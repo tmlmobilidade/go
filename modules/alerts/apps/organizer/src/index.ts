@@ -2,7 +2,7 @@
 
 import { ensureStructure } from '@/tasks/ensure-structure.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

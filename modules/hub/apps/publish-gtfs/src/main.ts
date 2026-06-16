@@ -26,7 +26,7 @@ import { exportShapesFile } from '@/exports/shapes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 
 /* * */
 

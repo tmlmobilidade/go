@@ -3,7 +3,7 @@
 import { deleteOldFileExports } from '@/tasks/delete-old-exports.js';
 import { markStuckProcessingExportsAsError } from '@/tasks/mark-stuck-as-error.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

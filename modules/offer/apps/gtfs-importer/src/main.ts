@@ -2,7 +2,7 @@
 
 import { lines, patterns, routes } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { INTERCHANGE_MODE } from '@tmlmobilidade/types';
 
 import { fetchAllEvents } from './fetchers/events.js';

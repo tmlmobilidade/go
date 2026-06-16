@@ -7,7 +7,7 @@ import { processApexValidation } from '@/tasks/process-apex-validation.js';
 import { processVehicleEvent } from '@/tasks/process-vehicle-event.js';
 import { pcgidbLegacy, pcgidbTicketing, pcgidbValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 
 /* * */
 

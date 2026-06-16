@@ -5,7 +5,7 @@ import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-replicator-p
 import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { pcgidbTicketing, rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';

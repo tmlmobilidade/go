@@ -4,7 +4,7 @@ import { categorizeValidations } from '@/tasks/categorize-validations.js';
 import { linkRefundsToSalesToValidations } from '@/tasks/link-refunds.js';
 import { linkSalesToValidations } from '@/tasks/link-sales.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */

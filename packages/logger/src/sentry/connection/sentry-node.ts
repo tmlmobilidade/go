@@ -1,6 +1,5 @@
+import { getSentryNodeClient } from '@/sentry/client/go-sentry-node.js';
 import * as Sentry from '@sentry/node';
-
-import { getSentryNodeClient } from '../client/go-sentry-node.js';
 
 /* * */
 

@@ -11,7 +11,7 @@ import { runLoaderPhase } from '@/run-loader.js';
 import { writeOutput } from '@/write-output.js';
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

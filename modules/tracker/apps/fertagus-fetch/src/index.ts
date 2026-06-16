@@ -6,7 +6,7 @@ import { externalClients } from '@tmlmobilidade/external';
 import { TrainsResponse } from '@tmlmobilidade/external/dist/clients/fertagus/types.js';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, HashedPattern, RawVehicleEventFertagusV1, Ride } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';

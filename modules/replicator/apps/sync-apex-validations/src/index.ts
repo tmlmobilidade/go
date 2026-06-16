@@ -5,7 +5,7 @@ import { parseSimplifiedApexValidation } from '@tmlmobilidade/go-replicator-pckg
 import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
 import { pcgidbValidations, rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';

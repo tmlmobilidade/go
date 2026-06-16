@@ -31,10 +31,6 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
-		},
-		"./sentry/node": {
-			"types": "./dist/sentry/connection/sentry-node.d.ts",
-			"default": "./dist/sentry/connection/sentry-node.js"
 		}
 	},
 	"scripts": {

@@ -4,7 +4,7 @@ import { publishGtfsRtFeed } from '@/tasks/publish-gtfs-rt-feed.js';
 import { publishJsonFeed } from '@/tasks/publish-json-feed.js';
 import { publishRssFeed } from '@/tasks/publish-rss-feed.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

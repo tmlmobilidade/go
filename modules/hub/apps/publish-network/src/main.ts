@@ -5,7 +5,7 @@ import { generateShapes } from '@/tasks/sync-shapes.js';
 import { generateStops } from '@/tasks/sync-stops.js';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

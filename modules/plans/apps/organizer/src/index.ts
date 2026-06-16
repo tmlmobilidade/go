@@ -3,7 +3,7 @@
 import { cleanOldValidations } from '@/tasks/clean-old-validations.js';
 import { ensureGtfsFiles } from '@/tasks/ensure-gtfs-files.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

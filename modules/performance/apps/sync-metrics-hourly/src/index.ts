@@ -6,7 +6,7 @@ import { syncPatternMetrics } from '@/tasks/sync-pattern-metrics.js';
 import { MetricSyncRunner } from '@/utils/run-metric.js';
 import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
