@@ -51,3 +51,7 @@ export class GoSentryClient {
 		return process.env.SENTRY_DSN;
 	}
 }
+
+export async function getSentryNodeClient() {
+	return await GoSentryClient.getClient();
+}
