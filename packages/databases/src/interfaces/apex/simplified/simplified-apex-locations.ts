@@ -9,20 +9,20 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 /* * */
 
 const tableSchema: ClickHouseSchema<SimplifiedApexLocation> = {
-	_id: { primaryKey: true, type: 'String' },
-	agency_id: { type: 'String' },
-	apex_version: { type: 'String' },
-	calendar_date: { type: 'String' },
-	created_at: { type: 'Int64' },
-	device_id: { type: 'String' },
-	line_id: { type: 'String' },
+	_id: { type: 'String' },
+	agency_id: { type: 'LowCardinality(String)' },
+	apex_version: { type: 'LowCardinality(String)' },
+	calendar_date: { type: 'Date' },
+	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	device_id: { type: 'LowCardinality(String)' },
+	line_id: { type: 'LowCardinality(String)' },
 	mac_ase_counter_value: { type: 'Int64' },
 	mac_sam_serial_number: { type: 'Int64' },
-	pattern_id: { type: 'String' },
-	received_at: { type: 'Int64' },
-	stop_id: { type: 'String' },
+	pattern_id: { type: 'LowCardinality(String)' },
+	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	stop_id: { type: 'LowCardinality(String)' },
 	trip_id: { type: 'String' },
-	vehicle_id: { type: 'String' },
+	vehicle_id: { type: 'LowCardinality(String)' },
 };
 
 /* * */
