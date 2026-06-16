@@ -55,7 +55,7 @@ export function LinesDetailViewMap() {
 			collection.features.push(result);
 		});
 		return collection;
-	}, [linesDetailContext.data.active_pattern.path, stopsContext.actions]);
+	}, [linesDetailContext.data.active_pattern?.path, stopsContext.actions]);
 
 	const activeStopFeatureCollection = useMemo(() => {
 		// Exit early if there is no active pattern or active waypoint
