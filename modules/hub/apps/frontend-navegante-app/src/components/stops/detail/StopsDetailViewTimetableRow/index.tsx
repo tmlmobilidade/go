@@ -4,6 +4,8 @@ import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { type StopsDetailViewTimetableData } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailViewTimetableClock } from '@/components/stops/detail/StopsDetailViewTimetableClock';
 import { StopsDetailViewTimetableRowArrival } from '@/components/stops/detail/StopsDetailViewTimetableRowArrival';
+import { useSelectedTrip } from '@/hooks/use-selected-trip';
+import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
@@ -17,6 +19,33 @@ interface StopsDetailViewTimetableRowProps {
 /* * */
 
 export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailViewTimetableRowProps) {
+	//
+
+	//
+	// A. Setup variables
+
+	const { selectedTripData, setSelectedTrip } = useSelectedTrip();
+
+	//
+	// B. Transform data
+
+	const isSelected = useMemo(() => {
+		const isSamePatternId = selectedTripData.patternId === data.pattern_id;
+		const isSameTripId = selectedTripData.tripId === data.trip_ids[0];
+		const isSameStopSequence = selectedTripData.stopSequence === data.stop_sequence;
+		return isSamePatternId && isSameTripId && isSameStopSequence;
+	}, [selectedTripData, data]);
+
+	//
+	// C. Handle actions
+
+	const handleClick = () => {
+		setSelectedTrip(data.pattern_id, data.trip_ids[0], data.stop_sequence);
+	};
+
+	//
+	// D. Render components
+
 	return (
 		<>
 
@@ -29,9 +58,11 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 			<div
 				className={styles.container}
 				data-is-past={data.is_past}
+				data-is-selected={isSelected}
 				data-with-clock={withClock}
+				onClick={handleClick}
 			>
-				{/* <p>{data.trip_ids.join(', ')}</p> */}
+
 				<div className={styles.summary}>
 					<LineDisplay
 						agencyId={data.agency_id}
@@ -42,6 +73,11 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 					/>
 					<StopsDetailViewTimetableRowArrival data={data} />
 				</div>
+
+				{/* <div className={styles.details}>
+					<p>{data.trip_ids.join(', ')}</p>
+				</div> */}
+
 			</div>
 
 		</>
