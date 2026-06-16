@@ -14,11 +14,11 @@ export type ClickHouseDataType =
   | 'UUID'
   | `DateTime64(3, 'UTC') CODEC(Delta, ZSTD)`
   | `Enum8(${string})`
+  | `LowCardinality(Nullable(String))`
   | `LowCardinality(String)`
   | `Nullable(Float64)`
   | `Nullable(Int32)`
   | `Nullable(Int64)`
-  | `Nullable(LowCardinality(String))`
   | `Nullable(String)`
   | `Nullable(UInt64)`
   | `Nullable(UUID)`;
