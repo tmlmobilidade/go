@@ -6,23 +6,23 @@ import { Dates } from '@tmlmobilidade/dates';
 
 /* * */
 
-const isDevelopment = process.env.ENVIRONMENT === 'development';
+const isProduction = process.env.ENVIRONMENT === 'production';
 
 function getEtaDatabase(): string {
-	return process.env.ENVIRONMENT === 'dev' ? 'eta_dev' : 'eta';
+	return isProduction ? 'eta' : 'eta_dev';
 }
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
-	agencyIds: ['1', '8', '21', '41', '42', '43', '44'],
+	agencyIds: ['1'],
 
 	database: getEtaDatabase(),
 
 	development: {
-		isDevelopment,
-		lineIds: [1215],
-		timeEnd: Dates.fromUnixTimestamp(1779062400000).plus({ hours: 1 }),
-		timeStart: Dates.fromUnixTimestamp(1779062400000),
+		isDevelopment: !isProduction,
+		lineIds: [77],
+		timeEnd: Dates.fromUnixTimestamp(1780836960000).plus({ hours: 1 }),
+		timeStart: Dates.fromUnixTimestamp(1780836960000),
 	},
 
 	// Data and time settings
@@ -41,8 +41,8 @@ export const AppConfig = Object.freeze({
 		insertHistoricalRidesByDay: true,
 		insertHistoricalShapeNodes: true,
 		insertHistoricalVehicleEvents: true,
-		runDdl: false, // true,
+		runDdl: true,
 		runTransformationAndAggregationQueries: true,
-		truncatePipelineTables: false, // isDevelopment ? true : false,
+		truncatePipelineTables: !isProduction,
 	},
 });
