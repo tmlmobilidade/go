@@ -1,6 +1,6 @@
 /* * */
 
-import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -10,7 +10,6 @@ export const SimplifiedApexBankingTapSchema = z.object({
 	agency_id: z.string(),
 	apex_version: z.string(),
 	banking_token: z.string(),
-	calendar_date: CalendarDateSchema,
 	card_brand: z.number(),
 	card_pan: z.string(),
 	created_at: UnixTimestampSchema,

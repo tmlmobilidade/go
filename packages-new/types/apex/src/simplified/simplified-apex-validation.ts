@@ -1,7 +1,7 @@
 /* * */
 
 import { ApexValidationStatusSchema } from '@/utils/validations-status.js';
-import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -10,7 +10,6 @@ export const SimplifiedApexValidationSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
-	calendar_date: CalendarDateSchema,
 	card_serial_number: z.string().nullable().default(null),
 	category: z.enum(['prepaid', 'subscription', 'on_board_sale']).nullable(),
 	created_at: UnixTimestampSchema,
