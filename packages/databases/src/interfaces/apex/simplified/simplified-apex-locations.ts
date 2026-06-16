@@ -22,6 +22,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexLocation> = {
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	stop_id: { type: 'LowCardinality(String)' },
 	trip_id: { type: 'String' },
+	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	vehicle_id: { type: 'LowCardinality(String)' },
 };
 

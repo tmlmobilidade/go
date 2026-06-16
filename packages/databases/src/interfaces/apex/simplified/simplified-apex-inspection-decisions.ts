@@ -22,6 +22,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexInspectionDecision> = {
 	mac_ase_counter_value: { type: 'Int64' },
 	mac_sam_serial_number: { type: 'Int64' },
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 };
 
 /* * */

@@ -30,6 +30,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexBankingTap> = {
 	stop_id: { type: 'LowCardinality(String)' },
 	trip_id: { type: 'Nullable(String)' },
 	units_qty: { type: 'Nullable(Int64)' },
+	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	vehicle_id: { type: 'LowCardinality(String)' },
 };
 

@@ -30,6 +30,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexInspection> = {
 	product_id: { type: 'LowCardinality(String)' },
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	trip_id: { type: 'String' },
+	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	vehicle_id: { type: 'LowCardinality(String)' },
 };
 

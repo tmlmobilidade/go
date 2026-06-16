@@ -32,6 +32,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardSale> = {
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	stop_id: { type: 'Nullable(LowCardinality(String))' },
 	trip_id: { type: 'Nullable(String)' },
+	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	validation_id: { type: 'Nullable(String)' },
 	vehicle_id: { type: 'Int64' },
 };
