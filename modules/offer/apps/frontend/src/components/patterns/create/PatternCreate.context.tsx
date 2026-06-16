@@ -64,7 +64,7 @@ export const PatternCreateContextProvider = ({ children, lineId, routeId }: Prop
 			form.resetDirty();
 			routeMutate();
 			closeCreatePatternModal();
-			router.push(keepUrlParams(PAGE_ROUTES.offer.PATTERN_DETAIL(lineId, routeId, newItem._id)));
+			router.push(keepUrlParams(PAGE_ROUTES.offer.PATTERN_DETAIL(lineId, newItem._id, routeId)));
 		},
 	});
 

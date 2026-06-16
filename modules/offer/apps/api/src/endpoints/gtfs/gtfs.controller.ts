@@ -49,7 +49,9 @@ interface GtfsTrip {
 	direction_id: string
 	path: {
 		arrival_time: string
+		avg_speed: number
 		departure_time: string
+		dwell_time: number
 		shape_dist_traveled: number
 		stop_id: string
 		stop_sequence: number
@@ -69,8 +71,47 @@ interface GtfsTrip {
 	trip_id: string
 }
 
-type ParsedStopTime = GtfsTrip['path'][number];
+// Intermediate type used during parsing, before avg_speed/dwell_time are computed
+type RawParsedStopTime = Omit<GtfsTrip['path'][number], 'avg_speed' | 'dwell_time'>;
+type ParsedStopTime = RawParsedStopTime;
 type ParsedShapePoint = GtfsTrip['shape']['points'][number];
+
+/**
+ * Parses a GTFS HH:MM:SS time string to total seconds (supports >24h times).
+ */
+function parseGtfsTime(t?: string): null | number {
+	if (!t) return null;
+	const parts = t.split(':').map(Number);
+	if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return null;
+	return parts[0] * 3600 + parts[1] * 60 + parts[2];
+}
+
+/**
+ * Enriches a sorted raw path with computed avg_speed (km/h) and dwell_time (seconds).
+ */
+function withPathMetrics(path: RawParsedStopTime[]): GtfsTrip['path'] {
+	return path.map((item, i) => {
+		const prev = i > 0 ? path[i - 1] : null;
+		const arrSec = parseGtfsTime(item.arrival_time);
+		const depSec = parseGtfsTime(item.departure_time);
+
+		const dwellTime = arrSec !== null && depSec !== null
+			? Math.max(0, depSec - arrSec)
+			: 30;
+
+		let avgSpeed = 0;
+		if (prev) {
+			const prevDep = parseGtfsTime(prev.departure_time);
+			const driveTime = arrSec !== null && prevDep !== null ? arrSec - prevDep : null;
+			const distDelta = item.shape_dist_traveled - prev.shape_dist_traveled;
+			if (driveTime && driveTime > 0 && distDelta > 0) {
+				avgSpeed = Math.round((distDelta * 3.6) / driveTime);
+			}
+		}
+
+		return { ...item, avg_speed: avgSpeed, dwell_time: dwellTime };
+	});
+}
 
 /**
  * Parses a GTFS CSV file from a zip entry.
@@ -252,7 +293,7 @@ export class GtfsController {
 
 					return [{
 						...trip,
-						path: normalized.path,
+						path: withPathMetrics(normalized.path),
 						shape: {
 							points: normalized.points,
 							shape_id: shape.shape_id,

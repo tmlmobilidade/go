@@ -421,6 +421,9 @@ export const API_ROUTES = Object.freeze({
 		ROUTES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/routes/${id}/lock`,
 		ROUTES_LIST: `${getModuleConfig('offer', 'api_url')}/routes`,
 
+		// SHAPES
+		SHAPES_ROUTE_PREVIEW: `${getModuleConfig('offer', 'api_url')}/shapes/route-preview`,
+
 		// TYPOLOGIES
 		TYPOLOGIES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${id}`,
 		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${id}/lock`,
