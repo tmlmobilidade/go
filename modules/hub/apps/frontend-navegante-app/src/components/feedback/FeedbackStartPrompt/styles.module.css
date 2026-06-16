@@ -34,9 +34,9 @@
 	pointer-events: none;
 	content: attr(data-label);
 	background-color: var(--color-brand-navegante);
-	border-radius: 0.4em;
+	border-radius: 6px;
 	box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
-	animation: hideSpeechBubble 1000ms ease 3s forwards;
+	animation: hide-speech-bubble 1000ms ease 3000ms forwards;
 }
 
 .container::after {
@@ -51,7 +51,7 @@
 	border-top-color: var(--color-brand-navegante);
 	border-right: 0;
 	border-bottom: 0;
-	animation: hideSpeechBubble 1000ms ease 3s forwards;
+	animation: hide-speech-bubble 1000ms ease 3000ms forwards;
 }
 
 .container:active {
@@ -64,7 +64,7 @@
 	outline-offset: 3px;
 }
 
-@keyframes hideSpeechBubble {
+@keyframes hide-speech-bubble {
 	to {
 		visibility: hidden;
 		opacity: 0;
