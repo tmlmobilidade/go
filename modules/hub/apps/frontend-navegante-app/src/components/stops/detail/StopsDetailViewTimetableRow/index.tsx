@@ -77,9 +77,9 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 					<StopsDetailViewTimetableRowArrival data={data} />
 				</div>
 
-				{data.locality_ids?.length > 0 && (
+				{data.locality_names?.length > 0 && (
 					<div className={styles.details}>
-						<p className={styles.localitiesList}>{t('default:stops.StopsDetailViewTimetableRow.localities', '', { localities: data.locality_ids.join(', ') })}</p>
+						<p className={styles.localitiesList}>{t('default:stops.StopsDetailViewTimetableRow.localities', '', { localities: data.locality_names.join(', ') })}</p>
 					</div>
 				)}
 
