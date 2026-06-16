@@ -1,0 +1,29 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"allowJs": true,
+		"baseUrl": ".",
+		"composite": false,
+		"declaration": true,
+		"declarationMap": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"inlineSources": false,
+		"isolatedModules": true,
+		"module": "NodeNext",
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"outDir": "dist",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+		"preserveWatchOutput": true,
+		"rootDir": "src",
+		"skipLibCheck": true,
+		"strict": false,
+		"target": "ESNext",
+		"types": ["node"]
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "dist"]
+}
