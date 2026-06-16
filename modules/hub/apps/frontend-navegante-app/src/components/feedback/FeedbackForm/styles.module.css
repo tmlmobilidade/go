@@ -1,0 +1,42 @@
+.modalOverlay {
+	background-color: rgb(0 0 0 / 45%);
+}
+
+.modalContent {
+	overflow: hidden;
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 8px;
+	box-shadow: 0 12px 40px rgb(0 0 0 / 30%);
+}
+
+.modalHeader {
+	min-height: 56px;
+	padding: 0 16px;
+	background-color: var(--color-system-background-100);
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.modalTitle {
+	font-size: 18px;
+	font-weight: var(--font-weight-bold);
+	line-height: 1.2;
+	color: var(--color-system-text-100);
+}
+
+.modalClose {
+	color: var(--color-system-text-200);
+	background-color: transparent;
+	border-radius: 100%;
+	transition: 200ms all ease;
+}
+
+.modalClose:hover {
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-300);
+}
+
+.modalBody {
+	padding: 16px;
+	background-color: var(--color-system-background-200);
+}

@@ -6,8 +6,10 @@ import { FeedbackMoodSelector } from '@/components/feedback/FeedbackMoodSelector
 import { FeedbackReasonOptionsSheet } from '@/components/feedback/FeedbackReasonOptionsSheet';
 import { FeedbackReasonsSheet } from '@/components/feedback/FeedbackReasonsSheet';
 import { FeedbackStartPrompt } from '@/components/feedback/FeedbackStartPrompt';
-import { FeedbackSubmitAction } from '@/components/feedback/FeedbackSubmitAction';
+import { Modal } from '@mantine/core';
 import { useState } from 'react';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -20,22 +22,21 @@ export function FeedbackForm() {
 	const [isHappyReasonsSheetOpen, setIsHappyReasonsSheetOpen] = useState(false);
 	const [isUnhappyReasonsSheetOpen, setIsUnhappyReasonsSheetOpen] = useState(false);
 	const [activeReasonOptionsSheet, setActiveReasonOptionsSheet] = useState<FeedbackReasonCategory | null>(null);
-	const [hasStartedFeedback, setHasStartedFeedback] = useState(false);
+	const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 	const [selectedReasonValues, setSelectedReasonValues] = useState<string[]>([]);
 	const [selectedMood, setSelectedMood] = useState<'happy' | 'unhappy' | null>(null);
-
-	const isAnyReasonsSheetOpen = isHappyReasonsSheetOpen || isUnhappyReasonsSheetOpen || activeReasonOptionsSheet !== null;
-	const shouldShowSubmitAction = !isAnyReasonsSheetOpen && (selectedMood === 'happy' || (selectedMood === 'unhappy' && selectedReasonValues.length > 0));
 
 	//
 	// B. Handle actions
 
 	const handleOpenHappyReasonsSheet = () => {
+		setIsFeedbackModalOpen(false);
 		setIsHappyReasonsSheetOpen(true);
 	};
 
 	const handleSelectUnhappy = () => {
 		setSelectedMood('unhappy');
+		setIsFeedbackModalOpen(false);
 		setIsUnhappyReasonsSheetOpen(true);
 	};
 
@@ -53,11 +54,23 @@ export function FeedbackForm() {
 
 	return (
 		<>
-			{!hasStartedFeedback && (
-				<FeedbackStartPrompt onClick={() => setHasStartedFeedback(true)} />
-			)}
+			<FeedbackStartPrompt onClick={() => setIsFeedbackModalOpen(true)} />
 
-			{hasStartedFeedback && (
+			<Modal
+				centered={true}
+				onClose={() => setIsFeedbackModalOpen(false)}
+				opened={isFeedbackModalOpen}
+				size="sm"
+				title="Feedback"
+				classNames={{
+					body: styles.modalBody,
+					close: styles.modalClose,
+					content: styles.modalContent,
+					header: styles.modalHeader,
+					overlay: styles.modalOverlay,
+					title: styles.modalTitle,
+				}}
+			>
 				<FeedbackMoodSelector
 					onSelectHappy={() => setSelectedMood('happy')}
 					onSelectUnhappy={handleSelectUnhappy}
@@ -67,11 +80,7 @@ export function FeedbackForm() {
 						<FeedbackImprovementPrompt onClick={handleOpenHappyReasonsSheet} />
 					)}
 				</FeedbackMoodSelector>
-			)}
-
-			{shouldShowSubmitAction && (
-				<FeedbackSubmitAction />
-			)}
+			</Modal>
 
 			<FeedbackReasonsSheet
 				description="Ajude-nos a melhorar o serviço."

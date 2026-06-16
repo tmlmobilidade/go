@@ -1,17 +1,18 @@
 .container {
 	display: flex;
 	flex-direction: column;
-	gap: 14px;
+	gap: 16px;
 	width: 100%;
 	padding: 16px;
+	background-color: var(--color-system-background-100);
 	border: 1px solid var(--color-system-border-100);
 	border-radius: 8px;
 }
 
 .title {
 	margin: 0;
-	font-size: 16px;
-	font-weight: var(--font-weight-medium);
+	font-size: 17px;
+	font-weight: var(--font-weight-bold);
 	line-height: 1.2;
 	color: var(--color-system-text-100);
 }
@@ -36,9 +37,10 @@
 	line-height: 1;
 	color: var(--color-system-text-200);
 	cursor: pointer;
-	background: transparent;
+	background-color: var(--color-system-background-200);
 	border: 1px solid var(--color-system-border-100);
 	border-radius: 999px;
+	transition: 200ms all ease;
 }
 
 .action:focus-visible {
@@ -49,13 +51,20 @@
 }
 
 .action[data-selected='true'] {
-	color: var(--color-brand-navegante);
+	color: #000;
+	background-color: var(--color-brand-navegante);
 	border-color: var(--color-brand-navegante);
 }
 
 @media (hover: hover) {
 	.action:hover {
 		color: var(--color-brand-navegante);
+		background-color: var(--color-system-background-300);
 		border-color: var(--color-brand-navegante);
+	}
+
+	.action[data-selected='true']:hover {
+		color: #000;
+		background-color: var(--color-brand-navegante);
 	}
 }
