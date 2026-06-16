@@ -2,7 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionSaleV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -104,7 +104,7 @@ export async function syncApexSales(timeChunk: PerformInTimeChunksItem) {
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
 			let parseResult: null | SimplifiedApexOnBoardSale = null;
-			if (sourceDbDocument.version === 'sale-3.0') parseResult = parseRawApexTransactionSaleV30(sourceDbDocument);
+			if (sourceDbDocument.version === 'sale-3.0') parseResult = parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(sourceDbDocument);
 			if (!parseResult) return;
 			await writer.write(parseResult);
 		},
