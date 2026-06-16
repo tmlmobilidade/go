@@ -59,7 +59,7 @@ interface RoutePreviewResponse {
 
 /* * */
 
-const VALHALLA_URL = process.env.VALHALLA_URL ?? 'http://localhost:8002';
+const VALHALLA_URL = process.env.VALHALLA_URL ?? 'https://valhalla.carrismetropolitana.pt';
 
 const toMeters = (distanceInKm: number) => Math.round(distanceInKm * 1000);
 
