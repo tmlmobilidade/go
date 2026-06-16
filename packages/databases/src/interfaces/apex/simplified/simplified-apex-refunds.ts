@@ -9,7 +9,7 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 /* * */
 
 const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardRefund> = {
-	_id: { type: 'String' },
+	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	block_id: { type: 'Nullable(String)' },
@@ -19,21 +19,21 @@ const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardRefund> = {
 	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	device_id: { type: 'LowCardinality(String)' },
 	duty_id: { type: 'Nullable(String)' },
-	line_id: { type: 'LowCardinality(String)' },
+	line_id: { type: 'Nullable(LowCardinality(String))' },
 	mac_ase_counter_value: { type: 'UInt64' },
 	mac_sam_serial_number: { type: 'UInt64' },
 	on_board_sale_id: { type: 'Nullable(String)' },
-	pattern_id: { type: 'LowCardinality(String)' },
+	pattern_id: { type: 'Nullable(LowCardinality(String))' },
 	payment_method: { type: 'UInt8' },
 	price: { type: 'Int32' },
-	product_long_id: { type: 'LowCardinality(String)' },
+	product_long_id: { type: 'Nullable(LowCardinality(String))' },
 	product_quantity: { type: 'Int32' },
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
-	stop_id: { type: 'LowCardinality(String)' },
+	stop_id: { type: 'Nullable(LowCardinality(String))' },
 	trip_id: { type: 'Nullable(String)' },
 	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	validation_id: { type: 'Nullable(String)' },
-	vehicle_id: { type: 'LowCardinality(String)' },
+	vehicle_id: { type: 'Nullable(LowCardinality(String))' },
 };
 
 /* * */

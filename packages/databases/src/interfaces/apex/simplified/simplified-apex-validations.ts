@@ -9,7 +9,7 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 /* * */
 
 const tableSchema: ClickHouseSchema<SimplifiedApexValidation> = {
-	_id: { type: 'String' },
+	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	calendar_date: { type: 'Date' },
@@ -34,7 +34,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexValidation> = {
 	units_qty: { type: 'Nullable(Int32)' },
 	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	validation_status: { type: 'UInt8' },
-	vehicle_id: { type: 'LowCardinality(String)' },
+	vehicle_id: { type: 'Nullable(LowCardinality(String))' },
 };
 
 /* * */

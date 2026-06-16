@@ -9,7 +9,7 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 /* * */
 
 const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardSale> = {
-	_id: { type: 'String' },
+	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	block_id: { type: 'Nullable(String)' },
@@ -34,7 +34,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardSale> = {
 	trip_id: { type: 'Nullable(String)' },
 	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	validation_id: { type: 'Nullable(String)' },
-	vehicle_id: { type: 'LowCardinality(String)' },
+	vehicle_id: { type: 'Nullable(LowCardinality(String))' },
 };
 
 /* * */

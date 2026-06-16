@@ -9,7 +9,7 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 /* * */
 
 const tableSchema: ClickHouseSchema<SimplifiedApexInspectionDecision> = {
-	_id: { type: 'String' },
+	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	calendar_date: { type: 'Date' },
