@@ -6,7 +6,7 @@ export type ClickHouseDataType =
   | 'Bool'
   | 'Date'
   | 'Float64'
-  | 'Int64'
+  | 'Int32'
   | 'String'
   | 'UInt8'
   | 'UInt64'
@@ -14,7 +14,7 @@ export type ClickHouseDataType =
   | `Enum8(${string})`
   | `LowCardinality(String)`
   | `Nullable(Float64)`
-  | `Nullable(Int64)`
+  | `Nullable(Int32)`
   | `Nullable(LowCardinality(String))`
   | `Nullable(String)`
   | `Nullable(UInt64)`;

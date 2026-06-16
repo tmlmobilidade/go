@@ -22,8 +22,8 @@ const tableSchema: ClickHouseSchema<SimplifiedApexValidation> = {
 	is_ok_pcgi: { type: 'Bool' },
 	is_passenger: { type: 'Bool' },
 	line_id: { type: 'Nullable(LowCardinality(String))' },
-	mac_ase_counter_value: { type: 'Int64' },
-	mac_sam_serial_number: { type: 'Int64' },
+	mac_ase_counter_value: { type: 'UInt64' },
+	mac_sam_serial_number: { type: 'UInt64' },
 	on_board_refund_id: { type: 'Nullable(String)' },
 	on_board_sale_id: { type: 'Nullable(String)' },
 	pattern_id: { type: 'Nullable(LowCardinality(String))' },
@@ -31,9 +31,9 @@ const tableSchema: ClickHouseSchema<SimplifiedApexValidation> = {
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	stop_id: { type: 'Nullable(LowCardinality(String))' },
 	trip_id: { type: 'Nullable(String)' },
-	units_qty: { type: 'Nullable(Int64)' },
+	units_qty: { type: 'Nullable(Int32)' },
 	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
-	validation_status: { type: 'Int64' },
+	validation_status: { type: 'UInt8' },
 	vehicle_id: { type: 'LowCardinality(String)' },
 };
 
