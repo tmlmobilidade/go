@@ -46,7 +46,7 @@ class SimplifiedApexValidationsNewClass extends ClickHouseInterfaceTemplate<Simp
 
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexValidation> = 'ReplacingMergeTree(updated_at)';
-	protected override readonly orderBy = 'agency_id, is_passenger, created_at, _id';
+	protected override readonly orderBy = 'agency_id, created_at, _id';
 	protected override readonly partitionBy = 'toYYYYMM(created_at)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'validations';
