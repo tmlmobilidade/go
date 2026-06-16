@@ -39,12 +39,11 @@ export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApex
 
 		const earliestTransactionDate = getEarliestDate();
 
-		const transactionDate = Dates
+		const transactionDateValue = Dates
 			.fromISO(pcgiDoc.transaction.transactionDate)
-			.setZone('Europe/Lisbon', 'rebase_utc')
-			.unix_timestamp;
+			.setZone('Europe/Lisbon', 'rebase_utc');
 
-		if (transactionDate < earliestTransactionDate.unix_timestamp) throw new Error(`Transaction date "${pcgiDoc.transaction.transactionDate}" is before the earliest allowed date "${earliestTransactionDate.operational_date}".`);
+		if (transactionDateValue.unix_timestamp < earliestTransactionDate.unix_timestamp) throw new Error(`Transaction date "${pcgiDoc.transaction.transactionDate}" is before the earliest allowed date "${earliestTransactionDate.operational_date}".`);
 
 		//
 		// Parse the document and return the simplified APEX object
@@ -53,7 +52,8 @@ export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApex
 			_id: pcgiDoc.transaction.transactionId,
 			agency_id: pcgiDoc.transaction.operatorLongID,
 			apex_version: pcgiDoc.transaction.apexVersion,
-			created_at: transactionDate,
+			calendar_date: transactionDateValue.calendar_date,
+			created_at: transactionDateValue.unix_timestamp,
 			device_id: pcgiDoc.transaction.deviceID,
 			line_id: pcgiDoc.transaction.lineLongID,
 			mac_ase_counter_value: pcgiDoc.transaction.macDataFields.aseCounterValue,

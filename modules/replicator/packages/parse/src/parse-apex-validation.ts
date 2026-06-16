@@ -39,12 +39,11 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 
 		const earliestTransactionDate = getEarliestDate();
 
-		const transactionDate = Dates
+		const transactionDateValue = Dates
 			.fromISO(pcgiDoc.transaction.transactionDate)
-			.setZone('Europe/Lisbon', 'rebase_utc')
-			.unix_timestamp;
+			.setZone('Europe/Lisbon', 'rebase_utc');
 
-		if (transactionDate < earliestTransactionDate.unix_timestamp) throw new Error(`Transaction date "${pcgiDoc.transaction.transactionDate}" is before the earliest allowed date "${earliestTransactionDate.operational_date}".`);
+		if (transactionDateValue.unix_timestamp < earliestTransactionDate.unix_timestamp) throw new Error(`Transaction date "${pcgiDoc.transaction.transactionDate}" is before the earliest allowed date "${earliestTransactionDate.operational_date}".`);
 
 		//
 		// Parse the document and return the simplified APEX object
@@ -53,9 +52,10 @@ export function parseSimplifiedApexValidation(pcgiDoc: any): null | SimplifiedAp
 			_id: pcgiDoc.transaction.transactionId,
 			agency_id: pcgiDoc.transaction.operatorLongID,
 			apex_version: pcgiDoc.transaction.apexVersion,
+			calendar_date: transactionDateValue.calendar_date,
 			card_serial_number: pcgiDoc.transaction.cardSerialNumber,
 			category: getSimplifiedApexValidationCategory(pcgiDoc.transaction.unitsQuantity, null),
-			created_at: transactionDate,
+			created_at: transactionDateValue.unix_timestamp,
 			device_id: pcgiDoc.transaction.deviceID,
 			event_type: pcgiDoc.transaction.eventType,
 			is_ok: false,

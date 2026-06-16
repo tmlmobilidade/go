@@ -43,12 +43,11 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedA
 
 		const earliestTransactionDate = getEarliestDate();
 
-		const transactionDate = Dates
+		const transactionDateValue = Dates
 			.fromISO(pcgiDoc.transaction.transactionDate)
-			.setZone('Europe/Lisbon', 'rebase_utc')
-			.unix_timestamp;
+			.setZone('Europe/Lisbon', 'rebase_utc');
 
-		if (transactionDate < earliestTransactionDate.unix_timestamp) throw new Error(`Transaction date "${pcgiDoc.transaction.transactionDate}" is before the earliest allowed date "${earliestTransactionDate.operational_date}".`);
+		if (transactionDateValue.unix_timestamp < earliestTransactionDate.unix_timestamp) throw new Error(`Transaction date "${pcgiDoc.transaction.transactionDate}" is before the earliest allowed date "${earliestTransactionDate.operational_date}".`);
 
 		//
 		// Parse the document and return the simplified APEX object
@@ -58,9 +57,10 @@ export function parseSimplifiedApexOnBoardSale(pcgiDoc: any): null | SimplifiedA
 			agency_id: pcgiDoc.transaction.operatorLongID,
 			apex_version: pcgiDoc.transaction.apexVersion,
 			block_id: null,
+			calendar_date: transactionDateValue.calendar_date,
 			card_physical_type: pcgiDoc.transaction.cardPhysicalType,
 			card_serial_number: pcgiDoc.transaction.cardSerialNumber,
-			created_at: transactionDate,
+			created_at: transactionDateValue.unix_timestamp,
 			device_id: pcgiDoc.transaction.deviceID,
 			duty_id: null,
 			is_passenger: validateIfSimplifiedApexOnBoardSaleIsPassenger(null),
