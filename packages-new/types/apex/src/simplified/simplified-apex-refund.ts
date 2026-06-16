@@ -23,7 +23,7 @@ export const SimplifiedApexOnBoardRefundSchema = z.object({
 	pattern_id: z.string().nullable().default(null),
 	payment_method: z.number(),
 	price: z.number(),
-	product_long_id: z.string(),
+	product_id: z.string(),
 	product_quantity: z.number(),
 	received_at: UnixTimestampSchema,
 	stop_id: z.string().nullable().default(null),

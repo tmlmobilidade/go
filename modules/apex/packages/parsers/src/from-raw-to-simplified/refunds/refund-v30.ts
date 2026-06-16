@@ -29,23 +29,25 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
-		duty_id: '',
-		line_id: '',
+		duty_id: null,
+		line_id: null,
 		mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
 		on_board_sale_id: null,
-		pattern_id: '',
+		pattern_id: null,
 		payment_method: 0,
 		price: 0,
-		product_long_id: '',
+		product_id: '',
 		product_quantity: 0,
 		received_at: doc.received_at,
-		stop_id: '',
-		trip_id: '',
+		stop_id: null,
+		trip_id: null,
 		updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
-		validation_id: '',
+		validation_id: null,
 		vehicle_id: 0,
 	};
+
+	console.log(result);
 
 	return SimplifiedApexOnBoardRefundSchema.parse(result);
 }

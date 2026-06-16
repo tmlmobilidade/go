@@ -38,7 +38,7 @@ export function parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(doc:
 		pattern_id: '',
 		payment_method: 0,
 		price: 0,
-		product_long_id: '',
+		product_id: '',
 		product_quantity: 0,
 		received_at: doc.received_at,
 		stop_id: '',

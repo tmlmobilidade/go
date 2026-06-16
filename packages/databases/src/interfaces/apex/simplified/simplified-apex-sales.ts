@@ -27,7 +27,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardSale> = {
 	pattern_id: { type: 'LowCardinality(Nullable(String))' },
 	payment_method: { type: 'UInt8' },
 	price: { type: 'Int32' },
-	product_long_id: { type: 'LowCardinality(Nullable(String))' },
+	product_id: { type: 'LowCardinality(Nullable(String))' },
 	product_quantity: { type: 'Int32' },
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	stop_id: { type: 'LowCardinality(Nullable(String))' },
