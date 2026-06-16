@@ -1,4 +1,4 @@
-import { getSentryNodeClient } from '@/sentry/client/go-sentry-node.js';
+import { getSentryClient } from '@/sentry/client/go-sentry-node.js';
 import * as Sentry from '@sentry/node';
 
 /* * */
@@ -9,9 +9,10 @@ export async function initSentryNode() {
 	//
 	// Initialize Sentry
 
-	await getSentryNodeClient();
+	const dsn = getSentryClient();
 
 	return Sentry.init({
+		dsn,
 		enableLogs: true,
 		integrations: [
 			Sentry.consoleLoggingIntegration(),
