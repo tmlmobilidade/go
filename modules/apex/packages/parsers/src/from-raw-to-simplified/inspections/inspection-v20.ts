@@ -2,6 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type RawApexTransactionInspectionV20, type SimplifiedApexInspection, SimplifiedApexInspectionSchema } from '@tmlmobilidade/go-types-apex';
+import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -16,13 +17,6 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		.setZone('Europe/Lisbon', 'rebase_utc');
 
 	//
-	// Prepare the card serial number field value
-
-	const cardSerialNumberValue = doc.payload.cardInfo.cardSerialNumber
-		? BigInt(`0x${doc.payload.cardInfo.cardSerialNumber}`)
-		: null;
-
-	//
 	// Validate the document structure and content
 
 	const result: SimplifiedApexInspection = {
@@ -30,7 +24,7 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		calendar_date: transactionDateValue.calendar_date,
-		card_serial_number: cardSerialNumberValue,
+		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		control_destination_stop_id: doc.payload.controlServiceInfo.controlDestinationStopLongID,
 		control_origin_stop_id: doc.payload.controlServiceInfo.controlOriginStopLongID,
 		control_status: doc.payload.controlInfo.controlStatus,

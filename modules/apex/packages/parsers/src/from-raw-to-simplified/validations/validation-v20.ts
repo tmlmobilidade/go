@@ -2,6 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type RawApexTransactionValidationV20, type SimplifiedApexValidation, SimplifiedApexValidationSchema } from '@tmlmobilidade/go-types-apex';
+import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -16,13 +17,6 @@ export function parseRawApexTransactionValidationV20IntoSimplifiedApexValidation
 		.setZone('Europe/Lisbon', 'rebase_utc');
 
 	//
-	// Prepare the card serial number field value
-
-	const cardSerialNumberValue = doc.payload.cardInfo.cardSerialNumber
-		? BigInt(`0x${doc.payload.cardInfo.cardSerialNumber}`)
-		: null;
-
-	//
 	// Validate the document structure and content
 
 	const result: SimplifiedApexValidation = {
@@ -30,7 +24,7 @@ export function parseRawApexTransactionValidationV20IntoSimplifiedApexValidation
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		calendar_date: transactionDateValue.calendar_date,
-		card_serial_number: cardSerialNumberValue,
+		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		category: 'subscription',
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,

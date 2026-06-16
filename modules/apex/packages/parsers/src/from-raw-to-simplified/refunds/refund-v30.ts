@@ -2,6 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type RawApexTransactionRefundV30, type SimplifiedApexOnBoardRefund, SimplifiedApexOnBoardRefundSchema } from '@tmlmobilidade/go-types-apex';
+import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -16,13 +17,6 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 		.setZone('Europe/Lisbon', 'rebase_utc');
 
 	//
-	// Prepare the card serial number field value
-
-	const cardSerialNumberValue = doc.payload.cardInfo.cardSerialNumber
-		? BigInt(`0x${doc.payload.cardInfo.cardSerialNumber}`).toString()
-		: null;
-
-	//
 	// Validate the document structure and content
 
 	const result: SimplifiedApexOnBoardRefund = {
@@ -32,7 +26,7 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 		block_id: '',
 		calendar_date: transactionDateValue.calendar_date,
 		card_physical_type: doc.payload.cardInfo.cardPhysicalType,
-		card_serial_number: cardSerialNumberValue,
+		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
 		duty_id: '',
