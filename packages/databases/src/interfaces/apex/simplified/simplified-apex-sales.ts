@@ -13,7 +13,6 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardSale> = {
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	block_id: { type: 'Nullable(String)' },
-	calendar_date: { type: 'Date' },
 	card_physical_type: { type: 'UInt8' },
 	card_serial_number: { type: 'Nullable(UInt64)' },
 	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },

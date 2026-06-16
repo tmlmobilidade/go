@@ -12,7 +12,6 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexLocation> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
-	calendar_date: { type: 'Date' },
 	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	device_id: { type: 'LowCardinality(String)' },
 	line_id: { type: 'LowCardinality(Nullable(String))' },

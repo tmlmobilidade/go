@@ -23,7 +23,6 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		_id: doc.payload.transactionInfo.transactionId,
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
-		calendar_date: transactionDateValue.calendar_date,
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		control_destination_stop_id: doc.payload.controlServiceInfo.controlDestinationStopLongID,
 		control_origin_stop_id: doc.payload.controlServiceInfo.controlOriginStopLongID,

@@ -12,7 +12,6 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexInspection> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
-	calendar_date: { type: 'Date' },
 	card_serial_number: { type: 'Nullable(UInt64)' },
 	control_destination_stop_id: { type: 'LowCardinality(Nullable(String))' },
 	control_origin_stop_id: { type: 'LowCardinality(Nullable(String))' },

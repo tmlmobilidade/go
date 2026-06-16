@@ -12,7 +12,6 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexValidation> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
-	calendar_date: { type: 'Date' },
 	card_serial_number: { type: 'Nullable(UInt64)' },
 	category: { type: 'LowCardinality(String)' },
 	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },

@@ -24,7 +24,6 @@ export function parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(doc:
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		block_id: '',
-		calendar_date: transactionDateValue.calendar_date,
 		card_physical_type: doc.payload.cardInfo.cardPhysicalType,
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		created_at: transactionDateValue.unix_timestamp,
