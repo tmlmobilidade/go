@@ -91,7 +91,8 @@
 }
 
 .headerRight {
-	width: 100%;
+	grid-column: 3;
+	min-width: 0;
 }
 
 .title {

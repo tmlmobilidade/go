@@ -12,4 +12,5 @@ export const PublicFeedbackStopReasonValues = [
 	'accessibility_issue',
 	'validator_issue',
 	'confusing_signage',
+	'other',
 ] as const satisfies readonly string[];

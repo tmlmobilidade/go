@@ -29,4 +29,5 @@ export const PublicFeedbackLineReasonValues = [
 	'inadequate_service',
 	'unsafe_speed',
 	'traffic_law_violation',
+	'other',
 ] as const satisfies readonly string[];
