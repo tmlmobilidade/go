@@ -1,5 +1,5 @@
 import { type TaskProps } from '@/types.js';
-import { Dates, type CalendarEntry } from '@tmlmobilidade/dates';
+import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
 
 export interface AgencyAverageRidesByDayTypeResult {

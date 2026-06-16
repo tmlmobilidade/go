@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { getEarliestDate } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 

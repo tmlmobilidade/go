@@ -1,10 +1,10 @@
 /* * */
 
 import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/go-replicator-pckg-parse';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type SimplifiedApexValidation } from '@tmlmobilidade/types';
 
 /**
  * Ensure that Validations have their category and is_passenger fields correctly set.
@@ -52,8 +52,7 @@ export async function categorizeValidations() {
 		Logger.success(`Gone through ${totalValidations} Validations in ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => process.exit(1), 10000); // after 10 seconds

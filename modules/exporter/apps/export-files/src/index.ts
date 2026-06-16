@@ -44,8 +44,10 @@ async function main() {
 		let pathToFile: string | undefined;
 
 		try {
-		//
-		// Process the file export.
+			Logger.info(`Processing file export ${fileExport._id} (${fileExport.type}).`);
+
+			//
+			// Process the file export.
 			switch (fileExport.type) {
 				case 'ride':
 					pathToFile = await exportRidesFile(fileExport);
@@ -86,7 +88,7 @@ async function main() {
 			}
 		} catch (error) {
 			Logger.error(error);
-			Logger.error(`Error processing file export: ${error instanceof Error ? error.message : 'Unknown error'}.`);
+			Logger.error(`Error processing file export ${fileExport._id} (${fileExport.type}): ${error instanceof Error ? error.message : 'Unknown error'}.`);
 			await fileExports.updateById(fileExport._id, { processing_status: 'error' });
 			continue;
 		}

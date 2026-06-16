@@ -3,9 +3,10 @@
 import { type OfferJourney, type OfferStop } from '@/types.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type OperationalDate, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
+import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
 import { JsonWriter } from '@tmlmobilidade/writers';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';

@@ -25,7 +25,7 @@ export async function publishVehiclesPositions() {
 	//
 	// Retrieve active plans from the database
 
-	const approvedPlans = await apiCache.get('hub:plans:approved:json');
+	const approvedPlans = await apiCache.get('hub:v1:plans:approved:json');
 	if (!approvedPlans) throw new Error('No approved plans found in API Cache');
 
 	const approvedPlansData: HubPlan[] = JSON.parse(approvedPlans);
@@ -81,7 +81,7 @@ export async function publishVehiclesPositions() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:realtime:vehicles:positions:json', JSON.stringify(vehiclePositions));
+	await apiCache.set('hub:v1:realtime:vehicles:positions:json', JSON.stringify(vehiclePositions));
 
 	Logger.success(`Finished publishing latest vehicles positions (${globalTimer.get()})`);
 

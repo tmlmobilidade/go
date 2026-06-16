@@ -74,21 +74,16 @@ export async function main() {
 
 		// Fetch the same per-day windows the loader inserts so we can
 		// determine which hist_rides are still considered in-window.
-		const historicalRidesPromises = [];
+		const keepRideIds: string[] = [];
 		for (let index = 0; index < AppConfig.historicalDataDaysBack; index++) {
-			historicalRidesPromises.push(fetchHistoricalRidesForDayIndex({}, index));
-		}
-		const historicalRidesByDay = await Promise.all(historicalRidesPromises);
-
-		const keepRideIds = new Set<string>();
-		for (const dayRides of historicalRidesByDay) {
+			const dayRides = await fetchHistoricalRidesForDayIndex({}, index);
 			for (const ride of dayRides) {
-				keepRideIds.add(ride._id);
+				keepRideIds.push(ride._id);
 			}
 		}
-		Logger.info(`Found ${keepRideIds.size} historical rides in current window`);
+		Logger.info(`Found ${keepRideIds.length} historical rides in current window`);
 
-		await cleanupHistoricalRides(clickhouseClient, Array.from(keepRideIds));
+		await cleanupHistoricalRides(clickhouseClient, keepRideIds);
 	}
 
 	//

@@ -3,11 +3,11 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { parseSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-replicator-pckg-parse';
 import { getEarliestDate, syncDocuments } from '@tmlmobilidade/go-replicator-pckg-sync';
+import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { pcgidbTicketing, rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { MongoDbWriter, type MongoDBWriterWriteOps } from '@tmlmobilidade/writers';
 import { Interval } from 'luxon';

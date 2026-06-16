@@ -19,6 +19,7 @@ on:
     paths:
       - 'modules/**'
       - 'packages/**'
+      - 'packages-new/**'
       - '.github/workflows/build-modules.yml'
       - '.github/actions/**/*'
       - '.github/templates/**/*'
