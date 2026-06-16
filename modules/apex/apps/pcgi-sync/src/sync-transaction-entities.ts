@@ -33,6 +33,8 @@ const writer = new BatchWriter<RawApexTransaction>({
 export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem) {
 	//
 
+	const timeChunkTimer = new Timer();
+
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
@@ -100,6 +102,8 @@ export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem
 	}
 
 	await writer.flush();
+
+	Logger.success(`[APEX Tx] Chunk ${timeChunk.total - timeChunk.index} took ${timeChunkTimer.get()}`);
 
 	//
 };
