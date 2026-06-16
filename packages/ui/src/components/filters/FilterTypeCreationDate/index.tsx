@@ -5,25 +5,25 @@ import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { DateTimeInput } from '../../dates/DateTimeInput';
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
-import { Spacer } from '../../layout/Spacer';
 import { FilterWrapper } from '../FilterWrapper';
 
 /* * */
 
-interface FilterTypeDateRangeProps {
+interface FilterTypeCreationDateProps {
 	active?: boolean
 	clearable?: boolean
+	creationDate?: null | UnixTimestamp
+	creationDateLimit?: null | UnixTimestamp
 	disabled?: boolean
-	endDate?: null | UnixTimestamp
 	label: string
-	onEndDateChange?: (values: null | UnixTimestamp) => void
-	onStartDateChange?: (values: null | UnixTimestamp) => void
-	startDate?: null | UnixTimestamp
+	onCreationDateChange?: (values: null | UnixTimestamp) => void
+	onCreationDateLimitChange?: (values: null | UnixTimestamp) => void
+
 }
 
 /* * */
 
-export function FilterTypeDateRange({ active, clearable = false, disabled, endDate, label, onEndDateChange, onStartDateChange, startDate }: FilterTypeDateRangeProps) {
+export function FilterTypeCreationDate({ active, clearable = false, creationDate, creationDateLimit, disabled, label, onCreationDateChange, onCreationDateLimitChange }: FilterTypeCreationDateProps) {
 	return (
 		<FilterWrapper
 			active={active}
@@ -31,19 +31,19 @@ export function FilterTypeDateRange({ active, clearable = false, disabled, endDa
 			label={label}
 		>
 			<Section gap="sm" height="auto" padding="md" width="auto">
-				<Label size="md">Data de Início</Label>
+				<Label size="md">Criado entre</Label>
 				<DateTimeInput
 					clearable={clearable}
-					onChange={onStartDateChange}
-					value={startDate}
+					onChange={onCreationDateChange}
+					value={creationDate}
 				/>
-				<Spacer />
-				<Label size="md">Data de Fim</Label>
+				<Label size="md"> </Label>
 				<DateTimeInput
 					clearable={clearable}
-					onChange={onEndDateChange}
-					value={endDate}
+					onChange={onCreationDateLimitChange}
+					value={creationDateLimit}
 				/>
+
 			</Section>
 		</FilterWrapper>
 	);

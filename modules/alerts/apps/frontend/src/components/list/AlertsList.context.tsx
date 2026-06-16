@@ -15,6 +15,7 @@ import useSWR from 'swr';
 interface AlertsListContextState extends ListContextStateTemplate {
 	actions: {
 		setFilterDateCreation: (value: number) => void
+		setFilterDateCreationLimit: (value: number) => void
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
 	}
@@ -26,6 +27,7 @@ interface AlertsListContextState extends ListContextStateTemplate {
 		agency: UseFilterStateListReturnType
 		cause: UseFilterStateListReturnType
 		date_creation: number
+		date_creation_limit: number
 		date_end: number
 		date_start: number
 		effect: UseFilterStateListReturnType
@@ -71,9 +73,11 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	//
 	// C. Setup filters
+
 	const [filterDateEnd, setFilterDateEnd] = useQueryState<number>('date_end', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])));
 	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])));
-	const [filterCreationDate, setFilterDateCreation] = useQueryState<number>('date_creation', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])));
+	const [filterCreationDate, setFilterDateCreation] = useQueryState<number>('date_creation', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').unix_timestamp, [])));
+	const [filterCreationDateLimit, setFilterDateCreationLimit] = useQueryState<number>('date_creation_limit', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').unix_timestamp, [])));
 
 	const filterSearch = useFilterStateString('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
@@ -122,6 +126,13 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			if (!filterEffect.value.includes(alert.effect)) return false;
 			// Filter by municipality IDs
 			// if (!alert.municipality_ids.some((mId: string) => filterMunicipality.value.includes(mId))) return false;
+			//
+			// Filter by time started and time ended
+			if ((alert.active_period_start_date ?? 0) > filterDateEnd || (alert.active_period_end_date ?? Infinity) < filterDateStart) return false;
+			// Filter by time created
+			if (filterCreationDate && (alert.created_at ?? 0) < filterCreationDate) return false;
+			if (filterCreationDateLimit && (alert.created_at ?? 0) > filterCreationDateLimit) return false;
+
 			// Return true if all filters pass
 			return true;
 		});
@@ -136,6 +147,10 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		filterCause.value,
 		filterEffect.value,
 		filterMunicipality.value,
+		filterDateEnd,
+		filterDateStart,
+		filterCreationDate,
+		filterCreationDateLimit,
 	]);
 
 	//
@@ -144,6 +159,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	const contextValue: AlertsListContextState = useMemo(() => ({
 		actions: {
 			setFilterDateCreation,
+			setFilterDateCreationLimit,
 			setFilterDateEnd,
 			setFilterDateStart,
 		},
@@ -155,6 +171,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			agency: filterAgency,
 			cause: filterCause,
 			date_creation: filterCreationDate,
+			date_creation_limit: filterCreationDateLimit,
 			date_end: filterDateEnd,
 			date_start: filterDateStart,
 			effect: filterEffect,
@@ -173,6 +190,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		filterDateEnd,
 		filterDateStart,
 		filterCreationDate,
+		filterCreationDateLimit,
 		filterResultsData,
 		allScheduledLoading,
 		allScheduledValidating,
@@ -187,6 +205,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		setFilterDateEnd,
 		setFilterDateStart,
 		setFilterDateCreation,
+		setFilterDateCreationLimit,
 	]);
 
 	//

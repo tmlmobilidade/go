@@ -23,23 +23,16 @@ export function AlertsListFilterDateRange() {
 		alertsListContext.actions.setFilterDateEnd(value);
 	};
 
-	const handleCreationDateChange = (value: UnixTimestamp) => {
-		alertsListContext.actions.setFilterDateCreation(value);
-	};
-
 	//
 
 	return (
 		<FilterTypeDateRange
 			active={true}
-			creationDate={alertsListContext.filters.date_creation as UnixTimestamp}
 			endDate={alertsListContext.filters.date_end as UnixTimestamp}
 			label="Datas"
-			onCreationDateChange={handleCreationDateChange}
 			onEndDateChange={handleEndDateChange}
 			onStartDateChange={handleStartDateChange}
 			startDate={alertsListContext.filters.date_start as UnixTimestamp}
-			thirdOption={true}
 		/>
 	);
 

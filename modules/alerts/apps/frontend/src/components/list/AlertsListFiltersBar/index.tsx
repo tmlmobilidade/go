@@ -2,6 +2,7 @@
 
 import { AlertsListFilterAgency } from '@/components/list/AlertsListFilterAgency';
 import { AlertsListFilterCause } from '@/components/list/AlertsListFilterCause';
+import { AlertsListFilterCreationDate } from '@/components/list/AlertsListFilterCreationDate';
 import { AlertsListFilterDateRange } from '@/components/list/AlertsListFilterDateRange';
 import { AlertsListFilterEffect } from '@/components/list/AlertsListFilterEffect';
 import { AlertsListFilterMunicipality } from '@/components/list/AlertsListFilterMunicipality';
@@ -21,6 +22,7 @@ export function AlertsListFiltersBar() {
 			<AlertsListFilterEffect />
 			<AlertsListFilterMunicipality />
 			<AlertsListFilterDateRange />
+			<AlertsListFilterCreationDate />
 			{/* <LineFilter /> */}
 			{/* <StopFilter /> */}
 			{/* <PublishDateFilter /> */}
