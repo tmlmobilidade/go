@@ -1,7 +1,6 @@
 /* eslint-disable perfectionist/sort-classes */
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
@@ -127,19 +126,19 @@ export class BatchWriter<T> {
 				// Call the insert function provided in the params to perform the actual database insertion.
 				if (!this.params.insertFn) throw new Error('BATCHWRITER: No insert function provided in params');
 				await this.insertWithRetry(this.dataBucketFlushOps);
-				Logger.info(`BATCHWRITER [${this.params.title}]: Flush | Length: ${this.dataBucketFlushOps.length} (session: ${sessionTimerResult}) (flush: ${flushTimer.get()})`);
+				console.info(`BATCHWRITER [${this.params.title}]: Flush | Length: ${this.dataBucketFlushOps.length} (session: ${sessionTimerResult}) (flush: ${flushTimer.get()})`);
 				// Call the flush callback, if provided
 				if (callback) await callback(this.dataBucketFlushOps);
 				// Reset the flush bucket
 				this.dataBucketFlushOps = [];
 			} catch (error) {
-				Logger.error(`BATCHWRITER [${this.params.title}]: Error @ flush().insert(): ${(error as Error).message}`);
+				console.error(`BATCHWRITER [${this.params.title}]: Error @ flush().insert(): ${(error as Error).message}`);
 				throw error; // Re-throw to allow retry logic at higher level
 			}
 
 			//
 		} catch (error) {
-			Logger.error(`BATCHWRITER [${this.params.title}]: Error @ flush(): ${(error as Error).message}`);
+			console.error(`BATCHWRITER [${this.params.title}]: Error @ flush(): ${(error as Error).message}`);
 			throw error; // Re-throw to allow retry logic at higher level
 		}
 	}
@@ -163,7 +162,7 @@ export class BatchWriter<T> {
 				const parsedError = error as Error & { code?: string };
 				const nextAttempt = attempt + 1;
 				const delayMs = retryBaseDelayMs * (2 ** attempt);
-				Logger.error(`BATCHWRITER [${this.params.title}]: Transient insert error (${parsedError.code ?? 'unknown'}). Retrying ${nextAttempt}/${maxRetries} in ${delayMs}ms. ${parsedError.message}`);
+				console.error(`BATCHWRITER [${this.params.title}]: Transient insert error (${parsedError.code ?? 'unknown'}). Retrying ${nextAttempt}/${maxRetries} in ${delayMs}ms. ${parsedError.message}`);
 				await new Promise(resolve => setTimeout(resolve, delayMs));
 			}
 		}
@@ -193,7 +192,7 @@ export class BatchWriter<T> {
 
 		const batchSize = this.params.batch_size ?? 10_000;
 		if (this.dataBucketAlwaysAvailable.length >= batchSize) {
-			Logger.info(`BATCHWRITER [${this.params.title}]: Batch full. Flushing data...`);
+			console.info(`BATCHWRITER [${this.params.title}]: Batch full. Flushing data...`);
 			await this.flush(flushCallback);
 		}
 
@@ -227,7 +226,7 @@ export class BatchWriter<T> {
 
 		if (this.params.idle_timeout && this.params.idle_timeout > 0 && !this.idleTimeoutTimer) {
 			this.idleTimeoutTimer = setTimeout(async () => {
-				Logger.info(`BATCHWRITER [${this.params.title}]: Idle timeout reached. Flushing data...`);
+				console.info(`BATCHWRITER [${this.params.title}]: Idle timeout reached. Flushing data...`);
 				await this.flush(flushCallback);
 			}, this.params.idle_timeout);
 		}
@@ -238,7 +237,7 @@ export class BatchWriter<T> {
 
 		if (this.params.batch_timeout && this.params.batch_timeout > 0 && !this.batchTimeoutTimer) {
 			this.batchTimeoutTimer = setTimeout(async () => {
-				Logger.info(`BATCHWRITER [${this.params.title}]: Batch timeout reached. Flushing data...`);
+				console.info(`BATCHWRITER [${this.params.title}]: Batch timeout reached. Flushing data...`);
 				await this.flush(flushCallback);
 			}, this.params.batch_timeout);
 		}
