@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -9,7 +9,8 @@ export const SimplifiedApexInspectionSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
-	card_serial_number: z.string(),
+	calendar_date: CalendarDateSchema,
+	card_serial_number: z.bigint().nullable().default(null),
 	control_destination_stop_id: z.string(),
 	control_origin_stop_id: z.string(),
 	control_status: z.number(),
@@ -26,7 +27,8 @@ export const SimplifiedApexInspectionSchema = z.object({
 	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
 	trip_id: z.string().nullable().default(null),
-	vehicle_id: z.number(),
+	updated_at: UnixTimestampSchema,
+	vehicle_id: z.number().nullable().default(null),
 });
 
 /**

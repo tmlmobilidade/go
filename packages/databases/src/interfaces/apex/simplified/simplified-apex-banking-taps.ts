@@ -2,34 +2,36 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema } from '@/types/index.js';
+import { type ClickHouseTableEngine, type ClickHouseTableSchema } from '@/types/index.js';
 import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseSchema<SimplifiedApexBankingTap> = {
-	_id: { primaryKey: true, type: 'String' },
-	agency_id: { type: 'String' },
-	apex_version: { type: 'String' },
+const tableSchema: ClickHouseTableSchema<SimplifiedApexBankingTap> = {
+	_id: { type: 'UUID' },
+	agency_id: { type: 'LowCardinality(String)' },
+	apex_version: { type: 'LowCardinality(String)' },
 	banking_token: { type: 'String' },
-	card_brand: { type: 'Int64' },
+	calendar_date: { type: 'Date' },
+	card_brand: { type: 'UInt8' },
 	card_pan: { type: 'String' },
-	created_at: { type: 'Int64' },
-	device_id: { type: 'String' },
-	event_type: { type: 'Int64' },
+	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	device_id: { type: 'LowCardinality(String)' },
+	event_type: { type: 'UInt8' },
 	is_ok: { type: 'Bool' },
 	is_ok_pcgi: { type: 'Bool' },
-	line_id: { type: 'String' },
-	mac_ase_counter_value: { type: 'Int64' },
-	mac_sam_serial_number: { type: 'Int64' },
-	pattern_id: { type: 'String' },
-	product_id: { type: 'String' },
-	received_at: { type: 'Int64' },
-	stop_id: { type: 'String' },
-	trip_id: { type: 'String' },
-	units_qty: { type: 'Int64' },
-	vehicle_id: { type: 'String' },
+	line_id: { type: 'LowCardinality(String)' },
+	mac_ase_counter_value: { type: 'UInt64' },
+	mac_sam_serial_number: { type: 'UInt64' },
+	pattern_id: { type: 'LowCardinality(String)' },
+	product_id: { type: 'LowCardinality(String)' },
+	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	stop_id: { type: 'LowCardinality(String)' },
+	trip_id: { type: 'Nullable(String)' },
+	units_qty: { type: 'Nullable(Int32)' },
+	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	vehicle_id: { type: 'LowCardinality(String)' },
 };
 
 /* * */
@@ -40,6 +42,9 @@ class SimplifiedApexBankingTapsNewClass extends ClickHouseInterfaceTemplate<Simp
 	private static _instance: null | Promise<SimplifiedApexBankingTapsNewClass> = null;
 
 	protected override readonly databaseName = 'simplified_apex';
+	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexBankingTap> = 'ReplacingMergeTree(updated_at)';
+	protected override readonly orderBy = 'agency_id, created_at, _id';
+	protected override readonly partitionBy = 'toYYYYMM(created_at)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'banking_taps';
 

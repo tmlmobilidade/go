@@ -2,7 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexInspectionDecisionsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionInspectionDecisionV20 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexInspectionDecision } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexInspectionDecision } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -104,7 +104,7 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
 			let parseResult: null | SimplifiedApexInspectionDecision = null;
-			if (sourceDbDocument.version === 'inspection-decision-2.0') parseResult = parseRawApexTransactionInspectionDecisionV20(sourceDbDocument);
+			if (sourceDbDocument.version === 'inspection-decision-2.0') parseResult = parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexInspectionDecision(sourceDbDocument);
 			if (!parseResult) return;
 			await writer.write(parseResult);
 		},

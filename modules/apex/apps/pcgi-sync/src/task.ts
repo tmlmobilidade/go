@@ -26,11 +26,11 @@ const writer = new BatchWriter<RawApexTransaction>({
 });
 
 /**
- * Syncs Transaction Entities from the PCGI database
+ * Syncs PCGI Transaction Entities from the PCGI database
  * to the MongoDB database for a given time chunk.
  * @param timeChunk The time chunk to sync the data for.
  */
-export async function syncTransactionEntities(timeChunk: PerformInTimeChunksItem) {
+export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const timeChunkTimer = new Timer();

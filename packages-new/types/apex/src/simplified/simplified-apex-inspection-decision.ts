@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -9,6 +9,7 @@ export const SimplifiedApexInspectionDecisionSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
+	calendar_date: CalendarDateSchema,
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	final_control_status: z.number(),
@@ -18,6 +19,7 @@ export const SimplifiedApexInspectionDecisionSchema = z.object({
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
 	received_at: UnixTimestampSchema,
+	updated_at: UnixTimestampSchema,
 });
 
 /**

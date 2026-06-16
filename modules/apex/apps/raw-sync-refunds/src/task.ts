@@ -2,7 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionRefundV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -104,7 +104,7 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
 			let parseResult: null | SimplifiedApexOnBoardRefund = null;
-			if (sourceDbDocument.version === 'refund-3.0') parseResult = parseRawApexTransactionRefundV30(sourceDbDocument);
+			if (sourceDbDocument.version === 'refund-3.0') parseResult = parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(sourceDbDocument);
 			if (!parseResult) return;
 			await writer.write(parseResult);
 		},
