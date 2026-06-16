@@ -279,6 +279,16 @@ export class AlertsController {
 	static async update(request: FastifyRequest<{ Body: UpdateAlertDto, Params: { id: string } }>, reply: FastifyReply<Alert>) {
 		// Validate the request body
 		const validatedAlert = UpdateAlertSchema.safeParse(request.body);
+		if (!validatedAlert.success) {
+			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Dados inválidos', validatedAlert.error);
+			Logger.issue('error', error, {
+				action: 'update',
+				feature: 'alerts',
+				request,
+				value: request.body,
+			});
+			throw error;
+		}
 
 		// Update the alert in the database
 		const updatedAlertData = await alerts.updateById(request.params.id, validatedAlert.data);
