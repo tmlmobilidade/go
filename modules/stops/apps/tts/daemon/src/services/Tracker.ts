@@ -4,7 +4,6 @@ import AdmZip from 'adm-zip';
 import fs from 'fs';
 import Papa from 'papaparse';
 import path from 'path';
-
 /* * */
 
 export interface TrackerItem {
@@ -14,7 +13,8 @@ export interface TrackerItem {
 
 /* * */
 
-const TRACKERS_DIRNAME = '/app/trackers';
+const TRACKERS_DIRNAME = './trackers';
+const OUTPUTS_DIRNAME = './outputs';
 
 const init = (name: string) => {
 	if (!fs.existsSync(TRACKERS_DIRNAME)) fs.mkdirSync(TRACKERS_DIRNAME, { recursive: true });
