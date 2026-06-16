@@ -1,13 +1,40 @@
 'use client';
 
-import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
-import { useForm } from '@mantine/form';
-import { EventRule, EventRuleSchema, HHMM } from '@tmlmobilidade/types';
-import { type UseFormReturnType } from '@tmlmobilidade/ui';
-import { zodResolver } from 'mantine-form-zod-resolver';
+import { type EventRule, EventRuleSchema, type HHMM } from '@tmlmobilidade/types';
+import { useForm, type UseFormReturnType, zodResolver } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
 import { closeCreateRuleModal } from './RuleCreate.modal';
+
+/* * */
+
+const ALL_DAY_RESTRICTION_END_TIME = '29:59' as HHMM;
+const ALL_DAY_RESTRICTION_START_TIME = '04:00' as HHMM;
+
+/* * */
+
+function getInitialRuleValues(initialValues?: EventRule): EventRule {
+	if (initialValues?.kind === 'event_restriction' && initialValues.all_day) {
+		return {
+			...initialValues,
+			end_time: initialValues.end_time || ALL_DAY_RESTRICTION_END_TIME,
+			start_time: initialValues.start_time || ALL_DAY_RESTRICTION_START_TIME,
+		};
+	}
+
+	return initialValues || {
+		all_day: false,
+		dates: [],
+		end_time: '' as HHMM,
+		event: {
+			id: '',
+			title: '',
+		},
+		kind: 'event_restriction',
+		lines_mode: 'all',
+		start_time: '' as HHMM,
+	};
+}
 
 /* * */
 
@@ -30,40 +57,35 @@ interface RuleCreateContextState {
 	}
 }
 
+interface RuleCreateContextProviderProps {
+	eventData: EventData
+	initialValues?: EventRule
+	onDelete?: () => void
+	onSubmit: (rule: EventRule) => void
+}
+
 /* * */
 
 const RuleCreateContext = createContext<RuleCreateContextState | undefined>(undefined);
 
-export const useRuleCreateContext = () => {
+export function useRuleCreateContext() {
 	const context = useContext(RuleCreateContext);
 	if (!context) {
 		throw new Error('useRuleCreateContext must be used within a RuleCreateContextProvider');
 	}
 	return context;
-};
+}
 
 /* * */
 
-export const RuleCreateContextProvider = ({ children, eventData, initialValues, onDelete, onSubmit }: PropsWithChildren<{ eventData: EventData, initialValues?: EventRule, onDelete?: () => void, onSubmit: (rule: EventRule) => void }>) => {
+export const RuleCreateContextProvider = ({ children, eventData, initialValues, onDelete, onSubmit }: PropsWithChildren<RuleCreateContextProviderProps>) => {
 	//
 
 	//
 	// A. Setup form
 
 	const form = useForm<EventRule>({
-		initialValues: initialValues || {
-			all_day: false,
-			dates: [],
-			end_time: '' as HHMM,
-			event: {
-				id: '',
-				title: '',
-			},
-
-			kind: 'event_restriction',
-			lines_mode: 'all',
-			start_time: '' as HHMM,
-		},
+		initialValues: getInitialRuleValues(initialValues),
 		mode: 'controlled',
 		validate: zodResolver(EventRuleSchema),
 		validateInputOnBlur: true,
@@ -74,6 +96,11 @@ export const RuleCreateContextProvider = ({ children, eventData, initialValues, 
 	// B. Handle actions
 
 	const handleSubmitRule = useCallback(() => {
+		if (form.values.kind === 'event_restriction' && form.values.all_day) {
+			form.setFieldValue('start_time', ALL_DAY_RESTRICTION_START_TIME);
+			form.setFieldValue('end_time', ALL_DAY_RESTRICTION_END_TIME);
+		}
+
 		// Validate form
 		const validation = form.validate();
 		if (validation.hasErrors) {
