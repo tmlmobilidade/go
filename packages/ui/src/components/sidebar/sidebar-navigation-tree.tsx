@@ -10,7 +10,8 @@ import { type JSX } from 'react';
 import { i18nResourceKeysPtShared } from '../../i18n';
 
 /* * */
-export interface SidebarLeafItemConfig {
+
+export interface SidebarNavigationItem {
 	_id: keyof typeof i18nResourceKeysPtShared.shared.components.sidebar.Sidebar
 	href: string
 	icon: JSX.Element
@@ -18,30 +19,30 @@ export interface SidebarLeafItemConfig {
 	type: 'item'
 }
 
-export interface SidebarGroupItemConfig {
+export interface SidebarNavigationGroup {
 	_id: keyof typeof i18nResourceKeysPtShared.shared.components.sidebar.SidebarGroups
-	children: readonly SidebarNodeConfig[]
+	children: readonly SidebarNavigationNode[]
 	permissions?: readonly Permission[]
 	type: 'group'
 }
 
-export type SidebarNodeConfig = SidebarGroupItemConfig | SidebarLeafItemConfig;
+export type SidebarNavigationNode = SidebarNavigationGroup | SidebarNavigationItem;
 
-const sidebarItem = (config: Omit<SidebarLeafItemConfig, 'type'>): SidebarLeafItemConfig => ({
+const sidebarNavigationItem = (config: Omit<SidebarNavigationItem, 'type'>): SidebarNavigationItem => ({
 	...config,
 	type: 'item',
 });
 
-const sidebarGroup = (config: Omit<SidebarGroupItemConfig, 'type'>): SidebarGroupItemConfig => ({
+const sidebarNavigationGroup = (config: Omit<SidebarNavigationGroup, 'type'>): SidebarNavigationGroup => ({
 	...config,
 	type: 'group',
 });
 
-export const sidebarApps = [
-	sidebarGroup({
+export const sidebarNavigationTree = [
+	sidebarNavigationGroup({
 		_id: 'overview',
 		children: [
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'home',
 				href: PAGE_ROUTES.auth.HOME_LIST,
 				icon: <IconHome size={20} />,
@@ -50,13 +51,13 @@ export const sidebarApps = [
 					{ action: PermissionCatalog.all.home.actions.read_wiki, scope: PermissionCatalog.all.home.scope },
 				],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'performance',
 				href: PAGE_ROUTES.performance.BASE,
 				icon: <IconRocket size={20} />,
 				permissions: [{ action: PermissionCatalog.all.performance.actions.read, scope: PermissionCatalog.all.performance.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'reference',
 				href: PAGE_ROUTES.root.REFERENCE_LIST,
 				icon: <IconBook size={20} />,
@@ -64,28 +65,28 @@ export const sidebarApps = [
 			}),
 		],
 	}),
-	sidebarGroup({
+	sidebarNavigationGroup({
 		_id: 'administration',
 		children: [
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'users',
 				href: PAGE_ROUTES.auth.USERS_LIST,
 				icon: <IconUser size={20} />,
 				permissions: [{ action: PermissionCatalog.all.users.actions.read, scope: PermissionCatalog.all.users.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'roles',
 				href: PAGE_ROUTES.auth.ROLES_LIST,
 				icon: <IconKey size={20} />,
 				permissions: [{ action: PermissionCatalog.all.roles.actions.read, scope: PermissionCatalog.all.roles.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'agencies',
 				href: PAGE_ROUTES.auth.AGENCIES_LIST,
 				icon: <IconBuildings size={20} />,
 				permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'organizations',
 				href: PAGE_ROUTES.auth.ORGANIZATIONS_LIST,
 				icon: <IconSitemap size={20} />,
@@ -93,40 +94,40 @@ export const sidebarApps = [
 			}),
 		],
 	}),
-	sidebarGroup({
+	sidebarNavigationGroup({
 		_id: 'operation',
 		children: [
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'rides',
 				href: PAGE_ROUTES.controller.RIDES_LIST,
 				icon: <IconListCheck size={20} />,
 				permissions: [{ action: PermissionCatalog.all.rides.actions.analysis_read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.rides.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'alerts',
 				href: PAGE_ROUTES.alerts.ALERTS_LIST,
 				icon: <IconAlertTriangle size={20} />,
 				permissions: [{ action: PermissionCatalog.all.alerts.actions.read, resources: { agency_ids: [], reference_types: [] }, scope: PermissionCatalog.all.alerts.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'plans',
 				href: PAGE_ROUTES.plans.APPROVED_LIST,
 				icon: <IconFileCertificate size={20} />,
 				permissions: [{ action: PermissionCatalog.all.plans.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.plans.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'gtfs_validations',
 				href: PAGE_ROUTES.plans.VALIDATIONS_LIST,
 				icon: <IconFileCheck size={20} />,
 				permissions: [{ action: PermissionCatalog.all.gtfs_validations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.gtfs_validations.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'sams',
 				href: PAGE_ROUTES.controller.SAMS_LIST,
 				icon: <IconDeviceSim size={20} />,
 				permissions: [{ action: PermissionCatalog.all.sams.actions.read, scope: PermissionCatalog.all.sams.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'vehicles',
 				href: PAGE_ROUTES.fleet.VEHICLES_LIST,
 				icon: <IconBus size={20} />,
@@ -134,34 +135,34 @@ export const sidebarApps = [
 			}),
 		],
 	}),
-	sidebarGroup({
+	sidebarNavigationGroup({
 		_id: 'offer',
 		children: [
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'lines',
 				href: PAGE_ROUTES.offer.LINES_LIST,
 				icon: <IconRoute size={20} />,
 				permissions: [{ action: PermissionCatalog.all.lines.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.lines.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'stops',
 				href: PAGE_ROUTES.stops.STOPS_LIST,
 				icon: <IconBusStop size={20} />,
 				permissions: [{ action: PermissionCatalog.all.stops.actions.read, resources: { agency_ids: [], municipality_ids: [] }, scope: PermissionCatalog.all.stops.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'typologies',
 				href: PAGE_ROUTES.offer.TYPOLOGIES_LIST,
 				icon: <IconTopologyStar3 size={20} />,
 				permissions: [{ action: PermissionCatalog.all.typologies.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.typologies.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'fares',
 				href: PAGE_ROUTES.offer.FARES_LIST,
 				icon: <IconTicket size={20} />,
 				permissions: [{ action: PermissionCatalog.all.fares.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.fares.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'zones',
 				href: PAGE_ROUTES.offer.ZONES_LIST,
 				icon: <IconLayoutCollage size={20} />,
@@ -169,10 +170,10 @@ export const sidebarApps = [
 			}),
 		],
 	}),
-	sidebarGroup({
+	sidebarNavigationGroup({
 		_id: 'calendar_management',
 		children: [
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'calendar',
 				href: PAGE_ROUTES.dates.CALENDAR_LIST,
 				icon: <IconCalendarEvent size={20} />,
@@ -181,25 +182,25 @@ export const sidebarApps = [
 					{ action: PermissionCatalog.all.annotations.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.annotations.scope },
 				],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'year_periods',
 				href: PAGE_ROUTES.dates.YEAR_PERIODS_LIST,
 				icon: <IconClock size={20} />,
 				permissions: [{ action: PermissionCatalog.all.year_periods.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.year_periods.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'events',
 				href: PAGE_ROUTES.dates.EVENTS_LIST,
 				icon: <IconCalendarStar size={20} />,
 				permissions: [{ action: PermissionCatalog.all.events.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.events.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'holidays',
 				href: PAGE_ROUTES.dates.HOLIDAYS_LIST,
 				icon: <IconBeach size={20} />,
 				permissions: [{ action: PermissionCatalog.all.holidays.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.holidays.scope }],
 			}),
-			sidebarItem({
+			sidebarNavigationItem({
 				_id: 'annotations',
 				href: PAGE_ROUTES.dates.ANNOTATIONS_LIST,
 				icon: <IconNote size={20} />,
@@ -207,4 +208,4 @@ export const sidebarApps = [
 			}),
 		],
 	}),
-] as const satisfies readonly SidebarNodeConfig[];
+] as const satisfies readonly SidebarNavigationNode[];

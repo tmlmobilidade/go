@@ -9,13 +9,13 @@ import styles from './styles.module.css';
 
 import { useMeContext } from '../../../contexts/Me.context';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
-import { type SidebarLeafItemConfig } from '../sidebar-navigation.config';
-import { isItemActive, isPermissionEnabled } from '../sidebar-navigation.model';
-import { useSidebarMode } from '../SidebarMode.context';
+import { type SidebarNavigationItem } from '../sidebar-navigation-tree';
+import { useSidebarVisualMode } from '../SidebarVisualMode.context';
+import { isItemActive, isPermissionEnabled } from '../utils';
 
 /* * */
 
-export interface SidebarItemProps extends SidebarLeafItemConfig {
+export interface SidebarItemProps extends SidebarNavigationItem {
 	depth?: number
 	label: string
 	pathname?: string
@@ -31,7 +31,7 @@ export function SidebarItem({ depth = 0, href, icon, label, pathname, permission
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { iconOnly } = useSidebarMode();
+	const { iconOnly } = useSidebarVisualMode();
 	const currentUrl = useCurrentUrl();
 
 	//

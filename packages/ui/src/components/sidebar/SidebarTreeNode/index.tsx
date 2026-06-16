@@ -10,17 +10,17 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { type SidebarNodeConfig } from '../sidebar-navigation.config';
-import { isNodeActive, isNodeVisible, isPermissionEnabled } from '../sidebar-navigation.model';
-import { useSidebarGroupOpen } from '../SidebarGroupOpen.context';
+import { type SidebarNavigationNode } from '../sidebar-navigation-tree';
 import { SidebarItem } from '../SidebarItem';
-import { useSidebarMode } from '../SidebarMode.context';
+import { useSidebarOpenGroups } from '../SidebarOpenGroups.context';
+import { useSidebarVisualMode } from '../SidebarVisualMode.context';
+import { isNodeActive, isNodeVisible, isPermissionEnabled } from '../utils';
 
 /* * */
 
 export interface SidebarTreeNodeProps {
 	depth: number
-	node: SidebarNodeConfig
+	node: SidebarNavigationNode
 	pathname?: string
 	userPermissions?: readonly Permission[]
 }
@@ -34,8 +34,8 @@ export function SidebarTreeNode({ depth, node, pathname, userPermissions }: Side
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { iconOnly } = useSidebarMode();
-	const { isGroupOpen, setGroupOpen, toggleGroup } = useSidebarGroupOpen();
+	const { iconOnly } = useSidebarVisualMode();
+	const { isGroupOpen, setGroupOpen, toggleGroup } = useSidebarOpenGroups();
 
 	//
 	// B. Transform data

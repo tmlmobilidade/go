@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 
 import { IconButton } from '../../buttons';
 import { AppWrapperLogo } from '../../wrapper/AppWrapperLogo';
-import { sidebarApps } from '../sidebar-navigation.config';
+import { sidebarNavigationTree } from '../sidebar-navigation-tree';
 import { SidebarFooter } from '../SidebarFooter';
 import { SidebarGreeting } from '../SidebarGreeting';
 import { SidebarTreeNode } from '../SidebarTreeNode';
@@ -77,7 +77,7 @@ export function SidebarPanel({ collapsedPref, expanded, onSetCollapsed, pathname
 			</div>
 			<div className={styles.sidebarContent}>
 				<div className={styles.sidebarScroll} data-sidebar-scroll>
-					{sidebarApps.map(node => (
+					{sidebarNavigationTree.map(node => (
 						<SidebarTreeNode
 							key={node._id}
 							depth={0}
