@@ -5,6 +5,10 @@ import { LogsNextjs, LogsNextjsContext } from './logs/logs-nextjs.js';
 import { LogsNode, type LogsNodeContext } from './logs/logs-node.js';
 
 /* * */
+
+export { initSentryNode } from './sentry/connection/sentry-node.js';
+
+/* * */
 interface LoggerColumn {
 
 	/**
@@ -66,6 +70,13 @@ class LoggersClass {
 		return process.env.SERVICE_NAME ?? process.env.npm_package_name ?? 'unknown-service';
 	}
 
+	private formatMessage(message?: Error | LoggerMessage, fallback = '') {
+		if (!message) return fallback;
+		if (message instanceof Error) return message.message;
+		if (Array.isArray(message)) return this.formatColumns(message);
+		return message;
+	}
+
 	/**
 	 * Loggers a divider line in the console.
 	 * @param message Optional message to display.
@@ -102,13 +113,7 @@ class LoggersClass {
 		const spacesAfter = typeof contextOrErrorOrSpacesAfter === 'number' ? contextOrErrorOrSpacesAfter : spacesAfterOrBefore;
 		const normalizedSpacesBefore = typeof contextOrErrorOrSpacesAfter === 'number' ? spacesAfterOrBefore : spacesBefore;
 		if (normalizedSpacesBefore && normalizedSpacesBefore > 0) this.spacer(normalizedSpacesBefore);
-		const formattedMessage = message
-			? message instanceof Error
-				? message.message
-				: Array.isArray(message)
-					? this.formatColumns(message)
-					: message
-			: context?.message ?? '';
+		const formattedMessage = this.formatMessage(message, context?.message ?? error?.message ?? '');
 
 		// Output error to the console unless explicitly silenced by the caller.
 		if (!(contextOrErrorOrSpacesAfter as LoggerErrorInputContext | undefined)?.silentConsole) {
@@ -157,13 +162,7 @@ class LoggersClass {
 		if (normalizedSpacesBefore && normalizedSpacesBefore > 0) this.spacer(normalizedSpacesBefore);
 
 		// Prepare the formatted message
-		const formattedMessage = message
-			? message instanceof Error
-				? message.message
-				: Array.isArray(message)
-					? this.formatColumns(message)
-					: message
-			: context?.message ?? '';
+		const formattedMessage = this.formatMessage(message, context?.message ?? '');
 
 		// Output information to the console
 		console.log(`→ ${formattedMessage ?? ''}`);
@@ -192,8 +191,8 @@ class LoggersClass {
 	 */
 	progress(message: LoggerMessage, spacesAfter?: number, spacesBefore?: number) {
 		if (spacesBefore && spacesBefore > 0) this.spacer(spacesBefore);
-		if (Array.isArray(message)) console.log(`• ${this.formatColumns(message)}`);
-		else console.log(`• ${message}`);
+		const formattedMessage = this.formatMessage(message);
+		console.log(`• ${formattedMessage}`);
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
 	}
 
@@ -215,8 +214,8 @@ class LoggersClass {
 	 */
 	success(message: LoggerMessage, spacesAfter?: number, spacesBefore?: number) {
 		if (spacesBefore && spacesBefore > 0) this.spacer(spacesBefore);
-		if (Array.isArray(message)) console.log(`✓ ${this.formatColumns(message)}`);
-		else console.log(`✓ ${message}`);
+		const formattedMessage = this.formatMessage(message);
+		console.log(`✓ ${formattedMessage}`);
 		if (spacesAfter && spacesAfter > 0) this.spacer(spacesAfter);
 	}
 

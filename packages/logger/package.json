@@ -32,13 +32,9 @@
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
 		},
-		"./sentry/nextjs": {
-			"types": "./dist/sentry/sentry-nextjs.d.ts",
-			"default": "./dist/sentry/sentry-nextjs.js"
-		},
 		"./sentry/node": {
-			"types": "./dist/sentry/sentry-node.d.ts",
-			"default": "./dist/sentry/sentry-node.js"
+			"types": "./dist/sentry/connection/sentry-node.d.ts",
+			"default": "./dist/sentry/connection/sentry-node.js"
 		}
 	},
 	"scripts": {
