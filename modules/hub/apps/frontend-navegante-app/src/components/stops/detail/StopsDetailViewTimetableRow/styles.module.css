@@ -36,6 +36,10 @@
 	transform: scale(1.01);
 }
 
+.container[data-is-past='true'][data-is-selected='true'] {
+	opacity: 0.9;
+}
+
 /* * */
 /* SUMMARY */
 
