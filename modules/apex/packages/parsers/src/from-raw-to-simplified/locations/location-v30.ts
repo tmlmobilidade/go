@@ -44,7 +44,7 @@ export function parseRawApexTransactionLocationV30(doc: RawApexTransactionLocati
 			pattern_id: doc.payload.validationServiceInfo.patternLongID,
 			received_at: doc.created_at,
 			stop_id: doc.payload.validationServiceInfo.stopLongID,
-			trip_id: doc.payload.validationServiceInfo.journeyID ?? '-',
+			trip_id: doc.payload.validationServiceInfo.journeyID,
 			vehicle_id: doc.payload.validationServiceInfo.vehicleID,
 		};
 	} catch (error) {

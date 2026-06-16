@@ -53,7 +53,7 @@ export function parseRawApexTransactionValidationV40(doc: RawApexTransactionVali
 			product_id: doc.payload.validationInfo.productLongID ?? '-',
 			received_at: doc.created_at,
 			stop_id: doc.payload.serviceInfo.stopLongID,
-			trip_id: doc.payload.serviceInfo.journeyID ?? '-',
+			trip_id: doc.payload.serviceInfo.journeyID,
 			units_qty: 0,
 			validation_status: 0,
 			vehicle_id: doc.payload.serviceInfo.vehicleID,

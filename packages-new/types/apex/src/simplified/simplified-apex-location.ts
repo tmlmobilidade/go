@@ -17,7 +17,7 @@ export const SimplifiedApexLocationSchema = z.object({
 	pattern_id: z.string(),
 	received_at: UnixTimestampSchema,
 	stop_id: z.string(),
-	trip_id: z.string(),
+	trip_id: z.string().nullable().default(null),
 	vehicle_id: z.number(),
 });
 
