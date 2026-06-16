@@ -18,6 +18,7 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 	protected readonly abstract tableName: string;
 
 	protected readonly engine: ClickHouseTableEngine = 'MergeTree';
+
 	/**
 	 * When `true` (default), `init()` runs `ensureDatabase()` + `ensureTable()` so
 	 * the schema is created from this class. Set to `false` for tables whose schema
