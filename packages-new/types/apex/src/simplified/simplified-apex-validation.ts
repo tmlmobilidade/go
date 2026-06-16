@@ -11,7 +11,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	agency_id: z.string(),
 	apex_version: z.string(),
 	calendar_date: CalendarDateSchema,
-	card_serial_number: z.string(),
+	card_serial_number: z.bigint().nullable().default(null),
 	category: z.enum(['prepaid', 'subscription', 'on_board_sale']).nullable(),
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
@@ -30,6 +30,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	stop_id: z.string(),
 	trip_id: z.string().nullable().default(null),
 	units_qty: z.number().nullable().default(null),
+	updated_at: UnixTimestampSchema,
 	validation_status: ApexValidationStatusSchema,
 	vehicle_id: z.number(),
 });
