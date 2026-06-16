@@ -8,6 +8,8 @@ import { FeedbackReasonOptionsSheet } from '@/components/feedback/sheets/Feedbac
 import { FeedbackReasonsSheet } from '@/components/feedback/sheets/FeedbackReasonsSheet';
 import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown';
 import { Modal } from '@mantine/core';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type PublicFeedback } from '@tmlmobilidade/types';
 import { useState } from 'react';
 
 import styles from './styles.module.css';
@@ -15,13 +17,16 @@ import styles from './styles.module.css';
 /* * */
 
 interface FeedbackFormProps {
+	agencyId?: string
 	entityId?: string
 	entityType?: FeedbackEntityType
 }
 
+const FEEDBACK_ENDPOINT = `${API_ROUTES.hub.BASE}/v1/feedback`;
+
 /* * */
 
-export function FeedbackForm({ entityId, entityType = 'line' }: FeedbackFormProps) {
+export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: FeedbackFormProps) {
 	//
 
 	//
@@ -32,14 +37,12 @@ export function FeedbackForm({ entityId, entityType = 'line' }: FeedbackFormProp
 	const [activeReasonOptionsSheet, setActiveReasonOptionsSheet] = useState<FeedbackReasonCategory | null>(null);
 	const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 	const [selectedReasonValues, setSelectedReasonValues] = useState<string[]>([]);
-	const [selectedMood, setSelectedMood] = useState<'happy' | 'unhappy' | null>(null);
+	const [selectedMood, setSelectedMood] = useState<null | PublicFeedback['mood']>(null);
 
 	const reasonGroups = getFeedbackReasonGroups(entityType);
 	const reasonCategories = Object.keys(reasonGroups) as FeedbackReasonCategory[];
 	const isAnyReasonsSheetOpen = isHappyReasonsSheetOpen || isUnhappyReasonsSheetOpen || activeReasonOptionsSheet !== null;
 	const feedbackCooldown = useFeedbackCooldown(entityType === 'line' ? entityId : undefined);
-
-	// Call feedbackCooldown.startCooldown() after a successful line feedback submission.
 
 	//
 	// B. Handle actions
@@ -79,6 +82,45 @@ export function FeedbackForm({ entityId, entityType = 'line' }: FeedbackFormProp
 		});
 	};
 
+	const submitFeedback = async (feedbackMood: null | PublicFeedback['mood'], feedbackReasonValues: string[]) => {
+		if (!agencyId || !entityId || !feedbackMood) return;
+		if (feedbackMood === 'unhappy' && feedbackReasonValues.length === 0) return;
+
+		const payload: PublicFeedback = {
+			agency_id: agencyId,
+			created_at: Date.now() as PublicFeedback['created_at'],
+			entity_id: entityId,
+			entity_type: entityType,
+			mood: feedbackMood,
+			reasons: feedbackReasonValues,
+			schema_version: 'v1',
+		};
+
+		const response = await fetch(FEEDBACK_ENDPOINT, {
+			body: JSON.stringify(payload),
+			headers: { 'Content-Type': 'application/json' },
+			method: 'POST',
+		});
+
+		if (!response.ok) return;
+
+		feedbackCooldown.startCooldown();
+	};
+
+	const handleCloseFeedbackModal = () => {
+		const feedbackMood = selectedMood;
+		const feedbackReasonValues = selectedReasonValues;
+
+		setIsFeedbackModalOpen(false);
+		setIsHappyReasonsSheetOpen(false);
+		setIsUnhappyReasonsSheetOpen(false);
+		setActiveReasonOptionsSheet(null);
+		setSelectedMood(null);
+		setSelectedReasonValues([]);
+
+		void submitFeedback(feedbackMood, feedbackReasonValues);
+	};
+
 	//
 	// C. Render component
 
@@ -91,7 +133,8 @@ export function FeedbackForm({ entityId, entityType = 'line' }: FeedbackFormProp
 			<Modal
 				centered={true}
 				closeOnClickOutside={false}
-				onClose={() => setIsFeedbackModalOpen(false)}
+				lockScroll={!isAnyReasonsSheetOpen}
+				onClose={handleCloseFeedbackModal}
 				opened={isFeedbackModalOpen}
 				size="sm"
 				title="Feedback"

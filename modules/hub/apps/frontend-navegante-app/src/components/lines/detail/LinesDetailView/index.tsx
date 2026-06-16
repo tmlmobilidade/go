@@ -36,7 +36,7 @@ export function LinesDetailView() {
 		<Section padding="none">
 			<LinesDetailViewMap />
 			<LinesDetailViewHeader />
-			<FeedbackForm entityId={linesDetailContext.data.line?._id} entityType="line" />
+			<FeedbackForm agencyId={linesDetailContext.data.line?.agency_id} entityId={linesDetailContext.data.line?._id} entityType="line" />
 			<Divider />
 			<LinesDetailToolbar />
 			<LinesDetailAlerts />

@@ -27,7 +27,7 @@ export function StopsDetailView() {
 	return (
 		<Section padding="none">
 			<StopsDetailViewHeader />
-			<FeedbackForm entityType="stop" />
+			<FeedbackForm agencyId={stopsDetailContext.data.stop?.agency_ids?.[0]} entityId={stopsDetailContext.data.stop?._id != null ? String(stopsDetailContext.data.stop._id) : undefined} entityType="stop" />
 			<Divider />
 			<StopsDetailAlerts />
 			<StopsDetailViewTimetable />
