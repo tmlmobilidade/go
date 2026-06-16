@@ -164,10 +164,7 @@ export class AlertsController {
 	static async getImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
 		// Ensure the alert exists
 		const foundAlert = await alerts.findById(request.params.id);
-
-		// Ensure the alert has an associated image file.
-		// Since it is optional, return null if not present
-		if (!foundAlert.file_id) {
+		if (!foundAlert) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 			Logger.issue('error', error, {
 				action: 'getImage',
@@ -177,6 +174,13 @@ export class AlertsController {
 			});
 			throw error;
 		}
+
+		// Ensure the alert has an associated image file.
+		// Since it is optional, return null if not present
+		if (!foundAlert.file_id) {
+			return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		}
+
 		// Retrieve and send the image file
 		const foundImageFile = await files.findById(foundAlert.file_id);
 		if (!foundImageFile) {
