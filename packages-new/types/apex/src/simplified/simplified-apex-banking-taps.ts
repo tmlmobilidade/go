@@ -28,7 +28,7 @@ export const SimplifiedApexBankingTapSchema = z.object({
 	trip_id: z.string(),
 	units_qty: z.number(),
 	updated_at: UnixTimestampSchema,
-	vehicle_id: z.number(),
+	vehicle_id: z.number().nullable().default(null),
 });
 
 /**

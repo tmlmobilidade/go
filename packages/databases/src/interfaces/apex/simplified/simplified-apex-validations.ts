@@ -17,7 +17,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexValidation> = {
 	category: { type: 'LowCardinality(String)' },
 	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	device_id: { type: 'LowCardinality(String)' },
-	event_type: { type: 'Int64' },
+	event_type: { type: 'UInt8' },
 	is_ok: { type: 'Bool' },
 	is_ok_pcgi: { type: 'Bool' },
 	is_passenger: { type: 'Bool' },
@@ -34,7 +34,7 @@ const tableSchema: ClickHouseSchema<SimplifiedApexValidation> = {
 	units_qty: { type: 'Nullable(Int64)' },
 	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	validation_status: { type: 'Int64' },
-	vehicle_id: { type: 'Int64' },
+	vehicle_id: { type: 'LowCardinality(String)' },
 };
 
 /* * */

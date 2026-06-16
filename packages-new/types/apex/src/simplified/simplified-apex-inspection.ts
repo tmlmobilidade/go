@@ -28,7 +28,7 @@ export const SimplifiedApexInspectionSchema = z.object({
 	received_at: UnixTimestampSchema,
 	trip_id: z.string().nullable().default(null),
 	updated_at: UnixTimestampSchema,
-	vehicle_id: z.number(),
+	vehicle_id: z.number().nullable().default(null),
 });
 
 /**
