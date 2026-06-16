@@ -1,0 +1,149 @@
+# # #
+
+name: tmlmobilidade-go-performance-production
+
+services:
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  watchtower:
+    image: nickfedor/watchtower
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=10
+      - WATCHTOWER_CLEANUP=TRUE
+      - WATCHTOWER_REMOVE_VOLUMES=TRUE
+      - WATCHTOWER_INCLUDE_RESTARTING=TRUE
+      - WATCHTOWER_INCLUDE_STOPPED=TRUE
+      - WATCHTOWER_REVIVE_STOPPED=TRUE
+      - WATCHTOWER_TIMEOUT=120s
+      - WATCHTOWER_ROLLING_RESTART=TRUE
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  nginx:
+    image: ghcr.io/tmlmobilidade/go-performance-nginx:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    ports:
+      - 80:80
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  api:
+    image: ghcr.io/tmlmobilidade/go-performance-api:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  frontend:
+    image: ghcr.io/tmlmobilidade/go-performance-frontend:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-metrics-realtime:
+    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics-realtime:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-metrics-hourly:
+    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics-hourly:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
+
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  sync-metrics-daily:
+    image: ghcr.io/tmlmobilidade/go-performance-sync-metrics-daily:production
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 30s
+      resources:
+        limits:
+          memory: 4gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
+    env_file:
+      - ./secrets/.env
