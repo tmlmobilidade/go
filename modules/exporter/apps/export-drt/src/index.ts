@@ -39,7 +39,7 @@ async function main() {
 
 	try {
 		await initSentryNode();
-		Logger.logsNode({ app: 'export-drt', message: 'Sentry Exporter DRT initialized', module: 'exporter', severity: 'info' });
+		Logger.startNodeLogs({ app: 'export-drt', message: 'Sentry Exporter DRT initialized', module: 'exporter', severity: 'info' });
 	} catch (error) {
 		Logger.error('Error initializing Sentry Exporter DRT', error);
 	}

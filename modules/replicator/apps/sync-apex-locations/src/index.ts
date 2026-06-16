@@ -23,7 +23,7 @@ async function syncApexLocations() {
 
 		try {
 			await initSentryNode();
-			Logger.logsNode({ app: 'sync-apex-locations', message: 'Sentry Replicator Sync Apex Locations initialized', module: 'replicator', severity: 'info' });
+			Logger.startNodeLogs({ app: 'sync-apex-locations', message: 'Sentry Replicator Sync Apex Locations initialized', module: 'replicator', severity: 'info' });
 		} catch (error) {
 			Logger.error('Error initializing Sentry Replicator Sync Apex Locations', error);
 		}

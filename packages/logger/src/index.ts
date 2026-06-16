@@ -1,8 +1,8 @@
 /* * */
 
-import { GlobalIssue, type GlobalIssueContext, type GlobalIssueLevel } from './Issues/GlobalIssue.js';
-import { LogsNextjs, LogsNextjsContext } from './logs/logs-nextjs.js';
-import { LogsNode, type LogsNodeContext } from './logs/logs-node.js';
+import { globalIssue, type GlobalIssueContext, type GlobalIssueLevel } from './Issues/GlobalIssue.js';
+import { type LogsNextjsContext, startLogsNextjs } from './logs/logs-nextjs.js';
+import { type LogsNodeContext, startNodeLogs } from './logs/logs-node.js';
 
 /* * */
 
@@ -46,8 +46,8 @@ class LoggersClass {
 	 * Logs an info message to the console.
 	 * @param context The context object containing the info message and context.
 	 */
-	logsNextjs(context: Omit<LogsNextjsContext, 'app' | 'message' | 'module' | 'severity'> & { app: string, message: string, module: string, severity: string }) {
-		LogsNextjs({
+	startLogsNextjs(context: Omit<LogsNextjsContext, 'app' | 'message' | 'module' | 'severity'> & { app: string, message: string, module: string, severity: string }) {
+		startLogsNextjs({
 			...context,
 			app: context.app,
 			message: context.message,
@@ -56,18 +56,14 @@ class LoggersClass {
 		});
 	}
 
-	logsNode(context: Omit<LogsNodeContext, 'app' | 'message' | 'module' | 'severity'> & { app: string, message: string, module: string, severity: string }) {
-		LogsNode({
+	startNodeLogs(context: Omit<LogsNodeContext, 'app' | 'message' | 'module' | 'severity'> & { app: string, message: string, module: string, severity: string }) {
+		startNodeLogs({
 			...context,
 			app: context.app,
 			message: context.message,
 			module: context.module,
 			severity: context.severity ?? 'info',
 		});
-	}
-
-	private getDefaultService() {
-		return process.env.SERVICE_NAME ?? process.env.npm_package_name ?? 'unknown-service';
 	}
 
 	private formatMessage(message?: Error | LoggerMessage, fallback = '') {
@@ -75,6 +71,10 @@ class LoggersClass {
 		if (message instanceof Error) return message.message;
 		if (Array.isArray(message)) return this.formatColumns(message);
 		return message;
+	}
+
+	private getDefaultService() {
+		return process.env.SERVICE_NAME ?? process.env.npm_package_name ?? 'unknown-service';
 	}
 
 	/**
@@ -131,7 +131,7 @@ class LoggersClass {
 	 * @param context Optional metadata for Sentry.
 	 */
 	issue(level: GlobalIssueLevel, messageOrError: Error | string, context?: Omit<GlobalIssueContext, 'error' | 'level' | 'message'> & { service?: string }) {
-		GlobalIssue({
+		globalIssue({
 			...context,
 			error: messageOrError instanceof Error ? messageOrError : undefined,
 			level,
@@ -265,7 +265,7 @@ class LoggersClass {
  */
 export const Logger = new LoggersClass();
 
-export { GlobalIssue };
+export { globalIssue };
 
 /**
  * Logger error context interface.

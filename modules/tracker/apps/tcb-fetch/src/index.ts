@@ -23,7 +23,7 @@ const main = async () => {
 
 	try {
 		await initSentryNode();
-		Logger.logsNode({ app: 'tcb-fetch', message: 'Sentry Tracker TCB Fetch initialized', module: 'tracker', severity: 'info' });
+		Logger.startNodeLogs({ app: 'tcb-fetch', message: 'Sentry Tracker TCB Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error('Error initializing Sentry Tracker TCB Fetch', error);
 	}

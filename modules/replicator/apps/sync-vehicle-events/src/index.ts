@@ -23,7 +23,7 @@ async function syncVehicleEvents() {
 
 		try {
 			await initSentryNode();
-			Logger.logsNode({ app: 'sync-vehicle-events', message: 'Sentry Replicator Sync Vehicle Events initialized', module: 'replicator', severity: 'info' });
+			Logger.startNodeLogs({ app: 'sync-vehicle-events', message: 'Sentry Replicator Sync Vehicle Events initialized', module: 'replicator', severity: 'info' });
 		} catch (error) {
 			Logger.error('Error initializing Sentry Replicator Sync Vehicle Events', error);
 		}

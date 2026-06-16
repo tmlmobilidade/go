@@ -17,42 +17,49 @@ export interface GlobalIssueContext {
 	value?: unknown
 }
 
-export const GlobalIssue = (context: GlobalIssueContext): void => {
-	const { action, email, error, feature, level, message, request, status, value, ...extra } = context;
-	const requestContext = request as FastifyRequest & { me?: { email?: string }, routeOptions?: { url?: string } } | undefined;
+export function globalIssue(context: GlobalIssueContext): void {
+	//
+
+	//
+	// Normalize the request context
+
+	const requestContext = context.request as FastifyRequest & { me?: { email?: string }, routeOptions?: { url?: string } } | undefined;
 	const routeUrl = requestContext?.routeOptions?.url;
 	const requestUrl = requestContext?.url;
-	const requestMethod = requestContext?.method;
-	const requestEmail = email ?? requestContext?.me?.email;
-	const normalizedLevel = level ?? 'info';
-	const normalizedMessage = message ?? error?.message ?? 'Unknown issue';
-	const normalizedValueTag = value === undefined || value === null
+	const requestMethod = context.request?.method;
+	const requestEmail = context.email ?? requestContext?.me?.email;
+	const normalizedLevel = context.level ?? 'info';
+	const normalizedMessage = context.message ?? context.error?.message ?? 'Unknown issue';
+	const normalizedValueTag = context.value === undefined || context.value === null
 		? undefined
-		: typeof value === 'string'
-			? value
-			: JSON.stringify(value);
-	const errorStatusCode = (error as undefined | { statusCode?: unknown })?.statusCode;
-	const statusCode = status ?? (typeof errorStatusCode === 'number'
+		: typeof context.value === 'string'
+			? context.value
+			: JSON.stringify(context.value);
+	const errorStatusCode = (context.error as undefined | { statusCode?: unknown })?.statusCode;
+	const statusCode = context.status ?? (typeof errorStatusCode === 'number'
 		? Number(errorStatusCode)
 		: undefined);
 
+	//
+	// Create the sentry context
+
 	const sentryContext = {
-		...extra,
+		...context,
 		extra: {
-			...extra,
+			...context,
 			email: requestEmail,
-			endpoint: routeUrl ?? request?.url,
+			endpoint: routeUrl ?? context.request?.url,
 			message: normalizedMessage,
 			method: requestMethod,
 			path: routeUrl ?? requestUrl,
 			request: requestUrl,
-			value,
+			value: context.value,
 		},
 		level: normalizedLevel,
 		tags: {
-			action,
-			email: requestEmail,
-			feature,
+			action: context.action,
+			email: context.email,
+			feature: context.feature,
 			level: normalizedLevel,
 			method: requestMethod,
 			path: routeUrl ?? requestUrl,
@@ -62,10 +69,16 @@ export const GlobalIssue = (context: GlobalIssueContext): void => {
 		},
 	};
 
-	if (normalizedLevel === 'error' || normalizedLevel === 'fatal' || error) {
-		Sentry.captureException(error ?? new Error(normalizedMessage), sentryContext);
+	//
+	// Capture the issue
+
+	if (normalizedLevel === 'error' || normalizedLevel === 'fatal' || context.error) {
+		Sentry.captureException(context.error ?? new Error(normalizedMessage), sentryContext);
 		return;
 	}
+
+	//
+	// Capture the message
 
 	Sentry.captureMessage(normalizedMessage, sentryContext);
 };

@@ -108,7 +108,7 @@ async function main() {
 		try {
 			await initSentryNode();
 			Logger.info('');
-			Logger.logsNode({ app: 'rides-acceptor', message: 'Sentry Rides Acceptor initialized', module: 'controller', severity: 'info' });
+			Logger.startNodeLogs({ app: 'rides-acceptor', message: 'Sentry Rides Acceptor initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
 			Logger.error('Error initializing Sentry Rides Acceptor', error);
 		}

@@ -18,7 +18,7 @@ async function main() {
 
 	try {
 		await initSentryNode();
-		Logger.logsNode({ app: 'cleaner', message: 'Sentry Auth Cleaner initialized', module: 'home', severity: 'info' });
+		Logger.startNodeLogs({ app: 'cleaner', message: 'Sentry Auth Cleaner initialized', module: 'core', severity: 'info' });
 	} catch (error) {
 		Logger.error('Error initializing Sentry Auth Cleaner', error);
 	}

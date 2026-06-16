@@ -22,7 +22,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 
 	try {
 		await initSentryNode();
-		Logger.logsNode({ app: 'gtfs-importer', message: 'Sentry Offer GTFS Importer initialized', module: 'offer', severity: 'info' });
+		Logger.startNodeLogs({ app: 'gtfs-importer', message: 'Sentry Offer GTFS Importer initialized', module: 'offer', severity: 'info' });
 	} catch (error) {
 		Logger.error('Error initializing Sentry Offer GTFS Importer', error);
 	}

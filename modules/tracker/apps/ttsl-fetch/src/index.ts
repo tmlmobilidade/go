@@ -23,7 +23,7 @@ const main = async () => {
 
 	try {
 		await initSentryNode();
-		Logger.logsNode({ app: 'ttsl-fetch', message: 'Sentry Tracker TTSL Fetch initialized', module: 'tracker', severity: 'info' });
+		Logger.startNodeLogs({ app: 'ttsl-fetch', message: 'Sentry Tracker TTSL Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error('Error initializing Sentry Tracker TTSL Fetch', error);
 	}

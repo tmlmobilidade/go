@@ -22,7 +22,7 @@ export async function validateRides() {
 		try {
 			await initSentryNode();
 			Logger.info('');
-			Logger.logsNode({ app: 'rides-examiner', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
+			Logger.startNodeLogs({ app: 'rides-examiner', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
 			Logger.error('Error initializing Sentry Rides Examiner', error);
 		}

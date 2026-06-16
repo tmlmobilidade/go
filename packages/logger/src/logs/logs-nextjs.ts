@@ -1,15 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
-/**
- * Provides a context type for logging in Next.js environments.
- *
- * @interface LogsNextjsContext
- * @property {string} app      - Name of the application generating the log.
- * @property {string} message    - Log message to record.
- * @property {string} module   - Name of the module related to the log event.
- * @property {string} severity - Optional severity level of the log (e.g., info, warning, error).
- * @property {unknown} [key: string] - Extendable for any additional context information.
- */
+/* * */
+
 export interface LogsNextjsContext {
 	[key: string]: unknown
 	app: string
@@ -19,44 +11,38 @@ export interface LogsNextjsContext {
 	status?: string
 }
 
-/**
- * Logs a message using Sentry's logger in a Next.js environment.
- *
- * @param {LogsNextjsContext} context - Contextual information about the log event.
- * @returns {void}
- */
+/* * */
 
-export const LogsNextjs = (context: LogsNextjsContext): void => {
-	const { app, message, module, severity, status, ...extra } = context;
+export function startLogsNextjs(context: LogsNextjsContext): void {
 	const locationData = normalizeLocationContext();
 	const payload = {
-		...extra,
+		...context,
 		...locationData,
-		app,
-		message,
-		module,
-		severity: normalizeSeverity(severity),
-		status,
+		app: context.app,
+		message: context.message,
+		module: context.module,
+		severity: normalizeSeverity(context.severity),
+		status: context.status,
 	};
-	const level = normalizeSeverity(severity);
+	const level = normalizeSeverity(context.severity);
 
 	if (level === 'debug') {
-		Sentry.logger.debug(message, payload);
+		Sentry.logger.debug(context.message, payload);
 		return;
 	}
 
 	if (level === 'warn') {
-		Sentry.logger.warn(message, payload);
+		Sentry.logger.warn(context.message, payload);
 		return;
 	}
 
 	if (level === 'error') {
-		Sentry.logger.error(message, payload);
+		Sentry.logger.error(context.message, payload);
 		return;
 	}
 
-	Sentry.logger.info(message, payload);
-	Sentry.getGlobalScope().setAttributes({ app, module });
+	Sentry.logger.info(context.message, payload);
+	Sentry.getGlobalScope().setAttributes({ app: context.app, module: context.module });
 };
 
 function normalizeSeverity(severity: string | undefined): 'debug' | 'error' | 'info' | 'warn' {

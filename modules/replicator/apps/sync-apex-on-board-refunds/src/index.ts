@@ -23,7 +23,7 @@ async function syncApexOnBoardRefunds() {
 
 		try {
 			await initSentryNode();
-			Logger.logsNode({ app: 'sync-apex-on-board-refunds', message: 'Sentry Replicator Sync Apex On Board Refunds initialized', module: 'replicator', severity: 'info' });
+			Logger.startNodeLogs({ app: 'sync-apex-on-board-refunds', message: 'Sentry Replicator Sync Apex On Board Refunds initialized', module: 'replicator', severity: 'info' });
 		} catch (error) {
 			Logger.error('Error initializing Sentry Replicator Sync Apex On Board Refunds', error);
 		}

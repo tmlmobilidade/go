@@ -15,7 +15,7 @@ await (async function init() {
 
 	try {
 		await initSentryNode();
-		Logger.logsNode({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
+		Logger.startNodeLogs({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
 	} catch (error) {
 		Logger.error('Error initializing Sentry Coordinator', error);
 	}

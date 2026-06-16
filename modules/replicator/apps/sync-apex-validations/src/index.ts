@@ -23,7 +23,7 @@ export async function syncApexValidations() {
 
 		try {
 			await initSentryNode();
-			Logger.logsNode({ app: 'sync-apex-validations', message: 'Sentry Replicator Sync Apex Validations initialized', module: 'replicator', severity: 'info' });
+			Logger.startNodeLogs({ app: 'sync-apex-validations', message: 'Sentry Replicator Sync Apex Validations initialized', module: 'replicator', severity: 'info' });
 		} catch (error) {
 			Logger.error('Error initializing Sentry Replicator Sync Apex Validations', error);
 		}

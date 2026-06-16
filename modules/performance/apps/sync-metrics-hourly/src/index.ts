@@ -19,7 +19,7 @@ async function main() {
 
 	try {
 		await initSentryNode();
-		Logger.logsNode({ app: 'sync-metrics-hourly', message: 'Sentry Performance Sync Metrics Hourly initialized', module: 'performance', severity: 'info' });
+		Logger.startNodeLogs({ app: 'sync-metrics-hourly', message: 'Sentry Performance Sync Metrics Hourly initialized', module: 'performance', severity: 'info' });
 	} catch (error) {
 		Logger.error('Error initializing Sentry Performance Sync Metrics Hourly', error);
 	}

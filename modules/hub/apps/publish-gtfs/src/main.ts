@@ -42,7 +42,7 @@ export async function main() {
 
 	try {
 		await initSentryNode();
-		Logger.logsNode({ app: 'publish-gtfs', message: 'Sentry Hub Publish GTFS initialized', module: 'hub', severity: 'info' });
+		Logger.startNodeLogs({ app: 'publish-gtfs', message: 'Sentry Hub Publish GTFS initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
 		Logger.error('Error initializing Sentry Hub Publish GTFS', error);
 	}

@@ -12,7 +12,7 @@ import fastifyCors from '@fastify/cors';
 import oneLineLogger from '@fastify/one-line-logger';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger/sentry/node';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
 import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
@@ -170,7 +170,7 @@ const createLoggerOptions = (getModuleName: () => string): FastifyLoggerOptions<
 			const shouldSendToSentry = message !== 'incoming request' && message !== 'request completed';
 
 			if (shouldSendToSentry) {
-				Logger.logsNode({
+				Logger.startNodeLogs({
 					app: 'api',
 					message: message,
 					method: method,

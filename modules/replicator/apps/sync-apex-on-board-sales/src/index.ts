@@ -23,7 +23,7 @@ async function syncApexOnBoardSales() {
 
 		try {
 			await initSentryNode();
-			Logger.logsNode({ app: 'sync-apex-on-board-sales', message: 'Sentry Replicator Sync Apex On Board Sales initialized', module: 'replicator', severity: 'info' });
+			Logger.startNodeLogs({ app: 'sync-apex-on-board-sales', message: 'Sentry Replicator Sync Apex On Board Sales initialized', module: 'replicator', severity: 'info' });
 		} catch (error) {
 			Logger.error('Error initializing Sentry Replicator Sync Apex On Board Sales', error);
 		}
