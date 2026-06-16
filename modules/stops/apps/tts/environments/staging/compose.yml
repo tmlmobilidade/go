@@ -1,0 +1,7 @@
+name: tmlmobilidade-go-stops-tts-staging
+
+services:
+  tts:
+    build: .
+    ports:
+      - "52013:8000"
