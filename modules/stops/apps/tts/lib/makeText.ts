@@ -1,5 +1,3 @@
-/* * */
-
 function titleCase(str) {
 	const splitStr = str.toLowerCase().split(' ');
 	for (let i = 0; i < splitStr.length; i++) {
@@ -11,43 +9,41 @@ function titleCase(str) {
 	return splitStr.join(' ').trim();
 }
 
-/* * */
-
 function addTransfer(p, modes) {
-	const numTr = Object.values(modes).reduce((total: number, x: number) => total + (x == 1 ? 1 : 0), 0);
+	const numTr = Object.values(modes).reduce((total: number, x: number) => total + (x === 1 ? 1 : 0), 0);
 	let addedTr = 0;
-	if (numTr == 0) {
+	if (numTr === 0) {
 		return p;
 	}
 
 	function needsAnd(numTr, addedTr) {
-		return numTr > 1 && addedTr == numTr - 1;
+		return numTr > 1 && addedTr === numTr - 1;
 	}
 
 	p = p + ' . ( Há correspondência ) com ';
-	if (modes.light_rail == 1) {
+	if (modes.light_rail === 1) {
 		p = p + (needsAnd(numTr, addedTr) ? ' e o ' : ' o ') + 'métro ligeiro';
 		addedTr += 1;
 	}
-	if (modes.subway == 1) {
+	if (modes.subway === 1) {
 		p = p + (needsAnd(numTr, addedTr) ? ' e o ' : ' o ') + 'métro';
 		addedTr += 1;
 	}
-	if (modes.train == 1) {
+	if (modes.train === 1) {
 		p = p + (needsAnd(numTr, addedTr) ? ' e o ' : ' o ') + 'combóio';
 		addedTr += 1;
 	}
-	if (modes.boat == 1) {
+	if (modes.boat === 1) {
 		p = p + (needsAnd(numTr, addedTr) ? ' e o ' : ' o ') + 'barco';
 		addedTr += 1;
 	}
-	if (modes.bike_sharing == 1) {
+	if (modes.bike_sharing === 1) {
 		p = p + (needsAnd(numTr, addedTr) ? ' e ' : ' ') + 'biciclétas partilhadas';
 		addedTr += 1;
 	}
-	if (modes.airport == 1) {
+	if (modes.airport === 1) {
 		p
-    = p + (needsAnd(numTr, addedTr) ? ' e o ' : ' o') + 'aéroporto (air port)';
+			= p + (needsAnd(numTr, addedTr) ? ' e o ' : ' o') + 'aéroporto (air port)';
 		addedTr += 1;
 	}
 	return p;
@@ -1072,8 +1068,7 @@ function createPhoneticText(p) {
 	if (thisString2 === thisString) {
 		regex = /\b(D[.]?)(\s\w)/giu;
 		thisString = thisString.replace(regex, 'Dom$2');
-	}
-	else {
+	} else {
 		thisString = thisString2;
 	}
 	/* Resolve N Sra */
@@ -1086,8 +1081,7 @@ function createPhoneticText(p) {
 	if (thisString2 === thisString) {
 		regex = /(\sN[.]?)\s(Sr[.]?)(\s\w)/giu;
 		thisString = thisString.replace(regex, ' Nosso Senhor$3');
-	}
-	else {
+	} else {
 		thisString = thisString2;
 	}
 	/* Resolve Sra */
@@ -1100,8 +1094,7 @@ function createPhoneticText(p) {
 	if (thisString2 === thisString) {
 		regex = /(\s|^)(Sr[.]?)\s(?=\w)/giu;
 		thisString = thisString.replace(regex, ' Senhor ');
-	}
-	else {
+	} else {
 		thisString = thisString2;
 	}
 	/* Resolve Prof Dr */
@@ -1114,8 +1107,7 @@ function createPhoneticText(p) {
 	if (thisString2 === thisString) {
 		regex = /\s(P[r]?[o]?[f]?[.]?[\s]?D[r]?[.]?)(\s\w)/giu;
 		thisString = thisString.replace(regex, ' Professor Doutor$2');
-	}
-	else {
+	} else {
 		thisString = thisString2;
 	}
 	/* Resolve Prof */
@@ -1128,8 +1120,7 @@ function createPhoneticText(p) {
 	if (thisString2 === thisString) {
 		regex = /\s(P[r]?[o]?f[.]?)(\s\w)/giu;
 		thisString = thisString.replace(regex, ' Professor$2');
-	}
-	else {
+	} else {
 		thisString = thisString2;
 	}
 	regex = /\s(Pr[.]?)(\s)/giu;
@@ -1146,8 +1137,7 @@ function createPhoneticText(p) {
 	if (thisString2 === thisString) {
 		regex = /\s(Eng[.]?)(\s\w)/giu;
 		thisString = thisString.replace(regex, ' Engenheiro$2');
-	}
-	else {
+	} else {
 		thisString = thisString2;
 	}
 	/* Resolve Emb */
@@ -1160,8 +1150,7 @@ function createPhoneticText(p) {
 	if (thisString2 === thisString) {
 		regex = /\s(Emb[.]?)(\s\w)/giu;
 		thisString = thisString.replace(regex, ' Embaixador$2');
-	}
-	else {
+	} else {
 		thisString = thisString2;
 	}
 	/* Resolve Dra */
@@ -1174,8 +1163,7 @@ function createPhoneticText(p) {
 	if (thisString2 === thisString) {
 		regex = /\s(Dr[.]?)(\s\w)/giu;
 		thisString = thisString.replace(regex, ' Doutor$2');
-	}
-	else {
+	} else {
 		thisString = thisString2;
 	}
 	/* Resolve Santa */
@@ -1195,8 +1183,7 @@ function createPhoneticText(p) {
 		thisString = thisString.replace(regex, ' Santo ');
 		regex = /(\s|^)(S[.]?)[\s]+(?=[^aeiou])/giu;
 		thisString = thisString.replace(regex, ' São ');
-	}
-	else {
+	} else {
 		thisString = thisString2;
 	}
 	/* Resolve Roman Ordinals I-IX */

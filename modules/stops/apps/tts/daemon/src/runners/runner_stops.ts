@@ -1,19 +1,16 @@
 /* * */
 
-import { SETTINGS } from '@/config/settings.js';
-import { googleCloudTtsApi } from '@/services/googleCloudTtsApi.js';
-import { Tracker, type TrackerItem } from '@/services/Tracker.js';
-import { type Stop } from '@carrismetropolitana/api-types/network';
-import tts from '@carrismetropolitana/tts';
-import LOGGER from '@helperkits/logger';
-import TIMETRACKER from '@helperkits/timer';
+import { makeStop } from '@/lib/index.js';
+import { Tracker, type TrackerItem } from '@/services/Tracker';
+import { Logger } from '@tmlmobilidade/logger';
+import { HubStop } from '@tmlmobilidade/types';
 
 /* * */
 
 export async function runnerStops() {
 	//
 
-	LOGGER.title(`TTS STOPS`);
+	Logger.title(`TTS STOPS`);
 	const globalTimer = new TIMETRACKER();
 
 	// Setup tracker
@@ -23,7 +20,7 @@ export async function runnerStops() {
 	// Get all stops
 	console.log('* Fetching all stops from API...');
 	const allStopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-	const allStopsData = await allStopsResponse.json() as Stop[];
+	const allStopsData = await allStopsResponse.json() as HubStop[];
 
 	// Log progress
 	console.log(`* Preparing ${allStopsData.length} stops...`);
@@ -33,33 +30,28 @@ export async function runnerStops() {
 	for (const [stopIndex, stopData] of allStopsData.entries()) {
 		//
 
-		const stopTts = tts.makeStop(stopData.long_name, {
-			airport: stopData.facilities.includes('airport'),
-			bike_parking: stopData.facilities.includes('bike_parking'),
-			bike_sharing: stopData.facilities.includes('bike_sharing'),
-			boat: stopData.facilities.includes('boat'),
-			car_parking: stopData.facilities.includes('car_parking'),
-			light_rail: stopData.facilities.includes('light_rail'),
-			subway: stopData.facilities.includes('subway'),
-			train: stopData.facilities.includes('train'),
+		const stopTts = makeStop(stopData.name, {
+			airport: stopData.flags.some(flag => flag.short_name === 'airport'),
+			bike_parking: stopData.flags.some(flag => flag.short_name === 'bike_parking'),
+			bike_sharing: stopData.flags.some(flag => flag.short_name === 'bike_sharing'),
+			boat: stopData.flags.some(flag => flag.short_name === 'boat'),
+			car_parking: stopData.flags.some(flag => flag.short_name === 'car_parking'),
+			light_rail: stopData.flags.some(flag => flag.short_name === 'light_rail'),
+			subway: stopData.flags.some(flag => flag.short_name === 'subway'),
+			train: stopData.flags.some(flag => flag.short_name === 'train'),
 		});
 
 		// Check if tracker already has this entry,
 		// and if it differs from the given TTS.
-		const trackerEntry = trackerData.find(item => item.id === stopData.id);
+		const trackerEntry = trackerData.find(item => item.id === stopData._id);
 		const ttsHasChanged = stopTts !== trackerEntry?.tts;
 
 		if (ttsHasChanged && stopTts && stopTts !== '#N/A') {
-			LOGGER.info(`[${stopIndex}/${allStopsData.length}] Generating for Stop ${stopData.id} - ${stopTts}`);
-			await googleCloudTtsApi({
-				dirname: `${SETTINGS.OUTPUTS_DIRNAME}/stops`,
-				filename: stopData.id,
-				replaceIfExists: true,
-				string: stopTts,
-			});
+			Logger.info(`[${stopIndex}/${allStopsData.length}] Generating for Stop ${stopData._id} - ${stopTts}`);
+		// TODO: Send to new endpoint
 		}
 
-		trackerDataUpdated.push({ id: stopData.id, tts: stopTts });
+		trackerDataUpdated.push({ id: stopData._id, tts: stopTts });
 
 		//
 	}
@@ -75,7 +67,7 @@ export async function runnerStops() {
 
 	//
 
-	LOGGER.success(`Processed ${trackerDataUpdated.length} "stops" items (${globalTimer.get()}).`);
+	Logger.success(`Processed ${trackerDataUpdated.length} "stops" items (${globalTimer.get()}).`);
 
 	//
 };
