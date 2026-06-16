@@ -40,6 +40,7 @@ export function parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap
 		stop_id: doc.payload.serviceInfo.stopLongID,
 		trip_id: doc.payload.serviceInfo.journeyID,
 		units_qty: doc.payload.tapInInfo.groupDimension,
+		updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
 		vehicle_id: doc.payload.serviceInfo.vehicleID,
 	};
 

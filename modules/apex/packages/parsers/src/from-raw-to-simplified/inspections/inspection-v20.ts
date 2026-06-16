@@ -16,6 +16,13 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		.setZone('Europe/Lisbon', 'rebase_utc');
 
 	//
+	// Prepare the card serial number field value
+
+	const cardSerialNumberValue = doc.payload.cardInfo.cardSerialNumber
+		? BigInt(`0x${doc.payload.cardInfo.cardSerialNumber}`)
+		: null;
+
+	//
 	// Validate the document structure and content
 
 	const result: SimplifiedApexInspection = {
@@ -23,7 +30,7 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		calendar_date: transactionDateValue.calendar_date,
-		card_serial_number: doc.payload.cardInfo.cardSerialNumber,
+		card_serial_number: cardSerialNumberValue,
 		control_destination_stop_id: doc.payload.controlServiceInfo.controlDestinationStopLongID,
 		control_origin_stop_id: doc.payload.controlServiceInfo.controlOriginStopLongID,
 		control_status: doc.payload.controlInfo.controlStatus,
@@ -40,6 +47,7 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		product_id: doc.payload.controlInfo.productLongID,
 		received_at: doc.received_at,
 		trip_id: doc.payload.controlServiceInfo.journeyID,
+		updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
 		vehicle_id: doc.payload.controlServiceInfo.vehicleID,
 	};
 

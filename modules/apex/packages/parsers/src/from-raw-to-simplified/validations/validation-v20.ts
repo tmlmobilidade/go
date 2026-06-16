@@ -16,6 +16,13 @@ export function parseRawApexTransactionValidationV20IntoSimplifiedApexValidation
 		.setZone('Europe/Lisbon', 'rebase_utc');
 
 	//
+	// Prepare the card serial number field value
+
+	const cardSerialNumberValue = doc.payload.cardInfo.cardSerialNumber
+		? BigInt(`0x${doc.payload.cardInfo.cardSerialNumber}`)
+		: null;
+
+	//
 	// Validate the document structure and content
 
 	const result: SimplifiedApexValidation = {
@@ -23,7 +30,7 @@ export function parseRawApexTransactionValidationV20IntoSimplifiedApexValidation
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		calendar_date: transactionDateValue.calendar_date,
-		card_serial_number: doc.payload.cardInfo.cardSerialNumber,
+		card_serial_number: cardSerialNumberValue,
 		category: 'subscription',
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
@@ -42,6 +49,7 @@ export function parseRawApexTransactionValidationV20IntoSimplifiedApexValidation
 		stop_id: doc.payload.serviceInfo.stopLongID,
 		trip_id: doc.payload.serviceInfo.journeyID,
 		units_qty: 0,
+		updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
 		validation_status: 0,
 		vehicle_id: doc.payload.serviceInfo.vehicleID,
 	};

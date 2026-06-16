@@ -32,6 +32,7 @@ export function parseRawApexTransactionLocationV30IntoSimplifiedApexLocation(doc
 		received_at: doc.received_at,
 		stop_id: doc.payload.validationServiceInfo.stopLongID,
 		trip_id: doc.payload.validationServiceInfo.journeyID,
+		updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
 		vehicle_id: doc.payload.validationServiceInfo.vehicleID,
 	};
 
