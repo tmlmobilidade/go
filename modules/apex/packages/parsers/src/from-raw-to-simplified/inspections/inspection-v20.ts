@@ -52,7 +52,7 @@ export function parseRawApexTransactionInspectionV20(doc: RawApexTransactionInsp
 			pattern_id: doc.payload.controlServiceInfo.patternLongID,
 			product_id: doc.payload.controlInfo.productLongID ?? '-',
 			received_at: doc.created_at,
-			trip_id: doc.payload.controlServiceInfo.journeyID,
+			trip_id: doc.payload.controlServiceInfo.journeyID ?? '-',
 			vehicle_id: doc.payload.controlServiceInfo.vehicleID,
 		};
 	} catch (error) {
