@@ -340,19 +340,7 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
 
 		// DEBUG
-		DEBUG_APP_ENABLED: `${getModuleConfig('hub', 'api_url')}/v1/debug/app-enabled`,
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
-
-		// FACILITIES
-		FACILITIES_BOAT_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/boat_stations`,
-		FACILITIES_HELPDESKS: `${getModuleConfig('hub', 'api_url')}/facilities/helpdesks`,
-		FACILITIES_LIGHT_RAIL_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/light_rail_stations`,
-		FACILITIES_LIST: `${getModuleConfig('hub', 'api_url')}/facilities`,
-		FACILITIES_PIPS: `${getModuleConfig('hub', 'api_url')}/facilities/pips`,
-		FACILITIES_SCHOOLS: `${getModuleConfig('hub', 'api_url')}/facilities/schools`,
-		FACILITIES_STORES: `${getModuleConfig('hub', 'api_url')}/facilities/stores`,
-		FACILITIES_SUBWAY_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/subway_stations`,
-		FACILITIES_TRAIN_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/train_stations`,
 
 		// NETWORK
 		NETWORK_LEGACY_STOPS_MAP: `${getModuleConfig('hub', 'api_url')}/v1/network/legacy-stops-map`,

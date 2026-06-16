@@ -11,6 +11,5 @@ export const RawApexTransactionBaseSchema = z.object({
 	created_at: UnixTimestampSchema,
 	is_ok: z.boolean(),
 	received_at: UnixTimestampSchema,
-	transaction_id: z.string(),
 	version: z.string(),
 });

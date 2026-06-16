@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { getEarliestDate } from '@tmlmobilidade/go-replicator-pckg-sync';
-import { type SimplifiedApexLocation } from '@tmlmobilidade/types';
+import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 
@@ -62,7 +62,6 @@ export function parseSimplifiedApexLocation(pcgiDoc: any): null | SimplifiedApex
 			received_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 			stop_id: pcgiDoc.transaction.stopLongID,
 			trip_id: pcgiDoc.transaction.journeyID,
-			updated_at: Dates.fromISO(pcgiDoc.createdAt).unix_timestamp,
 			vehicle_id: pcgiDoc.transaction.vehicleID,
 		};
 

@@ -29,7 +29,7 @@ export async function publishTripUpdates() {
 	//
 	// Retrieve active plans from the database
 
-	const approvedPlans = await apiCache.get('hub:plans:approved:json');
+	const approvedPlans = await apiCache.get('hub:v1:plans:approved:json');
 	if (!approvedPlans) throw new Error('No approved plans found in API Cache');
 
 	const approvedPlansData: HubPlan[] = JSON.parse(approvedPlans);
@@ -152,7 +152,7 @@ export async function publishTripUpdates() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:realtime:eta:gtfs', JSON.stringify(feedResult));
+	await apiCache.set('hub:v1:realtime:eta:gtfs', JSON.stringify(feedResult));
 
 	Logger.success(`Finished publishing GTFS-RT TripUpdate feed (${globalTimer.get()})`);
 

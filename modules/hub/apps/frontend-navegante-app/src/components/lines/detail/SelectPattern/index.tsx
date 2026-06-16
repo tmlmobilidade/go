@@ -4,10 +4,10 @@
 
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { type HubPattern } from '@/types/api/network';
 import { formatStopLocation } from '@/utils/format-stop-location';
 import { ComboboxItem, ComboboxItemGroup, Flex, Group, Select, SelectProps, Text } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
+import { type HubPattern } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -71,13 +71,13 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		// Filter patterns by date
 		patternsForSelect.map((patternGroupData) => {
 			const group = data.find(group => group.group === patternGroupData.route_id);
-			const routeData = linesContext.data.routes.find(route => route.id === patternGroupData.route_id);
+			const routeData = linesContext.data.routes.find(route => route._id === patternGroupData.route_id);
 
 			const item = {
 				direction_id: patternGroupData.direction_id,
 				disabled: (date_filter ? !patternGroupData.valid_on.includes(date_filter) : false) || !patternGroupData.path.length,
 				label: `Destino: ${getPatternTitle(patternGroupData, routeData?.long_name)}`,
-				pattern_id: patternGroupData.id,
+				pattern_id: patternGroupData._id,
 				value: patternGroupData.version_id,
 			};
 
@@ -96,7 +96,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		data.sort((a, b) => a.group.localeCompare(b.group));
 
 		data = data.map((group, index) => {
-			const routeData = linesContext.data.routes.find(route => route.id === group.group);
+			const routeData = linesContext.data.routes.find(route => route._id === group.group);
 			const letterIndex = String.fromCharCode(65 + index);
 			return ({ ...group, group: `${letterIndex} | ${routeData?.long_name}` });
 		});
@@ -123,7 +123,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 		const firstStopData = stopsContext.actions.getStopById(patternData.path[0].stop_id);
 		const firstStopLocation = formatStopLocation(firstStopData?.locality_name, firstStopData?.municipality_name);
 
-		const routeData = linesContext.data.routes.find(route => route.id === patternData.route_id);
+		const routeData = linesContext.data.routes.find(route => route._id === patternData.route_id);
 
 		return (
 			<Group key={option.value} gap={2}>

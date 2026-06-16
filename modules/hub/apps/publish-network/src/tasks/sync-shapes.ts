@@ -36,7 +36,7 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		// Use the cache key as the key for the Map,
 		// as it will be used to compare and delete stale shapes.
 
-		const cacheKey: ApiCacheKey = `hub:network:shapes:${shapeRaw.shape_id}`;
+		const cacheKey: ApiCacheKey = `hub:v1:network:shapes:${shapeRaw.shape_id}`;
 
 		//
 		// Check if a shape object already exists, or create a new one.
@@ -104,7 +104,7 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		//
 		// Update or create new document
 
-		await apiCache.set(`hub:network:shapes:${shapeData._id}`, JSON.stringify(shapeData));
+		await apiCache.set(`hub:v1:network:shapes:${shapeData._id}`, JSON.stringify(shapeData));
 		// await apiCache.set(SERVERDB_KEYS.NETWORK.SHAPES.ID(shapeData.shape_id), JSON.stringify(shapeData));
 
 		//
