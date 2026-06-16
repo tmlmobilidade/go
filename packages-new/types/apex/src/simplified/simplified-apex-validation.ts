@@ -1,6 +1,6 @@
 /* * */
 
-import { ApexValidationStatus, ApexValidationStatusSchema } from '@/simplified/apex-validation-status.js';
+import { ApexValidationStatusSchema } from '@/utils/validations-status.js';
 import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -46,13 +46,3 @@ export const UpdateSimplifiedApexValidationSchema = SimplifiedApexValidationSche
  */
 export type SimplifiedApexValidation = z.infer<typeof SimplifiedApexValidationSchema>;
 export type UpdateSimplifiedApexValidationDto = z.infer<typeof UpdateSimplifiedApexValidationSchema>;
-
-/**
- * Validation statuses that are considered valid for the card holder to travel.
- */
-export const ALLOWED_VALIDATION_STATUSES = [
-	ApexValidationStatus._0_ContractValid,
-	ApexValidationStatus._4_CardInWhiteList,
-	ApexValidationStatus._5_ProfileInWhiteList,
-	ApexValidationStatus._6_Interchange,
-];
