@@ -33,7 +33,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexValidation> = {
 	trip_id: { type: 'Nullable(String)' },
 	units_qty: { type: 'Nullable(Int32)' },
 	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
-	validation_status: { type: 'UInt8' },
+	validation_status: { type: 'LowCardinality(String)' },
 	vehicle_id: { type: 'Nullable(LowCardinality(String))' },
 };
 
