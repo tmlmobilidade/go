@@ -41,9 +41,10 @@ class SimplifiedApexBankingTapsNewClass extends ClickHouseInterfaceTemplate<Simp
 
 	private static _instance: null | Promise<SimplifiedApexBankingTapsNewClass> = null;
 
-	public override readonly engine: ClickHouseTableEngine<SimplifiedApexBankingTap> = 'ReplacingMergeTree(created_at)';
-
 	protected override readonly databaseName = 'simplified_apex';
+	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexBankingTap> = 'ReplacingMergeTree(updated_at)';
+	protected override readonly orderBy = 'agency_id, created_at, _id';
+	protected override readonly partitionBy = 'toYYYYMM(created_at)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'banking_taps';
 

@@ -2,7 +2,7 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseTableSchema, ClickHouseTableEngine } from '@/types/index.js';
+import { type ClickHouseTableEngine, type ClickHouseTableSchema } from '@/types/index.js';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
@@ -45,8 +45,9 @@ class SimplifiedApexValidationsNewClass extends ClickHouseInterfaceTemplate<Simp
 	private static _instance: null | Promise<SimplifiedApexValidationsNewClass> = null;
 
 	protected override readonly databaseName = 'simplified_apex';
-	protected override readonly engine: ClickHouseTableEngine = 'ReplacingMergeTree';
-	protected override readonly orderBy = '(agency_id, calendar_date)';
+	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexValidation> = 'ReplacingMergeTree(updated_at)';
+	protected override readonly orderBy = 'agency_id, is_passenger, created_at, _id';
+	protected override readonly partitionBy = 'toYYYYMM(created_at)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'validations';
 
