@@ -64,7 +64,7 @@ export async function publishGtfsRtFeed() {
 		},
 	};
 
-	await apiCache.set('hub:alerts:published:gtfs:cm', JSON.stringify(gtfsRtFeed));
+	await apiCache.set('hub:v1:alerts:published:gtfs:cm', JSON.stringify(gtfsRtFeed));
 
 	Logger.success(`Finished publishing GTFS-RT feed (${globalTimer.get()})`);
 

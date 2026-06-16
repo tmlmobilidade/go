@@ -23,9 +23,9 @@ export const SimplifiedApexInspectionSchema = z.object({
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
 	pattern_id: z.string(),
-	product_id: z.string(),
+	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
-	trip_id: z.string(),
+	trip_id: z.string().nullable().default(null),
 	vehicle_id: z.number(),
 });
 

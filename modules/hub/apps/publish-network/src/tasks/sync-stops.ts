@@ -128,7 +128,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	//
 	// Save to the database
 
-	await apiCache.set('hub:network:stops', JSON.stringify(exportedStopsData));
+	await apiCache.set('hub:v1:network:stops', JSON.stringify(exportedStopsData));
 
 	Logger.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
 

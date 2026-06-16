@@ -127,7 +127,7 @@ export async function publishJsonFeed() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:alerts:published:json', JSON.stringify(result));
+	await apiCache.set('hub:v1:alerts:published:json', JSON.stringify(result));
 
 	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
 

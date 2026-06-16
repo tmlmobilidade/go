@@ -58,7 +58,7 @@ export async function publishApprovedPlans() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:plans:approved:json', JSON.stringify(approvedPlans));
+	await apiCache.set('hub:v1:plans:approved:json', JSON.stringify(approvedPlans));
 
 	Logger.success(`Finished publishing ${approvedPlans.length} approved plans JSON feed. (${globalTimer.get()})`);
 

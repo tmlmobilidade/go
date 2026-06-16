@@ -29,17 +29,14 @@ export async function getCredential(key: string): Promise<null | string> {
 		if (platform === 'darwin') {
 			// macOS Keychain
 			return await getMacOSCredential(key);
-		}
-		else if (platform === 'win32') {
+		} else if (platform === 'win32') {
 			// Windows Credential Manager
 			return await getWindowsCredential(key);
-		}
-		else {
+		} else {
 			// Linux (and other Unix-like systems)
 			return await getLinuxCredential(key);
 		}
-	}
-	catch {
+	} catch {
 		// If credential doesn't exist or there's an error, return null
 		return null;
 	}
@@ -57,12 +54,10 @@ export async function setCredential(key: string, value: string): Promise<void> {
 	if (platform === 'darwin') {
 		// macOS Keychain
 		await setMacOSCredential(key, value);
-	}
-	else if (platform === 'win32') {
+	} else if (platform === 'win32') {
 		// Windows Credential Manager
 		await setWindowsCredential(key, value);
-	}
-	else {
+	} else {
 		// Linux (and other Unix-like systems)
 		await setLinuxCredential(key, value);
 	}
@@ -76,16 +71,13 @@ export async function deleteCredential(key: string): Promise<void> {
 		const platform = os.platform();
 		if (platform === 'darwin') {
 			await execAsync(`security delete-generic-password -s "${SERVICE_NAME}" -a "${key}"`);
-		}
-		else if (platform === 'win32') {
+		} else if (platform === 'win32') {
 			const targetName = `${SERVICE_NAME}:${key}`;
 			await execAsync(`powershell -Command "cmdkey /delete:'${targetName}'"`);
-		}
-		else {
+		} else {
 			await execAsync(`secret-tool clear service "${SERVICE_NAME}" account "${key}"`);
 		}
-	}
-	catch {
+	} catch {
 		// Credential might not exist, which is fine
 	}
 }
@@ -99,8 +91,7 @@ async function getMacOSCredential(key: string): Promise<null | string> {
 	try {
 		const { stdout } = await execAsync(`security find-generic-password -s "${SERVICE_NAME}" -a "${key}" -w`);
 		return stdout.trim();
-	}
-	catch {
+	} catch {
 		return null;
 	}
 }
@@ -136,8 +127,7 @@ async function getWindowsCredential(key: string): Promise<null | string> {
 		}
 
 		return stdout.trim();
-	}
-	catch {
+	} catch {
 		// Try fallback method
 		return await getWindowsCredentialFallback(key);
 	}
@@ -160,8 +150,7 @@ async function setWindowsCredential(key: string, value: string): Promise<void> {
 		`;
 		// Execute the PowerShell script
 		await execAsync(`powershell -Command "${script.replace(/\n/g, ' ')}"`);
-	}
-	catch {
+	} catch {
 		// Fallback to file-based storage with DPAPI
 		await setWindowsCredentialFallback(key, value);
 	}
@@ -177,8 +166,7 @@ async function getWindowsCredentialFallback(key: string): Promise<null | string>
 		const credPath = getCredentialFilePath(key);
 		const encrypted = await fs.readFile(credPath, 'utf8');
 		return decrypt(encrypted);
-	}
-	catch {
+	} catch {
 		return null;
 	}
 }
@@ -206,8 +194,7 @@ async function getLinuxCredential(key: string): Promise<null | string> {
 	try {
 		const { stdout } = await execAsync(`secret-tool lookup service "${SERVICE_NAME}" account "${key}"`);
 		return stdout.trim();
-	}
-	catch {
+	} catch {
 		// Fallback to encrypted file if secret-tool is not available
 		return await getLinuxCredentialFallback(key);
 	}
@@ -223,8 +210,7 @@ async function setLinuxCredential(key: string, value: string): Promise<void> {
 		// Try using secret-tool first
 		// Note: secret-tool reads password from stdin, so we use echo with pipe
 		await execAsync(`echo "${value}" | secret-tool store --label="${SERVICE_NAME} - ${key}" service "${SERVICE_NAME}" account "${key}"`);
-	}
-	catch {
+	} catch {
 		// Fallback to encrypted file
 		await setLinuxCredentialFallback(key, value);
 	}
@@ -240,8 +226,7 @@ async function getLinuxCredentialFallback(key: string): Promise<null | string> {
 		const credPath = getCredentialFilePath(key);
 		const encrypted = await fs.readFile(credPath, 'utf8');
 		return decrypt(encrypted);
-	}
-	catch {
+	} catch {
 		return null;
 	}
 }

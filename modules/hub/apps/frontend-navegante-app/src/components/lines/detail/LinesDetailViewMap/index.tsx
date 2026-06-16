@@ -35,9 +35,9 @@ export function LinesDetailViewMap() {
 	// B. Transform Data
 
 	const activeVehiclesFeatureCollection = useMemo(() => {
-		if (!linesDetailContext.data.active_pattern?.id) return;
-		return vehiclesContext.actions.getVehiclesByPatternIdGeoJsonFC(linesDetailContext.data.active_pattern?.id);
-	}, [linesDetailContext.data.active_pattern?.id, vehiclesContext.actions]);
+		if (!linesDetailContext.data.active_pattern?._id) return;
+		return vehiclesContext.actions.getVehiclesByPatternIdGeoJsonFC(linesDetailContext.data.active_pattern?._id);
+	}, [linesDetailContext.data.active_pattern?._id, vehiclesContext.actions]);
 
 	const activePathFeatureCollection = useMemo(() => {
 		if (!linesDetailContext.data.active_pattern?.path) return;
@@ -55,7 +55,7 @@ export function LinesDetailViewMap() {
 			collection.features.push(result);
 		});
 		return collection;
-	}, [linesDetailContext.data.active_pattern?.color, linesDetailContext.data.active_pattern?.path, linesDetailContext.data.active_pattern?.text_color, stopsContext.actions]);
+	}, [linesDetailContext.data.active_pattern?.path, stopsContext.actions]);
 
 	const activeStopFeatureCollection = useMemo(() => {
 		// Exit early if there is no active pattern or active waypoint
