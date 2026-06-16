@@ -26,9 +26,36 @@ export interface SidebarPanelProps {
 	userPermissions?: readonly Permission[]
 }
 
+/* * */
+
 export function SidebarPanel({ collapsedPref, expanded, onSetCollapsed, pathname, showToggle, userPermissions }: SidebarPanelProps) {
+	//
+
+	//
+	// A. Setup variables
+
 	const { t } = useTranslation();
+
+	//
+	// B. Transform data
+
 	const isPeek = expanded && collapsedPref;
+	const toggleAriaLabel = isPeek
+		? t('shared:components.sidebar.Sidebar.pin_sidebar_aria')
+		: t('shared:components.sidebar.Sidebar.unpin_sidebar_aria');
+	const toggleIcon = isPeek
+		? <IconLayoutSidebarLeftExpand size={20} />
+		: <IconLayoutSidebarLeftCollapse size={20} />;
+
+	//
+	// C. Handle actions
+
+	const handleToggleClick = () => {
+		onSetCollapsed(!isPeek);
+	};
+
+	//
+	// D. Render components
 
 	return (
 		<>
@@ -40,21 +67,12 @@ export function SidebarPanel({ collapsedPref, expanded, onSetCollapsed, pathname
 					</div>
 				) : null}
 				{showToggle ? (
-					isPeek ? (
-						<IconButton
-							aria-label={t('shared:components.sidebar.Sidebar.pin_sidebar_aria')}
-							color="var(--color-system-text-200)"
-							icon={<IconLayoutSidebarLeftExpand size={20} />}
-							onClick={() => onSetCollapsed(false)}
-						/>
-					) : (
-						<IconButton
-							aria-label={t('shared:components.sidebar.Sidebar.unpin_sidebar_aria')}
-							color="var(--color-system-text-200)"
-							icon={<IconLayoutSidebarLeftCollapse size={20} />}
-							onClick={() => onSetCollapsed(true)}
-						/>
-					)
+					<IconButton
+						aria-label={toggleAriaLabel}
+						color="var(--color-system-text-200)"
+						icon={toggleIcon}
+						onClick={handleToggleClick}
+					/>
 				) : null}
 			</div>
 			<div className={styles.sidebarContent}>
@@ -79,4 +97,6 @@ export function SidebarPanel({ collapsedPref, expanded, onSetCollapsed, pathname
 			</div>
 		</>
 	);
+
+	//
 }

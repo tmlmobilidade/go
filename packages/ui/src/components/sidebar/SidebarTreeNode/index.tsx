@@ -25,27 +25,48 @@ export interface SidebarTreeNodeProps {
 	userPermissions?: readonly Permission[]
 }
 
+/* * */
+
 export function SidebarTreeNode({ depth, node, pathname, userPermissions }: SidebarTreeNodeProps) {
+	//
+
+	//
+	// A. Setup variables
+
 	const { t } = useTranslation();
 	const { iconOnly } = useSidebarMode();
 	const { isGroupOpen, setGroupOpen, toggleGroup } = useSidebarGroupOpen();
+
+	//
+	// B. Transform data
+
 	const isActive = isNodeActive(node, pathname);
 
 	const isOpen = node.type === 'group' ? isGroupOpen(node._id) : false;
 
+	//
+	// C. Handle actions
+
 	useEffect(() => {
 		if (node.type === 'group' && isActive) setGroupOpen(node._id, true);
 	}, [isActive, node, setGroupOpen]);
+
+	//
+	// D. Render components
 
 	if (node.type === 'item') {
 		if (!isPermissionEnabled(node.permissions, userPermissions)) {
 			return null;
 		}
 
+		const itemLabel = t(`shared:components.sidebar.Sidebar.${node._id}` as never);
+
 		return (
 			<SidebarItem
 				depth={depth}
-				label={t(`shared:components.sidebar.Sidebar.${node._id}` as never)}
+				label={itemLabel}
+				pathname={pathname}
+				userPermissions={userPermissions}
 				{...node}
 			/>
 		);
@@ -55,6 +76,7 @@ export function SidebarTreeNode({ depth, node, pathname, userPermissions }: Side
 		return null;
 	}
 
+	const groupLabel = t(`shared:components.sidebar.SidebarGroups.${node._id}` as never);
 	const visibleChildren = node.children.filter(child => isNodeVisible(child, userPermissions));
 
 	if (!visibleChildren.length) {
@@ -65,14 +87,14 @@ export function SidebarTreeNode({ depth, node, pathname, userPermissions }: Side
 		<section className={styles.group} data-sidebar-group>
 			<button
 				aria-expanded={isOpen}
-				aria-label={t(`shared:components.sidebar.SidebarGroups.${node._id}` as never)}
+				aria-label={groupLabel}
 				className={styles.groupHeader}
 				data-collapsed={iconOnly}
 				onClick={() => toggleGroup(node._id)}
 				type="button"
 			>
 				<span aria-hidden="true" className={styles.groupRule} />
-				<span className={styles.groupLabel}>{t(`shared:components.sidebar.SidebarGroups.${node._id}` as never)}</span>
+				<span className={styles.groupLabel}>{groupLabel}</span>
 				<IconChevronDown className={styles.groupChevron} data-open={isOpen} size={14} />
 			</button>
 			<Collapse expanded={isOpen} transitionDuration={0}>
@@ -90,4 +112,6 @@ export function SidebarTreeNode({ depth, node, pathname, userPermissions }: Side
 			</Collapse>
 		</section>
 	);
+
+	//
 }
