@@ -3,7 +3,7 @@
 import { insertEtaRides } from '@/clickhouse/insert-eta-rides.js';
 import { insertHistoricalVehicleEvents } from '@/clickhouse/insert-historical-vehicle-events.js';
 import { AppConfig } from '@/lib/config.js';
-import { toEtaRideRow } from '@/lib/eta-ride-row.js';
+import { parseHistoricalRide, parseRide } from '@/lib/eta-ride-row.js';
 import { buildHistNodeTravelTimes } from '@/process/build-hist-node-travel-times.js';
 import { buildRidesQuery, fetchCurrentWindowRides, fetchHistoricalRidesForDayIndex } from '@/process/rides-query.js';
 import { syncShapeNodes } from '@/process/sync-shape-nodes.js';
@@ -71,7 +71,7 @@ export async function loadEta(config: AppConfig) {
 		Logger.title('1. Insert current window rides into clickhouse');
 
 		const currentWindowRides = await fetchCurrentWindowRides(ridesQuery, config);
-		await insertEtaRides(clickhouseClient, qualifiedTable(config.database, 'curr_rides'), currentWindowRides.map(toEtaRideRow), 'current window rides');
+		await insertEtaRides(clickhouseClient, qualifiedTable(config.database, 'curr_rides'), currentWindowRides.map(parseRide), 'current window rides');
 
 		// Get distinct hashed trip ids for later use
 		currentWindowRides.forEach(ride => currentWindowDistinctHashedTrips.add(ride.hashed_trip_id));
@@ -92,16 +92,21 @@ export async function loadEta(config: AppConfig) {
 		for (let index = 0; index < config.historicalDataDaysBack; index++) {
 			historicalRidesPromises.push(
 				(async () => {
+					//
+
+					// Fetch the historical rides for the day index.
 					const historicalRides = await fetchHistoricalRidesForDayIndex(ridesQuery, index, config);
 
+					// Add the distinct hashed shape ids to the set.
 					historicalRides.forEach((ride) => {
 						disctictHashedShapeIds.add(ride.hashed_shape_id);
 					});
 
+					// Log the number of historical rides found.
 					Logger.info(`Found ${historicalRides.length} historical rides`);
 
 					// Insert into clickhouse, _id, trip_id, hashed_shape_id
-					await insertEtaRides(clickhouseClient, qualifiedTable(config.database, 'hist_rides'), historicalRides.map(toEtaRideRow), 'historical rides');
+					await insertEtaRides(clickhouseClient, qualifiedTable(config.database, 'hist_rides'), historicalRides.map(parseHistoricalRide), 'historical rides');
 				})(),
 			);
 		}
