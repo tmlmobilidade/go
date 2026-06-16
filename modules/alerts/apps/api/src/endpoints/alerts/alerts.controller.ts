@@ -66,7 +66,7 @@ export class AlertsController {
 		const foundAlert = await alerts.findById(request.params.id);
 		// If the alert does not exist, return an error
 		if (!foundAlert) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete image for alert');
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 			Logger.issue('error', error, {
 				action: 'deleteImage',
 				feature: 'alerts',
@@ -78,7 +78,7 @@ export class AlertsController {
 
 		// Ensure the alert has an associated image file.
 		if (!foundAlert.file_id) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete image for alert');
+			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Image not found for alert');
 			Logger.issue('error', error, {
 				action: 'deleteImage',
 				feature: 'alerts',
