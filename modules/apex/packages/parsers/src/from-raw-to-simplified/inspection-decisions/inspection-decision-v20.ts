@@ -5,7 +5,7 @@ import { type RawApexTransactionInspectionDecisionV20, type SimplifiedApexInspec
 
 /* * */
 
-export function parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexBankingTap(doc: RawApexTransactionInspectionDecisionV20): null | SimplifiedApexInspectionDecision {
+export function parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexInspectionDecision(doc: RawApexTransactionInspectionDecisionV20): null | SimplifiedApexInspectionDecision {
 	//
 
 	//
