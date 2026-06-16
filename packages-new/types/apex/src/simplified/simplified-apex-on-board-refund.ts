@@ -12,7 +12,7 @@ export const SimplifiedApexOnBoardRefundSchema = z.object({
 	block_id: z.string().nullable().default(null),
 	calendar_date: CalendarDateSchema,
 	card_physical_type: z.number(),
-	card_serial_number: z.bigint().nullable().default(null),
+	card_serial_number: z.string().nullable().default(null),
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	duty_id: z.string().nullable().default(null),

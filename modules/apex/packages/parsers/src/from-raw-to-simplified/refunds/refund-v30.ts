@@ -19,7 +19,7 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 	// Prepare the card serial number field value
 
 	const cardSerialNumberValue = doc.payload.cardInfo.cardSerialNumber
-		? BigInt(`0x${doc.payload.cardInfo.cardSerialNumber}`)
+		? BigInt(`0x${doc.payload.cardInfo.cardSerialNumber}`).toString()
 		: null;
 
 	//
