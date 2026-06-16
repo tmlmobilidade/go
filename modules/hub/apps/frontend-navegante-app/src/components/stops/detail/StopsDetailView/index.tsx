@@ -1,5 +1,6 @@
 'use client';
 
+import { FeedbackForm } from '@/components/feedback/FeedbackForm';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailAlerts } from '@/components/stops/detail/StopsDetailAlerts';
 import { StopsDetailViewHeader } from '@/components/stops/detail/StopsDetailViewHeader';
@@ -26,6 +27,7 @@ export function StopsDetailView() {
 	return (
 		<Section padding="none">
 			<StopsDetailViewHeader />
+			<FeedbackForm entityType="stop" />
 			<Divider />
 			<StopsDetailAlerts />
 			<StopsDetailViewTimetable />

@@ -1,8 +1,8 @@
 'use client';
 
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
-import { type FeedbackReasonCategory } from '@/components/feedback/feedback-reason-options';
-import { IconBus, IconHeadset, IconRoute } from '@tabler/icons-react';
+import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
+import { IconBus, IconBusStop, IconHeadset, IconRoute } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
 
@@ -10,6 +10,7 @@ import styles from './styles.module.css';
 
 interface FeedbackReasonsSheetProps {
 	description: string
+	entityType: FeedbackEntityType
 	heading: string
 	onClose: () => void
 	onSelectCategory: (category: FeedbackReasonCategory) => void
@@ -18,7 +19,27 @@ interface FeedbackReasonsSheetProps {
 
 /* * */
 
-export function FeedbackReasonsSheet({ description, heading, onClose, onSelectCategory, opened }: FeedbackReasonsSheetProps) {
+function getReasonCategoryIcon(category: string) {
+	if (category === 'line_service') return <IconRoute aria-hidden={true} size={22} stroke={2} />;
+	if (category === 'vehicle') return <IconBus aria-hidden={true} size={22} stroke={2} />;
+	if (category === 'support') return <IconHeadset aria-hidden={true} size={22} stroke={2} />;
+	if (category === 'stop') return <IconBusStop aria-hidden={true} size={22} stroke={2} />;
+	return null;
+}
+
+/* * */
+
+export function FeedbackReasonsSheet({ description, entityType, heading, onClose, onSelectCategory, opened }: FeedbackReasonsSheetProps) {
+	//
+
+	//
+	// A. Setup variables
+
+	const reasonGroups = getFeedbackReasonGroups(entityType);
+
+	//
+	// B. Render component
+
 	return (
 		<BottomSheet
 			onClose={onClose}
@@ -33,20 +54,12 @@ export function FeedbackReasonsSheet({ description, heading, onClose, onSelectCa
 				</div>
 
 				<div className={styles.sheetOptions}>
-					<button className={styles.sheetOption} onClick={() => onSelectCategory('line_service')} type="button">
-						<IconRoute aria-hidden={true} size={22} stroke={2} />
-						<span>Linha/serviço</span>
-					</button>
-
-					<button className={styles.sheetOption} onClick={() => onSelectCategory('vehicle')} type="button">
-						<IconBus aria-hidden={true} size={22} stroke={2} />
-						<span>Veículo</span>
-					</button>
-
-					<button className={styles.sheetOption} onClick={() => onSelectCategory('support')} type="button">
-						<IconHeadset aria-hidden={true} size={22} stroke={2} />
-						<span>Atendimento</span>
-					</button>
+					{Object.entries(reasonGroups).map(([category, reasonGroup]) => (
+						<button key={category} className={styles.sheetOption} onClick={() => onSelectCategory(category as FeedbackReasonCategory)} type="button">
+							{getReasonCategoryIcon(category)}
+							<span>{reasonGroup.heading}</span>
+						</button>
+					))}
 				</div>
 			</div>
 		</BottomSheet>

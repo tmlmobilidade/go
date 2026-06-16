@@ -1,6 +1,6 @@
 'use client';
 
-import { type FeedbackReasonCategory } from '@/components/feedback/feedback-reason-options';
+import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
 import { FeedbackImprovementPrompt } from '@/components/feedback/FeedbackImprovementPrompt';
 import { FeedbackMoodSelector } from '@/components/feedback/FeedbackMoodSelector';
 import { FeedbackReasonOptionsSheet } from '@/components/feedback/FeedbackReasonOptionsSheet';
@@ -13,7 +13,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function FeedbackForm() {
+interface FeedbackFormProps {
+	entityType?: FeedbackEntityType
+}
+
+/* * */
+
+export function FeedbackForm({ entityType = 'line' }: FeedbackFormProps) {
 	//
 
 	//
@@ -26,18 +32,37 @@ export function FeedbackForm() {
 	const [selectedReasonValues, setSelectedReasonValues] = useState<string[]>([]);
 	const [selectedMood, setSelectedMood] = useState<'happy' | 'unhappy' | null>(null);
 
+	const reasonGroups = getFeedbackReasonGroups(entityType);
+	const reasonCategories = Object.keys(reasonGroups) as FeedbackReasonCategory[];
+	const isAnyReasonsSheetOpen = isHappyReasonsSheetOpen || isUnhappyReasonsSheetOpen || activeReasonOptionsSheet !== null;
+
 	//
 	// B. Handle actions
 
+	const handleOpenReasonSelection = (openReasonsSheet: () => void) => {
+		if (reasonCategories.length === 1 && reasonCategories[0]) {
+			setActiveReasonOptionsSheet(reasonCategories[0]);
+			return;
+		}
+
+		openReasonsSheet();
+	};
+
 	const handleOpenHappyReasonsSheet = () => {
-		setIsFeedbackModalOpen(false);
-		setIsHappyReasonsSheetOpen(true);
+		handleOpenReasonSelection(() => setIsHappyReasonsSheetOpen(true));
 	};
 
 	const handleSelectUnhappy = () => {
 		setSelectedMood('unhappy');
-		setIsFeedbackModalOpen(false);
-		setIsUnhappyReasonsSheetOpen(true);
+		handleOpenReasonSelection(() => setIsUnhappyReasonsSheetOpen(true));
+	};
+
+	const handleCloseHappyReasonsSheet = () => {
+		setIsHappyReasonsSheetOpen(false);
+	};
+
+	const handleCloseReasonOptionsSheet = () => {
+		setActiveReasonOptionsSheet(null);
 	};
 
 	const handleToggleReason = (reasonValue: string) => {
@@ -58,10 +83,12 @@ export function FeedbackForm() {
 
 			<Modal
 				centered={true}
+				closeOnClickOutside={false}
 				onClose={() => setIsFeedbackModalOpen(false)}
 				opened={isFeedbackModalOpen}
 				size="sm"
 				title="Feedback"
+				zIndex={isAnyReasonsSheetOpen ? 90 : undefined}
 				classNames={{
 					body: styles.modalBody,
 					close: styles.modalClose,
@@ -84,43 +111,33 @@ export function FeedbackForm() {
 
 			<FeedbackReasonsSheet
 				description="Ajude-nos a melhorar o serviço."
-				heading="Oque podemos melhorar?"
-				onClose={() => setIsHappyReasonsSheetOpen(false)}
+				entityType={entityType}
+				heading="O que podemos melhorar?"
+				onClose={handleCloseHappyReasonsSheet}
 				onSelectCategory={setActiveReasonOptionsSheet}
 				opened={isHappyReasonsSheetOpen}
 			/>
 
 			<FeedbackReasonsSheet
 				description="Ajude-nos a melhorar o serviço."
+				entityType={entityType}
 				heading="Com o que está insatisfeito?"
 				onClose={() => setIsUnhappyReasonsSheetOpen(false)}
 				onSelectCategory={setActiveReasonOptionsSheet}
 				opened={isUnhappyReasonsSheetOpen}
 			/>
 
-			<FeedbackReasonOptionsSheet
-				category="line_service"
-				onClose={() => setActiveReasonOptionsSheet(null)}
-				onToggleReason={handleToggleReason}
-				opened={activeReasonOptionsSheet === 'line_service'}
-				selectedValues={selectedReasonValues}
-			/>
-
-			<FeedbackReasonOptionsSheet
-				category="vehicle"
-				onClose={() => setActiveReasonOptionsSheet(null)}
-				onToggleReason={handleToggleReason}
-				opened={activeReasonOptionsSheet === 'vehicle'}
-				selectedValues={selectedReasonValues}
-			/>
-
-			<FeedbackReasonOptionsSheet
-				category="support"
-				onClose={() => setActiveReasonOptionsSheet(null)}
-				onToggleReason={handleToggleReason}
-				opened={activeReasonOptionsSheet === 'support'}
-				selectedValues={selectedReasonValues}
-			/>
+			{reasonCategories.map(category => (
+				<FeedbackReasonOptionsSheet
+					key={category}
+					category={category}
+					entityType={entityType}
+					onClose={handleCloseReasonOptionsSheet}
+					onToggleReason={handleToggleReason}
+					opened={activeReasonOptionsSheet === category}
+					selectedValues={selectedReasonValues}
+				/>
+			))}
 		</>
 	);
 }

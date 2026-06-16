@@ -36,7 +36,7 @@ export function LinesDetailView() {
 		<Section padding="none">
 			<LinesDetailViewMap />
 			<LinesDetailViewHeader />
-			<FeedbackForm />
+			<FeedbackForm entityType="line" />
 			<Divider />
 			<LinesDetailToolbar />
 			<LinesDetailAlerts />

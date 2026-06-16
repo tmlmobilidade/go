@@ -1,7 +1,7 @@
 'use client';
 
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
-import { FEEDBACK_LINE_REASON_GROUPS, type FeedbackReasonCategory } from '@/components/feedback/feedback-reason-options';
+import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
 
 import styles from './styles.module.css';
 
@@ -9,6 +9,7 @@ import styles from './styles.module.css';
 
 interface FeedbackReasonOptionsSheetProps {
 	category: FeedbackReasonCategory
+	entityType: FeedbackEntityType
 	onClose: () => void
 	onToggleReason: (value: string) => void
 	opened: boolean
@@ -17,17 +18,19 @@ interface FeedbackReasonOptionsSheetProps {
 
 /* * */
 
-export function FeedbackReasonOptionsSheet({ category, onClose, onToggleReason, opened, selectedValues }: FeedbackReasonOptionsSheetProps) {
+export function FeedbackReasonOptionsSheet({ category, entityType, onClose, onToggleReason, opened, selectedValues }: FeedbackReasonOptionsSheetProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const reasonGroup = FEEDBACK_LINE_REASON_GROUPS[category];
+	const reasonGroup = getFeedbackReasonGroups(entityType)[category];
 	const hasReachedSelectionLimit = selectedValues.length >= 2;
 
 	//
 	// B. Render component
+
+	if (!reasonGroup) return null;
 
 	return (
 		<BottomSheet
