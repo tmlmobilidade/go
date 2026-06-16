@@ -26,6 +26,8 @@ export interface StopsDetailViewTimetableData {
 	is_past: boolean
 	is_realtime: boolean
 	line_id: string
+	locality_ids: string[]
+	locality_names: string[]
 	pattern_id: string
 	shape_id: string
 	short_name: string
@@ -167,6 +169,8 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 						is_past: isPast,
 						is_realtime: isRealtime,
 						line_id: patternData.line_id,
+						locality_ids: patternData.locality_ids,
+						locality_names: patternData.locality_names,
 						pattern_id: patternData._id,
 						shape_id: patternData.shape_id,
 						short_name: patternData.short_name,
