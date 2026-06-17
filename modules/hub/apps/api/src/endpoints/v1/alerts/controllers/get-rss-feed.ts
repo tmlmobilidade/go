@@ -16,7 +16,7 @@ export async function getRssFeed(request: FastifyRequest, reply: FastifyReply<st
 	const cachedData = await apiCache.get('hub:v1:alerts:published:rss');
 
 	if (!cachedData) {
-		Logger.error('[hub/v1/alerts:getRssFeed()] No RSS feed found in cache. Returning empty message.');
+		Logger.error({ message: '[hub/v1/alerts:getRssFeed()] No RSS feed found in cache. Returning empty message.' });
 		return reply
 			.code(HTTP_STATUS.NO_CONTENT)
 			.header('access-control-allow-origin', '*')

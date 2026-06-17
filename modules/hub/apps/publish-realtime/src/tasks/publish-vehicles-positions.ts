@@ -71,12 +71,12 @@ export async function publishVehiclesPositions() {
 				// Add the vehicle position to the list
 				vehiclePositions.push(parsedVehiclePosition.data);
 			} catch (error) {
-				Logger.error(`Error parsing vehicle position ID: ${vehicleEventData._id}: ${error.message}`);
+				Logger.error({ message: `Error parsing vehicle position ID: ${vehicleEventData._id}: ${(error as Error).message}` });
 			}
 		}),
 	);
 
-	Logger.info(`Retrieved ${vehiclePositions.length} latest vehicles positions...`);
+	Logger.info({ message: `Retrieved ${vehiclePositions.length} latest vehicles positions...` });
 
 	//
 	// Save the result in API Cache

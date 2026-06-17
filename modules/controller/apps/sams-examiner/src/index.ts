@@ -4,6 +4,7 @@ import { type AggregationResultItem } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type CreateSamDto, Sam, type SamAnalysis, type SamTimelineSummary, UpdateSamDto } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -99,6 +100,19 @@ function buildTimelineSummary(analyses: SamAnalysis[]): SamTimelineSummary {
 async function main() {
 	try {
 		//
+
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.startNodeLogs({ app: 'sams-examiner', message: 'Sentry Sams Examiner initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error({ error, message: 'Error initializing Sentry Sams Examiner' });
+		}
+
+		//
+		// Initialize the logger
 
 		Logger.init();
 
@@ -206,7 +220,7 @@ async function main() {
 					validationsTransactionsPromise,
 				]);
 
-				Logger.info(`Location: ${locationTransactionsData.length} | OnBoard Refunds: ${onBoardRefundsTransactionsData.length} | OnBoard Sales: ${onBoardSalesTransactionsData.length} | Validations: ${validationsTransactionsData.length} (${aggregationTimer.get()})`);
+				Logger.info({ message: `Location: ${locationTransactionsData.length} | OnBoard Refunds: ${onBoardRefundsTransactionsData.length} | OnBoard Sales: ${onBoardSalesTransactionsData.length} | Validations: ${validationsTransactionsData.length} (${aggregationTimer.get()})` });
 
 				//
 				// Now merge all transactions into a single variable
@@ -235,7 +249,7 @@ async function main() {
 				// for the current SAM in the given time range.
 
 				if (!sortedTransactions.length) {
-					Logger.error(`No transactions found for SAM "${samData._id}" for the given time range. (${analysisTimer.get()})`);
+					Logger.error({ message: `No transactions found for SAM "${samData._id}" for the given time range. (${analysisTimer.get()})` });
 					const noTxUpdate = { analysis: [], remarks: 'No transactions found for given time range.', system_status: 'complete', timeline_summary: { months: [] } };
 					await sams.updateById(samData._id, noTxUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
@@ -251,7 +265,7 @@ async function main() {
 				const allTransactionsMatch = sortedTransactions.every(transaction => transaction.agency_id === agencyId);
 
 				if (!allTransactionsMatch) {
-					Logger.error(`SAM ${samData._id} has transactions with different Agency ID. (${analysisTimer.get()})`);
+					Logger.error({ message: `SAM ${samData._id} has transactions with different Agency ID. (${analysisTimer.get()})` });
 					const agencyErrorUpdate = { analysis: [], remarks: 'Transactions with different Agency IDs found.', system_status: 'error', timeline_summary: { months: [] } };
 					await sams.updateById(samData._id, agencyErrorUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
@@ -265,7 +279,7 @@ async function main() {
 				const allMacAseCounterValuesValid = sortedTransactions.every(transaction => transaction.mac_ase_counter_value > 0 && transaction.mac_ase_counter_value !== null && transaction.mac_ase_counter_value !== undefined);
 
 				if (!allMacAseCounterValuesValid) {
-					Logger.error(`SAM ${samData._id} has transactions with invalid mac_ase_counter_value. (${analysisTimer.get()})`);
+					Logger.error({ message: `SAM ${samData._id} has transactions with invalid mac_ase_counter_value. (${analysisTimer.get()})` });
 					const counterErrorUpdate = { analysis: [], remarks: 'Transactions with invalid mac_ase_counter_value found.', system_status: 'error', timeline_summary: { months: [] } };
 					await sams.updateById(samData._id, counterErrorUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
@@ -288,7 +302,7 @@ async function main() {
 				const duplicateAseCounterValues = Object.values(foundAseCounterValues).filter(count => count > 1);
 
 				if (duplicateAseCounterValues.length > 0) {
-					Logger.error(`SAM ${samData._id} has ${duplicateAseCounterValues.length} transactions with duplicate mac_ase_counter_value. (${analysisTimer.get()})`);
+					Logger.error({ message: `SAM ${samData._id} has ${duplicateAseCounterValues.length} transactions with duplicate mac_ase_counter_value. (${analysisTimer.get()})` });
 					const duplicateCounterUpdate = { analysis: [], remarks: 'Transactions with duplicate mac_ase_counter_value found.', system_status: 'error', timeline_summary: { months: [] } };
 					await sams.updateById(samData._id, duplicateCounterUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
@@ -422,7 +436,7 @@ async function main() {
 
 			//
 			} catch (error) {
-				Logger.error(`Error processing SAM "${samData._id}": ${error.message}`);
+				Logger.error({ message: `Error processing SAM "${samData._id}": ${error.message}` });
 				const processingErrorUpdate = { remarks: `Error processing SAM "${samData._id}": ${error.message}`, system_status: 'error', timeline_summary: { months: [] } };
 				await sams.updateById(samData._id, processingErrorUpdate as Partial<CreateSamDto>);
 			} finally {
@@ -436,8 +450,8 @@ async function main() {
 
 		//
 	} catch (error) {
-		Logger.error('An error occurred. Halting execution.', error);
-		Logger.error('Retrying in 10 seconds...');
+		Logger.error({ error, message: 'An error occurred. Halting execution.' });
+		Logger.error({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

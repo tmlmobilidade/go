@@ -78,7 +78,7 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 		return;
 	}
 
-	Logger.info(`[APEX Tx] MISMATCH: Found ${missingDocumentIds.length} missing documents from source on destination database. (${distinctIdsTimer.get()})`);
+	Logger.info({ message: `[APEX Tx] MISMATCH: Found ${missingDocumentIds.length} missing documents from source on destination database. (${distinctIdsTimer.get()})` });
 
 	//
 	// Sync all documents in the current timestamp chunk. We query the Source database for all documents
@@ -97,7 +97,7 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 			const parsedDocument = parsePcgiTransactionEntityIntoRawApexTransaction(document);
 			await writer.write(parsedDocument);
 		} catch (error) {
-			Logger.error(`Error transforming APEX Transaction: ${document.transactionId} Reason: ${error.message}`);
+			Logger.error({ message: `Error transforming APEX Transaction: ${document.transactionId}: Reason: ${error.message}` });
 		}
 	}
 

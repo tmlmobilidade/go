@@ -17,7 +17,7 @@ export async function getLines(request: FastifyRequest, reply: FastifyReply<HubL
 	const cachedData = await apiCache.get('hub:v1:network:lines');
 
 	if (!cachedData) {
-		Logger.error('[hub/v1/network:getLines()] No cached data found for lines');
+		Logger.error({ message: '[hub/v1/network:getLines()] No cached data found for lines' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=60')

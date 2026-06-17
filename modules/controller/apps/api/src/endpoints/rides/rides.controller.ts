@@ -1,10 +1,11 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
@@ -204,6 +205,8 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
+			Logger.issue({ context: { action: 'getSimplifiedApexLocationsByRideId', feature: 'rides', request, value: request.body }, level: 'error', messageOrError: error });
+
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -270,6 +273,7 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
+			Logger.issue({ context: { action: 'getSimplifiedApexOnBoardRefundsByRideId', feature: 'rides', request, value: request.body }, level: 'error', messageOrError: error });
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -336,6 +340,8 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
+			Logger.issue({ context: { action: 'getSimplifiedApexOnBoardSalesByRideId', feature: 'rides', request, value: request.body }, level: 'error', messageOrError: error });
+
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -402,6 +408,8 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
+			Logger.issue({ context: { action: 'getSimplifiedApexValidationsByRideId', feature: 'rides', request, value: request.body }, level: 'error', messageOrError: error });
+
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -468,6 +476,8 @@ export class RidesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
+			Logger.issue({ context: { action: 'getVehicleEventsByRideId', feature: 'rides', request, value: request.body }, level: 'error', messageOrError: error });
+
 			reply
 				.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 				.send(error);
@@ -489,6 +499,9 @@ export class RidesController {
 			const rideId = request.params['id'];
 
 			if (!rideId) {
+				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ride_id parameter.');
+				Logger.issue({ context: { action: 'reprocessRideById', feature: 'rides', request, value: rideId }, level: 'error', messageOrError: error });
+
 				return reply
 					.status(HTTP_STATUS.BAD_REQUEST)
 					.send({
@@ -504,6 +517,9 @@ export class RidesController {
 			const rideData = await rides.updateById(rideId, { system_status: 'waiting' });
 
 			if (!rideData) {
+				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');
+				Logger.issue({ context: { action: 'reprocessRideById', feature: 'rides', request, value: rideId }, level: 'error', messageOrError: error });
+
 				return reply
 					.status(HTTP_STATUS.NOT_FOUND)
 					.send({

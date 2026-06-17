@@ -40,7 +40,7 @@
 // 		//
 
 // 		Logger.init();
-// 		Logger.info('Linking Sales to Validations...');
+// 		Logger.info({ message: 'Linking Sales to Validations...' });
 
 // 		const globalTimer = new Timer();
 
@@ -62,7 +62,7 @@
 
 // 		for (const onBoardSale of unlinkedOnBoardSales) {
 // 			totalUnlinkedOnBoardSales++;
-// 			if (totalUnlinkedOnBoardSales % 10000 === 0) Logger.info(`Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far and linked ${totalLinkedOnBoardSales} of them to Validations.`);
+// 			if (totalUnlinkedOnBoardSales % 10000 === 0) Logger.info({ message: `Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far and linked ${totalLinkedOnBoardSales} of them to Validations.` });
 // 			// Fetch the corresponding Validation transaction.
 // 			// If no transaction is found, skip this iteration.
 // 			const [validationTransaction] = await simplifiedApexValidationsNew.queryFromString<ValidationRow>(`

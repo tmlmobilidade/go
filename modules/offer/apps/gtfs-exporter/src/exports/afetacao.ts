@@ -68,7 +68,7 @@ export async function parseZoning(
 			// Skip if this pathStop has no associated stop
 			const stopData = allStopsMap.get(pathData.stop_id);
 			if (!stopData) {
-				Logger.error(`AFETACAO: stop ${pathData.stop_id} not found for pattern ${patternData.code}`);
+				Logger.error({ message: `AFETACAO: stop ${pathData.stop_id} not found for pattern ${patternData.code}` });
 				continue;
 			}
 

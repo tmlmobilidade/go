@@ -3,6 +3,7 @@
 import { organizeStop } from '@tmlmobilidade/go-stops-pckg-organize';
 import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -10,6 +11,19 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 async function main() {
 	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Stops Organizer initialized', module: 'stops', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Stops Organizer' });
+	}
+
+	//
+	// Initialize the logger
 
 	Logger.init();
 
@@ -20,7 +34,7 @@ async function main() {
 
 	const allStopsData = await stops.all();
 
-	Logger.info(`Found ${allStopsData.length} stops.`);
+	Logger.info({ message: `Found ${allStopsData.length} stops.` });
 
 	//
 	// Loop through all stops and request updated attributes for each document
@@ -28,7 +42,7 @@ async function main() {
 	for (const [stopIndex, stopData] of allStopsData.entries()) {
 		//
 
-		Logger.info(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...`);
+		Logger.info({ message: `[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...` });
 
 		const organizedStopData = await organizeStop(stopData);
 

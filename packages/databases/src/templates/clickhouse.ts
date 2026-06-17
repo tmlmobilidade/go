@@ -207,9 +207,9 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 		// Perform the query to create the database if it does not exist
 		try {
 			await this.client.command({ query: `CREATE DATABASE IF NOT EXISTS "${this.databaseName}"` });
-			Logger.info(`CLICKHOUSE [${this.databaseName}]: Database created.`);
+			Logger.info({ message: `CLICKHOUSE [${this.databaseName}]: Database created.` });
 		} catch (error) {
-			Logger.error(`CLICKHOUSE [${this.databaseName}]: Error @ createDatabase(): ${(error as Error).message}`);
+			Logger.error({ error, message: `CLICKHOUSE [${this.databaseName}]: Error @ createDatabase(): ${(error as Error).message}` });
 			throw error;
 		}
 	}
@@ -242,11 +242,11 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 		// Perform the query to create the table
 		try {
 			await this.client.command({ query: createTableQuery });
-			Logger.info(`CLICKHOUSE [${this.tableName}]: Table created.`);
+			Logger.info({ message: `CLICKHOUSE [${this.tableName}]: Table created.` });
 		} catch (error) {
 			// If the error is not an ACCESS_DENIED, throw it right away
 			if (!(error instanceof ClickHouseError) || error.code !== '497') {
-				Logger.error(`CLICKHOUSE [${this.tableName}]: Error @ createTable(): ${(error as Error).message}`);
+				Logger.error({ error, message: `CLICKHOUSE [${this.tableName}]: Error @ createTable(): ${(error as Error).message}` });
 				throw error;
 			}
 
@@ -259,12 +259,12 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 				const tables = await resultSet.json();
 				if (Array.isArray(tables) && tables.length > 0) return;
 
-				Logger.error(`CLICKHOUSE [${this.tableName}]: ACCESS_DENIED and table does not exist. ${error.message}`);
+				Logger.error({ error, message: `CLICKHOUSE [${this.tableName}]: ACCESS_DENIED and table does not exist. ${error.message}` });
 				throw error;
 			} catch (verifyError) {
 				//
 
-				Logger.error(`CLICKHOUSE [${this.tableName}]: Failed to verify table existence after ACCESS_DENIED: ${(verifyError as Error).message}`);
+				Logger.error({ error: verifyError, message: `CLICKHOUSE [${this.tableName}]: Failed to verify table existence after ACCESS_DENIED: ${(verifyError as Error).message}` });
 				throw verifyError;
 			}
 		}

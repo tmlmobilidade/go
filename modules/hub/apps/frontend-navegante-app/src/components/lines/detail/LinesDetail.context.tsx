@@ -113,7 +113,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 				const resultData = await Promise.all(fetchPromises);
 				setDataAllPatternsState(resultData);
 			} catch (error) {
-				Logger.error('Error fetching pattern data:', error);
+				Logger.error({ error, message: 'Error fetching pattern data:' });
 			}
 		})();
 	}, [selectedLineData, stopsContext.actions, stopsContext.data.stops]);
@@ -128,7 +128,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			try {
 				const shapeUrl = API_ROUTES.hub.NETWORK_SHAPES(dataActivePatternState.shape_id);
 				const shapeData = await fetch(shapeUrl).then((response) => {
-					if (!response.ok) Logger.info(`Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}`);
+					if (!response.ok) Logger.info({ message: `Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}` });
 					else return response.json();
 				}).then(shapePayload => shapePayload?.data ?? shapePayload);
 				if (shapeData) {
@@ -142,7 +142,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 				}
 				setDataActiveShapeState(shapeData);
 			} catch (error) {
-				Logger.error('Error fetching shape data:', error);
+				Logger.error({ error, message: 'Error fetching shape data:' });
 			}
 		})();
 	}, [dataActivePatternState]);

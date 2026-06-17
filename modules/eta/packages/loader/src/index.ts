@@ -37,7 +37,7 @@ export async function loadEta(config: AppConfig) {
 		// Truncate pipeline tables (destructive; deletes tables from database)
 
 		if (config.pipelineSteps.truncatePipelineTables) {
-			Logger.info('Running 0b-truncate.sql');
+			Logger.info({ message: 'Running 0b-truncate.sql' });
 			await queryEachEtaStatementFromFile(clickhouseClient, config.database, pipelinePath('bootstrap/0b-truncate.sql'));
 		}
 
@@ -45,19 +45,19 @@ export async function loadEta(config: AppConfig) {
 		// Create tables
 
 		if (config.pipelineSteps.runDdl) {
-			Logger.info('Running 0a-ddl.sql', 1);
+			Logger.info({ message: 'Running 0a-ddl.sql' });
 			await queryEachEtaStatementFromFile(clickhouseClient, config.database, pipelinePath('bootstrap/0a-create-tables.sql'));
 
-			Logger.info('Creating Materialized Views');
+			Logger.info({ message: 'Creating Materialized Views' });
 
 			await queryEachEtaStatementFromFile(clickhouseClient, config.database, pipelinePath('bootstrap/mv-sync-curr-vehicle-events.sql'));
-			Logger.progress('Created mv-sync-curr-vehicle-events');
+			Logger.progress({ message: 'Created mv-sync-curr-vehicle-events' });
 
 			await queryEachEtaStatementFromFile(clickhouseClient, config.database, pipelinePath('bootstrap/mv-predict-node-etas.sql'));
-			Logger.progress('Created mv-predict-node-etas');
+			Logger.progress({ message: 'Created mv-predict-node-etas' });
 
 			await queryEachEtaStatementFromFile(clickhouseClient, config.database, pipelinePath('bootstrap/mv-predict-trip-stop-etas.sql'));
-			Logger.progress('Created mv-predict-trip-stop-etas', 1);
+			Logger.progress({ message: 'Created mv-predict-trip-stop-etas' });
 		}
 	}
 
@@ -86,7 +86,7 @@ export async function loadEta(config: AppConfig) {
 
 		Logger.title('2. Insert historical rides into clickhouse');
 
-		Logger.info(`Getting historical rides for date range: ${Dates.now('Europe/Lisbon').minus({ days: config.historicalDataDaysBack }).iso} → ${Dates.now('Europe/Lisbon').iso}`);
+		Logger.info({ message: `Getting historical rides for date range: ${Dates.now('Europe/Lisbon').minus({ days: config.historicalDataDaysBack }).iso} → ${Dates.now('Europe/Lisbon').iso}` });
 
 		const historicalRidesPromises = [];
 		for (let index = 0; index < config.historicalDataDaysBack; index++) {
@@ -98,7 +98,7 @@ export async function loadEta(config: AppConfig) {
 						disctictHashedShapeIds.add(ride.hashed_shape_id);
 					});
 
-					Logger.info(`Found ${historicalRides.length} historical rides`);
+					Logger.info({ message: `Found ${historicalRides.length} historical rides` });
 
 					// Insert into clickhouse, _id, trip_id, hashed_shape_id
 					await insertEtaRides(clickhouseClient, qualifiedTable(config.database, 'hist_rides'), historicalRides.map(toEtaRideRow), 'historical rides');
@@ -134,11 +134,11 @@ export async function loadEta(config: AppConfig) {
 		const historicalWindowStart = Dates.now('Europe/Lisbon').minus({ days: config.historicalDataDaysBack }).unix_timestamp;
 
 		//
-		Logger.info('Running 5a-build_hist_node_travel_times.sql query in chunks');
+		Logger.info({ message: 'Running 5a-build_hist_node_travel_times.sql query in chunks' });
 		await buildHistNodeTravelTimes(clickhouseClient, historicalWindowStart, config);
 
 		//
-		Logger.info(`Running 5b-aggregate_hist_node_travel_times.sql query`);
+		Logger.info({ message: 'Running 5b-aggregate_hist_node_travel_times.sql query' });
 		await queryEtaFromFile(clickhouseClient, config.database, pipelinePath('loader/3-aggregate_hist_node_travel_times.sql'), {
 			window_end: historicalWindowEnd,
 			window_start: historicalWindowStart,
@@ -151,7 +151,7 @@ export async function loadEta(config: AppConfig) {
 	if (config.pipelineSteps.insertCurrentWindowWaypoints) {
 		await syncCurrentWaypoints(clickhouseClient, Array.from(currentWindowDistinctHashedTrips), config);
 
-		Logger.info(`Snapping waypoints for current window`);
+		Logger.info({ message: 'Snapping waypoints for current window' });
 		await queryEtaFromFile(clickhouseClient, config.database, pipelinePath('loader/4-snap-waypoints.sql'));
 	}
 

@@ -64,7 +64,7 @@ export class RideAcceptanceController {
 		const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.id);
 
 		if (!rideAcceptanceData) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Esta viagem não ainda não tem uma aprovação.');
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride acceptance not found.');
 		}
 
 		return reply.send({

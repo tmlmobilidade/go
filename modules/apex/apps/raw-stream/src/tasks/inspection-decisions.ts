@@ -36,7 +36,7 @@ export async function processRawApexTransactionInspectionDecision(databaseOperat
 		if (!parseResult) return;
 		await writer.write(parseResult);
 	} catch (error) {
-		Logger.error(`Error transforming APEX Inspection Decision: ${databaseOperation.fullDocument.transaction.transactionId} Reason: ${error.message}`);
+		Logger.error({ message: `Error transforming APEX Inspection Decision: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
 	}
 
 	//

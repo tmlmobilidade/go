@@ -13,7 +13,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getVehiclePositionsGtfsRtProtobuf(request: FastifyRequest, reply: FastifyReply<unknown>) {
 	const raw = await apiCache.get('hub:v1:realtime:vehicles:positions:gtfs');
 	if (!raw) {
-		Logger.error('[hub/v1/realtime:getVehiclePositionsGtfsRtProtobuf()] No data in cache.');
+		Logger.error({ message: '[hub/v1/realtime:getVehiclePositionsGtfsRtProtobuf()] No data in cache.' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')

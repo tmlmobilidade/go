@@ -47,5 +47,5 @@ export async function exportStopTimesRows(planData: Plan, sqlTables: GtfsSQLTabl
 
 	await exportConfig.writers.stop_times.flush();
 
-	Logger.info('Exported stop_times.txt file.');
+	Logger.info({ message: 'Exported stop_times.txt file.' });
 }

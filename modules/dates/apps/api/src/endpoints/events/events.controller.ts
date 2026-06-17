@@ -163,7 +163,9 @@ export class EventsController {
 
 		const eventData = await events.findById(request.params.id);
 
-		if (!eventData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+		if (!eventData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+		}
 
 		//
 		// Get the resource permissions for events for the current user.
@@ -244,7 +246,9 @@ export class EventsController {
 
 		const eventData = await events.findById(request.params.id);
 
-		if (!eventData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+		if (!eventData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+		}
 
 		//
 		// Get the resource permissions for events for the current user.
@@ -276,8 +280,9 @@ export class EventsController {
 		// If authorized, toggle the lock status of the event
 		await events.toggleLockById(request.params.id);
 		const foundEvent = await events.findById(request.params.id);
-		if (!foundEvent) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
-
+		if (!foundEvent) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+		}
 		return reply.send({ data: foundEvent, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
@@ -296,7 +301,9 @@ export class EventsController {
 
 		const eventData = await events.findById(request.params.id);
 
-		if (!eventData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+		if (!eventData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
+		}
 
 		//
 		// Get the resource permissions for events for the current user.
