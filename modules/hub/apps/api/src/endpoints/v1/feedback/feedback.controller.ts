@@ -54,6 +54,8 @@ export class FeedbackController {
 		// Validate request body before accepting the submission.
 		const parsedFeedback = PublicFeedbackSchema.safeParse(request.body);
 
+		console.log('Received feedback submission:', request.body, 'Validation result:', parsedFeedback);
+
 		if (!parsedFeedback.success) {
 			return reply.code(400).send({
 				data: null,

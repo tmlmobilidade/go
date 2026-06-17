@@ -40,3 +40,61 @@
 	padding: 16px;
 	background-color: var(--color-system-background-200);
 }
+
+.thankYouMessage {
+	position: fixed;
+	right: 16px;
+	bottom: 24px;
+	left: 16px;
+	z-index: 400;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	justify-content: center;
+	width: fit-content;
+	max-width: calc(100vw - 32px);
+	min-height: 48px;
+	padding: 12px 16px;
+	margin: 0 auto;
+	font-size: 15px;
+	font-weight: var(--font-weight-bold);
+	line-height: 1.2;
+	color: var(--color-system-text-100);
+	text-align: center;
+	pointer-events: none;
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 8px;
+	box-shadow: 0 12px 32px rgb(0 0 0 / 24%);
+	animation: thankYouMessageIn 2000ms ease both;
+}
+
+.thankYouIcon {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	color: #106b42;
+	background-color: #dcfce7;
+	border-radius: 100%;
+}
+
+@keyframes thankYouMessageIn {
+	0% {
+		opacity: 0;
+		transform: translateY(8px) scale(0.98);
+	}
+
+	10%,
+	88% {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+
+	100% {
+		opacity: 0;
+		transform: translateY(4px) scale(0.98);
+	}
+}
