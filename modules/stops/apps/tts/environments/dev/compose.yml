@@ -6,7 +6,7 @@ services:
       context: ../../../../../..
       dockerfile: modules/stops/apps/tts/Dockerfile
     ports:
-      - "52013:8000"
+      - "8086:8000"
     volumes:
       - tts-audio:/app/audio
 

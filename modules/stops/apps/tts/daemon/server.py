@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from piper import PiperVoice
 
-MODEL_PATH = "models/voice.onnx"
+MODEL_PATH = "voice_models/voice.onnx"
 AUDIO_DIR = "audio"
 
 os.makedirs(AUDIO_DIR, exist_ok=True)
@@ -25,8 +25,12 @@ class TTSRequest(BaseModel):
     force: bool = False
 
 
+def normalize_stop_id(stop_id: str) -> str:
+    return stop_id.removesuffix('.mp3')
+
+
 def mp3_path_for(stop_id: str) -> str:
-    return f"{AUDIO_DIR}/{stop_id}.mp3"
+    return f"{AUDIO_DIR}/{normalize_stop_id(stop_id)}.mp3"
 
 
 @app.post("/generate")
@@ -34,9 +38,9 @@ def generate(req: TTSRequest):
     mp3_path = mp3_path_for(req.stop_id)
 
     if os.path.exists(mp3_path) and not req.force:
-        return {"generated": False, "stop_id": req.stop_id}
+        return {"generated": False, "stop_id": normalize_stop_id(req.stop_id)}
 
-    wav_path = f"{AUDIO_DIR}/{req.stop_id}.wav"
+    wav_path = f"{AUDIO_DIR}/{normalize_stop_id(req.stop_id)}.wav"
 
     try:
         sample_rate = voice.config.sample_rate
@@ -78,14 +82,16 @@ def generate(req: TTSRequest):
 
         os.remove(wav_path)
 
-        return {"generated": True, "stop_id": req.stop_id}
+        return {"generated": True, "stop_id": normalize_stop_id(req.stop_id)}
 
     except Exception as e:
         return {"error": str(e)}
 
 
 @app.get("/audio/{stop_id}")
+@app.get("/audio/{stop_id}.mp3")
 def get_audio(stop_id: str):
+    stop_id = normalize_stop_id(stop_id)
     mp3_path = mp3_path_for(stop_id)
 
     if not os.path.exists(mp3_path):
