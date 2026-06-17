@@ -38,7 +38,6 @@ export class AuthController {
 	 * Authenticate a user from a login request and create a new session.
 	 */
 	static async login(request: FastifyRequest<{ Body: LoginDto }>, reply: FastifyReply<Session>) {
-		// Validate the request body against the LoginDto schema
 		const result = LoginDtoSchema.safeParse(request.body);
 		// If validation fails, throw a bad request error
 		if (!result.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
