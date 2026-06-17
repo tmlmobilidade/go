@@ -41,7 +41,7 @@ export function parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(doc:
 		received_at: doc.received_at,
 		stop_id: '',
 		trip_id: '',
-		updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+		updated_at: Dates.now('utc').unix_timestamp,
 		validation_id: '',
 		vehicle_id: 0,
 	};

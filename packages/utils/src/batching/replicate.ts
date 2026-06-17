@@ -2,6 +2,8 @@
 
 import { Timer } from '@tmlmobilidade/timer';
 
+import { performInChunks } from './perform-in-chunks.js';
+
 /* * */
 
 interface ReplicateProps<SourceDocType> {
@@ -155,7 +157,9 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	const deleteStepTimer = new Timer();
 
 	if (extraDocumentIds.length > 0 && deleteDestinationDbFn) {
-		await deleteDestinationDbFn(extraDocumentIds);
+		performInChunks(extraDocumentIds, async (chunk) => {
+			await deleteDestinationDbFn(chunk);
+		}, 1_000);
 		console.info(`Deleted ${extraDocumentIds.length} extra documents in the Destination database. (${deleteStepTimer.get()})`);
 	}
 
