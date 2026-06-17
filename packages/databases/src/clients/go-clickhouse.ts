@@ -53,10 +53,16 @@ export class GOClickHouseClient {
 		const connectionString = await this.getConnectionString();
 		this.client = createClient({
 			clickhouse_settings: {
+				async_insert: 1,
 				connect_timeout: 360 * 1000,
 				http_receive_timeout: 360 * 1000,
 				http_send_timeout: 360 * 1000,
-				max_execution_time: 360 * 1000,
+				max_execution_time: 360,
+				wait_for_async_insert: 0,
+			},
+			compression: {
+				request: true,
+				response: true,
 			},
 			keep_alive: { enabled: false },
 			log: {
