@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY modules/stops/apps/tts/daemon/ .
+COPY modules/stops/apps/tts/voice_models/ models/
 
 CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]

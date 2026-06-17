@@ -113,3 +113,20 @@ services:
         max-file: '1'
     env_file:
       - ./secrets/.env
+
+  # # # # # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # # # #
+
+  tts:
+    image: ghcr.io/tmlmobilidade/go-stops-tts:staging
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+      resources:
+        limits:
+          memory: 1gb
+    logging:
+      options:
+        max-size: '1m'
+        max-file: '1'
