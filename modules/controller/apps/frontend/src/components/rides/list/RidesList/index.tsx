@@ -104,7 +104,7 @@ export function RidesList() {
 				/>
 			),
 			title: t('default:list.RidesList.columns.start_time_observed.label'),
-			width: 180,
+			width: 230,
 		},
 		{
 			accessor: 'end_time_scheduled',
@@ -124,7 +124,7 @@ export function RidesList() {
 				)
 				: null,
 			title: t('default:list.RidesList.columns.end_time_observed.label'),
-			width: 180,
+			width: 230,
 		},
 
 		{
