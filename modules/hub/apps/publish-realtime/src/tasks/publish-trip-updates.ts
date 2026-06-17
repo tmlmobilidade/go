@@ -70,7 +70,7 @@ export async function publishTripUpdates() {
 
 	const clickhouseTimer = new Timer();
 
-	Logger.info(`Retrieving Estimated Time of Arrivals from ClickHouse...`);
+	Logger.info({ message: `Retrieving Estimated Time of Arrivals from ClickHouse...` });
 
 	const clickhouseClient = await GOClickHouseClient.getClient();
 
@@ -93,24 +93,24 @@ export async function publishTripUpdates() {
 		feedResult.entity.push({ id: row.trip_id, trip_update: tripUpdate });
 	});
 
-	Logger.info(`Found ${allTripUpdates.length} trip updates in ${clickhouseTimer.get()}`, 1);
+	Logger.info({ message: `Found ${allTripUpdates.length} trip updates in ${clickhouseTimer.get()}`, spacesAfterOrBefore: 1 });
 
 	//
 	// CP Trip Updates (Already in GTFS-RT format)
 
-	// Logger.info(`Retrieving Estimated Time of Arrivals from CP API...`);
+	// Logger.info({ message: `Retrieving Estimated Time of Arrivals from CP API...` });
 	// const cpTrips = await externalClients.cp.tripUpdates();
 
 	// feed.entity.push(...cpTrips.entity.map(entity => ({
 	// 	id: entity.id,
 	// 	trip_update: entity.trip_update,
 	// })));
-	// Logger.info(`Found ${cpTrips.entity.length} CP trips`, 1);
+	// Logger.info({ message: `Found ${cpTrips.entity.length} CP trips` }, 1);
 
 	//
 	// Mobi Trip Updates (Already in GTFS-RT format)
 
-	// Logger.info(`Retrieving Estimated Time of Arrivals from Mobi API...`);
+	// Logger.info({ message: `Retrieving Estimated Time of Arrivals from Mobi API...` });
 	// const mobiTrips = await externalClients.mobi.tripUpdates();
 
 	// feed.entity.push(...mobiTrips.entity.map(entity => ({
@@ -124,7 +124,7 @@ export async function publishTripUpdates() {
 
 	const mlTimer = new Timer();
 
-	Logger.info(`Retrieving Estimated Time of Arrivals from ML API...`);
+	Logger.info({ message: `Retrieving Estimated Time of Arrivals from ML API...` });
 
 	const mlTrips = await externalClients.ml.tripUpdates();
 
@@ -147,7 +147,7 @@ export async function publishTripUpdates() {
 		feedResult.entity.push(entity);
 	});
 
-	Logger.info(`Found ${mlTrips.entity.length} ML trips in ${mlTimer.get()}`, 1);
+	Logger.info({ message: `Found ${mlTrips.entity.length} ML trips in ${mlTimer.get()}`, spacesAfterOrBefore: 1 });
 
 	//
 	// Save the result in API Cache

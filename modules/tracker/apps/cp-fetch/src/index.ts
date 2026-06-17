@@ -25,7 +25,7 @@ const main = async () => {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'cp-fetch', message: 'Sentry Tracker CP Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Tracker CP Fetch', error);
+		Logger.error({ error, message: 'Error initializing Sentry Tracker CP Fetch' });
 	}
 
 	//
@@ -37,11 +37,11 @@ const main = async () => {
 	//
 	// Fetch the CP Vehicle Events data from API and decode it.
 
-	Logger.info(`[${ITERATION}] Fetching CP data from API...`, 0, 1);
+	Logger.info({ message: `[${ITERATION}] Fetching CP data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.cp.vehiclePositions();
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CP data.`);
+	Logger.info({ message: `[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CP data.` });
 
 	//
 	// Transform each message into RawVehicleEvent and persist new ones.
@@ -110,7 +110,7 @@ const main = async () => {
 		saveCount++;
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from CP data in ${timer.get()}.`);
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from CP data in ${timer.get()}.` });
 
 	ITERATION++;
 

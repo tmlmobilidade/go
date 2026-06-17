@@ -20,7 +20,7 @@ export async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'publish-network', message: 'Sentry Hub Publish Network initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Hub Publish Network', error);
+		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Network' });
 	}
 
 	//
@@ -30,7 +30,7 @@ export async function main() {
 
 	const globalTimer = new Timer();
 
-	Logger.info(`Starting publish schedules process...`);
+	Logger.info({ message: `Starting publish schedules process...` });
 
 	//
 	// Set up the import config

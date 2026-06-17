@@ -24,15 +24,15 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'gtfs-importer', message: 'Sentry Offer GTFS Importer initialized', module: 'offer', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Offer GTFS Importer', error);
+		Logger.error({ error, message: 'Error initializing Sentry Offer GTFS Importer' });
 	}
 
 	//
 	// A. Start / log input
 
-	Logger.info('[gtfs-importer] Starting lines/routes import', {
-		gtfsPath: options.gtfsPath,
-	});
+	// Logger.info('[gtfs-importer] Starting lines/routes import', {
+	// 	gtfsPath: options.gtfsPath,
+	// });
 
 	//
 	// B. Build import context (GTFS data + indexes)
@@ -100,15 +100,15 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		const lineInput = buildLineFromRoute(primaryRoute, agencyId, typologyMap, primaryRoute.route_color, interchangeMode);
 		lineCodesInGtfs.add(lineInput.code);
 
-		Logger.info('[gtfs-importer] Processing line', {
-			agency_id: agencyId,
-			line_code: lineCodeKey,
-			line_id: primaryRoute.line_id,
-			line_long_name: primaryRoute.line_long_name,
-			line_short_name: primaryRoute.line_short_name,
-			resolved_line_code: lineInput.code,
-			typology_id: lineInput.typology,
-		});
+		// Logger.info('[gtfs-importer] Processing line', {
+		// 	agency_id: agencyId,
+		// 	line_code: lineCodeKey,
+		// 	line_id: primaryRoute.line_id,
+		// 	line_long_name: primaryRoute.line_long_name,
+		// 	line_short_name: primaryRoute.line_short_name,
+		// 	resolved_line_code: lineInput.code,
+		// 	typology_id: lineInput.typology,
+		// });
 
 		//
 		// E.1 Insert line
@@ -116,10 +116,10 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		const lineDoc = await lines.insertOne(lineInput);
 		linesCreated += 1;
 		const lineId = lineDoc._id;
-		Logger.info('[gtfs-importer] Line created', {
-			code: lineInput.code,
-			line_id: lineDoc._id,
-		});
+		// Logger.info('[gtfs-importer] Line created', {
+		// 	code: lineInput.code,
+		// 	line_id: lineDoc._id,
+		// });
 
 		const lineCode = lineInput.code;
 		const lineName = lineInput.name;
@@ -137,10 +137,10 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 			const routeDoc = await routes.insertOne(routeInput);
 			routesCreated += 1;
 			routeDocsByCode.set(routeInput.code, { _id: routeDoc._id });
-			Logger.info('[gtfs-importer] Route created', {
-				code: routeInput.code,
-				line_id: lineId,
-			});
+			// Logger.info('[gtfs-importer] Route created', {
+			// 	code: routeInput.code,
+			// 	line_id: lineId,
+			// });
 		}
 
 		//
@@ -198,14 +198,14 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		}
 	}
 
-	Logger.info('[gtfs-importer] Import finished', {
-		linesCreated,
-		linesInGtfs: lineCodesInGtfs.size,
-		patternsCreated,
-		patternsInGtfs,
-		routesCreated,
-		routesInGtfs,
-	});
+	// Logger.info('[gtfs-importer] Import finished', {
+	// 	linesCreated,
+	// 	linesInGtfs: lineCodesInGtfs.size,
+	// 	patternsCreated,
+	// 	patternsInGtfs,
+	// 	routesCreated,
+	// 	routesInGtfs,
+	// });
 
 	printWarningSummary();
 

@@ -50,7 +50,7 @@ export async function processor() {
 		await processAgencies();
 		await processRides();
 	} catch (error) {
-		Logger.error('Error processing.', error);
+		Logger.error({ error, message: 'Error processing.' });
 		throw new Error('✖︎ Error processing rides.');
 	}
 }
@@ -58,7 +58,7 @@ export async function processor() {
 async function processRides() {
 	//
 
-	Logger.info('Processing Rides...');
+	Logger.info({ message: 'Processing Rides...' });
 	const timer = new Timer();
 
 	const hashedShapesIds = new IndexedValues<string>();
@@ -116,14 +116,14 @@ async function processRides() {
 		});
 
 		if (totalRides % 10000 === 0) {
-			Logger.info(`Processed ${totalRides} rides so far...`);
+			Logger.info({ message: `Processed ${totalRides} rides so far...` });
 		}
 	}
 
 	// Flush the rides table to ensure all buffered writes are persisted
 	GLOBAL_CONTEXT.tables.rides.flush();
 
-	Logger.info(`Processed ${totalRides} Rides in ${timer.get()}.`);
+	Logger.info({ message: `Processed ${totalRides} Rides in ${timer.get()}.` });
 
 	await Promise.all([
 		processHashedTrips(hashedTripsIds).then(stopIds => processStops(stopIds)),
@@ -134,7 +134,7 @@ async function processRides() {
 async function processHashedTrips(hashedTripsIds: IndexedValues<string>): Promise<Set<string>> {
 	try {
 		//
-		Logger.info('Processing Hashed Trips...');
+		Logger.info({ message: 'Processing Hashed Trips...' });
 		const hashedTripsTimer = new Timer();
 
 		const stopIds = new Set<string>();
@@ -170,11 +170,11 @@ async function processHashedTrips(hashedTripsIds: IndexedValues<string>): Promis
 
 		GLOBAL_CONTEXT.tables.hashed_trips.flush();
 
-		Logger.info(`Processed ${totalHashedTrips} Hashed Trips in ${hashedTripsTimer.get()}.`);
+		Logger.info({ message: `Processed ${totalHashedTrips} Hashed Trips in ${hashedTripsTimer.get()}.` });
 
 		return stopIds;
 	} catch (error) {
-		Logger.error('Error processing Hashed Trips.', error); ;
+		Logger.error({ error, message: 'Error processing Hashed Trips.' }); ;
 		throw new Error('✖︎ Error processing Hashed Trips.');
 	}
 }
@@ -183,7 +183,7 @@ async function processHashedShapes(hashedShapesIds: IndexedValues<string>) {
 	try {
 		//
 
-		Logger.info('Processing Hashed Shapes...');
+		Logger.info({ message: 'Processing Hashed Shapes...' });
 		const hashedShapesTimer = new Timer();
 
 		const hashedShapesCollection = await hashedShapes.getCollection();
@@ -218,9 +218,9 @@ async function processHashedShapes(hashedShapesIds: IndexedValues<string>) {
 
 		GLOBAL_CONTEXT.tables.shapes.flush();
 
-		Logger.info(`Processed ${totalHashedShapes} Hashed Shapes in ${hashedShapesTimer.get()}.`);
+		Logger.info({ message: `Processed ${totalHashedShapes} Hashed Shapes in ${hashedShapesTimer.get()}.` });
 	} catch (error) {
-		Logger.error('Error processing Hashed Shapes.', error);
+		Logger.error({ error, message: 'Error processing Hashed Shapes.' });
 		throw new Error('✖︎ Error processing Hashed Shapes.');
 	}
 }
@@ -229,7 +229,7 @@ async function processAgencies() {
 	try {
 		//
 
-		Logger.info('Processing Agencies...');
+		Logger.info({ message: 'Processing Agencies...' });
 		const agenciesTimer = new Timer();
 
 		const allAgencies = await agencies.findOne({ _id: GLOBAL_CONTEXT.configs.agency_id });
@@ -243,9 +243,9 @@ async function processAgencies() {
 		GLOBAL_CONTEXT.tables.agencies.write(drtAgency);
 		GLOBAL_CONTEXT.tables.agencies.flush();
 
-		Logger.info(`Processed 1 Agency in ${agenciesTimer.get()}.`);
+		Logger.info({ message: `Processed 1 Agency in ${agenciesTimer.get()}.` });
 	} catch (error) {
-		Logger.error('Error processing Agencies.', error);
+		Logger.error({ error, message: 'Error processing Agencies.' });
 		throw new Error('✖︎ Error processing Agencies.');
 	}
 }
@@ -255,7 +255,7 @@ async function processStops(stopIds: Set<string>) {
 		//
 
 		//
-		Logger.info('Processing Stops...');
+		Logger.info({ message: 'Processing Stops...' });
 		const stopsTimer = new Timer();
 
 		//
@@ -288,9 +288,9 @@ async function processStops(stopIds: Set<string>) {
 		}
 		GLOBAL_CONTEXT.tables.stops.flush();
 
-		Logger.info(`Processed ${totalStops} Stops in ${stopsTimer.get()}.`);
+		Logger.info({ message: `Processed ${totalStops} Stops in ${stopsTimer.get()}.` });
 	} catch (error) {
-		Logger.error('Error processing Stops.', error);
+		Logger.error({ error, message: 'Error processing Stops.' });
 		throw new Error('✖︎ Error processing Stops.');
 	}
 }

@@ -21,7 +21,7 @@ await (async function init() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'stream', message: 'Sentry Replicator Stream initialized', module: 'replicator', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Replicator Stream', error);
+		Logger.error({ error, message: 'Error initializing Sentry Replicator Stream' });
 	}
 
 	//

@@ -25,7 +25,7 @@ async function syncApexLocations() {
 			await initSentryNode();
 			Logger.startNodeLogs({ app: 'sync-apex-locations', message: 'Sentry Replicator Sync Apex Locations initialized', module: 'replicator', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Replicator Sync Apex Locations', error);
+			Logger.error({ error, message: 'Error initializing Sentry Replicator Sync Apex Locations' });
 		}
 
 		//
@@ -119,11 +119,11 @@ async function syncApexLocations() {
 						{ returnResults: false },
 					);
 
-					Logger.info(`Flush [simplified_apex_locations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+					Logger.info({ message: `Flush [simplified_apex_locations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})` });
 
 					//
 				} catch (error) {
-					Logger.error('Error in flushCallback', error);
+					Logger.error({ error, message: 'Error in flushCallback' });
 				}
 			};
 

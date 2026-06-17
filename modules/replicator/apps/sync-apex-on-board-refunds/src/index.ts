@@ -25,7 +25,7 @@ async function syncApexOnBoardRefunds() {
 			await initSentryNode();
 			Logger.startNodeLogs({ app: 'sync-apex-on-board-refunds', message: 'Sentry Replicator Sync Apex On Board Refunds initialized', module: 'replicator', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Replicator Sync Apex On Board Refunds', error);
+			Logger.error({ error, message: 'Error initializing Sentry Replicator Sync Apex On Board Refunds' });
 		}
 
 		//
@@ -119,11 +119,11 @@ async function syncApexOnBoardRefunds() {
 						{ returnResults: false },
 					);
 
-					Logger.info(`Flush [apex_on_board_refunds]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+					Logger.info({ message: `Flush [apex_on_board_refunds]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})` });
 
 					//
 				} catch (error) {
-					Logger.error('Error in flushCallback', error);
+					Logger.error({ error, message: 'Error in flushCallback' });
 				}
 			};
 

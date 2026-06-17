@@ -3,7 +3,6 @@
 import { transformMarkdownToWikiArticle } from '@/utils/transform-md-to-wiki.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { Logger } from '@tmlmobilidade/logger';
 import { type WikiArticle } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { dirname, resolve } from 'path';

@@ -29,7 +29,7 @@ export async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'cleaner', message: 'Sentry ETA Cleaner initialized', module: 'eta', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry ETA Cleaner', error);
+		Logger.error({ error, message: 'Error initializing Sentry ETA Cleaner' });
 	}
 
 	//
@@ -70,7 +70,7 @@ export async function main() {
 	if (AppConfig.pipelineSteps.cleanupHistoricalRides) {
 		//
 
-		Logger.info(`Getting historical rides for date range: ${Dates.now('Europe/Lisbon').minus({ days: AppConfig.historicalDataDaysBack }).iso} → ${Dates.now('Europe/Lisbon').iso}`);
+		Logger.info({ message: `Getting historical rides for date range: ${Dates.now('Europe/Lisbon').minus({ days: AppConfig.historicalDataDaysBack }).iso} → ${Dates.now('Europe/Lisbon').iso}` });
 
 		// Fetch the same per-day windows the loader inserts so we can
 		// determine which hist_rides are still considered in-window.
@@ -81,7 +81,7 @@ export async function main() {
 				keepRideIds.push(ride._id);
 			}
 		}
-		Logger.info(`Found ${keepRideIds.length} historical rides in current window`);
+		Logger.info({ message: `Found ${keepRideIds.length} historical rides in current window` });
 
 		await cleanupHistoricalRides(clickhouseClient, keepRideIds);
 	}

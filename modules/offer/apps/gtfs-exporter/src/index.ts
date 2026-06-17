@@ -106,7 +106,7 @@ async function processExport(fileExport: FileExport) {
 
 		Logger.success(`GTFS export ${fileExport._id} completed.`);
 	} catch (error) {
-		Logger.error(`Error processing GTFS export ${fileExport._id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		Logger.error({ error, message: `Error processing GTFS export ${fileExport._id}` });
 		await fileExports.updateById(fileExport._id, { processing_status: 'error' });
 	} finally {
 		// Cleanup working directory
@@ -126,7 +126,7 @@ async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'gtfs-exporter', message: 'Sentry GTFS Exporter initialized', module: 'offer', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry GTFS Exporter', error);
+		Logger.error({ error, message: 'Error initializing Sentry GTFS Exporter' });
 	}
 
 	//
@@ -138,7 +138,7 @@ async function main() {
 		type: 'gtfs',
 	});
 
-	Logger.info(`Found ${waitingExports.length} waiting GTFS exports.`);
+	Logger.info({ message: `Found ${waitingExports.length} waiting GTFS exports.` });
 
 	for (const fileExport of waitingExports) {
 		await processExport(fileExport);

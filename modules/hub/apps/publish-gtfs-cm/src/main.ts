@@ -46,7 +46,7 @@ export async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'publish-gtfs-cm', message: 'Sentry Hub Publish GTFS CM initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Hub Publish GTFS CM', error);
+		Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS CM' });
 	}
 
 	//
@@ -100,7 +100,7 @@ export async function main() {
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
-	Logger.info(`Found ${allPlansData.length} Plans to process...`);
+	Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
 
 	//
 	// Hash the allPlansData response and check if it differs
@@ -136,7 +136,7 @@ export async function main() {
 
 			const planTimer = new Timer();
 
-			Logger.info(`[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}`);
+			Logger.info({ message: `[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}` });
 
 			//
 			// Validate the Plan data before processing.
@@ -148,7 +148,7 @@ export async function main() {
 
 			if (!isValidPlan) {
 				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'skipped', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
-				Logger.info(`Skipped plan ${planData._id} as it was ineligible for processing.`);
+				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
 				continue;
 			}
 
@@ -229,7 +229,7 @@ export async function main() {
 				}
 			}
 
-			Logger.info(`Added route references for plan ${planData._id}.`);
+			Logger.info({ message: `Added route references for plan ${planData._id}.` });
 
 			//
 			// Add the plan's referenced agency ID and farthest
@@ -265,7 +265,7 @@ export async function main() {
 			//
 		} catch (error) {
 			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'error', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
-			Logger.error(`Error processing plan ${planData._id}`, error);
+			Logger.error({ error, message: `Error processing plan ${planData._id}` });
 			Logger.divider();
 		}
 	}

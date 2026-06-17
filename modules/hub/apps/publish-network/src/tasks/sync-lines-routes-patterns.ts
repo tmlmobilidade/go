@@ -64,7 +64,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	// Get all distinct Pattern IDs from trips table
 	const allDistinctPatternIds = importedGtfsSql.trips.distinct('pattern_id');
 
-	Logger.info(`Fetched ${allDistinctPatternIds.length} rows from GTFS (${fetchRawDataTimer.get()})`);
+	Logger.info({ message: `Fetched ${allDistinctPatternIds.length} rows from GTFS (${fetchRawDataTimer.get()})` });
 
 	//
 	// For each distinct pattern_id, parse trips into patterns and schedules.
@@ -146,7 +146,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 				const stopParsedData: HubStop = allStopsParsedMap.get(Number(stopTimeRawData.stop_id));
 				if (!stopParsedData) {
-					Logger.error(`Stop not found: ${stopTimeRawData.stop_id}`);
+					Logger.error({ message: `Stop not found: ${stopTimeRawData.stop_id}` });
 					continue;
 				}
 
@@ -465,39 +465,39 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 		// await SERVERDB.set(SERVERDB_KEYS.NETWORK.PATTERNS.ID(patternId), JSON.stringify(finalizedPatternGroupsData));
 		updatedPatternKeys.add(`hub:network:patterns:${patternId}`);
 
-		// Logger.info(`Updated pattern_id "${patternId}" (${intraPatternTimer.get()})`);
+		// Logger.info({ message: `Updated pattern_id "${patternId}" (${intraPatternTimer.get()})` });
 
 		//
 	}
 
-	Logger.info(`Updated ${updatedPatternKeys.size} Patterns (${processPatternsTimer.get()})`);
+	Logger.info({ message: `Updated ${updatedPatternKeys.size} Patterns (${processPatternsTimer.get()})` });
 
 	//
 	// Delete stale patterns
 
 	const removeStalePatternsTimer = new Timer();
 
-	Logger.info(`Removing stale Patterns from cache...`);
+	Logger.info({ message: `Removing stale Patterns from cache...` });
 
 	const allPatternKeysInTheDatabase = await apiCache.scan(`hub:network:patterns:*`);
 	const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedPatternKeys.has(key));
 	if (stalePatternKeys.length) await apiCache.deleteMany(stalePatternKeys);
 
-	Logger.info(`Deleted ${stalePatternKeys.length} stale Patterns (${removeStalePatternsTimer.get()})`);
+	Logger.info({ message: `Deleted ${stalePatternKeys.length} stale Patterns (${removeStalePatternsTimer.get()})` });
 
 	//
 	// Save all routes to the database
 
 	const finalizedAllRoutesData: HubRoute[] = Array.from(allRoutesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
 	await apiCache.set('hub:v1:network:routes', JSON.stringify(finalizedAllRoutesData));
-	Logger.info(`Updated ${finalizedAllRoutesData.length} Routes`);
+	Logger.info({ message: `Updated ${finalizedAllRoutesData.length} Routes` });
 
 	//
 	// Save all lines to the database
 
 	const finalizedAllLinesData: HubLine[] = Array.from(allLinesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
 	await apiCache.set('hub:v1:network:lines', JSON.stringify(finalizedAllLinesData));
-	Logger.info(`Updated ${finalizedAllLinesData.length} Lines`);
+	Logger.info({ message: `Updated ${finalizedAllLinesData.length} Lines` });
 
 	//
 

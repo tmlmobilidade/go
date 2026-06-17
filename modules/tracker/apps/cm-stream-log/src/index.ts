@@ -16,7 +16,7 @@ import { initSentryNode } from '@tmlmobilidade/logger';
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'cm-stream-log', message: 'Sentry Tracker CM Stream Log initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Tracker CM Stream Log', error);
+		Logger.error({ error, message: 'Error initializing Sentry Tracker CM Stream Log' });
 	}
 
 	//

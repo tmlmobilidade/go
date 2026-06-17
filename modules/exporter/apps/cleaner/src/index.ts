@@ -19,7 +19,7 @@ async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'cleaner', message: 'Sentry Exporter Cleaner initialized', module: 'exporter', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Exporter Cleaner', error);
+		Logger.error({ error, message: 'Error initializing Sentry Exporter Cleaner' });
 	}
 
 	//

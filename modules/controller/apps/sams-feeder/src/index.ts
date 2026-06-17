@@ -20,10 +20,9 @@ async function main() {
 
 		try {
 			await initSentryNode();
-			Logger.info('');
 			Logger.startNodeLogs({ app: 'sams-feeder', message: 'Sentry Sams Feeder initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Sams Feeder', error);
+			Logger.error({ error, message: 'Error initializing Sentry Sams Feeder' });
 		}
 
 		//
@@ -60,7 +59,7 @@ async function main() {
 		/* * */
 		/* SIMPLIFIED APEX LOCATIONS */
 
-		Logger.info('Adding SAMs from Simplified APEX Locations...');
+		Logger.info({ message: 'Adding SAMs from Simplified APEX Locations...' });
 
 		const samsForLocationsTimer = new Timer();
 
@@ -75,7 +74,7 @@ async function main() {
 			const itemData = item as AggregationResultItem;
 			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				Logger.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				Logger.error({ message: `Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"` });
 				continue;
 			}
 			// Skip if the SAM already exists
@@ -94,7 +93,7 @@ async function main() {
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD REFUNDS */
 
-		Logger.info('Adding SAMs from Simplified APEX On Board Refunds...');
+		Logger.info({ message: 'Adding SAMs from Simplified APEX On Board Refunds...' });
 
 		const samsForOnBoardRefundsTimer = new Timer();
 
@@ -109,7 +108,7 @@ async function main() {
 			const itemData = item as AggregationResultItem;
 			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				Logger.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				Logger.error({ message: `Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"` });
 				continue;
 			}
 			// Skip if the SAM already exists
@@ -128,7 +127,7 @@ async function main() {
 		/* * */
 		/* SIMPLIFIED APEX ON BOARD SALES */
 
-		Logger.info('Adding SAMs from Simplified APEX On Board Sales...');
+		Logger.info({ message: 'Adding SAMs from Simplified APEX On Board Sales...' });
 
 		const samsForOnBoardSalesTimer = new Timer();
 
@@ -143,7 +142,7 @@ async function main() {
 			const itemData = item as AggregationResultItem;
 			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				Logger.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				Logger.error({ message: `Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"` });
 				continue;
 			}
 			// Skip if the SAM already exists
@@ -162,7 +161,7 @@ async function main() {
 		/* * */
 		/* SIMPLIFIED APEX VALIDATIONS */
 
-		Logger.info('Adding SAMs from Simplified APEX Validations...');
+		Logger.info({ message: 'Adding SAMs from Simplified APEX Validations...' });
 
 		const samsForValidationsTimer = new Timer();
 
@@ -177,7 +176,7 @@ async function main() {
 			const itemData = item as AggregationResultItem;
 			// Validate if the SAM Serial Number is a number
 			if (typeof itemData.mac_sam_serial_number !== 'number') {
-				Logger.error(`Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"`);
+				Logger.error({ message: `Expected a number for SAM Serial Number: "${itemData.mac_sam_serial_number}"` });
 				continue;
 			}
 			// Skip if the SAM already exists
@@ -199,8 +198,8 @@ async function main() {
 
 		//
 	} catch (error) {
-		Logger.error('An error occurred. Halting execution.', error);
-		Logger.error('Retrying in 10 seconds...');
+		Logger.error({ error, message: 'An error occurred. Halting execution.' });
+		Logger.error({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

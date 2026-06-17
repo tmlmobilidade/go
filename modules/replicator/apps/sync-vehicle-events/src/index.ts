@@ -25,7 +25,7 @@ async function syncVehicleEvents() {
 			await initSentryNode();
 			Logger.startNodeLogs({ app: 'sync-vehicle-events', message: 'Sentry Replicator Sync Vehicle Events initialized', module: 'replicator', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Replicator Sync Vehicle Events', error);
+			Logger.error({ error, message: 'Error initializing Sentry Replicator Sync Vehicle Events' });
 		}
 
 		//
@@ -118,11 +118,11 @@ async function syncVehicleEvents() {
 						{ returnResults: false },
 					);
 
-					Logger.info(`Flush [simplified_vehicle_events]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+					Logger.info({ message: `Flush [simplified_vehicle_events]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})` });
 
 					//
 				} catch (error) {
-					Logger.error('Error in flushCallback', error);
+					Logger.error({ error, message: 'Error in flushCallback' });
 				}
 			};
 

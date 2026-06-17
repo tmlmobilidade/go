@@ -3,7 +3,6 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { buildSamsMatch, sams, samsAnalysisExportAggregationPipeline, samsApexVersionsAggregationPipeline, samsBatchAggregationPipeline, samsBatchBaseAggregationPipeline, samsByIdAggregationPipeline, samsByIdsListViewAggregationPipeline } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { ActionsOf, type GetSamsBatchQuery, GetSamsBatchQuerySchema, Permission, PermissionCatalog, type Sam, type SamAnalysis, type SamListItem, withTimelineMonthGapFlags } from '@tmlmobilidade/types';
 
 /* * */

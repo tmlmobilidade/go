@@ -17,7 +17,7 @@ await (async function init() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Coordinator', error);
+		Logger.error({ error, message: 'Error initializing Sentry Coordinator' });
 	}
 
 	//
@@ -38,7 +38,7 @@ await (async function init() {
 			console.log(err);
 			process.exit(1);
 		}
-		Logger.info(`Server listening at ${address}`);
+		Logger.info({ message: `Server listening at ${address}` });
 	});
 
 	//

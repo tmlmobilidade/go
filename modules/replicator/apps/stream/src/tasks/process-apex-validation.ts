@@ -27,7 +27,7 @@ export async function processApexValidation(databaseOperation) {
 	// Only insert operations are expected to occur in this PCGIDB collection.
 
 	if (databaseOperation.operationType !== 'insert') {
-		Logger.error(`WARNING: processApexValidation with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"`);
+		Logger.error({ message: `WARNING: processApexValidation with operationType != "insert": [${databaseOperation.fullDocument.transaction.operatorLongID}] type="${databaseOperation.operationType}" transactionId="${databaseOperation.fullDocument.transaction.transactionId}"` });
 	}
 
 	//
@@ -38,7 +38,7 @@ export async function processApexValidation(databaseOperation) {
 	const newSimplifiedApexValidationDocument = parseSimplifiedApexValidation(databaseOperation.fullDocument);
 
 	if (!newSimplifiedApexValidationDocument) {
-		Logger.error(`Invalid APEX Validation document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}`);
+		Logger.error({ message: `Invalid APEX Validation document, skipping operation: ${databaseOperation.fullDocument.transaction.transactionId}` });
 		return;
 	}
 
@@ -68,11 +68,11 @@ export async function processApexValidation(databaseOperation) {
 
 			const updateRidesResult = await rides.updateMany({ $or: updateRidesOps }, { system_status: 'waiting' }, { returnResults: false });
 
-			Logger.info(`Flush [simplified_apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+			Logger.info({ message: `Flush [simplified_apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})` });
 
 			//
 		} catch (error) {
-			Logger.error('Error in flushCallback', error);
+			Logger.error({ error, message: 'Error in flushCallback' });
 		}
 	};
 

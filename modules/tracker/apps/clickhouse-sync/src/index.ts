@@ -19,7 +19,7 @@ async function main() {
 			await initSentryNode();
 			Logger.startNodeLogs({ app: 'clickhouse-sync', message: 'Sentry Tracker Clickhouse Sync initialized', module: 'tracker', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Tracker Clickhouse Sync', error);
+			Logger.error({ error, message: 'Error initializing Sentry Tracker Clickhouse Sync' });
 		}
 
 		//
@@ -49,7 +49,7 @@ async function main() {
 
 		//
 	} catch (err) {
-		Logger.error('An error occurred while syncing clickhouse data.', err as Error);
+		Logger.error({ error: err as Error, message: 'An error occurred while syncing clickhouse data.' });
 		throw err;
 	}
 }

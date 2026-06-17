@@ -6,7 +6,6 @@ import { createImportedStopResolver } from '@/utils/stops.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { lines, patterns, stops } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, PopulatedPath, PopulatedPattern, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
@@ -24,13 +23,6 @@ export class PatternsController {
 		const patternData = await patterns.findById(request.params.id);
 
 		if (!patternData) {
-			Logger.issue('error', new Error('Pattern not found'), {
-				action: 'comment',
-				feature: 'patterns',
-				request,
-				statusCode: HTTP_STATUS.NOT_FOUND,
-				value: request.params.id,
-			});
 			return reply.status(HTTP_STATUS.NOT_FOUND).send({
 				data: null,
 				error: 'Pattern not found.',
@@ -69,14 +61,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create patterns');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'patterns',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create patterns');
 		}
 
 		//
@@ -111,14 +96,7 @@ export class PatternsController {
 		const pattern = await patterns.findById(id);
 
 		if (!pattern) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
 
 		//
@@ -130,14 +108,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete patterns');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete patterns');
 		}
 
 		//
@@ -161,14 +132,7 @@ export class PatternsController {
 		const patternData: null | Pattern = await patterns.findById(request.params.id);
 
 		if (!patternData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
 
 		const merged = await mergePatternWithEventRules(patternData);
@@ -182,14 +146,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read patterns');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read patterns');
 		}
 
 		//
@@ -247,14 +204,7 @@ export class PatternsController {
 		// If pattern does not exist, throw error
 
 		if (!patternData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
-			Logger.issue('error', error, {
-				action: 'importFromGtfs',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
 
 		//
@@ -266,14 +216,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update patterns');
-			Logger.issue('error', error, {
-				action: 'importFromGtfs',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update patterns');
 		}
 
 		//
@@ -282,14 +225,7 @@ export class PatternsController {
 		const lineData = await lines.findById(patternData.line_id);
 
 		if (!lineData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found for pattern');
-			Logger.issue('error', error, {
-				action: 'importFromGtfs',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found for pattern');
 		}
 
 		const agencyId = lineData.agency_id;
@@ -317,12 +253,6 @@ export class PatternsController {
 
 			if (!associatedStop) {
 				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, `The stop "${pathItem.stop_id}" does not exist`);
-				Logger.issue('error', error, {
-					action: 'importFromGtfs',
-					feature: 'patterns',
-					request,
-					value: request.params.id,
-				});
 				throw error;
 			}
 
@@ -408,14 +338,7 @@ export class PatternsController {
 		const patternData = await patterns.findById(request.params.id);
 
 		if (!patternData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
 
 		//
@@ -427,28 +350,14 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock patterns');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock patterns');
 		}
 
 		// If authorized, toggle the lock status of the pattern
 		await patterns.toggleLockById(request.params.id);
 		const foundPattern = await patterns.findById(request.params.id);
 		if (!foundPattern) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
 
 		return reply.send({ data: foundPattern, error: null, statusCode: HTTP_STATUS.OK });
@@ -470,14 +379,7 @@ export class PatternsController {
 		const patternData = await patterns.findById(request.params.id);
 
 		if (!patternData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
 
 		//
@@ -489,14 +391,7 @@ export class PatternsController {
 		// If no permission found, deny access
 
 		if (!userPatternPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update patterns');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'patterns',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update patterns');
 		}
 
 		const sanitizedBody = UpdatePatternSchema.parse(request.body);

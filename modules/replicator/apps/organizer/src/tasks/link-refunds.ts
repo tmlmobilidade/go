@@ -20,7 +20,7 @@ export async function linkRefundsToSalesToValidations() {
 		//
 
 		Logger.init();
-		Logger.info('Linking Refunds to Sales and Validations...');
+		Logger.info({ message: 'Linking Refunds to Sales and Validations...' });
 
 		const globalTimer = new Timer();
 
@@ -43,7 +43,7 @@ export async function linkRefundsToSalesToValidations() {
 
 		for await (const onBoardRefund of unlinkedOnBoardRefundsBatch) {
 			totalUnlinkedOnBoardRefunds++;
-			if (totalUnlinkedOnBoardRefunds % 10000 === 0) Logger.info(`Gone through ${totalUnlinkedOnBoardRefunds} Refunds so far and linked ${totalLinkedOnBoardRefunds} of them to Sales and Validations.`);
+			if (totalUnlinkedOnBoardRefunds % 10000 === 0) Logger.info({ message: `Gone through ${totalUnlinkedOnBoardRefunds} Refunds so far and linked ${totalLinkedOnBoardRefunds} of them to Sales and Validations.` });
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardRefund.card_serial_number });
@@ -106,8 +106,7 @@ export async function linkRefundsToSalesToValidations() {
 		Logger.success(`Linked ${totalLinkedOnBoardRefunds} out of ${totalUnlinkedOnBoardRefunds} OnBoardRefunds in ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => process.exit(1), 10000); // after 10 seconds

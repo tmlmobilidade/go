@@ -44,7 +44,7 @@ export async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'publish-gtfs', message: 'Sentry Hub Publish GTFS initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Hub Publish GTFS', error);
+		Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS' });
 	}
 
 	//
@@ -67,7 +67,7 @@ export async function main() {
 		fs.mkdirSync(context.workdir.path, { recursive: true });
 		Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
 	} catch (error) {
-		Logger.error(`Error preparing workdir path "${context.workdir.path}".`, error);
+		Logger.error({ error, message: `Error preparing workdir path "${context.workdir.path}".` });
 		process.exit(1);
 	}
 
@@ -91,7 +91,7 @@ export async function main() {
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
-	Logger.info(`Found ${allPlansData.length} Plans to process...`);
+	Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
 
 	//
 	// Hash the allPlansData response and check if it differs
@@ -127,7 +127,7 @@ export async function main() {
 
 			const planTimer = new Timer();
 
-			Logger.info(`[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}`);
+			Logger.info({ message: `[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}` });
 
 			//
 			// Validate the Plan data before processing.
@@ -139,7 +139,7 @@ export async function main() {
 
 			if (!isValidPlan) {
 				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
-				Logger.info(`Skipped plan ${planData._id} as it was ineligible for processing.`);
+				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
 				continue;
 			}
 
@@ -221,7 +221,7 @@ export async function main() {
 				}
 			}
 
-			Logger.info(`Added route references for plan ${planData._id}.`);
+			Logger.info({ message: `Added route references for plan ${planData._id}.` });
 
 			//
 			// Add the plan's referenced agency ID and farthest
@@ -257,7 +257,7 @@ export async function main() {
 			//
 		} catch (error) {
 			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'error', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
-			Logger.error(`Error processing plan ${planData._id}`, error);
+			Logger.error({ error, message: `Error processing plan ${planData._id}` });
 			Logger.divider();
 		}
 	}
@@ -277,7 +277,7 @@ export async function main() {
 
 	const zipTimer = new Timer();
 
-	Logger.info('Zipping GTFS export...');
+	Logger.info({ message: 'Zipping GTFS export...' });
 
 	const outputZip = new ZipFile();
 
@@ -301,7 +301,7 @@ export async function main() {
 	// Upload the GTFS zip file to the Files collection,
 	// which handles storage and retrieval.
 
-	Logger.info('Uploading GTFS zip file to Files collection...');
+	Logger.info({ message: 'Uploading GTFS zip file to Files collection...' });
 
 	const fileStream = fs.createReadStream(`${context.workdir.path}/${context.run_id}.zip`);
 

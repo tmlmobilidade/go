@@ -3,7 +3,6 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { agencies } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
 
 /* * */

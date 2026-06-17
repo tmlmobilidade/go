@@ -41,9 +41,9 @@ async function createRideAcceptances(ride: Ride) {
 			ride_id: ride._id,
 		}, { returnResult: false });
 
-		Logger.info(`Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
+		Logger.info({ message: `Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.` });
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
 
@@ -62,9 +62,9 @@ async function updateRideAcceptances(ride: Ride, acceptance: RideAcceptance) {
 			analysis_summary: requiredTestsSummary,
 		}, { returnResult: false });
 
-		Logger.info(`Updated acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
+		Logger.info({ message: `Updated acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.` });
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
 
@@ -91,10 +91,10 @@ async function alertJustification(ride: Ride) {
 			},
 		});
 
-		Logger.info(`Justified ride ${ride._id} with alert ${foundAlert._id}.`);
+		Logger.info({ message: `Justified ride ${ride._id} with alert ${foundAlert._id}.` });
 	} catch (error) {
-		Logger.error('An error occurred. Halting execution.', error);
-		Logger.info('Retrying in 10 seconds...');
+		Logger.error({ error, message: 'An error occurred. Halting execution.' });
+		Logger.info({ message: 'Retrying in 10 seconds...' });
 	}
 }
 
@@ -107,10 +107,9 @@ async function main() {
 
 		try {
 			await initSentryNode();
-			Logger.info('');
 			Logger.startNodeLogs({ app: 'rides-acceptor', message: 'Sentry Rides Acceptor initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Rides Acceptor', error);
+			Logger.error({ error, message: 'Error initializing Sentry Rides Acceptor' });
 		}
 
 		//
@@ -199,16 +198,16 @@ async function main() {
 
 			//
 
-			Logger.info(`Found ${totalRides} rides. (${chunkTimer.get()})`);
+			Logger.info({ message: `Found ${totalRides} rides. (${chunkTimer.get()})` });
 
 			Logger.spacer(1);
 			Logger.divider();
 		}
 
-		Logger.info(`Total rides: ${totalRides}. (${globalTimer.get()})`);
+		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
-		Logger.info('Retrying in 10 seconds...');
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.info({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

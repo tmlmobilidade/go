@@ -21,10 +21,9 @@ export async function validateRides() {
 
 		try {
 			await initSentryNode();
-			Logger.info('');
 			Logger.startNodeLogs({ app: 'rides-examiner', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Rides Examiner', error);
+			Logger.error({ error, message: 'Error initializing Sentry Rides Examiner' });
 		}
 
 		//
@@ -51,7 +50,7 @@ export async function validateRides() {
 
 		const ridesBatch = await rides.findMany({ _id: { $in: rideIdsBatch || [] } });
 
-		Logger.info(`Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, 1);
+		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 
 		//
 		// Process each Ride
@@ -145,7 +144,7 @@ export async function validateRides() {
 					system_status: 'complete',
 				});
 
-				Logger.info([
+				Logger.info({ message: [
 					'[', { a: 'right', c: 7, t: `${ridesBatch.length - rideIndex}/${ridesBatch.length}` }, ']',
 					' F: ', { c: 5, t: fetchAnalysisDataTime },
 					' T: ', { c: 7, t: rideAnalysisTimer.get() },
@@ -154,12 +153,12 @@ export async function validateRides() {
 					{ c: 10, t: `PASS: ${passAnalysisCount.length} ` },
 					{ c: 10, t: `FAIL: ${failAnalysisCount.length} ` },
 					{ c: 12, t: `ERROR: ${errorAnalysisCount.length} [${errorAnalysisCount.join('|')}]` },
-				]);
+				] });
 
 				//
 			} catch (error) {
 				await rides.updateById(rideData._id, { system_status: 'error' });
-				Logger.error('An error occurred while processing a ride.', error);
+				Logger.error({ error, message: 'An error occurred while processing a ride.' });
 			}
 		}
 
@@ -171,8 +170,8 @@ export async function validateRides() {
 
 		//
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
-		Logger.error('Retrying in 10 seconds...');
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.error({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

@@ -3,7 +3,6 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, typologies } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { CreateTypologyDto, PermissionCatalog, type Typology, type UpdateTypologyDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -28,14 +27,7 @@ export class TypologiesController {
 		// If no permission found, deny access
 
 		if (!userTypologyPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create typologies');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'typologies',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create typologies');
 		}
 
 		//
@@ -50,14 +42,7 @@ export class TypologiesController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create typologies for these agencies. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'typologies',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create typologies for these agencies. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -83,14 +68,7 @@ export class TypologiesController {
 		const typology = await typologies.findById(id);
 
 		if (!typology) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
 		}
 
 		//
@@ -102,14 +80,7 @@ export class TypologiesController {
 		// If no permission found, deny access
 
 		if (!userTypologyPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete typologies');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete typologies');
 		}
 
 		//
@@ -124,14 +95,7 @@ export class TypologiesController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this typology. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this typology. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -158,13 +122,7 @@ export class TypologiesController {
 		// If no permission found, deny access
 
 		if (!userTypologyPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
-			Logger.issue('error', error, {
-				action: 'getAll',
-				feature: 'typologies',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
 		}
 
 		//
@@ -205,14 +163,7 @@ export class TypologiesController {
 		const typologyData = await typologies.findById(request.params.id);
 
 		if (!typologyData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
 		}
 
 		//
@@ -224,14 +175,7 @@ export class TypologiesController {
 		// If no permission found, deny access
 
 		if (!userTypologyPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
 		}
 
 		//
@@ -246,14 +190,7 @@ export class TypologiesController {
 		});
 
 		if (!hasPermissionForAnyAgency) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this typology');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this typology');
 		}
 
 		//
@@ -282,14 +219,7 @@ export class TypologiesController {
 		const typologyData = await typologies.findById(request.params.id);
 
 		if (!typologyData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
 		}
 
 		//
@@ -301,14 +231,7 @@ export class TypologiesController {
 		// If no permission found, deny access
 
 		if (!userTypologyPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock typologies');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock typologies');
 		}
 
 		//
@@ -323,28 +246,14 @@ export class TypologiesController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock typology. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock typology. You must have permission for all agencies involved.');
 		}
 
 		// If authorized, toggle the lock status of the typology
 		await typologies.toggleLockById(request.params.id);
 		const foundTypology = await typologies.findById(request.params.id);
 		if (!foundTypology) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
 		}
 
 		return reply.send({ data: foundTypology, error: null, statusCode: HTTP_STATUS.OK });
@@ -366,14 +275,7 @@ export class TypologiesController {
 		const typologyData = await typologies.findById(request.params.id);
 
 		if (!typologyData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
 		}
 
 		//
@@ -385,14 +287,7 @@ export class TypologiesController {
 		// If no permission found, deny access
 
 		if (!userTypologyPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update typologies');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update typologies');
 		}
 
 		//
@@ -407,14 +302,7 @@ export class TypologiesController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this typology. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'typologies',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this typology. You must have permission for all agencies involved.');
 		}
 
 		//

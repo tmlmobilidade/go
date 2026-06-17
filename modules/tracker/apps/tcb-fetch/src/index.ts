@@ -25,7 +25,7 @@ const main = async () => {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'tcb-fetch', message: 'Sentry Tracker TCB Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Tracker TCB Fetch', error);
+		Logger.error({ error, message: 'Error initializing Sentry Tracker TCB Fetch' });
 	}
 
 	//
@@ -38,11 +38,11 @@ const main = async () => {
 	//
 	// Fetch the TCB Vehicle Events data from the API and decode it
 
-	Logger.info(`[${ITERATION}] Fetching TCB data from API...`, 0, 1);
+	Logger.info({ message: `[${ITERATION}] Fetching TCB data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.tcb.vehiclePositions();
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TCB data.`);
+	Logger.info({ message: `[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TCB data.` });
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -93,7 +93,7 @@ const main = async () => {
 
 		//
 		} catch (error) {
-			Logger.error(`[${ITERATION}] Error processing vehicle event entity with ID ${entity.id}:`, error);
+			Logger.error({ error, message: `[${ITERATION}] Error processing vehicle event entity with ID ${entity.id}:` });
 		}
 	}
 
@@ -116,11 +116,11 @@ const main = async () => {
 				saveCount = newEvents.length;
 			}
 		} catch (error) {
-			Logger.error(`[${ITERATION}] Error saving vehicle events to database:`, error);
+			Logger.error({ error, message: `[${ITERATION}] Error saving vehicle events to database:` });
 		}
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from TCB data in ${timer.get()}.`);
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from TCB data in ${timer.get()}.` });
 
 	ITERATION++;
 

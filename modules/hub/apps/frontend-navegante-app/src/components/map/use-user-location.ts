@@ -71,10 +71,10 @@ export function useUserLocation(): UseUserLocationReturnType {
 				latitude: position.coords.latitude,
 				longitude: position.coords.longitude,
 			}));
-			Logger.info(`User location coordinates updated to ${position.coords.longitude}, ${position.coords.latitude}`);
+			Logger.info({ message: `User location coordinates updated to ${position.coords.longitude}, ${position.coords.latitude}` });
 		};
 		const errorCallback = (error: GeolocationPositionError) => {
-			Logger.info(`User location error: ${error.code} - ${error.message}`);
+			Logger.info({ message: `User location error: ${error.code} - ${error.message}` });
 			setUserLocationError(error.message);
 		};
 		// Watch for user location changes

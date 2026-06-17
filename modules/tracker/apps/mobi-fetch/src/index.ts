@@ -25,7 +25,7 @@ const main = async () => {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'mobi-fetch', message: 'Sentry Tracker MOBI Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Tracker MOBI Fetch', error);
+		Logger.error({ error, message: 'Error initializing Sentry Tracker MOBI Fetch' });
 	}
 
 	//
@@ -38,11 +38,11 @@ const main = async () => {
 	//
 	// Fetch the MOBI Vehicle Events data from the API and decode it
 
-	Logger.info(`[${ITERATION}] Fetching MOBI data from API...`, 0, 1);
+	Logger.info({ message: `[${ITERATION}] Fetching MOBI data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.mobi.vehiclePositions();
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the MOBI data.`);
+	Logger.info({ message: `[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the MOBI data.` });
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -104,7 +104,7 @@ const main = async () => {
 		//
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from MOBI data in ${timer.get()}.`);
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from MOBI data in ${timer.get()}.` });
 
 	ITERATION++;
 

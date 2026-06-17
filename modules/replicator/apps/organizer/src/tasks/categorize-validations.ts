@@ -17,7 +17,7 @@ export async function categorizeValidations() {
 		//
 
 		Logger.init();
-		Logger.info('Categorizing Validations...');
+		Logger.info({ message: 'Categorizing Validations...' });
 
 		const globalTimer = new Timer();
 
@@ -40,7 +40,7 @@ export async function categorizeValidations() {
 			// Keep track of total processed Validations
 			totalValidations++;
 			// Log progress every 10,000 Validations
-			if (totalValidations % 10_000 === 0) Logger.info(`Gone through ${totalValidations} Validations so far...`);
+			if (totalValidations % 10_000 === 0) Logger.info({ message: `Gone through ${totalValidations} Validations so far...` });
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			await simplifiedApexValidations.updateById(validationDocument._id, {

@@ -13,7 +13,7 @@ import { validateQueryParams } from '@tmlmobilidade/utils';
 export class LocationsController {
 	static async findByCoordinates(request: FastifyRequest, reply: FastifyReply<Location>) {
 		const { census, lat, lon } = request.query as { census: boolean, lat: number, lon: number };
-		console.log('Received coordinates:', { census, lat, lon });
+		Logger.info({ message: `Received coordinates: ${census}, ${lat}, ${lon}` });
 		try {
 			const result = await locations.findLocationByGeo(Number(lat), Number(lon), { census: Boolean(census) });
 			return reply.status(HTTP_STATUS.OK).send({
@@ -23,24 +23,12 @@ export class LocationsController {
 			});
 		} catch (error) {
 			if (error instanceof HttpException) {
-				Logger.issue('error', error, {
-					action: 'findByCoordinates',
-					feature: 'locations',
-					request,
-				});
-
 				return reply.status(error.statusCode).send({
 					data: undefined,
 					error: error.message,
 					status: error.statusCode,
 				});
 			}
-
-			Logger.issue('error', error, {
-				action: 'findByCoordinates',
-				feature: 'locations',
-				request,
-			});
 
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
@@ -64,24 +52,12 @@ export class LocationsController {
 			});
 		} catch (error) {
 			if (error instanceof HttpException) {
-				Logger.issue('error', error, {
-					action: 'getDistricts',
-					feature: 'locations',
-					request,
-				});
-
 				return reply.status(error.statusCode).send({
 					data: undefined,
 					error: error.message,
 					status: error.statusCode,
 				});
 			}
-
-			Logger.issue('error', error, {
-				action: 'getDistricts',
-				feature: 'locations',
-				request,
-			});
 
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
@@ -121,24 +97,12 @@ export class LocationsController {
 			});
 		} catch (error) {
 			if (error instanceof HttpException) {
-				Logger.issue('error', error, {
-					action: 'getLocalities',
-					feature: 'locations',
-					request,
-				});
-
 				return reply.status(error.statusCode).send({
 					data: undefined,
 					error: error.message,
 					status: error.statusCode,
 				});
 			}
-
-			Logger.issue('error', error, {
-				action: 'getLocalities',
-				feature: 'locations',
-				request,
-			});
 
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
@@ -164,24 +128,12 @@ export class LocationsController {
 			});
 		} catch (error) {
 			if (error instanceof HttpException) {
-				Logger.issue('error', error, {
-					action: 'getMunicipalities',
-					feature: 'locations',
-					request,
-				});
-
 				return reply.status(error.statusCode).send({
 					data: undefined,
 					error: error.message,
 					status: error.statusCode,
 				});
 			}
-
-			Logger.issue('error', error, {
-				action: 'getMunicipalities',
-				feature: 'locations',
-				request,
-			});
 
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
@@ -220,24 +172,12 @@ export class LocationsController {
 			});
 		} catch (error) {
 			if (error instanceof HttpException) {
-				Logger.issue('error', error, {
-					action: 'getParishes',
-					feature: 'locations',
-					request,
-				});
-
 				return reply.status(error.statusCode).send({
 					data: undefined,
 					error: error.message,
 					status: error.statusCode,
 				});
 			}
-
-			Logger.issue('error', error, {
-				action: 'getParishes',
-				feature: 'locations',
-				request,
-			});
 
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,

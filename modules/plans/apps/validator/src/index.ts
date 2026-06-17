@@ -23,7 +23,7 @@ async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'validator', message: 'Sentry Plans Validator initialized', module: 'plans', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Plans Validator', error);
+		Logger.error({ error, message: 'Error initializing Sentry Plans Validator' });
 	}
 
 	//
@@ -48,11 +48,11 @@ async function main() {
 		);
 
 		if (!waitingOrStuckGtfsValidations.length) {
-			Logger.info('No waiting validations to process. Exiting...');
+			Logger.info({ message: 'No waiting validations to process. Exiting...' });
 			return;
 		}
 
-		Logger.info(`Found ${waitingOrStuckGtfsValidations.length} waiting or stuck validations...`);
+		Logger.info({ message: `Found ${waitingOrStuckGtfsValidations.length} waiting or stuck validations...` });
 
 		//
 		// Process each waiting validation
@@ -61,14 +61,14 @@ async function main() {
 			const gtfsValidation = gtfsValidationItem as unknown as GtfsValidation;
 			Logger.title(`Processing GTFS Validation ${gtfsValidation._id} for File ${gtfsValidation.file_id}`);
 			await processValidation(gtfsValidation);
-			Logger.info(`Finished processing validation ${gtfsValidation._id} in ${globalTimer.get()}ms`);
+			Logger.info({ message: `Finished processing validation ${gtfsValidation._id} in ${globalTimer.get()}ms` });
 		}
 
 		//
 	} catch (error) {
 		// Log any unexpected errors that occur during the validation loop
 		// and send a system error email to the administrators.
-		Logger.error('Error processing validations:', error);
+		Logger.error({ error, message: 'Error processing validations:' });
 		await sendSystemErrorEmail({
 			data: {
 				errorMessage: error.message ?? 'Unknown error',

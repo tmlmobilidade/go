@@ -77,7 +77,7 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 			return (body?.data ?? body) as CalendarEntry[];
 		}
 		catch (error) {
-			Logger.error(`Error fetching calendar data`, error);
+			Logger.error({ error, message: `Error fetching calendar data` });
 			return [];
 		}
 	};

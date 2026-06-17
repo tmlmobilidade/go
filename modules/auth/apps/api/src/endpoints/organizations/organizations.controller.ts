@@ -3,7 +3,6 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { files, organizations } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { CreateOrganizationSchema, type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 
 /* * */
@@ -45,16 +44,14 @@ export class OrganizationsController {
 			try {
 				await files.deleteById(organization.logo_dark);
 			} catch (error) {
-				Logger.issue({ context: { action: 'delete', feature: 'organizations', request, value: request.params.id }, level: 'error', messageOrError: error });
-				throw error;
+				throw new error();
 			}
 		}
 		if (organization.logo_light) {
 			try {
 				await files.deleteById(organization.logo_light);
 			} catch (error) {
-				Logger.issue({ context: { action: 'delete', feature: 'organizations', request, value: request.params.id }, level: 'error', messageOrError: error });
-				throw error;
+				throw new error();
 			}
 		}
 		// Delete the organization from the database
@@ -201,7 +198,7 @@ export class OrganizationsController {
 					try {
 						await files.deleteById(organization.logo_dark);
 					} catch (error) {
-						Logger.issue({ context: { action: 'uploadImage', feature: 'organizations', request, value: request.params.id }, level: 'error', messageOrError: error });
+						throw new error();
 						continue;
 					}
 				}
@@ -213,7 +210,7 @@ export class OrganizationsController {
 					try {
 						await files.deleteById(organization.logo_light);
 					} catch (error) {
-						Logger.issue({ context: { action: 'uploadImage', feature: 'organizations', request, value: request.params.id }, level: 'error', messageOrError: error });
+						throw new error();
 						continue;
 					}
 				}

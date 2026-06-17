@@ -31,7 +31,7 @@ async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'sync-datik', message: 'Sentry Alerts Sync Datik initialized', module: 'alerts', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Alerts Sync Datik', error);
+		Logger.error({ error, message: 'Error initializing Sentry Alerts Sync Datik' });
 	}
 
 	//
@@ -47,13 +47,13 @@ async function main() {
 	for (const serviceAlert of serviceAlertResponse.entity) {
 		const alert = await alerts.findByExternalId(serviceAlert.id);
 		if (alert) {
-			Logger.error(`Alert with external ID ${serviceAlert.id} already exists, skipping...`);
+			Logger.error({ message: `Alert with external ID ${serviceAlert.id} already exists, skipping...` });
 		} else {
 			//
-			Logger.info(`Alert with external ID ${serviceAlert.id} does not exist, creating...`);
+			Logger.info({ message: `Alert with external ID ${serviceAlert.id} does not exist, creating...` });
 
 			if (serviceAlert.alert.informed_entity.find(entity => entity.trip?.trip_id) === undefined) {
-				Logger.error(`Alert with external ID ${serviceAlert.id} has no trip ID, skipping...`);
+				Logger.error({ message: `Alert with external ID ${serviceAlert.id} has no trip ID, skipping...` });
 				continue;
 			}
 
@@ -99,7 +99,7 @@ async function main() {
 			};
 
 			const alertRealtime = await alerts.insertOne(createAlertDto);
-			Logger.info(`Alert created | Internal ID: ${alertRealtime._id}, External ID: ${alertRealtime.external_id}`);
+			Logger.info({ message: `Alert created | Internal ID: ${alertRealtime._id}, External ID: ${alertRealtime.external_id}` });
 		}
 	}
 

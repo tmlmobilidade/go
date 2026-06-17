@@ -25,7 +25,7 @@ const main = async () => {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'crtm-aisa-fetch', message: 'Sentry Tracker CRTM AISA Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Tracker CRTM AISA Fetch', error);
+		Logger.error({ error, message: 'Error initializing Sentry Tracker CRTM AISA Fetch' });
 	}
 
 	//
@@ -38,11 +38,11 @@ const main = async () => {
 	//
 	// Fetch the CRTM-AISA Vehicle Events data from the API and decode it
 
-	Logger.info(`[${ITERATION}] Fetching CRTM-AISA data from API...`, 0, 1);
+	Logger.info({ message: `[${ITERATION}] Fetching CRTM-AISA data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.crtmAisa.vehiclePositions();
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CRTM-AISA data.`);
+	Logger.info({ message: `[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CRTM-AISA data.` });
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -99,11 +99,11 @@ const main = async () => {
 
 		//
 		} catch (error) {
-			Logger.error(`[${ITERATION}] Error processing vehicle event entity with ID ${entity.id}:`, error);
+			Logger.error({ error, message: `[${ITERATION}] Error processing vehicle event entity with ID ${entity.id}:` });
 		}
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from CRTM-AISA data in ${timer.get()}.`);
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from CRTM-AISA data in ${timer.get()}.` });
 
 	ITERATION++;
 

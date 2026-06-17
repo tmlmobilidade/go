@@ -25,7 +25,7 @@ async function syncApexOnBoardSales() {
 			await initSentryNode();
 			Logger.startNodeLogs({ app: 'sync-apex-on-board-sales', message: 'Sentry Replicator Sync Apex On Board Sales initialized', module: 'replicator', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Replicator Sync Apex On Board Sales', error);
+			Logger.error({ error, message: 'Error initializing Sentry Replicator Sync Apex On Board Sales' });
 		}
 
 		//
@@ -119,11 +119,11 @@ async function syncApexOnBoardSales() {
 						{ returnResults: false },
 					);
 
-					Logger.info(`Flush [apex_on_board_sales]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+					Logger.info({ message: `Flush [apex_on_board_sales]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})` });
 
 					//
 				} catch (error) {
-					Logger.error('Error in flushCallback', error);
+					Logger.error({ error, message: 'Error in flushCallback' });
 				}
 			};
 

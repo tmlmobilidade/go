@@ -25,7 +25,7 @@ const main = async () => {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'ttsl-fetch', message: 'Sentry Tracker TTSL Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Tracker TTSL Fetch', error);
+		Logger.error({ error, message: 'Error initializing Sentry Tracker TTSL Fetch' });
 	}
 
 	//
@@ -38,11 +38,11 @@ const main = async () => {
 	//
 	// Fetch the TTSL Vehicle Events data from the API and decode it
 
-	Logger.info(`[${ITERATION}] Fetching TTSL data from API...`, 0, 1);
+	Logger.info({ message: `[${ITERATION}] Fetching TTSL data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.ttsl.vehiclePositions();
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TTSL data.`);
+	Logger.info({ message: `[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TTSL data.` });
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -97,11 +97,11 @@ const main = async () => {
 
 		//
 		} catch (error) {
-			Logger.error(`Error processing TTSL entity with ID ${entity.id}:`, error);
+			Logger.error({ error, message: `[${ITERATION}] Error processing TTSL entity with ID ${entity.id}:` });
 		}
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from TTSL data in ${timer.get()}.`);
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from TTSL data in ${timer.get()}.` });
 
 	ITERATION++;
 

@@ -17,10 +17,9 @@ async function reprocessStuckRides() {
 
 		try {
 			await initSentryNode();
-			Logger.info('');
 			Logger.startNodeLogs({ app: 'rides-cleaner', message: 'Sentry Rides Cleaner initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Rides Cleaner', error);
+			Logger.error({ error, message: 'Error initializing Sentry Rides Cleaner' });
 		}
 
 		//
@@ -40,7 +39,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerResultA = fetchTimerA.get();
 
-		Logger.info(`A: Fetched ${processingRideIdsA.length} 'processing' rides. (${fetchTimerResultA})`);
+		Logger.info({ message: `A: Fetched ${processingRideIdsA.length} 'processing' rides. (${fetchTimerResultA})` });
 
 		//
 		// Wait 3 minutes before checking again
@@ -60,7 +59,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerResultB = fetchTimerB.get();
 
-		Logger.info(`B: Fetched ${processingRideIdsB.length} 'processing' rides. (${fetchTimerResultB})`);
+		Logger.info({ message: `B: Fetched ${processingRideIdsB.length} 'processing' rides. (${fetchTimerResultB})` });
 
 		//
 		// Wait another 3 minutes before checking again
@@ -78,7 +77,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerResultC = fetchTimerC.get();
 
-		Logger.info(`C: Fetched ${processingRideIdsC.length} 'processing' rides. (${fetchTimerResultC})`);
+		Logger.info({ message: `C: Fetched ${processingRideIdsC.length} 'processing' rides. (${fetchTimerResultC})` });
 
 		//
 		// Now, we have two lists of stuck rides. We need to find the rides that are present
@@ -97,12 +96,12 @@ async function reprocessStuckRides() {
 			const ridesCollection = await rides.getCollection();
 			await ridesCollection.updateMany({ _id: { $in: stuckRideIds } }, { $set: { system_status: 'waiting' } });
 
-			Logger.info(`Found ${stuckRideIds.length} stuck rides that were marked as 'waiting'. (${updateTimer.get()})`);
+			Logger.info({ message: `Found ${stuckRideIds.length} stuck rides that were marked as 'waiting'. (${updateTimer.get()})` });
 			Logger.spacer(1);
 
 			//
 		} else {
-			Logger.info(`No stuck rides found!`);
+			Logger.info({ message: `No stuck rides found!` });
 			Logger.spacer(1);
 		}
 
@@ -112,8 +111,8 @@ async function reprocessStuckRides() {
 
 		//
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
-		Logger.error('Retrying in 10 seconds...');
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.error({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

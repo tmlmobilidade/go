@@ -3,7 +3,6 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { fares, type Filter } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { CreateFareDto, type Fare, PermissionCatalog, type UpdateFareDto } from '@tmlmobilidade/types';
 
 /* * */;
@@ -28,13 +27,7 @@ export class FaresController {
 		// If no permission found, deny access
 
 		if (!userFarePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create fares');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'fares',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create fares');
 		}
 
 		//
@@ -49,13 +42,7 @@ export class FaresController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create fares for these agencies. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'fares',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create fares for these agencies. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -81,14 +68,7 @@ export class FaresController {
 		const fare = await fares.findById(id);
 
 		if (!fare) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'fares',
-				request,
-				value: id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
 		}
 
 		//
@@ -100,14 +80,7 @@ export class FaresController {
 		// If no permission found, deny access
 
 		if (!userFarePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete fares');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete fares');
 		}
 
 		//
@@ -122,14 +95,7 @@ export class FaresController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this fare. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this fare. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -156,13 +122,7 @@ export class FaresController {
 		// If no permission found, deny access
 
 		if (!userFarePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read fares');
-			Logger.issue('error', error, {
-				action: 'getAll',
-				feature: 'fares',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read fares');
 		}
 
 		//
@@ -203,14 +163,7 @@ export class FaresController {
 		const fareData = await fares.findById(request.params.id);
 
 		if (!fareData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
 		}
 
 		//
@@ -222,14 +175,7 @@ export class FaresController {
 		// If no permission found, deny access
 
 		if (!userFarePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read fares');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read fares');
 		}
 
 		//
@@ -244,14 +190,7 @@ export class FaresController {
 		});
 
 		if (!hasPermissionForAnyAgency) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this fare');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this fare');
 		}
 
 		//
@@ -280,14 +219,7 @@ export class FaresController {
 		const fareData = await fares.findById(request.params.id);
 
 		if (!fareData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
 		}
 
 		//
@@ -299,14 +231,7 @@ export class FaresController {
 		// If no permission found, deny access
 
 		if (!userFarePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock fares');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock fares');
 		}
 
 		//
@@ -321,28 +246,14 @@ export class FaresController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock fare. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock fare. You must have permission for all agencies involved.');
 		}
 
 		// If authorized, toggle the lock status of the fare
 		await fares.toggleLockById(request.params.id);
 		const foundFare = await fares.findById(request.params.id);
 		if (!foundFare) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
 		}
 
 		return reply.send({ data: foundFare, error: null, statusCode: HTTP_STATUS.OK });
@@ -364,14 +275,7 @@ export class FaresController {
 		const fareData = await fares.findById(request.params.id);
 
 		if (!fareData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
 		}
 
 		//
@@ -383,14 +287,7 @@ export class FaresController {
 		// If no permission found, deny access
 
 		if (!userFarePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update fares');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update fares');
 		}
 
 		//
@@ -405,14 +302,7 @@ export class FaresController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this fare. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'fares',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this fare. You must have permission for all agencies involved.');
 		}
 
 		//

@@ -17,7 +17,7 @@ export async function getGtfs(request: FastifyRequest, reply: FastifyReply<strin
 	// Stream the file in the given URL to the client
 	const storageServiceResponse = await fetch(foundFileData.url);
 	if (!storageServiceResponse.ok || !storageServiceResponse.body) {
-		Logger.error(`[hub/v1/plans:getGtfs()] Failed to fetch file from storage service. URL: ${foundFileData.url}, Status: ${storageServiceResponse.status}`);
+		Logger.error({ message: `[hub/v1/plans:getGtfs()] Failed to fetch file from storage service. URL: ${foundFileData.url}, Status: ${storageServiceResponse.status}` });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=300')

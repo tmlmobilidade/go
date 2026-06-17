@@ -135,7 +135,7 @@ export const calculateDailyServiceCompliance = async (context: ExportContext) =>
 
 		countProcessed++;
 		if (countProcessed % 100 === 0) {
-			// Logger.info(`Processed ${countProcessed} rides so far...`);
+			// Logger.info({ message: `Processed ${countProcessed} rides so far...` });
 		}
 	}
 

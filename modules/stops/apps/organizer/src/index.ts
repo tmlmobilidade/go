@@ -19,7 +19,7 @@ async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Stops Organizer initialized', module: 'stops', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Stops Organizer', error);
+		Logger.error({ error, message: 'Error initializing Sentry Stops Organizer' });
 	}
 
 	//
@@ -34,7 +34,7 @@ async function main() {
 
 	const allStopsData = await stops.all();
 
-	Logger.info(`Found ${allStopsData.length} stops.`);
+	Logger.info({ message: `Found ${allStopsData.length} stops.` });
 
 	//
 	// Loop through all stops and request updated attributes for each document
@@ -42,7 +42,7 @@ async function main() {
 	for (const [stopIndex, stopData] of allStopsData.entries()) {
 		//
 
-		Logger.info(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...`);
+		Logger.info({ message: `[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...` });
 
 		const organizedStopData = await organizeStop(stopData);
 

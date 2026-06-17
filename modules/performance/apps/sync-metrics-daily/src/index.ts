@@ -20,7 +20,7 @@ async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'sync-metrics-daily', message: 'Sentry Performance Sync Metrics Daily initialized', module: 'performance', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Performance Sync Metrics Daily', error);
+		Logger.error({ error, message: 'Error initializing Sentry Performance Sync Metrics Daily' });
 	}
 
 	const globalTimer = new Timer();
@@ -40,7 +40,7 @@ async function main() {
 		Logger.terminate(`Finished All Metrics Sync (${globalTimer.get()})`);
 		Logger.divider();
 	} catch (error) {
-		Logger.error('Failed to sync metrics');
+		Logger.error({ message: 'Failed to sync metrics' });
 		Logger.error(error);
 		Logger.divider();
 	}

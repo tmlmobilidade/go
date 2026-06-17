@@ -19,7 +19,7 @@ export async function linkSalesToValidations() {
 		//
 
 		Logger.init();
-		Logger.info('Linking Sales to Validations...');
+		Logger.info({ message: 'Linking Sales to Validations...' });
 
 		const globalTimer = new Timer();
 
@@ -41,7 +41,7 @@ export async function linkSalesToValidations() {
 
 		for await (const onBoardSale of unlinkedOnBoardSalesBatch) {
 			totalUnlinkedOnBoardSales++;
-			if (totalUnlinkedOnBoardSales % 10000 === 0) Logger.info(`Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far and linked ${totalLinkedOnBoardSales} of them to Validations.`);
+			if (totalUnlinkedOnBoardSales % 10000 === 0) Logger.info({ message: `Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far and linked ${totalLinkedOnBoardSales} of them to Validations.` });
 			// Fetch the corresponding Validation transaction.
 			// If no transaction is found, skip this iteration.
 			const validationTransaction = await simplifiedApexValidations.findOne({ card_serial_number: onBoardSale.card_serial_number });
@@ -87,8 +87,7 @@ export async function linkSalesToValidations() {
 		Logger.success(`Linked ${totalLinkedOnBoardSales} out of ${totalUnlinkedOnBoardSales} OnBoardSales in ${globalTimer.get()}.`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => process.exit(1), 10000); // after 10 seconds

@@ -20,7 +20,7 @@ const main = async () => {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'publish-alerts', message: 'Sentry Hub Publish Alerts initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Hub Publish Alerts', error);
+		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Alerts' });
 	}
 
 	//

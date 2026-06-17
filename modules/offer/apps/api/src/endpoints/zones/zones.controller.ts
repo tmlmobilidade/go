@@ -3,7 +3,6 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, zones } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { CreateZoneDto, PermissionCatalog, type UpdateZoneDto, type Zone } from '@tmlmobilidade/types';
 
 /* * */;
@@ -28,14 +27,7 @@ export class ZonesController {
 		// If no permission found, deny access
 
 		if (!userZonePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create zones');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'zones',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create zones');
 		}
 
 		//
@@ -50,14 +42,7 @@ export class ZonesController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create zones for these agencies. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'zones',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create zones for these agencies. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -83,14 +68,7 @@ export class ZonesController {
 		const zone = await zones.findById(id);
 
 		if (!zone) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
 		}
 
 		//
@@ -102,14 +80,7 @@ export class ZonesController {
 		// If no permission found, deny access
 
 		if (!userZonePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete zones');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete zones');
 		}
 
 		//
@@ -124,14 +95,7 @@ export class ZonesController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this zone. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this zone. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -158,13 +122,7 @@ export class ZonesController {
 		// If no permission found, deny access
 
 		if (!userZonePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read zones');
-			Logger.issue('error', error, {
-				action: 'getAll',
-				feature: 'zones',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read zones');
 		}
 
 		//
@@ -205,14 +163,7 @@ export class ZonesController {
 		const zoneData = await zones.findById(request.params.id);
 
 		if (!zoneData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
 		}
 
 		//
@@ -224,14 +175,7 @@ export class ZonesController {
 		// If no permission found, deny access
 
 		if (!userZonePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read zones');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read zones');
 		}
 
 		//
@@ -246,14 +190,7 @@ export class ZonesController {
 		});
 
 		if (!hasPermissionForAnyAgency) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this zone');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this zone');
 		}
 
 		//
@@ -282,14 +219,7 @@ export class ZonesController {
 		const zoneData = await zones.findById(request.params.id);
 
 		if (!zoneData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
 		}
 
 		//
@@ -301,14 +231,7 @@ export class ZonesController {
 		// If no permission found, deny access
 
 		if (!userZonePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock zones');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock zones');
 		}
 
 		//
@@ -323,28 +246,14 @@ export class ZonesController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock zone. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock zone. You must have permission for all agencies involved.');
 		}
 
 		// If authorized, toggle the lock status of the zone
 		await zones.toggleLockById(request.params.id);
 		const foundZone = await zones.findById(request.params.id);
 		if (!foundZone) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
 		}
 
 		return reply.send({ data: foundZone, error: null, statusCode: HTTP_STATUS.OK });
@@ -366,14 +275,7 @@ export class ZonesController {
 		const zoneData = await zones.findById(request.params.id);
 
 		if (!zoneData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
 		}
 
 		//
@@ -385,14 +287,7 @@ export class ZonesController {
 		// If no permission found, deny access
 
 		if (!userZonePermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update zones');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update zones');
 		}
 
 		//
@@ -407,14 +302,7 @@ export class ZonesController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this zone. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'zones',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this zone. You must have permission for all agencies involved.');
 		}
 
 		//

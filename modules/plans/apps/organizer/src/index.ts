@@ -18,7 +18,7 @@ const main = async () => {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Plans Organizer initialized', module: 'plans', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Plans Organizer', error);
+		Logger.error({ error, message: 'Error initializing Sentry Plans Organizer' });
 	}
 
 	//

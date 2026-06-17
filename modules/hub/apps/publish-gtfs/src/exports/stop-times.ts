@@ -54,7 +54,7 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 		const stopTimeData: GTFS_StopTime = stopTimeItem;
 		const matchingStopId = allStopsMap.get(stopTimeData.stop_id);
 		if (!matchingStopId) {
-			Logger.error(`Stop time ${stopTimeData.stop_id} not found in stops map for agency ${planData.gtfs_agency.agency_id}`);
+			Logger.error({ message: `Stop time ${stopTimeData.stop_id} not found in stops map for agency ${planData.gtfs_agency.agency_id}` });
 			continue;
 		}
 		const parsedStopTimesRow: ExportedStopTimesRow = {
@@ -75,5 +75,5 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 
 	await context.writers.stop_times.flush();
 
-	Logger.info('Exported stop_times.txt file.');
+	Logger.info({ message: 'Exported stop_times.txt file.' });
 }

@@ -27,7 +27,7 @@ export async function processVehicleEvent(databaseOperation) {
 	// Only insert operations are expected to occur in this PCGIDB collection.
 
 	if (databaseOperation.operationType !== 'insert') {
-		Logger.error('MAJOR ERROR: processVehicleEvent called with operationType different than "insert".');
+		Logger.error({ message: 'MAJOR ERROR: processVehicleEvent called with operationType different than "insert".' });
 		return;
 	}
 
@@ -39,7 +39,7 @@ export async function processVehicleEvent(databaseOperation) {
 	const newVehicleEventDocument = parseVehicleEvent(databaseOperation.fullDocument);
 
 	if (!newVehicleEventDocument) {
-		Logger.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
+		Logger.error({ message: `Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}` });
 		return;
 	}
 
@@ -68,17 +68,17 @@ export async function processVehicleEvent(databaseOperation) {
 			// Invalidate all rides that are affected
 
 			if (!rideUpdates.length) {
-				Logger.info('Flush [simplified_vehicle_events]: No rides to mark as waiting.');
+				Logger.info({ message: 'Flush [simplified_vehicle_events]: No rides to mark as waiting.' });
 				return;
 			}
 
 			const ridesResult = await rides.updateMany({ $or: rideUpdates }, { system_status: 'waiting' }, { returnResults: false });
 
-			Logger.info(`Flush [simplified_vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+			Logger.info({ message: `Flush [simplified_vehicle_events]: Marked as 'waiting': ${ridesResult.modifiedCount} Rides (${invalidationTimer.get()})` });
 
 			//
 		} catch (error) {
-			Logger.error('Error in flushCallback', error);
+			Logger.error({ error, message: 'Error in flushCallback' });
 		}
 	};
 

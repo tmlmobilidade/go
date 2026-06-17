@@ -21,10 +21,9 @@ async function main() {
 
 		try {
 			await initSentryNode();
-			Logger.info('');
 			Logger.startNodeLogs({ app: 'rides-locker', message: 'Sentry Rides Locker initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Rides Locker', error);
+			Logger.error({ error, message: 'Error initializing Sentry Rides Locker' });
 		}
 
 		//
@@ -89,21 +88,21 @@ async function main() {
 				if (rideAcceptance.is_locked) continue;
 
 				await rideAcceptances.updateByRideId(rideAcceptance.ride_id, { is_locked: true, updated_by: 'system' });
-				Logger.info(`Locked ride acceptance for ride ${rideAcceptance.ride_id}.`);
+				Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance.ride_id}.` });
 			}
 
 			//
 
-			Logger.info(`Found ${totalRides} ride acceptances. (${chunkTimer.get()})`);
+			Logger.info({ message: `Found ${totalRides} ride acceptances. (${chunkTimer.get()})` });
 
 			Logger.spacer(1);
 			Logger.divider();
 		}
 
-		Logger.info(`Total rides: ${totalRides}. (${globalTimer.get()})`);
+		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
-		Logger.info('Retrying in 10 seconds...');
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.info({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

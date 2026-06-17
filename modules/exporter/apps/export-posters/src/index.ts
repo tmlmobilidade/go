@@ -29,10 +29,9 @@ await (async function main() {
 
 		try {
 			await initSentryNode();
-			Logger.info('');
 			Logger.startNodeLogs({ app: 'export-posters', message: 'Sentry Exporter Posters initialized', module: 'exporter', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Exporter Posters', error);
+			Logger.error({ error, message: 'Error initializing Sentry Exporter Posters' });
 		}
 
 		//
@@ -59,10 +58,10 @@ await (async function main() {
 		const planData = await plans.findById('BYBGK'); // 43 Transportes Sul do Tejo
 		// const planData = await plans.findById('N8TKT'); // 44 Alsa Todi
 
-		Logger.info(`Found Plan to process: ${planData._id}`);
+		Logger.info({ message: `Found Plan to process: ${planData._id}` });
 
 		if (!planData) {
-			Logger.info('Plan not found. Exiting...');
+			Logger.info({ message: 'Plan not found. Exiting...' });
 			return;
 		}
 
@@ -101,7 +100,7 @@ await (async function main() {
 		//
 		// Start the export process
 
-		Logger.info(`Exporting to HiTouch GTFS...`);
+		Logger.info({ message: `Exporting to HiTouch GTFS...` });
 
 		const exportTimer = new Timer();
 
@@ -114,7 +113,7 @@ await (async function main() {
 		await exportFeedInfoFile(planData, exportConfig);
 		await exportDayTypesFile(exportConfig);
 
-		Logger.info(`Exported files in ${exportTimer.get()} seconds`);
+		Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
 
 		//
 

@@ -125,7 +125,7 @@ async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'ride-analyzer', message: 'Sentry ETA Ride Analyzer initialized', module: 'eta', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry ETA Ride Analyzer', error);
+		Logger.error({ error, message: 'Error initializing Sentry ETA Ride Analyzer' });
 	}
 
 	//
@@ -139,7 +139,7 @@ async function main() {
 	// C. Parse the command-line arguments
 
 	const args = parseCliArgs();
-	Logger.info(`ride-analyzer args: ${JSON.stringify(args)}`);
+	Logger.info({ message: `ride-analyzer args: ${JSON.stringify(args)}` });
 
 	//
 	// D. Build the loader config
@@ -151,7 +151,7 @@ async function main() {
 	// E. Run the loader phase
 
 	if (args.skipLoader) {
-		Logger.info('Skipping loader phase (--skip-loader)');
+		Logger.info({ message: 'Skipping loader phase (--skip-loader)' });
 	} else {
 		await runLoaderPhase(clickhouseClient, config);
 	}
@@ -162,8 +162,7 @@ async function main() {
 	const events = await fetchEventsForTrip(clickhouseClient, args.tripRef);
 	if (events.length === 0) {
 		Logger.error(
-			`No simplified vehicle events found for trip_id=${args.tripRef.tripId} `
-			+ `operational_date=${args.tripRef.operationalDate}; nothing to replay.`,
+			{ message: `No simplified vehicle events found for trip_id=${args.tripRef.tripId} ` + `operational_date=${args.tripRef.operationalDate}; nothing to replay.` },
 		);
 		process.exit(1);
 	}

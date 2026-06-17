@@ -25,7 +25,7 @@ const main = async () => {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'ccfl-fetch', message: 'Sentry Tracker CCFL Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Tracker CCFL Fetch', error);
+		Logger.error({ error, message: 'Error initializing Sentry Tracker CCFL Fetch' });
 	}
 
 	const timer = new Timer();
@@ -35,11 +35,11 @@ const main = async () => {
 	//
 	// Fetch the CCFL Vehicle Events data from the API and decode it
 
-	Logger.info(`[${ITERATION}] Fetching CCFL data from API...`, 0, 1);
+	Logger.info({ message: `[${ITERATION}] Fetching CCFL data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
 	const decodedMessage = await externalClients.ccfl.vehiclePositions();
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CCFL data.`);
+	Logger.info({ message: `[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the CCFL data.` });
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -94,11 +94,11 @@ const main = async () => {
 
 		//
 		} catch (error) {
-			Logger.error(`[${ITERATION}] Error processing vehicle event entity with ID ${entity.id}:`, error);
+			Logger.error({ error, message: `[${ITERATION}] Error processing vehicle event entity with ID ${entity.id}:` });
 		}
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from CCFL data in ${timer.get()}.`);
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from CCFL data in ${timer.get()}.` });
 
 	ITERATION++;
 

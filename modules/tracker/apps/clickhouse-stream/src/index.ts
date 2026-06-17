@@ -17,7 +17,7 @@ import { initSentryNode } from '@tmlmobilidade/logger';
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'clickhouse-stream', message: 'Sentry Tracker Clickhouse Stream initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Tracker Clickhouse Stream', error);
+		Logger.error({ error, message: 'Error initializing Sentry Tracker Clickhouse Stream' });
 	}
 
 	//
@@ -36,19 +36,19 @@ import { initSentryNode } from '@tmlmobilidade/logger';
 			// Only insert operations are expected to occur in this PCGIDB collection.
 
 			if (change.operationType !== 'insert') {
-				Logger.error(`[clickhouse-stream] WARNING: changeStream document with operationType != "insert": operationType="${change.operationType}" _id="${change._id}"`);
+				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with operationType != "insert": operationType="${change.operationType}" _id="${change._id}"` });
 				return;
 			}
 
 			if (!change.fullDocument) {
-				Logger.error(`[clickhouse-stream] WARNING: changeStream document with missing fullDocument: operationType="${change.operationType}" _id="${change._id}"`);
+				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with missing fullDocument: operationType="${change.operationType}" _id="${change._id}"` });
 				return;
 			}
 
 			const nowMinus5Minutes = Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp;
 
 			if (!change.fullDocument.created_at || change.fullDocument.created_at < nowMinus5Minutes) {
-				Logger.error(`[clickhouse-stream] WARNING: changeStream document with missing or outdated created_at field: operationType="${change.operationType}" _id="${change._id}"`);
+				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with missing or outdated created_at field: operationType="${change.operationType}" _id="${change._id}"` });
 				return;
 			}
 

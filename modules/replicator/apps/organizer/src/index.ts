@@ -19,7 +19,7 @@ async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Replicator Organizer initialized', module: 'replicator', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Replicator Organizer', error);
+		Logger.error({ error, message: 'Error initializing Sentry Replicator Organizer' });
 	}
 
 	//

@@ -25,7 +25,7 @@ export async function syncApexValidations() {
 			await initSentryNode();
 			Logger.startNodeLogs({ app: 'sync-apex-validations', message: 'Sentry Replicator Sync Apex Validations initialized', module: 'replicator', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Replicator Sync Apex Validations', error);
+			Logger.error({ error, message: 'Error initializing Sentry Replicator Sync Apex Validations' });
 		}
 
 		//
@@ -121,11 +121,11 @@ export async function syncApexValidations() {
 						{ returnResults: false },
 					);
 
-					Logger.info(`Flush [apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+					Logger.info({ message: `Flush [apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})` });
 
 					//
 				} catch (error) {
-					Logger.error('Error in flushCallback', error);
+					Logger.error({ error, message: 'Error in flushCallback' });
 				}
 			};
 

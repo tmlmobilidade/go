@@ -41,7 +41,7 @@ async function main() {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'export-drt', message: 'Sentry Exporter DRT initialized', module: 'exporter', severity: 'info' });
 	} catch (error) {
-		Logger.error('Error initializing Sentry Exporter DRT', error);
+		Logger.error({ error, message: 'Error initializing Sentry Exporter DRT' });
 	}
 
 	try {
@@ -84,7 +84,7 @@ async function main() {
 
 		Logger.terminate('DRT export completed successfully.');
 	} catch (error) {
-		Logger.error('Error parsing plan.', error);
+		Logger.error({ error, message: 'Error parsing plan.' });
 		throw error;
 	}
 }

@@ -25,10 +25,9 @@ export async function syncRides() {
 
 		try {
 			await initSentryNode();
-			Logger.info('');
 			Logger.startNodeLogs({ app: 'rides-bridge', message: 'Sentry Rides Bridge initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
-			Logger.error('Error initializing Sentry Rides Bridge', error);
+			Logger.error({ error, message: 'Error initializing Sentry Rides Bridge' });
 		}
 
 		//
@@ -48,13 +47,13 @@ export async function syncRides() {
 
 		if (currentMinutesAsNumber > 57 && currentMinutesAsNumber < 4) {
 			// Do not sync between 57 minutes past the hour and 4 minutes past the next hour.
-			Logger.info(`Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...`);
+			Logger.info({ message: `Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...` });
 			return;
 		}
 
 		if (currentMinutesAsNumber > 27 && currentMinutesAsNumber < 34) {
 			// Do not sync between 27 minutes and 34 minutes past the hour.
-			Logger.info(`Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...`);
+			Logger.info({ message: `Now is "${currentMinutesAsNumber}" minutes. Syncing is not allowed at this time. Exiting...` });
 			return;
 		}
 
@@ -64,12 +63,12 @@ export async function syncRides() {
 		// everything and copy everything again than checking if each individual
 		// item is present, updated or orphan in the original MongoDB collection.
 
-		Logger.info('Connecting to databases...');
+		Logger.info({ message: 'Connecting to databases...' });
 
 		await BRIDGEDB.connect();
 		const ridesCollection = await rides.getCollection();
 
-		Logger.info('Rebuilding table...');
+		Logger.info({ message: 'Rebuilding table...' });
 
 		await dropExistingTable();
 		await createTableFromExample(sampleRide);
@@ -100,7 +99,7 @@ export async function syncRides() {
 			batch.push(parseRide(ride));
 			if (batch.length >= BATCH_SIZE) {
 				await insertBatch(batch);
-				Logger.info(`Inserted ${count} rides so far...`);
+				Logger.info({ message: `Inserted ${count} rides so far...` });
 				count += batch.length;
 				batch = [];
 			}
@@ -108,7 +107,7 @@ export async function syncRides() {
 
 		if (batch.length > 0) {
 			await insertBatch(batch);
-			Logger.info(`Inserted remaining ${batch.length} rides. Total: ${count + batch.length}.`);
+			Logger.info({ message: `Inserted remaining ${batch.length} rides. Total: ${count + batch.length}.` });
 		}
 
 		//
@@ -123,8 +122,8 @@ export async function syncRides() {
 
 		//
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
-		Logger.info('Retrying in 10 seconds...');
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.info({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => process.exit(1), 10000);
 	}
 }

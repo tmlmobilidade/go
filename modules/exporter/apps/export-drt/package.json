@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"@carrismetropolitana/api-types": "20260509.2134.54",
+		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
