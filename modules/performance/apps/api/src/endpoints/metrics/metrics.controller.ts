@@ -136,14 +136,7 @@ export class MetricsController {
 			const metricDocs = (await metrics.findMany(query)) as Metric[];
 
 			if (!metricDocs || metricDocs.length === 0) {
-				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Metric not found');
-				Logger.issue('error', error, {
-					action: 'getMetric',
-					feature: 'metrics',
-					request,
-					value: id,
-				});
-				throw error;
+				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Metric not found');
 			}
 
 			// Apply date filtering
@@ -159,15 +152,8 @@ export class MetricsController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			Logger.error('Error retrieving metric:', error);
-			const err = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve metric');
-			Logger.issue('error', err, {
-				action: 'getMetric',
-				feature: 'metrics',
-				request,
-				value: id,
-			});
-			throw err;
+			Logger.error({ error, message: 'Error retrieving metric' });
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve metric');
 		}
 	}
 }

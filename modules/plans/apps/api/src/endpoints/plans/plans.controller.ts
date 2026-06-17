@@ -4,7 +4,6 @@ import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { files, type Filter, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { type CreateFileDto, type CreatePlanDto, File as FileType, HashablePlanMetadata, PermissionCatalog, type Plan, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
 import { createHash } from 'node:crypto';
 
@@ -24,14 +23,7 @@ export class PlansController {
 		const planData = await plans.findById(request.params.id);
 		const originalFileId = planData.operation_file_id;
 		if (!planData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-			Logger.issue('error', error, {
-				action: 'changeGtfsPlan',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
 		// Check if the user has permission to change the GTFS of the Plan
@@ -45,27 +37,13 @@ export class PlansController {
 
 		// Throw an error if the user is not authorized
 		if (!hasPermissionChangeGtfsPlan) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to change the GTFS of the plan.');
-			Logger.issue('error', error, {
-				action: 'changeGtfsPlan',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to change the GTFS of the plan.');
 		}
 
 		// For a given validation ID, get the validation data
 		const validationData = await gtfsValidations.findById(request.body.validation_id);
 		if (!validationData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
-			Logger.issue('error', error, {
-				action: 'changeGtfsPlan',
-				feature: 'plans',
-				request,
-				value: request.body.validation_id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
 		}
 
 		// Create a new MongoDB transaction to manage the GTFS change
@@ -147,14 +125,7 @@ export class PlansController {
 		const validationData = await gtfsValidations.findById(request.body.validation_id);
 
 		if (!validationData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'plans',
-				request,
-				value: request.body.validation_id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
 		//
@@ -274,14 +245,7 @@ export class PlansController {
 		const plan = await plans.findById(id);
 
 		if (!plan) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'plans',
-				request,
-				value: id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
 		//
@@ -295,14 +259,7 @@ export class PlansController {
 			scope: PermissionCatalog.all.plans.scope,
 			value: plan.gtfs_agency.agency_id,
 		})) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: delete plan');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'plans',
-				request,
-				value: id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: delete plan');
 		}
 
 		//
@@ -321,14 +278,7 @@ export class PlansController {
 		// Get the Plan from the database
 		const planData = await plans.findById(request.params.id);
 		if (!planData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-			Logger.issue('error', error, {
-				action: 'downloadPlanOperationFileById',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
 		// Check if the user has permission to read the Plan
@@ -340,40 +290,19 @@ export class PlansController {
 			value: planData.gtfs_agency.agency_id,
 		});
 		if (!hasPermissionReadPlan) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
-			Logger.issue('error', error, {
-				action: 'downloadPlanOperationFileById',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
 		}
 
 		// Fetch the file associated with the plan
 		const foundFileData = await files.findById(planData.operation_file_id);
 		if (!foundFileData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan operation file not found');
-			Logger.issue('error', error, {
-				action: 'downloadPlanOperationFileById',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan operation file not found');
 		}
 
 		// Stream the file in the given URL to the client
 		const storageServiceResponse = await fetch(foundFileData.url);
 		if (!storageServiceResponse.ok || !storageServiceResponse.body) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
-			Logger.issue('error', error, {
-				action: 'downloadPlanOperationFileById',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
 		}
 
 		// Set headers and pipe the response body to the client
@@ -424,13 +353,7 @@ export class PlansController {
 			const filteredPlans = await plans.findMany(filters, { sort: { created_at: -1 } });
 
 			if (!filteredPlans) {
-				const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plans not found');
-				Logger.issue('error', error, {
-					action: 'getAll',
-					feature: 'plans',
-					request,
-				});
-				throw error;
+				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plans not found');
 			}
 
 			return reply.send({ data: filteredPlans, error: null, statusCode: HTTP_STATUS.OK });
@@ -460,14 +383,7 @@ export class PlansController {
 		const planData = await plans.findById(request.params.id);
 
 		if (!planData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
 		//
@@ -482,14 +398,7 @@ export class PlansController {
 		});
 
 		if (!hasPermissionReadPlan) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
 		}
 
 		//
@@ -512,14 +421,7 @@ export class PlansController {
 	static async getDrtModel(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const file = await files.findById(`drt-model-${request.params.id}`);
 		if (!file) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'DRT model file not found');
-			Logger.issue('error', error, {
-				action: 'getDrtModel',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'DRT model file not found');
 		}
 
 		// Redirect to the file download url
@@ -540,14 +442,7 @@ export class PlansController {
 		const planData = await plans.findById(request.params.id);
 
 		if (!planData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-			Logger.issue('error', error, {
-				action: 'getPlanOperationFileById',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
 		//
@@ -562,14 +457,7 @@ export class PlansController {
 		});
 
 		if (!hasPermissionReadPlan) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
-			Logger.issue('error', error, {
-				action: 'getPlanOperationFileById',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
 		}
 
 		//
@@ -578,14 +466,7 @@ export class PlansController {
 		const fileData = await files.findById(planData.operation_file_id);
 
 		if (!fileData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan operation file not found');
-			Logger.issue('error', error, {
-				action: 'getPlanOperationFileById',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan operation file not found');
 		}
 
 		return reply.send({
@@ -606,14 +487,7 @@ export class PlansController {
 		// Get the Plan from the database
 		const planData = await plans.findById(request.params.id);
 		if (!planData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
 		// Check if the user has permission to toggle lock the Plan
@@ -625,28 +499,14 @@ export class PlansController {
 			value: planData.gtfs_agency.agency_id,
 		});
 		if (!hasPermissionToggleLockPlan) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock plan');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock plan');
 		}
 
 		// If authorized, toggle the lock status of the plan
 		await plans.toggleLockById(request.params.id);
 		const foundPlan = await plans.findById(request.params.id);
 		if (!foundPlan) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
 		reply.send({ data: foundPlan, error: null, statusCode: HTTP_STATUS.OK });
@@ -666,14 +526,7 @@ export class PlansController {
 		let planData = await plans.findById(request.params.id);
 
 		if (!planData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
 		//
@@ -688,14 +541,7 @@ export class PlansController {
 		});
 
 		if (!hasPermissionReadPlan) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this plan.');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this plan.');
 		}
 
 		//
@@ -705,14 +551,7 @@ export class PlansController {
 		const validatedFeedEndDate = validateOperationalDate(request.body.gtfs_feed_info?.feed_end_date);
 
 		if (validatedFeedStartDate > validatedFeedEndDate) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Feed start date cannot be after feed end date');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'plans',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Feed start date cannot be after feed end date');
 		}
 
 		//
@@ -734,14 +573,7 @@ export class PlansController {
 			});
 
 			if (!hasPermissionUpdateFeedInfoDates) {
-				const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the feed info dates.');
-				Logger.issue('error', error, {
-					action: 'update',
-					feature: 'plans',
-					request,
-					value: request.params.id,
-				});
-				throw error;
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the feed info dates.');
 			}
 
 			//
@@ -824,14 +656,7 @@ export class PlansController {
 			});
 
 			if (!hasPermissionUpdatePcgiLegacy) {
-				const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the PCGI legacy field.');
-				Logger.issue('error', error, {
-					action: 'update',
-					feature: 'plans',
-					request,
-					value: request.params.id,
-				});
-				throw error;
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the PCGI legacy field.');
 			}
 
 			//

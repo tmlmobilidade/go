@@ -29,14 +29,8 @@ export class NetworkController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			Logger.error('Error retrieving lines:', error);
-			const err = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve lines');
-			Logger.issue('error', err, {
-				action: 'getUniqueLineIds',
-				feature: 'network',
-				request,
-			});
-			throw err;
+			Logger.error({ error, message: 'Error retrieving lines' });
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve lines');
 		}
 	}
 
@@ -59,14 +53,8 @@ export class NetworkController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			Logger.error('Error retrieving patterns:', error);
-			const err = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve patterns');
-			Logger.issue('error', err, {
-				action: 'getUniquePatternIds',
-				feature: 'network',
-				request,
-			});
-			throw err;
+			Logger.error({ error, message: 'Error retrieving patterns' });
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to retrieve patterns');
 		}
 	}
 
