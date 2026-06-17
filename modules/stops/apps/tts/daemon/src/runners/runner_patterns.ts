@@ -1,19 +1,17 @@
 /* * */
 
-import { SETTINGS } from '@/config/settings.js';
-import { googleCloudTtsApi } from '@/services/googleCloudTtsApi.js';
-import { Tracker, type TrackerItem } from '@/services/Tracker.js';
-import { type Line, type Pattern } from '@carrismetropolitana/api-types/network';
-import tts from '@carrismetropolitana/tts';
-import LOGGER from '@helperkits/logger';
+import { makePattern } from '@/lib/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { type HubLine, type HubPattern } from '@tmlmobilidade/types';
 
+import { Tracker, type TrackerItem } from '../services/Tracker.js';
 /* * */
 
 export async function runnerPatterns() {
 	//
 
-	LOGGER.title(`TTS PATTERNS`);
+	Logger.title(`TTS PATTERNS`);
 	const globalTimer = new TIMETRACKER();
 
 	// Setup tracker
@@ -22,8 +20,8 @@ export async function runnerPatterns() {
 
 	// Get all lines
 	console.log('* Fetching all lines from API...');
-	const allLinesResponse = await fetch('https://api.carrismetropolitana.pt/v2/lines');
-	const allLinesData = await allLinesResponse.json() as Line[];
+	const allLinesResponse = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/network/lines');
+	const allLinesData = await allLinesResponse.json() as HubLine[];
 
 	// Log progress
 	console.log(`* Preparing ${allLinesData.length} lines...`);
@@ -40,10 +38,10 @@ export async function runnerPatterns() {
 			//
 
 			const patternResponse = await fetch(`https://api.carrismetropolitana.pt/v2/patterns/${patternId}`);
-			const patternGroup = await patternResponse.json() as Pattern[];
+			const patternGroup = await patternResponse.json() as HubPattern[];
 			const patternData = patternGroup.pop();
 
-			const patternTts = tts.makePattern(lineData.short_name, patternData.headsign);
+			const patternTts = makePattern(lineData.short_name, patternData.headsign);
 
 			// Check if tracker already has this entry,
 			// and if it differs from the generated TTS.
@@ -51,13 +49,8 @@ export async function runnerPatterns() {
 			const ttsHasChanged = patternTts !== trackerEntry?.tts;
 
 			if (ttsHasChanged) {
-				await googleCloudTtsApi({
-					dirname: `${SETTINGS.OUTPUTS_DIRNAME}/patterns`,
-					filename: patternId,
-					replaceIfExists: true,
-					string: patternTts,
-				});
-				LOGGER.info(`[${lineIndex}/${allLinesData.length}] [${patternIndex}/${lineData.pattern_ids.length}] Generated | Line ${lineData.id} | Pattern ${patternData.id} | ${patternTts}`);
+				// TODO: Send to new endpoint
+				Logger.info(`[${lineIndex}/${allLinesData.length}] [${patternIndex}/${lineData.pattern_ids.length}] Generated | Line ${lineData._id} | Pattern ${patternData._id} | ${patternTts}`);
 			}
 
 			trackerDataUpdated.push({ id: patternId, tts: patternTts });
@@ -77,7 +70,7 @@ export async function runnerPatterns() {
 
 	//
 
-	LOGGER.success(`Processed ${trackerDataUpdated.length} "pattern" items (${globalTimer.get()}).`);
+	Logger.success(`Processed ${trackerDataUpdated.length} "pattern" items (${globalTimer.get()}).`);
 
 	//
 };

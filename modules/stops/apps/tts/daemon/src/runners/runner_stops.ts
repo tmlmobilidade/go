@@ -1,9 +1,11 @@
 /* * */
 
 import { makeStop } from '@/lib/index.js';
-import { Tracker, type TrackerItem } from '@/services/Tracker';
+import TIMETRACKER from '@helperkits/timer';
 import { Logger } from '@tmlmobilidade/logger';
 import { HubStop } from '@tmlmobilidade/types';
+
+import { Tracker, type TrackerItem } from '../services/Tracker.js';
 
 /* * */
 
@@ -43,7 +45,7 @@ export async function runnerStops() {
 
 		// Check if tracker already has this entry,
 		// and if it differs from the given TTS.
-		const trackerEntry = trackerData.find(item => item.id === stopData._id);
+		const trackerEntry = trackerData.find(item => item.id === stopData._id.toString());
 		const ttsHasChanged = stopTts !== trackerEntry?.tts;
 
 		if (ttsHasChanged && stopTts && stopTts !== '#N/A') {
@@ -51,7 +53,7 @@ export async function runnerStops() {
 		// TODO: Send to new endpoint
 		}
 
-		trackerDataUpdated.push({ id: stopData._id, tts: stopTts });
+		trackerDataUpdated.push({ id: stopData._id.toString(), tts: stopTts });
 
 		//
 	}

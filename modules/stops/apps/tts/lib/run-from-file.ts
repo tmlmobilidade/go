@@ -1,15 +1,15 @@
 /* * */
 
 import { makeStop } from '@/makeText.js';
-import { Stop } from '@carrismetropolitana/api-types/gtfs-core';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+import { HubStop } from '@tmlmobilidade/types';
 import fs from 'fs';
 import Papa from 'papaparse';
 
 /* CREATE TTS STOP NAME IN CSV */
 
-interface StopExtended extends Stop {
+interface HubStopExtended extends HubStop {
 	airport: string
 	bike_parking: string
 	bike_sharing: string
@@ -24,13 +24,13 @@ interface StopExtended extends Stop {
 (async () => {
 	//
 
-	LOGGER.title(`TTS TEXT`);
+	Logger.title(`TTS TEXT`);
 	const globalTimer = new TIMETRACKER();
 
 	// Import stops.txt file
 	console.log('* Reading stops.txt file from disk...');
 	const allStopsTxt = fs.readFileSync('stops.txt', { encoding: 'utf8' });
-	const allStopsPapa = Papa.parse<StopExtended>(allStopsTxt, { header: true });
+	const allStopsPapa = Papa.parse<HubStopExtended>(allStopsTxt, { header: true });
 	const allStopsData = allStopsPapa.data;
 
 	// Define variable to hold results
@@ -45,28 +45,28 @@ interface StopExtended extends Stop {
 	for (const [index, stop] of allStopsData.entries()) {
 		//
 		process.stdout.clearLine(0);
-		process.stdout.write(`* Processing stop ${stop.stop_id} (${index}/${allStopsData.length})`);
+		process.stdout.write(`* Processing stop ${stop._id} (${index}/${allStopsData.length})`);
 		process.stdout.cursorTo(0);
 
-		// Assemble transfer modes
-		const modes = (({
-			airport,
-			bike_sharing,
-			boat,
-			light_rail,
-			subway,
-			train,
-		}) => ({ airport, bike_sharing, boat, light_rail, subway, train }))(stop);
+		const modes = {
+			airport: stop.flags.some(flag => flag.short_name === 'airport'),
+			bike_sharing: stop.flags.some(flag => flag.short_name === 'bike_sharing'),
+			boat: stop.flags.some(flag => flag.short_name === 'boat'),
+			car_parking: stop.flags.some(flag => flag.short_name === 'car_parking'),
+			light_rail: stop.flags.some(flag => flag.short_name === 'light_rail'),
+			subway: stop.flags.some(flag => flag.short_name === 'subway'),
+			train: stop.flags.some(flag => flag.short_name === 'train'),
+		};
 
-		const ttsStopName = makeStop(stop.stop_name, modes);
+		const ttsStopName = makeStop(stop.name, modes);
 
 		ttsSummary.push({
-			stop_id: stop.stop_id,
-			stop_name: stop.stop_name,
+			stop_id: stop._id,
+			stop_name: stop.name,
 			tts_stop_name: ttsStopName,
 		});
 
-		if (stop.tts_stop_name != ttsStopName) {
+		if (stop.tts_stop_name !== ttsStopName) {
 			stopsDiff.push(stop);
 			stopsDiff.push({ ...stop, tts_stop_name: ttsStopName });
 		}
@@ -94,7 +94,7 @@ interface StopExtended extends Stop {
 
 	//
 
-	LOGGER.success(`Processed ${ttsSummary.length} items (${globalTimer.get()}).`);
+	Logger.success(`Processed ${ttsSummary.length} items (${globalTimer.get()}).`);
 
 	//
 })();
