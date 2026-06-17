@@ -14,7 +14,7 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 
 	const transactionDateValue = Dates
 		.fromISO(doc.payload.transactionInfo.transactionDate)
-		.setZone('Europe/Lisbon', 'rebase_utc');
+		.setZone('utc', 'rebase_utc');
 
 	//
 	// Validate the document structure and content

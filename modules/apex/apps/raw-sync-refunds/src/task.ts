@@ -62,7 +62,7 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 		countDestinationDbFn: async () => {
 			return await simplifiedApexOnBoardRefundsNew.count(
 				'*',
-				'created_at >= $1 AND created_at <= $2',
+				'created_at >= fromUnixTimestamp64Milli($1) AND created_at <= fromUnixTimestamp64Milli($2)',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
 		},
@@ -74,15 +74,15 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 
 		deleteDestinationDbFn: async (ids: string[]) => {
 			await simplifiedApexOnBoardRefundsNew.delete(
-				'_id IN ($1)',
-				{ 1: ids.map(id => `'${id}'`).join(', ') },
+				'_id IN $1',
+				{ 1: ids },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexOnBoardRefundsNew.distinct(
 				'_id',
-				'created_at >= $1 AND created_at <= $2',
+				'created_at >= fromUnixTimestamp64Milli($1) AND created_at <= fromUnixTimestamp64Milli($2)',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
 			);
 		},

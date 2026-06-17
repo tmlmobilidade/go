@@ -56,7 +56,7 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
 	 * @returns A promise that resolves when the delete operation is complete.
 	 */
-	public async delete(where: string, params?: Record<string, number | string>): Promise<void> {
+	public async delete(where: string, params?: Record<string, number | string | string[]>): Promise<void> {
 		const preparedQuery = preparePositionalQueryParams(`DELETE FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
 		await this.client.command({
 			query: preparedQuery.query,
