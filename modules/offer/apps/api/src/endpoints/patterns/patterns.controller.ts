@@ -5,6 +5,7 @@ import { mergePatternWithEventRules } from '@/utils/rules.js';
 import { createImportedStopResolver } from '@/utils/stops.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { lines, patterns, stops } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CreatePatternDto, NoteComment, type Pattern, PermissionCatalog, PopulatedPath, PopulatedPattern, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
@@ -234,8 +235,16 @@ export class PatternsController {
 		// Convert GTFS shape points to GeoJSON
 
 		const sortedShapePoints = request.body.shape.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
-		const shapeCoordinates = sortedShapePoints.map(point => [point.shape_pt_lon, point.shape_pt_lat]);
+		const shapeCoordinates = sortedShapePoints.map(point => [point.shape_pt_lon, point.shape_pt_lat] as [number, number]);
 		const shapeExtension = sortedShapePoints[sortedShapePoints.length - 1]?.shape_dist_traveled || 0;
+		const shapeGeoJson = {
+			geometry: {
+				coordinates: shapeCoordinates,
+				type: 'LineString' as const,
+			},
+			properties: {},
+			type: 'Feature' as const,
+		};
 
 		//
 		// Process path with stop population and calculations
@@ -297,15 +306,9 @@ export class PatternsController {
 			parameters: [defaultParameter],
 			path: populatedPath,
 			shape: {
+				encoded_polyline: encodePolylineFromGeoJson(shapeGeoJson),
 				extension: Math.round(shapeExtension),
-				geojson: {
-					geometry: {
-						coordinates: shapeCoordinates,
-						type: 'LineString',
-					},
-					properties: {},
-					type: 'Feature',
-				},
+				geojson: shapeGeoJson,
 			},
 		};
 

@@ -57,6 +57,7 @@ const ShapeAnchorSchema = z.object({
 const ShapeLegSchema = z.object({
 	distance: z.number(),
 	duration: z.number(),
+	encoded_polyline: z.string().optional(),
 	from_index: z.number(),
 	geojson: z.object({
 		geometry: z.object({
@@ -77,6 +78,7 @@ const ShapeLegSchema = z.object({
 
 export const ShapeSchema = z.object({
 	anchors: z.array(ShapeAnchorSchema).optional(),
+	encoded_polyline: z.string().optional(),
 	extension: z.number(),
 	geojson: z.object({
 		geometry: z.object({
