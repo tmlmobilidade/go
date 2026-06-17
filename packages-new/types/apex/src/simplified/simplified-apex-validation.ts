@@ -1,7 +1,7 @@
 /* * */
 
-import { ApexValidationStatus, ApexValidationStatusSchema } from '@/simplified/apex-validation-status.js';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { ApexValidationStatusSchema } from '@/utils/validations-status.js';
+import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -10,7 +10,8 @@ export const SimplifiedApexValidationSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
-	card_serial_number: z.string(),
+	calendar_date: CalendarDateSchema,
+	card_serial_number: z.bigint().nullable().default(null),
 	category: z.enum(['prepaid', 'subscription', 'on_board_sale']).nullable(),
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
@@ -18,19 +19,20 @@ export const SimplifiedApexValidationSchema = z.object({
 	is_ok: z.boolean(),
 	is_ok_pcgi: z.boolean(),
 	is_passenger: z.boolean(),
-	line_id: z.string(),
+	line_id: z.string().nullable().default(null),
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
 	on_board_refund_id: z.string().nullable().default(null),
 	on_board_sale_id: z.string().nullable().default(null),
-	pattern_id: z.string(),
-	product_id: z.string(),
+	pattern_id: z.string().nullable().default(null),
+	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
-	stop_id: z.string(),
+	stop_id: z.string().nullable().default(null),
 	trip_id: z.string().nullable().default(null),
-	units_qty: z.number().nullable(),
+	units_qty: z.number().nullable().default(null),
+	updated_at: UnixTimestampSchema,
 	validation_status: ApexValidationStatusSchema,
-	vehicle_id: z.number(),
+	vehicle_id: z.number().nullable().default(null),
 });
 
 export const UpdateSimplifiedApexValidationSchema = SimplifiedApexValidationSchema.partial();
@@ -44,13 +46,3 @@ export const UpdateSimplifiedApexValidationSchema = SimplifiedApexValidationSche
  */
 export type SimplifiedApexValidation = z.infer<typeof SimplifiedApexValidationSchema>;
 export type UpdateSimplifiedApexValidationDto = z.infer<typeof UpdateSimplifiedApexValidationSchema>;
-
-/**
- * Validation statuses that are considered valid for the card holder to travel.
- */
-export const ALLOWED_VALIDATION_STATUSES = [
-	ApexValidationStatus._0_ContractValid,
-	ApexValidationStatus._4_CardInWhiteList,
-	ApexValidationStatus._5_ProfileInWhiteList,
-	ApexValidationStatus._6_Interchange,
-];

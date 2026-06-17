@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -10,8 +10,9 @@ export const SimplifiedApexOnBoardRefundSchema = z.object({
 	agency_id: z.string(),
 	apex_version: z.string(),
 	block_id: z.string().nullable().default(null),
+	calendar_date: CalendarDateSchema,
 	card_physical_type: z.number(),
-	card_serial_number: z.string(),
+	card_serial_number: z.bigint().nullable().default(null),
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	duty_id: z.string().nullable().default(null),
@@ -27,6 +28,7 @@ export const SimplifiedApexOnBoardRefundSchema = z.object({
 	received_at: UnixTimestampSchema,
 	stop_id: z.string().nullable().default(null),
 	trip_id: z.string().nullable().default(null),
+	updated_at: UnixTimestampSchema,
 	validation_id: z.string().nullable().default(null),
 	vehicle_id: z.number().nullable().default(null),
 });

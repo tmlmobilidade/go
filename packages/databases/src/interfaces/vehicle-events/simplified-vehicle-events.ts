@@ -5,13 +5,13 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema, ClickHouseTableEngine } from '@/types/index.js';
+import { type ClickHouseTableSchema, ClickHouseTableEngine } from '@/types/index.js';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseSchema<SimplifiedVehicleEvent> = {
+const tableSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'String' },
 	created_at: { type: 'Int64' },
@@ -42,7 +42,7 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	private static _instance: null | Promise<SimplifiedVehicleEventsNewClass> = null;
 
 	public override readonly databaseName = 'operation';
-	public override readonly engine: ClickHouseTableEngine = 'ReplacingMergeTree';
+	public override readonly engine: ClickHouseTableEngine<SimplifiedVehicleEvent> = 'ReplacingMergeTree(created_at)';
 	public override readonly orderBy = '(operational_date, trip_id, vehicle_id, agency_id, created_at)';
 	public override readonly partitionBy = 'toYYYYMM(fromUnixTimestamp64Milli(created_at))';
 	public override readonly primaryKey = '(operational_date, trip_id, vehicle_id)';

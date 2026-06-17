@@ -1,7 +1,7 @@
 /* * */
 
 import { simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
-import { parseRawApexTransactionRefundV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -32,7 +32,7 @@ export async function processRawApexTransactionRefund(databaseOperation) {
 
 	try {
 		let parseResult: null | SimplifiedApexOnBoardRefund = null;
-		if (databaseOperation.fullDocument.version === 'refund-3.0') parseResult = parseRawApexTransactionRefundV30(databaseOperation.fullDocument);
+		if (databaseOperation.fullDocument.version === 'refund-3.0') parseResult = parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(databaseOperation.fullDocument);
 		if (!parseResult) return;
 		await writer.write(parseResult);
 	} catch (error) {

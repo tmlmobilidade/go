@@ -14,11 +14,7 @@ interface ApexValidationStatusTagProps {
 export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps) {
 	//
 
-	if (!value && value !== 0) {
-		return <Tag label="N/A" variant="muted" />;
-	}
-
-	if (value === 0) {
+	if (value === '0') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'success' },
@@ -28,7 +24,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 1) {
+	if (value === '1') {
 		return (
 			<TagGroup tags={[
 				{ filled: false, label: value, variant: 'muted' },
@@ -38,7 +34,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 2) {
+	if (value === '2') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'danger' },
@@ -48,7 +44,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 3) {
+	if (value === '3') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'danger' },
@@ -58,7 +54,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 4) {
+	if (value === '4') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'success' },
@@ -68,7 +64,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 5) {
+	if (value === '5') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'success' },
@@ -78,7 +74,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 6) {
+	if (value === '6') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'success' },
@@ -88,7 +84,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 7) {
+	if (value === '7') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'warning' },
@@ -98,7 +94,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 8) {
+	if (value === '8') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'danger' },
@@ -108,7 +104,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 9) {
+	if (value === '9') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'danger' },
@@ -118,7 +114,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 10) {
+	if (value === '10') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'danger' },
@@ -128,7 +124,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 11) {
+	if (value === '11') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'danger' },
@@ -138,7 +134,7 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 		);
 	}
 
-	if (value === 12) {
+	if (value === '12') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'danger' },
@@ -147,6 +143,8 @@ export function ApexValidationStatusTag({ value }: ApexValidationStatusTagProps)
 			/>
 		);
 	}
+
+	return <Tag label="N/A" variant="muted" />;
 
 	//
 }

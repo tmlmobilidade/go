@@ -1,6 +1,6 @@
 /* * */
 
-import { syncTransactionEntities } from '@/sync-transaction-entities.js';
+import { syncPcgiTransactionEntities } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
@@ -30,7 +30,7 @@ async function main() {
 		await performInTimeChunks({
 			endDate: Dates.now('Europe/Lisbon').set({ day: 12, hour: 10, millisecond: 0, minute: 0, month: 6, second: 0, year: 2026 }).unix_timestamp,
 			onChunk: async (chunk) => {
-				await syncTransactionEntities(chunk);
+				await syncPcgiTransactionEntities(chunk);
 			},
 			splitBy: { minutes: 10 },
 			startDate: earliestDate.unix_timestamp,

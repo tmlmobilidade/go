@@ -2,7 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexInspectionsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionInspectionV20 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexInspection } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -103,10 +103,14 @@ export async function syncApexInspections(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexInspection = null;
-			if (sourceDbDocument.version === 'inspection-2.0') parseResult = parseRawApexTransactionInspectionV20(sourceDbDocument);
-			if (!parseResult) return;
-			await writer.write(parseResult);
+			try {
+				let parseResult: null | SimplifiedApexInspection = null;
+				if (sourceDbDocument.version === 'inspection-2.0') parseResult = parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection(sourceDbDocument);
+				if (!parseResult) return;
+				await writer.write(parseResult);
+			} catch (error) {
+				Logger.error(`Error transforming APEX Inspection: ${sourceDbDocument._id} Reason: ${error.message}`);
+			}
 		},
 
 	});
