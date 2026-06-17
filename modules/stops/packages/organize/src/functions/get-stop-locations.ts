@@ -1,7 +1,6 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Logger } from '@tmlmobilidade/logger';
 import { type District, type Locality, type Municipality, type ParishFeature } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 
@@ -48,7 +47,7 @@ export async function getStopLocations(lat: number, lon: number): Promise<GetSto
 	const { data: locationsData } = await fetchData<LocationsApiResponse>(locationsApiUrl);
 
 	if (!locationsData) {
-		Logger.info({ message: `No locations data found for coordinates ${lat}, ${lon}.` });
+		console.log({ message: `No locations data found for coordinates ${lat}, ${lon}.` });
 		return result;
 	}
 

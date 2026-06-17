@@ -17,7 +17,6 @@
 	"dependencies": {
 		"@carrismetropolitana/tts": "20250418.51.6",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
