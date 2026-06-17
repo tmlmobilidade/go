@@ -2,13 +2,14 @@
 
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
-import { IconBus, IconBusStop, IconHeadset, IconRoute } from '@tabler/icons-react';
+import { IconBus, IconBusStop, IconRoute, IconSteeringWheel } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface FeedbackReasonsSheetProps {
+	agencyId?: string
 	description: string
 	entityType: FeedbackEntityType
 	heading: string
@@ -22,20 +23,20 @@ interface FeedbackReasonsSheetProps {
 function getReasonCategoryIcon(category: string) {
 	if (category === 'line_service') return <IconRoute aria-hidden={true} size={22} stroke={2} />;
 	if (category === 'vehicle') return <IconBus aria-hidden={true} size={22} stroke={2} />;
-	if (category === 'support') return <IconHeadset aria-hidden={true} size={22} stroke={2} />;
+	if (category === 'driver') return <IconSteeringWheel aria-hidden={true} size={22} stroke={2} />;
 	if (category === 'stop') return <IconBusStop aria-hidden={true} size={22} stroke={2} />;
 	return null;
 }
 
 /* * */
 
-export function FeedbackReasonsSheet({ description, entityType, heading, onClose, onSelectCategory, opened }: FeedbackReasonsSheetProps) {
+export function FeedbackReasonsSheet({ agencyId, description, entityType, heading, onClose, onSelectCategory, opened }: FeedbackReasonsSheetProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const reasonGroups = getFeedbackReasonGroups(entityType);
+	const reasonGroups = getFeedbackReasonGroups(entityType, agencyId);
 
 	//
 	// B. Render component

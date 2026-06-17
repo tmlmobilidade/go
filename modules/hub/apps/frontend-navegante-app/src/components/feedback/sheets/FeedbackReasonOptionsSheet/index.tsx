@@ -8,6 +8,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface FeedbackReasonOptionsSheetProps {
+	agencyId?: string
 	category: FeedbackReasonCategory
 	entityType: FeedbackEntityType
 	onClose: () => void
@@ -18,13 +19,13 @@ interface FeedbackReasonOptionsSheetProps {
 
 /* * */
 
-export function FeedbackReasonOptionsSheet({ category, entityType, onClose, onToggleReason, opened, selectedValues }: FeedbackReasonOptionsSheetProps) {
+export function FeedbackReasonOptionsSheet({ agencyId, category, entityType, onClose, onToggleReason, opened, selectedValues }: FeedbackReasonOptionsSheetProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const reasonGroup = getFeedbackReasonGroups(entityType)[category];
+	const reasonGroup = getFeedbackReasonGroups(entityType, agencyId)[category];
 	const hasReachedSelectionLimit = selectedValues.length >= 2;
 
 	//

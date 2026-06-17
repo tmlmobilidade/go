@@ -1,18 +1,14 @@
 'use client';
 
 import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
-import { FeedbackImprovementPrompt } from '@/components/feedback/form/FeedbackImprovementPrompt';
-import { FeedbackMoodSelector } from '@/components/feedback/form/FeedbackMoodSelector';
+import { FeedbackModal } from '@/components/feedback/form/FeedbackModal';
 import { FeedbackStartPrompt } from '@/components/feedback/form/FeedbackStartPrompt';
 import { FeedbackReasonOptionsSheet } from '@/components/feedback/sheets/FeedbackReasonOptionsSheet';
 import { FeedbackReasonsSheet } from '@/components/feedback/sheets/FeedbackReasonsSheet';
 import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown';
-import { Modal } from '@mantine/core';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PublicFeedback } from '@tmlmobilidade/types';
 import { useState } from 'react';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -39,7 +35,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	const [selectedReasonValues, setSelectedReasonValues] = useState<string[]>([]);
 	const [selectedMood, setSelectedMood] = useState<null | PublicFeedback['mood']>(null);
 
-	const reasonGroups = getFeedbackReasonGroups(entityType);
+	const reasonGroups = getFeedbackReasonGroups(entityType, agencyId);
 	const reasonCategories = Object.keys(reasonGroups) as FeedbackReasonCategory[];
 	const isAnyReasonsSheetOpen = isHappyReasonsSheetOpen || isUnhappyReasonsSheetOpen || activeReasonOptionsSheet !== null;
 	const feedbackCooldown = useFeedbackCooldown(entityType === 'line' ? entityId : undefined);
@@ -130,36 +126,18 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 				<FeedbackStartPrompt onClick={() => setIsFeedbackModalOpen(true)} />
 			)}
 
-			<Modal
-				centered={true}
-				closeOnClickOutside={false}
-				lockScroll={!isAnyReasonsSheetOpen}
+			<FeedbackModal
+				isAnyReasonsSheetOpen={isAnyReasonsSheetOpen}
 				onClose={handleCloseFeedbackModal}
+				onOpenHappyReasonsSheet={handleOpenHappyReasonsSheet}
+				onSelectHappy={() => setSelectedMood('happy')}
+				onSelectUnhappy={handleSelectUnhappy}
 				opened={isFeedbackModalOpen}
-				size="sm"
-				title="Feedback"
-				zIndex={isAnyReasonsSheetOpen ? 90 : undefined}
-				classNames={{
-					body: styles.modalBody,
-					close: styles.modalClose,
-					content: styles.modalContent,
-					header: styles.modalHeader,
-					overlay: styles.modalOverlay,
-					title: styles.modalTitle,
-				}}
-			>
-				<FeedbackMoodSelector
-					onSelectHappy={() => setSelectedMood('happy')}
-					onSelectUnhappy={handleSelectUnhappy}
-					selectedMood={selectedMood}
-				>
-					{selectedMood === 'happy' && (
-						<FeedbackImprovementPrompt onClick={handleOpenHappyReasonsSheet} />
-					)}
-				</FeedbackMoodSelector>
-			</Modal>
+				selectedMood={selectedMood}
+			/>
 
 			<FeedbackReasonsSheet
+				agencyId={agencyId}
 				description="Ajude-nos a melhorar o serviço."
 				entityType={entityType}
 				heading="O que podemos melhorar?"
@@ -169,6 +147,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			/>
 
 			<FeedbackReasonsSheet
+				agencyId={agencyId}
 				description="Ajude-nos a melhorar o serviço."
 				entityType={entityType}
 				heading="Com o que está insatisfeito?"
@@ -180,6 +159,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			{reasonCategories.map(category => (
 				<FeedbackReasonOptionsSheet
 					key={category}
+					agencyId={agencyId}
 					category={category}
 					entityType={entityType}
 					onClose={handleCloseReasonOptionsSheet}

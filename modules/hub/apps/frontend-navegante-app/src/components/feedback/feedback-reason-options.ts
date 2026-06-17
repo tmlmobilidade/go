@@ -11,8 +11,18 @@ export interface FeedbackReasonOption {
 /* * */
 
 export const FEEDBACK_LINE_REASON_GROUPS = {
+	driver: {
+		heading: 'Motorista/Condutor',
+		options: [
+			{ label: 'Falta de apoio ao passageiro', value: 'lack_of_passenger_support' },
+			{ label: 'Atendimento rude', value: 'rude_staff' },
+			{ label: 'Má conduta do motorista', value: 'driver_bad_conduct' },
+			{ label: 'Embarque desorganizado', value: 'disorganized_boarding' },
+			{ label: 'Outro', value: 'other' },
+		],
+	},
 	line_service: {
-		heading: 'Linha/serviço',
+		heading: 'Linha/Serviço',
 		options: [
 			{ label: 'Passou adiantado', value: 'early' },
 			{ label: 'Passou atrasado', value: 'late' },
@@ -28,16 +38,6 @@ export const FEEDBACK_LINE_REASON_GROUPS = {
 			{ label: 'Percurso alterado sem aviso', value: 'route_changed_without_notice' },
 			{ label: 'Não parou na paragem', value: 'skipped_stop' },
 			{ label: 'Serviço inadequado', value: 'inadequate_service' },
-			{ label: 'Outro', value: 'other' },
-		],
-	},
-	support: {
-		heading: 'Atendimento',
-		options: [
-			{ label: 'Falta de apoio ao passageiro', value: 'lack_of_passenger_support' },
-			{ label: 'Atendimento rude', value: 'rude_staff' },
-			{ label: 'Má conduta do motorista', value: 'driver_bad_conduct' },
-			{ label: 'Embarque desorganizado', value: 'disorganized_boarding' },
 			{ label: 'Outro', value: 'other' },
 		],
 	},
@@ -58,6 +58,12 @@ export const FEEDBACK_LINE_REASON_GROUPS = {
 		],
 	},
 } as const satisfies Record<string, FeedbackReasonGroup>;
+
+const FEEDBACK_LINE_REASON_GROUPS_WITHOUT_DRIVER = Object.fromEntries(
+	Object.entries(FEEDBACK_LINE_REASON_GROUPS).filter(([category]) => category !== 'driver'),
+) satisfies Record<string, FeedbackReasonGroup>;
+
+const FEEDBACK_SUPPORT_AGENCY_IDS = new Set(['1', '41', '42', '43', '44', 'CM']);
 
 /* * */
 
@@ -95,6 +101,9 @@ export type FeedbackReasonCategory = keyof typeof FEEDBACK_LINE_REASON_GROUPS | 
 
 /* * */
 
-export function getFeedbackReasonGroups(entityType: FeedbackEntityType): Record<string, FeedbackReasonGroup> {
-	return FEEDBACK_REASON_GROUPS[entityType];
+export function getFeedbackReasonGroups(entityType: FeedbackEntityType, agencyId?: string): Record<string, FeedbackReasonGroup> {
+	if (entityType === 'stop') return FEEDBACK_STOP_REASON_GROUPS;
+	if (agencyId && FEEDBACK_SUPPORT_AGENCY_IDS.has(agencyId)) return FEEDBACK_LINE_REASON_GROUPS;
+
+	return FEEDBACK_LINE_REASON_GROUPS_WITHOUT_DRIVER;
 }
