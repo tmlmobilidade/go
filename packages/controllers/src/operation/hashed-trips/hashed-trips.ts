@@ -31,10 +31,14 @@ export class HashedTripsSharedController {
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
 		if (!ridesPermission['resources']?.agency_ids?.length) {
-			Logger.issue('info', 'No agency_ids found in permissions', {
-				action: 'getBatch',
-				feature: 'hashedTrips',
-				request,
+			Logger.issue({
+				context: {
+					action: 'getBatch',
+					feature: 'hashedTrips',
+					request,
+				},
+				level: 'info',
+				messageOrError: 'No agency_ids found in permissions',
 			});
 			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
 		}
@@ -72,7 +76,7 @@ export class HashedTripsSharedController {
 
 		const ridesBatch = await rides.aggregate(pipeline);
 
-		Logger.info(`HashedTripsSharedController.getBatch - ridesBatch count: ${ridesBatch?.length ?? 0}`);
+		Logger.info({ message: `HashedTripsSharedController.getBatch - ridesBatch count: ${ridesBatch?.length ?? 0}` });
 
 		//
 		// From the given batch of hashed_trip_ids,

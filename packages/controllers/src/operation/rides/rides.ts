@@ -34,10 +34,14 @@ export class RidesSharedController {
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
 		if (!ridesPermission['resources']?.agency_ids?.length) {
-			Logger.issue('info', 'No agency_ids found in permissions', {
-				action: 'getBatch',
-				feature: 'rides',
-				request,
+			Logger.issue({
+				context: {
+					action: 'getBatch',
+					feature: 'rides',
+					request,
+				},
+				level: 'info',
+				messageOrError: 'No agency_ids found in permissions',
 			});
 			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
 		}
@@ -121,11 +125,15 @@ export class RidesSharedController {
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
 		if (!ridesPermission['resources']?.agency_ids?.length) {
-			Logger.issue('info', 'No agency_ids found in permissions', {
-				action: 'getRideById',
-				feature: 'rides',
-				request,
-				value: request.params['id'],
+			Logger.issue({
+				context: {
+					action: 'getRideById',
+					feature: 'rides',
+					request,
+					value: request.params['id'],
+				},
+				level: 'info',
+				messageOrError: 'No agency_ids found in permissions',
 			});
 			return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
 		}
@@ -167,11 +175,15 @@ export class RidesSharedController {
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
 		if (!ridesPermission['resources']?.agency_ids?.length) {
-			Logger.issue('info', 'No agency_ids found in permissions', {
-				action: 'getRideByIds',
-				feature: 'rides',
-				request,
-				value: request.query['ids'],
+			Logger.issue({
+				context: {
+					action: 'getRideByIds',
+					feature: 'rides',
+					request,
+					value: request.query['ids'],
+				},
+				level: 'info',
+				messageOrError: 'No agency_ids found in permissions',
 			});
 			return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
 		}

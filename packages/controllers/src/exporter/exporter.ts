@@ -32,11 +32,15 @@ export class ExporterSharedController {
 		const fileExport = await fileExports.findById(id);
 		if (!fileExport) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'File export not found');
-			Logger.issue('error', error, {
-				action: 'download',
-				feature: 'exporter',
-				request,
-				value: id,
+			Logger.issue({
+				context: {
+					action: 'download',
+					feature: 'exporter',
+					request,
+					value: id,
+				},
+				level: 'error',
+				messageOrError: error,
 			});
 			throw error;
 		}
@@ -45,11 +49,15 @@ export class ExporterSharedController {
 		const foundFileData = await files.findById(fileExport.file_id);
 		if (!foundFileData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
-			Logger.issue('error', error, {
-				action: 'download',
-				feature: 'exporter',
-				request,
-				value: id,
+			Logger.issue({
+				context: {
+					action: 'download',
+					feature: 'exporter',
+					request,
+					value: id,
+				},
+				level: 'error',
+				messageOrError: error,
 			});
 			throw error;
 		}
@@ -58,11 +66,15 @@ export class ExporterSharedController {
 		const storageServiceResponse = await fetch(foundFileData.url);
 		if (!storageServiceResponse.ok || !storageServiceResponse.body) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
-			Logger.issue('error', error, {
-				action: 'download',
-				feature: 'exporter',
-				request,
-				value: id,
+			Logger.issue({
+				context: {
+					action: 'download',
+					feature: 'exporter',
+					request,
+					value: id,
+				},
+				level: 'error',
+				messageOrError: error,
 			});
 			throw error;
 		}

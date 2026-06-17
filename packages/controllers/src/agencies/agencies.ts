@@ -30,11 +30,15 @@ export class AgenciesSharedController {
 		const agencyData = await agencies.findById(request.params.id);
 		if (!agencyData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'agencies',
-				request,
-				value: request.params.id,
+			Logger.issue({
+				context: {
+					action: 'getById',
+					feature: 'agencies',
+					request,
+					value: request.params.id,
+				},
+				level: 'error',
+				messageOrError: error,
 			});
 			throw error;
 		}

@@ -28,10 +28,14 @@ export class OperationalStopsSharedController {
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
 		if (!ridesPermission['resources']?.agency_ids?.length) {
-			Logger.issue('info', 'No agency_ids found in permissions', {
-				action: 'getBatch',
-				feature: 'operationalStops',
-				request,
+			Logger.issue({
+				context: {
+					action: 'getBatch',
+					feature: 'operationalStops',
+					request,
+				},
+				level: 'info',
+				messageOrError: 'No agency_ids found in permissions',
 			});
 			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
 		}
