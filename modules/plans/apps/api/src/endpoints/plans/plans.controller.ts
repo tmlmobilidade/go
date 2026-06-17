@@ -69,6 +69,7 @@ export class PlansController {
 				gtfs_agency: planData.gtfs_agency,
 				gtfs_feed_info: planData.gtfs_feed_info,
 				operation_file_id: updateFileResult._id,
+				validation_id: request.body.validation_id,
 			};
 
 			// Generate the hash value
@@ -79,7 +80,11 @@ export class PlansController {
 			// Update the plan with the new data
 			const updatedPlanData = await plansCollection.updateById(
 				planData._id,
-				{ hash: hashValue, operation_file_id: updateFileResult._id },
+				{
+					hash: hashValue,
+					operation_file_id: updateFileResult._id,
+					validation_id: request.body.validation_id,
+				},
 				{ session: plansTransaction.getSession() },
 			);
 
@@ -173,6 +178,7 @@ export class PlansController {
 				pcgi_legacy: {
 					operation_plan_id: '',
 				},
+				validation_id: request.body.validation_id,
 			};
 
 			const planResult = await plansCollection.insertOne(
@@ -200,6 +206,7 @@ export class PlansController {
 				gtfs_agency: planResult.gtfs_agency,
 				gtfs_feed_info: planResult.gtfs_feed_info,
 				operation_file_id: fileResult._id,
+				validation_id: request.body.validation_id,
 			};
 
 			const hashValue = createHash('sha256')
@@ -568,6 +575,7 @@ export class PlansController {
 					feed_start_date: validatedFeedStartDate,
 				},
 				operation_file_id: updateFileResult._id,
+				validation_id: planData.validation_id || '',
 			};
 
 			const hashValue = createHash('sha256')
