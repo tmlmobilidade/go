@@ -2,7 +2,6 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
 import { useTranslations } from 'next-intl';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -75,9 +74,8 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 			if (!response.ok) return [];
 			const body = await response.json();
 			return (body?.data ?? body) as CalendarEntry[];
-		}
-		catch (error) {
-			Logger.error({ error, message: `Error fetching calendar data` });
+		} catch (error) {
+			console.error({ error, message: `Error fetching calendar data` });
 			return [];
 		}
 	};
@@ -88,11 +86,9 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 		try {
 			const data = await fetchCalendarData();
 			setCalendar(data);
-		}
-		catch {
+		} catch {
 			setIsError(true);
-		}
-		finally {
+		} finally {
 			setIsLoading(false);
 		}
 	};
@@ -140,8 +136,7 @@ export const DatesContextProvider = ({ children }: { children: React.ReactNode }
 				holiday: details.holiday,
 				notes: details.notes,
 			};
-		}
-		else {
+		} else {
 			info = day;
 		}
 

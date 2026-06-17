@@ -19,7 +19,6 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
-		"@sentry/node": "^10.53.1",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/fastify": "*",
