@@ -6,7 +6,7 @@ export function parseHistoricalRide(ride: HistoricalRide) {
 	return {
 		_id: ride._id,
 		agency_id: ride.agency_id,
-		end_time_observed: ride.end_time_observed,
+		end_time_observed: null,
 		first_stop: ride.first_stop,
 		first_stop_coordinates: [ride.first_stop.stop_lat, ride.first_stop.stop_lon],
 		first_stop_id: ride.first_stop.stop_id,
@@ -18,7 +18,7 @@ export function parseHistoricalRide(ride: HistoricalRide) {
 		last_stop_id: ride.last_stop.stop_id,
 		last_stop_name: ride.last_stop.stop_name,
 		plan_id: ride.plan_id,
-		start_time_observed: ride.start_time_observed,
+		start_time_observed: null,
 		start_time_scheduled: ride.start_time_scheduled,
 		trip_id: ride.trip_id,
 	};
