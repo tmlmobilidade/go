@@ -1,17 +1,19 @@
 /* * */
 
-import { SETTINGS } from '@/config/settings.js';
-import { googleCloudTtsApi } from '@/services/googleCloudTtsApi.js';
-import { Tracker, type TrackerItem } from '@/services/Tracker.js';
-import LOGGER from '@helperkits/logger';
 import TIMETRACKER from '@helperkits/timer';
+import { Logger } from '@tmlmobilidade/logger';
+
+import { piperTtsApi } from '../services/piperTtsApi.js';
+import { Tracker, type TrackerItem } from '../services/Tracker.js';
 
 /* * */
+
+const OUTPUTS_DIRNAME = './outputs/common';
 
 export async function runnerCommon() {
 	//
 
-	LOGGER.title(`TTS COMMON`);
+	Logger.title(`TTS COMMON`);
 	const globalTimer = new TIMETRACKER();
 
 	// Setup tracker
@@ -25,7 +27,7 @@ export async function runnerCommon() {
 		{ id: 'no_dropoff', text: 'Apenas permitido embarque.' },
 	];
 
-	LOGGER.info(`Preparing ${allCommonData.length} common sayings...`);
+	Logger.info(`Preparing ${allCommonData.length} common sayings...`);
 
 	// Iterate on each common saying
 	for (const [commonIndex, commonData] of allCommonData.entries()) {
@@ -34,8 +36,14 @@ export async function runnerCommon() {
 		const ttsHasChanged = commonData.text !== trackerEntry?.tts;
 		// If the entry does not exist, or if the TTS has changed, we need to generate a new TTS file.
 		if (ttsHasChanged) {
-			await googleCloudTtsApi({ dirname: `${SETTINGS.OUTPUTS_DIRNAME}/common`, filename: commonData.id, replaceIfExists: true, string: commonData.text });
-			console.log(`* [${commonIndex}/${allCommonData.length}] Generated | Stop ${commonData.id} | ${commonData.text}`);
+			Logger.info(`[${commonIndex + 1}/${allCommonData.length}] Generating | ${commonData.id} | ${commonData.text}`);
+
+			await piperTtsApi({
+				dirname: OUTPUTS_DIRNAME,
+				filename: commonData.id,
+				force: true,
+				string: commonData.text,
+			});
 		}
 		// Push the updated entry to the tracker data array.
 		trackerDataUpdated.push({ id: commonData.id, tts: commonData.text });
@@ -52,7 +60,7 @@ export async function runnerCommon() {
 
 	//
 
-	LOGGER.success(`Processed ${trackerDataUpdated.length} "common" items (${globalTimer.get()}).`);
+	Logger.success(`Processed ${trackerDataUpdated.length} "common" items (${globalTimer.get()}).`);
 
 	//
 };

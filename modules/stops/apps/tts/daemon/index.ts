@@ -1,10 +1,12 @@
 /* * */
 
-// import { generateStopTts } from '@tmlmobilidade/go-stops-pckg-tts';
-import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
+
+import { runnerCommon } from './runners/runner_common.js';
+import { runnerPatterns } from './runners/runner_patterns.js';
+import { runnerStops } from './runners/runner_stops.js';
 
 /* * */
 
@@ -15,29 +17,11 @@ async function main() {
 
 	const globalTimer = new Timer();
 
-	//
-	// Get all Stop documents from the database
+	await runnerStops();
+	await runnerCommon();
+	await runnerPatterns();
 
-	const allStopsData = await stops.all();
-
-	Logger.info(`Found ${allStopsData.length} stops.`);
-
-	//
-	// Loop through all stops and request updated attributes for each document
-
-	for (const [stopIndex, stopData] of allStopsData.entries()) {
-		//
-
-		Logger.info(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...`);
-
-		// const organizedStopData = await organizeStop(stopData);
-
-		// await stops.updateById(stopData._id, organizedStopData);
-
-		//
-	}
-
-	Logger.terminate(`Organization completed in ${globalTimer.get()}`);
+	Logger.terminate(`TTS generation completed in ${globalTimer.get()}`);
 
 	//
 }

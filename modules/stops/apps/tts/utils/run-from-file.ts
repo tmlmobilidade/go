@@ -1,11 +1,12 @@
 /* * */
 
-import { makeStop } from '@/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { Logger } from '@tmlmobilidade/logger';
 import { HubStop } from '@tmlmobilidade/types';
 import fs from 'fs';
 import Papa from 'papaparse';
+
+import { makeStop } from './makeText.js';
 
 /* CREATE TTS STOP NAME IN CSV */
 

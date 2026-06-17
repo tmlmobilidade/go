@@ -1,13 +1,16 @@
 /* * */
 
-import { makeStop } from '@/lib/index.js';
+import { makeStop } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
+import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { HubStop } from '@tmlmobilidade/types';
 
+import { piperTtsApi } from '../services/piperTtsApi.js';
 import { Tracker, type TrackerItem } from '../services/Tracker.js';
 
 /* * */
+
+const OUTPUTS_DIRNAME = './outputs/stops';
 
 export async function runnerStops() {
 	//
@@ -20,9 +23,8 @@ export async function runnerStops() {
 	const trackerDataUpdated: TrackerItem[] = [];
 
 	// Get all stops
-	console.log('* Fetching all stops from API...');
-	const allStopsResponse = await fetch('https://api.carrismetropolitana.pt/v2/stops');
-	const allStopsData = await allStopsResponse.json() as HubStop[];
+	console.log('* Fetching all stops from database...');
+	const allStopsData = await stops.all();
 
 	// Log progress
 	console.log(`* Preparing ${allStopsData.length} stops...`);
@@ -31,6 +33,8 @@ export async function runnerStops() {
 	// Iterate on each stop
 	for (const [stopIndex, stopData] of allStopsData.entries()) {
 		//
+
+		if (stopData.is_deleted) continue;
 
 		const stopTts = makeStop(stopData.name, {
 			airport: stopData.flags.some(flag => flag.short_name === 'airport'),
@@ -45,15 +49,22 @@ export async function runnerStops() {
 
 		// Check if tracker already has this entry,
 		// and if it differs from the given TTS.
-		const trackerEntry = trackerData.find(item => item.id === stopData._id.toString());
+		const stopId = stopData._id.toString();
+		const trackerEntry = trackerData.find(item => item.id === stopId);
 		const ttsHasChanged = stopTts !== trackerEntry?.tts;
 
 		if (ttsHasChanged && stopTts && stopTts !== '#N/A') {
-			Logger.info(`[${stopIndex}/${allStopsData.length}] Generating for Stop ${stopData._id} - ${stopTts}`);
-		// TODO: Send to new endpoint
+			Logger.info(`[${stopIndex + 1}/${allStopsData.length}] Generating for Stop ${stopData._id} - ${stopTts}`);
+
+			await piperTtsApi({
+				dirname: OUTPUTS_DIRNAME,
+				filename: stopId,
+				force: true,
+				string: stopTts,
+			});
 		}
 
-		trackerDataUpdated.push({ id: stopData._id.toString(), tts: stopTts });
+		trackerDataUpdated.push({ id: stopId, tts: stopTts });
 
 		//
 	}

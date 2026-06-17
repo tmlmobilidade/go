@@ -1,12 +1,15 @@
 /* * */
 
-import { makePattern } from '@/lib/makeText.js';
+import { makePattern } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { Logger } from '@tmlmobilidade/logger';
 import { type HubLine, type HubPattern } from '@tmlmobilidade/types';
 
+import { piperTtsApi } from '../services/piperTtsApi.js';
 import { Tracker, type TrackerItem } from '../services/Tracker.js';
 /* * */
+
+const OUTPUTS_DIRNAME = './outputs/patterns';
 
 export async function runnerPatterns() {
 	//
@@ -48,9 +51,15 @@ export async function runnerPatterns() {
 			const trackerEntry = trackerData.find(item => item.id === patternId);
 			const ttsHasChanged = patternTts !== trackerEntry?.tts;
 
-			if (ttsHasChanged) {
-				// TODO: Send to new endpoint
-				Logger.info(`[${lineIndex}/${allLinesData.length}] [${patternIndex}/${lineData.pattern_ids.length}] Generated | Line ${lineData._id} | Pattern ${patternData._id} | ${patternTts}`);
+			if (ttsHasChanged && patternTts && patternTts !== '#N/A') {
+				Logger.info(`[${lineIndex + 1}/${allLinesData.length}] [${patternIndex + 1}/${lineData.pattern_ids.length}] Generating | Line ${lineData._id} | Pattern ${patternData._id} | ${patternTts}`);
+
+				await piperTtsApi({
+					dirname: OUTPUTS_DIRNAME,
+					filename: patternId,
+					force: true,
+					string: patternTts,
+				});
 			}
 
 			trackerDataUpdated.push({ id: patternId, tts: patternTts });

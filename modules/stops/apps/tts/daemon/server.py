@@ -23,6 +23,7 @@ class TTSRequest(BaseModel):
     text: str
     stop_id: str
     speed: float = 1.0
+    force: bool = False
 
 
 @app.post("/tts")
@@ -30,7 +31,7 @@ def generate(req: TTSRequest):
     wav_path = f"{AUDIO_DIR}/{req.stop_id}.wav"
     mp3_path = f"{AUDIO_DIR}/{req.stop_id}.mp3"
 
-    if os.path.exists(mp3_path):
+    if os.path.exists(mp3_path) and not req.force:
         return {"url": f"/audio/{req.stop_id}.mp3"}
 
     try:
