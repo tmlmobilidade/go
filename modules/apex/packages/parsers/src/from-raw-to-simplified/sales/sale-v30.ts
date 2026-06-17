@@ -2,6 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type RawApexTransactionSaleV30, type SimplifiedApexOnBoardSale, SimplifiedApexOnBoardSaleSchema } from '@tmlmobilidade/go-types-apex';
+import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -12,15 +13,7 @@ export function parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(doc:
 	// Prepare the date field values
 
 	const transactionDateValue = Dates
-		.fromISO(doc.payload.transactionInfo.transactionDate)
-		.setZone('Europe/Lisbon', 'rebase_utc');
-
-	//
-	// Prepare the card serial number field value
-
-	const cardSerialNumberValue = doc.payload.cardInfo.cardSerialNumber
-		? BigInt(`0x${doc.payload.cardInfo.cardSerialNumber}`)
-		: null;
+		.fromFormat(doc.payload.transactionInfo.transactionDate, 'yyyy-MM-dd\'T\'HH:mm:ss', 'Europe/Lisbon');
 
 	//
 	// Validate the document structure and content
@@ -30,9 +23,8 @@ export function parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(doc:
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		block_id: '',
-		calendar_date: transactionDateValue.calendar_date,
 		card_physical_type: doc.payload.cardInfo.cardPhysicalType,
-		card_serial_number: cardSerialNumberValue,
+		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
 		duty_id: '',
@@ -44,7 +36,7 @@ export function parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(doc:
 		pattern_id: '',
 		payment_method: 0,
 		price: 0,
-		product_long_id: '',
+		product_id: '',
 		product_quantity: 0,
 		received_at: doc.received_at,
 		stop_id: '',

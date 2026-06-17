@@ -1,6 +1,6 @@
 /* * */
 
-import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -9,7 +9,6 @@ export const SimplifiedApexLocationSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
-	calendar_date: CalendarDateSchema,
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	line_id: z.string(),

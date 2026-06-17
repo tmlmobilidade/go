@@ -13,7 +13,6 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexBankingTap> = {
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	banking_token: { type: 'String' },
-	calendar_date: { type: 'Date' },
 	card_brand: { type: 'UInt8' },
 	card_pan: { type: 'String' },
 	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },

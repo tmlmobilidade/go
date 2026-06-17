@@ -12,8 +12,7 @@ export function parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap
 	// Prepare the date field values
 
 	const transactionDateValue = Dates
-		.fromISO(doc.payload.transactionInfo.transactionDate)
-		.setZone('Europe/Lisbon', 'rebase_utc');
+		.fromFormat(doc.payload.transactionInfo.transactionDate, 'yyyy-MM-dd\'T\'HH:mm:ss', 'Europe/Lisbon');
 
 	//
 	// Validate the document structure and content
@@ -22,10 +21,9 @@ export function parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap
 		_id: doc.payload.transactionInfo.transactionId,
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
-		banking_token: '',
-		calendar_date: transactionDateValue.calendar_date,
-		card_brand: 0,
-		card_pan: '',
+		banking_token: doc.payload.tapInInfo.bankingToken,
+		card_brand: doc.payload.tapInInfo.cardBrand,
+		card_pan: doc.payload.tapInInfo.cardPan,
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
 		event_type: null,
