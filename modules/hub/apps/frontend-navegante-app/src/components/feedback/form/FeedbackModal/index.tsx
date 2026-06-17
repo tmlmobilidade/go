@@ -1,6 +1,6 @@
 'use client';
 
-import { FeedbackImprovementPrompt } from '@/components/feedback/form/FeedbackImprovementPrompt';
+import { FeedbackImprovementPrompt } from '@/components/feedback/form/FeedbackImprovement';
 import { FeedbackMoodSelector } from '@/components/feedback/form/FeedbackMoodSelector';
 import { Modal } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
@@ -19,38 +19,26 @@ interface FeedbackModalProps {
 	onSelectUnhappy: () => void
 	opened: boolean
 	selectedMood: null | PublicFeedback['mood']
+	thankYouMessageKey: number
 }
 
 /* * */
 
-export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReasonsSheet, onSelectHappy, onSelectUnhappy, opened, selectedMood }: FeedbackModalProps) {
+export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReasonsSheet, onSelectHappy, onSelectUnhappy, opened, selectedMood, thankYouMessageKey }: FeedbackModalProps) {
 	const [showThankYouMessage, setShowThankYouMessage] = useState(false);
-	const previousOpenedRef = useRef(opened);
 	const thankYouMessageTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	useEffect(() => {
-		const wasOpened = previousOpenedRef.current;
+		if (thankYouMessageKey === 0) return;
 
-		if (wasOpened && !opened) {
-			setShowThankYouMessage(true);
+		setShowThankYouMessage(true);
 
-			if (thankYouMessageTimeoutRef.current) clearTimeout(thankYouMessageTimeoutRef.current);
-			thankYouMessageTimeoutRef.current = setTimeout(() => {
-				setShowThankYouMessage(false);
-				thankYouMessageTimeoutRef.current = null;
-			}, 2000);
-		}
-
-		if (opened) {
+		if (thankYouMessageTimeoutRef.current) clearTimeout(thankYouMessageTimeoutRef.current);
+		thankYouMessageTimeoutRef.current = setTimeout(() => {
 			setShowThankYouMessage(false);
-			if (thankYouMessageTimeoutRef.current) {
-				clearTimeout(thankYouMessageTimeoutRef.current);
-				thankYouMessageTimeoutRef.current = null;
-			}
-		}
-
-		previousOpenedRef.current = opened;
-	}, [opened]);
+			thankYouMessageTimeoutRef.current = null;
+		}, 2000);
+	}, [thankYouMessageKey]);
 
 	useEffect(() => {
 		return () => {
@@ -89,14 +77,30 @@ export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReaso
 				</FeedbackMoodSelector>
 			</Modal>
 
-			{showThankYouMessage && (
+			<Modal
+				centered={true}
+				closeOnClickOutside={false}
+				closeOnEscape={false}
+				lockScroll={false}
+				onClose={() => setShowThankYouMessage(false)}
+				opened={showThankYouMessage}
+				size="xs"
+				withCloseButton={false}
+				zIndex={500}
+				classNames={{
+					body: styles.thankYouBody,
+					content: styles.thankYouContent,
+					overlay: styles.thankYouOverlay,
+				}}
+			>
 				<div aria-live="polite" className={styles.thankYouMessage} role="status">
 					<span className={styles.thankYouIcon}>
-						<IconCheck aria-hidden={true} size={18} stroke={2.4} />
+						<IconCheck aria-hidden={true} size={36} stroke={2.6} />
 					</span>
-					<span>Obrigado pelo Feeback!</span>
+					<span className={styles.thankYouTitle}>Obrigado pelo Feedback!</span>
+					<span className={styles.thankYouDescription}>A tua resposta foi enviada.</span>
 				</div>
-			)}
+			</Modal>
 		</>
 	);
 }

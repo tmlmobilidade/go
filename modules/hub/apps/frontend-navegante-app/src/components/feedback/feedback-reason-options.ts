@@ -10,6 +10,10 @@ export interface FeedbackReasonOption {
 
 /* * */
 
+export const FEEDBACK_REASON_SELECTION_LIMIT = 4;
+
+/* * */
+
 export const FEEDBACK_LINE_REASON_GROUPS = {
 	driver: {
 		heading: 'Motorista/Condutor',

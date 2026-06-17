@@ -1,7 +1,7 @@
 'use client';
 
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
-import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
+import { FEEDBACK_REASON_SELECTION_LIMIT, type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
 
 import styles from './styles.module.css';
 
@@ -26,7 +26,7 @@ export function FeedbackReasonOptionsSheet({ agencyId, category, entityType, onC
 	// A. Setup variables
 
 	const reasonGroup = getFeedbackReasonGroups(entityType, agencyId)[category];
-	const hasReachedSelectionLimit = selectedValues.length >= 2;
+	const hasReachedSelectionLimit = selectedValues.length >= FEEDBACK_REASON_SELECTION_LIMIT;
 
 	//
 	// B. Render component

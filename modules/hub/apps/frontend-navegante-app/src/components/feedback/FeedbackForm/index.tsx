@@ -1,6 +1,6 @@
 'use client';
 
-import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
+import { FEEDBACK_REASON_SELECTION_LIMIT, type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
 import { FeedbackModal } from '@/components/feedback/form/FeedbackModal';
 import { FeedbackStartPrompt } from '@/components/feedback/form/FeedbackStartPrompt';
 import { FeedbackReasonOptionsSheet } from '@/components/feedback/sheets/FeedbackReasonOptionsSheet';
@@ -34,6 +34,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 	const [selectedReasonValues, setSelectedReasonValues] = useState<string[]>([]);
 	const [selectedMood, setSelectedMood] = useState<null | PublicFeedback['mood']>(null);
+	const [thankYouMessageKey, setThankYouMessageKey] = useState(0);
 
 	const reasonGroups = getFeedbackReasonGroups(entityType, agencyId);
 	const reasonCategories = Object.keys(reasonGroups) as FeedbackReasonCategory[];
@@ -72,7 +73,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	const handleToggleReason = (reasonValue: string) => {
 		setSelectedReasonValues((currentValue) => {
 			if (currentValue.includes(reasonValue)) return currentValue.filter(value => value !== reasonValue);
-			if (currentValue.length >= 2) return currentValue;
+			if (currentValue.length >= FEEDBACK_REASON_SELECTION_LIMIT) return currentValue;
 
 			return [...currentValue, reasonValue];
 		});
@@ -80,7 +81,6 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 
 	const submitFeedback = async (feedbackMood: null | PublicFeedback['mood'], feedbackReasonValues: string[]) => {
 		if (!agencyId || !entityId || !feedbackMood) return;
-		if (feedbackMood === 'unhappy' && feedbackReasonValues.length === 0) return;
 
 		const payload: PublicFeedback = {
 			agency_id: agencyId,
@@ -101,6 +101,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 		if (!response.ok) return;
 
 		feedbackCooldown.startCooldown();
+		setThankYouMessageKey(currentValue => currentValue + 1);
 	};
 
 	const handleCloseFeedbackModal = () => {
@@ -134,6 +135,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 				onSelectUnhappy={handleSelectUnhappy}
 				opened={isFeedbackModalOpen}
 				selectedMood={selectedMood}
+				thankYouMessageKey={thankYouMessageKey}
 			/>
 
 			<FeedbackReasonsSheet
