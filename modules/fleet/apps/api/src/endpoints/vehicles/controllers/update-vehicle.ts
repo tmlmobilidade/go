@@ -15,12 +15,6 @@ export async function updateVehicle(request: FastifyRequest<{ Body: UpdateVehicl
 
 	//
 	// Get the Vehicle from the database
-<<<<<<< Updated upstream
-	if (Array.isArray(request.params.id)) {
-		const vehicleData = await vehicles.findMany({ _id: { $in: request.params.id } });
-
-		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicles not found');
-=======
 	const vehicleIds = Array.isArray(request.params.id) ? request.params.id : request.params.id.split(',').filter(Boolean);
 	if (vehicleIds.length === 0) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid vehicle ID');
 
@@ -31,7 +25,6 @@ export async function updateVehicle(request: FastifyRequest<{ Body: UpdateVehicl
 		if (vehicleData.length !== vehicleIds.length) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'One or more vehicles not found');
 		}
->>>>>>> Stashed changes
 
 		//
 		// Check if the user has permission to update vehicles
@@ -56,12 +49,6 @@ export async function updateVehicle(request: FastifyRequest<{ Body: UpdateVehicl
 			statusCode: HTTP_STATUS.OK,
 		});
 	} else {
-<<<<<<< Updated upstream
-		const vehicleData = await vehicles.findById(request.params.id);
-
-		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
-
-=======
 		const vehicleId = vehicleIds[0];
 		const vehicleData = await vehicles.findById(vehicleId);
 
@@ -69,7 +56,6 @@ export async function updateVehicle(request: FastifyRequest<{ Body: UpdateVehicl
 
 		if (Array.isArray(request.body)) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid request body');
 
->>>>>>> Stashed changes
 		//
 		// Check if the user has permission to update vehicles
 
