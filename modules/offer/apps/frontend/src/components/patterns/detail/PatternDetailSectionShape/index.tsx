@@ -2,13 +2,14 @@
 
 import StatCard from '@/components/common/StatCard';
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { openGtfsImportModal } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsImport.modal';
+import { ShapeEditorModal } from '@/components/patterns/shape/shape-editor/ShapeEditor.modal';
+import { IconFileZip, IconShape } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Agency } from '@tmlmobilidade/types';
-import { Collapsible, Grid, MapOverlayPatternShape, MapView, Section } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { Agency, Pattern } from '@tmlmobilidade/types';
+import { Button, Collapsible, Grid, MapOverlayPatternShape, MapView, Section, useToast } from '@tmlmobilidade/ui';
+import { useMemo, useState } from 'react';
 import useSWR from 'swr';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -20,6 +21,8 @@ export function PatternDetailSectionShape() {
 
 	const patternDetailContext = usePatternDetailContext();
 	const { data: agencyData } = useSWR<Agency, Error>(API_ROUTES.auth.AGENCIES_DETAIL(patternDetailContext.data.agency_id || ''));
+
+	const [isEditorOpen, setIsEditorOpen] = useState(false);
 
 	//
 	// B. Transform data
@@ -38,20 +41,41 @@ export function PatternDetailSectionShape() {
 	}, [agencyData, patternDetailContext.data.form.values]);
 
 	//
-	// C. Render components
+	// C. Handle actions
+
+	const handleLoadPattern = (pattern: Pattern) => {
+		patternDetailContext.data.form.setFieldValue('path', pattern.path);
+		patternDetailContext.data.form.setFieldValue('shape', pattern.shape);
+		patternDetailContext.data.form.setFieldValue('parameters', pattern.parameters);
+		useToast.info({ message: 'Percurso carregado. Clique em Guardar para confirmar.' });
+	};
+
+	const handleOpenGtfsImportModal = () => {
+		openGtfsImportModal({
+			currentShapeExtension: patternDetailContext.data.pattern?.shape?.extension || 0,
+			currentStopCount: patternDetailContext.data.pattern?.path?.length || 0,
+			onLoad: handleLoadPattern,
+			patternId: patternDetailContext.data.id,
+		});
+	};
+
+	//
+	// D. Render components
 
 	return (
-		<Collapsible title="Shape">
-			<Section gap="sm">
-				<Grid columns="ab" gap="sm">
-					<StatCard title="Extensão" value={shapeExtensionCardValue} />
-					<StatCard title="Custo de cada viagem" value={shapeCost} />
-				</Grid>
+		<Collapsible title="Sequência de paragens" defaultOpen>
+			{(shapeExtensionCardValue !== null || shapeCost !== null) && (
+				<Section gap="sm">
+					<Grid columns="ab" gap="sm">
+						<StatCard title="Extensão" value={shapeExtensionCardValue} />
+						<StatCard title="Custo de cada viagem" value={shapeCost} />
+					</Grid>
+				</Section>
+			)}
 
-			</Section>
+			<Section gap="md" height="100%" padding="none" width="100%">
 
-			<div className={styles.mapWrapper}>
-				<MapView id="shapeMapView">
+				<MapView height={500} id="shapeMapView">
 					<MapOverlayPatternShape
 						id="pattern-shape"
 						lineColor={patternDetailContext.data.typologyData?.color || undefined}
@@ -59,7 +83,25 @@ export function PatternDetailSectionShape() {
 						stopsData={patternDetailContext.geojson.pattern_stops}
 					/>
 				</MapView>
-			</div>
+
+				<Section flexDirection="row" gap="sm">
+					<Button
+						label="Editar percurso"
+						leftSection={<IconShape />}
+						onClick={() => setIsEditorOpen(true)}
+					/>
+					<Button
+						label="Importar ficheiro GTFS"
+						leftSection={<IconFileZip />}
+						onClick={handleOpenGtfsImportModal}
+						variant="secondary"
+					/>
+				</Section>
+
+				{/* SHAPE EDITOR MODAL */}
+				<ShapeEditorModal onClose={() => setIsEditorOpen(false)} opened={isEditorOpen} />
+			</Section>
+
 		</Collapsible>
 	);
 

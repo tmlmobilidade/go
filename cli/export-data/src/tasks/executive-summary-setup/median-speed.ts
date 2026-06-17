@@ -1,5 +1,4 @@
 import { type TaskProps } from '@/types.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
 
 /** Result type for median speed by agency */

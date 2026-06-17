@@ -4,4 +4,6 @@ import '@/endpoints/typologies/typologies.routes.js';
 import '@/endpoints/patterns/patterns.routes.js';
 import '@/endpoints/gtfs/gtfs.routes.js';
 import '@/endpoints/fares/fares.routes.js';
+import '@/endpoints/vkm/vkm.routes.js';
 import '@/endpoints/zones/zones.routes.js';
+import '@/endpoints/shapes/shapes.routes.js';

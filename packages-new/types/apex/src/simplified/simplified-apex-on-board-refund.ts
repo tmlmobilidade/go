@@ -1,35 +1,37 @@
 /* * */
 
-import { DocumentSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { CalendarDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const SimplifiedApexOnBoardRefundSchema = DocumentSchema
-	.omit({ created_by: true, is_locked: true, updated_by: true })
-	.extend({
-		agency_id: z.string(),
-		apex_version: z.string(),
-		block_id: z.string().nullable(),
-		card_physical_type: z.number(),
-		card_serial_number: z.string(),
-		device_id: z.string(),
-		duty_id: z.string().nullable(),
-		line_id: z.string().nullable(),
-		mac_ase_counter_value: z.number(),
-		mac_sam_serial_number: z.number(),
-		on_board_sale_id: z.string().nullable(),
-		pattern_id: z.string().nullable(),
-		payment_method: z.number(),
-		price: z.number(),
-		product_long_id: z.string(),
-		product_quantity: z.number(),
-		received_at: UnixTimestampSchema,
-		stop_id: z.string().nullable(),
-		trip_id: z.string().nullable(),
-		validation_id: z.string().nullable(),
-		vehicle_id: z.number().nullable(),
-	});
+export const SimplifiedApexOnBoardRefundSchema = z.object({
+	_id: z.string(),
+	agency_id: z.string(),
+	apex_version: z.string(),
+	block_id: z.string().nullable().default(null),
+	calendar_date: CalendarDateSchema,
+	card_physical_type: z.number(),
+	card_serial_number: z.bigint().nullable().default(null),
+	created_at: UnixTimestampSchema,
+	device_id: z.string(),
+	duty_id: z.string().nullable().default(null),
+	line_id: z.string().nullable().default(null),
+	mac_ase_counter_value: z.number(),
+	mac_sam_serial_number: z.number(),
+	on_board_sale_id: z.string().nullable().default(null),
+	pattern_id: z.string().nullable().default(null),
+	payment_method: z.number(),
+	price: z.number(),
+	product_long_id: z.string(),
+	product_quantity: z.number(),
+	received_at: UnixTimestampSchema,
+	stop_id: z.string().nullable().default(null),
+	trip_id: z.string().nullable().default(null),
+	updated_at: UnixTimestampSchema,
+	validation_id: z.string().nullable().default(null),
+	vehicle_id: z.number().nullable().default(null),
+});
 
 export const UpdateSimplifiedApexOnBoardRefundSchema = SimplifiedApexOnBoardRefundSchema.partial();
 
