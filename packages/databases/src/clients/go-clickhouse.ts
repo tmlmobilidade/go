@@ -64,7 +64,6 @@ export class GOClickHouseClient {
 				request: true,
 				response: true,
 			},
-			keep_alive: { enabled: false },
 			log: {
 				level: ClickHouseLogLevel.OFF,
 			},
