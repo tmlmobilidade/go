@@ -1,9 +1,10 @@
 /* * */
 
-import AdmZip from 'adm-zip';
 import fs from 'fs';
 import Papa from 'papaparse';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
 /* * */
 
 export interface TrackerItem {
@@ -13,22 +14,29 @@ export interface TrackerItem {
 
 /* * */
 
-const TRACKERS_DIRNAME = './trackers';
-const OUTPUTS_DIRNAME = './outputs';
+const TRACKERS_DIRNAME = path.join(path.dirname(fileURLToPath(import.meta.url)), '../trackers');
+
+const trackerPath = (name: string) => `${TRACKERS_DIRNAME}/tracker_${name}.csv`;
 
 const init = (name: string) => {
 	if (!fs.existsSync(TRACKERS_DIRNAME)) fs.mkdirSync(TRACKERS_DIRNAME, { recursive: true });
-	if (!fs.existsSync(`${TRACKERS_DIRNAME}/tracker_${name}.csv`)) fs.writeFileSync(`${TRACKERS_DIRNAME}/tracker_${name}.csv`, '');
+	if (!fs.existsSync(trackerPath(name))) fs.writeFileSync(trackerPath(name), 'id,tts\n');
+};
+
+/* * */
+
+const read = (name: string): TrackerItem[] => {
+	init(name);
+	const trackerCsv = fs.readFileSync(trackerPath(name), { encoding: 'utf8' });
+	const trackerPapa = Papa.parse<TrackerItem>(trackerCsv, { header: true, skipEmptyLines: true });
+	return trackerPapa.data.filter(item => item.id);
 };
 
 /* * */
 
 const get = (name: string): TrackerItem[] => {
-	init(name);
 	console.log(`* Reading tracker_${name}.csv file from disk...`);
-	const trackerCsv = fs.readFileSync(`${TRACKERS_DIRNAME}/tracker_${name}.csv`, { encoding: 'utf8' });
-	const trackerPapa = Papa.parse<TrackerItem>(trackerCsv, { header: true });
-	return trackerPapa.data;
+	return read(name);
 };
 
 /* * */
@@ -36,33 +44,27 @@ const get = (name: string): TrackerItem[] => {
 const set = (name: string, data: TrackerItem[]) => {
 	init(name);
 	console.log(`* Saving tracker_${name}.csv file to disk...`);
-	const trackerCsvUpdated = Papa.unparse(data, { skipEmptyLines: 'greedy' });
-	fs.writeFileSync(`${TRACKERS_DIRNAME}/tracker_${name}.csv`, trackerCsvUpdated);
+	fs.writeFileSync(trackerPath(name), Papa.unparse(data, { skipEmptyLines: 'greedy' }));
 };
 
 /* * */
 
-const clean = (name: string) => {
-	console.log(`* Cleaning ${name}...`);
-	const trackerData = get(name);
-	const allTrackerItemIds = trackerData.map(item => String(item.id));
-	const directoryContents = fs.readdirSync(`${OUTPUTS_DIRNAME}/${name}/`, { withFileTypes: true });
-	for (const existingFile of directoryContents) {
-		const filenameWithoutExtension = path.parse(existingFile.name).name;
-		if (allTrackerItemIds.includes(filenameWithoutExtension)) continue;
-		fs.rmSync(`${OUTPUTS_DIRNAME}/${name}/${existingFile.name}`, { force: true, recursive: true });
+const upsert = (name: string, item: TrackerItem) => {
+	init(name);
+	const data = read(name);
+	const index = data.findIndex(row => row.id === item.id);
+
+	if (index >= 0) {
+		if (data[index].tts === item.tts) return;
+
+		data[index] = item;
+		fs.writeFileSync(trackerPath(name), Papa.unparse(data, { skipEmptyLines: 'greedy' }));
+		return;
 	}
+
+	fs.appendFileSync(trackerPath(name), `${Papa.unparse([item], { header: false })}\n`);
 };
 
 /* * */
 
-const zip = (name: string) => {
-	console.log(`* Zipping ${name}...`);
-	const outputZip = new AdmZip();
-	outputZip.addLocalFolder(`${OUTPUTS_DIRNAME}/${name}/`);
-	outputZip.writeZip(`${OUTPUTS_DIRNAME}/${name}/all.zip`);
-};
-
-/* * */
-
-export const Tracker = { clean, get, set, zip };
+export const Tracker = { get, set, upsert };

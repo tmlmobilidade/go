@@ -96,7 +96,7 @@
 		"dev:replicator:stream": "ENVIRONMENT=dev dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-stream",
 		"dev:stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
 		"dev:stops:prd": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
-		"dev:stops:tts": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/apps/tts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-tts",
+		"dev:stops:tts": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/apps/tts/environments/dev/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-tts",
 		"dev:stops:ui": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
 		"dev:tracker": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
 		"dev:tracker:ccfl-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ccfl-fetch",

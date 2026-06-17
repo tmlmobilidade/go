@@ -1,7 +1,14 @@
-name: tmlmobilidade-go-stops-tts-staging
+name: tmlmobilidade-go-stops-tts-dev
 
 services:
   tts:
-    build: .
+    build:
+      context: ../../../../../..
+      dockerfile: modules/stops/apps/tts/Dockerfile
     ports:
       - "52013:8000"
+    volumes:
+      - tts-audio:/app/audio
+
+volumes:
+  tts-audio:
