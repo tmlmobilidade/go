@@ -12,7 +12,7 @@ import { type Filter } from 'mongodb';
 /* * */
 
 const writer = new BatchWriter<SimplifiedApexOnBoardSale>({
-	batch_size: 50_000,
+	batch_size: 10_000,
 	insertFn: async (data) => {
 		await simplifiedApexOnBoardSalesNew.insert('JSONEachRow', data);
 	},

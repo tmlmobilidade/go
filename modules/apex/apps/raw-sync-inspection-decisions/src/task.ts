@@ -12,7 +12,7 @@ import { type Filter } from 'mongodb';
 /* * */
 
 const writer = new BatchWriter<SimplifiedApexInspectionDecision>({
-	batch_size: 50_000,
+	batch_size: 10_000,
 	insertFn: async (data) => {
 		await simplifiedApexInspectionDecisionsNew.insert('JSONEachRow', data);
 	},
