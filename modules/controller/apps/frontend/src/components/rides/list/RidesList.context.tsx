@@ -111,6 +111,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			delay_statuses: filterDelayStatus.value,
 			operational_statuses: filterOperationalStatus.value,
 			search: debouncedFilterSearch,
+			ticketing_status: filterTicketingStatus.value,
 			// stop_ids: filterStops.value,
 		},
 	});
