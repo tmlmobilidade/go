@@ -58,7 +58,6 @@ class SimplifiedApexValidationsNewClass extends ClickHouseInterfaceTemplate<Simp
 		// This ensures that if multiple calls to getInstance() happen concurrently,
 		// they will all await the same initialization process.
 		if (!this._instance) {
-			console.log('create instance here');
 			this._instance = (async () => {
 				const instance = new SimplifiedApexValidationsNewClass();
 				// This behaves like the constructor,
