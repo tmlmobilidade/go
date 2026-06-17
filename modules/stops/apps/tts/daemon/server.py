@@ -26,7 +26,7 @@ class TTSRequest(BaseModel):
     force: bool = False
 
 
-@app.post("/tts")
+@app.post("/generate")
 def generate(req: TTSRequest):
     wav_path = f"{AUDIO_DIR}/{req.stop_id}.wav"
     mp3_path = f"{AUDIO_DIR}/{req.stop_id}.mp3"
