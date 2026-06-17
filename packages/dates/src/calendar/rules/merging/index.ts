@@ -38,6 +38,7 @@ function buildEventDerivedRestriction(args: {
 		lines_to_include: rule.lines_to_include,
 		name: rule.name,
 		start_time: rule.start_time,
+		timepoints: rule.timepoints,
 	};
 }
 

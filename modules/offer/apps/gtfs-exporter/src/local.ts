@@ -13,17 +13,17 @@ import path from 'node:path';
 
 /* * */
 
-const AGENCY_IDS = ['41', '42', '43', '44'];
+const AGENCY_IDS = ['41'];
 
 function buildLocalExportConfig(agencyId: string): GtfsV29ExportConfig {
 	const workdir = path.resolve(`./output_${agencyId}`);
 
 	return {
 		agency_ids: [agencyId],
-		calendars_clip_end_date: '20261231' as OperationalDate,
+		calendars_clip_end_date: '20270101' as OperationalDate,
 		calendars_clip_start_date: '20260101' as OperationalDate,
 		clip_calendars: true,
-		feed_end_date: '20261231' as OperationalDate,
+		feed_end_date: '20270101' as OperationalDate,
 		feed_start_date: '20260101' as OperationalDate,
 		lines_exclude: [],
 		lines_include: [],

@@ -1,11 +1,14 @@
 'use client';
 
 import { transformStopDataIntoGeoJsonFeature, useStopsContext } from '@/components/stops/Stops.context';
-import { useTransitModes } from '@/hooks/use-transit-modes';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubStop } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, type MapOverlayMultipleStopsDataProps, useFilterStateString, useLocalStorage, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, type MapOverlayMultipleStopsDataProps, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+
+/* * */
+
+const CM_AGENCY_IDS = new Set(['41', '42', '43', '44']);
 
 /* * */
 
@@ -14,9 +17,9 @@ interface StopsListContextState extends ListContextStateTemplate {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>
 		filtered: HubStop[]
 	}
-	view: {
-		current: 'list' | 'map'
-		toggle: (view: 'list' | 'map') => void
+	filters: {
+		agency: UseFilterStateStringReturnType
+		search: UseFilterStateStringReturnType
 	}
 }
 
@@ -42,14 +45,8 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 
 	const stopsContext = useStopsContext();
 
-	const { activeAgencyIds } = useTransitModes();
-
 	const filterSearch = useFilterStateString('search');
-
-	const [currentView, setCurrentView] = useLocalStorage<'list' | 'map'>({
-		defaultValue: 'list',
-		key: 'stops-current-view',
-	});
+	const filterAgency = useFilterStateString('agency');
 
 	//
 	// B. Transform data
@@ -61,10 +58,14 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 	});
 
 	const filteredData = useMemo(() => {
-		return searchResultsData?.filter((stop) => {
-			return activeAgencyIds.some(agencyId => stop.agency_ids?.includes(agencyId));
+		if (!filterAgency.value) return searchResultsData;
+		return (searchResultsData ?? []).filter((stop) => {
+			return stop.agency_ids.some((id) => {
+				const normalized = CM_AGENCY_IDS.has(id) ? 'CM' : id;
+				return normalized === filterAgency.value;
+			});
 		});
-	}, [searchResultsData, activeAgencyIds]);
+	}, [filterAgency.value, searchResultsData]);
 
 	const dataFeatureCollection = useMemo(() => {
 		// Check if all data is available
@@ -93,15 +94,12 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 			filtered: filteredData,
 		},
 		filters: {
+			agency: filterAgency,
 			search: filterSearch,
 		},
 		flags: {
 			error: undefined,
 			isLoading: stopsContext.flags.isLoading,
-		},
-		view: {
-			current: currentView,
-			toggle: setCurrentView,
 		},
 	};
 

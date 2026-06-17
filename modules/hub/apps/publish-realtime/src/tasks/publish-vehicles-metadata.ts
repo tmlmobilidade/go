@@ -24,7 +24,7 @@ export async function publishVehiclesMetadata() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:realtime:vehicles:metadata:json', JSON.stringify(vehicleMetadata));
+	await apiCache.set('hub:v1:realtime:vehicles:metadata:json', JSON.stringify(vehicleMetadata));
 
 	Logger.success(`Finished publishing vehicles metadata (${globalTimer.get()})`);
 

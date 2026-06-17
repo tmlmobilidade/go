@@ -11,7 +11,7 @@
 	display: grid;
 	grid-template-rows: 1fr;
 	grid-template-columns: 1fr 1fr;
-	gap: var(--size-spacing-15);
+	gap: 10px;
 	justify-content: stretch;
 	width: 100%;
 }

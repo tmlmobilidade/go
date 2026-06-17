@@ -29,8 +29,7 @@ export async function exportHashedShapesGeoJSON({ context, hashedShapeIds, messa
 		const hashedShape = await hashedShapes.findById(id);
 		if (hashedShape) {
 			foundHashedShapes.push(hashedShape);
-		}
-		else {
+		} else {
 			notFoundIds.push(id);
 		}
 	}

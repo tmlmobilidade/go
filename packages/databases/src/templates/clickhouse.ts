@@ -1,6 +1,6 @@
 /* * */
 
-import { type ClickHouseColumn, type ClickHouseSchema, type ClickHouseTableEngine } from '@/types/index.js';
+import { type ClickHouseColumn, type ClickHouseTableEngine, type ClickHouseTableSchema } from '@/types/index.js';
 import { preparePositionalQueryParams } from '@/utils/clickhouse/prepare-positional-query-params.js';
 import { queryFromFile } from '@/utils/clickhouse/query-from-file.js';
 import { queryFromString } from '@/utils/clickhouse/query-from-string.js';
@@ -14,10 +14,11 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 	//
 
 	protected readonly abstract databaseName: string;
-	protected readonly abstract schema: ClickHouseSchema<T>;
+	protected readonly abstract schema: ClickHouseTableSchema<T>;
 	protected readonly abstract tableName: string;
 
-	protected readonly engine: ClickHouseTableEngine = 'MergeTree';
+	protected readonly engine: ClickHouseTableEngine<T> = 'MergeTree()';
+
 	/**
 	 * When `true` (default), `init()` runs `ensureDatabase()` + `ensureTable()` so
 	 * the schema is created from this class. Set to `false` for tables whose schema
@@ -233,7 +234,7 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 		const createTableQuery = `
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" (
 				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
-			) ENGINE = ${this.getEngineString()}
+			) ENGINE = ${this.engine}
 			${this.primaryKey ? `PRIMARY KEY (${this.primaryKey})` : ''}
 			${this.orderBy ? `ORDER BY (${this.orderBy})` : ''}
 			${this.partitionBy ? `PARTITION BY (${this.partitionBy})` : ''}
@@ -266,21 +267,6 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 				Logger.error(`CLICKHOUSE [${this.tableName}]: Failed to verify table existence after ACCESS_DENIED: ${(verifyError as Error).message}`);
 				throw verifyError;
 			}
-		}
-	}
-
-	/**
-	 * Constructs the appropriate engine string based on the provided engine type.
-	 * @throws Will throw an error if an unsupported engine type is provided.
-	 */
-	private getEngineString(): string {
-		switch (this.engine) {
-			case 'MergeTree':
-				return `MergeTree()`;
-			case 'ReplacingMergeTree':
-				return `ReplacingMergeTree()`;
-			default:
-				throw new Error(`CLICKHOUSE [${this.databaseName}/${this.tableName}]: Unsupported engine type: ${this.engine}`);
 		}
 	}
 

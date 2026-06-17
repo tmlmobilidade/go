@@ -47,41 +47,45 @@ export function RuleCreate() {
 				</div>
 			</div>
 
-			{/* Backdrop Overlay */}
-			{createRuleContext.flags.isDrawerOpen && <div className={styles.backdrop} onClick={() => createRuleContext.actions.closeDrawer()} />}
+			{createRuleContext.flags.isDrawerOpen && (
+				<>
+					{/* Backdrop Overlay */}
+					<div className={styles.backdrop} onClick={() => createRuleContext.actions.closeDrawer()} />
 
-			{/* Drawer */}
-			<div className={`${styles.drawer} ${createRuleContext.flags.isDrawerOpen ? styles.drawerOpen : ''}`}>
-				<div className={styles.drawerHeader}>
-					<CloseButton onClick={() => createRuleContext.actions.closeDrawer()} type="close" />
-					<Tag label="Validação da regra" variant="muted" />
-				</div>
+					{/* Drawer */}
+					<div className={`${styles.drawer} ${styles.drawerOpen}`}>
+						<div className={styles.drawerHeader}>
+							<CloseButton onClick={() => createRuleContext.actions.closeDrawer()} type="close" />
+							<Tag label="Validação da regra" variant="muted" />
+						</div>
 
-				<div className={styles.drawerContent}>
-					<Grid columns="ab" gap="md">
-						<Surface height="full">
-							<Section gap="sm">
-								<Text>Resumo:</Text>
-								<Divider />
-								<Text>{createRuleContext.data.ruleSummary.long}</Text>
-								<Text>Horários: {createRuleContext.data.form.values.timepoints?.join(', ')}</Text>
-							</Section>
-						</Surface>
+						<div className={styles.drawerContent}>
+							<Grid columns="ab" gap="md">
+								<Surface height="full">
+									<Section gap="sm">
+										<Text>Resumo:</Text>
+										<Divider />
+										<Text>{createRuleContext.data.ruleSummary.long}</Text>
+										<Text>Horários: {createRuleContext.data.form.values.timepoints?.join(', ')}</Text>
+									</Section>
+								</Surface>
 
-						<Surface height="full">
-							<Section gap="sm">
-								<Text>Impacto:</Text>
-								<Divider />
-								<Text>{createRuleContext.data.ruleImpact.count} dias afetados no próximo ano</Text>
-							</Section>
-						</Surface>
-					</Grid>
+								<Surface height="full">
+									<Section gap="sm">
+										<Text>Impacto:</Text>
+										<Divider />
+										<Text>{createRuleContext.data.ruleImpact?.count ?? 0} dias afetados no próximo ano</Text>
+									</Section>
+								</Surface>
+							</Grid>
 
-					<Surface>
-						<RulePreviewCalendar affectedDates={createRuleContext.data.ruleImpact.dates} onVisibleYearChange={createRuleContext.actions.setPreviewYear} />
-					</Surface>
-				</div>
-			</div>
+							<Surface>
+								<RulePreviewCalendar affectedDates={createRuleContext.data.ruleImpact?.dates ?? []} onVisibleYearChange={createRuleContext.actions.setPreviewYear} />
+							</Surface>
+						</div>
+					</div>
+				</>
+			)}
 		</div>
 	);
 }

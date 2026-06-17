@@ -30,6 +30,7 @@ export async function publishGtfsRtFeed() {
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
+					agency_id: { $in: ['41', '42', '43', '44'] },
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
 					publish_status: 'published',
 				},
@@ -63,7 +64,7 @@ export async function publishGtfsRtFeed() {
 		},
 	};
 
-	await apiCache.set('hub:alerts:published:gtfs:cm', JSON.stringify(gtfsRtFeed));
+	await apiCache.set('hub:v1:alerts:published:gtfs:cm', JSON.stringify(gtfsRtFeed));
 
 	Logger.success(`Finished publishing GTFS-RT feed (${globalTimer.get()})`);
 

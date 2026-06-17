@@ -1,13 +1,17 @@
 'use client';
 
-import { useAlertsContext } from '@/components/alerts/Alerts.context';
-import { useTransitModes } from '@/hooks/use-transit-modes';
+import { transformAlertDataIntoGeoJsonFeature, useAlertsContext } from '@/components/alerts/Alerts.context';
 import { type AlertGroup } from '@/types/alerts/alert-group';
 import { Dates } from '@tmlmobilidade/dates';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { AlertCause, AlertEffect, type HubAlert } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, useFilterStateString, UseFilterStateStringReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+
+/* * */
+
+const CM_AGENCY_IDS = new Set(['41', '42', '43', '44']);
 
 /* * */
 
@@ -17,7 +21,6 @@ interface AlertsListContextState extends ListContextStateTemplate {
 		updateFilterByCause: (value: AlertCause | null) => void
 		updateFilterByEffect: (value: AlertEffect | null) => void
 		updateFilterByLineId: (value: string) => void
-		// updateFilterBySearch: (value: string) => void
 		updateFilterByStopId: (value: string) => void
 	}
 	counters: {
@@ -27,10 +30,12 @@ interface AlertsListContextState extends ListContextStateTemplate {
 		}
 	}
 	data: {
+		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 		filtered: HubAlert[]
 		grouped: AlertGroup[]
 	}
 	filters: {
+		agency: UseFilterStateStringReturnType
 		cause: AlertCause | null
 		effect: AlertEffect | null
 		line_id: null | string
@@ -64,17 +69,13 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const alertsContext = useAlertsContext();
 
-	const { activeAgencyIds } = useTransitModes();
-
 	const { i18n, t } = useTranslation();
 
 	const filterSearch = useFilterStateString('search');
-
-	const [dataFilteredState, setDataFilteredState] = useState<HubAlert[]>([]);
+	const filterAgency = useFilterStateString('agency');
 
 	const [currentView, setCurrentView] = useLocalStorage<'current' | 'future' | 'map'>({ defaultValue: 'current', key: 'alerts-current-view' });
 	const [filterByLineIdState, setFilterByLineIdState] = useQueryState('line_id');
-	const [filterBySearchQueryState, setFilterBySearchQueryState] = useQueryState('search_query');
 	const [filterByStopIdState, setFilterByStopIdState] = useQueryState('stop_id');
 	const [filterByCauseState, setFilterByCauseState] = useQueryState('cause', {
 		parse: (value: string) => value as AlertCause | null,
@@ -97,31 +98,66 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	});
 
 	const baseFilteredData = useMemo(() => {
-		return (searchResultsData ?? []).filter(alert => activeAgencyIds.includes(alert.agency_id));
-	}, [searchResultsData, activeAgencyIds]);
+		if (!filterAgency.value) return (searchResultsData ?? []);
+		return (searchResultsData ?? []).filter((alert) => {
+			const normalized = CM_AGENCY_IDS.has(alert.agency_id) ? 'CM' : alert.agency_id;
+			return normalized === filterAgency.value;
+		});
+	}, [filterAgency.value, searchResultsData]);
 
-	const { currentWeekCount, filtered: viewFilteredData, futureWeekCount } = useMemo(() => {
-		let current = 0;
-		let future = 0;
-		const filtered: HubAlert[] = [];
+	const nonDateFilteredData = useMemo(() => {
+		let result = baseFilteredData;
 
-		for (const alert of baseFilteredData) {
-			if (!alert.active_period_start_date) continue;
-
-			const isCurrent = alert.active_period_start_date <= oneWeekFromNowMs;
-			if (isCurrent) current++;
-			else future++;
-
-			if (currentView === 'current' && isCurrent) filtered.push(alert);
-			if (currentView === 'future' && !isCurrent) filtered.push(alert);
+		if (filterByLineIdState) {
+			result = result.filter(alert => alert.references.some(reference => reference.parent_id === filterByLineIdState));
 		}
 
-		return {
-			currentWeekCount: current,
-			filtered,
-			futureWeekCount: future,
-		};
-	}, [baseFilteredData, currentView, oneWeekFromNowMs]);
+		if (filterByStopIdState) {
+			result = result.filter(alert => alert.references.some(reference => reference.child_ids.includes(filterByStopIdState)));
+		}
+
+		if (filterByCauseState) {
+			result = result.filter(alert => alert.cause === filterByCauseState);
+		}
+
+		if (filterByEffectState) {
+			result = result.filter(alert => alert.effect === filterByEffectState);
+		}
+
+		return result;
+	}, [baseFilteredData, filterByLineIdState, filterByStopIdState, filterByCauseState, filterByEffectState]);
+
+	const { currentWeekCount, futureWeekCount } = useMemo(() => {
+		let current = 0;
+		let future = 0;
+
+		for (const alert of nonDateFilteredData) {
+			if (!alert.active_period_start_date) continue;
+			if (alert.active_period_start_date <= oneWeekFromNowMs) current++;
+			else future++;
+		}
+
+		return { currentWeekCount: current, futureWeekCount: future };
+	}, [nonDateFilteredData, oneWeekFromNowMs]);
+
+	const filteredAlerts = useMemo(() => {
+		if (currentView === 'current') {
+			return nonDateFilteredData.filter(alert => alert.active_period_start_date && alert.active_period_start_date <= oneWeekFromNowMs);
+		}
+		if (currentView === 'future') {
+			return nonDateFilteredData.filter(alert => alert.active_period_start_date && alert.active_period_start_date > oneWeekFromNowMs);
+		}
+		return nonDateFilteredData;
+	}, [nonDateFilteredData, currentView, oneWeekFromNowMs]);
+
+	const dataFeatureCollection = useMemo(() => {
+		const collection = getBaseGeoJsonFeatureCollection();
+		filteredAlerts.forEach((alert) => {
+			const alertFC = transformAlertDataIntoGeoJsonFeature(alert);
+			if (alertFC) collection.features.push(alertFC);
+		});
+		return collection;
+	}, [filteredAlerts]);
 
 	const groupedAlerts = useMemo(() => {
 		const displayLocale = i18n.language === 'pt' ? 'pt-PT' : i18n.language;
@@ -129,7 +165,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		const tomorrow = today.plus({ days: 1 });
 		const yesterday = today.minus({ days: 1 });
 
-		const grouped = viewFilteredData.reduce((result: AlertGroup[], alert) => {
+		const grouped = filteredAlerts.reduce((result: AlertGroup[], alert) => {
 			if (!alert.active_period_start_date) return result;
 
 			const alertStartDate = Dates
@@ -169,69 +205,10 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		}, []);
 
 		return grouped.sort((a, b) => b.value.localeCompare(a.value));
-	}, [viewFilteredData, i18n.language, t]);
-
-	// Filters
-
-	const applyFiltersToData = () => {
-		//
-
-		let filterResult: HubAlert[] = baseFilteredData || [];
-
-		//
-		// Filter by_date
-
-		if (currentView === 'current') {
-			filterResult = filterResult.filter(alert => alert.active_period_start_date <= oneWeekFromNowMs);
-		} else if (currentView === 'future') {
-			filterResult = filterResult.filter(alert => alert.active_period_start_date > oneWeekFromNowMs);
-		}
-
-		if (filterByLineIdState) {
-			filterResult = filterResult.filter(alert => alert.references.some(reference => reference.parent_id === filterByLineIdState));
-		}
-
-		if (filterByStopIdState) {
-			filterResult = filterResult.filter(alert => alert.references.some(reference => reference.child_ids.includes(filterByStopIdState)));
-		}
-
-		// TODO: municipalityId does not exist in the informed_entity, needs to be added in API
-		// if (filterByMunicipalityIdState) {
-		// 	filterResult = filterResult.filter(alert => alert.informed_entity.some(entity => entity.municipalityId === filterByMunicipalityIdState));
-		// }
-
-		if (filterBySearchQueryState) {
-			filterResult = filterResult.filter((alert) => {
-				const searchQuery = filterBySearchQueryState.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-				return (
-					alert.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(searchQuery)
-					|| alert.description.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(searchQuery)
-				);
-			});
-		}
-
-		if (filterByCauseState) {
-			filterResult = filterResult.filter(alert => alert.cause === filterByCauseState);
-		}
-
-		if (filterByEffectState) {
-			filterResult = filterResult.filter(alert => alert.effect === filterByEffectState);
-		}
-
-		//
-		// Save filter result to state
-		return filterResult;
-
-		//
-	};
-
-	useEffect(() => {
-		const filteredAlerts = applyFiltersToData();
-		setDataFilteredState(filteredAlerts);
-	}, [baseFilteredData, currentView, filterByLineIdState, filterByStopIdState, filterBySearchQueryState, filterByCauseState, filterByEffectState]);
+	}, [filteredAlerts, i18n.language, t]);
 
 	//
-	// D. Handle actions
+	// C. Handle actions
 
 	const updateFilterByLineId = (value: AlertsListContextState['filters']['line_id']) => {
 		setFilterByLineIdState(value);
@@ -240,10 +217,6 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	const updateFilterByStopId = (value: AlertsListContextState['filters']['stop_id']) => {
 		setFilterByStopIdState(value);
 	};
-
-	// const updateFilterBySearch = (value: AlertsListContextState['filters']['search']) => {
-	// 	setFilterBySearchQueryState(value);
-	// };
 
 	const updateFilterByCause = (value: AlertsListContextState['filters']['cause']) => {
 		setFilterByCauseState(value);
@@ -262,7 +235,6 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			updateFilterByCause,
 			updateFilterByEffect,
 			updateFilterByLineId,
-			// updateFilterBySearch,
 			updateFilterByStopId,
 		},
 		counters: {
@@ -272,10 +244,12 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			},
 		},
 		data: {
-			filtered: dataFilteredState,
+			fc: dataFeatureCollection,
+			filtered: filteredAlerts,
 			grouped: groupedAlerts,
 		},
 		filters: {
+			agency: filterAgency,
 			cause: filterByCauseState,
 			effect: filterByEffectState,
 			line_id: filterByLineIdState,

@@ -40,7 +40,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			SELECT
 				stop_id,
 				json_group_array(DISTINCT r.agency_id) AS agency_ids,
-				json_group_array(DISTINCT r.route_short_name) AS line_ids,
+				json_group_array(DISTINCT r.line_id) AS line_ids,
 				json_group_array(DISTINCT r.route_id) AS route_ids,
 				json_group_array(DISTINCT t.pattern_id) AS pattern_ids
 			FROM
@@ -128,7 +128,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	//
 	// Save to the database
 
-	await apiCache.set('hub:network:stops', JSON.stringify(exportedStopsData));
+	await apiCache.set('hub:v1:network:stops', JSON.stringify(exportedStopsData));
 
 	Logger.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
 

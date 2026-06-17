@@ -74,6 +74,8 @@ db.createRole({
 		{ actions: ['find'], resource: { collection: 'localities', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'municipalities', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'parishes', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'vehicles', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
 		{ actions: ['find', 'update'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find', 'changeStream'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
@@ -200,6 +202,19 @@ db.createRole({
 	roles: [],
 });
 
+
+db.updateRole('tracker', {
+	privileges: [
+		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'plans', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'hashed_shapes', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'hashed_patterns', db: 'production' } },
+	],
+	roles: [],
+});
+
 db.createRole({
 	privileges: [
 		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
@@ -240,6 +255,10 @@ db.createRole({
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'annotations', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'holidays', db: 'production' } },
 		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'year_periods', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'typologies', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'lines', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'routes', db: 'production' } },
+		{ actions: ['find', 'listIndexes', 'collStats'], resource: { collection: 'patterns', db: 'production' } },
 	],
 	role: 'dgc-user',
 	roles: [],
