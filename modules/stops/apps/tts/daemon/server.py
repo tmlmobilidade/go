@@ -22,6 +22,7 @@ voice = PiperVoice.load(MODEL_PATH)
 class TTSRequest(BaseModel):
     text: str
     stop_id: str
+    speed: float = 1.0
 
 
 @app.post("/tts")
@@ -33,24 +34,39 @@ def generate(req: TTSRequest):
         return {"url": f"/audio/{req.stop_id}.mp3"}
 
     try:
-        # 🔥 CORRECT PIPELINE FOR YOUR PIPER VERSION
+        sample_rate = voice.config.sample_rate
+
         with wave.open(wav_path, "wb") as wav_file:
             wav_file.setnchannels(1)
             wav_file.setsampwidth(2)
-            wav_file.setframerate(22050)
+            wav_file.setframerate(sample_rate)
 
-            voice.synthesize(req.text, wav_file)
+            voice.synthesize(
+                req.text,
+                wav_file,
+                length_scale=1.15,  
+                noise_scale=0.6,    
+                noise_w=0.7          
+            )
 
-        # validate output
         if not os.path.exists(wav_path) or os.path.getsize(wav_path) < 1000:
             return {"error": "WAV generation failed"}
+
+        speed = max(0.5, min(req.speed, 2.0))
 
         subprocess.run([
             "ffmpeg",
             "-y",
             "-i", wav_path,
+            "-af",
+            f"atempo={speed},"
+            "highpass=f=80,"
+            "lowpass=f=12000,"
+            "equalizer=f=300:width_type=h:width=200:g=-3,"
+            "equalizer=f=3000:width_type=h:width=1000:g=3,"
+            "loudnorm",
             "-acodec", "libmp3lame",
-            "-b:a", "128k",
+            "-b:a", "192k",
             mp3_path
         ], check=True)
 
