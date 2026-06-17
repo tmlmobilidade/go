@@ -109,7 +109,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 				if (!parseResult) return;
 				await writer.write(parseResult);
 			} catch (error) {
-				Logger.error(`Error transforming APEX Location: ${sourceDbDocument._id} Reason: ${error.message}`);
+				Logger.error({ message: `Error transforming APEX Location: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}
 		},
 

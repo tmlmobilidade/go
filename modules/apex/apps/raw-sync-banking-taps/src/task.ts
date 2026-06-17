@@ -109,7 +109,7 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 				if (!parseResult) return;
 				await writer.write(parseResult);
 			} catch (error) {
-				Logger.error(`Error transforming APEX Banking Tap: ${sourceDbDocument._id} Reason: ${error.message}`);
+				Logger.error({ message: `Error transforming APEX Banking Tap: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}
 		},
 

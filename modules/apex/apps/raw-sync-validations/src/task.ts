@@ -112,7 +112,7 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 				if (!parseResult) return;
 				await writer.write(parseResult);
 			} catch (error) {
-				Logger.error(`Error transforming APEX Validation: ${sourceDbDocument._id} Reason: ${error.message}`);
+				Logger.error({ message: `Error transforming APEX Validation: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}
 		},
 

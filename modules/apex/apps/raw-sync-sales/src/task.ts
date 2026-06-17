@@ -109,7 +109,7 @@ export async function syncApexSales(timeChunk: PerformInTimeChunksItem) {
 				if (!parseResult) return;
 				await writer.write(parseResult);
 			} catch (error) {
-				Logger.error(`Error transforming APEX Sale: ${sourceDbDocument._id} Reason: ${error.message}`);
+				Logger.error({ message: `Error transforming APEX Sale: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}
 		},
 

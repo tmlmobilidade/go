@@ -109,7 +109,7 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 				if (!parseResult) return;
 				await writer.write(parseResult);
 			} catch (error) {
-				Logger.error(`Error transforming APEX Inspection Decision: ${sourceDbDocument._id} Reason: ${error.message}`);
+				Logger.error({ message: `Error transforming APEX Inspection Decision: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}
 		},
 
