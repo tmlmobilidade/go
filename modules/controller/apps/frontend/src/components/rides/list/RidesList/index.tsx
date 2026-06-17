@@ -12,11 +12,15 @@ import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
+import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Section, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+
+/* * */
+
+const MS_PER_MINUTE = 60_000;
 
 /* * */
 
@@ -39,7 +43,7 @@ export function RidesList() {
 	const formatDuration = (startTimestamp: null | UnixTimestamp, endTimestamp: null | UnixTimestamp) => {
 		if (!startTimestamp || !endTimestamp) return null;
 
-		return Math.round((endTimestamp - startTimestamp) / 60) + ' min';
+		return Math.round((endTimestamp - startTimestamp) / MS_PER_MINUTE) + ' min';
 	};
 
 	const formatDurationDeviation = (item: RideNormalized) => {
@@ -47,7 +51,7 @@ export function RidesList() {
 
 		const plannedDuration = item.end_time_scheduled - item.start_time_scheduled;
 		const observedDuration = item.end_time_observed - item.start_time_observed;
-		const deviationInMinutes = Math.round((observedDuration - plannedDuration) / 60);
+		const deviationInMinutes = Math.round((observedDuration - plannedDuration) / MS_PER_MINUTE);
 
 		if (deviationInMinutes === 0) return ' 0 min';
 		return (deviationInMinutes > 0 ? '+' : '') + deviationInMinutes + ' min';
