@@ -49,7 +49,7 @@ export class PCGIFileManagerClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('[PCGIFileManagerClient] Connecting to database...');
+		Logger.info({ message: '[PCGIFileManagerClient] Connecting to database...' });
 		const connectionString = await this.getConnectionString();
 		this.client = new MongoClient(connectionString, {
 			connectTimeoutMS: 10_000,
@@ -63,28 +63,28 @@ export class PCGIFileManagerClient {
 			serverSelectionTimeoutMS: 10_000,
 		});
 		this.client.on('connectionPoolCreated', () => {
-			Logger.info('[PCGIFileManagerClient] Database connection pool created.');
+			Logger.info({ message: '[PCGIFileManagerClient] Database connection pool created.' });
 		});
 		this.client.on('topologyDescriptionChanged', () => {
-			Logger.info('[PCGIFileManagerClient] Database topology description changed.');
+			Logger.info({ message: '[PCGIFileManagerClient] Database topology description changed.' });
 		});
 		this.client.on('serverDescriptionChanged', () => {
-			Logger.info('[PCGIFileManagerClient] Database server description changed.');
+			Logger.info({ message: '[PCGIFileManagerClient] Database server description changed.' });
 		});
 		this.client.on('open', () => {
-			Logger.info('[PCGIFileManagerClient] Database connection opened.');
+			Logger.info({ message: '[PCGIFileManagerClient] Database connection opened.' });
 		});
 		this.client.on('connectionReady', () => {
-			Logger.info('[PCGIFileManagerClient] Database connection is ready.');
+			Logger.info({ message: '[PCGIFileManagerClient] Database connection is ready.' });
 		});
 		this.client.on('close', () => {
-			Logger.error('[PCGIFileManagerClient] Database connection closed unexpectedly.');
+			Logger.error({ message: '[PCGIFileManagerClient] Database connection closed unexpectedly.' });
 		});
 		this.client.on('reconnect', () => {
-			Logger.info('[PCGIFileManagerClient] Database reconnected.');
+			Logger.info({ message: '[PCGIFileManagerClient] Database reconnected.' });
 		});
 		this.client.on('error', (error) => {
-			Logger.error('[PCGIFileManagerClient] Database connection error:', error);
+			Logger.error({ error, message: '[PCGIFileManagerClient] Database connection error:' });
 		});
 		await this.client.connect();
 	}
@@ -167,7 +167,7 @@ export class PCGIFileManagerClient {
 
 		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
-		Logger.info('[PCGIFileManagerClient] Setting up SSH Tunnel...');
+		Logger.info({ message: '[PCGIFileManagerClient] Setting up SSH Tunnel...' });
 
 		const connection = await this.tunnel.connect();
 		const addr = connection.address();

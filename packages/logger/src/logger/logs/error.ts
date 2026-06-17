@@ -7,8 +7,9 @@ import { spacer } from './spacer.js';
 /* * */
 
 interface ErrorArgs {
-	contextOrErrorOrSpacesAfter?: Error | LoggerErrorInputContext | number | string
-	message?: Error | LoggerMessage
+	contextOrErrorOrSpacesAfter?: LoggerErrorInputContext | number | string
+	error?: Error
+	message?: LoggerMessage
 	spacesAfterOrBefore?: number
 	spacesBefore?: number
 }
