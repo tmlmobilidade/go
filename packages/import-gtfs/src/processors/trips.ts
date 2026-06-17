@@ -17,7 +17,7 @@ export async function processTripsFile(context: ImportGtfsContext): Promise<void
 
 		const tripsParseTimer = new Timer();
 
-		Logger.info(`Reading zip entry "trips.txt"...`);
+		Logger.info({ message: 'Reading zip entry "trips.txt"...' });
 
 		const parseEachRow = async (data: GTFS_Trip_Extended_Raw) => {
 			// Validate the current row against the proper type
@@ -31,7 +31,7 @@ export async function processTripsFile(context: ImportGtfsContext): Promise<void
 			context.referenced_route_ids.add(validatedData.route_id);
 			context.referenced_shape_ids.add(validatedData.shape_id);
 			// Log progress
-			if (context.counters.trips % 10000 === 0) Logger.info(`Parsed ${context.counters.trips} trips.txt rows so far (${tripsParseTimer.get()})`);
+			if (context.counters.trips % 10000 === 0) Logger.info({ message: `Parsed ${context.counters.trips} trips.txt rows so far (${tripsParseTimer.get()})` });
 			// Increment the counter
 			context.counters.trips++;
 		};
@@ -47,7 +47,7 @@ export async function processTripsFile(context: ImportGtfsContext): Promise<void
 
 		//
 	} catch (error) {
-		Logger.error('Error processing "trips.txt" file.', error);
+		Logger.error({ error, message: 'Error processing "trips.txt" file.' });
 		throw new Error('✖︎ Error processing "trips.txt" file.');
 	}
 }

@@ -3,7 +3,6 @@
 import { FastifyReply, type FastifyRequest } from '@/fastify-service.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { type ActionsOf, type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
 
 /* * */
@@ -77,13 +76,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 			: permissionChecks.some(Boolean); // at least one must be true
 
 		if (!isAllowed) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scope}" | Actions: [${actions.join(',')}]`);
-			Logger.issue('error', error, {
-				action: 'authorizationMiddleware',
-				feature: 'authorization',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scope}" | Actions: [${actions.join(',')}]`);
 		}
 
 		//

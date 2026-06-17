@@ -113,20 +113,20 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		if (agenciesData?.length !== 1) return;
 		if (form.getValues('agency_id')) return;
 		form.setValue('agency_id', agenciesData[0]._id, { shouldDirty: false });
-		Logger.info('Auto-selected agency_id based on available agencies data.');
+		Logger.info({ message: 'Auto-selected agency_id based on available agencies data.' });
 	}, [agenciesData, form]);
 
 	useEffect(() => {
 		// Reset effect field when cause changes
 		form.setValue('effect', undefined);
-		Logger.info('Reset effect field due to cause change.');
+		Logger.info({ message: 'Reset effect field due to cause change.' });
 	}, [causeValue, form]);
 
 	useEffect(() => {
 		// Reset reference_type and references when effect changes
 		form.setValue('reference_type', undefined);
 		form.setValue('references', []);
-		Logger.info('Reset reference_type and references fields due to effect change.');
+		Logger.info({ message: 'Reset reference_type and references fields due to effect change.' });
 	}, [effectValue, form]);
 
 	useEffect(() => {
@@ -134,7 +134,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		if (!form.getValues('auto_texts')) return;
 		form.setValue('title', '');
 		form.setValue('description', '');
-		Logger.info('Reset title and description fields due to references change.');
+		Logger.info({ message: 'Reset title and description fields due to references change.' });
 	}, [referencesValue, form]);
 
 	useEffect(() => {
@@ -159,8 +159,8 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		else if (enabledTypes.includes('stops') && (allowAllReferenceTypes || allowedReferenceTypes.includes('stops'))) form.setValue('reference_type', 'stops');
 		else if (enabledTypes.includes('rides') && (allowAllReferenceTypes || allowedReferenceTypes.includes('rides'))) form.setValue('reference_type', 'rides');
 		else if (enabledTypes.includes('agency') && (allowAllReferenceTypes || allowedReferenceTypes.includes('agency'))) form.setValue('reference_type', 'agency');
-		else Logger.info('No enabled reference types available to set as default.');
-		Logger.info('Auto-selected reference_type options based on cause/effect change and user permissions.');
+		else Logger.info({ message: 'No enabled reference types available to set as default.' });
+		Logger.info({ message: 'Auto-selected reference_type options based on cause/effect change and user permissions.' });
 	}, [agenciesData, agencyIdValue, causeValue, effectValue, form, meContext.data.user.permissions, referenceTypeValue]);
 
 	useEffect(() => {
@@ -169,7 +169,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		// When reference_type is 'agency' or agency_id changes to non-empty,
 		// set references to the selected agency.
 		form.setValue('references', [{ child_ids: [], parent_id: form.getValues('agency_id') }]);
-		Logger.info('Auto-selected Agency references based on reference_type "agency" selection.');
+		Logger.info({ message: 'Auto-selected Agency references based on reference_type "agency" selection.' });
 	}, [form, referenceTypeValue, agencyIdValue]);
 
 	useEffect(() => {
@@ -178,7 +178,7 @@ export function AlertCreateContextProvider({ children }: PropsWithChildren) {
 		// Restore default end dates when active_period_end_date is cleared.
 		form.setValue('active_period_end_date', Dates.now('Europe/Lisbon').plus({ hours: 4 }).unix_timestamp);
 		form.setValue('publish_end_date', Dates.now('Europe/Lisbon').endOf('day').unix_timestamp);
-		Logger.info('Restored default end dates because active_period_end_date was cleared.');
+		Logger.info({ message: 'Restored default end dates because active_period_end_date was cleared.' });
 	}, [form, activePeriodEndDateValue]);
 
 	//

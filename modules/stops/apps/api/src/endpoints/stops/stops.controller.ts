@@ -4,7 +4,6 @@ import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, patterns, stops } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { CreateStopSchema, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
@@ -54,14 +53,7 @@ export class StopsController {
 		// Get the stop from the database
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'stops',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
 		}
 
 		if (foundStop.flags.length !== 0) {
@@ -75,14 +67,7 @@ export class StopsController {
 			});
 
 			if (!hasPermission) {
-				const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this stop');
-				Logger.issue('error', error, {
-					action: 'delete',
-					feature: 'stops',
-					request,
-					value: request.params.id,
-				});
-				throw error;
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this stop');
 			}
 		}
 
@@ -119,13 +104,7 @@ export class StopsController {
 			sort: { created_at: -1 },
 		});
 		if (!data) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not get stops from database');
-			Logger.issue('error', error, {
-				action: 'getAll',
-				feature: 'stops',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not get stops from database');
 		}
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -139,13 +118,7 @@ export class StopsController {
 	static async getValidId(request: FastifyRequest, reply: FastifyReply<StopId>) {
 		const newStopId = await generateStopId();
 		if (!newStopId) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not generate a new stop ID');
-			Logger.issue('error', error, {
-				action: 'getValidId',
-				feature: 'stops',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not generate a new stop ID');
 		}
 
 		reply.send({ data: newStopId, error: null, statusCode: HTTP_STATUS.OK });
@@ -160,14 +133,7 @@ export class StopsController {
 		// Get the stop from the database
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'stops',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
 		}
 
 		if (foundStop.flags.length !== 0) {
@@ -181,14 +147,7 @@ export class StopsController {
 			});
 
 			if (!hasPermission) {
-				const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this stop');
-				Logger.issue('error', error, {
-					action: 'getById',
-					feature: 'stops',
-					request,
-					value: request.params.id,
-				});
-				throw error;
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this stop');
 			}
 		}
 
@@ -212,14 +171,7 @@ export class StopsController {
 		);
 
 		if (!associatedPatterns) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, `Can not get associated patterns for stop with ID ${request.params.id}`);
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'stops',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, `Can not get associated patterns for stop with ID ${request.params.id}`);
 		}
 
 		reply.send({
@@ -238,14 +190,7 @@ export class StopsController {
 		// Get the stop from the database
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'stops',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
 		}
 
 		if (foundStop.flags.length !== 0) {
@@ -259,14 +204,7 @@ export class StopsController {
 			});
 
 			if (!hasPermission) {
-				const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock or unlock this stop');
-				Logger.issue('error', error, {
-					action: 'lock',
-					feature: 'stops',
-					request,
-					value: request.params.id,
-				});
-				throw error;
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock or unlock this stop');
 			}
 		}
 
@@ -285,14 +223,7 @@ export class StopsController {
 		// Get the stop from the database
 		const foundStop = await stops.findById(Number(request.params.id));
 		if (!foundStop) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'stops',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
 		}
 
 		if (
@@ -312,14 +243,7 @@ export class StopsController {
 			});
 
 			if (!hasPermission) {
-				const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this stop');
-				Logger.issue('error', error, {
-					action: 'update',
-					feature: 'stops',
-					request,
-					value: request.params.id,
-				});
-				throw error;
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this stop');
 			}
 		}
 

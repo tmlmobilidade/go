@@ -4,7 +4,6 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, yearPeriods } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { type CreateYearPeriodDto, OperationalDate, PermissionCatalog, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
@@ -39,13 +38,7 @@ export class YearPeriodsController {
 		// If no permission found, deny access
 
 		if (!userYearPeriodPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read year periods');
-			Logger.issue('error', error, {
-				action: 'checkConflicts',
-				feature: 'year_periods',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read year periods');
 		}
 
 		//
@@ -59,13 +52,7 @@ export class YearPeriodsController {
 				// Check that user has permission for all requested agencies
 				const hasAllAgencies = request.body.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
 				if (!hasAllAgencies) {
-					const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read periods for all specified agencies');
-					Logger.issue('error', error, {
-						action: 'checkConflicts',
-						feature: 'year_periods',
-						request,
-					});
-					throw error;
+					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read periods for all specified agencies');
 				}
 			}
 		}
@@ -151,13 +138,7 @@ export class YearPeriodsController {
 		// If no permission found, deny access
 
 		if (!userYearPeriodPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create periods');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'year_periods',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create periods');
 		}
 
 		//
@@ -170,13 +151,7 @@ export class YearPeriodsController {
 			if (!hasAllowAll) {
 				const hasAllAgencies = request.body.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
 				if (!hasAllAgencies) {
-					const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create periods for all specified agencies');
-					Logger.issue('error', error, {
-						action: 'create',
-						feature: 'year_periods',
-						request,
-					});
-					throw error;
+					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create periods for all specified agencies');
 				}
 			}
 		}
@@ -212,14 +187,7 @@ export class YearPeriodsController {
 		const period = await yearPeriods.findById(id);
 
 		if (!period) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'year_periods',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
 		}
 
 		//
@@ -230,14 +198,7 @@ export class YearPeriodsController {
 		// If no permission found, deny access
 
 		if (!userYearPeriodPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete year periods');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'year_periods',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete year periods');
 		}
 
 		//
@@ -251,14 +212,7 @@ export class YearPeriodsController {
 			if (!hasAllowAll) {
 				const hasAllAgencies = period.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
 				if (!hasAllAgencies) {
-					const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this period');
-					Logger.issue('error', error, {
-						action: 'delete',
-						feature: 'year_periods',
-						request,
-						value: request.params.id,
-					});
-					throw error;
+					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this period');
 				}
 			}
 		}
@@ -287,13 +241,7 @@ export class YearPeriodsController {
 		// If no permission found, deny access
 
 		if (!userYearPeriodPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read year periods');
-			Logger.issue('error', error, {
-				action: 'getAll',
-				feature: 'year_periods',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read year periods');
 		}
 
 		//
@@ -333,14 +281,7 @@ export class YearPeriodsController {
 
 		const periodData = await yearPeriods.findById(request.params.id);
 		if (!periodData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'year_periods',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
 		}
 
 		//
@@ -352,14 +293,7 @@ export class YearPeriodsController {
 		// If no permission found, deny access
 
 		if (!userYearPeriodPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read year periods');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'year_periods',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read year periods');
 		}
 
 		//
@@ -373,14 +307,7 @@ export class YearPeriodsController {
 			if (!hasAllowAll) {
 				const hasAnyAgency = periodData.agency_ids.some(agencyId => userAgencyIds.includes(agencyId));
 				if (!hasAnyAgency) {
-					const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this year period');
-					Logger.issue('error', error, {
-						action: 'getById',
-						feature: 'year_periods',
-						request,
-						value: request.params.id,
-					});
-					throw error;
+					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this year period');
 				}
 			}
 		}
@@ -411,14 +338,7 @@ export class YearPeriodsController {
 		const periodData = await yearPeriods.findById(request.params.id);
 
 		if (!periodData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'year_periods',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
 		}
 
 		//
@@ -429,14 +349,7 @@ export class YearPeriodsController {
 		// If no permission found, deny access
 
 		if (!userYearPeriodPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock year periods');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'year_periods',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock year periods');
 		}
 
 		//
@@ -450,14 +363,7 @@ export class YearPeriodsController {
 			if (!hasAllowAll) {
 				const hasAllAgencies = periodData.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
 				if (!hasAllAgencies) {
-					const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock period');
-					Logger.issue('error', error, {
-						action: 'lock',
-						feature: 'year_periods',
-						request,
-						value: request.params.id,
-					});
-					throw error;
+					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock period');
 				}
 			}
 		}
@@ -468,14 +374,7 @@ export class YearPeriodsController {
 		await yearPeriods.toggleLockById(request.params.id);
 		const updatedPeriod = await yearPeriods.findById(request.params.id);
 		if (!updatedPeriod) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'year_periods',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
 		}
 
 		return reply.send({
@@ -502,14 +401,7 @@ export class YearPeriodsController {
 		const periodData = await yearPeriods.findById(request.params.id);
 
 		if (!periodData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'year_periods',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
 		}
 
 		//
@@ -520,14 +412,7 @@ export class YearPeriodsController {
 		// If no permission found, deny access
 
 		if (!userYearPeriodPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update year periods');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'year_periods',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update year periods');
 		}
 
 		//
@@ -541,14 +426,7 @@ export class YearPeriodsController {
 			if (!hasAllowAll) {
 				const hasAllAgencies = periodData.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
 				if (!hasAllAgencies) {
-					const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock this period');
-					Logger.issue('error', error, {
-						action: 'update',
-						feature: 'year_periods',
-						request,
-						value: request.params.id,
-					});
-					throw error;
+					throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock this period');
 				}
 			}
 		}

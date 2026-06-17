@@ -219,7 +219,7 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 		const collections = await this.database.listCollections({ name: this.collectionName }).toArray();
 		if (collections.length) return;
 		await this.database.createCollection(this.collectionName);
-		Logger.info(`MONGODB [${this.collectionName}]: Collection created.`);
+		Logger.info({ message: `MONGODB [${this.collectionName}]: Collection created.` });
 	}
 
 	/**
@@ -232,11 +232,11 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	private async syncIndexes(): Promise<void> {
 		try {
 			if (this.indexDescription === false) {
-				Logger.info(`MONGODB [${this.collectionName}]: Skipping index synchronization.`);
+				Logger.info({ message: `MONGODB [${this.collectionName}]: Skipping index synchronization.` });
 				return;
 			}
 			// Start index synchronization process
-			Logger.info(`MONGODB [${this.collectionName}]: Synchronizing indexes...`);
+			Logger.info({ message: `MONGODB [${this.collectionName}]: Synchronizing indexes...` });
 			// Normalize already applied and new indexes
 			// and filter the default _id index.
 			const existingIndexes = await this.collection.indexes();
@@ -253,13 +253,13 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 			}
 			// Create indexes
 			for (const idx of indexesToCreate) {
-				Logger.info(`MONGODB [${this.collectionName}]: Creating index on keys ${JSON.stringify(idx.key)} with options ${JSON.stringify(prepareMongoIndexOptions(idx))}.`);
+				Logger.info({ message: `MONGODB [${this.collectionName}]: Creating index on keys ${JSON.stringify(idx.key)} with options ${JSON.stringify(prepareMongoIndexOptions(idx))}.` });
 				await this.collection.createIndex(idx.key, prepareMongoIndexOptions(idx));
 				Logger.success(`MONGODB [${this.collectionName}]: Created index on keys ${JSON.stringify(idx.key)}.`);
 			}
 			Logger.success(`MONGODB [${this.collectionName}]: Indexes synchronized.`);
 		} catch (error) {
-			Logger.error(`MONGODB [${this.collectionName}]: Error @ syncIndexes(): ${(error as Error).message}`);
+			Logger.error({ error, message: `MONGODB [${this.collectionName}]: Error @ syncIndexes(): ${(error as Error).message}` });
 			throw error;
 		}
 	}

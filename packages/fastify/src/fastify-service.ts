@@ -181,6 +181,7 @@ const createLoggerOptions = (getModuleName: () => string): FastifyLoggerOptions<
 					status: statusCode,
 				});
 			}
+
 			return logMessage;
 		},
 	}),
@@ -295,12 +296,15 @@ export class FastifyService {
 		 * If so, it sends a response with the appropriate status code and error message.
 		 * This ensures consistent error responses for HTTP exceptions throughout the application.
 		 */
-		this.server.setErrorHandler((error, _, reply) => {
+		this.server.setErrorHandler((error, request, reply) => {
 			// Log the error with full stack trace
 			const errorMessage = error instanceof Error ? error.message : 'Unhandled error';
 			this.server.log.error({ err: error }, errorMessage);
 			// Handle HttpException errors
 			if (error instanceof HttpException) {
+				if (error.statusCode === HTTP_STATUS.INTERNAL_SERVER_ERROR) {
+					Logger.issue({ context: { action: 'errorHandler', feature: this.options.module, request, value: request.body }, level: 'error', messageOrError: error });
+				}
 				reply
 					.status(error.statusCode)
 					.send({
@@ -309,6 +313,7 @@ export class FastifyService {
 						statusCode: error.statusCode,
 					});
 			} else {
+				Logger.issue({ context: { action: 'errorHandler', feature: this.options.module, request, value: request.body }, level: 'error', messageOrError: 'Internal server error' });
 				reply
 					.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
 					.send({

@@ -43,7 +43,7 @@ export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, goC
 			return;
 		}
 
-		Logger.info(`MISMATCH: Document count was different for both databases: ${pcgiDocCount} PCGIDB != ${goDocCount} GO (${countQueryTimer.get()})`);
+		Logger.info({ message: `MISMATCH: Document count was different for both databases: ${pcgiDocCount} PCGIDB != ${goDocCount} GO (${countQueryTimer.get()})` });
 
 		//
 		// If the document count was different, then we check which documents are missing.
@@ -61,7 +61,7 @@ export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, goC
 		const missingDocuments = pcgiDocIds.filter((documentId: string) => !goDocIdsUnique.has(String(documentId)));
 		const extraDocuments = goDocIds.filter((documentId: string) => !pcgiDocIdsUnique.has(String(documentId)));
 
-		Logger.info(`PCGI Total: ${pcgiDocCount} | PCGI Unique: ${pcgiDocIdsUnique.size} | PCGI ▲: ${pcgiDocCount - pcgiDocIdsUnique.size} | GO Total: ${goDocCount} | GO Unique: ${goDocIdsUnique.size} | GO ▲: ${goDocCount - goDocIdsUnique.size} | GO Missing: ${missingDocuments.length} | GO Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})`);
+		Logger.info({ message: `PCGI Total: ${pcgiDocCount} | PCGI Unique: ${pcgiDocIdsUnique.size} | PCGI ▲: ${pcgiDocCount - pcgiDocIdsUnique.size} | GO Total: ${goDocCount} | GO Unique: ${goDocIdsUnique.size} | GO ▲: ${goDocCount - goDocIdsUnique.size} | GO Missing: ${missingDocuments.length} | GO Extra: ${extraDocuments.length} (${distinctQueryTimer.get()})` });
 
 		//
 		// If all documents are already synced, then we can skip the rest of the process.
@@ -75,14 +75,14 @@ export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, goC
 
 		if (extraDocuments.length > 0) {
 			await goCollection.deleteMany({ [goIdKey]: { $in: extraDocuments }, ...goQuery });
-			Logger.info(`Removed ${extraDocuments.length} extra documents in GO. (${distinctQueryTimer.get()})`);
+			Logger.info({ message: `Removed ${extraDocuments.length} extra documents in GO. (${distinctQueryTimer.get()})` });
 		}
 
 		//
 		// If there are missing documents, then we sync them.
 		// We query the PCGIDB for the missing documents and write them to the GO database.
 
-		Logger.info(`Found ${missingDocuments.length} missing documents in GO. (${distinctQueryTimer.get()})`);
+		Logger.info({ message: `Found ${missingDocuments.length} missing documents in GO. (${distinctQueryTimer.get()})` });
 
 		const missingDocumentsStream = pcgiCollection
 			.find({ [pcgiIdKey]: { $in: missingDocuments } })
@@ -103,8 +103,7 @@ export async function syncDocuments<T>({ dbWriter, docParser, flushCallback, goC
 		Logger.success(`Complete! Synced ${missingDocuments.length} new documents. (${globalTimer.get()})`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.log('An error occurred. Halting execution.', err);
 		console.log('Retrying in 10 seconds...');
 		setTimeout(() => {

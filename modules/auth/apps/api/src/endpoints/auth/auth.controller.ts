@@ -5,7 +5,6 @@ import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AUTH_SESSION_COOKIE_NAME, authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/types';
 
@@ -22,14 +21,7 @@ export class AuthController {
 		const tokenResult = await verificationTokens.findOne({ token: { $eq: request.body.token } });
 		// If the token is invalid or expired, throw an error
 		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
-			Logger.issue('error', error, {
-				action: 'changePassword',
-				feature: 'auth',
-				request,
-				value: request.body.token,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
 		}
 		// Update the user's password in the database
 		await users.updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
@@ -46,13 +38,7 @@ export class AuthController {
 		// Validate the request body against the LoginDto schema
 		const result = LoginDtoSchema.safeParse(request.body);
 		if (!result.success) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
-			Logger.issue('error', error, {
-				action: 'login',
-				feature: 'auth',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
 		}
 		let newSession: Session;
 		try {
@@ -62,11 +48,6 @@ export class AuthController {
 			});
 		} catch (error) {
 			if (error instanceof HttpException) {
-				Logger.issue('error', error, {
-					action: 'login',
-					feature: 'auth',
-					request,
-				});
 				throw error;
 			}
 			throw error;
@@ -110,13 +91,7 @@ export class AuthController {
 		// Search user by the email provided in the request body
 		const foundUser = await users.findByEmail(request.body.email);
 		if (!foundUser) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
-			Logger.issue('error', error, {
-				action: 'sendPasswordResetEmail',
-				feature: 'auth',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
 		}
 		// Generate a random token for password reset
 		const randomToken = generateRandomToken();

@@ -3,7 +3,6 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { notifications } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { type Notification } from '@tmlmobilidade/types';
 
 /* * */
@@ -37,14 +36,7 @@ export class NotificationsController {
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Notification>) {
 		const notificationData = await notifications.findById(request.params.id);
 		if (!notificationData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Notification not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'notifications',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Notification not found');
 		}
 		reply.send({ data: notificationData, error: null, statusCode: HTTP_STATUS.OK });
 	}

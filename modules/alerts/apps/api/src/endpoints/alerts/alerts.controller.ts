@@ -20,14 +20,7 @@ export class AlertsController {
 	static async create(request: FastifyRequest<{ Body: CreateAlertDto }>, reply: FastifyReply<Alert>) {
 		const insertResult = await alerts.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
 		if (!insertResult) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to create alert');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'alerts',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to create alert');
 		}
 
 		// await notifications.sendNotification(PermissionCatalog.all.alerts.scope, 'created_alert', request.me, insertResult._id, insertResult.title, insertResult.description);
@@ -42,14 +35,7 @@ export class AlertsController {
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const deleteResult = await alerts.deleteById(request.params.id);
 		if (!deleteResult) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete alert');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'alerts',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete alert');
 		}
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
@@ -66,45 +52,24 @@ export class AlertsController {
 		const foundAlert = await alerts.findById(request.params.id);
 		// If the alert does not exist, return an error
 		if (!foundAlert) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
-			Logger.issue('error', error, {
-				action: 'deleteImage',
-				feature: 'alerts',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		}
 
 		// Ensure the alert has an associated image file.
 		if (!foundAlert.file_id) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Image not found for alert');
-			Logger.issue('error', error, {
-				action: 'deleteImage',
-				feature: 'alerts',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Image not found for alert');
 		}
 
-		Logger.info('===> Found alert with image ID:', foundAlert.file_id);
+		Logger.info({ message: `===> Found alert with image ID: ${foundAlert.file_id}` });
 		// Delete the image file and update the alert
 		// await files.deleteById(foundAlert.file_id);
-		Logger.info('===> Deleted image file ID:', foundAlert.file_id);
+		Logger.info({ message: `===> Deleted image file ID: ${foundAlert.file_id}` });
 		await alerts.updateById(request.params.id, { file_id: null });
 		// Send the updated Alert to the client
 		const updatedAlert = await alerts.findById(request.params.id);
 		// If the updated alert does not exist, return an error
 		if (!updatedAlert) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete image for alert');
-			Logger.issue('error', error, {
-				action: 'deleteImage',
-				feature: 'alerts',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete image for alert');
 		}
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
@@ -143,14 +108,7 @@ export class AlertsController {
 		const foundAlert = await alerts.findById(request.params.id);
 		// If the alert does not exist, return an error
 		if (!foundAlert) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
-			Logger.error(error, {
-				action: 'getById',
-				feature: 'alerts',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		}
 
 		reply.send({ data: foundAlert, error: null, statusCode: HTTP_STATUS.OK });
@@ -161,18 +119,13 @@ export class AlertsController {
 	 * @param request The request object containing the alert ID in the params.
 	 * @param reply The reply object.
 	 */
+	q;
+
 	static async getImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
 		// Ensure the alert exists
 		const foundAlert = await alerts.findById(request.params.id);
 		if (!foundAlert) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
-			Logger.issue('error', error, {
-				action: 'getImage',
-				feature: 'alerts',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		}
 
 		// Ensure the alert has an associated image file.
@@ -184,14 +137,7 @@ export class AlertsController {
 		// Retrieve and send the image file
 		const foundImageFile = await files.findById(foundAlert.file_id);
 		if (!foundImageFile) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Image file not found');
-			Logger.issue('error', error, {
-				action: 'getImage',
-				feature: 'alerts',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Image file not found');
 		}
 
 		reply.send({ data: foundImageFile, error: null, statusCode: HTTP_STATUS.OK });
@@ -206,14 +152,7 @@ export class AlertsController {
 		await alerts.toggleLockById(request.params.id);
 		const foundAlert = await alerts.findById(request.params.id);
 		if (!foundAlert) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'alerts',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		}
 
 		reply.send({ data: foundAlert, error: null, statusCode: HTTP_STATUS.OK });
@@ -239,14 +178,7 @@ export class AlertsController {
 		// Retrieve the existing alert
 		const existingAlert = await alerts.findById(request.params.id);
 		if (!existingAlert) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
-			Logger.issue('error', error, {
-				action: 'duplicate',
-				feature: 'alerts',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		}
 
 		// Update necessary properties to indicate a copy
@@ -262,13 +194,6 @@ export class AlertsController {
 		const insertResult = await alerts.insertOne(duplicatedAlertData);
 
 		reply.send({ data: insertResult, error: null, statusCode: HTTP_STATUS.OK });
-
-		Logger.issue('info', 'Duplicated alert', {
-			action: 'duplicate',
-			feature: 'alerts',
-			request,
-			value: request.params.id,
-		});
 	}
 
 	/**
@@ -280,14 +205,7 @@ export class AlertsController {
 		// Validate the request body
 		const validatedAlert = UpdateAlertSchema.safeParse(request.body);
 		if (!validatedAlert.success) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Dados inválidos', validatedAlert.error);
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'alerts',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Dados inválidos', validatedAlert.error);
 		}
 
 		// Update the alert in the database
@@ -305,25 +223,13 @@ export class AlertsController {
 		// Retrieve the alert from the database
 		const foundAlert = await alerts.findById(request.params.id);
 		if (!foundAlert) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
-			Logger.issue('error', error, {
-				action: 'uploadImage',
-				feature: 'alerts',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 		}
 
 		// Extract the file data from the request
 		const fileData = await request.file();
 		if (!fileData) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file data found');
-			Logger.issue('error', error, {
-				action: 'uploadImage',
-				feature: 'alerts',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file data found');
 		}
 
 		const buffer = await fileData.toBuffer();
@@ -341,13 +247,7 @@ export class AlertsController {
 
 		// If the file upload result is not found, return an error
 		if (!fileUploadResult) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to upload image');
-			Logger.issue('error', error, {
-				action: 'uploadImage',
-				feature: 'alerts',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to upload image');
 		}
 
 		// Delete the old image if it exists

@@ -72,14 +72,7 @@ export class SamsController {
 	static async getTimelineSummaryByIds(request: FastifyRequest, reply: FastifyReply<SamTimelineSummaryListItem[]>) {
 		const numericIds = SamsController.parseNumericIds(request.query['ids']?.split(',') ?? []);
 		if (numericIds.length === 0) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids parameter.');
-			Logger.issue('error', error, {
-				action: 'getTimelineSummaryByIds',
-				feature: 'sams',
-				request,
-				value: request.query,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids parameter.');
 		}
 
 		return SamsController.resolveTimelineSummaryRows(request, numericIds, reply);
@@ -97,14 +90,7 @@ export class SamsController {
 		const numericIds = (request.body?.ids ?? []).filter(id => Number.isInteger(id));
 
 		if (numericIds.length === 0) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids parameter.');
-			Logger.issue('error', error, {
-				action: 'postTimelineSummaryByIds',
-				feature: 'sams',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids parameter.');
 		}
 
 		return SamsController.resolveTimelineSummaryRows(request, numericIds, reply);
@@ -120,14 +106,7 @@ export class SamsController {
 		const samsPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read);
 
 		if (!samsPermission) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'Insufficient permissions.');
-			Logger.issue('error', error, {
-				action: 'resolveTimelineSummaryRows',
-				feature: 'sams',
-				request,
-				value: ids,
-			});
-			return reply.status(HTTP_STATUS.FORBIDDEN).send({ data: null, error: 'Insufficient permissions.', statusCode: HTTP_STATUS.FORBIDDEN });
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Insufficient permissions.');
 		}
 
 		if (ids.length === 0) {
@@ -176,14 +155,7 @@ export class SamsController {
 		const rows = (await sams.aggregate(pipeline)) as Array<{ _id: unknown }>;
 
 		if (rows.length === 0) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'No apex versions found.');
-			Logger.issue('error', error, {
-				action: 'getApexVersions',
-				feature: 'sams',
-				request,
-				value: request.query,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No apex versions found.');
 		}
 
 		return reply.send({
@@ -206,14 +178,7 @@ export class SamsController {
 		const allSams = (await sams.aggregate(pipeline)) as SamBaseListItem[];
 
 		if (allSams.length === 0) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'No sams found.');
-			Logger.issue('error', error, {
-				action: 'getBatchBase',
-				feature: 'sams',
-				request,
-				value: request.query,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No sams found.');
 		}
 
 		return reply.send({
@@ -236,14 +201,7 @@ export class SamsController {
 		const allSams = (await sams.aggregate(pipeline)) as SamBatchListItem[];
 
 		if (allSams.length === 0) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'No sams found.');
-			Logger.issue('error', error, {
-				action: 'getBatch',
-				feature: 'sams',
-				request,
-				value: request.query,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No sams found.');
 		}
 
 		return reply.send({
@@ -268,14 +226,7 @@ export class SamsController {
 			.filter(id => Number.isInteger(id));
 
 		if (numericIds.length === 0 && matchAnd.length === 0) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids or matchAnd parameter.');
-			Logger.issue('error', error, {
-				action: 'getExportData',
-				feature: 'sams',
-				request,
-				value: request.query,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids or matchAnd parameter.');
 		}
 
 		const pipeline = samsAnalysisExportAggregationPipeline({
@@ -286,14 +237,7 @@ export class SamsController {
 		const rows = (await sams.aggregate(pipeline)) as Sam[];
 
 		if (rows.length === 0) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'No sams found.');
-			Logger.issue('error', error, {
-				action: 'getExportData',
-				feature: 'sams',
-				request,
-				value: request.query,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No sams found.');
 		}
 
 		return reply.send({ data: rows, error: null, statusCode: HTTP_STATUS.OK });
@@ -311,14 +255,7 @@ export class SamsController {
 		const { id } = request.params as { id: string };
 
 		if (!id || isNaN(Number(id))) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing id parameter.');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'sams',
-				request,
-				value: request.params,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing id parameter.');
 		}
 
 		//
@@ -328,14 +265,7 @@ export class SamsController {
 		const sam = samRows[0];
 
 		if (!sam) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'SAM not found.');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'sams',
-				request,
-				value: request.params,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'SAM not found.');
 		}
 
 		//
@@ -357,14 +287,7 @@ export class SamsController {
 		const samsPermission = PermissionCatalog.get(request.permissions, PermissionCatalog.all.sams.scope, PermissionCatalog.all.sams.actions.read);
 
 		if (!samsPermission) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'Insufficient permissions.');
-			Logger.issue('error', error, {
-				action: 'getSamByIds',
-				feature: 'sams',
-				request,
-				value: request.query,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Insufficient permissions.');
 		}
 
 		const agencyIds = (samsPermission as Permission & { resources?: { agency_ids?: string[] } }).resources?.agency_ids;
@@ -378,14 +301,7 @@ export class SamsController {
 			.filter(id => Number.isInteger(id));
 
 		if (numericIds.length === 0) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids parameter.');
-			Logger.issue('error', error, {
-				action: 'getSamByIds',
-				feature: 'sams',
-				request,
-				value: request.query,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids parameter.');
 		}
 
 		const foundSamsByIds = (await sams.aggregate(

@@ -1,5 +1,7 @@
 /* * */
 
+import * as Sentry from '@sentry/nextjs';
+
 import { type LogsNextjsContext } from '../interface/logs-nextjs.js';
 
 /* * */
@@ -21,13 +23,11 @@ import { type LogsNextjsContext } from '../interface/logs-nextjs.js';
  *   startLogsNextjs({ app: 'my-app', message: 'Starting…', module: 'server', severity: 'info' });
  */
 export function startLogsNextjs(context: Omit<LogsNextjsContext, 'app' | 'message' | 'module' | 'severity'> & { app: string, message: string, module: string, severity: string }): void {
-	const normalizedContext = {
+	Sentry.logger.info(context.message, {
 		...context,
 		app: context.app,
-		message: context.message,
 		module: context.module,
 		severity: context.severity ?? 'info',
-	};
-
-	return startLogsNextjs(normalizedContext);
+	});
+	Sentry.getGlobalScope().setAttributes({ app: context.app, module: context.module });
 }

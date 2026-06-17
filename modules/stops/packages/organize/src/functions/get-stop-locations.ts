@@ -48,7 +48,7 @@ export async function getStopLocations(lat: number, lon: number): Promise<GetSto
 	const { data: locationsData } = await fetchData<LocationsApiResponse>(locationsApiUrl);
 
 	if (!locationsData) {
-		Logger.info(`No locations data found for coordinates ${lat}, ${lon}.`);
+		Logger.info({ message: `No locations data found for coordinates ${lat}, ${lon}.` });
 		return result;
 	}
 

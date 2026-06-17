@@ -30,7 +30,7 @@ export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters
 
 	await performInTimeChunks({
 		onChunk: async (chunk) => {
-			Logger.progress(`[${chunk.index + 1}/${chunk.total}] - ${Dates.fromUnixTimestamp(chunk.end).iso}[${chunk.end}] › ${Dates.fromUnixTimestamp(chunk.start).iso}[${chunk.start}]`);
+			Logger.progress({ message: `[${chunk.index + 1}/${chunk.total}] - ${Dates.fromUnixTimestamp(chunk.end).iso}[${chunk.end}] › ${Dates.fromUnixTimestamp(chunk.start).iso}[${chunk.start}]` });
 			const operationalDates = operationalDateBoundsForChunk(chunk.start, chunk.end);
 			await queryEtaFromFile(clickhouseClient, config.database, pipelinePath(INSERT_HISTORICAL_VEHICLE_EVENTS_SQL_FILE), {
 				chunk_end: chunk.end,
@@ -42,6 +42,6 @@ export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters
 		startDate: Dates.now('Europe/Lisbon').minus({ days: config.historicalDataDaysBack }).unix_timestamp,
 	});
 
-	Logger.progress(`Inserted historical rides vehicle events into clickhouse`);
+	Logger.progress({ message: `Inserted historical rides vehicle events into clickhouse` });
 	return;
 }

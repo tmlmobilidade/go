@@ -41,7 +41,7 @@ class PCGIDBValidationsClass {
 			serverSelectionTimeoutMS: 10_000,
 		};
 
-		Logger.info('Connecting to PCGIDB Validations...');
+		Logger.info({ message: 'Connecting to PCGIDB Validations...' });
 
 		try {
 			// Connect to the MongoDB database
@@ -138,7 +138,7 @@ class PCGIDBValidationsClass {
 			GLOBAL_PCGIDB_TUNNEL_INSTANCE = new SshTunnelService(sshConfig, sshOptions);
 		}
 
-		Logger.info('Setting up SSH Tunnel for PCGIDB Validations...');
+		Logger.info({ message: 'Setting up SSH Tunnel for PCGIDB Validations...' });
 
 		const sshTunnelConnection = await GLOBAL_PCGIDB_TUNNEL_INSTANCE.connect();
 

@@ -3,7 +3,6 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { annotations, type Filter } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { type Annotation, type CreateAnnotationDto, PermissionCatalog, type UpdateAnnotationDto } from '@tmlmobilidade/types';
 
 /* * */;
@@ -28,14 +27,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create annotations');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'annotations',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create annotations');
 		}
 
 		//
@@ -50,14 +42,7 @@ export class AnnotationsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create annotations for these agencies. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'annotations',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create annotations for these agencies. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -83,13 +68,7 @@ export class AnnotationsController {
 		const annotation = await annotations.findById(id);
 
 		if (!annotation) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'annotations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 		}
 
 		//
@@ -101,13 +80,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete annotations');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'annotations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete annotations');
 		}
 
 		//
@@ -122,13 +95,7 @@ export class AnnotationsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this annotation. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'annotations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this annotation. You must have permission for all agencies involved.');
 		}
 
 		//
@@ -155,13 +122,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read annotations');
-			Logger.issue('error', error, {
-				action: 'getAll',
-				feature: 'annotations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read annotations');
 		}
 
 		//
@@ -203,14 +164,7 @@ export class AnnotationsController {
 		const annotationData = await annotations.findById(request.params.id);
 
 		if (!annotationData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'annotations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 		}
 
 		//
@@ -222,13 +176,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read annotations');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'annotations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read annotations');
 		}
 
 		//
@@ -243,13 +191,7 @@ export class AnnotationsController {
 		});
 
 		if (!hasPermissionForAnyAgency) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this annotation');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'annotations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this annotation');
 		}
 
 		//
@@ -278,14 +220,7 @@ export class AnnotationsController {
 		const annotationData = await annotations.findById(request.params.id);
 
 		if (!annotationData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'annotations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 		}
 
 		//
@@ -297,13 +232,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock annotations');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'annotations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock/unlock annotations');
 		}
 
 		//
@@ -318,27 +247,14 @@ export class AnnotationsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock annotation. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'annotations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock annotation. You must have permission for all agencies involved.');
 		}
 
 		// If authorized, toggle the lock status of the annotation
 		await annotations.toggleLockById(request.params.id);
 		const foundAnnotation = await annotations.findById(request.params.id);
 		if (!foundAnnotation) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'annotations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 		}
 		return reply.send({ data: foundAnnotation, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -359,14 +275,7 @@ export class AnnotationsController {
 		const annotationData = await annotations.findById(request.params.id);
 
 		if (!annotationData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'annotations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 		}
 
 		//
@@ -378,13 +287,7 @@ export class AnnotationsController {
 		// If no permission found, deny access
 
 		if (!userAnnotationPermissions) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update annotations');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'annotations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update annotations');
 		}
 
 		//
@@ -399,13 +302,7 @@ export class AnnotationsController {
 		});
 
 		if (!hasPermissionForAllAgencies) {
-			const error = new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this annotation. You must have permission for all agencies involved.');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'annotations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this annotation. You must have permission for all agencies involved.');
 		}
 
 		//

@@ -2,7 +2,6 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { enrichUserRefs, proposedChanges } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { ProposedChange, UpdateProposedChangeDto } from '@tmlmobilidade/types';
 
 /**
@@ -18,14 +17,7 @@ export class ProposedChangesController {
 		const data = request.body as ProposedChange<any>;
 		const result = await proposedChanges.insertOne({ ...data, created_by: request.me._id, updated_by: request.me._id });
 		if (!result) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating proposed change');
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'proposedChanges',
-				request,
-				value: data,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating proposed change');
 		}
 
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
@@ -40,14 +32,7 @@ export class ProposedChangesController {
 		const { id } = request.params;
 		const result = await proposedChanges.deleteById(id);
 		if (!result) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error deleting proposed change');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'proposedChanges',
-				request,
-				value: id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error deleting proposed change');
 		}
 		reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -63,13 +48,7 @@ export class ProposedChangesController {
 		});
 
 		if (!data) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting proposed changes');
-			Logger.issue('error', error, {
-				action: 'getAll',
-				feature: 'proposedChanges',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting proposed changes');
 		}
 		reply.send({ data: await enrichUserRefs(data), error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -84,14 +63,7 @@ export class ProposedChangesController {
 		const proposedChange = await proposedChanges.findById(id);
 
 		if (!proposedChange) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Proposed Change not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'proposedChanges',
-				request,
-				value: id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Proposed Change not found');
 		}
 		reply.send({ data: await enrichUserRefs(proposedChange), error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -105,14 +77,7 @@ export class ProposedChangesController {
 		const { id } = request.params;
 		const data = await proposedChanges.updateById(id, request.body);
 		if (!data) {
-			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error updating proposed change');
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'proposedChanges',
-				request,
-				value: id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error updating proposed change');
 		}
 
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });

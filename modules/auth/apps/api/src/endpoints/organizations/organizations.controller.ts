@@ -20,14 +20,7 @@ export class OrganizationsController {
 		// Validate the request body
 		const validatedOrganization = CreateOrganizationSchema.safeParse(request.body);
 		if (!validatedOrganization.success) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, validatedOrganization.error.message);
-			Logger.issue('error', error, {
-				action: 'create',
-				feature: 'organizations',
-				request,
-				value: request.body,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, validatedOrganization.error.message);
 		}
 		// Set the updated_by field to the current user's id
 		validatedOrganization.data.updated_by = request.me._id;
@@ -45,26 +38,14 @@ export class OrganizationsController {
 		// Find the organization by ID
 		const organization = await organizations.findById(request.params.id);
 		if (!organization) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.issue('error', error, {
-				action: 'delete',
-				feature: 'organizations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
 		// Delete associated logo files if they exist
 		if (organization.logo_dark) {
 			try {
 				await files.deleteById(organization.logo_dark);
 			} catch (error) {
-				Logger.issue('error', error, {
-					action: 'delete',
-					feature: 'organizations',
-					request,
-					value: request.params.id,
-				});
+				Logger.issue({ context: { action: 'delete', feature: 'organizations', request, value: request.params.id }, level: 'error', messageOrError: error });
 				throw error;
 			}
 		}
@@ -72,12 +53,7 @@ export class OrganizationsController {
 			try {
 				await files.deleteById(organization.logo_light);
 			} catch (error) {
-				Logger.issue('error', error, {
-					action: 'delete',
-					feature: 'organizations',
-					request,
-					value: request.params.id,
-				});
+				Logger.issue({ context: { action: 'delete', feature: 'organizations', request, value: request.params.id }, level: 'error', messageOrError: error });
 				throw error;
 			}
 		}
@@ -95,26 +71,15 @@ export class OrganizationsController {
 		// Find the organization by ID
 		const organization = await organizations.findById(request.params.id);
 		if (!organization) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.issue('error', error, {
-				action: 'deleteImage',
-				feature: 'organizations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
+
 		// Determine which logo to delete based on theme
 		const logoField = request.params.theme === 'dark' ? organization.logo_dark : organization.logo_light;
 		if (!logoField) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, `Logo not found for theme: ${request.params.theme}`);
-			Logger.issue('error', error, {
-				action: 'deleteImage',
-				feature: 'organizations',
-				request,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `Logo not found for theme: ${request.params.theme}`);
 		}
+
 		// Delete the logo file from storage
 		await files.deleteById(logoField);
 		// Update the organization to remove the logo reference
@@ -142,14 +107,7 @@ export class OrganizationsController {
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Organization>) {
 		const organizationData = await organizations.findById(request.params.id);
 		if (!organizationData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.issue('error', error, {
-				action: 'getById',
-				feature: 'organizations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
 		reply.send({ data: organizationData, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -163,14 +121,7 @@ export class OrganizationsController {
 		// Find the organization by ID
 		const organization = await organizations.findById(request.params.id);
 		if (!organization) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.issue('error', error, {
-				action: 'getLogo',
-				feature: 'organizations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
 		// Fetch logo files if they exist
 		const logoDark = await files.findById(organization.logo_dark);
@@ -188,14 +139,7 @@ export class OrganizationsController {
 		await organizations.toggleLockById(request.params.id);
 		const foundOrganization = await organizations.findById(request.params.id);
 		if (!foundOrganization) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.issue('error', error, {
-				action: 'lock',
-				feature: 'organizations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
 		reply.send({ data: foundOrganization, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -209,14 +153,7 @@ export class OrganizationsController {
 		// Validate the request body
 		const validatedOrganization = UpdateOrganizationSchema.safeParse(request.body);
 		if (!validatedOrganization.success) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, validatedOrganization.error.message);
-			Logger.issue('error', error, {
-				action: 'update',
-				feature: 'organizations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, validatedOrganization.error.message);
 		}
 		// Set the updated_by field to the current user's id
 		request.body.updated_by = request.me._id;
@@ -236,14 +173,7 @@ export class OrganizationsController {
 		const organization = await organizations.findById(id);
 
 		if (!organization) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
-			Logger.issue('error', error, {
-				action: 'uploadImage',
-				feature: 'organizations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
 
 		const updateFields: Partial<{ logo_dark: string, logo_light: string }> = {};
@@ -271,12 +201,7 @@ export class OrganizationsController {
 					try {
 						await files.deleteById(organization.logo_dark);
 					} catch (error) {
-						Logger.issue('error', error, {
-							action: 'uploadImage',
-							feature: 'organizations',
-							request,
-							value: request.params.id,
-						});
+						Logger.issue({ context: { action: 'uploadImage', feature: 'organizations', request, value: request.params.id }, level: 'error', messageOrError: error });
 						continue;
 					}
 				}
@@ -288,12 +213,7 @@ export class OrganizationsController {
 					try {
 						await files.deleteById(organization.logo_light);
 					} catch (error) {
-						Logger.issue('error', error, {
-							action: 'uploadImage',
-							feature: 'organizations',
-							request,
-							value: request.params.id,
-						});
+						Logger.issue({ context: { action: 'uploadImage', feature: 'organizations', request, value: request.params.id }, level: 'error', messageOrError: error });
 						continue;
 					}
 				}
@@ -303,14 +223,7 @@ export class OrganizationsController {
 		}
 
 		if (Object.keys(updateFields).length === 0) {
-			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'No valid files provided');
-			Logger.issue('error', error, {
-				action: 'uploadImage',
-				feature: 'organizations',
-				request,
-				value: request.params.id,
-			});
-			throw error;
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No valid files provided');
 		}
 
 		// Update organization with new logo IDs
