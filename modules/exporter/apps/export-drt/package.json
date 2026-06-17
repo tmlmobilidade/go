@@ -28,10 +28,10 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"csv-parse": "6.2.1",
+		"csv-parse": "7.0.0",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0",
-		"node-cron": "4.2.1"
+		"node-cron": "4.3.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
