@@ -49,9 +49,9 @@ def generate(req: TTSRequest):
             voice.synthesize(
                 req.text,
                 wav_file,
-                length_scale=1.15,
-                noise_scale=0.6,
-                noise_w=0.7
+                length_scale=1.0,
+                noise_scale=0.667,
+                noise_w=0.8,
             )
 
         if not os.path.exists(wav_path) or os.path.getsize(wav_path) < 1000:
@@ -65,11 +65,12 @@ def generate(req: TTSRequest):
             "-i", wav_path,
             "-af",
             f"atempo={speed},"
-            "highpass=f=80,"
-            "lowpass=f=12000,"
-            "equalizer=f=300:width_type=h:width=200:g=-3,"
-            "equalizer=f=3000:width_type=h:width=1000:g=3,"
-            "loudnorm",
+            "highpass=f=90,"
+            "equalizer=f=300:width_type=h:width=250:g=-2,"
+            "equalizer=f=3000:width_type=h:width=1800:g=3,"
+            "equalizer=f=6500:width_type=h:width=3000:g=1.5,"
+            "acompressor=threshold=-18dB:ratio=2:attack=5:release=80:makeup=1,"
+            "alimiter=limit=0.98",
             "-acodec", "libmp3lame",
             "-b:a", "192k",
             mp3_path
