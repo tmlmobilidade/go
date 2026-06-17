@@ -34,13 +34,13 @@ export const RawApexTransactionValidationV20PayloadSchema = z.object({
 		operatorLongID: z.string(),
 	}),
 	serviceInfo: z.object({
-		journeyID: z.string(),
+		journeyID: z.string().nullable().default(null),
 		lineLongID: z.string(),
 		patternLongID: z.string(),
 		stopLongID: z.string(),
 		validatorID: z.number(),
 		vehicleID: z.number(),
-		zoneLongID: z.string(),
+		zoneLongID: z.string().nullable().default(null),
 	}),
 	signedData: z.object({
 		contractBinaryRead: z.string(),
