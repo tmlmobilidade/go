@@ -10,10 +10,9 @@ export function AlertsListFilterCreationDate() {
 	//
 
 	//
+	// A. Setup variables
 
 	const alertsListContext = useAlertsListContext();
-
-	//
 
 	const handleCreationDateChange = (value: UnixTimestamp) => {
 		alertsListContext.actions.setFilterDateCreation(value);
@@ -23,6 +22,7 @@ export function AlertsListFilterCreationDate() {
 	};
 
 	//
+	// B. Render components
 
 	return (
 		<FilterTypeCreationDate

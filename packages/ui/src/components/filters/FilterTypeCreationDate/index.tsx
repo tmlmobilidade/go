@@ -37,7 +37,6 @@ export function FilterTypeCreationDate({ active, clearable = false, creationDate
 					onChange={onCreationDateChange}
 					value={creationDate}
 				/>
-				<Label size="md"> </Label>
 				<DateTimeInput
 					clearable={clearable}
 					onChange={onCreationDateLimitChange}

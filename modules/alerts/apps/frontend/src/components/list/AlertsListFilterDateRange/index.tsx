@@ -10,10 +10,9 @@ export function AlertsListFilterDateRange() {
 	//
 
 	//
+	// A. Setup variables
 
 	const alertsListContext = useAlertsListContext();
-
-	//
 
 	const handleStartDateChange = (value: UnixTimestamp) => {
 		alertsListContext.actions.setFilterDateStart(value);
@@ -24,6 +23,7 @@ export function AlertsListFilterDateRange() {
 	};
 
 	//
+	// B. Render components
 
 	return (
 		<FilterTypeDateRange
