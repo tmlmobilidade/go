@@ -7,9 +7,8 @@ import { StopsListFilterEquipment } from '@/components/stops/list/StopsListFilte
 import { StopsListFilterFacilities } from '@/components/stops/list/StopsListFilterFacilities';
 // import { StopsListFilterParish } from '@/components/stops/list/StopsListFilterParishes';
 import { StopsListFilterLifecycleStatus } from '@/components/stops/list/StopsListFilterLifecycleStatus';
+import { StopsListFilterMunicipality } from '@/components/stops/list/StopsListFilterMunicipality';
 import { FiltersBar } from '@tmlmobilidade/ui';
-
-import { StopsListFilterMunicipality } from '../StopsListFilterMunicipality';
 
 /* * */
 
