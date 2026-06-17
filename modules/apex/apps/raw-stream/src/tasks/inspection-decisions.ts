@@ -1,7 +1,7 @@
 /* * */
 
 import { simplifiedApexInspectionDecisionsNew } from '@tmlmobilidade/databases';
-import { parseRawApexTransactionInspectionDecisionV20 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexInspectionDecision } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type SimplifiedApexInspectionDecision } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -32,7 +32,7 @@ export async function processRawApexTransactionInspectionDecision(databaseOperat
 
 	try {
 		let parseResult: null | SimplifiedApexInspectionDecision = null;
-		if (databaseOperation.fullDocument.version === 'inspection-decision-2.0') parseResult = parseRawApexTransactionInspectionDecisionV20(databaseOperation.fullDocument);
+		if (databaseOperation.fullDocument.version === 'inspection-decision-2.0') parseResult = parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexInspectionDecision(databaseOperation.fullDocument);
 		if (!parseResult) return;
 		await writer.write(parseResult);
 	} catch (error) {

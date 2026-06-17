@@ -2,7 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionValidationV20, parseRawApexTransactionValidationV30, parseRawApexTransactionValidationV40, parseRawApexTransactionValidationV50 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionValidationV20IntoSimplifiedApexValidation, parseRawApexTransactionValidationV30IntoSimplifiedApexValidation, parseRawApexTransactionValidationV40IntoSimplifiedApexValidation, parseRawApexTransactionValidationV50IntoSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -103,13 +103,17 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexValidation = null;
-			if (sourceDbDocument.version === 'validation-2.0') parseResult = parseRawApexTransactionValidationV20(sourceDbDocument);
-			if (sourceDbDocument.version === 'validation-3.0') parseResult = parseRawApexTransactionValidationV30(sourceDbDocument);
-			if (sourceDbDocument.version === 'validation-4.0') parseResult = parseRawApexTransactionValidationV40(sourceDbDocument);
-			if (sourceDbDocument.version === 'validation-5.0') parseResult = parseRawApexTransactionValidationV50(sourceDbDocument);
-			if (!parseResult) return;
-			await writer.write(parseResult);
+			try {
+				let parseResult: null | SimplifiedApexValidation = null;
+				if (sourceDbDocument.version === 'validation-2.0') parseResult = parseRawApexTransactionValidationV20IntoSimplifiedApexValidation(sourceDbDocument);
+				if (sourceDbDocument.version === 'validation-3.0') parseResult = parseRawApexTransactionValidationV30IntoSimplifiedApexValidation(sourceDbDocument);
+				if (sourceDbDocument.version === 'validation-4.0') parseResult = parseRawApexTransactionValidationV40IntoSimplifiedApexValidation(sourceDbDocument);
+				if (sourceDbDocument.version === 'validation-5.0') parseResult = parseRawApexTransactionValidationV50IntoSimplifiedApexValidation(sourceDbDocument);
+				if (!parseResult) return;
+				await writer.write(parseResult);
+			} catch (error) {
+				Logger.error(`Error transforming APEX Validation: ${sourceDbDocument._id} Reason: ${error.message}`);
+			}
 		},
 
 	});

@@ -2,34 +2,35 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema } from '@/types/index.js';
+import { type ClickHouseTableEngine, type ClickHouseTableSchema } from '@/types/index.js';
 import { type SimplifiedApexInspection } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseSchema<SimplifiedApexInspection> = {
-	_id: { primaryKey: true, type: 'String' },
-	agency_id: { type: 'String' },
-	apex_version: { type: 'String' },
-	card_serial_number: { type: 'String' },
-	control_destination_stop_id: { type: 'String' },
-	control_origin_stop_id: { type: 'String' },
-	control_status: { type: 'Int64' },
-	created_at: { type: 'Int64' },
-	device_id: { type: 'String' },
-	environment_status: { type: 'Int64' },
-	inspection_id: { type: 'String' },
+const tableSchema: ClickHouseTableSchema<SimplifiedApexInspection> = {
+	_id: { type: 'UUID' },
+	agency_id: { type: 'LowCardinality(String)' },
+	apex_version: { type: 'LowCardinality(String)' },
+	card_serial_number: { type: 'Nullable(UInt64)' },
+	control_destination_stop_id: { type: 'LowCardinality(Nullable(String))' },
+	control_origin_stop_id: { type: 'LowCardinality(Nullable(String))' },
+	control_status: { type: 'UInt8' },
+	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	device_id: { type: 'LowCardinality(String)' },
+	environment_status: { type: 'UInt8' },
+	inspection_id: { type: 'Nullable(UUID)' },
 	is_ok: { type: 'Bool' },
 	is_ok_pcgi: { type: 'Bool' },
-	line_id: { type: 'String' },
-	mac_ase_counter_value: { type: 'Int64' },
-	mac_sam_serial_number: { type: 'Int64' },
-	pattern_id: { type: 'String' },
-	product_id: { type: 'String' },
-	received_at: { type: 'Int64' },
-	trip_id: { type: 'String' },
-	vehicle_id: { type: 'String' },
+	line_id: { type: 'LowCardinality(Nullable(String))' },
+	mac_ase_counter_value: { type: 'UInt64' },
+	mac_sam_serial_number: { type: 'UInt64' },
+	pattern_id: { type: 'LowCardinality(Nullable(String))' },
+	product_id: { type: 'LowCardinality(Nullable(String))' },
+	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	trip_id: { type: 'Nullable(String)' },
+	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
 /* * */
@@ -40,6 +41,9 @@ class SimplifiedApexInspectionsNewClass extends ClickHouseInterfaceTemplate<Simp
 	private static _instance: null | Promise<SimplifiedApexInspectionsNewClass> = null;
 
 	protected override readonly databaseName = 'simplified_apex';
+	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexInspection> = 'ReplacingMergeTree(updated_at)';
+	protected override readonly orderBy = 'agency_id, created_at, _id';
+	protected override readonly partitionBy = 'toYYYYMM(created_at)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'inspections';
 

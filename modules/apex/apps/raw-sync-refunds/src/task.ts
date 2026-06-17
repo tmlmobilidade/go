@@ -2,7 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionRefundV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -36,7 +36,7 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
-	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${timeChunk.end}] › ${chunkStartDate.iso}[${timeChunk.start}]`, 150);
 
 	//
 	// Prepare the PCGIDB query to retrieve documents
@@ -44,8 +44,8 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 
 	const rawdbQuery: Filter<RawApexTransaction> = {
 		created_at: {
-			$gte: chunkStartDate.unix_timestamp,
-			$lte: chunkEndDate.unix_timestamp,
+			$gte: timeChunk.start,
+			$lt: timeChunk.end,
 		},
 		version: { $in: ['refund-3.0'] },
 	};
@@ -62,8 +62,8 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 		countDestinationDbFn: async () => {
 			return await simplifiedApexOnBoardRefundsNew.count(
 				'*',
-				'created_at >= $1 AND created_at <= $2',
-				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
 
@@ -74,16 +74,16 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 
 		deleteDestinationDbFn: async (ids: string[]) => {
 			await simplifiedApexOnBoardRefundsNew.delete(
-				'_id IN ($1)',
-				{ 1: ids.map(id => `'${id}'`).join(', ') },
+				'_id IN $1',
+				{ 1: ids },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexOnBoardRefundsNew.distinct(
 				'_id',
-				'created_at >= $1 AND created_at <= $2',
-				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
 
@@ -103,10 +103,14 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexOnBoardRefund = null;
-			if (sourceDbDocument.version === 'refund-3.0') parseResult = parseRawApexTransactionRefundV30(sourceDbDocument);
-			if (!parseResult) return;
-			await writer.write(parseResult);
+			try {
+				let parseResult: null | SimplifiedApexOnBoardRefund = null;
+				if (sourceDbDocument.version === 'refund-3.0') parseResult = parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(sourceDbDocument);
+				if (!parseResult) return;
+				await writer.write(parseResult);
+			} catch (error) {
+				Logger.error(`Error transforming APEX Refund: ${sourceDbDocument._id} Reason: ${error.message}`);
+			}
 		},
 
 	});

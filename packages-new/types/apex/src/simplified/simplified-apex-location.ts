@@ -18,7 +18,8 @@ export const SimplifiedApexLocationSchema = z.object({
 	received_at: UnixTimestampSchema,
 	stop_id: z.string(),
 	trip_id: z.string().nullable().default(null),
-	vehicle_id: z.number(),
+	updated_at: UnixTimestampSchema,
+	vehicle_id: z.number().nullable().default(null),
 });
 
 export const UpdateSimplifiedApexLocationSchema = SimplifiedApexLocationSchema.partial();
