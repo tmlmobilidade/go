@@ -1,7 +1,13 @@
 import * as Sentry from '@sentry/core';
-import { type FastifyRequest } from 'fastify';
 
 export type GlobalIssueLevel = 'debug' | 'error' | 'fatal' | 'info' | 'warning';
+
+export interface GlobalIssueRequestContext {
+	me?: { email?: string }
+	method?: string
+	routeOptions?: { url?: string }
+	url?: string
+}
 
 export interface GlobalIssueContext {
 	[key: string]: unknown
@@ -11,7 +17,7 @@ export interface GlobalIssueContext {
 	feature?: string
 	level?: GlobalIssueLevel
 	message?: string
-	request?: FastifyRequest
+	request?: GlobalIssueRequestContext
 	service?: string
 	status?: number
 	value?: unknown
@@ -23,7 +29,7 @@ export function globalIssue(context: GlobalIssueContext): void {
 	//
 	// Normalize the request context
 
-	const requestContext = context.request as FastifyRequest & { me?: { email?: string }, routeOptions?: { url?: string } } | undefined;
+	const requestContext = context.request;
 	const routeUrl = requestContext?.routeOptions?.url;
 	const requestUrl = requestContext?.url;
 	const requestMethod = context.request?.method;
