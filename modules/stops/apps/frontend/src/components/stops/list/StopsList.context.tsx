@@ -90,6 +90,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		data: normalizedStopsData,
 		query: filterSearch.value,
 	});
+
 	const filteredMunicipalityOptions = useMemo(() => {
 		if (!allStopsData?.length || !filterMunicipality.options?.length) {
 			return filterMunicipality.options;
