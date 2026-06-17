@@ -6,10 +6,10 @@ import { transformDescriptionText } from '@/transform/gtfs-rt/content/descriptio
 import { transformHeaderText } from '@/transform/gtfs-rt/content/header-text.js';
 import { transformImage } from '@/transform/gtfs-rt/content/image.js';
 import { transformUrl } from '@/transform/gtfs-rt/content/url.js';
-import { transformReferenceTypeAgency } from '@/transform/gtfs-rt/reference-types/agency.js';
-import { transformReferenceTypeLines } from '@/transform/gtfs-rt/reference-types/lines.js';
-import { transformReferenceTypeRides } from '@/transform/gtfs-rt/reference-types/rides.js';
-import { transformReferenceTypeStops } from '@/transform/gtfs-rt/reference-types/stops.js';
+import { transformReferenceTypeAgencyIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/agency.js';
+import { transformReferenceTypeLinesIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/lines.js';
+import { transformReferenceTypeRidesIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/rides.js';
+import { transformReferenceTypeStopsIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/stops.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@tmlmobilidade/types';
 
@@ -83,23 +83,19 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 		let informedEntityValues: GtfsRtEntitySelector[] | undefined;
 
 		if (alertData.reference_type === 'agency') {
-			informedEntityValues = await transformReferenceTypeAgency(alertData);
+			informedEntityValues = await transformReferenceTypeAgencyIntoGtfsRt(alertData);
 		}
 
 		if (alertData.reference_type === 'lines') {
-			informedEntityValues = await transformReferenceTypeLines(alertData);
+			informedEntityValues = await transformReferenceTypeLinesIntoGtfsRt(alertData);
 		}
 
 		if (alertData.reference_type === 'rides') {
-			informedEntityValues = await transformReferenceTypeRides(alertData);
+			informedEntityValues = await transformReferenceTypeRidesIntoGtfsRt(alertData);
 		}
 
 		if (alertData.reference_type === 'stops') {
-			informedEntityValues = await transformReferenceTypeStops(alertData);
-		}
-
-		if (alertData.reference_type === 'stops') {
-			informedEntityValues = await transformReferenceTypeStops(alertData);
+			informedEntityValues = await transformReferenceTypeStopsIntoGtfsRt(alertData);
 		}
 
 		if (!informedEntityValues) {

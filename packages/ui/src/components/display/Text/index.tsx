@@ -12,9 +12,9 @@ export interface TextProps extends MantineTextProps {
 
 /* * */
 
-export function Text({ children, size = 'base', ...props }: TextProps) {
+export function Text({ children, size = 'base', weight = 'medium', ...props }: TextProps) {
 	return (
-		<MantineText data-size={size} {...props}>
+		<MantineText data-size={size} data-weight={weight} {...props}>
 			{children}
 		</MantineText>
 	);

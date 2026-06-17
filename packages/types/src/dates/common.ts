@@ -5,13 +5,14 @@ import { z } from 'zod';
 /* * */
 
 const OPERATIONAL_DAY_START_HOUR = 4;
+const OPERATIONAL_DAY_END_HOUR = 29;
 
 /**
  * Parses an operational HH:MM.
  *
  * Rules:
  * - minimum is 04:00
- * - no upper hour limit
+ * - maximum is 29:59
  * - minutes must be 00–59
  * - hour must be at least 2 digits in stored format
  */
@@ -40,6 +41,12 @@ export function operationalHhmmToMinutes(hhmm: string, ignoreStartHour = false):
 		throw new Error(`Operational time out of range: ${hhmm}`);
 	}
 
+	const maxAllowed = (OPERATIONAL_DAY_END_HOUR * 60) + 59; // 29:59
+
+	if (!ignoreStartHour && total > maxAllowed) {
+		throw new Error(`Operational time out of range: ${hhmm}`);
+	}
+
 	return total;
 }
 
@@ -51,10 +58,8 @@ export function operationalHhmmToMinutes(hhmm: string, ignoreStartHour = false):
  * - "0800" -> "08:00"
  * - "2200" -> "22:00"
  * - "2600" -> "26:00"
- * - "10000" -> "100:00"
  * - "8:00" -> "08:00"
  * - "26:00" -> "26:00"
- * - "100:00" -> "100:00"
  *
  * Returns null if it cannot normalize safely.
  */
@@ -90,7 +95,7 @@ export const HHMMSchema = z
 			console.warn('Invalid HHMM:', value, err);
 			return false;
 		}
-	}, 'Invalid operational time (expected HH:MM with minimum 04:00)')
+	}, 'Invalid operational time (expected HH:MM between 04:00 and 29:59)')
 	.brand<'HHMM'>();
 
 export type HHMM = z.infer<typeof HHMMSchema>;

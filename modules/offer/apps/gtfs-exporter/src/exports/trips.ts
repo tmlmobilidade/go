@@ -1,35 +1,13 @@
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { type ServiceId, type ServiceRegistry } from '@/utils/service-registry.js';
-import {
-	buildRuleSummaryGtfs,
-	calendarWeekday,
-	computeActiveRules,
-	Dates,
-	getActivePeriodId,
-	resolveDayPeriod,
-	resolvePatternRules,
-	yyyymmddToKey,
-} from '@tmlmobilidade/dates';
-import {
-	DayPeriod,
-	type Event,
-	GtfsBikesAllowed,
-	GtfsTMLTrip,
-	GtfsWheelchairBoarding,
-	type HHMM,
-	hhmm,
-	type Holiday,
-	type IsoWeekday,
-	type OperationalDate,
-	type Pattern,
-	patternDirectionMapper,
-	type Route,
-	ScheduleRule,
-	timeToMinutes,
-	type YearPeriod,
-} from '@tmlmobilidade/types';
+import { buildOperationalDateRange, buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, Dates, getActivePeriodId, getTimepointsRemovedByEventRestriction, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap, yyyymmddToKey } from '@tmlmobilidade/dates';
+import { DayPeriod, type Event, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type HHMM, hhmm, type Holiday, type IsoWeekday, type ManualRule, type OperationalDate, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
+
+function isEventSpecificManual(rule: ScheduleRule): rule is ManualRule {
+	return rule.kind === 'manual' && !!(rule as ManualRule).event_id;
+}
 
 type ScheduleContributionMode = 'exclude' | 'include';
 
@@ -57,16 +35,6 @@ export interface TripSchedule {
 }
 
 /* * */
-
-// Abstract this
-
-function isTimeInRange(time: HHMM, start: HHMM, end: HHMM): boolean {
-	const timeMinutes = timeToMinutes(time);
-	const startMinutes = timeToMinutes(start);
-	const endMinutes = timeToMinutes(end);
-
-	return timeMinutes >= startMinutes && timeMinutes < endMinutes;
-}
 
 function addScheduleDate(
 	schedules: Map<string, RuleTimepointSchedule>,
@@ -117,14 +85,10 @@ function buildTimepointSchedules(
 			rulesById,
 		);
 
-		// 2) Build ON buckets:
-		// - if replacement rules are active, attribute only the timepoints
-		//   newly introduced by each replacement rule
-		// - otherwise attribute ON buckets to active manual include rules
+		// 2) Build ON buckets via shared GTFS attribution (replacement context + OFF pairs)
 		const activeIncludeTimepoints = collectIncludeTimepointsForDate(
 			schedules,
 			operationalDate,
-			appliedRules,
 			allRules,
 			periods,
 			holidays,
@@ -168,36 +132,9 @@ function getAppliedRulesForDate(
 		.filter((rule): rule is ScheduleRule => !!rule);
 }
 
-/**
- * Computes the manual include rules that would apply on a given date
- * WITHOUT any event replacement rules in effect.
- * Used to correctly attribute non-replacement timepoints to their original
- * weekday/weekend rules instead of the replacement-context rules.
- */
-function getBaseManualIncludeRules(
-	operationalDate: OperationalDate,
-	allRules: ScheduleRule[],
-	periods: YearPeriod[],
-	holidays: Holiday[],
-	events: Event[],
-): ScheduleRule[] {
-	const baseRules = allRules.filter(r => r.kind !== 'event_replacement');
-	const baseRulesById = new Map<string | undefined, ScheduleRule>(baseRules.map(r => [r._id, r]));
-	const { appliedRuleIds } = computeActiveRules(operationalDate, baseRules, periods, holidays, { events });
-	const result: ScheduleRule[] = [];
-	for (const id of appliedRuleIds) {
-		const rule = baseRulesById.get(id);
-		if (rule?.kind === 'manual' && rule.operating_mode === 'include') {
-			result.push(rule);
-		}
-	}
-	return result;
-}
-
 function collectIncludeTimepointsForDate(
 	schedules: Map<string, RuleTimepointSchedule>,
 	operationalDate: OperationalDate,
-	appliedRules: ScheduleRule[],
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
@@ -205,116 +142,7 @@ function collectIncludeTimepointsForDate(
 ): Set<HHMM> {
 	const activeIncludeTimepoints = new Set<HHMM>();
 
-	const activeManualIncludeRules = appliedRules.filter(
-		(rule): rule is ScheduleRule =>
-			rule.kind === 'manual' && rule.operating_mode === 'include',
-	);
-
-	const activeReplacementRules = appliedRules.filter(
-		(rule): rule is ScheduleRule => rule.kind === 'event_replacement',
-	);
-
-	// When a replacement rule is active, it should only "own" the timepoints
-	// that it actually adds compared to the same date without that replacement rule.
-	if (activeReplacementRules.length > 0) {
-		for (const replacementRule of activeReplacementRules) {
-			const addedTimepoints = getReplacementAddedTimepoints(
-				operationalDate,
-				replacementRule,
-				allRules,
-				periods,
-				holidays,
-				events,
-			);
-
-			for (const timepoint of addedTimepoints) {
-				if (activeIncludeTimepoints.has(timepoint)) continue;
-
-				activeIncludeTimepoints.add(timepoint);
-
-				addScheduleDate(schedules, {
-					date: operationalDate,
-					mode: 'include',
-					rule: replacementRule,
-					timepoint,
-				});
-			}
-		}
-	}
-
-	// ON buckets from manual include rules.
-	// When replacements are active, the replacement-context applied rules are Saturday/event
-	// rules — NOT the original weekday rules. Using those would wrongly attribute non-added
-	// timepoints (e.g. 14:50 that already exists on weekdays) to Saturday calendars.
-	// Fix: when any replacement is active, compute the BASE context (no replacements) so that
-	// non-added timepoints are attributed to their original weekday/weekend rule, keeping
-	// calendars like ALL_DU or ESC_DU correct. Timepoints already claimed by the replacement
-	// are skipped via the `activeIncludeTimepoints.has` guard.
-	const manualIncludeRules: ScheduleRule[] = activeReplacementRules.length > 0
-		? getBaseManualIncludeRules(operationalDate, allRules, periods, holidays, events)
-		: activeManualIncludeRules;
-
-	// Two-pass approach: event-specific rules (event_id set) win over general rules.
-	// When a general rule loses a timepoint to an event-specific rule, record an
-	// artificial include+exclude pair so resolveTripRows can emit the -OFF- suffix.
-	const timepointOwners = new Map<HHMM, ScheduleRule>();
-
-	// Pass 1: event-specific manual include rules (have event_id) — higher priority
-	const eventSpecificIncludes = manualIncludeRules.filter(r => !!(r as { event_id?: string }).event_id);
-
-	for (const manualRule of eventSpecificIncludes) {
-		for (const rawTimepoint of manualRule.timepoints ?? []) {
-			const timepoint = hhmm(rawTimepoint);
-
-			if (activeIncludeTimepoints.has(timepoint)) continue;
-
-			activeIncludeTimepoints.add(timepoint);
-			timepointOwners.set(timepoint, manualRule);
-
-			addScheduleDate(schedules, { date: operationalDate, mode: 'include', rule: manualRule, timepoint });
-		}
-	}
-
-	// Pass 2: general manual include rules (no event_id) — lower priority.
-	// If a timepoint was already claimed in pass 1 by an event-specific rule, record
-	// the displacement so the general rule's token gains -OFF-<EventName>.
-	const generalIncludes = manualIncludeRules.filter(r => !(r as { event_id?: string }).event_id);
-
-	for (const manualRule of generalIncludes) {
-		for (const rawTimepoint of manualRule.timepoints ?? []) {
-			const timepoint = hhmm(rawTimepoint);
-
-			if (activeIncludeTimepoints.has(timepoint)) {
-				const ownerRule = timepointOwners.get(timepoint);
-
-				if (ownerRule) {
-					// Displaced by event-specific rule: record both sides for token building.
-					addScheduleDate(schedules, { date: operationalDate, mode: 'include', rule: manualRule, timepoint });
-					addScheduleDate(schedules, { date: operationalDate, mode: 'exclude', rule: ownerRule, timepoint });
-				}
-
-				continue;
-			}
-
-			activeIncludeTimepoints.add(timepoint);
-			timepointOwners.set(timepoint, manualRule);
-
-			addScheduleDate(schedules, { date: operationalDate, mode: 'include', rule: manualRule, timepoint });
-		}
-	}
-
-	return activeIncludeTimepoints;
-}
-
-function getReplacementAddedTimepoints(
-	operationalDate: OperationalDate,
-	replacementRule: ScheduleRule,
-	allRules: ScheduleRule[],
-	periods: YearPeriod[],
-	holidays: Holiday[],
-	events: Event[],
-): Set<HHMM> {
-	const withRule = computeActiveRules(
+	const contributions = collectGtfsIncludeContributionsForDate(
 		operationalDate,
 		allRules,
 		periods,
@@ -322,25 +150,37 @@ function getReplacementAddedTimepoints(
 		{ events },
 	);
 
-	const withoutRule = computeActiveRules(
-		operationalDate,
-		allRules.filter(r => r._id !== replacementRule._id),
-		periods,
-		holidays,
-		{ events },
-	);
+	for (const contribution of contributions) {
+		if (contribution.kind === 'operating') {
+			activeIncludeTimepoints.add(contribution.timepoint);
 
-	const withSet = new Set(withRule.timepoints);
-	const withoutSet = new Set(withoutRule.timepoints);
-	const addedTimepoints = new Set<HHMM>();
+			addScheduleDate(schedules, {
+				date: operationalDate,
+				mode: 'include',
+				rule: contribution.rule,
+				timepoint: contribution.timepoint,
+			});
 
-	for (const tp of withSet) {
-		if (!withoutSet.has(tp)) {
-			addedTimepoints.add(hhmm(tp));
+			continue;
+		}
+
+		if (contribution.kind === 'base_off' && contribution.excludeRule) {
+			addScheduleDate(schedules, {
+				date: operationalDate,
+				mode: 'include',
+				rule: contribution.rule,
+				timepoint: contribution.timepoint,
+			});
+			addScheduleDate(schedules, {
+				date: operationalDate,
+				mode: 'exclude',
+				rule: contribution.excludeRule,
+				timepoint: contribution.timepoint,
+			});
 		}
 	}
 
-	return addedTimepoints;
+	return activeIncludeTimepoints;
 }
 
 function collectExcludeTimepointsForDate(
@@ -364,16 +204,11 @@ function collectExcludeTimepointsForDate(
 			continue;
 		}
 
-		// Event restriction rules remove whichever active include timepoints
-		// fall inside the restricted window for this date.
+		// Event restrictions: all day, explicit timepoints, or time window (same as computeActiveRules).
 		if (rule.kind === 'event_restriction') {
-			for (const timepoint of activeIncludeTimepoints) {
-				const affectsTimepoint = rule.all_day
-					? true
-					: !!rule.start_time && !!rule.end_time && isTimeInRange(timepoint, rule.start_time, rule.end_time);
+			if (!rule.dates?.includes(operationalDate)) continue;
 
-				if (!affectsTimepoint) continue;
-
+			for (const timepoint of getTimepointsRemovedByEventRestriction(rule, activeIncludeTimepoints)) {
 				addScheduleDate(schedules, {
 					date: operationalDate,
 					mode: 'exclude',
@@ -431,10 +266,13 @@ function groupSchedulesByTimepoint(
  * With this pass A is absorbed into B, yielding:
  *   - B on all dates (clean)
  *
- * Also removes the paired exclude record created by the displacement logic
- * (`${A.rule._id}|exclude|${timepoint}`) so B's date set is not incorrectly subtracted.
+ * Event-replacement includes are never absorbed. Excludes are not deleted here —
+ * base_off pairs attach excludes to a different rule id than the dominated include.
+ *
+ * Event-specific manuals (ND-05) are never absorbed: a general rule may run every
+ * Saturday while the event manual only runs on Santo António — strict subset is expected.
  */
-function mergeSubsetIncludeSchedules(schedules: Map<string, RuleTimepointSchedule>): void {
+export function mergeSubsetIncludeSchedules(schedules: Map<string, RuleTimepointSchedule>): void {
 	// Index include schedules by timepoint
 	const includesByTimepoint = new Map<HHMM, RuleTimepointSchedule[]>();
 
@@ -454,14 +292,19 @@ function mergeSubsetIncludeSchedules(schedules: Map<string, RuleTimepointSchedul
 		if (includes.length < 2) continue;
 
 		for (const a of includes) {
+			if (a.rule.kind === 'event_replacement') continue;
+			if (isEventSpecificManual(a.rule)) continue;
+
 			// A is dominated if there exists B with a.dates ⊊ b.dates (strict subset).
-			const isDominated = includes.some(b => b.rule._id !== a.rule._id && b.dates.size > a.dates.size && [...a.dates].every(d => b.dates.has(d)));
+			const isDominated = includes.some((b) => {
+				if (b.rule._id === a.rule._id) return false;
+				if (isEventSpecificManual(b.rule)) return false;
+
+				return b.dates.size > a.dates.size && [...a.dates].every(d => b.dates.has(d));
+			});
 
 			if (isDominated) {
 				keysToDelete.add(`${a.rule._id}|include|${a.timepoint}`);
-				// Remove the displacement-exclude record too — it was only subtracting
-				// A's dates from B's include, which we no longer need.
-				keysToDelete.add(`${a.rule._id}|exclude|${a.timepoint}`);
 			}
 		}
 	}
@@ -471,22 +314,68 @@ function mergeSubsetIncludeSchedules(schedules: Map<string, RuleTimepointSchedul
 	}
 }
 
+interface PendingTripRow {
+	dates: Set<OperationalDate>
+	includeSchedule: RuleTimepointSchedule
+	isOffRow: boolean
+	overlappingExcludeSchedules: RuleTimepointSchedule[]
+}
+
+/** P1: at most one plain trip row per (timepoint, date). Keeps the primary manual owner (ND-03). */
+function dedupePlainRowsOneTripPerDate(plainRows: PendingTripRow[]): PendingTripRow[] {
+	const sorted = [...plainRows].sort((a, b) => {
+		const aManual = a.includeSchedule.rule;
+		const bManual = b.includeSchedule.rule;
+		if (aManual.kind === 'manual' && bManual.kind === 'manual') {
+			const priority = compareGeneralManualOwnershipPriority(aManual, bManual);
+			if (priority !== 0) return priority;
+		}
+		return (aManual._id ?? '').localeCompare(bManual._id ?? '');
+	});
+
+	const datesClaimed = new Set<OperationalDate>();
+	const deduped: PendingTripRow[] = [];
+
+	for (const row of sorted) {
+		const dates = new Set([...row.dates].filter(date => !datesClaimed.has(date)));
+		if (dates.size === 0) continue;
+
+		for (const date of dates) datesClaimed.add(date);
+		deduped.push({ ...row, dates });
+	}
+
+	return deduped;
+}
+
 /**
  * Resolves final exportable trip rows.
  *
  * Final semantics:
- * - one row per include rule + timepoint
- * - if any exclude rules overlap this include rule on this timepoint,
- *   the token becomes INCLUDE-OFF-ex1-ex2
- * - the service dates are include dates MINUS all overlapping exclude dates
- * - no second plain INCLUDE row is created
+ * - one row per include rule + timepoint (+ plain/OFF split when exclude overlap is date-specific)
+ * - if exclude rules overlap this include on specific dates, those dates become OFF rows
+ *   (`INCLUDE-OFF-ex1-ex2`) with canonical base minus canonical excludes
+ * - dates without exclude overlap stay plain (operational day-walk dates, no canonical expansion)
  * - if resulting dates are empty, skip the row
+ *
+ * @see ND-04 in export-attribution/SCENARIOS.md
  */
 function resolveTripRows(
 	schedules: Map<string, RuleTimepointSchedule>,
 	serviceRegistry: ServiceRegistry,
-	{ events, periods }: { events: Event[], periods: YearPeriod[] },
+	{
+		events,
+		exportDates,
+		holidays,
+		periods,
+	}: {
+		events: Event[]
+		exportDates: readonly OperationalDate[]
+		holidays: Holiday[]
+		periods: YearPeriod[]
+	},
 ): ResolvedTripRow[] {
+	const canonicalCache: CanonicalDateCache = new Map();
+	const registryOptions = { events, holidays, periods };
 	const groupedByTimepoint = groupSchedulesByTimepoint(schedules);
 	const resolvedRows: ResolvedTripRow[] = [];
 
@@ -494,31 +383,79 @@ function resolveTripRows(
 		const includeSchedules = timepointSchedules.filter(schedule => schedule.mode === 'include');
 		const excludeSchedules = timepointSchedules.filter(schedule => schedule.mode === 'exclude');
 
+		const pendingRows: PendingTripRow[] = [];
+
 		for (const includeSchedule of includeSchedules) {
-			const overlappingExcludeSchedules = excludeSchedules.filter((excludeSchedule) => {
-				// A rule cannot exclude itself: displacement records write an exclude attributed
-				// to the winning event-specific rule, which would otherwise corrupt its own token.
-				if (excludeSchedule.rule._id === includeSchedule.rule._id) return false;
-				for (const date of includeSchedule.dates) {
-					if (excludeSchedule.dates.has(date)) return true;
-				}
-				return false;
-			});
+			const {
+				offOperationalDates,
+				overlappingExcludeSchedules,
+				plainOperationalDates,
+			} = splitOperationalDatesByExcludeOverlap(
+				includeSchedule.dates,
+				includeSchedule.rule._id,
+				excludeSchedules,
+			);
 
-			const resultingDates = new Set<OperationalDate>(includeSchedule.dates);
-
-			for (const excludeSchedule of overlappingExcludeSchedules) {
-				for (const excludedDate of excludeSchedule.dates) {
-					resultingDates.delete(excludedDate);
-				}
+			if (plainOperationalDates.size > 0) {
+				pendingRows.push({
+					dates: plainOperationalDates,
+					includeSchedule,
+					isOffRow: false,
+					// overlappingExcludeSchedules: [],
+					overlappingExcludeSchedules: excludeSchedules.filter(ex =>
+						overlappingExcludeSchedules.some(o => o.rule._id === ex.rule._id),
+					),
+				});
 			}
 
-			if (resultingDates.size === 0) {
-				continue;
-			}
+			if (offOperationalDates.size > 0 && overlappingExcludeSchedules.length > 0) {
+				const offDates = computeOffRowDates(
+					includeSchedule.rule,
+					overlappingExcludeSchedules,
+					canonicalCache,
+					exportDates,
+					registryOptions,
+					offOperationalDates,
+					includeSchedule.dates,
+				);
 
-			const includeRuleName = buildRuleSummaryGtfs(includeSchedule.rule, { events, periods });
-			const excludeRuleNames = [...new Set(overlappingExcludeSchedules.map(s => buildRuleSummaryGtfs(s.rule, { events, periods })))].sort();
+				if (offDates.size > 0) {
+					pendingRows.push({
+						dates: offDates,
+						includeSchedule,
+						isOffRow: true,
+						overlappingExcludeSchedules: excludeSchedules.filter(ex =>
+							overlappingExcludeSchedules.some(o => o.rule._id === ex.rule._id),
+						),
+					});
+				}
+			}
+		}
+
+		// Plain operating rows claim dates first (P1). OFF rows use canonical base−event for
+		// calendar membership, but must not be active on days a plain row already owns at this
+		// timepoint (e.g. ESC_DU + ALL_DU-OFF-DIA_CARN on school weekdays).
+		const plainRows = dedupePlainRowsOneTripPerDate(pendingRows.filter(row => !row.isOffRow));
+		const offRows = pendingRows.filter(row => row.isOffRow);
+		const datesClaimedByPlainRows = new Set<OperationalDate>();
+
+		for (const row of plainRows) {
+			for (const date of row.dates) {
+				datesClaimedByPlainRows.add(date);
+			}
+		}
+
+		for (const row of [...plainRows, ...offRows]) {
+			const resultingDates = row.isOffRow
+				? new Set([...row.dates].filter(date => !datesClaimedByPlainRows.has(date)))
+				: row.dates;
+
+			if (resultingDates.size === 0) continue;
+
+			const includeRuleName = buildRuleSummaryGtfs(row.includeSchedule.rule, { events, periods });
+			const excludeRuleNames = [...new Set(
+				row.overlappingExcludeSchedules.map(s => buildRuleSummaryGtfs(s.rule, { events, periods })),
+			)].sort();
 
 			const ruleToken = excludeRuleNames.length > 0
 				? `${includeRuleName}-OFF-${excludeRuleNames.join('-')}`
@@ -571,6 +508,31 @@ function collectDateMetadata(
 
 /* * */
 
+/** Debug helper: resolve trip rows for one pattern without writing GTFS files. */
+export function debugResolvePatternTripRows(
+	patternData: Pattern,
+	periods: YearPeriod[],
+	holidays: Holiday[],
+	events: Event[],
+	startDate: Dates,
+	endDate: Dates,
+	serviceRegistry: ServiceRegistry,
+): ResolvedTripRow[] {
+	const allRules = resolvePatternRules(patternData, events);
+	const schedules = buildTimepointSchedules(allRules, periods, holidays, events, startDate, endDate);
+	if (schedules.size === 0) return [];
+
+	mergeSubsetIncludeSchedules(schedules);
+
+	const exportDates = buildOperationalDateRange(startDate.js_date, endDate.js_date);
+	return resolveTripRows(schedules, serviceRegistry, {
+		events,
+		exportDates,
+		holidays,
+		periods,
+	});
+}
+
 /**
  * Exports trips for a pattern.
  */
@@ -608,10 +570,15 @@ export async function exportTripsForPattern(
 		// timepoint, A is redundant — absorb it into B so B runs on its full date set.
 		mergeSubsetIncludeSchedules(schedules);
 
-		// Step 2: Resolve final trip rows:
-		// include dates minus overlapping exclude dates,
-		// with serviceId deduplication based on final date sets.
-		const resolvedTripRows = resolveTripRows(schedules, serviceRegistry, { events, periods });
+		const exportDates = buildOperationalDateRange(startDate.js_date, endDate.js_date);
+
+		// Step 2: Resolve final trip rows from canonical calendars + OFF excludes.
+		const resolvedTripRows = resolveTripRows(schedules, serviceRegistry, {
+			events,
+			exportDates,
+			holidays,
+			periods,
+		});
 
 		if (resolvedTripRows.length === 0) {
 			return [];

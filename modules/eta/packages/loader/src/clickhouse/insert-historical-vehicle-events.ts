@@ -32,7 +32,7 @@ export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters
 		onChunk: async (chunk) => {
 			Logger.progress(`[${chunk.index + 1}/${chunk.total}] - ${Dates.fromUnixTimestamp(chunk.end).iso}[${chunk.end}] › ${Dates.fromUnixTimestamp(chunk.start).iso}[${chunk.start}]`);
 			const operationalDates = operationalDateBoundsForChunk(chunk.start, chunk.end);
-			await queryEtaFromFile(clickhouseClient, pipelinePath(INSERT_HISTORICAL_VEHICLE_EVENTS_SQL_FILE), {
+			await queryEtaFromFile(clickhouseClient, config.database, pipelinePath(INSERT_HISTORICAL_VEHICLE_EVENTS_SQL_FILE), {
 				chunk_end: chunk.end,
 				chunk_start: chunk.start,
 				...operationalDates,

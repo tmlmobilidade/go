@@ -1,9 +1,9 @@
 /* * */
 
-import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@/_common/status.js';
 import { RideAcceptanceStatusSchema } from '@/operation/rides/ride-acceptance.js';
 import { RideAnalysisGradeSchema } from '@/operation/rides/ride-analysis.js';
 import { RideSchema } from '@/operation/rides/ride.js';
+import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

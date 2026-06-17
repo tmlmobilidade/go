@@ -308,17 +308,6 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'api_url')}/year-periods`,
 	},
 
-	eta: {
-		// BASE
-		BASE: `${getModuleConfig('eta', 'api_url')}`,
-
-		// ETA
-		ARRIVALS_BY_PATTERN: (patternId: string) => `${getModuleConfig('eta', 'api_url')}/arrivals/by_pattern/${patternId}`,
-		ARRIVALS_BY_STOP: (stopId: string) => `${getModuleConfig('eta', 'api_url')}/arrivals/by_stop/${stopId}`,
-		ARRIVALS_DETAIL: (tripId: string) => `${getModuleConfig('eta', 'api_url')}/arrivals/${tripId}`,
-		ARRIVALS_LIST: `${getModuleConfig('eta', 'api_url')}/arrivals`,
-	},
-
 	exporter: {
 		// BASE
 		BASE: `${getModuleConfig('exporter', 'api_url')}`,
@@ -337,7 +326,6 @@ export const API_ROUTES = Object.freeze({
 		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getModuleConfig('fleet', 'api_url')}/vehicles/${id}/last-event`,
 		VEHICLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('fleet', 'api_url')}/vehicles/${id}/lock`,
 		VEHICLES_LIST: `${getModuleConfig('fleet', 'api_url')}/vehicles`,
-		VEHICLES_POSITIONS: `${getModuleConfig('fleet', 'api_url')}/vehicles/positions`,
 	},
 
 	hub: {
@@ -346,6 +334,7 @@ export const API_ROUTES = Object.freeze({
 
 		// ALERTS
 		ALERTS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs`,
+		ALERTS_GTFS_CM: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs-cm`,
 		ALERTS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/alerts/gtfs.pb`,
 		ALERTS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/alerts`,
 		ALERTS_RSS: `${getModuleConfig('hub', 'api_url')}/v1/alerts.rss`,
@@ -353,21 +342,12 @@ export const API_ROUTES = Object.freeze({
 		// DEBUG
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
-		// FACILITIES
-		FACILITIES_BOAT_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/boat_stations`,
-		FACILITIES_HELPDESKS: `${getModuleConfig('hub', 'api_url')}/facilities/helpdesks`,
-		FACILITIES_LIGHT_RAIL_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/light_rail_stations`,
-		FACILITIES_LIST: `${getModuleConfig('hub', 'api_url')}/facilities`,
-		FACILITIES_PIPS: `${getModuleConfig('hub', 'api_url')}/facilities/pips`,
-		FACILITIES_SCHOOLS: `${getModuleConfig('hub', 'api_url')}/facilities/schools`,
-		FACILITIES_STORES: `${getModuleConfig('hub', 'api_url')}/facilities/stores`,
-		FACILITIES_SUBWAY_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/subway_stations`,
-		FACILITIES_TRAIN_STATIONS: `${getModuleConfig('hub', 'api_url')}/facilities/train_stations`,
-
 		// NETWORK
+		NETWORK_LEGACY_STOPS_MAP: `${getModuleConfig('hub', 'api_url')}/v1/network/legacy-stops-map`,
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
 		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${id}`,
 		NETWORK_ROUTES: `${getModuleConfig('hub', 'api_url')}/v1/network/routes`,
+		NETWORK_SHAPES: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/shapes/${id}`,
 		NETWORK_STOPS: `${getModuleConfig('hub', 'api_url')}/v1/network/stops`,
 
 		// PLANS
@@ -376,9 +356,8 @@ export const API_ROUTES = Object.freeze({
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
 
 		// REALTIME
-		REALTIME_ETA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta`,
-		REALTIME_ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs`,
-		REALTIME_ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs.pb`,
+		REALTIME_TRIP_UPDATES: `${getModuleConfig('hub', 'api_url')}/v1/realtime/trip-updates`,
+		REALTIME_TRIP_UPDATES_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/trip-updates.pb`,
 		REALTIME_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/metadata`,
 		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
 		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
@@ -427,10 +406,16 @@ export const API_ROUTES = Object.freeze({
 		ROUTES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/routes/${id}/lock`,
 		ROUTES_LIST: `${getModuleConfig('offer', 'api_url')}/routes`,
 
+		// SHAPES
+		SHAPES_ROUTE_PREVIEW: `${getModuleConfig('offer', 'api_url')}/shapes/route-preview`,
+
 		// TYPOLOGIES
 		TYPOLOGIES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${id}`,
 		TYPOLOGIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/typologies/${id}/lock`,
 		TYPOLOGIES_LIST: `${getModuleConfig('offer', 'api_url')}/typologies`,
+
+		// VKM
+		VKM_CALCULATE: `${getModuleConfig('offer', 'api_url')}/vkm/calculate`,
 
 		// ZONES
 		ZONES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/zones/${id}`,

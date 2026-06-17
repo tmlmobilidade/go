@@ -1,17 +1,17 @@
 'use client';
 
-import { useLinesContext } from '@/contexts/Lines.context';
-import { type Line } from '@/types/api/network';
+import { useLinesContext } from '@/components/lines/Lines.context';
 import { IconInfoTriangleFilled } from '@tabler/icons-react';
-import classNames from 'classnames/bind';
+import { type HubLine } from '@tmlmobilidade/types';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
+interface LineBadgeProps {
+	agencyId?: string
 	color?: string
-	lineData?: Line
+	lineData?: HubLine
 	lineId?: string
 	onClick?: () => void
 	shortName?: string
@@ -22,11 +22,7 @@ interface Props {
 
 /* * */
 
-const cx = classNames.bind(styles);
-
-/* * */
-
-export function LineBadge({ color, lineData, lineId, onClick, shortName, size = 'md', textColor, withAlertIcon = false }: Props) {
+export function LineBadge({ agencyId, color, lineData, lineId, onClick, shortName, size = 'md', textColor, withAlertIcon = false }: LineBadgeProps) {
 	//
 
 	//
@@ -37,14 +33,17 @@ export function LineBadge({ color, lineData, lineId, onClick, shortName, size = 
 	//
 	// B. Transform data
 
-	const fetchedLineData = lineId ? linesContext.actions.getLineDataById(lineId) : undefined;
+	const fetchedLineData = lineId ? linesContext.data.lines.find(line => line._id === lineId) : undefined;
 
 	//
 	// C. Render components
 
 	return (
 		<div
-			className={cx({ badge: true, clickable: !!onClick, lg: size === 'lg', md: size === 'md' })}
+			className={styles.badge}
+			data-agency-id={agencyId || lineData?.agency_id || fetchedLineData?.agency_id}
+			data-clickable={!!onClick}
+			data-size={size}
 			onClick={onClick}
 			style={{ backgroundColor: color || lineData?.color || fetchedLineData?.color, color: textColor || lineData?.text_color || fetchedLineData?.text_color }}
 		>
@@ -56,6 +55,4 @@ export function LineBadge({ color, lineData, lineId, onClick, shortName, size = 
 			)}
 		</div>
 	);
-
-	//
 }

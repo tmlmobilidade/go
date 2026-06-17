@@ -9,6 +9,7 @@ import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
+import { getPublicRouteId } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
@@ -19,8 +20,6 @@ import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarDatesFile } from '@/exports/calendar-dates.js';
 import { exportDatesFile } from '@/exports/dates.js';
 import { exportFeedInfoFile } from '@/exports/feed-info.js';
-import { exportMunicipalitiesFile } from '@/exports/municipalities.js';
-import { exportPeriodsFile } from '@/exports/periods.js';
 import { exportPlansFile } from '@/exports/plans.js';
 import { exportRoutesFile } from '@/exports/routes.js';
 import { exportShapesFile } from '@/exports/shapes.js';
@@ -70,6 +69,8 @@ export async function main() {
 	// Retrieve all Plans from the database
 	// and iterate on each one.
 
+	const plansCollection = await plans.getCollection();
+
 	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
@@ -97,7 +98,7 @@ export async function main() {
 	// Mark as plans as 'waiting' in the database.
 
 	for (const planData of allPlansData) {
-		await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'waiting', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'waiting', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 	}
 
 	//
@@ -121,12 +122,12 @@ export async function main() {
 			const isValidPlan = validatePlan(planData);
 
 			if (!isValidPlan) {
-				await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'skipped', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
-				Logger.info(`Skipped plan ${planData._id} due to validation errors.`);
+				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+				Logger.info(`Skipped plan ${planData._id} as it was ineligible for processing.`);
 				continue;
 			}
 
-			await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'processing', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'processing', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 
 			//
 			// Get the operation file URL
@@ -198,8 +199,9 @@ export async function main() {
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
 				const routeData: GTFS_Route_Extended = routeItem;
-				if (thisIsAnActivePlan || !routesMarkedForFinalExport[routeData.route_id]) {
-					routesMarkedForFinalExport[routeData.route_id] = routeData;
+				const publicRouteId = getPublicRouteId(planData.gtfs_agency.agency_id, routeData.route_id);
+				if (thisIsAnActivePlan || !routesMarkedForFinalExport[publicRouteId]) {
+					routesMarkedForFinalExport[publicRouteId] = routeData;
 				}
 			}
 
@@ -223,7 +225,7 @@ export async function main() {
 			//
 			// Mark the plan as complete in the database.
 
-			await plans.updateById(planData._id, { apps: { ...planData.apps, merger: { last_hash: null, status: 'complete', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'complete', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 
 			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
 
@@ -238,7 +240,7 @@ export async function main() {
 
 			//
 		} catch (error) {
-			await plans.updateById(planData._id,	{ apps: { ...planData.apps, merger: { last_hash: null, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } }, { forceIfLocked: true });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'error', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 			Logger.error(`Error processing plan ${planData._id}`, error);
 			Logger.divider();
 		}
@@ -247,11 +249,9 @@ export async function main() {
 	//
 	// Export GTFS files from the merged dataset
 
-	await exportStopsFile(context);
 	await exportDatesFile(context);
-	await exportPeriodsFile(context);
-	await exportMunicipalitiesFile(context);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), context);
+	await exportStopsFile(Array.from(referencedAgencyIds), context);
 	await exportAgencyFile(Array.from(referencedAgencyIds), context);
 	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, context);
 

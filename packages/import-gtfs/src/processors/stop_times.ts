@@ -33,7 +33,7 @@ export async function processStopTimesFile(context: ImportGtfsContext): Promise<
 			// Save the exported row
 			context.gtfs.stop_times.write(validatedData);
 			// Log progress
-			if (context.counters.stop_times % 100000 === 0) Logger.info(`Parsed ${context.counters.stop_times} stop_times.txt rows so far.`);
+			if (context.counters.stop_times % 100000 === 0) Logger.info(`Parsed ${context.counters.stop_times} stop_times.txt rows so far (${stopTimesParseTimer.get()})`);
 			// Increment the counter
 			context.counters.stop_times++;
 		};

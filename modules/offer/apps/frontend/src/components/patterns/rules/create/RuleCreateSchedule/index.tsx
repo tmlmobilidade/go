@@ -3,7 +3,7 @@
 import { IconPlus } from '@tabler/icons-react';
 import { HHMM, HHMMSchema, normalizeOperationalHhmmInput, timeToMinutes } from '@tmlmobilidade/types';
 import { Button, DayPeriodsTimepoints, Section, TextInput } from '@tmlmobilidade/ui';
-import { KeyboardEvent, useState } from 'react';
+import { DragEvent, KeyboardEvent, useState } from 'react';
 
 /* * */
 
@@ -15,6 +15,15 @@ interface ScheduleGridInputProps {
 
 /* * */
 
+const splitTimepointInput = (input: string) => {
+	return input
+		.split(/[\s,;]+/)
+		.map(token => token.trim())
+		.filter(Boolean);
+};
+
+/* * */
+
 export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGridInputProps) {
 	const [inputValue, setInputValue] = useState('');
 	const [inputError, setInputError] = useState('');
@@ -23,32 +32,53 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 	const handleAdd = () => {
 		setInputError('');
 
-		// 1. Normalize raw user input into strict HH:MM
-		const normalizedTime = normalizeOperationalHhmmInput(inputValue);
+		// 1. Split raw user input into one or more timepoint tokens
+		const inputTokens = splitTimepointInput(inputValue);
 
-		if (!normalizedTime) {
+		if (!inputTokens.length) {
 			setInputError('Formato inválido');
 			return;
 		}
 
-		// 2. Validate with Zod and reuse its message
-		const result = HHMMSchema.safeParse(normalizedTime);
+		// 2. Normalize and validate each token with Zod
+		const parsedTimes: HHMM[] = [];
+		const invalidTokens: string[] = [];
 
-		if (!result.success) {
-			setInputError(result.error.issues[0]?.message ?? 'Formato inválido');
+		for (const inputToken of inputTokens) {
+			const normalizedTime = normalizeOperationalHhmmInput(inputToken);
+
+			if (!normalizedTime) {
+				invalidTokens.push(inputToken);
+				continue;
+			}
+
+			const result = HHMMSchema.safeParse(normalizedTime);
+
+			if (!result.success) {
+				invalidTokens.push(inputToken);
+				continue;
+			}
+
+			parsedTimes.push(result.data);
+		}
+
+		if (invalidTokens.length) {
+			setInputError(`Formato inválido: ${invalidTokens.join(', ')}`);
 			return;
 		}
 
-		const parsedTime = result.data;
-
 		// 3. Duplicate check
-		if (value.includes(parsedTime)) {
-			setInputError('Este horário já existe');
+		const uniqueNewTimes = parsedTimes.filter((parsedTime, index) => {
+			return !value.includes(parsedTime) && parsedTimes.indexOf(parsedTime) === index;
+		});
+
+		if (!uniqueNewTimes.length) {
+			setInputError(parsedTimes.length === 1 ? 'Este horário já existe' : 'Estes horários já existem');
 			return;
 		}
 
 		// 4. Add and sort using operational time logic
-		const newTimes = [...value, parsedTime].sort((a, b) => timeToMinutes(a as HHMM) - timeToMinutes(b as HHMM));
+		const newTimes = [...value, ...uniqueNewTimes].sort((a, b) => timeToMinutes(a as HHMM) - timeToMinutes(b as HHMM));
 
 		onChange(newTimes);
 		setInputValue('');
@@ -59,6 +89,18 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 			e.preventDefault();
 			handleAdd();
 		}
+	};
+
+	const handleDrop = (e: DragEvent<HTMLInputElement>) => {
+		const droppedText = e.dataTransfer.getData('text/plain');
+
+		if (!droppedText) return;
+
+		e.preventDefault();
+		setInputValue((currentValue) => {
+			return [currentValue, droppedText].filter(Boolean).join(' ');
+		});
+		setInputError('');
 	};
 
 	const handleRemove = (timeToRemove: string) => {
@@ -72,6 +114,8 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 			<Section flexDirection="row" gap="sm" padding="none">
 				<TextInput
 					error={inputError || error}
+					onDragOver={e => e.preventDefault()}
+					onDrop={handleDrop}
 					onKeyDown={handleKeyDown}
 					placeholder="Ex: 08:30 ou 0830 ou 830 + Enter"
 					rightSectionWidth={80}

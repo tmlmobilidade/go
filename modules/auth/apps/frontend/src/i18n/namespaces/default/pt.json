@@ -26,7 +26,7 @@
 					},
 					"name": {
 						"label": "Nome do Operador",
-						"placeholder": "Carris Metropolitana"
+						"placeholder": "Alsa Todi"
 					},
 					"phone": {
 						"label": "Contacto Telefónico",
@@ -35,6 +35,10 @@
 					"public_email": {
 						"label": "Email Público",
 						"placeholder": "email@example.com"
+					},
+					"public_name": {
+						"label": "Nome Público",
+						"placeholder": "Carris Metropolitana"
 					},
 					"short_name": {
 						"label": "Nome Curto",

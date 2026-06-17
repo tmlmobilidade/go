@@ -10,6 +10,7 @@ export type MergedPathItem = Path & {
 };
 
 export interface SegmentTravelTimes {
+	legSeconds: { formatted: Array<string>, raw: Array<null | number> }
 	segmentTravelSeconds: { formatted: Array<string>, raw: Array<null | number> }
 	stopDwellSeconds: { formatted: Array<string>, raw: Array<null | number> }
 	totalTripSecondsWithoutStops: { formatted: string, raw: number }
@@ -28,12 +29,15 @@ export function toNumberOrNull(value: unknown): null | number {
 	return null;
 }
 
-export function computeSegmentSeconds(distanceMeters: null | number, speedKmh: null | number): number {
-	if (!distanceMeters || !speedKmh) return 0;
+export function computeSegmentSeconds(
+	distanceMeters: null | number,
+	speedKmh: null | number,
+): null | number {
+	if (distanceMeters === null || distanceMeters <= 0) return null;
+	if (speedKmh === null || speedKmh <= 0) return null;
 
-	// km/h -> m/s
 	const speedMs = speedKmh * 1000 / 3600;
-	return Math.round(distanceMeters / speedMs) || 0;
+	return Math.round(distanceMeters / speedMs);
 }
 
 export function formatSecondsToTime(timeInSeconds: null | number): string {
@@ -56,15 +60,14 @@ export function formatSecondsToTime(timeInSeconds: null | number): string {
 export function computeSegmentTravelTimes(mergedPath: MergedPathItem[]): SegmentTravelTimes {
 	const segmentTravelSeconds: Array<null | number> = [];
 	const stopDwellSeconds: Array<null | number> = [];
+	const legSeconds: Array<null | number> = [];
 
 	for (let i = 0; i < mergedPath.length; i++) {
 		const row = mergedPath[i];
 
-		// Dwell applies at the stop itself
 		const dwell = toNumberOrNull(row.dwell_time);
-		stopDwellSeconds.push(dwell && dwell > 0 ? Math.round(dwell) : null);
+		stopDwellSeconds.push(dwell !== null && dwell > 0 ? Math.round(dwell) : 0);
 
-		// Segment travel time applies from previous stop -> current stop
 		if (i === 0) {
 			segmentTravelSeconds.push(null);
 			continue;
@@ -74,6 +77,17 @@ export function computeSegmentTravelTimes(mergedPath: MergedPathItem[]): Segment
 		const speedKmh = toNumberOrNull(row.avg_speed);
 
 		segmentTravelSeconds.push(computeSegmentSeconds(distanceMeters, speedKmh));
+	}
+
+	for (let i = 0; i < mergedPath.length; i++) {
+		const nextTravelSeconds = segmentTravelSeconds[i + 1];
+
+		if (nextTravelSeconds === undefined || nextTravelSeconds === null) {
+			legSeconds.push(stopDwellSeconds[i] ?? 0);
+			continue;
+		}
+
+		legSeconds.push((stopDwellSeconds[i] ?? 0) + nextTravelSeconds);
 	}
 
 	const totalTripSecondsWithoutStops = segmentTravelSeconds
@@ -87,22 +101,32 @@ export function computeSegmentTravelTimes(mergedPath: MergedPathItem[]): Segment
 	const totalTripSecondsWithStops = totalTripSecondsWithoutStops + totalStopSeconds;
 
 	return {
-		segmentTravelSeconds: { formatted: segmentTravelSeconds.map(s => formatSecondsToTime(s)), raw: segmentTravelSeconds },
-		stopDwellSeconds: { formatted: stopDwellSeconds.map(s => formatSecondsToTime(s)), raw: stopDwellSeconds },
-		totalTripSecondsWithoutStops: { formatted: formatSecondsToTime(totalTripSecondsWithoutStops), raw: totalTripSecondsWithoutStops },
-		totalTripSecondsWithStops: { formatted: formatSecondsToTime(totalTripSecondsWithStops), raw: totalTripSecondsWithStops },
+		legSeconds: {
+			formatted: legSeconds.map(s => formatSecondsToTime(s)),
+			raw: legSeconds,
+		},
+		segmentTravelSeconds: {
+			formatted: segmentTravelSeconds.map(s => formatSecondsToTime(s)),
+			raw: segmentTravelSeconds,
+		},
+		stopDwellSeconds: {
+			formatted: stopDwellSeconds.map(s => formatSecondsToTime(s)),
+			raw: stopDwellSeconds,
+		},
+		totalTripSecondsWithoutStops: {
+			formatted: formatSecondsToTime(totalTripSecondsWithoutStops),
+			raw: totalTripSecondsWithoutStops,
+		},
+		totalTripSecondsWithStops: {
+			formatted: formatSecondsToTime(totalTripSecondsWithStops),
+			raw: totalTripSecondsWithStops,
+		},
 	};
 }
 
 export function getMergedPath(basePath: Path[], newPath: StopsParameter['path']): MergedPathItem[] {
-	const editedByStopId = new Map<number, StopsParameter['path'][number]>(
-		(newPath || [])
-			.filter(p => p?.stop_id)
-			.map(p => [p.stop_id, p]),
-	);
-
-	return basePath.map((baseItem) => {
-		const edit = editedByStopId.get(baseItem.stop_id);
+	return basePath.map((baseItem, i) => {
+		const edit = (newPath || [])[i];
 		return {
 			...baseItem,
 			avg_speed: edit?.avg_speed,

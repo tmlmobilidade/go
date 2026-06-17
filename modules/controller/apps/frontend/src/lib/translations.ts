@@ -20,6 +20,7 @@ export const FILTER_KEY_TRANSLATIONS: Record<string, string> = {
 	seen_last_at: 'Última visualização',
 	start_time: 'Início da análise',
 	status: 'Estado',
+	ticketing: 'Bilhética',
 };
 
 // Operational status translations
@@ -60,6 +61,12 @@ export const SAMS_STATUS_TRANSLATIONS: Record<string, string> = {
 	error: 'Erro',
 	incomplete: 'Incompleto',
 	waiting: 'Aguardando',
+};
+
+// Status ticketing
+export const TICKETING_STATUS_TRANSLATIONS: Record<string, string> = {
+	has_ticketing: 'Com Bilhética',
+	no_ticketing: 'Sem Bilhédetica',
 };
 
 /* * */

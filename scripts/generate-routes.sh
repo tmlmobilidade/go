@@ -196,13 +196,14 @@ scan_api_routes() {
 
     # Find all *.routes.ts files
     local find_routes_temp=$(mktemp)
-    find "$endpoints_dir" -name "*.routes.ts" -type f > "$find_routes_temp"
+    find "$endpoints_dir" \( -name "*.routes.ts" -o -name "routes.ts" \) -type f > "$find_routes_temp"
 
     while IFS= read -r routes_file; do
         local namespace=""
         local endpoint_name=$(basename "$(dirname "$routes_file")")
         # Extract file name without extension (e.g., "alerts.routes.ts" -> "alerts")
-        local file_name=$(basename "$routes_file" | sed 's|\.routes\.ts$||')
+        local file_name=$(basename "$(dirname "$routes_file")")
+
 
         # Extract namespace from the routes file (handle both const namespace and const NAMESPACE)
         namespace=$(grep -E "^\s*(const\s+)?(namespace|NAMESPACE)\s*=\s*['\"](.*)['\"]" "$routes_file" | head -1 | sed -E "s/.*['\"](.*)['\"].*/\1/" | sed 's|^/||')
