@@ -37,11 +37,11 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
-		.setZone('Europe/Lisbon', 'offset_only');
+		.setZone('utc', 'offset_only');
 
 	const chunkEndDate = Dates
 		.fromUnixTimestamp(timeChunk.end)
-		.setZone('Europe/Lisbon', 'offset_only');
+		.setZone('utc', 'offset_only');
 
 	Logger.spacer(1);
 	Logger.divider(`APEX Tx [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
@@ -53,7 +53,7 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 	const sourceQuery = {
 		createdAt: {
 			$gte: chunkStartDate.js_date,
-			$lte: chunkEndDate.js_date,
+			$lt: chunkEndDate.js_date,
 		},
 	};
 
