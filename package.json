@@ -132,6 +132,7 @@
 		"helper:dates:seed-periods": "dotenv-run -f ./modules/dates/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-dates-helpers-seed-periods",
 		"helper:locations:seed-locations": "dotenv-run -f ./modules/locations/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:locations:seed-locations:prd": "dotenv-run -f ./modules/locations/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
+		"helper:offer:backfill-pattern-polylines": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-backfill-pattern-polylines",
 		"helper:offer:seed-fares": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-fares",
 		"helper:offer:seed-lines": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-lines",
 		"helper:offer:seed-typologies": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-typologies",
