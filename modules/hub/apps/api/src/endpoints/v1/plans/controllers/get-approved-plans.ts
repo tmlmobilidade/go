@@ -18,7 +18,7 @@ export async function getApprovedPlans(request: FastifyRequest, reply: FastifyRe
 	const cachedData = await apiCache.get('hub:v1:plans:approved:json');
 
 	if (!cachedData) {
-		Logger.error('[hub/v1/plans:getApprovedPlans()] No cached data found for approved plans');
+		Logger.error({ message: '[hub/v1/plans:getApprovedPlans()] No cached data found for approved plans' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=300')

@@ -53,5 +53,5 @@ export async function exportDatesFile(exportConfig: MergedGtfsExportConfig) {
 
 	await exportConfig.writers.dates.flush();
 
-	Logger.info('Exported dates.txt file.');
+	Logger.info({ message: 'Exported dates.txt file.' });
 }

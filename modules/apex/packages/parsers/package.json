@@ -21,7 +21,8 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*"
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

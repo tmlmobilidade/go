@@ -31,5 +31,5 @@ export async function exportDayTypesFile(exportConfig: ExportToHitouchConfig) {
 
 	await dayTypesExtCsv.flush();
 
-	Logger.info('Exported day_typesExt.txt file.');
+	Logger.info({ message: 'Exported day_typesExt.txt file.' });
 }

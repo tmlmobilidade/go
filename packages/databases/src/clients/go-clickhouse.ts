@@ -49,7 +49,7 @@ export class GOClickHouseClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('[GOClickHouseClient] Connecting to database...');
+		Logger.info({ message: '[GOClickHouseClient] Connecting to database...' });
 		const connectionString = await this.getConnectionString();
 		this.client = createClient({
 			clickhouse_settings: {
@@ -133,7 +133,7 @@ export class GOClickHouseClient {
 
 		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
-		Logger.info('[GOClickHouseClient] Setting up SSH Tunnel...');
+		Logger.info({ message: '[GOClickHouseClient] Setting up SSH Tunnel...' });
 
 		const connection = await this.tunnel.connect();
 		const addr = connection.address();

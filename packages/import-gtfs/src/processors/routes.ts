@@ -17,7 +17,7 @@ export async function processRoutesFile(context: ImportGtfsContext): Promise<voi
 
 		const routesParseTimer = new Timer();
 
-		Logger.info(`Reading zip entry "routes.txt"...`);
+		Logger.info({ message: 'Reading zip entry "routes.txt"...' });
 
 		const parseEachRow = async (data: GTFS_Route_Extended_Raw) => {
 			// Validate the current row against the proper type
@@ -40,7 +40,7 @@ export async function processRoutesFile(context: ImportGtfsContext): Promise<voi
 
 		//
 	} catch (error) {
-		Logger.error('Error processing "routes.txt" file.', error);
+		Logger.error({ error, message: 'Error processing "routes.txt" file.' });
 		throw new Error('✖︎ Error processing "routes.txt" file.');
 	}
 }

@@ -17,7 +17,7 @@ export async function getStops(request: FastifyRequest, reply: FastifyReply<HubL
 	const cachedData = await apiCache.get('hub:v1:network:stops');
 
 	if (!cachedData) {
-		Logger.error('[hub/v1/network:getStops()] No cached data found for stops');
+		Logger.error({ message: '[hub/v1/network:getStops()] No cached data found for stops' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=60')

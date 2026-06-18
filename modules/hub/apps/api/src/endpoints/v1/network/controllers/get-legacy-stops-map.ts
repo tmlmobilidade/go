@@ -17,7 +17,7 @@ export async function getLegacyStopsMap(request: FastifyRequest, reply: FastifyR
 	const cachedData = await apiCache.get('hub:v1:network:legacy-stops-map');
 
 	if (!cachedData) {
-		Logger.error('[hub/v1/network:getLegacyStopsMap()] No cached data found for legacy stops map');
+		Logger.error({ message: '[hub/v1/network:getLegacyStopsMap()] No cached data found for legacy stops map' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=60')

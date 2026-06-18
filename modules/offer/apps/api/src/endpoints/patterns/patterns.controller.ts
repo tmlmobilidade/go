@@ -131,7 +131,9 @@ export class PatternsController {
 
 		const patternData: null | Pattern = await patterns.findById(request.params.id);
 
-		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
+		if (!patternData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
+		}
 
 		const merged = await mergePatternWithEventRules(patternData);
 
@@ -250,7 +252,8 @@ export class PatternsController {
 			const associatedStop = await resolveImportedStop(pathItem.stop_id);
 
 			if (!associatedStop) {
-				throw new HttpException(HTTP_STATUS.BAD_REQUEST, `The stop "${pathItem.stop_id}" does not exist`);
+				const error = new HttpException(HTTP_STATUS.BAD_REQUEST, `The stop "${pathItem.stop_id}" does not exist`);
+				throw error;
 			}
 
 			// Get original path stop to preserve user settings
@@ -334,7 +337,9 @@ export class PatternsController {
 
 		const patternData = await patterns.findById(request.params.id);
 
-		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
+		if (!patternData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
+		}
 
 		//
 		// Get the resource permissions for patterns for the current user.
@@ -351,7 +356,9 @@ export class PatternsController {
 		// If authorized, toggle the lock status of the pattern
 		await patterns.toggleLockById(request.params.id);
 		const foundPattern = await patterns.findById(request.params.id);
-		if (!foundPattern) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
+		if (!foundPattern) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
+		}
 
 		return reply.send({ data: foundPattern, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -371,7 +378,9 @@ export class PatternsController {
 
 		const patternData = await patterns.findById(request.params.id);
 
-		if (!patternData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
+		if (!patternData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
+		}
 
 		//
 		// Get the resource permissions for patterns for the current user.

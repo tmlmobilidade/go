@@ -313,8 +313,6 @@ export class GtfsController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			console.log(error);
-
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: null,
 				error: error instanceof Error ? error.message : 'Failed to parse GTFS file',

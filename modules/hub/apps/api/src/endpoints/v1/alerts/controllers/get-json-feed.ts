@@ -17,7 +17,7 @@ export async function getJsonFeed(request: FastifyRequest, reply: FastifyReply<H
 	const cachedData = await apiCache.get('hub:v1:alerts:published:json');
 
 	if (!cachedData) {
-		Logger.error('[hub/v1/alerts:getJsonFeed()] No JSON feed found in cache. Returning empty array.');
+		Logger.error({ message: '[hub/v1/alerts:getJsonFeed()] No JSON feed found in cache. Returning empty array.' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=20')

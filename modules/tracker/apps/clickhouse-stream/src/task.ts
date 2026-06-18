@@ -38,7 +38,7 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 	const newSimplifiedVehicleEventDocument = parser(databaseOperation.fullDocument);
 
 	if (!newSimplifiedVehicleEventDocument) {
-		Logger.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
+		Logger.error({ message: `Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}` });
 		return;
 	}
 

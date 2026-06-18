@@ -5,7 +5,6 @@ import { useOperationalDate } from '@/components/common/operational-date/use-ope
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Logger } from '@tmlmobilidade/logger';
 import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -113,7 +112,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 				const resultData = await Promise.all(fetchPromises);
 				setDataAllPatternsState(resultData);
 			} catch (error) {
-				Logger.error('Error fetching pattern data:', error);
+				console.error({ error, message: 'Error fetching pattern data:' });
 			}
 		})();
 	}, [selectedLineData, stopsContext.actions, stopsContext.data.stops]);
@@ -128,7 +127,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			try {
 				const shapeUrl = API_ROUTES.hub.NETWORK_SHAPES(dataActivePatternState.shape_id);
 				const shapeData = await fetch(shapeUrl).then((response) => {
-					if (!response.ok) Logger.info(`Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}`);
+					if (!response.ok) console.log({ message: `Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}` });
 					else return response.json();
 				}).then(shapePayload => shapePayload?.data ?? shapePayload);
 				if (shapeData) {
@@ -142,7 +141,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 				}
 				setDataActiveShapeState(shapeData);
 			} catch (error) {
-				Logger.error('Error fetching shape data:', error);
+				console.error({ error, message: 'Error fetching shape data:' });
 			}
 		})();
 	}, [dataActivePatternState]);

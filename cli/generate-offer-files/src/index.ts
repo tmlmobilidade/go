@@ -40,7 +40,7 @@ await (async function init() {
 		options.endDate = validateOperationalDate(options.endDate);
 	} catch (error) {
 		Logger.divider();
-		Logger.error(`--start-date and/or --end-date are not valid:`, error.message);
+		Logger.error({ error, message: `--start-date and/or --end-date are not valid:` });
 		Logger.divider();
 		return;
 	}
@@ -50,13 +50,13 @@ await (async function init() {
 
 	if (fs.existsSync(options.outputDir) && !options.override) {
 		Logger.divider();
-		Logger.error(`Output directory "${options.outputDir}" already exists. Please remove it or change it before running the script.`);
+		Logger.error({ message: `Output directory "${options.outputDir}" already exists. Please remove it or change it before running the script.` });
 		Logger.divider();
 		return;
 	}
 
 	if (fs.existsSync(options.outputDir) && options.override) {
-		Logger.info(`Output directory "${options.outputDir}" already exists. It will be overridden.`);
+		Logger.info({ message: `Output directory "${options.outputDir}" already exists. It will be overridden.` });
 		fs.rmSync(options.outputDir, { recursive: true });
 	}
 

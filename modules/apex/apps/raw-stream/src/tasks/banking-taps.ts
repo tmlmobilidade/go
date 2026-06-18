@@ -36,7 +36,7 @@ export async function processRawApexTransactionBankingTap(databaseOperation) {
 		if (!parseResult) return;
 		await writer.write(parseResult);
 	} catch (error) {
-		Logger.error(`Error transforming APEX Banking Tap: ${databaseOperation.fullDocument.transaction.transactionId} Reason: ${error.message}`);
+		Logger.error({ message: `Error transforming APEX Banking Tap: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
 	}
 
 	//

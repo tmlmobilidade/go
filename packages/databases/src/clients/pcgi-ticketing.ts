@@ -49,7 +49,7 @@ export class PCGITicketingClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('[PCGITicketingClient] Connecting to database...');
+		Logger.info({ message: '[PCGITicketingClient] Connecting to database...' });
 		const connectionString = await this.getConnectionString();
 		this.client = new MongoClient(connectionString, {
 			connectTimeoutMS: 10_000,
@@ -63,28 +63,28 @@ export class PCGITicketingClient {
 			serverSelectionTimeoutMS: 10_000,
 		});
 		this.client.on('connectionPoolCreated', () => {
-			Logger.info('[PCGITicketingClient] Database connection pool created.');
+			Logger.info({ message: '[PCGITicketingClient] Database connection pool created.' });
 		});
 		this.client.on('topologyDescriptionChanged', () => {
-			Logger.info('[PCGITicketingClient] Database topology description changed.');
+			Logger.info({ message: '[PCGITicketingClient] Database topology description changed.' });
 		});
 		this.client.on('serverDescriptionChanged', () => {
-			Logger.info('[PCGITicketingClient] Database server description changed.');
+			Logger.info({ message: '[PCGITicketingClient] Database server description changed.' });
 		});
 		this.client.on('open', () => {
-			Logger.info('[PCGITicketingClient] Database connection opened.');
+			Logger.info({ message: '[PCGITicketingClient] Database connection opened.' });
 		});
 		this.client.on('connectionReady', () => {
-			Logger.info('[PCGITicketingClient] Database connection is ready.');
+			Logger.info({ message: '[PCGITicketingClient] Database connection is ready.' });
 		});
 		this.client.on('close', () => {
-			Logger.error('[PCGITicketingClient] Database connection closed unexpectedly.');
+			Logger.error({ message: '[PCGITicketingClient] Database connection closed unexpectedly.' });
 		});
 		this.client.on('reconnect', () => {
-			Logger.info('[PCGITicketingClient] Database reconnected.');
+			Logger.info({ message: '[PCGITicketingClient] Database reconnected.' });
 		});
 		this.client.on('error', (error) => {
-			Logger.error('[PCGITicketingClient] Database connection error:', error);
+			Logger.error({ error, message: '[PCGITicketingClient] Database connection error:' });
 		});
 		await this.client.connect();
 	}
@@ -167,7 +167,7 @@ export class PCGITicketingClient {
 
 		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
-		Logger.info('[PCGITicketingClient] Setting up SSH Tunnel...');
+		Logger.info({ message: '[PCGITicketingClient] Setting up SSH Tunnel...' });
 
 		const connection = await this.tunnel.connect();
 		const addr = connection.address();

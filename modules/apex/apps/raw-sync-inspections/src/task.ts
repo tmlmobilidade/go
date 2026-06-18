@@ -36,7 +36,7 @@ export async function syncApexInspections(timeChunk: PerformInTimeChunksItem) {
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
-	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${timeChunk.end}] › ${chunkStartDate.iso}[${timeChunk.start}]`, 150);
 
 	//
 	// Prepare the PCGIDB query to retrieve documents
@@ -44,8 +44,8 @@ export async function syncApexInspections(timeChunk: PerformInTimeChunksItem) {
 
 	const rawdbQuery: Filter<RawApexTransaction> = {
 		created_at: {
-			$gte: chunkStartDate.unix_timestamp,
-			$lte: chunkEndDate.unix_timestamp,
+			$gte: timeChunk.start,
+			$lt: timeChunk.end,
 		},
 		version: { $in: ['inspection-2.0'] },
 	};
@@ -62,8 +62,8 @@ export async function syncApexInspections(timeChunk: PerformInTimeChunksItem) {
 		countDestinationDbFn: async () => {
 			return await simplifiedApexInspectionsNew.count(
 				'*',
-				'created_at >= $1 AND created_at <= $2',
-				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
 
@@ -74,16 +74,16 @@ export async function syncApexInspections(timeChunk: PerformInTimeChunksItem) {
 
 		deleteDestinationDbFn: async (ids: string[]) => {
 			await simplifiedApexInspectionsNew.delete(
-				'_id IN ($1)',
-				{ 1: ids.map(id => `'${id}'`).join(', ') },
+				'_id IN $1',
+				{ 1: ids },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexInspectionsNew.distinct(
 				'_id',
-				'created_at >= $1 AND created_at <= $2',
-				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
 
@@ -109,7 +109,7 @@ export async function syncApexInspections(timeChunk: PerformInTimeChunksItem) {
 				if (!parseResult) return;
 				await writer.write(parseResult);
 			} catch (error) {
-				Logger.error(`Error transforming APEX Inspection: ${sourceDbDocument._id} Reason: ${error.message}`);
+				Logger.error({ message: `Error transforming APEX Inspection: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}
 		},
 

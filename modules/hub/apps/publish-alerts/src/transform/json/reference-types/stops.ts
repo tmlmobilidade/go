@@ -14,12 +14,12 @@ export async function transformReferenceTypeStopsIntoJson(alertData: Alert): Pro
 	// Validate required input properties
 
 	if (!alertData.agency_id) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert agency_id is missing for "rides" reference type.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert agency_id is missing for "rides" reference type.` });
 		return;
 	}
 
 	if (!alertData.references?.length) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert references are missing for "rides" reference type or are empty.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert references are missing for "rides" reference type or are empty.` });
 		return;
 	}
 
@@ -38,7 +38,7 @@ export async function transformReferenceTypeStopsIntoJson(alertData: Alert): Pro
 		});
 
 		if (!foundStopData) {
-			Logger.error(`[Alert ID: ${alertData._id}] Stop ID ${reference.parent_id} not found for agency ID ${alertData.agency_id}.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Stop ID ${reference.parent_id} not found for agency ID ${alertData.agency_id}.` });
 			continue;
 		}
 

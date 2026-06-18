@@ -27,5 +27,5 @@ export async function exportPeriodsFile(exportConfig: MergedGtfsExportConfig) {
 
 	await exportConfig.writers.periods.flush();
 
-	Logger.info('Exported periods.txt file.');
+	Logger.info({ message: 'Exported periods.txt file.' });
 }

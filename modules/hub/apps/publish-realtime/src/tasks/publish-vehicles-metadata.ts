@@ -19,7 +19,7 @@ export async function publishVehiclesMetadata() {
 
 	const vehicleMetadata = await vehicles.all();
 
-	Logger.info(`Retrieved ${vehicleMetadata.length} vehicles metadata...`);
+	Logger.info({ message: `Retrieved ${vehicleMetadata.length} vehicles metadata...` });
 
 	//
 	// Save the result in API Cache

@@ -18,7 +18,7 @@ export async function getGtfsRtJsonFeed(request: FastifyRequest, reply: FastifyR
 	const cachedData = await apiCache.get('hub:v1:alerts:published:gtfs');
 
 	if (!cachedData) {
-		Logger.error('[hub/v1/alerts:getGtfsRtJsonFeed()] No GTFS-RT feed found in cache. Returning empty message.');
+		Logger.error({ message: '[hub/v1/alerts:getGtfsRtJsonFeed()] No GTFS-RT feed found in cache. Returning empty message.' });
 		return reply
 			.code(HTTP_STATUS.NO_CONTENT)
 			.header('access-control-allow-origin', '*')

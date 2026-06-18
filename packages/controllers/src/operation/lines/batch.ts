@@ -91,7 +91,7 @@ export async function getOperationalLinesBatch(query: GetOperationalLinesBatchQu
 		.aggregate<PipelineResult>(pipeline, { allowDiskUse: true })
 		.toArray();
 
-	Logger.info(`OperationalLinesController.getBatch - pipeline result count: ${pipelineResult?.length ?? 0}`);
+	Logger.info({ message: `OperationalLinesController.getBatch - pipeline result count: ${pipelineResult?.length ?? 0}` });
 
 	//
 	// Setup the final Map to keep track of the Operation Lines,

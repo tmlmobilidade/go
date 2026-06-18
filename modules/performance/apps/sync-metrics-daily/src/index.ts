@@ -6,6 +6,7 @@ import { syncPatternHourMetrics } from '@/tasks/sync-pattern-hour-metrics.js';
 import { syncProductMetrics } from '@/tasks/sync-product-metrics.js';
 import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -13,6 +14,15 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 async function main() {
 	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'sync-metrics-daily', message: 'Sentry Performance Sync Metrics Daily initialized', module: 'performance', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Performance Sync Metrics Daily' });
+	}
+
 	const globalTimer = new Timer();
 
 	Logger.title('Starting Metrics Sync');
@@ -30,7 +40,7 @@ async function main() {
 		Logger.terminate(`Finished All Metrics Sync (${globalTimer.get()})`);
 		Logger.divider();
 	} catch (error) {
-		Logger.error('Failed to sync metrics');
+		Logger.error({ message: 'Failed to sync metrics' });
 		Logger.error(error);
 		Logger.divider();
 	}

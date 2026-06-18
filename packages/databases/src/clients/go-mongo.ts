@@ -49,7 +49,7 @@ export class GOMongoClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('[GOMongoClient] Connecting to database...');
+		Logger.info({ message: '[GOMongoClient] Connecting to database...' });
 		const connectionString = await this.getConnectionString();
 		this.client = new MongoClient(connectionString, {
 			connectTimeoutMS: 10_000,
@@ -63,28 +63,28 @@ export class GOMongoClient {
 			serverSelectionTimeoutMS: 10_000,
 		});
 		this.client.on('connectionPoolCreated', () => {
-			Logger.info('[GOMongoClient] Database connection pool created.');
+			Logger.info({ message: '[GOMongoClient] Database connection pool created.' });
 		});
 		this.client.on('topologyDescriptionChanged', () => {
-			Logger.info('[GOMongoClient] Database topology description changed.');
+			Logger.info({ message: '[GOMongoClient] Database topology description changed.' });
 		});
 		this.client.on('serverDescriptionChanged', () => {
-			Logger.info('[GOMongoClient] Database server description changed.');
+			Logger.info({ message: '[GOMongoClient] Database server description changed.' });
 		});
 		this.client.on('open', () => {
-			Logger.info('[GOMongoClient] Database connection opened.');
+			Logger.info({ message: '[GOMongoClient] Database connection opened.' });
 		});
 		this.client.on('connectionReady', () => {
-			Logger.info('[GOMongoClient] Database connection is ready.');
+			Logger.info({ message: '[GOMongoClient] Database connection is ready.' });
 		});
 		this.client.on('close', () => {
-			Logger.error('[GOMongoClient] Database connection closed unexpectedly.');
+			Logger.error({ message: '[GOMongoClient] Database connection closed unexpectedly.' });
 		});
 		this.client.on('reconnect', () => {
-			Logger.info('[GOMongoClient] Database reconnected.');
+			Logger.info({ message: '[GOMongoClient] Database reconnected.' });
 		});
 		this.client.on('error', (error) => {
-			Logger.error('[GOMongoClient] Database connection error:', error);
+			Logger.error({ error, message: '[GOMongoClient] Database connection error:' });
 		});
 		await this.client.connect();
 	}
@@ -167,7 +167,7 @@ export class GOMongoClient {
 
 		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
-		Logger.info('[GOMongoClient] Setting up SSH Tunnel...');
+		Logger.info({ message: '[GOMongoClient] Setting up SSH Tunnel...' });
 
 		const connection = await this.tunnel.connect();
 		const addr = connection.address();

@@ -14,7 +14,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getTripUpdatesGtfsRtJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
 	const raw = await apiCache.get('hub:v1:realtime:eta:gtfs');
 	if (!raw) {
-		Logger.error('[hub/v1/realtime:getTripUpdatesGtfsRtJson()] No data in cache.');
+		Logger.error({ message: '[hub/v1/realtime:getTripUpdatesGtfsRtJson()] No data in cache.' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')

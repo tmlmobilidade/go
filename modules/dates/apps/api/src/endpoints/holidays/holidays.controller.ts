@@ -163,7 +163,9 @@ export class HolidaysController {
 
 		const holidayData = await holidays.findById(request.params.id);
 
-		if (!holidayData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		if (!holidayData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		}
 
 		//
 		// Get the resource permissions for holidays for the current user.
@@ -217,7 +219,9 @@ export class HolidaysController {
 
 		const holidayData = await holidays.findById(request.params.id);
 
-		if (!holidayData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		if (!holidayData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		}
 
 		//
 		// Get the resource permissions for holidays for the current user.
@@ -249,7 +253,9 @@ export class HolidaysController {
 		// If authorized, toggle the lock status of the holiday
 		await holidays.toggleLockById(request.params.id);
 		const foundHoliday = await holidays.findById(request.params.id);
-		if (!foundHoliday) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		if (!foundHoliday) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		}
 
 		return reply.send({ data: foundHoliday, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -269,7 +275,9 @@ export class HolidaysController {
 
 		const holidayData = await holidays.findById(request.params.id);
 
-		if (!holidayData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		if (!holidayData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
+		}
 
 		//
 		// Get the resource permissions for holidays for the current user.

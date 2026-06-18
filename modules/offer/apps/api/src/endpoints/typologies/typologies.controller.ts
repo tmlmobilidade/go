@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, typologies } from '@tmlmobilidade/interfaces';
 import { CreateTypologyDto, PermissionCatalog, type Typology, type UpdateTypologyDto } from '@tmlmobilidade/types';
@@ -162,7 +162,9 @@ export class TypologiesController {
 
 		const typologyData = await typologies.findById(request.params.id);
 
-		if (!typologyData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		if (!typologyData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		}
 
 		//
 		// Get the resource permissions for typologies for the current user.
@@ -216,7 +218,9 @@ export class TypologiesController {
 
 		const typologyData = await typologies.findById(request.params.id);
 
-		if (!typologyData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		if (!typologyData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		}
 
 		//
 		// Get the resource permissions for typologies for the current user.
@@ -248,7 +252,9 @@ export class TypologiesController {
 		// If authorized, toggle the lock status of the typology
 		await typologies.toggleLockById(request.params.id);
 		const foundTypology = await typologies.findById(request.params.id);
-		if (!foundTypology) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		if (!foundTypology) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		}
 
 		return reply.send({ data: foundTypology, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -268,7 +274,9 @@ export class TypologiesController {
 
 		const typologyData = await typologies.findById(request.params.id);
 
-		if (!typologyData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		if (!typologyData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
+		}
 
 		//
 		// Get the resource permissions for typologies for the current user.

@@ -49,7 +49,7 @@ export async function processPcgiTransactionEntity(databaseOperation) {
 		const parsedDocument = parsePcgiTransactionEntityIntoRawApexTransaction(databaseOperation.fullDocument);
 		await writer.write(parsedDocument);
 	} catch (error) {
-		Logger.error(`Error transforming APEX Transaction: ${databaseOperation.fullDocument.transaction.transactionId} Reason: ${error.message}`);
+		Logger.error({ message: `Error transforming APEX Transaction: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
 	}
 
 	//

@@ -38,12 +38,12 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"nodemailer": "8.0.11",
+		"nodemailer": "9.0.1",
 		"react": "19.2.7",
-		"react-email": "6.6.0"
+		"react-email": "6.6.3"
 	},
 	"devDependencies": {
-		"@react-email/ui": "6.6.0",
+		"@react-email/ui": "6.6.3",
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "25.9.3",
 		"@types/nodemailer": "8.0.1",

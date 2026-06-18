@@ -35,5 +35,5 @@ export async function exportPlansFile(agencyId: string, planId: string, planStar
 
 	await context.writers.plans.flush();
 
-	Logger.info('Exported plans.txt file.');
+	Logger.info({ message: 'Exported plans.txt file.' });
 }

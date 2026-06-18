@@ -12,8 +12,7 @@ export function parseRawApexTransactionLocationV30IntoSimplifiedApexLocation(doc
 	// Prepare the date field values
 
 	const transactionDateValue = Dates
-		.fromISO(doc.payload.transactionInfo.transactionDate)
-		.setZone('Europe/Lisbon', 'rebase_utc');
+		.fromFormat(doc.payload.transactionInfo.transactionDate, 'yyyy-MM-dd\'T\'HH:mm:ss', 'Europe/Lisbon');
 
 	//
 	// Validate the document structure and content
@@ -22,7 +21,6 @@ export function parseRawApexTransactionLocationV30IntoSimplifiedApexLocation(doc
 		_id: doc.payload.transactionInfo.transactionId,
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
-		calendar_date: transactionDateValue.calendar_date,
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
 		line_id: doc.payload.validationServiceInfo.lineLongID,

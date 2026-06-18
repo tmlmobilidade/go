@@ -24,7 +24,9 @@ export class UsersController {
 		// Register the new user using the auth provider
 		const verificationToken = await authProvider.register(request.body);
 
-		if (!verificationToken) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to register user');
+		if (!verificationToken) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to register user');
+		}
 
 		// Send a welcome email to the user with the verification token
 		await sendWelcomeEmail({
@@ -47,7 +49,11 @@ export class UsersController {
 	 * @param reply The reply object.
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-		await users.deleteById(request.params.id);
+		const result = await users.deleteById(request.params.id);
+		if (!result) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete user');
+		}
+
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -58,6 +64,10 @@ export class UsersController {
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<User[]>) {
 		const foundUsers = await users.findMany({}, { sort: { created_at: -1 } });
+		if (!foundUsers) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to get users');
+		}
+
 		reply.send({ data: foundUsers, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -68,7 +78,10 @@ export class UsersController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
 		const foundUser = await users.findById(request.params.id);
-		if (!foundUser) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		if (!foundUser) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		}
+
 		reply.send({ data: foundUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -96,9 +109,10 @@ export class UsersController {
 
 		try {
 			userData = await authProvider.getUserFromSessionToken(sessionToken);
-			if (!userData) throw new Error('User not found');
-		} catch (error) {
-			console.error('Error retrieving user data:', error);
+			if (!userData) {
+				throw new Error('User not found');
+			}
+		} catch {
 			await authProvider.logout(sessionToken);
 			return reply
 				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
@@ -132,10 +146,16 @@ export class UsersController {
 	static async getSimplifiedById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedUser>) {
 		// Find the user by ID
 		const userData = await users.findById(request.params.id);
-		if (!userData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		if (!userData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		}
+
 		// Find the organization data associated with the user
 		const organizationData = await organizations.findById(userData.organization_id);
-		if (!organizationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		if (!organizationData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		}
+
 		// Simplify the user data by selecting only specific fields
 		const simplifiedUserData: SimplifiedUser = {
 			_id: userData._id,
@@ -156,8 +176,12 @@ export class UsersController {
 	 */
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
 		await users.toggleLockById(request.params.id);
+
 		const foundUser = await users.findById(request.params.id);
-		if (!foundUser) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		if (!foundUser) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		}
+
 		reply.send({ data: foundUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -171,7 +195,10 @@ export class UsersController {
 		request.body.updated_by = request.me._id;
 		// Validate the request body against the UpdateUserDto schema
 		const validatedUserData = UpdateUserSchema.safeParse(request.body);
-		if (!validatedUserData.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
+		if (!validatedUserData.success) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
+		}
+
 		// Remove password field if not provided to avoid
 		// overwriting existing password with undefined
 		if (!validatedUserData.data.password_hash) delete validatedUserData.data.password_hash;
@@ -192,6 +219,10 @@ export class UsersController {
 
 		// For now, only the preferences field is allowed to be updated by the current user
 		const updatedUser = await users.updateById(userData._id, { preferences: request.body.preferences });
+		if (!updatedUser) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update user');
+		}
+
 		reply.send({ data: updatedUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }
