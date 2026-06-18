@@ -26,7 +26,7 @@ export function parseRawApexTransactionValidationV20IntoSimplifiedApexValidation
 		category: 'subscription',
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
-		event_type: ApexEventTypeSchema.parse(doc.payload.validationInfo.eventType),
+		event_type: ApexEventTypeSchema.parse(String(doc.payload.validationInfo.eventType)),
 		is_ok: false,
 		is_ok_pcgi: doc.is_ok,
 		is_passenger: false,

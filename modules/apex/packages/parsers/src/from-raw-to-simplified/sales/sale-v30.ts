@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { ApexPaymentMethodSchema, type RawApexTransactionSaleV30, type SimplifiedApexOnBoardSale, SimplifiedApexOnBoardSaleSchema } from '@tmlmobilidade/go-types-apex';
+import { ApexCardTypeSchema, ApexPaymentMethodSchema, type RawApexTransactionSaleV30, type SimplifiedApexOnBoardSale, SimplifiedApexOnBoardSaleSchema } from '@tmlmobilidade/go-types-apex';
 import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
@@ -22,7 +22,7 @@ export function parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(doc:
 		_id: doc.payload.transactionInfo.transactionId,
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
-		card_physical_type: doc.payload.cardInfo.cardPhysicalType,
+		card_physical_type: ApexCardTypeSchema.parse(String(doc.payload.cardInfo.cardPhysicalType)),
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
@@ -34,7 +34,7 @@ export function parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(doc:
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
 		on_board_refund_id: null,
 		pattern_id: null,
-		payment_method: ApexPaymentMethodSchema.parse(doc.payload.paymentInfo.paymentMethod),
+		payment_method: ApexPaymentMethodSchema.parse(String(doc.payload.paymentInfo.paymentMethod)),
 		price: doc.payload.paymentInfo.price,
 		product_id: doc.payload.saleLoadInfo.productLongID,
 		product_quantity: doc.payload.saleLoadInfo.productQuantity,

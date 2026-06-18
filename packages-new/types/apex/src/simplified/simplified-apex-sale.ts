@@ -1,5 +1,6 @@
 /* * */
 
+import { ApexCardTypeSchema } from '@/utils/card-type.js';
 import { ApexPaymentMethodSchema } from '@/utils/payment-method.js';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
@@ -10,7 +11,7 @@ export const SimplifiedApexOnBoardSaleSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
-	card_physical_type: z.number(),
+	card_physical_type: ApexCardTypeSchema.default('255'),
 	card_serial_number: z.string().nullable().default(null),
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
