@@ -92,16 +92,24 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			schema_version: 'v1',
 		};
 
-		const response = await fetch(FEEDBACK_ENDPOINT, {
-			body: JSON.stringify(payload),
-			headers: { 'Content-Type': 'application/json' },
-			method: 'POST',
-		});
+		try {
+			const response = await fetch(FEEDBACK_ENDPOINT, {
+				body: JSON.stringify(payload),
+				headers: { 'Content-Type': 'application/json' },
+				method: 'POST',
+			});
 
-		if (!response.ok) return;
+			if (!response.ok) {
+				console.error({ message: 'Failed to submit feedback.', status: response.status });
+				return;
+			}
 
-		feedbackCooldown.startCooldown();
-		setThankYouMessageKey(currentValue => currentValue + 1);
+			feedbackCooldown.startCooldown();
+			setThankYouMessageKey(currentValue => currentValue + 1);
+		}
+		catch (error) {
+			console.error({ error, message: 'Error submitting feedback.' });
+		}
 	};
 
 	const handleCloseFeedbackModal = () => {
