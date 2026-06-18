@@ -23,4 +23,4 @@ export const ApexValidationStatusValues = [
 
 export const ApexValidationStatusSchema = z.enum(ApexValidationStatusValues);
 
-export type ApexValidationStatus2 = z.infer<typeof ApexValidationStatusSchema>;
+export type ApexValidationStatus = z.infer<typeof ApexValidationStatusSchema>;

@@ -12,7 +12,7 @@ export const SimplifiedApexInspectionDecisionSchema = z.object({
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	final_control_status: z.number(),
-	inspection_decision_id: z.string().nullable(),
+	inspection_id: z.string().nullable(),
 	is_ok: z.boolean(),
 	is_ok_pcgi: z.boolean(),
 	mac_ase_counter_value: z.number(),

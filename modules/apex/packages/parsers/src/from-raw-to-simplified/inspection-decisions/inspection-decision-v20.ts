@@ -24,7 +24,7 @@ export function parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexIn
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
 		final_control_status: doc.payload.controlAckInfo.finalControlStatus,
-		inspection_decision_id: doc.payload.controlAckInfo.corrControlTransactionID,
+		inspection_id: doc.payload.controlAckInfo.corrControlTransactionID,
 		is_ok: false,
 		is_ok_pcgi: doc.is_ok,
 		mac_ase_counter_value: doc.payload.mac.aseCounterValue,
