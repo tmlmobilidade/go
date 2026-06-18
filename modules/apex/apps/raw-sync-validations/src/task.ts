@@ -61,7 +61,7 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 		countDestinationDbFn: async () => {
 			return await simplifiedApexValidationsNew.count(
-				'distinct(_id)',
+				'*',
 				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
@@ -73,10 +73,11 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexValidationsNew.delete(
-				'_id IN $1',
-				{ 1: ids },
-			);
+			console.log(ids);
+			// await simplifiedApexValidationsNew.delete(
+			// 	'_id IN $1',
+			// 	{ 1: ids },
+			// );
 		},
 
 		distinctDestinationDbFn: async () => {
