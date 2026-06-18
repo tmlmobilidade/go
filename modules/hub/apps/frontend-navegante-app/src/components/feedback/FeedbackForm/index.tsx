@@ -133,6 +133,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 				onOpenHappyReasonsSheet={handleOpenHappyReasonsSheet}
 				onSelectHappy={() => setSelectedMood('happy')}
 				onSelectUnhappy={handleSelectUnhappy}
+				onSubmit={handleCloseFeedbackModal}
 				opened={isFeedbackModalOpen}
 				selectedMood={selectedMood}
 				thankYouMessageKey={thankYouMessageKey}

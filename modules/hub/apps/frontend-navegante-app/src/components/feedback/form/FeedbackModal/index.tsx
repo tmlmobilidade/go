@@ -2,6 +2,7 @@
 
 import { FeedbackImprovementPrompt } from '@/components/feedback/form/FeedbackImprovement';
 import { FeedbackMoodSelector } from '@/components/feedback/form/FeedbackMoodSelector';
+import { FeedbackSubmitButton } from '@/components/feedback/form/FeedbackSubmitButton';
 import { Modal } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import { type PublicFeedback } from '@tmlmobilidade/types';
@@ -17,6 +18,7 @@ interface FeedbackModalProps {
 	onOpenHappyReasonsSheet: () => void
 	onSelectHappy: () => void
 	onSelectUnhappy: () => void
+	onSubmit: () => void
 	opened: boolean
 	selectedMood: null | PublicFeedback['mood']
 	thankYouMessageKey: number
@@ -24,7 +26,7 @@ interface FeedbackModalProps {
 
 /* * */
 
-export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReasonsSheet, onSelectHappy, onSelectUnhappy, opened, selectedMood, thankYouMessageKey }: FeedbackModalProps) {
+export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReasonsSheet, onSelectHappy, onSelectUnhappy, onSubmit, opened, selectedMood, thankYouMessageKey }: FeedbackModalProps) {
 	const [showThankYouMessage, setShowThankYouMessage] = useState(false);
 	const thankYouMessageTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -75,6 +77,10 @@ export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReaso
 						<FeedbackImprovementPrompt onClick={onOpenHappyReasonsSheet} />
 					)}
 				</FeedbackMoodSelector>
+
+				{selectedMood && (
+					<FeedbackSubmitButton onClick={onSubmit} />
+				)}
 			</Modal>
 
 			<Modal
