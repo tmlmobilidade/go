@@ -1,7 +1,7 @@
 'use client';
 
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
-import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
+import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
 import { IconBus, IconBusStop, IconRoute, IconSteeringWheel } from '@tabler/icons-react';
 
 import styles from './styles.module.css';

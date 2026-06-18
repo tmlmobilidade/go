@@ -1,6 +1,6 @@
 'use client';
 
-import { FEEDBACK_REASON_SELECTION_LIMIT, type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-reason-options';
+import { FEEDBACK_REASON_SELECTION_LIMIT, type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
 import { FeedbackModal } from '@/components/feedback/form/FeedbackModal';
 import { FeedbackStartPrompt } from '@/components/feedback/form/FeedbackStartPrompt';
 import { FeedbackReasonOptionsSheet } from '@/components/feedback/sheets/FeedbackReasonOptionsSheet';
