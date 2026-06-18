@@ -61,7 +61,7 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 		countDestinationDbFn: async () => {
 			return await simplifiedApexValidationsNew.count(
-				'*',
+				'distinct(_id)',
 				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
