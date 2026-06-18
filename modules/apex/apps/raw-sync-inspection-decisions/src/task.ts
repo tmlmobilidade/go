@@ -5,7 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexInspectionDecision } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexInspectionDecision } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
-import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
+import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
 import { type Filter } from 'mongodb';
 
@@ -73,10 +73,12 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexInspectionDecisionsNew.delete(
-				'_id IN $1',
-				{ 1: ids },
-			);
+			await performInChunks(ids, async (chunk) => {
+				await simplifiedApexInspectionDecisionsNew.delete(
+					'_id IN $1',
+					{ 1: chunk },
+				);
+			}, 1_000);
 		},
 
 		distinctDestinationDbFn: async () => {
