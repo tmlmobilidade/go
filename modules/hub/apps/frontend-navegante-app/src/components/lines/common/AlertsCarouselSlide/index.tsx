@@ -1,43 +1,43 @@
 'use client';
 
-import type { HubAlert } from '@tmlmobilidade/types';
-
 import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
-import { AlertDetailModal } from '@/components/lines/common/AlertDetailModal';
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
-import { useState } from 'react';
+import { type HubAlert } from '@tmlmobilidade/types';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
+interface AlertsCarouselSlideProps {
 	alert: HubAlert
 }
 
-/* * */
-
-export function AlertsCarouselSlide({ alert }: Props) {
+export function AlertsCarouselSlide({ alert }: AlertsCarouselSlideProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const { setActiveBottomSheet } = useBottomSheet();
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleClick = () => {
+		setActiveBottomSheet({ entityId: alert._id, view: 'alerts-detail' });
+	};
+
+	//
+	// C. Render components
 
 	return (
 		<div className={styles.container}>
 			<AlertActivePeriodStart date={alert.active_period_start_date} size="sm" />
-			<p className={styles.title} onClick={() => setIsOpen(true)}>
+			<p className={styles.title} onClick={handleClick}>
 				{alert.title}
 				<IconCircleArrowRightFilled className={styles.icon} size={16} />
 			</p>
-			<AlertDetailModal alert={alert} isOpen={isOpen} onClose={() => setIsOpen(false)} />
 		</div>
 	);
-
-	//
 }

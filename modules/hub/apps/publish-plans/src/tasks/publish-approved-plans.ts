@@ -21,7 +21,7 @@ export async function publishApprovedPlans() {
 
 	const allPlansData = await plans.all();
 
-	Logger.info(`Retrieved ${allPlansData.length} approved plans...`);
+	Logger.info({ message: `Retrieved ${allPlansData.length} approved plans...` });
 
 	//
 	// For each plan, get the file URL
@@ -49,16 +49,16 @@ export async function publishApprovedPlans() {
 			// Add the plan to the list
 			approvedPlans.push(parsedPlan.data);
 		} catch (error) {
-			Logger.error(`Error parsing plan ${planData._id}: ${error.message}`);
+			Logger.error({ message: `Error parsing plan ${planData._id}: ${(error as Error).message}` });
 		}
 	}
 
-	Logger.info(`Parsed ${approvedPlans.length} approved plans...`);
+	Logger.info({ message: `Parsed ${approvedPlans.length} approved plans...` });
 
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:plans:approved:json', JSON.stringify(approvedPlans));
+	await apiCache.set('hub:v1:plans:approved:json', JSON.stringify(approvedPlans));
 
 	Logger.success(`Finished publishing ${approvedPlans.length} approved plans JSON feed. (${globalTimer.get()})`);
 

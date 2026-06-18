@@ -49,11 +49,11 @@ export class GORedisClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('[GORedisClient] Connecting to database...');
+		Logger.info({ message: '[GORedisClient] Connecting to database...' });
 		const connectionString = await this.getConnectionString();
 		this.client = createClient({ url: connectionString });
 		await this.client.connect();
-		Logger.info('[GORedisClient] Connected to database');
+		Logger.info({ message: '[GORedisClient] Connected to database' });
 	}
 
 	/**
@@ -102,12 +102,12 @@ export class GORedisClient {
 				port: Number(process.env.GO_REDIS_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
-				agent: process.env.GO_REDIS_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
+				agent: (process.env.GO_REDIS_TUNNEL_SSH_KEY_PATH || process.env.GO_REDIS_TUNNEL_SSH_KEY) ? undefined : process.env.SSH_AUTH_SOCK,
 				host: process.env.GO_REDIS_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 20,
+				keepaliveCountMax: 3,
 				keepaliveInterval: 10_000,
 				port: 22,
-				privateKey: process.env.GO_REDIS_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_REDIS_TUNNEL_SSH_KEY_PATH) : undefined,
+				privateKey: process.env.GO_REDIS_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_REDIS_TUNNEL_SSH_KEY_PATH) : process.env.GO_REDIS_TUNNEL_SSH_KEY ? process.env.GO_REDIS_TUNNEL_SSH_KEY : undefined,
 				username: process.env.GO_REDIS_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
@@ -122,7 +122,7 @@ export class GORedisClient {
 
 		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
-		Logger.info('[GORedisClient] Setting up SSH Tunnel...');
+		Logger.info({ message: '[GORedisClient] Setting up SSH Tunnel...' });
 
 		const connection = await this.tunnel.connect();
 		const addr = connection.address();

@@ -11,8 +11,8 @@ import { getClickHouseParamType } from '@/utils/clickhouse/get-clickhouse-param-
  * @throws Will throw an error if a placeholder is missing a corresponding parameter, if there are unused parameters, or if any parameter keys are invalid.
  * @returns An object containing the transformed query and a mapping of named parameters to their values.
  */
-export function preparePositionalQueryParams(query: string, params?: Record<string, number | string>): { query: string, query_params: Record<string, number | string> } {
-	const queryParams: Record<string, number | string> = {};
+export function preparePositionalQueryParams(query: string, params?: Record<string, number | string | string[]>): { query: string, query_params: Record<string, number | string | string[]> } {
+	const queryParams: Record<string, number | string | string[]> = {};
 	const providedParams = params ?? {};
 	const usedKeys = new Set<string>();
 

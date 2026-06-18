@@ -23,9 +23,9 @@ export const syncDemandByAgencyByDay = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
 	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch validations collection
@@ -109,7 +109,7 @@ export const syncDemandByAgencyByDay = async () => {
 				},
 			]).toArray();
 
-			Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} agencies (${chunkTimer.get()})`);
+			Logger.info({ message: `Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} agencies (${chunkTimer.get()})` });
 			return { dayLabel, validationsAgg };
 		}),
 	);
@@ -123,7 +123,7 @@ export const syncDemandByAgencyByDay = async () => {
 		const calendarProps = calendarMap.get(dayLabel);
 
 		if (!calendarProps) {
-			Logger.info(`No calendar entry for ${dayLabel}, skipping day`);
+			Logger.info({ message: `No calendar entry for ${dayLabel}, skipping day` });
 			continue;
 		}
 
@@ -160,7 +160,7 @@ export const syncDemandByAgencyByDay = async () => {
 	// Insert all metrics
 
 	if (results.length === 0) {
-		Logger.info('No metric documents to insert — skipping insertMany');
+		Logger.info({ message: 'No metric documents to insert — skipping insertMany' });
 	} else {
 		await metrics.insertMany(results);
 	}

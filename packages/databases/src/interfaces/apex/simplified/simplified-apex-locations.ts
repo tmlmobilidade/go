@@ -2,26 +2,27 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema } from '@/types/index.js';
+import { type ClickHouseTableEngine, type ClickHouseTableSchema } from '@/types/index.js';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseSchema<SimplifiedApexLocation> = {
-	_id: { primaryKey: true, type: 'String' },
-	agency_id: { type: 'String' },
-	apex_version: { type: 'String' },
-	created_at: { type: 'Int64' },
-	device_id: { type: 'String' },
-	line_id: { type: 'String' },
-	mac_ase_counter_value: { type: 'Int64' },
-	mac_sam_serial_number: { type: 'Int64' },
-	pattern_id: { type: 'String' },
-	received_at: { type: 'Int64' },
-	stop_id: { type: 'String' },
-	trip_id: { type: 'String' },
-	vehicle_id: { type: 'String' },
+const tableSchema: ClickHouseTableSchema<SimplifiedApexLocation> = {
+	_id: { type: 'UUID' },
+	agency_id: { type: 'LowCardinality(String)' },
+	apex_version: { type: 'LowCardinality(String)' },
+	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	device_id: { type: 'LowCardinality(String)' },
+	line_id: { type: 'LowCardinality(Nullable(String))' },
+	mac_ase_counter_value: { type: 'UInt64' },
+	mac_sam_serial_number: { type: 'UInt64' },
+	pattern_id: { type: 'LowCardinality(Nullable(String))' },
+	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	stop_id: { type: 'LowCardinality(Nullable(String))' },
+	trip_id: { type: 'Nullable(String)' },
+	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
 /* * */
@@ -32,6 +33,9 @@ class SimplifiedApexLocationsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	private static _instance: null | Promise<SimplifiedApexLocationsNewClass> = null;
 
 	protected override readonly databaseName = 'simplified_apex';
+	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexLocation> = 'ReplacingMergeTree(updated_at)';
+	protected override readonly orderBy = 'agency_id, created_at, _id';
+	protected override readonly partitionBy = 'toYYYYMM(created_at)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'locations';
 

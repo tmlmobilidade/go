@@ -1,7 +1,7 @@
 /* * */
 
 import { simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
-import { parseRawApexTransactionSaleV30 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -32,11 +32,11 @@ export async function processRawApexTransactionSale(databaseOperation) {
 
 	try {
 		let parseResult: null | SimplifiedApexOnBoardSale = null;
-		if (databaseOperation.fullDocument.version === 'sale-3.0') parseResult = parseRawApexTransactionSaleV30(databaseOperation.fullDocument);
+		if (databaseOperation.fullDocument.version === 'sale-3.0') parseResult = parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(databaseOperation.fullDocument);
 		if (!parseResult) return;
 		await writer.write(parseResult);
 	} catch (error) {
-		Logger.error(`Error transforming APEX Sale: ${databaseOperation.fullDocument.transaction.transactionId} Reason: ${error.message}`);
+		Logger.error({ message: `Error transforming APEX Sale: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
 	}
 
 	//

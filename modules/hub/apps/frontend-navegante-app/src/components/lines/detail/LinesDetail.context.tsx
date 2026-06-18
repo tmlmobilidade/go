@@ -4,10 +4,8 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { HubPattern, HubRoute, HubWaypoint } from '@/types/api/network';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Logger } from '@tmlmobilidade/logger';
-import { type HubAlert, type HubLine, type HubShape } from '@tmlmobilidade/types';
+import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -63,6 +61,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
 	const alertsContext = useAlertsContext();
+
 	const { selectedOperationalDate } = useOperationalDate();
 
 	const [dataAllPatternsState, setDataAllPatternsState] = useState<LinesDetailContextState['data']['all_patterns']>(null);
@@ -88,7 +87,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 
 	const availableRoutesData = useMemo(() => {
 		if (!selectedLineData?.route_ids?.length) return;
-		return linesContext.data.routes.filter(item => selectedLineData.route_ids.includes(item.id));
+		return linesContext.data.routes.filter(item => selectedLineData.route_ids.includes(item._id));
 	}, [linesContext.data.routes, selectedLineData?.route_ids]);
 
 	useEffect(() => {
@@ -113,7 +112,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 				const resultData = await Promise.all(fetchPromises);
 				setDataAllPatternsState(resultData);
 			} catch (error) {
-				Logger.error('Error fetching pattern data:', error);
+				console.error({ error, message: 'Error fetching pattern data:' });
 			}
 		})();
 	}, [selectedLineData, stopsContext.actions, stopsContext.data.stops]);
@@ -126,9 +125,9 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		if (!dataActivePatternState) return;
 		(async () => {
 			try {
-				const shapeUrl = API_ROUTES.hub.NETWORK_PATTERNS(dataActivePatternState.shape_id).replace('/patterns/', '/shapes/');
+				const shapeUrl = API_ROUTES.hub.NETWORK_SHAPES(dataActivePatternState.shape_id);
 				const shapeData = await fetch(shapeUrl).then((response) => {
-					if (!response.ok) Logger.info(`Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}`);
+					if (!response.ok) console.log({ message: `Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}` });
 					else return response.json();
 				}).then(shapePayload => shapePayload?.data ?? shapePayload);
 				if (shapeData) {
@@ -142,7 +141,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 				}
 				setDataActiveShapeState(shapeData);
 			} catch (error) {
-				Logger.error('Error fetching shape data:', error);
+				console.error({ error, message: 'Error fetching shape data:' });
 			}
 		})();
 	}, [dataActivePatternState]);
@@ -170,11 +169,11 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 				}
 			}
 			// If the closest date is valid, add the pattern group to the list
-			if (patternGroupWithClosestDate && !activePatterns.find(activePattern => activePattern.id === patternGroupWithClosestDate.id)) {
+			if (patternGroupWithClosestDate && !activePatterns.find(activePattern => activePattern._id === patternGroupWithClosestDate._id)) {
 				activePatterns.push(patternGroupWithClosestDate);
 			}
 		}
-		const sortedPatterns = activePatterns.sort((a, b) => a.id.localeCompare(b.id));
+		const sortedPatterns = activePatterns.sort((a, b) => a._id.localeCompare(b._id));
 		setDataValidPatternsState(sortedPatterns);
 	}, [dataAllPatternsState, selectedOperationalDate]);
 
@@ -218,15 +217,13 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	 * Return otherwise.
 	 */
 	useEffect(() => {
-		console.log('dataValidPatternsState', dataValidPatternsState);
-		console.log('filterActivePatternIdState', filterActivePatternIdState);
 		// Return early if no patterns are available
 		if (!dataValidPatternsState?.length) return;
 		// Preselect the first pattern with a path, falling back to the first pattern
 		if (!filterActivePatternIdState) {
 			const firstWithPath = dataValidPatternsState.find(pattern => pattern.path.length > 0);
-			setActivePattern((firstWithPath ?? dataValidPatternsState[0]).version_id);
-			console.log('firstWithPath', firstWithPath);
+			setFilterActivePatternIdState(firstWithPath._id);
+			setFlagIsInteractiveModeState(false);
 		}
 	}, [dataValidPatternsState, filterActivePatternIdState]);
 
@@ -238,10 +235,9 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		// Return early if no patterns are available or no filter value for active_pattern_id
 		if (!dataValidPatternsState || !filterActivePatternIdState) return;
 		// If there is a filter value for active pattern, set the pattern with that ID
-		const foundActivePatternData = dataValidPatternsState.find(activePattern => activePattern.id === filterActivePatternIdState);
+		const foundActivePatternData = dataValidPatternsState.find(activePattern => activePattern._id === filterActivePatternIdState);
 		if (!foundActivePatternData) return;
 		setDataActivePatternState(foundActivePatternData);
-		//
 	}, [dataValidPatternsState, filterActivePatternIdState]);
 
 	/**
@@ -256,9 +252,11 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			if (!dataActivePatternState.path.length) return;
 			const firstStopId = dataActivePatternState.path[0].stop_id;
 			const firstStopSequence = dataActivePatternState.path[0].stop_sequence;
-			setActiveWaypoint(firstStopId, firstStopSequence, false);
+			setFilterActiveWaypointStopIdState(firstStopId);
+			setFilterActiveWaypointStopSequenceState(String(firstStopSequence));
+			setFlagIsInteractiveModeState(false);
 		}
-	}, [dataActivePatternState, filterActiveWaypointStopIdState, filterActiveWaypointStopSequenceState]);
+	}, [dataActivePatternState, filterActiveWaypointStopIdState]);
 
 	/**
 	 * Activate a given Waypoint based on the filter value for active_stop_id and active_stop_sequence.
@@ -298,7 +296,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		const foundPatternData = dataValidPatternsState.find(validPattern => validPattern.version_id === patternVersionId);
 		// Update the state
 		if (foundPatternData) {
-			setFilterActivePatternIdState(foundPatternData.id);
+			setFilterActivePatternIdState(foundPatternData._id);
 			setFlagIsInteractiveModeState(false);
 		}
 	};

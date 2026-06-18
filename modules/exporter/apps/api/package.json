@@ -21,6 +21,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {

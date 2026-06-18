@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 export const RawApexTransactionInspectionDecisionV20PayloadSchema = z.object({
 	controlAckInfo: z.object({
-		corrControlTransactionID: z.string(),
+		corrControlTransactionID: z.string().nullable().default(null),
 		finalControlStatus: z.number(),
 	}),
 	mac: z.object({

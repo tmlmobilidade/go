@@ -39,7 +39,7 @@ export function RideAnalysisApexOnBoardSales() {
 			width: 220,
 		},
 		{
-			accessor: 'product_long_id',
+			accessor: 'product_id',
 			title: t('default:rides.analysis.RideAnalysisApexOnBoardSales.Table.columns.product_id.label'),
 			width: 250,
 		},

@@ -9,6 +9,7 @@ import { CreateStopSchema, PermissionCatalog, type Stop, type StopId, type Updat
 /**
  * This is an example controller that is using the stops interface.
  */
+
 export class StopsController {
 	//
 
@@ -38,6 +39,7 @@ export class StopsController {
 
 		const newStopId = await generateStopId();
 		const result = await stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
+
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
@@ -50,7 +52,9 @@ export class StopsController {
 		//
 		// Get the stop from the database
 		const foundStop = await stops.findById(Number(request.params.id));
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		}
 
 		if (foundStop.flags.length !== 0) {
 			// Check if the user has permission to run this action
@@ -62,7 +66,9 @@ export class StopsController {
 				value: foundStop.flags.flatMap(flag => flag.agency_ids),
 			});
 
-			if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this stop');
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this stop');
+			}
 		}
 
 		// If authorized, toggle the deleted status of the stop
@@ -97,6 +103,9 @@ export class StopsController {
 			projection: { _id: 1, flags: 1, is_deleted: 1, latitude: 1, legacy_ids: 1, lifecycle_status: 1, longitude: 1, municipality_id: 1, name: 1, system_status: 1 },
 			sort: { created_at: -1 },
 		});
+		if (!data) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not get stops from database');
+		}
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -108,6 +117,10 @@ export class StopsController {
 	 */
 	static async getValidId(request: FastifyRequest, reply: FastifyReply<StopId>) {
 		const newStopId = await generateStopId();
+		if (!newStopId) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not generate a new stop ID');
+		}
+
 		reply.send({ data: newStopId, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -119,7 +132,9 @@ export class StopsController {
 	static async getById(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		// Get the stop from the database
 		const foundStop = await stops.findById(Number(request.params.id));
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
+		}
 
 		if (foundStop.flags.length !== 0) {
 			// Check if the user has permission to run this action
@@ -131,7 +146,9 @@ export class StopsController {
 				value: foundStop.flags.flatMap(flag => flag.agency_ids),
 			});
 
-			if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this stop');
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this stop');
+			}
 		}
 
 		//
@@ -153,6 +170,10 @@ export class StopsController {
 			},
 		);
 
+		if (!associatedPatterns) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, `Can not get associated patterns for stop with ID ${request.params.id}`);
+		}
+
 		reply.send({
 			data: { ...foundStop, associated_patterns: associatedPatterns },
 			error: null,
@@ -168,7 +189,9 @@ export class StopsController {
 	static async lock(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		// Get the stop from the database
 		const foundStop = await stops.findById(Number(request.params.id));
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		}
 
 		if (foundStop.flags.length !== 0) {
 			// Check if the user has permission to run this action
@@ -180,7 +203,9 @@ export class StopsController {
 				value: foundStop.flags.flatMap(flag => flag.agency_ids),
 			});
 
-			if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock or unlock this stop');
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock or unlock this stop');
+			}
 		}
 
 		// If authorized, toggle the lock status of the stop
@@ -197,7 +222,9 @@ export class StopsController {
 	static async update(request: FastifyRequest<{ Body: UpdateStopDto, Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		// Get the stop from the database
 		const foundStop = await stops.findById(Number(request.params.id));
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		}
 
 		if (
 			foundStop.flags.length !== 0
@@ -215,7 +242,9 @@ export class StopsController {
 				value: foundStop.flags.flatMap(flag => flag.agency_ids),
 			});
 
-			if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this stop');
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this stop');
+			}
 		}
 
 		// Ensure the flag IDs are saved in the legacy IDs array

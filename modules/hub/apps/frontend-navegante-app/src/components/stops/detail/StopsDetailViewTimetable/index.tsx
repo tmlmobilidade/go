@@ -75,7 +75,7 @@ export function StopsDetailViewTimetable() {
 	// C. Render components
 
 	if (!stopsDetailContext.data.timetable?.length) {
-		return <NoDataLabel text={t('default:stops.StopsDetailContentTimetableSchedule.no_service')} withMinHeight />;
+		return <NoDataLabel text={t('default:stops.StopsDetailViewTimetable.no_service')} withMinHeight />;
 	}
 
 	return (
@@ -83,7 +83,7 @@ export function StopsDetailViewTimetable() {
 
 			{operationalDate.isTodaySelected &&	(
 				<p className={styles.toggleShowPastArrivals} onClick={toggleShowPastArrivals}>
-					{showPastArrivals ? t('default:stops.StopsDetailContentTimetableRealtime.show_past_trips_toggle.hide') : t('default:stops.StopsDetailContentTimetableRealtime.show_past_trips_toggle.show')}
+					{showPastArrivals ? t('default:stops.StopsDetailViewTimetable.show_past_trips_toggle.hide') : t('default:stops.StopsDetailViewTimetable.show_past_trips_toggle.show')}
 				</p>
 			)}
 
@@ -108,7 +108,7 @@ export function StopsDetailViewTimetable() {
 			</div>
 
 			<NoDataLabel
-				text={t('default:stops.StopsDetailContentTimetableSchedule.end_of_day')}
+				text={t('default:stops.StopsDetailViewTimetable.end_of_day')}
 				withMinHeight
 			/>
 

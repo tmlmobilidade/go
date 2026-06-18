@@ -18,7 +18,7 @@ export async function processStopsFile(context: ImportGtfsContext): Promise<void
 
 		const stopsParseTimer = new Timer();
 
-		Logger.info(`Reading zip entry "stops.txt"...`);
+		Logger.info({ message: 'Reading zip entry "stops.txt"...' });
 
 		const parseEachRow = async (data: GTFS_Stop_Extended_Raw) => {
 			// Validate the current row against the proper type
@@ -40,7 +40,7 @@ export async function processStopsFile(context: ImportGtfsContext): Promise<void
 
 		//
 	} catch (error) {
-		Logger.error('Error processing "stops.txt" file.', error);
+		Logger.error({ error, message: 'Error processing "stops.txt" file.' });
 		throw new Error('✖︎ Error processing "stops.txt" file.');
 	}
 }

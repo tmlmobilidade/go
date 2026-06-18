@@ -52,5 +52,5 @@ export async function exportAgencyFile(agencyIds: string[], exportConfig: Merged
 
 	await exportConfig.writers.agency.flush();
 
-	Logger.info('Exported agency.txt file.');
+	Logger.info({ message: 'Exported agency.txt file.' });
 }

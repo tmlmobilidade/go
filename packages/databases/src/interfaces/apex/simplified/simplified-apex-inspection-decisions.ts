@@ -2,25 +2,26 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema } from '@/types/index.js';
+import { type ClickHouseTableEngine, type ClickHouseTableSchema } from '@/types/index.js';
 import { type SimplifiedApexInspectionDecision } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseSchema<SimplifiedApexInspectionDecision> = {
-	_id: { primaryKey: true, type: 'String' },
-	agency_id: { type: 'String' },
-	apex_version: { type: 'String' },
-	created_at: { type: 'Int64' },
-	device_id: { type: 'String' },
-	final_control_status: { type: 'Int64' },
-	inspection_decision_id: { type: 'String' },
+const tableSchema: ClickHouseTableSchema<SimplifiedApexInspectionDecision> = {
+	_id: { type: 'UUID' },
+	agency_id: { type: 'LowCardinality(String)' },
+	apex_version: { type: 'LowCardinality(String)' },
+	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	device_id: { type: 'LowCardinality(String)' },
+	final_control_status: { type: 'UInt8' },
+	inspection_decision_id: { type: 'Nullable(UUID)' },
 	is_ok: { type: 'Bool' },
 	is_ok_pcgi: { type: 'Bool' },
-	mac_ase_counter_value: { type: 'Int64' },
-	mac_sam_serial_number: { type: 'Int64' },
-	received_at: { type: 'Int64' },
+	mac_ase_counter_value: { type: 'UInt64' },
+	mac_sam_serial_number: { type: 'UInt64' },
+	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 };
 
 /* * */
@@ -31,6 +32,9 @@ class SimplifiedApexInspectionDecisionsNewClass extends ClickHouseInterfaceTempl
 	private static _instance: null | Promise<SimplifiedApexInspectionDecisionsNewClass> = null;
 
 	protected override readonly databaseName = 'simplified_apex';
+	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexInspectionDecision> = 'ReplacingMergeTree(updated_at)';
+	protected override readonly orderBy = 'agency_id, created_at, _id';
+	protected override readonly partitionBy = 'toYYYYMM(created_at)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'inspection_decisions';
 

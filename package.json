@@ -124,10 +124,8 @@
 		"dev:tracker:tcb-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-tcb-fetch",
 		"dev:tracker:tcb-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-tcb-fetch",
 		"dev:tracker:ttsl-fetch": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
-		"dev:tracker:ttsl-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
-
+		"dev:tracker:ttsl-fetch:prd": "npm run build:tracker:packages && ENVIRONMENT=production dotenv-run -f ./modules/tracker/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-tracker-ttsl-fetch",
 		"generate-routes": "bash ./scripts/generate-routes.sh",
-
 		"helper:alerts:migrate-db": "dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-alerts-helpers-migrate-db",
 		"helper:controller:export-sams:prd": "dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-controller-helpers-export-sams",
 		"helper:dates:seed-periods": "dotenv-run -f ./modules/dates/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-dates-helpers-seed-periods",
@@ -139,7 +137,6 @@
 		"helper:offer:seed-zones": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-zones",
 		"helper:stops:migrate-stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-migrate-stops",
 		"helper:stops:seed-stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-seed-stops",
-
 		"lint": "turbo lint",
 		"lint:fix": "turbo lint:fix",
 		"pckg:dev:emails": "ENVIRONMENT=dev turbo run dev --filter=@tmlmobilidade/emails",

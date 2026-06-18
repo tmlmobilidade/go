@@ -51,5 +51,5 @@ export async function exportRoutesFile(routesList: GTFS_Route_Extended[], export
 
 	await exportConfig.writers.routes.flush();
 
-	Logger.info('Exported routes.txt file.');
+	Logger.info({ message: 'Exported routes.txt file.' });
 }
