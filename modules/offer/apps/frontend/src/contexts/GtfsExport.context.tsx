@@ -1,9 +1,9 @@
 'use client';
 
 import { GTFS_EXPORT_MODAL_ID } from '@/components/lines/export/GtfsExportModal';
-import { useForm } from '@mantine/form';
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import { type CreateFileExportDto, FileExport, FileExportType, type GtfsExportProperties, type LinesMode, type OperationalDate } from '@tmlmobilidade/types';
+import { useForm } from '@tmlmobilidade/ui';
 import { closeModal, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
