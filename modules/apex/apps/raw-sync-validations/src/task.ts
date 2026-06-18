@@ -80,16 +80,16 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await simplifiedApexValidationsNew.distinct(
+			const result = await simplifiedApexValidationsNew.distinct(
 				'_id',
 				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
+			return result.map(id => id.toUpperCase());
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawApexTransactions.distinct('_id', rawdbQuery);
-			return result.map(id => id.toUpperCase());
+			return await rawApexTransactions.distinct('_id', rawdbQuery);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
