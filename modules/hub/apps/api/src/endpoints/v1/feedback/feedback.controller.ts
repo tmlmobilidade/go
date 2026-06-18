@@ -2,6 +2,7 @@
 
 import { PublicFeedbackLineReasonValues } from '@/endpoints/v1/feedback/feedback-reasons/line/line-reasons.js';
 import { PublicFeedbackStopReasonValues } from '@/endpoints/v1/feedback/feedback-reasons/stop/stop-reasons.js';
+import { feedback } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type PublicFeedback, PublicFeedbackSchema } from '@tmlmobilidade/types';
 
@@ -63,6 +64,8 @@ export class FeedbackController {
 				statusCode: 400,
 			});
 		}
+
+		await feedback.insert('JSONEachRow', [parsedFeedback.data]);
 
 		return reply.code(201).send({
 			data: parsedFeedback.data,
