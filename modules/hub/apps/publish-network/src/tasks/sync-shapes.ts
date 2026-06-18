@@ -1,6 +1,7 @@
 /* * */
 
 import { apiCache, type ApiCacheKey } from '@tmlmobilidade/databases';
+import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -93,6 +94,7 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		// Create geojson feature using turf
 
 		shapeData.geojson = turf.lineString(shapeData.points.map(point => [point.shape_pt_lon, point.shape_pt_lat]));
+		shapeData.encoded_polyline = encodePolylineFromGeoJson(shapeData.geojson);
 
 		//
 		// Calculate shape extension
