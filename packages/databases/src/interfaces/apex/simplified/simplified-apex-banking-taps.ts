@@ -18,6 +18,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexBankingTap> = {
 	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	device_id: { type: 'LowCardinality(String)' },
 	event_type: { type: 'UInt8' },
+	group_dimension: { type: 'Int32' },
 	is_ok: { type: 'Bool' },
 	is_ok_pcgi: { type: 'Bool' },
 	line_id: { type: 'LowCardinality(String)' },
@@ -28,9 +29,8 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexBankingTap> = {
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	stop_id: { type: 'LowCardinality(String)' },
 	trip_id: { type: 'Nullable(String)' },
-	units_qty: { type: 'Nullable(Int32)' },
 	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
-	vehicle_id: { type: 'LowCardinality(String)' },
+	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
 /* * */

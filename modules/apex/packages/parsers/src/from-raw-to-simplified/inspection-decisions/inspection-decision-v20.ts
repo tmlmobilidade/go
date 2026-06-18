@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionInspectionDecisionV20, type SimplifiedApexInspectionDecision, SimplifiedApexInspectionDecisionSchema } from '@tmlmobilidade/go-types-apex';
+import { ApexControlStatusSchema, type RawApexTransactionInspectionDecisionV20, type SimplifiedApexInspectionDecision, SimplifiedApexInspectionDecisionSchema } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 
@@ -23,7 +23,7 @@ export function parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexIn
 		apex_version: doc.payload.versionInfo.apexVersion,
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
-		final_control_status: doc.payload.controlAckInfo.finalControlStatus,
+		final_control_status: ApexControlStatusSchema.parse(doc.payload.controlAckInfo.finalControlStatus),
 		inspection_id: doc.payload.controlAckInfo.corrControlTransactionID,
 		is_ok: false,
 		is_ok_pcgi: doc.is_ok,

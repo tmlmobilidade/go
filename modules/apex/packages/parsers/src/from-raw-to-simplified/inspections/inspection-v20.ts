@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionInspectionV20, type SimplifiedApexInspection, SimplifiedApexInspectionSchema } from '@tmlmobilidade/go-types-apex';
+import { ApexControlStatusSchema, ApexEnvironmentStatusSchema, type RawApexTransactionInspectionV20, type SimplifiedApexInspection, SimplifiedApexInspectionSchema } from '@tmlmobilidade/go-types-apex';
 import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
@@ -25,10 +25,10 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		control_destination_stop_id: doc.payload.controlServiceInfo.controlDestinationStopLongID,
 		control_origin_stop_id: doc.payload.controlServiceInfo.controlOriginStopLongID,
-		control_status: doc.payload.controlInfo.controlStatus,
+		control_status: ApexControlStatusSchema.parse(doc.payload.controlInfo.controlStatus),
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
-		environment_status: doc.payload.controlInfo.environmentStatus,
+		environment_status: ApexEnvironmentStatusSchema.parse(doc.payload.controlInfo.environmentStatus),
 		inspection_id: null,
 		is_ok: false,
 		is_ok_pcgi: false,

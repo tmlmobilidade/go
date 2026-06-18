@@ -14,8 +14,9 @@ export const SIMPLIFIED_APEX_TYPE_OPTIONS = [
 export const SimplifiedApexTypeSchema = z.enum(SIMPLIFIED_APEX_TYPE_OPTIONS);
 
 /**
- * This type should be used to represent the processing status
- * of various operations. It can be used in APIs, database operations,
- * or any other context where a processing status needs to be communicated.
+ * The type of a simplified APEX transaction.
+ * Use it when you need to use multiple APEX transactions
+ * together in a single structure, such as when aggregating
+ * APEX transactions for SAM analysis.
 */
 export type SimplifiedApexType = z.infer<typeof SimplifiedApexTypeSchema>;

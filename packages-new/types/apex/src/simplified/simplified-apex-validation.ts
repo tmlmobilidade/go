@@ -1,8 +1,8 @@
 /* * */
 
-import { ValidApexValidationStatusSchema } from '@/utils/valid-validations-status.js';
-import { ApexValidationCategorySchema } from '@/utils/validations-category.js';
-import { ApexValidationStatusSchema } from '@/utils/validations-status.js';
+import { ApexEventTypeSchema } from '@/utils/event-type.js';
+import { ApexValidationCategorySchema } from '@/utils/validation-category.js';
+import { ApexValidationStatusSchema, ValidApexValidationStatusSchema } from '@/utils/validation-status.js';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -13,10 +13,10 @@ export const SimplifiedApexValidationSchema = z.object({
 	agency_id: z.string(),
 	apex_version: z.string(),
 	card_serial_number: z.string().nullable().default(null),
-	category: ApexValidationCategorySchema.nullable().default(null),
+	category: ApexValidationCategorySchema.default('subscription'),
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
-	event_type: z.number(),
+	event_type: ApexEventTypeSchema,
 	is_ok: z.boolean(),
 	is_ok_pcgi: z.boolean(),
 	is_passenger: z.boolean(),

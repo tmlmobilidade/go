@@ -23,6 +23,8 @@ export function parseRawApexTransactionLocationV30IntoSimplifiedApexLocation(doc
 		apex_version: doc.payload.versionInfo.apexVersion,
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
+		is_ok: false,
+		is_ok_pcgi: doc.is_ok,
 		line_id: doc.payload.validationServiceInfo.lineLongID,
 		mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
