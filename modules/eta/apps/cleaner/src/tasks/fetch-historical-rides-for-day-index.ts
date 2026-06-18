@@ -11,7 +11,7 @@ export async function fetchHistoricalRidesForDayIndex(ridesQuery: Filter<Ride>, 
 	const start = Dates.now('Europe/Lisbon').minus({ days: dayIndex, hours: 1 });
 	const end = Dates.now('Europe/Lisbon').minus({ days: dayIndex }).plus({ hours: 2 });
 
-	Logger.progress(`Getting historical rides for date range: ${start.iso} → ${end.iso}`);
+	Logger.progress({ message: `Getting historical rides for date range: ${start.iso} → ${end.iso}` });
 
 	return await rides.aggregate([
 		{ $match: {
