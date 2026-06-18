@@ -1,6 +1,11 @@
 import { PatternShapeMapFeatureProperties, PatternShapeMapLineGroup } from '@/types/lines-overview';
 import { MapLayerMouseEvent, MapMouseEvent } from '@vis.gl/react-maplibre';
 
+export function areStringArraysEqual(left: string[], right: string[]) {
+	if (left.length !== right.length) return false;
+	return left.every((value, index) => value === right[index]);
+}
+
 export function dedupePatternFeatures(features: PatternShapeMapFeatureProperties[]) {
 	const seenPatternIds = new Set<string>();
 	const dedupedFeatures: PatternShapeMapFeatureProperties[] = [];

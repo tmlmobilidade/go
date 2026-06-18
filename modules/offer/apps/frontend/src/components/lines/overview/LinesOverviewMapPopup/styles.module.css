@@ -76,13 +76,13 @@
 
 .popupPatterns {
 	width: 100%;
-	gap: 8px;
+	gap: 0;
 }
 
 .popupPatternLink {
 	display: grid;
 	align-items: center;
-	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	padding: var(--size-spacing-sm);
 	text-decoration: none;
 	border-radius: 6px;
 }

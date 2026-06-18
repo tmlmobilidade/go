@@ -32,7 +32,7 @@ export function LinesOverviewMapPopup() {
 		linesOverviewContext.actions.setHighlightedPatternIds([patternId]);
 	};
 
-	const handlePatternMouseLeave = () => {
+	const handlePatternsMouseLeave = () => {
 		linesOverviewContext.actions.setHighlightedPatternIds(popupPatternIds);
 	};
 
@@ -69,16 +69,15 @@ export function LinesOverviewMapPopup() {
 								/>
 							</div>
 
-							<div className={styles.popupPatterns}>
+							<div className={styles.popupPatterns} onMouseLeave={handlePatternsMouseLeave}>
 								{group.patterns.map(pattern => (
 									<a
 										key={pattern.pattern_id}
 										className={styles.popupPatternLink}
 										href={PAGE_ROUTES.offer.PATTERN_DETAIL(pattern.line_id, pattern.pattern_id, pattern.route_id)}
-										onBlur={handlePatternMouseLeave}
+										onBlur={handlePatternsMouseLeave}
 										onFocus={() => handlePatternMouseEnter(pattern.pattern_id)}
 										onMouseEnter={() => handlePatternMouseEnter(pattern.pattern_id)}
-										onMouseLeave={handlePatternMouseLeave}
 										rel="noopener noreferrer"
 										target="_blank"
 									>

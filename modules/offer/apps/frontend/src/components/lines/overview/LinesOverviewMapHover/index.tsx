@@ -2,12 +2,16 @@
 
 import { useLinesOverviewContext } from '@/components/lines/overview/LinesOverview.context';
 import { PatternShapeMapFeatureProperties } from '@/types/lines-overview';
-import { getPatternFeaturesAtEvent } from '@/utils/lines-overview';
+import { areStringArraysEqual, getPatternFeaturesAtEvent } from '@/utils/lines-overview';
 import { useMapViewContext } from '@tmlmobilidade/ui';
 import { type MapMouseEvent, Marker } from '@vis.gl/react-maplibre';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import styles from './styles.module.css';
+
+/* * */
+
+const HOVER_INTENT_DELAY_MS = 120;
 
 /* * */
 
@@ -31,6 +35,9 @@ export function LinesOverviewMapHover() {
 	const popupInfo = linesOverviewContext.data.popupInfo;
 	const setHighlightedPatternIds = linesOverviewContext.actions.setHighlightedPatternIds;
 	const setHoverInfo = linesOverviewContext.actions.setHoverInfo;
+	const lastHoverPatternIdsRef = useRef<string[]>([]);
+	const pendingHoverPatternIdsRef = useRef<string[]>([]);
+	const hoverIntentTimeoutRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
 	const shouldRenderHover = hoverInfo && !popupInfo;
 
@@ -43,31 +50,71 @@ export function LinesOverviewMapHover() {
 		const mapRef = mapViewContext.ref.map.current;
 		if (!mapRef) return;
 
+		const clearHoverIntentTimeout = () => {
+			if (!hoverIntentTimeoutRef.current) return;
+			clearTimeout(hoverIntentTimeoutRef.current);
+			hoverIntentTimeoutRef.current = null;
+			pendingHoverPatternIdsRef.current = [];
+		};
+
+		const clearHoverState = () => {
+			clearHoverIntentTimeout();
+
+			if (!popupInfo && lastHoverPatternIdsRef.current.length) {
+				lastHoverPatternIdsRef.current = [];
+				setHighlightedPatternIds([]);
+			}
+
+			setHoverInfo(null);
+		};
+
 		const handleMouseMove = (event: MapMouseEvent) => {
 			const features = getPatternFeaturesAtEvent(event, hitboxLayerId);
 			if (!features.length) {
-				if (!popupInfo) setHighlightedPatternIds([]);
-				setHoverInfo(null);
+				clearHoverState();
 				return;
 			}
 
-			if (!popupInfo) setHighlightedPatternIds(features.map(feature => feature.pattern_id));
-			setHoverInfo({
-				features,
-				latitude: event.lngLat.lat,
-				longitude: event.lngLat.lng,
-			});
+			const patternIds = features.map(feature => feature.pattern_id);
+			const hasSamePatternIds = areStringArraysEqual(lastHoverPatternIdsRef.current, patternIds);
+
+			if (hasSamePatternIds) {
+				clearHoverIntentTimeout();
+				setHoverInfo({
+					features,
+					latitude: event.lngLat.lat,
+					longitude: event.lngLat.lng,
+				});
+				return;
+			}
+
+			if (areStringArraysEqual(pendingHoverPatternIdsRef.current, patternIds)) return;
+
+			clearHoverIntentTimeout();
+			pendingHoverPatternIdsRef.current = patternIds;
+
+			hoverIntentTimeoutRef.current = setTimeout(() => {
+				lastHoverPatternIdsRef.current = patternIds;
+				pendingHoverPatternIdsRef.current = [];
+				if (!popupInfo) setHighlightedPatternIds(patternIds);
+
+				setHoverInfo({
+					features,
+					latitude: event.lngLat.lat,
+					longitude: event.lngLat.lng,
+				});
+			}, HOVER_INTENT_DELAY_MS);
 		};
 
 		const handleMouseOut = () => {
-			if (!popupInfo) setHighlightedPatternIds([]);
-			setHoverInfo(null);
+			clearHoverState();
 		};
 
 		mapRef.on('mousemove', handleMouseMove);
 		mapRef.on('mouseout', handleMouseOut);
 
 		return () => {
+			clearHoverIntentTimeout();
 			mapRef.off('mousemove', handleMouseMove);
 			mapRef.off('mouseout', handleMouseOut);
 		};

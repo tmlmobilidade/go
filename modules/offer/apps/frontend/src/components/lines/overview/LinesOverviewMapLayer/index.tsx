@@ -19,6 +19,7 @@ export function LinesOverviewMapLayer() {
 	const linesOverviewContext = useLinesOverviewContext();
 	const mapViewContext = useMapViewContext();
 	const highlightedPatternIds = linesOverviewContext.data.highlightedPatternIds;
+	const hasHighlightedPatterns = highlightedPatternIds.length > 0;
 
 	//
 	// B. Transform data
@@ -75,7 +76,7 @@ export function LinesOverviewMapLayer() {
 				}}
 				paint={{
 					'line-color': '#000000',
-					'line-opacity': 0.16,
+					'line-opacity': hasHighlightedPatterns ? 0.04 : 0.16,
 					'line-width': ['interpolate', ['linear'], ['zoom'], 8, 2, 16, 8],
 				}}
 			/>
@@ -89,7 +90,7 @@ export function LinesOverviewMapLayer() {
 				}}
 				paint={{
 					'line-color': ['coalesce', ['get', 'color'], '#1c7ed6'],
-					'line-opacity': 0.86,
+					'line-opacity': hasHighlightedPatterns ? 0.14 : 0.86,
 					'line-width': ['interpolate', ['linear'], ['zoom'], 8, 1.2, 16, 4.5],
 				}}
 			/>
