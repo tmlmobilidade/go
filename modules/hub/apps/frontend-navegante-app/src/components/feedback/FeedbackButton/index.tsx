@@ -24,7 +24,7 @@ export interface FeedbackTriggerProps extends Omit<ButtonHTMLAttributes<HTMLButt
 
 /* * */
 
-export function FeedbackTrigger({
+export function FeedbackButton({
 	ariaLabel,
 	className,
 	icon,
@@ -54,3 +54,5 @@ export function FeedbackTrigger({
 		</button>
 	);
 }
+
+export const FeedbackTrigger = FeedbackButton;

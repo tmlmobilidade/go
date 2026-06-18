@@ -1,8 +1,8 @@
 'use client';
 
-import { FeedbackImprovementPrompt } from '@/components/feedback/form/FeedbackImprovement';
-import { FeedbackMoodSelector } from '@/components/feedback/form/FeedbackMoodSelector';
-import { FeedbackSubmitButton } from '@/components/feedback/form/FeedbackSubmitButton';
+import { FeedbackImprovementPrompt } from '@/components/feedback/FeedbackForm/components/FeedbackImprovement';
+import { FeedbackMoodSelector } from '@/components/feedback/FeedbackForm/components/FeedbackMoodSelector';
+import { FeedbackSubmitButton } from '@/components/feedback/FeedbackForm/components/FeedbackSubmitButton';
 import { Modal } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import { type PublicFeedback } from '@tmlmobilidade/types';

@@ -1,6 +1,6 @@
 'use client';
 
-import { FeedbackTrigger } from '@/components/feedback/FeedbackTrigger';
+import { FeedbackTrigger } from '@/components/feedback/FeedbackButton';
 
 /* * */
 

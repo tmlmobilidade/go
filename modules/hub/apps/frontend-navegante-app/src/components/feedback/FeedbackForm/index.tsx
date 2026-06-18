@@ -1,10 +1,10 @@
 'use client';
 
 import { FEEDBACK_REASON_SELECTION_LIMIT, type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
-import { FeedbackTrigger } from '@/components/feedback/FeedbackTrigger';
-import { FeedbackModal } from '@/components/feedback/form/FeedbackModal';
-import { FeedbackReasonOptionsSheet } from '@/components/feedback/sheets/FeedbackReasonOptionsSheet';
-import { FeedbackReasonsSheet } from '@/components/feedback/sheets/FeedbackReasonsSheet';
+import { FeedbackTrigger } from '@/components/feedback/FeedbackButton';
+import { FeedbackModal } from '@/components/feedback/FeedbackForm/components/FeedbackModal';
+import { FeedbackReasonOptionsSheet } from '@/components/feedback/FeedbackForm/sheets/FeedbackReasonOptionsSheet';
+import { FeedbackReasonsSheet } from '@/components/feedback/FeedbackForm/sheets/FeedbackReasonsSheet';
 import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PublicFeedback } from '@tmlmobilidade/types';
