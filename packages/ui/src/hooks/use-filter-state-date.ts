@@ -27,40 +27,36 @@ export interface UseFilterStateDateReturnType {
 
 }
 
-/**
- * Hook para gerir estados de data (Unix Timestamps) com sincronização no URL.
- * @param key A chave que vai aparecer na query string do URL (ex: 'date_start')
- * @param defaults O valor numérico padrão caso não exista nada no URL
- * @returns The filter state management object.
- */
-export function useFilterStateDate(key: string, defaults: number): UseFilterStateDateReturnType {
+interface UserFilterStateDateOptions {
+	minutesOffset?: number
+}
+
+export function useFilterStateDate(key: string, options?: UserFilterStateDateOptions) {
 	//
 
 	//
 	// A. Setup variables
 
+	const defaulTimestamp = useMemo(() => {
+		const now = Dates.now('Europe/Lisbon');
+		if (options?.minutesOffset) {
+			return options.minutesOffset > 0
+				? now.plus({ minutes: options.minutesOffset }).unix_timestamp
+				: now.minus({ minutes: Math.abs(options.minutesOffset) }).unix_timestamp;
+		}
+		return now.unix_timestamp;
+	}, [options?.minutesOffset]);
+
 	const [urlValue, setUrlValue] = useQueryState(
 		key,
-		parseAsInteger.withDefault(defaults),
+		parseAsInteger.withDefault(defaulTimestamp),
 	);
 
 	//
-	// B. Transform data
-
-	const isActive = useMemo(() => {
-		// The filter is not active
-		// if the URL value is not set
-		if (!urlValue) return false;
-		// The filter is active if
-		// the values are different.
-		return urlValue !== defaults;
-	}, [urlValue, defaults]);
-
-	//
-	// D. Return data
+	// B. Return data
 
 	return {
-		isActive,
+		isActive: urlValue !== defaulTimestamp,
 		set: setUrlValue,
 		value: urlValue,
 	};

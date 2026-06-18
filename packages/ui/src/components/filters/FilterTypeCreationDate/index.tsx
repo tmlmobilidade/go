@@ -12,8 +12,8 @@ import { FilterWrapper } from '../FilterWrapper';
 interface FilterTypeCreationDateProps {
 	active?: boolean
 	clearable?: boolean
-	creationDate?: null | UnixTimestamp
-	creationDateLimit?: null | UnixTimestamp
+	creationDateEnd?: null | UnixTimestamp
+	creationDateStart?: null | UnixTimestamp
 	disabled?: boolean
 	label: string
 	onCreationDateChange?: (values: null | UnixTimestamp) => void
@@ -23,7 +23,7 @@ interface FilterTypeCreationDateProps {
 
 /* * */
 
-export function FilterTypeCreationDate({ active, clearable = false, creationDate, creationDateLimit, disabled, label, onCreationDateChange, onCreationDateLimitChange }: FilterTypeCreationDateProps) {
+export function FilterTypeCreationDate({ active, clearable = false, creationDateEnd, creationDateStart, disabled, label, onCreationDateChange, onCreationDateLimitChange }: FilterTypeCreationDateProps) {
 	return (
 		<FilterWrapper
 			active={active}
@@ -35,12 +35,12 @@ export function FilterTypeCreationDate({ active, clearable = false, creationDate
 				<DateTimeInput
 					clearable={clearable}
 					onChange={onCreationDateChange}
-					value={creationDate}
+					value={creationDateStart}
 				/>
 				<DateTimeInput
 					clearable={clearable}
 					onChange={onCreationDateLimitChange}
-					value={creationDateLimit}
+					value={creationDateEnd}
 				/>
 
 			</Section>
