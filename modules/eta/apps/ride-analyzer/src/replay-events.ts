@@ -50,7 +50,7 @@ async function ensureRidePresent(clickhouseClient: ClickHouseClient, database: s
 			+ `(${tripRef.operationalDate}). Re-run without --skip-loader so the analyzer picks the correct day, or pass a --time-start that falls within ${tripRef.operationalDate}.`,
 		);
 	}
-	Logger.info(`curr_rides has ${count} row(s) for trip_id=${tripRef.tripId}`);
+	Logger.info({ message: `curr_rides has ${count} row(s) for trip_id=${tripRef.tripId}` });
 }
 
 /**
@@ -100,13 +100,12 @@ export async function replayEvents(
 
 		if (currVehicleEvent === null) missingSyncs += 1;
 
-		Logger.progress(`[${index + 1}/${events.length}] event=${event._id} node=${currVehicleEvent?.node_index ?? 'n/a'} stops=${etas.length} (${eventTimer.get()}s)`);
+		Logger.progress({ message: `[${index + 1}/${events.length}] event=${event._id} node=${currVehicleEvent?.node_index ?? 'n/a'} stops=${etas.length} (${eventTimer.get()}s)`, spacesAfterOrBefore: 1 });
 	}
 
 	if (missingSyncs > 0) {
 		Logger.error(
-			`${missingSyncs}/${events.length} events did not produce a curr_vehicle_events row. `
-			+ 'Likely the trip\'s hashed_shape_id has no rows in hist_shape_nodes (loader skipped it).',
+			{ message: `${missingSyncs}/${events.length} events did not produce a curr_vehicle_events row. ` + 'Likely the trip\'s hashed_shape_id has no rows in hist_shape_nodes (loader skipped it).', spacesAfterOrBefore: 1 },
 		);
 	}
 

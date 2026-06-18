@@ -25,6 +25,7 @@
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"

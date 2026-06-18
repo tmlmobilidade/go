@@ -69,10 +69,10 @@ export async function invalidateRides(data: SimplifiedVehicleEvent[]) {
 			{ returnResults: false },
 		);
 
-		Logger.info(`Flush: Marked as 'waiting' ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+		Logger.info({ message: `Flush: Marked as 'waiting' ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})` });
 
 		//
 	} catch (error) {
-		Logger.error('Error in flushCallback', error);
+		Logger.error({ error, message: 'Error in flushCallback' });
 	}
 };

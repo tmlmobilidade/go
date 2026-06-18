@@ -12,7 +12,7 @@ export function transformDescriptionText(alertData: Alert): GtfsRtTranslatedStri
 	// Validate required input properties
 
 	if (!alertData.description) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert description is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert description is missing.` });
 		return undefined;
 	}
 

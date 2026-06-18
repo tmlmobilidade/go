@@ -19,7 +19,7 @@ export async function processStopTimesFile(context: ImportGtfsContext): Promise<
 
 		const stopTimesParseTimer = new Timer();
 
-		Logger.info(`Reading zip entry "stop_times.txt"...`);
+		Logger.info({ message: 'Reading zip entry "stop_times.txt"...' });
 
 		const parseEachRow = async (data: GTFS_StopTime_Raw) => {
 			// Validate the current row against the proper type
@@ -33,7 +33,7 @@ export async function processStopTimesFile(context: ImportGtfsContext): Promise<
 			// Save the exported row
 			context.gtfs.stop_times.write(validatedData);
 			// Log progress
-			if (context.counters.stop_times % 100000 === 0) Logger.info(`Parsed ${context.counters.stop_times} stop_times.txt rows so far (${stopTimesParseTimer.get()})`);
+			if (context.counters.stop_times % 100000 === 0) Logger.info({ message: `Parsed ${context.counters.stop_times} stop_times.txt rows so far (${stopTimesParseTimer.get()})` });
 			// Increment the counter
 			context.counters.stop_times++;
 		};
@@ -49,7 +49,7 @@ export async function processStopTimesFile(context: ImportGtfsContext): Promise<
 
 		//
 	} catch (error) {
-		Logger.error('Error processing "stop_times.txt" file.', error);
+		Logger.error({ error, message: 'Error processing "stop_times.txt" file.' });
 		throw new Error('✖︎ Error processing "stop_times.txt" file.');
 	}
 }

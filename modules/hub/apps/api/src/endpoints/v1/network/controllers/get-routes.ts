@@ -17,7 +17,7 @@ export async function getRoutes(request: FastifyRequest, reply: FastifyReply<Hub
 	const cachedData = await apiCache.get('hub:v1:network:routes');
 
 	if (!cachedData) {
-		Logger.error('[hub/v1/network:getRoutes()] No cached data found for routes');
+		Logger.error({ message: '[hub/v1/network:getRoutes()] No cached data found for routes' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=60')

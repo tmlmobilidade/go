@@ -9,7 +9,7 @@ export const SimplifiedApexInspectionSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
-	card_serial_number: z.string(),
+	card_serial_number: z.string().nullable().default(null),
 	control_destination_stop_id: z.string(),
 	control_origin_stop_id: z.string(),
 	control_status: z.number(),
@@ -26,7 +26,8 @@ export const SimplifiedApexInspectionSchema = z.object({
 	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
 	trip_id: z.string().nullable().default(null),
-	vehicle_id: z.number(),
+	updated_at: UnixTimestampSchema,
+	vehicle_id: z.number().nullable().default(null),
 });
 
 /**

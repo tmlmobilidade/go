@@ -1,7 +1,7 @@
 /* * */
 
 import { simplifiedApexBankingTapsNew } from '@tmlmobilidade/databases';
-import { parseRawApexTransactionBankingTapV40 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -32,11 +32,11 @@ export async function processRawApexTransactionBankingTap(databaseOperation) {
 
 	try {
 		let parseResult: null | SimplifiedApexBankingTap = null;
-		if (databaseOperation.fullDocument.version === 'banking-tap-4.0') parseResult = parseRawApexTransactionBankingTapV40(databaseOperation.fullDocument);
+		if (databaseOperation.fullDocument.version === 'banking-tap-4.0') parseResult = parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap(databaseOperation.fullDocument);
 		if (!parseResult) return;
 		await writer.write(parseResult);
 	} catch (error) {
-		Logger.error(`Error transforming APEX Banking Tap: ${databaseOperation.fullDocument.transaction.transactionId} Reason: ${error.message}`);
+		Logger.error({ message: `Error transforming APEX Banking Tap: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
 	}
 
 	//

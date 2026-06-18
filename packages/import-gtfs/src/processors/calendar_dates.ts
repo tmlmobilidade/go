@@ -22,7 +22,7 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 
 		const calendarDatesParseTimer = new Timer();
 
-		Logger.info(`Reading zip entry "calendar_dates.txt"...`);
+		Logger.info({ message: 'Reading zip entry "calendar_dates.txt"...' });
 
 		const parseEachRow = async (data: GTFS_CalendarDate_Raw) => {
 			//
@@ -87,12 +87,12 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 			await parseCsvFile(`${context.workdir.extract_dir_path}/calendar_dates.txt`, parseEachRow);
 			Logger.success(`Finished processing "calendar_dates.txt": ${Object.keys(context.gtfs.calendar_dates).length} rows saved in ${calendarDatesParseTimer.get()}.`, 1);
 		} else {
-			Logger.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`, 1);
+			Logger.info({ message: 'Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...' });
 		}
 
 		//
 	} catch (error) {
-		Logger.error('Error processing "calendar_dates.txt" file.', error);
+		Logger.error({ error, message: 'Error processing "calendar_dates.txt" file.' });
 		throw new Error('✖︎ Error processing "calendar_dates.txt" file.');
 	}
 }

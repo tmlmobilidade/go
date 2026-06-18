@@ -2,17 +2,17 @@
 
 import { rawApexTransactions, simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionValidationV20, parseRawApexTransactionValidationV30, parseRawApexTransactionValidationV40, parseRawApexTransactionValidationV50 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionValidationV20IntoSimplifiedApexValidation, parseRawApexTransactionValidationV30IntoSimplifiedApexValidation, parseRawApexTransactionValidationV40IntoSimplifiedApexValidation, parseRawApexTransactionValidationV50IntoSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
-import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
+import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
 import { type Filter } from 'mongodb';
 
 /* * */
 
 const writer = new BatchWriter<SimplifiedApexValidation>({
-	batch_size: 50_000,
+	batch_size: 10_000,
 	insertFn: async (data) => {
 		await simplifiedApexValidationsNew.insert('JSONEachRow', data);
 	},
@@ -29,14 +29,14 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
-		.setZone('Europe/Lisbon', 'offset_only');
+		.setZone('utc', 'offset_only');
 
 	const chunkEndDate = Dates
 		.fromUnixTimestamp(timeChunk.end)
-		.setZone('Europe/Lisbon', 'offset_only');
+		.setZone('utc', 'offset_only');
 
 	Logger.spacer(1);
-	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${timeChunk.end}] › ${chunkStartDate.iso}[${timeChunk.start}]`, 150);
 
 	//
 	// Prepare the PCGIDB query to retrieve documents
@@ -44,8 +44,8 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 	const rawdbQuery: Filter<RawApexTransaction> = {
 		created_at: {
-			$gte: chunkStartDate.unix_timestamp,
-			$lte: chunkEndDate.unix_timestamp,
+			$gte: timeChunk.start,
+			$lt: timeChunk.end,
 		},
 		version: { $in: ['validation-2.0', 'validation-3.0', 'validation-4.0', 'validation-5.0'] },
 	};
@@ -62,8 +62,8 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		countDestinationDbFn: async () => {
 			return await simplifiedApexValidationsNew.count(
 				'*',
-				'created_at >= $1 AND created_at <= $2',
-				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
 
@@ -73,23 +73,24 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexValidationsNew.delete(
-				'_id IN ($1)',
-				{ 1: ids.map(id => `'${id}'`).join(', ') },
-			);
+			await performInChunks(ids, async (chunk) => {
+				await simplifiedApexValidationsNew.delete(
+					'_id IN $1',
+					{ 1: chunk },
+				);
+			}, 1_000);
 		},
 
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexValidationsNew.distinct(
-				'_id',
-				'created_at >= $1 AND created_at <= $2',
-				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+				'upper(toString(_id))',
+				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawApexTransactions.distinct('_id', rawdbQuery);
-			return result.map(String);
+			return await rawApexTransactions.distinct('_id', rawdbQuery);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
@@ -103,13 +104,17 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexValidation = null;
-			if (sourceDbDocument.version === 'validation-2.0') parseResult = parseRawApexTransactionValidationV20(sourceDbDocument);
-			if (sourceDbDocument.version === 'validation-3.0') parseResult = parseRawApexTransactionValidationV30(sourceDbDocument);
-			if (sourceDbDocument.version === 'validation-4.0') parseResult = parseRawApexTransactionValidationV40(sourceDbDocument);
-			if (sourceDbDocument.version === 'validation-5.0') parseResult = parseRawApexTransactionValidationV50(sourceDbDocument);
-			if (!parseResult) return;
-			await writer.write(parseResult);
+			try {
+				let parseResult: null | SimplifiedApexValidation = null;
+				if (sourceDbDocument.version === 'validation-2.0') parseResult = parseRawApexTransactionValidationV20IntoSimplifiedApexValidation(sourceDbDocument);
+				if (sourceDbDocument.version === 'validation-3.0') parseResult = parseRawApexTransactionValidationV30IntoSimplifiedApexValidation(sourceDbDocument);
+				if (sourceDbDocument.version === 'validation-4.0') parseResult = parseRawApexTransactionValidationV40IntoSimplifiedApexValidation(sourceDbDocument);
+				if (sourceDbDocument.version === 'validation-5.0') parseResult = parseRawApexTransactionValidationV50IntoSimplifiedApexValidation(sourceDbDocument);
+				if (!parseResult) return;
+				await writer.write(parseResult);
+			} catch (error) {
+				Logger.error({ message: `Error transforming APEX Validation: ${sourceDbDocument._id} Reason: ${error.message}` });
+			}
 		},
 
 	});

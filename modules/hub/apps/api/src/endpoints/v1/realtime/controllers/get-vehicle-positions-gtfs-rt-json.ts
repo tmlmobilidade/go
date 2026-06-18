@@ -15,7 +15,7 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 export async function getVehiclePositionsGtfsRtJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
 	const raw = await apiCache.get('hub:v1:realtime:vehicles:positions:gtfs');
 	if (!raw) {
-		Logger.error('[hub/v1/realtime:getVehiclePositionsGtfsRtJson()] No data in cache.');
+		Logger.error({ message: '[hub/v1/realtime:getVehiclePositionsGtfsRtJson()] No data in cache.' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')

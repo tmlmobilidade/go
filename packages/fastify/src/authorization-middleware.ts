@@ -75,7 +75,9 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 			? permissionChecks.every(Boolean) // all must be true
 			: permissionChecks.some(Boolean); // at least one must be true
 
-		if (!isAllowed) throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scope}" | Actions: [${actions.join(',')}]`);
+		if (!isAllowed) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scope}" | Actions: [${actions.join(',')}]`);
+		}
 
 		//
 	};

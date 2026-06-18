@@ -13,7 +13,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getVehicleMetadataJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
 	const raw = await apiCache.get('hub:v1:realtime:vehicles:metadata:json');
 	if (!raw) {
-		Logger.error('[hub/v1/realtime:getVehicleMetadataJson()] No data in cache.');
+		Logger.error({ message: '[hub/v1/realtime:getVehicleMetadataJson()] No data in cache.' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')

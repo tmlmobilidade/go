@@ -17,7 +17,6 @@ import { themeData } from '../../styles/theme';
 /* * */
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
-
 	/**
 	 * Please avoid using this prop. It is only intended for very specific use cases.
 	 * @dangerous

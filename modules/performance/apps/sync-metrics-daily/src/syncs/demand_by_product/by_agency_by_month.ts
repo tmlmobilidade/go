@@ -62,7 +62,7 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 
 	const deleteTimer = new Timer();
 	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Process daily metrics into monthly aggregates using batched streaming
@@ -88,7 +88,7 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 		if (batch.length >= BATCH_SIZE) {
 			processBatch(batch, productMap);
 			processedCount += batch.length;
-			Logger.info(`Processed ${processedCount} daily metrics...`);
+			Logger.info({ message: `Processed ${processedCount} daily metrics...` });
 			batch = []; // Clear batch
 		}
 	}
@@ -99,7 +99,7 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 		processedCount += batch.length;
 	}
 
-	Logger.info(`Streamed and processed ${processedCount} daily metrics in batches of ${BATCH_SIZE} (${streamTimer.get()})`);
+	Logger.info({ message: `Streamed and processed ${processedCount} daily metrics in batches of ${BATCH_SIZE} (${streamTimer.get()})` });
 
 	const results = Array.from(productMap.values());
 
@@ -108,7 +108,7 @@ export const syncDemandByProductByAgencyByMonth = async () => {
 
 	const insertTimer = new Timer();
 	await metrics.insertMany(results);
-	Logger.info(`Inserted ${results.length} monthly metrics (${insertTimer.get()})`);
+	Logger.info({ message: `Inserted ${results.length} monthly metrics (${insertTimer.get()})` });
 
 	logMetricToFile({
 		approach: { description: 'Stream daily metrics in batches and aggregate', key: 'batched_stream_aggregate' },

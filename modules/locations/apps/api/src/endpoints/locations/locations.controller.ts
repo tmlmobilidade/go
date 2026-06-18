@@ -1,8 +1,9 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, type FindOptions, locations } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { type District, type GetAllDistrictsQuery, GetAllDistrictsQuerySchema, type GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, type GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, type GetAllParishesQuery, GetAllParishesQuerySchema, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 
@@ -12,7 +13,7 @@ import { validateQueryParams } from '@tmlmobilidade/utils';
 export class LocationsController {
 	static async findByCoordinates(request: FastifyRequest, reply: FastifyReply<Location>) {
 		const { census, lat, lon } = request.query as { census: boolean, lat: number, lon: number };
-		console.log('Received coordinates:', { census, lat, lon });
+		Logger.info({ message: `Received coordinates: ${census}, ${lat}, ${lon}` });
 		try {
 			const result = await locations.findLocationByGeo(Number(lat), Number(lon), { census: Boolean(census) });
 			return reply.status(HTTP_STATUS.OK).send({
@@ -20,9 +21,7 @@ export class LocationsController {
 				error: null,
 				status: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
-			console.log(error);
+		} catch (error) {
 			if (error instanceof HttpException) {
 				return reply.status(error.statusCode).send({
 					data: undefined,
@@ -30,6 +29,7 @@ export class LocationsController {
 					status: error.statusCode,
 				});
 			}
+
 			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
 				data: undefined,
 				error: 'Internal server error',
@@ -50,8 +50,7 @@ export class LocationsController {
 				error: null,
 				status: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof HttpException) {
 				return reply.status(error.statusCode).send({
 					data: undefined,
@@ -96,8 +95,7 @@ export class LocationsController {
 				},
 				status: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof HttpException) {
 				return reply.status(error.statusCode).send({
 					data: undefined,
@@ -128,8 +126,7 @@ export class LocationsController {
 				error: null,
 				status: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof HttpException) {
 				return reply.status(error.statusCode).send({
 					data: undefined,
@@ -173,8 +170,7 @@ export class LocationsController {
 				},
 				status: HTTP_STATUS.OK,
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof HttpException) {
 				return reply.status(error.statusCode).send({
 					data: undefined,

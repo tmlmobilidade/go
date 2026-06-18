@@ -17,7 +17,7 @@ export async function getShape(request: FastifyRequest<{ Params: { id: string } 
 	const cachedData = await apiCache.get(`hub:v1:network:shapes:${request.params.id}`);
 
 	if (!cachedData) {
-		Logger.error(`[hub/v1/network:getShapes(${request.params.id})] No cached data found for shape ${request.params.id}`);
+		Logger.error({ message: `[hub/v1/network:getShapes(${request.params.id})] No cached data found for shape ${request.params.id}` });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=60')

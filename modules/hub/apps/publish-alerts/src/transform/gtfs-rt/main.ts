@@ -32,12 +32,12 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 		// Validate required input properties
 
 		if (!alertData.reference_type || !alertData.references?.length) {
-			Logger.error(`[Alert ID: ${alertData._id}] Alert reference_type or references are missing.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Alert reference_type or references are missing.` });
 			return;
 		}
 
 		if (!alertData.active_period_start_date) {
-			Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.` });
 			return;
 		}
 
@@ -67,12 +67,12 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 		const imageValue = await transformImage(alertData);
 
 		if (!headerTextValue) {
-			Logger.error(`[Alert ID: ${alertData._id}] Alert header_text is missing.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Alert header_text is missing.` });
 			return;
 		}
 
 		if (!descriptionTextValue) {
-			Logger.error(`[Alert ID: ${alertData._id}] Alert description_text is missing.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Alert description_text is missing.` });
 			return;
 		}
 
@@ -99,7 +99,7 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 		}
 
 		if (!informedEntityValues) {
-			Logger.error(`[Alert ID: ${alertData._id}] Alert informed_entity values are missing.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Alert informed_entity values are missing.` });
 			return;
 		}
 
@@ -122,6 +122,6 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 
 		//
 	} catch (error) {
-		Logger.error(`[Alert ID: ${alertData._id}] Error transforming alert: ${(error as Error).message}`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Error transforming alert: ${(error as Error).message}` });
 	}
 }

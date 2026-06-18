@@ -18,6 +18,7 @@ export const SimplifiedApexInspectionDecisionSchema = z.object({
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
 	received_at: UnixTimestampSchema,
+	updated_at: UnixTimestampSchema,
 });
 
 /**

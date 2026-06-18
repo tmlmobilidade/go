@@ -56,7 +56,7 @@ async function main() {
 	for (const agencyId of AGENCY_IDS) {
 		const exportConfig = buildLocalExportConfig(agencyId);
 
-		Logger.info(`Starting export for agency ${agencyId} → ${exportConfig.workdir}`);
+		Logger.info({ message: `Starting export for agency ${agencyId} → ${exportConfig.workdir}` });
 
 		fs.mkdirSync(exportConfig.workdir, { recursive: true });
 
@@ -76,6 +76,6 @@ async function main() {
 }
 
 main().catch((error) => {
-	Logger.error(`Local export failed: ${error instanceof Error ? error.message : error}`);
+	Logger.error({ error, message: 'Local export failed' });
 	process.exit(1);
 });

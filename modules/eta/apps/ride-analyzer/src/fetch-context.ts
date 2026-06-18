@@ -51,7 +51,7 @@ export async function fetchRouteNodes(clickhouseClient: ClickHouseClient, databa
 		query_params: { hashed_shape_id: hashedShapeId },
 	});
 	const nodes = await result.json<RouteNode>();
-	Logger.info(`Fetched ${nodes.length} route nodes for hashed_shape_id=${hashedShapeId}`);
+	Logger.info({ message: `Fetched ${nodes.length} route nodes for hashed_shape_id=${hashedShapeId}` });
 	return nodes;
 }
 
@@ -81,6 +81,6 @@ export async function fetchStopWaypoints(clickhouseClient: ClickHouseClient, dat
 		query_params: { hashed_trip_id: hashedTripId },
 	});
 	const stops = await result.json<StopWaypoint>();
-	Logger.info(`Fetched ${stops.length} stops for hashed_trip_id=${hashedTripId}`);
+	Logger.info({ message: `Fetched ${stops.length} stops for hashed_trip_id=${hashedTripId}` });
 	return stops;
 }

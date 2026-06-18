@@ -833,7 +833,7 @@ export function MapOverlayPatternShape({
 						'icon-allow-overlap': true,
 						'icon-anchor': 'center',
 						'icon-ignore-placement': true,
-						'icon-image': 'map-line-direction',
+						'icon-image': 'map-shape-arrow-inline',
 						'icon-offset': [0, 0],
 						'icon-rotate': 0,
 						'icon-size': zoomInterpolate(
