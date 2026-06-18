@@ -1,0 +1,115 @@
+.popup {
+	max-width: min(420px, calc(100vw - 60px));
+}
+
+.popup :global(.maplibregl-popup-content) {
+	width: min(440px, calc(100vw - 60px));
+	max-height: 360px;
+	padding: 18px;
+	overflow-y: auto;
+	background: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 8px;
+	box-shadow: 0 14px 36px rgb(15 23 42 / 16%), 0 2px 8px rgb(15 23 42 / 8%);
+}
+
+.popup :global(.maplibregl-popup-tip) {
+	border-top-color: var(--color-system-background-100);
+}
+
+.popupContent {
+	display: grid;
+	gap: 18px;
+}
+
+.popupTitle {
+	color: var(--color-system-text-300);
+	font-size: 14px;
+	font-weight: 800;
+}
+
+.popupLines,
+.popupPatterns {
+	display: grid;
+}
+
+.popupLines {
+	gap: 20px;
+}
+
+.popupLineGroup {
+	display: flex;
+	gap: 10px;
+}
+
+.popupLineLink {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 12px;
+	align-items: center;
+	max-width: 100%;
+	color: var(--color-system-text-100);
+	text-decoration: none;
+	border-radius: 6px;
+}
+
+.popupLineLink > div {
+	max-width: 96px;
+}
+
+.popupLineName {
+	min-width: 0;
+	overflow: hidden;
+	color: var(--color-system-text-100);
+	font-size: 15px;
+	font-weight: 800;
+	line-height: 1.25;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.popupLineLink:focus-visible,
+.popupPatternLink:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 2px;
+}
+
+.popupPatterns {
+	width: 100%;
+	gap: 8px;
+}
+
+.popupPatternLink {
+	display: grid;
+	align-items: center;
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	text-decoration: none;
+	border-radius: 6px;
+}
+
+.popupPatternName,
+.popupPatternCode {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.popupPatternName {
+	color: var(--color-system-text-200);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+.popupPatternCode {
+	color: var(--color-system-text-100);
+	font-size: 15px;
+	font-weight: 800;
+	line-height: 1.25;
+}
+
+.popupLineLink:hover,
+.popupPatternLink:hover {
+	background: var(--color-system-background-200);
+}
