@@ -6,22 +6,22 @@ import { createContext, useContext } from 'react';
 
 export type SidebarVisualMode = 'collapsed' | 'hovered' | 'pinned';
 
-export interface SidebarModeContextValue {
+export interface SidebarVisualModeContextValue {
 	expanded: boolean
 	iconOnly: boolean
 	visualMode: SidebarVisualMode
 }
 
-const defaultValue: SidebarModeContextValue = {
+const defaultValue: SidebarVisualModeContextValue = {
 	expanded: true,
 	iconOnly: false,
 	visualMode: 'pinned',
 };
 
-export const SidebarModeContext = createContext<SidebarModeContextValue>(defaultValue);
+export const SidebarVisualModeContext = createContext<SidebarVisualModeContextValue>(defaultValue);
 
 /* * */
 
-export function useSidebarMode() {
-	return useContext(SidebarModeContext);
+export function useSidebarVisualMode() {
+	return useContext(SidebarVisualModeContext);
 }

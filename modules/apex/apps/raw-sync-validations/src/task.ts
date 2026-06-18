@@ -5,7 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { parseRawApexTransactionValidationV20IntoSimplifiedApexValidation, parseRawApexTransactionValidationV30IntoSimplifiedApexValidation, parseRawApexTransactionValidationV40IntoSimplifiedApexValidation, parseRawApexTransactionValidationV50IntoSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
-import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
+import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
 import { type Filter } from 'mongodb';
 
@@ -29,11 +29,11 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 	const chunkStartDate = Dates
 		.fromUnixTimestamp(timeChunk.start)
-		.setZone('Europe/Lisbon', 'offset_only');
+		.setZone('utc', 'offset_only');
 
 	const chunkEndDate = Dates
 		.fromUnixTimestamp(timeChunk.end)
-		.setZone('Europe/Lisbon', 'offset_only');
+		.setZone('utc', 'offset_only');
 
 	Logger.spacer(1);
 	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${timeChunk.end}] › ${chunkStartDate.iso}[${timeChunk.start}]`, 150);
@@ -73,23 +73,24 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexValidationsNew.delete(
-				'_id IN $1',
-				{ 1: ids },
-			);
+			await performInChunks(ids, async (chunk) => {
+				await simplifiedApexValidationsNew.delete(
+					'_id IN $1',
+					{ 1: chunk },
+				);
+			}, 1_000);
 		},
 
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexValidationsNew.distinct(
-				'_id',
+				'upper(toString(_id))',
 				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawApexTransactions.distinct('_id', rawdbQuery);
-			return result.map(String);
+			return await rawApexTransactions.distinct('_id', rawdbQuery);
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {

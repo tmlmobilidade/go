@@ -41,7 +41,7 @@ export function parseRawApexTransactionValidationV40IntoSimplifiedApexValidation
 		stop_id: doc.payload.serviceInfo.stopLongID,
 		trip_id: doc.payload.serviceInfo.journeyID,
 		units_qty: 0,
-		updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+		updated_at: Dates.now('utc').unix_timestamp,
 		validation_status: '0',
 		vehicle_id: doc.payload.serviceInfo.vehicleID,
 	};

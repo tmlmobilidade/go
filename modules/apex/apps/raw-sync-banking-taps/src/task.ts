@@ -5,14 +5,14 @@ import { Dates } from '@tmlmobilidade/dates';
 import { parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
-import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
+import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
 import { type Filter } from 'mongodb';
 
 /* * */
 
 const writer = new BatchWriter<SimplifiedApexBankingTap>({
-	batch_size: 50_000,
+	batch_size: 10_000,
 	insertFn: async (data) => {
 		await simplifiedApexBankingTapsNew.insert('JSONEachRow', data);
 	},
@@ -73,15 +73,17 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexBankingTapsNew.delete(
-				'_id IN $1',
-				{ 1: ids },
-			);
+			await performInChunks(ids, async (chunk) => {
+				await simplifiedApexBankingTapsNew.delete(
+					'_id IN $1',
+					{ 1: chunk },
+				);
+			}, 1_000);
 		},
 
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexBankingTapsNew.distinct(
-				'_id',
+				'upper(toString(_id))',
 				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);

@@ -14,22 +14,22 @@ const SIDEBAR_OPEN_GROUP_IDS_KEY = 'sidebar_open_group_ids';
 
 /* * */
 
-export interface SidebarGroupOpenContextValue {
+export interface SidebarOpenGroupsContextValue {
 	isGroupOpen: (groupId: string) => boolean
 	setGroupOpen: (groupId: string, open: boolean) => void
 	toggleGroup: (groupId: string) => void
 }
 
-const SidebarGroupOpenContext = createContext<null | SidebarGroupOpenContextValue>(null);
+const SidebarOpenGroupsContext = createContext<null | SidebarOpenGroupsContextValue>(null);
 
 /* * */
 
-export interface SidebarGroupOpenProviderProps {
+export interface SidebarOpenGroupsProviderProps {
 	children: React.ReactNode
 	defaultOpenGroupIds?: readonly string[]
 }
 
-export function SidebarGroupOpenProvider({ children, defaultOpenGroupIds = [] }: SidebarGroupOpenProviderProps) {
+export function SidebarOpenGroupsProvider({ children, defaultOpenGroupIds = [] }: SidebarOpenGroupsProviderProps) {
 	//
 
 	//
@@ -101,18 +101,18 @@ export function SidebarGroupOpenProvider({ children, defaultOpenGroupIds = [] }:
 	// E. Render components
 
 	return (
-		<SidebarGroupOpenContext.Provider value={value}>
+		<SidebarOpenGroupsContext.Provider value={value}>
 			{children}
-		</SidebarGroupOpenContext.Provider>
+		</SidebarOpenGroupsContext.Provider>
 	);
 }
 
 /* * */
 
-export function useSidebarGroupOpen() {
-	const context = useContext(SidebarGroupOpenContext);
+export function useSidebarOpenGroups() {
+	const context = useContext(SidebarOpenGroupsContext);
 	if (!context) {
-		throw new Error('useSidebarGroupOpen must be used within SidebarGroupOpenProvider');
+		throw new Error('useSidebarOpenGroups must be used within SidebarOpenGroupsProvider');
 	}
 
 	return context;

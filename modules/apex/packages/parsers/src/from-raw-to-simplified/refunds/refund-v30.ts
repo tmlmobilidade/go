@@ -40,7 +40,7 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 		received_at: doc.received_at,
 		stop_id: null,
 		trip_id: null,
-		updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+		updated_at: Dates.now('utc').unix_timestamp,
 		validation_id: null,
 		vehicle_id: null,
 	};

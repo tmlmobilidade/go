@@ -41,7 +41,7 @@ export const RawApexTransactionValidationV50PayloadSchema = z.object({
 		stopLongID: z.string(),
 		validatorID: z.number(),
 		vehicleID: z.number(),
-		zoneLongID: z.string().optional(),
+		zoneLongID: z.string().nullable().default(null),
 	}),
 	signedData: z.object({
 		contractBinaryRead: z.string().nullable().default(null),
