@@ -73,11 +73,10 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			console.log(ids);
-			// await simplifiedApexValidationsNew.delete(
-			// 	'_id IN $1',
-			// 	{ 1: ids },
-			// );
+			await simplifiedApexValidationsNew.delete(
+				'_id IN $1',
+				{ 1: ids },
+			);
 		},
 
 		distinctDestinationDbFn: async () => {
@@ -90,7 +89,7 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 
 		distinctSourceDbFn: async () => {
 			const result = await rawApexTransactions.distinct('_id', rawdbQuery);
-			return result.map(String);
+			return result.map(id => id.toUpperCase());
 		},
 
 		missingDocumentsSourceDbAsyncIterator: (missingDocumentIds) => {
