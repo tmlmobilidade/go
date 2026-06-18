@@ -1,0 +1,117 @@
+.button {
+	--feedback-trigger-size: 48px;
+
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--feedback-trigger-size);
+	height: var(--feedback-trigger-size);
+	padding: 0;
+	font: inherit;
+	pointer-events: auto;
+	touch-action: manipulation;
+	cursor: pointer;
+	border: 2px solid transparent;
+	border-radius: 100%;
+	box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
+	transition: 200ms all ease;
+}
+
+.button[data-position='bottom-left'] {
+	position: fixed;
+	bottom: calc(16px + env(safe-area-inset-bottom));
+	left: calc(16px + env(safe-area-inset-left));
+	z-index: 110;
+}
+
+.button[data-position='bottom-right'] {
+	position: fixed;
+	right: calc(16px + env(safe-area-inset-right));
+	bottom: calc(16px + env(safe-area-inset-bottom));
+	z-index: 110;
+}
+
+.button[data-variant='default'] {
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
+	border-color: var(--color-system-border-100);
+}
+
+.button[data-variant='brand'] {
+	color: #000;
+	background-color: var(--color-brand-navegante);
+	border-color: var(--color-brand-navegante);
+}
+
+.button[data-with-bubble='true']::before {
+	position: absolute;
+	bottom: calc(100% + 14px);
+	padding: 8px 12px;
+	font-size: 14px;
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	color: #000;
+	white-space: nowrap;
+	pointer-events: none;
+	content: attr(data-label);
+	background-color: var(--color-brand-navegante);
+	border-radius: 6px;
+	box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
+	animation: hide-speech-bubble 1000ms ease 3000ms forwards;
+}
+
+.button[data-with-bubble='true']::after {
+	position: absolute;
+	bottom: calc(100% + 4px);
+	width: 0;
+	height: 0;
+	pointer-events: none;
+	content: '';
+	border: 10px solid transparent;
+	border-top-color: var(--color-brand-navegante);
+	border-right: 0;
+	border-bottom: 0;
+	animation: hide-speech-bubble 1000ms ease 3000ms forwards;
+}
+
+.button[data-position='bottom-left']::before,
+.button[data-position='inline']::before {
+	left: 0;
+}
+
+.button[data-position='bottom-left']::after,
+.button[data-position='inline']::after {
+	left: 24px;
+}
+
+.button[data-position='bottom-right']::before {
+	right: 0;
+}
+
+.button[data-position='bottom-right']::after {
+	right: 24px;
+}
+
+.button:active {
+	opacity: 0.95;
+	transform: scale(1.15);
+}
+
+.button:focus-visible {
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 3px;
+}
+
+.button:disabled {
+	pointer-events: none;
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+@keyframes hide-speech-bubble {
+	to {
+		visibility: hidden;
+		opacity: 0;
+	}
+}

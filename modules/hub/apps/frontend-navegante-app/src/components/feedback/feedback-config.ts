@@ -6,6 +6,25 @@ export const FEEDBACK_SUPPORT_AGENCY_IDS = ['1', '41', '42', '43', '44', 'CM'] a
 
 export type FeedbackEntityType = 'line' | 'stop';
 export type FeedbackReasonCategory = 'driver' | 'line_service' | 'stop' | 'vehicle';
+export interface FeedbackReasonConfig {
+	agencies?: readonly string[]
+	category: readonly FeedbackReasonCategory[]
+	id: string
+	name: string
+	scope: readonly FeedbackEntityType[]
+}
+
+export interface FeedbackReasonGroup {
+	heading: string
+	options: FeedbackReasonOption[]
+}
+
+export interface FeedbackReasonOption {
+	label: string
+	value: string
+}
+
+export type FeedbackReasonGroups = Partial<Record<FeedbackReasonCategory, FeedbackReasonGroup>>;
 
 /* * */
 
@@ -300,41 +319,35 @@ export const feedbackConfig = [
 		name: 'Outro',
 		scope: ['line', 'stop'],
 	},
-] as const satisfies readonly {
-	agencies?: readonly string[]
-	category: readonly FeedbackReasonCategory[]
-	id: string
-	name: string
-	scope: readonly FeedbackEntityType[]
-}[];
+] as const satisfies readonly FeedbackReasonConfig[];
 
 /* * */
 
-export function getFeedbackReasonGroups(entityType: FeedbackEntityType, agencyId?: string) {
+export function getFeedbackReasonGroups(entityType: FeedbackEntityType, agencyId?: string): FeedbackReasonGroups {
 	const categories = entityType === 'stop'
 		? CATEGORIES.stop
 		: agencyId && (FEEDBACK_SUPPORT_AGENCY_IDS as readonly string[]).includes(agencyId)
 			? CATEGORIES.line
 			: CATEGORIES.line_without_driver;
 
-	return Object.fromEntries(
-		categories.map((category) => {
-			const options = feedbackConfig
-				.filter(reason => reason.scope.includes(entityType))
-				.filter(reason => reason.category.includes(category))
-				.filter(reason => !reason.agencies || !!agencyId && reason.agencies.includes(agencyId))
-				.map(reason => ({
-					label: reason.name,
-					value: reason.id,
-				}));
+	const feedbackReasons: readonly FeedbackReasonConfig[] = feedbackConfig;
+	const reasonGroups: FeedbackReasonGroups = {};
 
-			return [
-				category,
-				{
-					heading: CATEGORY_HEADINGS[category],
-					options,
-				},
-			];
-		}),
-	);
+	for (const category of categories) {
+		const options = feedbackReasons
+			.filter(reason => reason.scope.includes(entityType))
+			.filter(reason => reason.category.includes(category))
+			.filter(reason => !reason.agencies || (!!agencyId && reason.agencies.includes(agencyId)))
+			.map(reason => ({
+				label: reason.name,
+				value: reason.id,
+			}));
+
+		reasonGroups[category] = {
+			heading: CATEGORY_HEADINGS[category],
+			options,
+		};
+	}
+
+	return reasonGroups;
 }

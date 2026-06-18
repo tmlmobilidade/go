@@ -1,8 +1,8 @@
 'use client';
 
 import { FEEDBACK_REASON_SELECTION_LIMIT, type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
+import { FeedbackTrigger } from '@/components/feedback/FeedbackTrigger';
 import { FeedbackModal } from '@/components/feedback/form/FeedbackModal';
-import { FeedbackStartPrompt } from '@/components/feedback/form/FeedbackStartPrompt';
 import { FeedbackReasonOptionsSheet } from '@/components/feedback/sheets/FeedbackReasonOptionsSheet';
 import { FeedbackReasonsSheet } from '@/components/feedback/sheets/FeedbackReasonsSheet';
 import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown';
@@ -124,7 +124,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	return (
 		<>
 			{!feedbackCooldown.isCoolingDown && (
-				<FeedbackStartPrompt onClick={() => setIsFeedbackModalOpen(true)} />
+				<FeedbackTrigger onClick={() => setIsFeedbackModalOpen(true)} />
 			)}
 
 			<FeedbackModal

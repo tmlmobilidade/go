@@ -28,7 +28,7 @@ interface FeedbackModalProps {
 
 export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReasonsSheet, onSelectHappy, onSelectUnhappy, onSubmit, opened, selectedMood, thankYouMessageKey }: FeedbackModalProps) {
 	const [showThankYouMessage, setShowThankYouMessage] = useState(false);
-	const thankYouMessageTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const thankYouMessageTimeoutRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
 	useEffect(() => {
 		if (thankYouMessageKey === 0) return;

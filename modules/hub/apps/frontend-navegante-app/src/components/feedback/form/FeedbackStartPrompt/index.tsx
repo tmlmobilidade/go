@@ -1,8 +1,6 @@
 'use client';
 
-import { IconMessageCircle } from '@tabler/icons-react';
-
-import styles from './styles.module.css';
+import { FeedbackTrigger } from '@/components/feedback/FeedbackTrigger';
 
 /* * */
 
@@ -13,15 +11,5 @@ interface FeedbackStartPromptProps {
 /* * */
 
 export function FeedbackStartPrompt({ onClick }: FeedbackStartPromptProps) {
-	return (
-		<button
-			aria-label="Feedback"
-			className={styles.container}
-			data-label="Dá-nos o teu feedback"
-			onClick={onClick}
-			type="button"
-		>
-			<IconMessageCircle aria-hidden={true} size={24} stroke={2} />
-		</button>
-	);
+	return <FeedbackTrigger onClick={onClick} />;
 }
