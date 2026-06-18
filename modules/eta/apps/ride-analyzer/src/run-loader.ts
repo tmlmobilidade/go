@@ -24,7 +24,7 @@ export async function runLoaderPhase(clickhouseClient: ClickHouseClient, config:
 
 	const predNodeEtasMv = qualifiedTable(config.database, 'mv_pred_node_etas');
 
-	Logger.info(`Refreshing ${predNodeEtasMv}`);
+	Logger.info({ message: `Refreshing ${predNodeEtasMv}` });
 	await clickhouseClient.command({ query: `SYSTEM REFRESH VIEW ${predNodeEtasMv}` });
 	await clickhouseClient.command({ query: `SYSTEM WAIT VIEW ${predNodeEtasMv}` });
 

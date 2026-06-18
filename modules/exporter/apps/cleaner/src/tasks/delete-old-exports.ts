@@ -24,11 +24,11 @@ export async function deleteOldFileExports(): Promise<void> {
 	});
 
 	if (oldExports.length === 0) {
-		Logger.info('No old file exports found to delete.');
+		Logger.info({ message: 'No old file exports found to delete.' });
 		return;
 	}
 
-	Logger.info(`Deleting ${oldExports.length} old file exports...`);
+	Logger.info({ message: `Deleting ${oldExports.length} old file exports...` });
 
 	const trasactionManager = new TransactionManager([files, fileExports] as const);
 
@@ -45,7 +45,7 @@ export async function deleteOldFileExports(): Promise<void> {
 				Logger.success(`Deleted file export ${item._id}.`);
 			});
 		} catch (error) {
-			Logger.error(`Failed to delete file export ${item._id}:`, error);
+			Logger.error({ error, message: `Failed to delete file export ${item._id}:` });
 		}
 	}
 }

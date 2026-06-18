@@ -27,7 +27,7 @@ export async function ensureStructure() {
 		.find({}, { sort: { publish_start_date: -1 } })
 		.stream();
 
-	Logger.info(`Found ${alertsQty} alerts.`);
+	Logger.info({ message: `Found ${alertsQty} alerts.` });
 
 	//
 	// Loop through all alerts and request updated attributes for each document
@@ -38,7 +38,7 @@ export async function ensureStructure() {
 		try {
 			//
 
-			Logger.info(`[${counter}/${alertsQty}] Processing Alert ${alertData._id}...`);
+			Logger.info({ message: `[${counter}/${alertsQty}] Processing Alert ${alertData._id}...` });
 
 			counter--;
 
@@ -68,7 +68,7 @@ export async function ensureStructure() {
 
 			//
 		} catch (error) {
-			Logger.error(`Error processing Alert ${alertData._id}:`, error);
+			Logger.error({ error, message: `Error processing Alert ${alertData._id}:` });
 		}
 	}
 

@@ -7,6 +7,6 @@
 		},
 		"rootDir": "src"
 	},
-	"include": ["src"],
+	"include": ["src", "instrument.mjs"],
 	"exclude": ["node_modules", "dist"]
 }

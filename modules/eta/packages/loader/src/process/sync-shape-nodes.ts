@@ -51,7 +51,7 @@ export async function syncShapeNodes(clickhouseClient: Parameters<typeof queryEt
 
 	//
 	// Create shape nodes for each hashed shape
-	Logger.info(`Creating shape nodes for ${hashedShapeIds.length} hashed shape ids`);
+	Logger.info({ message: `Creating shape nodes for ${hashedShapeIds.length} hashed shape ids` });
 
 	let shapeNodesProcessed = 0;
 	for await (const hashedShape of hashedShapesCursor) {

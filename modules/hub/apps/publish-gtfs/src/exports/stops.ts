@@ -14,7 +14,7 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 
 	const timer = new Timer();
 
-	Logger.info('Exporting stops.txt file...');
+	Logger.info({ message: 'Exporting stops.txt file...' });
 
 	//
 	// Build a map of location entities

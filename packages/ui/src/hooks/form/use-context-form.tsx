@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Logger } from '@tmlmobilidade/logger';
 import { useEffect, useMemo } from 'react';
 import { type DefaultValues, useForm, type UseFormReturn } from 'react-hook-form';
 import { type ZodSchema } from 'zod';
@@ -64,7 +63,7 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 		if (isFormDirty) return;
 		// Initialize form with API data
 		form.reset(apiData);
-		Logger.success(`Form initialized with values from API.`);
+		console.info(`Form initialized with values from API.`);
 	}, [apiData, form, isFormDirty]);
 
 	//

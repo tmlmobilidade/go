@@ -49,11 +49,11 @@ export class GORedisClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('[GORedisClient] Connecting to database...');
+		Logger.info({ message: '[GORedisClient] Connecting to database...' });
 		const connectionString = await this.getConnectionString();
 		this.client = createClient({ url: connectionString });
 		await this.client.connect();
-		Logger.info('[GORedisClient] Connected to database');
+		Logger.info({ message: '[GORedisClient] Connected to database' });
 	}
 
 	/**
@@ -122,7 +122,7 @@ export class GORedisClient {
 
 		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
-		Logger.info('[GORedisClient] Setting up SSH Tunnel...');
+		Logger.info({ message: '[GORedisClient] Setting up SSH Tunnel...' });
 
 		const connection = await this.tunnel.connect();
 		const addr = connection.address();

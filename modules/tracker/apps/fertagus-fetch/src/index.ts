@@ -6,6 +6,7 @@ import { externalClients } from '@tmlmobilidade/external';
 import { TrainsResponse } from '@tmlmobilidade/external/dist/clients/fertagus/types.js';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, HashedPattern, RawVehicleEventFertagusV1, Ride } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -39,23 +40,35 @@ interface FoundRideDocument {
 const main = async () => {
 	//
 
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'fertagus-fetch', message: 'Sentry Tracker Fertagus Fetch initialized', module: 'tracker', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Tracker Fertagus Fetch' });
+	}
+
+	//
+	// Initialize the timer
+
 	const timer = new Timer();
 	let saveCount = 0;
 
 	//
 	// Fetch the Fertagus Vehicle Events data from API and decode it.
 
-	Logger.info(`[${ITERATION}] Fetching Fertagus data from API...`, 0, 1);
+	Logger.info({ message: `[${ITERATION}] Fetching Fertagus data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
 	let response: null | TrainsResponse = null;
 	try {
 		response = await externalClients.fertagus.trains();
 	} catch (error) {
-		Logger.error(`[${ITERATION}] Error fetching Fertagus data from API:`, error);
+		Logger.error({ error, message: `[${ITERATION}] Error fetching Fertagus data from API:` });
 		return;
 	}
 
-	Logger.info(`[${ITERATION}] Found ${response.length ?? 0} Vehicle Events in the Fertagus data.`);
+	Logger.info({ message: `[${ITERATION}] Found ${response.length ?? 0} Vehicle Events in the Fertagus data.` });
 
 	const ridesMap = new Map<string, FoundRideDocument>();
 
@@ -127,20 +140,20 @@ const main = async () => {
 				//
 				// If no ride is found, skip this event.
 				if (foundRides.length === 0) {
-					Logger.error(`[${ITERATION}] No ride found for event start time scheduled: ${Dates.fromISO(event.startsAt).unix_timestamp} - ${event.stop_id_start} -> ${event.stop_id_end}.`);
+					Logger.error({ message: `[${ITERATION}] No ride found for event start time scheduled: ${Dates.fromISO(event.startsAt).unix_timestamp} - ${event.stop_id_start} -> ${event.stop_id_end}.` });
 					continue;
 				}
 
 				// If multiple rides are found, skip this event.
 				// This can be improved by checking start and end stop IDs.
 				if (foundRides.length > 1) {
-					Logger.error(`[${ITERATION}] Multiple rides found for event start time scheduled: ${Dates.fromISO(event.startsAt).unix_timestamp} - ${event.stop_id_start} -> ${event.stop_id_end}.`);
+					Logger.error({ message: `[${ITERATION}] Multiple rides found for event start time scheduled: ${Dates.fromISO(event.startsAt).unix_timestamp} - ${event.stop_id_start} -> ${event.stop_id_end}.` });
 					continue;
 				}
 
 				ridesMap.set(rideKey, foundRides[0]);
 			} catch (error) {
-				Logger.error(`[${ITERATION}] Error finding rides for event start time scheduled: ${Dates.fromISO(event.startsAt).unix_timestamp} - ${event.stop_id_start} -> ${event.stop_id_end}:`, error);
+				Logger.error({ error, message: `[${ITERATION}] Error finding rides for event start time scheduled: ${Dates.fromISO(event.startsAt).unix_timestamp} - ${event.stop_id_start} -> ${event.stop_id_end}:` });
 				continue;
 			}
 		}
@@ -212,7 +225,7 @@ const main = async () => {
 		saveCount++;
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from Fertagus data in ${timer.get()}.`);
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from Fertagus data in ${timer.get()}.` });
 
 	ITERATION++;
 

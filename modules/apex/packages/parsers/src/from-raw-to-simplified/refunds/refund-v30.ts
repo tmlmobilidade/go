@@ -1,64 +1,49 @@
 /* * */
 
-import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionRefundV30, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
+import { type RawApexTransactionRefundV30, type SimplifiedApexOnBoardRefund, SimplifiedApexOnBoardRefundSchema } from '@tmlmobilidade/go-types-apex';
+import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function parseRawApexTransactionRefundV30(doc: RawApexTransactionRefundV30): null | SimplifiedApexOnBoardRefund {
-	try {
-		//
+export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(doc: RawApexTransactionRefundV30): null | SimplifiedApexOnBoardRefund {
+	//
 
-		//
-		// Validate the document structure and content
+	//
+	// Prepare the date field values
 
-		if (!doc.payload.operatorInfo.operatorLongID) throw new Error('Missing operatorLongID in transaction.');
+	const transactionDateValue = Dates
+		.fromFormat(doc.payload.transactionInfo.transactionDate, 'yyyy-MM-dd\'T\'HH:mm:ss', 'Europe/Lisbon');
 
-		//
-		// Evaluate the transaction date and ensure it is not before the set earliest date
+	//
+	// Validate the document structure and content
 
-		if (!doc.payload.transactionInfo.transactionDate) throw new Error('Missing transactionDate in transaction.');
+	const result: SimplifiedApexOnBoardRefund = {
+		_id: doc.payload.transactionInfo.transactionId,
+		agency_id: doc.payload.operatorInfo.operatorLongID,
+		apex_version: doc.payload.versionInfo.apexVersion,
+		block_id: null,
+		card_physical_type: doc.payload.cardInfo.cardPhysicalType,
+		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
+		created_at: transactionDateValue.unix_timestamp,
+		device_id: doc.payload.operatorInfo.deviceID,
+		duty_id: null,
+		line_id: null,
+		mac_ase_counter_value: doc.payload.mac.aseCounterValue,
+		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
+		on_board_sale_id: doc.payload.loadCorrInfo.corrTransactionId,
+		pattern_id: null,
+		payment_method: doc.payload.paymentInfo.paymentMethod,
+		price: doc.payload.paymentInfo.price,
+		product_id: doc.payload.saleLoadInfo.productLongID,
+		product_quantity: doc.payload.saleLoadInfo.productQuantity,
+		received_at: doc.received_at,
+		stop_id: null,
+		trip_id: null,
+		updated_at: Dates.now('utc').unix_timestamp,
+		validation_id: null,
+		vehicle_id: null,
+	};
 
-		const earliestTransactionDate = getEarliestDate();
-
-		const transactionDate = Dates
-			.fromISO(doc.payload.transactionInfo.transactionDate)
-			.setZone('Europe/Lisbon', 'rebase_utc')
-			.unix_timestamp;
-
-		if (transactionDate < earliestTransactionDate.unix_timestamp) throw new Error(`Transaction date "${doc.payload.transactionInfo.transactionDate}" is before the earliest allowed date "${earliestTransactionDate.operational_date}".`);
-
-		//
-		// Parse the document and return the simplified APEX object
-
-		return {
-			_id: doc.payload.transactionInfo.transactionId,
-			agency_id: doc.payload.operatorInfo.operatorLongID,
-			apex_version: doc.payload.versionInfo.apexVersion,
-			block_id: '',
-			card_physical_type: doc.payload.cardInfo.cardPhysicalType,
-			card_serial_number: doc.payload.cardInfo.cardSerialNumber,
-			created_at: transactionDate,
-			device_id: doc.payload.operatorInfo.deviceID,
-			duty_id: '',
-			line_id: '',
-			mac_ase_counter_value: doc.payload.mac.aseCounterValue,
-			mac_sam_serial_number: doc.payload.mac.samSerialNumber,
-			on_board_sale_id: null,
-			pattern_id: '',
-			payment_method: 0,
-			price: 0,
-			product_long_id: '',
-			product_quantity: 0,
-			received_at: doc.created_at,
-			stop_id: '',
-			trip_id: '',
-			validation_id: '',
-			vehicle_id: 0,
-		};
-	} catch (error) {
-		console.error(`Error parsing simplified APEX Refund. Transaction ID: "${doc.payload.transactionInfo.transactionId}"`, error.message);
-		return null;
-	}
+	return SimplifiedApexOnBoardRefundSchema.parse(result);
 }

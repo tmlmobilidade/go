@@ -2,13 +2,25 @@
 
 import { syncApexBankingTaps } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
 async function main() {
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'raw-sync-banking-taps', message: 'Sentry APEX Raw Sync Banking Taps initialized', module: 'apex', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Banking Taps' });
+	}
+
+	//
+
 	try {
 		//
 

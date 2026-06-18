@@ -35,7 +35,7 @@ export async function fetchProtobuf<T>(
 		// Fetch the protobuf binary data
 		const response = await fetch(url);
 		if (!response.ok) {
-			Logger.error(`Failed to fetch protobuf data: HTTP ${response.status} - ${response.statusText}`);
+			Logger.error({ message: `Failed to fetch protobuf data: HTTP ${response.status} - ${response.statusText}` });
 			return null;
 		}
 
@@ -56,7 +56,7 @@ export async function fetchProtobuf<T>(
 
 		return decodedMessage;
 	} catch (error) {
-		Logger.error(`Error fetching protobuf from ${url}:`, error);
+		Logger.error({ error, message: `Error fetching protobuf from ${url}:` });
 		return null;
 	}
 }

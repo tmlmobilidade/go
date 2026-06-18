@@ -116,7 +116,7 @@ export async function exportStopTimesForPattern(
 			}
 		}
 	} catch (error) {
-		Logger.error(`Error exporting stop_times for pattern ${patternData.code}`, error);
+		Logger.error({ error, message: `Error exporting stop_times for pattern ${patternData.code}` });
 		throw new Error(`Error exporting stop_times for pattern ${patternData.code}: ${error}`);
 	}
 }

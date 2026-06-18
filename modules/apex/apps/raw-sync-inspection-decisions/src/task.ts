@@ -2,17 +2,17 @@
 
 import { rawApexTransactions, simplifiedApexInspectionDecisionsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { parseRawApexTransactionInspectionDecisionV20 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexInspectionDecision } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexInspectionDecision } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
-import { type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
+import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
 import { type Filter } from 'mongodb';
 
 /* * */
 
 const writer = new BatchWriter<SimplifiedApexInspectionDecision>({
-	batch_size: 50_000,
+	batch_size: 10_000,
 	insertFn: async (data) => {
 		await simplifiedApexInspectionDecisionsNew.insert('JSONEachRow', data);
 	},
@@ -36,7 +36,7 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
-	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
+	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${timeChunk.end}] › ${chunkStartDate.iso}[${timeChunk.start}]`, 150);
 
 	//
 	// Prepare the PCGIDB query to retrieve documents
@@ -44,8 +44,8 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 
 	const rawdbQuery: Filter<RawApexTransaction> = {
 		created_at: {
-			$gte: chunkStartDate.unix_timestamp,
-			$lte: chunkEndDate.unix_timestamp,
+			$gte: timeChunk.start,
+			$lt: timeChunk.end,
 		},
 		version: { $in: ['inspection-decision-2.0'] },
 	};
@@ -62,8 +62,8 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 		countDestinationDbFn: async () => {
 			return await simplifiedApexInspectionDecisionsNew.count(
 				'*',
-				'created_at >= $1 AND created_at <= $2',
-				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
 
@@ -73,17 +73,19 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedApexInspectionDecisionsNew.delete(
-				'_id IN ($1)',
-				{ 1: ids.map(id => `'${id}'`).join(', ') },
-			);
+			await performInChunks(ids, async (chunk) => {
+				await simplifiedApexInspectionDecisionsNew.delete(
+					'_id IN $1',
+					{ 1: chunk },
+				);
+			}, 1_000);
 		},
 
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexInspectionDecisionsNew.distinct(
-				'_id',
-				'created_at >= $1 AND created_at <= $2',
-				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
+				'upper(toString(_id))',
+				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
 
@@ -103,10 +105,14 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			let parseResult: null | SimplifiedApexInspectionDecision = null;
-			if (sourceDbDocument.version === 'inspection-decision-2.0') parseResult = parseRawApexTransactionInspectionDecisionV20(sourceDbDocument);
-			if (!parseResult) return;
-			await writer.write(parseResult);
+			try {
+				let parseResult: null | SimplifiedApexInspectionDecision = null;
+				if (sourceDbDocument.version === 'inspection-decision-2.0') parseResult = parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexInspectionDecision(sourceDbDocument);
+				if (!parseResult) return;
+				await writer.write(parseResult);
+			} catch (error) {
+				Logger.error({ message: `Error transforming APEX Inspection Decision: ${sourceDbDocument._id} Reason: ${error.message}` });
+			}
 		},
 
 	});

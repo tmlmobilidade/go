@@ -17,5 +17,5 @@ export async function exportFeedInfoFile(planData: Plan, exportConfig: ExportToH
 
 	await feedInfoCsv.flush();
 
-	Logger.info('Exported feed_info.txt file.');
+	Logger.info({ message: 'Exported feed_info.txt file.' });
 }

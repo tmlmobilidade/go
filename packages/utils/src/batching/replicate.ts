@@ -1,6 +1,5 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
@@ -109,11 +108,11 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	const destinationDbCount = await countDestinationDbFn();
 
 	if (sourceDbCount === destinationDbCount) {
-		Logger.success(`MATCH: Found the same number of documents in both databases: ${sourceDbCount} Source = ${destinationDbCount} Destination (${countStepTimer.get()})`);
+		console.info(`MATCH: Found the same number of documents in both databases: ${sourceDbCount} Source = ${destinationDbCount} Destination (${countStepTimer.get()})`);
 		return;
 	}
 
-	Logger.info(`MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})`);
+	console.info(`MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})`);
 
 	//
 	// If the document count was different, then check which documents are missing.
@@ -133,7 +132,7 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 
 	const extraDocumentIds = destinationDbDocIds.filter(doc => !sourceDbDocIdsUnique.has(doc));
 
-	Logger.info(`Source Total: ${sourceDbCount} | Source Unique: ${sourceDbDocIdsUnique.size} | Source ▲: ${sourceDbCount - sourceDbDocIdsUnique.size} | Destination Total: ${destinationDbCount} | Destination Unique: ${destinationDbDocIdsUnique.size} | Destination ▲: ${destinationDbCount - destinationDbDocIdsUnique.size} | Destination Missing: ${missingDocumentIds.length} | Destination Extra: ${extraDocumentIds.length} (${distinctStepTimer.get()})`);
+	console.info(`Source Total: ${sourceDbCount} | Source Unique: ${sourceDbDocIdsUnique.size} | Source ▲: ${sourceDbCount - sourceDbDocIdsUnique.size} | Destination Total: ${destinationDbCount} | Destination Unique: ${destinationDbDocIdsUnique.size} | Destination ▲: ${destinationDbCount - destinationDbDocIdsUnique.size} | Destination Missing: ${missingDocumentIds.length} | Destination Extra: ${extraDocumentIds.length} (${distinctStepTimer.get()})`);
 
 	//
 	// If there are missing documents, then they are synced.
@@ -146,7 +145,7 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 		for await (const sourceDbDocument of missingDocumentsSourceDbAsyncIterator(missingDocumentIds)) {
 			await writeSourceDocumentToDestinationDbFn(sourceDbDocument);
 		}
-		Logger.info(`Synced ${missingDocumentIds.length} missing documents to the Destination database. (${missingStepTimer.get()})`);
+		console.info(`Synced ${missingDocumentIds.length} missing documents to the Destination database. (${missingStepTimer.get()})`);
 	}
 
 	//
@@ -157,7 +156,7 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 
 	if (extraDocumentIds.length > 0 && deleteDestinationDbFn) {
 		await deleteDestinationDbFn(extraDocumentIds);
-		Logger.info(`Deleted ${extraDocumentIds.length} extra documents in the Destination database. (${deleteStepTimer.get()})`);
+		console.info(`Deleted ${extraDocumentIds.length} extra documents in the Destination database. (${deleteStepTimer.get()})`);
 	}
 
 	//
@@ -166,7 +165,7 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 
 	if (onCompleteCallbackFn) await onCompleteCallbackFn();
 
-	Logger.success(`Replication complete (${globalTimer.get()})`);
+	console.info(`Replication complete (${globalTimer.get()})`);
 
 	//
 }

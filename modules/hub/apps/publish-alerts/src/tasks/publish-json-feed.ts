@@ -43,7 +43,7 @@ export async function publishJsonFeed() {
 		},
 	);
 
-	Logger.info(`Retrieved ${findResult.length} active alerts...`);
+	Logger.info({ message: `Retrieved ${findResult.length} active alerts...` });
 
 	//
 	// Transform alerts into GTFS-RT feed entities
@@ -93,7 +93,7 @@ export async function publishJsonFeed() {
 			}
 
 			if (!transformedReferences) {
-				Logger.error(`[Alert ID: ${alertData._id}] Alert transformed references are missing.`);
+				Logger.error({ message: `[Alert ID: ${alertData._id}] Alert transformed references are missing.` });
 				return;
 			}
 
@@ -118,11 +118,11 @@ export async function publishJsonFeed() {
 
 			result.push(parsedAlert);
 		} catch (error) {
-			Logger.error(`Error processing alert with ID ${alertData._id}:`, error);
+			Logger.error({ error, message: `Error processing alert with ID ${alertData._id}:` });
 		}
 	}
 
-	Logger.info(`Transformed ${result.length} alerts into JSON feed entities (${globalTimer.get()})`);
+	Logger.info({ message: `Transformed ${result.length} alerts into JSON feed entities (${globalTimer.get()})` });
 
 	//
 	// Save the result in API Cache

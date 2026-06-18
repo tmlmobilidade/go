@@ -89,7 +89,9 @@ export class RoutesController {
 
 		const routeData = await routes.findById(request.params.id);
 
-		if (!routeData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		if (!routeData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		}
 
 		//
 		// Get the resource permissions for routes for the current user.
@@ -136,7 +138,9 @@ export class RoutesController {
 
 		const routeData = await routes.findById(request.params.id);
 
-		if (!routeData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		if (!routeData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		}
 
 		//
 		// Get the resource permissions for routes for the current user.
@@ -153,7 +157,9 @@ export class RoutesController {
 		// If authorized, toggle the lock status of the route
 		await routes.toggleLockById(request.params.id);
 		const foundRoute = await routes.findById(request.params.id);
-		if (!foundRoute) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		if (!foundRoute) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		}
 
 		return reply.send({ data: foundRoute, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -173,7 +179,9 @@ export class RoutesController {
 
 		const routeData = await routes.findById(request.params.id);
 
-		if (!routeData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		if (!routeData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
+		}
 
 		//
 		// Get the resource permissions for routes for the current user.

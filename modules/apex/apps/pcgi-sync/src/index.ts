@@ -1,15 +1,26 @@
 /* * */
 
-import { syncTransactionEntities } from '@/sync-transaction-entities.js';
+import { syncPcgiTransactionEntities } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
 async function main() {
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'pcgi-sync', message: 'Sentry APEX PCGI Sync initialized', module: 'apex', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry APEX PCGI Sync' });
+	}
+
+	//
 	try {
 		//
 
@@ -30,7 +41,7 @@ async function main() {
 		await performInTimeChunks({
 			endDate: Dates.now('Europe/Lisbon').set({ day: 12, hour: 10, millisecond: 0, minute: 0, month: 6, second: 0, year: 2026 }).unix_timestamp,
 			onChunk: async (chunk) => {
-				await syncTransactionEntities(chunk);
+				await syncPcgiTransactionEntities(chunk);
 			},
 			splitBy: { minutes: 10 },
 			startDate: earliestDate.unix_timestamp,

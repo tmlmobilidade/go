@@ -1,13 +1,14 @@
-/* * */
+/* eslint-disable @typescript-eslint/naming-convention */
 
-import { type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/lib/date-format.js';
+import { CALENDAR_DATE_FORMAT, type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/lib/date-format.js';
 import { type TimezoneIdentified, TimezoneIdentifiedSchema, TimezoneIdentifiedValues } from '@/lib/timezone-identified.js';
-import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/types';
+import { CalendarDate, type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
 
 /* * */
 
 interface DatesConstructor {
+	calendar_date: CalendarDate
 	iso: null | string
 	js_date: Date
 	operational_date: OperationalDate
@@ -28,39 +29,29 @@ export interface CalendarEntry {
 export class Dates {
 	//
 
-	//
-	// Static properties
+	static readonly standardWindowHours = 10;
 
-	static readonly STANDARD_WINDOW_HOURS = 10;
-
-	static get FORMATS() { return FORMATS; }
-
-	static get TIMEZONE_LIST() { return TimezoneIdentifiedValues; }
-
-	static get TIMEZONE_LIST_VALUES() { return TimezoneIdentifiedSchema.Values; }
-
-	//
-	// Instance properties
-
+	public calendar_date: CalendarDate;
 	public iso: null | string;
 	public js_date: Date;
 	public operational_date: OperationalDate;
 	public std_window: { end: UnixTimestamp, start: UnixTimestamp };
 	public unix_timestamp: UnixTimestamp;
 
-	//
-	// Constructor
-
-	constructor({ iso, js_date, operational_date, std_window, unix_timestamp }: DatesConstructor) {
-		this.iso = iso ?? null;
-		this.js_date = js_date;
-		this.operational_date = operational_date;
-		this.std_window = std_window;
-		this.unix_timestamp = unix_timestamp;
+	constructor(params: DatesConstructor) {
+		this.calendar_date = params.calendar_date;
+		this.iso = params.iso ?? null;
+		this.js_date = params.js_date;
+		this.operational_date = params.operational_date;
+		this.std_window = params.std_window;
+		this.unix_timestamp = params.unix_timestamp;
 	}
 
-	//
-	// Static methods
+	static get FORMATS() { return FORMATS; }
+
+	static get TIMEZONE_LIST() { return TimezoneIdentifiedValues; }
+
+	static get TIMEZONE_LIST_VALUES() { return TimezoneIdentifiedSchema.Values; }
 
 	/**
 	 * Creates a Dates object from a date/time string in a specific format.
@@ -75,6 +66,7 @@ export class Dates {
 			.fromFormat(text, format, { setZone: true })
 			.setZone(timezone, { keepLocalTime: true });
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
@@ -92,6 +84,7 @@ export class Dates {
 	static fromISO(isoText: string): Dates {
 		const dateTime = DateTime.fromISO(isoText, { setZone: true });
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
@@ -110,6 +103,7 @@ export class Dates {
 			.fromJSDate(date)
 			.setZone('utc', { keepLocalTime: false });
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
@@ -130,6 +124,7 @@ export class Dates {
 			.setZone(timezone, { keepLocalTime: true })
 			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 }); // Start of the operational date
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
@@ -148,6 +143,7 @@ export class Dates {
 			.fromSeconds(seconds)
 			.setZone('utc', { keepLocalTime: false });
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
@@ -166,6 +162,7 @@ export class Dates {
 			.fromMillis(millis)
 			.setZone('utc', { keepLocalTime: false });
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
@@ -184,6 +181,7 @@ export class Dates {
 			.now()
 			.setZone(timezone, { keepLocalTime: false });
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
@@ -197,16 +195,14 @@ export class Dates {
 	 * Returns an empty array if the request fails
 	 */
 	static async fetchCalendarData(): Promise<CalendarEntry[]> {
-		let calendarJson: CalendarEntry[] = [];
-
 		try {
+			let calendarJson: CalendarEntry[] = [];
 			const response = await fetch('https://go.carrismetropolitana.pt/api/dates/public');
 			calendarJson = !response.ok ? [] : await response.json() as CalendarEntry[];
+			return calendarJson;
 		} catch (error) {
 			console.error('Error fetching calendar data:', error);
 		}
-
-		return calendarJson;
 	}
 
 	/**
@@ -234,6 +230,7 @@ export class Dates {
 			.fromISO(this.iso, { setZone: true })
 			.endOf(unit);
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.getOperationalDate(dateTime.toISO()),
@@ -253,6 +250,7 @@ export class Dates {
 			.fromISO(this.iso, { setZone: true })
 			.minus(duration);
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.getOperationalDate(dateTime.toISO()),
@@ -272,6 +270,7 @@ export class Dates {
 			.fromISO(this.iso, { setZone: true })
 			.plus(duration);
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.getOperationalDate(dateTime.toISO()),
@@ -291,6 +290,7 @@ export class Dates {
 			.fromISO(this.iso, { setZone: true })
 			.set(dateOrTime);
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.getOperationalDate(dateTime.toISO()),
@@ -303,16 +303,17 @@ export class Dates {
 	 * Sets the timezone for the Dates object.
 	 * @param timezone The timezone to set in the format of an IANA timezone.
 	 * @param method The method to use for updating the timezone information.
-	 *   - `offset_only` Updates only offset setting to the new timezone. The ISO string will show adjusted time components (hour, minutes, etc.) to their equivalent in the new timezone. The UTC value in milliseconds stays the same. The timestamp is the source of truth.
+	 *   - `offset_only` Updates only offset setting to the new timezone. The ISO string will show adjusted time components (hour, minutes, etc.) to their equivalent in the new timezone. The UTC value in milliseconds stays the same. The UNIX timestamp is the source of truth.
 	 *   - `rebase_utc` Keeps the individual time components (hour, minutes, etc.) and updates the internal UTC value in milliseconds to reflect the change. The ISO string will show the same time components as before, but the UTC value in milliseconds will be adjusted to match the new timezone. The ISO string is the source of truth.
 	 * @returns The Dates object
 	 */
-	setZone(timezone: TimezoneIdentified, method: 'offset_only' | 'rebase_utc'): Dates {
+	setZone(timezone: 'local' | 'utc' | TimezoneIdentified, method: 'offset_only' | 'rebase_utc'): Dates {
 		if (!this.iso) throw new Error('ISO date is not set.');
 		const dateTime = DateTime
 			.fromISO(this.iso, { setZone: true })
 			.setZone(timezone, { keepLocalTime: method === 'rebase_utc' });
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.getOperationalDate(dateTime.toISO()),
@@ -332,6 +333,7 @@ export class Dates {
 			.fromISO(this.iso, { setZone: true })
 			.startOf(unit);
 		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
 			operational_date: this.getOperationalDate(dateTime.toISO()),
@@ -347,13 +349,14 @@ export class Dates {
 	 * @returns { minutes: number, hours: number, days: number }
 	 */
 	timeUntil(unixTimestamp: UnixTimestamp): { days: number, hours: number, minutes: number } {
+		// Calculate the difference in milliseconds
 		const now = Date.now();
 		const diffMs = unixTimestamp - now;
-
+		// Calculate the time remaining
 		const minutes = diffMs / (1000 * 60);
 		const hours = diffMs / (1000 * 60 * 60);
 		const days = diffMs / (1000 * 60 * 60 * 24);
-
+		// Return the time components
 		return { days, hours, minutes };
 	}
 
@@ -415,43 +418,30 @@ export class Dates {
 		return dateTime.toLocaleString(format, { locale: locale });
 	}
 
-	//
-	// Private methods
-
 	/**
 	 * Returns the operational date based on the provided timestamp and format.
 	 * @param timestamp - The timestamp to be parsed.
 	 * @returns The operational date in the yyyyLLdd format.
 	 */
 	private getOperationalDate(isoDate: null | string): OperationalDate {
+		// Skip if the ISO date is not set
 		if (!isoDate) throw new Error('ISO date is not set.');
-
-		//
 		// Get the date object
-
 		const dateObject = DateTime.fromISO(isoDate, { setZone: true });
-
-		//
 		// Check if the time is between 00:00 and 03:59.
 		// The operational date is between 04:00 and 03:59 of the following day.
-
 		let operationalDate: string;
-
 		if (dateObject.hour < 4) {
-			// If true, return the previous day in the yyyyLLdd format
-			const previousDay = dateObject.minus({ days: 1 });
+			// If true, unwind the clock by 12 hours to
+			// return the previous day in the yyyyLLdd format
+			const previousDay = dateObject.minus({ hours: 12 });
 			operationalDate = previousDay.toFormat(OPERATIONAL_DATE_FORMAT);
 		} else {
 			// Else, return the current day in the yyyyLLdd format
 			operationalDate = dateObject.toFormat(OPERATIONAL_DATE_FORMAT);
 		}
-
-		//
-		// Validate the operational date and return it
-
+		// Return the date as an operational date
 		return operationalDate as OperationalDate;
-
-		//
 	}
 
 	/**
@@ -465,8 +455,8 @@ export class Dates {
 		if (!isoDate) throw new Error('ISO date is not set.');
 		const dateTime = DateTime.fromISO(isoDate, { setZone: true });
 		return {
-			end: dateTime.plus({ hours: Dates.STANDARD_WINDOW_HOURS }).toMillis() as UnixTimestamp,
-			start: dateTime.minus({ hours: Dates.STANDARD_WINDOW_HOURS }).toMillis() as UnixTimestamp,
+			end: dateTime.plus({ hours: Dates.standardWindowHours }).toMillis() as UnixTimestamp,
+			start: dateTime.minus({ hours: Dates.standardWindowHours }).toMillis() as UnixTimestamp,
 		};
 	}
 

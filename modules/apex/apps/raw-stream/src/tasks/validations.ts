@@ -1,7 +1,7 @@
 /* * */
 
 import { simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
-import { parseRawApexTransactionValidationV20, parseRawApexTransactionValidationV30, parseRawApexTransactionValidationV40, parseRawApexTransactionValidationV50 } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionValidationV20IntoSimplifiedApexValidation, parseRawApexTransactionValidationV30IntoSimplifiedApexValidation, parseRawApexTransactionValidationV40IntoSimplifiedApexValidation, parseRawApexTransactionValidationV50IntoSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -32,14 +32,14 @@ export async function processRawApexTransactionValidation(databaseOperation) {
 
 	try {
 		let parseResult: null | SimplifiedApexValidation = null;
-		if (databaseOperation.fullDocument.version === 'validation-2.0') parseResult = parseRawApexTransactionValidationV20(databaseOperation.fullDocument);
-		if (databaseOperation.fullDocument.version === 'validation-3.0') parseResult = parseRawApexTransactionValidationV30(databaseOperation.fullDocument);
-		if (databaseOperation.fullDocument.version === 'validation-4.0') parseResult = parseRawApexTransactionValidationV40(databaseOperation.fullDocument);
-		if (databaseOperation.fullDocument.version === 'validation-5.0') parseResult = parseRawApexTransactionValidationV50(databaseOperation.fullDocument);
+		if (databaseOperation.fullDocument.version === 'validation-2.0') parseResult = parseRawApexTransactionValidationV20IntoSimplifiedApexValidation(databaseOperation.fullDocument);
+		if (databaseOperation.fullDocument.version === 'validation-3.0') parseResult = parseRawApexTransactionValidationV30IntoSimplifiedApexValidation(databaseOperation.fullDocument);
+		if (databaseOperation.fullDocument.version === 'validation-4.0') parseResult = parseRawApexTransactionValidationV40IntoSimplifiedApexValidation(databaseOperation.fullDocument);
+		if (databaseOperation.fullDocument.version === 'validation-5.0') parseResult = parseRawApexTransactionValidationV50IntoSimplifiedApexValidation(databaseOperation.fullDocument);
 		if (!parseResult) return;
 		await writer.write(parseResult);
 	} catch (error) {
-		Logger.error(`Error transforming APEX Validation: ${databaseOperation.fullDocument.transaction.transactionId} Reason: ${error.message}`);
+		Logger.error({ message: `Error transforming APEX Validation: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
 	}
 
 	//
