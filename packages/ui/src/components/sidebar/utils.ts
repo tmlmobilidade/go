@@ -2,7 +2,7 @@
 
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
-import { sidebarApps, type SidebarGroupItemConfig, type SidebarNodeConfig } from './sidebar-navigation.config';
+import { type SidebarNavigationGroup, type SidebarNavigationNode, sidebarNavigationTree } from './sidebar-navigation-tree';
 
 /* * */
 
@@ -36,7 +36,7 @@ export function isItemActive(href: string, currentPathname?: string) {
 	return current === itemPathname || current.startsWith(`${itemPathname}/`);
 }
 
-export function isNodeVisible(node: SidebarNodeConfig, userPermissions?: readonly Permission[]) {
+export function isNodeVisible(node: SidebarNavigationNode, userPermissions?: readonly Permission[]) {
 	if (node.type === 'item') {
 		return isPermissionEnabled(node.permissions, userPermissions);
 	}
@@ -48,7 +48,7 @@ export function isNodeVisible(node: SidebarNodeConfig, userPermissions?: readonl
 	return node.children.some(child => isNodeVisible(child, userPermissions));
 }
 
-export function isNodeActive(node: SidebarNodeConfig, pathname?: string) {
+export function isNodeActive(node: SidebarNavigationNode, pathname?: string) {
 	if (node.type === 'item') {
 		return isItemActive(node.href, pathname);
 	}
@@ -57,7 +57,7 @@ export function isNodeActive(node: SidebarNodeConfig, pathname?: string) {
 }
 
 export function getDefaultOpenGroupIds(pathname?: string): string[] {
-	return sidebarApps
-		.filter((node): node is SidebarGroupItemConfig => node.type === 'group' && isNodeActive(node, pathname))
+	return sidebarNavigationTree
+		.filter((node): node is SidebarNavigationGroup => node.type === 'group' && isNodeActive(node, pathname))
 		.map(node => node._id);
 }
