@@ -82,12 +82,11 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctDestinationDbFn: async () => {
-			const result = await simplifiedApexValidationsNew.distinct(
-				'_id',
+			return await simplifiedApexValidationsNew.distinct(
+				'upper(toString(_id))',
 				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
-			return result.map(id => id.toUpperCase());
 		},
 
 		distinctSourceDbFn: async () => {

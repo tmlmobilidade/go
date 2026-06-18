@@ -83,7 +83,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexLocationsNew.distinct(
-				'_id',
+				'upper(toString(_id))',
 				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
