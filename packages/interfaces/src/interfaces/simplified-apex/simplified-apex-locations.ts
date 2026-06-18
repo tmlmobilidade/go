@@ -1,13 +1,13 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type SimplifiedApexLocation, type UpdateSimplifiedApexLocationDto } from '@tmlmobilidade/go-types-apex';
+import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 
 /* * */
 
-class SimplifiedApexLocationsClass extends MongoCollectionClass<SimplifiedApexLocation, SimplifiedApexLocation, UpdateSimplifiedApexLocationDto> {
+class SimplifiedApexLocationsClass extends MongoCollectionClass<SimplifiedApexLocation, SimplifiedApexLocation, SimplifiedApexLocation> {
 	private static _instance: SimplifiedApexLocationsClass;
 
 	private constructor() {

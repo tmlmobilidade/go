@@ -14,6 +14,8 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexLocation> = {
 	apex_version: { type: 'LowCardinality(String)' },
 	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	device_id: { type: 'LowCardinality(String)' },
+	is_ok: { type: 'Bool' },
+	is_ok_pcgi: { type: 'Bool' },
 	line_id: { type: 'LowCardinality(Nullable(String))' },
 	mac_ase_counter_value: { type: 'UInt64' },
 	mac_sam_serial_number: { type: 'UInt64' },

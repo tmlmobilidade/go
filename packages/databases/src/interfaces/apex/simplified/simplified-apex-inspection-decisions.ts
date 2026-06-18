@@ -15,7 +15,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexInspectionDecision> = {
 	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	device_id: { type: 'LowCardinality(String)' },
 	final_control_status: { type: 'UInt8' },
-	inspection_decision_id: { type: 'Nullable(UUID)' },
+	inspection_id: { type: 'Nullable(UUID)' },
 	is_ok: { type: 'Bool' },
 	is_ok_pcgi: { type: 'Bool' },
 	mac_ase_counter_value: { type: 'UInt64' },

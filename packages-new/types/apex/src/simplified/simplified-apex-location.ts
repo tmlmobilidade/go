@@ -11,6 +11,8 @@ export const SimplifiedApexLocationSchema = z.object({
 	apex_version: z.string(),
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
+	is_ok: z.boolean().default(false),
+	is_ok_pcgi: z.boolean().default(false),
 	line_id: z.string(),
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
@@ -20,9 +22,21 @@ export const SimplifiedApexLocationSchema = z.object({
 	trip_id: z.string().nullable().default(null),
 	updated_at: UnixTimestampSchema,
 	vehicle_id: z.number().nullable().default(null),
+}).transform((val) => {
+	// Setup the individual conditions to consider
+	// this transaction as OK or NOT OK
+	const hasStopId = !!val.stop_id;
+	const hasDeviceId = !!val.device_id;
+	const hasLineId = !!val.line_id;
+	const hasPatternId = !!val.pattern_id;
+	const hasVehicleId = !!val.vehicle_id;
+	const hasAseCounterValue = !!val.mac_ase_counter_value && val.mac_ase_counter_value > 0;
+	const hasMacSamSerialNumber = !!val.mac_sam_serial_number;
+	// Combine the individual conditions
+	const isOk = hasStopId && hasDeviceId && hasLineId && hasPatternId && hasAseCounterValue && hasMacSamSerialNumber && hasVehicleId;
+	// Return the transformed value
+	return { ...val, is_ok: isOk };
 });
-
-export const UpdateSimplifiedApexLocationSchema = SimplifiedApexLocationSchema.partial();
 
 /**
  * APEX Locations are APEX transactions of type 19 that are generated every time the
@@ -32,4 +46,3 @@ export const UpdateSimplifiedApexLocationSchema = SimplifiedApexLocationSchema.p
  * in the current stop ID, trip ID, route ID, pattern ID, etc.
  */
 export type SimplifiedApexLocation = z.infer<typeof SimplifiedApexLocationSchema>;
-export type UpdateSimplifiedApexLocationDto = z.infer<typeof UpdateSimplifiedApexLocationSchema>;
