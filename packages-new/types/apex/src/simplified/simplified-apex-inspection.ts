@@ -2,7 +2,7 @@
 
 import { ApexControlStatusSchema } from '@/utils/control-status.js';
 import { ApexEnvironmentStatusSchema } from '@/utils/environment-status.js';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -15,7 +15,6 @@ export const SimplifiedApexInspectionSchema = z.object({
 	control_destination_stop_id: z.string().nullable().default(null),
 	control_origin_stop_id: z.string().nullable().default(null),
 	control_status: ApexControlStatusSchema,
-	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	environment_status: ApexEnvironmentStatusSchema,
 	inspection_id: z.string().nullable().default(null),
@@ -24,9 +23,11 @@ export const SimplifiedApexInspectionSchema = z.object({
 	line_id: z.string(),
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
+	operational_date: OperationalDateIntSchema,
 	pattern_id: z.string().nullable().default(null),
 	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
+	transaction_date: UnixTimestampSchema,
 	trip_id: z.string().nullable().default(null),
 	updated_at: UnixTimestampSchema,
 	vehicle_id: z.number().nullable().default(null),

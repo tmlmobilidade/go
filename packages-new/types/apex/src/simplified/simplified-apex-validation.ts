@@ -3,7 +3,7 @@
 import { ApexEventTypeSchema } from '@/utils/event-type.js';
 import { ApexValidationCategorySchema } from '@/utils/validation-category.js';
 import { ApexValidationStatusSchema, ValidApexValidationStatusSchema } from '@/utils/validation-status.js';
-import { OperationalDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -14,7 +14,6 @@ export const SimplifiedApexValidationSchema = z.object({
 	apex_version: z.string(),
 	card_serial_number: z.string().nullable().default(null),
 	category: ApexValidationCategorySchema.default('subscription'),
-	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	event_type: ApexEventTypeSchema,
 	is_ok: z.boolean(),
@@ -25,11 +24,12 @@ export const SimplifiedApexValidationSchema = z.object({
 	mac_sam_serial_number: z.number(),
 	on_board_refund_id: z.string().nullable().default(null),
 	on_board_sale_id: z.string().nullable().default(null),
-	operational_date: OperationalDateSchema,
+	operational_date: OperationalDateIntSchema,
 	pattern_id: z.string().nullable().default(null),
 	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
 	stop_id: z.string().nullable().default(null),
+	transaction_date: UnixTimestampSchema,
 	trip_id: z.string().nullable().default(null),
 	units_qty: z.number().nullable().default(null),
 	updated_at: UnixTimestampSchema,

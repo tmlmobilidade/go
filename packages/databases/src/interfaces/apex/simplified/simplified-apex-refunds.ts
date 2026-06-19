@@ -14,7 +14,6 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardRefund> = {
 	apex_version: { type: 'LowCardinality(String)' },
 	card_physical_type: { type: 'UInt8' },
 	card_serial_number: { type: 'Nullable(UInt64)' },
-	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	device_id: { type: 'LowCardinality(String)' },
 	is_ok: { type: 'Bool' },
 	is_ok_pcgi: { type: 'Bool' },
@@ -22,6 +21,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardRefund> = {
 	mac_ase_counter_value: { type: 'UInt64' },
 	mac_sam_serial_number: { type: 'UInt64' },
 	on_board_sale_id: { type: 'Nullable(UUID)' },
+	operational_date: { type: 'UInt32' },
 	pattern_id: { type: 'LowCardinality(Nullable(String))' },
 	payment_method: { type: 'UInt8' },
 	price: { type: 'Int32' },
@@ -29,6 +29,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardRefund> = {
 	product_quantity: { type: 'Int32' },
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	stop_id: { type: 'LowCardinality(Nullable(String))' },
+	transaction_date: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	trip_id: { type: 'Nullable(String)' },
 	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	validation_id: { type: 'Nullable(UUID)' },
@@ -44,8 +45,8 @@ class SimplifiedApexOnBoardRefundsNewClass extends ClickHouseInterfaceTemplate<S
 
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexOnBoardRefund> = 'ReplacingMergeTree(updated_at)';
-	protected override readonly orderBy = 'agency_id, created_at, _id';
-	protected override readonly partitionBy = 'toYYYYMM(created_at)';
+	protected override readonly orderBy = 'agency_id, transaction_date, _id';
+	protected override readonly partitionBy = 'toYYYYMM(transaction_date)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'refunds';
 
