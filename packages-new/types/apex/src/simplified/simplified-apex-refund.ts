@@ -13,6 +13,7 @@ export const SimplifiedApexOnBoardRefundSchema = z.object({
 	apex_version: z.string(),
 	card_physical_type: ApexCardTypeSchema.default('255'),
 	card_serial_number: z.string().nullable().default(null),
+	created_at: UnixTimestampSchema.optional(), // deprecated
 	device_id: z.string(),
 	is_ok: z.boolean().default(false),
 	is_ok_pcgi: z.boolean().default(false),

@@ -14,6 +14,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	apex_version: z.string(),
 	card_serial_number: z.string().nullable().default(null),
 	category: ApexValidationCategorySchema.default('subscription'),
+	created_at: UnixTimestampSchema.optional(), // deprecated
 	device_id: z.string(),
 	event_type: ApexEventTypeSchema,
 	is_ok: z.boolean(),

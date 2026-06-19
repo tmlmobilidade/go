@@ -9,6 +9,7 @@ export const SimplifiedApexLocationSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
+	created_at: UnixTimestampSchema.optional(), // deprecated
 	device_id: z.string(),
 	is_ok: z.boolean().default(false),
 	is_ok_pcgi: z.boolean().default(false),
