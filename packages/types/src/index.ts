@@ -18,7 +18,6 @@ export * from '@/notification.js';
 export * from '@/offer/index.js';
 export * from '@/operation/index.js';
 export * from '@/organization.js';
-export * from '@/pcgi/index.js';
 export * from '@/permissions/index.js';
 export * from '@/plans/index.js';
 export * from '@/proposed-change.js';

@@ -1,6 +1,5 @@
 /* * */
 
-import { SimplifiedApexTypeSchema } from '@tmlmobilidade/go-types-apex';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -12,10 +11,10 @@ export const SamAnalysisSchema = z.object({
 	end_time: UnixTimestampSchema.nullable(),
 	first_transaction_ase_counter_value: z.number().nullable(),
 	first_transaction_id: z.string().nullable(),
-	first_transaction_type: SimplifiedApexTypeSchema.nullable(),
+	first_transaction_type: z.string().nullable(), // SimplifiedApexTypeSchema
 	last_transaction_ase_counter_value: z.number().nullable(),
 	last_transaction_id: z.string().nullable(),
-	last_transaction_type: SimplifiedApexTypeSchema.nullable(),
+	last_transaction_type: z.string().nullable(), // SimplifiedApexTypeSchema
 	start_time: UnixTimestampSchema.nullable(),
 	transactions_expected: z.number(),
 	transactions_found: z.number(),
