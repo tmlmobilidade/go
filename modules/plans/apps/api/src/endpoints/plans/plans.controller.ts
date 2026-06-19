@@ -13,6 +13,50 @@ export class PlansController {
 	//
 
 	/**
+	 * Lists the plans to generate posters.
+	 * @param request Fastify request containing the plan ID
+	 * @param reply Fastify reply
+	 */
+	static async listPlanToGeneratePosters(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ success: boolean }>) {
+		//
+
+		//
+		// Get the plan data
+
+		const planData = await plans.findById(request.params.id);
+
+		if (!planData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+		}
+
+		//
+		// Get user permissions for the plan
+
+		const userPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.generate_pdf_posters);
+
+		if (!userPermissions) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to generate posters for this plan.');
+		}
+
+		//
+		// Save status to the plan processing posters
+
+		await plans.updateById(planData._id, {
+			apps: {
+				...planData.apps,
+				posters: {
+					last_hash: null,
+					status: 'waiting',
+					timestamp: null,
+				},
+			},
+		});
+
+		//
+		reply.send({ data: { success: true }, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
 	 * Changes the GTFS of a plan by ID
 	 * @param request Fastify request containing plan ID in params and update data in body
 	 * @param reply Fastify reply
@@ -169,6 +213,11 @@ export class PlansController {
 					merger: {
 						last_hash: null,
 						status: 'waiting',
+						timestamp: null,
+					},
+					posters: {
+						last_hash: null,
+						status: 'skipped',
 						timestamp: null,
 					},
 				},

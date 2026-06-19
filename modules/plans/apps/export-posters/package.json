@@ -11,7 +11,7 @@
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build": "tsc && resolve-tspaths",
+		"build": "tsc && cp src/dates.txt dist/dates.txt && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint . --fix"

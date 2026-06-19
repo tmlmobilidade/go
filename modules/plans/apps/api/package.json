@@ -21,6 +21,7 @@
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-exporter-export-posters": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*"
 	},
