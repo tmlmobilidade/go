@@ -23,25 +23,16 @@ on:
       - '.github/workflows/build-modules.yml'
       - '.github/actions/**/*'
       - '.github/templates/**/*'
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - closed
 
 jobs:
 
   # # #
   # Auto-discover modules and module->apps mapping from filesystem,
-  # then filter down to the modules that actually need to build:
-  # - Module file changed -> build only that module.
-  # - Shared package changed -> build every module.
-  # - Manual dispatch -> honour the `module` and `build_all` inputs.
+  # then filter down to the modules that actually need to build.
+  # PR builds are triggered manually via /build (build-command.yml).
 
   discover:
     name: Discover Modules
-    if: github.event.action != 'closed'
     runs-on: ubuntu-24.04-arm
     outputs:
       modules: ${{ steps.discover.outputs.modules }}
