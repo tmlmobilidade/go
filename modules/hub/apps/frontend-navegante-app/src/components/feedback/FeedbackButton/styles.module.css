@@ -1,6 +1,5 @@
 .button {
 	--feedback-trigger-size: 48px;
-
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -29,7 +28,7 @@
 	position: fixed;
 	right: calc(16px + env(safe-area-inset-right));
 	bottom: calc(16px + env(safe-area-inset-bottom));
-	z-index: 110;
+	z-index: 100;
 }
 
 .button[data-variant='default'] {
