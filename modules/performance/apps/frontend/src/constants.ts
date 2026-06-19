@@ -1,6 +1,6 @@
 /* * */
 
-import { IconBuildingFactory, IconBus, IconCheckupList, IconCurrencyEuro, IconLeaf, IconMapPin, IconMoodSmile, IconShieldCheck, IconUsers } from '@tabler/icons-react';
+import { IconBuildingFactory, IconBus, IconCheckupList, IconCurrencyEuro, IconLeaf, IconMapPin, IconMessageCircle, IconMoodSmile, IconShieldCheck, IconUsers } from '@tabler/icons-react';
 
 export interface DashboardDefinition {
 	description?: string
@@ -23,6 +23,7 @@ export const TOPICS = {
 	COVERAGE_AVAILABILITY: 'coverage-availability',
 	CUSTOMER_SATISFACTION: 'customer-satisfaction',
 	DEMAND: 'demand',
+	FEEDBACK: 'feedback',
 	INSPECTIONS: 'inspections',
 	OPERATIONAL_COSTS: 'operational_costs',
 	REVENUE: 'revenue',
@@ -81,6 +82,13 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 		icon: IconBus,
 		key: TOPICS.SUPPLY,
 		label: 'Oferta',
+		visible: true,
+	},
+	{
+		dashboards: [],
+		icon: IconMessageCircle,
+		key: TOPICS.FEEDBACK,
+		label: 'Feedback',
 		visible: true,
 	},
 	{
