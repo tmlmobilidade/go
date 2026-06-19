@@ -68,6 +68,7 @@
 		"dev:controller:rides-feeder": "ENVIRONMENT=dev dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-rides-feeder",
 		"dev:controller:rides-feeder:prd": "ENVIRONMENT=dev dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-rides-feeder",
 		"dev:controller:ui": "ENVIRONMENT=dev dotenv-run -f ./modules/controller/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
+		"dev:controller:ui:prd": "ENVIRONMENT=dev dotenv-run -f ./modules/controller/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
 		"dev:dates": "ENVIRONMENT=dev dotenv-run -f ./modules/dates/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-dates-*",
 		"dev:eta": "npm run build:eta:packages && ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
 		"dev:eta:prd": "npm run build:eta:packages && ENVIRONMENT=production dotenv-run -f ./modules/eta/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
