@@ -1,6 +1,8 @@
 /* * */
 
-import { ApexValidationStatusSchema } from '@/utils/validations-status.js';
+import { ApexEventTypeSchema } from '@/utils/event-type.js';
+import { ApexValidationCategorySchema } from '@/utils/validation-category.js';
+import { ApexValidationStatusSchema, ValidApexValidationStatusSchema } from '@/utils/validation-status.js';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -11,10 +13,10 @@ export const SimplifiedApexValidationSchema = z.object({
 	agency_id: z.string(),
 	apex_version: z.string(),
 	card_serial_number: z.string().nullable().default(null),
-	category: z.enum(['prepaid', 'subscription', 'on_board_sale']).nullable(),
+	category: ApexValidationCategorySchema.default('subscription'),
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
-	event_type: z.number(),
+	event_type: ApexEventTypeSchema,
 	is_ok: z.boolean(),
 	is_ok_pcgi: z.boolean(),
 	is_passenger: z.boolean(),
@@ -32,9 +34,40 @@ export const SimplifiedApexValidationSchema = z.object({
 	updated_at: UnixTimestampSchema,
 	validation_status: ApexValidationStatusSchema,
 	vehicle_id: z.number().nullable().default(null),
+}).transform((val) => {
+	// Check whether the transaction has a valid units quantity field
+	// and allow zero as valid value (for subsidized trips). In those cases,
+	// the validation is considered to be of category 'prepaid'.
+	if (!!val.units_qty || val.units_qty === 0) return { ...val, category: 'prepaid' };
+	// Check if a sale transaction is associated with this validation.
+	// If so, the validation is considered to be of category 'on_board_sale'.
+	if (val.on_board_sale_id) return { ...val, category: 'on_board_sale' };
+	// If no other category is detected, the validation is considered
+	// to be of category 'subscription'.
+	return { ...val, category: 'subscription' };
+}).transform((val) => {
+	// Setup the individual conditions to consider
+	// this transaction as OK or NOT OK
+	const hasStopId = !!val.stop_id;
+	const hasDeviceId = !!val.device_id;
+	const hasProductId = !!val.product_id;
+	const hasAseCounterValue = !!val.mac_ase_counter_value && val.mac_ase_counter_value > 0;
+	const hasMacSamSerialNumber = !!val.mac_sam_serial_number;
+	const hasValidationStatus = !!val.validation_status;
+	// Combine the individual conditions
+	const isOk = hasStopId && hasDeviceId && hasProductId && hasAseCounterValue && hasMacSamSerialNumber && hasValidationStatus;
+	// Return the transformed value
+	return { ...val, is_ok: isOk };
+}).transform((val) => {
+	// Setup the individual conditions to consider
+	// this transaction as a valid passenger
+	const isValidValidationStatus = ValidApexValidationStatusSchema.safeParse(val.validation_status).success;
+	const isNotRefunded = val.on_board_refund_id == null;
+	// Combine the individual conditions
+	const isPassenger = val.is_ok && isValidValidationStatus && isNotRefunded;
+	// Return the transformed value
+	return { ...val, is_passenger: isPassenger };
 });
-
-export const UpdateSimplifiedApexValidationSchema = SimplifiedApexValidationSchema.partial();
 
 /**
  * APEX Validations are APEX transactions of type 11 that are generated when a card holder touches a validator
@@ -44,4 +77,3 @@ export const UpdateSimplifiedApexValidationSchema = SimplifiedApexValidationSche
  * the validator machine, the route, and the time and location of the validation.
  */
 export type SimplifiedApexValidation = z.infer<typeof SimplifiedApexValidationSchema>;
-export type UpdateSimplifiedApexValidationDto = z.infer<typeof UpdateSimplifiedApexValidationSchema>;

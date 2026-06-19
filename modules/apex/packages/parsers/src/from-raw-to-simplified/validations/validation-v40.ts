@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionValidationV40, type SimplifiedApexValidation, SimplifiedApexValidationSchema } from '@tmlmobilidade/go-types-apex';
+import { ApexEventTypeSchema, type RawApexTransactionValidationV40, type SimplifiedApexValidation, SimplifiedApexValidationSchema } from '@tmlmobilidade/go-types-apex';
 import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
@@ -26,7 +26,7 @@ export function parseRawApexTransactionValidationV40IntoSimplifiedApexValidation
 		category: 'subscription',
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
-		event_type: doc.payload.validationInfo.eventType,
+		event_type: ApexEventTypeSchema.parse(String(doc.payload.validationInfo.eventType)),
 		is_ok: false,
 		is_ok_pcgi: doc.is_ok,
 		is_passenger: false,
