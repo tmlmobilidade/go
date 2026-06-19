@@ -114,7 +114,7 @@ export async function exportValidationsAggregated({ context, groupFields, messag
 		// Prepare the result key
 
 		const operationalDate = Dates
-			.fromUnixTimestamp(document.created_at)
+			.fromUnixTimestamp(document['created_at'])
 			.setZone('Europe/Lisbon', 'offset_only')
 			.operational_date;
 
