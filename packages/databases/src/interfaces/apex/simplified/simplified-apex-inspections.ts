@@ -43,8 +43,8 @@ class SimplifiedApexInspectionsNewClass extends ClickHouseInterfaceTemplate<Simp
 
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexInspection> = 'ReplacingMergeTree(updated_at)';
-	protected override readonly orderBy = 'agency_id, transaction_date, _id';
-	protected override readonly partitionBy = 'toYYYYMM(transaction_date)';
+	protected override readonly orderBy = 'agency_id, created_at, _id';
+	protected override readonly partitionBy = 'toYYYYMM(created_at)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'inspections';
 
