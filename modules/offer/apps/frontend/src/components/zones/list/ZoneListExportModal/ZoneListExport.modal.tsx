@@ -1,7 +1,8 @@
 'use client';
 
+import { ZonesListExportContextProvider } from '@/contexts/ZonesExport.content';
 import { DataProviders } from '@/providers/data-providers';
-import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
+import { AgenciesContextProvider, closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 import { ZoneListExportModal } from '.';
 import { ZonesListContextProvider } from '../ZonesList.context';
@@ -17,9 +18,13 @@ export const openZoneListExportModal = () => {
 		children: (
 			<DataProviders>
 				<MeContextProvider>
-					<ZonesListContextProvider>
-						<ZoneListExportModal />
-					</ZonesListContextProvider>
+					<AgenciesContextProvider>
+						<ZonesListContextProvider>
+							<ZonesListExportContextProvider>
+								<ZoneListExportModal />
+							</ZonesListExportContextProvider>
+						</ZonesListContextProvider>
+					</AgenciesContextProvider>
 				</MeContextProvider>
 			</DataProviders>
 		),
