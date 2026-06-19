@@ -79,7 +79,7 @@ export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReaso
 				</FeedbackMoodSelector>
 
 				{selectedMood && (
-					<FeedbackSubmitButton onClick={onSubmit} />
+					<FeedbackSubmitButton className={styles.submitButton} onClick={onSubmit} />
 				)}
 			</Modal>
 

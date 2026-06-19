@@ -36,7 +36,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	const [selectedMood, setSelectedMood] = useState<null | PublicFeedback['mood']>(null);
 	const [thankYouMessageKey, setThankYouMessageKey] = useState(0);
 
-	const reasonGroups = getFeedbackReasonGroups(entityType, agencyId);
+	const reasonGroups = getFeedbackReasonGroups(entityType);
 	const reasonCategories = Object.keys(reasonGroups) as FeedbackReasonCategory[];
 	const isAnyReasonsSheetOpen = isHappyReasonsSheetOpen || isUnhappyReasonsSheetOpen || activeReasonOptionsSheet !== null;
 	const feedbackCooldown = useFeedbackCooldown(entityType === 'line' ? entityId : undefined);
@@ -70,9 +70,13 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 		setActiveReasonOptionsSheet(null);
 	};
 
-	const handleContinueReasonOptionsSheet = (reasonValues: string[]) => {
-		setSelectedReasonValues(reasonValues);
+	const resetFeedbackForm = () => {
+		setIsFeedbackModalOpen(false);
+		setIsHappyReasonsSheetOpen(false);
+		setIsUnhappyReasonsSheetOpen(false);
 		setActiveReasonOptionsSheet(null);
+		setSelectedMood(null);
+		setSelectedReasonValues([]);
 	};
 
 	const submitFeedback = async (feedbackMood: null | PublicFeedback['mood'], feedbackReasonValues: string[]) => {
@@ -108,18 +112,25 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 		}
 	};
 
-	const handleCloseFeedbackModal = () => {
+	const handleCancelFeedbackModal = () => {
+		resetFeedbackForm();
+	};
+
+	const handleSubmitFeedbackModal = () => {
 		const feedbackMood = selectedMood;
 		const feedbackReasonValues = selectedReasonValues;
 
-		setIsFeedbackModalOpen(false);
-		setIsHappyReasonsSheetOpen(false);
-		setIsUnhappyReasonsSheetOpen(false);
-		setActiveReasonOptionsSheet(null);
-		setSelectedMood(null);
-		setSelectedReasonValues([]);
+		resetFeedbackForm();
 
 		void submitFeedback(feedbackMood, feedbackReasonValues);
+	};
+
+	const handleSubmitReasonOptionsSheet = (reasonValues: string[]) => {
+		const feedbackMood = selectedMood;
+
+		resetFeedbackForm();
+
+		void submitFeedback(feedbackMood, reasonValues);
 	};
 
 	//
@@ -133,18 +144,17 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 
 			<FeedbackModal
 				isAnyReasonsSheetOpen={isAnyReasonsSheetOpen}
-				onClose={handleCloseFeedbackModal}
+				onClose={handleCancelFeedbackModal}
 				onOpenHappyReasonsSheet={handleOpenHappyReasonsSheet}
 				onSelectHappy={() => setSelectedMood('happy')}
 				onSelectUnhappy={handleSelectUnhappy}
-				onSubmit={handleCloseFeedbackModal}
+				onSubmit={handleSubmitFeedbackModal}
 				opened={isFeedbackModalOpen}
 				selectedMood={selectedMood}
 				thankYouMessageKey={thankYouMessageKey}
 			/>
 
 			<FeedbackReasonsSheet
-				agencyId={agencyId}
 				description="Ajude-nos a melhorar o serviço."
 				entityType={entityType}
 				heading="O que podemos melhorar?"
@@ -154,7 +164,6 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			/>
 
 			<FeedbackReasonsSheet
-				agencyId={agencyId}
 				description="Ajude-nos a melhorar o serviço."
 				entityType={entityType}
 				heading="Com o que está insatisfeito?"
@@ -166,11 +175,10 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			{reasonCategories.map(category => (
 				<FeedbackReasonOptionsSheet
 					key={category}
-					agencyId={agencyId}
 					category={category}
 					entityType={entityType}
 					onClose={handleCloseReasonOptionsSheet}
-					onContinue={handleContinueReasonOptionsSheet}
+					onSubmit={handleSubmitReasonOptionsSheet}
 					opened={activeReasonOptionsSheet === category}
 					selectedValues={selectedReasonValues}
 				/>

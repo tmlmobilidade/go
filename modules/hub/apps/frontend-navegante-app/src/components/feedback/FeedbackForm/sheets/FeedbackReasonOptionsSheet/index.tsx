@@ -2,7 +2,7 @@
 
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { FEEDBACK_REASON_SELECTION_LIMIT, type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
-import { IconArrowRight } from '@tabler/icons-react';
+import { FeedbackSubmitButton } from '@/components/feedback/FeedbackForm/components/FeedbackSubmitButton';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -10,18 +10,17 @@ import styles from './styles.module.css';
 /* * */
 
 interface FeedbackReasonOptionsSheetProps {
-	agencyId?: string
 	category: FeedbackReasonCategory
 	entityType: FeedbackEntityType
 	onClose: () => void
-	onContinue: (values: string[]) => void
+	onSubmit: (values: string[]) => void
 	opened: boolean
 	selectedValues: string[]
 }
 
 /* * */
 
-export function FeedbackReasonOptionsSheet({ agencyId, category, entityType, onClose, onContinue, opened, selectedValues }: FeedbackReasonOptionsSheetProps) {
+export function FeedbackReasonOptionsSheet({ category, entityType, onClose, onSubmit, opened, selectedValues }: FeedbackReasonOptionsSheetProps) {
 	//
 
 	//
@@ -29,7 +28,8 @@ export function FeedbackReasonOptionsSheet({ agencyId, category, entityType, onC
 
 	const [draftSelectedValues, setDraftSelectedValues] = useState<string[]>(selectedValues);
 
-	const reasonGroup = getFeedbackReasonGroups(entityType, agencyId)[category];
+	const reasonGroup = getFeedbackReasonGroups(entityType)[category];
+	const hasDraftSelectedValues = draftSelectedValues.length > 0;
 	const hasReachedSelectionLimit = draftSelectedValues.length >= FEEDBACK_REASON_SELECTION_LIMIT;
 
 	//
@@ -40,8 +40,8 @@ export function FeedbackReasonOptionsSheet({ agencyId, category, entityType, onC
 		onClose();
 	};
 
-	const handleContinue = () => {
-		onContinue([...draftSelectedValues]);
+	const handleSubmit = () => {
+		onSubmit([...draftSelectedValues]);
 	};
 
 	const handleToggleReason = (reasonValue: string) => {
@@ -100,12 +100,9 @@ export function FeedbackReasonOptionsSheet({ agencyId, category, entityType, onC
 					})}
 				</div>
 
-				<div className={styles.sheetActions}>
-					<button className={styles.continueButton} onClick={handleContinue} type="button">
-						<span>Continuar</span>
-						<IconArrowRight aria-hidden={true} size={18} stroke={2.2} />
-					</button>
-				</div>
+				{hasDraftSelectedValues && (
+					<FeedbackSubmitButton className={styles.submitButton} onClick={handleSubmit} />
+				)}
 			</div>
 		</BottomSheet>
 	);

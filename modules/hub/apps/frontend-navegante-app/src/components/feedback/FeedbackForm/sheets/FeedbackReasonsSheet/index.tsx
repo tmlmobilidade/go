@@ -9,7 +9,6 @@ import styles from './styles.module.css';
 /* * */
 
 interface FeedbackReasonsSheetProps {
-	agencyId?: string
 	description: string
 	entityType: FeedbackEntityType
 	heading: string
@@ -30,13 +29,13 @@ function getReasonCategoryIcon(category: string) {
 
 /* * */
 
-export function FeedbackReasonsSheet({ agencyId, description, entityType, heading, onClose, onSelectCategory, opened }: FeedbackReasonsSheetProps) {
+export function FeedbackReasonsSheet({ description, entityType, heading, onClose, onSelectCategory, opened }: FeedbackReasonsSheetProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const reasonGroups = getFeedbackReasonGroups(entityType, agencyId);
+	const reasonGroups = getFeedbackReasonGroups(entityType);
 
 	//
 	// B. Render component

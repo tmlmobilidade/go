@@ -1,13 +1,8 @@
 /* * */
 
-export const FEEDBACK_SUPPORT_AGENCY_IDS = ['1', '41', '42', '43', '44', 'CM'] as const;
-
-/* * */
-
 export type FeedbackEntityType = 'line' | 'stop';
 export type FeedbackReasonCategory = 'driver' | 'line_service' | 'stop' | 'vehicle';
 export interface FeedbackReasonConfig {
-	agencies?: readonly string[]
 	category: readonly FeedbackReasonCategory[]
 	id: string
 	name: string
@@ -28,7 +23,8 @@ export type FeedbackReasonGroups = Partial<Record<FeedbackReasonCategory, Feedba
 
 /* * */
 
-export const FEEDBACK_REASON_SELECTION_LIMIT = 4;
+// use for checkbox limit ajusts :)
+export const FEEDBACK_REASON_SELECTION_LIMIT = 1;
 
 const CATEGORY_HEADINGS = {
 	driver: 'Motorista/Condutor',
@@ -39,9 +35,8 @@ const CATEGORY_HEADINGS = {
 
 const CATEGORIES = {
 	line: ['driver', 'line_service', 'vehicle'],
-	line_without_driver: ['line_service', 'vehicle'],
 	stop: ['stop'],
-} as const satisfies Record<string, readonly FeedbackReasonCategory[]>;
+} as const satisfies Record<FeedbackEntityType, readonly FeedbackReasonCategory[]>;
 
 /* * */
 
@@ -221,21 +216,18 @@ export const feedbackConfig = [
 		scope: ['line', 'stop'],
 	},
 	{
-		agencies: FEEDBACK_SUPPORT_AGENCY_IDS,
 		category: ['driver'],
 		id: 'lack_of_passenger_support',
 		name: 'Falta de apoio ao passageiro',
 		scope: ['line'],
 	},
 	{
-		agencies: FEEDBACK_SUPPORT_AGENCY_IDS,
 		category: ['driver'],
 		id: 'rude_staff',
 		name: 'Atendimento rude',
 		scope: ['line'],
 	},
 	{
-		agencies: FEEDBACK_SUPPORT_AGENCY_IDS,
 		category: ['driver'],
 		id: 'driver_bad_conduct',
 		name: 'Má conduta do motorista',
@@ -323,13 +315,8 @@ export const feedbackConfig = [
 
 /* * */
 
-export function getFeedbackReasonGroups(entityType: FeedbackEntityType, agencyId?: string): FeedbackReasonGroups {
-	const categories = entityType === 'stop'
-		? CATEGORIES.stop
-		: agencyId && (FEEDBACK_SUPPORT_AGENCY_IDS as readonly string[]).includes(agencyId)
-			? CATEGORIES.line
-			: CATEGORIES.line_without_driver;
-
+export function getFeedbackReasonGroups(entityType: FeedbackEntityType): FeedbackReasonGroups {
+	const categories = CATEGORIES[entityType];
 	const feedbackReasons: readonly FeedbackReasonConfig[] = feedbackConfig;
 	const reasonGroups: FeedbackReasonGroups = {};
 
@@ -337,7 +324,6 @@ export function getFeedbackReasonGroups(entityType: FeedbackEntityType, agencyId
 		const options = feedbackReasons
 			.filter(reason => reason.scope.includes(entityType))
 			.filter(reason => reason.category.includes(category))
-			.filter(reason => !reason.agencies || (!!agencyId && reason.agencies.includes(agencyId)))
 			.map(reason => ({
 				label: reason.name,
 				value: reason.id,

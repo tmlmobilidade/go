@@ -1,24 +1,24 @@
 'use client';
 
 import { IconSend } from '@tabler/icons-react';
+import clsx from 'clsx';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface FeedbackSubmitButtonProps {
+export interface FeedbackSubmitButtonProps {
+	className?: string
 	onClick: () => void
 }
 
 /* * */
 
-export function FeedbackSubmitButton({ onClick }: FeedbackSubmitButtonProps) {
+export function FeedbackSubmitButton({ className, onClick }: FeedbackSubmitButtonProps) {
 	return (
-		<div className={styles.container}>
-			<button className={styles.button} onClick={onClick} type="button">
-				<IconSend aria-hidden={true} size={18} stroke={2.2} />
-				<span>Enviar feedback</span>
-			</button>
-		</div>
+		<button className={clsx(styles.button, className)} onClick={onClick} type="button">
+			<IconSend aria-hidden={true} size={18} stroke={2.2} />
+			<span>Enviar feedback</span>
+		</button>
 	);
 }
