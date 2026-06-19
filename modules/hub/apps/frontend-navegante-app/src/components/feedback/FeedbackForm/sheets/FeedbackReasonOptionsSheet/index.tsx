@@ -4,6 +4,7 @@ import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { FEEDBACK_REASON_SELECTION_LIMIT, type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
 import { FeedbackSubmitButton } from '@/components/feedback/FeedbackForm/components/FeedbackSubmitButton';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -27,8 +28,9 @@ export function FeedbackReasonOptionsSheet({ category, entityType, onClose, onSu
 	// A. Setup variables
 
 	const [draftSelectedValues, setDraftSelectedValues] = useState<string[]>(selectedValues);
+	const { t } = useTranslation();
 
-	const reasonGroup = getFeedbackReasonGroups(entityType)[category];
+	const reasonGroup = getFeedbackReasonGroups(entityType, reasonId => t(`default:feedback.reasons.${reasonId}`))[category];
 	const hasDraftSelectedValues = draftSelectedValues.length > 0;
 	const hasReachedSelectionLimit = draftSelectedValues.length >= FEEDBACK_REASON_SELECTION_LIMIT;
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
+import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonCategories } from '@/components/feedback/feedback-config';
 import { FeedbackTrigger } from '@/components/feedback/FeedbackButton';
 import { FeedbackModal } from '@/components/feedback/FeedbackForm/components/FeedbackModal';
 import { FeedbackReasonOptionsSheet } from '@/components/feedback/FeedbackForm/sheets/FeedbackReasonOptionsSheet';
@@ -36,8 +36,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	const [selectedMood, setSelectedMood] = useState<null | PublicFeedback['mood']>(null);
 	const [thankYouMessageKey, setThankYouMessageKey] = useState(0);
 
-	const reasonGroups = getFeedbackReasonGroups(entityType);
-	const reasonCategories = Object.keys(reasonGroups) as FeedbackReasonCategory[];
+	const reasonCategories = getFeedbackReasonCategories(entityType) as readonly FeedbackReasonCategory[];
 	const isAnyReasonsSheetOpen = isHappyReasonsSheetOpen || isUnhappyReasonsSheetOpen || activeReasonOptionsSheet !== null;
 	const feedbackCooldown = useFeedbackCooldown(entityType === 'line' ? entityId : undefined);
 

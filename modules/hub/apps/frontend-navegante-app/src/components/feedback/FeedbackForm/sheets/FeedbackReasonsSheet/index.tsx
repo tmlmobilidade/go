@@ -3,6 +3,7 @@
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
 import { IconBus, IconBusStop, IconRoute, IconSteeringWheel } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -35,7 +36,9 @@ export function FeedbackReasonsSheet({ description, entityType, heading, onClose
 	//
 	// A. Setup variables
 
-	const reasonGroups = getFeedbackReasonGroups(entityType);
+	const { t } = useTranslation();
+
+	const reasonGroups = getFeedbackReasonGroups(entityType, reasonId => t(`default:feedback.reasons.${reasonId}`));
 
 	//
 	// B. Render component
