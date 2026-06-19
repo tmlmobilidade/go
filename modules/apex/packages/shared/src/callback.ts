@@ -50,7 +50,7 @@ export async function invalidateRides(data: CommonSimplifiedApexDocument[]) {
 			// Rides that are affected by the new data.
 			.map((item: CommonSimplifiedApexDocument) => {
 				const standardWindowInterval = Dates
-					.fromUnixTimestamp(item.transaction_date)
+					.fromUnixTimestamp(item.created_at)
 					.std_window;
 				return {
 					start_time_scheduled: {
