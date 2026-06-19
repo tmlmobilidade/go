@@ -3,7 +3,7 @@
 import { ApexEventTypeSchema } from '@/utils/event-type.js';
 import { ApexValidationCategorySchema } from '@/utils/validation-category.js';
 import { ApexValidationStatusSchema, ValidApexValidationStatusSchema } from '@/utils/validation-status.js';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -25,6 +25,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	mac_sam_serial_number: z.number(),
 	on_board_refund_id: z.string().nullable().default(null),
 	on_board_sale_id: z.string().nullable().default(null),
+	operational_date: OperationalDateSchema,
 	pattern_id: z.string().nullable().default(null),
 	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,

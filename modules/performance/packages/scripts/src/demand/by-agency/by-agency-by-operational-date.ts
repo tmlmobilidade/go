@@ -1,6 +1,6 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { demandByAgencyByOperationalDate } from '@tmlmobilidade/databases';
 
 /* * */
 
@@ -8,7 +8,9 @@ export async function runDemandByAgencyByOperationalDate() {
 	//
 
 	//
-	// Prepare the date field values
+	// Run the aggregation query to populate the table
 
-	const transactionDateValue = 'hello';
+	await demandByAgencyByOperationalDate.queryFromFile('/Users/joao/Developer/tmlmobilidade/go/modules/performance/sql/demand/by-agency-by-operational-date.sql');
+
+	console.log('Done!');
 }
