@@ -1,6 +1,6 @@
 'use client';
 
-import { FEEDBACK_REASON_SELECTION_LIMIT, type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
+import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
 import { FeedbackTrigger } from '@/components/feedback/FeedbackButton';
 import { FeedbackModal } from '@/components/feedback/FeedbackForm/components/FeedbackModal';
 import { FeedbackReasonOptionsSheet } from '@/components/feedback/FeedbackForm/sheets/FeedbackReasonOptionsSheet';
@@ -70,13 +70,9 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 		setActiveReasonOptionsSheet(null);
 	};
 
-	const handleToggleReason = (reasonValue: string) => {
-		setSelectedReasonValues((currentValue) => {
-			if (currentValue.includes(reasonValue)) return currentValue.filter(value => value !== reasonValue);
-			if (currentValue.length >= FEEDBACK_REASON_SELECTION_LIMIT) return currentValue;
-
-			return [...currentValue, reasonValue];
-		});
+	const handleContinueReasonOptionsSheet = (reasonValues: string[]) => {
+		setSelectedReasonValues(reasonValues);
+		setActiveReasonOptionsSheet(null);
 	};
 
 	const submitFeedback = async (feedbackMood: null | PublicFeedback['mood'], feedbackReasonValues: string[]) => {
@@ -174,7 +170,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 					category={category}
 					entityType={entityType}
 					onClose={handleCloseReasonOptionsSheet}
-					onToggleReason={handleToggleReason}
+					onContinue={handleContinueReasonOptionsSheet}
 					opened={activeReasonOptionsSheet === category}
 					selectedValues={selectedReasonValues}
 				/>
