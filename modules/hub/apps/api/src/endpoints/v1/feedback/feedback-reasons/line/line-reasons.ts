@@ -23,7 +23,6 @@ export const PublicFeedbackLineReasonValues = [
 	'accessibility_issue',
 	'lighting_issue',
 	'lack_of_passenger_support',
-	'long_headway',
 	'rude_staff',
 	'driver_bad_conduct',
 	'disorganized_boarding',
