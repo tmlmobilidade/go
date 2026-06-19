@@ -106,8 +106,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 
 			feedbackCooldown.startCooldown();
 			setThankYouMessageKey(currentValue => currentValue + 1);
-		}
-		catch (error) {
+		} catch (error) {
 			console.error({ error, message: 'Error submitting feedback.' });
 		}
 	};
@@ -135,6 +134,8 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 
 	//
 	// C. Render component
+
+	if (!agencyId || !entityId) return null;
 
 	return (
 		<>
