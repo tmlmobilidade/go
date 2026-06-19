@@ -21,6 +21,7 @@ export function parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexIn
 		_id: doc.payload.transactionInfo.transactionId,
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
+		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
 		final_control_status: ApexControlStatusSchema.parse(String(doc.payload.controlAckInfo.finalControlStatus)),
 		inspection_id: doc.payload.controlAckInfo.corrControlTransactionID,
@@ -30,7 +31,6 @@ export function parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexIn
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
 		operational_date: transactionDateValue.operational_date_int,
 		received_at: doc.received_at,
-		transaction_date: transactionDateValue.unix_timestamp,
 		updated_at: Dates.now('utc').unix_timestamp,
 	};
 
