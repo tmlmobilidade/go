@@ -7,6 +7,7 @@ on:
 permissions:
   pull-requests: write
   issues: write
+  contents: read
 
 jobs:
   comment:
@@ -19,27 +20,38 @@ jobs:
           script: |
             const prNumber = context.payload.pull_request.number;
 
+            const { data: contents } = await github.rest.repos.getContent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: 'modules',
+              ref: context.payload.pull_request.head.ref,
+            });
+
+            const moduleList = contents
+              .filter((item) => item.type === 'dir')
+              .map((item) => `- \`${item.name}\``)
+              .sort()
+              .join('\n');
+
             const body = [
               '### Builds',
               '',
-              'Comment to build — each module runs as a separate workflow:',
+              'PRs do not auto-build on push. Comment to build — each module runs as a separate workflow:',
               '```',
               '/build <module> [module...]',
               '/build all',
               '```',
               '',
-              'Example: `/build web docs`',
+              'Example: `/build stops`',
               '',
               '**Available modules:**',
               moduleList,
               '',
               '---',
               '',
-              '### Environment (After build some modules)',
+              '### Environment (after `/build`)',
               '',
-              'Behold! Your PR has ascended to its own environment:',
-              '',
-              'https://pr-${prNumber}.go-stg.tmlmobilidade.pt/',
+              `https://pr-${prNumber}.go-stg.tmlmobilidade.pt/`,
               '',
               'Test wisely, deploy bravely'
             ].join('\n');
