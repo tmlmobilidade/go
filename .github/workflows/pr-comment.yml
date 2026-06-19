@@ -19,9 +19,34 @@ jobs:
           script: |
             const prNumber = context.payload.pull_request.number;
 
+            const body = [
+              '### Builds',
+              '',
+              'Comment to build — each module runs as a separate workflow:',
+              '```',
+              '/build <module> [module...]',
+              '/build all',
+              '```',
+              '',
+              'Example: `/build web docs`',
+              '',
+              '**Available modules:**',
+              moduleList,
+              '',
+              '---',
+              '',
+              '### Environment (After build some modules)',
+              '',
+              'Behold! Your PR has ascended to its own environment:',
+              '',
+              'https://pr-${prNumber}.go-stg.tmlmobilidade.pt/',
+              '',
+              'Test wisely, deploy bravely'
+            ].join('\n');
+
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
-              body: `Behold! Your PR has ascended to its own environment:\n\nhttps://pr-${prNumber}.go-stg.tmlmobilidade.pt/\n\nTest wisely, deploy bravely`
+              body: body
             });
