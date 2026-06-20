@@ -1,0 +1,14 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	position: absolute;
+	top: 0;
+	right: 40px;
+	max-width: 320px;
+	overflow: hidden;
+	background-color: #fff;
+	border-bottom-right-radius: 8px;
+	border-bottom-left-radius: 8px;
+	box-shadow: 0 0 30px rgb(0 0 0 / 50%);
+}

@@ -1,0 +1,39 @@
+{
+	"name": "@tmlmobilidade/go-hub-frontend-videowall",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"private": true,
+	"scripts": {
+		"build": "next build",
+		"dev": "next dev -p 51100",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src"
+	},
+	"dependencies": {
+		"@tabler/icons-react": "3.44.0",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/ui": "*",
+		"@tmlmobilidade/utils": "*",
+		"next": "16.2.9",
+		"react": "19.2.7",
+		"react-dom": "19.2.7",
+		"react-i18next": "17.0.8",
+		"sharp": "0.35.1",
+		"swr": "2.4.1"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/eslint": "*",
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
+		"@types/geojson": "7946.0.16",
+		"@types/node": "25.9.3",
+		"@types/react": "19.2.17",
+		"@types/react-dom": "19.2.3",
+		"typescript": "6.0.3"
+	}
+}
