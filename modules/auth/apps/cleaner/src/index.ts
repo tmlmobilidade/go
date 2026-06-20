@@ -23,7 +23,7 @@ async function main() {
 	}
 
 	// Only run in production environment
-	if (process.env.ENVIRONMENT !== 'prd') {
+	if (process.env.ENVIRONMENT !== 'production') {
 		Logger.info({ message: 'Cleaner is disabled in non-prd environments' });
 		return;
 	}
