@@ -1,7 +1,6 @@
 /* * */
 
 import pjson from '#/package.json';
-import { AppReload } from '@/components/AppReload';
 import { i18nResourceKeysPt } from '@/i18n/resources';
 import { BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
@@ -25,7 +24,6 @@ export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} version={pjson.version}>
 			<NuqsAdapter>
-				<AppReload />
 				{children}
 			</NuqsAdapter>
 		</BaseProvider>

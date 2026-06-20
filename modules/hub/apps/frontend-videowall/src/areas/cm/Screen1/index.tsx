@@ -16,7 +16,9 @@ export function Screen1() {
 	//
 	// A. Fetch data
 
-	const { data: validationsData, isLoading: validationsLoading, isValidating: validationsValidating } = useSWR('https://api.carrismetropolitana.pt/v2/metrics/videowall/validations');
+	const { data: validationsData, isLoading: validationsLoading, isValidating: validationsValidating } = useSWR({ credentials: 'omit', url: 'https://api.carrismetropolitana.pt/v2/metrics/videowall/validations' });
+
+	console.log(validationsData);
 
 	//
 	// B. Transform data
@@ -24,50 +26,50 @@ export function Screen1() {
 	const validationsCmParsed = useMemo(() => {
 		if (!validationsData) return { primary_value: 0, secondary_value: 0, secondary_value_string: '?%' };
 		return {
-			primary_value: validationsData.data._cm_today_valid_count,
-			primary_value_string: Intl.NumberFormat('pt-PT').format(validationsData.data._cm_today_valid_count),
-			secondary_value: validationsData.data._cm_today_valid_count / validationsData.data._cm_last_week_valid_count,
-			secondary_value_string: `${parseFloat(((validationsData.data._cm_today_valid_count * 100) / validationsData.data._cm_last_week_valid_count).toFixed(2))}%`,
+			primary_value: validationsData._cm_today_valid_count,
+			primary_value_string: Intl.NumberFormat('pt-PT').format(validationsData._cm_today_valid_count),
+			secondary_value: validationsData._cm_today_valid_count / validationsData._cm_last_week_valid_count,
+			secondary_value_string: `${parseFloat(((validationsData._cm_today_valid_count * 100) / validationsData._cm_last_week_valid_count).toFixed(2))}%`,
 		};
 	}, [validationsData]);
 
 	const validations41Parsed = useMemo(() => {
 		if (!validationsData) return { primary_value: 0, secondary_value: 0, secondary_value_string: '?%' };
 		return {
-			primary_value: validationsData.data._41_today_valid_count,
-			primary_value_string: Intl.NumberFormat('pt-PT').format(validationsData.data._41_today_valid_count),
-			secondary_value: validationsData.data._41_today_valid_count / validationsData.data._41_last_week_valid_count,
-			secondary_value_string: `${parseFloat(((validationsData.data._41_today_valid_count * 100) / validationsData.data._41_last_week_valid_count).toFixed(2))}%`,
+			primary_value: validationsData._41_today_valid_count,
+			primary_value_string: Intl.NumberFormat('pt-PT').format(validationsData._41_today_valid_count),
+			secondary_value: validationsData._41_today_valid_count / validationsData._41_last_week_valid_count,
+			secondary_value_string: `${parseFloat(((validationsData._41_today_valid_count * 100) / validationsData._41_last_week_valid_count).toFixed(2))}%`,
 		};
 	}, [validationsData]);
 
 	const validations42Parsed = useMemo(() => {
 		if (!validationsData) return { primary_value: 0, secondary_value: 0, secondary_value_string: '?%' };
 		return {
-			primary_value: validationsData.data._42_today_valid_count,
-			primary_value_string: Intl.NumberFormat('pt-PT').format(validationsData.data._42_today_valid_count),
-			secondary_value: validationsData.data._42_today_valid_count / validationsData.data._42_last_week_valid_count,
-			secondary_value_string: `${parseFloat(((validationsData.data._42_today_valid_count * 100) / validationsData.data._42_last_week_valid_count).toFixed(2))}%`,
+			primary_value: validationsData._42_today_valid_count,
+			primary_value_string: Intl.NumberFormat('pt-PT').format(validationsData._42_today_valid_count),
+			secondary_value: validationsData._42_today_valid_count / validationsData._42_last_week_valid_count,
+			secondary_value_string: `${parseFloat(((validationsData._42_today_valid_count * 100) / validationsData._42_last_week_valid_count).toFixed(2))}%`,
 		};
 	}, [validationsData]);
 
 	const validations43Parsed = useMemo(() => {
 		if (!validationsData) return { primary_value: 0, secondary_value: 0, secondary_value_string: '?%' };
 		return {
-			primary_value: validationsData.data._43_today_valid_count,
-			primary_value_string: Intl.NumberFormat('pt-PT').format(validationsData.data._43_today_valid_count),
-			secondary_value: validationsData.data._43_today_valid_count / validationsData.data._43_last_week_valid_count,
-			secondary_value_string: `${parseFloat(((validationsData.data._43_today_valid_count * 100) / validationsData.data._43_last_week_valid_count).toFixed(2))}%`,
+			primary_value: validationsData._43_today_valid_count,
+			primary_value_string: Intl.NumberFormat('pt-PT').format(validationsData._43_today_valid_count),
+			secondary_value: validationsData._43_today_valid_count / validationsData._43_last_week_valid_count,
+			secondary_value_string: `${parseFloat(((validationsData._43_today_valid_count * 100) / validationsData._43_last_week_valid_count).toFixed(2))}%`,
 		};
 	}, [validationsData]);
 
 	const validations44Parsed = useMemo(() => {
 		if (!validationsData) return { primary_value: 0, secondary_value: 0, secondary_value_string: '?%' };
 		return {
-			primary_value: validationsData.data._44_today_valid_count,
-			primary_value_string: Intl.NumberFormat('pt-PT').format(validationsData.data._44_today_valid_count),
-			secondary_value: validationsData.data._44_today_valid_count / validationsData.data._44_last_week_valid_count,
-			secondary_value_string: `${parseFloat(((validationsData.data._44_today_valid_count * 100) / validationsData.data._44_last_week_valid_count).toFixed(2))}%`,
+			primary_value: validationsData._44_today_valid_count,
+			primary_value_string: Intl.NumberFormat('pt-PT').format(validationsData._44_today_valid_count),
+			secondary_value: validationsData._44_today_valid_count / validationsData._44_last_week_valid_count,
+			secondary_value_string: `${parseFloat(((validationsData._44_today_valid_count * 100) / validationsData._44_last_week_valid_count).toFixed(2))}%`,
 		};
 	}, [validationsData]);
 
@@ -79,6 +81,7 @@ export function Screen1() {
 			layout="primaryWithFourDetails"
 			cells={[
 				<CardDefault
+					key="cm-passengers-today"
 					icon={<IconCreditCardPay />}
 					isLoading={validationsLoading}
 					isValidating={validationsValidating}
@@ -89,6 +92,7 @@ export function Screen1() {
 					valueSecondary={validationsCmParsed.secondary_value_string}
 				/>,
 				<CardDefault
+					key="41-passengers-today"
 					icon={<IconCreditCardPay />}
 					isLoading={validationsLoading}
 					isValidating={validationsValidating}
@@ -99,6 +103,7 @@ export function Screen1() {
 					valueSecondary={validations41Parsed.secondary_value_string}
 				/>,
 				<CardDefault
+					key="42-passengers-today"
 					icon={<IconCreditCardPay />}
 					isLoading={validationsLoading}
 					isValidating={validationsValidating}
@@ -109,6 +114,7 @@ export function Screen1() {
 					valueSecondary={validations42Parsed.secondary_value_string}
 				/>,
 				<CardDefault
+					key="43-passengers-today"
 					icon={<IconCreditCardPay />}
 					isLoading={validationsLoading}
 					isValidating={validationsValidating}
@@ -119,6 +125,7 @@ export function Screen1() {
 					valueSecondary={validations43Parsed.secondary_value_string}
 				/>,
 				<CardDefault
+					key="44-passengers-today"
 					icon={<IconCreditCardPay />}
 					isLoading={validationsLoading}
 					isValidating={validationsValidating}
