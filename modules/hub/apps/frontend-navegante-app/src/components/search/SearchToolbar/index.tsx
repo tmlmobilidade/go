@@ -44,7 +44,7 @@ export function SearchToolbar({ onChangeSearchType, searchType }: SearchToolbarP
 				data={searchTypeOptions}
 				onChange={onChangeSearchType}
 				value={searchType}
-				w="100%"
+				fullWidth
 			/>
 			{(searchType === 'stops' || searchType === 'alerts') && (
 				<SearchAgencyChips />
