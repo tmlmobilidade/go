@@ -67,11 +67,11 @@ export async function runDemandByAgencyByOperationalDate(timespan: typeof AVAILA
 				count() AS qty,
 				now64(3) AS updated_at
 			FROM simplified_apex.validations
-			WHERE is_passenger = 1 AND operational_date >= {start_date:UInt32}
+			WHERE is_passenger = 1 AND operational_date >= $1
 			GROUP BY
 				agency_id,
 				operational_date;
 		`,
-		{ start_date: startDate },
+		{ 1: startDate },
 	);
 }
