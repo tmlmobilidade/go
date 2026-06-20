@@ -89,6 +89,10 @@ export async function fetchHistoricalRidesForDayIndex(ridesQuery: Filter<Ride>, 
 		? config.development.timeStart.minus({ days: dayIndex, hours: 1 })
 		: Dates.now('Europe/Lisbon').minus({ days: dayIndex, hours: 1 });
 
+	const end = config.development.isDevelopment
+		? config.development.timeEnd.minus({ days: dayIndex, hours: 1 })
+		: Dates.now('Europe/Lisbon').minus({ days: dayIndex }).plus({ hours: 2 });
+
 	Logger.progress({ message: `Getting historical rides for date range: ${start.iso} → ${end.iso}` });
 
 	return await rides.aggregate([
