@@ -75,7 +75,9 @@ WITH
             ON sve.agency_id = r.agency_id
             AND sve.trip_id  = r.trip_id
         WHERE
-            sve.created_at > (r.start_time_scheduled - {ride_window_pre_ms})
+            sve.created_at >= (SELECT min(start_time_scheduled) - {ride_window_pre_ms} FROM rides)
+            AND sve.created_at <= (SELECT max(start_time_scheduled) + {ride_window_post_ms} FROM rides)
+            AND sve.created_at > (r.start_time_scheduled - {ride_window_pre_ms})
             AND sve.created_at < (r.start_time_scheduled + {ride_window_post_ms})
             AND (
                 startsWith(sve.geohash, r.first_stop_geohash_prefix)
