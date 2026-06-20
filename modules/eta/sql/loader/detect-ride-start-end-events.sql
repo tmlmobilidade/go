@@ -94,15 +94,15 @@ WITH
     ),
     -- Per-ride start/end derived against the ride's departure time. The end has a
     -- fallback (handled in the final SELECT) to the last event of the ride.
-    detected AS (
-        SELECT
-            c.ride_id AS ride_id,
-            maxIf(c.created_at, c.dist_first <= {buffer_radius_m} AND c.created_at < d.departure_time) AS start_time_observed_new,
-            minIf(c.created_at, c.dist_last  <= {buffer_radius_m} AND c.created_at > d.departure_time) AS end_time_observed_new
-        FROM candidates AS c
-        INNER JOIN departure AS d
-            ON c.ride_id = d.ride_id
-        GROUP BY c.ride_id
+    detected AS (  
+        SELECT  
+            c.ride_id AS ride_id,  
+            maxIf(c.created_at, c.dist_first <= {buffer_radius_m} AND d.departure_time > 0 AND c.created_at < d.departure_time) AS start_time_observed_new,  
+            minIf(c.created_at, c.dist_last  <= {buffer_radius_m} AND d.departure_time > 0 AND c.created_at > d.departure_time) AS end_time_observed_new  
+        FROM candidates AS c  
+        INNER JOIN departure AS d  
+            ON c.ride_id = d.ride_id  
+        GROUP BY c.ride_id  
     ),
     -- Per-ride first/last event over the FULL ride window (no geohash restriction).
     -- Used as fallbacks: the first event when no first-stop arrival is detected,
