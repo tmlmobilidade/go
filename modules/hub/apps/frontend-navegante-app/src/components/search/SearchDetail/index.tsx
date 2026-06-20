@@ -6,7 +6,7 @@ import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { LinesListContextProvider } from '@/components/lines/list/LinesList.context';
 import { LinesListViewAll } from '@/components/lines/list/LinesListViewAll';
-import { SearchToolbar, type SearchType } from '@/components/search/SearchToolBar';
+import { SearchToolbar, type SearchType } from '@/components/search/SearchToolbar2';
 import { StopsListContextProvider } from '@/components/stops/list/StopsList.context';
 import { StopsListViewList } from '@/components/stops/list/StopsListViewList';
 import { useState } from 'react';
