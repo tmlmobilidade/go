@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 
 /* * */
 
-const isProduction = process.env.ENVIRONMENT === 'production';
+const isProduction = process.env.environment === 'prd';
 
 function getEtaDatabase(): string {
 	return isProduction ? 'eta' : 'eta_dev';
