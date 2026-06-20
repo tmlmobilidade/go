@@ -24,6 +24,6 @@ export async function cleanupHistoricalNodeTravelTimes(clickhouseClient: Paramet
 	);
 
 	const rowsToDelete = result[0]?.rows_to_delete ?? 0;
-	Logger.progress(`Deleted ${rowsToDelete} orphan historical node travel times`);
+	Logger.progress({ message: `Deleted ${rowsToDelete} orphan historical node travel times` });
 	return rowsToDelete;
 }

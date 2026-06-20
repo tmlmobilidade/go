@@ -42,5 +42,5 @@ export async function syncCurrentWaypoints(clickhouseClient: Parameters<typeof q
 
 	await writer.flush();
 
-	Logger.progress(`Found ${waypointsCount} waypoints`);
+	Logger.progress({ message: `Found ${waypointsCount} waypoints` });
 }

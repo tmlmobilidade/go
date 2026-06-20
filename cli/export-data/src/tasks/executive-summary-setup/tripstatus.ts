@@ -135,11 +135,11 @@ export const calculateDailyServiceCompliance = async (context: ExportContext) =>
 
 		countProcessed++;
 		if (countProcessed % 100 === 0) {
-			// Logger.info(`Processed ${countProcessed} rides so far...`);
+			// Logger.info({ message: `Processed ${countProcessed} rides so far...` });
 		}
 	}
 
-	Logger.info(`Ride processing completed in ${processingTimer.get()} ms`);
+	Logger.info({ message: `Ride processing completed in ${processingTimer.get()} ms` });
 
 	/* Format results and calculate percentages */
 	const formattedResults: Record<string, DailyResultsWithPct> = {};

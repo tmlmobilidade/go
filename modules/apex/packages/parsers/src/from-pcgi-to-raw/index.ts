@@ -1,7 +1,7 @@
 /* * */
 
 import { parsePcgiTransactionEntityIntoRawApexTransactionBankingTapV40 } from '@/from-pcgi-to-raw/banking-taps/banking-tap-v40.js';
-import { parsePcgiTransactionEntityIntoRawApexTransactionInspectionDecisionV20 } from '@/from-pcgi-to-raw/inspections/inspection-decision-v20.js';
+import { parsePcgiTransactionEntityIntoRawApexTransactionInspectionDecisionV20 } from '@/from-pcgi-to-raw/inspection-decisions/inspection-decision-v20.js';
 import { parsePcgiTransactionEntityIntoRawApexTransactionInspectionV20 } from '@/from-pcgi-to-raw/inspections/inspection-v20.js';
 import { parsePcgiTransactionEntityIntoRawApexTransactionLocationV30 } from '@/from-pcgi-to-raw/locations/location-v30.js';
 import { parsePcgiTransactionEntityIntoRawApexTransactionRefundV30 } from '@/from-pcgi-to-raw/refunds/refund-v30.js';

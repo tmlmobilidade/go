@@ -164,7 +164,9 @@ export class LinesController {
 
 		const lineData = await lines.findById(request.params.id);
 
-		if (!lineData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!lineData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		}
 
 		//
 		// Get the resource permissions for lines for the current user.
@@ -226,7 +228,9 @@ export class LinesController {
 
 		const lineData = await lines.findById(request.params.id);
 
-		if (!lineData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!lineData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		}
 
 		//
 		// Get the resource permissions for lines for the current user.
@@ -258,7 +262,9 @@ export class LinesController {
 		// If authorized, toggle the lock status of the line
 		await lines.toggleLockById(request.params.id);
 		const foundLine = await lines.findById(request.params.id);
-		if (!foundLine) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!foundLine) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		}
 
 		return reply.send({ data: foundLine, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -278,7 +284,9 @@ export class LinesController {
 
 		const lineData = await lines.findById(request.params.id);
 
-		if (!lineData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!lineData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		}
 
 		//
 		// Get the resource permissions for lines for the current user.

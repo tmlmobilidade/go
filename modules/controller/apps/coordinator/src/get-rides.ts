@@ -23,7 +23,7 @@ export async function getRides(): Promise<string[]> {
 	// sequentially. To do that, we implement a simple lock mechanism.
 
 	while (isBusy) {
-		Logger.info('[rides] Waiting for another request to complete...');
+		Logger.info({ message: '[rides] Waiting for another request to complete...' });
 		await new Promise(resolve => setTimeout(resolve, 500));
 	}
 
@@ -56,7 +56,7 @@ export async function getRides(): Promise<string[]> {
 	const fetchTimerResult = fetchTimer.get();
 
 	if (!latestWaitingRides.length) {
-		Logger.info(`[rides] No documents waiting | start_time_scheduled: ${standardWindowInterval.end} (fetch: ${fetchTimerResult})`);
+		Logger.info({ message: `[rides] No documents waiting | start_time_scheduled: ${standardWindowInterval.end} (fetch: ${fetchTimerResult})` });
 		isBusy = false;
 		return [];
 	}
@@ -71,7 +71,7 @@ export async function getRides(): Promise<string[]> {
 
 	await ridesCollection.updateMany({ _id: { $in: latestWaitingRidesIds } }, { $set: { system_status: 'processing' } });
 
-	Logger.info(`[rides] New batch: Qty ${latestWaitingRidesIds.length} | start_time_scheduled: ${latestWaitingRides[latestWaitingRides.length - 1].start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
+	Logger.info({ message: `[rides] New batch: Qty ${latestWaitingRidesIds.length} | start_time_scheduled: ${latestWaitingRides[latestWaitingRides.length - 1].start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 
 	isBusy = false;
 

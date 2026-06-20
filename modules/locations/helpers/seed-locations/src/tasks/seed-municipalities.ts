@@ -16,7 +16,7 @@ export async function seedMunicipalities() {
 		const municipalitiesText = await municipalitiesRes.text();
 		const municipalitiesData = JSON.parse(municipalitiesText);
 
-		Logger.info(`Fetched ${municipalitiesData.length} municipalities from remote source.`);
+		Logger.info({ message: `Fetched ${municipalitiesData.length} municipalities from remote source.` });
 
 		//
 		// Parse the JSON data into
@@ -27,25 +27,24 @@ export async function seedMunicipalities() {
 		// process.exit(0);
 		// });
 
-		Logger.info(`Parsed ${parsedMunicipalities.length} municipalities.`);
+		Logger.info({ message: `Parsed ${parsedMunicipalities.length} municipalities.` });
 
 		//
 		// Clear existing municipalities
 
 		const deleteResult = await municipalities.deleteMany({});
 
-		Logger.info(`Deleted ${deleteResult.deletedCount} existing municipalities.`);
+		Logger.info({ message: `Deleted ${deleteResult.deletedCount} existing municipalities.` });
 
 		//
 		// Insert municipalities data
 
 		const insertResult = await municipalities.insertMany(parsedMunicipalities, { unsafe: true });
 
-		Logger.info(`Inserted ${insertResult.insertedCount} municipalities.`);
+		Logger.info({ message: `Inserted ${insertResult.insertedCount} municipalities.` });
 
 		//
-	}
-	catch (error) {
-		Logger.error('Error seeding municipalities:', error);
+	} catch (error) {
+		Logger.error({ error, message: 'Error seeding municipalities:' });
 	}
 }

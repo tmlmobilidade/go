@@ -1,0 +1,21 @@
+/* * */
+/* CONTAINER */
+
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  overflow: hidden;
+  padding: var(--size-spacing-md);
+  background-color: var(--color-system-background-100);
+  border: 1px solid var(--color-system-border-100);
+  border-radius: var(--size-spacing-xs);
+  cursor: pointer;
+  transition: box-shadow 200ms ease, background-color 200ms ease;
+}
+
+.container:hover {
+  background-color: var(--color-system-background-200);
+}

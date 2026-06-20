@@ -7,6 +7,7 @@ import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { agencies, lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 
 import { exportFeedInfoFile } from './exports/feedInfo.js';
@@ -33,10 +34,10 @@ async function clearExportFiles(exportConfig: GtfsV29ExportConfig) {
 					fs.unlinkSync(`${exportConfig.workdir}/${file}`);
 				}
 			}
-			Logger.info('Cleared existing CSV files');
+			Logger.info({ message: 'Cleared existing CSV files' });
 		}
 	} catch (error) {
-		Logger.error('Error clearing export files', error);
+		Logger.error({ error, message: 'Error clearing export files' });
 		// Don't throw - continue with export even if cleanup fails
 	}
 }
@@ -55,9 +56,9 @@ async function updateProgress(
 	try {
 		// TODO: Replace with actual database update logic
 		// await ExportModel.updateOne({ _id: exportDocument._id }, updates);
-		Logger.info(`Progress: ${updates.progress_current || 0}/${updates.progress_total || 0}`);
+		Logger.info({ message: `Progress: ${updates.progress_current || 0}/${updates.progress_total || 0}` });
 	} catch (error) {
-		Logger.error(`Error updating progress for export ${exportDocument._id}`, error);
+		Logger.error({ error, message: `Error updating progress for export ${exportDocument._id}` });
 		throw new Error(`Error updating progress: ${error}`);
 	}
 }
@@ -72,11 +73,23 @@ export async function exportGtfsV29(
 	exportConfig: GtfsV29ExportConfig,
 ) {
 	try {
-		Logger.info('* * *');
-		Logger.info('* GTFS v29 : NEW EXPORT');
-		Logger.info(`* Agency IDs: ${exportConfig.agency_ids.join(', ')}`);
-		Logger.info(`* Version: ${exportConfig.version}`);
-		Logger.info('* * *');
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.startNodeLogs({ app: 'gtfs-exporter', message: 'Sentry Offer GTFS Exporter initialized', module: 'offer', severity: 'info' });
+		} catch (error) {
+			Logger.error({ error, message: 'Error initializing Sentry Offer GTFS Exporter' });
+		}
+
+		//
+
+		Logger.info({ message: '* * *' });
+		Logger.info({ message: '* GTFS v29 : NEW EXPORT' });
+		Logger.info({ message: `* Agency IDs: ${exportConfig.agency_ids.join(', ')}` });
+		Logger.info({ message: `* Version: ${exportConfig.version}` });
+		Logger.info({ message: '* * *' });
 
 		// Clear existing CSV files to ensure fresh export
 		await clearExportFiles(exportConfig);
@@ -147,41 +160,41 @@ export async function exportGtfsV29(
 
 		await updateProgress(progress, { progress_current: 0, progress_total: allLinesData.length });
 
-		Logger.info(`Processing ${allLinesData.length} lines...`);
+		Logger.info({ message: `Processing ${allLinesData.length} lines...` });
 
 		//
 		// Fetch data that will be needed for multiple lines/patterns to avoid redundant fetching inside the loops
 
-		Logger.info('Fetching all typologies...');
+		Logger.info({ message: 'Fetching all typologies...' });
 		const allTypologiesMap = await fetchAllTypologies();
 		Logger.success(`Loaded ${allTypologiesMap.size} typologies`);
 
-		Logger.info('Fetching all fares...');
+		Logger.info({ message: 'Fetching all fares...' });
 		const allFaresMap = await fetchAllFares();
 		Logger.success(`Loaded ${allFaresMap.size} fares`);
 
-		Logger.info('Fetching stops...');
+		Logger.info({ message: 'Fetching stops...' });
 		const allStopsData = await stops.findMany({}, { sort: { _id: 1 } });
 		const allStopsMap = new Map(allStopsData.map(stop => [stop._id, stop]));
 		Logger.success(`Loaded ${allStopsMap.size} stops`);
 
-		Logger.info('Fetching all zones...');
+		Logger.info({ message: 'Fetching all zones...' });
 		const allZonesMap = await fetchAllZones();
 		Logger.success(`Loaded ${allZonesMap.size} zones`);
 
-		Logger.info('Fetching all municipalities...');
+		Logger.info({ message: 'Fetching all municipalities...' });
 		const allMunicipalitiesMap = await fetchAllMunicipalities();
 		Logger.success(`Loaded ${allMunicipalitiesMap.size} municipalities`);
 
-		Logger.info('Fetching all periods...');
+		Logger.info({ message: 'Fetching all periods...' });
 		const allPeriodsMap = await fetchAllYearPeriods();
 		Logger.success(`Loaded ${allPeriodsMap.size} periods`);
 
-		Logger.info('Fetching all holidays...');
+		Logger.info({ message: 'Fetching all holidays...' });
 		const allHolidaysMap = await fetchAllHolidays(exportConfig.agency_ids);
 		Logger.success(`Loaded ${allHolidaysMap.size} holidays`);
 
-		Logger.info('Fetching all events...');
+		Logger.info({ message: 'Fetching all events...' });
 		const allEventsMap = await fetchAllEvents(exportConfig.agency_ids);
 		Logger.success(`Loaded ${allEventsMap.size} events`);
 
@@ -197,14 +210,14 @@ export async function exportGtfsV29(
 			// 3.0.
 			// Update progress
 			await updateProgress(progress, { progress_current: lineIndex + 1 });
-			Logger.info(`Processing line ${lineIndex + 1}/${allLinesData.length}: ${lineData.code} - ${lineData.name}`);
+			Logger.info({ message: `Processing line ${lineIndex + 1}/${allLinesData.length}: ${lineData.code} - ${lineData.name}` });
 
 			// 3.1.
 			// Fetch all routes for this line
 			const lineRoutes = await routes.findByLineId(lineData._id);
 
 			if (lineRoutes.length === 0) {
-				Logger.info(`  Skipping line ${lineData.code}: no routes found`);
+				Logger.info({ message: `  Skipping line ${lineData.code}: no routes found` });
 				// continue;
 			}
 
@@ -220,7 +233,7 @@ export async function exportGtfsV29(
 				});
 
 				if (routePatterns.length === 0) {
-					Logger.info(`  Skipping route ${routeId}: no patterns found`);
+					Logger.info({ message: `  Skipping route ${routeId}: no patterns found` });
 					continue;
 				}
 
@@ -228,7 +241,7 @@ export async function exportGtfsV29(
 				const hasValidPatterns = routePatterns.some(pattern => pattern.shape?.geojson?.geometry?.coordinates?.length > 0 && pattern.path?.length > 0);
 
 				if (!hasValidPatterns) {
-					Logger.info(`  Skipping route ${routeId}: no valid patterns with shape and path`);
+					Logger.info({ message: `  Skipping route ${routeId}: no valid patterns with shape and path` });
 					continue;
 				}
 
@@ -241,7 +254,7 @@ export async function exportGtfsV29(
 				for (const patternData of routePatterns) {
 					// Skip patterns without shape or path
 					if (!patternData.shape?.geojson?.geometry?.coordinates?.length || !patternData.path?.length) {
-						Logger.info(`    Skipping pattern ${patternData.code}: missing shape or path`);
+						Logger.info({ message: `    Skipping pattern ${patternData.code}: missing shape or path` });
 						continue;
 					}
 
@@ -281,10 +294,10 @@ export async function exportGtfsV29(
 					await exportStopTimesForPattern(allStopsData, patternData, tripSchedules, exportConfig, lineData.agency_id);
 				}
 
-				Logger.info(`  Processed route ${routeId} with ${routePatterns.length} patterns`);
+				Logger.info({ message: `  Processed route ${routeId} with ${routePatterns.length} patterns` });
 			}
 
-			Logger.info(`Processed line ${lineIndex + 1}/${allLinesData.length}`);
+			Logger.info({ message: `Processed line ${lineIndex + 1}/${allLinesData.length}` });
 		}
 
 		//
@@ -293,7 +306,7 @@ export async function exportGtfsV29(
 
 		await updateProgress(progress, { progress_current: 5, progress_total: 7 });
 
-		Logger.info(`Processing ${allStopsData.length} stops...`);
+		Logger.info({ message: `Processing ${allStopsData.length} stops...` });
 
 		// Export each stop
 		for (const stopData of allStopsData) {
@@ -323,7 +336,7 @@ export async function exportGtfsV29(
 
 		await updateProgress(progress, { progress_current: 6, progress_total: 7 });
 
-		Logger.info(`Exporting ${referencedFareIds.size} fare attributes...`);
+		Logger.info({ message: `Exporting ${referencedFareIds.size} fare attributes...` });
 		await exportFareAttributes(allAgenciesData[0], exportConfig, allFaresMap, referencedFareIds);
 		Logger.success('Exported fare_attributes.txt');
 
@@ -368,7 +381,7 @@ export async function exportGtfsV29(
 
 	//
 	} catch (error) {
-		Logger.error('Error during GTFS v29 export', error);
+		Logger.error({ error, message: 'Error during GTFS v29 export' });
 		throw error;
 	}
 }

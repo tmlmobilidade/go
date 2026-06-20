@@ -1,0 +1,41 @@
+/* * */
+
+import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { apiCache } from '@tmlmobilidade/databases';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { Logger } from '@tmlmobilidade/logger';
+import { type HubLine } from '@tmlmobilidade/types';
+
+/**
+ * Retrieves the legacy stops map from cache.
+ * @param request The request object.
+ * @param reply The reply object.
+ */
+export async function getLegacyStopsMap(request: FastifyRequest, reply: FastifyReply<HubLine[]>) {
+	//
+
+	const cachedData = await apiCache.get('hub:v1:network:legacy-stops-map');
+
+	if (!cachedData) {
+		Logger.error({ message: '[hub/v1/network:getLegacyStopsMap()] No cached data found for legacy stops map' });
+		return reply
+			.header('access-control-allow-origin', '*')
+			.header('cache-control', 'public, max-age=60')
+			.code(HTTP_STATUS.NO_CONTENT)
+			.send({
+				data: [],
+				error: null,
+				status_code: HTTP_STATUS.NO_CONTENT,
+			});
+	};
+
+	return reply
+		.header('access-control-allow-origin', '*')
+		.header('cache-control', 'public, max-age=3600')
+		.code(HTTP_STATUS.OK)
+		.send({
+			data: JSON.parse(cachedData),
+			error: null,
+			status_code: HTTP_STATUS.OK,
+		});
+}

@@ -5,7 +5,7 @@ import { useOperationalDate } from '@/components/common/operational-date/use-ope
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypoint } from '@/components/lines/detail/PathWaypoint';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useTripUpdatesContext } from '@/components/trip-updates/trip-updates.context';
+import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { type HubGtfsRtFeedEntity, type HubGtfsRtTripUpdate } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
@@ -17,19 +17,6 @@ import styles from './styles.module.css';
 interface NextArrival {
 	type: 'realtime' | 'scheduled'
 	unixTs: number
-}
-
-function getTripUpdateFromEntity(entity: HubGtfsRtFeedEntity): HubGtfsRtTripUpdate | undefined {
-	if (entity.trip_update?.stop_time_update?.length) return entity.trip_update;
-	if (entity.stop_time_update?.length) {
-		return {
-			stop_time_update: entity.stop_time_update,
-			timestamp: entity.timestamp,
-			trip: entity.trip,
-			vehicle: entity.vehicle,
-		};
-	}
-	return entity.trip_update ?? undefined;
 }
 
 export function LinesDetailPathList() {
@@ -47,55 +34,56 @@ export function LinesDetailPathList() {
 	// B. Transform data
 
 	const realtimeArrivalsByStop = useMemo<Map<string, NextArrival[]>>(() => {
-		const result = new Map<string, NextArrival[]>();
-		const activePattern = linesDetailContext.data.active_pattern;
-		if (!activePattern || !operationalDate.isTodaySelected) return result;
-		if (!tripUpdatesContext.data.trip_update_raw?.length) return result;
+		return new Map<string, NextArrival[]>();
+		// const result = new Map<string, NextArrival[]>();
+		// const activePattern = linesDetailContext.data.active_pattern;
+		// if (!activePattern || !operationalDate.isTodaySelected) return result;
+		// if (!tripUpdatesContext.data.map.size) return result;
 
-		const stopSequenceToStopId = new Map<number, string>();
-		const stopSequenceToAllowedStopIds = new Map<number, Set<string>>();
-		const validStopKeys = new Set(activePattern.path.map((waypoint) => {
-			stopSequenceToStopId.set(waypoint.stop_sequence, waypoint.stop_id);
-			const allowedStopIds = new Set([waypoint.stop_id, ...(stopsContext.actions.getLegacyStopIds(waypoint.stop_id) ?? [])]);
-			stopSequenceToAllowedStopIds.set(waypoint.stop_sequence, allowedStopIds);
-			return `${waypoint.stop_id}-${waypoint.stop_sequence}`;
-		}));
-		const validTripIds = new Set<string>();
-		activePattern.trips.forEach((trip) => {
-			trip.trip_ids.forEach((tripId) => {
-				validTripIds.add(tripId);
-			});
-		});
+		// const stopSequenceToStopId = new Map<number, string>();
+		// const stopSequenceToAllowedStopIds = new Map<number, Set<string>>();
+		// const validStopKeys = new Set(activePattern.path.map((waypoint) => {
+		// 	stopSequenceToStopId.set(waypoint.stop_sequence, waypoint.stop_id);
+		// 	const allowedStopIds = new Set([waypoint.stop_id, ...(stopsContext.actions.getLegacyStopIds(waypoint.stop_id) ?? [])]);
+		// 	stopSequenceToAllowedStopIds.set(waypoint.stop_sequence, allowedStopIds);
+		// 	return `${waypoint.stop_id}-${waypoint.stop_sequence}`;
+		// }));
+		// const validTripIds = new Set<string>();
+		// activePattern.trips.forEach((trip) => {
+		// 	trip.trip_ids.forEach((tripId) => {
+		// 		validTripIds.add(tripId);
+		// 	});
+		// });
 
-		for (const entity of tripUpdatesContext.data.trip_update_raw) {
-			const tripUpdate = getTripUpdateFromEntity(entity);
-			const tripId = tripUpdate?.trip?.trip_id;
-			if (!tripId || !tripUpdate?.stop_time_update?.length) continue;
-			if (!validTripIds.has(tripId)) continue;
+		// for (const entity of tripUpdatesContext.data.map.values()) {
+		// 	const tripUpdate = getTripUpdateFromEntity(entity);
+		// 	const tripId = tripUpdate?.trip?.trip_id;
+		// 	if (!tripId || !tripUpdate?.stop_time_update?.length) continue;
+		// 	if (!validTripIds.has(tripId)) continue;
 
-			for (const stopUpdate of tripUpdate.stop_time_update) {
-				const stopSequence = stopUpdate.stop_sequence;
-				if (stopSequence == null) continue;
-				const stopId = String(stopUpdate.stop_id);
-				const allowedStopIds = stopSequenceToAllowedStopIds.get(stopSequence);
-				if (!allowedStopIds?.has(stopId)) continue;
-				const canonicalStopId = stopSequenceToStopId.get(stopSequence);
-				if (!canonicalStopId) continue;
-				const stopKey = `${canonicalStopId}-${stopSequence}`;
-				if (!validStopKeys.has(stopKey)) continue;
-				const arrivalTime = stopUpdate.arrival?.time;
-				if (arrivalTime == null) continue;
-				if (!result.get(stopKey)) result.set(stopKey, []);
-				result.get(stopKey)?.push({ type: 'realtime', unixTs: arrivalTime * 1000 });
-			}
-		}
+		// 	for (const stopUpdate of tripUpdate.stop_time_update) {
+		// 		const stopSequence = stopUpdate.stop_sequence;
+		// 		if (stopSequence == null) continue;
+		// 		const stopId = String(stopUpdate.stop_id);
+		// 		const allowedStopIds = stopSequenceToAllowedStopIds.get(stopSequence);
+		// 		if (!allowedStopIds?.has(stopId)) continue;
+		// 		const canonicalStopId = stopSequenceToStopId.get(stopSequence);
+		// 		if (!canonicalStopId) continue;
+		// 		const stopKey = `${canonicalStopId}-${stopSequence}`;
+		// 		if (!validStopKeys.has(stopKey)) continue;
+		// 		const arrivalTime = stopUpdate.arrival?.time;
+		// 		if (arrivalTime == null) continue;
+		// 		if (!result.get(stopKey)) result.set(stopKey, []);
+		// 		result.get(stopKey)?.push({ type: 'realtime', unixTs: arrivalTime * 1000 });
+		// 	}
+		// }
 
-		for (const key of result.keys()) {
-			result.get(key)?.sort((a, b) => a.unixTs - b.unixTs);
-		}
+		// for (const key of result.keys()) {
+		// 	result.get(key)?.sort((a, b) => a.unixTs - b.unixTs);
+		// }
 
-		return result;
-	}, [linesDetailContext.data.active_pattern, operationalDate.isTodaySelected, stopsContext.actions, tripUpdatesContext.data.trip_update_raw]);
+		// return result;
+	}, []);
 
 	const scheduledArrivalsByStop = useMemo<Map<string, NextArrival[]>>(() => {
 		const result = new Map<string, NextArrival[]>();

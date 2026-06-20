@@ -56,5 +56,5 @@ export async function exportMunicipalitiesFile(exportConfig: MergedGtfsExportCon
 
 	await exportConfig.writers.municipalities.flush();
 
-	Logger.info('Exported municipalities.txt file.');
+	Logger.info({ message: 'Exported municipalities.txt file.' });
 }

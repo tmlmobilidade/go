@@ -41,7 +41,7 @@ export async function publishGtfsRtFeed() {
 		},
 	);
 
-	Logger.info(`Retrieved ${findResult.length} active alerts...`);
+	Logger.info({ message: `Retrieved ${findResult.length} active alerts...` });
 
 	//
 	// Transform alerts into GTFS-RT feed entities
@@ -50,7 +50,7 @@ export async function publishGtfsRtFeed() {
 
 	const transformResult: GtfsRtFeedEntity[] = transformedItems.filter(Boolean);
 
-	Logger.info(`Transformed ${transformResult.length} alerts into GTFS-RT feed entities (${globalTimer.get()})`);
+	Logger.info({ message: `Transformed ${transformResult.length} alerts into GTFS-RT feed entities (${globalTimer.get()})` });
 
 	//
 	// Save the result in API Cache
@@ -64,7 +64,7 @@ export async function publishGtfsRtFeed() {
 		},
 	};
 
-	await apiCache.set('hub:alerts:published:gtfs:cm', JSON.stringify(gtfsRtFeed));
+	await apiCache.set('hub:v1:alerts:published:gtfs:cm', JSON.stringify(gtfsRtFeed));
 
 	Logger.success(`Finished publishing GTFS-RT feed (${globalTimer.get()})`);
 

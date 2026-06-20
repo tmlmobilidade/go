@@ -41,7 +41,7 @@ export const RawApexTransactionValidationV40PayloadSchema = z.object({
 		stopLongID: z.string(),
 		validatorID: z.number(),
 		vehicleID: z.number(),
-		zoneLongID: z.string().optional(),
+		zoneLongID: z.string().nullable().default(null),
 	}),
 	signedData: z.object({
 		contractBinaryRead: z.string().nullable().default(null),
@@ -67,6 +67,7 @@ export const RawApexTransactionValidationV40PayloadSchema = z.object({
 		tickLoadDate: z.string().nullable().default(null),
 		tickLoadMachCode: z.number().nullable().default(null),
 		tickLoadNumbDaily: z.number().nullable().default(null),
+		unitsQuantity: z.number().nullable().default(null),
 		unitsRemaining: z.number().nullable().default(null),
 		validationStatus: z.number(),
 		validationType: z.number(),

@@ -2,37 +2,39 @@
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseSchema } from '@/types/index.js';
+import { type ClickHouseTableEngine, type ClickHouseTableSchema } from '@/types/index.js';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
-const tableSchema: ClickHouseSchema<SimplifiedApexOnBoardSale> = {
-	_id: { primaryKey: true, type: 'String' },
-	agency_id: { type: 'String' },
-	apex_version: { type: 'String' },
-	block_id: { type: 'String' },
-	card_physical_type: { type: 'String' },
-	card_serial_number: { type: 'String' },
-	created_at: { type: 'Int64' },
-	device_id: { type: 'String' },
-	duty_id: { type: 'String' },
+const tableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardSale> = {
+	_id: { type: 'UUID' },
+	agency_id: { type: 'LowCardinality(String)' },
+	apex_version: { type: 'LowCardinality(String)' },
+	card_physical_type: { type: 'UInt8' },
+	card_serial_number: { type: 'Nullable(UInt64)' },
+	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	device_id: { type: 'LowCardinality(String)' },
+	is_ok: { type: 'Bool' },
+	is_ok_pcgi: { type: 'Bool' },
 	is_passenger: { type: 'Bool' },
-	line_id: { type: 'String' },
-	mac_ase_counter_value: { type: 'Int64' },
-	mac_sam_serial_number: { type: 'Int64' },
-	on_board_refund_id: { type: 'Nullable(String)' },
-	pattern_id: { type: 'String' },
-	payment_method: { type: 'String' },
-	price: { type: 'Int64' },
-	product_long_id: { type: 'String' },
-	product_quantity: { type: 'Int64' },
-	received_at: { type: 'Int64' },
-	stop_id: { type: 'String' },
-	trip_id: { type: 'String' },
-	validation_id: { type: 'Nullable(String)' },
-	vehicle_id: { type: 'String' },
+	line_id: { type: 'LowCardinality(Nullable(String))' },
+	mac_ase_counter_value: { type: 'UInt64' },
+	mac_sam_serial_number: { type: 'UInt64' },
+	on_board_refund_id: { type: 'Nullable(UUID)' },
+	operational_date: { type: 'UInt32' },
+	pattern_id: { type: 'LowCardinality(Nullable(String))' },
+	payment_method: { type: 'UInt8' },
+	price: { type: 'Int32' },
+	product_id: { type: 'LowCardinality(Nullable(String))' },
+	product_quantity: { type: 'Int32' },
+	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	stop_id: { type: 'LowCardinality(Nullable(String))' },
+	trip_id: { type: 'Nullable(String)' },
+	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	validation_id: { type: 'Nullable(UUID)' },
+	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
 /* * */
@@ -43,6 +45,9 @@ class SimplifiedApexOnBoardSalesNewClass extends ClickHouseInterfaceTemplate<Sim
 	private static _instance: null | Promise<SimplifiedApexOnBoardSalesNewClass> = null;
 
 	protected override readonly databaseName = 'simplified_apex';
+	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexOnBoardSale> = 'ReplacingMergeTree(updated_at)';
+	protected override readonly orderBy = 'agency_id, operational_date, created_at, _id';
+	protected override readonly partitionBy = 'intDiv(operational_date, 100)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'sales';
 

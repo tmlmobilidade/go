@@ -10,15 +10,24 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionLocationV30(pcgi
 	//
 
 	//
+	// Prepare the date field values
+
+	const transactionDateValue = Dates
+		.fromFormat(decodedTransaction.transactionInfo.transactionDate, 'yyyy-MM-dd\'T\'HH:mm:ss', 'Europe/Lisbon');
+
+	const receivedAtValue = Dates
+		.fromJSDate(pcgiTransactionEntity.createdAt);
+
+	//
 	// Validate the document structure and content
 
 	const result: RawApexTransactionLocationV30 = {
 		_id: pcgiTransactionEntity.transactionId,
 		agency_id: decodedTransaction.operatorInfo.operatorLongID,
-		created_at: Dates.fromISO(decodedTransaction.transactionInfo.transactionDate).unix_timestamp,
+		created_at: transactionDateValue.unix_timestamp,
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionLocationV30PayloadSchema.parse(decodedTransaction),
-		received_at: Dates.fromJSDate(pcgiTransactionEntity.createdAt).unix_timestamp,
+		received_at: receivedAtValue.unix_timestamp,
 		version: 'location-3.0',
 	};
 

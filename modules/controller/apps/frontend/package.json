@@ -15,11 +15,12 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/hooks": "9.3.1",
+		"@mantine/hooks": "9.3.2",
 		"@tabler/icons-react": "3.44.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",

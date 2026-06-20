@@ -30,7 +30,7 @@ export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsC
 
 	const timer = new Timer();
 
-	Logger.info('Exporting agency.txt file...');
+	Logger.info({ message: 'Exporting agency.txt file...' });
 
 	//
 	// Get agencies data from the database.

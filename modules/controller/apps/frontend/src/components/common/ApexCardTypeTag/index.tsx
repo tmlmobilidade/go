@@ -14,11 +14,11 @@ interface ApexCardTypeTagProps {
 export function ApexCardTypeTag({ value }: ApexCardTypeTagProps) {
 	//
 
-	if (!value && value !== 0) {
+	if (!value && value !== '0') {
 		return <Tag label="N/A" variant="muted" />;
 	}
 
-	if (value === 28) {
+	if (value === '28') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'secondary' },

@@ -14,17 +14,17 @@ export async function transformReferenceTypeStopsIntoGtfsRt(alertData: Alert): P
 	// Validate required input properties
 
 	if (!alertData.agency_id || !alertData.references?.length) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert references are missing for "stops" reference type.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert references are missing for "stops" reference type.` });
 		return;
 	}
 
 	if (!alertData.active_period_start_date) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.` });
 		return;
 	}
 
 	if (!alertData.active_period_end_date) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_end_date is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_end_date is missing.` });
 		return;
 	}
 
@@ -43,7 +43,7 @@ export async function transformReferenceTypeStopsIntoGtfsRt(alertData: Alert): P
 		});
 
 		if (!foundStopData) {
-			Logger.error(`[Alert ID: ${alertData._id}] Stop ID ${reference.parent_id} not found for agency ID ${alertData.agency_id}.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Stop ID ${reference.parent_id} not found for agency ID ${alertData.agency_id}.` });
 			continue;
 		}
 
@@ -89,7 +89,7 @@ export async function transformReferenceTypeStopsIntoGtfsRt(alertData: Alert): P
 			]);
 
 			if (!foundRouteIds?.length) {
-				Logger.error(`[Alert ID: ${alertData._id}] No rides found for line ID ${childId} and start time ${alertData.active_period_start_date}.`);
+				Logger.error({ message: `[Alert ID: ${alertData._id}] No rides found for line ID ${childId} and start time ${alertData.active_period_start_date}.` });
 				continue;
 			}
 

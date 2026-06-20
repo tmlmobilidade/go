@@ -22,9 +22,9 @@ export const syncDemandByCategoryByPatternByDay = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
 	await metrics.deleteMany({ metric: METRIC as 'demand_by_product_by_pattern_by_day' });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch validations collection
@@ -89,7 +89,7 @@ export const syncDemandByCategoryByPatternByDay = async () => {
 	for (let i = 0; i < allTimestampChunks.length; i += BATCH_SIZE) {
 		const batchChunks = allTimestampChunks.slice(i, i + BATCH_SIZE);
 
-		Logger.info(`Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allTimestampChunks.length / BATCH_SIZE)} (chunks ${i + 1}-${Math.min(i + BATCH_SIZE, allTimestampChunks.length)})`);
+		Logger.info({ message: `Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allTimestampChunks.length / BATCH_SIZE)} (chunks ${i + 1}-${Math.min(i + BATCH_SIZE, allTimestampChunks.length)})` });
 
 		const batchPromises = batchChunks.map((chunkData, batchIndex) =>
 			limit(async () => {
@@ -120,7 +120,7 @@ export const syncDemandByCategoryByPatternByDay = async () => {
 					},
 				], { hint: 'is_passenger_1_pattern_id_1_created_at_1' }).toArray();
 
-				Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} category-pattern combinations (${chunkTimer.get()})`);
+				Logger.info({ message: `Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} category-pattern combinations (${chunkTimer.get()})` });
 				return validationsAgg;
 			}),
 		);
@@ -173,9 +173,9 @@ export const syncDemandByCategoryByPatternByDay = async () => {
 			const flushTimer = new Timer();
 			const results = Array.from(categoryMap.values());
 
-			Logger.info(`Flushing ${results.length} documents to database...`);
+			Logger.info({ message: `Flushing ${results.length} documents to database...` });
 			await metrics.insertMany(results as unknown as Parameters<typeof metrics.insertMany>[0]);
-			Logger.info(`Flushed ${results.length} documents (${flushTimer.get()})`);
+			Logger.info({ message: `Flushed ${results.length} documents (${flushTimer.get()})` });
 
 			categoryMap.clear(); // Free memory
 		}
@@ -186,7 +186,7 @@ export const syncDemandByCategoryByPatternByDay = async () => {
 
 	if (categoryMap.size > 0) {
 		const results = Array.from(categoryMap.values());
-		Logger.info(`Inserting final ${results.length} documents...`);
+		Logger.info({ message: `Inserting final ${results.length} documents...` });
 		await metrics.insertMany(results as unknown as Parameters<typeof metrics.insertMany>[0]);
 	}
 

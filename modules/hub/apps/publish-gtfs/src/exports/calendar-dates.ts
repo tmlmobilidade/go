@@ -37,5 +37,5 @@ export async function exportCalendarDatesFile(planData: Plan, sqlTables: GtfsSQL
 
 	await context.writers.calendar_dates.flush();
 
-	Logger.info('Exported calendar_dates.txt file.');
+	Logger.info({ message: 'Exported calendar_dates.txt file.' });
 }

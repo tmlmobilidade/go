@@ -34,5 +34,5 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 
 	await stopsCsv.flush();
 
-	Logger.info('Exported stops.txt file.');
+	Logger.info({ message: 'Exported stops.txt file.' });
 }

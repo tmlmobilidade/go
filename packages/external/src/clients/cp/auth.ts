@@ -36,11 +36,11 @@ export class CPAuthClient {
 
 	public async getToken() {
 		if (!this.token) {
-			Logger.info('[CPAuthClient] No token found, fetching a new one...');
+			Logger.info({ message: '[CPAuthClient] No token found, fetching a new one...' });
 			await this.connect();
 		}
 		if (this.expiresAt - Date.now() < 60 * 1000) {
-			Logger.info('[CPAuthClient] Token is about to expire, refreshing...');
+			Logger.info({ message: '[CPAuthClient] Token is about to expire, refreshing...' });
 			await this.connect();
 		}
 		return this.token;
@@ -70,7 +70,7 @@ export class CPAuthClient {
 	private async connect() {
 		//
 
-		Logger.info('[CPAuthClient] Connecting and fetching token...');
+		Logger.info({ message: '[CPAuthClient] Connecting and fetching token...' });
 
 		//
 		// Get the authentication URL, which also sets up the SSH tunnel if needed.
@@ -200,7 +200,7 @@ export class CPAuthClient {
 			await this.tunnel.connect();
 		}
 
-		Logger.info('[CPAuthClient] Setting up SSH Tunnel...');
+		Logger.info({ message: '[CPAuthClient] Setting up SSH Tunnel...' });
 
 		const addr = this.tunnel.server.address();
 

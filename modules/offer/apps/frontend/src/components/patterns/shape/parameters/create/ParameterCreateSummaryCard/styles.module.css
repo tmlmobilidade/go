@@ -1,0 +1,41 @@
+.container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: var(--size-spacing-sm);
+	padding: var(--size-spacing-md);
+	background-color: var(--color-system-background-200);
+	border-bottom: 1px solid var(--color-system-border-100);
+	flex-wrap: wrap;
+}
+
+.tile {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: var(--size-spacing-sm);
+	flex: 1;
+	min-width: 120px;
+    border: 1px solid var(--color-system-border-100);
+    padding: var(--size-spacing-sm);
+    border-radius: var(--size-spacing-xs);
+}
+
+.tileIcon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: var(--size-spacing-xs);
+	background-color: var(--color-system-background-300);
+	color: var(--color-system-text-200);
+	flex-shrink: 0;
+}
+
+.divider {
+	width: 1px;
+	height: 40px;
+	background-color: var(--color-system-border-100);
+	flex-shrink: 0;
+}

@@ -1,6 +1,8 @@
 /* * */
 
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { ApexBankingBrandSchema } from '@/utils/banking-brand.js';
+import { ApexEventTypeSchema } from '@/utils/event-type.js';
+import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -10,23 +12,37 @@ export const SimplifiedApexBankingTapSchema = z.object({
 	agency_id: z.string(),
 	apex_version: z.string(),
 	banking_token: z.string(),
-	card_brand: z.number(),
+	card_brand: ApexBankingBrandSchema,
 	card_pan: z.string(),
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
-	event_type: z.number().nullable(),
+	event_type: ApexEventTypeSchema.nullable().default(null),
+	group_dimension: z.number().default(1),
 	is_ok: z.boolean(),
 	is_ok_pcgi: z.boolean(),
-	line_id: z.string(),
+	line_id: z.string().nullable().default(null),
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
-	pattern_id: z.string(),
-	product_id: z.string(),
+	operational_date: OperationalDateIntSchema,
+	pattern_id: z.string().nullable().default(null),
+	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
 	stop_id: z.string(),
-	trip_id: z.string(),
-	units_qty: z.number(),
-	vehicle_id: z.number(),
+	trip_id: z.string().nullable().default(null),
+	updated_at: UnixTimestampSchema,
+	vehicle_id: z.number().nullable().default(null),
+}).transform((val) => {
+	// Setup the individual conditions to consider
+	// this transaction as OK or NOT OK
+	const hasDeviceId = !!val.device_id;
+	const hasAseCounterValue = !!val.mac_ase_counter_value && val.mac_ase_counter_value > 0;
+	const hasMacSamSerialNumber = !!val.mac_sam_serial_number;
+	const hasCardBrand = !!val.card_brand;
+	const hasCardPan = !!val.card_pan;
+	// Combine the individual conditions
+	const isOk = hasDeviceId && hasAseCounterValue && hasMacSamSerialNumber && hasCardBrand && hasCardPan;
+	// Return the transformed value
+	return { ...val, is_ok: isOk };
 });
 
 /**
