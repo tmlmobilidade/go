@@ -23,6 +23,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardSale> = {
 	mac_ase_counter_value: { type: 'UInt64' },
 	mac_sam_serial_number: { type: 'UInt64' },
 	on_board_refund_id: { type: 'Nullable(UUID)' },
+	operational_date: { type: 'UInt32' },
 	pattern_id: { type: 'LowCardinality(Nullable(String))' },
 	payment_method: { type: 'UInt8' },
 	price: { type: 'Int32' },
@@ -46,7 +47,7 @@ class SimplifiedApexOnBoardSalesNewClass extends ClickHouseInterfaceTemplate<Sim
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexOnBoardSale> = 'ReplacingMergeTree(updated_at)';
 	protected override readonly orderBy = 'agency_id, created_at, _id';
-	protected override readonly partitionBy = 'toYYYYMM(created_at)';
+	protected override readonly partitionBy = 'intDiv(operational_date, 100)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'sales';
 

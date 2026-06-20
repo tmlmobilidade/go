@@ -29,6 +29,7 @@ export function parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexIn
 		is_ok_pcgi: doc.is_ok,
 		mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
+		operational_date: transactionDateValue.operational_date_int,
 		received_at: doc.received_at,
 		updated_at: Dates.now('utc').unix_timestamp,
 	};

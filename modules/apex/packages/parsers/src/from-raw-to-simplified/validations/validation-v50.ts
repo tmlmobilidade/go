@@ -35,6 +35,7 @@ export function parseRawApexTransactionValidationV50IntoSimplifiedApexValidation
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
 		on_board_refund_id: null,
 		on_board_sale_id: null,
+		operational_date: transactionDateValue.operational_date_int,
 		pattern_id: doc.payload.serviceInfo.patternLongID,
 		product_id: doc.payload.validationInfo.productLongID,
 		received_at: doc.received_at,

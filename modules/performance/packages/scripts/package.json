@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-performance-sync-metrics-realtime",
+	"name": "@tmlmobilidade/go-performance-pckg-scripts",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -7,33 +7,31 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix",
-		"test": "tsx ./src/tests/index.ts"
+		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-performance-pckg-log": "*",
-		"@tmlmobilidade/go-performance-pckg-scripts": "*",
+		"@tmlmobilidade/go-types-apex": "*",
+		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"luxon": "3.7.2",
-		"p-limit": "7.3.0"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/node": "25.9.3",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.4",
+		"tsc-watch": "7.2.0",
 		"typescript": "6.0.3"
 	}
 }

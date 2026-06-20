@@ -19,6 +19,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexLocation> = {
 	line_id: { type: 'LowCardinality(Nullable(String))' },
 	mac_ase_counter_value: { type: 'UInt64' },
 	mac_sam_serial_number: { type: 'UInt64' },
+	operational_date: { type: 'UInt32' },
 	pattern_id: { type: 'LowCardinality(Nullable(String))' },
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	stop_id: { type: 'LowCardinality(Nullable(String))' },
@@ -37,7 +38,7 @@ class SimplifiedApexLocationsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexLocation> = 'ReplacingMergeTree(updated_at)';
 	protected override readonly orderBy = 'agency_id, created_at, _id';
-	protected override readonly partitionBy = 'toYYYYMM(created_at)';
+	protected override readonly partitionBy = 'intDiv(operational_date, 100)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'locations';
 

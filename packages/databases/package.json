@@ -36,6 +36,7 @@
 	"dependencies": {
 		"@clickhouse/client": "1.21.0",
 		"@tmlmobilidade/go-types-apex": "*",
+		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/types": "*",

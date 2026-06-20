@@ -25,6 +25,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexValidation> = {
 	mac_sam_serial_number: { type: 'UInt64' },
 	on_board_refund_id: { type: 'Nullable(UUID)' },
 	on_board_sale_id: { type: 'Nullable(UUID)' },
+	operational_date: { type: 'UInt32' },
 	pattern_id: { type: 'LowCardinality(Nullable(String))' },
 	product_id: { type: 'LowCardinality(Nullable(String))' },
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
@@ -46,7 +47,7 @@ class SimplifiedApexValidationsNewClass extends ClickHouseInterfaceTemplate<Simp
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexValidation> = 'ReplacingMergeTree(updated_at)';
 	protected override readonly orderBy = 'agency_id, created_at, _id';
-	protected override readonly partitionBy = 'toYYYYMM(created_at)';
+	protected override readonly partitionBy = 'intDiv(operational_date, 100)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'validations';
 
