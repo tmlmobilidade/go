@@ -34,7 +34,7 @@ async function main() {
 
 	// await syncRealtimeServiceCompliance();
 
-	await runDemandByAgencyByOperationalDate();
+	await runDemandByAgencyByOperationalDate('realtime');
 
 	//
 

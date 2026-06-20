@@ -8,14 +8,12 @@ INSERT INTO performance.demand_by_agency_by_operational_date
 	updated_at
 )
 SELECT
-	toString(agency_id) AS agency_id,
-	toYYYYMMDD(
-		toTimeZone(created_at, 'Europe/Lisbon') - INTERVAL 4 HOUR
-	) AS operational_date,
+	agency_id,
+	operational_date,
 	count() AS qty,
 	now64(3) AS updated_at
 FROM simplified_apex.validations
-WHERE is_passenger = 1
+WHERE is_passenger = 1 AND operational_date >= {start_date:UInt32}
 GROUP BY
 	agency_id,
 	operational_date;
