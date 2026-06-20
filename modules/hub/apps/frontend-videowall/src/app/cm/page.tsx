@@ -1,9 +1,9 @@
 /* * */
 
-import { AllScreens } from '@/areas/cm/AllScreens';
+import { CmDefault } from '@/components/agencies/cm/CmDefault';
 
 /* * */
 
 export default function Page() {
-	return <AllScreens />;
+	return <CmDefault />;
 }

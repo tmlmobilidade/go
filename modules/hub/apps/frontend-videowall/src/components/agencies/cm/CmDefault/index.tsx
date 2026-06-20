@@ -13,7 +13,7 @@ import useSWR from 'swr';
 
 /* * */
 
-export function CcflDefault() {
+export function CmDefault() {
 	//
 
 	//
@@ -24,15 +24,14 @@ export function CcflDefault() {
 	//
 	// B. Transform data
 
-	const ccflDemandToday = useMemo(() => {
+	const cmDemandToday = useMemo(() => {
 		const todayOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
-		const result = demandByAgencyByOperationalDateData?.find((item) => {
+		const result = demandByAgencyByOperationalDateData?.filter((item) => {
 			const isToday = item.operational_date === todayOperationalDate;
-			const isCCFL = item.agency_id === '1';
-			return isToday && isCCFL;
-		});
-		if (!result) return -1;
-		return result.qty;
+			const isCM = item.agency_id === '41' || item.agency_id === '42' || item.agency_id === '43' || item.agency_id === '44';
+			return isToday && isCM;
+		}).reduce((acc, item) => acc + item.qty, 0);
+		return result ?? -1;
 	}, [demandByAgencyByOperationalDateData]);
 
 	//
@@ -48,8 +47,8 @@ export function CcflDefault() {
 					isLoading={demandByAgencyByOperationalDateLoading}
 					isValidating={demandByAgencyByOperationalDateValidating}
 					sentiment="good"
-					title="CCFL / Passageiros transportados hoje, até agora"
-					valuePrimary={Intl.NumberFormat('pt-PT', { style: 'decimal' }).format(ccflDemandToday)}
+					title="CM / Passageiros transportados hoje, até agora"
+					valuePrimary={Intl.NumberFormat('pt-PT', { style: 'decimal' }).format(cmDemandToday)}
 					valueSecondary={1}
 				/>,
 			]}

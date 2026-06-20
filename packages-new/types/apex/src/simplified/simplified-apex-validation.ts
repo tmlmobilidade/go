@@ -39,7 +39,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	// Check whether the transaction has a valid units quantity field
 	// and allow zero as valid value (for subsidized trips). In those cases,
 	// the validation is considered to be of category 'prepaid'.
-	if (!!val.units_qty || val.units_qty === 0) return { ...val, category: 'prepaid' };
+	if (val.units_qty && val.units_qty >= 0) return { ...val, category: 'prepaid' };
 	// Check if a sale transaction is associated with this validation.
 	// If so, the validation is considered to be of category 'on_board_sale'.
 	if (val.on_board_sale_id) return { ...val, category: 'on_board_sale' };
