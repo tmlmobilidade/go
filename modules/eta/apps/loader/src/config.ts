@@ -14,7 +14,7 @@ function getEtaDatabase(): string {
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
-	agencyIds: ['1'],
+	agencyIds: ['1', '8', '21', '41', '42', '43', '44'],
 
 	database: getEtaDatabase(),
 
