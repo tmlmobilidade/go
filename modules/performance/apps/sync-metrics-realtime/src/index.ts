@@ -2,7 +2,7 @@
 
 import { syncRealtimeDemand } from '@/tasks/sync-realtime-demand.js';
 import { syncRealtimeServiceCompliance } from '@/tasks/sync-service-compliance.js';
-import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
+// import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
 import { runDemandByAgencyByOperationalDate } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
@@ -30,11 +30,11 @@ async function main() {
 
 	//
 
-	// await syncRealtimeDemand();
+	await syncRealtimeDemand();
 
-	// await syncRealtimeServiceCompliance();
+	await syncRealtimeServiceCompliance();
 
-	await runDemandByAgencyByOperationalDate('realtime');
+	await runDemandByAgencyByOperationalDate('full');
 
 	//
 
