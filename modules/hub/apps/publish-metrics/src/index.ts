@@ -1,16 +1,12 @@
 /* * */
 
-import { publishTripUpdates } from '@/tasks/publish-trip-updates.js';
-import { publishVehiclesMetadata } from '@/tasks/publish-vehicles-metadata.js';
-import { publishVehiclesPositions } from '@/tasks/publish-vehicles-positions.js';
+import { publishDemandByAgencyByOperationalDate } from '@/tasks/demand-by-agency-by-operational-date.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
-
-let ITERATION = 0;
 
 const main = async () => {
 	//
@@ -20,37 +16,32 @@ const main = async () => {
 
 	try {
 		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-realtime', message: 'Sentry Hub Publish Realtime initialized', module: 'hub', severity: 'info' });
+		Logger.startNodeLogs({ app: 'publish-metrics', message: 'Sentry Hub Publish Metrics initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Realtime' });
+		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Metrics' });
 	}
 
 	//
 	// Initialize the logger
 
 	Logger.init();
-	Logger.title(`[${ITERATION}] Publishing realtime data...`);
+	Logger.title(`Starting metrics data publishing...`);
 
 	const globalTimer = new Timer();
 
 	//
 	// Run all tasks sequentially
 
-	await publishVehiclesPositions();
-
-	if (ITERATION % 30 === 0) await publishVehiclesMetadata(); // Every 30 iterations * 1s = 30 seconds
-	if (ITERATION % 30 === 0) await publishTripUpdates(); // Every 30 iterations * 1s = 30 seconds
-
-	ITERATION++;
+	await publishDemandByAgencyByOperationalDate();
 
 	//
 	// Log the total time taken for all tasks
 
-	Logger.terminate(`[${ITERATION}] Publish realtime data completed in ${globalTimer.get()}`);
+	Logger.terminate(`Finished publishing metrics data (${globalTimer.get()})`);
 
 	//
 };
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '1s' });
+await runOnInterval(main, { intervalMs: '30s' });

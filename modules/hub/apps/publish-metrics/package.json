@@ -18,14 +18,8 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/external": "*",
-		"@tmlmobilidade/go-hub-pckg-sql": "*",
-		"@tmlmobilidade/gtfs-rt": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},
