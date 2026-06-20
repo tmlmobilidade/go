@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 
 /* * */
 
-const isProduction = process.env.environment === 'prd';
+const isProduction = true;// process.env.environment === 'prd';
 
 function getEtaDatabase(): string {
 	return isProduction ? 'eta' : 'eta_dev';
@@ -49,7 +49,7 @@ export const AppConfig = Object.freeze({
 		insertHistoricalRidesByDay: true,
 		insertHistoricalShapeNodes: true,
 		insertHistoricalVehicleEvents: true,
-		runDdl: true,
+		runDdl: !isProduction,
 		runTransformationAndAggregationQueries: true,
 		truncatePipelineTables: !isProduction,
 	},
