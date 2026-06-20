@@ -5,6 +5,7 @@ import { insertHistoricalVehicleEvents } from '@/clickhouse/insert-historical-ve
 import { AppConfig } from '@/lib/config.js';
 import { parseHistoricalRide, parseRide } from '@/lib/eta-ride-row.js';
 import { buildHistNodeTravelTimes } from '@/process/build-hist-node-travel-times.js';
+import { detectRideStartEndEvents } from '@/process/detect-ride-start-end-events.js';
 import { buildRidesQuery, fetchCurrentWindowRides, fetchHistoricalRidesForDayIndex } from '@/process/rides-query.js';
 import { syncShapeNodes } from '@/process/sync-shape-nodes.js';
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
@@ -111,6 +112,16 @@ export async function loadEta(config: AppConfig) {
 			);
 		}
 		await Promise.all(historicalRidesPromises);
+	}
+
+	// process.exit(0);
+
+	//
+	// 2b. Detect historical ride start/end observed times in clickhouse
+	//     Must run before step 3, which scopes source vehicle events by these times.
+
+	if (config.pipelineSteps.detectRideStartEndEvents) {
+		await detectRideStartEndEvents(clickhouseClient, config);
 	}
 
 	//

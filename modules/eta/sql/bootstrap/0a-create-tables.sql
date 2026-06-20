@@ -18,11 +18,11 @@ CREATE TABLE IF NOT EXISTS {database}.hist_rides (
     first_stop_id String,
     first_stop_name String,
     first_stop_coordinates Tuple(Float64, Float64),
-    first_stop_geohash String DEFAULT geohashEncode(first_stop_coordinates.1, first_stop_coordinates.2, 7),
+    first_stop_geohash String DEFAULT geohashEncode(first_stop_coordinates.2, first_stop_coordinates.1, 7),
     last_stop_id String,
     last_stop_name String,
     last_stop_coordinates Tuple(Float64, Float64),
-    last_stop_geohash String DEFAULT geohashEncode(last_stop_coordinates.1, last_stop_coordinates.2, 7)
+    last_stop_geohash String DEFAULT geohashEncode(last_stop_coordinates.2, last_stop_coordinates.1, 7)
 )
 ENGINE = ReplacingMergeTree()
 ORDER BY (_id);

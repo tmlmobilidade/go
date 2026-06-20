@@ -34,8 +34,16 @@ export const AppConfig = Object.freeze({
 	// Geometry settings
 	shapeNodeChunkLength: 25, // meters
 
+	// Ride start/end event detection settings
+	rideEventBufferRadiusMeters: 50, // meters (matches rides-controller BUFFER_RADIUS)
+	rideEventDetectionBatchSize: 500, // hist_rides per detect+mutation batch
+	rideEventGeohashPrefixLength: 6, // geohash-7 cell + neighbours around each stop
+	rideEventWindowPostMs: 10 * 60 * 60 * 1000, // 10h after scheduled start (matches temp.sql window)
+	rideEventWindowPreMs: 10 * 60 * 60 * 1000, // 10h before scheduled start (matches temp.sql window)
+
 	// App Pipeline Steps
 	pipelineSteps: {
+		detectRideStartEndEvents: true,
 		insertCurrentWindowRides: true,
 		insertCurrentWindowWaypoints: true,
 		insertHistoricalRidesByDay: true,
