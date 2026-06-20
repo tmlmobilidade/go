@@ -35,7 +35,7 @@ class SimplifiedApexInspectionDecisionsNewClass extends ClickHouseInterfaceTempl
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexInspectionDecision> = 'ReplacingMergeTree(updated_at)';
 	protected override readonly orderBy = 'agency_id, created_at, _id';
-	protected override readonly partitionBy = 'toYYYYMM(created_at)';
+	protected override readonly partitionBy = 'intDiv(operational_date, 100)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'inspection_decisions';
 
