@@ -71,7 +71,7 @@ export async function detectRideStartEndEvents(clickhouseClient: Parameters<type
 	}).then(result => result.json<RideIdRow>());
 
 	const rideIds = rideIdRows.map(row => row._id);
-	Logger.info(`Detecting start/end events for ${rideIds.length} historical rides in batches of ${config.rideEventDetectionBatchSize}`);
+	Logger.info({ message: `Detecting start/end events for ${rideIds.length} historical rides in batches of ${config.rideEventDetectionBatchSize}` });
 
 	//
 	// Pre-read + database-substitute the mutation SQL once (the detect SQL is read
@@ -90,7 +90,7 @@ export async function detectRideStartEndEvents(clickhouseClient: Parameters<type
 
 	for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
 		const batchIds = rideIds.slice(batchIndex * config.rideEventDetectionBatchSize, (batchIndex + 1) * config.rideEventDetectionBatchSize);
-		Logger.progress(`[${batchIndex + 1}/${totalBatches}] detecting ${batchIds.length} rides`);
+		Logger.progress({ message: `[${batchIndex + 1}/${totalBatches}] detecting ${batchIds.length} rides` });
 
 		//
 		// Reset the staging tables for this batch.
@@ -128,5 +128,5 @@ export async function detectRideStartEndEvents(clickhouseClient: Parameters<type
 	await clickhouseClient.command({ query: `DROP TABLE IF EXISTS ${batchTable}` });
 	await clickhouseClient.command({ query: `DROP TABLE IF EXISTS ${valuesTable}` });
 
-	Logger.progress('Detected historical ride start/end events');
+	Logger.progress({ message: 'Detected historical ride start/end events' });
 }
