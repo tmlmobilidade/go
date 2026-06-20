@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-hub-api",
+	"name": "@tmlmobilidade/go-hub-publish-metrics",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -13,25 +13,19 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix"
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@fastify/websocket": "11.2.0",
-		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-types-performance": "*",
-		"@tmlmobilidade/gtfs-rt": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/types": "*"
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
 		"@types/node": "25.9.3",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.4",
