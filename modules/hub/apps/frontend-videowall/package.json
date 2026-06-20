@@ -9,7 +9,7 @@
 	"private": true,
 	"scripts": {
 		"build": "next build",
-		"dev": "next dev -p 51101",
+		"dev": "next dev -p 51102",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src"
 	},
@@ -20,6 +20,7 @@
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.2.9",
+		"nuqs": "2.8.9",
 		"react": "19.2.7",
 		"react-dom": "19.2.7",
 		"react-i18next": "17.0.8",

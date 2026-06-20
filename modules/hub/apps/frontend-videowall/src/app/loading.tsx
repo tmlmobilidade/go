@@ -1,9 +1,9 @@
 /* * */
 
-import { Loader } from '@/components/Loader';
+import { LoadingSection } from '@tmlmobilidade/ui';
 
 /* * */
 
 export default function Loading() {
-	return <Loader full visible />;
+	return <LoadingSection fullHeight />;
 }

@@ -5,10 +5,10 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
-	basePath: '/hub/navegante-app',
+	basePath: '/hub/videowall',
 	devIndicators: false,
 	env: {
-		NEXT_PUBLIC_BASE_PATH: '/hub/navegante-app',
+		NEXT_PUBLIC_BASE_PATH: '/hub/videowall',
 		NEXT_PUBLIC_ENVIRONMENT: process.env.ENVIRONMENT,
 	},
 	experimental: {
