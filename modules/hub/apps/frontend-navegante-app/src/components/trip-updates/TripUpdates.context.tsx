@@ -11,14 +11,13 @@ export interface PreparedTripUpdate {
 	arrival_time: UnixTimestamp
 	delay: number
 	stop_id: string
-	stop_sequence: number
 	trip_id: string
 	vehicle_id: string
 }
 
 interface TripUpdatesContextState {
 	actions: {
-		getTripUpdateForStop: (tripIds: string[], stopId: string, stopSequence: number) => PreparedTripUpdate | undefined
+		getTripUpdateForStop: (tripIds: string[], stopId: string) => PreparedTripUpdate | undefined
 	}
 	data: {
 		map: Map<string, PreparedTripUpdate>
@@ -67,13 +66,12 @@ export function TripUpdatesContextProvider({ children }: PropsWithChildren) {
 			for (const stopTimeUpdate of entity.trip_update.stop_time_update) {
 				// Set a unique key for this object based on
 				// the trip id, stop id and stop sequence
-				const key = `${entity.trip_update.trip.trip_id}-${stopTimeUpdate.stop_id}-${stopTimeUpdate.stop_sequence}`;
+				const key = `${entity.trip_update.trip.trip_id}-${stopTimeUpdate.stop_id}`;
 				// Prepare the trip update
 				const preparedTripUpdate: PreparedTripUpdate = {
 					arrival_time: validateUnixTimestamp(stopTimeUpdate.arrival.time * 1000),
 					delay: stopTimeUpdate.arrival.delay ?? 0,
 					stop_id: stopTimeUpdate.stop_id,
-					stop_sequence: stopTimeUpdate.stop_sequence,
 					trip_id: entity.trip_update.trip?.trip_id,
 					vehicle_id: entity.trip_update.vehicle.id,
 				};
@@ -89,16 +87,22 @@ export function TripUpdatesContextProvider({ children }: PropsWithChildren) {
 	//
 	// C. Handle actions
 
-	const getTripUpdateForStop = useCallback((tripIds: string[], stopId: string, stopSequence: number): PreparedTripUpdate | undefined => {
+	const getTripUpdateForStop = useCallback((tripIds: string[], stopId: string): PreparedTripUpdate | undefined => {
+		let keyMatch: PreparedTripUpdate | undefined;
+
 		// Iterate over each trip id and return the first trip update that matches the stop id and stop sequence.
 		// This is because data in the Network API is compressed — there is no information
 		// on which days the trip ID is valid, only that all those trip IDs are valid on those days.
 		for (const tripId of tripIds) {
 			// Set a unique key for this object based on
-			const key = `${tripId}-${stopId}-${stopSequence}`;
-			// Return the trip update for the stop
-			return tripUpdatesMap.get(key) ?? undefined;
+			const key = `${tripId}-${stopId}`;
+
+			if (tripUpdatesMap.has(key)) {
+				keyMatch = tripUpdatesMap.get(key);
+				break;
+			}
 		}
+		return keyMatch ?? undefined;
 	}, [tripUpdatesMap]);
 
 	//
