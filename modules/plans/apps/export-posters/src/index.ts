@@ -9,6 +9,7 @@ import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
+import { Dates } from '@tmlmobilidade/dates';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -86,6 +87,7 @@ async function main(): Promise<void> {
 				posters: {
 					...planData.apps.posters,
 					status: 'processing',
+					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
 				},
 			},
 		});
@@ -157,6 +159,19 @@ async function main(): Promise<void> {
 		await exportDayTypesFile(exportConfig);
 
 		Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
+
+		//
+
+		await plans.updateById(planData._id, {
+			apps: {
+				...planData.apps,
+				posters: {
+					...planData.apps.posters,
+					status: 'complete',
+					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+				},
+			},
+		});
 
 		//
 

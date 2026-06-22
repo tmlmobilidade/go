@@ -46,10 +46,10 @@ export const PlansExportPdfsContextProvider = ({ children, planId }: PropsWithCh
 	const { action: generatePosters, isError, isLoading } = useHandleUpdate<PlansExportPdfsResponse>({
 		fetchFn: async () => await fetchData<PlansExportPdfsResponse>(API_ROUTES.plans.PLANS_DETAIL_LIST_TO_GENERATE_POSTERS(planId), 'PUT', {}),
 		labels: {
-			error_message: 'Não foi possível gerar os posters PDF.',
+			error_message: 'Não foi possível processar o plano para gerar os posters PDF.',
 			error_title: 'Erro ao gerar posters',
-			success_message: 'Os posters foram gerados com sucesso.',
-			success_title: 'Posters gerados',
+			success_message: 'Processando plano para gerar os posters PDF. Aguarde alguns minutos para que os posters sejam gerados.',
+			success_title: 'Processando plano',
 		},
 		onSuccess: () => {},
 	});
