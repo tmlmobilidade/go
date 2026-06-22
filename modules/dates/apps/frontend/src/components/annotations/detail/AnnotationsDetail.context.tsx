@@ -164,7 +164,16 @@ export const AnnotationsDetailContextProvider = ({ annotationId, children }: Pro
 		annotationError,
 		annotationLoading,
 		annotationId,
+		canDelete,
+		canLock,
+		canSave,
 		form,
+		handleDelete,
+		handleLock,
+		handleSave,
+		isDeleting,
+		isLocking,
+		isReadOnly,
 		isSaving,
 	]);
 

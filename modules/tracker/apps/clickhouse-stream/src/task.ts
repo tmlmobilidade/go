@@ -17,7 +17,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	insertFn: async (data) => {
 		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
 	},
-	title: await simplifiedVehicleEventsNew.getTableName(),
+	title: `clickhouse-stream-${Math.random().toString(36).substring(2, 15)}`,
 });
 
 /**
@@ -38,7 +38,7 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 	const newSimplifiedVehicleEventDocument = parser(databaseOperation.fullDocument);
 
 	if (!newSimplifiedVehicleEventDocument) {
-		Logger.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
+		Logger.error({ message: `Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}` });
 		return;
 	}
 

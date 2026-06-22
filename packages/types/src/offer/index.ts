@@ -7,4 +7,5 @@ export * from '@/offer/route.js';
 export * from '@/offer/rules.js';
 export * from '@/offer/transport-type.js';
 export * from '@/offer/typology.js';
+export * from '@/offer/vkm.js';
 export * from '@/offer/zone.js';

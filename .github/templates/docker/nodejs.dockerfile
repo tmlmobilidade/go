@@ -58,13 +58,17 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 RUN npm prune --omit-dev
 
 RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
-RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules
+RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules /app/packages-new
 
-# Turbo prune may omit modules/eta/sql; merge from build context when present.
+# Turbo prune may omit modules/*/sql; merge from build context when present.
 RUN --mount=type=bind,source=.,target=/ctx \
-    if [ -d "/ctx/modules/eta/sql" ]; then \
-      mkdir -p /app/modules/eta && cp -a /ctx/modules/eta/sql /app/modules/eta/; \
-    fi
+    for d in /ctx/modules/*/sql; do \
+      if [ -d "$d" ]; then \
+        m=$(basename "$(dirname "$d")"); \
+        mkdir -p "/app/modules/$m"; \
+        cp -a "$d" "/app/modules/$m/"; \
+      fi \
+    done
 
 
 # # #
@@ -88,6 +92,7 @@ ENV NODE_ENV=production
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/packages-new ./packages-new
 COPY --from=builder /app/modules ./modules
 COPY --from=builder /app/modules/${MODULE}/apps/${APP}/dist ./dist
 

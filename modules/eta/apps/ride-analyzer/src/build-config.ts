@@ -29,15 +29,16 @@ export function buildLoaderConfig(args: CliArgs): AppConfig {
 		const dayStart = Dates.fromOperationalDate(args.tripRef.operationalDate, 'Europe/Lisbon');
 		timeStart = dayStart;
 		timeEnd = dayStart.plus({ days: 1 });
-		Logger.info(`Using operational day window from ride id: ${timeStart.iso} → ${timeEnd.iso}`);
+		Logger.info({ message: `Using operational day window from ride id: ${timeStart.iso} → ${timeEnd.iso}` });
 	} else {
 		timeStart = Dates.fromUnixTimestamp(args.timeStartMs);
 		timeEnd = timeStart.plus({ hours: 1 });
-		Logger.info(`Using --time-start window: ${timeStart.iso} → ${timeEnd.iso}`);
+		Logger.info({ message: `Using --time-start window: ${timeStart.iso} → ${timeEnd.iso}` });
 	}
 
 	return {
 		agencyIds: AGENCY_IDS,
+		database: 'eta_dev',
 		development: {
 			isDevelopment: true,
 			lineIds: args.lineIds,

@@ -1,6 +1,6 @@
 /* * */
 
-import { type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale } from '@tmlmobilidade/types';
+import { type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
 import { Tag, TagGroup } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,11 +14,11 @@ interface ApexPaymentMethodTagProps {
 export function ApexPaymentMethodTag({ value }: ApexPaymentMethodTagProps) {
 	//
 
-	if (!value && value !== 0) {
+	if (!value && value !== '0') {
 		return <Tag label="N/A" variant="muted" />;
 	}
 
-	if (value === 2) {
+	if (value === '2') {
 		return (
 			<TagGroup tags={[
 				{ filled: true, label: value, variant: 'secondary' },

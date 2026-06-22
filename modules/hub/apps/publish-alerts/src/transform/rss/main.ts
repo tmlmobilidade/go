@@ -1,8 +1,7 @@
 /* * */
 
-import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type RssRawImageInput, type RssRawItem } from '@tmlmobilidade/rss/dist/types/feed.types.js';
+import { type RssRawItem } from '@tmlmobilidade/rss/dist/types/feed.types.js';
 import { type Alert } from '@tmlmobilidade/types';
 
 /**
@@ -21,44 +20,8 @@ export async function transformAlertIntoRssEntity(alertData: Alert, feedBaseUrl:
 	try {
 		//
 
-		const images: RssRawImageInput[] = [];
-		const fileIdOrder: string[] = [];
-		const seen = new Set<string>();
-
-		const attachedFiles = await files.findMany(
-			{ resource_id: alertData._id, scope: 'alerts' },
-			{ sort: { created_at: 1 } },
-		);
-
-		if (alertData.file_id) {
-			fileIdOrder.push(alertData.file_id);
-			seen.add(alertData.file_id);
-		}
-
-		for (const f of attachedFiles) {
-			if (!seen.has(f._id)) {
-				fileIdOrder.push(f._id);
-				seen.add(f._id);
-			}
-		}
-
-		for (const fileId of fileIdOrder) {
-			try {
-				const file = await files.findById(fileId);
-				if (!file?.url) continue;
-				images.push({
-					alt: alertData.title,
-					type: file.type ?? null,
-					url: file.url,
-				});
-			} catch {
-				// DB row exists but object missing in storage — omit image, still emit the item
-			}
-		}
-
 		return {
 			description: alertData.description,
-			images: images.length ? images : [],
 			link: `${feedBaseUrl}/${alertData._id}`,
 			linkLabel: 'Ver o alerta completo em carrismetropolitana.pt',
 			publish_start_date: alertData.publish_start_date,
@@ -67,6 +30,6 @@ export async function transformAlertIntoRssEntity(alertData: Alert, feedBaseUrl:
 
 		//
 	} catch (error) {
-		Logger.error(`[Alert ID: ${alertData._id}] Error transforming alert: ${(error as Error).message}`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Error transforming alert: ${(error as Error).message}` });
 	}
 }

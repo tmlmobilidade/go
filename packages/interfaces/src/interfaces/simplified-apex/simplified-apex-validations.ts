@@ -1,13 +1,13 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { type SimplifiedApexValidation, type UpdateSimplifiedApexValidationDto } from '@tmlmobilidade/types';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
 
 /* * */
 
-class SimplifiedApexValidationsClass extends MongoCollectionClass<SimplifiedApexValidation, SimplifiedApexValidation, UpdateSimplifiedApexValidationDto> {
+class SimplifiedApexValidationsClass extends MongoCollectionClass<SimplifiedApexValidation, SimplifiedApexValidation, SimplifiedApexValidation> {
 	private static _instance: SimplifiedApexValidationsClass;
 
 	private constructor() {

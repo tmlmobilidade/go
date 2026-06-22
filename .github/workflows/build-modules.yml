@@ -19,6 +19,7 @@ on:
     paths:
       - 'modules/**'
       - 'packages/**'
+      - 'packages-new/**'
       - '.github/workflows/build-modules.yml'
       - '.github/actions/**/*'
       - '.github/templates/**/*'
@@ -28,10 +29,6 @@ on:
       - reopened
       - synchronize
       - closed
-
-concurrency:
-  group: build-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
 

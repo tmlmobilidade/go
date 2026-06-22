@@ -3,6 +3,7 @@ import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { Files } from '@tmlmobilidade/files';
 import { fileExports, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { type FileExport, type GtfsExportProperties, ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { CsvWriter } from '@tmlmobilidade/writers';
@@ -105,7 +106,7 @@ async function processExport(fileExport: FileExport) {
 
 		Logger.success(`GTFS export ${fileExport._id} completed.`);
 	} catch (error) {
-		Logger.error(`Error processing GTFS export ${fileExport._id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		Logger.error({ error, message: `Error processing GTFS export ${fileExport._id}` });
 		await fileExports.updateById(fileExport._id, { processing_status: 'error' });
 	} finally {
 		// Cleanup working directory
@@ -116,6 +117,20 @@ async function processExport(fileExport: FileExport) {
 /* * */
 
 async function main() {
+	//
+
+	//
+	// Initialize the logger
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'gtfs-exporter', message: 'Sentry GTFS Exporter initialized', module: 'offer', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry GTFS Exporter' });
+	}
+
+	//
+	// Initialize the logger
 	Logger.init();
 
 	const waitingExports = await fileExports.findMany({
@@ -123,7 +138,7 @@ async function main() {
 		type: 'gtfs',
 	});
 
-	Logger.info(`Found ${waitingExports.length} waiting GTFS exports.`);
+	Logger.info({ message: `Found ${waitingExports.length} waiting GTFS exports.` });
 
 	for (const fileExport of waitingExports) {
 		await processExport(fileExport);

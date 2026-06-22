@@ -1,10 +1,10 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
+import { type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/types';
 
 /**
  * Common type for all SimplifiedApex documents that can be processed by the invalidateRides callback.
@@ -76,10 +76,10 @@ export async function invalidateRides(data: CommonSimplifiedApexDocument[]) {
 			{ returnResults: false },
 		);
 
-		Logger.info(`Flush [simplified_apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})`);
+		Logger.info({ message: `Flush [simplified_apex_validations]: Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})` });
 
 		//
 	} catch (error) {
-		Logger.error('Error in flushCallback', error);
+		Logger.error({ error, message: 'Error in flushCallback' });
 	}
 };

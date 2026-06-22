@@ -2,16 +2,13 @@
 
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { externalClients } from '@tmlmobilidade/external';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { GtfsRtFeedMessage, type HashableRawVehicleEvent, type RawVehicleEventTcbV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
-
-/* * */
-
-const API_URL = 'https://wowsystems.co.uk/gtfs-realtime';
 
 /* * */
 
@@ -22,6 +19,18 @@ let ITERATION = 0;
 const main = async () => {
 	//
 
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'tcb-fetch', message: 'Sentry Tracker TCB Fetch initialized', module: 'tracker', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Tracker TCB Fetch' });
+	}
+
+	//
+	// Initialize the timer
+
 	const timer = new Timer();
 
 	let saveCount = 0;
@@ -29,19 +38,11 @@ const main = async () => {
 	//
 	// Fetch the TCB Vehicle Events data from the API and decode it
 
-	Logger.info(`[${ITERATION}] Fetching TCB data from API...`, 0, 1);
+	Logger.info({ message: `[${ITERATION}] Fetching TCB data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
-	let decodedMessage: GtfsRtFeedMessage | null = null;
-	try {
-		const response = await fetch(API_URL);
-		const arrayBuffer = await response.arrayBuffer();
-		decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
-	} catch (error) {
-		Logger.error(`[${ITERATION}] Error decoding TCB data:`, error);
-		return;
-	}
+	const decodedMessage = await externalClients.tcb.vehiclePositions();
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TCB data.`);
+	Logger.info({ message: `[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TCB data.` });
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -92,7 +93,7 @@ const main = async () => {
 
 		//
 		} catch (error) {
-			Logger.error(`[${ITERATION}] Error processing vehicle event entity with ID ${entity.id}:`, error);
+			Logger.error({ error, message: `[${ITERATION}] Error processing vehicle event entity with ID ${entity.id}:` });
 		}
 	}
 
@@ -115,11 +116,11 @@ const main = async () => {
 				saveCount = newEvents.length;
 			}
 		} catch (error) {
-			Logger.error(`[${ITERATION}] Error saving vehicle events to database:`, error);
+			Logger.error({ error, message: `[${ITERATION}] Error saving vehicle events to database:` });
 		}
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from TCB data in ${timer.get()}.`);
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from TCB data in ${timer.get()}.` });
 
 	ITERATION++;
 

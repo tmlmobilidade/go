@@ -35,9 +35,9 @@ export const computeTop30DayPerformanceByLine = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
 	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Calculate date ranges
@@ -50,20 +50,20 @@ export const computeTop30DayPerformanceByLine = async () => {
 	const last30DaysEnd = now.iso.slice(0, 10);
 	const yearAgoDate = oneYearAgo.iso.slice(0, 10);
 
-	Logger.info(`Analyzing period: ${last30DaysStart} to ${last30DaysEnd}`);
-	Logger.info(`Rolling year baseline: ${yearAgoDate} to ${last30DaysEnd}`);
+	Logger.info({ message: `Analyzing period: ${last30DaysStart} to ${last30DaysEnd}` });
+	Logger.info({ message: `Rolling year baseline: ${yearAgoDate} to ${last30DaysEnd}` });
 
 	//
 	// Fetch demand metrics by line by day
 
 	const fetchTimer = new Timer();
-	Logger.info(`Fetching demand_by_line_by_day metrics...`);
+	Logger.info({ message: `Fetching demand_by_line_by_day metrics...` });
 
 	const dailyMetrics = await metrics.findMany({
 		metric: 'demand_by_line_by_day',
 	});
 
-	Logger.info(`Found ${dailyMetrics.length} line metrics (${fetchTimer.get()})`);
+	Logger.info({ message: `Found ${dailyMetrics.length} line metrics (${fetchTimer.get()})` });
 
 	//
 	// Process metrics to calculate totals
@@ -145,7 +145,7 @@ export const computeTop30DayPerformanceByLine = async () => {
 		});
 	}
 
-	Logger.info(`Processed ${linePerformance.length} lines with sufficient data`);
+	Logger.info({ message: `Processed ${linePerformance.length} lines with sufficient data` });
 
 	//
 	// Sort and get top/bottom performers

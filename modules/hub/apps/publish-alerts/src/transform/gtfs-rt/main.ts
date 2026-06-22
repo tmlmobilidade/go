@@ -6,10 +6,10 @@ import { transformDescriptionText } from '@/transform/gtfs-rt/content/descriptio
 import { transformHeaderText } from '@/transform/gtfs-rt/content/header-text.js';
 import { transformImage } from '@/transform/gtfs-rt/content/image.js';
 import { transformUrl } from '@/transform/gtfs-rt/content/url.js';
-import { transformReferenceTypeAgency } from '@/transform/gtfs-rt/reference-types/agency.js';
-import { transformReferenceTypeLines } from '@/transform/gtfs-rt/reference-types/lines.js';
-import { transformReferenceTypeRides } from '@/transform/gtfs-rt/reference-types/rides.js';
-import { transformReferenceTypeStops } from '@/transform/gtfs-rt/reference-types/stops.js';
+import { transformReferenceTypeAgencyIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/agency.js';
+import { transformReferenceTypeLinesIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/lines.js';
+import { transformReferenceTypeRidesIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/rides.js';
+import { transformReferenceTypeStopsIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/stops.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@tmlmobilidade/types';
 
@@ -32,12 +32,12 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 		// Validate required input properties
 
 		if (!alertData.reference_type || !alertData.references?.length) {
-			Logger.error(`[Alert ID: ${alertData._id}] Alert reference_type or references are missing.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Alert reference_type or references are missing.` });
 			return;
 		}
 
 		if (!alertData.active_period_start_date) {
-			Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.` });
 			return;
 		}
 
@@ -67,12 +67,12 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 		const imageValue = await transformImage(alertData);
 
 		if (!headerTextValue) {
-			Logger.error(`[Alert ID: ${alertData._id}] Alert header_text is missing.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Alert header_text is missing.` });
 			return;
 		}
 
 		if (!descriptionTextValue) {
-			Logger.error(`[Alert ID: ${alertData._id}] Alert description_text is missing.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Alert description_text is missing.` });
 			return;
 		}
 
@@ -83,27 +83,23 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 		let informedEntityValues: GtfsRtEntitySelector[] | undefined;
 
 		if (alertData.reference_type === 'agency') {
-			informedEntityValues = await transformReferenceTypeAgency(alertData);
+			informedEntityValues = await transformReferenceTypeAgencyIntoGtfsRt(alertData);
 		}
 
 		if (alertData.reference_type === 'lines') {
-			informedEntityValues = await transformReferenceTypeLines(alertData);
+			informedEntityValues = await transformReferenceTypeLinesIntoGtfsRt(alertData);
 		}
 
 		if (alertData.reference_type === 'rides') {
-			informedEntityValues = await transformReferenceTypeRides(alertData);
+			informedEntityValues = await transformReferenceTypeRidesIntoGtfsRt(alertData);
 		}
 
 		if (alertData.reference_type === 'stops') {
-			informedEntityValues = await transformReferenceTypeStops(alertData);
-		}
-
-		if (alertData.reference_type === 'stops') {
-			informedEntityValues = await transformReferenceTypeStops(alertData);
+			informedEntityValues = await transformReferenceTypeStopsIntoGtfsRt(alertData);
 		}
 
 		if (!informedEntityValues) {
-			Logger.error(`[Alert ID: ${alertData._id}] Alert informed_entity values are missing.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] Alert informed_entity values are missing.` });
 			return;
 		}
 
@@ -126,6 +122,6 @@ export async function transformAlertIntoGtfsRtEntity(alertData: Alert): Promise<
 
 		//
 	} catch (error) {
-		Logger.error(`[Alert ID: ${alertData._id}] Error transforming alert: ${(error as Error).message}`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Error transforming alert: ${(error as Error).message}` });
 	}
 }

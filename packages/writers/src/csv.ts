@@ -92,7 +92,7 @@ export class CsvWriter<T> {
 
 			fs.appendFileSync(this.FILE_PATH, csvData, { encoding: 'utf-8', flush: true });
 
-			if (this.LOGS) Logger.info(`CSVWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
+			if (this.LOGS) Logger.info({ message: `CSVWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})` });
 
 			this.CURRENT_BATCH_DATA = [];
 

@@ -11,6 +11,7 @@ import { FastifyService } from '@tmlmobilidade/fastify';
 
 	const fastifyService = FastifyService.getInstance({
 		bodyLimit: 1024 * 1024 * 1024 * 2, // 2GB
+		module: 'offer',
 		origin: getModuleConfig('offer', 'cors_origin'),
 		port: getModuleConfig('offer', 'api_port'),
 	});

@@ -7,7 +7,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -18,16 +20,18 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.9.1",
+		"@types/node": "25.9.3",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.3",
-		"typescript": "5.9.3"
+		"tsx": "4.22.4",
+		"typescript": "6.0.3"
 	}
 }

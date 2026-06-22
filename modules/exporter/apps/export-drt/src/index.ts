@@ -2,6 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import os from 'node:os';
@@ -31,6 +32,18 @@ export const GLOBAL_CONTEXT: GlobalContext = {
 /* * */
 /* MAIN FUNCTION */
 async function main() {
+	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'export-drt', message: 'Sentry Exporter DRT initialized', module: 'exporter', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Exporter DRT' });
+	}
+
 	try {
 		Logger.init();
 		const globalTimer = new Timer();
@@ -71,7 +84,7 @@ async function main() {
 
 		Logger.terminate('DRT export completed successfully.');
 	} catch (error) {
-		Logger.error('Error parsing plan.', error);
+		Logger.error({ error, message: 'Error parsing plan.' });
 		throw error;
 	}
 }

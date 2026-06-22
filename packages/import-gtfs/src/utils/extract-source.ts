@@ -28,7 +28,7 @@ export async function extractGtfsSource(context: ImportGtfsContext, config: Impo
 	// Then unzip it.
 
 	if ('url' in config.source) {
-		Logger.info(`Downloading GTFS file from URL: ${config.source.url}`);
+		Logger.info({ message: `Downloading GTFS file from URL: ${config.source.url}` });
 		const downloadResponse = await fetch(config.source.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 		fs.writeFileSync(context.workdir.download_file_path, Buffer.from(downloadArrayBuffer));
@@ -36,7 +36,7 @@ export async function extractGtfsSource(context: ImportGtfsContext, config: Impo
 	}
 
 	if ('path' in config.source) {
-		Logger.info(`Copying GTFS file from path: ${config.source.path}`);
+		Logger.info({ message: `Copying GTFS file from path: ${config.source.path}` });
 		fs.copyFileSync(config.source.path, context.workdir.download_file_path);
 		Logger.success(`Copied GTFS file from path: ${config.source.path}`);
 	}
@@ -44,7 +44,7 @@ export async function extractGtfsSource(context: ImportGtfsContext, config: Impo
 	//
 	// Unzip the GTFS file.
 
-	Logger.info('Unzipping GTFS file...');
+	Logger.info({ message: 'Unzipping GTFS file...' });
 	await unzipFile(context.workdir.download_file_path, context.workdir.extract_dir_path);
 	Logger.success(`Unzipped GTFS file from "${context.workdir.download_file_path}" to "${context.workdir.extract_dir_path}".`, 1);
 }

@@ -2,16 +2,13 @@
 
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { externalClients } from '@tmlmobilidade/external';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, type RawVehicleEventTtslV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
-
-/* * */
-
-const API_URL = 'https://api.ttsl.pt/files/gtfs_rt_vehicles.pb';
 
 /* * */
 
@@ -22,6 +19,18 @@ let ITERATION = 0;
 const main = async () => {
 	//
 
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'ttsl-fetch', message: 'Sentry Tracker TTSL Fetch initialized', module: 'tracker', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Tracker TTSL Fetch' });
+	}
+
+	//
+	// Initialize the timer
+
 	const timer = new Timer();
 
 	let saveCount = 0;
@@ -29,13 +38,11 @@ const main = async () => {
 	//
 	// Fetch the TTSL Vehicle Events data from the API and decode it
 
-	Logger.info(`[${ITERATION}] Fetching TTSL data from API...`, 0, 1);
+	Logger.info({ message: `[${ITERATION}] Fetching TTSL data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
-	const response = await fetch(API_URL);
-	const arrayBuffer = await response.arrayBuffer();
-	const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
+	const decodedMessage = await externalClients.ttsl.vehiclePositions();
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TTSL data.`);
+	Logger.info({ message: `[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the TTSL data.` });
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -90,11 +97,11 @@ const main = async () => {
 
 		//
 		} catch (error) {
-			Logger.error(`Error processing TTSL entity with ID ${entity.id}:`, error);
+			Logger.error({ error, message: `[${ITERATION}] Error processing TTSL entity with ID ${entity.id}:` });
 		}
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from TTSL data in ${timer.get()}.`);
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from TTSL data in ${timer.get()}.` });
 
 	ITERATION++;
 

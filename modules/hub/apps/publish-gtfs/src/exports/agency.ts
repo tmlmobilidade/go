@@ -30,7 +30,7 @@ export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsC
 
 	const timer = new Timer();
 
-	Logger.info('Exporting agency.txt file...');
+	Logger.info({ message: 'Exporting agency.txt file...' });
 
 	//
 	// Get agencies data from the database.
@@ -43,7 +43,7 @@ export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsC
 	for (const agencyData of foundAgenciesData) {
 		const parsedAgencyRow: ExportedAgencyRow = {
 			agency_id: agencyData._id,
-			agency_name: agencyData.name,
+			agency_name: agencyData.public_name || agencyData.name,
 			agency_email: agencyData.public_email,
 			agency_phone: agencyData.phone,
 			agency_url: agencyData.website_url,

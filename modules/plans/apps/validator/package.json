@@ -21,7 +21,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/files": "*",
-		"@tmlmobilidade/gtfs-validator": "20260527.1429.34",
+		"@tmlmobilidade/gtfs-validator": "20260612.856.51",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
@@ -30,9 +30,9 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.9.1",
+		"@types/node": "25.9.3",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.3",
-		"typescript": "5.9.3"
+		"tsx": "4.22.4",
+		"typescript": "6.0.3"
 	}
 }

@@ -13,7 +13,7 @@ import { type Zone } from '@tmlmobilidade/types';
  */
 export async function fetchAllZones(): Promise<Map<string, Zone>> {
 	try {
-		Logger.info('Fetching all zones...');
+		Logger.info({ message: 'Fetching all zones...' });
 
 		const allZones = await zones.findMany({});
 		const zonesMap = new Map<string, Zone>();
@@ -24,9 +24,8 @@ export async function fetchAllZones(): Promise<Map<string, Zone>> {
 
 		Logger.success(`Loaded ${zonesMap.size} zones into memory`);
 		return zonesMap;
-	}
-	catch (error) {
-		Logger.error('Error fetching zones', error);
+	} catch (error) {
+		Logger.error({ error, message: 'Error fetching zones' });
 		throw new Error(`Failed to fetch zones: ${error}`);
 	}
 }

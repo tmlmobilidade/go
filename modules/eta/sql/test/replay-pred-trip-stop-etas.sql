@@ -11,17 +11,40 @@
 -- the enrichment block from api/2-select-pred-trip-stop-etas-by-trip-id.sql.
 
 WITH
-    latest_pos AS (
+    -- Newest GPS fix per (trip, vehicle): anchors the clock and the shape.
+    latest_fix AS (
         SELECT
             trip_id,
             vehicle_id,
             argMax(hashed_shape_id, created_at) AS hashed_shape_id,
-            argMax(node_index, created_at)      AS current_node_index,
             max(created_at)                     AS position_created_at
         FROM {database}.curr_vehicle_events
         WHERE trip_id = {trip_id:String}
           AND created_at >= {now_ms:Int64} - 30 * 60 * 1000
         GROUP BY trip_id, vehicle_id
+    ),
+    -- Current node = furthest-forward node observed in the last 2 minutes before
+    -- the newest fix. Using the max progress (instead of a single argMax sample)
+    -- stops a noisy/backward-snapped latest GPS point from dragging the position
+    -- behind the vehicle's true realtime location.
+    latest_pos AS (
+        SELECT
+            lf.trip_id             AS trip_id,
+            lf.vehicle_id          AS vehicle_id,
+            lf.hashed_shape_id     AS hashed_shape_id,
+            max(e.node_index)      AS current_node_index,
+            lf.position_created_at AS position_created_at
+        FROM latest_fix AS lf
+        INNER JOIN {database}.curr_vehicle_events AS e
+            ON e.trip_id = lf.trip_id
+           AND e.vehicle_id = lf.vehicle_id
+        WHERE e.created_at BETWEEN lf.position_created_at - 2 * 60 * 1000
+                               AND lf.position_created_at
+        GROUP BY
+            lf.trip_id,
+            lf.vehicle_id,
+            lf.hashed_shape_id,
+            lf.position_created_at
     ),
     pos_with_trip AS (
         SELECT
@@ -299,6 +322,72 @@ WITH
         WHERE w.node_index >= pf.current_node_index
           AND pf.period != 'Unknown'
     ),
+    -- One distinct (trip, vehicle) per live position. This is the driving set
+    -- for the per-node scan below, so each shape's nodes are read once per
+    -- vehicle instead of once per upcoming stop.
+    live_trips AS (
+        SELECT DISTINCT
+            trip_id,
+            vehicle_id,
+            hashed_shape_id,
+            current_node_index,
+            period_of_day,
+            weekday,
+            day_type,
+            period
+        FROM pos_full
+        WHERE period != 'Unknown'
+    ),
+    -- Per (trip, vehicle) node travel times for every node still AHEAD of the
+    -- vehicle, with the live adjustment applied. The node_index > current_node
+    -- predicate is on the pred_node_etas ORDER BY prefix, so this scans only the
+    -- remaining slice of each shape rather than the whole shape per stop.
+    trip_nodes AS (
+        SELECT
+            lt.trip_id        AS trip_id,
+            lt.vehicle_id     AS vehicle_id,
+            p.node_index      AS node_index,
+            p.predicted_travel_time_seconds
+                * coalesce(lf.live_adjustment, toFloat64(1)) AS node_seconds
+        FROM live_trips AS lt
+        INNER JOIN {database}.pred_node_etas AS p
+            ON p.hashed_shape_id = lt.hashed_shape_id
+           AND p.period_of_day   = lt.period_of_day
+           AND p.weekday         = lt.weekday
+           AND p.day_type        = lt.day_type
+           AND p.period          = lt.period
+           AND p.node_index      > lt.current_node_index
+        LEFT JOIN live_factor AS lf
+            ON lf.trip_id    = lt.trip_id
+           AND lf.vehicle_id = lt.vehicle_id
+    ),
+    -- Running cumulative travel time from current_node up to (and including)
+    -- each node. NULL node predictions contribute 0, matching the original
+    -- sumIf semantics. Computing this once per node turns the old
+    -- O(stops x nodes) join into an O(nodes) window scan.
+    trip_node_cum AS (
+        SELECT
+            trip_id,
+            vehicle_id,
+            node_index,
+            sum(coalesce(node_seconds, toFloat64(0))) OVER (
+                PARTITION BY trip_id, vehicle_id
+                ORDER BY node_index
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cum_seconds,
+            countIf(node_seconds IS NOT NULL) OVER (
+                PARTITION BY trip_id, vehicle_id
+                ORDER BY node_index
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cum_known_nodes
+        FROM trip_nodes
+    ),
+    -- Each stop's ETA is the cumulative sum at the last predicted node at or
+    -- before the stop. Stop node_indexes come from hist_shape_nodes and need not
+    -- exist in pred_node_etas, so an ASOF (<=) match picks the nearest preceding
+    -- predicted node, exactly like the original sumIf over node_index <= stop.
+    -- Stops sitting at/behind current_node_index find no preceding row and fall
+    -- through to 0.
     eta_calc AS (
         SELECT
             u.trip_id             AS trip_id,
@@ -311,32 +400,12 @@ WITH
             u.stop_id             AS stop_id,
             u.stop_name           AS stop_name,
             u.stop_node_index     AS stop_node_index,
-            sumIf(
-                p.predicted_travel_time_seconds * coalesce(lf.live_adjustment, toFloat64(1)),
-                p.node_index >  u.current_node_index
-                AND p.node_index <= u.stop_node_index
-            ) AS eta_seconds
+            if(c.cum_known_nodes > 0, c.cum_seconds, toFloat64(0)) AS eta_seconds
         FROM upcoming AS u
-        LEFT JOIN {database}.pred_node_etas AS p
-            ON p.hashed_shape_id      = u.hashed_shape_id
-           AND p.period_of_day = u.period_of_day
-           AND p.weekday       = u.weekday
-           AND p.day_type      = u.day_type
-           AND p.period        = u.period
-        LEFT JOIN live_factor AS lf
-            ON lf.trip_id    = u.trip_id
-           AND lf.vehicle_id = u.vehicle_id
-        GROUP BY
-            u.trip_id,
-            u.vehicle_id,
-            u.hashed_trip_id,
-            u.hashed_shape_id,
-            u.current_node_index,
-            u.position_created_at,
-            u.stop_sequence,
-            u.stop_id,
-            u.stop_name,
-            u.stop_node_index
+        ASOF LEFT JOIN trip_node_cum AS c
+            ON c.trip_id     = u.trip_id
+           AND c.vehicle_id  = u.vehicle_id
+           AND c.node_index <= u.stop_node_index
     ),
     eta_clean AS (
         SELECT

@@ -1,3 +1,4 @@
+import { AppConfig } from '@/lib/config.js';
 import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -12,10 +13,11 @@ export async function cleanupCurrentWaypoints(clickhouseClient: Parameters<typeo
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
+		AppConfig.database,
 		pipelinePath(CLEANUP_CURRENT_WAYPOINTS_SQL),
 	);
 
 	const rowsToDelete = result[0]?.rows_to_delete ?? 0;
-	Logger.progress(`Deleted ${rowsToDelete} orphan current waypoints`);
+	Logger.progress({ message: `Deleted ${rowsToDelete} orphan current waypoints` });
 	return rowsToDelete;
 }

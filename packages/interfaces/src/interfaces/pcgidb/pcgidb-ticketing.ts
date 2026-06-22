@@ -40,7 +40,7 @@ class PCGIDBTicketingClass {
 			serverSelectionTimeoutMS: 10_000,
 		};
 
-		Logger.info('Connecting to PCGIDB Ticketing...');
+		Logger.info({ message: 'Connecting to PCGIDB Ticketing...' });
 
 		try {
 			// Connect to the MongoDB database
@@ -136,7 +136,7 @@ class PCGIDBTicketingClass {
 			GLOBAL_PCGIDB_TUNNEL_INSTANCE = new SshTunnelService(sshConfig, sshOptions);
 		}
 
-		Logger.info('Setting up SSH Tunnel for PCGIDB Ticketing...');
+		Logger.info({ message: 'Setting up SSH Tunnel for PCGIDB Ticketing...' });
 
 		const sshTunnelConnection = await GLOBAL_PCGIDB_TUNNEL_INSTANCE.connect();
 

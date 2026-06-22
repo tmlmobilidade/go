@@ -5,8 +5,13 @@ import { type Feature, type FeatureCollection, type GeoJsonProperties, type Geom
 import { type MapLibreEvent } from 'maplibre-gl';
 import { createContext, type CSSProperties, type PropsWithChildren, type RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { centerMapView } from '../../utils';
-import { loadMapAssets } from '../../utils/load-map-assets';
+import { MAP_ASSETS_ALERTS } from '../../assets/alerts';
+import { loadMapAssets } from '../../assets/load';
+import { MAP_ASSETS_MISC } from '../../assets/misc';
+import { MAP_ASSETS_SHAPES } from '../../assets/shapes';
+import { MAP_ASSETS_STOPS } from '../../assets/stops';
+import { MAP_ASSETS_VEHICLES } from '../../assets/vehicles';
+import { centerMapView } from '../../utils/center-map-view';
 
 /* * */
 
@@ -68,7 +73,11 @@ export const MapViewContextProvider = ({ children }: PropsWithChildren) => {
 	}, [flagLoading, flagAutoZoom, registeredSources]);
 
 	const initMap = (event: MapLibreEvent) => {
-		loadMapAssets(event.target);
+		loadMapAssets(event.target, MAP_ASSETS_ALERTS);
+		loadMapAssets(event.target, MAP_ASSETS_MISC);
+		loadMapAssets(event.target, MAP_ASSETS_SHAPES);
+		loadMapAssets(event.target, MAP_ASSETS_STOPS);
+		loadMapAssets(event.target, MAP_ASSETS_VEHICLES);
 		setFlagLoading(false);
 	};
 

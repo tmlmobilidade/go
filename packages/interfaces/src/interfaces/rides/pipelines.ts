@@ -1,6 +1,6 @@
 import { AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, UnixTimestamp } from '@tmlmobilidade/types';
+import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, TicketingStatus, UnixTimestamp } from '@tmlmobilidade/types';
 
 //
 // Time thresholds
@@ -279,6 +279,27 @@ export function ridesPipelineSeenStatus({ filter }: { filter?: { seen_status?: S
 	return pipeline;
 }
 
+export function ridesPipelineTicketingStatus({ filter }: { filter?: { ticketing_status?: TicketingStatus[] } } = {}): AggregationPipeline<Ride> {
+	const pipeline: AggregationPipeline<Ride> = [];
+	if (!filter?.ticketing_status?.length) return pipeline;
+
+	const includesHasTicketing = filter.ticketing_status.includes('has_ticketing');
+	const includesNoTicketing = filter.ticketing_status.includes('no_ticketing');
+
+	// If both are present, match all documents (no filter needed)
+	if (includesHasTicketing && includesNoTicketing) return pipeline;
+
+	if (includesHasTicketing) {
+		pipeline.push({ $match: { apex_validations_qty: { $gte: 1 } } });
+	}
+
+	if (includesNoTicketing) {
+		pipeline.push({ $match: { apex_validations_qty: { $eq: 0 } } });
+	}
+
+	return pipeline;
+}
+
 interface RidesPipelineFilter {
 	acceptance_status?: ('none' | RideAcceptanceStatus)[]
 	agency_ids?: string[]
@@ -294,6 +315,7 @@ interface RidesPipelineFilter {
 	search?: string
 	seen_statuses?: SeenStatus[]
 	stop_ids?: string[]
+	ticketing_status?: TicketingStatus[]
 }
 
 type FieldCondition = Record<string, unknown>;
@@ -447,6 +469,9 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	// Stage 2: Filter by agency IDs (required)
 	pipeline.push({ $match: { agency_id: { $in: filter.agency_ids ?? [] } } });
 
+	// Stage 2.1: Sort by start_time_scheduled
+	pipeline.push({ $sort: { start_time_scheduled: 1 } });
+
 	// Stage 3: Filter by line IDs if provided
 	if (filter.line_ids?.length) pipeline.push({ $match: { line_id: { $in: filter.line_ids.map(id => Number(id)) } } });
 
@@ -519,6 +544,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	pipeline.push(...ridesPipelineDelayStatus({ filter: { end_delay_status: filter.delay_statuses, start_delay_status: filter.delay_statuses } }));
 	pipeline.push(...ridesPipelineOperationalStatus({ filter: { operational_status: filter.operational_statuses } }));
 	pipeline.push(...ridesPipelineSeenStatus({ filter: { seen_status: filter.seen_statuses } }));
+	pipeline.push(...ridesPipelineTicketingStatus({ filter: { ticketing_status: filter.ticketing_status } }));
 
 	return pipeline;
 }
