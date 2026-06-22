@@ -1,0 +1,1 @@
+export async function computePlanVkm(planData: Plan): Promise<number> {
