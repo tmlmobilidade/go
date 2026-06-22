@@ -2,7 +2,7 @@
 
 import { ZonesListExportContextProvider } from '@/contexts/ZonesExport.content';
 import { DataProviders } from '@/providers/data-providers';
-import { AgenciesContextProvider, closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
+import { AgenciesContextProvider, closeModal, ExportsContextProvider, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 import { ZoneListExportModal } from '.';
 import { ZonesListContextProvider } from '../ZonesList.context';
@@ -19,11 +19,13 @@ export const openZoneListExportModal = () => {
 			<DataProviders>
 				<MeContextProvider>
 					<AgenciesContextProvider>
-						<ZonesListContextProvider>
-							<ZonesListExportContextProvider>
-								<ZoneListExportModal />
-							</ZonesListExportContextProvider>
-						</ZonesListContextProvider>
+						<ExportsContextProvider>
+							<ZonesListContextProvider>
+								<ZonesListExportContextProvider>
+									<ZoneListExportModal />
+								</ZonesListExportContextProvider>
+							</ZonesListContextProvider>
+						</ExportsContextProvider>
 					</AgenciesContextProvider>
 				</MeContextProvider>
 			</DataProviders>

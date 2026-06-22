@@ -4,7 +4,7 @@ import { useZonesListContext } from '@/components/zones/list/ZonesList.context';
 /***/
 
 import { CreateFileExportDto, type ZoneExportProperties } from '@tmlmobilidade/types';
-import { closeModal, useAgenciesContext, useToast } from '@tmlmobilidade/ui';
+import { closeModal, useAgenciesContext, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /***/
@@ -44,7 +44,7 @@ export const ZonesListExportContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// A. Setup variables
 	const agenciesContext = useAgenciesContext();
-
+	const exports = useExportsContext();
 	const zonesListContext = useZonesListContext();
 	const [loading, setLoading] = useState(false);
 
@@ -73,12 +73,12 @@ export const ZonesListExportContextProvider = ({ children }: PropsWithChildren) 
 	const exportProperties = useMemo((): ZoneExportProperties['properties'] => {
 		const searchValue = zonesListContext.filters.search.value.trim();
 		const hasSearch = searchValue.length > 0;
-		const activeAgencies = zonesListContext.filters.agencies.value as ZoneExportProperties['properties']['agencies'];
+		// const activeAgencies = zonesListContext.filters.agencies.value as ZoneExportProperties['properties']['agencies'];
 
 		return {
-			agencies: zonesListContext.filters.agencies.isActive && zonesListContext.filters.agencies.value.length > 0
-				? activeAgencies
-				: undefined,
+			// agencies: zonesListContext.filters.agencies.isActive && zonesListContext.filters.agencies.value.length > 0
+			// 	? activeAgencies
+			// 	: undefined,
 			search: hasSearch ? searchValue : undefined,
 		};
 	}, [
@@ -115,7 +115,7 @@ export const ZonesListExportContextProvider = ({ children }: PropsWithChildren) 
 		} finally {
 			setLoading(false);
 		}
-	}, [exportProperties, loading]);
+	}, [exportProperties, loading, exports.actions]);
 
 	//
 	// D. Define context value
