@@ -68,6 +68,7 @@ export const MetricsRoutes = Object.freeze({
 
 export const Routes = Object.freeze({
 	CMET_API: process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
+	FEEDBACK_PREVIEW: `${API_ROUTES.performance.BASE}/feedback/preview`,
 	LINES: '/api/lines',
 	PATTERNS: '/api/patterns',
 	URL: process.env.PUBLIC_URL ?? 'https://performance.sae.carrismetropolitana.pt',

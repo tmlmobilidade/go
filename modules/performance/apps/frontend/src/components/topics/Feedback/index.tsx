@@ -12,7 +12,6 @@ import {
 	TopFeedbackLines,
 } from '@/components/visualizations/Feedback';
 import { Routes } from '@/routes';
-import { type TopLines30DayPerformance } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -25,88 +24,129 @@ interface FeedbackTopicProps {
 	isLoading?: boolean
 }
 
+interface FeedbackPreviewResponse {
+	columns: string[]
+	rows: Record<string, unknown>[]
+	source: {
+		database: string
+		table: string
+	}
+}
+
+/* * */
+
+const NAME_FIELD_CANDIDATES = ['line_id', 'lineId', 'linha', 'route_id', 'routeId', 'id', '_id'];
+const METRIC_FIELD_CANDIDATES = ['feedback_count', 'feedbacks', 'rating', 'score', 'value', 'count', 'qty', 'total'];
+
+/* * */
+
+function formatPreviewValue(value: unknown) {
+	if (value === null || value === undefined || value === '') return '-';
+	if (typeof value === 'number') return value.toLocaleString('pt-PT');
+	if (typeof value === 'boolean') return value ? 'Sim' : 'Não';
+	if (typeof value === 'string') return value;
+
+	try {
+		return JSON.stringify(value);
+	} catch {
+		return String(value);
+	}
+}
+
+function getCandidateField(row: Record<string, unknown>, candidates: string[]) {
+	return candidates.find(field => row[field] !== null && row[field] !== undefined && row[field] !== '');
+}
+
+function getFirstStringField(row: Record<string, unknown>) {
+	return Object.entries(row).find(([, value]) => typeof value === 'string' && value.trim().length > 0)?.[0];
+}
+
+function getFirstNumericField(row: Record<string, unknown>) {
+	return Object.entries(row).find(([, value]) => typeof value === 'number')?.[0];
+}
+
+function getNumericValue(row: Record<string, unknown>, fallback: number) {
+	const metricField = getCandidateField(row, METRIC_FIELD_CANDIDATES);
+	const numericField = metricField && typeof row[metricField] === 'number' ? metricField : getFirstNumericField(row);
+	if (!numericField) return fallback;
+	return Number(row[numericField]);
+}
+
 /* * */
 
 export default function FeedbackTopic({ data, isLoading }: FeedbackTopicProps) {
-	const { data: localMetricData, error: localMetricError, isLoading: isLoadingLocalMetric } = useSWR<TopLines30DayPerformance[]>(
-		data ? null : Routes.TOP_LINES_30DAY_PERFORMANCE,
+	const { data: feedbackPreviewData, error: feedbackPreviewError, isLoading: isLoadingFeedbackPreview } = useSWR<FeedbackPreviewResponse>(
+		data ? null : Routes.FEEDBACK_PREVIEW,
 	);
 
 	const fetchedFeedbackData = useMemo<FeedbackTopicData | null>(() => {
-		const metric = localMetricData?.[0];
-		if (!metric?.data) return null;
+		if (!feedbackPreviewData) return null;
 
-		const topLines = Object.entries(metric.data.top_performers)
-			.map(([lineId, lineData]) => ({
-				description: `${lineData.last_30_days_total.toLocaleString('pt-PT')} passageiros nos últimos 30 dias`,
-				id: lineId,
-				metric: `${lineData.increase_pct.toFixed(1)}%`,
-				name: lineId,
-				raw: lineData,
-			}))
-			.sort((a, b) => b.raw.last_30_days_total - a.raw.last_30_days_total);
+		const rows = feedbackPreviewData.rows;
+		const columns = feedbackPreviewData.columns;
+		const numericColumns = columns.filter(column => rows.some(row => typeof row[column] === 'number'));
 
-		const worstLines = Object.entries(metric.data.worst_performers);
-		const allLines = [...topLines, ...worstLines.map(([lineId, lineData]) => ({
-			description: `${lineData.last_30_days_total.toLocaleString('pt-PT')} passageiros nos últimos 30 dias`,
-			id: lineId,
-			metric: `${lineData.increase_pct.toFixed(1)}%`,
-			name: lineId,
-			raw: lineData,
-		}))];
+		const previewRows = rows.slice(0, 6).map((row, index) => {
+			const nameField = getCandidateField(row, NAME_FIELD_CANDIDATES) ?? getFirstStringField(row);
+			const metricField = getCandidateField(row, METRIC_FIELD_CANDIDATES) ?? getFirstNumericField(row);
+			const description = Object.entries(row)
+				.filter(([field]) => field !== nameField && field !== metricField)
+				.slice(0, 2)
+				.map(([field, value]) => `${field}: ${formatPreviewValue(value)}`)
+				.join(' · ');
 
-		const totalPassengers = allLines.reduce((acc, line) => acc + line.raw.last_30_days_total, 0);
-		const averageVariation = allLines.length
-			? allLines.reduce((acc, line) => acc + line.raw.increase_pct, 0) / allLines.length
-			: 0;
-		const averageYtd = allLines.length
-			? allLines.reduce((acc, line) => acc + line.raw.ytd_avg, 0) / allLines.length
-			: 0;
+			return {
+				description,
+				id: String(row._id ?? row.id ?? index),
+				metric: metricField ? formatPreviewValue(row[metricField]) : undefined,
+				name: nameField ? formatPreviewValue(row[nameField]) : `Registo ${index + 1}`,
+				raw: row,
+			};
+		});
 
 		return {
-			categories: [
-				{ id: 'top-lines', label: 'Top positivas', value: topLines.length },
-				{ id: 'worst-lines', label: 'Top negativas', value: worstLines.length },
-				{ id: 'total-30-days', label: 'Total 30 dias', value: totalPassengers.toLocaleString('pt-PT') },
-				{ id: 'avg-ytd', label: 'Média anual', value: Math.round(averageYtd).toLocaleString('pt-PT') },
-			],
-			chartBars: topLines.slice(0, 6).map(line => ({
-				id: line.id,
-				label: String(line.name),
-				value: line.raw.last_30_days_total,
+			categories: columns.slice(0, 4).map(column => ({
+				id: column,
+				label: column,
+				value: `${rows.filter(row => row[column] !== null && row[column] !== undefined && row[column] !== '').length}/${rows.length}`,
 			})),
-			chartTitle: 'Top linhas por total nos últimos 30 dias',
+			chartBars: rows.slice(0, 6).map((row, index) => ({
+				id: String(row._id ?? row.id ?? index),
+				label: previewRows[index]?.name ? String(previewRows[index].name) : `Registo ${index + 1}`,
+				value: getNumericValue(row, rows.length - index),
+			})),
+			chartTitle: `Preview ${feedbackPreviewData.source.database}.${feedbackPreviewData.source.table}`,
 			summaryCards: [
 				{
-					description: 'linhas carregadas da métrica local',
-					id: 'loaded-lines',
-					label: 'Linhas',
-					value: allLines.length,
+					description: 'registos devolvidos pelo preview',
+					id: 'rows',
+					label: 'Registos',
+					value: rows.length,
 				},
 				{
-					description: 'variação média vs. média anual',
-					id: 'average-variation',
-					label: 'Variação média',
-					value: `${averageVariation.toFixed(1)}%`,
+					description: 'colunas detetadas na tabela',
+					id: 'columns',
+					label: 'Colunas',
+					value: columns.length,
 				},
 				{
-					description: 'passageiros nas linhas listadas',
-					id: 'total-passengers',
-					label: 'Total 30 dias',
-					value: totalPassengers.toLocaleString('pt-PT'),
+					description: 'colunas com valores numéricos',
+					id: 'numeric-columns',
+					label: 'Métricas',
+					value: numericColumns.length,
 				},
 			],
-			topLines: topLines.slice(0, 6).map(line => ({
-				description: line.description,
-				id: line.id,
-				metric: line.metric,
-				name: line.name,
+			topLines: previewRows.map(row => ({
+				description: row.description,
+				id: row.id,
+				metric: row.metric,
+				name: row.name,
 			})),
 		};
-	}, [localMetricData]);
+	}, [feedbackPreviewData]);
 
 	const feedbackData = data ?? fetchedFeedbackData ?? FEEDBACK_TOPIC_PLACEHOLDER_DATA;
-	const isPending = isLoading ?? (!data && !localMetricError && isLoadingLocalMetric);
+	const isPending = isLoading ?? (!data && !feedbackPreviewError && isLoadingFeedbackPreview);
 
 	return (
 		<div className={styles.container}>
@@ -117,7 +157,7 @@ export default function FeedbackTopic({ data, isLoading }: FeedbackTopicProps) {
 				<FeedbackCategoryList categories={feedbackData.categories} isLoading={isPending} />
 			</section>
 
-			<TopFeedbackLines isLoading={isPending} lines={feedbackData.topLines} title={fetchedFeedbackData ? 'Listagem básica do BD local' : undefined} />
+			<TopFeedbackLines isLoading={isPending} lines={feedbackData.topLines} title={fetchedFeedbackData ? 'Preview da tabela feedback' : undefined} />
 		</div>
 	);
 }
