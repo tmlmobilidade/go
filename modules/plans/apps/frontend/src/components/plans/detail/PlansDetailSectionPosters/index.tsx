@@ -1,7 +1,7 @@
 'use client';
 
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
-import { Button, Collapsible, Section } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Label, Section, Spacer } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -28,6 +28,8 @@ export function PlanDetailSectionPosters() {
 					onClick={plansExportPdfsContext.actions.generatePosters}
 					variant="secondary"
 				/>
+				<Spacer />
+				<Label size="sm" variant="warning" caps>AVISO - A geração de PDFs pode levar alguns minutos para ser concluída.</Label>
 			</Section>
 		</Collapsible>
 	);
