@@ -1,7 +1,7 @@
 'use client';
 
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
-import { Button, Collapsible, Label, Section, Spacer } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Section } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,8 +22,6 @@ export function PlanDetailSectionPosters() {
 			title="Posters em PDF"
 		>
 			<Section gap="sm">
-				<Label>Processar plano para gerar os posters em PDF</Label>
-				<Spacer />
 				<Button
 					label="Gerar Posters PDF"
 					loading={plansExportPdfsContext.flags.is_generating}
