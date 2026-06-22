@@ -33,6 +33,7 @@ export function parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap
 		line_id: doc.payload.serviceInfo.lineLongID,
 		mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
+		operational_date: transactionDateValue.operational_date_int,
 		pattern_id: doc.payload.serviceInfo.patternLongID,
 		product_id: doc.payload.tapInInfo.productLongID,
 		received_at: doc.received_at,

@@ -178,8 +178,9 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			api_port: 52000,
 			api_url: 'http://localhost:52000',
 			cors_origin: true,
-			frontend_navegante_app_url: 'http://localhost:51100/hub',
+			frontend_navegante_app_url: 'http://localhost:51101/hub',
 			frontend_port: 51000,
+			frontend_videowall_app_url: 'http://localhost:51102/hub',
 		},
 		prd: {
 			api_url: 'https://go.tmlmobilidade.pt/hub/api',

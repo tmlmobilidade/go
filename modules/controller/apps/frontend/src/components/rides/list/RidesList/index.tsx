@@ -205,16 +205,13 @@ export function RidesList() {
 	//
 	// C. Render components
 
-	if (ridesListContext.flags.error) {
-		return <ErrorDisplay message={ridesListContext.flags.error.message} />;
-	}
-
 	return (
 		<Pane header={[
 			<RidesListHeader key="header" />,
 			<RidesListFiltersBar key="filters" />,
 		]}
 		>
+			{ridesListContext.flags.error && <ErrorDisplay message={ridesListContext.flags.error.message} />}
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}

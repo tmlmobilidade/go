@@ -3,7 +3,7 @@
 import { ApexEventTypeSchema } from '@/utils/event-type.js';
 import { ApexValidationCategorySchema } from '@/utils/validation-category.js';
 import { ApexValidationStatusSchema, ValidApexValidationStatusSchema } from '@/utils/validation-status.js';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -25,6 +25,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	mac_sam_serial_number: z.number(),
 	on_board_refund_id: z.string().nullable().default(null),
 	on_board_sale_id: z.string().nullable().default(null),
+	operational_date: OperationalDateIntSchema,
 	pattern_id: z.string().nullable().default(null),
 	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
@@ -38,7 +39,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	// Check whether the transaction has a valid units quantity field
 	// and allow zero as valid value (for subsidized trips). In those cases,
 	// the validation is considered to be of category 'prepaid'.
-	if (!!val.units_qty || val.units_qty === 0) return { ...val, category: 'prepaid' };
+	if (val.units_qty && val.units_qty >= 0) return { ...val, category: 'prepaid' };
 	// Check if a sale transaction is associated with this validation.
 	// If so, the validation is considered to be of category 'on_board_sale'.
 	if (val.on_board_sale_id) return { ...val, category: 'on_board_sale' };

@@ -78,10 +78,6 @@ export class UsersController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
 		const foundUser = await users.findById(request.params.id);
-		if (!foundUser) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
-		}
-
 		reply.send({ data: foundUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

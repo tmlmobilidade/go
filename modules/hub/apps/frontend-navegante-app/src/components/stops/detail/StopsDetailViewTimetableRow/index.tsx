@@ -80,6 +80,12 @@ export function StopsDetailViewTimetableRow({ data, withClock }: StopsDetailView
 				{data.locality_names?.length > 0 && (
 					<div className={styles.details}>
 						<p className={styles.localitiesList}>{t('default:stops.StopsDetailViewTimetableRow.localities', '', { localities: data.locality_names.join(', ') })}</p>
+						{/* <pre
+							onClick={e => e.stopPropagation()}
+							style={{ overflow: 'auto', userSelect: 'text', width: '100%' }}
+						>
+							{JSON.stringify(data, null, 2)}
+						</pre> */}
 					</div>
 				)}
 
