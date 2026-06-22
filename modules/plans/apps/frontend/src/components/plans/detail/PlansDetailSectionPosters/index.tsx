@@ -18,8 +18,8 @@ export function PlanDetailSectionPosters() {
 
 	return (
 		<Collapsible
-			description="Posters em PDF referentes a este plano."
-			title="Posters em PDF"
+			description="Gerar PDFs referentes a este plano."
+			title="Gerar PDFs"
 		>
 			<Section gap="sm">
 				<Button
