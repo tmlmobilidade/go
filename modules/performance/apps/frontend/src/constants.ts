@@ -86,6 +86,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 	},
 	{
 		dashboards: [],
+		description: 'Recolha e análise de feedback sobre a experiência dos passageiros e a qualidade operacional.',
 		icon: IconMessageCircle,
 		key: TOPICS.FEEDBACK,
 		label: 'Feedback',
