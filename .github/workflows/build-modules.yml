@@ -133,4 +133,5 @@ jobs:
       modules-apps: ${{ needs.discover.outputs.modules-apps }}
       image-tag: ${{ inputs.pr_number != '' && format('pr-{0}', inputs.pr_number) || github.ref_name }}
       environment: ${{ inputs.pr_number != '' && format('pr-{0}', inputs.pr_number) || github.ref_name }}
+      pr_number: ${{ inputs.pr_number }}
     secrets: inherit
