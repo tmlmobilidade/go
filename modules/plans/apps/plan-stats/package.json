@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-plans-stats",
+	"name": "@tmlmobilidade/go-plans-plan-stats",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -13,11 +13,10 @@
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint ./src && tsc --noEmit",
+		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/import-gtfs": "*",
@@ -25,12 +24,15 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"papaparse": "5.5.3"
+		"@tmlmobilidade/writers": "*",
+		"gtfs-types": "5.1.0",
+		"yazl": "3.3.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/node": "25.9.1",
+		"@types/yazl": "3.3.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.3",
 		"typescript": "5.9.3"
