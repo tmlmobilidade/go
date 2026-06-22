@@ -48,7 +48,7 @@ export const PlansExportPdfsContextProvider = ({ children, planId }: PropsWithCh
 		labels: {
 			error_message: 'Não foi possível processar o plano para gerar os posters PDF.',
 			error_title: 'Erro ao gerar posters',
-			success_message: 'Processando plano para gerar os posters PDF. Aguarde alguns minutos para que os posters sejam gerados.',
+			success_message: 'A processar o plano para gerar os posters PDF. Aguarde alguns minutos para que os posters sejam gerados.',
 			success_title: 'Processando plano',
 		},
 		onSuccess: () => {},
