@@ -1,21 +1,21 @@
 /* * */
 
-// import { exportAgencyFile } from '@/exports/agency.js';
-// import { exportCalendarFiles } from '@/exports/calendars.js';
-// import { exportDayTypesFile } from '@/exports/day_types.js';
-// import { exportFeedInfoFile } from '@/exports/feed_info.js';
-// import { exportRoutesFile } from '@/exports/routes.js';
-// import { exportStopTimesFile } from '@/exports/stop-times.js';
-// import { exportStopsFile } from '@/exports/stops.js';
-// import { exportTripsFile } from '@/exports/trips.js';
-// import { type ExportToHitouchConfig } from '@/types.js';
-// import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { plans } from '@tmlmobilidade/interfaces';
+import { exportAgencyFile } from '@/exports/agency.js';
+import { exportCalendarFiles } from '@/exports/calendars.js';
+import { exportDayTypesFile } from '@/exports/day_types.js';
+import { exportFeedInfoFile } from '@/exports/feed_info.js';
+import { exportRoutesFile } from '@/exports/routes.js';
+import { exportStopTimesFile } from '@/exports/stop-times.js';
+import { exportStopsFile } from '@/exports/stops.js';
+import { exportTripsFile } from '@/exports/trips.js';
+import { type ExportToHitouchConfig } from '@/types.js';
+import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
+import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
-// import fs from 'node:fs';
+import fs from 'node:fs';
 
 // import { getFormattedDates } from './get-names.js';
 
@@ -95,52 +95,68 @@ async function main(): Promise<void> {
 		//
 		// Import the Plan into a local SQLite database
 
-		// const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+		const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+		const feedStartDate = planData.gtfs_feed_info.feed_start_date;
+		const feedEndDate = planData.gtfs_feed_info.feed_end_date;
 
-		// const importConfig: ImportGtfsToDatabaseConfig = {
-		// 	source: {
-		// 		url: operationFileUrl,
-		// 	},
-		// };
+		if (!feedStartDate || !feedEndDate) {
+			throw new Error(`Plan ${planData._id} is missing feed start or end dates.`);
+		}
 
-		// const sqlGtfs = await importGtfsToDatabase(importConfig);
+		const importConfig: ImportGtfsToDatabaseConfig = {
+			source: {
+				url: operationFileUrl,
+			},
+			time_range: {
+				date_range: {
+					end: feedEndDate,
+					start: feedStartDate,
+				},
+			},
+		};
+
+		const sqlGtfs = await importGtfsToDatabase(importConfig);
 
 		//
 		// Setup the export config
 
-		// const existingPlanDates = Array.from(new Set(Object.values(sqlGtfs.calendar_dates).flat())).sort();
+		const exportConfig: ExportToHitouchConfig = {
+			date_range: {
+				end: feedEndDate,
+				start: feedStartDate,
+			},
+			output: 'export-hitouch.zip',
+			workdir: '/tmp/hitouch',
+		};
 
-		// const exportConfig: ExportToHitouchConfig = {
-		// 	date_range: {
-		// 		end: existingPlanDates[existingPlanDates.length - 1],
-		// 		start: existingPlanDates[0],
-		// 	},
-		// 	output: 'export-hitouch.zip',
-		// 	workdir: '/tmp/hitouch',
-		// };
+		// const agencyHolidays = await holidays.findMany({
+		// 	agency_ids: { $in: [planData.gtfs_agency.agency_id] },
+		// });
 
-		// if (fs.existsSync(exportConfig.workdir)) {
-		// 	fs.rmSync(exportConfig.workdir, { recursive: true });
-		// }
-		// fs.mkdirSync(exportConfig.workdir, { recursive: true });
+		// const datesMap = buildDatesMap(exportConfig.date_range, agencyHolidays);
+
+		if (fs.existsSync(exportConfig.workdir)) {
+			fs.rmSync(exportConfig.workdir, { recursive: true });
+		}
+		fs.mkdirSync(exportConfig.workdir, { recursive: true });
 
 		//
 		// Start the export process
 
 		Logger.info({ message: `Exporting to HiTouch GTFS...` });
 
-		// const exportTimer = new Timer();
+		const exportTimer = new Timer();
 
-		// await exportCalendarFiles(sqlGtfs, exportConfig);
-		// await exportTripsFile(sqlGtfs, exportConfig);
-		// await exportStopTimesFile(sqlGtfs, exportConfig);
-		// await exportRoutesFile(sqlGtfs, exportConfig);
-		// await exportStopsFile(sqlGtfs, exportConfig);
-		// await exportAgencyFile(planData, exportConfig);
-		// await exportFeedInfoFile(planData, exportConfig);
-		// await exportDayTypesFile(exportConfig);
+		await exportCalendarFiles(sqlGtfs, exportConfig);
+		await exportTripsFile(sqlGtfs, exportConfig);
+		await exportStopTimesFile(sqlGtfs, exportConfig);
+		await exportRoutesFile(sqlGtfs, exportConfig);
+		await exportStopsFile(sqlGtfs, exportConfig);
+		await exportAgencyFile(planData, exportConfig);
+		await exportFeedInfoFile(planData, exportConfig);
+		await exportDayTypesFile(exportConfig);
 
-		// Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
+		Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
 
 		//
 
@@ -155,4 +171,4 @@ async function main(): Promise<void> {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '1m' });
+await runOnInterval(main, { intervalMs: '10s' });

@@ -2,7 +2,7 @@
 
 import { DAY_TYPES } from '@/day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
-import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
+import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GtfsDate } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -14,22 +14,34 @@ import Papa from 'papaparse';
 
 /* * */
 
-export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig,
+	// datesMap: Map<OperationalDate, GtfsDate>
+) {
 	//
 
 	//
+	// // Build the day-type date lists from the generated GTFS date metadata.
+
+	// const dayTypesConfig: DayTypeConfig[] = DAY_TYPES.map(dayType => ({ ...dayType, dates: [] }));
+
+	// for (const d of datesMap.values()) {
+	// 	// Add this date to the corresponding day_type_id
+	// 	const dayTypeTable = dayTypesConfig.find(dt => dt.period === d.period && dt.day_type === d.day_type);
+	// 	if (dayTypeTable) dayTypeTable.dates.push(d.date);
+	// }
+
 	// Import the dates.txt file into a map of date strings and their associated categorizations
 
-	if (!fs.existsSync('/Users/joao/Developer/tmlmobilidade/sae/plans/apps/export-posters/src/dates.txt')) {
+	if (!fs.existsSync('/Users/joaoferreira/Developer/tmlmobilidade/go/modules/plans/apps/export-posters/src/dates.txt')) {
 		Logger.error({ message: `Missing dates.txt file in ${process.cwd()}` });
 	}
 
-	const datesCat = Papa.parse<GTFS_Date>(fs.readFileSync('/Users/joao/Developer/tmlmobilidade/sae/plans/apps/export-posters/src/dates.txt', 'utf-8'), {
+	const datesCat = Papa.parse<GtfsDate>(fs.readFileSync('/Users/joaoferreira/Developer/tmlmobilidade/go/modules/plans/apps/export-posters/src/dates.txt', 'utf-8'), {
 		header: true,
 		skipEmptyLines: true,
 	});
 
-	const datesMap = new Map<string, GTFS_Date>();
+	const datesMap = new Map<string, GtfsDate>();
 	const dayTypesConfig: DayTypeConfig[] = DAY_TYPES;
 
 	datesCat.data.forEach((d) => {
@@ -113,9 +125,9 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				if (!serviceDates.length) continue;
 				// Categorize each date
 				serviceDates.forEach((date) => {
-					// Get the date entry from dates.txt
+					// Get the generated metadata for this date
 					const matchingDateEntry = datesMap.get(date);
-					if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceId} not found in dates.txt` });
+					if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceId} has no generated date metadata` });
 					// Build a key for this combination.
 					// By categorizing by day_type and period, the concept of trips and services
 					// becomes more about the category of service rather than the specific service_id,
@@ -164,8 +176,8 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				// Delete original entries from trips and stop_times
 
 				equalTripsData.trip_ids.forEach((tripId) => {
-					sqlTables.trips.query('DELETE FROM trips WHERE trip_id = ?', [tripId]);
-					sqlTables.stop_times.query('DELETE FROM stop_times WHERE trip_id = ?', [tripId]);
+					sqlTables.trips.run('DELETE FROM trips WHERE trip_id = ?', [tripId]);
+					sqlTables.stop_times.run('DELETE FROM stop_times WHERE trip_id = ?', [tripId]);
 				});
 
 				//
@@ -220,7 +232,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// Check if this service_id matches any of the standard
 		// day_type and period combinations exactly.
 
-		const matchedDayType = DAY_TYPES.find(dt => dt.day_type === serviceIdData.day_type && dt.period === serviceIdData.period);
+		const matchedDayType = dayTypesConfig.find(dt => dt.day_type === serviceIdData.day_type && dt.period === serviceIdData.period);
 		if (!matchedDayType) return Logger.error({ message: `Service ID ${serviceIdData._id} with day_type ${serviceIdData.day_type} and period ${serviceIdData.period} does not match any known day_type and period combination.` });
 
 		const isExactMatch = serviceIdData.dates.length === matchedDayType.dates.length && matchedDayType.dates.every(date => serviceIdData.dates.includes(date));
@@ -238,9 +250,9 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		const serviceIdWeekdaysMap: Record<string, { count: number, dates: OperationalDate[] }> = {};
 
 		for (const date of serviceIdData.dates) {
-			// Get the date entry from dates.txt
+			// Get the generated metadata for this date
 			const matchingDateEntry = datesMap.get(date);
-			if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceIdData._id} not found in dates.txt` });
+			if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceIdData._id} has no generated date metadata` });
 			// Get the weekday code for this date
 			let weekdayCode = Dates
 				.fromOperationalDate(date, 'Europe/Lisbon')
@@ -257,9 +269,9 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		const matchedDayTypeWeekdaysMap: Record<string, { count: number, dates: OperationalDate[] }> = {};
 
 		for (const date of matchedDayType.dates) {
-			// Get the date entry from dates.txt
+			// Get the generated metadata for this date
 			const matchingDateEntry = datesMap.get(date);
-			if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceIdData._id} not found in dates.txt` });
+			if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceIdData._id} has no generated date metadata` });
 			// Get the weekday code for this date
 			let weekdayCode = Dates
 				.fromOperationalDate(date, 'Europe/Lisbon')
@@ -396,7 +408,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	const calendarExtCsv = new CsvWriter('calendarExt.txt', `${exportConfig.workdir}/calendarExt.txt`, { batch_size: 100000 });
 
 	for (const serviceIdData of Object.values(updatedServiceIds)) {
-		for (const dayTypeConfig of DAY_TYPES) {
+		for (const dayTypeConfig of dayTypesConfig) {
 			// Check if this service operates on the same day_type
 			// and period for this day_type.
 			const matchedDayType = serviceIdData.day_type === dayTypeConfig.day_type;

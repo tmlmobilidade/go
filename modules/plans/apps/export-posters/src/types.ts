@@ -49,7 +49,7 @@ export interface DayTypeConfig {
 
 }
 
-export interface GTFS_Date {
+export interface GtfsDate {
 	date: OperationalDate
 	day_type: '1' | '2' | '3'
 	holiday: '0' | '1'
