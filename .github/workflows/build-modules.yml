@@ -13,6 +13,12 @@ on:
         required: false
         default: true
         type: boolean
+      pr_number:
+        description: 'PR number — sets image tag to pr-{N} when set (/build)'
+        required: false
+        type: string
+  pull_request:
+    types: [closed]
   push:
     branches:
       - prd
@@ -23,25 +29,17 @@ on:
       - '.github/workflows/build-modules.yml'
       - '.github/actions/**/*'
       - '.github/templates/**/*'
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - closed
 
 jobs:
 
   # # #
   # Auto-discover modules and module->apps mapping from filesystem,
-  # then filter down to the modules that actually need to build:
-  # - Module file changed -> build only that module.
-  # - Shared package changed -> build every module.
-  # - Manual dispatch -> honour the `module` and `build_all` inputs.
+  # then filter down to the modules that actually need to build.
+  # PR builds are triggered manually via /build (build-command.yml).
 
   discover:
     name: Discover Modules
-    if: github.event.action != 'closed'
+    if: github.event_name != 'pull_request' || github.event.action != 'closed'
     runs-on: ubuntu-24.04-arm
     outputs:
       modules: ${{ steps.discover.outputs.modules }}
@@ -95,17 +93,16 @@ jobs:
           retention-days: 1
 
   # # #
-  # If the current workflow is triggered by a pull request,
-  # eagerly notify the go-infra repo to generate a preview environment,
-  # even if some of the builds fail. This allows faster feedback for PR authors.
+  # Notify go-infra: preview deploy after /build, teardown on PR close.
 
   notify-infra:
     name: Notify Infrastructure
     needs: [package-lock]
     if: |
-      always() &&
-      github.event_name == 'pull_request' &&
-      (github.event.action == 'closed' || needs.package-lock.result == 'success')
+      always() && (
+        (github.event_name == 'pull_request' && github.event.action == 'closed') ||
+        (inputs.pr_number != '' && needs.package-lock.result == 'success')
+      )
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: peter-evans/repository-dispatch@v3
@@ -115,8 +112,8 @@ jobs:
           event-type: preview-pr
           client-payload: >-
             {
-              "pr_number": ${{ github.event.pull_request.number }},
-              "pr_action": "${{ github.event.action }}"
+              "pr_number": ${{ github.event_name == 'pull_request' && github.event.pull_request.number || inputs.pr_number }},
+              "pr_action": "${{ github.event_name == 'pull_request' && github.event.action || 'synchronize' }}"
             }
 
   # # #
@@ -134,6 +131,6 @@ jobs:
     with:
       module: ${{ matrix.module }}
       modules-apps: ${{ needs.discover.outputs.modules-apps }}
-      image-tag: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
-      environment: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+      image-tag: ${{ inputs.pr_number != '' && format('pr-{0}', inputs.pr_number) || github.ref_name }}
+      environment: ${{ inputs.pr_number != '' && format('pr-{0}', inputs.pr_number) || github.ref_name }}
     secrets: inherit
