@@ -1,0 +1,133 @@
+/* * */
+/* FEEDBACK VISUALIZATIONS */
+
+.summaryGrid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: var(--size-spacing-lg);
+}
+
+.cardTitle {
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-bold);
+}
+
+.summaryValue {
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-xl);
+	font-weight: var(--font-weight-bold);
+}
+
+.summaryDescription {
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+}
+
+.chartPlaceholder {
+	display: flex;
+	align-items: flex-end;
+	gap: var(--size-spacing-md);
+	min-height: 210px;
+	height: 100%;
+}
+
+.chartBar {
+	width: 12%;
+	min-height: 8px;
+	border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+	background-color: var(--color-primary);
+}
+
+.listPlaceholder,
+.feedbackList {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+}
+
+.listRow {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 120px;
+	align-items: center;
+	gap: var(--size-spacing-md);
+	padding: var(--size-spacing-sm) 0;
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+}
+
+.categoryMetric {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-xs);
+	min-width: 0;
+}
+
+.categoryValue {
+	min-width: 36px;
+	color: var(--color-system-text-100);
+	font-weight: var(--font-weight-bold);
+	text-align: right;
+}
+
+.categoryBarTrack {
+	flex: 1;
+	height: 8px;
+	overflow: hidden;
+	border-radius: var(--border-radius-sm);
+	background-color: var(--color-system-background-200);
+}
+
+.categoryBar {
+	height: 100%;
+	border-radius: inherit;
+	background-color: var(--color-primary);
+}
+
+.feedbackRow {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	padding: var(--size-spacing-md) 0;
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.feedbackRow:last-child {
+	border-bottom: none;
+}
+
+.feedbackRowHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-spacing-md);
+}
+
+.feedbackLineName {
+	min-width: 0;
+	overflow: hidden;
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-bold);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.feedbackLineMetric {
+	flex-shrink: 0;
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-bold);
+}
+
+.feedbackLineDescription {
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+}
+
+@media (max-width: 900px) {
+	.summaryGrid {
+		grid-template-columns: 1fr;
+	}
+}
+
