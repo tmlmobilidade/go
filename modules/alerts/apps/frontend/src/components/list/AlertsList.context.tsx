@@ -12,18 +12,15 @@ import useSWR from 'swr';
 /* * */
 
 interface AlertsListContextState extends ListContextStateTemplate {
-
 	data: {
 		filtered: Alert[]
 		raw: Alert[]
 	}
 	filters: ListContextStateTemplate['filters'] & {
+		active_period: UseFilterStateDateReturnType
 		agency: UseFilterStateListReturnType
 		cause: UseFilterStateListReturnType
-		date_creation_end: UseFilterStateDateReturnType
-		date_creation_start: UseFilterStateDateReturnType
-		date_end: UseFilterStateDateReturnType
-		date_start: UseFilterStateDateReturnType
+		created_at: UseFilterStateDateReturnType
 		effect: UseFilterStateListReturnType
 		municipality: UseFilterStateListReturnType
 		publish_status: UseFilterStateListReturnType
@@ -68,16 +65,13 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	//
 	// C. Setup filters
 
-	const filterDateEnd = useFilterStateDate('date_end', { minutesOffset: 5 });
-	const filterDateStart = useFilterStateDate('date_start', { minutesOffset: -5 });
-	const filterCreationStart = useFilterStateDate('date_creation_start');
-	const filterCreationEnd = useFilterStateDate ('date_creation_end');
-
+	const filterActivePeriod = useFilterStateDate('active_period', { minutesOffset: 5 });
 	const filterSearch = useFilterStateString('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 	const filterAlertReferenceType = useFilterStateList('reference_type', AlertReferenceTypeSchema.options, AlertReferenceTypeSchema.options.map(item => ({ label: t(`shared:alerts.reference_types.${item}.title`), value: item })));
 	const filterPublishStatus = useFilterStateList('publish_status', PublishStatusSchema.options, PublishStatusSchema.options.map(item => ({ label: t(`shared:status.publish_status.${item}`), value: item })));
 	const filterCause = useFilterStateList('cause', AlertSchema.shape.cause.options, AlertSchema.shape.cause.options.map(item => ({ label: t(`shared:alerts.causes.${item}.title`), value: item })));
+	const filterCreatedAt = useFilterStateDate('created_at', { minutesOffset: -5 });
 	const filterEffect = useFilterStateList('effect', AlertSchema.shape.effect.options, AlertSchema.shape.effect.options.map(item => ({ label: t(`shared:alerts.effects.${item}.title`), value: item })));
 	const filterMunicipality = useFilterStateList('municipality', locationsContext.data.municipality_ids, locationsContext.data.municipalities.map(item => ({ label: item.name, value: item.id })));
 
@@ -133,19 +127,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 		// Sort by creation date (newest first)
 		return result.sort((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0));
-	}, [
-		searchResultsData,
-		filterAgency.value,
-		filterAlertReferenceType.value,
-		filterPublishStatus.value,
-		filterCause.value,
-		filterEffect.value,
-		filterMunicipality.value,
-		filterDateEnd.value,
-		filterDateStart.value,
-		filterCreationStart.value,
-		filterCreationEnd.value,
-	]);
+	}, [searchResultsData, filterAgency.value, filterAlertReferenceType.value, filterPublishStatus.value, filterCause.value, filterEffect.value, filterMunicipality.value]);
 
 	//
 	// E. Define context value
@@ -156,12 +138,10 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			raw: allScheduledData,
 		},
 		filters: {
+			active_period: filterActivePeriod,
 			agency: filterAgency,
 			cause: filterCause,
-			date_creation_end: filterCreationEnd,
-			date_creation_start: filterCreationStart,
-			date_end: filterDateEnd,
-			date_start: filterDateStart,
+			created_at: filterCreatedAt,
 			effect: filterEffect,
 			municipality: filterMunicipality,
 			publish_status: filterPublishStatus,
@@ -173,24 +153,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			isLoading: allScheduledLoading,
 			isValidating: allScheduledValidating,
 		},
-	}), [
-		allScheduledData,
-		filterDateEnd,
-		filterDateStart,
-		filterCreationStart,
-		filterCreationEnd,
-		filterResultsData,
-		allScheduledLoading,
-		allScheduledValidating,
-		filterAlertReferenceType,
-		filterAgency,
-		allScheduledError,
-		filterPublishStatus,
-		filterCause,
-		filterEffect,
-		filterMunicipality,
-		filterSearch,
-	]);
+	}), [filterResultsData, allScheduledData, filterActivePeriod, filterAgency, filterCause, filterCreatedAt, filterEffect, filterMunicipality, filterPublishStatus, filterAlertReferenceType, filterSearch, allScheduledError, allScheduledLoading, allScheduledValidating]);
 
 	//
 	// F. Render components

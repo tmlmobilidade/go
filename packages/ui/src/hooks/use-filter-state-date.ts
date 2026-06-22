@@ -20,10 +20,11 @@ export interface UseFilterStateDateReturnType {
 	 */
 	set: (value: null | number) => void
 
+	value_end: number | UnixTimestamp
 	/**
 	 * The current value of the filter.
 	 */
-	value: number | UnixTimestamp
+	value_start: number | UnixTimestamp
 
 }
 
@@ -47,18 +48,22 @@ export function useFilterStateDate(key: string, options?: UserFilterStateDateOpt
 		return now.unix_timestamp;
 	}, [options?.minutesOffset]);
 
-	const [urlValue, setUrlValue] = useQueryState(
-		key,
-		parseAsInteger.withDefault(defaulTimestamp),
-	);
+	const [urlValueStart, setUrlValueStart] = useQueryState(key + 'start', parseAsInteger.withDefault(defaulTimestamp));
+	const [urlValueEnd, setUrlValueEnd] = useQueryState(key + 'end', parseAsInteger.withDefault(defaulTimestamp));
+
+	const handleSetValue = (start: UnixTimestamp, end: UnixTimestamp) => {
+		setUrlValueEnd(end);
+		setUrlValueStart(start);
+	};
 
 	//
 	// B. Return data
 
 	return {
-		isActive: urlValue !== defaulTimestamp,
-		set: setUrlValue,
-		value: urlValue,
+		isActive: urlValueEnd !== defaulTimestamp || urlValueStart !== defaulTimestamp,
+		set: handleSetValue,
+		value_end: urlValueEnd,
+		value_start: urlValueStart,
 	};
 
 	//
