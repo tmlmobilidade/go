@@ -161,7 +161,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					// Convert GTFS time string to Unix Timestamp
 					const scheduledArrivalMs = convertGTFSTimeStringAndOperationalDateToUnixTimestamp(stopTime.arrival_time, operationalDate.selectedOperationalDate);
 					// Fetch the trip update for this stop time
-					const tripUpdate = tripUpdatesContext.actions.getTripUpdateForStop(tripData.trip_ids, stopTime.stop_id, stopTime.stop_sequence);
+					const tripUpdate = tripUpdatesContext.actions.getTripUpdateForStop(tripData.trip_ids, stopTime.stop_id);
 					// Extract the arrival time, delay and effective arrival time
 					// from the trip update, if any was found
 					const estimatedArrivalMs = tripUpdate?.arrival_time;

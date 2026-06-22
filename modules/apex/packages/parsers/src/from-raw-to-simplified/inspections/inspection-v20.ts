@@ -35,6 +35,7 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		line_id: doc.payload.controlServiceInfo.lineLongID,
 		mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
+		operational_date: transactionDateValue.operational_date_int,
 		pattern_id: doc.payload.controlServiceInfo.patternLongID,
 		product_id: doc.payload.controlInfo.productLongID,
 		received_at: doc.received_at,

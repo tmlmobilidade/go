@@ -17,6 +17,7 @@ interface ClickHouseEtaGtfsResponse {
 	trip_update: string
 	vehicle_id: string
 }
+
 /* * */
 
 export async function publishTripUpdates() {

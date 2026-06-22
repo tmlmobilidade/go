@@ -2,7 +2,7 @@
 
 import { ApexBankingBrandSchema } from '@/utils/banking-brand.js';
 import { ApexEventTypeSchema } from '@/utils/event-type.js';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -23,6 +23,7 @@ export const SimplifiedApexBankingTapSchema = z.object({
 	line_id: z.string().nullable().default(null),
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
+	operational_date: OperationalDateIntSchema,
 	pattern_id: z.string().nullable().default(null),
 	product_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,

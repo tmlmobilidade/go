@@ -28,6 +28,7 @@ export function parseRawApexTransactionLocationV30IntoSimplifiedApexLocation(doc
 		line_id: doc.payload.validationServiceInfo.lineLongID,
 		mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
+		operational_date: transactionDateValue.operational_date_int,
 		pattern_id: doc.payload.validationServiceInfo.patternLongID,
 		received_at: doc.received_at,
 		stop_id: doc.payload.validationServiceInfo.stopLongID,

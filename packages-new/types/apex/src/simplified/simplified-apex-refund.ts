@@ -2,7 +2,7 @@
 
 import { ApexCardTypeSchema } from '@/utils/card-type.js';
 import { ApexPaymentMethodSchema } from '@/utils/payment-method.js';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -21,6 +21,7 @@ export const SimplifiedApexOnBoardRefundSchema = z.object({
 	mac_ase_counter_value: z.number(),
 	mac_sam_serial_number: z.number(),
 	on_board_sale_id: z.string().nullable().default(null),
+	operational_date: OperationalDateIntSchema,
 	pattern_id: z.string().nullable().default(null),
 	payment_method: ApexPaymentMethodSchema,
 	price: z.number(),

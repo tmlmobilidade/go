@@ -6,10 +6,10 @@ import { Dates } from '@tmlmobilidade/dates';
 
 /* * */
 
-const isDevelopment = process.env.ENVIRONMENT === 'development';
+const isProduction = true;// process.env.environment === 'prd';
 
 function getEtaDatabase(): string {
-	return process.env.ENVIRONMENT === 'dev' ? 'eta_dev' : 'eta';
+	return isProduction ? 'eta' : 'eta_dev';
 }
 
 export const AppConfig = Object.freeze({
@@ -19,10 +19,10 @@ export const AppConfig = Object.freeze({
 	database: getEtaDatabase(),
 
 	development: {
-		isDevelopment,
-		lineIds: [1215],
-		timeEnd: Dates.fromUnixTimestamp(1779062400000).plus({ hours: 1 }),
-		timeStart: Dates.fromUnixTimestamp(1779062400000),
+		isDevelopment: !isProduction,
+		lineIds: [77],
+		timeEnd: Dates.fromUnixTimestamp(1780836960000).plus({ hours: 1 }),
+		timeStart: Dates.fromUnixTimestamp(1780836960000),
 	},
 
 	// Data and time settings
@@ -34,15 +34,23 @@ export const AppConfig = Object.freeze({
 	// Geometry settings
 	shapeNodeChunkLength: 25, // meters
 
+	// Ride start/end event detection settings
+	rideEventBufferRadiusMeters: 50, // meters (matches rides-controller BUFFER_RADIUS)
+	rideEventDetectionBatchSize: 500, // hist_rides per detect+mutation batch
+	rideEventGeohashPrefixLength: 6, // geohash-7 cell + neighbours around each stop
+	rideEventWindowPostMs: 10 * 60 * 60 * 1000, // 10h after scheduled start (matches temp.sql window)
+	rideEventWindowPreMs: 10 * 60 * 60 * 1000, // 10h before scheduled start (matches temp.sql window)
+
 	// App Pipeline Steps
 	pipelineSteps: {
+		detectRideStartEndEvents: true,
 		insertCurrentWindowRides: true,
 		insertCurrentWindowWaypoints: true,
 		insertHistoricalRidesByDay: true,
 		insertHistoricalShapeNodes: true,
 		insertHistoricalVehicleEvents: true,
-		runDdl: false, // true,
+		runDdl: !isProduction,
 		runTransformationAndAggregationQueries: true,
-		truncatePipelineTables: false, // isDevelopment ? true : false,
+		truncatePipelineTables: !isProduction,
 	},
 });
