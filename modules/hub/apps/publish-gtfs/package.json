@@ -27,13 +27,13 @@
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"gtfs-types": "5.1.0",
-		"papaparse": "5.5.3",
+		"papaparse": "5.5.4",
 		"yazl": "3.3.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.9.3",
+		"@types/node": "26.0.0",
 		"@types/yazl": "3.3.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.4",
