@@ -12,14 +12,15 @@ import styles from './styles.module.css';
 interface TopFeedbackLinesProps {
 	isLoading: boolean
 	lines: FeedbackLineRowData[]
+	title?: string
 }
 
 /* * */
 
-export function TopFeedbackLines({ isLoading, lines }: TopFeedbackLinesProps) {
+export function TopFeedbackLines({ isLoading, lines, title = 'Linhas com mais feedbacks' }: TopFeedbackLinesProps) {
 	return (
 		<ContainerWrapper>
-			<p className={styles.cardTitle}>Linhas com mais feedbacks</p>
+			<p className={styles.cardTitle}>{title}</p>
 
 			<div className={styles.feedbackList}>
 				{lines.map(line => (
