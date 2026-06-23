@@ -18,11 +18,6 @@ export interface FeedbackPreviewResponse {
 
 /* * */
 
-const DEFAULT_LIMIT = 20;
-const MAX_LIMIT = 100;
-
-/* * */
-
 function assertClickHouseIdentifier(value: string, label: string) {
 	if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(value)) {
 		throw new Error(`Invalid ClickHouse ${label}: ${value}`);
@@ -31,15 +26,15 @@ function assertClickHouseIdentifier(value: string, label: string) {
 
 function resolveLimit(value?: string) {
 	const parsedValue = Number(value);
-	if (!Number.isFinite(parsedValue) || parsedValue <= 0) return DEFAULT_LIMIT;
-	return Math.min(Math.floor(parsedValue), MAX_LIMIT);
+	if (!Number.isFinite(parsedValue) || parsedValue <= 0) return null;
+	return Math.floor(parsedValue);
 }
 
 /* * */
 
 export class FeedbackController {
 	/**
-	 * Retrieve a small preview from the ClickHouse feedback table.
+	 * Retrieve rows from the ClickHouse feedback table.
 	 */
 	static async getPreview(request: FastifyRequest<{ Querystring: { limit?: string } }>, reply: FastifyReply<FeedbackPreviewResponse>) {
 		try {
@@ -53,8 +48,8 @@ export class FeedbackController {
 			const clickhouseClient = await GOClickHouseClient.getClient();
 			const resultSet = await clickhouseClient.query({
 				format: 'JSONEachRow',
-				query: `SELECT * FROM \`${database}\`.\`${table}\` LIMIT {limit:UInt32}`,
-				query_params: { limit },
+				query: `SELECT * FROM \`${database}\`.\`${table}\`${limit ? ' LIMIT {limit:UInt32}' : ''}`,
+				query_params: limit ? { limit } : {},
 			});
 
 			const rows = await resultSet.json<Record<string, unknown>>();

@@ -4,10 +4,13 @@
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { Routes } from '@/routes';
-import { standardSwrFetcher } from '@tmlmobilidade/utils';
+import { type HubLine } from '@tmlmobilidade/types';
+import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
+
+import { buildLineLabelsById, getLineLabel } from '../network-labels';
 
 /* * */
 
@@ -15,22 +18,7 @@ interface FeedbackPreviewResponse {
 	rows: Record<string, unknown>[]
 }
 
-interface CmetLine {
-	id: string
-	long_name?: string
-	short_name?: string
-}
-
 /* * */
-
-function normalizeLineId(lineId: string) {
-	return lineId.replace(/^\[\d+\]/, '');
-}
-
-function buildLineLabel(line: CmetLine) {
-	if (line.short_name && line.long_name) return `${line.short_name} - ${line.long_name}`;
-	return line.long_name ?? line.short_name ?? line.id;
-}
 
 function getLines(rows: Record<string, unknown>[]) {
 	const lines = new Map<string, number>();
@@ -48,9 +36,9 @@ function getLines(rows: Record<string, unknown>[]) {
 /* * */
 
 export function FeedbackLines() {
-	const { data, error, isLoading } = useSWR<FeedbackPreviewResponse, Error>(`${Routes.FEEDBACK_PREVIEW}?limit=100`);
-	const { data: linesData } = useSWR<CmetLine[], Error>(`${Routes.CMET_API}/lines`, standardSwrFetcher);
-	const linesById = new Map(linesData?.map(line => [line.id, buildLineLabel(line)]) ?? []);
+	const { data, error, isLoading } = useSWR<FeedbackPreviewResponse, Error>(Routes.FEEDBACK_PREVIEW);
+	const { data: linesData } = useSWR<HubLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
+	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
 	const lines = getLines(data?.rows ?? []);
 
 	return (
@@ -74,7 +62,7 @@ export function FeedbackLines() {
 						<tbody>
 							{lines.map(line => (
 								<tr key={line.lineId}>
-									<td>{linesById.get(normalizeLineId(line.lineId)) ?? line.lineId}</td>
+									<td>{getLineLabel(line.lineId, linesById)}</td>
 									<td>{line.feedbackCount.toLocaleString('pt-PT')}</td>
 								</tr>
 							))}

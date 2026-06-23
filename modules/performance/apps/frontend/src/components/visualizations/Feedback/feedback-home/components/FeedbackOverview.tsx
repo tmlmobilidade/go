@@ -4,12 +4,13 @@ import type { FeedbackLineRowData, FeedbackTopicData } from '../../types';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { Routes } from '@/routes';
-import { standardSwrFetcher } from '@tmlmobilidade/utils';
+import { type HubLine, type HubStop } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import styles from '../../styles.module.css';
 
+import { buildLineLabelsById, buildStopLabelsById, getLineLabel } from '../../network-labels';
 import { TopFeedbackLines } from './TopFeedbackLines';
 
 /* * */
@@ -26,19 +27,6 @@ export interface FeedbackPreviewResponse {
 interface FeedbackOverviewProps {
 	data?: FeedbackTopicData
 	previewData?: FeedbackPreviewResponse
-}
-
-interface CmetLine {
-	id: string
-	long_name?: string
-	short_name?: string
-}
-
-interface CmetStop {
-	id: string
-	long_name?: string
-	name?: string
-	short_name?: string
 }
 
 /* * */
@@ -78,10 +66,6 @@ function getFeedbackCount(row: Record<string, unknown>) {
 	return Number(row[metricField]);
 }
 
-function normalizeLineId(lineId: string) {
-	return lineId.replace(/^\[\d+\]/, '');
-}
-
 function getEntityId(row: Record<string, unknown>, entityType: 'line' | 'stop', fieldCandidates: string[]) {
 	if (row.entity_type && row.entity_type !== entityType) return null;
 	if (row.entity_type === entityType && typeof row.entity_id === 'string') return row.entity_id;
@@ -99,12 +83,12 @@ function buildTopFeedbackList(rows: Record<string, unknown>[], entityType: 'line
 		const entityId = getEntityId(row, entityType, fieldCandidates);
 		if (!entityId) continue;
 
-		const labelKey = entityType === 'line' ? normalizeLineId(entityId) : entityId;
 		const current = groupedRows.get(entityId);
+		const label = entityType === 'line' ? getLineLabel(entityId, labelsById) : labelsById.get(entityId) ?? entityId;
 
 		groupedRows.set(entityId, {
 			count: (current?.count ?? 0) + getFeedbackCount(row),
-			label: labelsById.get(labelKey) ?? entityId,
+			label,
 		});
 	}
 
@@ -118,15 +102,6 @@ function buildTopFeedbackList(rows: Record<string, unknown>[], entityType: 'line
 		}))
 		.sort((a, b) => b.count - a.count)
 		.slice(0, 6);
-}
-
-function buildLineLabel(line: CmetLine) {
-	if (line.short_name && line.long_name) return `${line.short_name} - ${line.long_name}`;
-	return line.long_name ?? line.short_name ?? line.id;
-}
-
-function buildStopLabel(stop: CmetStop) {
-	return stop.name ?? stop.long_name ?? stop.short_name ?? stop.id;
 }
 
 function parseFeedbackPreviewData(feedbackPreviewData: FeedbackPreviewResponse, linesById: Map<string, string>, stopsById: Map<string, string>): FeedbackTopicData {
@@ -166,11 +141,11 @@ function FeedbackGraphCard() {
 /* * */
 
 export function FeedbackOverview({ data, previewData }: FeedbackOverviewProps) {
-	const { data: linesData } = useSWR<CmetLine[], Error>(`${Routes.CMET_API}/lines`, standardSwrFetcher);
-	const { data: stopsData } = useSWR<CmetStop[], Error>(`${Routes.CMET_API}/stops`, standardSwrFetcher);
+	const { data: linesData } = useSWR<HubLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
+	const { data: stopsData } = useSWR<HubStop[], Error>({ credentials: 'omit', url: Routes.HUB_STOPS });
 
-	const linesById = useMemo(() => new Map(linesData?.map(line => [line.id, buildLineLabel(line)]) ?? []), [linesData]);
-	const stopsById = useMemo(() => new Map(stopsData?.map(stop => [stop.id, buildStopLabel(stop)]) ?? []), [stopsData]);
+	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
+	const stopsById = useMemo(() => buildStopLabelsById(stopsData), [stopsData]);
 
 	const feedbackData = useMemo(() => {
 		if (data) return data;
@@ -183,7 +158,7 @@ export function FeedbackOverview({ data, previewData }: FeedbackOverviewProps) {
 			<FeedbackGraphCard />
 			<section className={styles.listsGrid}>
 				<TopFeedbackLines lines={feedbackData.topLines} title="Linhas com mais feedbacks" />
-				<TopFeedbackLines lines={feedbackData.topStops} title="Stops com mais feedbacks" />
+				<TopFeedbackLines lines={feedbackData.topStops} title="Paragens com mais feedbacks" />
 			</section>
 		</>
 	);
