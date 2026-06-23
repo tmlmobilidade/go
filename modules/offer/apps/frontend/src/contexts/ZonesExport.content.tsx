@@ -22,7 +22,7 @@ export interface ZoneListExportContextState {
 	}
 	filters: ZoneListExportSummaryFilter[]
 	flags: {
-		CanSave: boolean
+		canSave: boolean
 		error: Error | undefined
 		loading: boolean
 	}
@@ -83,7 +83,7 @@ export const ZonesListExportContextProvider = ({ children }: PropsWithChildren) 
 			search: hasSearch ? searchValue : undefined,
 			zoneIds: zoneIds,
 		};
-	}, [zonesListContext.filters.search.value]);
+	}, [zonesListContext.data.filtered, zonesListContext.filters.search.value]);
 
 	//
 	// C. Handle actions
@@ -125,7 +125,7 @@ export const ZonesListExportContextProvider = ({ children }: PropsWithChildren) 
 			},
 			filters: activeFilters,
 			flags: {
-				CanSave: !loading,
+				canSave: !loading,
 				error: undefined,
 				loading,
 			},

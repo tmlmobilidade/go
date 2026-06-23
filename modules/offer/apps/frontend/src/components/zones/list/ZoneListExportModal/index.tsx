@@ -20,7 +20,7 @@ export function ZoneListExportModal() {
 	return (
 		<Pane
 			header={[
-				<Toolbar key="stop-list-export-toolbar">
+				<Toolbar key="zone-list-export-toolbar">
 					<Label size="lg" singleLine>Exportar zonas</Label>
 					<Spacer />
 				</Toolbar>,
@@ -43,7 +43,7 @@ export function ZoneListExportModal() {
 				<Grid columns="ab" gap="sm">
 					<Button label="Cancelar" onClick={closeZoneListExportModal} type="button" variant="secondary" />
 					<Button
-						disabled={!zoneListExportContext.flags.CanSave}
+						disabled={!zoneListExportContext.flags.canSave}
 						label="Exportar"
 						loading={zoneListExportContext.flags.loading}
 						onClick={zoneListExportContext.actions.exportZones}

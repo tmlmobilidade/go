@@ -9,7 +9,7 @@ import { ZonesListContextProvider } from '../ZonesList.context';
 
 /* * */
 
-const MODAL_ID = 'stop-list-export-modal';
+const MODAL_ID = 'zone-list-export-modal';
 
 /* * */
 
