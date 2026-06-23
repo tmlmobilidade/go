@@ -18,6 +18,7 @@ export const PlanSchema = DocumentSchema.extend({
 		merger: PlanAppStatusSchema,
 		posters: z.object({
 			file: FileSchema.nullable().default(null),
+			job_id: z.string().nullable().default(null),
 			last_hash: z.string().nullable().default(null),
 			status: ProcessingStatusSchema.default('waiting'),
 			step: z.string().nullable().default(null),

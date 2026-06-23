@@ -46,8 +46,10 @@ export class PlansController {
 				...planData.apps,
 				posters: {
 					file: null,
+					job_id: null,
 					last_hash: null,
 					status: 'waiting',
+					step: null,
 					timestamp: null,
 				},
 			},
@@ -218,8 +220,10 @@ export class PlansController {
 					},
 					posters: {
 						file: null,
+						job_id: null,
 						last_hash: null,
 						status: 'skipped',
+						step: null,
 						timestamp: null,
 					},
 				},
