@@ -4,8 +4,6 @@ import { simplifiedApexLocationsNew, simplifiedApexOnBoardRefundsNew, simplified
 import { Dates } from '@tmlmobilidade/dates';
 import { type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { hashedShapes, hashedTrips, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { Timer } from '@tmlmobilidade/timer';
 import { type HashedShape, type HashedTrip, type Ride, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /* * */
@@ -29,8 +27,6 @@ export async function fetchAnalysisData(rideData: Ride): Promise<FetchAnalysisDa
 	// For this ride, fetch all the necessary data for analysis.
 	// This includes static data, like hashed shapes and trips, and dynamic data,
 	// like vehicle events and apex transactions. Request all data in parallel.
-
-	const fetchAnalysisDataTimer = new Timer();
 
 	const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
 
@@ -69,10 +65,6 @@ export async function fetchAnalysisData(rideData: Ride): Promise<FetchAnalysisDa
 			vehicleEventsPromise,
 		]);
 
-		const fetchAnalysisDataTime = fetchAnalysisDataTimer.get();
-
-		Logger.info({ message: `Fetched analysis data from legacy MongoDB interfaces in ${fetchAnalysisDataTime}ms` });
-
 		return {
 			hashed_shape: hashedShapeData,
 			hashed_trip: hashedTripData,
@@ -87,11 +79,11 @@ export async function fetchAnalysisData(rideData: Ride): Promise<FetchAnalysisDa
 	//
 	// For other agencies, fetch data from the Clickhouse interfaces.
 
-	const simplifiedApexLocationsNewPromise = simplifiedApexLocationsNew.select('*', `created_at >= '${standardWindowInterval.start}' AND created_at <= '${standardWindowInterval.end}' AND trip_id = '${rideData.trip_id}'`);
-	const simplifiedApexOnBoardRefundsNewPromise = simplifiedApexOnBoardRefundsNew.select('*', `created_at >= '${standardWindowInterval.start}' AND created_at <= '${standardWindowInterval.end}' AND trip_id = '${rideData.trip_id}'`);
-	const simplifiedApexOnBoardSalesNewPromise = simplifiedApexOnBoardSalesNew.select('*', `created_at >= '${standardWindowInterval.start}' AND created_at <= '${standardWindowInterval.end}' AND trip_id = '${rideData.trip_id}'`);
-	const simplifiedApexValidationsNewPromise = simplifiedApexValidationsNew.select('*', `created_at >= '${standardWindowInterval.start}' AND created_at <= '${standardWindowInterval.end}' AND trip_id = '${rideData.trip_id}'`);
-	const vehicleEventsNewPromise = simplifiedVehicleEventsNew.select('*', `created_at >= '${standardWindowInterval.start}' AND created_at <= '${standardWindowInterval.end}' AND extra_trip_id = null AND trip_id = '${rideData.trip_id}'`);
+	const simplifiedApexLocationsNewPromise = simplifiedApexLocationsNew.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
+	const simplifiedApexOnBoardRefundsNewPromise = simplifiedApexOnBoardRefundsNew.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
+	const simplifiedApexOnBoardSalesNewPromise = simplifiedApexOnBoardSalesNew.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
+	const simplifiedApexValidationsNewPromise = simplifiedApexValidationsNew.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
+	const vehicleEventsNewPromise = simplifiedVehicleEventsNew.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4 AND extra_trip_id IS NULL`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
 
 	const [
 		hashedShapeData,
@@ -110,10 +102,6 @@ export async function fetchAnalysisData(rideData: Ride): Promise<FetchAnalysisDa
 		simplifiedApexValidationsNewPromise,
 		vehicleEventsNewPromise,
 	]);
-
-	const fetchAnalysisDataTime = fetchAnalysisDataTimer.get();
-
-	Logger.info({ message: `Fetched analysis data from legacy MongoDB interfaces in ${fetchAnalysisDataTime}ms` });
 
 	return {
 		hashed_shape: hashedShapeData,
