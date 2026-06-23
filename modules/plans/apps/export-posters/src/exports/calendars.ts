@@ -2,58 +2,29 @@
 
 import { DAY_TYPES } from '@/day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
-import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GtfsDate } from '@/types.js';
+import { type CalendarAssignmentsExt, type CalendarExt, type DayTypeConfig, type ExportToHitouchConfig, type GtfsDate } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
-import fs from 'node:fs';
-import Papa from 'papaparse';
 
 /* * */
 
-export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig,
-	// datesMap: Map<OperationalDate, GtfsDate>
-) {
+export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig, datesMap: Map<OperationalDate, GtfsDate>) {
 	//
 
 	//
-	// // Build the day-type date lists from the generated GTFS date metadata.
+	// Build the day-type date lists from the generated GTFS date metadata.
 
-	// const dayTypesConfig: DayTypeConfig[] = DAY_TYPES.map(dayType => ({ ...dayType, dates: [] }));
+	const dayTypesConfig: DayTypeConfig[] = DAY_TYPES.map(dayType => ({ ...dayType, dates: [] }));
 
-	// for (const d of datesMap.values()) {
-	// 	// Add this date to the corresponding day_type_id
-	// 	const dayTypeTable = dayTypesConfig.find(dt => dt.period === d.period && dt.day_type === d.day_type);
-	// 	if (dayTypeTable) dayTypeTable.dates.push(d.date);
-	// }
-
-	// Import the dates.txt file into a map of date strings and their associated categorizations
-
-	if (!fs.existsSync('/Users/joaoferreira/Developer/tmlmobilidade/go/modules/plans/apps/export-posters/src/dates.txt')) {
-		Logger.error({ message: `Missing dates.txt file in ${process.cwd()}` });
-	}
-
-	const datesCat = Papa.parse<GtfsDate>(fs.readFileSync('/Users/joaoferreira/Developer/tmlmobilidade/go/modules/plans/apps/export-posters/src/dates.txt', 'utf-8'), {
-		header: true,
-		skipEmptyLines: true,
-	});
-
-	const datesMap = new Map<string, GtfsDate>();
-	const dayTypesConfig: DayTypeConfig[] = DAY_TYPES;
-
-	datesCat.data.forEach((d) => {
-		// Ignore dates outside the export range
-		// if (d.date.localeCompare(exportConfig.date_range.start) > 0) console.log(d.date);
-		if (d.date < exportConfig.date_range.start || d.date > exportConfig.date_range.end) return;
+	for (const d of datesMap.values()) {
 		// Add this date to the corresponding day_type_id
 		const dayTypeTable = dayTypesConfig.find(dt => dt.period === d.period && dt.day_type === d.day_type);
 		if (dayTypeTable) dayTypeTable.dates.push(d.date);
-		// Add to map
-		datesMap.set(d.date, d);
-	});
+	}
 
 	//
 	// Get all unique Pattern IDs from trips

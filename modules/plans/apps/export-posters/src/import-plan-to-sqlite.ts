@@ -6,13 +6,14 @@ import { exportRoutesFile } from '@/exports/routes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
-import { ExportToHitouchConfig } from '@/types.js';
+import { type ExportToHitouchConfig } from '@/types.js';
+import { buildDatesMap } from '@/utils/build-dates-map.js';
 import { createHitouchZip } from '@/utils/create-hitouch-zip.js';
 import { importGtfsToDatabase, ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { files } from '@tmlmobilidade/interfaces';
+import { files, holidays, yearPeriods } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { Plan } from '@tmlmobilidade/types';
+import { type Plan } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouchConfig> {
@@ -24,6 +25,7 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 	const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
 	const feedStartDate = planData.gtfs_feed_info.feed_start_date;
 	const feedEndDate = planData.gtfs_feed_info.feed_end_date;
+	const agencyId = planData.gtfs_agency.agency_id;
 
 	//
 	// Check if the feed start and end dates are valid
@@ -45,6 +47,10 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 	};
 
 	const sqlGtfs = await importGtfsToDatabase(importConfig);
+	const [agencyHolidays, agencyYearPeriods] = await Promise.all([
+		holidays.findByAgencyIds([agencyId]),
+		yearPeriods.findMany({ agency_ids: { $in: [agencyId] } }),
+	]);
 
 	//
 	// Setup the export config
@@ -70,7 +76,9 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 
 	const exportTimer = new Timer();
 
-	await exportCalendarFiles(sqlGtfs, exportConfig);
+	const datesMap = buildDatesMap(exportConfig.date_range, agencyHolidays, agencyYearPeriods);
+
+	await exportCalendarFiles(sqlGtfs, exportConfig, datesMap);
 	await exportTripsFile(sqlGtfs, exportConfig);
 	await exportStopTimesFile(sqlGtfs, exportConfig);
 	await exportRoutesFile(sqlGtfs, exportConfig);

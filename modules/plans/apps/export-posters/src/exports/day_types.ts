@@ -7,35 +7,6 @@ import { CsvWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-// export async function exportDayTypesFile(exportConfig: ExportToHitouchConfig) {
-// 	//
-// 	// Export day types file
-
-// 	const dayTypesExtCsv = new CsvWriter('day_typesExt.txt', `${exportConfig.workdir}/day_typesExt.txt`, { batch_size: 100000 });
-
-// 	for (const dayType of DAY_TYPES) {
-// 		const isWeekday = [1, 4, 7].includes(dayType.index);
-
-// 		const parsedDayType: DayTypesExt = {
-// 			day_type_id: dayType._id,
-// 			friday: isWeekday,
-// 			monday: isWeekday,
-// 			name: dayType.name,
-// 			saturday: [2, 5, 8].includes(dayType.index),
-// 			sequence_number: dayType.index,
-// 			sunday: [3, 6, 9].includes(dayType.index),
-// 			thursday: isWeekday,
-// 			tuesday: isWeekday,
-// 			wednesday: isWeekday,
-// 		};
-// 		await dayTypesExtCsv.write(parsedDayType);
-// 	}
-
-// 	await dayTypesExtCsv.flush();
-
-// 	Logger.info({ message: 'Exported day_typesExt.txt file.' });
-// }
-
 export async function exportDayTypesFile(exportConfig: ExportToHitouchConfig) {
 	//
 	// Export day types file
@@ -43,17 +14,19 @@ export async function exportDayTypesFile(exportConfig: ExportToHitouchConfig) {
 	const dayTypesExtCsv = new CsvWriter('day_typesExt.txt', `${exportConfig.workdir}/day_typesExt.txt`, { batch_size: 100000 });
 
 	for (const dayType of DAY_TYPES) {
+		const isWeekday = [1, 4, 7].includes(dayType.index);
+
 		const parsedDayType: DayTypesExt = {
 			day_type_id: dayType._id,
-			friday: ['1', '2', '3', '4', '5'].includes(dayType.index.toString()) ? true : false,
-			monday: ['1', '2', '3', '4', '5'].includes(dayType.index.toString()) ? true : false,
+			friday: isWeekday,
+			monday: isWeekday,
 			name: dayType.name,
-			saturday: [2, 5, 8].includes(dayType.index) ? true : false,
+			saturday: [2, 5, 8].includes(dayType.index),
 			sequence_number: dayType.index,
-			sunday: [3, 6, 9].includes(dayType.index) ? true : false,
-			thursday: ['1', '2', '3', '4', '5'].includes(dayType.index.toString()) ? true : false,
-			tuesday: ['1', '2', '3', '4', '5'].includes(dayType.index.toString()) ? true : false,
-			wednesday: ['1', '2', '3', '4', '5'].includes(dayType.index.toString()) ? true : false,
+			sunday: [3, 6, 9].includes(dayType.index),
+			thursday: isWeekday,
+			tuesday: isWeekday,
+			wednesday: isWeekday,
 		};
 		await dayTypesExtCsv.write(parsedDayType);
 	}

@@ -24,7 +24,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 		routesByLineId[route.line_id].push(route);
 	});
 
-	for await (const routesGroup of Object.values(routesByLineId)) {
+	for (const routesGroup of Object.values(routesByLineId)) {
 		// If this line only has one route, export it as is
 		if (routesGroup.length === 1) {
 			const data: GTFS_Route = {
