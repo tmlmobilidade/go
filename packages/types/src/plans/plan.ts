@@ -20,6 +20,7 @@ export const PlanSchema = DocumentSchema.extend({
 			file: FileSchema.nullable().default(null),
 			last_hash: z.string().nullable().default(null),
 			status: ProcessingStatusSchema.default('waiting'),
+			step: z.string().nullable().default(null),
 			timestamp: UnixTimestampSchema.nullable().default(null),
 		}).default({}),
 	}).default({}),

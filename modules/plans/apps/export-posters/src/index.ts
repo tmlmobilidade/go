@@ -98,7 +98,7 @@ async function main(): Promise<void> {
 		// Update the plan status to 'processing'
 
 		await plans.updateById(planData._id, {
-			apps: { ...planData.apps, posters: { ...planData.apps.posters, status: 'processing', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
+			apps: { ...planData.apps, posters: { ...planData.apps.posters, status: 'processing', step: 'importing-plan', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
 
 		Logger.info({ message: `Found Plan to process: ${planData._id}` });
 
@@ -201,7 +201,7 @@ async function main(): Promise<void> {
 			//
 			// Update the plan status to 'error'
 
-			await plans.updateById(planData._id, { apps: { ...planData.apps, posters: { ...planData.apps.posters, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
+			await plans.updateById(planData._id, { apps: { ...planData.apps, posters: { ...planData.apps.posters, status: 'error', step: 'generating-pdf', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
 
 			throw error;
 		}
@@ -235,7 +235,7 @@ async function main(): Promise<void> {
 			//
 			// Update the plan status to 'error'
 
-			await plans.updateById(planData._id, { apps: { ...planData.apps, posters: { ...planData.apps.posters, status: 'error', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
+			await plans.updateById(planData._id, { apps: { ...planData.apps, posters: { ...planData.apps.posters, status: 'error', step: 'checking-pdf-status', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } } });
 			throw error;
 		}
 
@@ -266,7 +266,7 @@ async function main(): Promise<void> {
 		// Update the plan status to 'complete'
 
 		await plans.updateById(planData._id, {
-			apps: { ...planData.apps, posters: { ...planData.apps.posters, file: pdfFile, status: 'complete', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } },
+			apps: { ...planData.apps, posters: { ...planData.apps.posters, file: pdfFile, status: 'complete', step: 'completed-export', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } },
 		});
 
 		//
