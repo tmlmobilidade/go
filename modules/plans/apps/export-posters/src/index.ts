@@ -152,8 +152,6 @@ async function main(): Promise<void> {
 		}
 
 		//
-
-		//
 		// Start a new job or rebuild local files when no remote job was saved
 
 		let pdfId = planData.apps.posters.job_id;
