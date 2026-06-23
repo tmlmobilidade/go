@@ -141,6 +141,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// DEMAND
 		DEMAND_LIST: `${getModuleConfig('performance', 'frontend_url')}/demand`,
 
+		// FEEDBACK
+		FEEDBACK_LIST: `${getModuleConfig('performance', 'frontend_url')}/feedback`,
+
 		// SUPPLY
 		SUPPLY_LIST: `${getModuleConfig('performance', 'frontend_url')}/supply`,
 	},
@@ -345,6 +348,7 @@ export const API_ROUTES = Object.freeze({
 		// FEEDBACK
 		FEEDBACK_LIST: `${getModuleConfig('hub', 'api_url')}/v1/feedback`,
 		FEEDBACK_REASONS: `${getModuleConfig('hub', 'api_url')}/v1/feedback/reasons`,
+
 		// METRICS
 		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
 
@@ -435,6 +439,9 @@ export const API_ROUTES = Object.freeze({
 
 		// DATES
 		DATES_LIST: `${getModuleConfig('performance', 'api_url')}/dates`,
+
+		// FEEDBACK
+		FEEDBACK_PREVIEW: `${getModuleConfig('performance', 'api_url')}/feedback/preview`,
 
 		// METRICS
 		METRICS_DETAIL: (id: string) => `${getModuleConfig('performance', 'api_url')}/metrics/${id}`,
