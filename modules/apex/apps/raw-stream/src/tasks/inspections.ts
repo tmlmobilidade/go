@@ -9,7 +9,8 @@ import { BatchWriter } from '@tmlmobilidade/utils';
 /* * */
 
 const writer = new BatchWriter<SimplifiedApexInspection>({
-	batch_size: 500,
+	batch_size: 10_000,
+	batch_timeout: 30_000,
 	insertFn: async (data) => {
 		await simplifiedApexInspectionsNew.insert('JSONEachRow', data);
 	},
