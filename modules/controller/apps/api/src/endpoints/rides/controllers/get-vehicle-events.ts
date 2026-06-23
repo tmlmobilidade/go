@@ -1,6 +1,7 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
@@ -12,16 +13,14 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getSimplifiedVehicleEvents(request: FastifyRequest, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
+export async function getSimplifiedVehicleEvents(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
 	try {
 		//
 
 		//
 		// Validate the request parameters
 
-		const rideId = request.params['id'];
-
-		if (!rideId) {
+		if (!request.params.id) {
 			return reply
 				.status(HTTP_STATUS.BAD_REQUEST)
 				.send({
@@ -34,7 +33,7 @@ export async function getSimplifiedVehicleEvents(request: FastifyRequest, reply:
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await rides.findById(rideId);
+		const rideData = await rides.findById(request.params.id);
 
 		if (!rideData) {
 			return reply
@@ -52,11 +51,21 @@ export async function getSimplifiedVehicleEvents(request: FastifyRequest, reply:
 
 		const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
 
-		const vehicleEventsData = await simplifiedVehicleEvents.findMany({
-			created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
-			extra_trip_id: null,
-			trip_id: rideData.trip_id,
-		});
+		let vehicleEventsData: SimplifiedVehicleEvent[];
+
+		if (['41', '42', '43', '44'].includes(rideData.agency_id)) {
+			vehicleEventsData = await simplifiedVehicleEvents.findMany({
+				created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+				extra_trip_id: null,
+				trip_id: rideData.trip_id,
+			});
+		} else {
+			vehicleEventsData = await simplifiedVehicleEventsNew.select(
+				'*',
+				`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4 AND extra_trip_id IS NULL`,
+				{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },
+			);
+		}
 
 		//
 		// Send the ride data back to the client

@@ -1,6 +1,7 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
@@ -12,16 +13,14 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getSimplifiedApexValidations(request: FastifyRequest, reply: FastifyReply<SimplifiedApexValidation[]>) {
+export async function getSimplifiedApexValidations(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedApexValidation[]>) {
 	try {
 		//
 
 		//
 		// Validate the request parameters
 
-		const rideId = request.params['id'];
-
-		if (!rideId) {
+		if (!request.params.id) {
 			return reply
 				.status(HTTP_STATUS.BAD_REQUEST)
 				.send({
@@ -34,7 +33,7 @@ export async function getSimplifiedApexValidations(request: FastifyRequest, repl
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await rides.findById(rideId);
+		const rideData = await rides.findById(request.params.id);
 
 		if (!rideData) {
 			return reply
@@ -52,11 +51,21 @@ export async function getSimplifiedApexValidations(request: FastifyRequest, repl
 
 		const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
 
-		const simplifiedApexValidationsData = await simplifiedApexValidations.findMany({
-			created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
-			extra_trip_id: null,
-			trip_id: rideData.trip_id,
-		});
+		let simplifiedApexValidationsData: SimplifiedApexValidation[];
+
+		if (['41', '42', '43', '44'].includes(rideData.agency_id)) {
+			simplifiedApexValidationsData = await simplifiedApexValidations.findMany({
+				created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
+				extra_trip_id: null,
+				trip_id: rideData.trip_id,
+			});
+		} else {
+			simplifiedApexValidationsData = await simplifiedApexValidationsNew.select(
+				'*',
+				`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`,
+				{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },
+			);
+		}
 
 		//
 		// Send the ride data back to the client
