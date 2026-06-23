@@ -43,7 +43,7 @@ export class FeedbackController {
 	 */
 	static async getPreview(request: FastifyRequest<{ Querystring: { limit?: string } }>, reply: FastifyReply<FeedbackPreviewResponse>) {
 		try {
-			const database = process.env.GO_CLICKHOUSE_DATABASE || 'default';
+			const database = process.env.GO_CLICKHOUSE_DATABASE || 'hub';
 			const table = process.env.GO_CLICKHOUSE_FEEDBACK_TABLE || 'feedback';
 			const limit = resolveLimit(request.query.limit);
 

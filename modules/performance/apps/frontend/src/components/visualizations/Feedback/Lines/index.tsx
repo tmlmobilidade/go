@@ -4,6 +4,7 @@
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { Routes } from '@/routes';
+import { standardSwrFetcher } from '@tmlmobilidade/utils';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
@@ -14,7 +15,22 @@ interface FeedbackPreviewResponse {
 	rows: Record<string, unknown>[]
 }
 
+interface CmetLine {
+	id: string
+	long_name?: string
+	short_name?: string
+}
+
 /* * */
+
+function normalizeLineId(lineId: string) {
+	return lineId.replace(/^\[\d+\]/, '');
+}
+
+function buildLineLabel(line: CmetLine) {
+	if (line.short_name && line.long_name) return `${line.short_name} - ${line.long_name}`;
+	return line.long_name ?? line.short_name ?? line.id;
+}
 
 function getLines(rows: Record<string, unknown>[]) {
 	const lines = new Map<string, number>();
@@ -33,6 +49,8 @@ function getLines(rows: Record<string, unknown>[]) {
 
 export function FeedbackLines() {
 	const { data, error, isLoading } = useSWR<FeedbackPreviewResponse, Error>(`${Routes.FEEDBACK_PREVIEW}?limit=100`);
+	const { data: linesData } = useSWR<CmetLine[], Error>(`${Routes.CMET_API}/lines`, standardSwrFetcher);
+	const linesById = new Map(linesData?.map(line => [line.id, buildLineLabel(line)]) ?? []);
 	const lines = getLines(data?.rows ?? []);
 
 	return (
@@ -56,7 +74,7 @@ export function FeedbackLines() {
 						<tbody>
 							{lines.map(line => (
 								<tr key={line.lineId}>
-									<td>{line.lineId}</td>
+									<td>{linesById.get(normalizeLineId(line.lineId)) ?? line.lineId}</td>
 									<td>{line.feedbackCount.toLocaleString('pt-PT')}</td>
 								</tr>
 							))}
@@ -67,4 +85,3 @@ export function FeedbackLines() {
 		</ContainerWrapper>
 	);
 }
-
