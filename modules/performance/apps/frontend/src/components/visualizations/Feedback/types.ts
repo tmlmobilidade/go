@@ -34,9 +34,8 @@ export interface FeedbackLineRowData {
 }
 
 export interface FeedbackTopicData {
-	categories: FeedbackCategoryRowData[]
 	chartBars: FeedbackChartBarData[]
 	chartTitle?: string
-	summaryCards: FeedbackSummaryCardData[]
 	topLines: FeedbackLineRowData[]
+	topStops: FeedbackLineRowData[]
 }

@@ -27,7 +27,7 @@ export function FeedbackCategoryList({ categories, isLoading }: FeedbackCategory
 						<span>{category.label}</span>
 
 						{isLoading ? (
-							<Skeleton height={10} width={category.skeletonWidth ?? '54%'} />
+							<Skeleton height={10} width={category.skeletonWidth ?? '50%'} />
 						) : (
 							<div className={styles.categoryMetric}>
 								<span className={styles.categoryValue}>{category.value ?? '-'}</span>
