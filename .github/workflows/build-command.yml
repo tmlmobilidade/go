@@ -102,23 +102,21 @@ jobs:
               return;
             }
 
-            for (const module of modules) {
-              core.info(`Dispatching build-modules for ${module} on ref ${pr.head.ref}`);
-              try {
-                await github.rest.actions.createWorkflowDispatch({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  workflow_id: 'build-modules.yml',
-                  ref: pr.head.ref,
-                  inputs: {
-                    module,
-                    pr_number: String(prNumber),
-                  },
-                });
-              } catch (error) {
-                core.setFailed(`Failed to dispatch build-modules for ${module}: ${error.message}`);
-                return;
-              }
+            core.info(`Dispatching build-modules for ${modules.join(', ')} on ref ${pr.head.ref}`);
+            try {
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'build-modules.yml',
+                ref: pr.head.ref,
+                inputs: {
+                  module: modules.join(','),
+                  pr_number: String(prNumber),
+                },
+              });
+            } catch (error) {
+              core.setFailed(`Failed to dispatch build-modules: ${error.message}`);
+              return;
             }
 
             if (!isManual) {
