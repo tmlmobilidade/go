@@ -1,10 +1,10 @@
 /* * */
 
-import type { FeedbackLineRowData, FeedbackTopicData } from './types';
+import type { FeedbackLineRowData, FeedbackTopicData } from '../types';
 
 import { useMemo } from 'react';
 
-import styles from './styles.module.css';
+import styles from '../styles.module.css';
 
 import { FeedbackChartCard } from './FeedbackChartCard';
 import { TopFeedbackLines } from './TopFeedbackLines';
