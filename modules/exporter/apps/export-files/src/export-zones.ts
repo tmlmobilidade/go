@@ -1,3 +1,5 @@
+/* * */
+
 import { fileExports, zones } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
@@ -10,10 +12,12 @@ import path from 'path';
 import { parseZones } from './lib/parse-zones.js';
 
 /***/
+
 function getZoneIdsFromExportProperties(properties: ZoneExportProperties['properties']): string[] {
-	const zoneIds = properties.search.split (/[\s,]+/);
+	const zoneIds = properties.zoneIds ?? [];
 	return [...new Set(zoneIds.map(id => id.trim()).filter(Boolean))];
 }
+
 /***/
 
 export async function exportZoneFile(fileExport: FileExport): Promise<string> {
@@ -32,13 +36,8 @@ export async function exportZoneFile(fileExport: FileExport): Promise<string> {
 	const properties = fileExport.properties as ZoneExportProperties['properties'];
 	const zoneIds = getZoneIdsFromExportProperties(properties);
 
-	const query: Record<string, Record<string, string[]> | string> = {};
-	if (zoneIds.length > 0) {
-		query['_id'] = { $in: zoneIds };
-	}
-
 	const zonesCollection = await zones.getCollection();
-	const zonesBatchCursor = zonesCollection.find(query, { batchSize: 5000 });
+	const zonesBatchCursor = zonesCollection.find({ _id: { $in: zoneIds } }, { batchSize: 5000 });
 
 	//
 	// Write the zones batch file

@@ -73,6 +73,7 @@ export const ZonesListExportContextProvider = ({ children }: PropsWithChildren) 
 	const exportProperties = useMemo((): ZoneExportProperties['properties'] => {
 		const searchValue = zonesListContext.filters.search.value.trim();
 		const hasSearch = searchValue.length > 0;
+		const zoneIds = zonesListContext.data.filtered.map(zone => zone._id);
 		// const activeAgencies = zonesListContext.filters.agencies.value as ZoneExportProperties['properties']['agencies'];
 
 		return {
@@ -80,12 +81,9 @@ export const ZonesListExportContextProvider = ({ children }: PropsWithChildren) 
 			// 	? activeAgencies
 			// 	: undefined,
 			search: hasSearch ? searchValue : undefined,
+			zoneIds: zoneIds,
 		};
-	}, [
-		zonesListContext.data.filtered,
-		zonesListContext.filters.agencies.value,
-		zonesListContext.filters.search.value,
-	]);
+	}, [zonesListContext.filters.search.value]);
 
 	//
 	// C. Handle actions

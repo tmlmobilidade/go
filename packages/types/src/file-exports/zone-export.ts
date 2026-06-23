@@ -22,6 +22,7 @@ export const ZoneExportPropertiesSchema = z.object({
 		// agencies: ZoneSchema.shape.agency_ids,
 
 		search: z.string().optional().nullable(),
+		zoneIds: z.array(z.string()),
 	}),
 	type: z.literal('zone'),
 });
