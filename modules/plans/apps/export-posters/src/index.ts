@@ -85,11 +85,6 @@ async function main(): Promise<void> {
 		}
 
 		//
-		// Request a token from the ZPHERES API
-
-		await postersController.generateToken();
-
-		//
 		// Update the plan status to 'processing'
 
 		await plans.updateById(planData._id, {
@@ -178,6 +173,26 @@ async function main(): Promise<void> {
 		const outputPath = await createHitouchZip(exportConfig);
 
 		Logger.info({ message: `Created ${outputPath} in ${zipTimer.get()} seconds` });
+
+		//
+		// Generate the PDF
+
+		try {
+			await postersController.generatePDF(exportConfig);
+		} catch (error) {
+			Logger.error({ error, message: 'Error generating PDF.' });
+			await plans.updateById(planData._id, {
+				apps: {
+					...planData.apps,
+					posters: {
+						...planData.apps.posters,
+						status: 'error',
+						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+					},
+				},
+			});
+			throw error;
+		}
 
 		//
 

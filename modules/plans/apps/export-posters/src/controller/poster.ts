@@ -1,5 +1,10 @@
 /* * */
 
+import parametersConfig from '@/parameters.json';
+import { ExportToHitouchConfig } from '@/types.js';
+import fs from 'node:fs';
+import path from 'node:path';
+
 interface TokenResponse {
 	access_token: string
 	expires_in: number
@@ -57,5 +62,45 @@ export class PostersController {
 		this.tokenExpiresAt = Date.now() + Math.max(tokenData.expires_in - 60, 0) * 1_000;
 
 		return this.accessToken;
+	}
+
+	/**
+	 * Creates a new poster in the ZPHERES API.
+	 */
+	async generatePDF(exportConfig: ExportToHitouchConfig): Promise<void> {
+		//
+
+		const accessToken = await this.generateToken();
+		const gtfsZipPath = path.join(exportConfig.workdir, exportConfig.output);
+		const gtfsZip = await fs.promises.readFile(gtfsZipPath);
+		const parameters = JSON.stringify(parametersConfig);
+
+		const body = new FormData();
+
+		body.append('gtfs.zip', new Blob([new Uint8Array(gtfsZip)], { type: 'application/zip' }), path.basename(gtfsZipPath));
+		body.append('parameters.json', new Blob([parameters], { type: 'application/json' }), 'parameters.json');
+
+		const response = await fetch(process.env.ZPHERES_GENERATE_SVG_URL, {
+			body,
+			headers: {
+				'Authorization': `Bearer ${accessToken}`,
+				'ob2zphrs-customer': process.env.OB_CUSTOMER,
+				'ob2zphrs-user': process.env.OB_USER,
+			},
+			method: 'POST',
+		});
+
+		console.log('ZPHERES PDF response headers:', {
+			headers: Object.fromEntries(response.headers.entries()),
+			status: response.status,
+		});
+
+		if (!response.ok) {
+			const responseBody = await response.text();
+
+			console.log('ZPHERES PDF error response:', responseBody);
+
+			throw new Error(`ZPHERES PDF generation failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
+		}
 	}
 }
