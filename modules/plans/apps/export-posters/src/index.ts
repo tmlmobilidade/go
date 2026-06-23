@@ -1,5 +1,6 @@
 /* * */
 
+import { PostersController } from '@/controller/posters.controller.js';
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarFiles } from '@/exports/calendars.js';
 import { exportDayTypesFile } from '@/exports/day_types.js';
@@ -13,12 +14,16 @@ import { Dates } from '@tmlmobilidade/dates';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+// import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
 
 // import { getFormattedDates } from './get-names.js';
+
+/* * */
+
+const postersController = new PostersController();
 
 /* * */
 
@@ -29,12 +34,12 @@ async function main(): Promise<void> {
 		//
 		// Initialize Sentry
 
-		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'export-posters', message: 'Sentry Exporter Posters initialized', module: 'exporter', severity: 'info' });
-		} catch (error) {
-			Logger.error({ error, message: 'Error initializing Sentry Exporter Posters' });
-		}
+		// try {
+		// 	await initSentryNode();
+		// 	Logger.startNodeLogs({ app: 'export-posters', message: 'Sentry Exporter Posters initialized', module: 'exporter', severity: 'info' });
+		// } catch (error) {
+		// 	Logger.error({ error, message: 'Error initializing Sentry Exporter Posters' });
+		// }
 
 		//
 		// Initialize the logger
@@ -77,6 +82,11 @@ async function main(): Promise<void> {
 			Logger.terminate(`Run took ${globalTimer.get()}`);
 			return;
 		}
+
+		//
+		// Request a token from the ZPHERES API
+
+		await postersController.generateToken();
 
 		//
 		// Update the plan status to 'processing'
