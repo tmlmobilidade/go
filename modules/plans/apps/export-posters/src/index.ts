@@ -1,6 +1,6 @@
 /* * */
 
-import { PostersController } from '@/controller/posters.controller.js';
+import { PostersController } from '@/controller/poster.js';
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarFiles } from '@/exports/calendars.js';
 import { exportDayTypesFile } from '@/exports/day_types.js';
