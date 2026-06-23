@@ -3,7 +3,10 @@
 import type { FeedbackLineRowData, FeedbackTopicData } from '../../types';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
+import { Routes } from '@/routes';
+import { standardSwrFetcher } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
+import useSWR from 'swr';
 
 import styles from '../../styles.module.css';
 
@@ -25,6 +28,19 @@ interface FeedbackOverviewProps {
 	previewData?: FeedbackPreviewResponse
 }
 
+interface CmetLine {
+	id: string
+	long_name?: string
+	short_name?: string
+}
+
+interface CmetStop {
+	id: string
+	long_name?: string
+	name?: string
+	short_name?: string
+}
+
 /* * */
 
 const EMPTY_FEEDBACK_TOPIC_DATA: FeedbackTopicData = {
@@ -33,7 +49,7 @@ const EMPTY_FEEDBACK_TOPIC_DATA: FeedbackTopicData = {
 	topStops: [],
 };
 
-const LINE_FIELD_CANDIDATES = ['line_id', 'lineId', 'linha', 'route_id', 'routeId', 'id', '_id'];
+const LINE_FIELD_CANDIDATES = ['line_id', 'lineId', 'linha', 'route_id', 'routeId'];
 const STOP_FIELD_CANDIDATES = ['stop_id', 'stopId', 'stop_code', 'stopCode', 'stop_name', 'stopName', 'paragem_id', 'paragem'];
 const FEEDBACK_COUNT_FIELD_CANDIDATES = ['feedback_count', 'feedbacks', 'count', 'qty', 'total'];
 
@@ -62,39 +78,60 @@ function getFeedbackCount(row: Record<string, unknown>) {
 	return Number(row[metricField]);
 }
 
-function buildTopFeedbackList(rows: Record<string, unknown>[], fieldCandidates: string[], fallbackPrefix: string): (FeedbackLineRowData & { count: number })[] {
-	const groupedRows = new Map<string, { count: number, sample: Record<string, unknown> }>();
+function normalizeLineId(lineId: string) {
+	return lineId.replace(/^\[\d+\]/, '');
+}
 
-	for (const [index, row] of rows.entries()) {
-		const nameField = getCandidateField(row, fieldCandidates);
-		const name = nameField ? formatPreviewValue(row[nameField]) : `${fallbackPrefix} ${index + 1}`;
-		const current = groupedRows.get(name);
+function getEntityId(row: Record<string, unknown>, entityType: 'line' | 'stop', fieldCandidates: string[]) {
+	if (row.entity_type && row.entity_type !== entityType) return null;
+	if (row.entity_type === entityType && typeof row.entity_id === 'string') return row.entity_id;
 
-		groupedRows.set(name, {
+	const fallbackField = getCandidateField(row, fieldCandidates);
+	if (!fallbackField) return null;
+
+	return formatPreviewValue(row[fallbackField]);
+}
+
+function buildTopFeedbackList(rows: Record<string, unknown>[], entityType: 'line' | 'stop', fieldCandidates: string[], labelsById: Map<string, string>): (FeedbackLineRowData & { count: number })[] {
+	const groupedRows = new Map<string, { count: number, label: string }>();
+
+	for (const row of rows) {
+		const entityId = getEntityId(row, entityType, fieldCandidates);
+		if (!entityId) continue;
+
+		const labelKey = entityType === 'line' ? normalizeLineId(entityId) : entityId;
+		const current = groupedRows.get(entityId);
+
+		groupedRows.set(entityId, {
 			count: (current?.count ?? 0) + getFeedbackCount(row),
-			sample: current?.sample ?? row,
+			label: labelsById.get(labelKey) ?? entityId,
 		});
 	}
 
 	return Array.from(groupedRows.entries())
-		.map(([name, groupData]) => ({
+		.map(([id, groupData]) => ({
 			count: groupData.count,
-			description: Object.entries(groupData.sample)
-				.filter(([field]) => !fieldCandidates.includes(field) && !FEEDBACK_COUNT_FIELD_CANDIDATES.includes(field))
-				.slice(0, 2)
-				.map(([field, value]) => `${field}: ${formatPreviewValue(value)}`)
-				.join(' · '),
-			id: name,
+			description: groupData.label === id ? undefined : id,
+			id,
 			metric: groupData.count.toLocaleString('pt-PT'),
-			name,
+			name: groupData.label,
 		}))
 		.sort((a, b) => b.count - a.count)
 		.slice(0, 6);
 }
 
-function parseFeedbackPreviewData(feedbackPreviewData: FeedbackPreviewResponse): FeedbackTopicData {
-	const topLines = buildTopFeedbackList(feedbackPreviewData.rows, LINE_FIELD_CANDIDATES, 'Linha');
-	const topStops = buildTopFeedbackList(feedbackPreviewData.rows, STOP_FIELD_CANDIDATES, 'Stop');
+function buildLineLabel(line: CmetLine) {
+	if (line.short_name && line.long_name) return `${line.short_name} - ${line.long_name}`;
+	return line.long_name ?? line.short_name ?? line.id;
+}
+
+function buildStopLabel(stop: CmetStop) {
+	return stop.name ?? stop.long_name ?? stop.short_name ?? stop.id;
+}
+
+function parseFeedbackPreviewData(feedbackPreviewData: FeedbackPreviewResponse, linesById: Map<string, string>, stopsById: Map<string, string>): FeedbackTopicData {
+	const topLines = buildTopFeedbackList(feedbackPreviewData.rows, 'line', LINE_FIELD_CANDIDATES, linesById);
+	const topStops = buildTopFeedbackList(feedbackPreviewData.rows, 'stop', STOP_FIELD_CANDIDATES, stopsById);
 
 	return {
 		chartBars: topLines.map(line => ({
@@ -129,11 +166,17 @@ function FeedbackGraphCard() {
 /* * */
 
 export function FeedbackOverview({ data, previewData }: FeedbackOverviewProps) {
+	const { data: linesData } = useSWR<CmetLine[], Error>(`${Routes.CMET_API}/lines`, standardSwrFetcher);
+	const { data: stopsData } = useSWR<CmetStop[], Error>(`${Routes.CMET_API}/stops`, standardSwrFetcher);
+
+	const linesById = useMemo(() => new Map(linesData?.map(line => [line.id, buildLineLabel(line)]) ?? []), [linesData]);
+	const stopsById = useMemo(() => new Map(stopsData?.map(stop => [stop.id, buildStopLabel(stop)]) ?? []), [stopsData]);
+
 	const feedbackData = useMemo(() => {
 		if (data) return data;
-		if (previewData) return parseFeedbackPreviewData(previewData);
+		if (previewData) return parseFeedbackPreviewData(previewData, linesById, stopsById);
 		return EMPTY_FEEDBACK_TOPIC_DATA;
-	}, [data, previewData]);
+	}, [data, previewData, linesById, stopsById]);
 
 	return (
 		<>
