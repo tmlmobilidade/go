@@ -1,12 +1,12 @@
 /* * */
 
-import type { FeedbackLineRowData, FeedbackTopicData } from '../types';
+import type { FeedbackLineRowData, FeedbackTopicData } from '../../types';
 
+import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { useMemo } from 'react';
 
-import styles from '../styles.module.css';
+import styles from '../../styles.module.css';
 
-import { FeedbackChartCard } from './FeedbackChartCard';
 import { TopFeedbackLines } from './TopFeedbackLines';
 
 /* * */
@@ -118,6 +118,14 @@ function parseFeedbackPreviewData(feedbackPreviewData: FeedbackPreviewResponse):
 	};
 }
 
+function FeedbackGraphCard() {
+	return (
+		<ContainerWrapper height={360}>
+			<p className={styles.cardTitle}>Gráfico Feedback</p>
+		</ContainerWrapper>
+	);
+}
+
 /* * */
 
 export function FeedbackOverview({ data, previewData }: FeedbackOverviewProps) {
@@ -129,7 +137,7 @@ export function FeedbackOverview({ data, previewData }: FeedbackOverviewProps) {
 
 	return (
 		<>
-			<FeedbackChartCard bars={feedbackData.chartBars} title={feedbackData.chartTitle} />
+			<FeedbackGraphCard />
 			<section className={styles.listsGrid}>
 				<TopFeedbackLines lines={feedbackData.topLines} title="Linhas com mais feedbacks" />
 				<TopFeedbackLines lines={feedbackData.topStops} title="Stops com mais feedbacks" />

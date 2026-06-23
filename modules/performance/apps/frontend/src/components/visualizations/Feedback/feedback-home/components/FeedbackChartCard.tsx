@@ -1,10 +1,10 @@
 /* * */
 
-import type { FeedbackChartBarData } from '../types';
+import type { FeedbackChartBarData } from '../../types';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 
-import styles from '../styles.module.css';
+import styles from '../../styles.module.css';
 
 /* * */
 

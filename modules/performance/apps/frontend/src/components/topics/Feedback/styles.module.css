@@ -40,6 +40,7 @@
 	font-size: var(--font-size-md);
 	font-weight: var(--font-weight-bold);
 	text-align: left;
+	text-decoration: none;
 	cursor: pointer;
 }
 
