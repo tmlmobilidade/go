@@ -55,7 +55,7 @@ async function main() {
 				//
 				// Only process Plans for specific agency IDs
 
-				if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(currentPlan.gtfs_agency?.agency_id)) {
+				if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44', 'crtm-aisa'].includes(currentPlan.gtfs_agency?.agency_id)) {
 					Logger.error({ message: `Skip processing: gtfs_agency is '${currentPlan.gtfs_agency?.agency_id}'. Only '1', '2', '4', '8', '15', '16', '21', '41', '42', '43', or '44' are allowed.` });
 					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'skipped', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 					continue;
