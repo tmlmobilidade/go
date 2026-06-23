@@ -109,6 +109,9 @@ async function main(): Promise<void> {
 		const feedStartDate = planData.gtfs_feed_info.feed_start_date;
 		const feedEndDate = planData.gtfs_feed_info.feed_end_date;
 
+		//
+		// Check if the feed start and end dates are valid
+
 		if (!feedStartDate || !feedEndDate) {
 			throw new Error(`Plan ${planData._id} is missing feed start or end dates.`);
 		}
@@ -124,6 +127,9 @@ async function main(): Promise<void> {
 				},
 			},
 		};
+
+		//
+		// Import the Plan into a local SQLite database
 
 		const sqlGtfs = await importGtfsToDatabase(importConfig);
 
@@ -205,11 +211,11 @@ async function main(): Promise<void> {
 
 		let pdfStatus = await postersController.getPDFStatus(pdfId);
 		try {
-			while ((pdfStatus as { status: string }).status !== 'done') {
+			while (pdfStatus.status !== 'done') {
 				//
 				// Check if the PDF generation failed
 
-				if ((pdfStatus as { status: string }).status === 'error') {
+				if (pdfStatus.status === 'error') {
 					throw new Error('PDF generation failed.');
 				}
 
@@ -235,10 +241,31 @@ async function main(): Promise<void> {
 		Logger.info({ message: `PDF status: ${JSON.stringify(pdfStatus)}` });
 
 		//
+		// Download and upload the generated posters ZIP file
+
+		const pdfFileUrl = pdfStatus.downloadLink;
+
+		if (!pdfFileUrl) {
+			throw new Error(`PDF generation completed without a download URL. Response: ${JSON.stringify(pdfStatus)}`);
+		}
+
+		const pdfZip = await postersController.downloadPDF(pdfFileUrl);
+		const pdfFile = await files.upload(pdfZip, {
+			_id: `${planData._id}-pdf`,
+			created_by: 'system',
+			name: `${planData._id}-pdf.zip`,
+			resource_id: planData._id,
+			scope: 'plans',
+			size: pdfZip.byteLength,
+			type: 'application/zip',
+			updated_by: 'system',
+		}, { override: true });
+
+		//
 		// Update the plan status to 'complete'
 
 		await plans.updateById(planData._id, {
-			apps: { ...planData.apps, posters: { ...planData.apps.posters, download_url: (pdfStatus as { download_url: string }).download_url, status: 'complete', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } },
+			apps: { ...planData.apps, posters: { ...planData.apps.posters, file: pdfFile, status: 'complete', timestamp: Dates.now('Europe/Lisbon').unix_timestamp } },
 		});
 
 		//

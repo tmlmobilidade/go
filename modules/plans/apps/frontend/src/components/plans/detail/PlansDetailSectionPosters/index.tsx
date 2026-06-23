@@ -2,7 +2,7 @@
 
 import { FileComponent } from '@/components/common/FileComponent';
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
-import { Button, Collapsible, Label, Section, Spacer } from '@tmlmobilidade/ui';
+import { Button, Collapsible, Label, Section, Spacer, useToast } from '@tmlmobilidade/ui';
 
 import { usePlanDetailContext } from '../PlanDetail.context';
 
@@ -18,6 +18,25 @@ export function PlanDetailSectionPosters() {
 	const planDetailContext = usePlanDetailContext();
 
 	//
+	// Handle actions
+
+	const handleDownload = async () => {
+		try {
+			const fileUrl = planDetailContext.data.plan.apps?.posters?.file?.url;
+
+			if (!fileUrl) {
+				throw new Error('O ficheiro não está disponível para transferência');
+			}
+
+			window.open(fileUrl);
+		} catch (error) {
+			useToast.error({
+				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
+				title: 'Erro ao transferir ficheiro',
+			});
+		}
+	};
+	//
 	// B. Render components
 
 	return (
@@ -26,10 +45,10 @@ export function PlanDetailSectionPosters() {
 			title="Gerar PDFs"
 		>
 			<Section gap="sm">
-				{planDetailContext.data.plan.apps?.posters?.status === 'complete' ? (
+				{planDetailContext.data.plan.apps?.posters?.status === 'complete' && planDetailContext.data.plan.apps.posters.file ? (
 					<FileComponent
-						fileData={planDetailContext.data.operation_file} // TODO: Change to posters file
-						// onClick={}
+						fileData={planDetailContext.data.plan.apps.posters.file}
+						onClick={handleDownload}
 					/>
 				) : null}
 				<Button

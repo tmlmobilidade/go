@@ -45,6 +45,7 @@ export class PlansController {
 			apps: {
 				...planData.apps,
 				posters: {
+					file: null,
 					last_hash: null,
 					status: 'waiting',
 					timestamp: null,
@@ -216,6 +217,7 @@ export class PlansController {
 						timestamp: null,
 					},
 					posters: {
+						file: null,
 						last_hash: null,
 						status: 'skipped',
 						timestamp: null,
@@ -448,6 +450,17 @@ export class PlansController {
 
 		if (!hasPermissionReadPlan) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+		}
+
+		//
+		// Refresh the signed URL for the generated posters file
+
+		if (planData.apps.posters.file) {
+			const postersFile = await files.findById(planData.apps.posters.file._id);
+
+			if (postersFile) {
+				planData.apps.posters.file = postersFile;
+			}
 		}
 
 		//

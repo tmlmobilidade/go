@@ -8,8 +8,6 @@ import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
-/* * */
-
 interface FileComponentProps {
 	fileData: File
 	onClick?: () => void

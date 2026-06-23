@@ -10,6 +10,11 @@ interface TokenResponse {
 	expires_in: number
 }
 
+export interface PDFStatus {
+	downloadLink?: string
+	status: 'done' | 'error' | string
+}
+
 /* * */
 
 export class PostersController {
@@ -116,7 +121,7 @@ export class PostersController {
 	/**
 	 * Gets the status of a PDF generation in the ZPHERES API.
 	 */
-	async getPDFStatus(id: string): Promise<unknown> {
+	async getPDFStatus(id: string): Promise<PDFStatus> {
 		//
 
 		const accessToken = await this.generateToken();
@@ -133,8 +138,24 @@ export class PostersController {
 			throw new Error(`ZPHERES PDF status failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
 		}
 
-		const pdfStatus = await response.json();
+		const pdfStatus = await response.json() as PDFStatus;
 
 		return pdfStatus;
+	}
+
+	/**
+	 * Downloads the generated posters ZIP file from the ZPHERES API.
+	 */
+	async downloadPDF(fileUrl: string): Promise<Buffer> {
+		//
+
+		const response = await fetch(fileUrl);
+
+		if (!response.ok) {
+			const responseBody = await response.text();
+			throw new Error(`ZPHERES PDF download failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
+		}
+
+		return Buffer.from(await response.arrayBuffer());
 	}
 }

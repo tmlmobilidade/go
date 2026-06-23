@@ -1,5 +1,6 @@
 /* * */
 
+import { FileSchema } from '@/file.js';
 import { GtfsAgencySchema } from '@/gtfs/agency.js';
 import { GtfsFeedInfoSchema } from '@/gtfs/feed-info.js';
 import { PlanAppStatusSchema } from '@/plans/plan-app-status.js';
@@ -16,7 +17,8 @@ export const PlanSchema = DocumentSchema.extend({
 		hub_schedules: PlanAppStatusSchema,
 		merger: PlanAppStatusSchema,
 		posters: z.object({
-			download_url: z.string().nullable().default(null),
+			file: FileSchema.nullable().default(null),
+			last_hash: z.string().nullable().default(null),
 			status: ProcessingStatusSchema.default('waiting'),
 			timestamp: UnixTimestampSchema.nullable().default(null),
 		}).default({}),
