@@ -7,6 +7,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 /* * */
 
 const NAMESPACE = '/feedback';
+const shouldAuthenticatePreview = process.env.ENVIRONMENT !== 'dev';
 
 /* * */
 
@@ -18,7 +19,7 @@ server.register(
 
 		instance.get(
 			'/preview',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
+			shouldAuthenticatePreview ? { preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) } : {},
 			FeedbackController.getPreview,
 		);
 
@@ -26,4 +27,3 @@ server.register(
 	},
 	{ prefix: NAMESPACE },
 );
-
