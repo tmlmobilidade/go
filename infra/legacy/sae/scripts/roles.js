@@ -56,6 +56,9 @@ db.createRole({
 db.createRole({
 	privileges: [
 		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'holidays', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'year_periods', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'events', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'gtfs_validations', db: 'production' } },
