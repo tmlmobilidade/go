@@ -45,12 +45,14 @@ export function PlanDetailSectionPosters() {
 			title="Gerar PDFs"
 		>
 			<Section gap="sm">
-				{planDetailContext.data.plan.apps?.posters?.status === 'complete' && planDetailContext.data.plan.apps.posters.file ? (
+				{planDetailContext.data.plan.apps?.posters?.status === 'complete' && planDetailContext.data.plan.apps?.posters?.file ? (
 					<FileComponent
 						fileData={planDetailContext.data.plan.apps.posters.file}
 						onClick={handleDownload}
 					/>
 				) : null}
+			</Section>
+			<Section gap="sm">
 				<Button
 					label="Gerar Posters PDF"
 					loading={plansExportPdfsContext.flags.is_generating}

@@ -459,7 +459,7 @@ export class PlansController {
 		//
 		// Refresh the signed URL for the generated posters file
 
-		if (planData.apps.posters.file) {
+		if (planData.apps?.posters?.file) {
 			const postersFile = await files.findById(planData.apps.posters.file._id);
 
 			if (postersFile) {

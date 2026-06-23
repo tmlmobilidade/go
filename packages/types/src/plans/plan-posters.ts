@@ -1,0 +1,18 @@
+/* * */
+
+import { FileSchema } from '@/file.js';
+import { ProcessingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { z } from 'zod';
+
+/* * */
+
+export const PlanPostersStatusSchema = z.object({
+	file: FileSchema.nullable().optional(),
+	job_id: z.string().nullable().optional(),
+	last_hash: z.string().nullable().optional(),
+	status: ProcessingStatusSchema.default('skipped'),
+	step: z.string().nullable().optional(),
+	timestamp: UnixTimestampSchema.nullable().optional(),
+}).default({});
+
+export type PlanPostersStatus = z.infer<typeof PlanPostersStatusSchema>;
