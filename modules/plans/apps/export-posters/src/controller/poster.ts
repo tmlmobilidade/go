@@ -1,6 +1,6 @@
 /* * */
 
-import parametersConfig from '@/parameters.json';
+import parametersConfig from '@/parameters.json'; // <= dont change this line
 import { ExportToHitouchConfig } from '@/types.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -67,7 +67,7 @@ export class PostersController {
 	/**
 	 * Creates a new poster in the ZPHERES API.
 	 */
-	async generatePDF(exportConfig: ExportToHitouchConfig): Promise<void> {
+	async generatePDF(exportConfig: ExportToHitouchConfig): Promise<string> {
 		//
 
 		const accessToken = await this.generateToken();
@@ -102,5 +102,39 @@ export class PostersController {
 
 			throw new Error(`ZPHERES PDF generation failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
 		}
+
+		const location = response.headers.get('location');
+		const pdfId = location?.replace(/^\/api\/svg\//, '');
+
+		if (!pdfId || pdfId === location) {
+			throw new Error(`ZPHERES PDF response has an invalid location header: ${location ?? 'missing'}`);
+		}
+
+		return pdfId;
+	}
+
+	/**
+	 * Gets the status of a PDF generation in the ZPHERES API.
+	 */
+	async getPDFStatus(id: string): Promise<unknown> {
+		//
+
+		const accessToken = await this.generateToken();
+		const response = await fetch(process.env.ZPHERES_SVG_STATUS_URL.replace(':id', id), {
+			headers: {
+				'Authorization': `Bearer ${accessToken}`,
+				'ob2zphrs-customer': process.env.OB_CUSTOMER,
+				'ob2zphrs-user': process.env.OB_USER,
+			},
+		});
+
+		if (!response.ok) {
+			const responseBody = await response.text();
+			throw new Error(`ZPHERES PDF status failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
+		}
+
+		const pdfStatus = await response.json();
+
+		return pdfStatus;
 	}
 }
