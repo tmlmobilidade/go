@@ -68,7 +68,7 @@ async function prepareHitouchZip(planData: Plan): Promise<ExportToHitouchConfig>
 			end: feedEndDate,
 			start: feedStartDate,
 		},
-		output: 'hitouch-posters.zip',
+		output: `../${planData._id}-hitouch-posters.zip`,
 		workdir: `/tmp/hitouch/${planData._id}`,
 	};
 
@@ -100,8 +100,9 @@ async function prepareHitouchZip(planData: Plan): Promise<ExportToHitouchConfig>
 
 	const zipTimer = new Timer();
 	const outputPath = await createHitouchZip(exportConfig);
+	const outputSize = fs.statSync(outputPath).size;
 
-	Logger.info({ message: `Created ${outputPath} in ${zipTimer.get()} seconds` });
+	Logger.info({ message: `Created ${outputPath} (${outputSize} bytes) in ${zipTimer.get()} seconds` });
 
 	return exportConfig;
 }
@@ -211,6 +212,12 @@ async function main(): Promise<void> {
 					},
 				},
 			});
+
+			//
+			// Remove the staging TXT files after the job ID is persisted.
+			// Keep the final ZIP at /tmp/hitouch/<plan-id>-hitouch-posters.zip.
+
+			fs.rmSync(exportConfig.workdir, { force: true, recursive: true });
 		} else {
 			Logger.info({ message: `Resuming ZPHERES PDF job ${pdfId}.` });
 
@@ -238,7 +245,7 @@ async function main(): Promise<void> {
 		// Wait for the PDF generation to complete
 
 		while (pdfStatus.status !== 'done') {
-			if (pdfStatus.status === 'error') {
+			if (pdfStatus.status === 'failed') {
 				planData = await plans.updateById(planData._id, {
 					apps: {
 						...planData.apps,

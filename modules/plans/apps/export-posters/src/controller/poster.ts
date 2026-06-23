@@ -76,7 +76,18 @@ export class PostersController {
 		//
 
 		const accessToken = await this.generateToken();
-		const gtfsZipPath = path.join(exportConfig.workdir, exportConfig.output);
+		const gtfsZipPath = path.resolve(exportConfig.workdir, exportConfig.output);
+
+		if (!fs.existsSync(gtfsZipPath)) {
+			throw new Error(`HiTouch ZIP file does not exist: ${gtfsZipPath}`);
+		}
+
+		const gtfsZipSize = fs.statSync(gtfsZipPath).size;
+
+		if (gtfsZipSize === 0) {
+			throw new Error(`HiTouch ZIP file is empty: ${gtfsZipPath}`);
+		}
+
 		const gtfsZip = await fs.promises.readFile(gtfsZipPath);
 		const parameters = JSON.stringify(parametersConfig);
 

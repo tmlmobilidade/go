@@ -13,7 +13,8 @@ import { ZipFile } from 'yazl';
 export async function createHitouchZip(exportConfig: ExportToHitouchConfig): Promise<string> {
 	//
 
-	const outputPath = path.join(exportConfig.workdir, exportConfig.output);
+	const outputPath = path.resolve(exportConfig.workdir, exportConfig.output);
+	const temporaryOutputPath = `${outputPath}.tmp`;
 
 	const textFiles = fs.readdirSync(exportConfig.workdir, { withFileTypes: true })
 		.filter(entry => entry.isFile() && path.extname(entry.name).toLowerCase() === '.txt')
@@ -24,6 +25,16 @@ export async function createHitouchZip(exportConfig: ExportToHitouchConfig): Pro
 		throw new Error(`No TXT files found in ${exportConfig.workdir}.`);
 	}
 
+	const emptyTextFiles = textFiles.filter(fileName => fs.statSync(path.join(exportConfig.workdir, fileName)).size === 0);
+
+	if (emptyTextFiles.length) {
+		throw new Error(`Empty TXT files found in ${exportConfig.workdir}: ${emptyTextFiles.join(', ')}.`);
+	}
+
+	if (fs.existsSync(temporaryOutputPath)) {
+		fs.rmSync(temporaryOutputPath);
+	}
+
 	const outputZip = new ZipFile();
 
 	for (const fileName of textFiles) {
@@ -31,7 +42,7 @@ export async function createHitouchZip(exportConfig: ExportToHitouchConfig): Pro
 	}
 
 	await new Promise<void>((resolve, reject) => {
-		const outputStream = fs.createWriteStream(outputPath);
+		const outputStream = fs.createWriteStream(temporaryOutputPath);
 
 		outputStream.on('close', resolve);
 		outputStream.on('error', reject);
@@ -39,6 +50,15 @@ export async function createHitouchZip(exportConfig: ExportToHitouchConfig): Pro
 		outputZip.outputStream.pipe(outputStream);
 		outputZip.end();
 	});
+
+	const zipSize = fs.statSync(temporaryOutputPath).size;
+
+	if (zipSize === 0) {
+		fs.rmSync(temporaryOutputPath);
+		throw new Error(`Created ZIP file is empty: ${temporaryOutputPath}.`);
+	}
+
+	fs.renameSync(temporaryOutputPath, outputPath);
 
 	return outputPath;
 }

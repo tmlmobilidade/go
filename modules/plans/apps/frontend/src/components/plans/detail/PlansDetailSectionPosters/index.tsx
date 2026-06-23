@@ -18,7 +18,7 @@ export function PlanDetailSectionPosters() {
 	const planDetailContext = usePlanDetailContext();
 
 	//
-	// Handle actions
+	// B. Handle actions
 
 	const handleDownload = async () => {
 		try {
@@ -36,8 +36,9 @@ export function PlanDetailSectionPosters() {
 			});
 		}
 	};
+
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -46,13 +47,14 @@ export function PlanDetailSectionPosters() {
 		>
 			<Section gap="sm">
 				{planDetailContext.data.plan.apps?.posters?.status === 'complete' && planDetailContext.data.plan.apps?.posters?.file ? (
-					<FileComponent
-						fileData={planDetailContext.data.plan.apps.posters.file}
-						onClick={handleDownload}
-					/>
+					<>
+						<FileComponent
+							fileData={planDetailContext.data.plan.apps.posters.file}
+							onClick={handleDownload}
+						/>
+						<Spacer />
+					</>
 				) : null}
-			</Section>
-			<Section gap="sm">
 				<Button
 					label="Gerar Posters PDF"
 					loading={plansExportPdfsContext.flags.is_generating}
