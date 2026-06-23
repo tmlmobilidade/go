@@ -20,6 +20,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexInspectionDecision> = {
 	is_ok_pcgi: { type: 'Bool' },
 	mac_ase_counter_value: { type: 'UInt64' },
 	mac_sam_serial_number: { type: 'UInt64' },
+	operational_date: { type: 'UInt32' },
 	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
 };
@@ -33,8 +34,8 @@ class SimplifiedApexInspectionDecisionsNewClass extends ClickHouseInterfaceTempl
 
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexInspectionDecision> = 'ReplacingMergeTree(updated_at)';
-	protected override readonly orderBy = 'agency_id, created_at, _id';
-	protected override readonly partitionBy = 'toYYYYMM(created_at)';
+	protected override readonly orderBy = 'agency_id, operational_date, created_at, _id';
+	protected override readonly partitionBy = 'intDiv(operational_date, 100)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'inspection_decisions';
 

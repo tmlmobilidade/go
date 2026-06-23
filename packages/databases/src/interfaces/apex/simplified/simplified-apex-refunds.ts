@@ -22,6 +22,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardRefund> = {
 	mac_ase_counter_value: { type: 'UInt64' },
 	mac_sam_serial_number: { type: 'UInt64' },
 	on_board_sale_id: { type: 'Nullable(UUID)' },
+	operational_date: { type: 'UInt32' },
 	pattern_id: { type: 'LowCardinality(Nullable(String))' },
 	payment_method: { type: 'UInt8' },
 	price: { type: 'Int32' },
@@ -44,8 +45,8 @@ class SimplifiedApexOnBoardRefundsNewClass extends ClickHouseInterfaceTemplate<S
 
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexOnBoardRefund> = 'ReplacingMergeTree(updated_at)';
-	protected override readonly orderBy = 'agency_id, created_at, _id';
-	protected override readonly partitionBy = 'toYYYYMM(created_at)';
+	protected override readonly orderBy = 'agency_id, operational_date, created_at, _id';
+	protected override readonly partitionBy = 'intDiv(operational_date, 100)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'refunds';
 

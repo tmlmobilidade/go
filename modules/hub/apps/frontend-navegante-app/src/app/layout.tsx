@@ -5,12 +5,21 @@ import { Providers } from '@/app/providers';
 import { MapContextProvider } from '@/components/map/Map.context';
 import { i18nResourceKeysPt } from '@/i18n/resources';
 import { BaseProvider } from '@tmlmobilidade/ui';
+import { type Metadata } from 'next';
 import { type PropsWithChildren } from 'react';
 
 import '@mantine/carousel/styles.css';
 import '@/styles/reset.css';
 import '@/styles/navegante/font.css';
 import '@/styles/navegante/color.css';
+
+/* * */
+
+export const metadata: Metadata = {
+	description: 'Real-time public transit dashboard',
+	metadataBase: process.env.VERCEL_URL ? new URL(`https://${process.env.VERCEL_URL}`) : new URL(`http://0.0.0.0:${process.env.PORT || 3000}`),
+	title: 'GO | Realtime',
+};
 
 /* * */
 

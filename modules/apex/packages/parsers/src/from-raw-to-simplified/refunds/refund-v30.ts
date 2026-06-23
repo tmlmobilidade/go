@@ -32,6 +32,7 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 		mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
 		on_board_sale_id: doc.payload.loadCorrInfo.corrTransactionId,
+		operational_date: transactionDateValue.operational_date_int,
 		pattern_id: null,
 		payment_method: ApexPaymentMethodSchema.parse(String(doc.payload.paymentInfo.paymentMethod)),
 		price: doc.payload.paymentInfo.price,

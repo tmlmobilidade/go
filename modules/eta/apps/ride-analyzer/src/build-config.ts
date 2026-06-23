@@ -49,6 +49,7 @@ export function buildLoaderConfig(args: CliArgs): AppConfig {
 		historicalTransformationChunkDays: 2,
 		historicalVehicleEventsChunkDays: 2,
 		pipelineSteps: {
+			detectRideStartEndEvents: true,
 			insertCurrentWindowRides: true,
 			insertCurrentWindowWaypoints: true,
 			insertHistoricalRidesByDay: true,
@@ -58,6 +59,11 @@ export function buildLoaderConfig(args: CliArgs): AppConfig {
 			runTransformationAndAggregationQueries: true,
 			truncatePipelineTables: true,
 		},
+		rideEventBufferRadiusMeters: 50,
+		rideEventDetectionBatchSize: 500,
+		rideEventGeohashPrefixLength: 6,
+		rideEventWindowPostMs: 10 * 60 * 60 * 1000,
+		rideEventWindowPreMs: 10 * 60 * 60 * 1000,
 		shapeNodeChunkLength: 25,
 		syncInterval: '15m',
 	};

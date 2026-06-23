@@ -1,0 +1,16 @@
+name: tmlmobilidade-go-hub-feedback-local
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    environment:
+      CLICKHOUSE_DB: hub
+      CLICKHOUSE_USER: go
+      CLICKHOUSE_PASSWORD: go_dev_password
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports:
+      - "8123:8123"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
