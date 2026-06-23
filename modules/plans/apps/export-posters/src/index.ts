@@ -10,6 +10,7 @@ import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
+import { createHitouchZip } from '@/utils/create-hitouch-zip.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { files, plans } from '@tmlmobilidade/interfaces';
@@ -137,7 +138,7 @@ async function main(): Promise<void> {
 				end: feedEndDate,
 				start: feedStartDate,
 			},
-			output: 'export-hitouch.zip',
+			output: 'hitouch-posters.zip',
 			workdir: '/tmp/hitouch',
 		};
 
@@ -169,6 +170,14 @@ async function main(): Promise<void> {
 		await exportDayTypesFile(exportConfig);
 
 		Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
+
+		//
+		// Package all exported TXT files into the HiTouch ZIP archive
+
+		const zipTimer = new Timer();
+		const outputPath = await createHitouchZip(exportConfig);
+
+		Logger.info({ message: `Created ${outputPath} in ${zipTimer.get()} seconds` });
 
 		//
 
