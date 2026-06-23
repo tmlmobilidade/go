@@ -66,9 +66,12 @@ export const MetricsRoutes = Object.freeze({
 	TOP_MEAN_DEMAND_BY_LINE_BY_MONTH: metricEndpoint('top_mean_demand_by_line_by_month'),
 });
 
+const GO_HUB_API = 'https://go.tmlmobilidade.pt/hub/api/v1';
+
 export const Routes = Object.freeze({
-	CMET_API: process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2',
 	FEEDBACK_PREVIEW: `${API_ROUTES.performance.BASE}/feedback/preview`,
+	HUB_LINES: `${GO_HUB_API}/network/lines`,
+	HUB_STOPS: `${GO_HUB_API}/network/stops`,
 	LINES: '/api/lines',
 	PATTERNS: '/api/patterns',
 	URL: process.env.PUBLIC_URL ?? 'https://performance.sae.carrismetropolitana.pt',
