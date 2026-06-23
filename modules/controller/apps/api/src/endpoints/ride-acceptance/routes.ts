@@ -1,6 +1,10 @@
 /* * */
 
-import { RideAcceptanceController } from '@/endpoints/ride-acceptance/ride-acceptance.controller.js';
+import { addComment } from '@/endpoints/ride-acceptance/controllers/add-comment.js';
+import { changeStatus } from '@/endpoints/ride-acceptance/controllers/change-status.js';
+import { getRideAcceptance } from '@/endpoints/ride-acceptance/controllers/get-ride-acceptance.js';
+import { justifyRide } from '@/endpoints/ride-acceptance/controllers/justify-ride.js';
+import { lockRideAcceptance } from '@/endpoints/ride-acceptance/controllers/lock-ride-acceptance.js';
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -18,31 +22,31 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_read]) },
-			RideAcceptanceController.get,
+			getRideAcceptance,
 		);
 
 		instance.put(
 			'/change-status',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_change_status]) },
-			RideAcceptanceController.changeStatus,
+			changeStatus,
 		);
 
 		instance.put(
 			'/justify',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_justify]) },
-			RideAcceptanceController.justify,
+			justifyRide,
 		);
 
 		instance.post(
 			'/comment',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_justify, PermissionCatalog.all.rides.actions.acceptance_change_status]) },
-			RideAcceptanceController.comment,
+			addComment,
 		);
 
 		instance.put(
 			'/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.acceptance_lock]) },
-			RideAcceptanceController.lock,
+			lockRideAcceptance,
 		);
 
 		next();
