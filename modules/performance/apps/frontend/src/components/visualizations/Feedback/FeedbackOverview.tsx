@@ -2,6 +2,13 @@
 
 import type { FeedbackLineRowData, FeedbackTopicData } from './types';
 
+import { useMemo } from 'react';
+
+import styles from './styles.module.css';
+
+import { FeedbackChartCard } from './FeedbackChartCard';
+import { TopFeedbackLines } from './TopFeedbackLines';
+
 /* * */
 
 export interface FeedbackPreviewResponse {
@@ -13,7 +20,18 @@ export interface FeedbackPreviewResponse {
 	}
 }
 
+interface FeedbackOverviewProps {
+	data?: FeedbackTopicData
+	previewData?: FeedbackPreviewResponse
+}
+
 /* * */
+
+const EMPTY_FEEDBACK_TOPIC_DATA: FeedbackTopicData = {
+	chartBars: [],
+	topLines: [],
+	topStops: [],
+};
 
 const LINE_FIELD_CANDIDATES = ['line_id', 'lineId', 'linha', 'route_id', 'routeId', 'id', '_id'];
 const STOP_FIELD_CANDIDATES = ['stop_id', 'stopId', 'stop_code', 'stopCode', 'stop_name', 'stopName', 'paragem_id', 'paragem'];
@@ -59,24 +77,22 @@ function buildTopFeedbackList(rows: Record<string, unknown>[], fieldCandidates: 
 	}
 
 	return Array.from(groupedRows.entries())
-		.map(([name, data]) => ({
-			count: data.count,
-			description: Object.entries(data.sample)
+		.map(([name, groupData]) => ({
+			count: groupData.count,
+			description: Object.entries(groupData.sample)
 				.filter(([field]) => !fieldCandidates.includes(field) && !FEEDBACK_COUNT_FIELD_CANDIDATES.includes(field))
 				.slice(0, 2)
 				.map(([field, value]) => `${field}: ${formatPreviewValue(value)}`)
 				.join(' · '),
 			id: name,
-			metric: data.count.toLocaleString('pt-PT'),
+			metric: groupData.count.toLocaleString('pt-PT'),
 			name,
 		}))
 		.sort((a, b) => b.count - a.count)
 		.slice(0, 6);
 }
 
-/* * */
-
-export function parseFeedbackPreviewData(feedbackPreviewData: FeedbackPreviewResponse): FeedbackTopicData {
+function parseFeedbackPreviewData(feedbackPreviewData: FeedbackPreviewResponse): FeedbackTopicData {
 	const topLines = buildTopFeedbackList(feedbackPreviewData.rows, LINE_FIELD_CANDIDATES, 'Linha');
 	const topStops = buildTopFeedbackList(feedbackPreviewData.rows, STOP_FIELD_CANDIDATES, 'Stop');
 
@@ -100,4 +116,24 @@ export function parseFeedbackPreviewData(feedbackPreviewData: FeedbackPreviewRes
 			name: stop.name,
 		})),
 	};
+}
+
+/* * */
+
+export function FeedbackOverview({ data, previewData }: FeedbackOverviewProps) {
+	const feedbackData = useMemo(() => {
+		if (data) return data;
+		if (previewData) return parseFeedbackPreviewData(previewData);
+		return EMPTY_FEEDBACK_TOPIC_DATA;
+	}, [data, previewData]);
+
+	return (
+		<>
+			<FeedbackChartCard bars={feedbackData.chartBars} title={feedbackData.chartTitle} />
+			<section className={styles.listsGrid}>
+				<TopFeedbackLines lines={feedbackData.topLines} title="Linhas com mais feedbacks" />
+				<TopFeedbackLines lines={feedbackData.topStops} title="Stops com mais feedbacks" />
+			</section>
+		</>
+	);
 }
