@@ -222,6 +222,7 @@ async function main(): Promise<void> {
 				//
 				// Wait 30 seconds before checking the status again
 
+				Logger.info({ message: `processing ...` });
 				await new Promise(resolve => setTimeout(resolve, 30_000));
 				pdfStatus = await postersController.getPDFStatus(pdfId);
 			}
