@@ -1,10 +1,12 @@
 name: Build Modules
 
+run-name: ${{ inputs.pr_number != '' && format('build-module-{0}', inputs.pr_number) || github.ref_name }}
+
 on:
   workflow_dispatch:
     inputs:
       module:
-        description: 'Specific module to build (or "all")'
+        description: 'Module(s) to build — comma or space separated, or "all"'
         required: false
         default: 'all'
         type: string
@@ -133,4 +135,5 @@ jobs:
       modules-apps: ${{ needs.discover.outputs.modules-apps }}
       image-tag: ${{ inputs.pr_number != '' && format('pr-{0}', inputs.pr_number) || github.ref_name }}
       environment: ${{ inputs.pr_number != '' && format('pr-{0}', inputs.pr_number) || github.ref_name }}
+      pr_number: ${{ inputs.pr_number }}
     secrets: inherit
