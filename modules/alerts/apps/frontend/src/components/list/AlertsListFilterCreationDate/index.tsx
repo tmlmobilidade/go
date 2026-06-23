@@ -15,10 +15,10 @@ export function AlertsListFilterCreationDate() {
 	const alertsListContext = useAlertsListContext();
 
 	const handleCreationDateStartChange = (value: UnixTimestamp) => {
-		alertsListContext.filters.date_creation_start.set(value);
+		alertsListContext.filters.created_at.set(value, null);
 	};
 	const handleCreationDateEndChange = (value: UnixTimestamp) => {
-		alertsListContext.filters.date_creation_end.set(value);
+		alertsListContext.filters.created_at.set(null, value);
 	};
 
 	//
@@ -26,9 +26,9 @@ export function AlertsListFilterCreationDate() {
 
 	return (
 		<FilterTypeCreationDate
-			active={true}
-			creationDateEnd={alertsListContext.filters.date_creation_end.value as UnixTimestamp}
-			creationDateStart={alertsListContext.filters.date_creation_start.value as UnixTimestamp}
+			active={alertsListContext.filters.created_at.isActive}
+			creationDateEnd={alertsListContext.filters.created_at.value_end as UnixTimestamp}
+			creationDateStart={alertsListContext.filters.created_at.value_start as UnixTimestamp}
 			label="Data de Criação"
 			onCreationDateChange={handleCreationDateStartChange}
 			onCreationDateLimitChange={handleCreationDateEndChange}

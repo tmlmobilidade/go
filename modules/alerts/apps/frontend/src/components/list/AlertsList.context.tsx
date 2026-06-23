@@ -4,7 +4,7 @@ import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertReferenceTypeSchema, AlertSchema, PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useDataAgencies, useFilterStateDate, UseFilterStateDateReturnType, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useDataAgencies, useFilterStateDate, UseFilterStateDateIntervalReturnType, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -14,13 +14,13 @@ import useSWR from 'swr';
 interface AlertsListContextState extends ListContextStateTemplate {
 	data: {
 		filtered: Alert[]
-		raw: Alert[]
+		raw: Alert[] | undefined
 	}
 	filters: ListContextStateTemplate['filters'] & {
-		active_period: UseFilterStateDateReturnType
+		active_period: UseFilterStateDateIntervalReturnType
 		agency: UseFilterStateListReturnType
 		cause: UseFilterStateListReturnType
-		created_at: UseFilterStateDateReturnType
+		created_at: UseFilterStateDateIntervalReturnType
 		effect: UseFilterStateListReturnType
 		municipality: UseFilterStateListReturnType
 		publish_status: UseFilterStateListReturnType
@@ -65,13 +65,13 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	//
 	// C. Setup filters
 
-	const filterActivePeriod = useFilterStateDate('active_period', { minutesOffset: 5 });
+	const filterActivePeriod = useFilterStateDate('active_period');
 	const filterSearch = useFilterStateString('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 	const filterAlertReferenceType = useFilterStateList('reference_type', AlertReferenceTypeSchema.options, AlertReferenceTypeSchema.options.map(item => ({ label: t(`shared:alerts.reference_types.${item}.title`), value: item })));
 	const filterPublishStatus = useFilterStateList('publish_status', PublishStatusSchema.options, PublishStatusSchema.options.map(item => ({ label: t(`shared:status.publish_status.${item}`), value: item })));
 	const filterCause = useFilterStateList('cause', AlertSchema.shape.cause.options, AlertSchema.shape.cause.options.map(item => ({ label: t(`shared:alerts.causes.${item}.title`), value: item })));
-	const filterCreatedAt = useFilterStateDate('created_at', { minutesOffset: -5 });
+	const filterCreatedAt = useFilterStateDate('created_at');
 	const filterEffect = useFilterStateList('effect', AlertSchema.shape.effect.options, AlertSchema.shape.effect.options.map(item => ({ label: t(`shared:alerts.effects.${item}.title`), value: item })));
 	const filterMunicipality = useFilterStateList('municipality', locationsContext.data.municipality_ids, locationsContext.data.municipalities.map(item => ({ label: item.name, value: item.id })));
 
@@ -115,11 +115,27 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			// Filter by municipality IDs
 			// if (!alert.municipality_ids.some((mId: string) => filterMunicipality.value.includes(mId))) return false;
 			//
-			// Filter by time started and time ended
-			if ((alert.active_period_start_date ?? 0) > filterDateEnd.value || (alert.active_period_end_date ?? Infinity) < filterDateStart.value) return false;
+			// Filter by interval of time started and time ended
+			if (filterActivePeriod.isActive) {
+				if ((filterActivePeriod.value_start) !== null && (filterActivePeriod.value_end) !== null) {
+					if ((alert.active_period_start_date ?? 0) > (filterActivePeriod.value_end) || (alert.active_period_end_date ?? Infinity) < (filterActivePeriod.value_start)) {
+						return false;
+					}
+					// Filter only by Start Date
+				} else if ((filterActivePeriod.value_start) !== null) {
+					if ((alert.active_period_end_date ?? Infinity) < (filterActivePeriod.value_start)) {
+						return false;
+					}
+					// Filter only by End Date
+				} else if ((filterActivePeriod.value_end) !== null) {
+					if ((alert.active_period_start_date ?? 0) > (filterActivePeriod.value_end)) {
+						return false;
+					}
+				}
+			}
 			// Filter by time created
-			if (filterCreationStart.value && (alert.created_at ?? 0) < filterCreationStart.value) return false;
-			if (filterCreationEnd.value && (alert.created_at ?? 0) > filterCreationEnd.value) return false;
+			if (filterCreatedAt.value_start && (alert.created_at ?? 0) < filterCreatedAt.value_start) return false;
+			if (filterCreatedAt.value_end && (alert.created_at ?? 0) > filterCreatedAt.value_end) return false;
 
 			// Return true if all filters pass
 			return true;
@@ -127,7 +143,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 		// Sort by creation date (newest first)
 		return result.sort((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0));
-	}, [searchResultsData, filterAgency.value, filterAlertReferenceType.value, filterPublishStatus.value, filterCause.value, filterEffect.value, filterMunicipality.value]);
+	}, [searchResultsData, filterPublishStatus.value, filterCause.value, filterEffect.value, filterMunicipality.value.length, filterAgency.value, filterAlertReferenceType.value, filterActivePeriod.isActive, filterActivePeriod.value_start, filterActivePeriod.value_end, filterCreatedAt.value_start, filterCreatedAt.value_end]);
 
 	//
 	// E. Define context value

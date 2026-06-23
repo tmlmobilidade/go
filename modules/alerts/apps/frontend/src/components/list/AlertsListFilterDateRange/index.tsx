@@ -15,11 +15,11 @@ export function AlertsListFilterDateRange() {
 	const alertsListContext = useAlertsListContext();
 
 	const handleStartDateChange = (value: UnixTimestamp) => {
-		alertsListContext.filters.date_start.set(value);
+		alertsListContext.filters.active_period.set(value, null);
 	};
 
 	const handleEndDateChange = (value: UnixTimestamp) => {
-		alertsListContext.filters.date_end.set(value);
+		alertsListContext.filters.active_period.set(null, value);
 	};
 
 	//
@@ -27,12 +27,12 @@ export function AlertsListFilterDateRange() {
 
 	return (
 		<FilterTypeDateRange
-			active={true}
-			endDate={alertsListContext.filters.date_end.value as UnixTimestamp}
-			label="Datas"
+			active={alertsListContext.filters.active_period.isActive}
+			endDate={alertsListContext.filters.active_period.value_end as UnixTimestamp}
+			label="Data de Atividade"
 			onEndDateChange={handleEndDateChange}
 			onStartDateChange={handleStartDateChange}
-			startDate={alertsListContext.filters.date_start.value as UnixTimestamp}
+			startDate={alertsListContext.filters.active_period.value_start as UnixTimestamp}
 		/>
 	);
 

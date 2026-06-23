@@ -1,13 +1,11 @@
 'use client';
 
-import { Dates } from '@tmlmobilidade/dates';
 import { UnixTimestamp } from '@tmlmobilidade/types';
-import { parseAsInteger, useQueryState } from 'nuqs';
-import { useMemo } from 'react';
+import { parseAsInteger, useQueryStates } from 'nuqs';
 
 /* * */
 
-export interface UseFilterStateDateReturnType {
+export interface UseFilterStateDateIntervalReturnType {
 
 	/**
 	 * Indicates if the filter is currently active.
@@ -18,49 +16,47 @@ export interface UseFilterStateDateReturnType {
 	 * Function to set the filter value.
 	 * @param value The new value for the filter.
 	 */
-	set: (value: null | number) => void
-
-	value_end: number | UnixTimestamp
+	set: (start: UnixTimestamp, end: null | UnixTimestamp) => void
 	/**
-	 * The current value of the filter.
+	 * The current values of the filter.
 	 */
-	value_start: number | UnixTimestamp
+	value_end: null | number | UnixTimestamp
+	value_start: null | number | UnixTimestamp
 
 }
 
-interface UserFilterStateDateOptions {
-	minutesOffset?: number
-}
-
-export function useFilterStateDate(key: string, options?: UserFilterStateDateOptions) {
+export function useFilterStateDate(key: string): UseFilterStateDateIntervalReturnType {
 	//
 
 	//
 	// A. Setup variables
+	const [urlStates, setUrlStates] = useQueryStates({
+		[key + 'end']: parseAsInteger,
+		[key + 'start']: parseAsInteger,
+	});
 
-	const defaulTimestamp = useMemo(() => {
-		const now = Dates.now('Europe/Lisbon');
-		if (options?.minutesOffset) {
-			return options.minutesOffset > 0
-				? now.plus({ minutes: options.minutesOffset }).unix_timestamp
-				: now.minus({ minutes: Math.abs(options.minutesOffset) }).unix_timestamp;
+	const urlValueStart = urlStates[key + 'start'];
+	const urlValueEnd = urlStates[key + 'end'];
+
+	const handleSetValue = async (start: null | UnixTimestamp, end: null | UnixTimestamp) => {
+		const nextValueStart = start !== null ? start : urlValueStart;
+		const nextValueEnd = end !== null ? end : urlValueEnd;
+
+		if (nextValueStart === urlValueStart && nextValueEnd === urlValueEnd) {
+			return;
 		}
-		return now.unix_timestamp;
-	}, [options?.minutesOffset]);
 
-	const [urlValueStart, setUrlValueStart] = useQueryState(key + 'start', parseAsInteger.withDefault(defaulTimestamp));
-	const [urlValueEnd, setUrlValueEnd] = useQueryState(key + 'end', parseAsInteger.withDefault(defaulTimestamp));
-
-	const handleSetValue = (start: UnixTimestamp, end: UnixTimestamp) => {
-		setUrlValueEnd(end);
-		setUrlValueStart(start);
+		await setUrlStates({
+			[key + 'end']: nextValueEnd,
+			[key + 'start']: nextValueStart,
+		}, { history: 'push', shallow: true });
 	};
 
 	//
 	// B. Return data
 
 	return {
-		isActive: urlValueEnd !== defaulTimestamp || urlValueStart !== defaulTimestamp,
+		isActive: urlValueEnd !== null || urlValueStart !== null,
 		set: handleSetValue,
 		value_end: urlValueEnd,
 		value_start: urlValueStart,
