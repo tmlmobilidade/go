@@ -1,0 +1,36 @@
+/* * */
+
+.title {
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-xl);
+	font-weight: var(--font-weight-bold);
+}
+
+.text {
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+}
+
+.tableWrapper {
+	overflow-x: auto;
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-sm);
+}
+
+.table th,
+.table td {
+	padding: var(--size-spacing-sm) 0;
+	border-bottom: 1px solid var(--color-system-border-100);
+	text-align: left;
+}
+
+.table th {
+	color: var(--color-system-text-200);
+	font-weight: var(--font-weight-bold);
+}
+

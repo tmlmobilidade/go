@@ -2,9 +2,9 @@
 
 'use client';
 
-import type { FeedbackPreviewResponse, FeedbackTopicData } from '@/components/visualizations/Feedback/feedback-home';
+import type { FeedbackPreviewResponse, FeedbackTopicData } from '@/components/visualizations/Feedback';
 
-import { FeedbackOverview } from '@/components/visualizations/Feedback/feedback-home';
+import { FeedbackOverview } from '@/components/visualizations/Feedback';
 import { Routes } from '@/routes';
 import useSWR from 'swr';
 
