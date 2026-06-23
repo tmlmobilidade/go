@@ -15,7 +15,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexBankingTap> = {
 	banking_token: { type: 'String' },
 	card_brand: { type: 'UInt8' },
 	card_pan: { type: 'String' },
-	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	created_at: { type: 'Int64' },
 	device_id: { type: 'LowCardinality(String)' },
 	event_type: { type: 'UInt8' },
 	group_dimension: { type: 'Int32' },
@@ -27,10 +27,10 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexBankingTap> = {
 	operational_date: { type: 'UInt32' },
 	pattern_id: { type: 'LowCardinality(String)' },
 	product_id: { type: 'LowCardinality(String)' },
-	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	received_at: { type: 'Int64' },
 	stop_id: { type: 'LowCardinality(String)' },
 	trip_id: { type: 'Nullable(String)' },
-	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	updated_at: { type: 'Int64' },
 	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
