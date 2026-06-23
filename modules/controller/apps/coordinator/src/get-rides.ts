@@ -7,7 +7,7 @@ import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-let isBusy = false;
+let IS_BUSY = false;
 
 /* * */
 
@@ -22,7 +22,7 @@ export async function getRides(): Promise<string[]> {
 	// we need to make sure that instances request the next batch of documents
 	// sequentially. To do that, we implement a simple lock mechanism.
 
-	while (isBusy) {
+	while (IS_BUSY) {
 		Logger.info({ message: '[rides] Waiting for another request to complete...' });
 		await new Promise(resolve => setTimeout(resolve, 500));
 	}
@@ -31,7 +31,7 @@ export async function getRides(): Promise<string[]> {
 	// Set the busy flag to prevent other requests
 	// from being processed until the current one is done.
 
-	isBusy = true;
+	IS_BUSY = true;
 
 	//
 	// Find all Ride IDs that are waiting analysis and which started before the current time,
