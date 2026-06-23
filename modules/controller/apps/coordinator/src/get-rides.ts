@@ -57,7 +57,7 @@ export async function getRides(): Promise<string[]> {
 
 	if (!latestWaitingRides.length) {
 		Logger.info({ message: `[rides] No documents waiting | start_time_scheduled: ${standardWindowInterval.end} (fetch: ${fetchTimerResult})` });
-		isBusy = false;
+		IS_BUSY = false;
 		return [];
 	}
 
@@ -73,7 +73,7 @@ export async function getRides(): Promise<string[]> {
 
 	Logger.info({ message: `[rides] New batch: Qty ${latestWaitingRidesIds.length} | start_time_scheduled: ${latestWaitingRides[latestWaitingRides.length - 1].start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 
-	isBusy = false;
+	IS_BUSY = false;
 
 	return latestWaitingRidesIds;
 
