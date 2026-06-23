@@ -29,6 +29,8 @@ db.createRole({
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'vehicles', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'zones', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'alerts', db: 'production' } },
 		{ actions: ['find', 'update'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'exports', db: 'production' } },
