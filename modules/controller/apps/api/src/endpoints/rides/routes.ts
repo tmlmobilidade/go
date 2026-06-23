@@ -1,6 +1,13 @@
 /* * */
 
-import { RidesController } from '@/endpoints/rides/rides.controller.js';
+import { getSimplifiedApexLocations } from '@/endpoints/rides/controllers/get-apex-locations.js';
+import { getSimplifiedApexOnBoardRefunds } from '@/endpoints/rides/controllers/get-apex-refunds.js';
+import { getSimplifiedApexOnBoardSales } from '@/endpoints/rides/controllers/get-apex-sales.js';
+import { getSimplifiedApexValidations } from '@/endpoints/rides/controllers/get-apex-validations.js';
+import { getHashedShape } from '@/endpoints/rides/controllers/get-hashed-shape.js';
+import { getHashedTrip } from '@/endpoints/rides/controllers/get-hashed-trip.js';
+import { getSimplifiedVehicleEvents } from '@/endpoints/rides/controllers/get-vehicle-events.js';
+import { reprocessRideById } from '@/endpoints/rides/controllers/reprocess-ride.js';
 import { fastifyWebsocket } from '@fastify/websocket';
 import { RidesSharedController } from '@tmlmobilidade/controllers';
 import { authorizationMiddleware, type FastifyInstance, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
@@ -43,49 +50,49 @@ server.register(
 		instance.get(
 			'/:id/hashed-trip',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			RidesController.getHashedTripByRideId,
+			getHashedTrip,
 		);
 
 		instance.get(
 			'/:id/hashed-shape',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			RidesController.getHashedShapeByRideId,
+			getHashedShape,
 		);
 
 		instance.get(
 			'/:id/vehicle-events',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			RidesController.getVehicleEventsByRideId,
+			getSimplifiedVehicleEvents,
 		);
 
 		instance.get(
 			'/:id/simplified-apex-locations',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			RidesController.getSimplifiedApexLocationsByRideId,
+			getSimplifiedApexLocations,
 		);
 
 		instance.get(
 			'/:id/simplified-apex-validations',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			RidesController.getSimplifiedApexValidationsByRideId,
+			getSimplifiedApexValidations,
 		);
 
 		instance.get(
 			'/:id/simplified-apex-on-board-sales',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			RidesController.getSimplifiedApexOnBoardSalesByRideId,
+			getSimplifiedApexOnBoardSales,
 		);
 
 		instance.get(
 			'/:id/simplified-apex-on-board-refunds',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			RidesController.getSimplifiedApexOnBoardRefundsByRideId,
+			getSimplifiedApexOnBoardRefunds,
 		);
 
 		instance.get(
 			'/:id/reprocess',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_update]) },
-			RidesController.reprocessRideById,
+			reprocessRideById,
 		);
 
 		instance.get(
