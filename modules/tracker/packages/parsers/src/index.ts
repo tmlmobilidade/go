@@ -6,6 +6,7 @@ import { parseRawVehicleEventCmetV1Log } from '@/cmet/cmet-v1-log.js';
 import { parseRawVehicleEventCpV1 } from '@/cp/cp-v1.js';
 import { parseRawVehicleEventCrtmAisaV1 } from '@/crtm-aisa/crtm-aisa-v1.js';
 import { parseRawVehicleEventFertagusV1 } from '@/fertagus/fertagus-v1.js';
+import { parseRawVehicleEventMlV1 } from '@/ml/ml-v1.js';
 import { parseRawVehicleEventMobiV1 } from '@/mobi/mobi-v1.js';
 import { parseRawVehicleEventTcbV1 } from '@/tcb/tcb-v1.js';
 import { parseRawVehicleEventTtslV1 } from '@/ttsl/ttsl-v1.js';
@@ -20,6 +21,7 @@ export const PARSER_MAP: Record<RawVehicleEvent['version'], (vehicleEvent: RawVe
 	'cp-v1': parseRawVehicleEventCpV1,
 	'crtm-aisa-v1': parseRawVehicleEventCrtmAisaV1,
 	'fertagus-v1': parseRawVehicleEventFertagusV1,
+	'ml-v1': parseRawVehicleEventMlV1,
 	'mobi-v1': parseRawVehicleEventMobiV1,
 	'tcb-v1': parseRawVehicleEventTcbV1,
 	'ttsl-v1': parseRawVehicleEventTtslV1,
