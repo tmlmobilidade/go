@@ -12,7 +12,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexInspectionDecision> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
-	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	created_at: { type: 'Int64' },
 	device_id: { type: 'LowCardinality(String)' },
 	final_control_status: { type: 'UInt8' },
 	inspection_id: { type: 'Nullable(UUID)' },
@@ -21,8 +21,8 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexInspectionDecision> = {
 	mac_ase_counter_value: { type: 'UInt64' },
 	mac_sam_serial_number: { type: 'UInt64' },
 	operational_date: { type: 'UInt32' },
-	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
-	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	received_at: { type: 'Int64' },
+	updated_at: { type: 'Int64' },
 };
 
 /* * */

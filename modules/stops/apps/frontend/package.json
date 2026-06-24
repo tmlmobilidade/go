@@ -25,7 +25,7 @@
 		"next": "16.2.9",
 		"react": "19.2.7",
 		"react-dom": "19.2.7",
-		"swr": "2.4.1"
+		"swr": "2.4.2"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/api-types": "20260509.2134.54",

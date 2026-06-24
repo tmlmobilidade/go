@@ -19,6 +19,10 @@ on:
         description: "Build environment value"
         required: true
         type: string
+      pr_number:
+        description: "PR number"
+        required: true
+        type: string
 
 jobs:
 
@@ -95,3 +99,38 @@ jobs:
             ENVIRONMENT=${{ inputs.environment }}
             MODULE=${{ inputs.module }}
             APP=${{ matrix.app }}
+
+  report-builds:
+    name: Report Builds for ${{ inputs.module }}
+    needs: build
+    if: always() && inputs.pr_number != ''
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Report success
+        if: needs.build.result == 'success'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number('${{ inputs.pr_number }}'),
+              body: 'Build succeeded for `${{ inputs.module }}`.'
+            });
+
+      - name: Report failure
+        if: needs.build.result == 'failure'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number('${{ inputs.pr_number }}'),
+              body: `Build failed for \`${{ inputs.module }}\`.`
+            });

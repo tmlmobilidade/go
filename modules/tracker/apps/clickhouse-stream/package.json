@@ -19,8 +19,8 @@
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-tracker-pckg-callback": "*",
 		"@tmlmobilidade/go-tracker-pckg-parsers": "*",
-		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",

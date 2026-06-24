@@ -29,6 +29,8 @@ db.createRole({
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'vehicles', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'zones', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'alerts', db: 'production' } },
 		{ actions: ['find', 'update'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'exports', db: 'production' } },
@@ -56,6 +58,9 @@ db.createRole({
 db.createRole({
 	privileges: [
 		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'holidays', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'year_periods', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'events', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'files', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find', 'insert', 'update', 'remove'], resource: { collection: 'gtfs_validations', db: 'production' } },
@@ -205,12 +210,12 @@ db.createRole({
 
 db.updateRole('tracker', {
 	privileges: [
-		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_shapes', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_patterns', db: 'production' } },
+		{ actions: ['find', 'update'], resource: { collection: 'rides', db: 'production' } },
 	],
 	roles: [],
 });

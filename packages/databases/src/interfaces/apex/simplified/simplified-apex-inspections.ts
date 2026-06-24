@@ -16,7 +16,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexInspection> = {
 	control_destination_stop_id: { type: 'LowCardinality(Nullable(String))' },
 	control_origin_stop_id: { type: 'LowCardinality(Nullable(String))' },
 	control_status: { type: 'UInt8' },
-	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	created_at: { type: 'Int64' },
 	device_id: { type: 'LowCardinality(String)' },
 	environment_status: { type: 'UInt8' },
 	inspection_id: { type: 'Nullable(UUID)' },
@@ -28,9 +28,9 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexInspection> = {
 	operational_date: { type: 'UInt32' },
 	pattern_id: { type: 'LowCardinality(Nullable(String))' },
 	product_id: { type: 'LowCardinality(Nullable(String))' },
-	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	received_at: { type: 'Int64' },
 	trip_id: { type: 'Nullable(String)' },
-	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	updated_at: { type: 'Int64' },
 	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
