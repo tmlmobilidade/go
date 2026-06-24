@@ -288,23 +288,19 @@ const main = async () => {
 				.update(JSON.stringify(hashableRawEvent))
 				.digest('hex');
 
-			if (line === 'Azul') {
-				console.log(JSON.stringify(hashableRawEvent, null, 2));
-			}
+			//
+			// Write the new vehicle event document
+			// to the RawVehicleEvents collection.
 
-			// //
-			// // Write the new vehicle event document
-			// // to the RawVehicleEvents collection.
+			const alreadyExists = await rawVehicleEventsNew.findOne({ _id: hashableRawEventId });
 
-			// const alreadyExists = await rawVehicleEventsNew.findOne({ _id: hashableRawEventId });
+			if (alreadyExists) continue;
 
-			// if (alreadyExists) continue;
-
-			// await rawVehicleEventsNew.insertOne({
-			// 	...hashableRawEvent,
-			// 	_id: hashableRawEventId,
-			// 	received_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			// });
+			await rawVehicleEventsNew.insertOne({
+				...hashableRawEvent,
+				_id: hashableRawEventId,
+				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			});
 
 			saveCount++;
 		}
