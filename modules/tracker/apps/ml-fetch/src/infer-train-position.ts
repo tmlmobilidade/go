@@ -57,7 +57,11 @@ export function inferTrainPositionOnShape({ nextStop, nextStopWaypoint, previous
 		];
 	}
 
-	// Calculate how far the train is between previous and next stops by ETA progression.
+	// Given the time difference between the previous and the next stop,
+	// and the next_stop: arrival_seconds we can calculate the percentage of the chunked line that the vehicle has traveled.
+	// Eg. If ETA is 30s (nextStop.arrival_seconds) and delta between stops (nextStopWaypoint.timeDifference) is 120s
+	// This means the vehicle has traveled 75% of the distance between the two stops, and it's missing the last 25%.
+	// ((nextStopWaypoint.timeDifference - nextStop.arrival_seconds))/nextStopWaypoint.timeDifference = percentage of the chunked line that the vehicle has traveled
 	const elapsedBetweenStops = nextStopWaypoint.timeDifference - nextStop.arrival_seconds;
 	let percentageOfChunkedLine = elapsedBetweenStops / nextStopWaypoint.timeDifference;
 
