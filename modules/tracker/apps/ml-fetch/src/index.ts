@@ -95,8 +95,6 @@ const main = async () => {
 				continue;
 			}
 
-			console.log(JSON.stringify(ride, null, 2));
-
 			if (!ride) continue;
 
 			// Given the next stop (from the API) and the matched ride document, extract the waypoints in the ride's shape that correspond to:
@@ -104,8 +102,6 @@ const main = async () => {
 			// - previousStopWaypoint: The shape point immediately preceding the nextStop (used to interpolate train position).
 
 			const { nextStopWaypoint, previousStopWaypoint } = findTripStopWaypoints({ nextStop, ride });
-
-			console.log(JSON.stringify({ nextStopWaypoint, previousStopWaypoint }, null, 2));
 
 			if (!nextStopWaypoint) continue;
 
