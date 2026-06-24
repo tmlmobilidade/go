@@ -9,7 +9,8 @@ import { BatchWriter } from '@tmlmobilidade/utils';
 /* * */
 
 const writer = new BatchWriter<RawApexTransaction>({
-	batch_size: 500,
+	batch_size: 5_000,
+	batch_timeout: 30_000,
 	insertFn: async (data) => {
 		const writeOps = data.map(doc => ({
 			updateOne: {
