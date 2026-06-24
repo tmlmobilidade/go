@@ -10,6 +10,8 @@ import { Collapsible, Grid, Section, SegmentedControl, useMeContext, ValueDispla
 
 import styles from './styles.module.css';
 
+import { StopDetailPlayTTS } from '../StopDetailPlayTTS';
+
 /* * */
 
 export function StopDetailsSectionGeneral() {
@@ -90,7 +92,7 @@ export function StopDetailsSectionGeneral() {
 			<Section>
 				<Grid columns="a" gap="md">
 					<ValueDisplay
-						// icon={canEditStopName ? <IconEdit size={16} /> : undefined}
+						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
 						label="Nome Único da Paragem"
 						onClick={canEditStopName ? stopDetailContext.actions.openNamesEditor : undefined}
 						value={stopDetailContext.data.form.getValues()?.name ?? 'N/A'}
@@ -103,18 +105,25 @@ export function StopDetailsSectionGeneral() {
 			<Section>
 				<Grid columns="ab" gap="md">
 					<ValueDisplay
-						// icon={canEditStopName ? <IconEdit size={16} /> : undefined}
+						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
 						label="Nome Curto"
 						value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'}
 						variant="bordered"
 					/>
 					<ValueDisplay
-						// icon={canEditStopName ? <IconEdit size={16} /> : undefined}
+						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
 						label="Nome TTS"
 						onClick={canEditStopName ? stopDetailContext.actions.openNamesEditor : undefined}
 						value={stopDetailContext.data.form.values.tts_name ?? 'N/A'}
 						variant="bordered"
 					/>
+				</Grid>
+
+			</Section>
+
+			<Section>
+				<Grid columns="a">
+					<StopDetailPlayTTS />
 				</Grid>
 			</Section>
 

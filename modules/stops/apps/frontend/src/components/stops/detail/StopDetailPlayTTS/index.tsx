@@ -1,32 +1,76 @@
+'use client';
+
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { audioTtsUrl } from '@/settings/urls.settings';
-import { IconPlayerPlay } from '@tabler/icons-react';
+import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-react';
 import { Button } from '@tmlmobilidade/ui';
+import { useState } from 'react';
+
+import styles from './styles.module.css';
 
 export function StopDetailPlayTTS() {
-	//
 	//
 
 	//
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
+	const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+	const [isPlaying, setIsPlaying] = useState(false);
+	const [progress, setProgress] = useState(0);
+	const stopId = stopDetailContext.data.stop?._id;
 
 	//
 	// B. Handle actions
 
-	const handlePlayTTS = () => {
-		const ttsName = stopDetailContext.data.form.getValues()?.tts_name ?? '';
-		const audio = new Audio(`${audioTtsUrl}/stops/${ttsName}.mp3`);
-		audio.play();
+	const handleTTSAudio = async () => {
+		if (!stopId) return;
+
+		if (isPlaying && audio) {
+			audio.pause();
+			setIsPlaying(false);
+			return;
+		}
+
+		const audioToPlay = audio ?? new Audio();
+
+		audioToPlay.src = `${audioTtsUrl}/${stopId}.mp3`;
+
+		if (!audio) {
+			audioToPlay.ontimeupdate = () => {
+				if (!audioToPlay.duration) return;
+				setProgress((audioToPlay.currentTime / audioToPlay.duration) * 100);
+			};
+
+			audioToPlay.onended = () => {
+				setIsPlaying(false);
+				setProgress(0);
+			};
+
+			setAudio(audioToPlay);
+		}
+
+		await audioToPlay.play().catch(() => {
+			setIsPlaying(false);
+			setProgress(0);
+			return;
+		});
+
+		setIsPlaying(true);
 	};
 
 	//
-	// C. Render components
+	//  C. Render components
 
 	return (
-		<Button label="Reproduzir TTS" onClick={handlePlayTTS} rightSection={<IconPlayerPlay size={16} />} />
+		<Button
+			className={isPlaying ? styles.buttonPlaying : undefined}
+			label="Reproduzir TTS"
+			onClick={handleTTSAudio}
+			style={{ '--progress': `${progress}%` } as React.CSSProperties}
+			rightSection={
+				isPlaying ? <IconPlayerPause size={16} /> : <IconPlayerPlay size={16} />
+			}
+		/>
 	);
-
-	//
 }
