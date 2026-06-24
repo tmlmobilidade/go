@@ -46,7 +46,7 @@ export async function exportZoneFile(fileExport: FileExport): Promise<string> {
 
 	let count = 0;
 	for await (const zone of zonesBatchCursor) {
-		await csvWriter.write(parseZones({ _id: zone._id }));
+		await csvWriter.write(parseZones({ _id: zone._id, code: zone.code, name: zone.name }));
 		count++;
 	}
 	await csvWriter.flush();
