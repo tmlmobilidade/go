@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
@@ -26,12 +27,18 @@
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"gtfs-types": "5.1.0",
+		"jsts": "2.11.0",
+		"papaparse": "5.5.3",
+		"proj4": "2.15.0",
+		"shapefile": "0.6.6",
 		"yazl": "3.3.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
+		"@types/geojson": "7946.0.16",
 		"@types/node": "25.9.1",
+		"@types/papaparse": "5.5.2",
 		"@types/yazl": "3.3.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.3",

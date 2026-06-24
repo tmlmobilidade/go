@@ -127,6 +127,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/geo": "^1.0.0",
+		"papaparse": "^5.5.4",
 		"turf": "^3.0.14"
 	},
 	"devDependencies": {
