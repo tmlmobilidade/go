@@ -12,3 +12,15 @@ export interface TripStopWaypoint {
 	stop_id: string
 	timeDifference: number
 }
+
+export interface TrainNextStop {
+	arrival_seconds: number
+	stop_id: string
+}
+
+export interface TrainPosition {
+	destination_id: string
+	next_stop: TrainNextStop
+}
+
+export type TrainPositionsMap = Map<string, TrainPosition>;
