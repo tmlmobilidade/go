@@ -101,7 +101,7 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		onCompleteCallbackFn: async () => {
-			await writer.flush();
+			await writer.flush(setRidesAsWaiting);
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {

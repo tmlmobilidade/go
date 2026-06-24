@@ -102,7 +102,7 @@ export async function syncApexSales(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		onCompleteCallbackFn: async () => {
-			await writer.flush();
+			await writer.flush(setRidesAsWaiting);
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
