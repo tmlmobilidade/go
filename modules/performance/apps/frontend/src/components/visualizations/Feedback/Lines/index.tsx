@@ -29,36 +29,40 @@ export function FeedbackLines() {
 	const lines = getFeedbackSatisfactionByEntity(data?.rows ?? [], 'line');
 
 	return (
-		<ContainerWrapper>
-			<h2 className={styles.title}>Todas as linhas</h2>
+		<ContainerWrapper className={styles.container} padding="0">
+			<div className={styles.header}>
+				<h2 className={styles.title}>Todas as linhas</h2>
+			</div>
 
-			{isLoading && <p className={styles.text}>A carregar linhas...</p>}
-			{error && <p className={styles.text}>Erro ao carregar linhas.</p>}
-			{!isLoading && !error && lines.length === 0 && <p className={styles.text}>Sem linhas para mostrar.</p>}
+			<div className={styles.content}>
+				{isLoading && <p className={styles.text}>A carregar linhas...</p>}
+				{error && <p className={styles.text}>Erro ao carregar linhas.</p>}
+				{!isLoading && !error && lines.length === 0 && <p className={styles.text}>Sem linhas para mostrar.</p>}
 
-			{!isLoading && !error && lines.length > 0 && (
-				<div className={styles.tableWrapper}>
-					<table className={styles.table}>
-						<thead>
-							<tr>
-								<th>Linha</th>
-								<th>Feedbacks</th>
-								<th>Índice de satisfação</th>
-							</tr>
-						</thead>
-
-						<tbody>
-							{lines.map(line => (
-								<tr key={line.entityId}>
-									<td>{getLineLabel(line.entityId, linesById)}</td>
-									<td><FeedbackMetricTag label={line.feedbackCount.toLocaleString('pt-PT')} /></td>
-									<td><FeedbackMetricTag label={formatSatisfactionIndex(line.satisfactionIndex)} status={getFeedbackSatisfactionStatus(line.satisfactionIndex)} /></td>
+				{!isLoading && !error && lines.length > 0 && (
+					<div className={styles.tableWrapper}>
+						<table className={styles.table}>
+							<thead>
+								<tr>
+									<th>Linha</th>
+									<th>Feedbacks</th>
+									<th>Índice de satisfação</th>
 								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			)}
+							</thead>
+
+							<tbody>
+								{lines.map(line => (
+									<tr key={line.entityId}>
+										<td>{getLineLabel(line.entityId, linesById)}</td>
+										<td><FeedbackMetricTag label={line.feedbackCount.toLocaleString('pt-PT')} /></td>
+										<td><FeedbackMetricTag label={formatSatisfactionIndex(line.satisfactionIndex)} status={getFeedbackSatisfactionStatus(line.satisfactionIndex)} /></td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
+			</div>
 		</ContainerWrapper>
 	);
 }
