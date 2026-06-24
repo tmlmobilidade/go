@@ -15,7 +15,6 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/ssh": "*",
