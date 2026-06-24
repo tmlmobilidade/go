@@ -5,21 +5,20 @@ import { type Feature, type LineString, type Point } from 'geojson';
 
 import { type AggregationResult, type TrainNextStop, type TripStopWaypoint } from './types.js';
 
-/**
- * Infers the train's current position along the hashed shape from ETA and inter-stop travel time.
- * When the next stop is the first in the trip, returns that stop's coordinates.
- */
-export function inferTrainPositionOnShape({
-	nextStop,
-	nextStopWaypoint,
-	previousStopWaypoint,
-	ride,
-}: {
+/* * */
+
+interface InferTrainPositionOnShapeParams {
 	nextStop: TrainNextStop
 	nextStopWaypoint: TripStopWaypoint
 	previousStopWaypoint?: TripStopWaypoint
 	ride: AggregationResult
-}): [number, number] {
+}
+
+/**
+ * Infers the train's current position along the hashed shape from ETA and inter-stop travel time.
+ * When the next stop is the first in the trip, returns that stop's coordinates.
+ */
+export function inferTrainPositionOnShape({ nextStop, nextStopWaypoint, previousStopWaypoint, ride }: InferTrainPositionOnShapeParams): [number, number] {
 	if (!previousStopWaypoint) {
 		return [nextStopWaypoint.longitude, nextStopWaypoint.latitude];
 	}
