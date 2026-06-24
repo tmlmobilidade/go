@@ -1,6 +1,7 @@
 /* * */
 
 import { simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
@@ -35,7 +36,7 @@ export async function processRawApexTransactionSale(databaseOperation) {
 		let parseResult: null | SimplifiedApexOnBoardSale = null;
 		if (databaseOperation.fullDocument.version === 'sale-3.0') parseResult = parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(databaseOperation.fullDocument);
 		if (!parseResult) return;
-		await writer.write(parseResult);
+		await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 	} catch (error) {
 		Logger.error({ message: `Error transforming APEX Sale: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
 	}
