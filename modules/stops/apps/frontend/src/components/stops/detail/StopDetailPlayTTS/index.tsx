@@ -6,8 +6,6 @@ import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-react';
 import { Button } from '@tmlmobilidade/ui';
 import { useRef, useState } from 'react';
 
-import styles from './styles.module.css';
-
 /* * */
 
 export function StopDetailPlayTTS() {
@@ -18,9 +16,14 @@ export function StopDetailPlayTTS() {
 
 	const stopDetailContext = useStopDetailContext();
 	const audioRef = useRef<HTMLAudioElement | null>(null);
-	const [isPlaying] = useState<boolean>(false);
-	const [progress, setProgress] = useState<number>(0);
+	const [isPlaying, setIsPlaying] = useState(false);
 	const stopId = stopDetailContext.data.stop?._id;
+
+	const stopPlayback = () => {
+		audioRef.current?.pause();
+		audioRef.current = null;
+		setIsPlaying(false);
+	};
 
 	//
 	// B. Handle actions
@@ -28,14 +31,25 @@ export function StopDetailPlayTTS() {
 	const handleTTSAudio = async () => {
 		if (!stopId) return;
 
-		const audioToPlay = new Audio(`${audioTtsUrl}/${stopId}.mp3`);
+		if (isPlaying) {
+			stopPlayback();
+			return;
+		}
 
-		audioToPlay.ontimeupdate = () => {
-			if (!audioToPlay.duration) return;
-			setProgress((audioToPlay.currentTime / audioToPlay.duration) * 100);
-		};
+		stopPlayback();
+
+		const audioToPlay = new Audio(`${audioTtsUrl}/${stopId}.mp3?v=${Date.now()}`);
+
+		audioToPlay.onended = stopPlayback;
 
 		audioRef.current = audioToPlay;
+
+		try {
+			await audioToPlay.play();
+			setIsPlaying(true);
+		} catch {
+			stopPlayback();
+		}
 	};
 
 	//
@@ -43,10 +57,8 @@ export function StopDetailPlayTTS() {
 
 	return (
 		<Button
-			className={isPlaying ? styles.buttonPlaying : undefined}
 			label="Reproduzir TTS"
 			onClick={handleTTSAudio}
-			style={{ '--progress': `${progress}%` } as React.CSSProperties}
 			rightSection={
 				isPlaying ? <IconPlayerPause size={16} /> : <IconPlayerPlay size={16} />
 			}

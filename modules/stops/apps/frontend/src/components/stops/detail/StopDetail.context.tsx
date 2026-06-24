@@ -5,7 +5,7 @@ import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-o
 import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -64,7 +64,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const [isNamesEditorOpen, setNamesEditorOpen] = useState(false);
 	const openNamesEditor = useCallback(() => setNamesEditorOpen(true), []);
 	const closeNamesEditor = useCallback(() => setNamesEditorOpen(false), []);
-	const previousNameRef = useRef<string | undefined>(undefined);
 
 	//
 	// B. Fetch data
