@@ -49,7 +49,7 @@ export function StopDetailNamesModalBody() {
 			</Section>
 
 			<Section>
-				<Grid columns="abc" gap="md">
+				<Grid columns="ab" gap="md">
 					<Button label="Cancelar" onClick={stopDetailContext.actions.closeNamesEditor} />
 					<Button label="Salvar" onClick={stopDetailContext.actions.save} />
 				</Grid>
