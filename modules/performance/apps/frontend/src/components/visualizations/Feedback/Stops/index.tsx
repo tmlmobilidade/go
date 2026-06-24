@@ -10,6 +10,8 @@ import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
+import { formatSatisfactionIndex, getFeedbackSatisfactionByEntity, getFeedbackSatisfactionStatus } from '../feedback-metrics';
+import { FeedbackMetricTag } from '../FeedbackMetricTag';
 import { buildStopLabelsById, getStopLabel } from '../network-labels';
 
 /* * */
@@ -20,26 +22,11 @@ interface FeedbackPreviewResponse {
 
 /* * */
 
-function getStops(rows: Record<string, unknown>[]) {
-	const stops = new Map<string, number>();
-
-	for (const row of rows) {
-		if (row.entity_type !== 'stop' || typeof row.entity_id !== 'string') continue;
-		stops.set(row.entity_id, (stops.get(row.entity_id) ?? 0) + 1);
-	}
-
-	return Array.from(stops.entries())
-		.map(([stopId, feedbackCount]) => ({ feedbackCount, stopId }))
-		.sort((stopA, stopB) => stopB.feedbackCount - stopA.feedbackCount);
-}
-
-/* * */
-
 export function FeedbackStops() {
 	const { data, error, isLoading } = useSWR<FeedbackPreviewResponse, Error>(Routes.FEEDBACK_PREVIEW);
 	const { data: stopsData } = useSWR<HubStop[], Error>({ credentials: 'omit', url: Routes.HUB_STOPS });
 	const stopsById = useMemo(() => buildStopLabelsById(stopsData), [stopsData]);
-	const stops = getStops(data?.rows ?? []);
+	const stops = getFeedbackSatisfactionByEntity(data?.rows ?? [], 'stop');
 
 	return (
 		<ContainerWrapper>
@@ -56,14 +43,16 @@ export function FeedbackStops() {
 							<tr>
 								<th>Paragem</th>
 								<th>Feedbacks</th>
+								<th>Índice de satisfação</th>
 							</tr>
 						</thead>
 
 						<tbody>
 							{stops.map(stop => (
-								<tr key={stop.stopId}>
-									<td>{getStopLabel(stop.stopId, stopsById)}</td>
-									<td>{stop.feedbackCount.toLocaleString('pt-PT')}</td>
+								<tr key={stop.entityId}>
+									<td>{getStopLabel(stop.entityId, stopsById)}</td>
+									<td><FeedbackMetricTag label={stop.feedbackCount.toLocaleString('pt-PT')} /></td>
+									<td><FeedbackMetricTag label={formatSatisfactionIndex(stop.satisfactionIndex)} status={getFeedbackSatisfactionStatus(stop.satisfactionIndex)} /></td>
 								</tr>
 							))}
 						</tbody>

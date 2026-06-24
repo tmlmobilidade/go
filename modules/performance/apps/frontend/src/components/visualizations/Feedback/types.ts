@@ -25,6 +25,8 @@ export interface FeedbackLineRowData {
 	id: string
 	metric?: number | string
 	name?: number | string
+	satisfactionIndex?: number
+	satisfactionMetric?: number | string
 }
 
 export interface FeedbackTopicData {
