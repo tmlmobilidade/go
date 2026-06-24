@@ -147,6 +147,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// FEEDBACK
 		FEEDBACK_LIST: `${getModuleConfig('performance', 'frontend_url')}/feedback`,
 
+		// FEEDBACK_STOPS
+		FEEDBACK_STOPS_LIST: `${getModuleConfig('performance', 'frontend_url')}/feedback/stops`,
+
 		// SUPPLY
 		SUPPLY_LIST: `${getModuleConfig('performance', 'frontend_url')}/supply`,
 	},
