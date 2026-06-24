@@ -46,6 +46,11 @@
 	gap: var(--size-spacing-md);
 }
 
+.feedbackList {
+	gap: 0;
+	overflow-x: auto;
+}
+
 .listsGrid {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -91,9 +96,11 @@
 }
 
 .feedbackRow {
-	display: flex;
-	flex-direction: column;
-	gap: var(--size-spacing-sm);
+	display: grid;
+	grid-template-columns: minmax(260px, 1fr) 96px 140px;
+	gap: var(--size-spacing-md);
+	align-items: center;
+	min-width: 540px;
 	padding: var(--size-spacing-md) 0;
 	border-bottom: 1px solid var(--color-system-border-100);
 }
@@ -102,14 +109,32 @@
 	border-bottom: none;
 }
 
-.feedbackRowHeader {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+.feedbackListHeader {
+	display: grid;
+	grid-template-columns: minmax(260px, 1fr) 96px 140px;
 	gap: var(--size-spacing-md);
+	align-items: center;
+	min-width: 540px;
+	padding: var(--size-spacing-sm) 0;
+	border-bottom: 1px solid var(--color-system-border-100);
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight-bold);
+}
+
+.feedbackListHeaderMetric {
+	text-align: right;
+}
+
+.feedbackLineDetails {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	min-width: 0;
 }
 
 .feedbackLineName {
+	display: block;
 	min-width: 0;
 	overflow: hidden;
 	color: var(--color-system-text-100);
@@ -119,16 +144,59 @@
 	white-space: nowrap;
 }
 
-.feedbackLineMetric {
-	flex-shrink: 0;
-	color: var(--color-system-text-200);
-	font-size: var(--font-size-sm);
-	font-weight: var(--font-weight-bold);
+.feedbackTagCell {
+	display: flex;
+	justify-content: flex-end;
+	min-width: 0;
 }
 
 .feedbackLineDescription {
+	margin: 0;
+	overflow: hidden;
 	color: var(--color-system-text-200);
 	font-size: var(--font-size-sm);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.feedbackMetricTag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	min-width: 56px;
+	width: fit-content;
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	border-radius: 6px;
+	color: var(--text-muted, #6b7280);
+	background-color: var(--bg-muted, #f3f4f6);
+	white-space: nowrap;
+}
+
+.feedbackMetricTag.neutral {
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-200);
+}
+
+.feedbackMetricTag.positive {
+	color: var(--color-status-success-primary);
+	background-color: var(--color-status-success-contrast);
+}
+
+.feedbackMetricTag.negative {
+	color: var(--color-status-danger-primary);
+	background-color: var(--color-status-danger-contrast);
+}
+
+.feedbackMetricTag.warning {
+	color: var(--color-status-warning-primary);
+	background-color: var(--color-status-warning-contrast);
+}
+
+.feedbackMetricTagLabel {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-bold);
+	line-height: 1;
 }
 
 @media (max-width: 900px) {

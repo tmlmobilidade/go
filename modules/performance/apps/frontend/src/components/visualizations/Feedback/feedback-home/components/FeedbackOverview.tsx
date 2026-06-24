@@ -10,6 +10,7 @@ import useSWR from 'swr';
 
 import styles from '../../styles.module.css';
 
+import { calculateFeedbackSatisfactionIndex, formatSatisfactionIndex } from '../../feedback-metrics';
 import { buildLineLabelsById, buildStopLabelsById, getLineLabel } from '../../network-labels';
 import { TopFeedbackLines } from './TopFeedbackLines';
 
@@ -77,7 +78,7 @@ function getEntityId(row: Record<string, unknown>, entityType: 'line' | 'stop', 
 }
 
 function buildTopFeedbackList(rows: Record<string, unknown>[], entityType: 'line' | 'stop', fieldCandidates: string[], labelsById: Map<string, string>): (FeedbackLineRowData & { count: number })[] {
-	const groupedRows = new Map<string, { count: number, label: string }>();
+	const groupedRows = new Map<string, { count: number, happyCount: number, label: string, unhappyCount: number }>();
 
 	for (const row of rows) {
 		const entityId = getEntityId(row, entityType, fieldCandidates);
@@ -85,21 +86,30 @@ function buildTopFeedbackList(rows: Record<string, unknown>[], entityType: 'line
 
 		const current = groupedRows.get(entityId);
 		const label = entityType === 'line' ? getLineLabel(entityId, labelsById) : labelsById.get(entityId) ?? entityId;
+		const feedbackCount = getFeedbackCount(row);
 
 		groupedRows.set(entityId, {
-			count: (current?.count ?? 0) + getFeedbackCount(row),
+			count: (current?.count ?? 0) + feedbackCount,
+			happyCount: (current?.happyCount ?? 0) + (row.mood === 'happy' ? feedbackCount : 0),
 			label,
+			unhappyCount: (current?.unhappyCount ?? 0) + (row.mood === 'unhappy' ? feedbackCount : 0),
 		});
 	}
 
 	return Array.from(groupedRows.entries())
-		.map(([id, groupData]) => ({
-			count: groupData.count,
-			description: groupData.label === id ? undefined : id,
-			id,
-			metric: groupData.count.toLocaleString('pt-PT'),
-			name: groupData.label,
-		}))
+		.map(([id, groupData]) => {
+			const satisfactionIndex = calculateFeedbackSatisfactionIndex(groupData.happyCount, groupData.unhappyCount);
+
+			return {
+				count: groupData.count,
+				description: groupData.label === id ? undefined : id,
+				id,
+				metric: groupData.count.toLocaleString('pt-PT'),
+				name: groupData.label,
+				satisfactionIndex,
+				satisfactionMetric: formatSatisfactionIndex(satisfactionIndex),
+			};
+		})
 		.sort((a, b) => b.count - a.count)
 		.slice(0, 6);
 }
@@ -120,12 +130,16 @@ function parseFeedbackPreviewData(feedbackPreviewData: FeedbackPreviewResponse, 
 			id: line.id,
 			metric: line.metric,
 			name: line.name,
+			satisfactionIndex: line.satisfactionIndex,
+			satisfactionMetric: line.satisfactionMetric,
 		})),
 		topStops: topStops.map(stop => ({
 			description: stop.description,
 			id: stop.id,
 			metric: stop.metric,
 			name: stop.name,
+			satisfactionIndex: stop.satisfactionIndex,
+			satisfactionMetric: stop.satisfactionMetric,
 		})),
 	};
 }
@@ -157,8 +171,8 @@ export function FeedbackOverview({ data, previewData }: FeedbackOverviewProps) {
 		<>
 			<FeedbackGraphCard />
 			<section className={styles.listsGrid}>
-				<TopFeedbackLines lines={feedbackData.topLines} title="Linhas com mais feedbacks" />
-				<TopFeedbackLines lines={feedbackData.topStops} title="Paragens com mais feedbacks" />
+				<TopFeedbackLines lines={feedbackData.topLines} nameColumnLabel="Linha" title="Linhas com mais feedbacks" />
+				<TopFeedbackLines lines={feedbackData.topStops} nameColumnLabel="Paragem" title="Paragens com mais feedbacks" />
 			</section>
 		</>
 	);
