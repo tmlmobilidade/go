@@ -3,6 +3,7 @@ import subprocess
 import wave
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
@@ -14,6 +15,14 @@ AUDIO_DIR = "audio"
 os.makedirs(AUDIO_DIR, exist_ok=True)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 voice = PiperVoice.load(MODEL_PATH)
 
@@ -39,6 +48,9 @@ def generate(req: TTSRequest):
 
     if os.path.exists(mp3_path) and not req.force:
         return {"generated": False, "stop_id": normalize_stop_id(req.stop_id)}
+
+    if req.force and os.path.exists(mp3_path):
+        os.remove(mp3_path)
 
     wav_path = f"{AUDIO_DIR}/{normalize_stop_id(req.stop_id)}.wav"
 

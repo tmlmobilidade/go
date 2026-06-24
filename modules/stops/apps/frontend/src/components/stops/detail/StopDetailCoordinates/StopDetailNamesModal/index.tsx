@@ -52,8 +52,8 @@ export function StopDetailNamesModalBody() {
 			<Section>
 				<Grid columns="abc" gap="md">
 					<Button label="Cancelar" onClick={stopDetailContext.actions.closeNamesEditor} />
-					<Button label="Salvar" onClick={stopDetailContext.actions.save} />
-					<StopDetailPlayTTS />
+					<Button label="Salvar" onClick={stopDetailContext.actions.saveNames} />
+					<StopDetailPlayTTS active={stopDetailContext.flags.canPreviewTts} />
 				</Grid>
 			</Section>
 		</>

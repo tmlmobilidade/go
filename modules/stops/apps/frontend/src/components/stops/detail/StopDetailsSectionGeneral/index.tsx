@@ -35,19 +35,7 @@ export function StopDetailsSectionGeneral() {
 	}));
 
 	//
-	// C. Handle actions
-
-	// const handlePlayPhoneticName = async () => {
-	// 	if (typeof window !== 'undefined') {
-	// 		const synth = window.speechSynthesis;
-	// 		const utterance = new SpeechSynthesisUtterance(stopDetailContext.data.form.values.tts_name || '');
-	// 		utterance.lang = 'pt';
-	// 		synth.speak(utterance);
-	// 	}
-	// };
-
-	//
-	// D. Render components
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -123,7 +111,7 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="a">
-					<StopDetailPlayTTS />
+					<StopDetailPlayTTS active={true} />
 				</Grid>
 			</Section>
 
