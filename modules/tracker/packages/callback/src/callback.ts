@@ -7,23 +7,16 @@ import { Timer } from '@tmlmobilidade/timer';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /**
- * Callback function to invalidate Rides based on new SimplifiedApex data.
+ * Callback function to set Rides as 'waiting' based on new SimplifiedVehicleEvent data.
  * This function identifies all Rides that are affected by the new data and marks them as 'waiting',
  * which will trigger the necessary reprocessing in the system.
- * @param data An array of SimplifiedApex documents that have been inserted or updated.
+ * @param data An array of SimplifiedVehicleEvent documents that have been inserted or updated.
  */
-export async function invalidateRides(data: SimplifiedVehicleEvent[]) {
-	//
-
-	// FOR NOW THIS IS DISABLED UNTIL THE OTHER PACKAGES ARE MIGRATED
-	// TO READ EVENTS AND VALIDATIONS FROM GO
-	return;
-
-	//
+export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 	try {
 		//
 
-		const invalidationTimer = new Timer();
+		const timer = new Timer();
 
 		//
 		// Skip if there's no data to process
@@ -44,7 +37,6 @@ export async function invalidateRides(data: SimplifiedVehicleEvent[]) {
 				const standardWindowInterval = Dates
 					.fromUnixTimestamp(item.created_at)
 					.std_window;
-
 				return {
 					start_time_scheduled: {
 						$gte: standardWindowInterval.start,
@@ -69,10 +61,10 @@ export async function invalidateRides(data: SimplifiedVehicleEvent[]) {
 			{ returnResults: false },
 		);
 
-		Logger.info({ message: `Flush: Marked as 'waiting' ${updateRidesResult.modifiedCount} Rides (${invalidationTimer.get()})` });
+		Logger.info({ message: `Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${timer.get()})` });
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error in flushCallback' });
+		Logger.error({ error, message: 'Error in setRidesAsWaiting' });
 	}
 };
