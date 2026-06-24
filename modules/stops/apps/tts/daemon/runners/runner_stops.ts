@@ -45,7 +45,9 @@ export async function runnerStops() {
 		const ttsHasChanged = stopTts !== trackerEntry?.tts;
 
 		if (ttsHasChanged && stopTts && stopTts !== '#N/A') {
-			Logger.info(`[${stopIndex + 1}/${allStopsData.length}] Generating for Stop ${stopData._id} - ${stopTts}`);
+			Logger.info({
+				message: `[${stopIndex + 1}/${allStopsData.length}] Generating for Stop ${stopData._id} - ${stopTts}`,
+			});
 
 			await piperTtsApi({
 				filename: stopId,

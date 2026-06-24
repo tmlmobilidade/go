@@ -1,10 +1,9 @@
 'use client';
 
-import { regenerateStopTts } from '@/lib/regenerate-stop-tts';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
 import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
@@ -20,7 +19,6 @@ interface StopDetailContextState {
 		openCoordinatesEditor: () => void
 		openNamesEditor: () => void
 		save: () => void
-		saveNames: () => void
 	}
 	data: {
 		form: UseFormReturnType<UpdateStopDto>
@@ -29,7 +27,6 @@ interface StopDetailContextState {
 	flags: {
 		canDelete: boolean
 		canLock: boolean
-		canPreviewTts: boolean
 		canSave: boolean
 		error: Error | undefined
 		isCoordinatesEditorOpen: boolean
@@ -65,42 +62,15 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const closeCoordinatesEditor = useCallback(() => setCoordinatesEditorOpen(false), []);
 
 	const [isNamesEditorOpen, setNamesEditorOpen] = useState(false);
-	const [canPreviewTts, setCanPreviewTts] = useState(false);
-	const [ttsAudioVersion, setTtsAudioVersion] = useState(() => Date.now());
-	const namesEditorBaselineRef = useRef<null | {
-		name: string
-		short_name: string
-		tts_name: string
-	}>(null);
-	const namesEditorSavedPayloadRef = useRef<null | {
-		name: string
-		short_name: string
-		tts_name: string
-	}>(null);
+	const openNamesEditor = useCallback(() => setNamesEditorOpen(true), []);
+	const closeNamesEditor = useCallback(() => setNamesEditorOpen(false), []);
+	const previousNameRef = useRef<string | undefined>(undefined);
 
 	//
 	// B. Fetch data
 
 	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
 	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId));
-
-	const openNamesEditor = useCallback(() => {
-		if (!stopData) return;
-
-		namesEditorBaselineRef.current = {
-			name: stopData.name,
-			short_name: stopData.short_name,
-			tts_name: stopData.tts_name,
-		};
-		setCanPreviewTts(false);
-		setNamesEditorOpen(true);
-	}, [stopData]);
-
-	const closeNamesEditor = useCallback(() => {
-		namesEditorBaselineRef.current = null;
-		setNamesEditorOpen(false);
-		setCanPreviewTts(false);
-	}, []);
 
 	//
 	// C. Setup form
@@ -133,42 +103,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		},
 	});
 
-	const { action: handleSaveNames, isLoading: isSavingNames } = useHandleUpdate({
-		fetchFn: async () => {
-			const payload = form.getValues();
-			namesEditorSavedPayloadRef.current = {
-				name: payload.name ?? '',
-				short_name: payload.short_name ?? '',
-				tts_name: payload.tts_name ?? '',
-			};
-			return await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'PUT', payload);
-		},
-		onSuccess: (updatedItem) => {
-			const baseline = namesEditorBaselineRef.current;
-			const saved = namesEditorSavedPayloadRef.current;
-			const namesChanged = baseline !== null && saved !== null && (
-				saved.name !== baseline.name
-				|| saved.short_name !== baseline.short_name
-				|| saved.tts_name !== baseline.tts_name
-			);
-
-			if (namesChanged && saved?.tts_name) {
-				void regenerateStopTts(String(updatedItem._id), saved.tts_name)
-					.then(() => {
-						setTtsAudioVersion(Date.now());
-						setCanPreviewTts(true);
-					})
-					.catch((error: Error) => {
-						useToast.error({ message: error.message, title: 'Erro ao gerar TTS' });
-					});
-			}
-
-			form.resetDirty();
-			stopMutate(updatedItem);
-			allStopsMutate();
-		},
-	});
-
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'DELETE'),
 		onSuccess: (updatedItem) => {
@@ -190,8 +124,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// F. Setup flags
 
-	const isSavingForm = isSaving || isSavingNames;
-
 	const { isReadOnly } = useFlagReadOnly({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
 		isDeleted: stopData?.is_deleted,
@@ -199,7 +131,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		isLoading: stopLoading,
 		isLocked: stopData?.is_locked,
 		isLocking: isLocking,
-		isSaving: isSavingForm,
+		isSaving: isSaving,
 	});
 
 	const { canSave } = useFlagCanSave({
@@ -249,7 +181,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			openCoordinatesEditor,
 			openNamesEditor,
 			save: handleSave,
-			saveNames: handleSaveNames,
 		},
 		data: {
 			form,
@@ -258,9 +189,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		flags: {
 			canDelete,
 			canLock,
-			canPreviewTts,
 			canSave,
-			ttsAudioVersion,
 			error: stopError,
 			isCoordinatesEditorOpen,
 			isDeleting,
@@ -268,7 +197,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			isLocking,
 			isNamesEditorOpen,
 			isReadOnly,
-			isSaving: isSavingForm,
+			isSaving: isSaving,
 		},
 	}), [
 		closeCoordinatesEditor,
@@ -284,16 +213,13 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		stopLoading,
 		isLocking,
 		isReadOnly,
-		isSavingForm,
-		canPreviewTts,
-		ttsAudioVersion,
+		isSaving,
 		form,
 		stopData,
 		formValuesSignature,
 		handleDelete,
 		handleLock,
 		handleSave,
-		handleSaveNames,
 	]);
 	//
 	// H. Render components

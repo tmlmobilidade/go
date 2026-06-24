@@ -3,7 +3,6 @@
 /* * */
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { StopDetailPlayTTS } from '@/components/stops/detail/StopDetailPlayTTS';
 import { Button, Grid, Label, Modal, Pane, Section, Spacer, TextInput, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
@@ -52,8 +51,7 @@ export function StopDetailNamesModalBody() {
 			<Section>
 				<Grid columns="abc" gap="md">
 					<Button label="Cancelar" onClick={stopDetailContext.actions.closeNamesEditor} />
-					<Button label="Salvar" onClick={stopDetailContext.actions.saveNames} />
-					<StopDetailPlayTTS active={stopDetailContext.flags.canPreviewTts} />
+					<Button label="Salvar" onClick={stopDetailContext.actions.save} />
 				</Grid>
 			</Section>
 		</>

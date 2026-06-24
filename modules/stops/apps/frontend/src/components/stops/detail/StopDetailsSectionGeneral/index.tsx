@@ -111,7 +111,7 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="a">
-					<StopDetailPlayTTS active={true} />
+					<StopDetailPlayTTS />
 				</Grid>
 			</Section>
 

@@ -22,14 +22,18 @@ export async function runnerCommon() {
 		{ id: 'no_dropoff', text: 'Apenas permitido embarque.' },
 	];
 
-	Logger.info(`Preparing ${allCommonData.length} common sayings...`);
+	Logger.info({
+		message: `Preparing ${allCommonData.length} common sayings...`,
+	});
 
 	for (const [commonIndex, commonData] of allCommonData.entries()) {
 		const trackerEntry = trackerData.find(item => item.id === commonData.id);
 		const ttsHasChanged = commonData.text !== trackerEntry?.tts;
 
 		if (ttsHasChanged) {
-			Logger.info(`[${commonIndex + 1}/${allCommonData.length}] Generating | ${commonData.id} | ${commonData.text}`);
+			Logger.info({
+				message: `[${commonIndex + 1}/${allCommonData.length}] Generating | ${commonData.id} | ${commonData.text}`,
+			});
 
 			await piperTtsApi({
 				filename: commonData.id,

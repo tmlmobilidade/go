@@ -23,7 +23,6 @@ export async function runnerPatterns() {
 	const allLinesData = await allLinesResponse.json() as HubLine[];
 
 	console.log(`* Preparing ${allLinesData.length} lines...`);
-	console.log();
 
 	for (const [lineIndex, lineData] of allLinesData.entries()) {
 		for (const [patternIndex, patternId] of lineData.pattern_ids.entries()) {
@@ -37,7 +36,9 @@ export async function runnerPatterns() {
 			const ttsHasChanged = patternTts !== trackerEntry?.tts;
 
 			if (ttsHasChanged && patternTts && patternTts !== '#N/A') {
-				Logger.info(`[${lineIndex + 1}/${allLinesData.length}] [${patternIndex + 1}/${lineData.pattern_ids.length}] Generating | Line ${lineData._id} | Pattern ${patternData._id} | ${patternTts}`);
+				Logger.info({
+					message: `[${lineIndex + 1}/${allLinesData.length}] [${patternIndex + 1}/${lineData.pattern_ids.length}] Generating | Line ${lineData._id} | Pattern ${patternData._id} | ${patternTts}`,
+				});
 
 				await piperTtsApi({
 					filename: patternId,
