@@ -132,7 +132,7 @@ export async function validateRides() {
 				//
 			} catch (error) {
 				await rides.updateById(rideData._id, { system_status: 'error' });
-				Logger.error({ error, message: `An error occurred while processing a ride: ${error.message}` });
+				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
 			}
 		}
 
