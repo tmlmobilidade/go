@@ -19,7 +19,7 @@
 		"lint:fix": "eslint src --fix"
 	},
 	"dependencies": {
-		"@clickhouse/client": "1.21.0",
+		"@clickhouse/client": "1.22.0",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-eta-pckg-common": "*",

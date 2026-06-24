@@ -24,7 +24,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"protobufjs": "8.6.4"
+		"protobufjs": "8.6.5"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
