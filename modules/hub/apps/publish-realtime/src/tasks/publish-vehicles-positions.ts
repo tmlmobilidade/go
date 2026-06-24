@@ -44,8 +44,6 @@ export async function publishVehiclesPositions() {
 	await Promise.all(
 		latestVehicleEventsData.map(async (vehicleEventData) => {
 			try {
-				// Skip if vehicle position is not from an allowed agency
-				if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(vehicleEventData.agency_id)) return;
 				// Skip if vehicle position does not have a trip_id
 				if (!vehicleEventData.trip_id) return;
 				// Check if there is an active plan for the agency
@@ -54,7 +52,7 @@ export async function publishVehiclesPositions() {
 				// Fetch the corresponding ride from the database
 				const standardWindow = Dates.fromUnixTimestamp(vehicleEventData.created_at).std_window;
 				const associatedRide = await ridesCollection.findOne({ agency_id: vehicleEventData.agency_id, start_time_scheduled: { $gte: standardWindow.start, $lte: standardWindow.end }, trip_id: vehicleEventData.trip_id }, { projection: { _id: 1, line_id: 1, pattern_id: 1 } });
-				if (!associatedRide && vehicleEventData.agency_id !== '3') throw new Error(`No ride found for trip ID: ${vehicleEventData.trip_id} and agency ID: ${vehicleEventData.agency_id} in the standard window: ${standardWindow.start} to ${standardWindow.end}`);
+				if (!associatedRide && vehicleEventData.agency_id !== '2' && vehicleEventData.agency_id !== '3') throw new Error(`No ride found for trip ID: ${vehicleEventData.trip_id} and agency ID: ${vehicleEventData.agency_id} in the standard window: ${standardWindow.start} to ${standardWindow.end}`);
 				// Parse the vehicle position data
 				const vehiclePositionData: HubVehiclePosition = {
 					...vehicleEventData,

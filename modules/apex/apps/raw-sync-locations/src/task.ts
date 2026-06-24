@@ -2,6 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionLocationV30IntoSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
@@ -62,7 +63,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		countDestinationDbFn: async () => {
 			return await simplifiedApexLocationsNew.count(
 				'*',
-				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
@@ -84,7 +85,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexLocationsNew.distinct(
 				'upper(toString(_id))',
-				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
@@ -101,7 +102,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		onCompleteCallbackFn: async () => {
-			await writer.flush();
+			await writer.flush(setRidesAsWaiting);
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
@@ -109,7 +110,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 				let parseResult: null | SimplifiedApexLocation = null;
 				if (sourceDbDocument.version === 'location-3.0') parseResult = parseRawApexTransactionLocationV30IntoSimplifiedApexLocation(sourceDbDocument);
 				if (!parseResult) return;
-				await writer.write(parseResult);
+				await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
 				Logger.error({ message: `Error transforming APEX Location: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}

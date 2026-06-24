@@ -10,6 +10,7 @@ export type ClickHouseDataType =
   | 'Int64' // Should not be used, use Int32 instead
   | 'String'
   | 'UInt8'
+  | 'UInt32'
   | 'UInt64'
   | 'UUID'
   | `DateTime64(3, 'UTC') CODEC(Delta, ZSTD)`

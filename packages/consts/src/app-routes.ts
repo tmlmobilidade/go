@@ -342,6 +342,9 @@ export const API_ROUTES = Object.freeze({
 		// DEBUG
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
+		// METRICS
+		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
+
 		// NETWORK
 		NETWORK_LEGACY_STOPS_MAP: `${getModuleConfig('hub', 'api_url')}/v1/network/legacy-stops-map`,
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,

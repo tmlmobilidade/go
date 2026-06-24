@@ -5,7 +5,7 @@ import { IncomingMessage } from 'node:http';
 import https from 'node:https';
 
 import { mlAuthClient } from './auth.js';
-import { BaseResponse, DESTINATION_MAP, EstadoLinha, InfoEstacao, TempoEspera, TempoEsperaRawItem } from './types.js';
+import { BaseResponse, DESTINATION_MAP, EstadoLinha, InfoEstacao, TempoEsperaRawItem } from './types.js';
 
 /* * */
 
@@ -118,27 +118,27 @@ export const MlClient = Object.freeze({
 	/**
 	 * Gets the current waiting time estimates for a specific station.
 	 * @param estacao Station identifier as string.
-	 * @returns TempoEspera object with estimated waiting times for the station.
+	 * @returns An array of TempoEsperaRawItem objects, one for each platform in the station.
 	 */
-	tempoEsperaEstacao: async (estacao: string): Promise<BaseResponse<TempoEspera>> => {
-		return await fetcher<BaseResponse<TempoEspera>>(endpoints.tempoEsperaEstacao(estacao));
+	tempoEsperaEstacao: async (estacao: string): Promise<BaseResponse<TempoEsperaRawItem[]>> => {
+		return await fetcher<BaseResponse<TempoEsperaRawItem[]>>(endpoints.tempoEsperaEstacao(estacao));
 	},
 
 	/**
 	 * Gets the current waiting time estimates for a specific line.
 	 * @param linha Line identifier as string.
-	 * @returns An array of TempoEspera objects, one for each station in the line.
+	 * @returns An array of TempoEsperaRawItem objects, one for each platform in the line.
 	 */
-	tempoEsperaLinha: async (linha: string): Promise<BaseResponse<TempoEspera[]>> => {
-		return await fetcher<BaseResponse<TempoEspera[]>>(endpoints.tempoEsperaLinha(linha));
+	tempoEsperaLinha: async (linha: string): Promise<BaseResponse<TempoEsperaRawItem[]>> => {
+		return await fetcher<BaseResponse<TempoEsperaRawItem[]>>(endpoints.tempoEsperaLinha(linha));
 	},
 
 	/**
 	 * Gets the current waiting time estimates for all stations.
-	 * @returns An array of TempoEspera objects, one for each station.
+	 * @returns An array of TempoEsperaRawItem objects, one for each platform in all stations.
 	 */
-	tempoEsperaTodasEstacoes: async (): Promise<BaseResponse<TempoEspera[]>> => {
-		return await fetcher<BaseResponse<TempoEspera[]>>(endpoints.tempoEsperaTodasEstacoes);
+	tempoEsperaTodasEstacoes: async (): Promise<BaseResponse<TempoEsperaRawItem[]>> => {
+		return await fetcher<BaseResponse<TempoEsperaRawItem[]>>(endpoints.tempoEsperaTodasEstacoes);
 	},
 
 	/**

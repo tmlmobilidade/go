@@ -2,8 +2,8 @@
 
 import { rawVehicleEventsNew, simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
-import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { BatchWriter, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -95,7 +95,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		onCompleteCallbackFn: async () => {
-			await writer.flush(invalidateRides);
+			await writer.flush(setRidesAsWaiting);
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
@@ -103,7 +103,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 			if (!parser) return Logger.error({ message: `No parser found for version ${sourceDbDocument.version}. Skipping document with _id "${sourceDbDocument._id}"...` });
 			const parseResult = parser(sourceDbDocument);
 			if (!parseResult) return Logger.error({ message: `Failed to parse document with _id "${sourceDbDocument._id}". Skipping...` });
-			await writer.write(parseResult, { flushCallback: invalidateRides });
+			await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 		},
 
 	});

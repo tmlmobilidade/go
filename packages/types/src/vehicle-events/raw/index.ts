@@ -3,6 +3,7 @@ export * from '@/vehicle-events/raw/cmet/index.js';
 export * from '@/vehicle-events/raw/cp/index.js';
 export * from '@/vehicle-events/raw/crtm-aisa/index.js';
 export * from '@/vehicle-events/raw/fertagus/index.js';
+export * from '@/vehicle-events/raw/ml/index.js';
 export * from '@/vehicle-events/raw/mobi/index.js';
 export * from '@/vehicle-events/raw/raw-vehicle-event-base.js';
 export * from '@/vehicle-events/raw/raw-vehicle-event.js';

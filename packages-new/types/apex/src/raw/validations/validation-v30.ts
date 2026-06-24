@@ -67,6 +67,7 @@ export const RawApexTransactionValidationV30PayloadSchema = z.object({
 		tickLoadDate: z.string().nullable().default(null),
 		tickLoadMachCode: z.number().nullable().default(null),
 		tickLoadNumbDaily: z.number().nullable().default(null),
+		unitsQuantity: z.number().nullable().default(null),
 		unitsRemaining: z.number().nullable().default(null),
 		validationStatus: z.number(),
 		validationType: z.number(),

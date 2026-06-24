@@ -2,6 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
@@ -62,7 +63,7 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 		countDestinationDbFn: async () => {
 			return await simplifiedApexOnBoardRefundsNew.count(
 				'*',
-				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
@@ -84,7 +85,7 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexOnBoardRefundsNew.distinct(
 				'upper(toString(_id))',
-				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
@@ -101,7 +102,7 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		onCompleteCallbackFn: async () => {
-			await writer.flush();
+			await writer.flush(setRidesAsWaiting);
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
@@ -109,7 +110,7 @@ export async function syncApexRefunds(timeChunk: PerformInTimeChunksItem) {
 				let parseResult: null | SimplifiedApexOnBoardRefund = null;
 				if (sourceDbDocument.version === 'refund-3.0') parseResult = parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(sourceDbDocument);
 				if (!parseResult) return;
-				await writer.write(parseResult);
+				await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
 				Logger.error({ message: `Error transforming APEX Refund: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}
