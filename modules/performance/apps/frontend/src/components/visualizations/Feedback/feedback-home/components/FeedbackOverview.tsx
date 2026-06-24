@@ -146,8 +146,12 @@ function parseFeedbackPreviewData(feedbackPreviewData: FeedbackPreviewResponse, 
 
 function FeedbackGraphCard() {
 	return (
-		<ContainerWrapper height={360}>
-			<p className={styles.cardTitle}>Gráfico Feedback</p>
+		<ContainerWrapper className={styles.feedbackCard} height={360} padding="0">
+			<div className={styles.feedbackCardHeader}>
+				<p className={styles.cardTitle}>Gráfico Feedback</p>
+			</div>
+
+			<div className={`${styles.feedbackCardContent} ${styles.feedbackCardContentFill}`} />
 		</ContainerWrapper>
 	);
 }

@@ -29,36 +29,40 @@ export function FeedbackStops() {
 	const stops = getFeedbackSatisfactionByEntity(data?.rows ?? [], 'stop');
 
 	return (
-		<ContainerWrapper>
-			<h2 className={styles.title}>Todas as paragens</h2>
+		<ContainerWrapper className={styles.container} padding="0">
+			<div className={styles.header}>
+				<h2 className={styles.title}>Todas as paragens</h2>
+			</div>
 
-			{isLoading && <p className={styles.text}>A carregar paragens...</p>}
-			{error && <p className={styles.text}>Erro ao carregar paragens.</p>}
-			{!isLoading && !error && stops.length === 0 && <p className={styles.text}>Sem paragens para mostrar.</p>}
+			<div className={styles.content}>
+				{isLoading && <p className={styles.text}>A carregar paragens...</p>}
+				{error && <p className={styles.text}>Erro ao carregar paragens.</p>}
+				{!isLoading && !error && stops.length === 0 && <p className={styles.text}>Sem paragens para mostrar.</p>}
 
-			{!isLoading && !error && stops.length > 0 && (
-				<div className={styles.tableWrapper}>
-					<table className={styles.table}>
-						<thead>
-							<tr>
-								<th>Paragem</th>
-								<th>Feedbacks</th>
-								<th>Índice de satisfação</th>
-							</tr>
-						</thead>
-
-						<tbody>
-							{stops.map(stop => (
-								<tr key={stop.entityId}>
-									<td>{getStopLabel(stop.entityId, stopsById)}</td>
-									<td><FeedbackMetricTag label={stop.feedbackCount.toLocaleString('pt-PT')} /></td>
-									<td><FeedbackMetricTag label={formatSatisfactionIndex(stop.satisfactionIndex)} status={getFeedbackSatisfactionStatus(stop.satisfactionIndex)} /></td>
+				{!isLoading && !error && stops.length > 0 && (
+					<div className={styles.tableWrapper}>
+						<table className={styles.table}>
+							<thead>
+								<tr>
+									<th>Paragem</th>
+									<th>Feedbacks</th>
+									<th>Índice de satisfação</th>
 								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			)}
+							</thead>
+
+							<tbody>
+								{stops.map(stop => (
+									<tr key={stop.entityId}>
+										<td>{getStopLabel(stop.entityId, stopsById)}</td>
+										<td><FeedbackMetricTag label={stop.feedbackCount.toLocaleString('pt-PT')} /></td>
+										<td><FeedbackMetricTag label={formatSatisfactionIndex(stop.satisfactionIndex)} status={getFeedbackSatisfactionStatus(stop.satisfactionIndex)} /></td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
+			</div>
 		</ContainerWrapper>
 	);
 }
