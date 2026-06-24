@@ -1,6 +1,7 @@
 /* * */
 
 import { simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionValidationV20IntoSimplifiedApexValidation, parseRawApexTransactionValidationV30IntoSimplifiedApexValidation, parseRawApexTransactionValidationV40IntoSimplifiedApexValidation, parseRawApexTransactionValidationV50IntoSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
@@ -38,7 +39,7 @@ export async function processRawApexTransactionValidation(databaseOperation) {
 		if (databaseOperation.fullDocument.version === 'validation-4.0') parseResult = parseRawApexTransactionValidationV40IntoSimplifiedApexValidation(databaseOperation.fullDocument);
 		if (databaseOperation.fullDocument.version === 'validation-5.0') parseResult = parseRawApexTransactionValidationV50IntoSimplifiedApexValidation(databaseOperation.fullDocument);
 		if (!parseResult) return;
-		await writer.write(parseResult);
+		await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 	} catch (error) {
 		Logger.error({ message: `Error transforming APEX Validation: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
 	}

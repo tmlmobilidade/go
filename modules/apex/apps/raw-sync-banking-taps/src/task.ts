@@ -2,6 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexBankingTapsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
@@ -109,7 +110,7 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 				let parseResult: null | SimplifiedApexBankingTap = null;
 				if (sourceDbDocument.version === 'banking-tap-4.0') parseResult = parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap(sourceDbDocument);
 				if (!parseResult) return;
-				await writer.write(parseResult);
+				await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
 				Logger.error({ message: `Error transforming APEX Banking Tap: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}

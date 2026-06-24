@@ -2,6 +2,7 @@
 
 import { rawApexTransactions, simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
@@ -109,7 +110,7 @@ export async function syncApexSales(timeChunk: PerformInTimeChunksItem) {
 				let parseResult: null | SimplifiedApexOnBoardSale = null;
 				if (sourceDbDocument.version === 'sale-3.0') parseResult = parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(sourceDbDocument);
 				if (!parseResult) return;
-				await writer.write(parseResult);
+				await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
 				Logger.error({ message: `Error transforming APEX Sale: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}
