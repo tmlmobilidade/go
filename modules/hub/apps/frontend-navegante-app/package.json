@@ -15,14 +15,14 @@
 	},
 	"dependencies": {
 		"@amplitude/analytics-browser": "2.44.1",
-		"@mantine/carousel": "9.3.2",
-		"@mantine/charts": "9.3.2",
-		"@mantine/core": "9.3.2",
-		"@mantine/dates": "9.3.2",
-		"@mantine/form": "9.3.2",
-		"@mantine/hooks": "9.3.2",
-		"@mantine/modals": "9.3.2",
-		"@mantine/notifications": "9.3.2",
+		"@mantine/carousel": "9.4.0",
+		"@mantine/charts": "9.4.0",
+		"@mantine/core": "9.4.0",
+		"@mantine/dates": "9.4.0",
+		"@mantine/form": "9.4.0",
+		"@mantine/hooks": "9.4.0",
+		"@mantine/modals": "9.4.0",
+		"@mantine/notifications": "9.4.0",
 		"@tabler/icons-react": "3.44.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
@@ -46,7 +46,7 @@
 		"react-lottie-player": "2.1.0",
 		"react-viewport-list": "7.1.2",
 		"sharp": "0.35.2",
-		"swr": "2.4.1"
+		"swr": "2.4.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",

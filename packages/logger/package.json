@@ -40,9 +40,9 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@sentry/core": "10.59.0",
-		"@sentry/nextjs": "10.59.0",
-		"@sentry/node": "10.59.0",
+		"@sentry/core": "10.60.0",
+		"@sentry/nextjs": "10.60.0",
+		"@sentry/node": "10.60.0",
 		"@tmlmobilidade/consts": "*"
 	},
 	"devDependencies": {
