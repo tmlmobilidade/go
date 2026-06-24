@@ -16,6 +16,9 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 	try {
 		//
 
+		console.log('Callback disabled.');
+		return;
+
 		const timer = new Timer();
 
 		//
