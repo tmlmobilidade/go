@@ -210,12 +210,12 @@ db.createRole({
 
 db.updateRole('tracker', {
 	privileges: [
-		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'plans', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'stops', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_shapes', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'hashed_patterns', db: 'production' } },
+		{ actions: ['find', 'update'], resource: { collection: 'rides', db: 'production' } },
 	],
 	roles: [],
 });
