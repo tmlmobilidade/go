@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 
 const DASHBOARD_LINKS = [
 	{ href: '/feedback/lines', id: 'lines', label: 'Ver todas as linhas' },
-	{ id: 'stops', label: 'Ver todas as paragens' },
+	{ href: '/feedback/stops', id: 'stops', label: 'Ver todas as paragens' },
 ];
 
 /* * */

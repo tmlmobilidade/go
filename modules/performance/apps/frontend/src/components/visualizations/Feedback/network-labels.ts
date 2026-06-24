@@ -72,3 +72,7 @@ export function getLineLabel(lineId: string, labels: Map<string, string>) {
 
 	return lineId;
 }
+
+export function getStopLabel(stopId: string, labels: Map<string, string>) {
+	return labels.get(stopId) ?? stopId;
+}
