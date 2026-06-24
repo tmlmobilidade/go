@@ -44,8 +44,6 @@ export async function publishVehiclesPositions() {
 	await Promise.all(
 		latestVehicleEventsData.map(async (vehicleEventData) => {
 			try {
-				// Skip if vehicle position is not from an allowed agency
-				if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(vehicleEventData.agency_id)) return;
 				// Skip if vehicle position does not have a trip_id
 				if (!vehicleEventData.trip_id) return;
 				// Check if there is an active plan for the agency
