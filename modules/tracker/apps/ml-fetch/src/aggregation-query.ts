@@ -240,10 +240,9 @@ function rideProjectHashedRefsStage(): AggregationPipeline<Ride> {
  *
  * Pipeline stages:
  * 1. Filter rides by agency, headsign, and scheduled start-time window.
- * 2. Take the first match (`$limit: 1`).
- * 3. `$lookup` hashed shape and hashed trip.
- * 4. Resolve stop codes per path waypoint from `stops.flags`.
- * 5. Unwind lookups and project `hashed_shape` + `hashed_trip`.
+ * 2. `$lookup` hashed shape and hashed trip.
+ * 3. Resolve stop codes per path waypoint from `stops.flags`.
+ * 4. Unwind lookups and project `hashed_shape` + `hashed_trip`.
  *
  * @param headsign - Destination stop name used as the ride headsign.
  * @param startTimeScheduled - Lower bound (inclusive) for `start_time_scheduled`.
@@ -253,7 +252,6 @@ function rideProjectHashedRefsStage(): AggregationPipeline<Ride> {
 export function aggregationQuery({ endTimeScheduled, headsign, startTimeScheduled }: AggregationQueryParams): AggregationPipeline<Ride> {
 	return [
 		...rideMatchHeadsignWindowStages({ endTimeScheduled, headsign, startTimeScheduled }),
-		{ $limit: 1 },
 		...rideLookupHashedShapeStage(),
 		...rideLookupHashedTripWithStopCodesStages(),
 		...rideUnwindHashedRefsStages(),

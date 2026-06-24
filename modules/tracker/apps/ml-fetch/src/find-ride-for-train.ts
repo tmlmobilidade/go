@@ -43,13 +43,13 @@ export async function findRideForTrain({ destinationId, now }: FindRideForTrainP
 
 	const ridesAggregationResult = await ridesCollection.aggregate(
 		aggregationQuery({
-			endTimeScheduled: now.plus({ hours: 2 }).unix_timestamp,
+			endTimeScheduled: now.plus({ hours: 1 }).unix_timestamp,
 			headsign: destinationStop.name,
-			startTimeScheduled: now.minus({ hours: 2 }).unix_timestamp,
+			startTimeScheduled: now.minus({ hours: 1 }).unix_timestamp,
 		}),
 	).toArray() as AggregationResult[];
 
 	if (ridesAggregationResult.length === 0) return null;
 
-	return ridesAggregationResult[0];
+	return ridesAggregationResult[Math.floor(ridesAggregationResult.length / 2)] ?? null;
 }
