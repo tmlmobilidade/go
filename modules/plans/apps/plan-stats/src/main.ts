@@ -6,7 +6,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { computePlanVkm, logVkmPerPatternSummary } from './compute-plan-vkm.js';
-import { agencyIdToArea, type PlanVkmRow, writeVkmOutputSheets } from './write-vkm-csv.js';
+import { agencyIdToArea, buildPlanStatsOutput } from './write-vkm-csv.js';
 
 export async function main() {
 	//
@@ -15,13 +15,11 @@ export async function main() {
 	// Retrieve plans from the database and iterate on each one.
 	// Change the findMany filter to select specific plan(s), or use {} for all plans.
 
-	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await plans.findMany({ plan_stats: { $exists: false } }, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
 	Logger.info(`Found ${allPlansData.length} Plans to process...`);
-
-	const planRows: PlanVkmRow[] = [];
 
 	for (const [planIndex, planData] of allPlansData.entries()) {
 		//
@@ -52,7 +50,7 @@ export async function main() {
 			result.patterns_skipped_no_extension,
 		);
 
-		planRows.push({
+		const planStats = await buildPlanStatsOutput({
 			agency_id: agencyId,
 			area: agencyIdToArea(agencyId),
 			feed_end_date: planData.gtfs_feed_info.feed_end_date,
@@ -61,14 +59,9 @@ export async function main() {
 			result,
 		});
 
+		await plans.updateById(planData._id, { plan_stats: planStats }, { forceIfLocked: true });
+
+		Logger.success(`Plan stats pushed for plan ${planData._id}.`);
 		Logger.success(`Plan ${planData._id} processed in ${planTimer.get()}.`);
 	}
-
-	if (planRows.length === 0) {
-		return Logger.terminate('No plan VKM results to write. Exiting...');
-	}
-
-	await writeVkmOutputSheets(planRows);
-
-	Logger.success(`CSV outputs written to output/`);
 }
