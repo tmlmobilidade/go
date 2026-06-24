@@ -226,6 +226,7 @@ function rideProjectHashedRefsStage(): AggregationPipeline<Ride> {
 			$project: {
 				hashed_shape: 1,
 				hashed_trip: 1,
+				trip_id: 1,
 			},
 		},
 	] as AggregationPipeline<Ride>;

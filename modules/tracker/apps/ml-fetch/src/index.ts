@@ -136,7 +136,7 @@ const main = async () => {
 						stop_id: nextStop.stop_id,
 						timestamp: now.unix_timestamp,
 						trip: {
-							trip_id: `${line}_${trainId}_${destinationId}`,
+							trip_id: ride.trip_id,
 						},
 						vehicle: {
 							id: trainId,
