@@ -65,6 +65,6 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error in setRidesAsWaiting' });
+		Logger.error({ error, message: `Error in setRidesAsWaiting: ${error?.message ?? 'Unknown error'}` });
 	}
 };
