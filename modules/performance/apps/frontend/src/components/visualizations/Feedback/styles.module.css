@@ -188,6 +188,81 @@
 	white-space: nowrap;
 }
 
+.operatorsTableWrapper {
+	min-width: 0;
+	overflow-x: auto;
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+}
+
+.operatorsTable {
+	min-width: 100%;
+	width: max-content;
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+.operatorsTable th,
+.operatorsTable td {
+	min-width: 160px;
+	max-width: 220px;
+	padding: var(--size-spacing-sm) var(--size-spacing-md);
+	border-right: 1px solid var(--color-system-border-100);
+	text-align: left;
+}
+
+.operatorsTable th:last-child,
+.operatorsTable td:last-child {
+	border-right: none;
+}
+
+.operatorsTable th {
+	background-color: var(--color-system-background-200);
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight-bold);
+}
+
+.operatorsTableMetricHeader,
+.operatorMetricLabel {
+	position: sticky;
+	left: 0;
+	z-index: 1;
+	min-width: 170px;
+	max-width: 170px;
+}
+
+.operatorsTableMetricHeader {
+	z-index: 2;
+}
+
+.operatorsTable td {
+	border-top: 1px solid var(--color-system-border-100);
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-bold);
+}
+
+.operatorMetricLabel {
+	border-top: 1px solid var(--color-system-border-100);
+	background-color: var(--color-system-background-100);
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-xs);
+}
+
+.operatorName {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.operatorMetricValue {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+}
+
 .feedbackMetricTag {
 	display: inline-flex;
 	align-items: center;
