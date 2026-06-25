@@ -6,6 +6,7 @@ import type { FeedbackPreviewResponse } from '../types';
 import { Routes } from '@/routes';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency, type HubLine, type HubStop } from '@tmlmobilidade/types';
+import { useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -61,7 +62,7 @@ function useOperatorApprovalIndexes(previewData: FeedbackPreviewResponse | undef
 export function FeedbackOverview({ data, previewData }: FeedbackOverviewProps) {
 	const { data: linesData } = useSWR<HubLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
 	const { data: stopsData } = useSWR<HubStop[], Error>({ credentials: 'omit', url: Routes.HUB_STOPS });
-	const { data: operatorsData } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
+	const { raw: operatorsData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
 
 	const labels = useFeedbackNetworkLabels(linesData, stopsData);
 	const feedbackData = useFeedbackData(data, previewData, labels);
