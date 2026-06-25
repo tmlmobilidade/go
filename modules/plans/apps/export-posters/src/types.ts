@@ -28,15 +28,15 @@ export interface CalendarExt {
 
 export interface DayTypesExt {
 	day_type_id: string
-	friday: boolean
-	monday: boolean
+	friday: string
+	monday: string
 	name: string
-	saturday: boolean
+	saturday: string
 	sequence_number: number
-	sunday: boolean
-	thursday: boolean
-	tuesday: boolean
-	wednesday: boolean
+	sunday: string
+	thursday: string
+	tuesday: string
+	wednesday: string
 }
 
 export interface DayTypeConfig {
