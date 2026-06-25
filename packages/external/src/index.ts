@@ -3,6 +3,7 @@
 import { CcflClient } from './clients/ccfl/index.js';
 import { CpClient } from './clients/cp/index.js';
 import { CrtmAisaClient } from './clients/crtm-aisa/index.js';
+import { CrtmLaVelozClient } from './clients/crtm-laveloz/index.js';
 import { FertagusClient } from './clients/fertagus/index.js';
 import { MlClient } from './clients/ml/index.js';
 import { MobiClient } from './clients/mobi/index.js';
@@ -19,6 +20,7 @@ import { TtslClient } from './clients/ttsl/index.js';
  * - ccfl: Companhia dos Caminhos de Ferro de Lisboa (CCFL) AKA Carris Munícipal API Client.
  * - cp: Comboios de Portugal (CP) API Client
  * - crtmAisa: Consorcio Regional de Transportes de Madrid (AISACRTM) API Client
+ * - crtmLaVeloz: Consorcio Regional de Transportes de La Veloz (CRTM La Veloz) API Client
  * - mobi: MobiCascais API Client
  * - ml: Metro Lisboa (ML) API Client
  * - tcb: Transportes Colectivos do Barreiro (TCB) API Client
@@ -28,6 +30,7 @@ export const externalClients = Object.freeze({
 	ccfl: CcflClient,
 	cp: CpClient,
 	crtmAisa: CrtmAisaClient,
+	crtmLaVeloz: CrtmLaVelozClient,
 	fertagus: FertagusClient,
 	ml: MlClient,
 	mobi: MobiClient,
