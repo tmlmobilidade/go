@@ -81,7 +81,7 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 	const patternsRequestKey = useMemo(() => {
 		if (missingAgencyIds.length === 0) return null;
 
-		return API_ROUTES.offer.PATTERNS_SHAPES(missingAgencyIds.join(','));
+		return `${API_ROUTES.offer.PATTERNS_SHAPES}?${new URLSearchParams({ agency_ids: missingAgencyIds.join(',') }).toString()}`;
 	}, [missingAgencyIds]);
 
 	//

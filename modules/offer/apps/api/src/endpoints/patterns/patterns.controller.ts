@@ -91,7 +91,10 @@ export class PatternsController {
 	 * Retrieves compact pattern shape data for one agency.
 	 */
 	static async getShapesByAgencies(request: FastifyRequest<{ Querystring: { agency_ids?: string } }>, reply: FastifyReply<PatternShapeMapItem[]>) {
-		const agencyIds = request.query.agency_ids?.split(',').filter(Boolean) ?? [];
+		const agencyIds = (request.query.agency_ids ?? '')
+			.split(',')
+			.map(agencyId => agencyId.trim())
+			.filter(Boolean);
 
 		if (!agencyIds.length) {
 			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'agency_ids is required');
