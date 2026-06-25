@@ -1,11 +1,7 @@
 /* * */
 
-import {
-	GtfsRtOccupancyStatusSchema,
-	GtfsRtPositionSchema,
-	GtfsRtVehicleDescriptorSchema,
-	GtfsRtVehicleStopStatusSchema,
-} from '@/gtfs-rt/index.js';
+import { GtfsRtCongestionLevelSchema, GtfsRtOccupancyStatusSchema } from '@/gtfs-rt/index.js';
+import { OperationalDateSchema } from '@/index.js';
 import { RawVehicleEventBaseSchema } from '@/vehicle-events/raw/raw-vehicle-event-base.js';
 import { z } from 'zod';
 
@@ -19,18 +15,31 @@ export const RawVehicleEventCrtmLaVelozV1PayloadSchema = z.object({
 		timestamp: z.number(),
 	}),
 	vehicle: z.object({
-		current_status: GtfsRtVehicleStopStatusSchema.nullish(),
+		congestion_level: GtfsRtCongestionLevelSchema.nullish(),
+		current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']).nullish(),
+		current_stop_sequence: z.number().nullish(),
 		occupancy_status: GtfsRtOccupancyStatusSchema.nullish(),
-		position: GtfsRtPositionSchema,
+		position: z.object({
+			bearing: z.number().nullish(),
+			latitude: z.number(),
+			longitude: z.number(),
+			odometer: z.number().nullish(),
+			speed: z.number().nullish(),
+		}),
 		stop_id: z.string().nullish(),
 		timestamp: z.number().nullish(),
 		trip: z.object({
-			route_id: z.string().nullish(),
-			schedule_relationship: z.enum(['SCHEDULED', 'ADDED', 'UNSCHEDULED', 'CANCELED']).nullish(),
-			start_date: z.string().nullish(),
+			direction_id: z.number().nullish(),
+			route_id: z.string(),
+			schedule_relationship: z.enum(['SCHEDULED', 'NOT_SCHEDULED', 'CANCELED', 'ADDED']).nullish(),
+			start_date: OperationalDateSchema.nullish(),
+			start_time: z.string().nullish(),
 			trip_id: z.string(),
 		}),
-		vehicle: GtfsRtVehicleDescriptorSchema,
+		vehicle: z.object({
+			id: z.string(),
+			label: z.string().nullish(),
+		}),
 	}),
 });
 
