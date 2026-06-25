@@ -3,7 +3,7 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { useStopsContext } from '@/contexts/Stops.context';
 import { PopulatedPath } from '@tmlmobilidade/types';
-import { MapOverlayPatternShape, MapView, Section, useToast } from '@tmlmobilidade/ui';
+import { MapOverlayPatternShape, type MapOverlayPatternShapeLineData, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -38,6 +38,23 @@ export function ShapeEditorContent() {
 		);
 
 		if (legs?.length) {
+			if (legs.every(leg => leg.encoded_polyline)) {
+				return {
+					features: legs.map(leg => ({
+						encoded_polyline: leg.encoded_polyline ?? '',
+						properties: {
+							color: patternDetailContext.data.typologyData?.color,
+							from_index: leg.from_index,
+							id: `${patternDetailContext.data.id}:${leg.from_index}-${leg.to_index}`,
+							stop_from_index: routePreviewLegSegments.get(`${leg.from_index}:${leg.to_index}`)?.stop_from_index,
+							stop_to_index: routePreviewLegSegments.get(`${leg.from_index}:${leg.to_index}`)?.stop_to_index,
+							to_index: leg.to_index,
+						},
+					})),
+					type: 'EncodedPolylineCollection' as const,
+				} satisfies MapOverlayPatternShapeLineData;
+			}
+
 			return {
 				features: legs.map(leg => ({
 					geometry: {

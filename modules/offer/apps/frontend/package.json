@@ -22,6 +22,7 @@
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
+		"@vis.gl/react-maplibre": "8.1.1",
 		"clsx": "2.1.1",
 		"jszip": "3.10.1",
 		"mantine-form-zod-resolver": "1.3.0",

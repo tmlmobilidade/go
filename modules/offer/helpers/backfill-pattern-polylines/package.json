@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-offer-helpers-seed-lines",
+	"name": "@tmlmobilidade/go-offer-helpers-backfill-pattern-polylines",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -12,23 +12,19 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix",
-		"start": "tsx watch src/index.ts"
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint --fix .",
+		"start": "tsx src/index.ts"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/strings": "*",
-		"@tmlmobilidade/utils": "*",
-		"papaparse": "5.5.4"
+		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.0.0",
-		"@types/papaparse": "5.5.2",
+		"@types/node": "25.9.3",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.4",
 		"typescript": "6.0.3"

@@ -24,6 +24,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rabbitmq": "*",
