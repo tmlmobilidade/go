@@ -17,6 +17,12 @@ server.register(
 		//
 
 		instance.get(
+			'/shapes',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.read]) },
+			PatternsController.getShapesByAgencies,
+		);
+
+		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.read]) },
 			PatternsController.getById,

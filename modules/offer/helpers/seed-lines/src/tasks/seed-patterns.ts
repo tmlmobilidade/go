@@ -1,5 +1,6 @@
 import { type OriginalPatternDetailType, type OriginalPatternType } from '@/original-pattern.type.js';
 import { Dates } from '@tmlmobilidade/dates';
+import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { patterns } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Pattern, PatternSchema } from '@tmlmobilidade/types';
@@ -87,12 +88,10 @@ async function fetchJson<T>(url: string, opts: RequestInit = {}, timeoutMs = FET
 
 		try {
 			return JSON.parse(text) as T;
-		}
-		catch {
+		} catch {
 			throw new Error(`Failed to parse JSON from ${url} | body=${text.slice(0, 300)}`);
 		}
-	}
-	finally {
+	} finally {
 		clearTimeout(t);
 	}
 }
@@ -332,6 +331,17 @@ export async function seedPatternsFromGoV1() {
 				continue;
 			}
 
+			const shapeGeoJson = patternDetail.shape
+				? {
+					geometry: {
+						coordinates: patternDetail.shape.geojson?.geometry?.coordinates || [],
+						type: 'LineString' as const,
+					},
+					properties: {},
+					type: 'Feature' as const,
+				}
+				: undefined;
+
 			const parsed = PatternSchema.safeParse({
 				_id: generateRandomString(),
 				code: normalizeCode((patternDetail).code),
@@ -351,17 +361,11 @@ export async function seedPatternsFromGoV1() {
 					}
 					: undefined,
 				route_id: newRouteId,
-				shape: (patternDetail).shape
+				shape: shapeGeoJson
 					? {
+						encoded_polyline: encodePolylineFromGeoJson(shapeGeoJson),
 						extension: (patternDetail).shape.extension || 0,
-						geojson: {
-							geometry: {
-								coordinates: (patternDetail).shape.geojson?.geometry?.coordinates || [],
-								type: 'LineString',
-							},
-							properties: {},
-							type: 'Feature',
-						},
+						geojson: shapeGeoJson,
 					}
 					: undefined,
 				updated_at: now,
@@ -379,8 +383,7 @@ export async function seedPatternsFromGoV1() {
 
 			preparedPatterns.push(parsed.data);
 			console.log(`✅ prepared pattern: ${parsed.data.code}`);
-		}
-		catch (err) {
+		} catch (err) {
 			console.error(`Error processing pattern ${originalPatternId}:`, err);
 			skipped += 1;
 		}
