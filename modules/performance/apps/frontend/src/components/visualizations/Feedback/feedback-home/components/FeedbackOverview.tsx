@@ -70,7 +70,7 @@ export function FeedbackOverview({ data, previewData }: FeedbackOverviewProps) {
 
 	return (
 		<>
-			<FeedbackGraphCard />
+			<FeedbackGraphCard rows={previewData?.rows} />
 
 			<section className={styles.listsGrid}>
 				<TopFeedbackLines lines={feedbackData.topLines} nameColumnLabel="Linha" title="Linhas com mais feedbacks" />
