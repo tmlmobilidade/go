@@ -3,6 +3,7 @@
 .container {
 	gap: 0;
 	justify-content: flex-start;
+	min-height: 0;
 	overflow: hidden;
 }
 
@@ -16,6 +17,9 @@
 }
 
 .content {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
 	padding: var(--size-spacing-md);
 }
 
@@ -32,11 +36,13 @@
 }
 
 .tableWrapper {
-	overflow-x: auto;
+	max-height: clamp(320px, calc(100vh - 320px), 720px);
+	overflow: auto;
 }
 
 .table {
 	width: 100%;
+	min-width: 640px;
 	border-collapse: collapse;
 	color: var(--color-system-text-100);
 	font-size: var(--font-size-sm);
@@ -50,6 +56,10 @@
 }
 
 .table th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background-color: var(--color-system-background-100);
 	color: var(--color-system-text-200);
 	font-weight: var(--font-weight-bold);
 }
