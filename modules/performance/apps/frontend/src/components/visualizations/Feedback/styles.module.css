@@ -22,6 +22,12 @@
 	background-color: var(--color-system-background-200);
 }
 
+.feedbackCardHeaderWithControls {
+	justify-content: space-between;
+	gap: var(--size-spacing-md);
+	min-height: 82px;
+}
+
 .feedbackCardContent {
 	display: flex;
 	flex-direction: column;
@@ -36,6 +42,21 @@
 }
 
 .cardTitle {
+	margin: 0;
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-bold);
+}
+
+.timelineFilter {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	align-items: flex-start;
+	flex-shrink: 0;
+}
+
+.timelineFilter h3 {
 	margin: 0;
 	color: var(--color-system-text-100);
 	font-size: var(--font-size-md);
@@ -66,6 +87,10 @@
 	min-height: 8px;
 	border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
 	background-color: var(--color-primary);
+}
+
+.timelineChart {
+	width: 100%;
 }
 
 .categoryList,
@@ -307,5 +332,10 @@
 	.summaryGrid,
 	.listsGrid {
 		grid-template-columns: 1fr;
+	}
+
+	.feedbackCardHeaderWithControls {
+		align-items: flex-start;
+		flex-direction: column;
 	}
 }
