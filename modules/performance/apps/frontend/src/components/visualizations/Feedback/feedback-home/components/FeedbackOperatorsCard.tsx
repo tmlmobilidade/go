@@ -7,7 +7,7 @@ import styles from '../../styles.module.css';
 
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../../feedback-metrics';
 import { FeedbackMetricTag } from '../../FeedbackMetricTag';
-import { getOperatorCode, getOperatorName } from '../utils/operators';
+import { getOperatorName } from '../utils/operators';
 
 /* * */
 
@@ -44,9 +44,9 @@ export function FeedbackOperatorsCard({ operatorApprovalIndexes, operators }: Fe
 					<table className={styles.operatorsTable}>
 						<thead>
 							<tr>
-								<th className={styles.operatorsTableMetricHeader} scope="col">Métrica</th>
+								<th className={styles.operatorsTableMetricHeader} scope="col">ID</th>
 								{operators.map(operator => (
-									<th key={operator._id} scope="col">{getOperatorCode(operator)}</th>
+									<th key={operator._id} scope="col">{operator._id}</th>
 								))}
 							</tr>
 						</thead>

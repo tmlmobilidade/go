@@ -7,13 +7,6 @@ import { getAgencyId, getEntityId, getFeedbackCount, LINE_FIELD_CANDIDATES } fro
 
 /* * */
 
-const OPERATOR_APPROVAL_SOURCE_AGENCY_IDS: Record<string, string[]> = {
-	51: ['41'],
-	52: ['42'],
-	53: ['43'],
-	54: ['44'],
-};
-
 interface LineApprovalAccumulator {
 	agencyId?: string
 	happyCount: number
@@ -102,26 +95,6 @@ function collectLineApprovals(rows: Record<string, unknown>[]) {
 	return lineApprovals;
 }
 
-function applyOperatorApprovalSourceAliases(operatorApprovalTotals: Map<string, OperatorApprovalTotal>) {
-	for (const [operatorId, sourceAgencyIds] of Object.entries(OPERATOR_APPROVAL_SOURCE_AGENCY_IDS)) {
-		if (operatorApprovalTotals.has(operatorId)) continue;
-
-		const sourceTotals = sourceAgencyIds
-			.map(sourceAgencyId => operatorApprovalTotals.get(sourceAgencyId))
-			.filter((total): total is OperatorApprovalTotal => Boolean(total));
-
-		if (sourceTotals.length === 0) continue;
-
-		const lineCount = sourceTotals.reduce((total, sourceTotal) => total + sourceTotal.lineCount, 0);
-		const satisfactionTotal = sourceTotals.reduce((total, sourceTotal) => total + sourceTotal.satisfactionTotal, 0);
-
-		operatorApprovalTotals.set(operatorId, {
-			lineCount,
-			satisfactionTotal,
-		});
-	}
-}
-
 function toOperatorApprovalIndexes(operatorApprovalTotals: Map<string, OperatorApprovalTotal>) {
 	return new Map<string, number>(
 		Array.from(operatorApprovalTotals.entries()).map(([agencyId, operatorApproval]) => [
@@ -153,8 +126,6 @@ export function buildOperatorApprovalIndexes(rows: Record<string, unknown>[], li
 			satisfactionTotal: (current?.satisfactionTotal ?? 0) + satisfactionIndex,
 		});
 	}
-
-	applyOperatorApprovalSourceAliases(operatorApprovalTotals);
 
 	return toOperatorApprovalIndexes(operatorApprovalTotals);
 }
