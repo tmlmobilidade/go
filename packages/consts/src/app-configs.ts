@@ -176,7 +176,7 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 	hub: {
 		dev: {
 			api_port: 52100,
-			api_url: 'http://localhost:52000',
+			api_url: 'http://localhost:52100',
 			cors_origin: true,
 			frontend_navegante_app_url: 'http://localhost:51101/hub',
 			frontend_port: 51100,

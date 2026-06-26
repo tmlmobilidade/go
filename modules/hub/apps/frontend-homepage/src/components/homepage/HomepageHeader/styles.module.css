@@ -1,0 +1,111 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	position: sticky;
+	top: 0;
+	z-index: 20;
+	width: min(100%, var(--hp-max-width));
+	padding: var(--size-spacing-md) 0 0;
+	margin: 0 auto;
+	pointer-events: none;
+}
+
+/* * */
+/* INNER */
+
+.inner {
+	display: flex;
+	gap: var(--size-spacing-md);
+	align-items: center;
+	justify-content: space-between;
+	height: 56px;
+	padding: 0 var(--size-spacing-md);
+	margin: 0 auto;
+	pointer-events: auto;
+	background: rgb(11 13 20 / 86%);
+	border: 1px solid var(--hp-on-dark-border);
+	border-radius: var(--border-radius-md);
+	box-shadow: 0 18px 80px rgb(0 0 0 / 28%);
+	backdrop-filter: blur(20px);
+}
+
+/* * */
+/* BRAND */
+
+.brand {
+	display: inline-flex;
+	flex-shrink: 0;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+	min-width: max-content;
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-bold);
+	color: var(--hp-on-dark-100);
+}
+
+.logoMark {
+	position: relative;
+	display: inline-flex;
+	flex-direction: column;
+	gap: 5px;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	background: var(--hp-on-dark-100);
+	border: 1px solid rgb(255 255 255 / 18%);
+	border-radius: var(--border-radius-sm);
+}
+
+.logoMark span {
+	position: relative;
+	width: 14px;
+	height: 3px;
+	margin-left: 5px;
+	background: var(--hp-surface-900);
+	border-radius: var(--border-radius-xl);
+}
+
+.logoMark span::after {
+	position: absolute;
+	top: -1px;
+	right: -2px;
+	width: 5px;
+	height: 5px;
+	content: "";
+	background: var(--hp-brand-yellow);
+	border-radius: var(--border-radius-full);
+}
+
+/* * */
+/* ACTIONS */
+
+.actions {
+	display: flex;
+	flex-shrink: 0;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.actions :global(button) {
+	cursor: pointer;
+}
+
+/* * */
+/* RESPONSIVE */
+
+@media (width <= 720px) {
+	.container {
+		padding: var(--size-spacing-sm) 0 0;
+	}
+
+	.inner {
+		height: 52px;
+		padding: 0 var(--size-spacing-sm);
+	}
+
+	.actions {
+		gap: 4px;
+	}
+}

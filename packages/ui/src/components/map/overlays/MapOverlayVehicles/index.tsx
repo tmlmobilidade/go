@@ -16,6 +16,7 @@ export const MapOverlayVehiclesInteractiveLayerId = 'default-layer-vehicles-regu
 /* * */
 
 interface Props {
+	display?: 'default' | 'ambient'
 	presentBeforeId?: string
 	showCounter?: 'always' | 'positive'
 	vehiclesData?: GeoJSON.FeatureCollection<GeoJSON.Point>
@@ -109,7 +110,7 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 
 /* * */
 
-export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection }: Props) {
+export function MapOverlayVehicles({ display = 'default', presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection }: Props) {
 	//
 
 	//
@@ -182,43 +183,6 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 
 				<Layer
 					beforeId={presentBeforeId}
-					id="default-layer-vehicles-delay"
-					source="default-source-vehicles"
-					type="symbol"
-					layout={{
-						'icon-allow-overlap': true,
-						'icon-anchor': 'center',
-						'icon-ignore-placement': true,
-						'icon-image': 'cmet-bus-delay',
-						'icon-offset': [0, 0],
-						'icon-rotate': ['get', 'bearing'],
-						'icon-rotation-alignment': 'map',
-						'icon-size': ['interpolate',
-							['linear'],
-							['zoom'],
-							10,
-							0.05,
-							20,
-							0.15,
-						],
-						'symbol-placement': 'point',
-					}}
-					paint={{
-						'icon-opacity': [
-							'interpolate',
-							['linear'],
-							['get',
-								'delay'],
-							20,
-							0,
-							40,
-							1,
-						],
-					}}
-				/>
-
-				<Layer
-					beforeId="default-layer-vehicles-delay"
 					id="default-layer-vehicles-regular"
 					source="default-source-vehicles"
 					type="symbol"
@@ -229,47 +193,85 @@ export function MapOverlayVehicles({ presentBeforeId, showCounter, vehiclesData 
 						'icon-image': [
 							'match',
 							['to-string', ['get', 'agency_id']],
-							'4',
-							'ttsl-boat-regular',
-							'3',
-							'ttsl-boat-regular',
-							'1',
-							'carris-bus-regular',
-							'21',
-							'mobi-bus-regular',
-							'cmet-bus-regular',
+							'1', 'map-vehicle-ccfl-bus',
+							'2', 'map-vehicle-ml-train',
+							'3', 'map-vehicle-cp-train',
+							'4', 'map-vehicle-ttsl-boat',
+							'8', 'map-vehicle-tcb-bus',
+							'15', 'map-vehicle-fertagus-train',
+							'16', 'map-vehicle-mts-tram',
+							'21', 'map-vehicle-mobi-bus',
+							'41', 'map-vehicle-cmet-bus',
+							'42', 'map-vehicle-cmet-bus',
+							'43', 'map-vehicle-cmet-bus',
+							'44', 'map-vehicle-cmet-bus',
+							'map-vehicle-cmet-bus',
 						],
 						'icon-offset': [0, 0],
 						'icon-rotate': ['get', 'bearing'],
 						'icon-rotation-alignment': 'map',
-						'icon-size': ['interpolate',
-							['linear'],
-							['zoom'],
-							10,
-							['match',
-								['to-string', ['get', 'agency_id']],
-								'1',
-								0.0475,
-								'21',
-								0.0475,
+						'icon-size': display === 'ambient'
+							? [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								8,
+								0.08,
+								10,
+								0.12,
+								13,
+								0.22,
+								16,
+								0.38,
+							]
+							: [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								10,
 								0.05,
+								30,
+								0.5,
 							],
-							20,
-							['match',
-								['to-string', ['get', 'agency_id']],
-								'1',
-								0.1425,
-								'21',
-								0.1425,
-								0.15,
-							],
-						],
 						'symbol-placement': 'point',
 					}}
 					paint={{
-						'icon-opacity': ['get', 'opacity'],
+						'icon-opacity': display === 'ambient'
+							? ['get', 'opacity']
+							: [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								12,
+								0,
+								13,
+								['get', 'opacity'],
+							],
 					}}
 				/>
+
+				{display === 'default' && (
+				<Layer
+					beforeId="default-layer-vehicles-regular"
+					id="default-layer-vehicles-dot"
+					source="default-source-vehicles"
+					type="circle"
+					paint={{
+						'circle-color': '#00CD32',
+						'circle-opacity': [
+							'interpolate',
+							['linear'],
+							['zoom'],
+							12,
+							['get', 'opacity'],
+							13,
+							0,
+						],
+						'circle-pitch-alignment': 'map',
+						'circle-radius': 1.8,
+					}}
+				/>
+				)}
 
 			</Source>
 

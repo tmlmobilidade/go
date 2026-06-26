@@ -1,0 +1,15 @@
+/* * */
+/* HOMEPAGE RESET */
+
+:root {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	scroll-behavior: smooth;
+	text-rendering: geometricprecision;
+}
+
+body {
+	min-height: 100vh;
+	color: var(--hp-on-dark-100);
+	background: var(--hp-surface-900);
+}

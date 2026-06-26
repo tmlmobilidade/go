@@ -1,0 +1,41 @@
+/* * *
+ * WHAT IS THIS?
+ * Marketing surface tokens for the GO public homepage.
+ * The homepage uses a deliberate dark hero + light product band that does not
+ * map onto the app light/dark themes, so the surface palette is defined here.
+ * Everything else (spacing, radius, font, accent) reuses the shared
+ * @tmlmobilidade/ui design tokens loaded by BaseProvider.
+ */
+
+:root {
+
+	/* SURFACE / DARK */
+	--hp-surface-900: #07080d;
+	--hp-surface-800: #0d1119;
+	--hp-surface-700: #121723;
+
+	/* SURFACE / LIGHT (aligned with system background tokens) */
+	--hp-surface-light: var(--color-system-background-200);
+
+	/* TEXT ON DARK */
+	--hp-on-dark-100: #f8fafc;
+	--hp-on-dark-200: rgb(235 240 248 / 72%);
+
+	/* LINES & FILLS ON DARK */
+	--hp-on-dark-border: rgb(255 255 255 / 12%);
+	--hp-on-dark-fill: rgb(255 255 255 / 8%);
+
+	/* BRAND & STATUS */
+	--hp-brand-yellow: #ffdd01;
+	--hp-accent: var(--color-primary);
+	--hp-live: #00cd32;
+
+	/* LAYOUT
+	 * Gutter lives on section shells (heroForeground, productsSection).
+	 * Inner blocks use width: min(100%, --hp-max-width) so columns align.
+	 */
+	--hp-max-width: 1320px;
+	--hp-page-gutter: clamp(16px, 2.4vw, 40px);
+	--hp-map-chrome-bottom: var(--size-spacing-lg);
+	--hp-map-controls-height: 82px;
+}
