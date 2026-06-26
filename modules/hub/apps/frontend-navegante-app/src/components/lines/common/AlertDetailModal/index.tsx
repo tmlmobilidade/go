@@ -1,10 +1,9 @@
 'use client';
 
-import type { HubAlert } from '@tmlmobilidade/types';
-
 import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
 import { Modal, ModalBody } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
+import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 
 import styles from './styles.module.css';
 
