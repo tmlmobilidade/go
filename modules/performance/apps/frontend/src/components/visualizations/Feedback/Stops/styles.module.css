@@ -32,7 +32,7 @@
 
 .text {
 	color: var(--color-system-text-200);
-	font-size: var(--font-size-sm);
+	font-size: var(--font-size-md);
 }
 
 .tableWrapper {
@@ -45,7 +45,7 @@
 	min-width: 640px;
 	border-collapse: collapse;
 	color: var(--color-system-text-100);
-	font-size: var(--font-size-sm);
+	font-size: var(--font-size-md);
 }
 
 .table th,

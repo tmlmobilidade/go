@@ -20,6 +20,9 @@ interface TopFeedbackEntitiesProps {
 /* * */
 
 export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedbackEntitiesProps) {
+	//
+	// A. Render components
+
 	return (
 		<ContainerWrapper className={styles.feedbackCard} padding="0">
 			<div className={styles.feedbackCardHeader}>

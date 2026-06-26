@@ -149,14 +149,24 @@ function formatTimelineTick(value: string, timelineBars: FeedbackTimelineBar[]) 
 /* * */
 
 export function FeedbackGraphCard({ rows }: FeedbackGraphCardProps) {
+	//
+	// A. Setup variables
+
 	const [selectedRange, setSelectedRange] = useState<FeedbackTimelineRange>('week');
 	const timelineBars = useMemo(() => buildFeedbackTimeline(rows, selectedRange), [rows, selectedRange]);
 	const xAxisFormatter = useMemo(() => {
 		return (value: string) => formatTimelineTick(value, timelineBars);
 	}, [timelineBars]);
+
+	//
+	// B. Handle actions
+
 	const handleChangeRange = (value: FeedbackTimelineRange) => {
 		setSelectedRange(value);
 	};
+
+	//
+	// C. Render components
 
 	return (
 		<ContainerWrapper className={styles.feedbackCard} height={360} padding="0">

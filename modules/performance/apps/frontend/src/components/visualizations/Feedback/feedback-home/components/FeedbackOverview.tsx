@@ -26,15 +26,26 @@ interface FeedbackOverviewProps {
 /* * */
 
 export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
+	//
+	// A. Fetch data
+
 	const { data: linesData } = useSWR<HubLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
 	const { data: stopsData } = useSWR<HubStop[], Error>({ credentials: 'omit', url: Routes.HUB_STOPS });
 	const { raw: operatorsData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
 
+	//
+	// B. Transform data
+
 	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
 	const stopsById = useMemo(() => buildStopLabelsById(stopsData), [stopsData]);
 	const feedbackData = useMemo(() => getFeedbackOverviewData(rows, linesById, stopsById), [linesById, rows, stopsById]);
-	const operators = useMemo(() => sortOperatorsByCode(operatorsData), [operatorsData]);
-	const operatorApprovalIndexes = useMemo(() => buildOperatorApprovalIndexes(rows, linesData), [linesData, rows]);
+	const operatorApprovalIndexes = useMemo(() => buildOperatorApprovalIndexes(rows), [rows]);
+	const operators = useMemo(() => {
+		return sortOperatorsByCode(operatorsData).filter(operator => operatorApprovalIndexes.has(operator._id));
+	}, [operatorApprovalIndexes, operatorsData]);
+
+	//
+	// C. Render components
 
 	return (
 		<>
@@ -45,7 +56,9 @@ export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
 				<TopFeedbackEntities items={feedbackData.topStops} nameColumnLabel="Paragem" title="Paragens com mais feedbacks" />
 			</section>
 
-			<FeedbackOperatorsCard operatorApprovalIndexes={operatorApprovalIndexes} operators={operators} />
+			{operators.length > 0 && (
+				<FeedbackOperatorsCard operatorApprovalIndexes={operatorApprovalIndexes} operators={operators} />
+			)}
 		</>
 	);
 }
