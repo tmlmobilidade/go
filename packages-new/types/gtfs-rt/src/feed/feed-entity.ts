@@ -1,7 +1,7 @@
 /* * */
 
-import { GtfsRtAlertSchema } from '@/gtfs-rt/alert.js';
-import { GtfsRtVehiclePositionSchema } from '@/gtfs-rt/vehicle-position.js';
+import { GtfsRtAlertSchema } from '@/alert/alert.js';
+import { GtfsRtVehiclePositionSchema } from '@/vehicle-position/vehicle-position.js';
 import { z } from 'zod';
 
 /* * */

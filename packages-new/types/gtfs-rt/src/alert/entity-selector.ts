@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsRtTripDescriptorSchema } from '@/gtfs-rt/trip-descriptor.js';
+import { GtfsRtTripDescriptorSchema } from '@/shared/trip-descriptor.js';
 import { z } from 'zod';
 
 /* * */

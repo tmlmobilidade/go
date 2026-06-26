@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsRtTranslationSchema } from '@/gtfs-rt/translation.js';
+import { GtfsRtTranslationSchema } from '@/alert/translation.js';
 import { z } from 'zod';
 
 /* * */

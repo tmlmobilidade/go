@@ -1,12 +1,12 @@
 /* * */
 
-import { GtfsRtCauseSchema } from '@/gtfs-rt/cause.js';
-import { GtfsRtEffectSchema } from '@/gtfs-rt/effect.js';
-import { GtfsRtEntitySelectorSchema } from '@/gtfs-rt/entity-selector.js';
-import { GtfsRtSeverityLevelSchema } from '@/gtfs-rt/severity-level.js';
-import { GtfsRtTimeRangeSchema } from '@/gtfs-rt/time-range.js';
-import { GtfsRtTranslatedImageSchema } from '@/gtfs-rt/translated-image.js';
-import { GtfsRtTranslatedStringSchema } from '@/gtfs-rt/translated-string.js';
+import { GtfsRtCauseSchema } from '@/alert/alert-cause.js';
+import { GtfsRtEffectSchema } from '@/alert/alert-effect.js';
+import { GtfsRtEntitySelectorSchema } from '@/alert/entity-selector.js';
+import { GtfsRtSeverityLevelSchema } from '@/alert/severity-level.js';
+import { GtfsRtTimeRangeSchema } from '@/alert/time-range.js';
+import { GtfsRtTranslatedImageSchema } from '@/alert/translated-image.js';
+import { GtfsRtTranslatedStringSchema } from '@/alert/translated-string.js';
 import { z } from 'zod';
 
 /* * */

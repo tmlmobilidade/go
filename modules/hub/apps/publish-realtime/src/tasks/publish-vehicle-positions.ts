@@ -2,10 +2,11 @@
 
 import { apiCache, simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { HubGtfsRtFeedEntity, HubGtfsRtFeedMessage, HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
+import { validateCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HubPlan, type HubVehiclePosition, HubVehiclePositionSchema, validateCalendarDate } from '@tmlmobilidade/types';
 import { getPublicLineId, getPublicPatternId, getPublicTripId, getPublicVehicleId } from '@tmlmobilidade/utils';
 
 /* * */
@@ -39,7 +40,7 @@ export async function publishVehiclesPositions() {
 
 	const latestVehicleEventsData = await simplifiedVehicleEventsNew.getPositions();
 
-	const vehiclePositions: HubVehiclePosition[] = [];
+	const vehiclePositionsJson: HubVehiclePosition[] = [];
 
 	await Promise.all(
 		latestVehicleEventsData.map(async (vehicleEventData) => {
@@ -67,21 +68,63 @@ export async function publishVehiclesPositions() {
 				const parsedVehiclePosition = HubVehiclePositionSchema.safeParse(vehiclePositionData);
 				if (!parsedVehiclePosition.success) throw new Error(`Error parsing vehicle position ID: ${vehicleEventData._id}: ${parsedVehiclePosition.error.message}`);
 				// Add the vehicle position to the list
-				vehiclePositions.push(parsedVehiclePosition.data);
+				vehiclePositionsJson.push(parsedVehiclePosition.data);
 			} catch (error) {
 				Logger.error({ message: `Error parsing vehicle position ID: ${vehicleEventData._id}: ${(error as Error).message}` });
 			}
 		}),
 	);
 
-	Logger.info({ message: `Retrieved ${vehiclePositions.length} latest vehicles positions...` });
+	Logger.info({ message: `Retrieved ${vehiclePositionsJson.length} latest vehicles positions...` });
 
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:realtime:vehicles:positions:json', JSON.stringify(vehiclePositions));
+	await apiCache.set('hub:v1:realtime:vehicles:positions:json', JSON.stringify(vehiclePositionsJson));
 
 	Logger.success(`Finished publishing latest vehicles positions (${globalTimer.get()})`);
+
+	//
+	// Convert the vehicle positions to GTFS-RT feed entities
+
+	const vehiclePositionsGtfsRt: HubGtfsRtFeedMessage = {
+		entity: [],
+		header: {
+			gtfs_realtime_version: '2.0',
+			incrementality: 'FULL_DATASET',
+			timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+		},
+	};
+
+	vehiclePositionsGtfsRt.entity = vehiclePositionsJson.map((vehiclePosition) => {
+		const entity: HubGtfsRtFeedEntity = {
+			id: vehiclePosition._id,
+			vehicle: {
+				current_status: vehiclePosition.current_status,
+				position: {
+					bearing: vehiclePosition.bearing,
+					latitude: vehiclePosition.latitude,
+					longitude: vehiclePosition.longitude,
+					speed: vehiclePosition.speed,
+				},
+				stop_id: vehiclePosition.stop_id,
+				timestamp: vehiclePosition.created_at,
+				trip: {
+					direction_id: vehiclePosition.direction_id,
+					route_id: vehiclePosition.route_id,
+					schedule_relationship: '',
+					trip_id: vehiclePosition.trip_id,
+				},
+				vehicle: {
+					id: vehiclePosition.id,
+					label: event.id.substring(3),
+					license_plate: event.license_plate,
+					wheelchair_accessible: event.wheelchair_accessible ? 'WHEELCHAIR_ACCESSIBLE' : 'NO_VALUE',
+				},
+			},
+		};
+		return entity;
+	});
 
 	//
 };

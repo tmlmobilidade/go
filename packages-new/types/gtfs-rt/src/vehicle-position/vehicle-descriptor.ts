@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsRtWheelchairAccessibleSchema } from '@/gtfs-rt/wheelchair-accessible.js';
+import { GtfsRtWheelchairAccessibleSchema } from '@/shared/wheelchair-accessible.js';
 import { z } from 'zod';
 
 /* * */

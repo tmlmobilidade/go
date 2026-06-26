@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/types",
+	"name": "@tmlmobilidade/go-types-gtfs-rt",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -34,10 +34,6 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-types-gtfs-rt": "*",
-		"@tmlmobilidade/go-types-shared": "*",
-		"@types/geojson": "7946.0.16",
-		"gtfs-types": "5.1.0",
 		"luxon": "3.7.2",
 		"zod": "3.25.76"
 	},

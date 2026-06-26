@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsRtLocalizedImageSchema } from '@/gtfs-rt/localized-image.js';
+import { GtfsRtLocalizedImageSchema } from '@/alert/localized-image.js';
 import { z } from 'zod';
 
 /* * */

@@ -1,7 +1,7 @@
 /* * */
 
-import { GtfsRtFeedEntitySchema } from '@/gtfs-rt/feed-entity.js';
-import { GtfsRtFeedHeaderSchema } from '@/gtfs-rt/feed-header.js';
+import { GtfsRtFeedEntitySchema } from '@/feed/feed-entity.js';
+import { GtfsRtFeedHeaderSchema } from '@/feed/feed-header.js';
 import { z } from 'zod';
 
 /* * */

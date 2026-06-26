@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsRtOccupancyStatusSchema } from '@/gtfs-rt/occupancy-status.js';
+import { GtfsRtOccupancyStatusSchema } from '@/vehicle-position/occupancy-status.js';
 import { z } from 'zod';
 
 /* * */
