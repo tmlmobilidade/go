@@ -1,7 +1,7 @@
 'use client';
 
 import { DataProviders } from '@/providers/data-providers';
-import { Button, closeModal, Divider, Grid, Label, openModal, Pane, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
+import { AgenciesContextProvider, Button, closeModal, Divider, ExportsContextProvider, Grid, Label, MeContextProvider, openModal, Pane, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 
 import { AlertsListExportContextProvider, useAlertsListExportContext } from '../AlertListExport.context';
 import { AlertsListContextProvider } from '../AlertsList.context';
@@ -67,11 +67,17 @@ export const openAlertListExportModal = () => {
 	openModal({
 		children: (
 			<DataProviders>
-				<AlertsListContextProvider>
-					<AlertsListExportContextProvider>
-						<AlertListExportModal />
-					</AlertsListExportContextProvider>
-				</AlertsListContextProvider>
+				<MeContextProvider>
+					<AgenciesContextProvider>
+						<ExportsContextProvider>
+							<AlertsListContextProvider>
+								<AlertsListExportContextProvider>
+									<AlertListExportModal />
+								</AlertsListExportContextProvider>
+							</AlertsListContextProvider>
+						</ExportsContextProvider>
+					</AgenciesContextProvider>
+				</MeContextProvider>
 			</DataProviders>
 		),
 		closeOnClickOutside: false,

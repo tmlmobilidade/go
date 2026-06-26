@@ -56,16 +56,13 @@ export const AlertExportPropertiesSchema = z.object({
 		active_period_start_date: z.string().optional().nullable(),
 		agency_ids: z.array(z.string()).optional().nullable(),
 
-		/***/
+		alert_ids: z.array(z.string()),
 		cause: z.array(z.string()).optional().nullable(),
 		effect: z.array(z.string()).optional().nullable(),
+
 		end_date: z.string().optional().nullable(),
 
-		/***/
 		municipality_ids: z.array(z.string()).optional().nullable(),
-
-		/***/
-		alert_ids: z.array(z.string()),
 		publish_status: z.array(z.string()).optional().nullable(),
 
 		search: z.string().optional().nullable(),
