@@ -2,6 +2,7 @@
 
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { Layer, Source } from '@vis.gl/react-maplibre';
+import { type DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 import { useEffect, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -108,6 +109,80 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 	};
 }
 
+interface VehicleIconSize {
+	zoom10: number
+	zoom20: number
+}
+
+const DEFAULT_VEHICLE_ICON_SIZE: VehicleIconSize = {
+	zoom10: 0.09,
+	zoom20: 0.26,
+};
+
+const AMBIENT_VEHICLE_ICON_SIZE: VehicleIconSize = {
+	zoom10: 0.07,
+	zoom20: 0.20,
+};
+
+const VEHICLE_ICON_SIZE_BY_AGENCY: Array<{
+	agencyIds: readonly number[]
+	size: VehicleIconSize
+}> = [
+	{
+		agencyIds: [1],
+		size: { zoom10: 0.085, zoom20: 0.24 },
+	},
+	{
+		agencyIds: [21],
+		size: { zoom10: 0.085, zoom20: 0.24 },
+	},
+];
+
+const AGENCY_ID_INPUT = ['to-string', ['get', 'agency_id']];
+
+function buildAgencyMatch<T extends number | string>(
+	entries: ReadonlyArray<{ agencyIds: readonly number[], value: T }>,
+	defaultValue: T,
+) {
+	const cases: (number | string | T)[] = [];
+
+	for (const { agencyIds, value } of entries) {
+		for (const agencyId of agencyIds) {
+			cases.push(String(agencyId), value);
+		}
+	}
+
+	return ['match', AGENCY_ID_INPUT, ...cases, defaultValue];
+}
+
+function buildVehicleIconSizeExpression(display: 'ambient' | 'default') {
+	const baseSize = display === 'ambient'
+		? AMBIENT_VEHICLE_ICON_SIZE
+		: DEFAULT_VEHICLE_ICON_SIZE;
+
+	const zoom10Cases = VEHICLE_ICON_SIZE_BY_AGENCY.map(({ agencyIds, size }) => ({
+		agencyIds,
+		value: display === 'ambient' ? size.zoom10 * 0.78 : size.zoom10,
+	}));
+
+	const zoom20Cases = VEHICLE_ICON_SIZE_BY_AGENCY.map(({ agencyIds, size }) => ({
+		agencyIds,
+		value: display === 'ambient' ? size.zoom20 * 0.78 : size.zoom20,
+	}));
+
+	return [
+		'interpolate',
+		['linear'],
+		['zoom'],
+		10,
+		buildAgencyMatch(zoom10Cases, baseSize.zoom10),
+		16,
+		display === 'ambient' ? 0.14 : 0.19,
+		20,
+		buildAgencyMatch(zoom20Cases, baseSize.zoom20),
+	] as unknown as DataDrivenPropertyValueSpecification<number>;
+}
+
 /* * */
 
 export function MapOverlayVehicles({ display = 'default', presentBeforeId, showCounter, vehiclesData = baseGeoJsonFeatureCollection }: Props) {
@@ -210,29 +285,7 @@ export function MapOverlayVehicles({ display = 'default', presentBeforeId, showC
 						'icon-offset': [0, 0],
 						'icon-rotate': ['get', 'bearing'],
 						'icon-rotation-alignment': 'map',
-						'icon-size': display === 'ambient'
-							? [
-								'interpolate',
-								['linear'],
-								['zoom'],
-								8,
-								0.08,
-								10,
-								0.12,
-								13,
-								0.22,
-								16,
-								0.38,
-							]
-							: [
-								'interpolate',
-								['linear'],
-								['zoom'],
-								10,
-								0.05,
-								30,
-								0.5,
-							],
+						'icon-size': buildVehicleIconSizeExpression(display),
 						'symbol-placement': 'point',
 					}}
 					paint={{
