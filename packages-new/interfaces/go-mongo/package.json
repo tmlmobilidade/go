@@ -34,6 +34,14 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-clients-mongo": "*",
+		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/utils": "*",
+		"bcryptjs": "3.0.3",
 		"luxon": "3.7.2",
 		"zod": "3.25.76"
 	},

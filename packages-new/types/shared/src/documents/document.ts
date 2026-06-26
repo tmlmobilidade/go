@@ -13,3 +13,5 @@ export const DocumentSchema = z.object({
 	updated_at: UnixTimestampSchema,
 	updated_by: z.string().optional(),
 });
+
+export type GoMongoDocument = z.infer<typeof DocumentSchema>;
