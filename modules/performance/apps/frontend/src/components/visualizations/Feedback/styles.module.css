@@ -97,7 +97,7 @@
 	padding: var(--size-spacing-sm) 0;
 	border-bottom: 1px solid var(--color-system-border-100);
 	color: var(--color-system-text-200);
-	font-size: var(--font-size-xs);
+	font-size: var(--font-size-sm);
 	font-weight: var(--font-weight-bold);
 }
 
@@ -169,7 +169,7 @@
 .operatorsTable th {
 	background-color: var(--color-system-background-200);
 	color: var(--color-system-text-200);
-	font-size: var(--font-size-xs);
+	font-size: var(--font-size-sm);
 	font-weight: var(--font-weight-bold);
 }
 
@@ -189,7 +189,7 @@
 .operatorsTable td {
 	border-top: 1px solid var(--color-system-border-100);
 	color: var(--color-system-text-100);
-	font-size: var(--font-size-sm);
+	font-size: var(--font-size-md);
 	font-weight: var(--font-weight-bold);
 }
 
@@ -197,11 +197,24 @@
 	border-top: 1px solid var(--color-system-border-100);
 	background-color: var(--color-system-background-100);
 	color: var(--color-system-text-200);
-	font-size: var(--font-size-xs);
+	font-size: var(--font-size-sm);
+}
+
+.operatorIdentity {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-sm);
+	min-width: 0;
+}
+
+.operatorLogo {
+	flex: 0 0 auto;
+	object-fit: contain;
 }
 
 .operatorName {
 	display: block;
+	min-width: 0;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -248,7 +261,7 @@
 }
 
 .feedbackMetricTagLabel {
-	font-size: var(--font-size-sm);
+	font-size: var(--font-size-md);
 	font-weight: var(--font-weight-bold);
 	line-height: 1;
 }

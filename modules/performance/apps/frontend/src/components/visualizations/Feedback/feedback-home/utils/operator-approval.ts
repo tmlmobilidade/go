@@ -1,55 +1,40 @@
 /* * */
 
-import { type HubLine, type PublicFeedback } from '@tmlmobilidade/types';
+import { type PublicFeedback } from '@tmlmobilidade/types';
 
-import { getFeedbackMetricsByEntity } from '../../feedback-metrics';
-import { buildLineAgenciesById, getLineAgencyId } from '../../network-labels';
+import { calculateFeedbackSatisfactionIndex } from '../../feedback-metrics';
 
 /* * */
 
-interface OperatorApprovalTotal {
-	lineCount: number
-	satisfactionTotal: number
+interface OperatorApprovalCounts {
+	happyFeedbackCount: number
+	unhappyFeedbackCount: number
 }
 
 /* * */
 
-function buildFeedbackLineAgenciesById(rows: PublicFeedback[]) {
-	return new Map(
-		rows
-			.filter(row => row.entity_type === 'line')
-			.map(row => [row.entity_id, row.agency_id]),
-	);
-}
-
-function toOperatorApprovalIndexes(operatorApprovalTotals: Map<string, OperatorApprovalTotal>) {
+function toOperatorApprovalIndexes(operatorApprovalCounts: Map<string, OperatorApprovalCounts>) {
 	return new Map<string, number>(
-		Array.from(operatorApprovalTotals.entries()).map(([agencyId, operatorApproval]) => [
+		Array.from(operatorApprovalCounts.entries()).map(([agencyId, counts]) => [
 			agencyId,
-			operatorApproval.satisfactionTotal / operatorApproval.lineCount,
+			calculateFeedbackSatisfactionIndex(counts.happyFeedbackCount, counts.unhappyFeedbackCount),
 		]),
 	);
 }
 
 /* * */
 
-export function buildOperatorApprovalIndexes(rows: PublicFeedback[], lines?: HubLine[]) {
-	const lineAgenciesById = buildLineAgenciesById(lines);
-	const feedbackLineAgenciesById = buildFeedbackLineAgenciesById(rows);
-	const lineMetrics = getFeedbackMetricsByEntity(rows, 'line');
-	const operatorApprovalTotals = new Map<string, OperatorApprovalTotal>();
+export function buildOperatorApprovalIndexes(rows: PublicFeedback[]) {
+	const operatorApprovalCounts = new Map<string, OperatorApprovalCounts>();
 
-	for (const lineMetric of lineMetrics) {
-		const agencyId = feedbackLineAgenciesById.get(lineMetric.entityId) ?? getLineAgencyId(lineMetric.entityId, lineAgenciesById);
-		if (!agencyId) continue;
+	for (const row of rows) {
+		const current = operatorApprovalCounts.get(row.agency_id);
 
-		const current = operatorApprovalTotals.get(agencyId);
-
-		operatorApprovalTotals.set(agencyId, {
-			lineCount: (current?.lineCount ?? 0) + 1,
-			satisfactionTotal: (current?.satisfactionTotal ?? 0) + lineMetric.satisfactionIndex,
+		operatorApprovalCounts.set(row.agency_id, {
+			happyFeedbackCount: (current?.happyFeedbackCount ?? 0) + (row.mood === 'happy' ? 1 : 0),
+			unhappyFeedbackCount: (current?.unhappyFeedbackCount ?? 0) + (row.mood === 'unhappy' ? 1 : 0),
 		});
 	}
 
-	return toOperatorApprovalIndexes(operatorApprovalTotals);
+	return toOperatorApprovalIndexes(operatorApprovalCounts);
 }
