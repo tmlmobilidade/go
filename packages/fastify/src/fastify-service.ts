@@ -291,6 +291,22 @@ export class FastifyService {
 	 */
 	private _setupHooks() {
 		/**
+		 * Decodes URI-encoded `id` path params so encoded slashes (e.g. `%2F`) are
+		 * available as literal characters in route handlers.
+		 */
+		this.server.addHook('preHandler', (request, _, done) => {
+			const params = request.params as { id?: string };
+			if (params.id !== undefined) {
+				try {
+					params.id = decodeURIComponent(params.id);
+				} catch {
+					// Malformed URI sequence — keep original value
+				}
+			}
+			done();
+		});
+
+		/**
 		 * Sets a global error handler for the Fastify server instance.
 		 * This handler checks if the error is an instance of HttpException.
 		 * If so, it sends a response with the appropriate status code and error message.
