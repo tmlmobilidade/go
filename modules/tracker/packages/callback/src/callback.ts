@@ -41,6 +41,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 					.fromUnixTimestamp(item.created_at)
 					.std_window;
 				return {
+					agency_id: item.agency_id,
 					start_time_scheduled: {
 						$gte: standardWindowInterval.start,
 						$lte: standardWindowInterval.end,
