@@ -1,11 +1,11 @@
 /* * */
 
+import { GtfsRtOccupancyStatusSchema } from '@/shared/occupancy-status.js';
 import { GtfsRtTripDescriptorSchema } from '@/shared/trip-descriptor.js';
+import { GtfsRtVehicleDescriptorSchema } from '@/shared/vehicle-descriptor.js';
 import { GtfsRtCarriageDetailsSchema } from '@/vehicle-position/carriage-details.js';
 import { GtfsRtCongestionLevelSchema } from '@/vehicle-position/congestion-level.js';
-import { GtfsRtOccupancyStatusSchema } from '@/vehicle-position/occupancy-status.js';
 import { GtfsRtPositionSchema } from '@/vehicle-position/position.js';
-import { GtfsRtVehicleDescriptorSchema } from '@/shared/vehicle-descriptor.js';
 import { GtfsRtVehicleStopStatusSchema } from '@/vehicle-position/vehicle-stop-status.js';
 import { z } from 'zod';
 

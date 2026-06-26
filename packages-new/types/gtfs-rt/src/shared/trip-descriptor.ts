@@ -1,6 +1,7 @@
 /* * */
 
-import { OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { GtfsRtScheduleRelationshipSchema } from '@/shared/schedule-relationship.js';
+import { GtfsDateSchema, GtfsTimeSchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
@@ -9,9 +10,9 @@ export const GtfsRtTripDescriptorSchema = z.object({
 	direction_id: z.any(),
 	modified_trip: z.any(),
 	route_id: z.string(),
-	schedule_relationship: z.any(),
-	start_date: OperationalDateSchema,
-	start_time: z.any(),
+	schedule_relationship: GtfsRtScheduleRelationshipSchema,
+	start_date: GtfsDateSchema,
+	start_time: GtfsTimeSchema,
 	trip_id: z.string(),
 });
 
