@@ -12,7 +12,7 @@ export const GtfsRtTripDescriptorSchema = z.object({
 	route_id: z.string(),
 	schedule_relationship: GtfsRtScheduleRelationshipSchema,
 	start_date: GtfsDateSchema,
-	start_time: GtfsTimeSchema,
+	start_time: GtfsTimeSchema.nullish(),
 	trip_id: z.string(),
 });
 

@@ -7,8 +7,8 @@ import { z } from 'zod';
 
 export const GtfsRtVehicleDescriptorSchema = z.object({
 	id: z.string(),
-	label: z.string(),
-	license_plate: z.string(),
+	label: z.string().nullish(),
+	license_plate: z.string().nullish(),
 	wheelchair_accessible: GtfsRtWheelchairAccessibleSchema,
 });
 

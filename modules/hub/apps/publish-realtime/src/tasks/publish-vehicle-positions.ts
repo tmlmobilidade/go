@@ -2,9 +2,10 @@
 
 import { apiCache, simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
-import { type HubPlan } from '@tmlmobilidade/go-types-public-info';
-import { validateCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
+import { validateCalendarDate, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -61,8 +62,10 @@ export async function publishVehiclesPositions() {
 					calendar_date: validateCalendarDate(vehicleEventData.operational_date),
 					geohash: vehicleEventData.geohash ?? null,
 					line_id: getPublicLineId(vehicleEventData.agency_id, String(associatedRide?.line_id || '-')),
+					operational_date: validateOperationalDateInt(associatedRide?.operational_date),
 					pattern_id: getPublicPatternId(vehicleEventData.agency_id, String(associatedRide?.pattern_id ?? '-')),
-					ride_id: associatedRide?._id ?? '-',
+					ride_id: associatedRide?._id,
+					route_id: associatedRide?._id,
 					trip_id: getPublicTripId(activePlanIdForAgency ?? '-', vehicleEventData.agency_id, vehicleEventData.trip_id),
 					vehicle_id: getPublicVehicleId(vehicleEventData.agency_id, vehicleEventData.vehicle_id),
 				};
@@ -88,7 +91,7 @@ export async function publishVehiclesPositions() {
 	//
 	// Convert the vehicle positions to GTFS-RT feed entities
 
-	const vehiclePositionsGtfsRt: GtfsRtFeedMessage = {
+	const vehiclePositionsGtfs: GtfsRtFeedMessage = {
 		entity: [],
 		header: {
 			gtfs_realtime_version: '2.0',
@@ -97,8 +100,8 @@ export async function publishVehiclesPositions() {
 		},
 	};
 
-	vehiclePositionsGtfsRt.entity = vehiclePositionsJson.map((vehiclePosition) => {
-		const entity: HubGtfsRtFeedEntity = {
+	vehiclePositionsGtfs.entity = vehiclePositionsJson.map((vehiclePosition) => {
+		const entity: GtfsRtFeedEntity = {
 			id: vehiclePosition._id,
 			vehicle: {
 				current_status: vehiclePosition.current_status,
@@ -111,21 +114,23 @@ export async function publishVehiclesPositions() {
 				stop_id: vehiclePosition.stop_id,
 				timestamp: vehiclePosition.created_at,
 				trip: {
-					direction_id: vehiclePosition.direction_id,
 					route_id: vehiclePosition.route_id,
-					schedule_relationship: '',
+					schedule_relationship: 'SCHEDULED',
+					start_date: validateGtfsDate(vehiclePosition.operational_date),
 					trip_id: vehiclePosition.trip_id,
 				},
 				vehicle: {
-					id: vehiclePosition.id,
-					label: event.id.substring(3),
-					license_plate: event.license_plate,
-					wheelchair_accessible: event.wheelchair_accessible ? 'WHEELCHAIR_ACCESSIBLE' : 'NO_VALUE',
+					id: vehiclePosition.vehicle_id,
+					wheelchair_accessible: 'UNKNOWN',
 				},
 			},
 		};
 		return entity;
 	});
+
+	await apiCache.set('hub:v1:realtime:vehicles:positions:gtfs', JSON.stringify(vehiclePositionsGtfs));
+
+	Logger.success(`Finished publishing latest vehicles positions GTFS-RT (${globalTimer.get()})`);
 
 	//
 };

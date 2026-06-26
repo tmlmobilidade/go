@@ -30,10 +30,10 @@ export const GtfsDateSchema = z
  * GTFS date in the format 'yyyyMMdd'.
  * Throws an error if the date is invalid.
  * @param date The date to be validated.
- * @returns The given string as a GTFS date.
+ * @returns The given value as a GTFS date string.
  */
-export function validateGtfsDate(value: string): GtfsDate {
-	const parsedDate = DateTime.fromFormat(value, GTFS_DATE_FORMAT);
+export function validateGtfsDate(value: number | string): GtfsDate {
+	const parsedDate = DateTime.fromFormat(String(value), GTFS_DATE_FORMAT);
 	if (!parsedDate.isValid) throw new Error(`Invalid date format '${value}', expected format: ${GTFS_DATE_FORMAT}, explanation: ${parsedDate.invalidExplanation}`);
-	return value as GtfsDate;
+	return String(value) as GtfsDate;
 }
