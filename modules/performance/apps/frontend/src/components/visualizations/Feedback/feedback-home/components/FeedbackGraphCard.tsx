@@ -173,7 +173,7 @@ export function FeedbackGraphCard({ rows }: FeedbackGraphCardProps) {
 			<div className={`${styles.feedbackCardHeader} ${styles.feedbackCardHeaderWithControls}`}>
 				<p className={styles.cardTitle}>Feedback ao longo do tempo</p>
 
-				<div className={styles.timelineFilter}>
+				<div className={styles.feedbackCardControl}>
 					<h3>Vista</h3>
 					<SegmentedControl data={TIMELINE_RANGE_CONTROL_OPTIONS} onChange={handleChangeRange} value={selectedRange} />
 				</div>

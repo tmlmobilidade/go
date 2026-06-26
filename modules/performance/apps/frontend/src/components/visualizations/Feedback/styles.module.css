@@ -42,7 +42,7 @@
 	font-weight: var(--font-weight-bold);
 }
 
-.timelineFilter {
+.feedbackCardControl {
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-spacing-xs);
@@ -50,7 +50,7 @@
 	flex-shrink: 0;
 }
 
-.timelineFilter h3 {
+.feedbackCardControl h3 {
 	margin: 0;
 	color: var(--color-system-text-100);
 	font-size: var(--font-size-md);
