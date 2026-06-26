@@ -23,12 +23,3 @@ export interface HubGtfsRtTripUpdate {
 	trip?: HubGtfsRtTripDescriptor | null
 	vehicle?: null | { id?: null | string }
 }
-
-export interface HubGtfsRtFeedEntity {
-	id?: null | string
-	stop_time_update?: HubGtfsRtStopTimeUpdate[] | null
-	timestamp?: null | number
-	trip?: HubGtfsRtTripDescriptor | null
-	trip_update?: HubGtfsRtTripUpdate | null
-	vehicle?: null | { id?: null | string }
-}
