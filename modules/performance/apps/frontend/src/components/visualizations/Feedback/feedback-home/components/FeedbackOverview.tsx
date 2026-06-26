@@ -1,7 +1,6 @@
 /* * */
 
 import type { FeedbackTopicData } from '../../types';
-import type { FeedbackPreviewResponse } from '../types';
 
 import { Routes } from '@/routes';
 import { API_ROUTES } from '@tmlmobilidade/consts';
@@ -13,7 +12,7 @@ import useSWR from 'swr';
 import styles from '../../styles.module.css';
 
 import { buildLineLabelsById, buildStopLabelsById } from '../../network-labels';
-import { EMPTY_FEEDBACK_TOPIC_DATA, parseFeedbackPreviewData } from '../utils/feedback-preview';
+import { EMPTY_FEEDBACK_TOPIC_DATA, type FeedbackPreviewResponse, parseFeedbackPreviewData } from '../utils/feedback-preview';
 import { buildOperatorApprovalIndexes } from '../utils/operator-approval';
 import { sortOperatorsByCode } from '../utils/operators';
 import { FeedbackGraphCard } from './FeedbackGraphCard';
@@ -21,8 +20,6 @@ import { FeedbackOperatorsCard } from './FeedbackOperatorsCard';
 import { TopFeedbackLines } from './TopFeedbackLines';
 
 /* * */
-
-export type { FeedbackPreviewResponse } from '../types';
 
 interface FeedbackOverviewProps {
 	data?: FeedbackTopicData
