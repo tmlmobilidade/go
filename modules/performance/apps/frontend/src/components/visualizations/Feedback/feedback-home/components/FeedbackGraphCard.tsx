@@ -1,16 +1,15 @@
 /* * */
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
+import { type PublicFeedback } from '@tmlmobilidade/types';
 import { BarChart, MetricsSkeleton, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
 import styles from '../../styles.module.css';
 
-import { getFeedbackCount } from '../utils/feedback-preview-records';
-
 /* * */
 
-type FeedbackTimelineInterval = 'day' | 'month' | 'year';
+type FeedbackTimelineInterval = 'day' | 'month';
 type FeedbackTimelineRange = 'month' | 'six_months' | 'week';
 
 interface FeedbackTimelineBar {
@@ -20,43 +19,20 @@ interface FeedbackTimelineBar {
 }
 
 interface FeedbackGraphCardProps {
-	rows?: Record<string, unknown>[]
-}
-
-interface DatedFeedbackRow {
-	count: number
-	date: Date
-}
-
-interface FeedbackTimelineRangeOption {
-	id: FeedbackTimelineRange
-	interval: FeedbackTimelineInterval
-	label: string
+	rows: PublicFeedback[]
 }
 
 /* * */
 
-const DATE_FIELD_CANDIDATES = [
-	'created_at',
-	'createdAt',
-	'timestamp',
-	'date',
-	'datetime',
-	'submitted_at',
-	'submittedAt',
-	'received_at',
-	'receivedAt',
-];
+const TIMELINE_RANGE_OPTIONS: Record<FeedbackTimelineRange, { interval: FeedbackTimelineInterval, label: string }> = {
+	month: { interval: 'day', label: 'Mês' },
+	six_months: { interval: 'month', label: '6 meses' },
+	week: { interval: 'day', label: 'Semana' },
+};
 
-const TIMELINE_RANGE_OPTIONS: FeedbackTimelineRangeOption[] = [
-	{ id: 'week', interval: 'day', label: 'Semana' },
-	{ id: 'month', interval: 'day', label: 'Mês' },
-	{ id: 'six_months', interval: 'month', label: '6 meses' },
-];
-
-const TIMELINE_RANGE_CONTROL_OPTIONS = TIMELINE_RANGE_OPTIONS.map(option => ({
-	label: option.label,
-	value: option.id,
+const TIMELINE_RANGE_CONTROL_OPTIONS = ['week', 'month', 'six_months'].map((range: FeedbackTimelineRange) => ({
+	label: TIMELINE_RANGE_OPTIONS[range].label,
+	value: range,
 }));
 
 const TIMELINE_CHART_SERIES = [
@@ -68,41 +44,6 @@ const TIMELINE_CHART_SERIES = [
 ];
 
 /* * */
-
-function getCandidateValue(row: Record<string, unknown>, candidates: string[]) {
-	const field = candidates.find(candidate => row[candidate] !== null && row[candidate] !== undefined && row[candidate] !== '');
-	if (!field) return null;
-
-	return row[field];
-}
-
-function parseFeedbackDate(value: unknown) {
-	if (typeof value === 'number' && Number.isFinite(value)) {
-		const timestamp = value < 10_000_000_000 ? value * 1000 : value;
-		const date = new Date(timestamp);
-		return Number.isNaN(date.getTime()) ? null : date;
-	}
-
-	if (typeof value !== 'string') return null;
-
-	const numericValue = Number(value);
-	if (value.trim() && Number.isFinite(numericValue)) return parseFeedbackDate(numericValue);
-
-	const parsedTimestamp = Date.parse(value);
-	if (Number.isNaN(parsedTimestamp)) return null;
-
-	return new Date(parsedTimestamp);
-}
-
-function buildDatedFeedbackRows(rows: Record<string, unknown>[]) {
-	return rows
-		.map(row => ({
-			count: getFeedbackCount(row),
-			date: parseFeedbackDate(getCandidateValue(row, DATE_FIELD_CANDIDATES)),
-		}))
-		.filter((row): row is DatedFeedbackRow => Boolean(row.date))
-		.sort((a, b) => a.date.getTime() - b.date.getTime());
-}
 
 function getRangeStartDate(endDate: Date, range: FeedbackTimelineRange) {
 	const startDate = new Date(Date.UTC(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate()));
@@ -122,18 +63,12 @@ function getRangeStartDate(endDate: Date, range: FeedbackTimelineRange) {
 }
 
 function getTimelinePeriodStart(date: Date, interval: FeedbackTimelineInterval) {
-	if (interval === 'year') return new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
 	if (interval === 'month') return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
 	return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
 }
 
 function getNextTimelinePeriod(date: Date, interval: FeedbackTimelineInterval) {
 	const nextDate = new Date(date);
-
-	if (interval === 'year') {
-		nextDate.setUTCFullYear(nextDate.getUTCFullYear() + 1);
-		return nextDate;
-	}
 
 	if (interval === 'month') {
 		nextDate.setUTCMonth(nextDate.getUTCMonth() + 1);
@@ -149,14 +84,11 @@ function getTimelineKey(date: Date, interval: FeedbackTimelineInterval) {
 	const month = `${date.getUTCMonth() + 1}`.padStart(2, '0');
 	const day = `${date.getUTCDate()}`.padStart(2, '0');
 
-	if (interval === 'year') return `${year}`;
 	if (interval === 'month') return `${year}-${month}`;
 	return `${year}-${month}-${day}`;
 }
 
 function getTimelineLabel(key: string, interval: FeedbackTimelineInterval) {
-	if (interval === 'year') return key;
-
 	const [year, month, day] = key.split('-').map(Number);
 	const date = new Date(Date.UTC(year, month - 1, day ?? 1));
 
@@ -179,25 +111,23 @@ function getTimelineKeys(startDate: Date, endDate: Date, interval: FeedbackTimel
 	return keys;
 }
 
-function getRangeOption(range: FeedbackTimelineRange) {
-	return TIMELINE_RANGE_OPTIONS.find(option => option.id === range) ?? TIMELINE_RANGE_OPTIONS[0];
-}
-
-function buildFeedbackTimeline(rows: Record<string, unknown>[], range: FeedbackTimelineRange) {
-	const datedRows = buildDatedFeedbackRows(rows);
-	const endDate = datedRows.at(-1)?.date;
+function buildFeedbackTimeline(rows: PublicFeedback[], range: FeedbackTimelineRange) {
+	const sortedRows = [...rows].sort((rowA, rowB) => rowA.created_at - rowB.created_at);
+	const endDate = sortedRows.at(-1)?.created_at;
 	if (!endDate) return [];
 
-	const rangeOption = getRangeOption(range);
-	const startDate = getRangeStartDate(endDate, range);
-	const timelineKeys = getTimelineKeys(startDate, endDate, rangeOption.interval);
+	const rangeOption = TIMELINE_RANGE_OPTIONS[range];
+	const endTimelineDate = new Date(endDate);
+	const startDate = getRangeStartDate(endTimelineDate, range);
+	const timelineKeys = getTimelineKeys(startDate, endTimelineDate, rangeOption.interval);
 	const groupedRows = new Map<string, number>();
 
-	for (const row of datedRows) {
-		if (row.date.getTime() < startDate.getTime() || row.date.getTime() > endDate.getTime()) continue;
+	for (const row of sortedRows) {
+		const date = new Date(row.created_at);
+		if (date.getTime() < startDate.getTime() || date.getTime() > endTimelineDate.getTime()) continue;
 
-		const key = getTimelineKey(row.date, rangeOption.interval);
-		groupedRows.set(key, (groupedRows.get(key) ?? 0) + row.count);
+		const key = getTimelineKey(date, rangeOption.interval);
+		groupedRows.set(key, (groupedRows.get(key) ?? 0) + 1);
 	}
 
 	return timelineKeys.map((key): FeedbackTimelineBar => ({
@@ -218,7 +148,7 @@ function formatTimelineTick(value: string, timelineBars: FeedbackTimelineBar[]) 
 
 /* * */
 
-export function FeedbackGraphCard({ rows = [] }: FeedbackGraphCardProps) {
+export function FeedbackGraphCard({ rows }: FeedbackGraphCardProps) {
 	const [selectedRange, setSelectedRange] = useState<FeedbackTimelineRange>('week');
 	const timelineBars = useMemo(() => buildFeedbackTimeline(rows, selectedRange), [rows, selectedRange]);
 	const xAxisFormatter = useMemo(() => {
