@@ -2,7 +2,8 @@
 
 import { apiCache, simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { HubGtfsRtFeedEntity, HubGtfsRtFeedMessage, HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type HubPlan } from '@tmlmobilidade/go-types-public-info';
 import { validateCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -87,7 +88,7 @@ export async function publishVehiclesPositions() {
 	//
 	// Convert the vehicle positions to GTFS-RT feed entities
 
-	const vehiclePositionsGtfsRt: HubGtfsRtFeedMessage = {
+	const vehiclePositionsGtfsRt: GtfsRtFeedMessage = {
 		entity: [],
 		header: {
 			gtfs_realtime_version: '2.0',

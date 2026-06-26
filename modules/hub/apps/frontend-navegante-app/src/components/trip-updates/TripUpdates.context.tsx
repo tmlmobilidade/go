@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubGtfsRtFeedMessage, type UnixTimestamp, validateUnixTimestamp } from '@tmlmobilidade/types';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type UnixTimestamp, validateUnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -48,7 +49,7 @@ export function TripUpdatesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: tripUpdatesData, error: tripUpdatesError, isLoading: tripUpdatesLoading } = useSWR<HubGtfsRtFeedMessage, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_TRIP_UPDATES }, { refreshInterval: 30_000 }); // 30 seconds
+	const { data: tripUpdatesData, error: tripUpdatesError, isLoading: tripUpdatesLoading } = useSWR<GtfsRtFeedMessage, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_TRIP_UPDATES }, { refreshInterval: 30_000 }); // 30 seconds
 
 	//
 	// B. Transform data

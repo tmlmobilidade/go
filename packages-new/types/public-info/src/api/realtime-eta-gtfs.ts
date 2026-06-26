@@ -32,14 +32,3 @@ export interface HubGtfsRtFeedEntity {
 	trip_update?: HubGtfsRtTripUpdate | null
 	vehicle?: null | { id?: null | string }
 }
-
-export interface HubGtfsRtFeedHeader {
-	gtfs_realtime_version?: string
-	incrementality?: string
-	timestamp?: number
-}
-
-export interface HubGtfsRtFeedMessage {
-	entity: HubGtfsRtFeedEntity[]
-	header: HubGtfsRtFeedHeader
-}

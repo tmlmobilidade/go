@@ -38,8 +38,3 @@ export interface HubGtfsRtFeedHeader {
 	incrementality?: string
 	timestamp?: number
 }
-
-export interface HubGtfsRtFeedMessage {
-	entity: HubGtfsRtFeedEntity[]
-	header: HubGtfsRtFeedHeader
-}

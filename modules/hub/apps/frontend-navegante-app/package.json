@@ -27,6 +27,8 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-types-gtfs-rt": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"@turf/turf": "7.3.5",
