@@ -29,6 +29,9 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 	try {
 		//
 
+		console.log('Callback disabled.');
+		return;
+
 		const timer = new Timer();
 
 		//
