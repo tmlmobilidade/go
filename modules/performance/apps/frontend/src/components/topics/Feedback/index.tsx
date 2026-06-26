@@ -2,7 +2,7 @@
 
 'use client';
 
-import type { FeedbackPreviewResponse, FeedbackTopicData } from '@/components/visualizations/Feedback';
+import type { PublicFeedback } from '@tmlmobilidade/types';
 
 import { FeedbackOverview } from '@/components/visualizations/Feedback';
 import { Routes } from '@/routes';
@@ -14,23 +14,13 @@ import { FeedbackDashboards } from './FeedbackDashboards';
 
 /* * */
 
-interface FeedbackTopicProps {
-	data?: FeedbackTopicData
-}
-
-/* * */
-
-export default function FeedbackTopic({ data }: FeedbackTopicProps) {
-	const { data: feedbackPreviewData } = useSWR<FeedbackPreviewResponse>(
-		data ? null : Routes.FEEDBACK_PREVIEW,
-	);
+export default function FeedbackTopic() {
+	const { data: feedbackRows } = useSWR<PublicFeedback[]>(Routes.FEEDBACK_PREVIEW);
 
 	return (
 		<div className={styles.container}>
-			<FeedbackOverview data={data} previewData={feedbackPreviewData} />
+			<FeedbackOverview rows={feedbackRows ?? []} />
 			<FeedbackDashboards />
 		</div>
 	);
 }
-
-//

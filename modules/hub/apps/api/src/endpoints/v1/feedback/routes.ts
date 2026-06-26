@@ -2,7 +2,8 @@
 
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
-import { FeedbackController } from './feedback.controller.js';
+import { getReasons } from './controllers/get-reasons.js';
+import { submitFeedback } from './controllers/submit-feedback.js';
 
 /* * */
 
@@ -16,9 +17,9 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/reasons', FeedbackController.getReasons);
+		instance.get('/reasons', getReasons);
 
-		instance.post('/', FeedbackController.submit);
+		instance.post('/', submitFeedback);
 
 		next();
 	},

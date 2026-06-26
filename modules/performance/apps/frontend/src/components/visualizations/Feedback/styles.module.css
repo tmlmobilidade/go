@@ -1,12 +1,6 @@
 /* * */
 /* FEEDBACK VISUALIZATIONS */
 
-.summaryGrid {
-	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: var(--size-spacing-lg);
-}
-
 .feedbackCard {
 	gap: 0;
 	justify-content: flex-start;
@@ -63,32 +57,6 @@
 	font-weight: var(--font-weight-bold);
 }
 
-.summaryValue {
-	color: var(--color-system-text-100);
-	font-size: var(--font-size-xl);
-	font-weight: var(--font-weight-bold);
-}
-
-.summaryDescription {
-	color: var(--color-system-text-200);
-	font-size: var(--font-size-sm);
-}
-
-.chart {
-	display: flex;
-	align-items: flex-end;
-	gap: var(--size-spacing-md);
-	min-height: 210px;
-	height: 100%;
-}
-
-.chartBar {
-	width: 12%;
-	min-height: 8px;
-	border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
-	background-color: var(--color-primary);
-}
-
 .timelineChart {
 	width: 100%;
 }
@@ -96,10 +64,6 @@
 .feedbackList {
 	display: flex;
 	flex-direction: column;
-	gap: var(--size-spacing-md);
-}
-
-.feedbackList {
 	gap: 0;
 	overflow-x: auto;
 }
@@ -108,16 +72,6 @@
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: var(--size-spacing-lg);
-}
-
-.listRow {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr) 120px;
-	align-items: center;
-	gap: var(--size-spacing-md);
-	padding: var(--size-spacing-sm) 0;
-	color: var(--color-system-text-200);
-	font-size: var(--font-size-sm);
 }
 
 .feedbackRow {
@@ -300,7 +254,6 @@
 }
 
 @media (max-width: 900px) {
-	.summaryGrid,
 	.listsGrid {
 		grid-template-columns: 1fr;
 	}

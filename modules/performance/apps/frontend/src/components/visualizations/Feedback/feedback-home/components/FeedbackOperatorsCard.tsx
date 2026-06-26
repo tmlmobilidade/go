@@ -11,28 +11,7 @@ import { getOperatorName } from '../utils/operators';
 
 /* * */
 
-interface FeedbackOperatorsCardProps {
-	operatorApprovalIndexes: Map<string, number>
-	operators: Agency[]
-}
-
-/* * */
-
-function ApprovalMetricCell({ operatorApprovalIndexes, operatorId }: { operatorApprovalIndexes: Map<string, number>, operatorId: string }) {
-	const satisfactionIndex = operatorApprovalIndexes.get(operatorId);
-
-	return (
-		<td>
-			<div className={styles.operatorMetricValue}>
-				<FeedbackMetricTag label={satisfactionIndex === undefined ? '-' : formatSatisfactionIndex(satisfactionIndex)} status={getFeedbackSatisfactionStatus(satisfactionIndex)} />
-			</div>
-		</td>
-	);
-}
-
-/* * */
-
-export function FeedbackOperatorsCard({ operatorApprovalIndexes, operators }: FeedbackOperatorsCardProps) {
+export function FeedbackOperatorsCard({ operatorApprovalIndexes, operators }: { operatorApprovalIndexes: Map<string, number>, operators: Agency[] }) {
 	return (
 		<ContainerWrapper className={styles.feedbackCard} padding="0">
 			<div className={styles.feedbackCardHeader}>
@@ -63,9 +42,17 @@ export function FeedbackOperatorsCard({ operatorApprovalIndexes, operators }: Fe
 
 							<tr>
 								<th className={styles.operatorMetricLabel} scope="row">Índice de aprovação</th>
-								{operators.map(operator => (
-									<ApprovalMetricCell key={operator._id} operatorApprovalIndexes={operatorApprovalIndexes} operatorId={operator._id} />
-								))}
+								{operators.map((operator) => {
+									const satisfactionIndex = operatorApprovalIndexes.get(operator._id);
+
+									return (
+										<td key={operator._id}>
+											<div className={styles.operatorMetricValue}>
+												<FeedbackMetricTag label={satisfactionIndex === undefined ? '-' : formatSatisfactionIndex(satisfactionIndex)} status={getFeedbackSatisfactionStatus(satisfactionIndex)} />
+											</div>
+										</td>
+									);
+								})}
 							</tr>
 						</tbody>
 					</table>

@@ -4,29 +4,23 @@
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { Routes } from '@/routes';
-import { type HubLine } from '@tmlmobilidade/types';
+import { type HubLine, type PublicFeedback } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
-import { formatSatisfactionIndex, getFeedbackSatisfactionByEntity, getFeedbackSatisfactionStatus } from '../feedback-metrics';
+import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '../feedback-metrics';
 import { FeedbackMetricTag } from '../FeedbackMetricTag';
 import { buildLineLabelsById, getLineLabel } from '../network-labels';
 
 /* * */
 
-interface FeedbackPreviewResponse {
-	rows: Record<string, unknown>[]
-}
-
-/* * */
-
 export function FeedbackLines() {
-	const { data, error, isLoading } = useSWR<FeedbackPreviewResponse, Error>(Routes.FEEDBACK_PREVIEW);
+	const { data, error, isLoading } = useSWR<PublicFeedback[], Error>(Routes.FEEDBACK_PREVIEW);
 	const { data: linesData } = useSWR<HubLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
 	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
-	const lines = getFeedbackSatisfactionByEntity(data?.rows ?? [], 'line');
+	const lines = getFeedbackMetricsByEntity(data ?? [], 'line');
 
 	return (
 		<ContainerWrapper className={styles.container} padding="0">

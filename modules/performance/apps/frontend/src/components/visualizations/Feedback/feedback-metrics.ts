@@ -1,17 +1,16 @@
 /* * */
 
 import type { SystemStatusType } from '@/constants';
+import type { PublicFeedback } from '@tmlmobilidade/types';
 
 /* * */
 
-export type FeedbackEntityType = 'line' | 'stop';
+export type FeedbackEntityType = PublicFeedback['entity_type'];
 
-export interface FeedbackEntitySatisfaction {
+export interface FeedbackEntityMetrics {
 	entityId: string
 	feedbackCount: number
-	happyFeedbackCount: number
 	satisfactionIndex: number
-	unhappyFeedbackCount: number
 }
 
 /* * */
@@ -35,11 +34,11 @@ export function getFeedbackSatisfactionStatus(value?: number): SystemStatusType 
 	return 'positive';
 }
 
-export function getFeedbackSatisfactionByEntity(rows: Record<string, unknown>[], entityType: FeedbackEntityType) {
-	const groupedFeedback = new Map<string, Omit<FeedbackEntitySatisfaction, 'entityId' | 'satisfactionIndex'>>();
+export function getFeedbackMetricsByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackEntityMetrics[] {
+	const groupedFeedback = new Map<string, { feedbackCount: number, happyFeedbackCount: number, unhappyFeedbackCount: number }>();
 
 	for (const row of rows) {
-		if (row.entity_type !== entityType || typeof row.entity_id !== 'string') continue;
+		if (row.entity_type !== entityType) continue;
 
 		const current = groupedFeedback.get(row.entity_id);
 
@@ -53,7 +52,7 @@ export function getFeedbackSatisfactionByEntity(rows: Record<string, unknown>[],
 	return Array.from(groupedFeedback.entries())
 		.map(([entityId, feedbackData]) => ({
 			entityId,
-			...feedbackData,
+			feedbackCount: feedbackData.feedbackCount,
 			satisfactionIndex: calculateFeedbackSatisfactionIndex(feedbackData.happyFeedbackCount, feedbackData.unhappyFeedbackCount),
 		}))
 		.sort((entityA, entityB) => entityB.feedbackCount - entityA.feedbackCount);

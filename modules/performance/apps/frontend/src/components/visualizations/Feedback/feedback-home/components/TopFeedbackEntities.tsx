@@ -1,25 +1,25 @@
 /* * */
 
-import type { FeedbackLineRowData } from '../../types';
+import type { FeedbackEntitySummary } from '../utils/feedback-preview';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 
 import styles from '../../styles.module.css';
 
-import { getFeedbackSatisfactionStatus } from '../../feedback-metrics';
+import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../../feedback-metrics';
 import { FeedbackMetricTag } from '../../FeedbackMetricTag';
 
 /* * */
 
-interface TopFeedbackLinesProps {
-	lines: FeedbackLineRowData[]
-	nameColumnLabel?: string
-	title?: string
+interface TopFeedbackEntitiesProps {
+	items: FeedbackEntitySummary[]
+	nameColumnLabel: string
+	title: string
 }
 
 /* * */
 
-export function TopFeedbackLines({ lines, nameColumnLabel = 'Nome', title = 'Linhas com mais feedbacks' }: TopFeedbackLinesProps) {
+export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedbackEntitiesProps) {
 	return (
 		<ContainerWrapper className={styles.feedbackCard} padding="0">
 			<div className={styles.feedbackCardHeader}>
@@ -34,17 +34,17 @@ export function TopFeedbackLines({ lines, nameColumnLabel = 'Nome', title = 'Lin
 						<span className={styles.feedbackListHeaderMetric}>Satisfação</span>
 					</div>
 
-					{lines.map(line => (
-						<div key={line.id} className={styles.feedbackRow}>
+					{items.map(item => (
+						<div key={item.id} className={styles.feedbackRow}>
 							<div className={styles.feedbackLineDetails}>
-								<span className={styles.feedbackLineName}>{line.name ?? '-'}</span>
-								{line.description && <p className={styles.feedbackLineDescription}>{line.description}</p>}
+								<span className={styles.feedbackLineName}>{item.label}</span>
+								{item.description && <p className={styles.feedbackLineDescription}>{item.description}</p>}
 							</div>
 							<div className={styles.feedbackTagCell}>
-								<FeedbackMetricTag label={line.metric ?? '-'} />
+								<FeedbackMetricTag label={item.count.toLocaleString('pt-PT')} />
 							</div>
 							<div className={styles.feedbackTagCell}>
-								<FeedbackMetricTag label={line.satisfactionMetric ?? '-'} status={getFeedbackSatisfactionStatus(line.satisfactionIndex)} />
+								<FeedbackMetricTag label={formatSatisfactionIndex(item.satisfactionIndex)} status={getFeedbackSatisfactionStatus(item.satisfactionIndex)} />
 							</div>
 						</div>
 					))}

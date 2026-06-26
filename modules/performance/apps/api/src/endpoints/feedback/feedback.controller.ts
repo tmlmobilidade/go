@@ -4,17 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { Logger } from '@tmlmobilidade/logger';
-
-/* * */
-
-export interface FeedbackPreviewResponse {
-	columns: string[]
-	rows: Record<string, unknown>[]
-	source: {
-		database: string
-		table: string
-	}
-}
+import { type PublicFeedback } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -36,7 +26,7 @@ export class FeedbackController {
 	/**
 	 * Retrieve rows from the ClickHouse feedback table.
 	 */
-	static async getPreview(request: FastifyRequest<{ Querystring: { limit?: string } }>, reply: FastifyReply<FeedbackPreviewResponse>) {
+	static async getPreview(request: FastifyRequest<{ Querystring: { limit?: string } }>, reply: FastifyReply<PublicFeedback[]>) {
 		try {
 			const database = process.env.GO_CLICKHOUSE_DATABASE || 'hub';
 			const table = process.env.GO_CLICKHOUSE_FEEDBACK_TABLE || 'feedback';
@@ -52,18 +42,10 @@ export class FeedbackController {
 				query_params: limit ? { limit } : {},
 			});
 
-			const rows = await resultSet.json<Record<string, unknown>>();
-			const columns = Array.from(new Set(rows.flatMap(row => Object.keys(row))));
+			const rows = await resultSet.json<PublicFeedback>();
 
 			reply.send({
-				data: {
-					columns,
-					rows,
-					source: {
-						database,
-						table,
-					},
-				},
+				data: rows,
 				error: null,
 				statusCode: HTTP_STATUS.OK,
 			});

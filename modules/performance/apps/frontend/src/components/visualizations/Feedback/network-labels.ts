@@ -4,18 +4,18 @@ import type { HubLine, HubStop } from '@tmlmobilidade/types';
 
 /* * */
 
-function parsePrefixedId(id: string) {
-	const prefixedId = id.match(/^\[(\d+)\](.+)$/);
-	if (!prefixedId) return null;
+function parsePrefixedLineId(lineId: string) {
+	const prefixedLineId = lineId.match(/^\[(\d+)\](.+)$/);
+	if (!prefixedLineId) return null;
 
 	return {
-		agencyId: prefixedId[1],
-		rawId: prefixedId[2],
+		agencyId: prefixedLineId[1],
+		rawId: prefixedLineId[2],
 	};
 }
 
 function getLineLookupKeys(lineId: string) {
-	const prefixedLineId = parsePrefixedId(lineId);
+	const prefixedLineId = parsePrefixedLineId(lineId);
 	if (!prefixedLineId) return [lineId];
 
 	return [`${prefixedLineId.agencyId}:${prefixedLineId.rawId}`, prefixedLineId.rawId, lineId];
@@ -38,7 +38,7 @@ export function buildLineLabelsById(lines?: HubLine[]) {
 	for (const line of lines ?? []) {
 		const label = buildLineLabel(line);
 		const lineId = String(line._id);
-		const prefixedLineId = parsePrefixedId(lineId);
+		const prefixedLineId = parsePrefixedLineId(lineId);
 
 		labels.set(lineId, label);
 		labels.set(`${line.agency_id}:${lineId}`, label);
@@ -50,6 +50,30 @@ export function buildLineLabelsById(lines?: HubLine[]) {
 	}
 
 	return labels;
+}
+
+export function buildLineAgenciesById(lines?: HubLine[]) {
+	const agencies = new Map<string, string>();
+
+	for (const line of lines ?? []) {
+		const lineId = String(line._id);
+		const prefixedLineId = parsePrefixedLineId(lineId);
+
+		agencies.set(lineId, line.agency_id);
+		agencies.set(`${line.agency_id}:${lineId}`, line.agency_id);
+
+		for (const routeId of line.route_ids) {
+			agencies.set(routeId, line.agency_id);
+			agencies.set(`${line.agency_id}:${routeId}`, line.agency_id);
+		}
+
+		if (prefixedLineId) {
+			agencies.set(`${prefixedLineId.agencyId}:${prefixedLineId.rawId}`, line.agency_id);
+			if (!agencies.has(prefixedLineId.rawId)) agencies.set(prefixedLineId.rawId, line.agency_id);
+		}
+	}
+
+	return agencies;
 }
 
 export function buildStopLabelsById(stops?: HubStop[]) {
@@ -71,6 +95,18 @@ export function getLineLabel(lineId: string, labels: Map<string, string>) {
 	}
 
 	return lineId;
+}
+
+export function getLineAgencyId(lineId: string, agencies: Map<string, string>) {
+	for (const lookupKey of getLineLookupKeys(lineId)) {
+		const agencyId = agencies.get(lookupKey);
+		if (agencyId) return agencyId;
+	}
+
+	const prefixedLineId = parsePrefixedLineId(lineId);
+	if (prefixedLineId) return prefixedLineId.agencyId;
+
+	return lineId.match(/^(\d+):/)?.[1];
 }
 
 export function getStopLabel(stopId: string, labels: Map<string, string>) {
