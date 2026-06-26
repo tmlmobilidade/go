@@ -16,15 +16,15 @@ export async function exportDayTypesFile(exportConfig: ExportToHitouchConfig) {
 	const dayTypesExtRows: DayTypesExt[] = DAY_TYPES.map((dayType) => {
 		return {
 			day_type_id: dayType._id,
-			friday: dayType.day_type === '1' ? '1' : '',
-			monday: dayType.day_type === '1' ? '1' : '',
+			friday: '',
+			monday: '',
 			name: dayType.name,
-			saturday: dayType.day_type === '1' ? '1' : '',
+			saturday: '',
 			sequence_number: dayType.index,
-			sunday: dayType.day_type === '1' ? '1' : '',
-			thursday: dayType.day_type === '1' ? '1' : '',
-			tuesday: dayType.day_type === '1' ? '1' : '',
-			wednesday: dayType.day_type === '1' ? '1' : '',
+			sunday: '',
+			thursday: '',
+			tuesday: '',
+			wednesday: '',
 		};
 	});
 
