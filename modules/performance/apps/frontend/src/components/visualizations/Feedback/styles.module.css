@@ -93,7 +93,6 @@
 	width: 100%;
 }
 
-.categoryList,
 .feedbackList {
 	display: flex;
 	flex-direction: column;
@@ -119,34 +118,6 @@
 	padding: var(--size-spacing-sm) 0;
 	color: var(--color-system-text-200);
 	font-size: var(--font-size-sm);
-}
-
-.categoryMetric {
-	display: flex;
-	align-items: center;
-	gap: var(--size-spacing-xs);
-	min-width: 0;
-}
-
-.categoryValue {
-	min-width: 36px;
-	color: var(--color-system-text-100);
-	font-weight: var(--font-weight-bold);
-	text-align: right;
-}
-
-.categoryBarTrack {
-	flex: 1;
-	height: 8px;
-	overflow: hidden;
-	border-radius: var(--border-radius-sm);
-	background-color: var(--color-system-background-200);
-}
-
-.categoryBar {
-	height: 100%;
-	border-radius: inherit;
-	background-color: var(--color-primary);
 }
 
 .feedbackRow {
