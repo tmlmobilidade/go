@@ -1,11 +1,21 @@
 /* * */
 
 import type { FeedbackLineRowData, FeedbackTopicData } from '../../types';
-import type { FeedbackPreviewResponse } from '../types';
 
 import { calculateFeedbackSatisfactionIndex, type FeedbackEntityType, formatSatisfactionIndex } from '../../feedback-metrics';
 import { getLineLabel } from '../../network-labels';
 import { getEntityId, getFeedbackCount, LINE_FIELD_CANDIDATES, STOP_FIELD_CANDIDATES } from './feedback-preview-records';
+
+/* * */
+
+export interface FeedbackPreviewResponse {
+	columns: string[]
+	rows: Record<string, unknown>[]
+	source: {
+		database: string
+		table: string
+	}
+}
 
 /* * */
 
