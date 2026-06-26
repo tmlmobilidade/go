@@ -13,11 +13,11 @@
 
 .heroShell {
 	position: relative;
-	isolation: isolate;
 	height: 100vh;
 	min-height: 100vh;
 	overflow: hidden;
 	background: var(--hp-surface-900);
+	isolation: isolate;
 }
 
 .heroForeground {
@@ -32,9 +32,9 @@
 }
 
 /* * */
-/* PRODUCTS SECTION */
+/* CONTENT */
 
-.productsSection {
+.content {
 	width: 100%;
 	padding: 96px var(--hp-page-gutter) var(--size-spacing-3xl);
 	color: var(--color-system-text-100);

@@ -9,4 +9,5 @@ export * from './SidebarNotifications';
 export * from './SidebarNotificationsItem';
 export * from './SidebarOpenGroups.context';
 export * from './SidebarOptions';
+export * from './SidebarStaticPanel';
 export * from './SidebarVisualMode.context';

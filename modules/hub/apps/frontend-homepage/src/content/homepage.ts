@@ -67,9 +67,9 @@ export const homepageContent = {
 		statusLabel: 'veículos em movimento',
 	},
 	productIntro: {
-		body: 'Cada módulo resolve uma parte crítica do ciclo operacional, mantendo dados compatíveis entre planeamento, publicação, monitorização e análise.',
-		eyebrow: 'GO',
-		title: 'Uma plataforma modular para equipas que operam rede, oferta e serviço.',
+		body: 'Organize a oferta num único lugar, valide a rede com clareza e exporte em GTFS para alimentar os vários canais de informação.',
+		eyebrow: 'Oferta',
+		title: 'A rede começa aqui',
 	},
 	products: [
 		{

@@ -16,7 +16,7 @@ export const MapOverlayVehiclesInteractiveLayerId = 'default-layer-vehicles-regu
 /* * */
 
 interface Props {
-	display?: 'default' | 'ambient'
+	display?: 'ambient' | 'default'
 	presentBeforeId?: string
 	showCounter?: 'always' | 'positive'
 	vehiclesData?: GeoJSON.FeatureCollection<GeoJSON.Point>
@@ -251,26 +251,26 @@ export function MapOverlayVehicles({ display = 'default', presentBeforeId, showC
 				/>
 
 				{display === 'default' && (
-				<Layer
-					beforeId="default-layer-vehicles-regular"
-					id="default-layer-vehicles-dot"
-					source="default-source-vehicles"
-					type="circle"
-					paint={{
-						'circle-color': '#00CD32',
-						'circle-opacity': [
-							'interpolate',
-							['linear'],
-							['zoom'],
-							12,
-							['get', 'opacity'],
-							13,
-							0,
-						],
-						'circle-pitch-alignment': 'map',
-						'circle-radius': 1.8,
-					}}
-				/>
+					<Layer
+						beforeId="default-layer-vehicles-regular"
+						id="default-layer-vehicles-dot"
+						source="default-source-vehicles"
+						type="circle"
+						paint={{
+							'circle-color': '#00CD32',
+							'circle-opacity': [
+								'interpolate',
+								['linear'],
+								['zoom'],
+								12,
+								['get', 'opacity'],
+								13,
+								0,
+							],
+							'circle-pitch-alignment': 'map',
+							'circle-radius': 1.8,
+						}}
+					/>
 				)}
 
 			</Source>
