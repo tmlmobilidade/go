@@ -106,15 +106,8 @@ export class PostersController {
 			method: 'POST',
 		});
 
-		console.log('ZPHERES PDF response headers:', {
-			headers: Object.fromEntries(response.headers.entries()),
-			status: response.status,
-		});
-
 		if (!response.ok) {
 			const responseBody = await response.text();
-
-			console.log('ZPHERES PDF error response:', responseBody);
 
 			throw new Error(`ZPHERES PDF generation failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
 		}
