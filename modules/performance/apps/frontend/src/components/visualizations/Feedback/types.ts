@@ -13,13 +13,6 @@ export interface FeedbackChartBarData {
 	value?: number
 }
 
-export interface FeedbackCategoryRowData {
-	id: string
-	label: string
-	percentage?: number
-	value?: number | string
-}
-
 export interface FeedbackLineRowData {
 	description?: number | string
 	id: string

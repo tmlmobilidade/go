@@ -1,6 +1,5 @@
 /* * */
 
-export { FeedbackCategoryList } from './feedback-home/components/FeedbackCategoryList';
 export { FeedbackChartCard } from './feedback-home/components/FeedbackChartCard';
 export { FeedbackOverview } from './feedback-home/components/FeedbackOverview';
 export type { FeedbackPreviewResponse } from './feedback-home/components/FeedbackOverview';
