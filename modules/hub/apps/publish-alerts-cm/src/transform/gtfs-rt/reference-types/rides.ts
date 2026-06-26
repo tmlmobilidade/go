@@ -53,6 +53,7 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 			agency_id: alertData.agency_id,
 			trip: {
 				route_id: foundRide.route_id,
+				schedule_relationship: 'SCHEDULED',
 				start_date: validateGtfsDate(foundRide.operational_date),
 				trip_id: `[${foundRide.plan_id}]${foundRide.trip_id}`,
 			},
