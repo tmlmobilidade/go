@@ -1,5 +1,6 @@
 /* * */
 
+import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
@@ -53,7 +54,8 @@ export async function transformReferenceTypeRidesIntoGtfsRt(alertData: Alert): P
 			agency_id: alertData.agency_id,
 			trip: {
 				route_id: getPublicRouteId(alertData.agency_id, foundRide.route_id),
-				start_date: foundRide.operational_date,
+				schedule_relationship: 'SCHEDULED',
+				start_date: validateGtfsDate(foundRide.operational_date),
 				trip_id: getPublicTripId(foundRide.plan_id, alertData.agency_id, foundRide.trip_id),
 			},
 		};
