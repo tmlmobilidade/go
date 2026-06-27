@@ -68,7 +68,7 @@ export function RidesList() {
 			accessor: 'operational_status',
 			render: item => <OperationalStatusTag value={item.operational_status} />,
 			title: t('default:list.RidesList.columns.operational_status.label'),
-			width: 150,
+			width: 180,
 		},
 		{
 			accessor: 'operational_date',
