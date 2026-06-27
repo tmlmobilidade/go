@@ -3,9 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /**
  * Retrieves the vehicle positions GTFS RT JSON data from the cache.
@@ -13,9 +11,12 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
  * @param reply The reply object.
  */
 export async function getVehiclePositionsGtfsRtJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
-	const raw = await apiCache.get('hub:v1:realtime:vehicles:positions:gtfs');
-	if (!raw) {
-		Logger.error({ message: '[hub/v1/realtime:getVehiclePositionsGtfsRtJson()] No data in cache.' });
+	//
+
+	const cachedData = await apiCache.get('hub:v1:realtime:vehicles:positions:gtfs');
+
+	if (!cachedData) {
+		Logger.error({ message: '[hub/v1/realtime:getVehiclePositionsGtfsRtJson()] No cached data found for vehicles positions' });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')
@@ -25,13 +26,15 @@ export async function getVehiclePositionsGtfsRtJson(request: FastifyRequest, rep
 				error: null,
 				status_code: HTTP_STATUS.NO_CONTENT,
 			});
-	}
-	const allItemsData = JSON.parse(raw) as GtfsRtFeedMessage;
-	const buffer = await encodeGtfsRtFeed(allItemsData);
+	};
+
 	return reply
 		.header('access-control-allow-origin', '*')
 		.header('cache-control', 'public, max-age=3')
-		.type('application/octet-stream')
 		.code(HTTP_STATUS.OK)
-		.send(Buffer.from(buffer));
+		.send({
+			data: JSON.parse(cachedData),
+			error: null,
+			status_code: HTTP_STATUS.OK,
+		});
 }
