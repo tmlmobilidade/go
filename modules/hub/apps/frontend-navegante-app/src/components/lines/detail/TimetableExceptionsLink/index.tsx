@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { IconArrowUpRight } from '@tabler/icons-react';
-import { type Exception } from '@tmlmobilidade/types';
+import { type Exception } from '@tmlmobilidade/go-types-public-info';
 import { Trans, useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
