@@ -65,7 +65,22 @@ export const VehicleCreateContextProvider = ({ children }: PropsWithChildren) =>
 	const handleCreateVehicle = async () => {
 		setIsError(null);
 		setIsSaving(true);
-		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', form.getValues());
+		const formValues = form.getValues();
+		const vehicleId = formValues.license_plate.replace(/-/g, '').toUpperCase();
+		const vehiclePayload: CreateVehicleDto = {
+			...formValues,
+			_id: vehicleId,
+			agency_history: [
+				{
+					agency_id: formValues.agency_id,
+					start_date: formValues.start_date,
+					vehicle_id: formValues.vehicle_id,
+				},
+			],
+			license_plate: vehicleId,
+		};
+
+		const response = await fetchData<Vehicle>(API_ROUTES.fleet.VEHICLES_LIST, 'POST', vehiclePayload);
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar veículo' });

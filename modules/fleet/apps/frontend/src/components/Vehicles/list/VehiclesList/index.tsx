@@ -5,7 +5,6 @@ import { VehiclesListHeader } from '@/components/Vehicles/list/VehiclesListHeade
 import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
 import { VehicleNormalized } from '@/types/normalized';
 import { formatDate } from '@/utils/formatDate';
-import { FormatlLicensePlate } from '@/utils/formatLicencePlate';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
@@ -28,9 +27,9 @@ export function VehiclesList() {
 	const columns: DataTableColumn<VehicleNormalized>[] = [
 		{
 			accessor: '_id',
-			render: item => <IdTag id={item._id} />,
-			title: '#ID',
-			width: 100,
+			render: item => <IdTag id={item.license_plate} />,
+			title: 'Matrícula',
+			width: 150,
 		},
 		{
 			accessor: 'agency_id',
@@ -39,9 +38,9 @@ export function VehiclesList() {
 			width: 350,
 		},
 		{
-			accessor: 'license_plate',
-			render: item => <Tag label={FormatlLicensePlate(item.license_plate)} />,
-			title: 'Matrícula',
+			accessor: 'vehicle_id',
+			render: item => <Tag label={(item.vehicle_id)} />,
+			title: 'Id do Operador',
 			width: 200,
 		},
 		{

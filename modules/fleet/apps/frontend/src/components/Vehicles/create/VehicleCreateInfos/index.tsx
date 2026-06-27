@@ -26,15 +26,14 @@ export function VehicleCreateInfos() {
 		<Section gap="md">
 
 			<NumberInput
-				key={vehicleCreateContext.data.form.key(String('_id'))}
-				label="ID do veículo"
+				key={vehicleCreateContext.data.form.key('vehicle_id')}
+				label="ID do operador"
 				maxLength={5}
-				placeholder="Introduza o ID do veículo"
-				required={!vehicleSchema.shape._id.isOptional()}
+				placeholder="Introduza o ID do operador"
+				required={!vehicleSchema.shape.vehicle_id.isOptional()}
 				w="100%"
 				onChange={(event) => {
 					const value = event.toString(); // only numbers
-					vehicleCreateContext.data.form.getInputProps('_id').onChange(value);
 					vehicleCreateContext.data.form.getInputProps('vehicle_id').onChange(value);
 				}}
 			/>
@@ -81,6 +80,7 @@ export function VehicleCreateInfos() {
 				onChange={(event) => {
 					const value = event.currentTarget.value.toUpperCase();
 					vehicleCreateContext.data.form.getInputProps('license_plate').onChange(value);
+					vehicleCreateContext.data.form.getInputProps('_id').onChange(value.replace(/-/g, ''));
 				}}
 			/>
 

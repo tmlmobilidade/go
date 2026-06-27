@@ -1,41 +1,32 @@
 /* * */
 
 import { CreateVehicleDto } from '@tmlmobilidade/types';
+import Papa from 'papaparse';
 
 import { parseVehicleLine } from './parseVehicleLine';
 
 /* * */
 
 export const parseTxtFile = async (file: File): Promise<CreateVehicleDto[]> => {
-	const text = await file.text();
+	const text = (await file.text()).replace(/^\uFEFF/, '');
 
-	const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-
-	if (!lines.length) {
+	if (!text.trim()) {
 		throw new Error('Empty file');
 	}
 
-	const resolveDelimiter = (headerLine: string) => {
-		const commaCount = headerLine.split(',').length;
-		const semicolonCount = headerLine.split(';').length;
-		return commaCount >= semicolonCount ? ',' : ';';
-	};
+	const parsed = Papa.parse<Record<string, string>>(text, {
+		header: true,
+		skipEmptyLines: true,
+		transform: value => value.trim(),
+		transformHeader: header => header.replace(/^\uFEFF/, '').trim(),
+	});
 
-	const delimiter = resolveDelimiter(lines[0]);
-	const headers = lines[0].split(delimiter).map(h => h.trim());
+	if (parsed.errors.length > 0) {
+		throw new Error(`Failed to parse file: ${parsed.errors.map(error => error.message).join(', ')}`);
+	}
 
-	return lines.slice(1).map((line, index) => {
+	return parsed.data.map((raw, index) => {
 		try {
-			const values = line.split(delimiter);
-
-			const raw = headers.reduce<Record<string, string>>(
-				(acc, header, i) => {
-					acc[header] = values[i]?.trim() ?? '';
-					return acc;
-				},
-				{},
-			);
-
 			return parseVehicleLine(raw);
 		} catch (err) {
 			throw new Error(
