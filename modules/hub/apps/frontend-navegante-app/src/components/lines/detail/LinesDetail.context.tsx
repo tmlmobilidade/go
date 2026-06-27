@@ -5,7 +5,7 @@ import { useOperationalDate } from '@/components/common/operational-date/use-ope
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/types';
+import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */

@@ -5,7 +5,7 @@ import { IncomingMessage } from 'node:http';
 import https from 'node:https';
 
 import { mlAuthClient } from './auth.js';
-import { BaseResponse, DESTINATION_MAP, EstadoLinha, InfoEstacao, TempoEsperaRawItem } from './types.js';
+import { BaseResponse, EstadoLinha, InfoEstacao, TempoEsperaRawItem } from './types.js';
 
 /* * */
 
@@ -149,60 +149,60 @@ export const MlClient = Object.freeze({
 	tripUpdates: async (): Promise<GtfsRtFeedMessage> => {
 		const now = Date.now();
 
-		const lines = ['Amarela', 'Azul', 'Verde', 'Vermelha'];
+		// const lines = ['Amarela', 'Azul', 'Verde', 'Vermelha'];
 		const entities: GtfsRtFeedMessage['entity'] = [];
-		for (const line of lines) {
-			const data = await fetcher<BaseResponse<TempoEsperaRawItem[]>>(endpoints.tempoEsperaLinha(line));
+		// for (const line of lines) {
+		// 	// const data = await fetcher<BaseResponse<TempoEsperaRawItem[]>>(endpoints.tempoEsperaLinha(line));
 
-			const trainStops = new Map<string, { destination: string, stops: Array<{ arrival_seconds: number, stop_id: string, stop_sequence: number }> }>();
+		// 	// const trainStops = new Map<string, { destination: string, stops: Array<{ arrival_seconds: number, stop_id: string, stop_sequence: number }> }>();
 
-			for (const [index, item] of data.resposta.entries()) {
-				const trains = [
-					{ comboio: item.comboio, tempo: item.tempoChegada1 },
-					{ comboio: item.comboio2, tempo: item.tempoChegada2 },
-					{ comboio: item.comboio3, tempo: item.tempoChegada3 },
-				];
+		// 	// for (const [index, item] of data.resposta.entries()) {
+		// 	// 	const trains = [
+		// 	// 		{ comboio: item.comboio, tempo: item.tempoChegada1 },
+		// 	// 		{ comboio: item.comboio2, tempo: item.tempoChegada2 },
+		// 	// 		{ comboio: item.comboio3, tempo: item.tempoChegada3 },
+		// 	// 	];
 
-				for (const train of trains) {
-					if (!train.comboio || train.tempo === '--') continue;
-					const arrivalSeconds = Number.parseInt(train.tempo, 10);
-					if (!trainStops.has(train.comboio)) {
-						trainStops.set(train.comboio, { destination: item.destino, stops: [] });
-					}
-					trainStops.get(train.comboio)!.stops.push({
-						arrival_seconds: arrivalSeconds,
-						stop_id: item.stop_id,
-						stop_sequence: index,
-					});
-				}
-			}
+		// 	// 	for (const train of trains) {
+		// 	// 		if (!train.comboio || train.tempo === '--') continue;
+		// 	// 		const arrivalSeconds = Number.parseInt(train.tempo, 10);
+		// 	// 		if (!trainStops.has(train.comboio)) {
+		// 	// 			trainStops.set(train.comboio, { destination: item.destino, stops: [] });
+		// 	// 		}
+		// 	// 		// trainStops.get(train.comboio)!.stops.push({
+		// 	// 		// 	arrival_seconds: arrivalSeconds,
+		// 	// 		// 	stop_id: item.stop_id,
+		// 	// 		// 	stop_sequence: index,
+		// 	// 		// });
+		// 	// 	}
+		// 	// }
 
-			entities.push(...Array.from(trainStops.entries()).map(([key, value]) => {
-				const sortedStops = value.stops.sort((a, b) => a.stop_sequence - b.stop_sequence);
-				return {
-					id: `${line}_${key}_${DESTINATION_MAP[value.destination].code}`,
-					trip_update: {
-						stop_time_update: sortedStops.map(stop => ({
-							arrival: {
-								time: now + stop.arrival_seconds * 1000,
-							},
-							stop_id: stop.stop_id,
-							stop_sequence: stop.stop_sequence,
-						})),
-						timestamp: now,
-						trip: {
-							line_id: line,
-							line_short_name: `${line}_${DESTINATION_MAP[value.destination].code}`,
-							trip_headsign: DESTINATION_MAP[value.destination].name,
-							trip_id: `${line}_${key}_${value.destination}`,
-						},
-						vehicle: {
-							id: key,
-						},
-					},
-				};
-			}));
-		}
+		// 	// entities.push(...Array.from(trainStops.entries()).map(([key, value]) => {
+		// 	// 	const sortedStops = value.stops.sort((a, b) => a.stop_sequence - b.stop_sequence);
+		// 	// 	return {
+		// 	// 		id: `${line}_${key}_${DESTINATION_MAP[value.destination].code}`,
+		// 	// 		trip_update: {
+		// 	// 			stop_time_update: sortedStops.map(stop => ({
+		// 	// 				arrival: {
+		// 	// 					time: now + stop.arrival_seconds * 1000,
+		// 	// 				},
+		// 	// 				stop_id: stop.stop_id,
+		// 	// 				stop_sequence: stop.stop_sequence,
+		// 	// 			})),
+		// 	// 			timestamp: now,
+		// 	// 			trip: {
+		// 	// 				line_id: line,
+		// 	// 				line_short_name: `${line}_${DESTINATION_MAP[value.destination].code}`,
+		// 	// 				trip_headsign: DESTINATION_MAP[value.destination].name,
+		// 	// 				trip_id: `${line}_${key}_${value.destination}`,
+		// 	// 			},
+		// 	// 			vehicle: {
+		// 	// 				id: key,
+		// 	// 			},
+		// 	// 		},
+		// 	// 	};
+		// 	// }));
+		// }
 
 		return {
 			entity: entities,

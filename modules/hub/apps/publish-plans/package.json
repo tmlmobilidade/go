@@ -20,6 +20,7 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/external": "*",
+		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",

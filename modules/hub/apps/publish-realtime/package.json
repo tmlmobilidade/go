@@ -21,6 +21,10 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/external": "*",
 		"@tmlmobilidade/go-hub-pckg-sql": "*",
+		"@tmlmobilidade/go-types-gtfs": "*",
+		"@tmlmobilidade/go-types-gtfs-rt": "*",
+		"@tmlmobilidade/go-types-public-info": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
@@ -31,7 +35,6 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/node": "26.0.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.4",

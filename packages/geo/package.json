@@ -36,6 +36,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-types-public-info": "*",
 		"@turf/turf": "7.3.5"
 	},
 	"devDependencies": {

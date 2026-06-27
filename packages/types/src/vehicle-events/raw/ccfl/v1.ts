@@ -1,7 +1,7 @@
 /* * */
 
-import { GtfsRtOccupancyStatusSchema } from '@/gtfs-rt/occupancy-status.js';
 import { RawVehicleEventBaseSchema } from '@/vehicle-events/raw/raw-vehicle-event-base.js';
+import { GtfsRtOccupancyStatusSchema } from '@tmlmobilidade/go-types-gtfs-rt';
 import { z } from 'zod';
 
 /* * */

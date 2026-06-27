@@ -1,9 +1,8 @@
 'use client';
 
-import type { HubAlert } from '@tmlmobilidade/types';
-
 import { AlertsCarouselSlide } from '@/components/lines/common/AlertsCarouselSlide';
 import Carousel from '@/components/lines/common/Carousel';
+import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 
 /* * */
 

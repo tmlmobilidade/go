@@ -22,12 +22,13 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/types": "*"
+		"@tmlmobilidade/rss": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
