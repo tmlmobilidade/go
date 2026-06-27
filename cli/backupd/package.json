@@ -24,7 +24,7 @@
 		"@tmlmobilidade/utils": "*",
 		"@types/archiver": "8.0.0",
 		"archiver": "8.0.0",
-		"mongodb": "7.3.0",
+		"mongodb": "7.4.0",
 		"nodemailer": "9.0.1",
 		"pg": "8.22.0",
 		"resolve-tspaths": "0.8.23",
@@ -32,7 +32,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.0.0",
+		"@types/node": "26.0.1",
 		"@types/nodemailer": "8.0.1",
 		"typescript": "6.0.3"
 	}
