@@ -5,7 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
-import { validateCalendarDate, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateInt, validateCalendarDate, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -55,14 +55,18 @@ export async function publishVehiclesPositions() {
 				// Fetch the corresponding ride from the database
 				const standardWindow = Dates.fromUnixTimestamp(vehicleEventData.created_at).std_window;
 				const associatedRide = await ridesCollection.findOne({ agency_id: vehicleEventData.agency_id, start_time_scheduled: { $gte: standardWindow.start, $lte: standardWindow.end }, trip_id: vehicleEventData.trip_id }, { projection: { _id: 1, line_id: 1, pattern_id: 1 } });
-				if (!associatedRide && vehicleEventData.agency_id !== '2' && vehicleEventData.agency_id !== '3') throw new Error(`No ride found for trip ID: ${vehicleEventData.trip_id} and agency ID: ${vehicleEventData.agency_id} in the standard window: ${standardWindow.start} to ${standardWindow.end}`);
+				if (!associatedRide && vehicleEventData.agency_id !== '2') throw new Error(`No ride found for trip ID: ${vehicleEventData.trip_id} and agency ID: ${vehicleEventData.agency_id} in the standard window: ${standardWindow.start} to ${standardWindow.end}`);
+				// Prepare the operational date for this positions
+				let operationalDate: OperationalDateInt;
+				if (associatedRide?.operational_date) operationalDate = validateOperationalDateInt(associatedRide.operational_date);
+				else operationalDate = Dates.now('Europe/Lisbon').operational_date_int;
 				// Parse the vehicle position data
 				const vehiclePositionData: HubVehiclePosition = {
 					...vehicleEventData,
 					calendar_date: validateCalendarDate(vehicleEventData.operational_date),
 					geohash: vehicleEventData.geohash ?? null,
 					line_id: getPublicLineId(vehicleEventData.agency_id, String(associatedRide?.line_id || '-')),
-					operational_date: validateOperationalDateInt(associatedRide?.operational_date),
+					operational_date: operationalDate,
 					pattern_id: getPublicPatternId(vehicleEventData.agency_id, String(associatedRide?.pattern_id ?? '-')),
 					ride_id: associatedRide?._id,
 					route_id: associatedRide?._id,
@@ -100,33 +104,38 @@ export async function publishVehiclesPositions() {
 		},
 	};
 
-	vehiclePositionsGtfs.entity = vehiclePositionsJson.map((vehiclePosition) => {
-		const entity: GtfsRtFeedEntity = {
-			id: vehiclePosition._id,
-			vehicle: {
-				current_status: vehiclePosition.current_status,
-				position: {
-					bearing: vehiclePosition.bearing,
-					latitude: vehiclePosition.latitude,
-					longitude: vehiclePosition.longitude,
-					speed: vehiclePosition.speed,
-				},
-				stop_id: vehiclePosition.stop_id,
-				timestamp: vehiclePosition.created_at,
-				trip: {
-					route_id: vehiclePosition.route_id,
-					schedule_relationship: 'SCHEDULED',
-					start_date: validateGtfsDate(vehiclePosition.operational_date),
-					trip_id: vehiclePosition.trip_id,
-				},
+	vehiclePositionsGtfs.entity = vehiclePositionsJson
+		.filter((vehiclePosition) => {
+			if (!vehiclePosition.ride_id) return false;
+			return true;
+		})
+		.map((vehiclePosition) => {
+			const entity: GtfsRtFeedEntity = {
+				id: vehiclePosition._id,
 				vehicle: {
-					id: vehiclePosition.vehicle_id,
-					wheelchair_accessible: 'UNKNOWN',
+					current_status: vehiclePosition.current_status,
+					position: {
+						bearing: vehiclePosition.bearing,
+						latitude: vehiclePosition.latitude,
+						longitude: vehiclePosition.longitude,
+						speed: vehiclePosition.speed,
+					},
+					stop_id: vehiclePosition.stop_id,
+					timestamp: vehiclePosition.created_at,
+					trip: {
+						route_id: vehiclePosition.route_id,
+						schedule_relationship: 'SCHEDULED',
+						start_date: validateGtfsDate(vehiclePosition.operational_date),
+						trip_id: vehiclePosition.trip_id,
+					},
+					vehicle: {
+						id: vehiclePosition.vehicle_id,
+						wheelchair_accessible: 'UNKNOWN',
+					},
 				},
-			},
-		};
-		return entity;
-	});
+			};
+			return entity;
+		});
 
 	await apiCache.set('hub:v1:realtime:vehicles:positions:gtfs', JSON.stringify(vehiclePositionsGtfs));
 
