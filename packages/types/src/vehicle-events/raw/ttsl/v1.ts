@@ -29,7 +29,7 @@ export const RawVehicleEventTtslV1PayloadSchema = z.object({
 		}),
 		vehicle: z.object({
 			id: z.string(),
-			label: z.string(),
+			label: z.string().nullish(),
 		}),
 	}),
 });

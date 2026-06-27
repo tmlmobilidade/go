@@ -1,8 +1,8 @@
 /* * */
 
-import { OperationalDateSchema } from '@/index.js';
 import { RawVehicleEventBaseSchema } from '@/vehicle-events/raw/raw-vehicle-event-base.js';
-import { GtfsRtOccupancyStatusSchema } from '@tmlmobilidade/go-types-gtfs-rt';
+import { GtfsDateSchema, GtfsTimeSchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsRtOccupancyStatusSchema, GtfsRtScheduleRelationshipSchema } from '@tmlmobilidade/go-types-gtfs-rt';
 import { z } from 'zod';
 
 /* * */
@@ -27,8 +27,9 @@ export const RawVehicleEventMobiV1PayloadSchema = z.object({
 		timestamp: z.number().nullish(),
 		trip: z.object({
 			route_id: z.string(),
-			schedule_relationship: z.enum(['SCHEDULED', 'NOT_SCHEDULED']).nullish(),
-			start_time: OperationalDateSchema.nullish(),
+			schedule_relationship: GtfsRtScheduleRelationshipSchema.nullish(),
+			start_date: GtfsDateSchema.nullish(),
+			start_time: GtfsTimeSchema.nullish(),
 			trip_id: z.string(),
 		}),
 		vehicle: z.object({
