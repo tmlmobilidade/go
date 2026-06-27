@@ -8,6 +8,6 @@
 		"rootDir": "src",
 		"strictNullChecks": true
 	},
-	"include": ["src", "../gtfs/src/date.ts"],
+	"include": ["src"],
 	"exclude": ["node_modules", "dist"]
 }
