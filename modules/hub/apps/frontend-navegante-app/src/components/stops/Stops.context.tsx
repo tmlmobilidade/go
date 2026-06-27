@@ -10,24 +10,17 @@ import useSWR from 'swr';
 
 interface StopsContextState {
 	actions: {
-		getLegacyStopIds: (stopId: string) => string[]
 		getStopById: (stopId: string) => HubStop | undefined
 		getStopByIdGeoJsonFC: (stopId: string) => GeoJSON.FeatureCollection | undefined
 	}
 	data: {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
-		legacyStopsMap: Map<string, string[]>
 		stops: HubStop[]
 	}
 	flags: {
 		error: Error | undefined
 		isLoading: boolean
 	}
-}
-
-interface LegacyStopsMapData {
-	id: number
-	legacy_ids: string[]
 }
 
 /* * */
@@ -51,7 +44,6 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	// A. Fetch data
 
 	const { data: allStopsData, isLoading: allStopsLoading } = useSWR<HubStop[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_STOPS }); // 15 minutes
-	const { data: legacyStopsMapData, isLoading: legacyStopsMapLoading } = useSWR<LegacyStopsMapData[]>({ credentials: 'omit', url: API_ROUTES.hub.NETWORK_LEGACY_STOPS_MAP }); // 15 minutes
 
 	//
 	// B. Transform data
@@ -66,16 +58,8 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 		return collection;
 	}, [allStopsData]);
 
-	const dataLegacyStopsMapState = useMemo(() => {
-		const map = new Map<string, string[]>();
-		legacyStopsMapData?.forEach((item) => {
-			map.set(String(item.id), item.legacy_ids);
-		});
-		return map;
-	}, [legacyStopsMapData]);
-
 	//
-	// D. Handle actions
+	// C. Handle actions
 
 	const getStopById = (stopId: number | string): HubStop | undefined => {
 		return allStopsData?.find(stop => String(stop._id) === String(stopId));
@@ -90,32 +74,26 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 		return collection;
 	};
 
-	const getLegacyStopIds = (stopId: string): string[] => {
-		return dataLegacyStopsMapState.get(stopId) ?? [];
-	};
-
 	//
-	// E. Define context value
+	// D. Define context value
 
 	const contextValue: StopsContextState = {
 		actions: {
-			getLegacyStopIds,
 			getStopById,
 			getStopByIdGeoJsonFC,
 		},
 		data: {
 			fc: dataFeatureCollectionState,
-			legacyStopsMap: dataLegacyStopsMapState,
 			stops: allStopsData ?? [],
 		},
 		flags: {
 			error: undefined,
-			isLoading: allStopsLoading || legacyStopsMapLoading,
+			isLoading: allStopsLoading,
 		},
 	};
 
 	//
-	// F. Render components
+	// E. Render components
 
 	return (
 		<StopsContext.Provider value={contextValue}>
