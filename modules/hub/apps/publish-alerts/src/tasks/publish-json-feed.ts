@@ -6,10 +6,11 @@ import { transformReferenceTypeRidesIntoJson } from '@/transform/json/reference-
 import { transformReferenceTypeStopsIntoJson } from '@/transform/json/reference-types/stops.js';
 import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-public-info';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type AlertReference, type HubAlert, HubAlertSchema } from '@tmlmobilidade/types';
+import { type AlertReference } from '@tmlmobilidade/types';
 
 /* * */
 

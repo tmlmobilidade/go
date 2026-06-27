@@ -1,8 +1,8 @@
 /* * */
 
-import { GtfsRtCongestionLevelSchema, GtfsRtOccupancyStatusSchema } from '@/gtfs-rt/index.js';
 import { OperationalDateSchema } from '@/index.js';
 import { RawVehicleEventBaseSchema } from '@/vehicle-events/raw/raw-vehicle-event-base.js';
+import { GtfsRtCongestionLevelSchema, GtfsRtOccupancyStatusSchema } from '@tmlmobilidade/go-types-gtfs-rt';
 import { z } from 'zod';
 
 /* * */

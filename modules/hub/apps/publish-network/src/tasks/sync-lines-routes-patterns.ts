@@ -1,10 +1,11 @@
 /* * */
 
 import { apiCache } from '@tmlmobilidade/databases';
+import { type HubLine, type HubPattern, type HubRoute, type HubScheduledArrival, type HubStop, type HubTrip, type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Route_Extended, type HubLine, type HubPattern, type HubRoute, type HubScheduledArrival, type HubStop, type HubTrip, type HubWaypoint } from '@tmlmobilidade/types';
+import { type GTFS_Route_Extended } from '@tmlmobilidade/types';
 import crypto from 'node:crypto';
 
 /* * */
@@ -252,7 +253,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 			if (parsedPatternsForThisPatternGroup.has(currentPatternVersionHash)) {
 				currentPatternObject = parsedPatternsForThisPatternGroup.get(currentPatternVersionHash);
 			} else {
-				currentPatternObject =	{
+				currentPatternObject = {
 					_id: tripRawData.pattern_id,
 					agency_id: routeRawData.agency_id,
 					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
