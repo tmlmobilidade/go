@@ -601,8 +601,8 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "stop_times.txt" file.' });
-		throw new Error('✖︎ Error processing "stop_times.txt" file.');
+		Logger.error({ error, message: `Error processing "stop_times.txt" file: ${error.message}` });
+		throw new Error('✖︎ Error processing "stop_times.txt" file.', error);
 	}
 
 	/* * */
