@@ -10,10 +10,19 @@
 .header {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-spacing-md);
 	min-height: 52px;
 	padding: var(--size-spacing-md);
 	border-bottom: 1px solid var(--color-system-border-100);
 	background-color: var(--color-system-background-200);
+}
+
+.headerFilters {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-sm);
+	flex-shrink: 0;
 }
 
 .content {
@@ -62,4 +71,24 @@
 	background-color: var(--color-system-background-100);
 	color: var(--color-system-text-200);
 	font-weight: var(--font-weight-bold);
+}
+
+.tableRowButton {
+	cursor: pointer;
+}
+
+.tableRowButton:hover {
+	background-color: var(--color-system-background-200);
+}
+
+.tableRowButton:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: -2px;
+}
+
+@media (max-width: 720px) {
+	.header {
+		align-items: flex-start;
+		flex-direction: column;
+	}
 }

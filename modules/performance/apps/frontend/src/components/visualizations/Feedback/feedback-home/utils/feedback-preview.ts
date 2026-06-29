@@ -2,38 +2,15 @@
 
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
-import { type FeedbackEntityMetrics, type FeedbackEntityType, getFeedbackMetricsByEntity } from '../../feedback-metrics';
-import { getLineLabel } from '../../network-labels';
+import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '../../feedback-entities';
+import { type FeedbackEntityType, getFeedbackMetricsByEntity } from '../../feedback-metrics';
 
 /* * */
 
-export interface FeedbackEntitySummary {
-	count: number
-	description?: string
-	id: string
-	label: string
-	satisfactionIndex: number
-}
-
-function getEntityLabel(entityId: string, entityType: FeedbackEntityType, labelsById: Map<string, string>) {
-	if (entityType === 'line') return getLineLabel(entityId, labelsById);
-	return labelsById.get(entityId) ?? entityId;
-}
-
-function buildTopFeedbackList(metrics: FeedbackEntityMetrics[], entityType: FeedbackEntityType, labelsById: Map<string, string>): FeedbackEntitySummary[] {
+function buildTopFeedbackList(metrics: ReturnType<typeof getFeedbackMetricsByEntity>, entityType: FeedbackEntityType, labelsById: Map<string, string>): FeedbackEntitySummary[] {
 	return metrics
 		.slice(0, 6)
-		.map((metric) => {
-			const label = getEntityLabel(metric.entityId, entityType, labelsById);
-
-			return {
-				count: metric.feedbackCount,
-				description: label === metric.entityId ? undefined : metric.entityId,
-				id: metric.entityId,
-				label,
-				satisfactionIndex: metric.satisfactionIndex,
-			};
-		});
+		.map(metric => getFeedbackEntitySummary(metric, entityType, labelsById));
 }
 
 /* * */
