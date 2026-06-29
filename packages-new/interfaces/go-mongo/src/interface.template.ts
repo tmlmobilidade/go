@@ -365,7 +365,7 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 		const parseResult = this.updateSchema.safeParse(data);
 		if (!parseResult.success) throw new Error(`Update data validation failed: ${parseResult.error.message}`);
 		// Attempt to find and update the document in the collection
-		return await this.collection.updateOne(filter, { $set: parseResult.data }, options);
+		return await this.collection.updateOne(filter, { $set: { ...parseResult.data, updated_at: Dates.now('utc').unix_timestamp } }, options);
 	}
 
 	/**
