@@ -1,6 +1,7 @@
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarFiles } from '@/exports/calendars.js';
 import { exportDayTypesFile } from '@/exports/day_types.js';
+import { exportFeedInfoFile } from '@/exports/feed_info.js';
 import { exportRoutesFile } from '@/exports/routes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
@@ -86,7 +87,7 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 	await exportRoutesFile(sqlGtfs, exportConfig);
 	await exportStopsFile(sqlGtfs, exportConfig);
 	await exportAgencyFile(planData, exportConfig);
-	// await exportFeedInfoFile(planData, exportConfig);
+	await exportFeedInfoFile(planData, exportConfig);
 	await exportDayTypesFile(exportConfig);
 
 	Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
