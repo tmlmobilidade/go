@@ -36,7 +36,7 @@ jobs:
             const body = [
               '### Builds',
               '',
-              'PRs do not auto-build on push. Comment to build — each module runs independently:',
+              'PRs do not auto-build on push. Comment to build — each module runs independently in the preview environment:',
               '```',
               '/build <module> [module...]',
               '/build all',
