@@ -12,7 +12,6 @@ import styles from '../../styles.module.css';
 import { buildLineLabelsById, buildStopLabelsById } from '../../network-labels';
 import { getFeedbackOverviewData } from '../utils/feedback-preview';
 import { buildOperatorApprovalIndexes } from '../utils/operator-approval';
-import { sortOperatorsByCode } from '../utils/operators';
 import { FeedbackGraphCard } from './FeedbackGraphCard';
 import { FeedbackOperatorsCard } from './FeedbackOperatorsCard';
 import { TopFeedbackEntities } from './TopFeedbackEntities';
@@ -40,8 +39,15 @@ export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
 	const stopsById = useMemo(() => buildStopLabelsById(stopsData), [stopsData]);
 	const feedbackData = useMemo(() => getFeedbackOverviewData(rows, linesById, stopsById), [linesById, rows, stopsById]);
 	const operatorApprovalIndexes = useMemo(() => buildOperatorApprovalIndexes(rows), [rows]);
-	const operators = useMemo(() => {
-		return sortOperatorsByCode(operatorsData).filter(operator => operatorApprovalIndexes.has(operator._id));
+	const operatorApprovals = useMemo(() => {
+		return (operatorsData ?? []).flatMap((operator) => {
+			const satisfactionIndex = operatorApprovalIndexes.get(operator._id);
+
+			// Operators without feedback are intentionally omitted from the table.
+			if (satisfactionIndex === undefined) return [];
+
+			return [{ operator, satisfactionIndex }];
+		});
 	}, [operatorApprovalIndexes, operatorsData]);
 
 	//
@@ -56,8 +62,8 @@ export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
 				<TopFeedbackEntities items={feedbackData.topStops} nameColumnLabel="Paragem" title="Paragens com mais feedbacks" />
 			</section>
 
-			{operators.length > 0 && (
-				<FeedbackOperatorsCard operatorApprovalIndexes={operatorApprovalIndexes} operators={operators} />
+			{operatorApprovals.length > 0 && (
+				<FeedbackOperatorsCard operatorApprovals={operatorApprovals} />
 			)}
 		</>
 	);

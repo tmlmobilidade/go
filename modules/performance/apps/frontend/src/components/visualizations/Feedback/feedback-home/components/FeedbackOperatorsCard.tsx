@@ -9,13 +9,22 @@ import { useMemo, useState } from 'react';
 import styles from '../../styles.module.css';
 
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../../feedback-metrics';
+import { FeedbackMetricTag } from '../../FeedbackMetricTag';
 import { getOperatorLogoSrc } from '../utils/operator-logo';
-import { getOperatorName } from '../utils/operators';
-import { FeedbackMetricTag } from './FeedbackMetricTag';
+import { compareOperatorsByCode, getOperatorName } from '../utils/operators';
 
 /* * */
 
 type OperatorSortMode = 'id' | 'satisfaction_asc' | 'satisfaction_desc';
+
+interface FeedbackOperatorApproval {
+	operator: Agency
+	satisfactionIndex: number
+}
+
+interface FeedbackOperatorsCardProps {
+	operatorApprovals: FeedbackOperatorApproval[]
+}
 
 const OPERATOR_SORT_OPTIONS: { label: string, value: OperatorSortMode }[] = [
 	{ label: 'ID', value: 'id' },
@@ -23,23 +32,16 @@ const OPERATOR_SORT_OPTIONS: { label: string, value: OperatorSortMode }[] = [
 	{ label: 'Menor índice', value: 'satisfaction_asc' },
 ];
 
-const OPERATOR_ID_COLLATOR = new Intl.Collator('pt-PT', { numeric: true, sensitivity: 'base' });
-
 /* * */
 
-function compareOperatorsById(operatorA: Agency, operatorB: Agency) {
-	return OPERATOR_ID_COLLATOR.compare(operatorA._id, operatorB._id);
-}
+function sortOperatorApprovals(operatorApprovals: FeedbackOperatorApproval[], sortMode: OperatorSortMode) {
+	if (sortMode === 'id') return [...operatorApprovals].sort((approvalA, approvalB) => compareOperatorsByCode(approvalA.operator, approvalB.operator));
 
-function sortOperatorsBySatisfactionIndex(operators: Agency[], operatorApprovalIndexes: Map<string, number>, sortMode: OperatorSortMode) {
-	if (sortMode === 'id') return [...operators].sort(compareOperatorsById);
+	return [...operatorApprovals].sort((approvalA, approvalB) => {
+		const satisfactionDiff = approvalA.satisfactionIndex - approvalB.satisfactionIndex;
 
-	return [...operators].sort((operatorA, operatorB) => {
-		const satisfactionIndexA = operatorApprovalIndexes.get(operatorA._id) ?? 0;
-		const satisfactionIndexB = operatorApprovalIndexes.get(operatorB._id) ?? 0;
-		const satisfactionDiff = satisfactionIndexA - satisfactionIndexB;
-
-		if (satisfactionDiff === 0) return compareOperatorsById(operatorA, operatorB);
+		// Keep ID ordering as the tie-breaker so satisfaction sorts remain stable.
+		if (satisfactionDiff === 0) return compareOperatorsByCode(approvalA.operator, approvalB.operator);
 		if (sortMode === 'satisfaction_asc') return satisfactionDiff;
 		return satisfactionDiff * -1;
 	});
@@ -47,15 +49,15 @@ function sortOperatorsBySatisfactionIndex(operators: Agency[], operatorApprovalI
 
 /* * */
 
-export function FeedbackOperatorsCard({ operatorApprovalIndexes, operators }: { operatorApprovalIndexes: Map<string, number>, operators: Agency[] }) {
+export function FeedbackOperatorsCard({ operatorApprovals }: FeedbackOperatorsCardProps) {
 	//
 	// A. Setup variables
 
 	const [operatorSortMode, setOperatorSortMode] = useState<OperatorSortMode>('id');
 
-	const sortedOperators = useMemo(() => {
-		return sortOperatorsBySatisfactionIndex(operators, operatorApprovalIndexes, operatorSortMode);
-	}, [operatorApprovalIndexes, operatorSortMode, operators]);
+	const sortedOperatorApprovals = useMemo(() => {
+		return sortOperatorApprovals(operatorApprovals, operatorSortMode);
+	}, [operatorApprovals, operatorSortMode]);
 
 	//
 	// B. Handle actions
@@ -73,7 +75,7 @@ export function FeedbackOperatorsCard({ operatorApprovalIndexes, operators }: { 
 				<p className={styles.cardTitle}>Operadores</p>
 
 				<div className={styles.feedbackCardControl}>
-					<h3>Ordenar</h3>
+					<h3 className={styles.feedbackCardControlLabel}>Ordenar</h3>
 					<SegmentedControl data={OPERATOR_SORT_OPTIONS} onChange={handleChangeOperatorSortMode} value={operatorSortMode} />
 				</div>
 			</div>
@@ -84,7 +86,7 @@ export function FeedbackOperatorsCard({ operatorApprovalIndexes, operators }: { 
 						<thead>
 							<tr>
 								<th className={styles.operatorsTableMetricHeader} scope="col">ID</th>
-								{sortedOperators.map(operator => (
+								{sortedOperatorApprovals.map(({ operator }) => (
 									<th key={operator._id} scope="col">{operator._id}</th>
 								))}
 							</tr>
@@ -93,7 +95,7 @@ export function FeedbackOperatorsCard({ operatorApprovalIndexes, operators }: { 
 						<tbody>
 							<tr>
 								<th className={styles.operatorMetricLabel} scope="row">Operador</th>
-								{sortedOperators.map((operator) => {
+								{sortedOperatorApprovals.map(({ operator }) => {
 									const operatorLogoSrc = getOperatorLogoSrc(operator._id);
 
 									return (
@@ -117,18 +119,13 @@ export function FeedbackOperatorsCard({ operatorApprovalIndexes, operators }: { 
 
 							<tr>
 								<th className={styles.operatorMetricLabel} scope="row">Índice de aprovação</th>
-								{sortedOperators.map((operator) => {
-									const satisfactionIndex = operatorApprovalIndexes.get(operator._id);
-									if (satisfactionIndex === undefined) return null;
-
-									return (
-										<td key={operator._id}>
-											<div className={styles.operatorMetricValue}>
-												<FeedbackMetricTag label={formatSatisfactionIndex(satisfactionIndex)} status={getFeedbackSatisfactionStatus(satisfactionIndex)} />
-											</div>
-										</td>
-									);
-								})}
+								{sortedOperatorApprovals.map(({ operator, satisfactionIndex }) => (
+									<td key={operator._id}>
+										<div className={styles.operatorMetricValue}>
+											<FeedbackMetricTag label={formatSatisfactionIndex(satisfactionIndex)} status={getFeedbackSatisfactionStatus(satisfactionIndex)} />
+										</div>
+									</td>
+								))}
 							</tr>
 						</tbody>
 					</table>

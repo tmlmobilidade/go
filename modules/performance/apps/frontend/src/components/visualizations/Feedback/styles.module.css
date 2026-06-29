@@ -50,7 +50,7 @@
 	flex-shrink: 0;
 }
 
-.feedbackCardControl h3 {
+.feedbackCardControlLabel {
 	margin: 0;
 	color: var(--color-system-text-100);
 	font-size: var(--font-size-md);
@@ -59,6 +59,10 @@
 
 .timelineChart {
 	width: 100%;
+}
+
+.timelineChartSkeleton {
+	height: 220px;
 }
 
 .feedbackList {
@@ -198,9 +202,6 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-spacing-xs);
-	-webkit-tap-highlight-color: transparent;
-	-webkit-user-select: none;
-	user-select: none;
 }
 
 .feedbackEntityModalContributionButtons {
@@ -238,8 +239,6 @@
 }
 
 .feedbackEntityModalContributionButton:disabled {
-	border-color: transparent;
-	background-color: transparent;
 	color: var(--color-system-text-300);
 	cursor: default;
 }
@@ -255,37 +254,6 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-spacing-sm);
-	-webkit-tap-highlight-color: transparent;
-	-webkit-user-select: none;
-	user-select: none;
-}
-
-.feedbackEntityModalContributionChart *,
-.feedbackEntityModalReasonChart * {
-	-webkit-user-select: none;
-	user-select: none;
-}
-
-.feedbackEntityModalContributionChart :global(.recharts-wrapper),
-.feedbackEntityModalContributionChart :global(.recharts-surface),
-.feedbackEntityModalReasonChart :global(.recharts-wrapper),
-.feedbackEntityModalReasonChart :global(.recharts-surface) {
-	outline: none !important;
-}
-
-.feedbackEntityModalContributionChart :global(svg),
-.feedbackEntityModalContributionChart :global(svg *),
-.feedbackEntityModalReasonChart :global(svg),
-.feedbackEntityModalReasonChart :global(svg *) {
-	-webkit-tap-highlight-color: transparent;
-	outline: none !important;
-}
-
-.feedbackEntityModalContributionChart :global(.recharts-wrapper *:focus),
-.feedbackEntityModalContributionChart :global(.recharts-wrapper *:focus-visible),
-.feedbackEntityModalReasonChart :global(.recharts-wrapper *:focus),
-.feedbackEntityModalReasonChart :global(.recharts-wrapper *:focus-visible) {
-	outline: none !important;
 }
 
 .feedbackEntityModalMetrics {
@@ -407,8 +375,6 @@
 	width: fit-content;
 	padding: var(--size-spacing-xs) var(--size-spacing-sm);
 	border-radius: 6px;
-	color: var(--text-muted, #6b7280);
-	background-color: var(--bg-muted, #f3f4f6);
 	white-space: nowrap;
 }
 

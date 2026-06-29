@@ -12,9 +12,9 @@ import useSWR from 'swr';
 import styles from './styles.module.css';
 
 import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '../feedback-entities';
-import { FeedbackMetricTag } from '../feedback-home/components/FeedbackMetricTag';
 import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '../feedback-metrics';
 import { FeedbackEntityDetailModal } from '../FeedbackEntityDetailModal';
+import { FeedbackMetricTag } from '../FeedbackMetricTag';
 import { buildStopLabelsById, getStopLabel } from '../network-labels';
 import { useFeedbackOperatorFilter } from '../use-feedback-operator-filter';
 

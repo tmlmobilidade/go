@@ -9,7 +9,7 @@ import styles from '../../styles.module.css';
 
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../../feedback-metrics';
 import { FeedbackEntityDetailModal } from '../../FeedbackEntityDetailModal';
-import { FeedbackMetricTag } from './FeedbackMetricTag';
+import { FeedbackMetricTag } from '../../FeedbackMetricTag';
 
 /* * */
 
@@ -28,18 +28,7 @@ export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedba
 	const [selectedItem, setSelectedItem] = useState<FeedbackEntitySummary>();
 
 	//
-	// B. Handle actions
-
-	const handleOpenDetailModal = (item: FeedbackEntitySummary) => {
-		setSelectedItem(item);
-	};
-
-	const handleCloseDetailModal = () => {
-		setSelectedItem(undefined);
-	};
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<>
@@ -57,7 +46,7 @@ export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedba
 						</div>
 
 						{items.map(item => (
-							<button key={item.id} className={`${styles.feedbackRow} ${styles.feedbackRowButton}`} onClick={() => handleOpenDetailModal(item)} type="button">
+							<button key={item.id} className={`${styles.feedbackRow} ${styles.feedbackRowButton}`} onClick={() => setSelectedItem(item)} type="button">
 								<div className={styles.feedbackLineDetails}>
 									<span className={styles.feedbackLineName}>{item.label}</span>
 									{item.description && <p className={styles.feedbackLineDescription}>{item.description}</p>}
@@ -74,7 +63,7 @@ export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedba
 				</div>
 			</ContainerWrapper>
 
-			<FeedbackEntityDetailModal item={selectedItem} onClose={handleCloseDetailModal} />
+			<FeedbackEntityDetailModal item={selectedItem} onClose={() => setSelectedItem(undefined)} />
 		</>
 	);
 }
