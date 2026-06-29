@@ -1,6 +1,7 @@
 /* * */
 
 import { getRides } from '@/get-rides.js';
+import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import Fastify from 'fastify';
@@ -9,6 +10,14 @@ import Fastify from 'fastify';
 
 await (async function init() {
 	//
+
+	// console.log('invalidating crtm-aisa rides');
+	// await rides.updateMany({ agency_id: 'crtm-aisa' }, { system_status: 'waiting' });
+	// console.log('Done');
+
+	// console.log('invalidating crtm-laveloz rides');
+	// await rides.updateMany({ agency_id: 'crtm-laveloz' }, { system_status: 'waiting' });
+	// console.log('Done');
 
 	//
 	// Initialize Sentry
