@@ -28,7 +28,7 @@ export function AgenciesList() {
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
 			title: t('default:agencies.list.Table.columns.id'),
-			width: 50,
+			width: 80,
 		},
 		{
 			accessor: 'name',
