@@ -88,6 +88,24 @@
 	border-bottom: none;
 }
 
+.feedbackRowButton {
+	width: 100%;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+}
+
+.feedbackRowButton:hover {
+	background-color: var(--color-system-background-200);
+}
+
+.feedbackRowButton:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: -2px;
+}
+
 .feedbackListHeader {
 	display: grid;
 	grid-template-columns: minmax(260px, 1fr) 96px 140px;
@@ -102,7 +120,22 @@
 }
 
 .feedbackListHeaderMetric {
+	justify-self: end;
 	text-align: right;
+}
+
+.feedbackListHeaderTag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: fit-content;
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 6px;
+	background-color: var(--color-system-background-200);
+	color: var(--color-system-text-200);
+	line-height: 1;
+	white-space: nowrap;
 }
 
 .feedbackLineDetails {
@@ -138,6 +171,44 @@
 	white-space: nowrap;
 }
 
+.feedbackEntityModalTitle {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 2px;
+	max-width: 100%;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.feedbackEntityModalTitle p {
+	white-space: normal;
+}
+
+.feedbackEntityModalMetrics {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--size-spacing-md);
+	width: 100%;
+}
+
+.feedbackEntityModalMetric {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	align-items: flex-start;
+	padding: var(--size-spacing-md);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+	background-color: var(--color-system-background-200);
+}
+
+.feedbackEntityModalMetricLabel {
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-bold);
+}
+
 .operatorsTableWrapper {
 	min-width: 0;
 	overflow-x: auto;
@@ -155,7 +226,6 @@
 .operatorsTable th,
 .operatorsTable td {
 	min-width: 160px;
-	max-width: 220px;
 	padding: var(--size-spacing-sm) var(--size-spacing-md);
 	border-right: 1px solid var(--color-system-border-100);
 	text-align: left;
@@ -205,6 +275,7 @@
 	align-items: center;
 	gap: var(--size-spacing-sm);
 	min-width: 0;
+	width: max-content;
 }
 
 .operatorLogo {
@@ -215,8 +286,6 @@
 .operatorName {
 	display: block;
 	min-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 

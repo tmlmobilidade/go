@@ -9,9 +9,9 @@ import { useMemo, useState } from 'react';
 import styles from '../../styles.module.css';
 
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../../feedback-metrics';
-import { FeedbackMetricTag } from '../../FeedbackMetricTag';
 import { getOperatorLogoSrc } from '../utils/operator-logo';
 import { getOperatorName } from '../utils/operators';
+import { FeedbackMetricTag } from './FeedbackMetricTag';
 
 /* * */
 
