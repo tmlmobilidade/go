@@ -24,6 +24,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rabbitmq": "*",
@@ -31,13 +32,13 @@
 		"@tmlmobilidade/utils": "*",
 		"adm-zip": "0.5.17",
 		"formidable": "3.5.4",
-		"papaparse": "5.5.3"
+		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/adm-zip": "0.5.8",
-		"@types/node": "25.9.3",
+		"@types/node": "26.0.1",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.4",

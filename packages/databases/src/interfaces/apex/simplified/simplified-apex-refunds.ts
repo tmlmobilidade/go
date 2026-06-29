@@ -12,25 +12,26 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardRefund> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
-	block_id: { type: 'Nullable(String)' },
 	card_physical_type: { type: 'UInt8' },
 	card_serial_number: { type: 'Nullable(UInt64)' },
-	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	created_at: { type: 'Int64' },
 	device_id: { type: 'LowCardinality(String)' },
-	duty_id: { type: 'Nullable(String)' },
+	is_ok: { type: 'Bool' },
+	is_ok_pcgi: { type: 'Bool' },
 	line_id: { type: 'LowCardinality(Nullable(String))' },
 	mac_ase_counter_value: { type: 'UInt64' },
 	mac_sam_serial_number: { type: 'UInt64' },
 	on_board_sale_id: { type: 'Nullable(UUID)' },
+	operational_date: { type: 'UInt32' },
 	pattern_id: { type: 'LowCardinality(Nullable(String))' },
 	payment_method: { type: 'UInt8' },
 	price: { type: 'Int32' },
 	product_id: { type: 'LowCardinality(Nullable(String))' },
 	product_quantity: { type: 'Int32' },
-	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	received_at: { type: 'Int64' },
 	stop_id: { type: 'LowCardinality(Nullable(String))' },
 	trip_id: { type: 'Nullable(String)' },
-	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	updated_at: { type: 'Int64' },
 	validation_id: { type: 'Nullable(UUID)' },
 	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
@@ -44,8 +45,8 @@ class SimplifiedApexOnBoardRefundsNewClass extends ClickHouseInterfaceTemplate<S
 
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexOnBoardRefund> = 'ReplacingMergeTree(updated_at)';
-	protected override readonly orderBy = 'agency_id, created_at, _id';
-	protected override readonly partitionBy = 'toYYYYMM(created_at)';
+	protected override readonly orderBy = 'agency_id, operational_date, created_at, _id';
+	protected override readonly partitionBy = 'intDiv(operational_date, 100)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'refunds';
 

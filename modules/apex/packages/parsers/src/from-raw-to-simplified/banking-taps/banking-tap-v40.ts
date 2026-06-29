@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionBankingTapV40, type SimplifiedApexBankingTap, SimplifiedApexBankingTapSchema } from '@tmlmobilidade/go-types-apex';
+import { ApexBankingBrandSchema, type RawApexTransactionBankingTapV40, type SimplifiedApexBankingTap, SimplifiedApexBankingTapSchema } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 
@@ -22,22 +22,23 @@ export function parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap
 		agency_id: doc.payload.operatorInfo.operatorLongID,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		banking_token: doc.payload.tapInInfo.bankingToken,
-		card_brand: doc.payload.tapInInfo.cardBrand,
+		card_brand: ApexBankingBrandSchema.parse(String(doc.payload.tapInInfo.cardBrand)),
 		card_pan: doc.payload.tapInInfo.cardPan,
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
 		event_type: null,
+		group_dimension: doc.payload.tapInInfo.groupDimension,
 		is_ok: false,
 		is_ok_pcgi: doc.is_ok,
 		line_id: doc.payload.serviceInfo.lineLongID,
 		mac_ase_counter_value: doc.payload.mac.aseCounterValue,
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
+		operational_date: transactionDateValue.operational_date_int,
 		pattern_id: doc.payload.serviceInfo.patternLongID,
 		product_id: doc.payload.tapInInfo.productLongID,
 		received_at: doc.received_at,
 		stop_id: doc.payload.serviceInfo.stopLongID,
 		trip_id: doc.payload.serviceInfo.journeyID,
-		units_qty: doc.payload.tapInInfo.groupDimension,
 		updated_at: Dates.now('utc').unix_timestamp,
 		vehicle_id: doc.payload.serviceInfo.vehicleID,
 	};

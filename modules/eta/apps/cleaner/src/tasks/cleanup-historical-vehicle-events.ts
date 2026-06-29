@@ -24,6 +24,6 @@ export async function cleanupHistoricalVehicleEvents(clickhouseClient: Parameter
 	);
 
 	const rowsToDelete = result[0]?.rows_to_delete ?? 0;
-	Logger.progress(`Deleted ${rowsToDelete} orphan historical vehicle events`);
+	Logger.progress({ message: `Deleted ${rowsToDelete} orphan historical vehicle events` });
 	return rowsToDelete;
 }

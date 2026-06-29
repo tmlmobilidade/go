@@ -28,12 +28,12 @@
 		"@tmlmobilidade/writers": "*",
 		"csv-parse": "7.0.0",
 		"gtfs-types": "5.1.0",
-		"unzipper": "0.12.3"
+		"unzipper": "0.12.5"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "25.9.3",
+		"@types/node": "26.0.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.4",
 		"typescript": "6.0.3"

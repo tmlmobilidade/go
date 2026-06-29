@@ -5,7 +5,9 @@ import { RawVehicleEventCmetV1CoreSchema } from '@/vehicle-events/raw/cmet/v1-co
 import { RawVehicleEventCmetV1LogSchema } from '@/vehicle-events/raw/cmet/v1-log.js';
 import { RawVehicleEventCpV1Schema } from '@/vehicle-events/raw/cp/v1.js';
 import { RawVehicleEventCrtmAisaV1Schema } from '@/vehicle-events/raw/crtm-aisa/v1.js';
+import { RawVehicleEventCrtmLaVelozV1Schema } from '@/vehicle-events/raw/crtm-laveloz/v1.js';
 import { RawVehicleEventFertagusV1Schema } from '@/vehicle-events/raw/fertagus/v1.js';
+import { RawVehicleEventMlV1Schema } from '@/vehicle-events/raw/ml/v1.js';
 import { RawVehicleEventMobiV1Schema } from '@/vehicle-events/raw/mobi/v1.js';
 import { RawVehicleEventTcbV1Schema } from '@/vehicle-events/raw/tcb/v1.js';
 import { RawVehicleEventTtslV1Schema } from '@/vehicle-events/raw/ttsl/v1.js';
@@ -14,6 +16,7 @@ import { z } from 'zod';
 /* * */
 
 export const RawVehicleEventSchema = z.discriminatedUnion('version', [
+	RawVehicleEventMlV1Schema,
 	RawVehicleEventMobiV1Schema,
 	RawVehicleEventCcflV1Schema,
 	RawVehicleEventCmetV1CoreSchema,
@@ -21,6 +24,7 @@ export const RawVehicleEventSchema = z.discriminatedUnion('version', [
 	RawVehicleEventTtslV1Schema,
 	RawVehicleEventCpV1Schema,
 	RawVehicleEventCrtmAisaV1Schema,
+	RawVehicleEventCrtmLaVelozV1Schema,
 	RawVehicleEventTcbV1Schema,
 	RawVehicleEventFertagusV1Schema,
 ]);

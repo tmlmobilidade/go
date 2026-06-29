@@ -1,6 +1,6 @@
 /* * */
 
-import { CalendarDateSchema } from '@tmlmobilidade/types';
+import { CalendarDateSchema, OperationalDateIntSchema } from '@tmlmobilidade/types';
 import { UnixTimestampSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
@@ -25,9 +25,11 @@ export const HubVehiclePositionSchema = z.object({
 		.max(180)
 		.transform(value => value.toFixed(6))
 		.transform(value => parseFloat(value)),
+	operational_date: OperationalDateIntSchema,
 	pattern_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
 	ride_id: z.string().nullable().default(null),
+	route_id: z.string().nullable().default(null),
 	speed: z.number().nullable().default(null),
 	stop_id: z.string().nullable().default(null),
 	trip_id: z.string(),

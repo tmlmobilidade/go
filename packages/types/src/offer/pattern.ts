@@ -57,6 +57,7 @@ const ShapeAnchorSchema = z.object({
 const ShapeLegSchema = z.object({
 	distance: z.number(),
 	duration: z.number(),
+	encoded_polyline: z.string().optional(),
 	from_index: z.number(),
 	geojson: z.object({
 		geometry: z.object({
@@ -77,6 +78,7 @@ const ShapeLegSchema = z.object({
 
 export const ShapeSchema = z.object({
 	anchors: z.array(ShapeAnchorSchema).optional(),
+	encoded_polyline: z.string().optional(),
 	extension: z.number(),
 	geojson: z.object({
 		geometry: z.object({
@@ -120,6 +122,22 @@ export const PatternSimplifiedSchema = z.object({
 	route_id: z.string(),
 });
 
+export const PatternShapeMapItemSchema = z.object({
+	agency_id: z.string(),
+	color: z.string(),
+	destination: z.string(),
+	encoded_polyline: z.string(),
+	headsign: z.string(),
+	line_code: z.string(),
+	line_id: z.string(),
+	line_name: z.string(),
+	line_text_color: z.string(),
+	origin: z.string(),
+	pattern_code: z.string(),
+	pattern_id: z.string(),
+	route_id: z.string(),
+});
+
 /* * */
 
 export const CreatePatternSchema = PatternSchema.omit({ _id: true, created_at: true, updated_at: true });
@@ -139,6 +157,7 @@ export type UpdatePatternDto = z.infer<typeof UpdatePatternSchema>;
 export type PopulatedPattern = Omit<Pattern, 'path'> & { path: PopulatedPath[] };
 
 export type PatternSimplified = z.infer<typeof PatternSimplifiedSchema>;
+export type PatternShapeMapItem = z.infer<typeof PatternShapeMapItemSchema>;
 
 export type Path = z.infer<typeof PathSchema>;
 export type PopulatedPath = Path & { stop: null | Stop };

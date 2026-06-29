@@ -4,6 +4,7 @@
 .badge {
 	position: relative;
 	display: flex;
+	flex-shrink: 0;
 	align-items: center;
 	justify-content: center;
 	font-weight: 700;
@@ -44,6 +45,30 @@
 /* * */
 /* PROPS / AGENCY ID */
 
+.badge[data-size='md'][data-agency-id='3'] {
+	max-width: min-content;
+	padding: 0 10px;
+	letter-spacing: -0.5px;
+}
+
+.badge[data-size='lg'][data-agency-id='3'] {
+	max-width: min-content;
+	padding: 0 15px;
+	letter-spacing: -0.5px;
+}
+
+.badge[data-size='md'][data-agency-id='15'] {
+	min-width: 90px;
+	max-width: 90px;
+	letter-spacing: -0.5px;
+}
+
+.badge[data-size='lg'][data-agency-id='15'] {
+	min-width: 120px;
+	max-width: 120px;
+	letter-spacing: -0.5px;
+}
+
 .badge[data-size='md'][data-agency-id='41'],
 .badge[data-size='md'][data-agency-id='42'],
 .badge[data-size='md'][data-agency-id='43'],
@@ -58,18 +83,6 @@
 .badge[data-size='lg'][data-agency-id='44'] {
 	min-width: 85px;
 	max-width: 85px;
-}
-
-.badge[data-size='md'][data-agency-id='15'] {
-	min-width: 90px;
-	max-width: 90px;
-	letter-spacing: -0.5px;
-}
-
-.badge[data-size='lg'][data-agency-id='15'] {
-	min-width: 120px;
-	max-width: 120px;
-	letter-spacing: -0.5px;
 }
 
 /* * */

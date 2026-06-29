@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubVehiclePosition } from '@tmlmobilidade/types';
+import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -48,16 +48,22 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allVehiclesPositionsData, isLoading: allVehiclesPositionsLoading } = useSWR<HubVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, { refreshInterval: 5_000 }); // 1 second
+	const { data: allVehiclesPositionsData, isLoading: allVehiclesPositionsLoading } = useSWR<HubVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, { refreshInterval: 5_000 }); // 5 seconds
 
 	//
 	// B. Transform data
 
 	const vehiclesGeoJsonFeatureCollection = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, HubVehiclePosition>();
-		allVehiclesPositionsData?.forEach(vehicle => collection.features.push(transformVehicleDataIntoGeoJsonFeature(vehicle)));
+		allVehiclesPositionsData?.forEach((vehicle) => {
+			// Skip if vehicle position is not from an allowed agency
+			if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(vehicle.agency_id)) return;
+			// Add the vehicle position to the collection
+			collection.features.push(transformVehicleDataIntoGeoJsonFeature(vehicle));
+		});
 		return collection;
 	}, [allVehiclesPositionsData]);
+
 	//
 	// B. Handle actions
 

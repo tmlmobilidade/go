@@ -2,10 +2,10 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { clampCoordinate } from '@tmlmobilidade/geo';
+import { type HubGtfsExportStops, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-public-info';
 import { districts, localities, municipalities, parishes, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HubGtfsExportStops, HubGtfsExportStopsSchema } from '@tmlmobilidade/types';
 
 /* * */
 

@@ -44,7 +44,7 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 			accessor: 'operational_status',
 			render: item => <OperationalStatusTag value={item.operational_status} />,
 			title: 'Estado',
-			width: 150,
+			width: 190,
 		},
 		{
 			accessor: 'start_time_scheduled',

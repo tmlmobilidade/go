@@ -24,11 +24,11 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"pg": "8.21.0"
+		"pg": "8.22.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.9.3",
+		"@types/node": "26.0.1",
 		"@types/pg": "8.20.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"

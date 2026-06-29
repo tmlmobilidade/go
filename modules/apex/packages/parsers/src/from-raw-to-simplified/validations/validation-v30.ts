@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawApexTransactionValidationV30, type SimplifiedApexValidation, SimplifiedApexValidationSchema } from '@tmlmobilidade/go-types-apex';
+import { ApexEventTypeSchema, type RawApexTransactionValidationV30, type SimplifiedApexValidation, SimplifiedApexValidationSchema } from '@tmlmobilidade/go-types-apex';
 import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
@@ -26,7 +26,7 @@ export function parseRawApexTransactionValidationV30IntoSimplifiedApexValidation
 		category: 'subscription',
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
-		event_type: doc.payload.validationInfo.eventType,
+		event_type: ApexEventTypeSchema.parse(String(doc.payload.validationInfo.eventType)),
 		is_ok: false,
 		is_ok_pcgi: doc.is_ok,
 		is_passenger: false,
@@ -35,12 +35,13 @@ export function parseRawApexTransactionValidationV30IntoSimplifiedApexValidation
 		mac_sam_serial_number: doc.payload.mac.samSerialNumber,
 		on_board_refund_id: null,
 		on_board_sale_id: null,
+		operational_date: transactionDateValue.operational_date_int,
 		pattern_id: doc.payload.serviceInfo.patternLongID,
 		product_id: doc.payload.validationInfo.productLongID,
 		received_at: doc.received_at,
 		stop_id: doc.payload.serviceInfo.stopLongID,
 		trip_id: doc.payload.serviceInfo.journeyID,
-		units_qty: 0,
+		units_qty: doc.payload.validationInfo.unitsQuantity,
 		updated_at: Dates.now('utc').unix_timestamp,
 		validation_status: '0',
 		vehicle_id: doc.payload.serviceInfo.vehicleID,
