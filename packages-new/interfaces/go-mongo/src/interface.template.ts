@@ -359,6 +359,13 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	}
 
 	public async updateOne(filter: Filter<T>, data: TUpdate, options?: UpdateOptions) {
+		// If forceIfLocked is not set then check if the document is locked.
+		// If it is locked, then throw an error to prevent the operation.
+		if (!options?.forceIfLocked) {
+			const isLocked = await this.isLocked(filter);
+			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be deleted');
+		}
+
 		// If no update schema is defined, throw an error.
 		if (!this.updateSchema) throw new Error(`No schema defined for update operation for ${this.collectionName} collection.`);
 		// Validate the update data against the update schema
