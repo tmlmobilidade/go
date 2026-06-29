@@ -74,7 +74,7 @@ export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedba
 				</div>
 			</ContainerWrapper>
 
-			<FeedbackEntityDetailModal entityName={nameColumnLabel} item={selectedItem} onClose={handleCloseDetailModal} />
+			<FeedbackEntityDetailModal item={selectedItem} onClose={handleCloseDetailModal} />
 		</>
 	);
 }

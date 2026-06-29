@@ -117,7 +117,7 @@ export function FeedbackStops() {
 				</div>
 			</ContainerWrapper>
 
-			<FeedbackEntityDetailModal entityName="Paragem" item={selectedStop} onClose={handleCloseStopDetail} />
+			<FeedbackEntityDetailModal item={selectedStop} onClose={handleCloseStopDetail} />
 		</>
 	);
 }
