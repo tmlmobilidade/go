@@ -13,6 +13,7 @@ import styles from './styles.module.css';
 
 import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '../feedback-entities';
 import { FeedbackMetricTag } from '../feedback-home/components/FeedbackMetricTag';
+import { getFeedbackLineContributionMeters } from '../feedback-line-contributions';
 import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '../feedback-metrics';
 import { FeedbackEntityDetailModal } from '../FeedbackEntityDetailModal';
 import { buildLineLabelsById, getLineLabel } from '../network-labels';
@@ -44,7 +45,7 @@ export function FeedbackLines() {
 	// D. Handle actions
 
 	const handleOpenLineDetail = (line: typeof lines[number]) => {
-		setSelectedLine(getFeedbackEntitySummary(line, 'line', linesById));
+		setSelectedLine(getFeedbackEntitySummary(line, 'line', linesById, getFeedbackLineContributionMeters(operatorFilter.rows, line)));
 	};
 
 	const handleCloseLineDetail = () => {

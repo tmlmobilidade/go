@@ -185,6 +185,109 @@
 	white-space: normal;
 }
 
+.feedbackEntityModalChartContainer {
+	width: 100%;
+	min-width: 0;
+	padding: var(--size-spacing-md);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+	background-color: var(--color-system-background-200);
+}
+
+.feedbackEntityModalContributionChart {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	-webkit-tap-highlight-color: transparent;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.feedbackEntityModalContributionButtons {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: var(--size-spacing-xs);
+	padding-left: 56px;
+}
+
+.feedbackEntityModalContributionButton {
+	min-width: 0;
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	border: 1px solid transparent;
+	border-radius: 6px;
+	background-color: transparent;
+	color: var(--color-system-text-200);
+	cursor: pointer;
+	font: inherit;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-bold);
+	line-height: 1.2;
+	text-align: center;
+	white-space: normal;
+}
+
+.feedbackEntityModalContributionButton:hover {
+	border-color: var(--color-system-border-100);
+	background-color: var(--color-system-background-100);
+	color: var(--color-system-text-100);
+}
+
+.feedbackEntityModalContributionButton:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 2px;
+}
+
+.feedbackEntityModalContributionButton:disabled {
+	border-color: transparent;
+	background-color: transparent;
+	color: var(--color-system-text-300);
+	cursor: default;
+}
+
+.feedbackEntityModalContributionButtonSelected,
+.feedbackEntityModalContributionButtonSelected:hover {
+	border-color: var(--color-primary);
+	background-color: var(--color-system-background-100);
+	color: var(--color-primary);
+}
+
+.feedbackEntityModalReasonChart {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	-webkit-tap-highlight-color: transparent;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.feedbackEntityModalContributionChart *,
+.feedbackEntityModalReasonChart * {
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.feedbackEntityModalContributionChart :global(.recharts-wrapper),
+.feedbackEntityModalContributionChart :global(.recharts-surface),
+.feedbackEntityModalReasonChart :global(.recharts-wrapper),
+.feedbackEntityModalReasonChart :global(.recharts-surface) {
+	outline: none !important;
+}
+
+.feedbackEntityModalContributionChart :global(svg),
+.feedbackEntityModalContributionChart :global(svg *),
+.feedbackEntityModalReasonChart :global(svg),
+.feedbackEntityModalReasonChart :global(svg *) {
+	-webkit-tap-highlight-color: transparent;
+	outline: none !important;
+}
+
+.feedbackEntityModalContributionChart :global(.recharts-wrapper *:focus),
+.feedbackEntityModalContributionChart :global(.recharts-wrapper *:focus-visible),
+.feedbackEntityModalReasonChart :global(.recharts-wrapper *:focus),
+.feedbackEntityModalReasonChart :global(.recharts-wrapper *:focus-visible) {
+	outline: none !important;
+}
+
 .feedbackEntityModalMetrics {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -343,5 +446,10 @@
 	.feedbackCardHeaderWithControls {
 		align-items: flex-start;
 		flex-direction: column;
+	}
+
+	.feedbackEntityModalContributionButtons {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		padding-left: 0;
 	}
 }

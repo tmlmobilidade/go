@@ -1,5 +1,6 @@
 /* * */
 
+import { type FeedbackLineContributionMeter } from './feedback-line-contributions';
 import { type FeedbackEntityMetrics, type FeedbackEntityType } from './feedback-metrics';
 import { getLineLabel } from './network-labels';
 
@@ -10,6 +11,7 @@ export interface FeedbackEntitySummary {
 	description?: string
 	id: string
 	label: string
+	lineContributionMeters?: FeedbackLineContributionMeter[]
 	satisfactionIndex: number
 }
 
@@ -20,7 +22,7 @@ function getEntityLabel(entityId: string, entityType: FeedbackEntityType, labels
 	return labelsById.get(entityId) ?? entityId;
 }
 
-export function getFeedbackEntitySummary(metric: FeedbackEntityMetrics, entityType: FeedbackEntityType, labelsById: Map<string, string>): FeedbackEntitySummary {
+export function getFeedbackEntitySummary(metric: FeedbackEntityMetrics, entityType: FeedbackEntityType, labelsById: Map<string, string>, lineContributionMeters?: FeedbackLineContributionMeter[]): FeedbackEntitySummary {
 	const label = getEntityLabel(metric.entityId, entityType, labelsById);
 
 	return {
@@ -28,6 +30,7 @@ export function getFeedbackEntitySummary(metric: FeedbackEntityMetrics, entityTy
 		description: label === metric.entityId ? undefined : metric.entityId,
 		id: metric.entityId,
 		label,
+		lineContributionMeters,
 		satisfactionIndex: metric.satisfactionIndex,
 	};
 }
