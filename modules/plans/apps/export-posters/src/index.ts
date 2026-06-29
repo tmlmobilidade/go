@@ -10,8 +10,6 @@ import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
 
-// import { getFormattedDates } from './get-names.js';
-
 /* * */
 
 const postersController = new PostersController();
@@ -171,7 +169,7 @@ async function main(): Promise<void> {
 			}
 
 			Logger.info({ message: `ZPHERES PDF job ${pdfId} is ${pdfStatus.status}.` });
-			await new Promise(resolve => setTimeout(resolve, 30_000));
+			await new Promise(resolve => setTimeout(resolve, 60_000)); // Wait 60 seconds before checking the status again
 			pdfStatus = await postersController.getPDFStatus(pdfId);
 		}
 

@@ -7,8 +7,10 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@tmlmobilidade/types';
+import { type GTFS_Calendar, type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
+import fs from 'node:fs';
+import Papa from 'papaparse';
 
 /* * */
 
@@ -374,11 +376,47 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	// Output the calendar assignments file with the new service_ids,
 	// and the calendar exceptions file with the detected exceptions.
 
-	const calendarAssignmentsExtCsv = new CsvWriter('calendar_assignmentsExt.txt', `${exportConfig.workdir}/calendar_assignmentsExt.txt`, { batch_size: 100000 });
+	const calendarCsv = exportConfig.source_has_calendar ? new CsvWriter('calendar.txt', `${exportConfig.workdir}/calendar.txt`, { batch_size: 100000 }) : undefined;
 	const calendarDatesCsv = new CsvWriter('calendar_dates.txt', `${exportConfig.workdir}/calendar_dates.txt`, { batch_size: 100000 });
-	const calendarExtCsv = new CsvWriter('calendarExt.txt', `${exportConfig.workdir}/calendarExt.txt`, { batch_size: 100000 });
+	const calendarAssignmentsExtFields: (keyof CalendarAssignmentsExt)[] = ['day_type_id', 'service_id'];
+	const calendarAssignmentsExtRows: CalendarAssignmentsExt[] = [];
+	const calendarExtFields: (keyof CalendarExt)[] = ['service_id', 'index', 'comment'];
+	const calendarExtRows: CalendarExt[] = [];
+
+	//
+	// Loop through each service_id and output the calendar files
 
 	for (const serviceIdData of Object.values(updatedServiceIds)) {
+		//
+		// Sort the dates
+
+		const sortedDates = serviceIdData.dates.sort();
+
+		//
+		// Output the calendar file
+
+		if (calendarCsv) {
+			//
+			// Output the calendar data
+
+			const calendarData: GTFS_Calendar = {
+				end_date: sortedDates.at(-1) ?? exportConfig.date_range.end,
+				friday: 0,
+				monday: 0,
+				saturday: 0,
+				service_id: serviceIdData._id,
+				start_date: sortedDates.at(0) ?? exportConfig.date_range.start,
+				sunday: 0,
+				thursday: 0,
+				tuesday: 0,
+				wednesday: 0,
+			};
+			await calendarCsv.write(calendarData);
+		}
+
+		//
+		// Output the calendar assignments file
+
 		for (const dayTypeConfig of dayTypesConfig) {
 			// Check if this service operates on the same day_type
 			// and period for this day_type.
@@ -390,9 +428,12 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				day_type_id: dayTypeConfig._id,
 				service_id: serviceIdData._id,
 			};
-			await calendarAssignmentsExtCsv.write(assignment);
+			calendarAssignmentsExtRows.push(assignment);
 		}
+
+		//
 		// Output any exceptions for this service_id
+
 		serviceIdData.exceptions = Array.from(new Set(serviceIdData.exceptions));
 		for (const exceptionData of serviceIdData.exceptions) {
 			const calendarException: CalendarExt = {
@@ -400,10 +441,12 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				index: uniqueExceptionsMap[exceptionData].index,
 				service_id: serviceIdData._id,
 			};
-			await calendarExtCsv.write(calendarException);
+			calendarExtRows.push(calendarException);
 		}
+
+		//
 		// Output all dates for this service_id
-		const sortedDates = serviceIdData.dates.sort();
+
 		for (const operationalDate of sortedDates) {
 			const data: GTFS_CalendarDate = {
 				date: operationalDate,
@@ -414,11 +457,54 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		}
 	}
 
-	await calendarAssignmentsExtCsv.flush();
-	await calendarDatesCsv.flush();
-	await calendarExtCsv.flush();
+	//
+	// Flush the calendar files
 
-	Logger.info({ message: 'Exported calendar_assignmentsExt.txt and calendarExt.txt files.' });
+	await calendarCsv?.flush();
+	await calendarDatesCsv.flush();
+
+	//
+	// Output the calendar assignments file
+
+	if (calendarAssignmentsExtRows.length) {
+		//
+		// Output the calendar assignments data
+
+		const calendarAssignmentsExtCsvData = Papa.unparse(
+			{ data: calendarAssignmentsExtRows, fields: calendarAssignmentsExtFields },
+			{
+				newline: '\n',
+				quotes: value => !calendarAssignmentsExtFields.includes(value as keyof CalendarAssignmentsExt),
+			},
+		);
+		fs.writeFileSync(`${exportConfig.workdir}/calendar_assignmentsExt.txt`, calendarAssignmentsExtCsvData, { encoding: 'utf-8', flush: true });
+	}
+
+	if (calendarExtRows.length) {
+		//
+		// Output the calendar exceptions data
+
+		const calendarExtCsvData = Papa.unparse(
+			{ data: calendarExtRows, fields: calendarExtFields },
+			{
+				newline: '\n',
+				quotes: value => !calendarExtFields.includes(value as keyof CalendarExt),
+			},
+		);
+		fs.writeFileSync(`${exportConfig.workdir}/calendarExt.txt`, calendarExtCsvData, { encoding: 'utf-8', flush: true });
+	}
+
+	//
+	// Log the exported calendar files
+
+	const exportedCalendarFiles = [
+		...(calendarCsv ? ['calendar.txt'] : []),
+		'calendar_dates.txt',
+		...(calendarAssignmentsExtRows.length ? ['calendar_assignmentsExt.txt'] : []),
+		...(calendarExtRows.length ? ['calendarExt.txt'] : []),
+	];
+
+	Logger.info({ message: `Exported ${exportedCalendarFiles.join(', ')} files.` });
 
 	//
 	// Log completion

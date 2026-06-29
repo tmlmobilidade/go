@@ -1,10 +1,12 @@
 /* * */
 
-import { type ExportToHitouchConfig } from '@/types.js';
+import { type ExportToHitouchConfig, type StopsToCanvasExt } from '@/types.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_Stop } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
+import fs from 'node:fs';
+import Papa from 'papaparse';
 
 /* * */
 
@@ -31,6 +33,47 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 		};
 		await stopsCsv.write(data);
 	}
+
+	//
+	// Export stop canvas profiles by stop and direction.
+
+	const stopsToCanvasExtFields: (keyof StopsToCanvasExt)[] = ['stop_id', 'canvas_profile', 'direction_id'];
+	const stopsToCanvasExtRows = sqlTables._db.prepare(
+		` SELECT DISTINCT stop_times.stop_id, trips.direction_id
+		FROM stop_times
+		INNER JOIN trips ON trips.trip_id = stop_times.trip_id
+		ORDER BY stop_times.stop_id ASC, trips.direction_id ASC `,
+	).all().map((row: { direction_id: number, stop_id: string }): StopsToCanvasExt => ({
+		canvas_profile: '0Master.C',
+		direction_id: row.direction_id,
+		stop_id: row.stop_id,
+	}));
+
+	//
+	// If no stop directions were found, skip the export
+
+	if (!stopsToCanvasExtRows.length) return Logger.info({ message: 'Skipped stopsToCanvasExt.txt file because no stop directions were found.' });
+
+	//
+	// Output the stops to canvas ext data
+
+	const stopsToCanvasExtCsvData = '\uFEFF' + Papa.unparse(
+		{ data: stopsToCanvasExtRows, fields: stopsToCanvasExtFields },
+		{
+			newline: '\r\n',
+			quotes: (value, columnIndex) => columnIndex === 0 && !stopsToCanvasExtFields.includes(value as keyof StopsToCanvasExt),
+		},
+	);
+
+	//
+	// Output the stops to canvas ext file
+
+	fs.writeFileSync(`${exportConfig.workdir}/stopsToCanvasExt.txt`, stopsToCanvasExtCsvData, { encoding: 'utf-8', flush: true });
+
+	Logger.info({ message: 'Exported stopsToCanvasExt.txt file.' });
+
+	//
+	// Flush the stops CSV file
 
 	await stopsCsv.flush();
 

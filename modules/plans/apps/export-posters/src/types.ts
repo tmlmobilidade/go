@@ -10,6 +10,7 @@ export interface ExportToHitouchConfig {
 		start: OperationalDate
 	}
 	output: string
+	source_has_calendar: boolean
 	workdir: string
 }
 
@@ -55,4 +56,16 @@ export interface GtfsDate {
 	holiday: '0' | '1'
 	notes?: string
 	period: '1' | '2' | '3'
+}
+
+export interface RoutesToCanvasExt {
+	canvas_profile: string
+	direction_id: number
+	route_id: string
+}
+
+export interface StopsToCanvasExt {
+	canvas_profile: string
+	direction_id: number
+	stop_id: string
 }

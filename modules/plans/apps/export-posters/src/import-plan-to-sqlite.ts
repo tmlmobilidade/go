@@ -1,7 +1,6 @@
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarFiles } from '@/exports/calendars.js';
 import { exportDayTypesFile } from '@/exports/day_types.js';
-// import { exportFeedInfoFile } from '@/exports/feed_info.js';
 import { exportRoutesFile } from '@/exports/routes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
@@ -9,7 +8,7 @@ import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
 import { buildDatesMap } from '@/utils/build-dates-map.js';
 import { createHitouchZip } from '@/utils/create-hitouch-zip.js';
-import { importGtfsToDatabase, ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
+import { importGtfsToDatabase, ImportGtfsToDatabaseConfig, initImportGtfsContext } from '@tmlmobilidade/import-gtfs';
 import { files, holidays, yearPeriods } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -46,7 +45,9 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 		},
 	};
 
-	const sqlGtfs = await importGtfsToDatabase(importConfig);
+	const importContext = initImportGtfsContext();
+	const sqlGtfs = await importGtfsToDatabase(importConfig, importContext);
+	const sourceHasCalendar = fs.existsSync(`${importContext.workdir.extract_dir_path}/calendar.txt`);
 	const [agencyHolidays, agencyYearPeriods] = await Promise.all([
 		holidays.findByAgencyIds([agencyId]),
 		yearPeriods.findMany({ agency_ids: { $in: [agencyId] } }),
@@ -61,6 +62,7 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 			start: feedStartDate,
 		},
 		output: `../${planData._id}-hitouch-posters.zip`,
+		source_has_calendar: sourceHasCalendar,
 		workdir: `/tmp/hitouch/${planData._id}`,
 	};
 
