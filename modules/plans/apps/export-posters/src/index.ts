@@ -246,4 +246,4 @@ async function main(): Promise<void> {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '10s' });
+await runOnInterval(main, { intervalMs: '30s' });
