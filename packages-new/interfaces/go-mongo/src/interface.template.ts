@@ -39,6 +39,8 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @returns A promise that resolves to an array of all documents
 	 */
 	public async all() {
+		//
+
 		return await this.collection.find().toArray();
 	}
 
@@ -51,10 +53,14 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	public async aggregate(pipeline: AggregationPipeline<T>, options?: AggregateOptions & { returnResult?: true }): Promise<T[]>;
 	public async aggregate(pipeline: AggregationPipeline<T>, options: AggregateOptions & { returnResult: false }): Promise<AggregationCursor<T>>;
 	public async aggregate(pipeline: AggregationPipeline<T>, options?: AggregateOptions & { returnResult?: boolean }): Promise<AggregationCursor<T> | T[]> {
+		//
+
 		// Perform the aggregation pipeline
 		const aggregationResult = this.collection.aggregate(pipeline, options);
+
 		// If returnResult is false, return the cursor directly
 		if (options?.returnResult === false) return aggregationResult as AggregationCursor<T>;
+
 		// Otherwise, return the aggregated documents as an array
 		return aggregationResult.toArray() as Promise<T[]>;
 	}
@@ -187,16 +193,21 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @returns A promise that resolves to the result of the delete operation.
 	 */
 	public async deleteById(id: T['_id'], options?: DeleteOptions & { forceIfLocked?: boolean }): Promise<DeleteResult> {
+		//
+
 		// If forceIfLocked is not set then check if the document is locked.
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
 			const isLocked = await this.isLockedById(id);
 			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be deleted');
 		}
+
 		// Perform the delete operation
 		const result = await this.deleteOne({ _id: { $eq: id } }, options);
+
 		// Check if the delete operation was acknowledged
 		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete documents', result);
+
 		// Return the result of the delete operation
 		return result;
 	}
@@ -207,6 +218,8 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @returns A promise that resolves to the result of the delete operation.
 	 */
 	public async deleteOne(filter: Filter<T>, options?: DeleteOptions & { forceIfLocked?: boolean }): Promise<DeleteResult> {
+		//
+
 		// If forceIfLocked is not set then check if the document is locked.
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
@@ -225,11 +238,15 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @returns A promise that resolves to the result of the check operation.
 	 */
 	public async isLocked(filter: Filter<T>): Promise<boolean> {
+		//
+
 		// Fetch the document by its ID from the database
 		const foundDoc = await this.findOne(filter);
+
 		// If the document has a is_locked field and it resolves to a truthy value,
 		// then the document is considered locked.
 		if (foundDoc?.is_locked) return true;
+
 		// Otherwise, the document is not locked.
 		return false;
 	}
@@ -240,11 +257,15 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @returns A promise that resolves to the result of the check operation.
 	 */
 	public async isLockedById(id: T['_id']): Promise<boolean> {
+		//
+
 		// Fetch the document by its ID from the database
 		const foundDoc = await this.findById(id);
+
 		// If the document has an is_locked field and it resolves
 		// to a truthy value, then the document is considered locked.
 		if (foundDoc?.is_locked) return true;
+
 		// Otherwise, the document is not locked.
 		return false;
 	}
@@ -312,8 +333,11 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @returns A promise that resolves to the result of the insert operation.
 	 */
 	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
+		//
+
 		// Setup a copy of the document to be inserted
 		let parsedDocument = { ...doc } as OptionalUnlessRequiredId<T & { created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string }>;
+
 		// Validate the document against the create schema if unsafe is false
 		if (!unsafe) {
 			try {
@@ -333,11 +357,13 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
+
 		// Add default fields if they are missing from the original document
 		if (!doc.created_at) parsedDocument.created_at = Dates.now('utc').unix_timestamp;
 		if (!doc.created_by) parsedDocument.created_by = 'system';
 		if (!doc.updated_at) parsedDocument.updated_at = Dates.now('utc').unix_timestamp;
 		if (!doc.updated_by) parsedDocument.updated_by = 'system';
+
 		// Add the ID if it is missing from the original document
 		// If the document is missing any default fields, add them
 		if (!doc._id) {
@@ -346,19 +372,26 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 				parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
 			}
 		}
+
 		// Attempt to insert the document into the collection
 		const result = await this.collection.insertOne(parsedDocument, options);
+
 		// Check if the insert operation was acknowledged
 		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
+
 		// If returnResult is false, return the insert result directly
 		if (options?.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
+
 		// Otherwise, fetch and return the inserted document
 		const insertedDoc = await this.findOne({ _id: { $eq: result.insertedId as T['_id'] } }, options);
 		if (!insertedDoc) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find inserted document', result);
+
 		return insertedDoc as TReturnDocument extends true ? WithId<T> : InsertOneResult<T>;
 	}
 
-	public async updateOne(filter: Filter<T>, data: TUpdate, options?: UpdateOptions) {
+	public async updateOne(filter: Filter<T>, data: TUpdate, options?: UpdateOptions & { forceIfLocked?: boolean }) {
+		//
+
 		// If forceIfLocked is not set then check if the document is locked.
 		// If it is locked, then throw an error to prevent the operation.
 		if (!options?.forceIfLocked) {
@@ -368,9 +401,11 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 
 		// If no update schema is defined, throw an error.
 		if (!this.updateSchema) throw new Error(`No schema defined for update operation for ${this.collectionName} collection.`);
+
 		// Validate the update data against the update schema
 		const parseResult = this.updateSchema.safeParse(data);
 		if (!parseResult.success) throw new Error(`Update data validation failed: ${parseResult.error.message}`);
+
 		// Attempt to find and update the document in the collection
 		return await this.collection.updateOne(filter, { $set: { ...parseResult.data, updated_at: Dates.now('utc').unix_timestamp } }, options);
 	}
@@ -390,19 +425,25 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @returns A promise that resolves when the initialization process is complete.
 	 */
 	protected async init() {
+		//
+
 		// Skip if already initialized
 		if (this.client) return;
+
 		// Validate required properties before attempting to connect
 		if (!this.databaseName) throw new Error('MONGODB: databaseName is required.');
 		if (!this.collectionName) throw new Error('MONGODB: collectionName is required.');
+
 		// Connect to the MongoDB client
 		this.client = await this.connectToClient();
 		this.database = this.client.db(this.databaseName);
 		this.collection = this.database.collection(this.collectionName);
+
 		// Ensure the collection exists and its indexes are in sync
 		// with the provided index description.
 		await this.createCollectionIfNotExists();
 		await this.syncIndexes();
+
 		// Call postInit for any additional setup logic defined in subclasses
 		await this.postInit();
 	}
@@ -421,8 +462,13 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 	 * @returns A promise that resolves when the collection is ensured to exist.
 	 */
 	private async createCollectionIfNotExists(): Promise<void> {
+		//
+
+		// Check if the collection exists
 		const collections = await this.database.listCollections({ name: this.collectionName }).toArray();
 		if (collections.length) return;
+
+		// Create the collection
 		await this.database.createCollection(this.collectionName);
 		Logger.info({ message: `MONGODB [${this.collectionName}]: Collection created.` });
 	}
@@ -442,20 +488,27 @@ export abstract class MongoInterfaceTemplate<T extends Document, TCreate, TUpdat
 			}
 			// Start index synchronization process
 			Logger.info({ message: `MONGODB [${this.collectionName}]: Synchronizing indexes...` });
+
 			// Normalize already applied and new indexes
 			// and filter the default _id index.
 			const existingIndexes = await this.collection.indexes();
 			const filteredExisting = existingIndexes.filter(idx => JSON.stringify(idx.key) !== JSON.stringify({ _id: 1 }));
+
 			// Setup desired indexes based on indexDescription
 			const indexesToCreate: SimplifiedMongoIndex<T>[] = [];
+
 			// Find indexes to create
 			for (const desiredIdx of this.indexDescription) {
+				//
+
 				// For the list of desired indexes,
 				// check if they are present in the existing indexes.
 				const found = filteredExisting.some(existingIdx => isSameIndex(existingIdx, desiredIdx));
+
 				// If not, mark them for creation.
 				if (!found) indexesToCreate.push(desiredIdx);
 			}
+
 			// Create indexes
 			for (const idx of indexesToCreate) {
 				Logger.info({ message: `MONGODB [${this.collectionName}]: Creating index on keys ${JSON.stringify(idx.key)} with options ${JSON.stringify(prepareMongoIndexOptions(idx))}.` });
