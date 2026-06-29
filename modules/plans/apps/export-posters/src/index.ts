@@ -3,8 +3,7 @@
 import { PostersController } from '@/controller/poster.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { files, plans } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-// import { initSentryNode } from '@tmlmobilidade/logger';
+import { Logger, initSentryNode } from '@tmlmobilidade/logger';
 import { importPlanToSqlite } from '@/import-plan-to-sqlite.js';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -18,6 +17,13 @@ const postersController = new PostersController();
 
 async function main(): Promise<void> {
 	//
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'export-posters', message: 'Sentry Plans Export Posters initialized', module: 'plans', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Plans Export Posters' });
+	}
 
 	Logger.init();
 
@@ -173,7 +179,7 @@ async function main(): Promise<void> {
 			pdfStatus = await postersController.getPDFStatus(pdfId);
 		}
 
-		Logger.info({ message: `PDF status: ${JSON.stringify(pdfStatus)}` });
+		Logger.info({ message: `PDF generation completed.` });
 
 		//
 		// Download and upload the generated posters ZIP file
@@ -181,7 +187,7 @@ async function main(): Promise<void> {
 		const pdfFileUrl = pdfStatus.downloadLink;
 
 		if (!pdfFileUrl) {
-			throw new Error(`PDF generation completed without a download URL. Response: ${JSON.stringify(pdfStatus)}`);
+			throw new Error(`PDF generation completed without a download URL.`);
 		}
 
 		//
