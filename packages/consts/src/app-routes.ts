@@ -453,6 +453,8 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_LOCK: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/lock`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file`,
 		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file/download`,
+		PLANS_DETAIL_POSTERS_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/posters-file`,
+		PLANS_DETAIL_POSTERS_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/posters-file/download`,
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans`,
 

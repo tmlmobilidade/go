@@ -1,10 +1,10 @@
 /* * */
 
 import { PostersController } from '@/controller/poster.js';
+import { importPlanToSqlite } from '@/import-plan-to-sqlite.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { files, plans } from '@tmlmobilidade/interfaces';
-import { Logger, initSentryNode } from '@tmlmobilidade/logger';
-import { importPlanToSqlite } from '@/import-plan-to-sqlite.js';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
@@ -12,6 +12,14 @@ import fs from 'node:fs';
 /* * */
 
 const postersController = new PostersController();
+
+/* * */
+
+function getPostersForUpdate<T extends object>(posters: T): Omit<T, 'file'> {
+	const postersForUpdate = { ...posters } as T & { file?: unknown };
+	delete postersForUpdate.file;
+	return postersForUpdate;
+}
 
 /* * */
 
@@ -57,7 +65,7 @@ async function main(): Promise<void> {
 				apps: {
 					...planData.apps,
 					posters: {
-						...planData.apps.posters,
+						...getPostersForUpdate(planData.apps.posters),
 						status: 'processing',
 						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
 					},
@@ -78,8 +86,8 @@ async function main(): Promise<void> {
 				apps: {
 					...planData.apps,
 					posters: {
-						...planData.apps.posters,
-						file: null,
+						...getPostersForUpdate(planData.apps.posters),
+						file_id: null,
 						job_id: null,
 						status: 'processing',
 						step: 'preparing',
@@ -97,7 +105,7 @@ async function main(): Promise<void> {
 				apps: {
 					...planData.apps,
 					posters: {
-						...planData.apps.posters,
+						...getPostersForUpdate(planData.apps.posters),
 						step: 'generating',
 						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
 					},
@@ -118,7 +126,7 @@ async function main(): Promise<void> {
 				apps: {
 					...planData.apps,
 					posters: {
-						...planData.apps.posters,
+						...getPostersForUpdate(planData.apps.posters),
 						job_id: pdfId,
 						step: 'checking-status',
 						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
@@ -141,7 +149,7 @@ async function main(): Promise<void> {
 				apps: {
 					...planData.apps,
 					posters: {
-						...planData.apps.posters,
+						...getPostersForUpdate(planData.apps.posters),
 						step: 'checking-status',
 						timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
 					},
@@ -163,7 +171,7 @@ async function main(): Promise<void> {
 					apps: {
 						...planData.apps,
 						posters: {
-							...planData.apps.posters,
+							...getPostersForUpdate(planData.apps.posters),
 							status: 'error',
 							step: 'checking-status',
 							timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
@@ -197,7 +205,7 @@ async function main(): Promise<void> {
 			apps: {
 				...planData.apps,
 				posters: {
-					...planData.apps.posters,
+					...getPostersForUpdate(planData.apps.posters),
 					step: 'downloading',
 					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
 				},
@@ -226,8 +234,8 @@ async function main(): Promise<void> {
 			apps: {
 				...planData.apps,
 				posters: {
-					...planData.apps.posters,
-					file: pdfFile,
+					...getPostersForUpdate(planData.apps.posters),
+					file_id: pdfFile._id,
 					status: 'complete',
 					step: 'complete',
 					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,

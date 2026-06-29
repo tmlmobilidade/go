@@ -12,6 +12,11 @@ import { createHash } from 'node:crypto';
 export class PlansController {
 	//
 
+	private static getPlanPostersFileId(planData: Plan): null | string {
+		const postersWithLegacyFile = planData.apps.posters as Plan['apps']['posters'] & { file?: FileType | null };
+		return planData.apps.posters.file_id ?? postersWithLegacyFile.file?._id ?? null;
+	}
+
 	/**
 	 * Lists the plans to generate posters.
 	 * @param request Fastify request containing the plan ID
@@ -45,7 +50,7 @@ export class PlansController {
 			apps: {
 				...planData.apps,
 				posters: {
-					file: null,
+					file_id: null,
 					job_id: null,
 					last_hash: null,
 					status: 'waiting',
@@ -219,7 +224,7 @@ export class PlansController {
 						timestamp: null,
 					},
 					posters: {
-						file: null,
+						file_id: null,
 						job_id: null,
 						last_hash: null,
 						status: 'skipped',
@@ -457,17 +462,6 @@ export class PlansController {
 		}
 
 		//
-		// Refresh the signed URL for the generated posters file
-
-		if (planData.apps?.posters?.file) {
-			const postersFile = await files.findById(planData.apps.posters.file._id);
-
-			if (postersFile) {
-				planData.apps.posters.file = postersFile;
-			}
-		}
-
-		//
 		// Fetch the plan data
 
 		return reply.send({
@@ -542,6 +536,134 @@ export class PlansController {
 		});
 
 		//
+	}
+
+	/**
+	 * Retrieves the generated posters file associated with a plan by ID
+	 * @param request Fastify request containing plan ID in params
+	 * @param reply Fastify reply
+	 */
+	static async getPlanPostersFileById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<FileType>) {
+		//
+
+		//
+		// Get the Plan from the database
+
+		const planData = await plans.findById(request.params.id);
+
+		if (!planData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+		}
+
+		//
+		// Check if the user has permission to read the Plan
+
+		const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.read,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: planData.gtfs_agency.agency_id,
+		});
+
+		if (!hasPermissionReadPlan) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+		}
+
+		//
+		// Fetch the posters file associated with the plan
+
+		const postersFileId = PlansController.getPlanPostersFileId(planData);
+
+		if (!postersFileId) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan posters file not found');
+		}
+
+		const fileData = await files.findById(postersFileId);
+
+		if (!fileData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan posters file not found');
+		}
+
+		return reply.send({
+			data: fileData,
+			error: null,
+			statusCode: HTTP_STATUS.OK,
+		});
+
+		//
+	}
+
+	/**
+	 * Download the generated posters file associated with a plan by ID.
+	 * @param request The request object.
+	 * @param reply The reply object.
+	 */
+	static async downloadPlanPostersFileById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+		//
+
+		//
+		// Get the Plan from the database
+		const planData = await plans.findById(request.params.id);
+		if (!planData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+		}
+
+		//
+		// Check if the user has permission to read the Plan
+
+		const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.read,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: planData.gtfs_agency.agency_id,
+		});
+
+		if (!hasPermissionReadPlan) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+		}
+
+		//
+		// Get the posters file ID
+
+		const postersFileId = PlansController.getPlanPostersFileId(planData);
+
+		if (!postersFileId) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan posters file not found');
+		}
+
+		//
+		// Fetch the file associated with the plan
+
+		const foundFileData = await files.findById(postersFileId);
+		if (!foundFileData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan posters file not found');
+		}
+
+		//
+		// Stream the file in the given URL to the client
+		const storageServiceResponse = await fetch(foundFileData.url);
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
+		}
+
+		//
+		// Set headers and pipe the response body to the client
+
+		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
+		reply.header('Content-Type', 'application/zip');
+
+		//
+		// Set content length if available
+
+		const contentLength = storageServiceResponse.headers.get('Content-Length');
+		if (contentLength) reply.header('Content-Length', contentLength);
+
+		//
+		// Pipe the response body to the client
+
+		return reply.send(storageServiceResponse.body);
 	}
 
 	/**
