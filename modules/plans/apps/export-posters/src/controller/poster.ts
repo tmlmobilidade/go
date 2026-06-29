@@ -1,6 +1,6 @@
 /* * */
 
-import parametersConfig from '@/parameters.json'; // <= dont change this line
+import parametersConfig from '@/parameters.json' with { type: 'json' };
 import { ExportToHitouchConfig } from '@/types.js';
 import fs from 'node:fs';
 import path from 'node:path';
