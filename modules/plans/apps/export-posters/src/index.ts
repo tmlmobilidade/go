@@ -217,7 +217,6 @@ async function main(): Promise<void> {
 
 		const pdfZip = await postersController.downloadPDF(pdfFileUrl);
 		const pdfFile = await files.upload(pdfZip, {
-			_id: `${planData._id}-pdf`,
 			created_by: 'system',
 			name: `${planData._id}-pdf.zip`,
 			resource_id: planData._id,
@@ -225,7 +224,7 @@ async function main(): Promise<void> {
 			size: pdfZip.byteLength,
 			type: 'application/zip',
 			updated_by: 'system',
-		}, { override: true });
+		});
 
 		//
 		// Update the plan status to 'complete'
