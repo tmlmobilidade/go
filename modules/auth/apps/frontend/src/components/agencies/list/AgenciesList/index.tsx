@@ -17,11 +17,12 @@ export function AgenciesList() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
 	const agenciesListContext = useAgenciesListContext();
-	const { t } = useTranslation();
 
 	const columns: DataTableColumn<AgencyNormalized>[] = [
 		{
