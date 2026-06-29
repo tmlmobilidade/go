@@ -14,7 +14,7 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@amplitude/analytics-browser": "2.44.1",
+		"@amplitude/analytics-browser": "2.44.3",
 		"@mantine/carousel": "9.4.0",
 		"@mantine/charts": "9.4.0",
 		"@mantine/core": "9.4.0",
@@ -27,6 +27,9 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-types-gtfs-rt": "*",
+		"@tmlmobilidade/go-types-public-info": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"@turf/turf": "7.3.5",
@@ -53,7 +56,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/geojson": "7946.0.16",
-		"@types/node": "26.0.0",
+		"@types/node": "26.0.1",
 		"@types/react": "19.2.17",
 		"@types/react-dom": "19.2.3",
 		"typescript": "6.0.3"

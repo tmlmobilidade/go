@@ -5,7 +5,7 @@ import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { AGENCY_NAMES_MAP } from '@/lib/agency-names-map';
-import { HubLine } from '@tmlmobilidade/types';
+import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
