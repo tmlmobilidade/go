@@ -117,7 +117,7 @@ export function FeedbackLines() {
 				</div>
 			</ContainerWrapper>
 
-			<FeedbackEntityDetailModal entityName="Linha" item={selectedLine} onClose={handleCloseLineDetail} />
+			<FeedbackEntityDetailModal item={selectedLine} onClose={handleCloseLineDetail} />
 		</>
 	);
 }

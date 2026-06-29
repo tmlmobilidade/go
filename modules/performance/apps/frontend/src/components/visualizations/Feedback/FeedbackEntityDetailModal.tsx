@@ -2,7 +2,7 @@
 
 import type { FeedbackEntitySummary } from './feedback-entities';
 
-import { CloseButton, Divider, Label, Modal, Pane, Section, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Label, Modal, Pane, Section, Toolbar } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -12,14 +12,13 @@ import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from './feedba
 /* * */
 
 interface FeedbackEntityDetailModalProps {
-	entityName: string
 	item?: FeedbackEntitySummary
 	onClose: () => void
 }
 
 /* * */
 
-export function FeedbackEntityDetailModal({ entityName, item, onClose }: FeedbackEntityDetailModalProps) {
+export function FeedbackEntityDetailModal({ item, onClose }: FeedbackEntityDetailModalProps) {
 	//
 	// A. Render components
 
@@ -31,19 +30,12 @@ export function FeedbackEntityDetailModal({ entityName, item, onClose }: Feedbac
 						<Toolbar key="feedback-entity-detail-toolbar">
 							<CloseButton onClick={onClose} type="close" />
 							<div className={styles.feedbackEntityModalTitle}>
-								<Label size="lg">{item.id}</Label>
-								<Label size="md" variant="muted">{item.label}</Label>
+								<Label size="sm" variant="muted">{item.id}</Label>
+								<Label size="lg">{item.label}</Label>
 							</div>
 						</Toolbar>,
 					]}
 				>
-					<Section gap="sm">
-						<Label size="sm" caps>Tipo</Label>
-						<Label size="md">{entityName}</Label>
-					</Section>
-
-					<Divider />
-
 					<Section gap="sm">
 						<Label size="sm" caps>Resumo</Label>
 						<div className={styles.feedbackEntityModalMetrics}>
