@@ -129,6 +129,7 @@
 			},
 			"Table": {
 				"columns": {
+					"code": "Código",
 					"id": "#ID",
 					"name": "Nome"
 				}

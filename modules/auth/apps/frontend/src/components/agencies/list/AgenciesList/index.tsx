@@ -31,6 +31,12 @@ export function AgenciesList() {
 			width: 80,
 		},
 		{
+			accessor: 'code',
+			render: item => <IdTag id={item.code} />,
+			title: t('default:agencies.list.Table.columns.code'),
+			width: 80,
+		},
+		{
 			accessor: 'name',
 			title: t('default:agencies.list.Table.columns.name'),
 			width: 600,
