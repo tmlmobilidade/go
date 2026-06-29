@@ -12,6 +12,7 @@ function buildTopFeedbackList(rows: PublicFeedback[], metrics: ReturnType<typeof
 	return metrics
 		.slice(0, 6)
 		.map((metric) => {
+			// The contribution breakdown is only available for line details.
 			const lineContributionMeters = entityType === 'line' ? getFeedbackLineContributionMeters(rows, metric) : undefined;
 			return getFeedbackEntitySummary(metric, entityType, labelsById, lineContributionMeters);
 		});

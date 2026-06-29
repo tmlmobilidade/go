@@ -12,8 +12,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
-import { FeedbackMetricTag } from './feedback-home/components/FeedbackMetricTag';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from './feedback-metrics';
+import { FeedbackMetricTag } from './FeedbackMetricTag';
 
 /* * */
 

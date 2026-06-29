@@ -1,3 +1,4 @@
+// Short names follow the Navegante logo asset filenames.
 const AGENCY_ID_TO_LOGO_SHORT_NAME: Record<string, string> = {
 	1: 'ccfl',
 	15: 'fertagus',
