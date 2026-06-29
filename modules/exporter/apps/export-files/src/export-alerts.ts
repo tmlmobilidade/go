@@ -9,13 +9,13 @@ import { CsvWriter } from '@tmlmobilidade/writers';
 import os from 'os';
 import path from 'path';
 
-import { AlertExportCsvData, parseAlerts } from './parse-alerts.js';
+import { AlertExportCsvData, parseAlerts } from './lib/parse-alerts.js';
 
 /* * */
 
 function getAlertIdsFromExportProperties(properties: AlertExportProperties['properties']): string[] {
 	const alertIds = properties.alert_ids ?? [];
-	return [...new Set(alertIds.filter(Boolean))];
+	return [...new Set(alertIds.map(id => id.trim()).filter(Boolean))];
 }
 
 /* * */
@@ -26,8 +26,8 @@ function getAlertIdsFromExportProperties(properties: AlertExportProperties['prop
  * @returns The path to the exported file.
  */
 export async function exportAlertsFile(fileExport: FileExport): Promise<string> {
+	console.log('=======>>>', getAlertIdsFromExportProperties);
 	//
-
 	if (fileExport.type !== 'alert') throw new Error(`File export type is not alert: ${fileExport.type}.`);
 
 	if (!fileExport.properties) throw new Error('File export properties is missing.');
@@ -42,7 +42,7 @@ export async function exportAlertsFile(fileExport: FileExport): Promise<string> 
 	// Build alert ids from export properties
 	const properties = fileExport.properties as AlertExportProperties['properties'];
 	const alertIds = getAlertIdsFromExportProperties(properties);
-
+	Logger.info({ message: `IDS: ${alertIds}` });
 	const alertsCollection = await alerts.getCollection();
 	const alertsCursor = alertsCollection.find({ _id: { $in: alertIds } }, { batchSize: 5000 });
 
@@ -50,10 +50,9 @@ export async function exportAlertsFile(fileExport: FileExport): Promise<string> 
 	// Write the alert batch to the file
 	const tempFilePath = path.join(os.tmpdir(), `${fileExport.file_name}_${generateRandomString()}.csv`);
 	const csvWriter = new CsvWriter<AlertExportCsvData>(fileExport.file_name, tempFilePath, { batch_size: 10000, include_bom: true });
-
 	let count = 0;
 	for await (const alert of alertsCursor) {
-		await csvWriter.write(parseAlerts({ alert }));
+		await csvWriter.write(parseAlerts({ _id: alert._id, alert }));
 		count++;
 	}
 

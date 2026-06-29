@@ -1,10 +1,10 @@
 /* * */
+
+import { openAlertListExportModal } from '@/components/list/AlertListExportModal/AlertListExport.modal';
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
 import { IconFileDownload } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { HasPermission, IconButton, Label, Loader, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
-
-import { openAlertListExportModal } from '../AlertListExportModal';
 
 /* * */
 

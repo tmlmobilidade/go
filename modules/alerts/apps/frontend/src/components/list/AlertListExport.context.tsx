@@ -1,12 +1,13 @@
 'use client';
 
-/***/
-import { useAlertsListContext } from '@/components/list/AlertsList.context';
-import { AlertExportProperties, CreateFileExportDto } from '@tmlmobilidade/types';
-import { closeModal, useAgenciesContext, useExportsContext, useToast } from '@tmlmobilidade/ui';
-import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+/* * */
 
-/***/
+import { useAlertsListContext } from '@/components/list/AlertsList.context';
+import { type AlertExportProperties, CreateFileExportDto } from '@tmlmobilidade/types';
+import { closeModal, useAgenciesContext, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+
+/* * */
 
 export const ALERT_LIST_EXPORT_MODAL_ID = 'alert-list-export-modal';
 
@@ -21,7 +22,7 @@ export interface AlertListExportContextState {
 	}
 	filters: AlertListExportSummaryFilter[]
 	flags: {
-		CanSave: boolean
+		canSave: boolean
 		error: Error | undefined
 		loading: boolean
 	}
@@ -60,16 +61,26 @@ export const AlertsListExportContextProvider = ({ children }: PropsWithChildren)
 		if (alertsListContext.filters.agency.isActive && alertsListContext.filters.agency.value.length > 0) {
 			filters.push({ label: 'Operadores', value: agenciesContext.data.as_options.filter(option => alertsListContext.filters.agency.value.includes(option.value)).map(option => option.label).join(', ') });
 		}
-		if (alertsListContext.filters.publish_status.isActive && alertsListContext.filters.publish_status.value.length > 0)
+
+		if (alertsListContext.filters.publish_status.isActive && alertsListContext.filters.publish_status.value.length > 0) {
 			filters.push({ label: 'Estado', value: alertsListContext.filters.publish_status.value.join(', ') });
-		if (alertsListContext.filters.cause.isActive && alertsListContext.filters.cause.value.length > 0)
+		}
+
+		if (alertsListContext.filters.cause.isActive && alertsListContext.filters.cause.value.length > 0) {
 			filters.push({ label: 'Causa', value: alertsListContext.filters.cause.value.join(', ') });
-		if (alertsListContext.filters.effect.isActive && alertsListContext.filters.effect.value.length > 0)
+		}
+
+		if (alertsListContext.filters.effect.isActive && alertsListContext.filters.effect.value.length > 0) {
 			filters.push({ label: 'Efeito', value: alertsListContext.filters.effect.value.join(', ') });
-		if (alertsListContext.filters.municipality.isActive && alertsListContext.filters.municipality.value.length > 0)
+		}
+
+		if (alertsListContext.filters.municipality.isActive && alertsListContext.filters.municipality.value.length > 0) {
 			filters.push({ label: 'Município', value: alertsListContext.filters.municipality.value.join(', ') });
-		if (alertsListContext.filters.reference_type.isActive && alertsListContext.filters.reference_type.value.length > 0)
-			filters.push({ label: 'Tipo de Referência', value: alertsListContext.filters.reference_type.value.join(',') });
+		}
+
+		if (alertsListContext.filters.reference_type.isActive && alertsListContext.filters.reference_type.value.length > 0) {
+			filters.push({ label: 'Tipo de Referência', value: alertsListContext.filters.reference_type.value.join(', ') });
+		}
 
 		return filters;
 	}, [alertsListContext.filters.search.value, alertsListContext.filters.agency.isActive, alertsListContext.filters.agency.value, alertsListContext.filters.publish_status.isActive, alertsListContext.filters.publish_status.value, alertsListContext.filters.cause.isActive, alertsListContext.filters.cause.value, alertsListContext.filters.effect.isActive, alertsListContext.filters.effect.value, alertsListContext.filters.municipality.isActive, alertsListContext.filters.municipality.value, alertsListContext.filters.reference_type.isActive, alertsListContext.filters.reference_type.value, agenciesContext.data.as_options]);
@@ -94,7 +105,6 @@ export const AlertsListExportContextProvider = ({ children }: PropsWithChildren)
 
 	const exportAlerts = useCallback(async () => {
 		if (loading) return;
-
 		const dateTag = new Date().toISOString().slice(0, 10);
 		const fileName = `alerts_${dateTag}_${Date.now()}.csv`;
 		const createFileExportDto: CreateFileExportDto<AlertExportProperties> = {
@@ -105,10 +115,10 @@ export const AlertsListExportContextProvider = ({ children }: PropsWithChildren)
 			properties: exportProperties,
 			type: 'alert',
 		};
-
 		setLoading(true);
 		try {
 			const fileExport = await exports.actions.create(createFileExportDto);
+
 			if (!fileExport) return;
 			useToast.success({ message: 'A exportação foi iniciada', title: 'Sucesso' });
 			closeModal(ALERT_LIST_EXPORT_MODAL_ID);
@@ -117,8 +127,7 @@ export const AlertsListExportContextProvider = ({ children }: PropsWithChildren)
 		} finally {
 			setLoading(false);
 		}
-	}, [exportProperties, loading, exports.actions]);
-
+	}, [exportProperties, exports.actions, loading]);
 	//
 	// D. Define context value
 
@@ -129,7 +138,7 @@ export const AlertsListExportContextProvider = ({ children }: PropsWithChildren)
 			},
 			filters: activeFilters,
 			flags: {
-				CanSave: !loading,
+				canSave: !loading,
 				error: undefined,
 				loading,
 			},

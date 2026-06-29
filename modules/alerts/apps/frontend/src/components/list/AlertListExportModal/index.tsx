@@ -1,10 +1,8 @@
 'use client';
 
-import { DataProviders } from '@/providers/data-providers';
-import { AgenciesContextProvider, Button, closeModal, Divider, ExportsContextProvider, Grid, Label, MeContextProvider, openModal, Pane, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
+import { Button, closeModal, Divider, Grid, Label, Pane, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 
-import { AlertsListExportContextProvider, useAlertsListExportContext } from '../AlertListExport.context';
-import { AlertsListContextProvider } from '../AlertsList.context';
+import { useAlertsListExportContext } from '../AlertListExport.context';
 
 /* * */
 
@@ -49,7 +47,7 @@ export function AlertListExportModal() {
 				<Grid columns="ab" gap="sm">
 					<Button label="Cancelar" onClick={closeAlertListExportModal} type="button" variant="secondary" />
 					<Button
-						disabled={!alertListExportContext.flags.CanSave}
+						disabled={!alertListExportContext.flags.canSave}
 						label="Exportar"
 						loading={alertListExportContext.flags.loading}
 						onClick={alertListExportContext.actions.exportAlerts}
@@ -62,32 +60,6 @@ export function AlertListExportModal() {
 }
 
 /***/
-
-export const openAlertListExportModal = () => {
-	openModal({
-		children: (
-			<DataProviders>
-				<MeContextProvider>
-					<AgenciesContextProvider>
-						<ExportsContextProvider>
-							<AlertsListContextProvider>
-								<AlertsListExportContextProvider>
-									<AlertListExportModal />
-								</AlertsListExportContextProvider>
-							</AlertsListContextProvider>
-						</ExportsContextProvider>
-					</AgenciesContextProvider>
-				</MeContextProvider>
-			</DataProviders>
-		),
-		closeOnClickOutside: false,
-		closeOnEscape: false,
-		modalId: MODAL_ID,
-		padding: 0,
-		size: 'xl',
-		withCloseButton: false,
-	});
-};
 
 /* * */
 

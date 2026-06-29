@@ -57,7 +57,7 @@ function toOrderedCsvData(source: AlertExportCsvData): AlertExportCsvData {
 
 /***/
 
-export function parseAlerts(row: ParseAlertRow) {
+export function parseAlerts(row: ParseAlertRow): AlertExportCsvData {
 	const { _id, alert } = row;
 
 	return toOrderedCsvData({
