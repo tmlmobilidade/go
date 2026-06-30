@@ -5,7 +5,6 @@
 import { Collapse } from '@mantine/core';
 import { IconChevronDown } from '@tabler/icons-react';
 import { type Permission } from '@tmlmobilidade/types';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -43,16 +42,6 @@ export function SidebarTreeNode({ depth, node, pathname, userPermissions }: Side
 	const isActive = isNodeActive(node, pathname);
 
 	const isOpen = node.type === 'group' ? isGroupOpen(node._id) : false;
-
-	//
-	// C. Handle actions
-
-	useEffect(() => {
-		if (node.type === 'group' && isActive) setGroupOpen(node._id, true);
-	}, [isActive, node, setGroupOpen]);
-
-	//
-	// D. Render components
 
 	if (node.type === 'item') {
 		if (!isPermissionEnabled(node.permissions, userPermissions)) {
