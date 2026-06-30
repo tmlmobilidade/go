@@ -88,7 +88,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 
 	const setAgencyIds = useCallback((value: string[]) => {
 		if (value.length === 1) {
-			const selectedAgency = agenciesContext.data.raw.find(agency => agency._id === value[0]);
+			const selectedAgency = agenciesContext?.data?.raw?.find(agency => agency._id === value[0]);
 			const defaults = selectedAgency ? AGENCY_DEFAULT_VALUES[selectedAgency.code] : undefined;
 			if (defaults) {
 				form.setValues({
