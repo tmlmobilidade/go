@@ -1,0 +1,29 @@
+.button {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 44px;
+	padding: 0 16px;
+	font: inherit;
+	font-size: 15px;
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	color: #000;
+	cursor: pointer;
+	background-color: var(--color-brand-navegante);
+	border: 1px solid var(--color-brand-navegante);
+	border-radius: 999px;
+	box-shadow: 0 8px 22px rgb(0 0 0 / 12%);
+	transition: 180ms all ease;
+}
+
+.button:active {
+	transform: translateY(1px);
+}
+
+.button:focus-visible {
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 2px;
+}
