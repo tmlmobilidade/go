@@ -109,7 +109,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 			feed_end_date: null,
 			feed_start_date: null,
 		});
-	}, [agenciesContext.data.raw, form]);
+	}, [agenciesContext?.data?.raw, form]);
 
 	const setLinesMode = useCallback((value: LinesMode) => {
 		form.setValues({
