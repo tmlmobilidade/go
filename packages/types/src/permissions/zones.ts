@@ -11,6 +11,7 @@ export const ZonesPermissionSchema = z.object({
 		'read',
 		'lock',
 		'update',
+		'export',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),

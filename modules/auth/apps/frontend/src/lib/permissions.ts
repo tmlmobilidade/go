@@ -284,6 +284,7 @@ const zonesActions: PermissionConfig = {
 		{ action: 'update', description: 'Permite editar uma zona', label: 'Editar zona', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar uma zona', label: 'Eliminar zona', resources: ['AGENCIES'] },
 		{ action: 'lock', description: 'Permite bloquear/desbloquear uma zona', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'export', description: 'Permite a exportação de zonas', label: 'Exportar Zonas', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de zonas.',
 	scope: PermissionCatalog.all.zones.scope,
