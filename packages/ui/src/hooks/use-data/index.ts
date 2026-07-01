@@ -1,4 +1,5 @@
 export * from './use-data-agencies';
+export * from './use-data-agencies-new';
 export * from './use-data-hashed-trips';
 export * from './use-data-operational-lines';
 export * from './use-data-operational-stops';
