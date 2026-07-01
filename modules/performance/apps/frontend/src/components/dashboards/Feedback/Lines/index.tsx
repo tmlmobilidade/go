@@ -11,7 +11,7 @@ import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-lin
 import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
 import { buildLineLabelsById, getLineLabel } from '@/utils/feedback/network-labels';
 import { type HubLine, type PublicFeedback } from '@tmlmobilidade/types';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { FilterTypeList, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -84,18 +84,18 @@ export function FeedbackLines() {
 
 					{!isLoading && !error && lines.length > 0 && (
 						<div className={styles.tableWrapper}>
-							<table className={styles.table}>
-								<thead>
-									<tr>
-										<th>Linha</th>
-										<th>Feedbacks</th>
-										<th>Índice de satisfação</th>
-									</tr>
-								</thead>
+							<Table highlightOnHover striped>
+								<Table.Thead>
+									<Table.Tr>
+										<Table.Th>Linha</Table.Th>
+										<Table.Th>Feedbacks</Table.Th>
+										<Table.Th>Índice de satisfação</Table.Th>
+									</Table.Tr>
+								</Table.Thead>
 
-								<tbody>
+								<Table.Tbody>
 									{lines.map(line => (
-										<tr
+										<Table.Tr
 											key={line.entityId}
 											aria-label={`Abrir detalhe da linha ${getLineLabel(line.entityId, linesById)}`}
 											className={styles.tableRowButton}
@@ -104,13 +104,19 @@ export function FeedbackLines() {
 											role="button"
 											tabIndex={0}
 										>
-											<td>{getLineLabel(line.entityId, linesById)}</td>
-											<td><FeedbackMetricTag label={line.feedbackCount.toLocaleString('pt-PT')} /></td>
-											<td><FeedbackMetricTag label={formatSatisfactionIndex(line.satisfactionIndex)} status={getFeedbackSatisfactionStatus(line.satisfactionIndex)} /></td>
-										</tr>
+											<Table.Td>
+												<Text>{getLineLabel(line.entityId, linesById)}</Text>
+											</Table.Td>
+											<Table.Td>
+												<FeedbackMetricTag label={line.feedbackCount.toLocaleString('pt-PT')} />
+											</Table.Td>
+											<Table.Td>
+												<FeedbackMetricTag label={formatSatisfactionIndex(line.satisfactionIndex)} status={getFeedbackSatisfactionStatus(line.satisfactionIndex)} />
+											</Table.Td>
+										</Table.Tr>
 									))}
-								</tbody>
-							</table>
+								</Table.Tbody>
+							</Table>
 						</div>
 					)}
 				</div>

@@ -64,108 +64,41 @@
 	gap: var(--size-spacing-lg);
 }
 
-.feedbackList {
-	display: flex;
-	flex-direction: column;
-	gap: 0;
+.feedbackTableWrapper {
+	min-width: 0;
 	overflow-x: auto;
 }
 
-.feedbackRow {
-	display: grid;
-	grid-template-columns: minmax(260px, 1fr) 96px 140px;
-	gap: var(--size-spacing-md);
-	align-items: center;
+.feedbackTableWrapper table {
 	min-width: 540px;
-	padding: var(--size-spacing-md) 0;
-	border-bottom: 1px solid var(--color-system-border-100);
 }
 
-.feedbackRow:last-child {
-	border-bottom: none;
-}
-
-.feedbackRowButton {
-	width: 100%;
-	border: 0;
-	background: transparent;
-	color: inherit;
-	cursor: pointer;
-	font: inherit;
-}
-
-.feedbackRowButton:hover {
-	background-color: var(--color-system-background-200);
-}
-
-.feedbackRowButton:focus-visible {
-	outline: 2px solid var(--color-primary);
-	outline-offset: -2px;
-}
-
-.feedbackListHeader {
-	display: grid;
-	grid-template-columns: minmax(260px, 1fr) 96px 140px;
-	gap: var(--size-spacing-md);
-	align-items: center;
-	min-width: 540px;
-	padding: var(--size-spacing-sm) 0;
-	border-bottom: 1px solid var(--color-system-border-100);
-	color: var(--color-system-text-200);
-	font-size: var(--font-size-sm);
-	font-weight: var(--font-weight-bold);
-}
-
-.feedbackListHeaderMetric {
-	justify-self: end;
-	text-align: right;
-}
-
-.feedbackListHeaderTag {
-	display: inline-flex;
-	align-items: center;
+.feedbackReasonChart {
+	display: flex;
 	justify-content: center;
-	width: fit-content;
-	padding: var(--size-spacing-xs) var(--size-spacing-sm);
-	border: 1px solid var(--color-system-border-100);
-	border-radius: 6px;
-	background-color: var(--color-system-background-200);
-	color: var(--color-system-text-200);
-	line-height: 1;
-	white-space: nowrap;
+	gap: var(--size-spacing-md);
+	width: 100%;
+	padding: var(--size-spacing-md) 0 0;
 }
 
-.feedbackLineDetails {
+.feedbackReasonChart :global(.recharts-surface) {
+	overflow: visible !important;
+}
+
+.feedbackEntityDetails {
 	display: flex;
 	flex-direction: column;
-	gap: var(--size-spacing-xs);
+	gap: 2px;
 	min-width: 0;
 }
 
-.feedbackLineName {
-	display: block;
-	min-width: 0;
-	overflow: hidden;
-	color: var(--color-system-text-100);
-	font-size: var(--font-size-md);
-	font-weight: var(--font-weight-bold);
-	text-overflow: ellipsis;
-	white-space: nowrap;
+.feedbackTableRowButton {
+	cursor: pointer;
 }
 
-.feedbackTagCell {
-	display: flex;
-	justify-content: flex-end;
-	min-width: 0;
-}
-
-.feedbackLineDescription {
-	margin: 0;
-	overflow: hidden;
-	color: var(--color-system-text-200);
-	font-size: var(--font-size-sm);
-	text-overflow: ellipsis;
-	white-space: nowrap;
+.feedbackTableRowButton:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: -2px;
 }
 
 .operatorsTableWrapper {
@@ -308,4 +241,5 @@
 		align-items: flex-start;
 		flex-direction: column;
 	}
+
 }

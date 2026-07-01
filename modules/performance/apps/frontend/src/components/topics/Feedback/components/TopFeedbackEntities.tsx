@@ -1,11 +1,13 @@
 /* * */
 
 import type { FeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
+import type { FeedbackReasonChartSlice } from '@/utils/feedback/feedback-reasons';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
-import { useState } from 'react';
+import { PieChart, Table, Text } from '@tmlmobilidade/ui';
+import { type KeyboardEvent, useState } from 'react';
 
 import styles from '../styles.module.css';
 
@@ -14,19 +16,33 @@ import styles from '../styles.module.css';
 interface TopFeedbackEntitiesProps {
 	items: FeedbackEntitySummary[]
 	nameColumnLabel: string
+	reasonChartData: FeedbackReasonChartSlice[]
 	title: string
 }
 
 /* * */
 
-export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedbackEntitiesProps) {
+export function TopFeedbackEntities({ items, nameColumnLabel, reasonChartData, title }: TopFeedbackEntitiesProps) {
 	//
 	// A. Setup variables
 
 	const [selectedItem, setSelectedItem] = useState<FeedbackEntitySummary>();
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleOpenItem = (item: FeedbackEntitySummary) => {
+		setSelectedItem(item);
+	};
+
+	const handleItemKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, item: FeedbackEntitySummary) => {
+		if (event.key !== 'Enter' && event.key !== ' ') return;
+		event.preventDefault();
+		handleOpenItem(item);
+	};
+
+	//
+	// C. Render components
 
 	return (
 		<>
@@ -36,28 +52,60 @@ export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedba
 				</div>
 
 				<div className={styles.feedbackCardContent}>
-					<div className={styles.feedbackList}>
-						<div className={styles.feedbackListHeader}>
-							<span className={styles.feedbackListHeaderTag}>{nameColumnLabel}</span>
-							<span className={`${styles.feedbackListHeaderTag} ${styles.feedbackListHeaderMetric}`}>Feedbacks</span>
-							<span className={`${styles.feedbackListHeaderTag} ${styles.feedbackListHeaderMetric}`}>Satisfação</span>
-						</div>
+					<div className={styles.feedbackTableWrapper}>
+						<Table highlightOnHover striped>
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th>{nameColumnLabel}</Table.Th>
+									<Table.Th>Feedbacks</Table.Th>
+									<Table.Th>Satisfação</Table.Th>
+								</Table.Tr>
+							</Table.Thead>
 
-						{items.map(item => (
-							<button key={item.id} className={`${styles.feedbackRow} ${styles.feedbackRowButton}`} onClick={() => setSelectedItem(item)} type="button">
-								<div className={styles.feedbackLineDetails}>
-									<span className={styles.feedbackLineName}>{item.label}</span>
-									{item.description && <p className={styles.feedbackLineDescription}>{item.description}</p>}
-								</div>
-								<div className={styles.feedbackTagCell}>
-									<FeedbackMetricTag label={item.count.toLocaleString('pt-PT')} />
-								</div>
-								<div className={styles.feedbackTagCell}>
-									<FeedbackMetricTag label={formatSatisfactionIndex(item.satisfactionIndex)} status={getFeedbackSatisfactionStatus(item.satisfactionIndex)} />
-								</div>
-							</button>
-						))}
+							<Table.Tbody>
+								{items.map(item => (
+									<Table.Tr
+										key={item.id}
+										aria-label={`Abrir detalhe de ${item.label}`}
+										className={styles.feedbackTableRowButton}
+										onClick={() => handleOpenItem(item)}
+										onKeyDown={event => handleItemKeyDown(event, item)}
+										role="button"
+										tabIndex={0}
+									>
+										<Table.Td>
+											<div className={styles.feedbackEntityDetails}>
+												<Text>{item.label}</Text>
+												{item.description && <Text c="dimmed" size="sm">{item.description}</Text>}
+											</div>
+										</Table.Td>
+										<Table.Td>
+											<FeedbackMetricTag label={item.count.toLocaleString('pt-PT')} />
+										</Table.Td>
+										<Table.Td>
+											<FeedbackMetricTag label={formatSatisfactionIndex(item.satisfactionIndex)} status={getFeedbackSatisfactionStatus(item.satisfactionIndex)} />
+										</Table.Td>
+									</Table.Tr>
+								))}
+							</Table.Tbody>
+						</Table>
 					</div>
+
+					{reasonChartData.length > 0 && (
+						<div className={styles.feedbackReasonChart}>
+							<PieChart
+								data={reasonChartData}
+								labelsPosition="outside"
+								labelsType="percent"
+								size={200}
+								tooltipDataSource="segment"
+								valueFormatter={value => value.toLocaleString('pt-PT')}
+								withLabels
+								withLabelsLine
+								withTooltip
+							/>
+						</div>
+					)}
 				</div>
 			</ContainerWrapper>
 
