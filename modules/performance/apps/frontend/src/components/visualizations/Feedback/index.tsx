@@ -1,7 +1,7 @@
 /* * */
 
-export { FeedbackEntityDetailModal } from './common/FeedbackEntityDetailModal';
-export { FeedbackMetricTag } from './common/FeedbackMetricTag';
-export { LineContributionBreakdown } from './common/LineContributionBreakdown';
-export { OperatorLogo } from './common/OperatorLogo';
+export { FeedbackEntityDetailModal } from './FeedbackEntityDetailModal';
+export { FeedbackMetricTag } from './FeedbackMetricTag';
+export { LineContributionBreakdown } from './LineContributionBreakdown';
+export { OperatorLogo } from './OperatorLogo';
 export { FeedbackGraphCard } from './FeedbackGraphCard';
