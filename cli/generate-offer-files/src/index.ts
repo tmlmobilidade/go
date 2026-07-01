@@ -4,8 +4,8 @@
 
 import { generateOfferOutput } from '@/main.js';
 import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
-import { validateOperationalDate } from '@tmlmobilidade/types';
 import { Command } from 'commander';
 import fs from 'fs';
 
@@ -38,10 +38,9 @@ await (async function init() {
 	try {
 		options.startDate = validateOperationalDate(options.startDate);
 		options.endDate = validateOperationalDate(options.endDate);
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.divider();
-		Logger.error(`--start-date and/or --end-date are not valid:`, error.message);
+		Logger.error({ error, message: `--start-date and/or --end-date are not valid:` });
 		Logger.divider();
 		return;
 	}
@@ -51,13 +50,13 @@ await (async function init() {
 
 	if (fs.existsSync(options.outputDir) && !options.override) {
 		Logger.divider();
-		Logger.error(`Output directory "${options.outputDir}" already exists. Please remove it or change it before running the script.`);
+		Logger.error({ message: `Output directory "${options.outputDir}" already exists. Please remove it or change it before running the script.` });
 		Logger.divider();
 		return;
 	}
 
 	if (fs.existsSync(options.outputDir) && options.override) {
-		Logger.info(`Output directory "${options.outputDir}" already exists. It will be overridden.`);
+		Logger.info({ message: `Output directory "${options.outputDir}" already exists. It will be overridden.` });
 		fs.rmSync(options.outputDir, { recursive: true });
 	}
 

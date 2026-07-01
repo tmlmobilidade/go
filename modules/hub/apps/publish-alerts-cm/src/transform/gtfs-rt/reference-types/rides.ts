@@ -1,5 +1,6 @@
 /* * */
 
+import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
@@ -13,17 +14,17 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 	// Validate required input properties
 
 	if (!alertData.agency_id || !alertData.references?.length) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert references are missing for "rides" reference type.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert references are missing for "rides" reference type.` });
 		return;
 	}
 
 	if (!alertData.active_period_start_date) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.` });
 		return;
 	}
 
 	if (!alertData.active_period_end_date) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_end_date is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_end_date is missing.` });
 		return;
 	}
 
@@ -44,7 +45,7 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 		const foundRide = await rides.findById(reference.parent_id);
 
 		if (!foundRide) {
-			Logger.error(`[Alert ID: ${alertData._id}] No ride found for ride ID ${reference.parent_id}.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] No ride found for ride ID ${reference.parent_id}.` });
 			continue;
 		}
 
@@ -52,7 +53,8 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 			agency_id: alertData.agency_id,
 			trip: {
 				route_id: foundRide.route_id,
-				start_date: foundRide.operational_date,
+				schedule_relationship: 'SCHEDULED',
+				start_date: validateGtfsDate(foundRide.operational_date),
 				trip_id: `[${foundRide.plan_id}]${foundRide.trip_id}`,
 			},
 		};

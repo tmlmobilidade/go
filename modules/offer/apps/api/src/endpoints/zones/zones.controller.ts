@@ -162,7 +162,9 @@ export class ZonesController {
 
 		const zoneData = await zones.findById(request.params.id);
 
-		if (!zoneData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		if (!zoneData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		}
 
 		//
 		// Get the resource permissions for zones for the current user.
@@ -216,7 +218,9 @@ export class ZonesController {
 
 		const zoneData = await zones.findById(request.params.id);
 
-		if (!zoneData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		if (!zoneData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		}
 
 		//
 		// Get the resource permissions for zones for the current user.
@@ -248,7 +252,9 @@ export class ZonesController {
 		// If authorized, toggle the lock status of the zone
 		await zones.toggleLockById(request.params.id);
 		const foundZone = await zones.findById(request.params.id);
-		if (!foundZone) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		if (!foundZone) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		}
 
 		return reply.send({ data: foundZone, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -268,7 +274,9 @@ export class ZonesController {
 
 		const zoneData = await zones.findById(request.params.id);
 
-		if (!zoneData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		if (!zoneData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
+		}
 
 		//
 		// Get the resource permissions for zones for the current user.

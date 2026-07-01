@@ -8,7 +8,7 @@ import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsValidationSummary, type GtfsValidation } from '@tmlmobilidade/types';
+import { type GtfsValidation, type GtfsValidationSummary } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };
@@ -24,7 +24,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// If so, mark it as 'error' to avoid infinite retries on problematic files.
 
 		if ((gtfsValidation.validation_attempts ?? 0) >= 3) {
-			Logger.error(`GTFS Validation ${gtfsValidation._id} has already been attempted 3 times. Marking as error.`);
+			Logger.error({ message: `GTFS Validation ${gtfsValidation._id} has already been attempted 3 times. Marking as error.` });
 			await gtfsValidations.updateById(gtfsValidation._id, {
 				processing_status: 'error',
 				summary: {
@@ -50,7 +50,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// Update the gtfs validation document to 'processing' status
 		// and save the paths for reference in case of errors
 
-		Logger.info('Updating GTFS Validation document...');
+		Logger.info({ message: 'Updating GTFS Validation document...' });
 
 		await gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'processing',
@@ -61,7 +61,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// Get the associated file document from MongoDB
 		// and download the GTFS file to the temporary directory.
 
-		Logger.info('Downloading GTFS file...');
+		Logger.info({ message: 'Downloading GTFS file...' });
 
 		const gtfsFile = await files.findById(gtfsValidation.file_id);
 		if (!gtfsFile) throw new Error(`File not found: ${gtfsValidation.file_id}`);
@@ -85,22 +85,23 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		fs.writeFileSync(gtfsValidationRulesPath, rulesContent, { encoding: 'utf-8' });
 
-		Logger.info(`Custom validation rules saved to: ${gtfsValidationRulesPath}`);
+		Logger.info({ message: `Custom validation rules saved to: ${gtfsValidationRulesPath}` });
 
 		//
 		// Perform the GTFS validation using the GtfsValidator library
 		// and update the GTFS validation document in MongoDB with the results.
 
-		Logger.info('Performing the actual GTFS validation...');
+		Logger.info({ message: 'Performing the actual GTFS validation...' });
 
 		const gtfsValidationResult = await GtfsValidator(gtfsFilePath, {
 			lang: 'pt',
 			log_level: 'debug',
 			out_file: gtfsValidationResultPath,
 			rules_path: gtfsValidationRulesPath,
+			timeout: 60 * 60 * 1000, // 1 hour timeout
 		});
 
-		Logger.info('Validation completed. Updating GTFS Validation document with results...');
+		Logger.info({ message: 'Validation completed. Updating GTFS Validation document with results...' });
 
 		await gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'complete',
@@ -146,15 +147,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 				});
 			}
 		} catch (error) {
-			Logger.error('Error sending validation result email:', error);
-			await sendSystemErrorEmail({
-				data: {
-					errorMessage: error instanceof Error ? error.message : String(error),
-					serviceName: pjson.name,
-					timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-				},
-				to: SYSTEM_CONTACT_EMAIL,
-			});
+			Logger.error({ error, message: 'Error sending validation result email:' });
 		}
 
 		//
@@ -163,16 +156,16 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		try {
 			fs.rmSync(tempWorkdirPath, { force: true, recursive: true });
-			Logger.info('Cleaned up temporary files.');
+			Logger.info({ message: 'Cleaned up temporary files.' });
 		} catch (error) {
-			Logger.error('Error during cleanup of temporary files:', error);
+			Logger.error({ error, message: 'Error during cleanup of temporary files:' });
 		}
 
 		//
 	} catch (error) {
 		// If any errors occur during validation, catch them and format
 		// a custom error result to be saved in the database and sent via email.
-		Logger.error('Error during GTFS validation:', error);
+		Logger.error({ error, message: 'Error during GTFS validation:' });
 		await gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'error',
 			summary: {

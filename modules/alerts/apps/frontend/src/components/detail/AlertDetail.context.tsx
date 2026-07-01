@@ -1,8 +1,9 @@
 'use client';
 
+import { isValidOptionalAlertCoordinates } from '@/lib/alert-coordinates';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useDataAgencies, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useDataAgencies, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -66,6 +67,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		apiData: alertData,
 		// schema: UpdateAlertSchema,
 	});
+	const coordinatesValue = useContextFormWatch({ control: form.control, name: 'coordinates' });
 
 	//
 	// C. Transform data
@@ -117,23 +119,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 
 	const { action: handleUploadImage, isLoading: isUploadingImage } = useHandleUpdate({
 		fetchFn: async () => imageFile && await uploadFile(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), imageFile),
-		onSuccess: () => {
-			handleSave();
+		onSuccess: async () => {
 			setImageFile(undefined);
-			form.reset();
-			alertMutate();
-			alertImageMutate();
-			alertsListMutate();
+			await Promise.all([alertImageMutate(), alertMutate()]);
 		},
 	});
 
 	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Alert>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId), 'DELETE'),
-		onSuccess: () => {
-			form.reset();
-			alertMutate();
-			alertImageMutate();
-			alertsListMutate();
+		onSuccess: async () => {
+			await Promise.all([alertImageMutate(), alertMutate()]);
 		},
 	});
 
@@ -141,6 +136,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		if (!imageFile) return;
 		handleUploadImage();
 	}, [handleUploadImage, imageFile]);
+
+	useEffect(() => {
+		if (!isValidOptionalAlertCoordinates(coordinatesValue)) {
+			useToast.error({ message: 'Coordenadas inválidas. Use latitude [-90, 90] e longitude [-180, 180].', title: 'Erro' });
+			form.setError('coordinates', { message: 'Coordenadas inválidas. Use latitude [-90, 90] e longitude [-180, 180].' });
+			return;
+		} else {
+			form.clearErrors('coordinates');
+		}
+	}, [coordinatesValue, form]);
 
 	//
 	// F. Setup flags
@@ -187,7 +192,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		isLoading: alertLoading,
 		isLocked: alertData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.formState.isValid,
+		isValid: Object.keys(form.formState.errors).length === 0,
 	});
 
 	const { canLock } = useFlagCanLock({
@@ -294,7 +299,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		form: {
 			instance: form,
 		},
-	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isLocking, isReadOnly, isSaving, isUploadingImage]);
+	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, form.formState.isDirty, isLocking, isReadOnly, isSaving, isUploadingImage]);
 
 	//
 	// F. Render components

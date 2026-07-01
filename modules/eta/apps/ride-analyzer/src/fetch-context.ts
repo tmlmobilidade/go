@@ -13,12 +13,12 @@ import { Logger } from '@tmlmobilidade/logger';
  * The loader phase populates that table; if no row matches, the analyzer's
  * earlier `ensureRidePresent` precheck would already have failed.
  */
-export async function fetchTripHashes(clickhouseClient: ClickHouseClient, tripId: string): Promise<TripContext> {
+export async function fetchTripHashes(clickhouseClient: ClickHouseClient, database: string, tripId: string): Promise<TripContext> {
 	const result = await clickhouseClient.query({
 		format: 'JSONEachRow',
 		query: `
 			SELECT hashed_shape_id, hashed_trip_id
-			FROM ${qualifiedTable('curr_rides')}
+			FROM ${qualifiedTable(database, 'curr_rides')}
 			WHERE trip_id = {trip_id:String}
 			LIMIT 1
 		`,
@@ -39,19 +39,19 @@ export async function fetchTripHashes(clickhouseClient: ClickHouseClient, tripId
  * Used by the viewer to draw the route polyline and to look up coordinates of
  * the snapped node referenced by each `curr_vehicle_event.node_index`.
  */
-export async function fetchRouteNodes(clickhouseClient: ClickHouseClient, hashedShapeId: string): Promise<RouteNode[]> {
+export async function fetchRouteNodes(clickhouseClient: ClickHouseClient, database: string, hashedShapeId: string): Promise<RouteNode[]> {
 	const result = await clickhouseClient.query({
 		format: 'JSONEachRow',
 		query: `
 			SELECT node_index, latitude, longitude
-			FROM ${qualifiedTable('hist_shape_nodes')}
+			FROM ${qualifiedTable(database, 'hist_shape_nodes')}
 			WHERE hashed_shape_id = {hashed_shape_id:String}
 			ORDER BY node_index ASC
 		`,
 		query_params: { hashed_shape_id: hashedShapeId },
 	});
 	const nodes = await result.json<RouteNode>();
-	Logger.info(`Fetched ${nodes.length} route nodes for hashed_shape_id=${hashedShapeId}`);
+	Logger.info({ message: `Fetched ${nodes.length} route nodes for hashed_shape_id=${hashedShapeId}` });
 	return nodes;
 }
 
@@ -59,7 +59,7 @@ export async function fetchRouteNodes(clickhouseClient: ClickHouseClient, hashed
  * Returns the trip's stops with their snapped `node_index` and coordinates.
  * Already produced by the loader's `4-snap-waypoints.sql`, so no joins needed.
  */
-export async function fetchStopWaypoints(clickhouseClient: ClickHouseClient, hashedTripId: string): Promise<StopWaypoint[]> {
+export async function fetchStopWaypoints(clickhouseClient: ClickHouseClient, database: string, hashedTripId: string): Promise<StopWaypoint[]> {
 	const result = await clickhouseClient.query({
 		format: 'JSONEachRow',
 		query: `
@@ -74,13 +74,13 @@ export async function fetchStopWaypoints(clickhouseClient: ClickHouseClient, has
 				node_index,
 				arrival_time,
 				departure_time
-			FROM ${qualifiedTable('curr_waypoints_snapped')}
+			FROM ${qualifiedTable(database, 'curr_waypoints_snapped')}
 			WHERE hashed_trip_id = {hashed_trip_id:String}
 			ORDER BY stop_sequence ASC
 		`,
 		query_params: { hashed_trip_id: hashedTripId },
 	});
 	const stops = await result.json<StopWaypoint>();
-	Logger.info(`Fetched ${stops.length} stops for hashed_trip_id=${hashedTripId}`);
+	Logger.info({ message: `Fetched ${stops.length} stops for hashed_trip_id=${hashedTripId}` });
 	return stops;
 }

@@ -1,8 +1,8 @@
 /* * */
 
 import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
-import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { type ChangeStreamInsertDocument } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
@@ -17,7 +17,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	insertFn: async (data) => {
 		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
 	},
-	title: await simplifiedVehicleEventsNew.getTableName(),
+	title: `clickhouse-stream-${Math.random().toString(36).substring(2, 15)}`,
 });
 
 /**
@@ -38,14 +38,14 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 	const newSimplifiedVehicleEventDocument = parser(databaseOperation.fullDocument);
 
 	if (!newSimplifiedVehicleEventDocument) {
-		Logger.error(`Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}`);
+		Logger.error({ message: `Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}` });
 		return;
 	}
 
 	//
 	// Write the new vehicle event document to the SimplifiedVehicleEvents collection
 
-	await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: invalidateRides });
+	await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });
 
 	//
 };

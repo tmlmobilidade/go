@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { type SidebarVisualMode } from '../SidebarMode.context';
+import { type SidebarVisualMode } from '../SidebarVisualMode.context';
 
 /* * */
 

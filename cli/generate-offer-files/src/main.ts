@@ -3,9 +3,10 @@
 import { type OfferJourney, type OfferStop } from '@/types.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type OperationalDate, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
+import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsRouteExtended, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
 import { JsonWriter } from '@tmlmobilidade/writers';
 import { parse as csvParser } from 'csv-parse';
 import extract from 'extract-zip';
@@ -58,7 +59,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			Logger.success('Prepared working directory.');
 			Logger.spacer(1);
 		} catch (error) {
-			Logger.error(`Error preparing workdir path "${workdirPath}".`, error);
+			Logger.error({ error, message: `Error preparing workdir path "${workdirPath}".` });
 			process.exit(1);
 		}
 
@@ -67,7 +68,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 			Logger.success(`Unzipped GTFS file from "${filePath}" to "${extractDirPath}".`);
 			Logger.spacer(1);
 		} catch (error) {
-			Logger.error('Error unzipping the file.', error);
+			Logger.error({ error, message: 'Error unzipping the file.' });
 			process.exit(1);
 		}
 
@@ -92,7 +93,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			Logger.info(`Reading zip entry "calendar.txt"...`);
+			Logger.info({ message: `Reading zip entry "calendar.txt"...` });
 
 			const parseEachRow = async (data: GTFS_Calendar_Raw) => {
 				//
@@ -150,13 +151,13 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 				Logger.success(`Finished processing "calendar.txt"`);
 				Logger.spacer(1);
 			} else {
-				Logger.info(`Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...`);
+				Logger.info({ message: `Optional file "calendar.txt" not found. This may or may not be an error. Proceeding...` });
 				Logger.spacer(1);
 			}
 
 			//
 		} catch (error) {
-			Logger.error('Error processing "calendar.txt" file.', error);
+			Logger.error({ error, message: 'Error processing "calendar.txt" file.' });
 			throw new Error('✖︎ Error processing "calendar.txt" file.');
 		}
 
@@ -171,7 +172,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			Logger.info(`Reading zip entry "calendar_dates.txt"...`);
+			Logger.info({ message: `Reading zip entry "calendar_dates.txt"...` });
 
 			const parseEachRow = async (data: GTFS_CalendarDate_Raw) => {
 				//
@@ -220,13 +221,13 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 				Logger.success(`Finished processing "calendar_dates.txt"`);
 				Logger.spacer(1);
 			} else {
-				Logger.info(`Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...`);
+				Logger.info({ message: `Optional file "calendar_dates.txt" not found. This may or may not be an error. Proceeding...` });
 				Logger.spacer(1);
 			}
 
 			//
 		} catch (error) {
-			Logger.error('Error processing "calendar_dates.txt" file.', error);
+			Logger.error({ error, message: 'Error processing "calendar_dates.txt" file.' });
 			throw new Error('✖︎ Error processing "calendar_dates.txt" file.');
 		}
 
@@ -241,7 +242,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			Logger.info(`Reading zip entry "trips.txt"...`);
+			Logger.info({ message: `Reading zip entry "trips.txt"...` });
 
 			const parseEachRow = async (data: GTFS_Trip_Extended_Raw) => {
 				// Validate the current row against the proper type
@@ -265,7 +266,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			//
 		} catch (error) {
-			Logger.error('Error processing "trips.txt" file.', error);
+			Logger.error({ error, message: 'Error processing "trips.txt" file.' });
 			throw new Error('✖︎ Error processing "trips.txt" file.');
 		}
 
@@ -279,7 +280,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			Logger.info(`Reading zip entry "routes.txt"...`);
+			Logger.info({ message: `Reading zip entry "routes.txt"...` });
 
 			const parseEachRow = async (data: GTFS_Route_Extended_Raw) => {
 				// Validate the current row against the proper type
@@ -301,7 +302,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			//
 		} catch (error) {
-			Logger.error('Error processing "routes.txt" file.', error);
+			Logger.error({ error, message: 'Error processing "routes.txt" file.' });
 			throw new Error('✖︎ Error processing "routes.txt" file.');
 		}
 
@@ -316,7 +317,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			Logger.info(`Reading zip entry "stops.txt"...`);
+			Logger.info({ message: `Reading zip entry "stops.txt"...` });
 
 			const parseEachRow = async (data: GTFS_Stop_Extended_Raw) => {
 				// Validate the current row against the proper type
@@ -335,7 +336,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			//
 		} catch (error) {
-			Logger.error('Error processing "stops.txt" file.', error);
+			Logger.error({ error, message: 'Error processing "stops.txt" file.' });
 			throw new Error('✖︎ Error processing "stops.txt" file.');
 		}
 
@@ -351,7 +352,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 		try {
 			//
 
-			Logger.info(`Reading zip entry "stop_times.txt"...`);
+			Logger.info({ message: `Reading zip entry "stop_times.txt"...` });
 
 			const parseEachRow = async (data: GTFS_StopTime_Raw) => {
 				//
@@ -394,7 +395,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			//
 		} catch (error) {
-			Logger.error('Error processing "stop_times.txt" file.', error);
+			Logger.error({ error, message: 'Error processing "stop_times.txt" file.' });
 			throw new Error('✖︎ Error processing "stop_times.txt" file.');
 		}
 
@@ -419,7 +420,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 				const routeData = savedRoutes.get(currentTrip.route_id);
 
 				if (!stopTimesData || stopTimesData.length === 0) {
-					Logger.error(`Trip ${currentTrip.trip_id} has no path data. Skipping...`);
+					Logger.error({ message: `Trip ${currentTrip.trip_id} has no path data. Skipping...` });
 					continue;
 				}
 
@@ -574,7 +575,7 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 			//
 		} catch (error) {
-			Logger.error('Error transforming or saving Offer documents.', error);
+			Logger.error({ error, message: 'Error transforming or saving Offer documents.' });
 			throw new Error('✖︎ Error transforming or saving Offer documents.');
 		}
 
@@ -592,8 +593,8 @@ export async function generateOfferOutput(filePath: string, startDate: Operation
 
 		//
 	} catch (error) {
-		Logger.error('An error occurred. Halting execution.', error);
-		Logger.error('Retrying in 10 seconds...');
+		Logger.error({ error, message: 'An error occurred. Halting execution.' });
+		Logger.error({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

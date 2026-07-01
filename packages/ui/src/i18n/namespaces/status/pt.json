@@ -32,10 +32,10 @@
 		"voided": "Anulado"
 	},
 	"operational_status": {
-		"ended": "ENDED",
-		"missed": "MISSED",
-		"running": "RUNNING",
-		"scheduled": "SCHEDULED"
+		"ended": "Finalizada",
+		"missed": "Não realizada",
+		"running": "A circular",
+		"scheduled": "Planeada"
 	},
 	"processing_status": {
 		"complete": "Concluído",
@@ -43,11 +43,6 @@
 		"processing": "Em curso",
 		"skipped": "Omitido",
 		"waiting": "Em espera"
-	},
-	"validity_status": {
-		"valid": "Válido",
-		"invalid": "Inválido",
-		"unknown": "Desconhecido"
 	},
 	"publish_status": {
 		"archived": "Arquivado",
@@ -77,5 +72,10 @@
 		"Skipped": "Ignorado",
 		"Unknown": "Desconhecido",
 		"Waiting": "Em espera"
+	},
+	"validity_status": {
+		"invalid": "Inválido",
+		"unknown": "Desconhecido",
+		"valid": "Válido"
 	}
 }

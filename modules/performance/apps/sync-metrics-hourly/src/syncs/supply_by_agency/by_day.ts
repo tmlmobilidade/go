@@ -27,9 +27,12 @@ export const syncSupplyByAgencyByDay = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
-	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics for CM agencies...` });
+	await metrics.deleteMany({
+		'metric': METRIC,
+		'properties.agency_id': { $in: [...CM_AGENCY_IDS] },
+	});
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch rides collection
@@ -103,7 +106,7 @@ export const syncSupplyByAgencyByDay = async () => {
 	const latestOperationalData = latestRide?.operational_date;
 
 	if (!latestOperationalData) {
-		Logger.info('No CM rides with operational_date; using current operational date as upper bound');
+		Logger.info({ message: 'No CM rides with operational_date; using current operational date as upper bound' });
 	}
 
 	const latest = latestOperationalData
@@ -125,11 +128,11 @@ export const syncSupplyByAgencyByDay = async () => {
 		cursor = next;
 	}
 
-	Logger.info([
+	Logger.info({ message: [
 		`Date range: ${earliestDataNeeded.operational_date} → ${latestOperationalData ?? 'today'}`,
 		`Total chunks: ${allTimestampChunks.length}`,
 		`CM agencies: ${CM_AGENCY_IDS.join(', ')}`,
-	]);
+	] });
 
 	//
 	// Set max concurrent queries
@@ -147,7 +150,7 @@ export const syncSupplyByAgencyByDay = async () => {
 			const dayLabel = dayLabelFromOperationalDate(chunkData.operationalDate);
 			const chunkLabel = `${chunkIndex + 1}/${allTimestampChunks.length}`;
 
-			Logger.info(`Chunk ${chunkLabel} START operational_date=${chunkData.operationalDate} (${dayLabel})`);
+			Logger.info({ message: `Chunk ${chunkLabel} START operational_date=${chunkData.operationalDate} (${dayLabel})` });
 
 			try {
 				const ridesAgg = await ridesCollection
@@ -224,10 +227,10 @@ export const syncSupplyByAgencyByDay = async () => {
 					])
 					.toArray();
 
-				Logger.info(`Chunk ${chunkLabel} DONE - Found ${ridesAgg.length} agencies (${chunkTimer.get()})`);
+				Logger.info({ message: `Chunk ${chunkLabel} DONE - Found ${ridesAgg.length} agencies (${chunkTimer.get()})` });
 				return { dayLabel, ridesAgg };
 			} catch (error) {
-				Logger.error(`Chunk ${chunkLabel} FAILED operational_date=${chunkData.operationalDate} (${chunkTimer.get()})`);
+				Logger.error({ message: `Chunk ${chunkLabel} FAILED operational_date=${chunkData.operationalDate} (${chunkTimer.get()})` });
 				Logger.error(error);
 				throw error;
 			}
@@ -237,10 +240,10 @@ export const syncSupplyByAgencyByDay = async () => {
 	//
 	// Transform into Metric objects
 
-	Logger.info(`Waiting for ${allTimestampChunks.length} chunk aggregations to finish...`);
+	Logger.info({ message: `Waiting for ${allTimestampChunks.length} chunk aggregations to finish...` });
 	const chunksTimer = new Timer();
 	const allChunksResults = await Promise.all(dayPromises);
-	Logger.info(`All chunk aggregations finished (${chunksTimer.get()})`);
+	Logger.info({ message: `All chunk aggregations finished (${chunksTimer.get()})` });
 
 	let skippedCalendarDays = 0;
 	const mergeTimer = new Timer();
@@ -250,7 +253,7 @@ export const syncSupplyByAgencyByDay = async () => {
 
 		if (!calendarProps) {
 			skippedCalendarDays++;
-			Logger.info(`No calendar entry for ${dayLabel}, skipping day`);
+			Logger.info({ message: `No calendar entry for ${dayLabel}, skipping day` });
 			continue;
 		}
 
@@ -297,25 +300,25 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	const results = Array.from(agencyMap.values());
 
-	Logger.info([
+	Logger.info({ message: [
 		`Merge finished (${mergeTimer.get()})`,
 		`Skipped ${skippedCalendarDays} days without calendar`,
 		`Built ${results.length} agency metric documents`,
-	]);
+	] });
 	for (const doc of results) {
-		Logger.info(`  agency ${doc.properties.agency_id}: ${Object.keys(doc.data).length} days in data`);
+		Logger.info({ message: `  agency ${doc.properties.agency_id}: ${Object.keys(doc.data).length} days in data` });
 	}
 
 	//
 	// Insert all metrics
 
 	if (results.length === 0) {
-		Logger.info('No metric documents to insert — skipping insertMany');
+		Logger.info({ message: 'No metric documents to insert — skipping insertMany' });
 	} else {
 		const insertTimer = new Timer();
-		Logger.info(`insertMany starting (${results.length} documents)...`);
+		Logger.info({ message: `insertMany starting (${results.length} documents)...` });
 		await metrics.insertMany(results);
-		Logger.info(`insertMany finished (${insertTimer.get()})`);
+		Logger.info({ message: `insertMany finished (${insertTimer.get()})` });
 	}
 
 	logMetricToFile({

@@ -4,7 +4,6 @@ import { Layer, Source } from '@vis.gl/react-maplibre';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useEffect } from 'react';
 
-import { useMapContext } from '../../../../contexts';
 import { centerMapView } from '../../utils/center-map-view';
 import { moveMapView } from '../../utils/move-map-view';
 import { useMapViewContext } from '../../view/MapViewContext';
@@ -32,7 +31,6 @@ export function MapOverlayPins({ focusOnChange, id, pinsData, visible = true }: 
 	//
 	// A. Setup variables
 
-	const mapContext = useMapContext();
 	const mapViewContext = useMapViewContext();
 
 	//
@@ -49,21 +47,29 @@ export function MapOverlayPins({ focusOnChange, id, pinsData, visible = true }: 
 	useEffect(() => {
 		// Skip if focus on change is disabled
 		if (!focusOnChange) return;
-		// Skip if no map is available
-		if (!mapViewContext.ref.map.current) return;
-		// Skip if no search pin coordinates are available
-		if (!mapContext.data.search_pin?.features.length) return;
-		// Disable auto zoom (to prevent collisions)
-		mapViewContext.actions.toggleAutoZoom(false);
-		// If there is more than one feature, center the map on them
-		if (mapContext.data.search_pin.features.length > 1) {
-			centerMapView(mapViewContext.ref.map.current, mapContext.data.search_pin.features);
-		}
-		// If there is only one feature, move the map to it
-		else if (mapContext.data.search_pin.features[0]) {
-			moveMapView(mapViewContext.ref.map.current, mapContext.data.search_pin.features[0].geometry.coordinates);
-		}
-	}, [pinsData]);
+		// Skip while the map is still loading
+		if (mapViewContext.flags.loading) return;
+		// Skip if no pin coordinates are available
+		if (!pinsData?.features.length) return;
+
+		const timer = window.setTimeout(() => {
+			const map = mapViewContext.ref.map.current;
+			if (!map) return;
+
+			// Disable auto zoom (to prevent collisions)
+			mapViewContext.actions.toggleAutoZoom(false);
+			// If there is more than one feature, center the map on them
+			if (pinsData.features.length > 1) {
+				centerMapView(map, pinsData.features);
+			}
+			// If there is only one feature, move the map to it
+			else if (pinsData.features[0]) {
+				moveMapView(map, pinsData.features[0].geometry.coordinates);
+			}
+		}, 100);
+
+		return () => window.clearTimeout(timer);
+	}, [focusOnChange, mapViewContext.flags.loading, pinsData]);
 
 	//
 	// C. Render components

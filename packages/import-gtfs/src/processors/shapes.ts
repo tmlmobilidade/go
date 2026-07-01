@@ -17,7 +17,7 @@ export async function processShapesFile(context: ImportGtfsContext): Promise<voi
 
 		const shapesParseTimer = new Timer();
 
-		Logger.info(`Reading zip entry "shapes.txt"...`);
+		Logger.info({ message: 'Reading zip entry "shapes.txt"...' });
 
 		const parseEachRow = async (data: GTFS_Shape_Raw) => {
 			// Validate the current row against the proper type
@@ -28,7 +28,7 @@ export async function processShapesFile(context: ImportGtfsContext): Promise<voi
 			// Save the exported row
 			context.gtfs.shapes.write(validatedData);
 			// Log progress
-			if (context.counters.shapes % 100000 === 0) Logger.info(`Parsed ${context.counters.shapes} shapes.txt rows so far.`);
+			if (context.counters.shapes % 100000 === 0) Logger.info({ message: `Parsed ${context.counters.shapes} shapes.txt rows so far (${shapesParseTimer.get()})` });
 			// Increment the counter
 			context.counters.shapes++;
 		};
@@ -44,7 +44,7 @@ export async function processShapesFile(context: ImportGtfsContext): Promise<voi
 
 		//
 	} catch (error) {
-		Logger.error('Error processing "shapes.txt" file.', error);
+		Logger.error({ error, message: 'Error processing "shapes.txt" file.' });
 		throw new Error('✖︎ Error processing "shapes.txt" file.');
 	}
 }

@@ -2,58 +2,102 @@
 /* BADGE */
 
 .badge {
+	position: relative;
 	display: flex;
+	flex-shrink: 0;
 	align-items: center;
 	justify-content: center;
-	border-radius: 999px;
-	color: var(--color-system-background-100);
-	background-color: var(--color-system-text-200);
-	font-weight: var(--font-weight-extrabold);
-	letter-spacing: 1px;
+	font-weight: 700;
 	line-height: 1;
-	position: relative;
+	color: var(--color-system-background-100);
+	letter-spacing: 1px;
+	background-color: var(--color-system-text-200);
+	border-radius: 999px;
 }
 
-.badge.md {
-	font-size: 16px;
-	min-width: 65px;
-	max-width: 65px;
+/* * */
+/* PROPS / SIZE */
+
+.badge[data-size='md'] {
+	min-width: 55px;
+	max-width: 55px;
 	min-height: 26px;
 	max-height: 26px;
+	font-size: 16px;
 }
 
-.badge.lg {
-	font-size: 22px;
-	min-width: 85px;
-	max-width: 85px;
+.badge[data-size='lg'] {
+	min-width: 75px;
+	max-width: 75px;
 	min-height: 34px;
 	max-height: 34px;
+	font-size: 22px;
 }
 
-.badge.clickable {
+/* * */
+/* PROPS / CLICKABLE */
+
+.badge[data-clickable='true'] {
 	cursor: pointer;
 	transition: all 200ms ease;
 }
 
-.badge.clickable:hover {
-	transform: scale(1.05);
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+/* * */
+/* PROPS / AGENCY ID */
+
+.badge[data-size='md'][data-agency-id='3'] {
+	max-width: min-content;
+	padding: 0 10px;
+	letter-spacing: -0.5px;
 }
 
+.badge[data-size='lg'][data-agency-id='3'] {
+	max-width: min-content;
+	padding: 0 15px;
+	letter-spacing: -0.5px;
+}
+
+.badge[data-size='md'][data-agency-id='15'] {
+	min-width: 90px;
+	max-width: 90px;
+	letter-spacing: -0.5px;
+}
+
+.badge[data-size='lg'][data-agency-id='15'] {
+	min-width: 120px;
+	max-width: 120px;
+	letter-spacing: -0.5px;
+}
+
+.badge[data-size='md'][data-agency-id='41'],
+.badge[data-size='md'][data-agency-id='42'],
+.badge[data-size='md'][data-agency-id='43'],
+.badge[data-size='md'][data-agency-id='44'] {
+	min-width: 65px;
+	max-width: 65px;
+}
+
+.badge[data-size='lg'][data-agency-id='41'],
+.badge[data-size='lg'][data-agency-id='42'],
+.badge[data-size='lg'][data-agency-id='43'],
+.badge[data-size='lg'][data-agency-id='44'] {
+	min-width: 85px;
+	max-width: 85px;
+}
 
 /* * */
 /* ALERT ICON */
 
 .alertIcon {
-	background-color: var(--color-primary-white);
-	width: 20px;
-	height: 20px;
-	border-radius: 999px;
 	position: absolute;
-	right: -10px;
 	top: -10px;
+	right: -10px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	width: 20px;
+	height: 20px;
 	color: var(--color-status-info-text);
+	background-color: var(--color-primary-white);
+	border-radius: 999px;
 }

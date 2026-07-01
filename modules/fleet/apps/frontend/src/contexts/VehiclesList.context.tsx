@@ -15,7 +15,7 @@ interface VehicleNormalized extends Vehicle {
 
 /* * */
 
-interface VehicleListContextState {
+export interface VehicleListContextState {
 	data: {
 		filtered: VehicleNormalized[]
 		raw: Vehicle[]

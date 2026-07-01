@@ -31,11 +31,11 @@ export async function syncShapeNodes(clickhouseClient: Parameters<typeof queryEt
 		insertFn: async (data) => {
 			await clickhouseClient.insert({
 				format: 'JSONEachRow',
-				table: qualifiedTable('hist_shape_nodes'),
+				table: qualifiedTable(config.database, 'hist_shape_nodes'),
 				values: data,
 			});
 		},
-		title: qualifiedTable('hist_shape_nodes'),
+		title: qualifiedTable(config.database, 'hist_shape_nodes'),
 	});
 
 	//
@@ -51,7 +51,7 @@ export async function syncShapeNodes(clickhouseClient: Parameters<typeof queryEt
 
 	//
 	// Create shape nodes for each hashed shape
-	Logger.info(`Creating shape nodes for ${hashedShapeIds.length} hashed shape ids`);
+	Logger.info({ message: `Creating shape nodes for ${hashedShapeIds.length} hashed shape ids` });
 
 	let shapeNodesProcessed = 0;
 	for await (const hashedShape of hashedShapesCursor) {

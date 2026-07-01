@@ -38,7 +38,7 @@ export async function exportAgencyFile(agencyIds: string[], exportConfig: Merged
 	for (const agencyData of foundAgenciesData) {
 		const parsedAgencyRow: ExportedAgencyRow = {
 			agency_id: agencyData._id,
-			agency_name: agencyData.name,
+			agency_name: agencyData.public_name || agencyData.name,
 			agency_email: agencyData.public_email,
 			agency_phone: agencyData.phone,
 			agency_url: agencyData.website_url,
@@ -52,5 +52,5 @@ export async function exportAgencyFile(agencyIds: string[], exportConfig: Merged
 
 	await exportConfig.writers.agency.flush();
 
-	Logger.info('Exported agency.txt file.');
+	Logger.info({ message: 'Exported agency.txt file.' });
 }

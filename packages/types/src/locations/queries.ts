@@ -1,11 +1,11 @@
 /* * */
 
-import { PaginationSchema } from '@/_common/index.js';
 import { type Census, type CensusFeature } from '@/locations/census.js';
 import { type District, type DistrictFeature } from '@/locations/district.js';
 import { type Locality, type LocalityFeature } from '@/locations/locality.js';
 import { type Municipality, type MunicipalityFeature } from '@/locations/municipality.js';
 import { type Parish, type ParishFeature } from '@/locations/parish.js';
+import { PaginationSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /**

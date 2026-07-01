@@ -124,7 +124,7 @@ export async function queryFromFile<T>(client: ClickHouseClient, filePath: strin
 	try {
 		sql = await readFile(filePath, { encoding: 'utf-8' });
 	} catch (error) {
-		Logger.error(`CLICKHOUSE: Error @ queryFromFile(): Failed to read SQL file "${filePath}": ${(error as Error).message}`);
+		Logger.error({ error, message: `CLICKHOUSE: Error @ queryFromFile(): Failed to read SQL file "${filePath}": ${(error as Error).message}` });
 		throw error;
 	}
 	const { query, queryParams } = prepareNamedQueryParams(sql, params, filePath);
@@ -136,7 +136,7 @@ export async function queryFromFile<T>(client: ClickHouseClient, filePath: strin
 		});
 		return result.json<T>();
 	} catch (error) {
-		Logger.error(`CLICKHOUSE: Error @ queryFromFile(): Failed to execute query from file "${filePath}": ${(error as Error).message}`);
+		Logger.error({ error, message: `CLICKHOUSE: Error @ queryFromFile(): Failed to execute query from file "${filePath}": ${(error as Error).message}` });
 		throw error;
 	}
 }
@@ -150,7 +150,7 @@ export async function queryEachStatementFromFile<T>(client: ClickHouseClient, fi
 	try {
 		sql = await readFile(filePath, { encoding: 'utf-8' });
 	} catch (error) {
-		Logger.error(`CLICKHOUSE: Error @ queryEachStatementFromFile(): Failed to read SQL file "${filePath}": ${(error as Error).message}`);
+		Logger.error({ error, message: `CLICKHOUSE: Error @ queryEachStatementFromFile(): Failed to read SQL file "${filePath}": ${(error as Error).message}` });
 		throw error;
 	}
 
@@ -167,7 +167,7 @@ export async function queryEachStatementFromFile<T>(client: ClickHouseClient, fi
 			});
 			merged.push(...(await result.json<T>()));
 		} catch (error) {
-			Logger.error(`CLICKHOUSE: Error @ queryEachStatementFromFile(): Failed to execute statement from file "${filePath}": ${(error as Error).message}`);
+			Logger.error({ error, message: `CLICKHOUSE: Error @ queryEachStatementFromFile(): Failed to execute statement from file "${filePath}": ${(error as Error).message}` });
 			throw error;
 		}
 	}

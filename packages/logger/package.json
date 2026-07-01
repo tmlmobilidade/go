@@ -27,17 +27,29 @@
 	"files": ["dist"],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint ./src/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
+	"dependencies": {
+		"@sentry/core": "10.62.0",
+		"@sentry/nextjs": "10.62.0",
+		"@sentry/node": "10.62.0",
+		"@tmlmobilidade/consts": "*"
+	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.9.1",
+		"@types/node": "26.0.1",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.0",
-		"typescript": "5.9.3"
+		"typescript": "6.0.3"
 	}
 }
