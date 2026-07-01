@@ -266,39 +266,39 @@ const periodsActions: PermissionConfig = {
 
 const faresActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver tarifas', label: 'Ver tarifas', resources: ['AGENCIES'] },
+		{ action: 'nav', description: 'Permite aceder às páginas de tarifas na aplicação', label: 'Ver no menu', resources: ['AGENCIES'] },
 		{ action: 'create', description: 'Permite criar uma tarifa', label: 'Criar tarifa', resources: ['AGENCIES'] },
 		{ action: 'update', description: 'Permite editar uma tarifa', label: 'Editar tarifa', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar uma tarifa', label: 'Eliminar tarifa', resources: ['AGENCIES'] },
 		{ action: 'lock', description: 'Permite bloquear/desbloquear uma tarifa', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de tarifas.',
+	description: 'As ações que o utilizador pode realizar na gestão de tarifas. A consulta de tarifas para edição de linhas depende das permissões de linhas.',
 	scope: PermissionCatalog.all.fares.scope,
 	title: 'Permissões de Tarifas',
 };
 
 const zonesActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver zonas', label: 'Ver zonas', resources: ['AGENCIES'] },
+		{ action: 'nav', description: 'Permite aceder às páginas de zonas na aplicação', label: 'Ver no menu', resources: ['AGENCIES'] },
 		{ action: 'create', description: 'Permite criar uma zona', label: 'Criar zona', resources: ['AGENCIES'] },
 		{ action: 'update', description: 'Permite editar uma zona', label: 'Editar zona', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar uma zona', label: 'Eliminar zona', resources: ['AGENCIES'] },
 		{ action: 'lock', description: 'Permite bloquear/desbloquear uma zona', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de zonas.',
+	description: 'As ações que o utilizador pode realizar na gestão de zonas. A consulta de zonas para edição de linhas depende das permissões de linhas.',
 	scope: PermissionCatalog.all.zones.scope,
 	title: 'Permissões de Zonas',
 };
 
 const typologiesActions: PermissionConfig = {
 	actions: [
-		{ action: 'read', description: 'Permite ver tipologias', label: 'Ver tipologias', resources: ['AGENCIES'] },
+		{ action: 'nav', description: 'Permite aceder às páginas de tipologias na aplicação', label: 'Ver no menu', resources: ['AGENCIES'] },
 		{ action: 'create', description: 'Permite criar uma tipologia', label: 'Criar tipologia', resources: ['AGENCIES'] },
 		{ action: 'update', description: 'Permite editar uma tipologia', label: 'Editar tipologia', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar uma tipologia', label: 'Eliminar tipologia', resources: ['AGENCIES'] },
 		{ action: 'lock', description: 'Permite bloquear/desbloquear uma tipologia', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 	],
-	description: 'As ações que o utilizador pode realizar na gestão de tipologias.',
+	description: 'As ações que o utilizador pode realizar na gestão de tipologias. A consulta de tipologias para edição de linhas depende das permissões de linhas.',
 	scope: PermissionCatalog.all.typologies.scope,
 	title: 'Permissões de Tipologias',
 };
