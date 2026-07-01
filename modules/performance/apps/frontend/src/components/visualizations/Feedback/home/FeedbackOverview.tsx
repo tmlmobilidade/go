@@ -7,14 +7,14 @@ import { useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import styles from '../../styles.module.css';
+import styles from '../styles.module.css';
 
-import { buildLineLabelsById, buildStopLabelsById } from '../../network-labels';
-import { getFeedbackOverviewData } from '../utils/feedback-preview';
-import { buildOperatorApprovalIndexes } from '../utils/operator-approval';
+import { buildLineLabelsById, buildStopLabelsById } from '../utils/network-labels';
 import { FeedbackGraphCard } from './FeedbackGraphCard';
 import { FeedbackOperatorsCard } from './FeedbackOperatorsCard';
 import { TopFeedbackEntities } from './TopFeedbackEntities';
+import { getFeedbackOverviewData } from './utils/feedback-preview';
+import { buildOperatorApprovalIndexes } from './utils/operator-approval';
 
 /* * */
 

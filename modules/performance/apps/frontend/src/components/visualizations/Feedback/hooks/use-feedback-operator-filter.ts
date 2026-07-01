@@ -1,13 +1,13 @@
 /* * */
 
-import type { FeedbackEntityType } from './feedback-metrics';
+import type { FeedbackEntityType } from '../utils/feedback-metrics';
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
-import { getOperatorName, sortOperatorsByCode } from './operators';
+import { getOperatorName, sortOperatorsByCode } from '../utils/operators';
 
 /* * */
 

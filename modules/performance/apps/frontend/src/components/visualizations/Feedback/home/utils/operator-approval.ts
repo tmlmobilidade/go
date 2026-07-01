@@ -2,7 +2,7 @@
 
 import { type PublicFeedback } from '@tmlmobilidade/types';
 
-import { calculateFeedbackSatisfactionIndex } from '../../feedback-metrics';
+import { calculateFeedbackSatisfactionIndex } from '../../utils/feedback-metrics';
 
 /* * */
 

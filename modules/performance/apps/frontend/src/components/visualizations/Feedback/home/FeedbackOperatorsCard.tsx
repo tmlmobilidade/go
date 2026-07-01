@@ -3,15 +3,14 @@
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { type Agency } from '@tmlmobilidade/types';
 import { SegmentedControl } from '@tmlmobilidade/ui';
-import Image from 'next/image';
 import { useMemo, useState } from 'react';
 
-import styles from '../../styles.module.css';
+import styles from '../styles.module.css';
 
-import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../../feedback-metrics';
-import { FeedbackMetricTag } from '../../FeedbackMetricTag';
-import { getOperatorLogoSrc } from '../../operator-logo';
-import { compareOperatorsByCode, getOperatorName } from '../../operators';
+import { FeedbackMetricTag } from '../common/FeedbackMetricTag';
+import { OperatorLogo } from '../common/OperatorLogo';
+import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../utils/feedback-metrics';
+import { compareOperatorsByCode, getOperatorName } from '../utils/operators';
 
 /* * */
 
@@ -95,26 +94,14 @@ export function FeedbackOperatorsCard({ operatorApprovals }: FeedbackOperatorsCa
 						<tbody>
 							<tr>
 								<th className={styles.operatorMetricLabel} scope="row">Operador</th>
-								{sortedOperatorApprovals.map(({ operator }) => {
-									const operatorLogoSrc = getOperatorLogoSrc(operator._id);
-
-									return (
-										<td key={operator._id}>
-											<div className={styles.operatorIdentity}>
-												{operatorLogoSrc && (
-													<Image
-														alt=""
-														className={styles.operatorLogo}
-														height={32}
-														src={operatorLogoSrc}
-														width={48}
-													/>
-												)}
-												<span className={styles.operatorName}>{getOperatorName(operator)}</span>
-											</div>
-										</td>
-									);
-								})}
+								{sortedOperatorApprovals.map(({ operator }) => (
+									<td key={operator._id}>
+										<div className={styles.operatorIdentity}>
+											<OperatorLogo className={styles.operatorLogo} height={32} operatorId={operator._id} width={48} />
+											<span className={styles.operatorName}>{getOperatorName(operator)}</span>
+										</div>
+									</td>
+								))}
 							</tr>
 
 							<tr>

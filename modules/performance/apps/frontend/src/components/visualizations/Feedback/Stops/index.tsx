@@ -11,12 +11,12 @@ import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
-import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '../feedback-entities';
-import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '../feedback-metrics';
-import { FeedbackEntityDetailModal } from '../FeedbackEntityDetailModal';
-import { FeedbackMetricTag } from '../FeedbackMetricTag';
-import { buildStopLabelsById, getStopLabel } from '../network-labels';
-import { useFeedbackOperatorFilter } from '../use-feedback-operator-filter';
+import { FeedbackEntityDetailModal } from '../common/FeedbackEntityDetailModal';
+import { FeedbackMetricTag } from '../common/FeedbackMetricTag';
+import { useFeedbackOperatorFilter } from '../hooks/use-feedback-operator-filter';
+import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '../utils/feedback-entities';
+import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '../utils/feedback-metrics';
+import { buildStopLabelsById, getStopLabel } from '../utils/network-labels';
 
 /* * */
 
