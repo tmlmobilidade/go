@@ -43,12 +43,15 @@ export class PlansController {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 		}
 
-		//
-		// Get user permissions for the plan
+		const userGeneratePostersPermissions = PermissionCatalog.hasPermissionResource({
+			action: PermissionCatalog.all.plans.actions.generate_pdf_posters,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.plans.scope,
+			value: planData.gtfs_agency.agency_id,
+		});
 
-		const userPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.plans.scope, PermissionCatalog.all.plans.actions.generate_pdf_posters);
-
-		if (!userPermissions) {
+		if (!userGeneratePostersPermissions) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to generate posters for this plan.');
 		}
 

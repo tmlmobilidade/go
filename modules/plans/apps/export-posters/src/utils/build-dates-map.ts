@@ -7,8 +7,8 @@ import { type Holiday, type OperationalDate, type YearPeriod } from '@tmlmobilid
 /* * */
 
 function getHitouchPeriodId(period?: YearPeriod): GtfsDate['period'] {
-	if (period?.code === '3' || period?._id === 'UW2U0' || period?.name.toLowerCase().includes('verão')) return '3';
-	if (period?.code === '2' || period?._id === '2KIUJ' || period?.name.toLowerCase().includes('férias')) return '2';
+	if (period?.code === '3' || period?._id === 'UW2U0' || period?.name?.toLowerCase().includes('verão')) return '3';
+	if (period?.code === '2' || period?._id === '2KIUJ' || period?.name?.toLowerCase().includes('férias')) return '2';
 	return '1';
 }
 

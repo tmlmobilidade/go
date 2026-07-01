@@ -53,7 +53,7 @@ async function main(): Promise<void> {
 	}
 
 	Logger.info({
-		message: `Found Plan ${planData._id} at step "${planData.apps.posters.step ?? 'not-started'}"${planData.apps.posters.job_id ? ` with ZPHERES job ${planData.apps.posters.job_id}` : ''}.`,
+		message: `Found Plan ${planData._id} at step "${planData.apps.posters.step ?? 'not-started'}"${planData.apps.posters.job_id ? ` with job ${planData.apps.posters.job_id}` : ''}.`,
 	});
 
 	try {
@@ -117,7 +117,7 @@ async function main(): Promise<void> {
 
 			pdfId = await postersController.generatePDF(exportConfig);
 
-			Logger.info({ message: `Created ZPHERES PDF job ${pdfId}` });
+			Logger.info({ message: `Created PDF job ${pdfId}` });
 
 			//
 			// Persist the remote job immediately so a restart can resume polling
@@ -140,7 +140,7 @@ async function main(): Promise<void> {
 
 			fs.rmSync(exportConfig.workdir, { force: true, recursive: true });
 		} else {
-			Logger.info({ message: `Resuming ZPHERES PDF job ${pdfId}.` });
+			Logger.info({ message: `Resuming PDF job ${pdfId}.` });
 
 			//
 			// Update the plan status to 'checking-status'
@@ -179,10 +179,10 @@ async function main(): Promise<void> {
 					},
 				});
 
-				throw new Error(`ZPHERES PDF job ${pdfId} failed.`);
+				throw new Error(`PDF job ${pdfId} failed.`);
 			}
 
-			Logger.info({ message: `ZPHERES PDF job ${pdfId} is ${pdfStatus.status}.` });
+			Logger.info({ message: `PDF job ${pdfId} is ${pdfStatus.status}.` });
 			await new Promise(resolve => setTimeout(resolve, 60_000)); // Wait 60 seconds before checking the status again
 			pdfStatus = await postersController.getPDFStatus(pdfId);
 		}

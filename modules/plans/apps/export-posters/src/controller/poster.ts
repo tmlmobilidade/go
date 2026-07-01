@@ -22,7 +22,7 @@ export class PostersController {
 	private tokenExpiresAt = 0;
 
 	/**
-	 * Returns a valid ZPHERES access token, requesting a new one when needed.
+	 * Returns a valid access token, requesting a new one when needed.
 	 */
 	async generateToken(): Promise<string> {
 		//
@@ -35,13 +35,13 @@ export class PostersController {
 		}
 
 		//
-		// Request a new token from the ZPHERES API.
+		// Request a new token from the API.
 
 		const body = new URLSearchParams({
 			client_id: process.env.CLIENT_ID,
 			client_secret: process.env.CLIENT_SECRET,
 			grant_type: 'client_credentials',
-			scope: 'https://zpherescom.onmicrosoft.com/api/.default',
+			scope: process.env.ZPHERES_API_SCOPE,
 		});
 
 		const response = await fetch(process.env.ZPHERES_API_TOKEN_URL, {
@@ -51,13 +51,13 @@ export class PostersController {
 
 		if (!response.ok) {
 			const responseBody = await response.text();
-			throw new Error(`ZPHERES token request failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
+			throw new Error(`Token request failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
 		}
 
 		const tokenData = await response.json() as TokenResponse;
 
 		if (!tokenData.access_token || !tokenData.expires_in) {
-			throw new Error('ZPHERES token response is missing access_token or expires_in.');
+			throw new Error('Token response is missing access_token or expires_in.');
 		}
 
 		//
@@ -70,7 +70,7 @@ export class PostersController {
 	}
 
 	/**
-	 * Creates a new poster in the ZPHERES API.
+	 * Creates a new poster in the API.
 	 */
 	async generatePDF(exportConfig: ExportToHitouchConfig): Promise<string> {
 		//
@@ -109,21 +109,22 @@ export class PostersController {
 		if (!response.ok) {
 			const responseBody = await response.text();
 
-			throw new Error(`ZPHERES PDF generation failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
+			throw new Error(`PDF generation failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
 		}
 
 		const location = response.headers.get('location');
-		const pdfId = location?.replace(/^\/api\/svg\//, '');
+		const match = location?.match(/\/api\/svg\/([^?#/]+)/);
+		const pdfId = match ? match[1] : null;
 
-		if (!pdfId || pdfId === location) {
-			throw new Error(`ZPHERES PDF response has an invalid location header: ${location ?? 'missing'}`);
+		if (!pdfId) {
+			throw new Error('PDF response has an invalid location header: ' + (location ?? 'missing'));
 		}
 
 		return pdfId;
 	}
 
 	/**
-	 * Gets the status of a PDF generation in the ZPHERES API.
+	 * Gets the status of a PDF generation in the API.
 	 */
 	async getPDFStatus(id: string): Promise<PDFStatus> {
 		//
@@ -139,7 +140,7 @@ export class PostersController {
 
 		if (!response.ok) {
 			const responseBody = await response.text();
-			throw new Error(`ZPHERES PDF status failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
+			throw new Error(`PDF status failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
 		}
 
 		const pdfStatus = await response.json() as PDFStatus;
@@ -148,7 +149,7 @@ export class PostersController {
 	}
 
 	/**
-	 * Downloads the generated posters ZIP file from the ZPHERES API.
+	 * Downloads the generated posters ZIP file from the API.
 	 */
 	async downloadPDF(fileUrl: string): Promise<Buffer> {
 		//
@@ -157,7 +158,7 @@ export class PostersController {
 
 		if (!response.ok) {
 			const responseBody = await response.text();
-			throw new Error(`ZPHERES PDF download failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
+			throw new Error(`PDF download failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
 		}
 
 		return Buffer.from(await response.arrayBuffer());

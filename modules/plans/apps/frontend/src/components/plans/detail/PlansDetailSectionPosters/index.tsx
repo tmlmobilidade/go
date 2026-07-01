@@ -9,6 +9,23 @@ import { usePlanDetailContext } from '../PlanDetail.context';
 
 /* * */
 
+function getDownloadFilename(contentDisposition: null | string): string {
+	const fallbackFilename = 'planos pdf.zip';
+	const encodedFilename = contentDisposition?.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
+	const quotedFilename = contentDisposition?.match(/filename=["']?([^"';]+)["']?/i)?.[1];
+	const filename = encodedFilename ?? quotedFilename;
+
+	if (!filename) return fallbackFilename;
+
+	try {
+		return decodeURIComponent(filename);
+	} catch {
+		return filename;
+	}
+}
+
+/* * */
+
 export function PlanDetailSectionPosters() {
 	//
 
@@ -40,7 +57,7 @@ export function PlanDetailSectionPosters() {
 			const fileUrl = URL.createObjectURL(await response.blob());
 			const link = document.createElement('a');
 			link.href = fileUrl;
-			link.download = response.headers.get('Content-Disposition')?.split('filename=')[1] ?? 'planos pdf.zip';
+			link.download = getDownloadFilename(response.headers.get('Content-Disposition'));
 			document.body.append(link);
 			link.click();
 			link.remove();

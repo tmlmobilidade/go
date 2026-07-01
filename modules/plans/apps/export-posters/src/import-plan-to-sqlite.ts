@@ -73,7 +73,7 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 	fs.mkdirSync(exportConfig.workdir, { recursive: true });
 
 	//
-	// Export the files required by ZPHERES
+	// Export the files required by the API
 
 	Logger.info({ message: `Exporting Plan ${planData._id} to HiTouch GTFS...` });
 
@@ -93,7 +93,7 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 	Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
 
 	//
-	// Package all exported TXT files into the HiTouch ZIP archive
+	// Package all exported TXT files into the ZIP archive
 
 	const zipTimer = new Timer();
 	const outputPath = await createHitouchZip(exportConfig);
