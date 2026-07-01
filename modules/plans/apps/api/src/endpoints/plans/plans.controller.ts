@@ -12,9 +12,18 @@ import { createHash } from 'node:crypto';
 export class PlansController {
 	//
 
+	private static getAttachmentContentDisposition(filename: string): string {
+		const quotedFilename = filename.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
+		return `attachment; filename="${quotedFilename}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
+	}
+
 	private static getPlanPostersFileId(planData: Plan): null | string {
 		const postersWithLegacyFile = planData.apps.posters as Plan['apps']['posters'] & { file?: FileType | null };
 		return planData.apps.posters.file_id ?? postersWithLegacyFile.file?._id ?? null;
+	}
+
+	private static getPlanPostersFilename(): string {
+		return 'planos pdf.zip';
 	}
 
 	/**
@@ -53,6 +62,7 @@ export class PlansController {
 					file_id: null,
 					job_id: null,
 					last_hash: null,
+					requested_by: request.me.email,
 					status: 'waiting',
 					step: null,
 					timestamp: null,
@@ -366,7 +376,7 @@ export class PlansController {
 		}
 
 		// Set headers and pipe the response body to the client
-		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
+		reply.header('Content-Disposition', PlansController.getAttachmentContentDisposition(foundFileData.name));
 		reply.header('Content-Type', 'application/zip');
 		// Set content length if available
 		const contentLength = storageServiceResponse.headers.get('Content-Length');
@@ -651,7 +661,7 @@ export class PlansController {
 		//
 		// Set headers and pipe the response body to the client
 
-		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
+		reply.header('Content-Disposition', PlansController.getAttachmentContentDisposition(PlansController.getPlanPostersFilename()));
 		reply.header('Content-Type', 'application/zip');
 
 		//

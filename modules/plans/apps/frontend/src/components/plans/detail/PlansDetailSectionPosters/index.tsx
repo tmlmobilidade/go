@@ -23,11 +23,28 @@ export function PlanDetailSectionPosters() {
 
 	const handleDownload = async () => {
 		try {
-			if (!planDetailContext.data.posters_file) {
+			const postersFile = planDetailContext.data.posters_file;
+
+			if (!postersFile) {
 				throw new Error('O ficheiro não está disponível para transferência');
 			}
 
-			window.open(API_ROUTES.plans.PLANS_DETAIL_POSTERS_FILE_DOWNLOAD(planDetailContext.data.id), '_blank');
+			const response = await fetch(API_ROUTES.plans.PLANS_DETAIL_POSTERS_FILE_DOWNLOAD(planDetailContext.data.id), {
+				credentials: 'include',
+			});
+
+			if (!response.ok) {
+				throw new Error('Erro ao transferir ficheiro');
+			}
+
+			const fileUrl = URL.createObjectURL(await response.blob());
+			const link = document.createElement('a');
+			link.href = fileUrl;
+			link.download = response.headers.get('Content-Disposition')?.split('filename=')[1] ?? 'planos pdf.zip';
+			document.body.append(link);
+			link.click();
+			link.remove();
+			URL.revokeObjectURL(fileUrl);
 		} catch (error) {
 			useToast.error({
 				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',

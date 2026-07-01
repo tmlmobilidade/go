@@ -216,14 +216,15 @@ async function main(): Promise<void> {
 		// Download and upload the generated posters ZIP file
 
 		const pdfZip = await postersController.downloadPDF(pdfFileUrl);
+		const requestedBy = planData.apps.posters.requested_by ?? 'system';
 		const pdfFile = await files.upload(pdfZip, {
-			created_by: 'system',
+			created_by: requestedBy,
 			name: `${planData._id}-pdf.zip`,
 			resource_id: planData._id,
 			scope: 'plans',
 			size: pdfZip.byteLength,
 			type: 'application/zip',
-			updated_by: 'system',
+			updated_by: requestedBy,
 		});
 
 		//
