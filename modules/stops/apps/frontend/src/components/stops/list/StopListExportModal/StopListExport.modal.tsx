@@ -4,7 +4,7 @@ import { StopListExportModal } from '@/components/stops/list/StopListExportModal
 import { StopsListContextProvider } from '@/components/stops/list/StopsList.context';
 import { StopListExportContextProvider } from '@/contexts/StopListExport.contex';
 import { DataProviders } from '@/providers/data-providers';
-import { closeModal, openModal } from '@tmlmobilidade/ui';
+import { closeModal, LocationsContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,9 +17,11 @@ export const openStopListExportModal = () => {
 		children: (
 			<DataProviders>
 				<StopsListContextProvider>
-					<StopListExportContextProvider>
-						<StopListExportModal />
-					</StopListExportContextProvider>
+					<LocationsContextProvider>
+						<StopListExportContextProvider>
+							<StopListExportModal />
+						</StopListExportContextProvider>
+					</LocationsContextProvider>
 				</StopsListContextProvider>
 			</DataProviders>
 		),
