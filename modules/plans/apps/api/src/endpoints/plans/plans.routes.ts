@@ -40,6 +40,18 @@ server.register(
 			PlansController.downloadPlanOperationFileById,
 		);
 
+		instance.get(
+			'/:id/posters-file',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			PlansController.getPlanPostersFileById,
+		);
+
+		instance.get(
+			'/:id/posters-file/download',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			PlansController.downloadPlanPostersFileById,
+		);
+
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.create]) },
@@ -62,6 +74,12 @@ server.register(
 			'/:id/controller-reprocess',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_controller]) },
 			PlansController.controllerReprocessPlanById,
+		);
+
+		instance.put(
+			'/:id/list-to-generate-posters',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.generate_pdf_posters]) },
+			PlansController.listPlanToGeneratePosters,
 		);
 
 		instance.delete(

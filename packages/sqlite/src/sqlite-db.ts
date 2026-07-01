@@ -207,6 +207,10 @@ export class SQLiteTableInstance<T> {
 		return this.databaseInstance.prepare(sqlQuery).all(...params);
 	}
 
+	run(sqlQuery: string, params: (boolean | number | string)[] = []) {
+		return this.databaseInstance.prepare(sqlQuery).run(...params);
+	}
+
 	/**
 	 * Iterator to go through all rows in the table.
 	 */

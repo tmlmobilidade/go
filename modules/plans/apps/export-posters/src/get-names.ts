@@ -75,8 +75,7 @@ export function getFormattedDates(dates: OperationalDate[]): string {
 		for (let i = 1; i < days.length; i++) {
 			if (days[i] === prev + 1) {
 				prev = days[i];
-			}
-			else {
+			} else {
 				ranges.push([start, prev]);
 				start = days[i];
 				prev = days[i];
@@ -97,14 +96,12 @@ export function getFormattedDates(dates: OperationalDate[]): string {
 		if (hasLongRange && !hasNonConsecutive && !hasTwoDayRange) {
 			const [a, b] = ranges.find(([a, b]) => b > a + 1);
 			formatted = `${formatRange([a, b])} ${monthNames[month - 1]} ${year}`;
-		}
-		// Case 2: Only one 2-day range
-		else if (hasTwoDayRange && !hasNonConsecutive && !hasLongRange && ranges.length === 1) {
+		} else if (hasTwoDayRange && !hasNonConsecutive && !hasLongRange && ranges.length === 1) {
+			// Case 2: Only one 2-day range
 			const [a, b] = ranges[0];
 			formatted = `${formatRange([a, b])} ${monthNames[month - 1]} ${year}`;
-		}
-		// Case 3: Mix of long ranges + non-consecutive
-		else if (hasLongRange && hasNonConsecutive) {
+		} else if (hasLongRange && hasNonConsecutive) {
+			// Case 3: Mix of long ranges + non-consecutive
 			const rangeParts = ranges
 				.filter(([a, b]) => b > a + 1)
 				.map(formatRange)
@@ -120,9 +117,8 @@ export function getFormattedDates(dates: OperationalDate[]): string {
 					: `${nonConsecDays[0]}`;
 
 			formatted = `${rangeParts} ${monthNames[month - 1]} e ${nonConsecList} ${monthNames[month - 1]} ${year}`;
-		}
-		// Case 4: Only non-consecutive or mix with 2-day pairs → treat all as non-consecutive
-		else {
+		} else {
+			// Case 4: Only non-consecutive or mix with 2-day pairs → treat all as non-consecutive
 			const allDays = ranges.flatMap(([a, b]) => {
 				if (b === a) return [a];
 				if (b === a + 1) return [a, b]; // expand 2-day range

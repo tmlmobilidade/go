@@ -76,6 +76,7 @@ const planActions: PermissionConfig = {
 		{ action: 'lock', description: 'Permite bloquear/desbloquear um plano', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar um plano', label: 'Eliminar', resources: ['AGENCIES'] },
 		{ action: 'update_gtfs_plan', description: 'Permite alterar o GTFS de um plano', label: 'Alterar GTFS', resources: ['AGENCIES'] },
+		{ action: 'generate_pdf_posters', description: 'Permite gerar posters em PDF de um plano', label: 'Gerar Posters PDF', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de planos.',
 	scope: PermissionCatalog.all.plans.scope,

@@ -91,6 +91,20 @@ export function PlansList() {
 			title: 'Hub GTFS',
 			width: 135,
 		},
+		{
+			accessor: 'apps',
+			render: item => (
+				<ProcessingStatusTag
+					value={item.apps?.posters?.status}
+					tooltip={item.apps?.posters?.timestamp && Dates
+						.fromUnixTimestamp(item.apps?.posters?.timestamp)
+						.setZone('Europe/Lisbon', 'offset_only')
+						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
+				/>
+			),
+			title: 'Posters PDF',
+			width: 135,
+		},
 	];
 
 	//

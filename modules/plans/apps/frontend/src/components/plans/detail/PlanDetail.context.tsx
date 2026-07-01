@@ -2,12 +2,22 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type File, GtfsValidation, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
+import { type File, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
+
+/* * */
+
+type PlanWithLegacyPostersFile = Plan & {
+	apps: Plan['apps'] & {
+		posters: Plan['apps']['posters'] & {
+			file?: File | null
+		}
+	}
+};
 
 /* * */
 
@@ -20,6 +30,7 @@ interface PlanDetailContextState extends DetailContextStateTemplate {
 		id: string
 		operation_file: File | null
 		plan: null | Plan
+		posters_file: File | null
 		user: null | User
 	}
 	flags: DetailContextStateTemplate['flags'] & {
@@ -54,8 +65,14 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	// B. Fetch data
 
 	const { mutate: plansListMutate } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
-	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
+	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<PlanWithLegacyPostersFile>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
+	const legacyPostersFile = planData?.apps?.posters?.file;
+	const postersFileId = planData?.apps?.posters?.file_id ?? legacyPostersFile?._id;
 	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<File>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
+	const { data: postersFileData, error: postersFileError, mutate: postersFileMutate } = useSWR<File>(
+		postersFileId ? API_ROUTES.plans.PLANS_DETAIL_POSTERS_FILE(planId) : null,
+		{ shouldRetryOnError: false },
+	);
 	const { data: UserData } = useSWR<User>(planId && API_ROUTES.auth.USERS_DETAIL(planData?.created_by));
 
 	//
@@ -72,6 +89,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			form.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
+			postersFileMutate();
 			plansListMutate();
 		},
 	});
@@ -91,6 +109,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			form.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
+			postersFileMutate();
 			plansListMutate();
 		},
 	});
@@ -101,6 +120,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			form.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
+			postersFileMutate();
 			plansListMutate();
 		},
 	});
@@ -197,6 +217,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			id: planId,
 			operation_file: operationFileData,
 			plan: planData,
+			posters_file: postersFileError ? null : postersFileData ?? legacyPostersFile,
 			user: UserData,
 		},
 		flags: {
@@ -220,10 +241,14 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		canSave,
 		canChangePlan,
 		operationFileError,
+		postersFileError,
 		planError,
 		operationFileLoading,
 		isDeleting,
 		operationFileData,
+		postersFileData,
+		postersFileError,
+		legacyPostersFile,
 		isReprocessing,
 		planLoading,
 		isLocking,
