@@ -13,7 +13,7 @@ import styles from '../../styles.module.css';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../../utils/feedback-metrics';
 import { FeedbackMetricTag } from '../FeedbackMetricTag';
 import { LineContributionBreakdown } from '../LineContributionBreakdown';
-import { OperatorLogo } from '../OperatorLogo (cosmetic feature)';
+import { OperatorLogo } from '../OperatorLogo';
 
 /* * */
 
