@@ -69,7 +69,10 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const legacyPostersFile = planData?.apps?.posters?.file;
 	const postersFileId = planData?.apps?.posters?.file_id ?? legacyPostersFile?._id;
 	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<File>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
-	const { data: postersFileData, error: postersFileError, isLoading: postersFileLoading, mutate: postersFileMutate } = useSWR<File>(postersFileId ? API_ROUTES.plans.PLANS_DETAIL_POSTERS_FILE(planId) : null);
+	const { data: postersFileData, error: postersFileError, mutate: postersFileMutate } = useSWR<File>(
+		postersFileId ? API_ROUTES.plans.PLANS_DETAIL_POSTERS_FILE(planId) : null,
+		{ shouldRetryOnError: false },
+	);
 	const { data: UserData } = useSWR<User>(planId && API_ROUTES.auth.USERS_DETAIL(planData?.created_by));
 
 	//
@@ -214,7 +217,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			id: planId,
 			operation_file: operationFileData,
 			plan: planData,
-			posters_file: postersFileData ?? legacyPostersFile,
+			posters_file: postersFileError ? null : postersFileData ?? legacyPostersFile,
 			user: UserData,
 		},
 		flags: {
@@ -222,9 +225,9 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			canDelete,
 			canLock,
 			canSave,
-			error: planError || operationFileError || postersFileError,
+			error: planError || operationFileError,
 			isDeleting,
-			isLoading: planLoading || operationFileLoading || postersFileLoading,
+			isLoading: planLoading || operationFileLoading,
 			isLocking,
 			isReadOnly,
 			isSaving: isSaving || isReprocessing,
@@ -241,10 +244,10 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		postersFileError,
 		planError,
 		operationFileLoading,
-		postersFileLoading,
 		isDeleting,
 		operationFileData,
 		postersFileData,
+		postersFileError,
 		legacyPostersFile,
 		isReprocessing,
 		planLoading,
