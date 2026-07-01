@@ -11,6 +11,10 @@ from piper import PiperVoice
 
 MODEL_PATH = "voice_models/voice.onnx"
 AUDIO_DIR = "audio"
+TTS_LENGTH_SCALE = float(os.getenv("TTS_LENGTH_SCALE", "1.18"))
+TTS_NOISE_SCALE = float(os.getenv("TTS_NOISE_SCALE", "0.45"))
+TTS_NOISE_W = float(os.getenv("TTS_NOISE_W", "0.55"))
+TTS_SPEED = float(os.getenv("TTS_SPEED", "0.92"))
 
 os.makedirs(AUDIO_DIR, exist_ok=True)
 
@@ -30,7 +34,7 @@ voice = PiperVoice.load(MODEL_PATH)
 class TTSRequest(BaseModel):
     text: str
     stop_id: str
-    speed: float = 1.0
+    speed: float = TTS_SPEED
     force: bool = False
 
 
@@ -65,15 +69,15 @@ def generate(req: TTSRequest):
             voice.synthesize(
                 req.text,
                 wav_file,
-                length_scale=1.0,
-                noise_scale=0.667,
-                noise_w=0.8,
+                length_scale=TTS_LENGTH_SCALE,
+                noise_scale=TTS_NOISE_SCALE,
+                noise_w=TTS_NOISE_W,
             )
 
         if not os.path.exists(wav_path) or os.path.getsize(wav_path) < 1000:
             return {"error": "WAV generation failed"}
 
-        speed = max(0.5, min(req.speed, 2.0))
+        speed = max(0.75, min(req.speed, 1.25))
 
         subprocess.run([
             "ffmpeg",
@@ -81,12 +85,15 @@ def generate(req: TTSRequest):
             "-i", wav_path,
             "-af",
             f"atempo={speed},"
-            "highpass=f=90,"
-            "equalizer=f=300:width_type=h:width=250:g=-2,"
-            "equalizer=f=3000:width_type=h:width=1800:g=3,"
-            "equalizer=f=6500:width_type=h:width=3000:g=1.5,"
-            "acompressor=threshold=-18dB:ratio=2:attack=5:release=80:makeup=1,"
-            "alimiter=limit=0.98",
+            "highpass=f=120,"
+            "lowpass=f=8500,"
+            "afftdn=nf=-25,"
+            "equalizer=f=250:width_type=h:width=220:g=-2,"
+            "equalizer=f=3200:width_type=h:width=1800:g=2.5,"
+            "equalizer=f=6000:width_type=h:width=2500:g=1.5,"
+            "acompressor=threshold=-20dB:ratio=2.5:attack=8:release=120:makeup=1.5,"
+            "loudnorm=I=-16:TP=-1.5:LRA=11,"
+            "alimiter=limit=0.95",
             "-acodec", "libmp3lame",
             "-b:a", "192k",
             mp3_path

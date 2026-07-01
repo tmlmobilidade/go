@@ -9,7 +9,7 @@ export interface PiperTtsApiOptions {
 	string: string
 }
 
-export async function piperTtsApi({ filename, force = false, speed = 1.0, string }: PiperTtsApiOptions) {
+export async function piperTtsApi({ filename, force = false, speed = 0.92, string }: PiperTtsApiOptions) {
 	//
 
 	const response = await fetch(`${TTS_API_URL}/generate`, {
