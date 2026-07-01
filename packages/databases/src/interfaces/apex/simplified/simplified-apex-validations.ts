@@ -14,7 +14,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexValidation> = {
 	apex_version: { type: 'LowCardinality(String)' },
 	card_serial_number: { type: 'Nullable(UInt64)' },
 	category: { type: 'LowCardinality(String)' },
-	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	created_at: { type: 'Int64' },
 	device_id: { type: 'LowCardinality(String)' },
 	event_type: { type: 'UInt8' },
 	is_ok: { type: 'Bool' },
@@ -25,13 +25,14 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexValidation> = {
 	mac_sam_serial_number: { type: 'UInt64' },
 	on_board_refund_id: { type: 'Nullable(UUID)' },
 	on_board_sale_id: { type: 'Nullable(UUID)' },
+	operational_date: { type: 'UInt32' },
 	pattern_id: { type: 'LowCardinality(Nullable(String))' },
 	product_id: { type: 'LowCardinality(Nullable(String))' },
-	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	received_at: { type: 'Int64' },
 	stop_id: { type: 'LowCardinality(Nullable(String))' },
 	trip_id: { type: 'Nullable(String)' },
 	units_qty: { type: 'Nullable(Int32)' },
-	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	updated_at: { type: 'Int64' },
 	validation_status: { type: 'LowCardinality(String)' },
 	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
@@ -45,8 +46,8 @@ class SimplifiedApexValidationsNewClass extends ClickHouseInterfaceTemplate<Simp
 
 	protected override readonly databaseName = 'simplified_apex';
 	protected override readonly engine: ClickHouseTableEngine<SimplifiedApexValidation> = 'ReplacingMergeTree(updated_at)';
-	protected override readonly orderBy = 'agency_id, created_at, _id';
-	protected override readonly partitionBy = 'toYYYYMM(created_at)';
+	protected override readonly orderBy = 'agency_id, operational_date, created_at, _id';
+	protected override readonly partitionBy = 'intDiv(operational_date, 100)';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'validations';
 

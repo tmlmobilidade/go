@@ -5,6 +5,7 @@
 import type { DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 
 import { HoverCard } from '@mantine/core';
+import { lineFeatureFromEncodedPolyline } from '@tmlmobilidade/geo';
 import { nearestPointOnLine } from '@turf/turf';
 import { Layer, Marker, Popup, Source } from '@vis.gl/react-maplibre';
 import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
@@ -34,7 +35,19 @@ export interface MapOverlayPatternShapeStopsDataProps {
 	sequence: number
 }
 
+export interface MapOverlayPatternShapeEncodedLineDataProps {
+	encoded_polyline: string
+	properties: MapOverlayPatternShapeLineDataProps
+}
+
+export interface MapOverlayPatternShapeEncodedLineDataCollectionProps {
+	features: MapOverlayPatternShapeEncodedLineDataProps[]
+	type: 'EncodedPolylineCollection'
+}
+
 /* * */
+
+export type MapOverlayPatternShapeLineData = Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | MapOverlayPatternShapeEncodedLineDataCollectionProps | MapOverlayPatternShapeEncodedLineDataProps;
 
 interface MapOverlayPatternShapeAnchorDropEvent {
 	lat: number
@@ -50,7 +63,7 @@ interface MapOverlayPatternShapeProps {
 	enableAnchorPreview?: boolean
 	id: string
 	lineColor?: string
-	lineData: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null
+	lineData: MapOverlayPatternShapeLineData | null
 	onAnchorDragPreview?: (event: MapOverlayPatternShapeAnchorDropEvent, draggingAnchorId: null | string) => void
 	onAnchorDrop?: (event: MapOverlayPatternShapeAnchorDropEvent) => void
 	onAnchorMove?: (anchorId: string, event: MapOverlayPatternShapeAnchorDropEvent) => void
@@ -64,6 +77,28 @@ interface MapOverlayPatternShapeProps {
 }
 
 type MapOverlayPatternShapeThickness = 'lg' | 'md' | 'sm';
+
+function isEncodedLineData(data: MapOverlayPatternShapeLineData): data is MapOverlayPatternShapeEncodedLineDataProps {
+	return 'encoded_polyline' in data;
+}
+
+function isEncodedLineDataCollection(data: MapOverlayPatternShapeLineData): data is MapOverlayPatternShapeEncodedLineDataCollectionProps {
+	return 'type' in data && data.type === 'EncodedPolylineCollection';
+}
+
+function normalizePatternShapeLineData(
+	lineData: MapOverlayPatternShapeLineData | null,
+): Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null {
+	if (!lineData) return null;
+	if (isEncodedLineData(lineData)) return lineFeatureFromEncodedPolyline(lineData.encoded_polyline, lineData.properties);
+	if (isEncodedLineDataCollection(lineData)) {
+		return {
+			features: lineData.features.map(feature => lineFeatureFromEncodedPolyline(feature.encoded_polyline, feature.properties)),
+			type: 'FeatureCollection',
+		};
+	}
+	return lineData;
+}
 
 const BUS_CANDIDATE_ROAD_LAYER_IDS = [
 	'tunnel_motorway_link',
@@ -167,6 +202,7 @@ export function MapOverlayPatternShape({
 
 	const mapViewContext = useMapViewContext();
 	const primaryHexColor = useCssVariable('--color-primary');
+	const normalizedLineData = useMemo(() => normalizePatternShapeLineData(lineData), [lineData]);
 
 	const anchorPreviewLayerId = useMemo(
 		() => `${id}:pattern-shape:layer:line-anchor-preview-hitbox`,
@@ -405,10 +441,10 @@ export function MapOverlayPatternShape({
 
 	useEffect(() => {
 		// Register features for sources in this overlay component
-		if (lineData)
+		if (normalizedLineData)
 			mapViewContext.actions.registerOverlaySource(
 				`${id}:pattern-shape:source:line`,
-				lineData,
+				normalizedLineData,
 			);
 		if (stopsData)
 			mapViewContext.actions.registerOverlaySource(
@@ -423,7 +459,7 @@ export function MapOverlayPatternShape({
 				`${id}:pattern-shape:source:stops`,
 			);
 		};
-	}, [id, lineData, mapViewContext.actions, stopsData]);
+	}, [id, mapViewContext.actions, normalizedLineData, stopsData]);
 
 	const handleMouseMoveEvent = useCallback(
 
@@ -701,7 +737,7 @@ export function MapOverlayPatternShape({
 	//
 	// C. Render components
 
-	if (!lineData) {
+	if (!normalizedLineData) {
 		return null;
 	}
 
@@ -768,7 +804,7 @@ export function MapOverlayPatternShape({
 			))}
 
 			<Source
-				data={lineData}
+				data={normalizedLineData}
 				id={`${id}:pattern-shape:source:line`}
 				type="geojson"
 			>
@@ -833,7 +869,7 @@ export function MapOverlayPatternShape({
 						'icon-allow-overlap': true,
 						'icon-anchor': 'center',
 						'icon-ignore-placement': true,
-						'icon-image': 'map-line-direction',
+						'icon-image': 'map-shape-arrow-inline',
 						'icon-offset': [0, 0],
 						'icon-rotate': 0,
 						'icon-size': zoomInterpolate(

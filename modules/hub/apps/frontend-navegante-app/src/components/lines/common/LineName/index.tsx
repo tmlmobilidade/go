@@ -1,6 +1,6 @@
 /* * */
 
-import { type HubLine } from '@tmlmobilidade/types';
+import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import { MantineHighlight } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

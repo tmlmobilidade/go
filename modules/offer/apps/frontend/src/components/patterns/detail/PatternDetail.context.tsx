@@ -12,9 +12,9 @@ import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dat
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Path, Pattern, PermissionCatalog, PopulatedPath, PopulatedPattern, ScheduleRule, Stop, StopsParameter, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
+import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -46,7 +46,7 @@ interface PatternDetailContextState {
 	}
 	flags: DetailContextStateTemplate['flags']
 	geojson: {
-		pattern_line: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null
+		pattern_line: MapOverlayPatternShapeLineData | null
 		pattern_stops: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null
 	}
 }
@@ -116,7 +116,19 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	//
 	// D. Transform editable data to GeoJSON
 
-	const patternLineFC: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null = useMemo(() => {
+	const patternLineFC: MapOverlayPatternShapeLineData | null = useMemo(() => {
+		const properties: MapOverlayPatternShapeLineDataProps = {
+			color: typologyData?.color,
+			id: patternData?._id ?? patternId,
+		};
+
+		if (editableShape?.encoded_polyline) {
+			return {
+				encoded_polyline: editableShape.encoded_polyline,
+				properties,
+			};
+		}
+
 		if (!editableShape?.geojson?.geometry?.coordinates) return null;
 
 		return {
@@ -124,10 +136,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 				coordinates: editableShape.geojson.geometry.coordinates,
 				type: 'LineString' as const,
 			},
-			properties: {
-				color: typologyData?.color,
-				id: patternData?._id ?? patternId,
-			},
+			properties,
 			type: 'Feature' as const,
 		};
 	}, [editableShape, typologyData?.color, patternData?._id, patternId]);

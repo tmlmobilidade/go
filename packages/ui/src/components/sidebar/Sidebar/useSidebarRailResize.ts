@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { clampSidebarRailWidth } from '../sidebar-rail-width';
+import { clampSidebarRailWidth } from '../sidebar-layout.constants';
 
 /* * */
 

@@ -3,11 +3,10 @@
 import { useEventsContext } from '@/contexts/Events.context';
 import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { useForm } from '@mantine/form';
 import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { ManualRule, ManualRuleSchema } from '@tmlmobilidade/types';
-import { type UseFormReturnType } from '@tmlmobilidade/ui';
+import { useForm, type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 

@@ -68,7 +68,7 @@ export function RidesList() {
 			accessor: 'operational_status',
 			render: item => <OperationalStatusTag value={item.operational_status} />,
 			title: t('default:list.RidesList.columns.operational_status.label'),
-			width: 150,
+			width: 180,
 		},
 		{
 			accessor: 'operational_date',
@@ -205,16 +205,13 @@ export function RidesList() {
 	//
 	// C. Render components
 
-	if (ridesListContext.flags.error) {
-		return <ErrorDisplay message={ridesListContext.flags.error.message} />;
-	}
-
 	return (
 		<Pane header={[
 			<RidesListHeader key="header" />,
 			<RidesListFiltersBar key="filters" />,
 		]}
 		>
+			{ridesListContext.flags.error && <ErrorDisplay message={ridesListContext.flags.error.message} />}
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}

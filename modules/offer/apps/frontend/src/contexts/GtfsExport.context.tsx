@@ -1,10 +1,10 @@
 'use client';
 
 import { GTFS_EXPORT_MODAL_ID } from '@/components/lines/export/GtfsExportModal';
-import { useForm } from '@mantine/form';
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import { type CreateFileExportDto, FileExport, FileExportType, type GtfsExportProperties, type LinesMode, type OperationalDate } from '@tmlmobilidade/types';
-import { closeModal, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
+import { useForm } from '@tmlmobilidade/ui';
+import { closeModal, type UseFormReturnType, useAgenciesContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
@@ -66,6 +66,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// A. Setup variables
 
+	const agenciesContext = useAgenciesContext();
 	const form = useForm<GtfsExportFormValues>({
 		initialValues: {
 			agency_ids: [],
@@ -87,7 +88,8 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 
 	const setAgencyIds = useCallback((value: string[]) => {
 		if (value.length === 1) {
-			const defaults = AGENCY_DEFAULT_VALUES[value[0]];
+			const selectedAgency = agenciesContext?.data?.raw?.find(agency => agency._id === value[0]);
+			const defaults = selectedAgency ? AGENCY_DEFAULT_VALUES[selectedAgency.code] : undefined;
 			if (defaults) {
 				form.setValues({
 					agency_ids: value,
@@ -107,7 +109,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 			feed_end_date: null,
 			feed_start_date: null,
 		});
-	}, [form]);
+	}, [agenciesContext?.data?.raw, form]);
 
 	const setLinesMode = useCallback((value: LinesMode) => {
 		form.setValues({

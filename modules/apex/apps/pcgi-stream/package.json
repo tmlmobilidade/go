@@ -19,7 +19,6 @@
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/go-apex-pckg-parsers": "*",
-		"@tmlmobilidade/go-apex-pckg-shared": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",
@@ -28,7 +27,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "25.9.3",
+		"@types/node": "26.0.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.4",
 		"typescript": "6.0.3"

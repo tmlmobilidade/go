@@ -1,8 +1,9 @@
 /* * */
 
-import { GtfsRtOccupancyStatusSchema } from '@/gtfs-rt/occupancy-status.js';
 import { OperationalDateSchema } from '@/index.js';
 import { RawVehicleEventBaseSchema } from '@/vehicle-events/raw/raw-vehicle-event-base.js';
+import { GtfsDateSchema, GtfsTimeSchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsRtOccupancyStatusSchema } from '@tmlmobilidade/go-types-gtfs-rt';
 import { z } from 'zod';
 
 /* * */
@@ -29,8 +30,8 @@ export const RawVehicleEventTcbV1PayloadSchema = z.object({
 		trip: z.object({
 			direction_id: z.number().nullish(),
 			route_id: z.string(),
-			start_date: OperationalDateSchema.nullish(),
-			start_time: z.string().nullish(),
+			start_date: GtfsDateSchema.nullish(),
+			start_time: GtfsTimeSchema.nullish(),
 			trip_id: z.string(),
 		}),
 		vehicle: z.object({

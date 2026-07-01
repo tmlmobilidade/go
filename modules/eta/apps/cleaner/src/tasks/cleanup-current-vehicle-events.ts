@@ -21,6 +21,6 @@ export async function cleanupCurrentVehicleEvents(clickhouseClient: Parameters<t
 	);
 
 	const rowsToDelete = result[0]?.rows_to_delete ?? 0;
-	Logger.progress(`Deleted ${rowsToDelete} out-of-window or orphan current vehicle events`);
+	Logger.progress({ message: `Deleted ${rowsToDelete} out-of-window or orphan current vehicle events` });
 	return rowsToDelete;
 }

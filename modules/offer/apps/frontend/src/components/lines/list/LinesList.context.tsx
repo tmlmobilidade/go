@@ -106,7 +106,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 			error: allLinesError,
 			loading: allLinesLoading,
 		},
-	}), [allLinesError, allLinesLoading, searchResultsData, allLinesData, filterSearch, filterAgencies]);
+	}), [filterResultsData, allLinesData, filterAgencies, filterSearch, canCreatePermission, allLinesError, allLinesLoading]);
 
 	// E. Render components
 	return (

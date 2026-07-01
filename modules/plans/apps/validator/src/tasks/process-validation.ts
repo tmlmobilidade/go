@@ -98,6 +98,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			log_level: 'debug',
 			out_file: gtfsValidationResultPath,
 			rules_path: gtfsValidationRulesPath,
+			timeout: 60 * 60 * 1000, // 1 hour timeout
 		});
 
 		Logger.info({ message: 'Validation completed. Updating GTFS Validation document with results...' });

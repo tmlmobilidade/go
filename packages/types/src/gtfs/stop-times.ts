@@ -55,15 +55,15 @@ export interface GTFS_StopTime_Raw {
  */
 export function validateGtfsStopTime(rawData: GTFS_StopTime_Raw): GTFS_StopTime {
 	// Ensure required fields are present
-	if (!rawData.arrival_time) throw new Error('Missing required field "arrival_time" on GTFS StopTime.');
-	if (!rawData.departure_time) throw new Error('Missing required field "departure_time" on GTFS StopTime.');
-	if (!rawData.shape_dist_traveled) throw new Error('Missing required field "shape_dist_traveled" on GTFS StopTime.');
-	if (!rawData.stop_id) throw new Error('Missing required field "stop_id" on GTFS StopTime.');
-	if (!rawData.stop_sequence) throw new Error('Missing required field "stop_sequence" on GTFS StopTime.');
-	if (!rawData.trip_id) throw new Error('Missing required field "trip_id" on GTFS StopTime.');
+	if (!rawData.arrival_time) throw new Error(`Missing required field "arrival_time" on GTFS StopTime: ${JSON.stringify(rawData)}`);
+	if (!rawData.departure_time) throw new Error(`Missing required field "departure_time" on GTFS StopTime: ${JSON.stringify(rawData)}`);
+	if (!rawData.shape_dist_traveled) throw new Error(`Missing required field "shape_dist_traveled" on GTFS StopTime: ${JSON.stringify(rawData)}`);
+	if (!rawData.stop_id) throw new Error(`Missing required field "stop_id" on GTFS StopTime: ${JSON.stringify(rawData)}`);
+	if (!rawData.stop_sequence) throw new Error(`Missing required field "stop_sequence" on GTFS StopTime: ${JSON.stringify(rawData)}`);
+	if (!rawData.trip_id) throw new Error(`Missing required field "trip_id" on GTFS StopTime: ${JSON.stringify(rawData)}`);
 	// Validate the individual fields
-	if (Number.isNaN(rawData.shape_dist_traveled)) throw new Error(`Invalid value for "shape_dist_traveled": "${rawData.shape_dist_traveled}". It must be a number.`);
-	if (Number.isNaN(rawData.stop_sequence)) throw new Error(`Invalid value for "stop_sequence": "${rawData.stop_sequence}". It must be a number.`);
+	if (Number.isNaN(rawData.shape_dist_traveled)) throw new Error(`Invalid value for "shape_dist_traveled": "${rawData.shape_dist_traveled}". It must be a number. GTFS StopTime: ${JSON.stringify(rawData)}`);
+	if (Number.isNaN(rawData.stop_sequence)) throw new Error(`Invalid value for "stop_sequence": "${rawData.stop_sequence}". It must be a number. GTFS StopTime: ${JSON.stringify(rawData)}`);
 	// Transform the raw data into the output format
 	return {
 		arrival_time: rawData.arrival_time,

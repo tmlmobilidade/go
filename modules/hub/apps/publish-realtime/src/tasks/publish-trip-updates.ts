@@ -2,13 +2,11 @@
 
 import { apiCache, GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { externalClients } from '@tmlmobilidade/external';
 import { pipelinePath, querySqlFromFile } from '@tmlmobilidade/go-hub-pckg-sql';
+import { type GtfsRtFeedMessage, type GtfsRtStopTimeUpdate, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GtfsRtFeedMessage, type HubGtfsRtStopTimeUpdate, type HubGtfsRtTripUpdate, type HubPlan } from '@tmlmobilidade/types';
-import { getPublicTripId } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -17,6 +15,7 @@ interface ClickHouseEtaGtfsResponse {
 	trip_update: string
 	vehicle_id: string
 }
+
 /* * */
 
 export async function publishTripUpdates() {
@@ -25,18 +24,6 @@ export async function publishTripUpdates() {
 	Logger.title('Publishing GTFS-RT TripUpdate feed...');
 
 	const globalTimer = new Timer();
-
-	//
-	// Retrieve active plans from the database
-
-	const approvedPlans = await apiCache.get('hub:v1:plans:approved:json');
-	if (!approvedPlans) throw new Error('No approved plans found in API Cache');
-
-	const approvedPlansData: HubPlan[] = JSON.parse(approvedPlans);
-	const activePlansData = approvedPlansData.filter(plan => plan.is_active);
-	if (!activePlansData.length) throw new Error('No active plans found in API Cache');
-
-	const activePlansIdsMap: Record<string, string> = Object.fromEntries(activePlansData.map(plan => [plan.agency_id, plan._id]));
 
 	//
 	// Fetch all stops and build a map of legacy_ids to stop_id
@@ -78,10 +65,10 @@ export async function publishTripUpdates() {
 
 	allTripUpdates.forEach((row) => {
 		// Parse the trip update from the ClickHouse response
-		const tripUpdate: HubGtfsRtTripUpdate = JSON.parse(row.trip_update);
+		const tripUpdate: GtfsRtTripUpdate = JSON.parse(row.trip_update);
 		// Parse the stop_time_update to replace the stop_id
 		// with the legacy_id from the stops map
-		const parsedStopTimeUpdates: HubGtfsRtStopTimeUpdate[] = [];
+		const parsedStopTimeUpdates: GtfsRtStopTimeUpdate[] = [];
 		tripUpdate.stop_time_update?.forEach((stopUpdate) => {
 			const stopId = allStopsMap.get(stopUpdate.stop_id);
 			if (!stopId) return;
@@ -118,36 +105,6 @@ export async function publishTripUpdates() {
 	// 	trip_update: entity.trip_update,
 	// })));
 	// Logger.info(`Found ${mobiTrips.entity.length} Mobi trips`, 1);
-
-	//
-	// ML Trip Updates (Already in GTFS-RT format)
-
-	const mlTimer = new Timer();
-
-	Logger.info({ message: `Retrieving Estimated Time of Arrivals from ML API...` });
-
-	const mlTrips = await externalClients.ml.tripUpdates();
-
-	mlTrips.entity.forEach((entity) => {
-		// Parse the stop_time_update to replace the stop_id
-		// with the legacy_id from the stops map
-		const parsedStopTimeUpdates: HubGtfsRtStopTimeUpdate[] = [];
-		entity.trip_update.stop_time_update?.forEach((stopUpdate) => {
-			const stopId = allStopsMap.get(stopUpdate.stop_id);
-			if (!stopId) return console.log('Stop not found', stopUpdate.stop_id);
-			parsedStopTimeUpdates.push({ ...stopUpdate, stop_id: String(stopId) });
-		});
-		// Replace the stop_time_update with the parsed stop_time_update
-		entity.trip_update.stop_time_update = parsedStopTimeUpdates;
-		// Prepare the public trip ID
-		const publicTripId = getPublicTripId(activePlansIdsMap['2'], '2', entity.trip_update.trip.trip_id);
-		entity.id = publicTripId;
-		entity.trip_update.trip.trip_id = publicTripId;
-		// Add the trip update to the feed result
-		feedResult.entity.push(entity);
-	});
-
-	Logger.info({ message: `Found ${mlTrips.entity.length} ML trips in ${mlTimer.get()}`, spacesAfterOrBefore: 1 });
 
 	//
 	// Save the result in API Cache

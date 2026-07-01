@@ -3,8 +3,8 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type HubShape } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
-import { type HubShape } from '@tmlmobilidade/types';
 
 /**
  * Retrieves a shape by its ID from cache.

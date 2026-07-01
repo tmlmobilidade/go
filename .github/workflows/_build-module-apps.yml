@@ -19,6 +19,10 @@ on:
         description: "Build environment value"
         required: true
         type: string
+      pr_number:
+        description: "PR number"
+        required: true
+        type: string
 
 jobs:
 
@@ -95,3 +99,60 @@ jobs:
             ENVIRONMENT=${{ inputs.environment }}
             MODULE=${{ inputs.module }}
             APP=${{ matrix.app }}
+
+  publish-built-apps:
+    name: Publish Built Apps for ${{ inputs.module }}
+    needs: [get-apps, build]
+    if: success() && inputs.pr_number != ''
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Collect built app specs
+        run: |
+          MODULE="${{ inputs.module }}"
+          APPS='${{ needs.get-apps.outputs.apps }}'
+          OUT="built-apps-${MODULE}.txt"
+          echo "$APPS" | jq -r '.[]' | while read -r app; do
+            echo "${MODULE}-${app}" >> "$OUT"
+          done
+          cat "$OUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: built-apps-${{ inputs.module }}
+          path: built-apps-${{ inputs.module }}.txt
+          retention-days: 1
+
+  report-builds:
+    name: Report Builds for ${{ inputs.module }}
+    needs: build
+    if: always() && inputs.pr_number != ''
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Report success
+        if: needs.build.result == 'success'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number('${{ inputs.pr_number }}'),
+              body: 'Build succeeded for `${{ inputs.module }}`.'
+            });
+
+      - name: Report failure
+        if: needs.build.result == 'failure'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number('${{ inputs.pr_number }}'),
+              body: `Build failed for \`${{ inputs.module }}\`.`
+            });
