@@ -3,8 +3,9 @@
 /* * */
 
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
+import { useLocationsContext } from '@/contexts/Locations.context';
 import { CreateFileExportDto, type StopExportProperties } from '@tmlmobilidade/types';
-import { closeModal, useAgenciesContext, useExportsContext, useLocationsContext, useToast } from '@tmlmobilidade/ui';
+import { closeModal, useAgenciesContext, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */
@@ -81,7 +82,7 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 			filters.push({ label: 'Conexões', value: stopsListContext.filters.connections.value.join(', ') });
 		}
 		if (stopsListContext.filters.municipality.isActive && stopsListContext.filters.municipality.value.length > 0) {
-			filters.push({ label: 'Municípios', value: locationsContext.data.municipalities.filter(option => stopsListContext.filters.municipality.value.includes(option.id)).map(option => option.name).join(', ') });
+			filters.push({ label: 'Municípios', value: locationsContext.data.municipalities.filter(option => stopsListContext.filters.municipality.value.includes(option._id)).map(option => option.name).join(', ') });
 		}
 
 		return filters;
