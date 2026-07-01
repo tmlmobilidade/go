@@ -1,16 +1,14 @@
 /* * */
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
+import { FeedbackMetricTag, OperatorLogo } from '@/components/visualizations/Feedback';
+import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
+import { compareOperatorsByCode, getOperatorName } from '@/utils/feedback/operators';
 import { type Agency } from '@tmlmobilidade/types';
 import { SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
 import styles from '../styles.module.css';
-
-import { FeedbackMetricTag } from '../common/FeedbackMetricTag';
-import { OperatorLogo } from '../common/OperatorLogo';
-import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../utils/feedback-metrics';
-import { compareOperatorsByCode, getOperatorName } from '../utils/operators';
 
 /* * */
 

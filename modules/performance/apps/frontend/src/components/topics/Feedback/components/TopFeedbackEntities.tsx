@@ -1,15 +1,13 @@
 /* * */
 
-import type { FeedbackEntitySummary } from '../utils/feedback-entities';
+import type { FeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
+import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
+import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
 import { useState } from 'react';
 
 import styles from '../styles.module.css';
-
-import { FeedbackEntityDetailModal } from '../common/FeedbackEntityDetailModal';
-import { FeedbackMetricTag } from '../common/FeedbackMetricTag';
-import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../utils/feedback-metrics';
 
 /* * */
 

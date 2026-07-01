@@ -4,13 +4,13 @@
 
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
-import { FeedbackOverview } from '@/components/visualizations/Feedback';
 import { Routes } from '@/routes';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
 import { FeedbackDashboards } from './FeedbackDashboards';
+import { FeedbackOverview } from './FeedbackOverview';
 
 /* * */
 

@@ -1,8 +1,7 @@
 /* * */
 
+import { getOperatorLogoSrc } from '@/utils/feedback/operator-logo';
 import Image from 'next/image';
-
-import { getOperatorLogoSrc } from '../../utils/operator-logo';
 
 /* * */
 // se quiser remover por achar pouco reutilizavel, não tem problema :)

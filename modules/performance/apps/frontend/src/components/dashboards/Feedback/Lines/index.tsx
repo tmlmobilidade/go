@@ -3,21 +3,19 @@
 'use client';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
+import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
+import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
+import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
+import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-line-contributions';
+import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
+import { buildLineLabelsById, getLineLabel } from '@/utils/feedback/network-labels';
 import { type HubLine, type PublicFeedback } from '@tmlmobilidade/types';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
-
-import { FeedbackEntityDetailModal } from '../common/FeedbackEntityDetailModal';
-import { FeedbackMetricTag } from '../common/FeedbackMetricTag';
-import { useFeedbackOperatorFilter } from '../hooks/use-feedback-operator-filter';
-import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '../utils/feedback-entities';
-import { getFeedbackLineContributionMeters } from '../utils/feedback-line-contributions';
-import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '../utils/feedback-metrics';
-import { buildLineLabelsById, getLineLabel } from '../utils/network-labels';
 
 /* * */
 

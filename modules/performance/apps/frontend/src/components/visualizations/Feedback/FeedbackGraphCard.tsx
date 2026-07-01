@@ -1,13 +1,12 @@
 /* * */
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
+import { buildFeedbackTimeline, type FeedbackTimelineRange, formatTimelineTick, TIMELINE_RANGE_CONTROL_OPTIONS } from '@/utils/feedback/feedback-timeline';
 import { type PublicFeedback } from '@tmlmobilidade/types';
 import { BarChart, MetricsSkeleton, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
-import styles from '../styles.module.css';
-
-import { buildFeedbackTimeline, type FeedbackTimelineRange, formatTimelineTick, TIMELINE_RANGE_CONTROL_OPTIONS } from './utils/feedback-timeline';
+import styles from './styles.module.css';
 
 interface FeedbackGraphCardProps {
 	rows: PublicFeedback[]

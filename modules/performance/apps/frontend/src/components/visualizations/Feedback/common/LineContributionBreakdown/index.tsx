@@ -4,14 +4,13 @@
 
 /* * */
 
-import type { FeedbackLineContributionCategory, FeedbackLineContributionMeter } from '../../utils/feedback-line-contributions';
+import type { FeedbackLineContributionCategory, FeedbackLineContributionMeter } from '@/utils/feedback/feedback-line-contributions';
 
+import { formatSatisfactionIndex } from '@/utils/feedback/feedback-metrics';
 import { BarChart, Label, Section } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 
 import styles from '../../styles.module.css';
-
-import { formatSatisfactionIndex } from '../../utils/feedback-metrics';
 
 /* * */
 
