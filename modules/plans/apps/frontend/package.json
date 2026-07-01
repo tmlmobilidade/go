@@ -26,7 +26,8 @@
 		"papaparse": "5.5.4",
 		"react": "19.2.7",
 		"react-dom": "19.2.7",
-		"swr": "2.4.2"
+		"swr": "2.4.2",
+		"yazl": "2.5.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
