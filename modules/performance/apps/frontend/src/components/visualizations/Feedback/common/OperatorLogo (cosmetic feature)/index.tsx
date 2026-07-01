@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { getOperatorLogoSrc } from '../../utils/operator-logo';
 
 /* * */
+// se quiser remover por achar pouco reutilizavel, não tem problema :)
+// só coloquei porque achei que poderia ficar legal ter o logo do operador em alguns lugares, mas não é essencial
 
 interface OperatorLogoProps {
 	className?: string
