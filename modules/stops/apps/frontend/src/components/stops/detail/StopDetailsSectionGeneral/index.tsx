@@ -1,12 +1,16 @@
 'use client';
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
+import { StopDetailCoordinatesModal } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal';
+import { StopDetailNamesModal } from '@/components/stops/detail/StopDetailCoordinates/StopDetailNamesModal';
 import { Translations } from '@/lib/translations';
 import { IconEdit } from '@tabler/icons-react';
 import { LifecycleStatusSchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, ProposedChangesWrapper, Section, SegmentedControl, TextInput, useMeContext, ValueDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, SegmentedControl, useMeContext, ValueDisplay } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
+
+import { StopDetailPlayTTS } from '../StopDetailPlayTTS';
 
 /* * */
 
@@ -20,6 +24,7 @@ export function StopDetailsSectionGeneral() {
 	const meContext = useMeContext();
 
 	const canEditStopCoordinates = meContext.actions.hasPermission('stops', 'edit_coordinates') && !stopDetailContext.flags.isReadOnly;
+	const canEditStopName = meContext.actions.hasPermission('stops', 'edit_name') && !stopDetailContext.flags.isReadOnly;
 
 	//
 	// B. Transform data
@@ -30,19 +35,7 @@ export function StopDetailsSectionGeneral() {
 	}));
 
 	//
-	// C. Handle actions
-
-	// const handlePlayPhoneticName = async () => {
-	// 	if (typeof window !== 'undefined') {
-	// 		const synth = window.speechSynthesis;
-	// 		const utterance = new SpeechSynthesisUtterance(stopDetailContext.data.form.values.tts_name || '');
-	// 		utterance.lang = 'pt';
-	// 		synth.speak(utterance);
-	// 	}
-	// };
-
-	//
-	// D. Render components
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -86,28 +79,44 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="a" gap="md">
-
-					<ProposedChangesWrapper
-						inputName="name"
+					<ValueDisplay
+						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
 						label="Nome Único da Paragem"
-						relatedId={String(stopDetailContext.data.stop?._id)}
-						scope="stop"
-					>
-						<TextInput
-							readOnly={stopDetailContext.flags.isReadOnly}
-							{...stopDetailContext.data.form.getInputProps('name')}
-						/>
-					</ProposedChangesWrapper>
+						onClick={canEditStopName ? stopDetailContext.actions.openNamesEditor : undefined}
+						value={stopDetailContext.data.form.getValues()?.name ?? 'N/A'}
+						variant="bordered"
+					/>
 
 				</Grid>
 			</Section>
 
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ValueDisplay label="Nome Curto" value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'} variant="bordered" />
-					<ValueDisplay label="Nome TTS" value={stopDetailContext.data.form.getValues()?.tts_name ?? 'N/A'} variant="bordered" />
+					<ValueDisplay
+						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
+						label="Nome Curto"
+						value={stopDetailContext.data.form.getValues()?.short_name ?? 'N/A'}
+						variant="bordered"
+					/>
+					<ValueDisplay
+						icon={canEditStopName ? <IconEdit size={16} /> : undefined}
+						label="Nome TTS"
+						onClick={canEditStopName ? stopDetailContext.actions.openNamesEditor : undefined}
+						value={stopDetailContext.data.form.values.tts_name ?? 'N/A'}
+						variant="bordered"
+					/>
+				</Grid>
+
+			</Section>
+
+			<Section>
+				<Grid columns="a">
+					<StopDetailPlayTTS />
 				</Grid>
 			</Section>
+
+			{stopDetailContext.flags.isCoordinatesEditorOpen && <StopDetailCoordinatesModal />}
+			{stopDetailContext.flags.isNamesEditorOpen &&	<StopDetailNamesModal /> }
 
 		</Collapsible>
 	);

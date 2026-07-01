@@ -1,0 +1,39 @@
+{
+	"name": "@tmlmobilidade/go-stops-tts",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch daemon/index.ts",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint . --fix"
+	},
+	"dependencies": {
+		"@helperkits/timer": "20240627.34.23",
+		"@tmlmobilidade/go-stops-pckg-organize": "*",
+		"@tmlmobilidade/go-types-public-info": "*",
+		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/utils": "*",
+		"adm-zip": "^0.5.17"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/types": "*",
+		"@types/node": "25.9.2",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.22.4",
+		"typescript": "6.0.3"
+	}
+}

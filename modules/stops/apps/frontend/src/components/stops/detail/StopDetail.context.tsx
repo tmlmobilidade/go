@@ -1,19 +1,53 @@
 'use client';
 
-import { StopDetailContext, type StopDetailContextState, StopDetailCoordinatesEditorModal, useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
 import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { type PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-export { useStopDetailContext };
+interface StopDetailContextState {
+	actions: {
+		closeCoordinatesEditor: () => void
+		closeNamesEditor: () => void
+		delete: () => void
+		lock: () => void
+		openCoordinatesEditor: () => void
+		openNamesEditor: () => void
+		save: () => void
+	}
+	data: {
+		form: UseFormReturnType<UpdateStopDto>
+		stop: Stop | undefined
+	}
+	flags: {
+		canDelete: boolean
+		canLock: boolean
+		canSave: boolean
+		error: Error | undefined
+		isCoordinatesEditorOpen: boolean
+		isDeleting: boolean
+		isLoading: boolean
+		isLocking: boolean
+		isNamesEditorOpen: boolean
+		isReadOnly: boolean
+		isSaving: boolean
+	}
+}
 
-/* * */
+const StopDetailContext = createContext<StopDetailContextState | undefined>(undefined);
+
+export function useStopDetailContext() {
+	const context = useContext(StopDetailContext);
+	if (!context) {
+		throw new Error('useStopDetailContext must be used within a StopDetailContextProvider');
+	}
+	return context;
+}
 
 export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildren<{ stopId: string }>) => {
 	//
@@ -22,9 +56,14 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	// A. Setup variables
 
 	const meContext = useMeContext();
+
 	const [isCoordinatesEditorOpen, setCoordinatesEditorOpen] = useState(false);
 	const openCoordinatesEditor = useCallback(() => setCoordinatesEditorOpen(true), []);
 	const closeCoordinatesEditor = useCallback(() => setCoordinatesEditorOpen(false), []);
+
+	const [isNamesEditorOpen, setNamesEditorOpen] = useState(false);
+	const openNamesEditor = useCallback(() => setNamesEditorOpen(true), []);
+	const closeNamesEditor = useCallback(() => setNamesEditorOpen(false), []);
 
 	//
 	// B. Fetch data
@@ -135,9 +174,11 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const contextValue: StopDetailContextState = useMemo(() => ({
 		actions: {
 			closeCoordinatesEditor,
+			closeNamesEditor,
 			delete: handleDelete,
 			lock: handleLock,
 			openCoordinatesEditor,
+			openNamesEditor,
 			save: handleSave,
 		},
 		data: {
@@ -153,12 +194,15 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			isDeleting,
 			isLoading: stopLoading,
 			isLocking,
+			isNamesEditorOpen,
 			isReadOnly,
-			isSaving,
+			isSaving: isSaving,
 		},
 	}), [
 		closeCoordinatesEditor,
+		closeNamesEditor,
 		openCoordinatesEditor,
+		openNamesEditor,
 		isCoordinatesEditorOpen,
 		canDelete,
 		canLock,
@@ -176,15 +220,12 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		handleLock,
 		handleSave,
 	]);
-	/* eslint-enable react-hooks/exhaustive-deps */
-
 	//
 	// H. Render components
 
 	return (
 		<StopDetailContext.Provider value={contextValue}>
 			{children}
-			<StopDetailCoordinatesEditorModal />
 		</StopDetailContext.Provider>
 	);
 
