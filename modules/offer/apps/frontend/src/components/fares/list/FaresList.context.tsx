@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Fare, PermissionCatalog } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { useDataAgenciesNew, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -45,8 +45,8 @@ export const FaresListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.fares.actions.read],
+	const { agencyIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.fares.actions.nav],
 		scope: PermissionCatalog.all.fares.scope,
 	});
 
@@ -107,7 +107,7 @@ export const FaresListContextProvider = ({ children }: PropsWithChildren) => {
 			error: allFaresError,
 			loading: allFaresLoading,
 		},
-	}), [allFaresError, allFaresLoading, searchResultsData, allFaresData, filterSearch, filterAgencies]);
+	}), [allFaresError, allFaresLoading, allFaresData, canCreatePermission, filterResultsData, filterSearch, filterAgencies]);
 
 	// E. Render components
 	return (
