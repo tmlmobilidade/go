@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react';
 import styles from '../styles.module.css';
 
 import { FeedbackMetricTag } from '../common/FeedbackMetricTag';
-import { OperatorLogo } from '../common/OperatorLogo';
+import { OperatorLogo } from '../common/OperatorLogo (cosmetic feature)';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../utils/feedback-metrics';
 import { compareOperatorsByCode, getOperatorName } from '../utils/operators';
 
