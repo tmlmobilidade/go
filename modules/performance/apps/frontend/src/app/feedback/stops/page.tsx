@@ -1,7 +1,7 @@
 'use client';
 
+import { FeedbackStops } from '@/components/dashboards/Feedback/Stops';
 import DashboardWrapper from '@/components/layout/DashboardWrapper';
-import { FeedbackStops } from '@/components/visualizations/Feedback';
 import { DashboardDefinition, TOPICS, TOPICS_REGISTRY } from '@/constants';
 
 /* * */
@@ -25,4 +25,3 @@ export default function Page() {
 		</DashboardWrapper>
 	);
 }
-

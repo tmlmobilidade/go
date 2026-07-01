@@ -7,6 +7,253 @@
 	gap: var(--size-spacing-lg);
 }
 
+.feedbackCard {
+	gap: 0;
+	justify-content: flex-start;
+	overflow: hidden;
+}
+
+.feedbackCardHeader {
+	display: flex;
+	align-items: center;
+	min-height: 52px;
+	padding: var(--size-spacing-md);
+	border-bottom: 1px solid var(--color-system-border-100);
+	background-color: var(--color-system-background-200);
+}
+
+.feedbackCardHeaderWithControls {
+	justify-content: space-between;
+	gap: var(--size-spacing-md);
+	min-height: 82px;
+}
+
+.feedbackCardContent {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-lg);
+	min-width: 0;
+	padding: var(--size-spacing-md);
+}
+
+.cardTitle {
+	margin: 0;
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-bold);
+}
+
+.feedbackCardControl {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	align-items: flex-start;
+	flex-shrink: 0;
+}
+
+.feedbackCardControlLabel {
+	margin: 0;
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-bold);
+}
+
+.listsGrid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--size-spacing-lg);
+}
+
+.feedbackList {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	overflow-x: auto;
+}
+
+.feedbackRow {
+	display: grid;
+	grid-template-columns: minmax(260px, 1fr) 96px 140px;
+	gap: var(--size-spacing-md);
+	align-items: center;
+	min-width: 540px;
+	padding: var(--size-spacing-md) 0;
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.feedbackRow:last-child {
+	border-bottom: none;
+}
+
+.feedbackRowButton {
+	width: 100%;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+}
+
+.feedbackRowButton:hover {
+	background-color: var(--color-system-background-200);
+}
+
+.feedbackRowButton:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: -2px;
+}
+
+.feedbackListHeader {
+	display: grid;
+	grid-template-columns: minmax(260px, 1fr) 96px 140px;
+	gap: var(--size-spacing-md);
+	align-items: center;
+	min-width: 540px;
+	padding: var(--size-spacing-sm) 0;
+	border-bottom: 1px solid var(--color-system-border-100);
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-bold);
+}
+
+.feedbackListHeaderMetric {
+	justify-self: end;
+	text-align: right;
+}
+
+.feedbackListHeaderTag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: fit-content;
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 6px;
+	background-color: var(--color-system-background-200);
+	color: var(--color-system-text-200);
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.feedbackLineDetails {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	min-width: 0;
+}
+
+.feedbackLineName {
+	display: block;
+	min-width: 0;
+	overflow: hidden;
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-bold);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.feedbackTagCell {
+	display: flex;
+	justify-content: flex-end;
+	min-width: 0;
+}
+
+.feedbackLineDescription {
+	margin: 0;
+	overflow: hidden;
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.operatorsTableWrapper {
+	min-width: 0;
+	overflow-x: auto;
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+}
+
+.operatorsTable {
+	min-width: 100%;
+	width: max-content;
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+.operatorsTable th,
+.operatorsTable td {
+	min-width: 160px;
+	padding: var(--size-spacing-sm) var(--size-spacing-md);
+	border-right: 1px solid var(--color-system-border-100);
+	text-align: left;
+}
+
+.operatorsTable th:last-child,
+.operatorsTable td:last-child {
+	border-right: none;
+}
+
+.operatorsTable th {
+	background-color: var(--color-system-background-200);
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-bold);
+}
+
+.operatorsTableMetricHeader,
+.operatorMetricLabel {
+	position: sticky;
+	left: 0;
+	z-index: 1;
+	min-width: 170px;
+	max-width: 170px;
+}
+
+.operatorsTableMetricHeader {
+	z-index: 2;
+}
+
+.operatorsTable td {
+	border-top: 1px solid var(--color-system-border-100);
+	color: var(--color-system-text-100);
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-bold);
+}
+
+.operatorMetricLabel {
+	border-top: 1px solid var(--color-system-border-100);
+	background-color: var(--color-system-background-100);
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-sm);
+}
+
+.operatorIdentity {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-sm);
+	min-width: 0;
+	width: max-content;
+}
+
+.operatorLogo {
+	flex: 0 0 auto;
+	object-fit: contain;
+}
+
+.operatorName {
+	display: block;
+	min-width: 0;
+	white-space: nowrap;
+}
+
+.operatorMetricValue {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+}
+
 .dashboardsSection {
 	display: flex;
 	flex-direction: column;
@@ -51,5 +298,14 @@
 @media (max-width: 900px) {
 	.dashboardButtons {
 		grid-template-columns: 1fr;
+	}
+
+	.listsGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.feedbackCardHeaderWithControls {
+		align-items: flex-start;
+		flex-direction: column;
 	}
 }
