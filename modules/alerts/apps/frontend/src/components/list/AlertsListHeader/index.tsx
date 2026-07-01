@@ -1,7 +1,10 @@
 /* * */
 
+import { openAlertListExportModal } from '@/components/list/AlertListExportModal/AlertListExport.modal';
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
-import { Label, Loader, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { IconFileDownload } from '@tabler/icons-react';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { HasPermission, IconButton, Label, Loader, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,6 +25,9 @@ export function AlertsListHeader() {
 			<Loader size="sm" visible={alertsListContext.flags.isValidating} />
 			<Spacer />
 			<SearchInput onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
+			<HasPermission action={PermissionCatalog.all.alerts.actions.export} scope={PermissionCatalog.all.alerts.scope}>
+				<IconButton icon={<IconFileDownload />} onClick={openAlertListExportModal} tooltip="Exportar alertas" variant="secondary" />
+			</HasPermission>
 		</Toolbar>
 	);
 
