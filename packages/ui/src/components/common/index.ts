@@ -13,6 +13,7 @@ export * from './LineDisplay';
 export * from './LineName';
 export * from './LineSelect';
 export * from './MetricsSkeleton';
+export * from './PermissionGuard';
 export * from './Popover';
 export * from './Progress';
 export * from './Radio';

@@ -382,6 +382,9 @@ export const API_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('offer', 'api_url')}`,
 
+		// AGENCIES
+		AGENCIES_LIST: `${getModuleConfig('offer', 'api_url')}/agencies`,
+
 		// FARES
 		FARES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}`,
 		FARES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}/lock`,

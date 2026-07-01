@@ -1,10 +1,9 @@
 /* * */
 
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { LineSchema, PermissionCatalog, transportTypeOptions } from '@tmlmobilidade/types';
-import { Collapsible, Grid, Section, Select, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
-
+import { useLinesListContext } from '@/components/lines/list/LinesList.context';
+import { LineSchema, transportTypeOptions } from '@tmlmobilidade/types';
+import { Collapsible, Grid, Section, Select, TextInput } from '@tmlmobilidade/ui';
 /* * */
 
 export function LineDetailSectionConfig() {
@@ -14,13 +13,7 @@ export function LineDetailSectionConfig() {
 	// A. Setup variables
 
 	const lineDetailContext = useLineDetailContext();
-
-	// Bypass permissions to show all agency labels in read-only mode
-	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: lineDetailContext.flags.isReadOnly ? undefined : [PermissionCatalog.all.lines.actions.update],
-		scope: lineDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.lines.scope,
-	});
+	const linesListContext = useLinesListContext();
 
 	//
 	// B. Render components
@@ -51,7 +44,7 @@ export function LineDetailSectionConfig() {
 				<Grid columns="ab" gap="sm">
 					<Select
 						key={lineDetailContext.data.form.key('agency_id')}
-						data={agencyOptions}
+						data={linesListContext.data.agencyOptions}
 						disabled={lineDetailContext.flags.isReadOnly}
 						label="Operador"
 						required={!LineSchema.shape.agency_id.isOptional()}

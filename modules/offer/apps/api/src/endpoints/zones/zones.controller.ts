@@ -1,5 +1,6 @@
 /* * */
 
+import { getOfferCatalogAgencyFilter, hasOfferCatalogResourceReadAccess } from '@/utils/catalog-permissions.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, zones } from '@tmlmobilidade/interfaces';
@@ -113,32 +114,7 @@ export class ZonesController {
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Zone[]>) {
 		//
 
-		//
-		// Get the resource permissions for zones for the current user.
-
-		const userZonePermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.zones.scope, PermissionCatalog.all.zones.actions.read);
-
-		//
-		// If no permission found, deny access
-
-		if (!userZonePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read zones');
-		}
-
-		//
-		// Build database query filters based on user permissions
-
-		const queryFilters: Filter<Zone> = {};
-
-		//
-		// If agency IDs are specified in resources and do not include the ALLOW_ALL_FLAG,
-		// filter zones by those agency IDs.
-
-		if ('resources' in userZonePermissions && 'agency_ids' in userZonePermissions.resources) {
-			if (!userZonePermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters.agency_ids = { $in: userZonePermissions.resources['agency_ids'] };
-			}
-		}
+		const queryFilters: Filter<Zone> = getOfferCatalogAgencyFilter(request.permissions, 'zones');
 
 		//
 		// Fetch zones based on query filters
@@ -166,30 +142,7 @@ export class ZonesController {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
 		}
 
-		//
-		// Get the resource permissions for zones for the current user.
-
-		const userZonePermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.zones.scope, PermissionCatalog.all.zones.actions.read);
-
-		//
-		// If no permission found, deny access
-
-		if (!userZonePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read zones');
-		}
-
-		//
-		// Validate that user has permission for at least one of this zone's agencies
-
-		const hasPermissionForAnyAgency = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.zones.actions.read,
-			permissions: request.permissions,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.zones.scope,
-			value: zoneData.agency_ids,
-		});
-
-		if (!hasPermissionForAnyAgency) {
+		if (!hasOfferCatalogResourceReadAccess(request.permissions, 'zones', zoneData.agency_ids)) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this zone');
 		}
 

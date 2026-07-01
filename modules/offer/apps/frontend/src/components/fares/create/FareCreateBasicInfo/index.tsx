@@ -3,7 +3,7 @@
 import { useFareCreateContext } from '@/components/fares/create/FareCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { FareSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { MultiSelect, Section, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { MultiSelect, Section, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,7 +14,7 @@ export function FareCreateBasicInfo() {
 	// A. Setup variables
 
 	const fareCreateContext = useFareCreateContext();
-	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: allAgencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.fares.actions.create],
 		scope: PermissionCatalog.all.fares.scope,
 	});
