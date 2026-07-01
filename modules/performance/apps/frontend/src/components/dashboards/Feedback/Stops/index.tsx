@@ -10,7 +10,7 @@ import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '@/utils/fe
 import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
 import { buildStopLabelsById, getStopLabel } from '@/utils/feedback/network-labels';
 import { type HubStop, type PublicFeedback } from '@tmlmobilidade/types';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { FilterTypeList, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -83,18 +83,18 @@ export function FeedbackStops() {
 
 					{!isLoading && !error && stops.length > 0 && (
 						<div className={styles.tableWrapper}>
-							<table className={styles.table}>
-								<thead>
-									<tr>
-										<th>Paragem</th>
-										<th>Feedbacks</th>
-										<th>Índice de satisfação</th>
-									</tr>
-								</thead>
+							<Table highlightOnHover striped>
+								<Table.Thead>
+									<Table.Tr>
+										<Table.Th>Paragem</Table.Th>
+										<Table.Th>Feedbacks</Table.Th>
+										<Table.Th>Índice de satisfação</Table.Th>
+									</Table.Tr>
+								</Table.Thead>
 
-								<tbody>
+								<Table.Tbody>
 									{stops.map(stop => (
-										<tr
+										<Table.Tr
 											key={stop.entityId}
 											aria-label={`Abrir detalhe da paragem ${getStopLabel(stop.entityId, stopsById)}`}
 											className={styles.tableRowButton}
@@ -103,13 +103,19 @@ export function FeedbackStops() {
 											role="button"
 											tabIndex={0}
 										>
-											<td>{getStopLabel(stop.entityId, stopsById)}</td>
-											<td><FeedbackMetricTag label={stop.feedbackCount.toLocaleString('pt-PT')} /></td>
-											<td><FeedbackMetricTag label={formatSatisfactionIndex(stop.satisfactionIndex)} status={getFeedbackSatisfactionStatus(stop.satisfactionIndex)} /></td>
-										</tr>
+											<Table.Td>
+												<Text>{getStopLabel(stop.entityId, stopsById)}</Text>
+											</Table.Td>
+											<Table.Td>
+												<FeedbackMetricTag label={stop.feedbackCount.toLocaleString('pt-PT')} />
+											</Table.Td>
+											<Table.Td>
+												<FeedbackMetricTag label={formatSatisfactionIndex(stop.satisfactionIndex)} status={getFeedbackSatisfactionStatus(stop.satisfactionIndex)} />
+											</Table.Td>
+										</Table.Tr>
 									))}
-								</tbody>
-							</table>
+								</Table.Tbody>
+							</Table>
 						</div>
 					)}
 				</div>
