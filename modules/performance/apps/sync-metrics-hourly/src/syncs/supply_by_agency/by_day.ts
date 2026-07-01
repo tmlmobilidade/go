@@ -173,13 +173,13 @@ export const syncSupplyByAgencyByDay = async () => {
 								apex_on_board_sales_amount: {
 									$divide: [{ $ifNull: ['$apex_on_board_sales_amount', 0] }, 100],
 								},
+								apex_on_board_sales_qty: { $ifNull: ['$apex_on_board_sales_qty', 0] },
+								apex_validations_qty: { $ifNull: ['$apex_validations_qty', 0] },
+								passengers_observed: { $ifNull: ['$passengers_observed', 0] },
 								passengers_observed_prepaid_amount: {
 									$divide: [{ $ifNull: ['$passengers_observed_prepaid_amount', 0] }, 100],
 								},
 								passengers_observed_subscription_qty: { $ifNull: ['$passengers_observed_subscription_qty', 0] },
-								apex_validations_qty: { $ifNull: ['$apex_validations_qty', 0] },
-								apex_on_board_sales_qty: { $ifNull: ['$apex_on_board_sales_qty', 0] },
-								passengers_observed: { $ifNull: ['$passengers_observed', 0] },
 							},
 						},
 						{
