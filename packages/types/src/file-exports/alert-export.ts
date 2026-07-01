@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertReferenceSchema } from '@/alerts/reference.js';
+// import { AlertReferenceSchema } from '@/alerts/reference.js';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -34,8 +34,10 @@ export const FlatAlertSchema = z.object({
 
 	/* REFERENCE */
 	/* * */
+	line_ids: z.string().optional().nullable(),
 	reference_type: z.string().nullable(),
-	references: z.array(AlertReferenceSchema).default([]),
+	// references: z.array(AlertReferenceSchema).default([]),
+	stop_ids: z.string().optional().nullable(),
 
 	/* DATES */
 	/* * */

@@ -30,7 +30,8 @@ export const ALERT_EXPORT_ORDERED_FIELDS = [
 
 	// REFERENCE
 	'reference_type',
-	'references',
+	'line_ids',
+	'stop_ids',
 
 	// DATES
 	'active_period_end_date',
@@ -76,12 +77,13 @@ export function parseAlerts(row: ParseAlertRow): AlertExportCsvData {
 		file_id: alert.file_id,
 		info_url: alert.info_url,
 		is_locked: alert.is_locked,
+		line_ids: alert.references.map(ref => ref.parent_id).filter(Boolean).join(', '),
 		municipality_ids: alert.municipality_ids,
 		publish_end_date: alert.publish_end_date,
 		publish_start_date: alert.publish_start_date,
 		publish_status: alert.publish_status,
 		reference_type: alert.reference_type,
-		references: alert.references,
+		stop_ids: [...new Set(alert.references.flatMap(ref => ref.child_ids))].join(', '),
 		title: alert.title,
 		updated_at: alert.updated_at,
 		updated_by: alert.updated_by,
