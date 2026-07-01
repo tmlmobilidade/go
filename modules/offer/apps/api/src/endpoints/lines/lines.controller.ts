@@ -1,5 +1,6 @@
 /* * */
 
+import { populateLine, populateLines } from '@/utils/lines.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, lines, patterns, routes } from '@tmlmobilidade/interfaces';
@@ -49,11 +50,12 @@ export class LinesController {
 		// Create the new line
 
 		const newLine = await lines.insertOne(request.body);
+		const populatedLine = await populateLine(newLine);
 
 		//
 		// Send the response
 
-		reply.send({ data: newLine, error: null, statusCode: HTTP_STATUS.OK });
+		reply.send({ data: populatedLine, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -146,8 +148,9 @@ export class LinesController {
 		// Fetch lines based on query filters
 
 		const allLines = await lines.findMany(queryFilters, { sort: { created_at: -1 } });
+		const populatedLines = await populateLines(allLines);
 
-		return reply.send({ data: allLines, error: null, statusCode: HTTP_STATUS.OK });
+		return reply.send({ data: populatedLines, error: null, statusCode: HTTP_STATUS.OK });
 		//
 	}
 
@@ -206,8 +209,10 @@ export class LinesController {
 		//
 		// Return the line data with routes
 
+		const populatedLine = await populateLine({ ...lineData, routes: lineRoutes });
+
 		return reply.send({
-			data: { ...lineData, routes: lineRoutes },
+			data: populatedLine,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
@@ -266,7 +271,9 @@ export class LinesController {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
 		}
 
-		return reply.send({ data: foundLine, error: null, statusCode: HTTP_STATUS.OK });
+		const populatedLine = await populateLine(foundLine);
+
+		return reply.send({ data: populatedLine, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -319,12 +326,13 @@ export class LinesController {
 		// Update the line
 
 		const updatedLine = await lines.updateById(lineData._id, request.body);
+		const populatedLine = await populateLine(updatedLine);
 
 		//
 		// Send the updated line data as the response
 
 		reply.send({
-			data: updatedLine,
+			data: populatedLine,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});

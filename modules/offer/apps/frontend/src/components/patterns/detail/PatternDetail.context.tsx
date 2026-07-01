@@ -5,13 +5,12 @@ import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/
 import { openCreateParameterModal } from '@/components/patterns/shape/parameters/create/ParameterCreate.modal';
 import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { useTypologiesContext } from '@/contexts/Typologies.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Path, Pattern, PermissionCatalog, PopulatedPath, PopulatedPattern, ScheduleRule, Stop, StopsParameter, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Path, Pattern, PermissionCatalog, PopulatedPath, PopulatedPattern, ScheduleRule, Stop, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type Point } from 'geojson';
@@ -42,7 +41,7 @@ interface PatternDetailContextState {
 		mergedRules: ScheduleRule[]
 		pattern: null | PopulatedPattern
 		stopsParameterRules: StopsParameterExtended[]
-		typologyData?: Typology
+		typologyData?: Line['typology_data']
 	}
 	flags: DetailContextStateTemplate['flags']
 	geojson: {
@@ -81,8 +80,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 
 	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<PopulatedPattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId));
 	const { data: lineData, mutate: lineMutate } = useSWR<Line>(API_ROUTES.offer.LINES_DETAIL(lineId));
-	const typologiesContext = useTypologiesContext();
-	const typologyData = typologiesContext.data.raw.find(t => t._id === lineData?.typology);
+	const typologyData = lineData?.typology_data;
 
 	//
 	// C. Setup form

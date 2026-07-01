@@ -57,6 +57,15 @@ export const UpdateFareSchema = CreateFareSchema
 
 /* * */
 
+export const FareSimplifiedSchema = z.object({
+	_id: z.string(),
+	name: z.string(),
+	payment_method: z.enum([FARE_PAYMENT_METHOD.ONBOARD, FARE_PAYMENT_METHOD.PREPAID]),
+});
+
+/* * */
+
 export type Fare = z.infer<typeof FareSchema>;
+export type FareSimplified = z.infer<typeof FareSimplifiedSchema>;
 export type CreateFareDto = z.infer<typeof CreateFareSchema>;
 export type UpdateFareDto = z.infer<typeof UpdateFareSchema>;
