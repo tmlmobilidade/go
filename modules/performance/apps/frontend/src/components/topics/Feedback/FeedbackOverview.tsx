@@ -15,6 +15,7 @@ import styles from './styles.module.css';
 
 import { FeedbackOperatorsCard } from './components/FeedbackOperatorsCard';
 import { TopFeedbackEntities } from './components/TopFeedbackEntities';
+import { TopFeedbackReasonsChart } from './components/TopFeedbackReasonsChart';
 
 /* * */
 
@@ -58,8 +59,13 @@ export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
 			<FeedbackGraphCard rows={rows} />
 
 			<section className={styles.listsGrid}>
-				<TopFeedbackEntities items={feedbackData.topLines} nameColumnLabel="Linha" reasonChartData={feedbackData.topLineReasons} title="Linhas com mais feedbacks" />
-				<TopFeedbackEntities items={feedbackData.topStops} nameColumnLabel="Paragem" reasonChartData={feedbackData.topStopReasons} title="Paragens com mais feedbacks" />
+				<TopFeedbackEntities items={feedbackData.topLines} nameColumnLabel="Linha" title="Linhas com mais feedbacks" />
+				<TopFeedbackEntities items={feedbackData.topStops} nameColumnLabel="Paragem" title="Paragens com mais feedbacks" />
+			</section>
+
+			<section className={styles.listsGrid}>
+				<TopFeedbackReasonsChart data={feedbackData.topLineReasons} title="Motivos com mais feedbacks nas linhas" />
+				<TopFeedbackReasonsChart data={feedbackData.topStopReasons} title="Motivos com mais feedbacks nas paragens" />
 			</section>
 
 			{operatorApprovals.length > 0 && (

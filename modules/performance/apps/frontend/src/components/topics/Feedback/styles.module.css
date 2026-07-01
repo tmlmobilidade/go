@@ -78,11 +78,15 @@
 	justify-content: center;
 	gap: var(--size-spacing-md);
 	width: 100%;
-	padding: var(--size-spacing-md) 0 0;
+	padding: var(--size-spacing-md) 0;
 }
 
 .feedbackReasonChart :global(.recharts-surface) {
 	overflow: visible !important;
+}
+
+.feedbackReasonCardContent {
+	align-items: center;
 }
 
 .feedbackEntityDetails {

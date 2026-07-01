@@ -1,12 +1,11 @@
 /* * */
 
 import type { FeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
-import type { FeedbackReasonChartSlice } from '@/utils/feedback/feedback-reasons';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
-import { PieChart, Table, Text } from '@tmlmobilidade/ui';
+import { Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useState } from 'react';
 
 import styles from '../styles.module.css';
@@ -16,13 +15,12 @@ import styles from '../styles.module.css';
 interface TopFeedbackEntitiesProps {
 	items: FeedbackEntitySummary[]
 	nameColumnLabel: string
-	reasonChartData: FeedbackReasonChartSlice[]
 	title: string
 }
 
 /* * */
 
-export function TopFeedbackEntities({ items, nameColumnLabel, reasonChartData, title }: TopFeedbackEntitiesProps) {
+export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedbackEntitiesProps) {
 	//
 	// A. Setup variables
 
@@ -91,21 +89,6 @@ export function TopFeedbackEntities({ items, nameColumnLabel, reasonChartData, t
 						</Table>
 					</div>
 
-					{reasonChartData.length > 0 && (
-						<div className={styles.feedbackReasonChart}>
-							<PieChart
-								data={reasonChartData}
-								labelsPosition="outside"
-								labelsType="percent"
-								size={200}
-								tooltipDataSource="segment"
-								valueFormatter={value => value.toLocaleString('pt-PT')}
-								withLabels
-								withLabelsLine
-								withTooltip
-							/>
-						</div>
-					)}
 				</div>
 			</ContainerWrapper>
 
