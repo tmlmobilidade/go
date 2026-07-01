@@ -1,7 +1,8 @@
 /* * */
 
-import { type FeedbackLineContributionMeter } from './feedback-line-contributions';
-import { type FeedbackEntityMetrics, type FeedbackEntityType } from './feedback-metrics';
+import type { FeedbackLineContributionMeter } from './feedback-line-contributions';
+import type { FeedbackEntityMetrics, FeedbackEntityType } from './feedback-metrics';
+
 import { getLineLabel } from './network-labels';
 
 /* * */
@@ -12,6 +13,7 @@ export interface FeedbackEntitySummary {
 	id: string
 	label: string
 	lineContributionMeters?: FeedbackLineContributionMeter[]
+	operatorId?: string
 	satisfactionIndex: number
 }
 
@@ -31,6 +33,7 @@ export function getFeedbackEntitySummary(metric: FeedbackEntityMetrics, entityTy
 		id: metric.entityId,
 		label,
 		lineContributionMeters,
+		operatorId: entityType === 'line' ? metric.operatorId : undefined,
 		satisfactionIndex: metric.satisfactionIndex,
 	};
 }

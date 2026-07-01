@@ -8,12 +8,14 @@ import type { FeedbackEntitySummary } from './feedback-entities';
 import type { FeedbackLineContributionCategory } from './feedback-line-contributions';
 
 import { BarChart, CloseButton, Divider, Label, Modal, Pane, Section, Toolbar } from '@tmlmobilidade/ui';
+import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from './feedback-metrics';
 import { FeedbackMetricTag } from './FeedbackMetricTag';
+import { getOperatorLogoSrc } from './operator-logo';
 
 /* * */
 
@@ -25,11 +27,62 @@ const LINE_CONTRIBUTION_CHART_SERIES = [
 	},
 ];
 
+const LINE_CONTRIBUTION_CHART_HEIGHT = 220;
+const LINE_CONTRIBUTION_Y_AXIS_WIDTH = 56;
+const REASON_CHART_MIN_HEIGHT = 180;
+const REASON_CHART_ROW_HEIGHT = 44;
+const REASON_CHART_Y_AXIS_WIDTH = 180;
+
 /* * */
 
 interface FeedbackEntityDetailModalProps {
 	item?: FeedbackEntitySummary
 	onClose: () => void
+}
+
+/* * */
+
+function FeedbackEntityModalHeader({ item, onClose }: { item: FeedbackEntitySummary, onClose: () => void }) {
+	const operatorLogoSrc = item.operatorId ? getOperatorLogoSrc(item.operatorId) : undefined;
+
+	return (
+		<Toolbar>
+			<CloseButton onClick={onClose} type="close" />
+			<div className={styles.feedbackEntityModalTitle}>
+				<Label size="sm" variant="muted">{item.id}</Label>
+				<Label size="lg">{item.label}</Label>
+			</div>
+			{operatorLogoSrc && (
+				<div className={styles.feedbackEntityModalOperatorLogo}>
+					<Image
+						alt={`Logo do operador ${item.operatorId}`}
+						height={48}
+						src={operatorLogoSrc}
+						width={72}
+					/>
+				</div>
+			)}
+		</Toolbar>
+	);
+}
+
+function FeedbackEntityModalMetrics({ item }: { item: FeedbackEntitySummary }) {
+	return (
+		<Section gap="sm">
+			<Label size="sm" caps>Resumo</Label>
+			<div className={styles.feedbackEntityModalMetrics}>
+				<div className={styles.feedbackEntityModalMetric}>
+					<span className={styles.feedbackEntityModalMetricLabel}>Feedbacks</span>
+					<FeedbackMetricTag label={item.count.toLocaleString('pt-PT')} />
+				</div>
+
+				<div className={styles.feedbackEntityModalMetric}>
+					<span className={styles.feedbackEntityModalMetricLabel}>Satisfação</span>
+					<FeedbackMetricTag label={formatSatisfactionIndex(item.satisfactionIndex)} status={getFeedbackSatisfactionStatus(item.satisfactionIndex)} />
+				</div>
+			</div>
+		</Section>
+	);
 }
 
 /* * */
@@ -55,10 +108,7 @@ export function FeedbackEntityDetailModal({ item, onClose }: FeedbackEntityDetai
 		value: meter.value,
 	})) ?? [];
 
-	const lineContributionReasonChartData = selectedLineContributionMeter?.reasons.map(reason => ({
-		label: reason.label,
-		value: reason.value,
-	})) ?? [];
+	const lineContributionReasonChartData = selectedLineContributionMeter?.reasons ?? [];
 
 	//
 	// C. Handle actions
@@ -82,31 +132,25 @@ export function FeedbackEntityDetailModal({ item, onClose }: FeedbackEntityDetai
 			{item && (
 				<Pane
 					header={[
-						<Toolbar key="feedback-entity-detail-toolbar">
-							<CloseButton onClick={onClose} type="close" />
-							<div className={styles.feedbackEntityModalTitle}>
-								<Label size="sm" variant="muted">{item.id}</Label>
-								<Label size="lg">{item.label}</Label>
-							</div>
-						</Toolbar>,
+						<FeedbackEntityModalHeader key="feedback-entity-detail-toolbar" item={item} onClose={onClose} />,
 					]}
 				>
 					{item.lineContributionMeters && (
 						<>
 							<Section gap="sm">
-								<Label size="sm" caps>Composição dos feedbacks</Label>
+								<Label size="sm" caps>Pontos a melhorar</Label>
 								<div className={`${styles.feedbackEntityModalChartContainer} ${styles.feedbackEntityModalContributionChart}`}>
 									<BarChart
 										barChartProps={{ accessibilityLayer: false }}
 										data={lineContributionChartData}
 										dataKey="label"
-										h={220}
+										h={LINE_CONTRIBUTION_CHART_HEIGHT}
 										series={LINE_CONTRIBUTION_CHART_SERIES}
 										valueFormatter={value => formatSatisfactionIndex(Number(value))}
 										valueLabelProps={{ fill: 'white', position: 'inside' }}
 										withXAxis={false}
 										withYAxis={true}
-										yAxisProps={{ domain: [0, 100], tickFormatter: value => formatSatisfactionIndex(Number(value)), width: 56 }}
+										yAxisProps={{ domain: [0, 100], tickFormatter: value => formatSatisfactionIndex(Number(value)), width: LINE_CONTRIBUTION_Y_AXIS_WIDTH }}
 										withBarValueLabel
 									/>
 									<div className={styles.feedbackEntityModalContributionButtons}>
@@ -132,7 +176,7 @@ export function FeedbackEntityDetailModal({ item, onClose }: FeedbackEntityDetai
 											barChartProps={{ accessibilityLayer: false }}
 											data={lineContributionReasonChartData}
 											dataKey="label"
-											h={Math.max(180, lineContributionReasonChartData.length * 44)}
+											h={Math.max(REASON_CHART_MIN_HEIGHT, lineContributionReasonChartData.length * REASON_CHART_ROW_HEIGHT)}
 											orientation="vertical"
 											series={LINE_CONTRIBUTION_CHART_SERIES}
 											valueFormatter={value => formatSatisfactionIndex(Number(value))}
@@ -140,7 +184,7 @@ export function FeedbackEntityDetailModal({ item, onClose }: FeedbackEntityDetai
 											withXAxis={true}
 											withYAxis={true}
 											xAxisProps={{ domain: [0, 100], tickFormatter: value => formatSatisfactionIndex(Number(value)) }}
-											yAxisProps={{ width: 180 }}
+											yAxisProps={{ width: REASON_CHART_Y_AXIS_WIDTH }}
 											withBarValueLabel
 										/>
 									</div>
@@ -151,20 +195,7 @@ export function FeedbackEntityDetailModal({ item, onClose }: FeedbackEntityDetai
 						</>
 					)}
 
-					<Section gap="sm">
-						<Label size="sm" caps>Resumo</Label>
-						<div className={styles.feedbackEntityModalMetrics}>
-							<div className={styles.feedbackEntityModalMetric}>
-								<span className={styles.feedbackEntityModalMetricLabel}>Feedbacks</span>
-								<FeedbackMetricTag label={item.count.toLocaleString('pt-PT')} />
-							</div>
-
-							<div className={styles.feedbackEntityModalMetric}>
-								<span className={styles.feedbackEntityModalMetricLabel}>Satisfação</span>
-								<FeedbackMetricTag label={formatSatisfactionIndex(item.satisfactionIndex)} status={getFeedbackSatisfactionStatus(item.satisfactionIndex)} />
-							</div>
-						</div>
-					</Section>
+					<FeedbackEntityModalMetrics item={item} />
 				</Pane>
 			)}
 		</Modal>

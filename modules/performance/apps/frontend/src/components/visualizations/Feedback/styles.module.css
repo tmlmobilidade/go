@@ -189,6 +189,22 @@
 	white-space: normal;
 }
 
+.feedbackEntityModalOperatorLogo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	width: 96px;
+	height: 64px;
+	margin-left: var(--size-spacing-md);
+}
+
+.feedbackEntityModalOperatorLogo img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
 .feedbackEntityModalChartContainer {
 	width: 100%;
 	min-width: 0;
