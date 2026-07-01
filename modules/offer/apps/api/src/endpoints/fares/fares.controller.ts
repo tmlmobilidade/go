@@ -1,5 +1,6 @@
 /* * */
 
+import { getOfferCatalogAgencyFilter, hasOfferCatalogResourceReadAccess } from '@/utils/catalog-permissions.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { fares, type Filter } from '@tmlmobilidade/interfaces';
@@ -113,32 +114,7 @@ export class FaresController {
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Fare[]>) {
 		//
 
-		//
-		// Get the resource permissions for fares for the current user.
-
-		const userFarePermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.fares.scope, PermissionCatalog.all.fares.actions.read);
-
-		//
-		// If no permission found, deny access
-
-		if (!userFarePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read fares');
-		}
-
-		//
-		// Build database query filters based on user permissions
-
-		const queryFilters: Filter<Fare> = {};
-
-		//
-		// If agency IDs are specified in resources and do not include the ALLOW_ALL_FLAG,
-		// filter fares by those agency IDs.
-
-		if ('resources' in userFarePermissions && 'agency_ids' in userFarePermissions.resources) {
-			if (!userFarePermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters.agency_ids = { $in: userFarePermissions.resources['agency_ids'] };
-			}
-		}
+		const queryFilters: Filter<Fare> = getOfferCatalogAgencyFilter(request.permissions, 'fares');
 
 		//
 		// Fetch fares based on query filters
@@ -166,30 +142,7 @@ export class FaresController {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
 		}
 
-		//
-		// Get the resource permissions for fares for the current user.
-
-		const userFarePermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.fares.scope, PermissionCatalog.all.fares.actions.read);
-
-		//
-		// If no permission found, deny access
-
-		if (!userFarePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read fares');
-		}
-
-		//
-		// Validate that user has permission for at least one of this fare's agencies
-
-		const hasPermissionForAnyAgency = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.fares.actions.read,
-			permissions: request.permissions,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.fares.scope,
-			value: fareData.agency_ids,
-		});
-
-		if (!hasPermissionForAnyAgency) {
+		if (!hasOfferCatalogResourceReadAccess(request.permissions, 'fares', fareData.agency_ids)) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this fare');
 		}
 

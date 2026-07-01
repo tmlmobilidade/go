@@ -1,5 +1,6 @@
 /* * */
 
+import { getOfferCatalogAgencyFilter, hasOfferCatalogResourceReadAccess } from '@/utils/catalog-permissions.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, typologies } from '@tmlmobilidade/interfaces';
@@ -114,31 +115,9 @@ export class TypologiesController {
 		//
 
 		//
-		// Get the resource permissions for typologies for the current user.
-
-		const userTypologyPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.typologies.scope, PermissionCatalog.all.typologies.actions.read);
-
-		//
-		// If no permission found, deny access
-
-		if (!userTypologyPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
-		}
-
-		//
 		// Build database query filters based on user permissions
 
-		const queryFilters: Filter<Typology> = {};
-
-		//
-		// If agency IDs are specified in resources and do not include the ALLOW_ALL_FLAG,
-		// filter typologies by those agency IDs.
-
-		if ('resources' in userTypologyPermissions && 'agency_ids' in userTypologyPermissions.resources) {
-			if (!userTypologyPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters.agency_ids = { $in: userTypologyPermissions.resources['agency_ids'] };
-			}
-		}
+		const queryFilters: Filter<Typology> = getOfferCatalogAgencyFilter(request.permissions, 'typologies');
 
 		//
 		// Fetch typologies based on query filters
@@ -167,29 +146,9 @@ export class TypologiesController {
 		}
 
 		//
-		// Get the resource permissions for typologies for the current user.
-
-		const userTypologyPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.typologies.scope, PermissionCatalog.all.typologies.actions.read);
-
-		//
-		// If no permission found, deny access
-
-		if (!userTypologyPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
-		}
-
-		//
 		// Validate that user has permission for at least one of this typology's agencies
 
-		const hasPermissionForAnyAgency = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.typologies.actions.read,
-			permissions: request.permissions,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.typologies.scope,
-			value: typologyData.agency_ids,
-		});
-
-		if (!hasPermissionForAnyAgency) {
+		if (!hasOfferCatalogResourceReadAccess(request.permissions, 'typologies', typologyData.agency_ids)) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this typology');
 		}
 

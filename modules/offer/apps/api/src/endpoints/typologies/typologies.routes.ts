@@ -1,6 +1,7 @@
 /* * */
 
 import { TypologiesController } from '@/endpoints/typologies/typologies.controller.js';
+import { catalogReadPermissionMiddleware } from '@/middleware/catalog-read-authorization.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -18,13 +19,13 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.typologies.scope, [PermissionCatalog.all.typologies.actions.read]) },
+			{ preHandler: [authorizationMiddleware(), catalogReadPermissionMiddleware('typologies')] },
 			TypologiesController.getAll,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.typologies.scope, [PermissionCatalog.all.typologies.actions.read]) },
+			{ preHandler: [authorizationMiddleware(), catalogReadPermissionMiddleware('typologies')] },
 			TypologiesController.getById,
 		);
 
