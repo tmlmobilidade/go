@@ -1,12 +1,19 @@
 /* * */
 
-import { getOfferCatalogAgencyFilter, hasOfferCatalogResourceReadAccess } from '@/utils/catalog-permissions.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, zones } from '@tmlmobilidade/interfaces';
-import { CreateZoneDto, PermissionCatalog, type UpdateZoneDto, type Zone } from '@tmlmobilidade/types';
+import { CreateZoneDto, PermissionCatalog, type PermissionResourceCheck, type UpdateZoneDto, type Zone } from '@tmlmobilidade/types';
 
 /* * */;
+
+const ZONES_READ_PERMISSION_CHECKS: PermissionResourceCheck[] = [
+	{ action: PermissionCatalog.all.lines.actions.read, scope: PermissionCatalog.all.lines.scope },
+	{ action: PermissionCatalog.all.lines.actions.update, scope: PermissionCatalog.all.lines.scope },
+	{ action: PermissionCatalog.all.zones.actions.nav, scope: PermissionCatalog.all.zones.scope },
+];
+
+/* * */
 
 export class ZonesController {
 	//
@@ -114,7 +121,17 @@ export class ZonesController {
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Zone[]>) {
 		//
 
-		const queryFilters: Filter<Zone> = getOfferCatalogAgencyFilter(request.permissions, 'zones');
+		const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
+			checks: ZONES_READ_PERMISSION_CHECKS,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+		});
+
+		if (!agencyAccess.allowAll && !agencyAccess.values.length) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read zones');
+		}
+
+		const queryFilters: Filter<Zone> = agencyAccess.allowAll ? {} : { agency_ids: { $in: agencyAccess.values } };
 
 		//
 		// Fetch zones based on query filters
@@ -142,7 +159,15 @@ export class ZonesController {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
 		}
 
-		if (!hasOfferCatalogResourceReadAccess(request.permissions, 'zones', zoneData.agency_ids)) {
+		const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
+			checks: ZONES_READ_PERMISSION_CHECKS,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+		});
+
+		const canReadZone = agencyAccess.allowAll || zoneData.agency_ids.some(agencyId => agencyAccess.values.includes(agencyId));
+
+		if (!canReadZone) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this zone');
 		}
 

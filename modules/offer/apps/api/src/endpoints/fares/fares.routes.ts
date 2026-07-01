@@ -1,7 +1,6 @@
 /* * */
 
 import { FaresController } from '@/endpoints/fares/fares.controller.js';
-import { catalogReadPermissionMiddleware } from '@/middleware/catalog-read-authorization.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -19,13 +18,19 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: [authorizationMiddleware(), catalogReadPermissionMiddleware('fares')] },
+			{ preHandler: authorizationMiddleware([
+				{ actions: [PermissionCatalog.all.fares.actions.nav], scope: PermissionCatalog.all.fares.scope },
+				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
+			]) },
 			FaresController.getAll,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: [authorizationMiddleware(), catalogReadPermissionMiddleware('fares')] },
+			{ preHandler: authorizationMiddleware([
+				{ actions: [PermissionCatalog.all.fares.actions.nav], scope: PermissionCatalog.all.fares.scope },
+				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
+			]) },
 			FaresController.getById,
 		);
 
