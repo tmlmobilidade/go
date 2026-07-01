@@ -21,12 +21,12 @@
 	"dependencies": {
 		"@helperkits/timer": "20240627.34.23",
 		"@tmlmobilidade/go-stops-pckg-organize": "*",
+		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"adm-zip": "^0.5.17",
-		"papaparse": "^5.5.3"
+		"adm-zip": "^0.5.17"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

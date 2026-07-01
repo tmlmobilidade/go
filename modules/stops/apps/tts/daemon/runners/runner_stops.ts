@@ -6,7 +6,6 @@ import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
 import { piperTtsApi } from '../services/piperTtsApi.js';
-import { Tracker } from '../services/Tracker.js';
 
 /* * */
 
@@ -15,8 +14,6 @@ export async function runnerStops() {
 
 	Logger.title(`TTS STOPS`);
 	const globalTimer = new TIMETRACKER();
-
-	const trackerData = Tracker.get('stops');
 
 	console.log('* Fetching all stops from database...');
 	const allStopsData = await stops.all();
@@ -41,10 +38,7 @@ export async function runnerStops() {
 		});
 
 		const stopId = stopData._id.toString();
-		const trackerEntry = trackerData.find(item => item.id === stopId);
-		const ttsHasChanged = stopTts !== trackerEntry?.tts;
-
-		if (ttsHasChanged && stopTts && stopTts !== '#N/A') {
+		if (stopTts && stopTts !== '#N/A') {
 			Logger.info({
 				message: `[${stopIndex + 1}/${allStopsData.length}] Generating for Stop ${stopData._id} - ${stopTts}`,
 			});
@@ -55,8 +49,6 @@ export async function runnerStops() {
 				string: stopTts,
 			});
 		}
-
-		if (ttsHasChanged || !trackerEntry) Tracker.upsert('stops', { id: stopId, tts: stopTts });
 
 		//
 	}

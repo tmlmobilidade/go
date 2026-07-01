@@ -2,11 +2,10 @@
 
 import { makePattern } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
+import { type HubLine, type HubPattern } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
-import { type HubLine, type HubPattern } from '@tmlmobilidade/types';
 
 import { piperTtsApi } from '../services/piperTtsApi.js';
-import { Tracker } from '../services/Tracker.js';
 
 /* * */
 
@@ -15,8 +14,6 @@ export async function runnerPatterns() {
 
 	Logger.title(`TTS PATTERNS`);
 	const globalTimer = new TIMETRACKER();
-
-	const trackerData = Tracker.get('patterns');
 
 	console.log('* Fetching all lines from API...');
 	const allLinesResponse = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/network/lines');
@@ -32,10 +29,7 @@ export async function runnerPatterns() {
 
 			const patternTts = makePattern(lineData.short_name, patternData.headsign);
 
-			const trackerEntry = trackerData.find(item => item.id === patternId);
-			const ttsHasChanged = patternTts !== trackerEntry?.tts;
-
-			if (ttsHasChanged && patternTts && patternTts !== '#N/A') {
+			if (patternTts && patternTts !== '#N/A') {
 				Logger.info({
 					message: `[${lineIndex + 1}/${allLinesData.length}] [${patternIndex + 1}/${lineData.pattern_ids.length}] Generating | Line ${lineData._id} | Pattern ${patternData._id} | ${patternTts}`,
 				});
@@ -46,8 +40,6 @@ export async function runnerPatterns() {
 					string: patternTts,
 				});
 			}
-
-			if (ttsHasChanged || !trackerEntry) Tracker.upsert('patterns', { id: patternId, tts: patternTts });
 		}
 	}
 
