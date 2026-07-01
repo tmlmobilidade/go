@@ -1,4 +1,4 @@
-import { type Agency } from '@tmlmobilidade/types';
+import type { Agency } from '@tmlmobilidade/types';
 
 /* * */
 

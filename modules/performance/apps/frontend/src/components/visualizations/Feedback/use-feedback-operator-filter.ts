@@ -1,12 +1,13 @@
 /* * */
 
+import type { FeedbackEntityType } from './feedback-metrics';
+import type { PublicFeedback } from '@tmlmobilidade/types';
+
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PublicFeedback } from '@tmlmobilidade/types';
 import { useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
-import { getOperatorName, sortOperatorsByCode } from './feedback-home/utils/operators';
-import { type FeedbackEntityType } from './feedback-metrics';
+import { getOperatorName, sortOperatorsByCode } from './operators';
 
 /* * */
 
@@ -24,12 +25,14 @@ export function useFeedbackOperatorFilter(rows: PublicFeedback[] | undefined, en
 	//
 	// C. Transform data
 
-	const filteredRows = useMemo(() => {
-		if (!rows?.length || !selectedAgencyIds.length) return rows ?? [];
+	const selectedAgencyIdsSet = useMemo(() => new Set(selectedAgencyIds), [selectedAgencyIds]);
 
-		const selectedAgencyIdsSet = new Set(selectedAgencyIds);
+	const filteredRows = useMemo(() => {
+		if (!rows) return [];
+		if (selectedAgencyIdsSet.size === 0) return rows;
+
 		return rows.filter(row => selectedAgencyIdsSet.has(row.agency_id));
-	}, [rows, selectedAgencyIds]);
+	}, [rows, selectedAgencyIdsSet]);
 
 	const operatorOptions = useMemo(() => {
 		const agencyIdsWithFeedback = new Set(
@@ -41,17 +44,17 @@ export function useFeedbackOperatorFilter(rows: PublicFeedback[] | undefined, en
 		return sortOperatorsByCode(operatorsData)
 			.filter(operator => agencyIdsWithFeedback.has(operator._id))
 			.map(operator => ({
-				checked: selectedAgencyIds.includes(operator._id),
+				checked: selectedAgencyIdsSet.has(operator._id),
 				label: `${operator._id} - ${getOperatorName(operator)}`,
 				value: operator._id,
 			}));
-	}, [entityType, operatorsData, rows, selectedAgencyIds]);
+	}, [entityType, operatorsData, rows, selectedAgencyIdsSet]);
 
 	//
 	// D. Return value
 
 	return {
-		isActive: selectedAgencyIds.length > 0,
+		isActive: selectedAgencyIdsSet.size > 0,
 		onChange: setSelectedAgencyIds,
 		options: operatorOptions,
 		rows: filteredRows,

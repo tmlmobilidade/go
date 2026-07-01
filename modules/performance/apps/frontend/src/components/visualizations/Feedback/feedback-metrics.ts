@@ -10,7 +10,15 @@ export type FeedbackEntityType = PublicFeedback['entity_type'];
 export interface FeedbackEntityMetrics {
 	entityId: string
 	feedbackCount: number
+	operatorId?: string
 	satisfactionIndex: number
+}
+
+interface FeedbackEntityMetricCounts {
+	feedbackCount: number
+	happyFeedbackCount: number
+	operatorId?: string
+	unhappyFeedbackCount: number
 }
 
 /* * */
@@ -35,7 +43,7 @@ export function getFeedbackSatisfactionStatus(value?: number): SystemStatusType 
 }
 
 export function getFeedbackMetricsByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackEntityMetrics[] {
-	const groupedFeedback = new Map<string, { feedbackCount: number, happyFeedbackCount: number, unhappyFeedbackCount: number }>();
+	const groupedFeedback = new Map<string, FeedbackEntityMetricCounts>();
 
 	for (const row of rows) {
 		if (row.entity_type !== entityType) continue;
@@ -45,6 +53,7 @@ export function getFeedbackMetricsByEntity(rows: PublicFeedback[], entityType: F
 		groupedFeedback.set(row.entity_id, {
 			feedbackCount: (current?.feedbackCount ?? 0) + 1,
 			happyFeedbackCount: (current?.happyFeedbackCount ?? 0) + (row.mood === 'happy' ? 1 : 0),
+			operatorId: current?.operatorId ?? row.agency_id,
 			unhappyFeedbackCount: (current?.unhappyFeedbackCount ?? 0) + (row.mood === 'unhappy' ? 1 : 0),
 		});
 	}
@@ -53,6 +62,7 @@ export function getFeedbackMetricsByEntity(rows: PublicFeedback[], entityType: F
 		.map(([entityId, feedbackData]) => ({
 			entityId,
 			feedbackCount: feedbackData.feedbackCount,
+			operatorId: feedbackData.operatorId,
 			satisfactionIndex: calculateFeedbackSatisfactionIndex(feedbackData.happyFeedbackCount, feedbackData.unhappyFeedbackCount),
 		}))
 		.sort((entityA, entityB) => entityB.feedbackCount - entityA.feedbackCount);

@@ -1,8 +1,7 @@
 /* * */
 
+import type { FeedbackEntityMetrics } from './feedback-metrics';
 import type { PublicFeedback } from '@tmlmobilidade/types';
-
-import { type FeedbackEntityMetrics } from './feedback-metrics';
 
 /* * */
 
@@ -119,6 +118,11 @@ interface LineFeedbackReasonEntry {
 	label: string
 }
 
+interface LineFeedbackReasonWeight {
+	label: string
+	weight: number
+}
+
 /* * */
 
 function clampPercentage(value: number) {
@@ -166,31 +170,21 @@ function getLineFeedbackReasonEntries(reasons: string[]): LineFeedbackReasonEntr
 	}));
 }
 
+function createCategoryRecord<T>(createValue: () => T) {
+	return Object.fromEntries(
+		LINE_CONTRIBUTION_CATEGORIES.map(category => [category.id, createValue()]),
+	) as Record<FeedbackLineContributionCategory, T>;
+}
+
 function getInitialCategoryWeights() {
-	return LINE_CONTRIBUTION_CATEGORIES.reduce<Record<FeedbackLineContributionCategory, number>>((result, category) => {
-		result[category.id] = 0;
-		return result;
-	}, {
-		driver: 0,
-		line_service: 0,
-		unknown: 0,
-		vehicle: 0,
-	});
+	return createCategoryRecord(() => 0);
 }
 
 function getInitialReasonWeights() {
-	return LINE_CONTRIBUTION_CATEGORIES.reduce<Record<FeedbackLineContributionCategory, Map<string, { label: string, weight: number }>>>((result, category) => {
-		result[category.id] = new Map();
-		return result;
-	}, {
-		driver: new Map(),
-		line_service: new Map(),
-		unknown: new Map(),
-		vehicle: new Map(),
-	});
+	return createCategoryRecord(() => new Map<string, LineFeedbackReasonWeight>());
 }
 
-function addReasonWeight(reasonWeights: Map<string, { label: string, weight: number }>, reason: LineFeedbackReasonEntry, weight: number) {
+function addReasonWeight(reasonWeights: Map<string, LineFeedbackReasonWeight>, reason: LineFeedbackReasonEntry, weight: number) {
 	const currentReasonWeight = reasonWeights.get(reason.id);
 
 	reasonWeights.set(reason.id, {
@@ -199,7 +193,7 @@ function addReasonWeight(reasonWeights: Map<string, { label: string, weight: num
 	});
 }
 
-function getReasonMeters(reasonWeights: Map<string, { label: string, weight: number }>, categoryWeight: number): FeedbackLineContributionReasonMeter[] {
+function getReasonMeters(reasonWeights: Map<string, LineFeedbackReasonWeight>, categoryWeight: number): FeedbackLineContributionReasonMeter[] {
 	if (categoryWeight === 0) return [];
 
 	const reasonEntries = Array.from(reasonWeights.entries()).map(([id, reason]) => ({

@@ -10,8 +10,8 @@ import styles from '../../styles.module.css';
 
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '../../feedback-metrics';
 import { FeedbackMetricTag } from '../../FeedbackMetricTag';
-import { getOperatorLogoSrc } from '../utils/operator-logo';
-import { compareOperatorsByCode, getOperatorName } from '../utils/operators';
+import { getOperatorLogoSrc } from '../../operator-logo';
+import { compareOperatorsByCode, getOperatorName } from '../../operators';
 
 /* * */
 
