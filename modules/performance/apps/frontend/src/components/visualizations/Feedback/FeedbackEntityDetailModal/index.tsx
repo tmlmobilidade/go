@@ -9,7 +9,7 @@ import type { FeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
 import { CloseButton, Divider, Label, Modal, Pane, Section, Toolbar } from '@tmlmobilidade/ui';
 
-import styles from '../../styles.module.css';
+import styles from '../styles.module.css';
 
 import { FeedbackMetricTag } from '../FeedbackMetricTag';
 import { LineContributionBreakdown } from '../LineContributionBreakdown';

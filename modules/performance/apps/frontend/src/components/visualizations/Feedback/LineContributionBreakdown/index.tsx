@@ -10,7 +10,7 @@ import { formatSatisfactionIndex } from '@/utils/feedback/feedback-metrics';
 import { BarChart, Label, Section } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 
-import styles from '../../styles.module.css';
+import styles from '../styles.module.css';
 
 /* * */
 
