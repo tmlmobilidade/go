@@ -14,6 +14,7 @@ import styles from '../styles.module.css';
 import { FeedbackMetricTag } from '../FeedbackMetricTag';
 import { LineContributionBreakdown } from '../LineContributionBreakdown';
 import { OperatorLogo } from '../OperatorLogo';
+import { StopReasonBreakdown } from '../StopReasonBreakdown';
 
 /* * */
 
@@ -77,6 +78,13 @@ export function FeedbackEntityDetailModal({ item, onClose }: FeedbackEntityDetai
 					{item.lineContributionMeters && (
 						<>
 							<LineContributionBreakdown entityId={item.id} meters={item.lineContributionMeters} />
+							<Divider />
+						</>
+					)}
+
+					{item.stopReasonMeters && (
+						<>
+							<StopReasonBreakdown entityId={item.id} meters={item.stopReasonMeters} />
 							<Divider />
 						</>
 					)}
