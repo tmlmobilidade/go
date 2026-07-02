@@ -16,7 +16,7 @@ import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubPattern, type HubShape } from '@tmlmobilidade/types';
+import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
 import { type MapLayerMouseEvent, useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';

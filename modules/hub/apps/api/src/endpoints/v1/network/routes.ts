@@ -1,6 +1,5 @@
 /* * */
 
-import { getLegacyStopsMap } from '@/endpoints/v1/network/controllers/get-legacy-stops-map.js';
 import { getLines } from '@/endpoints/v1/network/controllers/get-lines.js';
 import { getPattern } from '@/endpoints/v1/network/controllers/get-pattern.js';
 import { getRoutes } from '@/endpoints/v1/network/controllers/get-routes.js';
@@ -21,8 +20,6 @@ server.register(
 		//
 
 		instance.get('/stops', getStops);
-
-		instance.get('/legacy-stops-map', getLegacyStopsMap);
 
 		instance.get('/lines', getLines);
 

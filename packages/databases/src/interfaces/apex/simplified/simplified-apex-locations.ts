@@ -12,7 +12,7 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexLocation> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
-	created_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	created_at: { type: 'Int64' },
 	device_id: { type: 'LowCardinality(String)' },
 	is_ok: { type: 'Bool' },
 	is_ok_pcgi: { type: 'Bool' },
@@ -21,10 +21,10 @@ const tableSchema: ClickHouseTableSchema<SimplifiedApexLocation> = {
 	mac_sam_serial_number: { type: 'UInt64' },
 	operational_date: { type: 'UInt32' },
 	pattern_id: { type: 'LowCardinality(Nullable(String))' },
-	received_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	received_at: { type: 'Int64' },
 	stop_id: { type: 'LowCardinality(Nullable(String))' },
 	trip_id: { type: 'Nullable(String)' },
-	updated_at: { type: 'DateTime64(3, \'UTC\') CODEC(Delta, ZSTD)' },
+	updated_at: { type: 'Int64' },
 	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 

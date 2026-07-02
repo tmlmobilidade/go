@@ -3,7 +3,7 @@
 import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
-import { type HubAlert } from '@tmlmobilidade/types';
+import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 
 import styles from './styles.module.css';
 

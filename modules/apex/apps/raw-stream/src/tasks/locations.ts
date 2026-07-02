@@ -1,6 +1,7 @@
 /* * */
 
 import { simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionLocationV30IntoSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
@@ -9,7 +10,8 @@ import { BatchWriter } from '@tmlmobilidade/utils';
 /* * */
 
 const writer = new BatchWriter<SimplifiedApexLocation>({
-	batch_size: 500,
+	batch_size: 10_000,
+	batch_timeout: 30_000,
 	insertFn: async (data) => {
 		await simplifiedApexLocationsNew.insert('JSONEachRow', data);
 	},
@@ -34,7 +36,7 @@ export async function processRawApexTransactionLocation(databaseOperation) {
 		let parseResult: null | SimplifiedApexLocation = null;
 		if (databaseOperation.fullDocument.version === 'location-3.0') parseResult = parseRawApexTransactionLocationV30IntoSimplifiedApexLocation(databaseOperation.fullDocument);
 		if (!parseResult) return;
-		await writer.write(parseResult);
+		await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 	} catch (error) {
 		Logger.error({ message: `Error transforming APEX Location: ${databaseOperation.fullDocument.transaction.transactionId}: Reason: ${error.message}` });
 	}

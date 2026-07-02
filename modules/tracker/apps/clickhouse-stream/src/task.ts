@@ -1,8 +1,8 @@
 /* * */
 
 import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
+import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
-import { invalidateRides } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { type ChangeStreamInsertDocument } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
@@ -45,7 +45,7 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 	//
 	// Write the new vehicle event document to the SimplifiedVehicleEvents collection
 
-	await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: invalidateRides });
+	await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });
 
 	//
 };

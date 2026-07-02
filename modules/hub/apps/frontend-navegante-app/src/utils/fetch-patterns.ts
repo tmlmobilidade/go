@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubPattern } from '@tmlmobilidade/types';
+import { type HubPattern } from '@tmlmobilidade/go-types-public-info';
 
 /**
  * Fetch one or more patterns by their IDs in parallel.

@@ -3,7 +3,7 @@
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { type HubLine, type HubStop } from '@tmlmobilidade/types';
+import { type HubLine, type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 

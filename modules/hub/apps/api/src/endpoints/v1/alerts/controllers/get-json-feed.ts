@@ -3,8 +3,8 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
-import { type HubAlert } from '@tmlmobilidade/types';
 
 /**
  * Returns a JSON feed with service alerts.

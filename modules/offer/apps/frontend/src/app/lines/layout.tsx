@@ -10,18 +10,18 @@ import { type PropsWithChildren } from 'react';
 
 export default function Layout({ children }: PropsWithChildren) {
 	return (
-		<PanesManager
-			id="lines"
-			panes={[
-				<MeContextProvider>
-					<DataProviders>
-						<LinesListContextProvider>
-							<LinesList />
-						</LinesListContextProvider>
-					</DataProviders>
-				</MeContextProvider>,
-				children,
-			]}
-		/>
+		<MeContextProvider>
+			<DataProviders>
+				<LinesListContextProvider>
+					<PanesManager
+						id="lines"
+						panes={[
+							<LinesList key="lines-list" />,
+							children,
+						]}
+					/>
+				</LinesListContextProvider>
+			</DataProviders>
+		</MeContextProvider>
 	);
 }
