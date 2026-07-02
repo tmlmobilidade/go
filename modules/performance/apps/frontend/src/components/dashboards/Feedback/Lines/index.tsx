@@ -11,7 +11,7 @@ import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-lin
 import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
 import { buildLineLabelsById, getLineLabel } from '@/utils/feedback/network-labels';
 import { type HubLine, type PublicFeedback } from '@tmlmobilidade/types';
-import { FilterTypeList, Table, Text } from '@tmlmobilidade/ui';
+import { FilterTypeList, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -19,10 +19,33 @@ import styles from './styles.module.css';
 
 /* * */
 
+type FeedbackEntitySortMode = 'feedback_count_desc' | 'satisfaction_asc' | 'satisfaction_desc';
+
+const FEEDBACK_ENTITY_SORT_OPTIONS: { label: string, value: FeedbackEntitySortMode }[] = [
+	{ label: 'Feedbacks', value: 'feedback_count_desc' },
+	{ label: 'Maior índice', value: 'satisfaction_desc' },
+	{ label: 'Menor índice', value: 'satisfaction_asc' },
+];
+
+function sortLines(lines: ReturnType<typeof getFeedbackMetricsByEntity>, sortMode: FeedbackEntitySortMode, linesById: Map<string, string>) {
+	return [...lines].sort((lineA, lineB) => {
+		const feedbackCountDiff = lineB.feedbackCount - lineA.feedbackCount;
+		const labelDiff = getLineLabel(lineA.entityId, linesById).localeCompare(getLineLabel(lineB.entityId, linesById), 'pt-PT');
+		const satisfactionDiff = lineA.satisfactionIndex - lineB.satisfactionIndex;
+
+		if (sortMode === 'feedback_count_desc') return feedbackCountDiff || labelDiff;
+		if (sortMode === 'satisfaction_asc') return satisfactionDiff || feedbackCountDiff || labelDiff;
+		return (satisfactionDiff * -1) || feedbackCountDiff || labelDiff;
+	});
+}
+
+/* * */
+
 export function FeedbackLines() {
 	//
 	// A. Setup variables
 
+	const [lineSortMode, setLineSortMode] = useState<FeedbackEntitySortMode>('feedback_count_desc');
 	const [selectedLine, setSelectedLine] = useState<FeedbackEntitySummary>();
 
 	//
@@ -37,7 +60,8 @@ export function FeedbackLines() {
 	const operatorFilter = useFeedbackOperatorFilter(data, 'line');
 
 	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
-	const lines = useMemo(() => getFeedbackMetricsByEntity(operatorFilter.rows, 'line'), [operatorFilter.rows]);
+	const lineMetrics = useMemo(() => getFeedbackMetricsByEntity(operatorFilter.rows, 'line'), [operatorFilter.rows]);
+	const lines = useMemo(() => sortLines(lineMetrics, lineSortMode, linesById), [lineMetrics, lineSortMode, linesById]);
 
 	//
 	// D. Handle actions
@@ -48,6 +72,10 @@ export function FeedbackLines() {
 
 	const handleCloseLineDetail = () => {
 		setSelectedLine(undefined);
+	};
+
+	const handleChangeLineSortMode = (value: FeedbackEntitySortMode) => {
+		setLineSortMode(value);
 	};
 
 	const handleLineKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, line: typeof lines[number]) => {
@@ -61,66 +89,75 @@ export function FeedbackLines() {
 
 	return (
 		<>
-			<ContainerWrapper className={styles.container} padding="0">
-				<div className={styles.header}>
-					<h2 className={styles.title}>Todas as linhas</h2>
-
-					<div className={styles.headerFilters}>
-						<FilterTypeList
-							active={operatorFilter.isActive}
-							label="Operador"
-							onChange={operatorFilter.onChange}
-							options={operatorFilter.options}
-							isMultiple
-							withToggleAll
-						/>
-					</div>
+			<div className={styles.dashboardContent}>
+				<div className={styles.pageFilters}>
+					<FilterTypeList
+						active={operatorFilter.isActive}
+						label="Operador"
+						onChange={operatorFilter.onChange}
+						options={operatorFilter.options}
+						isMultiple
+						withToggleAll
+					/>
 				</div>
 
-				<div className={styles.content}>
-					{isLoading && <p className={styles.text}>A carregar linhas...</p>}
-					{error && <p className={styles.text}>Erro ao carregar linhas.</p>}
-					{!isLoading && !error && lines.length === 0 && <p className={styles.text}>Sem linhas para mostrar.</p>}
+				<ContainerWrapper className={styles.container} padding="0">
+					<div className={styles.header}>
+						<h2 className={styles.title}>Todas as linhas</h2>
 
-					{!isLoading && !error && lines.length > 0 && (
-						<div className={styles.tableWrapper}>
-							<Table highlightOnHover striped>
-								<Table.Thead>
-									<Table.Tr>
-										<Table.Th>Linha</Table.Th>
-										<Table.Th>Feedbacks</Table.Th>
-										<Table.Th>Índice de satisfação</Table.Th>
-									</Table.Tr>
-								</Table.Thead>
-
-								<Table.Tbody>
-									{lines.map(line => (
-										<Table.Tr
-											key={line.entityId}
-											aria-label={`Abrir detalhe da linha ${getLineLabel(line.entityId, linesById)}`}
-											className={styles.tableRowButton}
-											onClick={() => handleOpenLineDetail(line)}
-											onKeyDown={event => handleLineKeyDown(event, line)}
-											role="button"
-											tabIndex={0}
-										>
-											<Table.Td>
-												<Text>{getLineLabel(line.entityId, linesById)}</Text>
-											</Table.Td>
-											<Table.Td>
-												<FeedbackMetricTag label={line.feedbackCount.toLocaleString('pt-PT')} />
-											</Table.Td>
-											<Table.Td>
-												<FeedbackMetricTag label={formatSatisfactionIndex(line.satisfactionIndex)} status={getFeedbackSatisfactionStatus(line.satisfactionIndex)} />
-											</Table.Td>
-										</Table.Tr>
-									))}
-								</Table.Tbody>
-							</Table>
+						<div className={styles.headerControls}>
+							<div className={styles.sortControl}>
+								<h3 className={styles.controlLabel}>Ordenar</h3>
+								<SegmentedControl data={FEEDBACK_ENTITY_SORT_OPTIONS} onChange={handleChangeLineSortMode} value={lineSortMode} />
+							</div>
 						</div>
-					)}
-				</div>
-			</ContainerWrapper>
+					</div>
+
+					<div className={styles.content}>
+						{isLoading && <p className={styles.text}>A carregar linhas...</p>}
+						{error && <p className={styles.text}>Erro ao carregar linhas.</p>}
+						{!isLoading && !error && lines.length === 0 && <p className={styles.text}>Sem linhas para mostrar.</p>}
+
+						{!isLoading && !error && lines.length > 0 && (
+							<div className={styles.tableWrapper}>
+								<Table highlightOnHover striped>
+									<Table.Thead>
+										<Table.Tr>
+											<Table.Th>Linha</Table.Th>
+											<Table.Th>Feedbacks</Table.Th>
+											<Table.Th>Índice de satisfação</Table.Th>
+										</Table.Tr>
+									</Table.Thead>
+
+									<Table.Tbody>
+										{lines.map(line => (
+											<Table.Tr
+												key={line.entityId}
+												aria-label={`Abrir detalhe da linha ${getLineLabel(line.entityId, linesById)}`}
+												className={styles.tableRowButton}
+												onClick={() => handleOpenLineDetail(line)}
+												onKeyDown={event => handleLineKeyDown(event, line)}
+												role="button"
+												tabIndex={0}
+											>
+												<Table.Td>
+													<Text>{getLineLabel(line.entityId, linesById)}</Text>
+												</Table.Td>
+												<Table.Td>
+													<FeedbackMetricTag label={line.feedbackCount.toLocaleString('pt-PT')} />
+												</Table.Td>
+												<Table.Td>
+													<FeedbackMetricTag label={formatSatisfactionIndex(line.satisfactionIndex)} status={getFeedbackSatisfactionStatus(line.satisfactionIndex)} />
+												</Table.Td>
+											</Table.Tr>
+										))}
+									</Table.Tbody>
+								</Table>
+							</div>
+						)}
+					</div>
+				</ContainerWrapper>
+			</div>
 
 			<FeedbackEntityDetailModal item={selectedLine} onClose={handleCloseLineDetail} />
 		</>
