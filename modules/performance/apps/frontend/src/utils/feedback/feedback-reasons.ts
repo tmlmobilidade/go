@@ -27,7 +27,7 @@ interface FeedbackReasonEntry {
 
 /* * */
 
-const TOP_REASON_LIMIT = 5;
+const TOP_REASON_LIMIT = 6;
 
 const FEEDBACK_REASON_CHART_COLORS = [
 	'var(--chart-color-1)',
@@ -164,20 +164,8 @@ function getSortedFeedbackReasonEntries(rows: PublicFeedback[], entityType: Feed
 		.sort((reasonA, reasonB) => reasonB.value - reasonA.value || reasonA.name.localeCompare(reasonB.name, 'pt-PT'));
 }
 
-function getGroupedFeedbackReasonEntries(reasonEntries: FeedbackReasonEntry[]) {
-	if (reasonEntries.length <= TOP_REASON_LIMIT) return reasonEntries;
-
-	const topReasons = reasonEntries.slice(0, TOP_REASON_LIMIT);
-	const otherReasonsValue = reasonEntries.slice(TOP_REASON_LIMIT).reduce((total, reason) => total + reason.value, 0);
-
-	return [
-		...topReasons,
-		{
-			id: 'other_reasons',
-			name: 'Outros',
-			value: otherReasonsValue,
-		},
-	];
+function getVisibleFeedbackReasonEntries(reasonEntries: FeedbackReasonEntry[]) {
+	return reasonEntries.slice(0, TOP_REASON_LIMIT);
 }
 
 function buildTrendPoint(dayKey: string, series: string[]) {
@@ -192,15 +180,14 @@ function buildTrendPoint(dayKey: string, series: string[]) {
 /* * */
 
 export function getTopFeedbackReasonsByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackReasonChartSlice[] {
-	return buildChartSlices(getGroupedFeedbackReasonEntries(getSortedFeedbackReasonEntries(rows, entityType)));
+	return buildChartSlices(getVisibleFeedbackReasonEntries(getSortedFeedbackReasonEntries(rows, entityType)));
 }
 
 export function getTopFeedbackReasonsTrendByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackReasonTrendChartData {
 	const reasonEntries = getSortedFeedbackReasonEntries(rows, entityType);
-	const groupedReasonEntries = getGroupedFeedbackReasonEntries(reasonEntries);
-	const topReasonNamesById = new Map(groupedReasonEntries.map(reason => [reason.id, reason.name]));
-	const hasOtherReasonGroup = reasonEntries.length > TOP_REASON_LIMIT;
-	const series = groupedReasonEntries.map(reason => reason.name);
+	const visibleReasonEntries = getVisibleFeedbackReasonEntries(reasonEntries);
+	const topReasonNamesById = new Map(visibleReasonEntries.map(reason => [reason.id, reason.name]));
+	const series = visibleReasonEntries.map(reason => reason.name);
 	const chartByDay = new Map<string, Record<string, number | string | undefined>>();
 	let sum = 0;
 
@@ -211,7 +198,9 @@ export function getTopFeedbackReasonsTrendByEntity(rows: PublicFeedback[], entit
 		const trendPoint = chartByDay.get(dayKey) ?? buildTrendPoint(dayKey, series);
 
 		for (const reason of getFeedbackReasonsForRow(row)) {
-			const seriesName = topReasonNamesById.get(reason) ?? (hasOtherReasonGroup ? 'Outros' : getFeedbackReasonLabel(reason));
+			const seriesName = topReasonNamesById.get(reason);
+			if (!seriesName) continue;
+
 			const currentValue = Number(trendPoint[seriesName] ?? 0);
 			const currentTotal = Number(trendPoint.total_qty ?? 0);
 

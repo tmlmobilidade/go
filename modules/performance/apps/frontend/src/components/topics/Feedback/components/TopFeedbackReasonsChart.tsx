@@ -20,6 +20,51 @@ interface TopFeedbackReasonsChartProps {
 
 /* * */
 
+const TREND_Y_AXIS_TARGET_TICK_COUNT = 5;
+
+function getTrendValues(trendData: FeedbackReasonTrendChartData) {
+	const values: number[] = [];
+
+	for (const chartPoint of trendData.chart) {
+		for (const seriesName of trendData.series) {
+			const value = Number(chartPoint[seriesName] ?? 0);
+			if (value > 0) values.push(value);
+		}
+	}
+
+	return values;
+}
+
+function getNiceTickStep(rawStep: number) {
+	const magnitude = 10 ** Math.floor(Math.log10(rawStep));
+	const normalizedStep = rawStep / magnitude;
+
+	if (normalizedStep <= 1) return magnitude;
+	if (normalizedStep <= 2.5) return 2 * magnitude;
+	if (normalizedStep <= 7.5) return 5 * magnitude;
+
+	return 10 * magnitude;
+}
+
+function getTrendYAxisConfig(values: number[]) {
+	if (values.length === 0) return { max: 1, ticks: [0, 1] };
+
+	const maxValue = Math.max(...values);
+	const paddedMaxValue = maxValue * 1.12;
+	const rawTickStep = Math.max(1, paddedMaxValue / (TREND_Y_AXIS_TARGET_TICK_COUNT - 1));
+	const tickStep = getNiceTickStep(rawTickStep);
+	const axisMax = Math.max(tickStep, Math.ceil(paddedMaxValue / tickStep) * tickStep);
+	const ticks = [];
+
+	for (let tick = 0; tick <= axisMax; tick += tickStep) {
+		ticks.push(tick);
+	}
+
+	return { max: axisMax, ticks };
+}
+
+/* * */
+
 export function TopFeedbackReasonsChart({ data, title, trendData }: TopFeedbackReasonsChartProps) {
 	const trendSeries = useMemo(() => {
 		const colors = generateColors(trendData.series);
@@ -30,6 +75,9 @@ export function TopFeedbackReasonsChart({ data, title, trendData }: TopFeedbackR
 			name: reason,
 		}));
 	}, [trendData.series]);
+
+	const trendValues = useMemo(() => getTrendValues(trendData), [trendData]);
+	const trendYAxisConfig = useMemo(() => getTrendYAxisConfig(trendValues), [trendValues]);
 
 	if (data.length === 0) return null;
 
@@ -46,16 +94,22 @@ export function TopFeedbackReasonsChart({ data, title, trendData }: TopFeedbackR
 							curveType="monotone"
 							data={trendData.chart}
 							dataKey="day_detailed"
-							h={220}
+							h={260}
 							legendProps={{ verticalAlign: 'bottom' }}
 							series={trendSeries}
-							strokeWidth={5}
+							strokeWidth={4}
+							tickLine="none"
 							valueFormatter={value => value.toLocaleString('pt-PT')}
 							withDots={false}
 							withLegend={true}
 							withXAxis={true}
 							withYAxis={true}
 							xAxisProps={{ tickFormatter: getShortLabelFromDetailed }}
+							yAxisProps={{
+								allowDecimals: false,
+								domain: [0, trendYAxisConfig.max],
+								ticks: trendYAxisConfig.ticks,
+							}}
 						/>
 					</div>
 
