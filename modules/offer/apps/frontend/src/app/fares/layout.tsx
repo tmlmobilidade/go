@@ -3,14 +3,14 @@
 import { FaresList } from '@/components/fares/list/FaresList';
 import { FaresListContextProvider } from '@/components/fares/list/FaresList.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { PanesManager, PermissionGuard } from '@tmlmobilidade/ui';
+import { ErrorDisplay, HasPermission, PanesManager } from '@tmlmobilidade/ui';
 import { Fragment, type PropsWithChildren } from 'react';
 
 /* * */
 
 export default function Layout({ children }: PropsWithChildren) {
 	return (
-		<PermissionGuard action={PermissionCatalog.all.fares.actions.nav} scope={PermissionCatalog.all.fares.scope}>
+		<HasPermission action={PermissionCatalog.all.fares.actions.nav} fallback={<ErrorDisplay message="Não tem permissão para aceder a esta página." />} scope={PermissionCatalog.all.fares.scope}>
 			<PanesManager
 				id="fares"
 				panes={[
@@ -20,6 +20,6 @@ export default function Layout({ children }: PropsWithChildren) {
 					<Fragment key="detail">{children}</Fragment>,
 				]}
 			/>
-		</PermissionGuard>
+		</HasPermission>
 	);
 }
