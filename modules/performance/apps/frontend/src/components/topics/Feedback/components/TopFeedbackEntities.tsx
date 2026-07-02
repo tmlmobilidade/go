@@ -3,10 +3,12 @@
 import type { FeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
+import { FeedbackEntityDetailModal, FeedbackMetricTag, OperatorLogo } from '@/components/visualizations/Feedback';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
+import { getOperatorName } from '@/utils/feedback/operators';
+import { type Agency } from '@tmlmobilidade/types';
 import { Table, Text } from '@tmlmobilidade/ui';
-import { type KeyboardEvent, useState } from 'react';
+import { type KeyboardEvent, useMemo, useState } from 'react';
 
 import styles from '../styles.module.css';
 
@@ -15,16 +17,27 @@ import styles from '../styles.module.css';
 interface TopFeedbackEntitiesProps {
 	items: FeedbackEntitySummary[]
 	nameColumnLabel: string
+	operatorsById?: Map<string, Agency>
 	title: string
 }
 
 /* * */
 
-export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedbackEntitiesProps) {
+function getFeedbackOperatorLabel(operatorId: string, operatorsById?: Map<string, Agency>) {
+	const operator = operatorsById?.get(operatorId);
+	if (!operator) return operatorId;
+
+	return getOperatorName(operator);
+}
+
+/* * */
+
+export function TopFeedbackEntities({ items, nameColumnLabel, operatorsById, title }: TopFeedbackEntitiesProps) {
 	//
 	// A. Setup variables
 
 	const [selectedItem, setSelectedItem] = useState<FeedbackEntitySummary>();
+	const showOperatorColumn = useMemo(() => items.some(item => Boolean(item.operatorId)), [items]);
 
 	//
 	// B. Handle actions
@@ -44,16 +57,17 @@ export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedba
 
 	return (
 		<>
-			<ContainerWrapper className={`${styles.feedbackCard} ${styles.feedbackListCard}`} padding="0">
+			<ContainerWrapper className={`${styles.feedbackCard} ${styles.feedbackListCard} ${showOperatorColumn ? styles.feedbackListCardWithOperator : ''}`} padding="0">
 				<div className={styles.feedbackCardHeader}>
 					<p className={styles.cardTitle}>{title}</p>
 				</div>
 
 				<div className={styles.feedbackCardContent}>
-					<div className={styles.feedbackTableWrapper}>
+					<div className={`${styles.feedbackTableWrapper} ${showOperatorColumn ? styles.feedbackTableWrapperWithOperator : ''}`}>
 						<Table highlightOnHover striped>
 							<Table.Thead>
 								<Table.Tr>
+									{showOperatorColumn && <Table.Th>Operador</Table.Th>}
 									<Table.Th>{nameColumnLabel}</Table.Th>
 									<Table.Th>Feedbacks</Table.Th>
 									<Table.Th>Satisfação</Table.Th>
@@ -71,6 +85,17 @@ export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedba
 										role="button"
 										tabIndex={0}
 									>
+										{showOperatorColumn && (
+											<Table.Td>
+												{item.operatorId && (
+													<div className={styles.feedbackTableOperator}>
+														<OperatorLogo className={styles.operatorLogo} height={24} operatorId={item.operatorId} width={36} />
+														<Text className={styles.feedbackTableOperatorName}>{getFeedbackOperatorLabel(item.operatorId, operatorsById)}</Text>
+													</div>
+												)}
+											</Table.Td>
+										)}
+
 										<Table.Td>
 											<div className={styles.feedbackEntityDetails}>
 												<Text>{item.label}</Text>

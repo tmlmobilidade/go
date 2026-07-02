@@ -25,6 +25,7 @@ export function useFeedbackOperatorFilter(rows: PublicFeedback[] | undefined, en
 	// C. Transform data
 
 	const selectedAgencyIdsSet = useMemo(() => new Set(selectedAgencyIds), [selectedAgencyIds]);
+	const operatorsById = useMemo(() => new Map((operatorsData ?? []).map(operator => [operator._id, operator])), [operatorsData]);
 
 	const filteredRows = useMemo(() => {
 		if (!rows) return [];
@@ -55,6 +56,7 @@ export function useFeedbackOperatorFilter(rows: PublicFeedback[] | undefined, en
 	return {
 		isActive: selectedAgencyIdsSet.size > 0,
 		onChange: setSelectedAgencyIds,
+		operatorsById,
 		options: operatorOptions,
 		rows: filteredRows,
 	};

@@ -3,14 +3,15 @@
 'use client';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
+import { FeedbackEntityDetailModal, FeedbackMetricTag, OperatorLogo } from '@/components/visualizations/Feedback';
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
 import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
 import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-line-contributions';
 import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
 import { buildLineLabelsById, getLineLabel } from '@/utils/feedback/network-labels';
-import { type HubLine, type PublicFeedback } from '@tmlmobilidade/types';
+import { getOperatorName } from '@/utils/feedback/operators';
+import { type Agency, type HubLine, type PublicFeedback } from '@tmlmobilidade/types';
 import { FilterTypeList, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -37,6 +38,24 @@ function sortLines(lines: ReturnType<typeof getFeedbackMetricsByEntity>, sortMod
 		if (sortMode === 'satisfaction_asc') return satisfactionDiff || feedbackCountDiff || labelDiff;
 		return (satisfactionDiff * -1) || feedbackCountDiff || labelDiff;
 	});
+}
+
+function getOperatorLabel(operatorId: string, operatorsById: Map<string, Agency>) {
+	const operator = operatorsById.get(operatorId);
+	if (!operator) return operatorId;
+
+	return getOperatorName(operator);
+}
+
+function LineOperatorCell({ operatorId, operatorsById }: { operatorId?: string, operatorsById: Map<string, Agency> }) {
+	if (!operatorId) return <Text>-</Text>;
+
+	return (
+		<div className={styles.lineOperator}>
+			<OperatorLogo className={styles.lineOperatorLogo} height={24} operatorId={operatorId} width={36} />
+			<Text className={styles.lineOperatorName}>{getOperatorLabel(operatorId, operatorsById)}</Text>
+		</div>
+	);
 }
 
 /* * */
@@ -123,6 +142,7 @@ export function FeedbackLines() {
 								<Table highlightOnHover striped>
 									<Table.Thead>
 										<Table.Tr>
+											<Table.Th>Operador</Table.Th>
 											<Table.Th>Linha</Table.Th>
 											<Table.Th>Feedbacks</Table.Th>
 											<Table.Th>Índice de satisfação</Table.Th>
@@ -140,6 +160,9 @@ export function FeedbackLines() {
 												role="button"
 												tabIndex={0}
 											>
+												<Table.Td>
+													<LineOperatorCell operatorId={line.operatorId} operatorsById={operatorFilter.operatorsById} />
+												</Table.Td>
 												<Table.Td>
 													<Text>{getLineLabel(line.entityId, linesById)}</Text>
 												</Table.Td>
