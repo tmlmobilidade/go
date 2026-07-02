@@ -26,7 +26,8 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"adm-zip": "^0.5.17"
+		"adm-zip": "0.5.17",
+		"p-limit": "6.2.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

@@ -36,6 +36,7 @@ class TTSRequest(BaseModel):
     stop_id: str
     speed: float = TTS_SPEED
     force: bool = False
+    return_audio: bool = False
 
 
 def normalize_stop_id(stop_id: str) -> str:
@@ -100,6 +101,13 @@ def generate(req: TTSRequest):
         ], check=True)
 
         os.remove(wav_path)
+
+        if req.return_audio:
+            return FileResponse(
+                mp3_path,
+                media_type="audio/mpeg",
+                filename=f"{normalize_stop_id(req.stop_id)}.mp3",
+            )
 
         return {"generated": True, "stop_id": normalize_stop_id(req.stop_id)}
 
