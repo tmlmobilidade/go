@@ -13,6 +13,14 @@
 	overflow: hidden;
 }
 
+.feedbackListCard {
+	min-height: 460px;
+}
+
+.feedbackReasonCard {
+	min-height: 360px;
+}
+
 .feedbackCardHeader {
 	display: flex;
 	align-items: center;
@@ -60,6 +68,7 @@
 
 .listsGrid {
 	display: grid;
+	align-items: stretch;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: var(--size-spacing-lg);
 }
@@ -106,6 +115,11 @@
 
 .feedbackTableRowButton {
 	cursor: pointer;
+}
+
+.feedbackTableRowButton td {
+	height: 54px;
+	vertical-align: middle;
 }
 
 .feedbackTableRowButton:focus-visible {
@@ -252,6 +266,11 @@
 	.feedbackCardHeaderWithControls {
 		align-items: flex-start;
 		flex-direction: column;
+	}
+
+	.feedbackListCard,
+	.feedbackReasonCard {
+		min-height: 0;
 	}
 
 }

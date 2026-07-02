@@ -34,7 +34,7 @@ export function TopFeedbackReasonsChart({ data, title, trendData }: TopFeedbackR
 	if (data.length === 0) return null;
 
 	return (
-		<ContainerWrapper className={styles.feedbackCard} padding="0">
+		<ContainerWrapper className={`${styles.feedbackCard} ${styles.feedbackReasonCard}`} padding="0">
 			<div className={styles.feedbackCardHeader}>
 				<p className={styles.cardTitle}>{title}</p>
 			</div>

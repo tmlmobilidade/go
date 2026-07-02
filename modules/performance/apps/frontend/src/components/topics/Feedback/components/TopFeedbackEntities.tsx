@@ -44,7 +44,7 @@ export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedba
 
 	return (
 		<>
-			<ContainerWrapper className={styles.feedbackCard} padding="0">
+			<ContainerWrapper className={`${styles.feedbackCard} ${styles.feedbackListCard}`} padding="0">
 				<div className={styles.feedbackCardHeader}>
 					<p className={styles.cardTitle}>{title}</p>
 				</div>
@@ -74,7 +74,6 @@ export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedba
 										<Table.Td>
 											<div className={styles.feedbackEntityDetails}>
 												<Text>{item.label}</Text>
-												{item.description && <Text c="dimmed" size="sm">{item.description}</Text>}
 											</div>
 										</Table.Td>
 										<Table.Td>
