@@ -64,8 +64,8 @@ export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
 			</section>
 
 			<section className={styles.listsGrid}>
-				<TopFeedbackReasonsChart data={feedbackData.topLineReasons} title="Motivos com mais feedbacks nas linhas" />
-				<TopFeedbackReasonsChart data={feedbackData.topStopReasons} title="Motivos com mais feedbacks nas paragens" />
+				<TopFeedbackReasonsChart data={feedbackData.topLineReasons} title="Motivos com mais feedbacks nas linhas" trendData={feedbackData.topLineReasonsTrend} />
+				<TopFeedbackReasonsChart data={feedbackData.topStopReasons} title="Motivos com mais feedbacks nas paragens" trendData={feedbackData.topStopReasonsTrend} />
 			</section>
 
 			{operatorApprovals.length > 0 && (

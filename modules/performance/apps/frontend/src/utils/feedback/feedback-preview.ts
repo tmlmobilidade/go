@@ -5,7 +5,7 @@ import type { PublicFeedback } from '@tmlmobilidade/types';
 import { type FeedbackEntitySummary, getFeedbackEntitySummary } from './feedback-entities';
 import { getFeedbackLineContributionMeters } from './feedback-line-contributions';
 import { type FeedbackEntityType, getFeedbackMetricsByEntity } from './feedback-metrics';
-import { getTopFeedbackReasonsByEntity } from './feedback-reasons';
+import { getTopFeedbackReasonsByEntity, getTopFeedbackReasonsTrendByEntity } from './feedback-reasons';
 
 /* * */
 
@@ -27,8 +27,10 @@ export function getFeedbackOverviewData(rows: PublicFeedback[], linesById: Map<s
 
 	return {
 		topLineReasons: getTopFeedbackReasonsByEntity(rows, 'line'),
+		topLineReasonsTrend: getTopFeedbackReasonsTrendByEntity(rows, 'line'),
 		topLines: buildTopFeedbackList(rows, lineMetrics, 'line', linesById),
 		topStopReasons: getTopFeedbackReasonsByEntity(rows, 'stop'),
+		topStopReasonsTrend: getTopFeedbackReasonsTrendByEntity(rows, 'stop'),
 		topStops: buildTopFeedbackList(rows, stopMetrics, 'stop', stopsById),
 	};
 }
