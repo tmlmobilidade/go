@@ -14,7 +14,11 @@
 }
 
 .feedbackListCard {
-	min-height: 460px;
+	min-height: 500px;
+}
+
+.feedbackListCardWithOperator {
+	min-width: 0;
 }
 
 .feedbackReasonCard {
@@ -73,6 +77,10 @@
 	gap: var(--size-spacing-lg);
 }
 
+.feedbackEntitiesGrid {
+	grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+}
+
 .feedbackTableWrapper {
 	min-width: 0;
 	overflow-x: auto;
@@ -80,6 +88,24 @@
 
 .feedbackTableWrapper table {
 	min-width: 540px;
+}
+
+.feedbackTableWrapperWithOperator table {
+	min-width: 820px;
+}
+
+.feedbackTableOperator {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-sm);
+	min-width: 0;
+}
+
+.feedbackTableOperatorName {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .feedbackReasonVisualizationContainer {

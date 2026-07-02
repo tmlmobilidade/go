@@ -79,7 +79,7 @@
 }
 
 .tableWrapper table {
-	min-width: 640px;
+	min-width: 860px;
 }
 
 .tableWrapper th {
@@ -96,6 +96,25 @@
 .tableRowButton:focus-visible {
 	outline: 2px solid var(--color-primary);
 	outline-offset: -2px;
+}
+
+.lineOperator {
+	display: flex;
+	align-items: center;
+	gap: var(--size-spacing-sm);
+	min-width: 0;
+}
+
+.lineOperatorLogo {
+	flex: 0 0 auto;
+	object-fit: contain;
+}
+
+.lineOperatorName {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 @media (max-width: 720px) {
