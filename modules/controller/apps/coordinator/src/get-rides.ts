@@ -42,7 +42,7 @@ export async function getRides(): Promise<string[]> {
 	const standardWindowInterval = Dates.now('utc').std_window;
 
 	const latestWaitingRides = await ridesCollection
-		.find({ start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'waiting' })
+		.find({ agency_id: { $in: ['41', '42', '43', '44'] }, start_time_scheduled: { $lte: standardWindowInterval.end }, system_status: 'waiting' })
 		.sort({ start_time_scheduled: -1 })
 		.limit(750)
 		.toArray();
