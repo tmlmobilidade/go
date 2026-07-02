@@ -1,7 +1,7 @@
 /* * */
 
-import { fares, typologies } from '@tmlmobilidade/interfaces';
-import { type Fare, type FareSimplified, type Line, type Typology, type TypologySimplified } from '@tmlmobilidade/types';
+import { fares, routes, typologies } from '@tmlmobilidade/interfaces';
+import { type Fare, type FareSimplified, type Line, type LineNormalized, type Route, type RouteSimplified, type Typology, type TypologySimplified } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -25,8 +25,17 @@ function toFareSimplified(fare: Fare): FareSimplified {
 	};
 }
 
-export async function populateLines(linesData: Line[]): Promise<Line[]> {
-	if (!linesData.length) return linesData;
+async function getLinesRoutes(lineIds: string[]): Promise<(Pick<Route, 'line_id'> & RouteSimplified)[]> {
+	if (!lineIds.length) return [];
+
+	return await routes.findMany(
+		{ line_id: { $in: lineIds } },
+		{ projection: { _id: 1, code: 1, line_id: 1, name: 1 }, sort: { created_at: -1 } },
+	) as (Pick<Route, 'line_id'> & RouteSimplified)[];
+}
+
+export async function populateLines(linesData: Line[]): Promise<LineNormalized[]> {
+	if (!linesData.length) return [];
 
 	const typologyIds = [...new Set(linesData.map(line => line.typology).filter(Boolean))] as string[];
 	const fareIds = [...new Set([
@@ -42,9 +51,21 @@ export async function populateLines(linesData: Line[]): Promise<Line[]> {
 			? fares.findMany({ _id: { $in: fareIds } })
 			: Promise.resolve([]),
 	]);
+	const routesData = await getLinesRoutes(linesData.map(line => line._id));
 
 	const typologyById = new Map(typologiesData.map(typology => [typology._id, typology]));
 	const fareById = new Map(faresData.map(fare => [fare._id, fare]));
+	const routesByLineId = new Map<string, RouteSimplified[]>();
+
+	for (const route of routesData) {
+		const lineRoutes = routesByLineId.get(route.line_id) ?? [];
+		lineRoutes.push({
+			_id: route._id,
+			code: route.code,
+			name: route.name,
+		});
+		routesByLineId.set(route.line_id, lineRoutes);
+	}
 
 	return linesData.map((line) => {
 		const typology = line.typology ? typologyById.get(line.typology) : undefined;
@@ -57,12 +78,13 @@ export async function populateLines(linesData: Line[]): Promise<Line[]> {
 			...line,
 			onboard_fares_data: onboardFares.map(toFareSimplified),
 			prepaid_fare_data: prepaidFare ? toFareSimplified(prepaidFare) : null,
+			routes: routesByLineId.get(line._id) ?? [],
 			typology_data: typology ? toTypologySimplified(typology) : null,
 		};
 	});
 }
 
-export async function populateLine(lineData: Line): Promise<Line> {
+export async function populateLine(lineData: Line): Promise<LineNormalized> {
 	const [populatedLine] = await populateLines([lineData]);
 	return populatedLine;
 }

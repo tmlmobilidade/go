@@ -4,7 +4,7 @@ import { populateLine, populateLines } from '@/utils/lines.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, lines, patterns, routes } from '@tmlmobilidade/interfaces';
-import { CreateLineDto, type Line, PermissionCatalog, RouteSimplified, type UpdateLineDto } from '@tmlmobilidade/types';
+import { CreateLineDto, type Line, type LineNormalized, PermissionCatalog, type UpdateLineDto } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -16,7 +16,7 @@ export class LinesController {
 	 * @param request Fastify request containing line data
 	 * @param reply Fastify reply
 	 */
-	static async create(request: FastifyRequest<{ Body: CreateLineDto }>, reply: FastifyReply<Line>) {
+	static async create(request: FastifyRequest<{ Body: CreateLineDto }>, reply: FastifyReply<LineNormalized>) {
 		//
 
 		//
@@ -114,7 +114,7 @@ export class LinesController {
 	 * @param request Fastify request
 	 * @param reply Fastify reply
 	 */
-	static async getAll(request: FastifyRequest, reply: FastifyReply<Line[]>) {
+	static async getAll(request: FastifyRequest, reply: FastifyReply<LineNormalized[]>) {
 		//
 
 		//
@@ -159,7 +159,7 @@ export class LinesController {
 	 * @param request Fastify request containing line ID in params
 	 * @param reply Fastify reply
 	 */
-	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Line>) {
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<LineNormalized>) {
 		//
 
 		//
@@ -199,17 +199,9 @@ export class LinesController {
 		}
 
 		//
-		// Fetch routes for this line
-
-		const lineRoutes = await routes.findMany(
-			{ line_id: request.params.id },
-			{ projection: { _id: 1, code: 1, name: 1 }, sort: { created_at: -1 } },
-		) as RouteSimplified[];
-
-		//
 		// Return the line data with routes
 
-		const populatedLine = await populateLine({ ...lineData, routes: lineRoutes });
+		const populatedLine = await populateLine(lineData);
 
 		return reply.send({
 			data: populatedLine,
@@ -225,7 +217,7 @@ export class LinesController {
 	 * @param request Fastify request containing line ID in params
 	 * @param reply Fastify reply
 	 */
-	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Line>) {
+	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<LineNormalized>) {
 		//
 
 		//
@@ -283,7 +275,7 @@ export class LinesController {
 	 * @param request Fastify request containing line ID in params and update data in body
 	 * @param reply Fastify reply
 	 */
-	static async update(request: FastifyRequest<{ Body: UpdateLineDto, Params: { id: string } }>, reply: FastifyReply<Line>) {
+	static async update(request: FastifyRequest<{ Body: UpdateLineDto, Params: { id: string } }>, reply: FastifyReply<LineNormalized>) {
 		//
 
 		//

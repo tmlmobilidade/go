@@ -57,10 +57,10 @@ export const UpdateFareSchema = CreateFareSchema
 
 /* * */
 
-export const FareSimplifiedSchema = z.object({
-	_id: z.string(),
-	name: z.string(),
-	payment_method: z.enum([FARE_PAYMENT_METHOD.ONBOARD, FARE_PAYMENT_METHOD.PREPAID]),
+export const FareSimplifiedSchema = FareSchema.pick({
+	_id: true,
+	name: true,
+	payment_method: true,
 });
 
 /* * */

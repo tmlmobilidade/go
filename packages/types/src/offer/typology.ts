@@ -39,14 +39,14 @@ export const UpdateTypologySchema = CreateTypologySchema
 
 /* * */
 
-export const TypologySimplifiedSchema = z.object({
-	_id: z.string(),
-	code: z.string(),
-	color: z.string(),
-	default_onboard_fare_ids: z.array(z.string()).nullable(),
-	default_prepaid_fare_id: z.string().nullable(),
-	name: z.string(),
-	text_color: z.string(),
+export const TypologySimplifiedSchema = TypologySchema.pick({
+	_id: true,
+	code: true,
+	color: true,
+	default_onboard_fare_ids: true,
+	default_prepaid_fare_id: true,
+	name: true,
+	text_color: true,
 });
 
 /* * */
