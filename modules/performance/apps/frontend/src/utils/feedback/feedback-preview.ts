@@ -6,6 +6,7 @@ import { type FeedbackEntitySummary, getFeedbackEntitySummary } from './feedback
 import { getFeedbackLineContributionMeters } from './feedback-line-contributions';
 import { type FeedbackEntityType, getFeedbackMetricsByEntity } from './feedback-metrics';
 import { getTopFeedbackReasonsByEntity, getTopFeedbackReasonsTrendByEntity } from './feedback-reasons';
+import { getFeedbackStopReasonMeters } from './feedback-stop-reasons';
 
 /* * */
 
@@ -15,7 +16,8 @@ function buildTopFeedbackList(rows: PublicFeedback[], metrics: ReturnType<typeof
 		.map((metric) => {
 			// The contribution breakdown is only available for line details.
 			const lineContributionMeters = entityType === 'line' ? getFeedbackLineContributionMeters(rows, metric) : undefined;
-			return getFeedbackEntitySummary(metric, entityType, labelsById, lineContributionMeters);
+			const stopReasonMeters = entityType === 'stop' ? getFeedbackStopReasonMeters(rows, metric) : undefined;
+			return getFeedbackEntitySummary(metric, entityType, labelsById, lineContributionMeters, stopReasonMeters);
 		});
 }
 

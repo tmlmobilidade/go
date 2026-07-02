@@ -8,6 +8,7 @@ import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operato
 import { Routes } from '@/routes';
 import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
 import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
+import { getFeedbackStopReasonMeters } from '@/utils/feedback/feedback-stop-reasons';
 import { buildStopLabelsById, getStopLabel } from '@/utils/feedback/network-labels';
 import { type HubStop, type PublicFeedback } from '@tmlmobilidade/types';
 import { FilterTypeList, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
@@ -66,7 +67,7 @@ export function FeedbackStops() {
 	// D. Handle actions
 
 	const handleOpenStopDetail = (stop: typeof stops[number]) => {
-		setSelectedStop(getFeedbackEntitySummary(stop, 'stop', stopsById));
+		setSelectedStop(getFeedbackEntitySummary(stop, 'stop', stopsById, undefined, getFeedbackStopReasonMeters(operatorFilter.rows, stop)));
 	};
 
 	const handleCloseStopDetail = () => {
