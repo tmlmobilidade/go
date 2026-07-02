@@ -25,9 +25,7 @@ export function StopDetailTts() {
 	const stopDetailContext = useStopDetailContext();
 	const stopId = stopDetailContext.data.stop?._id;
 
-	const { data: stopTtsData, error: stopTtsError, isLoading: stopTtsLoading } = useSWR<StopTtsResponse, Error>(
-		stopId ? API_ROUTES.stops.STOPS_TTS(String(stopId)) : null,
-	);
+	const { data: stopTtsData, error: stopTtsError, isLoading: stopTtsLoading } = useSWR<StopTtsResponse, Error>(API_ROUTES.stops.STOPS_TTS(String(`tts-${stopId}`)));
 
 	const audioUrl = stopTtsData?.file?.url;
 	const audioRef = useRef<HTMLAudioElement | null>(null);

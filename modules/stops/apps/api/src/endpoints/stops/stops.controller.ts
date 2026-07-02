@@ -115,8 +115,7 @@ export class StopsController {
 	 * @param reply The reply object used to send the response.
 	 */
 	static async getTTS(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ file: File | null }>) {
-		const file = await files.findById(`tts-${request.params.id}`);
-		console.log('file', file?.url);
+		const file = await files.findById(request.params.id);
 		reply.send({ data: { file }, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
