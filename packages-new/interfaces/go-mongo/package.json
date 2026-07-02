@@ -40,6 +40,7 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"bcryptjs": "3.0.3",
 		"luxon": "3.7.2",
