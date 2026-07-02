@@ -61,8 +61,8 @@ const LINE_REASON_CATEGORIES = new Map<string, FeedbackLineContributionCategory[
 	['safety_incident', ['vehicle']],
 	['skipped_stop', ['line_service']],
 	['too_crowded', ['line_service']],
-	['traffic_law_violation', ['vehicle']],
-	['unsafe_speed', ['vehicle']],
+	['traffic_law_violation', ['driver']],
+	['unsafe_speed', ['driver']],
 	['validator_issue', ['vehicle']],
 	['wrong_panel_information', ['line_service']],
 ]);
