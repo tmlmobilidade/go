@@ -3,7 +3,7 @@
 import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, type Filter, patterns, stops } from '@tmlmobilidade/interfaces';
+import { type Filter, patterns, stops } from '@tmlmobilidade/interfaces';
 import { CreateStopSchema, type File, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
@@ -114,11 +114,17 @@ export class StopsController {
 	 * @param request The request object containing the organization ID in the params.
 	 * @param reply The reply object used to send the response.
 	 */
-	static async getTTS(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ file: File }>) {
-		// Fetch  file
-		const file = await files.findById(request.params.id);
-		// Send the response with file url
-		reply.send({ data: { file }, error: null, statusCode: HTTP_STATUS.OK });
+	static async getTTS(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ file: Pick<File, 'url'> }>) {
+		const stopId = request.params.id;
+		const storagePublicUrl = process.env.STORAGE_PUBLIC_URL ?? 'https://storage.carrismetropolitana.pt';
+		const url = `${storagePublicUrl}/static/tts/live/tts-${stopId}.mp3`;
+
+		const response = await fetch(url, { method: 'HEAD' });
+		if (!response.ok) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `TTS not found for stop ${stopId}`);
+		}
+
+		reply.send({ data: { file: { url } }, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**

@@ -51,13 +51,13 @@ export async function runnerStops() {
 
 			const audioBuffer = await getPiperTtsAudio(stopId);
 			await files.upload(audioBuffer, {
-				_id: stopId,
+				_id: `tts-${stopId}`,
 				created_by: 'system',
 				name: `${stopId}.mp3`,
 				resource_id: 'tts/live',
 				scope: 'static',
 				size: audioBuffer.byteLength,
-				type: 'audio/mpeg',
+				type: 'audio/mp3',
 				updated_by: 'system',
 			}, { override: true });
 		}

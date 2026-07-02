@@ -3,14 +3,13 @@
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { StopDetailCoordinatesModal } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal';
 import { StopDetailNamesModal } from '@/components/stops/detail/StopDetailCoordinates/StopDetailNamesModal';
+import { StopDetailTts } from '@/components/stops/detail/StopDetailTts';
 import { Translations } from '@/lib/translations';
 import { IconEdit } from '@tabler/icons-react';
 import { LifecycleStatusSchema } from '@tmlmobilidade/types';
 import { Collapsible, Grid, Section, SegmentedControl, useMeContext, ValueDisplay } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
-
-import { StopDetailPlayTTS } from '../StopDetailPlayTTS';
 
 /* * */
 
@@ -111,7 +110,7 @@ export function StopDetailsSectionGeneral() {
 
 			<Section>
 				<Grid columns="a">
-					<StopDetailPlayTTS />
+					<StopDetailTts />
 				</Grid>
 			</Section>
 

@@ -1,18 +1,14 @@
 'use client';
 
-import { IconPlayerPause, IconVolume } from '@tabler/icons-react';
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
+import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type File } from '@tmlmobilidade/types';
+import { Button } from '@tmlmobilidade/ui';
 import { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
 
-import styles from './styles.module.css';
-
 /* * */
-
-interface Props {
-	stopId?: string
-}
 
 interface StopTtsResponse {
 	file: File | null
@@ -20,14 +16,17 @@ interface StopTtsResponse {
 
 /* * */
 
-export function StopDisplayTts({ stopId }: Props) {
+export function StopDetailTts() {
 	//
 
 	//
 	// A. Setup variables
 
+	const stopDetailContext = useStopDetailContext();
+	const stopId = stopDetailContext.data.stop?._id;
+
 	const { data: stopTtsData, error: stopTtsError, isLoading: stopTtsLoading } = useSWR<StopTtsResponse, Error>(
-		stopId ? { credentials: 'omit', url: API_ROUTES.stops.STOPS_DETAIL_TTS(stopId) } : null,
+		stopId ? API_ROUTES.stops.STOPS_TTS(String(stopId)) : null,
 	);
 
 	const audioUrl = stopTtsData?.file?.url;
@@ -48,7 +47,7 @@ export function StopDisplayTts({ stopId }: Props) {
 	//
 	// C. Handle actions
 
-	const handleToggleAudio = async () => {
+	const handleTTSAudio = async () => {
 		if (!audioUrl) return;
 
 		if (isPlaying) {
@@ -81,11 +80,13 @@ export function StopDisplayTts({ stopId }: Props) {
 	if (!stopId || stopTtsLoading || stopTtsError || !audioUrl) return null;
 
 	return (
-		<div className={`${styles.container} ${isPlaying && styles.isPlaying}`} onClick={handleToggleAudio}>
-			{isPlaying
-				? <IconPlayerPause />
-				: <IconVolume />}
-		</div>
+		<Button
+			label="Reproduzir TTS"
+			onClick={handleTTSAudio}
+			rightSection={
+				isPlaying ? <IconPlayerPause size={16} /> : <IconPlayerPlay size={16} />
+			}
+		/>
 	);
 
 	//
