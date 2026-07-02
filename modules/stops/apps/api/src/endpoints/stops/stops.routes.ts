@@ -46,7 +46,7 @@ server.register(
 		);
 
 		instance.get(
-			'/:id/tts',
+			'/tts/:id',
 			StopsController.getTTS,
 		);
 
