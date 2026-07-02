@@ -1,12 +1,25 @@
 /* * */
 
 import type { FeedbackEntityType } from './feedback-metrics';
+import type { StackedResult } from '@/utils/metrics';
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
 /* * */
 
 export interface FeedbackReasonChartSlice {
 	color: string
+	id: string
+	name: string
+	value: number
+}
+
+export interface FeedbackReasonTrendChartData {
+	chart: StackedResult['chart']
+	series: StackedResult['series']
+	sum: StackedResult['sum']
+}
+
+interface FeedbackReasonEntry {
 	id: string
 	name: string
 	value: number
@@ -74,6 +87,21 @@ const FEEDBACK_REASON_LABELS = new Map<string, string>([
 	['wrong_panel_information', 'Informação errada no painel'],
 ]);
 
+const FEEDBACK_REASON_DAY_DETAILED_FORMATTER = new Intl.DateTimeFormat('pt-PT', {
+	day: '2-digit',
+	month: 'long',
+	timeZone: 'UTC',
+	weekday: 'long',
+	year: 'numeric',
+});
+
+const FEEDBACK_REASON_DAY_SHORT_FORMATTER = new Intl.DateTimeFormat('pt-PT', {
+	day: '2-digit',
+	month: '2-digit',
+	timeZone: 'UTC',
+	weekday: 'short',
+});
+
 /* * */
 
 function getFeedbackReasonLabel(reason: string) {
@@ -85,16 +113,38 @@ function getFeedbackReasonsForRow(row: PublicFeedback) {
 	return Array.from(new Set(row.reasons));
 }
 
-function buildChartSlices(reasonEntries: { id: string, name: string, value: number }[]): FeedbackReasonChartSlice[] {
+function buildChartSlices(reasonEntries: FeedbackReasonEntry[]): FeedbackReasonChartSlice[] {
 	return reasonEntries.map((reason, index) => ({
 		...reason,
 		color: FEEDBACK_REASON_CHART_COLORS[index % FEEDBACK_REASON_CHART_COLORS.length],
 	}));
 }
 
-/* * */
+function getFeedbackDayKey(timestamp: number) {
+	const date = new Date(timestamp);
+	const year = date.getUTCFullYear();
+	const month = `${date.getUTCMonth() + 1}`.padStart(2, '0');
+	const day = `${date.getUTCDate()}`.padStart(2, '0');
 
-export function getTopFeedbackReasonsByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackReasonChartSlice[] {
+	return `${year}-${month}-${day}`;
+}
+
+function getDateFromDayKey(key: string) {
+	const [year, month, day] = key.split('-').map(Number);
+	return new Date(Date.UTC(year, month - 1, day));
+}
+
+function getFormattedDayDetailed(key: string) {
+	const label = FEEDBACK_REASON_DAY_DETAILED_FORMATTER.format(getDateFromDayKey(key));
+	return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+function getFormattedDayShort(key: string) {
+	const label = FEEDBACK_REASON_DAY_SHORT_FORMATTER.format(getDateFromDayKey(key));
+	return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+function getSortedFeedbackReasonEntries(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackReasonEntry[] {
 	const reasonCounts = new Map<string, number>();
 
 	for (const row of rows) {
@@ -105,25 +155,81 @@ export function getTopFeedbackReasonsByEntity(rows: PublicFeedback[], entityType
 		}
 	}
 
-	const sortedReasons = Array.from(reasonCounts.entries())
+	return Array.from(reasonCounts.entries())
 		.map(([id, value]) => ({
 			id,
 			name: getFeedbackReasonLabel(id),
 			value,
 		}))
 		.sort((reasonA, reasonB) => reasonB.value - reasonA.value || reasonA.name.localeCompare(reasonB.name, 'pt-PT'));
+}
 
-	if (sortedReasons.length <= TOP_REASON_LIMIT) return buildChartSlices(sortedReasons);
+function getGroupedFeedbackReasonEntries(reasonEntries: FeedbackReasonEntry[]) {
+	if (reasonEntries.length <= TOP_REASON_LIMIT) return reasonEntries;
 
-	const topReasons = sortedReasons.slice(0, TOP_REASON_LIMIT);
-	const otherReasonsValue = sortedReasons.slice(TOP_REASON_LIMIT).reduce((total, reason) => total + reason.value, 0);
+	const topReasons = reasonEntries.slice(0, TOP_REASON_LIMIT);
+	const otherReasonsValue = reasonEntries.slice(TOP_REASON_LIMIT).reduce((total, reason) => total + reason.value, 0);
 
-	return buildChartSlices([
+	return [
 		...topReasons,
 		{
 			id: 'other_reasons',
 			name: 'Outros',
 			value: otherReasonsValue,
 		},
-	]);
+	];
+}
+
+function buildTrendPoint(dayKey: string, series: string[]) {
+	return {
+		day_detailed: getFormattedDayDetailed(dayKey),
+		day_short: getFormattedDayShort(dayKey),
+		total_qty: 0,
+		...Object.fromEntries(series.map(seriesName => [seriesName, 0])),
+	};
+}
+
+/* * */
+
+export function getTopFeedbackReasonsByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackReasonChartSlice[] {
+	return buildChartSlices(getGroupedFeedbackReasonEntries(getSortedFeedbackReasonEntries(rows, entityType)));
+}
+
+export function getTopFeedbackReasonsTrendByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackReasonTrendChartData {
+	const reasonEntries = getSortedFeedbackReasonEntries(rows, entityType);
+	const groupedReasonEntries = getGroupedFeedbackReasonEntries(reasonEntries);
+	const topReasonNamesById = new Map(groupedReasonEntries.map(reason => [reason.id, reason.name]));
+	const hasOtherReasonGroup = reasonEntries.length > TOP_REASON_LIMIT;
+	const series = groupedReasonEntries.map(reason => reason.name);
+	const chartByDay = new Map<string, Record<string, number | string | undefined>>();
+	let sum = 0;
+
+	for (const row of rows) {
+		if (row.entity_type !== entityType) continue;
+
+		const dayKey = getFeedbackDayKey(row.created_at);
+		const trendPoint = chartByDay.get(dayKey) ?? buildTrendPoint(dayKey, series);
+
+		for (const reason of getFeedbackReasonsForRow(row)) {
+			const seriesName = topReasonNamesById.get(reason) ?? (hasOtherReasonGroup ? 'Outros' : getFeedbackReasonLabel(reason));
+			const currentValue = Number(trendPoint[seriesName] ?? 0);
+			const currentTotal = Number(trendPoint.total_qty ?? 0);
+
+			trendPoint[seriesName] = currentValue + 1;
+			trendPoint.total_qty = currentTotal + 1;
+			sum += 1;
+		}
+
+		chartByDay.set(dayKey, trendPoint);
+	}
+
+	const chart = Array.from(chartByDay.entries())
+		.sort(([dayA], [dayB]) => dayA.localeCompare(dayB))
+		.map(([, point]) => point);
+
+	return {
+		chart,
+		series,
+		sum,
+	};
 }

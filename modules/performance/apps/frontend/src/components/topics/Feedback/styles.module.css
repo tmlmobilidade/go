@@ -73,20 +73,28 @@
 	min-width: 540px;
 }
 
-.feedbackReasonChart {
+.feedbackReasonVisualizationContainer {
 	display: flex;
-	justify-content: center;
+	align-items: center;
 	gap: var(--size-spacing-md);
 	width: 100%;
+}
+
+.feedbackReasonTrendChart {
+	flex: 1 1 320px;
+	min-width: 0;
+}
+
+.feedbackReasonPieChart {
+	display: flex;
+	flex: 0 0 260px;
+	justify-content: center;
+	min-width: 0;
 	padding: var(--size-spacing-md) 0;
 }
 
-.feedbackReasonChart :global(.recharts-surface) {
+.feedbackReasonPieChart :global(.recharts-surface) {
 	overflow: visible !important;
-}
-
-.feedbackReasonCardContent {
-	align-items: center;
 }
 
 .feedbackEntityDetails {
@@ -246,4 +254,15 @@
 		flex-direction: column;
 	}
 
+}
+
+@media (max-width: 1500px) {
+	.feedbackReasonVisualizationContainer {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.feedbackReasonPieChart {
+		flex-basis: auto;
+	}
 }
