@@ -1,6 +1,6 @@
 /* * */
 
-const TTS_API_URL = process.env.TTS_API_URL ?? 'http://localhost:8000';
+const TTS_API_URL = process.env.TTS_API_URL ?? 'http://localhost:8086';
 
 export interface PiperTtsApiOptions {
 	filename: string
@@ -22,6 +22,18 @@ export async function piperTtsApi({ filename, force = false, speed = 0.92, strin
 
 	if (!response.ok || result.error) throw new Error(result.error ?? `TTS API failed (${response.status}) at ${TTS_API_URL}/generate`);
 	if (!result.stop_id) throw new Error('TTS API returned no stop_id');
+
+	//
+}
+
+export async function getPiperTtsAudio(filename: string): Promise<Buffer> {
+	//
+
+	const response = await fetch(`${TTS_API_URL}/audio/${filename}.mp3`);
+
+	if (!response.ok) throw new Error(`TTS API failed to return audio (${response.status}) at ${TTS_API_URL}/audio/${filename}.mp3`);
+
+	return Buffer.from(await response.arrayBuffer());
 
 	//
 }

@@ -1,7 +1,10 @@
 'use client';
 
 import { IconPlayerPause, IconVolume } from '@tabler/icons-react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type File } from '@tmlmobilidade/types';
 import { useEffect, useRef, useState } from 'react';
+import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
@@ -9,6 +12,10 @@ import styles from './styles.module.css';
 
 interface Props {
 	stopId?: string
+}
+
+interface StopTtsResponse {
+	file: File | null
 }
 
 /* * */
@@ -19,48 +26,62 @@ export function StopDisplayTts({ stopId }: Props) {
 	//
 	// A. Setup variables
 
+	const { data: stopTtsData, error: stopTtsError, isLoading: stopTtsLoading } = useSWR<StopTtsResponse, Error>(
+		stopId ? { credentials: 'omit', url: API_ROUTES.stops.STOPS_DETAIL_TTS(stopId) } : null,
+	);
+
+	const audioUrl = stopTtsData?.file?.url;
+	const audioRef = useRef<HTMLAudioElement | null>(null);
 	const [isPlaying, setIsPlaying] = useState(false);
-	const audioPlayer = useRef<HTMLAudioElement | null>(null);
 
 	//
 	// B. Transform data
 
 	useEffect(() => {
-		// audioPlayer.current = new Audio(`${audioTtsUrl}/stops/${stopId}.mp3`);
-	}, [stopId]);
-
-	useEffect(() => {
-		if (audioPlayer.current) {
-			audioPlayer.current.onplaying = () => setIsPlaying(true);
-			audioPlayer.current.onpause = () => setIsPlaying(false);
-			audioPlayer.current.onabort = () => setIsPlaying(false);
-		}
 		return () => {
-			if (audioPlayer.current) {
-				audioPlayer.current.onplaying = null;
-				audioPlayer.current.onpause = null;
-				audioPlayer.current.onabort = null;
-			}
+			audioRef.current?.pause();
+			audioRef.current = null;
+			setIsPlaying(false);
 		};
 	}, [stopId]);
 
 	//
 	// C. Handle actions
 
-	const handleToogleAudio = () => {
+	const handleToggleAudio = async () => {
+		if (!audioUrl) return;
+
 		if (isPlaying) {
-			audioPlayer.current?.pause();
-		} else {
-			audioPlayer.current?.load();
-			audioPlayer.current?.play();
+			audioRef.current?.pause();
+			return;
+		}
+
+		audioRef.current?.pause();
+
+		const audio = new Audio(audioUrl);
+		audio.onplaying = () => setIsPlaying(true);
+		audio.onpause = () => setIsPlaying(false);
+		audio.onended = () => {
+			audioRef.current = null;
+			setIsPlaying(false);
+		};
+		audioRef.current = audio;
+
+		try {
+			await audio.play();
+		} catch {
+			audioRef.current = null;
+			setIsPlaying(false);
 		}
 	};
 
 	//
 	// D. Render components
 
-	return audioPlayer && (
-		<div className={`${styles.container} ${isPlaying && styles.isPlaying}`} onClick={handleToogleAudio}>
+	if (!stopId || stopTtsLoading || stopTtsError || !audioUrl) return null;
+
+	return (
+		<div className={`${styles.container} ${isPlaying && styles.isPlaying}`} onClick={handleToggleAudio}>
 			{isPlaying
 				? <IconPlayerPause />
 				: <IconVolume />}

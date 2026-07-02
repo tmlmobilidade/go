@@ -472,6 +472,7 @@ export const API_ROUTES = Object.freeze({
 		// STOPS
 		STOPS_DETAIL: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}`,
 		STOPS_DETAIL_LOCK: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}/lock`,
+		STOPS_DETAIL_TTS: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}/tts`,
 		STOPS_LIST: `${getModuleConfig('stops', 'api_url')}/stops`,
 		STOPS_VALID_ID: `${getModuleConfig('stops', 'api_url')}/stops/valid-id`,
 	},

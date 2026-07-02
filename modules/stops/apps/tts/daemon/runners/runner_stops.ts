@@ -2,10 +2,10 @@
 
 import { makeStop } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
-import { stops } from '@tmlmobilidade/interfaces';
+import { files, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
-import { piperTtsApi } from '../services/piperTtsApi.js';
+import { getPiperTtsAudio, piperTtsApi } from '../services/piperTtsApi.js';
 
 /* * */
 
@@ -48,6 +48,18 @@ export async function runnerStops() {
 				force: true,
 				string: stopTts,
 			});
+
+			const audioBuffer = await getPiperTtsAudio(stopId);
+			await files.upload(audioBuffer, {
+				_id: stopId,
+				created_by: 'system',
+				name: `${stopId}.mp3`,
+				resource_id: 'tts/live',
+				scope: 'static',
+				size: audioBuffer.byteLength,
+				type: 'audio/mpeg',
+				updated_by: 'system',
+			}, { override: true });
 		}
 
 		//

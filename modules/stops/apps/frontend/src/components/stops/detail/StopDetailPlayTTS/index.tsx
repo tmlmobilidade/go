@@ -1,8 +1,8 @@
 'use client';
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { audioTtsUrl } from '@/settings/urls.settings';
 import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Button } from '@tmlmobilidade/ui';
 import { useRef, useState } from 'react';
 
@@ -38,7 +38,7 @@ export function StopDetailPlayTTS() {
 
 		stopPlayback();
 
-		const audioToPlay = new Audio(`${audioTtsUrl}/${stopId}.mp3?v=${Date.now()}`);
+		const audioToPlay = new Audio(`${API_ROUTES.stops.STOPS_DETAIL_TTS(String(stopId))}`);
 
 		audioToPlay.onended = stopPlayback;
 
