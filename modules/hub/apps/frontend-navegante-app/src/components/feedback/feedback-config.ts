@@ -171,12 +171,12 @@ export const feedbackConfig = [
 		scope: ['line', 'stop'],
 	},
 	{
-		category: ['vehicle'],
+		category: ['driver'],
 		id: 'unsafe_speed',
 		scope: ['line'],
 	},
 	{
-		category: ['vehicle'],
+		category: ['driver'],
 		id: 'traffic_law_violation',
 		scope: ['line'],
 	},
