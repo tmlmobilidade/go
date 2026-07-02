@@ -77,11 +77,13 @@ export function StopDetailTts() {
 	//
 	// D. Render components
 
-	if (!stopId || stopTtsLoading || stopTtsError || !audioUrl) return null;
+	if (!stopId) return null;
 
 	return (
 		<Button
+			disabled={stopTtsLoading || !!stopTtsError || !audioUrl}
 			label="Reproduzir TTS"
+			loading={stopTtsLoading}
 			onClick={handleTTSAudio}
 			rightSection={
 				isPlaying ? <IconPlayerPause size={16} /> : <IconPlayerPlay size={16} />

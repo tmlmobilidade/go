@@ -9,6 +9,15 @@ import { getPiperTtsAudio, piperTtsApi } from '../services/piperTtsApi.js';
 
 /* * */
 
+async function deleteLegacyTtsFile(fileId: string) {
+	const existingFile = await files.findOne({ _id: fileId });
+	if (!existingFile) return;
+
+	await files.deleteOne({ _id: fileId });
+}
+
+/* * */
+
 export async function runnerStops() {
 	//
 
@@ -50,14 +59,18 @@ export async function runnerStops() {
 			});
 
 			const audioBuffer = await getPiperTtsAudio(stopId);
+
+			await deleteLegacyTtsFile(stopId);
+			await deleteLegacyTtsFile(`tts-${stopId}`);
+
 			await files.upload(audioBuffer, {
 				_id: `tts-${stopId}`,
 				created_by: 'system',
 				name: `${stopId}.mp3`,
-				resource_id: 'tts/live',
+				resource_id: 'tts/live/stops/test',
 				scope: 'static',
 				size: audioBuffer.byteLength,
-				type: 'audio/mp3',
+				type: 'audio/mpeg',
 				updated_by: 'system',
 			}, { override: true });
 		}
