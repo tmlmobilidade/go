@@ -8,7 +8,6 @@ import { z } from 'zod';
 
 export const SimplifiedVehicleEventSchema = z.object({
 	_id: z.string(),
-	agency_code: z.string(),
 	agency_id: z.string(),
 	bearing: z.number().nullable().default(null),
 	created_at: UnixTimestampSchema,

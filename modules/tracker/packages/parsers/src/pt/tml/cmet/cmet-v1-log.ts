@@ -1,39 +1,28 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
-import { type RawVehicleEventPtTmlCmetV1Log, type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { roundToInt } from '@tmlmobilidade/utils';
+import { type RawVehicleEventPtTmlCmetV1Log, type SimplifiedVehicleEvent, SimplifiedVehicleEventSchema } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
 
 export function parseRawVehicleEventPtTmlCmetV1Log(doc: RawVehicleEventPtTmlCmetV1Log): null | SimplifiedVehicleEvent {
-	//
-	const vehicle = doc.payload.vehicle;
-
-	// Validate coordinates before parsing the rest of the event.
-	const latitude = isValidLatitude(vehicle.position.latitude);
-	const longitude = isValidLongitude(vehicle.position.longitude);
-
-	if (!latitude || !longitude) return null;
-
-	return {
+	const parsedSimplifiedVehicleEvent: SimplifiedVehicleEvent = {
 		_id: doc._id,
-		agency_code: doc.agency_id,
 		agency_id: doc.agency_id,
-		bearing: roundToInt(vehicle.position.bearing),
+		bearing: doc.payload.vehicle.position.bearing ?? null,
 		created_at: doc.created_at,
-		current_status: vehicle.currentStatus,
-		driver_id: vehicle.vehicle.driverId,
-		extra_trip_id: vehicle.trip?.extraTripId,
-		latitude: latitude,
-		longitude: longitude,
-		odometer: roundToInt(vehicle.position.odometer),
+		current_status: doc.payload.vehicle.currentStatus ?? null,
+		driver_id: doc.payload.vehicle.vehicle.driverId,
+		extra_trip_id: doc.payload.vehicle.trip?.extraTripId ?? null,
+		latitude: doc.payload.vehicle.position.latitude,
+		longitude: doc.payload.vehicle.position.longitude,
+		odometer: doc.payload.vehicle.position.odometer,
 		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date_int,
 		received_at: doc.received_at,
-		speed: roundToInt(vehicle.position.speed),
-		stop_id: vehicle.stopId,
-		trip_id: vehicle.trip?.tripId,
-		vehicle_id: vehicle.vehicle._id,
+		speed: doc.payload.vehicle.position.speed,
+		stop_id: doc.payload.vehicle.stopId ?? null,
+		trip_id: doc.payload.vehicle.trip?.tripId ?? null,
+		vehicle_id: doc.payload.vehicle.vehicle._id,
 	};
-};
+	return SimplifiedVehicleEventSchema.parse(parsedSimplifiedVehicleEvent);
+}
