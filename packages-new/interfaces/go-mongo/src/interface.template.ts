@@ -1,7 +1,7 @@
 /* * */
 
 import type { AggregationPipeline } from './types/mongo/aggregation.js';
-import type { AggregateOptions, AggregationCursor, Collection, Db, DeleteOptions, Filter, DeleteResult, Document, FindOptions, Flatten, InsertManyResult, InsertOneOptions, InsertOneResult, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId } from '@tmlmobilidade/go-clients-mongo';
+import type { AggregateOptions, AggregationCursor, Collection, Db, DeleteOptions, Filter, DeleteResult, Document, FindOptions, Flatten, InsertManyResult, InsertOneOptions, InsertOneResult, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId, BulkWriteOptions } from '@tmlmobilidade/go-clients-mongo';
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
@@ -105,7 +105,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @param options - The options for the insert operation
 	 * @returns A promise that resolves to the result of the insert operation
 	 */
-	public async insertMany(docs: (TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], { options, unsafe = false }: { options?: InsertOneOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
+	public async insertMany(docs: (TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], { options, unsafe = false }: { options?: BulkWriteOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
 		const newDocuments = docs.map((doc) => {
 			return {
 				...doc,

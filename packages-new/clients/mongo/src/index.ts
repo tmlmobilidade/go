@@ -14,6 +14,7 @@ export type {
 	Collection,
 	CreateIndexesOptions,
 	Db,
+	BulkWriteOptions,
 	DeleteOptions,
 	DeleteResult,
 	Document,
