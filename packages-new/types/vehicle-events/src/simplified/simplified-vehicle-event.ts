@@ -8,11 +8,11 @@ import { z } from 'zod';
 
 export const SimplifiedVehicleEventSchema = z.object({
 	_id: z.string(),
+	agency_code: z.string(),
 	agency_id: z.string(),
 	bearing: z.number().nullable().default(null),
 	created_at: UnixTimestampSchema,
 	current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']).nullable().default(null),
-	door: z.string().nullable().default(null),
 	driver_id: z.string().nullable().default(null),
 	extra_trip_id: z.string().nullable().default(null),
 	geohash: z.string().nullish(),
@@ -26,7 +26,6 @@ export const SimplifiedVehicleEventSchema = z.object({
 		.refine(value => value.toFixed(6) === value.toString()),
 	odometer: z.number().nullable().default(null),
 	operational_date: OperationalDateIntSchema,
-	pattern_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
 	speed: z.number().nullable().default(null),
 	stop_id: z.string().nullable().default(null),
