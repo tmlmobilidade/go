@@ -2,7 +2,7 @@
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { StopDetailCoordinatesModal } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal';
-import { StopDetailNamesModal } from '@/components/stops/detail/StopDetailCoordinates/StopDetailNamesModal';
+import { StopDetailNamesModal } from '@/components/stops/detail/StopDetailNames/StopDetailNamesModal';
 import { StopDetailTts } from '@/components/stops/detail/StopDetailTts';
 import { Translations } from '@/lib/translations';
 import { IconEdit } from '@tabler/icons-react';
