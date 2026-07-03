@@ -51,7 +51,7 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 		_id: `tts-${stopId}`,
 		created_by: 'system',
 		name: `${stopId}.mp3`,
-		resource_id: 'tts/live/stops/test',
+		resource_id: 'tts/live/stops',
 		scope: 'static',
 		size: audioBuffer.byteLength,
 		type: 'audio/mpeg',
