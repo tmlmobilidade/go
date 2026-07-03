@@ -58,8 +58,11 @@ def generate(req: TTSRequest):
         os.remove(mp3_path)
 
     wav_path = f"{AUDIO_DIR}/{normalize_stop_id(req.stop_id)}.wav"
+    stop_id = normalize_stop_id(req.stop_id)
 
     try:
+        print(f"Generating for Stop {stop_id}", flush=True)
+
         sample_rate = voice.config.sample_rate
 
         with wave.open(wav_path, "wb") as wav_file:
@@ -82,6 +85,8 @@ def generate(req: TTSRequest):
 
         subprocess.run([
             "ffmpeg",
+            "-hide_banner",
+            "-loglevel", "error",
             "-y",
             "-i", wav_path,
             "-af",
@@ -98,7 +103,7 @@ def generate(req: TTSRequest):
             "-acodec", "libmp3lame",
             "-b:a", "192k",
             mp3_path
-        ], check=True)
+        ], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         os.remove(wav_path)
 

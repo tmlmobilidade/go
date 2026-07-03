@@ -69,16 +69,22 @@ export async function runnerStops() {
 
 	console.log('* Fetching all stops from database...');
 	const allStopsData = await stops.all();
-
 	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted);
 
 	console.log(`* Preparing ${stopsToProcess.length} stops (${RUNNER_CONCURRENCY} concurrent)...`);
-	console.log();
 
 	const limit = pLimit(RUNNER_CONCURRENCY);
 
 	await Promise.all(
-		stopsToProcess.map((stopData, stopIndex) => limit(() => processStop(stopIndex, stopsToProcess.length, stopData))),
+		stopsToProcess.map((stopData, stopIndex) => limit(async () => {
+			try {
+				await processStop(stopIndex, stopsToProcess.length, stopData);
+			} catch (error) {
+				Logger.error({
+					message: `[${stopIndex + 1}/${stopsToProcess.length}] Failed Stop ${stopData._id}: ${error instanceof Error ? error.message : String(error)}`,
+				});
+			}
+		})),
 	);
 
 	Logger.success(`Processed ${stopsToProcess.length} "stops" items (${globalTimer.get()}).`);

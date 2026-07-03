@@ -9,6 +9,23 @@ export interface PiperTtsApiOptions {
 	string: string
 }
 
+interface GenerateResult { error?: string, generated?: boolean, stop_id?: string }
+
+function parseGenerateJson(buffer: Buffer): GenerateResult | null {
+	try {
+		return JSON.parse(buffer.toString('utf8')) as GenerateResult;
+	} catch {
+		return null;
+	}
+}
+
+function isMp3Buffer(buffer: Buffer) {
+	return buffer.length >= 100 && (
+		buffer.subarray(0, 3).toString() === 'ID3'
+		|| (buffer[0] === 0xFF && (buffer[1] & 0xE0) === 0xE0)
+	);
+}
+
 export async function piperTtsApi({ filename, force = false, speed = 0.92, string }: PiperTtsApiOptions) {
 	//
 
@@ -18,7 +35,7 @@ export async function piperTtsApi({ filename, force = false, speed = 0.92, strin
 		method: 'POST',
 	});
 
-	const result = await response.json() as { error?: string, generated?: boolean, stop_id?: string };
+	const result = await response.json() as GenerateResult;
 
 	if (!response.ok || result.error) throw new Error(result.error ?? `TTS API failed (${response.status}) at ${TTS_API_URL}/generate`);
 	if (!result.stop_id) throw new Error('TTS API returned no stop_id');
@@ -47,18 +64,19 @@ export async function generatePiperTtsAudio({ filename, force = false, speed = 0
 		method: 'POST',
 	});
 
-	if (!response.ok) {
-		const result = await response.json().catch(() => null) as null | { error?: string };
-		throw new Error(result?.error ?? `TTS API failed (${response.status}) at ${TTS_API_URL}/generate`);
+	const buffer = Buffer.from(await response.arrayBuffer());
+
+	if (isMp3Buffer(buffer)) {
+		return buffer;
 	}
 
-	const contentType = response.headers.get('content-type') ?? '';
-	if (!contentType.includes('audio')) {
-		const result = await response.json() as { error?: string };
-		throw new Error(result.error ?? 'TTS API did not return audio');
-	}
+	const result = parseGenerateJson(buffer);
 
-	return Buffer.from(await response.arrayBuffer());
+	if (result?.error) throw new Error(result.error);
+	if (!response.ok) throw new Error(result?.error ?? `TTS API failed (${response.status}) at ${TTS_API_URL}/generate`);
+	if (result?.stop_id) return getPiperTtsAudio(filename);
+
+	throw new Error('TTS API did not return audio');
 
 	//
 }
