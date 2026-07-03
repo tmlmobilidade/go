@@ -6,11 +6,10 @@ import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
-import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
-import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
+import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
 import { getFeedbackStopReasonMeters } from '@/utils/feedback/feedback-stop-reasons';
-import { buildStopLabelsById, getStopLabel } from '@/utils/feedback/network-labels';
-import { type HubStop, type PublicFeedback } from '@tmlmobilidade/types';
+import { buildStopLabelsById, type FeedbackNetworkStop, getStopLabel } from '@/utils/feedback/network-labels';
+import { type PublicFeedback } from '@tmlmobilidade/types';
 import { FilterTypeList, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -52,7 +51,7 @@ export function FeedbackStops() {
 	// B. Fetch data
 
 	const { data, error, isLoading } = useSWR<PublicFeedback[], Error>(Routes.FEEDBACK_PREVIEW);
-	const { data: stopsData } = useSWR<HubStop[], Error>({ credentials: 'omit', url: Routes.HUB_STOPS });
+	const { data: stopsData } = useSWR<FeedbackNetworkStop[], Error>({ credentials: 'omit', url: Routes.HUB_STOPS });
 
 	//
 	// C. Transform data

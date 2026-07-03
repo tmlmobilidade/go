@@ -3,6 +3,8 @@
 import type { FeedbackEntityMetrics } from './feedback-metrics';
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
+import { FEEDBACK_TOTAL_PERCENTAGE, getFeedbackReasonLabel, roundFeedbackPercentages } from './feedback-reasons';
+
 /* * */
 
 export type FeedbackLineContributionCategory = 'driver' | 'line_service' | 'unknown' | 'vehicle';
@@ -67,51 +69,6 @@ const LINE_REASON_CATEGORIES = new Map<string, FeedbackLineContributionCategory[
 	['wrong_panel_information', ['line_service']],
 ]);
 
-const LINE_REASON_LABELS = new Map<string, string>([
-	['accessibility_issue', 'Problema de acessibilidade'],
-	['audio_announcement_issue', 'Problema nos anúncios sonoros'],
-	['cancelled_departure', 'Circulação cancelada'],
-	['climate_control_issue', 'Problema na climatização'],
-	['damaged', 'Danificado'],
-	['detour', 'Desvio no percurso'],
-	['did_not_pass', 'Não passou'],
-	['dirty', 'Sujo'],
-	['disorganized_boarding', 'Embarque ou fila desorganizada'],
-	['display_issue', 'Problema no painel'],
-	['door_issue', 'Problema nas portas'],
-	['driver_bad_conduct', 'Má conduta do motorista'],
-	['early', 'Passou adiantado'],
-	['excessive_travel_time', 'Tempo de viagem excessivo'],
-	['inaccurate_realtime', 'Tempo real incorreto'],
-	['inadequate_service', 'Serviço inadequado'],
-	['insufficient_capacity', 'Capacidade insuficiente'],
-	['interrupted', 'Serviço interrompido'],
-	['lack_of_passenger_support', 'Falta de apoio ao passageiro'],
-	['late', 'Passou atrasado'],
-	['lighting_issue', 'Problema na iluminação'],
-	['long_headway', 'Tempo de espera elevado'],
-	['long_queue', 'Fila muito longa'],
-	['missing_safety_equipment', 'Equipamento de segurança em falta'],
-	['no_reason', 'Sem motivo indicado'],
-	['other', 'Outro'],
-	['route_changed_without_notice', 'Percurso alterado sem aviso'],
-	['rude_staff', 'Atendimento rude'],
-	['safety_incident', 'Incidente de segurança'],
-	['skipped_stop', 'Não parou na paragem'],
-	['too_crowded', 'Muito cheio'],
-	['traffic_law_violation', 'Infração de trânsito'],
-	['unsafe_speed', 'Velocidade insegura'],
-	['validator_issue', 'Problema no validador'],
-	['wrong_panel_information', 'Informação errada no painel'],
-]);
-
-/* * */
-
-const PERCENTAGE_DISPLAY_SCALE = 10;
-const TOTAL_PERCENTAGE = 100;
-
-/* * */
-
 interface LineFeedbackReasonEntry {
 	categories: FeedbackLineContributionCategory[]
 	id: string
@@ -125,48 +82,19 @@ interface LineFeedbackReasonWeight {
 
 /* * */
 
-function clampPercentage(value: number) {
-	return Math.min(Math.max(value, 0), 100);
-}
-
-function roundPercentages(values: number[]) {
-	if (values.length === 0) return [];
-
-	const targetTotal = TOTAL_PERCENTAGE * PERCENTAGE_DISPLAY_SCALE;
-	const scaledValues = values.map(value => clampPercentage(value) * PERCENTAGE_DISPLAY_SCALE);
-	const roundedValues = scaledValues.map(Math.floor);
-	const remainingValue = targetTotal - roundedValues.reduce((total, value) => total + value, 0);
-
-	const indexesByRemainder = scaledValues
-		.map((value, index) => ({ index, remainder: value - Math.floor(value) }))
-		.sort((a, b) => b.remainder - a.remainder);
-
-	for (let index = 0; index < remainingValue; index++) {
-		const targetIndex = indexesByRemainder[index % indexesByRemainder.length]?.index;
-		if (targetIndex === undefined) break;
-		roundedValues[targetIndex] += 1;
-	}
-
-	return roundedValues.map(value => value / PERCENTAGE_DISPLAY_SCALE);
-}
-
-function getLineFeedbackReasonLabel(reason: string) {
-	return LINE_REASON_LABELS.get(reason) ?? reason;
-}
-
 function getLineFeedbackReasonEntries(reasons: string[]): LineFeedbackReasonEntry[] {
 	if (reasons.length === 0) {
 		return [{
 			categories: ['unknown'],
 			id: 'no_reason',
-			label: getLineFeedbackReasonLabel('no_reason'),
+			label: getFeedbackReasonLabel('no_reason'),
 		}];
 	}
 
 	return reasons.map(reason => ({
 		categories: LINE_REASON_CATEGORIES.get(reason) ?? ['unknown'],
 		id: reason,
-		label: getLineFeedbackReasonLabel(reason),
+		label: getFeedbackReasonLabel(reason),
 	}));
 }
 
@@ -199,10 +127,10 @@ function getReasonMeters(reasonWeights: Map<string, LineFeedbackReasonWeight>, c
 	const reasonEntries = Array.from(reasonWeights.entries()).map(([id, reason]) => ({
 		id,
 		label: reason.label,
-		value: (reason.weight / categoryWeight) * TOTAL_PERCENTAGE,
+		value: (reason.weight / categoryWeight) * FEEDBACK_TOTAL_PERCENTAGE,
 	}));
 
-	const roundedValues = roundPercentages(reasonEntries.map(reason => reason.value));
+	const roundedValues = roundFeedbackPercentages(reasonEntries.map(reason => reason.value));
 
 	return reasonEntries
 		.map((reason, index) => ({
@@ -243,12 +171,12 @@ export function getFeedbackLineContributionMeters(rows: PublicFeedback[], metric
 		label: category.label,
 		reasons: getReasonMeters(reasonWeights[category.id], categoryWeights[category.id]),
 		selectable: category.id !== 'unknown',
-		value: feedbackCount === 0 ? 0 : (categoryWeights[category.id] / feedbackCount) * TOTAL_PERCENTAGE,
+		value: feedbackCount === 0 ? 0 : (categoryWeights[category.id] / feedbackCount) * FEEDBACK_TOTAL_PERCENTAGE,
 	}));
 
 	if (feedbackCount === 0) return contributionMeters;
 
-	const roundedValues = roundPercentages(contributionMeters.map(meter => meter.value));
+	const roundedValues = roundFeedbackPercentages(contributionMeters.map(meter => meter.value));
 
 	return contributionMeters.map((meter, index) => ({
 		...meter,

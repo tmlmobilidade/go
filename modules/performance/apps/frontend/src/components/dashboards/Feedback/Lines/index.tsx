@@ -6,12 +6,11 @@ import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag, OperatorLogo } from '@/components/visualizations/Feedback';
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
-import { type FeedbackEntitySummary, getFeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
 import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-line-contributions';
-import { formatSatisfactionIndex, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
-import { buildLineLabelsById, getLineLabel } from '@/utils/feedback/network-labels';
+import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
+import { buildLineLabelsById, type FeedbackNetworkLine, getLineLabel } from '@/utils/feedback/network-labels';
 import { getOperatorName } from '@/utils/feedback/operators';
-import { type Agency, type HubLine, type PublicFeedback } from '@tmlmobilidade/types';
+import { type Agency, type PublicFeedback } from '@tmlmobilidade/types';
 import { FilterTypeList, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -71,7 +70,7 @@ export function FeedbackLines() {
 	// B. Fetch data
 
 	const { data, error, isLoading } = useSWR<PublicFeedback[], Error>(Routes.FEEDBACK_PREVIEW);
-	const { data: linesData } = useSWR<HubLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
+	const { data: linesData } = useSWR<FeedbackNetworkLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
 
 	//
 	// C. Transform data

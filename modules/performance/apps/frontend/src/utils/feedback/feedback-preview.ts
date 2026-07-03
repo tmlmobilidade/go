@@ -2,9 +2,8 @@
 
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
-import { type FeedbackEntitySummary, getFeedbackEntitySummary } from './feedback-entities';
 import { getFeedbackLineContributionMeters } from './feedback-line-contributions';
-import { type FeedbackEntityType, getFeedbackMetricsByEntity } from './feedback-metrics';
+import { type FeedbackEntitySummary, type FeedbackEntityType, getFeedbackEntitySummary, getFeedbackMetricsByEntity } from './feedback-metrics';
 import { getTopFeedbackReasonsByEntity, getTopFeedbackReasonsTrendByEntity } from './feedback-reasons';
 import { getFeedbackStopReasonMeters } from './feedback-stop-reasons';
 

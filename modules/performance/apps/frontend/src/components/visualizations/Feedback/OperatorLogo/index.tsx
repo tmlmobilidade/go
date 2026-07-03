@@ -1,6 +1,6 @@
 /* * */
 
-import { getOperatorLogoSrc } from '@/utils/feedback/operator-logo';
+import { getOperatorLogoSrc } from '@/utils/feedback/operators';
 import Image from 'next/image';
 
 /* * */

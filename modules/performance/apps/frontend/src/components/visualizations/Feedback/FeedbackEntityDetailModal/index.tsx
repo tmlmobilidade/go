@@ -4,7 +4,7 @@
 
 /* * */
 
-import type { FeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
+import type { FeedbackEntitySummary } from '@/utils/feedback/feedback-metrics';
 
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
 import { CloseButton, Divider, Label, Modal, Pane, Section, Toolbar } from '@tmlmobilidade/ui';

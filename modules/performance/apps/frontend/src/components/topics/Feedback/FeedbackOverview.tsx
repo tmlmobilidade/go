@@ -3,10 +3,10 @@
 import { FeedbackGraphCard } from '@/components/visualizations/Feedback';
 import { Routes } from '@/routes';
 import { getFeedbackOverviewData } from '@/utils/feedback/feedback-preview';
-import { buildLineLabelsById, buildStopLabelsById } from '@/utils/feedback/network-labels';
-import { buildOperatorApprovalIndexes } from '@/utils/feedback/operator-approval';
+import { buildLineLabelsById, buildStopLabelsById, type FeedbackNetworkLine, type FeedbackNetworkStop } from '@/utils/feedback/network-labels';
+import { buildOperatorApprovalIndexes } from '@/utils/feedback/operators';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubLine, type HubStop, type PublicFeedback } from '@tmlmobilidade/types';
+import { type PublicFeedback } from '@tmlmobilidade/types';
 import { useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -29,8 +29,8 @@ export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
 	//
 	// A. Fetch data
 
-	const { data: linesData } = useSWR<HubLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
-	const { data: stopsData } = useSWR<HubStop[], Error>({ credentials: 'omit', url: Routes.HUB_STOPS });
+	const { data: linesData } = useSWR<FeedbackNetworkLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
+	const { data: stopsData } = useSWR<FeedbackNetworkStop[], Error>({ credentials: 'omit', url: Routes.HUB_STOPS });
 	const { raw: operatorsData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
 
 	//

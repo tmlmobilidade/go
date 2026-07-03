@@ -1,8 +1,18 @@
 /* * */
 
-import type { HubLine, HubStop } from '@tmlmobilidade/types';
+export interface FeedbackNetworkLine {
+	_id: number | string
+	agency_id: string
+	long_name?: string
+	short_name?: string
+}
 
-/* * */
+export interface FeedbackNetworkStop {
+	_id: number | string
+	legacy_ids?: (number | string)[]
+	name?: string
+	short_name?: string
+}
 
 function parsePrefixedLineId(lineId: string) {
 	const prefixedLineId = lineId.match(/^\[(\d+)\](.+)$/);
@@ -21,18 +31,18 @@ function getLineLookupKeys(lineId: string) {
 	return [`${prefixedLineId.agencyId}:${prefixedLineId.rawId}`, prefixedLineId.rawId, lineId];
 }
 
-function buildLineLabel(line: HubLine) {
+function buildLineLabel(line: FeedbackNetworkLine) {
 	if (line.short_name && line.long_name) return `${line.short_name} - ${line.long_name}`;
-	return line.long_name || line.short_name || line._id;
+	return line.long_name || line.short_name || String(line._id);
 }
 
-function buildStopLabel(stop: HubStop) {
+function buildStopLabel(stop: FeedbackNetworkStop) {
 	return stop.name || stop.short_name || String(stop._id);
 }
 
 /* * */
 
-export function buildLineLabelsById(lines?: HubLine[]) {
+export function buildLineLabelsById(lines?: FeedbackNetworkLine[]) {
 	const labels = new Map<string, string>();
 
 	for (const line of lines ?? []) {
@@ -52,13 +62,13 @@ export function buildLineLabelsById(lines?: HubLine[]) {
 	return labels;
 }
 
-export function buildStopLabelsById(stops?: HubStop[]) {
+export function buildStopLabelsById(stops?: FeedbackNetworkStop[]) {
 	const labels = new Map<string, string>();
 
 	for (const stop of stops ?? []) {
 		const label = buildStopLabel(stop);
 		labels.set(String(stop._id), label);
-		for (const legacyId of stop.legacy_ids) labels.set(String(legacyId), label);
+		for (const legacyId of stop.legacy_ids ?? []) labels.set(String(legacyId), label);
 	}
 
 	return labels;
