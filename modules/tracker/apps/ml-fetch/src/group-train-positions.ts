@@ -25,12 +25,7 @@ export function groupTrainPositions({ items, trainPositionsMap }: { items: Tempo
 		}
 
 		const existing = trainPositionsMap.get(item.comboio);
-		if (!existing) {
-			trainPositionsMap.set(item.comboio, {
-				destination_id: destinationCode,
-				next_stop: { arrival_seconds: arrivalSeconds, stop_id: item.stop_id },
-			});
-		} else if (arrivalSeconds < existing.next_stop.arrival_seconds) {
+		if (!existing || arrivalSeconds < existing.next_stop.arrival_seconds) {
 			trainPositionsMap.set(item.comboio, {
 				destination_id: destinationCode,
 				next_stop: { arrival_seconds: arrivalSeconds, stop_id: item.stop_id },
