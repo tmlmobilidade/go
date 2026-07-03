@@ -16,10 +16,10 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*"
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

@@ -1,10 +1,10 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /**
  * Callback function to set Rides as 'waiting' based on new SimplifiedVehicleEvent data.
