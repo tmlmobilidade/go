@@ -1,9 +1,10 @@
 /* * */
 
 import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
+import type { Agency, CreateAgencyDto, UpdateAgencyDto, FileExport, CreateFileExportDto, File, CreateFileDto, UpdateFileDto, Organization, CreateOrganizationDto, UpdateOrganizationDto, Role, CreateRoleDto, UpdateRoleDto, Session, CreateSessionDto, UpdateSessionDto, User, CreateUserDto, UpdateUserDto, VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto } from '@tmlmobilidade/types';
 
 import { MongoInterfaceTemplate } from '@/interface.template.js';
-import { Agency, CreateAgencyDto, CreateAgencySchema, CreateFileDto, CreateFileExportDto, CreateFileExportSchema, CreateFileSchema, CreateOrganizationDto, CreateOrganizationSchema, CreateRoleDto, CreateRoleSchema, CreateSessionDto, CreateSessionSchema, CreateUserDto, CreateUserSchema, CreateVerificationTokenDto, CreateVerificationTokenSchema, FileExport, Organization, Role, Session, UpdateAgencyDto, UpdateAgencySchema, UpdateFileDto, UpdateFileExportSchema, UpdateFileSchema, UpdateOrganizationDto, UpdateOrganizationSchema, UpdateRoleDto, UpdateRoleSchema, UpdateSessionDto, UpdateSessionSchema, UpdateUserDto, UpdateUserSchema, UpdateVerificationTokenDto, UpdateVerificationTokenSchema, User, VerificationToken } from '@tmlmobilidade/types';
+import { CreateAgencySchema, CreateFileExportSchema, CreateFileSchema, CreateOrganizationSchema, CreateRoleSchema, CreateSessionSchema, CreateUserSchema, CreateVerificationTokenSchema, UpdateAgencySchema, UpdateFileExportSchema, UpdateFileSchema, UpdateOrganizationSchema, UpdateRoleSchema, UpdateSessionSchema, UpdateUserSchema, UpdateVerificationTokenSchema } from '@tmlmobilidade/types';
 
 /* * */
 
