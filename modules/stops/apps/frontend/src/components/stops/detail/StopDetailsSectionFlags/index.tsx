@@ -41,7 +41,6 @@ export function StopDetailsSectionFlags() {
 		stopDetailContext.data.form.insertListItem('flags', {
 			agency_ids: [],
 			is_harmonized: false,
-			is_harmonized_name: false,
 			short_name: '',
 			stop_id: '',
 		});
