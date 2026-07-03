@@ -73,7 +73,7 @@ const main = async () => {
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlCpV1> = {
-			agency_id: '3',
+			agency_id: 'N18KL',
 			created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
 			entity_id: entity.id,
 			payload: {

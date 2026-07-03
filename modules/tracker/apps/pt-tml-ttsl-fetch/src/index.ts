@@ -64,7 +64,7 @@ const main = async () => {
 			// and avoid storing them multiple times in the database.
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlTtslV1> = {
-				agency_id: '4',
+				agency_id: 'LTP61',
 				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
 				entity_id: entity.id,
 				payload: {

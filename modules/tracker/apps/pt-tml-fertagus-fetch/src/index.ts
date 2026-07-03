@@ -172,7 +172,7 @@ const main = async () => {
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlFertagusV1> = {
-			agency_id: '15',
+			agency_id: '7NTB1',
 			created_at: Dates.fromISO(event.date).unix_timestamp,
 			entity_id: Buffer.from(`15-${event.date}-${event.train_id}`).toString('base64').replace(/=+$/, ''),
 			payload: {
