@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 class RolesClass extends MongoCollectionClass<Role, CreateRoleDto, UpdateRoleDto> {
 	private static _instance: RolesClass;
+
 	protected override createSchema: z.ZodSchema = CreateRoleSchema;
 	protected override updateSchema: z.ZodSchema = UpdateRoleSchema;
 
@@ -78,4 +79,8 @@ class RolesClass extends MongoCollectionClass<Role, CreateRoleDto, UpdateRoleDto
 	}
 }
 
+/**
+ * @deprecated This class is deprecated and will be removed in the future.
+ * Use `@tmlmobilidade/go-interfaces-go-mongo` instead.
+ */
 export const roles = asyncSingletonProxy(RolesClass);

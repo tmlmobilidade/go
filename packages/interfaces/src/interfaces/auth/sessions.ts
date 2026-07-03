@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 class SessionsClass extends MongoCollectionClass<Session, CreateSessionDto, UpdateSessionDto> {
 	private static _instance: SessionsClass;
+
 	protected override createSchema: z.ZodSchema = CreateSessionSchema;
 	protected override updateSchema: z.ZodSchema = UpdateSessionSchema;
 
@@ -45,4 +46,8 @@ class SessionsClass extends MongoCollectionClass<Session, CreateSessionDto, Upda
 
 /* * */
 
+/**
+ * @deprecated This class is deprecated and will be removed in the future.
+ * Use `@tmlmobilidade/go-interfaces-go-mongo` instead.
+ */
 export const sessions = asyncSingletonProxy(SessionsClass);
