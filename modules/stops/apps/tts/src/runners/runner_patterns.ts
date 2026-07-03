@@ -1,11 +1,11 @@
 /* * */
 
-import { makePattern } from '@/utils/makeText.js';
+import { makePattern } from '@/src/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { type HubLine, type HubPattern } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
 
-import { piperTtsApi } from '../services/piperTtsApi.js';
+import { piperTtsApi } from '../../src/services/piperTtsApi.js';
 
 /* * */
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { generatePiperTtsAudio } from '@/daemon/services/piperTtsApi.js';
+import { generatePiperTtsAudio } from '@/src/services/piperTtsApi.js';
 import TIMETRACKER from '@helperkits/timer';
 import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
