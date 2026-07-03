@@ -12,6 +12,5 @@ COPY modules/stops/apps/tts/src/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY modules/stops/apps/tts/src/ .
-COPY modules/stops/apps/tts/src/voice_models/ voice_models/
 
 CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log", "--log-level", "warning"]
