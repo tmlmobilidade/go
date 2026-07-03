@@ -1,9 +1,8 @@
 /* * */
 
-import type { Db } from 'mongodb';
+import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
 
 import { MongoInterfaceTemplate } from '@/interface.template.js';
-import { MongoConnector } from '@tmlmobilidade/mongo';
 import { Annotation, CreateAnnotationDto, CreateAnnotationSchema, CreateEventDto, CreateEventSchema, CreateFareDto, CreateFareSchema, CreateHolidayDto, CreateHolidaySchema, CreateLineDto, CreateLineSchema, CreatePatternDto, CreatePatternSchema, CreateRouteDto, CreateRouteSchema, CreateTypologyDto, CreateTypologySchema, CreateYearPeriodDto, CreateYearPeriodSchema, CreateZoneDto, CreateZoneSchema, Fare, Holiday, Line, Pattern, Route, Typology, UpdateAnnotationDto, UpdateAnnotationSchema, UpdateEventDto, UpdateEventSchema, UpdateFareDto, UpdateFareSchema, UpdateHolidayDto, UpdateHolidaySchema, UpdateLineDto, UpdateLineSchema, UpdatePatternDto, UpdatePatternSchema, UpdateRouteDto, UpdateRouteSchema, UpdateTypologyDto, UpdateTypologySchema, UpdateYearPeriodDto, UpdateYearPeriodSchema, UpdateZoneDto, UpdateZoneSchema, YearPeriod, Zone } from '@tmlmobilidade/types';
 /* * */
 
@@ -27,9 +26,9 @@ export class OfferDatabase {
 	public readonly database: Db;
 	public readonly databaseName = 'offer';
 
-	public constructor(instance: MongoConnector) {
+	public constructor(instance: MongoClient) {
 		// Create the database instance
-		this.database = instance.client.db(this.databaseName);
+		this.database = instance.db(this.databaseName);
 
 		// Create collection interfaces
 		this.annotations = new MongoInterfaceTemplate<Annotation, CreateAnnotationDto, UpdateAnnotationDto>('annotations', this.database, CreateAnnotationSchema, UpdateAnnotationSchema);

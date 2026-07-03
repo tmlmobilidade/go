@@ -1,9 +1,8 @@
 /* * */
 
-import type { Db } from 'mongodb';
+import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
 
 import { MongoInterfaceTemplate } from '@/interface.template.js';
-import { MongoConnector } from '@tmlmobilidade/mongo';
 import { District, Locality, Municipality, Parish } from '@tmlmobilidade/types';
 /* * */
 
@@ -22,9 +21,9 @@ export class LocationsDatabase {
 	private readonly database: Db;
 	private readonly databaseName = 'locations';
 
-	public constructor(instance: MongoConnector) {
+	public constructor(instance: MongoClient) {
 		// Create the database instance
-		this.database = instance.client.db(this.databaseName);
+		this.database = instance.db(this.databaseName);
 
 		// Create collection interfaces
 		this.districts = new MongoInterfaceTemplate<District, null, null>('districts', this.database, null, null);

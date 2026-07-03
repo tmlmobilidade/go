@@ -1,6 +1,6 @@
 /* * */
 
-import { MongoConnector } from '@tmlmobilidade/mongo';
+import { type MongoClient, MongoDatabaseClient } from '@tmlmobilidade/go-clients-mongo';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 import { CoreDatabase } from './databases/core.js';
@@ -18,7 +18,7 @@ class GoDBClass {
 	//
 	private static _instance: GoDBClass;
 
-	private mongoConnector: MongoConnector;
+	private mongoClient: MongoClient;
 
 	//
 	// Databases
@@ -47,21 +47,19 @@ class GoDBClass {
 		const dbUri = process.env.DATABASE_URI;
 		if (!dbUri) throw new Error(`Missing DATABASE_URI environment variable`);
 		// Attempt to connect to the MongoDB database
-		const mongoConnector = new MongoConnector(dbUri);
-		await mongoConnector.connect();
-
+		const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GO_MONGO' });
 		// Initialize the MongoDB connector
-		this.mongoConnector = mongoConnector;
+		this.mongoClient = mongoClient;
 	}
 
 	//
 	// Constructor
 	private constructor() {
-		this.core = new CoreDatabase(this.mongoConnector);
-		this.infrastructure = new InfrastructureDatabase(this.mongoConnector);
-		this.locations = new LocationsDatabase(this.mongoConnector);
-		this.offer = new OfferDatabase(this.mongoConnector);
-		this.operation = new OperationDatabase(this.mongoConnector);
+		this.core = new CoreDatabase(this.mongoClient);
+		this.infrastructure = new InfrastructureDatabase(this.mongoClient);
+		this.locations = new LocationsDatabase(this.mongoClient);
+		this.offer = new OfferDatabase(this.mongoClient);
+		this.operation = new OperationDatabase(this.mongoClient);
 	}
 }
 

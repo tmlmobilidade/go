@@ -1,10 +1,10 @@
 /* * */
 
-import type { Db } from 'mongodb';
+import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
 
 import { MongoInterfaceTemplate } from '@/interface.template.js';
-import { MongoConnector } from '@tmlmobilidade/mongo';
 import { Agency, CreateAgencyDto, CreateAgencySchema, CreateFileDto, CreateFileExportDto, CreateFileExportSchema, CreateFileSchema, CreateOrganizationDto, CreateOrganizationSchema, CreateRoleDto, CreateRoleSchema, CreateSessionDto, CreateSessionSchema, CreateUserDto, CreateUserSchema, CreateVerificationTokenDto, CreateVerificationTokenSchema, FileExport, Organization, Role, Session, UpdateAgencyDto, UpdateAgencySchema, UpdateFileDto, UpdateFileExportSchema, UpdateFileSchema, UpdateOrganizationDto, UpdateOrganizationSchema, UpdateRoleDto, UpdateRoleSchema, UpdateSessionDto, UpdateSessionSchema, UpdateUserDto, UpdateUserSchema, UpdateVerificationTokenDto, UpdateVerificationTokenSchema, User, VerificationToken } from '@tmlmobilidade/types';
+
 /* * */
 
 export class CoreDatabase {
@@ -25,9 +25,9 @@ export class CoreDatabase {
 	private readonly database: Db;
 	private readonly databaseName = 'core';
 
-	public constructor(instance: MongoConnector) {
+	public constructor(instance: MongoClient) {
 		// Create the database instance
-		this.database = instance.client.db(this.databaseName);
+		this.database = instance.db(this.databaseName);
 
 		// Create collection interfaces
 		this.agencies = new MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>('agencies', this.database, CreateAgencySchema, UpdateAgencySchema);

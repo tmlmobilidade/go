@@ -1,9 +1,8 @@
 /* * */
 
-import type { Db } from 'mongodb';
+import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
 
 import { MongoInterfaceTemplate } from '@/interface.template.js';
-import { MongoConnector } from '@tmlmobilidade/mongo';
 import { CreateGtfsValidationDto, CreateGtfsValidationSchema, CreatePlanDto, CreatePlanSchema, CreateRideAcceptanceDto, CreateRideAcceptanceSchema, CreateRideDto, CreateRideSchema, CreateSamDto, CreateSamSchema, CreateVehicleDto, CreateVehicleSchema, DocumentSchema, GtfsValidation, HashedPattern, HashedPatternSchema, HashedShape, HashedTrip, HashedTripSchema, Plan, Ride, RideAcceptance, Sam, UpdateGtfsValidationDto, UpdateGtfsValidationSchema, UpdatePlanDto, UpdatePlanSchema, UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema, UpdateRideDto, UpdateRideSchema, UpdateSamDto, UpdateSamSchema, UpdateVehicleDto, UpdateVehicleSchema, Vehicle } from '@tmlmobilidade/types';
 /* * */
 
@@ -26,9 +25,9 @@ export class OperationDatabase {
 	private readonly database: Db;
 	private readonly databaseName = 'operation';
 
-	public constructor(instance: MongoConnector) {
+	public constructor(instance: MongoClient) {
 		// Create the database instance
-		this.database = instance.client.db(this.databaseName);
+		this.database = instance.db(this.databaseName);
 
 		// Create collection interfaces
 		this.gtfsValidations = new MongoInterfaceTemplate<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto>('gtfsValidations', this.database, CreateGtfsValidationSchema, UpdateGtfsValidationSchema);
