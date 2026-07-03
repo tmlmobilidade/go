@@ -3,7 +3,7 @@
 import type { FeedbackEntityMetrics } from '../metrics/feedback-metrics';
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
-import { FEEDBACK_TOTAL_PERCENTAGE, getFeedbackReasonLabel, roundFeedbackPercentages } from './feedback-reasons';
+import { FEEDBACK_TOTAL_PERCENTAGE, getFeedbackReasonCategoryLabel, getFeedbackReasonLabel, roundFeedbackPercentages } from './feedback-reasons';
 
 /* * */
 
@@ -31,8 +31,8 @@ interface StopFeedbackReasonCount {
 /* * */
 
 const STOP_REASON_CATEGORIES = [
-	{ id: 'stop', label: 'Paragem' },
-	{ id: 'unknown', label: 'Indefinido' },
+	{ id: 'stop', label: getFeedbackReasonCategoryLabel('stop') },
+	{ id: 'unknown', label: getFeedbackReasonCategoryLabel('unknown') },
 ] as const satisfies readonly { id: FeedbackStopReasonCategory, label: string }[];
 
 function getReasonMeters(reasonCounts: Map<string, StopFeedbackReasonCount>, totalReasonCount: number): FeedbackStopReasonReasonMeter[] {

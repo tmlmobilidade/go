@@ -30,6 +30,7 @@
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"@turf/turf": "7.3.5",
@@ -54,7 +55,6 @@
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/geojson": "7946.0.16",
 		"@types/node": "26.0.1",
 		"@types/react": "19.2.17",

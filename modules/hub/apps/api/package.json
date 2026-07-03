@@ -28,7 +28,8 @@
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/rss": "*"
+		"@tmlmobilidade/rss": "*",
+		"@tmlmobilidade/types": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",

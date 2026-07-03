@@ -146,6 +146,13 @@
 		}
 	},
 	"feedback": {
+		"reason_categories": {
+			"driver": "Motorista/Condutor",
+			"line_service": "Linha/Serviço",
+			"stop": "Paragem",
+			"unknown": "Indefinido",
+			"vehicle": "Veículo"
+		},
 		"reasons": {
 			"accessibility_issue": "Problema de acessibilidade",
 			"audio_announcement_issue": "Problema nos anúncios sonoros",
@@ -176,6 +183,7 @@
 			"missing_line_information": "Informação de linhas em falta",
 			"missing_safety_equipment": "Equipamento de segurança em falta",
 			"no_bench": "Sem banco",
+			"no_reason": "Sem motivo indicado",
 			"no_shelter": "Sem abrigo",
 			"no_trash_bin": "Sem caixote do lixo",
 			"other": "Outro",
