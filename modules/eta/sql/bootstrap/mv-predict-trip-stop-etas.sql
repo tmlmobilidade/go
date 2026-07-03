@@ -104,71 +104,7 @@ WITH
                 dow = 6, 'Saturday',
                 'Sunday'
             ) AS weekday,
-            if(dow BETWEEN 1 AND 5, 'Weekday', 'Weekend') AS day_type,
-            multiIf(
-                (
-                    operational_date BETWEEN 20230701 AND 20230831
-                    OR operational_date BETWEEN 20240701 AND 20240901
-                    OR operational_date BETWEEN 20250630 AND 20250831
-                    OR operational_date BETWEEN 20260629 AND 20260913
-                    OR operational_date BETWEEN 20270701 AND 20270831
-                    OR operational_date BETWEEN 20280701 AND 20280831
-                    OR operational_date BETWEEN 20290701 AND 20290831
-                ), 'Summer',
-                (
-                    operational_date BETWEEN 20230103 AND 20230219
-                    OR operational_date BETWEEN 20230223 AND 20230324
-                    OR operational_date BETWEEN 20230410 AND 20230630
-                    OR operational_date BETWEEN 20230911 AND 20231222
-                    OR operational_date BETWEEN 20240103 AND 20240211
-                    OR operational_date BETWEEN 20240215 AND 20240327
-                    OR operational_date BETWEEN 20240403 AND 20240630
-                    OR operational_date BETWEEN 20240909 AND 20241220
-                    OR operational_date BETWEEN 20250106 AND 20250411
-                    OR operational_date BETWEEN 20250421 AND 20250629
-                    OR operational_date BETWEEN 20250911 AND 20251219
-                    OR operational_date BETWEEN 20260105 AND 20260213
-                    OR operational_date BETWEEN 20260219 AND 20260327
-                    OR operational_date BETWEEN 20260406 AND 20260628
-                    OR operational_date BETWEEN 20260914 AND 20261218
-                    OR operational_date BETWEEN 20270103 AND 20270209
-                    OR operational_date BETWEEN 20270213 AND 20270630
-                    OR operational_date BETWEEN 20270913 AND 20271223
-                    OR operational_date BETWEEN 20280103 AND 20280208
-                    OR operational_date BETWEEN 20280212 AND 20280630
-                    OR operational_date BETWEEN 20280911 AND 20281222
-                    OR operational_date BETWEEN 20290103 AND 20290206
-                    OR operational_date BETWEEN 20290210 AND 20290630
-                    OR operational_date BETWEEN 20290910 AND 20291221
-                ), 'School',
-                (
-                    operational_date BETWEEN 20230101 AND 20230102
-                    OR operational_date BETWEEN 20230220 AND 20230222
-                    OR operational_date BETWEEN 20230325 AND 20230409
-                    OR operational_date BETWEEN 20230901 AND 20230910
-                    OR operational_date BETWEEN 20231223 AND 20240102
-                    OR operational_date BETWEEN 20240212 AND 20240214
-                    OR operational_date BETWEEN 20240328 AND 20240402
-                    OR operational_date BETWEEN 20240902 AND 20240908
-                    OR operational_date BETWEEN 20241221 AND 20250105
-                    OR operational_date BETWEEN 20250412 AND 20250420
-                    OR operational_date BETWEEN 20250901 AND 20250910
-                    OR operational_date BETWEEN 20251220 AND 20260104
-                    OR operational_date BETWEEN 20260214 AND 20260218
-                    OR operational_date BETWEEN 20260328 AND 20260405
-                    OR operational_date BETWEEN 20261219 AND 20270102
-                    OR operational_date BETWEEN 20270210 AND 20270212
-                    OR operational_date BETWEEN 20270901 AND 20270912
-                    OR operational_date BETWEEN 20271224 AND 20280102
-                    OR operational_date BETWEEN 20280209 AND 20280211
-                    OR operational_date BETWEEN 20280901 AND 20280910
-                    OR operational_date BETWEEN 20281223 AND 20290102
-                    OR operational_date BETWEEN 20290207 AND 20290209
-                    OR operational_date BETWEEN 20290901 AND 20290909
-                    OR operational_date BETWEEN 20291222 AND 20291231
-                ), 'Christmas',
-                'Unknown'
-            ) AS period
+            if(dow BETWEEN 1 AND 5, 'Weekday', 'Weekend') AS day_type
         FROM pos_classified
     ),
     recent_events AS (
@@ -179,7 +115,6 @@ WITH
             pf.period_of_day       AS period_of_day,
             pf.weekday             AS weekday,
             pf.day_type            AS day_type,
-            pf.period              AS period,
             pf.position_created_at AS position_created_at,
             e.node_index           AS node_index,
             e.created_at           AS created_at
@@ -198,7 +133,6 @@ WITH
             period_of_day,
             weekday,
             day_type,
-            period,
             position_created_at,
             node_index,
             created_at,
@@ -220,7 +154,6 @@ WITH
             period_of_day,
             weekday,
             day_type,
-            period,
             position_created_at,
             countIf(
                 prev_node_index IS NOT NULL
@@ -257,7 +190,6 @@ WITH
             period_of_day,
             weekday,
             day_type,
-            period,
             position_created_at
     ),
     live_baseline AS (
@@ -274,7 +206,6 @@ WITH
            AND p.period_of_day   = lo.period_of_day
            AND p.weekday         = lo.weekday
            AND p.day_type        = lo.day_type
-           AND p.period          = lo.period
            AND p.node_index >  lo.start_node_index
            AND p.node_index <= lo.end_node_index
         GROUP BY
@@ -324,7 +255,6 @@ WITH
             pf.period_of_day       AS period_of_day,
             pf.weekday             AS weekday,
             pf.day_type            AS day_type,
-            pf.period              AS period,
             w.stop_sequence        AS stop_sequence,
             w.stop_id              AS stop_id,
             w.stop_name            AS stop_name,
@@ -333,7 +263,6 @@ WITH
         INNER JOIN {database}.curr_waypoints_snapped AS w
             ON pf.hashed_trip_id = w.hashed_trip_id
         WHERE w.node_index >= pf.current_node_index
-          AND pf.period != 'Unknown'
     ),
     -- One distinct (trip, vehicle) per live position. This is the driving set
     -- for the per-node scan below, so each shape's nodes are read once per
@@ -346,10 +275,8 @@ WITH
             current_node_index,
             period_of_day,
             weekday,
-            day_type,
-            period
+            day_type
         FROM pos_full
-        WHERE period != 'Unknown'
     ),
     -- Per (trip, vehicle) node travel times for every node still AHEAD of the
     -- vehicle, with the live adjustment applied. The node_index > current_node
@@ -368,7 +295,6 @@ WITH
            AND p.period_of_day   = lt.period_of_day
            AND p.weekday         = lt.weekday
            AND p.day_type        = lt.day_type
-           AND p.period          = lt.period
            AND p.node_index      > lt.current_node_index
         LEFT JOIN live_factor AS lf
             ON lf.trip_id    = lt.trip_id

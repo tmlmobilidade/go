@@ -319,6 +319,12 @@ export async function main() {
 	//
 	// Finalize the export process
 
+	try {
+		fs.rmSync(context.workdir.path, { force: true, recursive: true });
+	} catch (error) {
+		Logger.error({ error, message: `Error removing export workdir "${context.workdir.path}".` });
+	}
+
 	Logger.terminate(`Run took ${globalTimer.get()}`);
 
 	//

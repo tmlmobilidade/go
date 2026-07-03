@@ -68,7 +68,7 @@ The execution of the ETA system fundamentally operates on a continuous, multi-la
 3. **Historical Sync:** The Loader batches historical rides and vehicle events into `eta.hist_rides` and `eta.hist_vehicle_events`.
 4. **Shape Nodes Precomputation:** Complex transit shapes are chopped into discrete nodes (e.g., every 25 meters) and geohashed (`sync-shape-nodes.ts`).
 5. **Historical Transformation:** Raw historical GPS points are spatially snapped to shape nodes and travel times are computed per node (`2-build_hist_node_travel_times.sql`).
-6. **Aggregation:** Travel times are bucketed by time of day, weekday/weekend, and seasonal periods (`3-aggregate_hist_node_travel_times.sql`).
+6. **Aggregation:** Travel times are bucketed by time of day, weekday, and day type (`3-aggregate_hist_node_travel_times.sql`).
 7. **Live Prediction Generation:** The Materialized Views continuously cross-reference the aggregated node times with *live* vehicle events to predict the exact ETA for upcoming stops (`mv-predict-trip-stop-etas.sql`).
 8. **Garbage Collection:** The Cleaner runs concurrently to remove data falling outside the defined operational time windows.
 

@@ -10,12 +10,11 @@ CREATE TABLE IF NOT EXISTS {database}.pred_node_etas
     period_of_day Enum8('Peak AM' = 1, 'Mid' = 2, 'Peak PM' = 3, 'Off Peak' = 4),
     weekday Enum8('Monday' = 1, 'Tuesday' = 2, 'Wednesday' = 3, 'Thursday' = 4, 'Friday' = 5, 'Saturday' = 6, 'Sunday' = 7),
     day_type Enum8('Weekday' = 1, 'Weekend' = 2),
-    period String,
     predicted_travel_time_seconds Nullable(Float64),
     refreshed_at DateTime DEFAULT now()
 )
 ENGINE = ReplacingMergeTree(refreshed_at)
-ORDER BY (hashed_shape_id, node_index, period_of_day, weekday, day_type, period);
+ORDER BY (hashed_shape_id, node_index, period_of_day, weekday, day_type);
 
 -- Refreshable MV: rebuilds {database}.node_predictions every 5 minutes from the last
 -- 30 days of node_travel_times_aggregates.
@@ -37,8 +36,7 @@ WITH
             toFloat64(0.75) AS w_last_14d,
             toFloat64(0.50) AS w_last_30d,
             toFloat64(0.85) AS w_same_weekday,
-            toFloat64(0.80) AS w_same_day_type,
-            toFloat64(0.70) AS w_same_period
+            toFloat64(0.80) AS w_same_day_type
     ),
     -- FINAL forces query-time dedup on the ReplacingMergeTree so that
     -- duplicate aggregation rows produced by overlapping loader runs do not
@@ -51,14 +49,13 @@ WITH
             operational_date,
             weekday,
             day_type,
-            period,
             period_of_day,
             median_travel_time_seconds
         FROM {database}.hist_node_travel_times_aggregation FINAL
         WHERE operational_date BETWEEN ymd_prev_30d AND ymd_prev_1d
     ),
     targets AS (
-        SELECT DISTINCT hashed_shape_id, node_index, period_of_day, weekday, day_type, period
+        SELECT DISTINCT hashed_shape_id, node_index, period_of_day, weekday, day_type
         FROM base
     ),
     agg_window AS (
@@ -86,11 +83,6 @@ WITH
                avg(median_travel_time_seconds) AS avg_same_day_type
         FROM base GROUP BY hashed_shape_id, node_index, period_of_day, day_type
     ),
-    agg_period AS (
-        SELECT hashed_shape_id, node_index, period_of_day, period,
-               avg(median_travel_time_seconds) AS avg_same_period
-        FROM base GROUP BY hashed_shape_id, node_index, period_of_day, period
-    ),
     weighted AS (
         SELECT
             t.hashed_shape_id      AS hashed_shape_id,
@@ -98,15 +90,13 @@ WITH
             t.period_of_day AS period_of_day,
             t.weekday       AS weekday,
             t.day_type      AS day_type,
-            t.period        AS period,
             (
                 if(isNotNull(aw.avg_prev_3d),       w.w_last_3d,        0) +
                 if(isNotNull(aw.avg_prev_7d),       w.w_last_7d,        0) +
                 if(isNotNull(aw.avg_prev_14d),      w.w_last_14d,       0) +
                 if(isNotNull(aw.avg_prev_30d),      w.w_last_30d,       0) +
                 if(isNotNull(awd.avg_same_weekday), w.w_same_weekday,   0) +
-                if(isNotNull(adt.avg_same_day_type),w.w_same_day_type,  0) +
-                if(isNotNull(ap.avg_same_period),   w.w_same_period,    0)
+                if(isNotNull(adt.avg_same_day_type),w.w_same_day_type,  0)
             ) AS total_weight,
             (
                 coalesce(aw.avg_prev_3d,        0) * w.w_last_3d        * if(isNotNull(aw.avg_prev_3d),        1, 0) +
@@ -114,15 +104,13 @@ WITH
                 coalesce(aw.avg_prev_14d,       0) * w.w_last_14d       * if(isNotNull(aw.avg_prev_14d),       1, 0) +
                 coalesce(aw.avg_prev_30d,       0) * w.w_last_30d       * if(isNotNull(aw.avg_prev_30d),       1, 0) +
                 coalesce(awd.avg_same_weekday,  0) * w.w_same_weekday   * if(isNotNull(awd.avg_same_weekday),  1, 0) +
-                coalesce(adt.avg_same_day_type, 0) * w.w_same_day_type  * if(isNotNull(adt.avg_same_day_type), 1, 0) +
-                coalesce(ap.avg_same_period,    0) * w.w_same_period    * if(isNotNull(ap.avg_same_period),    1, 0)
+                coalesce(adt.avg_same_day_type, 0) * w.w_same_day_type  * if(isNotNull(adt.avg_same_day_type), 1, 0)
             ) AS weighted_sum
         FROM targets AS t
         CROSS JOIN weights AS w
         LEFT JOIN agg_window   AS aw  ON aw.hashed_shape_id = t.hashed_shape_id  AND aw.node_index = t.node_index  AND aw.period_of_day = t.period_of_day
         LEFT JOIN agg_weekday  AS awd ON awd.hashed_shape_id = t.hashed_shape_id AND awd.node_index = t.node_index AND awd.period_of_day = t.period_of_day AND awd.weekday  = t.weekday
         LEFT JOIN agg_day_type AS adt ON adt.hashed_shape_id = t.hashed_shape_id AND adt.node_index = t.node_index AND adt.period_of_day = t.period_of_day AND adt.day_type = t.day_type
-        LEFT JOIN agg_period   AS ap  ON ap.hashed_shape_id = t.hashed_shape_id  AND ap.node_index = t.node_index  AND ap.period_of_day = t.period_of_day  AND ap.period   = t.period
     )
 SELECT
     hashed_shape_id,
@@ -130,7 +118,6 @@ SELECT
     period_of_day,
     weekday,
     day_type,
-    period,
     if(total_weight > 0, weighted_sum / total_weight, NULL) AS predicted_travel_time_seconds,
     now() AS refreshed_at
 FROM weighted;
