@@ -1,6 +1,6 @@
 /* * */
 
-import type { FeedbackEntityType } from '@/utils/feedback/feedback-metrics';
+import type { FeedbackEntityType } from '@/utils/metrics/feedback-metrics';
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
 import { getOperatorName, sortOperatorsByCode } from '@/utils/feedback/operators';

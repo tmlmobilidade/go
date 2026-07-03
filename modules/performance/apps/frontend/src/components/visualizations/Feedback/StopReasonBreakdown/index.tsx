@@ -6,7 +6,7 @@
 
 import type { FeedbackStopReasonCategory, FeedbackStopReasonMeter } from '@/utils/feedback/feedback-stop-reasons';
 
-import { formatSatisfactionIndex } from '@/utils/feedback/feedback-metrics';
+import { formatSatisfactionIndex } from '@/utils/metrics/feedback-metrics';
 import { BarChart, Label, Section } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 

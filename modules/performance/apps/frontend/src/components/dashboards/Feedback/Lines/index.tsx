@@ -7,7 +7,7 @@ import { FeedbackEntityDetailModal, FeedbackMetricTag, OperatorLogo } from '@/co
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
 import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-line-contributions';
-import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
+import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { buildLineLabelsById, type FeedbackNetworkLine, getLineLabel } from '@/utils/feedback/network-labels';
 import { getOperatorName } from '@/utils/feedback/operators';
 import { type Agency, type PublicFeedback } from '@tmlmobilidade/types';

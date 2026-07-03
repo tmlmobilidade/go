@@ -1,6 +1,6 @@
 /* * */
 
-import type { FeedbackEntityMetrics } from './feedback-metrics';
+import type { FeedbackEntityMetrics } from '../metrics/feedback-metrics';
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
 import { FEEDBACK_TOTAL_PERCENTAGE, getFeedbackReasonLabel, roundFeedbackPercentages } from './feedback-reasons';

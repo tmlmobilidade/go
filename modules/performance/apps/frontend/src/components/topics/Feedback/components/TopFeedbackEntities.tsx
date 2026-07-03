@@ -1,11 +1,11 @@
 /* * */
 
-import type { FeedbackEntitySummary } from '@/utils/feedback/feedback-metrics';
+import type { FeedbackEntitySummary } from '@/utils/metrics/feedback-metrics';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag, OperatorLogo } from '@/components/visualizations/Feedback';
-import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/feedback/feedback-metrics';
 import { getOperatorName } from '@/utils/feedback/operators';
+import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { type Agency } from '@tmlmobilidade/types';
 import { Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';

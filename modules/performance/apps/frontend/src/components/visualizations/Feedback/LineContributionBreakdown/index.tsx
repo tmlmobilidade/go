@@ -6,7 +6,7 @@
 
 import type { FeedbackLineContributionCategory, FeedbackLineContributionMeter } from '@/utils/feedback/feedback-line-contributions';
 
-import { formatSatisfactionIndex } from '@/utils/feedback/feedback-metrics';
+import { formatSatisfactionIndex } from '@/utils/metrics/feedback-metrics';
 import { BarChart, Label, Section } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 

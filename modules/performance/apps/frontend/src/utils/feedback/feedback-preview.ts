@@ -3,7 +3,7 @@
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
 import { getFeedbackLineContributionMeters } from './feedback-line-contributions';
-import { type FeedbackEntitySummary, type FeedbackEntityType, getFeedbackEntitySummary, getFeedbackMetricsByEntity } from './feedback-metrics';
+import { type FeedbackEntitySummary, type FeedbackEntityType, getFeedbackEntitySummary, getFeedbackMetricsByEntity } from '../metrics/feedback-metrics';
 import { getTopFeedbackReasonsByEntity, getTopFeedbackReasonsTrendByEntity } from './feedback-reasons';
 import { getFeedbackStopReasonMeters } from './feedback-stop-reasons';
 
