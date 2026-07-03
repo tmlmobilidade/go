@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-tracker-cm-sync-core",
+	"name": "@tmlmobilidade/go-tracker-pt-tml-tcb-fetch",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -17,21 +17,17 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-tracker-pckg-databases": "*",
-		"@tmlmobilidade/go-tracker-pckg-shared": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/external": "*",
+		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*",
-		"luxon": "3.7.2"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/luxon": "3.7.2",
 		"@types/node": "26.1.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.5",

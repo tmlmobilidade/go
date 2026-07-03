@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-tracker-cm-stream-log",
+	"name": "@tmlmobilidade/go-tracker-pt-tml-mobi-fetch",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -18,15 +18,16 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
-		"@tmlmobilidade/go-tracker-pckg-databases": "*",
-		"@tmlmobilidade/go-tracker-pckg-shared": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/external": "*",
+		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/luxon": "3.7.2",
 		"@types/node": "26.1.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.5",

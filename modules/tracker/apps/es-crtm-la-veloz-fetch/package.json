@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-tracker-cm-stream-core",
+	"name": "@tmlmobilidade/go-tracker-es-crtm-la-veloz-fetch",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -18,15 +18,15 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
-		"@tmlmobilidade/go-tracker-pckg-databases": "*",
-		"@tmlmobilidade/go-tracker-pckg-shared": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/external": "*",
+		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/luxon": "3.7.2",
 		"@types/node": "26.1.0",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.5",

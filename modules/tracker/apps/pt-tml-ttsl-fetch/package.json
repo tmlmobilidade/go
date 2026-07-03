@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-tracker-cp-fetch",
+	"name": "@tmlmobilidade/go-tracker-pt-tml-ttsl-fetch",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -22,7 +22,6 @@
 		"@tmlmobilidade/external": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
