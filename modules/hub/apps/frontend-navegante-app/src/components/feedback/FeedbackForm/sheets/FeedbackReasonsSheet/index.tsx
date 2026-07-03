@@ -38,7 +38,11 @@ export function FeedbackReasonsSheet({ description, entityType, heading, onClose
 
 	const { t } = useTranslation();
 
-	const reasonGroups = getFeedbackReasonGroups(entityType, reasonId => t(`default:feedback.reasons.${reasonId}`));
+	const reasonGroups = getFeedbackReasonGroups(
+		entityType,
+		reasonId => t(`default:feedback.reasons.${reasonId}`),
+		category => t(`default:feedback.reason_categories.${category}`),
+	);
 
 	//
 	// B. Render component

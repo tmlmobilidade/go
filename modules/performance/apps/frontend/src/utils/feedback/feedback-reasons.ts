@@ -2,7 +2,10 @@
 
 import type { FeedbackEntityType } from '../metrics/feedback-metrics';
 import type { StackedResult } from '@/utils/metrics';
-import type { PublicFeedback } from '@tmlmobilidade/types';
+
+import { PUBLIC_FEEDBACK_NO_REASON_ID, type PublicFeedback, type PublicFeedbackReasonCategory } from '@tmlmobilidade/types';
+
+import feedbackTranslations from '../../../../../../hub/apps/frontend-navegante-app/src/i18n/namespaces/default/pt.json';
 
 /* * */
 
@@ -41,54 +44,8 @@ const FEEDBACK_REASON_CHART_COLORS = [
 	'var(--color-system-text-300)',
 ];
 
-const FEEDBACK_REASON_LABELS = new Map<string, string>([
-	['accessibility_issue', 'Problema de acessibilidade'],
-	['audio_announcement_issue', 'Problema nos anúncios sonoros'],
-	['cancelled_departure', 'Circulação cancelada'],
-	['climate_control_issue', 'Problema na climatização'],
-	['confusing_signage', 'Sinalética confusa'],
-	['damaged', 'Danificado'],
-	['damaged_bench', 'Banco danificado'],
-	['detour', 'Desvio no percurso'],
-	['did_not_pass', 'Não passou'],
-	['dirty', 'Sujo'],
-	['disorganized_boarding', 'Embarque ou fila desorganizada'],
-	['display_issue', 'Problema no painel'],
-	['door_issue', 'Problema nas portas'],
-	['driver_bad_conduct', 'Má conduta do motorista'],
-	['early', 'Passou adiantado'],
-	['elevator_escalator_issue', 'Problema no elevador ou escada rolante'],
-	['excessive_travel_time', 'Tempo de viagem excessivo'],
-	['inaccurate_realtime', 'Tempo real incorreto'],
-	['inadequate_service', 'Serviço inadequado'],
-	['insufficient_capacity', 'Capacidade insuficiente'],
-	['interrupted', 'Serviço interrompido'],
-	['lack_of_passenger_support', 'Falta de apoio ao passageiro'],
-	['late', 'Passou atrasado'],
-	['lighting_issue', 'Problema na iluminação'],
-	['long_headway', 'Tempo de espera elevado'],
-	['long_queue', 'Fila muito longa'],
-	['missing_line_information', 'Informação de linhas em falta'],
-	['missing_safety_equipment', 'Equipamento de segurança em falta'],
-	['no_bench', 'Sem banco'],
-	['no_reason', 'Sem motivo indicado'],
-	['no_shelter', 'Sem abrigo'],
-	['no_trash_bin', 'Sem caixote do lixo'],
-	['other', 'Outro'],
-	['route_changed_without_notice', 'Percurso alterado sem aviso'],
-	['rude_staff', 'Atendimento rude'],
-	['safety_incident', 'Incidente de segurança'],
-	['shelter_issue', 'Problema no abrigo'],
-	['sidewalk_issue', 'Problema no passeio'],
-	['skipped_stop', 'Não parou na paragem'],
-	['ticket_machine_issue', 'Problema na máquina de bilhetes'],
-	['too_crowded', 'Muito cheio'],
-	['traffic_law_violation', 'Infração de trânsito'],
-	['unsafe_speed', 'Velocidade insegura'],
-	['validator_issue', 'Problema no validador'],
-	['weather_exposure_issue', 'Exposição ao mau tempo'],
-	['wrong_panel_information', 'Informação errada no painel'],
-]);
+const FEEDBACK_REASON_LABELS = feedbackTranslations.feedback.reasons as Record<string, string>;
+const FEEDBACK_REASON_CATEGORY_LABELS = feedbackTranslations.feedback.reason_categories as Record<string, string>;
 
 const FEEDBACK_REASON_DAY_DETAILED_FORMATTER = new Intl.DateTimeFormat('pt-PT', {
 	day: '2-digit',
@@ -112,11 +69,15 @@ function clampPercentage(value: number) {
 }
 
 export function getFeedbackReasonLabel(reason: string) {
-	return FEEDBACK_REASON_LABELS.get(reason) ?? reason;
+	return FEEDBACK_REASON_LABELS[reason] ?? reason;
+}
+
+export function getFeedbackReasonCategoryLabel(category: 'unknown' | PublicFeedbackReasonCategory) {
+	return FEEDBACK_REASON_CATEGORY_LABELS[category] ?? category;
 }
 
 export function getFeedbackReasonsForRow(row: PublicFeedback) {
-	if (row.reasons.length === 0) return ['no_reason'];
+	if (row.reasons.length === 0) return [PUBLIC_FEEDBACK_NO_REASON_ID];
 	return Array.from(new Set(row.reasons));
 }
 

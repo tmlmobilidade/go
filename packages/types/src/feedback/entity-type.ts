@@ -11,4 +11,8 @@ export const PublicFeedbackEntityTypeSchemaValues = [
 
 /* * */
 
+export type PublicFeedbackEntityType = typeof PublicFeedbackEntityTypeSchemaValues[number];
+
+/* * */
+
 export const PublicFeedbackEntityTypeSchema = z.enum(PublicFeedbackEntityTypeSchemaValues);

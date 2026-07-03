@@ -1,9 +1,10 @@
 /* * */
 
 import type { FeedbackEntityMetrics } from '../metrics/feedback-metrics';
-import type { PublicFeedback } from '@tmlmobilidade/types';
 
-import { FEEDBACK_TOTAL_PERCENTAGE, getFeedbackReasonLabel, roundFeedbackPercentages } from './feedback-reasons';
+import { getPublicFeedbackReasonConfig, PUBLIC_FEEDBACK_NO_REASON_ID, type PublicFeedback, type PublicFeedbackReasonCategory } from '@tmlmobilidade/types';
+
+import { FEEDBACK_TOTAL_PERCENTAGE, getFeedbackReasonCategoryLabel, getFeedbackReasonLabel, roundFeedbackPercentages } from './feedback-reasons';
 
 /* * */
 
@@ -26,48 +27,11 @@ export interface FeedbackLineContributionReasonMeter {
 /* * */
 
 const LINE_CONTRIBUTION_CATEGORIES = [
-	{ id: 'line_service', label: 'Linha/Serviço' },
-	{ id: 'vehicle', label: 'Veículo' },
-	{ id: 'driver', label: 'Condutor' },
-	{ id: 'unknown', label: 'Indefinido' },
+	{ id: 'line_service', label: getFeedbackReasonCategoryLabel('line_service') },
+	{ id: 'vehicle', label: getFeedbackReasonCategoryLabel('vehicle') },
+	{ id: 'driver', label: getFeedbackReasonCategoryLabel('driver') },
+	{ id: 'unknown', label: getFeedbackReasonCategoryLabel('unknown') },
 ] as const satisfies readonly { id: FeedbackLineContributionCategory, label: string }[];
-
-const LINE_REASON_CATEGORIES = new Map<string, FeedbackLineContributionCategory[]>([
-	['accessibility_issue', ['vehicle']],
-	['audio_announcement_issue', ['line_service']],
-	['cancelled_departure', ['line_service']],
-	['climate_control_issue', ['vehicle']],
-	['damaged', ['vehicle']],
-	['detour', ['line_service']],
-	['did_not_pass', ['line_service']],
-	['dirty', ['vehicle']],
-	['disorganized_boarding', ['driver']],
-	['display_issue', ['line_service']],
-	['door_issue', ['vehicle']],
-	['driver_bad_conduct', ['driver']],
-	['early', ['line_service']],
-	['excessive_travel_time', ['line_service']],
-	['inaccurate_realtime', ['line_service']],
-	['inadequate_service', ['line_service']],
-	['insufficient_capacity', ['line_service']],
-	['interrupted', ['line_service']],
-	['lack_of_passenger_support', ['driver']],
-	['late', ['line_service']],
-	['lighting_issue', ['vehicle']],
-	['long_headway', ['line_service']],
-	['long_queue', ['line_service']],
-	['missing_safety_equipment', ['vehicle']],
-	['other', ['line_service', 'vehicle', 'driver']],
-	['route_changed_without_notice', ['line_service']],
-	['rude_staff', ['driver']],
-	['safety_incident', ['vehicle']],
-	['skipped_stop', ['line_service']],
-	['too_crowded', ['line_service']],
-	['traffic_law_violation', ['driver']],
-	['unsafe_speed', ['driver']],
-	['validator_issue', ['vehicle']],
-	['wrong_panel_information', ['line_service']],
-]);
 
 interface LineFeedbackReasonEntry {
 	categories: FeedbackLineContributionCategory[]
@@ -82,17 +46,27 @@ interface LineFeedbackReasonWeight {
 
 /* * */
 
+function isLineContributionCategory(category: PublicFeedbackReasonCategory): category is Exclude<PublicFeedbackReasonCategory, 'stop'> {
+	return category !== 'stop';
+}
+
+function getLineFeedbackReasonCategories(reason: string): FeedbackLineContributionCategory[] {
+	const categories = getPublicFeedbackReasonConfig(reason)?.category.filter(isLineContributionCategory) ?? [];
+	if (categories.length === 0) return ['unknown'];
+	return categories;
+}
+
 function getLineFeedbackReasonEntries(reasons: string[]): LineFeedbackReasonEntry[] {
 	if (reasons.length === 0) {
 		return [{
 			categories: ['unknown'],
-			id: 'no_reason',
-			label: getFeedbackReasonLabel('no_reason'),
+			id: PUBLIC_FEEDBACK_NO_REASON_ID,
+			label: getFeedbackReasonLabel(PUBLIC_FEEDBACK_NO_REASON_ID),
 		}];
 	}
 
 	return reasons.map(reason => ({
-		categories: LINE_REASON_CATEGORIES.get(reason) ?? ['unknown'],
+		categories: getLineFeedbackReasonCategories(reason),
 		id: reason,
 		label: getFeedbackReasonLabel(reason),
 	}));

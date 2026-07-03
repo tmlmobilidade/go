@@ -30,7 +30,11 @@ export function FeedbackReasonOptionsSheet({ category, entityType, onClose, onSu
 	const [draftSelectedValues, setDraftSelectedValues] = useState<string[]>(selectedValues);
 	const { t } = useTranslation();
 
-	const reasonGroup = getFeedbackReasonGroups(entityType, reasonId => t(`default:feedback.reasons.${reasonId}`))[category];
+	const reasonGroup = getFeedbackReasonGroups(
+		entityType,
+		reasonId => t(`default:feedback.reasons.${reasonId}`),
+		reasonCategory => t(`default:feedback.reason_categories.${reasonCategory}`),
+	)[category];
 	const hasDraftSelectedValues = draftSelectedValues.length > 0;
 	const hasReachedSelectionLimit = draftSelectedValues.length >= FEEDBACK_REASON_SELECTION_LIMIT;
 
