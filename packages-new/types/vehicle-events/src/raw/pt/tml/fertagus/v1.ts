@@ -38,6 +38,7 @@ export type RawVehicleEventPtTmlFertagusV1Payload = z.infer<typeof RawVehicleEve
 /* * */
 
 export const RawVehicleEventPtTmlFertagusV1Schema = RawVehicleEventBaseSchema.extend({
+	agency_id: z.literal('7NTB1'),
 	payload: RawVehicleEventPtTmlFertagusV1PayloadSchema,
 	version: z.literal('pt-tml-fertagus-v1'),
 });

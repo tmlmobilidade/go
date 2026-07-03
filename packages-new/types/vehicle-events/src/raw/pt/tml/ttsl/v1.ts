@@ -39,6 +39,7 @@ export type RawVehicleEventPtTmlTtslV1Payload = z.infer<typeof RawVehicleEventPt
 /* * */
 
 export const RawVehicleEventPtTmlTtslV1Schema = RawVehicleEventBaseSchema.extend({
+	agency_id: z.literal('LTP61'),
 	payload: RawVehicleEventPtTmlTtslV1PayloadSchema,
 	version: z.literal('pt-tml-ttsl-v1'),
 });

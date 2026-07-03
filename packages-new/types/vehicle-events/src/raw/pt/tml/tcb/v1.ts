@@ -44,6 +44,7 @@ export type RawVehicleEventPtTmlTcbV1Payload = z.infer<typeof RawVehicleEventPtT
 /* * */
 
 export const RawVehicleEventPtTmlTcbV1Schema = RawVehicleEventBaseSchema.extend({
+	agency_id: z.literal('A3H3M'),
 	payload: RawVehicleEventPtTmlTcbV1PayloadSchema,
 	version: z.literal('pt-tml-tcb-v1'),
 });

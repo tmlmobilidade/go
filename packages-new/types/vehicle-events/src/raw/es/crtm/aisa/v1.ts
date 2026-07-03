@@ -48,6 +48,7 @@ export type RawVehicleEventEsCrtmAisaV1Payload = z.infer<typeof RawVehicleEventE
 /* * */
 
 export const RawVehicleEventEsCrtmAisaV1Schema = RawVehicleEventBaseSchema.extend({
+	agency_id: z.literal('G8N1G'),
 	payload: RawVehicleEventEsCrtmAisaV1PayloadSchema,
 	version: z.literal('es-crtm-aisa-v1'),
 });

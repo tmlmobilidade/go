@@ -15,7 +15,7 @@ export const parseRawVehicleEventPtTmlCpV1 = (doc: RawVehicleEventPtTmlCpV1): nu
 	if (latitude === null || longitude === null) return null;
 	return {
 		_id: doc._id,
-		agency_code: doc.agency_id,
+		agency_code: '3',
 		agency_id: doc.agency_id,
 		bearing: vehicle.position.bearing ? roundToInt(vehicle.position.bearing) : null,
 		created_at: doc.created_at,

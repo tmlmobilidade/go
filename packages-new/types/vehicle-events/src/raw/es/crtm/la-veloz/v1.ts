@@ -48,6 +48,7 @@ export type RawVehicleEventEsCrtmLaVelozV1Payload = z.infer<typeof RawVehicleEve
 /* * */
 
 export const RawVehicleEventEsCrtmLaVelozV1Schema = RawVehicleEventBaseSchema.extend({
+	agency_id: z.literal('DFS5M'),
 	payload: RawVehicleEventEsCrtmLaVelozV1PayloadSchema,
 	version: z.literal('es-crtm-la-veloz-v1'),
 });

@@ -51,6 +51,12 @@ export type RawVehicleEventPtTmlCmetV1LogPayload = z.infer<typeof RawVehicleEven
 /* * */
 
 export const RawVehicleEventPtTmlCmetV1LogSchema = RawVehicleEventBaseSchema.extend({
+	agency_id: z.union([
+		z.literal('LA77N'), // Viação Alvorada
+		z.literal('BNA17'), // Rodoviária de Lisboa
+		z.literal('YA15B'), // Transportes Sul do Tejo
+		z.literal('A2L1N'), // Alsa Todi
+	]),
 	payload: RawVehicleEventPtTmlCmetV1LogPayloadSchema,
 	version: z.literal('pt-tml-cmet-v1-log'),
 });
