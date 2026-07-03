@@ -3,6 +3,9 @@ export * from './client.js';
 /* * */
 
 export type {
+	AggregateOptions,
+	Flatten, 
+	InsertManyResult,
 	AggregationCursor,
 	ChangeStreamDeleteDocument,
 	ChangeStreamDocument,

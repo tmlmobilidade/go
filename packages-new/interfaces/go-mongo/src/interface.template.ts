@@ -1,7 +1,7 @@
 /* * */
 
 import type { AggregationPipeline } from './types/mongo/aggregation.js';
-import type { AggregateOptions, AggregationCursor, Collection, Db, DeleteOptions, DeleteResult, Document, Filter, FindOptions, Flatten, InsertManyResult, InsertOneOptions, InsertOneResult, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId } from 'mongodb';
+import type { AggregateOptions, AggregationCursor, Collection, Db, DeleteOptions, Filter, DeleteResult, Document, FindOptions, Flatten, InsertManyResult, InsertOneOptions, InsertOneResult, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId } from '@tmlmobilidade/go-clients-mongo';
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
@@ -43,7 +43,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @param key The key to find distinct values for.
 	 * @returns A promise that resolves to an array of distinct values for the given key.
 	 */
-	public async distinct<Key extends keyof WithId<T>>(key: Key, filter?: Filter<T>): Promise<Array<Flatten<WithId<T>[Key]>>> {
+	public async distinct<Key extends keyof WithId<T>>(key: Key, filter: Filter<T> = {}): Promise<Array<Flatten<WithId<T>[Key]>>> {
 		return this.mongoCollection.distinct(key as string, filter) as Promise<Array<Flatten<WithId<T>[Key]>>>;
 	}
 
@@ -152,7 +152,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 */
 	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
 		// Setup a copy of the document to be inserted
-		let parsedDocument = { ...doc } as OptionalUnlessRequiredId<T>;
+		let parsedDocument = { ...doc } as OptionalUnlessRequiredId<T> & { created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string };
 		// Validate the document against the create schema if unsafe is false
 		if (!unsafe) {
 			try {
