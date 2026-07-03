@@ -84,7 +84,11 @@ export class MongoDatabaseClient {
 		const key = config.prefix;
 
 		if (!this.entries.has(key)) {
-			this.entries.set(key, this.createClient(config));
+			const promise = this.createClient(config).catch((error) => {
+				this.entries.delete(key);
+				throw error;
+			});
+			this.entries.set(key, promise);
 		}
 
 		const entry = await this.entries.get(key)!;
