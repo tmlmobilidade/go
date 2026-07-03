@@ -21,7 +21,6 @@ export * from '@/plans/index.js';
 export * from '@/proposed-change.js';
 export * from '@/sams/index.js';
 export * from '@/stops/index.js';
-export * from '@/vehicle-events/index.js';
 export * from '@/vehicle/index.js';
 export * from '@/wiki.js';
 export * from '@tmlmobilidade/go-types-gtfs-rt';
