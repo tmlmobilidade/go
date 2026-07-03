@@ -1,6 +1,6 @@
 /* * */
 
-import type { FeedbackEntitySummary } from '@/utils/feedback/feedback-entities';
+import type { FeedbackEntitySummary } from '@/utils/feedback/feedback-metrics';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag, OperatorLogo } from '@/components/visualizations/Feedback';

@@ -28,6 +28,9 @@ interface FeedbackReasonEntry {
 /* * */
 
 const TOP_REASON_LIMIT = 6;
+const PERCENTAGE_DISPLAY_SCALE = 10;
+
+export const FEEDBACK_TOTAL_PERCENTAGE = 100;
 
 const FEEDBACK_REASON_CHART_COLORS = [
 	'var(--chart-color-1)',
@@ -104,13 +107,38 @@ const FEEDBACK_REASON_DAY_SHORT_FORMATTER = new Intl.DateTimeFormat('pt-PT', {
 
 /* * */
 
-function getFeedbackReasonLabel(reason: string) {
+function clampPercentage(value: number) {
+	return Math.min(Math.max(value, 0), FEEDBACK_TOTAL_PERCENTAGE);
+}
+
+export function getFeedbackReasonLabel(reason: string) {
 	return FEEDBACK_REASON_LABELS.get(reason) ?? reason;
 }
 
-function getFeedbackReasonsForRow(row: PublicFeedback) {
+export function getFeedbackReasonsForRow(row: PublicFeedback) {
 	if (row.reasons.length === 0) return ['no_reason'];
 	return Array.from(new Set(row.reasons));
+}
+
+export function roundFeedbackPercentages(values: number[]) {
+	if (values.length === 0) return [];
+
+	const targetTotal = FEEDBACK_TOTAL_PERCENTAGE * PERCENTAGE_DISPLAY_SCALE;
+	const scaledValues = values.map(value => clampPercentage(value) * PERCENTAGE_DISPLAY_SCALE);
+	const roundedValues = scaledValues.map(Math.floor);
+	const remainingValue = targetTotal - roundedValues.reduce((total, value) => total + value, 0);
+
+	const indexesByRemainder = scaledValues
+		.map((value, index) => ({ index, remainder: value - Math.floor(value) }))
+		.sort((valueA, valueB) => valueB.remainder - valueA.remainder);
+
+	for (let index = 0; index < remainingValue; index++) {
+		const targetIndex = indexesByRemainder[index % indexesByRemainder.length]?.index;
+		if (targetIndex === undefined) break;
+		roundedValues[targetIndex] += 1;
+	}
+
+	return roundedValues.map(value => value / PERCENTAGE_DISPLAY_SCALE);
 }
 
 function buildChartSlices(reasonEntries: FeedbackReasonEntry[]): FeedbackReasonChartSlice[] {
