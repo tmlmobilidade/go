@@ -1,6 +1,6 @@
 /* * */
 
-import type { FeedbackEntityType } from './feedback-metrics';
+import type { FeedbackEntityType } from '../metrics/feedback-metrics';
 import type { StackedResult } from '@/utils/metrics';
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
