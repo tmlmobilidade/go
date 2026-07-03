@@ -3,8 +3,8 @@
 import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, patterns, stops } from '@tmlmobilidade/interfaces';
-import { CreateStopSchema, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
+import { files, type Filter, patterns, stops } from '@tmlmobilidade/interfaces';
+import { CreateStopSchema, type File, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
  * This is an example controller that is using the stops interface.
@@ -107,6 +107,16 @@ export class StopsController {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not get stops from database');
 		}
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Gets organization logo from the database.
+	 * @param request The request object containing the organization ID in the params.
+	 * @param reply The reply object used to send the response.
+	 */
+	static async getTTS(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ file: File | null }>) {
+		const file = await files.findById(request.params.id);
+		reply.send({ data: { file }, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
