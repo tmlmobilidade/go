@@ -1,7 +1,7 @@
 /* * */
 
-import { generatePiperTtsAudio } from '@/daemon/services/piperTtsApi.js';
-import { makeStop } from '@/utils/makeText.js';
+import { generatePiperTtsAudio } from '@/src/services/piperTtsApi.js';
+import { makeStop } from '@/src/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { files, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
