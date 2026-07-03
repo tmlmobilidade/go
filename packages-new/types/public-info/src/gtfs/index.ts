@@ -1,1 +1,1 @@
-export * from '@/gtfs/stops.js';
+export * from './stops.js';
