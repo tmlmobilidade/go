@@ -4,9 +4,9 @@ import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { type BaseResponse, type TempoEsperaRawItem } from '@tmlmobilidade/external/dist/clients/ml/types.js';
+import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlMlV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HashableRawVehicleEvent, type RawVehicleEventMlV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
@@ -115,7 +115,7 @@ const main = async () => {
 			// This allows us to identify duplicate events
 			// and avoid storing them multiple times in the database.
 
-			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventMlV1> = {
+			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlMlV1> = {
 				agency_id: '2',
 				created_at: now.unix_timestamp,
 				entity_id: `${line}_${trainId}_${destinationId}`,
@@ -143,7 +143,7 @@ const main = async () => {
 						},
 					},
 				},
-				version: 'ml-v1',
+				version: 'pt-tml-ml-v1',
 			};
 
 			const hashableRawEventId = crypto

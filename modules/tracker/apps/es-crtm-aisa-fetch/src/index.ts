@@ -3,10 +3,10 @@
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
+import { type HashableRawVehicleEvent, type RawVehicleEventEsCrtmAisaV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HashableRawVehicleEvent, type RawVehicleEventCrtmAisaV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
@@ -65,7 +65,7 @@ const main = async () => {
 			// This allows us to identify duplicate events
 			// and avoid storing them multiple times in the database.
 
-			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventCrtmAisaV1> = {
+			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventEsCrtmAisaV1> = {
 				agency_id: '1',
 				created_at: Dates.fromSeconds(Number(entity.vehicle.timestamp)).unix_timestamp,
 				entity_id: entity.id,
@@ -73,7 +73,7 @@ const main = async () => {
 					header: decodedMessage.header,
 					vehicle: entity.vehicle,
 				},
-				version: 'crtm-aisa-v1',
+				version: 'es-crtm-aisa-v1',
 			};
 
 			const hashableRawEventId = crypto

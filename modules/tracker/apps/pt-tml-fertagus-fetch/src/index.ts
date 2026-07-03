@@ -4,11 +4,12 @@ import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { TrainsResponse } from '@tmlmobilidade/external/dist/clients/fertagus/types.js';
+import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlFertagusV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HashableRawVehicleEvent, HashedPattern, RawVehicleEventFertagusV1, Ride } from '@tmlmobilidade/types';
+import { type HashedPattern, type Ride } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
@@ -170,7 +171,7 @@ const main = async () => {
 		// to create a unique identifier for the event.
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database
-		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventFertagusV1> = {
+		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlFertagusV1> = {
 			agency_id: '15',
 			created_at: Dates.fromISO(event.date).unix_timestamp,
 			entity_id: Buffer.from(`15-${event.date}-${event.train_id}`).toString('base64').replace(/=+$/, ''),
@@ -200,7 +201,7 @@ const main = async () => {
 					},
 				},
 			},
-			version: 'fertagus-v1',
+			version: 'pt-tml-fertagus-v1',
 		};
 
 		const hashableRawEventId = crypto

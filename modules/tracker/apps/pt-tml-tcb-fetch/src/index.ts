@@ -3,10 +3,10 @@
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
+import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlTcbV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { GtfsRtFeedMessage, type HashableRawVehicleEvent, type RawVehicleEventTcbV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
@@ -47,7 +47,7 @@ const main = async () => {
 	//
 	// Transform each message into a RawVehicleEvent
 
-	const candidateEvents: Array<{ _id: string, document: RawVehicleEventTcbV1 }> = [];
+	const candidateEvents: Array<{ _id: string, document: RawVehicleEventPtTmlTcbV1 }> = [];
 
 	for (const entity of decodedMessage.entity ?? []) {
 		try {
@@ -63,7 +63,7 @@ const main = async () => {
 			// This allows us to identify duplicate events
 			// and avoid storing them multiple times in the database.
 
-			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventTcbV1> = {
+			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlTcbV1> = {
 				agency_id: '8',
 				created_at: Dates.fromSeconds(timestampSeconds).unix_timestamp,
 				entity_id: entity.id,
@@ -74,7 +74,7 @@ const main = async () => {
 					},
 					vehicle: entity.vehicle,
 				},
-				version: 'tcb-v1',
+				version: 'pt-tml-tcb-v1',
 			};
 
 			const hashableRawEventId = crypto
