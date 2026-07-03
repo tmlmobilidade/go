@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { agencies } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-mongo';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Agency } from '@tmlmobilidade/types';
 
@@ -17,7 +17,7 @@ export class AgenciesSharedController {
 	 * @param reply The reply object
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Agency[]>) {
-		const allAgencies = await agencies.findMany({}, { sort: { _id: 1 } });
+		const allAgencies = await goDB.core.agencies.findMany({}, { sort: { _id: 1 } });
 		reply.send({ data: allAgencies, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -27,7 +27,7 @@ export class AgenciesSharedController {
 	 * @param reply The reply object
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Agency>) {
-		const agencyData = await agencies.findById(request.params.id);
+		const agencyData = await goDB.core.agencies.findById(request.params.id);
 		if (!agencyData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');
 			Logger.issue({

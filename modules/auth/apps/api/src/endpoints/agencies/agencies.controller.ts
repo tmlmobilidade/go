@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { agencies } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-mongo';
 import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/types';
 
 /* * */
@@ -16,7 +16,7 @@ export class AgenciesController {
 	 * @param reply The reply object
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Agency[]>) {
-		const allAgencies = await agencies.findMany({}, { projection: { validation_rules: 0 }, sort: { _id: 1 } });
+		const allAgencies = await goDB.core.agencies.findMany({}, { projection: { validation_rules: 0 }, sort: { _id: 1 } });
 		if (!allAgencies) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting agencies from database');
 		}
@@ -29,7 +29,7 @@ export class AgenciesController {
 	 * @param reply The reply object
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Agency>) {
-		const agencyData = await agencies.findById(request.params.id);
+		const agencyData = await goDB.core.agencies.findById(request.params.id);
 		if (!agencyData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, `Error finding agency with ID ${request.params.id}`);
 		}
@@ -42,8 +42,8 @@ export class AgenciesController {
 	 * @param reply Fastify reply.
 	 */
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Agency>) {
-		await agencies.toggleLockById(request.params.id);
-		const foundAgency = await agencies.findById(request.params.id);
+		await goDB.core.agencies.toggleLockById(request.params.id);
+		const foundAgency = await goDB.core.agencies.findById(request.params.id);
 		if (!foundAgency) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, `Error finding agency with ID ${request.params.id}`);
 		}
@@ -64,7 +64,7 @@ export class AgenciesController {
 		// Set the updated_by field to the current user's id
 		validatedAgency.data.updated_by = request.me._id;
 		// Update the agency in the database
-		const updatedAgencyData = await agencies.updateById(request.params.id, validatedAgency.data);
+		const updatedAgencyData = await goDB.core.agencies.updateById(request.params.id, validatedAgency.data);
 		reply.send({ data: updatedAgencyData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

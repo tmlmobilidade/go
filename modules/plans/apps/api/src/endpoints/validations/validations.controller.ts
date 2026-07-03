@@ -3,7 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { agencies, files, type Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-mongo';
+import { files, type Filter, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
 import { type CreateGtfsValidationDto, type File as FileType, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog, type ProcessingStatus } from '@tmlmobilidade/types';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
@@ -396,7 +397,7 @@ export class GtfsValidationsController {
 		//
 		// Get the TML contact emails for this Agency
 
-		const agencyData = await agencies.findById(validationData.gtfs_agency.agency_id);
+		const agencyData = await goDB.core.agencies.findById(validationData.gtfs_agency.agency_id);
 
 		if (!agencyData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');

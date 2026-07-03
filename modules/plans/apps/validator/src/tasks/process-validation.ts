@@ -5,8 +5,9 @@ import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-mongo';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
-import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
+import { files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GtfsValidation, type GtfsValidationSummary } from '@tmlmobilidade/types';
 import fs from 'node:fs';
@@ -75,7 +76,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// and download them to the working directory. Throw an error
 		// if no agency is found or if the rules file is not accessible.
 
-		const foundAgency = await agencies.findById(gtfsValidation.gtfs_agency.agency_id);
+		const foundAgency = await goDB.core.agencies.findById(gtfsValidation.gtfs_agency.agency_id);
 		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.gtfs_agency.agency_id}`);
 		if (!foundAgency.validation_rules) throw new Error(`No validation rules found for agency: ${gtfsValidation.gtfs_agency.agency_id}`);
 

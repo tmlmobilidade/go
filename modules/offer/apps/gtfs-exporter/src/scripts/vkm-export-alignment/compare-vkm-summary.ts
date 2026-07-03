@@ -21,7 +21,8 @@
 import type { CalculateVkmDto, OperationalDate, Pattern } from '@tmlmobilidade/types';
 
 import { buildOperationalDateRange, calculateAgencyVkm, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
-import { agencies, events, holidays, lines, patterns, routes, yearPeriods } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-mongo';
+import { events, holidays, lines, patterns, routes, yearPeriods } from '@tmlmobilidade/interfaces';
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';
@@ -191,7 +192,7 @@ async function main() {
 	const gtfsIndex = loadGtfsExportIndex(resolvedGtfsDir, startOp, endOp);
 
 	const [agencyRecord, agencyPatterns, periods, holidaysList, eventsList] = await Promise.all([
-		agencies.findById(agency),
+		goDB.core.agencies.findById(agency),
 		loadAgencyPatterns(agency, onlyRouted),
 		yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
 		holidays.findMany({ agency_ids: { $in: [agency] } }),
