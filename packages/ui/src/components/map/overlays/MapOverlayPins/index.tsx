@@ -88,7 +88,7 @@ export function MapOverlayPins({ focusOnChange, id, pinsData, visible = true }: 
 					'icon-allow-overlap': true,
 					'icon-anchor': 'bottom',
 					'icon-ignore-placement': true,
-					'icon-image': 'map-pin',
+					'icon-image': 'map-misc-pin',
 					'icon-offset': [0, 0],
 					'icon-pitch-alignment': 'viewport',
 					'icon-rotate': 0,
