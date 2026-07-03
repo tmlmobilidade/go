@@ -17,18 +17,25 @@ export function AgenciesList() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
 	const agenciesListContext = useAgenciesListContext();
-	const { t } = useTranslation();
 
 	const columns: DataTableColumn<AgencyNormalized>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
 			title: t('default:agencies.list.Table.columns.id'),
-			width: 50,
+			width: 80,
+		},
+		{
+			accessor: 'code',
+			render: item => <IdTag id={item.code} />,
+			title: t('default:agencies.list.Table.columns.code'),
+			width: 80,
 		},
 		{
 			accessor: 'name',

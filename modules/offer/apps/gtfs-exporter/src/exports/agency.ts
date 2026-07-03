@@ -17,7 +17,7 @@ export function parseAgency(agencyData: Agency): GtfsTMLAgency {
 		return {
 			agency_email: agencyData.public_email || '',
 			agency_fare_url: agencyData.fare_url || '',
-			agency_id: agencyData._id,
+			agency_id: agencyData.code,
 			agency_lang: 'pt',
 			agency_name: agencyData.name, // 'Carris Metropolitana',
 			agency_url: agencyData.website_url, // 'https://www.carrismetropolitana.pt',

@@ -2,7 +2,7 @@
 
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { IconInfoTriangleFilled } from '@tabler/icons-react';
-import { type HubLine } from '@tmlmobilidade/types';
+import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 
 import styles from './styles.module.css';
 

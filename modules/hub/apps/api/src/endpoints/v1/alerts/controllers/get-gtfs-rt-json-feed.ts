@@ -3,9 +3,9 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /**
  * Returns a GTFS-RT JSON feed with service alerts for Carris Metropolitana.

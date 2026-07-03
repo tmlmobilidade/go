@@ -95,30 +95,6 @@ jobs:
           retention-days: 1
 
   # # #
-  # Notify go-infra: preview deploy after /build, teardown on PR close.
-
-  notify-infra:
-    name: Notify Infrastructure
-    needs: [package-lock]
-    if: |
-      always() && (
-        (github.event_name == 'pull_request' && github.event.action == 'closed') ||
-        (inputs.pr_number != '' && needs.package-lock.result == 'success')
-      )
-    runs-on: ubuntu-24.04-arm
-    steps:
-      - uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.INFRA_REPO_TOKEN }}
-          repository: tmlmobilidade/go-infra
-          event-type: preview-pr
-          client-payload: >-
-            {
-              "pr_number": ${{ github.event_name == 'pull_request' && github.event.pull_request.number || inputs.pr_number }},
-              "pr_action": "${{ github.event_name == 'pull_request' && github.event.action || 'synchronize' }}"
-            }
-
-  # # #
   # Build and push Docker images for each module that needs it.
 
   build-module:
@@ -137,3 +113,81 @@ jobs:
       environment: ${{ inputs.pr_number != '' && format('pr-{0}', inputs.pr_number) || github.ref_name }}
       pr_number: ${{ inputs.pr_number }}
     secrets: inherit
+
+  # # #
+  # Notify go-infra: create/update PR overlay after successful /build.
+
+  notify-infra-build:
+    name: Notify Infrastructure (Build Preview)
+    needs: [build-module]
+    if: |
+      always() &&
+      inputs.pr_number != '' &&
+      needs.build-module.result != 'skipped' &&
+      needs.build-module.result != 'cancelled'
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: built-apps-*
+          merge-multiple: true
+
+      - name: Dispatch preview build to go-infra
+        uses: actions/github-script@v8
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+        with:
+          github-token: ${{ secrets.INFRA_REPO_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const specs = [];
+            for (const entry of fs.readdirSync('.', { withFileTypes: true })) {
+              if (!entry.isFile() || !entry.name.startsWith('built-apps-') || !entry.name.endsWith('.txt')) {
+                continue;
+              }
+              for (const line of fs.readFileSync(path.join('.', entry.name), 'utf8').split('\n')) {
+                const spec = line.trim();
+                if (spec) specs.push(spec);
+              }
+            }
+
+            const builtApps = [...new Set(specs)].sort();
+            if (builtApps.length === 0) {
+              core.info('No successful builds to publish — skip preview dispatch');
+              return;
+            }
+
+            core.info(`Dispatching preview build for PR #${process.env.PR_NUMBER}: ${builtApps.join(', ')}`);
+
+            await github.rest.repos.createDispatchEvent({
+              owner: 'tmlmobilidade',
+              repo: 'go-infra',
+              event_type: 'preview-pr',
+              client_payload: {
+                pr_number: Number(process.env.PR_NUMBER),
+                pr_action: 'build',
+                built_apps: builtApps.join(','),
+              },
+            });
+
+  # # #
+  # Notify go-infra: remove PR overlay when PR is closed.
+
+  notify-infra-cleanup:
+    name: Notify Infrastructure (Cleanup Preview)
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.INFRA_REPO_TOKEN }}
+          repository: tmlmobilidade/go-infra
+          event-type: preview-pr
+          client-payload: >-
+            {
+              "pr_number": ${{ github.event.pull_request.number }},
+              "pr_action": "closed"
+            }

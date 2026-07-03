@@ -4,7 +4,7 @@
 
 import { TimetableExceptions } from '@/components/lines/detail/TimetableExceptions';
 import { TimetableSchedules } from '@/components/lines/detail/TimetableSchedules';
-import { type Timetable } from '@tmlmobilidade/types';
+import { type Timetable } from '@tmlmobilidade/go-types-public-info';
 import { useState } from 'react';
 
 import styles from './styles.module.css';

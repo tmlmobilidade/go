@@ -2,10 +2,10 @@
 
 import { apiCache, type ApiCacheKey } from '@tmlmobilidade/databases';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
+import { type HubShape, type HubShapePoint } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HubShape, type HubShapePoint } from '@tmlmobilidade/types';
 import * as turf from '@turf/turf';
 
 /* * */
