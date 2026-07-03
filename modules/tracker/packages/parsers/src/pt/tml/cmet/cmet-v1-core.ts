@@ -2,12 +2,12 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
-import { type RawVehicleEventCmetV1Log, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type RawVehicleEventPtTmlCmetV1Core, type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { roundToInt } from '@tmlmobilidade/utils';
 
 /* * */
 
-export function parseRawVehicleEventCmetV1Log(doc: RawVehicleEventCmetV1Log): null | SimplifiedVehicleEvent {
+export function parseRawVehicleEventPtTmlCmetV1Core(doc: RawVehicleEventPtTmlCmetV1Core): null | SimplifiedVehicleEvent {
 	//
 	const vehicle = doc.payload.vehicle;
 
@@ -19,18 +19,17 @@ export function parseRawVehicleEventCmetV1Log(doc: RawVehicleEventCmetV1Log): nu
 
 	return {
 		_id: doc._id,
+		agency_code: doc.agency_id,
 		agency_id: doc.agency_id,
 		bearing: roundToInt(vehicle.position.bearing),
 		created_at: doc.created_at,
 		current_status: vehicle.currentStatus,
-		door: vehicle.trigger.door,
 		driver_id: vehicle.vehicle.driverId,
 		extra_trip_id: vehicle.trip?.extraTripId,
 		latitude: latitude,
 		longitude: longitude,
 		odometer: roundToInt(vehicle.position.odometer),
-		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date,
-		pattern_id: vehicle.trip?.patternId,
+		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date_int,
 		received_at: doc.received_at,
 		speed: roundToInt(vehicle.position.speed),
 		stop_id: vehicle.stopId,
