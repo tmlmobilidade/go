@@ -159,40 +159,32 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to the result of the insert operation.
 	 */
 	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
-		// Setup a copy of the document to be inserted
-		let parsedDocument = { ...doc } as OptionalUnlessRequiredId<T> & { created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string };
-		// Validate the document against the create schema if unsafe is false
-		if (!unsafe) {
-			try {
-				// If no create schema is defined, throw an error.
-				// In safe mode, a schema is required to validate the document.
-				if (!this.createSchema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
-				// Validate the document against the create schema
-				parsedDocument = this.createSchema.parse(parsedDocument);
-				// Add the missing default fields, if present in the original document.
-				// The schema might have omitted these fields, so we need to add them back.
-				if (doc._id) parsedDocument._id = doc._id;
-				if (doc.created_at) parsedDocument.created_at = doc.created_at;
-				if (doc.created_by) parsedDocument.created_by = doc.created_by;
-				if (doc.updated_at) parsedDocument.updated_at = doc.updated_at;
-				if (doc.updated_by) parsedDocument.updated_by = doc.updated_by;
-			} catch (error) {
-				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
-			}
-		}
-		// Add default fields if they are missing from the original document
-		if (!doc.created_at) parsedDocument.created_at = Dates.now('utc').unix_timestamp;
-		if (!doc.created_by) parsedDocument.created_by = 'system';
-		if (!doc.updated_at) parsedDocument.updated_at = Dates.now('utc').unix_timestamp;
-		if (!doc.updated_by) parsedDocument.updated_by = 'system';
-		// Add the ID if it is missing from the original document
-		// If the document is missing any default fields, add them
-		if (!doc._id) {
-			parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
-			while (await this.findById(parsedDocument._id as T['_id'])) {
-				parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
-			}
-		}
+		// Setup a copy of the document to be inserted with defaults  
+        let parsedDocument = {  
+            ...doc,  
+            created_at: doc.created_at || Dates.now('utc').unix_timestamp,  
+            created_by: doc.created_by || 'system',  
+            updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,  
+            updated_by: doc.updated_by || 'system',  
+        } as OptionalUnlessRequiredId<T>;  
+
+        // Add the ID if it is missing from the original document  
+        if (!doc._id) {  
+            parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];  
+            while (await this.findById(parsedDocument._id as T['_id'])) {  
+                parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];  
+            }  
+        }  
+
+        // Validate the document against the create schema if unsafe is false  
+        if (!unsafe) {  
+            try {  
+                if (!this.createSchema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');  
+                parsedDocument = this.createSchema.parse(parsedDocument);  
+            } catch (error) {  
+                throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });  
+            }  
+        }
 		// Attempt to insert the document into the collection
 		const result = await this.mongoCollection.insertOne(parsedDocument, options);
 		// Check if the insert operation was acknowledged
