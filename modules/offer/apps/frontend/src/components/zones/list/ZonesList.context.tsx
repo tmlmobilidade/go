@@ -100,7 +100,7 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 			error: allZonesError,
 			loading: allZonesLoading,
 		},
-	}), [allZonesError, allZonesLoading, searchResultsData, allZonesData, filterSearch, filterAgencies]);
+	}), [filterResultsData, allZonesData, filterAgencies, filterSearch, canCreatePermission, allZonesError, allZonesLoading]);
 
 	return (
 		<ZonesListContext.Provider value={contextValue}>

@@ -13,6 +13,7 @@ import { exportRidesFile } from './export-rides.js';
 import { exportSamsAnalysisFile } from './export-sams-analysis.js';
 import { exportStopsFile } from './export-stops.js';
 import { exportVehiclesFile } from './export-vehicles.js';
+import { exportZoneFile } from './export-zones.js';
 
 /* * */
 
@@ -60,6 +61,9 @@ async function main() {
 					break;
 				case 'vehicle':
 					pathToFile = await exportVehiclesFile(fileExport);
+					break;
+				case 'zone':
+					pathToFile = await exportZoneFile(fileExport);
 					break;
 				case 'gtfs':
 				default:
