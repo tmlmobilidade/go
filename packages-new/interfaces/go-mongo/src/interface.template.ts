@@ -106,24 +106,32 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to the result of the insert operation
 	 */
 	public async insertMany(docs: (TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], { options, unsafe = false }: { options?: BulkWriteOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
-		const newDocuments = docs.map((doc) => {
-			return {
-				...doc,
-				_id: doc._id || generateRandomString({ length: 5 }),
-				created_at: doc.created_at || Dates.now('utc').unix_timestamp,
-				created_by: doc.created_by || 'system',
-				updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,
-				updated_by: doc.updated_by || 'system',
-			} as unknown as OptionalUnlessRequiredId<T>;
-		});
+		const newDocuments: OptionalUnlessRequiredId<T>[] = [];  
+        const usedIds = new Set<any>(  
+            (await this.mongoCollection.find(  
+                { _id: { $in: docs.map(doc => doc._id).filter(Boolean) as T['_id'][] } } as unknown as Filter<T>,  
+                { projection: { _id: 1 } }  
+            ).toArray()).map(doc => doc._id)  
+        );  
 
-		// Ensure all documents have a unique ID
-		const foundIds = await this.mongoCollection.find({ _id: { $in: newDocuments.map(doc => doc._id as T['_id']) } } as unknown as Filter<T>, { projection: { _id: 1 } }).toArray();
-		for (const newDocument of newDocuments) {
-			if (foundIds.find(id => id._id === newDocument._id)) {
-				newDocument._id = generateRandomString({ length: 5 }) as T['_id'];
-			}
-		}
+        for (const doc of docs) {  
+            let id = doc._id;  
+            if (!id || usedIds.has(id)) {  
+                do {  
+                    id = generateRandomString({ length: 5 }) as T['_id'];  
+                } while (usedIds.has(id));  
+            }  
+            usedIds.add(id);  
+
+            newDocuments.push({  
+                ...doc,  
+                _id: id,  
+                created_at: doc.created_at || Dates.now('utc').unix_timestamp,  
+                created_by: doc.created_by || 'system',  
+                updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,  
+                updated_by: doc.updated_by || 'system',  
+            } as unknown as OptionalUnlessRequiredId<T>);  
+        }
 
 		const parsedDocuments: OptionalUnlessRequiredId<T>[] = [];
 		for (const newDocument of newDocuments) {
