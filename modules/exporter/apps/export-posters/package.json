@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-mongo": "*",
 		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",

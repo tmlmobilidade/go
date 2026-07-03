@@ -21,6 +21,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-mongo": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/lib": "*",
 		"@tmlmobilidade/logger": "*",

@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-mongo": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",

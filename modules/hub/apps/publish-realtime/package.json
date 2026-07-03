@@ -21,6 +21,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/external": "*",
 		"@tmlmobilidade/go-hub-pckg-sql": "*",
+		"@tmlmobilidade/go-interfaces-go-mongo": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",

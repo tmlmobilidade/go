@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@clickhouse/client": "1.22.0",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-mongo": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

@@ -18,6 +18,7 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-interfaces-go-mongo": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
