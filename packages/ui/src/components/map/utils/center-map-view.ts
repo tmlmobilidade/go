@@ -33,7 +33,7 @@ export function centerMapView(mapObject: MapRef, features: Feature<Geometry, Geo
 
 	const featureCollection = turf.featureCollection(validFeatures);
 	const featureCollectionEnvelope = turf.envelope(featureCollection);
-	if (!featureCollectionEnvelope || !featureCollectionEnvelope.bbox) return;
+	if (!featureCollectionEnvelope?.bbox) return;
 
 	//
 	// Validate if the envelope is valid

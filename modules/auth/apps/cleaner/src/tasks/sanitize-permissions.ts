@@ -12,7 +12,7 @@ export async function sanitizePermissions() {
 	try {
 		//
 
-		Logger.info(`Starting permission sanitization...`);
+		Logger.info({ message: `Starting permission sanitization...` });
 
 		//
 		// Fetch all Users and sanitize their permissions
@@ -41,8 +41,7 @@ export async function sanitizePermissions() {
 		}
 
 		Logger.success(`Updated ${allRoles.length} roles with sanitized permissions in ${rolesTimer.get()}.`);
-	}
-	catch (error) {
-		Logger.error(`Failed to sanitize permissions:`, error);
+	} catch (error) {
+		Logger.error({ error, message: `Failed to sanitize permissions:` });
 	}
 }

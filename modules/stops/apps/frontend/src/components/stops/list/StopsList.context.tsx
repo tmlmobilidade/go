@@ -22,6 +22,7 @@ interface StopsListContextState extends ListContextStateTemplate {
 		equipment: UseFilterStateListReturnType
 		facilities: UseFilterStateListReturnType
 		lifecycle_status: UseFilterStateListReturnType
+		municipality: UseFilterStateListReturnType
 	}
 }
 
@@ -54,8 +55,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	const filterConnections = useFilterStateList('connections', StopConnectionSchema.options, StopConnectionSchema.options.map(item => ({ label: item, value: item })));
 	const filterLifecycleStatus = useFilterStateList('lifecycle_status', LifecycleStatusSchema.options, LifecycleStatusSchema.options.map(item => ({ label: item, value: item })));
 	const filterAgencies = useFilterStateList('agencies', agenciesContext.data.raw.map(item => item._id), agenciesContext.data.as_options);
-
-	//
+	const filterMunicipality = useFilterStateList('municipalities', locationsContext.data.municipality_ids, (locationsContext.data.municipalities ?? []).map(item => ({ label: item.name, value: item._id })).sort((a, b) => a.label.localeCompare(b.label, 'pt')));
 	// B. Fetch data
 
 	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST, { refreshInterval: 5000 });
@@ -91,6 +91,15 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		query: filterSearch.value,
 	});
 
+	const filteredMunicipalityOptions = useMemo(() => {
+		if (!allStopsData?.length || !filterMunicipality.options?.length) {
+			return filterMunicipality.options;
+		}
+		const municipalityIds = new Set(allStopsData.map(stop => stop.municipality_id));
+
+		return filterMunicipality.options.filter(item => municipalityIds.has(item.value));
+	}, [allStopsData, filterMunicipality.options]);
+
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData?.length) return [];
@@ -103,8 +112,9 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 				const matchesConnections = stopData.connections?.length ? stopData.connections.some(item => filterConnections.value.includes(item)) : true;
 				const stopAgencyIds = stopData.flags?.flatMap(flag => flag.agency_ids) ?? [];
 				const matchesAgencies = !filterAgencies.isActive || stopAgencyIds.some(agencyId => filterAgencies.value.includes(agencyId));
+				const matchesMunicipalities = !filterMunicipality.isActive || filterMunicipality.value.includes(stopData.municipality_id);
 				// Evaluate conditions
-				return lifecycleStatusMatch && matchesFacilities && matchesEquipment && matchesConnections && matchesAgencies;
+				return lifecycleStatusMatch && matchesFacilities && matchesEquipment && matchesConnections && matchesAgencies && matchesMunicipalities;
 			})
 			.sort((a, b) => {
 				return String(a._id).localeCompare(String(b._id));
@@ -117,6 +127,8 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		filterFacilities,
 		filterEquipment,
 		filterConnections,
+		filterMunicipality.isActive,
+		filterMunicipality.value,
 	]);
 
 	//
@@ -133,6 +145,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 			equipment: filterEquipment,
 			facilities: filterFacilities,
 			lifecycle_status: filterLifecycleStatus,
+			municipality: { ...filterMunicipality, options: filteredMunicipalityOptions },
 			search: filterSearch,
 		},
 		flags: {

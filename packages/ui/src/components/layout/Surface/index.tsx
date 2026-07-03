@@ -13,7 +13,7 @@ export interface SurfaceProps {
 	justify?: 'center' | 'end' | 'start'
 	overflow?: 'auto' | 'hidden' | 'scroll' | 'visible'
 	style?: React.CSSProperties
-	variant?: 'bordered' | 'default' | 'primary' | 'transparent'
+	variant?: 'bordered' | 'default' | 'plain' | 'primary' | 'transparent'
 	withBackground?: boolean
 }
 

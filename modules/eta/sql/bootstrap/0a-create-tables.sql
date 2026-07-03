@@ -7,12 +7,22 @@ CREATE DATABASE IF NOT EXISTS {database};
 -- Historical window: rides whose samples feed transformation / aggregation.
 CREATE TABLE IF NOT EXISTS {database}.hist_rides (
     _id String,
+    agency_id String,
     hashed_shape_id String,
     hashed_trip_id String,
+    plan_id String,
     trip_id String,
-    start_time_observed UInt64,
+    start_time_observed Nullable(UInt64),
     start_time_scheduled UInt64,
-    end_time_observed UInt64
+    end_time_observed Nullable(UInt64),
+    first_stop_id String,
+    first_stop_name String,
+    first_stop_coordinates Tuple(Float64, Float64),
+    first_stop_geohash String DEFAULT geohashEncode(first_stop_coordinates.2, first_stop_coordinates.1, 7),
+    last_stop_id String,
+    last_stop_name String,
+    last_stop_coordinates Tuple(Float64, Float64),
+    last_stop_geohash String DEFAULT geohashEncode(last_stop_coordinates.2, last_stop_coordinates.1, 7)
 )
 ENGINE = ReplacingMergeTree()
 ORDER BY (_id);
@@ -85,7 +95,7 @@ DROP TABLE IF EXISTS {database}.hist_node_travel_times_aggregation;
 
 -- The loader (3-aggregate_hist_node_travel_times.sql) re-aggregates the last
 -- N days on every run, so identical (hashed_shape_id, node_index,
--- operational_date, period, period_of_day, weekday, day_type) rows would
+-- operational_date, period_of_day, weekday, day_type) rows would
 -- otherwise pile up and skew the averages computed by mv-predict-node-etas.sql.
 --
 -- ReplacingMergeTree with `inserted_at` as the version keeps the latest row
@@ -95,7 +105,6 @@ CREATE TABLE IF NOT EXISTS {database}.hist_node_travel_times_aggregation (
     hashed_shape_id String,
     node_index UInt32,
     operational_date UInt32,
-    period String,
     period_of_day Enum8('Peak AM' = 1, 'Mid' = 2, 'Peak PM' = 3, 'Off Peak' = 4),
     weekday Enum8('Monday' = 1, 'Tuesday' = 2, 'Wednesday' = 3, 'Thursday' = 4, 'Friday' = 5, 'Saturday' = 6, 'Sunday' = 7),
     day_type Enum8('Weekday' = 1, 'Weekend' = 2),
@@ -107,7 +116,7 @@ CREATE TABLE IF NOT EXISTS {database}.hist_node_travel_times_aggregation (
 )
 ENGINE = ReplacingMergeTree(inserted_at)
 ORDER BY
-    (hashed_shape_id, node_index, operational_date, period, period_of_day, weekday, day_type);
+    (hashed_shape_id, node_index, operational_date, period_of_day, weekday, day_type);
 
 
 -- =============================================================================

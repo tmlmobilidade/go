@@ -1,6 +1,6 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { annotations, type Filter } from '@tmlmobilidade/interfaces';
 import { type Annotation, type CreateAnnotationDto, PermissionCatalog, type UpdateAnnotationDto } from '@tmlmobilidade/types';
@@ -163,7 +163,9 @@ export class AnnotationsController {
 
 		const annotationData = await annotations.findById(request.params.id);
 
-		if (!annotationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
+		if (!annotationData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
+		}
 
 		//
 		// Get the resource permissions for annotations for the current user.
@@ -217,7 +219,9 @@ export class AnnotationsController {
 
 		const annotationData = await annotations.findById(request.params.id);
 
-		if (!annotationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
+		if (!annotationData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
+		}
 
 		//
 		// Get the resource permissions for annotations for the current user.
@@ -249,8 +253,9 @@ export class AnnotationsController {
 		// If authorized, toggle the lock status of the annotation
 		await annotations.toggleLockById(request.params.id);
 		const foundAnnotation = await annotations.findById(request.params.id);
-		if (!foundAnnotation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
-
+		if (!foundAnnotation) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
+		}
 		return reply.send({ data: foundAnnotation, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
@@ -269,7 +274,9 @@ export class AnnotationsController {
 
 		const annotationData = await annotations.findById(request.params.id);
 
-		if (!annotationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
+		if (!annotationData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
+		}
 
 		//
 		// Get the resource permissions for annotations for the current user.

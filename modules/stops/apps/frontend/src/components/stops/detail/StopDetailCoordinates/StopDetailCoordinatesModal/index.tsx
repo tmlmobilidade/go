@@ -2,11 +2,11 @@
 
 /* * */
 
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { StopDetailCoordinatesMap } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesMap';
 import { coordinatesToSearchQuery, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
 import { StopDetailCoordinatesSelect } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesSelect';
-import { useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
-import { Divider, Label, MapContextProvider, Pane, Spacer, Toolbar, useMapContext, useToast } from '@tmlmobilidade/ui';
+import { Divider, Label, MapContextProvider, Modal, Pane, Spacer, Toolbar, useMapContext, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useEffect, useState } from 'react';
 
 /* * */
@@ -26,14 +26,14 @@ export function StopDetailCoordinatesModalBody() {
 	const { form } = stopDetailContext.data;
 	const stop = stopDetailContext.data.stop;
 
-	const [draft, setDraft] = useState<[number, number]>(() => {
+	const [draft, setDraft] = useState<[number | undefined, number | undefined]>(() => {
 		const lat = form.values.latitude;
 		const lng = form.values.longitude;
 		const latN = typeof lat === 'number' ? lat : Number(lat);
 		const lngN = typeof lng === 'number' ? lng : Number(lng);
 		return [
-			Number.isFinite(latN) ? latN : 0,
-			Number.isFinite(lngN) ? lngN : 0,
+			Number.isFinite(latN) ? latN : undefined,
+			Number.isFinite(lngN) ? lngN : undefined,
 		];
 	});
 
@@ -46,7 +46,11 @@ export function StopDetailCoordinatesModalBody() {
 		const vals = form.getValues();
 		const latN = typeof vals.latitude === 'number' ? vals.latitude : Number(vals.latitude);
 		const lngN = typeof vals.longitude === 'number' ? vals.longitude : Number(vals.longitude);
-		if (!Number.isFinite(latN) || !Number.isFinite(lngN)) return;
+		if (!Number.isFinite(latN) || !Number.isFinite(lngN)) {
+			setDraft([undefined, undefined]);
+			mapContext.actions.handleSearch('');
+			return;
+		}
 		setDraft([latN, lngN]);
 		mapContext.actions.handleSearch(coordinatesToSearchQuery(latN, lngN));
 		// Intentionally only when the editor opens — avoid resetting draft after map clicks / context updates.
@@ -55,7 +59,7 @@ export function StopDetailCoordinatesModalBody() {
 
 	//
 
-	const setDraftCoords = useCallback((lat: number, lng: number) => {
+	const setDraftCoords = useCallback((lat: number | undefined, lng: number | undefined) => {
 		setDraft([lat, lng]);
 	}, []);
 
@@ -102,21 +106,31 @@ export function StopDetailCoordinatesModalBody() {
 export function StopDetailCoordinatesModal() {
 	//
 
+	//
+	// A. Setup variables
+
+	const stopDetailContext = useStopDetailContext();
+
+	//
+	// B. Render components
+
 	return (
-		<Pane
-			header={[
-				<Toolbar key="stop-detail-coordinates-toolbar">
-					<Label size="lg" singleLine>Editar coordenadas</Label>
-					<Spacer />
-				</Toolbar>,
-			]}
-		>
-			<div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, width: '100%' }}>
-				<MapContextProvider preferenceScope={DETAIL_COORDINATES_MAP_SCOPE}>
-					<StopDetailCoordinatesModalBody />
-				</MapContextProvider>
-			</div>
-		</Pane>
+		<Modal onClose={stopDetailContext.actions.closeCoordinatesEditor} opened={stopDetailContext.flags.isCoordinatesEditorOpen} size="xl">
+			<Pane
+				header={[
+					<Toolbar key="stop-detail-coordinates-toolbar">
+						<Label size="lg" singleLine>Editar coordenadas</Label>
+						<Spacer />
+					</Toolbar>,
+				]}
+			>
+				<div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, width: '100%' }}>
+					<MapContextProvider preferenceScope={DETAIL_COORDINATES_MAP_SCOPE}>
+						<StopDetailCoordinatesModalBody />
+					</MapContextProvider>
+				</div>
+			</Pane>
+		</Modal>
 	);
 
 	//

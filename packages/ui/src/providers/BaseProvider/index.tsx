@@ -1,6 +1,6 @@
 'use client';
 
-import { MantineProvider } from '@mantine/core';
+import { MantineProvider, MantineProviderProps } from '@mantine/core';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
@@ -16,14 +16,21 @@ import { themeData } from '../../styles/theme';
 
 /* * */
 
-type BaseProviderProps = LocaleContextProps & VersionContextProps;
+type BaseProviderProps = LocaleContextProps & VersionContextProps & {
+	/**
+	 * Please avoid using this prop. It is only intended for very specific use cases.
+	 * @dangerous
+	 */
+	theme?: MantineProviderProps['theme']
+
+};
 
 /**
  * This is the application base provider component. The whole application should be
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ children, i18n, theme, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
@@ -60,7 +67,7 @@ export function BaseProvider({ children, i18n, version }: PropsWithChildren<Base
 						<VersionContextProvider version={version}>
 							<SWRConfig value={swrSettings}>
 								<LocaleContextProvider i18n={i18n}>
-									<MantineProvider defaultColorScheme="auto" theme={themeData}>
+									<MantineProvider defaultColorScheme="auto" theme={theme ?? themeData}>
 										<DatesProvider settings={mantineDatesSettings}>
 											<ModalsProvider>
 												<Notifications position="bottom-right" />

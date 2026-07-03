@@ -34,6 +34,7 @@ export async function publishRssFeed() {
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
+					agency_id: { $in: ['41', '42', '43', '44'] },
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
 					publish_status: 'published',
 				},
@@ -44,7 +45,7 @@ export async function publishRssFeed() {
 		},
 	);
 
-	Logger.info(`Retrieved ${findResult.length} active alerts...`);
+	Logger.info({ message: `Retrieved ${findResult.length} active alerts...` });
 
 	//
 	// Transform alerts into RSS feed entities
@@ -53,7 +54,7 @@ export async function publishRssFeed() {
 
 	const transformResult: RssRawItem[] = transformedItems.filter(Boolean);
 
-	Logger.info(`Transformed ${transformResult.length} alerts into RSS feed entities (${globalTimer.get()})`);
+	Logger.info({ message: `Transformed ${transformResult.length} alerts into RSS feed entities (${globalTimer.get()})` });
 
 	//
 	// Save the result in API Cache
@@ -66,7 +67,7 @@ export async function publishRssFeed() {
 		title: 'Carris Metropolitana - Alertas',
 	});
 
-	await apiCache.set('hub:alerts:published:rss:cm', rssFeed);
+	await apiCache.set('hub:v1:alerts:published:rss:cm', rssFeed);
 
 	Logger.success(`Finished publishing RSS feed (${globalTimer.get()})`);
 

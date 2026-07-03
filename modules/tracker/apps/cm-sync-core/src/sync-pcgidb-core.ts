@@ -74,7 +74,7 @@ export async function syncPcgidbCoreVehicleEvents(timeChunk: PerformInTimeChunks
 		return;
 	}
 
-	Logger.info(`[CORE] MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})`);
+	Logger.info({ message: `[CORE] MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})` });
 
 	//
 	// Sync all documents in the current timestamp chunk. We query the Source database for all documents

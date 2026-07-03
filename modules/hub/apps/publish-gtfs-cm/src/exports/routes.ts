@@ -9,7 +9,7 @@ import { type GTFS_Route_Extended, type GTFS_RouteType } from '@tmlmobilidade/ty
 
 export interface ExportedRoutesRow {
 	agency_id: string
-	line_id: number
+	line_id: string
 	line_short_name: string
 	line_long_name: string
 	route_id: string
@@ -51,5 +51,5 @@ export async function exportRoutesFile(routesList: GTFS_Route_Extended[], export
 
 	await exportConfig.writers.routes.flush();
 
-	Logger.info('Exported routes.txt file.');
+	Logger.info({ message: 'Exported routes.txt file.' });
 }

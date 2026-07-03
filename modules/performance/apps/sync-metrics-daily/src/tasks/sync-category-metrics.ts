@@ -34,9 +34,8 @@ export const syncCategoryMetrics = async (): Promise<void> => {
 		await syncDemandByCategoryByPatternByYear();
 
 		Logger.success(`Finished Category Demand Metrics Sync (${timer.get()})`);
-	}
-	catch (error) {
-		Logger.error('Failed to sync Category Demand Metrics');
+	} catch (error) {
+		Logger.error({ message: 'Failed to sync Category Demand Metrics' });
 		Logger.error(error);
 		throw error;
 	}

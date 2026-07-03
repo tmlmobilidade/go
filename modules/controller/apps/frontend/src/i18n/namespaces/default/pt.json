@@ -17,6 +17,12 @@
 				"driver_ids": {
 					"label": "Driver IDs"
 				},
+				"duration_observed": {
+					"label": "Observado"
+				},
+				"duration_scheduled": {
+					"label": "Duração"
+				},
 				"end_time_observed": {
 					"label": "Observado"
 				},
@@ -78,6 +84,13 @@
 		},
 		"RidesListFilterOperationalStatus": {
 			"label": "Estado"
+		},
+		"RidesListFilterTicketingStatus": {
+			"label": "Bilhética",
+			"options": {
+				"has_ticketing": "Com bilhética",
+				"no_ticketing": "Sem bilhética"
+			}
 		},
 		"RidesListHeader": {
 			"export": "Exportar circulações",

@@ -11,6 +11,7 @@ import { cleanupHistoricalVehicleEvents } from '@/tasks/cleanup-historical-vehic
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -19,6 +20,18 @@ import { fetchHistoricalRidesForDayIndex } from './tasks/fetch-historical-rides-
 /* * */
 
 export async function main() {
+	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'cleaner', message: 'Sentry ETA Cleaner initialized', module: 'eta', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry ETA Cleaner' });
+	}
+
 	//
 	// Initialize the logger
 
@@ -57,25 +70,20 @@ export async function main() {
 	if (AppConfig.pipelineSteps.cleanupHistoricalRides) {
 		//
 
-		Logger.info(`Getting historical rides for date range: ${Dates.now('Europe/Lisbon').minus({ days: AppConfig.historicalDataDaysBack }).iso} → ${Dates.now('Europe/Lisbon').iso}`);
+		Logger.info({ message: `Getting historical rides for date range: ${Dates.now('Europe/Lisbon').minus({ days: AppConfig.historicalDataDaysBack }).iso} → ${Dates.now('Europe/Lisbon').iso}` });
 
 		// Fetch the same per-day windows the loader inserts so we can
 		// determine which hist_rides are still considered in-window.
-		const historicalRidesPromises = [];
+		const keepRideIds: string[] = [];
 		for (let index = 0; index < AppConfig.historicalDataDaysBack; index++) {
-			historicalRidesPromises.push(fetchHistoricalRidesForDayIndex({}, index));
-		}
-		const historicalRidesByDay = await Promise.all(historicalRidesPromises);
-
-		const keepRideIds = new Set<string>();
-		for (const dayRides of historicalRidesByDay) {
+			const dayRides = await fetchHistoricalRidesForDayIndex({}, index);
 			for (const ride of dayRides) {
-				keepRideIds.add(ride._id);
+				keepRideIds.push(ride._id);
 			}
 		}
-		Logger.info(`Found ${keepRideIds.size} historical rides in current window`);
+		Logger.info({ message: `Found ${keepRideIds.length} historical rides in current window` });
 
-		await cleanupHistoricalRides(clickhouseClient, Array.from(keepRideIds));
+		await cleanupHistoricalRides(clickhouseClient, keepRideIds);
 	}
 
 	//

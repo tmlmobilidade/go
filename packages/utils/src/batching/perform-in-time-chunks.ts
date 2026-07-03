@@ -14,12 +14,13 @@ export interface PerformInTimeChunksItem {
 }
 
 export interface PerformInTimeChunksOptions {
+	endDate?: UnixTimestamp
 	onChunk: (chunk: PerformInTimeChunksItem) => Promise<void>
 	splitBy: DurationObjectUnits
 	startDate: UnixTimestamp
 }
 
-export async function performInTimeChunks({ onChunk, splitBy, startDate }: PerformInTimeChunksOptions) {
+export async function performInTimeChunks({ endDate, onChunk, splitBy, startDate }: PerformInTimeChunksOptions) {
 	//
 
 	// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -29,14 +30,17 @@ export async function performInTimeChunks({ onChunk, splitBy, startDate }: Perfo
 	// More recent data is more important than older data, so we start syncing the most recent data first.
 	// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
 
-	const thirtySecondsAgo = Dates
-		.now('Europe/Lisbon')
-		.minus({ seconds: 30 });
+	const endDateValue = endDate
+		? Dates
+			.fromUnixTimestamp(endDate)
+		: Dates
+			.now('Europe/Lisbon')
+			.minus({ seconds: 30 });
 
-	const earliestDataNeeded = Dates.fromUnixTimestamp(startDate);
+	const startDateValue = Dates.fromUnixTimestamp(startDate);
 
 	const allTimestampChunks = Interval
-		.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
+		.fromISO(`${startDateValue.iso}/${endDateValue.iso}`)
 		.splitBy(splitBy)
 		.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
 		.sort((a, b) => b.start - a.start);

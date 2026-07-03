@@ -32,7 +32,7 @@ export class MetricSyncRunner {
 			return true;
 		} catch (error) {
 			this.#failures.push(name);
-			Logger.error(`Failed metric sync: ${name}`);
+			Logger.error({ message: `Failed metric sync: ${name}` });
 			Logger.error(error);
 			return false;
 		}
@@ -51,7 +51,7 @@ export class MetricSyncRunner {
 	finish({ successMessage }: { successMessage: string }): void {
 		if (this.hasFailures) {
 			Logger.error(
-				`${this.#scope} completed with ${this.#failures.length} failure(s): ${this.#failures.join(', ')}`,
+				{ message: `${this.#scope} completed with ${this.#failures.length} failure(s): ${this.#failures.join(', ')}` },
 			);
 			return;
 		}

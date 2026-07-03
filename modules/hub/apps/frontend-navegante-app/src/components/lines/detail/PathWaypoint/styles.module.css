@@ -1,0 +1,53 @@
+/* * */
+/* CONTAINER */
+
+.container {
+    display: grid;
+	grid-template-columns: 18px 1fr;
+	gap: 10px;
+	padding: 0 20px;
+	cursor: pointer;
+}
+
+.container:hover {
+	background-color: var(--color-system-background-300);
+}
+
+.container.isFirstStop {
+	padding-top: 20px;
+}
+
+.container.isLastStop {
+	padding-bottom: 20px;
+}
+
+.container.isSelected,
+.container.isSelected:hover {
+	z-index: 10;
+	cursor: default;
+	background-color: var(--color-system-background-100);
+	box-shadow: 0 0 30px 0 rgb(0 0 0 / 15%);
+}
+
+/* * */
+/* DETAILS WRAPPER */
+
+.detailsWrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	padding-top: 20px;
+	padding-bottom: 15px;
+}
+
+.isFirstStop .detailsWrapper {
+	padding-top: 2px;
+}
+
+.isSelected .detailsWrapper {
+	padding: 20px 0;
+}
+
+.isFirstStop.isSelected .detailsWrapper {
+	padding-top: 2px;
+}

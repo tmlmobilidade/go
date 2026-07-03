@@ -1,6 +1,6 @@
 import type { StorageConfig } from '../config/config-loader.js';
 
-import archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import { createWriteStream, existsSync, readdirSync, rmSync, statSync, writeFileSync } from 'fs';
 import os from 'os';
 import path from 'path';
@@ -84,7 +84,7 @@ async function createZipArchive(sourceDir: string, outputPath: string): Promise<
 
 	return new Promise((resolve, reject) => {
 		const output = createWriteStream(outputPath);
-		const archive = archiver('zip', {
+		const archive = new ZipArchive({
 			zlib: { level: 9 }, // Maximum compression
 		});
 
@@ -98,8 +98,7 @@ async function createZipArchive(sourceDir: string, outputPath: string): Promise<
 		archive.on('warning', (err) => {
 			if (err.code === 'ENOENT') {
 				logger.verbose(`Archive warning: ${err.message}`);
-			}
-			else {
+			} else {
 				reject(err);
 			}
 		});
@@ -162,12 +161,10 @@ export async function uploadArtifacts(options: UploadArtifactsOptions): Promise<
 		if (existsSync(zipFilePath)) {
 			const zipSizeMB = Math.round(statSync(zipFilePath).size / 1024 / 1024 * 100) / 100;
 			logger.info(`Zip archive created: ${zipFileName} (${zipSizeMB} MB)`);
-		}
-		else {
+		} else {
 			logger.info(`Zip archive created: ${zipFileName}`);
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		logger.error(`Failed to create zip archive: ${error instanceof Error ? error.message : String(error)}`);
 		throw error;
 	}
@@ -207,8 +204,7 @@ export async function uploadArtifacts(options: UploadArtifactsOptions): Promise<
 			rmSync(zipFilePath);
 			logger.verbose('Temporary zip file cleaned up');
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		// Clean up on error too
 		if (existsSync(ociConfigFile)) rmSync(ociConfigFile);
 		if (existsSync(rcloneConfigFile)) rmSync(rcloneConfigFile);

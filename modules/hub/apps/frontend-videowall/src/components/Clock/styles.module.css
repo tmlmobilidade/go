@@ -1,0 +1,31 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	padding: 20px;
+	background-color: rgb(10 10 10);
+	border: 3px solid rgb(20 20 20);
+	border-radius: 5px;
+}
+
+/* * */
+/* NUMBERS */
+
+.hours, .minutes, .seconds {
+	font-size: 120px;
+	font-weight: 800;
+	line-height: 1;
+	color: #fff;
+}
+
+.seconds {
+	margin-top: 45px;
+	font-size: 40px;
+	opacity: 0.25;
+	min-width: 60px;
+}

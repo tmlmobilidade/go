@@ -99,13 +99,13 @@ export async function writeOutput({ metadata, route, snapshots, stops }: WriteOu
 		snapshots,
 	};
 	fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2), { encoding: 'utf-8' });
-	Logger.info(`Wrote ${summaryPath}`);
+	Logger.info({ message: `Wrote ${summaryPath}` });
 
 	fs.writeFileSync(routePath, JSON.stringify(route), { encoding: 'utf-8' });
-	Logger.info(`Wrote ${routePath} (${route.length} nodes)`);
+	Logger.info({ message: `Wrote ${routePath} (${route.length} nodes)` });
 
 	fs.writeFileSync(stopsPath, JSON.stringify(stops, null, 2), { encoding: 'utf-8' });
-	Logger.info(`Wrote ${stopsPath} (${stops.length} stops)`);
+	Logger.info({ message: `Wrote ${stopsPath} (${stops.length} stops)` });
 
 	const flatRows = flattenSnapshots(snapshots);
 	const csvWriter = new CsvWriter<FlatEtaRow>('ride-analyzer', csvPath, { batch_size: 100000, logs: false });
@@ -113,7 +113,7 @@ export async function writeOutput({ metadata, route, snapshots, stops }: WriteOu
 		await csvWriter.write(flatRows);
 		await csvWriter.flush();
 	}
-	Logger.info(`Wrote ${csvPath} (${flatRows.length} rows)`);
+	Logger.info({ message: `Wrote ${csvPath} (${flatRows.length} rows)` });
 
 	const runId = path.basename(outputDir);
 	Logger.success(

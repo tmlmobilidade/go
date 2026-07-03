@@ -1,9 +1,8 @@
 /* * */
 
-import { SystemStatusSchema } from '@/_common/status.js';
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { FileExportBaseSchema } from '@/file-exports/base.js';
 import { SamAnalysisSchema } from '@/sams/sam-analysis.js';
+import { SystemStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

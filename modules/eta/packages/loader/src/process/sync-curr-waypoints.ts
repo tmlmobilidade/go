@@ -19,11 +19,11 @@ export async function syncCurrentWaypoints(clickhouseClient: Parameters<typeof q
 		insertFn: async (data) => {
 			await clickhouseClient.insert({
 				format: 'JSONEachRow',
-				table: qualifiedTable('curr_waypoints'),
+				table: qualifiedTable(config.database, 'curr_waypoints'),
 				values: data,
 			});
 		},
-		title: qualifiedTable('curr_waypoints'),
+		title: qualifiedTable(config.database, 'curr_waypoints'),
 	});
 
 	const hashedTripsCollection = await hashedTrips.getCollection();
@@ -42,5 +42,5 @@ export async function syncCurrentWaypoints(clickhouseClient: Parameters<typeof q
 
 	await writer.flush();
 
-	Logger.progress(`Found ${waypointsCount} waypoints`);
+	Logger.progress({ message: `Found ${waypointsCount} waypoints` });
 }

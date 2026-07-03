@@ -45,6 +45,7 @@ export function RuleCreateBasicInfo() {
 			{/* Schedule */}
 			<div className={styles.sectionWrapper}>
 				<Text size="lg">2. Que horários esta regra afeta?</Text>
+				<Text c="dimmed" size="sm">Também pode colar ou arrastar vários horários de uma folha de cálculo. Ex: 10:00 13:00 15:00 ou 1000 1300 1500</Text>
 
 				<RuleCreateSchedule
 					value={createRuleContext.data.form.values.timepoints || []}

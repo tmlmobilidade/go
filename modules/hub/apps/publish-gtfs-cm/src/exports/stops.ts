@@ -82,5 +82,5 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 
 	await exportConfig.writers.stops.flush();
 
-	Logger.info('Exported stops.txt file.');
+	Logger.info({ message: 'Exported stops.txt file.' });
 }

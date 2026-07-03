@@ -1,10 +1,8 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
-import { UnixTimestamp } from '@/_common/unix-timestamp.js';
+import { DocumentSchema, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type ApprovalStatus, ApprovalStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
-
-import { ApprovalStatus, ApprovalStatusSchema } from './_common/status.js';
 
 /* * */
 

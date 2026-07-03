@@ -1,0 +1,50 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: grid;
+	gap: 15px;
+	align-items: stretch;
+	justify-content: stretch;
+	padding: 15px;
+	overflow: hidden;
+}
+
+.cell {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.cell:nth-child(1) {
+	grid-area: one;
+}
+
+.cell:nth-child(2) {
+	grid-area: two;
+}
+
+.cell:nth-child(3){
+	grid-area: three;
+}
+
+/* * */
+/* LAYOUTS */
+
+.primaryWithFourDetails {
+	grid-template:
+		"one one" 2fr
+		"two two" 2fr
+}
+
+.twoDetailsWithPrimary {
+	grid-template:
+		"one one" 1fr
+		"three three" 2fr / 1fr 1fr
+}
+
+.sixDetails {
+	grid-template:
+		"one one" 2fr
+		"two three" 2fr / 1fr 1fr
+}

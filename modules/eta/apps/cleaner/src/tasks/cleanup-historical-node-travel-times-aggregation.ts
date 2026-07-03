@@ -20,6 +20,7 @@ export async function cleanupHistoricalNodeTravelTimesAggregation(clickhouseClie
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
+		AppConfig.database,
 		pipelinePath(CLEANUP_HIST_NODE_TRAVEL_TIMES_AGG_SQL),
 		{
 			historical_data_days_back: AppConfig.historicalDataDaysBack,
@@ -27,6 +28,6 @@ export async function cleanupHistoricalNodeTravelTimesAggregation(clickhouseClie
 	);
 
 	const rowsToDelete = result[0]?.rows_to_delete ?? 0;
-	Logger.progress(`Deleted ${rowsToDelete} out-of-window historical node travel times aggregation rows`);
+	Logger.progress({ message: `Deleted ${rowsToDelete} out-of-window historical node travel times aggregation rows` });
 	return rowsToDelete;
 }

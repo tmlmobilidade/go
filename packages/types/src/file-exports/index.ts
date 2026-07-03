@@ -4,3 +4,4 @@ export * from '@/file-exports/gtfs-export.js';
 export * from '@/file-exports/ride-export.js';
 export * from '@/file-exports/sams-analysis-export.js';
 export * from '@/file-exports/stop-export.js';
+export * from '@/file-exports/vehicle-export.js';

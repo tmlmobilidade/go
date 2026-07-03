@@ -21,7 +21,8 @@ export class WikiController {
 			const contentDirPath = resolve(dirname(fileURLToPath(import.meta.url)), '../../content/');
 
 			if (!fs.existsSync(contentDirPath)) {
-				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Content directory not found' });
+				const error = new Error('Content directory not found');
+				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
 				return;
 			}
 
@@ -33,7 +34,8 @@ export class WikiController {
 				.filter(file => file.endsWith('.md'));
 
 			if (allMdFiles.length === 0) {
-				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'No markdown files found' });
+				const error = new Error('No markdown files found');
+				reply.status(HTTP_STATUS.NOT_FOUND).send({ message: error.message });
 				return;
 			}
 

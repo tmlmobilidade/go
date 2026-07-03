@@ -20,17 +20,17 @@ export async function transformImage(alertData: Alert): Promise<GtfsRtTranslated
 	const fileData = await files.findById(alertData.file_id);
 
 	if (!fileData) {
-		Logger.error(`[Alert ID: ${alertData._id}] File ${alertData.file_id} not found.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] File ${alertData.file_id} not found.` });
 		return undefined;
 	}
 
 	if (!fileData.url) {
-		Logger.error(`[Alert ID: ${alertData._id}] File ${alertData.file_id} URL is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] File ${alertData.file_id} URL is missing.` });
 		return undefined;
 	}
 
 	if (!fileData.type) {
-		Logger.error(`[Alert ID: ${alertData._id}] File ${alertData.file_id} type is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] File ${alertData.file_id} type is missing.` });
 		return undefined;
 	}
 

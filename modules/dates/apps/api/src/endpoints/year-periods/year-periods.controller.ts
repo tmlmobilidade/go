@@ -280,7 +280,9 @@ export class YearPeriodsController {
 		// Get the YearPeriod from the database
 
 		const periodData = await yearPeriods.findById(request.params.id);
-		if (!periodData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+		if (!periodData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+		}
 
 		//
 		// Get the resource permissions for year periods for the current user.
@@ -335,7 +337,9 @@ export class YearPeriodsController {
 
 		const periodData = await yearPeriods.findById(request.params.id);
 
-		if (!periodData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+		if (!periodData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+		}
 
 		//
 		// Get the resource permissions for year periods for the current user.
@@ -369,7 +373,9 @@ export class YearPeriodsController {
 
 		await yearPeriods.toggleLockById(request.params.id);
 		const updatedPeriod = await yearPeriods.findById(request.params.id);
-		if (!updatedPeriod) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+		if (!updatedPeriod) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+		}
 
 		return reply.send({
 			data: updatedPeriod,
@@ -394,7 +400,9 @@ export class YearPeriodsController {
 
 		const periodData = await yearPeriods.findById(request.params.id);
 
-		if (!periodData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+		if (!periodData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+		}
 
 		//
 		// Get the resource permissions for year periods for the current user.

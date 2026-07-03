@@ -10,17 +10,17 @@ import styles from './styles.module.css';
 
 import { useMeContext } from '../../../contexts/Me.context';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
-import { getDefaultOpenGroupIds } from '../sidebar-navigation.model';
-import { SIDEBAR_COLLAPSED_WIDTH } from '../sidebar-rail-width';
-import { SidebarGroupOpenProvider } from '../SidebarGroupOpen.context';
-import { SidebarModeContext, type SidebarVisualMode } from '../SidebarMode.context';
+import { SIDEBAR_COLLAPSED_WIDTH } from '../sidebar-layout.constants';
+import { SidebarOpenGroupsProvider } from '../SidebarOpenGroups.context';
 import { SidebarPanel } from '../SidebarPanel';
+import { type SidebarVisualMode, SidebarVisualModeContext } from '../SidebarVisualMode.context';
+import { getDefaultOpenGroupIds } from '../utils';
 import { useSidebarPeekState } from './useSidebarPeekState';
 import { useSidebarRailResize } from './useSidebarRailResize';
 
 /* * */
 
-const sidebarModeContextValue = (
+const sidebarVisualModeContextValue = (
 	visualMode: SidebarVisualMode,
 	expanded: boolean,
 ) => ({
@@ -97,7 +97,7 @@ export function Sidebar({ collapsed, onCollapsedChange, onWidthPxChange, widthPx
 					onClick={() => setIsHovering(false)}
 				/>
 			) : null}
-			<SidebarGroupOpenProvider defaultOpenGroupIds={defaultOpenGroupIds}>
+			<SidebarOpenGroupsProvider defaultOpenGroupIds={defaultOpenGroupIds}>
 				<div
 					ref={railRef}
 					className={styles.sidebarShell}
@@ -111,7 +111,7 @@ export function Sidebar({ collapsed, onCollapsedChange, onWidthPxChange, widthPx
 						if (collapsed) setIsHovering(false);
 					}}
 				>
-					<SidebarModeContext.Provider value={sidebarModeContextValue(visualMode, labelsVisible)}>
+					<SidebarVisualModeContext.Provider value={sidebarVisualModeContextValue(visualMode, labelsVisible)}>
 						<div
 							ref={peekOverlayRef}
 							className={panelStyles.sidebarPanel}
@@ -128,7 +128,7 @@ export function Sidebar({ collapsed, onCollapsedChange, onWidthPxChange, widthPx
 								{...panelProps}
 							/>
 						</div>
-					</SidebarModeContext.Provider>
+					</SidebarVisualModeContext.Provider>
 
 					{visualMode === 'pinned' ? (
 						<div
@@ -143,7 +143,7 @@ export function Sidebar({ collapsed, onCollapsedChange, onWidthPxChange, widthPx
 						/>
 					) : null}
 				</div>
-			</SidebarGroupOpenProvider>
+			</SidebarOpenGroupsProvider>
 		</>
 	);
 }

@@ -45,7 +45,7 @@ import path from "node:path";
 
 const ROOTS = process.argv.length > 2
 	? process.argv.slice(2)
-	: ["packages", "modules"];
+	: ["packages", "packages-new", "modules"];
 const KEEP_ENTRIES = new Set(["package.json", "dist", "assets", "public"]);
 
 function walk(dir) {

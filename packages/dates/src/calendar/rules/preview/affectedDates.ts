@@ -24,25 +24,39 @@ interface CalendarContext {
  * Checks if a rule's period criteria matches a specific calendar date.
  * Verifies that at least one of the rule's period IDs is active on this date.
  */
-function isInPeriod(rule: ManualRule, key: CalendarKey, ctx: CalendarContext): boolean {
+function buildActivePeriodDateSet(rule: ManualRule, ctx: CalendarContext): Set<OperationalDate> {
+	const activePeriodDates = new Set<OperationalDate>();
+
+	if (!rule.year_period_ids?.length) return activePeriodDates;
+
+	for (const period of ctx.periods) {
+		if (!rule.year_period_ids.includes(period._id)) continue;
+
+		for (const date of period.dates ?? []) {
+			activePeriodDates.add(date as OperationalDate);
+		}
+	}
+
+	return activePeriodDates;
+}
+
+function isInPeriod(rule: ManualRule, key: CalendarKey, activePeriodDates: Set<OperationalDate>): boolean {
 	if (!rule.year_period_ids?.length) return false;
 
 	const op = keyToYYYYMMDD(key) as OperationalDate;
 
-	return ctx.periods.some(
-		p => rule.year_period_ids?.includes(p._id) && p.dates?.includes(op),
-	);
+	return activePeriodDates.has(op);
 }
 
 /**
  * Determines if a manual rule applies to a specific calendar date.
  * Checks both period membership and weekday matching.
  */
-function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: CalendarContext): boolean {
+function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: CalendarContext, activePeriodDates: Set<OperationalDate>): boolean {
 	const weekday = calendarWeekday(key, ctx.holidays);
 
 	// 1) YearPeriod required
-	if (!isInPeriod(rule, key, ctx)) return false;
+	if (!isInPeriod(rule, key, activePeriodDates)) return false;
 
 	// 2) Weekdays required
 	if (!rule.weekdays?.length) return false;
@@ -79,6 +93,7 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 	// normalize direction (ensure from <= to)
 	const from = startKey < endKey ? startKey : endKey;
 	const to = startKey < endKey ? endKey : startKey;
+	const activePeriodDates = buildActivePeriodDateSet(rule, ctx);
 
 	if (rule.event_id) {
 		const event = ctx.events?.find(e => e._id === rule.event_id);
@@ -94,7 +109,7 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 				}
 				// If year periods are specified, narrow event dates to matching periods only
 				if (rule.year_period_ids?.length) {
-					if (!isInPeriod(rule, key, ctx)) continue;
+					if (!isInPeriod(rule, key, activePeriodDates)) continue;
 				}
 				// If months are specified, narrow event dates to matching months only
 				if (rule.months?.length) {
@@ -114,7 +129,7 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 	while (current.unix_timestamp <= end.unix_timestamp) {
 		const key = calendarKey(current);
 
-		if (ruleAppliesToCivilKey(rule, key, ctx)) {
+		if (ruleAppliesToCivilKey(rule, key, ctx, activePeriodDates)) {
 			affected.push(key);
 		}
 

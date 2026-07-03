@@ -86,11 +86,14 @@ class ApiCacheClass {
 	 * @returns A promise resolving with all matching keys.
 	 */
 	public async scan(pattern: string): Promise<string[]> {
-		const keys: string[] = [];
-		for await (const key of this.client.scanIterator({ MATCH: pattern, TYPE: 'string' })) {
-			keys.push(String(key));
+		const foundKeys = new Set<string>();
+		for await (const scanResult of this.client.scanIterator({ MATCH: pattern, TYPE: 'string' })) {
+			// Scan result is an array of keys because Redis just goes over all keys
+			// in the database without any specific order or pagination and returns
+			// only the ones that match the requested pattern.
+			scanResult.forEach(key => foundKeys.add(key));
 		}
-		return keys;
+		return Array.from(foundKeys);
 	}
 
 	/**

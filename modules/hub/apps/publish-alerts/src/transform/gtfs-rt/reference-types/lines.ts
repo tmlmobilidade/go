@@ -1,25 +1,26 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
+import { rides, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector, UnixTimestamp } from '@tmlmobilidade/types';
+import { getPublicRouteId } from '@tmlmobilidade/utils';
 
 /* * */
 
-export async function transformReferenceTypeLines(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
+export async function transformReferenceTypeLinesIntoGtfsRt(alertData: Alert): Promise<GtfsRtEntitySelector[] | undefined> {
 	//
 
 	//
 	// Validate required input properties
 
 	if (!alertData.agency_id || !alertData.references?.length) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert references are missing for "lines" reference type.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert references are missing for "lines" reference type.` });
 		return;
 	}
 
 	if (!alertData.active_period_start_date) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.` });
 		return;
 	}
 
@@ -65,7 +66,7 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 		]);
 
 		if (!foundRouteIds?.length) {
-			Logger.error(`[Alert ID: ${alertData._id}] No rides found for line ID ${reference.parent_id} and start time ${alertData.active_period_start_date}.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] No rides found for line ID ${reference.parent_id} and start time ${alertData.active_period_start_date}.` });
 			continue;
 		}
 
@@ -80,7 +81,7 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 
 			const parsedEntitySelector: GtfsRtEntitySelector = {
 				agency_id: alertData.agency_id,
-				route_id: routeId,
+				route_id: getPublicRouteId(alertData.agency_id, routeId),
 			};
 
 			if (!reference.child_ids?.length) {
@@ -94,9 +95,17 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 			// add an EntitySelector object for each stop ID.
 
 			for (const childId of reference.child_ids) {
+				const foundStopData = await stops.findOne({
+					'flags.agency_ids': { $in: [alertData.agency_id] },
+					'flags.stop_id': childId,
+				});
+				if (!foundStopData) {
+					Logger.error({ message: `[Alert ID: ${alertData._id}] Stop ID ${childId} not found for agency ID ${alertData.agency_id}.` });
+					continue;
+				}
 				result.push({
 					...parsedEntitySelector,
-					stop_id: childId,
+					stop_id: String(foundStopData._id),
 				});
 			}
 

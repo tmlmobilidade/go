@@ -31,7 +31,7 @@ export async function exportFeedInfoFile(startDate: OperationalDate, endDate: Op
 
 	const timer = new Timer();
 
-	Logger.info('Exporting feed_info.txt file...');
+	Logger.info({ message: 'Exporting feed_info.txt file...' });
 
 	const parsedFeedInfoRow: ExportedFeedInfoRow = {
 		feed_version: context.run_id,

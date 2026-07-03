@@ -9,7 +9,7 @@ import { useNotificationsContext } from '../../../contexts/Notifications.context
 import { DeleteButton } from '../../buttons/DeleteButton';
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
-import { getSidebarScopeRepresentativeIcon } from '../sidebar-scope-icon';
+import { getSidebarNotificationScopeIcon } from '../sidebar-notification-scope-icon';
 
 /* * */
 
@@ -26,7 +26,7 @@ export function SidebarNotificationsItem({ notification }: SidebarNotificationsI
 	// A. Setup variables
 
 	const notificationsContext = useNotificationsContext();
-	const icon = getSidebarScopeRepresentativeIcon(notification.scope);
+	const icon = getSidebarNotificationScopeIcon(notification.scope);
 
 	if (!notification.payload) {
 		return null;

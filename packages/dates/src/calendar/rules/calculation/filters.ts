@@ -1,6 +1,6 @@
 import type { DayContext } from './types.js';
 
-import { type EventReplacementRule, HHMM, type ManualRule, type OperationalDate, type ScheduleRule, timeToMinutes } from '@tmlmobilidade/types';
+import { type EventReplacementRule, type EventRestrictionRule, HHMM, type ManualRule, type OperationalDate, type ScheduleRule, timeToMinutes } from '@tmlmobilidade/types';
 
 import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
 
@@ -117,6 +117,38 @@ function removeTimePointsByWindow(
 }
 
 /**
+ * Returns candidate timepoints removed by a single event restriction rule.
+ *
+ * Mirrors the three restriction modes used by {@link applyEventRestrictions}:
+ * all day, explicit timepoint list, or start/end window (midnight crossing supported).
+ */
+export function getTimepointsRemovedByEventRestriction(
+	restriction: EventRestrictionRule,
+	candidateTimepoints: Iterable<HHMM>,
+): HHMM[] {
+	const candidates = [...candidateTimepoints];
+	if (!candidates.length) return [];
+
+	if (restriction.all_day) return candidates;
+
+	if (restriction.timepoints?.length) {
+		const explicit = new Set(restriction.timepoints);
+		return candidates.filter(tp => explicit.has(tp));
+	}
+
+	const start = restriction.start_time;
+	const end = restriction.end_time;
+
+	if (start && end) {
+		const remaining = new Set(candidates);
+		removeTimePointsByWindow(remaining, start, end);
+		return candidates.filter(tp => !remaining.has(tp));
+	}
+
+	return [];
+}
+
+/**
  * Applies event restriction rules to remove time points for a specific date.
  *
  * Event restrictions can work in three modes:
@@ -153,26 +185,8 @@ export function applyEventRestrictions(
 
 		if (r._id) appliedRuleIds.push(r._id);
 
-		// 1) all day kills everything
-		if (r?.all_day) {
-			timepoints.clear();
-			continue;
-		}
-
-		// 2) explicit timepoints removal (UI generated)
-		if (r.timepoints?.length) {
-			for (const tp of r.timepoints) timepoints.delete(tp);
-			continue;
-		}
-
-		// 3) fallback: compute from window
-		// If start/end exist, remove anything within that time window.
-		// If somehow missing, do nothing.
-		const start = r?.start_time;
-		const end = r?.end_time;
-
-		if (start && end) {
-			removeTimePointsByWindow(timepoints, start, end);
+		for (const tp of getTimepointsRemovedByEventRestriction(r, timepoints)) {
+			timepoints.delete(tp);
 		}
 	}
 }

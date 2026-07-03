@@ -23,7 +23,7 @@ export async function cleanOldValidations() {
 
 	const allValidations = await gtfsValidations.all();
 
-	Logger.info(`Found ${allValidations.length} validations.`);
+	Logger.info({ message: `Found ${allValidations.length} validations.` });
 
 	//
 	// Set the threshold for deletion (30 days)
@@ -53,7 +53,7 @@ export async function cleanOldValidations() {
 		// Check that the validation has the required properties
 
 		if (!validation.file_id) {
-			Logger.error(`Validation ${validation._id} does not have a file_id. Skipping.`);
+			Logger.error({ message: `Validation ${validation._id} does not have a file_id. Skipping.` });
 			continue;
 		}
 
@@ -63,7 +63,7 @@ export async function cleanOldValidations() {
 		const thresholdValue = thresholdsByProcessingStatus[validation.processing_status];
 
 		if (!thresholdValue) {
-			Logger.error(`No threshold defined for status ${validation.processing_status}. Skipping validation ${validation._id}.`);
+			Logger.error({ message: `No threshold defined for status ${validation.processing_status}. Skipping validation ${validation._id}.` });
 			continue;
 		}
 
@@ -73,7 +73,7 @@ export async function cleanOldValidations() {
 		// Check if the validation is older than the cutoff date
 
 		if (validation.created_at > cutoffUnixTimestamp) {
-			Logger.info(`Validation ${validation._id} is not old enough. Skipping.`);
+			Logger.info({ message: `Validation ${validation._id} is not old enough. Skipping.` });
 			continue;
 		}
 
@@ -88,7 +88,7 @@ export async function cleanOldValidations() {
 			await files.deleteById(validation.file_id);
 			Logger.success(`Deleted validation ${validation._id} and its associated file ${validation.file_id} in ${fileDeletionTimer.get()}.`);
 		} catch (error) {
-			Logger.error(`Failed to delete validation ${validation._id} or its associated file ${validation.file_id}:`, error);
+			Logger.error({ error, message: `Failed to delete validation ${validation._id} or its associated file ${validation.file_id}:` });
 		}
 
 		//

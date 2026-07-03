@@ -12,12 +12,12 @@ import { Timer } from '@tmlmobilidade/timer';
 export async function cleanExpiredSessions() {
 	try {
 		const timer = new Timer();
-		Logger.info(`Cleaning expired "sessions" documents...`);
+		Logger.info({ message: `Cleaning expired "sessions" documents...` });
 		const now = Dates.now('Europe/Lisbon').unix_timestamp;
 		const deleteResult = await sessions.deleteMany({ expires_at: { $lt: now } });
 		Logger.success(`Deleted ${deleteResult.deletedCount} expired "sessions" documents in ${timer.get()}.`);
 	}
 	catch (error) {
-		Logger.error(`Failed to clean expired "sessions" documents:`, error);
+		Logger.error({ error, message: `Failed to clean expired "sessions" documents:` });
 	}
 }

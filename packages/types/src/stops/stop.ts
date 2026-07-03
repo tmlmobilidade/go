@@ -1,9 +1,5 @@
 /* * */
 
-import { CommentSchema } from '@/_common/comment.js';
-import { DocumentSchema } from '@/_common/document.js';
-import { AvailabilityStatusSchema, ConditionStatusSchema, LifecycleStatusSchema } from '@/_common/status.js';
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { StopConnectionSchema } from '@/stops/connections.js';
 import { StopEquipmentSchema } from '@/stops/equipment.js';
 import { StopFacilitySchema } from '@/stops/facilities.js';
@@ -11,6 +7,7 @@ import { StopFlagSchema } from '@/stops/flag.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
 import { StopRoadTypeSchema } from '@/stops/road-type.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
+import { AvailabilityStatusSchema, CommentSchema, ConditionStatusSchema, DocumentSchema, LifecycleStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

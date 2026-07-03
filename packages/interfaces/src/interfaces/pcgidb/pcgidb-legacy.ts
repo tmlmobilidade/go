@@ -40,7 +40,7 @@ class PCGIDBLegacyClass {
 			serverSelectionTimeoutMS: 10_000,
 		};
 
-		Logger.info('Connecting to PCGIDB Legacy...');
+		Logger.info({ message: 'Connecting to PCGIDB Legacy...' });
 
 		try {
 			// Connect to the MongoDB database
@@ -137,7 +137,7 @@ class PCGIDBLegacyClass {
 			GLOBAL_PCGIDB_TUNNEL_INSTANCE = new SshTunnelService(sshConfig, sshOptions);
 		}
 
-		Logger.info('Setting up SSH Tunnel for PCGIDB Legacy...');
+		Logger.info({ message: 'Setting up SSH Tunnel for PCGIDB Legacy...' });
 
 		const sshTunnelConnection = await GLOBAL_PCGIDB_TUNNEL_INSTANCE.connect();
 

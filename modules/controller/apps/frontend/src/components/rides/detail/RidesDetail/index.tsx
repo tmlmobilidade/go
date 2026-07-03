@@ -25,16 +25,13 @@ export function RidesDetail() {
 		return <LoadingOverlay />;
 	}
 
-	if (rideAnalysisContext.flags.error) {
-		return <ErrorDisplay message={rideAnalysisContext.flags.error.message} />;
-	}
-
 	return (
 		<Pane header={[
-			<RidesDetailHeader />,
-			<RideAnalysisViewNavigation />,
+			<RidesDetailHeader key="header" />,
+			<RideAnalysisViewNavigation key="navigation" />,
 		]}
 		>
+			{rideAnalysisContext.flags.error && <ErrorDisplay message={rideAnalysisContext.flags.error.message} />}
 			{rideAnalysisContext.data.selected_view === 'ANALYSIS' && <RideAnalysisAnalysis />}
 			{rideAnalysisContext.data.selected_view === 'AUDIT' && <RideAnalysisAudit />}
 			{rideAnalysisContext.data.selected_view === 'ACCEPTANCE' && <RideAcceptance />}

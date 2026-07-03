@@ -1,12 +1,11 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
-import { ProcessingStatusSchema } from '@/_common/status.js';
+import { DocumentSchema, ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const FileExportTypes = ['gtfs', 'ride', 'sams_analysis', 'stop'] as const;
+export const FileExportTypes = ['gtfs', 'ride', 'sams_analysis', 'stop', 'vehicle'] as const;
 export const FileExportTypeSchema = z.enum(FileExportTypes);
 export type FileExportType = z.infer<typeof FileExportTypeSchema>;
 

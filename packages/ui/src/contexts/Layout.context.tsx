@@ -2,7 +2,7 @@
 
 import { useColorScheme } from '@mantine/hooks';
 import { IconAB2, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo } from 'react';
 
 import { useFullscreenState } from '../hooks/use-fullscreen-state';
 import { useUserOrganization } from '../hooks/use-user-organization';
@@ -70,7 +70,7 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [userOrganization] = useUserOrganization();
 
-	const defaultTheme: ThemeType = userOrganization && userOrganization.theme && AVAILABLE_THEMES.some(t => t._id === userOrganization.theme) ? userOrganization.theme as ThemeType : 'ocean';
+	const defaultTheme: ThemeType = userOrganization?.theme && AVAILABLE_THEMES.some(t => t._id === userOrganization.theme) ? userOrganization.theme as ThemeType : 'ocean';
 
 	const [activeFullscreen, setActiveFullscreen] = useFullscreenState();
 	const [activeTheme, setActiveTheme] = useUserPreference<ThemeType>('ui', 'active_theme', defaultTheme);
@@ -111,19 +111,19 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Handle actions
 
-	const activateMode = (modeId: ModeType) => {
+	const activateMode = useCallback((modeId: ModeType) => {
 		if (!AVAILABLE_MODES.some(t => t._id === modeId)) return;
 		setActiveMode(modeId);
-	};
+	}, [setActiveMode]);
 
-	const activateTheme = (themeId: ThemeType) => {
+	const activateTheme = useCallback((themeId: ThemeType) => {
 		if (!AVAILABLE_THEMES.some(t => t._id === themeId)) return;
 		setActiveTheme(themeId);
-	};
+	}, [setActiveTheme]);
 
-	const activateFullscreen = () => {
+	const activateFullscreen = useCallback(() => {
 		setActiveFullscreen();
-	};
+	}, [setActiveFullscreen]);
 
 	//
 	// D. Define context value
@@ -139,11 +139,7 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 			active_mode: activeMode,
 			active_theme: activeTheme,
 		},
-	}), [
-		activeFullscreen,
-		activeMode,
-		activeTheme,
-	]);
+	}), [activateFullscreen, activateMode, activateTheme, activeFullscreen, activeMode, activeTheme]);
 
 	//
 	// E. Render components

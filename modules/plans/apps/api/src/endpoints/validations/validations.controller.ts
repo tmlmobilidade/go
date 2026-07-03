@@ -29,7 +29,9 @@ export class GtfsValidationsController {
 
 		const requestData = await request.file();
 
-		if (!requestData) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file provided');
+		if (!requestData) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file provided');
+		}
 
 		//
 		// Check if the user has permission to create a new GTFS Validation
@@ -42,7 +44,9 @@ export class GtfsValidationsController {
 			value: requestData.fields.agency_id['value'],
 		});
 
-		if (!hasPermissionCreateValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: create validation');
+		if (!hasPermissionCreateValidation) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: create validation');
+		}
 
 		//
 		// Convert form fields to Validation data
@@ -159,7 +163,10 @@ export class GtfsValidationsController {
 	static async downloadFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
 		// Get the Validation from the database
 		const foundValidation = await gtfsValidations.findById(request.params.id);
-		if (!foundValidation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		if (!foundValidation) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		}
+
 		// Check if the user has permission to read the Validation
 		const hasPermissionReadValidation = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.gtfs_validations.actions.read,
@@ -168,13 +175,22 @@ export class GtfsValidationsController {
 			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: foundValidation.gtfs_agency.agency_id,
 		});
-		if (!hasPermissionReadValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
+		if (!hasPermissionReadValidation) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
+		}
+
 		// Fetch the file associated with the validation
 		const foundFileData = await files.findById(foundValidation.file_id);
-		if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation file not found');
+		if (!foundFileData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation file not found');
+		}
+
 		// Stream the file in the given URL to the client
 		const storageServiceResponse = await fetch(foundFileData.url);
-		if (!storageServiceResponse.ok || !storageServiceResponse.body) return reply.code(500).send('Could not fetch file.');
+		if (!storageServiceResponse.ok || !storageServiceResponse.body) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
+		}
+
 		// Set headers and pipe the response body to the client
 		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
 		reply.header('Content-Type', 'application/zip');
@@ -248,7 +264,9 @@ export class GtfsValidationsController {
 		// Get the requested validation data
 
 		const foundValidation = await gtfsValidations.findById(request.params.id);
-		if (!foundValidation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		if (!foundValidation) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		}
 
 		//
 		// Check if the user has permission to read the validation
@@ -277,7 +295,10 @@ export class GtfsValidationsController {
 	static async getFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<FileType>) {
 		// Get the requested Validation data
 		const foundValidation = await gtfsValidations.findById(request.params.id);
-		if (!foundValidation) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Validation not found' });
+		if (!foundValidation) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		}
+
 		// Check if the user has permission to read the validation
 		const hasPermissionReadValidation = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.gtfs_validations.actions.read,
@@ -286,10 +307,16 @@ export class GtfsValidationsController {
 			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: foundValidation.gtfs_agency.agency_id,
 		});
-		if (!hasPermissionReadValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
+		if (!hasPermissionReadValidation) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
+		}
+
 		//
+
 		const foundFile = await files.findById(foundValidation.file_id);
-		if (!foundFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+		if (!foundFile) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+		}
 		reply.send({ data: foundFile, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -301,7 +328,10 @@ export class GtfsValidationsController {
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
 		// Get the Validation from the database
 		const validationData = await gtfsValidations.findById(request.params.id);
-		if (!validationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		if (!validationData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		}
+
 		// Check if the user has permission to toggle lock the Validation
 		const hasPermissionLockValidation = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.gtfs_validations.actions.lock,
@@ -310,11 +340,17 @@ export class GtfsValidationsController {
 			scope: PermissionCatalog.all.gtfs_validations.scope,
 			value: validationData.gtfs_agency.agency_id,
 		});
-		if (!hasPermissionLockValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock validation');
+		if (!hasPermissionLockValidation) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock validation');
+		}
+
 		// If authorized, toggle the lock status of the validation
 		await gtfsValidations.toggleLockById(request.params.id);
 		const foundValidation = await gtfsValidations.findById(request.params.id);
-		if (!foundValidation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		if (!foundValidation) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		}
+
 		reply.send({ data: foundValidation, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -331,12 +367,16 @@ export class GtfsValidationsController {
 
 		const validationData = await gtfsValidations.findById(request.params.id);
 
-		if (!validationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		if (!validationData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		}
 
 		//
 		// Check if the notification has already been sent
 
-		if (validationData.notification_sent) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Notification has already been sent');
+		if (validationData.notification_sent) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Notification has already been sent');
+		}
 
 		//
 		// Check if the user has permission to request approval for this Validation
@@ -349,7 +389,9 @@ export class GtfsValidationsController {
 			value: validationData.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionRequestApproval) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: request approval');
+		if (!hasPermissionRequestApproval) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: request approval');
+		}
 
 		//
 		// Get the TML contact emails for this Agency

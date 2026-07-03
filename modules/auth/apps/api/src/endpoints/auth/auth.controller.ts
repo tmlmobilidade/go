@@ -5,7 +5,6 @@ import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { AUTH_SESSION_COOKIE_NAME, authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/types';
 
@@ -23,30 +22,35 @@ export class AuthController {
 		// If the token is invalid or expired, throw an error
 		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
 			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
-		};
+		}
 		// Update the user's password in the database
 		await users.updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
 		// Once the token is validated, delete it from the database
 		await verificationTokens.deleteOne({ token: { $eq: request.body.token } });
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
-		// Log the password change event
-		Logger.info(`Password changed for user ID: ${tokenResult.user_id}`);
 	}
 
 	/**
 	 * Authenticate a user from a login request and create a new session.
 	 */
 	static async login(request: FastifyRequest<{ Body: LoginDto }>, reply: FastifyReply<Session>) {
-		// Validate the request body against the LoginDto schema
 		const result = LoginDtoSchema.safeParse(request.body);
-		// If validation fails, throw a bad request error
-		if (!result.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
-		// Call the authProvider to login the user
-		const newSession = await authProvider.login({
-			email: result.data.email,
-			password: result.data.password,
-		});
+		if (!result.success) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
+		}
+		let newSession: Session;
+		try {
+			newSession = await authProvider.login({
+				email: result.data.email,
+				password: result.data.password,
+			});
+		} catch (error) {
+			if (error instanceof HttpException) {
+				throw error;
+			}
+			throw error;
+		}
 		// Set the session token cookie in the response
 		reply.setCookie(AUTH_SESSION_COOKIE_NAME, newSession.token, {
 			httpOnly: true,
@@ -57,8 +61,6 @@ export class AuthController {
 		});
 		// Send the session data in the response
 		reply.send({ data: newSession, error: null, statusCode: HTTP_STATUS.OK });
-		// Log the login event
-		Logger.info(`User logged in: ${newSession.user_id}`);
 	}
 
 	/**
@@ -87,7 +89,9 @@ export class AuthController {
 	static async sendPasswordResetEmail(request: FastifyRequest<{ Body: { email: string } }>, reply: FastifyReply<void>) {
 		// Search user by the email provided in the request body
 		const foundUser = await users.findByEmail(request.body.email);
-		if (!foundUser) throw new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
+		if (!foundUser) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
+		}
 		// Generate a random token for password reset
 		const randomToken = generateRandomToken();
 		// Create a verification token entry in the database
@@ -107,8 +111,6 @@ export class AuthController {
 		});
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
-		// Log the password reset email event
-		Logger.info(`Password reset email sent to "${request.body.email}" for User ID ${foundUser._id}`);
 	}
 
 	//

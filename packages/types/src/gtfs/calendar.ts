@@ -1,7 +1,7 @@
 /* * */
 
-import { type OperationalDate, validateOperationalDate } from '@/_common/operational-date.js';
 import { type GTFS_Binary, validateGtfsBinary } from '@/gtfs/common.js';
+import { OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Represents a calendar in the GTFS (General Transit Feed Specification) format.

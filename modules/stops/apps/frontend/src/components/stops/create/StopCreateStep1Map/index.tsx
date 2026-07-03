@@ -17,16 +17,15 @@ export function StopCreateStep1Map() {
 
 	const stopCreateContext = useStopCreateContext();
 	const stopsListContext = useStopsListContext();
+	const [latitude, longitude] = stopCreateContext.data.coordinates;
 
 	//
 	// B. Transform data
 
 	const stopsAsGeojsonFC = useMemo(() => {
-		// Prepare an empty feature collection
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayMultipleStopsDataProps>();
-		// Skip if no data is provided
 		if (!stopsListContext.data.filtered) return baseGeoJson;
-		// Add the features to the base GeoJSON
+
 		baseGeoJson.features = stopsListContext.data.filtered.map(item => ({
 			geometry: {
 				coordinates: [item.longitude, item.latitude],
@@ -38,20 +37,19 @@ export function StopCreateStep1Map() {
 			},
 			type: 'Feature',
 		}));
-		// Return the collection
+
 		return baseGeoJson;
 	}, [stopsListContext.data.filtered]);
 
 	const selectedCoordinatesMapData = useMemo(() => {
-		// Prepare an empty feature collection
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayPinsPointDataProps>();
-		// Skip if no data is provided
-		if (!isValidLatitude(stopCreateContext.data.form.values.latitude)) return baseGeoJson;
-		if (!isValidLongitude(stopCreateContext.data.form.values.longitude)) return baseGeoJson;
-		// Add the features to the base GeoJSON
+		const validatedLatitude = isValidLatitude(latitude ?? NaN);
+		const validatedLongitude = isValidLongitude(longitude ?? NaN);
+		if (!validatedLatitude || !validatedLongitude) return baseGeoJson;
+
 		baseGeoJson.features = [{
 			geometry: {
-				coordinates: [stopCreateContext.data.form.values.longitude, stopCreateContext.data.form.values.latitude],
+				coordinates: [validatedLongitude, validatedLatitude],
 				type: 'Point',
 			},
 			properties: {
@@ -59,9 +57,9 @@ export function StopCreateStep1Map() {
 			},
 			type: 'Feature',
 		}];
-		// Return the collection
+
 		return baseGeoJson;
-	}, [stopCreateContext.data.form.values]);
+	}, [latitude, longitude]);
 
 	//
 	// C. Handle actions
@@ -83,6 +81,7 @@ export function StopCreateStep1Map() {
 			<MapOverlayPins
 				id="selected-coordinates"
 				pinsData={selectedCoordinatesMapData}
+				focusOnChange
 			/>
 		</MapView>
 	);

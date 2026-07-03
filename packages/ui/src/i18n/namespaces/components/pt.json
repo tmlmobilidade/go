@@ -66,10 +66,9 @@
 			"calendar_management": "Calendário",
 			"fleet_management": "Frota",
 			"network_offer": "Oferta de Rede",
-			"operations": "Operação",
-			"overview": "Visão Geral",
-			"reference_tools": "Referência",
-			"service_planning": "Planeamento"
+			"offer": "Oferta",
+			"operation": "Operação",
+			"overview": "Visão Geral"
 		}
 	},
 	"tags": {

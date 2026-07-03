@@ -47,5 +47,5 @@ export async function exportTripsRows(planData: Plan, sqlTables: GtfsSQLTables, 
 
 	await exportConfig.writers.trips.flush();
 
-	Logger.info('Exported trip.txt file.');
+	Logger.info({ message: 'Exported trip.txt file.' });
 }

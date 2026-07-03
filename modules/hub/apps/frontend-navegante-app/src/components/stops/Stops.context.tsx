@@ -2,8 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubStop } from '@tmlmobilidade/types';
-import { type MapOverlayMultipleStopsDataProps } from '@tmlmobilidade/ui';
+import { type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -60,7 +59,7 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	}, [allStopsData]);
 
 	//
-	// D. Handle actions
+	// C. Handle actions
 
 	const getStopById = (stopId: number | string): HubStop | undefined => {
 		return allStopsData?.find(stop => String(stop._id) === String(stopId));
@@ -76,7 +75,7 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	};
 
 	//
-	// E. Define context value
+	// D. Define context value
 
 	const contextValue: StopsContextState = {
 		actions: {
@@ -94,7 +93,7 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 	};
 
 	//
-	// F. Render components
+	// E. Render components
 
 	return (
 		<StopsContext.Provider value={contextValue}>
@@ -105,16 +104,13 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 
 /* * */
 
-export function transformStopDataIntoGeoJsonFeature(stopData: HubStop): GeoJSON.Feature<GeoJSON.Point, MapOverlayMultipleStopsDataProps> {
-	const feature: GeoJSON.Feature<GeoJSON.Point, MapOverlayMultipleStopsDataProps> = {
+export function transformStopDataIntoGeoJsonFeature(stopData: HubStop): GeoJSON.Feature<GeoJSON.Point, HubStop> {
+	const feature: GeoJSON.Feature<GeoJSON.Point, HubStop> = {
 		geometry: {
 			coordinates: [stopData.longitude, stopData.latitude],
 			type: 'Point',
 		},
-		properties: {
-			id: String(stopData._id),
-			name: stopData.name,
-		},
+		properties: stopData,
 		type: 'Feature',
 	};
 

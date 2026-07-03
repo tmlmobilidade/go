@@ -12,7 +12,7 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="agencies"
 			panes={[
-				<AgenciesListContextProvider>
+				<AgenciesListContextProvider key="agencies-list">
 					<AgenciesList />
 				</AgenciesListContextProvider>,
 				children,

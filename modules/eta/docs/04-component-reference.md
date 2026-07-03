@@ -34,7 +34,7 @@ Materialized Views in ClickHouse act as continuous insert triggers, allowing the
 *   **`eta.mv_pred_node_etas`** (`mv-predict-node-etas.sql`)
     *   **Frequency:** Refreshes every 3 minutes.
     *   **Source:** `eta.hist_node_travel_times_aggregation`.
-    *   **Action:** Applies weighted rolling window logic (3d, 7d, 14d, 30d, weekday matches, period matches) to distill historical buckets down to a single definitive float representing seconds to traverse the node.
+    *   **Action:** Applies weighted rolling window logic (3d, 7d, 14d, 30d, weekday and day-type matches) to distill historical buckets down to a single definitive float representing seconds to traverse the node.
 
 *   **`eta.mv_pred_trip_stop_etas`** (`mv-predict-trip-stop-etas.sql`)
     *   **Frequency:** Refreshes every 30 seconds.
@@ -45,5 +45,5 @@ Materialized Views in ClickHouse act as continuous insert triggers, allowing the
 
 *   **`1-insert-historical-vehicle-events.sql`**: Bootstraps basic vehicle event histories.
 *   **`2-build_hist_node_travel_times.sql`**: The most complex script in the system. Performs spatial bloom filter pruning, geohash expansion, `lag()`-based speed and bearing validation, monotonic index filtering, and gap interpolation.
-*   **`3-aggregate_hist_node_travel_times.sql`**: Responsible for the statistical aggregation into `eta.hist_node_travel_times_aggregation`. Handles mapping absolute timestamps into domain-specific 'School', 'Summer', 'Peak', etc. contexts.
+*   **`3-aggregate_hist_node_travel_times.sql`**: Responsible for the statistical aggregation into `eta.hist_node_travel_times_aggregation`. Buckets samples by operational date, time of day, weekday, and day type.
 *   **`4-snap-waypoints.sql`**: Once a day, resolves exact waypoint coordinates into strict node indexes so the final summation step (`mv_pred_trip_stop_etas`) operates purely on sequential node math rather than complex spatial logic.

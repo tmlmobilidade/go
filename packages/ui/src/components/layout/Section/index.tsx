@@ -8,6 +8,7 @@ import styles from './styles.module.css';
 
 interface SectionProps {
 	alignItems?: 'center' | 'flex-end' | 'flex-start'
+	className?: string
 	flexDirection?: 'column' | 'row'
 	flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse'
 	gap?: 'lg' | 'md' | 'sm' | 'xs' | null
@@ -21,10 +22,10 @@ interface SectionProps {
 
 /* * */
 
-export function Section({ alignItems = 'flex-start', children, flexDirection = 'column', flexWrap = 'nowrap', gap, height, justifyContent = 'flex-start', maxHeight, overflow, padding = 'md', width = '100%' }: PropsWithChildren<SectionProps>) {
+export function Section({ alignItems = 'flex-start', children, className, flexDirection = 'column', flexWrap = 'nowrap', gap, height, justifyContent = 'flex-start', maxHeight, overflow, padding = 'md', width = '100%' }: PropsWithChildren<SectionProps>) {
 	return (
 		<div
-			className={styles.root}
+			className={`${styles.root} ${className ?? ''}`}
 			data-align-items={alignItems}
 			data-flex-direction={flexDirection}
 			data-flex-wrap={flexWrap}

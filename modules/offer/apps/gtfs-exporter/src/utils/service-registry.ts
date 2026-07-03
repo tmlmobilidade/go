@@ -78,8 +78,21 @@ export class ServiceRegistry {
 	 * never exposed outside the registry.
 	 */
 	registerServiceId(serviceId: ServiceId, dates: Set<OperationalDate>): void {
-		if (!this.tokenServices.has(serviceId)) {
+		const existing = this.tokenServices.get(serviceId);
+
+		if (!existing) {
 			this.tokenServices.set(serviceId, new Set(dates));
+			return;
+		}
+
+		const sameSize = existing.size === dates.size;
+		const sameDates = sameSize && [...dates].every(date => existing.has(date));
+
+		if (!sameDates) {
+			throw new Error(
+				`Service ID "${serviceId}" already registered with a different date set. `
+				+ 'resolveRuleToken must assign a disambiguated suffix (e.g. "ALL_DU 2 2") before registerServiceId.',
+			);
 		}
 	}
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsRtEffect } from '@/gtfs-rt/effect.js';
+import { type GtfsRtEffect } from '@tmlmobilidade/go-types-gtfs-rt';
 import z from 'zod';
 
 /* * */

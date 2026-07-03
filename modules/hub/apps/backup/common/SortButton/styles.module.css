@@ -1,9 +1,0 @@
-
-.sortButton{
-
-    margin-top: 3px;
-
-    & :hover{
-        color: var(--color-system-text-100);
-    }
-}

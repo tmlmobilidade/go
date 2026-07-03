@@ -1,7 +1,6 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type GetRidesBatchQuery, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type SelectDataItem, useDebouncedState, useStateRef } from '@tmlmobilidade/ui';
@@ -20,7 +19,7 @@ function subscribeToWebSocket(wsUrlString: string, onMessage: (event: MessageEve
 	// Skip if URL is invalid
 	if (!wsUrlString) return () => {};
 	// Open a new WebSocket connection if one doesn't exist for the URL
-	Logger.info(`Opening WebSocket connection... ${wsUrlString}`);
+	console.info(`Opening WebSocket connection... ${wsUrlString}`);
 	const socket = new WebSocket(wsUrlString);
 	const listeners = new Set<(event: MessageEvent<string>) => void>();
 	wsListeners.set(wsUrlString, listeners);
@@ -36,7 +35,7 @@ function subscribeToWebSocket(wsUrlString: string, onMessage: (event: MessageEve
 		console.warn('WebSocket error:', event);
 	});
 	socket.addEventListener('close', (event: CloseEvent) => {
-		Logger.info(`WebSocket closed: ${event.code}, ${event.reason}`);
+		console.info(`WebSocket closed: ${event.code}, ${event.reason}`);
 		wsInstances.delete(wsUrlString);
 		wsListeners.delete(wsUrlString);
 	});
@@ -108,7 +107,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 				ridesData.set(next);
 				setLastUpdatedAt(Dates.now('Europe/Lisbon').unix_timestamp);
 			} catch (error) {
-				Logger.error('WebSocket message parse error:', error);
+				console.error('WebSocket message parse error:', error);
 			}
 		};
 		// Subscribe to WebSocket messages and return an unsubscribe function

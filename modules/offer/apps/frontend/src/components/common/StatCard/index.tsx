@@ -1,8 +1,7 @@
 /* * */
 
-import { CopyButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
-import { Loader, Text } from '@tmlmobilidade/ui';
+import { CopyButton, Loader, Text } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 
 import styles from './styles.module.css';
@@ -22,12 +21,12 @@ interface StatCardProps {
 export default function StatCard({ isLoading = false, link, title, type = 'copy', value }: StatCardProps) {
 	//
 
-	if (isLoading || (!value && value != 0)) {
+	if (isLoading || (!value && value !== 0)) {
 		return (
 			<div className={styles.container}>
 				<div className={styles.wrapper}>
 					<Text size="xl">{title}</Text>
-					<Loader visible />
+					<Loader size="sm" visible />
 				</div>
 			</div>
 		);
