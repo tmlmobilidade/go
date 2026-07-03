@@ -7,17 +7,17 @@ import { readFileSync } from 'node:fs';
  * Configuration for a Mongo database client.
  *
  * Every database follows the same env var naming convention, scoped by `prefix`:
- *   `{PREFIX}_TUNNEL_ENABLED` — `"true"` or `"false"`
- *   `{PREFIX}_HOST_1` / `{PREFIX}_PORT_1` — replica set seed 1
- *   `{PREFIX}_HOST_2` / `{PREFIX}_PORT_2` — replica set seed 2
- *   `{PREFIX}_HOST_3` / `{PREFIX}_PORT_3` — replica set seed 3
- *   `{PREFIX}_USER` / `{PREFIX}_PASSWORD` — credentials
- *   `{PREFIX}_RS_NAME` — replica set name
- *   `{PREFIX}_TUNNEL_LOCAL_PORT` — local port for SSH tunnel
- *   `{PREFIX}_TUNNEL_SSH_HOST` — SSH bastion host
- *   `{PREFIX}_TUNNEL_SSH_USERNAME` — SSH user
- *   `{PREFIX}_TUNNEL_SSH_KEY_PATH` — path to SSH private key file
- *   `{PREFIX}_TUNNEL_SSH_KEY` — inline SSH private key
+ *   `{PREFIX}_TUNNEL_ENABLED_NEW` — `"true"` or `"false"`
+ *   `{PREFIX}_HOST_1_NEW` / `{PREFIX}_PORT_1_NEW` — replica set seed 1
+ *   `{PREFIX}_HOST_2_NEW` / `{PREFIX}_PORT_2_NEW` — replica set seed 2
+ *   `{PREFIX}_HOST_3_NEW` / `{PREFIX}_PORT_3_NEW` — replica set seed 3
+ *   `{PREFIX}_USER_NEW` / `{PREFIX}_PASSWORD_NEW` — credentials
+ *   `{PREFIX}_RS_NAME_NEW` — replica set name
+ *   `{PREFIX}_TUNNEL_LOCAL_PORT_NEW` — local port for SSH tunnel
+ *   `{PREFIX}_TUNNEL_SSH_HOST_NEW` — SSH bastion host
+ *   `{PREFIX}_TUNNEL_SSH_USERNAME_NEW` — SSH user
+ *   `{PREFIX}_TUNNEL_SSH_KEY_PATH_NEW` — path to SSH private key file
+ *   `{PREFIX}_TUNNEL_SSH_KEY_NEW` — inline SSH private key
  *
  * @example
  * ```ts
@@ -108,11 +108,11 @@ export class MongoDatabaseClient {
 
 		const client = new MongoClient(uri, {
 			connectTimeoutMS: 10_000,
-			directConnection: process.env[`${prefix}_TUNNEL_ENABLED`] === 'true',
+			directConnection: process.env[`${prefix}_TUNNEL_ENABLED_NEW`] === 'true',
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'primary',
-			replicaSet: process.env[`${prefix}_RS_NAME`],
+			replicaSet: process.env[`${prefix}_RS_NAME_NEW`],
 			retryReads: true,
 			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
@@ -167,14 +167,14 @@ export class MongoDatabaseClient {
 		const tunnelEnabled = env('_TUNNEL_ENABLED');
 		if (tunnelEnabled !== 'true' && tunnelEnabled !== 'false') {
 			throw new Error(
-				`Missing ${prefix}_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting ${prefix}_TUNNEL_ENABLED to "true" or "false".`,
+				`Missing ${prefix}_TUNNEL_ENABLED_NEW. Please indicate whether SSH tunneling is required by setting ${prefix}_TUNNEL_ENABLED_NEW to "true" or "false".`,
 			);
 		}
 
-		if (!env('_HOST_1') || !env('_PORT_1')) throw new Error(`Missing ${prefix}_HOST_1 or ${prefix}_PORT_1`);
-		if (!env('_HOST_2') || !env('_PORT_2')) throw new Error(`Missing ${prefix}_HOST_2 or ${prefix}_PORT_2`);
-		if (!env('_HOST_3') || !env('_PORT_3')) throw new Error(`Missing ${prefix}_HOST_3 or ${prefix}_PORT_3`);
-		if (!env('_RS_NAME')) throw new Error(`Missing ${prefix}_RS_NAME`);
+		if (!env('_HOST_1') || !env('_PORT_1')) throw new Error(`Missing ${prefix}_HOST_1_NEW or ${prefix}_PORT_1_NEW`);
+		if (!env('_HOST_2') || !env('_PORT_2')) throw new Error(`Missing ${prefix}_HOST_2_NEW or ${prefix}_PORT_2_NEW`);
+		if (!env('_HOST_3') || !env('_PORT_3')) throw new Error(`Missing ${prefix}_HOST_3_NEW or ${prefix}_PORT_3_NEW`);
+		if (!env('_RS_NAME')) throw new Error(`Missing ${prefix}_RS_NAME_NEW`);
 
 		if (tunnelEnabled === 'false') {
 			return {
@@ -183,7 +183,7 @@ export class MongoDatabaseClient {
 			};
 		}
 
-		if (!env('_TUNNEL_LOCAL_PORT')) throw new Error(`Missing ${prefix}_TUNNEL_LOCAL_PORT`);
+		if (!env('_TUNNEL_LOCAL_PORT')) throw new Error(`Missing ${prefix}_TUNNEL_LOCAL_PORT_NEW`);
 		if (!env('_TUNNEL_SSH_HOST') || !env('_TUNNEL_SSH_USERNAME')) throw new Error(`Missing SSH config for ${prefix}`);
 
 		const sshConfig: SshConfig = {
