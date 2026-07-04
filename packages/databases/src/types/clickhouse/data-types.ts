@@ -10,6 +10,7 @@ export type ClickHouseDataType =
   | 'Int64' // Should not be used, use Int32 instead
   | 'String'
   | 'UInt8'
+  | 'UInt16'
   | 'UInt32'
   | 'UInt64'
   | 'UUID'
@@ -21,5 +22,6 @@ export type ClickHouseDataType =
   | `Nullable(Int32)`
   | `Nullable(Int64)`
   | `Nullable(String)`
+  | `Nullable(UInt16)`
   | `Nullable(UInt64)`
   | `Nullable(UUID)`;

@@ -10,22 +10,22 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 const tableSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
-	agency_id: { type: 'String' },
-	bearing: { type: 'Nullable(Int64)' },
+	agency_id: { type: 'LowCardinality(String)' },
+	bearing: { type: 'Nullable(UInt16)' },
 	created_at: { type: 'Int64' },
-	current_status: { type: 'Nullable(String)' },
-	driver_id: { type: 'Nullable(String)' },
+	current_status: { type: 'LowCardinality(Nullable(String))' },
+	driver_id: { type: 'LowCardinality(Nullable(String))' },
 	extra_trip_id: { type: 'Nullable(String)' },
 	geohash: { default: 'geohashEncode(longitude, latitude, 7)', type: 'String' },
 	latitude: { type: 'Float64' },
 	longitude: { type: 'Float64' },
-	odometer: { type: 'Nullable(Int64)' },
-	operational_date: { type: 'Date' },
+	odometer: { type: 'Nullable(UInt64)' },
+	operational_date: { type: 'UInt32' },
 	received_at: { type: 'Int64' },
-	speed: { type: 'Nullable(Int64)' },
-	stop_id: { type: 'Nullable(String)' },
+	speed: { type: 'Nullable(UInt16)' },
+	stop_id: { type: 'LowCardinality(Nullable(String))' },
 	trip_id: { type: 'String' },
-	vehicle_id: { type: 'String' },
+	vehicle_id: { type: 'LowCardinality(String)' },
 };
 
 /**
