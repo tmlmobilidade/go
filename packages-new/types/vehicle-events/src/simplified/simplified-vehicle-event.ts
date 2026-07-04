@@ -14,7 +14,7 @@ export const SimplifiedVehicleEventSchema = z.object({
 	current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']).nullable().default(null),
 	driver_id: z.string().nullable().default(null),
 	extra_trip_id: z.string().nullable().default(null),
-	geohash: z.string().nullish(),
+	geohash: z.string().nullable().default(null),
 	latitude: z.number()
 		.min(-90)
 		.max(90)

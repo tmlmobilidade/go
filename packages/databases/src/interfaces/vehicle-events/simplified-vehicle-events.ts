@@ -11,18 +11,18 @@ import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 const tableSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'LowCardinality(String)' },
-	bearing: { type: 'Nullable(UInt16)' },
-	created_at: { type: 'Int64' },
+	bearing: { type: 'Nullable(UInt16 CODEC(T64, ZSTD))' },
+	created_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	current_status: { type: 'LowCardinality(Nullable(String))' },
 	driver_id: { type: 'LowCardinality(Nullable(String))' },
 	extra_trip_id: { type: 'Nullable(String)' },
-	geohash: { default: 'geohashEncode(longitude, latitude, 7)', type: 'FixedString(7)' },
-	latitude: { type: 'Float32' },
-	longitude: { type: 'Float32' },
+	geohash: { materialized: 'geohashEncode(longitude, latitude, 7)', type: 'FixedString(7)' },
+	latitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
+	longitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
 	odometer: { type: 'Nullable(UInt32)' },
 	operational_date: { type: 'UInt32' },
-	received_at: { type: 'Int64' },
-	speed: { type: 'Nullable(UInt16)' },
+	received_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	speed: { type: 'Nullable(UInt8 CODEC(T64, ZSTD))' },
 	stop_id: { type: 'LowCardinality(Nullable(String))' },
 	trip_id: { type: 'String' },
 	vehicle_id: { type: 'LowCardinality(String)' },
@@ -39,9 +39,8 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 
 	public override readonly databaseName = 'operation';
 	public override readonly engine: ClickHouseTableEngine<SimplifiedVehicleEvent> = 'ReplacingMergeTree(created_at)';
-	public override readonly orderBy = '(operational_date, trip_id, vehicle_id, agency_id, created_at)';
-	public override readonly partitionBy = 'toYYYYMM(fromUnixTimestamp64Milli(created_at))';
-	public override readonly primaryKey = '(operational_date, trip_id, vehicle_id)';
+	public override readonly orderBy = 'agency_id, vehicle_id, trip_id, created_at, _id';
+	public override readonly partitionBy = 'toDiv(operational_date, 100)';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'simplified_vehicle_events';
 
