@@ -125,16 +125,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 			error: allDistrictsError || allMunicipalitiesError || allParishesError || allLocalitiesError,
 			loading: isLoading || allDistrictsLoading || allMunicipalitiesLoading || allParishesLoading || allLocalitiesLoading,
 		},
-	}), [
-		allDistrictsData,
-		allDistrictsMap.current,
-		allMunicipalitiesData,
-		allMunicipalitiesMap.current,
-		allParishesData,
-		allParishesMap.current,
-		allLocalitiesData,
-		allLocalitiesMap.current,
-	]);
+	}), [allDistrictsData, allLocalitiesData, allMunicipalitiesData, allParishesData, allDistrictsError, allMunicipalitiesError, allParishesError, allLocalitiesError, isLoading, allDistrictsLoading, allMunicipalitiesLoading, allParishesLoading, allLocalitiesLoading]);
 
 	//
 	// F. Render components
