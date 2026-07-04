@@ -5,9 +5,10 @@
 export type ClickHouseDataType =
   | 'Bool'
   | 'Date'
+  | 'Float32'
   | 'Float64'
   | 'Int32'
-  | 'Int64' // Should not be used, use Int32 instead
+  | 'Int64'
   | 'String'
   | 'UInt8'
   | 'UInt16'
@@ -16,6 +17,7 @@ export type ClickHouseDataType =
   | 'UUID'
   | `DateTime64(3, 'UTC') CODEC(Delta, ZSTD)`
   | `Enum8(${string})`
+  | `FixedString(${number})`
   | `LowCardinality(Nullable(String))`
   | `LowCardinality(String)`
   | `Nullable(Float64)`
@@ -23,5 +25,6 @@ export type ClickHouseDataType =
   | `Nullable(Int64)`
   | `Nullable(String)`
   | `Nullable(UInt16)`
+  | `Nullable(UInt32)`
   | `Nullable(UInt64)`
   | `Nullable(UUID)`;
