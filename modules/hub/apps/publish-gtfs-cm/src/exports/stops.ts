@@ -56,7 +56,7 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 		const matchingLocalityData = await locations.findLocalityById(stopData.locality_id);
 
 		const parsedStopsRow: ExportedStopsRow = {
-			stop_id: String(stopData._id),
+			stop_id: matchingFlagData?.stop_id ?? String(stopData._id),
 			stop_id_new: stopData._id,
 			stop_code: matchingFlagData?.stop_id ?? String(stopData._id),
 			stop_name: stopData.name,
