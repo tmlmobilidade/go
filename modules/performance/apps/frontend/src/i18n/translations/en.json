@@ -1,1 +1,14 @@
-{}
+{
+	"feedback": {
+		"labels": {
+			"feedbacks": "Feedbacks",
+			"points_to_improve": "Points to improve",
+			"satisfaction": "Satisfaction",
+			"summary": "Summary",
+			"view": "View"
+		},
+		"timeline": {
+			"title": "Feedback over time"
+		}
+	}
+}

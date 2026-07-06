@@ -8,19 +8,12 @@ import type { FeedbackStopReasonCategory, FeedbackStopReasonMeter } from '@/util
 
 import { formatSatisfactionIndex } from '@/utils/metrics/feedback-metrics';
 import { BarChart, Label, Section } from '@tmlmobilidade/ui';
+import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 
 import styles from '../styles.module.css';
 
 /* * */
-
-const STOP_REASON_CHART_SERIES = [
-	{
-		color: 'var(--color-primary)',
-		label: 'Feedbacks',
-		name: 'value',
-	},
-];
 
 const STOP_CATEGORY_CHART_HEIGHT = 220;
 const STOP_CATEGORY_Y_AXIS_WIDTH = 56;
@@ -38,7 +31,16 @@ interface StopReasonBreakdownProps {
 /* * */
 
 export function StopReasonBreakdown({ entityId, meters }: StopReasonBreakdownProps) {
+	const t = useTranslations();
 	const [selectedCategory, setSelectedCategory] = useState<FeedbackStopReasonCategory>();
+
+	const stopReasonChartSeries = useMemo(() => [
+		{
+			color: 'var(--color-primary)',
+			label: t('feedback.labels.feedbacks'),
+			name: 'value',
+		},
+	], [t]);
 
 	const selectedMeter = useMemo(() => {
 		return meters.find(meter => meter.id === selectedCategory && meter.selectable);
@@ -69,14 +71,14 @@ export function StopReasonBreakdown({ entityId, meters }: StopReasonBreakdownPro
 
 	return (
 		<Section gap="sm">
-			<Label size="sm" caps>Pontos a melhorar</Label>
+			<Label size="sm" caps>{t('feedback.labels.points_to_improve')}</Label>
 			<div className={`${styles.feedbackEntityModalChartContainer} ${styles.feedbackEntityModalContributionChart}`}>
 				<BarChart
 					barChartProps={{ accessibilityLayer: false }}
 					data={chartData}
 					dataKey="label"
 					h={STOP_CATEGORY_CHART_HEIGHT}
-					series={STOP_REASON_CHART_SERIES}
+					series={stopReasonChartSeries}
 					valueFormatter={value => formatSatisfactionIndex(Number(value))}
 					valueLabelProps={{ fill: 'white', position: 'inside' }}
 					withXAxis={false}
@@ -109,7 +111,7 @@ export function StopReasonBreakdown({ entityId, meters }: StopReasonBreakdownPro
 						dataKey="label"
 						h={Math.max(STOP_REASON_CHART_MIN_HEIGHT, reasonChartData.length * STOP_REASON_CHART_ROW_HEIGHT)}
 						orientation="vertical"
-						series={STOP_REASON_CHART_SERIES}
+						series={stopReasonChartSeries}
 						valueFormatter={value => formatSatisfactionIndex(Number(value))}
 						valueLabelProps={{ fill: 'var(--color-system-text-100)', position: 'right' }}
 						withXAxis={true}

@@ -27,6 +27,13 @@
 		"holiday": "Feriado"
 	},
 	"feedback": {
+		"labels": {
+			"feedbacks": "Feedbacks",
+			"points_to_improve": "Pontos a melhorar",
+			"satisfaction": "Satisfação",
+			"summary": "Resumo",
+			"view": "Vista"
+		},
 		"reason_categories": {
 			"driver": "Motorista/Condutor",
 			"line_service": "Linha/Serviço",
@@ -81,6 +88,9 @@
 			"validator_issue": "Problema no validador",
 			"weather_exposure_issue": "Exposição ao mau tempo",
 			"wrong_panel_information": "Informação errada no painel"
+		},
+		"timeline": {
+			"title": "Feedback ao longo do tempo"
 		}
 	},
 	"recordProgress": {
