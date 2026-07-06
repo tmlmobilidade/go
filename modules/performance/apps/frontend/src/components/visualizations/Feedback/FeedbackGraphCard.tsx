@@ -61,7 +61,7 @@ export function FeedbackGraphCard({ rows }: FeedbackGraphCardProps) {
 			<div className={`${styles.feedbackCardContent} ${styles.feedbackCardContentFill}`}>
 				{timelineBars.length === 0 ? (
 					<div className={styles.timelineChartSkeleton}>
-						<MetricsSkeleton />
+						{isLoading ? <MetricsSkeleton /> : <p className={styles.text}>Sem dados de feedback para mostrar.</p>}
 					</div>
 				) : (
 					<div className={styles.timelineChart}>
