@@ -46,7 +46,7 @@ function TopFeedbackEntitiesContent({ items, nameColumnLabel, title }: TopFeedba
 
 	return (
 		<>
-			<ContainerWrapper className={`${styles.feedbackCard} ${styles.feedbackListCard} ${showOperatorColumn ? styles.feedbackListCardWithOperator : ''}`} padding="0">
+			<ContainerWrapper className={`${styles.feedbackCard} ${styles.feedbackListCard}`} padding="0">
 				<div className={styles.feedbackCardHeader}>
 					<p className={styles.cardTitle}>{title}</p>
 				</div>

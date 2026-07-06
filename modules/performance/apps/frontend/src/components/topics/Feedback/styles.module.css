@@ -10,15 +10,12 @@
 .feedbackCard {
 	gap: 0;
 	justify-content: flex-start;
+	min-width: 0;
 	overflow: hidden;
 }
 
 .feedbackListCard {
 	min-height: 500px;
-}
-
-.feedbackListCardWithOperator {
-	min-width: 0;
 }
 
 .feedbackReasonCard {
@@ -48,13 +45,6 @@
 	padding: var(--size-spacing-md);
 }
 
-.cardTitle {
-	margin: 0;
-	color: var(--color-system-text-100);
-	font-size: var(--font-size-md);
-	font-weight: var(--font-weight-bold);
-}
-
 .feedbackCardControl {
 	display: flex;
 	flex-direction: column;
@@ -63,6 +53,7 @@
 	flex-shrink: 0;
 }
 
+.cardTitle,
 .feedbackCardControlLabel {
 	margin: 0;
 	color: var(--color-system-text-100);
@@ -202,17 +193,15 @@
 	font-size: var(--font-size-sm);
 }
 
-.operatorIdentity {
-	display: flex;
-	align-items: center;
-	min-width: 0;
-	width: max-content;
-}
-
+.operatorIdentity,
 .operatorMetricValue {
 	display: flex;
 	align-items: center;
 	min-width: 0;
+}
+
+.operatorIdentity {
+	width: max-content;
 }
 
 .dashboardsSection {
@@ -256,6 +245,17 @@
 	background-color: var(--color-system-background-200);
 }
 
+@media (max-width: 1500px) {
+	.feedbackReasonVisualizationContainer {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	.feedbackReasonPieChart {
+		flex-basis: auto;
+	}
+}
+
 @media (max-width: 900px) {
 	.dashboardButtons {
 		grid-template-columns: 1fr;
@@ -273,17 +273,5 @@
 	.feedbackListCard,
 	.feedbackReasonCard {
 		min-height: 0;
-	}
-
-}
-
-@media (max-width: 1500px) {
-	.feedbackReasonVisualizationContainer {
-		align-items: stretch;
-		flex-direction: column;
-	}
-
-	.feedbackReasonPieChart {
-		flex-basis: auto;
 	}
 }
