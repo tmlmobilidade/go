@@ -3,9 +3,8 @@
 import type { FeedbackEntityType } from '../metrics/feedback-metrics';
 import type { StackedResult } from '@/utils/metrics';
 
+import feedbackTranslations from '@/i18n/translations/pt.json';
 import { PUBLIC_FEEDBACK_NO_REASON_ID, type PublicFeedback, type PublicFeedbackReasonCategory } from '@tmlmobilidade/types';
-
-import feedbackTranslations from '../../../../../../hub/apps/frontend-navegante-app/src/i18n/namespaces/default/pt.json';
 
 /* * */
 
