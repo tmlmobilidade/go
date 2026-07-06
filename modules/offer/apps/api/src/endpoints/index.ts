@@ -1,3 +1,4 @@
+import '@/endpoints/agencies/agencies.routes.js';
 import '@/endpoints/lines/lines.routes.js';
 import '@/endpoints/routes/routes.routes.js';
 import '@/endpoints/typologies/typologies.routes.js';

@@ -8,8 +8,8 @@ export const FaresPermissionSchema = z.object({
 	action: z.enum([
 		'create',
 		'delete',
-		'read',
 		'lock',
+		'nav',
 		'update',
 	]),
 	resources: z.object({
