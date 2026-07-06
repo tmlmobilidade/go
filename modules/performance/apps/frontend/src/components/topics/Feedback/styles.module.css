@@ -77,10 +77,6 @@
 	gap: var(--size-spacing-lg);
 }
 
-.feedbackEntitiesGrid {
-	grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-}
-
 .feedbackTableWrapper {
 	min-width: 0;
 	overflow-x: auto;

@@ -4,9 +4,10 @@ import type { FeedbackEntitySummary } from '@/utils/metrics/feedback-metrics';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
+import { FeedbackEntityDetailModalContextProvider, useFeedbackEntityDetailModalContext } from '@/contexts/FeedbackEntityDetailModal.context';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { AgencyTag, Table, Text } from '@tmlmobilidade/ui';
-import { type KeyboardEvent, useMemo, useState } from 'react';
+import { type KeyboardEvent, useMemo } from 'react';
 
 import styles from '../styles.module.css';
 
@@ -20,18 +21,18 @@ interface TopFeedbackEntitiesProps {
 
 /* * */
 
-export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedbackEntitiesProps) {
+function TopFeedbackEntitiesContent({ items, nameColumnLabel, title }: TopFeedbackEntitiesProps) {
 	//
 	// A. Setup variables
 
-	const [selectedItem, setSelectedItem] = useState<FeedbackEntitySummary>();
+	const modalContext = useFeedbackEntityDetailModalContext();
 	const showOperatorColumn = useMemo(() => items.some(item => Boolean(item.operatorId)), [items]);
 
 	//
 	// B. Handle actions
 
 	const handleOpenItem = (item: FeedbackEntitySummary) => {
-		setSelectedItem(item);
+		modalContext.actions.open(item);
 	};
 
 	const handleItemKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, item: FeedbackEntitySummary) => {
@@ -103,7 +104,15 @@ export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedba
 				</div>
 			</ContainerWrapper>
 
-			<FeedbackEntityDetailModal item={selectedItem} onClose={() => setSelectedItem(undefined)} />
+			<FeedbackEntityDetailModal />
 		</>
+	);
+}
+
+export function TopFeedbackEntities(props: TopFeedbackEntitiesProps) {
+	return (
+		<FeedbackEntityDetailModalContextProvider>
+			<TopFeedbackEntitiesContent {...props} />
+		</FeedbackEntityDetailModalContextProvider>
 	);
 }
