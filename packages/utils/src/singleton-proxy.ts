@@ -12,11 +12,13 @@ export function asyncSingletonProxy<T extends object>(cls: { getInstance: () => 
 			return (async () => {
 				const instance = await cls.getInstance();
 				let value: unknown = instance;
+				let receiver: unknown = undefined;
 				for (const seg of pathSegments) {
+					receiver = value;
 					value = Reflect.get(value as object, seg, value);
 				}
 				if (typeof value === 'function') {
-					return value.apply(instance, args);
+					return value.apply(receiver ?? instance, args);
 				}
 				return value;
 			})();
