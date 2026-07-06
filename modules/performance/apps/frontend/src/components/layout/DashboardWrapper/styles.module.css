@@ -17,8 +17,16 @@
 .topContainer {
     display: flex;
     justify-content: space-between;
+	align-items: flex-start;
+	gap: var(--size-spacing-lg);
 }
 
+.actionsContainer {
+	display: flex;
+	justify-content: flex-end;
+	align-self: flex-end;
+	padding-bottom: var(--size-spacing-xl);
+}
 
 /* * */
 /* HEADER */
@@ -45,4 +53,19 @@
 .headerTitle {
     font-size: 32px;
     font-weight: var(--font-weight-bold);
+}
+
+@media (max-width: 900px) {
+	.topContainer {
+		flex-direction: column;
+	}
+
+	.headerContainer {
+		max-width: none;
+	}
+
+	.actionsContainer {
+		align-self: flex-start;
+		padding-bottom: 0;
+	}
 }

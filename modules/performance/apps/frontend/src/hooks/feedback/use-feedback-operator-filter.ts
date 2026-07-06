@@ -3,18 +3,19 @@
 import type { FeedbackEntityType } from '@/utils/metrics/feedback-metrics';
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
+import { useFeedbackOperatorFilterContext } from '@/contexts/FeedbackOperatorFilter.context';
 import { getOperatorName, sortOperatorsByCode } from '@/utils/feedback/operators';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { useDataAgencies } from '@tmlmobilidade/ui';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 /* * */
 
-export function useFeedbackOperatorFilter(rows: PublicFeedback[] | undefined, entityType: FeedbackEntityType) {
+export function useFeedbackOperatorFilter(rows: PublicFeedback[] | undefined, entityType: 'all' | FeedbackEntityType) {
 	//
 	// A. Setup variables
 
-	const [selectedAgencyIds, setSelectedAgencyIds] = useState<string[]>([]);
+	const { selectedAgencyIds, setSelectedAgencyIds } = useFeedbackOperatorFilterContext();
 
 	//
 	// B. Fetch data
@@ -37,12 +38,12 @@ export function useFeedbackOperatorFilter(rows: PublicFeedback[] | undefined, en
 	const operatorOptions = useMemo(() => {
 		const agencyIdsWithFeedback = new Set(
 			(rows ?? [])
-				.filter(row => row.entity_type === entityType)
+				.filter(row => entityType === 'all' || row.entity_type === entityType)
 				.map(row => row.agency_id),
 		);
 
 		return sortOperatorsByCode(operatorsData)
-			.filter(operator => agencyIdsWithFeedback.has(operator._id))
+			.filter(operator => agencyIdsWithFeedback.has(operator._id) || selectedAgencyIdsSet.has(operator._id))
 			.map(operator => ({
 				checked: selectedAgencyIdsSet.has(operator._id),
 				label: `${operator._id} - ${getOperatorName(operator)}`,

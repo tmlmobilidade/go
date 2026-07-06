@@ -8,7 +8,7 @@ import { FeedbackEntityDetailModalContextProvider } from '@/contexts/FeedbackEnt
 import { FeedbackStopsViewContextProvider, type FeedbackStopViewItem, useFeedbackStopsViewContext } from '@/contexts/FeedbackStopsViewContext';
 import { getStopLabel } from '@/utils/feedback/network-labels';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
-import { FilterTypeList, SearchInput, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
+import { SearchInput, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent } from 'react';
 
 import styles from './styles.module.css';
@@ -20,7 +20,7 @@ function FeedbackStopsView() {
 	// A. Setup variables
 
 	const viewContext = useFeedbackStopsViewContext();
-	const { operatorFilter, sortOptions, stops, stopsById, stopSearchValue, stopSortMode } = viewContext.data;
+	const { sortOptions, stops, stopsById, stopSearchValue, stopSortMode } = viewContext.data;
 	const { error, isLoading } = viewContext.flags;
 
 	//
@@ -42,15 +42,6 @@ function FeedbackStopsView() {
 					<div className={styles.searchInput}>
 						<SearchInput onChange={viewContext.actions.setStopSearchValue} value={stopSearchValue} />
 					</div>
-
-					<FilterTypeList
-						active={operatorFilter.isActive}
-						label="Operador"
-						onChange={operatorFilter.onChange}
-						options={operatorFilter.options}
-						isMultiple
-						withToggleAll
-					/>
 				</div>
 
 				<ContainerWrapper className={styles.container} padding="0">

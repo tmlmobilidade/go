@@ -4,6 +4,7 @@
 
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
+import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
 import useSWR from 'swr';
 
@@ -16,10 +17,11 @@ import { FeedbackOverview } from './FeedbackOverview';
 
 export default function FeedbackTopic() {
 	const { data: feedbackRows } = useSWR<PublicFeedback[]>(Routes.FEEDBACK_PREVIEW);
+	const operatorFilter = useFeedbackOperatorFilter(feedbackRows, 'all');
 
 	return (
 		<div className={styles.container}>
-			<FeedbackOverview rows={feedbackRows ?? []} />
+			<FeedbackOverview rows={operatorFilter.rows} />
 			<FeedbackDashboards />
 		</div>
 	);

@@ -5,7 +5,7 @@ import { DashboardDefinition, TopicDefinition } from '@/constants';
 
 import styles from './styles.module.css';
 
-export default function DashboardWrapper({ children, dashboard, topic }: { children?: React.ReactNode, dashboard: DashboardDefinition, topic: TopicDefinition }) {
+export default function DashboardWrapper({ actions, children, dashboard, topic }: { actions?: React.ReactNode, children?: React.ReactNode, dashboard: DashboardDefinition, topic: TopicDefinition }) {
 	//
 
 	// A. Setup variables
@@ -30,6 +30,12 @@ export default function DashboardWrapper({ children, dashboard, topic }: { child
 					</div>
 
 				</div>
+
+				{actions && (
+					<div className={styles.actionsContainer}>
+						{actions}
+					</div>
+				)}
 			</div>
 
 			{children}

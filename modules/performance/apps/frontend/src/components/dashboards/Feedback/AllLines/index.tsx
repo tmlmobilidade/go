@@ -8,7 +8,7 @@ import { FeedbackEntityDetailModalContextProvider } from '@/contexts/FeedbackEnt
 import { FeedbackLinesViewContextProvider, type FeedbackLineViewItem, useFeedbackLinesViewContext } from '@/contexts/FeedbackLinesViewContext';
 import { getLineLabel } from '@/utils/feedback/network-labels';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
-import { AgencyTag, FilterTypeList, SearchInput, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
+import { AgencyTag, SearchInput, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent } from 'react';
 
 import styles from './styles.module.css';
@@ -32,7 +32,7 @@ function FeedbackLinesView() {
 	// A. Setup variables
 
 	const viewContext = useFeedbackLinesViewContext();
-	const { lines, linesById, lineSearchValue, lineSortMode, operatorFilter, sortOptions } = viewContext.data;
+	const { lines, linesById, lineSearchValue, lineSortMode, sortOptions } = viewContext.data;
 	const { error, isLoading } = viewContext.flags;
 
 	//
@@ -54,15 +54,6 @@ function FeedbackLinesView() {
 					<div className={styles.searchInput}>
 						<SearchInput onChange={viewContext.actions.setLineSearchValue} value={lineSearchValue} />
 					</div>
-
-					<FilterTypeList
-						active={operatorFilter.isActive}
-						label="Operador"
-						onChange={operatorFilter.onChange}
-						options={operatorFilter.options}
-						isMultiple
-						withToggleAll
-					/>
 				</div>
 
 				<ContainerWrapper className={styles.container} padding="0">
