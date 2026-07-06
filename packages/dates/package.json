@@ -44,7 +44,7 @@
 		"@types/node": "26.1.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
-		"tsx": "4.22.5",
+		"tsx": "4.23.0",
 		"typescript": "6.0.3"
 	}
 }
