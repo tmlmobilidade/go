@@ -20,12 +20,13 @@ import { TopFeedbackReasonsChart } from './components/TopFeedbackReasonsChart';
 /* * */
 
 interface FeedbackOverviewProps {
+	operatorRows: PublicFeedback[]
 	rows: PublicFeedback[]
 }
 
 /* * */
 
-export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
+export function FeedbackOverview({ operatorRows, rows }: FeedbackOverviewProps) {
 	//
 	// A. Fetch data
 
@@ -39,7 +40,7 @@ export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
 	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
 	const stopsById = useMemo(() => buildStopLabelsById(stopsData), [stopsData]);
 	const feedbackData = useMemo(() => getFeedbackOverviewData(rows, linesById, stopsById), [linesById, rows, stopsById]);
-	const operatorApprovalIndexes = useMemo(() => buildOperatorApprovalIndexes(rows), [rows]);
+	const operatorApprovalIndexes = useMemo(() => buildOperatorApprovalIndexes(operatorRows), [operatorRows]);
 	const operatorApprovals = useMemo(() => {
 		return (operatorsData ?? []).flatMap((operator) => {
 			const satisfactionIndex = operatorApprovalIndexes.get(operator._id);

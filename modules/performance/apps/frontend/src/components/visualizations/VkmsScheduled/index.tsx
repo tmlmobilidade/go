@@ -4,7 +4,7 @@ import { ProgressBarChart } from '@/components/charts/ProgressBarChart';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { useHomeContext } from '@/contexts/Home.context';
+import { useHomeContext } from '@/contexts/home/Home.context';
 import { buildMetricUrl, RawMetricData, transformDemandMetric } from '@/utils/metrics';
 import { ProgressBarResult } from '@/utils/metrics/types/chartResults';
 import { Dates } from '@tmlmobilidade/dates';

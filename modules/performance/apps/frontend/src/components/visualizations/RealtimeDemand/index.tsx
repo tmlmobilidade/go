@@ -4,7 +4,7 @@ import { MetricCard } from '@/components/layout/MetricCard';
 import { DemandVisualization } from '@/components/visualizations/Demand/DemandVisualization';
 import { RecordDemand } from '@/components/visualizations/RecordDemand';
 import { AgencyType } from '@/constants';
-import { useHomeContext } from '@/contexts/Home.context';
+import { useHomeContext } from '@/contexts/home/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { IconUser } from '@tabler/icons-react';
 import { type RealtimeDemand } from '@tmlmobilidade/types';

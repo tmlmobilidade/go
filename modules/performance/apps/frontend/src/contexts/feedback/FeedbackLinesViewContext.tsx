@@ -3,7 +3,7 @@
 import type { Agency, PublicFeedback } from '@tmlmobilidade/types';
 import type { PropsWithChildren } from 'react';
 
-import { useFeedbackEntityDetailModalContext } from '@/contexts/FeedbackEntityDetailModal.context';
+import { useFeedbackEntityDetailModalContext } from '@/contexts/feedback/FeedbackEntityDetailModal.context';
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
 import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-line-contributions';

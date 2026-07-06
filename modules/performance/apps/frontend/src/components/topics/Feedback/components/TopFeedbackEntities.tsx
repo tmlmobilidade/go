@@ -4,7 +4,7 @@ import type { FeedbackEntitySummary } from '@/utils/metrics/feedback-metrics';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
-import { FeedbackEntityDetailModalContextProvider, useFeedbackEntityDetailModalContext } from '@/contexts/FeedbackEntityDetailModal.context';
+import { FeedbackEntityDetailModalContextProvider, useFeedbackEntityDetailModalContext } from '@/contexts/feedback/FeedbackEntityDetailModal.context';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { AgencyTag, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo } from 'react';

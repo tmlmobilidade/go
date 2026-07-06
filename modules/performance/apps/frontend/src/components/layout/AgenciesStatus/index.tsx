@@ -2,7 +2,7 @@
 
 import StatusCircle from '@/components/layout/StatusCircle';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { useHomeContext } from '@/contexts/Home.context';
+import { useHomeContext } from '@/contexts/home/Home.context';
 import { Skeleton } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';

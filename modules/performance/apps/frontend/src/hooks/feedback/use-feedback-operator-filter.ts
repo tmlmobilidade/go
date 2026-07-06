@@ -3,7 +3,7 @@
 import type { FeedbackEntityType } from '@/utils/metrics/feedback-metrics';
 import type { PublicFeedback } from '@tmlmobilidade/types';
 
-import { useFeedbackOperatorFilterContext } from '@/contexts/FeedbackOperatorFilter.context';
+import { useFeedbackOperatorFilterContext } from '@/contexts/feedback/FeedbackOperatorFilter.context';
 import { getOperatorName, sortOperatorsByCode } from '@/utils/feedback/operators';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { useDataAgencies } from '@tmlmobilidade/ui';

@@ -6,7 +6,7 @@ import { RecordCard } from '@/components/layout/RecordCard';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { useDatesContext } from '@/contexts/Dates.context';
+import { useDatesContext } from '@/contexts/demand/Dates.context';
 import { Routes } from '@/routes';
 import { TopDemandByAgencyByDayType } from '@tmlmobilidade/types';
 import { BarChart, Grid, MetricsSkeleton, Section, Skeleton, Surface } from '@tmlmobilidade/ui';

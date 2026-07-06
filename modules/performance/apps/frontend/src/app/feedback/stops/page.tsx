@@ -4,7 +4,7 @@ import { FeedbackStops } from '@/components/dashboards/Feedback/AllStops';
 import DashboardWrapper from '@/components/layout/DashboardWrapper';
 import { FeedbackOperatorFilterButton } from '@/components/topics/Feedback/components/FeedbackOperatorFilterButton';
 import { DashboardDefinition, TOPICS, TOPICS_REGISTRY } from '@/constants';
-import { FeedbackOperatorFilterContextProvider } from '@/contexts/FeedbackOperatorFilter.context';
+import { FeedbackOperatorFilterContextProvider } from '@/contexts/feedback/FeedbackOperatorFilter.context';
 
 /* * */
 
