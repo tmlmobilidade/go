@@ -7,10 +7,20 @@ import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
+import { migrateStopIds } from './migrate-stop-ids.js';
+
 /* * */
+
+(async () => {
+	await migrateStopIds();
+})();
 
 async function main() {
 	//
+
+	// await migrateStopIds();
+
+	return;
 
 	//
 	// Initialize Sentry
@@ -56,4 +66,4 @@ async function main() {
 	//
 }
 
-await runOnInterval(main, { intervalMs: '5m' });
+// await runOnInterval(main, { intervalMs: '5m' });

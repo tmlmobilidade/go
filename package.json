@@ -105,6 +105,7 @@
 		"dev:replicator:helpers-dump-data": "ENVIRONMENT=dev dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-helpers-dump-data",
 		"dev:replicator:stream": "ENVIRONMENT=dev dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-stream",
 		"dev:stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
+		"dev:stops:organizer": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-organizer",
 		"dev:stops:prd": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
 		"dev:stops:tts": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-tts",
 		"dev:stops:ui": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-stops-api --filter=@tmlmobilidade/go-stops-frontend",
