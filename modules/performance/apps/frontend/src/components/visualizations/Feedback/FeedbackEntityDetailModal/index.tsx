@@ -6,6 +6,7 @@
 
 import type { FeedbackEntitySummary } from '@/utils/metrics/feedback-metrics';
 
+import { useFeedbackEntityDetailModalContext } from '@/contexts/FeedbackEntityDetailModal.context';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { AgencyTag, CloseButton, Divider, Label, Modal, Pane, Section, Toolbar } from '@tmlmobilidade/ui';
 
@@ -14,13 +15,6 @@ import styles from '../styles.module.css';
 import { FeedbackMetricTag } from '../FeedbackMetricTag';
 import { LineContributionBreakdown } from '../LineContributionBreakdown';
 import { StopReasonBreakdown } from '../StopReasonBreakdown';
-
-/* * */
-
-interface FeedbackEntityDetailModalProps {
-	item?: FeedbackEntitySummary
-	onClose: () => void
-}
 
 /* * */
 
@@ -62,16 +56,22 @@ function FeedbackEntityModalMetrics({ item }: { item: FeedbackEntitySummary }) {
 
 /* * */
 
-export function FeedbackEntityDetailModal({ item, onClose }: FeedbackEntityDetailModalProps) {
+export function FeedbackEntityDetailModal() {
 	//
-	// A. Render components
+	// A. Setup variables
+
+	const modalContext = useFeedbackEntityDetailModalContext();
+	const item = modalContext.data.item;
+
+	//
+	// B. Render components
 
 	return (
-		<Modal onClose={onClose} opened={Boolean(item)} padding={0} size="xl" withCloseButton={false} centered>
+		<Modal onClose={modalContext.actions.close} opened={Boolean(item)} padding={0} size="xl" withCloseButton={false} centered>
 			{item && (
 				<Pane
 					header={[
-						<FeedbackEntityModalHeader key="feedback-entity-detail-toolbar" item={item} onClose={onClose} />,
+						<FeedbackEntityModalHeader key="feedback-entity-detail-toolbar" item={item} onClose={modalContext.actions.close} />,
 					]}
 				>
 					{item.lineContributionMeters && (

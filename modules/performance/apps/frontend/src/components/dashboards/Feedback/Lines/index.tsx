@@ -4,12 +4,13 @@
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
+import { FeedbackEntityDetailModalContextProvider, useFeedbackEntityDetailModalContext } from '@/contexts/FeedbackEntityDetailModal.context';
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
 import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-line-contributions';
 import { buildLineLabelsById, type FeedbackNetworkLine, getLineLabel } from '@/utils/feedback/network-labels';
 import { getOperatorName } from '@/utils/feedback/operators';
-import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
+import { formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { type Agency, type PublicFeedback } from '@tmlmobilidade/types';
 import { AgencyTag, FilterTypeList, SearchInput, SegmentedControl, Table, Text, useDebouncedValue } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
@@ -71,13 +72,13 @@ function LineOperatorCell({ operatorId }: { operatorId?: string }) {
 
 /* * */
 
-export function FeedbackLines() {
+function FeedbackLinesContent() {
 	//
 	// A. Setup variables
 
 	const [lineSortMode, setLineSortMode] = useState<FeedbackEntitySortMode>('feedback_count_desc');
 	const [lineSearchValue, setLineSearchValue] = useState('');
-	const [selectedLine, setSelectedLine] = useState<FeedbackEntitySummary>();
+	const modalContext = useFeedbackEntityDetailModalContext();
 
 	//
 	// B. Fetch data
@@ -108,11 +109,7 @@ export function FeedbackLines() {
 	// D. Handle actions
 
 	const handleOpenLineDetail = (line: typeof lines[number]) => {
-		setSelectedLine(getFeedbackEntitySummary(line, 'line', linesById, getFeedbackLineContributionMeters(operatorFilter.rows, line)));
-	};
-
-	const handleCloseLineDetail = () => {
-		setSelectedLine(undefined);
+		modalContext.actions.open(getFeedbackEntitySummary(line, 'line', linesById, getFeedbackLineContributionMeters(operatorFilter.rows, line)));
 	};
 
 	const handleChangeLineSortMode = (value: FeedbackEntitySortMode) => {
@@ -208,7 +205,15 @@ export function FeedbackLines() {
 				</ContainerWrapper>
 			</div>
 
-			<FeedbackEntityDetailModal item={selectedLine} onClose={handleCloseLineDetail} />
+			<FeedbackEntityDetailModal />
 		</>
+	);
+}
+
+export function FeedbackLines() {
+	return (
+		<FeedbackEntityDetailModalContextProvider>
+			<FeedbackLinesContent />
+		</FeedbackEntityDetailModalContextProvider>
 	);
 }

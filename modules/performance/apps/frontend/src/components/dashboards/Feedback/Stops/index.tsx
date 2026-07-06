@@ -4,11 +4,12 @@
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
+import { FeedbackEntityDetailModalContextProvider, useFeedbackEntityDetailModalContext } from '@/contexts/FeedbackEntityDetailModal.context';
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
 import { getFeedbackStopReasonMeters } from '@/utils/feedback/feedback-stop-reasons';
 import { buildStopLabelsById, type FeedbackNetworkStop, getStopLabel } from '@/utils/feedback/network-labels';
-import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
+import { formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { type PublicFeedback } from '@tmlmobilidade/types';
 import { FilterTypeList, SearchInput, SegmentedControl, Table, Text, useDebouncedValue } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
@@ -53,13 +54,13 @@ function matchesSearch(fields: (string | undefined)[], searchValue: string) {
 
 /* * */
 
-export function FeedbackStops() {
+function FeedbackStopsContent() {
 	//
 	// A. Setup variables
 
 	const [stopSortMode, setStopSortMode] = useState<FeedbackEntitySortMode>('feedback_count_desc');
 	const [stopSearchValue, setStopSearchValue] = useState('');
-	const [selectedStop, setSelectedStop] = useState<FeedbackEntitySummary>();
+	const modalContext = useFeedbackEntityDetailModalContext();
 
 	//
 	// B. Fetch data
@@ -88,11 +89,7 @@ export function FeedbackStops() {
 	// D. Handle actions
 
 	const handleOpenStopDetail = (stop: typeof stops[number]) => {
-		setSelectedStop(getFeedbackEntitySummary(stop, 'stop', stopsById, undefined, getFeedbackStopReasonMeters(operatorFilter.rows, stop)));
-	};
-
-	const handleCloseStopDetail = () => {
-		setSelectedStop(undefined);
+		modalContext.actions.open(getFeedbackEntitySummary(stop, 'stop', stopsById, undefined, getFeedbackStopReasonMeters(operatorFilter.rows, stop)));
 	};
 
 	const handleChangeStopSortMode = (value: FeedbackEntitySortMode) => {
@@ -184,7 +181,15 @@ export function FeedbackStops() {
 				</ContainerWrapper>
 			</div>
 
-			<FeedbackEntityDetailModal item={selectedStop} onClose={handleCloseStopDetail} />
+			<FeedbackEntityDetailModal />
 		</>
+	);
+}
+
+export function FeedbackStops() {
+	return (
+		<FeedbackEntityDetailModalContextProvider>
+			<FeedbackStopsContent />
+		</FeedbackEntityDetailModalContextProvider>
 	);
 }
