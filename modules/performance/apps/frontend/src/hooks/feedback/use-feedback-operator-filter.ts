@@ -1,21 +1,63 @@
 /* * */
 
 import type { FeedbackEntityType } from '@/utils/metrics/feedback-metrics';
-import type { PublicFeedback } from '@tmlmobilidade/types';
+import type { Permission, PublicFeedback } from '@tmlmobilidade/types';
 
 import { useFeedbackOperatorFilterContext } from '@/contexts/feedback/FeedbackOperatorFilter.context';
 import { getOperatorName, sortOperatorsByCode } from '@/utils/feedback/operators';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { useDataAgencies } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { useDataAgencies, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function useFeedbackOperatorFilter(rows: PublicFeedback[] | undefined, entityType: 'all' | FeedbackEntityType) {
+type FeedbackOperatorFilterEntityType = 'all' | FeedbackEntityType;
+type HasPermissionResource = ReturnType<typeof useMeContext>['actions']['hasPermissionResource'];
+
+function hasAgencyPermission(entityType: FeedbackEntityType, agencyId: string, hasPermissionResource: HasPermissionResource) {
+	if (entityType === 'line') {
+		return hasPermissionResource({
+			action: PermissionCatalog.all.lines.actions.read,
+			resource_key: 'agency_ids',
+			scope: PermissionCatalog.all.lines.scope,
+			value: agencyId,
+		});
+	}
+
+	return hasPermissionResource({
+		action: PermissionCatalog.all.stops.actions.read,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.stops.scope,
+		value: agencyId,
+	});
+}
+
+function hasOperatorPermission(entityType: FeedbackOperatorFilterEntityType, agencyId: string, hasPermissionResource: HasPermissionResource) {
+	if (entityType === 'all') {
+		return hasAgencyPermission('line', agencyId, hasPermissionResource) || hasAgencyPermission('stop', agencyId, hasPermissionResource);
+	}
+
+	return hasAgencyPermission(entityType, agencyId, hasPermissionResource);
+}
+
+function hasConfiguredAgencyPermissions(entityType: FeedbackOperatorFilterEntityType, permissions: Permission[] = []) {
+	const hasLineAgencyPermissions = PermissionCatalog.get(permissions, PermissionCatalog.all.lines.scope, PermissionCatalog.all.lines.actions.read)?.resources.agency_ids.length;
+	const hasStopAgencyPermissions = PermissionCatalog.get(permissions, PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.read)?.resources.agency_ids.length;
+
+	if (entityType === 'line') return Boolean(hasLineAgencyPermissions);
+	if (entityType === 'stop') return Boolean(hasStopAgencyPermissions);
+	return Boolean(hasLineAgencyPermissions || hasStopAgencyPermissions);
+}
+
+/* * */
+
+export function useFeedbackOperatorFilter(rows: PublicFeedback[] | undefined, entityType: FeedbackOperatorFilterEntityType) {
 	//
 	// A. Setup variables
 
 	const { selectedAgencyIds, setSelectedAgencyIds } = useFeedbackOperatorFilterContext();
+	const meContext = useMeContext();
 
 	//
 	// B. Fetch data
@@ -27,35 +69,58 @@ export function useFeedbackOperatorFilter(rows: PublicFeedback[] | undefined, en
 
 	const selectedAgencyIdsSet = useMemo(() => new Set(selectedAgencyIds), [selectedAgencyIds]);
 	const operatorsById = useMemo(() => new Map((operatorsData ?? []).map(operator => [operator._id, operator])), [operatorsData]);
+	const permittedAgencyIds = useMemo(() => {
+		return new Set(
+			(operatorsData ?? [])
+				.filter(operator => hasOperatorPermission(entityType, operator._id, meContext.actions.hasPermissionResource))
+				.map(operator => operator._id),
+		);
+	}, [entityType, meContext.actions.hasPermissionResource, operatorsData]);
+	const hasPermissionScopedOperators = useMemo(() => {
+		return hasConfiguredAgencyPermissions(entityType, meContext.data.user?.permissions);
+	}, [entityType, meContext.data.user?.permissions]);
+	const effectiveSelectedAgencyIdsSet = useMemo(() => {
+		if (!hasPermissionScopedOperators) return selectedAgencyIdsSet;
+
+		return new Set([...selectedAgencyIdsSet].filter(agencyId => permittedAgencyIds.has(agencyId)));
+	}, [hasPermissionScopedOperators, permittedAgencyIds, selectedAgencyIdsSet]);
+
+	const availableRows = useMemo(() => {
+		if (!rows) return [];
+		if (!hasPermissionScopedOperators) return rows;
+
+		return rows.filter(row => hasAgencyPermission(row.entity_type, row.agency_id, meContext.actions.hasPermissionResource));
+	}, [hasPermissionScopedOperators, meContext.actions.hasPermissionResource, rows]);
 
 	const filteredRows = useMemo(() => {
-		if (!rows) return [];
-		if (selectedAgencyIdsSet.size === 0) return rows;
+		if (effectiveSelectedAgencyIdsSet.size === 0) return availableRows;
 
-		return rows.filter(row => selectedAgencyIdsSet.has(row.agency_id));
-	}, [rows, selectedAgencyIdsSet]);
+		return availableRows.filter(row => effectiveSelectedAgencyIdsSet.has(row.agency_id));
+	}, [availableRows, effectiveSelectedAgencyIdsSet]);
 
 	const operatorOptions = useMemo(() => {
 		const agencyIdsWithFeedback = new Set(
-			(rows ?? [])
+			availableRows
 				.filter(row => entityType === 'all' || row.entity_type === entityType)
 				.map(row => row.agency_id),
 		);
 
 		return sortOperatorsByCode(operatorsData)
-			.filter(operator => agencyIdsWithFeedback.has(operator._id) || selectedAgencyIdsSet.has(operator._id))
+			.filter(operator => !hasPermissionScopedOperators || permittedAgencyIds.has(operator._id))
+			.filter(operator => agencyIdsWithFeedback.has(operator._id) || effectiveSelectedAgencyIdsSet.has(operator._id))
 			.map(operator => ({
-				checked: selectedAgencyIdsSet.has(operator._id),
+				checked: effectiveSelectedAgencyIdsSet.has(operator._id),
 				label: `${operator._id} - ${getOperatorName(operator)}`,
 				value: operator._id,
 			}));
-	}, [entityType, operatorsData, rows, selectedAgencyIdsSet]);
+	}, [availableRows, effectiveSelectedAgencyIdsSet, entityType, hasPermissionScopedOperators, operatorsData, permittedAgencyIds]);
 
 	//
 	// D. Return value
 
 	return {
-		isActive: selectedAgencyIdsSet.size > 0,
+		availableRows,
+		isActive: effectiveSelectedAgencyIdsSet.size > 0,
 		onChange: setSelectedAgencyIds,
 		operatorsById,
 		options: operatorOptions,
