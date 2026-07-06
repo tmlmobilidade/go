@@ -7,13 +7,12 @@
 import type { FeedbackEntitySummary } from '@/utils/metrics/feedback-metrics';
 
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
-import { CloseButton, Divider, Label, Modal, Pane, Section, Toolbar } from '@tmlmobilidade/ui';
+import { AgencyTag, CloseButton, Divider, Label, Modal, Pane, Section, Toolbar } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';
 
 import { FeedbackMetricTag } from '../FeedbackMetricTag';
 import { LineContributionBreakdown } from '../LineContributionBreakdown';
-import { OperatorLogo } from '../OperatorLogo';
 import { StopReasonBreakdown } from '../StopReasonBreakdown';
 
 /* * */
@@ -34,8 +33,8 @@ function FeedbackEntityModalHeader({ item, onClose }: { item: FeedbackEntitySumm
 				<Label size="lg">{item.label}</Label>
 			</div>
 			{item.operatorId && (
-				<div className={styles.feedbackEntityModalOperatorLogo}>
-					<OperatorLogo height={48} operatorId={item.operatorId} width={72} />
+				<div className={styles.feedbackEntityModalOperator}>
+					<AgencyTag agencyId={item.operatorId} showShortName />
 				</div>
 			)}
 		</Toolbar>

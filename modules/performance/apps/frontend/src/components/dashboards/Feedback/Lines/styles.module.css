@@ -107,20 +107,7 @@
 .lineOperator {
 	display: flex;
 	align-items: center;
-	gap: var(--size-spacing-sm);
 	min-width: 0;
-}
-
-.lineOperatorLogo {
-	flex: 0 0 auto;
-	object-fit: contain;
-}
-
-.lineOperatorName {
-	min-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 }
 
 @media (max-width: 720px) {

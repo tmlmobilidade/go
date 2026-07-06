@@ -3,11 +3,9 @@
 import type { FeedbackEntitySummary } from '@/utils/metrics/feedback-metrics';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { FeedbackEntityDetailModal, FeedbackMetricTag, OperatorLogo } from '@/components/visualizations/Feedback';
-import { getOperatorName } from '@/utils/feedback/operators';
+import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
-import { type Agency } from '@tmlmobilidade/types';
-import { Table, Text } from '@tmlmobilidade/ui';
+import { AgencyTag, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 
 import styles from '../styles.module.css';
@@ -17,22 +15,12 @@ import styles from '../styles.module.css';
 interface TopFeedbackEntitiesProps {
 	items: FeedbackEntitySummary[]
 	nameColumnLabel: string
-	operatorsById?: Map<string, Agency>
 	title: string
 }
 
 /* * */
 
-function getFeedbackOperatorLabel(operatorId: string, operatorsById?: Map<string, Agency>) {
-	const operator = operatorsById?.get(operatorId);
-	if (!operator) return operatorId;
-
-	return getOperatorName(operator);
-}
-
-/* * */
-
-export function TopFeedbackEntities({ items, nameColumnLabel, operatorsById, title }: TopFeedbackEntitiesProps) {
+export function TopFeedbackEntities({ items, nameColumnLabel, title }: TopFeedbackEntitiesProps) {
 	//
 	// A. Setup variables
 
@@ -89,8 +77,7 @@ export function TopFeedbackEntities({ items, nameColumnLabel, operatorsById, tit
 											<Table.Td>
 												{item.operatorId && (
 													<div className={styles.feedbackTableOperator}>
-														<OperatorLogo className={styles.operatorLogo} height={24} operatorId={item.operatorId} width={36} />
-														<Text className={styles.feedbackTableOperatorName}>{getFeedbackOperatorLabel(item.operatorId, operatorsById)}</Text>
+														<AgencyTag agencyId={item.operatorId} showShortName />
 													</div>
 												)}
 											</Table.Td>

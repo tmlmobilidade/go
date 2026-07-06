@@ -97,15 +97,7 @@
 .feedbackTableOperator {
 	display: flex;
 	align-items: center;
-	gap: var(--size-spacing-sm);
 	min-width: 0;
-}
-
-.feedbackTableOperatorName {
-	min-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 }
 
 .feedbackReasonVisualizationContainer {
@@ -217,20 +209,8 @@
 .operatorIdentity {
 	display: flex;
 	align-items: center;
-	gap: var(--size-spacing-sm);
 	min-width: 0;
 	width: max-content;
-}
-
-.operatorLogo {
-	flex: 0 0 auto;
-	object-fit: contain;
-}
-
-.operatorName {
-	display: block;
-	min-width: 0;
-	white-space: nowrap;
 }
 
 .operatorMetricValue {
