@@ -9,6 +9,7 @@ import type { FeedbackEntitySummary } from '@/utils/metrics/feedback-metrics';
 import { useFeedbackEntityDetailModalContext } from '@/contexts/feedback/FeedbackEntityDetailModal.context';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { AgencyTag, CloseButton, Divider, Label, Modal, Pane, Section, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslations } from 'next-intl';
 
 import styles from '../styles.module.css';
 
@@ -36,17 +37,19 @@ function FeedbackEntityModalHeader({ item, onClose }: { item: FeedbackEntitySumm
 }
 
 function FeedbackEntityModalMetrics({ item }: { item: FeedbackEntitySummary }) {
+	const t = useTranslations();
+
 	return (
 		<Section gap="sm">
-			<Label size="sm" caps>Resumo</Label>
+			<Label size="sm" caps>{t('feedback.labels.summary')}</Label>
 			<div className={styles.feedbackEntityModalMetrics}>
 				<div className={styles.feedbackEntityModalMetric}>
-					<span className={styles.feedbackEntityModalMetricLabel}>Feedbacks</span>
+					<span className={styles.feedbackEntityModalMetricLabel}>{t('feedback.labels.feedbacks')}</span>
 					<FeedbackMetricTag label={item.count.toLocaleString('pt-PT')} />
 				</div>
 
 				<div className={styles.feedbackEntityModalMetric}>
-					<span className={styles.feedbackEntityModalMetricLabel}>Satisfação</span>
+					<span className={styles.feedbackEntityModalMetricLabel}>{t('feedback.labels.satisfaction')}</span>
 					<FeedbackMetricTag label={formatSatisfactionIndex(item.satisfactionIndex)} status={getFeedbackSatisfactionStatus(item.satisfactionIndex)} />
 				</div>
 			</div>

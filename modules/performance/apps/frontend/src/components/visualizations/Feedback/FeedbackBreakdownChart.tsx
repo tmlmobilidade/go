@@ -4,43 +4,64 @@
 
 /* * */
 
-import type { FeedbackLineContributionCategory, FeedbackLineContributionMeter } from '@/utils/feedback/feedback-line-contributions';
-
 import { formatSatisfactionIndex } from '@/utils/metrics/feedback-metrics';
 import { BarChart, Label, Section } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 
-import styles from '../styles.module.css';
+import styles from './styles.module.css';
 
 /* * */
 
-const LINE_CONTRIBUTION_CHART_HEIGHT = 220;
-const LINE_CONTRIBUTION_Y_AXIS_WIDTH = 56;
-const REASON_CHART_MIN_HEIGHT = 180;
-const REASON_CHART_ROW_HEIGHT = 44;
-const REASON_CHART_Y_AXIS_WIDTH = 180;
+interface FeedbackBreakdownReasonMeter {
+	id: string
+	label: string
+	value: number
+}
 
-/* * */
+interface FeedbackBreakdownMeter<Category extends string> {
+	id: Category
+	label: string
+	reasons: FeedbackBreakdownReasonMeter[]
+	selectable: boolean
+	value: number
+}
 
-interface LineContributionBreakdownProps {
+interface FeedbackBreakdownChartProps<Category extends string> {
+	categoryChartHeight: number
+	categoryYAxisWidth: number
+	compactButtons?: boolean
 	entityId: string
-	meters: FeedbackLineContributionMeter[]
+	hideWhenEmpty?: boolean
+	meters: FeedbackBreakdownMeter<Category>[]
+	reasonChartMinHeight: number
+	reasonChartRowHeight: number
+	reasonChartYAxisWidth: number
 }
 
 /* * */
 
-export function LineContributionBreakdown({ entityId, meters }: LineContributionBreakdownProps) {
+export function FeedbackBreakdownChart<Category extends string>({
+	categoryChartHeight,
+	categoryYAxisWidth,
+	compactButtons,
+	entityId,
+	hideWhenEmpty,
+	meters,
+	reasonChartMinHeight,
+	reasonChartRowHeight,
+	reasonChartYAxisWidth,
+}: FeedbackBreakdownChartProps<Category>) {
 	//
 	// A. Setup variables
 
 	const t = useTranslations();
-	const [selectedCategory, setSelectedCategory] = useState<FeedbackLineContributionCategory>();
+	const [selectedCategory, setSelectedCategory] = useState<Category>();
 
 	//
 	// B. Transform data
 
-	const lineContributionChartSeries = useMemo(() => [
+	const chartSeries = useMemo(() => [
 		{
 			color: 'var(--color-primary)',
 			label: t('feedback.labels.feedbacks'),
@@ -52,13 +73,15 @@ export function LineContributionBreakdown({ entityId, meters }: LineContribution
 		return meters.find(meter => meter.id === selectedCategory && meter.selectable);
 	}, [meters, selectedCategory]);
 
-	const chartData = meters.map(meter => ({
-		color: meter.id === selectedCategory ? 'var(--color-primary)' : 'var(--color-system-text-300)',
-		id: meter.id,
-		label: meter.label,
-		selectable: meter.selectable,
-		value: meter.value,
-	}));
+	const chartData = useMemo(() => {
+		return meters.map(meter => ({
+			color: meter.id === selectedCategory ? 'var(--color-primary)' : 'var(--color-system-text-300)',
+			id: meter.id,
+			label: meter.label,
+			selectable: meter.selectable,
+			value: meter.value,
+		}));
+	}, [meters, selectedCategory]);
 
 	const reasonChartData = selectedMeter?.reasons ?? [];
 
@@ -69,7 +92,7 @@ export function LineContributionBreakdown({ entityId, meters }: LineContribution
 		setSelectedCategory(undefined);
 	}, [entityId]);
 
-	const handleSelectCategory = (categoryId: FeedbackLineContributionCategory) => {
+	const handleSelectCategory = (categoryId: Category) => {
 		const chartItem = chartData.find(item => item.id === categoryId);
 
 		if (!chartItem?.selectable) return;
@@ -79,6 +102,8 @@ export function LineContributionBreakdown({ entityId, meters }: LineContribution
 	//
 	// D. Render components
 
+	if (hideWhenEmpty && meters.length === 0) return null;
+
 	return (
 		<Section gap="sm">
 			<Label size="sm" caps>{t('feedback.labels.points_to_improve')}</Label>
@@ -87,16 +112,16 @@ export function LineContributionBreakdown({ entityId, meters }: LineContribution
 					barChartProps={{ accessibilityLayer: false }}
 					data={chartData}
 					dataKey="label"
-					h={LINE_CONTRIBUTION_CHART_HEIGHT}
-					series={lineContributionChartSeries}
+					h={categoryChartHeight}
+					series={chartSeries}
 					valueFormatter={value => formatSatisfactionIndex(Number(value))}
 					valueLabelProps={{ fill: 'white', position: 'inside' }}
 					withXAxis={false}
 					withYAxis={true}
-					yAxisProps={{ domain: [0, 100], tickFormatter: value => formatSatisfactionIndex(Number(value)), width: LINE_CONTRIBUTION_Y_AXIS_WIDTH }}
+					yAxisProps={{ domain: [0, 100], tickFormatter: value => formatSatisfactionIndex(Number(value)), width: categoryYAxisWidth }}
 					withBarValueLabel
 				/>
-				<div className={styles.feedbackEntityModalContributionButtons}>
+				<div className={`${styles.feedbackEntityModalContributionButtons} ${compactButtons ? styles.feedbackEntityModalContributionButtonsCompact : ''}`}>
 					{chartData.map(chartItem => (
 						<button
 							key={chartItem.id}
@@ -119,15 +144,15 @@ export function LineContributionBreakdown({ entityId, meters }: LineContribution
 						barChartProps={{ accessibilityLayer: false }}
 						data={reasonChartData}
 						dataKey="label"
-						h={Math.max(REASON_CHART_MIN_HEIGHT, reasonChartData.length * REASON_CHART_ROW_HEIGHT)}
+						h={Math.max(reasonChartMinHeight, reasonChartData.length * reasonChartRowHeight)}
 						orientation="vertical"
-						series={lineContributionChartSeries}
+						series={chartSeries}
 						valueFormatter={value => formatSatisfactionIndex(Number(value))}
 						valueLabelProps={{ fill: 'var(--color-system-text-100)', position: 'right' }}
 						withXAxis={true}
 						withYAxis={true}
 						xAxisProps={{ domain: [0, 100], tickFormatter: value => formatSatisfactionIndex(Number(value)) }}
-						yAxisProps={{ width: REASON_CHART_Y_AXIS_WIDTH }}
+						yAxisProps={{ width: reasonChartYAxisWidth }}
 						withBarValueLabel
 					/>
 				</div>
