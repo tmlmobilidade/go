@@ -20,7 +20,7 @@ export async function cleanupOrphanRidesForPlan(planId: string, savedRideIds: Se
 	const timer = new Timer();
 
 	Logger.spacer(1);
-	Logger.info(`Starting cleanup of orphan Rides for Plan "${planId}"...`);
+	Logger.info({ message: `Starting cleanup of orphan Rides for Plan "${planId}"...` });
 
 	//
 	// Setup a stream for all Ride IDs that are in use by Rides
@@ -39,10 +39,10 @@ export async function cleanupOrphanRidesForPlan(planId: string, savedRideIds: Se
 
 	await performInChunks(Array.from(staleRideIds), async (chunk) => {
 		const deleteStaleRidesResult = await rides.deleteMany({ _id: { $in: chunk } });
-		Logger.info(`Deleted ${deleteStaleRidesResult.deletedCount} stale rides for plan "${planId}"`);
+		Logger.info({ message: `Deleted ${deleteStaleRidesResult.deletedCount} stale rides for plan "${planId}"` });
 	});
 
-	Logger.info(`Completed delete stale rides for plan "${planId}". (${timer.get()})`);
+	Logger.info({ message: `Completed delete stale rides for plan "${planId}". (${timer.get()})` });
 
 	//
 }
@@ -58,7 +58,7 @@ export async function cleanupOrphanRidesGlobally() {
 	const timer = new Timer();
 
 	Logger.spacer(1);
-	Logger.info(`Starting cleanup of orphan Rides...`);
+	Logger.info({ message: `Starting cleanup of orphan Rides...` });
 
 	const allPlansData = await plans.all();
 	const allPlanIds = allPlansData.map(plan => plan._id);
@@ -82,7 +82,7 @@ export async function cleanupOrphanHashedShapes() {
 	const timer = new Timer();
 
 	Logger.spacer(1);
-	Logger.info(`Starting cleanup of orphan Hashed Shapes...`);
+	Logger.info({ message: `Starting cleanup of orphan Hashed Shapes...` });
 
 	//
 	// Setup a stream for all Hashed Shape IDs that are in use by Rides
@@ -114,14 +114,14 @@ export async function cleanupOrphanHashedShapes() {
 
 	hashedShapeIdsInUse.forEach(hashedShapeIdInUse => orphanHashedShapeIds.delete(hashedShapeIdInUse));
 
-	Logger.info(`Hashed Shapes cleanup progress: In use: ${hashedShapeIdsInUse.size} | Orphan: ${orphanHashedShapeIds.size} (${timer.get()})`);
+	Logger.info({ message: `Hashed Shapes cleanup progress: In use: ${hashedShapeIdsInUse.size} | Orphan: ${orphanHashedShapeIds.size} (${timer.get()})` });
 
 	//
 	// Delete all orphan Hashed Shapes in chunks
 
 	await performInChunks(Array.from(orphanHashedShapeIds), async (chunk) => {
 		const result = await hashedShapes.deleteMany({ _id: { $in: chunk } });
-		Logger.info(`Deleted ${result.deletedCount} orphan Hashed Shapes.`);
+		Logger.info({ message: `Deleted ${result.deletedCount} orphan Hashed Shapes.` });
 	});
 
 	Logger.success(`Hashed Shapes cleanup complete. Deleted ${orphanHashedShapeIds.size} orphan Hashed Shapes. (${timer.get()})`);
@@ -140,7 +140,7 @@ export async function cleanupOrphanHashedTrips() {
 	const timer = new Timer();
 
 	Logger.spacer(1);
-	Logger.info(`Starting cleanup of orphan Hashed Trips...`);
+	Logger.info({ message: `Starting cleanup of orphan Hashed Trips...` });
 
 	//
 	// Setup a stream for all Hashed Trip IDs that are in use by Rides
@@ -172,14 +172,14 @@ export async function cleanupOrphanHashedTrips() {
 
 	hashedTripIdsInUse.forEach(hashedTripIdInUse => orphanHashedTripIds.delete(hashedTripIdInUse));
 
-	Logger.info(`Hashed Trips cleanup progress: In use: ${hashedTripIdsInUse.size} | Orphan: ${orphanHashedTripIds.size} (${timer.get()})`);
+	Logger.info({ message: `Hashed Trips cleanup progress: In use: ${hashedTripIdsInUse.size} | Orphan: ${orphanHashedTripIds.size} (${timer.get()})` });
 
 	//
 	// Delete all orphan Hashed Trips in chunks
 
 	await performInChunks(Array.from(orphanHashedTripIds), async (chunk) => {
 		const result = await hashedTrips.deleteMany({ _id: { $in: chunk } });
-		Logger.info(`Deleted ${result.deletedCount} orphan Hashed Trips.`);
+		Logger.info({ message: `Deleted ${result.deletedCount} orphan Hashed Trips.` });
 	});
 
 	Logger.success(`Hashed Trips cleanup complete. Deleted ${orphanHashedTripIds.size} orphan Hashed Trips. (${timer.get()})`);
@@ -198,7 +198,7 @@ export async function cleanupOrphanHashedPatterns() {
 	const timer = new Timer();
 
 	Logger.spacer(1);
-	Logger.info(`Starting cleanup of orphan Hashed Patterns...`);
+	Logger.info({ message: `Starting cleanup of orphan Hashed Patterns...` });
 
 	//
 	// Setup a stream for all Hashed Pattern IDs that are in use by Rides
@@ -230,14 +230,14 @@ export async function cleanupOrphanHashedPatterns() {
 
 	hashedPatternIdsInUse.forEach(hashedPatternIdInUse => orphanHashedPatternIds.delete(hashedPatternIdInUse));
 
-	Logger.info(`Hashed Patterns cleanup progress: In use: ${hashedPatternIdsInUse.size} | Orphan: ${orphanHashedPatternIds.size} (${timer.get()})`);
+	Logger.info({ message: `Hashed Patterns cleanup progress: In use: ${hashedPatternIdsInUse.size} | Orphan: ${orphanHashedPatternIds.size} (${timer.get()})` });
 
 	//
 	// Delete all orphan Hashed Patterns in chunks
 
 	await performInChunks(Array.from(orphanHashedPatternIds), async (chunk) => {
 		const result = await hashedPatterns.deleteMany({ _id: { $in: chunk } });
-		Logger.info(`Deleted ${result.deletedCount} orphan Hashed Patterns.`);
+		Logger.info({ message: `Deleted ${result.deletedCount} orphan Hashed Patterns.` });
 	});
 
 	Logger.success(`Hashed Patterns cleanup complete. Deleted ${orphanHashedPatternIds.size} orphan Hashed Patterns. (${timer.get()})`);

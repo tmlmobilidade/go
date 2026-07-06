@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+piper-tts==1.2.0
+soundfile
+numpy

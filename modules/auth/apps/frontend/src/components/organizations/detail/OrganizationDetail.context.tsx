@@ -121,6 +121,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 
 		const response = await fetch(API_ROUTES.auth.ORGANIZATIONS_DETAIL_IMAGE(organizationId), {
 			body: formData,
+			credentials: 'include',
 			method: 'POST',
 		});
 

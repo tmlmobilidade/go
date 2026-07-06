@@ -22,15 +22,15 @@ export const syncDemandByProductByLineByMonth = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
 	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch existing daily metrics collection (more efficient than raw validations)
 
 	const metricsCollection = await metrics.getCollection();
-	Logger.info('Using daily metrics for aggregation (optimized approach)');
+	Logger.info({ message: 'Using daily metrics for aggregation (optimized approach)' });
 
 	//
 	// Define monthly chunks
@@ -113,7 +113,7 @@ export const syncDemandByProductByLineByMonth = async () => {
 				},
 			]).toArray();
 
-			Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Aggregated ${monthlyAgg.length} product-line combinations from daily metrics (${chunkTimer.get()})`);
+			Logger.info({ message: `Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Aggregated ${monthlyAgg.length} product-line combinations from daily metrics (${chunkTimer.get()})` });
 			return monthlyAgg;
 		}),
 	);

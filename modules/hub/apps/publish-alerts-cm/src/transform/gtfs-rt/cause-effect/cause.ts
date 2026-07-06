@@ -12,7 +12,7 @@ export function transformCause(alertData: Alert): GtfsRtCause {
 	// Validate required input properties
 
 	if (!alertData.cause) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert cause is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert cause is missing.` });
 		return 'UNKNOWN_CAUSE';
 	}
 

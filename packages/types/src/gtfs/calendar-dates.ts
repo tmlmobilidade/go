@@ -1,6 +1,6 @@
 /* * */
 
-import { type OperationalDate, validateOperationalDate } from '@/_common/operational-date.js';
+import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Represents the type of exception for a service

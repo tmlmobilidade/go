@@ -41,6 +41,14 @@ export function RuleCreateBasicInfo() {
 		createRuleContext.data.form.setFieldValue(field, formattedValue);
 	};
 
+	const handleToggleAllDay = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const enabled = e.currentTarget.checked;
+
+		createRuleContext.data.form.setFieldValue('all_day', enabled);
+		createRuleContext.data.form.setFieldValue('start_time', (enabled ? '04:00' : '') as HHMM);
+		createRuleContext.data.form.setFieldValue('end_time', (enabled ? '29:59' : '') as HHMM);
+	};
+
 	//
 	// C. Render components
 
@@ -122,6 +130,7 @@ export function RuleCreateBasicInfo() {
 						key={createRuleContext.data.form.key('all_day')}
 						label="Evento de dia completo"
 						{...createRuleContext.data.form.getInputProps('all_day', { type: 'checkbox' })}
+						onChange={handleToggleAllDay}
 					/>
 
 					{createRuleContext.data.form.values.kind === 'event_restriction' && !createRuleContext.data.form.values.all_day && (

@@ -17,5 +17,5 @@ export async function exportAgencyFile(planData: Plan, exportConfig: ExportToHit
 
 	await agencyCsv.flush();
 
-	Logger.info('Exported agency.txt file.');
+	Logger.info({ message: 'Exported agency.txt file.' });
 }

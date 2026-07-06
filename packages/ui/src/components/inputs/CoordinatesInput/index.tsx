@@ -1,189 +1,190 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { clampCoordinate } from '@tmlmobilidade/geo';
+import { type ClipboardEvent, type FocusEvent, useCallback, useEffect, useRef, useState } from 'react';
 
 import { Description } from '../../common';
-import { Label } from '../../display';
+import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
 import { NumberInput } from '../NumberInput';
 
-/* * */
+/**
+ * Type alias for a tuple representing latitude and longitude coordinates.
+ * Each value can be a number or undefined.
+ */
+type Coords = [number | undefined, number | undefined];
 
-const clamp = (val: number, min: number, max: number) => Math.min(Math.max(val, min), max);
+/**
+ * Type alias for raw input values which can be null, number, string, or undefined.
+ */
+type Raw = null | number | string | undefined;
 
-/* * */
+/**
+ * Returns a copy of the given coordinates tuple with the specified index (0 = lat, 1 = lng) patched to the new value.
+ * @param coords The original coordinates tuple.
+ * @param index 0 for latitude, 1 for longitude.
+ * @param value The new value to insert.
+ * @returns A new coordinates tuple with the patched value.
+ */
+const patch = (coords: Coords, index: 0 | 1, value: number | undefined): Coords =>
+	index === 0 ? [value, coords[1]] : [coords[0], value];
+
+/**
+ * Attempts to parse a raw value (string, number, or null/undefined) as a finite number.
+ * Returns undefined if the value cannot be reliably converted to a number.
+ * @param raw The raw value to parse.
+ * @returns The parsed number if valid, otherwise undefined.
+ */
+const parseRaw = (raw: Raw): number | undefined => {
+	if (raw === '' || raw == null) return undefined;
+	const n = typeof raw === 'number' ? raw : Number(raw);
+	return Number.isFinite(n) ? n : undefined;
+};
+
+/**
+ * Attempts to split a pasted text string into two coordinate parts.
+ * Accepts tab or comma delimiters and trims whitespace.
+ * Returns a tuple if two valid parts are found, otherwise null.
+ *
+ * @param text The pasted string.
+ * @returns A tuple of [latitude, longitude] as strings, or null if not a valid format.
+ */
+const splitPastedCoords = (text: string): [string, string] | null => {
+	const trimmed = text.trim();
+	const separator = trimmed.includes('\t') ? '\t' : trimmed.includes(',') ? ',' : null;
+	if (!separator) return null;
+
+	const parts = trimmed.split(separator).map(part => part.trim()).filter(Boolean);
+	return parts.length === 2 ? [parts[0], parts[1]] : null;
+};
+
+/**
+ * Rounds/clamps a coordinate using clampCoordinate helper.
+ * Returns the rounded number or undefined if the input is undefined or the clamp returns nullish.
+ * @param value The coordinate value to round/clamp.
+ * @returns The rounded value or undefined.
+ */
+const roundCoord = (value: number | undefined): number | undefined => {
+	if (value === undefined) return undefined;
+	const rounded = clampCoordinate(value);
+	return rounded ?? undefined;
+};
+
+/**
+ * Applies coordinate rounding/clamping to both latitude and longitude in a tuple.
+ * @param coords The coordinates tuple.
+ * @returns A new tuple with each coordinate rounded/clamped.
+ */
+const roundCoords = (coords: Coords): Coords => [
+	roundCoord(coords[0]),
+	roundCoord(coords[1]),
+];
 
 interface CoordinatesInputProps {
-	defaultValue?: [number, number]
 	description?: string
 	disabled?: boolean
-	/**
-	 * The `key` prop is required to ensure correct re-mounting behavior.
-	 * Use the `form.key('fieldName')` method to generate a unique key based on the form state.
-	 */
-	key: string
 	label?: string
-	onChange?: (changed: [number, number]) => void
+	onChange?: (changed: Coords | undefined) => void
 	onPaste?: (pastedValues: string[]) => void
-	value?: [number, number]
+	value?: Coords | undefined
 }
 
 /**
- * CoordinatesInput is a composite input component for latitude and longitude coordinates.
- *
- * - Accepts both controlled (`value`) and uncontrolled (`defaultValue`) usage.
- * - Supports validation and clamping: latitude is restricted to -90..90, longitude to -180..180.
- * - Handles paste events for quickly populating fields from clipboard (CSV or space-separated).
- *
- * Props:
- *   - defaultValue?: [number, number] — Initial value if uncontrolled.
- *   - description?: string — Optional field description.
- *   - disabled?: boolean — Disables both input fields.
- *   - key: string — Unique key (required for correct re-mounting in forms).
- *   - label?: string — Field label (defaults to "Coordenadas").
- *   - onChange?: (changed: [number, number]) => void — Called when coordinates are changed.
- *   - onPaste?: (pastedValues: string[]) => void — Called when user pastes data.
- *   - value?: [number, number] — Controlled value.
- *
- * Usage:
- *   <CoordinatesInput
- *     label="Coordenadas"
- *     value={[38.7, -9.2]}
- *     onChange={handleCoords}
- *   />
+ * Composite input for latitude/longitude coordinates.
+ * Supports controlled and uncontrolled usage, rounds committed values to 6 decimals,
+ * and keeps permissive numeric behavior for typed/pasted input.
  */
-export function CoordinatesInput({
-	defaultValue,
-	description,
-	disabled = false,
-	label = 'Coordenadas',
-	onChange,
-	onPaste,
-	value,
-}: CoordinatesInputProps) {
+export function CoordinatesInput({ description, disabled = false, label, onChange, onPaste, value }: CoordinatesInputProps) {
+	//
+
 	//
 	// A. Setup variables
 
-	/**
-	 * Store current Latitude and Longitude tuple.
-	 * Priority: controlled `value` > uncontrolled `defaultValue` > fallback [0, 0].
-	 */
-	const [coordinates, setCoordinates] = useState<[number, number]>(defaultValue ?? value ?? [0, 0]);
+	const initial = value ?? [undefined, undefined];
+	const draftRef = useRef<Coords>(initial);
+	const inputsRef = useRef<HTMLDivElement>(null);
+	const isEditingRef = useRef(false);
+	const [coords, setCoords] = useState<Coords>(initial);
 
 	//
-	// B. Setup effects & callbacks
+	// B. Handle effects
 
-	/**
-	 * Keeps state in sync with external (controlled) `value` prop.
-	 */
 	useEffect(() => {
-		if (value && (value[0] !== coordinates[0] || value[1] !== coordinates[1])) {
-			setCoordinates(value);
-		}
-	}, [coordinates, value]);
+		if (isEditingRef.current) return;
 
-	/**
-	 * Helper to update coordinates and propagate via onChange.
-	 */
-	const updateCoordinates = useCallback((newCoords: [number, number]) => {
-		setCoordinates(newCoords);
-		onChange?.(newCoords);
+		const next = value ?? [undefined, undefined];
+		if (next[0] === draftRef.current[0] && next[1] === draftRef.current[1]) return;
+
+		draftRef.current = next;
+		setCoords(next);
+	}, [value]);
+
+	//
+	// C. Handle actions
+
+	const updateCoords = (next: Coords) => {
+		draftRef.current = next;
+		setCoords(next);
+	};
+
+	const handleFocus = useCallback(() => {
+		isEditingRef.current = true;
+	}, []);
+
+	const handleChange = (index: 0 | 1, raw: Raw) => {
+		updateCoords(patch(draftRef.current, index, parseRaw(raw)));
+	};
+
+	const handleBlur = useCallback((event: FocusEvent<HTMLInputElement>) => {
+		const nextTarget = event.relatedTarget;
+		if (nextTarget instanceof Node && inputsRef.current?.contains(nextTarget)) return;
+
+		isEditingRef.current = false;
+
+		const rounded = roundCoords(draftRef.current);
+		updateCoords(rounded);
+		onChange?.(rounded);
 	}, [onChange]);
 
-	//
-	// C. Handle paste and blur actions
+	const handlePaste = useCallback((event: ClipboardEvent<HTMLInputElement>) => {
+		const parts = splitPastedCoords(event.clipboardData.getData('text'));
+		if (!parts) return;
 
-	/**
-	 * Paste handler: supports format "lat,lng" or "lat lng", with optional whitespace,
-	 * clamps and updates both values if valid. Optionally calls `onPaste`.
-	 */
-	const handlePaste = useCallback(
-		(event: React.ClipboardEvent<HTMLInputElement>) => {
-			event.preventDefault();
-			const pastedText = event.clipboardData.getData('text').trim();
-			if (!pastedText) return;
+		event.preventDefault();
 
-			const pastedValues = pastedText
-				.split(/[, ]+/)
-				.map(val => val.trim())
-				.filter(val => val.length > 0);
-
-			onPaste?.(pastedValues);
-
-			if (pastedValues.length >= 2) {
-				const lat = Number(pastedValues[0]);
-				const lng = Number(pastedValues[1]);
-
-				if (!isNaN(lat) && !isNaN(lng)) {
-					const clampedLat = clamp(lat, -90, 90);
-					const clampedLng = clamp(lng, -180, 180);
-					updateCoordinates([clampedLat, clampedLng]);
-				}
-			}
-		},
-		[updateCoordinates, onPaste],
-	);
-
-	/**
-	 * Called on blur (focus out) of either input field; clamps entered value into valid range.
-	 * @param index 0 for Latitude, 1 for Longitude
-	 */
-	const handleBlur = useCallback(
-		(index: number) => {
-			const clampedValue = index === 0 ? clamp(coordinates[0], -90, 90) : clamp(coordinates[1], -180, 180);
-
-			if (coordinates[index] !== clampedValue) {
-				const newCoords: [number, number] =
-					index === 0 ? [clampedValue, coordinates[1]] : [coordinates[0], clampedValue];
-				updateCoordinates(newCoords);
-			}
-		},
-		[coordinates, updateCoordinates],
-	);
+		updateCoords([parseRaw(parts[0]), parseRaw(parts[1])]);
+		onPaste?.(parts);
+	}, [onPaste]);
 
 	//
-	// D. Render UI
+	// D. Render components
 
 	return (
 		<Section flexDirection="column" gap="xs" padding="none">
-			<Label>{label}</Label>
+			{label && <Label>{label}</Label>}
 			{description && <Description>{description}</Description>}
-			<Section flexDirection="row" gap="sm" padding="none">
-				{/* Latitude input */}
+			<div ref={inputsRef} data-coordinates-input="" style={{ display: 'flex', flex: 1, gap: 'var(--size-spacing-sm)', width: '100%' }}>
 				<NumberInput
-					key="lat"
 					disabled={disabled}
-					onBlur={() => handleBlur(0)}
+					onBlur={handleBlur}
+					onChange={value => handleChange(0, value)}
+					onFocus={handleFocus}
 					onPaste={handlePaste}
 					placeholder="Latitude (-90 to 90)"
-					step={0.000001}
 					style={{ flex: 1 }}
-					value={coordinates[0] === 0 && coordinates[1] === 0 ? '' : coordinates[0]}
-					onChange={(val) => {
-						const newLat = Number(val);
-						if (!isNaN(newLat)) {
-							updateCoordinates([newLat, coordinates[1]]);
-						}
-					}}
+					value={coords[0] ?? ''}
 				/>
-				{/* Longitude input */}
 				<NumberInput
-					key="lon"
 					disabled={disabled}
-					onBlur={() => handleBlur(1)}
+					onBlur={handleBlur}
+					onChange={value => handleChange(1, value)}
+					onFocus={handleFocus}
 					onPaste={handlePaste}
 					placeholder="Longitude (-180 to 180)"
-					step={0.000001}
 					style={{ flex: 1 }}
-					value={coordinates[0] === 0 && coordinates[1] === 0 ? '' : coordinates[1]}
-					onChange={(val) => {
-						const newLng = Number(val);
-						if (!isNaN(newLng)) {
-							updateCoordinates([coordinates[0], newLng]);
-						}
-					}}
+					value={coords[1] ?? ''}
 				/>
-			</Section>
+			</div>
 		</Section>
 	);
 }

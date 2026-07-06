@@ -1,5 +1,5 @@
 import { type Line } from '@carrismetropolitana/api-types/network';
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { files } from '@tmlmobilidade/interfaces';
 import { type ServiceAlertResponseItem } from '@tmlmobilidade/types';
 import { Alert, File } from '@tmlmobilidade/types';
@@ -24,8 +24,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 								route_id: route_id,
 							};
 							informed_entity.push(entity);
-						}
-						else {
+						} else {
 							reference.child_ids.forEach((child_id) => {
 								const entity = {
 									route_id: route_id,
@@ -53,8 +52,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 						informed_entity.push({
 							stop_id: reference.parent_id,
 						});
-					}
-					else {
+					} else {
 						reference.child_ids.forEach((child_id) => {
 							for (const route_id of lines.find(line => line.id === child_id)?.route_ids ?? []) {
 								informed_entity.push({
@@ -76,8 +74,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 	let file: File | null = null;
 	try {
 		file = await files.findById(alert.file_id);
-	}
-	catch (error) {
+	} catch (error) {
 		console.error(error);
 	}
 

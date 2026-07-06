@@ -2,7 +2,8 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { closeCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
-import { CloseButton, DeleteButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { IconCopy } from '@tabler/icons-react';
+import { CloseButton, DeleteButton, IconButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -24,8 +25,21 @@ export function RuleCreateHeader() {
 
 			<Spacer />
 
+			{ruleCreateContext.flags.isEditing && ruleCreateContext.actions.duplicateRule && (
+				<IconButton
+					icon={<IconCopy size={20} />}
+					onClick={ruleCreateContext.actions.duplicateRule}
+					tooltip="Duplicar"
+				/>
+			)}
+
 			{ruleCreateContext.flags.isEditing && ruleCreateContext.actions.deleteRule && (
-				<DeleteButton onDelete={ruleCreateContext.actions.deleteRule} />
+				<DeleteButton
+					confirmMessage="Tem a certeza que deseja apagar esta regra? Esta ação não pode ser revertida."
+					confirmTitle="Apagar Regra"
+					onDelete={ruleCreateContext.actions.deleteRule}
+					showConfirmation
+				/>
 			)}
 
 		</Toolbar>

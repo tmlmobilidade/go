@@ -68,7 +68,7 @@ export function toFeatureFromObject<T extends LineString | Point | Polygon>(obje
 export function toMetersFromKilometersOrMeters(value: number | string, ballpark: number | string): number {
 	//
 
-	const BALLPARK_THRESHOLD = 800; // meters
+	const ballparkThreshold = 800; // meters
 
 	const valueAsNumber = Number(value);
 	const ballparkAsNumber = Number(ballpark);
@@ -80,7 +80,7 @@ export function toMetersFromKilometersOrMeters(value: number | string, ballpark:
 	// Otherwise, the value is in kilometers. This is because it is unlikely
 	// that a trip will be smaller than 800 meters, and longer than 800 kilometers.
 
-	if (ballparkAsNumber > BALLPARK_THRESHOLD) {
+	if (ballparkAsNumber > ballparkThreshold) {
 		return valueAsNumber;
 	}
 

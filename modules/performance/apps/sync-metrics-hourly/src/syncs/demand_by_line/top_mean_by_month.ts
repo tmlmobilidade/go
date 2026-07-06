@@ -21,7 +21,7 @@ import { Metric } from '@tmlmobilidade/types';
 const getAllMonthsFromMetrics = async (metricName: Metric['metric']): Promise<string[]> => {
 	//
 
-	Logger.info(`Fetching all months from metric '${metricName}'...`);
+	Logger.info({ message: `Fetching all months from metric '${metricName}'...` });
 
 	const metricsCollection = await metrics.getCollection();
 
@@ -45,7 +45,7 @@ const getAllMonthsFromMetrics = async (metricName: Metric['metric']): Promise<st
 	const allMonths = Array.from(monthsSet).sort();
 
 	Logger.info(
-		`Found ${allMonths.length} unique months from ${docsCount} documents of '${metricName}'.`,
+		{ message: `Found ${allMonths.length} unique months from ${docsCount} documents of '${metricName}'.` },
 	);
 
 	Logger.divider();
@@ -80,9 +80,9 @@ export const computeTopMeanDemandByLineByMonth = async () => {
 	const metricsCollection = await metrics.getCollection();
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
 	await metricsCollection.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics (${deleteTimer.get()})`);
+	Logger.info({ message: `Cleared existing metrics (${deleteTimer.get()})` });
 
 	Logger.divider();
 
@@ -224,7 +224,7 @@ const topMeanDemandByLineForMonth = async (yearMonth: string, METRIC: string) =>
 
 	await metrics.insertOne(result);
 
-	Logger.info(`Computed TopMeanDemandByLineByMonth for ${yearMonth} in ${globalTimer.get()}`);
+	Logger.info({ message: `Computed TopMeanDemandByLineByMonth for ${yearMonth} in ${globalTimer.get()}` });
 };
 
 //

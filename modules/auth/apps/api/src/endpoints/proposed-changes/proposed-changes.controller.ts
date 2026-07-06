@@ -16,6 +16,9 @@ export class ProposedChangesController {
 	static async create(request: FastifyRequest, reply: FastifyReply<ProposedChange<any>>) {
 		const data = request.body as ProposedChange<any>;
 		const result = await proposedChanges.insertOne({ ...data, created_by: request.me._id, updated_by: request.me._id });
+		if (!result) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating proposed change');
+		}
 
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
@@ -27,8 +30,10 @@ export class ProposedChangesController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		await proposedChanges.deleteById(id);
-
+		const result = await proposedChanges.deleteById(id);
+		if (!result) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error deleting proposed change');
+		}
 		reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -42,6 +47,9 @@ export class ProposedChangesController {
 			sort: { created_at: -1 },
 		});
 
+		if (!data) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting proposed changes');
+		}
 		reply.send({ data: await enrichUserRefs(data), error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -54,8 +62,9 @@ export class ProposedChangesController {
 		const { id } = request.params;
 		const proposedChange = await proposedChanges.findById(id);
 
-		if (!proposedChange) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Proposed Change not found');
-
+		if (!proposedChange) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Proposed Change not found');
+		}
 		reply.send({ data: await enrichUserRefs(proposedChange), error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -67,6 +76,9 @@ export class ProposedChangesController {
 	static async update(request: FastifyRequest<{ Body: UpdateProposedChangeDto<any>, Params: { id: string } }>, reply: FastifyReply<ProposedChange<any>>) {
 		const { id } = request.params;
 		const data = await proposedChanges.updateById(id, request.body);
+		if (!data) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error updating proposed change');
+		}
 
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}

@@ -49,7 +49,7 @@ export class PCGIRawClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('[PCGIRawClient] Connecting to database...');
+		Logger.info({ message: '[PCGIRawClient] Connecting to database...' });
 		const connectionString = await this.getConnectionString();
 		this.client = new MongoClient(connectionString, {
 			connectTimeoutMS: 10_000,
@@ -63,28 +63,28 @@ export class PCGIRawClient {
 			serverSelectionTimeoutMS: 10_000,
 		});
 		this.client.on('connectionPoolCreated', () => {
-			Logger.info('[PCGIRawClient] Database connection pool created.');
+			Logger.info({ message: '[PCGIRawClient] Database connection pool created.' });
 		});
 		this.client.on('topologyDescriptionChanged', () => {
-			Logger.info('[PCGIRawClient] Database topology description changed.');
+			Logger.info({ message: '[PCGIRawClient] Database topology description changed.' });
 		});
 		this.client.on('serverDescriptionChanged', () => {
-			Logger.info('[PCGIRawClient] Database server description changed.');
+			Logger.info({ message: '[PCGIRawClient] Database server description changed.' });
 		});
 		this.client.on('open', () => {
-			Logger.info('[PCGIRawClient] Database connection opened.');
+			Logger.info({ message: '[PCGIRawClient] Database connection opened.' });
 		});
 		this.client.on('connectionReady', () => {
-			Logger.info('[PCGIRawClient] Database connection is ready.');
+			Logger.info({ message: '[PCGIRawClient] Database connection is ready.' });
 		});
 		this.client.on('close', () => {
-			Logger.error('[PCGIRawClient] Database connection closed unexpectedly.');
+			Logger.error({ message: '[PCGIRawClient] Database connection closed unexpectedly.' });
 		});
 		this.client.on('reconnect', () => {
-			Logger.info('[PCGIRawClient] Database reconnected.');
+			Logger.info({ message: '[PCGIRawClient] Database reconnected.' });
 		});
 		this.client.on('error', (error) => {
-			Logger.error('[PCGIRawClient] Database connection error:', error);
+			Logger.error({ error, message: '[PCGIRawClient] Database connection error:' });
 		});
 		await this.client.connect();
 	}
@@ -147,12 +147,12 @@ export class PCGIRawClient {
 				port: Number(process.env.PCGI_RAW_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
-				agent: process.env.PCGI_RAW_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
+				agent: (process.env.PCGI_RAW_TUNNEL_SSH_KEY_PATH || process.env.PCGI_RAW_TUNNEL_SSH_KEY) ? undefined : process.env.SSH_AUTH_SOCK,
 				host: process.env.PCGI_RAW_TUNNEL_SSH_HOST,
 				keepaliveCountMax: 3,
 				keepaliveInterval: 10_000,
 				port: 22,
-				privateKey: process.env.PCGI_RAW_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.PCGI_RAW_TUNNEL_SSH_KEY_PATH) : undefined,
+				privateKey: process.env.PCGI_RAW_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.PCGI_RAW_TUNNEL_SSH_KEY_PATH) : process.env.PCGI_RAW_TUNNEL_SSH_KEY ? process.env.PCGI_RAW_TUNNEL_SSH_KEY : undefined,
 				username: process.env.PCGI_RAW_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
@@ -167,7 +167,7 @@ export class PCGIRawClient {
 
 		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
-		Logger.info('[PCGIRawClient] Setting up SSH Tunnel...');
+		Logger.info({ message: '[PCGIRawClient] Setting up SSH Tunnel...' });
 
 		const connection = await this.tunnel.connect();
 		const addr = connection.address();

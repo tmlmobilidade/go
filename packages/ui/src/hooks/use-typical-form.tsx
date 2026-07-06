@@ -1,7 +1,6 @@
 'use client';
 
 import { type FormErrors, useForm, type UseFormReturnType } from '@mantine/form';
-import { Logger } from '@tmlmobilidade/logger';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { useEffect } from 'react';
 import { type Schema } from 'zod';
@@ -61,7 +60,7 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 		form.setValues(apiData);
 		form.validate();
 		form.resetDirty();
-		Logger.success(`[${apiData._id}] Form initialized with values from API.`);
+		console.info(`[${apiData._id}] Form initialized with values from API.`);
 	}, [apiData]);
 
 	//

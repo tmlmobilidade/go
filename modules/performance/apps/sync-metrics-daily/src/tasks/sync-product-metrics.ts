@@ -34,9 +34,8 @@ export const syncProductMetrics = async (): Promise<void> => {
 		await syncDemandByProductByPatternByYear();
 
 		Logger.success(`Finished Product Demand Metrics Sync (${timer.get()})`);
-	}
-	catch (error) {
-		Logger.error('Failed to sync Product Demand Metrics');
+	} catch (error) {
+		Logger.error({ message: 'Failed to sync Product Demand Metrics' });
 		Logger.error(error);
 		throw error;
 	}

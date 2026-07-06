@@ -13,13 +13,14 @@ import { Label } from '../../display/Label';
 
 export interface CommentItemFieldProps {
 	comment: FieldChangedComment
+	loading?: boolean
 	onRevert?: (changes: Record<string, unknown>) => void
 	reverse?: boolean
 }
 
 /* * */
 
-export function CommentItemField({ comment, onRevert, reverse }: CommentItemFieldProps) {
+export function CommentItemField({ comment, loading, onRevert, reverse }: CommentItemFieldProps) {
 	//
 
 	//
@@ -77,6 +78,7 @@ export function CommentItemField({ comment, onRevert, reverse }: CommentItemFiel
 				{onRevert && isMultipleFields && (
 					<IconButton
 						icon={<IconRestore size={16} />}
+						isLoading={loading}
 						onClick={handleRevert}
 						tooltip="Reverter"
 						variant="muted"

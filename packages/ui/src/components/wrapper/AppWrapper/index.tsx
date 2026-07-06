@@ -7,7 +7,7 @@ import styles from './styles.module.css';
 import { useLayoutContext } from '../../../contexts/Layout.context';
 import { useUserPreference } from '../../../hooks/use-user-preference';
 import { Sidebar } from '../../sidebar/Sidebar';
-import { clampSidebarRailWidth, SIDEBAR_RAIL_WIDTH_DEFAULT } from '../../sidebar/sidebar-rail-width';
+import { clampSidebarRailWidth, SIDEBAR_RAIL_WIDTH_DEFAULT } from '../../sidebar/sidebar-layout.constants';
 
 /* * */
 

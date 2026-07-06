@@ -1,10 +1,10 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
 import { GtfsAgencySchema } from '@/gtfs/agency.js';
 import { GtfsFeedInfoSchema } from '@/gtfs/feed-info.js';
 import { PlanAppStatusSchema } from '@/plans/plan-app-status.js';
 import { PlanPcgiLegacySchema } from '@/plans/plan-pcgi-legacy.js';
+import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

@@ -24,6 +24,10 @@
 	--spacer-size: var(--size-spacing-sm);
 }
 
+.container[data-size="xs"] {
+	--spacer-size: var(--size-spacing-xs);
+}
+
 /* * */
 /* PROPS / ORIENTATION */
 

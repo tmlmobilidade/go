@@ -2,16 +2,13 @@
 
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { decodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
+import { externalClients } from '@tmlmobilidade/external';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, type RawVehicleEventMobiV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
-
-/* * */
-
-const API_URL = 'https://cascais-rt.trenmo.com/api/v1/key/fcba5b10/agency/2/command/gtfs-rt/vehiclePositions';
 
 /* * */
 
@@ -22,6 +19,18 @@ let ITERATION = 0;
 const main = async () => {
 	//
 
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'mobi-fetch', message: 'Sentry Tracker MOBI Fetch initialized', module: 'tracker', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Tracker MOBI Fetch' });
+	}
+
+	//
+	// Initialize the timer
+
 	const timer = new Timer();
 
 	let saveCount = 0;
@@ -29,17 +38,11 @@ const main = async () => {
 	//
 	// Fetch the MOBI Vehicle Events data from the API and decode it
 
-	Logger.info(`[${ITERATION}] Fetching MOBI data from API...`, 0, 1);
+	Logger.info({ message: `[${ITERATION}] Fetching MOBI data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
-	const response = await fetch(API_URL, {
-		headers: {
-			Authorization: `Basic ${Buffer.from(`${process.env.TRACKER_MOBI_API_USERNAME}:${process.env.TRACKER_MOBI_API_PASSWORD}`).toString('base64')}`,
-		},
-	});
-	const arrayBuffer = await response.arrayBuffer();
-	const decodedMessage = await decodeGtfsRtFeed(arrayBuffer);
+	const decodedMessage = await externalClients.mobi.vehiclePositions();
 
-	Logger.info(`[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the MOBI data.`);
+	Logger.info({ message: `[${ITERATION}] Found ${decodedMessage.entity?.length ?? 0} Vehicle Events in the MOBI data.` });
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -101,7 +104,7 @@ const main = async () => {
 		//
 	}
 
-	Logger.info(`[${ITERATION}] Saved ${saveCount} new Vehicle Events from MOBI data in ${timer.get()}.`);
+	Logger.info({ message: `[${ITERATION}] Saved ${saveCount} new Vehicle Events from MOBI data in ${timer.get()}.` });
 
 	ITERATION++;
 

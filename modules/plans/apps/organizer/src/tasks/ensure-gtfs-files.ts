@@ -17,7 +17,7 @@ import Papa from 'papaparse';
 export async function ensureGtfsFiles() {
 	//
 
-	Logger.info('Task disabled.');
+	Logger.info({ message: 'Task disabled.' });
 	return;
 
 	Logger.init();
@@ -29,18 +29,18 @@ export async function ensureGtfsFiles() {
 	for (const planData of allPlans) {
 		//
 
-		Logger.info(`Processing plan ${planData._id}`);
+		Logger.info({ message: `Processing plan ${planData._id}` });
 
 		//
 		// Check if plan has necessary data
 
 		if (!planData.operation_file_id) {
-			Logger.error(`[${planData._id}] No Operation file ID found.`);
+			Logger.error({ message: `[${planData._id}] No Operation file ID found.` });
 			continue;
 		}
 
 		if (!planData.gtfs_feed_info.feed_start_date && !planData.gtfs_feed_info.feed_end_date) {
-			Logger.error(`[${planData._id}] Plan has no start and end dates.`);
+			Logger.error({ message: `[${planData._id}] Plan has no start and end dates.` });
 			continue;
 		}
 
@@ -51,7 +51,7 @@ export async function ensureGtfsFiles() {
 
 		const operationFileZipInstance = await Files.unzip(operationFileData.url);
 
-		Logger.info(`[${planData._id}] Operation file "${operationFileData._id}" downloaded and unzipped.`);
+		Logger.info({ message: `[${planData._id}] Operation file "${operationFileData._id}" downloaded and unzipped.` });
 
 		//
 		// Prepare the output agency.txt file with cleaned data from the plan document
@@ -62,7 +62,7 @@ export async function ensureGtfsFiles() {
 		const foundAgencyData = await agencies.findById(planData.gtfs_agency.agency_id);
 
 		if (!foundAgencyData) {
-			Logger.error(`[${planData._id}] No agency found with ID ${planData.gtfs_agency.agency_id}.`);
+			Logger.error({ message: `[${planData._id}] No agency found with ID ${planData.gtfs_agency.agency_id}.` });
 			continue;
 		}
 
@@ -82,15 +82,14 @@ export async function ensureGtfsFiles() {
 		const originalAgencyTxtString = await operationFileZipInstance.file('agency.txt').async('string');
 
 		operationFileZipInstance.file('agency.txt', updateAgencyTxtString);
-		Logger.info(`[${planData._id}] agency.txt file updated.`);
+		Logger.info({ message: `[${planData._id}] agency.txt file updated.` });
 
 		if (originalAgencyTxtString !== updateAgencyTxtString) {
 			agencyTxtChanged = true;
 			operationFileZipInstance.file('agency.txt', updateAgencyTxtString);
-			Logger.info(`[${planData._id}] agency.txt file updated.`);
-		}
-		else {
-			Logger.info(`[${planData._id}] agency.txt file is already up to date.`);
+			Logger.info({ message: `[${planData._id}] agency.txt file updated.` });
+		} else {
+			Logger.info({ message: `[${planData._id}] agency.txt file is already up to date.` });
 		}
 
 		//
@@ -118,10 +117,9 @@ export async function ensureGtfsFiles() {
 		if (originalFeedInfoTxtString !== updatedFeedInfoTxtString) {
 			feedInfoTxtChanged = true;
 			operationFileZipInstance.file('feed_info.txt', updatedFeedInfoTxtString);
-			Logger.info(`[${planData._id}] feed_info.txt file updated.`);
-		}
-		else {
-			Logger.info(`[${planData._id}] feed_info.txt file is already up to date.`);
+			Logger.info({ message: `[${planData._id}] feed_info.txt file updated.` });
+		} else {
+			Logger.info({ message: `[${planData._id}] feed_info.txt file is already up to date.` });
 		}
 
 		//
@@ -132,7 +130,7 @@ export async function ensureGtfsFiles() {
 		if (agencyTxtChanged || feedInfoTxtChanged === false) {
 			const updatedOperationFileArrayBuffer = await operationFileZipInstance.generateAsync({ compression: 'DEFLATE', compressionOptions: { level: 9 }, type: 'arraybuffer' });
 			updateFileResult = await files.upload(Buffer.from(updatedOperationFileArrayBuffer), operationFileData, { override: true });
-			Logger.info(`[${planData._id}] Operation file updated: ${updateFileResult.size}`);
+			Logger.info({ message: `[${planData._id}] Operation file updated: ${updateFileResult.size}` });
 		}
 
 		//

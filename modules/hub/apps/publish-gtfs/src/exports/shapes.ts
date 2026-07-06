@@ -40,5 +40,5 @@ export async function exportShapesFile(planData: Plan, sqlTables: GtfsSQLTables,
 
 	await context.writers.shapes.flush();
 
-	Logger.info('Exported shapes.txt file.');
+	Logger.info({ message: 'Exported shapes.txt file.' });
 }

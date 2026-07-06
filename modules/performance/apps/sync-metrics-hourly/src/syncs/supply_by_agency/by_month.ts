@@ -19,7 +19,7 @@ export const syncSupplyByAgencyByMonth = async () => {
 
 	const deleteTimer = new Timer();
 	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	// Fetch by_day metrics from the metrics collection
 
@@ -30,7 +30,7 @@ export const syncSupplyByAgencyByMonth = async () => {
 		.find({ metric: 'supply_by_agency_by_day' })
 		.toArray() as SupplyByAgencyByDay[];
 
-	Logger.info(`Fetched ${dailyMetrics.length} daily metrics (${fetchTimer.get()})`);
+	Logger.info({ message: `Fetched ${dailyMetrics.length} daily metrics (${fetchTimer.get()})` });
 
 	//
 	// Process daily metrics into monthly aggregates
@@ -79,7 +79,7 @@ export const syncSupplyByAgencyByMonth = async () => {
 
 	const insertTimer = new Timer();
 	await metrics.insertMany(results);
-	Logger.info(`Inserted ${results.length} monthly metrics (${insertTimer.get()})`);
+	Logger.info({ message: `Inserted ${results.length} monthly metrics (${insertTimer.get()})` });
 
 	logMetricToFile({
 		approach: { description: 'Aggregate from by_day metrics', key: 'aggregate_from_daily' },

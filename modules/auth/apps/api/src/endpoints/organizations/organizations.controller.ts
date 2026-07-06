@@ -18,7 +18,9 @@ export class OrganizationsController {
 	static async create(request: FastifyRequest<{ Body: Omit<Organization, '_id' | 'created_at' | 'created_by' | 'updated_at' | 'updated_by'> }>, reply: FastifyReply<Organization>) {
 		// Validate the request body
 		const validatedOrganization = CreateOrganizationSchema.safeParse(request.body);
-		if (!validatedOrganization.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Dados inválidos', validatedOrganization.error);
+		if (!validatedOrganization.success) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, validatedOrganization.error.message);
+		}
 		// Set the updated_by field to the current user's id
 		validatedOrganization.data.updated_by = request.me._id;
 		// Update the organization in the database
@@ -42,14 +44,14 @@ export class OrganizationsController {
 			try {
 				await files.deleteById(organization.logo_dark);
 			} catch (error) {
-				console.error('Error deleting dark logo:', error);
+				throw new error();
 			}
 		}
 		if (organization.logo_light) {
 			try {
 				await files.deleteById(organization.logo_light);
 			} catch (error) {
-				console.error('Error deleting light logo:', error);
+				throw new error();
 			}
 		}
 		// Delete the organization from the database
@@ -65,10 +67,16 @@ export class OrganizationsController {
 	static async deleteImage(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<void>) {
 		// Find the organization by ID
 		const organization = await organizations.findById(request.params.id);
-		if (!organization) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Organization not found' });
+		if (!organization) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		}
+
 		// Determine which logo to delete based on theme
 		const logoField = request.params.theme === 'dark' ? organization.logo_dark : organization.logo_light;
-		if (!logoField) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: `Logo not found for theme: ${request.params.theme}` });
+		if (!logoField) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `Logo not found for theme: ${request.params.theme}`);
+		}
+
 		// Delete the logo file from storage
 		await files.deleteById(logoField);
 		// Update the organization to remove the logo reference
@@ -95,7 +103,9 @@ export class OrganizationsController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Organization>) {
 		const organizationData = await organizations.findById(request.params.id);
-		if (!organizationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		if (!organizationData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		}
 		reply.send({ data: organizationData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -107,7 +117,9 @@ export class OrganizationsController {
 	static async getLogo(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ logo_dark?: string, logo_light?: string }>) {
 		// Find the organization by ID
 		const organization = await organizations.findById(request.params.id);
-		if (!organization) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		if (!organization) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		}
 		// Fetch logo files if they exist
 		const logoDark = await files.findById(organization.logo_dark);
 		const logoLight = await files.findById(organization.logo_light);
@@ -123,7 +135,9 @@ export class OrganizationsController {
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Organization>) {
 		await organizations.toggleLockById(request.params.id);
 		const foundOrganization = await organizations.findById(request.params.id);
-		if (!foundOrganization) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		if (!foundOrganization) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		}
 		reply.send({ data: foundOrganization, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -135,7 +149,9 @@ export class OrganizationsController {
 	static async update(request: FastifyRequest<{ Body: UpdateOrganizationDto, Params: { id: string } }>, reply: FastifyReply<Organization>) {
 		// Validate the request body
 		const validatedOrganization = UpdateOrganizationSchema.safeParse(request.body);
-		if (!validatedOrganization.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Dados inválidos', validatedOrganization.error);
+		if (!validatedOrganization.success) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, validatedOrganization.error.message);
+		}
 		// Set the updated_by field to the current user's id
 		request.body.updated_by = request.me._id;
 		// Update the organization in the database
@@ -182,7 +198,8 @@ export class OrganizationsController {
 					try {
 						await files.deleteById(organization.logo_dark);
 					} catch (error) {
-						console.error('Error deleting old dark logo:', error);
+						throw new error();
+						continue;
 					}
 				}
 				updateFields.logo_dark = result._id;
@@ -193,7 +210,8 @@ export class OrganizationsController {
 					try {
 						await files.deleteById(organization.logo_light);
 					} catch (error) {
-						console.error('Error deleting old light logo:', error);
+						throw new error();
+						continue;
 					}
 				}
 				updateFields.logo_light = result._id;

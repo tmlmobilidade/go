@@ -1,11 +1,12 @@
 'use client';
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { IconArrowRight, IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
+import { IconCalendarCancel, IconCalendarCheck, IconCopy, IconDots, IconPencil, IconTrash } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { ManualRule, ScheduleRule } from '@tmlmobilidade/types';
-import { DayPeriodsTimepoints, IconButton, Section, Tag, Text, Tooltip } from '@tmlmobilidade/ui';
+import { DayPeriodsTimepoints, Menu, MenuDivider, MenuItem, openConfirmModal, Section, Tag, Text, Tooltip } from '@tmlmobilidade/ui';
 import Link from 'next/link';
+import { MouseEvent } from 'react';
 
 import styles from './styles.module.css';
 
@@ -33,15 +34,42 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 	//
 	// B. Handle actions
 
-	const handleEdit = () => {
+	const handleOpen = () => {
 		patternDetailContext.actions.openRuleModal(rule as ManualRule);
+	};
+
+	const handleDuplicate = () => {
+		patternDetailContext.actions.duplicateRule(rule as ManualRule);
+	};
+
+	const handleDelete = () => {
+		if (!rule._id) return;
+
+		openConfirmModal({
+			centered: true,
+			children: <Text>{`Tem a certeza que pretende eliminar a regra "${name}"?`}</Text>,
+			closeOnClickOutside: true,
+			confirmProps: { variant: 'danger' },
+			labels: { cancel: 'Cancelar', confirm: 'Eliminar' },
+			onConfirm: () => {
+				if (!rule._id) return;
+
+				patternDetailContext.actions.deleteRule(rule._id);
+			},
+			title: <Text size="xl">Eliminar regra</Text>,
+			w: 500,
+		});
+	};
+
+	const handleActionsClick = (event: MouseEvent<HTMLDivElement>) => {
+		event.stopPropagation();
 	};
 
 	//
 	// C. Render components
 
 	return (
-		<div className={styles.container} onClick={handleEdit}>
+		<div className={styles.container} onClick={handleOpen}>
 			<Section gap="md" justifyContent="space-between" padding="none">
 
 				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
@@ -77,10 +105,27 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 				<DayPeriodsTimepoints timepoints={times} variant="compact" />
 			</Section>
 
-			<IconButton
-				icon={<IconArrowRight size={20} />}
-				onClick={handleEdit}
-			/>
+			<div className={styles.actions} onClick={handleActionsClick}>
+				<Menu icon={IconDots} label="Ações da regra" menuPosition="bottom-end">
+					<MenuItem
+						leftSection={<IconPencil size={20} />}
+						onClick={handleOpen}
+						title="Abrir"
+					/>
+					<MenuItem
+						leftSection={<IconCopy size={20} />}
+						onClick={handleDuplicate}
+						title="Duplicar"
+					/>
+					<MenuDivider />
+					<MenuItem
+						color="var(--color-status-danger-primary)"
+						leftSection={<IconTrash size={20} />}
+						onClick={handleDelete}
+						title="Eliminar"
+					/>
+				</Menu>
+			</div>
 
 		</div>
 	);

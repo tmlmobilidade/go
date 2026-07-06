@@ -63,11 +63,11 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 		},
 	];
 
-	Logger.info(`Fetching failed rides in the target interval...`);
+	Logger.info({ message: `Fetching failed rides in the target interval...` });
 	const ridesCursor = ridesCollection.aggregate<Ride>(ridesPipeline).batchSize(100_000);
 	const ridesCount = await ridesCollection.countDocuments(ridesPipeline[0]['$match']);
 
-	Logger.info(`Found ${ridesCount} failed rides in the target interval.`);
+	Logger.info({ message: `Found ${ridesCount} failed rides in the target interval.` });
 
 	const operationalDayMap = new Map<OperationalDate, Map<AgencyId, Set<PatternHour>>>();
 
@@ -75,7 +75,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	for await (const ride of ridesCursor) {
 		ridesProcessed++;
 		if (ridesProcessed % 10_000 === 0) {
-			Logger.info(`Processed ${ridesProcessed} failed rides...`);
+			Logger.info({ message: `Processed ${ridesProcessed} failed rides...` });
 		}
 
 		const operationalDate: OperationalDate = ride.operational_date;
@@ -105,7 +105,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	}
 
 	// Global union of failed patternHours (used to restrict the median query)
-	Logger.info('Building failed patternHours set...');
+	Logger.info({ message: 'Building failed patternHours set...' });
 	const failedPatternHoursSet = new Set<PatternHour>();
 	for (const [, agencyMap] of operationalDayMap) {
 		for (const [, phSet] of agencyMap) {
@@ -113,14 +113,14 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 		}
 	}
 
-	Logger.info(`Found ${failedPatternHoursSet.size} failed patternHours.`);
+	Logger.info({ message: `Found ${failedPatternHoursSet.size} failed patternHours.` });
 	const failedPatternHours = [...failedPatternHoursSet];
 	if (failedPatternHours.length === 0) {
 		console.log('No failed patternHours in the selected interval.');
 		return new Map<OperationalDate, Map<AgencyId, AgencyDayStats>>();
 	}
 
-	Logger.info('Calculating passenger impact for each day...');
+	Logger.info({ message: 'Calculating passenger impact for each day...' });
 	const out = new Map<OperationalDate, Map<AgencyId, AgencyDayStats>>();
 
 	for (const dayChunk of allDaysChunks) {
@@ -136,7 +136,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 			.unix_timestamp;
 
 		Logger.info(
-			`Calculating passenger impact for day ${Dates.fromUnixTimestamp(start30dTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}...${Dates.fromUnixTimestamp(endTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}`,
+			{ message: `Calculating passenger impact for day ${Dates.fromUnixTimestamp(start30dTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}...${Dates.fromUnixTimestamp(endTs).toLocaleString(Dates.FORMATS.DATETIME_FULL)}` },
 		);
 
 		// 2) Median passengers_observed per (agency_id, patternHour) over the last 30 days

@@ -10,9 +10,9 @@ export const exportTypeLabels = {
 	'rides-raw': '2.0. Rides em bruto (SLAs)',
 	'sams-raw': '5.0. SAMs em bruto (Sequencialidade)',
 	'validations-aggregated': '1.1. Validações agregadas (escolher campos)',
+	'validations-p-municipalities': '7.0. Validações por município',
 	'validations-raw': '1.0. Validações em bruto',
 	'vehicle-events-raw': '3.0. Vehicle Events em bruto',
-	'validations-p-municipalities': '7.0. Validações por município',
 } as const;
 
 export type ExportType = keyof typeof exportTypeLabels;

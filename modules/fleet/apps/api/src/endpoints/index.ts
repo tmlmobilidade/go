@@ -1,1 +1,1 @@
-import '@/endpoints/vehicles/vehicles.routes.js';
+import '@/endpoints/vehicles/routes.js';

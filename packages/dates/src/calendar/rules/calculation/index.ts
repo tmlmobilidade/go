@@ -1,78 +1,180 @@
 import type { DayContext, RuleApplication } from './types.js';
-import type { Event, EventReplacementRule, HHMM, Holiday, ManualRule, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
+import type { Event, EventReplacementRule, EventRestrictionRule, HHMM, Holiday, ManualRule, OperationalDate, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
 
 import { calendarKey, calendarWeekday } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
 
+import { resolveEffectiveReplacement } from '../export-attribution/replacement.js';
 import { findReplacementForDate, getActivePeriodId } from '../utils/date.js';
 import { collectManualIncludes, collectReplacementManualIncludes } from './collectors.js';
 import { applyEventRestrictions, applyManualExcludes, applyReplacementManualExcludes } from './filters.js';
+import { getTimepointsRemovedByEventRestriction } from './filters.js';
+import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
 
 /* * */
 
+export interface ComputeActiveRulesOptions {
+	dateContext?: ActiveRulesDateContext
+	eventById?: Map<string, Event>
+	events?: Event[]
+}
+
+export interface ActiveRulesDateContext extends DayContext {
+	key: string
+}
+
+export interface SplitScheduleRules {
+	manualRules: ManualRule[]
+	replacementRules: EventReplacementRule[]
+	restrictionRules: EventRestrictionRule[]
+}
+
+export function buildActiveRulesEventIndex(events: Event[] = []): Map<string, Event> {
+	return new Map(events.map(event => [event._id, event]));
+}
+
+export function buildActiveRulesDateContext(date: OperationalDate, periods: YearPeriod[], holidays: Holiday[]): ActiveRulesDateContext {
+	const key = calendarKey(Dates.fromOperationalDate(date, 'Europe/Lisbon'));
+	return {
+		key,
+		weekday: calendarWeekday(key, holidays),
+		yearPeriodId: getActivePeriodId(date, periods),
+	};
+}
+
+export function splitScheduleRules(rules: ScheduleRule[]): SplitScheduleRules {
+	return {
+		manualRules: rules.filter((r): r is ManualRule => r.kind === 'manual'),
+		replacementRules: rules.filter((r): r is EventReplacementRule => r.kind === 'event_replacement'),
+		restrictionRules: rules.filter((r): r is EventRestrictionRule => r.kind === 'event_restriction'),
+	};
+}
+
+function resolveEventById(id: string, options?: ComputeActiveRulesOptions): Event | undefined {
+	return options?.eventById?.get(id) ?? options?.events?.find(event => event._id === id);
+}
+
+function filterManualRulesByEventDate(manualRules: ManualRule[], date: OperationalDate, options?: ComputeActiveRulesOptions) {
+	return manualRules.filter((rule) => {
+		if (!rule.event_id) return true;
+		const event = resolveEventById(rule.event_id, options);
+		if (!event?.dates?.length) return false;
+		return event.dates.includes(date);
+	});
+}
+
+function filterManualRulesByMonth(manualRules: ManualRule[], month: number) {
+	return manualRules.filter(rule =>
+		!rule.months?.length || (rule.months as number[]).includes(month),
+	);
+}
+
+function collectManualIncludeTimepoints(manualRules: ManualRule[], ctx: DayContext): Set<HHMM> {
+	const timepoints = new Set<HHMM>();
+
+	for (const rule of manualRules) {
+		if (rule.operating_mode !== 'include') continue;
+		if (!manualRuleMatchesContext(rule, ctx)) continue;
+
+		for (const timepoint of rule.timepoints ?? []) timepoints.add(timepoint);
+	}
+
+	return timepoints;
+}
+
+function collectReplacementManualIncludeTimepoints(replacement: EventReplacementRule, manualRules: ManualRule[]): Set<HHMM> {
+	const timepoints = new Set<HHMM>();
+
+	for (const rule of manualRules) {
+		if (rule.operating_mode !== 'include') continue;
+		if (!manualRuleMatchesReplacement(rule, replacement)) continue;
+
+		for (const timepoint of rule.timepoints) timepoints.add(timepoint as HHMM);
+	}
+
+	return timepoints;
+}
+
+function applyManualExcludeTimepoints(timepoints: Set<HHMM>, manualRules: ManualRule[], ctx: DayContext): void {
+	for (const rule of manualRules) {
+		if (rule.operating_mode !== 'exclude') continue;
+		if (!manualRuleMatchesContext(rule, ctx)) continue;
+
+		for (const timepoint of rule.timepoints ?? []) timepoints.delete(timepoint);
+	}
+}
+
+function applyReplacementManualExcludeTimepoints(timepoints: Set<HHMM>, replacement: EventReplacementRule, manualRules: ManualRule[]): void {
+	for (const rule of manualRules) {
+		if (rule.operating_mode !== 'exclude') continue;
+		if (!manualRuleMatchesReplacement(rule, replacement)) continue;
+
+		for (const timepoint of rule.timepoints) timepoints.delete(timepoint);
+	}
+}
+
+function applyEventRestrictionTimepoints(date: OperationalDate, timepoints: Set<HHMM>, rules: EventRestrictionRule[]): void {
+	for (const rule of rules) {
+		if (!rule.dates?.includes(date)) continue;
+
+		for (const timepoint of getTimepointsRemovedByEventRestriction(rule, timepoints)) {
+			timepoints.delete(timepoint);
+		}
+	}
+}
+
 /**
- * Calculates which time points are active for each date in a range, based on scheduling rules.
+ * Operating schedule for one operational date: merged timepoints and applied rule IDs.
  *
- * This is the core scheduling algorithm that processes three types of rules:
- * 1. Manual rules (include/exclude) - Define base schedules for weekday/period combinations
- * 2. Event replacement rules - Override base schedules for specific dates
- * 3. Event restriction rules - Remove specific time points or time windows from schedules
+ * This is the core scheduling algorithm for “what runs” (preview, VKM, rules grid).
+ * It processes three rule kinds:
+ * 1. Manual rules (include/exclude) — base schedules for weekday/period combinations
+ * 2. Event replacement rules — override base schedules on specific dates
+ * 3. Event restriction rules — remove timepoints or windows from the result
  *
- * Algorithm flow for each date:
- * - Check for event replacement rule
- *   - If found: Use intersection-based matching with manual rules
- *   - Otherwise: Use context-based matching (weekday + period)
- * - Collect INCLUDE time points
- * - Apply EXCLUDE time points
- * - Apply event restrictions (by date)
- * - Return final time points and applied rule IDs
+ * Algorithm flow:
+ * - If a replacement applies: intersection-based manual matching + replacement excludes
+ * - Otherwise: weekday + period context matching + manual excludes
+ * - Always apply event restrictions by date
  *
- * @param rules - All scheduling rules to process (manual, replacement, restriction)
- * @param dateRange - Array of operational dates to calculate schedules for
- * @param periods - YearPeriod definitions (school term, summer, etc.) for context resolution
- * @returns Map from CalendarKey to RuleApplication with active time points and metadata
+ * For GTFS `service_id` token binding (`operating` / `base_off` rows), use
+ * `collectGtfsIncludeContributionsForDate` in `export-attribution/index.ts`.
+ * That layer delegates here on replacement days; the `operating` timepoint set
+ * should match this function’s result (see SCENARIOS P5).
  *
- * @example
- * ```ts
- * const rules = [...]; // Manual, replacement, and restriction rules
- * const dates = ['2026-02-01', '2026-02-02', ...];
- * const periods = [...]; // YearPeriod definitions
- *
- * const result = computeActiveTimePoints(rules, dates, periods);
- * const feb1 = result.get(calendarKey(Dates.fromOperationalDate('2026-02-01')));
- * // feb1 = {
- * //   timepoints: ['08:00', '09:00', '10:00'],
- * //   appliedRuleIds: ['rule1', 'rule2']
- * // }
- * ```
+ * @param date - Operational date to evaluate
+ * @param rules - All scheduling rules (manual, replacement, restriction)
+ * @param periods - YearPeriod definitions for context resolution
+ * @param holidays - Holiday calendar for weekday resolution
+ * @returns Active timepoints and IDs of rules that contributed
  */
 export function computeActiveRules(
 	date: OperationalDate,
 	rules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
-	options?: {
-		events?: Event[]
-	},
+	options?: ComputeActiveRulesOptions,
 ): RuleApplication {
-	const manualRules = rules.filter((r): r is ManualRule => r.kind === 'manual');
-	const restrictionRules = rules.filter(r => r.kind === 'event_restriction');
-	const replacementRules = rules.filter((r): r is EventReplacementRule => r.kind === 'event_replacement');
+	const splitRules = splitScheduleRules(rules);
+	return computeActiveRulesFromSplit(date, splitRules, periods, holidays, options);
+}
 
-	const filteredManualRules = manualRules.filter((rule) => {
-		if (!rule.event_id) return true;
-		const event = options?.events?.find(e => e._id === rule.event_id);
-		if (!event?.dates?.length) return false;
-		return event.dates.includes(date);
-	});
+export function computeActiveRulesFromSplit(
+	date: OperationalDate,
+	rules: SplitScheduleRules,
+	periods: YearPeriod[],
+	holidays: Holiday[],
+	options?: ComputeActiveRulesOptions,
+): RuleApplication {
+	const { manualRules, replacementRules, restrictionRules } = rules;
 
-	const key = calendarKey(Dates.fromOperationalDate(date, 'Europe/Lisbon'));
+	const filteredManualRules = filterManualRulesByEventDate(manualRules, date, options);
+
+	const key = options?.dateContext?.key ?? calendarKey(Dates.fromOperationalDate(date, 'Europe/Lisbon'));
 
 	// Filter out manual rules whose months list doesn't include the current month
 	const month = Number(key.slice(5, 7));
-	const monthFilteredManualRules = filteredManualRules.filter(rule =>
-		!rule.months?.length || (rule.months as number[]).includes(month),
-	);
+	const monthFilteredManualRules = filterManualRulesByMonth(filteredManualRules, month);
 
 	const replacement = findReplacementForDate(date, replacementRules);
 
@@ -81,11 +183,7 @@ export function computeActiveRules(
 	let appliedRuleIds: string[];
 
 	if (replacement) {
-		// When same_weekday is true, each event date functions as its own actual weekday
-		// within the replacement's target periods, rather than all dates acting as one fixed weekday.
-		const effectiveReplacement = replacement.same_weekday
-			? { ...replacement, weekdays: [calendarWeekday(key, holidays)] }
-			: replacement;
+		const effectiveReplacement = resolveEffectiveReplacement(date, replacement, holidays);
 
 		// Replacement mode: match manuals by intersection (Option A)
 		const base = collectReplacementManualIncludes(effectiveReplacement, monthFilteredManualRules);
@@ -96,10 +194,7 @@ export function computeActiveRules(
 		applyReplacementManualExcludes(timepoints, appliedRuleIds, effectiveReplacement, monthFilteredManualRules);
 	} else {
 		// Normal mode: day resolves to a single weekday + single yearPeriodId
-		const ctx: DayContext = {
-			weekday: calendarWeekday(key, holidays),
-			yearPeriodId: getActivePeriodId(date, periods),
-		};
+		const ctx = options?.dateContext ?? buildActiveRulesDateContext(date, periods, holidays);
 
 		const base = collectManualIncludes(monthFilteredManualRules, ctx);
 		timepoints = base.timepoints;
@@ -117,6 +212,43 @@ export function computeActiveRules(
 	};
 
 	return result;
+}
+
+export function computeActiveRuleCountFromSplit(
+	date: OperationalDate,
+	rules: SplitScheduleRules,
+	periods: YearPeriod[],
+	holidays: Holiday[],
+	options?: ComputeActiveRulesOptions,
+): number {
+	const filteredManualRules = filterManualRulesByEventDate(rules.manualRules, date, options);
+
+	const key = options?.dateContext?.key ?? calendarKey(Dates.fromOperationalDate(date, 'Europe/Lisbon'));
+
+	const month = Number(key.slice(5, 7));
+	const monthFilteredManualRules = filterManualRulesByMonth(filteredManualRules, month);
+
+	const replacement = findReplacementForDate(date, rules.replacementRules);
+
+	let timepoints: Set<HHMM>;
+
+	if (replacement) {
+		const effectiveReplacement = resolveEffectiveReplacement(date, replacement, holidays);
+
+		timepoints = collectReplacementManualIncludeTimepoints(effectiveReplacement, monthFilteredManualRules);
+
+		applyReplacementManualExcludeTimepoints(timepoints, effectiveReplacement, monthFilteredManualRules);
+	} else {
+		const ctx = options?.dateContext ?? buildActiveRulesDateContext(date, periods, holidays);
+
+		timepoints = collectManualIncludeTimepoints(monthFilteredManualRules, ctx);
+
+		applyManualExcludeTimepoints(timepoints, monthFilteredManualRules, ctx);
+	}
+
+	applyEventRestrictionTimepoints(date, timepoints, rules.restrictionRules);
+
+	return timepoints.size;
 }
 
 /* * */

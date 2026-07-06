@@ -6,7 +6,7 @@ inputs:
     description: "Newline-separated list of modules and their apps (format: module:app, one app per line)"
     required: true
   selected-module:
-    description: "Selected module from workflow_dispatch (or 'all')"
+    description: "Selected module(s) from workflow_dispatch — comma/space separated, or 'all'"
     required: false
     default: "all"
   build-all:
@@ -32,6 +32,7 @@ runs:
         files: |
           modules/**
           packages/**
+          packages-new/**
         base_sha: ${{ github.event.before || github.event.pull_request.base.sha || '' }}
         sha: ${{ github.sha }}
         include_all_old_new_renamed_files: true
@@ -45,9 +46,9 @@ runs:
 
         # Use git diff to ensure deleted files are captured too (A/M/D/R).
         if [ -n "$BASE_SHA" ]; then
-          CHANGED=$(git diff --name-only --diff-filter=AMDR "$BASE_SHA" "$CURRENT_SHA" 2>/dev/null | grep -E '^(modules|packages)/' || true)
+          CHANGED=$(git diff --name-only --diff-filter=AMDR "$BASE_SHA" "$CURRENT_SHA" 2>/dev/null | grep -E '^(modules|packages|packages-new)/' || true)
         else
-          CHANGED=$(git diff --name-only --diff-filter=AMDR HEAD "$CURRENT_SHA" 2>/dev/null | grep -E '^(modules|packages)/' || true)
+          CHANGED=$(git diff --name-only --diff-filter=AMDR HEAD "$CURRENT_SHA" 2>/dev/null | grep -E '^(modules|packages|packages-new)/' || true)
         fi
 
         if [ -n "$CHANGED" ]; then
@@ -104,26 +105,34 @@ runs:
           const changedFiles = Array.from(new Set([...changedFromAction, ...changedFromGit]));
 
           const isManual = context.eventName === 'workflow_dispatch';
-          const selectedModule = (process.env.SELECTED_MODULE || 'all').trim().toLowerCase();
+          const selectedModules = (process.env.SELECTED_MODULE || 'all')
+            .split(/[\s,]+/)
+            .map((name) => name.trim().toLowerCase())
+            .filter(Boolean);
           const manualBuildAll = (process.env.BUILD_ALL || 'true') === 'true';
-          const hasSpecificManualModule = isManual && selectedModule !== '' && selectedModule !== 'all';
+          const hasSpecificManualModule = isManual && selectedModules.length > 0 && !selectedModules.includes('all');
 
           // Any shared-package change forces a full rebuild.
           const packagesChanged = changedFiles.some(f => f.startsWith('packages/'));
-          const buildAll = (isManual && !hasSpecificManualModule && manualBuildAll) || packagesChanged;
+          const packagesNewChanged = changedFiles.some(f => f.startsWith('packages-new/'));
+          const buildAll = (isManual && !hasSpecificManualModule && manualBuildAll) || packagesChanged || packagesNewChanged;
 
           const modulesToBuild = [];
           const moduleApps = {};
 
+          const fs = require('fs');
           for (const { module, apps } of allModules) {
+            const filteredApps = apps.filter(app => fs.existsSync(`modules/${module}/apps/${app}/package.json`));
+            if (filteredApps.length === 0) continue;
+
             if (hasSpecificManualModule) {
-              if (module === selectedModule) {
+              if (selectedModules.includes(module.toLowerCase())) {
                 modulesToBuild.push(module);
-                moduleApps[module] = apps;
+                moduleApps[module] = filteredApps;
               }
             } else if (buildAll) {
               modulesToBuild.push(module);
-              moduleApps[module] = apps;
+              moduleApps[module] = filteredApps;
             } else {
               // Environment files don't affect built images.
               const changed = changedFiles.some(f =>
@@ -131,7 +140,7 @@ runs:
               );
               if (changed) {
                 modulesToBuild.push(module);
-                moduleApps[module] = apps;
+                moduleApps[module] = filteredApps;
               }
             }
           }
@@ -140,6 +149,7 @@ runs:
           core.setOutput('modules-apps', JSON.stringify(moduleApps));
 
           core.info(`packages changed: ${packagesChanged}`);
+          core.info(`packages-new changed: ${packagesNewChanged}`);
           core.info(`build all: ${buildAll}`);
           core.info(`modules to build: ${JSON.stringify(modulesToBuild)}`);
           core.info(`modules and apps: ${JSON.stringify(moduleApps)}`);

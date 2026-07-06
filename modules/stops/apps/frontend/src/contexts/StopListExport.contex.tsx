@@ -3,6 +3,7 @@
 /* * */
 
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
+import { useLocationsContext } from '@/contexts/Locations.context';
 import { CreateFileExportDto, type StopExportProperties } from '@tmlmobilidade/types';
 import { closeModal, useAgenciesContext, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
@@ -44,6 +45,7 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 	//
 	// A. Setup variables
 	const agenciesContext = useAgenciesContext();
+	const locationsContext = useLocationsContext();
 
 	const exports = useExportsContext();
 	const stopsListContext = useStopsListContext();
@@ -79,22 +81,12 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 		if (stopsListContext.filters.connections.isActive && stopsListContext.filters.connections.value.length > 0) {
 			filters.push({ label: 'Conexões', value: stopsListContext.filters.connections.value.join(', ') });
 		}
+		if (stopsListContext.filters.municipality.isActive && stopsListContext.filters.municipality.value.length > 0) {
+			filters.push({ label: 'Municípios', value: locationsContext.data.municipalities.filter(option => stopsListContext.filters.municipality.value.includes(option._id)).map(option => option.name).join(', ') });
+		}
 
 		return filters;
-	}, [
-		agenciesContext.data.as_options,
-		stopsListContext.filters.connections.isActive,
-		stopsListContext.filters.connections.value,
-		stopsListContext.filters.agencies.isActive,
-		stopsListContext.filters.agencies.value,
-		stopsListContext.filters.equipment.isActive,
-		stopsListContext.filters.equipment.value,
-		stopsListContext.filters.facilities.isActive,
-		stopsListContext.filters.facilities.value,
-		stopsListContext.filters.lifecycle_status.isActive,
-		stopsListContext.filters.lifecycle_status.value,
-		stopsListContext.filters.search.value,
-	]);
+	}, [stopsListContext.filters.search.value, stopsListContext.filters.agencies.isActive, stopsListContext.filters.agencies.value, stopsListContext.filters.lifecycle_status.isActive, stopsListContext.filters.lifecycle_status.value, stopsListContext.filters.facilities.isActive, stopsListContext.filters.facilities.value, stopsListContext.filters.equipment.isActive, stopsListContext.filters.equipment.value, stopsListContext.filters.connections.isActive, stopsListContext.filters.connections.value, stopsListContext.filters.municipality.isActive, stopsListContext.filters.municipality.value, agenciesContext.data.as_options, locationsContext.data.municipalities]);
 
 	const exportProperties = useMemo((): StopExportProperties['properties'] => {
 		const searchValue = stopsListContext.filters.search.value.trim();

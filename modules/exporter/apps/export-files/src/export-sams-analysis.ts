@@ -87,7 +87,7 @@ export async function exportSamsAnalysisFile(fileExport: FileExport): Promise<st
 	await csvWriter.flush();
 
 	Logger.success(`Exported ${count} SAM analysis rows in ${timer.get()}`, 1);
-	Logger.info(`File path: ${tempFilePath}`);
+	Logger.info({ message: `File path: ${tempFilePath}` });
 	Logger.spacer(1);
 
 	return tempFilePath;

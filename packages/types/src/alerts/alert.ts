@@ -1,12 +1,10 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
-import { PublishStatusSchema } from '@/_common/status.js';
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { AlertCauseSchema } from '@/alerts/cause.js';
 import { AlertEffectSchema } from '@/alerts/effect.js';
 import { AlertReferenceTypeSchema } from '@/alerts/reference-type.js';
 import { AlertReferenceSchema } from '@/alerts/reference.js';
+import { DocumentSchema, PublishStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

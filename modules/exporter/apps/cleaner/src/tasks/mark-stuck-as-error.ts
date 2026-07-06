@@ -20,18 +20,18 @@ export async function markStuckProcessingExportsAsError() {
 	const stuckExports = await fileExports.findMany({ created_at: { $lt: cutoffTimestamp }, processing_status: ProcessingStatusSchema.enum.processing });
 
 	if (stuckExports.length === 0) {
-		Logger.info('No stuck processing file exports found.');
+		Logger.info({ message: 'No stuck processing file exports found.' });
 		return;
 	}
 
-	Logger.info(`Marking ${stuckExports.length} stuck processing file exports as error...`);
+	Logger.info({ message: `Marking ${stuckExports.length} stuck processing file exports as error...` });
 
 	for (const item of stuckExports) {
 		try {
 			await fileExports.updateById(item._id, { processing_status: ProcessingStatusSchema.enum.error });
 			Logger.success(`Marked processing file export ${item._id} as error.`);
 		} catch (error) {
-			Logger.error(`Failed to mark processing file export ${item._id} as error:`, error);
+			Logger.error({ error, message: `Failed to mark processing file export ${item._id} as error:` });
 		}
 	}
 }

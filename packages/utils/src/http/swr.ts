@@ -3,9 +3,28 @@
 import { HttpResponse } from '@/http/response.js';
 import { HttpException } from '@tmlmobilidade/consts';
 
+/* * */
+
 export interface SwrFetcherOptions {
+
+	/**
+	 * Whether to include credentials in the fetch operation.
+	 * @default 'include'
+	 */
 	credentials?: RequestInit['credentials']
+
+	/**
+	 * The URL to fetch from.
+	 */
 	url: string
+
+	/**
+	 * Whether to use the proper API response, where the response is an object with a data property.
+	 * If false, the response is assumed to be the data directly.
+	 * @default true
+	 */
+	useProperApiResponse?: boolean
+
 }
 
 /**
@@ -44,6 +63,14 @@ export async function swrFetcher<T>(urlOrOptions: string | SwrFetcherOptions): P
 
 	if (!res.ok) {
 		throw new HttpException(res.status, data.error ?? 'An error occurred');
+	}
+
+	//
+	// Return the data directly if the useProperApiResponse option is false
+	// or directly accessing the data property of the HttpResponse object.
+
+	if (typeof urlOrOptions === 'object' && urlOrOptions.useProperApiResponse === false) {
+		return data as T;
 	}
 
 	return data.data as T;

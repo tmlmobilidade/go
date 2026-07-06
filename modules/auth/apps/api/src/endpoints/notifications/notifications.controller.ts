@@ -35,7 +35,9 @@ export class NotificationsController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Notification>) {
 		const notificationData = await notifications.findById(request.params.id);
-		if (!notificationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Notification not found');
+		if (!notificationData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Notification not found');
+		}
 		reply.send({ data: notificationData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

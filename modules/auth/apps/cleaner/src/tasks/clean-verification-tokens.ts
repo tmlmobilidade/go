@@ -12,12 +12,12 @@ import { Timer } from '@tmlmobilidade/timer';
 export async function cleanExpiredVerificationTokens() {
 	try {
 		const timer = new Timer();
-		Logger.info(`Cleaning expired "verification_tokens" documents...`);
+		Logger.info({ message: `Cleaning expired "verification_tokens" documents...` });
 		const now = Dates.now('Europe/Lisbon').unix_timestamp;
 		const deleteResult = await verificationTokens.deleteMany({ expires_at: { $lt: now } });
 		Logger.success(`Deleted ${deleteResult.deletedCount} expired "verification_tokens" documents in ${timer.get()}.`);
 	}
 	catch (error) {
-		Logger.error(`Failed to clean expired "verification_tokens" documents:`, error);
+		Logger.error({ error, message: `Failed to clean expired "verification_tokens" documents:` });
 	}
 }

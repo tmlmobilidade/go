@@ -20,9 +20,9 @@ export const syncDemandByPatternHourByDay = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
 	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch rides collection
@@ -85,7 +85,7 @@ export const syncDemandByPatternHourByDay = async () => {
 	for (let i = 0; i < allTimestampChunks.length; i += BATCH_SIZE) {
 		const batchChunks = allTimestampChunks.slice(i, i + BATCH_SIZE);
 
-		Logger.info(`Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allTimestampChunks.length / BATCH_SIZE)} (chunks ${i + 1}-${Math.min(i + BATCH_SIZE, allTimestampChunks.length)})`);
+		Logger.info({ message: `Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allTimestampChunks.length / BATCH_SIZE)} (chunks ${i + 1}-${Math.min(i + BATCH_SIZE, allTimestampChunks.length)})` });
 
 		const batchPromises = batchChunks.map((chunkData, batchIndex) =>
 			limit(async () => {
@@ -123,7 +123,7 @@ export const syncDemandByPatternHourByDay = async () => {
 					])
 					.toArray();
 
-				Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${ridesAgg.length} pattern-hour groups (${chunkTimer.get()})`);
+				Logger.info({ message: `Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${ridesAgg.length} pattern-hour groups (${chunkTimer.get()})` });
 
 				return { dayLabel, ridesAgg };
 			}),
@@ -174,9 +174,9 @@ export const syncDemandByPatternHourByDay = async () => {
 			const flushTimer = new Timer();
 			const results = Array.from(patternHourMap.values());
 
-			Logger.info(`Flushing ${results.length} documents to database...`);
+			Logger.info({ message: `Flushing ${results.length} documents to database...` });
 			await metrics.insertMany(results);
-			Logger.info(`Flushed ${results.length} documents (${flushTimer.get()})`);
+			Logger.info({ message: `Flushed ${results.length} documents (${flushTimer.get()})` });
 
 			patternHourMap.clear(); // Free memory
 		}
@@ -187,7 +187,7 @@ export const syncDemandByPatternHourByDay = async () => {
 
 	if (patternHourMap.size > 0) {
 		const results = Array.from(patternHourMap.values());
-		Logger.info(`Inserting final ${results.length} documents...`);
+		Logger.info({ message: `Inserting final ${results.length} documents...` });
 		await metrics.insertMany(results);
 	}
 

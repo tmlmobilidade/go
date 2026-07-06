@@ -34,7 +34,7 @@ export async function exportDatesFile(context: ExportGtfsContext) {
 
 	const timer = new Timer();
 
-	Logger.info('Exporting dates.txt file...');
+	Logger.info({ message: 'Exporting dates.txt file...' });
 
 	//
 	// Fetch dates from GO v1 API

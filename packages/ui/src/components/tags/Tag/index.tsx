@@ -13,6 +13,7 @@ export interface TagProps {
 	icon?: React.ReactNode
 	label?: number | string
 	onClick?: () => void
+	style?: React.CSSProperties
 	tooltip?: string
 	variant?: 'danger' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
 }
@@ -27,6 +28,7 @@ const TagBody = forwardRef<HTMLDivElement, TagProps>((props, ref) => (
 		data-filled={props.filled}
 		data-variant={props.variant ?? 'secondary'}
 		onClick={props.onClick}
+		style={props.style}
 	>
 		{React.isValidElement<IconProps>(props.icon) && <span className={styles.icon}>{React.cloneElement(props.icon)}</span>}
 		{props.label !== null && props.label !== undefined && <span className={styles.label}>{props.label}</span>}

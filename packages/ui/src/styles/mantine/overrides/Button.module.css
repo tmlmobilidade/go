@@ -49,16 +49,28 @@
 }
 
 .root[data-variant='transparent'] {
+	height: fit-content;
+	padding: 0;
+	color: var(--color-primary);
 	background-color: transparent;
 	border-color: transparent;
 	box-shadow: unset;
 }
+
+.root[data-variant='transparent']:hover {
+	text-decoration: underline;
+}
+
 
 /* BUTTON / INNER */
 
 .inner {
 	display: flex;
 	gap: 10px;
+}
+
+.root[data-variant='transparent'] .inner {
+	gap: 5px;
 }
 
 /* BUTTON / SECTION */

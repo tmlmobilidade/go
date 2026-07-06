@@ -1,7 +1,7 @@
 /* * */
 
-import { UnixTimestampSchema } from '@/_common/unix-timestamp.js';
 import { OperationalDateSchema } from '@/index.js';
+import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

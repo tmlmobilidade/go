@@ -1,0 +1,111 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-flow: row wrap;
+	row-gap: 15px;
+}
+
+/* * */
+/* TIMETABLE WRAPPER */
+
+.timetableWrapper {
+	display: flex;
+	flex-flow: row wrap;
+	row-gap: 15px;
+}
+
+/* * */
+/* COLUMN */
+
+.column {
+	display: grid;
+	grid-auto-rows: 28px;
+}
+
+/* * */
+/* HOURS & MINUTES */
+
+.hour,
+.minute {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 6px;
+	font-size: 14px;
+	line-height: 1;
+}
+
+.column:first-child .hour,
+.column:first-child .minute {
+	justify-content: flex-start;
+	padding-right: 10px;
+	padding-left: 15px;
+}
+
+.column:last-child .hour,
+.column:last-child .minute {
+	padding-right: 15px;
+}
+
+/* * */
+/* HOURS */
+
+.hour {
+	font-weight: var(--font-weight-extrabold);
+	color: var(--color-primary-white);
+	background-color: var(--color-primary-black);
+}
+
+.column:first-child .hour {
+	border-top-left-radius: 999px;
+	border-bottom-left-radius: 999px;
+}
+
+.column:last-child .hour,
+.column:last-child .minute {
+	border-top-right-radius: 999px;
+	border-bottom-right-radius: 999px;
+}
+
+@media (prefers-color-scheme: dark) {
+	.hour {
+		color: var(--color-system-text-200);
+		background-color: var(--color-system-border-200);
+	}
+}
+
+/* * */
+/* HOUR DIVIDER */
+
+.hourDivider {
+	padding-left: 2px;
+	background-color: black;
+	opacity: 0.3;
+}
+
+/* * */
+/* MINUTES */
+
+.minute {
+	font-weight: var(--font-weight-semibold);
+}
+
+.minute.withException {
+	position: relative;
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-300);
+}
+
+
+/* * */
+/* EXCEPTION */
+
+.exception {
+	position: absolute;
+	top: 0;
+	right: -1px;
+	font-size: 10px;
+	font-weight: var(--font-weight-bold);
+}

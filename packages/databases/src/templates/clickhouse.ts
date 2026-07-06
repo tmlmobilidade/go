@@ -1,6 +1,6 @@
 /* * */
 
-import { type ClickHouseColumn, type ClickHouseSchema, type ClickHouseTableEngine } from '@/types/index.js';
+import { type ClickHouseColumn, type ClickHouseTableEngine, type ClickHouseTableSchema } from '@/types/index.js';
 import { preparePositionalQueryParams } from '@/utils/clickhouse/prepare-positional-query-params.js';
 import { queryFromFile } from '@/utils/clickhouse/query-from-file.js';
 import { queryFromString } from '@/utils/clickhouse/query-from-string.js';
@@ -14,10 +14,11 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 	//
 
 	protected readonly abstract databaseName: string;
-	protected readonly abstract schema: ClickHouseSchema<T>;
+	protected readonly abstract schema: ClickHouseTableSchema<T>;
 	protected readonly abstract tableName: string;
 
-	protected readonly engine: ClickHouseTableEngine = 'MergeTree';
+	protected readonly engine: ClickHouseTableEngine<T> = 'MergeTree()';
+
 	/**
 	 * When `true` (default), `init()` runs `ensureDatabase()` + `ensureTable()` so
 	 * the schema is created from this class. Set to `false` for tables whose schema
@@ -55,7 +56,7 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
 	 * @returns A promise that resolves when the delete operation is complete.
 	 */
-	public async delete(where: string, params?: Record<string, number | string>): Promise<void> {
+	public async delete(where: string, params?: Record<string, number | string | string[]>): Promise<void> {
 		const preparedQuery = preparePositionalQueryParams(`DELETE FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
 		await this.client.command({
 			query: preparedQuery.query,
@@ -71,7 +72,7 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 	 * @returns A promise that resolves to an array of distinct values matching the query.
 	 */
 	public async distinct<T>(field: keyof T, where: string, params?: Record<string, number | string>): Promise<T[keyof T][]> {
-		const result = await queryFromString<T>(this.client, `SELECT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
+		const result = await queryFromString<T>(this.client, `SELECT DISTINCT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
 		return result.map(doc => doc[field]);
 	}
 
@@ -206,9 +207,9 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 		// Perform the query to create the database if it does not exist
 		try {
 			await this.client.command({ query: `CREATE DATABASE IF NOT EXISTS "${this.databaseName}"` });
-			Logger.info(`CLICKHOUSE [${this.databaseName}]: Database created.`);
+			Logger.info({ message: `CLICKHOUSE [${this.databaseName}]: Database created.` });
 		} catch (error) {
-			Logger.error(`CLICKHOUSE [${this.databaseName}]: Error @ createDatabase(): ${(error as Error).message}`);
+			Logger.error({ error, message: `CLICKHOUSE [${this.databaseName}]: Error @ createDatabase(): ${(error as Error).message}` });
 			throw error;
 		}
 	}
@@ -233,7 +234,7 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 		const createTableQuery = `
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" (
 				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
-			) ENGINE = ${this.getEngineString()}
+			) ENGINE = ${this.engine}
 			${this.primaryKey ? `PRIMARY KEY (${this.primaryKey})` : ''}
 			${this.orderBy ? `ORDER BY (${this.orderBy})` : ''}
 			${this.partitionBy ? `PARTITION BY (${this.partitionBy})` : ''}
@@ -241,11 +242,11 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 		// Perform the query to create the table
 		try {
 			await this.client.command({ query: createTableQuery });
-			Logger.info(`CLICKHOUSE [${this.tableName}]: Table created.`);
+			Logger.info({ message: `CLICKHOUSE [${this.tableName}]: Table created.` });
 		} catch (error) {
 			// If the error is not an ACCESS_DENIED, throw it right away
 			if (!(error instanceof ClickHouseError) || error.code !== '497') {
-				Logger.error(`CLICKHOUSE [${this.tableName}]: Error @ createTable(): ${(error as Error).message}`);
+				Logger.error({ error, message: `CLICKHOUSE [${this.tableName}]: Error @ createTable(): ${(error as Error).message}` });
 				throw error;
 			}
 
@@ -258,29 +259,14 @@ export abstract class ClickHouseInterfaceTemplate<T extends object> {
 				const tables = await resultSet.json();
 				if (Array.isArray(tables) && tables.length > 0) return;
 
-				Logger.error(`CLICKHOUSE [${this.tableName}]: ACCESS_DENIED and table does not exist. ${error.message}`);
+				Logger.error({ error, message: `CLICKHOUSE [${this.tableName}]: ACCESS_DENIED and table does not exist. ${error.message}` });
 				throw error;
 			} catch (verifyError) {
 				//
 
-				Logger.error(`CLICKHOUSE [${this.tableName}]: Failed to verify table existence after ACCESS_DENIED: ${(verifyError as Error).message}`);
+				Logger.error({ error: verifyError, message: `CLICKHOUSE [${this.tableName}]: Failed to verify table existence after ACCESS_DENIED: ${(verifyError as Error).message}` });
 				throw verifyError;
 			}
-		}
-	}
-
-	/**
-	 * Constructs the appropriate engine string based on the provided engine type.
-	 * @throws Will throw an error if an unsupported engine type is provided.
-	 */
-	private getEngineString(): string {
-		switch (this.engine) {
-			case 'MergeTree':
-				return `MergeTree()`;
-			case 'ReplacingMergeTree':
-				return `ReplacingMergeTree()`;
-			default:
-				throw new Error(`CLICKHOUSE [${this.databaseName}/${this.tableName}]: Unsupported engine type: ${this.engine}`);
 		}
 	}
 

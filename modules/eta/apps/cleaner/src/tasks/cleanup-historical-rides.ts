@@ -1,7 +1,8 @@
+import { AppConfig } from '@/lib/config.js';
 import { pipelinePath, qualifiedTable, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
-const KEEP_TABLE = qualifiedTable('_cleaner_hist_rides_keep');
+const KEEP_TABLE = qualifiedTable(AppConfig.database, '_cleaner_hist_rides_keep');
 const CLEANUP_HIST_RIDES_SQL = 'cleanup/4-delete-out-of-window-hist-rides.sql';
 
 interface CleanupRowsResult {
@@ -26,7 +27,7 @@ export async function cleanupHistoricalRides(
 
 	if (keepRideIds.length === 0) {
 		// Safety net: an empty keep list would delete every row in hist_rides.
-		Logger.progress('No historical rides found in current window; skipping cleanup to avoid wiping eta.hist_rides');
+		Logger.progress({ message: 'No historical rides found in current window; skipping cleanup to avoid wiping eta.hist_rides' });
 		return 0;
 	}
 
@@ -42,10 +43,11 @@ export async function cleanupHistoricalRides(
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
+		AppConfig.database,
 		pipelinePath(CLEANUP_HIST_RIDES_SQL),
 	);
 
 	const rowsToDelete = result[0]?.rows_to_delete ?? 0;
-	Logger.progress(`Deleted ${rowsToDelete} out-of-window historical rides`);
+	Logger.progress({ message: `Deleted ${rowsToDelete} out-of-window historical rides` });
 	return rowsToDelete;
 }

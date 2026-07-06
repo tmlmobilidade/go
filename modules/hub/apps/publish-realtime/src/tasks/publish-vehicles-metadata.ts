@@ -19,12 +19,12 @@ export async function publishVehiclesMetadata() {
 
 	const vehicleMetadata = await vehicles.all();
 
-	Logger.info(`Retrieved ${vehicleMetadata.length} vehicles metadata...`);
+	Logger.info({ message: `Retrieved ${vehicleMetadata.length} vehicles metadata...` });
 
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:realtime:vehicles:metadata:json', JSON.stringify(vehicleMetadata));
+	await apiCache.set('hub:v1:realtime:vehicles:metadata:json', JSON.stringify(vehicleMetadata));
 
 	Logger.success(`Finished publishing vehicles metadata (${globalTimer.get()})`);
 

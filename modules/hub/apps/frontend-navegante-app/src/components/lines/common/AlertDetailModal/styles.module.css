@@ -1,0 +1,23 @@
+.title {
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--color-system-text-100);
+}
+
+.header {
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-10);
+	padding: 10px;
+}
+
+.description {
+	margin-top: 10px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--color-system-text-200);
+}

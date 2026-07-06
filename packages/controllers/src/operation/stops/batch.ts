@@ -91,7 +91,7 @@ export async function getOperationalStopsBatch(query: GetOperationalStopsBatchQu
 		.aggregate<PipelineResult>(pipeline, { allowDiskUse: true })
 		.toArray();
 
-	Logger.info(`OperationalStopsController.getBatch - pipeline result count: ${pipelineResult?.length ?? 0}`);
+	Logger.info({ message: `OperationalStopsController.getBatch - pipeline result count: ${pipelineResult?.length ?? 0}` });
 
 	//
 	// Setup the final Map to keep track of the Operation Stops,

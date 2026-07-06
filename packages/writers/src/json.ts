@@ -80,7 +80,7 @@ export class JsonWriter<T> {
 
 		// Append the csv string to the file
 		fs.appendFileSync(this.FILE_PATH, writableData);
-		Logger.info(`JSONWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
+		Logger.info({ message: `JSONWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | File Path: ${this.FILE_PATH} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})` });
 		this.CURRENT_BATCH_DATA = [];
 	}
 

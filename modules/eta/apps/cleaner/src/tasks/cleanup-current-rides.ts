@@ -13,6 +13,7 @@ export async function cleanupCurrentRides(clickhouseClient: Parameters<typeof qu
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
+		AppConfig.database,
 		pipelinePath(CLEANUP_CURRENT_RIDES_SQL),
 		{
 			window_hours_before: AppConfig.windowHoursBefore,
@@ -20,6 +21,6 @@ export async function cleanupCurrentRides(clickhouseClient: Parameters<typeof qu
 	);
 
 	const rowsToDelete = result[0]?.rows_to_delete ?? 0;
-	Logger.progress(`Deleted ${rowsToDelete} out-of-window current rides`);
+	Logger.progress({ message: `Deleted ${rowsToDelete} out-of-window current rides` });
 	return rowsToDelete;
 }

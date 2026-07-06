@@ -1,0 +1,26 @@
+/* * */
+/* CALENDAR MONTH BUTTON */
+
+.calendarMonthButton {
+	color: var(--color-primary);
+	font-size: var(--font-size-xs);
+}
+
+.calendarMonthButton:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+/* * */
+/* MONTH SMALL BUTTON */
+
+.monthSmallButton {
+	background-color: transparent;
+	color: var(--color-system-text-300);
+	font-size: var(--font-size-xs);
+}
+
+.monthSmallButton:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}

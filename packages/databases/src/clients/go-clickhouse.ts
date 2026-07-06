@@ -49,16 +49,21 @@ export class GOClickHouseClient {
 	 * This method is called internally by the service and should not be used directly.
 	 */
 	private async connect() {
-		Logger.info('[GOClickHouseClient] Connecting to database...');
+		Logger.info({ message: '[GOClickHouseClient] Connecting to database...' });
 		const connectionString = await this.getConnectionString();
 		this.client = createClient({
 			clickhouse_settings: {
+				async_insert: 1,
 				connect_timeout: 360 * 1000,
 				http_receive_timeout: 360 * 1000,
 				http_send_timeout: 360 * 1000,
-				max_execution_time: 360 * 1000,
+				max_execution_time: 360,
+				wait_for_async_insert: 0,
 			},
-			keep_alive: { enabled: false },
+			compression: {
+				request: true,
+				response: true,
+			},
 			log: {
 				level: ClickHouseLogLevel.OFF,
 			},
@@ -113,12 +118,12 @@ export class GOClickHouseClient {
 				port: Number(process.env.GO_CLICKHOUSE_TUNNEL_LOCAL_PORT),
 			},
 			sshOptions: {
-				agent: process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
+				agent: (process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH || process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY) ? undefined : process.env.SSH_AUTH_SOCK,
 				host: process.env.GO_CLICKHOUSE_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 20,
+				keepaliveCountMax: 3,
 				keepaliveInterval: 10_000,
 				port: 22,
-				privateKey: process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH) : undefined,
+				privateKey: process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH) : process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY ? process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY : undefined,
 				username: process.env.GO_CLICKHOUSE_TUNNEL_SSH_USERNAME,
 			},
 			tunnelOptions: {
@@ -133,7 +138,7 @@ export class GOClickHouseClient {
 
 		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
-		Logger.info('[GOClickHouseClient] Setting up SSH Tunnel...');
+		Logger.info({ message: '[GOClickHouseClient] Setting up SSH Tunnel...' });
 
 		const connection = await this.tunnel.connect();
 		const addr = connection.address();

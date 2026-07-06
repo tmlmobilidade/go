@@ -2,12 +2,23 @@
 
 import { getRides } from '@/get-rides.js';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import Fastify from 'fastify';
 
 /* * */
 
 await (async function init() {
 	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Coordinator' });
+	}
 
 	//
 	// Setup variables
@@ -27,7 +38,7 @@ await (async function init() {
 			console.log(err);
 			process.exit(1);
 		}
-		Logger.info(`Server listening at ${address}`);
+		Logger.info({ message: `Server listening at ${address}` });
 	});
 
 	//

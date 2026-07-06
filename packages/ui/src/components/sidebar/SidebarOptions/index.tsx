@@ -90,7 +90,7 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 
 			<MantineMenu.Item
 				leftSection={<IconBellRinging size={20} />}
-				onClick={() => Notification.requestPermission()}
+				onClick={notificationsContext.actions.requestNotificationPermission}
 				rightSection={notificationsContext.flags.enabled ? <IconCheck size={16} /> : null}
 			>
 				{notificationsContext.flags.enabled ? 'Notificações Ativadas' : 'Ativar Notificações'}

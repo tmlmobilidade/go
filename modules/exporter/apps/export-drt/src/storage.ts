@@ -13,8 +13,8 @@ export async function saveDatabaseToStorage(config: DatabaseConfig): Promise<voi
 	const databasePath = getDatabasePath(config);
 	const databaseName = config.agency_id ? `${config.database_name}-${config.agency_id}` : config.database_name;
 
-	Logger.info(`Saving the SQLite database to the storage service...`);
-	Logger.info(`File saved in: ${databasePath}`);
+	Logger.info({ message: `Saving the SQLite database to the storage service...` });
+	Logger.info({ message: `File saved in: ${databasePath}` });
 
 	const fileStream = fs.createReadStream(databasePath);
 	const fileStats = fs.statSync(databasePath);

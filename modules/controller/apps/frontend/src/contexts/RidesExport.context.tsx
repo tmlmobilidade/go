@@ -83,8 +83,7 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 			if (!fileExport) return;
 			useToast.success({ message: 'A exportação foi iniciada', title: 'Sucesso' });
 			closeModal(RIDES_EXPORT_MODAL_ID);
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({ message: error instanceof Error ? error.message : 'Erro ao iniciar a exportação', title: 'Erro' });
 			return;
 		}
@@ -112,6 +111,7 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 				delay_status: initialFilters.delay_status,
 				operational_status: initialFilters.operational_status,
 				search: initialFilters.search,
+				ticketing_status: initialFilters.ticketing_status,
 			},
 			flags: {
 				canSave: !!initialFilters.date_end && !!initialFilters.date_start,
@@ -130,6 +130,7 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 		initialFilters.analysis_transaction_sequentiality,
 		initialFilters.delay_status,
 		initialFilters.operational_status,
+		initialFilters.ticketing_status,
 	]);
 
 	//

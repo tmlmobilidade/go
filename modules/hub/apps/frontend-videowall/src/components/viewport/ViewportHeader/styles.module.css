@@ -1,0 +1,25 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 6px;
+	color: white;
+	background-color: rgb(255 255 255 / 10%);
+}
+
+/* * */
+/* TITLE */
+
+.title {
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1;
+	color: white;
+	text-transform: uppercase;
+	opacity: 0.6;
+}

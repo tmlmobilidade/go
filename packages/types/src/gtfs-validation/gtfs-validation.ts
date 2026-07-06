@@ -1,10 +1,9 @@
 /* * */
 
-import { DocumentSchema } from '@/_common/document.js';
-import { ProcessingStatusSchema, ValidityStatusSchema } from '@/_common/status.js';
 import { GtfsValidationSummarySchema } from '@/gtfs-validation/gtfs-validation-summary.js';
 import { GtfsAgencySchema } from '@/gtfs/agency.js';
 import { GtfsFeedInfoSchema } from '@/gtfs/feed-info.js';
+import { DocumentSchema, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

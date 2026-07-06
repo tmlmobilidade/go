@@ -1,8 +1,8 @@
 /* * */
 
-import { OperationalDateSchema } from '@/_common/operational-date.js';
 import { FileExportBaseSchema } from '@/file-exports/base.js';
 import { LinesModeSchema } from '@/offer/rules.js';
+import { OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

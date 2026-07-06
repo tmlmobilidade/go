@@ -20,9 +20,9 @@ export const syncDemandByPatternHourByYear = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
 	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch metrics collection
@@ -33,13 +33,13 @@ export const syncDemandByPatternHourByYear = async () => {
 	// Get all monthly metrics
 
 	const cascadeTimer = new Timer();
-	Logger.info(`Aggregating from demand_by_pattern_hour_by_month metrics...`);
+	Logger.info({ message: `Aggregating from demand_by_pattern_hour_by_month metrics...` });
 
 	const monthlyMetrics = await metricsCollection
 		.find({ metric: 'demand_by_pattern_hour_by_month' }, { allowDiskUse: false })
 		.toArray() as DemandByPatternHourByMonth[];
 
-	Logger.info(`Found ${monthlyMetrics.length} monthly metrics to aggregate (${cascadeTimer.get()})`);
+	Logger.info({ message: `Found ${monthlyMetrics.length} monthly metrics to aggregate (${cascadeTimer.get()})` });
 
 	//
 	// Aggregate by pattern hour and sum by year
@@ -89,7 +89,7 @@ export const syncDemandByPatternHourByYear = async () => {
 	}
 
 	const monthlyAggregation = Array.from(yearlyMap.values());
-	Logger.info(`Aggregated ${monthlyAggregation.length} yearly metrics from monthly data (${cascadeTimer.get()})`);
+	Logger.info({ message: `Aggregated ${monthlyAggregation.length} yearly metrics from monthly data (${cascadeTimer.get()})` });
 
 	//
 	// Insert all metrics

@@ -1,72 +1,108 @@
-// 'use client';
+'use client';
 
-// import { MapView } from '@/components/map/MapView';
-// import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/MapViewStyleAlerts';
-// import { useAlertsContext } from '@/contexts/Alerts.context';
-// import { useEnvironmentContext } from '@/contexts/Environment.context';
-// import { centerMap } from '@/utils/map.utils';
-// import * as turf from '@turf/turf';
-// import { MapMouseEvent, useMap } from '@vis.gl/react-maplibre';
-// import { useRouter } from 'next/navigation';
-// import { useEffect } from 'react';
+import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { MapView } from '@/components/map/MapView';
+import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
+import { centerMap, moveMap } from '@/utils/map.utils';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { useMap } from '@vis.gl/react-maplibre';
+import { type MapLayerMouseEvent } from 'maplibre-gl';
+import { useCallback, useEffect, useMemo } from 'react';
 
-// /* * */
+import styles from './styles.module.css';
 
-// export function AlertsListViewMap() {
-// 	//
+/* * */
 
-// 	//
-// 	// A. Setup variables
+export function AlertsListViewMap() {
+	//
 
-// 	const { alertsListMap } = useMap();
-// 	const router = useRouter();
-// 	const alertsContext = useAlertsContext();
-// 	const environmentContext = useEnvironmentContext();
-// 	//
-// 	// B. Handle actions
+	//
+	// A. Setup variables
 
-// 	useEffect(() => {
-// 		// Exit early if there are no alerts or map
-// 		if (!alertsContext.data.featureCollection?.features.length || !alertsListMap) return;
+	const alertsListContext = useAlertsListContext();
+	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
+	const { alertsListMap } = useMap();
 
-// 		// When there are search filters, center the map on the cluster with the most points
-// 		const clusterPoints = turf.clustersKmeans(alertsContext.data.featureCollection, { mutate: true, numberOfClusters: 2 });
-// 		const clusterPointsCount = clusterPoints.features.reduce((acc, feature) => {
-// 			if (typeof feature.properties.cluster !== 'number') return acc;
-// 			const clusterId = feature.properties.cluster;
-// 			if (!acc[clusterId]) acc[clusterId] = 0;
-// 			acc[clusterId]++;
-// 			return acc;
-// 		}, {});
-// 		const clusterId = Object.keys(clusterPointsCount).reduce((a, b) => (clusterPointsCount[a] > clusterPointsCount[b] ? a : b));
-// 		const filteredClusterPoints = clusterPoints.features.filter(feature => feature.properties.cluster === Number(clusterId));
-// 		centerMap(alertsListMap, filteredClusterPoints);
-// 		//
-// 	}, [alertsContext.data.featureCollection, alertsListMap]);
+	const focusedAlertId = activeBottomSheet?.view === 'alerts-detail' ? activeBottomSheet.entityId : null;
 
-// 	function handleLayerClick(event: MapMouseEvent) {
-// 		const feature = event.features?.[0];
-// 		if (!feature) return;
-// 		const alertId = feature.properties.id;
-// 		router.push(environmentContext.actions.getNormalizedHref(`/alerts/${alertId}`));
-// 	}
+	//
+	// B. Transform data
 
-// 	//
-// 	// C. Render components
+	const mapFeatureCollection = useMemo(() => {
+		if (!focusedAlertId) return alertsListContext.data.fc;
 
-// 	return (
-// 		<Surface variant="persistent" forceOverflow>
-// 			<div style={{ height: 600 }}>
-// 				<MapView
-// 					id="alertsListMap"
-// 					interactiveLayerIds={[MapViewStyleAlertsLayerId]}
-// 					onClick={handleLayerClick}
-// 				>
-// 					<MapViewStyleAlerts data={alertsContext.data.featureCollection} />
-// 				</MapView>
-// 			</div>
-// 		</Surface>
-// 	);
+		const collection = getBaseGeoJsonFeatureCollection();
 
-// 	//
-// }
+		alertsListContext.data.fc.features.forEach((feature) => {
+			const featureId = feature.properties?.id ?? feature.properties?._id;
+
+			if (featureId === focusedAlertId) collection.features.push(feature);
+		});
+
+		return collection;
+	}, [alertsListContext.data.fc, focusedAlertId]);
+
+	useEffect(() => {
+		if (!alertsListMap) return;
+
+		if (focusedAlertId) {
+			const focusedFeature = mapFeatureCollection.features.find(
+				feature => feature.geometry?.type === 'Point',
+			);
+
+			if (!focusedFeature || focusedFeature.geometry?.type !== 'Point') return;
+
+			moveMap(alertsListMap, focusedFeature.geometry.coordinates);
+			return;
+		}
+
+		if (alertsListContext.data.fc.features.length) {
+			centerMap(alertsListMap, alertsListContext.data.fc.features);
+		}
+	}, [alertsListMap, alertsListContext.data.fc, focusedAlertId, mapFeatureCollection.features]);
+
+	//
+	// C. Handle actions
+
+	const handleMapClick = useCallback((event: MapLayerMouseEvent) => {
+		if (!event.features?.length) return;
+
+		const alertFeature = event.features.find(
+			feature => feature.layer?.id === MapViewStyleAlertsLayerId,
+		);
+
+		if (!alertFeature) return;
+
+		const alertId = alertFeature.properties?.id ?? alertFeature.properties?._id;
+
+		if (!alertId || alertFeature.geometry?.type !== 'Point') return;
+
+		const [longitude, latitude] = alertFeature.geometry.coordinates;
+
+		moveMap(event.target, [longitude, latitude]);
+
+		const alertEntityId = String(alertId);
+
+		if (activeBottomSheet?.view === 'alerts-detail' && activeBottomSheet.entityId === alertEntityId) {
+			return;
+		}
+
+		setActiveBottomSheet({ entityId: alertEntityId, view: 'alerts-detail' });
+	}, [activeBottomSheet, setActiveBottomSheet]);
+
+	//
+	// D. Render components
+
+	return (
+		<div className={styles.container}>
+			<MapView
+				id="alertsListMap"
+				interactiveLayerIds={[MapViewStyleAlertsLayerId]}
+				onClick={handleMapClick}
+			>
+				<MapViewStyleAlerts data={mapFeatureCollection} />
+			</MapView>
+		</div>
+	);
+}

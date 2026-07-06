@@ -16,9 +16,8 @@ export const syncPassengerImpactMetrics = async (): Promise<void> => {
 		await syncPassengerImpactServiceFailuresByDay();
 
 		Logger.success(`Finished Passenger Impact Metrics Sync (${timer.get()})`);
-	}
-	catch (error) {
-		Logger.error('Failed to sync Passenger Impact Metrics');
+	} catch (error) {
+		Logger.error({ message: 'Failed to sync Passenger Impact Metrics' });
 		Logger.error(error);
 		throw error;
 	}

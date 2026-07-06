@@ -15,14 +15,14 @@ export function parseRide(ride: RideNormalized & { acceptance: null | RideAccept
 		/* * */
 		_id: ride._id,
 		agency_id: ride.agency_id,
-		driver_ids: ride.driver_ids.join('|'),
+		driver_ids: ride.driver_ids?.join('|') ?? null,
 		headsign: ride.headsign,
 		line_id: ride.line_id,
 		pattern_id: ride.pattern_id,
 		plan_id: ride.plan_id,
 		route_id: ride.route_id,
 		trip_id: ride.trip_id,
-		vehicle_ids: ride.vehicle_ids.join('|'),
+		vehicle_ids: ride.vehicle_ids?.join('|') ?? null,
 
 		/* TIME & STATUS */
 		/* * */
@@ -69,7 +69,7 @@ export function parseRide(ride: RideNormalized & { acceptance: null | RideAccept
 		analysis_EXPECTED_APEX_VALIDATION_INTERVAL: ride.analysis?.EXPECTED_APEX_VALIDATION_INTERVAL?.grade ?? null,
 		analysis_EXPECTED_DRIVER_ID_QTY: ride.analysis?.EXPECTED_DRIVER_ID_QTY?.grade ?? null,
 		analysis_EXPECTED_START_TIME: ride.analysis?.EXPECTED_START_TIME?.grade ?? null,
-		analysis_EXPECTED_START_TIME_value: ride.analysis?.EXPECTED_START_TIME.value ?? null,
+		analysis_EXPECTED_START_TIME_value: ride.analysis?.EXPECTED_START_TIME?.value ?? null,
 		analysis_EXPECTED_VEHICLE_EVENT_DELAY: ride.analysis?.EXPECTED_VEHICLE_EVENT_DELAY?.grade ?? null,
 		analysis_EXPECTED_VEHICLE_EVENT_INTERVAL: ride.analysis?.EXPECTED_VEHICLE_EVENT_INTERVAL?.grade ?? null,
 		analysis_EXPECTED_VEHICLE_EVENT_QTY: ride.analysis?.EXPECTED_VEHICLE_EVENT_QTY?.grade ?? null,

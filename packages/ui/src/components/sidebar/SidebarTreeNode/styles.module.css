@@ -61,15 +61,11 @@
 	letter-spacing: 0.5px;
 	white-space: nowrap;
 	opacity: 0;
-	transition:
-		max-width var(--sidebar-label-transition-duration) var(--sidebar-label-transition-easing),
-		opacity 200ms var(--sidebar-label-transition-easing);
 }
 
 .groupHeader[data-collapsed='false'] .groupLabel {
 	max-width: 100%;
 	opacity: 1;
-	transition-delay: 60ms;
 }
 
 .groupChevron {
@@ -80,11 +76,6 @@
 	overflow: hidden;
 	color: var(--color-system-text-300);
 	opacity: 1;
-	transition:
-		width var(--sidebar-label-transition-duration) var(--sidebar-label-transition-easing),
-		min-width var(--sidebar-label-transition-duration) var(--sidebar-label-transition-easing),
-		opacity 200ms var(--sidebar-label-transition-easing),
-		transform 200ms ease;
 }
 
 .groupHeader[data-collapsed='true'] .groupChevron {

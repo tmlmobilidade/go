@@ -12,7 +12,7 @@ export function transformEffect(alertData: Alert): GtfsRtEffect {
 	// Validate required input properties
 
 	if (!alertData.effect) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert effect is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert effect is missing.` });
 		return 'UNKNOWN_EFFECT';
 	}
 

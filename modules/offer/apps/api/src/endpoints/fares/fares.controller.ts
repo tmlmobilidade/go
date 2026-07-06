@@ -162,7 +162,9 @@ export class FaresController {
 
 		const fareData = await fares.findById(request.params.id);
 
-		if (!fareData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		if (!fareData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		}
 
 		//
 		// Get the resource permissions for fares for the current user.
@@ -216,7 +218,9 @@ export class FaresController {
 
 		const fareData = await fares.findById(request.params.id);
 
-		if (!fareData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		if (!fareData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		}
 
 		//
 		// Get the resource permissions for fares for the current user.
@@ -248,7 +252,9 @@ export class FaresController {
 		// If authorized, toggle the lock status of the fare
 		await fares.toggleLockById(request.params.id);
 		const foundFare = await fares.findById(request.params.id);
-		if (!foundFare) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		if (!foundFare) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		}
 
 		return reply.send({ data: foundFare, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -268,7 +274,9 @@ export class FaresController {
 
 		const fareData = await fares.findById(request.params.id);
 
-		if (!fareData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		if (!fareData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
+		}
 
 		//
 		// Get the resource permissions for fares for the current user.

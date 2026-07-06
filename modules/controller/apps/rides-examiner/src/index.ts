@@ -2,9 +2,10 @@
 
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { hashedShapes, hashedTrips, rides, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
+import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
+import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { UpdateRideSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -14,6 +15,19 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 export async function validateRides() {
 	try {
 		//
+
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.startNodeLogs({ app: 'rides-examiner', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error({ error, message: 'Error initializing Sentry Rides Examiner' });
+		}
+
+		//
+		// Initialize the logger
 
 		Logger.init();
 
@@ -36,7 +50,7 @@ export async function validateRides() {
 
 		const ridesBatch = await rides.findMany({ _id: { $in: rideIdsBatch || [] } });
 
-		Logger.info(`Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, 1);
+		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 
 		//
 		// Process each Ride
@@ -54,33 +68,7 @@ export async function validateRides() {
 
 				const fetchAnalysisDataTimer = new Timer();
 
-				const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
-
-				const hashedShapePromise = hashedShapes.findById(rideData.hashed_shape_id);
-				const hashedTripPromise = hashedTrips.findById(rideData.hashed_trip_id);
-				const simplifiedApexLocationsPromise = simplifiedApexLocations.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
-				const simplifiedApexOnBoardRefundsPromise = simplifiedApexOnBoardRefunds.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
-				const simplifiedApexOnBoardSalesPromise = simplifiedApexOnBoardSales.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
-				const simplifiedApexValidationsPromise = simplifiedApexValidations.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, trip_id: rideData.trip_id });
-				const vehicleEventsPromise = simplifiedVehicleEvents.findMany({ created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end }, extra_trip_id: null, trip_id: rideData.trip_id });
-
-				const [
-					hashedShapeData,
-					hashedTripData,
-					simplifiedApexLocationsData,
-					simplifiedApexOnBoardRefundsData,
-					simplifiedApexOnBoardSalesData,
-					simplifiedApexValidationsData,
-					vehicleEventsData,
-				] = await Promise.all([
-					hashedShapePromise,
-					hashedTripPromise,
-					simplifiedApexLocationsPromise,
-					simplifiedApexOnBoardRefundsPromise,
-					simplifiedApexOnBoardSalesPromise,
-					simplifiedApexValidationsPromise,
-					vehicleEventsPromise,
-				]);
+				const analysisData = await fetchAnalysisData(rideData);
 
 				const fetchAnalysisDataTime = fetchAnalysisDataTimer.get();
 
@@ -89,14 +77,14 @@ export async function validateRides() {
 				// from the fetched dynamic data. Some of this data will be used by the analyzers.
 
 				const augmentedRideData = augmentRide({
-					hashed_shape: hashedShapeData,
-					hashed_trip: hashedTripData,
+					hashed_shape: analysisData.hashed_shape,
+					hashed_trip: analysisData.hashed_trip,
 					ride: rideData,
-					simplified_apex_locations: simplifiedApexLocationsData,
-					simplified_apex_on_board_refunds: simplifiedApexOnBoardRefundsData,
-					simplified_apex_on_board_sales: simplifiedApexOnBoardSalesData,
-					simplified_apex_validations: simplifiedApexValidationsData,
-					vehicle_events: vehicleEventsData,
+					simplified_apex_locations: analysisData.simplified_apex_locations,
+					simplified_apex_on_board_refunds: analysisData.simplified_apex_on_board_refunds,
+					simplified_apex_on_board_sales: analysisData.simplified_apex_on_board_sales,
+					simplified_apex_validations: analysisData.simplified_apex_validations,
+					vehicle_events: analysisData.vehicle_events,
 				});
 
 				//
@@ -104,14 +92,14 @@ export async function validateRides() {
 				// how many failed and how many errored.
 
 				augmentedRideData.analysis = analyzeRide({
-					hashed_shape: hashedShapeData,
-					hashed_trip: hashedTripData,
+					hashed_shape: analysisData.hashed_shape,
+					hashed_trip: analysisData.hashed_trip,
 					ride: augmentedRideData,
-					simplified_apex_locations: simplifiedApexLocationsData,
-					simplified_apex_on_board_refunds: simplifiedApexOnBoardRefundsData,
-					simplified_apex_on_board_sales: simplifiedApexOnBoardSalesData,
-					simplified_apex_validations: simplifiedApexValidationsData,
-					vehicle_events: vehicleEventsData,
+					simplified_apex_locations: analysisData.simplified_apex_locations,
+					simplified_apex_on_board_refunds: analysisData.simplified_apex_on_board_refunds,
+					simplified_apex_on_board_sales: analysisData.simplified_apex_on_board_sales,
+					simplified_apex_validations: analysisData.simplified_apex_validations,
+					vehicle_events: analysisData.vehicle_events,
 				});
 
 				const skipAnalysisCount = Object.entries(augmentedRideData.analysis).filter(([, value]) => value.grade === 'skip').map(([key]) => key);
@@ -130,7 +118,7 @@ export async function validateRides() {
 					system_status: 'complete',
 				});
 
-				Logger.info([
+				Logger.info({ message: [
 					'[', { a: 'right', c: 7, t: `${ridesBatch.length - rideIndex}/${ridesBatch.length}` }, ']',
 					' F: ', { c: 5, t: fetchAnalysisDataTime },
 					' T: ', { c: 7, t: rideAnalysisTimer.get() },
@@ -139,12 +127,12 @@ export async function validateRides() {
 					{ c: 10, t: `PASS: ${passAnalysisCount.length} ` },
 					{ c: 10, t: `FAIL: ${failAnalysisCount.length} ` },
 					{ c: 12, t: `ERROR: ${errorAnalysisCount.length} [${errorAnalysisCount.join('|')}]` },
-				]);
+				] });
 
 				//
 			} catch (error) {
 				await rides.updateById(rideData._id, { system_status: 'error' });
-				Logger.error('An error occurred while processing a ride.', error);
+				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
 			}
 		}
 
@@ -156,8 +144,8 @@ export async function validateRides() {
 
 		//
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
-		Logger.error('Retrying in 10 seconds...');
+		Logger.error({ error: err, message: `An error occurred. Halting execution: ${err.message}` });
+		Logger.error({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

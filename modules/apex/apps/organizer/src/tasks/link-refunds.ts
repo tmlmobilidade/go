@@ -47,7 +47,7 @@
 // 		//
 
 // 		Logger.init();
-// 		Logger.info('Linking Refunds to Sales and Validations...');
+// 		Logger.info({ message: 'Linking Refunds to Sales and Validations...' });
 
 // 		const globalTimer = new Timer();
 
@@ -69,7 +69,7 @@
 
 // 		for (const onBoardRefund of unlinkedOnBoardRefunds) {
 // 			totalUnlinkedOnBoardRefunds++;
-// 			if (totalUnlinkedOnBoardRefunds % 10000 === 0) Logger.info(`Gone through ${totalUnlinkedOnBoardRefunds} Refunds so far and linked ${totalLinkedOnBoardRefunds} of them to Sales and Validations.`);
+// 			if (totalUnlinkedOnBoardRefunds % 10000 === 0) Logger.info({ message: `Gone through ${totalUnlinkedOnBoardRefunds} Refunds so far and linked ${totalLinkedOnBoardRefunds} of them to Sales and Validations.` });
 // 			// Fetch the corresponding Validation transaction.
 // 			// If no transaction is found, skip this iteration.
 // 			const [validationTransaction] = await queryRows<ValidationRow>(`

@@ -27,7 +27,7 @@ export async function queryFromString<T>(client: ClickHouseClient, query: string
 		});
 		return result.json<T>();
 	} catch (error) {
-		Logger.error(`CLICKHOUSE: Error @ queryFromString(): Failed to execute query "${query}": ${(error as Error).message}`);
+		Logger.error({ error, message: `CLICKHOUSE: Error @ queryFromString(): Failed to execute query "${query}": ${(error as Error).message}` });
 		throw error;
 	}
 }

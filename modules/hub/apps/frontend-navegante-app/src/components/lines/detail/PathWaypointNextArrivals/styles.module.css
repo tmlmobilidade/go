@@ -1,0 +1,63 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+/* * */
+/* TITLE */
+
+.title {
+	font-size: 12px;
+	font-style: italic;
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-300);
+}
+
+/* * */
+/* ARRIVALS WRAPPER */
+
+.arrivalsWrapper {
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+}
+
+.realtimeArrivalsWrapper,
+.scheduledArrivalsWrapper {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.realtimeArrivalsList,
+.scheduledArrivalsList {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+/* * */
+/* REALTIME ARRIVAL */
+
+.realtimeArrival {
+	font-size: 16px;
+	font-weight: var(--font-weight-bold);
+	color: var(--color-realtime-100);
+}
+
+/* * */
+/* SCHEDULED ARRIVAL */
+
+.scheduledArrival {
+	font-size: 16px;
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-system-text-100);
+}

@@ -1,8 +1,8 @@
 /* * */
 
-import { HttpException, HTTP_STATUS } from '@tmlmobilidade/consts';
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, lines, routes } from '@tmlmobilidade/interfaces';
+import { type Filter, lines, patterns, routes } from '@tmlmobilidade/interfaces';
 import { CreateLineDto, type Line, PermissionCatalog, RouteSimplified, type UpdateLineDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -59,7 +59,7 @@ export class LinesController {
 	}
 
 	/**
-	 * Deletes a line by ID
+	 * Deletes a line by ID and cascades to all its routes and patterns.
 	 * @param request Fastify request containing line ID in params
 	 * @param reply Fastify reply
 	 */
@@ -100,6 +100,8 @@ export class LinesController {
 
 		//
 
+		await patterns.deleteMany({ line_id: id });
+		await routes.deleteMany({ line_id: id });
 		await lines.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
@@ -162,7 +164,9 @@ export class LinesController {
 
 		const lineData = await lines.findById(request.params.id);
 
-		if (!lineData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!lineData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		}
 
 		//
 		// Get the resource permissions for lines for the current user.
@@ -224,7 +228,9 @@ export class LinesController {
 
 		const lineData = await lines.findById(request.params.id);
 
-		if (!lineData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!lineData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		}
 
 		//
 		// Get the resource permissions for lines for the current user.
@@ -256,7 +262,9 @@ export class LinesController {
 		// If authorized, toggle the lock status of the line
 		await lines.toggleLockById(request.params.id);
 		const foundLine = await lines.findById(request.params.id);
-		if (!foundLine) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!foundLine) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		}
 
 		return reply.send({ data: foundLine, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -276,7 +284,9 @@ export class LinesController {
 
 		const lineData = await lines.findById(request.params.id);
 
-		if (!lineData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		if (!lineData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
+		}
 
 		//
 		// Get the resource permissions for lines for the current user.

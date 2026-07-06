@@ -67,6 +67,6 @@ export async function transformAlertIntoRssEntity(alertData: Alert, feedBaseUrl:
 
 		//
 	} catch (error) {
-		Logger.error(`[Alert ID: ${alertData._id}] Error transforming alert: ${(error as Error).message}`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Error transforming alert: ${(error as Error).message}` });
 	}
 }

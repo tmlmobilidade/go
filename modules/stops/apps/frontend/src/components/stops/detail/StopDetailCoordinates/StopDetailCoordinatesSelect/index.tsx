@@ -2,17 +2,17 @@
 
 /* * */
 
+import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { COORDINATES_PIN_DEBOUNCE_MS, coordinatesToSearchQuery, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
-import { useStopDetailContext } from '@/contexts/StopDetailCoordinates.modal';
 import { Button, CoordinatesInput, Divider, Grid, Section, useMapContext, useToast } from '@tmlmobilidade/ui';
 import { useEffect, useRef } from 'react';
 
 /* * */
 
 interface StopDetailCoordinatesSelectProps {
-	draft: [number, number]
+	draft: [number | undefined, number | undefined]
 	onConfirmDraft: () => void
-	setDraftCoords: (latitude: number, longitude: number) => void
+	setDraftCoords: (latitude: number | undefined, longitude: number | undefined) => void
 }
 
 export function StopDetailCoordinatesSelect({ draft, onConfirmDraft, setDraftCoords }: StopDetailCoordinatesSelectProps) {
@@ -52,8 +52,20 @@ export function StopDetailCoordinatesSelect({ draft, onConfirmDraft, setDraftCoo
 		return true;
 	};
 
-	const handleDraftCoordinatesChange = (value: [number, number]) => {
+	const handleDraftCoordinatesChange = (value: [number | undefined, number | undefined] | undefined) => {
+		if (!value) {
+			setDraftCoords(undefined, undefined);
+			if (pinDelayRef.current) clearTimeout(pinDelayRef.current);
+			mapContext.actions.handleSearch('');
+			return;
+		}
 		const [latRaw, lngRaw] = value;
+		if (latRaw === undefined || lngRaw === undefined) {
+			setDraftCoords(latRaw, lngRaw);
+			if (pinDelayRef.current) clearTimeout(pinDelayRef.current);
+			mapContext.actions.handleSearch('');
+			return;
+		}
 		const lat = typeof latRaw === 'number' ? latRaw : Number(latRaw);
 		const lng = typeof lngRaw === 'number' ? lngRaw : Number(lngRaw);
 		if (!isDraftLngLatAllowed(lat, lng)) return;
@@ -83,16 +95,17 @@ export function StopDetailCoordinatesSelect({ draft, onConfirmDraft, setDraftCoo
 				key="stop-detail-coordinates-map-draft"
 				disabled={stopDetailContext.flags.isReadOnly}
 				onChange={handleDraftCoordinatesChange}
-				value={[
-					typeof latitude === 'number' ? latitude : 0,
-					typeof longitude === 'number' ? longitude : 0,
-				]}
+				value={
+					typeof latitude !== 'number' && typeof longitude !== 'number'
+						? undefined
+						: [latitude, longitude]
+				}
 			/>
 			<Divider />
 			<Grid columns="ab" gap="sm">
 				<Button label="Cancelar" onClick={stopDetailContext.actions.closeCoordinatesEditor} type="button" variant="secondary" />
 				<Button
-					disabled={stopDetailContext.flags.isReadOnly}
+					disabled={stopDetailContext.flags.isReadOnly || !latitude || !longitude}
 					label="Definir coordenadas"
 					onClick={onConfirmDraft}
 					type="button"

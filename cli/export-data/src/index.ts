@@ -21,9 +21,9 @@ import { exportTypeLabels, exportTypesWithoutEntityFilters, exportTypesWithoutFi
 import { initExportContext } from '@/utils/init-context.js';
 import { intro, log, outro, tasks } from '@clack/prompts';
 import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
-import { exportValidationsPMunicipalities } from './tasks/municipalities-validations/validations_p_municipalities.js';
 
 import { exportExecutiveSummary } from './tasks/executive-summary-setup/index.js';
+import { exportValidationsPMunicipalities } from './tasks/municipalities-validations/validations_p_municipalities.js';
 
 /* * */
 
