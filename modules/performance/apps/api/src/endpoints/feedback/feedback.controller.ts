@@ -38,7 +38,7 @@ export class FeedbackController {
 			const clickhouseClient = await GOClickHouseClient.getClient();
 			const resultSet = await clickhouseClient.query({
 				format: 'JSONEachRow',
-				query: `SELECT * FROM \`${database}\`.\`${table}\`${limit ? ' LIMIT {limit:UInt32}' : ''}`,
+				query: `SELECT * FROM \`${database}\`.\`${table}\` ORDER BY \`created_at\` DESC${limit ? ' LIMIT {limit:UInt32}' : ''}`,
 				query_params: limit ? { limit } : {},
 			});
 
