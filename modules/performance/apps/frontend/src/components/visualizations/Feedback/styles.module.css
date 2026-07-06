@@ -62,7 +62,17 @@
 }
 
 .timelineChartSkeleton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	height: 220px;
+}
+
+.emptyText {
+	margin: 0;
+	color: var(--color-system-text-200);
+	font-size: var(--font-size-md);
+	font-weight: var(--font-weight-bold);
 }
 
 .feedbackEntityModalTitle {

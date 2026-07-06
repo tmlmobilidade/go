@@ -14,12 +14,13 @@ import { useMemo, useState } from 'react';
 import styles from './styles.module.css';
 
 interface FeedbackGraphCardProps {
+	isLoading?: boolean
 	rows: PublicFeedback[]
 }
 
 /* * */
 
-export function FeedbackGraphCard({ rows }: FeedbackGraphCardProps) {
+export function FeedbackGraphCard({ isLoading, rows }: FeedbackGraphCardProps) {
 	//
 	// A. Setup variables
 
@@ -61,7 +62,7 @@ export function FeedbackGraphCard({ rows }: FeedbackGraphCardProps) {
 			<div className={`${styles.feedbackCardContent} ${styles.feedbackCardContentFill}`}>
 				{timelineBars.length === 0 ? (
 					<div className={styles.timelineChartSkeleton}>
-						<MetricsSkeleton />
+						{isLoading ? <MetricsSkeleton /> : <p className={styles.emptyText}>Sem dados de feedback para mostrar.</p>}
 					</div>
 				) : (
 					<div className={styles.timelineChart}>

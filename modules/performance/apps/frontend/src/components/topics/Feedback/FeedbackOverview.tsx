@@ -20,13 +20,14 @@ import { TopFeedbackReasonsChart } from './components/TopFeedbackReasonsChart';
 /* * */
 
 interface FeedbackOverviewProps {
+	isLoading?: boolean
 	operatorRows: PublicFeedback[]
 	rows: PublicFeedback[]
 }
 
 /* * */
 
-export function FeedbackOverview({ operatorRows, rows }: FeedbackOverviewProps) {
+export function FeedbackOverview({ isLoading, operatorRows, rows }: FeedbackOverviewProps) {
 	//
 	// A. Fetch data
 
@@ -57,7 +58,7 @@ export function FeedbackOverview({ operatorRows, rows }: FeedbackOverviewProps) 
 
 	return (
 		<>
-			<FeedbackGraphCard rows={rows} />
+			<FeedbackGraphCard isLoading={isLoading} rows={rows} />
 
 			<section className={styles.listsGrid}>
 				<TopFeedbackEntities items={feedbackData.topLines} nameColumnLabel="Linha" title="Linhas com mais feedbacks" />

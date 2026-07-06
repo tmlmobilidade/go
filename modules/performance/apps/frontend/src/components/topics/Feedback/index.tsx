@@ -16,12 +16,12 @@ import { FeedbackOverview } from './FeedbackOverview';
 /* * */
 
 export default function FeedbackTopic() {
-	const { data: feedbackRows } = useSWR<PublicFeedback[]>(Routes.FEEDBACK_PREVIEW);
+	const { data: feedbackRows, isLoading } = useSWR<PublicFeedback[]>(Routes.FEEDBACK_PREVIEW);
 	const operatorFilter = useFeedbackOperatorFilter(feedbackRows, 'all');
 
 	return (
 		<div className={styles.container}>
-			<FeedbackOverview operatorRows={operatorFilter.availableRows} rows={operatorFilter.rows} />
+			<FeedbackOverview isLoading={isLoading} operatorRows={operatorFilter.availableRows} rows={operatorFilter.rows} />
 			<FeedbackDashboards />
 		</div>
 	);
