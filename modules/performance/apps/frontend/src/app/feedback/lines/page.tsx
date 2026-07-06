@@ -1,6 +1,6 @@
 'use client';
 
-import { FeedbackLines } from '@/components/dashboards/Feedback/Lines';
+import { FeedbackLines } from '@/components/dashboards/Feedback/AllLines';
 import DashboardWrapper from '@/components/layout/DashboardWrapper';
 import { DashboardDefinition, TOPICS, TOPICS_REGISTRY } from '@/constants';
 

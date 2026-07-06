@@ -1,6 +1,6 @@
 'use client';
 
-import { FeedbackStops } from '@/components/dashboards/Feedback/Stops';
+import { FeedbackStops } from '@/components/dashboards/Feedback/AllStops';
 import DashboardWrapper from '@/components/layout/DashboardWrapper';
 import { DashboardDefinition, TOPICS, TOPICS_REGISTRY } from '@/constants';
 
