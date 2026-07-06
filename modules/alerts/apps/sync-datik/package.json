@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
-		"@tmlmobilidade/go-interfaces-go-mongo": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

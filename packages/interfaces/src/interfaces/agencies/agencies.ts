@@ -56,6 +56,6 @@ class AgenciesClass extends MongoCollectionClass<Agency, CreateAgencyDto, Update
 
 /**
  * @deprecated This class is deprecated and will be removed in the future.
- * Use `@tmlmobilidade/go-interfaces-go-mongo` instead.
+ * Use `@tmlmobilidade/go-interfaces-go-db` instead.
  */
 export const agencies = asyncSingletonProxy(AgenciesClass);

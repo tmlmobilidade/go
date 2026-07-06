@@ -141,6 +141,6 @@ class UsersClass extends MongoCollectionClass<User_UNSAFE, CreateUserDto, Update
 
 /**
  * @deprecated This class is deprecated and will be removed in the future.
- * Use `@tmlmobilidade/go-interfaces-go-mongo` instead.
+ * Use `@tmlmobilidade/go-interfaces-go-db` instead.
  */
 export const users = asyncSingletonProxy(UsersClass);

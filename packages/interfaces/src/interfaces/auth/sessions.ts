@@ -48,6 +48,6 @@ class SessionsClass extends MongoCollectionClass<Session, CreateSessionDto, Upda
 
 /**
  * @deprecated This class is deprecated and will be removed in the future.
- * Use `@tmlmobilidade/go-interfaces-go-mongo` instead.
+ * Use `@tmlmobilidade/go-interfaces-go-db` instead.
  */
 export const sessions = asyncSingletonProxy(SessionsClass);
