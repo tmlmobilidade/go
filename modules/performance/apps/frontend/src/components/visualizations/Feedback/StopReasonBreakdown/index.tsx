@@ -62,7 +62,7 @@ export function StopReasonBreakdown({ entityId, meters }: StopReasonBreakdownPro
 		const chartItem = chartData.find(item => item.id === categoryId);
 
 		if (!chartItem?.selectable) return;
-		setSelectedCategory(chartItem.id);
+		setSelectedCategory(currentCategory => (currentCategory === chartItem.id ? undefined : chartItem.id));
 	};
 
 	if (meters.length === 0) return null;
