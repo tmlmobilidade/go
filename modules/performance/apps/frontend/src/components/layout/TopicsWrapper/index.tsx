@@ -7,7 +7,7 @@ import { Divider } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
-export default function TopicsWrapper({ children, topic }: { children?: React.ReactNode, topic: TopicDefinition }) {
+export default function TopicsWrapper({ actions, children, topic }: { actions?: React.ReactNode, children?: React.ReactNode, topic: TopicDefinition }) {
 	//
 
 	// A. Setup variables
@@ -35,6 +35,12 @@ export default function TopicsWrapper({ children, topic }: { children?: React.Re
 
 					<p>{topic.description}</p>
 				</div>
+
+				{actions && (
+					<div className={styles.actionsContainer}>
+						{actions}
+					</div>
+				)}
 			</div>
 
 			{children}
