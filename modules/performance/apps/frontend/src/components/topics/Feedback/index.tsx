@@ -21,7 +21,7 @@ export default function FeedbackTopic() {
 
 	return (
 		<div className={styles.container}>
-			<FeedbackOverview rows={operatorFilter.rows} />
+			<FeedbackOverview operatorRows={feedbackRows ?? []} rows={operatorFilter.rows} />
 			<FeedbackDashboards />
 		</div>
 	);

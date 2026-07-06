@@ -5,7 +5,7 @@ import { MetricCard } from '@/components/layout/MetricCard';
 import { MetricCardSkeleton } from '@/components/layout/MetricCardSkeleton';
 import { TrendChip } from '@/components/layout/TrendChip';
 import { AgencyType } from '@/constants';
-import { useHomeContext } from '@/contexts/Home.context';
+import { useHomeContext } from '@/contexts/home/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { IconBus } from '@tabler/icons-react';
 import { RealtimeServiceCompliance } from '@tmlmobilidade/types';

@@ -4,7 +4,7 @@ import TopicsWrapper from '@/components/layout/TopicsWrapper';
 import FeedbackTopic from '@/components/topics/Feedback';
 import { FeedbackOperatorFilterButton } from '@/components/topics/Feedback/components/FeedbackOperatorFilterButton';
 import { TOPICS, TOPICS_REGISTRY } from '@/constants';
-import { FeedbackOperatorFilterContextProvider } from '@/contexts/FeedbackOperatorFilter.context';
+import { FeedbackOperatorFilterContextProvider } from '@/contexts/feedback/FeedbackOperatorFilter.context';
 
 /* * */
 

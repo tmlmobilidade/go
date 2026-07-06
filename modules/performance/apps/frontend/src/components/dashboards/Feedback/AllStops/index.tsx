@@ -4,8 +4,8 @@
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
-import { FeedbackEntityDetailModalContextProvider } from '@/contexts/FeedbackEntityDetailModal.context';
-import { FeedbackStopsViewContextProvider, type FeedbackStopViewItem, useFeedbackStopsViewContext } from '@/contexts/FeedbackStopsViewContext';
+import { FeedbackEntityDetailModalContextProvider } from '@/contexts/feedback/FeedbackEntityDetailModal.context';
+import { FeedbackStopsViewContextProvider, type FeedbackStopViewItem, useFeedbackStopsViewContext } from '@/contexts/feedback/FeedbackStopsViewContext';
 import { getStopLabel } from '@/utils/feedback/network-labels';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { SearchInput, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';

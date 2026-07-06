@@ -2,10 +2,10 @@
 
 import pjson from '#/package.json';
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
-import { DatesContextProvider } from '@/contexts/Dates.context';
-import { HomeContextProvider } from '@/contexts/Home.context';
+import { DatesContextProvider } from '@/contexts/demand/Dates.context';
+import { NetworkContextProvider } from '@/contexts/demand/Network.context';
+import { HomeContextProvider } from '@/contexts/home/Home.context';
 import { LocaleContextProvider } from '@/contexts/Locale.context';
-import { NetworkContextProvider } from '@/contexts/Network.context';
 import { ThemeProviders } from '@/providers/theme-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';

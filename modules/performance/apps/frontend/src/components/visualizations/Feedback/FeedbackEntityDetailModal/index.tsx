@@ -6,7 +6,7 @@
 
 import type { FeedbackEntitySummary } from '@/utils/metrics/feedback-metrics';
 
-import { useFeedbackEntityDetailModalContext } from '@/contexts/FeedbackEntityDetailModal.context';
+import { useFeedbackEntityDetailModalContext } from '@/contexts/feedback/FeedbackEntityDetailModal.context';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { AgencyTag, CloseButton, Divider, Label, Modal, Pane, Section, Toolbar } from '@tmlmobilidade/ui';
 
