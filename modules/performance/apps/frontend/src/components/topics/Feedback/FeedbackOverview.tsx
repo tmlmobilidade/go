@@ -39,7 +39,6 @@ export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
 	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
 	const stopsById = useMemo(() => buildStopLabelsById(stopsData), [stopsData]);
 	const feedbackData = useMemo(() => getFeedbackOverviewData(rows, linesById, stopsById), [linesById, rows, stopsById]);
-	const operatorsById = useMemo(() => new Map((operatorsData ?? []).map(operator => [operator._id, operator])), [operatorsData]);
 	const operatorApprovalIndexes = useMemo(() => buildOperatorApprovalIndexes(rows), [rows]);
 	const operatorApprovals = useMemo(() => {
 		return (operatorsData ?? []).flatMap((operator) => {
@@ -60,7 +59,7 @@ export function FeedbackOverview({ rows }: FeedbackOverviewProps) {
 			<FeedbackGraphCard rows={rows} />
 
 			<section className={`${styles.listsGrid} ${styles.feedbackEntitiesGrid}`}>
-				<TopFeedbackEntities items={feedbackData.topLines} nameColumnLabel="Linha" operatorsById={operatorsById} title="Linhas com mais feedbacks" />
+				<TopFeedbackEntities items={feedbackData.topLines} nameColumnLabel="Linha" title="Linhas com mais feedbacks" />
 				<TopFeedbackEntities items={feedbackData.topStops} nameColumnLabel="Paragem" title="Paragens com mais feedbacks" />
 			</section>
 

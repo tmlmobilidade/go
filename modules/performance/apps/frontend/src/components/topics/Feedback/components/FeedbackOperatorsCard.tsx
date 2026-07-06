@@ -1,11 +1,11 @@
 /* * */
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { FeedbackMetricTag, OperatorLogo } from '@/components/visualizations/Feedback';
+import { FeedbackMetricTag } from '@/components/visualizations/Feedback';
+import { compareOperatorsByCode } from '@/utils/feedback/operators';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
-import { compareOperatorsByCode, getOperatorName } from '@/utils/feedback/operators';
 import { type Agency } from '@tmlmobilidade/types';
-import { SegmentedControl } from '@tmlmobilidade/ui';
+import { AgencyTag, SegmentedControl } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
 import styles from '../styles.module.css';
@@ -95,8 +95,7 @@ export function FeedbackOperatorsCard({ operatorApprovals }: FeedbackOperatorsCa
 								{sortedOperatorApprovals.map(({ operator }) => (
 									<td key={operator._id}>
 										<div className={styles.operatorIdentity}>
-											<OperatorLogo className={styles.operatorLogo} height={32} operatorId={operator._id} width={48} />
-											<span className={styles.operatorName}>{getOperatorName(operator)}</span>
+											<AgencyTag agencyId={operator._id} showShortName />
 										</div>
 									</td>
 								))}

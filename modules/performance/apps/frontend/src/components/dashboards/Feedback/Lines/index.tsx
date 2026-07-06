@@ -3,7 +3,7 @@
 'use client';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { FeedbackEntityDetailModal, FeedbackMetricTag, OperatorLogo } from '@/components/visualizations/Feedback';
+import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
 import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-line-contributions';
@@ -11,7 +11,7 @@ import { buildLineLabelsById, type FeedbackNetworkLine, getLineLabel } from '@/u
 import { getOperatorName } from '@/utils/feedback/operators';
 import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { type Agency, type PublicFeedback } from '@tmlmobilidade/types';
-import { FilterTypeList, SearchInput, SegmentedControl, Table, Text, useDebouncedValue } from '@tmlmobilidade/ui';
+import { AgencyTag, FilterTypeList, SearchInput, SegmentedControl, Table, Text, useDebouncedValue } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -59,13 +59,12 @@ function getOperatorLabel(operatorId: string, operatorsById: Map<string, Agency>
 	return getOperatorName(operator);
 }
 
-function LineOperatorCell({ operatorId, operatorsById }: { operatorId?: string, operatorsById: Map<string, Agency> }) {
+function LineOperatorCell({ operatorId }: { operatorId?: string }) {
 	if (!operatorId) return <Text>-</Text>;
 
 	return (
 		<div className={styles.lineOperator}>
-			<OperatorLogo className={styles.lineOperatorLogo} height={24} operatorId={operatorId} width={36} />
-			<Text className={styles.lineOperatorName}>{getOperatorLabel(operatorId, operatorsById)}</Text>
+			<AgencyTag agencyId={operatorId} showShortName />
 		</div>
 	);
 }
@@ -188,7 +187,7 @@ export function FeedbackLines() {
 												tabIndex={0}
 											>
 												<Table.Td>
-													<LineOperatorCell operatorId={line.operatorId} operatorsById={operatorFilter.operatorsById} />
+													<LineOperatorCell operatorId={line.operatorId} />
 												</Table.Td>
 												<Table.Td>
 													<Text>{getLineLabel(line.entityId, linesById)}</Text>
