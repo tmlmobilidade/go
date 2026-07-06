@@ -4,61 +4,17 @@
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
-import { FeedbackEntityDetailModalContextProvider, useFeedbackEntityDetailModalContext } from '@/contexts/FeedbackEntityDetailModal.context';
-import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
-import { Routes } from '@/routes';
-import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-line-contributions';
-import { buildLineLabelsById, type FeedbackNetworkLine, getLineLabel } from '@/utils/feedback/network-labels';
-import { getOperatorName } from '@/utils/feedback/operators';
-import { formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
-import { type Agency, type PublicFeedback } from '@tmlmobilidade/types';
-import { AgencyTag, FilterTypeList, SearchInput, SegmentedControl, Table, Text, useDebouncedValue } from '@tmlmobilidade/ui';
-import { type KeyboardEvent, useMemo, useState } from 'react';
-import useSWR from 'swr';
+import { FeedbackEntityDetailModalContextProvider } from '@/contexts/FeedbackEntityDetailModal.context';
+import { getLineLabel } from '@/utils/feedback/network-labels';
+import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
+import { AgencyTag, FilterTypeList, SearchInput, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
+import { type KeyboardEvent } from 'react';
 
 import styles from './styles.module.css';
 
+import { FeedbackLinesViewContextProvider, type FeedbackLineViewItem, useFeedbackLinesViewContext } from './FeedbackLinesViewContext';
+
 /* * */
-
-type FeedbackEntitySortMode = 'feedback_count_desc' | 'satisfaction_asc' | 'satisfaction_desc';
-
-const FEEDBACK_ENTITY_SORT_OPTIONS: { label: string, value: FeedbackEntitySortMode }[] = [
-	{ label: 'Feedbacks', value: 'feedback_count_desc' },
-	{ label: 'Maior índice', value: 'satisfaction_desc' },
-	{ label: 'Menor índice', value: 'satisfaction_asc' },
-];
-
-function sortLines(lines: ReturnType<typeof getFeedbackMetricsByEntity>, sortMode: FeedbackEntitySortMode, linesById: Map<string, string>) {
-	return [...lines].sort((lineA, lineB) => {
-		const feedbackCountDiff = lineB.feedbackCount - lineA.feedbackCount;
-		const labelDiff = getLineLabel(lineA.entityId, linesById).localeCompare(getLineLabel(lineB.entityId, linesById), 'pt-PT');
-		const satisfactionDiff = lineA.satisfactionIndex - lineB.satisfactionIndex;
-
-		if (sortMode === 'feedback_count_desc') return feedbackCountDiff || labelDiff;
-		if (sortMode === 'satisfaction_asc') return satisfactionDiff || feedbackCountDiff || labelDiff;
-		return (satisfactionDiff * -1) || feedbackCountDiff || labelDiff;
-	});
-}
-
-function normalizeSearchValue(value: string) {
-	return value
-		.normalize('NFD')
-		.replace(/[\u0300-\u036f]/g, '')
-		.toLocaleLowerCase('pt-PT')
-		.trim();
-}
-
-function matchesSearch(fields: (string | undefined)[], searchValue: string) {
-	if (!searchValue) return true;
-	return fields.some(field => normalizeSearchValue(field ?? '').includes(searchValue));
-}
-
-function getOperatorLabel(operatorId: string, operatorsById: Map<string, Agency>) {
-	const operator = operatorsById.get(operatorId);
-	if (!operator) return operatorId;
-
-	return getOperatorName(operator);
-}
 
 function LineOperatorCell({ operatorId }: { operatorId?: string }) {
 	if (!operatorId) return <Text>-</Text>;
@@ -72,65 +28,32 @@ function LineOperatorCell({ operatorId }: { operatorId?: string }) {
 
 /* * */
 
-function FeedbackLinesContent() {
+function FeedbackLinesView() {
 	//
 	// A. Setup variables
 
-	const [lineSortMode, setLineSortMode] = useState<FeedbackEntitySortMode>('feedback_count_desc');
-	const [lineSearchValue, setLineSearchValue] = useState('');
-	const modalContext = useFeedbackEntityDetailModalContext();
+	const viewContext = useFeedbackLinesViewContext();
+	const { lines, linesById, lineSearchValue, lineSortMode, operatorFilter, sortOptions } = viewContext.data;
+	const { error, isLoading } = viewContext.flags;
 
 	//
-	// B. Fetch data
+	// B. Handle actions
 
-	const { data, error, isLoading } = useSWR<PublicFeedback[], Error>(Routes.FEEDBACK_PREVIEW);
-	const { data: linesData } = useSWR<FeedbackNetworkLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
-
-	//
-	// C. Transform data
-
-	const operatorFilter = useFeedbackOperatorFilter(data, 'line');
-
-	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
-	const lineMetrics = useMemo(() => getFeedbackMetricsByEntity(operatorFilter.rows, 'line'), [operatorFilter.rows]);
-	const [debouncedLineSearchValue] = useDebouncedValue(lineSearchValue, 500);
-	const normalizedLineSearchValue = useMemo(() => normalizeSearchValue(debouncedLineSearchValue), [debouncedLineSearchValue]);
-	const lines = useMemo(() => {
-		return sortLines(lineMetrics, lineSortMode, linesById)
-			.filter(line => matchesSearch([
-				line.entityId,
-				getLineLabel(line.entityId, linesById),
-				line.operatorId,
-				line.operatorId ? getOperatorLabel(line.operatorId, operatorFilter.operatorsById) : undefined,
-			], normalizedLineSearchValue));
-	}, [lineMetrics, lineSortMode, linesById, normalizedLineSearchValue, operatorFilter.operatorsById]);
-
-	//
-	// D. Handle actions
-
-	const handleOpenLineDetail = (line: typeof lines[number]) => {
-		modalContext.actions.open(getFeedbackEntitySummary(line, 'line', linesById, getFeedbackLineContributionMeters(operatorFilter.rows, line)));
-	};
-
-	const handleChangeLineSortMode = (value: FeedbackEntitySortMode) => {
-		setLineSortMode(value);
-	};
-
-	const handleLineKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, line: typeof lines[number]) => {
+	const handleLineKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, line: FeedbackLineViewItem) => {
 		if (event.key !== 'Enter' && event.key !== ' ') return;
 		event.preventDefault();
-		handleOpenLineDetail(line);
+		viewContext.actions.openLineDetail(line);
 	};
 
 	//
-	// E. Render components
+	// C. Render components
 
 	return (
 		<>
 			<div className={styles.dashboardContent}>
 				<div className={styles.pageFilters}>
 					<div className={styles.searchInput}>
-						<SearchInput onChange={setLineSearchValue} value={lineSearchValue} />
+						<SearchInput onChange={viewContext.actions.setLineSearchValue} value={lineSearchValue} />
 					</div>
 
 					<FilterTypeList
@@ -150,7 +73,7 @@ function FeedbackLinesContent() {
 						<div className={styles.headerControls}>
 							<div className={styles.sortControl}>
 								<h3 className={styles.controlLabel}>Ordenar</h3>
-								<SegmentedControl data={FEEDBACK_ENTITY_SORT_OPTIONS} onChange={handleChangeLineSortMode} value={lineSortMode} />
+								<SegmentedControl data={sortOptions} onChange={viewContext.actions.setLineSortMode} value={lineSortMode} />
 							</div>
 						</div>
 					</div>
@@ -178,7 +101,7 @@ function FeedbackLinesContent() {
 												key={line.entityId}
 												aria-label={`Abrir detalhe da linha ${getLineLabel(line.entityId, linesById)}`}
 												className={styles.tableRowButton}
-												onClick={() => handleOpenLineDetail(line)}
+												onClick={() => viewContext.actions.openLineDetail(line)}
 												onKeyDown={event => handleLineKeyDown(event, line)}
 												role="button"
 												tabIndex={0}
@@ -213,7 +136,9 @@ function FeedbackLinesContent() {
 export function FeedbackLines() {
 	return (
 		<FeedbackEntityDetailModalContextProvider>
-			<FeedbackLinesContent />
+			<FeedbackLinesViewContextProvider>
+				<FeedbackLinesView />
+			</FeedbackLinesViewContextProvider>
 		</FeedbackEntityDetailModalContextProvider>
 	);
 }
