@@ -40,7 +40,7 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 	public override readonly databaseName = 'operation';
 	public override readonly engine: ClickHouseTableEngine<SimplifiedVehicleEvent> = 'ReplacingMergeTree(created_at)';
 	public override readonly orderBy = 'agency_id, vehicle_id, trip_id, created_at, _id';
-	public override readonly partitionBy = 'toDiv(operational_date, 100)';
+	public override readonly partitionBy = 'intDiv(operational_date, 100)';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'simplified_vehicle_events';
 
