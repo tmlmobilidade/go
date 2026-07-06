@@ -6,11 +6,11 @@ import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
-import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { getFeedbackStopReasonMeters } from '@/utils/feedback/feedback-stop-reasons';
 import { buildStopLabelsById, type FeedbackNetworkStop, getStopLabel } from '@/utils/feedback/network-labels';
+import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { type PublicFeedback } from '@tmlmobilidade/types';
-import { FilterTypeList, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
+import { FilterTypeList, SearchInput, SegmentedControl, Table, Text, useDebouncedValue } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -38,6 +38,19 @@ function sortStops(stops: ReturnType<typeof getFeedbackMetricsByEntity>, sortMod
 	});
 }
 
+function normalizeSearchValue(value: string) {
+	return value
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toLocaleLowerCase('pt-PT')
+		.trim();
+}
+
+function matchesSearch(fields: (string | undefined)[], searchValue: string) {
+	if (!searchValue) return true;
+	return fields.some(field => normalizeSearchValue(field ?? '').includes(searchValue));
+}
+
 /* * */
 
 export function FeedbackStops() {
@@ -45,6 +58,7 @@ export function FeedbackStops() {
 	// A. Setup variables
 
 	const [stopSortMode, setStopSortMode] = useState<FeedbackEntitySortMode>('feedback_count_desc');
+	const [stopSearchValue, setStopSearchValue] = useState('');
 	const [selectedStop, setSelectedStop] = useState<FeedbackEntitySummary>();
 
 	//
@@ -60,7 +74,15 @@ export function FeedbackStops() {
 
 	const stopsById = useMemo(() => buildStopLabelsById(stopsData), [stopsData]);
 	const stopMetrics = useMemo(() => getFeedbackMetricsByEntity(operatorFilter.rows, 'stop'), [operatorFilter.rows]);
-	const stops = useMemo(() => sortStops(stopMetrics, stopSortMode, stopsById), [stopMetrics, stopSortMode, stopsById]);
+	const [debouncedStopSearchValue] = useDebouncedValue(stopSearchValue, 800);
+	const normalizedStopSearchValue = useMemo(() => normalizeSearchValue(debouncedStopSearchValue), [debouncedStopSearchValue]);
+	const stops = useMemo(() => {
+		return sortStops(stopMetrics, stopSortMode, stopsById)
+			.filter(stop => matchesSearch([
+				stop.entityId,
+				getStopLabel(stop.entityId, stopsById),
+			], normalizedStopSearchValue));
+	}, [stopMetrics, stopSortMode, stopsById, normalizedStopSearchValue]);
 
 	//
 	// D. Handle actions
@@ -90,6 +112,10 @@ export function FeedbackStops() {
 		<>
 			<div className={styles.dashboardContent}>
 				<div className={styles.pageFilters}>
+					<div className={styles.searchInput}>
+						<SearchInput onChange={setStopSearchValue} value={stopSearchValue} />
+					</div>
+
 					<FilterTypeList
 						active={operatorFilter.isActive}
 						label="Operador"
