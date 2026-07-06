@@ -5,14 +5,13 @@
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
 import { FeedbackEntityDetailModalContextProvider } from '@/contexts/FeedbackEntityDetailModal.context';
+import { FeedbackLinesViewContextProvider, type FeedbackLineViewItem, useFeedbackLinesViewContext } from '@/contexts/FeedbackLinesViewContext';
 import { getLineLabel } from '@/utils/feedback/network-labels';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { AgencyTag, FilterTypeList, SearchInput, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
 import { type KeyboardEvent } from 'react';
 
 import styles from './styles.module.css';
-
-import { FeedbackLinesViewContextProvider, type FeedbackLineViewItem, useFeedbackLinesViewContext } from './FeedbackLinesViewContext';
 
 /* * */
 
