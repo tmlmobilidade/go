@@ -5,8 +5,8 @@ import type { FeedbackReasonChartSlice, FeedbackReasonTrendChartData } from '@/u
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { generateColors } from '@/utils/metrics';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
-import { LineChart, PieChart } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { ChartLegend, LineChart, PieChart } from '@tmlmobilidade/ui';
+import { type ComponentProps, useCallback, useMemo, useState } from 'react';
 
 import styles from '../styles.module.css';
 
@@ -18,9 +18,21 @@ interface TopFeedbackReasonsChartProps {
 	trendData: FeedbackReasonTrendChartData
 }
 
+interface TrendSeriesItem {
+	name: string
+}
+
+interface TrendLegendContentProps {
+	payload?: ChartLegendPayload
+}
+
 /* * */
 
 const TREND_Y_AXIS_TARGET_TICK_COUNT = 5;
+const TREND_LINE_DIMMED_OPACITY = 0.06;
+
+type ChartLegendHighlight = Parameters<ComponentProps<typeof ChartLegend>['onHighlight']>[0];
+type ChartLegendPayload = ComponentProps<typeof ChartLegend>['payload'];
 
 function getTrendValues(trendData: FeedbackReasonTrendChartData) {
 	const values: number[] = [];
@@ -66,6 +78,12 @@ function getTrendYAxisConfig(values: number[]) {
 /* * */
 
 export function TopFeedbackReasonsChart({ data, title, trendData }: TopFeedbackReasonsChartProps) {
+	const [hoveredTrendSeries, setHoveredTrendSeries] = useState<null | string>(null);
+
+	const handleTrendLegendHighlight = useCallback((area: ChartLegendHighlight) => {
+		setHoveredTrendSeries(area === null ? null : String(area));
+	}, []);
+
 	const trendSeries = useMemo(() => {
 		const colors = generateColors(trendData.series);
 
@@ -75,6 +93,30 @@ export function TopFeedbackReasonsChart({ data, title, trendData }: TopFeedbackR
 			name: reason,
 		}));
 	}, [trendData.series]);
+
+	const trendLineProps = useMemo(() => {
+		return (series: TrendSeriesItem) => {
+			const isDimmed = hoveredTrendSeries !== null && hoveredTrendSeries !== series.name;
+
+			return {
+				strokeOpacity: isDimmed ? TREND_LINE_DIMMED_OPACITY : 1,
+			};
+		};
+	}, [hoveredTrendSeries]);
+
+	const renderTrendLegend = useCallback(({ payload }: TrendLegendContentProps) => (
+		<ChartLegend
+			legendPosition="bottom"
+			onHighlight={handleTrendLegendHighlight}
+			payload={payload}
+			series={trendSeries}
+		/>
+	), [handleTrendLegendHighlight, trendSeries]);
+
+	const pieCellProps = useCallback((slice: TrendSeriesItem) => ({
+		onMouseEnter: () => setHoveredTrendSeries(slice.name),
+		onMouseLeave: () => setHoveredTrendSeries(null),
+	}), []);
 
 	const trendValues = useMemo(() => getTrendValues(trendData), [trendData]);
 	const trendYAxisConfig = useMemo(() => getTrendYAxisConfig(trendValues), [trendValues]);
@@ -95,7 +137,8 @@ export function TopFeedbackReasonsChart({ data, title, trendData }: TopFeedbackR
 							data={trendData.chart}
 							dataKey="day_detailed"
 							h={260}
-							legendProps={{ verticalAlign: 'bottom' }}
+							legendProps={{ content: renderTrendLegend, verticalAlign: 'bottom' }}
+							lineProps={trendLineProps}
 							series={trendSeries}
 							strokeWidth={4}
 							tickLine="none"
@@ -115,6 +158,7 @@ export function TopFeedbackReasonsChart({ data, title, trendData }: TopFeedbackR
 
 					<div className={styles.feedbackReasonPieChart}>
 						<PieChart
+							cellProps={pieCellProps}
 							data={data}
 							labelsPosition="outside"
 							labelsType="percent"
