@@ -17,7 +17,13 @@
 .pageFilters {
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--size-spacing-sm);
 	justify-content: flex-end;
+}
+
+.searchInput {
+	width: min(100%, 360px);
 }
 
 .header {
@@ -107,5 +113,9 @@
 	.headerControls,
 	.pageFilters {
 		justify-content: flex-start;
+	}
+
+	.searchInput {
+		width: 100%;
 	}
 }

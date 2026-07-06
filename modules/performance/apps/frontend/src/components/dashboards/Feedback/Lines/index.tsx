@@ -7,11 +7,11 @@ import { FeedbackEntityDetailModal, FeedbackMetricTag, OperatorLogo } from '@/co
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
 import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-line-contributions';
-import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { buildLineLabelsById, type FeedbackNetworkLine, getLineLabel } from '@/utils/feedback/network-labels';
 import { getOperatorName } from '@/utils/feedback/operators';
+import { type FeedbackEntitySummary, formatSatisfactionIndex, getFeedbackEntitySummary, getFeedbackMetricsByEntity, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { type Agency, type PublicFeedback } from '@tmlmobilidade/types';
-import { FilterTypeList, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
+import { FilterTypeList, SearchInput, SegmentedControl, Table, Text, useDebouncedValue } from '@tmlmobilidade/ui';
 import { type KeyboardEvent, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -39,6 +39,19 @@ function sortLines(lines: ReturnType<typeof getFeedbackMetricsByEntity>, sortMod
 	});
 }
 
+function normalizeSearchValue(value: string) {
+	return value
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toLocaleLowerCase('pt-PT')
+		.trim();
+}
+
+function matchesSearch(fields: (string | undefined)[], searchValue: string) {
+	if (!searchValue) return true;
+	return fields.some(field => normalizeSearchValue(field ?? '').includes(searchValue));
+}
+
 function getOperatorLabel(operatorId: string, operatorsById: Map<string, Agency>) {
 	const operator = operatorsById.get(operatorId);
 	if (!operator) return operatorId;
@@ -64,6 +77,7 @@ export function FeedbackLines() {
 	// A. Setup variables
 
 	const [lineSortMode, setLineSortMode] = useState<FeedbackEntitySortMode>('feedback_count_desc');
+	const [lineSearchValue, setLineSearchValue] = useState('');
 	const [selectedLine, setSelectedLine] = useState<FeedbackEntitySummary>();
 
 	//
@@ -79,7 +93,17 @@ export function FeedbackLines() {
 
 	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
 	const lineMetrics = useMemo(() => getFeedbackMetricsByEntity(operatorFilter.rows, 'line'), [operatorFilter.rows]);
-	const lines = useMemo(() => sortLines(lineMetrics, lineSortMode, linesById), [lineMetrics, lineSortMode, linesById]);
+	const [debouncedLineSearchValue] = useDebouncedValue(lineSearchValue, 500);
+	const normalizedLineSearchValue = useMemo(() => normalizeSearchValue(debouncedLineSearchValue), [debouncedLineSearchValue]);
+	const lines = useMemo(() => {
+		return sortLines(lineMetrics, lineSortMode, linesById)
+			.filter(line => matchesSearch([
+				line.entityId,
+				getLineLabel(line.entityId, linesById),
+				line.operatorId,
+				line.operatorId ? getOperatorLabel(line.operatorId, operatorFilter.operatorsById) : undefined,
+			], normalizedLineSearchValue));
+	}, [lineMetrics, lineSortMode, linesById, normalizedLineSearchValue, operatorFilter.operatorsById]);
 
 	//
 	// D. Handle actions
@@ -109,6 +133,10 @@ export function FeedbackLines() {
 		<>
 			<div className={styles.dashboardContent}>
 				<div className={styles.pageFilters}>
+					<div className={styles.searchInput}>
+						<SearchInput onChange={setLineSearchValue} value={lineSearchValue} />
+					</div>
+
 					<FilterTypeList
 						active={operatorFilter.isActive}
 						label="Operador"
