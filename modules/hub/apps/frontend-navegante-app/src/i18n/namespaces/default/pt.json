@@ -150,7 +150,7 @@
 			"driver": "Motorista/Condutor",
 			"line_service": "Linha/Serviço",
 			"stop": "Paragem",
-			"unknown": "Indefinido",
+			"unknown": "Satisfeito",
 			"vehicle": "Veículo"
 		},
 		"reasons": {
