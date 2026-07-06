@@ -101,14 +101,10 @@ export async function migrateStopIds() {
 		}
 		console.log('+++');
 
+		return;
+
 		// Wait 300ms
 		// await new Promise(resolve => setTimeout(resolve, 2000));
-
-		//
-		// Recursively migrate the next stop ID
-
-		await migrateStopIds();
-		return;
 
 		//
 	}

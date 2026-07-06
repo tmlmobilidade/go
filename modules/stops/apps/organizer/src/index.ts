@@ -11,8 +11,9 @@ import { migrateStopIds } from './migrate-stop-ids.js';
 
 /* * */
 
-(async () => {
+(async function rerun() {
 	await migrateStopIds();
+	await rerun();
 })();
 
 async function main() {
