@@ -88,12 +88,12 @@ export async function migrateStopIds() {
 			console.log(patternData._id);
 			patternData.path.map((path) => {
 				if (path.stop_id === stopData._id) path.stop_id = Number(newStopId);
-				return path;
+				return { ...path, stop: undefined };
 			});
 			patternData.parameters.map((parameter) => {
 				return parameter.path.map((path) => {
 					if (path.stop_id === stopData._id) path.stop_id = Number(newStopId);
-					return path;
+					return { ...path, stop: undefined };
 				});
 			});
 			await patternsCollection.updateOne({ _id: patternData._id }, { $set: patternData });
