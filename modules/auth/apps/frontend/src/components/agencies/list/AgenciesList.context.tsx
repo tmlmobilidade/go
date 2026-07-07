@@ -52,9 +52,13 @@ export function AgenciesListContextProvider({ children }: PropsWithChildren) {
 		// Skip if no data is available
 		if (!agenciesContext.data.raw) return [];
 		// Normalize record fields
+
 		return agenciesContext.data.raw
 			.map(item => ({ ...item, name_normalized: normalizeString(item.name) }))
-			.sort((a, b) => a.code.localeCompare(b.code, undefined, { numeric: true }));
+			.sort((a, b) => {
+				if (!a.code || !b.code) return;
+				return a.code.localeCompare(b.code, undefined, { numeric: true });
+			});
 	}, [agenciesContext.data.raw]);
 
 	const searchResultsData = useSearch<AgencyNormalized>({
