@@ -14,26 +14,22 @@ let IS_BUSY = false;
 export async function getRides(): Promise<string[]> {
 	//
 
-	//
-	// The whole point of a coordinator is to prevent multiple instances
-	// from processing the same documents at the same time. For that reason,
-	// we need to make sure that instances request the next batch of documents
-	// sequentially. To do that, we implement a simple lock mechanism.
-
 	const timer = new Timer();
-
 	const sessionId = Math.random().toString(36).substring(2, 5).toUpperCase();
-
-	while (IS_BUSY) {
-		Logger.info({ message: `[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})` });
-		await new Promise(resolve => setTimeout(resolve, 500));
-	}
-
-	//
-	// Get the next batch of rides
 
 	try {
 		//
+
+		//
+		// The whole point of a coordinator is to prevent multiple instances
+		// from processing the same documents at the same time. For that reason,
+		// we need to make sure that instances request the next batch of documents
+		// sequentially. To do that, we implement a simple lock mechanism.
+
+		while (IS_BUSY) {
+			Logger.info({ message: `[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})` });
+			return [];
+		}
 
 		//
 		// Set the busy flag to prevent other requests
@@ -51,7 +47,7 @@ export async function getRides(): Promise<string[]> {
 
 		const latestWaitingRides = await rides.findMany(
 			{
-				agency_id: { $in: ['41', '42', '43', '44'] },
+				// agency_id: { $in: ['41', '42', '43', '44'] },
 				start_time_scheduled: { $lte: standardWindowInterval.end },
 				system_status: 'waiting',
 			},
