@@ -20,10 +20,12 @@ export async function getRides(): Promise<string[]> {
 	// we need to make sure that instances request the next batch of documents
 	// sequentially. To do that, we implement a simple lock mechanism.
 
-	const sessionId = Math.random().toString(36).substring(2, 15);
+	const timer = new Timer();
+
+	const sessionId = Math.random().toString(36).substring(2, 5).toUpperCase();
 
 	while (IS_BUSY) {
-		Logger.info({ message: `[${sessionId}] Waiting for another request to complete...` });
+		Logger.info({ message: `[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})` });
 		await new Promise(resolve => setTimeout(resolve, 500));
 	}
 
