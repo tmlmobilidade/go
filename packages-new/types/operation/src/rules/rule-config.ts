@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
-import { RuleConfigSchema } from './severity.js';
+import { SeverityEnumSchema } from './severity.js';
+
+const RuleConfigSchema = z.object({
+	severity: SeverityEnumSchema.default('ignore'),
+});
 
 const RuleConfigWithOptionsSchema = RuleConfigSchema.extend({
 	options: z.array(z.string()).default([]),

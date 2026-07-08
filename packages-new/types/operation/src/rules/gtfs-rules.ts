@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 import { RuleConfigWithCompareDefaultsSchema, RuleConfigWithDefaultsSchema, RuleConfigWithOptionsDefaultsSchema } from './rule-config.js';
-import { RulesSeverityEnumSchema } from './severity.js';
+import { SeverityEnumSchema } from './severity.js';
 
 export const GtfsRulesSchema = z.object({
 	agency: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		agency_email_valid_address: RuleConfigWithDefaultsSchema,
 		agency_fare_url_valid_url: RuleConfigWithDefaultsSchema,
 		agency_id_matched_with_agency_name: RuleConfigWithCompareDefaultsSchema,
@@ -17,7 +17,7 @@ export const GtfsRulesSchema = z.object({
 		agency_url_valid_url: RuleConfigWithDefaultsSchema,
 	}),
 	attributions: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		agency_id: RuleConfigWithDefaultsSchema,
 		attribution_email: RuleConfigWithDefaultsSchema,
 		attribution_id: RuleConfigWithDefaultsSchema,
@@ -31,7 +31,7 @@ export const GtfsRulesSchema = z.object({
 		trip_id: RuleConfigWithDefaultsSchema,
 	}),
 	calendar: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		calendar_end_date_valid_yyyymmdd: RuleConfigWithDefaultsSchema,
 		calendar_service_id_unique_non_empty: RuleConfigWithDefaultsSchema,
 		calendar_start_date_valid_yyyymmdd: RuleConfigWithDefaultsSchema,
@@ -44,7 +44,7 @@ export const GtfsRulesSchema = z.object({
 		wednesday: RuleConfigWithDefaultsSchema,
 	}),
 	calendar_dates: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		calendar_dates_service_id_references_calendar: RuleConfigWithDefaultsSchema,
 		day_type: RuleConfigWithOptionsDefaultsSchema,
 		exception_date_valid_yyyymmdd: RuleConfigWithDefaultsSchema,
@@ -53,7 +53,7 @@ export const GtfsRulesSchema = z.object({
 		period: RuleConfigWithOptionsDefaultsSchema,
 	}),
 	fare_attributes: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		currency_type_valid: RuleConfigWithOptionsDefaultsSchema,
 		fare_attributes_agency_id_references_agency_table: RuleConfigWithDefaultsSchema,
 		fare_id_unique: RuleConfigWithDefaultsSchema,
@@ -63,13 +63,13 @@ export const GtfsRulesSchema = z.object({
 		transfers_valid_gtfs_enum: RuleConfigWithOptionsDefaultsSchema,
 	}),
 	fare_media: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		fare_media_id_unique: RuleConfigWithDefaultsSchema,
 		fare_media_name_non_empty: RuleConfigWithDefaultsSchema,
 		fare_media_type_valid: RuleConfigWithOptionsDefaultsSchema,
 	}),
 	fare_rules: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		fare_rule_contains_id_references_zones_stops: RuleConfigWithDefaultsSchema,
 		fare_rule_destination_id_references_zones_stops: RuleConfigWithDefaultsSchema,
 		fare_rule_fare_id_references_fare_attributes: RuleConfigWithDefaultsSchema,
@@ -77,7 +77,7 @@ export const GtfsRulesSchema = z.object({
 		fare_rule_route_id_references_routes: RuleConfigWithDefaultsSchema,
 	}),
 	feed_info: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		default_lang_matches_feed_lang_when_present: RuleConfigWithDefaultsSchema,
 		feed_contact_email_valid_address: RuleConfigWithDefaultsSchema,
 		feed_contact_url_valid_http_url: RuleConfigWithDefaultsSchema,
@@ -91,11 +91,11 @@ export const GtfsRulesSchema = z.object({
 		feed_version_valid_identifier: RuleConfigWithDefaultsSchema,
 	}),
 	file_validation: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		gtfs_feed_file_presence_and_integrity_rule: RuleConfigWithDefaultsSchema,
 	}),
 	frequencies: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		exact_times_zero_when_timed_trip_uses_frequencies: RuleConfigWithDefaultsSchema,
 		frequencies_trip_id_references_trips_table: RuleConfigWithDefaultsSchema,
 		frequency_end_time_valid: RuleConfigWithDefaultsSchema,
@@ -103,13 +103,13 @@ export const GtfsRulesSchema = z.object({
 		headway_secs_positive_and_aligns_trip: RuleConfigWithDefaultsSchema,
 	}),
 	levels: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		level_id: RuleConfigWithDefaultsSchema,
 		level_index: RuleConfigWithDefaultsSchema,
 		level_name: RuleConfigWithDefaultsSchema,
 	}),
 	pathways: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		from_stop_id: RuleConfigWithDefaultsSchema,
 		is_bidirectional: RuleConfigWithDefaultsSchema,
 		length: RuleConfigWithDefaultsSchema,
@@ -124,14 +124,14 @@ export const GtfsRulesSchema = z.object({
 		traversal_time: RuleConfigWithDefaultsSchema,
 	}),
 	rider_categories: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		at_most_one_default_fare_category: RuleConfigWithDefaultsSchema,
 		eligibility_url_valid_http_url: RuleConfigWithDefaultsSchema,
 		rider_category_id_unique: RuleConfigWithDefaultsSchema,
 		rider_category_name_non_empty: RuleConfigWithDefaultsSchema,
 	}),
 	routes: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		circular: RuleConfigWithOptionsDefaultsSchema,
 		continuous_drop_off_valid_gtfs_enum: RuleConfigWithOptionsDefaultsSchema,
 		continuous_pickup_valid_gtfs_enum: RuleConfigWithOptionsDefaultsSchema,
@@ -154,7 +154,7 @@ export const GtfsRulesSchema = z.object({
 		school: RuleConfigWithOptionsDefaultsSchema,
 	}),
 	shapes: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		shape_block_distance_rows_aggregated: RuleConfigWithOptionsDefaultsSchema,
 		shape_dist_traveled_delta_mismatches_haversine_block: RuleConfigWithOptionsDefaultsSchema,
 		shape_dist_traveled_delta_mismatches_haversine_segment: RuleConfigWithOptionsDefaultsSchema,
@@ -169,7 +169,7 @@ export const GtfsRulesSchema = z.object({
 		shape_sequence_position_mismatches_cumulative_traveled_distance: RuleConfigWithDefaultsSchema,
 	}),
 	stop_times: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		arrival_time_ordering_with_departure_and_frequencies: RuleConfigWithDefaultsSchema,
 		departure_time_ordering_with_arrival_and_timepoint: RuleConfigWithDefaultsSchema,
 		drop_off_booking_rule_id_references_booking_rules_or_empty: RuleConfigWithDefaultsSchema,
@@ -188,7 +188,7 @@ export const GtfsRulesSchema = z.object({
 		timepoint_valid_gtfs_enum: RuleConfigWithDefaultsSchema,
 	}),
 	stops: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		has_bench_valid_enum: RuleConfigWithOptionsDefaultsSchema,
 		has_network_map_valid_enum: RuleConfigWithOptionsDefaultsSchema,
 		has_pip_real_time_valid_enum: RuleConfigWithOptionsDefaultsSchema,
@@ -220,14 +220,14 @@ export const GtfsRulesSchema = z.object({
 		zone_id_valid: RuleConfigWithDefaultsSchema,
 	}),
 	transfers: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		from_stop_id: RuleConfigWithDefaultsSchema,
 		min_transfer_time: RuleConfigWithDefaultsSchema,
 		to_stop_id: RuleConfigWithDefaultsSchema,
 		transfer_type: RuleConfigWithDefaultsSchema,
 	}),
 	translations: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		field_name: RuleConfigWithDefaultsSchema,
 		field_value: RuleConfigWithDefaultsSchema,
 		language: RuleConfigWithDefaultsSchema,
@@ -237,7 +237,7 @@ export const GtfsRulesSchema = z.object({
 		translation: RuleConfigWithDefaultsSchema,
 	}),
 	trips: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		bikes_allowed_valid_gtfs_enum: RuleConfigWithDefaultsSchema,
 		block_id_in_allowed_set: RuleConfigWithDefaultsSchema,
 		direction_id_consistent_for_all_patterns_in_trips: RuleConfigWithDefaultsSchema,
@@ -264,7 +264,7 @@ export const GtfsRulesSchema = z.object({
 		wheelchair_accessible_valid_gtfs_enum: RuleConfigWithDefaultsSchema,
 	}),
 	vehicles: z.object({
-		_file: RulesSeverityEnumSchema,
+		_file: SeverityEnumSchema,
 		available_seats_non_negative: RuleConfigWithDefaultsSchema,
 		available_standing_non_negative: RuleConfigWithDefaultsSchema,
 		bicycles_rack_count_non_negative: RuleConfigWithOptionsDefaultsSchema,
