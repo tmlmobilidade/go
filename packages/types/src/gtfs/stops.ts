@@ -50,7 +50,7 @@ export interface GTFS_Stop {
 	level_id?: string
 	location_type: GTFS_LocationType
 	parent_station?: string
-	platform_code?: strin
+	platform_code?: string
 	stop_code: string
 	stop_desc?: string
 	stop_id: string
