@@ -17,7 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@clickhouse/client": "1.23.0",
+		"@clickhouse/client": "1.23.1",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
@@ -28,9 +28,9 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.0",
-		"typescript": "6.0.3"
+		"typescript": "7.0.2"
 	}
 }
