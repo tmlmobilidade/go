@@ -1,16 +1,20 @@
+/* * */
+
 import { z } from 'zod';
 
 import { SeverityEnumSchema } from './severity.js';
 
-const RuleConfigSchema = z.object({
+/* * */
+
+export const RuleConfigSchema = z.object({
 	severity: SeverityEnumSchema.default('ignore'),
 });
 
-const RuleConfigWithOptionsSchema = RuleConfigSchema.extend({
+export const RuleConfigWithOptionsSchema = RuleConfigSchema.extend({
 	options: z.array(z.string()).default([]),
 });
 
-const RuleConfigWithCompareSchema = RuleConfigSchema.extend({
+export const RuleConfigWithCompareSchema = RuleConfigSchema.extend({
 	compare: z.array(z.object({
 		key: z.string(),
 		value: z.string(),

@@ -1,7 +1,11 @@
+/* * */
+
 import { z } from 'zod';
 
 import { RuleConfigWithCompareDefaultsSchema, RuleConfigWithDefaultsSchema, RuleConfigWithOptionsDefaultsSchema } from './rule-config.js';
 import { SeverityEnumSchema } from './severity.js';
+
+/* * */
 
 export const GtfsRulesSchema = z.object({
 	agency: z.object({

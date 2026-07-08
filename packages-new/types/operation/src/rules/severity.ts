@@ -1,4 +1,8 @@
+/* * */
+
 import { z } from 'zod';
+
+/* * */
 
 export const SeverityEnumSchema = z.enum([
 	'error',
