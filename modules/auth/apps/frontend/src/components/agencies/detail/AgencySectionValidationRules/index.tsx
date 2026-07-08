@@ -112,8 +112,8 @@ export function AgencySectionValidationRules() {
 						<Table highlightOnHover>
 							<Table.Thead>
 								<Table.Tr>
-									<Table.Th>{t('default:agencies.detail.SectionValidationRules.fields.Rules.label')}</Table.Th>
-									<Table.Th>{t('default:agencies.detail.SectionValidationRules.fields.Severity.label')}</Table.Th>
+									<Table.Th style={{ fontSize: '1.2rem' }}>{t('default:agencies.detail.SectionValidationRules.fields.Rules.label')}</Table.Th>
+									<Table.Th style={{ fontSize: '1.2rem' }}>{t('default:agencies.detail.SectionValidationRules.fields.Severity.label')}</Table.Th>
 								</Table.Tr>
 							</Table.Thead>
 							<Table.Tbody>
