@@ -34,14 +34,14 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"oci-common": "2.136.1",
-		"oci-generativeaiinference": "2.136.1"
+		"oci-common": "2.136.0",
+		"oci-generativeaiinference": "2.136.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.1",
+		"@types/node": "26.1.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
-		"typescript": "7.0.2"
+		"typescript": "6.0.3"
 	}
 }

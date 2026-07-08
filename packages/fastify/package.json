@@ -36,9 +36,9 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@fastify/cookie": "11.1.0",
-		"@fastify/cors": "11.3.0",
-		"@fastify/multipart": "10.1.0",
+		"@fastify/cookie": "11.0.2",
+		"@fastify/cors": "11.2.0",
+		"@fastify/multipart": "10.0.0",
 		"@fastify/one-line-logger": "^2.1.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/interfaces": "*",
@@ -49,9 +49,9 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.1",
+		"@types/node": "26.1.0",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
-		"typescript": "7.0.2"
+		"typescript": "6.0.3"
 	}
 }
