@@ -93,7 +93,7 @@ export function AgencySectionValidationRules() {
 					/>
 				</Section>
 
-				<Section gap="sm">
+				<Section alignItems="center" gap="sm">
 					<Label>{t('default:agencies.detail.SectionValidationRules.fields.file_content.label')}</Label>
 					{agencyDetailContext.data.agency.validation_rules ? (
 						<FileComponent
