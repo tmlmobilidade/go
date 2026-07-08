@@ -104,10 +104,10 @@ export function AgencySectionValidationRules() {
 
 				</Section>
 			</Grid>
+			<Section padding="lg">
+				<Grid columns="a" gap="lg">
+					<Surface variant="bordered">
 
-			<Grid columns="a" gap="sm">
-				<Surface variant="bordered">
-					<Section padding="none">
 						<Divider />
 						<Table highlightOnHover>
 							<Table.Thead>
@@ -139,9 +139,9 @@ export function AgencySectionValidationRules() {
 								))}
 							</Table.Tbody>
 						</Table>
-					</Section>
-				</Surface>
-			</Grid>
+					</Surface>
+				</Grid>
+			</Section>
 		</Collapsible>
 	);
 }
