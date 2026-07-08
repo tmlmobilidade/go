@@ -3,7 +3,7 @@
 import { HeroSection } from '@/components/homepage/hero/HeroSection';
 import { EndSection } from '@/components/homepage/layout/EndSection';
 import { RealtimeVehicleMap } from '@/components/homepage/layout/RealtimeVehicleMap';
-import { OfferProductDemo } from '@/components/modules/offer/OfferProductDemo';
+import { OfferSection } from '@/components/modules/offer/OfferSection';
 
 import styles from './styles.module.css';
 
@@ -20,7 +20,7 @@ export function Homepage() {
 				</div>
 			</section>
 			<section className={styles.content}>
-				<OfferProductDemo />
+				<OfferSection />
 			</section>
 			<EndSection />
 		</main>

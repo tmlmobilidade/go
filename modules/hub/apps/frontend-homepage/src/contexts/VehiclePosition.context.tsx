@@ -5,6 +5,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection, transformVehicleDataIntoGeoJsonFeature } from '@tmlmobilidade/geo';
 import { HubVehiclePosition, Vehicle } from '@tmlmobilidade/types';
+import { swrFetcher } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -33,8 +34,8 @@ export function useVehiclePositionContext() {
 /* * */
 
 export const VehiclePositionContextProvider = ({ children }: PropsWithChildren) => {
-	const { data: vehicleData } = useSWR<Vehicle[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_METADATA }, { refreshInterval: 5_000 });
-	const { data: fetchedVehiclePositionData, error, isLoading } = useSWR<HubVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, { refreshInterval: 5_000 });
+	const { data: vehicleData } = useSWR<Vehicle[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_METADATA }, swrFetcher, { refreshInterval: 5_000 });
+	const { data: fetchedVehiclePositionData, error, isLoading } = useSWR<HubVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, swrFetcher, { refreshInterval: 5_000 });
 
 	const vehiclesGeoJsonFeatureCollection: GeoJSON.FeatureCollection<GeoJSON.Point, GeoJSON.GeoJsonProperties> | undefined = useMemo(() => {
 		//

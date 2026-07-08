@@ -9,16 +9,6 @@ export interface HomepageCta {
 	status: 'disabled'
 }
 
-export interface HomepageProduct {
-	caption: string
-	description: string
-	eyebrow: string
-	icon: Icon
-	id: string
-	title: string
-	videoCta: HomepageCta
-}
-
 /* * */
 
 const DISABLED_DEMO_CTA: HomepageCta = {
@@ -71,69 +61,36 @@ export const homepageContent = {
 		eyebrow: 'Oferta',
 		title: 'A rede começa aqui',
 	},
-	products: [
-		{
-			caption: 'Pré-visualização do produto Paragens',
-			description: 'Inventário, localização e atributos de paragens numa base única, pronta para publicação, análise e integração operacional.',
-			eyebrow: 'Rede',
-			icon: IconMapPin,
-			id: 'stops',
-			title: 'Paragens',
-			videoCta: DISABLED_DEMO_CTA,
-		},
-		{
-			caption: 'Pré-visualização do produto Oferta',
-			description: 'Modelação de linhas, percursos, zonas, tarifas e padrões, com ferramentas para manter a oferta coerente antes da operação.',
-			eyebrow: 'Planeamento',
-			icon: IconRoute,
-			id: 'offer',
-			title: 'Oferta',
-			videoCta: DISABLED_DEMO_CTA,
-		},
-		{
-			caption: 'Pré-visualização do produto Validador GTFS e Planos',
-			description: 'Validação técnica de ficheiros GTFS e preparação de planos aprovados para publicação nos canais internos e externos.',
-			eyebrow: 'Qualidade',
-			icon: IconFileCheck,
-			id: 'plans',
-			title: 'Validador GTFS + Planos',
-			videoCta: DISABLED_DEMO_CTA,
-		},
-		{
-			caption: 'Pré-visualização do produto Monitorização de Circulações',
-			description: 'Monitorização contínua das circulações em serviço, posições de veículos, estados operacionais e evolução no terreno.',
-			eyebrow: 'Tempo real',
-			icon: IconRadar2,
-			id: 'realtime',
-			title: 'Monitorização de Circulações',
-			videoCta: DISABLED_DEMO_CTA,
-		},
-		{
-			caption: 'Pré-visualização do produto Alertas',
-			description: 'Gestão e publicação de alertas de serviço para manter equipas, canais digitais e passageiros alinhados.',
-			eyebrow: 'Comunicação',
-			icon: IconBellRinging,
-			id: 'alerts',
-			title: 'Alertas',
-			videoCta: DISABLED_DEMO_CTA,
-		},
-		{
-			caption: 'Pré-visualização do produto Performance',
-			description: 'Métricas de oferta, procura e execução para acompanhar desempenho, identificar desvios e sustentar decisões.',
-			eyebrow: 'Medição',
-			icon: IconChartLine,
-			id: 'performance',
-			title: 'Performance',
-			videoCta: DISABLED_DEMO_CTA,
-		},
-		{
-			caption: 'Pré-visualização do produto Dados Abertos',
-			description: 'APIs, feeds e ficheiros de dados abertos para integrar o ecossistema de mobilidade com informação operacional fiável.',
-			eyebrow: 'Publicação',
-			icon: IconApi,
-			id: 'open-data',
-			title: 'Dados Abertos',
-			videoCta: DISABLED_DEMO_CTA,
-		},
-	] satisfies HomepageProduct[],
+	// sections: [
+	// 	{
+	// 		name: 'Paragens',
+	// 		title: 'A rede começa no ponto certo',
+	// 		description: 'Centralize a gestão das paragens, valide localizações e mantenha uma base fiável para construir percursos, horários e informação ao passageiro.',
+	// 	},
+	// 	{
+	// 		name: 'Oferta',
+	// 		title: 'Construa a rede',
+	// 		description: 'Organize linhas, percursos e horários num único fluxo, valide a oferta com clareza e exporte em GTFS para alimentar os vários canais de informação.',
+	// 	},
+	// 	{
+	// 		eyebrow: 'Validador GTFS + Planos',
+	// 		title: 'Tudo pronto para operar',
+	// 		body: 'Confirme a qualidade dos dados, resolva inconsistências e prepare planos de operação fiáveis a partir da rede publicada.',
+	// 	},
+	// 	{
+	// 		eyebrow: 'Monitorização de Circulações',
+	// 		title: 'Acompanhe o serviço',
+	// 		body: 'Veja cada circulação em detalhe, compare o planeado com o observado e identifique rapidamente desvios na execução da operação.',
+	// 	},
+	// 	{
+	// 		eyebrow: 'Alertas',
+	// 		title: 'Responda à mudança',
+	// 		body: 'Crie e acompanhe alertas de serviço para comunicar alterações, gerir impactos na rede e manter a operação coordenada.',
+	// 	},
+	// 	{
+	// 		eyebrow: 'Performance',
+	// 		title: 'Melhore com evidência',
+	// 		body: 'Transforme dados operacionais em indicadores claros para avaliar qualidade, explicar resultados e apoiar decisões de melhoria.',
+	// 	},
+	// ] satisfies HomepageProduct[],
 } as const;

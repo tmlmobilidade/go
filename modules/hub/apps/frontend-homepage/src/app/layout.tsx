@@ -6,7 +6,7 @@ import { i18nResourceKeysPt } from '@/i18n/resources';
 
 import '@/styles/homepage.css';
 import '@/styles/reset.css';
-import { BaseProvider, MapContextProvider, MeContextProvider } from '@tmlmobilidade/ui';
+import { BaseProvider, MapContextProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { type PropsWithChildren } from 'react';
 
@@ -22,13 +22,11 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} version={pjson.version}>
-			<MeContextProvider>
-				<MapContextProvider>
-					<VehiclePositionContextProvider>
-						{children}
-					</VehiclePositionContextProvider>
-				</MapContextProvider>
-			</MeContextProvider>
+			<MapContextProvider anonymous>
+				<VehiclePositionContextProvider>
+					{children}
+				</VehiclePositionContextProvider>
+			</MapContextProvider>
 		</BaseProvider>
 	);
 }
