@@ -53,7 +53,7 @@ export async function getRides(): Promise<string[]> {
 			},
 			{
 				limit: 750,
-				projection: { _id: 1 },
+				projection: { _id: 1, operational_date: 1, start_time_scheduled: 1 },
 				sort: { start_time_scheduled: -1 },
 			},
 		);
@@ -79,7 +79,7 @@ export async function getRides(): Promise<string[]> {
 
 		await rides.updateMany({ _id: { $in: latestWaitingRidesIds } }, { system_status: 'processing' });
 
-		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestWaitingRidesIds.length} | start_time_scheduled: ${latestWaitingRides[latestWaitingRides.length - 1].start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
+		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestWaitingRidesIds.length} | operational_date: ${latestWaitingRides[latestWaitingRides.length - 1].operational_date} | start_time_scheduled: ${latestWaitingRides[latestWaitingRides.length - 1].start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 
 		return latestWaitingRidesIds;
 
