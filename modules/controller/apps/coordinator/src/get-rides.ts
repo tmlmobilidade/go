@@ -47,7 +47,6 @@ export async function getRides(): Promise<string[]> {
 
 		const latestWaitingRides = await rides.findMany(
 			{
-				// agency_id: { $in: ['41', '42', '43', '44'] },
 				start_time_scheduled: { $lte: standardWindowInterval.end },
 				system_status: 'waiting',
 			},
@@ -89,6 +88,5 @@ export async function getRides(): Promise<string[]> {
 		return [];
 	} finally {
 		IS_BUSY = false;
-		Logger.info({ message: `[${sessionId}] Session completed` });
 	}
 }
