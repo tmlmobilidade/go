@@ -74,10 +74,7 @@ export class GORedisClient {
 		}
 
 		this.tunnel = getSshTunnel({
-			forwardOptions: {
-				dstAddr: process.env.GO_REDIS_HOST,
-				dstPort: Number(process.env.GO_REDIS_PORT),
-			},
+			forwardOptions: { dstAddr: process.env.GO_REDIS_HOST, dstPort: Number(process.env.GO_REDIS_PORT) },
 			prefix: 'GO',
 		});
 
