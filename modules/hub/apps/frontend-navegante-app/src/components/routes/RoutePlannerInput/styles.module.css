@@ -1,0 +1,223 @@
+/* * */
+/* WRAPPER */
+
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: row;
+	gap: 12px;
+	padding: 16px;
+	background-color: var(--color-surface-primary, #fff);
+	border-radius: 16px;
+	box-shadow: 0 2px 12px rgb(0 0 0 / 8%);
+}
+
+/* * */
+/* TRACK */
+
+.track {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	align-items: center;
+	padding-top: 18px;
+	padding-bottom: 18px;
+}
+
+.originDot {
+	flex-shrink: 0;
+	color: var(--color-status-success, #2dc76d);
+}
+
+.destinationPin {
+	flex-shrink: 0;
+	color: var(--color-status-error, #e53e3e);
+}
+
+.trackLine {
+	flex: 1;
+	width: 2px;
+	margin: 4px 0;
+	background-image: repeating-linear-gradient(
+		to bottom,
+		var(--color-border-default, #ccc) 0,
+		var(--color-border-default, #ccc) 4px,
+		transparent 4px,
+		transparent 8px
+	);
+}
+
+/* * */
+/* FIELDS */
+
+.fields {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+}
+
+/* * */
+/* ROW */
+
+.row {
+	display: flex;
+	flex-direction: row;
+	gap: 8px;
+	align-items: center;
+	min-height: 52px;
+}
+
+.field {
+	position: relative;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.label {
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--color-text-secondary, #888);
+	text-transform: uppercase;
+}
+
+.locationValue {
+	width: 100%;
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--color-text-primary, #111);
+	outline: 0;
+	background: transparent;
+	border: 0;
+}
+
+.locationValue::placeholder {
+	font-weight: 500;
+	color: var(--color-text-secondary, #888);
+}
+
+/* * */
+/* LOCATION BUTTON */
+
+.locationButton {
+	all: unset;
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	color: var(--color-text-secondary, #888);
+	cursor: pointer;
+	background-color: var(--color-surface-secondary, #f5f5f5);
+	border-radius: 50%;
+	transition: background-color 150ms ease;
+}
+
+.locationButton:hover {
+	background-color: var(--color-surface-hover, #ebebeb);
+}
+
+/* * */
+/* SWAP ROW */
+
+.swapRow {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-end;
+	padding-right: 0;
+}
+
+.swapButton {
+	all: unset;
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	color: var(--color-text-secondary, #555);
+	cursor: pointer;
+	background-color: var(--color-surface-secondary, #f5f5f5);
+	border-radius: 50%;
+	transition: background-color 150ms ease;
+}
+
+.swapButton:hover {
+	background-color: var(--color-surface-hover, #ebebeb);
+}
+
+/* * */
+/* TIME CONTROLS */
+
+.timeControls {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 4px;
+	padding: 4px;
+	background-color: var(--color-surface-secondary, #f1f1f1);
+	border-radius: 12px;
+}
+
+.timeModeButton {
+	min-width: 0;
+	padding: 11px 8px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--color-text-secondary, #5f5f66);
+	white-space: nowrap;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	border-radius: 9px;
+}
+
+.timeModeButton[data-active='true'] {
+	color: var(--color-text-primary, #111);
+	background-color: var(--color-surface-primary, #fff);
+	box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
+}
+
+/* * */
+/* TIME INPUT */
+
+.timeInputWrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 12px;
+	background-color: var(--color-surface-primary, #fff);
+	border: 1px solid var(--color-system-border-200, #e3e3ea);
+	border-radius: 12px;
+}
+
+.timeInputWrapper span {
+	font-size: 11px;
+	font-weight: 700;
+	color: var(--color-text-secondary, #888);
+	text-transform: uppercase;
+}
+
+.timeInput {
+	width: 100%;
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--color-text-primary, #111);
+	outline: 0;
+	background: transparent;
+	border: 0;
+}

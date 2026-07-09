@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-type BottomSheetType = 'alerts-detail' | 'alerts-list' | 'help' | 'lines-detail' | 'search' | 'stops-detail' | 'vehicles-detail' | null;
+type BottomSheetType = 'alerts-detail' | 'alerts-list' | 'help' | 'lines-detail' | 'routes' | 'search' | 'stops-detail' | 'vehicles-detail' | null;
 
 interface BottomSheetNavigationType {
 	entityId?: null | string

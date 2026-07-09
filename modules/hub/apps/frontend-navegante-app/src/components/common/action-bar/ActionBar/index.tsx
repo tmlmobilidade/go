@@ -3,7 +3,7 @@
 import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
 import { ActionBarUserLocation } from '@/components/common/action-bar/ActionBarUserLocation';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { IconAlertTriangle, IconQuestionMark, IconSearch } from '@tabler/icons-react';
+import { IconQuestionMark, IconRoute, IconSearch } from '@tabler/icons-react';
 import { Spacer } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -35,10 +35,16 @@ export function ActionBar() {
 
 			<Spacer orientation="vertical" size="full" />
 
-			<ActionBarButton
+			{/* <ActionBarButton
 				icon={<IconAlertTriangle size={28} />}
 				label={t('default:action-bar.ActionBar.alerts.label')}
 				onClick={() => setActiveBottomSheet({ view: 'alerts-list' })}
+			/> */}
+
+			<ActionBarButton
+				icon={<IconRoute size={28} />}
+				label={t('default:action-bar.ActionBar.routes.label')}
+				onClick={() => setActiveBottomSheet({ view: 'routes' })}
 			/>
 
 			<ActionBarButton

@@ -1,0 +1,58 @@
+
+
+/* * */
+/* INPUT WRAPPER */
+
+.inputWrapper {
+	padding: 12px 16px;
+}
+
+/* * */
+/* PLAN BUTTON */
+
+.planButton {
+	width: calc(100% - 32px);
+	padding: 12px 16px;
+	margin: 16px;
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--color-primary-black, #111);
+	cursor: pointer;
+	background-color: var(--color-primary-yellow, #ffd400);
+	border: 0;
+	border-radius: 10px;
+}
+
+.planButton:disabled {
+	cursor: not-allowed;
+	opacity: 0.55;
+}
+
+/* * */
+/* PLAN ERROR */
+
+.planError {
+	padding: 12px;
+	margin: 0 16px 16px;
+	font-size: 13px;
+	color: var(--color-status-error, #b42318);
+	background-color: rgb(229 62 62 / 8%);
+	border-radius: 8px;
+}
+
+/* * */
+/* ITINERARIES */
+
+.itineraries {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: 0 16px 16px;
+}
+
+.itinerariesTitle {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 800;
+	color: var(--color-text-secondary, #6f6f78);
+}
