@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { feedback } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type PublicFeedback, PublicFeedbackSchema } from '@tmlmobilidade/types';
+import { type PublicFeedback, PublicFeedbackSchema } from '@tmlmobilidade/go-types-performance';
 
 /* * */
 

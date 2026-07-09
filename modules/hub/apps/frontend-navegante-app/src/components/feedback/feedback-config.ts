@@ -8,7 +8,7 @@ import {
 	type PublicFeedbackReasonCategory,
 	type PublicFeedbackReasonConfig,
 	type PublicFeedbackReasonId,
-} from '@tmlmobilidade/types';
+} from '@tmlmobilidade/go-types-performance';
 
 /* * */
 

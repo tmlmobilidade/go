@@ -7,7 +7,7 @@ import { FeedbackReasonOptionsSheet } from '@/components/feedback/FeedbackForm/s
 import { FeedbackReasonsSheet } from '@/components/feedback/FeedbackForm/sheets/FeedbackReasonsSheet';
 import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PublicFeedback } from '@tmlmobilidade/types';
+import { type PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import { useState } from 'react';
 
 /* * */

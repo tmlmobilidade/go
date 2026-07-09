@@ -1,6 +1,6 @@
 /* * */
 
-import type { PublicFeedbackEntityType } from '@/feedback/entity-type.js';
+import type { PublicFeedbackEntityType } from '@/feedback/feedback.js';
 
 /* * */
 

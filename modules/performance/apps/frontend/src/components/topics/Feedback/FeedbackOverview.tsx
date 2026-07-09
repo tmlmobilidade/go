@@ -6,7 +6,7 @@ import { getFeedbackOverviewData } from '@/utils/feedback/feedback-preview';
 import { buildLineLabelsById, buildStopLabelsById, type FeedbackNetworkLine, type FeedbackNetworkStop } from '@/utils/feedback/network-labels';
 import { buildOperatorApprovalIndexes } from '@/utils/feedback/operators';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PublicFeedback } from '@tmlmobilidade/types';
+import { type PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import { useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';

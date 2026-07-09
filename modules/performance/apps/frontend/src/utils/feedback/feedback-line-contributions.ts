@@ -2,7 +2,7 @@
 
 import type { FeedbackEntityMetrics } from '../metrics/feedback-metrics';
 
-import { getPublicFeedbackReasonConfig, PUBLIC_FEEDBACK_NO_REASON_ID, type PublicFeedback, type PublicFeedbackReasonCategory } from '@tmlmobilidade/types';
+import { getPublicFeedbackReasonConfig, PUBLIC_FEEDBACK_NO_REASON_ID, type PublicFeedback, type PublicFeedbackReasonCategory } from '@tmlmobilidade/go-types-performance';
 
 import { FEEDBACK_TOTAL_PERCENTAGE, getFeedbackReasonCategoryLabel, getFeedbackReasonLabel, roundFeedbackPercentages } from './feedback-reasons';
 

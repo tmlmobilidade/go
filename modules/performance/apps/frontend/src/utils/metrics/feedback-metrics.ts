@@ -3,7 +3,7 @@
 import type { FeedbackLineContributionMeter } from '../feedback/feedback-line-contributions';
 import type { FeedbackStopReasonMeter } from '../feedback/feedback-stop-reasons';
 import type { SystemStatusType } from '@/constants';
-import type { PublicFeedback } from '@tmlmobilidade/types';
+import type { PublicFeedback } from '@tmlmobilidade/go-types-performance';
 
 import { getLineLabel } from '../feedback/network-labels';
 

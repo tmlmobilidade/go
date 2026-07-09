@@ -3,10 +3,19 @@
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
-import { PublicFeedbackEntityTypeSchemaValues } from './entity-type.js';
-import { PublicFeedbackMoodSchemaValues } from './feedback-mood.js';
-
 /* * */
+
+export const PublicFeedbackEntityTypeSchemaValues = [
+	'line',
+	'stop',
+] as const;
+
+export type PublicFeedbackEntityType = typeof PublicFeedbackEntityTypeSchemaValues[number];
+
+const PublicFeedbackMoodSchemaValues = [
+	'happy',
+	'unhappy',
+] as const;
 
 export const PublicFeedbackSchema = z.object({
 	agency_id: z.string().min(1),

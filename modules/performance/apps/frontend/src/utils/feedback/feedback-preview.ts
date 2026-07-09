@@ -1,6 +1,6 @@
 /* * */
 
-import type { PublicFeedback } from '@tmlmobilidade/types';
+import type { PublicFeedback } from '@tmlmobilidade/go-types-performance';
 
 import { type FeedbackEntitySummary, type FeedbackEntityType, getFeedbackEntitySummary, getFeedbackMetricsByEntity } from '../metrics/feedback-metrics';
 import { getFeedbackLineContributionMeters } from './feedback-line-contributions';

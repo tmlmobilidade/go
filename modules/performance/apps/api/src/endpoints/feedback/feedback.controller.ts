@@ -3,8 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
+import { type PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/logger';
-import { type PublicFeedback } from '@tmlmobilidade/types';
 
 /* * */
 

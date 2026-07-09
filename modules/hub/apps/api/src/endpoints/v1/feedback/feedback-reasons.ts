@@ -1,6 +1,6 @@
 /* * */
 
-import { getPublicFeedbackReasonValuesByEntity, PublicFeedbackEntityTypeSchemaValues } from '@tmlmobilidade/types';
+import { getPublicFeedbackReasonValuesByEntity, PublicFeedbackEntityTypeSchemaValues } from '@tmlmobilidade/go-types-performance';
 
 /* * */
 

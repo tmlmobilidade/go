@@ -1,4 +1,5 @@
-import type { Agency, PublicFeedback } from '@tmlmobilidade/types';
+import type { PublicFeedback } from '@tmlmobilidade/go-types-performance';
+import type { Agency } from '@tmlmobilidade/types';
 
 import { calculateFeedbackSatisfactionIndex } from '../metrics/feedback-metrics';
 

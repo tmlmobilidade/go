@@ -1,7 +1,8 @@
 /* * */
 
 import type { FeedbackEntityType } from '@/utils/metrics/feedback-metrics';
-import type { Permission, PublicFeedback } from '@tmlmobilidade/types';
+import type { PublicFeedback } from '@tmlmobilidade/go-types-performance';
+import type { Permission } from '@tmlmobilidade/types';
 
 import { useFeedbackOperatorFilterContext } from '@/contexts/feedback/FeedbackOperatorFilter.context';
 import { getOperatorName, sortOperatorsByCode } from '@/utils/feedback/operators';

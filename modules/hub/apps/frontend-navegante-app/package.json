@@ -28,6 +28,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
+		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/types": "*",

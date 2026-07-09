@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.44.0",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",

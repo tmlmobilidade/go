@@ -6,7 +6,7 @@
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { buildFeedbackTimeline, type FeedbackTimelineRange, formatTimelineTick, TIMELINE_RANGE_CONTROL_OPTIONS } from '@/utils/feedback/feedback-timeline';
-import { type PublicFeedback } from '@tmlmobilidade/types';
+import { type PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import { BarChart, MetricsSkeleton, SegmentedControl } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';

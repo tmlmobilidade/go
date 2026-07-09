@@ -5,7 +5,7 @@ import { FeedbackMoodSelector } from '@/components/feedback/FeedbackForm/compone
 import { FeedbackSubmitButton } from '@/components/feedback/FeedbackForm/components/FeedbackSubmitButton';
 import { Modal } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
-import { type PublicFeedback } from '@tmlmobilidade/types';
+import { type PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import { useEffect, useRef, useState } from 'react';
 
 import styles from './styles.module.css';

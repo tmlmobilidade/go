@@ -1,6 +1,6 @@
 'use client';
 
-import type { PublicFeedback } from '@tmlmobilidade/types';
+import type { PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import type { PropsWithChildren } from 'react';
 
 import { useFeedbackEntityDetailModalContext } from '@/contexts/feedback/FeedbackEntityDetailModal.context';
