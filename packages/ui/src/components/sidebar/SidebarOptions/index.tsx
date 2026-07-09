@@ -2,6 +2,7 @@
 
 import { ColorSwatch, Menu as MantineMenu, type MenuProps } from '@mantine/core';
 import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLanguage, IconLogout, IconMaximize, IconMinimize, IconSettings } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
 import { useMeContext } from '../../../contexts/Me.context';
@@ -24,6 +25,7 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const meContext = useMeContext();
 	const layoutContext = useLayoutContext();
 	const versionContext = useVersionContext();
@@ -33,14 +35,14 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 	// B. Render components
 
 	return (
-		<Menu icon={IconSettings} label="Definições" menuPosition={menuPosition}>
+		<Menu icon={IconSettings} label={t('shared:components.sidebar.SidebarOptions.label')} menuPosition={menuPosition}>
 
-			<MantineMenu.Label>Personalização</MantineMenu.Label>
+			<MantineMenu.Label>{t('shared:components.sidebar.SidebarOptions.customisation')}</MantineMenu.Label>
 
 			<MantineMenu.Sub position="left">
 				<MantineMenu.Sub.Target>
 					<MantineMenu.Sub.Item leftSection={<IconBrightness size={20} />}>
-						Modo
+						{t('shared:components.sidebar.SidebarOptions.mode')}
 					</MantineMenu.Sub.Item>
 				</MantineMenu.Sub.Target>
 				<MantineMenu.Sub.Dropdown>
@@ -60,7 +62,7 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 			<MantineMenu.Sub position="left">
 				<MantineMenu.Sub.Target>
 					<MantineMenu.Sub.Item leftSection={<IconColorSwatch size={20} />}>
-						Tema
+						{t('shared:components.sidebar.SidebarOptions.theme')}
 					</MantineMenu.Sub.Item>
 				</MantineMenu.Sub.Target>
 				<MantineMenu.Sub.Dropdown>
@@ -80,7 +82,7 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 			<MantineMenu.Sub position="left">
 				<MantineMenu.Sub.Target>
 					<MantineMenu.Sub.Item leftSection={<IconLanguage size={20} />}>
-						Idioma
+						{t('shared:components.sidebar.SidebarOptions.language')}
 					</MantineMenu.Sub.Item>
 				</MantineMenu.Sub.Target>
 				<MantineMenu.Sub.Dropdown>
@@ -101,19 +103,23 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 				onClick={() => layoutContext.actions.activateFullscreen()}
 				rightSection={layoutContext.data.active_fullscreen ? <IconCheck size={16} /> : null}
 			>
-				{layoutContext.data.active_fullscreen ? 'Sair do Fullscreen' : 'Entrar em Fullscreen'}
+				{layoutContext.data.active_fullscreen
+					? t('shared:components.sidebar.SidebarOptions.exit_fullscreen')
+					: t('shared:components.sidebar.SidebarOptions.enter_fullscreen')}
 			</MantineMenu.Item>
 
 			<MantineMenu.Divider />
 
-			<MantineMenu.Label>Conta</MantineMenu.Label>
+			<MantineMenu.Label>{t('shared:components.sidebar.SidebarOptions.account')}</MantineMenu.Label>
 
 			<MantineMenu.Item
 				leftSection={<IconBellRinging size={20} />}
 				onClick={notificationsContext.actions.requestNotificationPermission}
 				rightSection={notificationsContext.flags.enabled ? <IconCheck size={16} /> : null}
 			>
-				{notificationsContext.flags.enabled ? 'Notificações Ativadas' : 'Ativar Notificações'}
+				{notificationsContext.flags.enabled
+					? t('shared:components.sidebar.SidebarOptions.notifications_enabled')
+					: t('shared:components.sidebar.SidebarOptions.enable_notifications')}
 			</MantineMenu.Item>
 
 			<MantineMenu.Item
@@ -121,12 +127,12 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 				leftSection={<IconLogout size={20} />}
 				onClick={meContext.actions.logout}
 			>
-				Logout
+				{t('shared:components.sidebar.SidebarOptions.logout')}
 			</MantineMenu.Item>
 
 			<MantineMenu.Divider />
 
-			<MantineMenu.Label>Versão {versionContext.data.version}</MantineMenu.Label>
+			<MantineMenu.Label>{t('shared:components.sidebar.SidebarOptions.version', { version: versionContext.data.version })}</MantineMenu.Label>
 
 		</Menu>
 	);

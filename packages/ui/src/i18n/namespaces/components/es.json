@@ -61,6 +61,14 @@
 			"year_periods": "Períodos del año",
 			"zones": "Zonas"
 		},
+		"SidebarExports": {
+			"label": "Exportaciones",
+			"no_exports": "Sin exportaciones disponibles",
+			"title": "Exportaciones"
+		},
+		"SidebarExportsItem": {
+			"no_name": "Sin nombre"
+		},
 		"SidebarGroups": {
 			"administration": "Administración",
 			"calendar_management": "Calendario",
@@ -69,6 +77,31 @@
 			"offer": "Oferta",
 			"operation": "Operación",
 			"overview": "Visión general"
+		},
+		"SidebarNotifications": {
+			"label": "Notificaciones",
+			"no_notifications": "Sin notificaciones disponibles",
+			"read": "Leídas",
+			"unread": "No leídas"
+		},
+		"SidebarNotificationsItem": {
+			"mark_as_read_aria": "Marcar como leído",
+			"no_description": "Sin descripción",
+			"no_title": "Sin título"
+		},
+		"SidebarOptions": {
+			"account": "Cuenta",
+			"customisation": "Personalización",
+			"enable_notifications": "Activar notificaciones",
+			"enter_fullscreen": "Entrar en pantalla completa",
+			"exit_fullscreen": "Salir de pantalla completa",
+			"label": "Ajustes",
+			"language": "Idioma",
+			"logout": "Cerrar sesión",
+			"mode": "Modo",
+			"notifications_enabled": "Notificaciones activadas",
+			"theme": "Tema",
+			"version": "Versión {{version}}"
 		}
 	},
 	"tags": {
