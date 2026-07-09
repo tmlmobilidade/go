@@ -1,14 +1,14 @@
 /* * */
 
+import { randomInt } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { ForwardOptions } from 'tunnel-ssh';
 
 import { SshConfig, SshTunnelService, SshTunnelServiceOptions } from './client.js';
 
 /* * */
 
 interface GetSshTunnelConfigOptions {
-	forwardOptions: ForwardOptions & { srcAddr: 'localhost' }
+	forwardOptions: { dstAddr: string, dstPort: number }
 	maxRetries?: number
 	prefix: string
 }
@@ -70,16 +70,17 @@ export function getSshTunnel(options: GetSshTunnelConfigOptions): null | SshTunn
 
 	//
 	// Compose SshConfig object with all parameter sections
+	const srcPort = randomInt(8_000, 8_999);
 
 	const sshConfig: SshConfig = {
 		forwardOptions: {
 			dstAddr: forwardOptions.dstAddr,
 			dstPort: forwardOptions.dstPort,
-			srcAddr: forwardOptions.srcAddr,
-			srcPort: forwardOptions.srcPort,
+			srcAddr: 'localhost',
+			srcPort: srcPort,
 		},
 		serverOptions: {
-			port: forwardOptions.srcPort,
+			port: srcPort,
 		},
 		sshOptions: {
 			/**
