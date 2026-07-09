@@ -16,6 +16,11 @@ export const availableLocales: LocaleConfig[] = [
 		alias: ['pt-PT', 'pt_PT', 'pt-BR', 'pt_BR', 'pt-GW', 'pt_GW', 'pt-MZ', 'pt_MZ'],
 		enabled: true,
 	},
+	{
+		_id: 'es',
+		alias: ['es-ES', 'es_ES', 'es-MX', 'es_MX', 'es-AR', 'es_AR'],
+		enabled: true,
+	},
 ];
 
 /* * */
