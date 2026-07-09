@@ -118,10 +118,6 @@ export class GOMongoClient {
 			throw new Error('Missing GO_MONGO_RS_NAME');
 		}
 
-		if (!process.env.GO_MONGO_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing GO_MONGO_TUNNEL_LOCAL_PORT');
-		}
-
 		this.tunnel = getSshTunnel({
 			forwardOptions: { dstAddr: process.env.GO_MONGO_HOST_1, dstPort: Number(process.env.GO_MONGO_PORT_1) },
 			prefix: 'GO',
