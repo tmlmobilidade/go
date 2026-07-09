@@ -40,13 +40,11 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 		},
 		prd: {
 			api_url: 'https://go.tmlmobilidade.pt/alerts/api',
-			cors_origin: true,
 			frontend_url: 'https://go.tmlmobilidade.pt/alerts',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
 			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/alerts/api`,
-			cors_origin: true,
 			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/alerts`,
 			...DEFAULT_STG_CONFIG,
 		},
@@ -208,11 +206,13 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			api_url: 'https://go.tmlmobilidade.pt/locations/api',
 			frontend_url: 'https://go.tmlmobilidade.pt/locations',
 			...DEFAULT_PRD_CONFIG,
+			cors_origin: true,
 		},
 		stg: {
 			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/locations/api`,
 			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/locations`,
 			...DEFAULT_STG_CONFIG,
+			cors_origin: true,
 		},
 	},
 
