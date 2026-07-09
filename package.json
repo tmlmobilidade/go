@@ -82,7 +82,7 @@
 		"dev:exporter-api": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-api",
 		"dev:exporter-merged": "ENVIRONMENT=dev dotenv-run -f ./modules/exporter/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-exporter-export-gtfs-merged",
 		"dev:fleet": "ENVIRONMENT=dev dotenv-run -f ./modules/fleet/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-fleet-*",
-		"dev:hub": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/development/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-*",
+		"dev:hub": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-*",
 		"dev:hub:api": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-api",
 		"dev:hub:enable-app": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-enable-app",
 		"dev:hub:publish-alerts": "ENVIRONMENT=dev dotenv-run -f ./modules/hub/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-alerts",
