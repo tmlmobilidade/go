@@ -101,7 +101,7 @@
 			"mode": "Modo",
 			"notifications_enabled": "Notificaciones activadas",
 			"theme": "Tema",
-			"version": "Versión {{version}}"
+			"version": "Versión"
 		}
 	},
 	"tags": {

@@ -8,7 +8,6 @@
 	"type": "module",
 	"main": "./dist/index.js",
 	"scripts": {
-
 		"build": "turbo build",
 		"build:alerts": "ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-*",
 		"build:alerts:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-alerts-pckg-*",
@@ -47,7 +46,6 @@
 		"build:tracker": "ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-*",
 		"build:tracker:packages": "ENVIRONMENT=dev dotenv-run -f ./modules/tracker/environments/staging/secrets/.env -- turbo run build --filter=@tmlmobilidade/go-tracker-pckg-*",
 		"build:types": "turbo build --filter=@tmlmobilidade/go-types-* --filter=@tmlmobilidade/types",
-
 		"dev:alerts": "npm run build:alerts:packages && ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:alerts:prd": "npm run build:alerts:packages && ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:alerts:ui": "ENVIRONMENT=dev dotenv-run -f ./modules/alerts/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-alerts-api --filter=@tmlmobilidade/go-alerts-frontend",
@@ -164,7 +162,6 @@
 		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
 
 		"test:eta:ride": "npm run build:eta:packages && ENVIRONMENT=dev dotenv-run -f ./modules/eta/environments/staging/secrets/.env -- npm run start -w @tmlmobilidade/go-eta-ride-analyzer --"
-
 	},
 	"devDependencies": {
 		"@commitlint/cli": "21.2.0",
@@ -186,5 +183,19 @@
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
 		"zod": "3.25.76"
+	},
+	"allowScripts": {
+		"@parcel/watcher@2.5.6": true,
+		"@sentry/cli@2.58.6": true,
+		"@swc/core@1.15.43": true,
+		"@tmlmobilidade/gtfs-validator@20260624.1438.43": true,
+		"better-sqlite3@12.11.1": true,
+		"cpu-features@0.0.10": true,
+		"esbuild@0.28.0": true,
+		"esbuild@0.28.1": true,
+		"fsevents@2.3.3": true,
+		"sharp@0.34.5": true,
+		"sharp@0.35.3": true,
+		"ssh2@1.17.0": true
 	}
 }
