@@ -64,8 +64,8 @@ export function getSshTunnel(options: GetSshTunnelConfigOptions): null | SshTunn
 	if (!env('TUNNEL_SSH_USERNAME')) {
 		throw new Error(`Missing ${prefix}_TUNNEL_SSH_USERNAME environment variable.`);
 	}
-	if (!env('TUNNEL_SSH_KEY_PATH') && !env('TUNNEL_SSH_KEY')) {
-		throw new Error(`Missing ${prefix}_TUNNEL_SSH_KEY_PATH or ${prefix}_TUNNEL_SSH_KEY environment variable.`);
+	if (!env('TUNNEL_SSH_KEY_PATH') && !env('TUNNEL_SSH_KEY') && !process.env.SSH_AUTH_SOCK) {
+		throw new Error(`Missing authentication configuration. Please provide ${prefix}_TUNNEL_SSH_KEY_PATH, ${prefix}_TUNNEL_SSH_KEY, or ensure SSH_AUTH_SOCK is set.`);
 	}
 
 	//
