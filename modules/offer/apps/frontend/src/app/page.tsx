@@ -6,5 +6,5 @@ import { redirect } from 'next/navigation';
 /* * */
 
 export default function Page() {
-	redirect(PAGE_ROUTES.offer.TYPOLOGIES_LIST);
+	redirect(PAGE_ROUTES.offer.LINES_LIST);
 }

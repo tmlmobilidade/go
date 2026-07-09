@@ -39,6 +39,19 @@ export const UpdateTypologySchema = CreateTypologySchema
 
 /* * */
 
+export const TypologySimplifiedSchema = TypologySchema.pick({
+	_id: true,
+	code: true,
+	color: true,
+	default_onboard_fare_ids: true,
+	default_prepaid_fare_id: true,
+	name: true,
+	text_color: true,
+});
+
+/* * */
+
 export type Typology = z.infer<typeof TypologySchema>;
+export type TypologySimplified = z.infer<typeof TypologySimplifiedSchema>;
 export type CreateTypologyDto = z.infer<typeof CreateTypologySchema>;
 export type UpdateTypologyDto = z.infer<typeof UpdateTypologySchema>;

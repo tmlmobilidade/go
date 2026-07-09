@@ -26,7 +26,8 @@ server.register(
 		instance.get('/vehicles/positions/gtfs.pb', getVehiclePositionsGtfsRtProtobuf);
 
 		instance.get('/trip-updates', getTripUpdatesGtfsRtJson);
-		instance.get('/trip-updates.pb', getTripUpdatesGtfsRtProtobuf);
+		instance.get('/trip-updates/gtfs', getTripUpdatesGtfsRtJson);
+		instance.get('/trip-updates/gtfs.pb', getTripUpdatesGtfsRtProtobuf);
 
 		next();
 	},

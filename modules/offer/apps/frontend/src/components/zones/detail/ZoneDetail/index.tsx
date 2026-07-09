@@ -5,10 +5,9 @@ import { ZoneDetailHeader } from '@/components/zones/detail/ZoneDetailHeader';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { PermissionCatalog, ZoneSchema } from '@tmlmobilidade/types';
-import { Divider, ErrorDisplay, GeoJsonInput, Grid, LoadingOverlay, MapOverlayPolygon, MapOverlayPolygonDataProps, MapView, MultiSelect, Pane, Section, TextInput, useCssVariable, useDataAgencies } from '@tmlmobilidade/ui';
+import { Divider, ErrorDisplay, GeoJsonInput, Grid, LoadingOverlay, MapOverlayPolygon, MapOverlayPolygonDataProps, MapView, MultiSelect, Pane, Section, TextInput, useCssVariable, useDataAgenciesNew } from '@tmlmobilidade/ui';
 import { Feature, type FeatureCollection, MultiPolygon, type Polygon } from 'geojson';
 import { useEffect, useState } from 'react';
-
 /* * */
 
 type ZoneGeometry = MultiPolygon | Polygon;
@@ -25,18 +24,16 @@ export function ZoneDetail() {
 
 	const primaryColorHexValue = useCssVariable('--color-primary', '#000000');
 
-	// Bypass permissions to show all agency labels in read-only mode
-	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: zoneDetailContext.flags.isReadOnly ? undefined : [PermissionCatalog.all.zones.actions.update],
-		scope: zoneDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.zones.scope,
+	const { options: agencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
+		actions: [zoneDetailContext.flags.isReadOnly ? PermissionCatalog.all.zones.actions.nav : PermissionCatalog.all.zones.actions.update],
+		scope: PermissionCatalog.all.zones.scope,
 	});
 
 	//
 	// B. Handle actions
 
 	const updateGeoJson = (feature: null | ZoneFeature) => {
-		if (!feature || !feature.geometry) {
+		if (!feature?.geometry) {
 			setPreviewGeoJson(null);
 			return;
 		}
@@ -56,8 +53,7 @@ export function ZoneDetail() {
 				},
 				type: 'Feature' as const,
 			}));
-		}
-		else {
+		} else {
 			baseGeoJson.features = [
 				{
 					geometry: feature.geometry,
@@ -112,7 +108,7 @@ export function ZoneDetail() {
 	}
 
 	return (
-		<Pane header={[<ZoneDetailHeader />]}>
+		<Pane header={[<ZoneDetailHeader key="header" />]}>
 
 			<MapView height={450} id="zone-geojson-preview">
 				{previewGeoJson && (
