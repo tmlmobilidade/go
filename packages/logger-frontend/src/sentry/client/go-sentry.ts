@@ -2,7 +2,7 @@ export function getSentryClient(): string {
 	//
 
 	//
-	// Check if are on Development
+	// If we are on Development, return an empty string
 	if (process.env.ENVIRONMENT === 'dev') {
 		return undefined;
 	}

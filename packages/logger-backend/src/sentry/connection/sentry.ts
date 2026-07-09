@@ -14,6 +14,7 @@ export async function initSentry() {
 	return Sentry.init({
 		dsn,
 		enableLogs: true,
+		environment: process.env.ENVIRONMENT,
 		integrations: [
 			Sentry.consoleLoggingIntegration(),
 			Sentry.fastifyIntegration(),
