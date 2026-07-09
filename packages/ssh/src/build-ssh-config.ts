@@ -43,11 +43,34 @@ interface GetSshTunnelConfigOptions {
  * @param options - SSH tunnel config options
  * @returns SshTunnelService instance ready to connect using the provided configuration
  */
-export function getSshTunnelConfig(options: GetSshTunnelConfigOptions): SshTunnelService {
+export function getSshTunnel(options: GetSshTunnelConfigOptions): null | SshTunnelService {
 	const { forwardOptions, maxRetries, prefix } = options;
 	const env = (name: string) => process.env[`${prefix}_${name}`];
 
+	//
+	// Validate required environment variables
+
+	if (env('TUNNEL_ENABLED') !== 'true' && env('TUNNEL_ENABLED') !== 'false') {
+		throw new Error(`Missing ${prefix}_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting ${prefix}_TUNNEL_ENABLED to "true" or "false".`);
+	}
+
+	if (env('TUNNEL_ENABLED') === 'false') {
+		return null;
+	}
+
+	if (!env('TUNNEL_SSH_HOST')) {
+		throw new Error(`Missing ${prefix}_TUNNEL_SSH_HOST environment variable.`);
+	}
+	if (!env('TUNNEL_SSH_USERNAME')) {
+		throw new Error(`Missing ${prefix}_TUNNEL_SSH_USERNAME environment variable.`);
+	}
+	if (!env('TUNNEL_SSH_KEY_PATH') && !env('TUNNEL_SSH_KEY')) {
+		throw new Error(`Missing ${prefix}_TUNNEL_SSH_KEY_PATH or ${prefix}_TUNNEL_SSH_KEY environment variable.`);
+	}
+
+	//
 	// Compose SshConfig object with all parameter sections
+
 	const sshConfig: SshConfig = {
 		forwardOptions: {
 			dstAddr: forwardOptions.dstAddr,
@@ -84,5 +107,7 @@ export function getSshTunnelConfig(options: GetSshTunnelConfigOptions): SshTunne
 		maxRetries: maxRetries || 3,
 	};
 
+	//
+	// Create and return the SshTunnelService instance
 	return new SshTunnelService(sshConfig, sshOptions);
 }
