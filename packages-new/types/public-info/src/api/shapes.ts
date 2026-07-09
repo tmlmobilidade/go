@@ -31,6 +31,7 @@ export type HubShapePoint = z.infer<typeof HubShapePointSchema>;
 export const HubShapeSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
+	encoded_polyline: z.string().optional(),
 	extension: z.number(),
 	geojson: HubShapeGeoJsonSchema,
 	points: z.array(HubShapePointSchema),

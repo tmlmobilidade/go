@@ -4,6 +4,7 @@ import { ValhallaRouteRequest, ValhallaRouteResponse } from '@/types/shapes.js';
 import { decodeValhallaShape } from '@/utils/shapes.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 
 /* * */
 
@@ -21,6 +22,7 @@ interface RoutePreviewDto {
 interface RoutePreviewLeg {
 	distance: number
 	duration: number
+	encoded_polyline: string
 	from_index: number
 	geojson: {
 		geometry: {
@@ -42,6 +44,7 @@ interface RoutePreviewLeg {
 interface RoutePreviewResponse {
 	distance: number
 	duration: number
+	encoded_polyline: string
 	geojson: {
 		geometry: {
 			coordinates: [number, number][]
@@ -140,9 +143,21 @@ export class ShapesController {
 			}
 
 			const segmentGeometry = decodeValhallaShape(encodedShape);
-
 			const segmentDistance = toMeters(valhallaData?.trip?.summary?.length ?? 0);
 			const segmentDuration = valhallaData?.trip?.summary?.time ?? 0;
+			const segmentGeoJson = {
+				geometry: {
+					coordinates: segmentGeometry,
+					type: 'LineString' as const,
+				},
+				properties: {
+					distance: segmentDistance,
+					duration: segmentDuration,
+					from_index: index,
+					to_index: index + 1,
+				},
+				type: 'Feature' as const,
+			};
 
 			totalDistance += segmentDistance;
 			totalDuration += segmentDuration;
@@ -156,40 +171,32 @@ export class ShapesController {
 			legs.push({
 				distance: segmentDistance,
 				duration: segmentDuration,
+				encoded_polyline: encodePolylineFromGeoJson(segmentGeoJson),
 				from_index: index,
-				geojson: {
-					geometry: {
-						coordinates: segmentGeometry,
-						type: 'LineString',
-					},
-					properties: {
-						distance: segmentDistance,
-						duration: segmentDuration,
-						from_index: index,
-						to_index: index + 1,
-					},
-					type: 'Feature',
-				},
+				geojson: segmentGeoJson,
 				geometry: segmentGeometry,
 				to_index: index + 1,
 			});
 		}
 
+		const fullGeoJson = {
+			geometry: {
+				coordinates: fullGeometry,
+				type: 'LineString' as const,
+			},
+			properties: {
+				distance: totalDistance,
+				duration: totalDuration,
+			},
+			type: 'Feature' as const,
+		};
+
 		return reply.send({
 			data: {
 				distance: totalDistance,
 				duration: totalDuration,
-				geojson: {
-					geometry: {
-						coordinates: fullGeometry,
-						type: 'LineString',
-					},
-					properties: {
-						distance: totalDistance,
-						duration: totalDuration,
-					},
-					type: 'Feature',
-				},
+				encoded_polyline: encodePolylineFromGeoJson(fullGeoJson),
+				geojson: fullGeoJson,
 				geometry: fullGeometry,
 				legs,
 			},

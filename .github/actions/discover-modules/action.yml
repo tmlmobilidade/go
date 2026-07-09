@@ -6,7 +6,7 @@ inputs:
     description: "Newline-separated list of modules and their apps (format: module:app, one app per line)"
     required: true
   selected-module:
-    description: "Selected module from workflow_dispatch (or 'all')"
+    description: "Selected module(s) from workflow_dispatch — comma/space separated, or 'all'"
     required: false
     default: "all"
   build-all:
@@ -105,9 +105,12 @@ runs:
           const changedFiles = Array.from(new Set([...changedFromAction, ...changedFromGit]));
 
           const isManual = context.eventName === 'workflow_dispatch';
-          const selectedModule = (process.env.SELECTED_MODULE || 'all').trim().toLowerCase();
+          const selectedModules = (process.env.SELECTED_MODULE || 'all')
+            .split(/[\s,]+/)
+            .map((name) => name.trim().toLowerCase())
+            .filter(Boolean);
           const manualBuildAll = (process.env.BUILD_ALL || 'true') === 'true';
-          const hasSpecificManualModule = isManual && selectedModule !== '' && selectedModule !== 'all';
+          const hasSpecificManualModule = isManual && selectedModules.length > 0 && !selectedModules.includes('all');
 
           // Any shared-package change forces a full rebuild.
           const packagesChanged = changedFiles.some(f => f.startsWith('packages/'));
@@ -123,7 +126,7 @@ runs:
             if (filteredApps.length === 0) continue;
 
             if (hasSpecificManualModule) {
-              if (module === selectedModule) {
+              if (selectedModules.includes(module.toLowerCase())) {
                 modulesToBuild.push(module);
                 moduleApps[module] = filteredApps;
               }

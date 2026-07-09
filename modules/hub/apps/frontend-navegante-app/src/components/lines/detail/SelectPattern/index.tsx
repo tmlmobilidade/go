@@ -7,7 +7,7 @@ import { useStopsContext } from '@/components/stops/Stops.context';
 import { formatStopLocation } from '@/utils/format-stop-location';
 import { ComboboxItem, ComboboxItemGroup, Flex, Group, Select, SelectProps, Text } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
-import { type HubPattern } from '@tmlmobilidade/types';
+import { type HubPattern } from '@tmlmobilidade/go-types-public-info';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -93,7 +93,7 @@ export function SelectPattern({ date_filter, onChange, patterns, value, ...props
 
 		data.forEach(group => group.items.sort((a, b) => a.direction_id - b.direction_id));
 
-		data.sort((a, b) => a.group.localeCompare(b.group));
+		// data.sort((a, b) => a.group.localeCompare(b.group));
 
 		data = data.map((group, index) => {
 			const routeData = linesContext.data.routes.find(route => route._id === group.group);

@@ -62,7 +62,7 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 		countDestinationDbFn: async () => {
 			return await simplifiedApexInspectionDecisionsNew.count(
 				'*',
-				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},
@@ -84,7 +84,7 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 		distinctDestinationDbFn: async () => {
 			return await simplifiedApexInspectionDecisionsNew.distinct(
 				'upper(toString(_id))',
-				'created_at >= fromUnixTimestamp64Milli($1) AND created_at < fromUnixTimestamp64Milli($2)',
+				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
 		},

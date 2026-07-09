@@ -4,10 +4,7 @@ import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypoint } from '@/components/lines/detail/PathWaypoint';
-import { useStopsContext } from '@/components/stops/Stops.context';
-import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { type HubGtfsRtFeedEntity, type HubGtfsRtTripUpdate } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -27,8 +24,6 @@ export function LinesDetailPathList() {
 
 	const linesDetailContext = useLinesDetailContext();
 	const operationalDate = useOperationalDate();
-	const stopsContext = useStopsContext();
-	const tripUpdatesContext = useTripUpdatesContext();
 
 	//
 	// B. Transform data

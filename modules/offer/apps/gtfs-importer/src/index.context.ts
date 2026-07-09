@@ -1,6 +1,8 @@
 /* * */
 
+import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { zones } from '@tmlmobilidade/interfaces';
+import { type Shape } from '@tmlmobilidade/types';
 
 import { fetchTypologiesByAgencyIds } from './fetchers/typology.js';
 import { type ImportOptions } from './types.js';
@@ -20,7 +22,7 @@ export interface ImportContext {
 	gtfsStopTimes: Awaited<ReturnType<typeof loadGtfsStopTimes>>
 	gtfsTrips: Awaited<ReturnType<typeof loadGtfsTrips>>
 	interchangeByLineId: Map<string, string>
-	shapesById: Map<string, { extension: number, geojson: { geometry: { coordinates: number[][], type: 'LineString' }, type: 'Feature' } }>
+	shapesById: Map<string, Shape>
 	stopTimesByTrip: ReturnType<typeof buildStopTimesByTrip>
 	tripsByRoute: ReturnType<typeof buildTripsByRouteAndDirection>['tripsByRoute']
 	tripsByRouteAndDirection: ReturnType<typeof buildTripsByRouteAndDirection>['tripsByRouteAndDirection']
@@ -95,7 +97,7 @@ export async function buildImportContext(options: ImportOptions): Promise<Import
 	const { tripsByRoute, tripsByRouteAndDirection } = buildTripsByRouteAndDirection(gtfsTrips);
 	const stopTimesByTrip = buildStopTimesByTrip(gtfsStopTimes);
 	const { interchangeByLineId, zonesByPatternStop, zonesByStop } = buildAfectacaoMaps(afetacaoRows);
-	const shapesById = new Map<string, { extension: number, geojson: { geometry: { coordinates: number[][], type: 'LineString' }, type: 'Feature' } }>();
+	const shapesById = new Map<string, Shape>();
 	const shapesGrouped = new Map<string, typeof gtfsShapes>();
 	for (const shape of gtfsShapes) {
 		if (!shapesGrouped.has(shape.shape_id)) shapesGrouped.set(shape.shape_id, []);
@@ -103,17 +105,20 @@ export async function buildImportContext(options: ImportOptions): Promise<Import
 	}
 	for (const [shapeId, points] of shapesGrouped.entries()) {
 		const sorted = [...points].sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
-		const coordinates = sorted.map(point => [point.shape_pt_lon, point.shape_pt_lat]);
+		const coordinates = sorted.map(point => [point.shape_pt_lon, point.shape_pt_lat] as [number, number]);
 		const maxDist = sorted.reduce((acc, point) => Math.max(acc, point.shape_dist_traveled ?? 0), 0);
-		shapesById.set(shapeId, {
-			extension: Math.round(maxDist * 1000),
-			geojson: {
-				geometry: {
-					coordinates,
-					type: 'LineString',
-				},
-				type: 'Feature',
+		const geojson = {
+			geometry: {
+				coordinates,
+				type: 'LineString' as const,
 			},
+			properties: {},
+			type: 'Feature' as const,
+		};
+		shapesById.set(shapeId, {
+			encoded_polyline: encodePolylineFromGeoJson(geojson),
+			extension: Math.round(maxDist * 1000),
+			geojson,
 		});
 	}
 

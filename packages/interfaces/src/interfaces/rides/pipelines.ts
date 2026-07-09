@@ -1,6 +1,6 @@
 import { AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { DelayStatus, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, TicketingStatus, UnixTimestamp } from '@tmlmobilidade/types';
+import { DelayStatus, OneOrTheOther, OperationalDate, OperationalStatus, Ride, RideAcceptanceStatus, RideAnalysisGradeWithNone, SeenStatus, TicketingStatus, UnixTimestamp } from '@tmlmobilidade/types';
 
 //
 // Time thresholds
@@ -300,23 +300,33 @@ export function ridesPipelineTicketingStatus({ filter }: { filter?: { ticketing_
 	return pipeline;
 }
 
-interface RidesPipelineFilter {
+interface DatesRange {
+	date_end: UnixTimestamp
+	date_start: UnixTimestamp
+}
+
+interface OperationalDateRange {
+	operational_date_end: OperationalDate
+	operational_date_start: OperationalDate
+}
+
+type RidesPipelineFilter = OneOrTheOther<DatesRange, OperationalDateRange> & {
 	acceptance_status?: ('none' | RideAcceptanceStatus)[]
 	agency_ids?: string[]
 	analysis_ended_at_last_stop_grade?: RideAnalysisGradeWithNone[]
 	analysis_expected_apex_validation_interval?: RideAnalysisGradeWithNone[]
 	analysis_simple_three_vehicle_events_grade?: RideAnalysisGradeWithNone[]
 	analysis_transaction_sequentiality?: RideAnalysisGradeWithNone[]
-	date_end: UnixTimestamp
-	date_start: UnixTimestamp
 	delay_statuses?: DelayStatus[]
 	line_ids?: string[]
 	operational_statuses?: OperationalStatus[]
+	pattern_ids?: string[]
 	search?: string
 	seen_statuses?: SeenStatus[]
 	stop_ids?: string[]
 	ticketing_status?: TicketingStatus[]
-}
+	vehicle_ids?: number[]
+};
 
 type FieldCondition = Record<string, unknown>;
 
@@ -464,7 +474,13 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	const pipeline: AggregationPipeline<Ride> = [];
 
 	// Stage 1: Filter by scheduled time range (required)
-	pipeline.push({ $match: { start_time_scheduled: { $gte: filter.date_start, $lte: filter.date_end } } });
+	if ('date_start' in filter && 'date_end' in filter) {
+		pipeline.push({ $match: { start_time_scheduled: { $gte: filter.date_start, $lte: filter.date_end } } });
+	} else if ('operational_date_start' in filter && 'operational_date_end' in filter) {
+		pipeline.push({ $match: { operational_date: { $gte: filter.operational_date_start, $lte: filter.operational_date_end } } });
+	} else {
+		throw new Error('Either date_start and date_end or operational_date_start and operational_date_end must be provided');
+	}
 
 	// Stage 2: Filter by agency IDs (required)
 	pipeline.push({ $match: { agency_id: { $in: filter.agency_ids ?? [] } } });

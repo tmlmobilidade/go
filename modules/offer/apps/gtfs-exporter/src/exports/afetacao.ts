@@ -93,7 +93,7 @@ export async function parseZoning(
 
 			// Build the afetacao entry
 			parsedZoning.push({
-				operator_id: agencyData._id,
+				operator_id: agencyData.code,
 				line_id: lineData.code,
 				line_type: typologyCode,
 				pattern_id: patternData.code,

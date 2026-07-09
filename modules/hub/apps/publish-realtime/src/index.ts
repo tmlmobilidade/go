@@ -1,8 +1,8 @@
 /* * */
 
 import { publishTripUpdates } from '@/tasks/publish-trip-updates.js';
+import { publishVehiclesPositions } from '@/tasks/publish-vehicle-positions.js';
 import { publishVehiclesMetadata } from '@/tasks/publish-vehicles-metadata.js';
-import { publishVehiclesPositions } from '@/tasks/publish-vehicles-positions.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

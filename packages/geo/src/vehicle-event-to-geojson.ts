@@ -1,6 +1,7 @@
 /* * */
 
-import { HubVehiclePosition, SimplifiedVehicleEvent, Vehicle } from '@tmlmobilidade/types';
+import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
+import { SimplifiedVehicleEvent, Vehicle } from '@tmlmobilidade/types';
 
 /* * */
 

@@ -5,16 +5,15 @@ import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/
 import { openCreateParameterModal } from '@/components/patterns/shape/parameters/create/ParameterCreate.modal';
 import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { useTypologiesContext } from '@/contexts/Typologies.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { EventReplacementRule, EventRestrictionRule, Line, ManualRule, Path, Pattern, PermissionCatalog, PopulatedPath, PopulatedPattern, ScheduleRule, Stop, StopsParameter, Typology, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { EventReplacementRule, EventRestrictionRule, type LineNormalized, ManualRule, Path, Pattern, PermissionCatalog, PopulatedPath, PopulatedPattern, ScheduleRule, Stop, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { type Feature, type FeatureCollection, type LineString, type Point } from 'geojson';
+import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -42,11 +41,11 @@ interface PatternDetailContextState {
 		mergedRules: ScheduleRule[]
 		pattern: null | PopulatedPattern
 		stopsParameterRules: StopsParameterExtended[]
-		typologyData?: Typology
+		typologyData?: LineNormalized['typology_data']
 	}
 	flags: DetailContextStateTemplate['flags']
 	geojson: {
-		pattern_line: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null
+		pattern_line: MapOverlayPatternShapeLineData | null
 		pattern_stops: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null
 	}
 }
@@ -80,9 +79,8 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	// B. Fetch data
 
 	const { data: patternData, error: patternError, isLoading: patternLoading, mutate: patternMutate } = useSWR<PopulatedPattern>(API_ROUTES.offer.PATTERNS_DETAIL(patternId));
-	const { data: lineData, mutate: lineMutate } = useSWR<Line>(API_ROUTES.offer.LINES_DETAIL(lineId));
-	const typologiesContext = useTypologiesContext();
-	const typologyData = typologiesContext.data.raw.find(t => t._id === lineData?.typology);
+	const { data: lineData, mutate: lineMutate } = useSWR<LineNormalized>(API_ROUTES.offer.LINES_DETAIL(lineId));
+	const typologyData = lineData?.typology_data;
 
 	//
 	// C. Setup form
@@ -116,7 +114,19 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	//
 	// D. Transform editable data to GeoJSON
 
-	const patternLineFC: Feature<LineString, MapOverlayPatternShapeLineDataProps> | FeatureCollection<LineString, MapOverlayPatternShapeLineDataProps> | null = useMemo(() => {
+	const patternLineFC: MapOverlayPatternShapeLineData | null = useMemo(() => {
+		const properties: MapOverlayPatternShapeLineDataProps = {
+			color: typologyData?.color,
+			id: patternData?._id ?? patternId,
+		};
+
+		if (editableShape?.encoded_polyline) {
+			return {
+				encoded_polyline: editableShape.encoded_polyline,
+				properties,
+			};
+		}
+
 		if (!editableShape?.geojson?.geometry?.coordinates) return null;
 
 		return {
@@ -124,10 +134,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 				coordinates: editableShape.geojson.geometry.coordinates,
 				type: 'LineString' as const,
 			},
-			properties: {
-				color: typologyData?.color,
-				id: patternData?._id ?? patternId,
-			},
+			properties,
 			type: 'Feature' as const,
 		};
 	}, [editableShape, typologyData?.color, patternData?._id, patternId]);

@@ -7,7 +7,8 @@ import { useStopsContext } from '@/components/stops/Stops.context';
 import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
 import { fetchPatterns } from '@/utils/fetch-patterns';
 import { Dates } from '@tmlmobilidade/dates';
-import { HubAlert, type HubLine, type HubPattern, type HubStop, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type HubAlert, type HubLine, type HubPattern, type HubStop } from '@tmlmobilidade/go-types-public-info';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { convertGTFSTimeStringAndOperationalDateToUnixTimestamp } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 

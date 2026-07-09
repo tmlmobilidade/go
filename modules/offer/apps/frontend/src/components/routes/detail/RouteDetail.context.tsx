@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Line, PermissionCatalog, Route, type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/types';
+import { type LineNormalized, PermissionCatalog, Route, type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -15,7 +15,7 @@ interface RouteDetailContextState {
 	data: {
 		form: UseFormReturnType<UpdateRouteDto>
 		id: string
-		line: Line | null
+		line: LineNormalized | null
 		route: null | Route
 	}
 	flags: DetailContextStateTemplate['flags']
@@ -48,7 +48,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	// B. Fetch data
 
 	const { data: routeData, error: routeError, isLoading: routeLoading, mutate: routeMutate } = useSWR<Route>(API_ROUTES.offer.ROUTES_DETAIL(routeId));
-	const { data: lineData, mutate: lineMutate } = useSWR<Line>(API_ROUTES.offer.LINES_DETAIL(lineId));
+	const { data: lineData, mutate: lineMutate } = useSWR<LineNormalized>(API_ROUTES.offer.LINES_DETAIL(lineId));
 
 	//
 	// C. Setup form

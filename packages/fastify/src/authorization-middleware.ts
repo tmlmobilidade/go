@@ -7,12 +7,28 @@ import { type ActionsOf, type Organization, type Permission, PermissionCatalog, 
 
 /* * */
 
+interface AuthorizationPermissionCheck<S extends Permission['scope'] = Permission['scope']> {
+	actions: ActionsOf<S>[]
+	requireAll?: boolean
+	scope: S
+}
+
+/* * */
+
 declare module 'fastify' {
 	export interface FastifyRequest {
 		me: User
 		organization: Organization
 		permissions: Permission[]
 	}
+}
+
+function isPermissionCheckAllowed(permissionEntries: Permission[], check: AuthorizationPermissionCheck) {
+	const permissionChecks = check.actions.map(action => PermissionCatalog.hasPermission(permissionEntries, check.scope, action));
+
+	return check.requireAll
+		? permissionChecks.every(Boolean)
+		: permissionChecks.some(Boolean);
 }
 
 /**
@@ -22,7 +38,9 @@ declare module 'fastify' {
  * @param requireAll Whether all actions must be true or at least one must be true.
  * @returns Fastify middleware function.
  */
-export function authorizationMiddleware<S extends Permission['scope']>(scope?: S, actions?: ActionsOf<S>[], requireAll = false) {
+export function authorizationMiddleware(checks: AuthorizationPermissionCheck[]): (request: FastifyRequest, reply: FastifyReply<string>) => Promise<void>;
+export function authorizationMiddleware<S extends Permission['scope']>(scope?: S, actions?: ActionsOf<S>[], requireAll?: boolean): (request: FastifyRequest, reply: FastifyReply<string>) => Promise<void>;
+export function authorizationMiddleware<S extends Permission['scope']>(scopeOrChecks?: AuthorizationPermissionCheck[] | S, actions: ActionsOf<S>[] = [], requireAll = false) {
 	return async (request: FastifyRequest, reply: FastifyReply<string>): Promise<void> => {
 		//
 
@@ -67,16 +85,26 @@ export function authorizationMiddleware<S extends Permission['scope']>(scope?: S
 		// Evaluate the retrieved permissions,
 		// if scope and actions are provided.
 
-		if (!scope) return;
+		if (Array.isArray(scopeOrChecks)) {
+			const isAllowed = scopeOrChecks.some(check => isPermissionCheckAllowed(request.permissions, check));
 
-		const permissionChecks = actions.map(action => PermissionCatalog.hasPermission(request.permissions, scope, action));
+			if (!isAllowed) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id}`);
+			}
+
+			return;
+		}
+
+		if (!scopeOrChecks) return;
+
+		const permissionChecks = actions.map(action => PermissionCatalog.hasPermission(request.permissions, scopeOrChecks, action));
 
 		const isAllowed = requireAll
 			? permissionChecks.every(Boolean) // all must be true
 			: permissionChecks.some(Boolean); // at least one must be true
 
 		if (!isAllowed) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scope}" | Actions: [${actions.join(',')}]`);
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scopeOrChecks}" | Actions: [${actions.join(',')}]`);
 		}
 
 		//
