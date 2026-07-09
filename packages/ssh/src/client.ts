@@ -96,7 +96,7 @@ export class SshTunnelService {
 				Logger.info({ message: 'Retrying SSH connection...' });
 				return await this.connect();
 			} else {
-				throw new Error('Error connecting to SSH tunnel', error);
+				throw new Error('Error connecting to SSH tunnel', { cause: error });
 			}
 		}
 	}
