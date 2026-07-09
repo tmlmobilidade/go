@@ -52,7 +52,7 @@ export class GOMongoClient {
 		const connectionString = await this.getConnectionString();
 		this.client = new MongoClient(connectionString, {
 			connectTimeoutMS: 10_000,
-			directConnection: process.env.GO_MONGO_TUNNEL_ENABLED === 'true',
+			directConnection: this.tunnel ? true : false,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'primary',
