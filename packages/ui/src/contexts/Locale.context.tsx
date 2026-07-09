@@ -4,7 +4,7 @@ import '@tmlmobilidade/ui';
 import i18next from 'i18next';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-import { DEFAULT_LOCALE_CODE, getMatchingLocale } from '../i18n/locales';
+import { DEFAULT_LOCALE_CODE, getBrowserLocale, getMatchingLocale } from '../i18n/locales';
 import { registerModuleTranslations } from '../i18n/utils';
 
 /* * */
@@ -35,18 +35,6 @@ export function useLocaleContext() {
 		throw new Error('useLocaleContext must be used within a LocaleContextProvider');
 	}
 	return context;
-}
-
-function getBrowserLocale() {
-	if (typeof window === 'undefined') return DEFAULT_LOCALE_CODE;
-
-	const browserLocales = navigator.languages ? navigator.languages : [navigator.language];
-	for (const browserLocale of browserLocales) {
-		const matchingBrowserLocale = getMatchingLocale(browserLocale.split('-')[0]);
-		if (matchingBrowserLocale) return matchingBrowserLocale._id;
-	}
-
-	return DEFAULT_LOCALE_CODE;
 }
 
 /* * */

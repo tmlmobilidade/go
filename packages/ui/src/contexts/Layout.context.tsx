@@ -7,8 +7,9 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useEffe
 import { useFullscreenState } from '../hooks/use-fullscreen-state';
 import { useUserOrganization } from '../hooks/use-user-organization';
 import { useUserPreference } from '../hooks/use-user-preference';
-import { DEFAULT_LOCALE_CODE, enabledLocales, getMatchingLocale } from '../i18n/locales';
+import { DEFAULT_LOCALE_CODE, enabledLocales, getBrowserLocale, getMatchingLocale } from '../i18n/locales';
 import { useLocaleContext } from './Locale.context';
+import { useMeContext } from './Me.context';
 
 /* * */
 
@@ -72,15 +73,18 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 
 	const systemColorScheme = useColorScheme();
 	const localeContext = useLocaleContext();
+	const meContext = useMeContext();
 
 	const [userOrganization] = useUserOrganization();
 
 	const defaultTheme: ThemeType = userOrganization?.theme && AVAILABLE_THEMES.some(t => t._id === userOrganization.theme) ? userOrganization.theme as ThemeType : 'ocean';
+	const savedLocalePreference = meContext.actions.getPreference<string>('ui', 'active_locale');
+	const defaultLocale = savedLocalePreference ?? getBrowserLocale();
 
 	const [activeFullscreen, setActiveFullscreen] = useFullscreenState();
 	const [activeTheme, setActiveTheme] = useUserPreference<ThemeType>('ui', 'active_theme', defaultTheme);
 	const [activeMode, setActiveMode] = useUserPreference<ModeType>('ui', 'active_mode', 'system');
-	const [activeLocale, setActiveLocale] = useUserPreference<string>('ui', 'active_locale', DEFAULT_LOCALE_CODE);
+	const [activeLocale, setActiveLocale] = useUserPreference<string>('ui', 'active_locale', defaultLocale);
 
 	//
 	// B. Transform data
@@ -119,6 +123,15 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 		const resolvedLocale = matchingLocale?._id ?? DEFAULT_LOCALE_CODE;
 		localeContext.actions.setLocale(resolvedLocale);
 	}, [activeLocale, localeContext.actions]);
+
+	useEffect(() => {
+		if (meContext.actions.getPreference<string>('ui', 'active_locale') != null) return;
+
+		const browserLocale = getBrowserLocale();
+		if (activeLocale === browserLocale) return;
+
+		setActiveLocale(browserLocale, { save: false });
+	}, [activeLocale, meContext.actions, meContext.data.user, setActiveLocale]);
 
 	//
 	// C. Handle actions

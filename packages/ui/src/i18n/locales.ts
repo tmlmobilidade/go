@@ -41,3 +41,15 @@ export function getMatchingLocale(localeCode: string) {
 	if (matchingLocale) return matchingLocale;
 	else return null;
 }
+
+export function getBrowserLocale() {
+	if (typeof window === 'undefined') return DEFAULT_LOCALE_CODE;
+
+	const browserLocales = navigator.languages ? navigator.languages : [navigator.language];
+	for (const browserLocale of browserLocales) {
+		const matchingBrowserLocale = getMatchingLocale(browserLocale.split('-')[0]);
+		if (matchingBrowserLocale) return matchingBrowserLocale._id;
+	}
+
+	return DEFAULT_LOCALE_CODE;
+}
