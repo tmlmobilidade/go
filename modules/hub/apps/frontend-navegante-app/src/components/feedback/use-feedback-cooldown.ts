@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 // use for enable or disable cooldown :)
-const FEEDBACK_COOLDOWN_CONTROL = false;
+const FEEDBACK_COOLDOWN_CONTROL = true;
 // use for change cooldown duration :)
 const FEEDBACK_COOLDOWN_DURATION_MS = 24 * 60 * 60 * 1000;
 
