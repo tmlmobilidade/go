@@ -17,10 +17,10 @@
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {
-				"placeholder": "Latitude (-90 to 90)"
+				"placeholder": "Latitud (-90 a 90)"
 			},
 			"longitude": {
-				"placeholder": "Longitude (-180 to 180)"
+				"placeholder": "Longitud (-180 a 180)"
 			}
 		},
 		"SearchInput": {
