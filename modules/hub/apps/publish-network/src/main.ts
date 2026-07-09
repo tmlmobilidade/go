@@ -4,8 +4,7 @@ import { generateLinesRoutesPatterns } from '@/tasks/sync-lines-routes-patterns.
 import { generateShapes } from '@/tasks/sync-shapes.js';
 import { generateStops } from '@/tasks/sync-stops.js';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentry } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

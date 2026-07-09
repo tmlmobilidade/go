@@ -3,8 +3,7 @@
 import { publishTripUpdates } from '@/tasks/publish-trip-updates.js';
 import { publishVehiclesPositions } from '@/tasks/publish-vehicle-positions.js';
 import { publishVehiclesMetadata } from '@/tasks/publish-vehicles-metadata.js';
-import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentry } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

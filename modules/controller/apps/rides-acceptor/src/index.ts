@@ -3,8 +3,7 @@
 import { isEmpty, testRide } from '@/utils.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentry } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Ride, type RideAcceptance } from '@tmlmobilidade/types';
