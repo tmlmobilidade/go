@@ -313,14 +313,23 @@ export class FastifyService {
 		 * This ensures consistent error responses for HTTP exceptions throughout the application.
 		 */
 		this.server.setErrorHandler((error, request, reply) => {
-			// Log the error with full stack trace
 			const errorMessage = error instanceof Error ? error.message : 'Unhandled error';
-			this.server.log.error({ err: error }, errorMessage);
+			const isHttpException = error instanceof HttpException;
+			const shouldReportError = !isHttpException || error.statusCode >= HTTP_STATUS.INTERNAL_SERVER_ERROR;
+
+			if (shouldReportError) {
+				// Keep unexpected/server errors as error logs so Sentry captures them.
+				this.server.log.error({ err: error }, errorMessage);
+			} else {
+				this.server.log.warn({ statusCode: error.statusCode }, errorMessage);
+			}
+
 			// Handle HttpException errors
-			if (error instanceof HttpException) {
-				if (error.statusCode === HTTP_STATUS.INTERNAL_SERVER_ERROR) {
+			if (isHttpException) {
+				if (shouldReportError) {
 					Logger.issue({ context: { action: 'errorHandler', feature: this.options.module, request, value: request.body }, level: 'error', messageOrError: error });
 				}
+
 				reply
 					.status(error.statusCode)
 					.send({
@@ -329,7 +338,13 @@ export class FastifyService {
 						statusCode: error.statusCode,
 					});
 			} else {
-				Logger.issue({ context: { action: 'errorHandler', feature: this.options.module, request, value: request.body }, level: 'error', messageOrError: 'Internal server error' });
+				//
+				// Only send to Sentry if the status code is 500
+				// This is to avoid flooding Sentry with errors that are not unexpected
+				if (error instanceof Error) {
+					Logger.issue({ context: { action: 'errorHandler', feature: this.options.module, request, value: request.body }, level: 'error', messageOrError: error });
+				}
+
 				reply
 					.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
 					.send({
