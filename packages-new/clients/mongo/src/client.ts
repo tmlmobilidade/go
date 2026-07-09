@@ -1,23 +1,16 @@
 import { Logger } from '@tmlmobilidade/logger';
-import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
+import { getSshTunnel, SshTunnelService } from '@tmlmobilidade/ssh';
 import { MongoClient, type MongoClientOptions } from 'mongodb';
-import { readFileSync } from 'node:fs';
 
 /**
  * Configuration for a Mongo database client.
  *
  * Every database follows the same env var naming convention, scoped by `prefix`:
- *   `{PREFIX}_TUNNEL_ENABLED_NEW` — `"true"` or `"false"`
  *   `{PREFIX}_HOST_1_NEW` / `{PREFIX}_PORT_1_NEW` — replica set seed 1
  *   `{PREFIX}_HOST_2_NEW` / `{PREFIX}_PORT_2_NEW` — replica set seed 2
  *   `{PREFIX}_HOST_3_NEW` / `{PREFIX}_PORT_3_NEW` — replica set seed 3
  *   `{PREFIX}_USER_NEW` / `{PREFIX}_PASSWORD_NEW` — credentials
  *   `{PREFIX}_RS_NAME_NEW` — replica set name
- *   `{PREFIX}_TUNNEL_LOCAL_PORT_NEW` — local port for SSH tunnel
- *   `{PREFIX}_TUNNEL_SSH_HOST_NEW` — SSH bastion host
- *   `{PREFIX}_TUNNEL_SSH_USERNAME_NEW` — SSH user
- *   `{PREFIX}_TUNNEL_SSH_KEY_PATH_NEW` — path to SSH private key file
- *   `{PREFIX}_TUNNEL_SSH_KEY_NEW` — inline SSH private key
  *
  * @example
  * ```ts
@@ -29,6 +22,8 @@ export interface MongoDatabaseConfig {
 	clientOptions?: Partial<MongoClientOptions>
 	/** Env var prefix (e.g. `"PCGI_RAW"`, `"GO_MONGO"`). */
 	prefix: string
+	/** SSH tunnel prefix (e.g. `"GO"`, `"PCGI"`). */
+	sshPrefix?: string
 }
 
 /**
@@ -108,7 +103,7 @@ export class MongoDatabaseClient {
 
 		const client = new MongoClient(uri, {
 			connectTimeoutMS: 10_000,
-			directConnection: process.env[`${prefix}_TUNNEL_ENABLED_NEW`] === 'true',
+			directConnection: tunnel === null,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'primary',
@@ -161,63 +156,28 @@ export class MongoDatabaseClient {
 	 * @returns The resolved URI and an optional SSH tunnel reference.
 	 */
 	private static async getConnectionString(config: MongoDatabaseConfig): Promise<{ tunnel: null | SshTunnelService, uri: string }> {
-		const { prefix } = config;
-		const env = (name: string) => process.env[`${prefix}${name}`];
+		const { prefix, sshPrefix } = config;
+		const env = (name: string) => process.env[`${prefix}_${name}_NEW`];
 
-		const tunnelEnabled = env('_TUNNEL_ENABLED');
-		if (tunnelEnabled !== 'true' && tunnelEnabled !== 'false') {
-			throw new Error(
-				`Missing ${prefix}_TUNNEL_ENABLED_NEW. Please indicate whether SSH tunneling is required by setting ${prefix}_TUNNEL_ENABLED_NEW to "true" or "false".`,
-			);
-		}
+		if (!env('HOST_1') || !env('PORT_1')) throw new Error(`Missing ${prefix}_HOST_1_NEW or ${prefix}_PORT_1_NEW`);
+		if (!env('HOST_2') || !env('PORT_2')) throw new Error(`Missing ${prefix}_HOST_2_NEW or ${prefix}_PORT_2_NEW`);
+		if (!env('HOST_3') || !env('PORT_3')) throw new Error(`Missing ${prefix}_HOST_3_NEW or ${prefix}_PORT_3_NEW`);
+		if (!env('RS_NAME')) throw new Error(`Missing ${prefix}_RS_NAME_NEW`);
 
-		if (!env('_HOST_1') || !env('_PORT_1')) throw new Error(`Missing ${prefix}_HOST_1_NEW or ${prefix}_PORT_1_NEW`);
-		if (!env('_HOST_2') || !env('_PORT_2')) throw new Error(`Missing ${prefix}_HOST_2_NEW or ${prefix}_PORT_2_NEW`);
-		if (!env('_HOST_3') || !env('_PORT_3')) throw new Error(`Missing ${prefix}_HOST_3_NEW or ${prefix}_PORT_3_NEW`);
-		if (!env('_RS_NAME')) throw new Error(`Missing ${prefix}_RS_NAME_NEW`);
+		const tunnel = getSshTunnel({
+			forwardOptions: {
+				dstAddr: env('HOST_1')!,
+				dstPort: Number(env('PORT_1')),
+			},
+			prefix: sshPrefix ?? prefix,
+		});
 
-		if (tunnelEnabled === 'false') {
+		if (!tunnel) {
 			return {
 				tunnel: null,
-				uri: `mongodb://${env('_USER')}:${env('_PASSWORD')}@${env('_HOST_1')}:${env('_PORT_1')},${env('_HOST_2')}:${env('_PORT_2')},${env('_HOST_3')}:${env('_PORT_3')}/`,
+				uri: `mongodb://${env('USER')}:${env('PASSWORD')}@${env('HOST_1')}:${env('PORT_1')},${env('HOST_2')}:${env('PORT_2')},${env('HOST_3')}:${env('PORT_3')}/`,
 			};
 		}
-
-		if (!env('_TUNNEL_LOCAL_PORT')) throw new Error(`Missing ${prefix}_TUNNEL_LOCAL_PORT_NEW`);
-		if (!env('_TUNNEL_SSH_HOST') || !env('_TUNNEL_SSH_USERNAME')) throw new Error(`Missing SSH config for ${prefix}`);
-
-		const sshConfig: SshConfig = {
-			forwardOptions: {
-				dstAddr: env('_HOST_1')!,
-				dstPort: Number(env('_PORT_1')),
-				srcAddr: 'localhost',
-				srcPort: Number(env('_TUNNEL_LOCAL_PORT')),
-			},
-			serverOptions: {
-				port: Number(env('_TUNNEL_LOCAL_PORT')),
-			},
-			sshOptions: {
-				agent: (env('_TUNNEL_SSH_KEY_PATH') || env('_TUNNEL_SSH_KEY')) ? undefined : process.env.SSH_AUTH_SOCK,
-				host: env('_TUNNEL_SSH_HOST')!,
-				keepaliveCountMax: 3,
-				keepaliveInterval: 10_000,
-				port: 22,
-				privateKey: env('_TUNNEL_SSH_KEY_PATH')
-					? readFileSync(env('_TUNNEL_SSH_KEY_PATH')!)
-					: env('_TUNNEL_SSH_KEY')
-						? env('_TUNNEL_SSH_KEY')
-						: undefined,
-				username: env('_TUNNEL_SSH_USERNAME')!,
-			},
-			tunnelOptions: {
-				autoClose: false,
-				reconnectOnError: true,
-			},
-		};
-
-		const sshOptions: SshTunnelServiceOptions = { maxRetries: 3 };
-
-		const tunnel = new SshTunnelService(sshConfig, sshOptions);
 
 		Logger.info({ message: `[${prefix}] Setting up SSH Tunnel...` });
 
@@ -230,7 +190,7 @@ export class MongoDatabaseClient {
 
 		return {
 			tunnel,
-			uri: `mongodb://${env('_USER')}:${env('_PASSWORD')}@localhost:${addr.port}/`,
+			uri: `mongodb://${env('USER')}:${env('PASSWORD')}@localhost:${addr.port}/`,
 		};
 	}
 }
