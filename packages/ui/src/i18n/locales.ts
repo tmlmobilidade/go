@@ -1,6 +1,7 @@
 'use client';
 
 export const DEFAULT_LOCALE_CODE = 'pt';
+export const LOCALE_STORAGE_KEY = 'locale';
 
 /* * */
 
@@ -8,6 +9,7 @@ export interface LocaleConfig {
 	_id: string
 	alias: string[]
 	enabled: boolean
+	name: string
 }
 
 export const availableLocales: LocaleConfig[] = [
@@ -15,11 +17,13 @@ export const availableLocales: LocaleConfig[] = [
 		_id: 'pt',
 		alias: ['pt-PT', 'pt_PT', 'pt-BR', 'pt_BR', 'pt-GW', 'pt_GW', 'pt-MZ', 'pt_MZ'],
 		enabled: true,
+		name: 'Português',
 	},
 	{
 		_id: 'es',
 		alias: ['es-ES', 'es_ES', 'es-MX', 'es_MX', 'es-AR', 'es_AR'],
 		enabled: true,
+		name: 'Español',
 	},
 ];
 

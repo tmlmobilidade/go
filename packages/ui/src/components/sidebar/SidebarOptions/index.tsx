@@ -1,12 +1,14 @@
 'use client';
 
 import { ColorSwatch, Menu as MantineMenu, type MenuProps } from '@mantine/core';
-import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLogout, IconMaximize, IconMinimize, IconSettings } from '@tabler/icons-react';
+import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLanguage, IconLogout, IconMaximize, IconMinimize, IconSettings } from '@tabler/icons-react';
 
 import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
+import { useLocaleContext } from '../../../contexts/Locale.context';
 import { useMeContext } from '../../../contexts/Me.context';
 import { useNotificationsContext } from '../../../contexts/Notifications.context';
 import { useVersionContext } from '../../../contexts/Version.context';
+import { enabledLocales } from '../../../i18n/locales';
 import { Menu } from '../../menu/Menu';
 
 /* * */
@@ -25,6 +27,7 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 
 	const meContext = useMeContext();
 	const layoutContext = useLayoutContext();
+	const localeContext = useLocaleContext();
 	const versionContext = useVersionContext();
 	const notificationsContext = useNotificationsContext();
 
@@ -69,6 +72,25 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 							leftSection={<ColorSwatch color={item.primary_color} size={16} />}
 							onClick={() => layoutContext.actions.activateTheme(item._id)}
 							rightSection={layoutContext.data.active_theme === item._id ? <IconCheck size={16} /> : null}
+						>
+							{item.name}
+						</MantineMenu.Item>
+					))}
+				</MantineMenu.Sub.Dropdown>
+			</MantineMenu.Sub>
+
+			<MantineMenu.Sub position="left">
+				<MantineMenu.Sub.Target>
+					<MantineMenu.Sub.Item leftSection={<IconLanguage size={20} />}>
+						Idioma
+					</MantineMenu.Sub.Item>
+				</MantineMenu.Sub.Target>
+				<MantineMenu.Sub.Dropdown>
+					{enabledLocales.map(item => (
+						<MantineMenu.Item
+							key={item._id}
+							onClick={() => localeContext.actions.setLocale(item._id)}
+							rightSection={localeContext.data.locale === item._id ? <IconCheck size={16} /> : null}
 						>
 							{item.name}
 						</MantineMenu.Item>

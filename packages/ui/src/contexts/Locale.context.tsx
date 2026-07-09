@@ -2,8 +2,9 @@
 
 import '@tmlmobilidade/ui';
 import i18next from 'i18next';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
+import { DEFAULT_LOCALE_CODE, getMatchingLocale, LOCALE_STORAGE_KEY } from '../i18n/locales';
 import { registerModuleTranslations } from '../i18n/utils';
 
 /* * */
@@ -45,16 +46,33 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 	//
 	// A. Setup Variables
 
-	const [locale, setLocale] = useState<string | undefined>(undefined);
+	const [locale, setLocaleState] = useState<string>(DEFAULT_LOCALE_CODE);
 
 	//
 	// B. Transform Data
 
 	useEffect(() => {
 		if (typeof window === 'undefined') return;
+
+		const storedLocale = localStorage.getItem(LOCALE_STORAGE_KEY);
+		if (storedLocale) {
+			const matchingStoredLocale = getMatchingLocale(storedLocale);
+			if (matchingStoredLocale) {
+				setLocaleState(matchingStoredLocale._id);
+				return;
+			}
+		}
+
 		const browserLocales = navigator.languages ? navigator.languages : [navigator.language];
-		const lang = browserLocales[0] || 'pt';
-		setLocale(lang.split('-')[0]);
+		for (const browserLocale of browserLocales) {
+			const matchingBrowserLocale = getMatchingLocale(browserLocale.split('-')[0]);
+			if (matchingBrowserLocale) {
+				setLocaleState(matchingBrowserLocale._id);
+				return;
+			}
+		}
+
+		setLocaleState(DEFAULT_LOCALE_CODE);
 	}, []);
 
 	useEffect(() => {
@@ -63,12 +81,20 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 
 	useEffect(() => {
 		if (!i18n) return;
-		for (const [locale, namespaces] of Object.entries(i18n)) {
+		for (const [localeCode, namespaces] of Object.entries(i18n)) {
 			for (const [namespace, value] of Object.entries(namespaces)) {
-				registerModuleTranslations(namespace, { [locale]: value });
+				registerModuleTranslations(namespace, { [localeCode]: value });
 			}
 		}
 	}, [i18n]);
+
+	const setLocale = useCallback((localeCode: string) => {
+		const matchingLocale = getMatchingLocale(localeCode);
+		const resolvedLocale = matchingLocale?._id ?? DEFAULT_LOCALE_CODE;
+
+		setLocaleState(resolvedLocale);
+		localStorage.setItem(LOCALE_STORAGE_KEY, resolvedLocale);
+	}, []);
 
 	//
 	// C. Context value
@@ -80,7 +106,7 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 		data: {
 			locale,
 		},
-	}), [locale]);
+	}), [locale, setLocale]);
 
 	//
 	// D. Render components
