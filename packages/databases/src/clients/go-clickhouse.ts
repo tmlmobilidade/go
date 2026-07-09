@@ -2,8 +2,7 @@
 
 import { ClickHouseClient, ClickHouseLogLevel, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
-import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
-import { readFileSync } from 'node:fs';
+import { getSshTunnel, SshTunnelService } from '@tmlmobilidade/ssh';
 
 /* * */
 
@@ -85,58 +84,21 @@ export class GOClickHouseClient {
 
 		//
 		// Validate required environment variables
-
-		if (process.env.GO_CLICKHOUSE_TUNNEL_ENABLED !== 'true' && process.env.GO_CLICKHOUSE_TUNNEL_ENABLED !== 'false') {
-			throw new Error('Missing GO_CLICKHOUSE_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting GO_CLICKHOUSE_TUNNEL_ENABLED to "true" or "false".');
-		}
-
 		if (!process.env.GO_CLICKHOUSE_HOST || !process.env.GO_CLICKHOUSE_PORT) {
 			throw new Error('Missing GO_CLICKHOUSE_HOST or GO_CLICKHOUSE_PORT');
 		}
 
-		if (process.env.GO_CLICKHOUSE_TUNNEL_ENABLED === 'false') {
+		//
+		// Setup SSH Tunnel
+
+		this.tunnel = getSshTunnel({
+			forwardOptions: { dstAddr: process.env.GO_CLICKHOUSE_HOST, dstPort: Number(process.env.GO_CLICKHOUSE_PORT) },
+			prefix: 'GO',
+		});
+
+		if (!this.tunnel) {
 			return `http://${process.env.GO_CLICKHOUSE_USER}:${process.env.GO_CLICKHOUSE_PASSWORD}@${process.env.GO_CLICKHOUSE_HOST}:${process.env.GO_CLICKHOUSE_PORT}`;
 		}
-
-		// SSH required
-		if (!process.env.GO_CLICKHOUSE_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing GO_CLICKHOUSE_TUNNEL_LOCAL_PORT');
-		}
-
-		if (!process.env.GO_CLICKHOUSE_TUNNEL_SSH_HOST || !process.env.GO_CLICKHOUSE_TUNNEL_SSH_USERNAME) {
-			throw new Error('Missing SSH config');
-		}
-
-		const sshConfig: SshConfig = {
-			forwardOptions: {
-				dstAddr: process.env.GO_CLICKHOUSE_HOST,
-				dstPort: Number(process.env.GO_CLICKHOUSE_PORT),
-				srcAddr: 'localhost',
-				srcPort: Number(process.env.GO_CLICKHOUSE_TUNNEL_LOCAL_PORT),
-			},
-			serverOptions: {
-				port: Number(process.env.GO_CLICKHOUSE_TUNNEL_LOCAL_PORT),
-			},
-			sshOptions: {
-				agent: (process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH || process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY) ? undefined : process.env.SSH_AUTH_SOCK,
-				host: process.env.GO_CLICKHOUSE_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 3,
-				keepaliveInterval: 10_000,
-				port: 22,
-				privateKey: process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY_PATH) : process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY ? process.env.GO_CLICKHOUSE_TUNNEL_SSH_KEY : undefined,
-				username: process.env.GO_CLICKHOUSE_TUNNEL_SSH_USERNAME,
-			},
-			tunnelOptions: {
-				autoClose: false,
-				reconnectOnError: true,
-			},
-		};
-
-		const sshOptions: SshTunnelServiceOptions = {
-			maxRetries: 3,
-		};
-
-		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
 		Logger.info({ message: '[GOClickHouseClient] Setting up SSH Tunnel...' });
 
