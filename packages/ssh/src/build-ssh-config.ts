@@ -7,10 +7,17 @@ import { SshConfig, SshTunnelService, SshTunnelServiceOptions } from './client.j
 
 /* * */
 
+/** Prefix for SSH tunnel configuration environment variables. */
+export type SshTunnelPrefix = 'GO' | 'PCGI';
+
+/** Options for building a SSH tunnel configuration. */
 interface GetSshTunnelConfigOptions {
+	/** Forwarding options. */
 	forwardOptions: { dstAddr: string, dstPort: number }
+	/** Maximum number of retries. */
 	maxRetries?: number
-	prefix: string
+	/** Prefix for SSH tunnel configuration environment variables. */
+	prefix: SshTunnelPrefix
 }
 
 /**
