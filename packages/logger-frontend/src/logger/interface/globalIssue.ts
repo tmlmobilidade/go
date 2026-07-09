@@ -18,7 +18,6 @@ export interface GlobalIssueContext {
 	level?: GlobalIssueLevel
 	message?: string
 	request?: GlobalIssueRequestContext
-	service?: string
 	status?: number
 	value?: unknown
 }
