@@ -86,7 +86,7 @@ export function getSshTunnel(options: GetSshTunnelConfigOptions): null | SshTunn
 			/**
 			 * Auth agent will only be set if KEY_PATH and KEY are both unset.
 			 */
-			agent: (env('TUNNEL_SSH_KEY_PATH') || env('TUNNEL_SSH_KEY')) ? undefined : env('SSH_AUTH_SOCK'),
+			agent: (env('TUNNEL_SSH_KEY_PATH') || env('TUNNEL_SSH_KEY')) ? undefined : process.env.SSH_AUTH_SOCK,
 			host: env('TUNNEL_SSH_HOST'),
 			keepaliveCountMax: 3,
 			keepaliveInterval: 10_000,
