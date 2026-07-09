@@ -1,9 +1,8 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
+import { getSshTunnel, SshTunnelService } from '@tmlmobilidade/ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
-import { readFileSync } from 'node:fs';
 import { IncomingMessage } from 'node:http';
 import https from 'node:https';
 
@@ -158,45 +157,11 @@ export class CPAuthClient {
 			throw new Error('Missing CP_AUTH_CLIENT_ID or CP_AUTH_CLIENT_SECRET environment variables.');
 		}
 
-		if (!process.env.CP_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing CP_TUNNEL_LOCAL_PORT environment variable.');
-		}
-
-		if (!process.env.CP_TUNNEL_SSH_HOST || !process.env.CP_TUNNEL_SSH_USERNAME) {
-			throw new Error('Missing CP_TUNNEL_SSH_HOST or CP_TUNNEL_SSH_USERNAME environment variables.');
-		}
-
-		const sshConfig: SshConfig = {
-			forwardOptions: {
-				dstAddr: process.env.CP_AUTH_HOST,
-				dstPort: 443,
-				srcAddr: 'localhost',
-				srcPort: Number(process.env.CP_TUNNEL_LOCAL_PORT),
-			},
-			serverOptions: {
-				port: Number(process.env.CP_TUNNEL_LOCAL_PORT),
-			},
-			sshOptions: {
-				agent: process.env.CP_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
-				host: process.env.CP_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 20,
-				keepaliveInterval: 10_000,
-				port: 22,
-				privateKey: process.env.CP_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.CP_TUNNEL_SSH_KEY_PATH) : process.env.CP_TUNNEL_SSH_KEY,
-				username: process.env.CP_TUNNEL_SSH_USERNAME,
-			},
-			tunnelOptions: {
-				autoClose: false,
-				reconnectOnError: true,
-			},
-		};
-
-		const sshOptions: SshTunnelServiceOptions = {
-			maxRetries: 3,
-		};
-
 		if (!this.tunnel) {
-			this.tunnel = new SshTunnelService(sshConfig, sshOptions);
+			this.tunnel = getSshTunnel({
+				forwardOptions: { dstAddr: process.env.CP_AUTH_HOST, dstPort: 443 },
+				prefix: 'GO',
+			});
 			await this.tunnel.connect();
 		}
 
