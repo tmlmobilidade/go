@@ -1,13 +1,15 @@
 import * as Sentry from '@sentry/node';
 
+import { getRuntimeLogContext } from '../utils/runtime-log-context.js';
+
 /* * */
 
 export interface LogsContext {
 	[key: string]: unknown
-	app: string
+	app?: string
 	message: string
 	method?: string
-	module: string
+	module?: string
 	path?: string
 	reqId?: string
 	severity?: string
@@ -17,9 +19,11 @@ export interface LogsContext {
 /* * */
 
 export function startLogs(context: LogsContext): void {
+	const runtimeContext = getRuntimeLogContext(context);
 	const requestData = normalizeRequestContext(context.request);
 	const payload = {
 		...context,
+		...runtimeContext,
 		...requestData,
 		severity: normalizeSeverity(context.severity),
 	};
@@ -41,7 +45,7 @@ export function startLogs(context: LogsContext): void {
 	}
 
 	Sentry.logger.info(context.message, payload);
-	Sentry.getGlobalScope().setAttributes({ app: context.app, module: context.module });
+	Sentry.getGlobalScope().setAttributes(runtimeContext);
 };
 
 function normalizeSeverity(severity: string | undefined): 'debug' | 'error' | 'info' | 'warn' {

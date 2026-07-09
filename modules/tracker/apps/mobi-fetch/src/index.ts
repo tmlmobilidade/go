@@ -22,7 +22,6 @@ const main = async () => {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'mobi-fetch', message: 'Sentry Tracker MOBI Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker MOBI Fetch' });
 	}

@@ -22,7 +22,6 @@ const main = async () => {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'ccfl-fetch', message: 'Sentry Tracker CCFL Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker CCFL Fetch' });
 	}

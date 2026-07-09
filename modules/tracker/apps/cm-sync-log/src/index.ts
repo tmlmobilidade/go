@@ -17,7 +17,6 @@ async function main() {
 
 		try {
 			await initSentry();
-			Logger.startLogs({ app: 'cm-sync-log', message: 'Sentry Tracker CM Sync Log initialized', module: 'tracker', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Tracker CM Sync Log' });
 		}

@@ -24,7 +24,6 @@ export async function syncRides() {
 
 		try {
 			await initSentry();
-			Logger.startLogs({ app: 'rides-bridge', message: 'Sentry Rides Bridge initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Rides Bridge' });
 		}

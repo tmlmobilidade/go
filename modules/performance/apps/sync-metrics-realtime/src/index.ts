@@ -17,7 +17,6 @@ async function main() {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'sync-metrics-realtime', message: 'Sentry Performance Sync Metrics Realtime initialized', module: 'performance', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Performance Sync Metrics Realtime' });
 	}

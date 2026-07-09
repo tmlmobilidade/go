@@ -21,7 +21,6 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'gtfs-importer', message: 'Sentry Offer GTFS Importer initialized', module: 'offer', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Offer GTFS Importer' });
 	}

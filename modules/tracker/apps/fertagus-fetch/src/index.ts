@@ -43,7 +43,6 @@ const main = async () => {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'fertagus-fetch', message: 'Sentry Tracker Fertagus Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker Fertagus Fetch' });
 	}

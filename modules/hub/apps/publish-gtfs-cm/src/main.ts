@@ -43,7 +43,6 @@ export async function main() {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'publish-gtfs-cm', message: 'Sentry Hub Publish GTFS CM initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS CM' });
 	}

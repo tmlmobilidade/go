@@ -77,7 +77,6 @@ export async function exportGtfsV29(
 
 		try {
 			await initSentry();
-			Logger.startLogs({ app: 'gtfs-exporter', message: 'Sentry Offer GTFS Exporter initialized', module: 'offer', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Offer GTFS Exporter' });
 		}

@@ -19,7 +19,6 @@ async function main() {
 
 		try {
 			await initSentry();
-			Logger.startLogs({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Rides Feeder' });
 		}

@@ -1,9 +1,14 @@
+import { getRuntimeLogContext } from '@/logger/utils/runtime-log-context.js';
+import { getSentryClient } from '@/sentry/client/go-sentry.js';
 import * as Sentry from '@sentry/nextjs';
 
-import { getSentryClient } from '../client/go-sentry.js';
-
 export async function initSentry() {
-	return Sentry.init({
+	//
+
+	//
+	// Initialize Sentry
+
+	const client = Sentry.init({
 		dsn: getSentryClient(),
 		enableLogs: true,
 		environment: process.env.ENVIRONMENT,
@@ -11,4 +16,10 @@ export async function initSentry() {
 			Sentry.consoleLoggingIntegration(),
 		],
 	});
+
+	const runtimeContext = getRuntimeLogContext();
+
+	Sentry.getGlobalScope().setAttributes(runtimeContext);
+
+	return client;
 }

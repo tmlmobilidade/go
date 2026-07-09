@@ -14,7 +14,6 @@ async function main() {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'raw-sync-inspection-decisions', message: 'Sentry APEX Raw Sync Inspection Decisions initialized', module: 'apex', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Inspection Decisions' });
 	}

@@ -13,7 +13,6 @@ import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'cm-stream-core', message: 'Sentry Tracker CM Stream Core initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker CM Stream Core' });
 	}

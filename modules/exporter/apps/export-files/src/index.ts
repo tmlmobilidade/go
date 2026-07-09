@@ -23,7 +23,6 @@ async function main() {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'export-files', message: 'Sentry Exporter Files initialized', module: 'exporter', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Exporter Files' });
 	}

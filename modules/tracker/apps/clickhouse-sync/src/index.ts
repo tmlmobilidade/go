@@ -16,7 +16,6 @@ async function main() {
 
 		try {
 			await initSentry();
-			Logger.startLogs({ app: 'clickhouse-sync', message: 'Sentry Tracker Clickhouse Sync initialized', module: 'tracker', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Tracker Clickhouse Sync' });
 		}

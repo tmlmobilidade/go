@@ -14,7 +14,6 @@ async function main() {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'raw-sync-locations', message: 'Sentry APEX Raw Sync Locations initialized', module: 'apex', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Locations' });
 	}

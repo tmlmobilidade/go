@@ -14,7 +14,6 @@ import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'clickhouse-stream', message: 'Sentry Tracker Clickhouse Stream initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker Clickhouse Stream' });
 	}

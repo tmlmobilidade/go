@@ -1,4 +1,4 @@
-export function getSentryClient(): string {
+export function getSentryClient(): string | undefined {
 	//
 
 	//

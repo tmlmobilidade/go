@@ -123,7 +123,6 @@ async function main() {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'gtfs-exporter', message: 'Sentry GTFS Exporter initialized', module: 'offer', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry GTFS Exporter' });
 	}

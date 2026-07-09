@@ -3,6 +3,16 @@
 import * as Sentry from '@sentry/node';
 
 import { type LogsContext } from '../interface/logs.js';
+import { getRuntimeLogContext } from '../utils/runtime-log-context.js';
+
+/* * */
+
+type StartLogsContext = Omit<LogsContext, 'app' | 'message' | 'module' | 'severity'> & {
+	app?: string
+	message: string
+	module?: string
+	severity?: string
+};
 
 /* * */
 
@@ -10,24 +20,48 @@ import { type LogsContext } from '../interface/logs.js';
  * Prepares and normalizes the context for starting Node.js logs.
  *
  * This function serves as a wrapper for initializing the logging context,
- * ensuring that the required fields ('app', 'message', 'module', 'severity') are present.
- * The 'severity' property will default to 'info' if not supplied.
+ * using process.env.APP and process.env.MODULE when app/module are not supplied.
+ * The 'severity' property defaults to 'info' if not supplied.
  *
- * @param context - Partial context for logs, must include app, message, module, and severity.
- *   - app: string - Application name
+ * @param context - Context for logs.
+ *   - app: string - Application name, defaults to process.env.APP
  *   - message: string - Main log message
- *   - module: string - Module/source of the log
+ *   - module: string - Module/source of the log, defaults to process.env.MODULE
  *   - severity: string - Log severity (defaults to 'info' if undefined)
  *
  * Example:
- *   startLogs({ app: 'api', message: 'Booting…', module: 'main', severity: 'info' });
+ *   startLogs({ message: 'Booting...' });
  */
-export function startLogs(context: Omit<LogsContext, 'app' | 'message' | 'module' | 'severity'> & { app: string, message: string, module: string, severity: string }): void {
-	Sentry.logger.info(context.message, {
+export function startLogs(context: StartLogsContext): void {
+	const runtimeContext = getRuntimeLogContext(context);
+	const severity = normalizeSeverity(context.severity);
+	const payload = {
 		...context,
-		app: context.app,
-		module: context.module,
-		severity: context.severity ?? 'info',
-	});
-	Sentry.getGlobalScope().setAttributes({ app: context.app, module: context.module });
+		...runtimeContext,
+		severity,
+	};
+
+	Sentry.getGlobalScope().setAttributes(runtimeContext);
+
+	if (severity === 'debug') {
+		Sentry.logger.debug(context.message, payload);
+		return;
+	}
+
+	if (severity === 'warn') {
+		Sentry.logger.warn(context.message, payload);
+		return;
+	}
+
+	if (severity === 'error') {
+		Sentry.logger.error(context.message, payload);
+		return;
+	}
+
+	Sentry.logger.info(context.message, payload);
+}
+
+function normalizeSeverity(severity: string | undefined): 'debug' | 'error' | 'info' | 'warn' {
+	if (severity === 'debug' || severity === 'error' || severity === 'warn') return severity;
+	return 'info';
 }

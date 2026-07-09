@@ -26,7 +26,6 @@ export async function main() {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'cleaner', message: 'Sentry ETA Cleaner initialized', module: 'eta', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry ETA Cleaner' });
 	}

@@ -105,7 +105,6 @@ async function main() {
 
 		try {
 			await initSentry();
-			Logger.startLogs({ app: 'sams-examiner', message: 'Sentry Sams Examiner initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Sams Examiner' });
 		}

@@ -20,7 +20,6 @@ async function main() {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'validator', message: 'Sentry Plans Validator initialized', module: 'plans', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Plans Validator' });
 	}

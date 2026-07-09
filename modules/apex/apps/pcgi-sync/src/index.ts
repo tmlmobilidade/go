@@ -14,7 +14,6 @@ async function main() {
 
 	try {
 		await initSentry();
-		Logger.startLogs({ app: 'pcgi-sync', message: 'Sentry APEX PCGI Sync initialized', module: 'apex', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry APEX PCGI Sync' });
 	}
