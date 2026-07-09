@@ -7,7 +7,7 @@ export function getSentryClient(): string {
 	if (!process.env.SENTRY_NEXTJS_DSN) {
 		//
 		// Check if are on Development
-		if (process.env.ENVIRONMENT === 'development') {
+		if (process.env.ENVIRONMENT === 'dev') {
 			return '';
 		}
 
