@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentryNode } from '@tmlmobilidade/logger-backend';
+import { initSentry } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import os from 'node:os';
@@ -38,8 +38,8 @@ async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'export-drt', message: 'Sentry Exporter DRT initialized', module: 'exporter', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'export-drt', message: 'Sentry Exporter DRT initialized', module: 'exporter', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Exporter DRT' });
 	}

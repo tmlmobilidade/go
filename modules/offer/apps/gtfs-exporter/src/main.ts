@@ -7,7 +7,7 @@ import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { agencies, lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentryNode } from '@tmlmobilidade/logger-backend';
+import { initSentry } from '@tmlmobilidade/logger-backend';
 import fs from 'node:fs';
 
 import { exportFeedInfoFile } from './exports/feedInfo.js';
@@ -77,8 +77,8 @@ export async function exportGtfsV29(
 		// Initialize Sentry
 
 		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'gtfs-exporter', message: 'Sentry Offer GTFS Exporter initialized', module: 'offer', severity: 'info' });
+			await initSentry();
+			Logger.startLogs({ app: 'gtfs-exporter', message: 'Sentry Offer GTFS Exporter initialized', module: 'offer', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Offer GTFS Exporter' });
 		}

@@ -2,7 +2,7 @@
 
 import { syncPcgiTransactionEntities } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
@@ -13,8 +13,8 @@ async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pcgi-sync', message: 'Sentry APEX PCGI Sync initialized', module: 'apex', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'pcgi-sync', message: 'Sentry APEX PCGI Sync initialized', module: 'apex', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry APEX PCGI Sync' });
 	}

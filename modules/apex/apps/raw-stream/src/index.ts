@@ -8,7 +8,7 @@ import { processRawApexTransactionRefund } from '@/tasks/refunds.js';
 import { processRawApexTransactionSale } from '@/tasks/sales.js';
 import { processRawApexTransactionValidation } from '@/tasks/validations.js';
 import { rawApexTransactions } from '@tmlmobilidade/databases';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
 
 /* * */
 
@@ -19,8 +19,8 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger-backend';
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'raw-stream', message: 'Sentry APEX Raw Stream initialized', module: 'apex', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'raw-stream', message: 'Sentry APEX Raw Stream initialized', module: 'apex', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry APEX Raw Stream' });
 	}

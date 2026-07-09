@@ -2,7 +2,7 @@
 
 import { ensureStructure } from '@/tasks/ensure-structure.js';
 import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentryNode } from '@tmlmobilidade/logger-backend';
+import { initSentry } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -15,8 +15,8 @@ const main = async () => {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Alerts Organizer initialized', module: 'alerts', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'organizer', message: 'Sentry Alerts Organizer initialized', module: 'alerts', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Alerts Organizer' });
 	}

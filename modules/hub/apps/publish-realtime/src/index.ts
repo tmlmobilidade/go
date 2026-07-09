@@ -4,7 +4,7 @@ import { publishTripUpdates } from '@/tasks/publish-trip-updates.js';
 import { publishVehiclesPositions } from '@/tasks/publish-vehicle-positions.js';
 import { publishVehiclesMetadata } from '@/tasks/publish-vehicles-metadata.js';
 import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentryNode } from '@tmlmobilidade/logger-backend';
+import { initSentry } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -19,8 +19,8 @@ const main = async () => {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-realtime', message: 'Sentry Hub Publish Realtime initialized', module: 'hub', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'publish-realtime', message: 'Sentry Hub Publish Realtime initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Realtime' });
 	}

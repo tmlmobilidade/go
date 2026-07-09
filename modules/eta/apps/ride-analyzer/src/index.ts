@@ -11,7 +11,7 @@ import { runLoaderPhase } from '@/run-loader.js';
 import { writeOutput } from '@/write-output.js';
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentryNode } from '@tmlmobilidade/logger-backend';
+import { initSentry } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -122,8 +122,8 @@ async function main() {
 	// A. Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'ride-analyzer', message: 'Sentry ETA Ride Analyzer initialized', module: 'eta', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'ride-analyzer', message: 'Sentry ETA Ride Analyzer initialized', module: 'eta', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry ETA Ride Analyzer' });
 	}

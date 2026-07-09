@@ -4,7 +4,7 @@ import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { type BaseResponse, type TempoEsperaRawItem } from '@tmlmobilidade/external/dist/clients/ml/types.js';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, type RawVehicleEventMlV1 } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -28,8 +28,8 @@ const main = async () => {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'Metro Lisboa-fetch', message: 'Sentry Tracker Metro Lisboa Fetch initialized', module: 'tracker', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'Metro Lisboa-fetch', message: 'Sentry Tracker Metro Lisboa Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker Metro Lisboa Fetch' });
 	}

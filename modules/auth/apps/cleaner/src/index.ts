@@ -3,7 +3,7 @@
 import { cleanExpiredSessions } from '@/tasks/clean-sessions.js';
 import { cleanExpiredVerificationTokens } from '@/tasks/clean-verification-tokens.js';
 import { sanitizePermissions } from '@/tasks/sanitize-permissions.js';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -16,8 +16,8 @@ async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'cleaner', message: 'Sentry Auth Cleaner initialized', module: 'core', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'cleaner', message: 'Sentry Auth Cleaner initialized', module: 'core', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Auth Cleaner' });
 	}

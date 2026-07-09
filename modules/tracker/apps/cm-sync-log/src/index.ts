@@ -4,7 +4,7 @@ import { syncPcgidbLogVehicleEvents } from '@/sync-pcgidb-log.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentryNode } from '@tmlmobilidade/logger-backend';
+import { initSentry } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
@@ -17,8 +17,8 @@ async function main() {
 		// Initialize Sentry
 
 		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'cm-sync-log', message: 'Sentry Tracker CM Sync Log initialized', module: 'tracker', severity: 'info' });
+			await initSentry();
+			Logger.startLogs({ app: 'cm-sync-log', message: 'Sentry Tracker CM Sync Log initialized', module: 'tracker', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Tracker CM Sync Log' });
 		}

@@ -4,7 +4,7 @@ import { isEmpty, testRide } from '@/utils.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentryNode } from '@tmlmobilidade/logger-backend';
+import { initSentry } from '@tmlmobilidade/logger-backend';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Ride, type RideAcceptance } from '@tmlmobilidade/types';
@@ -106,8 +106,8 @@ async function main() {
 		// Initialize Sentry
 
 		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'rides-acceptor', message: 'Sentry Rides Acceptor initialized', module: 'controller', severity: 'info' });
+			await initSentry();
+			Logger.startLogs({ app: 'rides-acceptor', message: 'Sentry Rides Acceptor initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Rides Acceptor' });
 		}

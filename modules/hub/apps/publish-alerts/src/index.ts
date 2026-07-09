@@ -4,7 +4,7 @@ import { publishGtfsRtFeed } from '@/tasks/publish-gtfs-rt-feed.js';
 import { publishJsonFeed } from '@/tasks/publish-json-feed.js';
 import { publishRssFeed } from '@/tasks/publish-rss-feed.js';
 import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentryNode } from '@tmlmobilidade/logger-backend';
+import { initSentry } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -17,8 +17,8 @@ const main = async () => {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-alerts', message: 'Sentry Hub Publish Alerts initialized', module: 'hub', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'publish-alerts', message: 'Sentry Hub Publish Alerts initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Alerts' });
 	}

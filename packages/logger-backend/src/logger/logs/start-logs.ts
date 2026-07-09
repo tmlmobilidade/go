@@ -20,7 +20,7 @@ import { type LogsContext } from '../interface/logs.js';
  *   - severity: string - Log severity (defaults to 'info' if undefined)
  *
  * Example:
- *   startNodeLogs({ app: 'api', message: 'Booting…', module: 'main', severity: 'info' });
+ *   startLogs({ app: 'api', message: 'Booting…', module: 'main', severity: 'info' });
  */
 export function startLogs(context: Omit<LogsContext, 'app' | 'message' | 'module' | 'severity'> & { app: string, message: string, module: string, severity: string }): void {
 	Sentry.logger.info(context.message, {

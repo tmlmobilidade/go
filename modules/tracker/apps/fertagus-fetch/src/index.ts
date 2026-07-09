@@ -6,7 +6,7 @@ import { externalClients } from '@tmlmobilidade/external';
 import { TrainsResponse } from '@tmlmobilidade/external/dist/clients/fertagus/types.js';
 import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-backend';
-import { initSentryNode } from '@tmlmobilidade/logger-backend';
+import { initSentry } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashableRawVehicleEvent, HashedPattern, RawVehicleEventFertagusV1, Ride } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -43,8 +43,8 @@ const main = async () => {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'fertagus-fetch', message: 'Sentry Tracker Fertagus Fetch initialized', module: 'tracker', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'fertagus-fetch', message: 'Sentry Tracker Fertagus Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker Fertagus Fetch' });
 	}
