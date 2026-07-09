@@ -122,6 +122,6 @@ export class SshTunnelService {
 	 */
 	async reconnect() {
 		await this.disconnect();
-		this.connect();
+		await this.connect();
 	}
 }
