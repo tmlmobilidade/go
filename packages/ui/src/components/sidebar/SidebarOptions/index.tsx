@@ -25,7 +25,7 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const { t } = useTranslation(['shared']);
 	const meContext = useMeContext();
 	const layoutContext = useLayoutContext();
 	const versionContext = useVersionContext();
