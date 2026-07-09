@@ -1,5 +1,5 @@
 import { Logger } from '@tmlmobilidade/logger';
-import { getSshTunnel, SshTunnelService } from '@tmlmobilidade/ssh';
+import { getSshTunnel, type SshTunnelPrefix, SshTunnelService } from '@tmlmobilidade/ssh';
 import { MongoClient, type MongoClientOptions } from 'mongodb';
 
 /**
@@ -23,7 +23,7 @@ export interface MongoDatabaseConfig {
 	/** Env var prefix (e.g. `"PCGI_RAW"`, `"GO_MONGO"`). */
 	prefix: string
 	/** SSH tunnel prefix (e.g. `"GO"`, `"PCGI"`). */
-	sshPrefix?: string
+	sshPrefix: SshTunnelPrefix
 }
 
 /**
@@ -169,7 +169,7 @@ export class MongoDatabaseClient {
 				dstAddr: env('HOST_1')!,
 				dstPort: Number(env('PORT_1')),
 			},
-			prefix: sshPrefix ?? prefix,
+			prefix: sshPrefix,
 		});
 
 		if (!tunnel) {
