@@ -40,3 +40,5 @@ export function AlertDetail() {
 		</Pane>
 	);
 }
+
+export { useAlertDetailContext };

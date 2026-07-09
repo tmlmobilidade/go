@@ -1,7 +1,13 @@
 /* Alert Icon */
 
 .alertIcon{
-    color:red
+    cursor: pointer;
+    color:red;
+    transition: opacity 0.2s ease;
+}
+
+.alertIcon:hover {
+    opacity: 0.7;
 }
 
 /* * */
