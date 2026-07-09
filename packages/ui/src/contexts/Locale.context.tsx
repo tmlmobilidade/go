@@ -46,7 +46,11 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 	//
 	// A. Setup Variables
 
-	const [locale, setLocaleState] = useState<string>(getBrowserLocale);
+	const [locale, setLocaleState] = useState<string>(DEFAULT_LOCALE_CODE);
+
+	useEffect(() => {
+		setLocaleState(getBrowserLocale());
+	}, []);
 
 	//
 	// B. Transform Data
