@@ -10,7 +10,7 @@ import { transformReferenceTypeAgency } from '@/transform/gtfs-rt/reference-type
 import { transformReferenceTypeLines } from '@/transform/gtfs-rt/reference-types/lines.js';
 import { transformReferenceTypeRides } from '@/transform/gtfs-rt/reference-types/rides.js';
 import { transformReferenceTypeStops } from '@/transform/gtfs-rt/reference-types/stops.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type Alert, type GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@tmlmobilidade/types';
 
 /**

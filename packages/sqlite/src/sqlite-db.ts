@@ -1,7 +1,7 @@
 /* * */
 
 import { SQLiteColumn, SQLiteDatabaseConfig, SQLiteTable } from '@/types.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import BSQLite3, { type Database, Statement } from 'better-sqlite3';
 import fs from 'node:fs';

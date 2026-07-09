@@ -3,7 +3,7 @@
 import { getOperationalStopsBatch } from '@/operation/stops/batch.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type ActionsOf, type GetOperationalStopsBatchQuery, GetOperationalStopsBatchQuerySchema, type OperationalStop, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */

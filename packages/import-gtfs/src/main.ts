@@ -12,7 +12,7 @@ import { type ImportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@/types/sql-tables.js';
 import { extractGtfsSource } from '@/utils/extract-source.js';
 import { initImportGtfsContext } from '@/utils/init-context.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /**

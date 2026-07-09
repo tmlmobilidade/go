@@ -3,7 +3,7 @@
 import { rawApexTransactions } from '@tmlmobilidade/databases';
 import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */

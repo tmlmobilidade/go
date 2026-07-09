@@ -1,8 +1,8 @@
 /* * */
 
 import { publishApprovedPlans } from '@/tasks/publish-approved-plans.js';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
+import { initSentryNode } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

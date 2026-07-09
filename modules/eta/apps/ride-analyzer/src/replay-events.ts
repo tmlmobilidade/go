@@ -6,7 +6,7 @@ import type { ClickHouseClient } from '@clickhouse/client';
 import type { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 import { pipelinePath, qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

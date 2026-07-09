@@ -2,7 +2,7 @@
 
 import type { CliArgs, ReplaySnapshot, RouteNode, StopWaypoint, TripContext } from '@/types.js';
 
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 import path from 'node:path';

@@ -7,7 +7,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -23,7 +25,6 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/lib": "*",
-		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/sqlite": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
@@ -31,7 +32,8 @@
 		"csv-parse": "7.0.1",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0",
-		"node-cron": "4.6.0"
+		"node-cron": "4.6.0",
+		"@tmlmobilidade/logger-backend": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

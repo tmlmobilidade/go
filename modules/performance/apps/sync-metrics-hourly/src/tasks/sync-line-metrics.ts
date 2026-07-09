@@ -7,7 +7,7 @@ import { computeMeanDemandByLineByMonth } from '@/syncs/demand_by_line/mean_by_m
 import { computeTop30DayPerformanceByLine } from '@/syncs/demand_by_line/top_30day_performance.js';
 import { computeTopMeanDemandByLineByMonth } from '@/syncs/demand_by_line/top_mean_by_month.js';
 import { MetricSyncRunner } from '@/utils/run-metric.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

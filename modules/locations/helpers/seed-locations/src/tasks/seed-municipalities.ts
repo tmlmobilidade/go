@@ -1,7 +1,7 @@
 /* * */
 
 import { municipalities } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 
 /* * */
 

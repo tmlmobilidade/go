@@ -1,6 +1,6 @@
 import { AppConfig } from '@/lib/config.js';
 import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 
 const CLEANUP_HIST_NODE_TRAVEL_TIMES_AGG_SQL = 'cleanup/7-delete-out-of-window-hist-node-travel-times-aggregation.sql';
 

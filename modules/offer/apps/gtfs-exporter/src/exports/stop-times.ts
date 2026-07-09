@@ -3,7 +3,7 @@
 import { type TripSchedule } from '@/exports/trips.js';
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type GTFS_StopTime, HHMM, metersToGtfsKm, Path, type Pattern, type Stop, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';

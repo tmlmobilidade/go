@@ -23,11 +23,11 @@
 		"@tmlmobilidade/go-stops-pckg-organize": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"adm-zip": "0.5.18",
-		"p-limit": "7.3.0"
+		"p-limit": "7.3.0",
+		"@tmlmobilidade/logger-backend": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

@@ -5,7 +5,7 @@
 import { generateOfferOutput } from '@/main.js';
 import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Command } from 'commander';
 import fs from 'fs';
 

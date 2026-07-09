@@ -9,7 +9,7 @@ import { syncDemandByCategoryByLineByYear } from '@/syncs/demand_by_category/by_
 import { syncDemandByCategoryByPatternByDay } from '@/syncs/demand_by_category/by_pattern_by_day.js';
 import { syncDemandByCategoryByPatternByMonth } from '@/syncs/demand_by_category/by_pattern_by_month.js';
 import { syncDemandByCategoryByPatternByYear } from '@/syncs/demand_by_category/by_pattern_by_year.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

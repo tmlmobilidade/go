@@ -3,7 +3,7 @@
 
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type OperationalDate, type Plan } from '@tmlmobilidade/types';
 
 /* * */

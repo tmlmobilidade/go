@@ -2,7 +2,7 @@
 
 import { syncApexBankingTaps } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 

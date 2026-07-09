@@ -28,7 +28,6 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",
@@ -36,7 +35,8 @@
 		"@tmlmobilidade/writers": "*",
 		"adm-zip": "0.5.18",
 		"formidable": "3.5.4",
-		"papaparse": "5.5.4"
+		"papaparse": "5.5.4",
+		"@tmlmobilidade/logger-backend": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

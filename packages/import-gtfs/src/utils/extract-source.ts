@@ -3,7 +3,7 @@
 import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
 import { type ImportGtfsContext } from '@/types/context.js';
 import { unzipFile } from '@/utils/unzip-file.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import fs from 'node:fs';
 
 /**

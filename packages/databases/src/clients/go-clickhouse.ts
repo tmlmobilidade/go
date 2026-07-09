@@ -1,7 +1,7 @@
 /* * */
 
 import { ClickHouseClient, ClickHouseLogLevel, createClient } from '@clickhouse/client';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
 import { readFileSync } from 'node:fs';
 

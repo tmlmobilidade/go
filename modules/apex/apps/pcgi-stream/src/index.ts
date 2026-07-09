@@ -2,7 +2,7 @@
 
 import { processPcgiTransactionEntity } from '@/task.js';
 import { pcgiTransactionEntities } from '@tmlmobilidade/databases';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger-backend';
 
 /* * */
 

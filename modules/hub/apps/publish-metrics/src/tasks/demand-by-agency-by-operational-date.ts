@@ -2,7 +2,7 @@
 
 import { apiCache, demandByAgencyByOperationalDate } from '@tmlmobilidade/databases';
 import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-performance';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

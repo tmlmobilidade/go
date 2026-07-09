@@ -4,7 +4,7 @@ import { type ExportedCalendarDatesRow, type GtfsV29ExportConfig } from '@/types
 import { getDayType, getPeriodForDate } from '@/utils/calendar-helpers.js';
 import { type ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates, isHoliday } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type Holiday, type YearPeriod } from '@tmlmobilidade/types';
 
 /* * */

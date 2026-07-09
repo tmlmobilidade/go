@@ -2,8 +2,8 @@
 
 import { processPcgiVehicleEventCore } from '@/process-pcgi-vehicle-event-core.js';
 import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
+import { initSentryNode } from '@tmlmobilidade/logger-backend';
 
 /* * */
 

@@ -9,7 +9,7 @@ import { syncSupplyByAgencyByDay } from '@/syncs/supply_by_agency/by_day.js';
 import { syncSupplyByAgencyByMonth } from '@/syncs/supply_by_agency/by_month.js';
 import { syncSupplyByAgencyByYear } from '@/syncs/supply_by_agency/by_year.js';
 import { MetricSyncRunner } from '@/utils/run-metric.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

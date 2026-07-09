@@ -1,7 +1,7 @@
 /* * */
 
 import { files } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type Alert, type GtfsRtTranslatedImage } from '@tmlmobilidade/types';
 
 /* * */

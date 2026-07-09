@@ -1,6 +1,6 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { AggregationPipeline, metrics, rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { OperationalDate, Ride } from '@tmlmobilidade/types';
 import { Interval } from 'luxon';
 

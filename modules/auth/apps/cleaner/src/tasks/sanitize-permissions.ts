@@ -1,7 +1,7 @@
 /* * */
 
 import { roles, users } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 

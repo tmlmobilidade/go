@@ -2,7 +2,7 @@
 
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { locations } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 
 /* * */
 

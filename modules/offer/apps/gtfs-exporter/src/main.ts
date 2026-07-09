@@ -6,8 +6,8 @@ import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.j
 import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { agencies, lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
+import { initSentryNode } from '@tmlmobilidade/logger-backend';
 import fs from 'node:fs';
 
 import { exportFeedInfoFile } from './exports/feedInfo.js';

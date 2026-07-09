@@ -4,7 +4,7 @@
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { stops } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type GTFS_StopTime, type Plan } from '@tmlmobilidade/types';
 
 /* * */

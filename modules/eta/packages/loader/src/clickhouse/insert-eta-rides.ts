@@ -1,7 +1,7 @@
 import type { EtaRideRow } from '@/lib/eta-ride-row.js';
 import type { ClickHouseClient } from '@clickhouse/client';
 
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 
 export async function insertEtaRides(
 	clickhouseClient: ClickHouseClient,

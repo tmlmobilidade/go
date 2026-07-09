@@ -2,7 +2,7 @@
 
 import { prepareNamedQueryParams } from '@/utils/clickhouse/prepare-named-query-params.js';
 import { type ClickHouseClient } from '@clickhouse/client';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { readFile } from 'node:fs/promises';
 
 function chunkHasExecutableLine(chunk: string): boolean {

@@ -3,7 +3,7 @@
 import { apiCache } from '@tmlmobilidade/databases';
 import { type HubStop, HubStopSchema } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Stop_Extended } from '@tmlmobilidade/types';
 

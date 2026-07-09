@@ -4,7 +4,7 @@
 // import { Dates } from '@tmlmobilidade/dates';
 // import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/go-apex-pckg-parse';
 // import { rides } from '@tmlmobilidade/interfaces';
-// import { Logger } from '@tmlmobilidade/logger';
+// import { Logger } from '@tmlmobilidade/logger-backend';
 // import { Timer } from '@tmlmobilidade/timer';
 
 // /* * */

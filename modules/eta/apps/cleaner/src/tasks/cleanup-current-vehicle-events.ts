@@ -1,6 +1,6 @@
 import { AppConfig } from '@/lib/config.js';
 import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 
 const CLEANUP_CURRENT_VEHICLE_EVENTS_SQL = 'cleanup/2-delete-out-of-window-curr-vehicle-events.sql';
 

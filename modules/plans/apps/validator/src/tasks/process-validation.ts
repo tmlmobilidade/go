@@ -7,7 +7,7 @@ import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfu
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type GtfsValidation, type GtfsValidationSummary } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';

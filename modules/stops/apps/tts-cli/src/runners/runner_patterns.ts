@@ -3,7 +3,7 @@
 import { makePattern } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { type HubLine, type HubPattern } from '@tmlmobilidade/go-types-public-info';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 
 import { piperTtsApi } from '../../src/services/piperTtsApi.js';
 

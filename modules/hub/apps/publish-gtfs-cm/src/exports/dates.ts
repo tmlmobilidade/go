@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */

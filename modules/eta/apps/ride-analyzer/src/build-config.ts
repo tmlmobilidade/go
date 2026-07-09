@@ -4,7 +4,7 @@ import type { CliArgs } from '@/types.js';
 import type { AppConfig } from '@tmlmobilidade/go-eta-pckg-loader';
 
 import { Dates } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 
 /* * */
 

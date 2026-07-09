@@ -1,8 +1,8 @@
 /* * */
 
 import { loadEta } from '@tmlmobilidade/go-eta-pckg-loader';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
+import { initSentryNode } from '@tmlmobilidade/logger-backend';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 import { AppConfig } from './config.js';

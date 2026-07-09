@@ -11,8 +11,8 @@ import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import oneLineLogger from '@fastify/one-line-logger';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry } from '@tmlmobilidade/logger-backend';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
 import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
@@ -170,7 +170,7 @@ const createLoggerOptions = (getModuleName: () => string): FastifyLoggerOptions<
 			const shouldSendToSentry = message !== 'incoming request' && message !== 'request completed';
 
 			if (shouldSendToSentry) {
-				Logger.startNodeLogs({
+				Logger.startLogs({
 					app: 'api',
 					message: message,
 					method: method,
@@ -238,7 +238,7 @@ export class FastifyService {
 		if (moduleName) this.options.module = moduleName;
 
 		try {
-			await initSentryNode();
+			await initSentry();
 		} catch (error) {
 			this.server.log.error({ err: error }, 'Error sending startup log to Sentry.');
 		}

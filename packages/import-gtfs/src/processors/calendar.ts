@@ -4,7 +4,7 @@ import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
 import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { GTFS_Calendar_Raw, validateGtfsCalendar } from '@tmlmobilidade/types';
 import { OperationalDate } from '@tmlmobilidade/types';

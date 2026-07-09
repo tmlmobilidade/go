@@ -28,12 +28,12 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/writers": "*",
 		"commander": "15.0.0",
 		"csv-parse": "7.0.1",
-		"extract-zip": "2.0.1"
+		"extract-zip": "2.0.1",
+		"@tmlmobilidade/logger-backend": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

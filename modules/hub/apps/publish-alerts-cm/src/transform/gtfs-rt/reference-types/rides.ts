@@ -2,7 +2,7 @@
 
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 
 /* * */

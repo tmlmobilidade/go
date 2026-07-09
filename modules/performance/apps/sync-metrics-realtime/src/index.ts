@@ -4,8 +4,8 @@ import { syncRealtimeDemand } from '@/tasks/sync-realtime-demand.js';
 import { syncRealtimeServiceCompliance } from '@/tasks/sync-service-compliance.js';
 // import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
 import { runDemandByAgencyByOperationalDate } from '@tmlmobilidade/go-performance-pckg-scripts';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
+import { initSentryNode } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

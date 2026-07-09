@@ -4,7 +4,7 @@ import type { AppConfig } from '@/lib/config.js';
 
 import { qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { hashedTrips } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */

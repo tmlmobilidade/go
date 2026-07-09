@@ -1,7 +1,7 @@
 /* * */
 
 import { type ExportedCalendarMapRow, type GtfsV29ExportConfig } from '@/types.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 
 /* * */
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { type AggregationPipeline, rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { type GetOperationalLinesBatchQuery, type HashedPattern, type OperationalDate, type OperationalLine } from '@tmlmobilidade/types';
 
 /* * */

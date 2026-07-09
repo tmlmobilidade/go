@@ -3,7 +3,7 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { agencies } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

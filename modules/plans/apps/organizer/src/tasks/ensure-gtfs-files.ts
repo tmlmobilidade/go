@@ -2,7 +2,7 @@
 
 import { Files } from '@tmlmobilidade/files';
 import { agencies, files, plans } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GtfsAgency, type GtfsFeedInfo, HashablePlanMetadata } from '@tmlmobilidade/types';
 import { createHash } from 'node:crypto';

@@ -8,7 +8,7 @@ import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-public-info';
 import { alerts, files } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type AlertReference } from '@tmlmobilidade/types';
 
