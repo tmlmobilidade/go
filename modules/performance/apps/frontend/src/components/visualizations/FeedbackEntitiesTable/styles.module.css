@@ -1,0 +1,36 @@
+/* * */
+
+.tableWrapper {
+	max-height: clamp(320px, calc(100vh - 320px), 720px);
+	overflow: auto;
+}
+
+.tableWrapper table {
+	min-width: 640px;
+}
+
+.tableWrapperWithOperator table {
+	min-width: 860px;
+}
+
+.tableWrapper th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background-color: var(--color-system-background-100);
+}
+
+.tableRowButton {
+	cursor: pointer;
+}
+
+.tableRowButton:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: -2px;
+}
+
+.operatorCell {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+}

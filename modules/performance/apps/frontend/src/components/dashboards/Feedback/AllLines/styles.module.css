@@ -79,37 +79,6 @@
 	font-weight: var(--font-weight-bold);
 }
 
-.tableWrapper {
-	max-height: clamp(320px, calc(100vh - 320px), 720px);
-	overflow: auto;
-}
-
-.tableWrapper table {
-	min-width: 860px;
-}
-
-.tableWrapper th {
-	position: sticky;
-	top: 0;
-	z-index: 1;
-	background-color: var(--color-system-background-100);
-}
-
-.tableRowButton {
-	cursor: pointer;
-}
-
-.tableRowButton:focus-visible {
-	outline: 2px solid var(--color-primary);
-	outline-offset: -2px;
-}
-
-.lineOperator {
-	display: flex;
-	align-items: center;
-	min-width: 0;
-}
-
 @media (max-width: 720px) {
 	.header {
 		align-items: flex-start;

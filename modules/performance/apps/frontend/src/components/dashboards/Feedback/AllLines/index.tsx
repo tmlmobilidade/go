@@ -3,27 +3,14 @@
 'use client';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
+import { FeedbackEntityDetailModal } from '@/components/visualizations/Feedback';
+import { FeedbackEntitiesTable } from '@/components/visualizations/FeedbackEntitiesTable';
 import { FeedbackEntityDetailModalContextProvider } from '@/contexts/feedback/FeedbackEntityDetailModal.context';
-import { FeedbackLinesViewContextProvider, type FeedbackLineViewItem, useFeedbackLinesViewContext } from '@/contexts/feedback/FeedbackLinesViewContext';
+import { FeedbackLinesViewContextProvider, useFeedbackLinesViewContext } from '@/contexts/feedback/FeedbackLinesViewContext';
 import { getLineLabel } from '@/utils/feedback/network-labels';
-import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
-import { AgencyTag, SearchInput, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
-import { type KeyboardEvent } from 'react';
+import { SearchInput, SegmentedControl } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
-
-/* * */
-
-function LineOperatorCell({ operatorId }: { operatorId?: string }) {
-	if (!operatorId) return <Text>-</Text>;
-
-	return (
-		<div className={styles.lineOperator}>
-			<AgencyTag agencyId={operatorId} showShortName />
-		</div>
-	);
-}
 
 /* * */
 
@@ -36,16 +23,7 @@ function FeedbackLinesView() {
 	const { error, isLoading } = viewContext.flags;
 
 	//
-	// B. Handle actions
-
-	const handleLineKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, line: FeedbackLineViewItem) => {
-		if (event.key !== 'Enter' && event.key !== ' ') return;
-		event.preventDefault();
-		viewContext.actions.openLineDetail(line);
-	};
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<>
@@ -74,45 +52,14 @@ function FeedbackLinesView() {
 						{!isLoading && !error && lines.length === 0 && <p className={styles.text}>Sem linhas para mostrar.</p>}
 
 						{!isLoading && !error && lines.length > 0 && (
-							<div className={styles.tableWrapper}>
-								<Table highlightOnHover striped>
-									<Table.Thead>
-										<Table.Tr>
-											<Table.Th>Operador</Table.Th>
-											<Table.Th>Linha</Table.Th>
-											<Table.Th>Feedbacks</Table.Th>
-											<Table.Th>Índice de satisfação</Table.Th>
-										</Table.Tr>
-									</Table.Thead>
-
-									<Table.Tbody>
-										{lines.map(line => (
-											<Table.Tr
-												key={line.entityId}
-												aria-label={`Abrir detalhe da linha ${getLineLabel(line.entityId, linesById)}`}
-												className={styles.tableRowButton}
-												onClick={() => viewContext.actions.openLineDetail(line)}
-												onKeyDown={event => handleLineKeyDown(event, line)}
-												role="button"
-												tabIndex={0}
-											>
-												<Table.Td>
-													<LineOperatorCell operatorId={line.operatorId} />
-												</Table.Td>
-												<Table.Td>
-													<Text>{getLineLabel(line.entityId, linesById)}</Text>
-												</Table.Td>
-												<Table.Td>
-													<FeedbackMetricTag label={line.feedbackCount.toLocaleString('pt-PT')} />
-												</Table.Td>
-												<Table.Td>
-													<FeedbackMetricTag label={formatSatisfactionIndex(line.satisfactionIndex)} status={getFeedbackSatisfactionStatus(line.satisfactionIndex)} />
-												</Table.Td>
-											</Table.Tr>
-										))}
-									</Table.Tbody>
-								</Table>
-							</div>
+							<FeedbackEntitiesTable
+								entityColumnLabel="Linha"
+								entityTypeLabel="linha"
+								getEntityLabel={entityId => getLineLabel(entityId, linesById)}
+								items={lines}
+								onOpenEntity={viewContext.actions.openLineDetail}
+								showOperatorColumn
+							/>
 						)}
 					</div>
 				</ContainerWrapper>

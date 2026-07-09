@@ -3,13 +3,12 @@
 'use client';
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visualizations/Feedback';
+import { FeedbackEntityDetailModal } from '@/components/visualizations/Feedback';
+import { FeedbackEntitiesTable } from '@/components/visualizations/FeedbackEntitiesTable';
 import { FeedbackEntityDetailModalContextProvider } from '@/contexts/feedback/FeedbackEntityDetailModal.context';
-import { FeedbackStopsViewContextProvider, type FeedbackStopViewItem, useFeedbackStopsViewContext } from '@/contexts/feedback/FeedbackStopsViewContext';
+import { FeedbackStopsViewContextProvider, useFeedbackStopsViewContext } from '@/contexts/feedback/FeedbackStopsViewContext';
 import { getStopLabel } from '@/utils/feedback/network-labels';
-import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
-import { SearchInput, SegmentedControl, Table, Text } from '@tmlmobilidade/ui';
-import { type KeyboardEvent } from 'react';
+import { SearchInput, SegmentedControl } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -24,16 +23,7 @@ function FeedbackStopsView() {
 	const { error, isLoading } = viewContext.flags;
 
 	//
-	// B. Handle actions
-
-	const handleStopKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, stop: FeedbackStopViewItem) => {
-		if (event.key !== 'Enter' && event.key !== ' ') return;
-		event.preventDefault();
-		viewContext.actions.openStopDetail(stop);
-	};
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<>
@@ -62,41 +52,13 @@ function FeedbackStopsView() {
 						{!isLoading && !error && stops.length === 0 && <p className={styles.text}>Sem paragens para mostrar.</p>}
 
 						{!isLoading && !error && stops.length > 0 && (
-							<div className={styles.tableWrapper}>
-								<Table highlightOnHover striped>
-									<Table.Thead>
-										<Table.Tr>
-											<Table.Th>Paragem</Table.Th>
-											<Table.Th>Feedbacks</Table.Th>
-											<Table.Th>Índice de satisfação</Table.Th>
-										</Table.Tr>
-									</Table.Thead>
-
-									<Table.Tbody>
-										{stops.map(stop => (
-											<Table.Tr
-												key={stop.entityId}
-												aria-label={`Abrir detalhe da paragem ${getStopLabel(stop.entityId, stopsById)}`}
-												className={styles.tableRowButton}
-												onClick={() => viewContext.actions.openStopDetail(stop)}
-												onKeyDown={event => handleStopKeyDown(event, stop)}
-												role="button"
-												tabIndex={0}
-											>
-												<Table.Td>
-													<Text>{getStopLabel(stop.entityId, stopsById)}</Text>
-												</Table.Td>
-												<Table.Td>
-													<FeedbackMetricTag label={stop.feedbackCount.toLocaleString('pt-PT')} />
-												</Table.Td>
-												<Table.Td>
-													<FeedbackMetricTag label={formatSatisfactionIndex(stop.satisfactionIndex)} status={getFeedbackSatisfactionStatus(stop.satisfactionIndex)} />
-												</Table.Td>
-											</Table.Tr>
-										))}
-									</Table.Tbody>
-								</Table>
-							</div>
+							<FeedbackEntitiesTable
+								entityColumnLabel="Paragem"
+								entityTypeLabel="paragem"
+								getEntityLabel={entityId => getStopLabel(entityId, stopsById)}
+								items={stops}
+								onOpenEntity={viewContext.actions.openStopDetail}
+							/>
 						)}
 					</div>
 				</ContainerWrapper>
