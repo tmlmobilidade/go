@@ -1,0 +1,18 @@
+{
+	"operations": {
+		"Archive": "Archivar",
+		"Cancel": "Cancelar",
+		"Continue": "Continuar",
+		"Create": "Crear",
+		"Delete": "Eliminar",
+		"Duplicate": "Duplicar",
+		"Edit": "Editar",
+		"Eliminate": "Eliminar",
+		"Exclude": "Excluir",
+		"Next": "Siguiente",
+		"Publish": "Publicar",
+		"Restore": "Restaurar",
+		"Save": "Guardar",
+		"Update": "Actualizar"
+	}
+}

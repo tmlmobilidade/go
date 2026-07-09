@@ -1,0 +1,85 @@
+{
+	"buttons": {
+		"DuplicateButton": {
+			"label": "Duplicar",
+			"tooltip": "Crear una copia de este documento"
+		},
+		"SaveButton": {
+			"label": "Guardar",
+			"tooltip": "Guardar cambios"
+		}
+	},
+	"filters": {
+		"FilterTypeList": {
+			"toggle_all": "Seleccionar todo"
+		}
+	},
+	"inputs": {
+		"CoordinatesInput": {
+			"latitude": {
+				"placeholder": "Latitude (-90 to 90)"
+			},
+			"longitude": {
+				"placeholder": "Longitude (-180 to 180)"
+			}
+		},
+		"SearchInput": {
+			"placeholder": "Buscar..."
+		},
+		"Select": {
+			"nothing_found": "No se encontraron resultados"
+		}
+	},
+	"sidebar": {
+		"Sidebar": {
+			"agencies": "Operadores",
+			"alerts": "Alertas",
+			"annotations": "Anotaciones",
+			"calendar": "Calendario",
+			"collapse_sidebar_aria": "Contraer barra lateral",
+			"events": "Eventos y excepciones",
+			"fares": "Tarifas",
+			"gtfs_validations": "Validaciones GTFS",
+			"hide_sidebar_aria": "Contraer barra lateral",
+			"holidays": "Festivos",
+			"home": "Home",
+			"lines": "Líneas",
+			"organizations": "Organizaciones",
+			"performance": "Performance",
+			"pin_sidebar_aria": "Fijar barra lateral",
+			"plans": "Planes",
+			"reference": "Documentación",
+			"resize_rail_aria": "Redimensionar barra lateral",
+			"rides": "Circulaciones",
+			"roles": "Grupos de permisos",
+			"sams": "SAMS",
+			"stops": "Paradas",
+			"typologies": "Tipologías",
+			"unpin_sidebar_aria": "Desfijar barra lateral",
+			"users": "Usuarios",
+			"vehicles": "Vehículos",
+			"year_periods": "Períodos del año",
+			"zones": "Zonas"
+		},
+		"SidebarGroups": {
+			"administration": "Administración",
+			"calendar_management": "Calendario",
+			"fleet_management": "Flota",
+			"network_offer": "Oferta de red",
+			"offer": "Oferta",
+			"operation": "Operación",
+			"overview": "Visión general"
+		}
+	},
+	"tags": {
+		"IdTag": {
+			"copied": "¡Copiado!",
+			"copy": "Haga clic para copiar el ID"
+		}
+	},
+	"topbar": {
+		"Topbar": {
+			"show_sidebar_aria": "Mostrar barra lateral"
+		}
+	}
+}
