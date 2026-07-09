@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { files, plans } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { getPublicRouteId } from '@tmlmobilidade/utils';
@@ -26,7 +26,6 @@ import { exportShapesFile } from '@/exports/shapes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
-import { initSentry } from '@tmlmobilidade/logger-backend';
 
 /* * */
 
