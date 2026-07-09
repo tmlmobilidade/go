@@ -132,7 +132,7 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 
 			<MantineMenu.Divider />
 
-			<MantineMenu.Label>{t('shared:components.sidebar.SidebarOptions.version', { version: versionContext.data.version })}</MantineMenu.Label>
+			<MantineMenu.Label>{t('shared:components.sidebar.SidebarOptions.version')} {versionContext.data.version}</MantineMenu.Label>
 
 		</Menu>
 	);
