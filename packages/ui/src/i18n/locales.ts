@@ -1,7 +1,6 @@
 'use client';
 
 export const DEFAULT_LOCALE_CODE = 'pt';
-export const LOCALE_STORAGE_KEY = 'locale';
 
 /* * */
 

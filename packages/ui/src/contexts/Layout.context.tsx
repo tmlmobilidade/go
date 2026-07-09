@@ -7,6 +7,8 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useEffe
 import { useFullscreenState } from '../hooks/use-fullscreen-state';
 import { useUserOrganization } from '../hooks/use-user-organization';
 import { useUserPreference } from '../hooks/use-user-preference';
+import { DEFAULT_LOCALE_CODE, enabledLocales, getMatchingLocale } from '../i18n/locales';
+import { useLocaleContext } from './Locale.context';
 
 /* * */
 
@@ -36,11 +38,13 @@ export type ModeType = (typeof AVAILABLE_MODES)[number]['_id'];
 interface LayoutContextState {
 	actions: {
 		activateFullscreen: () => void
+		activateLocale: (localeId: string) => void
 		activateMode: (modeId: ModeType) => void
 		activateTheme: (themeId: ThemeType) => void
 	}
 	data: {
 		active_fullscreen: boolean
+		active_locale: string
 		active_mode: ModeType
 		active_theme: ThemeType
 	}
@@ -67,6 +71,7 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const systemColorScheme = useColorScheme();
+	const localeContext = useLocaleContext();
 
 	const [userOrganization] = useUserOrganization();
 
@@ -75,6 +80,7 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 	const [activeFullscreen, setActiveFullscreen] = useFullscreenState();
 	const [activeTheme, setActiveTheme] = useUserPreference<ThemeType>('ui', 'active_theme', defaultTheme);
 	const [activeMode, setActiveMode] = useUserPreference<ModeType>('ui', 'active_mode', 'system');
+	const [activeLocale, setActiveLocale] = useUserPreference<string>('ui', 'active_locale', DEFAULT_LOCALE_CODE);
 
 	//
 	// B. Transform data
@@ -108,8 +114,19 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 		document.documentElement.setAttribute('data-fullscreen', activeFullscreen ? 'true' : 'false');
 	}, [activeFullscreen]);
 
+	useEffect(() => {
+		const matchingLocale = getMatchingLocale(activeLocale);
+		const resolvedLocale = matchingLocale?._id ?? DEFAULT_LOCALE_CODE;
+		localeContext.actions.setLocale(resolvedLocale);
+	}, [activeLocale, localeContext.actions]);
+
 	//
 	// C. Handle actions
+
+	const activateLocale = useCallback((localeId: string) => {
+		if (!enabledLocales.some(item => item._id === localeId)) return;
+		setActiveLocale(localeId);
+	}, [setActiveLocale]);
 
 	const activateMode = useCallback((modeId: ModeType) => {
 		if (!AVAILABLE_MODES.some(t => t._id === modeId)) return;
@@ -131,15 +148,17 @@ export const LayoutContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: LayoutContextState = useMemo(() => ({
 		actions: {
 			activateFullscreen,
+			activateLocale,
 			activateMode,
 			activateTheme,
 		},
 		data: {
 			active_fullscreen: activeFullscreen,
+			active_locale: activeLocale,
 			active_mode: activeMode,
 			active_theme: activeTheme,
 		},
-	}), [activateFullscreen, activateMode, activateTheme, activeFullscreen, activeMode, activeTheme]);
+	}), [activateFullscreen, activateLocale, activateMode, activateTheme, activeFullscreen, activeLocale, activeMode, activeTheme]);
 
 	//
 	// E. Render components

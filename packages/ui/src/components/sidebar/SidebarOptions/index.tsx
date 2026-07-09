@@ -4,7 +4,6 @@ import { ColorSwatch, Menu as MantineMenu, type MenuProps } from '@mantine/core'
 import { IconBellRinging, IconBrightness, IconCheck, IconColorSwatch, IconLanguage, IconLogout, IconMaximize, IconMinimize, IconSettings } from '@tabler/icons-react';
 
 import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
-import { useLocaleContext } from '../../../contexts/Locale.context';
 import { useMeContext } from '../../../contexts/Me.context';
 import { useNotificationsContext } from '../../../contexts/Notifications.context';
 import { useVersionContext } from '../../../contexts/Version.context';
@@ -27,7 +26,6 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 
 	const meContext = useMeContext();
 	const layoutContext = useLayoutContext();
-	const localeContext = useLocaleContext();
 	const versionContext = useVersionContext();
 	const notificationsContext = useNotificationsContext();
 
@@ -89,8 +87,8 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 					{enabledLocales.map(item => (
 						<MantineMenu.Item
 							key={item._id}
-							onClick={() => localeContext.actions.setLocale(item._id)}
-							rightSection={localeContext.data.locale === item._id ? <IconCheck size={16} /> : null}
+							onClick={() => layoutContext.actions.activateLocale(item._id)}
+							rightSection={layoutContext.data.active_locale === item._id ? <IconCheck size={16} /> : null}
 						>
 							{item.name}
 						</MantineMenu.Item>

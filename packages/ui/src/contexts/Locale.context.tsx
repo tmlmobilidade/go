@@ -4,7 +4,7 @@ import '@tmlmobilidade/ui';
 import i18next from 'i18next';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-import { DEFAULT_LOCALE_CODE, getMatchingLocale, LOCALE_STORAGE_KEY } from '../i18n/locales';
+import { DEFAULT_LOCALE_CODE, getMatchingLocale } from '../i18n/locales';
 import { registerModuleTranslations } from '../i18n/utils';
 
 /* * */
@@ -37,6 +37,18 @@ export function useLocaleContext() {
 	return context;
 }
 
+function getBrowserLocale() {
+	if (typeof window === 'undefined') return DEFAULT_LOCALE_CODE;
+
+	const browserLocales = navigator.languages ? navigator.languages : [navigator.language];
+	for (const browserLocale of browserLocales) {
+		const matchingBrowserLocale = getMatchingLocale(browserLocale.split('-')[0]);
+		if (matchingBrowserLocale) return matchingBrowserLocale._id;
+	}
+
+	return DEFAULT_LOCALE_CODE;
+}
+
 /* * */
 
 export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<LocaleContextProps>) => {
@@ -46,34 +58,10 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 	//
 	// A. Setup Variables
 
-	const [locale, setLocaleState] = useState<string>(DEFAULT_LOCALE_CODE);
+	const [locale, setLocaleState] = useState<string>(getBrowserLocale);
 
 	//
 	// B. Transform Data
-
-	useEffect(() => {
-		if (typeof window === 'undefined') return;
-
-		const storedLocale = localStorage.getItem(LOCALE_STORAGE_KEY);
-		if (storedLocale) {
-			const matchingStoredLocale = getMatchingLocale(storedLocale);
-			if (matchingStoredLocale) {
-				setLocaleState(matchingStoredLocale._id);
-				return;
-			}
-		}
-
-		const browserLocales = navigator.languages ? navigator.languages : [navigator.language];
-		for (const browserLocale of browserLocales) {
-			const matchingBrowserLocale = getMatchingLocale(browserLocale.split('-')[0]);
-			if (matchingBrowserLocale) {
-				setLocaleState(matchingBrowserLocale._id);
-				return;
-			}
-		}
-
-		setLocaleState(DEFAULT_LOCALE_CODE);
-	}, []);
 
 	useEffect(() => {
 		i18next.changeLanguage(locale);
@@ -90,10 +78,7 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 
 	const setLocale = useCallback((localeCode: string) => {
 		const matchingLocale = getMatchingLocale(localeCode);
-		const resolvedLocale = matchingLocale?._id ?? DEFAULT_LOCALE_CODE;
-
-		setLocaleState(resolvedLocale);
-		localStorage.setItem(LOCALE_STORAGE_KEY, resolvedLocale);
+		setLocaleState(matchingLocale?._id ?? DEFAULT_LOCALE_CODE);
 	}, []);
 
 	//
