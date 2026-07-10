@@ -47,7 +47,7 @@ class GoDBClass {
 		const dbUri = process.env.DATABASE_URI;
 		if (!dbUri) throw new Error(`Missing DATABASE_URI environment variable`);
 		// Attempt to connect to the MongoDB database
-		const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GO_MONGO', sshPrefix: 'GO' });
+		const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GODB' });
 		// Initialize the MongoDB connector
 		this.mongoClient = mongoClient;
 	}
