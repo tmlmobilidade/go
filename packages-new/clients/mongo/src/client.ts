@@ -1,5 +1,5 @@
 import { Logger } from '@tmlmobilidade/logger';
-import { getSshTunnel, type SshTunnelPrefix, SshTunnelService } from '@tmlmobilidade/ssh';
+import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 import { MongoClient, type MongoClientOptions } from 'mongodb';
 
 /**
@@ -22,8 +22,6 @@ export interface MongoDatabaseConfig {
 	clientOptions?: Partial<MongoClientOptions>
 	/** Env var prefix (e.g. `"PCGI_RAW"`, `"GO_MONGO"`). */
 	prefix: string
-	/** SSH tunnel prefix (e.g. `"GO"`, `"PCGI"`). */
-	sshPrefix: SshTunnelPrefix
 }
 
 /**
@@ -31,7 +29,7 @@ export interface MongoDatabaseConfig {
  */
 interface MongoDatabaseEntry {
 	client: MongoClient
-	tunnel: null | SshTunnelService
+	tunnel: null | SshTunnel
 }
 
 /**
@@ -155,8 +153,8 @@ export class MongoDatabaseClient {
 	 *
 	 * @returns The resolved URI and an optional SSH tunnel reference.
 	 */
-	private static async getConnectionString(config: MongoDatabaseConfig): Promise<{ tunnel: null | SshTunnelService, uri: string }> {
-		const { prefix, sshPrefix } = config;
+	private static async getConnectionString(config: MongoDatabaseConfig): Promise<{ tunnel: null | SshTunnel, uri: string }> {
+		const { prefix } = config;
 		const env = (name: string) => process.env[`${prefix}_${name}_NEW`];
 
 		if (!env('HOST_1') || !env('PORT_1')) throw new Error(`Missing ${prefix}_HOST_1_NEW or ${prefix}_PORT_1_NEW`);
@@ -164,13 +162,7 @@ export class MongoDatabaseClient {
 		if (!env('HOST_3') || !env('PORT_3')) throw new Error(`Missing ${prefix}_HOST_3_NEW or ${prefix}_PORT_3_NEW`);
 		if (!env('RS_NAME')) throw new Error(`Missing ${prefix}_RS_NAME_NEW`);
 
-		const tunnel = getSshTunnel({
-			forwardOptions: {
-				dstAddr: env('HOST_1')!,
-				dstPort: Number(env('PORT_1')),
-			},
-			prefix: sshPrefix,
-		});
+		const tunnel = goSshTunnel({ dstAddr: env('HOST_1')!, dstPort: Number(env('PORT_1')) });
 
 		if (!tunnel) {
 			return {
