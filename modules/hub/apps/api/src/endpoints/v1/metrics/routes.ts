@@ -1,6 +1,7 @@
 /* * */
 
 import { getDemandByAgencyByOperationalDate } from '@/endpoints/v1/metrics/controllers/get-demand-by-agency-by-operational-date.js';
+import { getServiceMetricsAll } from '@/endpoints/v1/metrics/controllers/get-service-metrics-all.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 
 /* * */
@@ -16,6 +17,17 @@ server.register(
 		//
 
 		instance.get('/demand-by-agency-by-operational-date', getDemandByAgencyByOperationalDate);
+
+		next();
+	},
+	{ prefix: namespace },
+);
+
+server.register(
+	(instance, opts, next) => {
+		//
+
+		instance.get('/service/all', getServiceMetricsAll);
 
 		next();
 	},
