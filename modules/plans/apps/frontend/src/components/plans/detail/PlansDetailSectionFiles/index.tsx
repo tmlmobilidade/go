@@ -35,11 +35,11 @@ export function PlanDetailSectionFiles() {
 
 	return (
 		<Collapsible
-			description="Ficheiros GTFS referentes a este plano."
-			title="Ficheiros GTFS"
+			description="Arquivo GTFS e ficheiros de configuração APEX."
+			title="Ficheiros"
 		>
-
 			<Section gap="sm">
+
 				{planDetailContext.data.operation_file ? (
 					<FileComponent
 						fileData={planDetailContext.data.operation_file}
@@ -48,10 +48,17 @@ export function PlanDetailSectionFiles() {
 				) : (
 					<Label>Nenhum ficheiro selecionado</Label>
 				)}
-			</Section>
 
+				{planDetailContext.data.apex_file_id ? (
+					<FileComponent
+						fileData={planDetailContext.data.apex_file_id}
+						onClick={handleDownload}
+					/>
+				) : (
+					<Label>Nenhum ficheiro selecionado</Label>
+				)}
+
+			</Section>
 		</Collapsible>
 	);
-
-	//
 }

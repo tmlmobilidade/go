@@ -1,8 +1,19 @@
 /* * */
 
-import { PlansController } from '@/endpoints/plans/plans.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
+
+import { changeGtfsOperationFile } from './controllers/change-gtfs-operation-file.js';
+import { controllerReprocessPlan } from './controllers/controller-reprocess-plan.js';
+import { createPlan } from './controllers/create-plan.js';
+import { deletePlan } from './controllers/delete-plan.js';
+import { downloadGtfsOperationFile } from './controllers/download-gtfs-operation-file.js';
+import { getAllPlans } from './controllers/get-all-plans.js';
+import { getDrtModel } from './controllers/get-drt-model.js';
+import { getGtfsOperationFile } from './controllers/get-gtfs-operation-file.js';
+import { getPlan } from './controllers/get-plan.js';
+import { lockPlan } from './controllers/lock-plan.js';
+import { updatePlan } from './controllers/update-plan.js';
 
 /* * */
 
@@ -19,64 +30,64 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
-			PlansController.getAll,
+			getAllPlans,
 		);
 
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
-			PlansController.getById,
+			getPlan,
 		);
 
 		instance.get(
 			'/:id/operation-file',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
-			PlansController.getPlanOperationFileById,
+			getGtfsOperationFile,
 		);
 
 		instance.get(
 			'/:id/operation-file/download',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
-			PlansController.downloadPlanOperationFileById,
+			downloadGtfsOperationFile,
 		);
 
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.create]) },
-			PlansController.create,
+			createPlan,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update]) },
-			PlansController.update,
+			updatePlan,
 		);
 
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.lock]) },
-			PlansController.lock,
+			lockPlan,
 		);
 
 		instance.get(
 			'/:id/controller-reprocess',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_controller]) },
-			PlansController.controllerReprocessPlanById,
+			controllerReprocessPlan,
 		);
 
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.delete]) },
-			PlansController.delete,
+			deletePlan,
 		);
 
 		instance.post(
 			'/:id/change-gtfs',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_gtfs_plan]) },
-			PlansController.changeGtfsPlan,
+			changeGtfsOperationFile,
 		);
 
-		instance.get('/drt-model/:id', PlansController.getDrtModel);
+		instance.get('/drt-model/:id', getDrtModel);
 
 		next();
 	},

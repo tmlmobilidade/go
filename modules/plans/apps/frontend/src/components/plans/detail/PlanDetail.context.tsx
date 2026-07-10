@@ -2,7 +2,7 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type File, GtfsValidation, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
+import { type File, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -16,6 +16,7 @@ interface PlanDetailContextState extends DetailContextStateTemplate {
 		controllerReprocessPlan: () => void
 	}
 	data: {
+		apex_file: File | null
 		form: UseFormReturnType<UpdatePlanDto>
 		id: string
 		operation_file: File | null
@@ -56,7 +57,8 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const { mutate: plansListMutate } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
 	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
 	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<File>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
-	const { data: UserData } = useSWR<User>(planId && API_ROUTES.auth.USERS_DETAIL(planData?.created_by));
+	const { data: apexFileData, error: apexFileError, isLoading: apexFileLoading, mutate: apexFileMutate } = useSWR<File>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId));
+	const { data: userData } = useSWR<User>(planId && API_ROUTES.auth.USERS_DETAIL(planData?.created_by));
 
 	//
 	// C. Setup form
@@ -193,11 +195,12 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			save: handleSave,
 		},
 		data: {
+			apex_file: apexFileData,
 			form,
 			id: planId,
 			operation_file: operationFileData,
 			plan: planData,
-			user: UserData,
+			user: userData,
 		},
 		flags: {
 			canChangePlan,
@@ -229,7 +232,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		isLocking,
 		isReadOnly,
 		isSaving,
-		UserData,
+		userData,
 	]);
 
 	//
