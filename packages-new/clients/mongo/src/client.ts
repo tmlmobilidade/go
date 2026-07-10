@@ -6,11 +6,11 @@ import { MongoClient, type MongoClientOptions } from 'mongodb';
  * Configuration for a Mongo database client.
  *
  * Every database follows the same env var naming convention, scoped by `prefix`:
- *   `{PREFIX}_HOST_1_NEW` / `{PREFIX}_PORT_1_NEW` — replica set seed 1
- *   `{PREFIX}_HOST_2_NEW` / `{PREFIX}_PORT_2_NEW` — replica set seed 2
- *   `{PREFIX}_HOST_3_NEW` / `{PREFIX}_PORT_3_NEW` — replica set seed 3
- *   `{PREFIX}_USER_NEW` / `{PREFIX}_PASSWORD_NEW` — credentials
- *   `{PREFIX}_RS_NAME_NEW` — replica set name
+ *   `{PREFIX}_HOST_1` / `{PREFIX}_PORT_1` — replica set seed 1
+ *   `{PREFIX}_HOST_2` / `{PREFIX}_PORT_2` — replica set seed 2
+ *   `{PREFIX}_HOST_3` / `{PREFIX}_PORT_3` — replica set seed 3
+ *   `{PREFIX}_USER` / `{PREFIX}_PASSWORD` — credentials
+ *   `{PREFIX}_RS_NAME` — replica set name
  *
  * @example
  * ```ts
@@ -105,7 +105,7 @@ export class MongoDatabaseClient {
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'primary',
-			replicaSet: process.env[`${prefix}_RS_NAME_NEW`],
+			replicaSet: process.env[`${prefix}_RS_NAME`],
 			retryReads: true,
 			retryWrites: true,
 			serverSelectionTimeoutMS: 10_000,
@@ -155,12 +155,12 @@ export class MongoDatabaseClient {
 	 */
 	private static async getConnectionString(config: MongoDatabaseConfig): Promise<{ tunnel: null | SshTunnel, uri: string }> {
 		const { prefix } = config;
-		const env = (name: string) => process.env[`${prefix}_${name}_NEW`];
+		const env = (name: string) => process.env[`${prefix}_${name}`];
 
-		if (!env('HOST_1') || !env('PORT_1')) throw new Error(`Missing ${prefix}_HOST_1_NEW or ${prefix}_PORT_1_NEW`);
-		if (!env('HOST_2') || !env('PORT_2')) throw new Error(`Missing ${prefix}_HOST_2_NEW or ${prefix}_PORT_2_NEW`);
-		if (!env('HOST_3') || !env('PORT_3')) throw new Error(`Missing ${prefix}_HOST_3_NEW or ${prefix}_PORT_3_NEW`);
-		if (!env('RS_NAME')) throw new Error(`Missing ${prefix}_RS_NAME_NEW`);
+		if (!env('HOST_1') || !env('PORT_1')) throw new Error(`Missing ${prefix}_HOST_1 or ${prefix}_PORT_1`);
+		if (!env('HOST_2') || !env('PORT_2')) throw new Error(`Missing ${prefix}_HOST_2 or ${prefix}_PORT_2`);
+		if (!env('HOST_3') || !env('PORT_3')) throw new Error(`Missing ${prefix}_HOST_3 or ${prefix}_PORT_3`);
+		if (!env('RS_NAME')) throw new Error(`Missing ${prefix}_RS_NAME`);
 
 		const tunnel = goSshTunnel({ dstAddr: env('HOST_1')!, dstPort: Number(env('PORT_1')) });
 
