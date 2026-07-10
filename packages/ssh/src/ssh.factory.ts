@@ -7,55 +7,43 @@ import { SshConfig, SshTunnelService, SshTunnelServiceOptions } from './client.j
 
 /* * */
 
-/** Prefix for SSH tunnel configuration environment variables. */
+/** Prefix for SSH tunnel environment variables (`{prefix}_TUNNEL_*`). */
 export type SshTunnelPrefix = 'GO' | 'PCGI';
 
-/** Options for building a SSH tunnel configuration. */
-interface GetSshTunnelConfigOptions {
-	/** Forwarding options. */
+/** Call-time options for creating an SSH tunnel. */
+export interface SshTunnelOptions {
+	/** Remote endpoint to forward traffic to. */
 	forwardOptions: { dstAddr: string, dstPort: number }
-	/** Maximum number of retries. */
+	/** Maximum connection retries. Defaults to 3. */
 	maxRetries?: number
-	/** Prefix for SSH tunnel configuration environment variables. */
-	prefix: SshTunnelPrefix
 }
 
-/**
- * Utility for building a strongly-typed SSH tunnel configuration for SshTunnelService.
- *
- * This function reads SSH tunnel connection options using environment variables,
- * with variable names constructed from the provided `prefix` and the option suffixes.
- *
- * Example usage:
- *   getSshTunnelConfig({
- *     forwardOptions: {
- *       srcAddr: 'localhost',
- *       srcPort: 12345,
- *       dstAddr: 'db.remote',
- *       dstPort: 27017,
- *     },
- *     maxRetries: 5,
- *     prefix: 'MYDB',
- *   });
- *
- * Expects environment variables for:
- *   <prefix>_TUNNEL_SSH_HOST,
- *   <prefix>_TUNNEL_SSH_USERNAME,
- *   <prefix>_TUNNEL_SSH_KEY_PATH (optional, path to a private key file),
- *   <prefix>_TUNNEL_SSH_KEY (optional, raw private key content),
- *   <prefix>_SSH_AUTH_SOCK (optional, agent socket).
- *
- * Priority for authentication: TUNNEL_SSH_KEY_PATH > TUNNEL_SSH_KEY > SSH_AUTH_SOCK.
- *
- * @param options - SSH tunnel config options
- * @returns SshTunnelService instance ready to connect using the provided configuration
- */
-export function getSshTunnel(options: GetSshTunnelConfigOptions): null | SshTunnelService {
-	const { forwardOptions, maxRetries, prefix } = options;
-	const env = (name: string) => process.env[`${prefix}_${name}`];
+/** A factory bound to a prefix; accepts only call-time options. */
+export type SshTunnelFactory = (options: SshTunnelOptions) => null | SshTunnelService;
 
-	//
-	// Validate required environment variables
+/**
+ * Creates an SSH tunnel factory for the given prefix.
+ *
+ * The returned function reads `{prefix}_TUNNEL_*` environment variables
+ * and builds an `SshTunnelService` when tunneling is enabled.
+ *
+ * Expected environment variables:
+ *   `{prefix}_TUNNEL_ENABLED` — `"true"` or `"false"`; `"false"` returns `null`
+ *   `{prefix}_TUNNEL_SSH_HOST`
+ *   `{prefix}_TUNNEL_SSH_USERNAME`
+ *   `{prefix}_TUNNEL_SSH_KEY_PATH` (optional)
+ *   `{prefix}_TUNNEL_SSH_KEY` (optional)
+ *   `SSH_AUTH_SOCK` (optional fallback agent)
+ *
+ * Auth priority: `TUNNEL_SSH_KEY_PATH` > `TUNNEL_SSH_KEY` > `SSH_AUTH_SOCK`.
+ */
+export function createSshTunnelFactory(prefix: SshTunnelPrefix): SshTunnelFactory {
+	return (options: SshTunnelOptions) => buildSshTunnel(prefix, options);
+}
+
+function buildSshTunnel(prefix: SshTunnelPrefix, options: SshTunnelOptions): null | SshTunnelService {
+	const { forwardOptions, maxRetries } = options;
+	const env = (name: string) => process.env[`${prefix}_${name}`];
 
 	if (env('TUNNEL_ENABLED') !== 'true' && env('TUNNEL_ENABLED') !== 'false') {
 		throw new Error(`Missing ${prefix}_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting ${prefix}_TUNNEL_ENABLED to "true" or "false".`);
@@ -75,8 +63,6 @@ export function getSshTunnel(options: GetSshTunnelConfigOptions): null | SshTunn
 		throw new Error(`Missing authentication configuration. Please provide ${prefix}_TUNNEL_SSH_KEY_PATH, ${prefix}_TUNNEL_SSH_KEY, or ensure SSH_AUTH_SOCK is set.`);
 	}
 
-	//
-	// Compose SshConfig object with all parameter sections
 	const srcPort = randomInt(8_000, 8_999);
 
 	const sshConfig: SshConfig = {
@@ -90,9 +76,6 @@ export function getSshTunnel(options: GetSshTunnelConfigOptions): null | SshTunn
 			port: srcPort,
 		},
 		sshOptions: {
-			/**
-			 * Auth agent will only be set if KEY_PATH and KEY are both unset.
-			 */
 			agent: (env('TUNNEL_SSH_KEY_PATH') || env('TUNNEL_SSH_KEY')) ? undefined : process.env.SSH_AUTH_SOCK,
 			host: env('TUNNEL_SSH_HOST'),
 			keepaliveCountMax: 3,
@@ -112,10 +95,8 @@ export function getSshTunnel(options: GetSshTunnelConfigOptions): null | SshTunn
 	};
 
 	const sshOptions: SshTunnelServiceOptions = {
-		maxRetries: maxRetries || 3,
+		maxRetries: maxRetries ?? 3,
 	};
 
-	//
-	// Create and return the SshTunnelService instance
 	return new SshTunnelService(sshConfig, sshOptions);
 }

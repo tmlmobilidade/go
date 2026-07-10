@@ -20,8 +20,6 @@ export interface SshTunnelServiceOptions {
 /* * */
 
 export class SshTunnelService {
-	private static _instance: SshTunnelService;
-
 	private _server: Server;
 	private config: SshConfig;
 	private options: SshTunnelServiceOptions;
@@ -34,21 +32,6 @@ export class SshTunnelService {
 
 	get server(): Server | undefined {
 		return this._server;
-	}
-
-	/**
-	 * Get the singleton instance of SshTunnelService.
-	 */
-	public static getInstance(config?: SshConfig, options?: SshTunnelServiceOptions): SshTunnelService {
-		if (!SshTunnelService._instance) {
-			if (!config) {
-				throw new Error('SSH Config is required');
-			}
-
-			SshTunnelService._instance = new SshTunnelService(config, options);
-		}
-
-		return SshTunnelService._instance;
 	}
 
 	/**
