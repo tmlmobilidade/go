@@ -17,6 +17,7 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
+		"@fastify/multipart": "10.0.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
