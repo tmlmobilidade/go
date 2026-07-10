@@ -15,7 +15,7 @@ interface SshTunnelFactoryOptions {
 	maxRetries?: number
 }
 
-export type SshTunnelFactory = (options: SshTunnelOptions) => null | SshTunnel;
+export type SshTunnelFactory = (options: SshTunnelFactoryOptions) => null | SshTunnel;
 
 /**
  * Creates an SSH tunnel factory for the given type.
