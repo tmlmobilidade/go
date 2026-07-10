@@ -1,7 +1,7 @@
 /* * */
 
 import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import type { Agency, CreateAgencyDto, UpdateAgencyDto, FileExport, CreateFileExportDto, File, CreateFileDto, UpdateFileDto, Organization, CreateOrganizationDto, UpdateOrganizationDto, Role, CreateRoleDto, UpdateRoleDto, Session, CreateSessionDto, UpdateSessionDto, User, CreateUserDto, UpdateUserDto, VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto } from '@tmlmobilidade/types';
+import type { Agency, CreateAgencyDto, CreateFileDto, CreateFileExportDto, CreateOrganizationDto, CreateRoleDto, CreateSessionDto, CreateUserDto, CreateVerificationTokenDto, File, FileExport, Organization, Role, Session, UpdateAgencyDto, UpdateFileDto, UpdateOrganizationDto, UpdateRoleDto, UpdateSessionDto, UpdateUserDto, UpdateVerificationTokenDto, User, VerificationToken } from '@tmlmobilidade/types';
 
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { CreateAgencySchema, CreateFileExportSchema, CreateFileSchema, CreateOrganizationSchema, CreateRoleSchema, CreateSessionSchema, CreateUserSchema, CreateVerificationTokenSchema, UpdateAgencySchema, UpdateFileExportSchema, UpdateFileSchema, UpdateOrganizationSchema, UpdateRoleSchema, UpdateSessionSchema, UpdateUserSchema, UpdateVerificationTokenSchema } from '@tmlmobilidade/types';
