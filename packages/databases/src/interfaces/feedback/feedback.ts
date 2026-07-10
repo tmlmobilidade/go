@@ -29,7 +29,7 @@ class FeedbackClass extends ClickHouseInterfaceTemplate<PublicFeedback> {
 
 	protected override readonly databaseName = 'hub';
 	protected override readonly engine: ClickHouseTableEngine<PublicFeedback> = 'MergeTree()';
-	protected override readonly orderBy = 'created_at, agency_id, entity_type, entity_id';
+	protected override readonly orderBy = 'agency_id, entity_type, entity_id,created_at';
 	protected override readonly partitionBy = 'toYYYYMM(fromUnixTimestamp64Milli(toInt64(created_at)))';
 	protected override readonly schema = tableSchema;
 	protected override readonly tableName = 'feedback';
