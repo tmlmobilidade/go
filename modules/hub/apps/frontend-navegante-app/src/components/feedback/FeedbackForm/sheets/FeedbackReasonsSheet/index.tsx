@@ -52,7 +52,7 @@ export function FeedbackReasonsSheet({ description, entityType, heading, onClose
 			onClose={onClose}
 			opened={opened}
 			size="fit"
-			title="Feedback"
+			title={t('default:feedback.FeedbackReasonsSheet.title')}
 		>
 			<div className={styles.sheet}>
 				<div className={styles.sheetHeader}>

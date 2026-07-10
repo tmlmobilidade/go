@@ -3,6 +3,7 @@
 import { IconMessageCircle } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { type ButtonHTMLAttributes, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -28,22 +29,24 @@ export function FeedbackButton({
 	ariaLabel,
 	className,
 	icon,
-	label = 'Dá-nos o teu feedback',
+	label,
 	onClick,
 	position = 'bottom-right',
 	variant = 'default',
 	withBubble = true,
 	...props
 }: FeedbackTriggerProps) {
-	const accessibleLabel = ariaLabel || label || 'Feedback';
-	const shouldShowBubble = withBubble && !!label;
+	const { t } = useTranslation();
+	const buttonLabel = label ?? t('default:feedback.FeedbackButton.label');
+	const accessibleLabel = ariaLabel || buttonLabel || t('default:feedback.FeedbackButton.aria_label');
+	const shouldShowBubble = withBubble && !!buttonLabel;
 
 	return (
 		<button
 			{...props}
 			aria-label={accessibleLabel}
 			className={clsx(styles.button, className)}
-			data-label={label}
+			data-label={buttonLabel}
 			data-position={position}
 			data-variant={variant}
 			data-with-bubble={shouldShowBubble}

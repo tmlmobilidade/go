@@ -9,6 +9,7 @@ import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -35,6 +36,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	const [selectedReasonValues, setSelectedReasonValues] = useState<string[]>([]);
 	const [selectedMood, setSelectedMood] = useState<null | PublicFeedback['mood']>(null);
 	const [thankYouMessageKey, setThankYouMessageKey] = useState(0);
+	const { t } = useTranslation();
 
 	const reasonCategories = getFeedbackReasonCategories(entityType) as readonly FeedbackReasonCategory[];
 	const isAnyReasonsSheetOpen = isHappyReasonsSheetOpen || isUnhappyReasonsSheetOpen || activeReasonOptionsSheet !== null;
@@ -155,18 +157,18 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			/>
 
 			<FeedbackReasonsSheet
-				description="Ajude-nos a melhorar o serviço."
+				description={t('default:feedback.FeedbackReasonsSheet.description')}
 				entityType={entityType}
-				heading="O que podemos melhorar?"
+				heading={t('default:feedback.FeedbackReasonsSheet.happy_heading')}
 				onClose={handleCloseHappyReasonsSheet}
 				onSelectCategory={setActiveReasonOptionsSheet}
 				opened={isHappyReasonsSheetOpen}
 			/>
 
 			<FeedbackReasonsSheet
-				description="Ajude-nos a melhorar o serviço."
+				description={t('default:feedback.FeedbackReasonsSheet.description')}
 				entityType={entityType}
-				heading="Com o que está insatisfeito?"
+				heading={t('default:feedback.FeedbackReasonsSheet.unhappy_heading')}
 				onClose={() => setIsUnhappyReasonsSheetOpen(false)}
 				onSelectCategory={setActiveReasonOptionsSheet}
 				opened={isUnhappyReasonsSheetOpen}

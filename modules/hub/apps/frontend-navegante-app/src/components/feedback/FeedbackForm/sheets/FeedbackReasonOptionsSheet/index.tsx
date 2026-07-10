@@ -83,7 +83,7 @@ export function FeedbackReasonOptionsSheet({ category, entityType, onClose, onSu
 			<div className={styles.sheet}>
 				<div className={styles.sheetHeader}>
 					<h2 className={styles.sheetTitle}>{reasonGroup.heading}</h2>
-					<p className={styles.sheetDescription}>Selecione os motivos que se aplicam.</p>
+					<p className={styles.sheetDescription}>{t('default:feedback.FeedbackReasonOptionsSheet.description')}</p>
 				</div>
 
 				<div className={styles.reasonOptions}>

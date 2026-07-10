@@ -7,6 +7,7 @@ import { Modal } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import { type PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -29,6 +30,7 @@ interface FeedbackModalProps {
 export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReasonsSheet, onSelectHappy, onSelectUnhappy, onSubmit, opened, selectedMood, thankYouMessageKey }: FeedbackModalProps) {
 	const [showThankYouMessage, setShowThankYouMessage] = useState(false);
 	const thankYouMessageTimeoutRef = useRef<null | ReturnType<typeof setTimeout>>(null);
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		if (thankYouMessageKey === 0) return;
@@ -57,7 +59,7 @@ export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReaso
 				onClose={onClose}
 				opened={opened}
 				size="sm"
-				title="Feedback"
+				title={t('default:feedback.FeedbackModal.title')}
 				zIndex={isAnyReasonsSheetOpen ? 90 : undefined}
 				classNames={{
 					body: styles.modalBody,
@@ -103,8 +105,8 @@ export function FeedbackModal({ isAnyReasonsSheetOpen, onClose, onOpenHappyReaso
 					<span className={styles.thankYouIcon}>
 						<IconCheck aria-hidden={true} size={36} stroke={2.6} />
 					</span>
-					<span className={styles.thankYouTitle}>Obrigado pelo Feedback!</span>
-					<span className={styles.thankYouDescription}>A tua resposta foi enviada.</span>
+					<span className={styles.thankYouTitle}>{t('default:feedback.FeedbackModal.thank_you_title')}</span>
+					<span className={styles.thankYouDescription}>{t('default:feedback.FeedbackModal.thank_you_description')}</span>
 				</div>
 			</Modal>
 		</>

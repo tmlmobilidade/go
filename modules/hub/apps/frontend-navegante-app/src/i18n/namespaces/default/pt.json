@@ -146,6 +146,35 @@
 		}
 	},
 	"feedback": {
+		"FeedbackButton": {
+			"aria_label": "Feedback",
+			"label": "Dá-nos o teu feedback"
+		},
+		"FeedbackImprovementPrompt": {
+			"button": "O que poderíamos melhorar?"
+		},
+		"FeedbackModal": {
+			"thank_you_description": "A tua resposta foi enviada.",
+			"thank_you_title": "Obrigado pelo Feedback!",
+			"title": "Feedback"
+		},
+		"FeedbackMoodSelector": {
+			"happy": "Sim",
+			"title": "Estás satisfeito com este serviço?",
+			"unhappy": "Não"
+		},
+		"FeedbackReasonOptionsSheet": {
+			"description": "Selecione os motivos que se aplicam."
+		},
+		"FeedbackReasonsSheet": {
+			"description": "Ajude-nos a melhorar o serviço.",
+			"happy_heading": "O que podemos melhorar?",
+			"title": "Feedback",
+			"unhappy_heading": "Com o que está insatisfeito?"
+		},
+		"FeedbackSubmitButton": {
+			"label": "Enviar feedback"
+		},
 		"reason_categories": {
 			"driver": "Motorista/Condutor",
 			"line_service": "Linha/Serviço",
