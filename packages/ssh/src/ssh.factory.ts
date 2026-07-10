@@ -78,7 +78,7 @@ function buildSshTunnel(type: SshTunnelType, options: SshTunnelFactoryOptions): 
 			keepaliveInterval: 10_000,
 			port: 22,
 			privateKey: env('TUNNEL_SSH_KEY_PATH')
-				? readFileSync(env('TUNNEL_SSH_KEY_PATH'))
+				? readFileSync(env('TUNNEL_SSH_KEY_PATH')!)
 				: env('TUNNEL_SSH_KEY')
 					? env('TUNNEL_SSH_KEY')
 					: undefined,

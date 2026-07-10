@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 class OrganizationsClass extends MongoCollectionClass<Organization, CreateOrganizationDto, UpdateOrganizationDto> {
 	private static _instance: OrganizationsClass;
+
 	protected override createSchema: z.ZodSchema = CreateOrganizationSchema;
 	protected override updateSchema: z.ZodSchema = UpdateOrganizationSchema;
 
@@ -41,4 +42,8 @@ class OrganizationsClass extends MongoCollectionClass<Organization, CreateOrgani
 	}
 }
 
+/**
+ * @deprecated This class is deprecated and will be removed in the future.
+ * Use `@tmlmobilidade/go-interfaces-go-db` instead.
+ */
 export const organizations = asyncSingletonProxy(OrganizationsClass);

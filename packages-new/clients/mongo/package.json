@@ -34,8 +34,9 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"luxon": "3.7.2",
-		"zod": "3.25.76"
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/ssh": "*",
+		"mongodb": "7.3.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
