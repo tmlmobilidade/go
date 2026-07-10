@@ -3,50 +3,50 @@
 import { randomInt } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
-import { SshConfig, SshTunnelService, SshTunnelServiceOptions } from './client.js';
+import { SshConfig, SshTunnel, type SshTunnelOptions } from './client.js';
 
 /* * */
 
-/** Prefix for SSH tunnel environment variables (`{prefix}_TUNNEL_*`). */
-export type SshTunnelPrefix = 'GO' | 'PCGI';
+/** Prefix for SSH tunnel environment variables (`{type}_TUNNEL_*`). */
+type SshTunnelType = 'GO' | 'PCGI';
 
 /** Call-time options for creating an SSH tunnel. */
-export interface SshTunnelOptions {
+interface SshTunnelFactoryOptions {
 	/** Remote endpoint to forward traffic to. */
 	forwardOptions: { dstAddr: string, dstPort: number }
 	/** Maximum connection retries. Defaults to 3. */
 	maxRetries?: number
 }
 
-/** A factory bound to a prefix; accepts only call-time options. */
-export type SshTunnelFactory = (options: SshTunnelOptions) => null | SshTunnelService;
+/** A factory bound to a type; accepts only call-time options. */
+export type SshTunnelFactory = (options: SshTunnelOptions) => null | SshTunnel;
 
 /**
- * Creates an SSH tunnel factory for the given prefix.
+ * Creates an SSH tunnel factory for the given type.
  *
- * The returned function reads `{prefix}_TUNNEL_*` environment variables
- * and builds an `SshTunnelService` when tunneling is enabled.
+ * The returned function reads `{type}_TUNNEL_*` environment variables
+ * and builds an `SshTunnel` when tunneling is enabled.
  *
  * Expected environment variables:
- *   `{prefix}_TUNNEL_ENABLED` — `"true"` or `"false"`; `"false"` returns `null`
- *   `{prefix}_TUNNEL_SSH_HOST`
- *   `{prefix}_TUNNEL_SSH_USERNAME`
- *   `{prefix}_TUNNEL_SSH_KEY_PATH` (optional)
- *   `{prefix}_TUNNEL_SSH_KEY` (optional)
+ *   `{type}_TUNNEL_ENABLED` — `"true"` or `"false"`; `"false"` returns `null`
+ *   `{type}_TUNNEL_SSH_HOST`
+ *   `{type}_TUNNEL_SSH_USERNAME`
+ *   `{type}_TUNNEL_SSH_KEY_PATH` (optional)
+ *   `{type}_TUNNEL_SSH_KEY` (optional)
  *   `SSH_AUTH_SOCK` (optional fallback agent)
  *
  * Auth priority: `TUNNEL_SSH_KEY_PATH` > `TUNNEL_SSH_KEY` > `SSH_AUTH_SOCK`.
  */
-export function createSshTunnelFactory(prefix: SshTunnelPrefix): SshTunnelFactory {
-	return (options: SshTunnelOptions) => buildSshTunnel(prefix, options);
+export function createSshTunnelFactory(type: SshTunnelType): SshTunnelFactory {
+	return (options: SshTunnelFactoryOptions) => buildSshTunnel(type, options);
 }
 
-function buildSshTunnel(prefix: SshTunnelPrefix, options: SshTunnelOptions): null | SshTunnelService {
+function buildSshTunnel(type: SshTunnelType, options: SshTunnelFactoryOptions): null | SshTunnel {
 	const { forwardOptions, maxRetries } = options;
-	const env = (name: string) => process.env[`${prefix}_${name}`];
+	const env = (name: string) => process.env[`${type}_${name}`];
 
 	if (env('TUNNEL_ENABLED') !== 'true' && env('TUNNEL_ENABLED') !== 'false') {
-		throw new Error(`Missing ${prefix}_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting ${prefix}_TUNNEL_ENABLED to "true" or "false".`);
+		throw new Error(`Missing ${type}_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting ${type}_TUNNEL_ENABLED to "true" or "false".`);
 	}
 
 	if (env('TUNNEL_ENABLED') === 'false') {
@@ -54,13 +54,13 @@ function buildSshTunnel(prefix: SshTunnelPrefix, options: SshTunnelOptions): nul
 	}
 
 	if (!env('TUNNEL_SSH_HOST')) {
-		throw new Error(`Missing ${prefix}_TUNNEL_SSH_HOST environment variable.`);
+		throw new Error(`Missing ${type}_TUNNEL_SSH_HOST environment variable.`);
 	}
 	if (!env('TUNNEL_SSH_USERNAME')) {
-		throw new Error(`Missing ${prefix}_TUNNEL_SSH_USERNAME environment variable.`);
+		throw new Error(`Missing ${type}_TUNNEL_SSH_USERNAME environment variable.`);
 	}
 	if (!env('TUNNEL_SSH_KEY_PATH') && !env('TUNNEL_SSH_KEY') && !process.env.SSH_AUTH_SOCK) {
-		throw new Error(`Missing authentication configuration. Please provide ${prefix}_TUNNEL_SSH_KEY_PATH, ${prefix}_TUNNEL_SSH_KEY, or ensure SSH_AUTH_SOCK is set.`);
+		throw new Error(`Missing authentication configuration. Please provide ${type}_TUNNEL_SSH_KEY_PATH, ${type}_TUNNEL_SSH_KEY, or ensure SSH_AUTH_SOCK is set.`);
 	}
 
 	const srcPort = randomInt(8_000, 8_999);
@@ -94,9 +94,9 @@ function buildSshTunnel(prefix: SshTunnelPrefix, options: SshTunnelOptions): nul
 		},
 	};
 
-	const sshOptions: SshTunnelServiceOptions = {
+	const sshOptions: SshTunnelOptions = {
 		maxRetries: maxRetries ?? 3,
 	};
 
-	return new SshTunnelService(sshConfig, sshOptions);
+	return new SshTunnel(sshConfig, sshOptions);
 }

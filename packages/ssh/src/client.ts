@@ -13,19 +13,19 @@ export interface SshConfig {
 	tunnelOptions: TunnelOptions
 }
 
-export interface SshTunnelServiceOptions {
+export interface SshTunnelOptions {
 	maxRetries?: number
 }
 
 /* * */
 
-export class SshTunnelService {
+export class SshTunnel {
 	private _server: Server;
 	private config: SshConfig;
-	private options: SshTunnelServiceOptions;
+	private options: SshTunnelOptions;
 	private retries = 0;
 
-	constructor(config: SshConfig, options?: SshTunnelServiceOptions) {
+	constructor(config: SshConfig, options?: SshTunnelOptions) {
 		this.config = config;
 		if (options) this.options = options;
 	}
@@ -42,7 +42,7 @@ export class SshTunnelService {
 	 * - If the connection is successful, it logs the connected host port and sets up an error listener on the server.
 	 * - If the connection fails, it retries the connection up to a maximum number of retries specified in the options.
 	 * @example ```typescript
-	 * const sshTunnelService = new SshTunnelService(config);
+	 * const sshTunnelService = new SshTunnel(config);
 	 * sshTunnelService.connect();
 	 * ```
 	 */
