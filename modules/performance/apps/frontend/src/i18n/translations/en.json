@@ -1,14 +1,64 @@
 {
 	"feedback": {
+		"dashboards": {
+			"all_lines": "View all lines",
+			"all_stops": "View all stops",
+			"title": "Dashboards"
+		},
 		"labels": {
+			"approval_index": "Approval index",
 			"feedbacks": "Feedbacks",
+			"id": "ID",
+			"line": "Line",
+			"lines": "Lines",
+			"open_detail_aria": "Open details for {entity}",
+			"operator": "Operator",
 			"points_to_improve": "Points to improve",
 			"satisfaction": "Satisfaction",
+			"satisfaction_index": "Satisfaction index",
+			"sort": "Sort",
+			"stop": "Stop",
+			"stops": "Stops",
 			"summary": "Summary",
 			"view": "View"
 		},
+		"lines": {
+			"all_title": "All lines",
+			"empty": "No lines to show.",
+			"error": "Error loading lines.",
+			"loading": "Loading lines...",
+			"most_feedback_title": "Lines with the most feedback",
+			"open_detail_aria": "Open details for line {entity}",
+			"top_reasons_title": "Reasons with the most feedback on lines"
+		},
+		"operators": {
+			"title": "Operators"
+		},
+		"sort": {
+			"satisfaction_asc": "Lowest index",
+			"satisfaction_desc": "Highest index"
+		},
+		"stops": {
+			"all_title": "All stops",
+			"empty": "No stops to show.",
+			"error": "Error loading stops.",
+			"loading": "Loading stops...",
+			"most_feedback_title": "Stops with the most feedback",
+			"open_detail_aria": "Open details for stop {entity}",
+			"top_reasons_title": "Reasons with the most feedback at stops"
+		},
 		"timeline": {
+			"empty": "No feedback data to show.",
+			"ranges": {
+				"month": "Month",
+				"six_months": "6 months",
+				"week": "Week"
+			},
 			"title": "Feedback over time"
+		},
+		"topic": {
+			"description": "Collection and analysis of feedback about passenger experience and operational quality.",
+			"label": "Feedback"
 		}
 	}
 }

@@ -3,6 +3,7 @@
 import { FeedbackMetricTag } from '@/components/visualizations/Feedback';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { AgencyTag, Table, Text } from '@tmlmobilidade/ui';
+import { useTranslations } from 'next-intl';
 import { type KeyboardEvent } from 'react';
 
 import styles from './styles.module.css';
@@ -18,10 +19,10 @@ interface FeedbackEntitiesTableItem {
 
 interface FeedbackEntitiesTableProps<T extends FeedbackEntitiesTableItem> {
 	entityColumnLabel: string
-	entityTypeLabel: string
 	getEntityLabel: (entityId: string) => string
 	items: T[]
 	onOpenEntity: (item: T) => void
+	openEntityAriaLabel: (entityLabel: string) => string
 	showOperatorColumn?: boolean
 }
 
@@ -41,12 +42,14 @@ function OperatorCell({ operatorId }: { operatorId?: string }) {
 
 export function FeedbackEntitiesTable<T extends FeedbackEntitiesTableItem>({
 	entityColumnLabel,
-	entityTypeLabel,
 	getEntityLabel,
 	items,
 	onOpenEntity,
+	openEntityAriaLabel,
 	showOperatorColumn = false,
 }: FeedbackEntitiesTableProps<T>) {
+	const t = useTranslations();
+
 	const handleKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, item: T) => {
 		if (event.key !== 'Enter' && event.key !== ' ') return;
 		event.preventDefault();
@@ -58,10 +61,10 @@ export function FeedbackEntitiesTable<T extends FeedbackEntitiesTableItem>({
 			<Table highlightOnHover striped>
 				<Table.Thead>
 					<Table.Tr>
-						{showOperatorColumn && <Table.Th>Operador</Table.Th>}
+						{showOperatorColumn && <Table.Th>{t('feedback.labels.operator')}</Table.Th>}
 						<Table.Th>{entityColumnLabel}</Table.Th>
-						<Table.Th>Feedbacks</Table.Th>
-						<Table.Th>Índice de satisfação</Table.Th>
+						<Table.Th>{t('feedback.labels.feedbacks')}</Table.Th>
+						<Table.Th>{t('feedback.labels.satisfaction_index')}</Table.Th>
 					</Table.Tr>
 				</Table.Thead>
 
@@ -72,7 +75,7 @@ export function FeedbackEntitiesTable<T extends FeedbackEntitiesTableItem>({
 						return (
 							<Table.Tr
 								key={item.entityId}
-								aria-label={`Abrir detalhe da ${entityTypeLabel} ${entityLabel}`}
+								aria-label={openEntityAriaLabel(entityLabel)}
 								className={styles.tableRowButton}
 								onClick={() => onOpenEntity(item)}
 								onKeyDown={event => handleKeyDown(event, item)}

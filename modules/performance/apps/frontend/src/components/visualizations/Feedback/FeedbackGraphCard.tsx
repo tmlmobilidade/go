@@ -5,7 +5,7 @@
 /* * */
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
-import { buildFeedbackTimeline, type FeedbackTimelineRange, formatTimelineTick, TIMELINE_RANGE_CONTROL_OPTIONS } from '@/utils/feedback/feedback-timeline';
+import { buildFeedbackTimeline, type FeedbackTimelineRange, formatTimelineTick } from '@/utils/feedback/feedback-timeline';
 import { type PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import { BarChart, MetricsSkeleton, SegmentedControl } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
@@ -27,6 +27,11 @@ export function FeedbackGraphCard({ isLoading, rows }: FeedbackGraphCardProps) {
 	const t = useTranslations();
 	const [selectedRange, setSelectedRange] = useState<FeedbackTimelineRange>('week');
 	const timelineBars = useMemo(() => buildFeedbackTimeline(rows, selectedRange), [rows, selectedRange]);
+	const timelineRangeControlOptions = useMemo((): { label: string, value: FeedbackTimelineRange }[] => [
+		{ label: t('feedback.timeline.ranges.week'), value: 'week' },
+		{ label: t('feedback.timeline.ranges.month'), value: 'month' },
+		{ label: t('feedback.timeline.ranges.six_months'), value: 'six_months' },
+	], [t]);
 	const timelineChartSeries = useMemo(() => [
 		{
 			color: 'var(--color-primary)',
@@ -55,14 +60,14 @@ export function FeedbackGraphCard({ isLoading, rows }: FeedbackGraphCardProps) {
 
 				<div className={styles.feedbackCardControl}>
 					<h3 className={styles.feedbackCardControlLabel}>{t('feedback.labels.view')}</h3>
-					<SegmentedControl data={TIMELINE_RANGE_CONTROL_OPTIONS} onChange={handleChangeRange} value={selectedRange} />
+					<SegmentedControl data={timelineRangeControlOptions} onChange={handleChangeRange} value={selectedRange} />
 				</div>
 			</div>
 
 			<div className={`${styles.feedbackCardContent} ${styles.feedbackCardContentFill}`}>
 				{timelineBars.length === 0 ? (
 					<div className={styles.timelineChartSkeleton}>
-						{isLoading ? <MetricsSkeleton /> : <p className={styles.emptyText}>Sem dados de feedback para mostrar.</p>}
+						{isLoading ? <MetricsSkeleton /> : <p className={styles.emptyText}>{t('feedback.timeline.empty')}</p>}
 					</div>
 				) : (
 					<div className={styles.timelineChart}>

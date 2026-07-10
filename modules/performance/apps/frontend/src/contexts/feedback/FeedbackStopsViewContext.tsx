@@ -10,6 +10,7 @@ import { getFeedbackStopReasonMeters } from '@/utils/feedback/feedback-stop-reas
 import { buildStopLabelsById, type FeedbackNetworkStop, getStopLabel } from '@/utils/feedback/network-labels';
 import { type FeedbackEntityMetrics, getFeedbackEntitySummary, getFeedbackMetricsByEntity } from '@/utils/metrics/feedback-metrics';
 import { useDebouncedValue } from '@tmlmobilidade/ui';
+import { useTranslations } from 'next-intl';
 import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -18,13 +19,12 @@ import useSWR from 'swr';
 export type FeedbackStopSortMode = 'feedback_count_desc' | 'satisfaction_asc' | 'satisfaction_desc';
 export type FeedbackStopViewItem = FeedbackEntityMetrics;
 
-const STOP_SEARCH_DEBOUNCE_MS = 800;
+interface FeedbackStopSortOption {
+	label: string
+	value: FeedbackStopSortMode
+}
 
-const FEEDBACK_STOP_SORT_OPTIONS: { label: string, value: FeedbackStopSortMode }[] = [
-	{ label: 'Feedbacks', value: 'feedback_count_desc' },
-	{ label: 'Maior índice', value: 'satisfaction_desc' },
-	{ label: 'Menor índice', value: 'satisfaction_asc' },
-];
+const STOP_SEARCH_DEBOUNCE_MS = 800;
 
 /* * */
 
@@ -36,7 +36,7 @@ interface FeedbackStopsViewContextState {
 	}
 	data: {
 		operatorFilter: ReturnType<typeof useFeedbackOperatorFilter>
-		sortOptions: typeof FEEDBACK_STOP_SORT_OPTIONS
+		sortOptions: FeedbackStopSortOption[]
 		stops: FeedbackStopViewItem[]
 		stopsById: Map<string, string>
 		stopSearchValue: string
@@ -94,6 +94,7 @@ export function FeedbackStopsViewContextProvider({ children }: PropsWithChildren
 	//
 	// A. Setup state
 
+	const t = useTranslations();
 	const [stopSortMode, setStopSortMode] = useState<FeedbackStopSortMode>('feedback_count_desc');
 	const [stopSearchValue, setStopSearchValue] = useState('');
 	const modalContext = useFeedbackEntityDetailModalContext();
@@ -109,6 +110,11 @@ export function FeedbackStopsViewContextProvider({ children }: PropsWithChildren
 
 	const operatorFilter = useFeedbackOperatorFilter(data, 'stop');
 
+	const sortOptions = useMemo((): FeedbackStopSortOption[] => [
+		{ label: t('feedback.labels.feedbacks'), value: 'feedback_count_desc' },
+		{ label: t('feedback.sort.satisfaction_desc'), value: 'satisfaction_desc' },
+		{ label: t('feedback.sort.satisfaction_asc'), value: 'satisfaction_asc' },
+	], [t]);
 	const stopsById = useMemo(() => buildStopLabelsById(stopsData), [stopsData]);
 	const stopMetrics = useMemo(() => getFeedbackMetricsByEntity(operatorFilter.rows, 'stop'), [operatorFilter.rows]);
 	const [debouncedStopSearchValue] = useDebouncedValue(stopSearchValue, STOP_SEARCH_DEBOUNCE_MS);
@@ -139,7 +145,7 @@ export function FeedbackStopsViewContextProvider({ children }: PropsWithChildren
 		},
 		data: {
 			operatorFilter,
-			sortOptions: FEEDBACK_STOP_SORT_OPTIONS,
+			sortOptions,
 			stops,
 			stopsById,
 			stopSearchValue,

@@ -7,6 +7,7 @@ import { FeedbackEntityDetailModal, FeedbackMetricTag } from '@/components/visua
 import { FeedbackEntityDetailModalContextProvider, useFeedbackEntityDetailModalContext } from '@/contexts/feedback/FeedbackEntityDetailModal.context';
 import { formatSatisfactionIndex, getFeedbackSatisfactionStatus } from '@/utils/metrics/feedback-metrics';
 import { AgencyTag, Table, Text } from '@tmlmobilidade/ui';
+import { useTranslations } from 'next-intl';
 import { type KeyboardEvent, useMemo } from 'react';
 
 import styles from '../styles.module.css';
@@ -25,6 +26,7 @@ function TopFeedbackEntitiesContent({ items, nameColumnLabel, title }: TopFeedba
 	//
 	// A. Setup variables
 
+	const t = useTranslations();
 	const modalContext = useFeedbackEntityDetailModalContext();
 	const showOperatorColumn = useMemo(() => items.some(item => Boolean(item.operatorId)), [items]);
 
@@ -56,10 +58,10 @@ function TopFeedbackEntitiesContent({ items, nameColumnLabel, title }: TopFeedba
 						<Table highlightOnHover striped>
 							<Table.Thead>
 								<Table.Tr>
-									{showOperatorColumn && <Table.Th>Operador</Table.Th>}
+									{showOperatorColumn && <Table.Th>{t('feedback.labels.operator')}</Table.Th>}
 									<Table.Th>{nameColumnLabel}</Table.Th>
-									<Table.Th>Feedbacks</Table.Th>
-									<Table.Th>Satisfação</Table.Th>
+									<Table.Th>{t('feedback.labels.feedbacks')}</Table.Th>
+									<Table.Th>{t('feedback.labels.satisfaction')}</Table.Th>
 								</Table.Tr>
 							</Table.Thead>
 
@@ -67,7 +69,7 @@ function TopFeedbackEntitiesContent({ items, nameColumnLabel, title }: TopFeedba
 								{items.map(item => (
 									<Table.Tr
 										key={item.id}
-										aria-label={`Abrir detalhe de ${item.label}`}
+										aria-label={t('feedback.labels.open_detail_aria', { entity: item.label })}
 										className={styles.feedbackTableRowButton}
 										onClick={() => handleOpenItem(item)}
 										onKeyDown={event => handleItemKeyDown(event, item)}

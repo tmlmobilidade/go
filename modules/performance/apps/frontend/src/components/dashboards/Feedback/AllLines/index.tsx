@@ -9,6 +9,7 @@ import { FeedbackEntityDetailModalContextProvider } from '@/contexts/feedback/Fe
 import { FeedbackLinesViewContextProvider, useFeedbackLinesViewContext } from '@/contexts/feedback/FeedbackLinesViewContext';
 import { getLineLabel } from '@/utils/feedback/network-labels';
 import { SearchInput, SegmentedControl } from '@tmlmobilidade/ui';
+import { useTranslations } from 'next-intl';
 
 import styles from './styles.module.css';
 
@@ -18,6 +19,7 @@ function FeedbackLinesView() {
 	//
 	// A. Setup variables
 
+	const t = useTranslations();
 	const viewContext = useFeedbackLinesViewContext();
 	const { lines, linesById, lineSearchValue, lineSortMode, sortOptions } = viewContext.data;
 	const { error, isLoading } = viewContext.flags;
@@ -36,28 +38,28 @@ function FeedbackLinesView() {
 
 				<ContainerWrapper className={styles.container} padding="0">
 					<div className={styles.header}>
-						<h2 className={styles.title}>Todas as linhas</h2>
+						<h2 className={styles.title}>{t('feedback.lines.all_title')}</h2>
 
 						<div className={styles.headerControls}>
 							<div className={styles.sortControl}>
-								<h3 className={styles.controlLabel}>Ordenar</h3>
+								<h3 className={styles.controlLabel}>{t('feedback.labels.sort')}</h3>
 								<SegmentedControl data={sortOptions} onChange={viewContext.actions.setLineSortMode} value={lineSortMode} />
 							</div>
 						</div>
 					</div>
 
 					<div className={styles.content}>
-						{isLoading && <p className={styles.text}>A carregar linhas...</p>}
-						{error && <p className={styles.text}>Erro ao carregar linhas.</p>}
-						{!isLoading && !error && lines.length === 0 && <p className={styles.text}>Sem linhas para mostrar.</p>}
+						{isLoading && <p className={styles.text}>{t('feedback.lines.loading')}</p>}
+						{error && <p className={styles.text}>{t('feedback.lines.error')}</p>}
+						{!isLoading && !error && lines.length === 0 && <p className={styles.text}>{t('feedback.lines.empty')}</p>}
 
 						{!isLoading && !error && lines.length > 0 && (
 							<FeedbackEntitiesTable
-								entityColumnLabel="Linha"
-								entityTypeLabel="linha"
+								entityColumnLabel={t('feedback.labels.line')}
 								getEntityLabel={entityId => getLineLabel(entityId, linesById)}
 								items={lines}
 								onOpenEntity={viewContext.actions.openLineDetail}
+								openEntityAriaLabel={entityLabel => t('feedback.lines.open_detail_aria', { entity: entityLabel })}
 								showOperatorColumn
 							/>
 						)}

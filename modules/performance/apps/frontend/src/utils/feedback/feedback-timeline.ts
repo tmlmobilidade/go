@@ -16,25 +16,16 @@ interface FeedbackTimelineBar {
 
 /* * */
 
-const TIMELINE_RANGE_OPTIONS: Record<FeedbackTimelineRange, { interval: FeedbackTimelineInterval, label: string }> = {
-	month: { interval: 'day', label: 'Mês' },
-	six_months: { interval: 'month', label: '6 meses' },
-	week: { interval: 'day', label: 'Semana' },
+const TIMELINE_RANGE_OPTIONS: Record<FeedbackTimelineRange, { interval: FeedbackTimelineInterval }> = {
+	month: { interval: 'day' },
+	six_months: { interval: 'month' },
+	week: { interval: 'day' },
 };
-
-const TIMELINE_RANGE_ORDER: FeedbackTimelineRange[] = ['week', 'month', 'six_months'];
 
 const TIMELINE_LABEL_FORMATTERS: Record<FeedbackTimelineInterval, Intl.DateTimeFormat> = {
 	day: new Intl.DateTimeFormat('pt-PT', { day: '2-digit', month: '2-digit' }),
 	month: new Intl.DateTimeFormat('pt-PT', { month: 'short', year: '2-digit' }),
 };
-
-export const TIMELINE_RANGE_CONTROL_OPTIONS = TIMELINE_RANGE_ORDER.map(range => ({
-	label: TIMELINE_RANGE_OPTIONS[range].label,
-	value: range,
-}));
-
-/* * */
 
 function getLatestFeedbackDate(rows: PublicFeedback[]) {
 	let latestCreatedAt: number | undefined;

@@ -3,27 +3,31 @@
 import { FeedbackStops } from '@/components/dashboards/Feedback/AllStops';
 import DashboardWrapper from '@/components/layout/DashboardWrapper';
 import { FeedbackOperatorFilterButton } from '@/components/topics/Feedback/components/FeedbackOperatorFilterButton';
-import { DashboardDefinition, TOPICS, TOPICS_REGISTRY } from '@/constants';
+import { type DashboardDefinition, type TopicDefinition, TOPICS, TOPICS_REGISTRY } from '@/constants';
 import { FeedbackOperatorFilterContextProvider } from '@/contexts/feedback/FeedbackOperatorFilter.context';
-
-/* * */
-
-const FEEDBACK_STOPS_DASHBOARD: DashboardDefinition = {
-	key: 'stops',
-	label: 'Paragens',
-};
+import { useTranslations } from 'next-intl';
 
 /* * */
 
 export default function Page() {
-	const topic = TOPICS_REGISTRY.find(t => t.key === TOPICS.FEEDBACK);
+	const t = useTranslations();
+	const topic = TOPICS_REGISTRY.find(t => t.key === TOPICS.FEEDBACK) as TopicDefinition;
+	const translatedTopic = {
+		...topic,
+		description: t('feedback.topic.description'),
+		label: t('feedback.topic.label'),
+	};
+	const feedbackStopsDashboard: DashboardDefinition = {
+		key: 'stops',
+		label: t('feedback.labels.stops'),
+	};
 
 	return (
 		<FeedbackOperatorFilterContextProvider>
 			<DashboardWrapper
 				actions={<FeedbackOperatorFilterButton entityType="stop" />}
-				dashboard={FEEDBACK_STOPS_DASHBOARD}
-				topic={topic}
+				dashboard={feedbackStopsDashboard}
+				topic={translatedTopic}
 			>
 				<FeedbackStops />
 			</DashboardWrapper>

@@ -12,6 +12,7 @@ import { buildLineLabelsById, type FeedbackNetworkLine, getLineLabel } from '@/u
 import { getOperatorName } from '@/utils/feedback/operators';
 import { type FeedbackEntityMetrics, getFeedbackEntitySummary, getFeedbackMetricsByEntity } from '@/utils/metrics/feedback-metrics';
 import { useDebouncedValue } from '@tmlmobilidade/ui';
+import { useTranslations } from 'next-intl';
 import { createContext, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -20,13 +21,12 @@ import useSWR from 'swr';
 export type FeedbackLineSortMode = 'feedback_count_desc' | 'satisfaction_asc' | 'satisfaction_desc';
 export type FeedbackLineViewItem = FeedbackEntityMetrics;
 
-const LINE_SEARCH_DEBOUNCE_MS = 500;
+interface FeedbackLineSortOption {
+	label: string
+	value: FeedbackLineSortMode
+}
 
-const FEEDBACK_LINE_SORT_OPTIONS: { label: string, value: FeedbackLineSortMode }[] = [
-	{ label: 'Feedbacks', value: 'feedback_count_desc' },
-	{ label: 'Maior índice', value: 'satisfaction_desc' },
-	{ label: 'Menor índice', value: 'satisfaction_asc' },
-];
+const LINE_SEARCH_DEBOUNCE_MS = 500;
 
 /* * */
 
@@ -42,7 +42,7 @@ interface FeedbackLinesViewContextState {
 		lineSearchValue: string
 		lineSortMode: FeedbackLineSortMode
 		operatorFilter: ReturnType<typeof useFeedbackOperatorFilter>
-		sortOptions: typeof FEEDBACK_LINE_SORT_OPTIONS
+		sortOptions: FeedbackLineSortOption[]
 	}
 	flags: {
 		error?: Error
@@ -103,6 +103,7 @@ export function FeedbackLinesViewContextProvider({ children }: PropsWithChildren
 	//
 	// A. Setup state
 
+	const t = useTranslations();
 	const [lineSortMode, setLineSortMode] = useState<FeedbackLineSortMode>('feedback_count_desc');
 	const [lineSearchValue, setLineSearchValue] = useState('');
 	const modalContext = useFeedbackEntityDetailModalContext();
@@ -118,6 +119,11 @@ export function FeedbackLinesViewContextProvider({ children }: PropsWithChildren
 
 	const operatorFilter = useFeedbackOperatorFilter(data, 'line');
 
+	const sortOptions = useMemo((): FeedbackLineSortOption[] => [
+		{ label: t('feedback.labels.feedbacks'), value: 'feedback_count_desc' },
+		{ label: t('feedback.sort.satisfaction_desc'), value: 'satisfaction_desc' },
+		{ label: t('feedback.sort.satisfaction_asc'), value: 'satisfaction_asc' },
+	], [t]);
 	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
 	const lineMetrics = useMemo(() => getFeedbackMetricsByEntity(operatorFilter.rows, 'line'), [operatorFilter.rows]);
 	const [debouncedLineSearchValue] = useDebouncedValue(lineSearchValue, LINE_SEARCH_DEBOUNCE_MS);
@@ -154,7 +160,7 @@ export function FeedbackLinesViewContextProvider({ children }: PropsWithChildren
 			lineSearchValue,
 			lineSortMode,
 			operatorFilter,
-			sortOptions: FEEDBACK_LINE_SORT_OPTIONS,
+			sortOptions,
 		},
 		flags: {
 			error,

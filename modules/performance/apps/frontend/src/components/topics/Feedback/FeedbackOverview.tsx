@@ -8,6 +8,7 @@ import { buildOperatorApprovalIndexes } from '@/utils/feedback/operators';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import { useDataAgencies } from '@tmlmobilidade/ui';
+import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -31,6 +32,7 @@ export function FeedbackOverview({ isLoading, operatorRows, rows }: FeedbackOver
 	//
 	// A. Fetch data
 
+	const t = useTranslations();
 	const { data: linesData } = useSWR<FeedbackNetworkLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
 	const { data: stopsData } = useSWR<FeedbackNetworkStop[], Error>({ credentials: 'omit', url: Routes.HUB_STOPS });
 	const { raw: operatorsData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
@@ -61,13 +63,13 @@ export function FeedbackOverview({ isLoading, operatorRows, rows }: FeedbackOver
 			<FeedbackGraphCard isLoading={isLoading} rows={rows} />
 
 			<section className={styles.listsGrid}>
-				<TopFeedbackEntities items={feedbackData.topLines} nameColumnLabel="Linha" title="Linhas com mais feedbacks" />
-				<TopFeedbackEntities items={feedbackData.topStops} nameColumnLabel="Paragem" title="Paragens com mais feedbacks" />
+				<TopFeedbackEntities items={feedbackData.topLines} nameColumnLabel={t('feedback.labels.line')} title={t('feedback.lines.most_feedback_title')} />
+				<TopFeedbackEntities items={feedbackData.topStops} nameColumnLabel={t('feedback.labels.stop')} title={t('feedback.stops.most_feedback_title')} />
 			</section>
 
 			<section className={styles.listsGrid}>
-				<TopFeedbackReasonsChart data={feedbackData.topLineReasons} title="Motivos com mais feedbacks nas linhas" trendData={feedbackData.topLineReasonsTrend} />
-				<TopFeedbackReasonsChart data={feedbackData.topStopReasons} title="Motivos com mais feedbacks nas paragens" trendData={feedbackData.topStopReasonsTrend} />
+				<TopFeedbackReasonsChart data={feedbackData.topLineReasons} title={t('feedback.lines.top_reasons_title')} trendData={feedbackData.topLineReasonsTrend} />
+				<TopFeedbackReasonsChart data={feedbackData.topStopReasons} title={t('feedback.stops.top_reasons_title')} trendData={feedbackData.topStopReasonsTrend} />
 			</section>
 
 			{operatorApprovals.length > 0 && (

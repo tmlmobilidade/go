@@ -1,5 +1,6 @@
 /* * */
 
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 import styles from './styles.module.css';
@@ -7,30 +8,32 @@ import styles from './styles.module.css';
 /* * */
 
 const DASHBOARD_LINKS = [
-	{ href: '/feedback/lines', id: 'lines', label: 'Ver todas as linhas' },
-	{ href: '/feedback/stops', id: 'stops', label: 'Ver todas as paragens' },
+	{ href: '/feedback/lines', id: 'lines', labelKey: 'feedback.dashboards.all_lines' },
+	{ href: '/feedback/stops', id: 'stops', labelKey: 'feedback.dashboards.all_stops' },
 ];
 
 /* * */
 
 export function FeedbackDashboards() {
+	const t = useTranslations();
+
 	return (
 		<section className={styles.dashboardsSection}>
-			<h2 className={styles.dashboardsTitle}>Dashboards</h2>
+			<h2 className={styles.dashboardsTitle}>{t('feedback.dashboards.title')}</h2>
 
 			<div className={styles.dashboardButtons}>
 				{DASHBOARD_LINKS.map((link) => {
 					if (link.href) {
 						return (
 							<Link key={link.id} className={styles.dashboardButton} href={link.href}>
-								{link.label}
+								{t(link.labelKey)}
 							</Link>
 						);
 					}
 
 					return (
 						<button key={link.id} className={styles.dashboardButton} type="button">
-							{link.label}
+							{t(link.labelKey)}
 						</button>
 					);
 				})}

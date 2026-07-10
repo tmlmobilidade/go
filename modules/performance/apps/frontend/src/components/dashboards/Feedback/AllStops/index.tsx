@@ -9,6 +9,7 @@ import { FeedbackEntityDetailModalContextProvider } from '@/contexts/feedback/Fe
 import { FeedbackStopsViewContextProvider, useFeedbackStopsViewContext } from '@/contexts/feedback/FeedbackStopsViewContext';
 import { getStopLabel } from '@/utils/feedback/network-labels';
 import { SearchInput, SegmentedControl } from '@tmlmobilidade/ui';
+import { useTranslations } from 'next-intl';
 
 import styles from './styles.module.css';
 
@@ -18,6 +19,7 @@ function FeedbackStopsView() {
 	//
 	// A. Setup variables
 
+	const t = useTranslations();
 	const viewContext = useFeedbackStopsViewContext();
 	const { sortOptions, stops, stopsById, stopSearchValue, stopSortMode } = viewContext.data;
 	const { error, isLoading } = viewContext.flags;
@@ -36,28 +38,28 @@ function FeedbackStopsView() {
 
 				<ContainerWrapper className={styles.container} padding="0">
 					<div className={styles.header}>
-						<h2 className={styles.title}>Todas as paragens</h2>
+						<h2 className={styles.title}>{t('feedback.stops.all_title')}</h2>
 
 						<div className={styles.headerControls}>
 							<div className={styles.sortControl}>
-								<h3 className={styles.controlLabel}>Ordenar</h3>
+								<h3 className={styles.controlLabel}>{t('feedback.labels.sort')}</h3>
 								<SegmentedControl data={sortOptions} onChange={viewContext.actions.setStopSortMode} value={stopSortMode} />
 							</div>
 						</div>
 					</div>
 
 					<div className={styles.content}>
-						{isLoading && <p className={styles.text}>A carregar paragens...</p>}
-						{error && <p className={styles.text}>Erro ao carregar paragens.</p>}
-						{!isLoading && !error && stops.length === 0 && <p className={styles.text}>Sem paragens para mostrar.</p>}
+						{isLoading && <p className={styles.text}>{t('feedback.stops.loading')}</p>}
+						{error && <p className={styles.text}>{t('feedback.stops.error')}</p>}
+						{!isLoading && !error && stops.length === 0 && <p className={styles.text}>{t('feedback.stops.empty')}</p>}
 
 						{!isLoading && !error && stops.length > 0 && (
 							<FeedbackEntitiesTable
-								entityColumnLabel="Paragem"
-								entityTypeLabel="paragem"
+								entityColumnLabel={t('feedback.labels.stop')}
 								getEntityLabel={entityId => getStopLabel(entityId, stopsById)}
 								items={stops}
 								onOpenEntity={viewContext.actions.openStopDetail}
+								openEntityAriaLabel={entityLabel => t('feedback.stops.open_detail_aria', { entity: entityLabel })}
 							/>
 						)}
 					</div>

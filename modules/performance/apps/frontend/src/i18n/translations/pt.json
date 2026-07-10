@@ -27,12 +27,39 @@
 		"holiday": "Feriado"
 	},
 	"feedback": {
+		"dashboards": {
+			"all_lines": "Ver todas as linhas",
+			"all_stops": "Ver todas as paragens",
+			"title": "Dashboards"
+		},
 		"labels": {
+			"approval_index": "Índice de aprovação",
 			"feedbacks": "Feedbacks",
+			"id": "ID",
+			"line": "Linha",
+			"lines": "Linhas",
+			"open_detail_aria": "Abrir detalhe de {entity}",
+			"operator": "Operador",
 			"points_to_improve": "Pontos a melhorar",
 			"satisfaction": "Satisfação",
+			"satisfaction_index": "Índice de satisfação",
+			"sort": "Ordenar",
+			"stop": "Paragem",
+			"stops": "Paragens",
 			"summary": "Resumo",
 			"view": "Vista"
+		},
+		"lines": {
+			"all_title": "Todas as linhas",
+			"empty": "Sem linhas para mostrar.",
+			"error": "Erro ao carregar linhas.",
+			"loading": "A carregar linhas...",
+			"most_feedback_title": "Linhas com mais feedbacks",
+			"open_detail_aria": "Abrir detalhe da linha {entity}",
+			"top_reasons_title": "Motivos com mais feedbacks nas linhas"
+		},
+		"operators": {
+			"title": "Operadores"
 		},
 		"reason_categories": {
 			"driver": "Motorista/Condutor",
@@ -89,8 +116,31 @@
 			"weather_exposure_issue": "Exposição ao mau tempo",
 			"wrong_panel_information": "Informação errada no painel"
 		},
+		"sort": {
+			"satisfaction_asc": "Menor índice",
+			"satisfaction_desc": "Maior índice"
+		},
+		"stops": {
+			"all_title": "Todas as paragens",
+			"empty": "Sem paragens para mostrar.",
+			"error": "Erro ao carregar paragens.",
+			"loading": "A carregar paragens...",
+			"most_feedback_title": "Paragens com mais feedbacks",
+			"open_detail_aria": "Abrir detalhe da paragem {entity}",
+			"top_reasons_title": "Motivos com mais feedbacks nas paragens"
+		},
 		"timeline": {
+			"empty": "Sem dados de feedback para mostrar.",
+			"ranges": {
+				"month": "Mês",
+				"six_months": "6 meses",
+				"week": "Semana"
+			},
 			"title": "Feedback ao longo do tempo"
+		},
+		"topic": {
+			"description": "Recolha e análise de feedback sobre a experiência dos passageiros e a qualidade operacional.",
+			"label": "Feedback"
 		}
 	},
 	"recordProgress": {
