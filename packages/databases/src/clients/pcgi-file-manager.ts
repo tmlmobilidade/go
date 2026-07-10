@@ -1,7 +1,7 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { getSshTunnel, SshTunnelService } from '@tmlmobilidade/ssh';
+import { pcgiSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 import { MongoClient } from 'mongodb';
 
 /* * */
@@ -12,7 +12,7 @@ export class PCGIFileManagerClient {
 	private static _instance: null | Promise<PCGIFileManagerClient> = null;
 
 	private client: MongoClient;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
@@ -121,10 +121,7 @@ export class PCGIFileManagerClient {
 		//
 		// Setup SSH Tunnel
 
-		this.tunnel = getSshTunnel({
-			forwardOptions: { dstAddr: process.env.PCGI_FILE_MANAGER_HOST_1, dstPort: Number(process.env.PCGI_FILE_MANAGER_PORT_1) },
-			prefix: 'PCGI',
-		});
+		this.tunnel = pcgiSshTunnel({ dstAddr: process.env.PCGI_FILE_MANAGER_HOST_1, dstPort: Number(process.env.PCGI_FILE_MANAGER_PORT_1) });
 
 		if (!this.tunnel) {
 			return `mongodb://${process.env.PCGI_FILE_MANAGER_USER}:${process.env.PCGI_FILE_MANAGER_PASSWORD}@${process.env.PCGI_FILE_MANAGER_HOST_1}:${process.env.PCGI_FILE_MANAGER_PORT_1},${process.env.PCGI_FILE_MANAGER_HOST_2}:${process.env.PCGI_FILE_MANAGER_PORT_2},${process.env.PCGI_FILE_MANAGER_HOST_3}:${process.env.PCGI_FILE_MANAGER_PORT_3}/`;

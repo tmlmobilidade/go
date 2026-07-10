@@ -2,7 +2,7 @@
 
 import { ClickHouseClient, ClickHouseLogLevel, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
-import { getSshTunnel, SshTunnelService } from '@tmlmobilidade/ssh';
+import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 
 /* * */
 
@@ -12,7 +12,7 @@ export class GOClickHouseClient {
 	private static _instance: null | Promise<GOClickHouseClient> = null;
 
 	private client: ClickHouseClient;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
@@ -91,10 +91,7 @@ export class GOClickHouseClient {
 		//
 		// Setup SSH Tunnel
 
-		this.tunnel = getSshTunnel({
-			forwardOptions: { dstAddr: process.env.GO_CLICKHOUSE_HOST, dstPort: Number(process.env.GO_CLICKHOUSE_PORT) },
-			prefix: 'GO',
-		});
+		this.tunnel = goSshTunnel({ dstAddr: process.env.GO_CLICKHOUSE_HOST, dstPort: Number(process.env.GO_CLICKHOUSE_PORT) });
 
 		if (!this.tunnel) {
 			return `http://${process.env.GO_CLICKHOUSE_USER}:${process.env.GO_CLICKHOUSE_PASSWORD}@${process.env.GO_CLICKHOUSE_HOST}:${process.env.GO_CLICKHOUSE_PORT}`;

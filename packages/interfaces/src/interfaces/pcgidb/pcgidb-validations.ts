@@ -2,12 +2,12 @@
 
 import { Logger } from '@tmlmobilidade/logger';
 import { MongoConnector } from '@tmlmobilidade/mongo';
-import { getSshTunnel, SshTunnelService } from '@tmlmobilidade/ssh';
+import { pcgiSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 import { type Collection, type MongoClientOptions } from 'mongodb';
 
 /* * */
 
-let GLOBAL_PCGIDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
+let GLOBAL_PCGIDB_TUNNEL_INSTANCE: SshTunnel | undefined;
 
 /* * */
 
@@ -78,10 +78,7 @@ class PCGIDBValidationsClass {
 		//
 		// Setup the SSH Tunnel
 
-		GLOBAL_PCGIDB_TUNNEL_INSTANCE = getSshTunnel({
-			forwardOptions: { dstAddr: process.env.PCGIDB_VALIDATIONS_ADDRESS_1, dstPort: Number(process.env.PCGIDB_VALIDATIONS_PORT) },
-			prefix: 'PCGI',
-		});
+		GLOBAL_PCGIDB_TUNNEL_INSTANCE = pcgiSshTunnel({ dstAddr: process.env.PCGIDB_VALIDATIONS_ADDRESS_1, dstPort: Number(process.env.PCGIDB_VALIDATIONS_PORT) });
 
 		if (!GLOBAL_PCGIDB_TUNNEL_INSTANCE) {
 			return `mongodb://${process.env.PCGIDB_VALIDATIONS_USER}:${process.env.PCGIDB_VALIDATIONS_PASSWORD}@${process.env.PCGIDB_VALIDATIONS_ADDRESS_1}:${process.env.PCGIDB_VALIDATIONS_PORT},${process.env.PCGIDB_VALIDATIONS_ADDRESS_2}:${process.env.PCGIDB_VALIDATIONS_PORT},${process.env.PCGIDB_VALIDATIONS_ADDRESS_3}:${process.env.PCGIDB_VALIDATIONS_PORT}/`;

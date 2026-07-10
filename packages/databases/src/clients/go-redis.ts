@@ -1,7 +1,7 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { getSshTunnel, SshTunnelService } from '@tmlmobilidade/ssh';
+import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 import { createClient, type RedisClientType } from 'redis';
 
 /* * */
@@ -12,7 +12,7 @@ export class GORedisClient {
 	private static _instance: null | Promise<GORedisClient> = null;
 
 	private client: RedisClientType;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
@@ -73,10 +73,7 @@ export class GORedisClient {
 			throw new Error('Missing GO_REDIS_HOST or GO_REDIS_PORT');
 		}
 
-		this.tunnel = getSshTunnel({
-			forwardOptions: { dstAddr: process.env.GO_REDIS_HOST, dstPort: Number(process.env.GO_REDIS_PORT) },
-			prefix: 'GO',
-		});
+		this.tunnel = goSshTunnel({ dstAddr: process.env.GO_REDIS_HOST, dstPort: Number(process.env.GO_REDIS_PORT) });
 
 		if (!this.tunnel) {
 			return `redis://${process.env.GO_REDIS_HOST}:${process.env.GO_REDIS_PORT}`;
