@@ -6,12 +6,13 @@ import type { PropsWithChildren } from 'react';
 import { useFeedbackEntityDetailModalContext } from '@/contexts/feedback/FeedbackEntityDetailModal.context';
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
+import { type FeedbackReasonCategoryTranslator, type FeedbackReasonTranslator } from '@/utils/feedback/feedback-reasons';
 import { getFeedbackStopReasonMeters } from '@/utils/feedback/feedback-stop-reasons';
 import { buildStopLabelsById, type FeedbackNetworkStop, getStopLabel } from '@/utils/feedback/network-labels';
 import { type FeedbackEntityMetrics, getFeedbackEntitySummary, getFeedbackMetricsByEntity } from '@/utils/metrics/feedback-metrics';
 import { useDebouncedValue } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -98,6 +99,8 @@ export function FeedbackStopsViewContextProvider({ children }: PropsWithChildren
 	const [stopSortMode, setStopSortMode] = useState<FeedbackStopSortMode>('feedback_count_desc');
 	const [stopSearchValue, setStopSearchValue] = useState('');
 	const modalContext = useFeedbackEntityDetailModalContext();
+	const translateFeedbackReason = useCallback<FeedbackReasonTranslator>(reason => t(`feedback.reasons.${reason}`), [t]);
+	const translateFeedbackReasonCategory = useCallback<FeedbackReasonCategoryTranslator>(category => t(`feedback.reason_categories.${category}`), [t]);
 
 	//
 	// B. Fetch data
@@ -131,7 +134,7 @@ export function FeedbackStopsViewContextProvider({ children }: PropsWithChildren
 	// D. Handle actions
 
 	const openStopDetail = (stop: FeedbackStopViewItem) => {
-		modalContext.actions.open(getFeedbackEntitySummary(stop, 'stop', stopsById, undefined, getFeedbackStopReasonMeters(operatorFilter.rows, stop)));
+		modalContext.actions.open(getFeedbackEntitySummary(stop, 'stop', stopsById, undefined, getFeedbackStopReasonMeters(operatorFilter.rows, stop, translateFeedbackReason, translateFeedbackReasonCategory)));
 	};
 
 	//

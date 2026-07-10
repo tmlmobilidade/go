@@ -3,13 +3,14 @@
 import { FeedbackGraphCard } from '@/components/visualizations/Feedback';
 import { Routes } from '@/routes';
 import { getFeedbackOverviewData } from '@/utils/feedback/feedback-preview';
+import { type FeedbackReasonCategoryTranslator, type FeedbackReasonTranslator } from '@/utils/feedback/feedback-reasons';
 import { buildLineLabelsById, buildStopLabelsById, type FeedbackNetworkLine, type FeedbackNetworkStop } from '@/utils/feedback/network-labels';
 import { buildOperatorApprovalIndexes } from '@/utils/feedback/operators';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PublicFeedback } from '@tmlmobilidade/go-types-performance';
 import { useDataAgencies } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
@@ -36,13 +37,15 @@ export function FeedbackOverview({ isLoading, operatorRows, rows }: FeedbackOver
 	const { data: linesData } = useSWR<FeedbackNetworkLine[], Error>({ credentials: 'omit', url: Routes.HUB_LINES });
 	const { data: stopsData } = useSWR<FeedbackNetworkStop[], Error>({ credentials: 'omit', url: Routes.HUB_STOPS });
 	const { raw: operatorsData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
+	const translateFeedbackReason = useCallback<FeedbackReasonTranslator>(reason => t(`feedback.reasons.${reason}`), [t]);
+	const translateFeedbackReasonCategory = useCallback<FeedbackReasonCategoryTranslator>(category => t(`feedback.reason_categories.${category}`), [t]);
 
 	//
 	// B. Transform data
 
 	const linesById = useMemo(() => buildLineLabelsById(linesData), [linesData]);
 	const stopsById = useMemo(() => buildStopLabelsById(stopsData), [stopsData]);
-	const feedbackData = useMemo(() => getFeedbackOverviewData(rows, linesById, stopsById), [linesById, rows, stopsById]);
+	const feedbackData = useMemo(() => getFeedbackOverviewData(rows, linesById, stopsById, translateFeedbackReason, translateFeedbackReasonCategory), [linesById, rows, stopsById, translateFeedbackReason, translateFeedbackReasonCategory]);
 	const operatorApprovalIndexes = useMemo(() => buildOperatorApprovalIndexes(operatorRows), [operatorRows]);
 	const operatorApprovals = useMemo(() => {
 		return (operatorsData ?? []).flatMap((operator) => {

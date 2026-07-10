@@ -3,7 +3,6 @@
 import type { FeedbackEntityType } from '../metrics/feedback-metrics';
 import type { StackedResult } from '@/utils/metrics';
 
-import feedbackTranslations from '@/i18n/translations/pt.json';
 import { PUBLIC_FEEDBACK_NO_REASON_ID, type PublicFeedback, type PublicFeedbackReasonCategory } from '@tmlmobilidade/go-types-performance';
 
 /* * */
@@ -21,10 +20,20 @@ export interface FeedbackReasonTrendChartData {
 	sum: StackedResult['sum']
 }
 
+export type FeedbackReasonCategory = 'unknown' | PublicFeedbackReasonCategory;
+export type FeedbackReasonCategoryTranslator = (category: FeedbackReasonCategory) => string;
+export type FeedbackReasonTranslator = (reason: string) => string;
+
 interface FeedbackReasonEntry {
 	id: string
 	name: string
 	value: number
+}
+
+interface FeedbackReasonTrendPoint extends Record<string, number | string> {
+	day_detailed: string
+	day_short: string
+	total_qty: number
 }
 
 /* * */
@@ -43,9 +52,6 @@ const FEEDBACK_REASON_CHART_COLORS = [
 	'var(--color-system-text-300)',
 ];
 
-const FEEDBACK_REASON_LABELS = feedbackTranslations.feedback.reasons as Record<string, string>;
-const FEEDBACK_REASON_CATEGORY_LABELS = feedbackTranslations.feedback.reason_categories as Record<string, string>;
-
 const FEEDBACK_REASON_DAY_DETAILED_FORMATTER = new Intl.DateTimeFormat('pt-PT', {
 	day: '2-digit',
 	month: 'long',
@@ -61,20 +67,6 @@ const FEEDBACK_REASON_DAY_SHORT_FORMATTER = new Intl.DateTimeFormat('pt-PT', {
 	weekday: 'short',
 });
 
-/* * */
-
-function clampPercentage(value: number) {
-	return Math.min(Math.max(value, 0), FEEDBACK_TOTAL_PERCENTAGE);
-}
-
-export function getFeedbackReasonLabel(reason: string) {
-	return FEEDBACK_REASON_LABELS[reason] ?? reason;
-}
-
-export function getFeedbackReasonCategoryLabel(category: 'unknown' | PublicFeedbackReasonCategory) {
-	return FEEDBACK_REASON_CATEGORY_LABELS[category] ?? category;
-}
-
 export function getFeedbackReasonsForRow(row: PublicFeedback) {
 	if (row.reasons.length === 0) return [PUBLIC_FEEDBACK_NO_REASON_ID];
 	return Array.from(new Set(row.reasons));
@@ -84,7 +76,7 @@ export function roundFeedbackPercentages(values: number[]) {
 	if (values.length === 0) return [];
 
 	const targetTotal = FEEDBACK_TOTAL_PERCENTAGE * PERCENTAGE_DISPLAY_SCALE;
-	const scaledValues = values.map(value => clampPercentage(value) * PERCENTAGE_DISPLAY_SCALE);
+	const scaledValues = values.map(value => value * PERCENTAGE_DISPLAY_SCALE);
 	const roundedValues = scaledValues.map(Math.floor);
 	const remainingValue = targetTotal - roundedValues.reduce((total, value) => total + value, 0);
 
@@ -93,9 +85,7 @@ export function roundFeedbackPercentages(values: number[]) {
 		.sort((valueA, valueB) => valueB.remainder - valueA.remainder);
 
 	for (let index = 0; index < remainingValue; index++) {
-		const targetIndex = indexesByRemainder[index % indexesByRemainder.length]?.index;
-		if (targetIndex === undefined) break;
-		roundedValues[targetIndex] += 1;
+		roundedValues[indexesByRemainder[index % indexesByRemainder.length].index] += 1;
 	}
 
 	return roundedValues.map(value => value / PERCENTAGE_DISPLAY_SCALE);
@@ -132,7 +122,7 @@ function getFormattedDayShort(key: string) {
 	return label.charAt(0).toUpperCase() + label.slice(1);
 }
 
-function getSortedFeedbackReasonEntries(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackReasonEntry[] {
+function getSortedFeedbackReasonEntries(rows: PublicFeedback[], entityType: FeedbackEntityType, translateReason: FeedbackReasonTranslator): FeedbackReasonEntry[] {
 	const reasonCounts = new Map<string, number>();
 
 	for (const row of rows) {
@@ -146,7 +136,7 @@ function getSortedFeedbackReasonEntries(rows: PublicFeedback[], entityType: Feed
 	return Array.from(reasonCounts.entries())
 		.map(([id, value]) => ({
 			id,
-			name: getFeedbackReasonLabel(id),
+			name: translateReason(id),
 			value,
 		}))
 		.sort((reasonA, reasonB) => reasonB.value - reasonA.value || reasonA.name.localeCompare(reasonB.name, 'pt-PT'));
@@ -156,7 +146,7 @@ function getVisibleFeedbackReasonEntries(reasonEntries: FeedbackReasonEntry[]) {
 	return reasonEntries.slice(0, TOP_REASON_LIMIT);
 }
 
-function buildTrendPoint(dayKey: string, series: string[]) {
+function buildTrendPoint(dayKey: string, series: string[]): FeedbackReasonTrendPoint {
 	return {
 		day_detailed: getFormattedDayDetailed(dayKey),
 		day_short: getFormattedDayShort(dayKey),
@@ -167,16 +157,16 @@ function buildTrendPoint(dayKey: string, series: string[]) {
 
 /* * */
 
-export function getTopFeedbackReasonsByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackReasonChartSlice[] {
-	return buildChartSlices(getVisibleFeedbackReasonEntries(getSortedFeedbackReasonEntries(rows, entityType)));
+export function getTopFeedbackReasonsByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType, translateReason: FeedbackReasonTranslator): FeedbackReasonChartSlice[] {
+	return buildChartSlices(getVisibleFeedbackReasonEntries(getSortedFeedbackReasonEntries(rows, entityType, translateReason)));
 }
 
-export function getTopFeedbackReasonsTrendByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType): FeedbackReasonTrendChartData {
-	const reasonEntries = getSortedFeedbackReasonEntries(rows, entityType);
+export function getTopFeedbackReasonsTrendByEntity(rows: PublicFeedback[], entityType: FeedbackEntityType, translateReason: FeedbackReasonTranslator): FeedbackReasonTrendChartData {
+	const reasonEntries = getSortedFeedbackReasonEntries(rows, entityType, translateReason);
 	const visibleReasonEntries = getVisibleFeedbackReasonEntries(reasonEntries);
 	const topReasonNamesById = new Map(visibleReasonEntries.map(reason => [reason.id, reason.name]));
 	const series = visibleReasonEntries.map(reason => reason.name);
-	const chartByDay = new Map<string, Record<string, number | string | undefined>>();
+	const chartByDay = new Map<string, FeedbackReasonTrendPoint>();
 	let sum = 0;
 
 	for (const row of rows) {
@@ -189,11 +179,8 @@ export function getTopFeedbackReasonsTrendByEntity(rows: PublicFeedback[], entit
 			const seriesName = topReasonNamesById.get(reason);
 			if (!seriesName) continue;
 
-			const currentValue = Number(trendPoint[seriesName] ?? 0);
-			const currentTotal = Number(trendPoint.total_qty ?? 0);
-
-			trendPoint[seriesName] = currentValue + 1;
-			trendPoint.total_qty = currentTotal + 1;
+			trendPoint[seriesName] = Number(trendPoint[seriesName]) + 1;
+			trendPoint.total_qty += 1;
 			sum += 1;
 		}
 

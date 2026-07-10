@@ -4,7 +4,7 @@ import type { FeedbackEntityMetrics } from '../metrics/feedback-metrics';
 
 import { getPublicFeedbackReasonConfig, PUBLIC_FEEDBACK_NO_REASON_ID, type PublicFeedback, type PublicFeedbackReasonCategory } from '@tmlmobilidade/go-types-performance';
 
-import { FEEDBACK_TOTAL_PERCENTAGE, getFeedbackReasonCategoryLabel, getFeedbackReasonLabel, roundFeedbackPercentages } from './feedback-reasons';
+import { FEEDBACK_TOTAL_PERCENTAGE, type FeedbackReasonCategoryTranslator, type FeedbackReasonTranslator, roundFeedbackPercentages } from './feedback-reasons';
 
 /* * */
 
@@ -26,12 +26,7 @@ export interface FeedbackLineContributionReasonMeter {
 
 /* * */
 
-const LINE_CONTRIBUTION_CATEGORIES = [
-	{ id: 'line_service', label: getFeedbackReasonCategoryLabel('line_service') },
-	{ id: 'vehicle', label: getFeedbackReasonCategoryLabel('vehicle') },
-	{ id: 'driver', label: getFeedbackReasonCategoryLabel('driver') },
-	{ id: 'unknown', label: getFeedbackReasonCategoryLabel('unknown') },
-] as const satisfies readonly { id: FeedbackLineContributionCategory, label: string }[];
+const LINE_CONTRIBUTION_CATEGORY_IDS = ['line_service', 'vehicle', 'driver', 'unknown'] as const satisfies readonly FeedbackLineContributionCategory[];
 
 interface LineFeedbackReasonEntry {
 	categories: FeedbackLineContributionCategory[]
@@ -56,25 +51,25 @@ function getLineFeedbackReasonCategories(reason: string): FeedbackLineContributi
 	return categories;
 }
 
-function getLineFeedbackReasonEntries(reasons: string[]): LineFeedbackReasonEntry[] {
+function getLineFeedbackReasonEntries(reasons: string[], translateReason: FeedbackReasonTranslator): LineFeedbackReasonEntry[] {
 	if (reasons.length === 0) {
 		return [{
 			categories: ['unknown'],
 			id: PUBLIC_FEEDBACK_NO_REASON_ID,
-			label: getFeedbackReasonLabel(PUBLIC_FEEDBACK_NO_REASON_ID),
+			label: translateReason(PUBLIC_FEEDBACK_NO_REASON_ID),
 		}];
 	}
 
 	return reasons.map(reason => ({
 		categories: getLineFeedbackReasonCategories(reason),
 		id: reason,
-		label: getFeedbackReasonLabel(reason),
+		label: translateReason(reason),
 	}));
 }
 
 function createCategoryRecord<T>(createValue: () => T) {
 	return Object.fromEntries(
-		LINE_CONTRIBUTION_CATEGORIES.map(category => [category.id, createValue()]),
+		LINE_CONTRIBUTION_CATEGORY_IDS.map(category => [category, createValue()]),
 	) as Record<FeedbackLineContributionCategory, T>;
 }
 
@@ -109,14 +104,14 @@ function getReasonMeters(reasonWeights: Map<string, LineFeedbackReasonWeight>, c
 	return reasonEntries
 		.map((reason, index) => ({
 			...reason,
-			value: roundedValues[index] ?? reason.value,
+			value: roundedValues[index],
 		}))
 		.sort((reasonA, reasonB) => reasonB.value - reasonA.value || reasonA.label.localeCompare(reasonB.label, 'pt-PT'));
 }
 
 /* * */
 
-export function getFeedbackLineContributionMeters(rows: PublicFeedback[], metric: FeedbackEntityMetrics): FeedbackLineContributionMeter[] {
+export function getFeedbackLineContributionMeters(rows: PublicFeedback[], metric: FeedbackEntityMetrics, translateReason: FeedbackReasonTranslator, translateReasonCategory: FeedbackReasonCategoryTranslator): FeedbackLineContributionMeter[] {
 	const categoryWeights = getInitialCategoryWeights();
 	const reasonWeights = getInitialReasonWeights();
 	let feedbackCount = 0;
@@ -127,7 +122,7 @@ export function getFeedbackLineContributionMeters(rows: PublicFeedback[], metric
 
 		feedbackCount += 1;
 
-		const reasons = getLineFeedbackReasonEntries(row.reasons);
+		const reasons = getLineFeedbackReasonEntries(row.reasons, translateReason);
 		const categories = Array.from(new Set(reasons.flatMap(reason => reason.categories)));
 
 		const categoryWeight = 1 / categories.length;
@@ -140,12 +135,12 @@ export function getFeedbackLineContributionMeters(rows: PublicFeedback[], metric
 		}
 	}
 
-	const contributionMeters = LINE_CONTRIBUTION_CATEGORIES.map(category => ({
-		id: category.id,
-		label: category.label,
-		reasons: getReasonMeters(reasonWeights[category.id], categoryWeights[category.id]),
-		selectable: category.id !== 'unknown',
-		value: feedbackCount === 0 ? 0 : (categoryWeights[category.id] / feedbackCount) * FEEDBACK_TOTAL_PERCENTAGE,
+	const contributionMeters = LINE_CONTRIBUTION_CATEGORY_IDS.map(category => ({
+		id: category,
+		label: translateReasonCategory(category),
+		reasons: getReasonMeters(reasonWeights[category], categoryWeights[category]),
+		selectable: category !== 'unknown',
+		value: feedbackCount === 0 ? 0 : (categoryWeights[category] / feedbackCount) * FEEDBACK_TOTAL_PERCENTAGE,
 	}));
 
 	if (feedbackCount === 0) return contributionMeters;
@@ -154,6 +149,6 @@ export function getFeedbackLineContributionMeters(rows: PublicFeedback[], metric
 
 	return contributionMeters.map((meter, index) => ({
 		...meter,
-		value: roundedValues[index] ?? meter.value,
+		value: roundedValues[index],
 	}));
 }

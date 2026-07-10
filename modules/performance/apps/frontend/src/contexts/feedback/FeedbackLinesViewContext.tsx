@@ -8,12 +8,13 @@ import { useFeedbackEntityDetailModalContext } from '@/contexts/feedback/Feedbac
 import { useFeedbackOperatorFilter } from '@/hooks/feedback/use-feedback-operator-filter';
 import { Routes } from '@/routes';
 import { getFeedbackLineContributionMeters } from '@/utils/feedback/feedback-line-contributions';
+import { type FeedbackReasonCategoryTranslator, type FeedbackReasonTranslator } from '@/utils/feedback/feedback-reasons';
 import { buildLineLabelsById, type FeedbackNetworkLine, getLineLabel } from '@/utils/feedback/network-labels';
 import { getOperatorName } from '@/utils/feedback/operators';
 import { type FeedbackEntityMetrics, getFeedbackEntitySummary, getFeedbackMetricsByEntity } from '@/utils/metrics/feedback-metrics';
 import { useDebouncedValue } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -107,6 +108,8 @@ export function FeedbackLinesViewContextProvider({ children }: PropsWithChildren
 	const [lineSortMode, setLineSortMode] = useState<FeedbackLineSortMode>('feedback_count_desc');
 	const [lineSearchValue, setLineSearchValue] = useState('');
 	const modalContext = useFeedbackEntityDetailModalContext();
+	const translateFeedbackReason = useCallback<FeedbackReasonTranslator>(reason => t(`feedback.reasons.${reason}`), [t]);
+	const translateFeedbackReasonCategory = useCallback<FeedbackReasonCategoryTranslator>(category => t(`feedback.reason_categories.${category}`), [t]);
 
 	//
 	// B. Fetch data
@@ -142,7 +145,7 @@ export function FeedbackLinesViewContextProvider({ children }: PropsWithChildren
 	// D. Handle actions
 
 	const openLineDetail = (line: FeedbackLineViewItem) => {
-		modalContext.actions.open(getFeedbackEntitySummary(line, 'line', linesById, getFeedbackLineContributionMeters(operatorFilter.rows, line)));
+		modalContext.actions.open(getFeedbackEntitySummary(line, 'line', linesById, getFeedbackLineContributionMeters(operatorFilter.rows, line, translateFeedbackReason, translateFeedbackReasonCategory)));
 	};
 
 	//
