@@ -7,18 +7,14 @@ import { SshConfig, SshTunnel, type SshTunnelOptions } from './client.js';
 
 /* * */
 
-/** Prefix for SSH tunnel environment variables (`{type}_TUNNEL_*`). */
 type SshTunnelType = 'GO' | 'PCGI';
 
-/** Call-time options for creating an SSH tunnel. */
 interface SshTunnelFactoryOptions {
-	/** Remote endpoint to forward traffic to. */
-	forwardOptions: { dstAddr: string, dstPort: number }
-	/** Maximum connection retries. Defaults to 3. */
+	dstAddr: string
+	dstPort: number
 	maxRetries?: number
 }
 
-/** A factory bound to a type; accepts only call-time options. */
 export type SshTunnelFactory = (options: SshTunnelOptions) => null | SshTunnel;
 
 /**
@@ -42,7 +38,7 @@ export function createSshTunnelFactory(type: SshTunnelType): SshTunnelFactory {
 }
 
 function buildSshTunnel(type: SshTunnelType, options: SshTunnelFactoryOptions): null | SshTunnel {
-	const { forwardOptions, maxRetries } = options;
+	const { dstAddr, dstPort, maxRetries } = options;
 	const env = (name: string) => process.env[`${type}_${name}`];
 
 	if (env('TUNNEL_ENABLED') !== 'true' && env('TUNNEL_ENABLED') !== 'false') {
@@ -67,8 +63,8 @@ function buildSshTunnel(type: SshTunnelType, options: SshTunnelFactoryOptions): 
 
 	const sshConfig: SshConfig = {
 		forwardOptions: {
-			dstAddr: forwardOptions.dstAddr,
-			dstPort: forwardOptions.dstPort,
+			dstAddr: dstAddr,
+			dstPort: dstPort,
 			srcAddr: 'localhost',
 			srcPort: srcPort,
 		},

@@ -42,8 +42,8 @@ export class SshTunnel {
 	 * - If the connection is successful, it logs the connected host port and sets up an error listener on the server.
 	 * - If the connection fails, it retries the connection up to a maximum number of retries specified in the options.
 	 * @example ```typescript
-	 * const sshTunnelService = new SshTunnel(config);
-	 * sshTunnelService.connect();
+	 * const SshTunnel = new SshTunnel(config);
+	 * SshTunnel.connect();
 	 * ```
 	 */
 	async connect() {
