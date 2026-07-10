@@ -3,7 +3,15 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, typologies } from '@tmlmobilidade/interfaces';
-import { CreateTypologyDto, PermissionCatalog, type Typology, type UpdateTypologyDto } from '@tmlmobilidade/types';
+import { CreateTypologyDto, PermissionCatalog, type PermissionResourceCheck, type Typology, type UpdateTypologyDto } from '@tmlmobilidade/types';
+
+/* * */
+
+const TYPOLOGIES_READ_PERMISSION_CHECKS: PermissionResourceCheck[] = [
+	{ action: PermissionCatalog.all.lines.actions.read, scope: PermissionCatalog.all.lines.scope },
+	{ action: PermissionCatalog.all.lines.actions.update, scope: PermissionCatalog.all.lines.scope },
+	{ action: PermissionCatalog.all.typologies.actions.nav, scope: PermissionCatalog.all.typologies.scope },
+];
 
 /* * */
 
@@ -114,31 +122,19 @@ export class TypologiesController {
 		//
 
 		//
-		// Get the resource permissions for typologies for the current user.
+		// Build database query filters based on user permissions
 
-		const userTypologyPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.typologies.scope, PermissionCatalog.all.typologies.actions.read);
+		const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
+			checks: TYPOLOGIES_READ_PERMISSION_CHECKS,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+		});
 
-		//
-		// If no permission found, deny access
-
-		if (!userTypologyPermissions) {
+		if (!agencyAccess.allowAll && !agencyAccess.values.length) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
 		}
 
-		//
-		// Build database query filters based on user permissions
-
-		const queryFilters: Filter<Typology> = {};
-
-		//
-		// If agency IDs are specified in resources and do not include the ALLOW_ALL_FLAG,
-		// filter typologies by those agency IDs.
-
-		if ('resources' in userTypologyPermissions && 'agency_ids' in userTypologyPermissions.resources) {
-			if (!userTypologyPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters.agency_ids = { $in: userTypologyPermissions.resources['agency_ids'] };
-			}
-		}
+		const queryFilters: Filter<Typology> = agencyAccess.allowAll ? {} : { agency_ids: { $in: agencyAccess.values } };
 
 		//
 		// Fetch typologies based on query filters
@@ -167,29 +163,17 @@ export class TypologiesController {
 		}
 
 		//
-		// Get the resource permissions for typologies for the current user.
-
-		const userTypologyPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.typologies.scope, PermissionCatalog.all.typologies.actions.read);
-
-		//
-		// If no permission found, deny access
-
-		if (!userTypologyPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
-		}
-
-		//
 		// Validate that user has permission for at least one of this typology's agencies
 
-		const hasPermissionForAnyAgency = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.typologies.actions.read,
+		const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
+			checks: TYPOLOGIES_READ_PERMISSION_CHECKS,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.typologies.scope,
-			value: typologyData.agency_ids,
 		});
 
-		if (!hasPermissionForAnyAgency) {
+		const canReadTypology = agencyAccess.allowAll || typologyData.agency_ids.some(agencyId => agencyAccess.values.includes(agencyId));
+
+		if (!canReadTypology) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this typology');
 		}
 

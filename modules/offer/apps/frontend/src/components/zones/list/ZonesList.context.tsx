@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, type Zone } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { useDataAgenciesNew, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -45,8 +45,8 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.zones.actions.read],
+	const { agencyIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.zones.actions.nav],
 		scope: PermissionCatalog.all.zones.scope,
 	});
 
@@ -100,7 +100,7 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 			error: allZonesError,
 			loading: allZonesLoading,
 		},
-	}), [allZonesError, allZonesLoading, searchResultsData, allZonesData, filterSearch, filterAgencies]);
+	}), [allZonesError, allZonesLoading, allZonesData, canCreatePermission, filterResultsData, filterSearch, filterAgencies]);
 
 	return (
 		<ZonesListContext.Provider value={contextValue}>

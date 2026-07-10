@@ -1,8 +1,9 @@
 /* * */
 
 import { type ExportType, type TaskProps } from '@/types.js';
-import { type Filter, rides } from '@tmlmobilidade/interfaces';
-import { type Ride } from '@tmlmobilidade/types';
+import { parseRide } from '@/utils/parse-ride.js';
+import { type Filter, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { type Ride, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 
@@ -53,6 +54,17 @@ export async function exportRidesRaw({ context, message }: TaskProps): Promise<v
 	const stream = ridesCollection.find(filterQuery).stream();
 
 	//
+	// Get the rides batch using native MongoDB cursor with batchSize to prevent memory issues
+	const pipeline = ridesBatchAggregationPipeline({
+		agency_ids: context.filters.agency_ids,
+		line_ids: context.filters.line_ids,
+		operational_date_end: context.dates.end,
+		operational_date_start: context.dates.start,
+		pattern_ids: context.filters.pattern_ids,
+		vehicle_ids: context.filters.vehicle_ids,
+	});
+
+	//
 	// Prepare the output directory and CSV writer
 
 	message(`A preparar a pasta para guardar os resultados...`);
@@ -69,8 +81,8 @@ export async function exportRidesRaw({ context, message }: TaskProps): Promise<v
 	message(`A aguardar o resultado da pesquisa...`);
 
 	for await (const doc of stream) {
-		const document = doc as Ride;
-		await csvWriter.write(document);
+		const document = doc as RideNormalized;
+		await csvWriter.write(parseRide(document as RideNormalized & { acceptance: null | RideAcceptance }));
 		if (counter % 1000 === 0) message(`Processados ${counter} documentos até agora...`);
 		counter++;
 	}

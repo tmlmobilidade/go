@@ -1,0 +1,77 @@
+{
+	"ChangePasswordForm": {
+		"description": "Introduzca su nueva contraseña",
+		"error_message": {
+			"description": "Se produjo un error al intentar cambiar la contraseña",
+			"title": "Error al intentar cambiar la contraseña"
+		},
+		"fields": {
+			"confirm_password": {
+				"placeholder": "Confirmar contraseña"
+			},
+			"password": {
+				"placeholder": "Contraseña"
+			}
+		},
+		"footer": {
+			"label": "Volver al inicio de sesión"
+		},
+		"submit": {
+			"label": "Confirmar"
+		},
+		"success": {
+			"description": "Contraseña cambiada correctamente.",
+			"title": "Éxito"
+		},
+		"title": "Cambiar contraseña"
+	},
+	"LoginForm": {
+		"description": "Buscamos simplificar la gestión del transporte público con herramientas digitales estables e intuitivas.",
+		"error": {
+			"description": "Se produjo un error al intentar iniciar sesión",
+			"title": "Error al intentar iniciar sesión"
+		},
+		"fields": {
+			"email": {
+				"placeholder": "Email"
+			},
+			"password": {
+				"placeholder": "Contraseña"
+			}
+		},
+		"footer": {
+			"label": "Recuperar contraseña"
+		},
+		"submit": {
+			"label": "Iniciar sesión"
+		},
+		"success": {
+			"description": "Inicio de sesión realizado correctamente",
+			"title": "Éxito"
+		},
+		"title": "Iniciar sesión en GO+"
+	},
+	"SendPasswordResetEmailForm": {
+		"description": "Introduzca su email para recuperar su contraseña",
+		"error": {
+			"description": "Se produjo un error al intentar enviar el email",
+			"title": "Error al intentar enviar el email"
+		},
+		"fields": {
+			"email": {
+				"placeholder": "Email de recuperación"
+			}
+		},
+		"footer": {
+			"label": "Volver al inicio de sesión"
+		},
+		"submit": {
+			"label": "Enviar email"
+		},
+		"success": {
+			"description": "Email de recuperación enviado correctamente",
+			"title": "Éxito"
+		},
+		"title": "Recuperar contraseña"
+	}
+}

@@ -1,10 +1,11 @@
 'use client';
 
 import { GTFS_EXPORT_MODAL_ID } from '@/components/lines/export/GtfsExportModal';
+import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import { type CreateFileExportDto, FileExport, FileExportType, type GtfsExportProperties, type LinesMode, type OperationalDate } from '@tmlmobilidade/types';
 import { useForm } from '@tmlmobilidade/ui';
-import { closeModal, type UseFormReturnType, useAgenciesContext, useToast } from '@tmlmobilidade/ui';
+import { closeModal, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
@@ -66,7 +67,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// A. Setup variables
 
-	const agenciesContext = useAgenciesContext();
+	const linesListContext = useLinesListContext();
 	const form = useForm<GtfsExportFormValues>({
 		initialValues: {
 			agency_ids: [],
@@ -88,8 +89,8 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 
 	const setAgencyIds = useCallback((value: string[]) => {
 		if (value.length === 1) {
-			const selectedAgency = agenciesContext?.data?.raw?.find(agency => agency._id === value[0]);
-			const defaults = selectedAgency ? AGENCY_DEFAULT_VALUES[selectedAgency.code] : undefined;
+			const selectedAgency = linesListContext?.data.agencyOptions?.find(agency => agency.value === value[0]);
+			const defaults = selectedAgency ? AGENCY_DEFAULT_VALUES[selectedAgency.value] : undefined;
 			if (defaults) {
 				form.setValues({
 					agency_ids: value,
@@ -109,7 +110,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 			feed_end_date: null,
 			feed_start_date: null,
 		});
-	}, [agenciesContext?.data?.raw, form]);
+	}, [linesListContext?.data.agencyOptions, form]);
 
 	const setLinesMode = useCallback((value: LinesMode) => {
 		form.setValues({

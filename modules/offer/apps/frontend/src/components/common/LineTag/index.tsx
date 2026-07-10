@@ -1,7 +1,6 @@
 /* * */
 
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
-import { useTypologiesContext } from '@/contexts/Typologies.context';
 import { LineDisplay } from '@tmlmobilidade/ui';
 
 /* * */
@@ -33,10 +32,8 @@ function LineTagFromContext({ line_id, onClick, withLabel = true }: LineTagProps
 	// A. Setup variables
 
 	const linesList = useLinesListContext();
-	const typologiesContext = useTypologiesContext();
 
 	const line = linesList.data.raw.find(line => line._id === line_id);
-	const typologyData = typologiesContext.data.raw.find(typology => typology._id === line?.typology);
 
 	//
 	// B. Render components
@@ -44,10 +41,10 @@ function LineTagFromContext({ line_id, onClick, withLabel = true }: LineTagProps
 	return (
 		<div onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
 			<LineDisplay
-				color={typologyData?.color || 'var(--color-system-text-200)'}
+				color={line?.typology_data?.color || 'var(--color-system-text-200)'}
 				longName={withLabel ? line?.name : undefined}
 				shortName={line?.code}
-				textColor={typologyData?.text_color || 'var(--color-system-background-100)'}
+				textColor={line?.typology_data?.text_color || 'var(--color-system-background-100)'}
 			/>
 		</div>
 	);
