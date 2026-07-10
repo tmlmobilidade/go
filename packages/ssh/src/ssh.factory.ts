@@ -41,11 +41,7 @@ function buildSshTunnel(type: SshTunnelType, options: SshTunnelFactoryOptions): 
 	const { dstAddr, dstPort, maxRetries } = options;
 	const env = (name: string) => process.env[`${type}_${name}`];
 
-	if (env('TUNNEL_ENABLED') !== 'true' && env('TUNNEL_ENABLED') !== 'false') {
-		throw new Error(`Missing ${type}_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting ${type}_TUNNEL_ENABLED to "true" or "false".`);
-	}
-
-	if (env('TUNNEL_ENABLED') === 'false') {
+	if (env('TUNNEL_ENABLED') !== 'true') {
 		return null;
 	}
 
