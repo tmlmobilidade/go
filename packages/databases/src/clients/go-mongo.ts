@@ -1,7 +1,7 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { getSshTunnel, type SshTunnelService } from '@tmlmobilidade/ssh';
+import { goSshTunnel, type SshTunnel } from '@tmlmobilidade/ssh';
 import { MongoClient } from 'mongodb';
 
 /* * */
@@ -12,7 +12,7 @@ export class GOMongoClient {
 	private static _instance: null | Promise<GOMongoClient> = null;
 
 	private client: MongoClient;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
@@ -118,10 +118,7 @@ export class GOMongoClient {
 			throw new Error('Missing GO_MONGO_RS_NAME');
 		}
 
-		this.tunnel = getSshTunnel({
-			forwardOptions: { dstAddr: process.env.GO_MONGO_HOST_1, dstPort: Number(process.env.GO_MONGO_PORT_1) },
-			prefix: 'GO',
-		});
+		this.tunnel = goSshTunnel({ dstAddr: process.env.GO_MONGO_HOST_1, dstPort: Number(process.env.GO_MONGO_PORT_1) });
 
 		if (!this.tunnel) {
 			return `mongodb://${process.env.GO_MONGO_USER}:${process.env.GO_MONGO_PASSWORD}@${process.env.GO_MONGO_HOST_1}:${process.env.GO_MONGO_PORT_1},${process.env.GO_MONGO_HOST_2}:${process.env.GO_MONGO_PORT_2},${process.env.GO_MONGO_HOST_3}:${process.env.GO_MONGO_PORT_3}/`;

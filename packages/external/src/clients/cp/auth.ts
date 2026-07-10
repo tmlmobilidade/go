@@ -1,7 +1,7 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { getSshTunnel, SshTunnelService } from '@tmlmobilidade/ssh';
+import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IncomingMessage } from 'node:http';
 import https from 'node:https';
@@ -25,7 +25,7 @@ export class CPAuthClient {
 
 	private expiresAt: number = 0;
 	private token: null | string = null;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
@@ -158,10 +158,7 @@ export class CPAuthClient {
 		}
 
 		if (!this.tunnel) {
-			this.tunnel = getSshTunnel({
-				forwardOptions: { dstAddr: process.env.CP_AUTH_HOST, dstPort: 443 },
-				prefix: 'GO',
-			});
+			this.tunnel = goSshTunnel({ dstAddr: process.env.CP_AUTH_HOST, dstPort: 443 });
 			await this.tunnel.connect();
 		}
 
