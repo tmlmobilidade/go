@@ -3,7 +3,7 @@
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, DateInput, Grid, Section, useMeContext } from '@tmlmobilidade/ui';
+import { Collapsible, DateInput, Grid, Section, useMeContext, ValueDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -37,6 +37,10 @@ export function PlanDetailSectionFeedInfo() {
 
 			<Section gap="sm">
 				<FeedInfoDisplay data={planDetailContext.data.plan?.gtfs_feed_info} />
+			</Section>
+
+			<Section gap="sm">
+				<ValueDisplay label="ID de validação" value={planDetailContext.data.plan?.validation_id || 'N/A'} />
 			</Section>
 
 			<Section gap="sm">

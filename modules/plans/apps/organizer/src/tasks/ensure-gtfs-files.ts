@@ -142,6 +142,7 @@ export async function ensureGtfsFiles() {
 			gtfs_agency: updatedAgencyTxtData,
 			gtfs_feed_info: updatedFeedInfoTxtData,
 			operation_file_id: updateFileResult._id,
+			validation_id: planData.validation_id,
 		};
 
 		const hashValue = createHash('sha256')
