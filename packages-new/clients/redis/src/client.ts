@@ -47,12 +47,15 @@ export class RedisDatabaseClient {
 	 * Clears the internal cache so subsequent `getClient` calls re-connect.
 	 */
 	static async disconnectAll(): Promise<void> {
-		const entries = await Promise.all(this.entries.values());
-		for (const entry of entries) {
-			if (entry.tunnel) {
-				await entry.tunnel.disconnect();
+		const settlements = await Promise.allSettled(this.entries.values());
+		for (const settlement of settlements) {
+			if (settlement.status === 'fulfilled') {
+				const entry = settlement.value;
+				if (entry.tunnel) {
+					await entry.tunnel.disconnect().catch(() => {});
+				}
+				await entry.client.disconnect().catch(() => {});
 			}
-			await entry.client.disconnect();
 		}
 		this.entries.clear();
 	}
