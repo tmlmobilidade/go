@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/go-interfaces-api-cache": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

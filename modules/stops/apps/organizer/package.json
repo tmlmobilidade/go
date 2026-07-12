@@ -17,6 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/go-stops-pckg-organize": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",

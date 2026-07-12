@@ -1,8 +1,7 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
-import { readFileSync } from 'node:fs';
+import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 import { createClient, type RedisClientType } from 'redis';
 
 /* * */
@@ -13,7 +12,7 @@ export class GORedisClient {
 	private static _instance: null | Promise<GORedisClient> = null;
 
 	private client: RedisClientType;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
@@ -70,57 +69,15 @@ export class GORedisClient {
 		//
 		// Validate required environment variables
 
-		if (process.env.GO_REDIS_TUNNEL_ENABLED !== 'true' && process.env.GO_REDIS_TUNNEL_ENABLED !== 'false') {
-			throw new Error('Missing GO_REDIS_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting GO_REDIS_TUNNEL_ENABLED to "true" or "false".');
-		}
-
 		if (!process.env.GO_REDIS_HOST || !process.env.GO_REDIS_PORT) {
 			throw new Error('Missing GO_REDIS_HOST or GO_REDIS_PORT');
 		}
 
-		if (process.env.GO_REDIS_TUNNEL_ENABLED === 'false') {
+		this.tunnel = goSshTunnel({ dstAddr: process.env.GO_REDIS_HOST, dstPort: Number(process.env.GO_REDIS_PORT) });
+
+		if (!this.tunnel) {
 			return `redis://${process.env.GO_REDIS_HOST}:${process.env.GO_REDIS_PORT}`;
 		}
-
-		// SSH required
-		if (!process.env.GO_REDIS_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing GO_REDIS_TUNNEL_LOCAL_PORT');
-		}
-
-		if (!process.env.GO_REDIS_TUNNEL_SSH_HOST || !process.env.GO_REDIS_TUNNEL_SSH_USERNAME) {
-			throw new Error('Missing SSH config');
-		}
-
-		const sshConfig: SshConfig = {
-			forwardOptions: {
-				dstAddr: process.env.GO_REDIS_HOST,
-				dstPort: Number(process.env.GO_REDIS_PORT),
-				srcAddr: 'localhost',
-				srcPort: Number(process.env.GO_REDIS_TUNNEL_LOCAL_PORT),
-			},
-			serverOptions: {
-				port: Number(process.env.GO_REDIS_TUNNEL_LOCAL_PORT),
-			},
-			sshOptions: {
-				agent: (process.env.GO_REDIS_TUNNEL_SSH_KEY_PATH || process.env.GO_REDIS_TUNNEL_SSH_KEY) ? undefined : process.env.SSH_AUTH_SOCK,
-				host: process.env.GO_REDIS_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 3,
-				keepaliveInterval: 10_000,
-				port: 22,
-				privateKey: process.env.GO_REDIS_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_REDIS_TUNNEL_SSH_KEY_PATH) : process.env.GO_REDIS_TUNNEL_SSH_KEY ? process.env.GO_REDIS_TUNNEL_SSH_KEY : undefined,
-				username: process.env.GO_REDIS_TUNNEL_SSH_USERNAME,
-			},
-			tunnelOptions: {
-				autoClose: false,
-				reconnectOnError: true,
-			},
-		};
-
-		const sshOptions: SshTunnelServiceOptions = {
-			maxRetries: 3,
-		};
-
-		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
 		Logger.info({ message: '[GORedisClient] Setting up SSH Tunnel...' });
 

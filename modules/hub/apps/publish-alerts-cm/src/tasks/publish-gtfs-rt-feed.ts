@@ -1,8 +1,8 @@
 /* * */
 
 import { transformAlertIntoGtfsRtEntity } from '@/transform/gtfs-rt/main.js';
-import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
