@@ -41,7 +41,7 @@ server.register(
 		);
 
 		instance.get(
-			'/:id/gtfs-operation-file',
+			'/:id/operation-file',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
 			getOperationFile,
 		);
