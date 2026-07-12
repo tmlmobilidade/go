@@ -11,11 +11,11 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 
 /**
- * Retrieves the APEX file associated with a plan by ID
+ * Updates the APEX file associated with a plan by ID
  * @param request Fastify request containing plan ID in params
  * @param reply Fastify reply
  */
-export async function getApexFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
+export async function updateApexFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
 	//
@@ -26,7 +26,7 @@ export async function getApexFile(request: FastifyRequest<{ Params: { id: string
 	if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
 	//
-	// Check if the user has permission to read the Plan
+	// Check if the user has permission to update the Plan
 
 	const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.plans.actions.read,
