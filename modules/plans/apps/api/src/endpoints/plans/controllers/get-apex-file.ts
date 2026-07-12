@@ -6,11 +6,11 @@ import { files, plans } from '@tmlmobilidade/interfaces';
 import { type File as FileType, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
- * Retrieves the operation file associated with a plan by ID
+ * Retrieves the Apex file associated with a plan by ID
  * @param request Fastify request containing plan ID in params
  * @param reply Fastify reply
  */
-export async function getGtfsOperationFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<FileType>) {
+export async function getApexFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<FileType>) {
 	//
 
 	//

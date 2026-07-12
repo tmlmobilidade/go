@@ -11,7 +11,7 @@ import { createHash } from 'node:crypto';
  * @param request Fastify request containing plan ID in params and update data in body
  * @param reply Fastify reply
  */
-export async function changeGtfsOperationFile(request: FastifyRequest<{ Body: { validation_id: string }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
+export async function changeOperationFile(request: FastifyRequest<{ Body: { validation_id: string }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
 	//
