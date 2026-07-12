@@ -23,9 +23,7 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 
 	const requestData = await request.file();
 
-	if (!requestData) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file provided');
-	}
+	if (!requestData) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file provided');
 
 	//
 	// Check if the user has permission to create a new GTFS Validation
@@ -38,9 +36,7 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 		value: requestData.fields.agency_id['value'],
 	});
 
-	if (!hasPermissionCreateValidation) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: create validation');
-	}
+	if (!hasPermissionCreateValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: create validation');
 
 	//
 	// Convert form fields to Validation data
