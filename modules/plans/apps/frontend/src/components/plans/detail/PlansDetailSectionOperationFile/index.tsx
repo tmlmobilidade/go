@@ -35,8 +35,8 @@ export function PlanDetailSectionOperationFile() {
 
 	return (
 		<Collapsible
-			description="Arquivo GTFS e ficheiros de configuração APEX."
-			title="Ficheiros"
+			description="Arquivo GTFS de operação."
+			title="Plano de Operação"
 		>
 			<Section gap="sm">
 
