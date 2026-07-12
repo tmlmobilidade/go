@@ -60,7 +60,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const { mutate: plansListMutate } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
 	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
 	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<FileType>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
-	const { data: apexFileData, error: apexFileError, isLoading: apexFileLoading, mutate: apexFileMutate } = useSWR<FileType>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId));
+	const { data: apexFileData, mutate: apexFileMutate } = useSWR<FileType>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId));
 	const { data: userData } = useSWR<User>(planId && API_ROUTES.auth.USERS_DETAIL(planData?.created_by));
 
 	//
@@ -72,11 +72,12 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', { ...form.getValues(), apex_file: apexFileUpload }),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
+			apexFileMutate();
 			plansListMutate();
 		},
 	});

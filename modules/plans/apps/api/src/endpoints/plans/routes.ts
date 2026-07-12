@@ -7,6 +7,7 @@ import { changeOperationFile } from './controllers/change-operation-file.js';
 import { controllerReprocessPlan } from './controllers/controller-reprocess-plan.js';
 import { createPlan } from './controllers/create-plan.js';
 import { deletePlan } from './controllers/delete-plan.js';
+import { downloadApexFile } from './controllers/download-apex-file.js';
 import { downloadOperationFile } from './controllers/download-operation-file.js';
 import { getAllPlans } from './controllers/get-all-plans.js';
 import { getApexFile } from './controllers/get-apex-file.js';
@@ -14,7 +15,6 @@ import { getDrtModel } from './controllers/get-drt-model.js';
 import { getOperationFile } from './controllers/get-operation-file.js';
 import { getPlan } from './controllers/get-plan.js';
 import { lockPlan } from './controllers/lock-plan.js';
-import { updateApexFile } from './controllers/update-apex-file.js';
 import { updatePlan } from './controllers/update-plan.js';
 
 /* * */
@@ -59,10 +59,10 @@ server.register(
 			downloadOperationFile,
 		);
 
-		instance.post(
-			'/:id/update-apex-file',
+		instance.get(
+			'/:id/apex-file/download',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
-			updateApexFile,
+			downloadApexFile,
 		);
 
 		instance.post(
