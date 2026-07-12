@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsValidationsController } from '@/endpoints/validations/validations.controller.js';
+import { GtfsValidationsController } from '@/endpoints/validations/controllers/validations.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
