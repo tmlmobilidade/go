@@ -7,7 +7,7 @@ import { Collapsible, Label, Section, useToast } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function PlanDetailSectionFiles() {
+export function PlanDetailSectionOperationFile() {
 	//
 
 	//
@@ -43,15 +43,6 @@ export function PlanDetailSectionFiles() {
 				{planDetailContext.data.operation_file ? (
 					<FileComponent
 						fileData={planDetailContext.data.operation_file}
-						onClick={handleDownload}
-					/>
-				) : (
-					<Label>Nenhum ficheiro selecionado</Label>
-				)}
-
-				{planDetailContext.data.apex_file_id ? (
-					<FileComponent
-						fileData={planDetailContext.data.apex_file_id}
 						onClick={handleDownload}
 					/>
 				) : (

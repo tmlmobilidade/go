@@ -2,11 +2,11 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type File, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
+import { type File as FileType, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -14,12 +14,13 @@ import useSWR from 'swr';
 interface PlanDetailContextState extends DetailContextStateTemplate {
 	actions: DetailContextStateTemplate['actions'] & {
 		controllerReprocessPlan: () => void
+		setApexFileUpload: (file: File | null) => void
 	}
 	data: {
-		apex_file: File | null
+		apex_file: FileType | null
 		form: UseFormReturnType<UpdatePlanDto>
 		id: string
-		operation_file: File | null
+		operation_file: FileType | null
 		plan: null | Plan
 		user: null | User
 	}
@@ -51,13 +52,15 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const router = useRouter();
 	const meContext = useMeContext();
 
+	const [apexFileUpload, setApexFileUpload] = useState<File | null>(null);
+
 	//
 	// B. Fetch data
 
 	const { mutate: plansListMutate } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
 	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
-	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<File>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
-	const { data: apexFileData, error: apexFileError, isLoading: apexFileLoading, mutate: apexFileMutate } = useSWR<File>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId));
+	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<FileType>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
+	const { data: apexFileData, error: apexFileError, isLoading: apexFileLoading, mutate: apexFileMutate } = useSWR<FileType>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId));
 	const { data: userData } = useSWR<User>(planId && API_ROUTES.auth.USERS_DETAIL(planData?.created_by));
 
 	//
@@ -193,6 +196,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			delete: handleDelete,
 			lock: handleLock,
 			save: handleSave,
+			setApexFileUpload,
 		},
 		data: {
 			apex_file: apexFileData,
