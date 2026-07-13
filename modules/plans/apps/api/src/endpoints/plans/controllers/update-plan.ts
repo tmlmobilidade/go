@@ -3,14 +3,9 @@
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, plans, TransactionManager } from '@tmlmobilidade/interfaces';
+import { files, plans } from '@tmlmobilidade/interfaces';
 import { type CreateFileDto, HashablePlanMetadata, PermissionCatalog, type Plan, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
-import { createWriteStream } from 'fs';
 import { createHash } from 'node:crypto';
-import { readFileSync, unlinkSync } from 'node:fs';
-import { pipeline } from 'node:stream/promises';
-import { tmpdir } from 'os';
-import { join } from 'path';
 
 /**
  * Updates an existing plan by ID
@@ -23,11 +18,9 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 	//
 	// Get the Plan from the database
 
-	let planData = await plans.findById(request.params.id);
+	const foundPlan = await plans.findById(request.params.id);
 
-	if (!planData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-	}
+	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
 	//
 	// Check if the user has permission to update the Plan
@@ -37,12 +30,10 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: planData.gtfs_agency.agency_id,
+		value: foundPlan.gtfs_agency.agency_id,
 	});
 
-	if (!hasPermissionReadPlan) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this plan.');
-	}
+	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this plan.');
 
 	//
 	// Validate the new feed info dates
@@ -58,7 +49,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 	// Check if the dates actually changed
 	// to avoid unnecessary file updates
 
-	if (planData.gtfs_feed_info.feed_start_date !== validatedFeedStartDate || planData.gtfs_feed_info.feed_end_date !== validatedFeedEndDate) {
+	if (foundPlan.gtfs_feed_info.feed_start_date !== validatedFeedStartDate || foundPlan.gtfs_feed_info.feed_end_date !== validatedFeedEndDate) {
 		//
 
 		//
@@ -69,18 +60,16 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: planData.gtfs_agency.agency_id,
+			value: foundPlan.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionUpdateFeedInfoDates) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the feed info dates.');
-		}
+		if (!hasPermissionUpdateFeedInfoDates) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the feed info dates.');
 
 		//
 		// Update the feed info dates in the operation file
 
 		const updateDatesResult = await updateFeedInfoDates(
-			planData.operation_file_id,
+			foundPlan.operation_file_id,
 			validatedFeedStartDate,
 			validatedFeedEndDate,
 		);
@@ -111,10 +100,10 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 		// to keep track of changes to the plan
 
 		const hashablePlanMetadata: HashablePlanMetadata = {
-			_id: planData._id,
-			gtfs_agency: planData.gtfs_agency,
+			_id: foundPlan._id,
+			gtfs_agency: foundPlan.gtfs_agency,
 			gtfs_feed_info: {
-				...planData.gtfs_feed_info,
+				...foundPlan.gtfs_feed_info,
 				feed_end_date: validatedFeedEndDate,
 				feed_start_date: validatedFeedStartDate,
 			},
@@ -125,9 +114,9 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 			.update(JSON.stringify(hashablePlanMetadata))
 			.digest('hex');
 
-		planData = await plans.updateById(planData._id, {
+		await plans.updateById(foundPlan._id, {
 			gtfs_feed_info: {
-				...planData.gtfs_feed_info,
+				...foundPlan.gtfs_feed_info,
 				feed_end_date: validatedFeedEndDate,
 				feed_start_date: validatedFeedStartDate,
 			},
@@ -141,7 +130,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 	//
 	// Check if the PCGI legacy field is being updated
 
-	if (request.body.pcgi_legacy?.operation_plan_id && request.body.pcgi_legacy?.operation_plan_id !== planData.pcgi_legacy?.operation_plan_id) {
+	if (request.body.pcgi_legacy?.operation_plan_id && request.body.pcgi_legacy?.operation_plan_id !== foundPlan.pcgi_legacy?.operation_plan_id) {
 		//
 
 		//
@@ -152,129 +141,21 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: planData.gtfs_agency.agency_id,
+			value: foundPlan.gtfs_agency.agency_id,
 		});
 
-		if (!hasPermissionUpdatePcgiLegacy) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the PCGI legacy field.');
-		}
+		if (!hasPermissionUpdatePcgiLegacy) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the PCGI legacy field.');
 
 		//
 		// Update the plan with the new data
 
-		planData = await plans.updateById(planData._id, {
+		await plans.updateById(foundPlan._id, {
 			pcgi_legacy: {
 				operation_plan_id: request.body.pcgi_legacy.operation_plan_id,
 			},
 		});
 
 		//
-	}
-
-	//
-	// Check if the APEX file is being updated
-
-	if (request.body.apex_file) {
-		//
-
-		//
-		// Check if the user has permission to update the Plan
-
-		const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.plans.actions.read,
-			permissions: request.permissions,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.plans.scope,
-			value: planData.gtfs_agency.agency_id,
-		});
-
-		if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
-
-		//
-		// Parse multipart form data from the request
-
-		const requestData = await request.file();
-
-		if (!requestData) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file provided');
-
-		//
-		// Stream file to temporary disk location
-		// to avoid Out Of Memory issues with large files
-
-		let buffer: Buffer;
-		let size: number;
-		let tempFilePath: null | string = null;
-
-		try {
-		// Create temporary file path
-			tempFilePath = join(tmpdir(), `apex-file-upload-${Date.now()}-${Math.random().toString(36).substring(7)}`);
-			// Stream directly to disk to avoid memory issues
-			const writeStream = createWriteStream(tempFilePath);
-			await pipeline(requestData.file, writeStream);
-			// Read file back as buffer for upload
-			buffer = readFileSync(tempFilePath);
-			size = buffer.length;
-		} catch (streamError) {
-			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
-		}
-
-		//
-		// Use Transaction Manager to ensure data consistency
-		// across multiple collections (Plan update and file upload).
-
-		const transactionManager = new TransactionManager([plans, files] as const);
-
-		await transactionManager.withTransaction(async (collections, transactions) => {
-		//
-
-			//
-			// Destructure collections for easier access
-			// and get the appropriate transaction for each collection
-
-			const [plansCollection, filesCollection] = collections;
-
-			const plansTransaction = transactions.get(plansCollection);
-			const filesTransaction = transactions.get(filesCollection);
-
-			//
-			// Upload the APEX file
-
-			const uploadFileResult = await filesCollection.upload(buffer, {
-				created_by: request.me.email,
-				name: requestData.filename,
-				resource_id: planData._id,
-				scope: 'plans',
-				size: size,
-				type: requestData.mimetype,
-				updated_by: request.me.email,
-			}, { session: filesTransaction.getSession() });
-
-			//
-			// Update the Plan with the APEX file reference
-
-			await plansCollection.updateById(planData._id, { apex_file_id: uploadFileResult._id }, { session: plansTransaction.getSession() });
-
-			//
-			// Return the complete Plan object
-
-			return {
-				...planData,
-				apex_file_id: uploadFileResult._id,
-			};
-
-		//
-		});
-
-		//
-		// Clean up temporary file
-
-		if (tempFilePath) {
-			try {
-				unlinkSync(tempFilePath);
-			} catch (cleanupError) {
-				console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
-			}
-		}
 	}
 
 	//

@@ -452,12 +452,12 @@ export const API_ROUTES = Object.freeze({
 		// PLANS
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}`,
 		PLANS_DETAIL_APEX_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file`,
+		PLANS_DETAIL_APEX_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file/download`,
 		PLANS_DETAIL_CHANGE_GTFS: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/change-gtfs`,
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/controller-reprocess`,
 		PLANS_DETAIL_LOCK: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/lock`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file`,
 		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file/download`,
-		PLANS_DETAIL_UPDATE_APEX_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/update-apex-file`,
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans`,
 

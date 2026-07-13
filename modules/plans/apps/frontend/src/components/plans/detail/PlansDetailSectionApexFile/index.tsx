@@ -36,7 +36,7 @@ export function PlanDetailSectionApexFile() {
 	return (
 		<Collapsible
 			description="Ficheiro de configuração APEX."
-			title="Ficheiro APEX"
+			title="Ficheiro de Configuração APEX"
 		>
 			<Section gap="sm">
 
@@ -48,7 +48,7 @@ export function PlanDetailSectionApexFile() {
 				) : (
 					<FileUpload
 						accept="application/zip"
-						label="Selecionar Ficheiro APEX"
+						label="Selecionar Ficheiro de Configuração APEX"
 						maxFileSize={5 * 1024 * 1024 * 1024} // 5 GB
 						onFileChange={planDetailContext.actions.setApexFileUpload}
 					/>

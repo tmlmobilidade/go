@@ -74,7 +74,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => {
 			if (apexFileUpload) await uploadFile(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId), apexFileUpload);
-			return await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', { ...form.getValues(), apex_file: apexFileUpload });
+			return await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', form.getValues());
 		},
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
