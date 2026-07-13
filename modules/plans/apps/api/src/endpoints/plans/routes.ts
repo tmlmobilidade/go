@@ -51,7 +51,7 @@ server.register(
 
 		instance.get(
 			'/:id/apex-file',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read_apex_file]) },
 			getApexFile,
 		);
 
@@ -63,19 +63,19 @@ server.register(
 
 		instance.get(
 			'/:id/apex-file/download',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read_apex_file]) },
 			downloadApexFile,
 		);
 
 		instance.post(
 			'/:id/apex-file',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_apex_file]) },
 			updateApexFile,
 		);
 
 		instance.delete(
 			'/:id/apex-file',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.delete_apex_file]) },
 			deleteApexFile,
 		);
 

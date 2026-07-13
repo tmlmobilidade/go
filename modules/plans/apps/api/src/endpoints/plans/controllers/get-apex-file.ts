@@ -24,7 +24,7 @@ export async function getApexFile(request: FastifyRequest<{ Params: { id: string
 	// Check if the user has permission to read the Plan
 
 	const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
-		action: PermissionCatalog.all.plans.actions.read,
+		action: PermissionCatalog.all.plans.actions.read_apex_file,
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,

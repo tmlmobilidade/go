@@ -23,7 +23,7 @@ export async function deleteApexFile(request: FastifyRequest<{ Params: { id: str
 	// Check if the user has permission to delete an apex file
 
 	if (!PermissionCatalog.hasPermissionResource({
-		action: PermissionCatalog.all.plans.actions.delete,
+		action: PermissionCatalog.all.plans.actions.delete_apex_file,
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,

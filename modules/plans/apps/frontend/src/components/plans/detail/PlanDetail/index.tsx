@@ -41,7 +41,7 @@ export function PlanDetail() {
 			<PlanDetailSectionOperationFile />
 
 			<HasPermission
-				action={PermissionCatalog.all.plans.actions.read}
+				action={PermissionCatalog.all.plans.actions.read_apex_file}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
 				value={planDetailContext.data.plan.gtfs_agency.agency_id}
