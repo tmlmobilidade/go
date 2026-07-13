@@ -1,9 +1,8 @@
 'use client';
 
-import { FileComponent } from '@/components/common/FileComponent';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Collapsible, FileUpload, Section, useToast } from '@tmlmobilidade/ui';
+import { Collapsible, FileItem, FileUpload, Section, useToast } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -21,7 +20,7 @@ export function PlanDetailSectionApexFile() {
 	const handleDownload = async () => {
 		try {
 			// Open file.url in a new window
-			window.open(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE_DOWNLOAD(planDetailContext.data.id), '_blank');
+			window.open(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE_DOWNLOAD(planDetailContext.data.id), '_blank');
 		} catch (error) {
 			useToast.error({
 				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
@@ -41,9 +40,11 @@ export function PlanDetailSectionApexFile() {
 			<Section gap="sm">
 
 				{planDetailContext.data.apex_file ? (
-					<FileComponent
-						fileData={planDetailContext.data.apex_file}
-						onClick={handleDownload}
+					<FileItem
+						fileName={planDetailContext.data.apex_file.name}
+						fileType={planDetailContext.data.apex_file.type}
+						onDelete={planDetailContext.actions.deleteApexFile}
+						onDownload={handleDownload}
 					/>
 				) : (
 					<FileUpload

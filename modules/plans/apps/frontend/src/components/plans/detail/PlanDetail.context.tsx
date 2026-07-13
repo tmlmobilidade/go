@@ -14,6 +14,7 @@ import useSWR from 'swr';
 interface PlanDetailContextState extends DetailContextStateTemplate {
 	actions: DetailContextStateTemplate['actions'] & {
 		controllerReprocessPlan: () => void
+		deleteApexFile: () => void
 		setApexFileUpload: (file: File | null) => void
 	}
 	data: {
@@ -77,6 +78,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			return await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', form.getValues());
 		},
 		onSuccess: (updatedItem) => {
+			setApexFileUpload(null);
 			form.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
@@ -114,6 +116,15 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		},
 	});
 
+	const { action: handleDeleteApexFile, isLoading: isDeletingApexFile } = useHandleUpdate({
+		fetchFn: async () => await fetchData<FileType>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId), 'DELETE'),
+		onSuccess: () => {
+			setApexFileUpload(null);
+			apexFileMutate(null);
+			planMutate();
+		},
+	});
+
 	//
 	// E. Setup flags
 
@@ -124,7 +135,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData?.gtfs_agency.agency_id ?? '',
 		}),
-		isDeleting: isDeleting,
+		isDeleting: isDeleting || isDeletingApexFile,
 		isLoading: planLoading || isReprocessing,
 		isLocked: planData?.is_locked,
 		isLocking: isLocking,
@@ -138,7 +149,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData?.gtfs_agency.agency_id ?? '',
 		}),
-		isDeleting: isDeleting,
+		isDeleting: isDeleting || isDeletingApexFile,
 		isDirty: form.isDirty() || !!apexFileUpload,
 		isLoading: planLoading || isReprocessing,
 		isLocked: planData?.is_locked,
@@ -153,7 +164,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData?.gtfs_agency.agency_id ?? '',
 		}),
-		isDeleting: isDeleting,
+		isDeleting: isDeleting || isDeletingApexFile,
 		isDirty: form.isDirty() || !!apexFileUpload,
 		isLoading: planLoading || isReprocessing,
 		isLocking: isLocking,
@@ -167,7 +178,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData?.gtfs_agency.agency_id ?? '',
 		}),
-		isDeleting: isDeleting,
+		isDeleting: isDeleting || isDeletingApexFile,
 		isDirty: form.isDirty() || !!apexFileUpload,
 		isLoading: planLoading || isReprocessing,
 		isLocked: planData?.is_locked,
@@ -180,6 +191,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		!planData?.is_locked,
 		!isLocking,
 		!isDeleting,
+		!isDeletingApexFile,
 		!isReprocessing,
 		!planLoading,
 		!isSaving,
@@ -198,6 +210,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		actions: {
 			controllerReprocessPlan: handleControllerReprocessPlan,
 			delete: handleDelete,
+			deleteApexFile: handleDeleteApexFile,
 			lock: handleLock,
 			save: handleSave,
 			setApexFileUpload,

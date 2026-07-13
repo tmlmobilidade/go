@@ -6,6 +6,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
 import { changeOperationFile } from './controllers/change-operation-file.js';
 import { controllerReprocessPlan } from './controllers/controller-reprocess-plan.js';
 import { createPlan } from './controllers/create-plan.js';
+import { deleteApexFile } from './controllers/delete-apex-file.js';
 import { deletePlan } from './controllers/delete-plan.js';
 import { downloadApexFile } from './controllers/download-apex-file.js';
 import { downloadOperationFile } from './controllers/download-operation-file.js';
@@ -70,6 +71,12 @@ server.register(
 			'/:id/apex-file',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
 			updateApexFile,
+		);
+
+		instance.delete(
+			'/:id/apex-file',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
+			deleteApexFile,
 		);
 
 		instance.post(
