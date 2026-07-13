@@ -1,9 +1,8 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
+import { pcgiSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 import { MongoClient } from 'mongodb';
-import { readFileSync } from 'node:fs';
 
 /* * */
 
@@ -13,7 +12,7 @@ export class PCGIFileManagerClient {
 	private static _instance: null | Promise<PCGIFileManagerClient> = null;
 
 	private client: MongoClient;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
@@ -53,7 +52,7 @@ export class PCGIFileManagerClient {
 		const connectionString = await this.getConnectionString();
 		this.client = new MongoClient(connectionString, {
 			connectTimeoutMS: 10_000,
-			directConnection: process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED === 'true',
+			directConnection: this.tunnel ? true : false,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'primary',
@@ -103,10 +102,6 @@ export class PCGIFileManagerClient {
 		//
 		// Validate required environment variables
 
-		if (process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED !== 'true' && process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED !== 'false') {
-			throw new Error('Missing PCGI_FILE_MANAGER_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting PCGI_FILE_MANAGER_TUNNEL_ENABLED to "true" or "false".');
-		}
-
 		if (!process.env.PCGI_FILE_MANAGER_HOST_1 || !process.env.PCGI_FILE_MANAGER_PORT_1) {
 			throw new Error('Missing PCGI_FILE_MANAGER_HOST_1 or PCGI_FILE_MANAGER_PORT_1');
 		}
@@ -123,49 +118,14 @@ export class PCGIFileManagerClient {
 			throw new Error('Missing PCGI_FILE_MANAGER_RS_NAME');
 		}
 
-		if (process.env.PCGI_FILE_MANAGER_TUNNEL_ENABLED === 'false') {
+		//
+		// Setup SSH Tunnel
+
+		this.tunnel = pcgiSshTunnel({ dstAddr: process.env.PCGI_FILE_MANAGER_HOST_1, dstPort: Number(process.env.PCGI_FILE_MANAGER_PORT_1) });
+
+		if (!this.tunnel) {
 			return `mongodb://${process.env.PCGI_FILE_MANAGER_USER}:${process.env.PCGI_FILE_MANAGER_PASSWORD}@${process.env.PCGI_FILE_MANAGER_HOST_1}:${process.env.PCGI_FILE_MANAGER_PORT_1},${process.env.PCGI_FILE_MANAGER_HOST_2}:${process.env.PCGI_FILE_MANAGER_PORT_2},${process.env.PCGI_FILE_MANAGER_HOST_3}:${process.env.PCGI_FILE_MANAGER_PORT_3}/`;
 		}
-
-		// SSH required
-		if (!process.env.PCGI_FILE_MANAGER_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing PCGI_FILE_MANAGER_TUNNEL_LOCAL_PORT');
-		}
-
-		if (!process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_HOST || !process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_USERNAME) {
-			throw new Error('Missing SSH config');
-		}
-
-		const sshConfig: SshConfig = {
-			forwardOptions: {
-				dstAddr: process.env.PCGI_FILE_MANAGER_HOST_1,
-				dstPort: Number(process.env.PCGI_FILE_MANAGER_PORT_1),
-				srcAddr: 'localhost',
-				srcPort: Number(process.env.PCGI_FILE_MANAGER_TUNNEL_LOCAL_PORT),
-			},
-			serverOptions: {
-				port: Number(process.env.PCGI_FILE_MANAGER_TUNNEL_LOCAL_PORT),
-			},
-			sshOptions: {
-				agent: (process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_KEY_PATH || process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_KEY) ? undefined : process.env.SSH_AUTH_SOCK,
-				host: process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 3,
-				keepaliveInterval: 10_000,
-				port: 22,
-				privateKey: process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_KEY_PATH) : process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_KEY ? process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_KEY : undefined,
-				username: process.env.PCGI_FILE_MANAGER_TUNNEL_SSH_USERNAME,
-			},
-			tunnelOptions: {
-				autoClose: false,
-				reconnectOnError: true,
-			},
-		};
-
-		const sshOptions: SshTunnelServiceOptions = {
-			maxRetries: 3,
-		};
-
-		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
 		Logger.info({ message: '[PCGIFileManagerClient] Setting up SSH Tunnel...' });
 

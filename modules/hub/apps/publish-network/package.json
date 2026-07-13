@@ -21,6 +21,8 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-interfaces-api-cache": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/interfaces": "*",

@@ -3,6 +3,7 @@
 import { type MenuProps } from '@mantine/core';
 import { IconCloudDown, IconCloudMinus } from '@tabler/icons-react';
 import { type FileExport } from '@tmlmobilidade/types';
+import { useTranslation } from 'react-i18next';
 
 import { useExportsContext } from '../../../contexts/exports.context';
 import { Menu } from '../../menu/Menu';
@@ -30,6 +31,7 @@ export function SidebarExports({ menuPosition }: SidebarExportsProps = {}) {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const exportsContext = useExportsContext();
 	const fileExports = exportsContext.data.fileExports || [];
 
@@ -37,10 +39,10 @@ export function SidebarExports({ menuPosition }: SidebarExportsProps = {}) {
 	// B. Render components
 
 	return (
-		<Menu counter={fileExports.length} icon={IconCloudDown} label="Exportações" menuPosition={menuPosition} variant="danger">
+		<Menu counter={fileExports.length} icon={IconCloudDown} label={t('shared:components.sidebar.SidebarExports.label')} menuPosition={menuPosition} variant="danger">
 			{fileExports.length === 0
-				? <MenuNoContent icon={IconCloudMinus} text="Sem exportações disponíveis" />
-				: <MenuList data={fileExports} getItemKey={item => item._id} itemComponent={SidebarExportsMenuItem} title="Exportações" />}
+				? <MenuNoContent icon={IconCloudMinus} text={t('shared:components.sidebar.SidebarExports.no_exports')} />
+				: <MenuList data={fileExports} getItemKey={item => item._id} itemComponent={SidebarExportsMenuItem} title={t('shared:components.sidebar.SidebarExports.title')} />}
 		</Menu>
 	);
 

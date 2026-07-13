@@ -2,13 +2,12 @@
 
 import { Logger } from '@tmlmobilidade/logger';
 import { MongoConnector } from '@tmlmobilidade/mongo';
-import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
-import { readFileSync } from 'fs';
+import { pcgiSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 import { type Collection, type MongoClientOptions } from 'mongodb';
 
 /* * */
 
-let GLOBAL_PCGIDB_TUNNEL_INSTANCE: SshTunnelService | undefined;
+let GLOBAL_PCGIDB_TUNNEL_INSTANCE: SshTunnel | undefined;
 
 /* * */
 
@@ -75,72 +74,13 @@ class PCGIDBLegacyClass {
 			throw new Error('Missing PCGIDB_LEGACY_ADDRESS_1, PCGIDB_LEGACY_ADDRESS_2, PCGIDB_LEGACY_ADDRESS_3 or PCGIDB_LEGACY_PORT environment variable.');
 		}
 
-		if (process.env.PCGIDB_TUNNEL_ENABLED !== 'true' && process.env.PCGIDB_TUNNEL_ENABLED !== 'false') {
-			throw new Error('Missing PCGIDB_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting PCGIDB_TUNNEL_ENABLED to "true" or "false".');
-		}
-
 		//
-		// Check if the SSH Tunnel is required based on the environment.
-		// In 'production' and 'staging', we assume direct connection is used.
+		// Setup the SSH Tunnel
 
-		if (process.env.PCGIDB_TUNNEL_ENABLED === 'false') {
-			return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@${process.env.PCGIDB_LEGACY_ADDRESS_1}:${process.env.PCGIDB_LEGACY_PORT},${process.env.PCGIDB_LEGACY_ADDRESS_2}:${process.env.PCGIDB_LEGACY_PORT},${process.env.PCGIDB_LEGACY_ADDRESS_3}:${process.env.PCGIDB_LEGACY_PORT}/`;
-		}
-
-		//
-		// If we're here, then the SSH Tunnel is to be used.
-		// Check if the required SSH Tunnel environment variables are set.
-
-		if (!process.env.PCGIDB_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing PCGIDB_TUNNEL_LOCAL_PORT environment variable.');
-		}
-
-		if (!process.env.PCGIDB_TUNNEL_SSH_HOST || !process.env.PCGIDB_TUNNEL_SSH_USERNAME) {
-			throw new Error('Missing PCGIDB_TUNNEL_SSH_HOST or PCGIDB_TUNNEL_SSH_USERNAME environment variable.');
-		}
-
-		//
-		// Setup the SSH Tunnel connection configuration
-
-		const sshConfig: SshConfig = {
-			forwardOptions: {
-				dstAddr: process.env.PCGIDB_LEGACY_ADDRESS_1,
-				dstPort: Number(process.env.PCGIDB_LEGACY_PORT),
-				srcAddr: 'localhost',
-				srcPort: Number(process.env.PCGIDB_TUNNEL_LOCAL_PORT),
-			},
-			serverOptions: {
-				port: Number(process.env.PCGIDB_TUNNEL_LOCAL_PORT),
-			},
-			sshOptions: {
-				/**
-				 * Using SSH Agent for authentication.
-				 * Ensure that your SSH key is added to the SSH agent beforehand.
-				 * @see https://developer.1password.com/docs/ssh/agent/compatibility/#ssh-auth-sock
-				 */
-				agent: (process.env.PCGIDB_TUNNEL_SSH_KEY_PATH || process.env.PCGIDB_TUNNEL_SSH_KEY) ? undefined : process.env.SSH_AUTH_SOCK,
-				host: process.env.PCGIDB_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 3,
-				keepaliveInterval: 10_000,
-				port: 22,
-				privateKey: process.env.PCGIDB_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.PCGIDB_TUNNEL_SSH_KEY_PATH) : process.env.PCGIDB_TUNNEL_SSH_KEY ? process.env.PCGIDB_TUNNEL_SSH_KEY : undefined,
-				username: process.env.PCGIDB_TUNNEL_SSH_USERNAME,
-			},
-			tunnelOptions: {
-				autoClose: false,
-				reconnectOnError: true,
-			},
-		};
-
-		const sshOptions: SshTunnelServiceOptions = {
-			maxRetries: 3,
-		};
-
-		//
-		// Actually create the SSH Tunnel connection
+		GLOBAL_PCGIDB_TUNNEL_INSTANCE = pcgiSshTunnel({ dstAddr: process.env.PCGIDB_LEGACY_ADDRESS_1, dstPort: Number(process.env.PCGIDB_LEGACY_PORT) });
 
 		if (!GLOBAL_PCGIDB_TUNNEL_INSTANCE) {
-			GLOBAL_PCGIDB_TUNNEL_INSTANCE = new SshTunnelService(sshConfig, sshOptions);
+			return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@${process.env.PCGIDB_LEGACY_ADDRESS_1}:${process.env.PCGIDB_LEGACY_PORT},${process.env.PCGIDB_LEGACY_ADDRESS_2}:${process.env.PCGIDB_LEGACY_PORT},${process.env.PCGIDB_LEGACY_ADDRESS_3}:${process.env.PCGIDB_LEGACY_PORT}/`;
 		}
 
 		Logger.info({ message: 'Setting up SSH Tunnel for PCGIDB Legacy...' });

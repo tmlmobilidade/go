@@ -34,7 +34,8 @@ export async function exportStopTimesRows(planData: Plan, sqlTables: GtfsSQLTabl
 	allStopsList.forEach((stopData) => {
 		if (!stopData.flags?.length) allStopsMap.set(String(stopData._id), String(stopData._id));
 		stopData.flags?.forEach((flag) => {
-			allStopsMap.set(flag.stop_id, String(stopData._id));
+			if (flag.is_harmonized) allStopsMap.set(flag.stop_id, String(stopData._id));
+			else allStopsMap.set(flag.stop_id, flag.stop_id);
 		});
 	});
 
