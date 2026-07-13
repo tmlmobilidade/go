@@ -62,7 +62,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 
 	const filteredAgencyCodes = useMemo(() => filteredAgencies.map(agency => agency.code), [filteredAgencies]);
 	const filteredAgencyOptions = useMemo(() => filteredAgencies.map(agency => ({
-		label: `${agency.code} - ${agency.name}`,
+		label: `${agency.code} - ${agency.short_name}`,
 		value: agency.code,
 	})), [filteredAgencies]);
 

@@ -77,6 +77,8 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		query: filterSearch.value,
 	});
 
+	console.log(normalizedPlansData);
+
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
