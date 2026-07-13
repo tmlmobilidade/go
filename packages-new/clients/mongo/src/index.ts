@@ -5,7 +5,9 @@ export * from './client.js';
 export type {
 	AggregateOptions,
 	AggregationCursor,
+	AnyBulkWriteOperation,
 	BulkWriteOptions,
+	BulkWriteResult,
 	ChangeStreamDeleteDocument,
 	ChangeStreamDocument,
 	ChangeStreamInsertDocument,
