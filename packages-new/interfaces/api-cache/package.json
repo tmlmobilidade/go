@@ -35,7 +35,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-clients-redis": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-backend": "*",
 		"@tmlmobilidade/utils": "*",
 		"luxon": "3.7.2",
 		"zod": "3.25.76"

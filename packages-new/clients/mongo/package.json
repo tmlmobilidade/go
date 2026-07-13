@@ -34,7 +34,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-backend": "*",
 		"@tmlmobilidade/ssh": "*",
 		"mongodb": "7.3.0"
 	},

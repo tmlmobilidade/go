@@ -38,7 +38,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-backend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
