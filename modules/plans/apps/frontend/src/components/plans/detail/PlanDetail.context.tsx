@@ -4,7 +4,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type File as FileType, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -72,7 +72,10 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', { ...form.getValues(), apex_file: apexFileUpload }),
+		fetchFn: async () => {
+			if (apexFileUpload) await uploadFile(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId), apexFileUpload);
+			return await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', { ...form.getValues(), apex_file: apexFileUpload });
+		},
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			planMutate(updatedItem);
@@ -136,7 +139,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			value: planData?.gtfs_agency.agency_id ?? '',
 		}),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: form.isDirty() || !!apexFileUpload,
 		isLoading: planLoading || isReprocessing,
 		isLocked: planData?.is_locked,
 		isLocking: isLocking,
@@ -151,7 +154,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			value: planData?.gtfs_agency.agency_id ?? '',
 		}),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: form.isDirty() || !!apexFileUpload,
 		isLoading: planLoading || isReprocessing,
 		isLocking: isLocking,
 		isValid: form.isValid(),
@@ -165,7 +168,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			value: planData?.gtfs_agency.agency_id ?? '',
 		}),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: form.isDirty() || !!apexFileUpload,
 		isLoading: planLoading || isReprocessing,
 		isLocked: planData?.is_locked,
 		isLocking: isLocking,
