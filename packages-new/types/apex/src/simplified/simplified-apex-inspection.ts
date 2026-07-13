@@ -18,7 +18,6 @@ export const SimplifiedApexInspectionSchema = z.object({
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	environment_status: ApexEnvironmentStatusSchema,
-	final_control_status: ApexControlStatusSchema,
 	inspection_id: z.string().nullable().default(null),
 	is_ok: z.boolean().default(false),
 	is_ok_pcgi: z.boolean().default(false),
@@ -39,9 +38,8 @@ export const SimplifiedApexInspectionSchema = z.object({
 	const hasAseCounterValue = !!val.mac_ase_counter_value && val.mac_ase_counter_value > 0;
 	const hasMacSamSerialNumber = !!val.mac_sam_serial_number;
 	const hasControlStatus = !!val.control_status;
-	const hasFinalControlStatus = !!val.final_control_status;
 	// Combine the individual conditions
-	const isOk = hasDeviceId && hasAseCounterValue && hasMacSamSerialNumber && hasControlStatus && hasFinalControlStatus;
+	const isOk = hasDeviceId && hasAseCounterValue && hasMacSamSerialNumber && hasControlStatus;
 	// Return the transformed value
 	return { ...val, is_ok: isOk };
 });
