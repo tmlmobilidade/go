@@ -16,7 +16,7 @@ class LabDbClass {
 	//
 	private static _instance: LabDbClass;
 
-	private clickhouseClient: ClickHouseClient;
+	private readonly clickhouseClient: ClickHouseClient;
 
 	//
 	// Databases
@@ -31,23 +31,17 @@ class LabDbClass {
 	 */
 	public static async getInstance() {
 		if (!LabDbClass._instance) {
-			const instance = new LabDbClass();
-			await instance.connect();
-			LabDbClass._instance = instance;
+			const clickhouseClient = await ClickHouseDatabaseClient.getClient({ prefix: 'LAB_DB' });
+			LabDbClass._instance = new LabDbClass(clickhouseClient);
 		}
 		return LabDbClass._instance;
 	}
 
-	private async connect() {
-		// Attempt to connect to the Lab Database
-		const clickhouseClient = await ClickHouseDatabaseClient.getClient({ prefix: 'LAB_DB' });
-		// Initialize the ClickHouse connector
-		this.clickhouseClient = clickhouseClient;
-	}
-
 	//
 	// Constructor
-	private constructor() {
+	private constructor(clickhouseClient: ClickHouseClient) {
+		this.clickhouseClient = clickhouseClient;
+
 		this.operation = new OperationDatabase(this.clickhouseClient);
 		this.performance = new PerformanceDatabase(this.clickhouseClient);
 		this.simplifiedApex = new SimplifiedApexDatabase(this.clickhouseClient);
