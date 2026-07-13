@@ -1,2 +1,2 @@
 export * from './client.js';
-export type { ClickHouseClient } from '@clickhouse/client';
+export * from './utils/index.js';
