@@ -52,6 +52,42 @@ class LabDbClass {
 		this.operation = new OperationDatabase(this.clickhouseClient);
 		this.simplifiedApex = new SimplifiedApexDatabase(this.clickhouseClient);
 	}
+
+	//
+	// Queries
+
+	/**
+	 * Executes a query from a .sql file with optional parameter substitutions.
+	 * @param filePath Absolute or relative path to the .sql file.
+	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+	 * @returns Query result rows typed as `T`.
+	 * @example
+	 * // Given a SQL file "get_users.sql" with the content:
+	 * // SELECT * FROM users WHERE created_at >= {start_date} AND created_at <= {end_date}
+	 * const users = await clickhouseService.queryFromFile<User>('get_users.sql', {
+	 *   start_date: '2024-01-01',
+	 *   end_date: '2024-12-31',
+	 * });
+	*/
+	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryFromFile<T>> {
+		return await queryFromFile<T>(this.clickhouseClient, filePath, params);
+	}
+
+	/**
+	 * Executes a query from a string.
+	 * @param client The ClickHouse client to use for executing the query.
+	 * @param query The SQL query to execute, with optional {key} placeholders for parameters.
+	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+	 * @returns Query result rows typed as `T`.
+	 * @example
+	 * const users = await queryFromString<User>(clickhouseClient,
+	 *   'SELECT * FROM users WHERE created_at >= {start_date} AND created_at <= {end_date}',
+	 *   { start_date: '2024-01-01', end_date: '2024-12-31' }
+	 * );
+	*/
+	public async queryFromString<T>(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
+		return await queryFromString<T>(this.clickhouseClient, query, params);
+	}
 }
 
 export const labDb = asyncSingletonProxy(LabDbClass);
