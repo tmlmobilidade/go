@@ -17,6 +17,9 @@ export const PlansPermissionSchema = z.object({
 		'update_feed_info_dates',
 		'update_gtfs_plan',
 		'update_pcgi_legacy',
+		'read_apex_file',
+		'update_apex_file',
+		'delete_apex_file',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),

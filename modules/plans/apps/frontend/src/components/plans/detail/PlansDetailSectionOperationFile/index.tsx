@@ -1,13 +1,12 @@
 'use client';
 
-import { FileComponent } from '@/components/common/FileComponent';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Collapsible, Label, Section, useToast } from '@tmlmobilidade/ui';
+import { Collapsible, FileItem, Label, Section, useToast } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function PlanDetailSectionFiles() {
+export function PlanDetailSectionOperationFile() {
 	//
 
 	//
@@ -35,23 +34,22 @@ export function PlanDetailSectionFiles() {
 
 	return (
 		<Collapsible
-			description="Ficheiros GTFS referentes a este plano."
-			title="Ficheiros GTFS"
+			description="Arquivo GTFS de operação."
+			title="Plano de Operação"
 		>
-
 			<Section gap="sm">
+
 				{planDetailContext.data.operation_file ? (
-					<FileComponent
-						fileData={planDetailContext.data.operation_file}
-						onClick={handleDownload}
+					<FileItem
+						fileName={planDetailContext.data.operation_file.name}
+						fileType={planDetailContext.data.operation_file.type}
+						onDownload={handleDownload}
 					/>
 				) : (
 					<Label>Nenhum ficheiro selecionado</Label>
 				)}
-			</Section>
 
+			</Section>
 		</Collapsible>
 	);
-
-	//
 }
