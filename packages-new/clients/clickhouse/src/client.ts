@@ -1,6 +1,10 @@
+/* * */
+
 import { ClickHouseClient, ClickHouseLogLevel, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
 import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
+
+/* * */
 
 /**
  * Configuration for a ClickHouse database client.
