@@ -3,7 +3,7 @@
 import { RoutePlannerLocationResults } from '@/components/routes/RoutePlannerLocationResults';
 import { type RoutePlannerLocation, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
 import { IconArrowsUpDown, IconCurrentLocation, IconMapPinFilled, IconPointFilled } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -60,15 +60,27 @@ export function RoutePlannerInput({
 		if (destination) setDestinationQuery(destination.label);
 	}, [destination]);
 
+	const currentLocationOption = useMemo<RoutePlannerLocation>(() => {
+		return {
+			detail: t('default:routes.RoutePlannerSearch.origin.current_location_detail'),
+			id: CURRENT_LOCATION_OPTION_ID,
+			label: t('default:routes.RoutePlannerSearch.origin.current_location'),
+			type: 'PLACE',
+		};
+	}, [t]);
+
+	const isCurrentLocationOrigin = origin?.label === currentLocationOption.label;
+
+	const originSearchData = useMemo(() => {
+		if (isCurrentLocationOrigin) return originSearch.data;
+		return [currentLocationOption, ...originSearch.data.filter(location => location.id !== CURRENT_LOCATION_OPTION_ID)];
+	}, [currentLocationOption, isCurrentLocationOrigin, originSearch.data]);
+
 	//
 	// C. Handle actions
 
 	const handleOriginLocationClick = () => {
-		handleCurrentLocationSelect(onOriginChange, setOriginQuery);
-	};
-
-	const handleDestinationLocationClick = () => {
-		handleCurrentLocationSelect(onDestinationChange, setDestinationQuery);
+		handleCurrentLocationSelect(onOriginChange, setOriginQuery, currentLocationOption.label, currentLocationOption.detail);
 	};
 
 	const handleOriginQueryChange = (value: string) => {
@@ -84,6 +96,12 @@ export function RoutePlannerInput({
 	};
 
 	const handleOriginSelect = (location: RoutePlannerLocation) => {
+		if (location.id === CURRENT_LOCATION_OPTION_ID) {
+			handleOriginLocationClick();
+			setActiveField(null);
+			return;
+		}
+
 		onOriginChange(location);
 		setOriginQuery(location.label);
 		setActiveField(null);
@@ -132,20 +150,23 @@ export function RoutePlannerInput({
 							{activeField === 'origin' && (
 								<RoutePlannerLocationResults
 									error={originSearch.error}
-									isLoading={originSearch.isLoading}
+									isLoading={originSearch.isLoading && originSearchData.length === 0}
 									loadingLabel={t('default:routes.RoutePlannerInput.search.loading')}
-									locations={originSearch.data}
+									locations={originSearchData}
 									onSelect={handleOriginSelect}
 								/>
 							)}
 						</div>
-						<button
-							aria-label={t('default:routes.RoutePlannerInput.origin.useLocation')}
-							className={styles.locationButton}
-							onClick={handleOriginLocationClick}
-						>
-							<IconCurrentLocation size={20} />
-						</button>
+						{!isCurrentLocationOrigin && (
+							<button
+								aria-label={t('default:routes.RoutePlannerInput.origin.useLocation')}
+								className={styles.locationButton}
+								onClick={handleOriginLocationClick}
+								type="button"
+							>
+								<IconCurrentLocation size={20} />
+							</button>
+						)}
 					</div>
 
 					<div className={styles.swapRow}>
@@ -153,6 +174,7 @@ export function RoutePlannerInput({
 							aria-label={t('default:routes.RoutePlannerInput.swap')}
 							className={styles.swapButton}
 							onClick={onSwap}
+							type="button"
 						>
 							<IconArrowsUpDown size={16} />
 						</button>
@@ -180,13 +202,6 @@ export function RoutePlannerInput({
 								/>
 							)}
 						</div>
-						<button
-							aria-label={t('default:routes.RoutePlannerInput.destination.useLocation')}
-							className={styles.locationButton}
-							onClick={handleDestinationLocationClick}
-						>
-							<IconCurrentLocation size={20} />
-						</button>
 					</div>
 
 				</div>
@@ -240,6 +255,10 @@ export function RoutePlannerInput({
 
 /* * */
 
+const CURRENT_LOCATION_OPTION_ID = '__current_location__';
+
+/* * */
+
 function formatDateForInput(date: Date) {
 	const offset = date.getTimezoneOffset();
 	const localDate = new Date(date.getTime() - offset * 60_000);
@@ -251,15 +270,16 @@ function formatDateForInput(date: Date) {
 function handleCurrentLocationSelect(
 	onChange: (location: RoutePlannerLocation) => void,
 	setQuery: (query: string) => void,
+	label: string,
+	detail: string,
 ) {
 	if (typeof navigator === 'undefined' || !navigator.geolocation) return;
 
 	navigator.geolocation.getCurrentPosition((position) => {
 		const lat = Number(position.coords.latitude.toFixed(6));
 		const lon = Number(position.coords.longitude.toFixed(6));
-		const label = `${lat},${lon}`;
 		const location: RoutePlannerLocation = {
-			detail: `Coordenadas | ${lat.toFixed(5)}, ${lon.toFixed(5)}`,
+			detail,
 			label,
 			lat,
 			lon,

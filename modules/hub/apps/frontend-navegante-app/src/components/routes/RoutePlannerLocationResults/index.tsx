@@ -14,11 +14,12 @@ interface RoutePlannerLocationResultsProps {
 	loadingLabel: string
 	locations: RoutePlannerLocation[]
 	onSelect: (location: RoutePlannerLocation) => void
+	variant?: 'dropdown' | 'inline'
 }
 
 /* * */
 
-export function RoutePlannerLocationResults({ error, isLoading, loadingLabel, locations, onSelect }: RoutePlannerLocationResultsProps) {
+export function RoutePlannerLocationResults({ error, isLoading, loadingLabel, locations, onSelect, variant = 'dropdown' }: RoutePlannerLocationResultsProps) {
 	//
 
 	//
@@ -53,11 +54,11 @@ export function RoutePlannerLocationResults({ error, isLoading, loadingLabel, lo
 	// C. Setup flags
 
 	if (isLoading) {
-		return <div className={styles.locationResultsStatus}>{loadingLabel}</div>;
+		return <div className={styles.locationResultsStatus} data-variant={variant}>{loadingLabel}</div>;
 	}
 
 	if (error) {
-		return <div className={styles.locationResultsStatus}>{error}</div>;
+		return <div className={styles.locationResultsStatus} data-variant={variant}>{error}</div>;
 	}
 
 	if (locations.length === 0) return null;
@@ -66,7 +67,7 @@ export function RoutePlannerLocationResults({ error, isLoading, loadingLabel, lo
 	// D. Render components
 
 	return (
-		<div className={styles.locationResults}>
+		<div className={styles.locationResults} data-variant={variant}>
 			{locations.map(location => (
 				<button
 					key={`${location.type}-${location.id || location.label}-${location.lat || ''}-${location.lon || ''}`}

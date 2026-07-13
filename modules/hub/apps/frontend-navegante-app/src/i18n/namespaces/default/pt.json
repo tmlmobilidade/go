@@ -236,25 +236,50 @@
 	"routes": {
 		"RoutePlanner": {
 			"actions": {
+				"clear": "Limpar",
+				"edit": "Editar",
 				"plan": "Calcular rota",
 				"planning": "A calcular..."
 			},
 			"errors": {
+				"location_unavailable": "Não foi possível usar a sua localização atual. Escolha uma partida para calcular a rota.",
 				"missing_locations": "Escolha a partida e o destino antes de calcular a rota.",
 				"no_itineraries": "Nenhuma alternativa encontrada. Experimente outra data ou localizações mais próximas da rede.",
 				"unknown": "Não foi possível calcular a rota."
 			},
 			"results": {
+				"alerts_count": "{count, plural, one {# aviso} other {# avisos}}",
+				"back_to_results": "Voltar às alternativas",
 				"best_alternatives": "Melhores alternativas",
 				"destination": "Destino",
 				"duration_unavailable": "Duração indisponível",
+				"filters": "Filtros de alternativas",
 				"hide_details": "Ocultar detalhes",
+				"intermediate_stops": "{count, plural, one {# paragem intermédia} other {# paragens intermédias}}",
 				"leg_duration": "{count, plural, one {# min} other {# min}}",
+				"modes": {
+					"bus": "Autocarro",
+					"ferry": "Barco",
+					"label": "Transportes",
+					"rail": "Comboio",
+					"subway": "Metro",
+					"tram": "Elétrico",
+					"transit": "Transporte"
+				},
 				"origin": "Origem",
 				"recommended": "Recomendado",
+				"ride_between": "Viajar de {from} até {to}",
 				"route_summary": "Resumo da rota",
+				"sort": {
+					"best": "Melhor",
+					"fastest": "Rápida",
+					"fewer_transfers": "Menos trocas",
+					"label": "Ordenar",
+					"least_walking": "Menos a pé"
+				},
 				"transfers": "{count, plural, =0 {Sem transbordos} one {# transbordo} other {# transbordos}}",
 				"view_details": "Ver detalhes",
+				"walk_between": "Caminhar de {from} até {to}",
 				"walk_label": "A pé",
 				"walking_time": "{count, plural, =0 {Sem caminhada} one {# min a pé} other {# min a pé}}"
 			},
@@ -293,6 +318,32 @@
 				"departure": "Partida às",
 				"now": "Agora"
 			}
+		},
+		"RoutePlannerSearch": {
+			"destination_placeholder": "Pesquisar paragem ou destino",
+			"favorites": {
+				"empty": "Ainda não existem favoritos.",
+				"title": "Favoritos"
+			},
+			"origin": {
+				"current_location": "A sua localização",
+				"current_location_detail": "Localização atual",
+				"edit": "Alterar origem",
+				"label": "Origem"
+			},
+			"recents": {
+				"campo_grande": "Campo Grande",
+				"lisboa_oriente": "Lisboa Oriente",
+				"santa_apolonia": "Santa Apolónia",
+				"title": "Recentes"
+			},
+			"time": {
+				"today": "Hoje"
+			},
+			"title": "Escolher destino"
+		},
+		"RoutePlannerTopSearch": {
+			"placeholder": "Para onde vai?"
 		}
 	},
 	"search": {

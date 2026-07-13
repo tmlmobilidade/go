@@ -9,6 +9,8 @@ import { VehiclesCounter } from '@/components/common/display/VehiclesCounter';
 import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { RoutePlanner } from '@/components/routes/RoutePlanner';
+import { RoutePlannerContextProvider } from '@/components/routes/RoutePlanner.context';
+import { RoutePlannerTopSearch } from '@/components/routes/RoutePlannerTopSearch';
 import { SearchDetail } from '@/components/search/SearchDetail';
 import { StopsDetail } from '@/components/stops/detail/StopsDetail';
 import { VehiclesDetail } from '@/components/vehicles/detail/VehiclesDetail';
@@ -41,8 +43,9 @@ export default function Page() {
 	// C. Render components
 
 	return (
-		<>
+		<RoutePlannerContextProvider>
 			<BaseMap />
+			<RoutePlannerTopSearch />
 			<BaseMapOverlaysControl />
 			<ActionBar />
 			<VehiclesDetail />
@@ -54,6 +57,6 @@ export default function Page() {
 			<SearchDetail />
 			<RoutePlanner />
 			<VehiclesCounter count={vehiclesContext.data.fc?.features?.length} />
-		</>
+		</RoutePlannerContextProvider>
 	);
 }

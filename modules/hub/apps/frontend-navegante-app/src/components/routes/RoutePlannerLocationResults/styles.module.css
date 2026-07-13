@@ -21,6 +21,17 @@
 	color: var(--color-text-secondary, #666);
 }
 
+.locationResults[data-variant='inline'],
+.locationResultsStatus[data-variant='inline'] {
+	position: static;
+	border-radius: 12px;
+	box-shadow: none;
+}
+
+.locationResultsStatus[data-variant='inline'] {
+	background-color: var(--color-system-background-100, #fff);
+}
+
 .locationResult {
 	all: unset;
 	box-sizing: border-box;

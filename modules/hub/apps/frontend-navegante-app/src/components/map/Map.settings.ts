@@ -1,3 +1,6 @@
+import goMapStyle from '@/components/map/go-map-styles.json' with { type: 'json' };
+import { type StyleSpecification } from 'maplibre-gl';
+
 /* * */
 
 /**
@@ -24,7 +27,7 @@ export const mapDefaultValues = Object.freeze({
  */
 
 export const mapDefaultStyles = Object.freeze({
-	map: 'https://maps.carrismetropolitana.pt/styles/default/style.json',
+	map: goMapStyle as StyleSpecification,
 	satellite: {
 		glyphs: '{fontstack}/{range}.pbf',
 		layers: [

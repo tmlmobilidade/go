@@ -94,7 +94,7 @@
 
 .locationValue {
 	width: 100%;
-	font-size: 15px;
+	font-size: 16px;
 	font-weight: 600;
 	color: var(--color-text-primary, #111);
 	outline: 0;
@@ -136,7 +136,8 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	justify-content: flex-end;
+	justify-content: center;
+	min-height: 36px;
 	padding-right: 0;
 }
 
@@ -214,7 +215,7 @@
 
 .timeInput {
 	width: 100%;
-	font-size: 15px;
+	font-size: 16px;
 	font-weight: 700;
 	color: var(--color-text-primary, #111);
 	outline: 0;

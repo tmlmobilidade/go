@@ -15,7 +15,7 @@ interface LineBadgeProps {
 	lineId?: string
 	onClick?: () => void
 	shortName?: string
-	size?: 'lg' | 'md'
+	size?: 'lg' | 'md' | 'sm'
 	textColor?: string
 	withAlertIcon?: boolean
 }

@@ -9,11 +9,14 @@ import styles from './styles.module.css';
 
 /* * */
 
+type BottomSheetSize = 'fit' | 'full' | 'half' | 'short';
+
 interface BottomSheetProps {
 	onClose: () => void
 	opened: boolean
-	size?: 'fit' | 'full' | 'half' | 'short'
+	size?: BottomSheetSize
 	title?: string
+	withOverlay?: boolean
 }
 
 /* * */
@@ -24,6 +27,7 @@ export function BottomSheet({
 	opened,
 	size = 'fit',
 	title,
+	withOverlay = true,
 }: PropsWithChildren<BottomSheetProps>) {
 	//
 
@@ -91,12 +95,14 @@ export function BottomSheet({
 
 	return (
 		<>
-			<div
-				aria-hidden="true"
-				className={styles.overlay}
-				data-opened={opened}
-				onClick={onClose}
-			/>
+			{withOverlay && (
+				<div
+					aria-hidden="true"
+					className={styles.overlay}
+					data-opened={opened}
+					onClick={onClose}
+				/>
+			)}
 
 			<section
 				ref={dialogRef}

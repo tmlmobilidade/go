@@ -1,11 +1,13 @@
 'use client';
 
+import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { formatMotisPlanDuration, formatMotisPlanDurationMinutes, formatMotisPlanTime, getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisItineraryStart, getMotisItineraryWalkMinutes, getMotisLegDetail, getMotisLegDurationSeconds, getMotisLegMode, getMotisLegModeKind, getMotisLegRouteLabel, getMotisTransfersCount, isMotisWalkingLeg, type MotisItinerary, type MotisPlanLeg } from '@/utils/route-planner-motis';
-import { IconBike, IconBus, IconCar, IconChevronRight, IconElevator, IconFerry, IconPlane, IconRefresh, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
+import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
+import { formatMotisPlanDuration, formatMotisPlanDurationMinutes, formatMotisPlanTime, getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisItineraryStart, getMotisItineraryWalkMinutes, getMotisLegDurationSeconds, getMotisLegMode, getMotisLegModeKind, getMotisLegRouteLabel, getMotisLegTripIds, getMotisPlanPlaceStopId, isMotisWalkingLeg, type MotisItinerary, type MotisPlanLeg } from '@/utils/route-planner-motis';
+import { IconAlertTriangle, IconBike, IconBus, IconCar, IconElevator, IconFerry, IconListDetails, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
-import { useMemo, useState } from 'react';
+import { type MouseEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -13,118 +15,123 @@ import styles from './styles.module.css';
 /* * */
 
 interface RoutePlannerItineraryCardProps {
-	index: number
+	isSelected?: boolean
 	itinerary: MotisItinerary
+	onOpenDetails?: () => void
+	onSelect?: () => void
 }
 
 /* * */
 
-export function RoutePlannerItineraryCard({ index, itinerary }: RoutePlannerItineraryCardProps) {
+export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpenDetails, onSelect }: RoutePlannerItineraryCardProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const alertsContext = useAlertsContext();
 	const linesContext = useLinesContext();
-	const [isExpanded, setIsExpanded] = useState(false);
+	const tripUpdatesContext = useTripUpdatesContext();
 
 	//
 	// B. Transform data
 
-	const legs = Array.isArray(itinerary.legs) ? itinerary.legs : [];
+	const legs = useMemo(() => {
+		return Array.isArray(itinerary.legs) ? itinerary.legs : [];
+	}, [itinerary.legs]);
 	const start = getMotisItineraryStart(itinerary);
 	const end = getMotisItineraryEnd(itinerary);
 	const duration = formatMotisPlanDuration(getMotisItineraryDurationSeconds(itinerary));
-	const transfers = getMotisTransfersCount(itinerary.transfers, legs);
 	const walkingMinutes = getMotisItineraryWalkMinutes(legs);
-	const fallbackLegOrigin = t('default:routes.RoutePlanner.results.origin');
-	const fallbackLegDestination = t('default:routes.RoutePlanner.results.destination');
-
 	const lineByShortName = useMemo(() => {
 		return new Map(linesContext.data.lines.map(line => [line.short_name, line]));
 	}, [linesContext.data.lines]);
 
+	const realtimeStatus = useMemo(() => {
+		return getItineraryRealtimeStatus(legs, tripUpdatesContext);
+	}, [legs, tripUpdatesContext]);
+
+	const itineraryAlerts = useMemo(() => {
+		const result = new Map<string, ReturnType<typeof alertsContext.actions.getAlertsByLineId>[number]>();
+
+		legs.forEach((leg) => {
+			if (isMotisWalkingLeg(leg)) return;
+			const line = lineByShortName.get(getMotisLegRouteLabel(leg));
+			if (!line) return;
+
+			alertsContext.actions.getAlertsByLineId(line._id).forEach((alert) => {
+				result.set(alert._id, alert);
+			});
+		});
+
+		return Array.from(result.values());
+	}, [alertsContext, legs, lineByShortName]);
+
 	//
 	// C. Handle actions
 
-	const handleToggleDetails = () => {
-		setIsExpanded(current => !current);
+	const handleDetailsClick = (event: MouseEvent<HTMLButtonElement>) => {
+		event.stopPropagation();
+		onOpenDetails?.();
 	};
 
 	//
 	// D. Render components
 
 	return (
-		<article className={styles.card} data-recommended={index === 0}>
-			<div className={styles.header}>
-				<div className={styles.summaryRow}>
-					<div className={styles.duration}>
-						<strong>{duration || t('default:routes.RoutePlanner.results.duration_unavailable')}</strong>
-					</div>
+		<article className={styles.card} data-selected={isSelected} onClick={onSelect}>
+			<div className={styles.topRow}>
+				<div className={styles.duration}>
+					<strong>{duration || t('default:routes.RoutePlanner.results.duration_unavailable')}</strong>
+				</div>
 
-					{index === 0 && (
-						<span className={styles.recommended}>
-							{t('default:routes.RoutePlanner.results.recommended')}
+				<span className={styles.timeRange}>
+					{formatMotisPlanTime(start)}
+					{' -> '}
+					{formatMotisPlanTime(end)}
+				</span>
+
+				<span className={styles.walkMetric}>
+					<IconWalk size={18} />
+					{t('default:routes.RoutePlanner.results.walking_time', '', { count: walkingMinutes })}
+				</span>
+			</div>
+
+			{(realtimeStatus.delaySeconds !== 0 || itineraryAlerts.length > 0) && (
+				<div className={styles.noticeRow}>
+					{realtimeStatus.delaySeconds !== 0 && (
+						<span className={styles.delayBadge} data-delay-kind={realtimeStatus.delaySeconds > 0 ? 'late' : 'early'}>
+							{formatDelayLabel(realtimeStatus.delaySeconds)}
+						</span>
+					)}
+
+					{itineraryAlerts.length > 0 && (
+						<span className={styles.alertBadge}>
+							<IconAlertTriangle size={14} />
+							{t('default:routes.RoutePlanner.results.alerts_count', '', { count: itineraryAlerts.length })}
 						</span>
 					)}
 				</div>
-
-				<div className={styles.headerMeta}>
-					<span>{formatMotisPlanTime(start)}{' -> '}{formatMotisPlanTime(end)}</span>
-					<span className={styles.metric}>
-						<IconRefresh size={16} />
-						{t('default:routes.RoutePlanner.results.transfers', '', { count: transfers })}
-					</span>
-					<span className={styles.metric}>
-						<IconWalk size={16} />
-						{t('default:routes.RoutePlanner.results.walking_time', '', { count: walkingMinutes })}
-					</span>
-				</div>
-			</div>
-
-			<div aria-label={t('default:routes.RoutePlanner.results.route_summary')} className={styles.routeStrip}>
-				{legs.map((leg, legIndex) => (
-					<RoutePlannerLegStripItem
-						key={`${getMotisLegMode(leg)}-${legIndex}`}
-						leg={leg}
-						lineByShortName={lineByShortName}
-						showConnector={legIndex < legs.length - 1}
-					/>
-				))}
-			</div>
-
-			{isExpanded && (
-				<div className={styles.legList}>
-					{legs.map((leg, legIndex) => (
-						<div key={`${getMotisLegDetail(leg, fallbackLegOrigin, fallbackLegDestination)}-${legIndex}`} className={styles.legRow}>
-							<div className={styles.legIcon} data-mode={getMotisLegModeKind(leg)}>
-								<RoutePlannerModeIcon leg={leg} size={18} />
-							</div>
-							<div className={styles.legContent}>
-								<div className={styles.legTitle}>
-									<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} />
-									{!isMotisWalkingLeg(leg) && leg.headsign && <span className={styles.headsign}>{leg.headsign}</span>}
-									<RoutePlannerLegDurationChip leg={leg} />
-								</div>
-								<span className={styles.legDetail}>
-									{getMotisLegDetail(leg, fallbackLegOrigin, fallbackLegDestination)}
-								</span>
-							</div>
-						</div>
-					))}
-				</div>
 			)}
 
-			<button
-				aria-expanded={isExpanded}
-				className={styles.detailsButton}
-				onClick={handleToggleDetails}
-				type="button"
-			>
-				{isExpanded ? t('default:routes.RoutePlanner.results.hide_details') : t('default:routes.RoutePlanner.results.view_details')}
-				<IconChevronRight size={18} />
-			</button>
+			<div className={styles.bottomRow}>
+				<div aria-label={t('default:routes.RoutePlanner.results.route_summary')} className={styles.routeStrip}>
+					{legs.map((leg, legIndex) => (
+						<RoutePlannerLegStripItem
+							key={`${getMotisLegMode(leg)}-${legIndex}`}
+							leg={leg}
+							lineByShortName={lineByShortName}
+							showConnector={legIndex < legs.length - 1}
+						/>
+					))}
+				</div>
+				<button className={styles.detailsButton} onClick={handleDetailsClick} type="button">
+					<IconListDetails size={16} />
+					{t('default:routes.RoutePlanner.results.view_details')}
+				</button>
+			</div>
+
 		</article>
 	);
 
@@ -198,7 +205,7 @@ function RoutePlannerLinePill({ leg, lineByShortName }: RoutePlannerLinePillProp
 	// C. Render components
 
 	if (!isMotisWalkingLeg(leg) && lineData) {
-		return <LineBadge lineData={lineData} size="md" />;
+		return <LineBadge lineData={lineData} size="sm" />;
 	}
 
 	return (
@@ -209,41 +216,6 @@ function RoutePlannerLinePill({ leg, lineByShortName }: RoutePlannerLinePillProp
 
 	//
 }
-
-/* * */
-
-interface RoutePlannerLegDurationChipProps {
-	leg: MotisPlanLeg
-}
-
-function RoutePlannerLegDurationChip({ leg }: RoutePlannerLegDurationChipProps) {
-	//
-
-	//
-	// A. Setup variables
-
-	const { t } = useTranslation();
-
-	//
-	// B. Transform data
-
-	const durationMinutes = formatMotisPlanDurationMinutes(getMotisLegDurationSeconds(leg));
-
-	//
-	// C. Render components
-
-	if (durationMinutes === null) return null;
-
-	return (
-		<span className={styles.legDuration}>
-			{t('default:routes.RoutePlanner.results.leg_duration', '', { count: durationMinutes })}
-		</span>
-	);
-
-	//
-}
-
-/* * */
 
 interface RoutePlannerModeIconProps {
 	leg: MotisPlanLeg
@@ -264,4 +236,32 @@ function RoutePlannerModeIcon({ leg, size }: RoutePlannerModeIconProps) {
 	if (modeKind === 'transit') return <IconRoute size={size} />;
 
 	return <IconTrain size={size} />;
+}
+
+/* * */
+
+function getItineraryRealtimeStatus(legs: MotisPlanLeg[], tripUpdatesContext: ReturnType<typeof useTripUpdatesContext>) {
+	const updates = legs.flatMap((leg) => {
+		const tripIds = getMotisLegTripIds(leg);
+		if (tripIds.length === 0) return [];
+
+		return [getMotisPlanPlaceStopId(leg.from), getMotisPlanPlaceStopId(leg.to)]
+			.filter((stopId): stopId is string => typeof stopId === 'string' && stopId.length > 0)
+			.map(stopId => tripUpdatesContext.actions.getTripUpdateForStop(tripIds, stopId))
+			.filter(Boolean);
+	});
+
+	const mostRelevantDelay = updates.reduce((selectedDelay, update) => {
+		if (!update) return selectedDelay;
+		if (Math.abs(update.delay) <= Math.abs(selectedDelay)) return selectedDelay;
+		return update.delay;
+	}, 0);
+
+	return { delaySeconds: mostRelevantDelay };
+}
+
+function formatDelayLabel(delaySeconds: number) {
+	const absoluteMinutes = Math.max(1, Math.round(Math.abs(delaySeconds) / 60));
+	if (delaySeconds > 0) return `+${absoluteMinutes} min`;
+	return `-${absoluteMinutes} min`;
 }

@@ -12,8 +12,10 @@ import { MapViewOverlayVehicles, MapViewOverlayVehiclesInteractiveLayerId, MapVi
 import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
 import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
 import { useUserLocation } from '@/components/map/use-user-location';
+import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
+import { centerMap } from '@/utils/map.utils';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
@@ -32,12 +34,13 @@ export function BaseMap() {
 	const stopsContext = useStopsContext();
 	const alertsContext = useAlertsContext();
 	const vehiclesContext = useVehiclesContext();
+	const routePlannerContext = useRoutePlannerContext();
 
 	const { data: { activeBaseMapOverlays } } = useMapContext();
 	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
 	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
 
-	const { 'viewport-map': viewportMap } = useMap();
+	const { 'base-map': baseMap } = useMap();
 
 	const focusedAlertId = activeBottomSheet?.view === 'alerts-detail' ? activeBottomSheet.entityId : null;
 	const focusedVehicleId = activeBottomSheet?.view === 'vehicles-detail' ? activeBottomSheet.entityId : null;
@@ -84,7 +87,7 @@ export function BaseMap() {
 	}, [vehiclesContext.data.fc, focusedVehicleId]);
 
 	useEffect(() => {
-		if (!viewportMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;
+		if (!baseMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;
 
 		const focusedFeature = alertsMapData.features.find(
 			feature => feature.geometry?.type === 'Point',
@@ -93,15 +96,23 @@ export function BaseMap() {
 		if (!focusedFeature || focusedFeature.geometry?.type !== 'Point') return;
 
 		// moveMap(viewportMap, focusedFeature.geometry.coordinates);
-	}, [viewportMap, focusedAlertId, alertsMapData.features, activeBaseMapOverlays]);
+	}, [baseMap, focusedAlertId, alertsMapData.features, activeBaseMapOverlays]);
 
 	useEffect(() => {
-		if (!viewportMap || !shape?.geojson) return;
+		if (!baseMap || !shape?.geojson) return;
 
 		// centerMap(viewportMap, [shape.geojson], {
 		// 	padding: { bottom: 320, left: 80, right: 80, top: 80 },
 		// });
-	}, [viewportMap, shape?.geojson]);
+	}, [baseMap, shape?.geojson]);
+
+	useEffect(() => {
+		if (!baseMap || routePlannerContext.data.route_map_data.shapeData.features.length === 0) return;
+
+		centerMap(baseMap, routePlannerContext.data.route_map_data.shapeData.features, {
+			padding: getRoutePlannerMapFitPadding(routePlannerContext.data.view_mode),
+		});
+	}, [baseMap, routePlannerContext.data.selected_itinerary_index, routePlannerContext.data.route_map_data.shapeData, routePlannerContext.data.view_mode]);
 
 	//
 	// C. Handle actions
@@ -171,6 +182,15 @@ export function BaseMap() {
 				/>
 			)}
 
+			{routePlannerContext.data.route_map_data.shapeData.features.length > 0 && (
+				<MapViewStylePath
+					idPrefix="route-planner"
+					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
+					shapeData={routePlannerContext.data.route_map_data.shapeData}
+					waypointsData={routePlannerContext.data.route_map_data.waypointsData}
+				/>
+			)}
+
 			<MapViewOverlayVehicles
 				vehiclesData={vehiclesMapData}
 				visible={activeBaseMapOverlays.includes('vehicles')}
@@ -189,4 +209,18 @@ export function BaseMap() {
 			/>
 		</MapView>
 	);
+}
+
+/* * */
+
+function getRoutePlannerMapFitPadding(viewMode: ReturnType<typeof useRoutePlannerContext>['data']['view_mode']) {
+	const viewportHeight = typeof window === 'undefined' ? 0 : window.innerHeight;
+	const resultsSheetHeight = viewMode === 'results' ? Math.round(viewportHeight * 0.55) : 0;
+
+	return {
+		bottom: Math.max(360, resultsSheetHeight + 32),
+		left: 60,
+		right: 60,
+		top: 120,
+	};
 }

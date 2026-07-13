@@ -11,6 +11,7 @@ export const MapViewStylePathInteractiveLayerId = 'default-layer-path-waypoints'
 /* * */
 
 interface Props {
+	idPrefix?: string
 	presentBeforeId?: string
 	shapeData?: GeoJSON.Feature | GeoJSON.FeatureCollection
 	waypointsData?: GeoJSON.FeatureCollection
@@ -22,15 +23,23 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
 /* * */
 
-export function MapViewStylePath({ presentBeforeId, shapeData = baseGeoJsonFeatureCollection, waypointsData = baseGeoJsonFeatureCollection }: Props) {
+export function MapViewStylePath({ idPrefix = 'default', presentBeforeId, shapeData = baseGeoJsonFeatureCollection, waypointsData = baseGeoJsonFeatureCollection }: Props) {
+	const shapeSourceId = `${idPrefix}-source-path-shape`;
+	const waypointsSourceId = `${idPrefix}-source-path-waypoints`;
+	const waypointsLayerId = `${idPrefix}-layer-path-waypoints`;
+	const shapeDirectionLayerId = `${idPrefix}-layer-path-shape-direction`;
+	const shapeLineLayerId = `${idPrefix}-layer-path-shape-line`;
+	const shapePaddingLayerId = `${idPrefix}-layer-path-shape-padding`;
+	const shapePaddingShadowLayerId = `${idPrefix}-layer-path-shape-padding-shadow`;
+
 	return (
 		<>
 
-			<Source data={waypointsData} generateId={true} id="default-source-path-waypoints" type="geojson">
+			<Source data={waypointsData} generateId={true} id={waypointsSourceId} type="geojson">
 				<Layer
 					beforeId={presentBeforeId}
-					id="default-layer-path-waypoints"
-					source="default-source-path-waypoints"
+					id={waypointsLayerId}
+					source={waypointsSourceId}
 					type="circle"
 					paint={{
 						'circle-color': ['get', 'text_color'],
@@ -57,11 +66,11 @@ export function MapViewStylePath({ presentBeforeId, shapeData = baseGeoJsonFeatu
 				/>
 			</Source>
 
-			<Source data={shapeData} generateId={true} id="default-source-path-shape" type="geojson">
+			<Source data={shapeData} generateId={true} id={shapeSourceId} type="geojson">
 				<Layer
-					beforeId="default-layer-path-waypoints"
-					id="default-layer-path-shape-direction"
-					source="default-source-path-shape"
+					beforeId={waypointsLayerId}
+					id={shapeDirectionLayerId}
+					source={shapeSourceId}
 					type="symbol"
 					layout={{
 						'icon-allow-overlap': true,
@@ -80,9 +89,9 @@ export function MapViewStylePath({ presentBeforeId, shapeData = baseGeoJsonFeatu
 					}}
 				/>
 				<Layer
-					beforeId="default-layer-path-shape-direction"
-					id="default-layer-path-shape-line"
-					source="default-source-path-shape"
+					beforeId={shapeDirectionLayerId}
+					id={shapeLineLayerId}
+					source={shapeSourceId}
 					type="line"
 					layout={{
 						'line-cap': 'round',
@@ -94,9 +103,9 @@ export function MapViewStylePath({ presentBeforeId, shapeData = baseGeoJsonFeatu
 					}}
 				/>
 				<Layer
-					beforeId="default-layer-path-shape-line"
-					id="default-layer-path-shape-padding"
-					source="default-source-path-shape"
+					beforeId={shapeLineLayerId}
+					id={shapePaddingLayerId}
+					source={shapeSourceId}
 					type="line"
 					layout={{
 						'line-cap': 'round',
@@ -108,9 +117,9 @@ export function MapViewStylePath({ presentBeforeId, shapeData = baseGeoJsonFeatu
 					}}
 				/>
 				<Layer
-					beforeId="default-layer-path-shape-padding"
-					id="default-layer-path-shape-padding-shadow"
-					source="default-source-path-shape"
+					beforeId={shapePaddingLayerId}
+					id={shapePaddingShadowLayerId}
+					source={shapeSourceId}
 					type="line"
 					layout={{
 						'line-cap': 'round',
