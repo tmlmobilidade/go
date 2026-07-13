@@ -1,5 +1,6 @@
 'use client';
 
+import { RideAnalysisAlerts } from '@/components/rides/analysis/RideAnalysisAlerts';
 import { RideAnalysisApexLocations } from '@/components/rides/analysis/RideAnalysisApexLocations';
 import { RideAnalysisApexOnBoardRefunds } from '@/components/rides/analysis/RideAnalysisApexOnBoardRefunds';
 import { RideAnalysisApexOnBoardSales } from '@/components/rides/analysis/RideAnalysisApexOnBoardSales';
@@ -43,6 +44,7 @@ export function RideAnalysisAnalysis() {
 			<RideAnalysisApexOnBoardSales />
 			<RideAnalysisApexOnBoardRefunds />
 			<RideAnalysisApexLocations />
+			<RideAnalysisAlerts />
 		</>
 	);
 }

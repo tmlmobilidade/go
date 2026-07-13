@@ -10,13 +10,14 @@ import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPa
 import { RidesListCellVehicles } from '@/components/rides/list/RidesListCellVehicles';
 import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
 import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Section, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import useSWR from 'swr';
 
 /* * */
 
@@ -35,6 +36,8 @@ export function RidesList() {
 
 	const ridesListContext = useRidesListContext();
 	const { t } = useTranslation();
+
+	const { data: allScheduledData = [] } = useSWR<Alert[], Error>(API_ROUTES.alerts.ALERTS_LIST);
 
 	const formatTimestamp = (timestamp: UnixTimestamp) => {
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
@@ -78,7 +81,12 @@ export function RidesList() {
 		},
 		{
 			accessor: 'headsign',
-			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.pattern_id} />,
+			render: (item) => {
+				const hasAlert = allScheduledData?.find(alert => alert.references.some(reference => Number(alert.reference_type === 'lines' ? reference.parent_id : reference.child_ids.some(childId => Number(childId) === Number(item.line_id))) === Number(item.line_id)));
+				return (
+					<RidesListCellHeadsign alertId={hasAlert?._id} hasAlert={!!hasAlert} headsign={item.headsign} patternId={item.pattern_id} />
+				);
+			},
 			title: t('default:list.RidesList.columns.headsign.label'),
 			width: 500,
 		},

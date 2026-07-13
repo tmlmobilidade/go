@@ -164,6 +164,27 @@
 			}
 		},
 		"analysis": {
+			"RideAnalysisAlerts": {
+				"Table": {
+					"columns": {
+						"alert_id": {
+							"label": "Id Alert"
+						},
+						"created_at": {
+							"label": "Timestamp"
+						},
+						"description": {
+							"label": "Descrição"
+						},
+						"title": {
+							"label": "Título do Alerta"
+						}
+					}
+				},
+				"description": "Alertas das circulações",
+				"no_data": "Circulação sem alerta",
+				"title": "Alertas"
+			},
 			"RideAnalysisApexLocations": {
 				"Table": {
 					"columns": {
