@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { apiCache } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -12,7 +12,7 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param reply The reply object.
  */
 export async function getTripUpdatesGtfsRtJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
-	const raw = await apiCache.get('hub:v1:realtime:eta:gtfs');
+	const raw = await cacheDb.get('hub:v1:realtime:eta:gtfs');
 	if (!raw) {
 		Logger.error({ message: '[hub/v1/realtime:getTripUpdatesGtfsRtJson()] No data in cache.' });
 		return reply

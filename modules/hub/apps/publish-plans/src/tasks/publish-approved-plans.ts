@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { apiCache } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { type HubPlan, HubPlanSchema } from '@tmlmobilidade/go-types-public-info';
 import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -58,7 +58,7 @@ export async function publishApprovedPlans() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:plans:approved:json', JSON.stringify(approvedPlans));
+	await cacheDb.set('hub:v1:plans:approved:json', JSON.stringify(approvedPlans));
 
 	Logger.success(`Finished publishing ${approvedPlans.length} approved plans JSON feed. (${globalTimer.get()})`);
 
