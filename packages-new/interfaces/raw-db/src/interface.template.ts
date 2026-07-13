@@ -115,7 +115,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 * @param options Optional insert options to configure the behavior of the insert operation.
 	 * @returns A promise that resolves to the result of the insertMany operation.
 	 */
-	public async insertMany(data: TCreate[], options?: InsertOneOptions) {
+	public async insertMany(data: TCreate[], options?: BulkWriteOptions) {
 		await this.ensureInitialized();
 		// If no create schema is defined, throw an error.
 		if (!this.createSchema) throw new Error(`No schema defined for insert operation for ${this.collectionName} collection.`);
