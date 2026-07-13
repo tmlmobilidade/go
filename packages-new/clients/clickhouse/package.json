@@ -34,6 +34,9 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@clickhouse/client": "1.23.0",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/ssh": "*",
 		"luxon": "3.7.2",
 		"zod": "3.25.76"
 	},
