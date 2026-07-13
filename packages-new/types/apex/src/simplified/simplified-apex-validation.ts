@@ -1,5 +1,6 @@
 /* * */
 
+import { ApexControlStatusSchema } from '@/utils/control-status.js';
 import { ApexEventTypeSchema } from '@/utils/event-type.js';
 import { ApexValidationCategorySchema } from '@/utils/validation-category.js';
 import { ApexValidationStatusSchema, ValidApexValidationStatusSchema } from '@/utils/validation-status.js';
@@ -17,6 +18,8 @@ export const SimplifiedApexValidationSchema = z.object({
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
 	event_type: ApexEventTypeSchema,
+	final_control_status: ApexControlStatusSchema,
+	inspection_id: z.string().nullable().default(null),
 	is_ok: z.boolean(),
 	is_ok_pcgi: z.boolean(),
 	is_passenger: z.boolean(),
@@ -55,8 +58,10 @@ export const SimplifiedApexValidationSchema = z.object({
 	const hasAseCounterValue = !!val.mac_ase_counter_value && val.mac_ase_counter_value > 0;
 	const hasMacSamSerialNumber = !!val.mac_sam_serial_number;
 	const hasValidationStatus = !!val.validation_status;
+	const hasFinalControlStatus = !!val.final_control_status;
+	const hasInspectionId = !!val.inspection_id;
 	// Combine the individual conditions
-	const isOk = hasStopId && hasDeviceId && hasProductId && hasAseCounterValue && hasMacSamSerialNumber && hasValidationStatus;
+	const isOk = hasStopId && hasDeviceId && hasProductId && hasAseCounterValue && hasMacSamSerialNumber && hasValidationStatus && hasFinalControlStatus && hasInspectionId;
 	// Return the transformed value
 	return { ...val, is_ok: isOk };
 }).transform((val) => {
