@@ -2,7 +2,7 @@
 
 import { type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
 import { isSameIndex, prepareMongoIndexOptions } from '@/utils/mongo/index.js';
-import { AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, Collection, CreateIndexesOptions, Db, Filter, FindOptions, InsertOneOptions, WithId } from '@tmlmobilidade/go-clients-mongo';
+import { AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, Collection, CreateIndexesOptions, Db, Document, Filter, FindOptions, InsertOneOptions, WithId } from '@tmlmobilidade/go-clients-mongo';
 import { Logger } from '@tmlmobilidade/logger';
 import { z } from 'zod';
 
@@ -19,6 +19,8 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	//
 	private readonly collection: Collection<T>;
 
+	private initPromise: null | Promise<void> = null;
+
 	/**
 	 * @param collectionName - The name of the collection to create the interface for.
 	 * @param database - The database to create the interface for.
@@ -26,10 +28,15 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 * @param indexDescription - The index description to use for the collection.
 	 */
 	public constructor(collectionName: string, database: Db, createSchema: z.ZodSchema, indexDescription: false | SimplifiedMongoIndex<T>[] = []) {
+		this.collectionName = collectionName;
 		this.collection = database.collection<T>(collectionName);
 		this.database = database;
 		this.createSchema = createSchema;
 		this.indexDescription = indexDescription;
+		this.initPromise = this.init().catch((error) => {
+			Logger.error({ error, message: `MONGODB [${this.collectionName}]: Error @ constructor(): ${(error as Error).message}` });
+			throw error;
+		});
 	}
 
 	/**
@@ -38,6 +45,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 * @returns A promise that resolves to the count of matching documents.
 	 */
 	public async count(filter?: Filter<T>): Promise<number> {
+		await this.ensureInitialized();
 		return await this.collection.countDocuments(filter);
 	}
 
@@ -48,6 +56,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 * @returns A promise that resolves to an array of distinct values for the given key.
 	 */
 	public async distinct<Key extends keyof WithId<T>>(key: Key, filter: Filter<T>) {
+		await this.ensureInitialized();
 		return this.collection.distinct(key, filter);
 	}
 
@@ -59,6 +68,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 * @returns A promise that resolves to an array of matching documents.
 	 */
 	public async findMany(filter: Filter<T>, options?: FindOptions) {
+		await this.ensureInitialized();
 		return await this.collection.find(filter, options).toArray();
 	}
 
@@ -69,6 +79,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 * @returns A promise that resolves to the matching document or null if not found.
 	 */
 	public async findOne(filter: Filter<T>, options?: FindOptions) {
+		await this.ensureInitialized();
 		return await this.collection.findOne(filter, options);
 	}
 
@@ -79,7 +90,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 * @warning Use with caution: direct access to the collection allows for executing arbitrary queries.
 	 */
 	public async getCollection(): Promise<Collection<T>> {
-		if (!this.collection) await this.init();
+		await this.ensureInitialized();
 		return this.collection;
 	}
 
@@ -94,6 +105,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 * It is the responsibility of the caller to ensure that the operations are valid and conform to the expected schemas.
 	 */
 	public async bulkWrite(operations: AnyBulkWriteOperation<T>[], options?: BulkWriteOptions): Promise<BulkWriteResult> {
+		await this.ensureInitialized();
 		return await this.collection.bulkWrite(operations, options);
 	}
 
@@ -104,6 +116,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 * @returns A promise that resolves to the result of the insertMany operation.
 	 */
 	public async insertMany(data: TCreate[], options?: InsertOneOptions) {
+		await this.ensureInitialized();
 		// If no create schema is defined, throw an error.
 		if (!this.createSchema) throw new Error(`No schema defined for insert operation for ${this.collectionName} collection.`);
 		// Validate each document against the create schema
@@ -117,6 +130,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	}
 
 	public async insertOne(data: TCreate, options?: InsertOneOptions) {
+		await this.ensureInitialized();
 		// If no create schema is defined, throw an error.
 		if (!this.createSchema) throw new Error(`No schema defined for insert operation for ${this.collectionName} collection.`);
 		// Validate the document against the create schema
@@ -140,6 +154,11 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 		await this.syncIndexes();
 		// Call postInit for any additional setup logic defined in subclasses
 		await this.postInit();
+	}
+
+	private async ensureInitialized() {
+		if (!this.initPromise) this.initPromise = this.init();
+		await this.initPromise;
 	}
 
 	/**

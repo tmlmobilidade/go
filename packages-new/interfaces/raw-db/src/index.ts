@@ -14,7 +14,7 @@ class RawDBClass {
 	//
 	private static _instance: RawDBClass;
 
-	private mongoClient: MongoClient;
+	private readonly mongoClient: MongoClient;
 
 	//
 	// Databases
@@ -22,28 +22,20 @@ class RawDBClass {
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
-	 * @param options Optional Mongo client connection options.
-	 * @throws Error if the environment variable for the database URI is missing or if the connection fails.
+	 * @throws Error if required RAW_DB_* environment variables are missing or if the connection fails.
 	 */
 	public static async getInstance() {
 		if (!RawDBClass._instance) {
-			const instance = new RawDBClass();
-			await instance.connect();
-			RawDBClass._instance = instance;
+			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'RAW_DB' });
+			RawDBClass._instance = new RawDBClass(mongoClient);
 		}
 		return RawDBClass._instance;
 	}
 
-	private async connect() {
-		// Attempt to connect to the MonRawDB database
-		const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'RAW_DB' });
-		// Initialize the MonRawDB connector
-		this.mongoClient = mongoClient;
-	}
-
 	//
 	// Constructor
-	private constructor() {
+	private constructor(mongoClient: MongoClient) {
+		this.mongoClient = mongoClient;
 		this.raw = new RawDatabase(this.mongoClient);
 	}
 }
