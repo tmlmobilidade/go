@@ -9,7 +9,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 type ClickhouseFields<T extends object> = Array<Extract<keyof T, string>> | Extract<keyof T, string>;
 
-interface ClickhouseInterfaceTableOptions<T extends object> {
+export interface ClickhouseInterfaceTableOptions<T extends object> {
 	engine?: ClickHouseTableEngine<T>
 	manageSchema?: boolean
 	orderBy?: Array<ClickhouseField<T>> | ClickhouseField<T>

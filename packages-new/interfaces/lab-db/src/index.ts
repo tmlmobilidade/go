@@ -1,9 +1,10 @@
 /* * */
 
-import { ClickHouseClient, ClickHouseDatabaseClient } from '@tmlmobilidade/go-clients-clickhouse';
+import { ClickHouseClient, ClickHouseDatabaseClient, queryFromFile, queryFromString } from '@tmlmobilidade/go-clients-clickhouse';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
-import { OperationDatabase } from './databases/opetation.js';
+import { OperationDatabase } from './databases/operation.js';
+import { SimplifiedApexDatabase } from './databases/simplified-apex.js';
 
 /* * */
 
@@ -19,6 +20,8 @@ class LabDbClass {
 	//
 	// Databases
 	public readonly operation: OperationDatabase;
+	public readonly simplifiedApex: SimplifiedApexDatabase;
+
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
 	 * @param options Optional Mongo client connection options.
@@ -47,6 +50,8 @@ class LabDbClass {
 	// Constructor
 	private constructor() {
 		this.operation = new OperationDatabase(this.clickhouseClient);
+		this.simplifiedApex = new SimplifiedApexDatabase(this.clickhouseClient);
+	}
 }
 
 export const labDb = asyncSingletonProxy(LabDbClass);

@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-clients-clickhouse": "*",
+		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
