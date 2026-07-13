@@ -50,6 +50,11 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 			partitionBy: options.partitionBy ?? undefined,
 			primaryKey: options.primaryKey ?? undefined,
 		};
+
+		this.init().catch((error) => {
+			Logger.error({ error, message: `CLICKHOUSE [${this.databaseName}."${this.tableName}"]: Error @ constructor(): ${(error as Error).message}` });
+			throw error;
+		});
 	}
 
 	/**
