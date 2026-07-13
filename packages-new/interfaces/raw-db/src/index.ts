@@ -35,9 +35,6 @@ class RawDBClass {
 	}
 
 	private async connect() {
-		// Extract the database URI from environment variables
-		const dbUri = process.env.DATABASE_URI;
-		if (!dbUri) throw new Error(`Missing DATABASE_URI environment variable`);
 		// Attempt to connect to the MonRawDB database
 		const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'RAW_DB' });
 		// Initialize the MonRawDB connector
