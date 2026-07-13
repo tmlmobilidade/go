@@ -7,10 +7,10 @@ import { type cacheDbKey } from './keys.js';
 
 /* * */
 
-class cacheDbClass {
+class CacheDbClass {
 	//
 
-	private static _instance: null | Promise<cacheDbClass> = null;
+	private static _instance: null | Promise<CacheDbClass> = null;
 
 	private client: RedisClientType;
 
@@ -23,7 +23,7 @@ class cacheDbClass {
 		// they will all await the same initialization process.
 		if (!this._instance) {
 			this._instance = (async () => {
-				const instance = new cacheDbClass();
+				const instance = new CacheDbClass();
 				// This behaves like the constructor,
 				// but allows for async initialization.
 				await instance.init();
@@ -131,4 +131,4 @@ class cacheDbClass {
 
 /* * */
 
-export const cacheDb = asyncSingletonProxy(cacheDbClass);
+export const cacheDb = asyncSingletonProxy(CacheDbClass);
