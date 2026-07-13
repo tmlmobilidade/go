@@ -39,9 +39,6 @@ class LabDbClass {
 	}
 
 	private async connect() {
-		// Extract the database URI from environment variables
-		const dbUri = process.env.LAB_DATABASE_URI;
-		if (!dbUri) throw new Error(`Missing LAB_DATABASE_URI environment variable`);
 		// Attempt to connect to the Lab Database
 		const clickhouseClient = await ClickHouseDatabaseClient.getClient({ prefix: 'LAB_DB' });
 		// Initialize the ClickHouse connector
