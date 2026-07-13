@@ -142,9 +142,9 @@ export class ClickHouseDatabaseClient {
 		const env = (name: string) => process.env[`${prefix}_${name}`];
 
 		if (!env('HOST') || !env('PORT')) throw new Error(`Missing ${prefix}_HOST or ${prefix}_PORT`);
+		if (!env('USER') || !env('PASSWORD')) throw new Error(`Missing ${prefix}_USER or ${prefix}_PASSWORD`);
 
-		const tunnel = goSshTunnel({ dstAddr: env('HOST')!, dstPort: Number(env('PORT')) });
-
+		const tunnel = env('TUNNEL_ENABLED') === 'true' ? goSshTunnel({ dstAddr: env('HOST')!, dstPort: Number(env('PORT')) }) : null;
 		if (!tunnel) {
 			return {
 				tunnel: null,
