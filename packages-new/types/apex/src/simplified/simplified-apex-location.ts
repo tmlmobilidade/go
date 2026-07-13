@@ -1,6 +1,5 @@
 /* * */
 
-import { ApexControlStatusSchema } from '@/utils/control-status.js';
 import { OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -12,8 +11,6 @@ export const SimplifiedApexLocationSchema = z.object({
 	apex_version: z.string(),
 	created_at: UnixTimestampSchema,
 	device_id: z.string(),
-	final_control_status: ApexControlStatusSchema,
-	inspection_id: z.string().nullable().default(null),
 	is_ok: z.boolean().default(false),
 	is_ok_pcgi: z.boolean().default(false),
 	line_id: z.string(),
@@ -36,10 +33,8 @@ export const SimplifiedApexLocationSchema = z.object({
 	const hasVehicleId = !!val.vehicle_id;
 	const hasAseCounterValue = !!val.mac_ase_counter_value && val.mac_ase_counter_value > 0;
 	const hasMacSamSerialNumber = !!val.mac_sam_serial_number;
-	const hasFinalControlStatus = !!val.final_control_status;
-	const hasInspectionId = !!val.inspection_id;
 	// Combine the individual conditions
-	const isOk = hasStopId && hasDeviceId && hasLineId && hasPatternId && hasAseCounterValue && hasMacSamSerialNumber && hasVehicleId && hasFinalControlStatus && hasInspectionId;
+	const isOk = hasStopId && hasDeviceId && hasLineId && hasPatternId && hasAseCounterValue && hasMacSamSerialNumber && hasVehicleId;
 	// Return the transformed value
 	return { ...val, is_ok: isOk };
 });
