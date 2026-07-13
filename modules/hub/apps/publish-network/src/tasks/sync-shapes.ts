@@ -1,7 +1,7 @@
 /* * */
 
-import { apiCache, type ApiCacheKey } from '@tmlmobilidade/databases';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
+import { apiCache, type ApiCacheKey } from '@tmlmobilidade/go-interfaces-api-cache';
 import { type HubShape, type HubShapePoint } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger-backend';

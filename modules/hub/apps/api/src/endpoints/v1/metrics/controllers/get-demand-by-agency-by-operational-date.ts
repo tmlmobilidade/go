@@ -1,8 +1,8 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
 import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/logger-backend';
 

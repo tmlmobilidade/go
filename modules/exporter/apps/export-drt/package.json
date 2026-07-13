@@ -23,6 +23,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/lib": "*",
 		"@tmlmobilidade/sqlite": "*",

@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 class VerificationTokensClass extends MongoCollectionClass<VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto> {
 	private static _instance: VerificationTokensClass;
+
 	protected override createSchema: z.ZodSchema = CreateVerificationTokenSchema;
 	protected override updateSchema: z.ZodSchema = UpdateVerificationTokenSchema;
 
@@ -53,4 +54,8 @@ class VerificationTokensClass extends MongoCollectionClass<VerificationToken, Cr
 
 /* * */
 
+/**
+ * @deprecated This class is deprecated and will be removed in the future.
+ * Use `@tmlmobilidade/go-interfaces-go-db` instead.
+ */
 export const verificationTokens = asyncSingletonProxy(VerificationTokensClass);

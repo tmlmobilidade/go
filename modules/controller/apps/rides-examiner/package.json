@@ -23,6 +23,7 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/timer": "*",

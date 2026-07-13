@@ -1,7 +1,7 @@
 /* * */
 
-import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-backend';
 import { Timer } from '@tmlmobilidade/timer';

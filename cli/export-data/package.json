@@ -39,6 +39,7 @@
 		"@clack/prompts": "1.7.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/interfaces": "*",

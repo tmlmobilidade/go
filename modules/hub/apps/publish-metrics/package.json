@@ -20,6 +20,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/go-interfaces-api-cache": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",

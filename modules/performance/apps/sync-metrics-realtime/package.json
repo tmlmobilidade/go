@@ -21,6 +21,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/go-performance-pckg-log": "*",
 		"@tmlmobilidade/go-performance-pckg-scripts": "*",
 		"@tmlmobilidade/timer": "*",

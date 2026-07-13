@@ -19,10 +19,12 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
+		"@clickhouse/client": "1.23.0",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-eta-pckg-common": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",

@@ -1,0 +1,36 @@
+export * from './client.js';
+
+/* * */
+
+export type {
+	AggregateOptions,
+	AggregationCursor,
+	BulkWriteOptions,
+	ChangeStreamDeleteDocument,
+	ChangeStreamDocument,
+	ChangeStreamInsertDocument,
+	ChangeStreamUpdateDocument,
+	Collection,
+	CreateIndexesOptions,
+	Db,
+	DeleteOptions,
+	DeleteResult,
+	Document,
+	Filter,
+	FindOptions,
+	Flatten,
+	IndexDescription,
+	IndexDescriptionInfo,
+	IndexSpecification,
+	InsertManyResult,
+	InsertOneOptions,
+	InsertOneResult,
+	MongoClient,
+	MongoClientOptions,
+	OptionalUnlessRequiredId,
+	Sort,
+	UpdateDescription,
+	UpdateOptions,
+	UpdateResult,
+	WithId,
+} from 'mongodb';

@@ -1,7 +1,7 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger-backend';
-import { SshTunnelService } from '@tmlmobilidade/ssh';
+import { SshTunnel } from '@tmlmobilidade/ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IncomingMessage } from 'node:http';
 import https from 'node:https';
@@ -25,7 +25,7 @@ export class MLAuthClient {
 
 	private expiresAt: number = 0;
 	private token: null | string = null;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
