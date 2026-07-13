@@ -20,7 +20,7 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/external": "*",
-		"@tmlmobilidade/go-interfaces-api-cache": "*",
+		"@tmlmobilidade/go-interfaces-cache-db": "*",
 		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/gtfs-rt": "*",

@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
+import { apiCache } from '@tmlmobilidade/go-interfaces-cache-db';
 import { type HubPlan, HubPlanSchema } from '@tmlmobilidade/go-types-public-info';
 import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
