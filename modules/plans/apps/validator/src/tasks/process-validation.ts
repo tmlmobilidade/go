@@ -75,7 +75,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// and download them to the working directory. Throw an error
 		// if no agency is found or if the rules file is not accessible.
 
-		const foundAgency = await agencies.findById(gtfsValidation.gtfs_agency.agency_id);
+		const foundAgency = await agencies.findByCode(gtfsValidation.gtfs_agency.agency_id);
 		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.gtfs_agency.agency_id}`);
 		if (!foundAgency.validation_rules) throw new Error(`No validation rules found for agency: ${gtfsValidation.gtfs_agency.agency_id}`);
 
