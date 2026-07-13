@@ -1,16 +1,16 @@
 /* * */
 
-import { GORedisClient } from '@/clients/go-redis.js';
-import { type ApiCacheKey } from '@/interfaces/api-cache/keys.js';
+import { type RedisClientType, RedisDatabaseClient } from '@tmlmobilidade/go-clients-redis';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
-import { type RedisClientType } from 'redis';
+
+import { type cacheDbKey } from './keys.js';
 
 /* * */
 
-class ApiCacheClass {
+class cacheDbClass {
 	//
 
-	private static _instance: null | Promise<ApiCacheClass> = null;
+	private static _instance: null | Promise<cacheDbClass> = null;
 
 	private client: RedisClientType;
 
@@ -23,7 +23,7 @@ class ApiCacheClass {
 		// they will all await the same initialization process.
 		if (!this._instance) {
 			this._instance = (async () => {
-				const instance = new ApiCacheClass();
+				const instance = new cacheDbClass();
 				// This behaves like the constructor,
 				// but allows for async initialization.
 				await instance.init();
@@ -36,7 +36,7 @@ class ApiCacheClass {
 	}
 
 	/**
-	 * Deletes all keys from the cache that are not allowed by {@link isAllowedHubApiCacheKey}.
+	 * Deletes all keys from the cache that are not allowed by {@link isAllowedHubcacheDbKey}.
 	 * This method is useful for maintaining a clean state free of stale
 	 * or irrelevant cache entries that consume storage and memory resources.
 	 * @returns A promise that resolves when the cleaning process is complete.
@@ -54,7 +54,7 @@ class ApiCacheClass {
 	 * @returns A promise that resolves when the deletion process is complete.
 	 * @throws Will throw an error if the deletion process fails.
 	 */
-	public async delete(key: ApiCacheKey) {
+	public async delete(key: cacheDbKey) {
 		await this.client.del(key as string);
 	}
 
@@ -74,7 +74,7 @@ class ApiCacheClass {
 	 * or `null` if not found.
 	 * @throws Will throw an error if the retrieval process fails.
 	 */
-	public async get(key: ApiCacheKey): Promise<null | string> {
+	public async get(key: cacheDbKey): Promise<null | string> {
 		const result = await this.client.get(key);
 		if (typeof result !== 'string') return null;
 		return result;
@@ -102,16 +102,16 @@ class ApiCacheClass {
 	 * @param value The value of the cache entry to save. Must be a string.
 	 * @param ttl Optional time-to-live (TTL) in seconds. Omit when not needed.
 	 */
-	public async set(key: ApiCacheKey, value: string, ttl?: number) {
+	public async set(key: cacheDbKey, value: string, ttl?: number) {
 		// Validate value type before setting cache
-		if (typeof value !== 'string') throw new Error(`[ApiCache] Value must be a string. Got "${typeof value}" for key "${key}".`);
+		if (typeof value !== 'string') throw new Error(`[cacheDb] Value must be a string. Got "${typeof value}" for key "${key}".`);
 		// Set cache with optional TTL
 		if (ttl) await this.client.set(key, value, { expiration: { type: 'EX', value: ttl } });
 		else await this.client.set(key, value);
 	}
 
 	protected connectToClient() {
-		return GORedisClient.getClient();
+		return RedisDatabaseClient.getClient({ prefix: 'CACHE_DB' });
 	}
 
 	/**
@@ -131,4 +131,4 @@ class ApiCacheClass {
 
 /* * */
 
-export const apiCache = asyncSingletonProxy(ApiCacheClass);
+export const cacheDb = asyncSingletonProxy(cacheDbClass);

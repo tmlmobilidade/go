@@ -2,7 +2,7 @@
 
 const dynamicKey = () => 'use-for-dynamic-key';
 
-export const ApiCacheKeyValues = [
+export const cacheDbKeyValues = [
 	'hub:v1:navegante:app-enabled',
 	'hub:v1:alerts:published:json',
 	'hub:v1:alerts:published:json:cm',
@@ -29,4 +29,4 @@ export const ApiCacheKeyValues = [
 	`hub:v1:network:shapes:${dynamicKey()}`,
 ] as const;
 
-export type ApiCacheKey = typeof ApiCacheKeyValues[number];
+export type cacheDbKey = typeof cacheDbKeyValues[number];

@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-interfaces-go-clickhouse",
+	"name": "@tmlmobilidade/go-interfaces-lab-db",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -34,6 +34,12 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-clients-clickhouse": "*",
+		"@tmlmobilidade/go-types-apex": "*",
+		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
 		"luxon": "3.7.2",
 		"zod": "3.25.76"
 	},

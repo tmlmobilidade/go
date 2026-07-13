@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -14,7 +14,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getLines(request: FastifyRequest, reply: FastifyReply<HubLine[]>) {
 	//
 
-	const cachedData = await apiCache.get('hub:v1:network:lines');
+	const cachedData = await cacheDb.get('hub:v1:network:lines');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/network:getLines()] No cached data found for lines' });
