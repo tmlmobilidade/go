@@ -4,6 +4,7 @@ import { ClickHouseClient, ClickHouseDatabaseClient, queryFromFile, queryFromStr
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 import { OperationDatabase } from './databases/operation.js';
+import { PerformanceDatabase } from './databases/performance.js';
 import { SimplifiedApexDatabase } from './databases/simplified-apex.js';
 
 /* * */
@@ -20,6 +21,7 @@ class LabDbClass {
 	//
 	// Databases
 	public readonly operation: OperationDatabase;
+	public readonly performance: PerformanceDatabase;
 	public readonly simplifiedApex: SimplifiedApexDatabase;
 
 	/**
@@ -50,6 +52,7 @@ class LabDbClass {
 	// Constructor
 	private constructor() {
 		this.operation = new OperationDatabase(this.clickhouseClient);
+		this.performance = new PerformanceDatabase(this.clickhouseClient);
 		this.simplifiedApex = new SimplifiedApexDatabase(this.clickhouseClient);
 	}
 
