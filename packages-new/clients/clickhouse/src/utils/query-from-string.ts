@@ -5,15 +5,15 @@ import { type ClickHouseClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
- * Executes a query from a string.
+ * Executes a query from a string using positional parameters.
  * @param client The ClickHouse client to use for executing the query.
- * @param query The SQL query to execute, with optional {key} placeholders for parameters.
- * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+ * @param query The SQL query to execute, with optional $1, $2 placeholders for parameters.
+ * @param params Optional key-value substitutions mapping parameter indices (as strings) to their values.
  * @returns Query result rows typed as `T`.
  * @example
  * const users = await queryFromString<User>(clickhouseClient,
- *   'SELECT * FROM users WHERE created_at >= {start_date} AND created_at <= {end_date}',
- *   { start_date: '2024-01-01', end_date: '2024-12-31' }
+ *   'SELECT * FROM users WHERE created_at >= $1 AND created_at <= $2',
+ *   { '1': '2024-01-01', '2': '2024-12-31' }
  * );
  */
 export async function queryFromString<T>(client: ClickHouseClient, query: string, params?: Record<string, number | string>): Promise<T[]> {
