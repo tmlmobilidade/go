@@ -62,19 +62,21 @@ async function main() {
 				}
 
 				//
+				// Only process Plans that are waiting or resuming processing
+
+				const controllerStatus = currentPlan.apps?.controller?.status;
+
+				if (controllerStatus !== 'waiting' && controllerStatus !== 'processing') {
+					Logger.error({ message: `Skip processing: status_controller is '${controllerStatus}'.` });
+					continue;
+				}
+
+				//
 				// If the hash is the same continue
 				// as it means the plan did not change since last run
 
 				if (currentPlan.hash === currentPlan.apps?.controller?.last_hash) {
 					Logger.error({ message: `Skip processing: Hash is the same as last_hash.` });
-					continue;
-				}
-
-				//
-				// Skip if its status is 'error'
-
-				if (currentPlan.apps?.controller?.status === 'error') {
-					Logger.error({ message: `Skip processing: status_controller is 'error'.` });
 					continue;
 				}
 
