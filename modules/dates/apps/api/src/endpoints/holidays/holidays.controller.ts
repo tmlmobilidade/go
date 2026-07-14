@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, holidays } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { type Filter } from '@tmlmobilidade/interfaces';
 import { type CreateHolidayDto, type Holiday, PermissionCatalog, type UpdateHolidayDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -48,7 +49,7 @@ export class HolidaysController {
 		//
 		// Create the new holiday
 
-		const newHoliday = await holidays.insertOne(request.body);
+		const newHoliday = await goDB.offer.holidays.insertOne(request.body);
 
 		//
 		// Send the response
@@ -65,7 +66,7 @@ export class HolidaysController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const holiday = await holidays.findById(id);
+		const holiday = await goDB.offer.holidays.findById(id);
 
 		if (!holiday) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
@@ -100,7 +101,7 @@ export class HolidaysController {
 
 		//
 
-		await holidays.deleteById(id);
+		await goDB.offer.holidays.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -143,7 +144,7 @@ export class HolidaysController {
 		//
 		// Fetch holidays based on query filters
 
-		const allHolidays = await holidays.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allHolidays = await goDB.offer.holidays.findMany(queryFilters, { sort: { created_at: -1 } });
 
 		return reply.send({ data: allHolidays, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -161,7 +162,7 @@ export class HolidaysController {
 		//
 		// Get the Holiday from the database
 
-		const holidayData = await holidays.findById(request.params.id);
+		const holidayData = await goDB.offer.holidays.findById(request.params.id);
 
 		if (!holidayData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
@@ -217,7 +218,7 @@ export class HolidaysController {
 		//
 		// Get the Holiday from the database
 
-		const holidayData = await holidays.findById(request.params.id);
+		const holidayData = await goDB.offer.holidays.findById(request.params.id);
 
 		if (!holidayData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
@@ -251,8 +252,8 @@ export class HolidaysController {
 		}
 
 		// If authorized, toggle the lock status of the holiday
-		await holidays.toggleLockById(request.params.id);
-		const foundHoliday = await holidays.findById(request.params.id);
+		await goDB.offer.holidays.toggleLockById(request.params.id);
+		const foundHoliday = await goDB.offer.holidays.findById(request.params.id);
 		if (!foundHoliday) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
 		}
@@ -273,7 +274,7 @@ export class HolidaysController {
 		//
 		// Get the Holiday from the database
 
-		const holidayData = await holidays.findById(request.params.id);
+		const holidayData = await goDB.offer.holidays.findById(request.params.id);
 
 		if (!holidayData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Holiday not found');
@@ -309,7 +310,7 @@ export class HolidaysController {
 		//
 		// Update the holiday
 
-		const updatedHoliday = await holidays.updateById(holidayData._id, request.body);
+		const updatedHoliday = await goDB.offer.holidays.updateById(holidayData._id, request.body);
 
 		//
 		// Send the updated holiday data as the response
