@@ -1,8 +1,10 @@
 /* * */
 
+import { generateHash } from '@/utils/generateHash.js';
 import { makePattern } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { type HubLine, type HubPattern } from '@tmlmobilidade/go-types-public-info';
+import { patterns } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
 import { piperTtsApi } from '../../src/services/piperTtsApi.js';
@@ -30,6 +32,15 @@ export async function runnerPatterns() {
 			const patternTts = makePattern(lineData.short_name, patternData.headsign);
 
 			if (patternTts && patternTts !== '#N/A') {
+				const hash = await generateHash(patternTts, patternData._id);
+
+				if (patternData.tts_hash === hash) {
+					Logger.info({
+						message: `[${lineIndex + 1}/${allLinesData.length}] [${patternIndex + 1}/${lineData.pattern_ids.length}] Skipping | Line ${lineData._id} | Pattern ${patternData._id} | TTS already exists`,
+					});
+					continue;
+				}
+
 				Logger.info({
 					message: `[${lineIndex + 1}/${allLinesData.length}] [${patternIndex + 1}/${lineData.pattern_ids.length}] Generating | Line ${lineData._id} | Pattern ${patternData._id} | ${patternTts}`,
 				});
@@ -39,6 +50,8 @@ export async function runnerPatterns() {
 					force: true,
 					string: patternTts,
 				});
+
+				await patterns.updateById(patternData._id, { tts_hash: hash }, { forceIfLocked: true });
 			}
 		}
 	}

@@ -112,6 +112,7 @@ export const PatternSchema = DocumentSchema.extend({
 	route_id: z.string(),
 	rules: z.array(ScheduleRuleSchema).optional().default([]),
 	shape: ShapeSchema.optional(),
+	tts_hash: z.string().default(''),
 });
 
 export const PatternSimplifiedSchema = z.object({
