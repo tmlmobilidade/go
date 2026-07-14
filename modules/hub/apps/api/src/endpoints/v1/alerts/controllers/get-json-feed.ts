@@ -1,8 +1,8 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -14,7 +14,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getJsonFeed(request: FastifyRequest, reply: FastifyReply<HubAlert[]>) {
 	//
 
-	const cachedData = await apiCache.get('hub:v1:alerts:published:json');
+	const cachedData = await cacheDb.get('hub:v1:alerts:published:json');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/alerts:getJsonFeed()] No JSON feed found in cache. Returning empty array.' });

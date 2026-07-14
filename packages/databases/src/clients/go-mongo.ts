@@ -1,9 +1,8 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
+import { goSshTunnel, type SshTunnel } from '@tmlmobilidade/ssh';
 import { MongoClient } from 'mongodb';
-import { readFileSync } from 'node:fs';
 
 /* * */
 
@@ -13,7 +12,7 @@ export class GOMongoClient {
 	private static _instance: null | Promise<GOMongoClient> = null;
 
 	private client: MongoClient;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
@@ -53,7 +52,7 @@ export class GOMongoClient {
 		const connectionString = await this.getConnectionString();
 		this.client = new MongoClient(connectionString, {
 			connectTimeoutMS: 10_000,
-			directConnection: process.env.GO_MONGO_TUNNEL_ENABLED === 'true',
+			directConnection: this.tunnel ? true : false,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'primary',
@@ -103,10 +102,6 @@ export class GOMongoClient {
 		//
 		// Validate required environment variables
 
-		if (process.env.GO_MONGO_TUNNEL_ENABLED !== 'true' && process.env.GO_MONGO_TUNNEL_ENABLED !== 'false') {
-			throw new Error('Missing GO_MONGO_TUNNEL_ENABLED. Please indicate whether SSH tunneling is required by setting GO_MONGO_TUNNEL_ENABLED to "true" or "false".');
-		}
-
 		if (!process.env.GO_MONGO_HOST_1 || !process.env.GO_MONGO_PORT_1) {
 			throw new Error('Missing GO_MONGO_HOST_1 or GO_MONGO_PORT_1');
 		}
@@ -123,49 +118,11 @@ export class GOMongoClient {
 			throw new Error('Missing GO_MONGO_RS_NAME');
 		}
 
-		if (process.env.GO_MONGO_TUNNEL_ENABLED === 'false') {
+		this.tunnel = goSshTunnel({ dstAddr: process.env.GO_MONGO_HOST_1, dstPort: Number(process.env.GO_MONGO_PORT_1) });
+
+		if (!this.tunnel) {
 			return `mongodb://${process.env.GO_MONGO_USER}:${process.env.GO_MONGO_PASSWORD}@${process.env.GO_MONGO_HOST_1}:${process.env.GO_MONGO_PORT_1},${process.env.GO_MONGO_HOST_2}:${process.env.GO_MONGO_PORT_2},${process.env.GO_MONGO_HOST_3}:${process.env.GO_MONGO_PORT_3}/`;
 		}
-
-		// SSH required
-		if (!process.env.GO_MONGO_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing GO_MONGO_TUNNEL_LOCAL_PORT');
-		}
-
-		if (!process.env.GO_MONGO_TUNNEL_SSH_HOST || !process.env.GO_MONGO_TUNNEL_SSH_USERNAME) {
-			throw new Error('Missing SSH config');
-		}
-
-		const sshConfig: SshConfig = {
-			forwardOptions: {
-				dstAddr: process.env.GO_MONGO_HOST_1,
-				dstPort: Number(process.env.GO_MONGO_PORT_1),
-				srcAddr: 'localhost',
-				srcPort: Number(process.env.GO_MONGO_TUNNEL_LOCAL_PORT),
-			},
-			serverOptions: {
-				port: Number(process.env.GO_MONGO_TUNNEL_LOCAL_PORT),
-			},
-			sshOptions: {
-				agent: (process.env.GO_MONGO_TUNNEL_SSH_KEY_PATH || process.env.GO_MONGO_TUNNEL_SSH_KEY) ? undefined : process.env.SSH_AUTH_SOCK,
-				host: process.env.GO_MONGO_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 3,
-				keepaliveInterval: 10_000,
-				port: 22,
-				privateKey: process.env.GO_MONGO_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.GO_MONGO_TUNNEL_SSH_KEY_PATH) : process.env.GO_MONGO_TUNNEL_SSH_KEY ? process.env.GO_MONGO_TUNNEL_SSH_KEY : undefined,
-				username: process.env.GO_MONGO_TUNNEL_SSH_USERNAME,
-			},
-			tunnelOptions: {
-				autoClose: false,
-				reconnectOnError: true,
-			},
-		};
-
-		const sshOptions: SshTunnelServiceOptions = {
-			maxRetries: 3,
-		};
-
-		this.tunnel = new SshTunnelService(sshConfig, sshOptions);
 
 		Logger.info({ message: '[GOMongoClient] Setting up SSH Tunnel...' });
 

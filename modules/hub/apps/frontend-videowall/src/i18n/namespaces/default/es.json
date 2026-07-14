@@ -1,0 +1,332 @@
+{
+	"action-bar": {
+		"ActionBar": {
+			"alerts": {
+				"label": "Alertas de servicio"
+			},
+			"help": {
+				"label": "Preguntas frecuentes"
+			},
+			"reload": {
+				"label": "Recargar"
+			},
+			"search": {
+				"label": "Buscar"
+			}
+		},
+		"ActionBarUserLocation": {
+			"disabled": {
+				"label": "Ubicación desactivada"
+			},
+			"follow": {
+				"label": "Orientar mapa"
+			},
+			"follow-bearing": {
+				"label": "Centrar mapa"
+			},
+			"idle": {
+				"label": "Centrar mapa"
+			}
+		}
+	},
+	"alerts": {
+		"AlertActivePeriod": {
+			"start": "Inicio: {value, date, dayShort}"
+		},
+		"AlertsList": {
+			"title": "Alertas de servicio"
+		},
+		"AlertsListEmpty": {
+			"action_1": "Ver alertas del pasado",
+			"action_2": "Ver alertas del futuro",
+			"subtitle": "Manténgase al día de todos los cambios en la red. Infórmese sobre nuevas líneas, cambios de recorrido y ajustes de horarios, así como sobre eventos que puedan afectar a su viaje.",
+			"title": "No se encontraron alertas"
+		},
+		"AlertsListGroup": {
+			"label": "{count, plural, one {Alerta activa} other {Alertas activas}}",
+			"titles": {
+				"future": "A partir de {value}",
+				"past": "Desde {value}",
+				"today": "A partir de hoy, {value}",
+				"tomorrow": "A partir de mañana, {value}",
+				"yesterday": "Desde ayer, {value}"
+			}
+		},
+		"AlertsListToolbar": {
+			"SelectLine": {
+				"label": "Buscar línea por número, nombre, localidad...",
+				"nothing_found": "No se encontraron resultados",
+				"placeholder": "Buscar línea por número, nombre, localidad..."
+			},
+			"SelectStop": {
+				"label": "Buscar parada por nombre, número, localidad...",
+				"nothing_found": "No se encontraron resultados",
+				"placeholder": "Buscar parada por nombre, número, localidad..."
+			},
+			"by_date": {
+				"current": "Ahora ({count})",
+				"future": "Futuros ({count})",
+				"map": "Mapa"
+			},
+			"expand_toggle": {
+				"is_hidden": {
+					"label": "Ver filtros"
+				},
+				"is_visible": {
+					"label": "Ocultar filtros"
+				}
+			},
+			"filters": {
+				"by_current_view": {
+					"list": "Lista",
+					"map": "Mapa"
+				},
+				"by_line": {
+					"label": "Filtrar por línea",
+					"placeholder": "Filtrar por línea"
+				},
+				"by_stop": {
+					"label": "Filtrar por parada",
+
+					"placeholder": "Filtrar por parada"
+				},
+				"text_search": "Buscar alerta por título, descripción, ubicación..."
+			},
+			"found_items_counter": "{count, plural, =0 {No se encontraron alertas.} one {Se encontró # alerta:} other {Se encontraron # alertas:}}",
+			"heading": "Alertas de servicio",
+			"subheading": "Manténgase al día de todos los cambios en la red. Infórmese sobre nuevas líneas, cambios de recorrido y ajustes de horarios, así como sobre eventos que puedan afectar a su viaje."
+		},
+		"AlertsListViewList": {
+			"no_data": "No se encontraron alertas para esta búsqueda"
+		},
+		"SelectCause": {
+			"placeholder": "Filtrar por causa"
+		},
+		"SelectEffect": {
+			"placeholder": "Filtrar por efecto"
+		}
+	},
+	"common": {
+		"BackButton": {
+			"label": "Volver"
+		},
+		"IconDisplay": {
+			"connections": {
+				"bike_parking": "Cerca de aparcamiento de bicicletas",
+				"boat": "Conexión con barco",
+				"bus": "Conexión con otros autobuses",
+				"car_parking": "Cerca de aparcamiento de coches",
+				"light_rail": "Conexión con metro ligero",
+				"subway": "Conexión con metro",
+				"train": "Conexión con tren"
+			},
+			"facilities": {
+				"court": "Cerca de un juzgado",
+				"fire_station": "Cerca de un parque de bomberos",
+				"health_center": "Cerca de un centro de salud o clínica",
+				"hospital": "Cerca de un hospital",
+				"park": "Cerca de un parque",
+				"police_station": "Cerca de una comisaría de policía",
+				"school": "Cerca de una escuela",
+				"transit_office": "Cerca de un espacio navegante®",
+				"university": "Cerca de una universidad"
+			},
+			"operators": {
+				"atlantic_ferries": "Atlantic Ferries (barcos de Tróia)",
+				"ccfl": "Carris municipal",
+				"cmet": "CMET",
+				"cp": "CP Comboios de Portugal",
+				"fertagus": "Fertagus (tren del puente)",
+				"metro": "Metro de Lisboa",
+				"mobi_cascais": "MobiCascais",
+				"mts": "Metro Transportes do Sul",
+				"tcb": "Transportes Colectivos do Barreiro",
+				"ttsl": "Transtejo e Soflusa"
+			}
+		}
+	},
+	"help": {
+		"HelpDetail": {
+			"no_data": "No hay preguntas frecuentes disponibles en este momento.",
+			"title": "Ayuda"
+		}
+	},
+	"layout": {
+		"NoDataLabel": {
+			"no_data": "No hay datos disponibles"
+		}
+	},
+	"lines": {
+		"LinesDetailAlerts": {
+			"heading": "Alertas activas para esta línea"
+		},
+		"LinesDetailPath": {
+			"no_data": "Seleccione un recorrido / destino",
+			"stop_details_name": "{index}ª parada: {stop_name}",
+			"summary": "Línea <lineNumber>{line_number}</lineNumber> con destino a <destinationName>{destination_name}</destinationName> el día <dayName>{day_name, date, long}</dayName>. <changeDay>Cambiar día ›</changeDay>",
+			"view_stop_details": "Ver detalles de la parada"
+		},
+		"LinesListGroup": {
+			"logo": {
+				"alt": "Líneas de: {agency_name}"
+			},
+			"show_more": "Ver más líneas de este operador..."
+		},
+		"LinesListToolbar": {
+			"by_search": {
+				"placeholder": "Buscar por nombre, número..."
+			},
+			"found_items_counter": {
+				"all": "{count, plural, =0 {No se encontraron líneas.} one {Se encontró # línea:} other {Se encontraron # líneas:}}"
+			},
+			"heading": "Buscar líneas"
+		},
+		"LinesListViewAll": {
+			"items": {
+				"aria_label": "{index}º: {tts_name}"
+			},
+			"no_data": "No se encontraron líneas para esta búsqueda"
+		},
+		"PathStopNextArrivals": {
+			"title": "Próximas circulaciones"
+		},
+		"PathWaypointTimetable": {
+			"next_date": "Esta línea no realiza viajes en este día de la semana. Próximo día con horarios: {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}",
+			"no_data": "Horarios no disponibles para esta fecha.",
+			"title": "Horarios planificados en esta parada:"
+		},
+		"SelectActivePatternGroup": {
+			"placeholder": "Seleccionar recorrido/destino..."
+		},
+		"SelectActivePatternGroupExplainer": {
+			"toggle": "¿Qué es el recorrido/destino de una línea?"
+		},
+		"SelectOperationalDate": {
+			"custom_date": "Fecha personalizada",
+			"today": "Hoy",
+			"tomorrow": "Mañana"
+		},
+		"SelectPattern": {
+			"invalid_option": "Recorrido inválido: {pattern_id}",
+			"label": "Recorrido / Destino",
+			"option_label": "Inicio del recorrido: {locality}",
+			"placeholder": "Seleccionar recorrido / destino..."
+		},
+		"TimetableExceptionsLink": {
+			"schedule": "Min.",
+			"variant": "<0>{exception_id})</0> Recorrido <1>{route_long_name}</1> con destino a <2>{pattern_headsign}</2>"
+		},
+		"TimetableSchedules": {
+			"hours": "Hora",
+			"minutes": "Min.",
+			"timestamp": "{hour} horas y {minute} minutos"
+		}
+	},
+	"map": {
+		"MapViewToolbar": {
+			"style": {
+				"map": "Mapa",
+				"satellite": "Satélite"
+			}
+		}
+	},
+	"search": {
+		"SearchDetail": {
+			"title": "Búsqueda"
+		},
+		"SearchToolbar": {
+			"types": {
+				"alerts": "Alertas",
+				"lines": "Líneas",
+				"stops": "Paradas"
+			}
+		}
+	},
+	"stops": {
+		"NextArrivals": {
+			"arriving": "Llegando",
+			"hours": "h",
+			"minutes": "min"
+		},
+		"StopsDetail": {
+			"title": "Parada"
+		},
+		"StopsDetailAlerts": {
+			"heading": "Alertas activas",
+			"subheading": "Alertas activas para esta parada o para líneas que pasan por esta parada."
+		},
+		"StopsDetailContentTimetableHeader": {
+			"summary": "Horarios estimados de paso en la parada <stopName>{stop_name}</stopName> para el día <dayName>{day_name, date, long}</dayName>. <changeDay>Cambiar día ›</changeDay>",
+			"trips_legend": {
+				"estimate": "Previsión",
+				"headsign": "Destino",
+				"line": "Línea"
+			}
+		},
+		"StopsDetailViewTimetable": {
+			"end_of_day": "Fin del día",
+			"no_service": "Sin servicio para el día seleccionado",
+			"show_past_trips_toggle": {
+				"hide": "Ocultar pasajes anteriores",
+				"show": "Ver pasajes anteriores"
+			}
+		},
+		"StopsDetailViewTimetableRow": {
+			"localities": "Pasa por: {localities}"
+		},
+		"StopsListToolbar": {
+			"by_current_view": {
+				"list": "Lista",
+				"map": "Mapa"
+			},
+			"by_search": {
+				"placeholder": "Buscar por nombre, número..."
+			},
+			"found_items_counter": {
+				"all": "{{count}}"
+			},
+			"heading": "Buscar paradas"
+		},
+		"StopsListViewList": {
+			"no_data": "No se encontraron paradas para esta búsqueda"
+		}
+	},
+	"vehicles": {
+		"VehiclesCounter": {
+			"label": "{count, plural, zero {Ningún vehículo en movimiento} one {# vehículo en movimiento} other {# vehículos en movimiento}}"
+		},
+		"VehiclesDetail": {
+			"title": "Vehículo"
+		},
+		"VehiclesDetailView": {
+			"seen_seconds_ago": "Visto hace {count, plural, one {# segundo} other {# segundos}}"
+		},
+		"VehiclesListDetails": {
+			"bikes_allowed": "Permite bicicletas",
+			"contactless": "Acepta pagos contactless",
+			"no_bikes_allowed": "No permite bicicletas",
+			"no_contactless": "No acepta pagos contactless",
+			"no_data": "Seleccione un vehículo",
+			"no_wheelchair_accessible": "No permite movilidad reducida",
+			"unknown": "Desconocido",
+			"wheelchair_accessible": "Movilidad reducida"
+		}
+	},
+	"viewport": {
+		"NavigationBar": {
+			"tabs": {
+				"alerts": "Alertas",
+				"lines": "Líneas",
+				"stops": "Paradas"
+			}
+		},
+		"TransitModesBar": {
+			"aria_label": {
+				"bus": "Autobuses",
+				"ferry": "Barco",
+				"subway": "Metro",
+				"train": "Trenes"
+			}
+		}
+	}
+}

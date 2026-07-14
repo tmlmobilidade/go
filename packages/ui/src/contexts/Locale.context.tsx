@@ -2,15 +2,17 @@
 
 import '@tmlmobilidade/ui';
 import i18next from 'i18next';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
+import { DEFAULT_LOCALE_CODE, getBrowserLocale, getMatchingLocale } from '../i18n/locales';
 import { registerModuleTranslations } from '../i18n/utils';
 
 /* * */
 
 export interface LocaleContextProps {
 	i18n?: {
-		pt: object
+		es?: object
+		pt?: object
 	}
 };
 
@@ -44,17 +46,14 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 	//
 	// A. Setup Variables
 
-	const [locale, setLocale] = useState<string | undefined>(undefined);
+	const [locale, setLocaleState] = useState<string>(DEFAULT_LOCALE_CODE);
+
+	useEffect(() => {
+		setLocaleState(getBrowserLocale());
+	}, []);
 
 	//
 	// B. Transform Data
-
-	useEffect(() => {
-		if (typeof window === 'undefined') return;
-		const browserLocales = navigator.languages ? navigator.languages : [navigator.language];
-		const lang = browserLocales[0] || 'pt';
-		setLocale(lang.split('-')[0]);
-	}, []);
 
 	useEffect(() => {
 		i18next.changeLanguage(locale);
@@ -62,10 +61,18 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 
 	useEffect(() => {
 		if (!i18n) return;
-		for (const [key, value] of Object.entries(i18n.pt)) {
-			registerModuleTranslations(key, { pt: value });
+		for (const [localeCode, namespaces] of Object.entries(i18n)) {
+			if (!namespaces) continue;
+			for (const [namespace, value] of Object.entries(namespaces)) {
+				registerModuleTranslations(namespace, { [localeCode]: value });
+			}
 		}
 	}, [i18n]);
+
+	const setLocale = useCallback((localeCode: string) => {
+		const matchingLocale = getMatchingLocale(localeCode);
+		setLocaleState(matchingLocale?._id ?? DEFAULT_LOCALE_CODE);
+	}, []);
 
 	//
 	// C. Context value
@@ -77,7 +84,7 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 		data: {
 			locale,
 		},
-	}), [locale]);
+	}), [locale, setLocale]);
 
 	//
 	// D. Render components

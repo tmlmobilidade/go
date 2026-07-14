@@ -1,8 +1,8 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -14,7 +14,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getGtfsRtProtobufFeed(request: FastifyRequest, reply: FastifyReply<Buffer>) {
 	//
 
-	const cachedData = await apiCache.get('hub:v1:alerts:published:gtfs');
+	const cachedData = await cacheDb.get('hub:v1:alerts:published:gtfs');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/alerts:getGtfsRtProtobufFeed()] No GTFS-RT feed found in cache. Returning empty message.' });

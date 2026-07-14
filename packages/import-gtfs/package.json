@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/sqlite": "*",
