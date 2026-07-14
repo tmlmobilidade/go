@@ -1,6 +1,7 @@
 /* * */
 
-import { fileExports, vehicles } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { fileExports } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
@@ -43,7 +44,7 @@ export async function exportVehiclesFile(fileExport: FileExport): Promise<string
 	const properties = fileExport.properties as VehicleExportProperties['properties'];
 	const vehicleIds = getVehicleIdsFromExportProperties(properties);
 
-	const vehiclesCollection = await vehicles.getCollection();
+	const vehiclesCollection = await goDB.operation.vehicles.getCollection();
 	const vehiclesCursor = vehiclesCollection.find({ _id: { $in: vehicleIds } }, { batchSize: 5000 });
 
 	//

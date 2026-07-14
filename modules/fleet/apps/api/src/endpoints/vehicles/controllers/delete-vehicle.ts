@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { vehicles } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -12,7 +12,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
  */
 export async function deleteVehicle(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 	const { id } = request.params;
-	const vehicle = await vehicles.findById(id);
+	const vehicle = await goDB.operation.vehicles.findById(id);
 
 	if (!vehicle) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
@@ -27,7 +27,7 @@ export async function deleteVehicle(request: FastifyRequest<{ Params: { id: stri
 
 	//
 
-	await vehicles.deleteById(id);
+	await goDB.operation.vehicles.deleteById(id);
 
 	reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 }

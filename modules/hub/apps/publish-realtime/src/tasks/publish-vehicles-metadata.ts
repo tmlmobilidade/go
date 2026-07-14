@@ -1,7 +1,7 @@
 /* * */
 
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
-import { vehicles } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -17,7 +17,7 @@ export async function publishVehiclesMetadata() {
 	//
 	// Retrieve active alerts from the database
 
-	const vehicleMetadata = await vehicles.all();
+	const vehicleMetadata = await goDB.operation.vehicles.findMany();
 
 	Logger.info({ message: `Retrieved ${vehicleMetadata.length} vehicles metadata...` });
 

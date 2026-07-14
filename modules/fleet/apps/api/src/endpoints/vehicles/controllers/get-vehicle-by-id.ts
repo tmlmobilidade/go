@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { vehicles } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type Vehicle } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +16,7 @@ export async function getVehicleById(request: FastifyRequest<{ Params: { id: str
 	//
 	// Get the Vehicle from the database
 
-	const vehicleData = await vehicles.findById(request.params.id);
+	const vehicleData = await goDB.operation.vehicles.findById(request.params.id);
 
 	if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
 	//
