@@ -1,8 +1,9 @@
 /* * */
 
-import { organizations, roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
+import { roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
 import { type CreateUserDto, type LoginDto, type Organization, type Permission, type Session, type User } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
@@ -37,7 +38,7 @@ class AuthProvider {
 		// Get the user associated with the session token
 		const userData = await this.getUserFromSessionToken(sessionToken);
 		// Find the organization associated with the user
-		const organizationData = await organizations.findOne({ _id: { $eq: userData.organization_id } });
+		const organizationData = await goDB.core.organizations.findOne({ _id: { $eq: userData.organization_id } });
 		if (!organizationData) return undefined;
 		// Return the user data to the caller
 		return organizationData;
