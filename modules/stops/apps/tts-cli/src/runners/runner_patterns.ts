@@ -6,6 +6,7 @@ import TIMETRACKER from '@helperkits/timer';
 import { type HubLine, type HubPattern } from '@tmlmobilidade/go-types-public-info';
 import { patterns } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
+import { type ApiResponseSuccess } from '@tmlmobilidade/types';
 
 import { piperTtsApi } from '../../src/services/piperTtsApi.js';
 
@@ -15,19 +16,25 @@ export async function runnerPatterns() {
 	//
 
 	Logger.title(`TTS PATTERNS`);
+
 	const globalTimer = new TIMETRACKER();
 
-	console.log('* Fetching all lines from API...');
-	const allLinesResponse = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/network/lines');
-	const allLinesData = await allLinesResponse.json() as HubLine[];
+	Logger.title('* Fetching all lines from API...');
 
-	console.log(`* Preparing ${allLinesData.length} lines...`);
+	const allLinesResponse = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/network/lines');
+	const allLinesResponseData = await allLinesResponse.json() as ApiResponseSuccess<HubLine[]>;
+	const allLinesData = allLinesResponseData.data;
+
+	Logger.title(`* Preparing ${allLinesData.length} lines...`);
 
 	for (const [lineIndex, lineData] of allLinesData.entries()) {
 		for (const [patternIndex, patternId] of lineData.pattern_ids.entries()) {
-			const patternResponse = await fetch(`https://go.tmlmobilidade.pt/hub/api/v1/network/patterns/${patternId}`);
-			const patternGroup = await patternResponse.json() as HubPattern[];
+			const patternResponse = await fetch(`https://go.tmlmobilidade.pt/hub/api/v1/network/patterns/${encodeURIComponent(patternId)}`);
+			const patternResponseData = await patternResponse.json() as ApiResponseSuccess<HubPattern[]>;
+			const patternGroup = patternResponseData.data;
 			const patternData = patternGroup.pop();
+
+			if (!patternData) continue;
 
 			const patternTts = makePattern(lineData.short_name, patternData.headsign);
 
@@ -45,11 +52,7 @@ export async function runnerPatterns() {
 					message: `[${lineIndex + 1}/${allLinesData.length}] [${patternIndex + 1}/${lineData.pattern_ids.length}] Generating | Line ${lineData._id} | Pattern ${patternData._id} | ${patternTts}`,
 				});
 
-				await piperTtsApi({
-					filename: patternId,
-					force: true,
-					string: patternTts,
-				});
+				await piperTtsApi({ filename: patternId, force: true, string: patternTts });
 
 				await patterns.updateById(patternData._id, { tts_hash: hash }, { forceIfLocked: true });
 			}
