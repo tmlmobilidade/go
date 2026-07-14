@@ -344,6 +344,7 @@ export const API_ROUTES = Object.freeze({
 
 		// METRICS
 		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
+		METRICS_SERVICE_ALL: `${getModuleConfig('hub', 'api_url')}/v1/metrics/service/all`,
 
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,

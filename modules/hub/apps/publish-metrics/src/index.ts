@@ -1,6 +1,7 @@
 /* * */
 
 import { publishDemandByAgencyByOperationalDate } from '@/tasks/demand-by-agency-by-operational-date.js';
+import { publishAllServiceMetrics } from '@/tasks/service-all.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -33,6 +34,7 @@ const main = async () => {
 	// Run all tasks sequentially
 
 	await publishDemandByAgencyByOperationalDate();
+	await publishAllServiceMetrics();
 
 	//
 	// Log the total time taken for all tasks

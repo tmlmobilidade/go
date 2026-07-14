@@ -25,6 +25,7 @@ export const ApiCacheKeyValues = [
 	'hub:v1:network:plans',
 	'hub:v1:metrics:demand:by-agency:by-operational-date:json',
 	'hub:v1:network:vehicles:protobuf',
+	'hub:v1:metrics:service:json',
 	`hub:v1:network:patterns:${dynamicKey()}`,
 	`hub:v1:network:shapes:${dynamicKey()}`,
 ] as const;
