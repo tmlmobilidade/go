@@ -41,6 +41,4 @@ export function AgencyDetail() {
 			<AgencySectionAlertsMap />
 		</Pane>
 	);
-
-	//
 }
