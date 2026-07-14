@@ -3,7 +3,8 @@
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Collapsible, FileItem, FileUpload, Label, Section, useMeContext, useToast } from '@tmlmobilidade/ui';
+import { Button, Collapsible, FileItem, FileUpload, HasPermission, Label, Section, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
+import { fetchData } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 
 /* * */
@@ -53,6 +54,11 @@ export function PlanDetailSectionApexFile() {
 		}
 	};
 
+	const { action: handleSendApexNotification, isLoading: isSendingApexNotification } = useHandleUpdate({
+		fetchFn: async () => await fetchData(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE_SEND_NOTIFICATION(planDetailContext.data.id)),
+		onSuccess: () => {},
+	});
+
 	//
 	// D. Render components
 
@@ -64,12 +70,26 @@ export function PlanDetailSectionApexFile() {
 			<Section gap="sm">
 
 				{planDetailContext.data.apex_file ? (
-					<FileItem
-						fileName={planDetailContext.data.apex_file.name}
-						fileType={planDetailContext.data.apex_file.type}
-						onDelete={hasPermissionDeleteApexFile && planDetailContext.actions.deleteApexFile}
-						onDownload={handleDownload}
-					/>
+					<>
+						<FileItem
+							fileName={planDetailContext.data.apex_file.name}
+							fileType={planDetailContext.data.apex_file.type}
+							onDelete={hasPermissionDeleteApexFile && planDetailContext.actions.deleteApexFile}
+							onDownload={handleDownload}
+						/>
+						<HasPermission
+							action={PermissionCatalog.all.plans.actions.send_apex_notification}
+							resourceKey="agency_ids"
+							scope={PermissionCatalog.all.plans.scope}
+							value={planDetailContext.data.plan?.gtfs_agency.agency_id ?? ''}
+						>
+							<Button
+								label="Enviar notificação APEX"
+								loading={isSendingApexNotification}
+								onClick={handleSendApexNotification}
+							/>
+						</HasPermission>
+					</>
 				) : (
 					hasPermissionUpdateApexFile ? (
 						<FileUpload
