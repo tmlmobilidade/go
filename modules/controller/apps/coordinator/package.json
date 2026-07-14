@@ -23,14 +23,14 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.9.0"
+		"fastify": "5.10.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/node": "26.1.0",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.5",
+		"tsx": "4.23.0",
 		"typescript": "6.0.3"
 	}
 }

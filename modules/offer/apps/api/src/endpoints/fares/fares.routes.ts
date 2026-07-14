@@ -18,13 +18,19 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.read]) },
+			{ preHandler: authorizationMiddleware([
+				{ actions: [PermissionCatalog.all.fares.actions.nav], scope: PermissionCatalog.all.fares.scope },
+				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
+			]) },
 			FaresController.getAll,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.fares.scope, [PermissionCatalog.all.fares.actions.read]) },
+			{ preHandler: authorizationMiddleware([
+				{ actions: [PermissionCatalog.all.fares.actions.nav], scope: PermissionCatalog.all.fares.scope },
+				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
+			]) },
 			FaresController.getById,
 		);
 

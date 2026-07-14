@@ -1,8 +1,10 @@
 'use client';
 
+import namespaceDefaultEs from '@/i18n/namespaces/default/es.json' with { type: 'json' };
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
+import namespaceUnauthenticatedEs from '@/i18n/namespaces/unauthenticated/es.json' with { type: 'json' };
 import namespaceUnauthenticatedPt from '@/i18n/namespaces/unauthenticated/pt.json' with { type: 'json' };
-import { i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
+import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
 /**
  * Resource keys for i18n translations in Portuguese.
@@ -15,4 +17,13 @@ export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
 	default: namespaceDefaultPt,
 	unauthenticated: namespaceUnauthenticatedPt,
+} as const;
+
+/**
+ * Resource keys for i18n translations in Spanish.
+ */
+export const i18nResourceKeysEs = {
+	...i18nResourceKeysEsShared,
+	default: namespaceDefaultEs,
+	unauthenticated: namespaceUnauthenticatedEs,
 } as const;
