@@ -50,7 +50,7 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 	await files.upload(audioBuffer, {
 		_id: `tts-${stopId}`,
 		created_by: 'system',
-		name: `${stopId}.mp3`,
+		name: `${stopData.tts_hash}.mp3`,
 		resource_id: 'tts/live/stops',
 		scope: 'static',
 		size: audioBuffer.byteLength,
