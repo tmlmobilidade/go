@@ -1,6 +1,7 @@
 /* * */
 
-import { buildSamsMatch, fileExports, sams, samsAnalysisExportAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { buildSamsMatch, fileExports, samsAnalysisExportAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
@@ -64,7 +65,7 @@ export async function exportSamsAnalysisFile(fileExport: FileExport): Promise<st
 
 	//
 	// Stream matching analysis rows
-	const samsCollection = await sams.getCollection();
+	const samsCollection = await goDB.operation.sams.getCollection();
 	const analysisCursor = samsCollection.aggregate(pipeline, { cursor: { batchSize: 5000 } });
 
 	//

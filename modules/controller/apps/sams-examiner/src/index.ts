@@ -2,7 +2,8 @@
 
 import { type AggregationResultItem } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -121,7 +122,7 @@ async function main() {
 		//
 		// Connect to databases
 
-		const samsCollection = await sams.getCollection();
+		const samsCollection = await goDB.operation.sams.getCollection();
 
 		const simplifiedApexLocationsCollection = await simplifiedApexLocations.getCollection();
 		const simplifiedApexOnBoardRefundsCollection = await simplifiedApexOnBoardRefunds.getCollection();
@@ -133,7 +134,7 @@ async function main() {
 
 		const setAsProcessingTimer = new Timer();
 
-		await sams.updateMany(
+		await goDB.operation.sams.updateMany(
 			{ /* ALL DOCUMENTS */ },
 			{ system_status: 'incomplete' },
 			{ returnResults: false },
@@ -153,7 +154,7 @@ async function main() {
 		// For each SAM, we should get all APEX transactions and validate their ASE Counter Value sequence.
 		// This will allow us to identify any missing transactions or gaps in the sequence.
 
-		let counter = await sams.count();
+		let counter = await goDB.operation.sams.count();
 
 		for await (const samItem of samsStream) {
 			//
@@ -251,7 +252,7 @@ async function main() {
 				if (!sortedTransactions.length) {
 					Logger.error({ message: `No transactions found for SAM "${samData._id}" for the given time range. (${analysisTimer.get()})` });
 					const noTxUpdate = { analysis: [], remarks: 'No transactions found for given time range.', system_status: 'complete', timeline_summary: { months: [] } };
-					await sams.updateById(samData._id, noTxUpdate as Partial<CreateSamDto>);
+					await goDB.operation.sams.updateById(samData._id, noTxUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
 					continue;
 				}
@@ -267,7 +268,7 @@ async function main() {
 				if (!allTransactionsMatch) {
 					Logger.error({ message: `SAM ${samData._id} has transactions with different Agency ID. (${analysisTimer.get()})` });
 					const agencyErrorUpdate = { analysis: [], remarks: 'Transactions with different Agency IDs found.', system_status: 'error', timeline_summary: { months: [] } };
-					await sams.updateById(samData._id, agencyErrorUpdate as Partial<CreateSamDto>);
+					await goDB.operation.sams.updateById(samData._id, agencyErrorUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
 					continue;
 				}
@@ -281,7 +282,7 @@ async function main() {
 				if (!allMacAseCounterValuesValid) {
 					Logger.error({ message: `SAM ${samData._id} has transactions with invalid mac_ase_counter_value. (${analysisTimer.get()})` });
 					const counterErrorUpdate = { analysis: [], remarks: 'Transactions with invalid mac_ase_counter_value found.', system_status: 'error', timeline_summary: { months: [] } };
-					await sams.updateById(samData._id, counterErrorUpdate as Partial<CreateSamDto>);
+					await goDB.operation.sams.updateById(samData._id, counterErrorUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
 					continue;
 				}
@@ -304,7 +305,7 @@ async function main() {
 				if (duplicateAseCounterValues.length > 0) {
 					Logger.error({ message: `SAM ${samData._id} has ${duplicateAseCounterValues.length} transactions with duplicate mac_ase_counter_value. (${analysisTimer.get()})` });
 					const duplicateCounterUpdate = { analysis: [], remarks: 'Transactions with duplicate mac_ase_counter_value found.', system_status: 'error', timeline_summary: { months: [] } };
-					await sams.updateById(samData._id, duplicateCounterUpdate as Partial<CreateSamDto>);
+					await goDB.operation.sams.updateById(samData._id, duplicateCounterUpdate as Partial<CreateSamDto>);
 					Logger.spacer(1);
 					continue;
 				}
@@ -430,7 +431,7 @@ async function main() {
 					transactions_missing: transactionsMissing,
 				};
 
-				await sams.updateById(samData._id, updatedSamData);
+				await goDB.operation.sams.updateById(samData._id, updatedSamData);
 
 				Logger.success(`Expected: ${updatedSamData.transactions_expected} | Found: ${updatedSamData.transactions_found} | Missing: ${updatedSamData.transactions_missing} (${analysisTimer.get()})`, 1);
 
@@ -438,7 +439,7 @@ async function main() {
 			} catch (error) {
 				Logger.error({ message: `Error processing SAM "${samData._id}": ${error.message}` });
 				const processingErrorUpdate = { remarks: `Error processing SAM "${samData._id}": ${error.message}`, system_status: 'error', timeline_summary: { months: [] } };
-				await sams.updateById(samData._id, processingErrorUpdate as Partial<CreateSamDto>);
+				await goDB.operation.sams.updateById(samData._id, processingErrorUpdate as Partial<CreateSamDto>);
 			} finally {
 				counter--;
 			}

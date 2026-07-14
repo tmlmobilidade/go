@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { sams, samsByIdAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { samsByIdAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { type Sam, type SamAnalysis, withTimelineMonthGapFlags } from '@tmlmobilidade/types';
 
 /* * */
@@ -35,7 +36,7 @@ export async function getById(request: FastifyRequest, reply: FastifyReply<Sam>)
 	//
 	// Fetch the SAM from the database
 
-	const samRows = await sams.aggregate(samsByIdAggregationPipeline(Number(id))) as Array<Sam & { __analysis?: SamAnalysis[] }>;
+	const samRows = await goDB.operation.sams.aggregate(samsByIdAggregationPipeline(Number(id))) as Array<Sam & { __analysis?: SamAnalysis[] }>;
 	const sam = samRows[0];
 
 	if (!sam) {

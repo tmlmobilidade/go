@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { sams, samsByIdsListViewAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { samsByIdsListViewAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { ActionsOf, Permission, PermissionCatalog, type SamListItem } from '@tmlmobilidade/types';
 
 /* * */
@@ -35,7 +36,7 @@ export async function getSamByIds<S extends Permission['scope']>(request: Fastif
 		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ids parameter.');
 	}
 
-	const foundSamsByIds = (await sams.aggregate(
+	const foundSamsByIds = (await goDB.operation.sams.aggregate(
 		samsByIdsListViewAggregationPipeline({
 			agencyIds,
 			ids: numericIds,

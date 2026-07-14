@@ -3,7 +3,8 @@
 import { parseSam } from '@/parse-sam.js';
 import { type AggregationResultItem } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -78,12 +79,12 @@ async function main() {
 				continue;
 			}
 			// Skip if the SAM already exists
-			const samAlreadyExists = await sams.existsById(itemData.mac_sam_serial_number);
+			const samAlreadyExists = await goDB.operation.sams.existsById(itemData.mac_sam_serial_number);
 			if (samAlreadyExists) continue;
 			// Parse the SAM data
 			const parsedSam = parseSam(item);
 			// Create a new SAM document
-			await sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
+			await goDB.operation.sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			samsForLocationsCounter++;
 		}
@@ -112,12 +113,12 @@ async function main() {
 				continue;
 			}
 			// Skip if the SAM already exists
-			const samAlreadyExists = await sams.existsById(itemData.mac_sam_serial_number);
+			const samAlreadyExists = await goDB.operation.sams.existsById(itemData.mac_sam_serial_number);
 			if (samAlreadyExists) continue;
 			// Parse the SAM data
 			const parsedSam = parseSam(item);
 			// Create a new SAM document
-			await sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
+			await goDB.operation.sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			samsForOnBoardRefundsCounter++;
 		}
@@ -146,12 +147,12 @@ async function main() {
 				continue;
 			}
 			// Skip if the SAM already exists
-			const samAlreadyExists = await sams.existsById(itemData.mac_sam_serial_number);
+			const samAlreadyExists = await goDB.operation.sams.existsById(itemData.mac_sam_serial_number);
 			if (samAlreadyExists) continue;
 			// Parse the SAM data
 			const parsedSam = parseSam(item);
 			// Create a new SAM document
-			await sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
+			await goDB.operation.sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			samsForOnBoardSalesCounter++;
 		}
@@ -180,12 +181,12 @@ async function main() {
 				continue;
 			}
 			// Skip if the SAM already exists
-			const samAlreadyExists = await sams.existsById(itemData.mac_sam_serial_number);
+			const samAlreadyExists = await goDB.operation.sams.existsById(itemData.mac_sam_serial_number);
 			if (samAlreadyExists) continue;
 			// Parse the SAM data
 			const parsedSam = parseSam(item);
 			// Create a new SAM document
-			await sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
+			await goDB.operation.sams.updateById(itemData.mac_sam_serial_number, parsedSam, { upsert: true });
 			// Increment the counter
 			samsForValidationsCounter++;
 		}

@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { sams, samsByIdsListViewAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { samsByIdsListViewAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Permission, PermissionCatalog, type Sam, type SamListItem } from '@tmlmobilidade/types';
 
 /**
@@ -67,7 +68,7 @@ export async function resolveTimelineSummaryRows(request: FastifyRequest, ids: n
 	const restrictByAgency = Array.isArray(agencyIds) && agencyIds.length > 0;
 	const allowAllAgencies = !restrictByAgency || (agencyIds?.includes(PermissionCatalog.ALLOW_ALL_FLAG) ?? false);
 
-	const timelineRows = (await sams.aggregate(
+	const timelineRows = (await goDB.operation.sams.aggregate(
 		samsByIdsListViewAggregationPipeline({
 			agencyIds,
 			ids,

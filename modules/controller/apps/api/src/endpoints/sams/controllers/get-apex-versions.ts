@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { buildSamsMatch, sams, samsApexVersionsAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { buildSamsMatch, samsApexVersionsAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { type GetSamsBatchQuery, GetSamsBatchQuerySchema } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +17,7 @@ export async function getApexVersions(request: FastifyRequest<{ Querystring: Get
 
 	const pipeline = samsApexVersionsAggregationPipeline({ matchAnd });
 
-	const rows = (await sams.aggregate(pipeline)) as Array<{ _id: unknown }>;
+	const rows = (await goDB.operation.sams.aggregate(pipeline)) as Array<{ _id: unknown }>;
 
 	if (rows.length === 0) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No apex versions found.');

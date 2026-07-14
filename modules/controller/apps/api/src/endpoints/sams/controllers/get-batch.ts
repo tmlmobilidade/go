@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { buildSamsMatch, sams, samsBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { buildSamsMatch, samsBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { type GetSamsBatchQuery, GetSamsBatchQuerySchema, type SamListItem } from '@tmlmobilidade/types';
 
 /**
@@ -15,7 +16,7 @@ export async function getBatch(request: FastifyRequest<{ Querystring: GetSamsBat
 	const matchAnd = buildSamsMatch(parsedQuery);
 
 	const pipeline = samsBatchAggregationPipeline({ matchAnd });
-	const allSams = (await sams.aggregate(pipeline)) as SamListItem[];
+	const allSams = (await goDB.operation.sams.aggregate(pipeline)) as SamListItem[];
 
 	if (allSams.length === 0) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No sams found.');
