@@ -200,6 +200,4 @@ export function AgencyDetailBasicInfo() {
 			</Section>
 		</Collapsible>
 	);
-
-	//
 }
