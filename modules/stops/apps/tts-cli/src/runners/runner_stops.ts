@@ -42,6 +42,7 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 	const audioBuffer = await generatePiperTtsAudio({
 		filename: stopId,
 		force: true,
+		resourceType: 'stops',
 		string: stopTts,
 	});
 

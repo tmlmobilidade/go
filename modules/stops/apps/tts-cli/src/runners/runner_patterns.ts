@@ -74,7 +74,7 @@ export async function runnerPatterns() {
 					message: `[${lineIndex + 1}/${allLinesData.length}] [${patternIndex + 1}/${lineData.pattern_ids.length}] Generating | Line ${lineData._id} | Pattern ${patternData._id} | ${patternTts}`,
 				});
 
-				await piperTtsApi({ filename: patternId, force: true, string: patternTts });
+				await piperTtsApi({ filename: patternId, force: true, resourceType: 'patterns', string: patternTts });
 
 				const updatedPatternGroup = patternGroup.map(patternData => ({ ...patternData, tts_hash: hash }));
 

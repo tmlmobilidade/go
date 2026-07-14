@@ -31,6 +31,7 @@ async function processCommon(commonIndex: number, total: number, commonData: typ
 	const audioBuffer = await generatePiperTtsAudio({
 		filename: commonData.id,
 		force: true,
+		resourceType: 'common',
 		string: commonData.text,
 	});
 
