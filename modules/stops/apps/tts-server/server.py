@@ -70,7 +70,8 @@ class TTSRequest(BaseModel):
 
 
 def normalize_audio_id(audio_id: str) -> str:
-    return audio_id.removesuffix('.mp3')
+    safe_id = os.path.basename(audio_id)  
+    return safe_id.removesuffix('.mp3')  
 
 
 def get_audio_id(req: TTSRequest) -> str:
