@@ -16,8 +16,8 @@ async function main() {
 
 	const globalTimer = new Timer();
 
-	// await runnerStops();
-	// await runnerCommon();
+	await runnerStops();
+	await runnerCommon();
 	await runnerPatterns();
 
 	Logger.terminate(`TTS generation completed in ${globalTimer.get()}`);
