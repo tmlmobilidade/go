@@ -5,7 +5,8 @@ import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.js';
 import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { agencies, lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { agencies, lines, routes, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
@@ -227,7 +228,7 @@ export async function exportGtfsV29(
 				const routeId = routeData.code;
 
 				// Fetch all patterns for this route
-				const routePatterns = await patterns.findMany({
+				const routePatterns = await goDB.offer.patterns.findMany({
 					line_id: lineData._id,
 					route_id: routeData._id,
 				});

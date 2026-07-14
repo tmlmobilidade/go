@@ -26,7 +26,8 @@
 
 import type { ManualRule, Pattern, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
 
-import { lines, patterns, routes, yearPeriods } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { lines, routes, yearPeriods } from '@tmlmobilidade/interfaces';
 import { writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 
@@ -92,7 +93,7 @@ async function loadAgencyPatterns(agencyId: string, onlyRouted: boolean): Promis
 	const lineIds = agencyLines.map(line => line._id);
 	if (!lineIds.length) return [];
 
-	const all = await patterns.findMany(
+	const all = await goDB.offer.patterns.findMany(
 		{ line_id: { $in: lineIds } },
 		{ projection: { code: 1, line_id: 1, route_id: 1, rules: 1 } },
 	);

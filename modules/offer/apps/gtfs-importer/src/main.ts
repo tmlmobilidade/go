@@ -1,6 +1,7 @@
 /* * */
 
-import { lines, patterns, routes } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { lines, routes } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { INTERCHANGE_MODE } from '@tmlmobilidade/types';
@@ -59,7 +60,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 	const lineIds = existingLines.map(line => line._id);
 
 	if (lineIds.length) {
-		await patterns.deleteMany({ line_id: { $in: lineIds } });
+		await goDB.offer.patterns.deleteMany({ line_id: { $in: lineIds } });
 		await routes.deleteMany({ line_id: { $in: lineIds } });
 		await lines.deleteMany({ _id: { $in: lineIds } });
 	}

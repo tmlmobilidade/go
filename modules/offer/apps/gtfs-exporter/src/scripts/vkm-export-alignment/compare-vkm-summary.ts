@@ -21,7 +21,8 @@
 import type { CalculateVkmDto, OperationalDate, Pattern } from '@tmlmobilidade/types';
 
 import { buildOperationalDateRange, calculateAgencyVkm, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
-import { agencies, events, holidays, lines, patterns, routes, yearPeriods } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { agencies, events, holidays, lines, routes, yearPeriods } from '@tmlmobilidade/interfaces';
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';
@@ -120,7 +121,7 @@ async function loadAgencyPatterns(agencyId: string, onlyRouted: boolean): Promis
 	const lineIds = agencyLines.map(line => line._id);
 	if (!lineIds.length) return [];
 
-	const all = await patterns.findMany(
+	const all = await goDB.offer.patterns.findMany(
 		{ line_id: { $in: lineIds } },
 		{ projection: { code: 1, line_id: 1, path: 1, route_id: 1, rules: 1, shape: 1 } },
 	);

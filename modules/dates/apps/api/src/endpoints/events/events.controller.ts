@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { events, type Filter, patterns } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { events, type Filter } from '@tmlmobilidade/interfaces';
 import { type CreateEventDto, type Event, PermissionCatalog, type UpdateEventDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -197,7 +198,7 @@ export class EventsController {
 		//
 		// Get pattern ids that reference this event in manual pattern rules
 
-		const associatedPatterns = await patterns.findMany(
+		const associatedPatterns = await goDB.offer.patterns.findMany(
 			{
 				rules: {
 					$elemMatch: {
