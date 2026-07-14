@@ -1,7 +1,7 @@
 /* * */
 
 import { seedFromGoV1 } from '@/tasks/seed-from-go-v1.js';
-import { zones } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 
 /* * */
 
@@ -12,7 +12,7 @@ import { zones } from '@tmlmobilidade/interfaces';
 	// Delete existing zones
 
 	console.log('Deleting All');
-	await zones.deleteMany({});
+	await goDB.offer.zones.deleteMany({});
 
 	//
 	// Run tasks
