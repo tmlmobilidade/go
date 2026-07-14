@@ -20,6 +20,7 @@ export const PlansPermissionSchema = z.object({
 		'read_apex_file',
 		'update_apex_file',
 		'delete_apex_file',
+		'send_apex_notification',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),

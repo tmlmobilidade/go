@@ -79,6 +79,7 @@ const planActions: PermissionConfig = {
 		{ action: 'read_apex_file', description: 'Permite ver o ficheiro APEX de um plano', label: 'Ver Ficheiro APEX', resources: ['AGENCIES'] },
 		{ action: 'update_apex_file', description: 'Permite alterar o ficheiro APEX de um plano', label: 'Alterar Ficheiro APEX', resources: ['AGENCIES'] },
 		{ action: 'delete_apex_file', description: 'Permite eliminar o ficheiro APEX de um plano', label: 'Eliminar Ficheiro APEX', resources: ['AGENCIES'] },
+		{ action: 'send_apex_notification', description: 'Permite enviar uma notificação para os contactos APEX', label: 'Enviar Notificação APEX', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de planos.',
 	scope: PermissionCatalog.all.plans.scope,
