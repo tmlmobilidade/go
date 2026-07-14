@@ -1,5 +1,6 @@
 import { Stop } from '@carrismetropolitana/api-types/network';
-import { agencies, hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { agencies, hashedTrips, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { HashedShape, HashedTrip, Ride } from '@tmlmobilidade/types';
@@ -186,7 +187,7 @@ async function processHashedShapes(hashedShapesIds: IndexedValues<string>) {
 		Logger.info({ message: 'Processing Hashed Shapes...' });
 		const hashedShapesTimer = new Timer();
 
-		const hashedShapesCollection = await hashedShapes.getCollection();
+		const hashedShapesCollection = await goDB.operation.hashedShapes.getCollection();
 		const hashedShapesStream = hashedShapesCollection.find({ _id: { $in: Array.from(hashedShapesIds.values()) } }).stream();
 
 		let totalHashedShapes = 0;
