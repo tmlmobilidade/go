@@ -1,8 +1,9 @@
 /* * */
 
-import { organizations, roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
+import { organizations, sessions, users, verificationTokens } from '@/interfaces/index.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
 import { type CreateUserDto, type LoginDto, type Organization, type Permission, type Session, type User } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
@@ -65,7 +66,7 @@ class AuthProvider {
 		const userData = await users.findById(userId);
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found.');
 		// Get the roles assigned to the user
-		const rolesData = await roles.findMany({ _id: { $in: userData.role_ids } });
+		const rolesData = await goDB.core.roles.findMany({ _id: { $in: userData.role_ids } });
 		// Combine permissions from roles and user-specific permissions
 		const allPermissions = [...rolesData.flatMap(role => role.permissions), ...userData.permissions];
 		// Merge permissions with the same scope and action
