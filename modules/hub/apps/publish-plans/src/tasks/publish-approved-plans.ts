@@ -2,8 +2,9 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type HubPlan, HubPlanSchema } from '@tmlmobilidade/go-types-public-info';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -19,7 +20,7 @@ export async function publishApprovedPlans() {
 	//
 	// Retrieve all plans
 
-	const allPlansData = await plans.all();
+	const allPlansData = await goDB.operation.plans.findMany();
 
 	Logger.info({ message: `Retrieved ${allPlansData.length} approved plans...` });
 

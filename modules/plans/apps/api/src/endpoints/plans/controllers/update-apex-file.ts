@@ -2,6 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { files, plans, TransactionManager } from '@tmlmobilidade/interfaces';
 import { PermissionCatalog, type Plan, type UpdatePlanDto } from '@tmlmobilidade/types';
 import { createWriteStream } from 'fs';
@@ -21,7 +22,7 @@ export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanD
 	//
 	// Get the Plan from the database
 
-	const foundPlan = await plans.findById(request.params.id);
+	const foundPlan = await goDB.operation.plans.findById(request.params.id);
 
 	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
@@ -127,7 +128,7 @@ export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanD
 	//
 	// Re-fetch the plan data to get the updated data
 
-	const updatedPlanData = await plans.findById(request.params.id);
+	const updatedPlanData = await goDB.operation.plans.findById(request.params.id);
 
 	if (!updatedPlanData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 

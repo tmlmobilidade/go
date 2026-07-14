@@ -9,8 +9,9 @@ import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -52,11 +53,11 @@ await (async function main() {
 		//
 		// Get single plan to process
 
-		// const planData = await plans.findById('P1LDS'); // Teste Simples
-		// const planData = await plans.findById('FPTD0'); // 41 Viação Alvorada
-		// const planData = await plans.findById('LA4CI'); // 42 Rodoviária de Lisboa
-		const planData = await plans.findById('BYBGK'); // 43 Transportes Sul do Tejo
-		// const planData = await plans.findById('N8TKT'); // 44 Alsa Todi
+		// const planData = await goDB.operation.plans.findById('P1LDS'); // Teste Simples
+		// const planData = await goDB.operation.plans.findById('FPTD0'); // 41 Viação Alvorada
+		// const planData = await goDB.operation.plans.findById('LA4CI'); // 42 Rodoviária de Lisboa
+		const planData = await goDB.operation.plans.findById('BYBGK'); // 43 Transportes Sul do Tejo
+		// const planData = await goDB.operation.plans.findById('N8TKT'); // 44 Alsa Todi
 
 		Logger.info({ message: `Found Plan to process: ${planData._id}` });
 

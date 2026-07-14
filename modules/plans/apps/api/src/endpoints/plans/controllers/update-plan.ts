@@ -3,7 +3,8 @@
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { files } from '@tmlmobilidade/interfaces';
 import { type CreateFileDto, HashablePlanMetadata, PermissionCatalog, type Plan, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
 import { createHash } from 'node:crypto';
 
@@ -18,7 +19,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 	//
 	// Get the Plan from the database
 
-	const foundPlan = await plans.findById(request.params.id);
+	const foundPlan = await goDB.operation.plans.findById(request.params.id);
 
 	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
@@ -114,7 +115,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 			.update(JSON.stringify(hashablePlanMetadata))
 			.digest('hex');
 
-		await plans.updateById(foundPlan._id, {
+		await goDB.operation.plans.updateById(foundPlan._id, {
 			gtfs_feed_info: {
 				...foundPlan.gtfs_feed_info,
 				feed_end_date: validatedFeedEndDate,
@@ -149,7 +150,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 		//
 		// Update the plan with the new data
 
-		await plans.updateById(foundPlan._id, {
+		await goDB.operation.plans.updateById(foundPlan._id, {
 			pcgi_legacy: {
 				operation_plan_id: request.body.pcgi_legacy.operation_plan_id,
 			},
@@ -161,7 +162,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 	//
 	// Re-fetch the plan data to get the updated data
 
-	const updatedPlanData = await plans.findById(request.params.id);
+	const updatedPlanData = await goDB.operation.plans.findById(request.params.id);
 
 	if (!updatedPlanData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 

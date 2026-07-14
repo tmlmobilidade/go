@@ -3,7 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { agencies, files, plans } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { agencies, files } from '@tmlmobilidade/interfaces';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -17,7 +18,7 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 	//
 	// Get the Plan from the database
 
-	const foundPlan = await plans.findById(request.params.id);
+	const foundPlan = await goDB.operation.plans.findById(request.params.id);
 
 	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 

@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, plans } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { type Filter } from '@tmlmobilidade/interfaces';
 import { PermissionCatalog, type Plan } from '@tmlmobilidade/types';
 
 /**
@@ -40,7 +41,7 @@ export async function getAllPlans(request: FastifyRequest, reply: FastifyReply<P
 			...(userPlanPermissions.resources['agency_ids'] && !userPlanPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: userPlanPermissions.resources['agency_ids'] } }),
 		};
 
-		const filteredPlans = await plans.findMany(filters, { sort: { created_at: -1 } });
+		const filteredPlans = await goDB.operation.plans.findMany(filters, { sort: { created_at: -1 } });
 
 		if (!filteredPlans) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plans not found');
@@ -52,7 +53,7 @@ export async function getAllPlans(request: FastifyRequest, reply: FastifyReply<P
 	//
 	// If no specific permissions are set, return all plans
 
-	const allPlans = await plans.findMany({}, { sort: { created_at: -1 } });
+	const allPlans = await goDB.operation.plans.findMany({}, { sort: { created_at: -1 } });
 
 	return reply.send({ data: allPlans, error: null, statusCode: HTTP_STATUS.OK });
 }

@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { files } from '@tmlmobilidade/interfaces';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +17,7 @@ export async function downloadOperationFile(request: FastifyRequest<{ Params: { 
 	//
 	// Get the Plan from the database
 
-	const planData = await plans.findById(request.params.id);
+	const planData = await goDB.operation.plans.findById(request.params.id);
 
 	if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 

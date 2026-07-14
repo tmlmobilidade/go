@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { plans } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { PermissionCatalog, type Plan } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +16,7 @@ export async function lockPlan(request: FastifyRequest<{ Params: { id: string } 
 	//
 	// Get the Plan from the database
 
-	const planData = await plans.findById(request.params.id);
+	const planData = await goDB.operation.plans.findById(request.params.id);
 
 	if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
@@ -36,9 +36,9 @@ export async function lockPlan(request: FastifyRequest<{ Params: { id: string } 
 	//
 	// If authorized, toggle the lock status of the plan
 
-	await plans.toggleLockById(request.params.id);
+	await goDB.operation.plans.toggleLockById(request.params.id);
 
-	const foundPlan = await plans.findById(request.params.id);
+	const foundPlan = await goDB.operation.plans.findById(request.params.id);
 
 	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 

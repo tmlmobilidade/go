@@ -1,7 +1,8 @@
 /* * */
 
 import { Files } from '@tmlmobilidade/files';
-import { agencies, files, plans } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { agencies, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GtfsAgency, type GtfsFeedInfo, HashablePlanMetadata } from '@tmlmobilidade/types';
@@ -24,7 +25,7 @@ export async function ensureGtfsFiles() {
 
 	const globalTimer = new Timer();
 
-	const allPlans = await plans.all();
+	const allPlans = await goDB.operation.plans.findMany();
 
 	for (const planData of allPlans) {
 		//
@@ -148,7 +149,7 @@ export async function ensureGtfsFiles() {
 			.update(JSON.stringify(hashablePlanMetadata))
 			.digest('hex');
 
-		await plans.updateById(planData._id, {
+		await goDB.operation.plans.updateById(planData._id, {
 			gtfs_agency: updatedAgencyTxtData,
 			gtfs_feed_info: updatedFeedInfoTxtData,
 			hash: hashValue,

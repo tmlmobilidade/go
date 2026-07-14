@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { plans } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type Plan } from '@tmlmobilidade/types';
 
 /**
@@ -11,7 +11,7 @@ import { type Plan } from '@tmlmobilidade/types';
  * @param reply Fastify reply
  */
 export async function controllerReprocessPlan(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
-	const planData = await plans.findById(request.params.id);
-	const result = await plans.updateById(request.params.id, { apps: { ...planData.apps, controller: { last_hash: null, status: 'waiting', timestamp: null } } });
+	const planData = await goDB.operation.plans.findById(request.params.id);
+	const result = await goDB.operation.plans.updateById(request.params.id, { apps: { ...planData.apps, controller: { last_hash: null, status: 'waiting', timestamp: null } } });
 	return reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
 }

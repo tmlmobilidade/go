@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { files } from '@tmlmobilidade/interfaces';
 import { PermissionCatalog, type Plan } from '@tmlmobilidade/types';
 
 /**
@@ -15,7 +16,7 @@ export async function deleteApexFile(request: FastifyRequest<{ Params: { id: str
 
 	if (!request.params?.id) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing Plan ID in request params.');
 
-	const foundPlan = await plans.findById(request.params.id);
+	const foundPlan = await goDB.operation.plans.findById(request.params.id);
 
 	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found.');
 
@@ -44,7 +45,7 @@ export async function deleteApexFile(request: FastifyRequest<{ Params: { id: str
 	//
 	// Update the plan to remove the apex file ID
 
-	const updatedPlan = await plans.updateById(request.params.id, { apex_file_id: null });
+	const updatedPlan = await goDB.operation.plans.updateById(request.params.id, { apex_file_id: null });
 
 	if (!updatedPlan) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update plan');
 

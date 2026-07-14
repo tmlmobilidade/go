@@ -1,6 +1,7 @@
 /* * */
 
-import { hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { hashedPatterns, hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInChunks } from '@tmlmobilidade/utils';
@@ -60,7 +61,7 @@ export async function cleanupOrphanRidesGlobally() {
 	Logger.spacer(1);
 	Logger.info({ message: `Starting cleanup of orphan Rides...` });
 
-	const allPlansData = await plans.all();
+	const allPlansData = await goDB.operation.plans.findMany();
 	const allPlanIds = allPlansData.map(plan => plan._id);
 
 	const deleteOrphanRidesResult = await rides.deleteMany({ plan_id: { $nin: allPlanIds } });
