@@ -19,6 +19,7 @@ export const AgencySchema = DocumentSchema.extend({
 	name: z.string(),
 	operation_start_date: OperationalDateSchema.nullable().default(null),
 	phone: z.string(),
+	pta_name: z.string(),
 	public_email: z.string().email(),
 	public_name: z.string(),
 	short_name: z.string().max(4),
