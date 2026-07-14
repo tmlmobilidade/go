@@ -6,7 +6,8 @@ import { createImportedStopResolver } from '@/utils/stops.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
-import { lines, patterns, stops, typologies } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { patterns, stops, typologies } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CreatePatternDto, NoteComment, type Pattern, type PatternShapeMapItem, PermissionCatalog, PopulatedPath, PopulatedPattern, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
@@ -118,7 +119,7 @@ export class PatternsController {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read patterns for this agency');
 		}
 
-		const agencyLines = await lines.findMany(
+		const agencyLines = await goDB.offer.lines.findMany(
 			{ agency_id: { $in: agencyIds } },
 			{ projection: { _id: 1, agency_id: 1, code: 1, name: 1, typology: 1 }, sort: { code: 1 } },
 		);
@@ -312,7 +313,7 @@ export class PatternsController {
 		//
 		// Get agencyId and Create stops cache
 
-		const lineData = await lines.findById(patternData.line_id);
+		const lineData = await goDB.offer.lines.findById(patternData.line_id);
 
 		if (!lineData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found for pattern');
