@@ -1,8 +1,9 @@
 /* * */
 
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { hashedTrips, rides } from '@tmlmobilidade/interfaces';
+import { hashedTrips } from '@tmlmobilidade/interfaces';
 import { type HashedTrip } from '@tmlmobilidade/types';
 
 /**
@@ -32,7 +33,7 @@ export async function getHashedTrip(request: FastifyRequest, reply: FastifyReply
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await rides.findById(rideId);
+		const rideData = await goDB.operation.rides.findById(rideId);
 
 		if (!rideData) {
 			return reply

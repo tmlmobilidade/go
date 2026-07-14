@@ -1,11 +1,12 @@
 /* * */
 
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
-import { rides, simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
+import { simplifiedApexOnBoardRefunds } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
@@ -33,7 +34,7 @@ export async function getSimplifiedApexOnBoardRefunds(request: FastifyRequest<{ 
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await rides.findById(request.params.id);
+		const rideData = await goDB.operation.rides.findById(request.params.id);
 
 		if (!rideData) {
 			return reply

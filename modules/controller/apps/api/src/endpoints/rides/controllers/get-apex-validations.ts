@@ -1,11 +1,12 @@
 /* * */
 
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
+import { simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
@@ -33,7 +34,7 @@ export async function getSimplifiedApexValidations(request: FastifyRequest<{ Par
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await rides.findById(request.params.id);
+		const rideData = await goDB.operation.rides.findById(request.params.id);
 
 		if (!rideData) {
 			return reply

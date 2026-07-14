@@ -2,7 +2,8 @@
 
 import { type ExportType, type TaskProps } from '@/types.js';
 import { parseRide } from '@/utils/parse-ride.js';
-import { type Filter, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { type Filter, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { type Ride, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
@@ -49,7 +50,7 @@ export async function exportRidesRaw({ context, message }: TaskProps): Promise<v
 
 	message(`A iniciar ligação à base de dados...`);
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	const stream = ridesCollection.find(filterQuery).stream();
 

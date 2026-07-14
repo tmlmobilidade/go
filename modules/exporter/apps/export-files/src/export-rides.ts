@@ -1,6 +1,7 @@
 /* * */
 
-import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { authProvider, fileExports, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
@@ -54,7 +55,7 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 		}
 	}
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 	const ridesBatchCursor = ridesCollection.aggregate(
 		[
 			...pipeline,

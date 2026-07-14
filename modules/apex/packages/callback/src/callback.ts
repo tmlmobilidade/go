@@ -1,8 +1,8 @@
 /* * */
 
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
 import { type SimplifiedApexBankingTap, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -72,7 +72,7 @@ export async function setRidesAsWaiting(data: AnySimplifiedApexDocument[]) {
 		// Run the update query to mark all affected Rides as 'waiting',
 		// which will trigger the necessary reprocessing in the system.
 
-		const updateRidesResult = await rides.updateMany(
+		const updateRidesResult = await goDB.operation.rides.updateMany(
 			{ $or: updateRidesOps },
 			{ system_status: 'waiting' },
 			{ returnResults: false },

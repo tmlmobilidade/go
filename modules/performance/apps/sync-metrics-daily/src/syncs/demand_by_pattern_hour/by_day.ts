@@ -1,6 +1,7 @@
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics, rides } from '@tmlmobilidade/interfaces';
+import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { Metric } from '@tmlmobilidade/types';
@@ -27,7 +28,7 @@ export const syncDemandByPatternHourByDay = async () => {
 	//
 	// Fetch rides collection
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	//
 	// Load calendar JSON

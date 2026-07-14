@@ -1,6 +1,6 @@
 /* * */
 
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type AlertReference } from '@tmlmobilidade/types';
 import { getPublicTripId } from '@tmlmobilidade/utils';
@@ -36,7 +36,7 @@ export async function transformReferenceTypeRidesIntoJson(alertData: Alert): Pro
 		// Find the ride document by its ID
 		// and prepare the AlertReference object
 
-		const foundRide = await rides.findById(reference.parent_id);
+		const foundRide = await goDB.operation.rides.findById(reference.parent_id);
 
 		if (!foundRide) {
 			Logger.error({ message: `[Alert ID: ${alertData._id}] No ride found for ride ID ${reference.parent_id}.` });

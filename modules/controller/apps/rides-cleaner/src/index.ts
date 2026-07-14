@@ -1,6 +1,6 @@
 /* * */
 
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -34,7 +34,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerA = new Timer();
 
-		const processingRidesA = await rides.findMany({ system_status: { $in: ['processing', 'error'] } });
+		const processingRidesA = await goDB.operation.rides.findMany({ system_status: { $in: ['processing', 'error'] } });
 		const processingRideIdsA = processingRidesA.map(item => item._id);
 
 		const fetchTimerResultA = fetchTimerA.get();
@@ -54,7 +54,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerB = new Timer();
 
-		const processingRidesB = await rides.findMany({ system_status: { $in: ['processing', 'error'] } });
+		const processingRidesB = await goDB.operation.rides.findMany({ system_status: { $in: ['processing', 'error'] } });
 		const processingRideIdsB = processingRidesB.map(item => item._id);
 
 		const fetchTimerResultB = fetchTimerB.get();
@@ -72,7 +72,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerC = new Timer();
 
-		const processingRidesC = await rides.findMany({ system_status: { $in: ['processing', 'error'] } });
+		const processingRidesC = await goDB.operation.rides.findMany({ system_status: { $in: ['processing', 'error'] } });
 		const processingRideIdsC = processingRidesC.map(item => item._id);
 
 		const fetchTimerResultC = fetchTimerC.get();
@@ -93,7 +93,7 @@ async function reprocessStuckRides() {
 
 			const updateTimer = new Timer();
 
-			const ridesCollection = await rides.getCollection();
+			const ridesCollection = await goDB.operation.rides.getCollection();
 			await ridesCollection.updateMany({ _id: { $in: stuckRideIds } }, { $set: { system_status: 'waiting' } });
 
 			Logger.info({ message: `Found ${stuckRideIds.length} stuck rides that were marked as 'waiting'. (${updateTimer.get()})` });

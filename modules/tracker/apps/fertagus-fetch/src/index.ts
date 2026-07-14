@@ -1,10 +1,10 @@
 /* * */
 
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { TrainsResponse } from '@tmlmobilidade/external/dist/clients/fertagus/types.js';
-import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -85,7 +85,7 @@ const main = async () => {
 
 		if (!ridesMap.has(rideKey)) {
 			try {
-				const ridesCollection = await rides.getCollection();
+				const ridesCollection = await goDB.operation.rides.getCollection();
 				const foundRides = await ridesCollection.aggregate<FoundRideDocument>([
 					{
 						$match: {

@@ -4,8 +4,8 @@ import type { AppConfig } from '@/lib/config.js';
 import type { Filter } from '@tmlmobilidade/interfaces';
 import type { HashedPatternWaypoint, Ride } from '@tmlmobilidade/types';
 
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -44,7 +44,7 @@ export function buildRidesQuery(config: AppConfig): Filter<Ride> {
 export async function fetchCurrentWindowRides(ridesQuery: Filter<Ride>, config: AppConfig) {
 	Logger.progress({ message: `Getting current window rides for date range: ${Dates.now('Europe/Lisbon').minus({ hours: 1 }).iso} → ${Dates.now('Europe/Lisbon').plus({ hours: 1 }).iso}` });
 
-	const currentWindowRides = await rides.aggregate([
+	const currentWindowRides = await goDB.operation.rides.aggregate([
 		{
 			$match: {
 				...ridesQuery,
@@ -95,7 +95,7 @@ export async function fetchHistoricalRidesForDayIndex(ridesQuery: Filter<Ride>, 
 
 	Logger.progress({ message: `Getting historical rides for date range: ${start.iso} → ${end.iso}` });
 
-	return await rides.aggregate([
+	return await goDB.operation.rides.aggregate([
 		// Match the rides that are within the historical window.
 		{
 			$match: {

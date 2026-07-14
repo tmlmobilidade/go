@@ -1,5 +1,6 @@
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
-import { metrics, rides } from '@tmlmobilidade/interfaces';
+import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
@@ -159,7 +160,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	//
 	// Fetch rides collection
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	//
 	// Today's stream

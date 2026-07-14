@@ -1,6 +1,6 @@
 /* * */
 
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 
@@ -59,7 +59,7 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Gtf
 			// for rides matching the line ID,
 			// the agency ID, and the alert start time.
 
-			const foundRouteIds = await rides.aggregate([
+			const foundRouteIds = await goDB.operation.rides.aggregate([
 				{
 					$match: {
 						agency_id: alertData.agency_id,

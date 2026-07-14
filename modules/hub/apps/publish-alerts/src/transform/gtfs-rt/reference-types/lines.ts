@@ -1,7 +1,8 @@
 /* * */
 
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
-import { rides, stops } from '@tmlmobilidade/interfaces';
+import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector, UnixTimestamp } from '@tmlmobilidade/types';
 import { getPublicRouteId } from '@tmlmobilidade/utils';
@@ -47,7 +48,7 @@ export async function transformReferenceTypeLinesIntoGtfsRt(alertData: Alert): P
 		// for rides matching the line ID,
 		// the agency ID, and the alert start time.
 
-		const foundRouteIds = await rides.aggregate([
+		const foundRouteIds = await goDB.operation.rides.aggregate([
 			{
 				$match: {
 					agency_id: alertData.agency_id,

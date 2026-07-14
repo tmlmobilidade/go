@@ -1,6 +1,6 @@
 import { type TaskProps } from '@/types.js';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
 
 /* * */
 
@@ -33,7 +33,7 @@ export interface CompletedTripsPercentageResult {
 export async function calculatePlannedTrips({ context, message }: TaskProps): Promise<PlannedTripsMetricResult[]> {
 	message('Calculating planned trips...');
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	message(`Date range: ${context.dates.start} to ${context.dates.end}`);
 
@@ -85,7 +85,7 @@ export async function calculatePlannedTrips({ context, message }: TaskProps): Pr
 export async function calculateCompletedTrips({ context, message }: TaskProps): Promise<CompletedTripsMetricResult[]> {
 	message('Calculating completed trips...');
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	message(`Date range: ${context.dates.start} to ${context.dates.end}`);
 

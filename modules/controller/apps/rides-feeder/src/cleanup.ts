@@ -1,6 +1,7 @@
 /* * */
 
-import { hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { hashedPatterns, hashedShapes, hashedTrips, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInChunks } from '@tmlmobilidade/utils';
@@ -25,7 +26,7 @@ export async function cleanupOrphanRidesForPlan(planId: string, savedRideIds: Se
 	//
 	// Setup a stream for all Ride IDs that are in use by Rides
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	const existingRidesStream = ridesCollection.find({ plan_id: planId }).stream();
 	const staleRideIds = new Set<string>();
@@ -38,7 +39,7 @@ export async function cleanupOrphanRidesForPlan(planId: string, savedRideIds: Se
 	}
 
 	await performInChunks(Array.from(staleRideIds), async (chunk) => {
-		const deleteStaleRidesResult = await rides.deleteMany({ _id: { $in: chunk } });
+		const deleteStaleRidesResult = await goDB.operation.rides.deleteMany({ _id: { $in: chunk } });
 		Logger.info({ message: `Deleted ${deleteStaleRidesResult.deletedCount} stale rides for plan "${planId}"` });
 	});
 
@@ -63,7 +64,7 @@ export async function cleanupOrphanRidesGlobally() {
 	const allPlansData = await plans.all();
 	const allPlanIds = allPlansData.map(plan => plan._id);
 
-	const deleteOrphanRidesResult = await rides.deleteMany({ plan_id: { $nin: allPlanIds } });
+	const deleteOrphanRidesResult = await goDB.operation.rides.deleteMany({ plan_id: { $nin: allPlanIds } });
 
 	Logger.success(`Deleted ${deleteOrphanRidesResult.deletedCount} orphan Rides from Plans that do not exist anymore. (${timer.get()})`);
 	Logger.spacer(1);
@@ -87,7 +88,7 @@ export async function cleanupOrphanHashedShapes() {
 	//
 	// Setup a stream for all Hashed Shape IDs that are in use by Rides
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 	const hashedShapeIdsInUseStream = ridesCollection.aggregate([{ $group: { _id: '$hashed_shape_id' } }]).stream();
 
 	//
@@ -145,7 +146,7 @@ export async function cleanupOrphanHashedTrips() {
 	//
 	// Setup a stream for all Hashed Trip IDs that are in use by Rides
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 	const hashedTripIdsInUseStream = ridesCollection.aggregate([{ $group: { _id: '$hashed_trip_id' } }]).stream();
 
 	//
@@ -203,7 +204,7 @@ export async function cleanupOrphanHashedPatterns() {
 	//
 	// Setup a stream for all Hashed Pattern IDs that are in use by Rides
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 	const hashedPatternIdsInUseStream = ridesCollection.aggregate([{ $group: { _id: '$hashed_pattern_id' } }]).stream();
 
 	//

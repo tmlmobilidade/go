@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -45,7 +45,7 @@ export async function getRides(): Promise<string[]> {
 
 		const standardWindowInterval = Dates.now('utc').std_window;
 
-		const latestWaitingRides = await rides.findMany(
+		const latestWaitingRides = await goDB.operation.rides.findMany(
 			{
 				start_time_scheduled: { $lte: standardWindowInterval.end },
 				system_status: 'waiting',
@@ -58,7 +58,7 @@ export async function getRides(): Promise<string[]> {
 		);
 
 		/* === FOR TESTING === */
-		// const latestWaitingRides = await rides.findMany({ _id: 'DC0XN-44-20250303-4412_0_2|300|1955' })
+		// const latestWaitingRides = await goDB.operation.rides.findMany({ _id: 'DC0XN-44-20250303-4412_0_2|300|1955' })
 		/* === FOR TESTING === */
 
 		const fetchTimerResult = fetchTimer.get();
@@ -76,7 +76,7 @@ export async function getRides(): Promise<string[]> {
 
 		const latestWaitingRidesIds = latestWaitingRides.map(item => item._id);
 
-		await rides.updateMany({ _id: { $in: latestWaitingRidesIds } }, { system_status: 'processing' });
+		await goDB.operation.rides.updateMany({ _id: { $in: latestWaitingRidesIds } }, { system_status: 'processing' });
 
 		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestWaitingRidesIds.length} | operational_date: ${latestWaitingRides[latestWaitingRides.length - 1].operational_date} | start_time_scheduled: ${latestWaitingRides[latestWaitingRides.length - 1].start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 

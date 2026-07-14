@@ -1,8 +1,9 @@
 /* * */
 
 import { isEmpty, testRide } from '@/utils.js';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
-import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
+import { alerts, rideAcceptances } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
@@ -163,7 +164,7 @@ async function main() {
 
 			//
 			// Fetch the rides.
-			const foundRides = await rides.findMany({ start_time_scheduled: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
+			const foundRides = await goDB.operation.rides.findMany({ start_time_scheduled: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
 
 			//
 			// Bulk fetch acceptances.

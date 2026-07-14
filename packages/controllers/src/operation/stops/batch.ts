@@ -1,6 +1,7 @@
 /* * */
 
-import { AggregationPipeline, rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { AggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GetOperationalStopsBatchQuery, type HashedPattern, type OperationalDate, type OperationalStop } from '@tmlmobilidade/types';
 
@@ -85,7 +86,7 @@ export async function getOperationalStopsBatch(query: GetOperationalStopsBatchQu
 		},
 	];
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	const pipelineResult = await ridesCollection
 		.aggregate<PipelineResult>(pipeline, { allowDiskUse: true })

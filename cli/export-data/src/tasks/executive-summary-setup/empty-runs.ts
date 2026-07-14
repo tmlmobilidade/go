@@ -1,6 +1,6 @@
 import { type TaskProps } from '@/types.js';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
 
 /* * */
 
@@ -22,7 +22,7 @@ export async function calculateObservedTrips({ context, message }: TaskProps): P
 	message('Calculating observed trips metrics...');
 
 	// Get the rides collection from MongoDB
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	message(`Date range: ${context.dates.start} to ${context.dates.end}`);
 

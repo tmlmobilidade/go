@@ -1,8 +1,9 @@
 /* * */
 
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { hashedShapes, rides } from '@tmlmobilidade/interfaces';
+import { hashedShapes } from '@tmlmobilidade/interfaces';
 import { type HashedShape } from '@tmlmobilidade/types';
 
 /**
@@ -29,7 +30,7 @@ export async function getHashedShape(request: FastifyRequest, reply: FastifyRepl
 	//
 	// Fetch the ride data from the database
 
-	const rideData = await rides.findById(rideId);
+	const rideData = await goDB.operation.rides.findById(rideId);
 
 	if (!rideData) {
 		return reply

@@ -1,9 +1,10 @@
 /* * */
 
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
-import { files, hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { files, hashedPatterns, hashedShapes, hashedTrips, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
@@ -45,7 +46,7 @@ export async function parsePlan(planData: Plan) {
 	const hashedPatternsCollection = await hashedPatterns.getCollection();
 	const hashedShapesCollection = await hashedShapes.getCollection();
 	const hashedTripsCollection = await hashedTrips.getCollection();
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	const hashedPatternsDbWritter = new MongoDbWriter<HashedPattern>({ batch_size: 1000, collection: hashedPatternsCollection });
 	const hashedShapesDbWritter = new MongoDbWriter<HashedShape>({ batch_size: 1000, collection: hashedShapesCollection });

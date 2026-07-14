@@ -1,5 +1,6 @@
 /* * */
 
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
@@ -7,7 +8,6 @@ import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
 import { OperationalDateInt, validateCalendarDate, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { getPublicLineId, getPublicPatternId, getPublicTripId, getPublicVehicleId } from '@tmlmobilidade/utils';
@@ -24,7 +24,7 @@ export async function publishVehiclesPositions() {
 	//
 	// Connect to databases
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	//
 	// Retrieve active plans from the database

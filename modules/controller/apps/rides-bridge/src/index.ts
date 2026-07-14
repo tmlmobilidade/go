@@ -3,8 +3,8 @@
 import { BRIDGEDB } from '@/BRIDGEDB.js';
 import { FlatRide, parseRide, sampleRide } from '@/types.js';
 import { createTableFromExample, dropExistingTable, insertBatch } from '@/utils.js';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -66,7 +66,7 @@ export async function syncRides() {
 		Logger.info({ message: 'Connecting to databases...' });
 
 		await BRIDGEDB.connect();
-		const ridesCollection = await rides.getCollection();
+		const ridesCollection = await goDB.operation.rides.getCollection();
 
 		Logger.info({ message: 'Rebuilding table...' });
 

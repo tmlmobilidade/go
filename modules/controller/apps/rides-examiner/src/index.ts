@@ -3,7 +3,7 @@
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -48,7 +48,7 @@ export async function validateRides() {
 
 		const fetchRideDocumentsTimer = new Timer();
 
-		const ridesBatch = await rides.findMany({ _id: { $in: rideIdsBatch || [] } });
+		const ridesBatch = await goDB.operation.rides.findMany({ _id: { $in: rideIdsBatch || [] } });
 
 		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 
@@ -113,7 +113,7 @@ export async function validateRides() {
 
 				const validatedRide = UpdateRideSchema.parse(augmentedRideData);
 
-				await rides.updateById(rideData._id, {
+				await goDB.operation.rides.updateById(rideData._id, {
 					...validatedRide,
 					system_status: 'complete',
 				});
@@ -131,7 +131,7 @@ export async function validateRides() {
 
 				//
 			} catch (error) {
-				await rides.updateById(rideData._id, { system_status: 'error' });
+				await goDB.operation.rides.updateById(rideData._id, { system_status: 'error' });
 				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
 			}
 		}

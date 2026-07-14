@@ -1,7 +1,7 @@
 /* * */
 
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 import { getPublicRouteId, getPublicTripId } from '@tmlmobilidade/utils';
@@ -43,7 +43,7 @@ export async function transformReferenceTypeRidesIntoGtfsRt(alertData: Alert): P
 		// for rides matching the ride ID,
 		// the agency ID, and the alert start time.
 
-		const foundRide = await rides.findById(reference.parent_id);
+		const foundRide = await goDB.operation.rides.findById(reference.parent_id);
 
 		if (!foundRide) {
 			Logger.error({ message: `[Alert ID: ${alertData._id}] No ride found for ride ID ${reference.parent_id}.` });

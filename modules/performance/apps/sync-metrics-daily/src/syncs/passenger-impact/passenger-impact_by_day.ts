@@ -1,5 +1,6 @@
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
-import { AggregationPipeline, metrics, rides } from '@tmlmobilidade/interfaces';
+import { AggregationPipeline, metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { OperationalDate, Ride } from '@tmlmobilidade/types';
 import { Interval } from 'luxon';
@@ -51,7 +52,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 		.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }));
 
 	// 1) Failed rides in the target interval -> operationalDayMap[opDate][agency] = Set(patternHour)
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 	const ridesPipeline: AggregationPipeline<Ride> = [
 		{
 			$match: {

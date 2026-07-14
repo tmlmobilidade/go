@@ -1,7 +1,8 @@
 /* * */
 
+import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
 import { type Dates } from '@tmlmobilidade/dates';
-import { rides, stops } from '@tmlmobilidade/interfaces';
+import { stops } from '@tmlmobilidade/interfaces';
 
 import { aggregationQuery } from './aggregation-query.js';
 import { type AggregationResult } from './types.js';
@@ -39,7 +40,7 @@ export async function findRideForTrain({ destinationId, now }: FindRideForTrainP
 
 	if (!destinationStop) return null;
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDB.operation.rides.getCollection();
 
 	const ridesAggregationResult = await ridesCollection.aggregate(
 		aggregationQuery({
