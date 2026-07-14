@@ -11,6 +11,19 @@ import pLimit from 'p-limit';
 
 /* * */
 
+const TEST_STOP_IDS = new Set([
+	100340,
+	100341,
+	100343,
+	100344,
+	100345,
+	100347,
+	100348,
+	100349,
+]);
+
+/* * */
+
 async function processStop(stopIndex: number, total: number, stopData: Awaited<ReturnType<typeof stops.all>>[number]) {
 	const stopTts = makeStop(stopData.name, {
 		airport: stopData.flags.some(flag => flag.short_name === 'airport'),
@@ -26,6 +39,14 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 	if (!stopTts || stopTts === '#N/A') return;
 
 	const stopId = stopData._id.toString();
+	const hash = await generateHash(stopTts, stopId);
+
+	if (stopData.tts_hash === hash) {
+		Logger.info({
+			message: `[${stopIndex + 1}/${total}] Skipping Stop ${stopData._id} - TTS already exists`,
+		});
+		return;
+	}
 
 	Logger.info({
 		message: `[${stopIndex + 1}/${total}] Generating for Stop ${stopData._id} - ${stopTts}`,
@@ -39,7 +60,6 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 
 	await deleteOldTtsFile(stopId);
 	await deleteOldTtsFile(`tts-${stopId}`);
-	const hash = await generateHash(stopTts);
 
 	await files.upload(audioBuffer, {
 		_id: `tts-${stopId}`,
@@ -51,6 +71,8 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 		type: 'audio/mpeg',
 		updated_by: 'system',
 	}, { override: true });
+
+	await stops.updateById(stopData._id, { tts_hash: hash }, { forceIfLocked: true });
 }
 
 /* * */
@@ -63,7 +85,7 @@ export async function runnerStops() {
 
 	console.log('* Fetching all stops from database...');
 	const allStopsData = await stops.all();
-	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted);
+	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted && TEST_STOP_IDS.has(stopData._id));
 
 	console.log(`* Preparing ${stopsToProcess.length} stops (${process.env.TTS_RUNNER_CONCURRENCY} concurrent)...`);
 
