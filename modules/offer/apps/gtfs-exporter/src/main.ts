@@ -5,8 +5,9 @@ import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.js';
 import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { agencies, lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
+>>>>>>> 2737379bc (feat(lines): integrate goDB for line operations in controllers and utils)
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
@@ -157,7 +158,7 @@ export async function exportGtfsV29(
 			linesFilter._id = { $nin: exportConfig.lines_exclude };
 		}
 
-		const allLinesData = await lines.findMany(linesFilter, { sort: { code: 1 } });
+		const allLinesData = await goDB.offer.lines.findMany(linesFilter, { sort: { code: 1 } });
 
 		await updateProgress(progress, { progress_current: 0, progress_total: allLinesData.length });
 

@@ -1,10 +1,10 @@
 import { resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { lines } from '@tmlmobilidade/interfaces';
+import { events, lines } from '@tmlmobilidade/interfaces';
 import { type Pattern } from '@tmlmobilidade/types';
 
 export async function mergePatternWithEventRules(pattern: Pattern): Promise<Pattern> {
-	const line = await lines.findById(pattern.line_id);
+	const line = await goDB.offer.lines.findById(pattern.line_id);
 	if (!line) return pattern;
 
 	// Fetch all events for this agency - filtering happens at the rule level
