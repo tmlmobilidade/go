@@ -5,8 +5,9 @@ import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
-import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
+import { agencies, files, users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GtfsValidation, type GtfsValidationSummary } from '@tmlmobilidade/types';
 import fs from 'node:fs';
@@ -25,7 +26,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		if ((gtfsValidation.validation_attempts ?? 0) >= 3) {
 			Logger.error({ message: `GTFS Validation ${gtfsValidation._id} has already been attempted 3 times. Marking as error.` });
-			await gtfsValidations.updateById(gtfsValidation._id, {
+			await goDB.operation.gtfsValidations.updateById(gtfsValidation._id, {
 				processing_status: 'error',
 				summary: {
 					messages: [SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED],
@@ -52,7 +53,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		Logger.info({ message: 'Updating GTFS Validation document...' });
 
-		await gtfsValidations.updateById(gtfsValidation._id, {
+		await goDB.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'processing',
 			validation_attempts: (gtfsValidation.validation_attempts ?? 0) + 1,
 		});
@@ -103,7 +104,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		Logger.info({ message: 'Validation completed. Updating GTFS Validation document with results...' });
 
-		await gtfsValidations.updateById(gtfsValidation._id, {
+		await goDB.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'complete',
 			summary: gtfsValidationResult.summary as GtfsValidationSummary,
 			validity_status: gtfsValidationResult.summary.total_errors === 0 ? 'valid' : 'invalid',
@@ -115,7 +116,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// Fetch the user details from the created_by field of the GTFS Validation document
 		// to personalize the email content and include a link to the validation detail.
 
-		const updatedGtfsValidation = await gtfsValidations.findById(gtfsValidation._id);
+		const updatedGtfsValidation = await goDB.operation.gtfsValidations.findById(gtfsValidation._id);
 
 		if (!updatedGtfsValidation) throw new Error(`GTFS Validation not found after update: ${gtfsValidation._id}`);
 		if (!updatedGtfsValidation.created_by) throw new Error(`No creator information found for file: ${gtfsFile._id}`);
@@ -166,7 +167,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// If any errors occur during validation, catch them and format
 		// a custom error result to be saved in the database and sent via email.
 		Logger.error({ error, message: 'Error during GTFS validation:' });
-		await gtfsValidations.updateById(gtfsValidation._id, {
+		await goDB.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'error',
 			summary: {
 				messages: [{

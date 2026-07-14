@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { gtfsValidations } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +16,7 @@ export async function getGtfsValidation(request: FastifyRequest<{ Params: { id: 
 	//
 	// Get the requested validation data
 
-	const foundValidation = await gtfsValidations.findById(request.params.id);
+	const foundValidation = await goDB.operation.gtfsValidations.findById(request.params.id);
 	if (!foundValidation) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
 	}

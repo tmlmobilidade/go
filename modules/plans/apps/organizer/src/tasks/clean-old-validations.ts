@@ -1,7 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
@@ -21,7 +22,7 @@ export async function cleanOldValidations() {
 	//
 	// Get all GTFS Validation documents from the database
 
-	const allValidations = await gtfsValidations.all();
+	const allValidations = await goDB.operation.gtfsValidations.findMany({});
 
 	Logger.info({ message: `Found ${allValidations.length} validations.` });
 
@@ -84,7 +85,7 @@ export async function cleanOldValidations() {
 		const fileDeletionTimer = new Timer();
 
 		try {
-			await gtfsValidations.deleteById(validation._id);
+			await goDB.operation.gtfsValidations.deleteById(validation._id);
 			await files.deleteById(validation.file_id);
 			Logger.success(`Deleted validation ${validation._id} and its associated file ${validation.file_id} in ${fileDeletionTimer.get()}.`);
 		} catch (error) {

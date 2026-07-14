@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { files, plans, TransactionManager } from '@tmlmobilidade/interfaces';
 import { HashablePlanMetadata, PermissionCatalog, type Plan } from '@tmlmobilidade/types';
 import { createHash } from 'node:crypto';
 
@@ -38,7 +39,7 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 	}
 
 	// For a given validation ID, get the validation data
-	const validationData = await gtfsValidations.findById(request.body.validation_id);
+	const validationData = await goDB.operation.gtfsValidations.findById(request.body.validation_id);
 	if (!validationData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
 	}

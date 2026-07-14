@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { files, plans, TransactionManager } from '@tmlmobilidade/interfaces';
 import { type CreatePlanDto, HashablePlanMetadata, PermissionCatalog, type Plan } from '@tmlmobilidade/types';
 import { createHash } from 'node:crypto';
 
@@ -17,7 +18,7 @@ export async function createPlan(request: FastifyRequest<{ Body: { validation_id
 	//
 	// For a given validation ID, create a new plan
 
-	const validationData = await gtfsValidations.findById(request.body.validation_id);
+	const validationData = await goDB.operation.gtfsValidations.findById(request.body.validation_id);
 
 	if (!validationData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
