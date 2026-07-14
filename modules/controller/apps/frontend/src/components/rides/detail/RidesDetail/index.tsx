@@ -32,7 +32,7 @@ export function RidesDetail() {
 		]}
 		>
 			{rideAnalysisContext.flags.error && <ErrorDisplay message={rideAnalysisContext.flags.error.message} />}
-			<RideAnalysisAnalysis />
+			{rideAnalysisContext.data.selected_view === 'ANALYSIS' && <RideAnalysisAnalysis />}
 			{rideAnalysisContext.data.selected_view === 'AUDIT' && <RideAnalysisAudit />}
 			{rideAnalysisContext.data.selected_view === 'ACCEPTANCE' && <RideAcceptance />}
 		</Pane>

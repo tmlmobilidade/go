@@ -1,13 +1,14 @@
 'use client';
 
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { type Alert } from '@tmlmobilidade/types';
 import { Collapsible, Divider, NoDataLabel, Section, Surface, ValueDisplay } from '@tmlmobilidade/ui';
+import Link from 'next/link';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
-
 /* * */
 
 export function RideAnalysisAlerts() {
@@ -18,6 +19,10 @@ export function RideAnalysisAlerts() {
 
 	const RideAnalysisContext = useRideAnalysisContext();
 	const { t } = useTranslation();
+
+	const formatTimestamp = (timestamp: number) => {
+		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
+	};
 
 	const ride = RideAnalysisContext.data.ride;
 	const { data: alertsData } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
@@ -57,14 +62,23 @@ export function RideAnalysisAlerts() {
 			description={t('default:rides.analysis.RideAnalysisAlerts.description')}
 			title={t('default:rides.analysis.RideAnalysisAlerts.title')}
 		>
+
 			<Section gap="lg">
 				{rideAlerts.map(alert => (
 					<Surface key={alert._id} variant="bordered">
 						<Section gap="md">
-							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.alert_id.label')} value={alert._id} variant="plain" />
+							<ValueDisplay
+								label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.alert_id.label')}
+								variant="plain"
+								value={(
+									<a className="clickable" href={PAGE_ROUTES.alerts.ALERTS_DETAIL(alert._id)}>
+										{alert._id}
+									</a>
+								)}
+							/>
 							<Divider />
 
-							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.created_at.label')} value={alert.created_at} variant="plain" />
+							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.created_at.label')} value={formatTimestamp(alert.created_at)} variant="plain" />
 							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.title.label')} value={alert.title} variant="plain" />
 							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.description.label')} value={alert.description} variant="plain" />
 						</Section>
