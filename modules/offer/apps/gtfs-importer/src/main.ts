@@ -1,6 +1,7 @@
 /* * */
 
-import { lines, patterns, routes } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { lines, patterns } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { INTERCHANGE_MODE } from '@tmlmobilidade/types';
@@ -60,7 +61,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 
 	if (lineIds.length) {
 		await patterns.deleteMany({ line_id: { $in: lineIds } });
-		await routes.deleteMany({ line_id: { $in: lineIds } });
+		await goDB.offer.routes.deleteMany({ line_id: { $in: lineIds } });
 		await lines.deleteMany({ _id: { $in: lineIds } });
 	}
 
@@ -134,7 +135,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 
 		const routeDocsByCode = new Map<string, { _id: string }>();
 		for (const routeInput of routeInputs) {
-			const routeDoc = await routes.insertOne(routeInput);
+			const routeDoc = await goDB.offer.routes.insertOne(routeInput);
 			routesCreated += 1;
 			routeDocsByCode.set(routeInput.code, { _id: routeDoc._id });
 			// Logger.info('[gtfs-importer] Route created', {

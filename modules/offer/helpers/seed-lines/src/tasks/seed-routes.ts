@@ -2,7 +2,7 @@
 
 import { type OriginalRouteType } from '@/original-route.type.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { routes } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Route, RouteSchema } from '@tmlmobilidade/types';
 
@@ -111,12 +111,11 @@ export async function seedRoutesFromGoV1() {
 		//
 		// Insert routes into DB
 
-		await routes.insertMany(preparedRoutes, { unsafe: true });
+		await goDB.offer.routes.insertMany(preparedRoutes, { unsafe: true });
 		console.log(`Inserted ${preparedRoutes.length} routes`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.error('Error importing routes:', err);
 		process.exit(1);
 	}
