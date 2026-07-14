@@ -1,14 +1,12 @@
 /* * */
 
+import { piperTtsApi } from '@/services/piperTtsApi.js';
 import { generateHash } from '@/utils/generateHash.js';
 import { makePattern } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { type HubLine, type HubPattern } from '@tmlmobilidade/go-types-public-info';
-import { patterns } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type ApiResponseSuccess } from '@tmlmobilidade/types';
-
-import { piperTtsApi } from '../../src/services/piperTtsApi.js';
 
 /* * */
 
@@ -19,20 +17,44 @@ export async function runnerPatterns() {
 
 	const globalTimer = new TIMETRACKER();
 
-	Logger.title('* Fetching all lines from API...');
+	Logger.title('* Fetching all lines from cache...');
 
-	const allLinesResponse = await fetch('https://go.tmlmobilidade.pt/hub/api/v1/network/lines');
-	const allLinesResponseData = await allLinesResponse.json() as ApiResponseSuccess<HubLine[]>;
-	const allLinesData = allLinesResponseData.data;
+	let allLinesCachedData: null | string;
+
+	try {
+		allLinesCachedData = await cacheDb.get('hub:v1:network:lines');
+	} catch (error) {
+		Logger.error({ error, message: '[hub/v1/network:getLines()] Cache read failed' });
+		return;
+	}
+
+	if (!allLinesCachedData) {
+		Logger.error({ message: '[hub/v1/network:getLines()] No cached data found for lines' });
+		return;
+	}
+
+	const allLinesData = JSON.parse(allLinesCachedData) as HubLine[];
 
 	Logger.title(`* Preparing ${allLinesData.length} lines...`);
 
 	for (const [lineIndex, lineData] of allLinesData.entries()) {
 		for (const [patternIndex, patternId] of lineData.pattern_ids.entries()) {
-			const patternResponse = await fetch(`https://go.tmlmobilidade.pt/hub/api/v1/network/patterns/${encodeURIComponent(patternId)}`);
-			const patternResponseData = await patternResponse.json() as ApiResponseSuccess<HubPattern[]>;
-			const patternGroup = patternResponseData.data;
-			const patternData = patternGroup.pop();
+			let cachedData: null | string;
+
+			try {
+				cachedData = await cacheDb.get(`hub:v1:network:patterns:${patternId}`);
+			} catch (error) {
+				Logger.error({ error, message: `[hub/v1/network:getPatterns(${patternId})] Cache read failed` });
+				return;
+			}
+
+			if (!cachedData) {
+				Logger.error({ message: `[hub/v1/network:getPatterns(${patternId})] No cached data found for pattern ${patternId}` });
+				continue;
+			}
+
+			const patternGroup = JSON.parse(cachedData) as HubPattern[];
+			const patternData = patternGroup.at(-1);
 
 			if (!patternData) continue;
 
@@ -54,7 +76,15 @@ export async function runnerPatterns() {
 
 				await piperTtsApi({ filename: patternId, force: true, string: patternTts });
 
-				await patterns.updateById(patternData._id, { tts_hash: hash }, { forceIfLocked: true });
+				const updatedPatternGroup = patternGroup.map(patternData => ({ ...patternData, tts_hash: hash }));
+
+				try {
+					await cacheDb.set(`hub:v1:network:patterns:${patternId}`, JSON.stringify(updatedPatternGroup));
+					Logger.success(`[hub/v1/network:getPatterns(${patternId})] Cached data updated for pattern ${patternId}`);
+				} catch (error) {
+					Logger.error({ error, message: `[hub/v1/network:getPatterns(${patternId})] Error updating cached data for pattern ${patternId}` });
+					return;
+				}
 			}
 		}
 	}
