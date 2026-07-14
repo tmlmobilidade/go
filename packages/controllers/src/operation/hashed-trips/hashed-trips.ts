@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { hashedTrips, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type HashedTrip, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -84,7 +85,7 @@ export class HashedTripsSharedController {
 
 		const hashedTripIds = ridesBatch.map(ride => ride.hashed_trip_id);
 
-		const hashedTripsBatch = await hashedTrips.findMany({ _id: { $in: hashedTripIds } });
+		const hashedTripsBatch = await goDB.operation.hashedTrips.findMany({ _id: { $in: hashedTripIds } });
 
 		//
 		// Send the response

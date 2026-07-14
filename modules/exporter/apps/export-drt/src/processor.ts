@@ -1,5 +1,6 @@
 import { Stop } from '@carrismetropolitana/api-types/network';
-import { agencies, hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { agencies, hashedShapes, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { HashedShape, HashedTrip, Ride } from '@tmlmobilidade/types';
@@ -139,7 +140,7 @@ async function processHashedTrips(hashedTripsIds: IndexedValues<string>): Promis
 
 		const stopIds = new Set<string>();
 
-		const hashedTripsCollection = await hashedTrips.getCollection();
+		const hashedTripsCollection = await goDB.operation.hashedTrips.getCollection();
 		const hashedTripsStream = hashedTripsCollection.find({ _id: { $in: Array.from(hashedTripsIds.values()) } }).stream();
 
 		let totalHashedTrips = 0;

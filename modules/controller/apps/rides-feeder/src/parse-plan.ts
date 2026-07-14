@@ -3,7 +3,8 @@
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
-import { files, hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { files, hashedPatterns, hashedShapes, plans, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
@@ -44,7 +45,7 @@ export async function parsePlan(planData: Plan) {
 
 	const hashedPatternsCollection = await hashedPatterns.getCollection();
 	const hashedShapesCollection = await hashedShapes.getCollection();
-	const hashedTripsCollection = await hashedTrips.getCollection();
+	const hashedTripsCollection = await goDB.operation.hashedTrips.getCollection();
 	const ridesCollection = await rides.getCollection();
 
 	const hashedPatternsDbWritter = new MongoDbWriter<HashedPattern>({ batch_size: 1000, collection: hashedPatternsCollection });
@@ -817,7 +818,7 @@ export async function parsePlan(planData: Plan) {
 			// Check if there is already a document with this unique ID value.
 			// If it does not exist, save it to the database.
 
-			const currentHashedTripAlreadyExists = await hashedTrips.existsById(uniqueIdValueForHashedTrip);
+			const currentHashedTripAlreadyExists = await goDB.operation.hashedTrips.existsById(uniqueIdValueForHashedTrip);
 
 			const finalHashedTrip: HashedTrip = {
 				...hashableHashedTrip,

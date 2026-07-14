@@ -3,7 +3,7 @@
 import type { AppConfig } from '@/lib/config.js';
 
 import { qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
-import { hashedTrips } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
@@ -26,7 +26,7 @@ export async function syncCurrentWaypoints(clickhouseClient: Parameters<typeof q
 		title: qualifiedTable(config.database, 'curr_waypoints'),
 	});
 
-	const hashedTripsCollection = await hashedTrips.getCollection();
+	const hashedTripsCollection = await goDB.operation.hashedTrips.getCollection();
 	const hashedTripsCursor = hashedTripsCollection.find({ _id: { $in: hashedTripIds } }).batchSize(10_000).stream();
 
 	let waypointsCount = 0;
