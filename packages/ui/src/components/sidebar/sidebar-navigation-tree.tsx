@@ -69,6 +69,12 @@ export const sidebarNavigationTree = [
 		_id: 'administration',
 		children: [
 			sidebarNavigationItem({
+				_id: 'agencies',
+				href: PAGE_ROUTES.auth.AGENCIES_LIST,
+				icon: <IconBuildings size={20} />,
+				permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
+			}),
+			sidebarNavigationItem({
 				_id: 'users',
 				href: PAGE_ROUTES.auth.USERS_LIST,
 				icon: <IconUser size={20} />,
@@ -85,12 +91,6 @@ export const sidebarNavigationTree = [
 				href: PAGE_ROUTES.auth.ORGANIZATIONS_LIST,
 				icon: <IconSitemap size={20} />,
 				permissions: [{ action: PermissionCatalog.all.organizations.actions.read, scope: PermissionCatalog.all.organizations.scope }],
-			}),
-			sidebarNavigationItem({
-				_id: 'agencies',
-				href: PAGE_ROUTES.auth.AGENCIES_LIST,
-				icon: <IconBuildings size={20} />,
-				permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
 			}),
 		],
 	}),
