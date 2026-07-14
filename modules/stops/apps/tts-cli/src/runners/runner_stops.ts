@@ -1,6 +1,8 @@
 /* * */
 
 import { generatePiperTtsAudio } from '@/services/piperTtsApi.js';
+import { deleteOldTtsFile } from '@/utils/deleteOldTTSFile.js';
+import { generateHash } from '@/utils/generateHash.js';
 import { makeStop } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { files, stops } from '@tmlmobilidade/interfaces';
@@ -8,15 +10,6 @@ import { Logger } from '@tmlmobilidade/logger';
 import pLimit from 'p-limit';
 
 /* * */
-
-const RUNNER_CONCURRENCY = Number(process.env.TTS_RUNNER_CONCURRENCY ?? 5);
-
-async function deleteLegacyTtsFile(fileId: string) {
-	const existingFile = await files.findOne({ _id: fileId });
-	if (!existingFile) return;
-
-	await files.deleteOne({ _id: fileId });
-}
 
 async function processStop(stopIndex: number, total: number, stopData: Awaited<ReturnType<typeof stops.all>>[number]) {
 	const stopTts = makeStop(stopData.name, {
@@ -44,13 +37,14 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 		string: stopTts,
 	});
 
-	await deleteLegacyTtsFile(stopId);
-	await deleteLegacyTtsFile(`tts-${stopId}`);
+	await deleteOldTtsFile(stopId);
+	await deleteOldTtsFile(`tts-${stopId}`);
+	const hash = await generateHash(stopTts);
 
 	await files.upload(audioBuffer, {
 		_id: `tts-${stopId}`,
 		created_by: 'system',
-		name: `${stopData.tts_hash}.mp3`,
+		name: `${hash}.mp3`,
 		resource_id: 'tts/live/stops',
 		scope: 'static',
 		size: audioBuffer.byteLength,
@@ -71,9 +65,9 @@ export async function runnerStops() {
 	const allStopsData = await stops.all();
 	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted);
 
-	console.log(`* Preparing ${stopsToProcess.length} stops (${RUNNER_CONCURRENCY} concurrent)...`);
+	console.log(`* Preparing ${stopsToProcess.length} stops (${process.env.TTS_RUNNER_CONCURRENCY} concurrent)...`);
 
-	const limit = pLimit(RUNNER_CONCURRENCY);
+	const limit = pLimit(Number(process.env.TTS_RUNNER_CONCURRENCY));
 
 	await Promise.all(
 		stopsToProcess.map((stopData, stopIndex) => limit(async () => {

@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import os
 import subprocess
 import wave
@@ -7,14 +8,31 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from piper import PiperVoice
+
+@contextmanager
+def suppress_native_stderr():
+    stderr_fd = os.dup(2)
+
+    try:
+        with open(os.devnull, "w") as devnull:
+            os.dup2(devnull.fileno(), 2)
+            yield
+    finally:
+        os.dup2(stderr_fd, 2)
+        os.close(stderr_fd)
+
+
+os.environ.setdefault("ORT_LOG_SEVERITY_LEVEL", "3")
+
+with suppress_native_stderr():
+    from piper import PiperVoice
 
 MODEL_PATH = "voice_models/voice.onnx"
 AUDIO_DIR = "audio"
 TTS_LENGTH_SCALE = float(os.getenv("TTS_LENGTH_SCALE", "1.18"))
 TTS_NOISE_SCALE = float(os.getenv("TTS_NOISE_SCALE", "0.45"))
 TTS_NOISE_W = float(os.getenv("TTS_NOISE_W", "0.55"))
-TTS_SPEED = float(os.getenv("TTS_SPEED", "0.92"))
+TTS_SPEED = float(os.getenv("TTS_SPEED", "0.82"))
 
 os.makedirs(AUDIO_DIR, exist_ok=True)
 
@@ -28,7 +46,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-voice = PiperVoice.load(MODEL_PATH)
+with suppress_native_stderr():
+    voice = PiperVoice.load(MODEL_PATH)
+
+
+print("Your text now has a voice, because apparently that's what I'm here for.", flush=True)
 
 
 class TTSRequest(BaseModel):
