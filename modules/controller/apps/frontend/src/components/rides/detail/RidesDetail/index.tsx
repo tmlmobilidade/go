@@ -16,28 +16,25 @@ export function RidesDetail() {
 	//
 	// A. Setup variables
 
-	// const rideAnalysisContext = useRideAnalysisContext();
+	const rideAnalysisContext = useRideAnalysisContext();
 
 	//
 	// B. Render components
 
-	// if (rideAnalysisContext.flags.loading) {
-	// 	return <LoadingOverlay />;
-	// }
+	if (rideAnalysisContext.flags.loading) {
+		return <LoadingOverlay />;
+	}
 
 	return (
 		<Pane header={[
 			<RidesDetailHeader key="header" />,
 			<RideAnalysisViewNavigation key="navigation" />,
 		]}
-
 		>
-			{/* {rideAnalysisContext.flags.error && <ErrorDisplay message={rideAnalysisContext.flags.error.message} />}
-
-			{rideAnalysisContext.data.selected_view === 'AUDIT' && <RideAnalysisAudit />}
-			{rideAnalysisContext.data.selected_view === 'ACCEPTANCE' && <RideAcceptance />} */}
-
+			{rideAnalysisContext.flags.error && <ErrorDisplay message={rideAnalysisContext.flags.error.message} />}
 			<RideAnalysisAnalysis />
+			{rideAnalysisContext.data.selected_view === 'AUDIT' && <RideAnalysisAudit />}
+			{rideAnalysisContext.data.selected_view === 'ACCEPTANCE' && <RideAcceptance />}
 		</Pane>
 	);
 
