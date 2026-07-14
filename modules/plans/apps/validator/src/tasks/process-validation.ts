@@ -54,7 +54,9 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		await gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'processing',
+			summary: null,
 			validation_attempts: (gtfsValidation.validation_attempts ?? 0) + 1,
+			validity_status: 'unknown',
 		});
 
 		//
@@ -75,9 +77,14 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// and download them to the working directory. Throw an error
 		// if no agency is found or if the rules file is not accessible.
 
-		const foundAgency = await agencies.findByCode(gtfsValidation.gtfs_agency.agency_id);
-		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.gtfs_agency.agency_id}`);
-		if (!foundAgency.validation_rules) throw new Error(`No validation rules found for agency: ${gtfsValidation.gtfs_agency.agency_id}`);
+		const foundAgency = await agencies.findByCode(gtfsValidation.gtfs_agency.agency_id) ?? await agencies.findById(gtfsValidation.gtfs_agency.agency_id);
+		if (!foundAgency.code) {
+			console.log(foundAgency);
+			throw new Error(`Agency not found: ${gtfsValidation.gtfs_agency.agency_id}`);
+		};
+		if (!foundAgency.validation_rules) {
+			throw new Error(`No validation rules found for agency: ${gtfsValidation.gtfs_agency.agency_id}`);
+		};
 
 		const rulesContent = typeof foundAgency.validation_rules === 'string'
 			? foundAgency.validation_rules

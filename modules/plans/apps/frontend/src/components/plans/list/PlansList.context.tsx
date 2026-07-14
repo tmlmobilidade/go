@@ -44,16 +44,22 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>(API_ROUTES.plans.PLANS_LIST, { refreshInterval: 5_000 });
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filtered: filteredAgencies } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.plans.actions.read],
 		scope: PermissionCatalog.all.plans.scope,
 	});
+
+	const filteredAgencyCodes = useMemo(() => filteredAgencies.map(agency => agency.code), [filteredAgencies]);
+	const filteredAgencyOptions = useMemo(() => filteredAgencies.map(agency => ({
+		label: `${agency.code} - ${agency.short_name}`,
+		value: agency.code,
+	})), [filteredAgencies]);
 
 	//
 	// B. Setup filters
 
 	const filterSearch = useFilterStateString('search');
-	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const filterAgency = useFilterStateList('agency', filteredAgencyCodes, filteredAgencyOptions);
 	const filterValidityStatus = useFilterStateList('validity_status', planValidityStatusValues, planValidityStatusOptions);
 
 	//
