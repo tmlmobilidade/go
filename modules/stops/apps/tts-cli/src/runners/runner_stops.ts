@@ -75,9 +75,10 @@ export async function runnerStops() {
 	const allStopsData = await stops.all();
 	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted);
 
-	console.log(`* Preparing ${stopsToProcess.length} stops (${process.env.TTS_RUNNER_CONCURRENCY} concurrent)...`);
+	const concurrency = Number(process.env.TTS_RUNNER_CONCURRENCY ?? 5);
+	console.log('* Preparing ' + stopsToProcess.length + ' stops (' + concurrency + ' concurrent)...');
 
-	const limit = pLimit(Number(process.env.TTS_RUNNER_CONCURRENCY));
+	const limit = pLimit(concurrency);
 
 	await Promise.all(
 		stopsToProcess.map((stopData, stopIndex) => limit(async () => {
