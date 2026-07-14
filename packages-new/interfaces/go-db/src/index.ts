@@ -35,31 +35,22 @@ class GoDBClass {
 	 */
 	public static async getInstance() {
 		if (!GoDBClass._instance) {
-			const instance = new GoDBClass();
-			await instance.connect();
-			GoDBClass._instance = instance;
+			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GO_DB' });
+			GoDBClass._instance = new GoDBClass(mongoClient);
 		}
 		return GoDBClass._instance;
 	}
 
-	private async connect() {
-		// Extract the database URI from environment variables
-		const dbUri = process.env.DATABASE_URI;
-		if (!dbUri) throw new Error(`Missing DATABASE_URI environment variable`);
-		// Attempt to connect to the MongoDB database
-		const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GO_DB' });
-		// Initialize the MongoDB connector
-		this.mongoClient = mongoClient;
-	}
-
 	//
 	// Constructor
-	private constructor() {
-		this.core = new CoreDatabase(this.mongoClient);
-		this.infrastructure = new InfrastructureDatabase(this.mongoClient);
-		this.locations = new LocationsDatabase(this.mongoClient);
-		this.offer = new OfferDatabase(this.mongoClient);
-		this.operation = new OperationDatabase(this.mongoClient);
+	//
+	// Constructor
+	private constructor(mongoClient: MongoClient) {
+		this.core = new CoreDatabase(mongoClient);
+		this.infrastructure = new InfrastructureDatabase(mongoClient);
+		this.locations = new LocationsDatabase(mongoClient);
+		this.offer = new OfferDatabase(mongoClient);
+		this.operation = new OperationDatabase(mongoClient);
 	}
 }
 

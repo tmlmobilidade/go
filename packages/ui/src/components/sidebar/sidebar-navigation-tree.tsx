@@ -69,16 +69,10 @@ export const sidebarNavigationTree = [
 		_id: 'administration',
 		children: [
 			sidebarNavigationItem({
-				_id: 'users',
-				href: PAGE_ROUTES.auth.USERS_LIST,
-				icon: <IconUser size={20} />,
-				permissions: [{ action: PermissionCatalog.all.users.actions.read, scope: PermissionCatalog.all.users.scope }],
-			}),
-			sidebarNavigationItem({
-				_id: 'roles',
-				href: PAGE_ROUTES.auth.ROLES_LIST,
-				icon: <IconKey size={20} />,
-				permissions: [{ action: PermissionCatalog.all.roles.actions.read, scope: PermissionCatalog.all.roles.scope }],
+				_id: 'agencies',
+				href: PAGE_ROUTES.auth.AGENCIES_LIST,
+				icon: <IconBuildings size={20} />,
+				permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
 			}),
 			sidebarNavigationItem({
 				_id: 'organizations',
@@ -87,10 +81,16 @@ export const sidebarNavigationTree = [
 				permissions: [{ action: PermissionCatalog.all.organizations.actions.read, scope: PermissionCatalog.all.organizations.scope }],
 			}),
 			sidebarNavigationItem({
-				_id: 'agencies',
-				href: PAGE_ROUTES.auth.AGENCIES_LIST,
-				icon: <IconBuildings size={20} />,
-				permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
+				_id: 'roles',
+				href: PAGE_ROUTES.auth.ROLES_LIST,
+				icon: <IconKey size={20} />,
+				permissions: [{ action: PermissionCatalog.all.roles.actions.read, scope: PermissionCatalog.all.roles.scope }],
+			}),
+			sidebarNavigationItem({
+				_id: 'users',
+				href: PAGE_ROUTES.auth.USERS_LIST,
+				icon: <IconUser size={20} />,
+				permissions: [{ action: PermissionCatalog.all.users.actions.read, scope: PermissionCatalog.all.users.scope }],
 			}),
 		],
 	}),

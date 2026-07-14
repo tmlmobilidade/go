@@ -16,6 +16,7 @@ import { getDrtModel } from './controllers/get-drt-model.js';
 import { getOperationFile } from './controllers/get-operation-file.js';
 import { getPlan } from './controllers/get-plan.js';
 import { lockPlan } from './controllers/lock-plan.js';
+import { sendApexNotification } from './controllers/send-apex-notification.js';
 import { updateApexFile } from './controllers/update-apex-file.js';
 import { updatePlan } from './controllers/update-plan.js';
 
@@ -77,6 +78,12 @@ server.register(
 			'/:id/apex-file',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.delete_apex_file]) },
 			deleteApexFile,
+		);
+
+		instance.get(
+			'/:id/apex-file/send-notification',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.send_apex_notification]) },
+			sendApexNotification,
 		);
 
 		instance.post(

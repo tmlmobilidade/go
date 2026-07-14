@@ -9,6 +9,8 @@ import { SshConfig, SshTunnel, type SshTunnelOptions } from './client.js';
 
 type SshTunnelType = 'GO' | 'PCGI';
 
+const tunnelCache = new Map<string, SshTunnel>();
+
 interface SshTunnelFactoryOptions {
 	dstAddr: string
 	dstPort: number
@@ -90,5 +92,15 @@ function buildSshTunnel(type: SshTunnelType, options: SshTunnelFactoryOptions): 
 		maxRetries: maxRetries ?? 3,
 	};
 
-	return new SshTunnel(sshConfig, sshOptions);
+	const cacheKey = `${type}:${dstAddr}:${dstPort}`;
+	const cached = tunnelCache.get(cacheKey);
+
+	if (cached) {
+		return cached;
+	}
+
+	const tunnel = new SshTunnel(sshConfig, sshOptions, () => tunnelCache.delete(cacheKey));
+	tunnelCache.set(cacheKey, tunnel);
+
+	return tunnel;
 }
