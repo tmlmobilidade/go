@@ -45,7 +45,7 @@ export async function runnerPatterns() {
 				cachedData = await cacheDb.get(`hub:v1:network:patterns:${patternId}`);
 			} catch (error) {
 				Logger.error({ error, message: `[hub/v1/network:getPatterns(${patternId})] Cache read failed` });
-				return;
+				continue;
 			}
 
 			if (!cachedData) {
@@ -83,7 +83,7 @@ export async function runnerPatterns() {
 					Logger.success(`[hub/v1/network:getPatterns(${patternId})] Cached data updated for pattern ${patternId}`);
 				} catch (error) {
 					Logger.error({ error, message: `[hub/v1/network:getPatterns(${patternId})] Error updating cached data for pattern ${patternId}` });
-					return;
+					continue;
 				}
 			}
 		}
