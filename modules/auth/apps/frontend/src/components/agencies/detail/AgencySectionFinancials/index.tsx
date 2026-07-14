@@ -87,6 +87,4 @@ export function AgencySectionFinancials() {
 			</Section>
 		</Collapsible>
 	);
-
-	//
 }
