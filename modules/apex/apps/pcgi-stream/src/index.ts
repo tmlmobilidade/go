@@ -1,7 +1,7 @@
 /* * */
 
 import { processPcgiTransactionEntity } from '@/task.js';
-import { pcgiTransactionEntities } from '@tmlmobilidade/databases';
+import { pcgiFileManager } from '@tmlmobilidade/go-interfaces-pcgi-file-manager';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -23,7 +23,7 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 	// Watch for changes to the PCGI File Manager Transaction Entity
 	// collection and process the documents immediately.
 
-	const pcgiTransactionEntitiesCollection = await pcgiTransactionEntities.getCollection();
+	const pcgiTransactionEntitiesCollection = await pcgiFileManager.locationManagement.locationEntity.getCollection();
 	const pcgiTransactionEntitiesChangeStream = pcgiTransactionEntitiesCollection.watch();
 	pcgiTransactionEntitiesChangeStream.on('change', processPcgiTransactionEntity);
 
