@@ -18,7 +18,7 @@
 				"fields": {
 					"contact_emails": {
 						"description": "Emails que serão notificados quando forem disponibilizados novos ficheiros de configuração APEX.",
-						"label": "Emails de contacto",
+						"label": "Emails de contacto APEX",
 						"placeholder": "email@example.com"
 					}
 				},
@@ -146,7 +146,8 @@
 				"columns": {
 					"code": "Código",
 					"id": "#ID",
-					"name": "Nome"
+					"name": "Nome",
+					"pta_name": "Nome da Autoridade"
 				}
 			}
 		}
