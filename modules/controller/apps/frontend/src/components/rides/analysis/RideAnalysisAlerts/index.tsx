@@ -3,7 +3,7 @@
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
-import { Collapsible, Grid, NoDataLabel, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, Divider, NoDataLabel, Section, Surface, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -32,8 +32,9 @@ export function RideAnalysisAlerts() {
 				return reference.child_ids.some(
 					childId => Number(childId) === Number(ride.line_id),
 				);
-			}),
-		);
+			}) &&
+			ride.start_time_scheduled <= (alert.active_period_end_date ?? Number.MAX_SAFE_INTEGER) &&
+			ride.end_time_scheduled >= (alert.active_period_start_date));
 	}, [alertsData, ride]);
 	//
 	// B. Handle No Data
@@ -56,14 +57,18 @@ export function RideAnalysisAlerts() {
 			description={t('default:rides.analysis.RideAnalysisAlerts.description')}
 			title={t('default:rides.analysis.RideAnalysisAlerts.title')}
 		>
-			<Section gap="md">
+			<Section gap="lg">
 				{rideAlerts.map(alert => (
-					<Grid key={alert._id}>
-						<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.alert_id.label')} value={alert._id} />
-						<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.created_at.label')} value={alert.created_at} />
-						<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.title.label')} value={alert.title} />
-						<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.description.label')} value={alert.description} />
-					</Grid>
+					<Surface key={alert._id} variant="bordered">
+						<Section gap="md">
+							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.alert_id.label')} value={alert._id} variant="plain" />
+							<Divider />
+
+							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.created_at.label')} value={alert.created_at} variant="plain" />
+							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.title.label')} value={alert.title} variant="plain" />
+							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.description.label')} value={alert.description} variant="plain" />
+						</Section>
+					</Surface>
 				))}
 			</Section>
 		</Collapsible>

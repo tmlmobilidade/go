@@ -82,7 +82,8 @@ export function RidesList() {
 		{
 			accessor: 'headsign',
 			render: (item) => {
-				const hasAlert = allScheduledData?.find(alert => alert.references.some(reference => Number(alert.reference_type === 'lines' ? reference.parent_id : reference.child_ids.some(childId => Number(childId) === Number(item.line_id))) === Number(item.line_id)));
+				const hasAlert = allScheduledData?.find(alert => alert.references.some(reference => Number(alert.reference_type === 'lines' ? reference.parent_id : reference.child_ids.some(childId => Number(childId) === item.line_id)) === item.line_id,
+				) && item.start_time_scheduled <= (alert.active_period_end_date ?? Number.MAX_SAFE_INTEGER) && item.end_time_scheduled >= (alert.active_period_start_date));
 				return (
 					<RidesListCellHeadsign alertId={hasAlert?._id} hasAlert={!!hasAlert} headsign={item.headsign} patternId={item.pattern_id} />
 				);

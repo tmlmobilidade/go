@@ -28,13 +28,16 @@ export function RidesDetail() {
 	return (
 		<Pane header={[
 			<RidesDetailHeader key="header" />,
-			// <RideAnalysisViewNavigation key="navigation" />,
+			<RideAnalysisViewNavigation key="navigation" />,
 		]}
+
 		>
-			{/* {rideAnalysisContext.flags.error && <ErrorDisplay message={rideAnalysisContext.flags.error.message} />} */}
+			{/* {rideAnalysisContext.flags.error && <ErrorDisplay message={rideAnalysisContext.flags.error.message} />}
+
+			{rideAnalysisContext.data.selected_view === 'AUDIT' && <RideAnalysisAudit />}
+			{rideAnalysisContext.data.selected_view === 'ACCEPTANCE' && <RideAcceptance />} */}
+
 			<RideAnalysisAnalysis />
-			{/* {rideAnalysisContext.data.selected_view === 'AUDIT' && <RideAnalysisAudit />} */}
-			{/* {rideAnalysisContext.data.selected_view === 'ACCEPTANCE' && <RideAcceptance />} */}
 		</Pane>
 	);
 
