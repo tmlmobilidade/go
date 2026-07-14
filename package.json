@@ -173,8 +173,9 @@
 		"cli/*"
 	],
 	"overrides": {
-		"react": "19.2.4",
-		"react-dom": "19.2.4",
+		"eslint": "10.7.0",
+		"react": "19.2.7",
+		"react-dom": "19.2.7",
 		"zod": "3.25.76"
 	},
 	"allowScripts": {
