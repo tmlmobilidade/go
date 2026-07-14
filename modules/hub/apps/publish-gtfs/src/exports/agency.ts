@@ -2,7 +2,7 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type ExportGtfsContext } from '@/types/context.js';
-import { agencies } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -35,7 +35,7 @@ export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsC
 	//
 	// Get agencies data from the database.
 
-	const foundAgenciesData = await agencies.findMany(
+	const foundAgenciesData = await goDB.core.agencies.findMany(
 		{ _id: { $in: agencyIds } },
 		{ sort: { _id: 1 } },
 	);
