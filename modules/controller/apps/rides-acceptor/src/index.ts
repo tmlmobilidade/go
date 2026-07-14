@@ -2,7 +2,8 @@
 
 import { isEmpty, testRide } from '@/utils.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { alerts, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
@@ -31,7 +32,7 @@ async function createRideAcceptances(ride: Ride) {
 
 		//
 		// Create the acceptance.
-		await rideAcceptances.createByRideId(ride._id, {
+		await goDB.operation.rideAcceptances.createByRideId(ride._id, {
 			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
 			analysis_summary: requiredTestsSummary,
 			comments: [],
@@ -57,7 +58,7 @@ async function updateRideAcceptances(ride: Ride, acceptance: RideAcceptance) {
 			return;
 		}
 
-		await rideAcceptances.updateByRideId(ride._id, {
+		await goDB.operation.rideAcceptances.updateByRideId(ride._id, {
 			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
 			analysis_summary: requiredTestsSummary,
 		}, { returnResult: false });
@@ -79,7 +80,7 @@ async function alertJustification(ride: Ride) {
 
 		if (!foundAlert) return;
 
-		await rideAcceptances.updateByRideId(ride._id, {
+		await goDB.operation.rideAcceptances.updateByRideId(ride._id, {
 			acceptance_status: 'under_review',
 			justification: {
 				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
@@ -167,7 +168,7 @@ async function main() {
 
 			//
 			// Bulk fetch acceptances.
-			const acceptances: RideAcceptance[] = await rideAcceptances.findMany({ ride_id: { $in: foundRides.map(r => r._id) } });
+			const acceptances: RideAcceptance[] = await goDB.operation.rideAcceptances.findMany({ ride_id: { $in: foundRides.map(r => r._id) } });
 			const acceptanceMap = new Map<string, RideAcceptance>(acceptances.map(a => [a.ride_id, a]));
 
 			//
