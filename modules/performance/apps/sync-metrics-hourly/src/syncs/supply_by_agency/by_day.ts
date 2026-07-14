@@ -2,7 +2,7 @@
 /* * */
 
 import { dayLabelFromOperationalDate } from '@/utils/day-label.js';
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { agencies, metrics } from '@tmlmobilidade/interfaces';

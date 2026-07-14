@@ -1,7 +1,7 @@
 /* * */
 
 import { type RideChangeListener, ridesChangeStream } from '@/operation/rides/watch.js';
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';

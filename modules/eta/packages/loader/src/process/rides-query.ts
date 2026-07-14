@@ -4,7 +4,7 @@ import type { AppConfig } from '@/lib/config.js';
 import type { Filter } from '@tmlmobilidade/interfaces';
 import type { HashedPatternWaypoint, Ride } from '@tmlmobilidade/types';
 
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
 import { Logger } from '@tmlmobilidade/logger';
 

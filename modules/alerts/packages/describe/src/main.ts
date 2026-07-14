@@ -8,7 +8,7 @@ import { initDescriptionPrompt, titleFormatTemplatePrompt } from '@/prompts/init
 import { referenceTypePrompt } from '@/prompts/reference-type.js';
 import { userInstructionDelimitersPrompt, userInstructionPrompt } from '@/prompts/user-instructions.js';
 import { parseAlertGeneratedCopy, PromptBuilder } from '@/utils.js';
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
 import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { Dates } from '@tmlmobilidade/dates';

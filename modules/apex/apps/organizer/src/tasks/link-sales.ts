@@ -5,7 +5,7 @@
 // import { simplifiedApexOnBoardSalesNew, simplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
 // import { Logger } from '@tmlmobilidade/logger';
 // import { Timer } from '@tmlmobilidade/timer';
-// import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+// import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 
 // /* * */
 

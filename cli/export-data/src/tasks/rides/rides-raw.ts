@@ -2,7 +2,7 @@
 
 import { type ExportType, type TaskProps } from '@/types.js';
 import { parseRide } from '@/utils/parse-ride.js';
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type Filter, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { type Ride, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';

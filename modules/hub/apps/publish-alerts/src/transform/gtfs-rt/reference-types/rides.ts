@@ -1,7 +1,7 @@
 /* * */
 
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 import { getPublicRouteId, getPublicTripId } from '@tmlmobilidade/utils';

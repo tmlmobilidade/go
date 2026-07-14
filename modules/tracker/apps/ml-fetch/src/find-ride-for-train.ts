@@ -1,6 +1,6 @@
 /* * */
 
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type Dates } from '@tmlmobilidade/dates';
 import { stops } from '@tmlmobilidade/interfaces';
 

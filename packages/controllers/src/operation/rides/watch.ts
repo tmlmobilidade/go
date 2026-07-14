@@ -25,7 +25,7 @@
  * - Reduced database load and network overhead
 */
 
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { RideNormalized } from '@tmlmobilidade/types';

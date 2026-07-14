@@ -1,7 +1,7 @@
 /* * */
 
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { files, hashedPatterns, hashedShapes, hashedTrips, plans } from '@tmlmobilidade/interfaces';

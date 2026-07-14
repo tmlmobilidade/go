@@ -1,5 +1,5 @@
 import { type TaskProps } from '@/types.js';
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 
 /** Result type for median speed by agency */
 export interface AgencyMedianSpeedResult {

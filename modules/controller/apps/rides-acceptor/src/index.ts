@@ -1,7 +1,7 @@
 /* * */
 
 import { isEmpty, testRide } from '@/utils.js';
-import { goDB } from '@tmlmobilidade/@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Dates } from '@tmlmobilidade/dates';
 import { alerts, rideAcceptances } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
