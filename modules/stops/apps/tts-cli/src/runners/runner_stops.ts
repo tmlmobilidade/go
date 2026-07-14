@@ -11,19 +11,6 @@ import pLimit from 'p-limit';
 
 /* * */
 
-const TEST_STOP_IDS = new Set([
-	100340,
-	100341,
-	100343,
-	100344,
-	100345,
-	100347,
-	100348,
-	100349,
-]);
-
-/* * */
-
 async function processStop(stopIndex: number, total: number, stopData: Awaited<ReturnType<typeof stops.all>>[number]) {
 	const stopTts = makeStop(stopData.name, {
 		airport: stopData.flags.some(flag => flag.short_name === 'airport'),
@@ -85,7 +72,7 @@ export async function runnerStops() {
 
 	console.log('* Fetching all stops from database...');
 	const allStopsData = await stops.all();
-	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted && TEST_STOP_IDS.has(stopData._id));
+	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted);
 
 	console.log(`* Preparing ${stopsToProcess.length} stops (${process.env.TTS_RUNNER_CONCURRENCY} concurrent)...`);
 
