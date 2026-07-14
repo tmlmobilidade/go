@@ -1,6 +1,6 @@
 /* * */
 
-import { events } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Event } from '@tmlmobilidade/types';
 
 /* * */
@@ -12,7 +12,7 @@ import { Event } from '@tmlmobilidade/types';
  */
 export async function fetchAllEvents(agencyId: string): Promise<Map<string, Event>> {
 	try {
-		const allEvents = await events.findByAgencyIds([agencyId]);
+		const allEvents = await goDB.offer.events.findByAgencyIds([agencyId]);
 		const eventsMap = new Map<string, Event>();
 		for (const event of allEvents) {
 			eventsMap.set(event._id, event);
