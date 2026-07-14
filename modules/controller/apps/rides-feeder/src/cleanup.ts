@@ -1,6 +1,7 @@
 /* * */
 
-import { hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInChunks } from '@tmlmobilidade/utils';
@@ -210,7 +211,7 @@ export async function cleanupOrphanHashedPatterns() {
 	// Setup a stream of all Hashed Pattern IDs
 	// and collect them in two Sets.
 
-	const hashedPatternsCollection = await hashedPatterns.getCollection();
+	const hashedPatternsCollection = await goDB.operation.hashedPatterns.getCollection();
 	const allHashedPatternIdsStream = hashedPatternsCollection.aggregate([{ $group: { _id: '$_id' } }]).stream();
 
 	const hashedPatternIdsInUse = new Set<string>();
@@ -236,7 +237,7 @@ export async function cleanupOrphanHashedPatterns() {
 	// Delete all orphan Hashed Patterns in chunks
 
 	await performInChunks(Array.from(orphanHashedPatternIds), async (chunk) => {
-		const result = await hashedPatterns.deleteMany({ _id: { $in: chunk } });
+		const result = await goDB.operation.hashedPatterns.deleteMany({ _id: { $in: chunk } });
 		Logger.info({ message: `Deleted ${result.deletedCount} orphan Hashed Patterns.` });
 	});
 
