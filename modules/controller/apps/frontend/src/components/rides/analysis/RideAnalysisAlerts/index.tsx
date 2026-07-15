@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
+
 /* * */
 
 export function RideAnalysisAlerts() {
@@ -20,8 +21,8 @@ export function RideAnalysisAlerts() {
 	const RideAnalysisContext = useRideAnalysisContext();
 	const { t } = useTranslation();
 
-	const formatTimestamp = (timestamp: number) => {
-		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
+	const formatDatesTimestamp = (timestamp: number) => {
+		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt') : null;
 	};
 
 	const ride = RideAnalysisContext.data.ride;
@@ -71,14 +72,14 @@ export function RideAnalysisAlerts() {
 								label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.alert_id.label')}
 								variant="plain"
 								value={(
-									<a className="clickable" href={PAGE_ROUTES.alerts.ALERTS_DETAIL(alert._id)}>
+									<Link href={PAGE_ROUTES.alerts.ALERTS_DETAIL(alert._id)}>
 										{alert._id}
-									</a>
+									</Link>
 								)}
 							/>
 							<Divider />
 
-							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.created_at.label')} value={formatTimestamp(alert.created_at)} variant="plain" />
+							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.created_at.label')} value={formatDatesTimestamp(alert.created_at)} variant="plain" />
 							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.title.label')} value={alert.title} variant="plain" />
 							<ValueDisplay label={t('default:rides.analysis.RideAnalysisAlerts.Table.columns.description.label')} value={alert.description} variant="plain" />
 						</Section>

@@ -168,10 +168,10 @@
 				"Table": {
 					"columns": {
 						"alert_id": {
-							"label": "Id Alert"
+							"label": "Id do Alerta"
 						},
 						"created_at": {
-							"label": "Timestamp"
+							"label": "Dia de Criação"
 						},
 						"description": {
 							"label": "Descrição"
