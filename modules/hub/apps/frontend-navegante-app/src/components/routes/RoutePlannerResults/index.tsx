@@ -2,9 +2,10 @@
 
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerItineraryCard } from '@/components/routes/RoutePlannerItineraryCard';
-import { getMotisItineraryDurationSeconds, getMotisItineraryWalkMinutes, getMotisLegModeKind, getMotisTransfersCount, isMotisWalkingLeg, type MotisItinerary } from '@/utils/route-planner-motis';
-import { IconBus, IconFerry, IconRoute, IconSortAscending, IconTrain, IconWalk } from '@tabler/icons-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { getMotisItineraryDurationSeconds, getMotisItineraryWalkMinutes, getMotisLegModeKind, getMotisTransfersCount, isMotisWalkingLeg, type MotisItinerary, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
+import { IconBus, IconClock, IconFerry, IconRoute, IconSortAscending, IconTrain, IconWalk } from '@tabler/icons-react';
+import { type TFunction } from 'i18next';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -12,7 +13,7 @@ import styles from './styles.module.css';
 /* * */
 
 type RoutePlannerModeFilter = 'bus' | 'ferry' | 'rail' | 'subway' | 'tram' | 'transit';
-type RoutePlannerOpenFilter = 'modes' | 'sort';
+type RoutePlannerOpenFilter = 'modes' | 'sort' | 'time';
 type RoutePlannerSortMode = 'best' | 'fastest' | 'fewer_transfers' | 'least_walking';
 
 interface RoutePlannerFilterOption<TValue extends string> {
@@ -58,7 +59,6 @@ export function RoutePlannerResults() {
 	});
 	const [openFilter, setOpenFilter] = useState<null | RoutePlannerOpenFilter>(null);
 	const [sortMode, setSortMode] = useState<RoutePlannerSortMode>('best');
-	const previousFirstVisibleItineraryIndexRef = useRef<null | number>(null);
 
 	//
 	// B. Transform data
@@ -85,11 +85,12 @@ export function RoutePlannerResults() {
 	useEffect(() => {
 		const firstVisibleItinerary = visibleItineraries[0];
 		if (!firstVisibleItinerary) return;
-		if (previousFirstVisibleItineraryIndexRef.current === firstVisibleItinerary.index) return;
 
-		previousFirstVisibleItineraryIndexRef.current = firstVisibleItinerary.index;
-		if (routePlannerContext.data.selected_itinerary_index === firstVisibleItinerary.index) return;
+		const isSelectedItineraryVisible = visibleItineraries.some(({ index }) => {
+			return index === routePlannerContext.data.selected_itinerary_index;
+		});
 
+		if (isSelectedItineraryVisible) return;
 		routePlannerContext.actions.selectItinerary(firstVisibleItinerary.index);
 	}, [routePlannerContext.actions, routePlannerContext.data.selected_itinerary_index, visibleItineraries]);
 
@@ -111,6 +112,31 @@ export function RoutePlannerResults() {
 		setOpenFilter(null);
 	};
 
+	const handleTravelTimeModeChange = (mode: RoutePlannerTravelTimeMode) => {
+		const nextTravelTime: RoutePlannerTravelTime = {
+			date: mode === 'now' || routePlannerContext.data.travel_time.mode === 'now' ? new Date() : routePlannerContext.data.travel_time.date,
+			mode,
+		};
+
+		routePlannerContext.actions.setTravelTimeMode(mode);
+		void routePlannerContext.actions.planRoute(routePlannerContext.data.origin, routePlannerContext.data.destination, nextTravelTime);
+
+		if (mode === 'now') setOpenFilter(null);
+	};
+
+	const handleTravelTimeChange = (value: string) => {
+		const parsedDate = new Date(value);
+		if (Number.isNaN(parsedDate.getTime())) return;
+
+		const nextTravelTime: RoutePlannerTravelTime = {
+			date: parsedDate,
+			mode: routePlannerContext.data.travel_time.mode,
+		};
+
+		routePlannerContext.actions.setTravelTime(parsedDate);
+		void routePlannerContext.actions.planRoute(routePlannerContext.data.origin, routePlannerContext.data.destination, nextTravelTime);
+	};
+
 	//
 	// E. Render components
 
@@ -124,34 +150,49 @@ export function RoutePlannerResults() {
 				<div className={styles.error}>{routePlannerContext.data.plan_error}</div>
 			)}
 
-			{routePlannerContext.data.itineraries.length > 0 && (
+			{routePlannerContext.data.origin && routePlannerContext.data.destination && (
 				<div className={styles.itineraries}>
 					<div className={styles.filterToggles}>
 						<button
-							aria-expanded={openFilter === 'sort'}
+							aria-expanded={openFilter === 'time'}
 							className={styles.filtersToggle}
-							data-active={sortMode !== 'best' || openFilter === 'sort'}
-							onClick={() => setOpenFilter(current => current === 'sort' ? null : 'sort')}
+							data-active={routePlannerContext.data.travel_time.mode !== 'now' || openFilter === 'time'}
+							onClick={() => setOpenFilter(current => current === 'time' ? null : 'time')}
 							type="button"
 						>
-							<IconSortAscending size={15} />
-							{t(`default:routes.RoutePlanner.results.sort.${sortMode}`)}
+							<IconClock size={15} />
+							{formatTravelTimeFilterLabel(routePlannerContext.data.travel_time, t)}
 						</button>
 
-						<button
-							aria-expanded={openFilter === 'modes'}
-							className={styles.filtersToggle}
-							data-active={disabledModesCount > 0 || openFilter === 'modes'}
-							onClick={() => setOpenFilter(current => current === 'modes' ? null : 'modes')}
-							type="button"
-						>
-							<IconRoute size={15} />
-							{t('default:routes.RoutePlanner.results.modes.label')}
-							{disabledModesCount > 0 && <span>{disabledModesCount}</span>}
-						</button>
+						{routePlannerContext.data.itineraries.length > 0 && (
+							<>
+								<button
+									aria-expanded={openFilter === 'sort'}
+									className={styles.filtersToggle}
+									data-active={sortMode !== 'best' || openFilter === 'sort'}
+									onClick={() => setOpenFilter(current => current === 'sort' ? null : 'sort')}
+									type="button"
+								>
+									<IconSortAscending size={15} />
+									{t(`default:routes.RoutePlanner.results.sort.${sortMode}`)}
+								</button>
+
+								<button
+									aria-expanded={openFilter === 'modes'}
+									className={styles.filtersToggle}
+									data-active={disabledModesCount > 0 || openFilter === 'modes'}
+									onClick={() => setOpenFilter(current => current === 'modes' ? null : 'modes')}
+									type="button"
+								>
+									<IconRoute size={15} />
+									{t('default:routes.RoutePlanner.results.modes.label')}
+									{disabledModesCount > 0 && <span>{disabledModesCount}</span>}
+								</button>
+							</>
+						)}
 					</div>
 
-					{openFilter === 'sort' && (
+					{openFilter === 'sort' && routePlannerContext.data.itineraries.length > 0 && (
 						<div className={styles.filtersPanel}>
 							<div className={styles.filterSection}>
 								<strong>{t('default:routes.RoutePlanner.results.sort.label')}</strong>
@@ -177,7 +218,50 @@ export function RoutePlannerResults() {
 						</div>
 					)}
 
-					{openFilter === 'modes' && (
+					{openFilter === 'time' && (
+						<div className={styles.filtersPanel}>
+							<div className={styles.filterSection}>
+								<strong>{t('default:routes.RoutePlannerInput.time.datetime_label')}</strong>
+								<div className={styles.filterGroup}>
+									<button
+										className={styles.filterButton}
+										data-active={routePlannerContext.data.travel_time.mode === 'now'}
+										onClick={() => handleTravelTimeModeChange('now')}
+										type="button"
+									>
+										{t('default:routes.RoutePlannerInput.time.now')}
+									</button>
+									<button
+										className={styles.filterButton}
+										data-active={routePlannerContext.data.travel_time.mode === 'departure'}
+										onClick={() => handleTravelTimeModeChange('departure')}
+										type="button"
+									>
+										{t('default:routes.RoutePlannerInput.time.departure')}
+									</button>
+									<button
+										className={styles.filterButton}
+										data-active={routePlannerContext.data.travel_time.mode === 'arrival'}
+										onClick={() => handleTravelTimeModeChange('arrival')}
+										type="button"
+									>
+										{t('default:routes.RoutePlannerInput.time.arrival')}
+									</button>
+								</div>
+
+								{routePlannerContext.data.travel_time.mode !== 'now' && (
+									<input
+										className={styles.timeInput}
+										onChange={event => handleTravelTimeChange(event.currentTarget.value)}
+										type="datetime-local"
+										value={formatDateForInput(routePlannerContext.data.travel_time.date)}
+									/>
+								)}
+							</div>
+						</div>
+					)}
+
+					{openFilter === 'modes' && routePlannerContext.data.itineraries.length > 0 && (
 						<div className={styles.filtersPanel}>
 							<div className={styles.filterSection}>
 								<strong>{t('default:routes.RoutePlanner.results.modes.label')}</strong>
@@ -205,7 +289,7 @@ export function RoutePlannerResults() {
 
 					{visibleItineraries.map(({ index, itinerary }) => (
 						<RoutePlannerItineraryCard
-							key={`${itinerary.startTime || itinerary.departureTime || index}-${itinerary.endTime || itinerary.arrivalTime || index}`}
+							key={`${itinerary.startTime || index}-${itinerary.endTime || index}`}
 							isSelected={routePlannerContext.data.selected_itinerary_index === index}
 							itinerary={itinerary}
 							onOpenDetails={() => routePlannerContext.actions.openItineraryDetail(index)}
@@ -271,4 +355,28 @@ function sortVisibleItineraries(itineraries: RoutePlannerVisibleItinerary[], sor
 	}
 
 	return results;
+}
+
+function formatDateForInput(date: Date) {
+	const offset = date.getTimezoneOffset();
+	const localDate = new Date(date.getTime() - offset * 60_000);
+	return localDate.toISOString().slice(0, 16);
+}
+
+function formatTravelTimeFilterLabel(travelTime: RoutePlannerTravelTime, t: TFunction) {
+	if (travelTime.mode === 'now') return t('default:routes.RoutePlannerInput.time.now');
+
+	const date = new Intl.DateTimeFormat(undefined, {
+		day: '2-digit',
+		hour: '2-digit',
+		hour12: false,
+		minute: '2-digit',
+		month: '2-digit',
+	}).format(travelTime.date);
+
+	const modeLabel = travelTime.mode === 'arrival'
+		? t('default:routes.RoutePlannerInput.time.arrival')
+		: t('default:routes.RoutePlannerInput.time.departure');
+
+	return `${modeLabel} ${date}`;
 }

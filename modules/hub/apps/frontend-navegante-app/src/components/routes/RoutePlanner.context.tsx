@@ -20,7 +20,7 @@ interface RoutePlannerContextState {
 		openItineraryDetail: (index: number) => void
 		openLocationSearch: (target: RoutePlannerLocationSearchTarget) => void
 		openResults: () => void
-		planRoute: (nextOrigin?: null | RoutePlannerLocation, nextDestination?: null | RoutePlannerLocation) => Promise<void>
+		planRoute: (nextOrigin?: null | RoutePlannerLocation, nextDestination?: null | RoutePlannerLocation, nextTravelTime?: RoutePlannerTravelTime) => Promise<void>
 		selectDestination: (location: RoutePlannerLocation) => Promise<void>
 		selectItinerary: (index: number) => void
 		selectOrigin: (location: RoutePlannerLocation) => Promise<void>
@@ -181,9 +181,10 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		setActiveBottomSheet({ view: 'routes' }, { replace: true });
 	};
 
-	const planRoute = async (nextOrigin?: null | RoutePlannerLocation, nextDestination?: null | RoutePlannerLocation) => {
+	const planRoute = async (nextOrigin?: null | RoutePlannerLocation, nextDestination?: null | RoutePlannerLocation, nextTravelTime?: RoutePlannerTravelTime) => {
 		const requestOrigin = nextOrigin === undefined ? origin : nextOrigin;
 		const requestDestination = nextDestination === undefined ? destination : nextDestination;
+		const requestTravelTime = nextTravelTime ?? travelTime;
 
 		if (!requestOrigin || !requestDestination) {
 			setPlanError(t('default:routes.RoutePlanner.errors.missing_locations'));
@@ -194,9 +195,10 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		setPlan(null);
 		setPlanError(null);
 		setSelectedItineraryIndex(0);
+		setViewMode('results');
 
 		try {
-			const response = await fetch(buildMotisProxyUrl('/api/v6/plan', buildMotisPlanParams(requestOrigin, requestDestination, travelTime)));
+			const response = await fetch(buildMotisProxyUrl('/api/v6/plan', buildMotisPlanParams(requestOrigin, requestDestination, requestTravelTime)));
 
 			if (!response.ok) throw new Error(`MOTIS returned HTTP ${response.status}`);
 
@@ -204,7 +206,6 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 			const nextItineraries = getMotisItineraries(data);
 
 			setPlan(data);
-			setViewMode('results');
 
 			if (nextItineraries.length === 0) {
 				setPlanError(t('default:routes.RoutePlanner.errors.no_itineraries'));
