@@ -321,6 +321,7 @@
 		},
 		"RoutePlannerSearch": {
 			"destination_placeholder": "Pesquisar paragem ou destino",
+			"destination_title": "Escolher destino",
 			"favorites": {
 				"empty": "Ainda não existem favoritos.",
 				"title": "Favoritos"
@@ -332,6 +333,7 @@
 				"label": "Origem"
 			},
 			"origin_placeholder": "Pesquisar partida",
+			"origin_title": "Escolher partida",
 			"recents": {
 				"campo_grande": "Campo Grande",
 				"lisboa_oriente": "Lisboa Oriente",

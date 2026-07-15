@@ -22,7 +22,7 @@ export function VehiclesDetail() {
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
 			opened={activeBottomSheet?.view === 'vehicles-detail'}
-			size="short"
+			size="fit"
 		>
 			{activeBottomSheet?.entityId && (
 				<VehiclesDetailContextProvider vehicleId={activeBottomSheet.entityId}>

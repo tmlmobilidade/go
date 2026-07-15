@@ -20,6 +20,14 @@
 	box-shadow: 0 2px 12px rgb(0 0 0 / 8%);
 }
 
+.container[data-variant='compact'] {
+	gap: 9px;
+	padding: 10px 12px;
+	border: 1px solid var(--color-system-border-100, #e8e8ee);
+	border-radius: 12px;
+	box-shadow: none;
+}
+
 /* * */
 /* TRACK */
 
@@ -30,6 +38,11 @@
 	align-items: center;
 	padding-top: 18px;
 	padding-bottom: 18px;
+}
+
+.container[data-variant='compact'] .track {
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 .originDot {
@@ -76,6 +89,10 @@
 	min-height: 52px;
 }
 
+.container[data-variant='compact'] .row {
+	min-height: 36px;
+}
+
 .field {
 	position: relative;
 	display: flex;
@@ -100,6 +117,14 @@
 	outline: 0;
 	background: transparent;
 	border: 0;
+}
+
+.container[data-variant='compact'] .locationValue {
+	font-size: 16px;
+}
+
+.container[data-variant='compact'] .label {
+	font-size: 10px;
 }
 
 .locationValue::placeholder {
@@ -141,6 +166,10 @@
 	padding-right: 0;
 }
 
+.container[data-variant='compact'] .swapRow {
+	min-height: 22px;
+}
+
 .swapButton {
 	all: unset;
 	display: flex;
@@ -159,6 +188,14 @@
 .swapButton:hover {
 	background-color: var(--color-surface-hover, #ebebeb);
 }
+
+.container[data-variant='compact'] .swapButton,
+.container[data-variant='compact'] .locationButton {
+	width: 30px;
+	height: 30px;
+}
+
+
 
 /* * */
 /* TIME CONTROLS */

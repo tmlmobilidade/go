@@ -1,6 +1,6 @@
 'use client';
 
-import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerDestinationSearch } from '@/components/routes/RoutePlannerDestinationSearch';
@@ -10,6 +10,34 @@ import { RoutePlannerResults } from '@/components/routes/RoutePlannerResults';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
+
+/* * */
+
+interface RoutePlannerSheetConfig {
+	headerMode: 'default' | 'handle'
+	initialSnap: number
+	snapPoints: number[]
+	title?: string
+	withCloseButton: boolean
+	withCompactCloseButton: boolean
+	withOverlay: boolean
+}
+
+interface RoutePlannerSheetTitles {
+	destinationSearch: string
+	fullInput: string
+	itineraryDetail: string
+	originSearch: string
+}
+
+/* * */
+
+const ROUTE_PLANNER_SHEET_SNAP_POINTS = {
+	destinationSearch: [0, 0.72, 0.95],
+	fullInput: [0, 0.52, 0.95],
+	itineraryDetail: [0, 0.28, 0.64, 0.95],
+	results: [0, 0.24, 0.58, 0.95],
+};
 
 /* * */
 
@@ -27,23 +55,45 @@ export function RoutePlanner() {
 	//
 	// B. Transform data
 
-	const title = routePlannerContext.data.view_mode === 'destination-search'
-		? t('default:routes.RoutePlannerSearch.title')
-		: t('default:routes.RoutePlanner.title');
-
-	const isResultsView = routePlannerContext.data.view_mode === 'results';
-	const isMapPreviewView = isResultsView;
+	const sheetConfig = getRoutePlannerSheetConfig(routePlannerContext.data.view_mode, {
+		destinationSearch: t('default:routes.RoutePlannerSearch.destination_title'),
+		fullInput: t('default:routes.RoutePlanner.title'),
+		itineraryDetail: t('default:routes.RoutePlanner.results.route_summary'),
+		originSearch: t('default:routes.RoutePlannerSearch.origin_title'),
+	}, routePlannerContext.data.location_search_target);
 
 	//
-	// C. Render components
+	// C. Handle actions
+
+	const handleClose = () => {
+		if (routePlannerContext.data.view_mode === 'itinerary-detail') {
+			routePlannerContext.actions.openResults();
+			return;
+		}
+
+		if (routePlannerContext.data.view_mode === 'results') {
+			routePlannerContext.actions.clearRoute();
+			closeActiveBottomSheet();
+			return;
+		}
+
+		closeActiveBottomSheet();
+	};
+
+	//
+	// D. Render components
 
 	return (
 		<BottomSheet
-			onClose={closeActiveBottomSheet}
+			headerMode={sheetConfig.headerMode}
+			initialSnap={sheetConfig.initialSnap}
+			onClose={handleClose}
 			opened={activeBottomSheet?.view === 'routes'}
-			size="half"
-			title={title}
-			withOverlay={!isMapPreviewView}
+			snapPoints={sheetConfig.snapPoints}
+			title={sheetConfig.title}
+			withCloseButton={sheetConfig.withCloseButton}
+			withCompactCloseButton={sheetConfig.withCompactCloseButton}
+			withOverlay={sheetConfig.withOverlay}
 		>
 			{routePlannerContext.data.view_mode === 'destination-search' && (
 				<RoutePlannerDestinationSearch />
@@ -61,6 +111,7 @@ export function RoutePlanner() {
 							onTravelTimeModeChange={routePlannerContext.actions.setTravelTimeMode}
 							origin={routePlannerContext.data.origin}
 							travelTime={routePlannerContext.data.travel_time}
+							variant="compact"
 						/>
 					</div>
 
@@ -82,4 +133,52 @@ export function RoutePlanner() {
 	);
 
 	//
+}
+
+/* * */
+
+function getRoutePlannerSheetConfig(viewMode: ReturnType<typeof useRoutePlannerContext>['data']['view_mode'], titles: RoutePlannerSheetTitles, searchTarget: ReturnType<typeof useRoutePlannerContext>['data']['location_search_target']): RoutePlannerSheetConfig {
+	if (viewMode === 'destination-search') {
+		return {
+			headerMode: 'default',
+			initialSnap: 1,
+			snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.destinationSearch,
+			title: searchTarget === 'origin' ? titles.originSearch : titles.destinationSearch,
+			withCloseButton: false,
+			withCompactCloseButton: false,
+			withOverlay: true,
+		};
+	}
+
+	if (viewMode === 'full-input') {
+		return {
+			headerMode: 'default',
+			initialSnap: 1,
+			snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.fullInput,
+			title: titles.fullInput,
+			withCloseButton: true,
+			withCompactCloseButton: false,
+			withOverlay: true,
+		};
+	}
+
+	if (viewMode === 'itinerary-detail') {
+		return {
+			headerMode: 'handle',
+			initialSnap: 1,
+			snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.itineraryDetail,
+			withCloseButton: true,
+			withCompactCloseButton: true,
+			withOverlay: false,
+		};
+	}
+
+	return {
+		headerMode: 'handle',
+		initialSnap: 1,
+		snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.results,
+		withCloseButton: true,
+		withCompactCloseButton: true,
+		withOverlay: false,
+	};
 }

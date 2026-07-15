@@ -1,7 +1,6 @@
 'use client';
 
-import { useSessionStorage } from '@mantine/hooks';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
 /* * */
 
@@ -12,15 +11,70 @@ interface BottomSheetNavigationType {
 	view: BottomSheetType
 }
 
+interface BottomSheetSnapType {
+	snapIndex: null | number
+	snapPoint: null | number
+}
+
 interface SetActiveBottomSheetOptions {
 	replace?: boolean
 }
 
 interface UseBottomSheetReturnType {
 	activeBottomSheet: BottomSheetNavigationType | null
+	activeBottomSheetSnap: BottomSheetSnapType
 	closeActiveBottomSheet: () => void
 	isBottomSheetInStack: (view: BottomSheetType) => boolean
 	setActiveBottomSheet: (value: BottomSheetNavigationType, options?: SetActiveBottomSheetOptions) => void
+	setActiveBottomSheetSnap: (value: BottomSheetSnapType) => void
+}
+
+/* * */
+
+let BOTTOM_SHEET_NAVIGATION_STORE: BottomSheetNavigationType[] = [];
+let BOTTOM_SHEET_SNAP_STORE: BottomSheetSnapType = { snapIndex: null, snapPoint: null };
+const bottomSheetNavigationListeners = new Set<() => void>();
+const bottomSheetSnapListeners = new Set<() => void>();
+
+function emitBottomSheetNavigationChange() {
+	bottomSheetNavigationListeners.forEach(listener => listener());
+}
+
+function emitBottomSheetSnapChange() {
+	bottomSheetSnapListeners.forEach(listener => listener());
+}
+
+function getBottomSheetNavigationSnapshot() {
+	return BOTTOM_SHEET_NAVIGATION_STORE;
+}
+
+function getBottomSheetSnapSnapshot() {
+	return BOTTOM_SHEET_SNAP_STORE;
+}
+
+function setBottomSheetNavigationStore(value: BottomSheetNavigationType[]) {
+	BOTTOM_SHEET_NAVIGATION_STORE = value;
+	emitBottomSheetNavigationChange();
+}
+
+function setBottomSheetSnapStore(value: BottomSheetSnapType) {
+	if (BOTTOM_SHEET_SNAP_STORE.snapIndex === value.snapIndex && BOTTOM_SHEET_SNAP_STORE.snapPoint === value.snapPoint) return;
+	BOTTOM_SHEET_SNAP_STORE = value;
+	emitBottomSheetSnapChange();
+}
+
+function subscribeToBottomSheetNavigation(listener: () => void) {
+	bottomSheetNavigationListeners.add(listener);
+	return () => {
+		bottomSheetNavigationListeners.delete(listener);
+	};
+}
+
+function subscribeToBottomSheetSnap(listener: () => void) {
+	bottomSheetSnapListeners.add(listener);
+	return () => {
+		bottomSheetSnapListeners.delete(listener);
+	};
 }
 
 /**
@@ -33,10 +87,17 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 	//
 	// A. Setup variables
 
-	const [bottomSheetNavigation, setBottomSheetNavigation] = useSessionStorage<BottomSheetNavigationType[]>({
-		defaultValue: [],
-		key: 'bottom-sheet-navigation',
-	});
+	const bottomSheetNavigation = useSyncExternalStore(
+		subscribeToBottomSheetNavigation,
+		getBottomSheetNavigationSnapshot,
+		getBottomSheetNavigationSnapshot,
+	);
+
+	const activeBottomSheetSnap = useSyncExternalStore(
+		subscribeToBottomSheetSnap,
+		getBottomSheetSnapSnapshot,
+		getBottomSheetSnapSnapshot,
+	);
 
 	//
 	// B. Transform data
@@ -48,28 +109,34 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 	//
 	// C. Handle actions
 
-	const setActiveBottomSheet = (value: BottomSheetNavigationType, options?: SetActiveBottomSheetOptions) => {
+	const setActiveBottomSheet = useCallback((value: BottomSheetNavigationType, options?: SetActiveBottomSheetOptions) => {
 		// If replace is true, override the full navigation stack with the new value
-		if (options?.replace) setBottomSheetNavigation([{ entityId: value.entityId ?? null, view: value.view }]);
+		if (options?.replace) setBottomSheetNavigationStore([{ entityId: value.entityId ?? null, view: value.view }]);
 		// Otherwise, append the new value to the navigation stack
-		else setBottomSheetNavigation(prev => [...prev, { entityId: value.entityId ?? null, view: value.view }]);
-	};
+		else setBottomSheetNavigationStore([...BOTTOM_SHEET_NAVIGATION_STORE, { entityId: value.entityId ?? null, view: value.view }]);
+	}, []);
 
-	const closeActiveBottomSheet = () => {
-		setBottomSheetNavigation(prev => prev?.slice(0, -1));
-	};
+	const setActiveBottomSheetSnap = useCallback((value: BottomSheetSnapType) => {
+		setBottomSheetSnapStore(value);
+	}, []);
 
-	const isBottomSheetInStack = (view: BottomSheetType) => {
+	const closeActiveBottomSheet = useCallback(() => {
+		setBottomSheetNavigationStore(BOTTOM_SHEET_NAVIGATION_STORE.slice(0, -1));
+	}, []);
+
+	const isBottomSheetInStack = useCallback((view: BottomSheetType) => {
 		return bottomSheetNavigation.some(entry => entry.view === view);
-	};
+	}, [bottomSheetNavigation]);
 
 	//
 	// D. Return data
 
 	return {
 		activeBottomSheet,
+		activeBottomSheetSnap,
 		closeActiveBottomSheet,
 		isBottomSheetInStack,
 		setActiveBottomSheet,
+		setActiveBottomSheetSnap,
 	};
 }

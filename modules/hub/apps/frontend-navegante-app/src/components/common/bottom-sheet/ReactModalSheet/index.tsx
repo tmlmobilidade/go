@@ -2,24 +2,34 @@
 
 /* * */
 
-import { BottomSheetClose } from '@/components/common/bottom-sheet/BottomSheetClose';
-import { type PropsWithChildren, useId } from 'react';
-import { Sheet } from 'react-modal-sheet';
+import { ReactModalSheetClose } from '@/components/common/bottom-sheet/ReactModalSheetClose';
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { type PropsWithChildren, useEffect, useId, useMemo, useRef } from 'react';
+import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 import styles from './styles.module.css';
 
 /* * */
 
+type BottomSheetHeaderMode = 'default' | 'handle';
+type BottomSheetSize = 'fit' | 'full' | 'half' | 'short';
+
 interface BottomSheetProps {
+	headerMode?: BottomSheetHeaderMode
+	initialSnap?: number
 	onClose: () => void
 	opened: boolean
-	size?: 'fit' | 'full' | 'half' | 'short'
+	size?: BottomSheetSize
+	snapPoints?: number[]
 	title?: string
+	withCloseButton?: boolean
+	withCompactCloseButton?: boolean
+	withOverlay?: boolean
 }
 
 /* * */
 
-const SHEET_SNAP_POINTS_BY_SIZE: Record<NonNullable<BottomSheetProps['size']>, number[]> = {
+const SHEET_SNAP_POINTS_BY_SIZE: Record<BottomSheetSize, number[]> = {
 	fit: [0, 1],
 	full: [0, 0.95],
 	half: [0, 0.55],
@@ -30,10 +40,16 @@ const SHEET_SNAP_POINTS_BY_SIZE: Record<NonNullable<BottomSheetProps['size']>, n
 
 export function BottomSheet({
 	children,
+	headerMode = 'default',
+	initialSnap,
 	onClose,
 	opened,
 	size = 'fit',
+	snapPoints: customSnapPoints,
 	title,
+	withCloseButton = true,
+	withCompactCloseButton = false,
+	withOverlay = true,
 }: PropsWithChildren<BottomSheetProps>) {
 	//
 
@@ -41,36 +57,76 @@ export function BottomSheet({
 	// A. Setup variables
 
 	const titleId = useId();
-	const snapPoints = SHEET_SNAP_POINTS_BY_SIZE[size];
-	const detent = size === 'fit' ? 'content' : 'full';
+	const sheetRef = useRef<SheetRef>(null);
+	const { setActiveBottomSheetSnap } = useBottomSheet();
+	const snapPoints = customSnapPoints ?? SHEET_SNAP_POINTS_BY_SIZE[size];
+	const snapPointsKey = useMemo(() => snapPoints.join('|'), [snapPoints]);
+	const detent = customSnapPoints || size !== 'fit' ? 'full' : 'content';
+	const selectedInitialSnap = initialSnap ?? snapPoints.length - 1;
+	const selectedInitialSnapPoint = snapPoints[selectedInitialSnap] ?? null;
+	const withTitle = headerMode === 'default' && !!title;
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	useEffect(() => {
+		if (!opened) {
+			setActiveBottomSheetSnap({ snapIndex: null, snapPoint: null });
+			return;
+		}
+
+		setActiveBottomSheetSnap({
+			snapIndex: selectedInitialSnap,
+			snapPoint: selectedInitialSnapPoint,
+		});
+		sheetRef.current?.snapTo(selectedInitialSnap);
+	}, [opened, selectedInitialSnap, selectedInitialSnapPoint, setActiveBottomSheetSnap, snapPointsKey]);
+
+	const handleSnap = (snapIndex: number) => {
+		setActiveBottomSheetSnap({
+			snapIndex,
+			snapPoint: snapPoints[snapIndex] ?? null,
+		});
+	};
+
+	//
+	// C. Render components
 
 	return (
 		<Sheet
+			ref={sheetRef}
 			className={styles.root}
 			detent={detent}
-			initialSnap={1}
+			initialSnap={selectedInitialSnap}
 			isOpen={opened}
 			onClose={onClose}
+			onSnap={handleSnap}
 			snapPoints={snapPoints}
 		>
 			<Sheet.Container
-				aria-labelledby={title ? titleId : undefined}
+				aria-labelledby={withTitle ? titleId : undefined}
 				aria-modal={true}
 				className={styles.container}
 				role="dialog"
 			>
-				<Sheet.Header className={styles.header}>
+				<Sheet.Header className={styles.header} data-mode={headerMode}>
 					<div className={styles.headerLeft} />
 
-					<h1 className={styles.title} id={titleId}>
-						{title ?? ''}
-					</h1>
+					{headerMode === 'handle' ? (
+						<div aria-hidden="true" className={styles.handle} />
+					) : (
+						<h1 className={styles.title} id={titleId}>
+							{title ?? ''}
+						</h1>
+					)}
 
 					<div className={styles.headerRight}>
-						<BottomSheetClose onClick={onClose} />
+						{withCloseButton && (
+							<ReactModalSheetClose
+								onClick={onClose}
+								size={withCompactCloseButton ? 'sm' : 'default'}
+							/>
+						)}
 					</div>
 				</Sheet.Header>
 
@@ -79,7 +135,7 @@ export function BottomSheet({
 				</Sheet.Content>
 			</Sheet.Container>
 
-			<Sheet.Backdrop className={styles.backdrop} onTap={onClose} />
+			{withOverlay && <Sheet.Backdrop className={styles.backdrop} onTap={onClose} />}
 		</Sheet>
 	);
 

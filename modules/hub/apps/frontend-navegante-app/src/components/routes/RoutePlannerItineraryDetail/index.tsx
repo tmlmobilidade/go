@@ -47,10 +47,6 @@ export function RoutePlannerItineraryDetail() {
 
 	return (
 		<div className={styles.container}>
-			<button className={styles.backButton} onClick={routePlannerContext.actions.openResults} type="button">
-				{t('default:routes.RoutePlanner.results.back_to_results')}
-			</button>
-
 			<header className={styles.summary}>
 				<strong>{duration || t('default:routes.RoutePlanner.results.duration_unavailable')}</strong>
 				<span>{formatMotisPlanTime(start)}{' -> '}{formatMotisPlanTime(end)}</span>

@@ -21,6 +21,8 @@ interface RoutePlannerInputProps {
 	onTravelTimeModeChange: (mode: RoutePlannerTravelTimeMode) => void
 	origin: null | RoutePlannerLocation
 	travelTime: RoutePlannerTravelTime
+	variant?: 'compact' | 'default'
+	withTravelTimeControls?: boolean
 }
 
 /* * */
@@ -34,6 +36,8 @@ export function RoutePlannerInput({
 	onTravelTimeModeChange,
 	origin,
 	travelTime,
+	variant = 'default',
+	withTravelTimeControls = false,
 }: RoutePlannerInputProps) {
 	//
 
@@ -123,9 +127,9 @@ export function RoutePlannerInput({
 	// D. Render components
 
 	return (
-		<div className={styles.wrapper}>
+		<div className={styles.wrapper} data-variant={variant}>
 
-			<div className={styles.container}>
+			<div className={styles.container} data-variant={variant}>
 
 				<div className={styles.track}>
 					<IconPointFilled className={styles.originDot} size={16} />
@@ -208,43 +212,47 @@ export function RoutePlannerInput({
 
 			</div>
 
-			<div className={styles.timeControls}>
-				<button
-					className={styles.timeModeButton}
-					data-active={travelTime.mode === 'now'}
-					onClick={() => onTravelTimeModeChange('now')}
-					type="button"
-				>
-					{t('default:routes.RoutePlannerInput.time.now')}
-				</button>
-				<button
-					className={styles.timeModeButton}
-					data-active={travelTime.mode === 'departure'}
-					onClick={() => onTravelTimeModeChange('departure')}
-					type="button"
-				>
-					{t('default:routes.RoutePlannerInput.time.departure')}
-				</button>
-				<button
-					className={styles.timeModeButton}
-					data-active={travelTime.mode === 'arrival'}
-					onClick={() => onTravelTimeModeChange('arrival')}
-					type="button"
-				>
-					{t('default:routes.RoutePlannerInput.time.arrival')}
-				</button>
-			</div>
+			{withTravelTimeControls && (
+				<>
+					<div className={styles.timeControls}>
+						<button
+							className={styles.timeModeButton}
+							data-active={travelTime.mode === 'now'}
+							onClick={() => onTravelTimeModeChange('now')}
+							type="button"
+						>
+							{t('default:routes.RoutePlannerInput.time.now')}
+						</button>
+						<button
+							className={styles.timeModeButton}
+							data-active={travelTime.mode === 'departure'}
+							onClick={() => onTravelTimeModeChange('departure')}
+							type="button"
+						>
+							{t('default:routes.RoutePlannerInput.time.departure')}
+						</button>
+						<button
+							className={styles.timeModeButton}
+							data-active={travelTime.mode === 'arrival'}
+							onClick={() => onTravelTimeModeChange('arrival')}
+							type="button"
+						>
+							{t('default:routes.RoutePlannerInput.time.arrival')}
+						</button>
+					</div>
 
-			{travelTime.mode !== 'now' && (
-				<label className={styles.timeInputWrapper}>
-					<span>{t('default:routes.RoutePlannerInput.time.datetime_label')}</span>
-					<input
-						className={styles.timeInput}
-						onChange={event => handleTravelTimeInputChange(event.currentTarget.value)}
-						type="datetime-local"
-						value={formatDateForInput(travelTime.date)}
-					/>
-				</label>
+					{travelTime.mode !== 'now' && (
+						<label className={styles.timeInputWrapper}>
+							<span>{t('default:routes.RoutePlannerInput.time.datetime_label')}</span>
+							<input
+								className={styles.timeInput}
+								onChange={event => handleTravelTimeInputChange(event.currentTarget.value)}
+								type="datetime-local"
+								value={formatDateForInput(travelTime.date)}
+							/>
+						</label>
+					)}
+				</>
 			)}
 
 		</div>
