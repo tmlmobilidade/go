@@ -1,8 +1,8 @@
-import { getRuntimeLogContext } from '@/logger/utils/runtime-log-context.js';
+import { setRuntimeLogContext } from '@/logger/utils/runtime-log-context.js';
 import { getSentryClient } from '@/sentry/client/go-sentry.js';
 import * as Sentry from '@sentry/nextjs';
 
-export async function initSentry() {
+export function initSentry(module: string) {
 	//
 
 	//
@@ -17,7 +17,7 @@ export async function initSentry() {
 		],
 	});
 
-	const runtimeContext = getRuntimeLogContext();
+	const runtimeContext = setRuntimeLogContext({ app: 'frontend', module });
 
 	Sentry.getGlobalScope().setAttributes(runtimeContext);
 

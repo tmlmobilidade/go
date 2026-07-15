@@ -17,16 +17,16 @@ type StartLogsContext = Omit<LogsContext, 'app' | 'message' | 'module' | 'severi
 /* * */
 
 /**
- * Prepares and normalizes the context for starting Node.js logs.
+ * Prepares and normalizes the context for starting browser logs.
  *
  * This function serves as a wrapper for initializing the logging context,
- * using process.env.APP and process.env.MODULE when app/module are not supplied.
+ * using the app/module configured by initSentry when they are not supplied.
  * The 'severity' property defaults to 'info' if not supplied.
  *
  * @param context - Context for logs.
- *   - app: string - Application name, defaults to process.env.APP
+ *   - app: string - Application name, defaults to frontend
  *   - message: string - Main log message
- *   - module: string - Module/source of the log, defaults to process.env.MODULE
+ *   - module: string - Module/source of the log, defaults to the configured module
  *   - severity: string - Log severity (defaults to 'info' if undefined)
  *
  * Example:
