@@ -13,10 +13,16 @@ import { LoadingSection } from '../../components/loaders/LoadingSection';
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
 import { themeData } from '../../styles/theme';
+import { SentryInitializer } from './SentryInitializer';
 
 /* * */
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
+	/**
+	 * The module name used to identify frontend logs in Sentry.
+	 */
+	module: string
+
 	/**
 	 * Please avoid using this prop. It is only intended for very specific use cases.
 	 * @dangerous
@@ -30,7 +36,7 @@ type BaseProviderProps = LocaleContextProps & VersionContextProps & {
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n, theme, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ children, i18n, module, theme, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
@@ -62,6 +68,7 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 			lang="pt"
 		>
 			<body>
+				<SentryInitializer module={module} />
 				<NuqsAdapter>
 					<Suspense fallback={<LoadingSection fullHeight />}>
 						<VersionContextProvider version={version}>

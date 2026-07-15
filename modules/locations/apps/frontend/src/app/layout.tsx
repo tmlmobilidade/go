@@ -1,8 +1,9 @@
 /* * */
 
+import pjson from '#/package.json';
 import { MapOptionsContextProvider } from '@/components/map/MapOptions.context';
 import { getModuleConfig } from '@tmlmobilidade/consts';
-import { LayoutContextProvider } from '@tmlmobilidade/ui';
+import { BaseProvider, LayoutContextProvider } from '@tmlmobilidade/ui';
 import { Metadata } from 'next';
 import { cookies as nextCookies } from 'next/headers';
 import { redirect, RedirectType } from 'next/navigation';
@@ -36,15 +37,13 @@ export default async function Layout({ children }: PropsWithChildren) {
 	// B. Render components
 
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<body>
-				<LayoutContextProvider>
-					<MapOptionsContextProvider>
-						{children}
-					</MapOptionsContextProvider>
-				</LayoutContextProvider>
-			</body>
-		</html>
+		<BaseProvider module="locations" version={pjson.version}>
+			<LayoutContextProvider>
+				<MapOptionsContextProvider>
+					{children}
+				</MapOptionsContextProvider>
+			</LayoutContextProvider>
+		</BaseProvider>
 	);
 
 	//
