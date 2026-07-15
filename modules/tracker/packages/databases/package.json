@@ -17,16 +17,16 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/logger-backend": "*",
 		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"mongodb": "7.4.0",
-		"@tmlmobilidade/logger-backend": "*"
+		"mongodb": "7.5.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"

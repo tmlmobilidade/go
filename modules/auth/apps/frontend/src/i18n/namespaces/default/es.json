@@ -13,6 +13,17 @@
 				},
 				"title": "Alertas"
 			},
+			"SectionApex": {
+				"description": "Configuración del sistema APEX para este operador.",
+				"fields": {
+					"contact_emails": {
+						"description": "Emails que serán notificados cuando se dispongan de nuevos archivos de configuración APEX.",
+						"label": "Emails de contacto APEX",
+						"placeholder": "email@example.com"
+					}
+				},
+				"title": "Configuración APEX"
+			},
 			"SectionBasicInfo": {
 				"description": "Nombre, email, teléfono, URL y zona horaria.",
 				"fields": {
@@ -131,7 +142,8 @@
 				"columns": {
 					"code": "Código",
 					"id": "#ID",
-					"name": "Nombre"
+					"name": "Nombre",
+					"pta_name": "Nombre de la Autoridad"
 				}
 			}
 		}

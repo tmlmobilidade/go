@@ -101,7 +101,7 @@ export class MongoDatabaseClient {
 
 		const client = new MongoClient(uri, {
 			connectTimeoutMS: 10_000,
-			directConnection: tunnel === null,
+			directConnection: tunnel !== null,
 			maxPoolSize: 20,
 			minPoolSize: 2,
 			readPreference: 'primary',
@@ -137,7 +137,13 @@ export class MongoDatabaseClient {
 			Logger.error({ error, message: `[${prefix}] Database connection error:` });
 		});
 
-		await client.connect();
+		try {
+			await client.connect();
+		} catch (error) {
+			await client.close().catch(() => {});
+			throw error;
+		}
+
 		return { client, tunnel };
 	}
 
@@ -160,6 +166,7 @@ export class MongoDatabaseClient {
 		if (!env('HOST_1') || !env('PORT_1')) throw new Error(`Missing ${prefix}_HOST_1 or ${prefix}_PORT_1`);
 		if (!env('HOST_2') || !env('PORT_2')) throw new Error(`Missing ${prefix}_HOST_2 or ${prefix}_PORT_2`);
 		if (!env('HOST_3') || !env('PORT_3')) throw new Error(`Missing ${prefix}_HOST_3 or ${prefix}_PORT_3`);
+		if (!env('USERNAME') || !env('PASSWORD')) throw new Error(`Missing ${prefix}_USERNAME or ${prefix}_PASSWORD`);
 		if (!env('RS_NAME')) throw new Error(`Missing ${prefix}_RS_NAME`);
 
 		const tunnel = goSshTunnel({ dstAddr: env('HOST_1')!, dstPort: Number(env('PORT_1')) });
@@ -167,7 +174,7 @@ export class MongoDatabaseClient {
 		if (!tunnel) {
 			return {
 				tunnel: null,
-				uri: `mongodb://${env('USER')}:${env('PASSWORD')}@${env('HOST_1')}:${env('PORT_1')},${env('HOST_2')}:${env('PORT_2')},${env('HOST_3')}:${env('PORT_3')}/`,
+				uri: `mongodb://${env('USERNAME')}:${env('PASSWORD')}@${env('HOST_1')}:${env('PORT_1')},${env('HOST_2')}:${env('PORT_2')},${env('HOST_3')}:${env('PORT_3')}/`,
 			};
 		}
 
@@ -182,7 +189,7 @@ export class MongoDatabaseClient {
 
 		return {
 			tunnel,
-			uri: `mongodb://${env('USER')}:${env('PASSWORD')}@localhost:${addr.port}/`,
+			uri: `mongodb://${env('USERNAME')}:${env('PASSWORD')}@localhost:${addr.port}/`,
 		};
 	}
 }

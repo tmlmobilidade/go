@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { Logger } from '@tmlmobilidade/logger-backend';
 
 /**
@@ -13,7 +13,7 @@ import { Logger } from '@tmlmobilidade/logger-backend';
 export async function getVehiclePositionsJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
 	//
 
-	const cachedData = await apiCache.get('hub:v1:realtime:vehicles:positions:json');
+	const cachedData = await cacheDb.get('hub:v1:realtime:vehicles:positions:json');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/realtime:getVehiclePositionsJson()] No cached data found for vehicles positions' });

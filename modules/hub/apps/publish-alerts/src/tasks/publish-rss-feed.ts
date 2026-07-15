@@ -2,7 +2,7 @@
 
 import { transformAlertIntoRssEntity } from '@/transform/rss/main.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-backend';
 import { createRssFeed, type RssRawItem } from '@tmlmobilidade/rss';
@@ -66,7 +66,7 @@ export async function publishRssFeed() {
 		title: 'Carris Metropolitana - Alertas',
 	});
 
-	await apiCache.set('hub:v1:alerts:published:rss', rssFeed);
+	await cacheDb.set('hub:v1:alerts:published:rss', rssFeed);
 
 	Logger.success(`Finished publishing RSS feed (${globalTimer.get()})`);
 

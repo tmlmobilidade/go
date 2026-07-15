@@ -22,7 +22,7 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/external": "*",
-		"@tmlmobilidade/go-interfaces-api-cache": "*",
+		"@tmlmobilidade/go-interfaces-cache-db": "*",
 		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
@@ -36,9 +36,9 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.0",
+		"tsx": "4.23.1",
 		"typescript": "6.0.3"
 	}
 }

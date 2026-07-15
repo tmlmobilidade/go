@@ -20,13 +20,15 @@ export interface SshTunnelOptions {
 /* * */
 
 export class SshTunnel {
-	private _server: Server;
+	private _server: Server | undefined;
 	private config: SshConfig;
+	private onDisconnect?: () => void;
 	private options: SshTunnelOptions;
 	private retries = 0;
 
-	constructor(config: SshConfig, options?: SshTunnelOptions) {
+	constructor(config: SshConfig, options?: SshTunnelOptions, onDisconnect?: () => void) {
 		this.config = config;
+		this.onDisconnect = onDisconnect;
 		if (options) this.options = options;
 	}
 
@@ -91,7 +93,9 @@ export class SshTunnel {
 	 */
 	async disconnect() {
 		try {
-			this._server.close();
+			this._server?.close();
+			this._server = undefined;
+			this.onDisconnect?.();
 			console.log(`⤷ SSH Tunnel disconnected.`);
 		} catch (error) {
 			console.log(`⤷ ERROR: Failed to disconnect from SSH Tunnel.`, error);

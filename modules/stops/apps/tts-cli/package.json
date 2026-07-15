@@ -20,21 +20,22 @@
 	},
 	"dependencies": {
 		"@helperkits/timer": "20240627.34.23",
+		"@tmlmobilidade/go-interfaces-cache-db": "*",
 		"@tmlmobilidade/go-stops-pckg-organize": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"adm-zip": "0.5.18",
-		"p-limit": "7.3.0",
-		"@tmlmobilidade/logger-backend": "*"
+		"adm-zip": "0.6.0",
+		"p-limit": "7.3.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.0",
+		"tsx": "4.23.1",
 		"typescript": "6.0.3"
 	}
 }
