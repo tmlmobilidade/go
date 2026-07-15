@@ -1,24 +1,14 @@
+import type { Area as MotisApiArea, GeocodeResponse as MotisApiGeocodeResponse, Itinerary as MotisApiItinerary,	Leg as MotisApiLeg, Place as MotisApiPlace, PlanResponse as MotisApiPlanResponse } from '@/types/motis-api';
+
 /* * */
 
 export type RoutePlannerTravelTimeMode = 'arrival' | 'departure' | 'now';
 
 /* * */
 
-export interface MotisGeocodeArea {
-	name?: string
-}
+export type MotisGeocodeArea = Partial<MotisApiArea>;
 
-export interface MotisGeocodeResult {
-	areas?: MotisGeocodeArea[]
-	id?: string
-	lat?: number
-	level?: number
-	lon?: number
-	modes?: string[]
-	name?: string
-	street?: string
-	type?: string
-}
+export type MotisGeocodeResult = MotisApiGeocodeResponse[number];
 
 export interface RoutePlannerLocation {
 	areas?: MotisGeocodeArea[]
@@ -33,95 +23,11 @@ export interface RoutePlannerLocation {
 	type: string
 }
 
-export interface MotisPlanLegGeometry {
-	coordinates?: GeoJSON.Position[]
-	encodedPolyline?: string
-	points?: string
-	polyline?: string
-	precision?: number
-	type?: string
-}
-
-export interface MotisPlanPlace {
-	id?: string
-	lat?: number
-	latitude?: number
-	lon?: number
-	longitude?: number
-	name?: string
-	stop?: {
-		id?: string
-		lat?: number
-		latitude?: number
-		lon?: number
-		longitude?: number
-		name?: string
-		stop_id?: string
-		stopId?: string
-	}
-	stop_id?: string
-	stopId?: string
-}
-
-export interface MotisPlanIntermediateStop {
-	arrivalTime?: string
-	departureTime?: string
-	lat?: number
-	latitude?: number
-	lon?: number
-	longitude?: number
-	name?: string
-	stop?: MotisPlanPlace['stop']
-}
-
-export interface MotisPlanLeg {
-	arrivalTime?: string
-	departureTime?: string
-	direction?: string
-	duration?: number
-	encodedPolyline?: string
-	endTime?: string
-	from?: MotisPlanPlace
-	geometry?: GeoJSON.LineString | MotisPlanLegGeometry | string
-	headsign?: string
-	intermediateStops?: MotisPlanIntermediateStop[]
-	legGeometry?: MotisPlanLegGeometry | string
-	line?: string
-	mode?: string
-	polyline?: string
-	route?: string
-	routeShortName?: string
-	shape?: GeoJSON.LineString | MotisPlanLegGeometry | string
-	startTime?: string
-	stops?: MotisPlanIntermediateStop[]
-	to?: MotisPlanPlace
-	transportMode?: string
-	trip?: {
-		id?: string
-		trip_id?: string
-		tripId?: string
-	}
-	trip_id?: string
-	tripId?: string
-	tripIds?: string[]
-}
-
-export interface MotisItinerary {
-	arrivalTime?: string
-	departureTime?: string
-	duration?: number
-	end?: string
-	endTime?: string
-	legs?: MotisPlanLeg[]
-	start?: string
-	startTime?: string
-	transfers?: number
-}
-
-export interface MotisPlanResponse {
-	connections?: MotisItinerary[]
-	itineraries?: MotisItinerary[]
-}
+export type MotisPlanPlace = MotisApiPlace;
+export type MotisPlanIntermediateStop = MotisApiPlace;
+export type MotisPlanLeg = MotisApiLeg;
+export type MotisItinerary = MotisApiItinerary;
+export type MotisPlanResponse = MotisApiPlanResponse;
 
 export interface RoutePlannerTravelTime {
 	date: Date
@@ -152,7 +58,7 @@ export function buildMotisPlanParams(origin: RoutePlannerLocation, destination: 
 		detailedLegs: 'true',
 		directModes: 'WALK',
 		fromPlace: getMotisPlaceParam(origin),
-		maxItineraries: '5',
+		maxItineraries: '10',
 		postTransitModes: 'WALK',
 		preTransitModes: 'WALK',
 		time: requestDate.toISOString(),
@@ -186,6 +92,8 @@ export function buildRoutePlannerItineraryMapData(itinerary: MotisItinerary | nu
 			},
 			properties: {
 				color: getRoutePlannerLegColor(leg, options),
+				leg_index: index,
+				route_label: getMotisLegRouteLabel(leg),
 				text_color: getRoutePlannerLegTextColor(leg, options),
 			},
 			type: 'Feature',
@@ -244,16 +152,15 @@ export function formatMotisPlanTime(value: string | undefined) {
 export function getMotisItineraries(plan: MotisPlanResponse | null) {
 	if (!plan) return [];
 	if (Array.isArray(plan.itineraries)) return plan.itineraries;
-	if (Array.isArray(plan.connections)) return plan.connections;
 	return [];
 }
 
 export function getMotisItineraryEnd(itinerary: MotisItinerary) {
-	return itinerary.endTime || itinerary.arrivalTime || itinerary.end;
+	return itinerary.endTime;
 }
 
 export function getMotisItineraryStart(itinerary: MotisItinerary) {
-	return itinerary.startTime || itinerary.departureTime || itinerary.start;
+	return itinerary.startTime;
 }
 
 export function getMotisItineraryDurationSeconds(itinerary: MotisItinerary) {
@@ -271,21 +178,21 @@ export function getMotisItineraryWalkMinutes(legs: MotisPlanLeg[]) {
 }
 
 export function getMotisLegDetail(leg: MotisPlanLeg, fallbackOrigin: string, fallbackDestination: string) {
-	const from = leg.from?.name || leg.from?.stop?.name || fallbackOrigin;
-	const to = leg.to?.name || leg.to?.stop?.name || fallbackDestination;
-	const start = formatMotisPlanTime(leg.startTime || leg.departureTime);
-	const end = formatMotisPlanTime(leg.endTime || leg.arrivalTime);
+	const from = leg.from.name || fallbackOrigin;
+	const to = leg.to.name || fallbackDestination;
+	const start = formatMotisPlanTime(leg.startTime);
+	const end = formatMotisPlanTime(leg.endTime);
 
 	return `${start} -> ${end} | ${from} -> ${to}`;
 }
 
 export function getMotisLegDurationSeconds(leg: MotisPlanLeg) {
 	if (Number.isFinite(leg.duration)) return leg.duration;
-	return getSecondsBetween(leg.startTime || leg.departureTime, leg.endTime || leg.arrivalTime);
+	return getSecondsBetween(leg.startTime, leg.endTime);
 }
 
 export function getMotisLegMode(leg: MotisPlanLeg) {
-	return (leg.mode || leg.transportMode || 'LEG').toUpperCase();
+	return leg.mode.toUpperCase();
 }
 
 export function getMotisLegModeKind(leg: MotisPlanLeg) {
@@ -307,7 +214,7 @@ export function getMotisLegModeKind(leg: MotisPlanLeg) {
 }
 
 export function getMotisLegRouteLabel(leg: MotisPlanLeg) {
-	const explicitLabel = leg.routeShortName || leg.route || leg.line;
+	const explicitLabel = leg.routeShortName;
 	if (explicitLabel) return explicitLabel;
 
 	const modeKind = getMotisLegModeKind(leg);
@@ -327,26 +234,17 @@ export function getMotisLegRouteLabel(leg: MotisPlanLeg) {
 }
 
 export function getMotisLegTripIds(leg: MotisPlanLeg) {
-	const candidates = [
-		leg.tripId,
-		leg.trip_id,
-		leg.trip?.tripId,
-		leg.trip?.trip_id,
-		leg.trip?.id,
-		...(Array.isArray(leg.tripIds) ? leg.tripIds : []),
-	];
-
-	return Array.from(new Set(candidates.filter((value): value is string => typeof value === 'string' && value.length > 0)));
+	return typeof leg.tripId === 'string' && leg.tripId.length > 0 ? [leg.tripId] : [];
 }
 
 export function getMotisPlanPlaceStopId(place: MotisPlanPlace | undefined) {
-	return place?.stop_id || place?.stopId || place?.id || place?.stop?.stop_id || place?.stop?.stopId || place?.stop?.id;
+	return place?.stopId || place?.stopCode;
 }
 
 export function getMotisLegTitle(leg: MotisPlanLeg) {
-	const mode = leg.mode || leg.transportMode || 'LEG';
-	const route = leg.routeShortName || leg.route || leg.line || '';
-	const headsign = leg.headsign || leg.direction || '';
+	const mode = leg.mode;
+	const route = leg.routeShortName || '';
+	const headsign = leg.headsign || '';
 
 	return [mode, route, headsign].filter(Boolean).join(' ');
 }
@@ -368,7 +266,7 @@ export function getMotisPlaceParam(location: RoutePlannerLocation) {
 
 export function getMotisTransfersCount(value: number | undefined, legs: MotisPlanLeg[]) {
 	if (Number.isFinite(value)) return value || 0;
-	const transitLegs = legs.filter(leg => !['FOOT', 'WALK'].includes(leg.mode || ''));
+	const transitLegs = legs.filter(leg => !['FOOT', 'WALK'].includes(leg.mode));
 	return Math.max(0, transitLegs.length - 1);
 }
 
@@ -447,11 +345,7 @@ function getMotisLegFallbackPositions(leg: MotisPlanLeg, index: number, totalLeg
 
 function getMotisLegGeometryPositions(leg: MotisPlanLeg) {
 	const candidates: unknown[] = [
-		leg.geometry,
 		leg.legGeometry,
-		leg.shape,
-		leg.encodedPolyline,
-		leg.polyline,
 	];
 
 	for (const candidate of candidates) {
@@ -466,16 +360,13 @@ function getMotisPlanPlacePosition(place: MotisPlanPlace | undefined): GeoJSON.P
 	if (!place) return null;
 
 	const directPosition = getPositionFromLatLon(
-		Number.isFinite(place.lat) ? place.lat : place.latitude,
-		Number.isFinite(place.lon) ? place.lon : place.longitude,
+		place.lat,
+		place.lon,
 	);
 
 	if (directPosition) return directPosition;
 
-	return getPositionFromLatLon(
-		Number.isFinite(place.stop?.lat) ? place.stop?.lat : place.stop?.latitude,
-		Number.isFinite(place.stop?.lon) ? place.stop?.lon : place.stop?.longitude,
-	);
+	return null;
 }
 
 function getPositionFromLatLon(lat: number | undefined, lon: number | undefined): GeoJSON.Position | null {
