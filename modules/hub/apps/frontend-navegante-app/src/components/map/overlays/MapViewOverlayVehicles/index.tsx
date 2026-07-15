@@ -2,6 +2,7 @@
 
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { Layer, Source } from '@vis.gl/react-maplibre';
+import { type DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 import { useEffect, useRef, useState } from 'react';
 
 /* * */
@@ -12,6 +13,7 @@ export const MapViewOverlayVehiclesInteractiveLayerId = 'default-layer-vehicles-
 /* * */
 
 interface MapViewOverlayVehiclesProps {
+	alwaysShowVehicles?: boolean
 	presentBeforeId?: string
 	vehiclesData?: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 	visible?: boolean
@@ -103,7 +105,7 @@ function interpolateProps(startFeature: GeoJSON.Feature<GeoJSON.Point> | undefin
 
 /* * */
 
-export function MapViewOverlayVehicles({ presentBeforeId, vehiclesData = baseGeoJsonFeatureCollection, visible = true }: MapViewOverlayVehiclesProps) {
+export function MapViewOverlayVehicles({ alwaysShowVehicles = false, presentBeforeId, vehiclesData = baseGeoJsonFeatureCollection, visible = true }: MapViewOverlayVehiclesProps) {
 	//
 
 	//
@@ -113,6 +115,24 @@ export function MapViewOverlayVehicles({ presentBeforeId, vehiclesData = baseGeo
 	const previousDataRef = useRef<GeoJSON.FeatureCollection>(vehiclesData);
 	const animationStart = useRef<null | number>(null);
 	const animationFrame = useRef<null | number>(null);
+	const iconOpacity: DataDrivenPropertyValueSpecification<number> = alwaysShowVehicles ? ['coalesce', ['get', 'opacity'], 1] : [
+		'interpolate',
+		['linear'],
+		['zoom'],
+		12,
+		0,
+		13,
+		1,
+	];
+	const circleOpacity: DataDrivenPropertyValueSpecification<number> = alwaysShowVehicles ? 0 : [
+		'interpolate',
+		['linear'],
+		['zoom'],
+		12,
+		1,
+		13,
+		0,
+	];
 
 	//
 	// B. Transform data
@@ -215,15 +235,7 @@ export function MapViewOverlayVehicles({ presentBeforeId, vehiclesData = baseGeo
 
 				}}
 				paint={{
-					'icon-opacity': [
-						'interpolate',
-						['linear'],
-						['zoom'],
-						12,
-						0,
-						13,
-						1,
-					],
+					'icon-opacity': iconOpacity,
 				}}
 			/>
 
@@ -237,15 +249,7 @@ export function MapViewOverlayVehicles({ presentBeforeId, vehiclesData = baseGeo
 				}}
 				paint={{
 					'circle-color': '#00CD32',
-					'circle-opacity': [
-						'interpolate',
-						['linear'],
-						['zoom'],
-						12,
-						1,
-						13,
-						0,
-					],
+					'circle-opacity': circleOpacity,
 					'circle-pitch-alignment': 'map',
 					'circle-radius': 1.8,
 				}}

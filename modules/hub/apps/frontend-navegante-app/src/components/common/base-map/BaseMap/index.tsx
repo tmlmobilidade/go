@@ -2,6 +2,7 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { useLinesContext } from '@/components/lines/Lines.context';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
 import { MapViewOverlayStopLineBadges } from '@/components/map/overlays/MapViewOverlayStopLineBadges';
@@ -16,6 +17,8 @@ import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { centerMap } from '@/utils/map.utils';
+import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
+import { filterVehicleFeatureCollectionByLineIds, getRoutePlannerItineraryLineIds } from '@/utils/route-planner-vehicles';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
@@ -33,6 +36,7 @@ export function BaseMap() {
 
 	const stopsContext = useStopsContext();
 	const alertsContext = useAlertsContext();
+	const linesContext = useLinesContext();
 	const vehiclesContext = useVehiclesContext();
 	const routePlannerContext = useRoutePlannerContext();
 
@@ -60,8 +64,21 @@ export function BaseMap() {
 		pattern?.shape_id ? { credentials: 'omit', url: API_ROUTES.hub.NETWORK_SHAPES(pattern.shape_id) } : null,
 	);
 
+	const routePlannerAlertFilters = useMemo(() => {
+		return getRoutePlannerItineraryAlertFilters(routePlannerContext.data.selected_itinerary, linesContext.data.lines);
+	}, [linesContext.data.lines, routePlannerContext.data.selected_itinerary]);
+
+	const routePlannerAlerts = useMemo(() => {
+		return filterAlertsByRoutePlannerItinerary(alertsContext.data.alerts, routePlannerAlertFilters);
+	}, [alertsContext.data.alerts, routePlannerAlertFilters]);
+
+	const routePlannerAlertsMapData = useMemo(() => {
+		if (!routePlannerAlertFilters) return alertsContext.data.fc;
+		return buildRoutePlannerAlertFeatureCollection(alertsContext.data.fc, routePlannerAlerts, routePlannerContext.data.route_map_data, linesContext.data.lines);
+	}, [alertsContext.data.fc, linesContext.data.lines, routePlannerAlertFilters, routePlannerAlerts, routePlannerContext.data.route_map_data]);
+
 	const alertsMapData = useMemo(() => {
-		if (!focusedAlertId) return alertsContext.data.fc;
+		if (!focusedAlertId) return routePlannerAlertsMapData;
 
 		const collection = getBaseGeoJsonFeatureCollection();
 
@@ -72,10 +89,20 @@ export function BaseMap() {
 		});
 
 		return collection;
-	}, [alertsContext.data.fc, focusedAlertId]);
+	}, [alertsContext.data.fc, focusedAlertId, routePlannerAlertsMapData]);
+
+	const routePlannerVehicleLineIds = useMemo(() => {
+		return getRoutePlannerItineraryLineIds(routePlannerContext.data.selected_itinerary, linesContext.data.lines);
+	}, [linesContext.data.lines, routePlannerContext.data.selected_itinerary]);
+
+	const shouldAlwaysShowRoutePlannerVehicles = routePlannerVehicleLineIds !== null;
+
+	const routePlannerVehiclesMapData = useMemo(() => {
+		return filterVehicleFeatureCollectionByLineIds(vehiclesContext.data.fc, routePlannerVehicleLineIds);
+	}, [routePlannerVehicleLineIds, vehiclesContext.data.fc]);
 
 	const vehiclesMapData = useMemo(() => {
-		if (!focusedVehicleId) return vehiclesContext.data.fc;
+		if (!focusedVehicleId) return routePlannerVehiclesMapData;
 
 		const collection = getBaseGeoJsonFeatureCollection();
 
@@ -84,7 +111,7 @@ export function BaseMap() {
 		});
 
 		return collection;
-	}, [vehiclesContext.data.fc, focusedVehicleId]);
+	}, [focusedVehicleId, routePlannerVehiclesMapData, vehiclesContext.data.fc]);
 
 	useEffect(() => {
 		if (!baseMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;
@@ -192,6 +219,7 @@ export function BaseMap() {
 			)}
 
 			<MapViewOverlayVehicles
+				alwaysShowVehicles={shouldAlwaysShowRoutePlannerVehicles}
 				vehiclesData={vehiclesMapData}
 				visible={activeBaseMapOverlays.includes('vehicles')}
 			/>
