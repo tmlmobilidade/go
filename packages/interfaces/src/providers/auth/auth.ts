@@ -1,8 +1,9 @@
 /* * */
 
-import { organizations, roles, sessions, users, verificationTokens } from '@/interfaces/index.js';
+import { organizations, roles, sessions, users } from '@/interfaces/index.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
 import { type CreateUserDto, type LoginDto, type Organization, type Permission, type Session, type User } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
@@ -160,7 +161,7 @@ class AuthProvider {
 		// Generate a random token that will be used to verify the user
 		const verificationToken = generateRandomToken();
 		// Insert the verification token into the database
-		await verificationTokens.insertOne({
+		await goDB.core.verificationTokens.insertOne({
 			expires_at: Dates.now('utc').plus({ days: 7 }).unix_timestamp,
 			token: verificationToken,
 			user_id: insertNewUserResult._id,

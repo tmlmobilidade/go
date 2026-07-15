@@ -4,7 +4,8 @@ import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AUTH_SESSION_COOKIE_NAME, authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { AUTH_SESSION_COOKIE_NAME, authProvider, users } from '@tmlmobilidade/interfaces';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/types';
 
@@ -18,7 +19,7 @@ export class AuthController {
 	 */
 	static async changePassword(request: FastifyRequest<{ Body: { password_hash: string, token: string } }>, reply: FastifyReply<void>) {
 		// Check if the verification token is valid
-		const tokenResult = await verificationTokens.findOne({ token: { $eq: request.body.token } });
+		const tokenResult = await goDB.core.verificationTokens.findOne({ token: { $eq: request.body.token } });
 		// If the token is invalid or expired, throw an error
 		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
 			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
@@ -26,7 +27,7 @@ export class AuthController {
 		// Update the user's password in the database
 		await users.updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
 		// Once the token is validated, delete it from the database
-		await verificationTokens.deleteOne({ token: { $eq: request.body.token } });
+		await goDB.core.verificationTokens.deleteOne({ token: { $eq: request.body.token } });
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -96,7 +97,7 @@ export class AuthController {
 		const randomToken = generateRandomToken();
 		// Create a verification token entry in the database
 		// with an expiration time of 1 hour
-		await verificationTokens.insertOne({
+		await goDB.core.verificationTokens.insertOne({
 			expires_at: Dates.now('utc').plus({ hours: 1 }).unix_timestamp,
 			token: randomToken,
 			user_id: foundUser._id,
