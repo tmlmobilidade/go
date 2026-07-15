@@ -6,7 +6,7 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
 import { MapViewOverlayStopLineBadges } from '@/components/map/overlays/MapViewOverlayStopLineBadges';
-import { MapViewOverlayStops, MapViewOverlayStopsInteractiveLayerId } from '@/components/map/overlays/MapViewOverlayStops';
+import { MapViewOverlayStops, MapViewOverlayStopsInteractiveLayerId, MapViewOverlayStopsVisibleMinZoom } from '@/components/map/overlays/MapViewOverlayStops';
 import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOverlayUserLocation';
 // import { MapViewOverlayVehicleLineBadges } from '@/components/map/overlays/MapViewOverlayVehicleLineBadges';
 import { MapViewOverlayVehicles, MapViewOverlayVehiclesInteractiveLayerId, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
@@ -23,7 +23,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
 import { type MapLayerMouseEvent, useMap } from '@vis.gl/react-maplibre';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -42,9 +42,10 @@ export function BaseMap() {
 
 	const { data: { activeBaseMapOverlays } } = useMapContext();
 	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
-	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
+	const { activeBottomSheet, activeBottomSheetSnap, setActiveBottomSheet } = useBottomSheet();
 
 	const { 'base-map': baseMap } = useMap();
+	const lastRouteMapFitKeyRef = useRef<null | string>(null);
 
 	const focusedAlertId = activeBottomSheet?.view === 'alerts-detail' ? activeBottomSheet.entityId : null;
 	const focusedVehicleId = activeBottomSheet?.view === 'vehicles-detail' ? activeBottomSheet.entityId : null;
@@ -101,6 +102,10 @@ export function BaseMap() {
 		return filterVehicleFeatureCollectionByLineIds(vehiclesContext.data.fc, routePlannerVehicleLineIds);
 	}, [routePlannerVehicleLineIds, vehiclesContext.data.fc]);
 
+	const routePlannerMapFitFeatures = useMemo(() => {
+		return getRoutePlannerMapFitFeatures(routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode);
+	}, [routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode]);
+
 	const vehiclesMapData = useMemo(() => {
 		if (!focusedVehicleId) return routePlannerVehiclesMapData;
 
@@ -134,12 +139,23 @@ export function BaseMap() {
 	}, [baseMap, shape?.geojson]);
 
 	useEffect(() => {
-		if (!baseMap || routePlannerContext.data.route_map_data.shapeData.features.length === 0) return;
+		if (!baseMap || routePlannerMapFitFeatures.length === 0) return;
+		if (activeBottomSheet?.view !== 'routes') return;
 
-		centerMap(baseMap, routePlannerContext.data.route_map_data.shapeData.features, {
-			padding: getRoutePlannerMapFitPadding(routePlannerContext.data.view_mode),
+		const routeMapFitKey = [
+			routePlannerContext.data.selected_itinerary_index,
+			routePlannerContext.data.view_mode,
+			activeBottomSheetSnap.snapPoint,
+			routePlannerMapFitFeatures.length,
+		].join('|');
+
+		if (lastRouteMapFitKeyRef.current === routeMapFitKey) return;
+		lastRouteMapFitKeyRef.current = routeMapFitKey;
+
+		centerMap(baseMap, routePlannerMapFitFeatures, {
+			padding: getRoutePlannerMapFitPadding(routePlannerContext.data.view_mode, activeBottomSheetSnap.snapPoint),
 		});
-	}, [baseMap, routePlannerContext.data.selected_itinerary_index, routePlannerContext.data.route_map_data.shapeData, routePlannerContext.data.view_mode]);
+	}, [activeBottomSheet?.view, activeBottomSheetSnap.snapPoint, baseMap, routePlannerContext.data.selected_itinerary_index, routePlannerContext.data.view_mode, routePlannerMapFitFeatures]);
 
 	//
 	// C. Handle actions
@@ -151,20 +167,21 @@ export function BaseMap() {
 		const layerId = feature.layer?.id;
 
 		if (layerId === MapViewOverlayStopsInteractiveLayerId) {
+			if (!baseMap || baseMap.getZoom() <= MapViewOverlayStopsVisibleMinZoom) return;
 			if (!feature.properties._id) return;
-			setActiveBottomSheet({ entityId: String(feature.properties._id), view: 'stops-detail' }, { replace: true });
+			setActiveBottomSheet({ entityId: String(feature.properties._id), view: 'stops-detail' });
 			return;
 		}
 
 		if (layerId === MapViewStyleAlertsInteractiveLayerId) {
 			if (!feature.properties._id) return;
-			setActiveBottomSheet({ entityId: String(feature.properties._id), view: 'alerts-detail' }, { replace: true });
+			setActiveBottomSheet({ entityId: String(feature.properties._id), view: 'alerts-detail' });
 			return;
 		}
 
 		if (layerId === MapViewOverlayVehiclesInteractiveLayerId) {
 			if (!feature.properties.vehicle_id) return;
-			setActiveBottomSheet({ entityId: String(feature.properties.vehicle_id), view: 'vehicles-detail' }, { replace: true });
+			setActiveBottomSheet({ entityId: String(feature.properties.vehicle_id), view: 'vehicles-detail' });
 			return;
 		}
 	};
@@ -241,14 +258,21 @@ export function BaseMap() {
 
 /* * */
 
-function getRoutePlannerMapFitPadding(viewMode: ReturnType<typeof useRoutePlannerContext>['data']['view_mode']) {
+function getRoutePlannerMapFitPadding(viewMode: ReturnType<typeof useRoutePlannerContext>['data']['view_mode'], activeSnapPoint: null | number) {
 	const viewportHeight = typeof window === 'undefined' ? 0 : window.innerHeight;
-	const resultsSheetHeight = viewMode === 'results' ? Math.round(viewportHeight * 0.55) : 0;
+	const fallbackSnapPoint = viewMode === 'itinerary-detail' ? 0.28 : 0.24;
+	const resultsSheetHeight = viewMode === 'results' || viewMode === 'itinerary-detail' ? Math.round(viewportHeight * (activeSnapPoint ?? fallbackSnapPoint)) : 0;
 
 	return {
-		bottom: Math.max(360, resultsSheetHeight + 32),
+		bottom: Math.max(260, resultsSheetHeight + 32),
 		left: 60,
 		right: 60,
 		top: 120,
 	};
+}
+
+function getRoutePlannerMapFitFeatures(features: GeoJSON.Feature<GeoJSON.LineString>[], viewMode: ReturnType<typeof useRoutePlannerContext>['data']['view_mode']) {
+	if (viewMode !== 'itinerary-detail') return features;
+
+	return features.slice(0, 1);
 }

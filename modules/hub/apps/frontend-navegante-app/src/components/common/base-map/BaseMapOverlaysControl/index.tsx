@@ -4,6 +4,7 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useMapContext } from '@/components/map/Map.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
+import { useMapFloatingControlsLayout } from '@/hooks/useMapFloatingControlsLayout';
 import { IconAlertTriangle, IconAlertTriangleOff, IconBus, IconBusOff, IconFlag2, IconFlag2Off } from '@tabler/icons-react';
 import { Loader } from '@tmlmobilidade/ui';
 
@@ -20,6 +21,7 @@ export function BaseMapOverlaysControl() {
 	const stopsContext = useStopsContext();
 	const vehiclesContext = useVehiclesContext();
 	const alertsContext = useAlertsContext();
+	const controlsLayout = useMapFloatingControlsLayout();
 
 	const { actions: { toggleBaseMapOverlay }, data: { activeBaseMapOverlays } } = useMapContext();
 
@@ -27,7 +29,7 @@ export function BaseMapOverlaysControl() {
 	// B. Render components
 
 	return (
-		<div className={styles.container} aria-hidden>
+		<div className={styles.container} data-layout={controlsLayout} aria-hidden>
 
 			<div
 				className={styles.button}

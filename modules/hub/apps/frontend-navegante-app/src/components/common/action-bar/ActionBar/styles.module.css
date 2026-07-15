@@ -3,7 +3,7 @@
 
 .container {
 	position: fixed;
-	top: calc(env(safe-area-inset-top, 0px) + 84px);
+	top: var(--route-planner-floating-controls-top, calc(env(safe-area-inset-top, 0px) + 84px));
 	right: 0;
 	bottom: 0;
 	z-index: 10;
@@ -11,5 +11,27 @@
 	flex-direction: column;
 	gap: 15px;
 	padding: 15px;
+	padding-top: 0;
 	pointer-events: none;
+	transition: top 180ms ease, bottom 180ms ease, opacity 180ms ease;
+}
+
+.container[data-layout='route-results-short'] {
+	top: var(--route-planner-floating-controls-top, calc(env(safe-area-inset-top, 0px) + 84px));
+	bottom: calc(24dvh + env(safe-area-inset-bottom, 0px) + 10px);
+}
+
+.container[data-layout='route-results-compact'] {
+	top: var(--route-planner-floating-controls-top, calc(env(safe-area-inset-top, 0px) + 84px));
+	bottom: calc(28dvh + env(safe-area-inset-bottom, 0px) + 10px);
+}
+
+.container[data-layout='route-results-medium'] {
+	top: var(--route-planner-floating-controls-top, calc(env(safe-area-inset-top, 0px) + 84px));
+	bottom: calc(58dvh + env(safe-area-inset-bottom, 0px) + 10px);
+}
+
+.container[data-layout='route-results-full'] {
+	pointer-events: none;
+	opacity: 0;
 }

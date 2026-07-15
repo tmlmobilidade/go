@@ -3,6 +3,7 @@
 import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
 import { ActionBarUserLocation } from '@/components/common/action-bar/ActionBarUserLocation';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { useMapFloatingControlsLayout } from '@/hooks/useMapFloatingControlsLayout';
 import { IconQuestionMark } from '@tabler/icons-react';
 import { Spacer } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -20,12 +21,13 @@ export function ActionBar() {
 	const { t } = useTranslation();
 
 	const { setActiveBottomSheet } = useBottomSheet();
+	const controlsLayout = useMapFloatingControlsLayout();
 
 	//
 	// B. Render components
 
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} data-layout={controlsLayout}>
 
 			<ActionBarButton
 				icon={<IconQuestionMark size={30} />}

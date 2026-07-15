@@ -4,6 +4,7 @@ import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-shee
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerLocationSelector } from '@/components/routes/RoutePlannerLocationSelector';
 import { IconHome, IconSearch } from '@tabler/icons-react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -19,6 +20,7 @@ export function RoutePlannerTopSearch() {
 	const { t } = useTranslation();
 	const { isBottomSheetInStack } = useBottomSheet();
 	const routePlannerContext = useRoutePlannerContext();
+	const containerRef = useRef<HTMLDivElement>(null);
 
 	//
 	// B. Transform data
@@ -31,7 +33,33 @@ export function RoutePlannerTopSearch() {
 	);
 
 	//
-	// C. Handle actions
+	// C. Handle effects
+
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+		const element = containerRef.current;
+		if (!element) return;
+
+		const updateFloatingControlsTop = () => {
+			const rect = element.getBoundingClientRect();
+			document.documentElement.style.setProperty('--route-planner-floating-controls-top', `${Math.ceil(rect.bottom + 14)}px`);
+		};
+
+		updateFloatingControlsTop();
+
+		const resizeObserver = new ResizeObserver(updateFloatingControlsTop);
+		resizeObserver.observe(element);
+		window.addEventListener('resize', updateFloatingControlsTop);
+
+		return () => {
+			resizeObserver.disconnect();
+			window.removeEventListener('resize', updateFloatingControlsTop);
+			document.documentElement.style.removeProperty('--route-planner-floating-controls-top');
+		};
+	}, [shouldShowRouteInput]);
+
+	//
+	// D. Handle actions
 
 	const handleOriginClick = () => {
 		routePlannerContext.actions.openLocationSearch('origin');
@@ -42,10 +70,10 @@ export function RoutePlannerTopSearch() {
 	};
 
 	//
-	// D. Render components
+	// E. Render components
 
 	return (
-		<div className={styles.container}>
+		<div ref={containerRef} className={styles.container}>
 			{shouldShowRouteInput && (
 				<div className={styles.routeInputWrapper}>
 					<RoutePlannerLocationSelector

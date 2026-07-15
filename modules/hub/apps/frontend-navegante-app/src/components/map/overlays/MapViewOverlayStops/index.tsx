@@ -7,6 +7,7 @@ import { Layer, Source } from '@vis.gl/react-maplibre';
 
 export const MapViewOverlayStopsPrimaryLayerId = 'default-layer-stops-all';
 export const MapViewOverlayStopsInteractiveLayerId = 'default-layer-stops-regular';
+export const MapViewOverlayStopsVisibleMinZoom = 14;
 
 /* * */
 
@@ -29,6 +30,7 @@ export function MapViewOverlayStops({ presentBeforeId, stopsData = baseGeoJsonFe
 			<Layer
 				beforeId={presentBeforeId}
 				id="default-layer-stops-regular"
+				minzoom={MapViewOverlayStopsVisibleMinZoom}
 				source="default-source-stops-all"
 				type="symbol"
 				layout={{
