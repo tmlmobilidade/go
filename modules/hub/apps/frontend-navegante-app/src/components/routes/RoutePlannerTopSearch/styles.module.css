@@ -11,6 +11,15 @@
 }
 
 /* * */
+/* ROUTE INPUT */
+
+.routeInputWrapper {
+	width: min(560px, 100%);
+	margin: 0 auto;
+	pointer-events: auto;
+}
+
+/* * */
 /* SEARCH BUTTON */
 
 .searchButton {

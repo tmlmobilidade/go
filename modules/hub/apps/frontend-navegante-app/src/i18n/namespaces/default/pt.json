@@ -331,6 +331,7 @@
 				"edit": "Alterar origem",
 				"label": "Origem"
 			},
+			"origin_placeholder": "Pesquisar partida",
 			"recents": {
 				"campo_grande": "Campo Grande",
 				"lisboa_oriente": "Lisboa Oriente",

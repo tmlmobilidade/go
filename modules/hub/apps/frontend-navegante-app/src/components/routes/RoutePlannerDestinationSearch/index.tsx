@@ -63,6 +63,7 @@ export function RoutePlannerDestinationSearch() {
 
 	const shouldShowSearchResults = query.trim().length >= 2;
 	const listLocations = activeList === 'recents' ? recentLocations : [];
+	const searchTarget = routePlannerContext.data.location_search_target;
 
 	useEffect(() => {
 		const timeout = window.setTimeout(() => {
@@ -77,6 +78,11 @@ export function RoutePlannerDestinationSearch() {
 	// C. Handle actions
 
 	const handleSelect = (location: RoutePlannerLocation) => {
+		if (searchTarget === 'origin') {
+			void routePlannerContext.actions.selectOrigin(location);
+			return;
+		}
+
 		void routePlannerContext.actions.selectDestination(location);
 	};
 
@@ -91,7 +97,7 @@ export function RoutePlannerDestinationSearch() {
 					ref={inputRef}
 					autoComplete="off"
 					onChange={event => setQuery(event.currentTarget.value)}
-					placeholder={t('default:routes.RoutePlannerSearch.destination_placeholder')}
+					placeholder={searchTarget === 'origin' ? t('default:routes.RoutePlannerSearch.origin_placeholder') : t('default:routes.RoutePlannerSearch.destination_placeholder')}
 					type="search"
 					value={query}
 					autoFocus
