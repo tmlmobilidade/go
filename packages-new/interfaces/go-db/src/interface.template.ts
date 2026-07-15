@@ -1,7 +1,7 @@
 /* * */
 
-import type { AggregationPipeline } from './types/mongo/aggregation.js';
-import type { AggregateOptions, AggregationCursor, Collection, Db, DeleteOptions, Filter, DeleteResult, Document, FindOptions, Flatten, InsertManyResult, InsertOneOptions, InsertOneResult, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId, BulkWriteOptions } from '@tmlmobilidade/go-clients-mongo';
+import type { AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
+import type { AggregateOptions, AggregationCursor, BulkWriteOptions, Collection, Db, DeleteOptions, DeleteResult, Document, Filter, FindOptions, Flatten, InsertManyResult, InsertOneOptions, InsertOneResult, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId } from '@tmlmobilidade/go-clients-mongo';
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
@@ -106,32 +106,32 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to the result of the insert operation
 	 */
 	public async insertMany(docs: (TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], { options, unsafe = false }: { options?: BulkWriteOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
-		const newDocuments: OptionalUnlessRequiredId<T>[] = [];  
-        const usedIds = new Set<any>(  
-            (await this.mongoCollection.find(  
-                { _id: { $in: docs.map(doc => doc._id).filter(Boolean) as T['_id'][] } } as unknown as Filter<T>,  
-                { projection: { _id: 1 } }  
-            ).toArray()).map(doc => doc._id)  
-        );  
+		const newDocuments: OptionalUnlessRequiredId<T>[] = [];
+		const usedIds = new Set<any>(
+			(await this.mongoCollection.find(
+				{ _id: { $in: docs.map(doc => doc._id).filter(Boolean) as T['_id'][] } } as unknown as Filter<T>,
+				{ projection: { _id: 1 } },
+			).toArray()).map(doc => doc._id),
+		);
 
-        for (const doc of docs) {  
-            let id = doc._id;  
-            if (!id || usedIds.has(id)) {  
-                do {  
-                    id = generateRandomString({ length: 5 }) as T['_id'];  
-                } while (usedIds.has(id));  
-            }  
-            usedIds.add(id);  
+		for (const doc of docs) {
+			let id = doc._id;
+			if (!id || usedIds.has(id)) {
+				do {
+					id = generateRandomString({ length: 5 }) as T['_id'];
+				} while (usedIds.has(id));
+			}
+			usedIds.add(id);
 
-            newDocuments.push({  
-                ...doc,  
-                _id: id,  
-                created_at: doc.created_at || Dates.now('utc').unix_timestamp,  
-                created_by: doc.created_by || 'system',  
-                updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,  
-                updated_by: doc.updated_by || 'system',  
-            } as unknown as OptionalUnlessRequiredId<T>);  
-        }
+			newDocuments.push({
+				...doc,
+				_id: id,
+				created_at: doc.created_at || Dates.now('utc').unix_timestamp,
+				created_by: doc.created_by || 'system',
+				updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,
+				updated_by: doc.updated_by || 'system',
+			} as unknown as OptionalUnlessRequiredId<T>);
+		}
 
 		const parsedDocuments: OptionalUnlessRequiredId<T>[] = [];
 		for (const newDocument of newDocuments) {
@@ -159,32 +159,32 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to the result of the insert operation.
 	 */
 	public async insertOne<TReturnDocument extends boolean = true>(doc: TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string }, { options, unsafe = false }: { options?: InsertOneOptions & { returnResult?: TReturnDocument }, unsafe?: boolean } = {}): Promise<TReturnDocument extends true ? WithId<T> : InsertOneResult<T>> {
-		// Setup a copy of the document to be inserted with defaults  
-        let parsedDocument = {  
-            ...doc,  
-            created_at: doc.created_at || Dates.now('utc').unix_timestamp,  
-            created_by: doc.created_by || 'system',  
-            updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,  
-            updated_by: doc.updated_by || 'system',  
-        } as OptionalUnlessRequiredId<T>;  
+		// Setup a copy of the document to be inserted with defaults
+		let parsedDocument = {
+			...doc,
+			created_at: doc.created_at || Dates.now('utc').unix_timestamp,
+			created_by: doc.created_by || 'system',
+			updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,
+			updated_by: doc.updated_by || 'system',
+		} as OptionalUnlessRequiredId<T>;
 
-        // Add the ID if it is missing from the original document  
-        if (!doc._id) {  
-            parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];  
-            while (await this.findById(parsedDocument._id as T['_id'])) {  
-                parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];  
-            }  
-        }  
+		// Add the ID if it is missing from the original document
+		if (!doc._id) {
+			parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
+			while (await this.findById(parsedDocument._id as T['_id'])) {
+				parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
+			}
+		}
 
-        // Validate the document against the create schema if unsafe is false  
-        if (!unsafe) {  
-            try {  
-                if (!this.createSchema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');  
-                parsedDocument = this.createSchema.parse(parsedDocument);  
-            } catch (error) {  
-                throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });  
-            }  
-        }
+		// Validate the document against the create schema if unsafe is false
+		if (!unsafe) {
+			try {
+				if (!this.createSchema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
+				parsedDocument = this.createSchema.parse(parsedDocument);
+			} catch (error) {
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
+			}
+		}
 		// Attempt to insert the document into the collection
 		const result = await this.mongoCollection.insertOne(parsedDocument, options);
 		// Check if the insert operation was acknowledged

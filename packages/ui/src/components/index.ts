@@ -6,6 +6,7 @@ export * from './common';
 export * from './datatable';
 export * from './dates';
 export * from './display';
+export * from './files';
 export * from './filters';
 export * from './inputs';
 export * from './layout';

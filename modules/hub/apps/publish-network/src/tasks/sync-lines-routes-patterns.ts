@@ -1,6 +1,6 @@
 /* * */
 
-import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { type HubLine, type HubPattern, type HubRoute, type HubScheduledArrival, type HubStop, type HubTrip, type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -54,7 +54,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	const fetchRawDataTimer = new Timer();
 
 	// For Stops
-	const allStopsParsedTxt = await apiCache.get('hub:v1:network:stops');
+	const allStopsParsedTxt = await cacheDb.get('hub:v1:network:stops');
 	const allStopsParsedJson: HubStop[] = JSON.parse(allStopsParsedTxt);
 	const allStopsParsedMap = new Map(allStopsParsedJson.map(item => [item._id, item]));
 
@@ -276,6 +276,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 					short_name: routeRawData.line_short_name,
 					text_color: routeRawData.route_text_color ? `#${routeRawData.route_text_color}` : '#000000',
 					trips: [],
+					tts_hash: '',
 					tts_headsign: '',
 					valid_on: [],
 					version_id: currentPatternVersionHash,
@@ -462,7 +463,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 		const finalizedPatternGroupsData: HubPattern[] = Array.from(parsedPatternsForThisPatternGroup.values()).map((item: HubPattern) => ({ ...item, trips: Object.values(item.trips) }));
 
-		await apiCache.set(`hub:v1:network:patterns:${patternId}`, JSON.stringify(finalizedPatternGroupsData));
+		await cacheDb.set(`hub:v1:network:patterns:${patternId}`, JSON.stringify(finalizedPatternGroupsData));
 		// await SERVERDB.set(SERVERDB_KEYS.NETWORK.PATTERNS.ID(patternId), JSON.stringify(finalizedPatternGroupsData));
 		updatedPatternKeys.add(`hub:network:patterns:${patternId}`);
 
@@ -480,9 +481,9 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 	Logger.info({ message: `Removing stale Patterns from cache...` });
 
-	const allPatternKeysInTheDatabase = await apiCache.scan(`hub:network:patterns:*`);
+	const allPatternKeysInTheDatabase = await cacheDb.scan(`hub:network:patterns:*`);
 	const stalePatternKeys = allPatternKeysInTheDatabase.filter(key => !updatedPatternKeys.has(key));
-	if (stalePatternKeys.length) await apiCache.deleteMany(stalePatternKeys);
+	if (stalePatternKeys.length) await cacheDb.deleteMany(stalePatternKeys);
 
 	Logger.info({ message: `Deleted ${stalePatternKeys.length} stale Patterns (${removeStalePatternsTimer.get()})` });
 
@@ -490,14 +491,14 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	// Save all routes to the database
 
 	const finalizedAllRoutesData: HubRoute[] = Array.from(allRoutesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
-	await apiCache.set('hub:v1:network:routes', JSON.stringify(finalizedAllRoutesData));
+	await cacheDb.set('hub:v1:network:routes', JSON.stringify(finalizedAllRoutesData));
 	Logger.info({ message: `Updated ${finalizedAllRoutesData.length} Routes` });
 
 	//
 	// Save all lines to the database
 
 	const finalizedAllLinesData: HubLine[] = Array.from(allLinesParsed.values()).sort((a, b) => a._id.localeCompare(b._id, undefined, { numeric: true }));
-	await apiCache.set('hub:v1:network:lines', JSON.stringify(finalizedAllLinesData));
+	await cacheDb.set('hub:v1:network:lines', JSON.stringify(finalizedAllLinesData));
 	Logger.info({ message: `Updated ${finalizedAllLinesData.length} Lines` });
 
 	//

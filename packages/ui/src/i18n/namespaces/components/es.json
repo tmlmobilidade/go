@@ -9,6 +9,22 @@
 			"tooltip": "Guardar cambios"
 		}
 	},
+	"files": {
+		"FileItem": {
+			"actions": {
+				"delete": {
+					"confirmation_cancel": "Cancelar",
+					"confirmation_confirm": "Eliminar",
+					"confirmation_description": "¿Está seguro de querer eliminar este archivo? Esta acción es irreversible.",
+					"confirmation_title": "¿Eliminar archivo?",
+					"label": "Eliminar archivo"
+				},
+				"download": {
+					"label": "Descargar"
+				}
+			}
+		}
+	},
 	"filters": {
 		"FilterTypeList": {
 			"toggle_all": "Seleccionar todo"
