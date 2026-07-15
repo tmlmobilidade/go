@@ -5,6 +5,7 @@ import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
+import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
 import { formatMotisPlanDuration, formatMotisPlanDurationMinutes, formatMotisPlanTime, getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisItineraryStart, getMotisLegDurationSeconds, getMotisLegModeKind, getMotisLegRouteLabel, getMotisLegTripIds, getMotisPlanPlaceStopId, isMotisWalkingLeg, type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/utils/route-planner-motis';
 import { IconAlertTriangle, IconBike, IconBus, IconCar, IconChevronDown, IconElevator, IconFerry, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
@@ -35,6 +36,8 @@ export function RoutePlannerItineraryDetail() {
 	const duration = itinerary ? formatMotisPlanDuration(getMotisItineraryDurationSeconds(itinerary)) : null;
 	const start = itinerary ? getMotisItineraryStart(itinerary) : undefined;
 	const end = itinerary ? getMotisItineraryEnd(itinerary) : undefined;
+	const routeDestinationLabel = routePlannerContext.data.destination?.label ?? t('default:routes.RoutePlanner.results.destination');
+	const routeOriginLabel = routePlannerContext.data.origin?.label ?? t('default:routes.RoutePlanner.results.origin');
 
 	const lineByShortName = useMemo(() => {
 		return new Map(linesContext.data.lines.map(line => [line.short_name, line]));
@@ -55,12 +58,12 @@ export function RoutePlannerItineraryDetail() {
 			<ol className={styles.timeline}>
 				{legs.map((leg, index) => (
 					<RoutePlannerItineraryDetailLeg
-						key={`${getLegPlaceName(leg.from, t('default:routes.RoutePlanner.results.origin'))}-${getLegPlaceName(leg.to, t('default:routes.RoutePlanner.results.destination'))}-${index}`}
+						key={`${getLegPlaceName(leg.from, routeOriginLabel, routeOriginLabel, routeDestinationLabel)}-${getLegPlaceName(leg.to, routeDestinationLabel, routeOriginLabel, routeDestinationLabel)}-${index}`}
 						alertsContext={alertsContext}
-						fallbackDestination={t('default:routes.RoutePlanner.results.destination')}
-						fallbackOrigin={t('default:routes.RoutePlanner.results.origin')}
 						leg={leg}
 						lineByShortName={lineByShortName}
+						routeDestinationLabel={routeDestinationLabel}
+						routeOriginLabel={routeOriginLabel}
 						tripUpdatesContext={tripUpdatesContext}
 					/>
 				))}
@@ -75,14 +78,14 @@ export function RoutePlannerItineraryDetail() {
 
 interface RoutePlannerItineraryDetailLegProps {
 	alertsContext: ReturnType<typeof useAlertsContext>
-	fallbackDestination: string
-	fallbackOrigin: string
 	leg: MotisPlanLeg
 	lineByShortName: Map<string, HubLine>
+	routeDestinationLabel: string
+	routeOriginLabel: string
 	tripUpdatesContext: ReturnType<typeof useTripUpdatesContext>
 }
 
-function RoutePlannerItineraryDetailLeg({ alertsContext, fallbackDestination, fallbackOrigin, leg, lineByShortName, tripUpdatesContext }: RoutePlannerItineraryDetailLegProps) {
+function RoutePlannerItineraryDetailLeg({ alertsContext, leg, lineByShortName, routeDestinationLabel, routeOriginLabel, tripUpdatesContext }: RoutePlannerItineraryDetailLegProps) {
 	//
 
 	//
@@ -94,14 +97,21 @@ function RoutePlannerItineraryDetailLeg({ alertsContext, fallbackDestination, fa
 	//
 	// B. Transform data
 
-	const from = getLegPlaceName(leg.from, fallbackOrigin);
-	const to = getLegPlaceName(leg.to, fallbackDestination);
+	const from = getLegPlaceName(leg.from, routeOriginLabel, routeOriginLabel, routeDestinationLabel);
+	const to = getLegPlaceName(leg.to, routeDestinationLabel, routeOriginLabel, routeDestinationLabel);
 	const durationMinutes = formatMotisPlanDurationMinutes(getMotisLegDurationSeconds(leg));
 	const intermediateStops = getIntermediateStops(leg);
 	const hasIntermediateStops = intermediateStops.length > 0;
 	const delaySeconds = getLegRealtimeDelay(leg, tripUpdatesContext);
-	const line = !isMotisWalkingLeg(leg) ? lineByShortName.get(getMotisLegRouteLabel(leg)) : undefined;
-	const alerts = line ? alertsContext.actions.getAlertsByLineId(line._id) : [];
+	const legAlertFilters = useMemo(() => {
+		if (isMotisWalkingLeg(leg)) return null;
+		return getRoutePlannerItineraryAlertFilters({ legs: [leg] }, Array.from(lineByShortName.values()));
+	}, [leg, lineByShortName]);
+
+	const alerts = useMemo(() => {
+		if (isMotisWalkingLeg(leg)) return [];
+		return filterAlertsByRoutePlannerItinerary(alertsContext.data.alerts, legAlertFilters);
+	}, [alertsContext.data.alerts, leg, legAlertFilters]);
 
 	//
 	// C. Render components
@@ -136,8 +146,8 @@ function RoutePlannerItineraryDetailLeg({ alertsContext, fallbackDestination, fa
 				)}
 
 				<div className={styles.legEndpoints}>
-					<span>{formatMotisPlanTime(leg.startTime || leg.departureTime)} · {from}</span>
-					<span>{formatMotisPlanTime(leg.endTime || leg.arrivalTime)} · {to}</span>
+					<span>{formatMotisPlanTime(leg.startTime)} · {from}</span>
+					<span>{formatMotisPlanTime(leg.endTime)} · {to}</span>
 				</div>
 
 				{(delaySeconds !== 0 || alerts.length > 0) && (
@@ -174,7 +184,7 @@ function RoutePlannerItineraryDetailLeg({ alertsContext, fallbackDestination, fa
 							<ol className={styles.stopList}>
 								{intermediateStops.map((stop, index) => (
 									<li key={`${getStopName(stop)}-${index}`}>
-										<span>{formatMotisPlanTime(stop.departureTime || stop.arrivalTime)}</span>
+										<span>{formatMotisPlanTime(getIntermediateStopTime(stop))}</span>
 										<strong>{getStopName(stop)}</strong>
 									</li>
 								))}
@@ -245,18 +255,24 @@ function RoutePlannerModeIcon({ leg, size }: { leg: MotisPlanLeg, size: number }
 /* * */
 
 function getIntermediateStops(leg: MotisPlanLeg) {
-	return [
-		...(Array.isArray(leg.intermediateStops) ? leg.intermediateStops : []),
-		...(Array.isArray(leg.stops) ? leg.stops : []),
-	].filter(stop => getStopName(stop));
+	return (leg.intermediateStops ?? []).filter(stop => getStopName(stop));
 }
 
-function getLegPlaceName(place: MotisPlanLeg['from'], fallback: string) {
-	return place?.name || place?.stop?.name || fallback;
+function getIntermediateStopTime(stop: MotisPlanIntermediateStop) {
+	return stop.departure || stop.arrival || stop.scheduledDeparture || stop.scheduledArrival;
+}
+
+function getLegPlaceName(place: MotisPlanLeg['from'], fallbackLabel: string, routeOriginLabel: string, routeDestinationLabel: string) {
+	const placeName = place.name;
+
+	if (placeName === 'START') return routeOriginLabel;
+	if (placeName === 'END') return routeDestinationLabel;
+
+	return placeName || fallbackLabel;
 }
 
 function getStopName(stop: MotisPlanIntermediateStop) {
-	return stop.name || stop.stop?.name || '';
+	return stop.name || '';
 }
 
 function getLegRealtimeDelay(leg: MotisPlanLeg, tripUpdatesContext: ReturnType<typeof useTripUpdatesContext>) {

@@ -270,6 +270,7 @@
 				"recommended": "Recomendado",
 				"ride_between": "Viajar de {from} até {to}",
 				"route_summary": "Resumo da rota",
+				"start_route": "Ir",
 				"sort": {
 					"best": "Melhor",
 					"fastest": "Rápida",
@@ -279,7 +280,7 @@
 				},
 				"transfers": "{count, plural, =0 {Sem transbordos} one {# transbordo} other {# transbordos}}",
 				"view_details": "Ver detalhes",
-				"walk_between": "Caminhar de {from} até {to}",
+				"walk_between": "Caminhar até {to}",
 				"walk_label": "A pé",
 				"walking_time": "{count, plural, =0 {Sem caminhada} one {# min a pé} other {# min a pé}}"
 			},

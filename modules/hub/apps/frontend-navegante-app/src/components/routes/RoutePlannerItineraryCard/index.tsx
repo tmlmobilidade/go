@@ -4,8 +4,9 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
+import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
 import { formatMotisPlanDuration, formatMotisPlanDurationMinutes, formatMotisPlanTime, getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisItineraryStart, getMotisItineraryWalkMinutes, getMotisLegDurationSeconds, getMotisLegMode, getMotisLegModeKind, getMotisLegRouteLabel, getMotisLegTripIds, getMotisPlanPlaceStopId, isMotisWalkingLeg, type MotisItinerary, type MotisPlanLeg } from '@/utils/route-planner-motis';
-import { IconAlertTriangle, IconBike, IconBus, IconCar, IconElevator, IconFerry, IconListDetails, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
+import { IconAlertTriangle, IconArrowRight, IconBike, IconBus, IconCar, IconElevator, IconFerry, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import { type MouseEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -52,26 +53,18 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 		return getItineraryRealtimeStatus(legs, tripUpdatesContext);
 	}, [legs, tripUpdatesContext]);
 
+	const itineraryAlertFilters = useMemo(() => {
+		return getRoutePlannerItineraryAlertFilters(itinerary, linesContext.data.lines);
+	}, [itinerary, linesContext.data.lines]);
+
 	const itineraryAlerts = useMemo(() => {
-		const result = new Map<string, ReturnType<typeof alertsContext.actions.getAlertsByLineId>[number]>();
-
-		legs.forEach((leg) => {
-			if (isMotisWalkingLeg(leg)) return;
-			const line = lineByShortName.get(getMotisLegRouteLabel(leg));
-			if (!line) return;
-
-			alertsContext.actions.getAlertsByLineId(line._id).forEach((alert) => {
-				result.set(alert._id, alert);
-			});
-		});
-
-		return Array.from(result.values());
-	}, [alertsContext, legs, lineByShortName]);
+		return filterAlertsByRoutePlannerItinerary(alertsContext.data.alerts, itineraryAlertFilters);
+	}, [alertsContext.data.alerts, itineraryAlertFilters]);
 
 	//
 	// C. Handle actions
 
-	const handleDetailsClick = (event: MouseEvent<HTMLButtonElement>) => {
+	const handleRouteActionClick = (event: MouseEvent<HTMLButtonElement>) => {
 		event.stopPropagation();
 		onOpenDetails?.();
 	};
@@ -92,6 +85,12 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 					{formatMotisPlanTime(end)}
 				</span>
 
+				{itineraryAlerts.length > 0 && (
+					<span className={styles.alertBadge}>
+						<IconAlertTriangle size={14} />
+					</span>
+				)}
+
 				<span className={styles.walkMetric}>
 					<IconWalk size={18} />
 					{t('default:routes.RoutePlanner.results.walking_time', '', { count: walkingMinutes })}
@@ -106,17 +105,14 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 						</span>
 					)}
 
-					{itineraryAlerts.length > 0 && (
-						<span className={styles.alertBadge}>
-							<IconAlertTriangle size={14} />
-							{t('default:routes.RoutePlanner.results.alerts_count', '', { count: itineraryAlerts.length })}
-						</span>
-					)}
 				</div>
 			)}
 
 			<div className={styles.bottomRow}>
-				<div aria-label={t('default:routes.RoutePlanner.results.route_summary')} className={styles.routeStrip}>
+				<div
+					aria-label={t('default:routes.RoutePlanner.results.route_summary')}
+					className={styles.routeStrip}
+				>
 					{legs.map((leg, legIndex) => (
 						<RoutePlannerLegStripItem
 							key={`${getMotisLegMode(leg)}-${legIndex}`}
@@ -126,9 +122,9 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 						/>
 					))}
 				</div>
-				<button className={styles.detailsButton} onClick={handleDetailsClick} type="button">
-					<IconListDetails size={16} />
-					{t('default:routes.RoutePlanner.results.view_details')}
+				<button aria-label={t('default:routes.RoutePlanner.results.view_details')} className={styles.routeActionButton} onClick={handleRouteActionClick} type="button">
+					{t('default:routes.RoutePlanner.results.start_route')}
+					<IconArrowRight size={15} />
 				</button>
 			</div>
 
