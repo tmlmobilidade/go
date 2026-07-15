@@ -27,6 +27,11 @@ export function getPublishStatusValue(alertData: Alert): PublishStatus {
 
 	const nowUnixTimestamp = Dates.now('Europe/Lisbon').unix_timestamp;
 
+	if (alertData.publish_start_date && alertData.publish_start_date > nowUnixTimestamp) {
+		// The publish start date is in the future, so we can consider the alert scheduled.
+		result = 'scheduled';
+	}
+
 	if (alertData.publish_start_date && alertData.publish_start_date <= nowUnixTimestamp) {
 		// So far the alert is not a draft and the publish start date has passed,
 		// so we can consider it published.

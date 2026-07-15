@@ -71,6 +71,7 @@ export function PublishStatusTag({ disabled, onChange, onClick, value }: Publish
 			{value === 'draft' && <Tag label={t('shared:status.publish_status.draft')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="muted" />}
 			{value === 'archived' && <Tag label={t('shared:status.publish_status.archived')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" />}
 			{value === 'published' && <Tag label={t('shared:status.publish_status.published')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" filled />}
+			{value === 'scheduled' && <Tag label={t('shared:status.publish_status.scheduled')} onClick={(onClick || onChange) && !disabled ? handleClick : undefined} variant="primary" />}
 		</>
 	);
 
