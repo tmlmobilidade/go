@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 
 function resolveSqlRoot(): string {
-	const fromModuleTree = path.resolve(moduleDir, '..', '..', '..', 'sql');
+	const fromModuleTree = path.resolve(moduleDir, '..', '..', '..', '..', 'sql');
 	if (existsSync(fromModuleTree)) {
 		return fromModuleTree;
 	}
