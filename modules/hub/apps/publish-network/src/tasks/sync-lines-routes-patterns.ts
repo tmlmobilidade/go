@@ -276,6 +276,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 					short_name: routeRawData.line_short_name,
 					text_color: routeRawData.route_text_color ? `#${routeRawData.route_text_color}` : '#000000',
 					trips: [],
+					tts_hash: '',
 					tts_headsign: '',
 					valid_on: [],
 					version_id: currentPatternVersionHash,
