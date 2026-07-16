@@ -6,7 +6,8 @@ import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
-import { agencies, files, gtfsValidations, users } from '@tmlmobilidade/interfaces';
+import { agencies, files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GtfsValidation, type GtfsValidationSummary } from '@tmlmobilidade/types';
 import fs from 'node:fs';
@@ -120,7 +121,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		if (!updatedGtfsValidation) throw new Error(`GTFS Validation not found after update: ${gtfsValidation._id}`);
 		if (!updatedGtfsValidation.created_by) throw new Error(`No creator information found for file: ${gtfsFile._id}`);
 
-		const foundUser = await users.findById(updatedGtfsValidation.created_by);
+		const foundUser = await goDB.core.users..findById(updatedGtfsValidation.created_by);
 		if (!foundUser) throw new Error(`User not found: ${updatedGtfsValidation.created_by}`);
 
 		try {

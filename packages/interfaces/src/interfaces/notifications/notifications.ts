@@ -1,7 +1,8 @@
 /* * */
 
 import { MongoCollectionClass } from '@/common/mongo-collection.js';
-import { users } from '@/interfaces/auth/users.js';
+import { roles } from '@/interfaces/auth/roles.js';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { getModuleConfig } from '@tmlmobilidade/consts';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type CreateNotificationDto, CreateNotificationSchema, type Notification, NotificationPermission, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
@@ -42,7 +43,7 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 		const rolesWithTopic = await goDB.core.roles.findMany({ 'permissions.action': topic });
 		const roleIdsWithTopic = rolesWithTopic.map(r => r._id);
 
-		const usersWithTopic = await users.findMany({
+		const usersWithTopic = await goDB.core.users..findMany({
 			$or: [
 				{ 'permissions.action': topic },
 				{ role_ids: { $in: roleIdsWithTopic } },

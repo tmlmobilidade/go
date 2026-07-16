@@ -1,6 +1,6 @@
 /* * */
 
-import { organizations, roles, users, verificationTokens, sessions } from '@/interfaces/index.js';
+import { organizations, roles, sessions, verificationTokens } from '@/interfaces/index.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
@@ -63,7 +63,7 @@ class AuthProvider {
 	 */
 	public async getPermissionsFromUserId(userId: string): Promise<Permission[]> {
 		// Get the user associated with the session token
-		const userData = await users.findById(userId);
+		const userData = await goDB.core.users.findById(userId);
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found.');
 		// Get the roles assigned to the user
 		const rolesData = await goDB.core.roles.findMany({ _id: { $in: userData.role_ids } });
@@ -100,7 +100,7 @@ class AuthProvider {
 		const sessionData = await goDB.core.sessions.findOne({ token: { $eq: sessionToken } });
 		if (!sessionData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session not found');
 		// Find the user associated with the session
-		const userData = await users.findOne({ _id: { $eq: sessionData.user_id } });
+		const userData = await goDB.core.users.findOne({ _id: { $eq: sessionData.user_id } });
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
 		// Sanitize the user data by removing sensitive fields
 		userData.password_hash = undefined;
@@ -119,7 +119,7 @@ class AuthProvider {
 	 */
 	public async login(loginDto: LoginDto): Promise<Session> {
 		// Find the user by email
-		const userData = await users.findByEmail(loginDto.email, { includeUnsafeProperties: true });
+		const userData = await goDB.core.users.findByEmail(loginDto.email, { includeUnsafeProperties: true });
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
 		// Check if the password matches the stored hash
 		const passwordHashMatch = await bcrypt.compare(loginDto.password, userData.password_hash ?? '');
@@ -157,7 +157,7 @@ class AuthProvider {
 	 */
 	public async register(createUserDto: CreateUserDto): Promise<string> {
 		// Insert the new user into the database with the provided data
-		const insertNewUserResult = await users.insertOne(createUserDto);
+		const insertNewUserResult = await goDB.core.users.insertOne(createUserDto);
 		// Generate a random token that will be used to verify the user
 		const verificationToken = generateRandomToken();
 		// Insert the verification token into the database
