@@ -32,7 +32,7 @@ export const syncValidationsByStopBySequence = async () => {
 	// 1. Bootstrap table schema
 
 	Logger.info({ message: 'Running validations_by_stop_by_sequence.sql DDL' });
-	await queryEachStatementFromFile(clickhouseClient, performanceSqlPath('demand/validations_by_stop_by_sequence.sql'));
+	await queryEachStatementFromFile(clickhouseClient, performanceSqlPath('demand/stop-validations/validations_by_stop_by_sequence.sql'));
 
 	//
 	// 2. Fetch validations aggregated by stop from ClickHouse
@@ -41,7 +41,7 @@ export const syncValidationsByStopBySequence = async () => {
 	Logger.info({ message: 'Fetching validations by stop from ClickHouse...' });
 	const validationsByStop = await queryFromFile<ValidationByStopRow>(
 		clickhouseClient,
-		performanceSqlPath('demand/select-validations-by-stop.sql'),
+		performanceSqlPath('demand/stop-validations/select-validations-by-stop.sql'),
 	);
 	Logger.info({ message: `Fetched ${validationsByStop.length} validation rows (${fetchTimer.get()})` });
 
