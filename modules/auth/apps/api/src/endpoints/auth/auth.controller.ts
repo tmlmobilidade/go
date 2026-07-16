@@ -4,9 +4,10 @@ import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AUTH_SESSION_COOKIE_NAME, authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
+import { AUTH_SESSION_COOKIE_NAME, authProvider, verificationTokens } from '@tmlmobilidade/interfaces';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/types';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 
 /* * */
 
@@ -24,7 +25,7 @@ export class AuthController {
 			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
 		}
 		// Update the user's password in the database
-		await users.updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
+		await goDB.core.users..updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
 		// Once the token is validated, delete it from the database
 		await verificationTokens.deleteOne({ token: { $eq: request.body.token } });
 		// Send a success response
@@ -88,7 +89,7 @@ export class AuthController {
 	 */
 	static async sendPasswordResetEmail(request: FastifyRequest<{ Body: { email: string } }>, reply: FastifyReply<void>) {
 		// Search user by the email provided in the request body
-		const foundUser = await users.findByEmail(request.body.email);
+		const foundUser = await goDB.core.users..findByEmail(request.body.email);
 		if (!foundUser) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
 		}
