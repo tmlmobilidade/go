@@ -4,6 +4,7 @@ import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { roles } from '@/interfaces/auth/roles.js';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { getModuleConfig } from '@tmlmobilidade/consts';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type CreateNotificationDto, CreateNotificationSchema, type Notification, NotificationPermission, Permission, Role, UpdateNotificationDto, UpdateNotificationSchema, User } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
@@ -39,7 +40,7 @@ class NotificationsClass extends MongoCollectionClass<Notification, CreateNotifi
 		description: string,
 	): Promise<void> {
 		// Fetch roles and users that have access to this topic
-		const rolesWithTopic = await roles.findMany({ 'permissions.action': topic });
+		const rolesWithTopic = await goDB.core.roles.findMany({ 'permissions.action': topic });
 		const roleIdsWithTopic = rolesWithTopic.map(r => r._id);
 
 		const usersWithTopic = await goDB.core.users..findMany({

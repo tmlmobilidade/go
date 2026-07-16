@@ -1,6 +1,6 @@
 /* * */
 
-import type { AggregationPipeline } from './types/mongo/aggregation.js';
+import type { AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import type { AggregateOptions, AggregationCursor, BulkWriteOptions, Collection, Db, DeleteOptions, DeleteResult, Document, Filter, FindOptions, Flatten, InsertManyResult, InsertOneOptions, InsertOneResult, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId } from '@tmlmobilidade/go-clients-mongo';
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';

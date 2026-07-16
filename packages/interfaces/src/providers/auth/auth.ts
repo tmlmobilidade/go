@@ -66,7 +66,7 @@ class AuthProvider {
 		const userData = await goDB.core.users.findById(userId);
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found.');
 		// Get the roles assigned to the user
-		const rolesData = await roles.findMany({ _id: { $in: userData.role_ids } });
+		const rolesData = await goDB.core.roles.findMany({ _id: { $in: userData.role_ids } });
 		// Combine permissions from roles and user-specific permissions
 		const allPermissions = [...rolesData.flatMap(role => role.permissions), ...userData.permissions];
 		// Merge permissions with the same scope and action
@@ -97,7 +97,7 @@ class AuthProvider {
 	 */
 	public async getUserFromSessionToken(sessionToken: string): Promise<User> {
 		// Find the current session in the database
-		const sessionData = await sessions.findOne({ token: { $eq: sessionToken } });
+		const sessionData = await goDB.core.sessions.findOne({ token: { $eq: sessionToken } });
 		if (!sessionData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session not found');
 		// Find the user associated with the session
 		const userData = await goDB.core.users.findOne({ _id: { $eq: sessionData.user_id } });
@@ -136,7 +136,7 @@ class AuthProvider {
 			user_id: userData._id.toString(),
 		};
 		// Insert the new session into the database
-		await sessions.insertOne(newSession);
+		await goDB.core.sessions.insertOne(newSession);
 		// Return the session to the caller
 		return newSession;
 	}
@@ -146,7 +146,7 @@ class AuthProvider {
 	 * @param sessionToken The session token to logout.
 	 */
 	public async logout(sessionToken: string): Promise<void> {
-		await sessions.deleteOne({ token: { $eq: sessionToken } });
+		await goDB.core.sessions.deleteOne({ token: { $eq: sessionToken } });
 	}
 
 	/**
