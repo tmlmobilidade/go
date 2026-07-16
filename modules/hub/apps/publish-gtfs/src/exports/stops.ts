@@ -3,7 +3,7 @@
 import { type ExportGtfsContext } from '@/types/context.js';
 import { clampCoordinate } from '@tmlmobilidade/geo';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { localities, municipalities, parishes, stops } from '@tmlmobilidade/interfaces';
+import { municipalities, parishes, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -28,7 +28,7 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 	const allParishesData = await parishes.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
 	const allParishesMap = new Map<string, string>(allParishesData.map(item => [item._id, item?.['properties']?.['name']]));
 
-	const allLocalitiesData = await localities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
+	const allLocalitiesData = await goDB.locations.localities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
 	const allLocalitiesMap = new Map<string, string>(allLocalitiesData.map(item => [item._id, item?.['properties']?.['name']]));
 
 	//
