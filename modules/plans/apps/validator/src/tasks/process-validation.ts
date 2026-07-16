@@ -121,7 +121,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		if (!updatedGtfsValidation) throw new Error(`GTFS Validation not found after update: ${gtfsValidation._id}`);
 		if (!updatedGtfsValidation.created_by) throw new Error(`No creator information found for file: ${gtfsFile._id}`);
 
-		const foundUser = await users.findById(updatedGtfsValidation.created_by);
+		const foundUser = await goDB.core.users..findById(updatedGtfsValidation.created_by);
 		if (!foundUser) throw new Error(`User not found: ${updatedGtfsValidation.created_by}`);
 
 		try {

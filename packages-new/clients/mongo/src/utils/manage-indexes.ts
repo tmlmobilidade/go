@@ -1,7 +1,8 @@
 /* * */
 
 import type { SimplifiedMongoIndex } from '@/types/index.js';
-import type { CreateIndexesOptions, IndexDescriptionInfo } from '@tmlmobilidade/go-clients-mongo';
+
+import { CreateIndexesOptions, IndexDescriptionInfo } from 'mongodb';
 
 /**
  * Prepares MongoDB index options by extracting relevant properties

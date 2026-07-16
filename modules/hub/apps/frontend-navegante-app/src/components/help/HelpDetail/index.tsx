@@ -1,6 +1,6 @@
 'use client';
 
-import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { Accordion } from '@mantine/core';
