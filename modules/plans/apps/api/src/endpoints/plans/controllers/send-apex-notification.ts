@@ -3,7 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { agencies, files, plans } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { files, plans } from '@tmlmobilidade/interfaces';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -37,7 +38,7 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 	//
 	// Fetch the Agency data
 
-	const agencyData = await agencies.findById(foundPlan.gtfs_agency.agency_id);
+	const agencyData = await goDB.core.agencies.findById(foundPlan.gtfs_agency.agency_id);
 
 	if (!agencyData.apex.contact_emails.length) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No APEX contact emails found for this agency.');
 
