@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { fileExports } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 
@@ -17,7 +17,7 @@ export async function markStuckProcessingExportsAsError() {
 
 	const cutoffTimestamp = Dates.now('local').minus({ hours: PROCESSING_TIMEOUT_HOURS }).unix_timestamp;
 
-	const stuckExports = await fileExports.findMany({ created_at: { $lt: cutoffTimestamp }, processing_status: ProcessingStatusSchema.enum.processing });
+	const stuckExports = await goDB.core.exports.findMany({ created_at: { $lt: cutoffTimestamp }, processing_status: ProcessingStatusSchema.enum.processing });
 
 	if (stuckExports.length === 0) {
 		Logger.info({ message: 'No stuck processing file exports found.' });
@@ -28,7 +28,7 @@ export async function markStuckProcessingExportsAsError() {
 
 	for (const item of stuckExports) {
 		try {
-			await fileExports.updateById(item._id, { processing_status: ProcessingStatusSchema.enum.error });
+			await goDB.core.exports.updateById(item._id, { processing_status: ProcessingStatusSchema.enum.error });
 			Logger.success(`Marked processing file export ${item._id} as error.`);
 		} catch (error) {
 			Logger.error({ error, message: `Failed to mark processing file export ${item._id} as error:` });

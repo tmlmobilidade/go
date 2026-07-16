@@ -1,6 +1,7 @@
 /* * */
 
-import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { authProvider, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
@@ -29,7 +30,7 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 	// Setup a timer to track the execution time
 	const timer = new Timer();
 
-	await fileExports.updateById(fileExport._id, { processing_status: 'processing' });
+	await goDB.core.exports.updateById(fileExport._id, { processing_status: 'processing' });
 
 	//
 	// Extract and prepare the search query

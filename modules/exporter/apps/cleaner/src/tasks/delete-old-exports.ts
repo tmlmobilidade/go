@@ -1,6 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { fileExports, files, TransactionManager } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
@@ -15,7 +16,7 @@ const DELETION_TIMEOUT_HOURS = 4;
 export async function deleteOldFileExports(): Promise<void> {
 	const cutoffTimestamp = Dates.now('local').minus({ hours: DELETION_TIMEOUT_HOURS }).unix_timestamp;
 
-	const oldExports = await fileExports.findMany({
+	const oldExports = await goDB.core.exports.findMany({
 		processing_status: { $in: [
 			ProcessingStatusSchema.enum.complete,
 			ProcessingStatusSchema.enum.error,

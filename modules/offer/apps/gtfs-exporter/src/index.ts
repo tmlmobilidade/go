@@ -1,7 +1,8 @@
 import { exportGtfsV29 } from '@/main.js';
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { Files } from '@tmlmobilidade/files';
-import { fileExports, files } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { type FileExport, type GtfsExportProperties, ProcessingStatusSchema } from '@tmlmobilidade/types';
@@ -58,7 +59,7 @@ async function processExport(fileExport: FileExport) {
 
 	try {
 		// Mark as processing
-		await fileExports.updateById(fileExport._id, { processing_status: 'processing' });
+		await goDB.core.exports.updateById(fileExport._id, { processing_status: 'processing' });
 
 		// Ensure working directory exists
 		fs.mkdirSync(workdir, { recursive: true });
@@ -102,12 +103,12 @@ async function processExport(fileExport: FileExport) {
 		});
 
 		// Mark as complete
-		await fileExports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
+		await goDB.core.exports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
 
 		Logger.success(`GTFS export ${fileExport._id} completed.`);
 	} catch (error) {
 		Logger.error({ error, message: `Error processing GTFS export ${fileExport._id}` });
-		await fileExports.updateById(fileExport._id, { processing_status: 'error' });
+		await goDB.core.exports.updateById(fileExport._id, { processing_status: 'error' });
 	} finally {
 		// Cleanup working directory
 		fs.rmSync(workdir, { force: true, recursive: true });
@@ -133,7 +134,7 @@ async function main() {
 	// Initialize the logger
 	Logger.init();
 
-	const waitingExports = await fileExports.findMany({
+	const waitingExports = await goDB.core.exports.findMany({
 		processing_status: ProcessingStatusSchema.enum.waiting,
 		type: 'gtfs',
 	});

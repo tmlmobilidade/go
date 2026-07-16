@@ -1,6 +1,7 @@
 /* * */
 
-import { fileExports, locations, stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { locations, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
@@ -36,7 +37,7 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 	// Setup a timer to track the execution time
 	const timer = new Timer();
 
-	await fileExports.updateById(fileExport._id, { processing_status: 'processing' });
+	await goDB.core.exports.updateById(fileExport._id, { processing_status: 'processing' });
 
 	//
 	// Build stop ids from export properties
