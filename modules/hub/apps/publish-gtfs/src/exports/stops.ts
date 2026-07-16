@@ -2,8 +2,8 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { clampCoordinate } from '@tmlmobilidade/geo';
-import { type HubGtfsExportStops, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-public-info';
-import { districts, localities, municipalities, parishes, stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { localities, municipalities, parishes, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -19,7 +19,7 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 	//
 	// Build a map of location entities
 
-	const allDistrictsData = await districts.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
+	const allDistrictsData = await goDB.locations.districts.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
 	const allDistrictsMap = new Map<string, string>(allDistrictsData.map(item => [item._id, item?.['properties']?.['name']]));
 
 	const allMunicipalitiesData = await municipalities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
