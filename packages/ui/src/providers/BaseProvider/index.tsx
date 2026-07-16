@@ -19,6 +19,11 @@ import { SentryInitializer } from './SentryInitializer';
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
 	/**
+	 * The app name used to identify frontend logs in Sentry.
+	 */
+	app: string
+
+	/**
 	 * The module name used to identify frontend logs in Sentry.
 	 */
 	module: string
@@ -36,7 +41,7 @@ type BaseProviderProps = LocaleContextProps & VersionContextProps & {
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n, module, theme, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ app, children, i18n, module, theme, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
@@ -68,7 +73,7 @@ export function BaseProvider({ children, i18n, module, theme, version }: PropsWi
 			lang="pt"
 		>
 			<body>
-				<SentryInitializer module={module} />
+				<SentryInitializer app={app} module={module} />
 				<NuqsAdapter>
 					<Suspense fallback={<LoadingSection fullHeight />}>
 						<VersionContextProvider version={version}>

@@ -1,4 +1,4 @@
-import { setRuntimeLogContext } from '@/logger/utils/runtime-log-context.js';
+import { RuntimeLogContext, setRuntimeLogContext } from '@/logger/utils/runtime-log-context.js';
 import { getSentryClient } from '@/sentry/client/go-sentry.js';
 import * as Sentry from '@sentry/nextjs';
 
@@ -6,13 +6,13 @@ const SENTRY_START_TIMEOUT_MS = 60_000;
 let SENTRY_CLIENT: ReturnType<typeof Sentry.init>;
 let SENTRY_START_ATTEMPTED = false;
 
-function reportSentryStartFailure(module: string, error: unknown) {
+function reportSentryStartFailure(context: RuntimeLogContext, error: unknown) {
 	globalThis.setTimeout(() => {
-		console.error(new Error(`Sentry failed to start for the ${module} frontend within the timeout.`), error);
+		console.error(new Error(`Sentry failed to start for ${context.module}/${context.app} within the timeout.`), error);
 	}, SENTRY_START_TIMEOUT_MS);
 }
 
-export function initSentry(module: string) {
+export function initSentry(context: RuntimeLogContext) {
 	//
 	if (SENTRY_START_ATTEMPTED) return SENTRY_CLIENT;
 	SENTRY_START_ATTEMPTED = true;
@@ -20,7 +20,7 @@ export function initSentry(module: string) {
 	//
 	// Setup runtime context
 
-	const runtimeContext = setRuntimeLogContext({ app: 'frontend', module });
+	const runtimeContext = setRuntimeLogContext(context);
 
 	//
 	// Initialize Sentry
@@ -39,7 +39,7 @@ export function initSentry(module: string) {
 
 		return SENTRY_CLIENT;
 	} catch (error) {
-		reportSentryStartFailure(module, error);
+		reportSentryStartFailure(runtimeContext, error);
 		return undefined;
 	}
 }

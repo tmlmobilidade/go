@@ -6,20 +6,21 @@ import { useEffect } from 'react';
 /* * */
 
 interface SentryInitializerProps {
+	app: string
 	module: string
 }
 
 /* * */
 
-export function SentryInitializer({ module }: SentryInitializerProps) {
+export function SentryInitializer({ app, module }: SentryInitializerProps) {
 	//
 
 	//
 	// A. Initialize Sentry
 
 	useEffect(() => {
-		initSentry(module);
-	}, [module]);
+		initSentry({ app, module });
+	}, [app, module]);
 
 	//
 	// B. Render component
