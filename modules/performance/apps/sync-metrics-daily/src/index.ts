@@ -4,6 +4,7 @@ import { syncCategoryMetrics } from '@/tasks/sync-category-metrics.js';
 import { syncPassengerImpactMetrics } from '@/tasks/sync-passenger-impact.js';
 import { syncPatternHourMetrics } from '@/tasks/sync-pattern-hour-metrics.js';
 import { syncProductMetrics } from '@/tasks/sync-product-metrics.js';
+import { syncStopValidationsMetrics } from '@/tasks/sync-stop-validations.js';
 import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
@@ -33,6 +34,7 @@ async function main() {
 		await syncProductMetrics();
 		await syncCategoryMetrics();
 		await syncPassengerImpactMetrics();
+		await syncStopValidationsMetrics();
 
 		generatePerformanceSummary();
 
