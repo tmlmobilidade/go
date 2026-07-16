@@ -4,8 +4,8 @@ import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AUTH_SESSION_COOKIE_NAME, authProvider, organizations } from '@tmlmobilidade/interfaces';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { AUTH_SESSION_COOKIE_NAME, authProvider, users } from '@tmlmobilidade/interfaces';
 import { type CreateUserDto, type SimplifiedUser, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
 
 /* * */
@@ -148,7 +148,7 @@ export class UsersController {
 		}
 
 		// Find the organization data associated with the user
-		const organizationData = await organizations.findById(userData.organization_id);
+		const organizationData = await goDB.core.organizations.findById(userData.organization_id);
 		if (!organizationData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
