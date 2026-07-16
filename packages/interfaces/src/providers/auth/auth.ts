@@ -1,6 +1,6 @@
 /* * */
 
-import { organizations, sessions, users, verificationTokens } from '@/interfaces/index.js';
+import { organizations, roles, users, verificationTokens, sessions } from '@/interfaces/index.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
@@ -97,7 +97,7 @@ class AuthProvider {
 	 */
 	public async getUserFromSessionToken(sessionToken: string): Promise<User> {
 		// Find the current session in the database
-		const sessionData = await sessions.findOne({ token: { $eq: sessionToken } });
+		const sessionData = await goDB.core.sessions.findOne({ token: { $eq: sessionToken } });
 		if (!sessionData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session not found');
 		// Find the user associated with the session
 		const userData = await users.findOne({ _id: { $eq: sessionData.user_id } });
@@ -136,7 +136,7 @@ class AuthProvider {
 			user_id: userData._id.toString(),
 		};
 		// Insert the new session into the database
-		await sessions.insertOne(newSession);
+		await goDB.core.sessions.insertOne(newSession);
 		// Return the session to the caller
 		return newSession;
 	}
@@ -146,7 +146,7 @@ class AuthProvider {
 	 * @param sessionToken The session token to logout.
 	 */
 	public async logout(sessionToken: string): Promise<void> {
-		await sessions.deleteOne({ token: { $eq: sessionToken } });
+		await goDB.core.sessions.deleteOne({ token: { $eq: sessionToken } });
 	}
 
 	/**
