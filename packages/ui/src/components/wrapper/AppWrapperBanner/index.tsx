@@ -42,7 +42,7 @@ export function AppWrapperBanner() {
 	//
 	// A. Setup variables
 
-	const banner = APP_WRAPPER_BANNER;
+	const banner = null;
 
 	//
 	// B. Render components
