@@ -16,6 +16,7 @@
 	flex-direction: row;
 	gap: var(--size-spacing-sm);
 	align-items: center;
+	width: 100%;
 	min-width: 0;
 	min-height: var(--sidebar-header-height);
 	padding: 0 var(--size-spacing-sm) 0 0;
@@ -58,6 +59,7 @@
 	display: flex;
 	flex: 1;
 	flex-direction: column;
+	width: 100%;
 	min-height: 0;
 	overflow: hidden;
 }
@@ -66,6 +68,7 @@
 	display: flex;
 	flex: 1;
 	flex-direction: column;
+	width: 100%;
 	min-height: 0;
 
 	/* padding: var(--sidebar-scroll-padding); */
@@ -75,6 +78,7 @@
 
 .sidebarFooterSlot {
 	flex-shrink: 0;
+	width: 100%;
 	height: var(--sidebar-footer-height);
 	min-height: var(--sidebar-footer-height);
 	max-height: var(--sidebar-footer-height);

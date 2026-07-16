@@ -123,11 +123,13 @@ export function Sidebar({ collapsed, onCollapsedChange, onWidthPxChange, widthPx
 							} as CSSProperties : undefined}
 							data-sidebar-panel
 						>
-							<SidebarPanel
-								expanded={labelsVisible}
-								showToggle={showToggle}
-								{...panelProps}
-							/>
+							<Surface>
+								<SidebarPanel
+									expanded={labelsVisible}
+									showToggle={showToggle}
+									{...panelProps}
+								/>
+							</Surface>
 						</div>
 					</SidebarVisualModeContext.Provider>
 
