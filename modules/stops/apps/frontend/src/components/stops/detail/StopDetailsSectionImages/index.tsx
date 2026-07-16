@@ -22,14 +22,14 @@ export function StopDetailsSectionImages() {
 			description="Suportes visuais."
 			title="Imagens"
 		>
-			{/* <Section>
+			<Section>
 				<UploadImage
-					imageUrl={stopDetailContext.data.imageUrl}
+					imageUrl={stopDetailContext.data.image}
 					label="Imagem"
 					onDelete={stopDetailContext.actions.deleteImage}
 					onFileChange={stopDetailContext.actions.fileChanged}
 				/>
-			</Section> */}
+			</Section>
 		</Collapsible>
 	);
 

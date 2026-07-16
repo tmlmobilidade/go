@@ -2,10 +2,10 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
-import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
+import { type File as FileType, PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
 import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { fetchData, uploadFile } from '@tmlmobilidade/utils';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -15,6 +15,8 @@ interface StopDetailContextState {
 		closeCoordinatesEditor: () => void
 		closeNamesEditor: () => void
 		delete: () => void
+		deleteImage: () => void
+		fileChanged: (file: File) => void
 		lock: () => void
 		openCoordinatesEditor: () => void
 		openNamesEditor: () => void
@@ -22,6 +24,7 @@ interface StopDetailContextState {
 	}
 	data: {
 		form: UseFormReturnType<UpdateStopDto>
+		image: FileType | undefined
 		stop: Stop | undefined
 	}
 	flags: {
@@ -31,11 +34,13 @@ interface StopDetailContextState {
 		error: Error | undefined
 		isCoordinatesEditorOpen: boolean
 		isDeleting: boolean
+		isDeletingImage: boolean
 		isLoading: boolean
 		isLocking: boolean
 		isNamesEditorOpen: boolean
 		isReadOnly: boolean
 		isSaving: boolean
+		isUploadingImage: boolean
 	}
 }
 
@@ -64,12 +69,13 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	const [isNamesEditorOpen, setNamesEditorOpen] = useState(false);
 	const openNamesEditor = useCallback(() => setNamesEditorOpen(true), []);
 	const closeNamesEditor = useCallback(() => setNamesEditorOpen(false), []);
-
+	const [imageFile, setImageFile] = useState<File | null>(null);
 	//
 	// B. Fetch data
 
 	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
 	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId));
+	const { data: stopImage, mutate: stopImageMutate } = useSWR<FileType | null>(API_ROUTES.stops.STOPS_DETAIL_IMAGE(stopId));
 
 	//
 	// C. Setup form
@@ -120,7 +126,33 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		},
 	});
 
-	//
+	const { action: handleUploadImage, isLoading: isUploadingImage } = useHandleUpdate({
+		fetchFn: async () => imageFile && await uploadFile(API_ROUTES.stops.STOPS_DETAIL_IMAGE(stopId), imageFile),
+		onSuccess: async () => {
+			setImageFile(null);
+			await Promise.all([
+				stopImageMutate(),
+				stopMutate(),
+				allStopsMutate(),
+			]);
+		},
+	});
+
+	const { action: handleDeleteImage, isLoading: isDeletingImage } = useHandleUpdate({
+		fetchFn: async () => await fetchData(API_ROUTES.stops.STOPS_DETAIL_IMAGE(stopId), 'DELETE'),
+		onSuccess: async () => {
+			await Promise.all([
+				stopImageMutate(),
+				stopMutate(),
+			]);
+		},
+	});
+
+	useEffect(() => {
+		if (!imageFile) return;
+		handleUploadImage();
+	}, [imageFile, handleUploadImage]);
+
 	// F. Setup flags
 
 	const { isReadOnly } = useFlagReadOnly({
@@ -176,6 +208,8 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			closeCoordinatesEditor,
 			closeNamesEditor,
 			delete: handleDelete,
+			deleteImage: handleDeleteImage,
+			fileChanged: setImageFile,
 			lock: handleLock,
 			openCoordinatesEditor,
 			openNamesEditor,
@@ -183,6 +217,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		},
 		data: {
 			form,
+			image: stopImage,
 			stop: stopData,
 		},
 		flags: {
@@ -192,11 +227,13 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			error: stopError,
 			isCoordinatesEditorOpen,
 			isDeleting,
+			isDeletingImage,
 			isLoading: stopLoading,
 			isLocking,
 			isNamesEditorOpen,
 			isReadOnly,
 			isSaving: isSaving,
+			isUploadingImage,
 		},
 	}), [
 		closeCoordinatesEditor,
@@ -219,6 +256,10 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		handleDelete,
 		handleLock,
 		handleSave,
+		stopImage,
+		handleDeleteImage,
+		isDeletingImage,
+		isUploadingImage,
 	]);
 	//
 	// H. Render components
