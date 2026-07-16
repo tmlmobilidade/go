@@ -1,6 +1,6 @@
 /* * */
 
-import { municipalities } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -32,14 +32,14 @@ export async function seedMunicipalities() {
 		//
 		// Clear existing municipalities
 
-		const deleteResult = await municipalities.deleteMany({});
+		const deleteResult = await goDB.locations.municipalities.deleteMany({});
 
 		Logger.info({ message: `Deleted ${deleteResult.deletedCount} existing municipalities.` });
 
 		//
 		// Insert municipalities data
 
-		const insertResult = await municipalities.insertMany(parsedMunicipalities, { unsafe: true });
+		const insertResult = await goDB.locations.municipalities.insertMany(parsedMunicipalities, { unsafe: true });
 
 		Logger.info({ message: `Inserted ${insertResult.insertedCount} municipalities.` });
 
