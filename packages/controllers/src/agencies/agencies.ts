@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { agencies, type Filter } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { type Filter } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type ActionsOf, type Agency, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -68,7 +69,7 @@ export class AgenciesSharedController {
 		const allowAllAgencies = permittedAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 		const queryFilters: Filter<Agency> = allowAllAgencies ? {} : { _id: { $in: permittedAgencyIds } };
 
-		const allAgencies = await agencies.findMany(queryFilters, { sort: { _id: 1 } });
+		const allAgencies = await goDB.core.agencies.findMany(queryFilters, { sort: { _id: 1 } });
 		reply.send({ data: allAgencies, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -102,7 +103,7 @@ export class AgenciesSharedController {
 		const allowAllAgencies = permittedAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 		const queryFilters: Filter<Agency> = allowAllAgencies ? { _id: request.params.id } : { _id: { $eq: request.params.id, $in: permittedAgencyIds } };
 
-		const agencyData = await agencies.findOne(queryFilters);
+		const agencyData = await goDB.core.agencies.findOne(queryFilters);
 
 		if (!agencyData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');

@@ -3,7 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { calculateAgencyVkm } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { agencies, events, holidays, lines, patterns, yearPeriods } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { events, holidays, lines, patterns, yearPeriods } from '@tmlmobilidade/interfaces';
 import { type CalculateVkmDto, CalculateVkmSchema, PermissionCatalog, type VkmCalculationResult } from '@tmlmobilidade/types';
 
 /* * */
@@ -43,7 +44,7 @@ export class VkmController {
 			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'End date is required for fixed range calculations');
 		}
 
-		const agency = await agencies.findById(payload.agency_id);
+		const agency = await goDB.core.agencies.findById(payload.agency_id);
 
 		if (!agency) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');

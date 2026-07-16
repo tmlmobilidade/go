@@ -41,8 +41,7 @@
 		"@fastify/multipart": "10.1.0",
 		"@fastify/one-line-logger": "^2.1.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/go-interfaces-go-db": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/go-providers-auth": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*",
 		"fastify": "5.10.0"
