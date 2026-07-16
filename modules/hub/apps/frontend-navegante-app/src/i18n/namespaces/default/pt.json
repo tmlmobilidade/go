@@ -226,6 +226,16 @@
 		}
 	},
 	"map": {
+		"BaseMapOverlaysControl": {
+			"layers": {
+				"alerts": "Alertas",
+				"stops": "Paragens",
+				"vehicles": "Veículos"
+			},
+			"trigger": {
+				"label": "Camadas do mapa"
+			}
+		},
 		"MapViewToolbar": {
 			"style": {
 				"map": "Mapa",

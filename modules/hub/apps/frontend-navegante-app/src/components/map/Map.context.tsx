@@ -8,7 +8,7 @@ import { createContext, type PropsWithChildren, useContext, useEffect, useState 
 
 /* * */
 
-type BaseMapOverlayType = 'alerts' | 'stops' | 'vehicles';
+export type BaseMapOverlayType = 'alerts' | 'stops' | 'vehicles';
 
 interface MapContextState {
 	actions: {
