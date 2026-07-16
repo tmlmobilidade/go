@@ -1,6 +1,7 @@
 /* * */
 
-import { roles, users } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { PermissionCatalog } from '@tmlmobilidade/types';
@@ -33,11 +34,11 @@ export async function sanitizePermissions() {
 
 		const rolesTimer = new Timer();
 
-		const allRoles = await roles.findMany();
+		const allRoles = await goDB.core.roles.findMany();
 
 		for (const role of allRoles) {
 			const sanitizedPermissions = PermissionCatalog.sanitize(role.permissions);
-			await roles.updateById(role._id, { permissions: sanitizedPermissions });
+			await goDB.core.roles.updateById(role._id, { permissions: sanitizedPermissions });
 		}
 
 		Logger.success(`Updated ${allRoles.length} roles with sanitized permissions in ${rolesTimer.get()}.`);
