@@ -32,7 +32,7 @@ async function main() {
 	//
 	// Get all Stop documents from the database
 
-	const allStopsData = await goDB.infrastructure.stops.all();
+	const allStopsData = await goDB.infrastructure.stops.findMany();
 
 	Logger.info({ message: `Found ${allStopsData.length} stops.` });
 
