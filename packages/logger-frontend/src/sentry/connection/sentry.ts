@@ -37,6 +37,7 @@ export function initSentry(context: RuntimeLogContext) {
 
 		Sentry.getGlobalScope().setAttributes(runtimeContext);
 
+		console.log('finish');
 		return SENTRY_CLIENT;
 	} catch (error) {
 		reportSentryStartFailure(runtimeContext, error);

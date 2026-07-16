@@ -8,5 +8,7 @@ export function getSentryClient(): string | undefined {
 		throw new Error('Missing SENTRY_NEXTJS_DSN. Please check your environment variables.');
 	}
 
+	console.log('See sentry dsn');
+
 	return process.env.SENTRY_NEXTJS_DSN;
 }
