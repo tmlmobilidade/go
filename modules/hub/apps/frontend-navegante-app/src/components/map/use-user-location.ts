@@ -1,7 +1,7 @@
 'use client';
 
 import { useSessionStorage } from '@mantine/hooks';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -16,6 +16,7 @@ export interface UserLocation {
 
 interface UseUserLocationReturnType {
 	availableUserLocationTrackingModes: UserLocationTrackingMode[]
+	requestUserLocationPermission: () => void
 	setUserLocationTrackingMode: (mode: UserLocationTrackingMode) => void
 	userLocation: null | UserLocation
 	userLocationTrackingMode: UserLocationTrackingMode
@@ -54,28 +55,48 @@ export function useUserLocation(): UseUserLocationReturnType {
 	//
 	// C. Handle actions
 
+	const handleUserLocationSuccess = useCallback((position: GeolocationPosition) => {
+		setUserLocationError(null);
+		setUserLocation(prev => ({
+			...prev,
+			accuracy: position.coords.accuracy,
+			latitude: position.coords.latitude,
+			longitude: position.coords.longitude,
+		}));
+	}, []);
+
+	const handleUserLocationError = useCallback((error: GeolocationPositionError) => {
+		setUserLocationError(error.message);
+	}, []);
+
+	const requestUserLocationPermission = useCallback(() => {
+		if (!navigator.geolocation) {
+			setUserLocationError('Geolocation is not supported');
+			return;
+		}
+
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+				handleUserLocationSuccess(position);
+				setUserLocationTrackingMode('follow');
+			},
+			handleUserLocationError,
+			{
+				enableHighAccuracy: true,
+				maximumAge: 0,
+				timeout: 10_000,
+			},
+		);
+	}, [handleUserLocationError, handleUserLocationSuccess, setUserLocationTrackingMode]);
+
 	useEffect(() => {
 		// Skip if geolocation is not supported
 		if (!navigator.geolocation) {
 			setUserLocationError('Geolocation is not supported');
 			return;
 		}
-		// Set the callback functions to handle the success and error cases
-		const successCallback = (position: GeolocationPosition) => {
-			setUserLocationError(null);
-			setUserLocation(prev => ({
-				...prev,
-				accuracy: position.coords.accuracy,
-				latitude: position.coords.latitude,
-				longitude: position.coords.longitude,
-			}));
-		};
-		const errorCallback = (error: GeolocationPositionError) => {
-			console.log({ message: `User location error: ${error.code} - ${error.message}` });
-			setUserLocationError(error.message);
-		};
 		// Watch for user location changes
-		const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback, {
+		const watchId = navigator.geolocation.watchPosition(handleUserLocationSuccess, handleUserLocationError, {
 			enableHighAccuracy: true,
 			maximumAge: 0,
 			timeout: 10_000,
@@ -84,7 +105,7 @@ export function useUserLocation(): UseUserLocationReturnType {
 		return () => {
 			navigator.geolocation.clearWatch(watchId);
 		};
-	}, []);
+	}, [handleUserLocationError, handleUserLocationSuccess]);
 
 	useEffect(() => {
 		(async () => {
@@ -133,6 +154,7 @@ export function useUserLocation(): UseUserLocationReturnType {
 
 	return {
 		availableUserLocationTrackingModes,
+		requestUserLocationPermission,
 		setUserLocationTrackingMode,
 		userLocation,
 		userLocationTrackingMode,

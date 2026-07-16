@@ -18,7 +18,7 @@ export function ActionBarUserLocation() {
 
 	const mapContext = useMapContext();
 
-	const { availableUserLocationTrackingModes, setUserLocationTrackingMode, userLocation, userLocationTrackingMode } = useUserLocation();
+	const { availableUserLocationTrackingModes, requestUserLocationPermission, setUserLocationTrackingMode, userLocation, userLocationTrackingMode } = useUserLocation();
 
 	//
 	// B. Handle actions
@@ -47,6 +47,7 @@ export function ActionBarUserLocation() {
 			<ActionBarButton
 				icon={<IconLocationOff size={28} />}
 				label={t('default:action-bar.ActionBarUserLocation.disabled.label')}
+				onClick={requestUserLocationPermission}
 				variant="disabled"
 			/>
 		);
