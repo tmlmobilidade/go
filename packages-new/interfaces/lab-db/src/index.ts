@@ -31,7 +31,7 @@ class LabDbClass {
 	 */
 	public static async getInstance() {
 		if (!LabDbClass._instance) {
-			const clickhouseClient = await ClickHouseDatabaseClient.getClient({ prefix: 'LAB_DB' });
+			const clickhouseClient = await ClickHouseDatabaseClient.getClient({ prefix: 'LABDB' });
 			LabDbClass._instance = new LabDbClass(clickhouseClient);
 		}
 		return LabDbClass._instance;
