@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './styles.module.css';
 
 import { IconButton } from '../../buttons';
-import { AppWrapperLogo } from '../../wrapper/AppWrapperLogo';
+import { AppWrapperLogo } from '../AppWrapperLogo';
 import { sidebarNavigationTree } from '../sidebar-navigation-tree';
 import { SidebarFooter } from '../SidebarFooter';
 import { SidebarGreeting } from '../SidebarGreeting';
