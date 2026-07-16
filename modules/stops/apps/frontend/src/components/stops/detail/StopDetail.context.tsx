@@ -24,7 +24,7 @@ interface StopDetailContextState {
 	}
 	data: {
 		form: UseFormReturnType<UpdateStopDto>
-		image: FileType | undefined
+		image: FileType[] | undefined
 		stop: Stop | undefined
 	}
 	flags: {
@@ -75,7 +75,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 
 	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
 	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId));
-	const { data: stopImage, mutate: stopImageMutate } = useSWR<FileType | null>(API_ROUTES.stops.STOPS_DETAIL_IMAGE(stopId));
+	const { data: stopImages, mutate: stopImageMutate } = useSWR<FileType[] | null>(API_ROUTES.stops.STOPS_DETAIL_IMAGE(stopId));
 
 	//
 	// C. Setup form
@@ -150,8 +150,13 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 
 	useEffect(() => {
 		if (!imageFile) return;
+
+		if ((stopImages?.length ?? 0) >= 2) {
+			return;
+		}
+
 		handleUploadImage();
-	}, [imageFile, handleUploadImage]);
+	}, [imageFile, stopImages, handleUploadImage]);
 
 	// F. Setup flags
 
@@ -217,7 +222,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		},
 		data: {
 			form,
-			image: stopImage,
+			image: stopImages,
 			stop: stopData,
 		},
 		flags: {
@@ -256,7 +261,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		handleDelete,
 		handleLock,
 		handleSave,
-		stopImage,
+		stopImages,
 		handleDeleteImage,
 		isDeletingImage,
 		isUploadingImage,

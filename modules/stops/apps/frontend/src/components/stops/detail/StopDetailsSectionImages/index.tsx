@@ -24,7 +24,7 @@ export function StopDetailsSectionImages() {
 		>
 			<Section>
 				<UploadImage
-					imageUrl={stopDetailContext.data.image}
+					imageUrl={stopDetailContext.data.image?.url ?? undefined}
 					label="Imagem"
 					onDelete={stopDetailContext.actions.deleteImage}
 					onFileChange={stopDetailContext.actions.fileChanged}
