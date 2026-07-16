@@ -1,12 +1,16 @@
 /* * */
 
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
-import { patterns } from '@tmlmobilidade/interfaces';
-import { type Pattern, type Shape, type UnixTimestamp } from '@tmlmobilidade/types';
+import { lines, patterns } from '@tmlmobilidade/interfaces';
+import { type Line, type Pattern, type Shape, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type Feature, type LineString } from 'geojson';
 
 /* * */
 
+const agencyIds = (process.env.AGENCY_IDS ?? '')
+	.split(',')
+	.map(agencyId => agencyId.trim())
+	.filter(Boolean);
 const dryRun = process.env.DRY_RUN === '1';
 const force = process.env.FORCE === '1';
 const includeLocked = process.env.INCLUDE_LOCKED === '1';
@@ -68,10 +72,26 @@ function getBackfillSetFields(shape: Shape): { changed: boolean, fields: Record<
 	return { changed: Object.keys(fields).length > 0, fields, legsChanged };
 }
 
-function getCandidateFilter(): Record<string, unknown> {
+async function getAgencyLineIds(): Promise<string[] | undefined> {
+	if (!agencyIds.length) return undefined;
+
+	const lineCollection = await lines.getCollection();
+	const lineDocs = await lineCollection.find(
+		{ agency_id: { $in: agencyIds } },
+		{ projection: { _id: 1 } },
+	).toArray() as Pick<Line, '_id'>[];
+
+	return lineDocs.map(line => line._id);
+}
+
+function getCandidateFilter(lineIds?: string[]): Record<string, unknown> {
 	const filter: Record<string, unknown> = {
 		'shape.geojson.geometry.coordinates.0': { $exists: true },
 	};
+
+	if (lineIds) {
+		filter.line_id = { $in: lineIds };
+	}
 
 	if (!force) {
 		filter.$or = [
@@ -106,18 +126,23 @@ function shouldLogProgress(processed: number): boolean {
 }
 
 async function main() {
-	let shouldDisconnect = false;
+	let shouldDisconnectLines = false;
+	let shouldDisconnectPatterns = false;
 
 	try {
-		console.log('[backfill-pattern-polylines] Starting', { dryRun, force, includeLocked, limit, logEvery });
+		console.log('[backfill-pattern-polylines] Starting', { agencyIds, dryRun, force, includeLocked, limit, logEvery });
 
+		const lineIds = await getAgencyLineIds();
+		if (lineIds) shouldDisconnectLines = true;
 		const patternCollection = await patterns.getCollection();
-		shouldDisconnect = true;
-		const candidateFilter = getCandidateFilter();
+		shouldDisconnectPatterns = true;
+		const candidateFilter = getCandidateFilter(lineIds);
 		const totalCandidates = await patternCollection.countDocuments(candidateFilter);
 
 		console.log('[backfill-pattern-polylines] Found candidates', {
+			agency_ids: agencyIds,
 			limit,
+			line_ids: lineIds?.length,
 			total_candidates: totalCandidates,
 		});
 
@@ -206,6 +231,7 @@ async function main() {
 		}
 
 		console.log('[backfill-pattern-polylines] Done', {
+			agencyIds,
 			checked,
 			dryRun,
 			failed,
@@ -219,7 +245,8 @@ async function main() {
 
 		if (failed > 0) process.exitCode = 1;
 	} finally {
-		if (shouldDisconnect) await patterns.disconnect();
+		if (shouldDisconnectPatterns) await patterns.disconnect();
+		if (shouldDisconnectLines) await lines.disconnect();
 	}
 }
 
