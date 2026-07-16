@@ -2,7 +2,8 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
-import { locations, stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { locations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -34,7 +35,7 @@ export interface ExportedStopsRow {
 export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 	//
 
-	const allStopsList = await stops.findMany(
+	const allStopsList = await goDB.infrastructure.stops.findMany(
 		{ 'flags.agency_ids': { $in: ['41', '42', '43', '44'] } }, // Only stops used by CM
 		{ sort: { _id: 1 } },
 	);

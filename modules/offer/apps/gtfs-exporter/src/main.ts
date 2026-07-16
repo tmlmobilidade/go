@@ -5,7 +5,8 @@ import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.js';
 import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { agencies, lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { agencies, lines, patterns, routes } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
@@ -174,7 +175,7 @@ export async function exportGtfsV29(
 		Logger.success(`Loaded ${allFaresMap.size} fares`);
 
 		Logger.info({ message: 'Fetching stops...' });
-		const allStopsData = await stops.findMany({}, { sort: { _id: 1 } });
+		const allStopsData = await goDB.infrastructure.stops.findMany({}, { sort: { _id: 1 } });
 		const allStopsMap = new Map(allStopsData.map(stop => [stop._id, stop]));
 		Logger.success(`Loaded ${allStopsMap.size} stops`);
 

@@ -2,8 +2,8 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_StopTime, type Plan } from '@tmlmobilidade/types';
 
@@ -28,7 +28,7 @@ export interface ExportedStopTimesRow {
 export async function exportStopTimesRows(planData: Plan, sqlTables: GtfsSQLTables, exportConfig: MergedGtfsExportConfig) {
 	//
 
-	const allStopsList = await stops.findMany({}, { projection: { _id: 1, flags: 1, legacy_ids: 1 } });
+	const allStopsList = await goDB.infrastructure.stops.findMany({}, { projection: { _id: 1, flags: 1, legacy_ids: 1 } });
 	const allStopsMap = new Map<string, string>();
 
 	allStopsList.forEach((stopData) => {

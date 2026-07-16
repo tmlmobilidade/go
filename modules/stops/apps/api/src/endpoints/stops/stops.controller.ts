@@ -3,7 +3,8 @@
 import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, type Filter, patterns, stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { files, type Filter, patterns } from '@tmlmobilidade/interfaces';
 import { CreateStopSchema, type File, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
@@ -38,7 +39,7 @@ export class StopsController {
 		// if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create this stop, because you do not have permission for all the agencies involved in the stop.');
 
 		const newStopId = await generateStopId();
-		const result = await stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
+		const result = await goDB.infrastructure.stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
 
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
@@ -51,7 +52,7 @@ export class StopsController {
 	static async delete(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		//
 		// Get the stop from the database
-		const foundStop = await stops.findById(Number(request.params.id));
+		const foundStop = await goDB.infrastructure.stops.findById(Number(request.params.id));
 		if (!foundStop) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
 		}
@@ -72,7 +73,7 @@ export class StopsController {
 		}
 
 		// If authorized, toggle the deleted status of the stop
-		await stops.toggleDeleteById(request.params.id);
+		await goDB.infrastructure.stops.toggleDeleteById(request.params.id);
 
 		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -99,7 +100,7 @@ export class StopsController {
 				];
 			}
 		}
-		const data = await stops.findMany(queryFilters, {
+		const data = await goDB.infrastructure.stops.findMany(queryFilters, {
 			projection: { _id: 1, flags: 1, is_deleted: 1, latitude: 1, legacy_ids: 1, lifecycle_status: 1, longitude: 1, municipality_id: 1, name: 1, system_status: 1 },
 			sort: { created_at: -1 },
 		});
@@ -141,7 +142,7 @@ export class StopsController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		// Get the stop from the database
-		const foundStop = await stops.findById(Number(request.params.id));
+		const foundStop = await goDB.infrastructure.stops.findById(Number(request.params.id));
 		if (!foundStop) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
 		}
@@ -198,7 +199,7 @@ export class StopsController {
 	 */
 	static async lock(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		// Get the stop from the database
-		const foundStop = await stops.findById(Number(request.params.id));
+		const foundStop = await goDB.infrastructure.stops.findById(Number(request.params.id));
 		if (!foundStop) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
 		}
@@ -219,7 +220,7 @@ export class StopsController {
 		}
 
 		// If authorized, toggle the lock status of the stop
-		await stops.toggleLockById(foundStop._id);
+		await goDB.infrastructure.stops.toggleLockById(foundStop._id);
 
 		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -231,7 +232,7 @@ export class StopsController {
 	 */
 	static async update(request: FastifyRequest<{ Body: UpdateStopDto, Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		// Get the stop from the database
-		const foundStop = await stops.findById(Number(request.params.id));
+		const foundStop = await goDB.infrastructure.stops.findById(Number(request.params.id));
 		if (!foundStop) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
 		}
@@ -263,7 +264,7 @@ export class StopsController {
 		flagIds.forEach(flagId => existingLegacyIds.add(flagId));
 		request.body.legacy_ids = Array.from(existingLegacyIds);
 		// Perform the update
-		const data = await stops.updateById(Number(request.params.id), request.body);
+		const data = await goDB.infrastructure.stops.updateById(Number(request.params.id), request.body);
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }

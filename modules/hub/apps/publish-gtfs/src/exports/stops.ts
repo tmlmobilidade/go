@@ -2,8 +2,9 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { clampCoordinate } from '@tmlmobilidade/geo';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type HubGtfsExportStops, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-public-info';
-import { districts, localities, municipalities, parishes, stops } from '@tmlmobilidade/interfaces';
+import { districts, localities, municipalities, parishes } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -34,7 +35,7 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 	//
 	// Get all the stops for the specified agency IDs
 
-	const allStopsList = await stops.findMany(
+	const allStopsList = await goDB.infrastructure.stops.findMany(
 		{ 'flags.agency_ids': { $in: agencyIds }, 'is_deleted': false },
 		{ sort: { _id: 1 } },
 	);

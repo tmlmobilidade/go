@@ -1,6 +1,7 @@
 /* * */
 
-import { rides, stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 import { getPublicRouteId } from '@tmlmobilidade/utils';
@@ -37,7 +38,7 @@ export async function transformReferenceTypeStopsIntoGtfsRt(alertData: Alert): P
 	for (const reference of alertData.references) {
 		//
 
-		const foundStopData = await stops.findOne({
+		const foundStopData = await goDB.infrastructure.stops.findOne({
 			'flags.agency_ids': { $in: [alertData.agency_id] },
 			'flags.stop_id': reference.parent_id,
 		});

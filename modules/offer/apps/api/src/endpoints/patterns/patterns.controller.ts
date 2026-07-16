@@ -6,7 +6,8 @@ import { createImportedStopResolver } from '@/utils/stops.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
-import { lines, patterns, stops, typologies } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { lines, patterns, typologies } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CreatePatternDto, NoteComment, type Pattern, type PatternShapeMapItem, PermissionCatalog, PopulatedPath, PopulatedPattern, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
@@ -244,7 +245,7 @@ export class PatternsController {
 
 		if (patternData.path && patternData.path.length > 0) {
 			const stopIds = patternData.path.map(pathItem => pathItem.stop_id);
-			const stopsData = await stops.findMany(
+			const stopsData = await goDB.infrastructure.stops.findMany(
 				{ _id: { $in: stopIds } },
 			);
 

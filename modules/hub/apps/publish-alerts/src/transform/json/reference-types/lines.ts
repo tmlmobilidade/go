@@ -1,6 +1,6 @@
 /* * */
 
-import { stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type AlertReference } from '@tmlmobilidade/types';
 import { getPublicLineId } from '@tmlmobilidade/utils';
@@ -48,7 +48,7 @@ export async function transformReferenceTypeLinesIntoJson(alertData: Alert): Pro
 		// add an AlertReference object for each stop ID.
 
 		for (const childId of reference.child_ids) {
-			const foundStopData = await stops.findOne({
+			const foundStopData = await goDB.infrastructure.stops.findOne({
 				'flags.agency_ids': { $in: [alertData.agency_id] },
 				'flags.stop_id': childId,
 			});

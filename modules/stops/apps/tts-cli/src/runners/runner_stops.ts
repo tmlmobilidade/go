@@ -5,6 +5,7 @@ import { deleteOldTtsFile } from '@/utils/deleteOldTTSFile.js';
 import { generateHash } from '@/utils/generateHash.js';
 import { makeStop } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { files, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import pLimit from 'p-limit';
@@ -60,7 +61,7 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 		updated_by: 'system',
 	}, { override: true });
 
-	await stops.updateById(stopData._id, { tts_hash: hash }, { forceIfLocked: true });
+	await goDB.infrastructure.stops.updateById(stopData._id, { tts_hash: hash }, { forceIfLocked: true });
 }
 
 /* * */
@@ -72,7 +73,7 @@ export async function runnerStops() {
 	const globalTimer = new TIMETRACKER();
 
 	console.log('* Fetching all stops from database...');
-	const allStopsData = await stops.all();
+	const allStopsData = await goDB.infrastructure.stops.findMany();
 	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted);
 
 	const concurrency = Number(process.env.TTS_RUNNER_CONCURRENCY ?? 5);

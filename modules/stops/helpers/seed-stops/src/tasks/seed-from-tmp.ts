@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Stop, StopId, StopSchema } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import fs from 'node:fs';
@@ -24,7 +24,7 @@ export async function seedFromTmp() {
 	try {
 		//
 
-		throw new Error('Disabled.')
+		throw new Error('Disabled.');
 
 		//
 		// Download and prepare GO stops data
@@ -36,7 +36,7 @@ export async function seedFromTmp() {
 
 		const jsonFile = `/Users/joao/Developer/tmlmobilidade/go/modules/stops/helpers/seed-stops/src/tasks/tmp-stops.json`;
 
-		let preparedStops = [];
+		const preparedStops = [];
 
 		// if (fs.existsSync(jsonFile)) {
 		// 	const fileData = fs.readFileSync(jsonFile, 'utf-8');
@@ -45,7 +45,7 @@ export async function seedFromTmp() {
 		// 	ut1StopsData.data = ut1StopsData.data.filter(stop => !preparedStops.some((existingStop: Stop) => existingStop.previous_go_id === stop.stop_id));
 		// }
 
-		const stopsCollection = await stops.getCollection();
+		const stopsCollection = await goDB.infrastructure.stops.getCollection();
 		const deleteCount = await stopsCollection.deleteMany({ legacy_id: { $regex: '^prg:' } });
 		console.log(`Deleted ${deleteCount.deletedCount} existing stops with legacy_id starting with 'prg:'`);
 

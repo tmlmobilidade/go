@@ -1,7 +1,7 @@
 /* * */
 
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { organizeStop } from '@tmlmobilidade/go-stops-pckg-organize';
-import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -32,7 +32,7 @@ async function main() {
 	//
 	// Get all Stop documents from the database
 
-	const allStopsData = await stops.all();
+	const allStopsData = await goDB.infrastructure.stops.all();
 
 	Logger.info({ message: `Found ${allStopsData.length} stops.` });
 
@@ -46,7 +46,7 @@ async function main() {
 
 		const organizedStopData = await organizeStop(stopData);
 
-		await stops.updateById(stopData._id, organizedStopData);
+		await goDB.infrastructure.stops.updateById(stopData._id, organizedStopData);
 
 		//
 	}

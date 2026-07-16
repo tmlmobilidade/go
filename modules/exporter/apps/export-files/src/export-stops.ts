@@ -1,6 +1,7 @@
 /* * */
 
-import { fileExports, locations, stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { fileExports, locations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
@@ -43,7 +44,7 @@ export async function exportStopsFile(fileExport: FileExport): Promise<string> {
 	const properties = fileExport.properties as StopExportProperties['properties'];
 	const stopIds = getStopIdsFromExportProperties(properties);
 
-	const stopsCollection = await stops.getCollection();
+	const stopsCollection = await goDB.infrastructure.stops.getCollection();
 	const stopsCursor = stopsCollection.find({ _id: { $in: stopIds } }, { batchSize: 5000 });
 	const municipalityIds = await stopsCollection.distinct('municipality_id', { _id: { $in: stopIds } });
 	const municipalitiesList = await locations.findMunicipalities(

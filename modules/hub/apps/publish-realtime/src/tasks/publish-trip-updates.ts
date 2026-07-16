@@ -4,8 +4,8 @@ import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { pipelinePath, querySqlFromFile } from '@tmlmobilidade/go-hub-pckg-sql';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type GtfsRtFeedMessage, type GtfsRtStopTimeUpdate, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
-import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -29,7 +29,7 @@ export async function publishTripUpdates() {
 	//
 	// Fetch all stops and build a map of legacy_ids to stop_id
 
-	const allStopsData = await stops.findMany({}, { projection: { _id: 1, flags: 1 }, sort: { _id: 1 } });
+	const allStopsData = await goDB.infrastructure.stops.findMany({}, { projection: { _id: 1, flags: 1 }, sort: { _id: 1 } });
 
 	const allStopsMap = new Map<string, number>();
 

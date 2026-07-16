@@ -1,4 +1,4 @@
-import { stops } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Stop } from '@tmlmobilidade/types';
 
 export function createImportedStopResolver(agencyId?: string) {
@@ -14,12 +14,12 @@ export function createImportedStopResolver(agencyId?: string) {
 		const promise = (async () => {
 			const numericStopId = Number(normalizedStopId);
 			if (!Number.isNaN(numericStopId)) {
-				const stopById = await stops.findById(numericStopId);
+				const stopById = await goDB.infrastructure.stops.findById(numericStopId);
 				if (stopById) return stopById;
 			}
 
 			if (agencyId) {
-				const stopByAgencyFlag = await stops.findOne({
+				const stopByAgencyFlag = await goDB.infrastructure.stops.findOne({
 					flags: {
 						$elemMatch: {
 							agency_ids: agencyId,
@@ -30,7 +30,7 @@ export function createImportedStopResolver(agencyId?: string) {
 				if (stopByAgencyFlag) return stopByAgencyFlag;
 			}
 
-			const stopByLegacyId = await stops.findOne({ legacy_id: normalizedStopId });
+			const stopByLegacyId = await goDB.infrastructure.stops.findOne({ legacy_id: normalizedStopId });
 			if (stopByLegacyId) return stopByLegacyId;
 
 			return null;
