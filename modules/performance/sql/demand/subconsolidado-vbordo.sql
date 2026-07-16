@@ -4,8 +4,6 @@ INSERT INTO performance.subconsolidado_vbordo
 SELECT
     agency_id,
     operational_date,
-    is_passenger,
-    line_id,
     product_long_id,
     processed_date,
     calendar_date,
@@ -60,8 +58,6 @@ FROM (
     FROM (
         SELECT
             agency_id,
-            is_passenger,
-            line_id,
             price,
             product_id,
             fromUnixTimestamp64Milli(toInt64(created_at)) AS created_at_dt,
@@ -72,8 +68,6 @@ FROM (
 GROUP BY
     agency_id,
     operational_date,
-    is_passenger,
-    line_id,
     product_long_id,
     processed_date,
     calendar_date,
