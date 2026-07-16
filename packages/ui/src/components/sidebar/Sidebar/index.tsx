@@ -10,6 +10,7 @@ import styles from './styles.module.css';
 
 import { useMeContext } from '../../../contexts/Me.context';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
+import { Surface } from '../../layout';
 import { SIDEBAR_COLLAPSED_WIDTH } from '../sidebar-layout.constants';
 import { SidebarOpenGroupsProvider } from '../SidebarOpenGroups.context';
 import { SidebarPanel } from '../SidebarPanel';

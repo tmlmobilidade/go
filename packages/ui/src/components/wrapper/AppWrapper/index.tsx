@@ -32,31 +32,20 @@ export function AppWrapper({ children }: PropsWithChildren) {
 	//
 	// B. Render components
 
-	if (layoutContext.data.active_fullscreen) {
-		return (
-			<div className={styles.root}>
-				<AppWrapperBanner />
-				<div className={styles.container}>
-					<div className={styles.content}>{children}</div>
-				</div>
-			</div>
-		);
-	}
-
 	return (
 		<div className={styles.root}>
-			<AppWrapperBanner />
-			<div className={styles.container}>
+			{!layoutContext.data.active_fullscreen && (
 				<Sidebar
 					collapsed={sidebarHidden}
 					onCollapsedChange={setSidebarHidden}
 					onWidthPxChange={handleSidebarWidthChange}
 					widthPx={sidebarWidthPx}
 				/>
-				<div className={styles.content}>{children}</div>
+			)}
+			<div className={styles.content}>
+				<AppWrapperBanner />
+				{children}
 			</div>
 		</div>
 	);
-
-	//
 }

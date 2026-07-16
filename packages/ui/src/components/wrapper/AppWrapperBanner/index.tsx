@@ -5,25 +5,25 @@ import { type ReactNode } from 'react';
 
 import styles from './styles.module.css';
 
+import { Surface } from '../../layout/Surface';
+
 /* * */
 
 export type AppWrapperBannerVariant = 'danger' | 'info' | 'success' | 'warning';
 
 export interface AppWrapperBannerConfig {
-	/** Short headline shown to users. */
-	title: string
-	/** Variant of the banner. */
-	variant?: AppWrapperBannerVariant
-}
 
-/**
- * Set to a config object to show the app-wide announcement banner.
- * Set to `null` to hide it.
- */
-export const APP_WRAPPER_BANNER: AppWrapperBannerConfig | null = {
-	title: 'Manutenção programada — A partir das 16:00',
-	variant: 'warning',
-};
+	/**
+	 * Short headline shown to users.
+	 */
+	title: string
+
+	/**
+	 * Variant of the banner.
+	 */
+	variant: AppWrapperBannerVariant
+
+}
 
 /* * */
 
@@ -42,7 +42,10 @@ export function AppWrapperBanner() {
 	//
 	// A. Setup variables
 
-	const banner = null;
+	const banner: AppWrapperBannerConfig | null = {
+		title: 'Manutenção programada — A partir das 16:00',
+		variant: 'danger',
+	};
 
 	//
 	// B. Render components
@@ -51,17 +54,12 @@ export function AppWrapperBanner() {
 		return null;
 	}
 
-	const variant = banner.variant ?? 'info';
-
 	return (
-		<div className={styles.root} data-variant={variant} role="status">
-			<div className={styles.accent} aria-hidden />
-			<div className={styles.icon} aria-hidden>
-				{VARIANT_ICONS[variant]}
+		<Surface>
+			<div className={styles.root} data-variant={banner.variant} role="status">
+				{VARIANT_ICONS[banner.variant]}
+				<p className={styles.title}>{banner.title}</p>
 			</div>
-			<p className={styles.title}>{banner.title}</p>
-		</div>
+		</Surface>
 	);
-
-	//
 }
