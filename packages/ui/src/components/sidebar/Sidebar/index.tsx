@@ -3,9 +3,7 @@
 /* * */
 
 import { type CSSProperties } from 'react';
-import { useTranslation } from 'react-i18next';
 
-import panelStyles from '../SidebarPanel/styles.module.css';
 import styles from './styles.module.css';
 
 import { useMeContext } from '../../../contexts/Me.context';
@@ -17,7 +15,6 @@ import { SidebarPanel } from '../SidebarPanel';
 import { type SidebarVisualMode, SidebarVisualModeContext } from '../SidebarVisualMode.context';
 import { getDefaultOpenGroupIds } from '../utils';
 import { useSidebarPeekState } from './useSidebarPeekState';
-import { useSidebarRailResize } from './useSidebarRailResize';
 
 /* * */
 
@@ -42,13 +39,19 @@ export interface SidebarProps {
 
 /* * */
 
-export function Sidebar({ collapsed, onCollapsedChange, onWidthPxChange, widthPx }: SidebarProps) {
+export function Sidebar({ collapsed, onCollapsedChange, widthPx }: SidebarProps) {
+	//
+
+	//
+	// A. Setup variables
+
 	const meContext = useMeContext();
 	const currentUrl = useCurrentUrl();
-	const { t } = useTranslation();
 
 	const pathname = currentUrl?.pathname;
 	const userPermissions = meContext.data.user?.permissions;
+
+	const defaultOpenGroupIds = getDefaultOpenGroupIds(pathname);
 
 	const {
 		isPeekAnimating,
@@ -60,22 +63,15 @@ export function Sidebar({ collapsed, onCollapsedChange, onWidthPxChange, widthPx
 		visualMode,
 	} = useSidebarPeekState({ collapsed });
 
-	const { railRef, resizing, setResizing } = useSidebarRailResize({ onWidthPxChange });
-
-	const layoutWidthPx = collapsed ? SIDEBAR_COLLAPSED_WIDTH : widthPx;
-
 	const railStyle = {
-		flex: `0 0 ${layoutWidthPx}px`,
-		maxWidth: `${layoutWidthPx}px`,
-		minWidth: `${layoutWidthPx}px`,
-		width: `${layoutWidthPx}px`,
+		flex: `0 0 auto`,
+		maxWidth: `${SIDEBAR_COLLAPSED_WIDTH}px`,
+		minWidth: `auto`,
+		width: `auto`,
 	} as const;
 
 	const handleSetCollapsed = (nextCollapsed: boolean) => {
-		if (nextCollapsed) {
-			setIsHovering(false);
-		}
-
+		if (nextCollapsed) setIsHovering(false);
 		onCollapsedChange(nextCollapsed);
 	};
 
@@ -86,23 +82,23 @@ export function Sidebar({ collapsed, onCollapsedChange, onWidthPxChange, widthPx
 		userPermissions,
 	};
 
-	const defaultOpenGroupIds = getDefaultOpenGroupIds(pathname);
+	//
+	// B. Render components
 
 	return (
 		<>
-			{isPeekAnimating ? (
+
+			{isPeekAnimating && (
 				<div
 					aria-hidden={!peekExpanded}
 					className={styles.peekBackdrop}
 					data-visible={peekExpanded}
-					onClick={() => setIsHovering(false)}
 				/>
-			) : null}
+			)}
+
 			<SidebarOpenGroupsProvider defaultOpenGroupIds={defaultOpenGroupIds}>
 				<div
-					ref={railRef}
 					className={styles.sidebarShell}
-					data-resizing={resizing}
 					data-sidebar-mode={visualMode}
 					style={railStyle}
 					onMouseEnter={() => {
@@ -115,13 +111,12 @@ export function Sidebar({ collapsed, onCollapsedChange, onWidthPxChange, widthPx
 					<SidebarVisualModeContext.Provider value={sidebarVisualModeContextValue(visualMode, labelsVisible)}>
 						<div
 							ref={peekOverlayRef}
-							className={panelStyles.sidebarPanel}
+							className={styles.sidebarPanel}
 							data-peek-expanded={peekExpanded}
 							style={collapsed ? {
 								'--sidebar-peek-width-collapsed': `${SIDEBAR_COLLAPSED_WIDTH}px`,
 								'--sidebar-peek-width-expanded': `${widthPx}px`,
 							} as CSSProperties : undefined}
-							data-sidebar-panel
 						>
 							<Surface>
 								<SidebarPanel
@@ -133,18 +128,6 @@ export function Sidebar({ collapsed, onCollapsedChange, onWidthPxChange, widthPx
 						</div>
 					</SidebarVisualModeContext.Provider>
 
-					{visualMode === 'pinned' ? (
-						<div
-							aria-label={t('shared:components.sidebar.Sidebar.resize_rail_aria')}
-							aria-orientation="vertical"
-							className={styles.resizeHandle}
-							role="separator"
-							onMouseDown={(e) => {
-								e.preventDefault();
-								setResizing(true);
-							}}
-						/>
-					) : null}
 				</div>
 			</SidebarOpenGroupsProvider>
 		</>

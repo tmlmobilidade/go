@@ -42,10 +42,12 @@ export function AppWrapperBanner() {
 	//
 	// A. Setup variables
 
-	const banner: AppWrapperBannerConfig | null = {
-		title: 'Manutenção programada — A partir das 16:00',
-		variant: 'danger',
-	};
+	// const banner: AppWrapperBannerConfig | null = {
+	// 	title: 'Manutenção programada — A partir das 16:00',
+	// 	variant: 'danger',
+	// };
+
+	const banner: AppWrapperBannerConfig | null = null;
 
 	//
 	// B. Render components
