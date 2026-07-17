@@ -12,7 +12,7 @@ import { Event } from '@tmlmobilidade/types';
  */
 export async function fetchAllEvents(agencyId: string): Promise<Map<string, Event>> {
 	try {
-		const allEvents = await goDb.offer.events.findByAgencyIds([agencyId]);
+		const allEvents = await goDb.offer.events.findMany({ agency_ids: { $in: [agencyId] } });
 		const eventsMap = new Map<string, Event>();
 		for (const event of allEvents) {
 			eventsMap.set(event._id, event);

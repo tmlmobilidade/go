@@ -12,7 +12,7 @@ import { Holiday } from '@tmlmobilidade/types';
  */
 export async function fetchAllHolidays(agencyIds: string[]): Promise<Map<string, Holiday>> {
 	try {
-		const allHolidays = await goDb.offer.holidays.findByAgencyIds(agencyIds);
+		const allHolidays = await goDb.offer.holidays.findMany({ agency_ids: { $in: agencyIds } });
 		const holidaysMap = new Map<string, Holiday>();
 		for (const holiday of allHolidays) {
 			holidaysMap.set(holiday._id, holiday);

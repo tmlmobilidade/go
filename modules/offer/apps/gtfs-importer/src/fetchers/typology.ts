@@ -9,7 +9,7 @@ import { Typology } from '@tmlmobilidade/types';
 export async function fetchTypologiesByAgencyIds(agencyIds: string[]): Promise<Typology[]> {
 	try {
 		if (!agencyIds.length) return [];
-		return await goDb.offer.typologies.findByAgencyIds(agencyIds);
+		return await goDb.offer.typologies.findMany({ agency_ids: { $in: agencyIds } });
 	} catch (error) {
 		throw new Error(`Error fetching typologies by agency IDs: ${error}`);
 	}
