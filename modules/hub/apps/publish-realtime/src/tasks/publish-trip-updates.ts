@@ -3,7 +3,7 @@
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { pipelinePath, querySqlFromFile } from '@tmlmobilidade/go-hub-pckg-sql';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type GtfsRtFeedMessage, type GtfsRtStopTimeUpdate, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';

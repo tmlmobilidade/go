@@ -2,7 +2,7 @@
 
 import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
