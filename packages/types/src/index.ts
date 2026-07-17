@@ -1,6 +1,7 @@
 export * from '@/agencies/index.js';
 export * from '@/alerts/index.js';
 export * from '@/api/index.js';
+export * from '@/app-configs/index.js';
 export * from '@/auth/index.js';
 export * from '@/calendar/index.js';
 export * from '@/dates/index.js';
