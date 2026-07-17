@@ -1,6 +1,6 @@
 /* * */
 
-import { zones } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Zone } from '@tmlmobilidade/types';
 
@@ -15,7 +15,7 @@ export async function fetchAllZones(): Promise<Map<string, Zone>> {
 	try {
 		Logger.info({ message: 'Fetching all zones...' });
 
-		const allZones = await zones.findMany({});
+		const allZones = await goDB.offer.zones.findMany({});
 		const zonesMap = new Map<string, Zone>();
 
 		for (const zone of allZones) {

@@ -2,7 +2,7 @@
 
 import { type OriginalTypologyType } from '@/original-typology.type.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { typologies } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Typology, TypologySchema } from '@tmlmobilidade/types';
 
@@ -131,7 +131,7 @@ export async function seedFromGoV1() {
 		//
 		// Insert typologies into DB
 
-		await typologies.insertMany(preparedTypologies, { unsafe: true });
+		await goDB.offer.typologies.insertMany(preparedTypologies, { unsafe: true });
 		console.log(`Inserted ${preparedTypologies.length} typologies`);
 
 		//

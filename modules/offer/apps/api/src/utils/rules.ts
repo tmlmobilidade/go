@@ -1,6 +1,6 @@
 import { resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { events } from '@tmlmobilidade/interfaces';
+import { events, lines } from '@tmlmobilidade/interfaces';
 import { type Pattern } from '@tmlmobilidade/types';
 
 export async function mergePatternWithEventRules(pattern: Pattern): Promise<Pattern> {
@@ -8,7 +8,7 @@ export async function mergePatternWithEventRules(pattern: Pattern): Promise<Patt
 	if (!line) return pattern;
 
 	// Fetch all events for this agency - filtering happens at the rule level
-	const candidateEvents = await events.findMany({
+	const candidateEvents = await goDB.offer.events.findMany({
 		agency_ids: { $in: [line.agency_id] },
 	});
 
