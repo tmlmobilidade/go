@@ -10,7 +10,7 @@ export const RawVehicleEventPtTmlFertagusV1PayloadSchema = z.object({
 	header: z.object({
 		gtfs_realtime_version: z.literal('2.0'),
 		incrementality: z.literal('FULL_DATASET'),
-		timestamp: UnixTimestampSchema,
+		timestamp: z.number(),
 	}),
 	vehicle: z.object({
 		agencyId: z.string(),
