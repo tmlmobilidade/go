@@ -26,7 +26,7 @@ export function StopsDetail() {
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
 			opened={activeBottomSheet?.view === 'stops-detail'}
-			size="full"
+			size="fit"
 			title={foundStopData?.name}
 		>
 			<StopsDetailContextProvider stopId={activeBottomSheet?.entityId}>
