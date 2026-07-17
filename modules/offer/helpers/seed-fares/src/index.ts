@@ -1,7 +1,7 @@
 /* * */
 
 import { seedFromGoV1 } from '@/tasks/seed-from-go-v1.js';
-import { fares } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 
 /* * */
 
@@ -12,7 +12,7 @@ import { fares } from '@tmlmobilidade/interfaces';
 	// Delete existing fares
 
 	console.log('Deleting All');
-	await fares.deleteMany({});
+	await goDB.offer.fares.deleteMany({});
 
 	//
 	// Run tasks

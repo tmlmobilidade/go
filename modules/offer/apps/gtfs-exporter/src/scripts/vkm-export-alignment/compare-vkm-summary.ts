@@ -22,7 +22,8 @@ import type { CalculateVkmDto, OperationalDate, Pattern } from '@tmlmobilidade/t
 
 import { buildOperationalDateRange, calculateAgencyVkm, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { agencies, events, holidays, lines, routes, yearPeriods } from '@tmlmobilidade/interfaces';
+import { agencies, events, holidays, lines, patterns, routes, yearPeriods } from '@tmlmobilidade/interfaces';
+>>>>>>> 2737379bc (feat(lines): integrate goDB for line operations in controllers and utils)
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';
@@ -117,11 +118,11 @@ function fmtInt(value: number) {
 }
 
 async function loadAgencyPatterns(agencyId: string, onlyRouted: boolean): Promise<Pattern[]> {
-	const agencyLines = await lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
+	const agencyLines = await goDB.offer.lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
 	const lineIds = agencyLines.map(line => line._id);
 	if (!lineIds.length) return [];
 
-	const all = await goDB.offer.patterns.findMany(
+	const all = await patterns.findMany(
 		{ line_id: { $in: lineIds } },
 		{ projection: { code: 1, line_id: 1, path: 1, route_id: 1, rules: 1, shape: 1 } },
 	);
@@ -192,7 +193,7 @@ async function main() {
 	const gtfsIndex = loadGtfsExportIndex(resolvedGtfsDir, startOp, endOp);
 
 	const [agencyRecord, agencyPatterns, periods, holidaysList, eventsList] = await Promise.all([
-		agencies.findById(agency),
+		goDb.core.agencies.findById(agency),
 		loadAgencyPatterns(agency, onlyRouted),
 		yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
 		holidays.findMany({ agency_ids: { $in: [agency] } }),
