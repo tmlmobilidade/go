@@ -23,7 +23,6 @@ import type { CalculateVkmDto, OperationalDate, Pattern } from '@tmlmobilidade/t
 import { buildOperationalDateRange, calculateAgencyVkm, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { agencies, events, holidays, lines, patterns, routes, yearPeriods } from '@tmlmobilidade/interfaces';
->>>>>>> 2737379bc (feat(lines): integrate goDB for line operations in controllers and utils)
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';

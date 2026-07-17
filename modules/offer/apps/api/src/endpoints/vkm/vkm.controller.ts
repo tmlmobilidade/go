@@ -5,7 +5,6 @@ import { calculateAgencyVkm } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { agencies, events, holidays, lines, patterns, yearPeriods } from '@tmlmobilidade/interfaces';
->>>>>>> 2737379bc (feat(lines): integrate goDB for line operations in controllers and utils)
 import { type CalculateVkmDto, CalculateVkmSchema, PermissionCatalog, type VkmCalculationResult } from '@tmlmobilidade/types';
 
 /* * */

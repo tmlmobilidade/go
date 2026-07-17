@@ -7,7 +7,6 @@ import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { agencies, lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
->>>>>>> 2737379bc (feat(lines): integrate goDB for line operations in controllers and utils)
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
