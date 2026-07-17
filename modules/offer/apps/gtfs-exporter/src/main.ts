@@ -6,7 +6,7 @@ import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.j
 import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { agencies, lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
+import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
@@ -215,7 +215,7 @@ export async function exportGtfsV29(
 
 			// 3.1.
 			// Fetch all routes for this line
-			const lineRoutes = await goDb.offer.routes.findByLineId(lineData._id);
+			const lineRoutes = await goDb.offer.routes.findMany({ line_id: lineData._id });
 
 			if (lineRoutes.length === 0) {
 				Logger.info({ message: `  Skipping line ${lineData.code}: no routes found` });
@@ -228,7 +228,7 @@ export async function exportGtfsV29(
 				const routeId = routeData.code;
 
 				// Fetch all patterns for this route
-				const routePatterns = await patterns.findMany({
+				const routePatterns = await goDb.offer.patterns.findMany({
 					line_id: lineData._id,
 					route_id: routeData._id,
 				});

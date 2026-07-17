@@ -1,7 +1,6 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { fares, typologies } from '@tmlmobilidade/interfaces';
 import { type Fare, type FareSimplified, type Line, type LineNormalized, type Route, type RouteSimplified, type Typology, type TypologySimplified } from '@tmlmobilidade/types';
 
 /* * */
@@ -46,10 +45,10 @@ export async function populateLines(linesData: Line[]): Promise<LineNormalized[]
 
 	const [typologiesData, faresData] = await Promise.all([
 		typologyIds.length
-			? typologies.findMany({ _id: { $in: typologyIds } })
+			? goDb.offer.typologies.findMany({ _id: { $in: typologyIds } })
 			: Promise.resolve([]),
 		fareIds.length
-			? fares.findMany({ _id: { $in: fareIds } })
+			? goDb.offer.fares.findMany({ _id: { $in: fareIds } })
 			: Promise.resolve([]),
 	]);
 	const routesData = await getLinesRoutes(linesData.map(line => line._id));

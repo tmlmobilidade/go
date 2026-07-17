@@ -7,7 +7,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { lines, patterns, stops, typologies } from '@tmlmobilidade/interfaces';
+import { stops } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CreatePatternDto, NoteComment, type Pattern, type PatternShapeMapItem, PermissionCatalog, PopulatedPath, PopulatedPattern, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
@@ -22,7 +22,7 @@ export class PatternsController {
 	static async comment(request: FastifyRequest<{ Body: NoteComment, Params: { id: string } }>, reply: FastifyReply<Pattern>) {
 		//
 
-		const patternData = await patterns.findById(request.params.id);
+		const patternData = await goDb.offer.patterns.findById(request.params.id);
 
 		if (!patternData) {
 			return reply.status(HTTP_STATUS.NOT_FOUND).send({
@@ -34,7 +34,7 @@ export class PatternsController {
 
 		const createdBy = request.me.first_name + ' ' + request.me.last_name;
 
-		const updateResult = await patterns.updateById(
+		const updateResult = await goDb.offer.patterns.updateById(
 			request.params.id,
 			{ comments: [...patternData.comments, { ...request.body, created_by: createdBy, updated_by: createdBy }], updated_by: createdBy },
 		);
@@ -75,7 +75,7 @@ export class PatternsController {
 			path: [],
 		};
 
-		const newPattern = await patterns.insertOne({
+		const newPattern = await goDb.offer.patterns.insertOne({
 			...request.body,
 			parameters: [defaultParameter],
 		});
@@ -127,12 +127,12 @@ export class PatternsController {
 		const lineIds = agencyLines.map(line => line._id);
 		if (!lineIds.length) return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
 
-		const agencyTypologies = await goDb.offer.typologies.findByAgencyIds(agencyIds);
+		const agencyTypologies = await goDb.offer.typologies.findMany({ agency_ids: { $in: agencyIds } });
 		const typologyColorById = new Map(agencyTypologies.map(typology => [typology._id, typology.color]));
 		const typologyTextColorById = new Map(agencyTypologies.map(typology => [typology._id, typology.text_color]));
 		const lineById = new Map(agencyLines.map(line => [line._id, line]));
 
-		const agencyPatterns = await patterns.findMany(
+		const agencyPatterns = await goDb.offer.patterns.findMany(
 			{
 				'line_id': { $in: lineIds },
 				'shape.encoded_polyline': { $exists: true },
@@ -184,7 +184,7 @@ export class PatternsController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const pattern = await patterns.findById(id);
+		const pattern = await goDb.offer.patterns.findById(id);
 
 		if (!pattern) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
@@ -204,7 +204,7 @@ export class PatternsController {
 
 		//
 
-		await patterns.deleteById(id);
+		await goDb.offer.patterns.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -220,7 +220,7 @@ export class PatternsController {
 		//
 		// Get the Pattern from the database
 
-		const patternData: null | Pattern = await patterns.findById(request.params.id);
+		const patternData: null | Pattern = await goDb.offer.patterns.findById(request.params.id);
 
 		if (!patternData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
@@ -289,7 +289,7 @@ export class PatternsController {
 		//
 		// Get pattern data
 
-		const patternData = await patterns.findById(request.params.id);
+		const patternData = await goDb.offer.patterns.findById(request.params.id);
 
 		//
 		// If pattern does not exist, throw error
@@ -428,7 +428,7 @@ export class PatternsController {
 		//
 		// Get the Pattern from the database
 
-		const patternData = await patterns.findById(request.params.id);
+		const patternData = await goDb.offer.patterns.findById(request.params.id);
 
 		if (!patternData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
@@ -447,8 +447,8 @@ export class PatternsController {
 		}
 
 		// If authorized, toggle the lock status of the pattern
-		await patterns.toggleLockById(request.params.id);
-		const foundPattern = await patterns.findById(request.params.id);
+		await goDb.offer.patterns.toggleLockById(request.params.id);
+		const foundPattern = await goDb.offer.patterns.findById(request.params.id);
 		if (!foundPattern) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
 		}
@@ -469,7 +469,7 @@ export class PatternsController {
 		//
 		// Get the Pattern from the database
 
-		const patternData = await patterns.findById(request.params.id);
+		const patternData = await goDb.offer.patterns.findById(request.params.id);
 
 		if (!patternData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Pattern not found');
@@ -512,7 +512,7 @@ export class PatternsController {
 		//
 		// Update the pattern
 
-		const updatedPattern = await patterns.updateById(patternData._id, updateData);
+		const updatedPattern = await goDb.offer.patterns.updateById(patternData._id, updateData);
 
 		//
 		// Send the updated pattern data as the response

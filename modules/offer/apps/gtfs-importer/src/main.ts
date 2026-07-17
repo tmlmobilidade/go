@@ -1,7 +1,6 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { lines, patterns, routes } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { INTERCHANGE_MODE } from '@tmlmobilidade/types';
@@ -55,12 +54,12 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 	// C. Cleanup existing data for agencies being imported
 
 	const agencyIds = [...new Set(gtfsRoutes.map(route => route.agency_id).filter(Boolean))];
-	const existingLines = await goDb.offer.lines.findByAgencyIds(agencyIds);
+	const existingLines = await goDb.offer.lines.findMany({ agency_ids: { $in: agencyIds } });
 
 	const lineIds = existingLines.map(line => line._id);
 
 	if (lineIds.length) {
-		await patterns.deleteMany({ line_id: { $in: lineIds } });
+		await goDb.offer.patterns.deleteMany({ line_id: { $in: lineIds } });
 		await goDb.offer.routes.deleteMany({ line_id: { $in: lineIds } });
 		await goDb.offer.lines.deleteMany({ _id: { $in: lineIds } });
 	}

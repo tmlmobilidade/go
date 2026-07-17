@@ -1,6 +1,5 @@
 import { resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { events, lines } from '@tmlmobilidade/interfaces';
 import { type Pattern } from '@tmlmobilidade/types';
 
 export async function mergePatternWithEventRules(pattern: Pattern): Promise<Pattern> {

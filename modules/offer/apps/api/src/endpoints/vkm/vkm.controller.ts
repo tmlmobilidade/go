@@ -4,7 +4,6 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { calculateAgencyVkm } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { agencies, events, holidays, lines, patterns, yearPeriods } from '@tmlmobilidade/interfaces';
 import { type CalculateVkmDto, CalculateVkmSchema, PermissionCatalog, type VkmCalculationResult } from '@tmlmobilidade/types';
 
 /* * */
@@ -59,20 +58,20 @@ export class VkmController {
 
 		const [agencyPatterns, agencyPeriods, agencyHolidays, agencyEvents] = await Promise.all([
 			lineIds.length > 0
-				? patterns.findMany(
+				? goDb.offer.patterns.findMany(
 					{ line_id: { $in: lineIds } },
 					{ projection: patternProjection },
 				)
 				: Promise.resolve([]),
-			yearPeriods.findMany(
+			goDb.offer.yearPeriods.findMany(
 				{ agency_ids: { $in: [payload.agency_id] } },
 				{ projection: { _id: 1, code: 1, dates: 1, name: 1 } },
 			),
-			holidays.findMany(
+			goDb.offer.holidays.findMany(
 				{ agency_ids: { $in: [payload.agency_id] } },
 				{ projection: { _id: 1, agency_ids: 1, dates: 1, title: 1 } },
 			),
-			events.findMany(
+			goDb.offer.events.findMany(
 				{ agency_ids: { $in: [payload.agency_id] } },
 				{ projection: { _id: 1, agency_ids: 1, dates: 1, rules: 1, title: 1 } },
 			),
