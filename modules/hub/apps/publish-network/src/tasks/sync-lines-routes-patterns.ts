@@ -77,7 +77,6 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 	const allLinesParsed = new Map<string, HubLine>();
 	const allRoutesParsed = new Map<string, HubRoute>();
-	const allTripPatternIds = new Map<string, string>();
 	const updatedPatternKeys = new Set<string>();
 
 	for (const patternId of allDistinctPatternIds) {
@@ -100,8 +99,6 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 		for (const tripRawData of allTripsForThisPatternRaw) {
 			//
-
-			allTripPatternIds.set(tripRawData.trip_id, tripRawData.pattern_id);
 
 			//
 			// Get the stop_times data associated with the current trip
@@ -489,12 +486,6 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 	if (stalePatternKeys.length) await cacheDb.deleteMany(stalePatternKeys);
 
 	Logger.info({ message: `Deleted ${stalePatternKeys.length} stale Patterns (${removeStalePatternsTimer.get()})` });
-
-	//
-	// Save the GTFS trip to Hub pattern lookup as one atomically-replaced Redis hash
-
-	await apiCache.replaceHash('hub:v1:network:trip-patterns', allTripPatternIds);
-	Logger.info({ message: `Updated ${allTripPatternIds.size} Trip to Pattern references` });
 
 	//
 	// Save all routes to the database

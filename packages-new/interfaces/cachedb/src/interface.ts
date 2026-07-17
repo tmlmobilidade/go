@@ -2,7 +2,6 @@
 
 import { type RedisClientType, RedisDatabaseClient } from '@tmlmobilidade/go-clients-redis';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
-import crypto from 'node:crypto';
 
 import { type cacheDbKey } from './keys.js';
 
@@ -82,26 +81,6 @@ class CacheDbClass {
 	}
 
 	/**
-	 * Retrieves selected fields from a cache hash.
-	 * @param key The key of the hash.
-	 * @param fields The hash fields to retrieve.
-	 * @returns A map containing the fields that exist in the hash.
-	 */
-	public async getHashFields(key: ApiCacheKey, fields: string[]): Promise<Map<string, string>> {
-		if (!fields.length) return new Map();
-
-		const values = await this.client.hmGet(key, fields);
-		const result = new Map<string, string>();
-
-		fields.forEach((field, index) => {
-			const value = values[index];
-			if (typeof value === 'string') result.set(field, value);
-		});
-
-		return result;
-	}
-
-	/**
 	 * Scans cache keys by pattern.
 	 * @param pattern The redis pattern to match.
 	 * @returns A promise resolving with all matching keys.
@@ -129,33 +108,6 @@ class CacheDbClass {
 		// Set cache with optional TTL
 		if (ttl) await this.client.set(key, value, { expiration: { type: 'EX', value: ttl } });
 		else await this.client.set(key, value);
-	}
-
-	/**
-	 * Atomically replaces a cache hash without exposing partially-published data.
-	 * @param key The key of the hash to replace.
-	 * @param values The complete set of hash fields and values.
-	 */
-	public async replaceHash(key: ApiCacheKey, values: ReadonlyMap<string, string>) {
-		if (!values.size) {
-			await this.client.del(key);
-			return;
-		}
-
-		const temporaryKey = `${key}:building:${crypto.randomUUID()}`;
-		const entries = Array.from(values.entries());
-		const chunkSize = 10_000;
-
-		try {
-			for (let index = 0; index < entries.length; index += chunkSize) {
-				await this.client.hSet(temporaryKey, Object.fromEntries(entries.slice(index, index + chunkSize)));
-			}
-
-			await this.client.rename(temporaryKey, key);
-		} catch (error) {
-			await this.client.del(temporaryKey);
-			throw error;
-		}
 	}
 
 	protected connectToClient() {

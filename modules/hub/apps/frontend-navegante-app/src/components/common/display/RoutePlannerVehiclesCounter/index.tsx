@@ -3,7 +3,7 @@
 import { VehiclesCounter } from '@/components/common/display/VehiclesCounter';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { filterVehicleFeatureCollectionByPatternIds, getRoutePlannerItineraryPatternIds } from '@/utils/route-planner-vehicles';
+import { filterVehicleFeatureCollectionByRouteDirections, getRoutePlannerItineraryRouteDirections } from '@/utils/route-planner-vehicles';
 import { useMemo } from 'react';
 
 /* * */
@@ -20,13 +20,13 @@ export function RoutePlannerVehiclesCounter() {
 	//
 	// B. Transform data
 
-	const routePlannerVehiclePatternIds = useMemo(() => {
-		return getRoutePlannerItineraryPatternIds(routePlannerContext.data.selected_itinerary);
+	const routePlannerVehicleRouteDirections = useMemo(() => {
+		return getRoutePlannerItineraryRouteDirections(routePlannerContext.data.selected_itinerary);
 	}, [routePlannerContext.data.selected_itinerary]);
 
 	const vehiclesData = useMemo(() => {
-		return filterVehicleFeatureCollectionByPatternIds(vehiclesContext.data.fc, routePlannerVehiclePatternIds);
-	}, [routePlannerVehiclePatternIds, vehiclesContext.data.fc]);
+		return filterVehicleFeatureCollectionByRouteDirections(vehiclesContext.data.fc, routePlannerVehicleRouteDirections);
+	}, [routePlannerVehicleRouteDirections, vehiclesContext.data.fc]);
 
 	//
 	// C. Render components

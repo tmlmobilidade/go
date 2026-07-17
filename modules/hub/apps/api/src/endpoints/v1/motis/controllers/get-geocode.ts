@@ -1,7 +1,6 @@
 /* * */
 
-import { fetchMotisJson } from '@/endpoints/v1/motis/motis-client.js';
-import { type MotisQuery } from '@/endpoints/v1/motis/motis.types.js';
+import { fetchMotisJson, type MotisQuery } from '@/endpoints/v1/motis/motis-client.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 

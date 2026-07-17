@@ -21,13 +21,21 @@ import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { centerMap } from '@/utils/map.utils';
 import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
-import { filterVehicleFeatureCollectionByPatternIds, getRoutePlannerItineraryPatternIds } from '@/utils/route-planner-vehicles';
+import { filterVehicleFeatureCollectionByPatternIds, filterVehicleFeatureCollectionByRouteDirections, getRoutePlannerItineraryRouteDirections } from '@/utils/route-planner-vehicles';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
 import { type MapLayerMouseEvent, useMap, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
+
+/* * */
+
+const baseMapInteractiveLayerIds = [
+	MapViewOverlayVehiclesPrimaryLayerId,
+	MapViewOverlayStopsInteractiveLayerId,
+	MapViewStyleAlertsInteractiveLayerId,
+];
 
 /* * */
 
@@ -98,8 +106,8 @@ export function BaseMap() {
 		return collection;
 	}, [alertsContext.data.fc, focusedAlertId, routePlannerAlertsMapData]);
 
-	const routePlannerVehiclePatternIds = useMemo(() => {
-		return getRoutePlannerItineraryPatternIds(routePlannerContext.data.selected_itinerary);
+	const routePlannerVehicleRouteDirections = useMemo(() => {
+		return getRoutePlannerItineraryRouteDirections(routePlannerContext.data.selected_itinerary);
 	}, [routePlannerContext.data.selected_itinerary]);
 
 	const lineDetailVehiclePatternIds = useMemo(() => {
@@ -108,11 +116,11 @@ export function BaseMap() {
 		return new Set(activePatternId ? [activePatternId] : []);
 	}, [activeBottomSheet?.view, linesDetailContext.data.active_pattern?._id]);
 
-	const shouldAlwaysShowFilteredVehicles = routePlannerVehiclePatternIds !== null || lineDetailVehiclePatternIds !== null;
+	const shouldAlwaysShowFilteredVehicles = routePlannerVehicleRouteDirections !== null || lineDetailVehiclePatternIds !== null;
 
 	const routePlannerVehiclesMapData = useMemo(() => {
-		return filterVehicleFeatureCollectionByPatternIds(vehiclesContext.data.fc, routePlannerVehiclePatternIds);
-	}, [routePlannerVehiclePatternIds, vehiclesContext.data.fc]);
+		return filterVehicleFeatureCollectionByRouteDirections(vehiclesContext.data.fc, routePlannerVehicleRouteDirections);
+	}, [routePlannerVehicleRouteDirections, vehiclesContext.data.fc]);
 
 	const lineDetailVehiclesMapData = useMemo(() => {
 		if (lineDetailVehiclePatternIds === null) return routePlannerVehiclesMapData;
@@ -242,14 +250,10 @@ export function BaseMap() {
 	return (
 		<MapView
 			id="base-map"
+			interactiveLayerIds={baseMapInteractiveLayerIds}
 			onClick={handleMapClick}
 			onDrag={handleMapDrag}
 			onZoom={handleMapZoom}
-			interactiveLayerIds={[
-				MapViewOverlayVehiclesPrimaryLayerId,
-				MapViewOverlayStopsInteractiveLayerId,
-				MapViewStyleAlertsInteractiveLayerId,
-			]}
 		>
 
 			<MapViewOverlayStops

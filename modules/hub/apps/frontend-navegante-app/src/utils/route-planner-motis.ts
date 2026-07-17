@@ -10,19 +10,6 @@ export type MotisGeocodeArea = Partial<MotisApiArea>;
 
 export type MotisGeocodeResult = MotisApiGeocodeResponse[number];
 
-export type MotisPlanLeg = MotisApiLeg & {
-	hubPatternId: null | string
-};
-
-export type MotisItinerary = Omit<MotisApiItinerary, 'legs'> & {
-	legs: MotisPlanLeg[]
-};
-
-export type MotisPlanResponse = Omit<MotisApiPlanResponse, 'direct' | 'itineraries'> & {
-	direct: MotisItinerary[]
-	itineraries: MotisItinerary[]
-};
-
 export interface RoutePlannerLocation {
 	areas?: MotisGeocodeArea[]
 	category?: string
@@ -42,6 +29,9 @@ export interface RoutePlannerLocation {
 
 export type MotisPlanPlace = MotisApiPlace;
 export type MotisPlanIntermediateStop = MotisApiPlace;
+export type MotisPlanLeg = MotisApiLeg;
+export type MotisItinerary = MotisApiItinerary;
+export type MotisPlanResponse = MotisApiPlanResponse;
 
 export interface RoutePlannerTravelTime {
 	date: Date
@@ -504,7 +494,7 @@ function decodePolylineCoordinate(value: string, startIndex: number) {
 	let result = 0;
 	let shift = 0;
 	let index = startIndex;
-	let byte = 0;
+	let byte: number;
 
 	do {
 		if (index >= value.length) return null;

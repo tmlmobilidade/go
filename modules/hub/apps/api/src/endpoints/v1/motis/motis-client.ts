@@ -3,11 +3,13 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Logger } from '@tmlmobilidade/logger';
 
-import { type MotisQuery } from './motis.types.js';
-
 /* * */
 
 const DEFAULT_MOTIS_API_BASE_URL = 'http://localhost:8080';
+
+/* * */
+
+export type MotisQuery = Record<string, unknown>;
 
 /* * */
 
