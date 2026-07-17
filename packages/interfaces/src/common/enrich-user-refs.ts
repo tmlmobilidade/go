@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { users } from '@/interfaces/auth/users.js';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type UserDisplay, UserDisplayFields } from '@tmlmobilidade/types';
 import { FindOptions } from 'mongodb';
 
@@ -33,8 +32,7 @@ function replaceRefs(input: unknown, map: UserMap): unknown {
 			if (isUserRefKey(k) && typeof v === 'string' && v !== 'system') {
 				const found = map.get(v);
 				out[k] = found ?? v; // fallback to original id if user not found
-			}
-			else {
+			} else {
 				out[k] = replaceRefs(v, map);
 			}
 		}
@@ -45,7 +43,7 @@ function replaceRefs(input: unknown, map: UserMap): unknown {
 
 async function fetchUsersMap(ids: Set<string>): Promise<UserMap> {
 	if (ids.size === 0) return new Map();
-	const coll = await users.getCollection();
+	const coll = await goDB.core.users.getCollection();
 
 	// Only fetch UserDisplay fields
 	const projection: FindOptions['projection'] = Object.keys(UserDisplayFields).reduce((acc, field) => {

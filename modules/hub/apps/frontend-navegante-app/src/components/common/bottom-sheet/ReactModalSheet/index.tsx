@@ -119,6 +119,7 @@ export function BottomSheet({
 
 	return (
 		<Sheet
+			ref={sheetRef}
 			avoidKeyboard={avoidKeyboard}
 			className={styles.root}
 			detent={detent}
@@ -129,7 +130,6 @@ export function BottomSheet({
 			onOpenEnd={onOpenEnd}
 			onOpenStart={onOpenStart}
 			onSnap={handleSnap}
-			ref={sheetRef}
 			snapPoints={snapPoints}
 		>
 			<Sheet.Container

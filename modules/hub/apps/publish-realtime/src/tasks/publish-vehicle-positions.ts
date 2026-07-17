@@ -1,7 +1,8 @@
 /* * */
 
-import { apiCache, simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
+import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
@@ -28,7 +29,7 @@ export async function publishVehiclesPositions() {
 	//
 	// Retrieve active plans from the database
 
-	const approvedPlans = await apiCache.get('hub:v1:plans:approved:json');
+	const approvedPlans = await cacheDb.get('hub:v1:plans:approved:json');
 	if (!approvedPlans) throw new Error('No approved plans found in API Cache');
 
 	const approvedPlansData: HubPlan[] = JSON.parse(approvedPlans);
@@ -64,12 +65,13 @@ export async function publishVehiclesPositions() {
 				const vehiclePositionData: HubVehiclePosition = {
 					...vehicleEventData,
 					calendar_date: validateCalendarDate(vehicleEventData.operational_date),
+					direction_id: associatedRide?.direction_id,
 					geohash: vehicleEventData.geohash ?? null,
 					line_id: getPublicLineId(vehicleEventData.agency_id, String(associatedRide?.line_id || '-')),
 					operational_date: operationalDate,
 					pattern_id: getPublicPatternId(vehicleEventData.agency_id, String(associatedRide?.pattern_id ?? '-')),
 					ride_id: associatedRide?._id,
-					route_id: associatedRide?._id,
+					route_id: associatedRide?.route_id,
 					trip_id: getPublicTripId(activePlanIdForAgency ?? '-', vehicleEventData.agency_id, vehicleEventData.trip_id),
 					vehicle_id: getPublicVehicleId(vehicleEventData.agency_id, vehicleEventData.vehicle_id),
 				};
@@ -88,7 +90,7 @@ export async function publishVehiclesPositions() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:realtime:vehicles:positions:json', JSON.stringify(vehiclePositionsJson));
+	await cacheDb.set('hub:v1:realtime:vehicles:positions:json', JSON.stringify(vehiclePositionsJson));
 
 	Logger.success(`Finished publishing latest vehicles positions (${globalTimer.get()})`);
 
@@ -137,7 +139,7 @@ export async function publishVehiclesPositions() {
 			return entity;
 		});
 
-	await apiCache.set('hub:v1:realtime:vehicles:positions:gtfs', JSON.stringify(vehiclePositionsGtfs));
+	await cacheDb.set('hub:v1:realtime:vehicles:positions:gtfs', JSON.stringify(vehiclePositionsGtfs));
 
 	Logger.success(`Finished publishing latest vehicles positions GTFS-RT (${globalTimer.get()})`);
 

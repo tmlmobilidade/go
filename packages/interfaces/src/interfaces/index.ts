@@ -1,6 +1,4 @@
-export * from '@/interfaces/agencies/index.js';
 export * from '@/interfaces/alerts/index.js';
-export * from '@/interfaces/auth/index.js';
 export * from '@/interfaces/dates/index.js';
 export * from '@/interfaces/file-exports/index.js';
 export * from '@/interfaces/files/index.js';
@@ -11,7 +9,6 @@ export * from '@/interfaces/notifications/index.js';
 export * from '@/interfaces/offer/fares.js';
 export * from '@/interfaces/offer/index.js';
 export * from '@/interfaces/offer/zones.js';
-export * from '@/interfaces/organizations/index.js';
 export * from '@/interfaces/pcgidb/index.js';
 export * from '@/interfaces/plans/index.js';
 export * from '@/interfaces/proposed-changes/index.js';

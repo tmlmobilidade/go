@@ -28,6 +28,7 @@ export const StopSchema = DocumentSchema.extend({
 	new_name: z.string().min(5).max(100).nullable().default(null),
 	previous_go_id: z.string().nullable().default(null),
 	short_name: z.string().min(2).max(55),
+	tts_hash: z.string(),
 	tts_name: z.string(),
 
 	//
