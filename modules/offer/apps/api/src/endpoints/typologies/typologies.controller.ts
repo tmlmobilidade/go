@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, typologies } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Filter } from '@tmlmobilidade/interfaces';
 import { CreateTypologyDto, PermissionCatalog, type PermissionResourceCheck, type Typology, type UpdateTypologyDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -56,7 +57,7 @@ export class TypologiesController {
 		//
 		// Create the new typology
 
-		const newTypology = await typologies.insertOne(request.body);
+		const newTypology = await goDb.offer.typologies.insertOne(request.body);
 
 		//
 		// Send the response
@@ -73,7 +74,7 @@ export class TypologiesController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const typology = await typologies.findById(id);
+		const typology = await goDb.offer.typologies.findById(id);
 
 		if (!typology) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
@@ -108,7 +109,7 @@ export class TypologiesController {
 
 		//
 
-		await typologies.deleteById(id);
+		await goDb.offer.typologies.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -139,7 +140,7 @@ export class TypologiesController {
 		//
 		// Fetch typologies based on query filters
 
-		const allTypologies = await typologies.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allTypologies = await goDb.offer.typologies.findMany(queryFilters, { sort: { created_at: -1 } });
 
 		return reply.send({ data: allTypologies, error: null, statusCode: HTTP_STATUS.OK });
 		//
@@ -156,7 +157,7 @@ export class TypologiesController {
 		//
 		// Get the Typology from the database
 
-		const typologyData = await typologies.findById(request.params.id);
+		const typologyData = await goDb.offer.typologies.findById(request.params.id);
 
 		if (!typologyData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
@@ -200,7 +201,7 @@ export class TypologiesController {
 		//
 		// Get the Typology from the database
 
-		const typologyData = await typologies.findById(request.params.id);
+		const typologyData = await goDb.offer.typologies.findById(request.params.id);
 
 		if (!typologyData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
@@ -234,8 +235,8 @@ export class TypologiesController {
 		}
 
 		// If authorized, toggle the lock status of the typology
-		await typologies.toggleLockById(request.params.id);
-		const foundTypology = await typologies.findById(request.params.id);
+		await goDb.offer.typologies.toggleLockById(request.params.id);
+		const foundTypology = await goDb.offer.typologies.findById(request.params.id);
 		if (!foundTypology) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
 		}
@@ -256,7 +257,7 @@ export class TypologiesController {
 		//
 		// Get the Typology from the database
 
-		const typologyData = await typologies.findById(request.params.id);
+		const typologyData = await goDb.offer.typologies.findById(request.params.id);
 
 		if (!typologyData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
@@ -292,7 +293,7 @@ export class TypologiesController {
 		//
 		// Update the typology
 
-		const updatedTypology = await typologies.updateById(typologyData._id, request.body);
+		const updatedTypology = await goDb.offer.typologies.updateById(typologyData._id, request.body);
 
 		//
 		// Send the updated typology data as the response

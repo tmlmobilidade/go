@@ -22,7 +22,6 @@ import type { CalculateVkmDto, OperationalDate, Pattern } from '@tmlmobilidade/t
 
 import { buildOperationalDateRange, calculateAgencyVkm, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { events, holidays, lines, patterns, routes, yearPeriods } from '@tmlmobilidade/interfaces';
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';
@@ -117,11 +116,11 @@ function fmtInt(value: number) {
 }
 
 async function loadAgencyPatterns(agencyId: string, onlyRouted: boolean): Promise<Pattern[]> {
-	const agencyLines = await lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
+	const agencyLines = await goDb.offer.lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
 	const lineIds = agencyLines.map(line => line._id);
 	if (!lineIds.length) return [];
 
-	const all = await patterns.findMany(
+	const all = await goDb.offer.patterns.findMany(
 		{ line_id: { $in: lineIds } },
 		{ projection: { code: 1, line_id: 1, path: 1, route_id: 1, rules: 1, shape: 1 } },
 	);
@@ -129,7 +128,7 @@ async function loadAgencyPatterns(agencyId: string, onlyRouted: boolean): Promis
 	if (!onlyRouted) return all;
 
 	const live = new Set(
-		(await routes.findMany({ line_id: { $in: lineIds } }, { projection: { _id: 1 } })).map(r => r._id),
+		(await goDb.offer.routes.findMany({ line_id: { $in: lineIds } }, { projection: { _id: 1 } })).map(r => r._id),
 	);
 	return all.filter(p => live.has(p.route_id));
 }
@@ -137,9 +136,9 @@ async function loadAgencyPatterns(agencyId: string, onlyRouted: boolean): Promis
 function goTimepointDays(
 	pattern: Pattern,
 	operationalDates: OperationalDate[],
-	periods: Awaited<ReturnType<typeof yearPeriods.findMany>>,
-	holidaysList: Awaited<ReturnType<typeof holidays.findMany>>,
-	eventsList: Awaited<ReturnType<typeof events.findMany>>,
+	periods: Awaited<ReturnType<typeof goDb.offer.yearPeriods.findMany>>,
+	holidaysList: Awaited<ReturnType<typeof goDb.offer.holidays.findMany>>,
+	eventsList: Awaited<ReturnType<typeof goDb.offer.events.findMany>>,
 ) {
 	const mergedRules = resolvePatternRules(pattern, eventsList);
 	if (!mergedRules.length) return 0;
@@ -194,9 +193,9 @@ async function main() {
 	const [agencyRecord, agencyPatterns, periods, holidaysList, eventsList] = await Promise.all([
 		goDb.core.agencies.findById(agency),
 		loadAgencyPatterns(agency, onlyRouted),
-		yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
-		holidays.findMany({ agency_ids: { $in: [agency] } }),
-		events.findMany({ agency_ids: { $in: [agency] } }),
+		goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
+		goDb.offer.holidays.findMany({ agency_ids: { $in: [agency] } }),
+		goDb.offer.events.findMany({ agency_ids: { $in: [agency] } }),
 	]);
 	if (!agencyRecord) throw new Error(`Agency ${agency} not found`);
 
