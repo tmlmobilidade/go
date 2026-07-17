@@ -40,4 +40,4 @@ class RawDBClass {
 	}
 }
 
-export const RawDb = asyncSingletonProxy(RawDBClass);
+export const rawDb = asyncSingletonProxy(RawDBClass);
