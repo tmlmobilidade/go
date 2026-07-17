@@ -4,7 +4,7 @@ import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDB } from '@tmlmobilidade/go-interfaces-godb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/types';
@@ -19,15 +19,15 @@ export class AuthController {
 	 */
 	static async changePassword(request: FastifyRequest<{ Body: { password_hash: string, token: string } }>, reply: FastifyReply<void>) {
 		// Check if the verification token is valid
-		const tokenResult = await goDB.core.verificationTokens.findOne({ token: { $eq: request.body.token } });
+		const tokenResult = await goDb.core.verificationTokens.findOne({ token: { $eq: request.body.token } });
 		// If the token is invalid or expired, throw an error
 		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
 			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
 		}
 		// Update the user's password in the database
-		await goDB.core.users.updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
+		await goDb.core.users.updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
 		// Once the token is validated, delete it from the database
-		await goDB.core.verificationTokens.deleteOne({ token: { $eq: request.body.token } });
+		await goDb.core.verificationTokens.deleteOne({ token: { $eq: request.body.token } });
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -89,7 +89,7 @@ export class AuthController {
 	 */
 	static async sendPasswordResetEmail(request: FastifyRequest<{ Body: { email: string } }>, reply: FastifyReply<void>) {
 		// Search user by the email provided in the request body
-		const foundUser = await goDB.core.users.findOne({ email: { $eq: request.body.email } });
+		const foundUser = await goDb.core.users.findOne({ email: { $eq: request.body.email } });
 		if (!foundUser) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
 		}
@@ -97,7 +97,7 @@ export class AuthController {
 		const randomToken = generateRandomToken();
 		// Create a verification token entry in the database
 		// with an expiration time of 1 hour
-		await goDB.core.verificationTokens.insertOne({
+		await goDb.core.verificationTokens.insertOne({
 			expires_at: Dates.now('utc').plus({ hours: 1 }).unix_timestamp,
 			token: randomToken,
 			user_id: foundUser._id,

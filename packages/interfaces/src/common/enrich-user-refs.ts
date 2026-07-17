@@ -1,4 +1,4 @@
-import { goDB } from '@tmlmobilidade/go-interfaces-godb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type UserDisplay, UserDisplayFields } from '@tmlmobilidade/types';
 import { FindOptions } from 'mongodb';
 
@@ -43,7 +43,7 @@ function replaceRefs(input: unknown, map: UserMap): unknown {
 
 async function fetchUsersMap(ids: Set<string>): Promise<UserMap> {
 	if (ids.size === 0) return new Map();
-	const coll = await goDB.core.users.getCollection();
+	const coll = await goDb.core.users.getCollection();
 
 	// Only fetch UserDisplay fields
 	const projection: FindOptions['projection'] = Object.keys(UserDisplayFields).reduce((acc, field) => {

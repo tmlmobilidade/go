@@ -5,7 +5,7 @@ import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.js';
 import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-godb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
@@ -119,7 +119,7 @@ export async function exportGtfsV29(
 
 		const allAgenciesData = await Promise.all(
 			exportConfig.agency_ids.map(async (id) => {
-				const agencyData = await goDB.core.agencies.findById(id);
+				const agencyData = await goDb.core.agencies.findById(id);
 				if (!agencyData) throw new Error(`Agency with ID ${id} not found`);
 				return agencyData;
 			}),
