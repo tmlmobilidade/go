@@ -7,8 +7,11 @@ import styles from './styles.module.css';
 import { useMeContext } from '../../../contexts/Me.context';
 import { useUserPreference } from '../../../hooks';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
+import { Surface } from '../../layout/Surface';
 import { SIDEBAR_LOGO_WIDTH_PX } from '../sidebar-layout.constants';
 import { SidebarBackdrop } from '../SidebarBackdrop';
+import { SidebarFooter } from '../SidebarFooter';
+import { SidebarHeader } from '../SidebarHeader';
 import { SidebarOpenGroupsProvider } from '../SidebarOpenGroups.context';
 import { SidebarPanel } from '../SidebarPanel';
 import { type SidebarVisualMode, SidebarVisualModeContext } from '../SidebarVisualMode.context';
@@ -36,7 +39,7 @@ export function Sidebar() {
 	const meContext = useMeContext();
 	const currentUrl = useCurrentUrl();
 
-	const [sidebarCollapsed, setSidebarCollapsed] = useUserPreference<boolean>('ui', 'sidebar_hidden', false);
+	const [sidebarCollapsed] = useUserPreference<boolean>('ui', 'sidebar_hidden', false);
 
 	const pathname = currentUrl?.pathname;
 	const userPermissions = meContext.data.user?.permissions;
@@ -50,11 +53,6 @@ export function Sidebar() {
 		: isHovering
 			? 'hovered'
 			: 'collapsed';
-
-	const handleSetCollapsed = (nextCollapsed: boolean) => {
-		if (nextCollapsed) setIsHovering(false);
-		setSidebarCollapsed(nextCollapsed);
-	};
 
 	//
 	// B. Render components
@@ -79,14 +77,24 @@ export function Sidebar() {
 						}}
 					>
 						<div className={styles.expandingContainer}>
-							<SidebarPanel
-								collapsedPref={sidebarCollapsed}
-								expanded={isHovering || !sidebarCollapsed}
-								onSetCollapsed={handleSetCollapsed}
-								pathname={pathname}
-								showToggle={isHovering || !sidebarCollapsed}
-								userPermissions={userPermissions}
-							/>
+							<Surface>
+
+								<SidebarHeader
+									expanded={isHovering || !sidebarCollapsed}
+									showToggle={isHovering || !sidebarCollapsed}
+								/>
+
+								<SidebarPanel
+									pathname={pathname}
+									userPermissions={userPermissions}
+								/>
+
+								<SidebarFooter
+									iconOnly={!(isHovering || !sidebarCollapsed)}
+									menuPosition={(isHovering || !sidebarCollapsed) ? 'bottom-end' : 'right-start'}
+								/>
+
+							</Surface>
 						</div>
 					</div>
 				</SidebarVisualModeContext.Provider>
