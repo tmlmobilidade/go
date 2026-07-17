@@ -1,7 +1,7 @@
 /* * */
 
 import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade/go-apex-pckg-parsers';
-import { RawDb } from '@tmlmobilidade/go-interfaces-raw-db';
+import { rawDb } from '@tmlmobilidade/go-interfaces-raw-db';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -19,7 +19,7 @@ const writer = new BatchWriter<RawApexTransaction>({
 				upsert: true,
 			},
 		}));
-		await RawDb.raw.rawApexTransactions.bulkWrite(writeOps);
+		await rawDb.raw.rawApexTransactions.bulkWrite(writeOps);
 	},
 	title: 'rawdb|raw-apex-transactions',
 });
