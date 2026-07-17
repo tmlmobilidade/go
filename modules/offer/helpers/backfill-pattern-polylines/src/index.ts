@@ -1,7 +1,7 @@
 /* * */
 
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Pattern, type Shape, type UnixTimestamp } from '@tmlmobilidade/types';
 import { type Feature, type LineString } from 'geojson';
 
@@ -111,7 +111,7 @@ async function main() {
 	try {
 		console.log('[backfill-pattern-polylines] Starting', { dryRun, force, includeLocked, limit, logEvery });
 
-		const patternCollection = await goDB.offer.patterns.getCollection();
+		const patternCollection = await goDb.offer.patterns.getCollection();
 		shouldDisconnect = true;
 		const candidateFilter = getCandidateFilter();
 		const totalCandidates = await patternCollection.countDocuments(candidateFilter);
@@ -219,7 +219,7 @@ async function main() {
 
 		if (failed > 0) process.exitCode = 1;
 	} finally {
-		if (shouldDisconnect) await goDB.offer.patterns.disconnect();
+		if (shouldDisconnect) await goDb.offer.patterns.disconnect();
 	}
 }
 

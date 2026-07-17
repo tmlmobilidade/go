@@ -1,6 +1,6 @@
 /* * */
 
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
@@ -11,7 +11,7 @@ import { YearPeriod } from '@tmlmobilidade/types';
  */
 export async function fetchAllYearPeriods(): Promise<Map<string, YearPeriod>> {
 	try {
-		const allPeriods = await goDB.offer.yearPeriods.findMany({});
+		const allPeriods = await goDb.offer.yearPeriods.findMany({});
 		const periodsMap = new Map<string, YearPeriod>();
 		for (const period of allPeriods) {
 			periodsMap.set(period._id, period);

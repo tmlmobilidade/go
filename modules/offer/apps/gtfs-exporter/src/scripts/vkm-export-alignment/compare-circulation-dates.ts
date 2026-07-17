@@ -24,7 +24,7 @@
 import type { OperationalDate, Pattern } from '@tmlmobilidade/types';
 
 import { buildOperationalDateRange, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { events, holidays, patterns, yearPeriods } from '@tmlmobilidade/interfaces';
 import { writeFileSync } from 'node:fs';
 
@@ -339,7 +339,7 @@ async function resolvePatternsToAnalyze(
 	holidaysList: Awaited<ReturnType<typeof holidays.findMany>>,
 	eventsList: Awaited<ReturnType<typeof events.findMany>>,
 ): Promise<Pattern[]> {
-	const agencyLines = await goDB.offer.lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
+	const agencyLines = await goDb.offer.lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
 	const lineIds = agencyLines.map(l => l._id);
 	const allPatterns = await patterns.findMany(
 		{ line_id: { $in: lineIds } },

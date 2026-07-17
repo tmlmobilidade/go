@@ -1,7 +1,7 @@
 /* * */
 
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Shape } from '@tmlmobilidade/types';
 
 import { fetchTypologiesByAgencyIds } from './fetchers/typology.js';
@@ -83,7 +83,7 @@ export async function buildImportContext(options: ImportOptions): Promise<Import
 		mappedColors: typologyMap.size,
 	});
 
-	const zoneDocs = await goDB.offer.zones.findMany({});
+	const zoneDocs = await goDb.offer.zones.findMany({});
 	const zoneIdByCode = new Map<string, string>();
 	for (const zone of zoneDocs) {
 		if (!zone.code) continue;

@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Filter } from '@tmlmobilidade/interfaces';
 import { CreateFareDto, type Fare, PermissionCatalog, type PermissionResourceCheck, type UpdateFareDto } from '@tmlmobilidade/types';
 
@@ -57,7 +57,7 @@ export class FaresController {
 		//
 		// Create the new fare
 
-		const newFare = await goDB.offer.fares.insertOne(request.body);
+		const newFare = await goDb.offer.fares.insertOne(request.body);
 
 		//
 		// Send the response
@@ -74,7 +74,7 @@ export class FaresController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const fare = await goDB.offer.fares.findById(id);
+		const fare = await goDb.offer.fares.findById(id);
 
 		if (!fare) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
@@ -109,7 +109,7 @@ export class FaresController {
 
 		//
 
-		await goDB.offer.fares.deleteById(id);
+		await goDb.offer.fares.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -137,7 +137,7 @@ export class FaresController {
 		//
 		// Fetch fares based on query filters
 
-		const allFares = await goDB.offer.fares.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allFares = await goDb.offer.fares.findMany(queryFilters, { sort: { created_at: -1 } });
 
 		return reply.send({ data: allFares, error: null, statusCode: HTTP_STATUS.OK });
 		//
@@ -154,7 +154,7 @@ export class FaresController {
 		//
 		// Get the Fare from the database
 
-		const fareData = await goDB.offer.fares.findById(request.params.id);
+		const fareData = await goDb.offer.fares.findById(request.params.id);
 
 		if (!fareData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
@@ -195,7 +195,7 @@ export class FaresController {
 		//
 		// Get the Fare from the database
 
-		const fareData = await goDB.offer.fares.findById(request.params.id);
+		const fareData = await goDb.offer.fares.findById(request.params.id);
 
 		if (!fareData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
@@ -229,8 +229,8 @@ export class FaresController {
 		}
 
 		// If authorized, toggle the lock status of the fare
-		await goDB.offer.fares.toggleLockById(request.params.id);
-		const foundFare = await goDB.offer.fares.findById(request.params.id);
+		await goDb.offer.fares.toggleLockById(request.params.id);
+		const foundFare = await goDb.offer.fares.findById(request.params.id);
 		if (!foundFare) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
 		}
@@ -251,7 +251,7 @@ export class FaresController {
 		//
 		// Get the Fare from the database
 
-		const fareData = await goDB.offer.fares.findById(request.params.id);
+		const fareData = await goDb.offer.fares.findById(request.params.id);
 
 		if (!fareData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
@@ -287,7 +287,7 @@ export class FaresController {
 		//
 		// Update the fare
 
-		const updatedFare = await goDB.offer.fares.updateById(fareData._id, request.body);
+		const updatedFare = await goDb.offer.fares.updateById(fareData._id, request.body);
 
 		//
 		// Send the updated fare data as the response

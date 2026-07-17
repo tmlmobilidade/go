@@ -1,6 +1,6 @@
 /* * */
 
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { fares, typologies } from '@tmlmobilidade/interfaces';
 import { type Fare, type FareSimplified, type Line, type LineNormalized, type Route, type RouteSimplified, type Typology, type TypologySimplified } from '@tmlmobilidade/types';
 
@@ -29,7 +29,7 @@ function toFareSimplified(fare: Fare): FareSimplified {
 async function getLinesRoutes(lineIds: string[]): Promise<(Pick<Route, 'line_id'> & RouteSimplified)[]> {
 	if (!lineIds.length) return [];
 
-	return await goDB.offer.routes.findMany(
+	return await goDb.offer.routes.findMany(
 		{ line_id: { $in: lineIds } },
 		{ projection: { _id: 1, code: 1, line_id: 1, name: 1 }, sort: { created_at: -1 } },
 	) as (Pick<Route, 'line_id'> & RouteSimplified)[];

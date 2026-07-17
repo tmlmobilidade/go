@@ -2,7 +2,7 @@
 
 import { type OriginalFareType } from '@/original-fare.type.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Fare, FARE_CURRENCY, FARE_PAYMENT_METHOD, FARE_TRANSFERS, FareSchema } from '@tmlmobilidade/types';
 
@@ -52,7 +52,7 @@ export async function seedFromGoV1() {
 		//
 		// Insert fares into DB
 
-		await goDB.offer.fares.insertMany(preparedFares, { unsafe: true });
+		await goDb.offer.fares.insertMany(preparedFares, { unsafe: true });
 		console.log(`Inserted ${preparedFares.length} fares`);
 
 		//

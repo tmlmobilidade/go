@@ -3,7 +3,7 @@
 import { seedLinesFromGoV1 } from '@/tasks/seed-lines.js';
 import { seedPatternsFromGoV1 } from '@/tasks/seed-patterns.js';
 import { seedRoutesFromGoV1 } from '@/tasks/seed-routes.js';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { lines, patterns, routes } from '@tmlmobilidade/interfaces';
 
 /* * */
@@ -15,9 +15,9 @@ import { lines, patterns, routes } from '@tmlmobilidade/interfaces';
 	// Delete existing lines, routes, and patterns
 
 	console.log('Deleting All Lines');
-	await goDB.offer.lines.deleteMany({});
+	await goDb.offer.lines.deleteMany({});
 	console.log('Deleting All Routes');
-	await goDB.offer.routes.deleteMany({});
+	await goDb.offer.routes.deleteMany({});
 	console.log('Deleting All Patterns');
 	await patterns.deleteMany({});
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -80,7 +80,7 @@ export async function seedFromGoV1() {
 			const startDate = sortedDates[0];
 			const endDate = sortedDates[sortedDates.length - 1];
 
-			await goDB.offer.yearPeriods.updateOne(
+			await goDb.offer.yearPeriods.updateOne(
 				{ _id: yearPeriodId },
 				{
 					dates: datesToUpdate as OperationalDate[],

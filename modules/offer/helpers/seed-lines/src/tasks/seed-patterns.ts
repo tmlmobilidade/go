@@ -1,7 +1,7 @@
 import { type OriginalPatternDetailType, type OriginalPatternType } from '@/original-pattern.type.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Pattern, PatternSchema } from '@tmlmobilidade/types';
 
@@ -394,7 +394,7 @@ export async function seedPatternsFromGoV1() {
 	console.log(`Stop mapping misses (total): ${missingStopCount}`);
 	console.log('==============================\n');
 
-	await goDB.offer.patterns.insertMany(preparedPatterns, { unsafe: true });
+	await goDb.offer.patterns.insertMany(preparedPatterns, { unsafe: true });
 	console.log(`Inserted ${preparedPatterns.length} patterns`);
 }
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { getStopByLegacyId } from '@/utils/stops.js';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CreatePatternDto, GtfsTMLStopTimes, GtfsTMLTrip, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/types';
 
@@ -212,7 +212,7 @@ export async function insertPatterns(builtPatterns: BuiltPattern[]): Promise<{ p
 	let patternsCreated = 0;
 
 	for (const { input } of builtPatterns) {
-		const patternDoc = await goDB.offer.patterns.insertOne(input);
+		const patternDoc = await goDb.offer.patterns.insertOne(input);
 		patternsCreated += 1;
 		console.log('[gtfs-importer] Pattern created', {
 			code: input.code,

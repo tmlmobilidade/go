@@ -2,7 +2,7 @@
 
 import { type OriginalLineType } from '@/original-line.type.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { INTERCHANGE_MODE, type Line, LineSchema, TransportType, TransportTypeValues } from '@tmlmobilidade/types';
 
@@ -210,7 +210,7 @@ export async function seedLinesFromGoV1() {
 		//
 		// Insert lines into DB
 
-		await goDB.offer.lines.insertMany(preparedLines, { unsafe: true });
+		await goDb.offer.lines.insertMany(preparedLines, { unsafe: true });
 		console.log(`Inserted ${preparedLines.length} lines`);
 
 		//

@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { patterns, routes } from '@tmlmobilidade/interfaces';
 import { CreateRouteDto, PatternSimplified, PermissionCatalog, type Route, type UpdateRouteDto } from '@tmlmobilidade/types';
 
@@ -34,7 +34,7 @@ export class RoutesController {
 		//
 		// Create the new route
 
-		const newRoute = await goDB.offer.routes.insertOne(request.body);
+		const newRoute = await goDb.offer.routes.insertOne(request.body);
 
 		//
 		// Send the response
@@ -51,7 +51,7 @@ export class RoutesController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const route = await goDB.offer.routes.findById(id);
+		const route = await goDb.offer.routes.findById(id);
 
 		if (!route) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
@@ -71,8 +71,8 @@ export class RoutesController {
 
 		//
 
-		await goDB.offer.routes.deleteById(id);
-		await goDB.offer.patterns.deleteMany({ route_id: id });
+		await goDb.offer.routes.deleteById(id);
+		await goDb.offer.patterns.deleteMany({ route_id: id });
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -88,7 +88,7 @@ export class RoutesController {
 		//
 		// Get the Route from the database
 
-		const routeData = await goDB.offer.routes.findById(request.params.id);
+		const routeData = await goDb.offer.routes.findById(request.params.id);
 
 		if (!routeData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
@@ -109,7 +109,7 @@ export class RoutesController {
 		//
 		// Fetch routes for this line
 
-		const routePatterns = await goDB.offer.patterns.findMany(
+		const routePatterns = await goDb.offer.patterns.findMany(
 			{ line_id: routeData.line_id, route_id: request.params.id },
 			{ projection: { _id: 1, code: 1, destination: 1, headsign: 1, line_id: 1, origin: 1, route_id: 1 }, sort: { created_at: -1 } },
 		) as PatternSimplified[];
@@ -137,7 +137,7 @@ export class RoutesController {
 		//
 		// Get the Route from the database
 
-		const routeData = await goDB.offer.routes.findById(request.params.id);
+		const routeData = await goDb.offer.routes.findById(request.params.id);
 
 		if (!routeData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
@@ -156,8 +156,8 @@ export class RoutesController {
 		}
 
 		// If authorized, toggle the lock status of the route
-		await goDB.offer.routes.toggleLockById(request.params.id);
-		const foundRoute = await goDB.offer.routes.findById(request.params.id);
+		await goDb.offer.routes.toggleLockById(request.params.id);
+		const foundRoute = await goDb.offer.routes.findById(request.params.id);
 		if (!foundRoute) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
 		}
@@ -178,7 +178,7 @@ export class RoutesController {
 		//
 		// Get the Route from the database
 
-		const routeData = await goDB.offer.routes.findById(request.params.id);
+		const routeData = await goDb.offer.routes.findById(request.params.id);
 
 		if (!routeData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Route not found');
@@ -199,7 +199,7 @@ export class RoutesController {
 		//
 		// Update the route
 
-		const updatedRoute = await goDB.offer.routes.updateById(routeData._id, request.body);
+		const updatedRoute = await goDb.offer.routes.updateById(routeData._id, request.body);
 
 		//
 		// Send the updated route data as the response

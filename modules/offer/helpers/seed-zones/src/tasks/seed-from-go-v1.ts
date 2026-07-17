@@ -2,7 +2,7 @@
 
 import { type OriginalZoneType } from '@/original-zone.type.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { ZoneSchema } from '@tmlmobilidade/types';
 
@@ -76,7 +76,7 @@ export async function seedFromGoV1() {
 		//
 		// Insert zones into DB
 
-		await goDB.offer.zones.insertMany(preparedZones, { unsafe: true });
+		await goDb.offer.zones.insertMany(preparedZones, { unsafe: true });
 		console.log(`Inserted ${preparedZones.length} zones`);
 
 		//

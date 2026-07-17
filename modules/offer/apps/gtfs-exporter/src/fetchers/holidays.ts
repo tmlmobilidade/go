@@ -1,6 +1,6 @@
 /* * */
 
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Holiday } from '@tmlmobilidade/types';
 
 /* * */
@@ -12,7 +12,7 @@ import { Holiday } from '@tmlmobilidade/types';
  */
 export async function fetchAllHolidays(agencyIds: string[]): Promise<Map<string, Holiday>> {
 	try {
-		const allHolidays = await goDB.offer.holidays.findByAgencyIds(agencyIds);
+		const allHolidays = await goDb.offer.holidays.findByAgencyIds(agencyIds);
 		const holidaysMap = new Map<string, Holiday>();
 		for (const holiday of allHolidays) {
 			holidaysMap.set(holiday._id, holiday);
