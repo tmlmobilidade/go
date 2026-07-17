@@ -26,7 +26,7 @@ class RawDBClass {
 	 */
 	public static async getInstance() {
 		if (!RawDBClass._instance) {
-			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'RAW_DB' });
+			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'RAWDB' });
 			RawDBClass._instance = new RawDBClass(mongoClient);
 		}
 		return RawDBClass._instance;
@@ -40,4 +40,4 @@ class RawDBClass {
 	}
 }
 
-export const RawDb = asyncSingletonProxy(RawDBClass);
+export const rawDb = asyncSingletonProxy(RawDBClass);

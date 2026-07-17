@@ -3,7 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { agencies, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { gtfsValidations } from '@tmlmobilidade/interfaces';
 import { type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -48,7 +49,7 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 	//
 	// Get the TML contact emails for this Agency
 
-	const agencyData = await agencies.findById(validationData.gtfs_agency.agency_id);
+	const agencyData = await goDb.core.agencies.findById(validationData.gtfs_agency.agency_id);
 
 	if (!agencyData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');

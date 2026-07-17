@@ -35,7 +35,7 @@ class GoDBClass {
 	 */
 	public static async getInstance() {
 		if (!GoDBClass._instance) {
-			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GO_DB' });
+			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GODB' });
 			GoDBClass._instance = new GoDBClass(mongoClient);
 		}
 		return GoDBClass._instance;
@@ -54,4 +54,4 @@ class GoDBClass {
 	}
 }
 
-export const goDB = asyncSingletonProxy(GoDBClass);
+export const goDb = asyncSingletonProxy(GoDBClass);

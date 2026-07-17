@@ -2,7 +2,7 @@
 
 import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
@@ -65,12 +65,13 @@ export async function publishVehiclesPositions() {
 				const vehiclePositionData: HubVehiclePosition = {
 					...vehicleEventData,
 					calendar_date: validateCalendarDate(vehicleEventData.operational_date),
+					direction_id: associatedRide?.direction_id,
 					geohash: vehicleEventData.geohash ?? null,
 					line_id: getPublicLineId(vehicleEventData.agency_id, String(associatedRide?.line_id || '-')),
 					operational_date: operationalDate,
 					pattern_id: getPublicPatternId(vehicleEventData.agency_id, String(associatedRide?.pattern_id ?? '-')),
 					ride_id: associatedRide?._id,
-					route_id: associatedRide?._id,
+					route_id: associatedRide?.route_id,
 					trip_id: getPublicTripId(activePlanIdForAgency ?? '-', vehicleEventData.agency_id, vehicleEventData.trip_id),
 					vehicle_id: getPublicVehicleId(vehicleEventData.agency_id, vehicleEventData.vehicle_id),
 				};

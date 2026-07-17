@@ -168,14 +168,6 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 			updated_by: doc.updated_by || 'system',
 		} as OptionalUnlessRequiredId<T>;
 
-		// Add the ID if it is missing from the original document
-		if (!doc._id) {
-			parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
-			while (await this.findById(parsedDocument._id as T['_id'])) {
-				parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
-			}
-		}
-
 		// Validate the document against the create schema if unsafe is false
 		if (!unsafe) {
 			try {
@@ -185,6 +177,15 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
 		}
+
+		// Add the ID if it is missing from the original document
+		if (!doc._id) {
+			parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
+			while (await this.findById(parsedDocument._id as T['_id'])) {
+				parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
+			}
+		}
+
 		// Attempt to insert the document into the collection
 		const result = await this.mongoCollection.insertOne(parsedDocument, options);
 		// Check if the insert operation was acknowledged

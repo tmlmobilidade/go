@@ -111,7 +111,7 @@ class CacheDbClass {
 	}
 
 	protected connectToClient() {
-		return RedisDatabaseClient.getClient({ prefix: 'CACHE_DB' });
+		return RedisDatabaseClient.getClient({ prefix: 'CACHEDB' });
 	}
 
 	/**

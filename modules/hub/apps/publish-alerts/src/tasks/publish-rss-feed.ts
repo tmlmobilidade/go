@@ -2,7 +2,7 @@
 
 import { transformAlertIntoRssEntity } from '@/transform/rss/main.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { createRssFeed, type RssRawItem } from '@tmlmobilidade/rss';
