@@ -21,7 +21,7 @@ export interface AppWrapperBannerConfig {
  * Set to `null` to hide it.
  */
 export const APP_WRAPPER_BANNER: AppWrapperBannerConfig | null = {
-	title: 'Manutenção programada — A partir das 16:00',
+	title: 'Manutenção programada — A partir das 18:45',
 	variant: 'warning',
 };
 
@@ -42,7 +42,7 @@ export function AppWrapperBanner() {
 	//
 	// A. Setup variables
 
-	const banner = null;
+	const banner = APP_WRAPPER_BANNER;
 
 	//
 	// B. Render components
