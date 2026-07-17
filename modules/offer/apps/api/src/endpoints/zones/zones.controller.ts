@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, zones } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { type Filter } from '@tmlmobilidade/interfaces';
 import { CreateZoneDto, PermissionCatalog, type PermissionResourceCheck, type UpdateZoneDto, type Zone } from '@tmlmobilidade/types';
 
 /* * */;
@@ -56,7 +57,7 @@ export class ZonesController {
 		//
 		// Create the new zone
 
-		const newZone = await zones.insertOne(request.body);
+		const newZone = await goDB.offer.zones.insertOne(request.body);
 
 		//
 		// Send the response
@@ -73,7 +74,7 @@ export class ZonesController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const zone = await zones.findById(id);
+		const zone = await goDB.offer.zones.findById(id);
 
 		if (!zone) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
@@ -108,7 +109,7 @@ export class ZonesController {
 
 		//
 
-		await zones.deleteById(id);
+		await goDB.offer.zones.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -136,7 +137,7 @@ export class ZonesController {
 		//
 		// Fetch zones based on query filters
 
-		const allZones = await zones.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allZones = await goDB.offer.zones.findMany(queryFilters, { sort: { created_at: -1 } });
 
 		return reply.send({ data: allZones, error: null, statusCode: HTTP_STATUS.OK });
 		//
@@ -153,7 +154,7 @@ export class ZonesController {
 		//
 		// Get the Zone from the database
 
-		const zoneData = await zones.findById(request.params.id);
+		const zoneData = await goDB.offer.zones.findById(request.params.id);
 
 		if (!zoneData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
@@ -194,7 +195,7 @@ export class ZonesController {
 		//
 		// Get the Zone from the database
 
-		const zoneData = await zones.findById(request.params.id);
+		const zoneData = await goDB.offer.zones.findById(request.params.id);
 
 		if (!zoneData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
@@ -228,8 +229,8 @@ export class ZonesController {
 		}
 
 		// If authorized, toggle the lock status of the zone
-		await zones.toggleLockById(request.params.id);
-		const foundZone = await zones.findById(request.params.id);
+		await goDB.offer.zones.toggleLockById(request.params.id);
+		const foundZone = await goDB.offer.zones.findById(request.params.id);
 		if (!foundZone) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
 		}
@@ -250,7 +251,7 @@ export class ZonesController {
 		//
 		// Get the Zone from the database
 
-		const zoneData = await zones.findById(request.params.id);
+		const zoneData = await goDB.offer.zones.findById(request.params.id);
 
 		if (!zoneData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Zone not found');
@@ -286,7 +287,7 @@ export class ZonesController {
 		//
 		// Update the zone
 
-		const updatedZone = await zones.updateById(zoneData._id, request.body);
+		const updatedZone = await goDB.offer.zones.updateById(zoneData._id, request.body);
 
 		//
 		// Send the updated zone data as the response
