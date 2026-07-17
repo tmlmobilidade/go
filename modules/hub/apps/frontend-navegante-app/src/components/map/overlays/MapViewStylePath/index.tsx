@@ -14,6 +14,7 @@ interface Props {
 	idPrefix?: string
 	presentBeforeId?: string
 	shapeData?: GeoJSON.Feature | GeoJSON.FeatureCollection
+	variant?: 'context' | 'default'
 	waypointsData?: GeoJSON.FeatureCollection
 }
 
@@ -23,14 +24,37 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 
 /* * */
 
-export function MapViewStylePath({ idPrefix = 'default', presentBeforeId, shapeData = baseGeoJsonFeatureCollection, waypointsData = baseGeoJsonFeatureCollection }: Props) {
+export function MapViewStylePath({ idPrefix = 'default', presentBeforeId, shapeData = baseGeoJsonFeatureCollection, variant = 'default', waypointsData = baseGeoJsonFeatureCollection }: Props) {
 	const shapeSourceId = `${idPrefix}-source-path-shape`;
 	const waypointsSourceId = `${idPrefix}-source-path-waypoints`;
 	const waypointsLayerId = `${idPrefix}-layer-path-waypoints`;
+	const shapeContextLineLayerId = `${idPrefix}-layer-path-shape-context`;
 	const shapeDirectionLayerId = `${idPrefix}-layer-path-shape-direction`;
 	const shapeLineLayerId = `${idPrefix}-layer-path-shape-line`;
 	const shapePaddingLayerId = `${idPrefix}-layer-path-shape-padding`;
 	const shapePaddingShadowLayerId = `${idPrefix}-layer-path-shape-padding-shadow`;
+
+	if (variant === 'context') {
+		return (
+			<Source data={shapeData} generateId={true} id={shapeSourceId} type="geojson">
+				<Layer
+					beforeId={presentBeforeId}
+					id={shapeContextLineLayerId}
+					source={shapeSourceId}
+					type="line"
+					layout={{
+						'line-cap': 'round',
+						'line-join': 'round',
+					}}
+					paint={{
+						'line-color': ['get', 'color'],
+						'line-opacity': 0.28,
+						'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2, 20, 7],
+					}}
+				/>
+			</Source>
+		);
+	}
 
 	return (
 		<>

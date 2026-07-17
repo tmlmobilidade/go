@@ -20,9 +20,10 @@ import { useUserLocation } from '@/components/map/use-user-location';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
+import { fetchPatterns } from '@/utils/fetch-patterns';
 import { centerMap } from '@/utils/map.utils';
 import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
-import { filterVehicleFeatureCollectionByPatternIds, filterVehicleFeatureCollectionByRouteDirections, getRoutePlannerItineraryRouteDirections } from '@/utils/route-planner-vehicles';
+import { filterVehicleFeatureCollectionByPatternIds, filterVehicleFeatureCollectionByRouteDirections, getRoutePlannerItineraryRouteDirections, getRoutePlannerItineraryRouteIds, getRoutePlannerRouteDirectionKey, getRoutePlannerRouteIdKey } from '@/utils/route-planner-vehicles';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
@@ -131,6 +132,71 @@ export function BaseMap() {
 	const routePlannerVehicleRouteDirections = useMemo(() => {
 		return getRoutePlannerItineraryRouteDirections(routePlannerContext.data.selected_itinerary);
 	}, [routePlannerContext.data.selected_itinerary]);
+	const routePlannerRouteIds = useMemo(() => {
+		return getRoutePlannerItineraryRouteIds(routePlannerContext.data.selected_itinerary);
+	}, [routePlannerContext.data.selected_itinerary]);
+	const routePlannerPatternIds = useMemo(() => {
+		if (!routePlannerRouteIds) return [];
+
+		return Array.from(new Set(
+			linesContext.data.routes
+				.filter(route => routePlannerRouteIds.has(getRoutePlannerRouteIdKey(route._id, route.agency_id) || ''))
+				.flatMap(route => route.pattern_ids),
+		));
+	}, [linesContext.data.routes, routePlannerRouteIds]);
+	const { data: routePlannerPatternGroups } = useSWR<HubPattern[][]>(
+		routePlannerPatternIds.length > 0 ? ['route-planner-patterns', ...routePlannerPatternIds] : null,
+		() => fetchPatterns(routePlannerPatternIds),
+	);
+	const routePlannerPatterns = useMemo(() => {
+		if (!routePlannerVehicleRouteDirections || !routePlannerPatternGroups) return [];
+
+		const matchingPatterns = routePlannerPatternGroups
+			.flat()
+			.filter((candidate) => {
+				const routeDirection = getRoutePlannerRouteDirectionKey(candidate.route_id, candidate.direction_id, candidate.agency_id);
+				return routeDirection !== null && routePlannerVehicleRouteDirections.has(routeDirection);
+			});
+
+		return Array.from(new Map(matchingPatterns.map(candidate => [candidate.shape_id, candidate])).values());
+	}, [routePlannerPatternGroups, routePlannerVehicleRouteDirections]);
+	const routePlannerShapeIds = useMemo(() => {
+		return routePlannerPatterns.map(candidate => candidate.shape_id);
+	}, [routePlannerPatterns]);
+	const { data: routePlannerShapes } = useSWR<HubShape[]>(
+		routePlannerShapeIds.length > 0 ? ['route-planner-shapes', ...routePlannerShapeIds] : null,
+		async () => {
+			const shapePayloads = await Promise.all(routePlannerShapeIds.map(async (shapeId) => {
+				const response = await fetch(API_ROUTES.hub.NETWORK_SHAPES(shapeId));
+				if (!response.ok) return null;
+
+				const payload: HubShape | { data?: HubShape } = await response.json();
+				return 'data' in payload ? payload.data ?? null : payload;
+			}));
+
+			return shapePayloads.filter((shape): shape is HubShape => shape !== null);
+		},
+	);
+	const routePlannerContextShapeData = useMemo<GeoJSON.FeatureCollection<GeoJSON.LineString>>(() => {
+		const shapesById = new Map(routePlannerShapes?.map(candidate => [candidate._id, candidate]) ?? []);
+
+		return {
+			features: routePlannerPatterns.flatMap((pattern) => {
+				const routePlannerShape = shapesById.get(pattern.shape_id);
+				if (!routePlannerShape) return [];
+
+				return [{
+					...routePlannerShape.geojson,
+					properties: {
+						...routePlannerShape.geojson.properties,
+						color: pattern.color,
+						text_color: pattern.text_color,
+					},
+				}];
+			}),
+			type: 'FeatureCollection',
+		};
+	}, [routePlannerPatterns, routePlannerShapes]);
 
 	const lineDetailVehiclePatternIds = useMemo(() => {
 		if (activeBottomSheet?.view !== 'lines-detail') return null;
@@ -321,6 +387,15 @@ export function BaseMap() {
 							text_color: pattern.text_color,
 						},
 					}}
+				/>
+			)}
+
+			{routePlannerContextShapeData.features.length > 0 && (
+				<MapViewStylePath
+					idPrefix="route-planner-context"
+					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
+					shapeData={routePlannerContextShapeData}
+					variant="context"
 				/>
 			)}
 
