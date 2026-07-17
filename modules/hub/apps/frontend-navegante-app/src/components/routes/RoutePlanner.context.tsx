@@ -3,7 +3,8 @@
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useUserLocation } from '@/components/map/use-user-location';
-import { buildMotisPlanParams, buildMotisProxyUrl, buildRoutePlannerItineraryMapData, getMotisItineraries, type MotisItinerary, type MotisPlanResponse, type RoutePlannerItineraryMapData, type RoutePlannerLocation, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
+import { buildMotisPlanParams, buildRoutePlannerItineraryMapData, getMotisItineraries, type MotisItinerary, type MotisPlanResponse, type RoutePlannerItineraryMapData, type RoutePlannerLocation, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -198,11 +199,13 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		setViewMode('results');
 
 		try {
-			const response = await fetch(buildMotisProxyUrl('/api/v6/plan', buildMotisPlanParams(requestOrigin, requestDestination, requestTravelTime)));
+			const params = buildMotisPlanParams(requestOrigin, requestDestination, requestTravelTime);
+			const response = await fetch(`${API_ROUTES.hub.MOTIS_PLAN}?${params.toString()}`);
 
 			if (!response.ok) throw new Error(`MOTIS returned HTTP ${response.status}`);
 
-			const data: MotisPlanResponse = await response.json();
+			const payload: { data: MotisPlanResponse } = await response.json();
+			const data = payload.data;
 			const nextItineraries = getMotisItineraries(data);
 
 			setPlan(data);

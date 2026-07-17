@@ -1,37 +1,32 @@
-import { getMotisLegRouteLabel, isMotisWalkingLeg, type MotisItinerary } from '@/utils/route-planner-motis';
-import { type HubLine, type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
+import { isMotisWalkingLeg, type MotisItinerary } from '@/utils/route-planner-motis';
+import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
 
 /* * */
 
-export function getRoutePlannerItineraryLineIds(itinerary: MotisItinerary | null, lines: HubLine[]) {
+export function getRoutePlannerItineraryPatternIds(itinerary: MotisItinerary | null) {
 	const legs = Array.isArray(itinerary?.legs) ? itinerary.legs : [];
-	const routeLabels = new Set(
-		legs
-			.filter(leg => !isMotisWalkingLeg(leg))
-			.map(leg => getMotisLegRouteLabel(leg))
-			.filter(Boolean),
-	);
+	const transitLegs = legs.filter(leg => !isMotisWalkingLeg(leg));
 
-	if (routeLabels.size === 0 || lines.length === 0) return null;
+	if (transitLegs.length === 0) return null;
 
 	return new Set(
-		lines
-			.filter(line => routeLabels.has(line.short_name))
-			.map(line => line._id),
+		transitLegs
+			.map(leg => leg.hubPatternId)
+			.filter((patternId): patternId is string => typeof patternId === 'string' && patternId.length > 0),
 	);
 }
 
-export function filterVehicleFeatureCollectionByLineIds(
+export function filterVehicleFeatureCollectionByPatternIds(
 	vehiclesData: GeoJSON.FeatureCollection<GeoJSON.Point, HubVehiclePosition>,
-	lineIds: null | Set<string>,
+	patternIds: null | Set<string>,
 ) {
-	if (!lineIds) return vehiclesData;
+	if (!patternIds) return vehiclesData;
 
 	return {
 		...vehiclesData,
 		features: vehiclesData.features.filter((feature) => {
-			const lineId = feature.properties?.line_id;
-			return typeof lineId === 'string' && lineIds.has(lineId);
+			const patternId = feature.properties?.pattern_id;
+			return typeof patternId === 'string' && patternIds.has(patternId);
 		}),
 	};
 }

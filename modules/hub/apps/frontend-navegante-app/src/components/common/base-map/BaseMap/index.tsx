@@ -18,7 +18,7 @@ import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { centerMap } from '@/utils/map.utils';
 import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
-import { filterVehicleFeatureCollectionByLineIds, getRoutePlannerItineraryLineIds } from '@/utils/route-planner-vehicles';
+import { filterVehicleFeatureCollectionByPatternIds, getRoutePlannerItineraryPatternIds } from '@/utils/route-planner-vehicles';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
@@ -92,15 +92,15 @@ export function BaseMap() {
 		return collection;
 	}, [alertsContext.data.fc, focusedAlertId, routePlannerAlertsMapData]);
 
-	const routePlannerVehicleLineIds = useMemo(() => {
-		return getRoutePlannerItineraryLineIds(routePlannerContext.data.selected_itinerary, linesContext.data.lines);
-	}, [linesContext.data.lines, routePlannerContext.data.selected_itinerary]);
+	const routePlannerVehiclePatternIds = useMemo(() => {
+		return getRoutePlannerItineraryPatternIds(routePlannerContext.data.selected_itinerary);
+	}, [routePlannerContext.data.selected_itinerary]);
 
-	const shouldAlwaysShowRoutePlannerVehicles = routePlannerVehicleLineIds !== null;
+	const shouldAlwaysShowRoutePlannerVehicles = routePlannerVehiclePatternIds !== null;
 
 	const routePlannerVehiclesMapData = useMemo(() => {
-		return filterVehicleFeatureCollectionByLineIds(vehiclesContext.data.fc, routePlannerVehicleLineIds);
-	}, [routePlannerVehicleLineIds, vehiclesContext.data.fc]);
+		return filterVehicleFeatureCollectionByPatternIds(vehiclesContext.data.fc, routePlannerVehiclePatternIds);
+	}, [routePlannerVehiclePatternIds, vehiclesContext.data.fc]);
 
 	const routePlannerMapFitFeatures = useMemo(() => {
 		return getRoutePlannerMapFitFeatures(routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode);

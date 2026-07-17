@@ -10,6 +10,19 @@ export type MotisGeocodeArea = Partial<MotisApiArea>;
 
 export type MotisGeocodeResult = MotisApiGeocodeResponse[number];
 
+export type MotisPlanLeg = MotisApiLeg & {
+	hubPatternId: null | string
+};
+
+export type MotisItinerary = Omit<MotisApiItinerary, 'legs'> & {
+	legs: MotisPlanLeg[]
+};
+
+export type MotisPlanResponse = Omit<MotisApiPlanResponse, 'direct' | 'itineraries'> & {
+	direct: MotisItinerary[]
+	itineraries: MotisItinerary[]
+};
+
 export interface RoutePlannerLocation {
 	areas?: MotisGeocodeArea[]
 	detail: string
@@ -25,9 +38,6 @@ export interface RoutePlannerLocation {
 
 export type MotisPlanPlace = MotisApiPlace;
 export type MotisPlanIntermediateStop = MotisApiPlace;
-export type MotisPlanLeg = MotisApiLeg;
-export type MotisItinerary = MotisApiItinerary;
-export type MotisPlanResponse = MotisApiPlanResponse;
 
 export interface RoutePlannerTravelTime {
 	date: Date
