@@ -1,7 +1,6 @@
 /* * */
 
 import { RawVehicleEventBaseSchema } from '@/raw/raw-vehicle-event-base.js';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
