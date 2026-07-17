@@ -3,7 +3,7 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { pcgiFileManager } from '@tmlmobilidade/go-interfaces-pcgi-file-manager';
-import { rawDb } from '@tmlmobilidade/go-interfaces-raw-db';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
