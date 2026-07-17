@@ -4,7 +4,7 @@ import { populateLine, populateLines } from '@/utils/lines.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { type Filter, patterns, routes } from '@tmlmobilidade/interfaces';
+import { type Filter, lines, patterns, routes } from '@tmlmobilidade/interfaces';
 import { CreateLineDto, type Line, type LineNormalized, PermissionCatalog, type UpdateLineDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -104,7 +104,7 @@ export class LinesController {
 		//
 
 		await patterns.deleteMany({ line_id: id });
-		await routes.deleteMany({ line_id: id });
+		await goDB.offer.routes.deleteMany({ line_id: id });
 		await goDB.offer.lines.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });

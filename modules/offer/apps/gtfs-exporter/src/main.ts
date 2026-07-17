@@ -215,7 +215,7 @@ export async function exportGtfsV29(
 
 			// 3.1.
 			// Fetch all routes for this line
-			const lineRoutes = await routes.findByLineId(lineData._id);
+			const lineRoutes = await goDB.offer.routes.findByLineId(lineData._id);
 
 			if (lineRoutes.length === 0) {
 				Logger.info({ message: `  Skipping line ${lineData.code}: no routes found` });
