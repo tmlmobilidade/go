@@ -11,7 +11,7 @@ import { parseAlertGeneratedCopy, PromptBuilder } from '@/utils.js';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
 import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { Dates } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-godb';
 import { rides } from '@tmlmobilidade/interfaces';
 import { type Agency, type Alert, type I18nCode, type UnixTimestamp } from '@tmlmobilidade/types';
 

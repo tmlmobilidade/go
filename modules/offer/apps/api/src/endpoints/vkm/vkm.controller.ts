@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { calculateAgencyVkm } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-godb';
 import { events, holidays, lines, patterns, yearPeriods } from '@tmlmobilidade/interfaces';
 import { type CalculateVkmDto, CalculateVkmSchema, PermissionCatalog, type VkmCalculationResult } from '@tmlmobilidade/types';
 

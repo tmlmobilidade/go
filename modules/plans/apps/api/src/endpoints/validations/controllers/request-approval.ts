@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-godb';
 import { gtfsValidations } from '@tmlmobilidade/interfaces';
 import { type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 

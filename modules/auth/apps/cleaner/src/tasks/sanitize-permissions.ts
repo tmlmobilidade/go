@@ -3,7 +3,7 @@
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-godb';
 
 /**
  * Sanitizes permissions in both the "users" and "roles" collections.

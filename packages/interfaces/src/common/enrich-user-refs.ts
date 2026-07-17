@@ -1,4 +1,4 @@
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDB } from '@tmlmobilidade/go-interfaces-godb';
 import { type UserDisplay, UserDisplayFields } from '@tmlmobilidade/types';
 import { FindOptions } from 'mongodb';
 
