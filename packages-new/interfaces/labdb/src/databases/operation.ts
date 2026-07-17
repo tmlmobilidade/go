@@ -3,7 +3,7 @@
 import { ClickHouseInterfaceTemplate } from '@/interface.template.js';
 import { simplifiedVehicleEventSchema } from '@/types/operation.js';
 import { ClickHouseClient } from '@tmlmobilidade/go-clients-clickhouse';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
 

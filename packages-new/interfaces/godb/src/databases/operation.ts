@@ -4,6 +4,7 @@ import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
 
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { CreateGtfsValidationDto, CreateGtfsValidationSchema, CreatePlanDto, CreatePlanSchema, CreateRideAcceptanceDto, CreateRideAcceptanceSchema, CreateRideDto, CreateRideSchema, CreateSamDto, CreateSamSchema, CreateVehicleDto, CreateVehicleSchema, DocumentSchema, GtfsValidation, HashedPattern, HashedPatternSchema, HashedShape, HashedTrip, HashedTripSchema, Plan, Ride, RideAcceptance, Sam, UpdateGtfsValidationDto, UpdateGtfsValidationSchema, UpdatePlanDto, UpdatePlanSchema, UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema, UpdateRideDto, UpdateRideSchema, UpdateSamDto, UpdateSamSchema, UpdateVehicleDto, UpdateVehicleSchema, Vehicle } from '@tmlmobilidade/types';
+
 /* * */
 
 export class OperationDatabase {

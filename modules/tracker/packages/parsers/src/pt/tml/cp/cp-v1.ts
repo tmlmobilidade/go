@@ -14,6 +14,7 @@ export function parseRawVehicleEventPtTmlCpV1(doc: RawVehicleEventPtTmlCpV1): nu
 		current_status: doc.payload.vehicle.current_status ?? null,
 		driver_id: null,
 		extra_trip_id: null,
+		geohash: null,
 		latitude: doc.payload.vehicle.position.latitude,
 		longitude: doc.payload.vehicle.position.longitude,
 		odometer: null,
