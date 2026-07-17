@@ -218,8 +218,9 @@ async function main() {
 		});
 
 		if (failed > 0) process.exitCode = 1;
-	} finally {
-		if (shouldDisconnect) await goDb.offer.patterns.disconnect();
+	} catch (error) {
+		console.error('[backfill-pattern-polylines] Fatal error', { error });
+		process.exitCode = 1;
 	}
 }
 
