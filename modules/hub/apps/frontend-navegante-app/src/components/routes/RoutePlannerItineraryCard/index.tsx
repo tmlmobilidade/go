@@ -3,10 +3,11 @@
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useLinesContext } from '@/components/lines/Lines.context';
+import { RoutePlannerGoButton } from '@/components/routes/RoutePlannerGoButton';
 import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
 import { formatMotisPlanDuration, formatMotisPlanDurationMinutes, formatMotisPlanTime, getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisItineraryStart, getMotisItineraryWalkMinutes, getMotisLegDurationSeconds, getMotisLegMode, getMotisLegModeKind, getMotisLegRouteLabel, getMotisLegTripIds, getMotisPlanPlaceStopId, isMotisWalkingLeg, type MotisItinerary, type MotisPlanLeg } from '@/utils/route-planner-motis';
-import { IconAlertTriangle, IconArrowRight, IconBike, IconBus, IconCar, IconElevator, IconFerry, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBike, IconBus, IconCar, IconElevator, IconFerry, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import { type MouseEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -122,10 +123,10 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 						/>
 					))}
 				</div>
-				<button aria-label={t('default:routes.RoutePlanner.results.view_details')} className={styles.routeActionButton} onClick={handleRouteActionClick} type="button">
-					{t('default:routes.RoutePlanner.results.start_route')}
-					<IconArrowRight size={15} />
-				</button>
+				<RoutePlannerGoButton
+					ariaLabel={t('default:routes.RoutePlanner.results.view_details')}
+					onClick={handleRouteActionClick}
+				/>
 			</div>
 
 		</article>

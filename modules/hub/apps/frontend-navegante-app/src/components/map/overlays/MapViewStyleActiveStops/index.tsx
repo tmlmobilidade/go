@@ -24,44 +24,8 @@ const baseGeoJsonFeatureCollection = getBaseGeoJsonFeatureCollection();
 export function MapViewStyleActiveStops({ presentBeforeId, stopsData = baseGeoJsonFeatureCollection }: Props) {
 	return (
 		<Source data={stopsData} generateId={true} id="default-source-active-stops" type="geojson">
-
 			<Layer
 				beforeId={presentBeforeId}
-				id="default-layer-active-stops-pole"
-				source="default-source-active-stops"
-				type="symbol"
-				layout={{
-					'icon-allow-overlap': true,
-					'icon-anchor': 'bottom',
-					'icon-ignore-placement': true,
-					'icon-image': 'map-navegante-stop-bus-selected',
-					'icon-offset': [0, 5],
-					'icon-size': [
-						'interpolate',
-						['linear'],
-						['zoom'],
-						10,
-						0.1,
-						20,
-						0.25,
-					],
-					'symbol-placement': 'point',
-				}}
-				paint={{
-					'icon-opacity': [
-						'interpolate',
-						['linear'],
-						['zoom'],
-						7,
-						0,
-						10,
-						1,
-					],
-				}}
-			/>
-
-			<Layer
-				beforeId="default-layer-active-stops-pole"
 				id="default-layer-active-stops-circle"
 				source="default-source-active-stops"
 				type="circle"

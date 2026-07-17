@@ -1,0 +1,16 @@
+.directionsButton {
+	display: inline-flex;
+	gap: 9px;
+	align-items: center;
+	align-self: flex-start;
+	width: fit-content;
+	padding: 2px 0;
+	font: inherit;
+	font-size: 17px;
+	font-weight: var(--font-weight-bold);
+	line-height: 1.2;
+	color: var(--color-status-info, #1677ff);
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+}

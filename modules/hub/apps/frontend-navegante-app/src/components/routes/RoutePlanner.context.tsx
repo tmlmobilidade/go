@@ -17,6 +17,7 @@ interface RoutePlannerContextState {
 	actions: {
 		clearRoute: () => void
 		openDestinationSearch: () => void
+		openDirectionsTo: (location: RoutePlannerLocation) => Promise<void>
 		openFullInput: () => void
 		openItineraryDetail: (index: number) => void
 		openLocationSearch: (target: RoutePlannerLocationSearchTarget) => void
@@ -181,12 +182,10 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	const openItineraryDetail = (index: number) => {
 		setSelectedItineraryIndex(index);
 		setViewMode('itinerary-detail');
-		setActiveBottomSheet({ view: 'routes' }, { replace: true });
 	};
 
 	const openResults = () => {
 		setViewMode('results');
-		setActiveBottomSheet({ view: 'routes' }, { replace: true });
 	};
 
 	const openPlace = async (location: RoutePlannerLocation) => {
@@ -272,6 +271,12 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		await planRoute(nextOrigin, location);
 	};
 
+	const openDirectionsTo = async (location: RoutePlannerLocation) => {
+		setViewMode('results');
+		setActiveBottomSheet({ view: 'routes' });
+		await selectDestination(location);
+	};
+
 	const selectOrigin = async (location: RoutePlannerLocation) => {
 		setOriginState(location);
 		setPlan(null);
@@ -343,6 +348,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 				actions: {
 					clearRoute,
 					openDestinationSearch,
+					openDirectionsTo,
 					openFullInput,
 					openItineraryDetail,
 					openLocationSearch,

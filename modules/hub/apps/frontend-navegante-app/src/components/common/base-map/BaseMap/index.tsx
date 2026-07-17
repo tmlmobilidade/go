@@ -13,6 +13,7 @@ import { MapViewOverlayStops, MapViewOverlayStopsInteractiveLayerId, MapViewOver
 import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOverlayUserLocation';
 // import { MapViewOverlayVehicleLineBadges } from '@/components/map/overlays/MapViewOverlayVehicleLineBadges';
 import { MapViewOverlayVehicles, MapViewOverlayVehiclesInteractiveLayerId, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
+import { MapViewStyleActiveStops } from '@/components/map/overlays/MapViewStyleActiveStops';
 import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
 import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
 import { useUserLocation } from '@/components/map/use-user-location';
@@ -62,7 +63,28 @@ export function BaseMap() {
 
 	const focusedAlertId = activeBottomSheet?.view === 'alerts-detail' ? activeBottomSheet.entityId : null;
 	const focusedLineShape = activeBottomSheet?.view === 'lines-detail' ? linesDetailContext.data.active_shape?.geojson : null;
+	const focusedStopId = activeBottomSheet?.view === 'stops-detail' ? activeBottomSheet.entityId : null;
 	const focusedVehicleId = activeBottomSheet?.view === 'vehicles-detail' ? activeBottomSheet.entityId : null;
+	const focusedStop = useMemo(() => {
+		if (!focusedStopId) return null;
+		return stopsContext.data.stops.find(stop => String(stop._id) === focusedStopId) ?? null;
+	}, [focusedStopId, stopsContext.data.stops]);
+	const focusedStopMapData = useMemo(() => {
+		if (!focusedStopId) return null;
+
+		const collection = getBaseGeoJsonFeatureCollection();
+		const feature = stopsContext.data.fc.features.find(item => String(item.properties?._id) === focusedStopId);
+		if (feature) collection.features.push(feature);
+		return collection;
+	}, [focusedStopId, stopsContext.data.fc]);
+	const stopsMapData = useMemo(() => {
+		if (!focusedStopId) return stopsContext.data.fc;
+
+		return {
+			...stopsContext.data.fc,
+			features: stopsContext.data.fc.features.filter(feature => String(feature.properties?._id) !== focusedStopId),
+		};
+	}, [focusedStopId, stopsContext.data.fc]);
 
 	const focusedVehiclePatternId = useMemo(() => {
 		if (!focusedVehicleId) return null;
@@ -130,7 +152,7 @@ export function BaseMap() {
 	const routePlannerMapFitFeatures = useMemo(() => {
 		return getRoutePlannerMapFitFeatures(routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode);
 	}, [routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode]);
-	const placeDestination = routePlannerContext.data.view_mode === 'place-detail' ? routePlannerContext.data.destination : null;
+	const placeDestination = activeBottomSheet?.view === 'routes' && routePlannerContext.data.view_mode === 'place-detail' ? routePlannerContext.data.destination : null;
 
 	const vehiclesMapData = useMemo(() => {
 		if (!focusedVehicleId) return lineDetailVehiclesMapData;
@@ -163,6 +185,16 @@ export function BaseMap() {
 			padding: mapPadding,
 		});
 	}, [activeBottomSheetSnap.snapPoint, baseMap, focusedLineShape, mapPadding, shouldFitMap]);
+
+	useEffect(() => {
+		if (!baseMap || !focusedStop || !shouldFitMap) return;
+		baseMap.flyTo({
+			center: [focusedStop.longitude, focusedStop.latitude],
+			duration: 650,
+			offset: [0, Math.round((mapPadding.top - mapPadding.bottom) / 2)],
+			zoom: 15.5,
+		});
+	}, [activeBottomSheetSnap.snapPoint, baseMap, focusedStop, mapPadding, shouldFitMap]);
 
 	useEffect(() => {
 		if (!baseMap || !shape?.geojson) return;
@@ -257,12 +289,19 @@ export function BaseMap() {
 		>
 
 			<MapViewOverlayStops
-				stopsData={stopsContext.data.fc}
+				stopsData={stopsMapData}
 				visible={activeBaseMapOverlays.includes('stops')}
 			/>
 			<MapViewOverlayStopLineBadges
 				visible={activeBaseMapOverlays.includes('stops')}
 			/>
+
+			{focusedStopMapData && (
+				<MapViewStyleActiveStops
+					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
+					stopsData={focusedStopMapData}
+				/>
+			)}
 
 			{focusedLineShape && (
 				<MapViewStylePath

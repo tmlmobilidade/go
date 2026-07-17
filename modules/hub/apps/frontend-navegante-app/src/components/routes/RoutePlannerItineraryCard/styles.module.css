@@ -117,24 +117,6 @@
 	border: 1px solid #fecdd3;
 }
 
-.routeActionButton {
-	display: inline-flex;
-	gap: 4px;
-	align-items: center;
-	justify-content: center;
-	height: 28px;
-	padding: 0 9px 0 10px;
-	font-size: 11px;
-	font-weight: 900;
-	line-height: 1;
-	color: var(--color-primary-white, #fff);
-	white-space: nowrap;
-	cursor: pointer;
-	background-color: var(--color-status-info, #1677ff);
-	border: 1px solid var(--color-status-info, #1677ff);
-	border-radius: 999px;
-}
-
 /* * */
 /* ROUTE STRIP */
 
