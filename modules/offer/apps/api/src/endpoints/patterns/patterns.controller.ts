@@ -6,7 +6,8 @@ import { createImportedStopResolver } from '@/utils/stops.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
-import { lines, patterns, stops, typologies } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { lines, patterns, stops } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CreatePatternDto, NoteComment, type Pattern, type PatternShapeMapItem, PermissionCatalog, PopulatedPath, PopulatedPattern, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
@@ -126,7 +127,7 @@ export class PatternsController {
 		const lineIds = agencyLines.map(line => line._id);
 		if (!lineIds.length) return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
 
-		const agencyTypologies = await typologies.findByAgencyIds(agencyIds);
+		const agencyTypologies = await goDB.offer.typologies.findByAgencyIds(agencyIds);
 		const typologyColorById = new Map(agencyTypologies.map(typology => [typology._id, typology.color]));
 		const typologyTextColorById = new Map(agencyTypologies.map(typology => [typology._id, typology.text_color]));
 		const lineById = new Map(agencyLines.map(line => [line._id, line]));
