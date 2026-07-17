@@ -14,8 +14,6 @@ class PCGIFileManagerClass {
 	//
 	private static _instance: PCGIFileManagerClass;
 
-	private readonly mongoClient: MongoClient;
-
 	//
 	// Databases
 	public readonly locationManagement: LocationManagementDatabase;
@@ -35,8 +33,7 @@ class PCGIFileManagerClass {
 	//
 	// Constructor
 	private constructor(mongoClient: MongoClient) {
-		this.mongoClient = mongoClient;
-		this.locationManagement = new LocationManagementDatabase(this.mongoClient);
+		this.locationManagement = new LocationManagementDatabase(mongoClient);
 	}
 }
 
