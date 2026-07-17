@@ -27,14 +27,24 @@ interface UseBottomSheetReturnType {
 	isBottomSheetInStack: (view: BottomSheetType) => boolean
 	setActiveBottomSheet: (value: BottomSheetNavigationType, options?: SetActiveBottomSheetOptions) => void
 	setActiveBottomSheetSnap: (value: BottomSheetSnapType) => void
+	snapActiveBottomSheet: (snapIndex: number) => boolean
 }
 
 /* * */
 
 let BOTTOM_SHEET_NAVIGATION_STORE: BottomSheetNavigationType[] = [];
 let BOTTOM_SHEET_SNAP_STORE: BottomSheetSnapType = { snapIndex: null, snapPoint: null };
+let ACTIVE_BOTTOM_SHEET_SNAP_CONTROLLER: ((snapIndex: number) => void) | null = null;
 const bottomSheetNavigationListeners = new Set<() => void>();
 const bottomSheetSnapListeners = new Set<() => void>();
+
+export function registerActiveBottomSheetSnapController(controller: (snapIndex: number) => void) {
+	ACTIVE_BOTTOM_SHEET_SNAP_CONTROLLER = controller;
+
+	return () => {
+		if (ACTIVE_BOTTOM_SHEET_SNAP_CONTROLLER === controller) ACTIVE_BOTTOM_SHEET_SNAP_CONTROLLER = null;
+	};
+}
 
 function emitBottomSheetNavigationChange() {
 	bottomSheetNavigationListeners.forEach(listener => listener());
@@ -120,6 +130,12 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 		setBottomSheetSnapStore(value);
 	}, []);
 
+	const snapActiveBottomSheet = useCallback((snapIndex: number) => {
+		if (!ACTIVE_BOTTOM_SHEET_SNAP_CONTROLLER) return false;
+		ACTIVE_BOTTOM_SHEET_SNAP_CONTROLLER(snapIndex);
+		return true;
+	}, []);
+
 	const closeActiveBottomSheet = useCallback(() => {
 		setBottomSheetNavigationStore(BOTTOM_SHEET_NAVIGATION_STORE.slice(0, -1));
 	}, []);
@@ -138,5 +154,6 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 		isBottomSheetInStack,
 		setActiveBottomSheet,
 		setActiveBottomSheetSnap,
+		snapActiveBottomSheet,
 	};
 }

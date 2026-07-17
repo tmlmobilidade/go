@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 export type RoutePlannerLocationSearchTarget = 'destination' | 'origin';
-type RoutePlannerViewMode = 'destination-search' | 'full-input' | 'itinerary-detail' | 'results';
+type RoutePlannerViewMode = 'destination-search' | 'full-input' | 'itinerary-detail' | 'place-detail' | 'results';
 
 interface RoutePlannerContextState {
 	actions: {

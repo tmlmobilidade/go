@@ -16,7 +16,8 @@ import styles from './styles.module.css';
 interface RoutePlannerSheetConfig {
 	headerMode: 'default' | 'handle'
 	initialSnap: number
-	snapPoints: number[]
+	mapAware: boolean
+	snapPoints?: number[]
 	title?: string
 	withCloseButton: boolean
 	withCompactCloseButton: boolean
@@ -35,8 +36,6 @@ interface RoutePlannerSheetTitles {
 const ROUTE_PLANNER_SHEET_SNAP_POINTS = {
 	destinationSearch: [0, 0.72, 0.95],
 	fullInput: [0, 0.52, 0.95],
-	itineraryDetail: [0, 0.28, 0.64, 0.95],
-	results: [0, 0.24, 0.58, 0.95],
 };
 
 /* * */
@@ -87,6 +86,7 @@ export function RoutePlanner() {
 		<BottomSheet
 			headerMode={sheetConfig.headerMode}
 			initialSnap={sheetConfig.initialSnap}
+			mapAware={sheetConfig.mapAware}
 			onClose={handleClose}
 			opened={activeBottomSheet?.view === 'routes'}
 			snapPoints={sheetConfig.snapPoints}
@@ -142,6 +142,7 @@ function getRoutePlannerSheetConfig(viewMode: ReturnType<typeof useRoutePlannerC
 		return {
 			headerMode: 'default',
 			initialSnap: 1,
+			mapAware: false,
 			snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.destinationSearch,
 			title: searchTarget === 'origin' ? titles.originSearch : titles.destinationSearch,
 			withCloseButton: false,
@@ -154,6 +155,7 @@ function getRoutePlannerSheetConfig(viewMode: ReturnType<typeof useRoutePlannerC
 		return {
 			headerMode: 'default',
 			initialSnap: 1,
+			mapAware: false,
 			snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.fullInput,
 			title: titles.fullInput,
 			withCloseButton: true,
@@ -166,7 +168,18 @@ function getRoutePlannerSheetConfig(viewMode: ReturnType<typeof useRoutePlannerC
 		return {
 			headerMode: 'handle',
 			initialSnap: 1,
-			snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.itineraryDetail,
+			mapAware: true,
+			withCloseButton: true,
+			withCompactCloseButton: true,
+			withOverlay: false,
+		};
+	}
+
+	if (viewMode === 'place-detail') {
+		return {
+			headerMode: 'handle',
+			initialSnap: 1,
+			mapAware: true,
 			withCloseButton: true,
 			withCompactCloseButton: true,
 			withOverlay: false,
@@ -176,7 +189,7 @@ function getRoutePlannerSheetConfig(viewMode: ReturnType<typeof useRoutePlannerC
 	return {
 		headerMode: 'handle',
 		initialSnap: 1,
-		snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.results,
+		mapAware: true,
 		withCloseButton: true,
 		withCompactCloseButton: true,
 		withOverlay: false,

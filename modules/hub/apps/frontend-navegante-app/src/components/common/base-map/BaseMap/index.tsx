@@ -2,6 +2,7 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { useMapBottomSheet } from '@/components/common/bottom-sheet/use-map-bottom-sheet';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
@@ -22,7 +23,7 @@ import { filterVehicleFeatureCollectionByPatternIds, getRoutePlannerItineraryPat
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
-import { type MapLayerMouseEvent, useMap } from '@vis.gl/react-maplibre';
+import { type MapLayerMouseEvent, useMap, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 
@@ -43,6 +44,7 @@ export function BaseMap() {
 	const { data: { activeBaseMapOverlays } } = useMapContext();
 	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
 	const { activeBottomSheet, activeBottomSheetSnap, setActiveBottomSheet } = useBottomSheet();
+	const { collapseForMapInteraction, mapPadding, shouldFitMap } = useMapBottomSheet();
 
 	const { 'base-map': baseMap } = useMap();
 	const lastRouteMapFitKeyRef = useRef<null | string>(null);
@@ -141,6 +143,10 @@ export function BaseMap() {
 	useEffect(() => {
 		if (!baseMap || routePlannerMapFitFeatures.length === 0) return;
 		if (activeBottomSheet?.view !== 'routes') return;
+		if (!shouldFitMap) {
+			lastRouteMapFitKeyRef.current = null;
+			return;
+		}
 
 		const routeMapFitKey = [
 			routePlannerContext.data.selected_itinerary_index,
@@ -153,9 +159,9 @@ export function BaseMap() {
 		lastRouteMapFitKeyRef.current = routeMapFitKey;
 
 		centerMap(baseMap, routePlannerMapFitFeatures, {
-			padding: getRoutePlannerMapFitPadding(routePlannerContext.data.view_mode, activeBottomSheetSnap.snapPoint),
+			padding: mapPadding,
 		});
-	}, [activeBottomSheet?.view, activeBottomSheetSnap.snapPoint, baseMap, routePlannerContext.data.selected_itinerary_index, routePlannerContext.data.view_mode, routePlannerMapFitFeatures]);
+	}, [activeBottomSheet?.view, activeBottomSheetSnap.snapPoint, baseMap, mapPadding, routePlannerContext.data.selected_itinerary_index, routePlannerContext.data.view_mode, routePlannerMapFitFeatures, shouldFitMap]);
 
 	//
 	// C. Handle actions
@@ -186,8 +192,13 @@ export function BaseMap() {
 		}
 	};
 
-	const handleMapDrag = () => {
+	const handleMapDrag = (event: ViewStateChangeEvent) => {
 		setUserLocationTrackingMode('idle');
+		collapseForMapInteraction(event);
+	};
+
+	const handleMapZoom = (event: ViewStateChangeEvent) => {
+		collapseForMapInteraction(event);
 	};
 
 	//
@@ -196,13 +207,14 @@ export function BaseMap() {
 	return (
 		<MapView
 			id="base-map"
-			onClick={handleMapClick}
-			onDrag={handleMapDrag}
 			interactiveLayerIds={[
 				MapViewOverlayVehiclesPrimaryLayerId,
 				MapViewOverlayStopsInteractiveLayerId,
 				MapViewStyleAlertsInteractiveLayerId,
 			]}
+			onClick={handleMapClick}
+			onDrag={handleMapDrag}
+			onZoom={handleMapZoom}
 		>
 
 			<MapViewOverlayStops
@@ -254,21 +266,6 @@ export function BaseMap() {
 			/>
 		</MapView>
 	);
-}
-
-/* * */
-
-function getRoutePlannerMapFitPadding(viewMode: ReturnType<typeof useRoutePlannerContext>['data']['view_mode'], activeSnapPoint: null | number) {
-	const viewportHeight = typeof window === 'undefined' ? 0 : window.innerHeight;
-	const fallbackSnapPoint = viewMode === 'itinerary-detail' ? 0.28 : 0.24;
-	const resultsSheetHeight = viewMode === 'results' || viewMode === 'itinerary-detail' ? Math.round(viewportHeight * (activeSnapPoint ?? fallbackSnapPoint)) : 0;
-
-	return {
-		bottom: Math.max(260, resultsSheetHeight + 32),
-		left: 60,
-		right: 60,
-		top: 120,
-	};
 }
 
 function getRoutePlannerMapFitFeatures(features: GeoJSON.Feature<GeoJSON.LineString>[], viewMode: ReturnType<typeof useRoutePlannerContext>['data']['view_mode']) {

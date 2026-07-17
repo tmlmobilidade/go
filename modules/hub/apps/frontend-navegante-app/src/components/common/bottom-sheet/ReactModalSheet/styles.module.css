@@ -38,9 +38,16 @@
 
 .header[data-mode='handle'] {
 	grid-template-columns: 50px 1fr 50px;
+	align-items: flex-start;
 	min-height: 44px;
-	padding: 8px 12px 6px;
+	padding: 12px;
+	padding-bottom: 0;
+	background-color: transparent;
 	border-bottom: 0;
+}
+
+.header[data-mode='handle'][data-with-background='true'] {
+	background-color: var(--color-system-background-100);
 }
 
 .headerLeft {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/components/common/bottom-sheet/use-map-bottom-sheet';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 
 /* * */
@@ -17,6 +18,7 @@ export function useMapFloatingControlsLayout(): MapFloatingControlsLayout {
 
 	const { activeBottomSheet, activeBottomSheetSnap } = useBottomSheet();
 	const routePlannerContext = useRoutePlannerContext();
+	const compactSnapPoint = MAP_BOTTOM_SHEET_SNAP_POINTS[MAP_BOTTOM_SHEET_INITIAL_SNAP];
 
 	//
 	// B. Transform data
@@ -28,14 +30,14 @@ export function useMapFloatingControlsLayout(): MapFloatingControlsLayout {
 	}
 
 	if (routePlannerContext.data.view_mode === 'itinerary-detail') {
-		const snapPoint = activeBottomSheetSnap.snapPoint ?? 0.28;
+		const snapPoint = activeBottomSheetSnap.snapPoint ?? compactSnapPoint;
 		if (snapPoint >= 0.9) return 'route-results-full';
 		if (snapPoint >= 0.5) return 'route-results-medium';
 		return 'route-results-compact';
 	}
 
 	if (routePlannerContext.data.view_mode === 'results') {
-		const snapPoint = activeBottomSheetSnap.snapPoint ?? 0.24;
+		const snapPoint = activeBottomSheetSnap.snapPoint ?? compactSnapPoint;
 		if (snapPoint >= 0.9) return 'route-results-full';
 		if (snapPoint >= 0.5) return 'route-results-medium';
 		return 'route-results-short';
