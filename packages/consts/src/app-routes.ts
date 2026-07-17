@@ -345,6 +345,10 @@ export const API_ROUTES = Object.freeze({
 		// METRICS
 		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
 
+		// MOTIS
+		MOTIS_GEOCODE: `${getModuleConfig('hub', 'api_url')}/v1/motis/geocode`,
+		MOTIS_PLAN: `${getModuleConfig('hub', 'api_url')}/v1/motis/plan`,
+
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,
 		NETWORK_PATTERNS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/network/patterns/${encodeURIComponent(id)}`,

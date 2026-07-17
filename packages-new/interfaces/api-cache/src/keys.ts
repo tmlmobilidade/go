@@ -22,6 +22,7 @@ export const ApiCacheKeyValues = [
 	'hub:v1:network:legacy-stops-map',
 	'hub:v1:network:lines',
 	'hub:v1:network:routes',
+	'hub:v1:network:trip-patterns',
 	'hub:v1:network:plans',
 	'hub:v1:metrics:demand:by-agency:by-operational-date:json',
 	'hub:v1:network:vehicles:protobuf',
