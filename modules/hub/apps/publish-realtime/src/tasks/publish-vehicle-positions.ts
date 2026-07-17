@@ -70,7 +70,7 @@ export async function publishVehiclesPositions() {
 					operational_date: operationalDate,
 					pattern_id: getPublicPatternId(vehicleEventData.agency_id, String(associatedRide?.pattern_id ?? '-')),
 					ride_id: associatedRide?._id,
-					route_id: associatedRide?._id,
+					route_id: associatedRide?.route_id,
 					trip_id: getPublicTripId(activePlanIdForAgency ?? '-', vehicleEventData.agency_id, vehicleEventData.trip_id),
 					vehicle_id: getPublicVehicleId(vehicleEventData.agency_id, vehicleEventData.vehicle_id),
 				};
