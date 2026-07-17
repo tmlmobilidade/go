@@ -65,6 +65,7 @@ export async function publishVehiclesPositions() {
 				const vehiclePositionData: HubVehiclePosition = {
 					...vehicleEventData,
 					calendar_date: validateCalendarDate(vehicleEventData.operational_date),
+					direction_id: associatedRide?.direction_id,
 					geohash: vehicleEventData.geohash ?? null,
 					line_id: getPublicLineId(vehicleEventData.agency_id, String(associatedRide?.line_id || '-')),
 					operational_date: operationalDate,
