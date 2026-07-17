@@ -17,8 +17,8 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/go-apex-pckg-parsers": "*",
+		"@tmlmobilidade/go-interfaces-raw-db": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",
