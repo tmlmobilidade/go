@@ -3,7 +3,7 @@
 
 import { dayLabelFromOperationalDate } from '@/utils/day-label.js';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -42,7 +42,7 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	// Fetch agencies collection + build price map (agency_id -> price_per_km)
 
-	const agenciesCollection = await goDB.core.agencies.getCollection();
+	const agenciesCollection = await goDb.core.agencies.getCollection();
 
 	// Mapa: agency_id (string) -> price_per_km (number)
 	const pricePerKmByAgency = new Map<string, number>();

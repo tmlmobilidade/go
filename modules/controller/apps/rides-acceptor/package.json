@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-interfaces-go-db": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/normalizers": "*",

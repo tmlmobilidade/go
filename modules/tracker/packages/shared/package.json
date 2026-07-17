@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-interfaces-go-db": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",

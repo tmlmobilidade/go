@@ -38,7 +38,7 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
-		"@tmlmobilidade/go-interfaces-go-db": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/mongo": "*",

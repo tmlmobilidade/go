@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
 import { type CreateUserDto, type LoginDto, type Organization, type Permission, type Session, type User } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
@@ -33,7 +33,7 @@ class AuthProviderClass {
 	 */
 	async getOrganizationFromSessionToken(sessionToken: string): Promise<Organization | undefined> {
 		const userData = await this.getUserFromSessionToken(sessionToken);
-		const organizationData = await goDB.core.organizations.findOne({ _id: { $eq: userData.organization_id } });
+		const organizationData = await goDb.core.organizations.findOne({ _id: { $eq: userData.organization_id } });
 		if (!organizationData) return undefined;
 		return organizationData;
 	}
@@ -55,10 +55,10 @@ class AuthProviderClass {
 	 * @throws An HTTP UNAUTHORIZED error code if user not found.
 	 */
 	async getPermissionsFromUserId(userId: string): Promise<Permission[]> {
-		const userData = await goDB.core.users.findById(userId);
+		const userData = await goDb.core.users.findById(userId);
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found.');
 
-		const rolesData = await goDB.core.roles.findMany({ _id: { $in: userData.role_ids } });
+		const rolesData = await goDb.core.roles.findMany({ _id: { $in: userData.role_ids } });
 		const allPermissions = [...rolesData.flatMap(role => role.permissions), ...userData.permissions];
 
 		const permissionsMap = new Map<string, Permission>();
@@ -82,10 +82,10 @@ class AuthProviderClass {
 	 * @throws An HTTP UNAUTHORIZED error code if user or session not found.
 	 */
 	async getUserFromSessionToken(sessionToken: string): Promise<User> {
-		const sessionData = await goDB.core.sessions.findOne({ token: { $eq: sessionToken } });
+		const sessionData = await goDb.core.sessions.findOne({ token: { $eq: sessionToken } });
 		if (!sessionData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session not found');
 
-		const userData = await goDB.core.users.findOne({ _id: { $eq: sessionData.user_id } });
+		const userData = await goDb.core.users.findOne({ _id: { $eq: sessionData.user_id } });
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
 
 		(userData as any).password_hash = undefined;
@@ -99,13 +99,13 @@ class AuthProviderClass {
 	 * @throws An HTTP UNAUTHORIZED error code if user not found or password is incorrect.
 	 */
 	async login(loginDto: LoginDto): Promise<Session> {
-		const userData = await goDB.core.users.findOne({ email: { $eq: loginDto.email } });
+		const userData = await goDb.core.users.findOne({ email: { $eq: loginDto.email } });
 		if (!userData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
 
 		const passwordHashMatch = await bcrypt.compare(loginDto.password, (userData as any).password_hash ?? '');
 		if (!passwordHashMatch) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Invalid password');
 
-		const createdSession = await goDB.core.sessions.insertOne({
+		const createdSession = await goDb.core.sessions.insertOne({
 			_id: generateRandomString(),
 			created_at: Dates.now('utc').unix_timestamp,
 			created_by: 'system',
@@ -124,7 +124,7 @@ class AuthProviderClass {
 	 * @param sessionToken The session token to logout.
 	 */
 	async logout(sessionToken: string): Promise<void> {
-		await goDB.core.sessions.deleteOne({ token: { $eq: sessionToken } });
+		await goDb.core.sessions.deleteOne({ token: { $eq: sessionToken } });
 	}
 
 	/**
@@ -133,10 +133,10 @@ class AuthProviderClass {
 	 * @returns The verification token for email verification.
 	 */
 	async register(createUserDto: CreateUserDto): Promise<string> {
-		const insertNewUserResult = await goDB.core.users.insertOne(createUserDto as any);
+		const insertNewUserResult = await goDb.core.users.insertOne(createUserDto as any);
 
 		const verificationToken = generateRandomToken();
-		await goDB.core.verificationTokens.insertOne({
+		await goDb.core.verificationTokens.insertOne({
 			expires_at: Dates.now('utc').plus({ days: 7 }).unix_timestamp,
 			token: verificationToken,
 			user_id: insertNewUserResult._id,

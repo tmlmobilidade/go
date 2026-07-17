@@ -18,6 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-apex-pckg-parsers": "*",
+		"@tmlmobilidade/go-interfaces-pcgi-file-manager": "*",
 		"@tmlmobilidade/go-interfaces-raw-db": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/logger": "*",

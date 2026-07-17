@@ -1,6 +1,6 @@
 /* * */
 
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubStop, HubStopSchema } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
