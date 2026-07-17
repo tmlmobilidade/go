@@ -1,7 +1,10 @@
 'use client';
 
-import { buildMotisProxyUrl, mapMotisGeocodeResultToLocation, type MotisGeocodeResult, routePlannerCoordinateToLocation, type RoutePlannerLocation } from '@/utils/route-planner-motis';
-import { useEffect, useState } from 'react';
+import { useStopsContext } from '@/components/stops/Stops.context';
+import { mapMotisGeocodeResultToLocation, type MotisGeocodeResult, routePlannerCoordinateToLocation, type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type HubStop } from '@tmlmobilidade/go-types-public-info';
+import { useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -19,9 +22,11 @@ export function useMotisLocationSearch(query: string): UseMotisLocationSearchRes
 	//
 	// A. Setup variables
 
+	const stopsContext = useStopsContext();
 	const [data, setData] = useState<RoutePlannerLocation[]>([]);
 	const [error, setError] = useState<null | string>(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const localStopResults = useMemo(() => searchStops(stopsContext.data.stops, query), [query, stopsContext.data.stops]);
 
 	//
 	// B. Fetch data
@@ -49,30 +54,30 @@ export function useMotisLocationSearch(query: string): UseMotisLocationSearchRes
 			const params = new URLSearchParams({
 				numResults: '8',
 				text: trimmedQuery,
-				type: 'STOP,ADDRESS,PLACE',
+				type: 'PLACE',
 			});
 
 			setIsLoading(true);
 			setError(null);
 
 			try {
-				const response = await fetch(buildMotisProxyUrl('/api/v1/geocode', params), {
+				const response = await fetch(`${API_ROUTES.hub.MOTIS_GEOCODE}?${params.toString()}`, {
 					signal: abortController.signal,
 				});
 
 				if (!response.ok) throw new Error(`MOTIS geocode returned HTTP ${response.status}`);
 
-				const results: unknown = await response.json();
-				const mappedResults = Array.isArray(results)
-					? results.map((result: MotisGeocodeResult) => mapMotisGeocodeResultToLocation(result))
+				const payload: { data: unknown } = await response.json();
+				const mappedResults = Array.isArray(payload.data)
+					? payload.data.map((result: MotisGeocodeResult) => mapMotisGeocodeResultToLocation(result))
 					: [];
 
-				setData(mappedResults);
+				setData([...localStopResults, ...mappedResults]);
 			} catch (caughtError) {
 				if (caughtError instanceof DOMException && caughtError.name === 'AbortError') return;
 				const message = caughtError instanceof Error ? caughtError.message : 'Erro ao pesquisar localizações';
-				setData([]);
-				setError(message);
+				setData(localStopResults);
+				setError(localStopResults.length > 0 ? null : message);
 			} finally {
 				if (!abortController.signal.aborted) setIsLoading(false);
 			}
@@ -82,7 +87,7 @@ export function useMotisLocationSearch(query: string): UseMotisLocationSearchRes
 			abortController.abort();
 			window.clearTimeout(timeout);
 		};
-	}, [query]);
+	}, [localStopResults, query]);
 
 	//
 	// C. Return values
@@ -90,4 +95,27 @@ export function useMotisLocationSearch(query: string): UseMotisLocationSearchRes
 	return { data, error, isLoading };
 
 	//
+}
+
+/* * */
+
+function searchStops(stops: HubStop[], query: string): RoutePlannerLocation[] {
+	const normalizedQuery = normalizeSearchText(query);
+	if (normalizedQuery.length < 2) return [];
+
+	return stops
+		.filter(stop => normalizeSearchText(`${stop.name} ${stop.short_name} ${stop.locality_name ?? ''} ${stop.municipality_name}`).includes(normalizedQuery))
+		.slice(0, 8)
+		.map(stop => ({
+			detail: [stop.locality_name, stop.municipality_name].filter(Boolean).join(' | '),
+			id: String(stop._id),
+			label: stop.name,
+			lat: stop.latitude,
+			lon: stop.longitude,
+			type: 'STOP',
+		}));
+}
+
+function normalizeSearchText(value: string) {
+	return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase();
 }

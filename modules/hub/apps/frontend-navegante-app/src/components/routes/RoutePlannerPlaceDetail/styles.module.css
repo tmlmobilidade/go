@@ -1,0 +1,30 @@
+.container {
+    display: grid;
+    gap: 16px;
+    padding: 12px;
+    padding-top: 0;
+}
+
+.placeHeader {
+    display: grid;
+    gap: 4px;
+}
+
+.placeHeader h2,
+.placeHeader p,
+.container h3 {
+    margin: 0;
+}
+
+.placeHeader p {
+    color: var(--color-system-text-200);
+}
+
+.itineraries {
+    display: grid;
+    gap: 12px;
+}
+
+.error {
+    color: var(--color-system-text-error);
+}

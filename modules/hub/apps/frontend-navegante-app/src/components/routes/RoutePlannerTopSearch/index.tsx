@@ -3,7 +3,8 @@
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerLocationSelector } from '@/components/routes/RoutePlannerLocationSelector';
-import { IconHome, IconSearch } from '@tabler/icons-react';
+import { getLastOmniSearchQuery } from '@/components/search/OmniSearch';
+import { IconSearch } from '@tabler/icons-react';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,19 +19,19 @@ export function RoutePlannerTopSearch() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { isBottomSheetInStack } = useBottomSheet();
+	const { setActiveBottomSheet } = useBottomSheet();
 	const routePlannerContext = useRoutePlannerContext();
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	//
 	// B. Transform data
 
-	const isRoutePlannerActive = isBottomSheetInStack('routes');
 	const hasRouteInputContext = !!routePlannerContext.data.origin && !!routePlannerContext.data.destination;
-	const shouldShowRouteInput = isRoutePlannerActive && (
+	const shouldShowRouteInput = (
 		['itinerary-detail', 'results'].includes(routePlannerContext.data.view_mode)
 		|| (routePlannerContext.data.view_mode === 'destination-search' && hasRouteInputContext)
 	);
+	const searchLabel = getLastOmniSearchQuery().trim() || t('default:action-bar.ActionBar.search.label');
 
 	//
 	// C. Handle effects
@@ -73,7 +74,7 @@ export function RoutePlannerTopSearch() {
 	// E. Render components
 
 	return (
-		<div ref={containerRef} className={styles.container}>
+		<div className={styles.container} ref={containerRef}>
 			{shouldShowRouteInput && (
 				<div className={styles.routeInputWrapper}>
 					<RoutePlannerLocationSelector
@@ -87,16 +88,9 @@ export function RoutePlannerTopSearch() {
 			)}
 
 			{!shouldShowRouteInput && (
-				<button
-					className={styles.searchButton}
-					onClick={routePlannerContext.actions.openDestinationSearch}
-					type="button"
-				>
+				<button className={styles.searchButton} onClick={() => setActiveBottomSheet({ view: 'search' })} type="button">
 					<IconSearch className={styles.searchIcon} size={24} />
-					<span className={styles.placeholder}>
-						{routePlannerContext.data.destination?.label || t('default:routes.RoutePlannerTopSearch.placeholder')}
-					</span>
-					<IconHome className={styles.homeIcon} size={24} />
+					<span className={styles.placeholder}>{searchLabel}</span>
 				</button>
 			)}
 		</div>

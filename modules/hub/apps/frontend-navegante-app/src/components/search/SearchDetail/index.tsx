@@ -1,16 +1,9 @@
 'use client';
 
-import { AlertsListContextProvider } from '@/components/alerts/list/AlertsList.context';
-import { AlertsListViewList } from '@/components/alerts/list/AlertsListViewList';
 import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { LinesListContextProvider } from '@/components/lines/list/LinesList.context';
-import { LinesListViewAll } from '@/components/lines/list/LinesListViewAll';
-import { SearchToolbar, type SearchType } from '@/components/search/SearchToolbar';
-import { StopsListContextProvider } from '@/components/stops/list/StopsList.context';
-import { StopsListViewList } from '@/components/stops/list/StopsListViewList';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { OmniSearch } from '@/components/search/OmniSearch';
+import { useRef, useState } from 'react';
 
 /* * */
 
@@ -20,41 +13,37 @@ export function SearchDetail() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
-
-	const [searchType, setSearchType] = useState<SearchType>('lines');
-
 	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
+	const inputRef = useRef<HTMLInputElement>(null);
+	const isOpen = activeBottomSheet?.view === 'search';
+	const [isMounted, setIsMounted] = useState(isOpen);
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleOpenEnd = () => {
+		inputRef.current?.focus({ preventScroll: true });
+	};
+
+	if (!isOpen && !isMounted) return null;
+
+	//
+	// C. Render components
 
 	return (
 		<BottomSheet
+			avoidKeyboard={false}
+			headerMode="handle"
 			onClose={closeActiveBottomSheet}
-			opened={activeBottomSheet?.view === 'search'}
+			onCloseEnd={() => setIsMounted(false)}
+			onOpenEnd={handleOpenEnd}
+			onOpenStart={() => setIsMounted(true)}
+			opened={isOpen}
 			size="full"
-			title={t('default:search.SearchDetail.title')}
+			snapPoints={[0, 1]}
+			withCompactCloseButton
 		>
-			<SearchToolbar onChangeSearchType={setSearchType} searchType={searchType} />
-
-			{searchType === 'lines' && (
-				<LinesListContextProvider>
-					<LinesListViewAll />
-				</LinesListContextProvider>
-			)}
-
-			{searchType === 'stops' && (
-				<StopsListContextProvider>
-					<StopsListViewList />
-				</StopsListContextProvider>
-			)}
-
-			{searchType === 'alerts' && (
-				<AlertsListContextProvider>
-					<AlertsListViewList />
-				</AlertsListContextProvider>
-			)}
+			<OmniSearch inputRef={inputRef} />
 		</BottomSheet>
 	);
 }

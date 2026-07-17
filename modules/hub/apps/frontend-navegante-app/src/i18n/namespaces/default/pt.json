@@ -257,6 +257,9 @@
 				"no_itineraries": "Nenhuma alternativa encontrada. Experimente outra data ou localizações mais próximas da rede.",
 				"unknown": "Não foi possível calcular a rota."
 			},
+			"place_detail": {
+				"how_to_get_here": "Como chegar aqui"
+			},
 			"results": {
 				"alerts_count": "{count, plural, one {# aviso} other {# avisos}}",
 				"back_to_results": "Voltar às alternativas",
@@ -361,6 +364,17 @@
 		}
 	},
 	"search": {
+		"OmniSearch": {
+			"empty": "Nenhum resultado encontrado.",
+			"groups": {
+				"alert": "Alertas",
+				"line": "Linhas",
+				"poi": "Locais",
+				"stop": "Paragens"
+			},
+			"loading": "A pesquisar...",
+			"placeholder": "Pesquisar linhas, paragens, alertas e locais"
+		},
 		"SearchDetail": {
 			"title": "Pesquisa"
 		},

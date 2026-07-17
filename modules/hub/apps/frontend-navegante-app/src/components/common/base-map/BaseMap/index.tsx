@@ -6,6 +6,7 @@ import { useMapBottomSheet } from '@/components/common/bottom-sheet/use-map-bott
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
+import { MapViewOverlayPlaceLocation } from '@/components/map/overlays/MapViewOverlayPlaceLocation';
 import { MapViewOverlayStopLineBadges } from '@/components/map/overlays/MapViewOverlayStopLineBadges';
 import { MapViewOverlayStops, MapViewOverlayStopsInteractiveLayerId, MapViewOverlayStopsVisibleMinZoom } from '@/components/map/overlays/MapViewOverlayStops';
 import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOverlayUserLocation';
@@ -107,6 +108,7 @@ export function BaseMap() {
 	const routePlannerMapFitFeatures = useMemo(() => {
 		return getRoutePlannerMapFitFeatures(routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode);
 	}, [routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode]);
+	const placeDestination = routePlannerContext.data.view_mode === 'place-detail' ? routePlannerContext.data.destination : null;
 
 	const vehiclesMapData = useMemo(() => {
 		if (!focusedVehicleId) return routePlannerVehiclesMapData;
@@ -139,6 +141,17 @@ export function BaseMap() {
 		// 	padding: { bottom: 320, left: 80, right: 80, top: 80 },
 		// });
 	}, [baseMap, shape?.geojson]);
+
+	useEffect(() => {
+		if (!baseMap || !Number.isFinite(placeDestination?.lon) || !Number.isFinite(placeDestination?.lat)) return;
+		if (!shouldFitMap) return;
+		baseMap.flyTo({
+			center: [placeDestination.lon, placeDestination.lat],
+			duration: 650,
+			offset: [0, Math.round((mapPadding.top - mapPadding.bottom) / 2)],
+			zoom: 15.5,
+		});
+	}, [activeBottomSheetSnap.snapPoint, baseMap, mapPadding, placeDestination, shouldFitMap]);
 
 	useEffect(() => {
 		if (!baseMap || routePlannerMapFitFeatures.length === 0) return;
@@ -259,6 +272,11 @@ export function BaseMap() {
 			<MapViewStyleAlerts
 				data={alertsMapData}
 				visible={activeBaseMapOverlays.includes('alerts')}
+			/>
+			<MapViewOverlayPlaceLocation
+				latitude={placeDestination?.lat}
+				longitude={placeDestination?.lon}
+				visible={Boolean(placeDestination)}
 			/>
 			<MapViewOverlayUserLocation
 				latitude={userLocation?.latitude}

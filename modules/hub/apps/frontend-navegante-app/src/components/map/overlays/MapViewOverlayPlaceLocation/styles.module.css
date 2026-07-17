@@ -1,0 +1,38 @@
+/* * */
+/* MARKER */
+
+.marker {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	width: 44px;
+	height: 52px;
+	pointer-events: none;
+	filter: drop-shadow(0 2px 4px rgb(0 0 0 / 30%));
+}
+
+/* * */
+/* PIN */
+
+.pin {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	background-color: var(--color-status-active-primary);
+	border: 3px solid var(--color-status-active-contrast);
+	border-radius: 50% 50% 50% 0;
+	transform: rotate(-45deg);
+}
+
+/* * */
+/* DOT */
+
+.dot {
+	width: 9px;
+	height: 9px;
+	background-color: var(--color-status-active-contrast);
+	border-radius: 999px;
+	transform: rotate(45deg);
+}

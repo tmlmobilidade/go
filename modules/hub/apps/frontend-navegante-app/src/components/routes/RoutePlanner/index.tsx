@@ -6,6 +6,7 @@ import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context
 import { RoutePlannerDestinationSearch } from '@/components/routes/RoutePlannerDestinationSearch';
 import { RoutePlannerInput } from '@/components/routes/RoutePlannerInput';
 import { RoutePlannerItineraryDetail } from '@/components/routes/RoutePlannerItineraryDetail';
+import { RoutePlannerPlaceDetail } from '@/components/routes/RoutePlannerPlaceDetail';
 import { RoutePlannerResults } from '@/components/routes/RoutePlannerResults';
 import { useTranslation } from 'react-i18next';
 
@@ -71,6 +72,11 @@ export function RoutePlanner() {
 		}
 
 		if (routePlannerContext.data.view_mode === 'results') {
+			if (routePlannerContext.data.was_opened_from_place) {
+				routePlannerContext.actions.openPlaceDetail();
+				return;
+			}
+
 			routePlannerContext.actions.clearRoute();
 			closeActiveBottomSheet();
 			return;
@@ -127,6 +133,8 @@ export function RoutePlanner() {
 			)}
 
 			{routePlannerContext.data.view_mode === 'results' && <RoutePlannerResults />}
+
+			{routePlannerContext.data.view_mode === 'place-detail' && <RoutePlannerPlaceDetail />}
 
 			{routePlannerContext.data.view_mode === 'itinerary-detail' && <RoutePlannerItineraryDetail />}
 		</BottomSheet>

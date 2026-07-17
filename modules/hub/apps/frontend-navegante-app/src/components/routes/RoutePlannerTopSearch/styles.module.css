@@ -24,7 +24,7 @@
 
 .searchButton {
 	display: grid;
-	grid-template-columns: auto minmax(0, 1fr) auto;
+	grid-template-columns: auto minmax(0, 1fr);
 	gap: 12px;
 	align-items: center;
 	width: min(560px, 100%);
@@ -44,8 +44,7 @@
 	transform: scale(0.99);
 }
 
-.searchIcon,
-.homeIcon {
+.searchIcon {
 	flex-shrink: 0;
 	color: var(--color-system-text-200, #5f6673);
 }

@@ -25,7 +25,10 @@ export type MotisPlanResponse = Omit<MotisApiPlanResponse, 'direct' | 'itinerari
 
 export interface RoutePlannerLocation {
 	areas?: MotisGeocodeArea[]
+	category?: string
+	country?: string
 	detail: string
+	houseNumber?: string
 	id?: string
 	label: string
 	lat?: number
@@ -34,6 +37,7 @@ export interface RoutePlannerLocation {
 	modes?: string[]
 	street?: string
 	type: string
+	zip?: string
 }
 
 export type MotisPlanPlace = MotisApiPlace;
@@ -54,12 +58,6 @@ interface RoutePlannerItineraryMapDataOptions {
 }
 
 /* * */
-
-export function buildMotisProxyUrl(path: string, params?: URLSearchParams) {
-	const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-	const query = params ? `?${params.toString()}` : '';
-	return `${basePath}/api/motis${path}${query}`;
-}
 
 export function buildMotisPlanParams(origin: RoutePlannerLocation, destination: RoutePlannerLocation, travelTime: RoutePlannerTravelTime) {
 	const requestDate = travelTime.mode === 'now' ? new Date() : travelTime.date;
@@ -82,7 +80,6 @@ export function buildMotisPlanParams(origin: RoutePlannerLocation, destination: 
 
 	return params;
 }
-
 export function buildRoutePlannerItineraryMapData(itinerary: MotisItinerary | null, origin: null | RoutePlannerLocation, destination: null | RoutePlannerLocation, options?: RoutePlannerItineraryMapDataOptions): RoutePlannerItineraryMapData {
 	const shapeData = getEmptyLineStringFeatureCollection();
 	const waypointsData = getEmptyPointFeatureCollection();
@@ -120,15 +117,15 @@ export function buildRoutePlannerItineraryMapData(itinerary: MotisItinerary | nu
 }
 
 export function formatMotisLocationDetail(location: MotisGeocodeResult | RoutePlannerLocation) {
-	const parts = [
-		location.type,
-		Array.isArray(location.modes) && location.modes.length > 0 ? location.modes.join(', ') : '',
-		location.street,
-		Array.isArray(location.areas) ? location.areas.map(area => area.name).filter(Boolean).slice(0, 2).join(', ') : '',
-		Number.isFinite(location.lat) && Number.isFinite(location.lon) ? `${location.lat?.toFixed(5)}, ${location.lon?.toFixed(5)}` : '',
-	];
+	const label = 'label' in location ? location.label : location.name;
+	const street = [
+		getUsefulLocationPart(location.street),
+		getUsefulLocationPart(location.houseNumber),
+	].filter(Boolean).join(' ');
+	const areaNames = getMotisAreaNames(location.areas, [label, street]);
+	const locality = [getUsefulLocationPart(location.zip), ...areaNames].filter(Boolean).join(' ');
 
-	return parts.filter(Boolean).join(' | ');
+	return [street, locality].filter(Boolean).join(' · ');
 }
 
 export function formatMotisPlanDuration(seconds: number | undefined) {
@@ -285,7 +282,10 @@ export function mapMotisGeocodeResultToLocation(result: MotisGeocodeResult): Rou
 
 	return {
 		areas: result.areas,
+		category: result.category,
+		country: result.country,
 		detail: formatMotisLocationDetail(result),
+		houseNumber: result.houseNumber,
 		id: result.id,
 		label,
 		lat: result.lat,
@@ -294,6 +294,7 @@ export function mapMotisGeocodeResultToLocation(result: MotisGeocodeResult): Rou
 		modes: result.modes,
 		street: result.street,
 		type: result.type || 'PLACE',
+		zip: result.zip,
 	};
 }
 
@@ -330,6 +331,34 @@ export function routePlannerCoordinateToLocation(value: string): null | RoutePla
 function formatCoordinateLabel(lat: number | undefined, lon: number | undefined) {
 	if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
 	return `${lat},${lon}`;
+}
+
+function getMotisAreaNames(areas: MotisGeocodeArea[] | undefined, excludedValues: Array<string | undefined>) {
+	const excluded = new Set(excludedValues.map(normalizeLocationPart).filter(Boolean));
+	const result: string[] = [];
+	const seen = new Set<string>();
+
+	for (const area of areas ?? []) {
+		const name = getUsefulLocationPart(area.name);
+		const normalizedName = normalizeLocationPart(name);
+		if (!name || !normalizedName || excluded.has(normalizedName) || seen.has(normalizedName)) continue;
+
+		seen.add(normalizedName);
+		result.push(name);
+		if (result.length === 2) break;
+	}
+
+	return result;
+}
+
+function getUsefulLocationPart(value: string | undefined) {
+	const normalizedValue = normalizeLocationPart(value);
+	if (!normalizedValue || ['address', 'none', 'null', 'place', 'stop', 'undefined'].includes(normalizedValue)) return '';
+	return value?.trim() ?? '';
+}
+
+function normalizeLocationPart(value: string | undefined) {
+	return value?.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase().trim() ?? '';
 }
 
 function getEmptyLineStringFeatureCollection(): GeoJSON.FeatureCollection<GeoJSON.LineString> {
