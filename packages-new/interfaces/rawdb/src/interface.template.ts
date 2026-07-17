@@ -221,5 +221,11 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 		}
 	}
 
-	//
+	/**
+	 * Gets the collection name.
+	 * @returns The collection name
+	 */
+	public getCollectionName(): string {
+		return this.collectionName;
+	}
 }
