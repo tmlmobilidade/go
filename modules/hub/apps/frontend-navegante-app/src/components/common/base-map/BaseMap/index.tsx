@@ -242,14 +242,14 @@ export function BaseMap() {
 	return (
 		<MapView
 			id="base-map"
+			onClick={handleMapClick}
+			onDrag={handleMapDrag}
+			onZoom={handleMapZoom}
 			interactiveLayerIds={[
 				MapViewOverlayVehiclesPrimaryLayerId,
 				MapViewOverlayStopsInteractiveLayerId,
 				MapViewStyleAlertsInteractiveLayerId,
 			]}
-			onClick={handleMapClick}
-			onDrag={handleMapDrag}
-			onZoom={handleMapZoom}
 		>
 
 			<MapViewOverlayStops

@@ -18,12 +18,12 @@ export function LinesDetail() {
 
 	return (
 		<BottomSheet
-			mapAware
 			onClose={closeActiveBottomSheet}
 			opened={activeBottomSheet?.view === 'lines-detail'}
+			withOverlay={false}
+			mapAware
 			withCompactCloseButton
 			withHeaderBackground
-			withOverlay={false}
 		>
 			{activeBottomSheet?.entityId && <LinesDetailView />}
 		</BottomSheet>

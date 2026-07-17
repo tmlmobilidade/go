@@ -64,14 +64,14 @@ export function OmniSearch({ inputRef: inputRefProp, variant = 'sheet' }: OmniSe
 		<div className={styles.container} data-variant={variant}>
 			<label className={styles.inputWrapper}>
 				<IconSearch size={20} />
-				<input autoFocus={variant === 'sheet'} onChange={event => handleQueryChange(event.currentTarget.value)} placeholder={t('default:search.OmniSearch.placeholder')} ref={inputRef} type="search" value={query} />
+				<input ref={inputRef} autoFocus={variant === 'sheet'} onChange={event => handleQueryChange(event.currentTarget.value)} placeholder={t('default:search.OmniSearch.placeholder')} type="search" value={query} />
 			</label>
 
 			{search.groups.map(group => (
-				<section className={styles.group} key={group.key}>
+				<section key={group.key} className={styles.group}>
 					<h2>{t(`default:search.OmniSearch.groups.${group.key}`)}</h2>
 					{group.results.map(result => (
-						<RegularListItem icon={getResultIcon(result)} key={`${result.type}-${result.id}`} onClick={() => handleSelect(result)}>
+						<RegularListItem key={`${result.type}-${result.id}`} icon={getResultIcon(result)} onClick={() => handleSelect(result)}>
 							<OmniSearchResultDisplay result={result} />
 						</RegularListItem>
 					))}
@@ -131,9 +131,9 @@ function StopAgencyLogos({ agencyIds }: { agencyIds: string[] }) {
 				if (!agency) return null;
 				return (
 					<Image
+						key={agencyId}
 						alt={agency.full}
 						height={24}
-						key={agencyId}
 						src={getAgencyLogo(agencyId, '120x120', 'light')}
 						width={24}
 					/>

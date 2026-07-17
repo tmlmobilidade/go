@@ -29,11 +29,11 @@ export function ActionBar() {
 	return (
 		<div className={styles.container} data-layout={controlsLayout}>
 
-			<ActionBarButton
+			{/* <ActionBarButton
 				icon={<IconQuestionMark size={30} />}
 				label={t('default:action-bar.ActionBar.help.label')}
 				onClick={() => setActiveBottomSheet({ view: 'help' })}
-			/>
+			/> */}
 
 			<Spacer orientation="vertical" size="full" />
 
@@ -41,18 +41,6 @@ export function ActionBar() {
 				icon={<IconAlertTriangle size={28} />}
 				label={t('default:action-bar.ActionBar.alerts.label')}
 				onClick={() => setActiveBottomSheet({ view: 'alerts-list' })}
-			/> */}
-
-			{/* <ActionBarButton
-				icon={<IconRoute size={28} />}
-				label={t('default:action-bar.ActionBar.routes.label')}
-				onClick={() => setActiveBottomSheet({ view: 'routes' })}
-			/>
-
-			<ActionBarButton
-				icon={<IconSearch size={28} />}
-				label={t('default:action-bar.ActionBar.search.label')}
-				onClick={() => setActiveBottomSheet({ view: 'search' })}
 			/> */}
 
 			<ActionBarUserLocation />
