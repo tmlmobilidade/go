@@ -6,7 +6,7 @@ import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context
 
 /* * */
 
-export type MapFloatingControlsLayout = 'default' | 'route-results-compact' | 'route-results-full' | 'route-results-medium' | 'route-results-short' | 'route-search';
+export type MapFloatingControlsLayout = 'default' | 'route-results-compact' | 'route-results-full' | 'route-results-medium' | 'route-search';
 
 /* * */
 
@@ -40,7 +40,7 @@ export function useMapFloatingControlsLayout(): MapFloatingControlsLayout {
 		const snapPoint = activeBottomSheetSnap.snapPoint ?? compactSnapPoint;
 		if (snapPoint >= 0.9) return 'route-results-full';
 		if (snapPoint >= 0.5) return 'route-results-medium';
-		return 'route-results-short';
+		return 'route-results-compact';
 	}
 
 	return 'default';

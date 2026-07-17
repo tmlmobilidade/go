@@ -18,16 +18,12 @@
 	transition: bottom 180ms ease, opacity 180ms ease;
 }
 
-.container[data-layout='route-results-short'] {
-	bottom: calc(24dvh + env(safe-area-inset-bottom, 0px) + 20px);
-}
-
 .container[data-layout='route-results-compact'] {
 	bottom: calc(28dvh + env(safe-area-inset-bottom, 0px) + 20px);
 }
 
 .container[data-layout='route-results-medium'] {
-	bottom: calc(58dvh + env(safe-area-inset-bottom, 0px) + 20px);
+	bottom: calc(64dvh + env(safe-area-inset-bottom, 0px) + 20px);
 }
 
 .container[data-layout='route-results-full'] {
