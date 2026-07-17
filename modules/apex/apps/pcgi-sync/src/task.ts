@@ -23,7 +23,7 @@ const writer = new BatchWriter<RawApexTransaction>({
 		}));
 		await rawDb.raw.rawApexTransactions.bulkWrite(writeOps);
 	},
-	title: 'rawdb|raw-apex-transactions',
+	title: rawDb.raw.rawApexTransactions.getCollectionName(),
 });
 
 /**
