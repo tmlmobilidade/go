@@ -5,7 +5,6 @@ import { LinesDetailAlerts } from '@/components/lines/detail/LinesDetailAlerts';
 import { LinesDetailPath } from '@/components/lines/detail/LinesDetailPath';
 import { LinesDetailToolbar } from '@/components/lines/detail/LinesDetailToolbar';
 import { LinesDetailViewHeader } from '@/components/lines/detail/LinesDetailViewHeader';
-import { LinesDetailViewMap } from '@/components/lines/detail/LinesDetailViewMap';
 import { Space } from '@mantine/core';
 import { Divider, LoadingSection, Section } from '@tmlmobilidade/ui';
 
@@ -33,7 +32,6 @@ export function LinesDetailView() {
 
 	return (
 		<Section padding="none">
-			<LinesDetailViewMap />
 			<LinesDetailViewHeader />
 			<Divider />
 			<LinesDetailToolbar />

@@ -52,7 +52,7 @@ export function useLinesDetailContext() {
 
 /* * */
 
-export function LinesDetailContextProvider({ children, lineId }: PropsWithChildren<{ lineId: string }>) {
+export function LinesDetailContextProvider({ children, lineId }: PropsWithChildren<{ lineId: null | string }>) {
 	//
 
 	//
@@ -72,8 +72,8 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	const [dataActiveWaypointState, setDataActiveWaypointState] = useState<LinesDetailContextState['data']['active_waypoint']>(null);
 	const [dataHighlightedTripIdsState, setDataHighlightedTripIdsState] = useState<LinesDetailContextState['data']['highlighted_trip_ids']>([]);
 	const [filterActivePatternIdState, setFilterActivePatternIdState] = useState<null | string>(null);
-	const [filterActiveWaypointStopIdState, setFilterActiveWaypointStopIdState] = useState('active_waypoint_stop_id');
-	const [filterActiveWaypointStopSequenceState, setFilterActiveWaypointStopSequenceState] = useState('active_waypoint_stop_sequence');
+	const [filterActiveWaypointStopIdState, setFilterActiveWaypointStopIdState] = useState<null | string>(null);
+	const [filterActiveWaypointStopSequenceState, setFilterActiveWaypointStopSequenceState] = useState<null | string>(null);
 
 	const [flagIsInteractiveModeState, setFlagIsInteractiveModeState] = useState<LinesDetailContextState['flags']['is_interactive_mode']>(false);
 
@@ -91,6 +91,22 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	}, [linesContext.data.routes, selectedLineData?.route_ids]);
 
 	useEffect(() => {
+		setDataAllPatternsState(null);
+		setDataValidPatternsState(undefined);
+		setDataActiveAlertsState(undefined);
+		setDataActivePatternState(null);
+		setDataActiveShapeState(null);
+		setDataActiveWaypointState(null);
+		setDataHighlightedTripIdsState([]);
+		setFilterActivePatternIdState(null);
+		setFilterActiveWaypointStopIdState(null);
+		setFilterActiveWaypointStopSequenceState(null);
+		setFlagIsInteractiveModeState(false);
+	}, [lineId]);
+
+	useEffect(() => {
+		let isCancelled = false;
+
 		(async () => {
 			try {
 				if (!selectedLineData) return;
@@ -110,11 +126,15 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 						});
 				});
 				const resultData = await Promise.all(fetchPromises);
-				setDataAllPatternsState(resultData);
+				if (!isCancelled) setDataAllPatternsState(resultData);
 			} catch (error) {
 				console.error({ error, message: 'Error fetching pattern data:' });
 			}
 		})();
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [selectedLineData, stopsContext.actions, stopsContext.data.stops]);
 
 	/**
@@ -123,6 +143,8 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	 */
 	useEffect(() => {
 		if (!dataActivePatternState) return;
+		let isCancelled = false;
+
 		(async () => {
 			try {
 				const shapeUrl = API_ROUTES.hub.NETWORK_SHAPES(dataActivePatternState.shape_id);
@@ -139,11 +161,15 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 						},
 					};
 				}
-				setDataActiveShapeState(shapeData);
+				if (!isCancelled) setDataActiveShapeState(shapeData);
 			} catch (error) {
 				console.error({ error, message: 'Error fetching shape data:' });
 			}
 		})();
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [dataActivePatternState]);
 
 	//

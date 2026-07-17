@@ -5,9 +5,11 @@ import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { ActionBar } from '@/components/common/action-bar/ActionBar';
 import { BaseMap } from '@/components/common/base-map/BaseMap';
 import { BaseMapOverlaysControl } from '@/components/common/base-map/BaseMapOverlaysControl';
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { RoutePlannerVehiclesCounter } from '@/components/common/display/RoutePlannerVehiclesCounter';
 import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
+import { LinesDetailContextProvider } from '@/components/lines/detail/LinesDetail.context';
 import { RoutePlanner } from '@/components/routes/RoutePlanner';
 import { RoutePlannerContextProvider } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerTopSearch } from '@/components/routes/RoutePlannerTopSearch';
@@ -26,6 +28,8 @@ export default function Page() {
 	// A. Setup variables
 
 	const colorScheme = useColorScheme();
+	const { activeBottomSheet } = useBottomSheet();
+	const activeLineId = activeBottomSheet?.view === 'lines-detail' ? activeBottomSheet.entityId ?? null : null;
 
 	//
 	// B. Handle actions
@@ -40,20 +44,22 @@ export default function Page() {
 	// C. Render components
 
 	return (
-		<RoutePlannerContextProvider>
-			<BaseMap />
-			<RoutePlannerTopSearch />
-			<BaseMapOverlaysControl />
-			<ActionBar />
-			<VehiclesDetail />
-			<LinesDetail />
-			<StopsDetail />
-			<HelpDetail />
-			<AlertsList />
-			<AlertsDetail />
-			<SearchDetail />
-			<RoutePlanner />
-			<RoutePlannerVehiclesCounter />
-		</RoutePlannerContextProvider>
+		<LinesDetailContextProvider lineId={activeLineId}>
+			<RoutePlannerContextProvider>
+				<BaseMap />
+				<RoutePlannerTopSearch />
+				<BaseMapOverlaysControl />
+				<ActionBar />
+				<VehiclesDetail />
+				<LinesDetail />
+				<StopsDetail />
+				<HelpDetail />
+				<AlertsList />
+				<AlertsDetail />
+				<SearchDetail />
+				<RoutePlanner />
+				<RoutePlannerVehiclesCounter />
+			</RoutePlannerContextProvider>
+		</LinesDetailContextProvider>
 	);
 }

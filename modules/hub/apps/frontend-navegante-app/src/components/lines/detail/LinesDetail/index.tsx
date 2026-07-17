@@ -2,9 +2,7 @@
 
 import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { LinesDetailContextProvider } from '@/components/lines/detail/LinesDetail.context';
 import { LinesDetailView } from '@/components/lines/detail/LinesDetailView';
-import { useLinesContext } from '@/components/lines/Lines.context';
 
 /* * */
 
@@ -16,24 +14,18 @@ export function LinesDetail() {
 
 	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
 
-	const linesContext = useLinesContext();
-	const foundLineData = linesContext.data.lines.find(line => line._id === activeBottomSheet?.entityId);
-
-	//
-	// B. Render componentss
+	// B. Render components
 
 	return (
 		<BottomSheet
+			mapAware
 			onClose={closeActiveBottomSheet}
 			opened={activeBottomSheet?.view === 'lines-detail'}
-			size="full"
-			title={foundLineData?.long_name}
+			withCompactCloseButton
+			withHeaderBackground
+			withOverlay={false}
 		>
-			{activeBottomSheet?.entityId && (
-				<LinesDetailContextProvider lineId={activeBottomSheet.entityId}>
-					<LinesDetailView />
-				</LinesDetailContextProvider>
-			)}
+			{activeBottomSheet?.entityId && <LinesDetailView />}
 		</BottomSheet>
 	);
 }

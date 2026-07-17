@@ -3,6 +3,7 @@
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useMapBottomSheet } from '@/components/common/bottom-sheet/use-map-bottom-sheet';
+import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
@@ -38,6 +39,7 @@ export function BaseMap() {
 
 	const stopsContext = useStopsContext();
 	const alertsContext = useAlertsContext();
+	const linesDetailContext = useLinesDetailContext();
 	const linesContext = useLinesContext();
 	const vehiclesContext = useVehiclesContext();
 	const routePlannerContext = useRoutePlannerContext();
@@ -51,6 +53,7 @@ export function BaseMap() {
 	const lastRouteMapFitKeyRef = useRef<null | string>(null);
 
 	const focusedAlertId = activeBottomSheet?.view === 'alerts-detail' ? activeBottomSheet.entityId : null;
+	const focusedLineShape = activeBottomSheet?.view === 'lines-detail' ? linesDetailContext.data.active_shape?.geojson : null;
 	const focusedVehicleId = activeBottomSheet?.view === 'vehicles-detail' ? activeBottomSheet.entityId : null;
 
 	const focusedVehiclePatternId = useMemo(() => {
@@ -99,11 +102,22 @@ export function BaseMap() {
 		return getRoutePlannerItineraryPatternIds(routePlannerContext.data.selected_itinerary);
 	}, [routePlannerContext.data.selected_itinerary]);
 
-	const shouldAlwaysShowRoutePlannerVehicles = routePlannerVehiclePatternIds !== null;
+	const lineDetailVehiclePatternIds = useMemo(() => {
+		if (activeBottomSheet?.view !== 'lines-detail') return null;
+		const activePatternId = linesDetailContext.data.active_pattern?._id;
+		return new Set(activePatternId ? [activePatternId] : []);
+	}, [activeBottomSheet?.view, linesDetailContext.data.active_pattern?._id]);
+
+	const shouldAlwaysShowFilteredVehicles = routePlannerVehiclePatternIds !== null || lineDetailVehiclePatternIds !== null;
 
 	const routePlannerVehiclesMapData = useMemo(() => {
 		return filterVehicleFeatureCollectionByPatternIds(vehiclesContext.data.fc, routePlannerVehiclePatternIds);
 	}, [routePlannerVehiclePatternIds, vehiclesContext.data.fc]);
+
+	const lineDetailVehiclesMapData = useMemo(() => {
+		if (lineDetailVehiclePatternIds === null) return routePlannerVehiclesMapData;
+		return filterVehicleFeatureCollectionByPatternIds(vehiclesContext.data.fc, lineDetailVehiclePatternIds);
+	}, [lineDetailVehiclePatternIds, routePlannerVehiclesMapData, vehiclesContext.data.fc]);
 
 	const routePlannerMapFitFeatures = useMemo(() => {
 		return getRoutePlannerMapFitFeatures(routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode);
@@ -111,7 +125,7 @@ export function BaseMap() {
 	const placeDestination = routePlannerContext.data.view_mode === 'place-detail' ? routePlannerContext.data.destination : null;
 
 	const vehiclesMapData = useMemo(() => {
-		if (!focusedVehicleId) return routePlannerVehiclesMapData;
+		if (!focusedVehicleId) return lineDetailVehiclesMapData;
 
 		const collection = getBaseGeoJsonFeatureCollection();
 
@@ -120,7 +134,7 @@ export function BaseMap() {
 		});
 
 		return collection;
-	}, [focusedVehicleId, routePlannerVehiclesMapData, vehiclesContext.data.fc]);
+	}, [focusedVehicleId, lineDetailVehiclesMapData, vehiclesContext.data.fc]);
 
 	useEffect(() => {
 		if (!baseMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;
@@ -133,6 +147,14 @@ export function BaseMap() {
 
 		// moveMap(viewportMap, focusedFeature.geometry.coordinates);
 	}, [baseMap, focusedAlertId, alertsMapData.features, activeBaseMapOverlays]);
+
+	useEffect(() => {
+		if (!baseMap || !focusedLineShape) return;
+		if (!shouldFitMap) return;
+		centerMap(baseMap, [focusedLineShape], {
+			padding: mapPadding,
+		});
+	}, [activeBottomSheetSnap.snapPoint, baseMap, focusedLineShape, mapPadding, shouldFitMap]);
 
 	useEffect(() => {
 		if (!baseMap || !shape?.geojson) return;
@@ -238,6 +260,14 @@ export function BaseMap() {
 				visible={activeBaseMapOverlays.includes('stops')}
 			/>
 
+			{focusedLineShape && (
+				<MapViewStylePath
+					idPrefix="line-detail"
+					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
+					shapeData={focusedLineShape}
+				/>
+			)}
+
 			{shape?.geojson && pattern && (
 				<MapViewStylePath
 					presentBeforeId={MapViewOverlayVehiclesPrimaryLayerId}
@@ -261,7 +291,7 @@ export function BaseMap() {
 			)}
 
 			<MapViewOverlayVehicles
-				alwaysShowVehicles={shouldAlwaysShowRoutePlannerVehicles}
+				alwaysShowVehicles={shouldAlwaysShowFilteredVehicles}
 				vehiclesData={vehiclesMapData}
 				visible={activeBaseMapOverlays.includes('vehicles')}
 			/>
