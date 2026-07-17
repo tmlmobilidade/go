@@ -1,7 +1,7 @@
 /* * */
 
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { lines, patterns } from '@tmlmobilidade/interfaces';
+import { lines, patterns, routes } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { INTERCHANGE_MODE } from '@tmlmobilidade/types';
@@ -55,14 +55,14 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 	// C. Cleanup existing data for agencies being imported
 
 	const agencyIds = [...new Set(gtfsRoutes.map(route => route.agency_id).filter(Boolean))];
-	const existingLines = await lines.findByAgencyIds(agencyIds);
+	const existingLines = await goDB.offer.lines.findByAgencyIds(agencyIds);
 
 	const lineIds = existingLines.map(line => line._id);
 
 	if (lineIds.length) {
 		await patterns.deleteMany({ line_id: { $in: lineIds } });
 		await goDB.offer.routes.deleteMany({ line_id: { $in: lineIds } });
-		await lines.deleteMany({ _id: { $in: lineIds } });
+		await goDB.offer.lines.deleteMany({ _id: { $in: lineIds } });
 	}
 
 	// Fetch events
@@ -114,7 +114,7 @@ export async function importGtfs(options: ImportOptions): Promise<ImportSummary>
 		//
 		// E.1 Insert line
 
-		const lineDoc = await lines.insertOne(lineInput);
+		const lineDoc = await goDB.offer.lines.insertOne(lineInput);
 		linesCreated += 1;
 		const lineId = lineDoc._id;
 		// Logger.info('[gtfs-importer] Line created', {

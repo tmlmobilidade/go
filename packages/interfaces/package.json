@@ -38,6 +38,7 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/ssh": "*",
@@ -45,15 +46,15 @@
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"bcryptjs": "3.0.3",
-		"mongodb": "7.4.0",
-		"oci-common": "2.136.0",
-		"oci-objectstorage": "2.136.0",
+		"mongodb": "7.5.0",
+		"oci-common": "2.137.0",
+		"oci-objectstorage": "2.137.0",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"

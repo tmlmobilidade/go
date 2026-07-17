@@ -8,6 +8,7 @@ import { useLayoutContext } from '../../../contexts/Layout.context';
 import { useUserPreference } from '../../../hooks/use-user-preference';
 import { Sidebar } from '../../sidebar/Sidebar';
 import { clampSidebarRailWidth, SIDEBAR_RAIL_WIDTH_DEFAULT } from '../../sidebar/sidebar-layout.constants';
+import { AppWrapperBanner } from '../AppWrapperBanner';
 
 /* * */
 
@@ -33,21 +34,27 @@ export function AppWrapper({ children }: PropsWithChildren) {
 
 	if (layoutContext.data.active_fullscreen) {
 		return (
-			<div className={styles.container}>
-				<div className={styles.content}>{children}</div>
+			<div className={styles.root}>
+				<AppWrapperBanner />
+				<div className={styles.container}>
+					<div className={styles.content}>{children}</div>
+				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className={styles.container}>
-			<Sidebar
-				collapsed={sidebarHidden}
-				onCollapsedChange={setSidebarHidden}
-				onWidthPxChange={handleSidebarWidthChange}
-				widthPx={sidebarWidthPx}
-			/>
-			<div className={styles.content}>{children}</div>
+		<div className={styles.root}>
+			<AppWrapperBanner />
+			<div className={styles.container}>
+				<Sidebar
+					collapsed={sidebarHidden}
+					onCollapsedChange={setSidebarHidden}
+					onWidthPxChange={handleSidebarWidthChange}
+					widthPx={sidebarWidthPx}
+				/>
+				<div className={styles.content}>{children}</div>
+			</div>
 		</div>
 	);
 

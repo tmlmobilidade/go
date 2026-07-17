@@ -3,6 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { calculateAgencyVkm } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { agencies, events, holidays, lines, patterns, yearPeriods } from '@tmlmobilidade/interfaces';
 import { type CalculateVkmDto, CalculateVkmSchema, PermissionCatalog, type VkmCalculationResult } from '@tmlmobilidade/types';
 
@@ -43,13 +44,13 @@ export class VkmController {
 			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'End date is required for fixed range calculations');
 		}
 
-		const agency = await agencies.findById(payload.agency_id);
+		const agency = await goDb.core.agencies.findById(payload.agency_id);
 
 		if (!agency) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');
 		}
 
-		const agencyLines = await lines.findMany({ agency_id: payload.agency_id }, { projection: { _id: 1 } });
+		const agencyLines = await goDB.offer.lines.findMany({ agency_id: payload.agency_id }, { projection: { _id: 1 } });
 		const lineIds = agencyLines.map(line => line._id);
 
 		const patternProjection = payload.extension_source === 'stop_times'

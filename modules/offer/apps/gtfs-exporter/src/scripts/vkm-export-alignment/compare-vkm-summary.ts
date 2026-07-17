@@ -22,7 +22,7 @@ import type { CalculateVkmDto, OperationalDate, Pattern } from '@tmlmobilidade/t
 
 import { buildOperationalDateRange, calculateAgencyVkm, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { agencies, events, holidays, lines, patterns, yearPeriods } from '@tmlmobilidade/interfaces';
+import { agencies, events, holidays, lines, patterns, routes, yearPeriods } from '@tmlmobilidade/interfaces';
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';
@@ -117,7 +117,7 @@ function fmtInt(value: number) {
 }
 
 async function loadAgencyPatterns(agencyId: string, onlyRouted: boolean): Promise<Pattern[]> {
-	const agencyLines = await lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
+	const agencyLines = await goDB.offer.lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
 	const lineIds = agencyLines.map(line => line._id);
 	if (!lineIds.length) return [];
 
@@ -192,7 +192,7 @@ async function main() {
 	const gtfsIndex = loadGtfsExportIndex(resolvedGtfsDir, startOp, endOp);
 
 	const [agencyRecord, agencyPatterns, periods, holidaysList, eventsList] = await Promise.all([
-		agencies.findById(agency),
+		goDb.core.agencies.findById(agency),
 		loadAgencyPatterns(agency, onlyRouted),
 		yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
 		holidays.findMany({ agency_ids: { $in: [agency] } }),

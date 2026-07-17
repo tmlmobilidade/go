@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { patterns } from '@tmlmobilidade/interfaces';
+import { patterns, routes } from '@tmlmobilidade/interfaces';
 import { CreateRouteDto, PatternSimplified, PermissionCatalog, type Route, type UpdateRouteDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -72,7 +72,7 @@ export class RoutesController {
 		//
 
 		await goDB.offer.routes.deleteById(id);
-		await patterns.deleteMany({ route_id: id });
+		await goDB.offer.patterns.deleteMany({ route_id: id });
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -109,7 +109,7 @@ export class RoutesController {
 		//
 		// Fetch routes for this line
 
-		const routePatterns = await patterns.findMany(
+		const routePatterns = await goDB.offer.patterns.findMany(
 			{ line_id: routeData.line_id, route_id: request.params.id },
 			{ projection: { _id: 1, code: 1, destination: 1, headsign: 1, line_id: 1, origin: 1, route_id: 1 }, sort: { created_at: -1 } },
 		) as PatternSimplified[];

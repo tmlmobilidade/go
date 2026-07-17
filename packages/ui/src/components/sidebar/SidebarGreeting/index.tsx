@@ -32,10 +32,7 @@ export function SidebarGreeting({ availableGreetings = ['Olá', 'Hi', 'Hey', 'Oi
 	}
 
 	return (
-		<>
-			<Label size="md" caps singleLine>{drawnGreeting} {meContext.data.user.first_name}</Label>
-			{/* <Label size="sm" variant="warning" caps singleLine>Situação estabilizada, continuamos a monitorizar.</Label> */}
-		</>
+		<Label size="md" caps singleLine>{drawnGreeting} {meContext.data.user.first_name}</Label>
 	);
 
 	//

@@ -1,6 +1,6 @@
 /* * */
 
-import { fares } from '@tmlmobilidade/interfaces';
+import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { Fare } from '@tmlmobilidade/types';
 
 /* * */
@@ -11,7 +11,7 @@ import { Fare } from '@tmlmobilidade/types';
  */
 export async function fetchAllFares(): Promise<Map<string, Fare>> {
 	try {
-		const allFares = await fares.findMany({});
+		const allFares = await goDB.offer.fares.findMany({});
 		const faresMap = new Map<string, Fare>();
 		for (const fare of allFares) {
 			faresMap.set(fare._id, fare);
