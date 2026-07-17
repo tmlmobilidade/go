@@ -58,6 +58,4 @@ export function AgencyDetailHeader() {
 
 		</Toolbar>
 	);
-
-	//
 }

@@ -4,8 +4,8 @@ import { transformReferenceTypeAgencyIntoJson } from '@/transform/json/reference
 import { transformReferenceTypeLinesIntoJson } from '@/transform/json/reference-types/lines.js';
 import { transformReferenceTypeRidesIntoJson } from '@/transform/json/reference-types/rides.js';
 import { transformReferenceTypeStopsIntoJson } from '@/transform/json/reference-types/stops.js';
-import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
 import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-public-info';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -128,7 +128,7 @@ export async function publishJsonFeed() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:alerts:published:json', JSON.stringify(result));
+	await cacheDb.set('hub:v1:alerts:published:json', JSON.stringify(result));
 
 	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
 

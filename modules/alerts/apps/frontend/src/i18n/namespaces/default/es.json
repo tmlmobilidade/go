@@ -1,0 +1,40 @@
+{
+	"alerts": {
+		"create": {
+			"causes": {
+				"no_data": "No hay causas disponibles"
+			},
+			"effects": {
+				"no_data": "No hay efectos disponibles"
+			},
+			"references": {
+				"no_data": "No hay tipos de referencia disponibles"
+			},
+			"summary": {
+				"auto_texts": {
+					"label": "Textos automáticos"
+				},
+				"coordinates": {
+					"label": "Coordenadas geográficas"
+				},
+				"description": {
+					"label": "Descripción"
+				},
+				"generate_text": {
+					"label": "Generar texto automático"
+				},
+				"info_url": {
+					"description": "Opcionalmente incluya la URL de un sitio web donde se pueda obtener más información",
+					"label": "Enlace adicional"
+				},
+				"title": {
+					"label": "Título"
+				},
+				"user_instructions": {
+					"label": "Información adicional para la generación del texto automático (opcional)",
+					"placeholder": "Ej.: Desvío por la calle X, sentido Y, debido a Z."
+				}
+			}
+		}
+	}
+}

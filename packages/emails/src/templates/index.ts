@@ -1,4 +1,5 @@
 export * from '@/templates/generic-notification.js';
+export * from '@/templates/new-apex-file-notification.js';
 export * from '@/templates/plan-approval-request.js';
 export * from '@/templates/plan-approved.js';
 export * from '@/templates/reset-password.js';

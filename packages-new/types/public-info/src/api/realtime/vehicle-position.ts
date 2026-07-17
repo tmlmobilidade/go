@@ -12,6 +12,7 @@ export const HubVehiclePositionSchema = z.object({
 	calendar_date: CalendarDateSchema,
 	created_at: UnixTimestampSchema,
 	current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']).nullable().default(null),
+	direction_id: z.number().nullable().default(null),
 	geohash: z.string().nullable().default(null),
 	latitude: z.number()
 		.min(-90)

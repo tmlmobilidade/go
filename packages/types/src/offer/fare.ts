@@ -57,6 +57,15 @@ export const UpdateFareSchema = CreateFareSchema
 
 /* * */
 
+export const FareSimplifiedSchema = FareSchema.pick({
+	_id: true,
+	name: true,
+	payment_method: true,
+});
+
+/* * */
+
 export type Fare = z.infer<typeof FareSchema>;
+export type FareSimplified = z.infer<typeof FareSimplifiedSchema>;
 export type CreateFareDto = z.infer<typeof CreateFareSchema>;
 export type UpdateFareDto = z.infer<typeof UpdateFareSchema>;

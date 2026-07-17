@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
@@ -28,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"@types/pg": "8.20.0",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"

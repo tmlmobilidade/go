@@ -17,11 +17,13 @@
 		"lint:fix": "eslint ./src --fix"
 	},
 	"dependencies": {
-		"@fastify/websocket": "11.2.0",
+		"@fastify/websocket": "11.3.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-interfaces-cache-db": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
@@ -33,9 +35,9 @@
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.5",
+		"tsx": "4.23.1",
 		"typescript": "6.0.3"
 	}
 }

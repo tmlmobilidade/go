@@ -60,4 +60,7 @@ class RawVehicleEventsNewClass extends MongoInterfaceTemplate<RawVehicleEvent, R
 
 /* * */
 
+/**
+ * @deprecated Use RawDb.raw.vehicleEvents instead.
+ */
 export const rawVehicleEventsNew = asyncSingletonProxy(RawVehicleEventsNewClass);

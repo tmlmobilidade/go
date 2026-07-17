@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
@@ -27,10 +28,10 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.5",
+		"tsx": "4.23.1",
 		"typescript": "6.0.3"
 	}
 }

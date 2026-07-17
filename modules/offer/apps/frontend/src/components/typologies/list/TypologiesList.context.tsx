@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, type Typology } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { useDataAgenciesNew, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -45,8 +45,8 @@ export const TypologiesListContextProvider = ({ children }: PropsWithChildren) =
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.typologies.actions.read],
+	const { agencyIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.typologies.actions.nav],
 		scope: PermissionCatalog.all.typologies.scope,
 	});
 
@@ -107,7 +107,7 @@ export const TypologiesListContextProvider = ({ children }: PropsWithChildren) =
 			error: allTypologiesError,
 			loading: allTypologiesLoading,
 		},
-	}), [allTypologiesError, allTypologiesLoading, searchResultsData, allTypologiesData, filterSearch, filterAgencies]);
+	}), [allTypologiesError, allTypologiesLoading, allTypologiesData, canCreatePermission, filterResultsData, filterSearch, filterAgencies]);
 
 	// E. Render components
 	return (

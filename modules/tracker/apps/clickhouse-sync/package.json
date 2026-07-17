@@ -20,6 +20,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/go-tracker-pckg-callback": "*",
 		"@tmlmobilidade/go-tracker-pckg-parsers": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
@@ -31,9 +32,9 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.5",
+		"tsx": "4.23.1",
 		"typescript": "6.0.3"
 	}
 }

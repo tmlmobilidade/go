@@ -10,7 +10,19 @@
 --   - day_type                  : Weekday | Weekend
 -- =============================================================================
 
-INSERT INTO {database}.hist_node_travel_times_aggregation
+INSERT INTO {database}.hist_node_travel_times_aggregation (
+    hashed_shape_id,
+    node_index,
+    operational_date,
+    period_of_day,
+    weekday,
+    day_type,
+    avg_travel_time_seconds,
+    min_travel_time_seconds,
+    max_travel_time_seconds,
+    median_travel_time_seconds,
+    inserted_at
+)
 WITH
 
 -- -----------------------------------------------------------------------------
