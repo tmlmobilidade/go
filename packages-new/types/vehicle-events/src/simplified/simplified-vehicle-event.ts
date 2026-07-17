@@ -18,11 +18,11 @@ export const SimplifiedVehicleEventSchema = z.object({
 	latitude: z.number()
 		.min(-90)
 		.max(90)
-		.refine(value => value.toFixed(6) === value.toString()),
+		.refine(value => Number(value.toFixed(6)) === value),
 	longitude: z.number()
 		.min(-180)
 		.max(180)
-		.refine(value => value.toFixed(6) === value.toString()),
+		.refine(value => Number(value.toFixed(6)) === value),
 	odometer: z.number().nullable().default(null),
 	operational_date: OperationalDateIntSchema,
 	received_at: UnixTimestampSchema,
