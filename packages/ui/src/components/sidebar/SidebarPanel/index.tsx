@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './styles.module.css';
 
 import { IconButton } from '../../buttons';
+import { Surface } from '../../layout/Surface';
 import { AppWrapperLogo } from '../AppWrapperLogo';
 import { sidebarNavigationTree } from '../sidebar-navigation-tree';
 import { SidebarFooter } from '../SidebarFooter';
@@ -58,7 +59,7 @@ export function SidebarPanel({ collapsedPref, expanded, onSetCollapsed, pathname
 	// D. Render components
 
 	return (
-		<>
+		<Surface>
 			<div className={styles.sidebarHeader} data-expanded={expanded}>
 				<AppWrapperLogo />
 				{expanded ? (
@@ -76,17 +77,15 @@ export function SidebarPanel({ collapsedPref, expanded, onSetCollapsed, pathname
 				) : null}
 			</div>
 			<div className={styles.sidebarContent}>
-				<div className={styles.sidebarScroll} data-sidebar-scroll>
-					{sidebarNavigationTree.map(node => (
-						<SidebarTreeNode
-							key={node._id}
-							depth={0}
-							node={node}
-							pathname={pathname}
-							userPermissions={userPermissions}
-						/>
-					))}
-				</div>
+				{sidebarNavigationTree.map(node => (
+					<SidebarTreeNode
+						key={node._id}
+						depth={0}
+						node={node}
+						pathname={pathname}
+						userPermissions={userPermissions}
+					/>
+				))}
 			</div>
 
 			<div className={styles.sidebarFooterSlot} data-sidebar-footer-slot>
@@ -95,8 +94,6 @@ export function SidebarPanel({ collapsedPref, expanded, onSetCollapsed, pathname
 					menuPosition={expanded ? 'bottom-end' : 'right-start'}
 				/>
 			</div>
-		</>
+		</Surface>
 	);
-
-	//
 }

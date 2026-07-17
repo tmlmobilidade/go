@@ -1,20 +1,18 @@
 'use client';
 
-/* * */
-
-import { type CSSProperties } from 'react';
+import { type CSSProperties, useState } from 'react';
 
 import styles from './styles.module.css';
 
 import { useMeContext } from '../../../contexts/Me.context';
+import { useUserPreference } from '../../../hooks';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
-import { Surface } from '../../layout';
-import { SIDEBAR_COLLAPSED_WIDTH } from '../sidebar-layout.constants';
+import { SIDEBAR_LOGO_WIDTH_PX } from '../sidebar-layout.constants';
+import { SidebarBackdrop } from '../SidebarBackdrop';
 import { SidebarOpenGroupsProvider } from '../SidebarOpenGroups.context';
 import { SidebarPanel } from '../SidebarPanel';
 import { type SidebarVisualMode, SidebarVisualModeContext } from '../SidebarVisualMode.context';
 import { getDefaultOpenGroupIds } from '../utils';
-import { useSidebarPeekState } from './useSidebarPeekState';
 
 /* * */
 
@@ -29,17 +27,7 @@ const sidebarVisualModeContextValue = (
 
 /* * */
 
-export interface SidebarProps {
-	collapsed: boolean
-	onCollapsedChange: (collapsed: boolean) => void
-	onWidthPxChange: (widthPx: number) => void
-	widthPx: number
-
-}
-
-/* * */
-
-export function Sidebar({ collapsed, onCollapsedChange, widthPx }: SidebarProps) {
+export function Sidebar() {
 	//
 
 	//
@@ -48,38 +36,24 @@ export function Sidebar({ collapsed, onCollapsedChange, widthPx }: SidebarProps)
 	const meContext = useMeContext();
 	const currentUrl = useCurrentUrl();
 
+	const [sidebarCollapsed, setSidebarCollapsed] = useUserPreference<boolean>('ui', 'sidebar_hidden', false);
+
 	const pathname = currentUrl?.pathname;
 	const userPermissions = meContext.data.user?.permissions;
 
 	const defaultOpenGroupIds = getDefaultOpenGroupIds(pathname);
 
-	const {
-		isPeekAnimating,
-		labelsVisible,
-		peekExpanded,
-		peekOverlayRef,
-		setIsHovering,
-		showToggle,
-		visualMode,
-	} = useSidebarPeekState({ collapsed });
+	const [isHovering, setIsHovering] = useState(false);
 
-	const railStyle = {
-		flex: `0 0 auto`,
-		maxWidth: `${SIDEBAR_COLLAPSED_WIDTH}px`,
-		minWidth: `auto`,
-		width: `auto`,
-	} as const;
+	const visualMode: SidebarVisualMode = !sidebarCollapsed
+		? 'pinned'
+		: isHovering
+			? 'hovered'
+			: 'collapsed';
 
 	const handleSetCollapsed = (nextCollapsed: boolean) => {
 		if (nextCollapsed) setIsHovering(false);
-		onCollapsedChange(nextCollapsed);
-	};
-
-	const panelProps = {
-		collapsedPref: collapsed,
-		onSetCollapsed: handleSetCollapsed,
-		pathname,
-		userPermissions,
+		setSidebarCollapsed(nextCollapsed);
 	};
 
 	//
@@ -88,48 +62,36 @@ export function Sidebar({ collapsed, onCollapsedChange, widthPx }: SidebarProps)
 	return (
 		<>
 
-			{isPeekAnimating && (
-				<div
-					aria-hidden={!peekExpanded}
-					className={styles.peekBackdrop}
-					data-visible={peekExpanded}
-				/>
-			)}
+			<SidebarBackdrop isVisible={isHovering} />
 
 			<SidebarOpenGroupsProvider defaultOpenGroupIds={defaultOpenGroupIds}>
-				<div
-					className={styles.sidebarShell}
-					data-sidebar-mode={visualMode}
-					style={railStyle}
-					onMouseEnter={() => {
-						if (collapsed) setIsHovering(true);
-					}}
-					onMouseLeave={() => {
-						if (collapsed) setIsHovering(false);
-					}}
-				>
-					<SidebarVisualModeContext.Provider value={sidebarVisualModeContextValue(visualMode, labelsVisible)}>
-						<div
-							ref={peekOverlayRef}
-							className={styles.sidebarPanel}
-							data-peek-expanded={peekExpanded}
-							style={collapsed ? {
-								'--sidebar-peek-width-collapsed': `${SIDEBAR_COLLAPSED_WIDTH}px`,
-								'--sidebar-peek-width-expanded': `${widthPx}px`,
-							} as CSSProperties : undefined}
-						>
-							<Surface>
-								<SidebarPanel
-									expanded={labelsVisible}
-									showToggle={showToggle}
-									{...panelProps}
-								/>
-							</Surface>
+				<SidebarVisualModeContext.Provider value={sidebarVisualModeContextValue(visualMode, isHovering)}>
+					<div
+						className={styles.fixedContainer}
+						data-peek-expanded={isHovering}
+						data-sidebar-mode={visualMode}
+						style={{ '--sidebar-width-collapsed': SIDEBAR_LOGO_WIDTH_PX } as CSSProperties}
+						onMouseEnter={() => {
+							if (sidebarCollapsed) setIsHovering(true);
+						}}
+						onMouseLeave={() => {
+							if (sidebarCollapsed) setIsHovering(false);
+						}}
+					>
+						<div className={styles.expandingContainer}>
+							<SidebarPanel
+								collapsedPref={sidebarCollapsed}
+								expanded={isHovering || !sidebarCollapsed}
+								onSetCollapsed={handleSetCollapsed}
+								pathname={pathname}
+								showToggle={isHovering || !sidebarCollapsed}
+								userPermissions={userPermissions}
+							/>
 						</div>
-					</SidebarVisualModeContext.Provider>
-
-				</div>
+					</div>
+				</SidebarVisualModeContext.Provider>
 			</SidebarOpenGroupsProvider>
+
 		</>
 	);
 }
