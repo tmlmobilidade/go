@@ -11,7 +11,7 @@ import { parseAlertGeneratedCopy, PromptBuilder } from '@/utils.js';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
 import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { Dates } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { rides } from '@tmlmobilidade/interfaces';
 import { type Agency, type Alert, type I18nCode, type UnixTimestamp } from '@tmlmobilidade/types';
 
@@ -112,7 +112,7 @@ function createPromptBodyCollector(): DescribeAlertPromptBodyCollector {
 }
 
 async function getAgencyLabels(props: DescribeAlertProps): Promise<DescribeAlertAgencyLabels> {
-	const foundAgency = await goDB.core.agencies.findById(props.agency_id);
+	const foundAgency = await goDb.core.agencies.findById(props.agency_id);
 	if (!foundAgency) throw new Error('Agency not found for the given reference');
 
 	return {

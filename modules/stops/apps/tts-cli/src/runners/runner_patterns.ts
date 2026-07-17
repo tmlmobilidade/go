@@ -4,7 +4,7 @@ import { piperTtsApi } from '@/services/piperTtsApi.js';
 import { generateHash } from '@/utils/generateHash.js';
 import { makePattern } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubLine, type HubPattern } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
 

@@ -18,7 +18,7 @@
 		"@tmlmobilidade/ai": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-interfaces-go-db": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"zod": "3.25.76"
 	},
