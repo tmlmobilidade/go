@@ -40,7 +40,7 @@ export function SidebarHeader() {
 		<div className={styles.container}>
 			<SidebarHeaderLogo />
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && (
-				<>
+				<div className={styles.inner}>
 					<SidebarHeaderGreeting />
 					<IconButton
 						aria-label={toggleAriaLabel}
@@ -48,7 +48,7 @@ export function SidebarHeader() {
 						icon={toggleIcon}
 						onClick={sidebarContext.presentation.toggleIsPinned}
 					/>
-				</>
+				</div>
 			)}
 		</div>
 	);
