@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { IconButton } from '../../buttons';
+import { IconButton } from '../../buttons/IconButton';
 import { useSidebarContext } from '../Sidebar.context';
-import { SidebarGreeting } from '../SidebarGreeting';
+import { SidebarHeaderGreeting } from '../SidebarHeaderGreeting';
 import { SidebarHeaderLogo } from '../SidebarHeaderLogo';
 
 /* * */
@@ -34,31 +34,22 @@ export function SidebarHeader() {
 		: <IconLayoutSidebarLeftCollapse size={20} />;
 
 	//
-	// C. Handle actions
-
-	const handleToggleClick = () => {
-		sidebarContext.presentation.toggleIsPinned();
-	};
-
-	//
-	// D. Render components
+	// C. Render components
 
 	return (
-		<div className={styles.sidebarHeader}>
+		<div className={styles.container}>
 			<SidebarHeaderLogo />
-			{sidebarContext.presentation.visual_mode !== 'collapsed' ? (
-				<div className={styles.sidebarHeaderGreeting}>
-					<SidebarGreeting />
-				</div>
-			) : null}
-			{sidebarContext.presentation.visual_mode !== 'collapsed' ? (
-				<IconButton
-					aria-label={toggleAriaLabel}
-					color="var(--color-system-text-200)"
-					icon={toggleIcon}
-					onClick={handleToggleClick}
-				/>
-			) : null}
+			{sidebarContext.presentation.visual_mode !== 'collapsed' && (
+				<>
+					<SidebarHeaderGreeting />
+					<IconButton
+						aria-label={toggleAriaLabel}
+						color="var(--color-system-text-200)"
+						icon={toggleIcon}
+						onClick={sidebarContext.presentation.toggleIsPinned}
+					/>
+				</>
+			)}
 		</div>
 	);
 }

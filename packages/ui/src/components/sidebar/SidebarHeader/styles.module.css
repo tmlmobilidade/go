@@ -1,18 +1,10 @@
-.sidebarHeader {
-	box-sizing: border-box;
+/* * */
+
+.container {
 	display: flex;
 	flex-direction: row;
 	gap: var(--size-spacing-sm);
 	align-items: center;
 	width: 100%;
-	min-width: 0;
-	min-height: var(--sidebar-header-height);
 	border-bottom: 1px solid var(--color-system-border-100);
-}
-
-.sidebarHeaderGreeting {
-	display: flex;
-	flex: 1;
-	align-items: center;
-	min-width: 0;
 }

@@ -3,7 +3,7 @@ export * from './sidebar-layout.constants';
 export * from './SidebarExports';
 export * from './SidebarExportsItem';
 export * from './SidebarFooter';
-export * from './SidebarGreeting';
+export * from './SidebarHeaderGreeting';
 export * from './SidebarItem';
 export * from './SidebarNotifications';
 export * from './SidebarNotificationsItem';
