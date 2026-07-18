@@ -2,19 +2,25 @@
 
 import styles from './styles.module.css';
 
-/* * */
-
-export interface SidebarBackdropProps {
-	isVisible: boolean
-}
+import { useSidebarContext } from '../Sidebar.context';
 
 /* * */
 
-export function SidebarBackdrop({ isVisible }: SidebarBackdropProps) {
+export function SidebarBackdrop() {
+	//
+
+	//
+	// A. Setup variables
+
+	const sidebarContext = useSidebarContext();
+
+	//
+	// B. Render components
+
 	return (
 		<div
 			className={styles.backdrop}
-			data-is-visible={isVisible}
+			data-is-visible={sidebarContext.presentation.visual_mode === 'hovered'}
 		/>
 	);
 }
