@@ -4,27 +4,22 @@ import { type CSSProperties, useCallback } from 'react';
 
 import styles from './styles.module.css';
 
-import { useMeContext } from '../../../contexts/Me.context';
-import { useCurrentUrl } from '../../../hooks/use-current-url';
 import { Surface } from '../../layout/Surface';
 import { SIDEBAR_LOGO_WIDTH_PX } from '../sidebar-layout.constants';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarFooter } from '../SidebarFooter';
+import { SidebarHeader } from '../SidebarHeader';
 import { SidebarPanel } from '../SidebarPanel';
-import { SidebarViewHeader } from '../SidebarViewHeader';
 
 /* * */
 
-export function SidebarView() {
+export function SidebarMain() {
 	//
 
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
 	const sidebarContext = useSidebarContext();
-
-	const currentUrl = useCurrentUrl();
 
 	//
 	// B. Handle actions
@@ -53,12 +48,9 @@ export function SidebarView() {
 			<div className={styles.expandingContainer}>
 				<Surface>
 
-					<SidebarViewHeader />
+					<SidebarHeader />
 
-					<SidebarPanel
-						pathname={currentUrl?.pathname}
-						userPermissions={meContext.data.user?.permissions}
-					/>
+					<SidebarPanel />
 
 					<SidebarFooter
 						iconOnly={sidebarContext.presentation.visual_mode !== 'collapsed'}

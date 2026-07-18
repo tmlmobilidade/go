@@ -1,33 +1,42 @@
 'use client';
 
-import { type Permission } from '@tmlmobilidade/types';
-
 import styles from './styles.module.css';
 
+import { useMeContext } from '../../../contexts/Me.context';
+import { useCurrentUrl } from '../../../hooks/use-current-url';
 import { sidebarNavigationTree } from '../sidebar-navigation-tree';
+import { useSidebarContext } from '../Sidebar.context';
+import { SidebarOpenGroupsProvider } from '../SidebarOpenGroups.context';
 import { SidebarTreeNode } from '../SidebarTreeNode';
 
 /* * */
 
-export interface SidebarPanelProps {
-	pathname?: string
-	userPermissions?: readonly Permission[]
-}
+export function SidebarPanel() {
+	//
 
-/* * */
+	//
+	// A. Setup variables
 
-export function SidebarPanel({ pathname, userPermissions }: SidebarPanelProps) {
+	const meContext = useMeContext();
+	const currentUrl = useCurrentUrl();
+	const sidebarContext = useSidebarContext();
+
+	//
+	// B. Render components
+
 	return (
-		<div className={styles.sidebarContent}>
-			{sidebarNavigationTree.map(node => (
-				<SidebarTreeNode
-					key={node._id}
-					depth={0}
-					node={node}
-					pathname={pathname}
-					userPermissions={userPermissions}
-				/>
-			))}
-		</div>
+		<SidebarOpenGroupsProvider defaultOpenGroupIds={sidebarContext.data.default_open_group_ids}>
+			<div className={styles.sidebarContent}>
+				{sidebarNavigationTree.map(node => (
+					<SidebarTreeNode
+						key={node._id}
+						depth={0}
+						node={node}
+						pathname={currentUrl?.pathname}
+						userPermissions={meContext.data.user?.permissions}
+					/>
+				))}
+			</div>
+		</SidebarOpenGroupsProvider>
 	);
 }

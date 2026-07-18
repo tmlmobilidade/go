@@ -8,11 +8,11 @@ import styles from './styles.module.css';
 import { IconButton } from '../../buttons';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarGreeting } from '../SidebarGreeting';
-import { SidebarViewHeaderLogo } from '../SidebarViewHeaderLogo';
+import { SidebarHeaderLogo } from '../SidebarHeaderLogo';
 
 /* * */
 
-export function SidebarViewHeader() {
+export function SidebarHeader() {
 	//
 
 	//
@@ -45,7 +45,7 @@ export function SidebarViewHeader() {
 
 	return (
 		<div className={styles.sidebarHeader}>
-			<SidebarViewHeaderLogo />
+			<SidebarHeaderLogo />
 			{sidebarContext.presentation.visual_mode !== 'collapsed' ? (
 				<div className={styles.sidebarHeaderGreeting}>
 					<SidebarGreeting />
