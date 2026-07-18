@@ -6,7 +6,7 @@ import useSWR from 'swr';
 
 import { useCurrentUrl } from '../../hooks/use-current-url';
 import { useUserPreference } from '../../hooks/use-user-preference';
-import { SidebarItemProps } from './SidebarItem';
+import { SidebarItemProps } from './SidebarNavigationGroupItem';
 import { getDefaultOpenGroupIds } from './utils';
 
 /* * */

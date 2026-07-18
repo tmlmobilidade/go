@@ -6,8 +6,8 @@ import { useMeContext } from '../../../contexts/Me.context';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
 import { sidebarNavigationTree } from '../sidebar-navigation-tree';
 import { useSidebarContext } from '../Sidebar.context';
+import { SidebarNavigationGroup } from '../SidebarNavigationGroup';
 import { SidebarOpenGroupsProvider } from '../SidebarOpenGroups.context';
-import { SidebarTreeNode } from '../SidebarTreeNode';
 
 /* * */
 
@@ -28,7 +28,7 @@ export function SidebarNavigation() {
 		<SidebarOpenGroupsProvider defaultOpenGroupIds={sidebarContext.data.default_open_group_ids}>
 			<div className={styles.container}>
 				{sidebarNavigationTree.map(node => (
-					<SidebarTreeNode
+					<SidebarNavigationGroup
 						key={node._id}
 						depth={0}
 						node={node}

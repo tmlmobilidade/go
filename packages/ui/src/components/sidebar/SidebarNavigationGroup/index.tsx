@@ -11,14 +11,13 @@ import { useTranslation } from 'react-i18next';
 import styles from './styles.module.css';
 
 import { type SidebarNavigationNode } from '../sidebar-navigation-tree';
-import { SidebarItem } from '../SidebarItem';
+import { SidebarNavigationGroupItem } from '../SidebarNavigationGroupItem';
 import { useSidebarOpenGroups } from '../SidebarOpenGroups.context';
-import { useSidebarVisualMode } from '../SidebarVisualMode.context';
 import { isNodeActive, isNodeVisible, isPermissionEnabled } from '../utils';
 
 /* * */
 
-export interface SidebarTreeNodeProps {
+export interface SidebarNavigationGroupProps {
 	depth: number
 	node: SidebarNavigationNode
 	pathname?: string
@@ -27,14 +26,13 @@ export interface SidebarTreeNodeProps {
 
 /* * */
 
-export function SidebarTreeNode({ depth, node, pathname, userPermissions }: SidebarTreeNodeProps) {
+export function SidebarNavigationGroup({ depth, node, pathname, userPermissions }: SidebarNavigationGroupProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { iconOnly } = useSidebarVisualMode();
 	const { isGroupOpen, setGroupOpen, toggleGroup } = useSidebarOpenGroups();
 
 	//
@@ -62,7 +60,7 @@ export function SidebarTreeNode({ depth, node, pathname, userPermissions }: Side
 		const itemLabel = t(`shared:components.sidebar.Sidebar.${node._id}` as never);
 
 		return (
-			<SidebarItem
+			<SidebarNavigationGroupItem
 				depth={depth}
 				label={itemLabel}
 				pathname={pathname}
@@ -89,7 +87,7 @@ export function SidebarTreeNode({ depth, node, pathname, userPermissions }: Side
 				aria-expanded={isOpen}
 				aria-label={groupLabel}
 				className={styles.groupHeader}
-				data-collapsed={iconOnly}
+				data-collapsed={true}
 				onClick={() => toggleGroup(node._id)}
 				type="button"
 			>
@@ -100,7 +98,7 @@ export function SidebarTreeNode({ depth, node, pathname, userPermissions }: Side
 			<Collapse expanded={isOpen} transitionDuration={0}>
 				<div className={styles.groupChildren} data-sidebar-group-children>
 					{visibleChildren.map(child => (
-						<SidebarTreeNode
+						<SidebarNavigationGroup
 							key={child._id}
 							depth={depth + 1}
 							node={child}

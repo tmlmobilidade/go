@@ -11,7 +11,7 @@ import { i18nResourceKeysPtShared } from '../../i18n';
 
 /* * */
 
-export interface SidebarNavigationItem {
+export interface SidebarNavigationGroupItem {
 	_id: keyof typeof i18nResourceKeysPtShared.shared.components.sidebar.Sidebar
 	href: string
 	icon: JSX.Element
@@ -26,9 +26,9 @@ export interface SidebarNavigationGroup {
 	type: 'group'
 }
 
-export type SidebarNavigationNode = SidebarNavigationGroup | SidebarNavigationItem;
+export type SidebarNavigationNode = SidebarNavigationGroup | SidebarNavigationGroupItem;
 
-const sidebarNavigationItem = (config: Omit<SidebarNavigationItem, 'type'>): SidebarNavigationItem => ({
+const sidebarNavigationItem = (config: Omit<SidebarNavigationGroupItem, 'type'>): SidebarNavigationGroupItem => ({
 	...config,
 	type: 'item',
 });

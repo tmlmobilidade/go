@@ -9,13 +9,12 @@ import styles from './styles.module.css';
 
 import { useMeContext } from '../../../contexts/Me.context';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
-import { type SidebarNavigationItem } from '../sidebar-navigation-tree';
-import { useSidebarVisualMode } from '../SidebarVisualMode.context';
+import { type SidebarNavigationGroupItem } from '../sidebar-navigation-tree';
 import { isItemActive, isPermissionEnabled } from '../utils';
 
 /* * */
 
-export interface SidebarItemProps extends SidebarNavigationItem {
+export interface SidebarItemProps extends SidebarNavigationGroupItem {
 	depth?: number
 	label: string
 	pathname?: string
@@ -24,14 +23,13 @@ export interface SidebarItemProps extends SidebarNavigationItem {
 
 /* * */
 
-export function SidebarItem({ depth = 0, href, icon, label, pathname, permissions, userPermissions }: SidebarItemProps) {
+export function SidebarNavigationGroupItem({ depth = 0, href, icon, label, pathname, permissions, userPermissions }: SidebarItemProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { iconOnly } = useSidebarVisualMode();
 	const currentUrl = useCurrentUrl();
 
 	//
@@ -55,7 +53,7 @@ export function SidebarItem({ depth = 0, href, icon, label, pathname, permission
 			aria-label={label}
 			className={styles.item}
 			data-active={isActive}
-			data-collapsed={iconOnly}
+			data-collapsed={true}
 			data-depth={depth}
 			data-disabled={!isEnabled}
 			href={hrefValue ?? '#'}
