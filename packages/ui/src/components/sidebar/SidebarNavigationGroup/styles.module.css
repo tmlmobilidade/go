@@ -92,5 +92,5 @@
 .groupChildren {
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: var(--size-spacing-xs);
 }

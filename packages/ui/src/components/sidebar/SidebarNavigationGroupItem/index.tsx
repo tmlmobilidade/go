@@ -10,12 +10,12 @@ import styles from './styles.module.css';
 import { useMeContext } from '../../../contexts/Me.context';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
 import { type SidebarNavigationGroupItem } from '../sidebar-navigation';
+import { useSidebarContext } from '../Sidebar.context';
 import { isItemActive, isPermissionEnabled } from '../utils';
 
 /* * */
 
 export interface SidebarItemProps extends SidebarNavigationGroupItem {
-	depth?: number
 	label: string
 	pathname?: string
 	userPermissions?: readonly Permission[]
@@ -23,7 +23,7 @@ export interface SidebarItemProps extends SidebarNavigationGroupItem {
 
 /* * */
 
-export function SidebarNavigationGroupItem({ depth = 0, href, icon, label, pathname, permissions, userPermissions }: SidebarItemProps) {
+export function SidebarNavigationGroupItem({ href, icon, label, pathname, permissions, userPermissions }: SidebarItemProps) {
 	//
 
 	//
@@ -31,6 +31,8 @@ export function SidebarNavigationGroupItem({ depth = 0, href, icon, label, pathn
 
 	const meContext = useMeContext();
 	const currentUrl = useCurrentUrl();
+
+	const sidebarContext = useSidebarContext();
 
 	//
 	// B. Transform data
@@ -53,13 +55,13 @@ export function SidebarNavigationGroupItem({ depth = 0, href, icon, label, pathn
 			aria-label={label}
 			className={styles.item}
 			data-active={isActive}
-			data-collapsed={true}
-			data-depth={depth}
 			data-disabled={!isEnabled}
 			href={hrefValue ?? '#'}
 		>
 			<span className={styles.icon}>{icon}</span>
-			<span className={styles.label}>{label}</span>
+			{sidebarContext.presentation.visual_mode !== 'collapsed' && (
+				<span className={styles.label}>{label}</span>
+			)}
 		</Link>
 	);
 

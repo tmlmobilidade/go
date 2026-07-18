@@ -2,79 +2,22 @@
 /* ITEM */
 
 .item {
-	box-sizing: border-box;
 	display: flex;
 	gap: var(--size-spacing-sm);
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	min-width: 0;
-	height: var(--sidebar-row-height, 36px);
-	min-height: var(--sidebar-row-height, 36px);
-	max-height: var(--sidebar-row-height, 36px);
-	padding: 0 var(--sidebar-item-padding);
-	overflow: hidden;
-	font-size: 15px;
-	font-weight: 500;
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
 	color: var(--color-system-text-100);
 	text-decoration: none;
 	user-select: none;
 	background-color: transparent;
-	border: 1px solid transparent;
+	border: 2px solid transparent;
 	border-radius: var(--border-radius-sm);
 }
 
-.item[data-collapsed='true'] {
-	flex-shrink: 0;
-	gap: 0;
-	justify-content: center;
-}
-
 .item:hover {
-	background-color: var(--color-system-background-200);
-	border-color: var(--color-system-border-100);
-}
-
-/* * */
-/* ICON */
-
-.icon {
-	display: flex;
-	flex-shrink: 0;
-	align-items: center;
-	justify-content: center;
-	width: var(--sidebar-icon-size, 20px);
-	min-width: var(--sidebar-icon-size, 20px);
-	aspect-ratio: 1;
-	font-size: 20px;
-	color: var(--color-system-text-100);
-}
-
-.label {
-	flex: 1;
-	min-width: 0;
-	max-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	opacity: 0;
-	transition:
-		max-width var(--sidebar-label-transition-duration, 280ms) var(--sidebar-label-transition-easing, cubic-bezier(0.4, 0, 0.2, 1)),
-		opacity 200ms var(--sidebar-label-transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-.item[data-collapsed='false'] .label {
-	max-width: 100%;
-	opacity: 1;
-	transition-delay: 60ms;
-}
-
-.item[data-collapsed='true'] .label {
-	flex: 0 0 0;
-	width: 0;
-	min-width: 0;
-	padding: 0;
-	margin: 0;
+	background-color: var(--color-system-background-300);
 }
 
 .item[data-active='true'],
@@ -86,11 +29,6 @@
 	box-shadow: 0 1px 3px 0 var(--color-shadow);
 }
 
-.item[data-active='true'] .icon,
-.item[data-active='true']:hover .icon {
-	color: inherit;
-}
-
 .item[data-disabled='true'],
 .item[data-disabled='true']:hover {
 	color: var(--color-system-text-100);
@@ -98,4 +36,25 @@
 	background-color: transparent;
 	border-color: transparent;
 	opacity: 0.25;
+}
+
+/* * */
+/* ICON */
+
+.icon {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+}
+
+/* * */
+/* LABEL */
+
+.label {
+	width: 100%;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }

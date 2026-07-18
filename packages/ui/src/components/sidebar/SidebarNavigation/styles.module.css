@@ -5,6 +5,5 @@
 	flex-direction: column;
 	width: 100%;
 	height: 100%;
-	padding: var(--size-spacing-xs);
 	overflow-y: auto;
 }
