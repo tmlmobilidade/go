@@ -16,6 +16,7 @@
 	height: var(--sidebar-group-slot-height);
 	min-height: var(--sidebar-group-slot-height);
 	max-height: var(--sidebar-group-slot-height);
+	padding: 0 7px;
 	overflow: hidden;
 	cursor: pointer;
 	background: none;
@@ -25,7 +26,7 @@
 .groupRule {
 	flex-shrink: 0;
 	width: 0;
-	height: 2px;
+	height: 4px;
 	min-height: 2px;
 	background-color: var(--color-system-border-100);
 	border-radius: 1px;

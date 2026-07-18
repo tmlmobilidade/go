@@ -44,15 +44,15 @@ export function SidebarNavigationGroup({ group, pathname, userPermissions }: Sid
 
 	const isGroupOpen = useMemo(() => {
 		if (isGroupActive) return true;
-		return sidebarContext.data.open_group_ids.includes(group._id);
-	}, [group._id, isGroupActive, sidebarContext.data.open_group_ids]);
+		return sidebarContext.navigation.open_group_ids.includes(group._id);
+	}, [group._id, isGroupActive, sidebarContext.navigation.open_group_ids]);
 
 	//
 	// C. Handle actions
 
 	const toggleGroup = useCallback(() => {
-		// sidebarContext.presentation.toggleGroup(group._id);
-	}, []);
+		sidebarContext.navigation.toggleOpenGroup(group._id);
+	}, [group._id, sidebarContext.navigation]);
 
 	//
 	// C. Render components
@@ -91,7 +91,7 @@ export function SidebarNavigationGroup({ group, pathname, userPermissions }: Sid
 			<button
 				aria-label={t(`shared:components.sidebar.SidebarGroups.${group._id}` as never)}
 				className={styles.groupHeader}
-				data-collapsed={true}
+				data-collapsed={sidebarContext.presentation.visual_mode === 'collapsed'}
 				onClick={toggleGroup}
 				type="button"
 			>

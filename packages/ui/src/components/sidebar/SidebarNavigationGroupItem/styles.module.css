@@ -7,7 +7,7 @@
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	padding: 7px var(--size-spacing-sm);
 	color: var(--color-system-text-100);
 	text-decoration: none;
 	user-select: none;

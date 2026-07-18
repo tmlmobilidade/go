@@ -6,4 +6,9 @@
 	width: 100%;
 	height: 100%;
 	overflow-y: auto;
+	transition: padding-right 200ms ease-in-out;
+}
+
+.container[data-expanded="true"] {
+	padding-right: 5px;
 }

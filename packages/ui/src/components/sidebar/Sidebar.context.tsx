@@ -11,8 +11,9 @@ import { getDefaultOpenGroupIds } from './utils';
 export type SidebarVisualMode = 'collapsed' | 'hovered' | 'pinned';
 
 interface SidebarContextState {
-	data: {
+	navigation: {
 		open_group_ids: string[]
+		toggleOpenGroup: (groupId: string) => void
 	}
 	presentation: {
 		setVisualMode: (visualMode: SidebarVisualMode) => void
@@ -42,13 +43,8 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 	const currentUrl = useCurrentUrl();
 
 	const [isPinned, setIsPinned] = useUserPreference<boolean>('ui', 'sidebar_is_pinned', false);
-
 	const [currentVisualMode, setCurrentVisualMode] = useState<SidebarVisualMode>('collapsed');
-
-	//
-	// C. Handle actions
-
-	const defaultOpenGroupIds = getDefaultOpenGroupIds(currentUrl?.pathname);
+	const [openGroupIds, setOpenGroupIds] = useState<string[]>(getDefaultOpenGroupIds(currentUrl?.pathname));
 
 	//
 	// C. Handle actions
@@ -63,19 +59,27 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 		setIsPinned(!isPinned);
 	}, [isPinned, setIsPinned]);
 
+	const toggleOpenGroup = useCallback((groupId: string) => {
+		setOpenGroupIds((prev) => {
+			if (prev.includes(groupId)) return prev.filter(id => id !== groupId);
+			return [...prev, groupId];
+		});
+	}, []);
+
 	//
 	// D. Define context value
 
 	const contextValue: SidebarContextState = useMemo(() => ({
-		data: {
-			open_group_ids: defaultOpenGroupIds,
+		navigation: {
+			open_group_ids: openGroupIds,
+			toggleOpenGroup,
 		},
 		presentation: {
 			setVisualMode,
 			toggleIsPinned,
 			visual_mode: currentVisualMode,
 		},
-	}), [currentVisualMode, defaultOpenGroupIds, setVisualMode, toggleIsPinned]);
+	}), [currentVisualMode, openGroupIds, setVisualMode, toggleIsPinned, toggleOpenGroup]);
 
 	//
 	// E. Render components
