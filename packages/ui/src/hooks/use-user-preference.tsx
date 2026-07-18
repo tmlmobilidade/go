@@ -1,8 +1,8 @@
 'use client';
 
-import { useDebouncedCallback } from '@mantine/hooks';
+import { useDebouncedState } from '@mantine/hooks';
 import { type UserPreferenceValue } from '@tmlmobilidade/types';
-import { useEffect, useRef, useState } from 'react';
+import { type Dispatch, type SetStateAction, useEffect, useRef } from 'react';
 
 import { useMeContext } from '../contexts/Me.context';
 
@@ -12,19 +12,10 @@ function isEqual(a: unknown, b: unknown) {
 	return JSON.stringify(a) === JSON.stringify(b);
 }
 
-export interface SetUserPreferenceOptions {
-	/** `false` skips persistence; `true` (default) debounces persistence (~500ms). */
-	save?: boolean
-}
-
 /**
  * A hook to manage user preferences as state.
  */
-export function useUserPreference<T extends UserPreferenceValue>(
-	scope: string,
-	key: string,
-	defaultValue: T,
-): [T, (value: T, options?: SetUserPreferenceOptions) => void] {
+export function useUserPreference<T extends UserPreferenceValue>(scope: string, key: string, defaultValue: T): [T, Dispatch<SetStateAction<T>>] {
 	//
 
 	//
@@ -32,7 +23,7 @@ export function useUserPreference<T extends UserPreferenceValue>(
 
 	const meContext = useMeContext();
 
-	const [preferenceValue, setPreferenceValue] = useState<T>(defaultValue);
+	const [preferenceValue, setPreferenceValue] = useDebouncedState<T>(defaultValue, 200, { leading: true });
 
 	const hasLocalUpdateRef = useRef(false);
 	const latestLocalValueRef = useRef<T>(defaultValue);
@@ -63,25 +54,14 @@ export function useUserPreference<T extends UserPreferenceValue>(
 	//
 	// C. Handle actions
 
-	const savePreferenceValueDebounced = useDebouncedCallback((value: T) => {
-		meContext.actions.updatePreference(scope, key, value);
-	}, 500);
-
-	const handleSetPreferenceValue = (value: T, options?: SetUserPreferenceOptions) => {
-		hasLocalUpdateRef.current = true;
-		latestLocalValueRef.current = value;
-
-		setPreferenceValue(value);
-
-		if (options?.save === false) return;
-
-		savePreferenceValueDebounced(value);
-	};
+	useEffect(() => {
+		meContext.actions.updatePreference(scope, key, preferenceValue);
+	}, [key, meContext.actions, preferenceValue, scope]);
 
 	//
 	// D. Return
 
-	return [preferenceValue, handleSetPreferenceValue];
+	return [preferenceValue, setPreferenceValue];
 
 	//
 }

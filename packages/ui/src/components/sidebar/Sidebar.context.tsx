@@ -44,7 +44,10 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 
 	const [isPinned, setIsPinned] = useUserPreference<boolean>('ui', 'sidebar_is_pinned', false);
 	const [currentVisualMode, setCurrentVisualMode] = useState<SidebarVisualMode>('collapsed');
-	const [openGroupIds, setOpenGroupIds] = useState<string[]>(getDefaultOpenGroupIds(currentUrl?.pathname));
+
+	console.log('isPinned', isPinned);
+
+	const [openGroupIds, setOpenGroupIds] = useUserPreference<string[]>('ui', 'sidebar_open_group_ids', getDefaultOpenGroupIds(currentUrl?.pathname));
 
 	//
 	// C. Handle actions

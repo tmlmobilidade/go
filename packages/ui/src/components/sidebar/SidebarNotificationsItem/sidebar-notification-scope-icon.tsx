@@ -2,7 +2,7 @@
 
 import { type JSX } from 'react';
 
-import { SidebarNavigationGroup, sidebarNavigationGroups } from './sidebar-navigation';
+import { SidebarNavigationGroup, sidebarNavigationGroups } from '../sidebar-navigation';
 
 /* * */
 
