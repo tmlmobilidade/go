@@ -5,11 +5,15 @@ import { type CSSProperties, useCallback } from 'react';
 import styles from './styles.module.css';
 
 import { Surface } from '../../layout/Surface';
-import { SIDEBAR_LOGO_WIDTH_PX } from '../sidebar-layout.constants';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarFooter } from '../SidebarFooter';
 import { SidebarHeader } from '../SidebarHeader';
 import { SidebarNavigation } from '../SidebarNavigation';
+
+/* * */
+
+export const SIDEBAR_WIDTH_COLLAPSED = 60;
+export const SIDEBAR_WIDTH_EXPANDED = 250;
 
 /* * */
 
@@ -43,7 +47,11 @@ export function SidebarMain() {
 			onMouseLeave={handleStopHovering}
 			onTouchEnd={handleStopHovering}
 			onTouchStart={handleStartHovering}
-			style={{ '--sidebar-width-collapsed': SIDEBAR_LOGO_WIDTH_PX } as CSSProperties}
+			style={{
+				'--sidebar-slot-width': sidebarContext.presentation.visual_mode === 'pinned'
+					? `${SIDEBAR_WIDTH_EXPANDED}px`
+					: `${SIDEBAR_WIDTH_COLLAPSED}px`,
+			} as CSSProperties}
 		>
 			<div className={styles.expandingContainer}>
 				<Surface>

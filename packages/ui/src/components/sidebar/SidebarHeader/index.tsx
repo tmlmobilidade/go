@@ -1,6 +1,6 @@
 'use client';
 
-import { IconLayoutSidebarLeftCollapse, IconLayoutSidebarLeftExpand } from '@tabler/icons-react';
+import { IconLayoutSidebarLeftCollapse, IconLayoutSidebarLeftExpandFilled } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -29,9 +29,9 @@ export function SidebarHeader() {
 		? t('shared:components.sidebar.Sidebar.pin_sidebar_aria')
 		: t('shared:components.sidebar.Sidebar.unpin_sidebar_aria');
 
-	const toggleIcon = sidebarContext.presentation.visual_mode !== 'collapsed'
-		? <IconLayoutSidebarLeftExpand size={20} />
-		: <IconLayoutSidebarLeftCollapse size={20} />;
+	const toggleIcon = sidebarContext.presentation.visual_mode === 'pinned'
+		? <IconLayoutSidebarLeftCollapse size={20} />
+		: <IconLayoutSidebarLeftExpandFilled size={20} />;
 
 	//
 	// C. Render components
