@@ -5,21 +5,14 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { useUserPreference } from '../../../hooks/use-user-preference';
 import { IconButton } from '../../buttons';
+import { useSidebarContext } from '../Sidebar.context';
 import { SidebarGreeting } from '../SidebarGreeting';
-import { SidebarHeaderLogo } from '../SidebarHeaderLogo';
+import { SidebarViewHeaderLogo } from '../SidebarViewHeaderLogo';
 
 /* * */
 
-export interface SidebarHeaderProps {
-	expanded: boolean
-	showToggle: boolean
-}
-
-/* * */
-
-export function SidebarHeader({ expanded, showToggle }: SidebarHeaderProps) {
+export function SidebarViewHeader() {
 	//
 
 	//
@@ -27,17 +20,16 @@ export function SidebarHeader({ expanded, showToggle }: SidebarHeaderProps) {
 
 	const { t } = useTranslation();
 
-	const [sidebarCollapsed, setSidebarCollapsed] = useUserPreference<boolean>('ui', 'sidebar_hidden', false);
+	const sidebarContext = useSidebarContext();
 
 	//
 	// B. Transform data
 
-	const isPeek = expanded && sidebarCollapsed;
-
-	const toggleAriaLabel = isPeek
+	const toggleAriaLabel = sidebarContext.presentation.visual_mode !== 'collapsed'
 		? t('shared:components.sidebar.Sidebar.pin_sidebar_aria')
 		: t('shared:components.sidebar.Sidebar.unpin_sidebar_aria');
-	const toggleIcon = isPeek
+
+	const toggleIcon = sidebarContext.presentation.visual_mode !== 'collapsed'
 		? <IconLayoutSidebarLeftExpand size={20} />
 		: <IconLayoutSidebarLeftCollapse size={20} />;
 
@@ -45,21 +37,21 @@ export function SidebarHeader({ expanded, showToggle }: SidebarHeaderProps) {
 	// C. Handle actions
 
 	const handleToggleClick = () => {
-		setSidebarCollapsed(!sidebarCollapsed);
+		sidebarContext.presentation.toggleIsPinned();
 	};
 
 	//
 	// D. Render components
 
 	return (
-		<div className={styles.sidebarHeader} data-expanded={expanded}>
-			<SidebarHeaderLogo />
-			{expanded ? (
+		<div className={styles.sidebarHeader}>
+			<SidebarViewHeaderLogo />
+			{sidebarContext.presentation.visual_mode !== 'collapsed' ? (
 				<div className={styles.sidebarHeaderGreeting}>
 					<SidebarGreeting />
 				</div>
 			) : null}
-			{showToggle ? (
+			{sidebarContext.presentation.visual_mode !== 'collapsed' ? (
 				<IconButton
 					aria-label={toggleAriaLabel}
 					color="var(--color-system-text-200)"

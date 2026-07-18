@@ -10,8 +10,8 @@ import { Surface } from '../../layout/Surface';
 import { SIDEBAR_LOGO_WIDTH_PX } from '../sidebar-layout.constants';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarFooter } from '../SidebarFooter';
-import { SidebarHeader } from '../SidebarHeader';
 import { SidebarPanel } from '../SidebarPanel';
+import { SidebarViewHeader } from '../SidebarViewHeader';
 
 /* * */
 
@@ -53,10 +53,7 @@ export function SidebarView() {
 			<div className={styles.expandingContainer}>
 				<Surface>
 
-					<SidebarHeader
-						expanded={sidebarContext.presentation.visual_mode !== 'collapsed'}
-						showToggle={sidebarContext.presentation.visual_mode !== 'collapsed'}
-					/>
+					<SidebarViewHeader />
 
 					<SidebarPanel
 						pathname={currentUrl?.pathname}

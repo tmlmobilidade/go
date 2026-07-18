@@ -11,7 +11,7 @@ import { WhenMode } from '../../layout/WhenMode';
 
 /* * */
 
-export function SidebarHeaderLogo() {
+export function SidebarViewHeaderLogo() {
 	//
 
 	//
