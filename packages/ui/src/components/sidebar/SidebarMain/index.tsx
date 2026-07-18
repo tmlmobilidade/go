@@ -9,7 +9,7 @@ import { SIDEBAR_LOGO_WIDTH_PX } from '../sidebar-layout.constants';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarFooter } from '../SidebarFooter';
 import { SidebarHeader } from '../SidebarHeader';
-import { SidebarPanel } from '../SidebarPanel';
+import { SidebarNavigation } from '../SidebarNavigation';
 
 /* * */
 
@@ -50,7 +50,7 @@ export function SidebarMain() {
 
 					<SidebarHeader />
 
-					<SidebarPanel />
+					<SidebarNavigation />
 
 					<SidebarFooter
 						iconOnly={sidebarContext.presentation.visual_mode !== 'collapsed'}

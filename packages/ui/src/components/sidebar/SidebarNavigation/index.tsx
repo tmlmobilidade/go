@@ -11,7 +11,7 @@ import { SidebarTreeNode } from '../SidebarTreeNode';
 
 /* * */
 
-export function SidebarPanel() {
+export function SidebarNavigation() {
 	//
 
 	//
