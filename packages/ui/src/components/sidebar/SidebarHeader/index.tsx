@@ -7,8 +7,8 @@ import styles from './styles.module.css';
 
 import { useUserPreference } from '../../../hooks/use-user-preference';
 import { IconButton } from '../../buttons';
-import { AppWrapperLogo } from '../AppWrapperLogo';
 import { SidebarGreeting } from '../SidebarGreeting';
+import { SidebarHeaderLogo } from '../SidebarHeaderLogo';
 
 /* * */
 
@@ -53,7 +53,7 @@ export function SidebarHeader({ expanded, showToggle }: SidebarHeaderProps) {
 
 	return (
 		<div className={styles.sidebarHeader} data-expanded={expanded}>
-			<AppWrapperLogo />
+			<SidebarHeaderLogo />
 			{expanded ? (
 				<div className={styles.sidebarHeaderGreeting}>
 					<SidebarGreeting />

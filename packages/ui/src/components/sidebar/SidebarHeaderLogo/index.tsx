@@ -11,7 +11,7 @@ import { WhenMode } from '../../layout/WhenMode';
 
 /* * */
 
-export function AppWrapperLogo() {
+export function SidebarHeaderLogo() {
 	//
 
 	//
@@ -37,6 +37,4 @@ export function AppWrapperLogo() {
 			)}
 		</div>
 	);
-
-	//
 }
