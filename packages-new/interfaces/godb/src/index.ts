@@ -54,4 +54,4 @@ class GoDBClass {
 	}
 }
 
-export const goDB = asyncSingletonProxy(GoDBClass);
+export const goDb = asyncSingletonProxy(GoDBClass);

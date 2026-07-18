@@ -7,7 +7,7 @@ import { files, hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedPattern, type HashedPatternWaypoint, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, type UnixTimestamp, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsPickupDropoffType, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
+import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedPattern, type HashedPatternWaypoint, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsPickupDropoffType, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
 import { convertGTFSTimeStringAndOperationalDateToUnixTimestamp } from '@tmlmobilidade/utils';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@tmlmobilidade/writers';
 import crypto from 'crypto';
@@ -311,7 +311,7 @@ export async function parsePlan(planData: Plan) {
 		//
 	} catch (error) {
 		Logger.error({ error, message: 'Error processing "calendar.txt" file.' });
-		throw new Error('✖︎ Error processing "calendar.txt" file.');
+		throw new Error('✖︎ Error processing "calendar.txt" file.', error);
 	}
 
 	/* * */
@@ -387,7 +387,7 @@ export async function parsePlan(planData: Plan) {
 		//
 	} catch (error) {
 		Logger.error({ error, message: 'Error processing "calendar_dates.txt" file.' });
-		throw new Error('✖︎ Error processing "calendar_dates.txt" file.');
+		throw new Error('✖︎ Error processing "calendar_dates.txt" file.', error);
 	}
 
 	/* * */
@@ -434,7 +434,7 @@ export async function parsePlan(planData: Plan) {
 		//
 	} catch (error) {
 		Logger.error({ error, message: 'Error processing "trips.txt" file.' });
-		throw new Error('✖︎ Error processing "trips.txt" file.');
+		throw new Error('✖︎ Error processing "trips.txt" file.', error);
 	}
 
 	/* * */
@@ -473,7 +473,7 @@ export async function parsePlan(planData: Plan) {
 		//
 	} catch (error) {
 		Logger.error({ error, message: 'Error processing "routes.txt" file.' });
-		throw new Error('✖︎ Error processing "routes.txt" file.');
+		throw new Error('✖︎ Error processing "routes.txt" file.', error);
 	}
 
 	/* * */
@@ -517,7 +517,7 @@ export async function parsePlan(planData: Plan) {
 		//
 	} catch (error) {
 		Logger.error({ error, message: 'Error processing "shapes.txt" file.' });
-		throw new Error('✖︎ Error processing "shapes.txt" file.');
+		throw new Error('✖︎ Error processing "shapes.txt" file.', error);
 	}
 
 	/* * */
@@ -554,7 +554,7 @@ export async function parsePlan(planData: Plan) {
 		//
 	} catch (error) {
 		Logger.error({ error, message: 'Error processing "stops.txt" file.' });
-		throw new Error('✖︎ Error processing "stops.txt" file.');
+		throw new Error('✖︎ Error processing "stops.txt" file.', error);
 	}
 
 	/* * */
@@ -941,6 +941,7 @@ export async function parsePlan(planData: Plan) {
 					apex_validations_qty: null,
 					created_at: Dates.now('utc').unix_timestamp,
 					created_by: 'system',
+					direction_id: Number(currentTrip.direction_id),
 					driver_ids: [],
 					end_time_observed: null,
 					end_time_scheduled: endTimeScheduledDate,
@@ -1027,7 +1028,7 @@ export async function parsePlan(planData: Plan) {
 		//
 	} catch (error) {
 		Logger.error({ error, message: 'Error transforming or saving Shapes, Trips or Rides to database.' });
-		throw new Error('✖︎ Error transforming or saving Shapes, Trips or Rides to database.');
+		throw new Error('✖︎ Error transforming or saving Shapes, Trips or Rides to database.', error);
 	}
 
 	//

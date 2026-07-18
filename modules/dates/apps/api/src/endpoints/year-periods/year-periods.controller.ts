@@ -3,7 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, yearPeriods } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Filter } from '@tmlmobilidade/interfaces';
 import { type CreateYearPeriodDto, OperationalDate, PermissionCatalog, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
@@ -72,7 +73,7 @@ export class YearPeriodsController {
 			query._id = { $ne: year_period_id };
 		}
 
-		const agencyPeriods = await yearPeriods.findMany(query);
+		const agencyPeriods = await goDb.offer.yearPeriods.findMany(query);
 
 		//
 		// Helper function to check if two agency arrays are exactly the same (regardless of order)
@@ -167,7 +168,7 @@ export class YearPeriodsController {
 		//
 		// Create the new period
 
-		const newPeriod = await yearPeriods.insertOne(request.body);
+		const newPeriod = await goDb.offer.yearPeriods.insertOne(request.body);
 
 		//
 		// Send the response
@@ -184,7 +185,7 @@ export class YearPeriodsController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const period = await yearPeriods.findById(id);
+		const period = await goDb.offer.yearPeriods.findById(id);
 
 		if (!period) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
@@ -219,7 +220,7 @@ export class YearPeriodsController {
 
 		//
 
-		await yearPeriods.deleteById(id);
+		await goDb.offer.yearPeriods.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -262,7 +263,7 @@ export class YearPeriodsController {
 		//
 		// Fetch year periods based on query filters
 
-		const allYearPeriods = await yearPeriods.findMany(queryFilters, { sort: { start_date: -1 } });
+		const allYearPeriods = await goDb.offer.yearPeriods.findMany(queryFilters, { sort: { start_date: -1 } });
 		return reply.send({ data: allYearPeriods, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
@@ -279,7 +280,7 @@ export class YearPeriodsController {
 		//
 		// Get the YearPeriod from the database
 
-		const periodData = await yearPeriods.findById(request.params.id);
+		const periodData = await goDb.offer.yearPeriods.findById(request.params.id);
 		if (!periodData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
 		}
@@ -335,7 +336,7 @@ export class YearPeriodsController {
 		//
 		// Get the YearPeriod from the database
 
-		const periodData = await yearPeriods.findById(request.params.id);
+		const periodData = await goDb.offer.yearPeriods.findById(request.params.id);
 
 		if (!periodData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
@@ -371,8 +372,8 @@ export class YearPeriodsController {
 		//
 		// Toggle the lock status of the period
 
-		await yearPeriods.toggleLockById(request.params.id);
-		const updatedPeriod = await yearPeriods.findById(request.params.id);
+		await goDb.offer.yearPeriods.toggleLockById(request.params.id);
+		const updatedPeriod = await goDb.offer.yearPeriods.findById(request.params.id);
 		if (!updatedPeriod) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
 		}
@@ -398,7 +399,7 @@ export class YearPeriodsController {
 		//
 		// Get the YearPeriod from the database
 
-		const periodData = await yearPeriods.findById(request.params.id);
+		const periodData = await goDb.offer.yearPeriods.findById(request.params.id);
 
 		if (!periodData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
@@ -448,7 +449,7 @@ export class YearPeriodsController {
 		//
 		// Update the period
 
-		const updatedPeriod = await yearPeriods.updateById(periodData._id, request.body);
+		const updatedPeriod = await goDb.offer.yearPeriods.updateById(periodData._id, request.body);
 
 		//
 		// Send the updated period data as the response
@@ -494,7 +495,7 @@ export class YearPeriodsController {
 			query._id = { $ne: yearPeriodId };
 		}
 
-		const agencyPeriods = await yearPeriods.findMany(query);
+		const agencyPeriods = await goDb.offer.yearPeriods.findMany(query);
 
 		//
 		// Helper function to check if two agency arrays are exactly the same (regardless of order)
@@ -521,7 +522,7 @@ export class YearPeriodsController {
 			if (conflicts.length > 0) {
 				// Remove conflicting dates from this year period
 				const updatedDates = removeDatesFromArray(otherPeriod.dates, conflicts);
-				await yearPeriods.updateById(otherPeriod._id, { dates: updatedDates });
+				await goDb.offer.yearPeriods.updateById(otherPeriod._id, { dates: updatedDates });
 			}
 		}
 

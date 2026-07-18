@@ -1,7 +1,10 @@
 'use client';
 
 import { IconAlertCircle, IconCircleCheck, IconInfoCircle, IconServerCog } from '@tabler/icons-react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type AppBanner, type AppBannerVariant } from '@tmlmobilidade/types';
 import { type ReactNode } from 'react';
+import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
@@ -9,21 +12,7 @@ import { Surface } from '../../layout/Surface';
 
 /* * */
 
-export type AppWrapperBannerVariant = 'danger' | 'info' | 'success' | 'warning';
-
-export interface AppWrapperBannerConfig {
-
-	/**
-	 * Short headline shown to users.
-	 */
-	title: string
-
-	/**
-	 * Variant of the banner.
-	 */
-	variant: AppWrapperBannerVariant
-
-}
+export type AppWrapperBannerVariant = AppBannerVariant;
 
 /* * */
 
@@ -40,19 +29,16 @@ export function AppWrapperBanner() {
 	//
 
 	//
-	// A. Setup variables
+	// A. Fetch data
 
-	// const banner: AppWrapperBannerConfig | null = {
-	// 	title: 'Manutenção programada — A partir das 16:00',
-	// 	variant: 'danger',
-	// };
-
-	const banner: AppWrapperBannerConfig | null = null;
+	const { data: banner } = useSWR<AppBanner | null, Error>(API_ROUTES.auth.APP_CONFIGS_APP_WRAPPER_BANNER, {
+		refreshInterval: 60_000,
+	});
 
 	//
 	// B. Render components
 
-	if (!banner) {
+	if (!banner?.enabled || !banner.title) {
 		return null;
 	}
 

@@ -5,7 +5,7 @@ import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -76,7 +76,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// and download them to the working directory. Throw an error
 		// if no agency is found or if the rules file is not accessible.
 
-		const foundAgency = await goDB.core.agencies.findById(gtfsValidation.gtfs_agency.agency_id);
+		const foundAgency = await goDb.core.agencies.findById(gtfsValidation.gtfs_agency.agency_id);
 		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.gtfs_agency.agency_id}`);
 		if (!foundAgency.validation_rules) throw new Error(`No validation rules found for agency: ${gtfsValidation.gtfs_agency.agency_id}`);
 
@@ -121,7 +121,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		if (!updatedGtfsValidation) throw new Error(`GTFS Validation not found after update: ${gtfsValidation._id}`);
 		if (!updatedGtfsValidation.created_by) throw new Error(`No creator information found for file: ${gtfsFile._id}`);
 
-		const foundUser = await goDB.core.users.findById(updatedGtfsValidation.created_by);
+		const foundUser = await goDb.core.users.findById(updatedGtfsValidation.created_by);
 		if (!foundUser) throw new Error(`User not found: ${updatedGtfsValidation.created_by}`);
 
 		try {

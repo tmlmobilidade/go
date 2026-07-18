@@ -1,7 +1,7 @@
 /* * */
 
 import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import type { Agency, CreateAgencyDto, CreateFileDto, CreateFileExportDto, CreateOrganizationDto, CreateRoleDto, CreateSessionDto, CreateUserDto, CreateVerificationTokenDto, File, FileExport, Organization, Role, Session, UpdateAgencyDto, UpdateFileDto, UpdateOrganizationDto, UpdateRoleDto, UpdateSessionDto, UpdateUserDto, UpdateVerificationTokenDto, User, VerificationToken } from '@tmlmobilidade/types';
+import type { Agency, AppConfig, CreateAgencyDto, CreateFileDto, CreateFileExportDto, CreateOrganizationDto, CreateRoleDto, CreateSessionDto, CreateUserDto, CreateVerificationTokenDto, File, FileExport, Organization, Role, Session, UpdateAgencyDto, UpdateFileDto, UpdateOrganizationDto, UpdateRoleDto, UpdateSessionDto, UpdateUserDto, UpdateVerificationTokenDto, User, VerificationToken } from '@tmlmobilidade/types';
 
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { CreateAgencySchema, CreateFileExportSchema, CreateFileSchema, CreateOrganizationSchema, CreateRoleSchema, CreateSessionSchema, CreateUserSchema, CreateVerificationTokenSchema, UpdateAgencySchema, UpdateFileExportSchema, UpdateFileSchema, UpdateOrganizationSchema, UpdateRoleSchema, UpdateSessionSchema, UpdateUserSchema, UpdateVerificationTokenSchema } from '@tmlmobilidade/types';
@@ -14,6 +14,7 @@ export class CoreDatabase {
 	//
 	// Collections
 	public readonly agencies: MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>;
+	public readonly appConfigs: MongoInterfaceTemplate<AppConfig, null, null>;
 	public readonly exports: MongoInterfaceTemplate<FileExport, CreateFileExportDto<any>, Partial<FileExport>>;
 	public readonly files: MongoInterfaceTemplate<File, CreateFileDto, UpdateFileDto>;
 	public readonly organizations: MongoInterfaceTemplate<Organization, CreateOrganizationDto, UpdateOrganizationDto>;
@@ -32,6 +33,7 @@ export class CoreDatabase {
 
 		// Create collection interfaces
 		this.agencies = new MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>('agencies', this.database, CreateAgencySchema, UpdateAgencySchema);
+		this.appConfigs = new MongoInterfaceTemplate<AppConfig, null, null>('app-configs', this.database, null, null);
 		this.exports = new MongoInterfaceTemplate<FileExport, CreateFileExportDto<any>, Partial<FileExport>>('exports', this.database, CreateFileExportSchema, UpdateFileExportSchema);
 		this.organizations = new MongoInterfaceTemplate<Organization, CreateOrganizationDto, UpdateOrganizationDto>('organizations', this.database, CreateOrganizationSchema, UpdateOrganizationSchema);
 		this.roles = new MongoInterfaceTemplate<Role, CreateRoleDto, UpdateRoleDto>('roles', this.database, CreateRoleSchema, UpdateRoleSchema);

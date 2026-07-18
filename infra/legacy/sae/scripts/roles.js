@@ -155,6 +155,10 @@ db.createRole({
 	privileges: [
 		{ actions: ['find'], resource: { collection: 'rides', db: 'production' } },
 		{ actions: ['find'], resource: { collection: 'sams', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'hashed_trips', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'hashed_patterns', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'hashed_shapes', db: 'production' } },
+		{ actions: ['find'], resource: { collection: 'simplified_apex_validations', db: 'production' } },
 		{ actions: ['find', 'update', 'insert', 'remove'], resource: { collection: 'metrics', db: 'production' } },
 	],
 	role: 'performance',

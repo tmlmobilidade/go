@@ -413,4 +413,12 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 		// Otherwise, return the aggregated documents as an array
 		return aggregationResult.toArray() as Promise<T[]>;
 	}
+
+	/**
+	 * Gets the collection name.
+	 * @returns The collection name
+	 */
+	public getCollectionName(): string {
+		return this.mongoCollection.collectionName;
+	}
 }
