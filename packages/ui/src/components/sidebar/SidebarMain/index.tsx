@@ -48,12 +48,19 @@ export function SidebarMain() {
 			onTouchEnd={handleStopHovering}
 			onTouchStart={handleStartHovering}
 			style={{
-				'--sidebar-slot-width': sidebarContext.presentation.visual_mode === 'pinned'
+				width: sidebarContext.presentation.visual_mode === 'pinned'
 					? `${SIDEBAR_WIDTH_EXPANDED}px`
 					: `${SIDEBAR_WIDTH_COLLAPSED}px`,
 			} as CSSProperties}
 		>
-			<div className={styles.expandingContainer}>
+			<div
+				className={styles.expandingContainer}
+				style={{
+					width: sidebarContext.presentation.visual_mode !== 'collapsed'
+						? `${SIDEBAR_WIDTH_EXPANDED}px`
+						: `${SIDEBAR_WIDTH_COLLAPSED}px`,
+				} as CSSProperties}
+			>
 				<Surface>
 
 					<SidebarHeader />

@@ -1,23 +1,15 @@
 /* * */
-/* PANEL */
 
 .fixedContainer {
 	z-index: 40;
 	display: flex;
 	flex-direction: column;
-	width: var(--sidebar-slot-width);
 	max-height: 100%;
 }
 
 .expandingContainer {
 	position: relative;
 	display: flex;
-	width: 60px;
 	max-height: 100%;
 	transition: width 300ms cubic-bezier(.15,1.1,.60,1);
-}
-
-.fixedContainer[data-visual-mode='pinned'] .expandingContainer,
-.fixedContainer[data-visual-mode='hovered'] .expandingContainer {
-	width: 250px;
 }
