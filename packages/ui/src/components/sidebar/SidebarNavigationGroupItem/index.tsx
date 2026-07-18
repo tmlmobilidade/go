@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 
 import { useMeContext } from '../../../contexts/Me.context';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
-import { type SidebarNavigationGroupItem } from '../sidebar-navigation-tree';
+import { type SidebarNavigationGroupItem } from '../sidebar-navigation';
 import { isItemActive, isPermissionEnabled } from '../utils';
 
 /* * */

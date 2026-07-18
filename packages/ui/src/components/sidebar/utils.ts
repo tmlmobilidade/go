@@ -2,7 +2,7 @@
 
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
-import { type SidebarNavigationGroup, type SidebarNavigationNode, sidebarNavigationTree } from './sidebar-navigation-tree';
+import { type SidebarNavigationGroup, sidebarNavigationGroups } from './sidebar-navigation';
 
 /* * */
 
@@ -28,36 +28,22 @@ export function isPermissionEnabled(permissions: readonly Permission[], userPerm
 
 export function isItemActive(href: string, currentPathname?: string) {
 	if (!currentPathname) return false;
-
 	const itemPathname = normalizePathname(getItemPathname(href));
 	const current = normalizePathname(currentPathname);
-
 	if (itemPathname === '/') return current === '/';
 	return current === itemPathname || current.startsWith(`${itemPathname}/`);
 }
 
-export function isNodeVisible(node: SidebarNavigationNode, userPermissions?: readonly Permission[]) {
-	if (node.type === 'item') {
-		return isPermissionEnabled(node.permissions, userPermissions);
-	}
-
-	if (node.permissions && !isPermissionEnabled(node.permissions, userPermissions)) {
-		return false;
-	}
-
-	return node.children.some(child => isNodeVisible(child, userPermissions));
+export function isGroupVisible(group: SidebarNavigationGroup, userPermissions?: readonly Permission[]) {
+	return group.items.some(item => isPermissionEnabled(item.permissions, userPermissions));
 }
 
-export function isNodeActive(node: SidebarNavigationNode, pathname?: string) {
-	if (node.type === 'item') {
-		return isItemActive(node.href, pathname);
-	}
-
-	return node.children.some(child => isNodeActive(child, pathname));
+export function isGroupActive(group: SidebarNavigationGroup, pathname?: string) {
+	return group.items.some(item => isItemActive(item.href, pathname));
 }
 
 export function getDefaultOpenGroupIds(pathname?: string): string[] {
-	return sidebarNavigationTree
-		.filter((node): node is SidebarNavigationGroup => node.type === 'group' && isNodeActive(node, pathname))
+	return sidebarNavigationGroups
+		.filter(group => isGroupActive(group, pathname))
 		.map(node => node._id);
 }

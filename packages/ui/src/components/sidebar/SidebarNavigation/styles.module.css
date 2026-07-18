@@ -4,7 +4,7 @@
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	min-height: 0;
+	height: 100%;
 	padding: var(--size-spacing-xs);
 	overflow-y: auto;
 }

@@ -2,28 +2,26 @@
 
 import { type JSX } from 'react';
 
-import { type SidebarNavigationNode, sidebarNavigationTree } from './sidebar-navigation-tree';
+import { SidebarNavigationGroup, sidebarNavigationGroups } from './sidebar-navigation';
 
 /* * */
 
-function firstLeafIconFromNodes(nodes: readonly SidebarNavigationNode[]): JSX.Element | undefined {
+function firstLeafIconFromNodes(nodes: readonly SidebarNavigationGroup[]): JSX.Element | undefined {
 	for (const n of nodes) {
-		if (n.type === 'item') return n.icon;
-		const nested = firstLeafIconFromNodes(n.children);
-		if (nested) return nested;
+		if (n.items.length) return n.items[0].icon;
 	}
 
 	return;
 }
 
-function leafIconByIdFromNodes(nodes: readonly SidebarNavigationNode[], id: string): JSX.Element | undefined {
+function leafIconByIdFromNodes(nodes: readonly SidebarNavigationGroup[], id: string): JSX.Element | undefined {
 	for (const n of nodes) {
 		if (n._id === id) {
-			return n.type === 'item' ? n.icon : firstLeafIconFromNodes(n.children);
+			return n.items.length ? n.items[0].icon : firstLeafIconFromNodes([n]);
 		}
 
-		if (n.type === 'group') {
-			const nested = leafIconByIdFromNodes(n.children, id);
+		if (n.items.length) {
+			const nested = leafIconByIdFromNodes([n], id);
 			if (nested) return nested;
 		}
 	}
@@ -32,5 +30,5 @@ function leafIconByIdFromNodes(nodes: readonly SidebarNavigationNode[], id: stri
 }
 
 export function getSidebarNotificationScopeIcon(scope: string): JSX.Element | undefined {
-	return leafIconByIdFromNodes(sidebarNavigationTree, scope);
+	return leafIconByIdFromNodes(sidebarNavigationGroups, scope);
 }

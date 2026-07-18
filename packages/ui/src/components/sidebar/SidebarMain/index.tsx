@@ -62,16 +62,9 @@ export function SidebarMain() {
 				} as CSSProperties}
 			>
 				<Surface>
-
 					<SidebarHeader />
-
 					<SidebarNavigation />
-
-					<SidebarFooter
-						iconOnly={sidebarContext.presentation.visual_mode !== 'collapsed'}
-						menuPosition={sidebarContext.presentation.visual_mode !== 'collapsed' ? 'bottom-end' : 'right-start'}
-					/>
-
+					<SidebarFooter />
 				</Surface>
 			</div>
 		</div>
