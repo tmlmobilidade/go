@@ -26,7 +26,7 @@ export function SidebarNavigation() {
 
 	return (
 		<SidebarOpenGroupsProvider defaultOpenGroupIds={sidebarContext.data.default_open_group_ids}>
-			<div className={styles.sidebarContent}>
+			<div className={styles.container}>
 				{sidebarNavigationTree.map(node => (
 					<SidebarTreeNode
 						key={node._id}
