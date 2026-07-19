@@ -1,6 +1,6 @@
 'use client';
 
-import { type CSSProperties, useCallback } from 'react';
+import { type CSSProperties } from 'react';
 
 import styles from './styles.module.css';
 
@@ -28,13 +28,13 @@ export function SidebarMain() {
 	//
 	// B. Handle actions
 
-	const handleStartHovering = useCallback(() => {
+	const handleStartHovering = () => {
 		sidebarContext.presentation.setVisualMode('hovered');
-	}, [sidebarContext]);
+	};
 
-	const handleStopHovering = useCallback(() => {
+	const handleStopHovering = () => {
 		sidebarContext.presentation.setVisualMode('collapsed');
-	}, [sidebarContext]);
+	};
 
 	//
 	// C. Render components

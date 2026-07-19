@@ -47,6 +47,7 @@ export function SidebarHeader() {
 						color="var(--color-system-text-200)"
 						icon={toggleIcon}
 						onClick={sidebarContext.presentation.toggleIsPinned}
+						tooltip={toggleAriaLabel}
 					/>
 				</div>
 			)}

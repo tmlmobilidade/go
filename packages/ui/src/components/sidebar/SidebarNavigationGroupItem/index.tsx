@@ -2,8 +2,8 @@
 
 /* * */
 
-import { type Permission } from '@tmlmobilidade/types';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -15,19 +15,19 @@ import { isItemActive, isPermissionEnabled } from '../utils';
 
 /* * */
 
-export interface SidebarItemProps extends SidebarNavigationGroupItem {
-	label: string
-	pathname?: string
-	userPermissions?: readonly Permission[]
+export interface SidebarNavigationGroupItemProps {
+	item: SidebarNavigationGroupItem
 }
 
 /* * */
 
-export function SidebarNavigationGroupItem({ href, icon, label, pathname, permissions, userPermissions }: SidebarItemProps) {
+export function SidebarNavigationGroupItem({ item }: SidebarNavigationGroupItemProps) {
 	//
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
 
 	const meContext = useMeContext();
 	const currentUrl = useCurrentUrl();
@@ -37,11 +37,10 @@ export function SidebarNavigationGroupItem({ href, icon, label, pathname, permis
 	//
 	// B. Transform data
 
-	const effectivePathname = pathname ?? currentUrl?.pathname;
-	const effectiveUserPermissions = userPermissions ?? meContext.data.user?.permissions;
-	const isEnabled = isPermissionEnabled(permissions, effectiveUserPermissions);
-	const isActive = isEnabled && isItemActive(href, effectivePathname);
-	const hrefValue = isActive ? '#' : href;
+	const effectiveUserPermissions = item.permissions ?? meContext.data.user?.permissions;
+	const isEnabled = isPermissionEnabled(item.permissions, effectiveUserPermissions);
+	const isActive = isEnabled && isItemActive(item.href, currentUrl?.pathname);
+	const hrefValue = isActive ? '#' : item.href;
 
 	//
 	// C. Render components
@@ -52,15 +51,15 @@ export function SidebarNavigationGroupItem({ href, icon, label, pathname, permis
 
 	return (
 		<Link
-			aria-label={label}
+			aria-label={t(`shared:components.sidebar.Sidebar.${item._id}`)}
 			className={styles.item}
 			data-active={isActive}
 			data-disabled={!isEnabled}
 			href={hrefValue ?? '#'}
 		>
-			<span className={styles.icon}>{icon}</span>
+			<span className={styles.icon}>{item.icon}</span>
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && (
-				<span className={styles.label}>{label}</span>
+				<span className={styles.label}>{t(`shared:components.sidebar.Sidebar.${item._id}`)}</span>
 			)}
 		</Link>
 	);

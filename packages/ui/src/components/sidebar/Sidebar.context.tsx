@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useUserPreference } from '../../hooks/use-user-preference';
 
@@ -44,7 +44,17 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 	const [openGroupIds, setOpenGroupIds] = useUserPreference<string[]>('ui', 'sidebar_open_group_ids', []);
 
 	//
-	// C. Handle actions
+	// B. Handle actions
+
+	useEffect(() => {
+		// Keep visual_mode in sync with the persisted pin preference.
+		// Unpinning while the sidebar is open falls back to hovered (user is still interacting).
+		setCurrentVisualMode((prev) => {
+			if (isPinned) return 'pinned';
+			if (prev === 'pinned') return 'hovered';
+			return prev;
+		});
+	}, [isPinned]);
 
 	const setVisualMode = useCallback((value: SidebarVisualMode) => {
 		if (isPinned) setCurrentVisualMode('pinned');
@@ -53,8 +63,8 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 	}, [isPinned]);
 
 	const toggleIsPinned = useCallback(() => {
-		setIsPinned(!isPinned);
-	}, [isPinned, setIsPinned]);
+		setIsPinned(prev => !prev);
+	}, [setIsPinned]);
 
 	const toggleOpenGroup = useCallback((groupId: string) => {
 		setOpenGroupIds((prev) => {
@@ -64,7 +74,7 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 	}, [setOpenGroupIds]);
 
 	//
-	// D. Define context value
+	// C. Define context value
 
 	const contextValue: SidebarContextState = useMemo(() => ({
 		navigation: {
@@ -79,7 +89,7 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 	}), [currentVisualMode, openGroupIds, setVisualMode, toggleIsPinned, toggleOpenGroup]);
 
 	//
-	// E. Render components
+	// D. Render components
 
 	return (
 		<SidebarContext.Provider value={contextValue}>

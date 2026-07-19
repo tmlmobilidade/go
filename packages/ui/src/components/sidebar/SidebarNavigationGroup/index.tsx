@@ -3,12 +3,12 @@
 /* * */
 
 import { IconChevronLeft } from '@tabler/icons-react';
-import { type Permission } from '@tmlmobilidade/types';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
+import { useCurrentUrl } from '../../../hooks/use-current-url';
 import { type SidebarNavigationGroup } from '../sidebar-navigation';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarNavigationGroupItem } from '../SidebarNavigationGroupItem';
@@ -18,13 +18,11 @@ import { isItemActive } from '../utils';
 
 export interface SidebarNavigationGroupProps {
 	group: SidebarNavigationGroup
-	pathname?: string
-	userPermissions?: readonly Permission[]
 }
 
 /* * */
 
-export function SidebarNavigationGroup({ group, pathname, userPermissions }: SidebarNavigationGroupProps) {
+export function SidebarNavigationGroup({ group }: SidebarNavigationGroupProps) {
 	//
 
 	//
@@ -32,14 +30,16 @@ export function SidebarNavigationGroup({ group, pathname, userPermissions }: Sid
 
 	const { t } = useTranslation();
 
+	const currentUrl = useCurrentUrl();
+
 	const sidebarContext = useSidebarContext();
 
 	//
 	// B. Transform data
 
 	const isGroupActive = useMemo(() => {
-		return group.items.some(item => isItemActive(item.href, pathname));
-	}, [group, pathname]);
+		return group.items.some(item => isItemActive(item.href, currentUrl?.pathname));
+	}, [group, currentUrl?.pathname]);
 
 	const isGroupOpen = useMemo(() => {
 		if (isGroupActive) return true;
@@ -50,8 +50,9 @@ export function SidebarNavigationGroup({ group, pathname, userPermissions }: Sid
 	// C. Handle actions
 
 	const toggleGroup = useCallback(() => {
+		if (isGroupActive) return;
 		sidebarContext.navigation.toggleOpenGroup(group._id);
-	}, [group._id, sidebarContext.navigation]);
+	}, [group._id, isGroupActive, sidebarContext.navigation]);
 
 	//
 	// D. Render components
@@ -59,6 +60,7 @@ export function SidebarNavigationGroup({ group, pathname, userPermissions }: Sid
 	return (
 		<section
 			className={styles.container}
+			data-group-active={isGroupActive}
 			data-group-open={isGroupOpen}
 			data-sidebar-collapsed={sidebarContext.presentation.visual_mode === 'collapsed'}
 		>
@@ -66,22 +68,13 @@ export function SidebarNavigationGroup({ group, pathname, userPermissions }: Sid
 			<div className={styles.header} onClick={toggleGroup}>
 				<span aria-hidden="true" className={styles.rule} />
 				<span className={styles.label}>{t(`shared:components.sidebar.SidebarGroups.${group._id}`)}</span>
-				<IconChevronLeft className={styles.chevron} />
+				<IconChevronLeft className={styles.chevron} stroke={3} />
 			</div>
 
 			{isGroupOpen && (
 				<div className={styles.items}>
 					{group.items.map(item => (
-						<SidebarNavigationGroupItem
-							key={item._id}
-							_id={item._id}
-							href={item.href}
-							icon={item.icon}
-							label={t(`shared:components.sidebar.Sidebar.${item._id}`)}
-							pathname={pathname}
-							permissions={item.permissions}
-							userPermissions={userPermissions}
-						/>
+						<SidebarNavigationGroupItem key={item._id} item={item} />
 					))}
 				</div>
 			)}
