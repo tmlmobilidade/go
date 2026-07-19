@@ -35,9 +35,8 @@ Located in `sql/loader/3-aggregate_hist_node_travel_times.sql`.
 Raw travel times vary wildly due to traffic, weather, and time of day.
 *   **Classification:** Every event is mapped into a specific statistical bucket:
     *   *Operational Date:* Shifted backwards for late-night rides (e.g., a 01:30 AM trip is logically classified under the previous day).
-    *   *Calendar Period:* Specific hardcoded date ranges identifying 'School', 'Summer', or 'Christmas' periods, as traffic behaviors change drastically between them.
     *   *Time of Day:* 'Peak AM', 'Mid', 'Peak PM', 'Off Peak'.
-    *   *Day Type:* 'Weekday' or 'Weekend'.
+    *   *Weekday* and *Day Type:* 'Weekday' or 'Weekend'.
 *   **Rollup:** The system stores the minimum, maximum, average, and *median* travel times for that node under those specific conditions.
 
 ## 4. Weighted Predictions
@@ -45,8 +44,8 @@ Located in `sql/bootstrap/mv-predict-node-etas.sql`.
 How do we convert buckets of historical medians into a single expected travel time?
 *   **Algorithm:** A weighted rolling-window sum is calculated.
 *   **Time Horizons:** It averages the past 3, 7, 14, and 30 days of data.
-*   **Context Matches:** It also calculates averages specifically for the same weekday, the same day type, and the same time period.
-*   **Weights:** These sub-averages are multiplied by constant weights (e.g., `w_last_3d` = 1.0, `w_last_30d` = 0.50, `w_same_period` = 0.70). The final `predicted_travel_time_seconds` is the sum of the weighted values divided by the sum of the weights used.
+*   **Context Matches:** It also calculates averages specifically for the same weekday and day type.
+*   **Weights:** These sub-averages are multiplied by constant weights (e.g., `w_last_3d` = 1.0, `w_last_30d` = 0.50, `w_same_weekday` = 0.85). The final `predicted_travel_time_seconds` is the sum of the weighted values divided by the sum of the weights used.
 
 ## 5. Live ETA Generation
 Located in `sql/bootstrap/mv-predict-trip-stop-etas.sql`.

@@ -20,24 +20,28 @@ export function LineDetailSectionTypology() {
 	const typologiesContext = useTypologiesContext();
 
 	const typologyOptions = useMemo(() => {
-		return typologiesContext.data.raw?.map(typology => ({
+		return typologiesContext.data.raw.map(typology => ({
 			label: typology.name,
 			value: typology._id,
 		}));
 	}, [typologiesContext.data.raw]);
 
 	const prepaidFareOptions = useMemo(() => {
-		return faresContext.data.raw?.filter(fare => fare.payment_method === FARE_PAYMENT_METHOD.PREPAID).map(fare => ({
-			label: fare.name,
-			value: fare._id,
-		}));
+		return faresContext.data.raw
+			.filter(fare => fare.payment_method === FARE_PAYMENT_METHOD.PREPAID)
+			.map(fare => ({
+				label: fare.name,
+				value: fare._id,
+			}));
 	}, [faresContext.data.raw]);
 
 	const onboardFareOptions = useMemo(() => {
-		return faresContext.data.raw?.filter(fare => fare.payment_method === FARE_PAYMENT_METHOD.ONBOARD).map(fare => ({
-			label: fare.name,
-			value: fare._id,
-		}));
+		return faresContext.data.raw
+			.filter(fare => fare.payment_method === FARE_PAYMENT_METHOD.ONBOARD)
+			.map(fare => ({
+				label: fare.name,
+				value: fare._id,
+			}));
 	}, [faresContext.data.raw]);
 
 	//
@@ -56,7 +60,7 @@ export function LineDetailSectionTypology() {
 		previousTypologyRef.current = undefined;
 	};
 
-	const handleTypologyChange = (typology_id) => {
+	const handleTypologyChange = (typology_id: null | string) => {
 		if (!typology_id) return;
 
 		const currentValue = lineDetailContext.data.form.values.typology;

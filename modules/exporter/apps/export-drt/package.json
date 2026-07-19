@@ -21,6 +21,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/lib": "*",
 		"@tmlmobilidade/logger": "*",
@@ -28,17 +29,17 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"csv-parse": "7.0.0",
+		"csv-parse": "7.0.1",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0",
-		"node-cron": "4.5.0"
+		"node-cron": "4.6.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.0.1",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.4",
+		"tsx": "4.23.1",
 		"typescript": "6.0.3"
 	}
 }

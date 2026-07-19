@@ -62,7 +62,7 @@ export function AgenciesListContextProvider({ children }: PropsWithChildren) {
 	}, [agenciesContext.data.raw]);
 
 	const searchResultsData = useSearch<AgencyNormalized>({
-		accessors: ['name_normalized'],
+		accessors: ['_id', 'code', 'name_normalized', 'short_name'],
 		data: normalizedAgenciesData,
 		query: filterSearch.value,
 	});

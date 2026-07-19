@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { annotations, type Filter } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Filter } from '@tmlmobilidade/interfaces';
 import { type Annotation, type CreateAnnotationDto, PermissionCatalog, type UpdateAnnotationDto } from '@tmlmobilidade/types';
 
 /* * */;
@@ -48,7 +49,7 @@ export class AnnotationsController {
 		//
 		// Create the new annotation
 
-		const newAnnotation = await annotations.insertOne(request.body);
+		const newAnnotation = await goDb.offer.annotations.insertOne(request.body);
 
 		//
 		// Send the response
@@ -65,7 +66,7 @@ export class AnnotationsController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const annotation = await annotations.findById(id);
+		const annotation = await goDb.offer.annotations.findById(id);
 
 		if (!annotation) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
@@ -100,7 +101,7 @@ export class AnnotationsController {
 
 		//
 
-		await annotations.deleteById(id);
+		await goDb.offer.annotations.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -143,7 +144,7 @@ export class AnnotationsController {
 		//
 		// Fetch annotations based on query filters
 
-		const allAnnotations = await annotations.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allAnnotations = await goDb.offer.annotations.findMany(queryFilters, { sort: { created_at: -1 } });
 
 		return reply.send({ data: allAnnotations, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -161,7 +162,7 @@ export class AnnotationsController {
 		//
 		// Get the Annotation from the database
 
-		const annotationData = await annotations.findById(request.params.id);
+		const annotationData = await goDb.offer.annotations.findById(request.params.id);
 
 		if (!annotationData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
@@ -217,7 +218,7 @@ export class AnnotationsController {
 		//
 		// Get the Annotation from the database
 
-		const annotationData = await annotations.findById(request.params.id);
+		const annotationData = await goDb.offer.annotations.findById(request.params.id);
 
 		if (!annotationData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
@@ -251,8 +252,8 @@ export class AnnotationsController {
 		}
 
 		// If authorized, toggle the lock status of the annotation
-		await annotations.toggleLockById(request.params.id);
-		const foundAnnotation = await annotations.findById(request.params.id);
+		await goDb.offer.annotations.toggleLockById(request.params.id);
+		const foundAnnotation = await goDb.offer.annotations.findById(request.params.id);
 		if (!foundAnnotation) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
 		}
@@ -272,7 +273,7 @@ export class AnnotationsController {
 		//
 		// Get the Annotation from the database
 
-		const annotationData = await annotations.findById(request.params.id);
+		const annotationData = await goDb.offer.annotations.findById(request.params.id);
 
 		if (!annotationData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Annotation not found');
@@ -308,7 +309,7 @@ export class AnnotationsController {
 		//
 		// Update the annotation
 
-		const updatedAnnotation = await annotations.updateById(annotationData._id, request.body);
+		const updatedAnnotation = await goDb.offer.annotations.updateById(annotationData._id, request.body);
 
 		//
 		// Send the updated annotation data as the response

@@ -20,8 +20,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/go-types-gtfs": "*",
-		"@tmlmobilidade/go-types-public-info": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
@@ -35,10 +34,10 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.0.1",
+		"@types/node": "26.1.1",
 		"@types/yazl": "3.3.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.4",
+		"tsx": "4.23.1",
 		"typescript": "6.0.3"
 	}
 }
