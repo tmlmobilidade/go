@@ -8,6 +8,8 @@ import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
+import { Surface } from '../../layout/Surface';
+
 /* * */
 
 export type AppWrapperBannerVariant = AppBannerVariant;
@@ -40,17 +42,12 @@ export function AppWrapperBanner() {
 		return null;
 	}
 
-	const variant = banner.variant ?? 'info';
-
 	return (
-		<div className={styles.root} data-variant={variant} role="status">
-			<div className={styles.accent} aria-hidden />
-			<div className={styles.icon} aria-hidden>
-				{VARIANT_ICONS[variant]}
+		<Surface>
+			<div className={styles.root} data-variant={banner.variant} role="status">
+				{VARIANT_ICONS[banner.variant]}
+				<p className={styles.title}>{banner.title}</p>
 			</div>
-			<p className={styles.title}>{banner.title}</p>
-		</div>
+		</Surface>
 	);
-
-	//
 }

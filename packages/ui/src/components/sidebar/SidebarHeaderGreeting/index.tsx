@@ -8,13 +8,13 @@ import { Label } from '../../display/Label';
 
 /* * */
 
-export interface SidebarGreetingProps {
+export interface SidebarHeaderGreetingProps {
 	availableGreetings?: string[]
 }
 
 /* * */
 
-export function SidebarGreeting({ availableGreetings = ['Olá', 'Hi', 'Hey', 'Oi', 'Hallo', 'Hola', 'Ciao', 'Hej'] }: SidebarGreetingProps) {
+export function SidebarHeaderGreeting({ availableGreetings = ['Olá', 'Hi', 'Hey', 'Oi', 'Hallo', 'Hola', 'Ciao', 'Hej'] }: SidebarHeaderGreetingProps) {
 	//
 
 	//
@@ -32,8 +32,8 @@ export function SidebarGreeting({ availableGreetings = ['Olá', 'Hi', 'Hey', 'Oi
 	}
 
 	return (
-		<Label size="md" caps singleLine>{drawnGreeting} {meContext.data.user.first_name}</Label>
+		<Label size="md" caps singleLine>
+			{drawnGreeting} {meContext.data.user.first_name}
+		</Label>
 	);
-
-	//
 }
