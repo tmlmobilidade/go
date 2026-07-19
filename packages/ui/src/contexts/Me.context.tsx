@@ -116,6 +116,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	const updatePreference = async (scope: string, key: string, value: undefined | UserPreferenceValue) => {
 		// Skip if user data is not available
 		if (!meData) return;
+		console.log('init updatePreference', scope, key, value);
 		// Merge current with updated preferences
 		const currentPreferences = meData.preferences ?? {};
 		const currentScope = currentPreferences[scope] ?? {};
@@ -126,6 +127,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		// Mutate the SWR cache to update user data
 		await meMutate();
 		await userMutate();
+		console.log('end updated preference', scope, key, value);
 	};
 
 	//
