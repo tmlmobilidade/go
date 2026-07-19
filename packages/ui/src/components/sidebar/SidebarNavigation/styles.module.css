@@ -5,10 +5,11 @@
 	flex-direction: column;
 	width: 100%;
 	height: 100%;
-	overflow-y: auto;
-	transition: padding-right 200ms ease-in-out;
+	padding-bottom: var(--size-spacing-md);
+	overflow: hidden auto;
+	scrollbar-width: none;
 }
 
 .container[data-expanded="true"] {
-	padding-right: var(--size-spacing-xs);
+	scrollbar-width: auto;
 }
