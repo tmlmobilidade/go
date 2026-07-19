@@ -11,7 +11,7 @@ import { WhenMode } from '../../layout/WhenMode';
 
 /* * */
 
-export function AppWrapperLogo() {
+export function SidebarHeaderLogo() {
 	//
 
 	//
@@ -31,12 +31,10 @@ export function AppWrapperLogo() {
 		<div className={styles.appLogo}>
 			{organizationLogoData && (
 				<WhenMode
-					dark={<Image key={organizationLogoData?.logo_dark} alt="Logo" fallbackSrc="" src={organizationLogoData?.logo_dark} width={70} />}
-					light={<Image key={organizationLogoData?.logo_light} alt="Logo" fallbackSrc="" src={organizationLogoData?.logo_light} width={70} />}
+					dark={<Image key={organizationLogoData?.logo_dark} alt="Logo" fallbackSrc="/auth/assets/layout/sidebar/go-sidebar-fallback-dark.png" src={organizationLogoData?.logo_dark} width={70} />}
+					light={<Image key={organizationLogoData?.logo_light} alt="Logo" fallbackSrc="/auth/assets/layout/sidebar/go-sidebar-fallback-light.png" src={organizationLogoData?.logo_light} width={70} />}
 				/>
 			)}
 		</div>
 	);
-
-	//
 }
