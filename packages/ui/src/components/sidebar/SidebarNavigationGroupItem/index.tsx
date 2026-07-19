@@ -1,22 +1,20 @@
 'use client';
 
-/* * */
-
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { useMeContext } from '../../../contexts/Me.context';
 import { useCurrentUrl } from '../../../hooks/use-current-url';
-import { type SidebarNavigationGroupItem } from '../sidebar-navigation';
+import { type SidebarNavigationGroupItemType } from '../sidebar-navigation';
 import { useSidebarContext } from '../Sidebar.context';
-import { isItemActive, isPermissionEnabled } from '../utils';
+import { isItemActive } from '../utils';
 
 /* * */
 
 export interface SidebarNavigationGroupItemProps {
-	item: SidebarNavigationGroupItem
+	item: SidebarNavigationGroupItemType
 }
 
 /* * */
@@ -29,7 +27,6 @@ export function SidebarNavigationGroupItem({ item }: SidebarNavigationGroupItemP
 
 	const { t } = useTranslation();
 
-	const meContext = useMeContext();
 	const currentUrl = useCurrentUrl();
 
 	const sidebarContext = useSidebarContext();
@@ -37,25 +34,19 @@ export function SidebarNavigationGroupItem({ item }: SidebarNavigationGroupItemP
 	//
 	// B. Transform data
 
-	const effectiveUserPermissions = item.permissions ?? meContext.data.user?.permissions;
-	const isEnabled = isPermissionEnabled(item.permissions, effectiveUserPermissions);
-	const isActive = isEnabled && isItemActive(item.href, currentUrl?.pathname);
-	const hrefValue = isActive ? '#' : item.href;
+	const isActive = useMemo(() => {
+		return isItemActive(item.href, currentUrl?.pathname);
+	}, [currentUrl?.pathname, item.href]);
 
 	//
 	// C. Render components
-
-	if (!isEnabled) {
-		return null;
-	}
 
 	return (
 		<Link
 			aria-label={t(`shared:components.sidebar.Sidebar.${item._id}`)}
 			className={styles.item}
 			data-active={isActive}
-			data-disabled={!isEnabled}
-			href={hrefValue ?? '#'}
+			href={isActive ? '#' : item.href ?? '#'}
 		>
 			<span className={styles.icon}>{item.icon}</span>
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && (
@@ -63,6 +54,4 @@ export function SidebarNavigationGroupItem({ item }: SidebarNavigationGroupItemP
 			)}
 		</Link>
 	);
-
-	//
 }

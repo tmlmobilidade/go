@@ -11,12 +11,12 @@ import { i18nResourceKeysPtShared } from '../../i18n/resources';
 
 /* * */
 
-export interface SidebarNavigationGroup {
+export interface SidebarNavigationGroupType {
 	_id: keyof typeof i18nResourceKeysPtShared.shared.components.sidebar.SidebarGroups
-	items: SidebarNavigationGroupItem[]
+	items: SidebarNavigationGroupItemType[]
 }
 
-export interface SidebarNavigationGroupItem {
+export interface SidebarNavigationGroupItemType {
 	_id: keyof typeof i18nResourceKeysPtShared.shared.components.sidebar.Sidebar
 	href: string
 	icon: JSX.Element
@@ -195,4 +195,4 @@ export const sidebarNavigationGroups = [
 			},
 		],
 	},
-] as const satisfies readonly SidebarNavigationGroup[];
+] satisfies readonly SidebarNavigationGroupType[];

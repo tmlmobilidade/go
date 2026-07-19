@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './styles.module.css';
 
 import { useCurrentUrl } from '../../../hooks/use-current-url';
-import { type SidebarNavigationGroup } from '../sidebar-navigation';
+import { type SidebarNavigationGroupType } from '../sidebar-navigation';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarNavigationGroupItem } from '../SidebarNavigationGroupItem';
 import { isItemActive } from '../utils';
@@ -17,7 +17,7 @@ import { isItemActive } from '../utils';
 /* * */
 
 export interface SidebarNavigationGroupProps {
-	group: SidebarNavigationGroup
+	group: SidebarNavigationGroupType
 }
 
 /* * */
@@ -31,7 +31,6 @@ export function SidebarNavigationGroup({ group }: SidebarNavigationGroupProps) {
 	const { t } = useTranslation();
 
 	const currentUrl = useCurrentUrl();
-
 	const sidebarContext = useSidebarContext();
 
 	//

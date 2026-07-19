@@ -29,15 +29,6 @@
 	box-shadow: 0 1px 3px 0 var(--color-shadow);
 }
 
-.item[data-disabled='true'],
-.item[data-disabled='true']:hover {
-	color: var(--color-system-text-100);
-	cursor: not-allowed;
-	background-color: transparent;
-	border-color: transparent;
-	opacity: 0.25;
-}
-
 /* * */
 /* ICON */
 
