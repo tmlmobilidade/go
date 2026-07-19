@@ -41,7 +41,7 @@ export function SidebarMain() {
 
 	return (
 		<div
-			className={styles.fixedContainer}
+			className={styles.root}
 			data-visual-mode={sidebarContext.presentation.visual_mode}
 			onMouseEnter={handleStartHovering}
 			onMouseLeave={handleStopHovering}

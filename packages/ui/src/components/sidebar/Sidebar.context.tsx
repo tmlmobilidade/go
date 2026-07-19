@@ -2,9 +2,7 @@
 
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
-import { useCurrentUrl } from '../../hooks/use-current-url';
 import { useUserPreference } from '../../hooks/use-user-preference';
-import { getDefaultOpenGroupIds } from './utils';
 
 /* * */
 
@@ -40,14 +38,12 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Setup variables
 
-	const currentUrl = useCurrentUrl();
+	// const currentUrl = useCurrentUrl();
 
 	const [isPinned, setIsPinned] = useUserPreference<boolean>('ui', 'sidebar_is_pinned', false);
 	const [currentVisualMode, setCurrentVisualMode] = useState<SidebarVisualMode>('collapsed');
 
-	console.log('isPinned', isPinned);
-
-	const [openGroupIds, setOpenGroupIds] = useUserPreference<string[]>('ui', 'sidebar_open_group_ids', getDefaultOpenGroupIds(currentUrl?.pathname));
+	const [openGroupIds, setOpenGroupIds] = useUserPreference<string[]>('ui', 'sidebar_open_group_ids', []);
 
 	//
 	// C. Handle actions
@@ -67,7 +63,7 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 			if (prev.includes(groupId)) return prev.filter(id => id !== groupId);
 			return [...prev, groupId];
 		});
-	}, []);
+	}, [setOpenGroupIds]);
 
 	//
 	// D. Define context value

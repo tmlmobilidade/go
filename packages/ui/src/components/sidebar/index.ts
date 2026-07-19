@@ -6,5 +6,4 @@ export * from './SidebarHeaderGreeting';
 export * from './SidebarNavigationGroupItem';
 export * from './SidebarNotifications';
 export * from './SidebarNotificationsItem';
-export * from './SidebarOpenGroups.context';
 export * from './SidebarOptions';

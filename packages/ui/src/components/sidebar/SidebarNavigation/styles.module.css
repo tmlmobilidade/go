@@ -10,5 +10,5 @@
 }
 
 .container[data-expanded="true"] {
-	padding-right: 5px;
+	padding-right: var(--size-spacing-xs);
 }

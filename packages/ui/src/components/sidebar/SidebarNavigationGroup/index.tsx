@@ -3,7 +3,7 @@
 /* * */
 
 import { Collapse } from '@mantine/core';
-import { IconChevronDown } from '@tabler/icons-react';
+import { IconChevronLeft } from '@tabler/icons-react';
 import { type Permission } from '@tmlmobilidade/types';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -55,53 +55,23 @@ export function SidebarNavigationGroup({ group, pathname, userPermissions }: Sid
 	}, [group._id, sidebarContext.navigation]);
 
 	//
-	// C. Render components
-
-	// if (node.type === 'item') {
-	// 	if (!isPermissionEnabled(node.permissions, userPermissions)) {
-	// 		return null;
-	// 	}
-
-	// 	const itemLabel = t(`shared:components.sidebar.Sidebar.${node._id}` as never);
-
-	// 	return (
-	// 		<SidebarNavigationGroupItem
-	// 			label={itemLabel}
-	// 			pathname={pathname}
-	// 			userPermissions={userPermissions}
-	// 			{...node}
-	// 		/>
-	// 	);
-	// }
-
-	// if (node.permissions && !isPermissionEnabled(node.permissions, userPermissions)) {
-	// 	return null;
-	// }
-
-	// const groupLabel = t(`shared:components.sidebar.SidebarGroups.${node._id}` as never);
-	// const visibleChildren = node.children.filter(child => isNodeVisible(child, userPermissions));
-
-	// if (!visibleChildren.length) {
-	// 	return null;
-	// }
+	// D. Render components
 
 	return (
-		<section className={styles.group}>
+		<section
+			className={styles.container}
+			data-group-open={isGroupOpen}
+			data-sidebar-collapsed={sidebarContext.presentation.visual_mode === 'collapsed'}
+		>
 
-			<button
-				aria-label={t(`shared:components.sidebar.SidebarGroups.${group._id}` as never)}
-				className={styles.groupHeader}
-				data-collapsed={sidebarContext.presentation.visual_mode === 'collapsed'}
-				onClick={toggleGroup}
-				type="button"
-			>
-				<span aria-hidden="true" className={styles.groupRule} />
-				<span className={styles.groupLabel}>{t(`shared:components.sidebar.SidebarGroups.${group._id}` as never)}</span>
-				<IconChevronDown className={styles.groupChevron} data-open={isGroupOpen} size={14} />
-			</button>
+			<div className={styles.header} onClick={toggleGroup}>
+				<span aria-hidden="true" className={styles.rule} />
+				<span className={styles.label}>{t(`shared:components.sidebar.SidebarGroups.${group._id}`)}</span>
+				<IconChevronLeft className={styles.chevron} />
+			</div>
 
 			<Collapse expanded={isGroupOpen} transitionDuration={0}>
-				<div className={styles.groupChildren} data-sidebar-group-children>
+				<div className={styles.items}>
 					{group.items.map(item => (
 						<SidebarNavigationGroupItem
 							key={item._id}
