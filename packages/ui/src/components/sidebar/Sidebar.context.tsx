@@ -38,8 +38,6 @@ export function SidebarContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Setup variables
 
-	// const currentUrl = useCurrentUrl();
-
 	const [isPinned, setIsPinned] = useUserPreference<boolean>('ui', 'sidebar_is_pinned', false);
 	const [currentVisualMode, setCurrentVisualMode] = useState<SidebarVisualMode>('collapsed');
 

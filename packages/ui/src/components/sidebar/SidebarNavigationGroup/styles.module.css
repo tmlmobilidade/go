@@ -64,6 +64,7 @@
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
 	white-space: nowrap;
+	user-select: none;
 	transition: opacity var(--transition-duration) var(--transition-easing);
 }
 

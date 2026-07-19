@@ -2,7 +2,6 @@
 
 /* * */
 
-import { Collapse } from '@mantine/core';
 import { IconChevronLeft } from '@tabler/icons-react';
 import { type Permission } from '@tmlmobilidade/types';
 import { useCallback, useMemo } from 'react';
@@ -70,7 +69,7 @@ export function SidebarNavigationGroup({ group, pathname, userPermissions }: Sid
 				<IconChevronLeft className={styles.chevron} />
 			</div>
 
-			<Collapse expanded={isGroupOpen} transitionDuration={0}>
+			{isGroupOpen && (
 				<div className={styles.items}>
 					{group.items.map(item => (
 						<SidebarNavigationGroupItem
@@ -85,7 +84,7 @@ export function SidebarNavigationGroup({ group, pathname, userPermissions }: Sid
 						/>
 					))}
 				</div>
-			</Collapse>
+			)}
 
 		</section>
 	);
