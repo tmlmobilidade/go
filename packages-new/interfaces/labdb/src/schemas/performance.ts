@@ -5,7 +5,7 @@ import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-pe
 
 /* * */
 
-export const demandByAgencyByOperationalDateSchema: ClickHouseTableSchema<DemandByAgencyByOperationalDate> = {
+export const demandByAgencyByOperationalDateTableSchema: ClickHouseTableSchema<DemandByAgencyByOperationalDate> = {
 	agency_id: { type: 'LowCardinality(String)' },
 	operational_date: { type: 'UInt32' },
 	qty: { type: 'UInt64' },

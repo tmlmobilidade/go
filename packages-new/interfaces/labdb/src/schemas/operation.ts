@@ -5,7 +5,7 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
 
 /* * */
 
-export const simplifiedVehicleEventSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
+export const simplifiedVehicleEventTableSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'String' },
 	bearing: { type: 'Nullable(Int64)' },

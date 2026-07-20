@@ -12,43 +12,45 @@ import { SimplifiedApexDatabase } from './databases/simplified-apex.js';
 class LabDbClass {
 	//
 
-	//
-	//
-	private static _instance: LabDbClass;
+	private static _instance: null | Promise<LabDbClass> = null;
 
-	private readonly clickhouseClient: ClickHouseClient;
-
-	//
-	// Databases
 	public readonly operation: OperationDatabase;
 	public readonly performance: PerformanceDatabase;
 	public readonly simplifiedApex: SimplifiedApexDatabase;
 
-	/**
-	 * Establishes a connection to the Mongo database and initializes the collection.
-	 * @param options Optional Mongo client connection options.
-	 * @throws Error if the environment variable for the database URI is missing or if the connection fails.
-	 */
-	public static async getInstance() {
-		if (!LabDbClass._instance) {
-			const clickhouseClient = await ClickHouseDatabaseClient.getClient({ prefix: 'LABDB' });
-			LabDbClass._instance = new LabDbClass(clickhouseClient);
-		}
-		return LabDbClass._instance;
-	}
+	private readonly clickhouseClient: ClickHouseClient;
 
-	//
-	// Constructor
-	private constructor(clickhouseClient: ClickHouseClient) {
-		this.clickhouseClient = clickhouseClient;
-
+	private constructor(client: ClickHouseClient) {
+		this.clickhouseClient = client;
 		this.operation = new OperationDatabase(this.clickhouseClient);
 		this.performance = new PerformanceDatabase(this.clickhouseClient);
 		this.simplifiedApex = new SimplifiedApexDatabase(this.clickhouseClient);
 	}
 
-	//
-	// Queries
+	/**
+	 * Returns the singleton instance.
+	 * Concurrent callers share the same initialization promise so schema setup runs once.
+	 */
+	public static async getInstance() {
+		if (!LabDbClass._instance) {
+			LabDbClass._instance = (async () => {
+				const clickhouseClient = await ClickHouseDatabaseClient.getClient({ prefix: 'LABDB', tunnelType: 'GO' });
+				const instance = new LabDbClass(clickhouseClient);
+				// Behaves like an async constructor: create DBs/tables before the proxy exposes the instance.
+				await instance.init();
+				return instance;
+			})();
+		}
+		return await LabDbClass._instance;
+	}
+
+	private async init() {
+		await Promise.all([
+			this.operation.init(),
+			this.performance.init(),
+			this.simplifiedApex.init(),
+		]);
+	}
 
 	/**
 	 * Executes a query from a .sql file with optional parameter substitutions.
@@ -83,5 +85,7 @@ class LabDbClass {
 		return await queryFromString<T>(this.clickhouseClient, query, params);
 	}
 }
+
+/* * */
 
 export const labDb = asyncSingletonProxy(LabDbClass);

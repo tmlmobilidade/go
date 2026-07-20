@@ -5,7 +5,7 @@ import { type SimplifiedApexBankingTap, SimplifiedApexInspection, SimplifiedApex
 
 /* * */
 
-export const simplifiedApexBankingTapSchema: ClickHouseTableSchema<SimplifiedApexBankingTap> = {
+export const simplifiedApexBankingTapTableSchema: ClickHouseTableSchema<SimplifiedApexBankingTap> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
@@ -31,7 +31,7 @@ export const simplifiedApexBankingTapSchema: ClickHouseTableSchema<SimplifiedApe
 	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
-export const simplifiedApexInspectionDecisionSchema: ClickHouseTableSchema<SimplifiedApexInspectionDecision> = {
+export const simplifiedApexInspectionDecisionTableSchema: ClickHouseTableSchema<SimplifiedApexInspectionDecision> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
@@ -48,7 +48,7 @@ export const simplifiedApexInspectionDecisionSchema: ClickHouseTableSchema<Simpl
 	updated_at: { type: 'Int64' },
 };
 
-export const simplifiedApexInspectionSchema: ClickHouseTableSchema<SimplifiedApexInspection> = {
+export const simplifiedApexInspectionTableSchema: ClickHouseTableSchema<SimplifiedApexInspection> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
@@ -74,7 +74,7 @@ export const simplifiedApexInspectionSchema: ClickHouseTableSchema<SimplifiedApe
 	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
-export const simplifiedApexLocationSchema: ClickHouseTableSchema<SimplifiedApexLocation> = {
+export const simplifiedApexLocationTableSchema: ClickHouseTableSchema<SimplifiedApexLocation> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
@@ -94,7 +94,7 @@ export const simplifiedApexLocationSchema: ClickHouseTableSchema<SimplifiedApexL
 	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
-export const simplifiedApexOnBoardRefundSchema: ClickHouseTableSchema<SimplifiedApexOnBoardRefund> = {
+export const simplifiedApexOnBoardRefundTableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardRefund> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
@@ -122,7 +122,7 @@ export const simplifiedApexOnBoardRefundSchema: ClickHouseTableSchema<Simplified
 	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
-export const simplifiedApexOnBoardSaleSchema: ClickHouseTableSchema<SimplifiedApexOnBoardSale> = {
+export const simplifiedApexOnBoardSaleTableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardSale> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
@@ -151,7 +151,7 @@ export const simplifiedApexOnBoardSaleSchema: ClickHouseTableSchema<SimplifiedAp
 	vehicle_id: { type: 'LowCardinality(Nullable(String))' },
 };
 
-export const simplifiedApexValidationSchema: ClickHouseTableSchema<SimplifiedApexValidation> = {
+export const simplifiedApexValidationTableSchema: ClickHouseTableSchema<SimplifiedApexValidation> = {
 	_id: { type: 'UUID' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
