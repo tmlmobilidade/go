@@ -3,8 +3,7 @@
 import { syncPcgidbLogVehicleEvents } from '@/sync-pcgidb-log.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
