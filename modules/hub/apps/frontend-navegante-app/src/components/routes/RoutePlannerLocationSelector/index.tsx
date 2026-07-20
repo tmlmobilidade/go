@@ -14,11 +14,12 @@ interface RoutePlannerLocationSelectorProps {
 	onOriginClick: () => void
 	onSwap: () => void
 	origin: null | RoutePlannerLocation
+	readOnly?: boolean
 }
 
 /* * */
 
-export function RoutePlannerLocationSelector({ destination, onDestinationClick, onOriginClick, onSwap, origin }: RoutePlannerLocationSelectorProps) {
+export function RoutePlannerLocationSelector({ destination, onDestinationClick, onOriginClick, onSwap, origin, readOnly = false }: RoutePlannerLocationSelectorProps) {
 	//
 
 	//
@@ -30,7 +31,7 @@ export function RoutePlannerLocationSelector({ destination, onDestinationClick, 
 	// B. Render components
 
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} data-readonly={readOnly || undefined}>
 			<div className={styles.track}>
 				<IconPointFilled className={styles.originDot} size={13} />
 				<span className={styles.trackLine} />
@@ -38,12 +39,12 @@ export function RoutePlannerLocationSelector({ destination, onDestinationClick, 
 			</div>
 
 			<div className={styles.fields}>
-				<button className={styles.fieldButton} onClick={onOriginClick} type="button">
+				<button className={styles.fieldButton} disabled={readOnly} onClick={onOriginClick} type="button">
 					<span className={styles.label}>{t('default:routes.RoutePlannerInput.origin.label')}</span>
 					<span className={styles.value}>{origin?.label || t('default:routes.RoutePlannerInput.origin.placeholder')}</span>
 				</button>
 
-				<button className={styles.fieldButton} onClick={onDestinationClick} type="button">
+				<button className={styles.fieldButton} disabled={readOnly} onClick={onDestinationClick} type="button">
 					<span className={styles.label}>{t('default:routes.RoutePlannerInput.destination.label')}</span>
 					<span className={styles.value}>{destination?.label || t('default:routes.RoutePlannerInput.destination.placeholder')}</span>
 				</button>
@@ -52,6 +53,7 @@ export function RoutePlannerLocationSelector({ destination, onDestinationClick, 
 			<button
 				aria-label={t('default:routes.RoutePlannerInput.swap')}
 				className={styles.swapButton}
+				disabled={readOnly}
 				onClick={onSwap}
 				type="button"
 			>

@@ -55,6 +55,7 @@
 }
 
 .legIcon {
+	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -64,6 +65,22 @@
 	background-color: var(--color-system-background-200, #f3f4f6);
 	border: 1px solid var(--color-system-border-100, #ececf1);
 	border-radius: 999px;
+}
+
+.currentStepMarker {
+	position: absolute;
+	top: -7px;
+	right: -7px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	color: var(--color-primary-white, #fff);
+	background-color: var(--color-status-info, #1677ff);
+	border: 2px solid var(--color-system-background-100, #fff);
+	border-radius: 999px;
+	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 }
 
 .legIcon[data-mode='bus'] {
@@ -271,4 +288,39 @@
 	color: var(--color-system-text-100, #111);
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.actions {
+	display: flex;
+	gap: 10px;
+}
+
+.startButton,
+.endButton {
+	display: inline-flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	min-height: 48px;
+	padding: 0 18px;
+	font-size: 16px;
+	font-weight: 800;
+	cursor: pointer;
+	border: 0;
+	border-radius: 999px;
+}
+
+.startButton {
+	color: var(--color-primary-white, #fff);
+	background-color: var(--color-status-info, #1677ff);
+}
+
+.endButton {
+	color: var(--color-primary-white, #fff);
+	background-color: var(--color-status-error, #e53e3e);
+}
+
+.startButton:active,
+.endButton:active {
+	transform: scale(0.98);
 }

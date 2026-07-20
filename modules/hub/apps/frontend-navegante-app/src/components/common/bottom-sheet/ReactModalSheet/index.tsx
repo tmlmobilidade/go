@@ -17,6 +17,7 @@ type BottomSheetSize = 'fit' | 'full' | 'half' | 'short';
 
 interface BottomSheetProps {
 	avoidKeyboard?: boolean
+	disableDismiss?: boolean
 	headerMode?: BottomSheetHeaderMode
 	initialSnap?: number
 	mapAware?: boolean
@@ -48,6 +49,7 @@ const SHEET_SNAP_POINTS_BY_SIZE: Record<BottomSheetSize, number[]> = {
 export function BottomSheet({
 	avoidKeyboard = true,
 	children,
+	disableDismiss = false,
 	headerMode,
 	initialSnap,
 	mapAware = false,
@@ -123,6 +125,7 @@ export function BottomSheet({
 			avoidKeyboard={avoidKeyboard}
 			className={styles.root}
 			detent={detent}
+			disableDismiss={disableDismiss}
 			initialSnap={selectedInitialSnap}
 			isOpen={opened}
 			onClose={onClose}

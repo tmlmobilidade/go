@@ -133,6 +133,20 @@ export function formatMotisPlanDurationMinutes(seconds: number | undefined) {
 	return Math.max(0, Math.round((seconds || 0) / 60));
 }
 
+export function formatMotisPlanDistance(meters: number | undefined) {
+	if (!Number.isFinite(meters)) return null;
+
+	const normalizedMeters = Math.max(0, meters || 0);
+	const useKilometers = normalizedMeters >= 1000;
+
+	return new Intl.NumberFormat(undefined, {
+		maximumFractionDigits: useKilometers ? 1 : 0,
+		style: 'unit',
+		unit: useKilometers ? 'kilometer' : 'meter',
+		unitDisplay: 'short',
+	}).format(useKilometers ? normalizedMeters / 1000 : normalizedMeters);
+}
+
 export function formatMotisPlanTime(value: number | string | undefined) {
 	if (!value) return '--:--';
 
@@ -163,6 +177,86 @@ export function getMotisItineraryStart(itinerary: MotisItinerary) {
 export function getMotisItineraryDurationSeconds(itinerary: MotisItinerary) {
 	if (Number.isFinite(itinerary.duration)) return itinerary.duration;
 	return getSecondsBetween(getMotisItineraryStart(itinerary), getMotisItineraryEnd(itinerary));
+}
+
+/**
+ * Finds which leg of the itinerary the user is currently closest to, so the UI can highlight
+ * the "current step" while navigating. This is a simple nearest-path heuristic (not a full
+ * map-matching / route-snapping algorithm): for each leg we measure the shortest distance from
+ * the user's position to that leg's path (geometry, or a straight line fallback), and pick the
+ * leg with the smallest distance.
+ */
+export function getMotisItineraryActiveLegIndex(itinerary: MotisItinerary, userPosition: GeoJSON.Position, origin: null | RoutePlannerLocation, destination: null | RoutePlannerLocation) {
+	const legs = Array.isArray(itinerary.legs) ? itinerary.legs : [];
+	if (legs.length === 0) return 0;
+
+	let closestLegIndex = 0;
+	let closestDistanceMeters = Infinity;
+
+	legs.forEach((leg, index) => {
+		const geometryPositions = getMotisLegGeometryPositions(leg);
+		const fallbackPositions = getMotisLegFallbackPositions(leg, index, legs.length, origin, destination);
+		const positions = geometryPositions.length >= 2 ? geometryPositions : fallbackPositions;
+		const distanceMeters = getDistanceToPathMeters(userPosition, positions);
+
+		if (distanceMeters < closestDistanceMeters) {
+			closestDistanceMeters = distanceMeters;
+			closestLegIndex = index;
+		}
+	});
+
+	return closestLegIndex;
+}
+
+/**
+ * Estimates how many seconds are left on a walking leg based on the user's live distance to its
+ * end point, using the leg's own planned pace (distance / duration) as the walking speed. Falls
+ * back to a typical walking speed (~1.35 m/s) when the leg has no distance, and to the full
+ * planned duration for non-walking legs (their progress isn't distance-estimated here).
+ */
+export function getMotisLegRemainingSeconds(leg: MotisPlanLeg, userPosition: GeoJSON.Position) {
+	const totalSeconds = getMotisLegDurationSeconds(leg) ?? 0;
+	if (!isMotisWalkingLeg(leg)) return totalSeconds;
+
+	const endPosition = getMotisPlanPlacePosition(leg.to);
+	if (!endPosition) return totalSeconds;
+
+	const defaultWalkingSpeedMetersPerSecond = 1.35;
+	const plannedDistanceMeters = Number.isFinite(leg.distance) ? leg.distance as number : undefined;
+	const walkingSpeedMetersPerSecond = plannedDistanceMeters && totalSeconds
+		? plannedDistanceMeters / totalSeconds
+		: defaultWalkingSpeedMetersPerSecond;
+
+	const remainingMeters = getHaversineDistanceMeters(userPosition, endPosition);
+	const remainingSeconds = Math.round(remainingMeters / walkingSpeedMetersPerSecond);
+
+	return Math.max(0, Math.min(totalSeconds, remainingSeconds));
+}
+
+export function getMotisLegRemainingDistanceMeters(leg: MotisPlanLeg, userPosition: GeoJSON.Position | null) {
+	if (!isMotisWalkingLeg(leg)) return null;
+
+	const plannedDistanceMeters = Number.isFinite(leg.distance) ? leg.distance as number : null;
+	if (!userPosition) return plannedDistanceMeters;
+
+	const endPosition = getMotisPlanPlacePosition(leg.to);
+	if (!endPosition) return plannedDistanceMeters;
+
+	const remainingMeters = getHaversineDistanceMeters(userPosition, endPosition);
+	return Math.round(plannedDistanceMeters === null ? remainingMeters : Math.min(plannedDistanceMeters, remainingMeters));
+}
+
+export function getHaversineDistanceMeters(positionA: GeoJSON.Position, positionB: GeoJSON.Position) {
+	const earthRadiusMeters = 6371000;
+	const [lonA, latA] = positionA;
+	const [lonB, latB] = positionB;
+	const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
+
+	const deltaLat = toRadians(latB - latA);
+	const deltaLon = toRadians(lonB - lonA);
+	const haversine = (Math.sin(deltaLat / 2) ** 2) + (Math.cos(toRadians(latA)) * Math.cos(toRadians(latB)) * (Math.sin(deltaLon / 2) ** 2));
+
+	return 2 * earthRadiusMeters * Math.asin(Math.min(1, Math.sqrt(haversine)));
 }
 
 export function getMotisItineraryWalkMinutes(legs: MotisPlanLeg[]) {
@@ -363,6 +457,43 @@ function getEmptyPointFeatureCollection(): GeoJSON.FeatureCollection<GeoJSON.Poi
 		features: [],
 		type: 'FeatureCollection',
 	};
+}
+
+function getDistanceToPathMeters(point: GeoJSON.Position, positions: GeoJSON.Position[]) {
+	if (positions.length === 0) return Infinity;
+	if (positions.length === 1) return getHaversineDistanceMeters(point, positions[0]);
+
+	let minDistanceMeters = Infinity;
+
+	for (let i = 0; i < positions.length - 1; i++) {
+		const distanceMeters = getDistanceToSegmentMeters(point, positions[i], positions[i + 1]);
+		if (distanceMeters < minDistanceMeters) minDistanceMeters = distanceMeters;
+	}
+
+	return minDistanceMeters;
+}
+
+// Projects onto a local planar approximation (equirectangular) around the segment start.
+// Accurate enough for the short segments found in a single leg's geometry.
+function getDistanceToSegmentMeters(point: GeoJSON.Position, segmentStart: GeoJSON.Position, segmentEnd: GeoJSON.Position) {
+	const metersPerDegreeLat = 111320;
+	const metersPerDegreeLon = 111320 * Math.cos((segmentStart[1] * Math.PI) / 180);
+
+	const toLocalMeters = (position: GeoJSON.Position): [number, number] => [
+		(position[0] - segmentStart[0]) * metersPerDegreeLon,
+		(position[1] - segmentStart[1]) * metersPerDegreeLat,
+	];
+
+	const localPoint = toLocalMeters(point);
+	const localEnd = toLocalMeters(segmentEnd);
+
+	const segmentLengthSquared = (localEnd[0] ** 2) + (localEnd[1] ** 2);
+	if (segmentLengthSquared === 0) return Math.sqrt((localPoint[0] ** 2) + (localPoint[1] ** 2));
+
+	const projection = Math.max(0, Math.min(1, ((localPoint[0] * localEnd[0]) + (localPoint[1] * localEnd[1])) / segmentLengthSquared));
+	const closestPoint: [number, number] = [localEnd[0] * projection, localEnd[1] * projection];
+
+	return Math.sqrt(((localPoint[0] - closestPoint[0]) ** 2) + ((localPoint[1] - closestPoint[1]) ** 2));
 }
 
 function getMotisLegFallbackPositions(leg: MotisPlanLeg, index: number, totalLegs: number, origin: null | RoutePlannerLocation, destination: null | RoutePlannerLocation) {

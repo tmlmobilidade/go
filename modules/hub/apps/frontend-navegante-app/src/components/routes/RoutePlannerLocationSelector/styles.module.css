@@ -71,8 +71,20 @@
 	border: 0;
 }
 
+.fieldButton:disabled {
+	cursor: default;
+}
+
 .fieldButton + .fieldButton {
 	border-top: 1px solid var(--color-system-border-100, #ececf1);
+}
+
+.container[data-readonly='true'] {
+	grid-template-columns: 18px minmax(0, 1fr);
+}
+
+.container[data-readonly='true'] .swapButton {
+	display: none;
 }
 
 .label {
@@ -112,4 +124,9 @@
 
 .swapButton:active {
 	transform: scale(0.96);
+}
+
+.swapButton:disabled {
+	cursor: default;
+	opacity: 0.5;
 }

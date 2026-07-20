@@ -6,10 +6,11 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerItineraryLegStrip } from '@/components/routes/RoutePlannerItineraryLegStrip';
 import { RoutePlannerTime } from '@/components/routes/RoutePlannerTime';
+import { useRoutePlannerActiveLeg } from '@/hooks/useRoutePlannerActiveLeg';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
 import { formatMotisPlanDuration, formatMotisPlanDurationMinutes, getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisLegDurationSeconds, getMotisLegModeKind, getMotisLegRouteLabel, isMotisWalkingLeg, type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/utils/route-planner-motis';
 import { getRoutePlannerIntermediateStopRealtimeStatus, getRoutePlannerItineraryRealtimeStatus, getRoutePlannerLegRealtimeStatus } from '@/utils/route-planner-realtime';
-import { IconAlertTriangle, IconBike, IconBus, IconCar, IconChevronDown, IconElevator, IconFerry, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBike, IconBus, IconCar, IconChevronDown, IconElevator, IconFerry, IconNavigationTop, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,11 +29,13 @@ export function RoutePlannerItineraryDetail() {
 	const alertsContext = useAlertsContext();
 	const linesContext = useLinesContext();
 	const routePlannerContext = useRoutePlannerContext();
+	const { activeLegIndex } = useRoutePlannerActiveLeg();
 
 	//
 	// B. Transform data
 
 	const itinerary = routePlannerContext.data.selected_itinerary;
+	const isNavigating = routePlannerContext.flags.is_navigating;
 	const legs = useMemo(() => Array.isArray(itinerary?.legs) ? itinerary.legs : [], [itinerary?.legs]);
 	const duration = itinerary ? formatMotisPlanDuration(getMotisItineraryDurationSeconds(itinerary)) : null;
 	const end = itinerary ? getMotisItineraryEnd(itinerary) : undefined;
@@ -71,11 +74,22 @@ export function RoutePlannerItineraryDetail() {
 				<RoutePlannerItineraryLegStrip itinerary={itinerary} />
 			</header>
 
+			<div className={styles.actions}>
+				<button
+					className={isNavigating ? styles.endButton : styles.startButton}
+					onClick={isNavigating ? routePlannerContext.actions.stopActiveTrip : routePlannerContext.actions.startActiveTrip}
+					type="button"
+				>
+					{t(isNavigating ? 'default:routes.RoutePlanner.results.end_trip' : 'default:routes.RoutePlanner.results.start_trip')}
+				</button>
+			</div>
+
 			<ol className={styles.timeline}>
 				{legs.map((leg, index) => (
 					<RoutePlannerItineraryDetailLeg
 						key={`${getLegPlaceName(leg.from, routeOriginLabel, routeOriginLabel, routeDestinationLabel)}-${getLegPlaceName(leg.to, routeDestinationLabel, routeOriginLabel, routeDestinationLabel)}-${index}`}
 						alertsContext={alertsContext}
+						isActive={isNavigating && index === activeLegIndex}
 						leg={leg}
 						lineByShortName={lineByShortName}
 						routeDestinationLabel={routeDestinationLabel}
@@ -93,13 +107,14 @@ export function RoutePlannerItineraryDetail() {
 
 interface RoutePlannerItineraryDetailLegProps {
 	alertsContext: ReturnType<typeof useAlertsContext>
+	isActive: boolean
 	leg: MotisPlanLeg
 	lineByShortName: Map<string, HubLine>
 	routeDestinationLabel: string
 	routeOriginLabel: string
 }
 
-function RoutePlannerItineraryDetailLeg({ alertsContext, leg, lineByShortName, routeDestinationLabel, routeOriginLabel }: RoutePlannerItineraryDetailLegProps) {
+function RoutePlannerItineraryDetailLeg({ alertsContext, isActive, leg, lineByShortName, routeDestinationLabel, routeOriginLabel }: RoutePlannerItineraryDetailLegProps) {
 	//
 
 	//
@@ -132,9 +147,18 @@ function RoutePlannerItineraryDetailLeg({ alertsContext, leg, lineByShortName, r
 	// C. Render components
 
 	return (
-		<li className={styles.leg}>
+		<li aria-current={isActive ? 'step' : undefined} className={styles.leg}>
 			<div className={styles.legIcon} data-mode={getMotisLegModeKind(leg)}>
 				<RoutePlannerModeIcon leg={leg} size={18} />
+				{isActive && (
+					<span
+						aria-label={t('default:routes.RoutePlanner.results.current_step')}
+						className={styles.currentStepMarker}
+						role="img"
+					>
+						<IconNavigationTop size={12} stroke={3} />
+					</span>
+				)}
 			</div>
 
 			<div className={styles.legBody}>

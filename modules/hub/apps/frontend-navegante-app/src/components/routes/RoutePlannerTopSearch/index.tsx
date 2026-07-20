@@ -28,11 +28,15 @@ export function RoutePlannerTopSearch() {
 	// B. Transform data
 
 	const hasRouteInputContext = !!routePlannerContext.data.origin && !!routePlannerContext.data.destination;
-	const shouldShowRouteInput = (
-		['itinerary-detail', 'results'].includes(routePlannerContext.data.view_mode)
-		|| (routePlannerContext.data.view_mode === 'destination-search' && hasRouteInputContext)
-	);
-	const searchLabel = lastOmniSearchQuery.trim() || t('default:action-bar.ActionBar.search.label');
+	const isNavigating = routePlannerContext.flags.is_navigating;
+	const isPreviewDetail = routePlannerContext.data.view_mode === 'itinerary-detail' && !isNavigating;
+	const isDestinationSearchWithRouteInput = routePlannerContext.data.view_mode === 'destination-search' && hasRouteInputContext;
+	const isRouteInputView = ['itinerary-detail', 'results'].includes(routePlannerContext.data.view_mode) || isDestinationSearchWithRouteInput;
+	const shouldShowRouteInput = !isNavigating && isRouteInputView;
+	const searchLabel = isNavigating
+		? t('default:routes.RoutePlannerTopSearch.placeholder')
+		: lastOmniSearchQuery.trim() || t('default:action-bar.ActionBar.search.label');
+	const isRouteInputReadOnly = isPreviewDetail;
 
 	//
 	// C. Handle effects
@@ -75,7 +79,7 @@ export function RoutePlannerTopSearch() {
 	// E. Render components
 
 	return (
-		<div className={styles.container} ref={containerRef}>
+		<div ref={containerRef} className={styles.container}>
 			{shouldShowRouteInput && (
 				<div className={styles.routeInputWrapper}>
 					<RoutePlannerLocationSelector
@@ -84,6 +88,7 @@ export function RoutePlannerTopSearch() {
 						onOriginClick={handleOriginClick}
 						onSwap={routePlannerContext.actions.swapLocations}
 						origin={routePlannerContext.data.origin}
+						readOnly={isRouteInputReadOnly}
 					/>
 				</div>
 			)}

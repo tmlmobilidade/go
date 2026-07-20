@@ -23,6 +23,7 @@ interface SetActiveBottomSheetOptions {
 interface UseBottomSheetReturnType {
 	activeBottomSheet: BottomSheetNavigationType | null
 	activeBottomSheetSnap: BottomSheetSnapType
+	clearActiveBottomSheets: () => void
 	closeActiveBottomSheet: () => void
 	isBottomSheetInStack: (view: BottomSheetType) => boolean
 	setActiveBottomSheet: (value: BottomSheetNavigationType, options?: SetActiveBottomSheetOptions) => void
@@ -140,6 +141,10 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 		setBottomSheetNavigationStore(BOTTOM_SHEET_NAVIGATION_STORE.slice(0, -1));
 	}, []);
 
+	const clearActiveBottomSheets = useCallback(() => {
+		setBottomSheetNavigationStore([]);
+	}, []);
+
 	const isBottomSheetInStack = useCallback((view: BottomSheetType) => {
 		return bottomSheetNavigation.some(entry => entry.view === view);
 	}, [bottomSheetNavigation]);
@@ -150,6 +155,7 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 	return {
 		activeBottomSheet,
 		activeBottomSheetSnap,
+		clearActiveBottomSheets,
 		closeActiveBottomSheet,
 		isBottomSheetInStack,
 		setActiveBottomSheet,
