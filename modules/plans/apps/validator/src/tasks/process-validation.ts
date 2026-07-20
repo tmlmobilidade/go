@@ -78,7 +78,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// and download them to the working directory. Throw an error
 		// if no agency is found or if the rules file is not accessible.
 
-		const gtfsAgencyId = gtfsValidation.gtfs_agency.agency_id;
+		const gtfsAgencyId = gtfsValidation.agency_id ?? gtfsValidation.gtfs_agency.agency_id;
 		const foundAgency = await goDb.core.agencies.findOne({
 			$or: [
 				{ _id: gtfsAgencyId },

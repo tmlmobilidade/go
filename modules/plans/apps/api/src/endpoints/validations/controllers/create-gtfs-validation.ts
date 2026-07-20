@@ -42,6 +42,7 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 	// Convert form fields to Validation data
 
 	const validationData: CreateGtfsValidationDto = {
+		agency_id: requestData.fields.agency_id['value'] as string,
 		created_by: request.me._id,
 		file_id: '',
 		gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
