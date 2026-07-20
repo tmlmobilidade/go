@@ -31,6 +31,7 @@ export function ValidationCreateBasicInfo() {
 			{validationCreateContext.data.agency_options.length > 1 && (
 				<>
 					<Section gap="sm">
+						<Label size="lg">Selecione a agência para a validação</Label>
 						<Select
 							clearable={false}
 							data={validationCreateContext.data.agency_options}
