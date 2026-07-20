@@ -3,9 +3,9 @@
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerLocationSelector } from '@/components/routes/RoutePlannerLocationSelector';
-import { getLastOmniSearchQuery } from '@/components/search/OmniSearch';
+import { getLastOmniSearchQuery, subscribeToOmniSearchQuery } from '@/components/search/OmniSearch';
 import { IconSearch } from '@tabler/icons-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -22,6 +22,7 @@ export function RoutePlannerTopSearch() {
 	const { setActiveBottomSheet } = useBottomSheet();
 	const routePlannerContext = useRoutePlannerContext();
 	const containerRef = useRef<HTMLDivElement>(null);
+	const lastOmniSearchQuery = useSyncExternalStore(subscribeToOmniSearchQuery, getLastOmniSearchQuery, getLastOmniSearchQuery);
 
 	//
 	// B. Transform data
@@ -31,7 +32,7 @@ export function RoutePlannerTopSearch() {
 		['itinerary-detail', 'results'].includes(routePlannerContext.data.view_mode)
 		|| (routePlannerContext.data.view_mode === 'destination-search' && hasRouteInputContext)
 	);
-	const searchLabel = getLastOmniSearchQuery().trim() || t('default:action-bar.ActionBar.search.label');
+	const searchLabel = lastOmniSearchQuery.trim() || t('default:action-bar.ActionBar.search.label');
 
 	//
 	// C. Handle effects

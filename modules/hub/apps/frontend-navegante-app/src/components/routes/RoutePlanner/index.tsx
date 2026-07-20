@@ -3,11 +3,12 @@
 import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { RoutePlannerDestinationSearch } from '@/components/routes/RoutePlannerDestinationSearch';
 import { RoutePlannerInput } from '@/components/routes/RoutePlannerInput';
 import { RoutePlannerItineraryDetail } from '@/components/routes/RoutePlannerItineraryDetail';
 import { RoutePlannerPlaceDetail } from '@/components/routes/RoutePlannerPlaceDetail';
 import { RoutePlannerResults } from '@/components/routes/RoutePlannerResults';
+import { OmniSearch } from '@/components/search/OmniSearch';
+import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -85,6 +86,15 @@ export function RoutePlanner() {
 		closeActiveBottomSheet();
 	};
 
+	const handleLocationSelect = (location: RoutePlannerLocation) => {
+		if (routePlannerContext.data.location_search_target === 'origin') {
+			void routePlannerContext.actions.selectOrigin(location);
+			return;
+		}
+
+		void routePlannerContext.actions.selectDestination(location);
+	};
+
 	//
 	// D. Render components
 
@@ -102,7 +112,13 @@ export function RoutePlanner() {
 			withOverlay={sheetConfig.withOverlay}
 		>
 			{routePlannerContext.data.view_mode === 'destination-search' && (
-				<RoutePlannerDestinationSearch />
+				<OmniSearch
+					onLocationSelect={handleLocationSelect}
+					placeholder={routePlannerContext.data.location_search_target === 'origin'
+						? t('default:routes.RoutePlannerSearch.origin_placeholder')
+						: t('default:routes.RoutePlannerSearch.destination_placeholder')}
+					locationPicker
+				/>
 			)}
 
 			{routePlannerContext.data.view_mode === 'full-input' && (

@@ -251,7 +251,7 @@ export function isMotisWalkingLeg(leg: MotisPlanLeg) {
 }
 
 export function getMotisPlaceParam(location: RoutePlannerLocation) {
-	if (location.type === 'STOP' && location.id) return location.id;
+	if (location.type === 'STOP' && location.id) return `GTFS_${location.id.replace(/^GTFS_/, '')}`;
 
 	if (Number.isFinite(location.lat) && Number.isFinite(location.lon)) {
 		const level = Number.isFinite(location.level) ? `,${location.level}` : '';
