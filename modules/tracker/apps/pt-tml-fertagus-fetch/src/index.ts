@@ -1,9 +1,9 @@
 /* * */
 
-import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { TrainsResponse } from '@tmlmobilidade/external/dist/clients/fertagus/types.js';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlFertagusV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { rides } from '@tmlmobilidade/interfaces';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -60,7 +60,7 @@ const main = async () => {
 
 	Logger.info({ message: `[${ITERATION}] Fetching Fertagus data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
-	let response: null | TrainsResponse = null;
+	let response: null | TrainsResponse;
 	try {
 		response = await externalClients.fertagus.trains();
 	} catch (error) {
@@ -212,11 +212,11 @@ const main = async () => {
 		// Write the new vehicle event document
 		// to the RawVehicleEvents collection
 
-		const alreadyExists = await rawVehicleEventsNew.findOne({ _id: hashableRawEventId });
+		const alreadyExists = await rawDb.raw.rawVehicleEvents.findOne({ _id: hashableRawEventId });
 
 		if (alreadyExists) continue;
 
-		await rawVehicleEventsNew.insertOne({
+		await rawDb.raw.rawVehicleEvents.insertOne({
 			...hashableRawEvent,
 			_id: hashableRawEventId,
 			received_at: Dates.now('Europe/Lisbon').unix_timestamp,

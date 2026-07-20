@@ -20,8 +20,8 @@ export function groupTrainPositions({ items, trainPositionsMap }: { items: Tempo
 			trainPositionsMap.set(trainId, { destination_id: destinationId, next_stop: { arrival_seconds: arrivalSeconds, stop_id: stopId } });
 		}
 
-		if (arrivalSeconds < trainPositionsMap.get(trainId)!.next_stop.arrival_seconds) {
-			trainPositionsMap.get(trainId)!.next_stop = { arrival_seconds: arrivalSeconds, stop_id: stopId };
+		if (arrivalSeconds < trainPositionsMap.get(trainId).next_stop.arrival_seconds) {
+			trainPositionsMap.get(trainId).next_stop = { arrival_seconds: arrivalSeconds, stop_id: stopId };
 		}
 	}
 }

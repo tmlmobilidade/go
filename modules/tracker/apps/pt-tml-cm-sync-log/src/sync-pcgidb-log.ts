@@ -1,8 +1,8 @@
 /* * */
 
-import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { pcgiLegacy } from '@tmlmobilidade/go-interfaces-pcgi-legacy';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventLog } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { type RawVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
@@ -20,9 +20,9 @@ const writer = new BatchWriter<RawVehicleEvent>({
 				upsert: true,
 			},
 		}));
-		await rawVehicleEventsNew.bulkWrite(writeOps);
+		await rawDb.raw.rawVehicleEvents.bulkWrite(writeOps);
 	},
-	title: 'LOG',
+	title: 'rawdb|raw-vehicle-events',
 });
 
 /**
@@ -51,8 +51,9 @@ export async function syncPcgidbLogVehicleEvents(timeChunk: PerformInTimeChunksI
 	// because they are impossible to calculate without fetching and parsing all documents,
 	// so we just upsert them in the Destination database and the DB takes care of deduplication.
 
-	const pcgidbLegacyLogStream = pcgidbLegacy
-		.VehicleEventsLog
+	const collection = await pcgiLegacy.offerApiLog.vehicleEvents.getCollection();
+
+	const pcgidbLegacyLogStream = collection
 		.find({
 			millis: {
 				$gte: chunkStartDate.unix_timestamp,

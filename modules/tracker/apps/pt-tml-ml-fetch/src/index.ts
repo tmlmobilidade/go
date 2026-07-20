@@ -1,9 +1,9 @@
 /* * */
 
-import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { type BaseResponse, type TempoEsperaRawItem } from '@tmlmobilidade/external/dist/clients/ml/types.js';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlMlV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -66,7 +66,7 @@ const main = async () => {
 		// Fetch the waiting times for this line.
 		// On error, log and continue to the next line.
 
-		let response: BaseResponse<TempoEsperaRawItem[]> | null = null;
+		let response: BaseResponse<TempoEsperaRawItem[]> | null;
 		try {
 			response = await externalClients.ml.tempoEsperaLinha(line);
 		} catch (error) {
@@ -87,7 +87,7 @@ const main = async () => {
 			 * and the current reference time (now). If no corresponding ride is found for the current train, skip to the next train.
 			 * Any error while searching is logged, and the loop continues.
 			 */
-			let ride: AggregationResult | null = null;
+			let ride: AggregationResult | null;
 			try {
 				ride = await findRideForTrain({ destinationId, now });
 			} catch (error) {
@@ -155,11 +155,11 @@ const main = async () => {
 			// Write the new vehicle event document
 			// to the RawVehicleEvents collection.
 
-			const alreadyExists = await rawVehicleEventsNew.findOne({ _id: hashableRawEventId });
+			const alreadyExists = await rawDb.raw.rawVehicleEvents.findOne({ _id: hashableRawEventId });
 
 			if (alreadyExists) continue;
 
-			await rawVehicleEventsNew.insertOne({
+			await rawDb.raw.rawVehicleEvents.insertOne({
 				...hashableRawEvent,
 				_id: hashableRawEventId,
 				received_at: Dates.now('Europe/Lisbon').unix_timestamp,

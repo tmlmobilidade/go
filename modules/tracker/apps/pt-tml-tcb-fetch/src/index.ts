@@ -1,8 +1,8 @@
 /* * */
 
-import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlTcbV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -102,7 +102,7 @@ const main = async () => {
 	if (candidateEvents.length > 0) {
 		try {
 			const candidateIds = candidateEvents.map(event => event._id);
-			const existingDocs = await rawVehicleEventsNew.findMany(
+			const existingDocs = await rawDb.raw.rawVehicleEvents.findMany(
 				{ _id: { $in: candidateIds } },
 				{ projection: { _id: 1 } },
 			);
@@ -111,7 +111,7 @@ const main = async () => {
 			const newEvents = candidateEvents.filter(event => !existingIds.has(event._id));
 
 			if (newEvents.length > 0) {
-				await rawVehicleEventsNew.insertMany(newEvents.map(event => event.document));
+				await rawDb.raw.rawVehicleEvents.insertMany(newEvents.map(event => event.document));
 				saveCount = newEvents.length;
 			}
 		} catch (error) {
