@@ -43,8 +43,6 @@ class GoDBClass {
 
 	//
 	// Constructor
-	//
-	// Constructor
 	private constructor(mongoClient: MongoClient) {
 		this.core = new CoreDatabase(mongoClient);
 		this.infrastructure = new InfrastructureDatabase(mongoClient);
