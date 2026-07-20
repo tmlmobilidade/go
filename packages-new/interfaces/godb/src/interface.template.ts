@@ -178,8 +178,12 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 			}
 		}
 
-		// Add the ID if it is missing from the original document
-		if (!doc._id) {
+		// Preserve a caller-provided _id (create schemas omit it, so parse strips it),
+		// otherwise generate a unique one.
+		if (doc._id) {
+			parsedDocument._id = doc._id;
+		}
+		else {
 			parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
 			while (await this.findById(parsedDocument._id as T['_id'])) {
 				parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
