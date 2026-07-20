@@ -37,7 +37,7 @@ class GoDBClass {
 	 */
 	public static async getInstance() {
 		if (!GoDBClass._instance) {
-			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GODB' });
+			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GODB', tunnelType: 'GO' });
 			GoDBClass._instance = new GoDBClass(mongoClient);
 		}
 		return GoDBClass._instance;
