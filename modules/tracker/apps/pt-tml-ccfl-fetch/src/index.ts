@@ -1,8 +1,8 @@
 /* * */
 
-import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlCcflV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
@@ -80,11 +80,11 @@ const main = async () => {
 			// Write the new vehicle event document
 			// to the RawVehicleEvents collection
 
-			const alreadyExists = await rawVehicleEventsNew.findOne({ _id: hashableRawEventId });
+			const alreadyExists = await rawDb.raw.rawVehicleEvents.findOne({ _id: hashableRawEventId });
 
 			if (alreadyExists) continue;
 
-			await rawVehicleEventsNew.insertOne({
+			await rawDb.raw.rawVehicleEvents.insertOne({
 				...hashableRawEvent,
 				_id: hashableRawEventId,
 				received_at: Dates.now('Europe/Lisbon').unix_timestamp,

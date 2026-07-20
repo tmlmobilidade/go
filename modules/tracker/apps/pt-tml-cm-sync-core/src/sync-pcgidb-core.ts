@@ -1,8 +1,8 @@
 /* * */
 
-import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { pcgiLegacy } from '@tmlmobilidade/go-interfaces-pcgi-legacy';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { type RawVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
@@ -21,9 +21,9 @@ const writer = new BatchWriter<RawVehicleEvent>({
 				upsert: true,
 			},
 		}));
-		await rawVehicleEventsNew.bulkWrite(writeOps);
+		await rawDb.raw.rawVehicleEvents.bulkWrite(writeOps);
 	},
-	title: 'CORE',
+	title: 'rawdb|raw-vehicle-events',
 });
 
 /**
@@ -59,9 +59,9 @@ export async function syncPcgidbCoreVehicleEvents(timeChunk: PerformInTimeChunks
 		},
 	};
 
-	const sourceDbCount = await pcgidbLegacy.VehicleEventsCore.countDocuments(sourceQuery);
+	const sourceDbCount = await pcgiLegacy.coreManagement.vehicleEvents.count(sourceQuery);
 
-	const destinationDbCount = await rawVehicleEventsNew.count({
+	const destinationDbCount = await rawDb.raw.rawVehicleEvents.count({
 		received_at: {
 			$gte: chunkStartDate.unix_timestamp,
 			$lte: chunkEndDate.unix_timestamp,
@@ -83,9 +83,11 @@ export async function syncPcgidbCoreVehicleEvents(timeChunk: PerformInTimeChunks
 	// because they are impossible to calculate without fetching and parsing all documents,
 	// so we just upsert them in the Destination database and the DB takes care of deduplication.
 
-	const pcgidbLegacyCoreStream = pcgidbLegacy.VehicleEventsCore.find(sourceQuery).stream();
+	const vehicleEventsCollection = await pcgiLegacy.coreManagement.vehicleEvents.getCollection();
 
-	for await (const document of pcgidbLegacyCoreStream) {
+	const vehicleEventsCursor = vehicleEventsCollection.find(sourceQuery).stream();
+
+	for await (const document of vehicleEventsCursor) {
 		const parsedDocuments = transformPcgiVehicleEventCore(document);
 		for (const parsedDocument of parsedDocuments) {
 			await writer.write(parsedDocument);

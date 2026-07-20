@@ -2,7 +2,6 @@
 
 import { syncPcgidbCoreVehicleEvents } from '@/sync-pcgidb-core.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -29,11 +28,6 @@ async function main() {
 		Logger.init();
 
 		const globalTimer = new Timer();
-
-		//
-		// Connect to the source database
-
-		await pcgidbLegacy.connect();
 
 		//
 		// Get the earliest date from which we have data to sync,

@@ -1,10 +1,10 @@
 /* * */
 
-import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
+import { type ChangeStreamInsertDocument } from '@tmlmobilidade/go-clients-mongo';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { type ChangeStreamInsertDocument } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
@@ -15,7 +15,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	batch_timeout: 500,
 	idle_timeout: 500,
 	insertFn: async (data) => {
-		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
+		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
 	},
 	title: `clickhouse-stream-${Math.random().toString(36).substring(2, 15)}`,
 });

@@ -1,10 +1,9 @@
 /* * */
 
 import { processVehicleEvent } from '@/task.js';
-import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
@@ -24,7 +23,7 @@ import { initSentryNode } from '@tmlmobilidade/logger';
 	// Watch for changes to the rawVehicleEventsNew collection
 	// and integrate those documents immediately.
 
-	const collection = await rawVehicleEventsNew.getCollection();
+	const collection = await rawDb.raw.rawVehicleEvents.getCollection();
 
 	collection
 		.watch(/* [{ $match: { 'fullDocument.created_at': { $gt: Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp }, 'operationType': 'insert' } }], */)

@@ -1,6 +1,6 @@
 /* * */
 
-import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventLog } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { type RawVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
@@ -20,9 +20,9 @@ const writer = new BatchWriter<RawVehicleEvent>({
 				upsert: true,
 			},
 		}));
-		await rawVehicleEventsNew.bulkWrite(writeOps);
+		await rawDb.raw.rawVehicleEvents.bulkWrite(writeOps);
 	},
-	title: await rawVehicleEventsNew.getCollectionName(),
+	title: 'rawdb|raw-vehicle-events',
 });
 
 /* * */
