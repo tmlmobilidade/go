@@ -1,8 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { INTERCHANGE_MODE } from '@tmlmobilidade/types';
 
 import { fetchAllEvents } from './fetchers/events.js';
