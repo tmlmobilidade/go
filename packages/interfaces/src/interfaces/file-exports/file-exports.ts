@@ -56,6 +56,6 @@ class FileExportsClass extends MongoCollectionClass<FileExport, CreateFileExport
 
 /**
  * @deprecated This class is deprecated and will be removed in the future.
- * Use `@tmlmobilidade/go-interfaces-go-db` instead.
+ * Use `@tmlmobilidade/go-interfaces-godb` instead.
  */
 export const fileExports = asyncSingletonProxy(FileExportsClass);

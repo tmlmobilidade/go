@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
@@ -15,7 +15,7 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 export async function getGtfsRtJsonFeedCm(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
 	//
 
-	const cachedData = await apiCache.get('hub:v1:alerts:published:gtfs:cm');
+	const cachedData = await cacheDb.get('hub:v1:alerts:published:gtfs:cm');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/alerts:getGtfsRtJsonFeedCm()] No GTFS-RT feed found in cache. Returning empty message.' });

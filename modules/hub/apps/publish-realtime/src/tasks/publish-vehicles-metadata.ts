@@ -1,6 +1,6 @@
 /* * */
 
-import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { vehicles } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -24,7 +24,7 @@ export async function publishVehiclesMetadata() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:realtime:vehicles:metadata:json', JSON.stringify(vehicleMetadata));
+	await cacheDb.set('hub:v1:realtime:vehicles:metadata:json', JSON.stringify(vehicleMetadata));
 
 	Logger.success(`Finished publishing vehicles metadata (${globalTimer.get()})`);
 

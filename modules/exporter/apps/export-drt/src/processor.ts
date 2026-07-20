@@ -1,5 +1,6 @@
 import { Stop } from '@carrismetropolitana/api-types/network';
-import { agencies, hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { HashedShape, HashedTrip, Ride } from '@tmlmobilidade/types';
@@ -232,7 +233,7 @@ async function processAgencies() {
 		Logger.info({ message: 'Processing Agencies...' });
 		const agenciesTimer = new Timer();
 
-		const allAgencies = await agencies.findOne({ _id: GLOBAL_CONTEXT.configs.agency_id });
+		const allAgencies = await goDb.core.agencies.findOne({ _id: GLOBAL_CONTEXT.configs.agency_id });
 		if (allAgencies === null) throw new Error(`Agency "${GLOBAL_CONTEXT.configs.agency_id}" not found.`);
 
 		const drtAgency: DrtAgency = {

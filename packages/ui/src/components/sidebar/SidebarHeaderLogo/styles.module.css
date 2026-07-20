@@ -1,0 +1,11 @@
+/* * */
+/* APP LOGO */
+
+.appLogo {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 60px;
+	height: 60px;
+}

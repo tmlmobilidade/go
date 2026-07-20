@@ -1,11 +1,15 @@
 export * from './client.js';
+export * from './types/index.js';
+export * from './utils/index.js';
 
 /* * */
 
 export type {
 	AggregateOptions,
 	AggregationCursor,
+	AnyBulkWriteOperation,
 	BulkWriteOptions,
+	BulkWriteResult,
 	ChangeStreamDeleteDocument,
 	ChangeStreamDocument,
 	ChangeStreamInsertDocument,

@@ -142,6 +142,4 @@ export function AgencySectionAlertsMap() {
 			</Section>
 		</Collapsible>
 	);
-
-	//
 }

@@ -2,7 +2,7 @@
 
 import { transformAlertIntoGtfsRtEntity } from '@/transform/gtfs-rt/main.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { apiCache } from '@tmlmobilidade/go-interfaces-api-cache';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -64,7 +64,7 @@ export async function publishGtfsRtFeed() {
 		},
 	};
 
-	await apiCache.set('hub:v1:alerts:published:gtfs:cm', JSON.stringify(gtfsRtFeed));
+	await cacheDb.set('hub:v1:alerts:published:gtfs:cm', JSON.stringify(gtfsRtFeed));
 
 	Logger.success(`Finished publishing GTFS-RT feed (${globalTimer.get()})`);
 
