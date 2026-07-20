@@ -1,7 +1,7 @@
 /* * */
 
 import { processPcgiVehicleEventCore } from '@/process-pcgi-vehicle-event-core.js';
-import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
+import { pcgiLegacy } from '@tmlmobilidade/go-interfaces-pcgi-legacy';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 
@@ -22,13 +22,13 @@ import { initSentryNode } from '@tmlmobilidade/logger';
 	//
 	// Connect to the source database
 
-	await pcgidbLegacy.connect();
+	const vehicleEventsCoreCollection = await pcgiLegacy.coreManagement.vehicleEvents.getCollection();
 
 	//
 	// Watch for changes to the MongoDB collections
 	// and integrate those documents immediately.
 
-	pcgidbLegacy.VehicleEventsCore.watch().on('change', processPcgiVehicleEventCore);
+	vehicleEventsCoreCollection.watch().on('change', processPcgiVehicleEventCore);
 
 	//
 })();
