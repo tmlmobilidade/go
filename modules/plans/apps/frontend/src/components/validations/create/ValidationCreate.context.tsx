@@ -4,7 +4,7 @@ import { closeCreateValidationModal } from '@/components/validations/create/Vali
 import { type WorkerMessage } from '@/types/worker';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateGtfsValidationDto, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
-import { useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
+import { type SelectDataItem, useDataAgencies, useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -12,13 +12,20 @@ import { mutate } from 'swr';
 
 /* * */
 
+const CREATE_VALIDATION_ACTIONS = [PermissionCatalog.all.gtfs_validations.actions.create];
+
+/* * */
+
 interface ValidationCreateContextState {
 	actions: {
 		createValidation: () => void
+		setSelectedAgencyId: (agencyId: null | string) => void
 		setValidationFile: (file: File | null) => void
 	}
 	data: {
+		agency_options: SelectDataItem[]
 		form: UseFormReturnType<CreateGtfsValidationDto>
+		selected_agency_id: null | string
 	}
 	flags: {
 		can_create: boolean
@@ -49,23 +56,52 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 
 	const router = useRouter();
 	const workerRef = useRef<null | Worker>(null);
-	const meContext = useMeContext();
 
 	const [isLoading, setIsLoading] = useState(false);
-	const [canCreate, setCanCreate] = useState(false);
+	const [gtfsAgencyCode, setGtfsAgencyCode] = useState<null | string>(null);
+	const [selectedAgencyId, setSelectedAgencyId] = useState<null | string>(null);
 	const [validationFile, setValidationFile] = useState<File | null>(null);
 	const [validationError, setValidationError] = useState<Error | null>(null);
 
 	//
-	// B. Setup form
+	// B. Fetch data
 
-	const form = useForm<CreateGtfsValidationDto>({
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
+	const { error: agenciesError, filtered: permittedAgencies, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: CREATE_VALIDATION_ACTIONS,
+		scope: PermissionCatalog.all.gtfs_validations.scope,
 	});
 
 	//
-	// C. Handle actions
+	// C. Setup form
+
+	const form = useForm<CreateGtfsValidationDto>({ validateInputOnBlur: true, validateInputOnChange: true });
+	const formRef = useRef(form);
+	formRef.current = form;
+
+	//
+	// D. Transform data
+
+	const matchingAgencies = useMemo(() => {
+		if (!gtfsAgencyCode) return [];
+		const normalizedGtfsAgencyCode = gtfsAgencyCode.trim().toLowerCase();
+		return permittedAgencies.filter(agency => agency.code.trim().toLowerCase() === normalizedGtfsAgencyCode);
+	}, [gtfsAgencyCode, permittedAgencies]);
+
+	const agencyOptions = useMemo(() => matchingAgencies.map(agency => ({
+		label: `${agency._id} - ${agency.name}`,
+		value: agency._id,
+	})), [matchingAgencies]);
+
+	const canCreate = Boolean(
+		validationFile
+		&& selectedAgencyId
+		&& matchingAgencies.some(agency => agency._id === selectedAgencyId)
+		&& !agenciesLoading
+		&& !isLoading,
+	);
+
+	//
+	// E. Handle actions
 
 	const handleWorkerMessage = useCallback((event: MessageEvent<WorkerMessage>) => {
 		//
@@ -82,38 +118,30 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 		// If the worker returns a valid agency and feed info,
 		// update the form values and check permissions
 
-		form.setValues({
+		formRef.current.setValues({
 			gtfs_agency: event.data.agency,
 			gtfs_feed_info: event.data.feed_info,
 		});
+		setGtfsAgencyCode(event.data.agency.agency_id);
 
 		//
-		// Check if the current user has permission
-		// to create validations for the GTFS agency
+	}, []);
 
-		const hasPermission = meContext.actions.hasPermissionResource({
-			action: PermissionCatalog.all.gtfs_validations.actions.create,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.gtfs_validations.scope,
-			value: event.data.agency.agency_id,
-		});
-
-		if (!hasPermission) {
-			setCanCreate(false);
-			setValidationError({
-				message: 'Não é permitido criar validações para esta agência.',
-				name: 'ValidationError',
-			});
-			return;
-		}
-
-		setCanCreate(true);
-
-		//
-	}, [form, meContext.actions]);
+	const selectAgency = useCallback((agencyId: null | string) => {
+		setSelectedAgencyId(
+			agencyId && matchingAgencies.some(agency => agency._id === agencyId)
+				? agencyId
+				: null,
+		);
+	}, [matchingAgencies]);
 
 	const createValidation = useCallback(async () => {
 		//
+
+		//
+		// Ensure an agency and file were selected
+
+		if (!selectedAgencyId || !validationFile) return;
 
 		//
 		// Update state to indicate progress
@@ -126,7 +154,7 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 
 		const uploadFormData = new FormData();
 
-		uploadFormData.append('agency_id', form.values.gtfs_agency.agency_id);
+		uploadFormData.append('agency_id', selectedAgencyId);
 		uploadFormData.append('gtfs_agency', JSON.stringify(form.values.gtfs_agency));
 		uploadFormData.append('gtfs_feed_info', JSON.stringify(form.values.gtfs_feed_info));
 		uploadFormData.append('processing_status', form.values.processing_status);
@@ -168,7 +196,37 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 		await mutate(API_ROUTES.plans.VALIDATIONS_LIST);
 
 		//
-	}, [form, router, validationFile]);
+	}, [form, router, selectedAgencyId, validationFile]);
+
+	//
+	// F. Handle effects
+
+	useEffect(() => {
+		// Wait until the GTFS and permitted agencies are available
+		if (!gtfsAgencyCode || agenciesLoading) return;
+
+		if (agenciesError || matchingAgencies.length === 0) {
+			setSelectedAgencyId(null);
+			setValidationError({
+				message: 'Não é permitido criar validações para esta agência.',
+				name: 'ValidationError',
+			});
+			return;
+		}
+
+		setValidationError(null);
+
+		if (matchingAgencies.length === 1) {
+			setSelectedAgencyId(matchingAgencies[0]._id);
+			return;
+		}
+
+		setSelectedAgencyId(currentAgencyId => (
+			matchingAgencies.some(agency => agency._id === currentAgencyId)
+				? currentAgencyId
+				: null
+		));
+	}, [agenciesError, agenciesLoading, gtfsAgencyCode, matchingAgencies]);
 
 	useEffect(() => {
 		//
@@ -178,10 +236,17 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 		// when there is no validation file
 
 		if (!validationFile) {
-			setCanCreate(false);
-			form.reset();
+			setGtfsAgencyCode(null);
+			setSelectedAgencyId(null);
+			setValidationError(null);
+			formRef.current.reset();
 			return;
 		}
+
+		setGtfsAgencyCode(null);
+		setSelectedAgencyId(null);
+		setValidationError(null);
+		formRef.current.reset();
 
 		//
 		// Setup a new worker instance to process the GTFS file.
@@ -198,19 +263,22 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 		workerRef.current.onmessage = handleWorkerMessage;
 
 		//
-	}, [form, handleWorkerMessage, validationFile]);
+	}, [handleWorkerMessage, validationFile]);
 
 	//
-	// E. Define context value
+	// G. Define context value
 
 	const contextValue: ValidationCreateContextState = useMemo(() => {
 		return {
 			actions: {
 				createValidation,
+				setSelectedAgencyId: selectAgency,
 				setValidationFile,
 			},
 			data: {
+				agency_options: agencyOptions,
 				form: form,
+				selected_agency_id: selectedAgencyId,
 			},
 			flags: {
 				can_create: canCreate,
@@ -218,10 +286,10 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 				loading: isLoading,
 			},
 		};
-	}, [createValidation, form, canCreate, validationError, isLoading]);
+	}, [agencyOptions, canCreate, createValidation, form, isLoading, selectAgency, selectedAgencyId, validationError]);
 
 	//
-	// F. Render components
+	// H. Render components
 
 	return (
 		<ValidationCreateContext.Provider value={contextValue}>
