@@ -18,6 +18,6 @@ export class FileManagementDatabase {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
 		// Create collection interfaces
-		this.transactionEntity = new MongoInterfaceTemplate<any, any>('transactionEntity', this.database, null, null);
+		this.transactionEntity = new MongoInterfaceTemplate<PcgiTransactionEntity>('transactionEntity', this.database);
 	}
 }
