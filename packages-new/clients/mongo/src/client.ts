@@ -1,5 +1,5 @@
 import { Logger } from '@tmlmobilidade/logger';
-import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
+import { createSshTunnelFactory, SshTunnel, SshTunnelType } from '@tmlmobilidade/ssh';
 import { MongoClient, type MongoClientOptions } from 'mongodb';
 
 /**
@@ -22,6 +22,8 @@ export interface MongoDatabaseConfig {
 	clientOptions?: Partial<MongoClientOptions>
 	/** Env var prefix (e.g. `"PCGI_RAW"`, `"GO_MONGO"`). */
 	prefix: string
+	/** Type of SSH tunnel to use. */
+	tunnelType?: SshTunnelType
 }
 
 /**
@@ -180,7 +182,7 @@ export class MongoDatabaseClient {
 		if (!username || !password) throw new Error(`Missing ${prefix}_USERNAME or ${prefix}_PASSWORD`);
 		if (!rsName) throw new Error(`Missing ${prefix}_RS_NAME`);
 
-		const tunnel = goSshTunnel({ dstAddr: host1, dstPort: Number(port1) });
+		const tunnel = config.tunnelType ? createSshTunnelFactory(config.tunnelType)({ dstAddr: host1, dstPort: Number(port1) }) : null;
 
 		if (!tunnel) {
 			return {
