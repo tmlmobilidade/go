@@ -23,7 +23,7 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 	// Watch for changes to the PCGI File Manager Transaction Entity
 	// collection and process the documents immediately.
 
-	const pcgiTransactionEntitiesCollection = await pcgiFileManager.locationManagement.locationEntity.getCollection();
+	const pcgiTransactionEntitiesCollection = await pcgiFileManager.fileManagement.transactionEntity.getCollection();
 	const pcgiTransactionEntitiesChangeStream = pcgiTransactionEntitiesCollection.watch();
 	pcgiTransactionEntitiesChangeStream.on('change', processPcgiTransactionEntity);
 

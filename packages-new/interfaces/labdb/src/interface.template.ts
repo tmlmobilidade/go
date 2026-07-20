@@ -52,7 +52,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		};
 
 		this.init().catch((error) => {
-			Logger.error({ error, message: `CLICKHOUSE [${this.databaseName}."${this.tableName}"]: Error @ constructor(): ${(error as Error).message}` });
+			Logger.error({ error, message: `LABDB [${this.databaseName}."${this.tableName}"]: Error @ constructor(): ${(error as Error).message}` });
 			throw error;
 		});
 	}
@@ -213,13 +213,13 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 
 	private async ensureDatabase(): Promise<void> {
 		// Validate the inputs are safe identifiers to prevent SQL injection
-		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
+		if (!validateSqlParam(this.databaseName, false)) throw new Error(`LABDB [${this.databaseName}]: Unsafe database name provided.`);
 		// Perform the query to create the database if it does not exist
 		try {
 			await this.client.command({ query: `CREATE DATABASE IF NOT EXISTS "${this.databaseName}"` });
-			Logger.info({ message: `CLICKHOUSE [${this.databaseName}]: Database created.` });
+			Logger.info({ message: `LABDB [${this.databaseName}]: Database created.` });
 		} catch (error) {
-			Logger.error({ error, message: `CLICKHOUSE [${this.databaseName}]: Error @ createDatabase(): ${(error as Error).message}` });
+			Logger.error({ error, message: `LABDB [${this.databaseName}]: Error @ createDatabase(): ${(error as Error).message}` });
 			throw error;
 		}
 	}
@@ -233,11 +233,11 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 */
 	private async ensureTable(): Promise<void> {
 		// Validate the inputs are safe identifiers to prevent SQL injection
-		if (!validateSqlParam(this.databaseName, false)) throw new Error(`CLICKHOUSE [${this.databaseName}]: Unsafe database name provided.`);
-		if (!validateSqlParam(this.tableName, false)) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe table name provided.`);
+		if (!validateSqlParam(this.databaseName, false)) throw new Error(`LABDB [${this.databaseName}]: Unsafe database name provided.`);
+		if (!validateSqlParam(this.tableName, false)) throw new Error(`LABDB [${this.tableName}]: Unsafe table name provided.`);
 		// Validate the schema columns are safe identifiers
 		const unsafeColumns = Object.keys(this.schema).filter(key => !validateSqlParam(key, false));
-		if (unsafeColumns.length > 0) throw new Error(`CLICKHOUSE [${this.tableName}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
+		if (unsafeColumns.length > 0) throw new Error(`LABDB [${this.tableName}]: Unsafe column names provided: ${unsafeColumns.join(', ')}.`);
 		// Ensure the database exists before creating the table
 		await this.ensureDatabase();
 		// Setup the full CREATE TABLE query
@@ -252,11 +252,11 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		// Perform the query to create the table
 		try {
 			await this.client.command({ query: createTableQuery });
-			Logger.info({ message: `CLICKHOUSE [${this.tableName}]: Table created.` });
+			Logger.info({ message: `LABDB [${this.tableName}]: Table created.` });
 		} catch (error) {
 			// If the error is not an ACCESS_DENIED, throw it right away
 			if (!(error instanceof ClickHouseError) || error.code !== '497') {
-				Logger.error({ error, message: `CLICKHOUSE [${this.tableName}]: Error @ createTable(): ${(error as Error).message}` });
+				Logger.error({ error, message: `LABDB [${this.tableName}]: Error @ createTable(): ${(error as Error).message}` });
 				throw error;
 			}
 
@@ -269,12 +269,12 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 				const tables = await resultSet.json();
 				if (Array.isArray(tables) && tables.length > 0) return;
 
-				Logger.error({ error, message: `CLICKHOUSE [${this.tableName}]: ACCESS_DENIED and table does not exist. ${error.message}` });
+				Logger.error({ error, message: `LABDB [${this.tableName}]: ACCESS_DENIED and table does not exist. ${error.message}` });
 				throw error;
 			} catch (verifyError) {
 				//
 
-				Logger.error({ error: verifyError, message: `CLICKHOUSE [${this.tableName}]: Failed to verify table existence after ACCESS_DENIED: ${(verifyError as Error).message}` });
+				Logger.error({ error: verifyError, message: `LABDB [${this.tableName}]: Failed to verify table existence after ACCESS_DENIED: ${(verifyError as Error).message}` });
 				throw verifyError;
 			}
 		}
