@@ -1,16 +1,14 @@
 /* * */
 
-import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
-
 import { MongoInterfaceTemplate } from '@/interface.template.js';
-import { CreateGtfsValidationDto, CreateGtfsValidationSchema, CreatePlanDto, CreatePlanSchema, CreateRideAcceptanceDto, CreateRideAcceptanceSchema, CreateRideDto, CreateRideSchema, CreateSamDto, CreateSamSchema, CreateVehicleDto, CreateVehicleSchema, DocumentSchema, GtfsValidation, HashedPattern, HashedPatternSchema, HashedShape, HashedTrip, HashedTripSchema, Plan, Ride, RideAcceptance, Sam, UpdateGtfsValidationDto, UpdateGtfsValidationSchema, UpdatePlanDto, UpdatePlanSchema, UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema, UpdateRideDto, UpdateRideSchema, UpdateSamDto, UpdateSamSchema, UpdateVehicleDto, UpdateVehicleSchema, Vehicle } from '@tmlmobilidade/types';
+import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
+import { type CreateGtfsValidationDto, CreateGtfsValidationSchema, type CreatePlanDto, CreatePlanSchema, type CreateRideAcceptanceDto, CreateRideAcceptanceSchema, type CreateRideDto, CreateRideSchema, type CreateSamDto, CreateSamSchema, type CreateVehicleDto, CreateVehicleSchema, DocumentSchema, type GtfsValidation, type HashedPattern, HashedPatternSchema, type HashedShape, type HashedTrip, HashedTripSchema, type Plan, type Ride, type RideAcceptance, type Sam, type UpdateGtfsValidationDto, UpdateGtfsValidationSchema, type UpdatePlanDto, UpdatePlanSchema, type UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema, type UpdateRideDto, UpdateRideSchema, type UpdateSamDto, UpdateSamSchema, type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
+
 /* * */
 
 export class OperationDatabase {
 	//
 
-	//
-	// Collections
 	public readonly gtfsValidations: MongoInterfaceTemplate<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto>;
 	public readonly hashedPatterns: MongoInterfaceTemplate<HashedPattern, HashedPattern, HashedPattern>;
 	public readonly hashedShapes: MongoInterfaceTemplate<HashedShape, HashedShape, HashedShape>;
@@ -21,14 +19,12 @@ export class OperationDatabase {
 	public readonly sams: MongoInterfaceTemplate<Sam, CreateSamDto, UpdateSamDto>;
 	public readonly vehicles: MongoInterfaceTemplate<Vehicle, CreateVehicleDto, UpdateVehicleDto>;
 
-	//
 	private readonly database: Db;
 	private readonly databaseName = 'operation';
 
 	public constructor(instance: MongoClient) {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
-
 		// Create collection interfaces
 		this.gtfsValidations = new MongoInterfaceTemplate<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto>('gtfsValidations', this.database, CreateGtfsValidationSchema, UpdateGtfsValidationSchema);
 		this.hashedPatterns = new MongoInterfaceTemplate<HashedPattern, HashedPattern, HashedPattern>('hashedPatterns', this.database, HashedPatternSchema, HashedPatternSchema);

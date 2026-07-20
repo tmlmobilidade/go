@@ -16,7 +16,7 @@ class PCGIFileManagerClass {
 
 	//
 	// Databases
-	public readonly locationManagement: LocationManagementDatabase;
+	public readonly fileManagement: FileManagementDatabase;
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
@@ -33,7 +33,7 @@ class PCGIFileManagerClass {
 	//
 	// Constructor
 	private constructor(mongoClient: MongoClient) {
-		this.locationManagement = new LocationManagementDatabase(mongoClient);
+		this.fileManagement = new LocationManagementDatabase(mongoClient);
 	}
 }
 

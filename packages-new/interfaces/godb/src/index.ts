@@ -14,19 +14,21 @@ import { OperationDatabase } from './databases/operation.js';
 class GoDBClass {
 	//
 
-	//
-	//
 	private static _instance: GoDBClass;
 
-	private mongoClient: MongoClient;
-
-	//
-	// Databases
 	public readonly core: CoreDatabase;
 	public readonly infrastructure: InfrastructureDatabase;
 	public readonly locations: LocationsDatabase;
 	public readonly offer: OfferDatabase;
 	public readonly operation: OperationDatabase;
+
+	private constructor(mongoClient: MongoClient) {
+		this.core = new CoreDatabase(mongoClient);
+		this.infrastructure = new InfrastructureDatabase(mongoClient);
+		this.locations = new LocationsDatabase(mongoClient);
+		this.offer = new OfferDatabase(mongoClient);
+		this.operation = new OperationDatabase(mongoClient);
+	}
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
@@ -40,18 +42,8 @@ class GoDBClass {
 		}
 		return GoDBClass._instance;
 	}
-
-	//
-	// Constructor
-	//
-	// Constructor
-	private constructor(mongoClient: MongoClient) {
-		this.core = new CoreDatabase(mongoClient);
-		this.infrastructure = new InfrastructureDatabase(mongoClient);
-		this.locations = new LocationsDatabase(mongoClient);
-		this.offer = new OfferDatabase(mongoClient);
-		this.operation = new OperationDatabase(mongoClient);
-	}
 }
+
+/* * */
 
 export const goDb = asyncSingletonProxy(GoDBClass);
