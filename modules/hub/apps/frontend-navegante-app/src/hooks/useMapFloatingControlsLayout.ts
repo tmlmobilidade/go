@@ -6,7 +6,21 @@ import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context
 
 /* * */
 
-export type MapFloatingControlsLayout = 'default' | 'route-results-compact' | 'route-results-full' | 'route-results-medium' | 'route-search';
+export type MapFloatingControlsLayoutKind = 'above-sheet' | 'default' | 'hidden';
+
+export interface MapFloatingControlsLayout {
+	// Pixel offset (not dvh/vh) so it matches exactly how react-modal-sheet itself measures the
+	// sheet's height (via the container's real DOM height, off `window.innerHeight`). Mixing
+	// `dvh` here previously caused the sheet's visible edge and this offset to drift apart on
+	// mobile browsers with a dynamic viewport (address bar show/hide), hiding controls behind it.
+	bottomOffsetPx: number
+	layout: MapFloatingControlsLayoutKind
+}
+
+/* * */
+
+// The live trip bar is 60px tall and sits 12px above the viewport's safe-area edge.
+const ROUTE_PLANNER_LIVE_BAR_OFFSET_PX = 72;
 
 /* * */
 
@@ -19,31 +33,38 @@ export function useMapFloatingControlsLayout(): MapFloatingControlsLayout {
 	const { activeBottomSheet, activeBottomSheetSnap } = useBottomSheet();
 	const routePlannerContext = useRoutePlannerContext();
 	const compactSnapPoint = MAP_BOTTOM_SHEET_SNAP_POINTS[MAP_BOTTOM_SHEET_INITIAL_SNAP];
+	const viewportHeight = typeof window === 'undefined' ? 0 : window.innerHeight;
 
 	//
 	// B. Transform data
 
-	if (activeBottomSheet?.view !== 'routes') return 'default';
+	if (!activeBottomSheet) {
+		if (routePlannerContext.flags.is_navigating) {
+			return {
+				bottomOffsetPx: ROUTE_PLANNER_LIVE_BAR_OFFSET_PX,
+				layout: 'above-sheet',
+			};
+		}
 
-	if (routePlannerContext.data.view_mode === 'destination-search' || routePlannerContext.data.view_mode === 'full-input') {
-		return 'route-search';
+		return { bottomOffsetPx: 0, layout: 'default' };
 	}
 
-	if (routePlannerContext.data.view_mode === 'itinerary-detail') {
-		const snapPoint = activeBottomSheetSnap.snapPoint ?? compactSnapPoint;
-		if (snapPoint >= 0.9) return 'route-results-full';
-		if (snapPoint >= 0.5) return 'route-results-medium';
-		return 'route-results-compact';
-	}
+	const isRouteSheet = activeBottomSheet.view === 'routes';
+	const isRouteSearch = isRouteSheet && (
+		routePlannerContext.data.view_mode === 'destination-search'
+		|| routePlannerContext.data.view_mode === 'full-input'
+	);
+	const isMapAwareDetailSheet = activeBottomSheet.view === 'lines-detail' || activeBottomSheet.view === 'stops-detail';
+	const isMapAwareSheet = isMapAwareDetailSheet || (isRouteSheet && !isRouteSearch);
 
-	if (routePlannerContext.data.view_mode === 'results') {
-		const snapPoint = activeBottomSheetSnap.snapPoint ?? compactSnapPoint;
-		if (snapPoint >= 0.9) return 'route-results-full';
-		if (snapPoint >= 0.5) return 'route-results-medium';
-		return 'route-results-compact';
-	}
+	if (!isMapAwareSheet) return { bottomOffsetPx: 0, layout: 'hidden' };
 
-	return 'default';
+	// Use the sheet's actual current snap fraction (rather than fixed buckets) so the
+	// floating controls line up correctly for every map-aware sheet and snap-points array.
+	const snapPoint = activeBottomSheetSnap.snapPoint ?? compactSnapPoint;
+	if (snapPoint >= 0.9) return { bottomOffsetPx: 0, layout: 'hidden' };
+
+	return { bottomOffsetPx: Math.round(snapPoint * viewportHeight), layout: 'above-sheet' };
 
 	//
 }

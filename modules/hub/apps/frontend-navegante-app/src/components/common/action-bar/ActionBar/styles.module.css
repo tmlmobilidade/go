@@ -3,30 +3,19 @@
 
 .container {
 	position: fixed;
-	top: var(--route-planner-floating-controls-top, calc(env(safe-area-inset-top, 0px) + 84px));
-	right: 0;
-	bottom: 0;
-	z-index: 10;
+	right: 15px;
+	bottom: 20px;
+	/* Above the mapAware bottom sheet's container (z-index: 100) so it never renders hidden
+	   behind the sheet, even if the sheet's measured height and this offset briefly disagree
+	   (e.g. during a mobile browser's dynamic viewport resize). */
+	z-index: 101;
 	display: flex;
-	flex-direction: column;
-	gap: 15px;
-	padding: 15px;
-	padding-top: 0;
 	pointer-events: none;
-	transition: top 180ms ease, bottom 180ms ease, opacity 180ms ease;
+	transition: opacity 180ms ease;
 }
 
-.container[data-layout='route-results-compact'] {
-	top: var(--route-planner-floating-controls-top, calc(env(safe-area-inset-top, 0px) + 84px));
-	bottom: calc(28dvh + env(safe-area-inset-bottom, 0px) + 10px);
-}
-
-.container[data-layout='route-results-medium'] {
-	top: var(--route-planner-floating-controls-top, calc(env(safe-area-inset-top, 0px) + 84px));
-	bottom: calc(64dvh + env(safe-area-inset-bottom, 0px) + 10px);
-}
-
-.container[data-layout='route-results-full'] {
+.container[data-layout='hidden'] {
+	visibility: hidden;
 	pointer-events: none;
 	opacity: 0;
 }

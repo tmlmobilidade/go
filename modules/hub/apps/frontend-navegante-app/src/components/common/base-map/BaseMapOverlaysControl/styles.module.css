@@ -14,12 +14,8 @@
 	transition: top 180ms ease, opacity 180ms ease;
 }
 
-.container[data-layout='route-results-short'],
-.container[data-layout='route-results-medium'] {
-	top: var(--route-planner-floating-controls-top, calc(env(safe-area-inset-top, 0px) + 84px));
-}
-
-.container[data-layout='route-results-full'] {
+.container[data-layout='hidden'] {
+	visibility: hidden;
 	opacity: 0;
 	pointer-events: none;
 }

@@ -44,6 +44,8 @@ const SHEET_SNAP_POINTS_BY_SIZE: Record<BottomSheetSize, number[]> = {
 	short: [0, 0.32],
 };
 
+const ACTIVE_MAP_BOTTOM_SHEET_HEIGHT_CSS_PROPERTY = '--active-map-bottom-sheet-height';
+
 /* * */
 
 export function BottomSheet({
@@ -108,6 +110,28 @@ export function BottomSheet({
 			sheetRef.current?.snapTo(snapIndex);
 		});
 	}, [mapAware, opened, setActiveBottomSheetSnap, snapPoints, snapPointsKey]);
+
+	useEffect(() => {
+		if (!mapAware || !opened || typeof document === 'undefined') return;
+
+		const visibleHeight = sheetRef.current?.yInverted;
+		if (!visibleHeight) return;
+
+		const updateVisibleHeight = (value: number) => {
+			document.documentElement.style.setProperty(
+				ACTIVE_MAP_BOTTOM_SHEET_HEIGHT_CSS_PROPERTY,
+				`${Math.max(0, Math.round(value))}px`,
+			);
+		};
+
+		updateVisibleHeight(visibleHeight.get());
+		const unsubscribe = visibleHeight.on('change', updateVisibleHeight);
+
+		return () => {
+			unsubscribe();
+			document.documentElement.style.removeProperty(ACTIVE_MAP_BOTTOM_SHEET_HEIGHT_CSS_PROPERTY);
+		};
+	}, [mapAware, opened]);
 
 	const handleSnap = (snapIndex: number) => {
 		setActiveBottomSheetSnap({

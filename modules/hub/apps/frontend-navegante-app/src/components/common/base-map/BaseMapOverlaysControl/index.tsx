@@ -65,7 +65,7 @@ export function BaseMapOverlaysControl() {
 	// C. Render components
 
 	return (
-		<div ref={containerRef} className={styles.container} data-layout={controlsLayout} onKeyDown={handleContainerKeyDown}>
+		<div ref={containerRef} className={styles.container} data-layout={controlsLayout.layout} onKeyDown={handleContainerKeyDown}>
 
 			<button
 				aria-controls={panelId}

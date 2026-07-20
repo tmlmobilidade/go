@@ -5,7 +5,8 @@
 	position: fixed;
 	bottom: 20px;
 	left: 15px;
-	z-index: 10;
+	/* Above the mapAware bottom sheet's container (z-index: 100), see ActionBar for rationale. */
+	z-index: 101;
 	display: flex;
 	gap: 2px;
 	align-items: center;
@@ -15,18 +16,11 @@
 	background-color: var(--color-system-background-100);
 	border-radius: 999px;
 	box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
-	transition: bottom 180ms ease, opacity 180ms ease;
+	transition: opacity 180ms ease;
 }
 
-.container[data-layout='route-results-compact'] {
-	bottom: calc(28dvh + env(safe-area-inset-bottom, 0px) + 20px);
-}
-
-.container[data-layout='route-results-medium'] {
-	bottom: calc(64dvh + env(safe-area-inset-bottom, 0px) + 20px);
-}
-
-.container[data-layout='route-results-full'] {
+.container[data-layout='hidden'] {
+	visibility: hidden;
 	opacity: 0;
 	pointer-events: none;
 }

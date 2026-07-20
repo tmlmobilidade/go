@@ -1,12 +1,7 @@
 'use client';
 
-import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
 import { ActionBarUserLocation } from '@/components/common/action-bar/ActionBarUserLocation';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useMapFloatingControlsLayout } from '@/hooks/useMapFloatingControlsLayout';
-import { IconQuestionMark } from '@tabler/icons-react';
-import { Spacer } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -18,33 +13,18 @@ export function ActionBar() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
-
-	const { setActiveBottomSheet } = useBottomSheet();
 	const controlsLayout = useMapFloatingControlsLayout();
 
 	//
 	// B. Render components
 
 	return (
-		<div className={styles.container} data-layout={controlsLayout}>
-
-			{/* <ActionBarButton
-				icon={<IconQuestionMark size={30} />}
-				label={t('default:action-bar.ActionBar.help.label')}
-				onClick={() => setActiveBottomSheet({ view: 'help' })}
-			/> */}
-
-			<Spacer orientation="vertical" size="full" />
-
-			{/* <ActionBarButton
-				icon={<IconAlertTriangle size={28} />}
-				label={t('default:action-bar.ActionBar.alerts.label')}
-				onClick={() => setActiveBottomSheet({ view: 'alerts-list' })}
-			/> */}
-
+		<div
+			className={styles.container}
+			data-layout={controlsLayout.layout}
+			style={controlsLayout.layout === 'above-sheet' ? { bottom: `calc(var(--active-map-bottom-sheet-height, ${controlsLayout.bottomOffsetPx}px) + env(safe-area-inset-bottom, 0px) + 20px)` } : undefined}
+		>
 			<ActionBarUserLocation />
-
 		</div>
 	);
 }

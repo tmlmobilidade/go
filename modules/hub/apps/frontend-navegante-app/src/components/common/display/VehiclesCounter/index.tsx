@@ -29,7 +29,13 @@ export function VehiclesCounter({ count }: VehiclesCounterProps) {
 	if (!activeBaseMapOverlays.includes('vehicles')) return null;
 
 	return (
-		<div className={styles.container} data-layout={controlsLayout} data-zero-count={!count} aria-hidden>
+		<div
+			className={styles.container}
+			data-layout={controlsLayout.layout}
+			data-zero-count={!count}
+			style={controlsLayout.layout === 'above-sheet' ? { bottom: `calc(var(--active-map-bottom-sheet-height, ${controlsLayout.bottomOffsetPx}px) + env(safe-area-inset-bottom, 0px) + 20px)` } : undefined}
+			aria-hidden
+		>
 			<LiveIcon color={!count ? 'var(--color-system-text-300)' : 'var(--color-status-live-primary)'} />
 			<p className={styles.label}>{t('default:vehicles.VehiclesCounter.label', '', { count })}</p>
 		</div>
