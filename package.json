@@ -99,6 +99,7 @@
 		"dev:performance:sync-metrics-realtime": "npm run build:performance:sync-metrics-realtime && ENVIRONMENT=dev dotenv-run -f ./modules/performance/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-performance-sync-metrics-realtime",
 		"dev:plans": "ENVIRONMENT=dev dotenv-run -f ./modules/plans/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
 		"dev:plans:prd": "ENVIRONMENT=dev dotenv-run -f ./modules/plans/environments/production/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
+		"dev:plans:ui": "ENVIRONMENT=dev dotenv-run -f ./modules/plans/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-plans-api --filter=@tmlmobilidade/go-plans-frontend --filter=@tmlmobilidade/go-plans-organizer",
 		"dev:replicator": "ENVIRONMENT=dev dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-*",
 		"dev:replicator:helpers-dump-data": "ENVIRONMENT=dev dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-helpers-dump-data",
 		"dev:replicator:stream": "ENVIRONMENT=dev dotenv-run -f ./modules/replicator/environments/staging/secrets/.env -- turbo run dev --filter=@tmlmobilidade/go-replicator-stream",
