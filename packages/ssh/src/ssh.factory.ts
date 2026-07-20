@@ -7,7 +7,7 @@ import { SshConfig, SshTunnel, type SshTunnelOptions } from './client.js';
 
 /* * */
 
-type SshTunnelType = 'GO' | 'PCGI';
+export type SshTunnelType = 'GO' | 'PCGI';
 
 const tunnelCache = new Map<string, SshTunnel>();
 
