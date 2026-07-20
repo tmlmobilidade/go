@@ -133,7 +133,7 @@ export function formatMotisPlanDurationMinutes(seconds: number | undefined) {
 	return Math.max(0, Math.round((seconds || 0) / 60));
 }
 
-export function formatMotisPlanTime(value: string | undefined) {
+export function formatMotisPlanTime(value: number | string | undefined) {
 	if (!value) return '--:--';
 
 	const date = new Date(value);

@@ -1,14 +1,14 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
-import { LineBadge } from '@/components/lines/common/LineBadge';
+import { LiveIcon } from '@/components/common/display/LiveIcon';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { RoutePlannerGoButton } from '@/components/routes/RoutePlannerGoButton';
-import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
+import { RoutePlannerItineraryLegStrip } from '@/components/routes/RoutePlannerItineraryLegStrip';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
-import { formatMotisPlanDuration, formatMotisPlanDurationMinutes, formatMotisPlanTime, getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisItineraryStart, getMotisItineraryWalkMinutes, getMotisLegDurationSeconds, getMotisLegMode, getMotisLegModeKind, getMotisLegRouteLabel, getMotisLegTripIds, getMotisPlanPlaceStopId, isMotisWalkingLeg, type MotisItinerary, type MotisPlanLeg } from '@/utils/route-planner-motis';
-import { IconAlertTriangle, IconBike, IconBus, IconCar, IconElevator, IconFerry, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
-import { type HubLine } from '@tmlmobilidade/go-types-public-info';
+import { formatMotisPlanDuration, formatMotisPlanTime, getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisItineraryStart, getMotisItineraryWalkMinutes, type MotisItinerary } from '@/utils/route-planner-motis';
+import { getRoutePlannerItineraryRealtimeStatus } from '@/utils/route-planner-realtime';
+import { IconAlertTriangle, IconWalk } from '@tabler/icons-react';
 import { type MouseEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +34,6 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 	const { t } = useTranslation();
 	const alertsContext = useAlertsContext();
 	const linesContext = useLinesContext();
-	const tripUpdatesContext = useTripUpdatesContext();
 
 	//
 	// B. Transform data
@@ -46,13 +45,18 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 	const end = getMotisItineraryEnd(itinerary);
 	const duration = formatMotisPlanDuration(getMotisItineraryDurationSeconds(itinerary));
 	const walkingMinutes = getMotisItineraryWalkMinutes(legs);
-	const lineByShortName = useMemo(() => {
-		return new Map(linesContext.data.lines.map(line => [line.short_name, line]));
-	}, [linesContext.data.lines]);
 
 	const realtimeStatus = useMemo(() => {
-		return getItineraryRealtimeStatus(legs, tripUpdatesContext);
-	}, [legs, tripUpdatesContext]);
+		return getRoutePlannerItineraryRealtimeStatus(legs);
+	}, [legs]);
+	const effectiveStart = realtimeStatus.start_time?.effective_time ?? start;
+	const effectiveEnd = realtimeStatus.end_time?.effective_time ?? end;
+	const plannedEnd = realtimeStatus.end_time?.planned_time ?? end;
+	const hasRealtimeRange = realtimeStatus.is_realtime;
+	const effectiveEndLabel = formatMotisPlanTime(effectiveEnd);
+	const plannedEndLabel = formatMotisPlanTime(plannedEnd);
+	const hasChangedArrival = hasRealtimeRange && effectiveEndLabel !== plannedEndLabel;
+	const arrivalStatus = getArrivalStatus(realtimeStatus.arrival_delay_seconds, hasChangedArrival);
 
 	const itineraryAlertFilters = useMemo(() => {
 		return getRoutePlannerItineraryAlertFilters(itinerary, linesContext.data.lines);
@@ -80,11 +84,21 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 					<strong>{duration || t('default:routes.RoutePlanner.results.duration_unavailable')}</strong>
 				</div>
 
-				<span className={styles.timeRange}>
-					{formatMotisPlanTime(start)}
-					{' -> '}
-					{formatMotisPlanTime(end)}
-				</span>
+				<div className={styles.timeRange} data-arrival-status={arrivalStatus} data-realtime={hasRealtimeRange}>
+					<div className={styles.primaryTime}>
+						<strong>{formatTimeRange(effectiveStart, effectiveEnd)}</strong>
+						{hasRealtimeRange && (
+							<span aria-label={t('default:routes.RoutePlanner.results.realtime')} className={styles.liveStatus}>
+								<LiveIcon color={getLiveIndicatorColor(arrivalStatus)} />
+							</span>
+						)}
+					</div>
+					{hasChangedArrival && (
+						<small>
+							{t('default:routes.RoutePlanner.results.scheduled_at', '', { time: plannedEndLabel })}
+						</small>
+					)}
+				</div>
 
 				{itineraryAlerts.length > 0 && (
 					<span className={styles.alertBadge}>
@@ -98,31 +112,8 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 				</span>
 			</div>
 
-			{(realtimeStatus.delaySeconds !== 0 || itineraryAlerts.length > 0) && (
-				<div className={styles.noticeRow}>
-					{realtimeStatus.delaySeconds !== 0 && (
-						<span className={styles.delayBadge} data-delay-kind={realtimeStatus.delaySeconds > 0 ? 'late' : 'early'}>
-							{formatDelayLabel(realtimeStatus.delaySeconds)}
-						</span>
-					)}
-
-				</div>
-			)}
-
 			<div className={styles.bottomRow}>
-				<div
-					aria-label={t('default:routes.RoutePlanner.results.route_summary')}
-					className={styles.routeStrip}
-				>
-					{legs.map((leg, legIndex) => (
-						<RoutePlannerLegStripItem
-							key={`${getMotisLegMode(leg)}-${legIndex}`}
-							leg={leg}
-							lineByShortName={lineByShortName}
-							showConnector={legIndex < legs.length - 1}
-						/>
-					))}
-				</div>
+				<RoutePlannerItineraryLegStrip itinerary={itinerary} />
 				<RoutePlannerGoButton
 					ariaLabel={t('default:routes.RoutePlanner.results.view_details')}
 					onClick={handleRouteActionClick}
@@ -135,130 +126,19 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 	//
 }
 
-/* * */
+type ArrivalStatus = 'early' | 'late' | 'on-time';
 
-interface RoutePlannerLegStripItemProps {
-	leg: MotisPlanLeg
-	lineByShortName: Map<string, HubLine>
-	showConnector: boolean
+function getArrivalStatus(arrivalDelaySeconds: number, hasChangedArrival: boolean): ArrivalStatus {
+	if (!hasChangedArrival) return 'on-time';
+	return arrivalDelaySeconds > 0 ? 'late' : 'early';
 }
 
-function RoutePlannerLegStripItem({ leg, lineByShortName, showConnector }: RoutePlannerLegStripItemProps) {
-	//
-
-	//
-	// A. Transform data
-
-	const durationMinutes = formatMotisPlanDurationMinutes(getMotisLegDurationSeconds(leg));
-
-	//
-	// B. Render components
-
-	return (
-		<div className={styles.stripItem}>
-			{isMotisWalkingLeg(leg) ? (
-				<div className={styles.walkPill}>
-					<IconWalk size={15} />
-					{durationMinutes ? `${durationMinutes}'` : null}
-				</div>
-			) : (
-				<>
-					<div className={styles.modeIcon} data-mode={getMotisLegModeKind(leg)}>
-						<RoutePlannerModeIcon leg={leg} size={16} />
-					</div>
-					<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} />
-				</>
-			)}
-			{showConnector && <span className={styles.connector}>•••</span>}
-		</div>
-	);
-
-	//
+function getLiveIndicatorColor(arrivalStatus: ArrivalStatus) {
+	if (arrivalStatus === 'late') return 'var(--color-status-warning-primary)';
+	if (arrivalStatus === 'early') return 'var(--color-status-success-primary)';
+	return 'var(--color-status-active-primary)';
 }
 
-/* * */
-
-interface RoutePlannerLinePillProps {
-	leg: MotisPlanLeg
-	lineByShortName: Map<string, HubLine>
-}
-
-function RoutePlannerLinePill({ leg, lineByShortName }: RoutePlannerLinePillProps) {
-	//
-
-	//
-	// A. Setup variables
-
-	const { t } = useTranslation();
-
-	//
-	// B. Transform data
-
-	const label = isMotisWalkingLeg(leg) ? t('default:routes.RoutePlanner.results.walk_label') : getMotisLegRouteLabel(leg);
-	const modeKind = getMotisLegModeKind(leg);
-	const lineData = lineByShortName.get(label);
-
-	//
-	// C. Render components
-
-	if (!isMotisWalkingLeg(leg) && lineData) {
-		return <LineBadge lineData={lineData} size="sm" />;
-	}
-
-	return (
-		<span className={styles.linePill} data-mode={modeKind}>
-			{label}
-		</span>
-	);
-
-	//
-}
-
-interface RoutePlannerModeIconProps {
-	leg: MotisPlanLeg
-	size: number
-}
-
-function RoutePlannerModeIcon({ leg, size }: RoutePlannerModeIconProps) {
-	const modeKind = getMotisLegModeKind(leg);
-
-	if (modeKind === 'walk') return <IconWalk size={size} />;
-	if (modeKind === 'bus') return <IconBus size={size} />;
-	if (modeKind === 'bike') return <IconBike size={size} />;
-	if (modeKind === 'car') return <IconCar size={size} />;
-	if (modeKind === 'ferry') return <IconFerry size={size} />;
-	if (modeKind === 'plane') return <IconPlane size={size} />;
-	if (modeKind === 'scooter') return <IconScooter size={size} />;
-	if (modeKind === 'elevator') return <IconElevator size={size} />;
-	if (modeKind === 'transit') return <IconRoute size={size} />;
-
-	return <IconTrain size={size} />;
-}
-
-/* * */
-
-function getItineraryRealtimeStatus(legs: MotisPlanLeg[], tripUpdatesContext: ReturnType<typeof useTripUpdatesContext>) {
-	const updates = legs.flatMap((leg) => {
-		const tripIds = getMotisLegTripIds(leg);
-		if (tripIds.length === 0) return [];
-
-		return [getMotisPlanPlaceStopId(leg.from), getMotisPlanPlaceStopId(leg.to)]
-			.filter((stopId): stopId is string => typeof stopId === 'string' && stopId.length > 0)
-			.map(stopId => tripUpdatesContext.actions.getTripUpdateForStop(tripIds, stopId))
-			.filter(Boolean);
-	});
-
-	const mostRelevantDelay = updates.reduce((selectedDelay, update) => {
-		if (!update) return selectedDelay;
-		if (Math.abs(update.delay) <= Math.abs(selectedDelay)) return selectedDelay;
-		return update.delay;
-	}, 0);
-
-	return { delaySeconds: mostRelevantDelay };
-}
-
-function formatDelayLabel(delaySeconds: number) {
-	const absoluteMinutes = Math.max(1, Math.round(Math.abs(delaySeconds) / 60));
-	if (delaySeconds > 0) return `+${absoluteMinutes} min`;
-	return `-${absoluteMinutes} min`;
+function formatTimeRange(start: number | string | undefined, end: number | string | undefined) {
+	return `${formatMotisPlanTime(start)} → ${formatMotisPlanTime(end)}`;
 }

@@ -262,6 +262,8 @@
 			},
 			"results": {
 				"alerts_count": "{count, plural, one {# aviso} other {# avisos}}",
+				"arrival_time_prefix": "Chegada às",
+				"arrive_at": "Chegada às {time}",
 				"back_to_results": "Voltar às alternativas",
 				"best_alternatives": "Melhores alternativas",
 				"destination": "Destino",
@@ -281,8 +283,11 @@
 				},
 				"origin": "Origem",
 				"recommended": "Recomendado",
+				"realtime": "Tempo real",
 				"ride_between": "Viajar de {from} até {to}",
 				"route_summary": "Resumo da rota",
+				"scheduled_at": "Previsto às {time}",
+				"scheduled_range": "Previsto {start} → {end}",
 				"sort": {
 					"best": "Melhor",
 					"fastest": "Rápida",

@@ -1,0 +1,40 @@
+.container {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 4px 6px;
+	align-items: baseline;
+}
+
+.container strong {
+	font: inherit;
+	font-weight: 800;
+}
+
+.container[data-realtime='true'] strong {
+	color: var(--color-status-info, #1677ff);
+}
+
+.container em {
+	padding: 2px 5px;
+	font-size: 9px;
+	font-style: normal;
+	font-weight: 900;
+	line-height: 1;
+	color: var(--color-status-info, #1677ff);
+	text-transform: uppercase;
+	background-color: #e8f2ff;
+	border-radius: 999px;
+}
+
+.container del {
+	font-size: 11px;
+	font-weight: 700;
+	color: var(--color-system-text-300, #777);
+	white-space: nowrap;
+}
+
+@media (width <= 480px) {
+	.container em {
+		display: none;
+	}
+}
