@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider app="frontend" i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }} module="auth" version={pjson.version}>
+		<BaseProvider app="frontend" i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }} module="core" version={pjson.version}>
 			{children}
 		</BaseProvider>
 	);
