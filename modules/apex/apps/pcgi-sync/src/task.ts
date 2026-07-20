@@ -67,7 +67,7 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 
 	const distinctIdsTimer = new Timer();
 
-	const sourceDbDistinctIds = await pcgiFileManager.locationManagement.locationEntity.distinct('transactionId', sourceQuery);
+	const sourceDbDistinctIds = await pcgiFileManager.fileManagement.transactionEntity.distinct('transactionId', sourceQuery);
 
 	const matchingDocumentIds = await rawDb.raw.rawApexTransactions.findMany({ _id: { $in: sourceDbDistinctIds } }, { projection: { _id: 1 } });
 	const matchingDocumentIdsUnique = new Set(matchingDocumentIds.map(doc => doc._id));
@@ -88,7 +88,7 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 	// because they are impossible to calculate without fetching and parsing all documents,
 	// so we just upsert them in the Destination database and the DB takes care of deduplication.
 
-	const pcgidbTransactionEntitiesCollection = await pcgiFileManager.locationManagement.locationEntity.getCollection();
+	const pcgidbTransactionEntitiesCollection = await pcgiFileManager.fileManagement.transactionEntity.getCollection();
 
 	const pcgidbTransactionEntitiesStream = pcgidbTransactionEntitiesCollection.find({ transactionId: { $in: missingDocumentIds } }).stream();
 

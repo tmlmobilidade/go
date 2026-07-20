@@ -1,18 +1,14 @@
 /* * */
 
-import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import type { Agency, AppConfig, CreateAgencyDto, CreateFileDto, CreateFileExportDto, CreateOrganizationDto, CreateRoleDto, CreateSessionDto, CreateUserDto, CreateVerificationTokenDto, File, FileExport, Organization, Role, Session, UpdateAgencyDto, UpdateFileDto, UpdateOrganizationDto, UpdateRoleDto, UpdateSessionDto, UpdateUserDto, UpdateVerificationTokenDto, User, VerificationToken } from '@tmlmobilidade/types';
-
 import { MongoInterfaceTemplate } from '@/interface.template.js';
-import { CreateAgencySchema, CreateFileExportSchema, CreateFileSchema, CreateOrganizationSchema, CreateRoleSchema, CreateSessionSchema, CreateUserSchema, CreateVerificationTokenSchema, UpdateAgencySchema, UpdateFileExportSchema, UpdateFileSchema, UpdateOrganizationSchema, UpdateRoleSchema, UpdateSessionSchema, UpdateUserSchema, UpdateVerificationTokenSchema } from '@tmlmobilidade/types';
+import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
+import { type Agency, type AppConfig, type CreateAgencyDto, CreateAgencySchema, type CreateFileDto, type CreateFileExportDto, CreateFileExportSchema, CreateFileSchema, type CreateOrganizationDto, CreateOrganizationSchema, type CreateRoleDto, CreateRoleSchema, type CreateSessionDto, CreateSessionSchema, type CreateUserDto, CreateUserSchema, type CreateVerificationTokenDto, CreateVerificationTokenSchema, type File, type FileExport, type Organization, type Role, type Session, type UpdateAgencyDto, UpdateAgencySchema, type UpdateFileDto, UpdateFileExportSchema, UpdateFileSchema, type UpdateOrganizationDto, UpdateOrganizationSchema, type UpdateRoleDto, UpdateRoleSchema, type UpdateSessionDto, UpdateSessionSchema, type UpdateUserDto, UpdateUserSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type User, type VerificationToken } from '@tmlmobilidade/types';
 
 /* * */
 
 export class CoreDatabase {
 	//
 
-	//
-	// Collections
 	public readonly agencies: MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>;
 	public readonly appConfigs: MongoInterfaceTemplate<AppConfig, null, null>;
 	public readonly exports: MongoInterfaceTemplate<FileExport, CreateFileExportDto<any>, Partial<FileExport>>;
@@ -23,14 +19,12 @@ export class CoreDatabase {
 	public readonly users: MongoInterfaceTemplate<User, CreateUserDto, UpdateUserDto>;
 	public readonly verificationTokens: MongoInterfaceTemplate<VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto>;
 
-	//
 	private readonly database: Db;
 	private readonly databaseName = 'core';
 
 	public constructor(instance: MongoClient) {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
-
 		// Create collection interfaces
 		this.agencies = new MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>('agencies', this.database, CreateAgencySchema, UpdateAgencySchema);
 		this.appConfigs = new MongoInterfaceTemplate<AppConfig, null, null>('app-configs', this.database, null, null);
