@@ -50,17 +50,21 @@ export async function publishVehiclesPositions() {
 			try {
 				// Skip if vehicle position does not have a trip_id
 				if (!vehicleEventData.trip_id) return;
+
 				// Check if there is an active plan for the agency
 				const activePlanIdForAgency = activePlansIdsMap[vehicleEventData.agency_id];
 				if (!activePlanIdForAgency && vehicleEventData.agency_id !== '3') throw new Error(`No active plan found for agency ID: ${vehicleEventData.agency_id}`);
+
 				// Fetch the corresponding ride from the database
 				const standardWindow = Dates.fromUnixTimestamp(vehicleEventData.created_at).std_window;
-				const associatedRide = await ridesCollection.findOne({ agency_id: vehicleEventData.agency_id, start_time_scheduled: { $gte: standardWindow.start, $lte: standardWindow.end }, trip_id: vehicleEventData.trip_id }, { projection: { _id: 1, direction_id: 1, line_id: 1, pattern_id: 1 } });
+				const associatedRide = await ridesCollection.findOne({ agency_id: vehicleEventData.agency_id, start_time_scheduled: { $gte: standardWindow.start, $lte: standardWindow.end }, trip_id: vehicleEventData.trip_id }, { projection: { _id: 1, direction_id: 1, line_id: 1, operational_date: 1, pattern_id: 1, route_id: 1, trip_id: 1, vehicle_id: 1 } });
 				if (!associatedRide && vehicleEventData.agency_id !== '2') throw new Error(`No ride found for trip ID: ${vehicleEventData.trip_id} and agency ID: ${vehicleEventData.agency_id} in the standard window: ${standardWindow.start} to ${standardWindow.end}`);
+
 				// Prepare the operational date for this positions
 				let operationalDate: OperationalDateInt;
 				if (associatedRide?.operational_date) operationalDate = validateOperationalDateInt(associatedRide.operational_date);
 				else operationalDate = Dates.now('Europe/Lisbon').operational_date_int;
+
 				// Parse the vehicle position data
 				const vehiclePositionData: HubVehiclePosition = {
 					...vehicleEventData,
@@ -75,8 +79,10 @@ export async function publishVehiclesPositions() {
 					trip_id: getPublicTripId(activePlanIdForAgency ?? '-', vehicleEventData.agency_id, vehicleEventData.trip_id),
 					vehicle_id: getPublicVehicleId(vehicleEventData.agency_id, vehicleEventData.vehicle_id),
 				};
+
 				const parsedVehiclePosition = HubVehiclePositionSchema.safeParse(vehiclePositionData);
 				if (!parsedVehiclePosition.success) throw new Error(`Error parsing vehicle position ID: ${vehicleEventData._id}: ${parsedVehiclePosition.error.message}`);
+
 				// Add the vehicle position to the list
 				vehiclePositionsJson.push(parsedVehiclePosition.data);
 			} catch (error) {

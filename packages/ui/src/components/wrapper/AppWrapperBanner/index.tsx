@@ -31,7 +31,7 @@ export function AppWrapperBanner() {
 	//
 	// A. Fetch data
 
-	const { data: banner } = useSWR<AppBanner | null, Error>(API_ROUTES.auth.APP_CONFIGS_APP_WRAPPER_BANNER, {
+	const { data: banner } = useSWR<AppBanner | null, Error>(API_ROUTES.auth.APP_CONFIGS_APP_BANNER, {
 		refreshInterval: 60_000,
 	});
 
