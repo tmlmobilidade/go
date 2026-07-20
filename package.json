@@ -146,11 +146,11 @@
 		"helper:offer:seed-zones": "dotenv-run -f ./modules/offer/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-zones",
 		"helper:stops:migrate-stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-migrate-stops",
 		"helper:stops:seed-stops": "ENVIRONMENT=dev dotenv-run -f ./modules/stops/environments/staging/secrets/.env -- turbo run start --filter=@tmlmobilidade/go-stops-helpers-seed-stops",
-		"lint": "turbo lint",
-		"lint:fix": "turbo lint:fix",
 		"pckg:dev:emails": "ENVIRONMENT=dev turbo run dev --filter=@tmlmobilidade/emails",
 		"repo:generate-routes": "bash ./scripts/generate-routes.sh",
 		"repo:init": "npm i && turbo build --filter=./packages-new/**/* && turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/* && npm run repo:generate-routes",
+		"repo:lint": "turbo lint",
+		"repo:lint:fix": "turbo lint:fix",
 		"repo:load-env-prd": "ENVIRONMENT=prd npx --yes dotenv-run -v -f ./environments/prd/.env.prd --",
 		"repo:load-env-stg": "ENVIRONMENT=dev npx --yes dotenv-run -v -f ./environments/stg/.env.stg --",
 		"repo:rinse": "npx --yes @tmlmobilidade/repo-rinse"
