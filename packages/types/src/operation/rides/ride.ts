@@ -33,6 +33,7 @@ export const RideSchema = DocumentSchema
 		apex_on_board_sales_amount: z.number().nullable(),
 		apex_on_board_sales_qty: z.number().nullable(),
 		apex_validations_qty: z.number().nullable(),
+		direction_id: z.number(),
 		driver_ids: z.array(z.string()),
 		end_time_observed: UnixTimestampSchema.nullable(),
 		end_time_scheduled: UnixTimestampSchema,

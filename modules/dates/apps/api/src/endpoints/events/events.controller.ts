@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { events, type Filter, patterns } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Filter } from '@tmlmobilidade/interfaces';
 import { type CreateEventDto, type Event, PermissionCatalog, type UpdateEventDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -48,7 +49,7 @@ export class EventsController {
 		//
 		// Create the new event
 
-		const newEvent = await events.insertOne(request.body);
+		const newEvent = await goDb.offer.events.insertOne(request.body);
 
 		//
 		// Send the response
@@ -65,7 +66,7 @@ export class EventsController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const event = await events.findById(id);
+		const event = await goDb.offer.events.findById(id);
 
 		if (!event) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
@@ -100,7 +101,7 @@ export class EventsController {
 
 		//
 
-		await events.deleteById(id);
+		await goDb.offer.events.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -143,7 +144,7 @@ export class EventsController {
 		//
 		// Fetch events based on query filters
 
-		const allEvents = await events.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allEvents = await goDb.offer.events.findMany(queryFilters, { sort: { created_at: -1 } });
 
 		return reply.send({ data: allEvents, error: null, statusCode: HTTP_STATUS.OK });
 
@@ -161,7 +162,7 @@ export class EventsController {
 		//
 		// Get the Event from the database
 
-		const eventData = await events.findById(request.params.id);
+		const eventData = await goDb.offer.events.findById(request.params.id);
 
 		if (!eventData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
@@ -197,7 +198,7 @@ export class EventsController {
 		//
 		// Get pattern ids that reference this event in manual pattern rules
 
-		const associatedPatterns = await patterns.findMany(
+		const associatedPatterns = await goDb.offer.patterns.findMany(
 			{
 				rules: {
 					$elemMatch: {
@@ -244,7 +245,7 @@ export class EventsController {
 		//
 		// Get the Event from the database
 
-		const eventData = await events.findById(request.params.id);
+		const eventData = await goDb.offer.events.findById(request.params.id);
 
 		if (!eventData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
@@ -278,8 +279,8 @@ export class EventsController {
 		}
 
 		// If authorized, toggle the lock status of the event
-		await events.toggleLockById(request.params.id);
-		const foundEvent = await events.findById(request.params.id);
+		await goDb.offer.events.toggleLockById(request.params.id);
+		const foundEvent = await goDb.offer.events.findById(request.params.id);
 		if (!foundEvent) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
 		}
@@ -299,7 +300,7 @@ export class EventsController {
 		//
 		// Get the Event from the database
 
-		const eventData = await events.findById(request.params.id);
+		const eventData = await goDb.offer.events.findById(request.params.id);
 
 		if (!eventData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Event not found');
@@ -335,7 +336,7 @@ export class EventsController {
 		//
 		// Update the event
 
-		const updatedEvent = await events.updateById(eventData._id, request.body);
+		const updatedEvent = await goDb.offer.events.updateById(eventData._id, request.body);
 
 		//
 		// Send the updated event data as the response

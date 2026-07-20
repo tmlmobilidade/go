@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { roles } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateRoleDto, type Role, type UpdateRoleDto } from '@tmlmobilidade/types';
 
 /* * */
@@ -23,7 +23,7 @@ export class RolesController {
 		request.body.created_by = request.me._id;
 		request.body.updated_by = request.me._id;
 
-		const role = await roles.insertOne(request.body);
+		const role = await goDb.core.roles.insertOne(request.body);
 
 		if (!role) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating role');
@@ -38,7 +38,7 @@ export class RolesController {
 	 * @param {FastifyReply} reply - The reply object
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-		const result = await roles.deleteById(request.params.id);
+		const result = await goDb.core.roles.deleteById(request.params.id);
 		if (!result) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error deleting role');
 		}
@@ -52,7 +52,7 @@ export class RolesController {
 	 * @param {FastifyReply} reply - The reply object
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Role[]>) {
-		const allRolesData = await roles.findMany({}, { sort: { name: 1 } });
+		const allRolesData = await goDb.core.roles.findMany({}, { sort: { name: 1 } });
 
 		if (!allRolesData) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting roles');
@@ -67,7 +67,7 @@ export class RolesController {
 	 * @param {FastifyReply} reply - The reply object
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Role>) {
-		const role = await roles.findById(request.params.id);
+		const role = await goDb.core.roles.findById(request.params.id);
 
 		if (!role) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
@@ -82,8 +82,8 @@ export class RolesController {
 	 * @param reply Fastify reply.
 	 */
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Role>) {
-		await roles.toggleLockById(request.params.id);
-		const foundRole = await roles.findById(request.params.id);
+		await goDb.core.roles.toggleLockById(request.params.id);
+		const foundRole = await goDb.core.roles.findById(request.params.id);
 		if (!foundRole) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
 		}
@@ -103,7 +103,7 @@ export class RolesController {
 		// Set the updated_by field to the current user's id
 		request.body.updated_by = request.me._id;
 
-		const role = await roles.updateById(request.params.id, request.body);
+		const role = await goDb.core.roles.updateById(request.params.id, request.body);
 
 		if (!role) {
 			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error updating role');

@@ -1,4 +1,4 @@
-import { typologies } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Typology } from '@tmlmobilidade/types';
 
 /**
@@ -7,7 +7,7 @@ import { Typology } from '@tmlmobilidade/types';
  */
 export async function fetchAllTypologies(): Promise<Map<string, Typology>> {
 	try {
-		const allTypologies = await typologies.findMany({});
+		const allTypologies = await goDb.offer.typologies.findMany({});
 		const typologiesMap = new Map<string, Typology>();
 		for (const typology of allTypologies) {
 			typologiesMap.set(typology._id, typology);
@@ -38,7 +38,7 @@ export async function getTypologyDetails(
 
 	// Otherwise, fetch individually
 	try {
-		return await typologies.findById(typologyId);
+		return await goDb.offer.typologies.findById(typologyId);
 	}
 	catch (error) {
 		throw new Error(`Error fetching typology ${typologyId}: ${error}`);

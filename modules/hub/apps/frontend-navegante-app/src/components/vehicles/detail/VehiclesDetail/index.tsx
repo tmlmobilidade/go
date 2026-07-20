@@ -1,6 +1,6 @@
 'use client';
 
-import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { VehiclesDetailContextProvider } from '@/components/vehicles/detail/VehiclesDetail.context';
 import { VehiclesDetailView } from '@/components/vehicles/detail/VehiclesDetailView';
