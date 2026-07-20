@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-interfaces-pcgi-ticketing",
+	"name": "@tmlmobilidade/go-interfaces-pcgi-legacy",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -34,6 +34,10 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-clients-mongo": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/utils": "*",
 		"luxon": "3.7.2",
 		"zod": "3.25.76"
 	},

@@ -66,8 +66,8 @@ class PCGIDBLegacyClass {
 		//
 		// Check if the required PCGIDB environment variables are set.
 
-		if (!process.env.PCGIDB_LEGACY_USER || !process.env.PCGIDB_LEGACY_PASSWORD) {
-			throw new Error('Missing PCGIDB_LEGACY_USER or PCGIDB_LEGACY_PASSWORD environment variable.');
+		if (!process.env.PCGIDB_LEGACY_USERNAME || !process.env.PCGIDB_LEGACY_PASSWORD) {
+			throw new Error('Missing PCGIDB_LEGACY_USERNAME or PCGIDB_LEGACY_PASSWORD environment variable.');
 		}
 
 		if (!process.env.PCGIDB_LEGACY_ADDRESS_1 || !process.env.PCGIDB_LEGACY_ADDRESS_2 || !process.env.PCGIDB_LEGACY_ADDRESS_3 || !process.env.PCGIDB_LEGACY_PORT) {
@@ -80,7 +80,7 @@ class PCGIDBLegacyClass {
 		GLOBAL_PCGIDB_TUNNEL_INSTANCE = pcgiSshTunnel({ dstAddr: process.env.PCGIDB_LEGACY_ADDRESS_1, dstPort: Number(process.env.PCGIDB_LEGACY_PORT) });
 
 		if (!GLOBAL_PCGIDB_TUNNEL_INSTANCE) {
-			return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@${process.env.PCGIDB_LEGACY_ADDRESS_1}:${process.env.PCGIDB_LEGACY_PORT},${process.env.PCGIDB_LEGACY_ADDRESS_2}:${process.env.PCGIDB_LEGACY_PORT},${process.env.PCGIDB_LEGACY_ADDRESS_3}:${process.env.PCGIDB_LEGACY_PORT}/`;
+			return `mongodb://${process.env.PCGIDB_LEGACY_USERNAME}:${process.env.PCGIDB_LEGACY_PASSWORD}@${process.env.PCGIDB_LEGACY_ADDRESS_1}:${process.env.PCGIDB_LEGACY_PORT},${process.env.PCGIDB_LEGACY_ADDRESS_2}:${process.env.PCGIDB_LEGACY_PORT},${process.env.PCGIDB_LEGACY_ADDRESS_3}:${process.env.PCGIDB_LEGACY_PORT}/`;
 		}
 
 		Logger.info({ message: 'Setting up SSH Tunnel for PCGIDB Legacy...' });
@@ -96,7 +96,7 @@ class PCGIDBLegacyClass {
 			throw new Error('Failed to retrieve the SSH tunnel address for PCGIDB Legacy.');
 		}
 
-		return `mongodb://${process.env.PCGIDB_LEGACY_USER}:${process.env.PCGIDB_LEGACY_PASSWORD}@localhost:${localAddress.port}/?directConnection=true`;
+		return `mongodb://${process.env.PCGIDB_LEGACY_USERNAME}:${process.env.PCGIDB_LEGACY_PASSWORD}@localhost:${localAddress.port}/?directConnection=true`;
 
 		//
 	}

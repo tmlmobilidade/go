@@ -17,7 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/databases": "*",
+		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-tracker-pckg-databases": "*",
 		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
