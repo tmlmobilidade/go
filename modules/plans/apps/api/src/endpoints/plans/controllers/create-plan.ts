@@ -73,7 +73,7 @@ export async function createPlan(request: FastifyRequest<{ Body: { validation_id
 			gtfs_feed_info: validationData.gtfs_feed_info,
 			hash: '',
 			is_locked: false,
-			operation_file_id: null,
+			operation_file_id: '',
 			pcgi_legacy: {
 				operation_plan_id: '',
 			},
