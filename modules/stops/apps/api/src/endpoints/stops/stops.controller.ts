@@ -3,9 +3,10 @@
 import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Filter } from '@tmlmobilidade/interfaces';
-import { CreateStopSchema, type File, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type Attachment, CreateStopSchema, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
  * This is an example controller that is using the stops interface.
@@ -115,9 +116,9 @@ export class StopsController {
 	 * @param request The request object containing the organization ID in the params.
 	 * @param reply The reply object used to send the response.
 	 */
-	static async getTTS(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ file: File | null }>) {
-		const file = await goDb.core.files.findById(request.params.id);
-		reply.send({ data: { file }, error: null, statusCode: HTTP_STATUS.OK });
+	static async getTTS(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
+		const fileData = await storageProvider.findById(request.params.id);
+		reply.send({ data: fileData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**

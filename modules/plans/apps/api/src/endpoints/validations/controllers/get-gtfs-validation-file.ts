@@ -3,14 +3,14 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
-import { type File as FileType, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Attachment, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
  * Retrieves the file for a Validation by ID
  * @param request Fastify request containing Validation ID in params
  * @param reply Fastify reply
  */
-export async function getGtfsValidationFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<FileType>) {
+export async function getGtfsValidationFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
 	//
 
 	//

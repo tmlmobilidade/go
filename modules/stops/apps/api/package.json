@@ -22,8 +22,9 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
