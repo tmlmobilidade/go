@@ -1,4 +1,5 @@
 import '@/endpoints/agencies/agencies.routes.js';
+import '@/endpoints/app-configs/app-configs.routes.js';
 import '@/endpoints/auth/auth.routes.js';
 import '@/endpoints/roles/roles.routes.js';
 import '@/endpoints/users/users.routes.js';

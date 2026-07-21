@@ -27,7 +27,7 @@ export type FastifyInstance = FastifyInstanceType<RawServerDefault, RawRequestDe
 
 /**
  * FastifyServiceOptions interface defines the options for the Fastify server.
- * It extends FastifyServerOptions and adds optional properties for origin and port.
+ * It extends FastifyServerOptions and adds optional properties for origin and port.s
  */
 export interface FastifyServiceOptions extends FastifyServerOptions {
 	/**

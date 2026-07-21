@@ -21,8 +21,8 @@
 	"dependencies": {
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-interfaces-cache-db": "*",
-		"@tmlmobilidade/go-interfaces-go-db": "*",
+		"@tmlmobilidade/go-interfaces-cachedb": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-public-info": "*",

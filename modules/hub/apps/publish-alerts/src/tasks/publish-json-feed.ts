@@ -5,7 +5,7 @@ import { transformReferenceTypeLinesIntoJson } from '@/transform/json/reference-
 import { transformReferenceTypeRidesIntoJson } from '@/transform/json/reference-types/rides.js';
 import { transformReferenceTypeStopsIntoJson } from '@/transform/json/reference-types/stops.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-public-info';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-backend';

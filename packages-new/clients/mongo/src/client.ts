@@ -1,5 +1,5 @@
-import { Logger } from '@tmlmobilidade/logger-backend';
-import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
+import { Logger } from '@tmlmobilidade/logger-backend	';
+import { createSshTunnelFactory, SshTunnel, SshTunnelType } from '@tmlmobilidade/ssh';
 import { MongoClient, type MongoClientOptions } from 'mongodb';
 
 /**
@@ -22,6 +22,8 @@ export interface MongoDatabaseConfig {
 	clientOptions?: Partial<MongoClientOptions>
 	/** Env var prefix (e.g. `"PCGI_RAW"`, `"GO_MONGO"`). */
 	prefix: string
+	/** Type of SSH tunnel to use. */
+	tunnelType?: SshTunnelType
 }
 
 /**
@@ -84,7 +86,8 @@ export class MongoDatabaseClient {
 			this.entries.set(key, promise);
 		}
 
-		const entry = await this.entries.get(key)!;
+		const entry = await this.entries.get(key);
+		if (!entry) throw new Error(`No entry found for key: ${key}`);
 		return entry.client;
 	}
 
@@ -163,18 +166,28 @@ export class MongoDatabaseClient {
 		const { prefix } = config;
 		const env = (name: string) => process.env[`${prefix}_${name}`];
 
-		if (!env('HOST_1') || !env('PORT_1')) throw new Error(`Missing ${prefix}_HOST_1 or ${prefix}_PORT_1`);
-		if (!env('HOST_2') || !env('PORT_2')) throw new Error(`Missing ${prefix}_HOST_2 or ${prefix}_PORT_2`);
-		if (!env('HOST_3') || !env('PORT_3')) throw new Error(`Missing ${prefix}_HOST_3 or ${prefix}_PORT_3`);
-		if (!env('USERNAME') || !env('PASSWORD')) throw new Error(`Missing ${prefix}_USERNAME or ${prefix}_PASSWORD`);
-		if (!env('RS_NAME')) throw new Error(`Missing ${prefix}_RS_NAME`);
+		const host1 = env('HOST_1');
+		const port1 = env('PORT_1');
+		const host2 = env('HOST_2');
+		const port2 = env('PORT_2');
+		const host3 = env('HOST_3');
+		const port3 = env('PORT_3');
+		const username = env('USERNAME');
+		const password = env('PASSWORD');
+		const rsName = env('RS_NAME');
 
-		const tunnel = goSshTunnel({ dstAddr: env('HOST_1')!, dstPort: Number(env('PORT_1')) });
+		if (!host1 || !port1) throw new Error(`Missing ${prefix}_HOST_1 or ${prefix}_PORT_1`);
+		if (!host2 || !port2) throw new Error(`Missing ${prefix}_HOST_2 or ${prefix}_PORT_2`);
+		if (!host3 || !port3) throw new Error(`Missing ${prefix}_HOST_3 or ${prefix}_PORT_3`);
+		if (!username || !password) throw new Error(`Missing ${prefix}_USERNAME or ${prefix}_PASSWORD`);
+		if (!rsName) throw new Error(`Missing ${prefix}_RS_NAME`);
+
+		const tunnel = config.tunnelType ? createSshTunnelFactory(config.tunnelType)({ dstAddr: host1, dstPort: Number(port1) }) : null;
 
 		if (!tunnel) {
 			return {
 				tunnel: null,
-				uri: `mongodb://${env('USERNAME')}:${env('PASSWORD')}@${env('HOST_1')}:${env('PORT_1')},${env('HOST_2')}:${env('PORT_2')},${env('HOST_3')}:${env('PORT_3')}/`,
+				uri: `mongodb://${username}:${password}@${host1}:${port1},${host2}:${port2},${host3}:${port3}/`,
 			};
 		}
 
@@ -189,7 +202,7 @@ export class MongoDatabaseClient {
 
 		return {
 			tunnel,
-			uri: `mongodb://${env('USERNAME')}:${env('PASSWORD')}@localhost:${addr.port}/`,
+			uri: `mongodb://${username}:${password}@localhost:${addr.port}/`,
 		};
 	}
 }

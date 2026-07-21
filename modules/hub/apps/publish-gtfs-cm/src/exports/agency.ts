@@ -2,7 +2,7 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
-import { agencies } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger-backend';
 
 /* * */
@@ -30,7 +30,7 @@ export async function exportAgencyFile(agencyIds: string[], exportConfig: Merged
 	//
 	// Get agencies data from the database.
 
-	const foundAgenciesData = await agencies.findMany(
+	const foundAgenciesData = await goDb.core.agencies.findMany(
 		{ _id: { $in: agencyIds } },
 		{ sort: { _id: 1 } },
 	);

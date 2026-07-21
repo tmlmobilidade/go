@@ -23,7 +23,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/external": "*",
 		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/go-interfaces-go-db": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",

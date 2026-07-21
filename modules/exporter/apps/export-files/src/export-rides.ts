@@ -1,6 +1,7 @@
 /* * */
 
-import { authProvider, fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { authProvider } from '@tmlmobilidade/go-providers-auth';
+import { fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-backend';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';

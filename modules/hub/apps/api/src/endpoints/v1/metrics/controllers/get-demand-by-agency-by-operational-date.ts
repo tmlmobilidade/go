@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/logger-backend';
 

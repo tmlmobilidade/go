@@ -15,7 +15,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.44.0",
+		"@tabler/icons-react": "3.45.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/logger-frontend": "*",
 		"@tmlmobilidade/ui": "*",

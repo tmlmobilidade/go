@@ -3,7 +3,8 @@
 import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, type Filter, patterns, stops } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { files, type Filter, stops } from '@tmlmobilidade/interfaces';
 import { CreateStopSchema, type File, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
@@ -164,7 +165,7 @@ export class StopsController {
 		//
 		// Get pattern ids that reference this event in manual pattern rules
 
-		const associatedPatterns = await patterns.findMany(
+		const associatedPatterns = await goDb.offer.patterns.findMany(
 			{
 				'path.stop_id': Number(request.params.id),
 			},

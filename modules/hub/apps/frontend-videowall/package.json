@@ -14,7 +14,7 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.44.0",
+		"@tabler/icons-react": "3.45.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-types-performance": "*",
@@ -22,10 +22,10 @@
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.2.10",
-		"nuqs": "2.9.0",
+		"nuqs": "2.9.1",
 		"react": "19.2.7",
 		"react-dom": "19.2.7",
-		"react-i18next": "17.0.9",
+		"react-i18next": "17.0.10",
 		"sharp": "0.35.3",
 		"swr": "2.4.2"
 	},

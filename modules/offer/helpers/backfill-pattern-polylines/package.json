@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*"
 	},
 	"devDependencies": {

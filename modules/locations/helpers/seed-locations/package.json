@@ -19,7 +19,7 @@
 		"start": "tsx src/index.ts"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-interfaces-go-db": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@turf/turf": "7.3.5",
 		"@tmlmobilidade/logger-backend": "*"

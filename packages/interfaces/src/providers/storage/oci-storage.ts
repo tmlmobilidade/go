@@ -36,7 +36,7 @@ export class OCIStorageProvider implements IStorageProvider {
 				config.tenancy,
 				config.user,
 				config.fingerprint,
-				config.private_key_path ? readFileSync(config.private_key_path, 'utf8') : config.private_key,
+				config.private_key_path ? readFileSync(config.private_key_path, 'utf8') : config.private_key?.replace(/\\n/g, '\n'),
 				null,
 				Region.fromRegionId(config.region),
 			),
