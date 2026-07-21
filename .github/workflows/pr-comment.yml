@@ -33,6 +33,17 @@ jobs:
               .sort()
               .join('\n');
 
+            const messages = [
+              'Test wisely, deploy bravely',
+              'With great power comes great responsibility',
+              'Quality first, deployment second',
+              'If it just works then its not good enough',
+              'Good systems grow, great code lasts',
+              'Write code like someone’s way home depends on it',
+              'For every line we put into production, someone finds a line to reach their destination.'
+              ];
+            const tagline = messages[Math.floor(Math.random() * messages.length)];
+
             const body = [
               '### Builds',
               '',
@@ -53,7 +64,7 @@ jobs:
               '',
               `https://pr-${prNumber}.go-stg.tmlmobilidade.pt/`,
               '',
-              'Test wisely, deploy bravely'
+              tagline,
             ].join('\n');
 
             github.rest.issues.createComment({
