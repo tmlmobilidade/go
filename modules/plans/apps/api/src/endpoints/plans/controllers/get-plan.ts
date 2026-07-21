@@ -28,7 +28,7 @@ export async function getPlan(request: FastifyRequest<{ Params: { id: string } }
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: planData.gtfs_agency.agency_id,
+		value: planData.agency_id,
 	});
 
 	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');

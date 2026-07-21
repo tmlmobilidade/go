@@ -34,12 +34,12 @@ export function ValidationsDetailHeader() {
 				action: PermissionCatalog.all.gtfs_validations.actions.update_processing_status,
 				resource_key: 'agency_ids',
 				scope: PermissionCatalog.all.gtfs_validations.scope,
-				value: validationsDetailContext.data.validation.gtfs_agency.agency_id,
+				value: validationsDetailContext.data.validation.agency_id,
 			},
 		]);
 	}, [
 		meContext.data.user?.permissions,
-		validationsDetailContext.data.validation.gtfs_agency.agency_id,
+		validationsDetailContext.data.validation.agency_id,
 	]);
 
 	//
@@ -69,7 +69,7 @@ export function ValidationsDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<IdTag id={validationsDetailContext.data.validation?._id} copyOnClick />
-			<AgencyTag agencyId={validationsDetailContext.data.validation?.gtfs_agency.agency_id} />
+			<AgencyTag agencyId={validationsDetailContext.data.validation?.agency_id} />
 
 			<ProcessingStatusTag
 				disabled={!hasPermissionToChangeProcessingStatus}
@@ -86,7 +86,7 @@ export function ValidationsDetailHeader() {
 					action={PermissionCatalog.all.gtfs_validations.actions.request_approval}
 					resourceKey="agency_ids"
 					scope={PermissionCatalog.all.gtfs_validations.scope}
-					value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
+					value={validationsDetailContext.data.validation.agency_id}
 				>
 					<Button
 						disabled={validationsDetailContext.flags.loading || validationsDetailContext.data.validation.notification_sent}
@@ -102,7 +102,7 @@ export function ValidationsDetailHeader() {
 					action={PermissionCatalog.all.plans.actions.create}
 					resourceKey="agency_ids"
 					scope={PermissionCatalog.all.plans.scope}
-					value={validationsDetailContext.data.validation.gtfs_agency.agency_id}
+					value={validationsDetailContext.data.validation.agency_id}
 				>
 					<Button
 						disabled={validationsDetailContext.flags.loading}

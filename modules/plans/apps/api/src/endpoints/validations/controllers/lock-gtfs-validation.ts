@@ -28,7 +28,7 @@ export async function lockGtfsValidation(request: FastifyRequest<{ Params: { id:
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.gtfs_validations.scope,
-		value: foundValidation.gtfs_agency.agency_id,
+		value: foundValidation.agency_id,
 	});
 
 	if (!hasPermissionLockValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock validation');

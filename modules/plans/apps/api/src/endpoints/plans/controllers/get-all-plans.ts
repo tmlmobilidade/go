@@ -32,13 +32,13 @@ export async function getAllPlans(request: FastifyRequest, reply: FastifyReply<P
 
 	if ('resources' in userPlanPermissions && 'agency_ids' in userPlanPermissions.resources) {
 		if (!userPlanPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-			queryFilters['gtfs_agency.agency_id'] = { $in: userPlanPermissions.resources['agency_ids'] };
+			queryFilters['agency_id'] = { $in: userPlanPermissions.resources['agency_ids'] };
 		}
 	}
 
 	if ('resources' in userPlanPermissions) {
 		const filters = {
-			...(userPlanPermissions.resources['agency_ids'] && !userPlanPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: userPlanPermissions.resources['agency_ids'] } }),
+			...(userPlanPermissions.resources['agency_ids'] && !userPlanPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { agency_id: { $in: userPlanPermissions.resources['agency_ids'] } }),
 		};
 
 		const filteredPlans = await goDb.operation.plans.findMany(filters, { sort: { created_at: -1 } });

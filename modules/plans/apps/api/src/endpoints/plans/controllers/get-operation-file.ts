@@ -31,7 +31,7 @@ export async function getOperationFile(request: FastifyRequest<{ Params: { id: s
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: planData.gtfs_agency.agency_id,
+		value: planData.agency_id,
 	});
 
 	if (!hasPermissionReadPlan) {

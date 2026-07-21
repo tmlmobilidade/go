@@ -24,7 +24,7 @@ export async function downloadGtfsValidationFile(request: FastifyRequest<{ Param
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.gtfs_validations.scope,
-		value: foundValidation.gtfs_agency.agency_id,
+		value: foundValidation.agency_id,
 	});
 	if (!hasPermissionReadValidation) {
 		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read validation file');

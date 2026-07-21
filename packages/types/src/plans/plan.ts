@@ -26,8 +26,8 @@ export const PlanSchema = DocumentSchema.extend({
 	pcgi_legacy: PlanPcgiLegacySchema,
 });
 
-export const CreatePlanSchema = PlanSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdatePlanSchema = CreatePlanSchema.omit({ created_by: true }).partial();
+export const CreatePlanSchema = PlanSchema.omit({ _id: true, updated_at: true });
+export const UpdatePlanSchema = CreatePlanSchema.omit({ created_at: true, created_by: true }).partial();
 
 /* * */
 

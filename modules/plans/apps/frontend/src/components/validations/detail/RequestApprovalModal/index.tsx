@@ -45,7 +45,7 @@ export default function RequestApprovalModal() {
 			<Section alignItems="center" flexDirection="row" gap="lg">
 				<ProcessingStatusTag value={plansCreateContext.data.validation?.processing_status} />
 				<ValidityStatusTag value={plansCreateContext.data.validation?.validity_status} />
-				<Tag label={plansCreateContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
+				<Tag label={plansCreateContext.data.validation?.agency_id} variant="secondary" />
 				<Label size="md" caps>{plansCreateContext.data.validation._id}</Label>
 			</Section>
 

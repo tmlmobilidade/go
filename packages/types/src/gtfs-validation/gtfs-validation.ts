@@ -21,7 +21,7 @@ export const GtfsValidationSchema = DocumentSchema.extend({
 });
 
 export const CreateGtfsValidationSchema = GtfsValidationSchema.omit({ _id: true, updated_at: true });
-export const UpdateGtfsValidationSchema = CreateGtfsValidationSchema.omit({ created_by: true }).partial();
+export const UpdateGtfsValidationSchema = CreateGtfsValidationSchema.omit({ created_at: true, created_by: true }).partial();
 
 export type GtfsValidation = z.infer<typeof GtfsValidationSchema>;
 export type CreateGtfsValidationDto = z.infer<typeof CreateGtfsValidationSchema>;

@@ -30,7 +30,7 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: foundPlan.gtfs_agency.agency_id,
+		value: foundPlan.agency_id,
 	});
 
 	if (!hasPermissionSendApexNotification) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to send the APEX notification.');
@@ -38,7 +38,7 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 	//
 	// Fetch the Agency data
 
-	const agencyData = await goDb.core.agencies.findById(foundPlan.gtfs_agency.agency_id);
+	const agencyData = await goDb.core.agencies.findById(foundPlan.agency_id);
 
 	if (!agencyData.apex.contact_emails.length) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No APEX contact emails found for this agency.');
 
@@ -67,7 +67,7 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 			filename: foundFileData.name,
 		}],
 		data: {
-			agencyName: foundPlan.gtfs_agency.agency_name,
+			agencyName: agencyData.name,
 			planId: foundPlan._id,
 			startDate: foundPlan.gtfs_feed_info.feed_start_date,
 		},

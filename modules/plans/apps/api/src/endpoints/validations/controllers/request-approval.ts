@@ -38,7 +38,7 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.gtfs_validations.scope,
-		value: validationData.gtfs_agency.agency_id,
+		value: validationData.agency_id,
 	});
 
 	if (!hasPermissionRequestApproval) {
@@ -48,7 +48,7 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 	//
 	// Get the TML contact emails for this Agency
 
-	const agencyData = await goDb.core.agencies.findById(validationData.gtfs_agency.agency_id);
+	const agencyData = await goDb.core.agencies.findById(validationData.agency_id);
 
 	if (!agencyData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');
@@ -59,7 +59,7 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 
 	await sendPlanApprovalRequestEmail({
 		data: {
-			agencyName: validationData.gtfs_agency.agency_name,
+			agencyName: agencyData.name,
 			endDate: validationData.gtfs_feed_info.feed_end_date,
 			firstName: request.me.first_name,
 			gtfsValidationId: validationData._id,

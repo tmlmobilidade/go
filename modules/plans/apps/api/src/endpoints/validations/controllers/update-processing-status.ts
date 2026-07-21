@@ -30,7 +30,7 @@ export async function updateProcessingStatus(request: FastifyRequest<{ Body: { p
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.gtfs_validations.scope,
-		value: gtfsValidationData.gtfs_agency.agency_id,
+		value: gtfsValidationData.agency_id,
 	});
 
 	if (!hasPermissionChangeStatus) {

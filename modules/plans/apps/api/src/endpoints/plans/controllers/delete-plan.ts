@@ -28,7 +28,7 @@ export async function deletePlan(request: FastifyRequest<{ Params: { id: string 
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: foundPlan.gtfs_agency.agency_id,
+		value: foundPlan.agency_id,
 	})) {
 		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: delete plan');
 	}

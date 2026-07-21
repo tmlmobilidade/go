@@ -32,7 +32,7 @@ export function ValidationsList() {
 		},
 		{
 			accessor: 'agency_id_normalized',
-			render: item => <AgencyTag agencyId={item.agency_id ?? item.gtfs_agency.agency_id} showShortName />,
+			render: item => <AgencyTag agencyId={item.agency_id} showShortName />,
 			title: 'Operador',
 			width: 110,
 		},

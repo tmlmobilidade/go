@@ -60,10 +60,10 @@ export async function ensureGtfsFiles() {
 
 		let agencyTxtChanged = false;
 
-		const foundAgencyData = await goDb.core.agencies.findById(planData.gtfs_agency.agency_id);
+		const foundAgencyData = await goDb.core.agencies.findById(planData.agency_id);
 
 		if (!foundAgencyData) {
-			Logger.error({ message: `[${planData._id}] No agency found with ID ${planData.gtfs_agency.agency_id}.` });
+			Logger.error({ message: `[${planData._id}] No agency found with ID ${planData.agency_id}.` });
 			continue;
 		}
 

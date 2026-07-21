@@ -31,7 +31,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: foundPlan.gtfs_agency.agency_id,
+		value: foundPlan.agency_id,
 	});
 
 	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this plan.');
@@ -61,7 +61,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: foundPlan.gtfs_agency.agency_id,
+			value: foundPlan.agency_id,
 		});
 
 		if (!hasPermissionUpdateFeedInfoDates) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the feed info dates.');
@@ -142,7 +142,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: foundPlan.gtfs_agency.agency_id,
+			value: foundPlan.agency_id,
 		});
 
 		if (!hasPermissionUpdatePcgiLegacy) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the PCGI legacy field.');

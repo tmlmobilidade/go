@@ -33,13 +33,13 @@ export async function getAllGtfsValidations(request: FastifyRequest, reply: Fast
 
 	if ('resources' in userGtfsValidationPermissions && 'agency_ids' in userGtfsValidationPermissions.resources) {
 		if (!userGtfsValidationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-			queryFilters['gtfs_agency.agency_id'] = { $in: userGtfsValidationPermissions.resources['agency_ids'] };
+			queryFilters['agency_id'] = { $in: userGtfsValidationPermissions.resources['agency_ids'] };
 		}
 	}
 
 	if ('resources' in userGtfsValidationPermissions) {
 		const filters = {
-			...(userGtfsValidationPermissions.resources['agency_ids'] && !userGtfsValidationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: userGtfsValidationPermissions.resources['agency_ids'] } }),
+			...(userGtfsValidationPermissions.resources['agency_ids'] && !userGtfsValidationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { agency_id: { $in: userGtfsValidationPermissions.resources['agency_ids'] } }),
 		};
 
 		const filteredgtfsValidations = await goDb.operation.gtfsValidations.findMany(filters, { sort: { created_at: -1 } });

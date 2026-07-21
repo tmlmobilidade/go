@@ -71,7 +71,8 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		// Normalize record fields
 		return allPlansData.map(item => ({
 			...item,
-			agency_id_normalized: item.gtfs_agency.agency_id,
+			agency_code_normalized: item.gtfs_agency.agency_id,
+			agency_id_normalized: item.agency_id,
 			agency_name_normalized: normalizeString(item.gtfs_agency.agency_name),
 			validity_status: getPlanValidityStatus(item.gtfs_feed_info.feed_start_date, item.gtfs_feed_info.feed_end_date),
 		}));
@@ -83,8 +84,6 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		query: filterSearch.value,
 	});
 
-	console.log(normalizedPlansData);
-
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
@@ -94,7 +93,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 		return searchResultsData
 			.filter((item: PlanNormalized) => {
 				// Filter by agency
-				if (!agencySet.has(item.gtfs_agency.agency_id)) return false;
+				if (!agencySet.has(item.agency_id)) return false;
 				// Filter by validity_status
 				if (!validityStatusSet.has(item.validity_status)) return false;
 				// Return true if all filters pass
@@ -122,15 +121,7 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 			error: allPlansError,
 			isLoading: allPlansLoading,
 		},
-	}), [
-		allPlansError,
-		allPlansLoading,
-		filterResultsData,
-		filterValidityStatus.value,
-		allPlansData,
-		filterAgency.value,
-		filterSearch.value,
-	]);
+	}), [filterResultsData, allPlansData, filterAgency, filterSearch, filterValidityStatus, allPlansError, allPlansLoading]);
 
 	//
 	// E. Render components

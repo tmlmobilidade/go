@@ -32,7 +32,7 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: planData.gtfs_agency.agency_id,
+		value: planData.agency_id,
 	});
 
 	// Throw an error if the user is not authorized
