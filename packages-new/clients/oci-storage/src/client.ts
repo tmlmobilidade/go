@@ -2,11 +2,14 @@
 
 import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
 import { Logger } from '@tmlmobilidade/logger';
+import { withRetry } from '@tmlmobilidade/utils';
 import { readFileSync } from 'node:fs';
 import { Readable } from 'node:stream';
 import { OciError, Region, SimpleAuthenticationDetailsProvider } from 'oci-common';
 import { ObjectStorageClient, UploadManager } from 'oci-objectstorage';
 import { CreatePreauthenticatedRequestDetails } from 'oci-objectstorage/lib/model/create-preauthenticated-request-details.js';
+
+import { BlobStoreError, NotFoundError } from './storage-error.js';
 
 /* * */
 
@@ -56,17 +59,21 @@ export class OCIStorageClientWrapper {
 	 * @param destination - The destination object key.
 	 */
 	async copyFile(source: string, destination: string): Promise<void> {
-		await this.entry.client.copyObject({
-			bucketName: this.entry.bucketName,
-			copyObjectDetails: {
-				destinationBucket: this.entry.bucketName,
-				destinationNamespace: this.entry.namespace,
-				destinationObjectName: destination,
-				destinationRegion: this.entry.region.regionId,
-				sourceObjectName: source,
-			},
-			namespaceName: this.entry.namespace,
-		});
+		try {
+			await withRetry(() => this.entry.client.copyObject({
+				bucketName: this.entry.bucketName,
+				copyObjectDetails: {
+					destinationBucket: this.entry.bucketName,
+					destinationNamespace: this.entry.namespace,
+					destinationObjectName: destination,
+					destinationRegion: this.entry.region.regionId,
+					sourceObjectName: source,
+				},
+				namespaceName: this.entry.namespace,
+			}));
+		} catch (error) {
+			this.throwBlobStoreError(error, { destination, source });
+		}
 	}
 
 	/**
@@ -74,11 +81,15 @@ export class OCIStorageClientWrapper {
 	 * @param key - The object key to delete.
 	 */
 	async deleteFile(key: string): Promise<void> {
-		await this.entry.client.deleteObject({
-			bucketName: this.entry.bucketName,
-			namespaceName: this.entry.namespace,
-			objectName: key,
-		});
+		try {
+			await withRetry(() => this.entry.client.deleteObject({
+				bucketName: this.entry.bucketName,
+				namespaceName: this.entry.namespace,
+				objectName: key,
+			}));
+		} catch (error) {
+			this.throwBlobStoreError(error, { key });
+		}
 	}
 
 	/**
@@ -86,7 +97,15 @@ export class OCIStorageClientWrapper {
 	 * @param keys - The object keys to delete.
 	 */
 	async deleteFiles(keys: string[]): Promise<void> {
-		await Promise.all(keys.map(key => this.deleteFile(key)));
+		try {
+			await Promise.all(keys.map(key => this.entry.client.deleteObject({
+				bucketName: this.entry.bucketName,
+				namespaceName: this.entry.namespace,
+				objectName: key,
+			})));
+		} catch (error) {
+			this.throwBlobStoreError(error, { keys });
+		}
 	}
 
 	/**
@@ -96,15 +115,21 @@ export class OCIStorageClientWrapper {
 	 */
 	async fileExists(key: string): Promise<boolean> {
 		try {
-			await this.entry.client.headObject({
-				bucketName: this.entry.bucketName,
-				namespaceName: this.entry.namespace,
-				objectName: key,
+			return await withRetry(async () => {
+				try {
+					await this.entry.client.headObject({
+						bucketName: this.entry.bucketName,
+						namespaceName: this.entry.namespace,
+						objectName: key,
+					});
+					return true;
+				} catch (error: unknown) {
+					if (error instanceof OciError && error.statusCode === 404) return false;
+					throw error;
+				}
 			});
-			return true;
-		} catch (error: unknown) {
-			if (error instanceof OciError && error.statusCode === 404) return false;
-			throw error;
+		} catch (error) {
+			this.throwBlobStoreError(error, { key });
 		}
 	}
 
@@ -115,22 +140,37 @@ export class OCIStorageClientWrapper {
 	 * @throws {HttpException} 404 if the object does not exist.
 	 */
 	async getFileUrl(key: string): Promise<string> {
-		if (!await this.fileExists(key)) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, `File ${key} does not exist in bucket ${this.entry.bucketName}`);
+		try {
+			return await withRetry(async () => {
+				try {
+					await this.entry.client.headObject({
+						bucketName: this.entry.bucketName,
+						namespaceName: this.entry.namespace,
+						objectName: key,
+					});
+				} catch (error: unknown) {
+					if (error instanceof OciError && error.statusCode === 404) {
+						throw new HttpException(HTTP_STATUS.NOT_FOUND, `File ${key} does not exist in bucket ${this.entry.bucketName}`);
+					}
+					throw error;
+				}
+
+				const response = await this.entry.client.createPreauthenticatedRequest({
+					bucketName: this.entry.bucketName,
+					createPreauthenticatedRequestDetails: {
+						accessType: CreatePreauthenticatedRequestDetails.AccessType.ObjectRead,
+						name: 'public-download-link',
+						objectName: key,
+						timeExpires: new Date(Date.now() + 1000 * 60 * 60),
+					},
+					namespaceName: this.entry.namespace,
+				});
+
+				return `https://objectstorage.${this.entry.region.regionId}.oraclecloud.com${response.preauthenticatedRequest.accessUri}`;
+			});
+		} catch (error) {
+			this.throwBlobStoreError(error, { key });
 		}
-
-		const response = await this.entry.client.createPreauthenticatedRequest({
-			bucketName: this.entry.bucketName,
-			createPreauthenticatedRequestDetails: {
-				accessType: CreatePreauthenticatedRequestDetails.AccessType.ObjectRead,
-				name: 'public-download-link',
-				objectName: key,
-				timeExpires: new Date(Date.now() + 1000 * 60 * 60),
-			},
-			namespaceName: this.entry.namespace,
-		});
-
-		return `https://objectstorage.${this.entry.region.regionId}.oraclecloud.com${response.preauthenticatedRequest.accessUri}`;
 	}
 
 	/**
@@ -139,12 +179,18 @@ export class OCIStorageClientWrapper {
 	 * @returns An array of object keys.
 	 */
 	async listFiles(prefix?: string): Promise<string[]> {
-		const result = await this.entry.client.listObjects({
-			bucketName: this.entry.bucketName,
-			namespaceName: this.entry.namespace,
-			prefix,
-		});
-		return result.listObjects?.objects?.map(obj => obj.name) ?? [];
+		try {
+			return await withRetry(async () => {
+				const result = await this.entry.client.listObjects({
+					bucketName: this.entry.bucketName,
+					namespaceName: this.entry.namespace,
+					prefix,
+				});
+				return result.listObjects?.objects?.map(obj => obj.name) ?? [];
+			});
+		} catch (error) {
+			this.throwBlobStoreError(error, { prefix });
+		}
 	}
 
 	/**
@@ -162,6 +208,7 @@ export class OCIStorageClientWrapper {
 		const uploadManager = new UploadManager(this.entry.client, { enforceMD5: true });
 
 		try {
+			// Uploads are not safely retried (streams may be consumed).
 			await uploadManager.upload({
 				content: body instanceof Buffer
 					? { blob: new Blob([new Uint8Array(body)], { type: mimeType }) }
@@ -175,9 +222,19 @@ export class OCIStorageClientWrapper {
 				},
 			});
 		} catch (error) {
-			console.error('Error uploading file:', JSON.stringify(error, null, 2));
-			throw error;
+			this.throwBlobStoreError(error, { key, mimeType });
 		}
+	}
+
+	private throwBlobStoreError(error: unknown, context: Record<string, unknown>): never {
+		if (error instanceof HttpException && error.statusCode === HTTP_STATUS.NOT_FOUND) {
+			throw new NotFoundError(error.message, { cause: error, context });
+		}
+		throw new BlobStoreError(error instanceof Error ? error.message : String(error), {
+			cause: error,
+			context,
+			retryable: true,
+		});
 	}
 }
 
