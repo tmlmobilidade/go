@@ -30,7 +30,7 @@ export function AgencyTag({ agencyId, showId = true, showName = false, showShort
 	//
 	// B. Transform data
 
-	const agencyData = agenciesData.find(agency => agency._id === agencyId || agency.code === agencyId);
+	const agencyData = agenciesData.find(agency => agency._id === agencyId);
 	const agencyName = agencyData?.name;
 	const agencyShortName = agencyData?.short_name;
 

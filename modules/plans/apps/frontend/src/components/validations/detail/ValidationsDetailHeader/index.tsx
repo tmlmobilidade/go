@@ -69,7 +69,7 @@ export function ValidationsDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<IdTag id={validationsDetailContext.data.validation?._id} copyOnClick />
-			<AgencyTag agencyId={validationsDetailContext.data.validation?.agency_id} />
+			<AgencyTag agencyId={validationsDetailContext.data.validation?.agency_id} showShortName />
 
 			<ProcessingStatusTag
 				disabled={!hasPermissionToChangeProcessingStatus}
