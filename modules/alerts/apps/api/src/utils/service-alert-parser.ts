@@ -1,8 +1,8 @@
 import { type Line } from '@carrismetropolitana/api-types/network';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type ServiceAlertResponseItem } from '@tmlmobilidade/types';
-import { Alert, File } from '@tmlmobilidade/types';
+import { Alert, Attachment } from '@tmlmobilidade/types';
 import { type EntitySelector } from 'gtfs-types';
 
 async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAlertResponseItem> {
@@ -71,9 +71,9 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 		return informedEntity;
 	};
 
-	let file: File | null = null;
+	let attachment: Attachment | null = null;
 	try {
-		file = await files.findById(alert.file_id);
+		attachment = await storageProvider.findById(alert.file_id);
 	} catch (error) {
 		console.error(error);
 	}
@@ -105,12 +105,12 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 					},
 				],
 			},
-			image: file ? {
+			image: attachment ? {
 				localized_image: [
 					{
 						language: 'pt',
-						media_type: file.type ?? 'image/png',
-						url: file.url ?? '',
+						media_type: attachment.type ?? 'image/png',
+						url: attachment.url ?? '',
 					},
 				],
 			} : undefined,
