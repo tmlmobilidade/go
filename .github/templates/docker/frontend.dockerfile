@@ -1,6 +1,6 @@
 # # #
 
-FROM node:lts-alpine AS base
+FROM node:lts-slim AS base
 
 
 # # #
@@ -54,15 +54,16 @@ ARG APP
 
 WORKDIR /app
 
-COPY .github/templates/docker/scripts /app/.docker/scripts
-COPY assets /app/assets
-
 # First install the dependencies (as they change less often)
 COPY --from=pruner /app/out/json/ .
 RUN npm ci
 
+COPY .github/templates/docker/scripts /app/.docker/scripts
+
 # Build the app
 COPY --from=pruner /app/out/full/ .
+
+COPY assets /app/assets
 
 RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/package.json
 
@@ -71,11 +72,14 @@ RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 RUN node /app/.docker/scripts/trim-node-modules.js /app/modules/${MODULE}/apps/${APP}/.next/standalone/node_modules
 RUN node /app/.docker/scripts/trim-workspaces.js /app/modules/${MODULE}/apps/${APP}/.next/standalone/packages /app/modules/${MODULE}/apps/${APP}/.next/standalone/modules
 
+# Stable entrypoint for distroless (no shell to expand MODULE/APP at runtime)
+RUN ln -s "modules/${MODULE}/apps/${APP}/server.js" "/app/modules/${MODULE}/apps/${APP}/.next/standalone/server.js"
+
 
 # # #
 # RUNNER STAGE
 
-FROM node:lts-alpine AS runner
+FROM gcr.io/distroless/nodejs24-debian13 AS runner
 
 ARG MODULE
 ARG APP
@@ -84,12 +88,11 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
+COPY --from=builder --chown=nonroot:nonroot /app/assets ./modules/${MODULE}/apps/${APP}/public/assets
+COPY --from=builder --chown=nonroot:nonroot /app/modules/${MODULE}/apps/${APP}/.next/standalone ./
+COPY --from=builder --chown=nonroot:nonroot /app/modules/${MODULE}/apps/${APP}/.next/static ./modules/${MODULE}/apps/${APP}/.next/static
 
-COPY --from=pruner --chown=nextjs:nodejs /app/assets ./modules/${MODULE}/apps/${APP}/public/assets
-COPY --from=builder --chown=nextjs:nodejs /app/modules/${MODULE}/apps/${APP}/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/modules/${MODULE}/apps/${APP}/.next/static ./modules/${MODULE}/apps/${APP}/.next/static
+USER nonroot
 
-CMD node /app/modules/${MODULE}/apps/${APP}/server.js
+# Distroless entrypoint is node; server.js is a symlink into the app path.
+CMD ["server.js"]
