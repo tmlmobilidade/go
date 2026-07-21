@@ -1,21 +1,12 @@
 /* * */
 
-import { batchDelete as batchDeleteFn, type BatchDeleteInput } from '@/operations/batch-delete.js';
-import { type BatchResult, batchUpload as batchUploadFn, type BatchUploadItem } from '@/operations/batch-upload.js';
-import { copy as copyFn } from '@/operations/copy.js';
-import { deleteAttachment as deleteFn } from '@/operations/delete.js';
-import { exists as existsFn, type ExistsResult } from '@/operations/exists.js';
-import { findById as findByIdFn } from '@/operations/find-by-id.js';
-import { getSignedUrl as getSignedUrlFn } from '@/operations/get-signed-url.js';
-import { move as moveFn } from '@/operations/move.js';
-import { replace as replaceFn } from '@/operations/replace.js';
-import { upload as uploadFn } from '@/operations/upload.js';
-import { validateUpload as validateUploadFn, type ValidateUploadResult } from '@/operations/validate-upload.js';
 import { BlobBody } from '@/types/blob-body.js';
 import { type StorageDeps } from '@/types/deps.js';
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
 import { createLoggerObservability } from '@/utils/observability.js';
+
+import * as operations from './operations/index.js';
 
 /* * */
 
@@ -47,8 +38,8 @@ class StorageProviderClass {
 	 * @param options - Optional: Batch deletion settings such as concurrency.
 	 * @returns A promise resolving to the batch result containing deleted fileIds.
 	 */
-	async batchDelete(fileIds: string[], hooks?: OperationHooks<OperationContext, BatchResult<{ fileId: string }>>, options?: Pick<BatchDeleteInput, 'concurrency'>): Promise<BatchResult<{ fileId: string }>> {
-		return batchDeleteFn(this.deps, { concurrency: options?.concurrency, fileIds, hooks });
+	async batchDelete(fileIds: string[], hooks?: OperationHooks<OperationContext, operations.BatchResult<{ fileId: string }>>, options?: Pick<operations.BatchDeleteInput, 'concurrency'>): Promise<operations.BatchResult<{ fileId: string }>> {
+		return operations.batchDelete(this.deps, { concurrency: options?.concurrency, fileIds, hooks });
 	}
 
 	/**
@@ -58,8 +49,8 @@ class StorageProviderClass {
 	 * @param options - Optional: Control concurrency for batch uploads.
 	 * @returns A promise resolving to the batch upload result with attachments.
 	 */
-	async batchUpload(items: BatchUploadItem[], hooks?: OperationHooks<OperationContext, BatchResult<Attachment>>, options?: { concurrency?: number }): Promise<BatchResult<Attachment>> {
-		return batchUploadFn(this.deps, { concurrency: options?.concurrency, hooks, items });
+	async batchUpload(items: operations.BatchUploadItem[], hooks?: OperationHooks<OperationContext, operations.BatchResult<Attachment>>, options?: { concurrency?: number }): Promise<operations.BatchResult<Attachment>> {
+		return operations.batchUpload(this.deps, { concurrency: options?.concurrency, hooks, items });
 	}
 
 	/**
@@ -71,7 +62,7 @@ class StorageProviderClass {
 	 * @returns A promise resolving to the new copied Attachment.
 	 */
 	async copy(fileId: string, scope: string, resourceId: string, hooks?: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
-		return copyFn(this.deps, { fileId, hooks, resourceId, scope });
+		return operations.copy(this.deps, { fileId, hooks, resourceId, scope });
 	}
 
 	/**
@@ -81,7 +72,7 @@ class StorageProviderClass {
 	 * @returns A promise resolving with the deleted fileId.
 	 */
 	async delete(fileId: string, hooks?: OperationHooks<OperationContext, { fileId: string }>): Promise<{ fileId: string }> {
-		return deleteFn(this.deps, { fileId, hooks });
+		return operations.deleteAttachment(this.deps, { fileId, hooks });
 	}
 
 	/**
@@ -90,8 +81,8 @@ class StorageProviderClass {
 	 * @param hooks - Hooks for operation execution.
 	 * @returns A promise resolving to the existence result.
 	 */
-	async exists(params: { fileId?: string, key?: string }, hooks?: OperationHooks<OperationContext, ExistsResult>): Promise<ExistsResult> {
-		return existsFn(this.deps, { ...params, hooks });
+	async exists(params: { fileId?: string, key?: string }, hooks?: OperationHooks<OperationContext, operations.ExistsResult>): Promise<operations.ExistsResult> {
+		return operations.exists(this.deps, { ...params, hooks });
 	}
 
 	/**
@@ -101,7 +92,7 @@ class StorageProviderClass {
 	 * @returns A promise resolving to the Attachment or null if not found.
 	 */
 	async findById(id: string, hooks?: OperationHooks<OperationContext, Attachment | null>): Promise<Attachment | null> {
-		return findByIdFn(this.deps, { hooks, id });
+		return operations.findById(this.deps, { hooks, id });
 	}
 
 	/**
@@ -111,7 +102,7 @@ class StorageProviderClass {
 	 * @returns A promise resolving to the signed URL as a string.
 	 */
 	async getSignedUrl(params: { fileId?: string, key?: string }, hooks?: OperationHooks<OperationContext, string>): Promise<string> {
-		return getSignedUrlFn(this.deps, { ...params, hooks });
+		return operations.getSignedUrl(this.deps, { ...params, hooks });
 	}
 
 	/**
@@ -123,7 +114,7 @@ class StorageProviderClass {
 	 * @returns A promise resolving to the updated Attachment.
 	 */
 	async move(fileId: string, scope: string, resourceId: string, hooks?: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
-		return moveFn(this.deps, { fileId, hooks, resourceId, scope });
+		return operations.move(this.deps, { fileId, hooks, resourceId, scope });
 	}
 
 	/**
@@ -134,7 +125,7 @@ class StorageProviderClass {
 	 * @returns A promise resolving to the updated Attachment.
 	 */
 	async replace(file: BlobBody, createAttachmentDto: CreateAttachmentDto & { _id: string }, hooks?: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
-		return replaceFn(this.deps, { createAttachmentDto, file, hooks });
+		return operations.replace(this.deps, { createAttachmentDto, file, hooks });
 	}
 
 	/**
@@ -145,7 +136,7 @@ class StorageProviderClass {
 	 * @returns A promise resolving to the created Attachment.
 	 */
 	async upload(file: BlobBody, createAttachmentDto: CreateAttachmentDto & { _id?: string }, hooks?: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
-		return uploadFn(this.deps, { createAttachmentDto, file, hooks });
+		return operations.upload(this.deps, { createAttachmentDto, file, hooks });
 	}
 
 	/**
@@ -155,8 +146,8 @@ class StorageProviderClass {
 	 * @param options - Optional: Max allowed file size in bytes.
 	 * @returns A promise resolving to the validation result.
 	 */
-	async validateUpload(createAttachmentDto: Pick<CreateAttachmentDto, 'name' | 'size'>, hooks?: OperationHooks<OperationContext, ValidateUploadResult>, options?: { maxSizeBytes?: number }): Promise<ValidateUploadResult> {
-		return validateUploadFn({
+	async validateUpload(createAttachmentDto: Pick<CreateAttachmentDto, 'name' | 'size'>, hooks?: OperationHooks<OperationContext, operations.ValidateUploadResult>, options?: { maxSizeBytes?: number }): Promise<operations.ValidateUploadResult> {
+		return operations.validateUpload({
 			createAttachmentDto,
 			hooks,
 			maxSizeBytes: options?.maxSizeBytes,
