@@ -11,6 +11,7 @@ import { parseRawVehicleEventPtTmlMlV1 } from '@/pt/tml/ml/ml-v1.js';
 import { parseRawVehicleEventPtTmlMobiV1 } from '@/pt/tml/mobi/mobi-v1.js';
 import { parseRawVehicleEventPtTmlTcbV1 } from '@/pt/tml/tcb/tcb-v1.js';
 import { parseRawVehicleEventPtTmlTtslV1 } from '@/pt/tml/ttsl/ttsl-v1.js';
+import { parseRawVehicleEventPtTmpUnirV1 } from '@/pt/tmp/unir/unir-v1.js';
 import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
@@ -27,4 +28,5 @@ export const PARSER_MAP: Record<RawVehicleEvent['version'], (vehicleEvent: RawVe
 	'pt-tml-mobi-v1': parseRawVehicleEventPtTmlMobiV1,
 	'pt-tml-tcb-v1': parseRawVehicleEventPtTmlTcbV1,
 	'pt-tml-ttsl-v1': parseRawVehicleEventPtTmlTtslV1,
+	'pt-tmp-unir-v1': parseRawVehicleEventPtTmpUnirV1,
 };
