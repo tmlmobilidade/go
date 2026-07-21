@@ -2,6 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
+import { UnirVehicleLocationResponse } from '@tmlmobilidade/external/dist/clients/unir/types.js';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmpUnirV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -12,6 +13,14 @@ import crypto from 'node:crypto';
 /* * */
 
 let ITERATION = 0;
+
+const AGENCY_NAME_ID_MAP = {
+	'UT1 - VIANORBUS': 'KJTOU',
+	'UT2 - NEX': '1H6XC',
+	'UT3 - Porto Mobilidade': 'OP1VZ',
+	'UT4 - Transportes Beira Douro': 'VZAS3',
+	'UT5 - XERBUS': '8NDX4',
+};
 
 /* * */
 
@@ -34,7 +43,7 @@ const main = async () => {
 
 	Logger.info({ message: `[${ITERATION}] Fetching TMP UNIR data from API...`, spacesAfterOrBefore: 1, spacesBefore: 0 });
 
-	let response;
+	let response: UnirVehicleLocationResponse;
 	try {
 		response = await externalClients.unir.vehiclePositions();
 	} catch (error) {
@@ -48,7 +57,7 @@ const main = async () => {
 		//
 
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmpUnirV1> = {
-			agency_id: 'X7B3N',
+			agency_id: AGENCY_NAME_ID_MAP[event.nomeOperador],
 			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
 			entity_id: event.id,
 			payload: event,
