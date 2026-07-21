@@ -1,2 +1,2 @@
-export * from './hjklç/index.js';
+export * from './amp/index.js';
 export * from './tml/index.js';

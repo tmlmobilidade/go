@@ -2,7 +2,7 @@
 
 import { RawVehicleEventEsCrtmAisaV1Schema } from '@/raw/es/crtm/aisa/v1.js';
 import { RawVehicleEventEsCrtmLaVelozV1Schema } from '@/raw/es/crtm/la-veloz/v1.js';
-import { RawVehicleEventPtTmpUnirV1Schema } from '@/raw/pt/hjklç/unir/v1.js';
+import { RawVehicleEventPtTmpUnirV1Schema } from '@/raw/pt/amp/unir/v1.js';
 import { RawVehicleEventPtTmlCcflV1Schema } from '@/raw/pt/tml/ccfl/v1.js';
 import { RawVehicleEventPtTmlCmetV1CoreSchema } from '@/raw/pt/tml/cmet/v1-core.js';
 import { RawVehicleEventPtTmlCmetV1LogSchema } from '@/raw/pt/tml/cmet/v1-log.js';
