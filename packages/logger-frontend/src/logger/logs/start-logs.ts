@@ -2,17 +2,17 @@
 
 import * as Sentry from '@sentry/nextjs';
 
-import { type LogsContext } from '../interface/logs.js';
 import { getRuntimeLogContext } from '../utils/runtime-log-context.js';
 
 /* * */
 
-type StartLogsContext = Omit<LogsContext, 'app' | 'message' | 'module' | 'severity'> & {
+interface StartLogsContext {
+	[key: string]: unknown
 	app?: string
 	message: string
 	module?: string
 	severity?: string
-};
+}
 
 /* * */
 

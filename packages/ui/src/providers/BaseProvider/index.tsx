@@ -4,25 +4,20 @@ import { MantineProvider, MantineProviderProps } from '@mantine/core';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
+import { initSentry } from '@tmlmobilidade/logger-frontend';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { NuqsAdapter } from 'nuqs/adapters/next';
-import { type PropsWithChildren, Suspense } from 'react';
+import { type PropsWithChildren, Suspense, useEffect } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
 import { LoadingSection } from '../../components/loaders/LoadingSection';
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
 import { themeData } from '../../styles/theme';
-import { SentryInitializer } from './SentryInitializer';
 
 /* * */
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
-	/**
-	 * The app name used to identify frontend logs in Sentry.
-	 */
-	app: string
-
 	/**
 	 * The module name used to identify frontend logs in Sentry.
 	 */
@@ -41,11 +36,18 @@ type BaseProviderProps = LocaleContextProps & VersionContextProps & {
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ app, children, i18n, module, theme, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ children, i18n, module, theme, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
-	// A. Setup variables
+	// A. Initialize frontend logging
+
+	useEffect(() => {
+		initSentry(module);
+	}, [module]);
+
+	//
+	// B. Setup variables
 
 	const mantineDatesSettings: Partial<DatesProviderSettings> = {
 		firstDayOfWeek: 1,
@@ -63,7 +65,7 @@ export function BaseProvider({ app, children, i18n, module, theme, version }: Pr
 	};
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<html
@@ -73,7 +75,6 @@ export function BaseProvider({ app, children, i18n, module, theme, version }: Pr
 			lang="pt"
 		>
 			<body>
-				<SentryInitializer app={app} module={module} />
 				<NuqsAdapter>
 					<Suspense fallback={<LoadingSection fullHeight />}>
 						<VersionContextProvider version={version}>

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider app="frontend-videowall" i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }} module="hub" version={pjson.version}>
+		<BaseProvider i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }} module="hub" version={pjson.version}>
 			<NuqsAdapter>
 				{children}
 			</NuqsAdapter>

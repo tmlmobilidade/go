@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider app="frontend-navegante-app" i18n={{ pt: i18nResourceKeysPt }} module="hub" version={pjson.version}>
+		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} module="hub" version={pjson.version}>
 			<Providers>
 				<MapContextProvider>
 					{children}
