@@ -4,15 +4,15 @@ import { UnirVehicleLocationResponse } from './types.js';
 
 /* * */
 
-const BASE_URL = process.env.Unir_API_URL;
-const API_KEY = process.env.Unir_API_KEY;
+const BASE_URL = process.env.UNIR_API_URL;
+const API_KEY = process.env.UNIR_API_KEY;
 
 async function fetcher(endpoint: string): Promise<Response> {
 	if (!BASE_URL) {
-		throw new Error('Missing Unir_API_URL environment variable.');
+		throw new Error('Missing UNIR_API_URL environment variable.');
 	}
 	if (!API_KEY) {
-		throw new Error('Missing Unir_API_KEY environment variable.');
+		throw new Error('Missing UNIR_API_KEY environment variable.');
 	}
 
 	const response = await fetch(`${BASE_URL}${endpoint}`, {
