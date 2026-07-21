@@ -3,7 +3,7 @@
 import { cleanupOrphanHashedPatterns, cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
 import { parsePlan } from '@/parse-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { plans } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -34,9 +34,9 @@ async function main() {
 		//
 		// Get all Plans and iterate on each one
 
-		const plansCollection = await plans.getCollection();
+		const plansCollection = await goDb.operation.plans.getCollection();
 
-		const allPlansData = await plans.all();
+		const allPlansData = await goDb.operation.plans.findMany({});
 
 		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
