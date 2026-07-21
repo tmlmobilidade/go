@@ -84,9 +84,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 nextjs
+# USER nextjs
 
 COPY --from=pruner --chown=nextjs:nodejs /app/assets ./modules/${MODULE}/apps/${APP}/public/assets
 COPY --from=builder --chown=nextjs:nodejs /app/modules/${MODULE}/apps/${APP}/.next/standalone ./
