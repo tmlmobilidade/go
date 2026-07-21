@@ -81,7 +81,7 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 		await storageProvider.upload(
 			buffer,
 			{
-				created_by: request.me.email,
+				created_by: request.me._id,
 				name: requestData.filename,
 				resource_id: insertValidationResult._id.toString(),
 				scope: 'gtfsValidations',

@@ -68,7 +68,7 @@ export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanD
 		await storageProvider.upload(
 			buffer,
 			{
-				created_by: request.me.email,
+				created_by: request.me._id,
 				name: requestData.filename,
 				resource_id: foundPlan._id.toString(),
 				scope: PermissionCatalog.all.plans.scope,
