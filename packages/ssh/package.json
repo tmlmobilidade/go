@@ -36,8 +36,8 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"tunnel-ssh": "5.2.0",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/logger-backend": "*",
+		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
