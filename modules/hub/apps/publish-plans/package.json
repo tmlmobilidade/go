@@ -17,14 +17,12 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/external": "*",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rss": "*",
 		"@tmlmobilidade/ssh": "*",

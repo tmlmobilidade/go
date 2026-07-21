@@ -21,7 +21,6 @@
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/import-gtfs": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",

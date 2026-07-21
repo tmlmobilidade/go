@@ -4,8 +4,8 @@ import { type MergedGtfsExportConfig } from '@/types.js';
 import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { files, plans } from '@tmlmobilidade/interfaces';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
@@ -93,9 +93,9 @@ export async function main() {
 	// Retrieve all Plans from the database
 	// and iterate on each one.
 
-	const plansCollection = await plans.getCollection();
+	const plansCollection = await goDb.operation.plans.getCollection();
 
-	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await goDb.operation.plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
@@ -156,7 +156,7 @@ export async function main() {
 			//
 			// Get the operation file URL
 
-			const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+			const operationFileData = await goDb.core.files.findById(planData.operation_file_id);
 
 			//
 			// Find out if this plan is a currently active plan.
@@ -168,7 +168,7 @@ export async function main() {
 
 			const importConfig: ImportGtfsToDatabaseConfig = {
 				source: {
-					url: operationFileUrl,
+					url: operationFileData.url,
 				},
 				time_range: {
 					date_range: {
@@ -310,7 +310,7 @@ export async function main() {
 
 	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`);
 
-	await files.upload(fileStream, {
+	await goDb.core.files.upload(fileStream, {
 		_id: 'gtfs-cm-latest',
 		created_by: 'system',
 		name: `${exportConfig.version}.zip`,

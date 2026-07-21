@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /**
  * Download the latest GTFS CM merged file.
@@ -11,7 +11,7 @@ import { files } from '@tmlmobilidade/interfaces';
  */
 export async function getGtfsCm(request: FastifyRequest, reply: FastifyReply<string>) {
 	// Retrieve file data from database
-	const foundFileData = await files.findById('gtfs-cm-latest');
+	const foundFileData = await goDb.core.files.findById('gtfs-cm-latest');
 	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 	// Stream the file in the given URL to the client
 	const storageServiceResponse = await fetch(foundFileData.url);

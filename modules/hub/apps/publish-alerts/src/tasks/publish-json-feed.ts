@@ -6,8 +6,8 @@ import { transformReferenceTypeRidesIntoJson } from '@/transform/json/reference-
 import { transformReferenceTypeStopsIntoJson } from '@/transform/json/reference-types/stops.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-public-info';
-import { alerts, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type AlertReference } from '@tmlmobilidade/types';
@@ -24,7 +24,7 @@ export async function publishJsonFeed() {
 	//
 	// Retrieve active alerts from the database
 
-	const findResult = await alerts.findMany(
+	const findResult = await goDb.operation.alerts.findMany(
 		{
 			$and: [
 				{
@@ -62,7 +62,7 @@ export async function publishJsonFeed() {
 
 			if (alertData.file_id) {
 				// Get the associated file data to prepare the image value
-				const fileData = await files.findById(alertData.file_id);
+				const fileData = await goDb.core.files.findById(alertData.file_id);
 				if (fileData?.url && fileData?.type) {
 					imageUrl = fileData.url;
 				}
