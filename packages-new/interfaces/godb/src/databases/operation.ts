@@ -29,11 +29,11 @@ export class OperationDatabase {
 		// Create collection interfaces
 		this.alerts = new MongoInterfaceTemplate<Alert, CreateAlertDto, UpdateAlertDto>('alerts', this.database, CreateAlertSchema, UpdateAlertSchema);
 		this.gtfsValidations = new MongoInterfaceTemplate<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto>('gtfsValidations', this.database, CreateGtfsValidationSchema, UpdateGtfsValidationSchema);
-		this.hashedPatterns = new MongoInterfaceTemplate<HashedPattern, HashedPattern, HashedPattern>('hashedPatterns', this.database, HashedPatternSchema, HashedPatternSchema);
-		this.hashedShapes = new MongoInterfaceTemplate<HashedShape, HashedShape, HashedShape>('hashedShapes', this.database, DocumentSchema, DocumentSchema);
-		this.hashedTrips = new MongoInterfaceTemplate<HashedTrip, HashedTrip, HashedTrip>('hashedTrips', this.database, HashedTripSchema, HashedTripSchema);
+		this.hashedPatterns = new MongoInterfaceTemplate<HashedPattern, HashedPattern, HashedPattern>('hashed-patterns', this.database, HashedPatternSchema, HashedPatternSchema);
+		this.hashedShapes = new MongoInterfaceTemplate<HashedShape, HashedShape, HashedShape>('hashed-shapes', this.database, DocumentSchema, DocumentSchema);
+		this.hashedTrips = new MongoInterfaceTemplate<HashedTrip, HashedTrip, HashedTrip>('hashed-trips', this.database, HashedTripSchema, HashedTripSchema);
 		this.plans = new MongoInterfaceTemplate<Plan, CreatePlanDto, UpdatePlanDto>('plans', this.database, CreatePlanSchema, UpdatePlanSchema);
-		this.rideAcceptances = new MongoInterfaceTemplate<RideAcceptance, CreateRideAcceptanceDto, UpdateRideAcceptanceDto>('rideAcceptances', this.database, CreateRideAcceptanceSchema, UpdateRideAcceptanceSchema);
+		this.rideAcceptances = new MongoInterfaceTemplate<RideAcceptance, CreateRideAcceptanceDto, UpdateRideAcceptanceDto>('ride-acceptances', this.database, CreateRideAcceptanceSchema, UpdateRideAcceptanceSchema);
 		this.rides = new MongoInterfaceTemplate<Ride, CreateRideDto, UpdateRideDto>('rides', this.database, CreateRideSchema, UpdateRideSchema);
 		this.sams = new MongoInterfaceTemplate<Sam, CreateSamDto, UpdateSamDto>('sams', this.database, CreateSamSchema, UpdateSamSchema);
 		this.vehicles = new MongoInterfaceTemplate<Vehicle, CreateVehicleDto, UpdateVehicleDto>('vehicles', this.database, CreateVehicleSchema, UpdateVehicleSchema);
