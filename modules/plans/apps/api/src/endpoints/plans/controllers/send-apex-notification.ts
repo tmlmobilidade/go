@@ -4,7 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -18,7 +18,7 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 	//
 	// Get the Plan from the database
 
-	const foundPlan = await plans.findById(request.params.id);
+	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
 	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
@@ -45,7 +45,7 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 	//
 	// Fetch the APEX file data
 
-	const foundFileData = await files.findById(foundPlan.apex_file_id);
+	const foundFileData = await storageProvider.findById(foundPlan.apex_file_id);
 
 	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'APEX file not found for this plan');
 

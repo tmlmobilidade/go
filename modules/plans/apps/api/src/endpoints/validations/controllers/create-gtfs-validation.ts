@@ -2,11 +2,12 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, gtfsValidations, TransactionManager } from '@tmlmobilidade/interfaces';
-import { type CreateGtfsValidationDto, type GtfsAgency, type GtfsFeedInfo, PermissionCatalog } from '@tmlmobilidade/types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type CreateGtfsValidationDto, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
-import { pipeline } from 'node:stream/promises';
+import { finished } from 'node:stream/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
@@ -18,15 +19,8 @@ import { join } from 'path';
 export async function createGtfsValidation(request: FastifyRequest, reply: FastifyReply<unknown>) {
 	//
 
-	//
-	// Parse multipart form data from the request
-
 	const requestData = await request.file();
-
 	if (!requestData) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file provided');
-
-	//
-	// Check if the user has permission to create a new GTFS Validation
 
 	const hasPermissionCreateValidation = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.gtfs_validations.actions.create,
@@ -37,9 +31,6 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 	});
 
 	if (!hasPermissionCreateValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: create validation');
-
-	//
-	// Convert form fields to Validation data
 
 	const validationData: CreateGtfsValidationDto = {
 		agency_id: requestData.fields.agency_id['value'] as string,
@@ -54,83 +45,62 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 		validity_status: 'unknown',
 	};
 
-	//
-	// Stream file to temporary disk location
-	// to avoid Out Of Memory issues with large files
+	const tempFilePath = join(tmpdir(), `validation-upload-${Date.now()}-${Math.random().toString(36).substring(7)}`);
 
 	let buffer: Buffer;
 	let size: number;
-	let tempFilePath: null | string = null;
 
 	try {
-		// Create temporary file path
-		tempFilePath = join(tmpdir(), `validation-upload-${Date.now()}-${Math.random().toString(36).substring(7)}`);
-		// Stream directly to disk to avoid memory issues
 		const writeStream = createWriteStream(tempFilePath);
-		await pipeline(requestData.file, writeStream);
-		// Read file back as buffer for upload
+		requestData.file.pipe(writeStream);
+		await finished(writeStream);
 		buffer = readFileSync(tempFilePath);
 		size = buffer.length;
 	} catch (streamError) {
+		try {
+			unlinkSync(tempFilePath);
+		} catch (cleanupError) {
+			console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
+		}
 		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
 	}
 
-	//
-	// Use Transaction Manager to ensure data consistency
-	// across multiple collections (Validation creation and file upload).
-
-	const transactionManager = new TransactionManager([gtfsValidations, files] as const);
-
-	const result = await transactionManager.withTransaction(async (collections, transactions) => {
-		//
-
-		//
-		// Destructure collections for easier access
-		// and get the appropriate transaction for each collection
-
-		const [gtfsValidationsCollection, filesCollection] = collections;
-		const gtfsValidationsTransaction = transactions.get(gtfsValidationsCollection);
-
-		const filesTransaction = transactions.get(filesCollection);
-
-		//
-		// Insert the new Validation document
-
-		const insertValidationResult = await gtfsValidationsCollection.insertOne(validationData, { options: { session: gtfsValidationsTransaction.getSession() } });
-
-		//
-		// Upload the operation Validation file
-
-		const uploadFileResult = await filesCollection.upload(buffer, {
-			created_by: request.me.email,
-			name: requestData.filename,
-			resource_id: insertValidationResult._id.toString(),
-			scope: 'gtfsValidations',
-			size: size,
-			type: requestData.mimetype,
-			updated_by: request.me.email,
-		}, { session: filesTransaction.getSession() });
-
-		//
-		// Update the Validation with the file reference
-
-		await gtfsValidationsCollection.updateById(insertValidationResult._id, { file_id: uploadFileResult._id }, { session: gtfsValidationsTransaction.getSession() });
-
-		//
-		// Return the complete Validation object
-
-		return {
-			...insertValidationResult,
-			file_id: uploadFileResult._id,
-		};
-
-		//
-	});
+	const insertValidationResult = await goDb.operation.gtfsValidations.insertOne(validationData);
 
 	//
-	// Clean up temporary file
+	// Upload the GTFS file, then attach it to the validation.
+	// Failure modes (handled by storage saga + hooks):
+	// - upload fails → saga compensates blob/metadata; onRollback deletes the validation
+	// - validation update fails → onSuccess throws → onRollback deletes the validation → saga compensates the upload
 
-	if (tempFilePath) {
+	let finalValidationData: GtfsValidation | null = null;
+
+	try {
+		await storageProvider.upload(
+			buffer,
+			{
+				created_by: request.me.email,
+				name: requestData.filename,
+				resource_id: insertValidationResult._id.toString(),
+				scope: 'gtfsValidations',
+				size: size,
+				type: requestData.mimetype,
+				updated_by: request.me.email,
+			},
+			{
+				onRollback: async () => {
+					await goDb.operation.gtfsValidations.deleteById(insertValidationResult._id);
+					finalValidationData = null;
+				},
+				onSuccess: async (_ctx, result) => {
+					finalValidationData = await goDb.operation.gtfsValidations.updateById(
+						insertValidationResult._id,
+						{ file_id: result._id },
+					);
+				},
+			},
+		);
+	} finally {
 		try {
 			unlinkSync(tempFilePath);
 		} catch (cleanupError) {
@@ -138,10 +108,5 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 		}
 	}
 
-	//
-	// Return the created Validation
-
-	return reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
-
-	//
+	return reply.send({ data: finalValidationData, error: null, statusCode: HTTP_STATUS.OK });
 }

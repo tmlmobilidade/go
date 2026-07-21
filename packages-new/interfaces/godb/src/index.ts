@@ -22,14 +22,6 @@ class GoDBClass {
 	public readonly offer: OfferDatabase;
 	public readonly operation: OperationDatabase;
 
-	private constructor(mongoClient: MongoClient) {
-		this.core = new CoreDatabase(mongoClient);
-		this.infrastructure = new InfrastructureDatabase(mongoClient);
-		this.locations = new LocationsDatabase(mongoClient);
-		this.offer = new OfferDatabase(mongoClient);
-		this.operation = new OperationDatabase(mongoClient);
-	}
-
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
 	 * @param options Optional Mongo client connection options.
@@ -37,10 +29,20 @@ class GoDBClass {
 	 */
 	public static async getInstance() {
 		if (!GoDBClass._instance) {
-			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GODB' });
+			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GODB', tunnelType: 'GO' });
 			GoDBClass._instance = new GoDBClass(mongoClient);
 		}
 		return GoDBClass._instance;
+	}
+
+	//
+	// Constructor
+	private constructor(mongoClient: MongoClient) {
+		this.core = new CoreDatabase(mongoClient);
+		this.infrastructure = new InfrastructureDatabase(mongoClient);
+		this.locations = new LocationsDatabase(mongoClient);
+		this.offer = new OfferDatabase(mongoClient);
+		this.operation = new OperationDatabase(mongoClient);
 	}
 }
 

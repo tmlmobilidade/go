@@ -1,7 +1,7 @@
 /* * */
 
-import type { TripRef } from '@/parse-trip-ref.js';
-import type { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type TripRef } from '@/parse-trip-ref.js';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
 

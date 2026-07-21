@@ -12,7 +12,6 @@ import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
 import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { rides } from '@tmlmobilidade/interfaces';
 import { type Agency, type Alert, type I18nCode, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
@@ -211,7 +210,7 @@ async function addRidesReferenceContext(
 ) {
 	if (props.reference_type !== 'rides') return;
 
-	const foundRides = await rides.findMany({ _id: { $in: props.references.map(ref => ref.parent_id) } });
+	const foundRides = await goDb.operation.rides.findMany({ _id: { $in: props.references.map(ref => ref.parent_id) } });
 	if (!foundRides?.length) throw new Error('Rides not found for the given references');
 
 	for (const rideData of foundRides) {

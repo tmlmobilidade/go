@@ -25,7 +25,7 @@ class PCGIFileManagerClass {
 	 */
 	public static async getInstance() {
 		if (!PCGIFileManagerClass._instance) {
-			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'PCGI_FILE_MANAGER' });
+			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'PCGI_FILE_MANAGER', tunnelType: 'PCGI' });
 			PCGIFileManagerClass._instance = new PCGIFileManagerClass(mongoClient);
 		}
 		return PCGIFileManagerClass._instance;

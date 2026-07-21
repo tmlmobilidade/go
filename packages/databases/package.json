@@ -37,6 +37,7 @@
 		"@clickhouse/client": "1.23.1",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/types": "*",

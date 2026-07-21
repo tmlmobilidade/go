@@ -22,6 +22,7 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/lib": "*",
 		"@tmlmobilidade/logger": "*",

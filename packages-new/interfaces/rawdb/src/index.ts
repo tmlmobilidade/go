@@ -26,7 +26,7 @@ class RawDBClass {
 	 */
 	public static async getInstance() {
 		if (!RawDBClass._instance) {
-			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'RAWDB' });
+			const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'RAWDB', tunnelType: 'GO' });
 			RawDBClass._instance = new RawDBClass(mongoClient);
 		}
 		return RawDBClass._instance;

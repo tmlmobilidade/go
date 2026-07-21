@@ -1,2 +1,2 @@
-export * from '@/transform-pcgi-vehicle-event-core.js';
-export * from '@/transform-pcgi-vehicle-event-log.js';
+export * from './transform-pcgi-vehicle-event-core.js';
+export * from './transform-pcgi-vehicle-event-log.js';

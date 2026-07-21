@@ -1,10 +1,10 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /**
  * Callback function to set Rides as 'waiting' based on new SimplifiedVehicleEvent data.
@@ -59,7 +59,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 		// Run the update query to mark all affected Rides as 'waiting',
 		// which will trigger the necessary reprocessing in the system.
 
-		const updateRidesResult = await rides.updateMany(
+		const updateRidesResult = await goDb.operation.rides.updateMany(
 			{ $or: updateRidesOps },
 			{ system_status: 'waiting' },
 			{ returnResults: false },

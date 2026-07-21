@@ -1,7 +1,8 @@
 import { Dates } from '@tmlmobilidade/dates';
-import { AggregationPipeline, metrics, rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { AggregationPipeline, metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { OperationalDate, Ride } from '@tmlmobilidade/types';
+import { type OperationalDate, type Ride } from '@tmlmobilidade/types';
 import { Interval } from 'luxon';
 
 type AgencyId = string;
@@ -51,7 +52,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 		.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }));
 
 	// 1) Failed rides in the target interval -> operationalDayMap[opDate][agency] = Set(patternHour)
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 	const ridesPipeline: AggregationPipeline<Ride> = [
 		{
 			$match: {
@@ -218,18 +219,18 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 		const outAgency = new Map<AgencyId, AgencyDayStats>();
 
 		for (const [agencyId, phSet] of agencyMapForDay) {
-			const failed_circulations = phSet.size;
+			const failedCirculations = phSet.size;
 
-			let estimated_affected_passengers = 0;
+			let estimatedAffectedPassengers = 0;
 			const medMap = medianByAgencyPH.get(agencyId);
 
 			for (const ph of phSet) {
-				estimated_affected_passengers += medMap?.get(ph) ?? 0;
+				estimatedAffectedPassengers += medMap?.get(ph) ?? 0;
 			}
 
 			outAgency.set(agencyId, {
-				estimated_affected_passengers,
-				failed_circulations,
+				estimated_affected_passengers: estimatedAffectedPassengers,
+				failed_circulations: failedCirculations,
 			});
 		}
 
@@ -237,7 +238,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	}
 
 	// 4) Export: 1 doc per agency_id with days inside `data`
-	const METRIC = 'demand_affected_by_failed_circulations_by_day' as const;
+	const metricKey = 'demand_affected_by_failed_circulations_by_day' as const;
 
 	// dataByAgency[agency] = { [operational_day]: { ...stats } }
 	const dataByAgency = new Map<
@@ -245,33 +246,33 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 		Record<string, { estimated_affected_passengers: number, failed_circulations: number }>
 	>();
 
-	for (const [operational_day, agencyMap] of out.entries()) {
-		for (const [agency_id_raw, stats] of agencyMap.entries()) {
-			const agency_id: AgencyId = String(agency_id_raw);
+	for (const [operationalDay, agencyMap] of out.entries()) {
+		for (const [agencyIdRaw, stats] of agencyMap.entries()) {
+			const agencyId: AgencyId = String(agencyIdRaw);
 
-			let data = dataByAgency.get(agency_id);
+			let data = dataByAgency.get(agencyId);
 			if (!data) {
 				data = {};
-				dataByAgency.set(agency_id, data);
+				dataByAgency.set(agencyId, data);
 			}
 
-			data[String(operational_day)] = {
+			data[String(operationalDay)] = {
 				estimated_affected_passengers: stats.estimated_affected_passengers,
 				failed_circulations: stats.failed_circulations,
 			};
 		}
 	}
 
-	const results = Array.from(dataByAgency.entries()).map(([agency_id, data]) => ({
+	const results = Array.from(dataByAgency.entries()).map(([agencyId, data]) => ({
 		data,
-		description: `Passenger impact (estimated) for agency ${agency_id} by operational day`,
+		description: `Passenger impact (estimated) for agency ${agencyId} by operational day`,
 		generated_at: new Date(),
-		metric: METRIC,
-		properties: { agency_id },
+		metric: metricKey,
+		properties: { agency_id: agencyId },
 	}));
 
 	// clear existing (match working example field name)
-	await metrics.deleteMany({ metric: METRIC });
+	await metrics.deleteMany({ metric: metricKey });
 
 	// insertMany
 	if (results.length > 0) {

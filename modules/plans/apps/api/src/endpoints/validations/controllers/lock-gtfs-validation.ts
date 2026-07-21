@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { gtfsValidations } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +16,7 @@ export async function lockGtfsValidation(request: FastifyRequest<{ Params: { id:
 	//
 	// Get the Validation from the database
 
-	const foundValidation = await gtfsValidations.findById(request.params.id);
+	const foundValidation = await goDb.operation.gtfsValidations.findById(request.params.id);
 
 	if (!foundValidation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
 
@@ -36,9 +36,9 @@ export async function lockGtfsValidation(request: FastifyRequest<{ Params: { id:
 	//
 	// If authorized, toggle the lock status of the validation
 
-	await gtfsValidations.toggleLockById(request.params.id);
+	await goDb.operation.gtfsValidations.toggleLockById(request.params.id);
 
-	const updatedValidation = await gtfsValidations.findById(request.params.id);
+	const updatedValidation = await goDb.operation.gtfsValidations.findById(request.params.id);
 
 	if (!updatedValidation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
 

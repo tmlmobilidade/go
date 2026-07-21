@@ -1,8 +1,9 @@
 /* * */
 
+import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
+
 import { MongoInterfaceTemplate } from '@/interface.template.js';
-import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { type Agency, type AppConfig, type CreateAgencyDto, CreateAgencySchema, type CreateFileDto, type CreateFileExportDto, CreateFileExportSchema, CreateFileSchema, type CreateOrganizationDto, CreateOrganizationSchema, type CreateRoleDto, CreateRoleSchema, type CreateSessionDto, CreateSessionSchema, type CreateUserDto, CreateUserSchema, type CreateVerificationTokenDto, CreateVerificationTokenSchema, type File, type FileExport, type Organization, type Role, type Session, type UpdateAgencyDto, UpdateAgencySchema, type UpdateFileDto, UpdateFileExportSchema, UpdateFileSchema, type UpdateOrganizationDto, UpdateOrganizationSchema, type UpdateRoleDto, UpdateRoleSchema, type UpdateSessionDto, UpdateSessionSchema, type UpdateUserDto, UpdateUserSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type User, type VerificationToken } from '@tmlmobilidade/types';
+import { type Agency, type AppConfig, type Attachment, type CreateAgencyDto, CreateAgencySchema, type CreateAttachmentDto, CreateAttachmentSchema, type CreateFileExportDto, CreateFileExportSchema, type CreateOrganizationDto, CreateOrganizationSchema, type CreateRoleDto, CreateRoleSchema, type CreateSessionDto, CreateSessionSchema, type CreateUserDto, CreateUserSchema, type CreateVerificationTokenDto, CreateVerificationTokenSchema, type FileExport, type Organization, type Role, type Session, type UpdateAgencyDto, UpdateAgencySchema, type UpdateAttachmentDto, UpdateAttachmentSchema, UpdateFileExportSchema, type UpdateOrganizationDto, UpdateOrganizationSchema, type UpdateRoleDto, UpdateRoleSchema, type UpdateSessionDto, UpdateSessionSchema, type UpdateUserDto, UpdateUserSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type User, type VerificationToken } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -11,8 +12,8 @@ export class CoreDatabase {
 
 	public readonly agencies: MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>;
 	public readonly appConfigs: MongoInterfaceTemplate<AppConfig, null, null>;
+	public readonly attachments: MongoInterfaceTemplate<Attachment, CreateAttachmentDto, UpdateAttachmentDto>;
 	public readonly exports: MongoInterfaceTemplate<FileExport, CreateFileExportDto<any>, Partial<FileExport>>;
-	public readonly files: MongoInterfaceTemplate<File, CreateFileDto, UpdateFileDto>;
 	public readonly organizations: MongoInterfaceTemplate<Organization, CreateOrganizationDto, UpdateOrganizationDto>;
 	public readonly roles: MongoInterfaceTemplate<Role, CreateRoleDto, UpdateRoleDto>;
 	public readonly sessions: MongoInterfaceTemplate<Session, CreateSessionDto, UpdateSessionDto>;
@@ -33,7 +34,7 @@ export class CoreDatabase {
 		this.roles = new MongoInterfaceTemplate<Role, CreateRoleDto, UpdateRoleDto>('roles', this.database, CreateRoleSchema, UpdateRoleSchema);
 		this.sessions = new MongoInterfaceTemplate<Session, CreateSessionDto, UpdateSessionDto>('sessions', this.database, CreateSessionSchema, UpdateSessionSchema);
 		this.users = new MongoInterfaceTemplate<User, CreateUserDto, UpdateUserDto>('users', this.database, CreateUserSchema, UpdateUserSchema);
-		this.verificationTokens = new MongoInterfaceTemplate<VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto>('verificationTokens', this.database, CreateVerificationTokenSchema, UpdateVerificationTokenSchema);
-		this.files = new MongoInterfaceTemplate<File, CreateFileDto, UpdateFileDto>('files', this.database, CreateFileSchema, UpdateFileSchema);
+		this.verificationTokens = new MongoInterfaceTemplate<VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto>('verification-tokens', this.database, CreateVerificationTokenSchema, UpdateVerificationTokenSchema);
+		this.attachments = new MongoInterfaceTemplate<Attachment, CreateAttachmentDto, UpdateAttachmentDto>('attachments', this.database, CreateAttachmentSchema, UpdateAttachmentSchema);
 	}
 }

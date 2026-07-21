@@ -1,7 +1,6 @@
 /* * */
 
-import { CalendarDateSchema, OperationalDateIntSchema } from '@tmlmobilidade/types';
-import { UnixTimestampSchema } from '@tmlmobilidade/types';
+import { CalendarDateSchema, OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
