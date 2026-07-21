@@ -55,18 +55,16 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 
 	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>(API_ROUTES.plans.VALIDATIONS_LIST, { refreshInterval: 3_000 });
 
-	const { filtered: filteredAgencies, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.gtfs_validations.actions.read],
 		scope: PermissionCatalog.all.gtfs_validations.scope,
 	});
-
-	const filteredAgencyCodes = useMemo(() => filteredAgencies.map(agency => agency.code), [filteredAgencies]);
 
 	//
 	// C. Setup filters
 
 	const filterSearch = useFilterStateString('search');
-	const filterAgency = useFilterStateList('agency', filteredAgencyCodes, filteredAgencyOptions);
+	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 	const filterProcessingStatus = useFilterStateList('processing_status', ProcessingStatusSchema.options, ProcessingStatusSchema.options.map(item => ({ label: t(`shared:status.processing_status.${item}`), value: item })));
 	const filterValidityStatus = useFilterStateList('validity_status', ValidityStatusSchema.options, ValidityStatusSchema.options.map(item => ({ label: t(`shared:status.validity_status.${item}`), value: item })));
 
