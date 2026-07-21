@@ -2,7 +2,7 @@
 
 import { generatePiperTtsAudio } from '@/services/piperTtsApi.js';
 import TIMETRACKER from '@helperkits/timer';
-import { files } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import pLimit from 'p-limit';
 
@@ -17,10 +17,10 @@ const allCommonData = [
 ];
 
 async function deleteLegacyTtsFile(fileId: string) {
-	const existingFile = await files.findOne({ _id: fileId });
+	const existingFile = await goDb.core.files.findOne({ _id: fileId });
 	if (!existingFile) return;
 
-	await files.deleteOne({ _id: fileId });
+	await goDb.core.files.deleteOne({ _id: fileId });
 }
 
 async function processCommon(commonIndex: number, total: number, commonData: typeof allCommonData[number]) {
@@ -38,7 +38,7 @@ async function processCommon(commonIndex: number, total: number, commonData: typ
 	await deleteLegacyTtsFile(commonData.id);
 	await deleteLegacyTtsFile(`tts-${commonData.id}`);
 
-	await files.upload(audioBuffer, {
+	await goDb.core.files.upload(audioBuffer, {
 		_id: `tts-${commonData.id}`,
 		created_by: 'system',
 		name: `${commonData.id}.mp3`,
