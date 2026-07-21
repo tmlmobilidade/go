@@ -2,7 +2,7 @@
 
 import { ClickHouseClient, ClickHouseLogLevel, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
-import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
+import { createSshTunnelFactory, SshTunnel, SshTunnelType } from '@tmlmobilidade/ssh';
 
 /* * */
 
@@ -21,6 +21,8 @@ import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 export interface ClickHouseDatabaseConfig {
 	/** Env var prefix (e.g. `"GO_CLICKHOUSE"`). */
 	prefix: string
+	/** Type of SSH tunnel to use. */
+	tunnelType?: SshTunnelType
 }
 
 /**
@@ -150,7 +152,8 @@ export class ClickHouseDatabaseClient {
 		if (!host || !port) throw new Error(`Missing ${prefix}_HOST or ${prefix}_PORT`);
 		if (!username || !password) throw new Error(`Missing ${prefix}_USERNAME or ${prefix}_PASSWORD`);
 
-		const tunnel = env('TUNNEL_ENABLED') === 'true' ? goSshTunnel({ dstAddr: host, dstPort: Number(port) }) : null;
+		const tunnel = config.tunnelType ? createSshTunnelFactory(config.tunnelType)({ dstAddr: host, dstPort: Number(port) }) : null;
+
 		if (!tunnel) {
 			return {
 				tunnel: null,

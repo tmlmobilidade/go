@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type HashableRawVehicleEvent, type RawVehicleEvent, type RawVehicleEventCmetV1Log } from '@tmlmobilidade/types';
+import { type HashableRawVehicleEvent, type RawVehicleEvent, type RawVehicleEventPtTmlCmetV1Log } from '@tmlmobilidade/go-types-vehicle-events';
 import crypto from 'node:crypto';
 
 /* * */
@@ -29,7 +29,7 @@ export function transformPcgiVehicleEventLog(pcgiVehicleEvent): RawVehicleEvent[
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database.
 
-		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventCmetV1Log> = {
+		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlCmetV1Log> = {
 			agency_id: entity.vehicle.agencyId,
 			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
 			entity_id: entity._id,
@@ -37,7 +37,7 @@ export function transformPcgiVehicleEventLog(pcgiVehicleEvent): RawVehicleEvent[
 				header: pcgiVehicleEvent.content.header,
 				vehicle: entity.vehicle,
 			},
-			version: 'cmet-v1-log',
+			version: 'pt-tml-cmet-v1-log',
 		};
 
 		const hashableRawEventId = crypto

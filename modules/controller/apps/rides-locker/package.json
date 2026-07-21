@@ -20,16 +20,16 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"luxon": "3.7.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
+		"@types/luxon": "3.7.2",
 		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.1",

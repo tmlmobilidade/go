@@ -1,11 +1,12 @@
 /* * */
 
-import { rawVehicleEventsNew, simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
+import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
-import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { BatchWriter, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 
 /* * */
@@ -13,9 +14,9 @@ import { BatchWriter, type PerformInTimeChunksItem, replicate } from '@tmlmobili
 const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	batch_size: 10_000,
 	insertFn: async (data) => {
-		await simplifiedVehicleEventsNew.insert('JSONEachRow', data);
+		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
 	},
-	title: await simplifiedVehicleEventsNew.getTableName(),
+	title: await labDb.operation.vehicleEvents.getTableName(),
 });
 
 /**
@@ -53,12 +54,12 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
-	const rawVehicleEventsNewCollection = await rawVehicleEventsNew.getCollection();
+	const rawVehicleEventsNewCollection = await rawDb.raw.rawVehicleEvents.getCollection();
 
 	await replicate<RawVehicleEvent>({
 
 		countDestinationDbFn: async () => {
-			return await simplifiedVehicleEventsNew.count(
+			return await labDb.operation.vehicleEvents.count(
 				'*',
 				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
@@ -66,19 +67,19 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		countSourceDbFn: async () => {
-			const result = await rawVehicleEventsNew.count(rawdbQuery);
+			const result = await rawDb.raw.rawVehicleEvents.count(rawdbQuery);
 			return result;
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
-			await simplifiedVehicleEventsNew.delete(
+			await labDb.operation.vehicleEvents.delete(
 				'_id IN ($1)',
 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 			);
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await simplifiedVehicleEventsNew.distinct(
+			return await labDb.operation.vehicleEvents.distinct(
 				'_id',
 				'created_at >= $1 AND created_at <= $2',
 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
@@ -86,7 +87,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawVehicleEventsNew.distinct('_id', rawdbQuery);
+			const result = await rawDb.raw.rawVehicleEvents.distinct('_id', rawdbQuery);
 			return result.map(String);
 		},
 

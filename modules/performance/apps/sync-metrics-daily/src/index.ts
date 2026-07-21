@@ -5,8 +5,7 @@ import { syncPassengerImpactMetrics } from '@/tasks/sync-passenger-impact.js';
 import { syncPatternHourMetrics } from '@/tasks/sync-pattern-hour-metrics.js';
 import { syncProductMetrics } from '@/tasks/sync-product-metrics.js';
 import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

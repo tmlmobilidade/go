@@ -2,7 +2,8 @@
 
 import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, toLineStringFromHashedShape } from '@tmlmobilidade/geo';
-import { type HashedShape, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { type HashedShape } from '@tmlmobilidade/types';
 
 /* * */
 

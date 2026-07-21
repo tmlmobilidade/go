@@ -2,8 +2,7 @@
 
 import { syncVehicleEvents } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 

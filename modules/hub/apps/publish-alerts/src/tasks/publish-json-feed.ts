@@ -6,9 +6,9 @@ import { transformReferenceTypeRidesIntoJson } from '@/transform/json/reference-
 import { transformReferenceTypeStopsIntoJson } from '@/transform/json/reference-types/stops.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-public-info';
-import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type AlertReference } from '@tmlmobilidade/types';
@@ -25,7 +25,7 @@ export async function publishJsonFeed() {
 	//
 	// Retrieve active alerts from the database
 
-	const findResult = await alerts.findMany(
+	const findResult = await goDb.operation.alerts.findMany(
 		{
 			$and: [
 				{

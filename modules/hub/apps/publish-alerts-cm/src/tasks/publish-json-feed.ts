@@ -2,8 +2,8 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Alert } from '@tmlmobilidade/types';
@@ -20,7 +20,7 @@ export async function publishJsonFeed() {
 	//
 	// Retrieve active alerts from the database
 
-	const findResult = await alerts.findMany(
+	const findResult = await goDb.operation.alerts.findMany(
 		{
 			$and: [
 				{

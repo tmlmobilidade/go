@@ -17,12 +17,13 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-clients-mongo": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-tracker-pckg-callback": "*",
 		"@tmlmobilidade/go-tracker-pckg-parsers": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"

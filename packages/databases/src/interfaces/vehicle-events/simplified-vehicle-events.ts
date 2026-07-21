@@ -1,41 +1,37 @@
-/**
- * Simplified Vehicle Events represent a simplified version of the raw vehicle events.
- * These are stored in ClickHouse for performance and scalability reasons.
-**/
+/* * */
 
 import { GOClickHouseClient } from '@/clients/go-clickhouse.js';
 import { ClickHouseInterfaceTemplate } from '@/templates/clickhouse.js';
-import { type ClickHouseTableSchema, ClickHouseTableEngine } from '@/types/index.js';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { ClickHouseTableEngine, type ClickHouseTableSchema } from '@/types/index.js';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
 const tableSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
-	agency_id: { type: 'String' },
-	created_at: { type: 'Int64' },
-	geohash: { default: 'geohashEncode(longitude, latitude, 7)', type: 'String' },
-	latitude: { type: 'Float64' },
-	longitude: { type: 'Float64' },
-	operational_date: { type: 'Date' },
-	received_at: { type: 'Int64' },
-	trip_id: { type: 'String' },
-	vehicle_id: { type: 'String' },
-	// Optional Fields
-	bearing: { type: 'Nullable(Int64)' },
-	current_status: { type: 'Nullable(String)' },
-	door: { type: 'Nullable(String)' },
-	driver_id: { type: 'Nullable(String)' },
+	agency_id: { type: 'LowCardinality(String)' },
+	bearing: { type: 'Nullable(UInt16 CODEC(T64, ZSTD))' },
+	created_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	current_status: { type: 'LowCardinality(Nullable(String))' },
+	driver_id: { type: 'LowCardinality(Nullable(String))' },
 	extra_trip_id: { type: 'Nullable(String)' },
-	odometer: { type: 'Nullable(Int64)' },
-	pattern_id: { type: 'Nullable(String)' },
-	speed: { type: 'Nullable(Int64)' },
-	stop_id: { type: 'Nullable(String)' },
+	geohash: { materialized: 'geohashEncode(longitude, latitude, 7)', type: 'FixedString(7)' },
+	latitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
+	longitude: { type: 'Float32 CODEC(Gorilla, ZSTD)' },
+	odometer: { type: 'Nullable(UInt32)' },
+	operational_date: { type: 'UInt32' },
+	received_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
+	speed: { type: 'Nullable(UInt8 CODEC(T64, ZSTD))' },
+	stop_id: { type: 'LowCardinality(Nullable(String))' },
+	trip_id: { type: 'String' },
+	vehicle_id: { type: 'LowCardinality(String)' },
 };
 
-/* * */
-
+/**
+ * Simplified Vehicle Events represent a simplified version of the raw vehicle events.
+ * These are stored in ClickHouse for performance and scalability reasons.
+ */
 class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<SimplifiedVehicleEvent> {
 	//
 
@@ -43,9 +39,8 @@ class SimplifiedVehicleEventsNewClass extends ClickHouseInterfaceTemplate<Simpli
 
 	public override readonly databaseName = 'operation';
 	public override readonly engine: ClickHouseTableEngine<SimplifiedVehicleEvent> = 'ReplacingMergeTree(created_at)';
-	public override readonly orderBy = '(operational_date, trip_id, vehicle_id, agency_id, created_at)';
-	public override readonly partitionBy = 'toYYYYMM(fromUnixTimestamp64Milli(created_at))';
-	public override readonly primaryKey = '(operational_date, trip_id, vehicle_id)';
+	public override readonly orderBy = 'agency_id, vehicle_id, trip_id, created_at, _id';
+	public override readonly partitionBy = 'intDiv(operational_date, 100)';
 	public override readonly schema = tableSchema;
 	public override readonly tableName = 'simplified_vehicle_events';
 

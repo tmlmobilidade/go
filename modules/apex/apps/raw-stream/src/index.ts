@@ -7,7 +7,7 @@ import { processRawApexTransactionLocation } from '@/tasks/locations.js';
 import { processRawApexTransactionRefund } from '@/tasks/refunds.js';
 import { processRawApexTransactionSale } from '@/tasks/sales.js';
 import { processRawApexTransactionValidation } from '@/tasks/validations.js';
-import { rawApexTransactions } from '@tmlmobilidade/databases';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -33,7 +33,7 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 	// Watch for changes to the RawApexTransactions collection
 	// and process the documents immediately.
 
-	const rawApexTransactionsCollection = await rawApexTransactions.getCollection();
+	const rawApexTransactionsCollection = await rawDb.raw.rawApexTransactions.getCollection();
 
 	rawApexTransactionsCollection
 		.watch([{ $match: { 'fullDocument.version': { $in: ['banking-tap-4.0'] } } }])

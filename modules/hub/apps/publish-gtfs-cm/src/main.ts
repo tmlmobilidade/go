@@ -4,11 +4,10 @@ import { type MergedGtfsExportConfig } from '@/types.js';
 import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { plans } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
@@ -95,9 +94,9 @@ export async function main() {
 	// Retrieve all Plans from the database
 	// and iterate on each one.
 
-	const plansCollection = await plans.getCollection();
+	const plansCollection = await goDb.operation.plans.getCollection();
 
-	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await goDb.operation.plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 

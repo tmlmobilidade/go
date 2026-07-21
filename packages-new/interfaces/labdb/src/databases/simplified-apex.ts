@@ -1,7 +1,7 @@
 /* * */
 
 import { ClickhouseInterfaceTableOptions, ClickHouseInterfaceTemplate } from '@/interface.template.js';
-import { simplifiedApexBankingTapSchema, simplifiedApexInspectionDecisionSchema, simplifiedApexInspectionSchema, simplifiedApexLocationSchema, simplifiedApexOnBoardRefundSchema, simplifiedApexOnBoardSaleSchema, simplifiedApexValidationSchema } from '@/types/simplified-apex.js';
+import { simplifiedApexBankingTapTableSchema, simplifiedApexInspectionDecisionTableSchema, simplifiedApexInspectionTableSchema, simplifiedApexLocationTableSchema, simplifiedApexOnBoardRefundTableSchema, simplifiedApexOnBoardSaleTableSchema, simplifiedApexValidationTableSchema } from '@/schemas/simplified-apex.js';
 import { ClickHouseClient } from '@tmlmobilidade/go-clients-clickhouse';
 import { type SimplifiedApexBankingTap, SimplifiedApexInspection, SimplifiedApexInspectionDecision, SimplifiedApexLocation, SimplifiedApexOnBoardRefund, SimplifiedApexOnBoardSale, SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 
@@ -10,8 +10,6 @@ import { type SimplifiedApexBankingTap, SimplifiedApexInspection, SimplifiedApex
 export class SimplifiedApexDatabase {
 	//
 
-	//
-	// Tables
 	public readonly bankingTaps: ClickHouseInterfaceTemplate<SimplifiedApexBankingTap>;
 	public readonly inspectionDecisions: ClickHouseInterfaceTemplate<SimplifiedApexInspectionDecision>;
 	public readonly inspections: ClickHouseInterfaceTemplate<SimplifiedApexInspection>;
@@ -20,26 +18,35 @@ export class SimplifiedApexDatabase {
 	public readonly sales: ClickHouseInterfaceTemplate<SimplifiedApexOnBoardSale>;
 	public readonly validations: ClickHouseInterfaceTemplate<SimplifiedApexValidation>;
 
-	//
 	private readonly databaseName = 'simplified_apex';
 
-	public constructor(instance: ClickHouseClient) {
+	public constructor(client: ClickHouseClient) {
 		//
 
-		// Setup the table options, as they are the same for all simplified APEX tables
 		const simplifiedTableOptions: ClickhouseInterfaceTableOptions<SimplifiedApexBankingTap | SimplifiedApexInspection | SimplifiedApexInspectionDecision | SimplifiedApexLocation | SimplifiedApexOnBoardRefund | SimplifiedApexOnBoardSale | SimplifiedApexValidation> = {
 			engine: 'ReplacingMergeTree(updated_at)',
 			orderBy: ['agency_id', 'operational_date', 'created_at', '_id'],
 			partitionBy: 'intDiv(operational_date, 100)',
 		};
 
-		// Create the table interfaces
-		this.bankingTaps = new ClickHouseInterfaceTemplate<SimplifiedApexBankingTap>(instance, this.databaseName, 'banking_taps', simplifiedApexBankingTapSchema, simplifiedTableOptions);
-		this.inspectionDecisions = new ClickHouseInterfaceTemplate<SimplifiedApexInspectionDecision>(instance, this.databaseName, 'inspection_decisions', simplifiedApexInspectionDecisionSchema, simplifiedTableOptions);
-		this.inspections = new ClickHouseInterfaceTemplate<SimplifiedApexInspection>(instance, this.databaseName, 'inspections', simplifiedApexInspectionSchema, simplifiedTableOptions);
-		this.locations = new ClickHouseInterfaceTemplate<SimplifiedApexLocation>(instance, this.databaseName, 'locations', simplifiedApexLocationSchema, simplifiedTableOptions);
-		this.refunds = new ClickHouseInterfaceTemplate<SimplifiedApexOnBoardRefund>(instance, this.databaseName, 'refunds', simplifiedApexOnBoardRefundSchema, simplifiedTableOptions);
-		this.sales = new ClickHouseInterfaceTemplate<SimplifiedApexOnBoardSale>(instance, this.databaseName, 'sales', simplifiedApexOnBoardSaleSchema, simplifiedTableOptions);
-		this.validations = new ClickHouseInterfaceTemplate<SimplifiedApexValidation>(instance, this.databaseName, 'validations', simplifiedApexValidationSchema, simplifiedTableOptions);
+		this.bankingTaps = new ClickHouseInterfaceTemplate<SimplifiedApexBankingTap>(client, this.databaseName, 'banking_taps', simplifiedApexBankingTapTableSchema, simplifiedTableOptions);
+		this.inspectionDecisions = new ClickHouseInterfaceTemplate<SimplifiedApexInspectionDecision>(client, this.databaseName, 'inspection_decisions', simplifiedApexInspectionDecisionTableSchema, simplifiedTableOptions);
+		this.inspections = new ClickHouseInterfaceTemplate<SimplifiedApexInspection>(client, this.databaseName, 'inspections', simplifiedApexInspectionTableSchema, simplifiedTableOptions);
+		this.locations = new ClickHouseInterfaceTemplate<SimplifiedApexLocation>(client, this.databaseName, 'locations', simplifiedApexLocationTableSchema, simplifiedTableOptions);
+		this.refunds = new ClickHouseInterfaceTemplate<SimplifiedApexOnBoardRefund>(client, this.databaseName, 'refunds', simplifiedApexOnBoardRefundTableSchema, simplifiedTableOptions);
+		this.sales = new ClickHouseInterfaceTemplate<SimplifiedApexOnBoardSale>(client, this.databaseName, 'sales', simplifiedApexOnBoardSaleTableSchema, simplifiedTableOptions);
+		this.validations = new ClickHouseInterfaceTemplate<SimplifiedApexValidation>(client, this.databaseName, 'validations', simplifiedApexValidationTableSchema, simplifiedTableOptions);
+	}
+
+	public async init() {
+		await Promise.all([
+			this.bankingTaps.init(),
+			this.inspectionDecisions.init(),
+			this.inspections.init(),
+			this.locations.init(),
+			this.refunds.init(),
+			this.sales.init(),
+			this.validations.init(),
+		]);
 	}
 }

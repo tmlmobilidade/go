@@ -2,8 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { fileExports } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/types';
 
@@ -19,7 +19,7 @@ export class ExporterSharedController {
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static async create(request: FastifyRequest<{ Body: CreateFileExportDto<any> }>, reply: FastifyReply<FileExport>) {
-		const fileExportData = await fileExports.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
+		const fileExportData = await goDb.core.exports.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
 		return reply.send({ data: fileExportData, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
@@ -35,7 +35,7 @@ export class ExporterSharedController {
 		const context = { action: 'download', feature: 'exporter', request, value: id };
 
 		// Find file export by ID
-		const fileExport = await fileExports.findById(id);
+		const fileExport = await goDb.core.exports.findById(id);
 		if (!fileExport) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'File export not found');
 			Logger.issue({ context, level: 'error', messageOrError: error });
@@ -75,7 +75,7 @@ export class ExporterSharedController {
 			created_by: request.me._id,
 		};
 
-		const allFileExport = await fileExports.findMany(filters, { sort: { created_at: 1 } });
+		const allFileExport = await goDb.core.exports.findMany(filters, { sort: { created_at: 1 } });
 		return reply.send({ data: allFileExport, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

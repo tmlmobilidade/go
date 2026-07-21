@@ -2,9 +2,8 @@
 
 import { isEmpty, testRide } from '@/utils.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Ride, type RideAcceptance } from '@tmlmobilidade/types';
@@ -31,7 +30,7 @@ async function createRideAcceptances(ride: Ride) {
 
 		//
 		// Create the acceptance.
-		await rideAcceptances.createByRideId(ride._id, {
+		await goDb.operation.rideAcceptances.insertOne({
 			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
 			analysis_summary: requiredTestsSummary,
 			comments: [],
@@ -39,7 +38,7 @@ async function createRideAcceptances(ride: Ride) {
 			is_locked: false,
 			justification: null,
 			ride_id: ride._id,
-		}, { returnResult: false });
+		});
 
 		Logger.info({ message: `Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.` });
 	} catch (err) {
@@ -57,7 +56,7 @@ async function updateRideAcceptances(ride: Ride, acceptance: RideAcceptance) {
 			return;
 		}
 
-		await rideAcceptances.updateByRideId(ride._id, {
+		await goDb.operation.rideAcceptances.updateOne({ ride_id: ride._id }, {
 			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
 			analysis_summary: requiredTestsSummary,
 		}, { returnResult: false });
@@ -71,7 +70,7 @@ async function updateRideAcceptances(ride: Ride, acceptance: RideAcceptance) {
 async function alertJustification(ride: Ride) {
 	try {
 		//
-		const foundAlert = await alerts.findOne({
+		const foundAlert = await goDb.operation.alerts.findOne({
 			created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 2 }).unix_timestamp },
 			reference_type: { $in: ['rides', 'lines'] },
 			references: { $elemMatch: { parent_id: { $in: [ride._id, ride.line_id] } } },
@@ -79,7 +78,7 @@ async function alertJustification(ride: Ride) {
 
 		if (!foundAlert) return;
 
-		await rideAcceptances.updateByRideId(ride._id, {
+		await goDb.operation.rideAcceptances.updateOne({ ride_id: ride._id }, {
 			acceptance_status: 'under_review',
 			justification: {
 				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
@@ -163,11 +162,11 @@ async function main() {
 
 			//
 			// Fetch the rides.
-			const foundRides = await rides.findMany({ start_time_scheduled: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
+			const foundRides = await goDb.operation.rides.findMany({ start_time_scheduled: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
 
 			//
 			// Bulk fetch acceptances.
-			const acceptances: RideAcceptance[] = await rideAcceptances.findMany({ ride_id: { $in: foundRides.map(r => r._id) } });
+			const acceptances: RideAcceptance[] = await goDb.operation.rideAcceptances.findMany({ ride_id: { $in: foundRides.map(r => r._id) } });
 			const acceptanceMap = new Map<string, RideAcceptance>(acceptances.map(a => [a.ride_id, a]));
 
 			//

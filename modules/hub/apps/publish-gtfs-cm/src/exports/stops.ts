@@ -2,7 +2,7 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
-import { locations, stops } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -34,7 +34,7 @@ export interface ExportedStopsRow {
 export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 	//
 
-	const allStopsList = await stops.findMany(
+	const allStopsList = await goDb.infrastructure.stops.findMany(
 		{ 'flags.agency_ids': { $in: ['41', '42', '43', '44'] } }, // Only stops used by CM
 		{ sort: { _id: 1 } },
 	);
@@ -50,10 +50,10 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 			return matches41 || matches42 || matches43 || matches44;
 		});
 
-		const matchingDistrictData = await locations.findDistrictById(stopData.district_id);
-		const matchingMunicipalityData = await locations.findMunicipalityById(stopData.municipality_id);
-		const matchingParishData = await locations.findParishById(stopData.parish_id);
-		const matchingLocalityData = await locations.findLocalityById(stopData.locality_id);
+		const matchingDistrictData = await goDb.locations.districts.findById(stopData.district_id, { projection: { '_id': 1, 'properties.name': 1 } });
+		const matchingMunicipalityData = await goDb.locations.municipalities.findById(stopData.municipality_id, { projection: { '_id': 1, 'properties.name': 1 } });
+		const matchingParishData = await goDb.locations.parishes.findById(stopData.parish_id, { projection: { '_id': 1, 'properties.name': 1 } });
+		const matchingLocalityData = await goDb.locations.localities.findById(stopData.locality_id, { projection: { '_id': 1, 'properties.name': 1 } });
 
 		const parsedStopsRow: ExportedStopsRow = {
 			stop_id: matchingFlagData?.stop_id ?? String(stopData._id),

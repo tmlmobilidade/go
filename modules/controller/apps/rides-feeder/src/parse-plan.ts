@@ -3,7 +3,7 @@
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
-import { files, hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
@@ -42,10 +42,10 @@ export async function parsePlan(planData: Plan) {
 	//
 	// Connect to databases and setup MongoDB Writers
 
-	const hashedPatternsCollection = await hashedPatterns.getCollection();
-	const hashedShapesCollection = await hashedShapes.getCollection();
-	const hashedTripsCollection = await hashedTrips.getCollection();
-	const ridesCollection = await rides.getCollection();
+	const hashedPatternsCollection = await goDb.operation.hashedPatterns.getCollection();
+	const hashedShapesCollection = await goDb.operation.hashedShapes.getCollection();
+	const hashedTripsCollection = await goDb.operation.hashedTrips.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	const hashedPatternsDbWritter = new MongoDbWriter<HashedPattern>({ batch_size: 1000, collection: hashedPatternsCollection });
 	const hashedShapesDbWritter = new MongoDbWriter<HashedShape>({ batch_size: 1000, collection: hashedShapesCollection });
@@ -195,7 +195,7 @@ export async function parsePlan(planData: Plan) {
 
 	Logger.info({ message: `Fetching operation file from "${planData.operation_file_id}".` });
 
-	const operationFileData = await files.findById(planData.operation_file_id);
+	const operationFileData = await goDb.core.files.findById(planData.operation_file_id);
 
 	if (!operationFileData?.url) {
 		Logger.error({ message: `No operation file found for plan "${planData._id}".` });
@@ -739,7 +739,7 @@ export async function parsePlan(planData: Plan) {
 			// Check if there is already a document with this unique ID value.
 			// If it does not exist, save it to the database.
 
-			const currentHashedPatternAlreadyExists = await hashedPatterns.existsById(uniqueIdValueForHashedPattern);
+			const currentHashedPatternAlreadyExists = await goDb.operation.hashedPatterns.existsById(uniqueIdValueForHashedPattern);
 
 			const finalHashedPattern: HashedPattern = {
 				...hashableHashedPattern,
@@ -817,7 +817,7 @@ export async function parsePlan(planData: Plan) {
 			// Check if there is already a document with this unique ID value.
 			// If it does not exist, save it to the database.
 
-			const currentHashedTripAlreadyExists = await hashedTrips.existsById(uniqueIdValueForHashedTrip);
+			const currentHashedTripAlreadyExists = await goDb.operation.hashedTrips.existsById(uniqueIdValueForHashedTrip);
 
 			const finalHashedTrip: HashedTrip = {
 				...hashableHashedTrip,
@@ -872,7 +872,7 @@ export async function parsePlan(planData: Plan) {
 			// Check if there is already a document with this unique ID value.
 			// If it does not exist, save it to the database.
 
-			const currentHashedShapeAlreadyExists = await hashedShapes.existsById(uniqueIdValueForHashedShape);
+			const currentHashedShapeAlreadyExists = await goDb.operation.hashedShapes.existsById(uniqueIdValueForHashedShape);
 
 			const finalHashedShape: HashedShape = {
 				...hashableHashedShape,
@@ -1039,7 +1039,7 @@ export async function parsePlan(planData: Plan) {
 	//
 	// Mark this plan as 'complete' to indicate that it was processed successfully
 
-	const plansCollection = await plans.getCollection();
+	const plansCollection = await goDb.operation.plans.getCollection();
 
 	await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.controller.last_hash': planData.hash, 'apps.controller.status': 'complete', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 

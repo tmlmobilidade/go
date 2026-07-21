@@ -5,13 +5,13 @@ import { deleteOldTtsFile } from '@/utils/deleteOldTTSFile.js';
 import { generateHash } from '@/utils/generateHash.js';
 import { makeStop } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
-import { files, stops } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import pLimit from 'p-limit';
 
 /* * */
 
-async function processStop(stopIndex: number, total: number, stopData: Awaited<ReturnType<typeof stops.all>>[number]) {
+async function processStop(stopIndex: number, total: number, stopData: Awaited<ReturnType<typeof goDb.infrastructure.stops.findMany>>[number]) {
 	const stopTts = makeStop(stopData.name, {
 		airport: stopData.flags.some(flag => flag.short_name === 'airport'),
 		bike_parking: stopData.flags.some(flag => flag.short_name === 'bike_parking'),
@@ -49,7 +49,7 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 	await deleteOldTtsFile(stopId);
 	await deleteOldTtsFile(`tts-${stopId}`);
 
-	await files.upload(audioBuffer, {
+	await goDb.core.files.upload(audioBuffer, {
 		_id: `tts-${stopId}`,
 		created_by: 'system',
 		name: `${hash}.mp3`,
@@ -60,7 +60,7 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 		updated_by: 'system',
 	}, { override: true });
 
-	await stops.updateById(stopData._id, { tts_hash: hash }, { forceIfLocked: true });
+	await goDb.infrastructure.stops.updateById(stopData._id, { tts_hash: hash }, { forceIfLocked: true });
 }
 
 /* * */
@@ -72,7 +72,7 @@ export async function runnerStops() {
 	const globalTimer = new TIMETRACKER();
 
 	console.log('* Fetching all stops from database...');
-	const allStopsData = await stops.all();
+	const allStopsData = await goDb.infrastructure.stops.findMany();
 	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted);
 
 	const concurrency = Number(process.env.TTS_RUNNER_CONCURRENCY ?? 5);

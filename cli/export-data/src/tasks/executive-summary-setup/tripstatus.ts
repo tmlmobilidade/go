@@ -1,6 +1,6 @@
 import { ExportContext } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Ride } from '@tmlmobilidade/types';
@@ -86,7 +86,7 @@ function calculatePercentages(metrics: RideMetrics) {
 /* Main Function */
 export const calculateDailyServiceCompliance = async (context: ExportContext) => {
 	const agencies = ['41', '42', '43', '44'];
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	const processingTimer = new Timer();
 	let countProcessed = 0;
