@@ -10,6 +10,8 @@ import * as operations from './operations/index.js';
 
 /* * */
 
+import type { Filter, FindOptions } from '@tmlmobilidade/go-clients-mongo';
+
 import { OCIStorageClient } from '@tmlmobilidade/go-clients-oci-storage';
 import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
@@ -153,6 +155,17 @@ class StorageProviderClass {
 			maxSizeBytes: options?.maxSizeBytes,
 			observability: this.deps.observability,
 		});
+	}
+
+	/**
+	 * Finds multiple attachments matching the filter criteria.
+	 * @param filter - Filter criteria to match attachments.
+	 * @param options - Find options.
+	 * @param hooks - Hooks for operation execution.
+	 * @returns A promise resolving to an array of matching attachments.
+	 */
+	async findMany(filter?: Filter<Attachment>, options?: FindOptions, hooks?: OperationHooks<OperationContext, Attachment[]>): Promise<Attachment[] | null> {
+		return operations.findMany(this.deps, { filter, hooks, options });
 	}
 }
 

@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-clients-oci-storage": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/logger": "*",
