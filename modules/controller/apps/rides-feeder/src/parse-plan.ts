@@ -4,6 +4,7 @@ import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
@@ -195,7 +196,7 @@ export async function parsePlan(planData: Plan) {
 
 	Logger.info({ message: `Fetching operation file from "${planData.operation_file_id}".` });
 
-	const operationFileData = await goDb.core.files.findById(planData.operation_file_id);
+	const operationFileData = await storageProvider.findById(planData.operation_file_id);
 
 	if (!operationFileData?.url) {
 		Logger.error({ message: `No operation file found for plan "${planData._id}".` });
