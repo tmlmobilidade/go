@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, gtfsValidations, plans, TransactionManager } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { HashablePlanMetadata, PermissionCatalog, type Plan } from '@tmlmobilidade/types';
 import { createHash } from 'node:crypto';
 
@@ -17,11 +18,13 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 	//
 	// Get the Plan from the database
 
-	const planData = await plans.findById(request.params.id);
-	const originalFileId = planData.operation_file_id;
+	const planData = await goDb.operation.plans.findById(request.params.id);
 	if (!planData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 	}
+
+	const originalFileId = planData.operation_file_id;
+	const originalHash = planData.hash;
 
 	// Check if the user has permission to change the GTFS of the Plan
 	const hasPermissionChangeGtfsPlan = PermissionCatalog.hasPermissionResource({
@@ -38,61 +41,55 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 	}
 
 	// For a given validation ID, get the validation data
-	const validationData = await gtfsValidations.findById(request.body.validation_id);
+	const validationData = await goDb.operation.gtfsValidations.findById(request.body.validation_id);
 	if (!validationData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
 	}
 
-	// Create a new MongoDB transaction to manage the GTFS change
-	// and perform all necessary operations atomically, with rollback on failure
-	const transactionManager = new TransactionManager([plans, files] as const);
+	//
+	// Copy validation GTFS into the plan scope, then point the plan at it and drop the old file.
+	// Failure modes (handled by storage saga + hooks):
+	// - copy fails → saga compensates blob/metadata; plan untouched
+	// - plan update fails → onSuccess throws → saga compensates the copy
+	// - old-file delete fails → onSuccess throws → onRollback restores plan → saga compensates the copy
 
-	// Execute the transaction and return the updated plan data
-	const result = await transactionManager.withTransaction(async (collections, transactions) => {
-		//
+	let updatedPlanData: null | Plan = null;
 
-		// Get the appropriate transaction for each collection
-		const [plansCollection, filesCollection] = collections;
-		const plansTransaction = transactions.get(plansCollection);
-		const filesTransaction = transactions.get(filesCollection);
+	await storageProvider.copy(
+		validationData.file_id,
+		PermissionCatalog.all.plans.scope,
+		planData._id.toString(),
+		{
+			onRollback: async () => {
+				if (!updatedPlanData) return;
+				await goDb.operation.plans.updateById(planData._id, {
+					hash: originalHash,
+					operation_file_id: originalFileId,
+				});
+				updatedPlanData = null;
+			},
+			onSuccess: async (_ctx, result) => {
+				const hashablePlanMetadata: HashablePlanMetadata = {
+					_id: planData._id,
+					gtfs_agency: planData.gtfs_agency,
+					gtfs_feed_info: planData.gtfs_feed_info,
+					operation_file_id: result._id,
+				};
 
-		// Make a clone of the validation GTFS file in S3
-		// to keep plan data separate from validations
-		const updateFileResult = await filesCollection.clone(
-			validationData.file_id,
-			PermissionCatalog.all.plans.scope,
-			planData._id.toString(),
-			{ session: filesTransaction.getSession() },
-		);
+				const hashValue = createHash('sha256')
+					.update(JSON.stringify(hashablePlanMetadata))
+					.digest('hex');
 
-		// Get a hash of all metadata to make it possible
-		// to keep track of changes to the plan
-		const hashablePlanMetadata: HashablePlanMetadata = {
-			_id: planData._id,
-			gtfs_agency: planData.gtfs_agency,
-			gtfs_feed_info: planData.gtfs_feed_info,
-			operation_file_id: updateFileResult._id,
-		};
+				updatedPlanData = await goDb.operation.plans.updateById(
+					planData._id,
+					{ hash: hashValue, operation_file_id: result._id },
+				);
 
-		// Generate the hash value
-		const hashValue = createHash('sha256')
-			.update(JSON.stringify(hashablePlanMetadata))
-			.digest('hex');
-
-		// Update the plan with the new data
-		const updatedPlanData = await plansCollection.updateById(
-			planData._id,
-			{ hash: hashValue, operation_file_id: updateFileResult._id },
-			{ session: plansTransaction.getSession() },
-		);
-
-		// Return the updated plan data
-		return updatedPlanData;
-	});
-
-	// Delete the old operation file
-	await files.deleteById(originalFileId);
+				await storageProvider.delete(originalFileId);
+			},
+		},
+	);
 
 	// Send the updated plan data as the response
-	reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
+	reply.send({ data: updatedPlanData, error: null, statusCode: HTTP_STATUS.OK });
 }
