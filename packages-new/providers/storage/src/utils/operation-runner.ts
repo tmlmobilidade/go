@@ -1,7 +1,7 @@
 /* * */
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
-import { CompensationError, StorageError, toStorageError } from '@/types/storage-error.js';
+import { CompensationError, StorageError, toStorageError } from '@tmlmobilidade/go-clients-oci-storage';
 
 import { noopObservability, type Observability } from './observability.js';
 

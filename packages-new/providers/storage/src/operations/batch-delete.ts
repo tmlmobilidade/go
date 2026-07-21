@@ -2,7 +2,7 @@
 
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
-import { type StorageError, toStorageError } from '@/types/storage-error.js';
+import { type StorageError, toStorageError } from '@tmlmobilidade/go-clients-oci-storage';
 import { runWithConcurrency } from '@tmlmobilidade/utils';
 
 import { type StorageDeps } from '../types/deps.js';

@@ -3,9 +3,9 @@
 import { type StorageDeps } from '@/types/deps.js';
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
-import { NotFoundError, ValidationError } from '@/types/storage-error.js';
 import { runOperation } from '@/utils/operation-runner.js';
 import { storageKey } from '@/utils/storage-key.js';
+import { NotFoundError, ValidationError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /* * */
@@ -38,7 +38,7 @@ export async function getSignedUrl(deps: StorageDeps, input: GetSignedUrlInput):
 				key = storageKey(file);
 			}
 
-			return deps.blobs.getUrl(key as string);
+			return deps.blobs.getFileUrl(key as string);
 		},
 		hooks,
 		observability: deps.observability,

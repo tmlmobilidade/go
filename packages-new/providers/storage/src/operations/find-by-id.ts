@@ -29,7 +29,7 @@ export async function findById(deps: StorageDeps, input: FindByIdInput): Promise
 			const file = await goDb.core.attachments.findById(id);
 			if (!file) return null;
 
-			file.url = await deps.blobs.getUrl(storageKey(file));
+			file.url = await deps.blobs.getFileUrl(storageKey(file));
 			return file;
 		},
 		hooks,

@@ -3,7 +3,7 @@
 import { BlobBody } from '@/types/blob-body.js';
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
-import { type StorageError, toStorageError } from '@/types/storage-error.js';
+import { type StorageError, toStorageError } from '@tmlmobilidade/go-clients-oci-storage';
 import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types';
 import { runWithConcurrency } from '@tmlmobilidade/utils';
 

@@ -2,10 +2,10 @@
 
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
-import { MetadataError, NotFoundError } from '@/types/storage-error.js';
 import { getFileExtension } from '@/utils/mime.js';
 import { runSaga } from '@/utils/operation-runner.js';
 import { storageKey } from '@/utils/storage-key.js';
+import { MetadataError, NotFoundError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Attachment, CreateAttachmentSchema } from '@tmlmobilidade/types';
@@ -60,10 +60,10 @@ export async function move(deps: StorageDeps, input: MoveInput): Promise<Attachm
 			},
 			{
 				compensate: async () => {
-					await deps.blobs.delete(newFilePath);
+					await deps.blobs.deleteFile(newFilePath);
 				},
 				execute: async () => {
-					await deps.blobs.copy(originalFilePath, newFilePath);
+					await deps.blobs.copyFile(originalFilePath, newFilePath);
 				},
 				name: 'copyBlob',
 			},
@@ -86,11 +86,11 @@ export async function move(deps: StorageDeps, input: MoveInput): Promise<Attachm
 			{
 				compensate: async () => {
 					if (sourceBlobDeleted) {
-						await deps.blobs.copy(newFilePath, originalFilePath);
+						await deps.blobs.copyFile(newFilePath, originalFilePath);
 					}
 				},
 				execute: async () => {
-					await deps.blobs.delete(originalFilePath);
+					await deps.blobs.deleteFile(originalFilePath);
 					sourceBlobDeleted = true;
 				},
 				name: 'deleteSourceBlob',

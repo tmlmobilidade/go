@@ -1,6 +1,5 @@
 /* * */
 
-import { OciBlobStore } from '@/oci-blob-store.js';
 import { batchDelete as batchDeleteFn, type BatchDeleteInput } from '@/operations/batch-delete.js';
 import { type BatchResult, batchUpload as batchUploadFn, type BatchUploadItem } from '@/operations/batch-upload.js';
 import { copy as copyFn } from '@/operations/copy.js';
@@ -36,7 +35,7 @@ class StorageProviderClass {
 	public static async getInstance() {
 		if (!StorageProviderClass._instance) {
 			const ociStorageClient = await OCIStorageClient.getClient({ prefix: 'OCI_STORAGE' });
-			StorageProviderClass._instance = new StorageProviderClass({ blobs: new OciBlobStore(ociStorageClient), observability: createLoggerObservability() });
+			StorageProviderClass._instance = new StorageProviderClass({ blobs: ociStorageClient, observability: createLoggerObservability() });
 		}
 		return StorageProviderClass._instance;
 	}

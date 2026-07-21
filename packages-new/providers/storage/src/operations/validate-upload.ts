@@ -2,10 +2,10 @@
 
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
-import { ValidationError } from '@/types/storage-error.js';
 import { getFileExtension, getMimeTypeFromFileExtension } from '@/utils/mime.js';
 import { type Observability } from '@/utils/observability.js';
 import { runOperation } from '@/utils/operation-runner.js';
+import { ValidationError } from '@tmlmobilidade/go-clients-oci-storage';
 import { type CreateAttachmentDto } from '@tmlmobilidade/types';
 
 /* * */

@@ -2,9 +2,9 @@
 
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
-import { NotFoundError } from '@/types/storage-error.js';
 import { runSaga } from '@/utils/operation-runner.js';
 import { storageKey } from '@/utils/storage-key.js';
+import { NotFoundError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 import { type StorageDeps } from '../types/deps.js';
@@ -46,7 +46,7 @@ export async function deleteAttachment(deps: StorageDeps, input: DeleteInput): P
 			},
 			{
 				execute: async () => {
-					await deps.blobs.delete(key);
+					await deps.blobs.deleteFile(key);
 				},
 				name: 'deleteBlob',
 			},

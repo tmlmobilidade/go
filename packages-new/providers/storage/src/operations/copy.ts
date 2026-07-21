@@ -2,10 +2,10 @@
 
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
-import { MetadataError, NotFoundError } from '@/types/storage-error.js';
 import { getFileExtension } from '@/utils/mime.js';
 import { runSaga } from '@/utils/operation-runner.js';
 import { storageKey } from '@/utils/storage-key.js';
+import { MetadataError, NotFoundError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Attachment, CreateAttachmentSchema } from '@tmlmobilidade/types';
@@ -58,10 +58,10 @@ export async function copy(deps: StorageDeps, input: CopyInput): Promise<Attachm
 			},
 			{
 				compensate: async () => {
-					await deps.blobs.delete(newFilePath);
+					await deps.blobs.deleteFile(newFilePath);
 				},
 				execute: async () => {
-					await deps.blobs.copy(originalFilePath, newFilePath);
+					await deps.blobs.copyFile(originalFilePath, newFilePath);
 				},
 				name: 'copyBlob',
 			},

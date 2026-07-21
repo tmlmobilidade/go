@@ -4,10 +4,10 @@ import { BlobBody } from '@/types/blob-body.js';
 import { type StorageDeps } from '@/types/deps.js';
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
-import { MetadataError } from '@/types/storage-error.js';
 import { getMimeTypeFromFileExtension } from '@/utils/mime.js';
 import { runSaga } from '@/utils/operation-runner.js';
 import { buildStorageKey } from '@/utils/storage-key.js';
+import { MetadataError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types';
@@ -44,10 +44,10 @@ export async function upload(deps: StorageDeps, input: UploadInput): Promise<Att
 		steps: [
 			{
 				compensate: async () => {
-					await deps.blobs.delete(filePath);
+					await deps.blobs.deleteFile(filePath);
 				},
 				execute: async () => {
-					await deps.blobs.put(filePath, file, mimeType);
+					await deps.blobs.uploadFile(filePath, file, mimeType);
 				},
 				name: 'putBlob',
 			},

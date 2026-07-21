@@ -1,4 +1,4 @@
-import { type StorageError } from './storage-error.js';
+import { type StorageError } from '@tmlmobilidade/go-clients-oci-storage';
 
 export interface OperationHooks<TContext, TResult> {
 	onError: (ctx: TContext, error: StorageError) => Promise<void> | void

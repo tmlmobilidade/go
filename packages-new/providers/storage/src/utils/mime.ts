@@ -1,7 +1,7 @@
 /* * */
 
-import { ValidationError } from '@/types/storage-error.js';
 import { mimeTypes } from '@tmlmobilidade/consts';
+import { ValidationError } from '@tmlmobilidade/go-clients-oci-storage';
 
 /* * */
 

@@ -4,10 +4,10 @@ import { BlobBody } from '@/types/blob-body.js';
 import { type StorageDeps } from '@/types/deps.js';
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
-import { ConflictError, MetadataError, NotFoundError } from '@/types/storage-error.js';
 import { getMimeTypeFromFileExtension } from '@/utils/mime.js';
 import { runSaga } from '@/utils/operation-runner.js';
 import { buildStorageKey, storageKey, tempStorageKey } from '@/utils/storage-key.js';
+import { ConflictError, MetadataError, NotFoundError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Attachment, type CreateAttachmentDto, CreateAttachmentSchema } from '@tmlmobilidade/types';
 import { convertObject } from '@tmlmobilidade/utils';
@@ -63,10 +63,10 @@ export async function replace(deps: StorageDeps, input: ReplaceInput): Promise<A
 			},
 			{
 				compensate: async () => {
-					if (asideCreated) await deps.blobs.delete(asideKey);
+					if (asideCreated) await deps.blobs.deleteFile(asideKey);
 				},
 				execute: async () => {
-					await deps.blobs.copy(filePath, asideKey);
+					await deps.blobs.copyFile(filePath, asideKey);
 					asideCreated = true;
 				},
 				name: 'copyAside',
@@ -74,11 +74,11 @@ export async function replace(deps: StorageDeps, input: ReplaceInput): Promise<A
 			{
 				compensate: async () => {
 					if (newBlobWritten) {
-						await deps.blobs.copy(asideKey, filePath);
+						await deps.blobs.copyFile(asideKey, filePath);
 					}
 				},
 				execute: async () => {
-					await deps.blobs.put(filePath, file, mimeType);
+					await deps.blobs.uploadFile(filePath, file, mimeType);
 					newBlobWritten = true;
 				},
 				name: 'putBlob',
@@ -104,7 +104,7 @@ export async function replace(deps: StorageDeps, input: ReplaceInput): Promise<A
 			{
 				execute: async () => {
 					if (asideCreated) {
-						await deps.blobs.delete(asideKey);
+						await deps.blobs.deleteFile(asideKey);
 						asideCreated = false;
 					}
 				},
