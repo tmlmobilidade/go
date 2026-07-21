@@ -12,10 +12,6 @@ import { mutate } from 'swr';
 
 /* * */
 
-const CREATE_VALIDATION_ACTIONS = [PermissionCatalog.all.gtfs_validations.actions.create];
-
-/* * */
-
 interface ValidationCreateContextState {
 	actions: {
 		createValidation: () => void
@@ -67,7 +63,7 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 	// B. Fetch data
 
 	const { error: agenciesError, filtered: permittedAgencies, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: CREATE_VALIDATION_ACTIONS,
+		actions: [PermissionCatalog.all.gtfs_validations.actions.create],
 		scope: PermissionCatalog.all.gtfs_validations.scope,
 	});
 
