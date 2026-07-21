@@ -1,18 +1,19 @@
 /* * */
 
-import { RawVehicleEventEsCrtmAisaV1Schema } from '@/raw/es/crtm/aisa/v1.js';
-import { RawVehicleEventEsCrtmLaVelozV1Schema } from '@/raw/es/crtm/la-veloz/v1.js';
-import { RawVehicleEventPtTmlCcflV1Schema } from '@/raw/pt/tml/ccfl/v1.js';
-import { RawVehicleEventPtTmlCmetV1CoreSchema } from '@/raw/pt/tml/cmet/v1-core.js';
-import { RawVehicleEventPtTmlCmetV1LogSchema } from '@/raw/pt/tml/cmet/v1-log.js';
-import { RawVehicleEventPtTmlCpV1Schema } from '@/raw/pt/tml/cp/v1.js';
-import { RawVehicleEventPtTmlFertagusV1Schema } from '@/raw/pt/tml/fertagus/v1.js';
-import { RawVehicleEventPtTmlMlV1Schema } from '@/raw/pt/tml/ml/v1.js';
-import { RawVehicleEventPtTmlMobiV1Schema } from '@/raw/pt/tml/mobi/v1.js';
-import { RawVehicleEventPtTmlTcbV1Schema } from '@/raw/pt/tml/tcb/v1.js';
-import { RawVehicleEventPtTmlTtslV1Schema } from '@/raw/pt/tml/ttsl/v1.js';
-import { RawVehicleEventPtTmpUnirV1Schema } from '@/raw/pt/tmp/unir/v1.js';
 import { z } from 'zod';
+
+import { RawVehicleEventEsCrtmAisaV1Schema } from './es/crtm/aisa/v1.js';
+import { RawVehicleEventEsCrtmLaVelozV1Schema } from './es/crtm/la-veloz/v1.js';
+import { RawVehicleEventPtTmlCcflV1Schema } from './pt/tml/ccfl/v1.js';
+import { RawVehicleEventPtTmlCmetV1CoreSchema } from './pt/tml/cmet/v1-core.js';
+import { RawVehicleEventPtTmlCmetV1LogSchema } from './pt/tml/cmet/v1-log.js';
+import { RawVehicleEventPtTmlCpV1Schema } from './pt/tml/cp/v1.js';
+import { RawVehicleEventPtTmlFertagusV1Schema } from './pt/tml/fertagus/v1.js';
+import { RawVehicleEventPtTmlMlV1Schema } from './pt/tml/ml/v1.js';
+import { RawVehicleEventPtTmlMobiV1Schema } from './pt/tml/mobi/v1.js';
+import { RawVehicleEventPtTmlTcbV1Schema } from './pt/tml/tcb/v1.js';
+import { RawVehicleEventPtTmlTtslV1Schema } from './pt/tml/ttsl/v1.js';
+import { RawVehicleEventPtTmpUnirV1Schema } from './pt/tmp/unir/v1.js';
 
 /* * */
 
