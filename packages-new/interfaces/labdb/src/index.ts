@@ -44,6 +44,17 @@ class LabDbClass {
 		return await LabDbClass._instance;
 	}
 
+	/**
+	 * Returns the ClickHouse client.
+	 * @returns The ClickHouse client.
+	 * @deprecated Avoid using this method directly. Find alternative ways
+	 * to query the database using the database-specific methods instead.
+	 */
+	public async getClient(): Promise<ClickHouseClient> {
+		const instance = await LabDbClass.getInstance();
+		return instance.clickhouseClient;
+	}
+
 	private async init() {
 		await Promise.all([
 			this.operation.init(),

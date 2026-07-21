@@ -26,6 +26,7 @@
 		"build:controller": "turbo run build --filter=@tmlmobilidade/go-controller-*",
 		"build:dates": "turbo run build --filter=@tmlmobilidade/go-dates-*",
 		"build:eslint": "turbo build --filter=@tmlmobilidade/eslint",
+		"build:eta": "turbo run build --filter=@tmlmobilidade/go-eta-*",
 		"build:eta:pckg": "turbo run build --filter=@tmlmobilidade/go-eta-pckg-*",
 		"build:exporter": "turbo run build --filter=@tmlmobilidade/go-exporter-*",
 		"build:fleet": "turbo run build --filter=@tmlmobilidade/go-fleet-*",
