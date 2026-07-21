@@ -4,8 +4,9 @@ import { type MergedGtfsExportConfig } from '@/types.js';
 import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { initSentryNode } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -157,7 +158,7 @@ export async function main() {
 			//
 			// Get the operation file URL
 
-			const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.operation_file_id });
 
 			//
 			// Find out if this plan is a currently active plan.
@@ -311,7 +312,7 @@ export async function main() {
 
 	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`);
 
-	await files.upload(fileStream, {
+	await storageProvider.replace(fileStream, {
 		_id: 'gtfs-cm-latest',
 		created_by: 'system',
 		name: `${exportConfig.version}.zip`,
@@ -320,7 +321,7 @@ export async function main() {
 		size: fs.statSync(`${exportConfig.workdir}/${exportConfig.version}.zip`).size,
 		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${exportConfig.version}.zip`)),
 		updated_by: 'system',
-	}, { override: true });
+	});
 
 	//
 	// Finalize the export process
