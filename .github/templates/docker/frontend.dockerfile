@@ -75,7 +75,7 @@ RUN node /app/.docker/scripts/trim-workspaces.js /app/modules/${MODULE}/apps/${A
 # # #
 # RUNNER STAGE
 
-FROM base AS runner
+FROM gcr.io/distroless/nodejs24-debian13 AS runner
 
 ARG MODULE
 ARG APP
