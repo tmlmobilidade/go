@@ -5,16 +5,12 @@ import { type StorageDeps } from '@/types/deps.js';
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
 import { createLoggerObservability } from '@/utils/observability.js';
-
-import * as operations from './operations/index.js';
-
-/* * */
-
-import type { Filter, FindOptions } from '@tmlmobilidade/go-clients-mongo';
-
+import { type Filter, type FindOptions } from '@tmlmobilidade/go-clients-mongo';
 import { OCIStorageClient } from '@tmlmobilidade/go-clients-oci-storage';
 import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
+
+import * as operations from './operations/index.js';
 
 /* * */
 

@@ -11,8 +11,6 @@ import { CreatePreauthenticatedRequestDetails } from 'oci-objectstorage/lib/mode
 
 import { BlobStoreError, NotFoundError } from './storage-error.js';
 
-/* * */
-
 /**
  * Configuration for an OCI Object Storage client.
  *
@@ -293,7 +291,8 @@ export class OCIStorageClient {
 			this.entries.set(key, promise);
 		}
 
-		const entry = await this.entries.get(key)!;
+		const entry = await this.entries.get(key);
+		if (!entry) throw new Error(`OCI Storage client not found for prefix ${key}`);
 		return new OCIStorageClientWrapper(entry);
 	}
 
@@ -306,48 +305,69 @@ export class OCIStorageClient {
 	 * retries work.
 	 */
 	private static async createClient(config: OCIStorageConfig): Promise<OCIStorageEntry> {
-		const { prefix } = config;
-		const env = (name: string) => process.env[`${prefix}_${name}`];
+		//
 
-		Logger.info({ message: `[${prefix}] Creating OCI Storage client...` });
+		//
+		// Setup a function to get the environment variable by prefix
 
-		const requiredVars = ['BUCKET_NAME', 'NAMESPACE', 'REGION', 'TENANCY', 'USER', 'FINGERPRINT'] as const;
-		const missing: string[] = [];
+		const env = (name: string) => process.env[`${config.prefix}_${name}`];
 
-		for (const name of requiredVars) {
-			if (!env(name)) missing.push(`${prefix}_${name}`);
-		}
+		//
+		// Check if all required environment variables are set
 
-		if (!env('PRIVATE_KEY') && !env('PRIVATE_KEY_PATH')) {
-			missing.push(`${prefix}_PRIVATE_KEY or ${prefix}_PRIVATE_KEY_PATH`);
-		}
+		Logger.info({ message: `[${config.prefix}] Creating OCI Storage client...` });
 
-		if (missing.length > 0) {
-			throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
-		}
+		const bucketName = env('BUCKET_NAME');
+		if (!bucketName) throw new Error(`${config.prefix}_BUCKET_NAME is not set`);
 
-		const privateKey = env('PRIVATE_KEY_PATH')
-			? readFileSync(env('PRIVATE_KEY_PATH')!, 'utf8')
-			: env('PRIVATE_KEY')!;
+		const namespace = env('NAMESPACE');
+		if (!namespace) throw new Error(`${config.prefix}_NAMESPACE is not set`);
+
+		const region = env('REGION');
+		if (!region) throw new Error(`${config.prefix}_REGION is not set`);
+
+		const tenancy = env('TENANCY');
+		if (!tenancy) throw new Error(`${config.prefix}_TENANCY is not set`);
+
+		const user = env('USER');
+		if (!user) throw new Error(`${config.prefix}_USER is not set`);
+
+		const fingerprint = env('FINGERPRINT');
+		if (!fingerprint) throw new Error(`${config.prefix}_FINGERPRINT is not set`);
+
+		//
+		// Resolve private key
+
+		const privateKeyPath = env('PRIVATE_KEY_PATH');
+		const privateKeyValue = env('PRIVATE_KEY');
+		if (!privateKeyPath && !privateKeyValue) throw new Error(`${config.prefix}_PRIVATE_KEY or ${config.prefix}_PRIVATE_KEY_PATH is not set`);
+
+		let privateKey: string;
+		if (privateKeyPath) privateKey = readFileSync(privateKeyPath, 'utf8');
+		else if (privateKeyValue) privateKey = privateKeyValue.replace(/\\n/g, '\n');
+		else throw new Error(`Could not resolve private key for ${config.prefix} (missing ${config.prefix}_PRIVATE_KEY or ${config.prefix}_PRIVATE_KEY_PATH)`);
+
+		//
+		// Create OCI Storage client
 
 		const client = new ObjectStorageClient({
 			authenticationDetailsProvider: new SimpleAuthenticationDetailsProvider(
-				env('TENANCY')!,
-				env('USER')!,
-				env('FINGERPRINT')!,
+				tenancy,
+				user,
+				fingerprint,
 				privateKey,
 				null,
-				Region.fromRegionId(env('REGION')!),
+				Region.fromRegionId(region),
 			),
 		});
 
-		Logger.info({ message: `[${prefix}] OCI Storage client created.` });
+		Logger.info({ message: `[${config.prefix}] OCI Storage client created.` });
 
 		return {
-			bucketName: env('BUCKET_NAME')!,
+			bucketName,
 			client,
-			namespace: env('NAMESPACE')!,
-			region: Region.fromRegionId(env('REGION')!),
+			namespace,
+			region: Region.fromRegionId(region),
 		};
 	}
 }
