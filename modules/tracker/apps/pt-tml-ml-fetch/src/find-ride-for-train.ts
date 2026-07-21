@@ -1,7 +1,7 @@
 /* * */
 
 import { type Dates } from '@tmlmobilidade/dates';
-import { rides, stops } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 import { aggregationQuery } from './aggregation-query.js';
 import { type AggregationResult } from './types.js';
@@ -33,13 +33,13 @@ interface FindRideForTrainParams {
  * Used by ml-fetch to map API train positions to GTFS rides for downstream vehicle event construction.
  */
 export async function findRideForTrain({ destinationId, now }: FindRideForTrainParams): Promise<AggregationResult | null> {
-	const destinationStop = await stops.findOne({
+	const destinationStop = await goDb.infrastructure.stops.findOne({
 		flags: { $elemMatch: { agency_ids: '2', stop_id: destinationId } },
 	});
 
 	if (!destinationStop) return null;
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	const ridesAggregationResult = await ridesCollection.aggregate(
 		aggregationQuery({

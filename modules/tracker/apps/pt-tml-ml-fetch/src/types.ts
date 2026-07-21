@@ -1,4 +1,4 @@
-import { HashedShape, HashedTrip, HashedTripWaypoint } from '@tmlmobilidade/types';
+import { type HashedShape, type HashedTrip, type HashedTripWaypoint } from '@tmlmobilidade/types';
 
 export interface AggregationResult {
 	_id: string

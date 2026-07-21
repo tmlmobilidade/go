@@ -3,9 +3,9 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { TrainsResponse } from '@tmlmobilidade/external/dist/clients/fertagus/types.js';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlFertagusV1 } from '@tmlmobilidade/go-types-vehicle-events';
-import { rides } from '@tmlmobilidade/interfaces';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type HashedPattern, type Ride } from '@tmlmobilidade/types';
@@ -85,7 +85,7 @@ const main = async () => {
 
 		if (!ridesMap.has(rideKey)) {
 			try {
-				const ridesCollection = await rides.getCollection();
+				const ridesCollection = await goDb.operation.rides.getCollection();
 				const foundRides = await ridesCollection.aggregate<FoundRideDocument>([
 					{
 						$match: {
