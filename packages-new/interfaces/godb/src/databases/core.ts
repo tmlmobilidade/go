@@ -2,6 +2,7 @@
 
 import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
 
+import { agenciesIndexes } from '@/indexes/index.js';
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Agency, type AppConfig, type Attachment, type CreateAgencyDto, CreateAgencySchema, type CreateAttachmentDto, CreateAttachmentSchema, type CreateFileExportDto, CreateFileExportSchema, type CreateOrganizationDto, CreateOrganizationSchema, type CreateRoleDto, CreateRoleSchema, type CreateSessionDto, CreateSessionSchema, type CreateUserDto, CreateUserSchema, type CreateVerificationTokenDto, CreateVerificationTokenSchema, type FileExport, type Organization, type Role, type Session, type UpdateAgencyDto, UpdateAgencySchema, type UpdateAttachmentDto, UpdateAttachmentSchema, UpdateFileExportSchema, type UpdateOrganizationDto, UpdateOrganizationSchema, type UpdateRoleDto, UpdateRoleSchema, type UpdateSessionDto, UpdateSessionSchema, type UpdateUserDto, UpdateUserSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type User, type VerificationToken } from '@tmlmobilidade/types';
 
@@ -27,7 +28,7 @@ export class CoreDatabase {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
 		// Create collection interfaces
-		this.agencies = new MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>('agencies', this.database, CreateAgencySchema, UpdateAgencySchema);
+		this.agencies = new MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>('agencies', this.database, CreateAgencySchema, UpdateAgencySchema, agenciesIndexes);
 		this.appConfigs = new MongoInterfaceTemplate<AppConfig, null, null>('app-configs', this.database, null, null);
 		this.exports = new MongoInterfaceTemplate<FileExport, CreateFileExportDto<any>, Partial<FileExport>>('exports', this.database, CreateFileExportSchema, UpdateFileExportSchema);
 		this.organizations = new MongoInterfaceTemplate<Organization, CreateOrganizationDto, UpdateOrganizationDto>('organizations', this.database, CreateOrganizationSchema, UpdateOrganizationSchema);
