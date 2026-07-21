@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const FileSchema = DocumentSchema
+export const AttachmentSchema = DocumentSchema
 	.omit({ is_locked: true })
 	.extend({
 		created_by: z.string(),
@@ -20,9 +20,9 @@ export const FileSchema = DocumentSchema
 		url: z.string().nullish(),
 	});
 
-export const CreateFileSchema = FileSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateFileSchema = CreateFileSchema.omit({ created_by: true }).partial();
+export const CreateAttachmentSchema = AttachmentSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const UpdateAttachmentSchema = CreateAttachmentSchema.omit({ created_by: true }).partial();
 
-export type File = z.infer<typeof FileSchema>;
-export type CreateFileDto = z.infer<typeof CreateFileSchema>;
-export type UpdateFileDto = z.infer<typeof UpdateFileSchema>;
+export type Attachment = z.infer<typeof AttachmentSchema>;
+export type CreateAttachmentDto = z.infer<typeof CreateAttachmentSchema>;
+export type UpdateAttachmentDto = z.infer<typeof UpdateAttachmentSchema>;
