@@ -2,8 +2,9 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HubPlan, HubPlanSchema } from '@tmlmobilidade/go-types-public-info';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -31,7 +32,7 @@ export async function publishApprovedPlans() {
 	for (const planData of allPlansData) {
 		try {
 			// Get the operation file URL
-			const operationFile = await files.findById(planData.operation_file_id);
+			const operationFile = await storageProvider.findById(planData.operation_file_id);
 			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
 			// Check if the plans is active
 			const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
