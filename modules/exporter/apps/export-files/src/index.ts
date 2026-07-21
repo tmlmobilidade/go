@@ -2,6 +2,7 @@
 
 import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
@@ -73,7 +74,7 @@ async function main() {
 			if (pathToFile) {
 				const fileStream = fs.createReadStream(pathToFile, 'utf-8');
 
-				const file = await goDb.core.files.upload(fileStream, {
+				const file = await storageProvider.upload(fileStream, {
 					created_by: 'system',
 					name: fileExport.file_name,
 					resource_id: fileExport._id,
