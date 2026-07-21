@@ -56,11 +56,10 @@ async function main() {
 		//
 		// Process each waiting validation
 
-		for (const gtfsValidationItem of waitingOrStuckGtfsValidations) {
-			const gtfsValidation = gtfsValidationItem as unknown as GtfsValidation;
-			Logger.title(`Processing GTFS Validation ${gtfsValidation._id} for File ${gtfsValidation.file_id}`);
-			await processValidation(gtfsValidation);
-			Logger.info({ message: `Finished processing validation ${gtfsValidation._id} in ${globalTimer.get()}ms` });
+		for (const gtfsValidationData of waitingOrStuckGtfsValidations) {
+			Logger.title(`Processing GTFS Validation ${gtfsValidationData._id} for File ${gtfsValidationData.file_id}`);
+			await processValidation(gtfsValidationData);
+			Logger.info({ message: `Finished processing validation ${gtfsValidationData._id} in ${globalTimer.get()}ms` });
 		}
 
 		//

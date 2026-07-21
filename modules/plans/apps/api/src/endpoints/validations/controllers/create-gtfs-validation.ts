@@ -1,6 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
@@ -34,6 +35,7 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 
 	const validationData: CreateGtfsValidationDto = {
 		agency_id: requestData.fields.agency_id['value'] as string,
+		created_at: Dates.now('utc').unix_timestamp,
 		created_by: request.me._id,
 		file_id: '',
 		gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
