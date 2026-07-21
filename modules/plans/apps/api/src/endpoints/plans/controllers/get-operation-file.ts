@@ -3,14 +3,14 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { files, plans } from '@tmlmobilidade/interfaces';
-import { type File as FileType, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Attachment, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
  * Retrieves the operation file associated with a plan by ID
  * @param request Fastify request containing plan ID in params
  * @param reply Fastify reply
  */
-export async function getOperationFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<FileType>) {
+export async function getOperationFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
 	//
 
 	//
