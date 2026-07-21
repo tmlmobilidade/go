@@ -9,6 +9,7 @@ import { z } from 'zod';
 export const RideSchema = DocumentSchema
 	.omit({ is_locked: true })
 	.extend({
+		agency_code: z.string(),
 		agency_id: z.string(),
 		analysis: z.object({
 			AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP: atLeastOneVehicleEventOnFirstStopSchema,

@@ -932,7 +932,8 @@ export async function parsePlan(planData: Plan) {
 
 				const finalRide: Ride = {
 					_id: uniqueIdValueForRide,
-					agency_id: routeData.agency_id,
+					agency_code: planData.gtfs_agency?.agency_id,
+					agency_id: planData.agency_id,
 					analysis: null,
 					apex_locations_qty: null,
 					apex_on_board_refunds_amount: null,
