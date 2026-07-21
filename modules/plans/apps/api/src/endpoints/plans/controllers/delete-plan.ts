@@ -36,7 +36,7 @@ export async function deletePlan(request: FastifyRequest<{ Params: { id: string 
 	//
 	// Actually delete the plan
 
-	await storageProvider.delete(foundPlan.apex_file_id, {
+	await storageProvider.delete(foundPlan.operation_file_id, {
 		onRollback: async (_, error) => {
 			throw error;
 		},
