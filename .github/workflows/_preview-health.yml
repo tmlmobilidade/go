@@ -60,7 +60,7 @@ jobs:
           POLL_SECONDS: ${{ inputs.poll_seconds }}
         run: |
           set -euo pipefail
-          URL="https://pr-${PR_NUMBER}.go-stg.tmlmobilidade.pt/"
+          URL="https://pr-${PR_NUMBER}.go-stg.tmlmobilidade.pt/auth/api/health"
           DEADLINE=$((SECONDS + TIMEOUT_MINUTES * 60))
           echo "Polling ${URL} for up to ${TIMEOUT_MINUTES}m (every ${POLL_SECONDS}s)"
 
@@ -89,7 +89,7 @@ jobs:
         with:
           script: |
             const prNumber = Number(process.env.PR_NUMBER);
-            const url = `https://pr-${prNumber}.go-stg.tmlmobilidade.pt/`;
+            const url = `https://pr-${prNumber}.go-stg.tmlmobilidade.pt/auth/api/health`;
             const ready = process.env.READY === 'true';
             const code = process.env.HTTP_CODE || '000';
             const timeout = process.env.TIMEOUT_MINUTES || '15';
