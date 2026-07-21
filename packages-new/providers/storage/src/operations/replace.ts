@@ -19,7 +19,7 @@ import { convertObject } from '@tmlmobilidade/utils';
 export interface ReplaceInput {
 	createAttachmentDto: CreateAttachmentDto & { _id: string }
 	file: BlobBody
-	hooks: OperationHooks<OperationContext, Attachment>
+	hooks?: OperationHooks<OperationContext, Attachment>
 }
 
 export async function replace(deps: StorageDeps, input: ReplaceInput): Promise<Attachment> {

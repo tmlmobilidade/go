@@ -15,7 +15,7 @@ export interface SagaStep {
 
 export interface RunSagaOptions<TContext extends OperationContext, TResult> {
 	context: TContext
-	hooks: OperationHooks<TContext, TResult>
+	hooks?: OperationHooks<TContext, TResult>
 	observability?: Observability
 	result: () => Promise<TResult> | TResult
 	steps: SagaStep[]
@@ -40,7 +40,8 @@ export interface RunSagaOptions<TContext extends OperationContext, TResult> {
 export async function runSaga<TContext extends OperationContext, TResult>(options: RunSagaOptions<TContext, TResult>): Promise<TResult> {
 	//
 
-	const { context, hooks, result, steps } = options;
+	const { context, result, steps } = options;
+	const hooks = options.hooks ?? {};
 	const observability = options.observability ?? noopObservability;
 	const startedAt = Date.now();
 	const completed: SagaStep[] = [];
@@ -65,7 +66,7 @@ export async function runSaga<TContext extends OperationContext, TResult>(option
 
 		const value = await result();
 
-		await hooks.onSuccess(context, value);
+		await hooks.onSuccess?.(context, value);
 		observability.onOperationEnd({ ...context, durationMs: Date.now() - startedAt, outcome: 'success' });
 
 		return value;
@@ -101,7 +102,7 @@ export async function runSaga<TContext extends OperationContext, TResult>(option
 			: storageError;
 
 		await hooks.onRollback?.(context, finalError);
-		await hooks.onError(context, finalError);
+		await hooks.onError?.(context, finalError);
 		observability.onOperationEnd({ ...context, durationMs: Date.now() - startedAt, outcome: 'error' });
 
 		throw finalError;
@@ -128,7 +129,7 @@ export async function runOperation<TContext extends OperationContext, TResult>(
 	options: {
 		context: TContext
 		execute: () => Promise<TResult>
-		hooks: OperationHooks<TContext, TResult>
+		hooks?: OperationHooks<TContext, TResult>
 		observability?: Observability
 	},
 ): Promise<TResult> {

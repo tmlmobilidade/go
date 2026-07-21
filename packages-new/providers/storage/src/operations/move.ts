@@ -17,7 +17,7 @@ import { type StorageDeps } from '../types/deps.js';
 
 export interface MoveInput {
 	fileId: string
-	hooks: OperationHooks<OperationContext, Attachment>
+	hooks?: OperationHooks<OperationContext, Attachment>
 	resourceId: string
 	scope: string
 }

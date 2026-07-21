@@ -11,7 +11,7 @@ import { type Attachment } from '@tmlmobilidade/types';
 /* * */
 
 export interface FindByIdInput {
-	hooks: OperationHooks<OperationContext, Attachment | null>
+	hooks?: OperationHooks<OperationContext, Attachment | null>
 	id: string
 }
 

@@ -14,7 +14,7 @@ import { deleteAttachment } from './delete.js';
 export interface BatchDeleteInput {
 	concurrency?: number
 	fileIds: string[]
-	hooks: OperationHooks<OperationContext, BatchResult<{ fileId: string }>>
+	hooks?: OperationHooks<OperationContext, BatchResult<{ fileId: string }>>
 }
 
 /* * */
@@ -25,7 +25,7 @@ export async function batchDelete(deps: StorageDeps, input: BatchDeleteInput): P
 	const { concurrency = 5, fileIds, hooks } = input;
 	const context: OperationContext = { itemCount: fileIds.length, operation: 'batchDelete' };
 
-	await hooks.onStart?.(context);
+	await hooks?.onStart?.(context);
 
 	try {
 		const settlements = await runWithConcurrency(fileIds, concurrency, async (fileId) => {
@@ -50,19 +50,19 @@ export async function batchDelete(deps: StorageDeps, input: BatchDeleteInput): P
 		});
 
 		const result = { fulfilled, rejected };
-		await hooks.onSuccess(context, result);
+		await hooks?.onSuccess?.(context, result);
 
 		return result;
 	} catch (error) {
 		//
 
 		const storageError = toStorageError(error, { operation: context.operation });
-		await hooks.onError(context, storageError);
+		await hooks?.onError?.(context, storageError);
 
 		throw storageError;
 	} finally {
 		//
 
-		await hooks.onFinally?.(context);
+		await hooks?.onFinally?.(context);
 	}
 }

@@ -18,7 +18,7 @@ export interface ExistsResult {
 
 export interface ExistsInput {
 	fileId?: string
-	hooks: OperationHooks<OperationContext, ExistsResult>
+	hooks?: OperationHooks<OperationContext, ExistsResult>
 	key?: string
 }
 

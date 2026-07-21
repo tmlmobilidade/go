@@ -17,7 +17,7 @@ import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types'
 export interface UploadInput {
 	createAttachmentDto: CreateAttachmentDto & { _id?: string }
 	file: BlobBody
-	hooks: OperationHooks<OperationContext, Attachment>
+	hooks?: OperationHooks<OperationContext, Attachment>
 }
 
 /* * */

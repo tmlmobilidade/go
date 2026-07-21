@@ -17,7 +17,7 @@ export interface ValidateUploadResult {
 
 export interface ValidateUploadInput {
 	createAttachmentDto: Pick<CreateAttachmentDto, 'name' | 'size'>
-	hooks: OperationHooks<OperationContext, ValidateUploadResult>
+	hooks?: OperationHooks<OperationContext, ValidateUploadResult>
 	maxSizeBytes?: number
 	observability?: Observability
 }

@@ -12,7 +12,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 export interface GetSignedUrlInput {
 	fileId?: string
-	hooks: OperationHooks<OperationContext, string>
+	hooks?: OperationHooks<OperationContext, string>
 	key?: string
 }
 

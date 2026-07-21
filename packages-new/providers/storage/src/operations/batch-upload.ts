@@ -24,7 +24,7 @@ export interface BatchResult<T> {
 
 export interface BatchUploadInput {
 	concurrency?: number
-	hooks: OperationHooks<OperationContext, BatchResult<Attachment>>
+	hooks?: OperationHooks<OperationContext, BatchResult<Attachment>>
 	items: BatchUploadItem[]
 }
 
@@ -34,7 +34,7 @@ export async function batchUpload(deps: StorageDeps, input: BatchUploadInput): P
 	const { concurrency = 5, hooks, items } = input;
 	const context: OperationContext = { itemCount: items.length, operation: 'batchUpload' };
 
-	await hooks.onStart?.(context);
+	await hooks?.onStart?.(context);
 
 	try {
 		const settlements = await runWithConcurrency(items, concurrency, async (item) => {
@@ -60,18 +60,18 @@ export async function batchUpload(deps: StorageDeps, input: BatchUploadInput): P
 		});
 
 		const result = { fulfilled, rejected };
-		await hooks.onSuccess(context, result);
+		await hooks?.onSuccess?.(context, result);
 		return result;
 	} catch (error) {
 		//
 
 		const storageError = toStorageError(error, { operation: context.operation });
-		await hooks.onError(context, storageError);
+		await hooks?.onError?.(context, storageError);
 
 		throw storageError;
 	} finally {
 		//
 
-		await hooks.onFinally?.(context);
+		await hooks?.onFinally?.(context);
 	}
 }

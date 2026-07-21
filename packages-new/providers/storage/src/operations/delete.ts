@@ -16,7 +16,7 @@ import { type StorageDeps } from '../types/deps.js';
  */
 export interface DeleteInput {
 	fileId: string
-	hooks: OperationHooks<OperationContext, { fileId: string }>
+	hooks?: OperationHooks<OperationContext, { fileId: string }>
 }
 
 export async function deleteAttachment(deps: StorageDeps, input: DeleteInput): Promise<{ fileId: string }> {
