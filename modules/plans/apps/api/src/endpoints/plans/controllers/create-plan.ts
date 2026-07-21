@@ -1,6 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
@@ -45,6 +46,7 @@ export async function createPlan(request: FastifyRequest<{ Body: { validation_id
 				timestamp: null,
 			},
 		},
+		created_at: Dates.now('utc').unix_timestamp,
 		created_by: request.me._id,
 		gtfs_agency: validationData.gtfs_agency,
 		gtfs_feed_info: validationData.gtfs_feed_info,
