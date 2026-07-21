@@ -25,7 +25,7 @@ export async function transformAlertIntoRssEntity(alertData: Alert, feedBaseUrl:
 		const fileIdOrder: string[] = [];
 		const seen = new Set<string>();
 
-		const attachedFiles = await files.findMany(
+		const attachedFiles = await storageProvider.findMany(
 			{ resource_id: alertData._id, scope: 'alerts' },
 			{ sort: { created_at: 1 } },
 		);
