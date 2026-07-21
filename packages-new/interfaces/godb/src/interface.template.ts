@@ -182,8 +182,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 		// otherwise generate a unique one.
 		if (doc._id) {
 			parsedDocument._id = doc._id;
-		}
-		else {
+		} else {
 			parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
 			while (await this.findById(parsedDocument._id as T['_id'])) {
 				parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
