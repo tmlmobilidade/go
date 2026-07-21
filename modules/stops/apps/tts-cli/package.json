@@ -22,6 +22,7 @@
 		"@helperkits/timer": "20240627.34.23",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-stops-pckg-organize": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/interfaces": "*",

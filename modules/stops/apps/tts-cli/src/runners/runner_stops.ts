@@ -6,6 +6,7 @@ import { generateHash } from '@/utils/generateHash.js';
 import { makeStop } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import pLimit from 'p-limit';
 
@@ -49,7 +50,7 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 	await deleteOldTtsFile(stopId);
 	await deleteOldTtsFile(`tts-${stopId}`);
 
-	await goDb.core.files.upload(audioBuffer, {
+	await storageProvider.replace(audioBuffer, {
 		_id: `tts-${stopId}`,
 		created_by: 'system',
 		name: `${hash}.mp3`,
@@ -58,7 +59,7 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 		size: audioBuffer.byteLength,
 		type: 'audio/mpeg',
 		updated_by: 'system',
-	}, { override: true });
+	});
 
 	await goDb.infrastructure.stops.updateById(stopData._id, { tts_hash: hash }, { forceIfLocked: true });
 }
