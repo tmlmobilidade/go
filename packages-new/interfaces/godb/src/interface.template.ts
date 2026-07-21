@@ -1,33 +1,48 @@
 /* * */
 
-import type { AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import type { AggregateOptions, AggregationCursor, BulkWriteOptions, Collection, Db, DeleteOptions, DeleteResult, Document, Filter, FindOptions, Flatten, InsertManyResult, InsertOneOptions, InsertOneResult, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId } from '@tmlmobilidade/go-clients-mongo';
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
+import { type AggregationPipeline, CreateIndexesOptions, isSameIndex, prepareMongoIndexOptions, type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
 import { UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import z from 'zod';
 
 /* * */
 
 export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
-	//
+//
 
+	private readonly collection: Collection<T>;
+	private readonly collectionName: string;
+	private readonly database: Db;
+	private readonly indexDescription: false | SimplifiedMongoIndex<T>[];
+
+	//
 	private readonly createSchema: null | z.ZodSchema = null;
-	private readonly mongoCollection: Collection<T>;
 	private readonly updateSchema: null | z.ZodSchema = null;
 
+	private initPromise: null | Promise<void> = null;
+
 	/**
-	 * @param collectionName - The name of the collection to create the interface for.
-	 * @param databaseName - The name of the database to create the interface for.
-	 * @param createSchema - The schema to use for creating documents.
-	 * @param updateSchema - The schema to use for updating documents.
-	 */
-	public constructor(collectionName: string, database: Db, createSchema: null | z.ZodSchema, updateSchema: null | z.ZodSchema) {
-		this.mongoCollection = database.collection<T>(collectionName);
+ * @param collectionName - The name of the collection to create the interface for.
+ * @param database - The database to create the interface for.
+ * @param createSchema - The schema to use for creating documents.
+ * @param indexDescription - The index description to use for the collection.
+ */
+	public constructor(collectionName: string, database: Db, createSchema: null | z.ZodSchema = null, updateSchema: null | z.ZodSchema = null, indexDescription: false | SimplifiedMongoIndex<T>[] = []) {
+		this.collectionName = collectionName;
+		this.collection = database.collection<T>(collectionName);
+		this.database = database;
 		this.createSchema = createSchema;
 		this.updateSchema = updateSchema;
+		this.indexDescription = indexDescription;
+		this.initPromise = this.init().catch((error) => {
+			Logger.error({ error, message: `MONGODB [${this.collectionName}]: Error @ constructor(): ${(error as Error).message}` });
+			throw error;
+		});
 	}
 
 	/**
@@ -35,7 +50,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns The MongoDB collection instance
 	 */
 	public async getCollection(): Promise<Collection<T>> {
-		return this.mongoCollection;
+		return this.collection;
 	}
 
 	/**
@@ -44,7 +59,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to an array of distinct values for the given key.
 	 */
 	public async distinct<Key extends keyof WithId<T>>(key: Key, filter: Filter<T> = {}): Promise<Array<Flatten<WithId<T>[Key]>>> {
-		return this.mongoCollection.distinct(key as string, filter) as Promise<Array<Flatten<WithId<T>[Key]>>>;
+		return this.collection.distinct(key as string, filter) as Promise<Array<Flatten<WithId<T>[Key]>>>;
 	}
 
 	/**
@@ -55,7 +70,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 */
 	public async exists<K extends keyof T>(key: K, value: T[K]): Promise<boolean> {
 		const filter: Filter<T> = { [key]: value } as Filter<T>;
-		const doc = await this.mongoCollection.findOne(filter, { projection: { [key]: 1 } });
+		const doc = await this.collection.findOne(filter, { projection: { [key]: 1 } });
 		return !!doc;
 	}
 
@@ -65,7 +80,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to true if the document exists, false otherwise.
 	 */
 	public async existsById(id: T['_id']): Promise<boolean> {
-		const foundDoc = await this.mongoCollection.findOne({ _id: id }, { projection: { _id: 1 } });
+		const foundDoc = await this.collection.findOne({ _id: id }, { projection: { _id: 1 } });
 		return !!foundDoc;
 	}
 
@@ -76,7 +91,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to an array of matching documents.
 	 */
 	public async findMany(filter?: Filter<T>, options?: FindOptions): Promise<WithId<T>[]> {
-		return await this.mongoCollection.find(filter ?? {}, options).toArray();
+		return await this.collection.find(filter ?? {}, options).toArray();
 	}
 
 	/**
@@ -86,7 +101,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to the matching document or null if not found.
 	 */
 	public async findById(id: T['_id'], options?: FindOptions): Promise<null | WithId<T>> {
-		return this.mongoCollection.findOne({ _id: { $eq: id } }, options);
+		return this.collection.findOne({ _id: { $eq: id } }, options);
 	}
 
 	/**
@@ -96,7 +111,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to the matching document or null if not found.
 	 */
 	public async findOne(filter: Filter<T>, options?: FindOptions): Promise<null | WithId<T>> {
-		return await this.mongoCollection.findOne(filter, options);
+		return await this.collection.findOne(filter, options);
 	}
 
 	/**
@@ -108,7 +123,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	public async insertMany(docs: (TCreate & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], { options, unsafe = false }: { options?: BulkWriteOptions, unsafe?: boolean } = {}): Promise<InsertManyResult<T>> {
 		const newDocuments: OptionalUnlessRequiredId<T>[] = [];
 		const usedIds = new Set<any>(
-			(await this.mongoCollection.find(
+			(await this.collection.find(
 				{ _id: { $in: docs.map(doc => doc._id).filter(Boolean) as T['_id'][] } } as unknown as Filter<T>,
 				{ projection: { _id: 1 } },
 			).toArray()).map(doc => doc._id),
@@ -149,7 +164,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 			parsedDocuments.push(parsedDocument);
 		}
 
-		return await this.mongoCollection.insertMany(parsedDocuments, options);
+		return await this.collection.insertMany(parsedDocuments, options);
 	}
 
 	/**
@@ -190,7 +205,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 		}
 
 		// Attempt to insert the document into the collection
-		const result = await this.mongoCollection.insertOne(parsedDocument, options);
+		const result = await this.collection.insertOne(parsedDocument, options);
 		// Check if the insert operation was acknowledged
 		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
 		// If returnResult is false, return the insert result directly
@@ -244,7 +259,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 		// Determine the new lock status
 		const newLockStatus = forceValue !== undefined ? forceValue : !foundDoc.is_locked;
 		// Update the document with the new lock status
-		await this.mongoCollection.updateOne({ _id: { $eq: id } }, { $set: { is_locked: newLockStatus } } as unknown as Partial<T>);
+		await this.collection.updateOne({ _id: { $eq: id } }, { $set: { is_locked: newLockStatus } } as unknown as Partial<T>);
 	}
 
 	/**
@@ -287,7 +302,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 			}
 		}
 
-		const result = await this.mongoCollection.updateMany(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
+		const result = await this.collection.updateMany(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
 
 		if (options?.returnResults === false) return result as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
 
@@ -328,7 +343,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 			}
 		}
 
-		const result = await this.mongoCollection.updateOne(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
+		const result = await this.collection.updateOne(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
 
 		if (options?.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
 
@@ -348,7 +363,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to the count of matching documents.
 	 */
 	public async count(filter?: Filter<T>): Promise<number> {
-		return await this.mongoCollection.countDocuments(filter);
+		return await this.collection.countDocuments(filter);
 	}
 
 	/**
@@ -377,7 +392,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to the result of the delete many operation.
 	 */
 	public async deleteMany(filter: Filter<T>): Promise<DeleteResult> {
-		const result = await this.mongoCollection.deleteMany(filter);
+		const result = await this.collection.deleteMany(filter);
 		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete documents', result);
 		return result;
 	}
@@ -395,7 +410,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 			if (isLocked) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Document is locked and cannot be deleted');
 		}
 		// Perform the delete operation
-		const result = await this.mongoCollection.deleteOne(filter, options);
+		const result = await this.collection.deleteOne(filter, options);
 		if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete document', result);
 		return result;
 	}
@@ -410,7 +425,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	public async aggregate(pipeline: AggregationPipeline<T>, options: AggregateOptions & { returnResult: false }): Promise<AggregationCursor<T>>;
 	public async aggregate(pipeline: AggregationPipeline<T>, options?: AggregateOptions & { returnResult?: boolean }): Promise<AggregationCursor<T> | T[]> {
 		// Perform the aggregation pipeline
-		const aggregationResult = this.mongoCollection.aggregate(pipeline, options);
+		const aggregationResult = this.collection.aggregate(pipeline, options);
 		// If returnResult is false, return the cursor directly
 		if (options?.returnResult === false) return aggregationResult as AggregationCursor<T>;
 		// Otherwise, return the aggregated documents as an array
@@ -422,6 +437,79 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns The collection name
 	 */
 	public getCollectionName(): string {
-		return this.mongoCollection.collectionName;
+		return this.collection.collectionName;
+	}
+
+	/**
+	 * Ensures that the specified collection exists in the MongoDB database,
+	 * creating it if it does not already exist.
+	 * @returns A promise that resolves when the collection is ensured to exist.
+	 */
+	private async createCollectionIfNotExists(): Promise<void> {
+		const collections = await this.database.listCollections({ name: this.collectionName }).toArray();
+		if (collections.length) return;
+		await this.database.createCollection(this.collectionName);
+		Logger.info({ message: `MONGODB [${this.collectionName}]: Collection created.` });
+	}
+
+	/**
+	 * Initializes the MongoDB client and ensures that the specified database and collection exist.
+	 * This method should be called before performing any operations on the database or collection.
+	 * It handles the asynchronous setup process and logs any errors that occur during initialization.
+	 * @throws Will throw an error if the client initialization or database/collection setup fails.
+	 * @returns A promise that resolves when the initialization process is complete.
+	 */
+	protected async init() {
+		// Ensure the collection exists and its indexes are in sync
+		// with the provided index description.
+		await this.createCollectionIfNotExists();
+		await this.syncIndexes();
+	}
+
+	private async ensureInitialized() {
+		if (!this.initPromise) this.initPromise = this.init();
+		await this.initPromise;
+	}
+
+	/**
+	 * Ensures that the specified indexes exist in MongoDB, creating them if they do not already exist.
+	 * This method performs input validation to prevent unsafe operations and logs the outcome of the operation.
+	 * It constructs the necessary index creation queries based on the provided index descriptions and executes them using the client.
+	 * @throws Will throw an error if any of the inputs are unsafe or if the index creation query fails.
+	 * @returns A promise that resolves when the indexes are ensured to exist.
+	 */
+	private async syncIndexes(): Promise<void> {
+		try {
+			if (this.indexDescription === false) {
+				Logger.info({ message: `MONGODB [${this.collectionName}]: Skipping index synchronization.` });
+				return;
+			}
+			// Start index synchronization process
+			Logger.info({ message: `MONGODB [${this.collectionName}]: Synchronizing indexes...` });
+			// Normalize already applied and new indexes
+			// and filter the default _id index.
+			const existingIndexes = await this.collection.indexes();
+			const filteredExisting = existingIndexes.filter(idx => JSON.stringify(idx.key) !== JSON.stringify({ _id: 1 }));
+			// Setup desired indexes based on indexDescription
+			const indexesToCreate: SimplifiedMongoIndex<T>[] = [];
+			// Find indexes to create
+			for (const desiredIdx of this.indexDescription) {
+				// For the list of desired indexes,
+				// check if they are present in the existing indexes.
+				const found = filteredExisting.some(existingIdx => isSameIndex(existingIdx, desiredIdx));
+				// If not, mark them for creation.
+				if (!found) indexesToCreate.push(desiredIdx);
+			}
+			// Create indexes
+			for (const idx of indexesToCreate) {
+				Logger.info({ message: `MONGODB [${this.collectionName}]: Creating index on keys ${JSON.stringify(idx.key)} with options ${JSON.stringify(prepareMongoIndexOptions(idx))}.` });
+				await this.collection.createIndex(idx.key, prepareMongoIndexOptions(idx) as CreateIndexesOptions);
+				Logger.success(`MONGODB [${this.collectionName}]: Created index on keys ${JSON.stringify(idx.key)}.`);
+			}
+			Logger.success(`MONGODB [${this.collectionName}]: Indexes synchronized.`);
+		} catch (error) {
+			Logger.error({ error, message: `MONGODB [${this.collectionName}]: Error @ syncIndexes(): ${(error as Error).message}` });
+			throw error;
+		}
 	}
 }
