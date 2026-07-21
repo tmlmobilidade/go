@@ -12,8 +12,8 @@ export function validatePlan(planData: Plan): boolean {
 	//
 	// Return false if the agency is not for the given IDs
 
-	if (!['41', '42', '43', '44'].includes(planData.agency_id)) {
-		Logger.error({ message: `Skip processing: gtfs_agency is '${planData.agency_id}'. Only '41', '42', '43', or '44' are allowed.` });
+	if (!['A2L1N', 'BNA17', 'LA77N', 'YA15B'].includes(planData.agency_id)) {
+		Logger.error({ message: `Skip processing: gtfs_agency is '${planData.agency_id}'. Only 'LA77N', 'BNA17', 'YA15B', or 'A2L1N' are allowed.` });
 		return false;
 	}
 
