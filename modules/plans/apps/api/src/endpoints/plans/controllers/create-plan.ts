@@ -21,6 +21,7 @@ export async function createPlan(request: FastifyRequest<{ Body: { validation_id
 	}
 
 	const newPlanData: CreatePlanDto = {
+		agency_id: validationData.agency_id,
 		apex_file_id: null,
 		apps: {
 			controller: {

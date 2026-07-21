@@ -10,6 +10,7 @@ import { z } from 'zod';
 /* * */
 
 export const PlanSchema = DocumentSchema.extend({
+	agency_id: z.string(),
 	apex_file_id: z.string().nullable().default(null),
 	apps: z.object({
 		controller: PlanAppStatusSchema,
