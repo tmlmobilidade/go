@@ -1,6 +1,7 @@
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { metrics, rides } from '@tmlmobilidade/interfaces';
+import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { Metric } from '@tmlmobilidade/types';
@@ -14,20 +15,20 @@ export const syncDemandByPatternHourByDay = async () => {
 	Logger.title(`Sync Demand Metrics by Pattern Hour by Day`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'demand_by_pattern_hour_by_day';
+	const metricKey = 'demand_by_pattern_hour_by_day';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch rides collection
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	//
 	// Load calendar JSON
@@ -73,8 +74,8 @@ export const syncDemandByPatternHourByDay = async () => {
 	// Set concurrency limit and batch processing
 
 	const limit = pLimit(5); // Reduce concurrent queries
-	const BATCH_SIZE = 50; // Process chunks in smaller batches
-	const FLUSH_THRESHOLD = 10000; // Flush to DB when we have this many patterns
+	const batchSize = 50; // Process chunks in smaller batches
+	const flushThreshold = 10000; // Flush to DB when we have this many patterns
 
 	//
 	// Process chunks in batches to avoid memory issues
@@ -82,10 +83,10 @@ export const syncDemandByPatternHourByDay = async () => {
 	const patternHourMap = new Map<string, Metric>();
 	let totalProcessed = 0;
 
-	for (let i = 0; i < allTimestampChunks.length; i += BATCH_SIZE) {
-		const batchChunks = allTimestampChunks.slice(i, i + BATCH_SIZE);
+	for (let i = 0; i < allTimestampChunks.length; i += batchSize) {
+		const batchChunks = allTimestampChunks.slice(i, i + batchSize);
 
-		Logger.info({ message: `Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(allTimestampChunks.length / BATCH_SIZE)} (chunks ${i + 1}-${Math.min(i + BATCH_SIZE, allTimestampChunks.length)})` });
+		Logger.info({ message: `Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(allTimestampChunks.length / batchSize)} (chunks ${i + 1}-${Math.min(i + batchSize, allTimestampChunks.length)})` });
 
 		const batchPromises = batchChunks.map((chunkData, batchIndex) =>
 			limit(async () => {
@@ -144,7 +145,7 @@ export const syncDemandByPatternHourByDay = async () => {
 							.toString()
 							.padStart(2, '0')}`,
 						generated_at: new Date(),
-						metric: METRIC,
+						metric: metricKey,
 						properties: {
 							hour: ride.hour,
 							line_id: ride.line_id.toString(),
@@ -170,7 +171,7 @@ export const syncDemandByPatternHourByDay = async () => {
 		totalProcessed += batchResults.reduce((sum, batch) => sum + batch.ridesAgg.length, 0);
 
 		// Flush to database periodically to avoid memory issues
-		if (patternHourMap.size >= FLUSH_THRESHOLD) {
+		if (patternHourMap.size >= flushThreshold) {
 			const flushTimer = new Timer();
 			const results = Array.from(patternHourMap.values());
 
@@ -193,7 +194,7 @@ export const syncDemandByPatternHourByDay = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by day, aggregate on mongo (batched)', key: 'loop_day_batched' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),
