@@ -3,7 +3,7 @@
 import { useMapContext } from '@/components/map/Map.context';
 import { mapDefaultConfig } from '@/components/map/Map.settings';
 import { loadMapAssets, MAP_ASSETS_ALERTS, MAP_ASSETS_MISC, MAP_ASSETS_SHAPES, MAP_ASSETS_STOPS, MAP_ASSETS_VEHICLES } from '@tmlmobilidade/ui';
-import Map, { MapRef, useMap } from '@vis.gl/react-maplibre';
+import Map, { type MapLayerMouseEvent, type MapLayerTouchEvent, MapRef, useMap } from '@vis.gl/react-maplibre';
 import { type MapLibreEvent } from 'maplibre-gl';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -22,13 +22,20 @@ interface MapViewProps {
 	onCenterMap?: () => void
 	onClick?: (arg0) => void
 	onDrag?: (arg0) => void
+	onMouseDown?: (event: MapLayerMouseEvent) => void
 	onMouseEnter?: (arg0) => void // When the mouse enters the interactive layer
 	onMouseLeave?: (arg0) => void // When the mouse leaves the interactive layer
+	onMouseMove?: (event: MapLayerMouseEvent) => void
 	onMouseOut?: (arg0) => void // When the mouse enters the map
 	onMouseOver?: (arg0) => void // When the mouse leaves the map
+	onMouseUp?: (event: MapLayerMouseEvent) => void
 	onMove?: (arg0) => void
 	onMoveEnd?: (arg0) => void
 	onMoveStart?: (arg0) => void
+	onTouchCancel?: (event: MapLayerTouchEvent) => void
+	onTouchEnd?: (event: MapLayerTouchEvent) => void
+	onTouchMove?: (event: MapLayerTouchEvent) => void
+	onTouchStart?: (event: MapLayerTouchEvent) => void
 	onZoom?: (arg0) => void
 	primarySourceId?: string
 	scrollZoom?: boolean
@@ -38,7 +45,7 @@ interface MapViewProps {
 
 /* * */
 
-export function MapView({ children, id, interactiveLayerIds = [], onClick, onDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onMoveEnd, onMoveStart, onZoom, scrollZoom = true }: MapViewProps) {
+export function MapView({ children, id, interactiveLayerIds = [], onClick, onDrag, onMouseDown, onMouseEnter, onMouseLeave, onMouseMove, onMouseOut, onMouseOver, onMouseUp, onMoveEnd, onMoveStart, onTouchCancel, onTouchEnd, onTouchMove, onTouchStart, onZoom, scrollZoom = true }: MapViewProps) {
 	//
 
 	//
@@ -93,7 +100,7 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 	// D. Render components
 
 	return (
-		<div className={styles.container} aria-hidden>
+		<div className={styles.container}>
 
 			<Map
 				attributionControl={false}
@@ -110,13 +117,20 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 				onClick={onClick}
 				onDrag={onDrag}
 				onLoad={handleOnLoad}
+				onMouseDown={onMouseDown}
 				onMouseEnter={handleOnMouseEnter}
 				onMouseLeave={handleOnMouseLeave}
+				onMouseMove={onMouseMove}
 				onMouseOut={onMouseOut}
 				onMouseOver={onMouseOver}
+				onMouseUp={onMouseUp}
 				onMove={handleOnMoveStart}
 				onMoveEnd={handleOnMoveEnd}
 				onMoveStart={handleOnMoveStart}
+				onTouchCancel={onTouchCancel}
+				onTouchEnd={onTouchEnd}
+				onTouchMove={onTouchMove}
+				onTouchStart={onTouchStart}
 				onZoom={onZoom}
 				scrollZoom={scrollZoom}
 				style={{ height: '100%', width: '100%' }}

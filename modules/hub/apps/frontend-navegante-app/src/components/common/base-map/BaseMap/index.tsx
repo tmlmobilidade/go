@@ -20,6 +20,7 @@ import { useUserLocation } from '@/components/map/use-user-location';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
+import { type MapLongPressLocation, useMapLongPress } from '@/hooks/useMapLongPress';
 import { fetchPatterns } from '@/utils/fetch-patterns';
 import { centerMap } from '@/utils/map.utils';
 import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
@@ -28,7 +29,8 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
 import { type MapLayerMouseEvent, useMap, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -47,6 +49,7 @@ export function BaseMap() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const stopsContext = useStopsContext();
 	const alertsContext = useAlertsContext();
 	const linesDetailContext = useLinesDetailContext();
@@ -61,6 +64,8 @@ export function BaseMap() {
 
 	const { 'base-map': baseMap } = useMap();
 	const lastRouteMapFitKeyRef = useRef<null | string>(null);
+	const [selectedMapLocation, setSelectedMapLocation] = useState<MapLongPressLocation | null>(null);
+	const mapLongPress = useMapLongPress(setSelectedMapLocation);
 
 	const focusedAlertId = activeBottomSheet?.view === 'alerts-detail' ? activeBottomSheet.entityId : null;
 	const focusedLineShape = activeBottomSheet?.view === 'lines-detail' ? linesDetailContext.data.active_shape?.geojson : null;
@@ -308,6 +313,10 @@ export function BaseMap() {
 	// C. Handle actions
 
 	const handleMapClick = (event: MapLayerMouseEvent) => {
+		if (mapLongPress.consumeTriggeredClick()) return;
+
+		setSelectedMapLocation(null);
+
 		if (!event.features?.length) return;
 
 		const feature = event.features[0];
@@ -333,12 +342,28 @@ export function BaseMap() {
 		}
 	};
 
+	const handleGetDirections = () => {
+		if (!selectedMapLocation) return;
+
+		const location = selectedMapLocation;
+		setSelectedMapLocation(null);
+		void routePlannerContext.actions.openDirectionsTo({
+			detail: `${location.latitude}, ${location.longitude}`,
+			label: t('default:map.MapLocationPin.selected_location'),
+			lat: location.latitude,
+			lon: location.longitude,
+			type: 'PLACE',
+		});
+	};
+
 	const handleMapDrag = (event: ViewStateChangeEvent) => {
+		mapLongPress.cancel();
 		setUserLocationTrackingMode('idle');
 		collapseForMapInteraction(event);
 	};
 
 	const handleMapZoom = (event: ViewStateChangeEvent) => {
+		mapLongPress.cancel();
 		collapseForMapInteraction(event);
 	};
 
@@ -351,6 +376,14 @@ export function BaseMap() {
 			interactiveLayerIds={baseMapInteractiveLayerIds}
 			onClick={handleMapClick}
 			onDrag={handleMapDrag}
+			onMouseDown={mapLongPress.handlePressStart}
+			onMouseLeave={mapLongPress.cancel}
+			onMouseMove={mapLongPress.handlePressMove}
+			onMouseUp={mapLongPress.cancel}
+			onTouchCancel={mapLongPress.cancel}
+			onTouchEnd={mapLongPress.cancel}
+			onTouchMove={mapLongPress.handlePressMove}
+			onTouchStart={mapLongPress.handlePressStart}
 			onZoom={handleMapZoom}
 		>
 
@@ -425,6 +458,13 @@ export function BaseMap() {
 				latitude={placeDestination?.lat}
 				longitude={placeDestination?.lon}
 				visible={Boolean(placeDestination)}
+			/>
+			<MapViewOverlayPlaceLocation
+				directionsLabel={t('default:map.MapLocationPin.get_directions')}
+				latitude={selectedMapLocation?.latitude}
+				longitude={selectedMapLocation?.longitude}
+				onDirections={handleGetDirections}
+				visible={Boolean(selectedMapLocation)}
 			/>
 			<MapViewOverlayUserLocation
 				latitude={userLocation?.latitude}

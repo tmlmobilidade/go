@@ -236,6 +236,10 @@
 				"label": "Camadas do mapa"
 			}
 		},
+		"MapLocationPin": {
+			"get_directions": "Como chegar",
+			"selected_location": "Local selecionado"
+		},
 		"MapViewToolbar": {
 			"style": {
 				"map": "Mapa",
