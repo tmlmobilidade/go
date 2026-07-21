@@ -23,10 +23,10 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.10.0",
-		"@tmlmobilidade/logger-backend": "*"
+		"fastify": "5.10.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

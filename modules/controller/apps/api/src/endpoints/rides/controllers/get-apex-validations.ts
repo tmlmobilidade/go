@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { rides, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /**
  * Get SimplifiedApexValidations by Ride ID.

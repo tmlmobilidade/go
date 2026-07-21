@@ -26,11 +26,11 @@
 		"@tmlmobilidade/go-tracker-pckg-databases": "*",
 		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"luxon": "3.7.2",
-		"@tmlmobilidade/logger-backend": "*"
+		"luxon": "3.7.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

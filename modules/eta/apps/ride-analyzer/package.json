@@ -14,9 +14,9 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"start": "tsx src/index.ts",
 		"lint": "eslint src --fix && tsc --noEmit",
-		"lint:fix": "eslint src --fix"
+		"lint:fix": "eslint src --fix",
+		"start": "tsx src/index.ts"
 	},
 	"dependencies": {
 		"@clickhouse/client": "1.23.1",
@@ -24,9 +24,9 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-eta-pckg-common": "*",
 		"@tmlmobilidade/go-eta-pckg-loader": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/writers": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",

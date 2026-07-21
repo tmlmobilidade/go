@@ -3,7 +3,7 @@
 import { runnerCommon } from '@/runners/runner_common.js';
 import { runnerPatterns } from '@/runners/runner_patterns.js';
 import { runnerStops } from '@/runners/runner_stops.js';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

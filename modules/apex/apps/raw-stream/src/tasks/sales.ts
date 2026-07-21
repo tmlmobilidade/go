@@ -4,7 +4,7 @@ import { simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */

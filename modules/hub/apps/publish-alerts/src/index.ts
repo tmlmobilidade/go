@@ -3,7 +3,7 @@
 import { publishGtfsRtFeed } from '@/tasks/publish-gtfs-rt-feed.js';
 import { publishJsonFeed } from '@/tasks/publish-json-feed.js';
 import { publishRssFeed } from '@/tasks/publish-rss-feed.js';
-import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

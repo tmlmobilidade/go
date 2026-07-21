@@ -1,4 +1,4 @@
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { createSshTunnelFactory, SshTunnel, SshTunnelType } from '@tmlmobilidade/ssh';
 import { MongoClient, type MongoClientOptions } from 'mongodb';
 

@@ -2,7 +2,7 @@
 
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { vehicles } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

@@ -2,7 +2,7 @@
 
 import { DAY_TYPES } from '@/day-types.js';
 import { DayTypesExt, type ExportToHitouchConfig } from '@/types.js';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
 /* * */

@@ -30,8 +30,8 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/logger-logger-backend": "*",
+		"@tmlmobilidade/rss": "*"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/api-types": "20260509.2134.54",

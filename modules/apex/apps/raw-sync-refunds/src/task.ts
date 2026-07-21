@@ -5,7 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type RawApexTransaction, type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
 import { type Filter } from 'mongodb';

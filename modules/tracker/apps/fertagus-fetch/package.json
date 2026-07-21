@@ -25,11 +25,11 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

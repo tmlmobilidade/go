@@ -41,7 +41,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/logger-backend": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/strings": "*",

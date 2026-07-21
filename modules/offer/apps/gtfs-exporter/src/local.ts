@@ -5,7 +5,7 @@
 
 import { exportGtfsV29 } from '@/main.js';
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { OperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';

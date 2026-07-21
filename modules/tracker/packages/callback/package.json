@@ -20,9 +20,9 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/types": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

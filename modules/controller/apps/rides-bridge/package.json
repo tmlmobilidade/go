@@ -23,11 +23,11 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"pg": "8.22.0",
-		"@tmlmobilidade/logger-backend": "*"
+		"pg": "8.22.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

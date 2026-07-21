@@ -2,7 +2,7 @@
 
 import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended_Raw, validateGtfsRouteExtended } from '@tmlmobilidade/types';
 

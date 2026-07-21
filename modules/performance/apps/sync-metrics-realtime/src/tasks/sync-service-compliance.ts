@@ -1,6 +1,6 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { metrics, rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
 

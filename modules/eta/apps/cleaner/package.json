@@ -24,10 +24,10 @@
 		"@tmlmobilidade/go-eta-pckg-common": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

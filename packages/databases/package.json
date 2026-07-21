@@ -39,13 +39,13 @@
 		"@clickhouse/client": "1.23.1",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"mongodb": "7.5.0",
 		"redis": "6.1.0",
-		"zod": "3.25.76",
-		"@tmlmobilidade/logger-backend": "*"
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

@@ -11,7 +11,7 @@ import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import oneLineLogger from '@fastify/one-line-logger';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
 import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';

@@ -8,7 +8,7 @@ import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type GtfsValidation, type GtfsValidationSummary } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';

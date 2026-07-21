@@ -1,7 +1,7 @@
 /* * */
 
 import { fileExports, locations, stops } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
 import { FileExport, type StopExportProperties } from '@tmlmobilidade/types';

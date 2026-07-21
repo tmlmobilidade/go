@@ -8,7 +8,7 @@ import { processRawApexTransactionRefund } from '@/tasks/refunds.js';
 import { processRawApexTransactionSale } from '@/tasks/sales.js';
 import { processRawApexTransactionValidation } from '@/tasks/validations.js';
 import { rawApexTransactions } from '@tmlmobilidade/databases';
-import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

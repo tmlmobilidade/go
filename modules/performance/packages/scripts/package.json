@@ -23,9 +23,9 @@
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

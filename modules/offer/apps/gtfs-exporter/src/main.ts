@@ -7,7 +7,7 @@ import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { stops } from '@tmlmobilidade/interfaces';
-import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import fs from 'node:fs';
 
 import { exportFeedInfoFile } from './exports/feedInfo.js';

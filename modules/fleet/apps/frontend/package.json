@@ -19,7 +19,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/logger-frontend": "*",
+		"@tmlmobilidade/logger-logger-frontend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",

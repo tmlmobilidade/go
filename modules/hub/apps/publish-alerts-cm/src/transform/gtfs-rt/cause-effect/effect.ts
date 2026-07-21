@@ -1,6 +1,6 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type Alert, AlertEffectToGtfsRtEffectMap, type GtfsRtEffect } from '@tmlmobilidade/types';
 
 /* * */

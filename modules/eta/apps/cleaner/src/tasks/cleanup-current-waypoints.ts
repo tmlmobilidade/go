@@ -1,6 +1,6 @@
 import { AppConfig } from '@/lib/config.js';
 import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 const CLEANUP_CURRENT_WAYPOINTS_SQL = 'cleanup/3-delete-orphan-curr-waypoints.sql';
 

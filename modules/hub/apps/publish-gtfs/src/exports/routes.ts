@@ -2,7 +2,7 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type ExportGtfsContext } from '@/types/context.js';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type GTFS_RouteType } from '@tmlmobilidade/types';
 import { getPublicLineId, getPublicRouteId } from '@tmlmobilidade/utils';

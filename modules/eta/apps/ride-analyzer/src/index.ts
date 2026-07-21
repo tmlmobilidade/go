@@ -10,7 +10,7 @@ import { replayEvents } from '@/replay-events.js';
 import { runLoaderPhase } from '@/run-loader.js';
 import { writeOutput } from '@/write-output.js';
 import { GOClickHouseClient } from '@tmlmobilidade/databases';
-import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

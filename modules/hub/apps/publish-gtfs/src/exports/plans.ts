@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 
 import { type ExportGtfsContext } from '@/types/context.js';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */

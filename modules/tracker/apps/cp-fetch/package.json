@@ -23,11 +23,11 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/external": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

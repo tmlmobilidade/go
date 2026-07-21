@@ -3,7 +3,7 @@
 import type { AppConfig } from '@/lib/config.js';
 
 import { pipelinePath, qualifiedTable, queryEtaFromFile, substituteEtaDatabase } from '@tmlmobilidade/go-eta-pckg-common';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { readFile } from 'node:fs/promises';
 
 /* * */

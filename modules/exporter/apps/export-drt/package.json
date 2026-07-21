@@ -26,6 +26,7 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/lib": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/sqlite": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
@@ -33,8 +34,7 @@
 		"csv-parse": "7.0.1",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0",
-		"node-cron": "4.6.0",
-		"@tmlmobilidade/logger-backend": "*"
+		"node-cron": "4.6.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

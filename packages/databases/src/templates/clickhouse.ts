@@ -6,7 +6,7 @@ import { queryFromFile } from '@/utils/clickhouse/query-from-file.js';
 import { queryFromString } from '@/utils/clickhouse/query-from-string.js';
 import { validateSqlParam } from '@/utils/clickhouse/validate-sql-param.js';
 import { type ClickHouseClient, ClickHouseError, type DataFormat } from '@clickhouse/client';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

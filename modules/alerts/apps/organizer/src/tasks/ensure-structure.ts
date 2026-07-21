@@ -3,7 +3,7 @@
 import { getAutoTextValue } from '@/utils/get-auto-text-value.js';
 import { getPublishStatusValue } from '@/utils/get-publish-status-value.js';
 import { alerts } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { AlertSchema } from '@tmlmobilidade/types';
 

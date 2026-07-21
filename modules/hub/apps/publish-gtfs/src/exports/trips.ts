@@ -3,7 +3,7 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type GTFS_Trip_Extended, type Plan } from '@tmlmobilidade/types';
 import { getPublicPatternId, getPublicRouteId, getPublicServiceId, getPublicShapeId, getPublicTripId } from '@tmlmobilidade/utils';
 

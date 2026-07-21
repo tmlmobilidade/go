@@ -1,6 +1,6 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type AddressInfo, type Server } from 'node:net';
 import { createTunnel, type ForwardOptions, type ServerOptions, type SshOptions, type TunnelOptions } from 'tunnel-ssh';
 

@@ -21,9 +21,9 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-eta-pckg-loader": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/utils": "*",
-		"ngeohash": "^0.6.3",
-		"@tmlmobilidade/logger-backend": "*"
+		"ngeohash": "^0.6.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

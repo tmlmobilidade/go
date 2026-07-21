@@ -1,6 +1,6 @@
 import { Stop } from '@carrismetropolitana/api-types/network';
 import { hashedShapes, hashedTrips, rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { HashedShape, HashedTrip, Ride } from '@tmlmobilidade/types';
 

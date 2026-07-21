@@ -37,10 +37,10 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/gtfs-rt": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

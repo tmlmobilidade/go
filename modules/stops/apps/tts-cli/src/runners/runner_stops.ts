@@ -6,7 +6,7 @@ import { generateHash } from '@/utils/generateHash.js';
 import { makeStop } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { files, stops } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import pLimit from 'p-limit';
 
 /* * */

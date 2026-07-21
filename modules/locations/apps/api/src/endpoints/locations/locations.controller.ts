@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter, type FindOptions, locations } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type District, type GetAllDistrictsQuery, GetAllDistrictsQuerySchema, type GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, type GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, type GetAllParishesQuery, GetAllParishesQuerySchema, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 

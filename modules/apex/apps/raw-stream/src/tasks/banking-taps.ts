@@ -4,7 +4,7 @@ import { simplifiedApexBankingTapsNew } from '@tmlmobilidade/databases';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */

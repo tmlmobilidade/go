@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { files, plans } from '@tmlmobilidade/interfaces';
-import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';

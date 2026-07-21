@@ -26,9 +26,9 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/gtfs-validator": "20260624.1438.43",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

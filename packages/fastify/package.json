@@ -42,9 +42,9 @@
 		"@fastify/one-line-logger": "^2.1.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.10.0",
-		"@tmlmobilidade/logger-backend": "*"
+		"fastify": "5.10.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

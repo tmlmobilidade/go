@@ -2,7 +2,7 @@
 
 import { mimeTypes } from '@tmlmobilidade/consts';
 import { files } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import fs from 'fs';
 
 import { DatabaseConfig, getDatabasePath } from './database.js';

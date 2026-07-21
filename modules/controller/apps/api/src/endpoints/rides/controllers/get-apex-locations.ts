@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { rides, simplifiedApexLocations } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /**
  * Get SimplifiedApexLocations by Ride ID.

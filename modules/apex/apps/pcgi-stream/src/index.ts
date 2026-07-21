@@ -2,7 +2,7 @@
 
 import { processPcgiTransactionEntity } from '@/task.js';
 import { pcgiFileManager } from '@tmlmobilidade/go-interfaces-pcgi-file-manager';
-import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

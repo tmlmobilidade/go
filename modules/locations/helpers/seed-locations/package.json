@@ -21,8 +21,8 @@
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@turf/turf": "7.3.5",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/logger-logger-backend": "*",
+		"@turf/turf": "7.3.5"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

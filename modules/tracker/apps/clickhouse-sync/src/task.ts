@@ -4,7 +4,7 @@ import { rawVehicleEventsNew, simplifiedVehicleEventsNew } from '@tmlmobilidade/
 import { Dates } from '@tmlmobilidade/dates';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { BatchWriter, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 

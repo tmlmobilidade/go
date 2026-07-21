@@ -22,9 +22,9 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/go-tracker-pckg-databases": "*",
 		"@tmlmobilidade/go-tracker-pckg-shared": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

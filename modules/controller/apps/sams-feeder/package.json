@@ -25,7 +25,7 @@
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/logger-backend": "*"
+			"@tmlmobilidade/logger-logger-backend": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

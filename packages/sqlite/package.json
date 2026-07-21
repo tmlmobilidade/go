@@ -36,9 +36,9 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/strings": "*",
-		"better-sqlite3": "12.11.1",
-		"@tmlmobilidade/logger-backend": "*"
+		"better-sqlite3": "12.11.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

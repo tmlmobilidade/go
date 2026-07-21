@@ -1,6 +1,6 @@
 /* * */
 
-import { sentryConfig } from '@tmlmobilidade/logger-frontend';
+import { sentryConfig } from '@tmlmobilidade/logger-logger-frontend';
 import { type NextConfig } from 'next';
 
 /* * */

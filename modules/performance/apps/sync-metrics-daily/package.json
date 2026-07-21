@@ -23,11 +23,11 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-performance-pckg-log": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"luxon": "3.7.2",
-		"p-limit": "7.3.0",
-		"@tmlmobilidade/logger-backend": "*"
+		"p-limit": "7.3.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/interfaces": "*",

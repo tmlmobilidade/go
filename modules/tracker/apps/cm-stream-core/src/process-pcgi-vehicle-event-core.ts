@@ -2,7 +2,7 @@
 
 import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type RawVehicleEvent } from '@tmlmobilidade/types';
 import { BatchWriter } from '@tmlmobilidade/utils';
 

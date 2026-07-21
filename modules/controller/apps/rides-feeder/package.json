@@ -24,14 +24,14 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/sqlite": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"csv-parse": "7.0.1",
 		"gtfs-types": "5.1.0",
-		"unzipper": "0.12.5",
-		"@tmlmobilidade/logger-backend": "*"
+		"unzipper": "0.12.5"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

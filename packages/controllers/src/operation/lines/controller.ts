@@ -3,7 +3,7 @@
 import { getOperationalLinesBatch } from '@/operation/lines/batch.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type ActionsOf, type GetOperationalLinesBatchQuery, GetOperationalLinesBatchQuerySchema, type OperationalLine, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */

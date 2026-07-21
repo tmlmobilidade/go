@@ -20,6 +20,7 @@
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@types/archiver": "8.0.0",
@@ -28,8 +29,7 @@
 		"nodemailer": "9.0.3",
 		"pg": "8.22.0",
 		"resolve-tspaths": "0.8.23",
-		"yaml": "2.9.0",
-		"@tmlmobilidade/logger-backend": "*"
+		"yaml": "2.9.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

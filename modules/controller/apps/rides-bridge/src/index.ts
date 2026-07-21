@@ -5,7 +5,7 @@ import { FlatRide, parseRide, sampleRide } from '@/types.js';
 import { createTableFromExample, dropExistingTable, insertBatch } from '@/utils.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
-import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

@@ -10,7 +10,7 @@ import { transformReferenceTypeAgencyIntoGtfsRt } from '@/transform/gtfs-rt/refe
 import { transformReferenceTypeLinesIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/lines.js';
 import { transformReferenceTypeRidesIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/rides.js';
 import { transformReferenceTypeStopsIntoGtfsRt } from '@/transform/gtfs-rt/reference-types/stops.js';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type Alert, type GtfsRtEntitySelector, type GtfsRtFeedEntity } from '@tmlmobilidade/types';
 
 /**

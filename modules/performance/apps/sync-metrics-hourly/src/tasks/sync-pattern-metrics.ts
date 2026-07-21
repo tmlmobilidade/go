@@ -4,7 +4,7 @@ import { syncDemandByPatternByDay } from '@/syncs/demand_by_pattern/by_day.js';
 import { syncDemandByPatternByMonth } from '@/syncs/demand_by_pattern/by_month.js';
 import { syncDemandByPatternByYear } from '@/syncs/demand_by_pattern/by_year.js';
 import { MetricSyncRunner } from '@/utils/run-metric.js';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

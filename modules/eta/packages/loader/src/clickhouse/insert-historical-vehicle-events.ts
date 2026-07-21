@@ -1,7 +1,7 @@
 import { AppConfig } from '@/lib/config.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { pipelinePath, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { performInTimeChunks } from '@tmlmobilidade/utils';
 
 const INSERT_HISTORICAL_VEHICLE_EVENTS_SQL_FILE = 'loader/1-insert-historical-vehicle-events.sql';

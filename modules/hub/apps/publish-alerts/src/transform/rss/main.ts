@@ -1,6 +1,6 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type RssRawItem } from '@tmlmobilidade/rss/dist/types/feed.types.js';
 import { type Alert } from '@tmlmobilidade/types';
 

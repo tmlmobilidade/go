@@ -23,11 +23,11 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"luxon": "3.7.2",
-		"@tmlmobilidade/logger-backend": "*"
+		"luxon": "3.7.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

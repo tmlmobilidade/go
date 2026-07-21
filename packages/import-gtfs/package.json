@@ -39,12 +39,12 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/sqlite": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
 		"csv-parse": "7.0.1",
-		"unzipper": "0.12.5",
-		"@tmlmobilidade/logger-backend": "*"
+		"unzipper": "0.12.5"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

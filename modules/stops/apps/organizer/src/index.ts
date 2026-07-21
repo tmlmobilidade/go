@@ -2,7 +2,7 @@
 
 import { organizeStop } from '@tmlmobilidade/go-stops-pckg-organize';
 import { stops } from '@tmlmobilidade/interfaces';
-import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

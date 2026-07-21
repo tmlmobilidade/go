@@ -23,10 +23,10 @@
 		"@tmlmobilidade/go-apex-pckg-parsers": "*",
 		"@tmlmobilidade/go-interfaces-pcgi-file-manager": "*",
 		"@tmlmobilidade/go-types-apex": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/writers": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

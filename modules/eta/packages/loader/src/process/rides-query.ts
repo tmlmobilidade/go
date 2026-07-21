@@ -6,7 +6,7 @@ import type { HashedPatternWaypoint, Ride } from '@tmlmobilidade/types';
 
 import { Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

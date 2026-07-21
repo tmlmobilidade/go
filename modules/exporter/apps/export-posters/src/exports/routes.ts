@@ -2,7 +2,7 @@
 
 import { type ExportToHitouchConfig } from '@/types.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type GTFS_Route } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 

@@ -23,7 +23,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger-backend": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/rss": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"

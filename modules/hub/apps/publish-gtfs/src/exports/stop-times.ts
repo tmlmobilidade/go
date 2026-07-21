@@ -4,7 +4,7 @@
 import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { stops } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type GTFS_StopTime, type Plan } from '@tmlmobilidade/types';
 import { getPublicTripId } from '@tmlmobilidade/utils';
 

@@ -26,7 +26,7 @@
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/logger-logger-backend": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

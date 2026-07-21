@@ -16,7 +16,7 @@ import type {
 
 import { type SimplifiedMongoIndex } from '@/types/mongo/index-description.js';
 import { isSameIndex, prepareMongoIndexOptions } from '@/utils/mongo/index.js';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { z } from 'zod';
 
 /* * */

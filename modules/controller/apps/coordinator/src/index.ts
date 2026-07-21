@@ -1,7 +1,7 @@
 /* * */
 
 import { getRides } from '@/get-rides.js';
-import { initSentry, Logger } from '@tmlmobilidade/logger-backend';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import Fastify from 'fastify';
 
 /* * */

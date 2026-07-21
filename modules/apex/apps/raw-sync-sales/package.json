@@ -25,11 +25,11 @@
 		"@tmlmobilidade/go-apex-pckg-callback": "*",
 		"@tmlmobilidade/go-apex-pckg-parsers": "*",
 		"@tmlmobilidade/go-types-apex": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/writers": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

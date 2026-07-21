@@ -4,7 +4,7 @@ import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { pcgidbLegacy } from '@tmlmobilidade/go-tracker-pckg-databases';
 import { transformPcgiVehicleEventLog } from '@tmlmobilidade/go-tracker-pckg-shared';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type RawVehicleEvent } from '@tmlmobilidade/types';
 import { BatchWriter, type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
 

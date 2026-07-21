@@ -31,8 +31,8 @@
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/logger-logger-backend": "*",
+		"@tmlmobilidade/rss": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",

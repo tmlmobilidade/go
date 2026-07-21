@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-performance';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /**
  * Retrieves the demand by agency by operational date JSON data from the cache.

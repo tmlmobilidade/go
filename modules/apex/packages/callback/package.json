@@ -21,8 +21,8 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/logger-logger-backend": "*",
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

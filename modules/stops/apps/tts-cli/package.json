@@ -24,7 +24,7 @@
 		"@tmlmobilidade/go-stops-pckg-organize": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger-backend": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"adm-zip": "0.6.0",

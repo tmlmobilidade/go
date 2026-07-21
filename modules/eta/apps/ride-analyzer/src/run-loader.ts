@@ -5,7 +5,7 @@ import type { AppConfig } from '@tmlmobilidade/go-eta-pckg-loader';
 
 import { qualifiedTable } from '@tmlmobilidade/go-eta-pckg-common';
 import { loadEta } from '@tmlmobilidade/go-eta-pckg-loader';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

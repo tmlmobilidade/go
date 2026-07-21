@@ -36,9 +36,9 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
-		"papaparse": "5.5.4",
-		"@tmlmobilidade/logger-backend": "*"
+		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

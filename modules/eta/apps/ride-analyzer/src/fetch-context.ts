@@ -4,7 +4,7 @@ import type { RouteNode, StopWaypoint, TripContext } from '@/types.js';
 import type { ClickHouseClient } from '@clickhouse/client';
 
 import { qualifiedTable } from '@tmlmobilidade/go-eta-pckg-common';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

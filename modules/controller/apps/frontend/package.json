@@ -21,7 +21,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-apex": "*",
-		"@tmlmobilidade/logger-frontend": "*",
+		"@tmlmobilidade/logger-logger-frontend": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",

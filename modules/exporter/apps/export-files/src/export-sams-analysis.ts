@@ -1,7 +1,7 @@
 /* * */
 
 import { buildSamsMatch, fileExports, sams, samsAnalysisExportAggregationPipeline } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
 import { type FileExport, FlatSamsAnalysisExportAnalysis, PermissionCatalog, type Sam, type SamAnalysis, SamsAnalysisExportProperties } from '@tmlmobilidade/types';

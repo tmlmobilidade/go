@@ -27,13 +27,13 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"adm-zip": "0.6.0",
 		"formidable": "3.5.4",
-		"papaparse": "5.5.4",
-		"@tmlmobilidade/logger-backend": "*"
+		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

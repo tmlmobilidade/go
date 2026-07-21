@@ -23,8 +23,8 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/utils": "*",
-		"@tmlmobilidade/logger-backend": "*"
+		"@tmlmobilidade/logger-logger-backend": "*",
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@carrismetropolitana/api-types": "20260509.2134.54",

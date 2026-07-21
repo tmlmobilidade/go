@@ -2,7 +2,7 @@
 
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
 import { fileExports, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
 import { FileExport, PermissionCatalog, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';

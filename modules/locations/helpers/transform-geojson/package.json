@@ -19,9 +19,9 @@
 		"start": "tsx src/index.ts"
 	},
 	"dependencies": {
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@turf/turf": "7.3.5",
-		"yazl": "3.3.1",
-		"@tmlmobilidade/logger-backend": "*"
+		"yazl": "3.3.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
