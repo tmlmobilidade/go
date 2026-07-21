@@ -2,8 +2,9 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, plans } from '@tmlmobilidade/interfaces';
-import { type Attachment, PermissionCatalog } from '@tmlmobilidade/types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { Attachment, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
  * Retrieves the APEX file associated with a plan by ID
@@ -16,7 +17,7 @@ export async function getApexFile(request: FastifyRequest<{ Params: { id: string
 	//
 	// Get the Plan from the database
 
-	const planData = await plans.findById(request.params.id);
+	const planData = await goDb.operation.plans.findById(request.params.id);
 
 	if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
@@ -41,7 +42,7 @@ export async function getApexFile(request: FastifyRequest<{ Params: { id: string
 	//
 	// Fetch the file associated with the plan
 
-	const foundFileData = await files.findById(planData.apex_file_id);
+	const foundFileData = await storageProvider.findById(planData.apex_file_id);
 
 	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'APEX file not found for this plan');
 

@@ -2,8 +2,9 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, plans } from '@tmlmobilidade/interfaces';
-import { type Attachment, PermissionCatalog } from '@tmlmobilidade/types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { Attachment, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
  * Retrieves the operation file associated with a plan by ID
@@ -16,7 +17,7 @@ export async function getOperationFile(request: FastifyRequest<{ Params: { id: s
 	//
 	// Get the Plan from the database
 
-	const planData = await plans.findById(request.params.id);
+	const planData = await goDb.operation.plans.findById(request.params.id);
 
 	if (!planData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
@@ -40,7 +41,7 @@ export async function getOperationFile(request: FastifyRequest<{ Params: { id: s
 	//
 	// Fetch the file associated with the plan
 
-	const fileData = await files.findById(planData.operation_file_id);
+	const fileData = await storageProvider.findById(planData.operation_file_id);
 
 	if (!fileData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan operation file not found');
