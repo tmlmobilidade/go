@@ -129,35 +129,35 @@ class StorageProviderClass {
 	/**
 	 * Replaces an existing file's data while preserving its identifier.
 	 * @param file - Blob body of the new file.
-	 * @param createFileDto - Data transfer object describing the attachment, must include _id.
+	 * @param createAttachmentDto - Data transfer object describing the attachment, must include _id.
 	 * @param hooks - Hooks for operation execution.
 	 * @returns A promise resolving to the updated Attachment.
 	 */
-	async replace(file: BlobBody, createFileDto: CreateAttachmentDto & { _id: string }, hooks: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
-		return replaceFn(this.deps, { createFileDto, file, hooks });
+	async replace(file: BlobBody, createAttachmentDto: CreateAttachmentDto & { _id: string }, hooks: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
+		return replaceFn(this.deps, { createAttachmentDto, file, hooks });
 	}
 
 	/**
 	 * Uploads a new file and creates the corresponding attachment.
 	 * @param file - Blob body of the file to upload.
-	 * @param createFileDto - Data transfer object for attachment creation. _id is optional.
+	 * @param createAttachmentDto - Data transfer object for attachment creation. _id is optional.
 	 * @param hooks - Hooks for operation execution.
 	 * @returns A promise resolving to the created Attachment.
 	 */
-	async upload(file: BlobBody, createFileDto: CreateAttachmentDto & { _id?: string }, hooks: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
-		return uploadFn(this.deps, { createFileDto, file, hooks });
+	async upload(file: BlobBody, createAttachmentDto: CreateAttachmentDto & { _id?: string }, hooks: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
+		return uploadFn(this.deps, { createAttachmentDto, file, hooks });
 	}
 
 	/**
 	 * Validates whether a file upload can proceed, based on file size and name.
-	 * @param createFileDto - Contains file information to validate (name and size).
+	 * @param createAttachmentDto - Contains file information to validate (name and size).
 	 * @param hooks - Hooks for operation execution.
 	 * @param options - Optional: Max allowed file size in bytes.
 	 * @returns A promise resolving to the validation result.
 	 */
-	async validateUpload(createFileDto: Pick<CreateAttachmentDto, 'name' | 'size'>, hooks: OperationHooks<OperationContext, ValidateUploadResult>, options?: { maxSizeBytes?: number }): Promise<ValidateUploadResult> {
+	async validateUpload(createAttachmentDto: Pick<CreateAttachmentDto, 'name' | 'size'>, hooks: OperationHooks<OperationContext, ValidateUploadResult>, options?: { maxSizeBytes?: number }): Promise<ValidateUploadResult> {
 		return validateUploadFn({
-			createFileDto,
+			createAttachmentDto,
 			hooks,
 			maxSizeBytes: options?.maxSizeBytes,
 			observability: this.deps.observability,

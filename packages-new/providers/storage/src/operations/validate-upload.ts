@@ -16,7 +16,7 @@ export interface ValidateUploadResult {
 }
 
 export interface ValidateUploadInput {
-	createFileDto: Pick<CreateAttachmentDto, 'name' | 'size'>
+	createAttachmentDto: Pick<CreateAttachmentDto, 'name' | 'size'>
 	hooks: OperationHooks<OperationContext, ValidateUploadResult>
 	maxSizeBytes?: number
 	observability?: Observability
@@ -27,22 +27,22 @@ export interface ValidateUploadInput {
 export async function validateUpload(input: ValidateUploadInput): Promise<ValidateUploadResult> {
 	//
 
-	const { createFileDto, hooks, maxSizeBytes, observability } = input;
+	const { createAttachmentDto, hooks, maxSizeBytes, observability } = input;
 	const context: OperationContext = { operation: 'validateUpload' };
 
 	return runOperation({
 		context,
 		execute: async () => {
-			const extension = getFileExtension(createFileDto.name);
-			const mimeType = getMimeTypeFromFileExtension(createFileDto.name);
+			const extension = getFileExtension(createAttachmentDto.name);
+			const mimeType = getMimeTypeFromFileExtension(createAttachmentDto.name);
 
-			if (typeof createFileDto.size === 'number' && createFileDto.size < 0) {
-				throw new ValidationError('File size cannot be negative', { context: { size: createFileDto.size } });
+			if (typeof createAttachmentDto.size === 'number' && createAttachmentDto.size < 0) {
+				throw new ValidationError('File size cannot be negative', { context: { size: createAttachmentDto.size } });
 			}
 
-			if (maxSizeBytes !== undefined && createFileDto.size > maxSizeBytes) {
+			if (maxSizeBytes !== undefined && createAttachmentDto.size > maxSizeBytes) {
 				throw new ValidationError(`File size exceeds maximum of ${maxSizeBytes} bytes`, {
-					context: { maxSizeBytes, size: createFileDto.size },
+					context: { maxSizeBytes, size: createAttachmentDto.size },
 				});
 			}
 

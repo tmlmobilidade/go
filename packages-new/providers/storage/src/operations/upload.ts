@@ -15,7 +15,7 @@ import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types'
 /* * */
 
 export interface UploadInput {
-	createFileDto: CreateAttachmentDto & { _id?: string }
+	createAttachmentDto: CreateAttachmentDto & { _id?: string }
 	file: BlobBody
 	hooks: OperationHooks<OperationContext, Attachment>
 }
@@ -25,11 +25,11 @@ export interface UploadInput {
 export async function upload(deps: StorageDeps, input: UploadInput): Promise<Attachment> {
 	//
 
-	const { createFileDto, file, hooks } = input;
-	const fileId = createFileDto._id || generateRandomString({ length: 5 });
-	const mimeType = getMimeTypeFromFileExtension(createFileDto.name);
-	const filePath = buildStorageKey(createFileDto.scope, createFileDto.resource_id, fileId, createFileDto.name);
-	const context: OperationContext = { attachmentId: fileId, key: filePath, operation: 'upload', resourceId: createFileDto.resource_id, scope: createFileDto.scope };
+	const { createAttachmentDto, file, hooks } = input;
+	const fileId = createAttachmentDto._id || generateRandomString({ length: 5 });
+	const mimeType = getMimeTypeFromFileExtension(createAttachmentDto.name);
+	const filePath = buildStorageKey(createAttachmentDto.scope, createAttachmentDto.resource_id, fileId, createAttachmentDto.name);
+	const context: OperationContext = { attachmentId: fileId, key: filePath, operation: 'upload', resourceId: createAttachmentDto.resource_id, scope: createAttachmentDto.scope };
 
 	let inserted: Attachment | undefined;
 
@@ -57,7 +57,7 @@ export async function upload(deps: StorageDeps, input: UploadInput): Promise<Att
 				},
 				execute: async () => {
 					inserted = await goDb.core.attachments.insertOne({
-						...createFileDto,
+						...createAttachmentDto,
 						_id: fileId,
 						type: mimeType,
 					});

@@ -13,7 +13,7 @@ import { upload } from './upload.js';
 /* * */
 
 export interface BatchUploadItem {
-	createFileDto: CreateAttachmentDto & { _id?: string }
+	createAttachmentDto: CreateAttachmentDto & { _id?: string }
 	file: BlobBody
 }
 
@@ -39,7 +39,7 @@ export async function batchUpload(deps: StorageDeps, input: BatchUploadInput): P
 	try {
 		const settlements = await runWithConcurrency(items, concurrency, async (item) => {
 			return upload(deps, {
-				createFileDto: item.createFileDto,
+				createAttachmentDto: item.createAttachmentDto,
 				file: item.file,
 				hooks: {
 					onError: async () => undefined,

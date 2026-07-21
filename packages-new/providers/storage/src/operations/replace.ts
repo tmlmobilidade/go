@@ -17,7 +17,7 @@ import { convertObject } from '@tmlmobilidade/utils';
  * Uses copy-aside of the old blob so a failed put can restore the previous object.
  */
 export interface ReplaceInput {
-	createFileDto: CreateAttachmentDto & { _id: string }
+	createAttachmentDto: CreateAttachmentDto & { _id: string }
 	file: BlobBody
 	hooks: OperationHooks<OperationContext, Attachment>
 }
@@ -25,11 +25,11 @@ export interface ReplaceInput {
 export async function replace(deps: StorageDeps, input: ReplaceInput): Promise<Attachment> {
 	//
 
-	const { createFileDto, file, hooks } = input;
-	const fileId = createFileDto._id;
-	const mimeType = getMimeTypeFromFileExtension(createFileDto.name);
-	const filePath = buildStorageKey(createFileDto.scope, createFileDto.resource_id, fileId, createFileDto.name);
-	const context: OperationContext = { attachmentId: fileId, key: filePath, operation: 'replace', resourceId: createFileDto.resource_id, scope: createFileDto.scope };
+	const { createAttachmentDto, file, hooks } = input;
+	const fileId = createAttachmentDto._id;
+	const mimeType = getMimeTypeFromFileExtension(createAttachmentDto.name);
+	const filePath = buildStorageKey(createAttachmentDto.scope, createAttachmentDto.resource_id, fileId, createAttachmentDto.name);
+	const context: OperationContext = { attachmentId: fileId, key: filePath, operation: 'replace', resourceId: createAttachmentDto.resource_id, scope: createAttachmentDto.scope };
 
 	let existing: Attachment | undefined;
 	let asideKey = '';
@@ -94,7 +94,7 @@ export async function replace(deps: StorageDeps, input: ReplaceInput): Promise<A
 				execute: async () => {
 					await goDb.core.attachments.deleteById(fileId, { forceIfLocked: true });
 					inserted = await goDb.core.attachments.insertOne({
-						...createFileDto,
+						...createAttachmentDto,
 						_id: fileId,
 						type: mimeType,
 					});

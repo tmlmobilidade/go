@@ -1,6 +1,5 @@
 export * from '@/interfaces/alerts/index.js';
 export * from '@/interfaces/file-exports/index.js';
-export * from '@/interfaces/files/index.js';
 export * from '@/interfaces/gtfs-validations/index.js';
 export * from '@/interfaces/locations/index.js';
 export * from '@/interfaces/metrics/index.js';
