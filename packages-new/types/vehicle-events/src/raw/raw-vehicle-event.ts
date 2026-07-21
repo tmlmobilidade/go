@@ -19,7 +19,6 @@ import { z } from 'zod';
 export const RawVehicleEventSchema = z.discriminatedUnion('version', [
 	RawVehicleEventEsCrtmAisaV1Schema,
 	RawVehicleEventEsCrtmLaVelozV1Schema,
-	RawVehicleEventPtTmpUnirV1Schema,
 	RawVehicleEventPtTmlCcflV1Schema,
 	RawVehicleEventPtTmlCmetV1CoreSchema,
 	RawVehicleEventPtTmlCmetV1LogSchema,
@@ -29,6 +28,7 @@ export const RawVehicleEventSchema = z.discriminatedUnion('version', [
 	RawVehicleEventPtTmlMobiV1Schema,
 	RawVehicleEventPtTmlTcbV1Schema,
 	RawVehicleEventPtTmlTtslV1Schema,
+	RawVehicleEventPtTmpUnirV1Schema,
 ]);
 
 /**
