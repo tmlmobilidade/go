@@ -22,14 +22,14 @@ export const ridesIndexes: SimplifiedMongoIndex<Ride>[] = [
 	{ key: { system_status: 1, start_time_scheduled: 1 } },
 	// eslint-disable-next-line perfectionist/sort-objects
 	{ key: { trip_id: 1, start_time_scheduled: 1 } },
-	{ key: { trip_id: 1 } },
 	{ key: { plan_id: 1 } },
-	{ key: { _id: 1 } },
+	{ key: { pattern_id: 1 } },
 	{ key: { agency_id: 1, line_id: 1, start_time_scheduled: 1 } },
 	// eslint-disable-next-line perfectionist/sort-objects
-	{ key: { agency_id: 1, start_time_scheduled: 1, hashed_trip_id: 1 } },
-	// eslint-disable-next-line perfectionist/sort-objects
-	{ key: { agency_id: 1, start_time_scheduled: 1, hashed_pattern_id: 1 } },
+	{ key: { agency_id: 1, start_time_scheduled: -1, hashed_trip_id: 1 } },
+	{ key: { hashed_pattern_id: 1 } },
 	{ key: { agency_id: 1, hashed_trip_id: 1, start_time_scheduled: 1 } },
 	{ key: { agency_id: 1, hashed_pattern_id: 1, start_time_scheduled: 1 } },
+	// eslint-disable-next-line perfectionist/sort-objects
+	{ key: { agency_id: 1, start_time_scheduled: -1, hashed_pattern_id: 1 } },
 ];
