@@ -21,7 +21,7 @@ export const PlanSchema = DocumentSchema.extend({
 	gtfs_feed_info: GtfsFeedInfoSchema,
 	hash: z.string(),
 	is_locked: z.boolean().default(false),
-	operation_file_id: z.string(),
+	operation_file_id: z.string().nullable().default(null),
 	pcgi_legacy: PlanPcgiLegacySchema,
 });
 
