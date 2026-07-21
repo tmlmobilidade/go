@@ -30,10 +30,11 @@ export interface RunSagaOptions<TContext extends OperationContext, TResult> {
  * @param {RunSagaOptions<TContext, TResult>} options - Options for running the saga, including context, hooks, observability, result function, and saga steps.
  * @returns {Promise<TResult>} The result of the saga execution.
  *
- * @throws {StorageError} If a step fails, throws a StorageError or CompensationError (if compensations fail).
+ * @throws {StorageError} If a storage step fails, or CompensationError if compensations fail.
+ * @throws {unknown} If `onSuccess` / a non-storage failure throws and compensations succeed, the original error is rethrown (so callers can keep HttpException status codes).
  *
  * @remarks
- * - If a step fails during execution, all completed steps are compensated in reverse order using their `compensate` methods (if provided).
+ * - If a step or `onSuccess` fails, `onRollback` runs first (restore external state while storage resources still exist), then completed steps are compensated in reverse order.
  * - Lifecycle hooks are invoked at the start, on success, on rollback, on error, and finally.
  * - Observability callbacks are fired at various phases (operation start, step execution/compensation, operation end).
  */
@@ -77,6 +78,16 @@ export async function runSaga<TContext extends OperationContext, TResult>(option
 		const suppressed: unknown[] = [];
 
 		/**
+		 * Restore external state before compensating storage steps, so callers can point
+		 * dependents back at the previous resource while it (and the new one) still exist.
+		 */
+		try {
+			await hooks.onRollback?.(context, storageError);
+		} catch (rollbackFailure) {
+			suppressed.push(rollbackFailure);
+		}
+
+		/**
 		 * Compensate all completed steps in reverse order, if they have a compensate handler.
 		 * For each step that defines a compensate function:
 		 *   1. Fires an observability callback before compensation.
@@ -94,17 +105,19 @@ export async function runSaga<TContext extends OperationContext, TResult>(option
 		}
 
 		/**
-		 * If compensations failed, create a CompensationError to wrap the original error and include suppressed errors.
-		 * Otherwise, use the original error directly.
+		 * If rollback/compensations failed, wrap as CompensationError.
+		 * Otherwise prefer the original error when it was not already a StorageError
+		 * (typical for HttpException thrown from onSuccess side effects).
 		 */
 		const finalError: StorageError = suppressed.length > 0
 			? new CompensationError(storageError.message, { cause: storageError, context: { ...storageError.context, ...context }, suppressed })
 			: storageError;
 
-		await hooks.onRollback?.(context, finalError);
 		await hooks.onError?.(context, finalError);
 		observability.onOperationEnd({ ...context, durationMs: Date.now() - startedAt, outcome: 'error' });
 
+		if (suppressed.length > 0) throw finalError;
+		if (!(error instanceof StorageError)) throw error;
 		throw finalError;
 	} finally {
 		//
