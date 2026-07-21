@@ -292,8 +292,8 @@ export function RoutePlannerResults() {
 							key={`${itinerary.startTime || index}-${itinerary.endTime || index}`}
 							isSelected={routePlannerContext.data.selected_itinerary_index === index}
 							itinerary={itinerary}
-							onOpenDetails={() => routePlannerContext.actions.openItineraryDetail(index)}
 							onSelect={() => routePlannerContext.actions.selectItinerary(index)}
+							onStartTrip={() => routePlannerContext.actions.startItinerary(index)}
 						/>
 					))}
 				</div>

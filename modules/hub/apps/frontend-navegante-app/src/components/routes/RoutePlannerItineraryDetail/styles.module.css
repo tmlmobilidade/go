@@ -295,7 +295,6 @@
 	gap: 10px;
 }
 
-.startButton,
 .endButton {
 	display: inline-flex;
 	flex: 1;
@@ -310,17 +309,11 @@
 	border-radius: 999px;
 }
 
-.startButton {
-	color: var(--color-primary-white, #fff);
-	background-color: var(--color-status-info, #1677ff);
-}
-
 .endButton {
 	color: var(--color-primary-white, #fff);
 	background-color: var(--color-status-error, #e53e3e);
 }
 
-.startButton:active,
 .endButton:active {
 	transform: scale(0.98);
 }

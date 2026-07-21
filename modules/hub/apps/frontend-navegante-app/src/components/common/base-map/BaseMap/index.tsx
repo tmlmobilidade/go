@@ -24,6 +24,7 @@ import { type MapLongPressLocation, useMapLongPress } from '@/hooks/useMapLongPr
 import { fetchPatterns } from '@/utils/fetch-patterns';
 import { centerMap } from '@/utils/map.utils';
 import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
+import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner-navigation';
 import { filterVehicleFeatureCollectionByPatternIds, filterVehicleFeatureCollectionByRouteDirections, getRoutePlannerItineraryRouteDirections, getRoutePlannerItineraryRouteIds, getRoutePlannerRouteDirectionKey, getRoutePlannerRouteIdKey } from '@/utils/route-planner-vehicles';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
@@ -288,7 +289,7 @@ export function BaseMap() {
 
 	useEffect(() => {
 		if (!baseMap || routePlannerMapFitFeatures.length === 0) return;
-		if (activeBottomSheet?.view !== 'routes') return;
+		if (activeBottomSheet?.view !== 'routes' && !routePlannerContext.flags.is_navigating) return;
 		if (!shouldFitMap) {
 			lastRouteMapFitKeyRef.current = null;
 			return;
@@ -307,7 +308,7 @@ export function BaseMap() {
 		centerMap(baseMap, routePlannerMapFitFeatures, {
 			padding: mapPadding,
 		});
-	}, [activeBottomSheet?.view, activeBottomSheetSnap.snapPoint, baseMap, mapPadding, routePlannerContext.data.selected_itinerary_index, routePlannerContext.data.view_mode, routePlannerMapFitFeatures, shouldFitMap]);
+	}, [activeBottomSheet?.view, activeBottomSheetSnap.snapPoint, baseMap, mapPadding, routePlannerContext.data.selected_itinerary_index, routePlannerContext.data.view_mode, routePlannerContext.flags.is_navigating, routePlannerMapFitFeatures, shouldFitMap]);
 
 	//
 	// C. Handle actions
@@ -472,10 +473,4 @@ export function BaseMap() {
 			/>
 		</MapView>
 	);
-}
-
-function getRoutePlannerMapFitFeatures(features: GeoJSON.Feature<GeoJSON.LineString>[], viewMode: ReturnType<typeof useRoutePlannerContext>['data']['view_mode']) {
-	if (viewMode !== 'itinerary-detail') return features;
-
-	return features.slice(0, 1);
 }

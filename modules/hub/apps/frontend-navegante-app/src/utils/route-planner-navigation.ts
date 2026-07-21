@@ -2,7 +2,23 @@ import { type RoutePlannerViewMode } from '@/components/routes/RoutePlanner.cont
 
 /* * */
 
+// NOTE: keep in sync with the itinerary-detail snap points array in RoutePlanner/index.tsx.
+// Index 0 is reserved by react-modal-sheet as an alias for "closed", so the smallest visible
+// snap point is index 1.
+export const ROUTE_PLANNER_ITINERARY_DETAIL_SNAP = {
+	compact: 1,
+	full: 4,
+	medium: 3,
+	preview: 2,
+};
+
 export type RoutePlannerCloseAction = 'clear-route' | 'close-sheet' | 'dismiss-trip-sheets' | 'open-place-detail' | 'open-results';
+
+export interface RoutePlannerStartTripTransition {
+	isNavigating: true
+	selectedItineraryIndex: number
+	viewMode: 'itinerary-detail'
+}
 
 interface GetRoutePlannerCloseActionOptions {
 	hasRouteContext: boolean
@@ -19,4 +35,22 @@ export function getRoutePlannerCloseAction({ hasRouteContext, isNavigating, view
 	if (viewMode === 'destination-search' && hasRouteContext) return 'open-results';
 
 	return 'close-sheet';
+}
+
+export function getRoutePlannerStartTripTransition(index: number): RoutePlannerStartTripTransition {
+	return {
+		isNavigating: true,
+		selectedItineraryIndex: index,
+		viewMode: 'itinerary-detail',
+	};
+}
+
+export function getRoutePlannerItineraryDetailInitialSnap(isNavigating: boolean) {
+	return isNavigating ? ROUTE_PLANNER_ITINERARY_DETAIL_SNAP.compact : ROUTE_PLANNER_ITINERARY_DETAIL_SNAP.preview;
+}
+
+export function getRoutePlannerMapFitFeatures(features: GeoJSON.Feature<GeoJSON.LineString>[], viewMode: RoutePlannerViewMode) {
+	if (viewMode !== 'itinerary-detail') return features;
+
+	return features.slice(0, 1);
 }

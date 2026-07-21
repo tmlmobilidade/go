@@ -1,4 +1,4 @@
-import { getRoutePlannerCloseAction } from '@/utils/route-planner-navigation';
+import { getRoutePlannerCloseAction, getRoutePlannerItineraryDetailInitialSnap, getRoutePlannerMapFitFeatures, getRoutePlannerStartTripTransition } from '@/utils/route-planner-navigation';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 
@@ -57,3 +57,34 @@ describe('getRoutePlannerCloseAction', () => {
 		}), 'dismiss-trip-sheets');
 	});
 });
+
+describe('getRoutePlannerStartTripTransition', () => {
+	it('selects the itinerary and enters navigation immediately', () => {
+		assert.deepEqual(getRoutePlannerStartTripTransition(2), {
+			isNavigating: true,
+			selectedItineraryIndex: 2,
+			viewMode: 'itinerary-detail',
+		});
+	});
+});
+
+describe('active itinerary presentation', () => {
+	it('opens active detail at compact snap position 1', () => {
+		assert.equal(getRoutePlannerItineraryDetailInitialSnap(true), 1);
+	});
+
+	it('fits the map to the first leg trajectory in itinerary detail', () => {
+		const firstLeg = createLineFeature([[0, 0], [1, 1]]);
+		const secondLeg = createLineFeature([[1, 1], [2, 2]]);
+
+		assert.deepEqual(getRoutePlannerMapFitFeatures([firstLeg, secondLeg], 'itinerary-detail'), [firstLeg]);
+	});
+});
+
+function createLineFeature(coordinates: GeoJSON.Position[]): GeoJSON.Feature<GeoJSON.LineString> {
+	return {
+		geometry: { coordinates, type: 'LineString' },
+		properties: {},
+		type: 'Feature',
+	};
+}

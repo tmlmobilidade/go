@@ -74,15 +74,17 @@ export function RoutePlannerItineraryDetail() {
 				<RoutePlannerItineraryLegStrip itinerary={itinerary} />
 			</header>
 
-			<div className={styles.actions}>
-				<button
-					className={isNavigating ? styles.endButton : styles.startButton}
-					onClick={isNavigating ? routePlannerContext.actions.stopActiveTrip : routePlannerContext.actions.startActiveTrip}
-					type="button"
-				>
-					{t(isNavigating ? 'default:routes.RoutePlanner.results.end_trip' : 'default:routes.RoutePlanner.results.start_trip')}
-				</button>
-			</div>
+			{isNavigating && (
+				<div className={styles.actions}>
+					<button
+						className={styles.endButton}
+						onClick={routePlannerContext.actions.endActiveTrip}
+						type="button"
+					>
+						{t('default:routes.RoutePlanner.results.end_trip')}
+					</button>
+				</div>
+			)}
 
 			<ol className={styles.timeline}>
 				{legs.map((leg, index) => (

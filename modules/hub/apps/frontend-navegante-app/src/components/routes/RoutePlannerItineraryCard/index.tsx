@@ -19,13 +19,13 @@ import styles from './styles.module.css';
 interface RoutePlannerItineraryCardProps {
 	isSelected?: boolean
 	itinerary: MotisItinerary
-	onOpenDetails?: () => void
 	onSelect?: () => void
+	onStartTrip?: () => void
 }
 
 /* * */
 
-export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpenDetails, onSelect }: RoutePlannerItineraryCardProps) {
+export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onSelect, onStartTrip }: RoutePlannerItineraryCardProps) {
 	//
 
 	//
@@ -69,9 +69,9 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 	//
 	// C. Handle actions
 
-	const handleRouteActionClick = (event: MouseEvent<HTMLButtonElement>) => {
+	const handleStartTripClick = (event: MouseEvent<HTMLButtonElement>) => {
 		event.stopPropagation();
-		onOpenDetails?.();
+		onStartTrip?.();
 	};
 
 	//
@@ -115,8 +115,8 @@ export function RoutePlannerItineraryCard({ isSelected = false, itinerary, onOpe
 			<div className={styles.bottomRow}>
 				<RoutePlannerItineraryLegStrip itinerary={itinerary} />
 				<RoutePlannerGoButton
-					ariaLabel={t('default:routes.RoutePlanner.results.view_details')}
-					onClick={handleRouteActionClick}
+					ariaLabel={t('default:routes.RoutePlanner.results.start_route_aria_label')}
+					onClick={handleStartTripClick}
 				/>
 			</div>
 

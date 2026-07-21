@@ -3,14 +3,14 @@
 import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/components/common/bottom-sheet/use-map-bottom-sheet';
-import { ROUTE_PLANNER_ITINERARY_DETAIL_SNAP, useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
+import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerInput } from '@/components/routes/RoutePlannerInput';
 import { RoutePlannerItineraryDetail } from '@/components/routes/RoutePlannerItineraryDetail';
 import { RoutePlannerPlaceDetail } from '@/components/routes/RoutePlannerPlaceDetail';
 import { RoutePlannerResults } from '@/components/routes/RoutePlannerResults';
 import { OmniSearch } from '@/components/search/OmniSearch';
 import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
-import { getRoutePlannerCloseAction } from '@/utils/route-planner-navigation';
+import { getRoutePlannerCloseAction, getRoutePlannerItineraryDetailInitialSnap } from '@/utils/route-planner-navigation';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -208,7 +208,7 @@ function getRoutePlannerSheetConfig(
 		return {
 			disableDismiss: true,
 			headerMode: 'handle',
-			initialSnap: isNavigating ? ROUTE_PLANNER_ITINERARY_DETAIL_SNAP.full : ROUTE_PLANNER_ITINERARY_DETAIL_SNAP.preview,
+			initialSnap: getRoutePlannerItineraryDetailInitialSnap(isNavigating),
 			mapAware: true,
 			snapPoints: ROUTE_PLANNER_SHEET_SNAP_POINTS.itineraryDetail,
 			withCloseButton: true,
