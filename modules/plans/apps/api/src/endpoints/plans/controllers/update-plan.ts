@@ -3,8 +3,9 @@
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
 import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, plans } from '@tmlmobilidade/interfaces';
-import { type CreateFileDto, HashablePlanMetadata, PermissionCatalog, type Plan, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { plans } from '@tmlmobilidade/interfaces';
+import { type CreateAttachmentDto, HashablePlanMetadata, PermissionCatalog, type Plan, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
 import { createHash } from 'node:crypto';
 
 /**
@@ -77,7 +78,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 		//
 		// Prepare the updated file metadata
 
-		const updatedFileData: CreateFileDto = {
+		const updatedFileData: CreateAttachmentDto = {
 			created_by: updateDatesResult.info.created_by,
 			name: updateDatesResult.info.name,
 			resource_id: updateDatesResult.info.resource_id,
@@ -90,7 +91,7 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 		//
 		// Upload updated file and store new file ID
 
-		const updateFileResult = await files.upload(
+		const updateFileResult = await storageProvider.upload(
 			Buffer.from(await updateDatesResult.file.arrayBuffer()),
 			updatedFileData,
 		);
