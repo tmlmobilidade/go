@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Attachment, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -16,8 +17,7 @@ export async function getGtfsValidationFile(request: FastifyRequest<{ Params: { 
 	//
 	// Get the requested Validation data
 
-	const foundValidation = await gtfsValidations.findById(request.params.id);
-
+	const foundValidation = await goDb.operation.gtfsValidations.findById(request.params.id);
 	if (!foundValidation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
 
 	//
@@ -36,9 +36,7 @@ export async function getGtfsValidationFile(request: FastifyRequest<{ Params: { 
 	//
 	// Fetch the file associated with the validation
 
-	const foundFile = await files.findById(foundValidation.file_id);
-
-	if (!foundFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+	const foundFile = await storageProvider.findById(foundValidation.file_id);
 
 	reply.send({ data: foundFile, error: null, statusCode: HTTP_STATUS.OK });
 }
