@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { fileExports, files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { fileExports } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/types';
 
@@ -28,63 +29,38 @@ export class ExporterSharedController {
 	 * @param reply The reply object
 	 */
 	static async download(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+		//
+
 		const { id } = request.params;
+		const context = { action: 'download', feature: 'exporter', request, value: id };
+
+		// Find file export by ID
 		const fileExport = await fileExports.findById(id);
 		if (!fileExport) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'File export not found');
-			Logger.issue({
-				context: {
-					action: 'download',
-					feature: 'exporter',
-					request,
-					value: id,
-				},
-				level: 'error',
-				messageOrError: error,
-			});
+			Logger.issue({ context, level: 'error', messageOrError: error });
+
 			throw error;
 		}
 
-		// Retrieve file data from database
-		const foundFileData = await files.findById(fileExport.file_id);
-		if (!foundFileData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
-			Logger.issue({
-				context: {
-					action: 'download',
-					feature: 'exporter',
-					request,
-					value: id,
-				},
-				level: 'error',
-				messageOrError: error,
-			});
-			throw error;
-		}
-
-		// Stream the file in the given URL to the client
+		// Retrieve file data from storage
+		const foundFileData = await storageProvider.findById(fileExport.file_id);
 		const storageServiceResponse = await fetch(foundFileData.url);
 		if (!storageServiceResponse.ok || !storageServiceResponse.body) {
 			const error = new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
-			Logger.issue({
-				context: {
-					action: 'download',
-					feature: 'exporter',
-					request,
-					value: id,
-				},
-				level: 'error',
-				messageOrError: error,
-			});
+			Logger.issue({ context, level: 'error', messageOrError: error });
+
 			throw error;
 		}
 
 		// Set headers and pipe the response body to the client
 		reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
 		reply.header('Content-Type', foundFileData.type);
+
 		// Set content length if available
 		const contentLength = storageServiceResponse.headers.get('Content-Length');
 		if (contentLength) reply.header('Content-Length', contentLength);
+
 		// Pipe the response body to the client
 		return reply.send(storageServiceResponse.body);
 	}
