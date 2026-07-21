@@ -28,7 +28,7 @@ export class OperationDatabase {
 		this.database = instance.db(this.databaseName);
 		// Create collection interfaces
 		this.alerts = new MongoInterfaceTemplate<Alert, CreateAlertDto, UpdateAlertDto>('alerts', this.database, CreateAlertSchema, UpdateAlertSchema);
-		this.gtfsValidations = new MongoInterfaceTemplate<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto>('gtfsValidations', this.database, CreateGtfsValidationSchema, UpdateGtfsValidationSchema);
+		this.gtfsValidations = new MongoInterfaceTemplate<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto>('gtfs-validations', this.database, CreateGtfsValidationSchema, UpdateGtfsValidationSchema);
 		this.hashedPatterns = new MongoInterfaceTemplate<HashedPattern, HashedPattern, HashedPattern>('hashed-patterns', this.database, HashedPatternSchema, HashedPatternSchema);
 		this.hashedShapes = new MongoInterfaceTemplate<HashedShape, HashedShape, HashedShape>('hashed-shapes', this.database, DocumentSchema, DocumentSchema);
 		this.hashedTrips = new MongoInterfaceTemplate<HashedTrip, HashedTrip, HashedTrip>('hashed-trips', this.database, HashedTripSchema, HashedTripSchema);
