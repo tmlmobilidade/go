@@ -49,7 +49,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/writers": "*",
-		"exceljs": "^4.4.0"
+		"exceljs": "4.4.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

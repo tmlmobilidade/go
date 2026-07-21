@@ -23,7 +23,6 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*"
 	},
 	"devDependencies": {

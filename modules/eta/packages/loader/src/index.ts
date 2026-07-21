@@ -2,7 +2,7 @@
 
 import { insertEtaRides } from '@/clickhouse/insert-eta-rides.js';
 import { insertHistoricalVehicleEvents } from '@/clickhouse/insert-historical-vehicle-events.js';
-import { AppConfig } from '@/lib/config.js';
+import { type AppConfig } from '@/lib/config.js';
 import { parseHistoricalRide, parseRide } from '@/lib/eta-ride-row.js';
 import { buildHistNodeTravelTimes } from '@/process/build-hist-node-travel-times.js';
 import { detectRideStartEndEvents } from '@/process/detect-ride-start-end-events.js';
