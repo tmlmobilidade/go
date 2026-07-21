@@ -111,6 +111,22 @@ jobs:
     secrets: inherit
 
   # # #
+  # After first /build: poll preview URL until OK or 15m timeout.
+
+  preview-health:
+    name: Preview Health Check
+    needs: [notify-infra-build]
+    if: |
+      always() &&
+      inputs.pr_number != '' &&
+      needs.notify-infra-build.result == 'success'
+    uses: ./.github/workflows/_preview-health.yml
+    with:
+      pr_number: ${{ inputs.pr_number }}
+      timeout_minutes: 15
+      poll_seconds: 30
+
+  # # #
   # Notify go-infra: remove PR overlay when PR is closed.
 
   notify-infra-cleanup:
