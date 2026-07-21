@@ -1,147 +1,169 @@
 /* * */
 
-import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
-import { OCIStorageClient, type OCIStorageClientWrapper } from '@tmlmobilidade/go-clients-oci-storage';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { generateRandomString } from '@tmlmobilidade/strings';
-import { type CreateFileDto, CreateFileSchema, type File } from '@tmlmobilidade/types';
-import { asyncSingletonProxy, convertObject } from '@tmlmobilidade/utils';
-import { type Readable } from 'node:stream';
+import { OciBlobStore } from '@/oci-blob-store.js';
+import { batchDelete as batchDeleteFn, type BatchDeleteInput } from '@/operations/batch-delete.js';
+import { type BatchResult, batchUpload as batchUploadFn, type BatchUploadItem } from '@/operations/batch-upload.js';
+import { copy as copyFn } from '@/operations/copy.js';
+import { deleteAttachment as deleteFn } from '@/operations/delete.js';
+import { exists as existsFn, type ExistsResult } from '@/operations/exists.js';
+import { findById as findByIdFn } from '@/operations/find-by-id.js';
+import { getSignedUrl as getSignedUrlFn } from '@/operations/get-signed-url.js';
+import { move as moveFn } from '@/operations/move.js';
+import { replace as replaceFn } from '@/operations/replace.js';
+import { upload as uploadFn } from '@/operations/upload.js';
+import { validateUpload as validateUploadFn, type ValidateUploadResult } from '@/operations/validate-upload.js';
+import { BlobBody } from '@/types/blob-body.js';
+import { type StorageDeps } from '@/types/deps.js';
+import { type OperationHooks } from '@/types/hooks.js';
+import { type OperationContext } from '@/types/operation-context.js';
+import { createLoggerObservability } from '@/utils/observability.js';
+
+/* * */
+
+import { OCIStorageClient } from '@tmlmobilidade/go-clients-oci-storage';
+import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types';
+import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
 class StorageProviderClass {
+	//
+
 	private static _instance: StorageProviderClass;
 
-	private constructor(private readonly ociStorageClient: OCIStorageClientWrapper) {}
+	private constructor(private readonly deps: StorageDeps) {}
 
 	public static async getInstance() {
 		if (!StorageProviderClass._instance) {
 			const ociStorageClient = await OCIStorageClient.getClient({ prefix: 'OCI_STORAGE' });
-			StorageProviderClass._instance = new StorageProviderClass(ociStorageClient);
+			StorageProviderClass._instance = new StorageProviderClass({ blobs: new OciBlobStore(ociStorageClient), observability: createLoggerObservability() });
 		}
 		return StorageProviderClass._instance;
 	}
 
 	/**
-	 * Clones a file from one resource to another.
-	 * Copies the object in OCI and inserts a new MongoDB record.
+	 * Deletes multiple files by their IDs in a batch operation.
+	 * @param fileIds - An array of file IDs to be deleted.
+	 * @param hooks - Operation hooks for observability or side effects.
+	 * @param options - Optional: Batch deletion settings such as concurrency.
+	 * @returns A promise resolving to the batch result containing deleted fileIds.
 	 */
-	async clone(fileId: string, scope: string, resourceId: string): Promise<File> {
-		const _id = generateRandomString({ length: 5 });
-		const file = await goDb.core.files.findOne({ _id: { $eq: fileId } });
-		if (!file) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
-
-		const originalFilePath = this.getStorageKey(file);
-		const newFilePath = `${scope}/${resourceId}/${_id}.${getFileExtension(file.name)}`;
-
-		await this.ociStorageClient.copyFile(originalFilePath, newFilePath);
-
-		const newFile = convertObject(file, CreateFileSchema);
-		return await goDb.core.files.insertOne({ ...newFile, _id, resource_id: resourceId, scope });
+	async batchDelete(fileIds: string[], hooks: OperationHooks<OperationContext, BatchResult<{ fileId: string }>>, options?: Pick<BatchDeleteInput, 'concurrency'>): Promise<BatchResult<{ fileId: string }>> {
+		return batchDeleteFn(this.deps, { concurrency: options?.concurrency, fileIds, hooks });
 	}
 
 	/**
-	 * Deletes a file from OCI and MongoDB.
+	 * Uploads multiple items in a batch operation.
+	 * @param items - List of items to be uploaded.
+	 * @param hooks - Operation hooks for the batch upload.
+	 * @param options - Optional: Control concurrency for batch uploads.
+	 * @returns A promise resolving to the batch upload result with attachments.
 	 */
-	async deleteById(fileId: string) {
-		const foundFile = await goDb.core.files.findById(fileId);
-		if (!foundFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
-
-		await this.ociStorageClient.deleteFile(
-			`${foundFile.scope}/${foundFile.resource_id}/${foundFile._id}.${getFileExtensionFromMimeType(foundFile.type)}`,
-		);
-
-		return await goDb.core.files.deleteById(fileId, { forceIfLocked: true });
+	async batchUpload(items: BatchUploadItem[], hooks: OperationHooks<OperationContext, BatchResult<Attachment>>, options?: { concurrency?: number }): Promise<BatchResult<Attachment>> {
+		return batchUploadFn(this.deps, { concurrency: options?.concurrency, hooks, items });
 	}
 
 	/**
-	 * Retrieves a file from MongoDB and attaches a signed OCI URL.
+	 * Copies a file to a new resource and scope.
+	 * @param fileId - The ID of the file to copy.
+	 * @param scope - The new scope for the copied file.
+	 * @param resourceId - The ID of the new associated resource.
+	 * @param hooks - Hooks for operation observability and behavior.
+	 * @returns A promise resolving to the new copied Attachment.
 	 */
-	async findById(id: string): Promise<File | null> {
-		const file = await goDb.core.files.findById(id);
-		if (!file) return null;
-
-		file.url = await this.getFileUrl({ fileId: file._id });
-		return file;
+	async copy(fileId: string, scope: string, resourceId: string, hooks: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
+		return copyFn(this.deps, { fileId, hooks, resourceId, scope });
 	}
 
 	/**
-	 * Returns a signed download URL for a file, by MongoDB id or OCI object key.
+	 * Deletes a single file by its ID.
+	 * @param fileId - The ID of the file to delete.
+	 * @param hooks - Hooks for operation side effects and observability.
+	 * @returns A promise resolving with the deleted fileId.
 	 */
-	async getFileUrl({ fileId, key }: { fileId?: string, key?: string }): Promise<string> {
-		if (!fileId && !key) {
-			throw new Error('Either "fileId" or "key" must be provided');
-		}
-
-		if (fileId) {
-			const file = await goDb.core.files.findOne({ _id: { $eq: fileId } });
-			if (!file) {
-				throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
-			}
-			key = this.getStorageKey(file);
-		}
-
-		return this.ociStorageClient.getFileUrl(key as string);
+	async delete(fileId: string, hooks: OperationHooks<OperationContext, { fileId: string }>): Promise<{ fileId: string }> {
+		return deleteFn(this.deps, { fileId, hooks });
 	}
 
 	/**
-	 * Uploads a file to OCI and inserts the corresponding MongoDB record.
+	 * Checks for existence of a file by ID or key.
+	 * @param params - An object containing fileId or key.
+	 * @param hooks - Hooks for operation execution.
+	 * @returns A promise resolving to the existence result.
 	 */
-	async upload(
-		file: Buffer | Readable | ReadableStream,
-		createFileDto: CreateFileDto & { _id?: string },
-		options?: { override?: boolean },
-	): Promise<File> {
-		if (createFileDto._id && !options?.override) {
-			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'When File ID is provided, override must be true');
-		}
-
-		const fileId = createFileDto._id || generateRandomString({ length: 5 });
-		const fileExtension = getFileExtension(createFileDto.name);
-		const mimeType = getMimeTypeFromFileExtension(createFileDto.name);
-		const filePath = `${createFileDto.scope}/${createFileDto.resource_id}/${fileId}.${fileExtension}`;
-
-		if (options?.override) {
-			const existingFile = await goDb.core.files.findOne({ _id: { $eq: fileId } });
-
-			if (existingFile) {
-				const existingFilePath = this.getStorageKey(existingFile);
-
-				if (existingFilePath !== filePath) {
-					throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'File ID is provided, but the file path is different from the existing file', { cause: { existingFilePath, filePath } });
-				}
-
-				await goDb.core.files.deleteById(fileId, { forceIfLocked: true });
-			}
-		}
-
-		await this.ociStorageClient.uploadFile(filePath, file, mimeType);
-
-		return await goDb.core.files.insertOne({ ...createFileDto, _id: fileId, type: mimeType });
+	async exists(params: { fileId?: string, key?: string }, hooks: OperationHooks<OperationContext, ExistsResult>): Promise<ExistsResult> {
+		return existsFn(this.deps, { ...params, hooks });
 	}
 
-	private getStorageKey(file: Pick<File, '_id' | 'name' | 'resource_id' | 'scope'>): string {
-		return `${file.scope}/${file.resource_id}/${file._id}.${getFileExtension(file.name)}`;
+	/**
+	 * Finds a file attachment by its unique ID.
+	 * @param id - The ID of the attachment.
+	 * @param hooks - Hooks for operation execution.
+	 * @returns A promise resolving to the Attachment or null if not found.
+	 */
+	async findById(id: string, hooks: OperationHooks<OperationContext, Attachment | null>): Promise<Attachment | null> {
+		return findByIdFn(this.deps, { hooks, id });
 	}
-}
 
-/* * */
+	/**
+	 * Generates a signed URL for downloading or accessing a file.
+	 * @param params - Parameters with fileId or key for which to generate the URL.
+	 * @param hooks - Hooks for execution/observability.
+	 * @returns A promise resolving to the signed URL as a string.
+	 */
+	async getSignedUrl(params: { fileId?: string, key?: string }, hooks: OperationHooks<OperationContext, string>): Promise<string> {
+		return getSignedUrlFn(this.deps, { ...params, hooks });
+	}
 
-function getFileExtension(fileName: string): string {
-	const extension = fileName.split('.').pop()?.toLowerCase();
-	if (!extension) throw new Error('File has no extension');
-	if (!(extension in mimeTypes)) throw new Error(`Unsupported file extension: ${extension}`);
-	return extension;
-}
+	/**
+	 * Moves a file to a different resource and/or scope.
+	 * @param fileId - ID of the file to move.
+	 * @param scope - Target scope.
+	 * @param resourceId - Target resource ID.
+	 * @param hooks - Hooks for observability or side effects.
+	 * @returns A promise resolving to the updated Attachment.
+	 */
+	async move(fileId: string, scope: string, resourceId: string, hooks: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
+		return moveFn(this.deps, { fileId, hooks, resourceId, scope });
+	}
 
-function getMimeTypeFromFileExtension(fileName: string): string {
-	return mimeTypes[getFileExtension(fileName) as keyof typeof mimeTypes];
-}
+	/**
+	 * Replaces an existing file's data while preserving its identifier.
+	 * @param file - Blob body of the new file.
+	 * @param createFileDto - Data transfer object describing the attachment, must include _id.
+	 * @param hooks - Hooks for operation execution.
+	 * @returns A promise resolving to the updated Attachment.
+	 */
+	async replace(file: BlobBody, createFileDto: CreateAttachmentDto & { _id: string }, hooks: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
+		return replaceFn(this.deps, { createFileDto, file, hooks });
+	}
 
-function getFileExtensionFromMimeType(mimeType: string): string {
-	if (!mimeType) return '';
-	return Object.keys(mimeTypes).find(key => mimeTypes[key as keyof typeof mimeTypes] === mimeType) ?? '';
+	/**
+	 * Uploads a new file and creates the corresponding attachment.
+	 * @param file - Blob body of the file to upload.
+	 * @param createFileDto - Data transfer object for attachment creation. _id is optional.
+	 * @param hooks - Hooks for operation execution.
+	 * @returns A promise resolving to the created Attachment.
+	 */
+	async upload(file: BlobBody, createFileDto: CreateAttachmentDto & { _id?: string }, hooks: OperationHooks<OperationContext, Attachment>): Promise<Attachment> {
+		return uploadFn(this.deps, { createFileDto, file, hooks });
+	}
+
+	/**
+	 * Validates whether a file upload can proceed, based on file size and name.
+	 * @param createFileDto - Contains file information to validate (name and size).
+	 * @param hooks - Hooks for operation execution.
+	 * @param options - Optional: Max allowed file size in bytes.
+	 * @returns A promise resolving to the validation result.
+	 */
+	async validateUpload(createFileDto: Pick<CreateAttachmentDto, 'name' | 'size'>, hooks: OperationHooks<OperationContext, ValidateUploadResult>, options?: { maxSizeBytes?: number }): Promise<ValidateUploadResult> {
+		return validateUploadFn({
+			createFileDto,
+			hooks,
+			maxSizeBytes: options?.maxSizeBytes,
+			observability: this.deps.observability,
+		});
+	}
 }
 
 /* * */
