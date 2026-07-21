@@ -34,7 +34,7 @@ export function ValidationsList() {
 			accessor: 'agency_id_normalized',
 			render: item => <AgencyTag agencyId={item.agency_id} copyOnClick={false} showShortName />,
 			title: 'Operador',
-			width: 110,
+			width: 180,
 		},
 		{
 			accessor: 'processing_status',
