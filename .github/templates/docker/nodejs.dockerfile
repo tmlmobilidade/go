@@ -1,6 +1,6 @@
 # # #
 
-FROM gcr.io/distroless/nodejs24-debian13 AS base
+FROM node:24-slim AS base
 
 
 # # #
