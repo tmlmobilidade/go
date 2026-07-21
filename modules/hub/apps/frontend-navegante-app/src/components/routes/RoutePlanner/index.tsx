@@ -10,6 +10,7 @@ import { RoutePlannerPlaceDetail } from '@/components/routes/RoutePlannerPlaceDe
 import { RoutePlannerResults } from '@/components/routes/RoutePlannerResults';
 import { OmniSearch } from '@/components/search/OmniSearch';
 import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { getRoutePlannerCloseAction } from '@/utils/route-planner-navigation';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -78,27 +79,18 @@ export function RoutePlanner() {
 	// C. Handle actions
 
 	const handleClose = () => {
-		if (routePlannerContext.data.view_mode === 'itinerary-detail') {
-			if (routePlannerContext.flags.is_navigating) {
-				routePlannerContext.actions.dismissTripSheets();
-				return;
-			}
+		const closeAction = getRoutePlannerCloseAction({
+			hasRouteContext: !!routePlannerContext.data.origin && !!routePlannerContext.data.destination,
+			isNavigating: routePlannerContext.flags.is_navigating,
+			viewMode: routePlannerContext.data.view_mode,
+			wasOpenedFromPlace: routePlannerContext.data.was_opened_from_place,
+		});
 
-			routePlannerContext.actions.openResults();
-			return;
-		}
+		if (closeAction === 'dismiss-trip-sheets') return routePlannerContext.actions.dismissTripSheets();
+		if (closeAction === 'open-results') return routePlannerContext.actions.openResults();
+		if (closeAction === 'open-place-detail') return routePlannerContext.actions.openPlaceDetail();
 
-		if (routePlannerContext.data.view_mode === 'results') {
-			if (routePlannerContext.data.was_opened_from_place) {
-				routePlannerContext.actions.openPlaceDetail();
-				return;
-			}
-
-			routePlannerContext.actions.clearRoute();
-			closeActiveBottomSheet();
-			return;
-		}
-
+		if (closeAction === 'clear-route') routePlannerContext.actions.clearRoute();
 		closeActiveBottomSheet();
 	};
 

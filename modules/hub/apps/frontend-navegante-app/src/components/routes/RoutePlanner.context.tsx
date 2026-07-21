@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 /* * */
 
 export type RoutePlannerLocationSearchTarget = 'destination' | 'origin';
-type RoutePlannerViewMode = 'destination-search' | 'full-input' | 'itinerary-detail' | 'place-detail' | 'results';
+export type RoutePlannerViewMode = 'destination-search' | 'full-input' | 'itinerary-detail' | 'place-detail' | 'results';
 
 // NOTE: keep in sync with the itinerary-detail snap points array in RoutePlanner/index.tsx.
 // Index 0 is reserved by react-modal-sheet as an alias for "closed", so the smallest visible
@@ -212,9 +212,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 
 	const openLocationSearch = (target: RoutePlannerLocationSearchTarget) => {
 		setLocationSearchTarget(target);
-		setPlanError(null);
 		setViewMode('destination-search');
-		setWasOpenedFromPlace(false);
 		setActiveBottomSheet({ view: 'routes' }, { replace: true });
 	};
 
