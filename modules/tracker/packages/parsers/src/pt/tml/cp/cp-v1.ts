@@ -6,7 +6,7 @@ import { type RawVehicleEventPtTmlCpV1, type SimplifiedVehicleEvent, SimplifiedV
 /* * */
 
 export function parseRawVehicleEventPtTmlCpV1(doc: RawVehicleEventPtTmlCpV1): null | SimplifiedVehicleEvent {
-	const parsedSimplifiedVehicleEvent: SimplifiedVehicleEvent = {
+	return SimplifiedVehicleEventSchema.parse({
 		_id: doc._id,
 		agency_id: doc.agency_id,
 		bearing: doc.payload.vehicle.position.bearing ?? null,
@@ -24,6 +24,5 @@ export function parseRawVehicleEventPtTmlCpV1(doc: RawVehicleEventPtTmlCpV1): nu
 		stop_id: null,
 		trip_id: doc.payload.vehicle.trip.trip_id,
 		vehicle_id: doc.payload.vehicle.vehicle.id,
-	};
-	return SimplifiedVehicleEventSchema.parse(parsedSimplifiedVehicleEvent);
+	});
 }

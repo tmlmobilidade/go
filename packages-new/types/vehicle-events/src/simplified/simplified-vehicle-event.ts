@@ -1,6 +1,6 @@
 /* * */
 
-import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { LatitudeSchema, LongitudeSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -15,14 +15,8 @@ export const SimplifiedVehicleEventSchema = z.object({
 	driver_id: z.string().nullable().default(null),
 	extra_trip_id: z.string().nullable().default(null),
 	geohash: z.string().nullable().default(null),
-	latitude: z.number()
-		.min(-90)
-		.max(90)
-		.refine(value => Number(value.toFixed(6)) === value),
-	longitude: z.number()
-		.min(-180)
-		.max(180)
-		.refine(value => Number(value.toFixed(6)) === value),
+	latitude: LatitudeSchema,
+	longitude: LongitudeSchema,
 	odometer: z.number().nullable().default(null),
 	operational_date: OperationalDateIntSchema,
 	received_at: UnixTimestampSchema,

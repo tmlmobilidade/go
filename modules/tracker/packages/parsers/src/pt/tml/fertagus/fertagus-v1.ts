@@ -6,7 +6,7 @@ import { type RawVehicleEventPtTmlFertagusV1, type SimplifiedVehicleEvent, Simpl
 /* * */
 
 export function parseRawVehicleEventPtTmlFertagusV1(doc: RawVehicleEventPtTmlFertagusV1): null | SimplifiedVehicleEvent {
-	const parsedSimplifiedVehicleEvent: SimplifiedVehicleEvent = {
+	return SimplifiedVehicleEventSchema.parse({
 		_id: doc._id,
 		agency_id: doc.agency_id,
 		bearing: null,
@@ -24,6 +24,5 @@ export function parseRawVehicleEventPtTmlFertagusV1(doc: RawVehicleEventPtTmlFer
 		stop_id: null,
 		trip_id: doc.payload.vehicle.trip.trip_id,
 		vehicle_id: doc.payload.vehicle.vehicle.id,
-	};
-	return SimplifiedVehicleEventSchema.parse(parsedSimplifiedVehicleEvent);
+	});
 }

@@ -28,24 +28,29 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
  * @returns A promise that resolves when the Vehicle Event document has been processed.
  */
 export async function processVehicleEvent(databaseOperation: ChangeStreamInsertDocument<RawVehicleEvent>) {
-	//
+	try {
+		//
+
+		//
+		// Extract the full document from the database operation and transform it
+		// into a simplified vehicle event document using the appropriate parser based on the version field.
+
+		const parser = PARSER_MAP[databaseOperation.fullDocument.version];
+		const newSimplifiedVehicleEventDocument = parser(databaseOperation.fullDocument);
+
+		if (!newSimplifiedVehicleEventDocument) {
+			Logger.error({ message: `Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}` });
+			return;
+		}
+
+		//
+		// Write the new vehicle event document to the SimplifiedVehicleEvents collection
+
+		await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });
 
 	//
-	// Extract the full document from the database operation and transform it
-	// into a simplified vehicle event document using the appropriate parser based on the version field.
-
-	const parser = PARSER_MAP[databaseOperation.fullDocument.version];
-	const newSimplifiedVehicleEventDocument = parser(databaseOperation.fullDocument);
-
-	if (!newSimplifiedVehicleEventDocument) {
-		Logger.error({ message: `Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}` });
-		return;
+	} catch (error) {
+		console.error(JSON.stringify(databaseOperation.fullDocument, null, 2));
+		Logger.error({ message: `Error processing Vehicle Event document: ${error}` });
 	}
-
-	//
-	// Write the new vehicle event document to the SimplifiedVehicleEvents collection
-
-	await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });
-
-	//
 };
