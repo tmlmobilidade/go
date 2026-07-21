@@ -6,7 +6,7 @@ import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { UpdateRideSchema } from '@tmlmobilidade/types';
+import { getCurrentEnvironment, UpdateRideSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
@@ -37,7 +37,8 @@ export async function validateRides() {
 
 		const fetchCoordinatorTimer = new Timer();
 
-		const rideIdsBatchResponse = await fetch(process.env.COORDINATOR_URL + '/rides');
+		const currentEnvironment = getCurrentEnvironment();
+		const rideIdsBatchResponse = await fetch(`http://${currentEnvironment}-controller-coordinator.${currentEnvironment}-controller.svc.cluster.local/rides`);
 		const rideIdsBatch = await rideIdsBatchResponse.json() as string[];
 
 		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
