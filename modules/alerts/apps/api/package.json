@@ -26,6 +26,7 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",

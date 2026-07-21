@@ -3,9 +3,10 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { describeAlert, type DescribeAlertProps, type DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { alerts, files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { alerts } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type CreateAlertDto, CreateAlertSchema, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { type Alert, type Attachment, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -121,7 +122,7 @@ export class AlertsController {
 	 */
 	q;
 
-	static async getImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
+	static async getImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
 		// Ensure the alert exists
 		const foundAlert = await alerts.findById(request.params.id);
 		if (!foundAlert) {
@@ -135,7 +136,7 @@ export class AlertsController {
 		}
 
 		// Retrieve and send the image file
-		const foundImageFile = await files.findById(foundAlert.file_id);
+		const foundImageFile = await storageProvider.findById(foundAlert.file_id);
 		if (!foundImageFile) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Image file not found');
 		}
@@ -219,7 +220,7 @@ export class AlertsController {
 	 * @param request The request object containing the alert ID in the params and the image file in the body.
 	 * @param reply The reply object.
 	 */
-	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
+	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
 		// Retrieve the alert from the database
 		const foundAlert = await alerts.findById(request.params.id);
 		if (!foundAlert) {
@@ -235,7 +236,7 @@ export class AlertsController {
 		const buffer = await fileData.toBuffer();
 		const size = buffer.buffer.byteLength;
 		// Upload the file to the database
-		const fileUploadResult = await files.upload(buffer, {
+		const fileUploadResult = await storageProvider.upload(buffer, {
 			created_by: request.me._id,
 			name: fileData.filename,
 			resource_id: foundAlert._id,
@@ -252,7 +253,7 @@ export class AlertsController {
 
 		// Delete the old image if it exists
 		if (foundAlert.file_id) {
-			await files.deleteById(foundAlert.file_id);
+			await storageProvider.delete(foundAlert.file_id);
 		}
 		// Update the alert with the new file ID
 		await alerts.updateById(foundAlert._id, { file_id: fileUploadResult._id.toString() });
