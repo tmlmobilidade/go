@@ -1,4 +1,3 @@
-export * from '@/interfaces/file-exports/index.js';
 export * from '@/interfaces/locations/index.js';
 export * from '@/interfaces/metrics/index.js';
 export * from '@/interfaces/notifications/index.js';
