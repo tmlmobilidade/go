@@ -89,7 +89,7 @@ jobs:
         with:
           script: |
             const prNumber = Number(process.env.PR_NUMBER);
-            const url = `https://pr-${pr_Number}.go-stg.tmlmobilidade.pt/`;
+            const url = `https://pr-${prNumber}.go-stg.tmlmobilidade.pt/`;
             const ready = process.env.READY === 'true';
             const code = process.env.HTTP_CODE || '000';
             const timeout = process.env.TIMEOUT_MINUTES || '15';
@@ -109,7 +109,8 @@ jobs:
               ? [
                   '### Preview Environment',
                   '',
-                  `https://pr-${prNumber}.go-stg.tmlmobilidade.pt/`,
+                  url,
+                  '',
                   tagline,
                 ].join('\n')
               : [
