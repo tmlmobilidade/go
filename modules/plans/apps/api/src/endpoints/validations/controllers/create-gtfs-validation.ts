@@ -33,6 +33,7 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 	if (!hasPermissionCreateValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: create validation');
 
 	const validationData: CreateGtfsValidationDto = {
+		agency_id: requestData.fields.agency_id['value'] as string,
 		created_by: request.me._id,
 		file_id: '',
 		gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,

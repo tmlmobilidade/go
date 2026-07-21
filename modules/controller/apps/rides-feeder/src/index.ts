@@ -52,11 +52,21 @@ async function main() {
 				Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.gtfs_agency.agency_id} - Plan ${currentPlan._id}`);
 
 				//
-				// Only process Plans for specific agency IDs
+				// Only process Plans for supported agency IDs
 
-				if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44', 'crtm-aisa', 'crtm-laveloz'].includes(currentPlan.gtfs_agency?.agency_id)) {
-					Logger.error({ message: `Skip processing: gtfs_agency is '${currentPlan.gtfs_agency?.agency_id}'. Only '1', '2', '4', '8', '15', '16', '21', '41', '42', '43', or '44' are allowed.` });
+				if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44', 'crtm-aisa', 'crtm-laveloz', 'ut1', 'ut2', 'ut3', 'ut4', 'ut5'].includes(currentPlan.gtfs_agency?.agency_id)) {
+					Logger.error({ message: `Skip processing: gtfs_agency is '${currentPlan.gtfs_agency?.agency_id}'. only '1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44', 'crtm-aisa', 'crtm-laveloz', 'ut1', 'ut2', 'ut3', 'ut4', 'ut5' are allowed.` });
 					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'skipped', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+					continue;
+				}
+
+				//
+				// Only process Plans that are waiting or resuming processing
+
+				const controllerStatus = currentPlan.apps?.controller?.status;
+
+				if (controllerStatus !== 'waiting' && controllerStatus !== 'processing') {
+					Logger.error({ message: `Skip processing: status_controller is '${controllerStatus}'.` });
 					continue;
 				}
 
@@ -66,14 +76,6 @@ async function main() {
 
 				if (currentPlan.hash === currentPlan.apps?.controller?.last_hash) {
 					Logger.error({ message: `Skip processing: Hash is the same as last_hash.` });
-					continue;
-				}
-
-				//
-				// Skip if its status is 'error'
-
-				if (currentPlan.apps?.controller?.status === 'error') {
-					Logger.error({ message: `Skip processing: status_controller is 'error'.` });
 					continue;
 				}
 
