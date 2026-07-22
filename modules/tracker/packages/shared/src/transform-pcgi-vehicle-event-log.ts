@@ -6,6 +6,15 @@ import crypto from 'node:crypto';
 
 /* * */
 
+const AGENCY_ID_MAP = [
+	{ agency_code: '41', agency_id: 'LA77N' },
+	{ agency_code: '42', agency_id: 'BNA17' },
+	{ agency_code: '43', agency_id: 'YA15B' },
+	{ agency_code: '44', agency_id: 'A2L1N' },
+] as const;
+
+/* * */
+
 export function transformPcgiVehicleEventLog(pcgiVehicleEvent): RawVehicleEvent[] {
 	//
 
@@ -24,13 +33,20 @@ export function transformPcgiVehicleEventLog(pcgiVehicleEvent): RawVehicleEvent[
 		if (!entity.vehicle) continue;
 
 		//
+		// Map the agency code to the agency id
+
+		const matchingAgency = AGENCY_ID_MAP.find(agency => agency.agency_code === String(entity.vehicle.agencyId));
+
+		if (!matchingAgency) continue;
+
+		//
 		// Hash the relevant fields of the vehicle event
 		// to create a unique identifier for the event.
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database.
 
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlCmetV1Log> = {
-			agency_id: entity.vehicle.agencyId,
+			agency_id: matchingAgency.agency_id,
 			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
 			entity_id: entity._id,
 			payload: {
