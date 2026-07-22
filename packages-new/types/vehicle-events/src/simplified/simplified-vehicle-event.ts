@@ -22,7 +22,7 @@ export const SimplifiedVehicleEventSchema = z.object({
 	received_at: UnixTimestampSchema,
 	speed: z.number().nullable().default(null),
 	stop_id: z.string().nullable().default(null),
-	trip_id: z.string().nullable().default(null),
+	trip_id: z.string(),
 	vehicle_id: z.string(),
 });
 
