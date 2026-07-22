@@ -1,6 +1,6 @@
 # # #
 
-FROM node:alpine AS base
+FROM node:lts-slim AS base
 
 
 # # #
