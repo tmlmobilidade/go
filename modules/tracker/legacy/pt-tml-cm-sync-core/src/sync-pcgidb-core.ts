@@ -90,7 +90,7 @@ export async function syncPcgidbCoreVehicleEvents(timeChunk: PerformInTimeChunks
 			$gte: chunkStartDate.unix_timestamp,
 			$lte: chunkEndDate.unix_timestamp,
 		},
-		version: 'pt-tml-cmet-v1-core',
+		version: 'pt-tml-cm-v1',
 	});
 
 	if (sourceDbCount === destinationDbCount) {
