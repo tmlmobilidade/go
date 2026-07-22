@@ -17,6 +17,18 @@ export interface PDFStatus {
 
 /* * */
 
+function getRequiredEnv(name: string): string {
+	const value = process.env[name];
+
+	if (!value) {
+		throw new Error(`Missing required environment variable: ${name}`);
+	}
+
+	return value;
+}
+
+/* * */
+
 export class PostersController {
 	private accessToken: null | string = null;
 	private tokenExpiresAt = 0;
@@ -38,13 +50,13 @@ export class PostersController {
 		// Request a new token from the API.
 
 		const body = new URLSearchParams({
-			client_id: process.env.CLIENT_ID,
-			client_secret: process.env.CLIENT_SECRET,
+			client_id: getRequiredEnv('CLIENT_ID'),
+			client_secret: getRequiredEnv('CLIENT_SECRET'),
 			grant_type: 'client_credentials',
-			scope: process.env.ZPHERES_API_SCOPE,
+			scope: getRequiredEnv('ZPHERES_API_SCOPE'),
 		});
 
-		const response = await fetch(process.env.ZPHERES_API_TOKEN_URL, {
+		const response = await fetch(getRequiredEnv('ZPHERES_API_TOKEN_URL'), {
 			body,
 			method: 'POST',
 		});
@@ -96,12 +108,12 @@ export class PostersController {
 		body.append('gtfs.zip', new Blob([new Uint8Array(gtfsZip)], { type: 'application/zip' }), path.basename(gtfsZipPath));
 		body.append('parameters.json', new Blob([parameters], { type: 'application/json' }), 'parameters.json');
 
-		const response = await fetch(process.env.ZPHERES_GENERATE_SVG_URL, {
+		const response = await fetch(getRequiredEnv('ZPHERES_GENERATE_SVG_URL'), {
 			body,
 			headers: {
 				'Authorization': `Bearer ${accessToken}`,
-				'ob2zphrs-customer': process.env.OB_CUSTOMER,
-				'ob2zphrs-user': process.env.OB_USER,
+				'ob2zphrs-customer': getRequiredEnv('OB_CUSTOMER'),
+				'ob2zphrs-user': getRequiredEnv('OB_USER'),
 			},
 			method: 'POST',
 		});
@@ -130,11 +142,11 @@ export class PostersController {
 		//
 
 		const accessToken = await this.generateToken();
-		const response = await fetch(process.env.ZPHERES_SVG_STATUS_URL.replace(':id', id), {
+		const response = await fetch(getRequiredEnv('ZPHERES_SVG_STATUS_URL').replace(':id', id), {
 			headers: {
 				'Authorization': `Bearer ${accessToken}`,
-				'ob2zphrs-customer': process.env.OB_CUSTOMER,
-				'ob2zphrs-user': process.env.OB_USER,
+				'ob2zphrs-customer': getRequiredEnv('OB_CUSTOMER'),
+				'ob2zphrs-user': getRequiredEnv('OB_USER'),
 			},
 		});
 
