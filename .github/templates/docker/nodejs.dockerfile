@@ -59,7 +59,7 @@ RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/
 
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
-RUN npm prune --omit-dev
+RUN npm prune
 
 RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
 RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules /app/packages-new
