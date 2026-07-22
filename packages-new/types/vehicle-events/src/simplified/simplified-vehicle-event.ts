@@ -9,7 +9,7 @@ import { z } from 'zod';
 export const SimplifiedVehicleEventSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
-	bearing: z.number().nullable().default(null),
+	bearing: z.number().transform(val => val ? Math.round(val) : null).nullable().default(null),
 	created_at: UnixTimestampSchema,
 	current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']).nullable().default(null),
 	driver_id: z.string().nullable().default(null),
@@ -17,7 +17,7 @@ export const SimplifiedVehicleEventSchema = z.object({
 	geohash: z.string().nullable().default(null),
 	latitude: LatitudeSchema,
 	longitude: LongitudeSchema,
-	odometer: z.number().nullable().default(null),
+	odometer: z.number().transform(val => val ? Math.round(val) : null).nullable().default(null),
 	operational_date: OperationalDateIntSchema,
 	received_at: UnixTimestampSchema,
 	speed: z.number().transform(val => val ? Math.round(val) : null).nullable().default(null),
