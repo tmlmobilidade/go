@@ -46,7 +46,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 7 | Split route results and extract pure filtering/sorting | complete | 1 | Pure mode filtering, last-mode protection, and sorting are extracted; results orchestration, filter toggles, mode/sort/time panels, and itinerary cards now have focused components under `list`. |
 | 8 | Split route input and OmniSearch presentation | complete | 5 | Added one shared debounced MOTIS geocode hook while keeping route stop/coordinate composition and OmniSearch grouping/scoring feature-specific; split focused input, location-result, travel-time, and OmniSearch presentation components. |
 | 9 | Split `route-planner-motis.ts` by responsibility | complete | 1, 3, 5 | Moved types, plan request/response helpers, geocoding, formatting, modes, geometry, and progress into focused modules; retained `route-planner-motis.ts` as a compatibility barrel for existing consumers. |
-| 10 | Extract the MOTIS API client and pure transitions from `RoutePlanner.context.tsx` | pending | 9 | Preserve the current context facade. |
+| 10 | Extract the MOTIS API client and pure transitions from `RoutePlanner.context.tsx` | complete | 9 | Moved context-facing types, the MOTIS plan request, plan-start state, and travel-time-mode state into focused modules with transition coverage; preserved the complete context facade and reduced the provider file from 420 to 367 lines. |
 | 11 | Extract BaseMap focused-entity and derived-data hooks | in progress | 2, 3 | Pure alert and vehicle map-data composition is extracted with filtering-order coverage. Focused entities and remaining derived data still need extraction. |
 | 12 | Extract BaseMap camera synchronization, interactions, and layer composition | pending | 11 | Separate commits for effects, interactions, and layers. |
 | 13 | Introduce singleton user-location ownership | pending | 3 | Verify mobile permission and orientation flows manually. |
@@ -68,6 +68,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 7, 17 | `refactor(hub): split route results components` | Move route results into `list` and separate filtering, sorting, time controls, and itinerary cards into focused components. |
 | 8, 17 | `refactor(hub): split route search components` | Move route input into `input`, separate OmniSearch presentation, and share low-level debounced MOTIS geocoding without merging feature-specific result composition. |
 | 9 | `refactor(hub): split route planner utilities` | Split the MOTIS catch-all into focused modules while preserving its complete public API through a compatibility barrel. |
+| 10 | `refactor(hub): extract route planner services` | Move the MOTIS request, context contract, and tested plan/time transitions out of the provider without changing its public facade. |
 
 ## Verification
 

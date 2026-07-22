@@ -1,6 +1,7 @@
 import { getMotisPlaceParam } from '@/utils/motis-geocode';
 import { isMotisWalkingLeg } from '@/utils/route-planner-modes';
 import { type MotisItinerary, type MotisPlanIntermediateStop, type MotisPlanLeg, type MotisPlanPlace, type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerTravelTime } from '@/utils/route-planner.types';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 
 /* * */
 
@@ -24,6 +25,16 @@ export function buildMotisPlanParams(origin: RoutePlannerLocation, destination: 
 	}
 
 	return params;
+}
+
+export async function fetchMotisPlan(origin: RoutePlannerLocation, destination: RoutePlannerLocation, travelTime: RoutePlannerTravelTime) {
+	const params = buildMotisPlanParams(origin, destination, travelTime);
+	const response = await fetch(`${API_ROUTES.hub.MOTIS_PLAN}?${params.toString()}`);
+
+	if (!response.ok) throw new Error(`MOTIS returned HTTP ${response.status}`);
+
+	const payload: { data: MotisPlanResponse } = await response.json();
+	return payload.data;
 }
 
 export function getMotisItineraries(plan: MotisPlanResponse | null) {

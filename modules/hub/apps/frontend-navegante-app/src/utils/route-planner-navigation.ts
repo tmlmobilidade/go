@@ -1,4 +1,4 @@
-import { type RoutePlannerViewMode } from '@/components/routes/RoutePlanner.context';
+import { type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/utils/route-planner.types';
 
 /* * */
 
@@ -18,6 +18,12 @@ export interface RoutePlannerStartTripTransition {
 	isNavigating: true
 	selectedItineraryIndex: number
 	viewMode: 'itinerary-detail'
+}
+
+export interface RoutePlannerPlanStartTransition {
+	isNavigating: false
+	selectedItineraryIndex: null | number
+	viewMode: RoutePlannerPlanViewMode
 }
 
 interface GetRoutePlannerCloseActionOptions {
@@ -42,6 +48,21 @@ export function getRoutePlannerStartTripTransition(index: number): RoutePlannerS
 		isNavigating: true,
 		selectedItineraryIndex: index,
 		viewMode: 'itinerary-detail',
+	};
+}
+
+export function getRoutePlannerPlanStartTransition(viewMode: RoutePlannerPlanViewMode): RoutePlannerPlanStartTransition {
+	return {
+		isNavigating: false,
+		selectedItineraryIndex: viewMode === 'place-detail' ? null : 0,
+		viewMode,
+	};
+}
+
+export function getRoutePlannerTravelTimeModeTransition(current: RoutePlannerTravelTime, mode: RoutePlannerTravelTimeMode, currentDate = new Date()): RoutePlannerTravelTime {
+	return {
+		date: mode === 'now' || current.mode === 'now' ? currentDate : current.date,
+		mode,
 	};
 }
 

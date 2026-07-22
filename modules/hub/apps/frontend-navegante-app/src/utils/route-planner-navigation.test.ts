@@ -1,4 +1,4 @@
-import { getRoutePlannerCloseAction, getRoutePlannerItineraryDetailInitialSnap, getRoutePlannerMapFitFeatures, getRoutePlannerStartTripTransition } from '@/utils/route-planner-navigation';
+import { getRoutePlannerCloseAction, getRoutePlannerItineraryDetailInitialSnap, getRoutePlannerMapFitFeatures, getRoutePlannerPlanStartTransition, getRoutePlannerStartTripTransition, getRoutePlannerTravelTimeModeTransition } from '@/utils/route-planner-navigation';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 
@@ -64,6 +64,41 @@ describe('getRoutePlannerStartTripTransition', () => {
 			isNavigating: true,
 			selectedItineraryIndex: 2,
 			viewMode: 'itinerary-detail',
+		});
+	});
+});
+
+describe('getRoutePlannerPlanStartTransition', () => {
+	it('opens the requested result view and selects its expected initial itinerary', () => {
+		assert.deepEqual(getRoutePlannerPlanStartTransition('results'), {
+			isNavigating: false,
+			selectedItineraryIndex: 0,
+			viewMode: 'results',
+		});
+		assert.deepEqual(getRoutePlannerPlanStartTransition('place-detail'), {
+			isNavigating: false,
+			selectedItineraryIndex: null,
+			viewMode: 'place-detail',
+		});
+	});
+});
+
+describe('getRoutePlannerTravelTimeModeTransition', () => {
+	it('refreshes the date when entering or leaving now mode and otherwise preserves it', () => {
+		const storedDate = new Date('2026-07-20T08:00:00.000Z');
+		const currentDate = new Date('2026-07-22T10:00:00.000Z');
+
+		assert.deepEqual(getRoutePlannerTravelTimeModeTransition({ date: storedDate, mode: 'departure' }, 'arrival', currentDate), {
+			date: storedDate,
+			mode: 'arrival',
+		});
+		assert.deepEqual(getRoutePlannerTravelTimeModeTransition({ date: storedDate, mode: 'now' }, 'departure', currentDate), {
+			date: currentDate,
+			mode: 'departure',
+		});
+		assert.deepEqual(getRoutePlannerTravelTimeModeTransition({ date: storedDate, mode: 'departure' }, 'now', currentDate), {
+			date: currentDate,
+			mode: 'now',
 		});
 	});
 });

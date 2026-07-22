@@ -3,65 +3,19 @@
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useUserLocation } from '@/components/map/use-user-location';
+import { type RoutePlannerContextState } from '@/components/routes/route-planner-context.types';
 import { clearLastOmniSearchQuery } from '@/components/search/omni-search-query';
+import { fetchMotisPlan, getMotisItineraries } from '@/utils/motis-plan-api';
+import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner-geometry';
 import { createRoutePlannerCurrentLocation } from '@/utils/route-planner-locations';
-import { buildMotisPlanParams, buildRoutePlannerItineraryMapData, getMotisItineraries, type MotisItinerary, type MotisPlanResponse, type RoutePlannerItineraryMapData, type RoutePlannerLocation, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
-import { getRoutePlannerStartTripTransition } from '@/utils/route-planner-navigation';
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { getRoutePlannerPlanStartTransition, getRoutePlannerStartTripTransition, getRoutePlannerTravelTimeModeTransition } from '@/utils/route-planner-navigation';
+import { type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/utils/route-planner.types';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export type RoutePlannerLocationSearchTarget = 'destination' | 'origin';
-export type RoutePlannerViewMode = 'destination-search' | 'full-input' | 'itinerary-detail' | 'place-detail' | 'results';
-
-interface RoutePlannerContextState {
-	actions: {
-		clearRoute: () => void
-		dismissTripSheets: () => void
-		endActiveTrip: () => void
-		openActiveTripDetail: () => void
-		openDestinationSearch: () => void
-		openDirectionsTo: (location: RoutePlannerLocation) => Promise<void>
-		openFullInput: () => void
-		openLocationSearch: (target: RoutePlannerLocationSearchTarget) => void
-		openPlace: (location: RoutePlannerLocation) => Promise<void>
-		openPlaceDetail: () => void
-		openResults: () => void
-		planRoute: (nextOrigin?: null | RoutePlannerLocation, nextDestination?: null | RoutePlannerLocation, nextTravelTime?: RoutePlannerTravelTime, nextViewMode?: 'place-detail' | 'results') => Promise<void>
-		selectDestination: (location: RoutePlannerLocation) => Promise<void>
-		selectItinerary: (index: number) => void
-		selectOrigin: (location: RoutePlannerLocation) => Promise<void>
-		setDestination: (location: null | RoutePlannerLocation) => void
-		setOrigin: (location: null | RoutePlannerLocation) => void
-		setTravelTime: (date: Date) => void
-		setTravelTimeMode: (mode: RoutePlannerTravelTimeMode) => void
-		startItinerary: (index: number) => void
-		swapLocations: () => void
-	}
-	data: {
-		destination: null | RoutePlannerLocation
-		itineraries: MotisItinerary[]
-		location_search_target: RoutePlannerLocationSearchTarget
-		origin: null | RoutePlannerLocation
-		plan: MotisPlanResponse | null
-		plan_error: null | string
-		route_map_data: RoutePlannerItineraryMapData
-		selected_itinerary: MotisItinerary | null
-		selected_itinerary_index: null | number
-		travel_time: RoutePlannerTravelTime
-		view_mode: RoutePlannerViewMode
-		was_opened_from_place: boolean
-	}
-	flags: {
-		has_plan_error: boolean
-		is_navigating: boolean
-		is_planning: boolean
-	}
-}
-
-/* * */
+export type { RoutePlannerLocationSearchTarget, RoutePlannerViewMode } from '@/utils/route-planner.types';
 
 const RoutePlannerContext = createContext<RoutePlannerContextState | undefined>(undefined);
 
@@ -235,7 +189,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		setViewMode('place-detail');
 	};
 
-	const planRoute = async (nextOrigin?: null | RoutePlannerLocation, nextDestination?: null | RoutePlannerLocation, nextTravelTime?: RoutePlannerTravelTime, nextViewMode: 'place-detail' | 'results' = 'results') => {
+	const planRoute = async (nextOrigin?: null | RoutePlannerLocation, nextDestination?: null | RoutePlannerLocation, nextTravelTime?: RoutePlannerTravelTime, nextViewMode: RoutePlannerPlanViewMode = 'results') => {
 		const requestOrigin = nextOrigin === undefined ? origin : nextOrigin;
 		const requestDestination = nextDestination === undefined ? destination : nextDestination;
 		const requestTravelTime = nextTravelTime ?? travelTime;
@@ -245,21 +199,17 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 			return;
 		}
 
+		const transition = getRoutePlannerPlanStartTransition(nextViewMode);
+
 		setIsPlanning(true);
 		setPlan(null);
 		setPlanError(null);
-		setIsNavigating(false);
-		setSelectedItineraryIndex(nextViewMode === 'place-detail' ? null : 0);
-		setViewMode(nextViewMode);
+		setIsNavigating(transition.isNavigating);
+		setSelectedItineraryIndex(transition.selectedItineraryIndex);
+		setViewMode(transition.viewMode);
 
 		try {
-			const params = buildMotisPlanParams(requestOrigin, requestDestination, requestTravelTime);
-			const response = await fetch(`${API_ROUTES.hub.MOTIS_PLAN}?${params.toString()}`);
-
-			if (!response.ok) throw new Error(`MOTIS returned HTTP ${response.status}`);
-
-			const payload: { data: MotisPlanResponse } = await response.json();
-			const data = payload.data;
+			const data = await fetchMotisPlan(requestOrigin, requestDestination, requestTravelTime);
 			const nextItineraries = getMotisItineraries(data);
 
 			setPlan(data);
@@ -341,10 +291,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	};
 
 	const setTravelTimeMode = (mode: RoutePlannerTravelTimeMode) => {
-		setTravelTimeState(current => ({
-			date: mode === 'now' || current.mode === 'now' ? new Date() : current.date,
-			mode,
-		}));
+		setTravelTimeState(current => getRoutePlannerTravelTimeModeTransition(current, mode));
 		setPlan(null);
 		setPlanError(null);
 		setSelectedItineraryIndex(0);
