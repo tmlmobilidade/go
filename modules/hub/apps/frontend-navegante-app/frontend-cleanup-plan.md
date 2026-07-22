@@ -39,7 +39,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 |---:|---|---|---|---|
 | 1 | Characterize route-planner modes, sorting, travel-time parameters, location mapping, and navigation transitions | complete | — | Covered mode normalization/filtering, last-mode protection, all sort modes, now/departure/arrival parameters, geocode/stop/coordinate mapping, and existing pure navigation transitions. |
 | 2 | Characterize map operator normalization and alert/vehicle filtering order | complete | — | Covered CM grouping, known/unknown agency visibility, itinerary selection, focused overrides, line-pattern overrides, and final operator filtering. |
-| 3 | Characterize active-leg selection, walking progress, geometry, and first-leg fitting | pending | — | — |
+| 3 | Characterize active-leg selection, walking progress, geometry, and first-leg fitting | complete | — | Covered nearest-path selection, no-position and empty-itinerary fallbacks, walking distance/time, decoded and endpoint-fallback geometry, and first-leg fitting. |
 | 4 | Extract shared route presentation primitives | complete | 1 | Added `RoutePlannerModeIcon`, `MotisLegModeKind`, pure mode normalization, and `useLinesByShortName`; migrated detail, leg strip, and live bar. |
 | 5 | Extract shared search and location utilities | in progress | 1 | Hub-stop location factory is shared by route input and OmniSearch. Text normalization and time-input formatting remain. |
 | 6 | Split itinerary detail and leg-strip components | pending | 4 | One named component per folder. |
@@ -62,6 +62,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 1, 4, 17 | `refactor(hub): extract shared route presentation primitives` | Characterize mode normalization and extract shared route presentation primitives. |
 | 1, 5, 7 | `test(hub): characterize route planning behavior` | Cover route result selection, request parameters, and location mapping through pure seams. |
 | 2, 11 | `test(hub): characterize map filtering order` | Cover operator normalization and alert/vehicle filter precedence through pure seams. |
+| 3 | `test(hub): characterize active route progress` | Cover active-leg selection, walking progress, geometry fallback, and fitting through a pure progress seam. |
 
 ## Verification
 
