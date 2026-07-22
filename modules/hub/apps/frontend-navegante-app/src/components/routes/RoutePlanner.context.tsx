@@ -3,8 +3,7 @@
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
-import { type RoutePlannerContextState } from '@/types/route-planner/context';
-import { type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/types/route-planner/models';
+import { type MotisItinerary, type MotisPlanResponse, type RoutePlannerItineraryMapData, type RoutePlannerLocation, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/types/route-planner/models';
 import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner/itinerary/geometry';
 import { createRoutePlannerCurrentLocation } from '@/utils/route-planner/planning/locations';
 import { fetchMotisPlan, getMotisItineraries } from '@/utils/route-planner/planning/motis-plan-api';
@@ -13,6 +12,55 @@ import { clearLastSearchQuery } from '@/utils/search/search-query';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWRMutation from 'swr/mutation';
+
+/* * */
+
+export type { RoutePlannerLocationSearchTarget, RoutePlannerViewMode } from '@/types/route-planner/models';
+
+interface RoutePlannerContextState {
+	actions: {
+		clearRoute: () => void
+		dismissTripSheets: () => void
+		endActiveTrip: () => void
+		openActiveTripDetail: () => void
+		openDestinationSearch: () => void
+		openDirectionsTo: (location: RoutePlannerLocation) => Promise<void>
+		openFullInput: () => void
+		openLocationSearch: (target: RoutePlannerLocationSearchTarget) => void
+		openPlace: (location: RoutePlannerLocation) => Promise<void>
+		openPlaceDetail: () => void
+		openResults: () => void
+		planRoute: (nextOrigin?: null | RoutePlannerLocation, nextDestination?: null | RoutePlannerLocation, nextTravelTime?: RoutePlannerTravelTime, nextViewMode?: RoutePlannerPlanViewMode) => Promise<void>
+		selectDestination: (location: RoutePlannerLocation) => Promise<void>
+		selectItinerary: (index: number) => void
+		selectOrigin: (location: RoutePlannerLocation) => Promise<void>
+		setDestination: (location: null | RoutePlannerLocation) => void
+		setOrigin: (location: null | RoutePlannerLocation) => void
+		setTravelTime: (date: Date) => void
+		setTravelTimeMode: (mode: RoutePlannerTravelTimeMode) => void
+		startItinerary: (index: number) => void
+		swapLocations: () => void
+	}
+	data: {
+		destination: null | RoutePlannerLocation
+		itineraries: MotisItinerary[]
+		location_search_target: RoutePlannerLocationSearchTarget
+		origin: null | RoutePlannerLocation
+		plan: MotisPlanResponse | null
+		plan_error: null | string
+		route_map_data: RoutePlannerItineraryMapData
+		selected_itinerary: MotisItinerary | null
+		selected_itinerary_index: null | number
+		travel_time: RoutePlannerTravelTime
+		view_mode: RoutePlannerViewMode
+		was_opened_from_place: boolean
+	}
+	flags: {
+		has_plan_error: boolean
+		is_navigating: boolean
+		is_planning: boolean
+	}
+}
 
 /* * */
 
@@ -31,8 +79,6 @@ async function fetchRoutePlan(_key: string, { arg }: { arg: RoutePlanRequest }) 
 }
 
 /* * */
-
-export type { RoutePlannerLocationSearchTarget, RoutePlannerViewMode } from '@/types/route-planner/models';
 
 const RoutePlannerContext = createContext<RoutePlannerContextState | undefined>(undefined);
 
@@ -69,11 +115,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	const [locationSearchTarget, setLocationSearchTarget] = useState<RoutePlannerLocationSearchTarget>('destination');
 	const [wasOpenedFromPlace, setWasOpenedFromPlace] = useState(false);
 	const [isNavigating, setIsNavigating] = useState(false);
-	const {
-		isMutating: isPlanning,
-		reset: resetPlanRequest,
-		trigger: triggerPlanRequest,
-	} = useSWRMutation<MotisPlanResponse, Error, string, RoutePlanRequest>(ROUTE_PLAN_KEY, fetchRoutePlan, { throwOnError: false });
+	const { isMutating: isPlanning, reset: resetPlanRequest, trigger: triggerPlanRequest } = useSWRMutation<MotisPlanResponse, Error, string, RoutePlanRequest>(ROUTE_PLAN_KEY, fetchRoutePlan, { throwOnError: false });
 
 	//
 	// B. Transform data
