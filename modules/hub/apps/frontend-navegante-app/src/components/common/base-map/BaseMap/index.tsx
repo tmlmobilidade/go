@@ -1,5 +1,6 @@
 'use client';
 
+import { useBaseMapCameraSync } from '@/components/common/base-map/useBaseMapCameraSync';
 import { useBaseMapDerivedData } from '@/components/common/base-map/useBaseMapDerivedData';
 import { useBaseMapFocusedEntities } from '@/components/common/base-map/useBaseMapFocusedEntities';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
@@ -18,9 +19,8 @@ import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
 import { useUserLocation } from '@/components/map/use-user-location';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { type MapLongPressLocation, useMapLongPress } from '@/hooks/useMapLongPress';
-import { centerMap } from '@/utils/map.utils';
 import { type MapLayerMouseEvent, useMap, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -44,11 +44,10 @@ export function BaseMap() {
 
 	const { data: { activeBaseMapOverlays, excludedBaseMapOperatorIds } } = useMapContext();
 	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
-	const { activeBottomSheet, activeBottomSheetSnap, setActiveBottomSheet } = useBottomSheet();
-	const { collapseForMapInteraction, mapPadding, shouldFitMap } = useMapBottomSheet();
+	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
+	const { collapseForMapInteraction } = useMapBottomSheet();
 
 	const { 'base-map': baseMap } = useMap();
-	const lastRouteMapFitKeyRef = useRef<null | string>(null);
 	const [selectedMapLocation, setSelectedMapLocation] = useState<MapLongPressLocation | null>(null);
 	const mapLongPress = useMapLongPress(setSelectedMapLocation);
 
@@ -77,77 +76,12 @@ export function BaseMap() {
 		focusedVehicleId,
 	});
 
-	useEffect(() => {
-		if (!baseMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;
-
-		const focusedFeature = operatorFilteredAlertsMapData.features.find(
-			feature => feature.geometry?.type === 'Point',
-		);
-
-		if (!focusedFeature || focusedFeature.geometry?.type !== 'Point') return;
-
-		// moveMap(viewportMap, focusedFeature.geometry.coordinates);
-	}, [activeBaseMapOverlays, baseMap, focusedAlertId, operatorFilteredAlertsMapData.features]);
-
-	useEffect(() => {
-		if (!baseMap || !focusedLineShape) return;
-		if (!shouldFitMap) return;
-		centerMap(baseMap, [focusedLineShape], {
-			padding: mapPadding,
-		});
-	}, [activeBottomSheetSnap.snapPoint, baseMap, focusedLineShape, mapPadding, shouldFitMap]);
-
-	useEffect(() => {
-		if (!baseMap || !focusedStop || !shouldFitMap) return;
-		baseMap.flyTo({
-			center: [focusedStop.longitude, focusedStop.latitude],
-			duration: 650,
-			offset: [0, Math.round((mapPadding.top - mapPadding.bottom) / 2)],
-			zoom: 15.5,
-		});
-	}, [activeBottomSheetSnap.snapPoint, baseMap, focusedStop, mapPadding, shouldFitMap]);
-
-	useEffect(() => {
-		if (!baseMap || !shape?.geojson) return;
-
-		// centerMap(viewportMap, [shape.geojson], {
-		// 	padding: { bottom: 320, left: 80, right: 80, top: 80 },
-		// });
-	}, [baseMap, shape?.geojson]);
-
-	useEffect(() => {
-		if (!baseMap || !Number.isFinite(placeDestination?.lon) || !Number.isFinite(placeDestination?.lat)) return;
-		if (!shouldFitMap) return;
-		baseMap.flyTo({
-			center: [placeDestination.lon, placeDestination.lat],
-			duration: 650,
-			offset: [0, Math.round((mapPadding.top - mapPadding.bottom) / 2)],
-			zoom: 15.5,
-		});
-	}, [activeBottomSheetSnap.snapPoint, baseMap, mapPadding, placeDestination, shouldFitMap]);
-
-	useEffect(() => {
-		if (!baseMap || routePlannerMapFitFeatures.length === 0) return;
-		if (activeBottomSheet?.view !== 'routes' && !routePlannerContext.flags.is_navigating) return;
-		if (!shouldFitMap) {
-			lastRouteMapFitKeyRef.current = null;
-			return;
-		}
-
-		const routeMapFitKey = [
-			routePlannerContext.data.selected_itinerary_index,
-			routePlannerContext.data.view_mode,
-			activeBottomSheetSnap.snapPoint,
-			routePlannerMapFitFeatures.length,
-		].join('|');
-
-		if (lastRouteMapFitKeyRef.current === routeMapFitKey) return;
-		lastRouteMapFitKeyRef.current = routeMapFitKey;
-
-		centerMap(baseMap, routePlannerMapFitFeatures, {
-			padding: mapPadding,
-		});
-	}, [activeBottomSheet?.view, activeBottomSheetSnap.snapPoint, baseMap, mapPadding, routePlannerContext.data.selected_itinerary_index, routePlannerContext.data.view_mode, routePlannerContext.flags.is_navigating, routePlannerMapFitFeatures, shouldFitMap]);
+	useBaseMapCameraSync({
+		focusedLineShape,
+		focusedStop,
+		placeDestination,
+		routePlannerMapFitFeatures,
+	});
 
 	//
 	// C. Handle actions
