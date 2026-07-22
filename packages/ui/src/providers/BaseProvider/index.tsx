@@ -19,6 +19,16 @@ import { themeData } from '../../styles/theme';
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
 	/**
+	 * The application name used to identify frontend logs in Sentry.
+	 */
+	app: string
+
+	/**
+	 * Set to false when Sentry is initialized through instrumentation-client.ts.
+	 */
+	initializeSentry?: boolean
+
+	/**
 	 * The module name used to identify frontend logs in Sentry.
 	 */
 	module: string
@@ -36,15 +46,16 @@ type BaseProviderProps = LocaleContextProps & VersionContextProps & {
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n, module, theme, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ app, children, i18n, initializeSentry = true, module, theme, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
 	// A. Initialize frontend logging
 
 	useEffect(() => {
-		initSentry(module);
-	}, [module]);
+		if (!initializeSentry) return;
+		initSentry(app, module);
+	}, [initializeSentry, module]);
 
 	//
 	// B. Setup variables
