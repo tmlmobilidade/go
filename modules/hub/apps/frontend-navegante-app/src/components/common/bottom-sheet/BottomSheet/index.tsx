@@ -5,7 +5,7 @@
 import { getBottomSheetSnapState } from '@/components/common/bottom-sheet/bottom-sheet-behavior';
 import { ACTIVE_MAP_BOTTOM_SHEET_HEIGHT_CSS_PROPERTY, MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/components/common/bottom-sheet/bottom-sheet.constants';
 import { BottomSheetClose } from '@/components/common/bottom-sheet/BottomSheetClose';
-import { registerActiveBottomSheetSnapController, useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { registerActiveBottomSheetSnapController, useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type PropsWithChildren, useEffect, useId, useMemo, useRef } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 

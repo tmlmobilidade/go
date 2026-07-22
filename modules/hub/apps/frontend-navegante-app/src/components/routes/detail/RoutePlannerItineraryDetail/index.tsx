@@ -5,8 +5,8 @@ import { RoutePlannerItineraryLegStrip } from '@/components/routes/common/RouteP
 import { RoutePlannerTime } from '@/components/routes/common/RoutePlannerTime';
 import { getRoutePlannerLegPlaceName, RoutePlannerItineraryDetailLeg } from '@/components/routes/detail/RoutePlannerItineraryDetailLeg';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { useLinesByShortName } from '@/hooks/useLinesByShortName';
-import { useRoutePlannerActiveLeg } from '@/hooks/useRoutePlannerActiveLeg';
+import { useLinesByShortName } from '@/hooks/route-planner/useLinesByShortName';
+import { useRoutePlannerActiveLeg } from '@/hooks/route-planner/useRoutePlannerActiveLeg';
 import { formatMotisPlanDuration, getMotisItineraryDurationSeconds, getMotisItineraryEnd } from '@/utils/route-planner-motis';
 import { getRoutePlannerItineraryRealtimeStatus } from '@/utils/route-planner-realtime';
 import { useMemo } from 'react';

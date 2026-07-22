@@ -2,7 +2,7 @@
 
 import { RegularListItem } from '@/components/common/lists/RegularListItem';
 import { OmniSearchResultDisplay } from '@/components/search/OmniSearchResultDisplay';
-import { type OmniSearchGroup as OmniSearchGroupData, type OmniSearchResult } from '@/components/search/useOmniSearch';
+import { type OmniSearchGroup as OmniSearchGroupData, type OmniSearchResult } from '@/hooks/search/useOmniSearch';
 import { IconAlertTriangle, IconBusStop, IconMapPin } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 

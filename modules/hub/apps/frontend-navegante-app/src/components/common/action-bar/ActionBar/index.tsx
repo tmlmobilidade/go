@@ -1,7 +1,7 @@
 'use client';
 
 import { ActionBarUserLocation } from '@/components/common/action-bar/ActionBarUserLocation';
-import { useMapFloatingControlsLayout } from '@/hooks/useMapFloatingControlsLayout';
+import { useMapFloatingControlsLayout } from '@/hooks/base-map/useMapFloatingControlsLayout';
 
 import styles from './styles.module.css';
 

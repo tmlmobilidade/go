@@ -1,7 +1,7 @@
 'use client';
 
 import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { IconCircleArrowRightFilled } from '@tabler/icons-react';
 import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 

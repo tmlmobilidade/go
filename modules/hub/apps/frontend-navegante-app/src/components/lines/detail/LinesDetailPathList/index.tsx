@@ -1,9 +1,9 @@
 'use client';
 
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
-import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypoint } from '@/components/lines/detail/PathWaypoint';
+import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { Dates } from '@tmlmobilidade/dates';
 import { useMemo } from 'react';
 

@@ -38,8 +38,10 @@ Hooks and utilities will be grouped by the domain knowledge they own. Shared typ
 ```text
 src/hooks/
 ├── base-map/               # Base-map derived data, camera, and interactions
+├── bottom-sheet/           # Shared sheet state and map-aware behavior
 ├── route-planner/          # Route-planning data and workflow hooks
-└── search/                 # Shared search/geocoding hooks
+├── search/                 # Shared search/geocoding hooks
+└── transit/                # Operational-date and selected-trip hooks
 
 src/utils/
 ├── alerts/                  # Alert presentation and filtering helpers
@@ -72,7 +74,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 15 | Normalize context flags and memoize provider values | complete | 10–14 | Every local context provider now memoizes its value behind stable action/filter facades; boolean flags use `is_`/`has_` snake_case names, and permanently undefined/false flags were removed. |
 | 16 | Consolidate route/status design tokens and CSS duplication | in progress | Structural tasks complete | Route mode/status colors now use named Navegante tokens; compact/detail line pills and mode badges share size-aware primitives; filter triggers reuse the option button primitive; route CSS no longer carries fallback hex colors. Automated checks pass, but light/dark and responsive visual regression remains pending because no controllable browser was available. |
 | 17 | Reorganize route components into `common`, `input`, `list`, `detail`, `navigation`, and `planner` | complete | 4, completed alongside 6–8 | `common` owns shared time/mode/leg presentation, `input` owns endpoint and travel-time input, `list` owns results/filtering/cards, `detail` owns itinerary and place detail, `navigation` owns trip-start and live-guidance controls, and `planner` owns the workflow composition root. Only the context contract remains at the route root. |
-| 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | in progress | 9, 11–15 | Began the source-layout pass by closing the remaining category-less `RoutePlanner` exception. Next: move BaseMap and other reusable hooks into themed `src/hooks` folders; group route-planner, map, search, alert, and transit utilities; move shared types/constants out of component folders where appropriate; colocate tests with their implementation; avoid compatibility files that recreate flat catch-all directories. |
+| 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | in progress | 9, 11–15 | Closed the category-less `RoutePlanner` exception and grouped all standalone hooks under themed `base-map`, `bottom-sheet`, `route-planner`, `search`, and `transit` folders. Removed the redundant user-location re-export so consumers use its established context hook directly. Next: group utilities and support types/constants by domain, colocate their tests, and remove flat compatibility files. |
 
 ## Commit log
 

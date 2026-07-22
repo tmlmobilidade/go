@@ -1,7 +1,5 @@
 'use client';
 
-import { useBaseMapDerivedData } from '@/components/common/base-map/useBaseMapDerivedData';
-import { useBaseMapFocusedEntities } from '@/components/common/base-map/useBaseMapFocusedEntities';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapViewOverlayPlaceLocation } from '@/components/map/overlays/MapViewOverlayPlaceLocation';
 import { MapViewOverlayStopLineBadges } from '@/components/map/overlays/MapViewOverlayStopLineBadges';
@@ -11,9 +9,11 @@ import { MapViewOverlayVehicles, MapViewOverlayVehiclesPrimaryLayerId } from '@/
 import { MapViewStyleActiveStops } from '@/components/map/overlays/MapViewStyleActiveStops';
 import { MapViewStyleAlerts } from '@/components/map/overlays/MapViewStyleAlerts';
 import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
-import { useUserLocation } from '@/components/map/use-user-location';
+import { useUserLocation } from '@/components/map/UserLocation.context';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { type MapLongPressLocation } from '@/hooks/useMapLongPress';
+import { useBaseMapDerivedData } from '@/hooks/base-map/useBaseMapDerivedData';
+import { useBaseMapFocusedEntities } from '@/hooks/base-map/useBaseMapFocusedEntities';
+import { type MapLongPressLocation } from '@/hooks/base-map/useMapLongPress';
 import { useTranslation } from 'react-i18next';
 
 /* * */

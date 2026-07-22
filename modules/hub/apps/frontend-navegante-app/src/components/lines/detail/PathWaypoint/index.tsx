@@ -1,11 +1,11 @@
 /* * */
 
-import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypointHeader } from '@/components/lines/detail/PathWaypointHeader';
 import { PathWaypointNextArrivals } from '@/components/lines/detail/PathWaypointNextArrivals';
 import { PathWaypointSpine } from '@/components/lines/detail/PathWaypointSpine';
 import { PathWaypointTimetable } from '@/components/lines/detail/PathWaypointTimetable';
+import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
 
 import styles from './styles.module.css';

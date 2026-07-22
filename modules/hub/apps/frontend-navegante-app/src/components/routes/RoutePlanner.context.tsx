@@ -1,10 +1,10 @@
 'use client';
 
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { useUserLocation } from '@/components/map/use-user-location';
+import { useUserLocation } from '@/components/map/UserLocation.context';
 import { type RoutePlannerContextState } from '@/components/routes/route-planner-context.types';
 import { clearLastOmniSearchQuery } from '@/components/search/omni-search-query';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { fetchMotisPlan, getMotisItineraries } from '@/utils/motis-plan-api';
 import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner-geometry';
 import { createRoutePlannerCurrentLocation } from '@/utils/route-planner-locations';

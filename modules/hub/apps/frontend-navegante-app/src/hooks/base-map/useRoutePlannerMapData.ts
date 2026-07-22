@@ -1,9 +1,9 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { fetchPatterns } from '@/utils/fetch-patterns';
 import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
 import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner-navigation';

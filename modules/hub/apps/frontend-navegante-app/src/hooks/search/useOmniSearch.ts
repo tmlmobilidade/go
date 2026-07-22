@@ -2,9 +2,9 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { useUserLocation } from '@/components/map/use-user-location';
+import { useUserLocation } from '@/components/map/UserLocation.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useMotisGeocode } from '@/hooks/useMotisGeocode';
+import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
 import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
 import { normalizeSearchText } from '@/utils/search';
 import { type HubAlert, type HubLine, type HubStop } from '@tmlmobilidade/go-types-public-info';

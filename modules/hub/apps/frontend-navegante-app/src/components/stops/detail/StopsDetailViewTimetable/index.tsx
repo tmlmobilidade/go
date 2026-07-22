@@ -1,9 +1,9 @@
 'use client';
 
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
-import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
 import { StopsDetailViewTimetableRow } from '@/components/stops/detail/StopsDetailViewTimetableRow';
+import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { Dates } from '@tmlmobilidade/dates';
 import { Section } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';

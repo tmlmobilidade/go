@@ -1,10 +1,10 @@
 'use client';
 
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { getLastOmniSearchQuery, setLastOmniSearchQuery, subscribeToOmniSearchQuery } from '@/components/search/omni-search-query';
 import { OmniSearchGroup } from '@/components/search/OmniSearchGroup';
-import { type OmniSearchResult, useOmniSearch } from '@/components/search/useOmniSearch';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { type OmniSearchResult, useOmniSearch } from '@/hooks/search/useOmniSearch';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
 import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
 import { IconSearch } from '@tabler/icons-react';

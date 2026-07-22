@@ -1,6 +1,6 @@
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { OmniSearchStopAgencyLogos } from '@/components/search/OmniSearchStopAgencyLogos';
-import { type OmniSearchResult } from '@/components/search/useOmniSearch';
+import { type OmniSearchResult } from '@/hooks/search/useOmniSearch';
 
 import styles from './styles.module.css';
 

@@ -5,8 +5,16 @@ import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type RoutePlannerLocationFieldsProps } from './index';
 import { useMotisLocationSearch } from './useMotisLocationSearch';
+
+/* * */
+
+interface UseRoutePlannerLocationFieldsParams {
+	destination: null | RoutePlannerLocation
+	onDestinationChange: (location: null | RoutePlannerLocation) => void
+	onOriginChange: (location: null | RoutePlannerLocation) => void
+	origin: null | RoutePlannerLocation
+}
 
 /* * */
 
@@ -14,7 +22,7 @@ const CURRENT_LOCATION_OPTION_ID = '__current_location__';
 
 /* * */
 
-export function useRoutePlannerLocationFields({ destination, onDestinationChange, onOriginChange, origin }: RoutePlannerLocationFieldsProps) {
+export function useRoutePlannerLocationFields({ destination, onDestinationChange, onOriginChange, origin }: UseRoutePlannerLocationFieldsParams) {
 	//
 
 	//

@@ -1,11 +1,11 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
-import { useRoutePlannerMapData } from '@/components/common/base-map/useRoutePlannerMapData';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { type BaseMapOperatorId } from '@/components/map/Map.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
+import { useRoutePlannerMapData } from '@/hooks/base-map/useRoutePlannerMapData';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { getBaseMapAlertsMapData, getBaseMapVehiclesMapData } from '@/utils/base-map-data';
 import { useMemo } from 'react';
 

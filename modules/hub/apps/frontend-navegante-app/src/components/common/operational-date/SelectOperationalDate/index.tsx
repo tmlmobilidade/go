@@ -1,6 +1,6 @@
 'use client';
 
-import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
+import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { Modal, SegmentedControl } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { Dates } from '@tmlmobilidade/dates';

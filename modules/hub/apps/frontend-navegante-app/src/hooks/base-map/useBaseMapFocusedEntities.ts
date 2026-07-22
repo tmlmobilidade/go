@@ -1,9 +1,9 @@
 'use client';
 
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';

@@ -1,10 +1,10 @@
 'use client';
 
-import { useBaseMapDerivedData } from '@/components/common/base-map/useBaseMapDerivedData';
-import { useBaseMapFocusedEntities } from '@/components/common/base-map/useBaseMapFocusedEntities';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { useMapBottomSheet } from '@/components/common/bottom-sheet/use-map-bottom-sheet';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
+import { useBaseMapDerivedData } from '@/hooks/base-map/useBaseMapDerivedData';
+import { useBaseMapFocusedEntities } from '@/hooks/base-map/useBaseMapFocusedEntities';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { useMapBottomSheet } from '@/hooks/bottom-sheet/useMapBottomSheet';
 import { centerMap } from '@/utils/map.utils';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useRef } from 'react';

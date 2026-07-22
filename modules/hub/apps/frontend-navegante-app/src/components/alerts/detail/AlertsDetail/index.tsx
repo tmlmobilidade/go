@@ -3,7 +3,7 @@
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { AlertsDetailView } from '@/components/alerts/detail/AlertsDetailView';
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 
 /* * */
 

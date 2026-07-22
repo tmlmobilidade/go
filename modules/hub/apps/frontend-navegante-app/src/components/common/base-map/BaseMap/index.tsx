@@ -1,14 +1,14 @@
 'use client';
 
 import { BaseMapLayers } from '@/components/common/base-map/BaseMapLayers';
-import { useBaseMapCameraSync } from '@/components/common/base-map/useBaseMapCameraSync';
-import { useBaseMapDerivedData } from '@/components/common/base-map/useBaseMapDerivedData';
-import { useBaseMapFocusedEntities } from '@/components/common/base-map/useBaseMapFocusedEntities';
-import { baseMapInteractiveLayerIds, useBaseMapInteractions } from '@/components/common/base-map/useBaseMapInteractions';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
-import { useUserLocation } from '@/components/map/use-user-location';
+import { useUserLocation } from '@/components/map/UserLocation.context';
+import { useBaseMapCameraSync } from '@/hooks/base-map/useBaseMapCameraSync';
+import { useBaseMapDerivedData } from '@/hooks/base-map/useBaseMapDerivedData';
+import { useBaseMapFocusedEntities } from '@/hooks/base-map/useBaseMapFocusedEntities';
+import { baseMapInteractiveLayerIds, useBaseMapInteractions } from '@/hooks/base-map/useBaseMapInteractions';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 
 /* * */
 

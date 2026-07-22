@@ -1,9 +1,9 @@
 'use client';
 
 import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { centerMap, moveMap } from '@/utils/map.utils';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { useMap } from '@vis.gl/react-maplibre';

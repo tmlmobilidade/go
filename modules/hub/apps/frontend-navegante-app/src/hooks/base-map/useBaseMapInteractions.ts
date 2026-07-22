@@ -1,13 +1,13 @@
 'use client';
 
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { useMapBottomSheet } from '@/components/common/bottom-sheet/use-map-bottom-sheet';
 import { MapViewOverlayStopsInteractiveLayerId, MapViewOverlayStopsVisibleMinZoom } from '@/components/map/overlays/MapViewOverlayStops';
 import { MapViewOverlayVehiclesInteractiveLayerId, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
-import { useUserLocation } from '@/components/map/use-user-location';
+import { useUserLocation } from '@/components/map/UserLocation.context';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { type MapLongPressLocation, useMapLongPress } from '@/hooks/useMapLongPress';
+import { type MapLongPressLocation, useMapLongPress } from '@/hooks/base-map/useMapLongPress';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { useMapBottomSheet } from '@/hooks/bottom-sheet/useMapBottomSheet';
 import { type MapLayerMouseEvent, useMap, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

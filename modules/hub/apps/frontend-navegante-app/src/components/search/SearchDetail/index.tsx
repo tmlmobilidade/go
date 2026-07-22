@@ -1,8 +1,8 @@
 'use client';
 
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { OmniSearch } from '@/components/search/OmniSearch';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useRef, useState } from 'react';
 
 /* * */

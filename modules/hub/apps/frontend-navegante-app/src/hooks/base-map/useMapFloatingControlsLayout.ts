@@ -1,8 +1,8 @@
 'use client';
 
 import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/components/common/bottom-sheet/bottom-sheet.constants';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 
 /* * */
 

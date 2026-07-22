@@ -5,7 +5,6 @@ import { AlertsList } from '@/components/alerts/list/AlertsList';
 import { ActionBar } from '@/components/common/action-bar/ActionBar';
 import { BaseMap } from '@/components/common/base-map/BaseMap';
 import { BaseMapOverlaysControl } from '@/components/common/base-map/BaseMapOverlaysControl';
-import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { RoutePlannerVehiclesCounter } from '@/components/common/display/RoutePlannerVehiclesCounter';
 import { HelpDetail } from '@/components/help/HelpDetail';
 import { LinesDetail } from '@/components/lines/detail/LinesDetail';
@@ -17,6 +16,7 @@ import { RoutePlannerContextProvider } from '@/components/routes/RoutePlanner.co
 import { SearchDetail } from '@/components/search/SearchDetail';
 import { StopsDetail } from '@/components/stops/detail/StopsDetail';
 import { VehiclesDetail } from '@/components/vehicles/detail/VehiclesDetail';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useColorScheme } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 

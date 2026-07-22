@@ -1,7 +1,7 @@
 'use client';
 
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useMotisGeocode } from '@/hooks/useMotisGeocode';
+import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
 import { routePlannerCoordinateToLocation, type RoutePlannerLocation } from '@/utils/route-planner-motis';
 import { normalizeSearchText } from '@/utils/search';

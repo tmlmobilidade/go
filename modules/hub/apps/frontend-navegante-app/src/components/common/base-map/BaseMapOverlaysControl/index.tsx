@@ -2,7 +2,7 @@
 
 import { BaseMapFiltersSheet } from '@/components/common/base-map/BaseMapFiltersSheet';
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
-import { useMapFloatingControlsLayout } from '@/hooks/useMapFloatingControlsLayout';
+import { useMapFloatingControlsLayout } from '@/hooks/base-map/useMapFloatingControlsLayout';
 import { IconStack2 } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
