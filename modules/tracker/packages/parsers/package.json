@@ -16,7 +16,10 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-types-vehicle-events": "*"
+		"@tmlmobilidade/go-clients-mongo": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
