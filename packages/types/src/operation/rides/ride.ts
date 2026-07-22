@@ -44,7 +44,7 @@ export const RideSchema = DocumentSchema
 		hashed_shape_id: z.string(),
 		hashed_trip_id: z.string(),
 		headsign: z.string(),
-		line_id: z.number(),
+		line_id: z.string(),
 		operational_date: OperationalDateSchema,
 		passengers_estimated: z.number().nullable(),
 		passengers_observed: z.number().nullable(),

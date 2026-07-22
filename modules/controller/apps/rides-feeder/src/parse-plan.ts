@@ -953,7 +953,7 @@ export async function parsePlan(planData: Plan) {
 					hashed_shape_id: finalHashedShape._id,
 					hashed_trip_id: finalHashedTrip._id,
 					headsign: currentTrip.trip_headsign,
-					line_id: Number(routeData.line_id),
+					line_id: routeData.line_id,
 					operational_date: calendarDate,
 					passengers_estimated: null,
 					passengers_observed: null,

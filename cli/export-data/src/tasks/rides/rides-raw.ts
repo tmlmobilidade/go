@@ -34,7 +34,7 @@ export async function exportRidesRaw({ context, message }: TaskProps): Promise<v
 	}
 
 	if (context.filters.line_ids.length) {
-		filterQuery.line_id = { $in: context.filters.line_ids.map(Number) };
+		filterQuery.line_id = { $in: context.filters.line_ids };
 	}
 
 	if (context.filters.pattern_ids.length) {
