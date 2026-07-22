@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-tracker-pt-tml-cm-core-stream",
+	"name": "@tmlmobilidade/go-tracker-pt-tmp-unir-ut4-rawdb-stream",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -17,12 +17,12 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-interfaces-pcgi-legacy": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
-		"@tmlmobilidade/go-tracker-pckg-shared": "*",
+		"@tmlmobilidade/go-tracker-pckg-callback": "*",
+		"@tmlmobilidade/go-tracker-pckg-parsers": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {

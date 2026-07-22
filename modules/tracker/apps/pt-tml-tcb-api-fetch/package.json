@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-tracker-pt-tml-cm-core-stream",
+	"name": "@tmlmobilidade/go-tracker-pt-tml-tcb-api-fetch",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -17,11 +17,15 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-interfaces-pcgi-legacy": "*",
+		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/external": "*",
+		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
