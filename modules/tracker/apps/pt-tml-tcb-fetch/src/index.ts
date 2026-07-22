@@ -102,7 +102,7 @@ const main = async () => {
 	if (candidateEvents.length > 0) {
 		try {
 			const candidateIds = candidateEvents.map(event => event._id);
-			const existingDocs = await rawDb.raw.rawVehicleEvents.findMany(
+			const existingDocs = await rawDb.vehicleEvents.ptTmlTcb.findMany(
 				{ _id: { $in: candidateIds } },
 				{ projection: { _id: 1 } },
 			);
@@ -111,7 +111,7 @@ const main = async () => {
 			const newEvents = candidateEvents.filter(event => !existingIds.has(event._id));
 
 			if (newEvents.length > 0) {
-				await rawDb.raw.rawVehicleEvents.insertMany(newEvents.map(event => event.document));
+				await rawDb.vehicleEvents.ptTmlTcb.insertMany(newEvents.map(event => event.document));
 				saveCount = newEvents.length;
 			}
 		} catch (error) {

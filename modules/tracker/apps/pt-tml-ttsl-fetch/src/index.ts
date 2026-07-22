@@ -82,11 +82,11 @@ const main = async () => {
 			// Write the new vehicle event document
 			// to the RawVehicleEvents collection
 
-			const alreadyExists = await rawDb.raw.rawVehicleEvents.findOne({ _id: hashableRawEventId });
+			const alreadyExists = await rawDb.vehicleEvents.ptTmlTtsl.findOne({ _id: hashableRawEventId });
 
 			if (alreadyExists) continue;
 
-			await rawDb.raw.rawVehicleEvents.insertOne({
+			await rawDb.vehicleEvents.ptTmlTtsl.insertOne({
 				...hashableRawEvent,
 				_id: hashableRawEventId,
 				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
