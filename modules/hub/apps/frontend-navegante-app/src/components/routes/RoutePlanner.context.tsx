@@ -4,6 +4,7 @@ import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-shee
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useUserLocation } from '@/components/map/use-user-location';
 import { clearLastOmniSearchQuery } from '@/components/search/OmniSearch';
+import { createRoutePlannerCurrentLocation } from '@/utils/route-planner-locations';
 import { buildMotisPlanParams, buildRoutePlannerItineraryMapData, getMotisItineraries, type MotisItinerary, type MotisPlanResponse, type RoutePlannerItineraryMapData, type RoutePlannerLocation, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
 import { getRoutePlannerStartTripTransition } from '@/utils/route-planner-navigation';
 import { API_ROUTES } from '@tmlmobilidade/consts';
@@ -123,18 +124,12 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	// C. Handle actions
 
 	const buildOriginFromCoordinates = (latitude: number | undefined, longitude: number | undefined): null | RoutePlannerLocation => {
-		if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
-
-		const lat = Number(latitude.toFixed(6));
-		const lon = Number(longitude.toFixed(6));
-
-		return {
+		return createRoutePlannerCurrentLocation({
 			detail: t('default:routes.RoutePlannerSearch.origin.current_location_detail'),
 			label: t('default:routes.RoutePlannerSearch.origin.current_location'),
-			lat,
-			lon,
-			type: 'PLACE',
-		};
+			latitude,
+			longitude,
+		});
 	};
 
 	const buildUserLocationOrigin = (): null | RoutePlannerLocation => {

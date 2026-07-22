@@ -1,6 +1,8 @@
 'use client';
 
 import { RoutePlannerLocationResults } from '@/components/routes/RoutePlannerLocationResults';
+import { formatDateTimeLocalInputValue } from '@/utils/route-planner-format';
+import { createRoutePlannerCurrentLocation } from '@/utils/route-planner-locations';
 import { type RoutePlannerLocation, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
 import { IconArrowsUpDown, IconCurrentLocation, IconMapPinFilled, IconPointFilled } from '@tabler/icons-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -248,7 +250,7 @@ export function RoutePlannerInput({
 								className={styles.timeInput}
 								onChange={event => handleTravelTimeInputChange(event.currentTarget.value)}
 								type="datetime-local"
-								value={formatDateForInput(travelTime.date)}
+								value={formatDateTimeLocalInputValue(travelTime.date)}
 							/>
 						</label>
 					)}
@@ -267,14 +269,6 @@ const CURRENT_LOCATION_OPTION_ID = '__current_location__';
 
 /* * */
 
-function formatDateForInput(date: Date) {
-	const offset = date.getTimezoneOffset();
-	const localDate = new Date(date.getTime() - offset * 60_000);
-	return localDate.toISOString().slice(0, 16);
-}
-
-/* * */
-
 function handleCurrentLocationSelect(
 	onChange: (location: RoutePlannerLocation) => void,
 	setQuery: (query: string) => void,
@@ -284,15 +278,13 @@ function handleCurrentLocationSelect(
 	if (typeof navigator === 'undefined' || !navigator.geolocation) return;
 
 	navigator.geolocation.getCurrentPosition((position) => {
-		const lat = Number(position.coords.latitude.toFixed(6));
-		const lon = Number(position.coords.longitude.toFixed(6));
-		const location: RoutePlannerLocation = {
+		const location = createRoutePlannerCurrentLocation({
 			detail,
 			label,
-			lat,
-			lon,
-			type: 'PLACE',
-		};
+			latitude: position.coords.latitude,
+			longitude: position.coords.longitude,
+		});
+		if (!location) return;
 
 		onChange(location);
 		setQuery(label);

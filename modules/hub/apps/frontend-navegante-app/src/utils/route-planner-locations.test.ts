@@ -1,4 +1,4 @@
-import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
+import { createRoutePlannerCurrentLocation, mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
 import { formatMotisLocationDetail, getMotisPlaceParam, mapMotisGeocodeResultToLocation, type MotisGeocodeResult, parseRoutePlannerCoordinate, routePlannerCoordinateToLocation, type RoutePlannerLocation } from '@/utils/route-planner-motis';
 import { type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { strict as assert } from 'node:assert';
@@ -87,6 +87,30 @@ describe('MOTIS geocode location mapping', () => {
 });
 
 describe('route-planner stop and coordinate locations', () => {
+	it('creates a rounded route location from current coordinates and translated labels', () => {
+		assert.deepEqual(createRoutePlannerCurrentLocation({
+			detail: 'A sua localização atual',
+			label: 'Localização atual',
+			latitude: 38.7077514,
+			longitude: -9.1365946,
+		}), {
+			detail: 'A sua localização atual',
+			label: 'Localização atual',
+			lat: 38.707751,
+			lon: -9.136595,
+			type: 'PLACE',
+		});
+	});
+
+	it('rejects non-finite current coordinates', () => {
+		assert.equal(createRoutePlannerCurrentLocation({
+			detail: 'A sua localização atual',
+			label: 'Localização atual',
+			latitude: Number.NaN,
+			longitude: -9.13659,
+		}), null);
+	});
+
 	it('maps Hub stops while preserving each search path stop-ID convention', () => {
 		const stop: HubStop = {
 			_id: 60001,

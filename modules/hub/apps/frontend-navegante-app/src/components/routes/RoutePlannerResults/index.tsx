@@ -2,6 +2,7 @@
 
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerItineraryCard } from '@/components/routes/RoutePlannerItineraryCard';
+import { formatDateTimeLocalInputValue } from '@/utils/route-planner-format';
 import { type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
 import { getItineraryTransitModeFilters, itineraryMatchesEnabledModes, type RoutePlannerModeFilter, type RoutePlannerSortMode, type RoutePlannerVisibleItinerary, sortVisibleItineraries, toggleRoutePlannerMode } from '@/utils/route-planner-results';
 import { IconBus, IconClock, IconFerry, IconRoute, IconSortAscending, IconTrain, IconWalk } from '@tabler/icons-react';
@@ -240,7 +241,7 @@ export function RoutePlannerResults() {
 										className={styles.timeInput}
 										onChange={event => handleTravelTimeChange(event.currentTarget.value)}
 										type="datetime-local"
-										value={formatDateForInput(routePlannerContext.data.travel_time.date)}
+										value={formatDateTimeLocalInputValue(routePlannerContext.data.travel_time.date)}
 									/>
 								)}
 							</div>
@@ -288,12 +289,6 @@ export function RoutePlannerResults() {
 	);
 
 	//
-}
-
-function formatDateForInput(date: Date) {
-	const offset = date.getTimezoneOffset();
-	const localDate = new Date(date.getTime() - offset * 60_000);
-	return localDate.toISOString().slice(0, 16);
 }
 
 function formatTravelTimeFilterLabel(travelTime: RoutePlannerTravelTime, t: TFunction) {

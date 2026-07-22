@@ -3,6 +3,7 @@
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
 import { mapMotisGeocodeResultToLocation, type MotisGeocodeResult, routePlannerCoordinateToLocation, type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { normalizeSearchText } from '@/utils/search';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { useEffect, useMemo, useState } from 'react';
@@ -108,8 +109,4 @@ function searchStops(stops: HubStop[], query: string): RoutePlannerLocation[] {
 		.filter(stop => normalizeSearchText(`${stop.name} ${stop.short_name} ${stop.locality_name ?? ''} ${stop.municipality_name}`).includes(normalizedQuery))
 		.slice(0, 8)
 		.map(stop => mapHubStopToRoutePlannerLocation(stop));
-}
-
-function normalizeSearchText(value: string) {
-	return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase();
 }

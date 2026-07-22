@@ -5,6 +5,7 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useUserLocation } from '@/components/map/use-user-location';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { mapMotisGeocodeResultToLocation, type MotisGeocodeResult, type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { normalizeSearchText } from '@/utils/search';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubAlert, type HubLine, type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { useEffect, useMemo, useState } from 'react';
@@ -52,7 +53,7 @@ export function useOmniSearch(query: string): UseOmniSearchResult {
 	const [poiResults, setPoiResults] = useState<OmniSearchResult[]>([]);
 	const [error, setError] = useState<null | string>(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const normalizedQuery = normalizeSearchText(query);
+	const normalizedQuery = normalizeSearchText(query).trim();
 
 	//
 	// B. Fetch data
@@ -187,7 +188,7 @@ function getSearchCoordinates(userLocation: null | Partial<SearchCoordinates>): 
 }
 
 function getMatchScore(value: string, query: string) {
-	const normalizedValue = normalizeSearchText(value);
+	const normalizedValue = normalizeSearchText(value).trim();
 	if (normalizedValue === query) return 1_000;
 	if (normalizedValue.startsWith(query)) return 800;
 	const queryTokens = query.split(' ').filter(Boolean);
@@ -195,8 +196,4 @@ function getMatchScore(value: string, query: string) {
 	if (queryTokens.every(token => valueTokens.some(valueToken => valueToken.startsWith(token)))) return 600;
 	if (normalizedValue.includes(query)) return 400;
 	return 0;
-}
-
-function normalizeSearchText(value: string) {
-	return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase().trim();
 }
