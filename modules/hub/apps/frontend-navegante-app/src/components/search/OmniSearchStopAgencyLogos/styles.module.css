@@ -1,0 +1,15 @@
+.stopAgencyLogos {
+	display: flex;
+	flex-shrink: 0;
+	gap: 0.2rem;
+	align-items: center;
+	font-style: normal;
+}
+
+.stopAgencyLogos img {
+	display: block;
+	width: 22px;
+	height: 22px;
+	object-fit: contain;
+	border-radius: 50%;
+}

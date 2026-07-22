@@ -1,9 +1,9 @@
 'use client';
 
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { RoutePlannerLocationSelector } from '@/components/routes/input/RoutePlannerLocationSelector';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { RoutePlannerLocationSelector } from '@/components/routes/RoutePlannerLocationSelector';
-import { getLastOmniSearchQuery, subscribeToOmniSearchQuery } from '@/components/search/OmniSearch';
+import { getLastOmniSearchQuery, subscribeToOmniSearchQuery } from '@/components/search/omni-search-query';
 import { IconSearch } from '@tabler/icons-react';
 import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';

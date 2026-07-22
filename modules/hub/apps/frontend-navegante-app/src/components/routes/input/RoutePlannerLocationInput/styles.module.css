@@ -1,0 +1,70 @@
+.row {
+	display: flex;
+	flex-direction: row;
+	gap: 8px;
+	align-items: center;
+	min-height: 52px;
+}
+
+.row[data-variant='compact'] {
+	min-height: 36px;
+}
+
+.field {
+	position: relative;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.label {
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--color-text-secondary, #888);
+	text-transform: uppercase;
+}
+
+.row[data-variant='compact'] .label {
+	font-size: 10px;
+}
+
+.locationValue {
+	width: 100%;
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--color-text-primary, #111);
+	outline: 0;
+	background: transparent;
+	border: 0;
+}
+
+.locationValue::placeholder {
+	font-weight: 500;
+	color: var(--color-text-secondary, #888);
+}
+
+.locationButton {
+	all: unset;
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	color: var(--color-text-secondary, #888);
+	cursor: pointer;
+	background-color: var(--color-surface-secondary, #f5f5f5);
+	border-radius: 50%;
+	transition: background-color 150ms ease;
+}
+
+.locationButton:hover {
+	background-color: var(--color-surface-hover, #ebebeb);
+}
+
+.row[data-variant='compact'] .locationButton {
+	width: 30px;
+	height: 30px;
+}

@@ -1,7 +1,7 @@
 'use client';
 
+import { RoutePlannerLocationIcon } from '@/components/routes/input/RoutePlannerLocationIcon';
 import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
-import { IconBuilding, IconBus, IconBusStop, IconMapPin, IconShip, IconTrain } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -97,24 +97,6 @@ export function RoutePlannerLocationResults({ error, isLoading, loadingLabel, lo
 	);
 
 	//
-}
-
-/* * */
-
-interface RoutePlannerLocationIconProps {
-	location: RoutePlannerLocation
-}
-
-function RoutePlannerLocationIcon({ location }: RoutePlannerLocationIconProps) {
-	const modes = getNormalizedModes(location);
-
-	if (modes.some(mode => ['LIGHT_RAIL', 'RAIL', 'SUBWAY', 'TRAIN', 'TRAM'].includes(mode))) return <IconTrain size={18} />;
-	if (modes.some(mode => ['BOAT', 'FERRY'].includes(mode))) return <IconShip size={18} />;
-	if (modes.includes('BUS')) return <IconBus size={18} />;
-	if (location.type === 'STOP') return <IconBusStop size={18} />;
-	if (location.type === 'ADDRESS') return <IconBuilding size={18} />;
-
-	return <IconMapPin size={18} />;
 }
 
 /* * */

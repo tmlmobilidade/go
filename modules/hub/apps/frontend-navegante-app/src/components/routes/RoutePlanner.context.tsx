@@ -3,7 +3,7 @@
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useUserLocation } from '@/components/map/use-user-location';
-import { clearLastOmniSearchQuery } from '@/components/search/OmniSearch';
+import { clearLastOmniSearchQuery } from '@/components/search/omni-search-query';
 import { createRoutePlannerCurrentLocation } from '@/utils/route-planner-locations';
 import { buildMotisPlanParams, buildRoutePlannerItineraryMapData, getMotisItineraries, type MotisItinerary, type MotisPlanResponse, type RoutePlannerItineraryMapData, type RoutePlannerLocation, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
 import { getRoutePlannerStartTripTransition } from '@/utils/route-planner-navigation';

@@ -1,0 +1,35 @@
+.resultDisplay,
+.stopDisplay {
+	display: grid;
+	min-width: 0;
+}
+
+.resultDisplay {
+	gap: 0.2rem;
+}
+
+.stopDisplay {
+	gap: 0.25rem;
+}
+
+.resultDisplay strong,
+.stopDisplay strong {
+	font-size: 1.05rem;
+	line-height: 1.2;
+}
+
+.resultDisplay small,
+.stopDisplay small {
+	overflow: hidden;
+	color: var(--mantine-color-dimmed);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.stopDisplay > span {
+	display: flex;
+	gap: 0.45rem;
+	align-items: center;
+	min-width: 0;
+	color: var(--mantine-color-dimmed);
+}

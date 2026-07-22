@@ -1,16 +1,13 @@
 'use client';
 
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { RegularListItem } from '@/components/common/lists/RegularListItem';
-import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
+import { getLastOmniSearchQuery, setLastOmniSearchQuery, subscribeToOmniSearchQuery } from '@/components/search/omni-search-query';
+import { OmniSearchGroup } from '@/components/search/OmniSearchGroup';
 import { type OmniSearchResult, useOmniSearch } from '@/components/search/useOmniSearch';
-import { getAgencyLogo } from '@/lib/agency-logos-map';
-import { AGENCY_NAMES_MAP } from '@/lib/agency-names-map';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
 import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
-import { IconAlertTriangle, IconBusStop, IconMapPin, IconSearch } from '@tabler/icons-react';
-import Image from 'next/image';
+import { IconSearch } from '@tabler/icons-react';
 import { type RefObject, useRef, useState, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -25,38 +22,6 @@ interface OmniSearchProps {
 	placeholder?: string
 	variant?: 'sheet' | 'top'
 }
-
-let LAST_OMNI_SEARCH_QUERY = '';
-const omniSearchQueryListeners = new Set<() => void>();
-
-function emitOmniSearchQueryChange() {
-	omniSearchQueryListeners.forEach(listener => listener());
-}
-
-export function subscribeToOmniSearchQuery(listener: () => void) {
-	omniSearchQueryListeners.add(listener);
-	return () => {
-		omniSearchQueryListeners.delete(listener);
-	};
-}
-
-export function getLastOmniSearchQuery() {
-	return LAST_OMNI_SEARCH_QUERY;
-}
-
-export function clearLastOmniSearchQuery() {
-	if (LAST_OMNI_SEARCH_QUERY === '') return;
-	LAST_OMNI_SEARCH_QUERY = '';
-	emitOmniSearchQueryChange();
-}
-
-function setLastOmniSearchQuery(value: string) {
-	if (LAST_OMNI_SEARCH_QUERY === value) return;
-	LAST_OMNI_SEARCH_QUERY = value;
-	emitOmniSearchQueryChange();
-}
-
-/* * */
 
 export function OmniSearch({ inputRef: inputRefProp, locationPicker = false, onLocationSelect, placeholder, variant = 'sheet' }: OmniSearchProps) {
 	//
@@ -112,14 +77,7 @@ export function OmniSearch({ inputRef: inputRefProp, locationPicker = false, onL
 			</label>
 
 			{visibleGroups.map(group => (
-				<section key={group.key} className={styles.group}>
-					<h2>{t(`default:search.OmniSearch.groups.${group.key}`)}</h2>
-					{group.results.map(result => (
-						<RegularListItem key={`${result.type}-${result.id}`} icon={getResultIcon(result)} onClick={() => handleSelect(result)}>
-							<OmniSearchResultDisplay result={result} />
-						</RegularListItem>
-					))}
-				</section>
+				<OmniSearchGroup key={group.key} group={group} onSelect={handleSelect} variant={variant} />
 			))}
 
 			{search.isLoading && <p className={styles.status}>{t('default:search.OmniSearch.loading')}</p>}
@@ -136,62 +94,4 @@ function getRoutePlannerLocation(result: OmniSearchResult): null | RoutePlannerL
 	if (result.type !== 'stop') return null;
 
 	return mapHubStopToRoutePlannerLocation(result.entity, { ensureGtfsId: true });
-}
-
-/* * */
-
-function OmniSearchResultDisplay({ result }: { result: OmniSearchResult }) {
-	if (result.type === 'line') return <LineDisplay lineData={result.entity} />;
-	if (result.type === 'stop') {
-		return (
-			<div className={styles.stopDisplay}>
-				<strong>{result.label}</strong>
-				<span>
-					<small>{getDetail(result)}</small>
-					<StopAgencyLogos agencyIds={result.entity.agency_ids} />
-				</span>
-			</div>
-		);
-	}
-
-	return (
-		<div className={styles.resultDisplay}>
-			<strong>{result.label}</strong>
-			{getDetail(result) && <small>{getDetail(result)}</small>}
-		</div>
-	);
-}
-
-function getResultIcon(result: OmniSearchResult) {
-	if (result.type === 'alert') return <IconAlertTriangle size={22} />;
-	if (result.type === 'poi') return <IconMapPin size={22} />;
-	if (result.type === 'stop') return <IconBusStop size={22} />;
-	return undefined;
-}
-
-function getDetail(result: OmniSearchResult) {
-	if (result.type === 'alert') return result.entity.description;
-	if (result.type === 'line') return '';
-	if (result.type === 'stop') return [result.entity.locality_name, result.entity.municipality_name].filter(Boolean).join(' | ');
-	return [result.entity.street, result.entity.areas?.map(area => area.name).filter(Boolean).slice(0, 2).join(', ')].filter(Boolean).join(' | ');
-}
-
-function StopAgencyLogos({ agencyIds }: { agencyIds: string[] }) {
-	return (
-		<em className={styles.stopAgencyLogos}>
-			{agencyIds.map((agencyId) => {
-				const agency = AGENCY_NAMES_MAP[agencyId as keyof typeof AGENCY_NAMES_MAP];
-				if (!agency) return null;
-				return (
-					<Image
-						key={agencyId}
-						alt={agency.full}
-						height={24}
-						src={getAgencyLogo(agencyId, '120x120', 'light')}
-						width={24}
-					/>
-				);
-			})}
-		</em>
-	);
 }

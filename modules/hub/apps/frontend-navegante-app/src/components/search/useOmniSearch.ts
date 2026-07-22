@@ -4,11 +4,11 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useUserLocation } from '@/components/map/use-user-location';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { mapMotisGeocodeResultToLocation, type MotisGeocodeResult, type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { useMotisGeocode } from '@/hooks/useMotisGeocode';
+import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
 import { normalizeSearchText } from '@/utils/search';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubAlert, type HubLine, type HubStop } from '@tmlmobilidade/go-types-public-info';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -50,51 +50,15 @@ export function useOmniSearch(query: string): UseOmniSearchResult {
 	const { userLocation } = useUserLocation();
 	const userCoordinates = useMemo(() => getSearchCoordinates(userLocation), [userLocation?.latitude, userLocation?.longitude]);
 	const searchBiasCoordinates = userCoordinates ?? DEFAULT_SEARCH_COORDINATES;
-	const [poiResults, setPoiResults] = useState<OmniSearchResult[]>([]);
-	const [error, setError] = useState<null | string>(null);
-	const [isLoading, setIsLoading] = useState(false);
 	const normalizedQuery = normalizeSearchText(query).trim();
-
-	//
-	// B. Fetch data
-
-	useEffect(() => {
-		if (normalizedQuery.length < 2) {
-			setPoiResults([]);
-			setError(null);
-			setIsLoading(false);
-			return;
-		}
-
-		const abortController = new AbortController();
-		const timeout = window.setTimeout(async () => {
-			setIsLoading(true);
-			setError(null);
-
-			try {
-				const params = new URLSearchParams({ numResults: '8', text: query.trim(), type: 'PLACE' });
-				params.set('place', `${searchBiasCoordinates.latitude},${searchBiasCoordinates.longitude}`);
-				params.set('placeBias', String(MOTIS_PLACE_BIAS));
-				const response = await fetch(`${API_ROUTES.hub.MOTIS_GEOCODE}?${params.toString()}`, { signal: abortController.signal });
-				if (!response.ok) throw new Error(`MOTIS geocode returned HTTP ${response.status}`);
-				const payload: { data: unknown } = await response.json();
-				const results = Array.isArray(payload.data) ? payload.data.map((item: MotisGeocodeResult) => mapMotisGeocodeResultToLocation(item)) : [];
-				const mappedPoiResults = results.map(location => toPoiResult(location, normalizedQuery));
-				setPoiResults(mappedPoiResults);
-			} catch (caughtError) {
-				if (caughtError instanceof DOMException && caughtError.name === 'AbortError') return;
-				setPoiResults([]);
-				setError(caughtError instanceof Error ? caughtError.message : 'Erro ao pesquisar locais');
-			} finally {
-				if (!abortController.signal.aborted) setIsLoading(false);
-			}
-		}, 260);
-
-		return () => {
-			abortController.abort();
-			window.clearTimeout(timeout);
-		};
-	}, [normalizedQuery, query, searchBiasCoordinates]);
+	const motisSearch = useMotisGeocode(query, {
+		errorMessage: 'Erro ao pesquisar locais',
+		placeBias: {
+			latitude: searchBiasCoordinates.latitude,
+			longitude: searchBiasCoordinates.longitude,
+			weight: MOTIS_PLACE_BIAS,
+		},
+	});
 
 	//
 	// C. Transform data
@@ -107,13 +71,13 @@ export function useOmniSearch(query: string): UseOmniSearchResult {
 			...alertsContext.data.alerts.map(alert => toResult('alert', alert, `${alert.title} ${alert.description}`, normalizedQuery)),
 			...linesContext.data.lines.map(line => toResult('line', line, `${line.short_name} ${line.long_name}`, normalizedQuery)),
 			...stopsContext.data.stops.map(stop => toResult('stop', stop, `${stop.name} ${stop.short_name} ${stop.locality_name ?? ''} ${stop.municipality_name}`, normalizedQuery)),
-			...poiResults,
+			...motisSearch.data.map(location => toPoiResult(location, normalizedQuery)),
 		].filter((result): result is OmniSearchResult => result !== null);
 
 		return groupResults(results);
-	}, [alertsContext.data.alerts, linesContext.data.lines, normalizedQuery, poiResults, stopsContext.data.stops]);
+	}, [alertsContext.data.alerts, linesContext.data.lines, motisSearch.data, normalizedQuery, stopsContext.data.stops]);
 
-	return { error, groups, isLoading };
+	return { error: motisSearch.error, groups, isLoading: motisSearch.isLoading };
 }
 
 /* * */
