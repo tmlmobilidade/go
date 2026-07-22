@@ -37,11 +37,11 @@ export const AGENCY_NAMES_MAP = Object.freeze({
 		short: 'VA',
 	},
 	42: {
-		full: 'Rodóviaria de Lisboa',
+		full: 'Rodoviária de Lisboa',
 		short: 'RL',
 	},
 	43: {
-		full: 'Trasnportes Sul do Tejo ',
+		full: 'Transportes Sul do Tejo',
 		short: 'TST',
 	},
 	44: {
