@@ -1,7 +1,7 @@
 'use client';
 
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
-import { OmniSearch } from '@/components/search/OmniSearch';
+import { Search } from '@/components/search/Search';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useRef, useState } from 'react';
 
@@ -43,7 +43,7 @@ export function SearchDetail() {
 			snapPoints={[0, 1]}
 			withCompactCloseButton
 		>
-			<OmniSearch inputRef={inputRef} />
+			<Search inputRef={inputRef} />
 		</BottomSheet>
 	);
 }

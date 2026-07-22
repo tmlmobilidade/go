@@ -6,7 +6,7 @@ import { RoutePlannerPlaceDetail } from '@/components/routes/detail/RoutePlanner
 import { RoutePlannerInput } from '@/components/routes/input/RoutePlannerInput';
 import { RoutePlannerResults } from '@/components/routes/list/RoutePlannerResults';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { OmniSearch } from '@/components/search/OmniSearch';
+import { Search } from '@/components/search/Search';
 import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type RoutePlannerLocation } from '@/types/route-planner';
@@ -121,7 +121,7 @@ export function RoutePlanner() {
 			withOverlay={sheetConfig.withOverlay}
 		>
 			{routePlannerContext.data.view_mode === 'destination-search' && (
-				<OmniSearch
+				<Search
 					onLocationSelect={handleLocationSelect}
 					placeholder={routePlannerContext.data.location_search_target === 'origin'
 						? t('default:routes.RoutePlannerSearch.origin_placeholder')

@@ -2,26 +2,20 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
 import { type RoutePlannerLocation } from '@/types/route-planner';
+import { type SearchGroup, type SearchResult } from '@/types/search';
 import { normalizeSearchText } from '@/utils/search/normalize';
 import { type HubAlert, type HubLine, type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { useMemo } from 'react';
 
 /* * */
 
-export type OmniSearchResult = { entity: HubAlert, id: string, label: string, score: number, type: 'alert' } | { entity: HubLine, id: string, label: string, score: number, type: 'line' } | { entity: HubStop, id: string, label: string, score: number, type: 'stop' } | { entity: RoutePlannerLocation, id: string, label: string, score: number, type: 'poi' };
-
-export interface OmniSearchGroup {
-	key: OmniSearchResult['type']
-	results: OmniSearchResult[]
-}
-
-interface UseOmniSearchResult {
+interface UseSearchResult {
 	error: null | string
-	groups: OmniSearchGroup[]
+	groups: SearchGroup[]
 	isLoading: boolean
 }
 
@@ -32,14 +26,14 @@ interface SearchCoordinates {
 
 /* * */
 
-const GROUP_TIE_BREAKERS: Record<OmniSearchResult['type'], number> = { alert: 0, line: 1, poi: 3, stop: 2 };
+const GROUP_TIE_BREAKERS: Record<SearchResult['type'], number> = { alert: 0, line: 1, poi: 3, stop: 2 };
 const MOTIS_PLACE_BIAS = 1;
 const RESULTS_PER_GROUP = 5;
 const DEFAULT_SEARCH_COORDINATES: SearchCoordinates = { latitude: 38.7223, longitude: -9.1393 };
 
 /* * */
 
-export function useOmniSearch(query: string): UseOmniSearchResult {
+export function useSearch(query: string): UseSearchResult {
 	//
 
 	// A. Setup variables
@@ -67,12 +61,12 @@ export function useOmniSearch(query: string): UseOmniSearchResult {
 		if (!normalizedQuery) return getAgencyAlertGroup(alertsContext.data.alerts);
 		if (normalizedQuery.length < 2) return [];
 
-		const results: OmniSearchResult[] = [
+		const results: SearchResult[] = [
 			...alertsContext.data.alerts.map(alert => toResult('alert', alert, `${alert.title} ${alert.description}`, normalizedQuery)),
 			...linesContext.data.lines.map(line => toResult('line', line, `${line.short_name} ${line.long_name}`, normalizedQuery)),
 			...stopsContext.data.stops.map(stop => toResult('stop', stop, `${stop.name} ${stop.short_name} ${stop.locality_name ?? ''} ${stop.municipality_name}`, normalizedQuery)),
 			...motisSearch.data.map(location => toPoiResult(location, normalizedQuery)),
-		].filter((result): result is OmniSearchResult => result !== null);
+		].filter((result): result is SearchResult => result !== null);
 
 		return groupResults(results);
 	}, [alertsContext.data.alerts, linesContext.data.lines, motisSearch.data, normalizedQuery, stopsContext.data.stops]);
@@ -82,7 +76,7 @@ export function useOmniSearch(query: string): UseOmniSearchResult {
 
 /* * */
 
-function toResult<T extends HubAlert | HubLine | HubStop | RoutePlannerLocation>(type: OmniSearchResult['type'], entity: T, searchableText: string, query: string): null | OmniSearchResult {
+function toResult<T extends HubAlert | HubLine | HubStop | RoutePlannerLocation>(type: SearchResult['type'], entity: T, searchableText: string, query: string): null | SearchResult {
 	const score = getMatchScore(searchableText, query);
 	if (score === 0) return null;
 
@@ -92,7 +86,7 @@ function toResult<T extends HubAlert | HubLine | HubStop | RoutePlannerLocation>
 	return { entity: entity as RoutePlannerLocation, id: (entity as RoutePlannerLocation).id ?? (entity as RoutePlannerLocation).label, label: (entity as RoutePlannerLocation).label, score, type: 'poi' };
 }
 
-function toPoiResult(location: RoutePlannerLocation, query: string): Extract<OmniSearchResult, { type: 'poi' }> {
+function toPoiResult(location: RoutePlannerLocation, query: string): Extract<SearchResult, { type: 'poi' }> {
 	const searchableText = `${location.label} ${location.detail} ${location.street ?? ''}`;
 	const groupScore = getMatchScore(searchableText, query) || 200;
 
@@ -105,7 +99,7 @@ function toPoiResult(location: RoutePlannerLocation, query: string): Extract<Omn
 	};
 }
 
-function getAgencyAlertGroup(alerts: HubAlert[]): OmniSearchGroup[] {
+function getAgencyAlertGroup(alerts: HubAlert[]): SearchGroup[] {
 	const now = Date.now() / 1000;
 	const agencyAlerts = alerts
 		.filter(alert => alert.reference_type === 'agency' && (!alert.active_period_start_date || alert.active_period_start_date <= now) && (!alert.active_period_end_date || alert.active_period_end_date >= now));
@@ -119,8 +113,8 @@ function getAgencyAlertGroup(alerts: HubAlert[]): OmniSearchGroup[] {
 	return results.length ? [{ key: 'alert', results }] : [];
 }
 
-function groupResults(results: OmniSearchResult[]): OmniSearchGroup[] {
-	const groups = new Map<OmniSearchResult['type'], OmniSearchResult[]>();
+function groupResults(results: SearchResult[]): SearchGroup[] {
+	const groups = new Map<SearchResult['type'], SearchResult[]>();
 	results.forEach((result) => {
 		const current = groups.get(result.type) ?? [];
 		current.push(result);
@@ -137,11 +131,11 @@ function groupResults(results: OmniSearchResult[]): OmniSearchGroup[] {
 		.sort((a, b) => getGroupScore(b) - getGroupScore(a) || GROUP_TIE_BREAKERS[a.key] - GROUP_TIE_BREAKERS[b.key]);
 }
 
-function getGroupScore(group: OmniSearchGroup) {
+function getGroupScore(group: SearchGroup) {
 	return Math.max(...group.results.map(result => result.score));
 }
 
-function compareResults(a: OmniSearchResult, b: OmniSearchResult) {
+function compareResults(a: SearchResult, b: SearchResult) {
 	if (b.score !== a.score) return b.score - a.score;
 	return a.label.localeCompare(b.label);
 }

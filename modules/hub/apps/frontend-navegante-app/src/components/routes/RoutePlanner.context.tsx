@@ -2,7 +2,6 @@
 
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useUserLocation } from '@/contexts/UserLocation.context';
-import { clearLastOmniSearchQuery } from '@/components/search/omni-search-query';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/types/route-planner';
 import { type RoutePlannerContextState } from '@/types/route-planner-context';
@@ -10,6 +9,7 @@ import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner/geometr
 import { createRoutePlannerCurrentLocation } from '@/utils/route-planner/locations';
 import { fetchMotisPlan, getMotisItineraries } from '@/utils/route-planner/motis-plan-api';
 import { getRoutePlannerPlanStartTransition, getRoutePlannerStartTripTransition, getRoutePlannerTravelTimeModeTransition } from '@/utils/route-planner/navigation';
+import { clearLastSearchQuery } from '@/utils/search/search-query';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -166,7 +166,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 
 	const endActiveTrip = useCallback(() => {
 		clearRoute();
-		clearLastOmniSearchQuery();
+		clearLastSearchQuery();
 		clearActiveBottomSheets();
 	}, [clearActiveBottomSheets, clearRoute]);
 

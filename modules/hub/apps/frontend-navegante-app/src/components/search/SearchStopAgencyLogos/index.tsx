@@ -6,13 +6,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface OmniSearchStopAgencyLogosProps {
+interface SearchStopAgencyLogosProps {
 	agencyIds: string[]
 }
 
 /* * */
 
-export function OmniSearchStopAgencyLogos({ agencyIds }: OmniSearchStopAgencyLogosProps) {
+export function SearchStopAgencyLogos({ agencyIds }: SearchStopAgencyLogosProps) {
 	return (
 		<em className={styles.stopAgencyLogos}>
 			{agencyIds.map((agencyId) => {

@@ -59,7 +59,8 @@ src/types/
 ├── bottom-sheet.ts          # Sheet navigation contracts
 ├── map.ts                   # Map overlay and operator contracts
 ├── route-planner-context.ts # Route context facade
-└── route-planner.ts         # MOTIS and route-planning contracts
+├── route-planner.ts         # MOTIS and route-planning contracts
+└── search.ts                # Shared search result contracts
 ```
 
 ## Execution plan
@@ -72,10 +73,10 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 2 | Characterize map operator normalization and alert/vehicle filtering order | complete | — | Covered CM grouping, known/unknown agency visibility, itinerary selection, focused overrides, line-pattern overrides, and final operator filtering. |
 | 3 | Characterize active-leg selection, walking progress, geometry, and first-leg fitting | complete | — | Covered nearest-path selection, no-position and empty-itinerary fallbacks, walking distance/time, decoded and endpoint-fallback geometry, and first-leg fitting. |
 | 4 | Extract shared route presentation primitives | complete | 1 | Added `RoutePlannerModeIcon`, `MotisLegModeKind`, pure mode normalization, and `useLinesByShortName`; migrated detail, leg strip, and live bar. |
-| 5 | Extract shared search and location utilities | complete | 1 | Shared Hub-stop and current-coordinate location factories, accent/case-insensitive text normalization, and local datetime-input formatting; migrated route input, route context, route results, and OmniSearch. |
+| 5 | Extract shared search and location utilities | complete | 1 | Shared Hub-stop and current-coordinate location factories, accent/case-insensitive text normalization, and local datetime-input formatting; migrated route input, route context, route results, and Search. |
 | 6 | Split itinerary detail and leg-strip components | complete | 4 | Moved itinerary detail into `detail`; extracted detail legs and badges; moved the shared leg strip into `common`; extracted strip items and line pills with one named component per folder. |
 | 7 | Split route results and extract pure filtering/sorting | complete | 1 | Pure mode filtering, last-mode protection, and sorting are extracted; results orchestration, filter toggles, mode/sort/time panels, and itinerary cards now have focused components under `list`. |
-| 8 | Split route input and OmniSearch presentation | complete | 5 | Added one shared debounced MOTIS geocode hook while keeping route stop/coordinate composition and OmniSearch grouping/scoring feature-specific; split focused input, location-result, travel-time, and OmniSearch presentation components. |
+| 8 | Split route input and Search presentation | complete | 5 | Added one shared debounced MOTIS geocode hook while keeping route stop/coordinate composition and Search grouping/scoring feature-specific; split focused input, location-result, travel-time, and Search presentation components. |
 | 9 | Split `route-planner-motis.ts` by responsibility | complete | 1, 3, 5 | Moved types, plan request/response helpers, geocoding, formatting, modes, geometry, and progress into focused modules; retained `route-planner-motis.ts` as a compatibility barrel for existing consumers. |
 | 10 | Extract the MOTIS API client and pure transitions from `RoutePlanner.context.tsx` | complete | 9 | Moved context-facing types, the MOTIS plan request, plan-start state, and travel-time-mode state into focused modules with transition coverage; preserved the complete context facade and reduced the provider file from 420 to 367 lines. |
 | 11 | Extract BaseMap focused-entity and derived-data hooks | complete | 2, 3 | Moved focused alert/line/stop/vehicle selection, focused geometry, route-specific map enrichment, and final operator filtering into map-owned hooks; reduced `BaseMap` from roughly 500 to 315 lines while preserving filtering precedence. |
@@ -87,7 +88,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 17 | Reorganize route components into `common`, `input`, `list`, `detail`, `navigation`, and `planner` | complete | 4, completed alongside 6–8 | `common` owns shared time/mode/leg presentation, `input` owns endpoint and travel-time input, `list` owns results/filtering/cards, `detail` owns itinerary and place detail, `navigation` owns trip-start and live-guidance controls, and `planner` owns the workflow composition root. Only the context contract remains at the route root. |
 | 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | complete | 9, 11–15 | Grouped standalone hooks under themed folders; grouped utilities under `alerts`, `bottom-sheet`, `map`, `route-planner`, `search`, and `transit`; moved shared sheet and route contracts/constants out of component folders; colocated tests with their modules; updated test discovery; removed the route-planner compatibility barrel and redundant user-location re-export. |
 | 19 | Remove unreachable legacy component trees | complete | 17–18 | Audited static source reachability from every Next.js app entry point; removed 13 unreachable components, the list contexts owned only by the obsolete line/stop list trees, and their unreferenced translation keys. A second reachability pass reports no unused component entry points. |
-| 20 | Organize map support and normalize search naming | in progress | 18–19 | Moved map contexts, contracts, configuration, and style assets out of the component tree so `components/map` contains rendered map modules only. Search still needs its `OmniSearch` vocabulary normalized to the shared `Search` prefix. |
+| 20 | Organize map support and normalize search naming | complete | 18–19 | Moved map contexts, contracts, configuration, and style assets out of the component tree so `components/map` contains rendered map modules only. Standardized one `Search` prefix across rendered modules, hooks, contracts, query state, and translation keys. |
 
 ## Commit log
 
@@ -100,7 +101,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 5 | `refactor(hub): consolidate route search utilities` | Centralize text normalization, current-coordinate location mapping, and datetime-input formatting without changing consumer behavior. |
 | 6, 17 | `refactor(hub): split route itinerary components` | Give itinerary detail and shared leg-strip presentation one named component per folder under the target route structure. |
 | 7, 17 | `refactor(hub): split route results components` | Move route results into `list` and separate filtering, sorting, time controls, and itinerary cards into focused components. |
-| 8, 17 | `refactor(hub): split route search components` | Move route input into `input`, separate OmniSearch presentation, and share low-level debounced MOTIS geocoding without merging feature-specific result composition. |
+| 8, 17 | `refactor(hub): split route search components` | Move route input into `input`, separate Search presentation, and share low-level debounced MOTIS geocoding without merging feature-specific result composition. |
 | 9 | `refactor(hub): split route planner utilities` | Split the MOTIS catch-all into focused modules while preserving its complete public API through a compatibility barrel. |
 | 10 | `refactor(hub): extract route planner services` | Move the MOTIS request, context contract, and tested plan/time transitions out of the provider without changing its public facade. |
 | 11 | `refactor(hub): extract base map derived data` | Move focused-entity selection and render-ready route, alert, stop, and vehicle data behind focused map hooks without changing filter order. |
@@ -120,6 +121,8 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 18 | `refactor(hub): organize frontend hooks by domain` | Move standalone hooks out of component and flat hook folders into themed support folders. |
 | 18 | `refactor(hub): organize frontend support by domain` | Group utilities and adjacent tests by domain, move shared contracts/constants out of component folders, and remove the compatibility barrel. |
 | 19 | `refactor(hub): remove unreachable frontend components` | Delete obsolete line/stop list trees and isolated components with no import path from the app. |
+| 20 | `refactor(hub): organize map feature support` | Keep rendered map modules in `components/map` while moving shared state, contracts, configuration, and assets to their top-level homes. |
+| 20 | `refactor(hub): normalize search feature naming` | Use consistent `Search`-prefixed modules and move shared query state and result contracts out of the component tree. |
 
 ## Verification
 

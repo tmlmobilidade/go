@@ -364,7 +364,7 @@
 		}
 	},
 	"search": {
-		"OmniSearch": {
+		"Search": {
 			"empty": "Nenhum resultado encontrado.",
 			"groups": {
 				"alert": "Alertas",

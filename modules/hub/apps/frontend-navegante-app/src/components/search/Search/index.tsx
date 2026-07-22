@@ -1,12 +1,13 @@
 'use client';
 
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { getLastOmniSearchQuery, setLastOmniSearchQuery, subscribeToOmniSearchQuery } from '@/components/search/omni-search-query';
-import { OmniSearchGroup } from '@/components/search/OmniSearchGroup';
+import { SearchGroup } from '@/components/search/SearchGroup';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
-import { type OmniSearchResult, useOmniSearch } from '@/hooks/search/useOmniSearch';
+import { useSearch } from '@/hooks/search/useSearch';
 import { type RoutePlannerLocation } from '@/types/route-planner';
+import { type SearchResult } from '@/types/search';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/locations';
+import { getLastSearchQuery, setLastSearchQuery, subscribeToSearchQuery } from '@/utils/search/search-query';
 import { IconSearch } from '@tabler/icons-react';
 import { type RefObject, useRef, useState, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +16,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface OmniSearchProps {
+interface SearchProps {
 	inputRef?: RefObject<HTMLInputElement | null>
 	locationPicker?: boolean
 	onLocationSelect?: (location: RoutePlannerLocation) => void
@@ -23,7 +24,7 @@ interface OmniSearchProps {
 	variant?: 'sheet' | 'top'
 }
 
-export function OmniSearch({ inputRef: inputRefProp, locationPicker = false, onLocationSelect, placeholder, variant = 'sheet' }: OmniSearchProps) {
+export function Search({ inputRef: inputRefProp, locationPicker = false, onLocationSelect, placeholder, variant = 'sheet' }: SearchProps) {
 	//
 
 	// A. Setup variables
@@ -31,12 +32,12 @@ export function OmniSearch({ inputRef: inputRefProp, locationPicker = false, onL
 	const { t } = useTranslation();
 	const { setActiveBottomSheet } = useBottomSheet();
 	const routePlannerContext = useRoutePlannerContext();
-	const sharedQuery = useSyncExternalStore(subscribeToOmniSearchQuery, getLastOmniSearchQuery, getLastOmniSearchQuery);
+	const sharedQuery = useSyncExternalStore(subscribeToSearchQuery, getLastSearchQuery, getLastSearchQuery);
 	const [locationPickerQuery, setLocationPickerQuery] = useState('');
 	const query = locationPicker ? locationPickerQuery : sharedQuery;
 	const internalInputRef = useRef<HTMLInputElement>(null);
 	const inputRef = inputRefProp ?? internalInputRef;
-	const search = useOmniSearch(query);
+	const search = useSearch(query);
 	const visibleGroups = locationPicker
 		? search.groups.filter(group => group.key === 'poi' || group.key === 'stop')
 		: search.groups;
@@ -44,7 +45,7 @@ export function OmniSearch({ inputRef: inputRefProp, locationPicker = false, onL
 	//
 	// B. Handle actions
 
-	const handleSelect = (result: OmniSearchResult) => {
+	const handleSelect = (result: SearchResult) => {
 		if (locationPicker) {
 			const location = getRoutePlannerLocation(result);
 			if (location) onLocationSelect?.(location);
@@ -63,7 +64,7 @@ export function OmniSearch({ inputRef: inputRefProp, locationPicker = false, onL
 			return;
 		}
 
-		setLastOmniSearchQuery(value);
+		setLastSearchQuery(value);
 	};
 
 	//
@@ -73,23 +74,23 @@ export function OmniSearch({ inputRef: inputRefProp, locationPicker = false, onL
 		<div className={styles.container} data-variant={variant}>
 			<label className={styles.inputWrapper}>
 				<IconSearch size={20} />
-				<input ref={inputRef} autoFocus={variant === 'sheet'} onChange={event => handleQueryChange(event.currentTarget.value)} placeholder={placeholder ?? t('default:search.OmniSearch.placeholder')} type="search" value={query} />
+				<input ref={inputRef} autoFocus={variant === 'sheet'} onChange={event => handleQueryChange(event.currentTarget.value)} placeholder={placeholder ?? t('default:search.Search.placeholder')} type="search" value={query} />
 			</label>
 
 			{visibleGroups.map(group => (
-				<OmniSearchGroup key={group.key} group={group} onSelect={handleSelect} variant={variant} />
+				<SearchGroup key={group.key} group={group} onSelect={handleSelect} variant={variant} />
 			))}
 
-			{search.isLoading && <p className={styles.status}>{t('default:search.OmniSearch.loading')}</p>}
+			{search.isLoading && <p className={styles.status}>{t('default:search.Search.loading')}</p>}
 			{search.error && <p className={styles.status}>{search.error}</p>}
-			{query.trim().length >= 2 && !search.isLoading && !search.error && visibleGroups.length === 0 && <p className={styles.status}>{t('default:search.OmniSearch.empty')}</p>}
+			{query.trim().length >= 2 && !search.isLoading && !search.error && visibleGroups.length === 0 && <p className={styles.status}>{t('default:search.Search.empty')}</p>}
 		</div>
 	);
 }
 
 /* * */
 
-function getRoutePlannerLocation(result: OmniSearchResult): null | RoutePlannerLocation {
+function getRoutePlannerLocation(result: SearchResult): null | RoutePlannerLocation {
 	if (result.type === 'poi') return result.entity;
 	if (result.type !== 'stop') return null;
 

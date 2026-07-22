@@ -1,18 +1,18 @@
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
-import { OmniSearchStopAgencyLogos } from '@/components/search/OmniSearchStopAgencyLogos';
-import { type OmniSearchResult } from '@/hooks/search/useOmniSearch';
+import { SearchStopAgencyLogos } from '@/components/search/SearchStopAgencyLogos';
+import { type SearchResult } from '@/types/search';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface OmniSearchResultDisplayProps {
-	result: OmniSearchResult
+interface SearchResultDisplayProps {
+	result: SearchResult
 }
 
 /* * */
 
-export function OmniSearchResultDisplay({ result }: OmniSearchResultDisplayProps) {
+export function SearchResultDisplay({ result }: SearchResultDisplayProps) {
 	if (result.type === 'line') return <LineDisplay lineData={result.entity} />;
 
 	if (result.type === 'stop') {
@@ -21,7 +21,7 @@ export function OmniSearchResultDisplay({ result }: OmniSearchResultDisplayProps
 				<strong>{result.label}</strong>
 				<span>
 					<small>{getResultDetail(result)}</small>
-					<OmniSearchStopAgencyLogos agencyIds={result.entity.agency_ids} />
+					<SearchStopAgencyLogos agencyIds={result.entity.agency_ids} />
 				</span>
 			</div>
 		);
@@ -39,7 +39,7 @@ export function OmniSearchResultDisplay({ result }: OmniSearchResultDisplayProps
 
 /* * */
 
-function getResultDetail(result: OmniSearchResult) {
+function getResultDetail(result: SearchResult) {
 	if (result.type === 'alert') return result.entity.description;
 	if (result.type === 'line') return '';
 	if (result.type === 'stop') return [result.entity.locality_name, result.entity.municipality_name].filter(Boolean).join(' | ');
