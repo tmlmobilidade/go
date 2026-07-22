@@ -1,8 +1,9 @@
 /* * */
 
-import { apiCache, GOClickHouseClient } from '@tmlmobilidade/databases';
+import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { pipelinePath, querySqlFromFile } from '@tmlmobilidade/go-hub-pckg-sql';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type GtfsRtFeedMessage, type GtfsRtStopTimeUpdate, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -109,7 +110,7 @@ export async function publishTripUpdates() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:realtime:eta:gtfs', JSON.stringify(feedResult));
+	await cacheDb.set('hub:v1:realtime:eta:gtfs', JSON.stringify(feedResult));
 
 	Logger.success(`Finished publishing GTFS-RT TripUpdate feed (${globalTimer.get()})`);
 

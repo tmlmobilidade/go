@@ -7,7 +7,7 @@ import { type CreateGtfsValidationDto, type GtfsValidation, PermissionCatalog } 
 import { useForm, UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { mutate } from 'swr';
 
 /* * */
@@ -67,7 +67,7 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 	//
 	// C. Handle actions
 
-	const handleWorkerMessage = (event: MessageEvent<WorkerMessage>) => {
+	const handleWorkerMessage = useCallback((event: MessageEvent<WorkerMessage>) => {
 		//
 
 		//
@@ -110,9 +110,9 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 		setCanCreate(true);
 
 		//
-	};
+	}, [form, meContext.actions]);
 
-	const createValidation = async () => {
+	const createValidation = useCallback(async () => {
 		//
 
 		//
@@ -168,7 +168,7 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 		await mutate(API_ROUTES.plans.VALIDATIONS_LIST);
 
 		//
-	};
+	}, [form, router, validationFile]);
 
 	useEffect(() => {
 		//
@@ -198,7 +198,7 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 		workerRef.current.onmessage = handleWorkerMessage;
 
 		//
-	}, [validationFile]);
+	}, [form, handleWorkerMessage, validationFile]);
 
 	//
 	// E. Define context value
@@ -218,12 +218,7 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 				loading: isLoading,
 			},
 		};
-	}, [
-		form,
-		isLoading,
-		canCreate,
-		validationError,
-	]);
+	}, [createValidation, form, canCreate, validationError, isLoading]);
 
 	//
 	// F. Render components

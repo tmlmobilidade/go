@@ -2,8 +2,17 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, typologies } from '@tmlmobilidade/interfaces';
-import { CreateTypologyDto, PermissionCatalog, type Typology, type UpdateTypologyDto } from '@tmlmobilidade/types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Filter } from '@tmlmobilidade/interfaces';
+import { CreateTypologyDto, PermissionCatalog, type PermissionResourceCheck, type Typology, type UpdateTypologyDto } from '@tmlmobilidade/types';
+
+/* * */
+
+const TYPOLOGIES_READ_PERMISSION_CHECKS: PermissionResourceCheck[] = [
+	{ action: PermissionCatalog.all.lines.actions.read, scope: PermissionCatalog.all.lines.scope },
+	{ action: PermissionCatalog.all.lines.actions.update, scope: PermissionCatalog.all.lines.scope },
+	{ action: PermissionCatalog.all.typologies.actions.nav, scope: PermissionCatalog.all.typologies.scope },
+];
 
 /* * */
 
@@ -48,7 +57,7 @@ export class TypologiesController {
 		//
 		// Create the new typology
 
-		const newTypology = await typologies.insertOne(request.body);
+		const newTypology = await goDb.offer.typologies.insertOne(request.body);
 
 		//
 		// Send the response
@@ -65,7 +74,7 @@ export class TypologiesController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const typology = await typologies.findById(id);
+		const typology = await goDb.offer.typologies.findById(id);
 
 		if (!typology) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
@@ -100,7 +109,7 @@ export class TypologiesController {
 
 		//
 
-		await typologies.deleteById(id);
+		await goDb.offer.typologies.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -114,36 +123,24 @@ export class TypologiesController {
 		//
 
 		//
-		// Get the resource permissions for typologies for the current user.
+		// Build database query filters based on user permissions
 
-		const userTypologyPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.typologies.scope, PermissionCatalog.all.typologies.actions.read);
+		const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
+			checks: TYPOLOGIES_READ_PERMISSION_CHECKS,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+		});
 
-		//
-		// If no permission found, deny access
-
-		if (!userTypologyPermissions) {
+		if (!agencyAccess.allowAll && !agencyAccess.values.length) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
 		}
 
-		//
-		// Build database query filters based on user permissions
-
-		const queryFilters: Filter<Typology> = {};
-
-		//
-		// If agency IDs are specified in resources and do not include the ALLOW_ALL_FLAG,
-		// filter typologies by those agency IDs.
-
-		if ('resources' in userTypologyPermissions && 'agency_ids' in userTypologyPermissions.resources) {
-			if (!userTypologyPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters.agency_ids = { $in: userTypologyPermissions.resources['agency_ids'] };
-			}
-		}
+		const queryFilters: Filter<Typology> = agencyAccess.allowAll ? {} : { agency_ids: { $in: agencyAccess.values } };
 
 		//
 		// Fetch typologies based on query filters
 
-		const allTypologies = await typologies.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allTypologies = await goDb.offer.typologies.findMany(queryFilters, { sort: { created_at: -1 } });
 
 		return reply.send({ data: allTypologies, error: null, statusCode: HTTP_STATUS.OK });
 		//
@@ -160,36 +157,24 @@ export class TypologiesController {
 		//
 		// Get the Typology from the database
 
-		const typologyData = await typologies.findById(request.params.id);
+		const typologyData = await goDb.offer.typologies.findById(request.params.id);
 
 		if (!typologyData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
 		}
 
 		//
-		// Get the resource permissions for typologies for the current user.
-
-		const userTypologyPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.typologies.scope, PermissionCatalog.all.typologies.actions.read);
-
-		//
-		// If no permission found, deny access
-
-		if (!userTypologyPermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read typologies');
-		}
-
-		//
 		// Validate that user has permission for at least one of this typology's agencies
 
-		const hasPermissionForAnyAgency = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.typologies.actions.read,
+		const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
+			checks: TYPOLOGIES_READ_PERMISSION_CHECKS,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.typologies.scope,
-			value: typologyData.agency_ids,
 		});
 
-		if (!hasPermissionForAnyAgency) {
+		const canReadTypology = agencyAccess.allowAll || typologyData.agency_ids.some(agencyId => agencyAccess.values.includes(agencyId));
+
+		if (!canReadTypology) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this typology');
 		}
 
@@ -216,7 +201,7 @@ export class TypologiesController {
 		//
 		// Get the Typology from the database
 
-		const typologyData = await typologies.findById(request.params.id);
+		const typologyData = await goDb.offer.typologies.findById(request.params.id);
 
 		if (!typologyData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
@@ -250,8 +235,8 @@ export class TypologiesController {
 		}
 
 		// If authorized, toggle the lock status of the typology
-		await typologies.toggleLockById(request.params.id);
-		const foundTypology = await typologies.findById(request.params.id);
+		await goDb.offer.typologies.toggleLockById(request.params.id);
+		const foundTypology = await goDb.offer.typologies.findById(request.params.id);
 		if (!foundTypology) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
 		}
@@ -272,7 +257,7 @@ export class TypologiesController {
 		//
 		// Get the Typology from the database
 
-		const typologyData = await typologies.findById(request.params.id);
+		const typologyData = await goDb.offer.typologies.findById(request.params.id);
 
 		if (!typologyData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Typology not found');
@@ -308,7 +293,7 @@ export class TypologiesController {
 		//
 		// Update the typology
 
-		const updatedTypology = await typologies.updateById(typologyData._id, request.body);
+		const updatedTypology = await goDb.offer.typologies.updateById(typologyData._id, request.body);
 
 		//
 		// Send the updated typology data as the response

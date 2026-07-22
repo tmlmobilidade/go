@@ -7,7 +7,9 @@ import { PlanDetailSectionAgency } from '@/components/plans/detail/PlanDetailSec
 import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetailSectionController';
 import { PlanDetailSectionFeedInfo } from '@/components/plans/detail/PlanDetailSectionFeedInfo';
 import { PlanDetailSectionPcgiLegacy } from '@/components/plans/detail/PlanDetailSectionPcgiLegacy';
+import { PlanDetailSectionApexFile } from '@/components/plans/detail/PlansDetailSectionApexFile';
 import { PlanDetailSectionFiles } from '@/components/plans/detail/PlansDetailSectionFiles';
+import { PlanDetailSectionOperationFile } from '@/components/plans/detail/PlansDetailSectionOperationFile';
 import { PlanDetailSectionPosters } from '@/components/plans/detail/PlansDetailSectionPosters';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
@@ -38,7 +40,16 @@ export function PlanDetail() {
 
 			<PlanDetailSectionAgency />
 			<PlanDetailSectionFeedInfo />
-			<PlanDetailSectionFiles />
+			<PlanDetailSectionOperationFile />
+
+			<HasPermission
+				action={PermissionCatalog.all.plans.actions.read_apex_file}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.plans.scope}
+				value={planDetailContext.data.plan.gtfs_agency.agency_id}
+			>
+				<PlanDetailSectionApexFile />
+			</HasPermission>
 
 			<HasPermission
 				action={PermissionCatalog.all.plans.actions.generate_pdf_posters}

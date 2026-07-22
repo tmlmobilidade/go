@@ -1,9 +1,11 @@
 /* * */
 
+import { populateLine, populateLines } from '@/utils/lines.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, lines, patterns, routes } from '@tmlmobilidade/interfaces';
-import { CreateLineDto, type Line, PermissionCatalog, RouteSimplified, type UpdateLineDto } from '@tmlmobilidade/types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Filter } from '@tmlmobilidade/interfaces';
+import { CreateLineDto, type Line, type LineNormalized, PermissionCatalog, type UpdateLineDto } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -15,7 +17,7 @@ export class LinesController {
 	 * @param request Fastify request containing line data
 	 * @param reply Fastify reply
 	 */
-	static async create(request: FastifyRequest<{ Body: CreateLineDto }>, reply: FastifyReply<Line>) {
+	static async create(request: FastifyRequest<{ Body: CreateLineDto }>, reply: FastifyReply<LineNormalized>) {
 		//
 
 		//
@@ -48,12 +50,13 @@ export class LinesController {
 		//
 		// Create the new line
 
-		const newLine = await lines.insertOne(request.body);
+		const newLine = await goDb.offer.lines.insertOne(request.body);
+		const populatedLine = await populateLine(newLine);
 
 		//
 		// Send the response
 
-		reply.send({ data: newLine, error: null, statusCode: HTTP_STATUS.OK });
+		reply.send({ data: populatedLine, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -65,7 +68,7 @@ export class LinesController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const line = await lines.findById(id);
+		const line = await goDb.offer.lines.findById(id);
 
 		if (!line) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
@@ -100,9 +103,9 @@ export class LinesController {
 
 		//
 
-		await patterns.deleteMany({ line_id: id });
-		await routes.deleteMany({ line_id: id });
-		await lines.deleteById(id);
+		await goDb.offer.patterns.deleteMany({ line_id: id });
+		await goDb.offer.routes.deleteMany({ line_id: id });
+		await goDb.offer.lines.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -112,7 +115,7 @@ export class LinesController {
 	 * @param request Fastify request
 	 * @param reply Fastify reply
 	 */
-	static async getAll(request: FastifyRequest, reply: FastifyReply<Line[]>) {
+	static async getAll(request: FastifyRequest, reply: FastifyReply<LineNormalized[]>) {
 		//
 
 		//
@@ -145,9 +148,10 @@ export class LinesController {
 		//
 		// Fetch lines based on query filters
 
-		const allLines = await lines.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allLines = await goDb.offer.lines.findMany(queryFilters, { sort: { created_at: -1 } });
+		const populatedLines = await populateLines(allLines);
 
-		return reply.send({ data: allLines, error: null, statusCode: HTTP_STATUS.OK });
+		return reply.send({ data: populatedLines, error: null, statusCode: HTTP_STATUS.OK });
 		//
 	}
 
@@ -156,13 +160,13 @@ export class LinesController {
 	 * @param request Fastify request containing line ID in params
 	 * @param reply Fastify reply
 	 */
-	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Line>) {
+	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<LineNormalized>) {
 		//
 
 		//
 		// Get the Line from the database
 
-		const lineData = await lines.findById(request.params.id);
+		const lineData = await goDb.offer.lines.findById(request.params.id);
 
 		if (!lineData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
@@ -196,18 +200,12 @@ export class LinesController {
 		}
 
 		//
-		// Fetch routes for this line
-
-		const lineRoutes = await routes.findMany(
-			{ line_id: request.params.id },
-			{ projection: { _id: 1, code: 1, name: 1 }, sort: { created_at: -1 } },
-		) as RouteSimplified[];
-
-		//
 		// Return the line data with routes
 
+		const populatedLine = await populateLine(lineData);
+
 		return reply.send({
-			data: { ...lineData, routes: lineRoutes },
+			data: populatedLine,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
@@ -220,13 +218,13 @@ export class LinesController {
 	 * @param request Fastify request containing line ID in params
 	 * @param reply Fastify reply
 	 */
-	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Line>) {
+	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<LineNormalized>) {
 		//
 
 		//
 		// Get the Line from the database
 
-		const lineData = await lines.findById(request.params.id);
+		const lineData = await goDb.offer.lines.findById(request.params.id);
 
 		if (!lineData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
@@ -260,13 +258,15 @@ export class LinesController {
 		}
 
 		// If authorized, toggle the lock status of the line
-		await lines.toggleLockById(request.params.id);
-		const foundLine = await lines.findById(request.params.id);
+		await goDb.offer.lines.toggleLockById(request.params.id);
+		const foundLine = await goDb.offer.lines.findById(request.params.id);
 		if (!foundLine) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
 		}
 
-		return reply.send({ data: foundLine, error: null, statusCode: HTTP_STATUS.OK });
+		const populatedLine = await populateLine(foundLine);
+
+		return reply.send({ data: populatedLine, error: null, statusCode: HTTP_STATUS.OK });
 
 		//
 	}
@@ -276,13 +276,13 @@ export class LinesController {
 	 * @param request Fastify request containing line ID in params and update data in body
 	 * @param reply Fastify reply
 	 */
-	static async update(request: FastifyRequest<{ Body: UpdateLineDto, Params: { id: string } }>, reply: FastifyReply<Line>) {
+	static async update(request: FastifyRequest<{ Body: UpdateLineDto, Params: { id: string } }>, reply: FastifyReply<LineNormalized>) {
 		//
 
 		//
 		// Get the Line from the database
 
-		const lineData = await lines.findById(request.params.id);
+		const lineData = await goDb.offer.lines.findById(request.params.id);
 
 		if (!lineData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Line not found');
@@ -318,13 +318,14 @@ export class LinesController {
 		//
 		// Update the line
 
-		const updatedLine = await lines.updateById(lineData._id, request.body);
+		const updatedLine = await goDb.offer.lines.updateById(lineData._id, request.body);
+		const populatedLine = await populateLine(updatedLine);
 
 		//
 		// Send the updated line data as the response
 
 		reply.send({
-			data: updatedLine,
+			data: populatedLine,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});

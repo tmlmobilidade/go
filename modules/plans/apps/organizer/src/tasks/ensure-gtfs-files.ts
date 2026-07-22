@@ -1,7 +1,8 @@
 /* * */
 
 import { Files } from '@tmlmobilidade/files';
-import { agencies, files, plans } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GtfsAgency, type GtfsFeedInfo, HashablePlanMetadata } from '@tmlmobilidade/types';
@@ -59,7 +60,7 @@ export async function ensureGtfsFiles() {
 
 		let agencyTxtChanged = false;
 
-		const foundAgencyData = await agencies.findById(planData.gtfs_agency.agency_id);
+		const foundAgencyData = await goDb.core.agencies.findById(planData.gtfs_agency.agency_id);
 
 		if (!foundAgencyData) {
 			Logger.error({ message: `[${planData._id}] No agency found with ID ${planData.gtfs_agency.agency_id}.` });

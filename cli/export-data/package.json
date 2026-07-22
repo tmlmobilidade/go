@@ -36,9 +36,10 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@clack/prompts": "1.6.0",
+		"@clack/prompts": "1.7.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/interfaces": "*",
@@ -51,7 +52,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.0.1",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"
 	}

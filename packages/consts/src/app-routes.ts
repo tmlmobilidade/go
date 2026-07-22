@@ -207,6 +207,9 @@ export const API_ROUTES = Object.freeze({
 		AGENCIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/agencies/${encodeURIComponent(id)}/lock`,
 		AGENCIES_LIST: `${getModuleConfig('auth', 'api_url')}/agencies`,
 
+		// APP-CONFIGS
+		APP_CONFIGS_APP_BANNER: `${getModuleConfig('auth', 'api_url')}/app-configs/app-banner`,
+
 		// AUTH
 		AUTH_CHANGE_PASSWORD: `${getModuleConfig('auth', 'api_url')}/auth/change-password`,
 		AUTH_LOGIN: `${getModuleConfig('auth', 'api_url')}/auth/login`,
@@ -359,7 +362,8 @@ export const API_ROUTES = Object.freeze({
 
 		// REALTIME
 		REALTIME_TRIP_UPDATES: `${getModuleConfig('hub', 'api_url')}/v1/realtime/trip-updates`,
-		REALTIME_TRIP_UPDATES_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/trip-updates.pb`,
+		REALTIME_TRIP_UPDATES_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/trip-updates/gtfs`,
+		REALTIME_TRIP_UPDATES_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/trip-updates/gtfs.pb`,
 		REALTIME_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/metadata`,
 		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
 		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
@@ -381,6 +385,9 @@ export const API_ROUTES = Object.freeze({
 	offer: {
 		// BASE
 		BASE: `${getModuleConfig('offer', 'api_url')}`,
+
+		// AGENCIES
+		AGENCIES_LIST: `${getModuleConfig('offer', 'api_url')}/agencies`,
 
 		// FARES
 		FARES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/fares/${encodeURIComponent(id)}`,
@@ -447,6 +454,9 @@ export const API_ROUTES = Object.freeze({
 
 		// PLANS
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}`,
+		PLANS_DETAIL_APEX_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file`,
+		PLANS_DETAIL_APEX_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file/download`,
+		PLANS_DETAIL_APEX_FILE_SEND_NOTIFICATION: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file/send-notification`,
 		PLANS_DETAIL_CHANGE_GTFS: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/change-gtfs`,
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/controller-reprocess`,
 		PLANS_DETAIL_LIST_TO_GENERATE_POSTERS: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/list-to-generate-posters`,
@@ -476,6 +486,7 @@ export const API_ROUTES = Object.freeze({
 		STOPS_DETAIL: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}`,
 		STOPS_DETAIL_LOCK: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}/lock`,
 		STOPS_LIST: `${getModuleConfig('stops', 'api_url')}/stops`,
+		STOPS_TTS: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/tts/${encodeURIComponent(id)}`,
 		STOPS_VALID_ID: `${getModuleConfig('stops', 'api_url')}/stops/valid-id`,
 	},
 } as const);

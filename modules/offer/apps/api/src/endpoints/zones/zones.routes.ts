@@ -18,13 +18,19 @@ server.register(
 
 		instance.get(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.zones.scope, [PermissionCatalog.all.zones.actions.read]) },
+			{ preHandler: authorizationMiddleware([
+				{ actions: [PermissionCatalog.all.zones.actions.nav], scope: PermissionCatalog.all.zones.scope },
+				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
+			]) },
 			ZonesController.getAll,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.zones.scope, [PermissionCatalog.all.zones.actions.read]) },
+			{ preHandler: authorizationMiddleware([
+				{ actions: [PermissionCatalog.all.zones.actions.nav], scope: PermissionCatalog.all.zones.scope },
+				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
+			]) },
 			ZonesController.getById,
 		);
 

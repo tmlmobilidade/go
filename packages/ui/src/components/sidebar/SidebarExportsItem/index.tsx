@@ -3,6 +3,7 @@
 import { IconCheck, IconCircleDashed, IconFileDownload, IconLoader2, IconX } from '@tabler/icons-react';
 import { FileExport } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -23,6 +24,7 @@ export function SidebarExportsItem({ fileExport }: SidebarExportsItemProps) {
 
 	//
 	// A. Setup variables
+	const { t } = useTranslation();
 	const exportsContext = useExportsContext();
 
 	const icon = useMemo(() => {
@@ -51,7 +53,7 @@ export function SidebarExportsItem({ fileExport }: SidebarExportsItemProps) {
 				<Section flexDirection="row" gap="sm" justifyContent="space-between" padding="none" width="fit-content">
 					<div className={styles.iconWrapper}>{icon}</div>
 					<div>
-						<Label size="md">{fileExport.file_name || 'Sem nome'}</Label>
+						<Label size="md">{fileExport.file_name || t('shared:components.sidebar.SidebarExportsItem.no_name')}</Label>
 						<div className={styles.body}>
 							<Label size="sm">{fileExport.processing_status}</Label>
 						</div>
