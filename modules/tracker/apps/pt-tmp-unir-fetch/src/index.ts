@@ -78,7 +78,7 @@ const main = async () => {
 
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmpUnirV1> = {
 			agency_id: AGENCY_NAME_ID_MAP[event.nomeOperador].id,
-			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+			created_at: Dates.fromFormat(event.recordedAtTime, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp,
 			entity_id: hashableRawEventHash,
 			payload: event,
 			version: 'pt-tmp-unir-v1',
