@@ -33,7 +33,7 @@ export class CoreDatabase {
 		this.roles = new MongoInterfaceTemplate<Role, CreateRoleDto, UpdateRoleDto>('roles', this.database, CreateRoleSchema, UpdateRoleSchema);
 		this.sessions = new MongoInterfaceTemplate<Session, CreateSessionDto, UpdateSessionDto>('sessions', this.database, CreateSessionSchema, UpdateSessionSchema);
 		this.users = new MongoInterfaceTemplate<User, CreateUserDto, UpdateUserDto>('users', this.database, CreateUserSchema, UpdateUserSchema);
-		this.verificationTokens = new MongoInterfaceTemplate<VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto>('verificationTokens', this.database, CreateVerificationTokenSchema, UpdateVerificationTokenSchema);
+		this.verificationTokens = new MongoInterfaceTemplate<VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto>('verification-tokens', this.database, CreateVerificationTokenSchema, UpdateVerificationTokenSchema);
 		this.files = new MongoInterfaceTemplate<File, CreateFileDto, UpdateFileDto>('files', this.database, CreateFileSchema, UpdateFileSchema);
 	}
 }
