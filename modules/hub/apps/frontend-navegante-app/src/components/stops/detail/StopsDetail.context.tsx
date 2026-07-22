@@ -10,7 +10,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type HubAlert, type HubLine, type HubPattern, type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { convertGTFSTimeStringAndOperationalDateToUnixTimestamp } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -208,23 +208,23 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 	//
 	// D. Handle actions
 
-	const setActiveTripId = (tripId: string, stopSequence: number) => {
+	const setActiveTripId = useCallback((tripId: string, stopSequence: number) => {
 		const activePattern = validPatternsData?.find(patternGroup => patternGroup.trips.find(trip => trip.trip_ids.includes(tripId)));
 		if (activePattern) setHighlightedPattern(activePattern);
 		setHighlightedTripId(tripId);
 		setHighlightedStopSequence(stopSequence);
-	};
+	}, [validPatternsData]);
 
-	const resetActiveTripId = () => {
+	const resetActiveTripId = useCallback(() => {
 		setHighlightedPattern(undefined);
 		setHighlightedTripId(undefined);
 		setHighlightedStopSequence(undefined);
-	};
+	}, []);
 
 	//
 	// E. Define context value
 
-	const contextValue: StopsDetailContextState = {
+	const contextValue = useMemo<StopsDetailContextState>(() => ({
 		actions: {
 			resetActiveTripId,
 			setActiveTripId,
@@ -241,7 +241,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		flags: {
 			is_loading: isLoading || stopsContext.flags.is_loading || linesContext.flags.is_loading,
 		},
-	};
+	}), [activeAlertsData, associatedLinesData, highlightedPattern, highlightedStopSequence, highlightedTripId, isLoading, linesContext.flags.is_loading, resetActiveTripId, selectedStopData, setActiveTripId, stopsContext.flags.is_loading, timetableDataForSelectedDate]);
 
 	//
 	// F. Render components

@@ -4,7 +4,7 @@
 
 import pjson from '#/package.json';
 import { type Ampli, ampli } from '@/amplitude';
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 
 /* * */
 
@@ -43,7 +43,7 @@ export const AnalyticsContextProvider = ({ children }) => {
 	//
 	// A. Handle actions
 
-	const capture = (callback: (instance: Ampli, props: DefaultEventProps) => void) => {
+	const capture = useCallback((callback: (instance: Ampli, props: DefaultEventProps) => void) => {
 		// Skip if Ampli is not loaded
 		if (!ampli?.isLoaded) return;
 		// Skip if window or document are not available
@@ -59,7 +59,7 @@ export const AnalyticsContextProvider = ({ children }) => {
 		};
 		// Execute the callback with the default event properties
 		callback(ampli, defaultProps);
-	};
+	}, []);
 
 	useEffect(() => {
 		if (!ampli.isLoaded) {
@@ -81,16 +81,16 @@ export const AnalyticsContextProvider = ({ children }) => {
 		return () => {
 			window.clearInterval(intervalId);
 		};
-	}, []);
+	}, [capture]);
 
 	//
 	// C. Define context value
 
-	const contextValue: AnalyticsContextState = {
+	const contextValue = useMemo<AnalyticsContextState>(() => ({
 		actions: {
 			capture,
 		},
-	};
+	}), [capture]);
 
 	//
 	// D. Render components

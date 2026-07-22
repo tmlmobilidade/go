@@ -6,7 +6,7 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -315,7 +315,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	 * @param patternVersionId
 	 * @returns
 	 */
-	const setActivePattern = (patternVersionId: string) => {
+	const setActivePattern = useCallback((patternVersionId: string) => {
 		// Return early if there are no valid patterns
 		if (!dataValidPatternsState) return;
 		// Find the pattern data that matches the pattern version id
@@ -325,7 +325,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			setFilterActivePatternIdState(foundPatternData._id);
 			setFlagIsInteractiveModeState(false);
 		}
-	};
+	}, [dataValidPatternsState]);
 
 	/**
 	 * Set the active waypoint based on the stop id and stop sequence.
@@ -335,7 +335,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 	 * @param isInteractive
 	 * @returns
 	 */
-	const setActiveWaypoint = (stopId: string, stopSequence: number, isInteractive = true) => {
+	const setActiveWaypoint = useCallback((stopId: string, stopSequence: number, isInteractive = true) => {
 		// Return early if active waypoint is already selected
 		if (dataActiveWaypointState?.stop_id === stopId && dataActiveWaypointState?.stop_sequence === stopSequence) return;
 		// Find the waypoint in the active pattern that matches the stop id and stop sequence
@@ -346,22 +346,22 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			setFilterActiveWaypointStopSequenceState(String(foundWaypoint.stop_sequence));
 			setFlagIsInteractiveModeState(isInteractive);
 		}
-	};
+	}, [dataActivePatternState, dataActiveWaypointState]);
 
 	/**
 	 * Set the highlighted trip ids.
 	 * @param tripIds
 	 * @returns
 	 */
-	const setHighlightedTripIds = (tripIds: string[]) => {
+	const setHighlightedTripIds = useCallback((tripIds: string[]) => {
 		if (tripIds === dataHighlightedTripIdsState) setDataHighlightedTripIdsState(null);
 		else setDataHighlightedTripIdsState(tripIds);
-	};
+	}, [dataHighlightedTripIdsState]);
 
 	//
 	// E. Define context value
 
-	const contextValue: LinesDetailContextState = {
+	const contextValue = useMemo<LinesDetailContextState>(() => ({
 		actions: {
 			setActivePattern,
 			setActiveWaypoint,
@@ -387,7 +387,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			is_interactive_mode: flagIsInteractiveModeState,
 			is_loading: linesContext.flags.is_loading || stopsContext.flags.is_loading || availableRoutesData === null || dataAllPatternsState === null,
 		},
-	};
+	}), [availableRoutesData, dataActiveAlertsState, dataActivePatternState, dataActiveShapeState, dataActiveWaypointState, dataAllPatternsState, dataHighlightedTripIdsState, dataValidPatternsState, filterActivePatternIdState, filterActiveWaypointStopIdState, filterActiveWaypointStopSequenceState, flagIsInteractiveModeState, linesContext.flags.is_loading, selectedLineData, setActivePattern, setActiveWaypoint, setHighlightedTripIds, stopsContext.flags.is_loading]);
 
 	//
 	// F. Render components
