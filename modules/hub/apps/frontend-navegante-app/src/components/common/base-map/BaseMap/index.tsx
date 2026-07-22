@@ -3,33 +3,22 @@
 import { useBaseMapCameraSync } from '@/components/common/base-map/useBaseMapCameraSync';
 import { useBaseMapDerivedData } from '@/components/common/base-map/useBaseMapDerivedData';
 import { useBaseMapFocusedEntities } from '@/components/common/base-map/useBaseMapFocusedEntities';
+import { baseMapInteractiveLayerIds, useBaseMapInteractions } from '@/components/common/base-map/useBaseMapInteractions';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { useMapBottomSheet } from '@/components/common/bottom-sheet/use-map-bottom-sheet';
 import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
 import { MapViewOverlayPlaceLocation } from '@/components/map/overlays/MapViewOverlayPlaceLocation';
 import { MapViewOverlayStopLineBadges } from '@/components/map/overlays/MapViewOverlayStopLineBadges';
-import { MapViewOverlayStops, MapViewOverlayStopsInteractiveLayerId, MapViewOverlayStopsVisibleMinZoom } from '@/components/map/overlays/MapViewOverlayStops';
+import { MapViewOverlayStops } from '@/components/map/overlays/MapViewOverlayStops';
 import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOverlayUserLocation';
 // import { MapViewOverlayVehicleLineBadges } from '@/components/map/overlays/MapViewOverlayVehicleLineBadges';
-import { MapViewOverlayVehicles, MapViewOverlayVehiclesInteractiveLayerId, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
+import { MapViewOverlayVehicles, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
 import { MapViewStyleActiveStops } from '@/components/map/overlays/MapViewStyleActiveStops';
-import { MapViewStyleAlerts, MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
+import { MapViewStyleAlerts } from '@/components/map/overlays/MapViewStyleAlerts';
 import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
 import { useUserLocation } from '@/components/map/use-user-location';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { type MapLongPressLocation, useMapLongPress } from '@/hooks/useMapLongPress';
-import { type MapLayerMouseEvent, useMap, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-/* * */
-
-const baseMapInteractiveLayerIds = [
-	MapViewOverlayVehiclesPrimaryLayerId,
-	MapViewOverlayStopsInteractiveLayerId,
-	MapViewStyleAlertsInteractiveLayerId,
-];
 
 /* * */
 
@@ -44,12 +33,7 @@ export function BaseMap() {
 
 	const { data: { activeBaseMapOverlays, excludedBaseMapOperatorIds } } = useMapContext();
 	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
-	const { activeBottomSheet, setActiveBottomSheet } = useBottomSheet();
-	const { collapseForMapInteraction } = useMapBottomSheet();
-
-	const { 'base-map': baseMap } = useMap();
-	const [selectedMapLocation, setSelectedMapLocation] = useState<MapLongPressLocation | null>(null);
-	const mapLongPress = useMapLongPress(setSelectedMapLocation);
+	const { activeBottomSheet } = useBottomSheet();
 
 	const {
 		focusedAlertId,
@@ -83,82 +67,18 @@ export function BaseMap() {
 		routePlannerMapFitFeatures,
 	});
 
-	//
-	// C. Handle actions
-
-	const handleMapClick = (event: MapLayerMouseEvent) => {
-		if (mapLongPress.consumeTriggeredClick()) return;
-
-		setSelectedMapLocation(null);
-
-		if (!event.features?.length) return;
-
-		const feature = event.features[0];
-		const layerId = feature.layer?.id;
-
-		if (layerId === MapViewOverlayStopsInteractiveLayerId) {
-			if (!baseMap || baseMap.getZoom() <= MapViewOverlayStopsVisibleMinZoom) return;
-			if (!feature.properties._id) return;
-			setActiveBottomSheet({ entityId: String(feature.properties._id), view: 'stops-detail' });
-			return;
-		}
-
-		if (layerId === MapViewStyleAlertsInteractiveLayerId) {
-			if (!feature.properties._id) return;
-			setActiveBottomSheet({ entityId: String(feature.properties._id), view: 'alerts-detail' });
-			return;
-		}
-
-		if (layerId === MapViewOverlayVehiclesInteractiveLayerId) {
-			if (!feature.properties.vehicle_id) return;
-			setActiveBottomSheet({ entityId: String(feature.properties.vehicle_id), view: 'vehicles-detail' });
-			return;
-		}
-	};
-
-	const handleGetDirections = () => {
-		if (!selectedMapLocation) return;
-
-		const location = selectedMapLocation;
-		setSelectedMapLocation(null);
-		void routePlannerContext.actions.openDirectionsTo({
-			detail: `${location.latitude}, ${location.longitude}`,
-			label: t('default:map.MapLocationPin.selected_location'),
-			lat: location.latitude,
-			lon: location.longitude,
-			type: 'PLACE',
-		});
-	};
-
-	const handleMapDrag = (event: ViewStateChangeEvent) => {
-		mapLongPress.cancel();
-		setUserLocationTrackingMode('idle');
-		collapseForMapInteraction(event);
-	};
-
-	const handleMapZoom = (event: ViewStateChangeEvent) => {
-		mapLongPress.cancel();
-		collapseForMapInteraction(event);
-	};
+	const { handleGetDirections, mapViewInteractionProps, selectedMapLocation } = useBaseMapInteractions({
+		setUserLocationTrackingMode,
+	});
 
 	//
 	// B. Render components
 
 	return (
 		<MapView
+			{...mapViewInteractionProps}
 			id="base-map"
 			interactiveLayerIds={baseMapInteractiveLayerIds}
-			onClick={handleMapClick}
-			onDrag={handleMapDrag}
-			onMouseDown={mapLongPress.handlePressStart}
-			onMouseLeave={mapLongPress.cancel}
-			onMouseMove={mapLongPress.handlePressMove}
-			onMouseUp={mapLongPress.cancel}
-			onTouchCancel={mapLongPress.cancel}
-			onTouchEnd={mapLongPress.cancel}
-			onTouchMove={mapLongPress.handlePressMove}
-			onTouchStart={mapLongPress.handlePressStart}
-			onZoom={handleMapZoom}
 		>
 
 			<MapViewOverlayStops
