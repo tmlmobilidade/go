@@ -3,7 +3,7 @@
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 4px;
 	padding: 4px;
-	background-color: var(--color-surface-secondary, #f1f1f1);
+	background-color: var(--color-system-background-200);
 	border-radius: 12px;
 }
 
@@ -13,7 +13,7 @@
 	overflow: hidden;
 	font-size: 14px;
 	font-weight: 700;
-	color: var(--color-text-secondary, #5f5f66);
+	color: var(--color-system-text-200);
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	cursor: pointer;
@@ -23,8 +23,8 @@
 }
 
 .timeModeButton[data-active='true'] {
-	color: var(--color-text-primary, #111);
-	background-color: var(--color-surface-primary, #fff);
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
 	box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
 }
 
@@ -33,15 +33,15 @@
 	flex-direction: column;
 	gap: 6px;
 	padding: 12px;
-	background-color: var(--color-surface-primary, #fff);
-	border: 1px solid var(--color-system-border-200, #e3e3ea);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-200);
 	border-radius: 12px;
 }
 
 .timeInputWrapper span {
 	font-size: 11px;
 	font-weight: 700;
-	color: var(--color-text-secondary, #888);
+	color: var(--color-system-text-200);
 	text-transform: uppercase;
 }
 
@@ -49,7 +49,7 @@
 	width: 100%;
 	font-size: 16px;
 	font-weight: 700;
-	color: var(--color-text-primary, #111);
+	color: var(--color-system-text-100);
 	outline: 0;
 	background: transparent;
 	border: 0;

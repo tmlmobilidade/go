@@ -16,9 +16,9 @@
 	margin: 16px;
 	font-size: 15px;
 	font-weight: 700;
-	color: var(--color-primary-black, #111);
+	color: var(--color-route-on-brand);
 	cursor: pointer;
-	background-color: var(--color-primary-yellow, #ffd400);
+	background-color: var(--color-route-brand-background);
 	border: 0;
 	border-radius: 10px;
 }
@@ -35,8 +35,8 @@
 	padding: 12px;
 	margin: 0 16px 16px;
 	font-size: 13px;
-	color: var(--color-status-error, #b42318);
-	background-color: rgb(229 62 62 / 8%);
+	color: var(--color-route-status-error-text);
+	background-color: var(--color-route-status-error-background);
 	border-radius: 8px;
 }
 
@@ -54,5 +54,5 @@
 	margin: 0;
 	font-size: 16px;
 	font-weight: 800;
-	color: var(--color-text-secondary, #6f6f78);
+	color: var(--color-system-text-200);
 }

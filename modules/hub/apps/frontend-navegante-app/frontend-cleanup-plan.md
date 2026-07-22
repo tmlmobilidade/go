@@ -70,8 +70,8 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 13 | Introduce singleton user-location ownership | in progress | 3 | One root `UserLocationContextProvider` now owns geolocation and orientation subscriptions while the existing hook interface remains compatible; mobile permission and orientation flows still require manual verification. |
 | 14 | Consolidate bottom-sheet implementation and add snap behavior coverage | complete | 1 | Removed the legacy handcrafted sheet, made the `react-modal-sheet` adapter the canonical `BottomSheet`, colocated navigation types and shared snap constants, and covered map-interaction collapse and snap-state publication. |
 | 15 | Normalize context flags and memoize provider values | complete | 10–14 | Every local context provider now memoizes its value behind stable action/filter facades; boolean flags use `is_`/`has_` snake_case names, and permanently undefined/false flags were removed. |
-| 16 | Consolidate route/status design tokens and CSS duplication | pending | Structural tasks complete | Requires visual regression coverage. |
-| 17 | Reorganize route components into `common`, `input`, `list`, `detail`, and `navigation` | in progress | 4, completed alongside 6–8 | `common` owns shared mode/leg-strip presentation, `input` owns endpoint fields, location results/selectors, time input, and top search, `detail` owns itinerary detail, and `list` owns results, filters, and itinerary cards. Place detail, navigation, and remaining shared/root moves remain. |
+| 16 | Consolidate route/status design tokens and CSS duplication | in progress | Structural tasks complete | Route mode/status colors now use named Navegante tokens; compact/detail line pills and mode badges share size-aware primitives; filter triggers reuse the option button primitive; route CSS no longer carries fallback hex colors. Automated checks pass, but light/dark and responsive visual regression remains pending because no controllable browser was available. |
+| 17 | Reorganize route components into `common`, `input`, `list`, `detail`, and `navigation` | in progress | 4, completed alongside 6–8 | `common` owns shared mode, badge, pill, and leg-strip presentation, `input` owns endpoint fields, location results/selectors, time input, and top search, `detail` owns itinerary detail, and `list` owns results, filters, and itinerary cards. Place detail, navigation, and remaining shared/root moves remain. |
 | 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | pending | 9, 11–15 | Move BaseMap and other reusable hooks into themed `src/hooks` folders; group route-planner, map, search, alert, and transit utilities; move shared types/constants out of component folders where appropriate; colocate tests with their implementation; avoid compatibility files that recreate flat catch-all directories. |
 
 ## Commit log
@@ -99,6 +99,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 15 | `refactor(hub): stabilize list context values` | Memoize alerts, lines, and stops list providers behind stable filter/action facades and normalize their local loading flags without changing the shared UI template. |
 | 15 | `refactor(hub): stabilize detail context values` | Memoize line, stop, and analytics provider values while stabilizing their exposed actions. |
 | 15 | `refactor(hub): stabilize route planner context` | Stabilize the Route Planner action API and memoize its context facade without changing workflow transitions. |
+| 16, 17 | `refactor(hub): consolidate route presentation styles` | Centralize route mode/status tokens, share compact/detail mode and line presentation, and reuse filter button styling; visual regression remains tracked. |
 
 ## Verification
 
@@ -117,4 +118,4 @@ cd modules/hub/apps/frontend-navegante-app
 npx eslint src
 ```
 
-Each completed slice has passed its tests, TypeScript check, scoped ESLint, and `git diff --check`.
+Each committed slice has passed its tests, TypeScript check, scoped ESLint, and `git diff --check`. Manual verification remains explicitly tracked for Tasks 13 and 16.

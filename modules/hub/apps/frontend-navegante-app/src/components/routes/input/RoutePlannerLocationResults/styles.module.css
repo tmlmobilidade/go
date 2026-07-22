@@ -8,9 +8,9 @@
 	top: calc(100% + 8px);
 	left: 0;
 	right: 0;
-	border: 1px solid var(--color-system-border-200, #e3e3ea);
+	border: 1px solid var(--color-system-border-200);
 	border-radius: 10px;
-	background-color: var(--color-surface-primary, #fff);
+	background-color: var(--color-system-background-100);
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 	overflow: hidden;
 }
@@ -18,7 +18,7 @@
 .locationResultsStatus {
 	padding: 12px;
 	font-size: 13px;
-	color: var(--color-text-secondary, #666);
+	color: var(--color-system-text-200);
 }
 
 .locationResults[data-variant='inline'],
@@ -29,7 +29,7 @@
 }
 
 .locationResultsStatus[data-variant='inline'] {
-	background-color: var(--color-system-background-100, #fff);
+	background-color: var(--color-system-background-100);
 }
 
 .locationResult {
@@ -42,7 +42,7 @@
 	align-items: start;
 	width: 100%;
 	padding: 10px 12px;
-	border-bottom: 1px solid var(--color-system-border-100, #f0f0f4);
+	border-bottom: 1px solid var(--color-system-border-100);
 }
 
 .locationResult:last-child {
@@ -50,7 +50,7 @@
 }
 
 .locationResult:hover {
-	background-color: var(--color-surface-secondary, #f5f5f5);
+	background-color: var(--color-system-background-200);
 }
 
 .locationIcon {
@@ -59,9 +59,9 @@
 	justify-content: center;
 	width: 34px;
 	height: 34px;
-	color: var(--color-system-text-200, #555);
-	background-color: var(--color-system-background-200, #f3f4f6);
-	border: 1px solid var(--color-system-border-100, #ececf1);
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
 	border-radius: 999px;
 }
 
@@ -76,7 +76,7 @@
 	overflow: hidden;
 	font-size: 14px;
 	font-weight: 600;
-	color: var(--color-text-primary, #111);
+	color: var(--color-system-text-100);
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
@@ -95,13 +95,13 @@
 	font-size: 11px;
 	font-weight: 800;
 	line-height: 1;
-	color: var(--color-system-text-200, #555);
-	background-color: var(--color-system-background-200, #f3f4f6);
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-200);
 	border-radius: 999px;
 }
 
 .locationResult small {
 	font-size: 12px;
 	line-height: 1.3;
-	color: var(--color-text-secondary, #666);
+	color: var(--color-system-text-200);
 }

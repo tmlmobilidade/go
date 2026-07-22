@@ -7,18 +7,22 @@ import styles from './styles.module.css';
 /* * */
 
 interface RoutePlannerFilterButtonProps {
+	ariaExpanded?: boolean
 	children: ReactNode
 	isActive: boolean
 	onClick: () => void
+	variant?: 'option' | 'trigger'
 }
 
 /* * */
 
-export function RoutePlannerFilterButton({ children, isActive, onClick }: RoutePlannerFilterButtonProps) {
+export function RoutePlannerFilterButton({ ariaExpanded, children, isActive, onClick, variant = 'option' }: RoutePlannerFilterButtonProps) {
 	return (
 		<button
+			aria-expanded={ariaExpanded}
 			className={styles.filterButton}
 			data-active={isActive}
+			data-variant={variant}
 			onClick={onClick}
 			type="button"
 		>

@@ -1,8 +1,8 @@
 'use client';
 
 import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
-import { RoutePlannerModeIcon } from '@/components/routes/common/RoutePlannerModeIcon';
-import { formatMotisPlanDurationMinutes, getMotisLegDurationSeconds, getMotisLegModeKind, isMotisWalkingLeg, type MotisPlanLeg } from '@/utils/route-planner-motis';
+import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
+import { formatMotisPlanDurationMinutes, getMotisLegDurationSeconds, isMotisWalkingLeg, type MotisPlanLeg } from '@/utils/route-planner-motis';
 import { IconWalk } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 
@@ -38,9 +38,7 @@ export function RoutePlannerLegStripItem({ leg, lineByShortName, showConnector }
 				</div>
 			) : (
 				<>
-					<div className={styles.modeIcon} data-mode={getMotisLegModeKind(leg)}>
-						<RoutePlannerModeIcon leg={leg} size={16} />
-					</div>
+					<RoutePlannerModeBadge leg={leg} size="sm" />
 					<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} />
 				</>
 			)}

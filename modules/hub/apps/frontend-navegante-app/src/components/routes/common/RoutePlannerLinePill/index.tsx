@@ -12,11 +12,12 @@ import styles from './styles.module.css';
 interface RoutePlannerLinePillProps {
 	leg: MotisPlanLeg
 	lineByShortName: Map<string, HubLine>
+	size?: 'md' | 'sm'
 }
 
 /* * */
 
-export function RoutePlannerLinePill({ leg, lineByShortName }: RoutePlannerLinePillProps) {
+export function RoutePlannerLinePill({ leg, lineByShortName, size = 'sm' }: RoutePlannerLinePillProps) {
 	//
 
 	//
@@ -35,11 +36,11 @@ export function RoutePlannerLinePill({ leg, lineByShortName }: RoutePlannerLineP
 	// C. Render components
 
 	if (!isMotisWalkingLeg(leg) && lineData) {
-		return <LineBadge lineData={lineData} size="sm" />;
+		return <LineBadge lineData={lineData} size={size} />;
 	}
 
 	return (
-		<span className={styles.linePill} data-mode={modeKind}>
+		<span className={styles.linePill} data-mode={modeKind} data-size={size}>
 			{label}
 		</span>
 	);

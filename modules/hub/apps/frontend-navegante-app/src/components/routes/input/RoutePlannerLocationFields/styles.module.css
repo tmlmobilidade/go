@@ -3,7 +3,7 @@
 	flex-direction: row;
 	gap: 12px;
 	padding: 16px;
-	background-color: var(--color-surface-primary, #fff);
+	background-color: var(--color-system-background-100);
 	border-radius: 16px;
 	box-shadow: 0 2px 12px rgb(0 0 0 / 8%);
 }
@@ -11,7 +11,7 @@
 .container[data-variant='compact'] {
 	gap: 9px;
 	padding: 10px 12px;
-	border: 1px solid var(--color-system-border-100, #e8e8ee);
+	border: 1px solid var(--color-system-border-100);
 	border-radius: 12px;
 	box-shadow: none;
 }
@@ -36,11 +36,11 @@
 }
 
 .originDot {
-	color: var(--color-status-success, #2dc76d);
+	color: var(--color-route-status-origin);
 }
 
 .destinationPin {
-	color: var(--color-status-error, #e53e3e);
+	color: var(--color-route-status-danger);
 }
 
 .trackLine {
@@ -49,8 +49,8 @@
 	margin: 4px 0;
 	background-image: repeating-linear-gradient(
 		to bottom,
-		var(--color-border-default, #ccc) 0,
-		var(--color-border-default, #ccc) 4px,
+		var(--color-system-border-200) 0,
+		var(--color-system-border-200) 4px,
 		transparent 4px,
 		transparent 8px
 	);
@@ -84,15 +84,15 @@
 	justify-content: center;
 	width: 36px;
 	height: 36px;
-	color: var(--color-text-secondary, #555);
+	color: var(--color-system-text-200);
 	cursor: pointer;
-	background-color: var(--color-surface-secondary, #f5f5f5);
+	background-color: var(--color-system-background-200);
 	border-radius: 50%;
 	transition: background-color 150ms ease;
 }
 
 .swapButton:hover {
-	background-color: var(--color-surface-hover, #ebebeb);
+	background-color: var(--color-system-background-300);
 }
 
 .container[data-variant='compact'] .swapButton {

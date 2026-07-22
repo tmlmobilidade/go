@@ -1,11 +1,11 @@
 'use client';
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
-import { RoutePlannerModeIcon } from '@/components/routes/common/RoutePlannerModeIcon';
-import { RoutePlannerLegBadge } from '@/components/routes/detail/RoutePlannerLegBadge';
+import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
+import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
 import { RoutePlannerTime } from '@/components/routes/RoutePlannerTime';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
-import { formatMotisPlanDurationMinutes, getMotisLegDurationSeconds, getMotisLegModeKind, isMotisWalkingLeg, type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/utils/route-planner-motis';
+import { formatMotisPlanDurationMinutes, getMotisLegDurationSeconds, isMotisWalkingLeg, type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/utils/route-planner-motis';
 import { getRoutePlannerIntermediateStopRealtimeStatus, getRoutePlannerLegRealtimeStatus } from '@/utils/route-planner-realtime';
 import { IconAlertTriangle, IconChevronDown, IconNavigationTop } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
@@ -61,9 +61,10 @@ export function RoutePlannerItineraryDetailLeg({ alertsContext, isActive, leg, l
 
 	return (
 		<li aria-current={isActive ? 'step' : undefined} className={styles.leg}>
-			<div className={styles.legIcon} data-mode={getMotisLegModeKind(leg)}>
-				<RoutePlannerModeIcon leg={leg} size={18} />
-				{isActive && (
+			<RoutePlannerModeBadge
+				leg={leg}
+				size="md"
+				marker={isActive && (
 					<span
 						aria-label={t('default:routes.RoutePlanner.results.current_step')}
 						className={styles.currentStepMarker}
@@ -72,11 +73,11 @@ export function RoutePlannerItineraryDetailLeg({ alertsContext, isActive, leg, l
 						<IconNavigationTop size={12} stroke={3} />
 					</span>
 				)}
-			</div>
+			/>
 
 			<div className={styles.legBody}>
 				<div className={styles.legHeader}>
-					<RoutePlannerLegBadge leg={leg} lineByShortName={lineByShortName} />
+					<RoutePlannerLinePill leg={leg} lineByShortName={lineByShortName} size="md" />
 					{durationMinutes !== null && (
 						<span className={styles.durationChip}>
 							{t('default:routes.RoutePlanner.results.leg_duration', '', { count: durationMinutes })}

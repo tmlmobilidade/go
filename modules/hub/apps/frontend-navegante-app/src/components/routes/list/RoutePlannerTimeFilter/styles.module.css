@@ -4,8 +4,8 @@
 	padding: 0 10px;
 	font-size: 16px;
 	font-weight: 750;
-	color: var(--color-system-text-100, #111);
-	background-color: var(--color-system-background-100, #fff);
-	border: 1px solid var(--color-system-border-100, #e8e8ee);
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
 	border-radius: 9px;
 }

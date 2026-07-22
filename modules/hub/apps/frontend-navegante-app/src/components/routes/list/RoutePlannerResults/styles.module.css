@@ -10,16 +10,16 @@
 	padding: 12px;
 	font-size: 14px;
 	font-weight: 700;
-	background-color: var(--color-system-background-100, #fff);
+	background-color: var(--color-system-background-100);
 	border-radius: 10px;
 }
 
 .status {
-	color: var(--color-system-text-200, #666);
+	color: var(--color-system-text-200);
 }
 
 .error {
-	color: var(--color-status-error, #b42318);
+	color: var(--color-route-status-error-text);
 }
 
 .itineraries {

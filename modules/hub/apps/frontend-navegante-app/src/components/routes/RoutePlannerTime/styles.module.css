@@ -11,7 +11,7 @@
 }
 
 .container[data-realtime='true'] strong {
-	color: var(--color-status-info, #1677ff);
+	color: var(--color-route-status-info);
 }
 
 .container em {
@@ -20,16 +20,16 @@
 	font-style: normal;
 	font-weight: 900;
 	line-height: 1;
-	color: var(--color-status-info, #1677ff);
+	color: var(--color-route-status-info);
 	text-transform: uppercase;
-	background-color: #e8f2ff;
+	background-color: var(--color-route-status-realtime-background);
 	border-radius: 999px;
 }
 
 .container del {
 	font-size: 11px;
 	font-weight: 700;
-	color: var(--color-system-text-300, #777);
+	color: var(--color-system-text-300);
 	white-space: nowrap;
 }
 

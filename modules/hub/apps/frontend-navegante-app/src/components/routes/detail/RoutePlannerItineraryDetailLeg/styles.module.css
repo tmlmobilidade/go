@@ -7,20 +7,7 @@
 }
 
 .leg + .leg {
-	border-top: 1px solid var(--color-system-border-100, #ececf1);
-}
-
-.legIcon {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 32px;
-	height: 32px;
-	color: var(--color-system-text-200, #555);
-	background-color: var(--color-system-background-200, #f3f4f6);
-	border: 1px solid var(--color-system-border-100, #ececf1);
-	border-radius: 999px;
+	border-top: 1px solid var(--color-system-border-100);
 }
 
 .currentStepMarker {
@@ -32,38 +19,11 @@
 	justify-content: center;
 	width: 20px;
 	height: 20px;
-	color: var(--color-primary-white, #fff);
-	background-color: var(--color-status-info, #1677ff);
-	border: 2px solid var(--color-system-background-100, #fff);
+	color: var(--color-route-on-accent);
+	background-color: var(--color-route-status-info);
+	border: 2px solid var(--color-system-background-100);
 	border-radius: 999px;
 	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
-}
-
-.legIcon[data-mode='bus'] {
-	color: #303640;
-}
-
-.legIcon[data-mode='bike'],
-.legIcon[data-mode='scooter'] {
-	color: #15803d;
-}
-
-.legIcon[data-mode='car'] {
-	color: #475569;
-}
-
-.legIcon[data-mode='rail'],
-.legIcon[data-mode='subway'],
-.legIcon[data-mode='tram'] {
-	color: #0d168f;
-}
-
-.legIcon[data-mode='ferry'] {
-	color: #1273c4;
-}
-
-.legIcon[data-mode='plane'] {
-	color: #0f766e;
 }
 
 .legBody {
@@ -88,10 +48,10 @@
 	font-size: 13px;
 	font-weight: 900;
 	line-height: 1;
-	color: var(--color-system-text-200, #555);
+	color: var(--color-system-text-200);
 	white-space: nowrap;
-	background-color: var(--color-system-background-200, #f3f4f6);
-	border: 1px solid var(--color-system-border-100, #ececf1);
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
 	border-radius: 999px;
 }
 
@@ -100,7 +60,7 @@
 	font-size: 15px;
 	font-weight: 800;
 	line-height: 1.25;
-	color: var(--color-system-text-100, #111);
+	color: var(--color-system-text-100);
 }
 
 .headsign {
@@ -108,7 +68,7 @@
 	overflow: hidden;
 	font-size: 13px;
 	font-weight: 700;
-	color: var(--color-system-text-300, #777);
+	color: var(--color-system-text-300);
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
@@ -119,7 +79,7 @@
 	gap: 5px;
 	font-size: 13px;
 	font-weight: 700;
-	color: var(--color-system-text-200, #666);
+	color: var(--color-system-text-200);
 }
 
 .warningList {
@@ -148,21 +108,21 @@
 }
 
 .warningItem[data-kind='late'] {
-	color: #8a4b00;
-	background-color: #fff3d5;
-	border: 1px solid #f4d08a;
+	color: var(--color-route-status-late-text);
+	background-color: var(--color-route-status-late-background);
+	border: 1px solid var(--color-route-status-late-border);
 }
 
 .warningItem[data-kind='early'] {
-	color: #14532d;
-	background-color: #dcfce7;
-	border: 1px solid #86efac;
+	color: var(--color-route-status-early-text);
+	background-color: var(--color-route-status-early-background);
+	border: 1px solid var(--color-route-status-early-border);
 }
 
 .warningItem[data-kind='alert'] {
-	color: #9f1239;
-	background-color: #ffe4e6;
-	border: 1px solid #fecdd3;
+	color: var(--color-route-status-alert-text);
+	background-color: var(--color-route-status-alert-background);
+	border: 1px solid var(--color-route-status-alert-border);
 }
 
 .stops {
@@ -179,7 +139,7 @@
 	padding: 0;
 	font-size: 13px;
 	font-weight: 800;
-	color: var(--color-status-info, #1677ff);
+	color: var(--color-route-status-info);
 	cursor: pointer;
 	background: transparent;
 	border: 0;
@@ -196,7 +156,7 @@
 	padding: 8px 0 0 10px;
 	margin: 0;
 	list-style: none;
-	border-left: 2px solid var(--color-system-border-100, #ececf1);
+	border-left: 2px solid var(--color-system-border-100);
 }
 
 .stopList li {
@@ -205,13 +165,13 @@
 	gap: 8px;
 	align-items: baseline;
 	font-size: 13px;
-	color: var(--color-system-text-200, #666);
+	color: var(--color-system-text-200);
 }
 
 .stopList strong {
 	min-width: 0;
 	overflow: hidden;
-	color: var(--color-system-text-100, #111);
+	color: var(--color-system-text-100);
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }

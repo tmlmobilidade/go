@@ -1,55 +1,71 @@
 .linePill {
 	display: inline-flex;
 	align-items: center;
-	max-width: 92px;
-	height: 22px;
-	padding: 0 8px;
 	overflow: hidden;
-	font-size: 12px;
 	font-weight: 900;
 	line-height: 1;
-	color: var(--color-primary-white, #fff);
+	color: var(--color-route-on-accent);
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	background-color: var(--color-system-text-200, #555);
+	background-color: var(--color-system-text-200);
 	border-radius: 999px;
 }
 
+.linePill[data-size='sm'] {
+	max-width: 92px;
+	height: 22px;
+	padding: 0 8px;
+	font-size: 12px;
+}
+
+.linePill[data-size='md'] {
+	max-width: 170px;
+	height: 26px;
+	padding: 0 10px;
+	font-size: 13px;
+}
+
+.linePill[data-mode='walk'] {
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
+}
+
 .linePill[data-mode='bus'] {
-	color: var(--color-primary-black, #111);
-	background-color: #3bd33b;
+	color: var(--color-route-on-bus);
+	background-color: var(--color-route-mode-bus-background);
 }
 
 .linePill[data-mode='bike'],
 .linePill[data-mode='scooter'] {
-	background-color: #15803d;
+	background-color: var(--color-route-mode-bike);
 }
 
 .linePill[data-mode='car'] {
-	background-color: #64748b;
+	background-color: var(--color-route-mode-car-background);
 }
 
 .linePill[data-mode='rail'] {
-	background-color: #08138f;
+	background-color: var(--color-route-mode-rail-background);
 }
 
 .linePill[data-mode='subway'] {
-	background-color: #7f35d8;
+	background-color: var(--color-route-mode-subway-background);
 }
 
 .linePill[data-mode='tram'] {
-	background-color: #f0a000;
+	background-color: var(--color-route-mode-tram-background);
 }
 
 .linePill[data-mode='ferry'] {
-	background-color: #0b76c5;
+	background-color: var(--color-route-mode-ferry-background);
 }
 
 .linePill[data-mode='plane'] {
-	background-color: #0f766e;
+	background-color: var(--color-route-mode-plane);
 }
 
 .linePill[data-mode='elevator'],
 .linePill[data-mode='transit'] {
-	background-color: #6b7280;
+	background-color: var(--color-route-mode-transit);
 }

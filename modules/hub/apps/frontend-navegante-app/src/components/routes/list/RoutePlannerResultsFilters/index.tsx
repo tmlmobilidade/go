@@ -1,5 +1,6 @@
 'use client';
 
+import { RoutePlannerFilterButton } from '@/components/routes/list/RoutePlannerFilterButton';
 import { RoutePlannerModeFilter } from '@/components/routes/list/RoutePlannerModeFilter';
 import { RoutePlannerSortFilter } from '@/components/routes/list/RoutePlannerSortFilter';
 import { RoutePlannerTimeFilter } from '@/components/routes/list/RoutePlannerTimeFilter';
@@ -45,41 +46,38 @@ export function RoutePlannerResultsFilters({ availableModes, disabledModesCount,
 	return (
 		<>
 			<div className={styles.filterToggles}>
-				<button
-					aria-expanded={openFilter === 'time'}
-					className={styles.filtersToggle}
-					data-active={routePlannerContext.data.travel_time.mode !== 'now' || openFilter === 'time'}
+				<RoutePlannerFilterButton
+					ariaExpanded={openFilter === 'time'}
+					isActive={routePlannerContext.data.travel_time.mode !== 'now' || openFilter === 'time'}
 					onClick={() => onOpenFilterChange(openFilter === 'time' ? null : 'time')}
-					type="button"
+					variant="trigger"
 				>
 					<IconClock size={15} />
 					{formatTravelTimeFilterLabel(routePlannerContext.data.travel_time, t)}
-				</button>
+				</RoutePlannerFilterButton>
 
 				{hasItineraries && (
 					<>
-						<button
-							aria-expanded={openFilter === 'sort'}
-							className={styles.filtersToggle}
-							data-active={sortMode !== 'best' || openFilter === 'sort'}
+						<RoutePlannerFilterButton
+							ariaExpanded={openFilter === 'sort'}
+							isActive={sortMode !== 'best' || openFilter === 'sort'}
 							onClick={() => onOpenFilterChange(openFilter === 'sort' ? null : 'sort')}
-							type="button"
+							variant="trigger"
 						>
 							<IconSortAscending size={15} />
 							{t(`default:routes.RoutePlanner.results.sort.${sortMode}`)}
-						</button>
+						</RoutePlannerFilterButton>
 
-						<button
-							aria-expanded={openFilter === 'modes'}
-							className={styles.filtersToggle}
-							data-active={disabledModesCount > 0 || openFilter === 'modes'}
+						<RoutePlannerFilterButton
+							ariaExpanded={openFilter === 'modes'}
+							isActive={disabledModesCount > 0 || openFilter === 'modes'}
 							onClick={() => onOpenFilterChange(openFilter === 'modes' ? null : 'modes')}
-							type="button"
+							variant="trigger"
 						>
 							<IconRoute size={15} />
 							{t('default:routes.RoutePlanner.results.modes.label')}
-							{disabledModesCount > 0 && <span>{disabledModesCount}</span>}
-						</button>
+							{disabledModesCount > 0 && <span className={styles.filterCount}>{disabledModesCount}</span>}
+						</RoutePlannerFilterButton>
 					</>
 				)}
 			</div>
