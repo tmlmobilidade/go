@@ -77,7 +77,7 @@ const main = async () => {
 			.digest('hex');
 
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmpUnirV1> = {
-			agency_id: AGENCY_NAME_ID_MAP[event.nomeOperador],
+			agency_id: AGENCY_NAME_ID_MAP[event.nomeOperador].id,
 			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
 			entity_id: hashableRawEventHash,
 			payload: event,
