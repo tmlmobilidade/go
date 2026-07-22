@@ -1,6 +1,6 @@
 name: Build Modules
 
-run-name: ${{ inputs.pr_number != '' && format('build-module-{0}', inputs.pr_number) || github.ref_name }}
+run-name: "${{ inputs.pr_number != '' && format('build pr-{0}: {1}', inputs.pr_number, inputs.module || 'all') || format('build {0}: {1}', github.ref_name, inputs.module || 'changed') }}"
 
 on:
   workflow_dispatch:
