@@ -15,11 +15,26 @@ import crypto from 'node:crypto';
 let ITERATION = 0;
 
 const AGENCY_NAME_ID_MAP = {
-	'UT1 - VIANORBUS': 'KJTOU',
-	'UT2 - NEX': '1H6XC',
-	'UT3 - Porto Mobilidade': 'OP1VZ',
-	'UT4 - Transportes Beira Douro': 'VZAS3',
-	'UT5 - XERBUS': '8NDX4',
+	'UT1 - VIANORBUS': {
+		collection: 'ptTmpUnirUt1',
+		id: 'KJTOU',
+	},
+	'UT2 - NEX': {
+		collection: 'ptTmpUnirUt2',
+		id: '1H6XC',
+	},
+	'UT3 - Porto Mobilidade': {
+		collection: 'ptTmpUnirUt3',
+		id: 'OP1VZ',
+	},
+	'UT4 - Transportes Beira Douro': {
+		collection: 'ptTmpUnirUt4',
+		id: 'VZAS3',
+	},
+	'UT5 - XERBUS': {
+		collection: 'ptTmpUnirUt5',
+		id: '8NDX4',
+	},
 };
 
 /* * */
@@ -70,12 +85,13 @@ const main = async () => {
 		};
 
 		//
+		const collection = AGENCY_NAME_ID_MAP[event.nomeOperador].collection;
 
-		const alreadyExists = await rawDb.raw.rawVehicleEvents.findOne({ _id: hashableRawEventHash });
+		const alreadyExists = await rawDb.vehicleEvents[collection].findOne({ _id: hashableRawEventHash });
 
 		if (alreadyExists) continue;
 
-		await rawDb.raw.rawVehicleEvents.insertOne({
+		await rawDb.vehicleEvents[collection].insertOne({
 			...hashableRawEvent,
 			_id: hashableRawEventHash,
 			received_at: Dates.now('Europe/Lisbon').unix_timestamp,
