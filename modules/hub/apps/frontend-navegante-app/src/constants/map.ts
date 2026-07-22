@@ -1,4 +1,4 @@
-import goMapStyle from '@/components/map/go-map-styles.json' with { type: 'json' };
+import goMapStyle from '@/assets/map/go-map-styles.json' with { type: 'json' };
 import { type StyleSpecification } from 'maplibre-gl';
 
 /* * */

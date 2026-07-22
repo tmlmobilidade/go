@@ -1,8 +1,8 @@
 'use client';
 
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { useMapContext } from '@/components/map/Map.context';
-import { MapViewOverlayStopsInteractiveLayerId } from '@/components/map/overlays/MapViewOverlayStops';
+import { MapViewOverlayStopsInteractiveLayerId } from '@/components/map/MapViewOverlayStops';
+import { useMapContext } from '@/contexts/Map.context';
 import { useDebouncedCallback } from '@mantine/hooks';
 import { type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { Marker } from '@vis.gl/react-maplibre';

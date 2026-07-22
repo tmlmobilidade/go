@@ -2,7 +2,7 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
-import { type BaseMapOperatorId } from '@/components/map/Map.context';
+import { type BaseMapOperatorId } from '@/types/map';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { useRoutePlannerMapData } from '@/hooks/base-map/useRoutePlannerMapData';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';

@@ -2,7 +2,7 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { useUserLocation } from '@/components/map/UserLocation.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
 import { type RoutePlannerLocation } from '@/types/route-planner';

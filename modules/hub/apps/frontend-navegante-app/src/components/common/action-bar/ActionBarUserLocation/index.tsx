@@ -1,8 +1,8 @@
 'use client';
 
 import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
-import { useMapContext } from '@/components/map/Map.context';
-import { useUserLocation } from '@/components/map/UserLocation.context';
+import { useMapContext } from '@/contexts/Map.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { IconCurrentLocation, IconCurrentLocationFilled, IconLocationOff, IconNavigationTop } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 

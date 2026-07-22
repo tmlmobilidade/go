@@ -1,15 +1,13 @@
 'use client';
 
-import { useUserLocation } from '@/components/map/UserLocation.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
+import { type BaseMapOperatorId, type BaseMapOverlayType } from '@/types/map';
 import { useSessionStorage } from '@mantine/hooks';
 import { moveMapView } from '@tmlmobilidade/ui';
 import { type MapRef } from '@vis.gl/react-maplibre';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
-
-export type BaseMapOperatorId = '1' | '2' | '3' | '4' | '8' | '15' | '16' | '21' | 'CM';
-export type BaseMapOverlayType = 'alerts' | 'vehicles';
 
 interface MapContextState {
 	actions: {

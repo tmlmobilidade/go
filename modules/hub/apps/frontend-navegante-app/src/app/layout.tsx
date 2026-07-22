@@ -2,7 +2,7 @@
 
 import pjson from '#/package.json';
 import { Providers } from '@/app/providers';
-import { MapContextProvider } from '@/components/map/Map.context';
+import { MapContextProvider } from '@/contexts/Map.context';
 import { i18nResourceKeysPt } from '@/i18n/resources';
 import { BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';

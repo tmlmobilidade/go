@@ -52,10 +52,12 @@ src/utils/
 └── transit/                 # Shared timetable, stop, and pattern helpers
 
 src/constants/
-└── bottom-sheet.ts          # Cross-component sheet constants
+├── bottom-sheet.ts          # Cross-component sheet constants
+└── map.ts                   # Map defaults and style configuration
 
 src/types/
 ├── bottom-sheet.ts          # Sheet navigation contracts
+├── map.ts                   # Map overlay and operator contracts
 ├── route-planner-context.ts # Route context facade
 └── route-planner.ts         # MOTIS and route-planning contracts
 ```
@@ -85,6 +87,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 17 | Reorganize route components into `common`, `input`, `list`, `detail`, `navigation`, and `planner` | complete | 4, completed alongside 6–8 | `common` owns shared time/mode/leg presentation, `input` owns endpoint and travel-time input, `list` owns results/filtering/cards, `detail` owns itinerary and place detail, `navigation` owns trip-start and live-guidance controls, and `planner` owns the workflow composition root. Only the context contract remains at the route root. |
 | 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | complete | 9, 11–15 | Grouped standalone hooks under themed folders; grouped utilities under `alerts`, `bottom-sheet`, `map`, `route-planner`, `search`, and `transit`; moved shared sheet and route contracts/constants out of component folders; colocated tests with their modules; updated test discovery; removed the route-planner compatibility barrel and redundant user-location re-export. |
 | 19 | Remove unreachable legacy component trees | complete | 17–18 | Audited static source reachability from every Next.js app entry point; removed 13 unreachable components, the list contexts owned only by the obsolete line/stop list trees, and their unreferenced translation keys. A second reachability pass reports no unused component entry points. |
+| 20 | Organize map support and normalize search naming | in progress | 18–19 | Moved map contexts, contracts, configuration, and style assets out of the component tree so `components/map` contains rendered map modules only. Search still needs its `OmniSearch` vocabulary normalized to the shared `Search` prefix. |
 
 ## Commit log
 

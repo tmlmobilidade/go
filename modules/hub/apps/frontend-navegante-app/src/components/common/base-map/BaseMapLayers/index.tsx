@@ -1,16 +1,16 @@
 'use client';
 
-import { useMapContext } from '@/components/map/Map.context';
-import { MapViewOverlayPlaceLocation } from '@/components/map/overlays/MapViewOverlayPlaceLocation';
-import { MapViewOverlayStopLineBadges } from '@/components/map/overlays/MapViewOverlayStopLineBadges';
-import { MapViewOverlayStops } from '@/components/map/overlays/MapViewOverlayStops';
-import { MapViewOverlayUserLocation } from '@/components/map/overlays/MapViewOverlayUserLocation';
-import { MapViewOverlayVehicles, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
-import { MapViewStyleActiveStops } from '@/components/map/overlays/MapViewStyleActiveStops';
-import { MapViewStyleAlerts } from '@/components/map/overlays/MapViewStyleAlerts';
-import { MapViewStylePath } from '@/components/map/overlays/MapViewStylePath';
-import { useUserLocation } from '@/components/map/UserLocation.context';
+import { MapViewOverlayPlaceLocation } from '@/components/map/MapViewOverlayPlaceLocation';
+import { MapViewOverlayStopLineBadges } from '@/components/map/MapViewOverlayStopLineBadges';
+import { MapViewOverlayStops } from '@/components/map/MapViewOverlayStops';
+import { MapViewOverlayUserLocation } from '@/components/map/MapViewOverlayUserLocation';
+import { MapViewOverlayVehicles, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/MapViewOverlayVehicles';
+import { MapViewStyleActiveStops } from '@/components/map/MapViewStyleActiveStops';
+import { MapViewStyleAlerts } from '@/components/map/MapViewStyleAlerts';
+import { MapViewStylePath } from '@/components/map/MapViewStylePath';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
+import { useMapContext } from '@/contexts/Map.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useBaseMapDerivedData } from '@/hooks/base-map/useBaseMapDerivedData';
 import { useBaseMapFocusedEntities } from '@/hooks/base-map/useBaseMapFocusedEntities';
 import { type MapLongPressLocation } from '@/hooks/base-map/useMapLongPress';

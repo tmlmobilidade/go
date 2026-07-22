@@ -2,7 +2,7 @@
 
 import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';
 import { MapView } from '@/components/map/MapView';
-import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
+import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/MapViewStyleAlerts';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { centerMap, moveMap } from '@/utils/map/map';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';

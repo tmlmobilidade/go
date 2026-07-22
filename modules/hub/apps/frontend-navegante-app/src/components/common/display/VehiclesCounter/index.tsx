@@ -1,7 +1,7 @@
 'use client';
 
 import { LiveIcon } from '@/components/common/display/LiveIcon';
-import { useMapContext } from '@/components/map/Map.context';
+import { useMapContext } from '@/contexts/Map.context';
 import { useMapFloatingControlsLayout } from '@/hooks/base-map/useMapFloatingControlsLayout';
 import { useTranslation } from 'react-i18next';
 

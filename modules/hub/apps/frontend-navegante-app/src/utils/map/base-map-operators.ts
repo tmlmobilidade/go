@@ -1,4 +1,4 @@
-import { type BaseMapOperatorId } from '@/components/map/Map.context';
+import { type BaseMapOperatorId } from '@/types/map';
 
 /* * */
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { useMapContext } from '@/components/map/Map.context';
-import { mapDefaultConfig } from '@/components/map/Map.settings';
+import { mapDefaultConfig } from '@/constants/map';
+import { useMapContext } from '@/contexts/Map.context';
 import { loadMapAssets, MAP_ASSETS_ALERTS, MAP_ASSETS_MISC, MAP_ASSETS_SHAPES, MAP_ASSETS_STOPS, MAP_ASSETS_VEHICLES } from '@tmlmobilidade/ui';
 import Map, { type MapLayerMouseEvent, type MapLayerTouchEvent, MapRef, useMap } from '@vis.gl/react-maplibre';
 import { type MapLibreEvent } from 'maplibre-gl';

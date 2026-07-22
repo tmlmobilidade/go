@@ -1,7 +1,7 @@
 'use client';
 
 import { useLinesContext } from '@/components/lines/Lines.context';
-import { useUserLocation } from '@/components/map/UserLocation.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { clearLastOmniSearchQuery } from '@/components/search/omni-search-query';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/types/route-planner';

@@ -1,10 +1,10 @@
 'use client';
 
-import { MapViewOverlayStopsInteractiveLayerId, MapViewOverlayStopsVisibleMinZoom } from '@/components/map/overlays/MapViewOverlayStops';
-import { MapViewOverlayVehiclesInteractiveLayerId, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/overlays/MapViewOverlayVehicles';
-import { MapViewStyleAlertsInteractiveLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
-import { useUserLocation } from '@/components/map/UserLocation.context';
+import { MapViewOverlayStopsInteractiveLayerId, MapViewOverlayStopsVisibleMinZoom } from '@/components/map/MapViewOverlayStops';
+import { MapViewOverlayVehiclesInteractiveLayerId, MapViewOverlayVehiclesPrimaryLayerId } from '@/components/map/MapViewOverlayVehicles';
+import { MapViewStyleAlertsInteractiveLayerId } from '@/components/map/MapViewStyleAlerts';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { type MapLongPressLocation, useMapLongPress } from '@/hooks/base-map/useMapLongPress';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useMapBottomSheet } from '@/hooks/bottom-sheet/useMapBottomSheet';

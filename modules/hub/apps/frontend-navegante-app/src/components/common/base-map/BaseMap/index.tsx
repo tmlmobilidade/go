@@ -1,9 +1,9 @@
 'use client';
 
 import { BaseMapLayers } from '@/components/common/base-map/BaseMapLayers';
-import { useMapContext } from '@/components/map/Map.context';
 import { MapView } from '@/components/map/MapView';
-import { useUserLocation } from '@/components/map/UserLocation.context';
+import { useMapContext } from '@/contexts/Map.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useBaseMapCameraSync } from '@/hooks/base-map/useBaseMapCameraSync';
 import { useBaseMapDerivedData } from '@/hooks/base-map/useBaseMapDerivedData';
 import { useBaseMapFocusedEntities } from '@/hooks/base-map/useBaseMapFocusedEntities';

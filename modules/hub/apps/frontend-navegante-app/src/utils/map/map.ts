@@ -1,6 +1,6 @@
 /* * */
 
-import { mapDefaultValues } from '@/components/map/Map.settings';
+import { mapDefaultValues } from '@/constants/map';
 import * as turf from '@turf/turf';
 
 /* * */
