@@ -41,7 +41,7 @@ WORKDIR /app
 # Copy everything including package-lock.json from workflow cache
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
+RUN turbo prune --docker @tmlmobilidade/go-${MODULE}-${APP}
 
 
 # # #

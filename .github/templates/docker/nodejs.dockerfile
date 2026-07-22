@@ -32,7 +32,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
+RUN turbo prune --docker @tmlmobilidade/go-${MODULE}-${APP}
 
 
 # # #
