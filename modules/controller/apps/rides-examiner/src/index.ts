@@ -38,7 +38,11 @@ export async function validateRides() {
 		const fetchCoordinatorTimer = new Timer();
 
 		const currentEnvironment = getCurrentEnvironment();
-		const rideIdsBatchResponse = await fetch(`http://${currentEnvironment}-controller-coordinator.${currentEnvironment}-controller.svc.cluster.local/rides`);
+		let coordinatorUrl: string;
+		if (currentEnvironment === 'dev') coordinatorUrl = `http://localhost:5050/rides`;
+		else coordinatorUrl = `http://${currentEnvironment}-controller-coordinator.${currentEnvironment}-controller.svc.cluster.local/rides`;
+
+		const rideIdsBatchResponse = await fetch(coordinatorUrl);
 		const rideIdsBatch = await rideIdsBatchResponse.json() as string[];
 
 		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
@@ -156,4 +160,4 @@ export async function validateRides() {
 
 /* * */
 
-await runOnInterval(validateRides, { intervalMs: '1s' });
+await runOnInterval(validateRides, { intervalMs: '10s' });
