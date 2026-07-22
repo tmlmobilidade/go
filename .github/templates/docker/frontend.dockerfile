@@ -54,6 +54,10 @@ ARG APP
 
 WORKDIR /app
 
+RUN apt-get update
+RUN apt-get install -y python3 build-essential
+RUN rm -rf /var/lib/apt/lists/*
+
 # First install the dependencies (as they change less often)
 COPY --from=pruner /app/out/json/ .
 RUN npm ci

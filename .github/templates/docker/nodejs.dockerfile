@@ -44,6 +44,10 @@ FROM base AS builder
 
 WORKDIR /app
 
+RUN apt-get update
+RUN apt-get install -y python3 build-essential
+RUN rm -rf /var/lib/apt/lists/*
+
 COPY --from=pruner /app/out/json/ .
 COPY .github/templates/docker/scripts /app/.docker/scripts
 
