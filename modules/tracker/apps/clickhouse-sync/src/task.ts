@@ -100,11 +100,15 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		writeSourceDocumentToDestinationDbFn: async (sourceDbDocument) => {
-			const parser = PARSER_MAP[sourceDbDocument.version];
-			if (!parser) return Logger.error({ message: `No parser found for version ${sourceDbDocument.version}. Skipping document with _id "${sourceDbDocument._id}"...` });
-			const parseResult = parser(sourceDbDocument);
-			if (!parseResult) return Logger.error({ message: `Failed to parse document with _id "${sourceDbDocument._id}". Skipping...` });
-			await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
+			try {
+				const parser = PARSER_MAP[sourceDbDocument.version];
+				if (!parser) throw new Error(`No parser found for version ${sourceDbDocument.version}. Skipping document with _id "${sourceDbDocument._id}"...`);
+				const parseResult = parser(sourceDbDocument);
+				if (!parseResult) throw new Error(`Failed to parse document with _id "${sourceDbDocument._id}". Skipping...`);
+				await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
+			} catch (error) {
+				Logger.error({ error, message: `An error occurred while parsing a document: ${error.message}` });
+			}
 		},
 
 	});

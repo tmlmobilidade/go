@@ -36,21 +36,18 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 		// into a simplified vehicle event document using the appropriate parser based on the version field.
 
 		const parser = PARSER_MAP[databaseOperation.fullDocument.version];
-		const newSimplifiedVehicleEventDocument = parser(databaseOperation.fullDocument);
+		if (!parser) throw new Error(`No parser found for version ${databaseOperation.fullDocument.version}. Skipping document with _id "${databaseOperation.fullDocument._id}"...`);
 
-		if (!newSimplifiedVehicleEventDocument) {
-			Logger.error({ message: `Invalid Vehicle Event document, skipping operation: ${databaseOperation.fullDocument._id}` });
-			return;
-		}
+		const newSimplifiedVehicleEventDocument = parser(databaseOperation.fullDocument);
+		if (!newSimplifiedVehicleEventDocument) throw new Error(`Failed to parse document with _id "${databaseOperation.fullDocument._id}". Skipping...`);
 
 		//
 		// Write the new vehicle event document to the SimplifiedVehicleEvents collection
 
 		await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });
 
-	//
+		//
 	} catch (error) {
-		console.error(JSON.stringify(databaseOperation.fullDocument, null, 2));
-		Logger.error({ message: `Error processing Vehicle Event document: ${error}` });
+		Logger.error({ error, message: `An error occurred while parsing a document: ${error.message}` });
 	}
 };
