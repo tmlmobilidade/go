@@ -3,6 +3,7 @@
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubStop, HubStopSchema } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Stop_Extended } from '@tmlmobilidade/types';
@@ -59,6 +60,9 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	// For each item, update its entry in the database
 
 	const exportedStopsData: HubStop[] = [];
+	const dbStops = await stops.findMany({}, { projection: { _id: 1, flags: 1, legacy_ids: 1 } });
+	const dbStopsMap = new Map(dbStops.map(stop => [stop._id, stop]));
+
 	let updatedStopsCounter = 0;
 
 	for (const stop of allStops as QueryResult[]) {
@@ -88,14 +92,16 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 			//
 			// Build the final stop object
 
+			const dbStop = dbStopsMap.get(Number(stop.stop_id));
+
 			const validatedStop: HubStop = {
 				_id: Number(stop.stop_id),
 				agency_ids: JSON.parse(stop.agency_ids),
 				district_id: stop.district_id,
 				district_name: stop.district_name,
-				flags: [],
+				flags: dbStop?.flags ?? [],
 				latitude: stop.stop_lat,
-				legacy_ids: [],
+				legacy_ids: dbStop?.legacy_ids ?? [],
 				lifecycle_status: 'active',
 				line_ids: JSON.parse(stop.line_ids),
 				locality_id: stop.locality_id,
