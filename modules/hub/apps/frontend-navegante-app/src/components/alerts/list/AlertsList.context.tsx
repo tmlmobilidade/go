@@ -259,7 +259,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 		},
 		flags: {
 			error: undefined,
-			isLoading: alertsContext.flags.isLoading,
+			isLoading: alertsContext.flags.is_loading,
 		},
 		view: {
 			current: currentView,

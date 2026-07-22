@@ -13,8 +13,7 @@ interface LinesContextState {
 		routes: HubRoute[]
 	}
 	flags: {
-		error: Error | undefined
-		isLoading: boolean
+		is_loading: boolean
 	}
 }
 
@@ -52,16 +51,15 @@ export function LinesContextProvider({ children }: PropsWithChildren) {
 	//
 	// B. Define context value
 
-	const contextValue: LinesContextState = {
+	const contextValue = useMemo<LinesContextState>(() => ({
 		data: {
 			lines: normalizedLinesData,
 			routes: normalizedRoutesData,
 		},
 		flags: {
-			error: undefined,
-			isLoading: allLinesLoading || allRoutesLoading,
+			is_loading: allLinesLoading || allRoutesLoading,
 		},
-	};
+	}), [allLinesLoading, allRoutesLoading, normalizedLinesData, normalizedRoutesData]);
 
 	//
 	// C. Render components

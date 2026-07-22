@@ -24,7 +24,7 @@ export function AlertsDetailView({ alert }: AlertsDetailViewProps) {
 	//
 	// B. Render componentss
 
-	if (alertsContext.flags.isLoading) {
+	if (alertsContext.flags.is_loading) {
 		return (
 			<>
 				<Space h="90px" />

@@ -31,11 +31,16 @@ src/components/routes/
 
 The migration happens while components are split, avoiding a directory-wide move-only change.
 
-## Target utility structure
+## Target source-support structure
 
-Utilities will be grouped by the domain knowledge they own, with tests colocated beside the module they verify. Colocation keeps the implementation and its test surface together while the domain folders make the utility interface easier to navigate.
+Hooks and utilities will be grouped by the domain knowledge they own. Shared types and constants will move to the matching themed support folder instead of accumulating beside components, while tests remain colocated with the module they verify. Component feature folders should primarily contain rendered components, their styles, and established feature contexts.
 
 ```text
+src/hooks/
+├── base-map/               # Base-map derived data, camera, and interactions
+├── route-planner/          # Route-planning data and workflow hooks
+└── search/                 # Shared search/geocoding hooks
+
 src/utils/
 ├── alerts/                  # Alert presentation and filtering helpers
 ├── map/                     # Base-map data, operator visibility, and map helpers
@@ -67,7 +72,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 15 | Normalize context flags and memoize provider values | pending | 10–14 | Use small consumer-safe migrations. |
 | 16 | Consolidate route/status design tokens and CSS duplication | pending | Structural tasks complete | Requires visual regression coverage. |
 | 17 | Reorganize route components into `common`, `input`, `list`, `detail`, and `navigation` | in progress | 4, completed alongside 6–8 | `common` owns shared mode/leg-strip presentation, `input` owns endpoint fields, location results/selectors, time input, and top search, `detail` owns itinerary detail, and `list` owns results, filters, and itinerary cards. Place detail, navigation, and remaining shared/root moves remain. |
-| 18 | Reorganize the flat `utils` directory by domain and keep tests colocated | pending | 9, 11–13 | Move route-planner, map, search, alert, and shared transit utilities into focused folders after behavior-sensitive extractions stop changing their imports; avoid compatibility files that recreate the flat directory. |
+| 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | pending | 9, 11–15 | Move BaseMap and other reusable hooks into themed `src/hooks` folders; group route-planner, map, search, alert, and transit utilities; move shared types/constants out of component folders where appropriate; colocate tests with their implementation; avoid compatibility files that recreate flat catch-all directories. |
 
 ## Commit log
 

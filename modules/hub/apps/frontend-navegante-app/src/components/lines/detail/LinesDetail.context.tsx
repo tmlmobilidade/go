@@ -385,7 +385,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		},
 		flags: {
 			is_interactive_mode: flagIsInteractiveModeState,
-			is_loading: linesContext.flags.isLoading || stopsContext.flags.isLoading || availableRoutesData === null || dataAllPatternsState === null,
+			is_loading: linesContext.flags.is_loading || stopsContext.flags.is_loading || availableRoutesData === null || dataAllPatternsState === null,
 		},
 	};
 

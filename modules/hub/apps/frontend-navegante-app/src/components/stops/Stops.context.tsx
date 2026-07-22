@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubStop } from '@tmlmobilidade/go-types-public-info';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -18,8 +18,7 @@ interface StopsContextState {
 		stops: HubStop[]
 	}
 	flags: {
-		error: Error | undefined
-		isLoading: boolean
+		is_loading: boolean
 	}
 }
 
@@ -58,39 +57,42 @@ export function StopsContextProvider({ children }: PropsWithChildren) {
 		return collection;
 	}, [allStopsData]);
 
+	const normalizedStopsData = useMemo(() => {
+		return allStopsData ?? [];
+	}, [allStopsData]);
+
 	//
 	// C. Handle actions
 
-	const getStopById = (stopId: number | string): HubStop | undefined => {
-		return allStopsData?.find(stop => String(stop._id) === String(stopId));
-	};
+	const getStopById = useCallback((stopId: number | string): HubStop | undefined => {
+		return normalizedStopsData.find(stop => String(stop._id) === String(stopId));
+	}, [normalizedStopsData]);
 
-	const getStopByIdGeoJsonFC = (stopId: string): GeoJSON.FeatureCollection | undefined => {
+	const getStopByIdGeoJsonFC = useCallback((stopId: string): GeoJSON.FeatureCollection | undefined => {
 		const stop = getStopById(stopId);
 		if (!stop) return;
 		const collection = getBaseGeoJsonFeatureCollection();
 		const stopFC = transformStopDataIntoGeoJsonFeature(stop);
 		if (stopFC) collection.features.push(stopFC);
 		return collection;
-	};
+	}, [getStopById]);
 
 	//
 	// D. Define context value
 
-	const contextValue: StopsContextState = {
+	const contextValue = useMemo<StopsContextState>(() => ({
 		actions: {
 			getStopById,
 			getStopByIdGeoJsonFC,
 		},
 		data: {
 			fc: dataFeatureCollectionState,
-			stops: allStopsData ?? [],
+			stops: normalizedStopsData,
 		},
 		flags: {
-			error: undefined,
-			isLoading: allStopsLoading,
+			is_loading: allStopsLoading,
 		},
-	};
+	}), [allStopsLoading, dataFeatureCollectionState, getStopById, getStopByIdGeoJsonFC, normalizedStopsData]);
 
 	//
 	// E. Render components

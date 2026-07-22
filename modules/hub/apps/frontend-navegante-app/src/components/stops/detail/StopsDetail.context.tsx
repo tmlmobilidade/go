@@ -239,7 +239,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 			timetable: timetableDataForSelectedDate,
 		},
 		flags: {
-			is_loading: isLoading || stopsContext.flags.isLoading || linesContext.flags.isLoading,
+			is_loading: isLoading || stopsContext.flags.is_loading || linesContext.flags.is_loading,
 		},
 	};
 

@@ -111,7 +111,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: undefined,
-			isLoading: linesContext.flags.isLoading,
+			isLoading: linesContext.flags.is_loading,
 		},
 	};
 

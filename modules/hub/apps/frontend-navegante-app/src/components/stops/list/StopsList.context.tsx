@@ -99,7 +99,7 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 		},
 		flags: {
 			error: undefined,
-			isLoading: stopsContext.flags.isLoading,
+			isLoading: stopsContext.flags.is_loading,
 		},
 	};
 

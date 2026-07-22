@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -19,8 +19,7 @@ interface AlertsContextState {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
 	}
 	flags: {
-		error: Error | undefined
-		isLoading: boolean
+		is_loading: boolean
 	}
 }
 
@@ -59,47 +58,50 @@ export function AlertsContextProvider({ children }: PropsWithChildren) {
 		return collection;
 	}, [allAlertsData]);
 
+	const normalizedAlertsData = useMemo(() => {
+		return allAlertsData ?? [];
+	}, [allAlertsData]);
+
 	//
 	// C. Handle actions
 
-	const getAlertById = (alertId: string): HubAlert | null => {
-		return allAlertsData?.find(item => item._id === alertId) || null;
-	};
+	const getAlertById = useCallback((alertId: string): HubAlert | null => {
+		return normalizedAlertsData.find(item => item._id === alertId) || null;
+	}, [normalizedAlertsData]);
 
-	const getAlertsByLineId = (lineId: string): HubAlert[] => {
-		return allAlertsData?.filter((item) => {
+	const getAlertsByLineId = useCallback((lineId: string): HubAlert[] => {
+		return normalizedAlertsData.filter((item) => {
 			if (item.reference_type === 'lines') return item.references.some(reference => reference.parent_id === lineId);
 			if (item.reference_type === 'stops') return item.references.some(reference => reference.child_ids.includes(lineId));
 			return false;
-		}) || [];
-	};
+		});
+	}, [normalizedAlertsData]);
 
-	const getAlertsByStopId = (lineId: string): HubAlert[] => {
-		return allAlertsData?.filter((item) => {
+	const getAlertsByStopId = useCallback((lineId: string): HubAlert[] => {
+		return normalizedAlertsData.filter((item) => {
 			if (item.reference_type === 'stops') return item.references.some(reference => reference.parent_id === lineId);
 			if (item.reference_type === 'lines') return item.references.some(reference => reference.child_ids.includes(lineId));
 			return false;
-		}) || [];
-	};
+		});
+	}, [normalizedAlertsData]);
 
 	//
 	// D. Define context value
 
-	const contextValue: AlertsContextState = {
+	const contextValue = useMemo<AlertsContextState>(() => ({
 		actions: {
 			getAlertById,
 			getAlertsByLineId,
 			getAlertsByStopId,
 		},
 		data: {
-			alerts: allAlertsData || [],
+			alerts: normalizedAlertsData,
 			fc: dataFeatureCollectionState,
 		},
 		flags: {
-			error: undefined,
-			isLoading: allAlertsLoading,
+			is_loading: allAlertsLoading,
 		},
-	};
+	}), [allAlertsLoading, dataFeatureCollectionState, getAlertById, getAlertsByLineId, getAlertsByStopId, normalizedAlertsData]);
 
 	//
 	// E. Render components
