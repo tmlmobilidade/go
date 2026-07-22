@@ -48,7 +48,7 @@ async function main() {
 
 		//
 	} catch (err) {
-		Logger.error({ error: err as Error, message: 'An error occurred while syncing clickhouse data.' });
+		Logger.error({ message: 'An error occurred while syncing clickhouse data.' });
 		throw err;
 	}
 }
