@@ -112,7 +112,10 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 				if (!selectedLineData) return;
 				const fetchPromises = selectedLineData.pattern_ids.map((patternId) => {
 					return fetch(API_ROUTES.hub.NETWORK_PATTERNS(patternId))
-						.then(response => response.json())
+						.then((response) => {
+							if (!response.ok) throw new Error(`Failed to fetch pattern ${patternId}`);
+							return response.json();
+						})
 						.then((patternPayload) => {
 							const patternData = Array.isArray(patternPayload) ? patternPayload : patternPayload.data ?? [];
 							return patternData.map((patternGroup) => {
@@ -127,8 +130,8 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 				});
 				const resultData = await Promise.all(fetchPromises);
 				if (!isCancelled) setDataAllPatternsState(resultData);
-			} catch (error) {
-				console.error({ error, message: 'Error fetching pattern data:' });
+			} catch {
+				if (!isCancelled) setDataAllPatternsState([]);
 			}
 		})();
 
@@ -149,8 +152,8 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 			try {
 				const shapeUrl = API_ROUTES.hub.NETWORK_SHAPES(dataActivePatternState.shape_id);
 				const shapeData = await fetch(shapeUrl).then((response) => {
-					if (!response.ok) console.log({ message: `Failed to fetch shape data for shapeId: ${dataActivePatternState.shape_id}` });
-					else return response.json();
+					if (!response.ok) throw new Error(`Failed to fetch shape ${dataActivePatternState.shape_id}`);
+					return response.json();
 				}).then(shapePayload => shapePayload?.data ?? shapePayload);
 				if (shapeData) {
 					shapeData.geojson = {
@@ -162,8 +165,8 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 					};
 				}
 				if (!isCancelled) setDataActiveShapeState(shapeData);
-			} catch (error) {
-				console.error({ error, message: 'Error fetching shape data:' });
+			} catch {
+				if (!isCancelled) setDataActiveShapeState(null);
 			}
 		})();
 

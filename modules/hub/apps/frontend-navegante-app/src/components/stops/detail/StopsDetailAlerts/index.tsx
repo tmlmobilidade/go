@@ -4,8 +4,7 @@
 
 import { AlertsCarousel } from '@/components/lines/common/AlertsCarousel';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-import { Section, Surface } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
+import { Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -15,7 +14,6 @@ export function StopsDetailAlerts() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
 	const stopsDetailContext = useStopsDetailContext();
 
 	//

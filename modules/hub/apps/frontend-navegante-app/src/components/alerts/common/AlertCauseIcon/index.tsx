@@ -12,12 +12,11 @@ import styles from './styles.module.css';
 interface AlertCauseIconProps {
 	cause?: AlertCause
 	className?: string
-	size?: 'lg' | 'md'
 	withText?: boolean
 }
 /* * */
 
-export function AlertCauseIcon({ cause, className, size, withText = false }: AlertCauseIconProps) {
+export function AlertCauseIcon({ cause, className, withText = false }: AlertCauseIconProps) {
 	//
 
 	//

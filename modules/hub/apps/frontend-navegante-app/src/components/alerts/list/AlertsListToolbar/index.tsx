@@ -1,8 +1,8 @@
 'use client';
 
 import { AlertExpandToggle } from '@/components/alerts/common/AlertExpandToggle';
-import SelectCause from '@/components/alerts/common/SelectCause';
-import SelectEffect from '@/components/alerts/common/SelectEffect';
+import { SelectCause } from '@/components/alerts/common/SelectCause';
+import { SelectEffect } from '@/components/alerts/common/SelectEffect';
 import { SelectLine } from '@/components/alerts/common/SelectLine';
 import { SelectStop } from '@/components/alerts/common/SelectStop';
 import { useAlertsListContext } from '@/components/alerts/list/AlertsList.context';

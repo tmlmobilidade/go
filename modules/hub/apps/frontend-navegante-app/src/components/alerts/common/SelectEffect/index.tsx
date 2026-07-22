@@ -15,7 +15,7 @@ import styles from './styles.module.css';
 
 type SelectAlertEffectProps = SelectProps;
 
-export default function Component({ onChange, value, ...props }: SelectAlertEffectProps) {
+export function SelectEffect({ onChange, value, ...props }: SelectAlertEffectProps) {
 	//
 
 	//

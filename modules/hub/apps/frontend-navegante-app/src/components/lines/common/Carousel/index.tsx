@@ -25,7 +25,7 @@ interface SlideItemProps {
 
 /* * */
 
-export default function Component({ skeletonComponent, skeletonQty = 3, slides = [], slideSize = 300 }: CarouselProps) {
+export function CarouselDisplay({ skeletonComponent, skeletonQty = 3, slides = [], slideSize = 300 }: CarouselProps) {
 	return (
 		<Carousel
 			classNames={{ container: styles.container, control: styles.control, controls: styles.controlsWrapper }}

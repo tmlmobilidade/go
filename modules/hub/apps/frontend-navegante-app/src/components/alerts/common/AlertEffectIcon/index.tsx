@@ -12,13 +12,12 @@ import styles from './styles.module.css';
 interface AlertEffectIconProps {
 	className?: string
 	effect?: AlertEffect
-	size?: 'lg' | 'md'
 	withText?: boolean
 }
 
 /* * */
 
-export function AlertEffectIcon({ className, effect, size, withText = false }: AlertEffectIconProps) {
+export function AlertEffectIcon({ className, effect, withText = false }: AlertEffectIconProps) {
 	//
 
 	//

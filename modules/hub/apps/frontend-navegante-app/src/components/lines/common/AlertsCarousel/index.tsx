@@ -1,7 +1,7 @@
 'use client';
 
 import { AlertsCarouselSlide } from '@/components/lines/common/AlertsCarouselSlide';
-import Carousel from '@/components/lines/common/Carousel';
+import { CarouselDisplay } from '@/components/lines/common/Carousel';
 import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 
 /* * */
@@ -21,6 +21,6 @@ export function AlertsCarousel({ alerts }: Props) {
 	}));
 
 	return (
-		<Carousel slides={carouselSlides} />
+		<CarouselDisplay slides={carouselSlides} />
 	);
 }
