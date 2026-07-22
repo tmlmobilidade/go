@@ -35,19 +35,19 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 			// Only insert operations are expected to occur in this PCGIDB collection.
 
 			if (change.operationType !== 'insert') {
-				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with operationType != "insert": operationType="${change.operationType}" _id="${change._id}"` });
+				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with operationType != "insert": operationType="${change.operationType}"` });
 				return;
 			}
 
 			if (!change.fullDocument) {
-				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with missing fullDocument: operationType="${change.operationType}" _id="${change._id}"` });
+				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with missing fullDocument: operationType="${change.operationType}" _id="${change.fullDocument._id}"` });
 				return;
 			}
 
 			const nowMinus5Minutes = Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp;
 
 			if (!change.fullDocument.created_at || change.fullDocument.created_at < nowMinus5Minutes) {
-				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with missing or outdated created_at field: operationType="${change.operationType}" _id="${change._id}"` });
+				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with missing or outdated created_at field: operationType="${change.operationType}" _id="${change.fullDocument._id}"` });
 				return;
 			}
 
