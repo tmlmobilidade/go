@@ -29,7 +29,7 @@ const main = async () => {
 
 	try {
 		await initSentryNode();
-		Logger.startNodeLogs({ app: 'Metro Lisboa-fetch', message: 'Sentry Tracker Metro Lisboa Fetch initialized', module: 'tracker', severity: 'info' });
+		Logger.startNodeLogs({ app: 'pt-tml-ml-api-fetch', message: 'Sentry Tracker Metro Lisboa Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker Metro Lisboa Fetch' });
 	}

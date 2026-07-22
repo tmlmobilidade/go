@@ -22,7 +22,7 @@ const main = async () => {
 
 	try {
 		await initSentryNode();
-		Logger.startNodeLogs({ app: 'crtm-aisa-fetch', message: 'Sentry Tracker CRTM AISA Fetch initialized', module: 'tracker', severity: 'info' });
+		Logger.startNodeLogs({ app: 'es-crtm-aisa-api-fetch', message: 'Sentry Tracker CRTM AISA Fetch initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker CRTM AISA Fetch' });
 	}

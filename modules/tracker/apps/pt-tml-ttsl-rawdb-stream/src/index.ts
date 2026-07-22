@@ -17,7 +17,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	insertFn: async (data) => {
 		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
 	},
-	title: `pt-tml-ttsl-labdb-stream`,
+	title: `pt-tml-ttsl-rawdb-stream`,
 });
 
 /* * */
@@ -29,7 +29,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 
 	try {
 		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pt-tml-ttsl-labdb-stream', message: 'Sentry Tracker CRTM AISA LabDb Stream initialized', module: 'tracker', severity: 'info' });
+		Logger.startNodeLogs({ app: 'pt-tml-ttsl-rawdb-stream', message: 'Sentry Tracker CRTM AISA LabDb Stream initialized', module: 'tracker', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker CRTM AISA LabDb Stream' });
 	}
@@ -46,7 +46,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 			//
 
 			if (change.operationType !== 'insert' || !change.fullDocument) {
-				Logger.error({ message: `[pt-tml-ttsl-labdb-stream] WARNING: unexpected changeStream document: operationType="${change.operationType}"` });
+				Logger.error({ message: `[pt-tml-ttsl-rawdb-stream] WARNING: unexpected changeStream document: operationType="${change.operationType}"` });
 				return;
 			}
 
