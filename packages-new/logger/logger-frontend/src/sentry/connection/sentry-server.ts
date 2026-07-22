@@ -38,11 +38,6 @@ interface RequestLogContext extends RuntimeLogContext {
 }
 
 /**
- * Sentinel property used to flag that stdout has already been monkey-patched
- */
-const REQUEST_LOG_REGISTRATION_KEY = '__tml_sentry_next_request_logs_registered__';
-
-/**
  * Pattern for matching standardized HTTP request logs:
  *   "<METHOD> <PATH> <STATUS_CODE> [in <DURATION> <ms|s>]"
  */
@@ -65,13 +60,10 @@ export function registerSentryNextRequestLogs(context: RuntimeLogContext): void 
 	const processRef = Reflect.get(globalThis, 'process') as ProcessLike | undefined;
 	const stdout = processRef?.stdout;
 
-	// Abort if stdout isn't available or already patched
+	// Abort if stdout isn't available
 	if (!stdout || typeof stdout.write !== 'function') return;
-	if (Reflect.get(stdout, REQUEST_LOG_REGISTRATION_KEY)) return;
 
 	const originalWrite = stdout.write.bind(stdout);
-
-	Reflect.set(stdout, REQUEST_LOG_REGISTRATION_KEY, true);
 
 	/**
 	 * Patched write function: inspects outgoing data, forwards it,
