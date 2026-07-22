@@ -1,4 +1,4 @@
-import { type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace, type RoutePlannerItineraryMapData, type RoutePlannerItineraryMapDataOptions, type RoutePlannerLocation } from '@/types/route-planner';
+import { type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace, type RoutePlannerItineraryMapData, type RoutePlannerItineraryMapDataOptions, type RoutePlannerLocation } from '@/types/route-planner/models';
 import { getMotisLegModeKind, getMotisLegRouteLabel } from '@/utils/route-planner/modes';
 
 /* * */

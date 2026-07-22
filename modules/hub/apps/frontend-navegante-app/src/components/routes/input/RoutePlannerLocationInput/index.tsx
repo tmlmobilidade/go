@@ -1,7 +1,7 @@
 'use client';
 
 import { RoutePlannerLocationResults } from '@/components/routes/input/RoutePlannerLocationResults';
-import { type RoutePlannerLocation } from '@/types/route-planner';
+import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { IconCurrentLocation } from '@tabler/icons-react';
 
 import styles from './styles.module.css';

@@ -1,4 +1,4 @@
-import { type MotisItinerary, type MotisPlanLeg, type RoutePlannerLocation } from '@/types/route-planner';
+import { type MotisItinerary, type MotisPlanLeg, type RoutePlannerLocation } from '@/types/route-planner/models';
 import { formatMotisPlanDurationMinutes } from '@/utils/route-planner/format';
 import { getMotisLegPathPositions, getMotisPlanPlacePosition } from '@/utils/route-planner/geometry';
 import { isMotisWalkingLeg } from '@/utils/route-planner/modes';

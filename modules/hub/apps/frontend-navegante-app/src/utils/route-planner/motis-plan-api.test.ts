@@ -1,4 +1,4 @@
-import { type RoutePlannerLocation } from '@/types/route-planner';
+import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { buildMotisPlanParams } from '@/utils/route-planner/motis-plan-api';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';

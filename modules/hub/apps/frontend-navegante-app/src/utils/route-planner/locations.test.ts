@@ -1,4 +1,4 @@
-import { type MotisGeocodeResult, type RoutePlannerLocation } from '@/types/route-planner';
+import { type MotisGeocodeResult, type RoutePlannerLocation } from '@/types/route-planner/models';
 import { formatMotisLocationDetail } from '@/utils/route-planner/format';
 import { createRoutePlannerCurrentLocation, mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/locations';
 import { getMotisPlaceParam, mapMotisGeocodeResultToLocation, parseRoutePlannerCoordinate, routePlannerCoordinateToLocation } from '@/utils/search/motis-geocode';

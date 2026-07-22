@@ -4,7 +4,7 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
 import { RoutePlannerTime } from '@/components/routes/common/RoutePlannerTime';
-import { type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/types/route-planner';
+import { type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/types/route-planner/models';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/alerts';
 import { formatMotisPlanDurationMinutes } from '@/utils/route-planner/format';
 import { isMotisWalkingLeg } from '@/utils/route-planner/modes';

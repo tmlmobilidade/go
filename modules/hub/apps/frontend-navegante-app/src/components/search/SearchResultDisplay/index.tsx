@@ -1,6 +1,6 @@
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { SearchStopAgencyLogos } from '@/components/search/SearchStopAgencyLogos';
-import { type SearchResult } from '@/types/search';
+import { type SearchResult } from '@/types/common/search';
 
 import styles from './styles.module.css';
 

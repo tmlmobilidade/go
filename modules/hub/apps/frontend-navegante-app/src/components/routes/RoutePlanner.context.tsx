@@ -3,8 +3,8 @@
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
-import { type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/types/route-planner';
-import { type RoutePlannerContextState } from '@/types/route-planner-context';
+import { type RoutePlannerContextState } from '@/types/route-planner/context';
+import { type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/types/route-planner/models';
 import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner/geometry';
 import { createRoutePlannerCurrentLocation } from '@/utils/route-planner/locations';
 import { fetchMotisPlan, getMotisItineraries } from '@/utils/route-planner/motis-plan-api';
@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export type { RoutePlannerLocationSearchTarget, RoutePlannerViewMode } from '@/types/route-planner';
+export type { RoutePlannerLocationSearchTarget, RoutePlannerViewMode } from '@/types/route-planner/models';
 
 const RoutePlannerContext = createContext<RoutePlannerContextState | undefined>(undefined);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/types/route-planner';
+import { type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/types/route-planner/models';
 import { formatDateTimeLocalInputValue } from '@/utils/route-planner/format';
 import { useTranslation } from 'react-i18next';
 

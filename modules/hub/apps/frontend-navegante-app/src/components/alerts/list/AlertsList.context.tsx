@@ -1,7 +1,7 @@
 'use client';
 
 import { transformAlertDataIntoGeoJsonFeature, useAlertsContext } from '@/components/alerts/Alerts.context';
-import { type AlertGroup } from '@/types/alerts/alert-group';
+import { type AlertGroup } from '@/types/common/alert-group';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubAlert } from '@tmlmobilidade/go-types-public-info';

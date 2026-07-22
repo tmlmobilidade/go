@@ -4,8 +4,8 @@ import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context
 import { SearchGroup } from '@/components/search/SearchGroup';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useSearch } from '@/hooks/search/useSearch';
-import { type RoutePlannerLocation } from '@/types/route-planner';
-import { type SearchResult } from '@/types/search';
+import { type SearchResult } from '@/types/common/search';
+import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/locations';
 import { getLastSearchQuery, setLastSearchQuery, subscribeToSearchQuery } from '@/utils/search/search-query';
 import { IconSearch } from '@tabler/icons-react';

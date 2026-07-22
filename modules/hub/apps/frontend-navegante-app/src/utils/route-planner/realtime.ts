@@ -1,4 +1,4 @@
-import { type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/types/route-planner';
+import { type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/types/route-planner/models';
 
 /* * */
 

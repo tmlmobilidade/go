@@ -1,4 +1,4 @@
-import { type RoutePlannerLocation } from '@/types/route-planner';
+import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { IconBuilding, IconBus, IconBusStop, IconMapPin, IconShip, IconTrain } from '@tabler/icons-react';
 
 /* * */

@@ -1,7 +1,7 @@
 'use client';
 
 import { useUserLocation } from '@/contexts/UserLocation.context';
-import { type BaseMapOperatorId, type BaseMapOverlayType } from '@/types/map';
+import { type BaseMapOperatorId, type BaseMapOverlayType } from '@/types/common/map';
 import { useSessionStorage } from '@mantine/hooks';
 import { moveMapView } from '@tmlmobilidade/ui';
 import { type MapRef } from '@vis.gl/react-maplibre';

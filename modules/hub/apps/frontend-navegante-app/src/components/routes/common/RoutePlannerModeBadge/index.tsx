@@ -1,7 +1,7 @@
 'use client';
 
 import { RoutePlannerModeIcon } from '@/components/routes/common/RoutePlannerModeIcon';
-import { type MotisPlanLeg } from '@/types/route-planner';
+import { type MotisPlanLeg } from '@/types/route-planner/models';
 import { getMotisLegModeKind } from '@/utils/route-planner/modes';
 import { type ReactNode } from 'react';
 

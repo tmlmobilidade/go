@@ -1,9 +1,9 @@
 'use client';
 
 import { useMapContext } from '@/contexts/Map.context';
-import { type BaseMapOverlayType } from '@/types/map';
 import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { AGENCY_NAMES_MAP } from '@/lib/agency-names-map';
+import { type BaseMapOverlayType } from '@/types/common/map';
 import { BASE_MAP_OPERATOR_IDS } from '@/utils/map/base-map-operators';
 import { IconAlertTriangle, IconBus, IconCheck } from '@tabler/icons-react';
 import Image from 'next/image';

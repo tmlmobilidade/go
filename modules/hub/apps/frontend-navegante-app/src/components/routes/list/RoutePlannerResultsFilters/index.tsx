@@ -5,7 +5,7 @@ import { RoutePlannerModeFilter } from '@/components/routes/list/RoutePlannerMod
 import { RoutePlannerSortFilter } from '@/components/routes/list/RoutePlannerSortFilter';
 import { RoutePlannerTimeFilter } from '@/components/routes/list/RoutePlannerTimeFilter';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { type RoutePlannerTravelTime } from '@/types/route-planner';
+import { type RoutePlannerTravelTime } from '@/types/route-planner/models';
 import { type RoutePlannerModeFilter as RoutePlannerModeFilterValue, type RoutePlannerSortMode } from '@/utils/route-planner/results';
 import { IconClock, IconRoute, IconSortAscending } from '@tabler/icons-react';
 import { type TFunction } from 'i18next';

@@ -1,4 +1,4 @@
-import { type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace, type RoutePlannerLocation } from '@/types/route-planner';
+import { type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace, type RoutePlannerLocation } from '@/types/route-planner/models';
 import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner/geometry';
 import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner/navigation';
 import { getMotisItineraryActiveLegIndex, getMotisLegRemainingDistanceMeters, getMotisLegRemainingSeconds, getRoutePlannerActiveLegProgress } from '@/utils/route-planner/progress';

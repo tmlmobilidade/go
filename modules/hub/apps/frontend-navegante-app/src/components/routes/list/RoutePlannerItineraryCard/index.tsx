@@ -5,7 +5,7 @@ import { LiveIcon } from '@/components/common/display/LiveIcon';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { RoutePlannerItineraryLegStrip } from '@/components/routes/common/RoutePlannerItineraryLegStrip';
 import { RoutePlannerGoButton } from '@/components/routes/navigation/RoutePlannerGoButton';
-import { type MotisItinerary } from '@/types/route-planner';
+import { type MotisItinerary } from '@/types/route-planner/models';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/alerts';
 import { formatMotisPlanDuration, formatMotisPlanTime } from '@/utils/route-planner/format';
 import { getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisItineraryStart, getMotisItineraryWalkMinutes } from '@/utils/route-planner/motis-plan-api';

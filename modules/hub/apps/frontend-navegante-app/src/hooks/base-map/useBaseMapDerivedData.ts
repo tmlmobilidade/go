@@ -2,10 +2,10 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
-import { type BaseMapOperatorId } from '@/types/map';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { useRoutePlannerMapData } from '@/hooks/base-map/useRoutePlannerMapData';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { type BaseMapOperatorId } from '@/types/common/map';
 import { getBaseMapAlertsMapData, getBaseMapVehiclesMapData } from '@/utils/map/base-map-data';
 import { useMemo } from 'react';
 

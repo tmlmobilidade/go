@@ -2,7 +2,7 @@
 
 import { RegularListItem } from '@/components/common/lists/RegularListItem';
 import { SearchResultDisplay } from '@/components/search/SearchResultDisplay';
-import { type SearchGroup as SearchGroupData, type SearchResult } from '@/types/search';
+import { type SearchGroup as SearchGroupData, type SearchResult } from '@/types/common/search';
 import { IconAlertTriangle, IconBusStop, IconMapPin } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 

@@ -1,4 +1,4 @@
-import { type BaseMapOperatorId } from '@/types/map';
+import { type BaseMapOperatorId } from '@/types/common/map';
 
 /* * */
 

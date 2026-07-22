@@ -2,7 +2,7 @@
 
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
-import { type RoutePlannerLocation } from '@/types/route-planner';
+import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/locations';
 import { routePlannerCoordinateToLocation } from '@/utils/search/motis-geocode';
 import { normalizeSearchText } from '@/utils/search/normalize';

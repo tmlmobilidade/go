@@ -1,4 +1,4 @@
-import { type MotisItinerary, type MotisPlanLeg } from '@/types/route-planner';
+import { type MotisItinerary, type MotisPlanLeg } from '@/types/route-planner/models';
 import { getItineraryTransitModeFilters, itineraryMatchesEnabledModes, type RoutePlannerModeFilter, type RoutePlannerVisibleItinerary, sortVisibleItineraries, toggleRoutePlannerMode } from '@/utils/route-planner/results';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';

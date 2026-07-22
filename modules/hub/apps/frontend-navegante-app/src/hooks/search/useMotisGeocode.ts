@@ -1,6 +1,6 @@
 'use client';
 
-import { type MotisGeocodeResult, type RoutePlannerLocation } from '@/types/route-planner';
+import { type MotisGeocodeResult, type RoutePlannerLocation } from '@/types/route-planner/models';
 import { mapMotisGeocodeResultToLocation } from '@/utils/search/motis-geocode';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { useEffect, useState } from 'react';

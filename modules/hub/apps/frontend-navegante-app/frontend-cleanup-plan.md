@@ -56,11 +56,10 @@ src/constants/
 └── map.ts                   # Map defaults and style configuration
 
 src/types/
-├── bottom-sheet.ts          # Sheet navigation contracts
-├── map.ts                   # Map overlay and operator contracts
-├── route-planner-context.ts # Route context facade
-├── route-planner.ts         # MOTIS and route-planning contracts
-└── search.ts                # Shared search result contracts
+├── api/                     # Hub API response contracts
+├── common/                  # One-off shared app contracts
+├── motis-api/               # Generated MOTIS API contracts
+└── route-planner/           # Route models and context facade
 ```
 
 ## Execution plan
@@ -89,6 +88,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | complete | 9, 11–15 | Grouped standalone hooks under themed folders; grouped utilities under `alerts`, `bottom-sheet`, `map`, `route-planner`, `search`, and `transit`; moved shared sheet and route contracts/constants out of component folders; colocated tests with their modules; updated test discovery; removed the route-planner compatibility barrel and redundant user-location re-export. |
 | 19 | Remove unreachable legacy component trees | complete | 17–18 | Audited static source reachability from every Next.js app entry point; removed 13 unreachable components, the list contexts owned only by the obsolete line/stop list trees, and their unreferenced translation keys. A second reachability pass reports no unused component entry points. |
 | 20 | Organize map support and normalize search naming | complete | 18–19 | Moved map contexts, contracts, configuration, and style assets out of the component tree so `components/map` contains rendered map modules only. Standardized one `Search` prefix across rendered modules, hooks, contracts, query state, and translation keys. |
+| 21 | Normalize type, route utility, and test hierarchies | in progress | 18–20 | `src/types` now contains folders only; shared one-off contracts live in `common`, route contracts are grouped together, and the unused duplicate timetable contracts were removed. Route utilities and tests still need their target grouping. |
 
 ## Commit log
 
