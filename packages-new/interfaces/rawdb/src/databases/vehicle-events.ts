@@ -9,9 +9,6 @@ import { type RawVehicleEvent, RawVehicleEventSchema } from '@tmlmobilidade/go-t
 export class VehicleEventsDatabase {
 	//
 
-	//
-	// Collections
-
 	public readonly esCrtmAisa: MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>;
 	public readonly esCrtmLaVeloz: MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>;
 	public readonly ptTmlCcfl: MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>;
@@ -37,21 +34,20 @@ export class VehicleEventsDatabase {
 	public constructor(instance: MongoClient) {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
-
 		// Create collection interfaces
-		this.esCrtmAisa = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('es-crtm-aisa-fetch', this.database, RawVehicleEventSchema);
-		this.esCrtmLaVeloz = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('es-crtm-la-veloz-fetch', this.database, RawVehicleEventSchema);
-		this.ptTmlCcfl = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-ccfl-fetch', this.database, RawVehicleEventSchema);
+		this.esCrtmAisa = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('es-crtm-aisa', this.database, RawVehicleEventSchema);
+		this.esCrtmLaVeloz = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('es-crtm-la-veloz', this.database, RawVehicleEventSchema);
+		this.ptTmlCcfl = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-ccfl', this.database, RawVehicleEventSchema);
 		this.ptTmlCmAlsa = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-cm-alsa', this.database, RawVehicleEventSchema);
 		this.ptTmlCmRl = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-cm-rl', this.database, RawVehicleEventSchema);
 		this.ptTmlCmTst = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-cm-tst', this.database, RawVehicleEventSchema);
 		this.ptTmlCmVa = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-cm-va', this.database, RawVehicleEventSchema);
-		this.ptTmlCp = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-cp-fetch', this.database, RawVehicleEventSchema);
-		this.ptTmlFertagus = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-fertagus-fetch', this.database, RawVehicleEventSchema);
-		this.ptTmlMl = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-ml-fetch', this.database, RawVehicleEventSchema);
-		this.ptTmlMobi = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-mobi-fetch', this.database, RawVehicleEventSchema);
-		this.ptTmlTcb = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-tcb-fetch', this.database, RawVehicleEventSchema);
-		this.ptTmlTtsl = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-ttsl-fetch', this.database, RawVehicleEventSchema);
+		this.ptTmlCp = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-cp', this.database, RawVehicleEventSchema);
+		this.ptTmlFertagus = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-fertagus', this.database, RawVehicleEventSchema);
+		this.ptTmlMl = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-ml', this.database, RawVehicleEventSchema);
+		this.ptTmlMobi = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-mobi', this.database, RawVehicleEventSchema);
+		this.ptTmlTcb = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-tcb', this.database, RawVehicleEventSchema);
+		this.ptTmlTtsl = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tml-ttsl', this.database, RawVehicleEventSchema);
 		this.ptTmpUnirUt1 = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tmp-unir-ut1', this.database, RawVehicleEventSchema);
 		this.ptTmpUnirUt2 = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tmp-unir-ut2', this.database, RawVehicleEventSchema);
 		this.ptTmpUnirUt3 = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('pt-tmp-unir-ut3', this.database, RawVehicleEventSchema);
