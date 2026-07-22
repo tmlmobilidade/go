@@ -17,7 +17,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	insertFn: async (data) => {
 		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
 	},
-	title: `es-crtm-aisa-labdb-stream-${Math.random().toString(36).substring(2, 15)}`,
+	title: `es-crtm-aisa-labdb-stream`,
 });
 
 /* * */
