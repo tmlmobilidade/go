@@ -96,7 +96,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 19 | Remove unreachable legacy component trees | complete | 17–18 | Audited static source reachability from every Next.js app entry point; removed 13 unreachable components, the list contexts owned only by the obsolete line/stop list trees, and their unreferenced translation keys. A second reachability pass reports no unused component entry points. |
 | 20 | Organize map support and normalize search naming | complete | 18–19 | Moved map contexts, contracts, configuration, and style assets out of the component tree so `components/map` contains rendered map modules only. Standardized one `Search` prefix across rendered modules, hooks, contracts, query state, and translation keys. |
 | 21 | Normalize type, route utility, and test hierarchies | complete | 18–20 | `src/types` now contains folders only; shared one-off contracts live in `common`, route contracts are grouped together, and the unused duplicate timetable contracts were removed. Route utilities are grouped into `itinerary`, `planning`, and `presentation`, while all tests live under the app-level `tests` tree. No new directory contains only one file. |
-| 22 | Deepen the route-planning workflow | in progress | 10, 13 | Restoring a green app baseline before adding latest-request-wins planning and moving cohesive route workflow state behind one hook. |
+| 22 | Deepen the route-planning workflow | in progress | 10, 13 | Restored a green app baseline. Route planning now has latest-request-wins ownership through SWR Mutation and resets invalidated work; workflow hook extraction remains. |
 
 ## Commit log
 
