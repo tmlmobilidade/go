@@ -1,9 +1,10 @@
 'use client';
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
-import { useLinesContext } from '@/components/lines/Lines.context';
+import { RoutePlannerModeIcon } from '@/components/routes/common/RoutePlannerModeIcon';
+import { useLinesByShortName } from '@/hooks/useLinesByShortName';
 import { formatMotisPlanDurationMinutes, getMotisLegDurationSeconds, getMotisLegMode, getMotisLegModeKind, getMotisLegRouteLabel, isMotisWalkingLeg, type MotisItinerary, type MotisPlanLeg } from '@/utils/route-planner-motis';
-import { IconBike, IconBus, IconCar, IconElevator, IconFerry, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
+import { IconWalk } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +26,7 @@ export function RoutePlannerItineraryLegStrip({ itinerary }: RoutePlannerItinera
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const linesContext = useLinesContext();
+	const lineByShortName = useLinesByShortName();
 
 	//
 	// B. Transform data
@@ -33,10 +34,6 @@ export function RoutePlannerItineraryLegStrip({ itinerary }: RoutePlannerItinera
 	const legs = useMemo(() => {
 		return Array.isArray(itinerary.legs) ? itinerary.legs : [];
 	}, [itinerary.legs]);
-
-	const lineByShortName = useMemo(() => {
-		return new Map(linesContext.data.lines.map(line => [line.short_name, line]));
-	}, [linesContext.data.lines]);
 
 	//
 	// C. Render components
@@ -137,25 +134,4 @@ function RoutePlannerLinePill({ leg, lineByShortName }: RoutePlannerLinePillProp
 	);
 
 	//
-}
-
-interface RoutePlannerModeIconProps {
-	leg: MotisPlanLeg
-	size: number
-}
-
-function RoutePlannerModeIcon({ leg, size }: RoutePlannerModeIconProps) {
-	const modeKind = getMotisLegModeKind(leg);
-
-	if (modeKind === 'walk') return <IconWalk size={size} />;
-	if (modeKind === 'bus') return <IconBus size={size} />;
-	if (modeKind === 'bike') return <IconBike size={size} />;
-	if (modeKind === 'car') return <IconCar size={size} />;
-	if (modeKind === 'ferry') return <IconFerry size={size} />;
-	if (modeKind === 'plane') return <IconPlane size={size} />;
-	if (modeKind === 'scooter') return <IconScooter size={size} />;
-	if (modeKind === 'elevator') return <IconElevator size={size} />;
-	if (modeKind === 'transit') return <IconRoute size={size} />;
-
-	return <IconTrain size={size} />;
 }

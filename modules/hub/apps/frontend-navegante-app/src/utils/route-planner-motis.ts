@@ -4,6 +4,8 @@ import type { Area as MotisApiArea, GeocodeResponse as MotisApiGeocodeResponse, 
 
 export type RoutePlannerTravelTimeMode = 'arrival' | 'departure' | 'now';
 
+export type MotisLegModeKind = 'bike' | 'bus' | 'car' | 'elevator' | 'ferry' | 'plane' | 'rail' | 'scooter' | 'subway' | 'tram' | 'transit' | 'walk';
+
 /* * */
 
 export type MotisGeocodeArea = Partial<MotisApiArea>;
@@ -286,8 +288,8 @@ export function getMotisLegMode(leg: MotisPlanLeg) {
 	return leg.mode.toUpperCase();
 }
 
-export function getMotisLegModeKind(leg: MotisPlanLeg) {
-	const mode = getMotisLegMode(leg);
+export function getMotisModeKind(value: string): MotisLegModeKind {
+	const mode = value.toUpperCase();
 
 	if (['FOOT', 'WALK'].includes(mode)) return 'walk';
 	if (mode.includes('BUS')) return 'bus';
@@ -302,6 +304,10 @@ export function getMotisLegModeKind(leg: MotisPlanLeg) {
 	if (mode.includes('ELEVATOR')) return 'elevator';
 
 	return 'transit';
+}
+
+export function getMotisLegModeKind(leg: MotisPlanLeg) {
+	return getMotisModeKind(getMotisLegMode(leg));
 }
 
 export function getMotisLegRouteLabel(leg: MotisPlanLeg) {

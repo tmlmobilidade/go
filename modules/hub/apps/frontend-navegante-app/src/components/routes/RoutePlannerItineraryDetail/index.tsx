@@ -2,15 +2,16 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { LineBadge } from '@/components/lines/common/LineBadge';
-import { useLinesContext } from '@/components/lines/Lines.context';
+import { RoutePlannerModeIcon } from '@/components/routes/common/RoutePlannerModeIcon';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerItineraryLegStrip } from '@/components/routes/RoutePlannerItineraryLegStrip';
 import { RoutePlannerTime } from '@/components/routes/RoutePlannerTime';
+import { useLinesByShortName } from '@/hooks/useLinesByShortName';
 import { useRoutePlannerActiveLeg } from '@/hooks/useRoutePlannerActiveLeg';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
 import { formatMotisPlanDuration, formatMotisPlanDurationMinutes, getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisLegDurationSeconds, getMotisLegModeKind, getMotisLegRouteLabel, isMotisWalkingLeg, type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/utils/route-planner-motis';
 import { getRoutePlannerIntermediateStopRealtimeStatus, getRoutePlannerItineraryRealtimeStatus, getRoutePlannerLegRealtimeStatus } from '@/utils/route-planner-realtime';
-import { IconAlertTriangle, IconBike, IconBus, IconCar, IconChevronDown, IconElevator, IconFerry, IconNavigationTop, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk } from '@tabler/icons-react';
+import { IconAlertTriangle, IconChevronDown, IconNavigationTop } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +28,7 @@ export function RoutePlannerItineraryDetail() {
 
 	const { t } = useTranslation();
 	const alertsContext = useAlertsContext();
-	const linesContext = useLinesContext();
+	const lineByShortName = useLinesByShortName();
 	const routePlannerContext = useRoutePlannerContext();
 	const { activeLegIndex } = useRoutePlannerActiveLeg();
 
@@ -51,10 +52,6 @@ export function RoutePlannerItineraryDetail() {
 		is_realtime: realtimeStatus.is_realtime,
 		planned_time: plannedEnd,
 	};
-
-	const lineByShortName = useMemo(() => {
-		return new Map(linesContext.data.lines.map(line => [line.short_name, line]));
-	}, [linesContext.data.lines]);
 
 	//
 	// C. Render components
@@ -273,24 +270,6 @@ function RoutePlannerLegBadge({ leg, lineByShortName }: RoutePlannerLegBadgeProp
 	);
 
 	//
-}
-
-/* * */
-
-function RoutePlannerModeIcon({ leg, size }: { leg: MotisPlanLeg, size: number }) {
-	const modeKind = getMotisLegModeKind(leg);
-
-	if (modeKind === 'walk') return <IconWalk size={size} />;
-	if (modeKind === 'bus') return <IconBus size={size} />;
-	if (modeKind === 'bike') return <IconBike size={size} />;
-	if (modeKind === 'car') return <IconCar size={size} />;
-	if (modeKind === 'ferry') return <IconFerry size={size} />;
-	if (modeKind === 'plane') return <IconPlane size={size} />;
-	if (modeKind === 'scooter') return <IconScooter size={size} />;
-	if (modeKind === 'elevator') return <IconElevator size={size} />;
-	if (modeKind === 'transit') return <IconRoute size={size} />;
-
-	return <IconTrain size={size} />;
 }
 
 /* * */

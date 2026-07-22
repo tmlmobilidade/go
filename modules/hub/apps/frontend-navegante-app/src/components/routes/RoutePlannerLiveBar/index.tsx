@@ -2,8 +2,8 @@
 
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { LineBadge } from '@/components/lines/common/LineBadge';
-import { useLinesContext } from '@/components/lines/Lines.context';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
+import { useLinesByShortName } from '@/hooks/useLinesByShortName';
 import { useRoutePlannerActiveLeg } from '@/hooks/useRoutePlannerActiveLeg';
 import { formatMotisPlanDistance, formatMotisPlanTime, getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner-motis';
 import { IconWalk } from '@tabler/icons-react';
@@ -22,7 +22,7 @@ export function RoutePlannerLiveBar() {
 
 	const { t } = useTranslation();
 	const { activeBottomSheet } = useBottomSheet();
-	const linesContext = useLinesContext();
+	const lineByShortName = useLinesByShortName();
 	const routePlannerContext = useRoutePlannerContext();
 	const { activeLeg, activeLegIndex, remainingDistanceMeters, remainingMinutes } = useRoutePlannerActiveLeg();
 
@@ -34,10 +34,6 @@ export function RoutePlannerLiveBar() {
 	const isDetailSheetOpen = activeBottomSheet?.view === 'routes' && routePlannerContext.data.view_mode === 'itinerary-detail';
 	const legs = Array.isArray(itinerary?.legs) ? itinerary.legs : [];
 	const nextLeg = legs[activeLegIndex + 1] ?? null;
-
-	const lineByShortName = useMemo(() => {
-		return new Map(linesContext.data.lines.map(line => [line.short_name, line]));
-	}, [linesContext.data.lines]);
 
 	const nextStepLabel = useMemo(() => {
 		if (!activeLeg) return t('default:routes.RoutePlanner.results.route_summary');
