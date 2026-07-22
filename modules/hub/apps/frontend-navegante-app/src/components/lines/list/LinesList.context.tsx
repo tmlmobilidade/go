@@ -2,8 +2,8 @@
 
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
-import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { type ListContextStateTemplate, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */
 
@@ -19,13 +19,16 @@ interface LinesListGroupData {
 	qty: number
 }
 
-interface LinesListContextState extends ListContextStateTemplate {
+interface LinesListContextState extends Omit<ListContextStateTemplate, 'flags'> {
 	actions: {
 		increaseQtyPerAgency: (agencyId: string) => void
 	}
 	data: {
 		filtered: LinesListGroupData[]
 		qtyPerAgency: Record<string, number>
+	}
+	flags: {
+		is_loading: boolean
 	}
 }
 
@@ -88,17 +91,23 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Handle actions
 
-	const increaseQtyPerAgency = (agencyId: string) => {
+	const increaseQtyPerAgency = useCallback((agencyId: string) => {
 		setQtyPerAgency(prev => ({
 			...prev,
 			[agencyId]: (prev[agencyId] || DEFAULT_QTY_PER_AGENCY) + 30,
 		}));
-	};
+	}, []);
+
+	const filterSearchState = useMemo<UseFilterStateStringReturnType>(() => ({
+		isActive: filterSearch.isActive,
+		set: filterSearch.set,
+		value: filterSearch.value,
+	}), [filterSearch.isActive, filterSearch.set, filterSearch.value]);
 
 	//
 	// D. Define context value
 
-	const contextValue: LinesListContextState = {
+	const contextValue = useMemo<LinesListContextState>(() => ({
 		actions: {
 			increaseQtyPerAgency,
 		},
@@ -107,13 +116,12 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 			qtyPerAgency,
 		},
 		filters: {
-			search: filterSearch,
+			search: filterSearchState,
 		},
 		flags: {
-			error: undefined,
-			isLoading: linesContext.flags.is_loading,
+			is_loading: linesContext.flags.is_loading,
 		},
-	};
+	}), [filterSearchState, filteredData, increaseQtyPerAgency, linesContext.flags.is_loading, qtyPerAgency]);
 
 	//
 	// E. Render components

@@ -12,7 +12,7 @@ const CM_AGENCY_IDS = new Set(['41', '42', '43', '44']);
 
 /* * */
 
-interface StopsListContextState extends ListContextStateTemplate {
+interface StopsListContextState extends Omit<ListContextStateTemplate, 'flags'> {
 	data: {
 		fc: GeoJSON.FeatureCollection<GeoJSON.Point, MapOverlayMultipleStopsDataProps>
 		filtered: HubStop[]
@@ -20,6 +20,9 @@ interface StopsListContextState extends ListContextStateTemplate {
 	filters: {
 		agency: UseFilterStateStringReturnType
 		search: UseFilterStateStringReturnType
+	}
+	flags: {
+		is_loading: boolean
 	}
 }
 
@@ -85,23 +88,34 @@ export function StopsListContextProvider({ children }: PropsWithChildren) {
 		return collection;
 	}, [filteredData]);
 
+	const filterAgencyState = useMemo<UseFilterStateStringReturnType>(() => ({
+		isActive: filterAgency.isActive,
+		set: filterAgency.set,
+		value: filterAgency.value,
+	}), [filterAgency.isActive, filterAgency.set, filterAgency.value]);
+
+	const filterSearchState = useMemo<UseFilterStateStringReturnType>(() => ({
+		isActive: filterSearch.isActive,
+		set: filterSearch.set,
+		value: filterSearch.value,
+	}), [filterSearch.isActive, filterSearch.set, filterSearch.value]);
+
 	//
 	// C. Define context value
 
-	const contextValue: StopsListContextState = {
+	const contextValue = useMemo<StopsListContextState>(() => ({
 		data: {
 			fc: dataFeatureCollection,
 			filtered: filteredData,
 		},
 		filters: {
-			agency: filterAgency,
-			search: filterSearch,
+			agency: filterAgencyState,
+			search: filterSearchState,
 		},
 		flags: {
-			error: undefined,
-			isLoading: stopsContext.flags.is_loading,
+			is_loading: stopsContext.flags.is_loading,
 		},
-	};
+	}), [dataFeatureCollection, filterAgencyState, filteredData, filterSearchState, stopsContext.flags.is_loading]);
 
 	//
 	// D. Render components

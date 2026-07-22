@@ -28,7 +28,7 @@ export function LinesListViewAll() {
 	//
 	// B. Render components
 
-	if (linesListContext.flags.isLoading) {
+	if (linesListContext.flags.is_loading) {
 		return <LoadingSection fullHeight />;
 	}
 
