@@ -7,20 +7,23 @@ import styles from './styles.module.css';
 /* * */
 
 interface BottomSheetCloseProps {
+	label?: string
 	onClick: () => void
-	ref?: React.RefObject<HTMLDivElement>
+	size?: 'default' | 'sm'
 }
 
-export function BottomSheetClose({ onClick, ref }: BottomSheetCloseProps) {
+/* * */
+
+export function BottomSheetClose({ label = 'Fechar', onClick, size = 'default' }: BottomSheetCloseProps) {
 	return (
-		<div
-			ref={ref}
-			aria-label="Fechar"
+		<button
+			aria-label={label}
 			className={styles.button}
+			data-size={size}
 			onClick={onClick}
-			role="button"
+			type="button"
 		>
-			<IconX size={30} />
-		</div>
+			<IconX size={size === 'sm' ? 20 : 28} />
+		</button>
 	);
 }

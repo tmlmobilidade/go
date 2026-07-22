@@ -63,7 +63,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 11 | Extract BaseMap focused-entity and derived-data hooks | complete | 2, 3 | Moved focused alert/line/stop/vehicle selection, focused geometry, route-specific map enrichment, and final operator filtering into map-owned hooks; reduced `BaseMap` from roughly 500 to 315 lines while preserving filtering precedence. |
 | 12 | Extract BaseMap camera synchronization, interactions, and layer composition | complete | 11 | Camera synchronization and map interactions are isolated behind map-owned hooks, render ordering lives in `BaseMapLayers`, and `BaseMap` is now a small composition root that retains one user-location hook instance. |
 | 13 | Introduce singleton user-location ownership | in progress | 3 | One root `UserLocationContextProvider` now owns geolocation and orientation subscriptions while the existing hook interface remains compatible; mobile permission and orientation flows still require manual verification. |
-| 14 | Clarify bottom-sheet implementations and add snap behavior coverage | pending | 1 | Rename implementations and colocate navigation types/constants before consolidation. |
+| 14 | Consolidate bottom-sheet implementation and add snap behavior coverage | complete | 1 | Removed the legacy handcrafted sheet, made the `react-modal-sheet` adapter the canonical `BottomSheet`, colocated navigation types and shared snap constants, and covered map-interaction collapse and snap-state publication. |
 | 15 | Normalize context flags and memoize provider values | pending | 10–14 | Use small consumer-safe migrations. |
 | 16 | Consolidate route/status design tokens and CSS duplication | pending | Structural tasks complete | Requires visual regression coverage. |
 | 17 | Reorganize route components into `common`, `input`, `list`, `detail`, and `navigation` | in progress | 4, completed alongside 6–8 | `common` owns shared mode/leg-strip presentation, `input` owns endpoint fields, location results/selectors, time input, and top search, `detail` owns itinerary detail, and `list` owns results, filters, and itinerary cards. Place detail, navigation, and remaining shared/root moves remain. |
@@ -88,6 +88,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 12 | `refactor(hub): extract base map interactions` | Move click, drag, zoom, and long-press behavior behind one interaction hook without adding a GPS subscriber. |
 | 12 | `refactor(hub): extract base map layers` | Move map overlay and path render ordering into a focused layer-composition module. |
 | 13 | `refactor(hub): centralize user location ownership` | Replace per-consumer geolocation and orientation subscriptions with one root-owned context while preserving the existing hook interface. |
+| 14 | `refactor(hub): consolidate bottom sheet implementation` | Remove the legacy sheet, expose the snap-capable adapter through one canonical component, and cover its shared snap behavior. |
 
 ## Verification
 

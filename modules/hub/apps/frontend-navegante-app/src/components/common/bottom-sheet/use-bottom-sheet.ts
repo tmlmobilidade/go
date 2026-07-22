@@ -1,40 +1,25 @@
 'use client';
 
+import { type BottomSheetNavigationEntry, type BottomSheetSnapState, type BottomSheetView, type SetActiveBottomSheetOptions } from '@/components/common/bottom-sheet/bottom-sheet.types';
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
 /* * */
 
-type BottomSheetType = 'alerts-detail' | 'alerts-list' | 'help' | 'lines-detail' | 'routes' | 'search' | 'stops-detail' | 'vehicles-detail' | null;
-
-interface BottomSheetNavigationType {
-	entityId?: null | string
-	view: BottomSheetType
-}
-
-interface BottomSheetSnapType {
-	snapIndex: null | number
-	snapPoint: null | number
-}
-
-interface SetActiveBottomSheetOptions {
-	replace?: boolean
-}
-
 interface UseBottomSheetReturnType {
-	activeBottomSheet: BottomSheetNavigationType | null
-	activeBottomSheetSnap: BottomSheetSnapType
+	activeBottomSheet: BottomSheetNavigationEntry | null
+	activeBottomSheetSnap: BottomSheetSnapState
 	clearActiveBottomSheets: () => void
 	closeActiveBottomSheet: () => void
-	isBottomSheetInStack: (view: BottomSheetType) => boolean
-	setActiveBottomSheet: (value: BottomSheetNavigationType, options?: SetActiveBottomSheetOptions) => void
-	setActiveBottomSheetSnap: (value: BottomSheetSnapType) => void
+	isBottomSheetInStack: (view: BottomSheetView) => boolean
+	setActiveBottomSheet: (value: BottomSheetNavigationEntry, options?: SetActiveBottomSheetOptions) => void
+	setActiveBottomSheetSnap: (value: BottomSheetSnapState) => void
 	snapActiveBottomSheet: (snapIndex: number) => boolean
 }
 
 /* * */
 
-let BOTTOM_SHEET_NAVIGATION_STORE: BottomSheetNavigationType[] = [];
-let BOTTOM_SHEET_SNAP_STORE: BottomSheetSnapType = { snapIndex: null, snapPoint: null };
+let BOTTOM_SHEET_NAVIGATION_STORE: BottomSheetNavigationEntry[] = [];
+let BOTTOM_SHEET_SNAP_STORE: BottomSheetSnapState = { snapIndex: null, snapPoint: null };
 let ACTIVE_BOTTOM_SHEET_SNAP_CONTROLLER: ((snapIndex: number) => void) | null = null;
 const bottomSheetNavigationListeners = new Set<() => void>();
 const bottomSheetSnapListeners = new Set<() => void>();
@@ -63,12 +48,12 @@ function getBottomSheetSnapSnapshot() {
 	return BOTTOM_SHEET_SNAP_STORE;
 }
 
-function setBottomSheetNavigationStore(value: BottomSheetNavigationType[]) {
+function setBottomSheetNavigationStore(value: BottomSheetNavigationEntry[]) {
 	BOTTOM_SHEET_NAVIGATION_STORE = value;
 	emitBottomSheetNavigationChange();
 }
 
-function setBottomSheetSnapStore(value: BottomSheetSnapType) {
+function setBottomSheetSnapStore(value: BottomSheetSnapState) {
 	if (BOTTOM_SHEET_SNAP_STORE.snapIndex === value.snapIndex && BOTTOM_SHEET_SNAP_STORE.snapPoint === value.snapPoint) return;
 	BOTTOM_SHEET_SNAP_STORE = value;
 	emitBottomSheetSnapChange();
@@ -120,14 +105,14 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 	//
 	// C. Handle actions
 
-	const setActiveBottomSheet = useCallback((value: BottomSheetNavigationType, options?: SetActiveBottomSheetOptions) => {
+	const setActiveBottomSheet = useCallback((value: BottomSheetNavigationEntry, options?: SetActiveBottomSheetOptions) => {
 		// If replace is true, override the full navigation stack with the new value
 		if (options?.replace) setBottomSheetNavigationStore([{ entityId: value.entityId ?? null, view: value.view }]);
 		// Otherwise, append the new value to the navigation stack
 		else setBottomSheetNavigationStore([...BOTTOM_SHEET_NAVIGATION_STORE, { entityId: value.entityId ?? null, view: value.view }]);
 	}, []);
 
-	const setActiveBottomSheetSnap = useCallback((value: BottomSheetSnapType) => {
+	const setActiveBottomSheetSnap = useCallback((value: BottomSheetSnapState) => {
 		setBottomSheetSnapStore(value);
 	}, []);
 
@@ -145,7 +130,7 @@ export function useBottomSheet(): UseBottomSheetReturnType {
 		setBottomSheetNavigationStore([]);
 	}, []);
 
-	const isBottomSheetInStack = useCallback((view: BottomSheetType) => {
+	const isBottomSheetInStack = useCallback((view: BottomSheetView) => {
 		return bottomSheetNavigation.some(entry => entry.view === view);
 	}, [bottomSheetNavigation]);
 

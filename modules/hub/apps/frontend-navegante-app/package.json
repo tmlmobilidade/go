@@ -12,7 +12,7 @@
 		"dev": "next dev -p 51101",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src",
-		"test": "node --import tsx --test src/utils/*.test.ts"
+		"test": "node --import tsx --test src/utils/*.test.ts src/components/common/bottom-sheet/*.test.ts"
 	},
 	"dependencies": {
 		"@amplitude/analytics-browser": "2.45.0",

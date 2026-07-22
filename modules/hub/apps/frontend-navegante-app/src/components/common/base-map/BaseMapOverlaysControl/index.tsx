@@ -67,6 +67,7 @@ export function BaseMapOverlaysControl({ onOpenedChange, opened }: BaseMapOverla
 				onClose={() => onOpenedChange(false)}
 				opened={opened}
 				size="fit"
+				syncSnapState={false}
 				title={t('default:map.BaseMapOverlaysControl.title')}
 			>
 				<BaseMapFiltersSheet />

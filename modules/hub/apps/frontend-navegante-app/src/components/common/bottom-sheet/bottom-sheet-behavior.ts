@@ -1,0 +1,24 @@
+import { type BottomSheetSnapState } from '@/components/common/bottom-sheet/bottom-sheet.types';
+
+/* * */
+
+interface GetMapInteractionCollapseTargetParams {
+	compactSnapIndex: number
+	hasOriginalEvent: boolean
+	snapIndex: null | number
+}
+
+/* * */
+
+export function getBottomSheetSnapState(snapPoints: number[], snapIndex: number): BottomSheetSnapState {
+	return {
+		snapIndex,
+		snapPoint: snapPoints[snapIndex] ?? null,
+	};
+}
+
+export function getMapInteractionCollapseTarget(params: GetMapInteractionCollapseTargetParams) {
+	if (!params.hasOriginalEvent) return null;
+	if (params.snapIndex === null || params.snapIndex <= params.compactSnapIndex) return null;
+	return params.compactSnapIndex;
+}

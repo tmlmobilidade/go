@@ -1,5 +1,7 @@
 'use client';
 
+import { getMapInteractionCollapseTarget } from '@/components/common/bottom-sheet/bottom-sheet-behavior';
+import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/components/common/bottom-sheet/bottom-sheet.constants';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -12,11 +14,6 @@ interface MapPadding {
 	right: number
 	top: number
 }
-
-/* * */
-
-export const MAP_BOTTOM_SHEET_INITIAL_SNAP = 1;
-export const MAP_BOTTOM_SHEET_SNAP_POINTS = [0, 0.28, 0.64, 0.95];
 
 /* * */
 
@@ -58,12 +55,16 @@ export function useMapBottomSheet() {
 	// C. Handle actions
 
 	const collapseForMapInteraction = useCallback((event: ViewStateChangeEvent) => {
-		if (!event.originalEvent) return;
-		if (activeBottomSheetSnap.snapIndex === null || activeBottomSheetSnap.snapIndex <= MAP_BOTTOM_SHEET_INITIAL_SNAP) return;
+		const collapseTarget = getMapInteractionCollapseTarget({
+			compactSnapIndex: MAP_BOTTOM_SHEET_INITIAL_SNAP,
+			hasOriginalEvent: Boolean(event.originalEvent),
+			snapIndex: activeBottomSheetSnap.snapIndex,
+		});
+		if (collapseTarget === null) return;
 		if (ignoredMapFitSnapPointRef.current === compactSnapPoint) return;
 
 		ignoredMapFitSnapPointRef.current = compactSnapPoint;
-		const didSnap = snapActiveBottomSheet(MAP_BOTTOM_SHEET_INITIAL_SNAP);
+		const didSnap = snapActiveBottomSheet(collapseTarget);
 		if (!didSnap) ignoredMapFitSnapPointRef.current = null;
 	}, [activeBottomSheetSnap.snapIndex, compactSnapPoint, snapActiveBottomSheet]);
 

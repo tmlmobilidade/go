@@ -1,8 +1,8 @@
 'use client';
 
-import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
+import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/components/common/bottom-sheet/bottom-sheet.constants';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
-import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/components/common/bottom-sheet/use-map-bottom-sheet';
 import { RoutePlannerItineraryDetail } from '@/components/routes/detail/RoutePlannerItineraryDetail';
 import { RoutePlannerInput } from '@/components/routes/input/RoutePlannerInput';
 import { RoutePlannerResults } from '@/components/routes/list/RoutePlannerResults';
