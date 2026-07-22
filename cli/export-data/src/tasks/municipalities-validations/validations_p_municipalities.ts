@@ -1,6 +1,7 @@
 import { type ExportType, type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { municipalities, simplifiedApexValidations, stops } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import ExcelJS from 'exceljs';
 import fs from 'node:fs';
 
@@ -32,9 +33,9 @@ export async function exportValidationsPMunicipalities({
 
 	const [stopsCol, validationsCol, municipalitiesCol] =
 		await Promise.all([
-			stops.getCollection(),
+			goDb.infrastructure.stops.getCollection(),
 			simplifiedApexValidations.getCollection(),
-			municipalities.getCollection(),
+			goDb.locations.municipalities.getCollection(),
 		]);
 
 	if (!stopsCol || !validationsCol || !municipalitiesCol) {

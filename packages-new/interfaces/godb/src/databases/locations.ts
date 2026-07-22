@@ -1,5 +1,6 @@
 /* * */
 
+import { districtsIndexes, localitiesIndexes, municipalitiesIndexes, parishesIndexes } from '@/indexes/index.js';
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
 import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/types';
@@ -21,10 +22,10 @@ export class LocationsDatabase {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
 		// Create collection interfaces
-		this.districts = new MongoInterfaceTemplate<District, null, null>('districts', this.database, null, null);
-		this.localities = new MongoInterfaceTemplate<Locality, null, null>('localities', this.database, null, null);
-		this.municipalities = new MongoInterfaceTemplate<Municipality, null, null>('municipalities', this.database, null, null);
-		this.parishes = new MongoInterfaceTemplate<Parish, null, null>('parishes', this.database, null, null);
+		this.districts = new MongoInterfaceTemplate<District, null, null>('districts', this.database, null, null, districtsIndexes);
+		this.localities = new MongoInterfaceTemplate<Locality, null, null>('localities', this.database, null, null, localitiesIndexes);
+		this.municipalities = new MongoInterfaceTemplate<Municipality, null, null>('municipalities', this.database, null, null, municipalitiesIndexes);
+		this.parishes = new MongoInterfaceTemplate<Parish, null, null>('parishes', this.database, null, null, parishesIndexes);
 	}
 }
 

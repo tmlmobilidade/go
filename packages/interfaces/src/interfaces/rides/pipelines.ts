@@ -489,7 +489,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	pipeline.push({ $sort: { start_time_scheduled: 1 } });
 
 	// Stage 3: Filter by line IDs if provided
-	if (filter.line_ids?.length) pipeline.push({ $match: { line_id: { $in: filter.line_ids.map(id => Number(id)) } } });
+	if (filter.line_ids?.length) pipeline.push({ $match: { line_id: { $in: filter.line_ids } } });
 
 	// Stage 4: Search by term routing and selective fallback regex
 	pipeline.push(...buildSearchPipeline(filter));

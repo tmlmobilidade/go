@@ -1,6 +1,6 @@
 # # #
 
-FROM node:24-slim AS base
+FROM node:lts-slim AS base
 
 
 # # #

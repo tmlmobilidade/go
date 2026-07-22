@@ -1,10 +1,8 @@
 /* * */
 
 import { processVehicleEvent } from '@/task.js';
-import { rawVehicleEventsNew } from '@tmlmobilidade/databases';
-import { Dates } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
@@ -24,33 +22,29 @@ import { initSentryNode } from '@tmlmobilidade/logger';
 	// Watch for changes to the rawVehicleEventsNew collection
 	// and integrate those documents immediately.
 
-	const collection = await rawVehicleEventsNew.getCollection();
+	const collection = await rawDb.raw.rawVehicleEvents.getCollection();
 
 	collection
-		.watch(/* [{ $match: { 'fullDocument.created_at': { $gt: Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp }, 'operationType': 'insert' } }], */)
+		// Filter server-side so only insert operations traverse the stream.
+		// This cuts stream volume and removes redundant client-side filtering.
+		.watch([{ $match: { operationType: 'insert' } }])
 		.on('change', async (change) => {
 			//
 
-			//
-			// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.
-			// Only insert operations are expected to occur in this PCGIDB collection.
+			// Defensive: the $match guarantees inserts, but the driver's union
+			// change type still allows missing fullDocument. Skip if absent.
 
-			if (change.operationType !== 'insert') {
-				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with operationType != "insert": operationType="${change.operationType}" _id="${change._id}"` });
+			if (change.operationType !== 'insert' || !change.fullDocument) {
+				Logger.error({ message: `[clickhouse-stream] WARNING: unexpected changeStream document: operationType="${change.operationType}"` });
 				return;
 			}
 
-			if (!change.fullDocument) {
-				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with missing fullDocument: operationType="${change.operationType}" _id="${change._id}"` });
-				return;
-			}
+			// const nowMinus5Minutes = Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp;
 
-			const nowMinus5Minutes = Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp;
-
-			if (!change.fullDocument.created_at || change.fullDocument.created_at < nowMinus5Minutes) {
-				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with missing or outdated created_at field: operationType="${change.operationType}" _id="${change._id}"` });
-				return;
-			}
+			// if (!change.fullDocument.created_at || change.fullDocument.created_at < nowMinus5Minutes) {
+			// 	Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with missing or outdated created_at field: operationType="${change.operationType}" _id="${change.fullDocument._id}"` });
+			// 	return;
+			// }
 
 			await processVehicleEvent(change);
 		});

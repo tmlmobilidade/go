@@ -1,7 +1,6 @@
 /* * */
 
-import type { ClickHouseClient, ClickHouseColumn, ClickhouseField, ClickHouseTableEngine, ClickHouseTableSchema, DataFormat } from '@tmlmobilidade/go-clients-clickhouse';
-
+import { type ClickHouseClient, type ClickHouseColumn, type ClickhouseField, type ClickHouseTableEngine, type ClickHouseTableSchema, type DataFormat } from '@tmlmobilidade/go-clients-clickhouse';
 import { ClickHouseError, preparePositionalQueryParams, queryFromFile, queryFromString, validateSqlParam } from '@tmlmobilidade/go-clients-clickhouse';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -19,6 +18,7 @@ export interface ClickhouseInterfaceTableOptions<T extends object> {
 
 export class ClickHouseInterfaceTemplate<T extends object> {
 	//
+
 	private readonly databaseName: string;
 	private readonly schema: ClickHouseTableSchema<T>;
 	private readonly tableName: string;
@@ -50,11 +50,6 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 			partitionBy: options.partitionBy ?? undefined,
 			primaryKey: options.primaryKey ?? undefined,
 		};
-
-		this.init().catch((error) => {
-			Logger.error({ error, message: `LABDB [${this.databaseName}."${this.tableName}"]: Error @ constructor(): ${(error as Error).message}` });
-			throw error;
-		});
 	}
 
 	/**
@@ -102,7 +97,6 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 * @warning Use with caution: direct access to the client allows for executing arbitrary queries.
 	 */
 	public async getClient(): Promise<ClickHouseClient> {
-		if (!this.client) await this.init();
 		return this.client;
 	}
 
@@ -146,15 +140,12 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	}
 
 	/**
-	 * Initializes the ClickHouse client and ensures that the specified database and table exist.
-	 * This method should be called before performing any operations on the database or table.
-	 * It handles the asynchronous setup process and logs any errors that occur during initialization.
-	 * @throws Will throw an error if the client initialization or database/table setup fails.
+	 * Ensures that the specified database and table exist.
+	 * Called by `LabDbClass.getInstance()` before the singleton is exposed via `asyncSingletonProxy`.
+	 * @throws Will throw an error if database/table setup fails.
 	 * @returns A promise that resolves when the initialization process is complete.
 	 */
-	protected async init() {
-		// Skip if already initialized
-		if (this.client) return;
+	public async init() {
 		// Validate required properties before attempting to connect
 		if (!this.databaseName) throw new Error('CLICKHOUSE: databaseName is required.');
 		if (!this.tableName) throw new Error('CLICKHOUSE: tableName is required.');
@@ -164,9 +155,9 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		// Only own the schema when this interface is the source of truth.
 		// External DDL owners (see `manageSchema`) skip this entirely.
 		if (this.tableOptions.manageSchema) {
-			await this.ensureDatabase();
 			await this.ensureTable();
 		}
+		// Run any additional setup logic
 		await this.postInit();
 	}
 
@@ -211,6 +202,13 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		return await queryFromString<T>(this.client, query, params);
 	}
 
+	/**
+	 * Ensures that the specified database exists in ClickHouse, creating it if it does not already exist.
+	 * This method performs input validation to prevent SQL injection and logs the outcome of the operation.
+	 * It constructs a CREATE DATABASE query and executes it using the client.
+	 * @throws Will throw an error if any of the inputs are unsafe or if the database creation query fails.
+	 * @returns A promise that resolves when the database is ensured to exist.
+	 */
 	private async ensureDatabase(): Promise<void> {
 		// Validate the inputs are safe identifiers to prevent SQL injection
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`LABDB [${this.databaseName}]: Unsafe database name provided.`);
@@ -243,7 +241,9 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		// Setup the full CREATE TABLE query
 		const createTableQuery = `
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" (
-				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
+				${Object.entries<ClickHouseColumn>(this.schema)
+					.map(([key, column]) => `${key} ${column.type} ${column.materialized ? ` MATERIALIZED ${column.materialized}` : ''}`)
+					.join(', ')}
 			) ENGINE = ${this.tableOptions.engine}
 			${this.tableOptions.primaryKey ? `PRIMARY KEY (${Array.isArray(this.tableOptions.primaryKey) ? this.tableOptions.primaryKey.join(', ') : this.tableOptions.primaryKey})` : ''}
 			${this.tableOptions.orderBy ? `ORDER BY (${Array.isArray(this.tableOptions.orderBy) ? this.tableOptions.orderBy.join(', ') : this.tableOptions.orderBy})` : ''}
@@ -272,8 +272,6 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 				Logger.error({ error, message: `LABDB [${this.tableName}]: ACCESS_DENIED and table does not exist. ${error.message}` });
 				throw error;
 			} catch (verifyError) {
-				//
-
 				Logger.error({ error: verifyError, message: `LABDB [${this.tableName}]: Failed to verify table existence after ACCESS_DENIED: ${(verifyError as Error).message}` });
 				throw verifyError;
 			}

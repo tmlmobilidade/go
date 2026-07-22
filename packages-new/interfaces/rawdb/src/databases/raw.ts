@@ -1,11 +1,9 @@
 /* * */
 
-import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import type { RawVehicleEvent } from '@tmlmobilidade/types';
-
 import { MongoInterfaceTemplate } from '@/interface.template.js';
-import { RawApexTransaction, RawApexTransactionSchema } from '@tmlmobilidade/go-types-apex';
-import { RawVehicleEventSchema } from '@tmlmobilidade/types';
+import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
+import { type RawApexTransaction, RawApexTransactionSchema } from '@tmlmobilidade/go-types-apex';
+import { type RawVehicleEvent, RawVehicleEventSchema } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
 
@@ -26,7 +24,7 @@ export class RawDatabase {
 		this.database = instance.db(this.databaseName);
 
 		// Create collection interfaces
-		this.rawApexTransactions = new MongoInterfaceTemplate<RawApexTransaction, RawApexTransaction>('raw_apex_transactions', this.database, RawApexTransactionSchema);
-		this.rawVehicleEvents = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('raw_vehicle_events', this.database, RawVehicleEventSchema);
+		this.rawApexTransactions = new MongoInterfaceTemplate<RawApexTransaction, RawApexTransaction>('raw-apex-transactions', this.database, RawApexTransactionSchema);
+		this.rawVehicleEvents = new MongoInterfaceTemplate<RawVehicleEvent, RawVehicleEvent>('raw-vehicle-events', this.database, RawVehicleEventSchema);
 	}
 }

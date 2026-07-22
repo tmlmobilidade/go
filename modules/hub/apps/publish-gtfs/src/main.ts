@@ -4,8 +4,8 @@ import { initExportGtfsContext } from '@/utils/init-contex.js';
 import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
@@ -26,6 +26,7 @@ import { exportShapesFile } from '@/exports/shapes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { initSentryNode } from '@tmlmobilidade/logger';
 
 /* * */
@@ -85,9 +86,9 @@ export async function main() {
 	// Retrieve all Plans from the database
 	// and iterate on each one.
 
-	const plansCollection = await plans.getCollection();
+	const plansCollection = await goDb.operation.plans.getCollection();
 
-	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await goDb.operation.plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
@@ -148,7 +149,7 @@ export async function main() {
 			//
 			// Get the operation file URL
 
-			const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.operation_file_id });
 
 			//
 			// Find out if this plan is a currently active plan.
@@ -305,7 +306,7 @@ export async function main() {
 
 	const fileStream = fs.createReadStream(`${context.workdir.path}/${context.run_id}.zip`);
 
-	await files.upload(fileStream, {
+	await storageProvider.replace(fileStream, {
 		_id: 'gtfs-latest',
 		created_by: 'system',
 		name: `${context.run_id}.zip`,
@@ -314,7 +315,7 @@ export async function main() {
 		size: fs.statSync(`${context.workdir.path}/${context.run_id}.zip`).size,
 		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${context.run_id}.zip`)),
 		updated_by: 'system',
-	}, { override: true });
+	});
 
 	//
 	// Finalize the export process
