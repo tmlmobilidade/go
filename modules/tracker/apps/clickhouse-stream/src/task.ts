@@ -2,7 +2,7 @@
 
 import { type ChangeStreamInsertDocument } from '@tmlmobilidade/go-clients-mongo';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
+import { RidesWaitingNotifier } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
@@ -10,10 +10,14 @@ import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
+// Rides bookkeeping runs off the insert hot path: events are deduped and
+// flushed on their own timer instead of blocking every ClickHouse insert.
+const ridesNotifier = new RidesWaitingNotifier(10_000);
+
 const writer = new BatchWriter<SimplifiedVehicleEvent>({
-	batch_size: 500,
-	batch_timeout: 500,
-	idle_timeout: 500,
+	batch_size: 5_000,
+	batch_timeout: 1_000,
+	idle_timeout: 1_000,
 	insertFn: async (data) => {
 		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
 	},
@@ -44,7 +48,7 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 		//
 		// Write the new vehicle event document to the SimplifiedVehicleEvents collection
 
-		await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });
+		await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: async data => ridesNotifier.enqueue(data) });
 
 		//
 	} catch (error) {

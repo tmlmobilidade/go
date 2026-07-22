@@ -1,7 +1,6 @@
 /* * */
 
 import { processVehicleEvent } from '@/task.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 
@@ -26,21 +25,17 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 	const collection = await rawDb.raw.rawVehicleEvents.getCollection();
 
 	collection
-		.watch(/* [{ $match: { 'fullDocument.created_at': { $gt: Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp }, 'operationType': 'insert' } }], */)
+		// Filter server-side so only insert operations traverse the stream.
+		// This cuts stream volume and removes redundant client-side filtering.
+		.watch([{ $match: { operationType: 'insert' } }])
 		.on('change', async (change) => {
 			//
 
-			//
-			// Validate that the operation is an insert or update. Otherwise, send an email to the emergency contact.
-			// Only insert operations are expected to occur in this PCGIDB collection.
+			// Defensive: the $match guarantees inserts, but the driver's union
+			// change type still allows missing fullDocument. Skip if absent.
 
-			if (change.operationType !== 'insert') {
-				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with operationType != "insert": operationType="${change.operationType}"` });
-				return;
-			}
-
-			if (!change.fullDocument) {
-				Logger.error({ message: `[clickhouse-stream] WARNING: changeStream document with missing fullDocument: operationType="${change.operationType}" _id="${change.fullDocument._id}"` });
+			if (change.operationType !== 'insert' || !change.fullDocument) {
+				Logger.error({ message: `[clickhouse-stream] WARNING: unexpected changeStream document: operationType="${change.operationType}"` });
 				return;
 			}
 
