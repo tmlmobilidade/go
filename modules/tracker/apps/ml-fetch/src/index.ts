@@ -37,15 +37,8 @@ const main = async () => {
 	//
 	// Initialize the timer
 
-	const now = Dates.now('Europe/Lisbon');
 	const timer = new Timer();
 	let saveCount = 0;
-
-	//
-	// Initialize the train positions map.
-	// This groups the upcoming trains per line so we can infer where each one is.
-
-	const trainPositionsMap: TrainPositionsMap = new Map();
 
 	//
 	// Fetch the Metro Lisboa Vehicle Events data from API and decode it.
@@ -57,24 +50,36 @@ const main = async () => {
 	for (const line of lines) {
 		//
 
-		//
-		// Reset the per-line train grouping map.
+		// Use a fresh timestamp per line so the ride time window stays accurate.
 
-		trainPositionsMap.clear();
+		const now = Dates.now('Europe/Lisbon');
+
+		//
+		// Initialize a per-line train grouping map.
+
+		const trainPositionsMap: TrainPositionsMap = new Map();
 
 		//
 		// Fetch the waiting times for this line.
 		// On error, log and continue to the next line.
 
 		let response: BaseResponse<TempoEsperaRawItem[]> | null = null;
+		let apiOk = true;
 		try {
 			response = await externalClients.ml.tempoEsperaLinha(line);
 		} catch (error) {
 			Logger.error({ error, message: `[${ITERATION}] Error fetching Metro Lisboa data from API for line ${line}:` });
+			apiOk = false;
+		}
+
+		if (!apiOk) {
+			Logger.info({ message: `[${ITERATION}] API call failed for line ${line}, no data to process.` });
 			continue;
 		}
 
-		groupTrainPositions({ items: response.resposta, trainPositionsMap });
+		groupTrainPositions({ items: response!.resposta, trainPositionsMap });
+
+		Logger.info({ message: `[${ITERATION}] Line ${line}: ${trainPositionsMap.size} unique trains found in API response.` });
 
 		//
 		// For each train, infer its current position.
@@ -95,7 +100,10 @@ const main = async () => {
 				continue;
 			}
 
-			if (!ride) continue;
+			if (!ride) {
+				Logger.info({ message: `[${ITERATION}] No ride found for train ${trainId} on line ${line} (destinationId: ${destinationId}), skipping.` });
+				continue;
+			}
 
 			// Given the next stop (from the API) and the matched ride document, extract the waypoints in the ride's shape that correspond to:
 			// - nextStopWaypoint: The shape point nearest to the nextStop.
@@ -103,7 +111,10 @@ const main = async () => {
 
 			const { nextStopWaypoint, previousStopWaypoint } = findTripStopWaypoints({ nextStop, ride });
 
-			if (!nextStopWaypoint) continue;
+			if (!nextStopWaypoint) {
+				Logger.info({ message: `[${ITERATION}] No waypoint found for stop ${nextStop.stop_id} on ride ${ride.trip_id} for train ${trainId} on line ${line}, skipping.` });
+				continue;
+			}
 
 			// Infer the train's current position as a point [longitude, latitude] on the ride's shape,
 			// using the next stop, corresponding waypoints, and ride details.
