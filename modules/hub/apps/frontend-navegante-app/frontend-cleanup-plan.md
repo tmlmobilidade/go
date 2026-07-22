@@ -62,7 +62,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 10 | Extract the MOTIS API client and pure transitions from `RoutePlanner.context.tsx` | complete | 9 | Moved context-facing types, the MOTIS plan request, plan-start state, and travel-time-mode state into focused modules with transition coverage; preserved the complete context facade and reduced the provider file from 420 to 367 lines. |
 | 11 | Extract BaseMap focused-entity and derived-data hooks | complete | 2, 3 | Moved focused alert/line/stop/vehicle selection, focused geometry, route-specific map enrichment, and final operator filtering into map-owned hooks; reduced `BaseMap` from roughly 500 to 315 lines while preserving filtering precedence. |
 | 12 | Extract BaseMap camera synchronization, interactions, and layer composition | complete | 11 | Camera synchronization and map interactions are isolated behind map-owned hooks, render ordering lives in `BaseMapLayers`, and `BaseMap` is now a small composition root that retains one user-location hook instance. |
-| 13 | Introduce singleton user-location ownership | pending | 3 | Verify mobile permission and orientation flows manually. |
+| 13 | Introduce singleton user-location ownership | in progress | 3 | One root `UserLocationContextProvider` now owns geolocation and orientation subscriptions while the existing hook interface remains compatible; mobile permission and orientation flows still require manual verification. |
 | 14 | Clarify bottom-sheet implementations and add snap behavior coverage | pending | 1 | Rename implementations and colocate navigation types/constants before consolidation. |
 | 15 | Normalize context flags and memoize provider values | pending | 10–14 | Use small consumer-safe migrations. |
 | 16 | Consolidate route/status design tokens and CSS duplication | pending | Structural tasks complete | Requires visual regression coverage. |
@@ -87,6 +87,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 12 | `refactor(hub): extract base map camera sync` | Move line, stop, place, and route fitting effects behind a focused camera-synchronization hook. |
 | 12 | `refactor(hub): extract base map interactions` | Move click, drag, zoom, and long-press behavior behind one interaction hook without adding a GPS subscriber. |
 | 12 | `refactor(hub): extract base map layers` | Move map overlay and path render ordering into a focused layer-composition module. |
+| 13 | `refactor(hub): centralize user location ownership` | Replace per-consumer geolocation and orientation subscriptions with one root-owned context while preserving the existing hook interface. |
 
 ## Verification
 
