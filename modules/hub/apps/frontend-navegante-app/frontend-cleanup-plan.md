@@ -37,13 +37,13 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 
 | # | Task | Status | Dependencies | Progress |
 |---:|---|---|---|---|
-| 1 | Characterize route-planner modes, sorting, travel-time parameters, location mapping, and navigation transitions | in progress | — | Mode normalization and existing navigation transitions are covered. Sorting, travel time, and location mapping remain. |
+| 1 | Characterize route-planner modes, sorting, travel-time parameters, location mapping, and navigation transitions | complete | — | Covered mode normalization/filtering, last-mode protection, all sort modes, now/departure/arrival parameters, geocode/stop/coordinate mapping, and existing pure navigation transitions. |
 | 2 | Characterize map operator normalization and alert/vehicle filtering order | pending | — | Include CM agencies `41`–`44` and unknown agencies. |
 | 3 | Characterize active-leg selection, walking progress, geometry, and first-leg fitting | pending | — | — |
 | 4 | Extract shared route presentation primitives | complete | 1 | Added `RoutePlannerModeIcon`, `MotisLegModeKind`, pure mode normalization, and `useLinesByShortName`; migrated detail, leg strip, and live bar. |
-| 5 | Extract shared search and location utilities | pending | 1 | Text normalization, location factories, and time-input formatting. |
+| 5 | Extract shared search and location utilities | in progress | 1 | Hub-stop location factory is shared by route input and OmniSearch. Text normalization and time-input formatting remain. |
 | 6 | Split itinerary detail and leg-strip components | pending | 4 | One named component per folder. |
-| 7 | Split route results and extract pure filtering/sorting | pending | 1 | Toolbar, mode, sort, and time controls. |
+| 7 | Split route results and extract pure filtering/sorting | in progress | 1 | Pure mode filtering, last-mode protection, and sorting are extracted. Component splitting remains. |
 | 8 | Split route input and OmniSearch presentation | pending | 5 | Keep feature-specific composition above shared geocoding. |
 | 9 | Split `route-planner-motis.ts` by responsibility | pending | 1, 3, 5 | Move-only modules with temporary compatibility exports where needed. |
 | 10 | Extract the MOTIS API client and pure transitions from `RoutePlanner.context.tsx` | pending | 9 | Preserve the current context facade. |
@@ -60,6 +60,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | Tasks | Commit | Summary |
 |---|---|---|
 | 1, 4, 17 | `refactor(hub): extract shared route presentation primitives` | Characterize mode normalization and extract shared route presentation primitives. |
+| 1, 5, 7 | `test(hub): characterize route planning behavior` | Cover route result selection, request parameters, and location mapping through pure seams. |
 
 ## Verification
 

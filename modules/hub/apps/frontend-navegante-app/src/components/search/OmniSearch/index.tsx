@@ -7,6 +7,7 @@ import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context
 import { type OmniSearchResult, useOmniSearch } from '@/components/search/useOmniSearch';
 import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { AGENCY_NAMES_MAP } from '@/lib/agency-names-map';
+import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
 import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
 import { IconAlertTriangle, IconBusStop, IconMapPin, IconSearch } from '@tabler/icons-react';
 import Image from 'next/image';
@@ -134,14 +135,7 @@ function getRoutePlannerLocation(result: OmniSearchResult): null | RoutePlannerL
 	if (result.type === 'poi') return result.entity;
 	if (result.type !== 'stop') return null;
 
-	return {
-		detail: [result.entity.locality_name, result.entity.municipality_name].filter(Boolean).join(' | '),
-		id: `GTFS_${String(result.entity._id).replace(/^GTFS_/, '')}`,
-		label: result.entity.name,
-		lat: result.entity.latitude,
-		lon: result.entity.longitude,
-		type: 'STOP',
-	};
+	return mapHubStopToRoutePlannerLocation(result.entity, { ensureGtfsId: true });
 }
 
 /* * */

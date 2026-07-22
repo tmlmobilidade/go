@@ -2,7 +2,8 @@
 
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerItineraryCard } from '@/components/routes/RoutePlannerItineraryCard';
-import { getMotisItineraryDurationSeconds, getMotisItineraryWalkMinutes, getMotisLegModeKind, getMotisTransfersCount, isMotisWalkingLeg, type MotisItinerary, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
+import { type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
+import { getItineraryTransitModeFilters, itineraryMatchesEnabledModes, type RoutePlannerModeFilter, type RoutePlannerSortMode, type RoutePlannerVisibleItinerary, sortVisibleItineraries, toggleRoutePlannerMode } from '@/utils/route-planner-results';
 import { IconBus, IconClock, IconFerry, IconRoute, IconSortAscending, IconTrain, IconWalk } from '@tabler/icons-react';
 import { type TFunction } from 'i18next';
 import { useEffect, useMemo, useState } from 'react';
@@ -12,21 +13,12 @@ import styles from './styles.module.css';
 
 /* * */
 
-type RoutePlannerModeFilter = 'bus' | 'ferry' | 'rail' | 'subway' | 'tram' | 'transit';
 type RoutePlannerOpenFilter = 'modes' | 'sort' | 'time';
-type RoutePlannerSortMode = 'best' | 'fastest' | 'fewer_transfers' | 'least_walking';
 
 interface RoutePlannerFilterOption<TValue extends string> {
 	icon: typeof IconRoute
 	value: TValue
 }
-
-interface RoutePlannerVisibleItinerary {
-	index: number
-	itinerary: MotisItinerary
-}
-
-/* * */
 
 const MODE_FILTER_OPTIONS: RoutePlannerFilterOption<RoutePlannerModeFilter>[] = [
 	{ icon: IconBus, value: 'bus' },
@@ -98,13 +90,7 @@ export function RoutePlannerResults() {
 	// D. Handle actions
 
 	const handleModeToggle = (mode: RoutePlannerModeFilter) => {
-		setEnabledModes((current) => {
-			const next = new Set(current);
-			if (next.has(mode)) next.delete(mode);
-			else next.add(mode);
-
-			return next.size > 0 ? next : current;
-		});
+		setEnabledModes(current => toggleRoutePlannerMode(current, mode));
 	};
 
 	const handleSortModeChange = (mode: RoutePlannerSortMode) => {
@@ -302,59 +288,6 @@ export function RoutePlannerResults() {
 	);
 
 	//
-}
-
-/* * */
-
-function getItineraryTransitModeFilters(itinerary: MotisItinerary): RoutePlannerModeFilter[] {
-	const legs = Array.isArray(itinerary.legs) ? itinerary.legs : [];
-	const modes = legs
-		.filter(leg => !isMotisWalkingLeg(leg))
-		.map(leg => normalizeModeFilter(getMotisLegModeKind(leg)));
-
-	return Array.from(new Set(modes));
-}
-
-function itineraryMatchesEnabledModes(itinerary: MotisItinerary, enabledModes: Set<RoutePlannerModeFilter>) {
-	const modes = getItineraryTransitModeFilters(itinerary);
-	return modes.length === 0 || modes.every(mode => enabledModes.has(mode));
-}
-
-function getItineraryTransfersCount(itinerary: MotisItinerary) {
-	const legs = Array.isArray(itinerary.legs) ? itinerary.legs : [];
-	return getMotisTransfersCount(itinerary.transfers, legs);
-}
-
-function getItineraryWalkMinutes(itinerary: MotisItinerary) {
-	const legs = Array.isArray(itinerary.legs) ? itinerary.legs : [];
-	return getMotisItineraryWalkMinutes(legs);
-}
-
-function normalizeModeFilter(mode: string): RoutePlannerModeFilter {
-	if (mode === 'bus') return 'bus';
-	if (mode === 'ferry') return 'ferry';
-	if (mode === 'rail') return 'rail';
-	if (mode === 'subway') return 'subway';
-	if (mode === 'tram') return 'tram';
-	return 'transit';
-}
-
-function sortVisibleItineraries(itineraries: RoutePlannerVisibleItinerary[], sortMode: RoutePlannerSortMode) {
-	const results = [...itineraries];
-
-	if (sortMode === 'fastest') {
-		return results.sort((a, b) => getMotisItineraryDurationSeconds(a.itinerary) - getMotisItineraryDurationSeconds(b.itinerary));
-	}
-
-	if (sortMode === 'fewer_transfers') {
-		return results.sort((a, b) => getItineraryTransfersCount(a.itinerary) - getItineraryTransfersCount(b.itinerary));
-	}
-
-	if (sortMode === 'least_walking') {
-		return results.sort((a, b) => getItineraryWalkMinutes(a.itinerary) - getItineraryWalkMinutes(b.itinerary));
-	}
-
-	return results;
 }
 
 function formatDateForInput(date: Date) {

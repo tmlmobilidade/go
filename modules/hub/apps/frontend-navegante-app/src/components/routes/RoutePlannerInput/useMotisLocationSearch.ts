@@ -1,6 +1,7 @@
 'use client';
 
 import { useStopsContext } from '@/components/stops/Stops.context';
+import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
 import { mapMotisGeocodeResultToLocation, type MotisGeocodeResult, routePlannerCoordinateToLocation, type RoutePlannerLocation } from '@/utils/route-planner-motis';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubStop } from '@tmlmobilidade/go-types-public-info';
@@ -106,14 +107,7 @@ function searchStops(stops: HubStop[], query: string): RoutePlannerLocation[] {
 	return stops
 		.filter(stop => normalizeSearchText(`${stop.name} ${stop.short_name} ${stop.locality_name ?? ''} ${stop.municipality_name}`).includes(normalizedQuery))
 		.slice(0, 8)
-		.map(stop => ({
-			detail: [stop.locality_name, stop.municipality_name].filter(Boolean).join(' | '),
-			id: String(stop._id),
-			label: stop.name,
-			lat: stop.latitude,
-			lon: stop.longitude,
-			type: 'STOP',
-		}));
+		.map(stop => mapHubStopToRoutePlannerLocation(stop));
 }
 
 function normalizeSearchText(value: string) {
