@@ -107,7 +107,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 				if (!parseResult) throw new Error(`Failed to parse document with _id "${sourceDbDocument._id}". Skipping...`);
 				await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
-				Logger.error({ error, message: `Parsing failed: _id="${sourceDbDocument._id}" version="${sourceDbDocument.version}": ${error.message}` });
+				Logger.error({ message: `Parsing failed: _id="${sourceDbDocument._id}" version="${sourceDbDocument.version}": ${error.message}` });
 			}
 		},
 
