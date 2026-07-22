@@ -38,7 +38,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	// Watch for changes to the rawVehicleEventsNew collection
 	// and integrate those documents immediately.
 
-	const collection = await rawDb.vehicleEvents.esCrtmAisa.getCollection();
+	const collection = await rawDb.vehicleEvents.esCrtmLaVeloz.getCollection();
 
 	collection
 		.watch([{ $match: { operationType: 'insert' } }])
