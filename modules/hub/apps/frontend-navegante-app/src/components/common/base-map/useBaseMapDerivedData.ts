@@ -1,0 +1,78 @@
+'use client';
+
+import { useAlertsContext } from '@/components/alerts/Alerts.context';
+import { useRoutePlannerMapData } from '@/components/common/base-map/useRoutePlannerMapData';
+import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
+import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
+import { type BaseMapOperatorId } from '@/components/map/Map.context';
+import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
+import { getBaseMapAlertsMapData, getBaseMapVehiclesMapData } from '@/utils/base-map-data';
+import { useMemo } from 'react';
+
+/* * */
+
+interface UseBaseMapDerivedDataParams {
+	activeBottomSheet: ReturnType<typeof useBottomSheet>['activeBottomSheet']
+	excludedOperatorIds: BaseMapOperatorId[]
+	focusedAlertId: null | string
+	focusedVehicleId: null | string
+}
+
+/* * */
+
+export function useBaseMapDerivedData(params: UseBaseMapDerivedDataParams) {
+	//
+
+	//
+	// A. Setup variables
+
+	const alertsContext = useAlertsContext();
+	const linesDetailContext = useLinesDetailContext();
+	const vehiclesContext = useVehiclesContext();
+	const routePlannerMapData = useRoutePlannerMapData({ activeBottomSheet: params.activeBottomSheet });
+
+	//
+	// B. Transform data
+
+	const lineDetailVehiclePatternIds = useMemo(() => {
+		if (params.activeBottomSheet?.view !== 'lines-detail') return null;
+		const activePatternId = linesDetailContext.data.active_pattern?._id;
+		return new Set(activePatternId ? [activePatternId] : []);
+	}, [params.activeBottomSheet?.view, linesDetailContext.data.active_pattern?._id]);
+
+	const alertsMapData = useMemo(() => {
+		return getBaseMapAlertsMapData({
+			alerts: alertsContext.data.alerts,
+			alertsData: alertsContext.data.fc,
+			excludedOperatorIds: params.excludedOperatorIds,
+			focusedAlertId: params.focusedAlertId,
+			routePlannerAlertsData: routePlannerMapData.alertsMapData,
+		});
+	}, [alertsContext.data.alerts, alertsContext.data.fc, params.excludedOperatorIds, params.focusedAlertId, routePlannerMapData.alertsMapData]);
+
+	const vehiclesMapData = useMemo(() => {
+		return getBaseMapVehiclesMapData({
+			excludedOperatorIds: params.excludedOperatorIds,
+			focusedVehicleId: params.focusedVehicleId,
+			lineDetailPatternIds: lineDetailVehiclePatternIds,
+			routePlannerRouteDirections: routePlannerMapData.vehicleRouteDirections,
+			vehiclesData: vehiclesContext.data.fc,
+		});
+	}, [lineDetailVehiclePatternIds, params.excludedOperatorIds, params.focusedVehicleId, routePlannerMapData.vehicleRouteDirections, vehiclesContext.data.fc]);
+
+	const shouldAlwaysShowFilteredVehicles = routePlannerMapData.vehicleRouteDirections !== null || lineDetailVehiclePatternIds !== null;
+
+	//
+	// C. Return data
+
+	return {
+		alertsMapData,
+		placeDestination: routePlannerMapData.placeDestination,
+		routePlannerContextShapeData: routePlannerMapData.contextShapeData,
+		routePlannerMapFitFeatures: routePlannerMapData.fitFeatures,
+		shouldAlwaysShowFilteredVehicles,
+		vehiclesMapData,
+	};
+
+	//
+}
