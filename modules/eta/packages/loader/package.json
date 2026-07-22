@@ -20,9 +20,9 @@
 	},
 	"dependencies": {
 		"@clickhouse/client": "1.23.1",
-		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-clients-clickhouse": "*",
 		"@tmlmobilidade/go-eta-pckg-common": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",

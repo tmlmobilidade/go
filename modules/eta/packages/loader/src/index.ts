@@ -8,9 +8,9 @@ import { buildHistNodeTravelTimes } from '@/process/build-hist-node-travel-times
 import { detectRideStartEndEvents } from '@/process/detect-ride-start-end-events.js';
 import { buildRidesQuery, fetchCurrentWindowRides, fetchHistoricalRidesForDayIndex } from '@/process/rides-query.js';
 import { syncShapeNodes } from '@/process/sync-shape-nodes.js';
-import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { pipelinePath, qualifiedTable, queryEachEtaStatementFromFile, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -24,7 +24,7 @@ export async function loadEta(config: AppConfig) {
 
 	Logger.init();
 	const globalTimer = new Timer();
-	const clickhouseClient = await GOClickHouseClient.getClient();
+	const clickhouseClient = await labDb.getClient();
 
 	const ridesQuery = buildRidesQuery(config);
 
