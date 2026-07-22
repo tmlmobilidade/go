@@ -56,28 +56,28 @@ const main = async () => {
 	for (const event of response.message) {
 		//
 
+		const hashableRawEventHash = crypto
+			.createHash('sha256')
+			.update(JSON.stringify(event))
+			.digest('hex');
+
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmpUnirV1> = {
 			agency_id: AGENCY_NAME_ID_MAP[event.nomeOperador],
 			created_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			entity_id: event.id,
+			entity_id: hashableRawEventHash,
 			payload: event,
 			version: 'pt-tmp-unir-v1',
 		};
 
-		const hashableRawEventId = crypto
-			.createHash('sha256')
-			.update(JSON.stringify(hashableRawEvent))
-			.digest('hex');
-
 		//
 
-		const alreadyExists = await rawDb.raw.rawVehicleEvents.findOne({ _id: hashableRawEventId });
+		const alreadyExists = await rawDb.raw.rawVehicleEvents.findOne({ _id: hashableRawEventHash });
 
 		if (alreadyExists) continue;
 
 		await rawDb.raw.rawVehicleEvents.insertOne({
 			...hashableRawEvent,
-			_id: hashableRawEventId,
+			_id: hashableRawEventHash,
 			received_at: Dates.now('Europe/Lisbon').unix_timestamp,
 		});
 
