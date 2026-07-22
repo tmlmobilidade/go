@@ -1,6 +1,6 @@
 /* * */
 
-import { syncVehicleEvents } from '@/task.js';
+// import { syncVehicleEvents } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -9,6 +9,7 @@ import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 /* * */
 
 async function main() {
+	throw new Error('Not implemented');
 	try {
 		//
 
@@ -38,11 +39,11 @@ async function main() {
 		// Divide the time range into chunks
 		// and sync each one sequentially.
 
-		await performInTimeChunks({
-			onChunk: syncVehicleEvents,
-			splitBy: { minutes: 5 },
-			startDate: earliestDate.unix_timestamp,
-		});
+		// await performInTimeChunks({
+		// 	onChunk: syncVehicleEvents,
+		// 	splitBy: { minutes: 5 },
+		// 	startDate: earliestDate.unix_timestamp,
+		// });
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
