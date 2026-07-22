@@ -38,7 +38,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | # | Task | Status | Dependencies | Progress |
 |---:|---|---|---|---|
 | 1 | Characterize route-planner modes, sorting, travel-time parameters, location mapping, and navigation transitions | complete | — | Covered mode normalization/filtering, last-mode protection, all sort modes, now/departure/arrival parameters, geocode/stop/coordinate mapping, and existing pure navigation transitions. |
-| 2 | Characterize map operator normalization and alert/vehicle filtering order | pending | — | Include CM agencies `41`–`44` and unknown agencies. |
+| 2 | Characterize map operator normalization and alert/vehicle filtering order | complete | — | Covered CM grouping, known/unknown agency visibility, itinerary selection, focused overrides, line-pattern overrides, and final operator filtering. |
 | 3 | Characterize active-leg selection, walking progress, geometry, and first-leg fitting | pending | — | — |
 | 4 | Extract shared route presentation primitives | complete | 1 | Added `RoutePlannerModeIcon`, `MotisLegModeKind`, pure mode normalization, and `useLinesByShortName`; migrated detail, leg strip, and live bar. |
 | 5 | Extract shared search and location utilities | in progress | 1 | Hub-stop location factory is shared by route input and OmniSearch. Text normalization and time-input formatting remain. |
@@ -47,7 +47,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 8 | Split route input and OmniSearch presentation | pending | 5 | Keep feature-specific composition above shared geocoding. |
 | 9 | Split `route-planner-motis.ts` by responsibility | pending | 1, 3, 5 | Move-only modules with temporary compatibility exports where needed. |
 | 10 | Extract the MOTIS API client and pure transitions from `RoutePlanner.context.tsx` | pending | 9 | Preserve the current context facade. |
-| 11 | Extract BaseMap focused-entity and derived-data hooks | pending | 2, 3 | Preserve filtering order. |
+| 11 | Extract BaseMap focused-entity and derived-data hooks | in progress | 2, 3 | Pure alert and vehicle map-data composition is extracted with filtering-order coverage. Focused entities and remaining derived data still need extraction. |
 | 12 | Extract BaseMap camera synchronization, interactions, and layer composition | pending | 11 | Separate commits for effects, interactions, and layers. |
 | 13 | Introduce singleton user-location ownership | pending | 3 | Verify mobile permission and orientation flows manually. |
 | 14 | Clarify bottom-sheet implementations and add snap behavior coverage | pending | 1 | Rename implementations and colocate navigation types/constants before consolidation. |
@@ -61,6 +61,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 |---|---|---|
 | 1, 4, 17 | `refactor(hub): extract shared route presentation primitives` | Characterize mode normalization and extract shared route presentation primitives. |
 | 1, 5, 7 | `test(hub): characterize route planning behavior` | Cover route result selection, request parameters, and location mapping through pure seams. |
+| 2, 11 | `test(hub): characterize map filtering order` | Cover operator normalization and alert/vehicle filter precedence through pure seams. |
 
 ## Verification
 

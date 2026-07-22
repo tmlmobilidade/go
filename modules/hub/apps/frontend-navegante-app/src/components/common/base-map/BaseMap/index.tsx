@@ -21,15 +21,15 @@ import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { type MapLongPressLocation, useMapLongPress } from '@/hooks/useMapLongPress';
-import { isBaseMapAgencyVisible } from '@/utils/base-map-operators';
+import { getBaseMapAlertsMapData, getBaseMapVehiclesMapData } from '@/utils/base-map-data';
 import { fetchPatterns } from '@/utils/fetch-patterns';
 import { centerMap } from '@/utils/map.utils';
 import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
 import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner-navigation';
-import { filterVehicleFeatureCollectionByPatternIds, filterVehicleFeatureCollectionByRouteDirections, getRoutePlannerItineraryRouteDirections, getRoutePlannerItineraryRouteIds, getRoutePlannerRouteDirectionKey, getRoutePlannerRouteIdKey } from '@/utils/route-planner-vehicles';
+import { getRoutePlannerItineraryRouteDirections, getRoutePlannerItineraryRouteIds, getRoutePlannerRouteDirectionKey, getRoutePlannerRouteIdKey } from '@/utils/route-planner-vehicles';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubPattern, type HubShape, type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
+import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
 import { type MapLayerMouseEvent, useMap, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -122,34 +122,15 @@ export function BaseMap() {
 		return buildRoutePlannerAlertFeatureCollection(alertsContext.data.fc, routePlannerAlerts, routePlannerContext.data.route_map_data, linesContext.data.lines);
 	}, [alertsContext.data.fc, linesContext.data.lines, routePlannerAlertFilters, routePlannerAlerts, routePlannerContext.data.route_map_data]);
 
-	const alertsMapData = useMemo<GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>>(() => {
-		if (!focusedAlertId) return routePlannerAlertsMapData;
-
-		const collection = getBaseGeoJsonFeatureCollection();
-
-		alertsContext.data.fc.features.forEach((feature) => {
-			const featureId = feature.properties?.id ?? feature.properties?._id;
-
-			if (featureId === focusedAlertId) collection.features.push(feature);
-		});
-
-		return collection;
-	}, [alertsContext.data.fc, focusedAlertId, routePlannerAlertsMapData]);
 	const operatorFilteredAlertsMapData = useMemo(() => {
-		const visibleAlertIds = new Set(
-			alertsContext.data.alerts
-				.filter(alert => isBaseMapAgencyVisible(alert.agency_id, excludedBaseMapOperatorIds))
-				.map(alert => alert._id),
-		);
-
-		return {
-			...alertsMapData,
-			features: alertsMapData.features.filter((feature) => {
-				const featureId = feature.properties?.id ?? feature.properties?._id;
-				return visibleAlertIds.has(String(featureId));
-			}),
-		};
-	}, [alertsContext.data.alerts, alertsMapData, excludedBaseMapOperatorIds]);
+		return getBaseMapAlertsMapData({
+			alerts: alertsContext.data.alerts,
+			alertsData: alertsContext.data.fc,
+			excludedOperatorIds: excludedBaseMapOperatorIds,
+			focusedAlertId,
+			routePlannerAlertsData: routePlannerAlertsMapData,
+		});
+	}, [alertsContext.data.alerts, alertsContext.data.fc, excludedBaseMapOperatorIds, focusedAlertId, routePlannerAlertsMapData]);
 
 	const routePlannerVehicleRouteDirections = useMemo(() => {
 		return getRoutePlannerItineraryRouteDirections(routePlannerContext.data.selected_itinerary);
@@ -228,39 +209,20 @@ export function BaseMap() {
 
 	const shouldAlwaysShowFilteredVehicles = routePlannerVehicleRouteDirections !== null || lineDetailVehiclePatternIds !== null;
 
-	const routePlannerVehiclesMapData = useMemo(() => {
-		return filterVehicleFeatureCollectionByRouteDirections(vehiclesContext.data.fc, routePlannerVehicleRouteDirections);
-	}, [routePlannerVehicleRouteDirections, vehiclesContext.data.fc]);
-
-	const lineDetailVehiclesMapData = useMemo(() => {
-		if (lineDetailVehiclePatternIds === null) return routePlannerVehiclesMapData;
-		return filterVehicleFeatureCollectionByPatternIds(vehiclesContext.data.fc, lineDetailVehiclePatternIds);
-	}, [lineDetailVehiclePatternIds, routePlannerVehiclesMapData, vehiclesContext.data.fc]);
-
 	const routePlannerMapFitFeatures = useMemo(() => {
 		return getRoutePlannerMapFitFeatures(routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode);
 	}, [routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode]);
 	const placeDestination = activeBottomSheet?.view === 'routes' && routePlannerContext.data.view_mode === 'place-detail' ? routePlannerContext.data.destination : null;
 
-	const vehiclesMapData = useMemo<GeoJSON.FeatureCollection<GeoJSON.Point, HubVehiclePosition>>(() => {
-		if (!focusedVehicleId) return lineDetailVehiclesMapData;
-
-		const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, HubVehiclePosition>();
-
-		vehiclesContext.data.fc.features.forEach((feature) => {
-			if (feature.properties?.vehicle_id === focusedVehicleId) collection.features.push(feature);
-		});
-
-		return collection;
-	}, [focusedVehicleId, lineDetailVehiclesMapData, vehiclesContext.data.fc]);
 	const operatorFilteredVehiclesMapData = useMemo(() => {
-		return {
-			...vehiclesMapData,
-			features: vehiclesMapData.features.filter((feature) => {
-				return isBaseMapAgencyVisible(feature.properties?.agency_id ?? '', excludedBaseMapOperatorIds);
-			}),
-		};
-	}, [excludedBaseMapOperatorIds, vehiclesMapData]);
+		return getBaseMapVehiclesMapData({
+			excludedOperatorIds: excludedBaseMapOperatorIds,
+			focusedVehicleId,
+			lineDetailPatternIds: lineDetailVehiclePatternIds,
+			routePlannerRouteDirections: routePlannerVehicleRouteDirections,
+			vehiclesData: vehiclesContext.data.fc,
+		});
+	}, [excludedBaseMapOperatorIds, focusedVehicleId, lineDetailVehiclePatternIds, routePlannerVehicleRouteDirections, vehiclesContext.data.fc]);
 
 	useEffect(() => {
 		if (!baseMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;
