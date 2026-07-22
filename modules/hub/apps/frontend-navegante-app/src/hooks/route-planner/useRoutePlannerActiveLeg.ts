@@ -1,8 +1,8 @@
 'use client';
 
-import { useUserLocation } from '@/contexts/UserLocation.context';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { getRoutePlannerActiveLegProgress, type RoutePlannerActiveLegProgress } from '@/utils/route-planner/progress';
+import { useUserLocation } from '@/contexts/UserLocation.context';
+import { getRoutePlannerActiveLegProgress, type RoutePlannerActiveLegProgress } from '@/utils/route-planner/itinerary/progress';
 import { useMemo } from 'react';
 
 /* * */

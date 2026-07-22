@@ -33,7 +33,7 @@ The migration happens while components are split, avoiding a directory-wide move
 
 ## Target source-support structure
 
-Hooks and utilities will be grouped by the domain knowledge they own. Shared types and constants will move to the matching themed support folder instead of accumulating beside components, while tests remain colocated with the module they verify. Component feature folders should primarily contain rendered components, their styles, and established feature contexts.
+Hooks and utilities are grouped by the domain knowledge they own. Shared types and constants live in themed support folders instead of accumulating beside components, while automated tests live outside the production source tree. Component feature folders should primarily contain rendered components and their styles.
 
 ```text
 src/hooks/
@@ -45,9 +45,12 @@ src/hooks/
 
 src/utils/
 ├── alerts/                  # Alert presentation and filtering helpers
-├── bottom-sheet/            # Sheet behavior and adjacent tests
+├── bottom-sheet/            # Shared sheet behavior
 ├── map/                     # Base-map data, operator visibility, and map helpers
-├── route-planner/           # MOTIS adapters and route-planning domain logic
+├── route-planner/
+│   ├── itinerary/           # Itinerary enrichment, geometry, and progress
+│   ├── planning/            # Locations, planning API, results, and transitions
+│   └── presentation/        # Formatting and mode presentation
 ├── search/                  # Text normalization and search helpers
 └── transit/                 # Shared timetable, stop, and pattern helpers
 
@@ -60,6 +63,10 @@ src/types/
 ├── common/                  # One-off shared app contracts
 ├── motis-api/               # Generated MOTIS API contracts
 └── route-planner/           # Route models and context facade
+
+tests/
+├── common/                  # One-off bottom-sheet, map, and search tests
+└── route-planner/           # Route-planning behavior tests
 ```
 
 ## Execution plan
@@ -88,7 +95,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | complete | 9, 11–15 | Grouped standalone hooks under themed folders; grouped utilities under `alerts`, `bottom-sheet`, `map`, `route-planner`, `search`, and `transit`; moved shared sheet and route contracts/constants out of component folders; colocated tests with their modules; updated test discovery; removed the route-planner compatibility barrel and redundant user-location re-export. |
 | 19 | Remove unreachable legacy component trees | complete | 17–18 | Audited static source reachability from every Next.js app entry point; removed 13 unreachable components, the list contexts owned only by the obsolete line/stop list trees, and their unreferenced translation keys. A second reachability pass reports no unused component entry points. |
 | 20 | Organize map support and normalize search naming | complete | 18–19 | Moved map contexts, contracts, configuration, and style assets out of the component tree so `components/map` contains rendered map modules only. Standardized one `Search` prefix across rendered modules, hooks, contracts, query state, and translation keys. |
-| 21 | Normalize type, route utility, and test hierarchies | in progress | 18–20 | `src/types` now contains folders only; shared one-off contracts live in `common`, route contracts are grouped together, and the unused duplicate timetable contracts were removed. Route utilities and tests still need their target grouping. |
+| 21 | Normalize type, route utility, and test hierarchies | complete | 18–20 | `src/types` now contains folders only; shared one-off contracts live in `common`, route contracts are grouped together, and the unused duplicate timetable contracts were removed. Route utilities are grouped into `itinerary`, `planning`, and `presentation`, while all tests live under the app-level `tests` tree. No new directory contains only one file. |
 
 ## Commit log
 
@@ -123,6 +130,8 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 19 | `refactor(hub): remove unreachable frontend components` | Delete obsolete line/stop list trees and isolated components with no import path from the app. |
 | 20 | `refactor(hub): organize map feature support` | Keep rendered map modules in `components/map` while moving shared state, contracts, configuration, and assets to their top-level homes. |
 | 20 | `refactor(hub): normalize search feature naming` | Use consistent `Search`-prefixed modules and move shared query state and result contracts out of the component tree. |
+| 21 | `refactor(hub): organize frontend type contracts` | Make the type root folder-only, group route contracts, consolidate one-off contracts, and remove unused timetable duplicates. |
+| 21 | `refactor(hub): organize route utilities and tests` | Group route utilities by responsibility and move automated tests out of the production utility tree. |
 
 ## Verification
 

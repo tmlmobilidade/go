@@ -2,7 +2,7 @@
 
 import { RoutePlannerFilterButton } from '@/components/routes/list/RoutePlannerFilterButton';
 import { RoutePlannerFilterPanel } from '@/components/routes/list/RoutePlannerFilterPanel';
-import { type RoutePlannerModeFilter } from '@/utils/route-planner/results';
+import { type RoutePlannerModeFilter } from '@/utils/route-planner/planning/results';
 import { IconBus, IconFerry, IconRoute, IconTrain } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 

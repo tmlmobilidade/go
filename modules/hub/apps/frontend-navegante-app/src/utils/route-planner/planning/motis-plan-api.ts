@@ -1,5 +1,5 @@
 import { type MotisItinerary, type MotisPlanIntermediateStop, type MotisPlanLeg, type MotisPlanPlace, type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerTravelTime } from '@/types/route-planner/models';
-import { isMotisWalkingLeg } from '@/utils/route-planner/modes';
+import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { getMotisPlaceParam } from '@/utils/search/motis-geocode';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 

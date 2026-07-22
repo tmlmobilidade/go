@@ -4,7 +4,7 @@ import { RoutePlannerFilterButton } from '@/components/routes/list/RoutePlannerF
 import { RoutePlannerFilterPanel } from '@/components/routes/list/RoutePlannerFilterPanel';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/types/route-planner/models';
-import { formatDateTimeLocalInputValue } from '@/utils/route-planner/format';
+import { formatDateTimeLocalInputValue } from '@/utils/route-planner/presentation/format';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

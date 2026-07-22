@@ -1,5 +1,5 @@
 import { type MotisLegModeKind, type MotisPlanLeg } from '@/types/route-planner/models';
-import { getMotisLegModeKind } from '@/utils/route-planner/modes';
+import { getMotisLegModeKind } from '@/utils/route-planner/presentation/modes';
 import { IconBike, IconBus, IconCar, IconElevator, IconFerry, IconPlane, IconRoute, IconScooter, IconTrain, IconWalk, type TablerIcon } from '@tabler/icons-react';
 
 /* * */

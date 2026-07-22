@@ -10,7 +10,7 @@ import { Search } from '@/components/search/Search';
 import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
-import { getRoutePlannerCloseAction, getRoutePlannerItineraryDetailInitialSnap } from '@/utils/route-planner/navigation';
+import { getRoutePlannerCloseAction, getRoutePlannerItineraryDetailInitialSnap } from '@/utils/route-planner/planning/navigation';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

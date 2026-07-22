@@ -1,4 +1,4 @@
-import { formatDateTimeLocalInputValue } from '@/utils/route-planner/format';
+import { formatDateTimeLocalInputValue } from '@/utils/route-planner/presentation/format';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 

@@ -2,7 +2,7 @@
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { type MotisPlanLeg } from '@/types/route-planner/models';
-import { getMotisLegModeKind, getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/modes';
+import { getMotisLegModeKind, getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import { useTranslation } from 'react-i18next';
 

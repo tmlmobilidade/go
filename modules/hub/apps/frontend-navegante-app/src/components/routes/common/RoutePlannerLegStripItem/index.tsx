@@ -3,9 +3,9 @@
 import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
 import { type MotisPlanLeg } from '@/types/route-planner/models';
-import { formatMotisPlanDurationMinutes } from '@/utils/route-planner/format';
-import { isMotisWalkingLeg } from '@/utils/route-planner/modes';
-import { getMotisLegDurationSeconds } from '@/utils/route-planner/motis-plan-api';
+import { getMotisLegDurationSeconds } from '@/utils/route-planner/planning/motis-plan-api';
+import { formatMotisPlanDurationMinutes } from '@/utils/route-planner/presentation/format';
+import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { IconWalk } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 

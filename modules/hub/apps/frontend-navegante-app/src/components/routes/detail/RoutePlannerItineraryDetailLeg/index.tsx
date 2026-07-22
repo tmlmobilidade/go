@@ -5,11 +5,11 @@ import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLin
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
 import { RoutePlannerTime } from '@/components/routes/common/RoutePlannerTime';
 import { type MotisPlanIntermediateStop, type MotisPlanLeg } from '@/types/route-planner/models';
-import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/alerts';
-import { formatMotisPlanDurationMinutes } from '@/utils/route-planner/format';
-import { isMotisWalkingLeg } from '@/utils/route-planner/modes';
-import { getMotisLegDurationSeconds } from '@/utils/route-planner/motis-plan-api';
-import { getRoutePlannerIntermediateStopRealtimeStatus, getRoutePlannerLegRealtimeStatus } from '@/utils/route-planner/realtime';
+import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner/itinerary/alerts';
+import { getRoutePlannerIntermediateStopRealtimeStatus, getRoutePlannerLegRealtimeStatus } from '@/utils/route-planner/itinerary/realtime';
+import { getMotisLegDurationSeconds } from '@/utils/route-planner/planning/motis-plan-api';
+import { formatMotisPlanDurationMinutes } from '@/utils/route-planner/presentation/format';
+import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { IconAlertTriangle, IconChevronDown, IconNavigationTop } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import { useMemo, useState } from 'react';

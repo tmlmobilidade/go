@@ -3,7 +3,7 @@
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
-import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/locations';
+import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/planning/locations';
 import { routePlannerCoordinateToLocation } from '@/utils/search/motis-geocode';
 import { normalizeSearchText } from '@/utils/search/normalize';
 import { type HubStop } from '@tmlmobilidade/go-types-public-info';

@@ -7,9 +7,9 @@ import { getRoutePlannerLegPlaceName, RoutePlannerItineraryDetailLeg } from '@/c
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useLinesByShortName } from '@/hooks/route-planner/useLinesByShortName';
 import { useRoutePlannerActiveLeg } from '@/hooks/route-planner/useRoutePlannerActiveLeg';
-import { formatMotisPlanDuration } from '@/utils/route-planner/format';
-import { getMotisItineraryDurationSeconds, getMotisItineraryEnd } from '@/utils/route-planner/motis-plan-api';
-import { getRoutePlannerItineraryRealtimeStatus } from '@/utils/route-planner/realtime';
+import { getRoutePlannerItineraryRealtimeStatus } from '@/utils/route-planner/itinerary/realtime';
+import { getMotisItineraryDurationSeconds, getMotisItineraryEnd } from '@/utils/route-planner/planning/motis-plan-api';
+import { formatMotisPlanDuration } from '@/utils/route-planner/presentation/format';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

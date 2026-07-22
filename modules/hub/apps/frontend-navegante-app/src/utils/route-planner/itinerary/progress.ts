@@ -1,8 +1,8 @@
 import { type MotisItinerary, type MotisPlanLeg, type RoutePlannerLocation } from '@/types/route-planner/models';
-import { formatMotisPlanDurationMinutes } from '@/utils/route-planner/format';
-import { getMotisLegPathPositions, getMotisPlanPlacePosition } from '@/utils/route-planner/geometry';
-import { isMotisWalkingLeg } from '@/utils/route-planner/modes';
-import { getMotisLegDurationSeconds } from '@/utils/route-planner/motis-plan-api';
+import { getMotisLegPathPositions, getMotisPlanPlacePosition } from '@/utils/route-planner/itinerary/geometry';
+import { getMotisLegDurationSeconds } from '@/utils/route-planner/planning/motis-plan-api';
+import { formatMotisPlanDurationMinutes } from '@/utils/route-planner/presentation/format';
+import { isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 
 /* * */
 
