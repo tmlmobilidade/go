@@ -110,7 +110,7 @@ export class ClickHouseDatabaseClient {
 				http_receive_timeout: 360 * 1000,
 				http_send_timeout: 360 * 1000,
 				max_execution_time: 360,
-				wait_for_async_insert: 0,
+				wait_for_async_insert: 1,
 			},
 			compression: {
 				request: true,

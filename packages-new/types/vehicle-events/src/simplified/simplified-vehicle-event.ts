@@ -20,7 +20,7 @@ export const SimplifiedVehicleEventSchema = z.object({
 	odometer: z.number().nullable().default(null),
 	operational_date: OperationalDateIntSchema,
 	received_at: UnixTimestampSchema,
-	speed: z.number().nullable().default(null),
+	speed: z.number().transform(val => val ? Math.round(val) : null).nullable().default(null),
 	stop_id: z.string().nullable().default(null),
 	trip_id: z.string(),
 	vehicle_id: z.string(),
