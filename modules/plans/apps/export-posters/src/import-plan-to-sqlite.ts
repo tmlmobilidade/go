@@ -10,8 +10,8 @@ import { type ExportToHitouchConfig } from '@/types.js';
 import { buildDatesMap } from '@/utils/build-dates-map.js';
 import { createHitouchZip } from '@/utils/create-hitouch-zip.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { importGtfsToDatabase, ImportGtfsToDatabaseConfig, initImportGtfsContext } from '@tmlmobilidade/import-gtfs';
-import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Plan } from '@tmlmobilidade/types';
@@ -23,7 +23,7 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 	//
 	// Import the Plan into a local SQLite database
 
-	const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+	const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.operation_file_id });
 	const feedStartDate = planData.gtfs_feed_info.feed_start_date;
 	const feedEndDate = planData.gtfs_feed_info.feed_end_date;
 	const agencyId = planData.gtfs_agency.agency_id;

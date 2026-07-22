@@ -146,15 +146,6 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		},
 	});
 
-	const { action: handleDeleteApexFile, isLoading: isDeletingApexFile } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Attachment>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId), 'DELETE'),
-		onSuccess: () => {
-			setApexFileUpload(null);
-			apexFileMutate(null);
-			planMutate();
-		},
-	});
-
 	//
 	// E. Setup flags
 

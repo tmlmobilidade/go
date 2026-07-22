@@ -3,7 +3,7 @@
 import { PostersController } from '@/controller/poster.js';
 import { importPlanToSqlite } from '@/import-plan-to-sqlite.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -40,10 +40,10 @@ async function main(): Promise<void> {
 	//
 	// Resume a processing Plan before starting a waiting Plan
 
-	let planData = await plans.findOne({ 'apps.posters.status': 'processing' }, { sort: { 'apps.posters.timestamp': 1 } });
+	let planData = await goDb.operation.plans.findOne({ 'apps.posters.status': 'processing' }, { sort: { 'apps.posters.timestamp': 1 } });
 
 	if (!planData) {
-		planData = await plans.findOne({ 'apps.posters.status': 'waiting' }, { sort: { 'apps.posters.timestamp': 1 } });
+		planData = await goDb.operation.plans.findOne({ 'apps.posters.status': 'waiting' }, { sort: { 'apps.posters.timestamp': 1 } });
 	}
 
 	if (!planData) {
@@ -61,7 +61,7 @@ async function main(): Promise<void> {
 		// Update the plan status to 'processing' if it is not already
 
 		if (planData.apps.posters.status !== 'processing') {
-			planData = await plans.updateById(planData._id, {
+			planData = await goDb.operation.plans.updateById(planData._id, {
 				apps: {
 					...planData.apps,
 					posters: {
@@ -82,7 +82,7 @@ async function main(): Promise<void> {
 			//
 			// Update the plan status to 'processing' and 'preparing'
 
-			planData = await plans.updateById(planData._id, {
+			planData = await goDb.operation.plans.updateById(planData._id, {
 				apps: {
 					...planData.apps,
 					posters: {
@@ -101,7 +101,7 @@ async function main(): Promise<void> {
 			//
 			// Update the plan status to 'generating'
 
-			planData = await plans.updateById(planData._id, {
+			planData = await goDb.operation.plans.updateById(planData._id, {
 				apps: {
 					...planData.apps,
 					posters: {
@@ -122,7 +122,7 @@ async function main(): Promise<void> {
 			//
 			// Persist the remote job immediately so a restart can resume polling
 
-			planData = await plans.updateById(planData._id, {
+			planData = await goDb.operation.plans.updateById(planData._id, {
 				apps: {
 					...planData.apps,
 					posters: {
@@ -145,7 +145,7 @@ async function main(): Promise<void> {
 			//
 			// Update the plan status to 'checking-status'
 
-			planData = await plans.updateById(planData._id, {
+			planData = await goDb.operation.plans.updateById(planData._id, {
 				apps: {
 					...planData.apps,
 					posters: {
@@ -167,7 +167,7 @@ async function main(): Promise<void> {
 
 		while (pdfStatus.status !== 'done') {
 			if (pdfStatus.status === 'failed') {
-				planData = await plans.updateById(planData._id, {
+				planData = await goDb.operation.plans.updateById(planData._id, {
 					apps: {
 						...planData.apps,
 						posters: {
@@ -201,7 +201,7 @@ async function main(): Promise<void> {
 		//
 		// Update the plan status to 'downloading'
 
-		planData = await plans.updateById(planData._id, {
+		planData = await goDb.operation.plans.updateById(planData._id, {
 			apps: {
 				...planData.apps,
 				posters: {
@@ -217,20 +217,22 @@ async function main(): Promise<void> {
 
 		const pdfZip = await postersController.downloadPDF(pdfFileUrl);
 		const requestedBy = planData.apps.posters.requested_by ?? 'system';
-		const pdfFile = await files.upload(pdfZip, {
+		const pdfFile = await goDb.core.attachments.insertOne({
 			created_by: requestedBy,
+			description: 'Posters ZIP file',
 			name: `${planData._id}-pdf.zip`,
 			resource_id: planData._id,
-			scope: 'plans',
+			scope: 'plan',
 			size: pdfZip.byteLength,
 			type: 'application/zip',
 			updated_by: requestedBy,
+			url: pdfFileUrl,
 		});
 
 		//
 		// Update the plan status to 'complete'
 
-		await plans.updateById(planData._id, {
+		await goDb.operation.plans.updateById(planData._id, {
 			apps: {
 				...planData.apps,
 				posters: {

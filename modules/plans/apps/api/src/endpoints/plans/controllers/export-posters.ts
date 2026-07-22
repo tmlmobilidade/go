@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { plans } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
@@ -22,7 +22,7 @@ export async function listPlanToGeneratePosters(request: FastifyRequest<{ Params
 	//
 	// Get the plan data
 
-	const planData = await plans.findById(request.params.id);
+	const planData = await goDb.operation.plans.findById(request.params.id);
 
 	if (!planData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
@@ -46,7 +46,7 @@ export async function listPlanToGeneratePosters(request: FastifyRequest<{ Params
 	//
 	// Save status to the plan processing posters
 
-	await plans.updateById(planData._id, {
+	await goDb.operation.plans.updateById(planData._id, {
 		apps: {
 			...planData.apps,
 			posters: {
