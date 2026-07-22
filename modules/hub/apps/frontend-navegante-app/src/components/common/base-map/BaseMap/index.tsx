@@ -21,6 +21,7 @@ import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
 import { type MapLongPressLocation, useMapLongPress } from '@/hooks/useMapLongPress';
+import { isBaseMapAgencyVisible } from '@/utils/base-map-operators';
 import { fetchPatterns } from '@/utils/fetch-patterns';
 import { centerMap } from '@/utils/map.utils';
 import { buildRoutePlannerAlertFeatureCollection, filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
@@ -28,7 +29,7 @@ import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner-navigation'
 import { filterVehicleFeatureCollectionByPatternIds, filterVehicleFeatureCollectionByRouteDirections, getRoutePlannerItineraryRouteDirections, getRoutePlannerItineraryRouteIds, getRoutePlannerRouteDirectionKey, getRoutePlannerRouteIdKey } from '@/utils/route-planner-vehicles';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubPattern, type HubShape } from '@tmlmobilidade/go-types-public-info';
+import { type HubPattern, type HubShape, type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
 import { type MapLayerMouseEvent, useMap, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -58,7 +59,7 @@ export function BaseMap() {
 	const vehiclesContext = useVehiclesContext();
 	const routePlannerContext = useRoutePlannerContext();
 
-	const { data: { activeBaseMapOverlays } } = useMapContext();
+	const { data: { activeBaseMapOverlays, excludedBaseMapOperatorIds } } = useMapContext();
 	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
 	const { activeBottomSheet, activeBottomSheetSnap, setActiveBottomSheet } = useBottomSheet();
 	const { collapseForMapInteraction, mapPadding, shouldFitMap } = useMapBottomSheet();
@@ -121,7 +122,7 @@ export function BaseMap() {
 		return buildRoutePlannerAlertFeatureCollection(alertsContext.data.fc, routePlannerAlerts, routePlannerContext.data.route_map_data, linesContext.data.lines);
 	}, [alertsContext.data.fc, linesContext.data.lines, routePlannerAlertFilters, routePlannerAlerts, routePlannerContext.data.route_map_data]);
 
-	const alertsMapData = useMemo(() => {
+	const alertsMapData = useMemo<GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>>(() => {
 		if (!focusedAlertId) return routePlannerAlertsMapData;
 
 		const collection = getBaseGeoJsonFeatureCollection();
@@ -134,6 +135,21 @@ export function BaseMap() {
 
 		return collection;
 	}, [alertsContext.data.fc, focusedAlertId, routePlannerAlertsMapData]);
+	const operatorFilteredAlertsMapData = useMemo(() => {
+		const visibleAlertIds = new Set(
+			alertsContext.data.alerts
+				.filter(alert => isBaseMapAgencyVisible(alert.agency_id, excludedBaseMapOperatorIds))
+				.map(alert => alert._id),
+		);
+
+		return {
+			...alertsMapData,
+			features: alertsMapData.features.filter((feature) => {
+				const featureId = feature.properties?.id ?? feature.properties?._id;
+				return visibleAlertIds.has(String(featureId));
+			}),
+		};
+	}, [alertsContext.data.alerts, alertsMapData, excludedBaseMapOperatorIds]);
 
 	const routePlannerVehicleRouteDirections = useMemo(() => {
 		return getRoutePlannerItineraryRouteDirections(routePlannerContext.data.selected_itinerary);
@@ -226,10 +242,10 @@ export function BaseMap() {
 	}, [routePlannerContext.data.route_map_data.shapeData.features, routePlannerContext.data.view_mode]);
 	const placeDestination = activeBottomSheet?.view === 'routes' && routePlannerContext.data.view_mode === 'place-detail' ? routePlannerContext.data.destination : null;
 
-	const vehiclesMapData = useMemo(() => {
+	const vehiclesMapData = useMemo<GeoJSON.FeatureCollection<GeoJSON.Point, HubVehiclePosition>>(() => {
 		if (!focusedVehicleId) return lineDetailVehiclesMapData;
 
-		const collection = getBaseGeoJsonFeatureCollection();
+		const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, HubVehiclePosition>();
 
 		vehiclesContext.data.fc.features.forEach((feature) => {
 			if (feature.properties?.vehicle_id === focusedVehicleId) collection.features.push(feature);
@@ -237,18 +253,26 @@ export function BaseMap() {
 
 		return collection;
 	}, [focusedVehicleId, lineDetailVehiclesMapData, vehiclesContext.data.fc]);
+	const operatorFilteredVehiclesMapData = useMemo(() => {
+		return {
+			...vehiclesMapData,
+			features: vehiclesMapData.features.filter((feature) => {
+				return isBaseMapAgencyVisible(feature.properties?.agency_id ?? '', excludedBaseMapOperatorIds);
+			}),
+		};
+	}, [excludedBaseMapOperatorIds, vehiclesMapData]);
 
 	useEffect(() => {
 		if (!baseMap || !focusedAlertId || !activeBaseMapOverlays.includes('alerts')) return;
 
-		const focusedFeature = alertsMapData.features.find(
+		const focusedFeature = operatorFilteredAlertsMapData.features.find(
 			feature => feature.geometry?.type === 'Point',
 		);
 
 		if (!focusedFeature || focusedFeature.geometry?.type !== 'Point') return;
 
 		// moveMap(viewportMap, focusedFeature.geometry.coordinates);
-	}, [baseMap, focusedAlertId, alertsMapData.features, activeBaseMapOverlays]);
+	}, [activeBaseMapOverlays, baseMap, focusedAlertId, operatorFilteredAlertsMapData.features]);
 
 	useEffect(() => {
 		if (!baseMap || !focusedLineShape) return;
@@ -390,10 +414,10 @@ export function BaseMap() {
 
 			<MapViewOverlayStops
 				stopsData={stopsMapData}
-				visible={activeBaseMapOverlays.includes('stops')}
+				visible
 			/>
 			<MapViewOverlayStopLineBadges
-				visible={activeBaseMapOverlays.includes('stops')}
+				visible
 			/>
 
 			{focusedStopMapData && (
@@ -444,7 +468,7 @@ export function BaseMap() {
 
 			<MapViewOverlayVehicles
 				alwaysShowVehicles={shouldAlwaysShowFilteredVehicles}
-				vehiclesData={vehiclesMapData}
+				vehiclesData={operatorFilteredVehiclesMapData}
 				visible={activeBaseMapOverlays.includes('vehicles')}
 			/>
 			{/* <MapViewOverlayVehicleLineBadges
@@ -452,7 +476,7 @@ export function BaseMap() {
 			/> */}
 
 			<MapViewStyleAlerts
-				data={alertsMapData}
+				data={operatorFilteredAlertsMapData}
 				visible={activeBaseMapOverlays.includes('alerts')}
 			/>
 			<MapViewOverlayPlaceLocation

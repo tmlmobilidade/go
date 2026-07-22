@@ -18,7 +18,7 @@ import { SearchDetail } from '@/components/search/SearchDetail';
 import { StopsDetail } from '@/components/stops/detail/StopsDetail';
 import { VehiclesDetail } from '@/components/vehicles/detail/VehiclesDetail';
 import { useColorScheme } from '@mantine/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 /* * */
 
@@ -30,6 +30,7 @@ export default function Page() {
 
 	const colorScheme = useColorScheme();
 	const { activeBottomSheet } = useBottomSheet();
+	const [isMapFiltersOpen, setIsMapFiltersOpen] = useState(false);
 	const activeLineId = activeBottomSheet?.view === 'lines-detail' ? activeBottomSheet.entityId ?? null : null;
 
 	//
@@ -49,8 +50,8 @@ export default function Page() {
 			<RoutePlannerContextProvider>
 				<BaseMap />
 				<RoutePlannerTopSearch />
-				<BaseMapOverlaysControl />
-				<ActionBar />
+				<BaseMapOverlaysControl onOpenedChange={setIsMapFiltersOpen} opened={isMapFiltersOpen} />
+				{!isMapFiltersOpen && <ActionBar />}
 				<VehiclesDetail />
 				<LinesDetail />
 				<StopsDetail />
@@ -60,7 +61,7 @@ export default function Page() {
 				<SearchDetail />
 				<RoutePlanner />
 				<RoutePlannerLiveBar />
-				<RoutePlannerVehiclesCounter />
+				{!isMapFiltersOpen && <RoutePlannerVehiclesCounter />}
 			</RoutePlannerContextProvider>
 		</LinesDetailContextProvider>
 	);

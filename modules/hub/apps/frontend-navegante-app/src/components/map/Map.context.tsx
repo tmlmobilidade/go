@@ -8,16 +8,19 @@ import { createContext, type PropsWithChildren, useContext, useEffect, useState 
 
 /* * */
 
-export type BaseMapOverlayType = 'alerts' | 'stops' | 'vehicles';
+export type BaseMapOperatorId = '1' | '2' | '3' | '4' | '8' | '15' | '16' | '21' | 'CM';
+export type BaseMapOverlayType = 'alerts' | 'vehicles';
 
 interface MapContextState {
 	actions: {
 		moveMap: (params: { isUserInitiated: boolean, latitude: number, longitude: number }) => void
 		setMap: (map: MapRef) => void
+		toggleBaseMapOperator: (operatorId: BaseMapOperatorId) => void
 		toggleBaseMapOverlay: (overlay: BaseMapOverlayType) => void
 	}
 	data: {
 		activeBaseMapOverlays: BaseMapOverlayType[]
+		excludedBaseMapOperatorIds: BaseMapOperatorId[]
 		map: MapRef | undefined
 	}
 	flags: {
@@ -50,8 +53,12 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 	const { userLocation, userLocationTrackingMode } = useUserLocation();
 
 	const [activeBaseMapOverlays, setActiveBaseMapOverlays] = useSessionStorage<BaseMapOverlayType[]>({
-		defaultValue: ['alerts', 'stops', 'vehicles'],
+		defaultValue: ['alerts', 'vehicles'],
 		key: 'active-viewport-map-sources',
+	});
+	const [excludedBaseMapOperatorIds, setExcludedBaseMapOperatorIds] = useSessionStorage<BaseMapOperatorId[]>({
+		defaultValue: [],
+		key: 'excluded-viewport-map-operators',
 	});
 
 	//
@@ -78,6 +85,17 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 		});
 	};
 
+	const toggleBaseMapOperator = (operatorId: BaseMapOperatorId) => {
+		setExcludedBaseMapOperatorIds((previousOperatorIds) => {
+			const nextOperatorIds = new Set(previousOperatorIds);
+
+			if (nextOperatorIds.has(operatorId)) nextOperatorIds.delete(operatorId);
+			else nextOperatorIds.add(operatorId);
+
+			return Array.from(nextOperatorIds);
+		});
+	};
+
 	useEffect(() => {
 		// Skip if the user location tracking mode is idle
 		if (userLocationTrackingMode === 'idle') return;
@@ -97,10 +115,12 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 		actions: {
 			moveMap,
 			setMap,
+			toggleBaseMapOperator,
 			toggleBaseMapOverlay,
 		},
 		data: {
 			activeBaseMapOverlays,
+			excludedBaseMapOperatorIds,
 			map: dataMapState,
 		},
 		flags: {

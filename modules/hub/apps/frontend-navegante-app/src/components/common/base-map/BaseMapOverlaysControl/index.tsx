@@ -1,111 +1,78 @@
 'use client';
 
-import { type BaseMapOverlayType, useMapContext } from '@/components/map/Map.context';
+import { BaseMapFiltersSheet } from '@/components/common/base-map/BaseMapFiltersSheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { useMapFloatingControlsLayout } from '@/hooks/useMapFloatingControlsLayout';
-import { useClickOutside } from '@mantine/hooks';
-import { IconAlertTriangle, IconBus, IconFlag2, IconStack2 } from '@tabler/icons-react';
-import { type KeyboardEvent, type ReactNode, useId, useState } from 'react';
+import { IconStack2 } from '@tabler/icons-react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface BaseMapOverlayControlItem {
-	icon: ReactNode
-	label: string
-	value: BaseMapOverlayType
+interface BaseMapOverlaysControlProps {
+	onOpenedChange: (opened: boolean) => void
+	opened: boolean
 }
 
 /* * */
 
-export function BaseMapOverlaysControl() {
+export function BaseMapOverlaysControl({ onOpenedChange, opened }: BaseMapOverlaysControlProps) {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
-
-	const [isOpen, setIsOpen] = useState(false);
-	const panelId = useId();
-	const containerRef = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
-
 	const controlsLayout = useMapFloatingControlsLayout();
 
-	const { actions: { toggleBaseMapOverlay }, data: { activeBaseMapOverlays } } = useMapContext();
-
-	const controlItems: BaseMapOverlayControlItem[] = [
-		{
-			icon: <IconBus size={22} />,
-			label: t('default:map.BaseMapOverlaysControl.layers.vehicles'),
-			value: 'vehicles',
-		},
-		{
-			icon: <IconFlag2 size={22} />,
-			label: t('default:map.BaseMapOverlaysControl.layers.stops'),
-			value: 'stops',
-		},
-		{
-			icon: <IconAlertTriangle size={22} />,
-			label: t('default:map.BaseMapOverlaysControl.layers.alerts'),
-			value: 'alerts',
-		},
-	];
-
 	//
-	// B. Handle actions
+	// B. Setup effects
 
-	const handleContainerKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-		if (event.key !== 'Escape') return;
-		setIsOpen(false);
-	};
+	useEffect(() => {
+		if (controlsLayout.layout === 'hidden') onOpenedChange(false);
+	}, [controlsLayout.layout, onOpenedChange]);
+
+	useEffect(() => {
+		if (!opened) return;
+
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') onOpenedChange(false);
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+		return () => window.removeEventListener('keydown', handleKeyDown);
+	}, [onOpenedChange, opened]);
 
 	//
 	// C. Render components
 
 	return (
-		<div ref={containerRef} className={styles.container} data-layout={controlsLayout.layout} onKeyDown={handleContainerKeyDown}>
-
-			<button
-				aria-controls={panelId}
-				aria-expanded={isOpen}
-				aria-label={t('default:map.BaseMapOverlaysControl.trigger.label')}
-				className={styles.trigger}
-				data-open={isOpen}
-				onClick={() => setIsOpen(prev => !prev)}
-				type="button"
-			>
-				<IconStack2 size={24} />
-			</button>
-
-			{isOpen && (
-				<div
+		<>
+			<div className={styles.container} data-layout={controlsLayout.layout}>
+				<button
+					aria-expanded={opened}
 					aria-label={t('default:map.BaseMapOverlaysControl.trigger.label')}
-					className={styles.panel}
-					id={panelId}
-					role="group"
+					className={styles.trigger}
+					data-open={opened}
+					onClick={() => onOpenedChange(true)}
+					type="button"
 				>
-					{controlItems.map((item) => {
-						const isActive = activeBaseMapOverlays.includes(item.value);
+					<IconStack2 size={24} />
+				</button>
+			</div>
 
-						return (
-							<button
-								key={item.value}
-								aria-label={item.label}
-								aria-pressed={isActive}
-								className={styles.layerButton}
-								data-active={isActive}
-								onClick={() => toggleBaseMapOverlay(item.value)}
-								type="button"
-							>
-								<span className={styles.layerIcon}>{item.icon}</span>
-							</button>
-						);
-					})}
-				</div>
-			)}
-
-		</div>
+			<BottomSheet
+				onClose={() => onOpenedChange(false)}
+				opened={opened}
+				size="fit"
+				title={t('default:map.BaseMapOverlaysControl.title')}
+			>
+				<BaseMapFiltersSheet />
+			</BottomSheet>
+		</>
 	);
+
+	//
 }

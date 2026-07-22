@@ -11,8 +11,6 @@ import styles from './styles.module.css';
 
 /* * */
 
-export type MapStyle = 'map' | 'satellite';
-
 interface MapViewProps {
 	autoZoom?: boolean
 	children: React.ReactNode

@@ -229,9 +229,14 @@
 		"BaseMapOverlaysControl": {
 			"layers": {
 				"alerts": "Alertas",
-				"stops": "Paragens",
 				"vehicles": "Veículos"
 			},
+			"sections": {
+				"map_details": "Mostrar no mapa",
+				"operators": "Operadores",
+				"operators_description": "Escolha os operadores cujos veículos e alertas quer ver."
+			},
+			"title": "Filtros do mapa",
 			"trigger": {
 				"label": "Camadas do mapa"
 			}

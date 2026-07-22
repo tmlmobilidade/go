@@ -7,8 +7,6 @@
 	left: 15px;
 	z-index: 15;
 	display: flex;
-	align-items: flex-start;
-	gap: 8px;
 	color: var(--color-system-text-100);
 	pointer-events: none;
 	transition: top 180ms ease, opacity 180ms ease;
@@ -52,110 +50,7 @@
 	outline-offset: 2px;
 }
 
-/* * */
-/* PANEL */
-
-.panel {
-	display: flex;
-	gap: 6px;
-	width: auto;
-	padding: 6px;
-	pointer-events: all;
-	background-color: var(--color-system-background-100);
-	border: 1px solid var(--color-system-border-100);
-	border-radius: 16px;
-	box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
-	transform-origin: left center;
-	animation: panel-open 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-/* * */
-/* LAYER BUTTON */
-
-.layerButton {
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 50px;
-	min-width: 50px;
-	height: 50px;
-	min-height: 50px;
-	padding: 0;
-	font: inherit;
-	color: var(--color-system-text-300);
-	cursor: pointer;
-	background-color: transparent;
-	border: 0;
-	border-radius: 12px;
-	transition: 120ms all ease;
-	animation: layer-button-open 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-	animation-delay: calc(var(--layer-index) * 35ms);
-}
-
-.layerButton:nth-child(1) {
-	--layer-index: 0;
-}
-
-.layerButton:nth-child(2) {
-	--layer-index: 1;
-}
-
-.layerButton:nth-child(3) {
-	--layer-index: 2;
-}
-
-.layerButton:active {
-	background-color: var(--color-system-background-200);
-	transform: scale(0.96);
-}
-
-.layerButton:focus-visible {
-	outline: 3px solid var(--color-status-active-primary);
-	outline-offset: 2px;
-}
-
-.layerButton[data-active="true"] {
+.trigger[data-open='true'] {
 	color: var(--color-status-active-contrast);
 	background-color: var(--color-status-active-primary);
-}
-
-.layerIcon {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-/* * */
-/* ANIMATIONS */
-
-@keyframes panel-open {
-	from {
-		opacity: 0;
-		transform: translateX(-8px) scaleX(0.86);
-	}
-
-	to {
-		opacity: 1;
-		transform: translateX(0) scaleX(1);
-	}
-}
-
-@keyframes layer-button-open {
-	from {
-		opacity: 0;
-		transform: translateX(-8px);
-	}
-
-	to {
-		opacity: 1;
-		transform: translateX(0);
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.panel,
-	.layerButton {
-		animation: none;
-	}
 }
