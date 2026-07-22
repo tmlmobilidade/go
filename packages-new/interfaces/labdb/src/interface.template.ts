@@ -242,7 +242,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		const createTableQuery = `
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" (
 				${Object.entries<ClickHouseColumn>(this.schema)
-					.map(([key, column]) => `${key} ${column.type} ${column.materialized ? ` MATERIALIZED ${column.materialized}` : ''}`.trim())
+					.map(([key, column]) => `${key} ${column.type} ${column.materialized ? ` MATERIALIZED ${column.materialized}` : ''}`)
 					.join(', ')}
 			) ENGINE = ${this.tableOptions.engine}
 			${this.tableOptions.primaryKey ? `PRIMARY KEY (${Array.isArray(this.tableOptions.primaryKey) ? this.tableOptions.primaryKey.join(', ') : this.tableOptions.primaryKey})` : ''}

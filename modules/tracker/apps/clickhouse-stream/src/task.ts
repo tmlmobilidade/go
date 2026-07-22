@@ -48,6 +48,6 @@ export async function processVehicleEvent(databaseOperation: ChangeStreamInsertD
 
 		//
 	} catch (error) {
-		Logger.error({ message: `Parsing failed: _id="${databaseOperation.fullDocument._id}" version="${databaseOperation.fullDocument.version}": ${error.message}` });
+		Logger.error({ error, message: `Parsing failed: _id="${databaseOperation.fullDocument._id}" version="${databaseOperation.fullDocument.version}"` });
 	}
 };

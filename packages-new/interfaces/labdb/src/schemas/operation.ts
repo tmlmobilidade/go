@@ -8,7 +8,7 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
 export const simplifiedVehicleEventTableSchema: ClickHouseTableSchema<SimplifiedVehicleEvent> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'LowCardinality(String)' },
-	bearing: { type: 'Nullable(UInt16 CODEC(T64, ZSTD))' },
+	bearing: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
 	created_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	current_status: { type: 'LowCardinality(Nullable(String))' },
 	driver_id: { type: 'LowCardinality(Nullable(String))' },
@@ -19,7 +19,7 @@ export const simplifiedVehicleEventTableSchema: ClickHouseTableSchema<Simplified
 	odometer: { type: 'Nullable(UInt32)' },
 	operational_date: { type: 'UInt32' },
 	received_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
-	speed: { type: 'Nullable(UInt8 CODEC(T64, ZSTD))' },
+	speed: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
 	stop_id: { type: 'LowCardinality(Nullable(String))' },
 	trip_id: { type: 'String' },
 	vehicle_id: { type: 'LowCardinality(String)' },
