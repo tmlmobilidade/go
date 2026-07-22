@@ -117,6 +117,8 @@ jobs:
                   '### Preview environment failed',
                   '',
                   `Creation of preview environment failed within ${timeout} minutes`,
+                  '',
+                  `Remember that you need to build the auth module always first :)`,
                 ].join('\n');
 
             await github.rest.issues.createComment({
