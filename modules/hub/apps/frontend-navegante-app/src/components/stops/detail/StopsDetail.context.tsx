@@ -3,7 +3,7 @@
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
+import { useTripUpdatesContext } from '@/contexts/TripUpdates.context';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { fetchPatterns } from '@/utils/transit/fetch-patterns';
 import { Dates } from '@tmlmobilidade/dates';
