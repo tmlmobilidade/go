@@ -10,7 +10,7 @@ import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner-geometr
 import { createRoutePlannerCurrentLocation } from '@/utils/route-planner-locations';
 import { getRoutePlannerPlanStartTransition, getRoutePlannerStartTripTransition, getRoutePlannerTravelTimeModeTransition } from '@/utils/route-planner-navigation';
 import { type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerLocationSearchTarget, type RoutePlannerPlanViewMode, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode, type RoutePlannerViewMode } from '@/utils/route-planner.types';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -77,21 +77,21 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	//
 	// C. Handle actions
 
-	const buildOriginFromCoordinates = (latitude: number | undefined, longitude: number | undefined): null | RoutePlannerLocation => {
+	const buildOriginFromCoordinates = useCallback((latitude: number | undefined, longitude: number | undefined): null | RoutePlannerLocation => {
 		return createRoutePlannerCurrentLocation({
 			detail: t('default:routes.RoutePlannerSearch.origin.current_location_detail'),
 			label: t('default:routes.RoutePlannerSearch.origin.current_location'),
 			latitude,
 			longitude,
 		});
-	};
+	}, [t]);
 
-	const buildUserLocationOrigin = (): null | RoutePlannerLocation => {
+	const buildUserLocationOrigin = useCallback((): null | RoutePlannerLocation => {
 		if (!userLocation) return null;
 		return buildOriginFromCoordinates(userLocation.latitude, userLocation.longitude);
-	};
+	}, [buildOriginFromCoordinates, userLocation]);
 
-	const getCurrentBrowserLocationOrigin = async (): Promise<null | RoutePlannerLocation> => {
+	const getCurrentBrowserLocationOrigin = useCallback(async (): Promise<null | RoutePlannerLocation> => {
 		if (typeof navigator === 'undefined' || !navigator.geolocation) return null;
 
 		return new Promise((resolve) => {
@@ -105,9 +105,9 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 				},
 			);
 		});
-	};
+	}, [buildOriginFromCoordinates]);
 
-	const clearRoute = () => {
+	const clearRoute = useCallback(() => {
 		setOriginState(null);
 		setDestinationState(null);
 		setPlan(null);
@@ -116,80 +116,9 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		setViewMode('destination-search');
 		setWasOpenedFromPlace(false);
 		setIsNavigating(false);
-	};
+	}, []);
 
-	const startItinerary = (index: number) => {
-		const transition = getRoutePlannerStartTripTransition(index);
-
-		setSelectedItineraryIndex(transition.selectedItineraryIndex);
-		setIsNavigating(transition.isNavigating);
-		setViewMode(transition.viewMode);
-		clearActiveBottomSheets();
-	};
-
-	const endActiveTrip = () => {
-		clearRoute();
-		clearLastOmniSearchQuery();
-		clearActiveBottomSheets();
-	};
-
-	const dismissTripSheets = () => {
-		clearActiveBottomSheets();
-	};
-
-	const openActiveTripDetail = () => {
-		setViewMode('itinerary-detail');
-		setActiveBottomSheet({ view: 'routes' }, { replace: true });
-	};
-
-	const openDestinationSearch = () => {
-		openLocationSearch('destination');
-	};
-
-	const openLocationSearch = (target: RoutePlannerLocationSearchTarget) => {
-		setLocationSearchTarget(target);
-		setViewMode('destination-search');
-		setActiveBottomSheet({ view: 'routes' }, { replace: true });
-	};
-
-	const openFullInput = () => {
-		setViewMode('full-input');
-		setPlanError(null);
-		setWasOpenedFromPlace(false);
-		setActiveBottomSheet({ view: 'routes' }, { replace: true });
-	};
-
-	const openResults = () => {
-		setIsNavigating(false);
-		setViewMode('results');
-	};
-
-	const openPlace = async (location: RoutePlannerLocation) => {
-		setDestinationState(location);
-		setPlan(null);
-		setPlanError(null);
-		setSelectedItineraryIndex(null);
-		setViewMode('place-detail');
-		setWasOpenedFromPlace(true);
-		setActiveBottomSheet({ view: 'routes' });
-
-		const nextOrigin = origin || buildUserLocationOrigin() || await getCurrentBrowserLocationOrigin();
-		if (!nextOrigin) {
-			setPlanError(t('default:routes.RoutePlanner.errors.location_unavailable'));
-			setViewMode('full-input');
-			return;
-		}
-
-		setOriginState(nextOrigin);
-		await planRoute(nextOrigin, location, undefined, 'place-detail');
-	};
-
-	const openPlaceDetail = () => {
-		setSelectedItineraryIndex(null);
-		setViewMode('place-detail');
-	};
-
-	const planRoute = async (nextOrigin?: null | RoutePlannerLocation, nextDestination?: null | RoutePlannerLocation, nextTravelTime?: RoutePlannerTravelTime, nextViewMode: RoutePlannerPlanViewMode = 'results') => {
+	const planRoute = useCallback(async (nextOrigin?: null | RoutePlannerLocation, nextDestination?: null | RoutePlannerLocation, nextTravelTime?: RoutePlannerTravelTime, nextViewMode: RoutePlannerPlanViewMode = 'results') => {
 		const requestOrigin = nextOrigin === undefined ? origin : nextOrigin;
 		const requestDestination = nextDestination === undefined ? destination : nextDestination;
 		const requestTravelTime = nextTravelTime ?? travelTime;
@@ -224,9 +153,80 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		} finally {
 			setIsPlanning(false);
 		}
-	};
+	}, [destination, origin, t, travelTime]);
 
-	const selectDestination = async (location: RoutePlannerLocation) => {
+	const startItinerary = useCallback((index: number) => {
+		const transition = getRoutePlannerStartTripTransition(index);
+
+		setSelectedItineraryIndex(transition.selectedItineraryIndex);
+		setIsNavigating(transition.isNavigating);
+		setViewMode(transition.viewMode);
+		clearActiveBottomSheets();
+	}, [clearActiveBottomSheets]);
+
+	const endActiveTrip = useCallback(() => {
+		clearRoute();
+		clearLastOmniSearchQuery();
+		clearActiveBottomSheets();
+	}, [clearActiveBottomSheets, clearRoute]);
+
+	const dismissTripSheets = useCallback(() => {
+		clearActiveBottomSheets();
+	}, [clearActiveBottomSheets]);
+
+	const openActiveTripDetail = useCallback(() => {
+		setViewMode('itinerary-detail');
+		setActiveBottomSheet({ view: 'routes' }, { replace: true });
+	}, [setActiveBottomSheet]);
+
+	const openLocationSearch = useCallback((target: RoutePlannerLocationSearchTarget) => {
+		setLocationSearchTarget(target);
+		setViewMode('destination-search');
+		setActiveBottomSheet({ view: 'routes' }, { replace: true });
+	}, [setActiveBottomSheet]);
+
+	const openDestinationSearch = useCallback(() => {
+		openLocationSearch('destination');
+	}, [openLocationSearch]);
+
+	const openFullInput = useCallback(() => {
+		setViewMode('full-input');
+		setPlanError(null);
+		setWasOpenedFromPlace(false);
+		setActiveBottomSheet({ view: 'routes' }, { replace: true });
+	}, [setActiveBottomSheet]);
+
+	const openResults = useCallback(() => {
+		setIsNavigating(false);
+		setViewMode('results');
+	}, []);
+
+	const openPlace = useCallback(async (location: RoutePlannerLocation) => {
+		setDestinationState(location);
+		setPlan(null);
+		setPlanError(null);
+		setSelectedItineraryIndex(null);
+		setViewMode('place-detail');
+		setWasOpenedFromPlace(true);
+		setActiveBottomSheet({ view: 'routes' });
+
+		const nextOrigin = origin || buildUserLocationOrigin() || await getCurrentBrowserLocationOrigin();
+		if (!nextOrigin) {
+			setPlanError(t('default:routes.RoutePlanner.errors.location_unavailable'));
+			setViewMode('full-input');
+			return;
+		}
+
+		setOriginState(nextOrigin);
+		await planRoute(nextOrigin, location, undefined, 'place-detail');
+	}, [buildUserLocationOrigin, getCurrentBrowserLocationOrigin, origin, planRoute, setActiveBottomSheet, t]);
+
+	const openPlaceDetail = useCallback(() => {
+		setSelectedItineraryIndex(null);
+		setViewMode('place-detail');
+	}, []);
+
+	const selectDestination = useCallback(async (location: RoutePlannerLocation) => {
 		setDestinationState(location);
 		setPlan(null);
 		setPlanError(null);
@@ -242,15 +242,15 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 
 		setOriginState(nextOrigin);
 		await planRoute(nextOrigin, location);
-	};
+	}, [buildUserLocationOrigin, getCurrentBrowserLocationOrigin, origin, planRoute, t]);
 
-	const openDirectionsTo = async (location: RoutePlannerLocation) => {
+	const openDirectionsTo = useCallback(async (location: RoutePlannerLocation) => {
 		setViewMode('results');
 		setActiveBottomSheet({ view: 'routes' });
 		await selectDestination(location);
-	};
+	}, [selectDestination, setActiveBottomSheet]);
 
-	const selectOrigin = async (location: RoutePlannerLocation) => {
+	const selectOrigin = useCallback(async (location: RoutePlannerLocation) => {
 		setOriginState(location);
 		setPlan(null);
 		setPlanError(null);
@@ -262,42 +262,42 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		}
 
 		await planRoute(location, destination);
-	};
+	}, [destination, planRoute]);
 
-	const selectItinerary = (index: number) => {
+	const selectItinerary = useCallback((index: number) => {
 		setSelectedItineraryIndex(index);
 		if (viewMode === 'place-detail') setViewMode('results');
-	};
+	}, [viewMode]);
 
-	const setDestination = (location: null | RoutePlannerLocation) => {
+	const setDestination = useCallback((location: null | RoutePlannerLocation) => {
 		setDestinationState(location);
 		setPlan(null);
 		setPlanError(null);
 		setSelectedItineraryIndex(0);
-	};
+	}, []);
 
-	const setOrigin = (location: null | RoutePlannerLocation) => {
+	const setOrigin = useCallback((location: null | RoutePlannerLocation) => {
 		setOriginState(location);
 		setPlan(null);
 		setPlanError(null);
 		setSelectedItineraryIndex(0);
-	};
+	}, []);
 
-	const setTravelTime = (date: Date) => {
+	const setTravelTime = useCallback((date: Date) => {
 		setTravelTimeState(current => ({ ...current, date }));
 		setPlan(null);
 		setPlanError(null);
 		setSelectedItineraryIndex(0);
-	};
+	}, []);
 
-	const setTravelTimeMode = (mode: RoutePlannerTravelTimeMode) => {
+	const setTravelTimeMode = useCallback((mode: RoutePlannerTravelTimeMode) => {
 		setTravelTimeState(current => getRoutePlannerTravelTimeModeTransition(current, mode));
 		setPlan(null);
 		setPlanError(null);
 		setSelectedItineraryIndex(0);
-	};
+	}, []);
 
-	const swapLocations = () => {
+	const swapLocations = useCallback(() => {
 		setOriginState(destination);
 		setDestinationState(origin);
 		setPlan(null);
@@ -307,58 +307,61 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		if (origin && destination) {
 			void planRoute(destination, origin);
 		}
-	};
+	}, [destination, origin, planRoute]);
 
 	//
-	// D. Render components
+	// D. Define context value
+
+	const contextValue = useMemo<RoutePlannerContextState>(() => ({
+		actions: {
+			clearRoute,
+			dismissTripSheets,
+			endActiveTrip,
+			openActiveTripDetail,
+			openDestinationSearch,
+			openDirectionsTo,
+			openFullInput,
+			openLocationSearch,
+			openPlace,
+			openPlaceDetail,
+			openResults,
+			planRoute,
+			selectDestination,
+			selectItinerary,
+			selectOrigin,
+			setDestination,
+			setOrigin,
+			setTravelTime,
+			setTravelTimeMode,
+			startItinerary,
+			swapLocations,
+		},
+		data: {
+			destination,
+			itineraries,
+			location_search_target: locationSearchTarget,
+			origin,
+			plan,
+			plan_error: planError,
+			route_map_data: routeMapData,
+			selected_itinerary: selectedItinerary,
+			selected_itinerary_index: selectedItineraryIndex,
+			travel_time: travelTime,
+			view_mode: viewMode,
+			was_opened_from_place: wasOpenedFromPlace,
+		},
+		flags: {
+			has_plan_error: !!planError,
+			is_navigating: isNavigating,
+			is_planning: isPlanning,
+		},
+	}), [clearRoute, destination, dismissTripSheets, endActiveTrip, isNavigating, isPlanning, itineraries, locationSearchTarget, openActiveTripDetail, openDestinationSearch, openDirectionsTo, openFullInput, openLocationSearch, openPlace, openPlaceDetail, openResults, origin, plan, planError, planRoute, routeMapData, selectDestination, selectedItinerary, selectedItineraryIndex, selectItinerary, selectOrigin, setDestination, setOrigin, setTravelTime, setTravelTimeMode, startItinerary, swapLocations, travelTime, viewMode, wasOpenedFromPlace]);
+
+	//
+	// E. Render components
 
 	return (
-		<RoutePlannerContext.Provider
-			value={{
-				actions: {
-					clearRoute,
-					dismissTripSheets,
-					endActiveTrip,
-					openActiveTripDetail,
-					openDestinationSearch,
-					openDirectionsTo,
-					openFullInput,
-					openLocationSearch,
-					openPlace,
-					openPlaceDetail,
-					openResults,
-					planRoute,
-					selectDestination,
-					selectItinerary,
-					selectOrigin,
-					setDestination,
-					setOrigin,
-					setTravelTime,
-					setTravelTimeMode,
-					startItinerary,
-					swapLocations,
-				},
-				data: {
-					destination,
-					itineraries,
-					location_search_target: locationSearchTarget,
-					origin,
-					plan,
-					plan_error: planError,
-					route_map_data: routeMapData,
-					selected_itinerary: selectedItinerary,
-					selected_itinerary_index: selectedItineraryIndex,
-					travel_time: travelTime,
-					view_mode: viewMode,
-					was_opened_from_place: wasOpenedFromPlace,
-				},
-				flags: {
-					has_plan_error: !!planError,
-					is_navigating: isNavigating,
-					is_planning: isPlanning,
-				},
-			}}
-		>
+		<RoutePlannerContext.Provider value={contextValue}>
 			{children}
 		</RoutePlannerContext.Provider>
 	);
