@@ -1,6 +1,6 @@
 /* * */
 
-import { getCauseSeverityLevel } from '@/utils/get-alert-severity-level';
+import { getCauseSeverityLevel } from '@/utils/alerts/get-alert-severity-level';
 import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/types';
 import { AlertCauseIcons } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

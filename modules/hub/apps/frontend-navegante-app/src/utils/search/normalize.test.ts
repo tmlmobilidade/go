@@ -1,4 +1,4 @@
-import { normalizeSearchText } from '@/utils/search';
+import { normalizeSearchText } from '@/utils/search/normalize';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 

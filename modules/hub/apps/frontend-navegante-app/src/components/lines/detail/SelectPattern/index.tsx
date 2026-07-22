@@ -4,7 +4,7 @@
 
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { formatStopLocation } from '@/utils/format-stop-location';
+import { formatStopLocation } from '@/utils/transit/format-stop-location';
 import { ComboboxItem, ComboboxItemGroup, Flex, Group, Select, SelectProps, Text } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { type HubPattern } from '@tmlmobilidade/go-types-public-info';

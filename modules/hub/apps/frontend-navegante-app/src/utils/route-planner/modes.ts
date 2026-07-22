@@ -1,4 +1,4 @@
-import { type MotisLegModeKind, type MotisPlanLeg } from '@/utils/route-planner.types';
+import { type MotisLegModeKind, type MotisPlanLeg } from '@/types/route-planner';
 
 /* * */
 

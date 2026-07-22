@@ -1,6 +1,6 @@
-import { getMotisPlaceParam } from '@/utils/motis-geocode';
-import { isMotisWalkingLeg } from '@/utils/route-planner-modes';
-import { type MotisItinerary, type MotisPlanIntermediateStop, type MotisPlanLeg, type MotisPlanPlace, type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerTravelTime } from '@/utils/route-planner.types';
+import { type MotisItinerary, type MotisPlanIntermediateStop, type MotisPlanLeg, type MotisPlanPlace, type MotisPlanResponse, type RoutePlannerLocation, type RoutePlannerTravelTime } from '@/types/route-planner';
+import { isMotisWalkingLeg } from '@/utils/route-planner/modes';
+import { getMotisPlaceParam } from '@/utils/search/motis-geocode';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 
 /* * */

@@ -1,6 +1,7 @@
-import { buildRoutePlannerItineraryMapData, getMotisItineraryActiveLegIndex, getMotisLegRemainingDistanceMeters, getMotisLegRemainingSeconds, type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace, type RoutePlannerLocation } from '@/utils/route-planner-motis';
-import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner-navigation';
-import { getRoutePlannerActiveLegProgress } from '@/utils/route-planner-progress';
+import { type MotisItinerary, type MotisPlanLeg, type MotisPlanPlace, type RoutePlannerLocation } from '@/types/route-planner';
+import { buildRoutePlannerItineraryMapData } from '@/utils/route-planner/geometry';
+import { getRoutePlannerMapFitFeatures } from '@/utils/route-planner/navigation';
+import { getMotisItineraryActiveLegIndex, getMotisLegRemainingDistanceMeters, getMotisLegRemainingSeconds, getRoutePlannerActiveLegProgress } from '@/utils/route-planner/progress';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 

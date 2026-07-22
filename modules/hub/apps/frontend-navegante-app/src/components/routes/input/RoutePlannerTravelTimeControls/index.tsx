@@ -1,7 +1,7 @@
 'use client';
 
-import { formatDateTimeLocalInputValue } from '@/utils/route-planner-format';
-import { type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
+import { type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/types/route-planner';
+import { formatDateTimeLocalInputValue } from '@/utils/route-planner/format';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

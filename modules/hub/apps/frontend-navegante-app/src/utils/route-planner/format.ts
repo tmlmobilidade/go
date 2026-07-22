@@ -1,4 +1,4 @@
-import { type MotisGeocodeArea, type MotisGeocodeResult, type MotisPlanLeg, type RoutePlannerLocation } from '@/utils/route-planner.types';
+import { type MotisGeocodeArea, type MotisGeocodeResult, type MotisPlanLeg, type RoutePlannerLocation } from '@/types/route-planner';
 
 /* * */
 

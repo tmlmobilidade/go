@@ -1,4 +1,4 @@
-import { getMotisModeKind } from '@/utils/route-planner-motis';
+import { getMotisModeKind } from '@/utils/route-planner/modes';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 

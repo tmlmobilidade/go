@@ -1,7 +1,7 @@
 'use client';
 
-import { formatMotisPlanTime } from '@/utils/route-planner-motis';
-import { type RoutePlannerTimeStatus } from '@/utils/route-planner-realtime';
+import { formatMotisPlanTime } from '@/utils/route-planner/format';
+import { type RoutePlannerTimeStatus } from '@/utils/route-planner/realtime';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

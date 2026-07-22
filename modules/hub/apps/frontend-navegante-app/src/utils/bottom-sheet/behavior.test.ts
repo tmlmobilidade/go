@@ -1,4 +1,4 @@
-import { getBottomSheetSnapState, getMapInteractionCollapseTarget } from '@/components/common/bottom-sheet/bottom-sheet-behavior';
+import { getBottomSheetSnapState, getMapInteractionCollapseTarget } from '@/utils/bottom-sheet/behavior';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 

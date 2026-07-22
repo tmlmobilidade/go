@@ -2,7 +2,7 @@
 
 import { RoutePlannerFilterButton } from '@/components/routes/list/RoutePlannerFilterButton';
 import { RoutePlannerFilterPanel } from '@/components/routes/list/RoutePlannerFilterPanel';
-import { type RoutePlannerSortMode } from '@/utils/route-planner-results';
+import { type RoutePlannerSortMode } from '@/utils/route-planner/results';
 import { IconRoute, IconSortAscending, IconWalk } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 

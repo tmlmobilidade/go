@@ -5,7 +5,7 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useTripUpdatesContext } from '@/components/trip-updates/TripUpdates.context';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
-import { fetchPatterns } from '@/utils/fetch-patterns';
+import { fetchPatterns } from '@/utils/transit/fetch-patterns';
 import { Dates } from '@tmlmobilidade/dates';
 import { type HubAlert, type HubLine, type HubPattern, type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';

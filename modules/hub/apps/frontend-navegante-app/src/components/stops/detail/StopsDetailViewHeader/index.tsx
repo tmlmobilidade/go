@@ -6,7 +6,7 @@ import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.con
 import { StopsDetailViewHeaderAssociatedLines } from '@/components/stops/detail/StopsDetailViewHeaderAssociatedLines';
 import { StopsDetailViewHeaderMetadata } from '@/components/stops/detail/StopsDetailViewHeaderMetadata';
 import { StopsDetailViewName } from '@/components/stops/detail/StopsDetailViewName';
-import { formatStopLocation } from '@/utils/format-stop-location';
+import { formatStopLocation } from '@/utils/transit/format-stop-location';
 import { IconDirections } from '@tabler/icons-react';
 import { Section, Surface } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

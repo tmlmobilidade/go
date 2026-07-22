@@ -1,7 +1,8 @@
 'use client';
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
-import { getMotisLegModeKind, getMotisLegRouteLabel, isMotisWalkingLeg, type MotisPlanLeg } from '@/utils/route-planner-motis';
+import { type MotisPlanLeg } from '@/types/route-planner';
+import { getMotisLegModeKind, getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/modes';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 import { useTranslation } from 'react-i18next';
 

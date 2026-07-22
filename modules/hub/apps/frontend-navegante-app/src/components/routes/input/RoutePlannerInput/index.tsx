@@ -2,7 +2,7 @@
 
 import { RoutePlannerLocationFields } from '@/components/routes/input/RoutePlannerLocationFields';
 import { RoutePlannerTravelTimeControls } from '@/components/routes/input/RoutePlannerTravelTimeControls';
-import { type RoutePlannerLocation, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/utils/route-planner-motis';
+import { type RoutePlannerLocation, type RoutePlannerTravelTime, type RoutePlannerTravelTimeMode } from '@/types/route-planner';
 
 import styles from './styles.module.css';
 

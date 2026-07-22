@@ -1,6 +1,5 @@
 'use client';
 
-import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/components/common/bottom-sheet/bottom-sheet.constants';
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { RoutePlannerItineraryDetail } from '@/components/routes/detail/RoutePlannerItineraryDetail';
 import { RoutePlannerPlaceDetail } from '@/components/routes/detail/RoutePlannerPlaceDetail';
@@ -8,9 +7,10 @@ import { RoutePlannerInput } from '@/components/routes/input/RoutePlannerInput';
 import { RoutePlannerResults } from '@/components/routes/list/RoutePlannerResults';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { OmniSearch } from '@/components/search/OmniSearch';
+import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
-import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
-import { getRoutePlannerCloseAction, getRoutePlannerItineraryDetailInitialSnap } from '@/utils/route-planner-navigation';
+import { type RoutePlannerLocation } from '@/types/route-planner';
+import { getRoutePlannerCloseAction, getRoutePlannerItineraryDetailInitialSnap } from '@/utils/route-planner/navigation';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

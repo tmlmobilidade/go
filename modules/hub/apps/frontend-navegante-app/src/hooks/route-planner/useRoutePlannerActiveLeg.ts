@@ -2,7 +2,7 @@
 
 import { useUserLocation } from '@/components/map/UserLocation.context';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { getRoutePlannerActiveLegProgress, type RoutePlannerActiveLegProgress } from '@/utils/route-planner-progress';
+import { getRoutePlannerActiveLegProgress, type RoutePlannerActiveLegProgress } from '@/utils/route-planner/progress';
 import { useMemo } from 'react';
 
 /* * */

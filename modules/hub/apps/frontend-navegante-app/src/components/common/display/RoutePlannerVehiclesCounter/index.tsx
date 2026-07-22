@@ -3,7 +3,7 @@
 import { VehiclesCounter } from '@/components/common/display/VehiclesCounter';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
-import { filterVehicleFeatureCollectionByRouteDirections, getRoutePlannerItineraryRouteDirections } from '@/utils/route-planner-vehicles';
+import { filterVehicleFeatureCollectionByRouteDirections, getRoutePlannerItineraryRouteDirections } from '@/utils/route-planner/vehicles';
 import { useMemo } from 'react';
 
 /* * */

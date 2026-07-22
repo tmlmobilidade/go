@@ -1,4 +1,6 @@
-import { getMotisLegRouteLabel, getMotisLegTripIds, getMotisPlanPlaceStopId, isMotisWalkingLeg, type MotisItinerary, type MotisPlanIntermediateStop, type RoutePlannerItineraryMapData } from '@/utils/route-planner-motis';
+import { type MotisItinerary, type MotisPlanIntermediateStop, type RoutePlannerItineraryMapData } from '@/types/route-planner';
+import { getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/modes';
+import { getMotisLegTripIds, getMotisPlanPlaceStopId } from '@/utils/route-planner/motis-plan-api';
 import { type HubAlert, type HubLine } from '@tmlmobilidade/go-types-public-info';
 
 /* * */

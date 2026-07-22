@@ -1,5 +1,5 @@
-import { type MotisItinerary, type MotisPlanLeg } from '@/utils/route-planner-motis';
-import { getItineraryTransitModeFilters, itineraryMatchesEnabledModes, type RoutePlannerModeFilter, type RoutePlannerVisibleItinerary, sortVisibleItineraries, toggleRoutePlannerMode } from '@/utils/route-planner-results';
+import { type MotisItinerary, type MotisPlanLeg } from '@/types/route-planner';
+import { getItineraryTransitModeFilters, itineraryMatchesEnabledModes, type RoutePlannerModeFilter, type RoutePlannerVisibleItinerary, sortVisibleItineraries, toggleRoutePlannerMode } from '@/utils/route-planner/results';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 

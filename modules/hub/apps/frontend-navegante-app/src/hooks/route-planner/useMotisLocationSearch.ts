@@ -2,9 +2,10 @@
 
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
-import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
-import { routePlannerCoordinateToLocation, type RoutePlannerLocation } from '@/utils/route-planner-motis';
-import { normalizeSearchText } from '@/utils/search';
+import { type RoutePlannerLocation } from '@/types/route-planner';
+import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/locations';
+import { routePlannerCoordinateToLocation } from '@/utils/search/motis-geocode';
+import { normalizeSearchText } from '@/utils/search/normalize';
 import { type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { useMemo } from 'react';
 

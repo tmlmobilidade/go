@@ -5,7 +5,7 @@ import { useBaseMapDerivedData } from '@/hooks/base-map/useBaseMapDerivedData';
 import { useBaseMapFocusedEntities } from '@/hooks/base-map/useBaseMapFocusedEntities';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useMapBottomSheet } from '@/hooks/bottom-sheet/useMapBottomSheet';
-import { centerMap } from '@/utils/map.utils';
+import { centerMap } from '@/utils/map/map';
 import { useMap } from '@vis.gl/react-maplibre';
 import { useEffect, useRef } from 'react';
 

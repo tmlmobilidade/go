@@ -3,7 +3,7 @@
 import { RoutePlannerItineraryCard } from '@/components/routes/list/RoutePlannerItineraryCard';
 import { type RoutePlannerOpenFilter, RoutePlannerResultsFilters } from '@/components/routes/list/RoutePlannerResultsFilters';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { getItineraryTransitModeFilters, itineraryMatchesEnabledModes, ROUTE_PLANNER_MODE_FILTERS, type RoutePlannerModeFilter, type RoutePlannerSortMode, type RoutePlannerVisibleItinerary, sortVisibleItineraries, toggleRoutePlannerMode } from '@/utils/route-planner-results';
+import { getItineraryTransitModeFilters, itineraryMatchesEnabledModes, ROUTE_PLANNER_MODE_FILTERS, type RoutePlannerModeFilter, type RoutePlannerSortMode, type RoutePlannerVisibleItinerary, sortVisibleItineraries, toggleRoutePlannerMode } from '@/utils/route-planner/results';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -2,7 +2,7 @@
 
 import { RoutePlannerLocationInput } from '@/components/routes/input/RoutePlannerLocationInput';
 import { useRoutePlannerLocationFields } from '@/hooks/route-planner/useRoutePlannerLocationFields';
-import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { type RoutePlannerLocation } from '@/types/route-planner';
 import { IconArrowsUpDown, IconMapPinFilled, IconPointFilled } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 

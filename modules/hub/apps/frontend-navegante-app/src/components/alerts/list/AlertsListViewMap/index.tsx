@@ -4,7 +4,7 @@ import { useAlertsListContext } from '@/components/alerts/list/AlertsList.contex
 import { MapView } from '@/components/map/MapView';
 import { MapViewStyleAlerts, MapViewStyleAlertsLayerId } from '@/components/map/overlays/MapViewStyleAlerts';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
-import { centerMap, moveMap } from '@/utils/map.utils';
+import { centerMap, moveMap } from '@/utils/map/map';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { useMap } from '@vis.gl/react-maplibre';
 import { type MapLayerMouseEvent } from 'maplibre-gl';

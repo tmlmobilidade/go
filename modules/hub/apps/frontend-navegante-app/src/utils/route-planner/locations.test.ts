@@ -1,5 +1,7 @@
-import { createRoutePlannerCurrentLocation, mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
-import { formatMotisLocationDetail, getMotisPlaceParam, mapMotisGeocodeResultToLocation, type MotisGeocodeResult, parseRoutePlannerCoordinate, routePlannerCoordinateToLocation, type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { type MotisGeocodeResult, type RoutePlannerLocation } from '@/types/route-planner';
+import { formatMotisLocationDetail } from '@/utils/route-planner/format';
+import { createRoutePlannerCurrentLocation, mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/locations';
+import { getMotisPlaceParam, mapMotisGeocodeResultToLocation, parseRoutePlannerCoordinate, routePlannerCoordinateToLocation } from '@/utils/search/motis-geocode';
 import { type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';

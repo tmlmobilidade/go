@@ -1,5 +1,5 @@
-import { getBaseMapAlertsMapData, getBaseMapVehiclesMapData } from '@/utils/base-map-data';
-import { getBaseMapOperatorId, isBaseMapAgencyVisible } from '@/utils/base-map-operators';
+import { getBaseMapAlertsMapData, getBaseMapVehiclesMapData } from '@/utils/map/base-map-data';
+import { getBaseMapOperatorId, isBaseMapAgencyVisible } from '@/utils/map/base-map-operators';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 

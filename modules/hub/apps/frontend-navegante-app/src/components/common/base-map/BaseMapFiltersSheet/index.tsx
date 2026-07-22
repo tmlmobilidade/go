@@ -3,7 +3,7 @@
 import { type BaseMapOverlayType, useMapContext } from '@/components/map/Map.context';
 import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { AGENCY_NAMES_MAP } from '@/lib/agency-names-map';
-import { BASE_MAP_OPERATOR_IDS } from '@/utils/base-map-operators';
+import { BASE_MAP_OPERATOR_IDS } from '@/utils/map/base-map-operators';
 import { IconAlertTriangle, IconBus, IconCheck } from '@tabler/icons-react';
 import Image from 'next/image';
 import { type ReactNode } from 'react';

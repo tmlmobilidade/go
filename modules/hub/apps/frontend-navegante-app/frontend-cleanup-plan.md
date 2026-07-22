@@ -45,10 +45,19 @@ src/hooks/
 
 src/utils/
 ├── alerts/                  # Alert presentation and filtering helpers
+├── bottom-sheet/            # Sheet behavior and adjacent tests
 ├── map/                     # Base-map data, operator visibility, and map helpers
 ├── route-planner/           # MOTIS adapters and route-planning domain logic
 ├── search/                  # Text normalization and search helpers
 └── transit/                 # Shared timetable, stop, and pattern helpers
+
+src/constants/
+└── bottom-sheet.ts          # Cross-component sheet constants
+
+src/types/
+├── bottom-sheet.ts          # Sheet navigation contracts
+├── route-planner-context.ts # Route context facade
+└── route-planner.ts         # MOTIS and route-planning contracts
 ```
 
 ## Execution plan
@@ -74,7 +83,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 15 | Normalize context flags and memoize provider values | complete | 10–14 | Every local context provider now memoizes its value behind stable action/filter facades; boolean flags use `is_`/`has_` snake_case names, and permanently undefined/false flags were removed. |
 | 16 | Consolidate route/status design tokens and CSS duplication | in progress | Structural tasks complete | Route mode/status colors now use named Navegante tokens; compact/detail line pills and mode badges share size-aware primitives; filter triggers reuse the option button primitive; route CSS no longer carries fallback hex colors. Automated checks pass, but light/dark and responsive visual regression remains pending because no controllable browser was available. |
 | 17 | Reorganize route components into `common`, `input`, `list`, `detail`, `navigation`, and `planner` | complete | 4, completed alongside 6–8 | `common` owns shared time/mode/leg presentation, `input` owns endpoint and travel-time input, `list` owns results/filtering/cards, `detail` owns itinerary and place detail, `navigation` owns trip-start and live-guidance controls, and `planner` owns the workflow composition root. Only the context contract remains at the route root. |
-| 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | in progress | 9, 11–15 | Closed the category-less `RoutePlanner` exception and grouped all standalone hooks under themed `base-map`, `bottom-sheet`, `route-planner`, `search`, and `transit` folders. Removed the redundant user-location re-export so consumers use its established context hook directly. Next: group utilities and support types/constants by domain, colocate their tests, and remove flat compatibility files. |
+| 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | complete | 9, 11–15 | Grouped standalone hooks under themed folders; grouped utilities under `alerts`, `bottom-sheet`, `map`, `route-planner`, `search`, and `transit`; moved shared sheet and route contracts/constants out of component folders; colocated tests with their modules; updated test discovery; removed the route-planner compatibility barrel and redundant user-location re-export. |
 
 ## Commit log
 
@@ -103,6 +112,9 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 15 | `refactor(hub): stabilize route planner context` | Stabilize the Route Planner action API and memoize its context facade without changing workflow transitions. |
 | 16, 17 | `refactor(hub): consolidate route presentation styles` | Centralize route mode/status tokens, share compact/detail mode and line presentation, and reuse filter button styling; visual regression remains tracked. |
 | 17 | `refactor(hub): organize remaining route components` | Move place detail, shared time presentation, and active-trip controls into their final route feature folders. |
+| 17, 18 | `refactor(hub): organize route planner composition` | Move the workflow composition root into the explicit `routes/planner` category. |
+| 18 | `refactor(hub): organize frontend hooks by domain` | Move standalone hooks out of component and flat hook folders into themed support folders. |
+| 18 | `refactor(hub): organize frontend support by domain` | Group utilities and adjacent tests by domain, move shared contracts/constants out of component folders, and remove the compatibility barrel. |
 
 ## Verification
 

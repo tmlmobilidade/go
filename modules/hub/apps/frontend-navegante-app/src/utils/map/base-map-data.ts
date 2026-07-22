@@ -1,6 +1,6 @@
 import { type BaseMapOperatorId } from '@/components/map/Map.context';
-import { isBaseMapAgencyVisible } from '@/utils/base-map-operators';
-import { getRoutePlannerRouteDirectionKey } from '@/utils/route-planner-vehicles';
+import { isBaseMapAgencyVisible } from '@/utils/map/base-map-operators';
+import { getRoutePlannerRouteDirectionKey } from '@/utils/route-planner/vehicles';
 
 /* * */
 

@@ -5,7 +5,8 @@ import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useLinesByShortName } from '@/hooks/route-planner/useLinesByShortName';
 import { useRoutePlannerActiveLeg } from '@/hooks/route-planner/useRoutePlannerActiveLeg';
-import { formatMotisPlanDistance, formatMotisPlanTime, getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner-motis';
+import { formatMotisPlanDistance, formatMotisPlanTime } from '@/utils/route-planner/format';
+import { getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/modes';
 import { IconWalk } from '@tabler/icons-react';
 import { type MouseEvent, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

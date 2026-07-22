@@ -1,7 +1,7 @@
 'use client';
 
 import { RoutePlannerLocationIcon } from '@/components/routes/input/RoutePlannerLocationIcon';
-import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { type RoutePlannerLocation } from '@/types/route-planner';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';

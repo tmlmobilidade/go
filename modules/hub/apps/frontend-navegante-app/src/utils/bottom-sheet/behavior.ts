@@ -1,4 +1,4 @@
-import { type BottomSheetSnapState } from '@/components/common/bottom-sheet/bottom-sheet.types';
+import { type BottomSheetSnapState } from '@/types/bottom-sheet';
 
 /* * */
 

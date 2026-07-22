@@ -5,8 +5,8 @@ import { useLinesContext } from '@/components/lines/Lines.context';
 import { useUserLocation } from '@/components/map/UserLocation.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { useMotisGeocode } from '@/hooks/search/useMotisGeocode';
-import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
-import { normalizeSearchText } from '@/utils/search';
+import { type RoutePlannerLocation } from '@/types/route-planner';
+import { normalizeSearchText } from '@/utils/search/normalize';
 import { type HubAlert, type HubLine, type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { useMemo } from 'react';
 

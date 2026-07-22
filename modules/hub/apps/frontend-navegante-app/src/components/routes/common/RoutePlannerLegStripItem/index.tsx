@@ -2,7 +2,10 @@
 
 import { RoutePlannerLinePill } from '@/components/routes/common/RoutePlannerLinePill';
 import { RoutePlannerModeBadge } from '@/components/routes/common/RoutePlannerModeBadge';
-import { formatMotisPlanDurationMinutes, getMotisLegDurationSeconds, isMotisWalkingLeg, type MotisPlanLeg } from '@/utils/route-planner-motis';
+import { type MotisPlanLeg } from '@/types/route-planner';
+import { formatMotisPlanDurationMinutes } from '@/utils/route-planner/format';
+import { isMotisWalkingLeg } from '@/utils/route-planner/modes';
+import { getMotisLegDurationSeconds } from '@/utils/route-planner/motis-plan-api';
 import { IconWalk } from '@tabler/icons-react';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
 

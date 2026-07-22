@@ -1,7 +1,7 @@
 'use client';
 
-import { createRoutePlannerCurrentLocation } from '@/utils/route-planner-locations';
-import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { type RoutePlannerLocation } from '@/types/route-planner';
+import { createRoutePlannerCurrentLocation } from '@/utils/route-planner/locations';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { useStopsContext } from '@/components/stops/Stops.context';
-import { formatStopLocation } from '@/utils/format-stop-location';
+import { formatStopLocation } from '@/utils/transit/format-stop-location';
 import { useClipboard } from '@mantine/hooks';
 import { IconCheck, IconCopy } from '@tabler/icons-react';
 import { type HubWaypoint } from '@tmlmobilidade/go-types-public-info';

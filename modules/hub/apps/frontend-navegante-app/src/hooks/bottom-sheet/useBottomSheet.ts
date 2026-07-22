@@ -1,6 +1,6 @@
 'use client';
 
-import { type BottomSheetNavigationEntry, type BottomSheetSnapState, type BottomSheetView, type SetActiveBottomSheetOptions } from '@/components/common/bottom-sheet/bottom-sheet.types';
+import { type BottomSheetNavigationEntry, type BottomSheetSnapState, type BottomSheetView, type SetActiveBottomSheetOptions } from '@/types/bottom-sheet';
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
 /* * */

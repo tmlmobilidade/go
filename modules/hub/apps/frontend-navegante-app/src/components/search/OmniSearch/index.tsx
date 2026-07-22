@@ -5,8 +5,8 @@ import { getLastOmniSearchQuery, setLastOmniSearchQuery, subscribeToOmniSearchQu
 import { OmniSearchGroup } from '@/components/search/OmniSearchGroup';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type OmniSearchResult, useOmniSearch } from '@/hooks/search/useOmniSearch';
-import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner-locations';
-import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { type RoutePlannerLocation } from '@/types/route-planner';
+import { mapHubStopToRoutePlannerLocation } from '@/utils/route-planner/locations';
 import { IconSearch } from '@tabler/icons-react';
 import { type RefObject, useRef, useState, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';

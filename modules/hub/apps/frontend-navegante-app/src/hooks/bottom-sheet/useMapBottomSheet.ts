@@ -1,8 +1,8 @@
 'use client';
 
-import { getMapInteractionCollapseTarget } from '@/components/common/bottom-sheet/bottom-sheet-behavior';
-import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/components/common/bottom-sheet/bottom-sheet.constants';
+import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { getMapInteractionCollapseTarget } from '@/utils/bottom-sheet/behavior';
 import { type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 

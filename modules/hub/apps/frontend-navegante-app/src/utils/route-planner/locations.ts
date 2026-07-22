@@ -1,4 +1,4 @@
-import { type RoutePlannerLocation } from '@/utils/route-planner-motis';
+import { type RoutePlannerLocation } from '@/types/route-planner';
 import { type HubStop } from '@tmlmobilidade/go-types-public-info';
 
 /* * */

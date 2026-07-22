@@ -2,7 +2,8 @@
 
 import { RoutePlannerLegStripItem } from '@/components/routes/common/RoutePlannerLegStripItem';
 import { useLinesByShortName } from '@/hooks/route-planner/useLinesByShortName';
-import { getMotisLegMode, type MotisItinerary } from '@/utils/route-planner-motis';
+import { type MotisItinerary } from '@/types/route-planner';
+import { getMotisLegMode } from '@/utils/route-planner/modes';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
