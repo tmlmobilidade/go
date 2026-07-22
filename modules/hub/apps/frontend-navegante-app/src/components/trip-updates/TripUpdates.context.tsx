@@ -24,8 +24,8 @@ interface TripUpdatesContextState {
 		map: Map<string, PreparedTripUpdate>
 	}
 	flags: {
-		error: Error | undefined
-		isLoading: boolean
+		has_error: boolean
+		is_loading: boolean
 	}
 }
 
@@ -118,8 +118,8 @@ export function TripUpdatesContextProvider({ children }: PropsWithChildren) {
 				map: tripUpdatesMap,
 			},
 			flags: {
-				error: tripUpdatesError,
-				isLoading: tripUpdatesLoading,
+				has_error: !!tripUpdatesError,
+				is_loading: tripUpdatesLoading,
 			},
 		};
 	}, [getTripUpdateForStop, tripUpdatesError, tripUpdatesLoading, tripUpdatesMap]);

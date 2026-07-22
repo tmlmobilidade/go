@@ -44,11 +44,11 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 	//
 	// E. Define context value
 
-	const contextValue: VehiclesDetailContextState = {
+	const contextValue = useMemo<VehiclesDetailContextState>(() => ({
 		data: {
 			vehicle: vehicleData,
 		},
-	};
+	}), [vehicleData]);
 
 	//
 	// F. Render components

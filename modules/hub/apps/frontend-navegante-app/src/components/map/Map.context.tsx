@@ -4,7 +4,7 @@ import { useUserLocation } from '@/components/map/use-user-location';
 import { useSessionStorage } from '@mantine/hooks';
 import { moveMapView } from '@tmlmobilidade/ui';
 import { type MapRef } from '@vis.gl/react-maplibre';
-import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -22,9 +22,6 @@ interface MapContextState {
 		activeBaseMapOverlays: BaseMapOverlayType[]
 		excludedBaseMapOperatorIds: BaseMapOperatorId[]
 		map: MapRef | undefined
-	}
-	flags: {
-		isLoading: boolean
 	}
 }
 
@@ -64,16 +61,16 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 	//
 	// B. Handle actions
 
-	const setMap = (map: MapRef) => {
+	const setMap = useCallback((map: MapRef) => {
 		setDataMapState(map);
-	};
+	}, []);
 
-	const moveMap = (params: { isUserInitiated: boolean, latitude: number, longitude: number }) => {
+	const moveMap = useCallback((params: { isUserInitiated: boolean, latitude: number, longitude: number }) => {
 		if (params.isUserInitiated) dataMapState?.stop();
 		moveMapView(dataMapState, [params.longitude, params.latitude], { zoom: 15 });
-	};
+	}, [dataMapState]);
 
-	const toggleBaseMapOverlay = (source: BaseMapOverlayType) => {
+	const toggleBaseMapOverlay = useCallback((source: BaseMapOverlayType) => {
 		setActiveBaseMapOverlays((prev) => {
 			// Create a new set with the previous sources
 			const result = new Set([...prev]);
@@ -83,9 +80,9 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 			// Return the new sources as an array
 			return Array.from(result);
 		});
-	};
+	}, [setActiveBaseMapOverlays]);
 
-	const toggleBaseMapOperator = (operatorId: BaseMapOperatorId) => {
+	const toggleBaseMapOperator = useCallback((operatorId: BaseMapOperatorId) => {
 		setExcludedBaseMapOperatorIds((previousOperatorIds) => {
 			const nextOperatorIds = new Set(previousOperatorIds);
 
@@ -94,7 +91,7 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 
 			return Array.from(nextOperatorIds);
 		});
-	};
+	}, [setExcludedBaseMapOperatorIds]);
 
 	useEffect(() => {
 		// Skip if the user location tracking mode is idle
@@ -111,7 +108,7 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 	//
 	// C. Define context value
 
-	const contextValue: MapContextState = {
+	const contextValue = useMemo<MapContextState>(() => ({
 		actions: {
 			moveMap,
 			setMap,
@@ -123,10 +120,7 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 			excludedBaseMapOperatorIds,
 			map: dataMapState,
 		},
-		flags: {
-			isLoading: false,
-		},
-	};
+	}), [activeBaseMapOverlays, dataMapState, excludedBaseMapOperatorIds, moveMap, setMap, toggleBaseMapOperator, toggleBaseMapOverlay]);
 
 	//
 	// D. Render components

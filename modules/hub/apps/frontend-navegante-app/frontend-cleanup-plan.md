@@ -69,7 +69,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 12 | Extract BaseMap camera synchronization, interactions, and layer composition | complete | 11 | Camera synchronization and map interactions are isolated behind map-owned hooks, render ordering lives in `BaseMapLayers`, and `BaseMap` is now a small composition root that retains one user-location hook instance. |
 | 13 | Introduce singleton user-location ownership | in progress | 3 | One root `UserLocationContextProvider` now owns geolocation and orientation subscriptions while the existing hook interface remains compatible; mobile permission and orientation flows still require manual verification. |
 | 14 | Consolidate bottom-sheet implementation and add snap behavior coverage | complete | 1 | Removed the legacy handcrafted sheet, made the `react-modal-sheet` adapter the canonical `BottomSheet`, colocated navigation types and shared snap constants, and covered map-interaction collapse and snap-state publication. |
-| 15 | Normalize context flags and memoize provider values | pending | 10–14 | Use small consumer-safe migrations. |
+| 15 | Normalize context flags and memoize provider values | in progress | 10–14 | Alerts, lines, stops, vehicles, trip updates, map, user location, and vehicle detail now expose stable provider values; local boolean flags use snake_case and permanently undefined/false flags were removed. Route planner and the remaining list/detail/analytics providers remain. |
 | 16 | Consolidate route/status design tokens and CSS duplication | pending | Structural tasks complete | Requires visual regression coverage. |
 | 17 | Reorganize route components into `common`, `input`, `list`, `detail`, and `navigation` | in progress | 4, completed alongside 6–8 | `common` owns shared mode/leg-strip presentation, `input` owns endpoint fields, location results/selectors, time input, and top search, `detail` owns itinerary detail, and `list` owns results, filters, and itinerary cards. Place detail, navigation, and remaining shared/root moves remain. |
 | 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | pending | 9, 11–15 | Move BaseMap and other reusable hooks into themed `src/hooks` folders; group route-planner, map, search, alert, and transit utilities; move shared types/constants out of component folders where appropriate; colocate tests with their implementation; avoid compatibility files that recreate flat catch-all directories. |
@@ -94,6 +94,8 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 12 | `refactor(hub): extract base map layers` | Move map overlay and path render ordering into a focused layer-composition module. |
 | 13 | `refactor(hub): centralize user location ownership` | Replace per-consumer geolocation and orientation subscriptions with one root-owned context while preserving the existing hook interface. |
 | 14 | `refactor(hub): consolidate bottom sheet implementation` | Remove the legacy sheet, expose the snap-capable adapter through one canonical component, and cover its shared snap behavior. |
+| 15 | `refactor(hub): normalize network context values` | Normalize alerts, lines, and stops loading flags, remove permanently undefined errors, and stabilize their provider values and actions. |
+| 15 | `refactor(hub): stabilize realtime map contexts` | Memoize vehicles, vehicle detail, trip updates, and map providers; normalize realtime flags and remove the map's permanently false loading flag. |
 
 ## Verification
 
