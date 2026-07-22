@@ -12,7 +12,7 @@ import { LinesDetail } from '@/components/lines/detail/LinesDetail';
 import { LinesDetailContextProvider } from '@/components/lines/detail/LinesDetail.context';
 import { RoutePlannerTopSearch } from '@/components/routes/input/RoutePlannerTopSearch';
 import { RoutePlannerLiveBar } from '@/components/routes/navigation/RoutePlannerLiveBar';
-import { RoutePlanner } from '@/components/routes/RoutePlanner';
+import { RoutePlanner } from '@/components/routes/planner/RoutePlanner';
 import { RoutePlannerContextProvider } from '@/components/routes/RoutePlanner.context';
 import { SearchDetail } from '@/components/search/SearchDetail';
 import { StopsDetail } from '@/components/stops/detail/StopsDetail';
