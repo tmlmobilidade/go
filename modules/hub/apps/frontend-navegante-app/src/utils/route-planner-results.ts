@@ -5,6 +5,8 @@ import { getMotisItineraryDurationSeconds, getMotisItineraryWalkMinutes, getMoti
 export type RoutePlannerModeFilter = 'bus' | 'ferry' | 'rail' | 'subway' | 'tram' | 'transit';
 export type RoutePlannerSortMode = 'best' | 'fastest' | 'fewer_transfers' | 'least_walking';
 
+export const ROUTE_PLANNER_MODE_FILTERS: RoutePlannerModeFilter[] = ['bus', 'rail', 'subway', 'tram', 'ferry', 'transit'];
+
 export interface RoutePlannerVisibleItinerary {
 	index: number
 	itinerary: MotisItinerary

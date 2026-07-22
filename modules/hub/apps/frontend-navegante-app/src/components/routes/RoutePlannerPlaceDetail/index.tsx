@@ -1,7 +1,7 @@
 'use client';
 
+import { RoutePlannerItineraryCard } from '@/components/routes/list/RoutePlannerItineraryCard';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { RoutePlannerItineraryCard } from '@/components/routes/RoutePlannerItineraryCard';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -33,8 +33,8 @@ export function RoutePlannerPlaceDetail() {
 			<div className={styles.itineraries}>
 				{routePlannerContext.data.itineraries.map((itinerary, index) => (
 					<RoutePlannerItineraryCard
-						itinerary={itinerary}
 						key={`${itinerary.startTime || index}-${itinerary.endTime || index}`}
+						itinerary={itinerary}
 						onSelect={() => routePlannerContext.actions.selectItinerary(index)}
 					/>
 				))}

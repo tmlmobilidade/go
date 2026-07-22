@@ -1,0 +1,29 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 8px 12px 16px;
+}
+
+.status,
+.error {
+	padding: 12px;
+	font-size: 14px;
+	font-weight: 700;
+	background-color: var(--color-system-background-100, #fff);
+	border-radius: 10px;
+}
+
+.status {
+	color: var(--color-system-text-200, #666);
+}
+
+.error {
+	color: var(--color-status-error, #b42318);
+}
+
+.itineraries {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}

@@ -1,0 +1,23 @@
+.filterButton {
+	display: inline-flex;
+	flex: 0 0 auto;
+	gap: 4px;
+	align-items: center;
+	justify-content: center;
+	height: 28px;
+	padding: 0 9px;
+	font-size: 12px;
+	font-weight: 800;
+	color: var(--color-system-text-200, #555);
+	white-space: nowrap;
+	cursor: pointer;
+	background-color: var(--color-system-background-100, #fff);
+	border: 1px solid var(--color-system-border-100, #e8e8ee);
+	border-radius: 999px;
+}
+
+.filterButton[data-active='true'] {
+	color: var(--color-status-info, #1677ff);
+	background-color: #eef5ff;
+	border-color: var(--color-status-info, #1677ff);
+}
