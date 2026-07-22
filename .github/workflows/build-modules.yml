@@ -1,6 +1,6 @@
 name: Build Modules
 
-run-name: "${{ inputs.pr_number != '' && format('build pr-{0}: {1}', inputs.pr_number, inputs.module || 'all') || format('build {0}: {1}', github.ref_name, inputs.module || 'changed') }}"
+run-name: "${{ inputs.pr_number != '' && format('build pr-{0} ({1}): {2}', inputs.pr_number, inputs.pr_title || 'PR', inputs.module || 'all') || format('build {0}: {1}', github.ref_name, inputs.module || 'changed') }}"
 
 on:
   workflow_dispatch:
@@ -17,6 +17,10 @@ on:
         type: boolean
       pr_number:
         description: 'PR number — sets image tag to pr-{N} when set (/build)'
+        required: false
+        type: string
+      pr_title:
+        description: 'PR title — shown in run-name for /build'
         required: false
         type: string
   pull_request:

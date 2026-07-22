@@ -104,6 +104,13 @@ jobs:
 
             core.info(`Dispatching build-modules for ${modules.join(', ')} on ref ${pr.head.ref}`);
             try {
+              const prTitle = String(pr.title || 'PR')
+                .replace(/["'`]/g, '')
+                .replace(/:/g, '-')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .slice(0, 50);
+
               await github.rest.actions.createWorkflowDispatch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -112,6 +119,7 @@ jobs:
                 inputs: {
                   module: modules.join(','),
                   pr_number: String(prNumber),
+                  pr_title: prTitle || 'PR',
                 },
               });
             } catch (error) {
