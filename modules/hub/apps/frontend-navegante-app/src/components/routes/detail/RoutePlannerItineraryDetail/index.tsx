@@ -2,9 +2,9 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { RoutePlannerItineraryLegStrip } from '@/components/routes/common/RoutePlannerItineraryLegStrip';
+import { RoutePlannerTime } from '@/components/routes/common/RoutePlannerTime';
 import { getRoutePlannerLegPlaceName, RoutePlannerItineraryDetailLeg } from '@/components/routes/detail/RoutePlannerItineraryDetailLeg';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
-import { RoutePlannerTime } from '@/components/routes/RoutePlannerTime';
 import { useLinesByShortName } from '@/hooks/useLinesByShortName';
 import { useRoutePlannerActiveLeg } from '@/hooks/useRoutePlannerActiveLeg';
 import { formatMotisPlanDuration, getMotisItineraryDurationSeconds, getMotisItineraryEnd } from '@/utils/route-planner-motis';

@@ -71,7 +71,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 14 | Consolidate bottom-sheet implementation and add snap behavior coverage | complete | 1 | Removed the legacy handcrafted sheet, made the `react-modal-sheet` adapter the canonical `BottomSheet`, colocated navigation types and shared snap constants, and covered map-interaction collapse and snap-state publication. |
 | 15 | Normalize context flags and memoize provider values | complete | 10–14 | Every local context provider now memoizes its value behind stable action/filter facades; boolean flags use `is_`/`has_` snake_case names, and permanently undefined/false flags were removed. |
 | 16 | Consolidate route/status design tokens and CSS duplication | in progress | Structural tasks complete | Route mode/status colors now use named Navegante tokens; compact/detail line pills and mode badges share size-aware primitives; filter triggers reuse the option button primitive; route CSS no longer carries fallback hex colors. Automated checks pass, but light/dark and responsive visual regression remains pending because no controllable browser was available. |
-| 17 | Reorganize route components into `common`, `input`, `list`, `detail`, and `navigation` | in progress | 4, completed alongside 6–8 | `common` owns shared mode, badge, pill, and leg-strip presentation, `input` owns endpoint fields, location results/selectors, time input, and top search, `detail` owns itinerary detail, and `list` owns results, filters, and itinerary cards. Place detail, navigation, and remaining shared/root moves remain. |
+| 17 | Reorganize route components into `common`, `input`, `list`, `detail`, and `navigation` | complete | 4, completed alongside 6–8 | `common` owns shared time/mode/leg presentation, `input` owns endpoint and travel-time input, `list` owns results/filtering/cards, `detail` owns itinerary and place detail, and `navigation` owns trip-start and live-guidance controls. Only the workflow composition root and context contract remain at the route root. |
 | 18 | Reorganize hooks, utilities, support types/constants, and colocated tests by domain | pending | 9, 11–15 | Move BaseMap and other reusable hooks into themed `src/hooks` folders; group route-planner, map, search, alert, and transit utilities; move shared types/constants out of component folders where appropriate; colocate tests with their implementation; avoid compatibility files that recreate flat catch-all directories. |
 
 ## Commit log
@@ -100,6 +100,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 15 | `refactor(hub): stabilize detail context values` | Memoize line, stop, and analytics provider values while stabilizing their exposed actions. |
 | 15 | `refactor(hub): stabilize route planner context` | Stabilize the Route Planner action API and memoize its context facade without changing workflow transitions. |
 | 16, 17 | `refactor(hub): consolidate route presentation styles` | Centralize route mode/status tokens, share compact/detail mode and line presentation, and reuse filter button styling; visual regression remains tracked. |
+| 17 | `refactor(hub): organize remaining route components` | Move place detail, shared time presentation, and active-trip controls into their final route feature folders. |
 
 ## Verification
 
