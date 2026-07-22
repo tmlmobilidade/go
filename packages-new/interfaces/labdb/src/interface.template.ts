@@ -241,7 +241,9 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		// Setup the full CREATE TABLE query
 		const createTableQuery = `
 			CREATE TABLE IF NOT EXISTS "${this.databaseName}"."${this.tableName}" (
-				${Object.entries<ClickHouseColumn>(this.schema).map(([key, column]) => `${key} ${column.type}`).join(', ')}
+				${Object.entries<ClickHouseColumn>(this.schema)
+					.map(([key, column]) => `${key} ${column.type} ${column.materialized ? ` MATERIALIZED ${column.materialized}` : ''}`.trim())
+					.join(', ')}
 			) ENGINE = ${this.tableOptions.engine}
 			${this.tableOptions.primaryKey ? `PRIMARY KEY (${Array.isArray(this.tableOptions.primaryKey) ? this.tableOptions.primaryKey.join(', ') : this.tableOptions.primaryKey})` : ''}
 			${this.tableOptions.orderBy ? `ORDER BY (${Array.isArray(this.tableOptions.orderBy) ? this.tableOptions.orderBy.join(', ') : this.tableOptions.orderBy})` : ''}
