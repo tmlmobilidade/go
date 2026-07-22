@@ -38,7 +38,7 @@ export function VehicleImportFile() {
 
 			<Label>Selecione um arquivo valido para criar ou atualizar um veículo</Label>
 			<FileUpload
-				accept=".txt"
+				accept=".txt,.csv"
 				label="Arquivo de importação de veículos"
 				maxFileSize={5 * 1024 * 1024 * 1024} // 5 GB
 				onFileChange={vehicleImportContext.actions.setImportFile}

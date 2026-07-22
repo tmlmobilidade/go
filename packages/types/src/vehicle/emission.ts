@@ -5,12 +5,12 @@ import { z } from 'zod';
 /* * */
 
 const VehicleEmissionValues = [
-	'EURO_I',
-	'EURO_II',
-	'EURO_III',
-	'EURO_IV',
-	'EURO_V',
-	'EURO_VI',
+	'1',
+	'2',
+	'3',
+	'4',
+	'5',
+	'6',
 ] as const;
 
 export const VehicleEmissionSchema = z.enum(VehicleEmissionValues);

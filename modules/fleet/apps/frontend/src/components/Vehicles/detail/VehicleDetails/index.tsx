@@ -2,6 +2,7 @@
 
 import { Pane } from '@tmlmobilidade/ui';
 
+import { VehicleDetailsAgencyHistory } from '../VehicleDetailsAgencyHistory';
 import { VehicleDetailsHeader } from '../VehicleDetailsHeader';
 import { VehicleDetailsMap } from '../VehicleDetailsMap';
 import { VehicleDetailsSectionFunctionalities } from '../VehicleDetailsSectionFunctionalities';
@@ -15,6 +16,7 @@ export function VehicleDetails() {
 		<Pane header={[<VehicleDetailsHeader key="header" />]}>
 			<VehicleDetailsMap />
 			<VehicleDetailsSectionIdentification />
+			<VehicleDetailsAgencyHistory />
 			<VehicleDetailsSectionSpecifications />
 			<VehicleDetailsSectionFunctionalities />
 		</Pane>

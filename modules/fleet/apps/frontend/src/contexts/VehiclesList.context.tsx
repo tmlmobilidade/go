@@ -80,7 +80,7 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 	}, [allVehicleData, filteredAgencyIds]);
 
 	const searchResultsData = useSearch<VehicleNormalized>({
-		accessors: ['_id', 'agency_id', 'license_plate'],
+		accessors: ['_id', 'agency_id', 'license_plate', 'vehicle_id'],
 		data: normalizedVehicleData,
 		query: filterSearch.value,
 	});

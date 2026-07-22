@@ -24,9 +24,17 @@ export function VehicleDetailsSectionIdentification() {
 			<Section>
 				<Grid columns="ab" gap="md">
 					<TextInput
-						label="ID do veículo"
-						readOnly={true}
-						{...vehiclesDetailContext.data.form.getInputProps('_id')}
+						key={vehiclesDetailContext.data.form.key('license_plate')}
+						label="Matrícula do veículo"
+						readOnly={vehiclesDetailContext.flags.read_only}
+						{...vehiclesDetailContext.data.form.getInputProps('license_plate')}
+					/>
+
+					<TextInput
+						key={vehiclesDetailContext.data.form.key('vehicle_id')}
+						label="Id do operador"
+						readOnly={vehiclesDetailContext.flags.read_only}
+						{...vehiclesDetailContext.data.form.getInputProps('vehicle_id')}
 					/>
 
 					<TextInput
@@ -58,12 +66,6 @@ export function VehicleDetailsSectionIdentification() {
 						{...vehiclesDetailContext.data.form.getInputProps('start_date')}
 					/>
 
-					<TextInput
-						key={vehiclesDetailContext.data.form.key('license_plate')}
-						label="Placa do veículo"
-						readOnly={vehiclesDetailContext.flags.read_only}
-						{...vehiclesDetailContext.data.form.getInputProps('license_plate')}
-					/>
 				</Grid>
 			</Section>
 		</Collapsible>
