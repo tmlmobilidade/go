@@ -20,6 +20,7 @@
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
+		"@turf/turf": "7.3.5",
 		"@vis.gl/react-maplibre": "8.1.1",
 		"clsx": "2.1.1",
 		"maplibre-gl": "6.0.0",
