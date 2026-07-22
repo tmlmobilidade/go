@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const RawVehicleEventPtTmlCmetV1LogPayloadSchema = z.object({
+export const RawVehicleEventPtTmlCmV1PayloadSchema = z.object({
 	header: z.object({
 		gtfsRealtimeVersion: z.literal('2.0'),
 		incrementality: z.literal('DIFFERENTIAL'),
@@ -46,19 +46,19 @@ export const RawVehicleEventPtTmlCmetV1LogPayloadSchema = z.object({
 	}),
 });
 
-export type RawVehicleEventPtTmlCmetV1LogPayload = z.infer<typeof RawVehicleEventPtTmlCmetV1LogPayloadSchema>;
+export type RawVehicleEventPtTmlCmV1Payload = z.infer<typeof RawVehicleEventPtTmlCmV1PayloadSchema>;
 
 /* * */
 
-export const RawVehicleEventPtTmlCmetV1LogSchema = RawVehicleEventBaseSchema.extend({
+export const RawVehicleEventPtTmlCmV1Schema = RawVehicleEventBaseSchema.extend({
 	agency_id: z.union([
 		z.literal('LA77N'), // Viação Alvorada
 		z.literal('BNA17'), // Rodoviária de Lisboa
 		z.literal('YA15B'), // Transportes Sul do Tejo
 		z.literal('A2L1N'), // Alsa Todi
 	]),
-	payload: RawVehicleEventPtTmlCmetV1LogPayloadSchema,
-	version: z.literal('pt-tml-cmet-v1-log'),
+	payload: RawVehicleEventPtTmlCmV1PayloadSchema,
+	version: z.literal('pt-tml-cm-v1'),
 });
 
-export type RawVehicleEventPtTmlCmetV1Log = z.infer<typeof RawVehicleEventPtTmlCmetV1LogSchema>;
+export type RawVehicleEventPtTmlCmV1 = z.infer<typeof RawVehicleEventPtTmlCmV1Schema>;
