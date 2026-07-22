@@ -1,0 +1,68 @@
+.stripItem {
+	display: flex;
+	flex: 0 0 auto;
+	gap: 5px;
+	align-items: center;
+}
+
+.connector {
+	max-width: 16px;
+	overflow: hidden;
+	font-size: 11px;
+	font-weight: 800;
+	color: var(--color-system-text-300, #9a9aa3);
+	letter-spacing: 2px;
+}
+
+.modeIcon,
+.walkPill {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	min-width: 28px;
+	height: 22px;
+	color: var(--color-system-text-200, #555);
+	background-color: var(--color-system-background-200, #f3f4f6);
+	border: 1px solid var(--color-system-border-100, #ececf1);
+	border-radius: 999px;
+}
+
+.walkPill {
+	gap: 2px;
+	padding: 0 6px;
+	font-size: 11px;
+	font-weight: 800;
+}
+
+.modeIcon[data-mode='bus'] {
+	color: #303640;
+}
+
+.modeIcon[data-mode='bike'],
+.modeIcon[data-mode='scooter'] {
+	color: #15803d;
+}
+
+.modeIcon[data-mode='car'] {
+	color: #475569;
+}
+
+.modeIcon[data-mode='rail'],
+.modeIcon[data-mode='subway'],
+.modeIcon[data-mode='tram'] {
+	color: #0d168f;
+}
+
+.modeIcon[data-mode='ferry'] {
+	color: #1273c4;
+}
+
+.modeIcon[data-mode='plane'] {
+	color: #0f766e;
+}
+
+.modeIcon[data-mode='elevator'],
+.modeIcon[data-mode='transit'] {
+	color: #6b7280;
+}

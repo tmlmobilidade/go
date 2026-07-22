@@ -42,7 +42,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 3 | Characterize active-leg selection, walking progress, geometry, and first-leg fitting | complete | — | Covered nearest-path selection, no-position and empty-itinerary fallbacks, walking distance/time, decoded and endpoint-fallback geometry, and first-leg fitting. |
 | 4 | Extract shared route presentation primitives | complete | 1 | Added `RoutePlannerModeIcon`, `MotisLegModeKind`, pure mode normalization, and `useLinesByShortName`; migrated detail, leg strip, and live bar. |
 | 5 | Extract shared search and location utilities | complete | 1 | Shared Hub-stop and current-coordinate location factories, accent/case-insensitive text normalization, and local datetime-input formatting; migrated route input, route context, route results, and OmniSearch. |
-| 6 | Split itinerary detail and leg-strip components | pending | 4 | One named component per folder. |
+| 6 | Split itinerary detail and leg-strip components | complete | 4 | Moved itinerary detail into `detail`; extracted detail legs and badges; moved the shared leg strip into `common`; extracted strip items and line pills with one named component per folder. |
 | 7 | Split route results and extract pure filtering/sorting | in progress | 1 | Pure mode filtering, last-mode protection, and sorting are extracted. Component splitting remains. |
 | 8 | Split route input and OmniSearch presentation | pending | 5 | Keep feature-specific composition above shared geocoding. |
 | 9 | Split `route-planner-motis.ts` by responsibility | pending | 1, 3, 5 | Move-only modules with temporary compatibility exports where needed. |
@@ -53,7 +53,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 14 | Clarify bottom-sheet implementations and add snap behavior coverage | pending | 1 | Rename implementations and colocate navigation types/constants before consolidation. |
 | 15 | Normalize context flags and memoize provider values | pending | 10–14 | Use small consumer-safe migrations. |
 | 16 | Consolidate route/status design tokens and CSS duplication | pending | Structural tasks complete | Requires visual regression coverage. |
-| 17 | Reorganize route components into `common`, `input`, `list`, `detail`, and `navigation` | in progress | 4, completed alongside 6–8 | `common/RoutePlannerModeIcon` establishes the structure. Remaining moves occur with component extraction. |
+| 17 | Reorganize route components into `common`, `input`, `list`, `detail`, and `navigation` | in progress | 4, completed alongside 6–8 | `common` now owns shared mode/leg-strip presentation and `detail` owns itinerary detail. Remaining `input`, `list`, and `navigation` moves occur with component extraction. |
 
 ## Commit log
 
@@ -64,6 +64,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 2, 11 | `test(hub): characterize map filtering order` | Cover operator normalization and alert/vehicle filter precedence through pure seams. |
 | 3 | `test(hub): characterize active route progress` | Cover active-leg selection, walking progress, geometry fallback, and fitting through a pure progress seam. |
 | 5 | `refactor(hub): consolidate route search utilities` | Centralize text normalization, current-coordinate location mapping, and datetime-input formatting without changing consumer behavior. |
+| 6, 17 | `refactor(hub): split route itinerary components` | Give itinerary detail and shared leg-strip presentation one named component per folder under the target route structure. |
 
 ## Verification
 

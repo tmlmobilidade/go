@@ -1,47 +1,3 @@
-.container {
-	display: flex;
-	flex-direction: column;
-	gap: 14px;
-	min-height: 100%;
-	padding: 4px 16px 16px;
-}
-
-.header {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	padding: 0 0 4px;
-}
-
-.duration {
-	font-size: 34px;
-	font-weight: 800;
-	line-height: 1;
-	color: var(--color-system-text-100, #111);
-}
-
-.arrival {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px 6px;
-	align-items: baseline;
-	font-size: 15px;
-	font-weight: 700;
-	color: var(--color-system-text-200, #666);
-}
-
-.timeline {
-	display: flex;
-	flex-direction: column;
-	gap: 0;
-	padding: 0;
-	margin: 0;
-	list-style: none;
-	background-color: var(--color-system-background-100, #fff);
-	border: 1px solid var(--color-system-border-100, #ececf1);
-	border-radius: 10px;
-}
-
 .leg {
 	position: relative;
 	display: grid;
@@ -124,7 +80,6 @@
 	align-items: center;
 }
 
-.linePill,
 .durationChip {
 	display: inline-flex;
 	align-items: center;
@@ -133,40 +88,11 @@
 	font-size: 13px;
 	font-weight: 900;
 	line-height: 1;
-	white-space: nowrap;
-	border-radius: 999px;
-}
-
-.linePill {
-	max-width: 170px;
-	overflow: hidden;
-	color: var(--color-primary-white, #fff);
-	text-overflow: ellipsis;
-	background-color: var(--color-system-text-200, #555);
-}
-
-.linePill[data-mode='walk'],
-.durationChip {
 	color: var(--color-system-text-200, #555);
+	white-space: nowrap;
 	background-color: var(--color-system-background-200, #f3f4f6);
 	border: 1px solid var(--color-system-border-100, #ececf1);
-}
-
-.linePill[data-mode='bus'] {
-	color: var(--color-primary-black, #111);
-	background-color: #3bd33b;
-}
-
-.linePill[data-mode='rail'] {
-	background-color: #08138f;
-}
-
-.linePill[data-mode='subway'] {
-	background-color: #7f35d8;
-}
-
-.linePill[data-mode='tram'] {
-	background-color: #f0a000;
+	border-radius: 999px;
 }
 
 .instruction {
@@ -288,32 +214,4 @@
 	color: var(--color-system-text-100, #111);
 	text-overflow: ellipsis;
 	white-space: nowrap;
-}
-
-.actions {
-	display: flex;
-	gap: 10px;
-}
-
-.endButton {
-	display: inline-flex;
-	flex: 1;
-	align-items: center;
-	justify-content: center;
-	min-height: 48px;
-	padding: 0 18px;
-	font-size: 16px;
-	font-weight: 800;
-	cursor: pointer;
-	border: 0;
-	border-radius: 999px;
-}
-
-.endButton {
-	color: var(--color-primary-white, #fff);
-	background-color: var(--color-status-error, #e53e3e);
-}
-
-.endButton:active {
-	transform: scale(0.98);
 }

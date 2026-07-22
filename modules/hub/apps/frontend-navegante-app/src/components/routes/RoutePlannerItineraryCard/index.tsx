@@ -3,8 +3,8 @@
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { LiveIcon } from '@/components/common/display/LiveIcon';
 import { useLinesContext } from '@/components/lines/Lines.context';
+import { RoutePlannerItineraryLegStrip } from '@/components/routes/common/RoutePlannerItineraryLegStrip';
 import { RoutePlannerGoButton } from '@/components/routes/RoutePlannerGoButton';
-import { RoutePlannerItineraryLegStrip } from '@/components/routes/RoutePlannerItineraryLegStrip';
 import { filterAlertsByRoutePlannerItinerary, getRoutePlannerItineraryAlertFilters } from '@/utils/route-planner-alerts';
 import { formatMotisPlanDuration, formatMotisPlanTime, getMotisItineraryDurationSeconds, getMotisItineraryEnd, getMotisItineraryStart, getMotisItineraryWalkMinutes, type MotisItinerary } from '@/utils/route-planner-motis';
 import { getRoutePlannerItineraryRealtimeStatus } from '@/utils/route-planner-realtime';

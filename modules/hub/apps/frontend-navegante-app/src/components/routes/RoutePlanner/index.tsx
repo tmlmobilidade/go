@@ -3,9 +3,9 @@
 import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/components/common/bottom-sheet/use-map-bottom-sheet';
+import { RoutePlannerItineraryDetail } from '@/components/routes/detail/RoutePlannerItineraryDetail';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { RoutePlannerInput } from '@/components/routes/RoutePlannerInput';
-import { RoutePlannerItineraryDetail } from '@/components/routes/RoutePlannerItineraryDetail';
 import { RoutePlannerPlaceDetail } from '@/components/routes/RoutePlannerPlaceDetail';
 import { RoutePlannerResults } from '@/components/routes/RoutePlannerResults';
 import { OmniSearch } from '@/components/search/OmniSearch';

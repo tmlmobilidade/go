@@ -1,0 +1,55 @@
+.linePill {
+	display: inline-flex;
+	align-items: center;
+	max-width: 92px;
+	height: 22px;
+	padding: 0 8px;
+	overflow: hidden;
+	font-size: 12px;
+	font-weight: 900;
+	line-height: 1;
+	color: var(--color-primary-white, #fff);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	background-color: var(--color-system-text-200, #555);
+	border-radius: 999px;
+}
+
+.linePill[data-mode='bus'] {
+	color: var(--color-primary-black, #111);
+	background-color: #3bd33b;
+}
+
+.linePill[data-mode='bike'],
+.linePill[data-mode='scooter'] {
+	background-color: #15803d;
+}
+
+.linePill[data-mode='car'] {
+	background-color: #64748b;
+}
+
+.linePill[data-mode='rail'] {
+	background-color: #08138f;
+}
+
+.linePill[data-mode='subway'] {
+	background-color: #7f35d8;
+}
+
+.linePill[data-mode='tram'] {
+	background-color: #f0a000;
+}
+
+.linePill[data-mode='ferry'] {
+	background-color: #0b76c5;
+}
+
+.linePill[data-mode='plane'] {
+	background-color: #0f766e;
+}
+
+.linePill[data-mode='elevator'],
+.linePill[data-mode='transit'] {
+	background-color: #6b7280;
+}

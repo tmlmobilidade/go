@@ -1,0 +1,68 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	min-height: 100%;
+	padding: 4px 16px 16px;
+}
+
+.header {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 0 0 4px;
+}
+
+.duration {
+	font-size: 34px;
+	font-weight: 800;
+	line-height: 1;
+	color: var(--color-system-text-100, #111);
+}
+
+.arrival {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 6px;
+	align-items: baseline;
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--color-system-text-200, #666);
+}
+
+.timeline {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	background-color: var(--color-system-background-100, #fff);
+	border: 1px solid var(--color-system-border-100, #ececf1);
+	border-radius: 10px;
+}
+
+.actions {
+	display: flex;
+	gap: 10px;
+}
+
+.endButton {
+	display: inline-flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	min-height: 48px;
+	padding: 0 18px;
+	font-size: 16px;
+	font-weight: 800;
+	color: var(--color-primary-white, #fff);
+	cursor: pointer;
+	background-color: var(--color-status-error, #e53e3e);
+	border: 0;
+	border-radius: 999px;
+}
+
+.endButton:active {
+	transform: scale(0.98);
+}
