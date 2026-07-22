@@ -2,7 +2,7 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type File as FileType, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, type User } from '@tmlmobilidade/types';
+import { type File as FileType, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -134,6 +134,15 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			operationFileMutate();
 			postersFileMutate();
 			mutate(API_ROUTES.plans.PLANS_LIST);
+		},
+	});
+
+	const { action: handleDeleteApexFile, isLoading: isDeletingApexFile } = useHandleUpdate({
+		fetchFn: async () => await fetchData<FileType>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId), 'DELETE'),
+		onSuccess: () => {
+			setApexFileUpload(null);
+			apexFileMutate(null);
+			planMutate();
 		},
 	});
 
