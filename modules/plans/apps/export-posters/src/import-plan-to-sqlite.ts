@@ -9,8 +9,9 @@ import { exportTripsFile } from '@/exports/trips.js';
 import { type ExportToHitouchConfig } from '@/types.js';
 import { buildDatesMap } from '@/utils/build-dates-map.js';
 import { createHitouchZip } from '@/utils/create-hitouch-zip.js';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { importGtfsToDatabase, ImportGtfsToDatabaseConfig, initImportGtfsContext } from '@tmlmobilidade/import-gtfs';
-import { files, holidays, yearPeriods } from '@tmlmobilidade/interfaces';
+import { files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Plan } from '@tmlmobilidade/types';
@@ -50,8 +51,8 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 	const sqlGtfs = await importGtfsToDatabase(importConfig, importContext);
 	const sourceHasCalendar = fs.existsSync(`${importContext.workdir.extract_dir_path}/calendar.txt`);
 	const [agencyHolidays, agencyYearPeriods] = await Promise.all([
-		holidays.findByAgencyIds([agencyId]),
-		yearPeriods.findMany({ agency_ids: { $in: [agencyId] } }),
+		goDb.offer.holidays.findMany({ agency_ids: { $in: [agencyId] } }),
+		goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [agencyId] } }),
 	]);
 
 	//

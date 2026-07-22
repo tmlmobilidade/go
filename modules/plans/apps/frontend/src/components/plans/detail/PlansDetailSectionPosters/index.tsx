@@ -2,27 +2,27 @@
 
 import { FileComponent } from '@/components/common/FileComponent';
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
+// import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Button, Collapsible, Label, Section, Spacer, useToast } from '@tmlmobilidade/ui';
 
 import { usePlanDetailContext } from '../PlanDetail.context';
 
 /* * */
 
-function getDownloadFilename(contentDisposition: null | string): string {
-	const fallbackFilename = 'planos pdf.zip';
-	const encodedFilename = contentDisposition?.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
-	const quotedFilename = contentDisposition?.match(/filename=["']?([^"';]+)["']?/i)?.[1];
-	const filename = encodedFilename ?? quotedFilename;
+// function getDownloadFilename(contentDisposition: null | string): string {
+// 	const fallbackFilename = 'planos pdf.zip';
+// 	const encodedFilename = contentDisposition?.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
+// 	const quotedFilename = contentDisposition?.match(/filename=["']?([^"';]+)["']?/i)?.[1];
+// 	const filename = encodedFilename ?? quotedFilename;
 
-	if (!filename) return fallbackFilename;
+// 	if (!filename) return fallbackFilename;
 
-	try {
-		return decodeURIComponent(filename);
-	} catch {
-		return filename;
-	}
-}
+// 	try {
+// 		return decodeURIComponent(filename);
+// 	} catch {
+// 		return filename;
+// 	}
+// }
 
 /* * */
 
@@ -38,37 +38,37 @@ export function PlanDetailSectionPosters() {
 	//
 	// B. Handle actions
 
-	const handleDownload = async () => {
-		try {
-			const postersFile = planDetailContext.data.posters_file;
+	// const handleDownload = async () => {
+	// 	try {
+	// 		const postersFile = planDetailContext.data.posters_file;
 
-			if (!postersFile) {
-				throw new Error('O ficheiro não está disponível para transferência');
-			}
+	// 		if (!postersFile) {
+	// 			throw new Error('O ficheiro não está disponível para transferência');
+	// 		}
 
-			const response = await fetch(API_ROUTES.plans.PLANS_DETAIL_POSTERS_FILE_DOWNLOAD(planDetailContext.data.id), {
-				credentials: 'include',
-			});
+	// 		const response = await fetch(API_ROUTES.plans.PLANS_DETAIL_POSTERS_FILE_DOWNLOAD(planDetailContext.data.id), {
+	// 			credentials: 'include',
+	// 		});
 
-			if (!response.ok) {
-				throw new Error('Erro ao transferir ficheiro');
-			}
+	// 		if (!response.ok) {
+	// 			throw new Error('Erro ao transferir ficheiro');
+	// 		}
 
-			const fileUrl = URL.createObjectURL(await response.blob());
-			const link = document.createElement('a');
-			link.href = fileUrl;
-			link.download = getDownloadFilename(response.headers.get('Content-Disposition'));
-			document.body.append(link);
-			link.click();
-			link.remove();
-			URL.revokeObjectURL(fileUrl);
-		} catch (error) {
-			useToast.error({
-				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
-				title: 'Erro ao transferir ficheiro',
-			});
-		}
-	};
+	// 		const fileUrl = URL.createObjectURL(await response.blob());
+	// 		const link = document.createElement('a');
+	// 		link.href = fileUrl;
+	// 		link.download = getDownloadFilename(response.headers.get('Content-Disposition'));
+	// 		document.body.append(link);
+	// 		link.click();
+	// 		link.remove();
+	// 		URL.revokeObjectURL(fileUrl);
+	// 	} catch (error) {
+	// 		useToast.error({
+	// 			message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
+	// 			title: 'Erro ao transferir ficheiro',
+	// 		});
+	// 	}
+	// };
 
 	//
 	// C. Render components
@@ -82,8 +82,7 @@ export function PlanDetailSectionPosters() {
 				{planDetailContext.data.plan.apps?.posters?.status === 'complete' && planDetailContext.data.posters_file ? (
 					<>
 						<FileComponent
-							fileData={planDetailContext.data.posters_file}
-							onClick={handleDownload}
+							file={planDetailContext.data.posters_file}
 						/>
 						<Spacer />
 					</>

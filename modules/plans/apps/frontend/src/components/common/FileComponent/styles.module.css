@@ -1,0 +1,66 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	user-select: none;
+}
+
+/* * */
+/* content */
+
+.content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--size-spacing-md);
+	color: var(--color-system-text-100);
+	padding: var(--size-spacing-md);
+	border-radius: var(--border-radius-md);
+	cursor: pointer;
+}
+
+.content:hover {
+	background-color: var(--color-system-background-200);
+}
+
+/* * */
+/* TOOLTIP */
+
+.tooltip {
+	position: absolute;
+	left: 50%;
+	text-wrap: nowrap;
+	transform: translateX(-50%);
+	top: calc(100% + var(--size-spacing-sm));
+	z-index: 26;
+	gap: var(--size-spacing-sm);
+	display: none;
+	padding: var(--size-spacing-md);
+	font-size: var(--size-font-md);
+	font-weight: var(--font-weight-semibold);
+	line-height: 1;
+	color: var(--color-system-background-100);
+	background-color: var(--color-system-text-100);
+	border-radius: var(--border-radius-sm);
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%) translateY(-50%) rotate(45deg);
+		width: 8px;
+		height: 8px;
+		background-color: var(--color-system-text-100);
+	}
+}
+
+.container:hover .tooltip {
+	display: flex;
+}
