@@ -3,7 +3,8 @@
 import { type MongoClient, MongoDatabaseClient } from '@tmlmobilidade/go-clients-mongo';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
-import { RawDatabase } from './databases/raw.js';
+import { ApexDatabase } from './databases/apex.js';
+import { VehicleEventsDatabase } from './databases/vehicle-events.js';
 
 /* * */
 
@@ -18,8 +19,8 @@ class RawDBClass {
 
 	//
 	// Databases
-	public readonly raw: RawDatabase;
-
+	public readonly apex: ApexDatabase;
+	public readonly vehicleEvents: VehicleEventsDatabase;
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
 	 * @throws Error if required RAW_DB_* environment variables are missing or if the connection fails.
@@ -36,7 +37,8 @@ class RawDBClass {
 	// Constructor
 	private constructor(mongoClient: MongoClient) {
 		this.mongoClient = mongoClient;
-		this.raw = new RawDatabase(this.mongoClient);
+		this.apex = new ApexDatabase(this.mongoClient);
+		this.vehicleEvents = new VehicleEventsDatabase(this.mongoClient);
 	}
 }
 
