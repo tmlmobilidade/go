@@ -1,5 +1,6 @@
 'use client';
 
+import { FeedbackForm } from '@/components/feedback';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { LinesDetailAlerts } from '@/components/lines/detail/LinesDetailAlerts';
 import { LinesDetailPath } from '@/components/lines/detail/LinesDetailPath';
@@ -33,6 +34,7 @@ export function LinesDetailView() {
 	return (
 		<Section padding="none">
 			<LinesDetailViewHeader />
+			<FeedbackForm agencyId={linesDetailContext.data.line?.agency_id} entityId={linesDetailContext.data.line?._id} entityType="line" />
 			<Divider />
 			<LinesDetailToolbar />
 			<LinesDetailAlerts />
