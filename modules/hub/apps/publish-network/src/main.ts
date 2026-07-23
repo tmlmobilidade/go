@@ -47,9 +47,9 @@ export async function main() {
 
 	await generateStops(importedGtfsSql);
 
-	await generateShapes(importedGtfsSql);
+	// await generateShapes(importedGtfsSql);
 
-	await generateLinesRoutesPatterns(importedGtfsSql);
+	// await generateLinesRoutesPatterns(importedGtfsSql);
 
 	//
 	// Finalize the export process
