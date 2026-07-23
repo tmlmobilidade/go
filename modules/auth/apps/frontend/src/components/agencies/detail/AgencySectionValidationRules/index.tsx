@@ -18,7 +18,7 @@ export function AgencySectionValidationRules() {
 	const agencyDetailContext = useAgencyDetailContext();
 	const { t } = useTranslation();
 
-	//
+	// s
 	// B. Handle actions
 
 	const handleFileChange = (file: File) => {
