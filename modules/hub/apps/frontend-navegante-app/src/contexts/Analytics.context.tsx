@@ -5,6 +5,7 @@
 import pjson from '#/package.json';
 import { type Ampli, ampli } from '@/amplitude';
 import { AMPLITUDE_BROWSER_OPTIONS, isAmplitudeEnabled } from '@/utils/analytics/config';
+import { startAnalyticsHeartbeat } from '@/utils/analytics/heartbeat';
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 
 /* * */
@@ -85,20 +86,20 @@ export const AnalyticsContextProvider = ({ children }) => {
 			}).promise;
 		}
 
-		// Ping on mount and every minute while the WebView session is open
+		// Ping on mount and every minute while the WebView is visible
 		const pingActiveSession = () => {
 			capture((instance, props) => {
 				instance.pingNaveganteTempoReal({ app_version: props.app_version });
 			});
 		};
 
-		pingActiveSession();
-
-		const intervalId = window.setInterval(pingActiveSession, 60_000);
-
-		return () => {
-			window.clearInterval(intervalId);
-		};
+		return startAnalyticsHeartbeat({
+			addVisibilityChangeListener: listener => document.addEventListener('visibilitychange', listener),
+			clearInterval: intervalId => window.clearInterval(intervalId),
+			isVisible: () => !document.hidden,
+			removeVisibilityChangeListener: listener => document.removeEventListener('visibilitychange', listener),
+			setInterval: (callback, intervalMs) => window.setInterval(callback, intervalMs),
+		}, pingActiveSession);
 	}, [capture, isEnabled]);
 
 	//
