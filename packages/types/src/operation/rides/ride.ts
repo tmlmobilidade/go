@@ -62,7 +62,7 @@ export const RideSchema = DocumentSchema
 		start_time_scheduled: UnixTimestampSchema,
 		system_status: ProcessingStatusSchema.default('waiting'),
 		trip_id: z.string(),
-		vehicle_ids: z.array(z.number()),
+		vehicle_ids: z.array(z.string().transform(String)),
 	});
 
 export const CreateRideSchema = RideSchema.partial({ _id: true }).omit({ created_at: true, updated_at: true });
