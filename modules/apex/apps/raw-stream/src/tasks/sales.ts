@@ -1,8 +1,8 @@
 /* * */
 
-import { simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -13,9 +13,9 @@ const writer = new BatchWriter<SimplifiedApexOnBoardSale>({
 	batch_size: 10_000,
 	batch_timeout: 30_000,
 	insertFn: async (data) => {
-		await simplifiedApexOnBoardSalesNew.insert('JSONEachRow', data);
+		await labDb.simplifiedApex.sales.insert('JSONEachRow', data);
 	},
-	title: await simplifiedApexOnBoardSalesNew.getTableName(),
+	title: await labDb.simplifiedApex.sales.getTableName(),
 });
 
 /**

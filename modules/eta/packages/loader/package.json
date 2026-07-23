@@ -20,16 +20,16 @@
 	},
 	"dependencies": {
 		"@clickhouse/client": "1.23.1",
-		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-clients-clickhouse": "*",
+		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-eta-pckg-common": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"ngeohash": "^0.6.3"
+		"ngeohash": "0.6.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

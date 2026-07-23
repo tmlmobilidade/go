@@ -4,7 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -18,7 +18,7 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 	//
 	// Get the Plan from the database
 
-	const foundPlan = await plans.findById(request.params.id);
+	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
 	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
@@ -30,7 +30,7 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: foundPlan.gtfs_agency.agency_id,
+		value: foundPlan.agency_id,
 	});
 
 	if (!hasPermissionSendApexNotification) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to send the APEX notification.');
@@ -38,14 +38,14 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 	//
 	// Fetch the Agency data
 
-	const agencyData = await goDb.core.agencies.findById(foundPlan.gtfs_agency.agency_id);
+	const agencyData = await goDb.core.agencies.findById(foundPlan.agency_id);
 
 	if (!agencyData.apex.contact_emails.length) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No APEX contact emails found for this agency.');
 
 	//
 	// Fetch the APEX file data
 
-	const foundFileData = await files.findById(foundPlan.apex_file_id);
+	const foundFileData = await storageProvider.findById(foundPlan.apex_file_id);
 
 	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'APEX file not found for this plan');
 
@@ -67,7 +67,7 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 			filename: foundFileData.name,
 		}],
 		data: {
-			agencyName: foundPlan.gtfs_agency.agency_name,
+			agencyName: agencyData.name,
 			planId: foundPlan._id,
 			startDate: foundPlan.gtfs_feed_info.feed_start_date,
 		},

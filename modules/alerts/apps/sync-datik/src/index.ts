@@ -2,7 +2,7 @@
 
 import { fetchProtobuf } from '@/protobuf.js';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { alerts } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type CreateAlertDto, type ServiceAlertResponse, UnixTimestamp } from '@tmlmobilidade/types';
@@ -44,7 +44,7 @@ async function main() {
 	const serviceAlertResponse = await fetchProtobuf<ServiceAlertResponse>(DatikServiceAlertsUrl, ProtobufPath, 'transit_realtime.FeedMessage');
 
 	for (const serviceAlert of serviceAlertResponse.entity) {
-		const alert = await alerts.findByExternalId(serviceAlert.id);
+		const alert = await goDb.operation.alerts.findOne({ external_id: serviceAlert.id });
 		if (alert) {
 			Logger.error({ message: `Alert with external ID ${serviceAlert.id} already exists, skipping...` });
 		} else {
@@ -97,7 +97,7 @@ async function main() {
 				user_instructions: '',
 			};
 
-			const alertRealtime = await alerts.insertOne(createAlertDto);
+			const alertRealtime = await goDb.operation.alerts.insertOne(createAlertDto);
 			Logger.info({ message: `Alert created | Internal ID: ${alertRealtime._id}, External ID: ${alertRealtime.external_id}` });
 		}
 	}

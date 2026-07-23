@@ -3,7 +3,7 @@
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { useValidationCreateContext } from '@/components/validations/create/ValidationCreate.context';
-import { AlertMessage, Divider, FileUpload, Label, Section } from '@tmlmobilidade/ui';
+import { AlertMessage, Divider, FileUpload, Label, Section, Select } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -24,6 +24,22 @@ export function ValidationCreateBasicInfo() {
 			{validationCreateContext.flags.error?.name === 'ValidationError' && (
 				<>
 					<AlertMessage title={validationCreateContext.flags.error?.message ?? ''} variant="danger" />
+					<Divider />
+				</>
+			)}
+
+			{validationCreateContext.data.agency_options.length > 1 && (
+				<>
+					<Section gap="sm">
+						<Label size="lg">Selecione a agência para a validação</Label>
+						<Select
+							clearable={false}
+							data={validationCreateContext.data.agency_options}
+							onChange={validationCreateContext.actions.setSelectedAgencyId}
+							value={validationCreateContext.data.selected_agency_id}
+							w="100%"
+						/>
+					</Section>
 					<Divider />
 				</>
 			)}

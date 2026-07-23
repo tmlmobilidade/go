@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 'use client';
@@ -63,7 +62,7 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 		if (!allValidationsData) return [];
 
 		return allValidationsData.filter((item) => {
-			const matchesAgencyId = item.gtfs_agency.agency_id === planData.gtfs_agency.agency_id;
+			const matchesAgencyId = item.agency_id === planData.agency_id;
 			const isComplete = item.processing_status === 'complete';
 			const isValid = item.validity_status === 'valid';
 			return matchesAgencyId && isComplete && isValid;

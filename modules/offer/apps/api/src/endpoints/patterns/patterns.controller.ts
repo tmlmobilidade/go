@@ -7,7 +7,6 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { stops } from '@tmlmobilidade/interfaces';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CreatePatternDto, NoteComment, type Pattern, type PatternShapeMapItem, PermissionCatalog, PopulatedPath, PopulatedPattern, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
 
@@ -245,7 +244,7 @@ export class PatternsController {
 
 		if (patternData.path && patternData.path.length > 0) {
 			const stopIds = patternData.path.map(pathItem => pathItem.stop_id);
-			const stopsData = await stops.findMany(
+			const stopsData = await goDb.infrastructure.stops.findMany(
 				{ _id: { $in: stopIds } },
 			);
 

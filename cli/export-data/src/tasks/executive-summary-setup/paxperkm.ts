@@ -1,5 +1,5 @@
 import { type TaskProps } from '@/types.js';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 export interface PassengersPerKmResult {
 	agencyId: string
@@ -11,7 +11,7 @@ export interface PassengersPerKmResult {
 export async function calculatePassengersPerKm({ context }: TaskProps): Promise<PassengersPerKmResult[]> {
 	console.log('Calculating passengers per km for executed trips...');
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	console.log(`Date range: ${context.dates.start} to ${context.dates.end}`);
 

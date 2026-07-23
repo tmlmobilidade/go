@@ -1,0 +1,35 @@
+{
+	"name": "@tmlmobilidade/go-tracker-pt-tmp-unir-ut2-rawdb-stream",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint . --fix"
+	},
+	"dependencies": {
+		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-interfaces-rawdb": "*",
+		"@tmlmobilidade/go-tracker-pckg-callback": "*",
+		"@tmlmobilidade/go-tracker-pckg-parsers": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/utils": "*"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "*",
+		"@types/node": "26.1.1",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.23.1",
+		"typescript": "6.0.3"
+	}
+}
