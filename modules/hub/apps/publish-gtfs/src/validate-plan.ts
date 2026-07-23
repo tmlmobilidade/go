@@ -12,9 +12,21 @@ export function validatePlan(planData: Plan): boolean {
 	//
 	// Return false if the agency is not for the given IDs
 
-	// 3, 8, and 21 are currently disabled
-	if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(planData.agency_id)) {
-		Logger.error({ message: `Skip processing: gtfs_agency is '${planData.agency_id}'. Only '1', '2', '3', '4', '8', '15', '16', '41', '42', '43', or '44' are allowed.` });
+	if (![
+		'2IA2N9', // Metro de Lisboa
+		'7NTB1', // Fertagus
+		'A2L1N', // Alsa (CM)
+		'A3H3M', // TCB
+		'BNA17', // Rodoviária de Lisboa (CM)
+		'HF16N', // MobiCascais
+		'IA9T6', // Carris
+		'KB1F6', // Metro Transportes do Sul
+		'LA77N', // Viação Alvorada (CM)
+		'LTP61', // Transtejo
+		'N18KL', // Comboios de Portugal
+		'YA15B', // TST (CM)
+	].includes(planData.agency_id)) {
+		Logger.error({ message: `Skip processing: gtfs_agency is '${planData.agency_id}'. Only '2IA2N9', '7NTB1', 'A2L1N', 'A3H3M', 'BNA17', 'HF16N', 'IA9T6', 'KB1F6', 'LA77N', 'LTP61', 'N18KL', or 'YA15B' are allowed.` });
 		return false;
 	}
 
