@@ -3,7 +3,6 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Attachment, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -44,7 +43,7 @@ export async function getPosterById(request: FastifyRequest<{ Params: { id: stri
 	//
 	// Fetch the file associated with the plan
 
-	const foundFileData = await storageProvider.findById(postersFileId);
+	const foundFileData = await goDb.core.attachments.findById(postersFileId);
 
 	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Posters file not found for this plan');
 

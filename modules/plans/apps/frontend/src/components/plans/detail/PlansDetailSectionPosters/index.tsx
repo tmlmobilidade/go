@@ -48,11 +48,10 @@ export function PlanDetailSectionPosters() {
 			<Section gap="sm">
 				{planDetailContext.data.plan.apps?.posters?.status === 'complete' ? (
 					<>
-						<Label size="sm" variant="success" caps>PDFs gerados com sucesso.</Label>
 						{planDetailContext.data.posters_file ? (
 							<FileItem
 								fileName={planDetailContext.data.posters_file.name}
-								fileType={mimeTypes.pdf}
+								fileType={mimeTypes.zip}
 								onDownload={handleDownload}
 							/>
 						) : null}
