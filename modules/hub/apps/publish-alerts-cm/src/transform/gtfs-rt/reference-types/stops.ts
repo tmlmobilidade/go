@@ -63,7 +63,7 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Gtf
 				{
 					$match: {
 						agency_id: alertData.agency_id,
-						line_id: Number(childId),
+						line_id: childId,
 						start_time_scheduled: {
 							$gte: alertData.active_period_start_date,
 							$lte: alertData.active_period_end_date,

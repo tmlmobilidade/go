@@ -51,7 +51,7 @@ export async function transformReferenceTypeLinesIntoGtfsRt(alertData: Alert): P
 			{
 				$match: {
 					agency_id: alertData.agency_id,
-					line_id: Number(reference.parent_id),
+					line_id: reference.parent_id,
 					start_time_scheduled: {
 						$gte: alertData.active_period_start_date,
 						$lte: activePeriodEndDate,
