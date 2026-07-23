@@ -153,8 +153,8 @@
 		"repo:init": "npm i && npm run repo:assets && npm run repo:build && npm run repo:routes",
 		"repo:lint": "turbo lint",
 		"repo:lint:fix": "turbo lint:fix",
-		"repo:load-env-prd": "ENVIRONMENT=prd npx --yes @dotenv-run/cli -v -r ./environments/prd -f .env.override,.env.prd --",
-		"repo:load-env-stg": "ENVIRONMENT=dev npx --yes @dotenv-run/cli -v -r ./environments/stg -f .env.override,.env.stg --",
+		"repo:load-env-prd": "ENVIRONMENT=prd npx --yes @dotenv-run/cli -v -f ./environments/prd/.env.prd --",
+		"repo:load-env-stg": "ENVIRONMENT=dev npx --yes @dotenv-run/cli -v -f ./environments/stg/.env.stg --",
 		"repo:rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"repo:routes": "bash ./scripts/generate-routes.sh"
 	},
