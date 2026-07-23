@@ -431,8 +431,8 @@ function buildSearchPipeline(filter: Pick<RidesPipelineFilter, 'search'>): Aggre
 	if (vehicleMatch) {
 		const vehicleIDs = vehicleMatch[1]
 			.split(',')
-			.map(id => Number(id.trim()))
-			.filter(id => !isNaN(id));
+			.map(id => id.trim())
+			.filter(Boolean);
 
 		if (vehicleIDs.length > 0) {
 			pipeline.push({ $match: { vehicle_ids: { $in: vehicleIDs } } });
