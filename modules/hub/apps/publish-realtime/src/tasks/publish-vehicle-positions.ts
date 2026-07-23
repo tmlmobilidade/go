@@ -7,7 +7,7 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
-import { OperationalDateInt, validateCalendarDate, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateInt, toCalendarDate, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -108,7 +108,7 @@ export async function publishVehiclesPositions() {
 				// Parse the vehicle position data
 				const vehiclePositionData: HubVehiclePosition = {
 					...vehicleEventData,
-					calendar_date: validateCalendarDate(String(vehicleEventData.operational_date)),
+					calendar_date: toCalendarDate(String(vehicleEventData.operational_date)),
 					direction_id: associatedRide?.direction_id,
 					geohash: vehicleEventData.geohash ?? null,
 					line_id: getPublicLineId(vehicleEventData.agency_id, String(associatedRide?.line_id || '-')),
