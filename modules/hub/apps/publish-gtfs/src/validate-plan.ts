@@ -1,32 +1,30 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
-export function validatePlan(planData: Plan): boolean {
+export async function validatePlan(planData: Plan): Promise<boolean> {
 	//
 
 	//
-	// Return false if the agency is not for the given IDs
+	// Return false if the agency is not found
 
-	if (![
-		'2IA2N9', // Metro de Lisboa
-		'7NTB1', // Fertagus
-		'A2L1N', // Alsa (CM)
-		'A3H3M', // TCB
-		'BNA17', // Rodoviária de Lisboa (CM)
-		'HF16N', // MobiCascais
-		'IA9T6', // Carris
-		'KB1F6', // Metro Transportes do Sul
-		'LA77N', // Viação Alvorada (CM)
-		'LTP61', // Transtejo
-		'N18KL', // Comboios de Portugal
-		'YA15B', // TST (CM)
-	].includes(planData.agency_id)) {
-		Logger.error({ message: `Skip processing: gtfs_agency is '${planData.agency_id}'. Only '2IA2N9', '7NTB1', 'A2L1N', 'A3H3M', 'BNA17', 'HF16N', 'IA9T6', 'KB1F6', 'LA77N', 'LTP61', 'N18KL', or 'YA15B' are allowed.` });
+	const agencyData = await goDb.core.agencies.findById(planData.agency_id);
+
+	if (!agencyData) {
+		Logger.error({ message: `Skip processing: No agency data found for agency_id '${planData.agency_id}'.` });
+		return false;
+	}
+
+	//
+	// Return false if the agency does not have GTFS enabled
+
+	if (!agencyData.open_data.gtfs_enabled) {
+		Logger.error({ message: `Skip processing: Agency '${planData.agency_id}' does not have GTFS enabled.` });
 		return false;
 	}
 

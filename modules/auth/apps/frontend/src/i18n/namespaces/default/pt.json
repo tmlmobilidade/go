@@ -108,6 +108,9 @@
 					},
 					"positions_enabled": {
 						"label": "Disponibilizar posições dos veículos"
+					},
+					"service_alerts_enabled": {
+						"label": "Disponibilizar alertas de serviço"
 					}
 				},
 				"title": "Dados Abertos"

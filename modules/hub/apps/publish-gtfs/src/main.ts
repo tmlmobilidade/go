@@ -136,7 +136,7 @@ export async function main() {
 			// and mark it as 'skipped' in the database.
 			// Otherwise, mark it as 'processing'.
 
-			const isValidPlan = validatePlan(planData);
+			const isValidPlan = await validatePlan(planData);
 
 			if (!isValidPlan) {
 				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });

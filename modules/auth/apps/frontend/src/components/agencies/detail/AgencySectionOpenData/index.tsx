@@ -63,6 +63,19 @@ export function AgencySectionOpenData() {
 						/>
 					)}
 				/>
+				<ContextFormController
+					control={agencyDetailContext.form.instance.control}
+					name="open_data.service_alerts_enabled"
+					render={({ field, fieldState }) => (
+						<Switch
+							checked={field.value}
+							error={fieldState.error?.message}
+							label={t('default:agencies.detail.SectionOpenData.fields.service_alerts_enabled.label')}
+							onChange={field.onChange}
+							readOnly={agencyDetailContext.flags.isReadOnly}
+						/>
+					)}
+				/>
 			</Section>
 		</Collapsible>
 	);
