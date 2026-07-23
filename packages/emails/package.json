@@ -39,7 +39,7 @@
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"nodemailer": "9.0.3",
-		"react": "19.2.7",
+		"react": "19.2.8",
 		"react-email": "6.9.0"
 	},
 	"devDependencies": {

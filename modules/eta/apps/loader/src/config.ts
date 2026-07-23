@@ -1,8 +1,6 @@
 /* * */
 
-import type { TimeSlot } from '@tmlmobilidade/dates';
-
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates, type TimeSlot } from '@tmlmobilidade/dates';
 
 /* * */
 

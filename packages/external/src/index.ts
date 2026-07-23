@@ -9,6 +9,7 @@ import { MlClient } from './clients/ml/index.js';
 import { MobiClient } from './clients/mobi/index.js';
 import { TcbClient } from './clients/tcb/index.js';
 import { TtslClient } from './clients/ttsl/index.js';
+import { UnirClient } from './clients/unir/index.js';
 
 /**
  * Collection of external transport agency clients.
@@ -36,4 +37,5 @@ export const externalClients = Object.freeze({
 	mobi: MobiClient,
 	tcb: TcbClient,
 	ttsl: TtslClient,
+	unir: UnirClient,
 });

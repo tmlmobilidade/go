@@ -44,7 +44,7 @@ export function parseRawApexTransactionValidationV30IntoSimplifiedApexValidation
 		units_qty: doc.payload.validationInfo.unitsQuantity,
 		updated_at: Dates.now('utc').unix_timestamp,
 		validation_status: '0',
-		vehicle_id: doc.payload.serviceInfo.vehicleID,
+		vehicle_id: String(doc.payload.serviceInfo.vehicleID),
 	};
 
 	return SimplifiedApexValidationSchema.parse(result);

@@ -22,14 +22,15 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.1",

@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, gtfsValidations } from '@tmlmobilidade/interfaces';
+import { type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -32,16 +33,16 @@ export async function getAllGtfsValidations(request: FastifyRequest, reply: Fast
 
 	if ('resources' in userGtfsValidationPermissions && 'agency_ids' in userGtfsValidationPermissions.resources) {
 		if (!userGtfsValidationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-			queryFilters['gtfs_agency.agency_id'] = { $in: userGtfsValidationPermissions.resources['agency_ids'] };
+			queryFilters['agency_id'] = { $in: userGtfsValidationPermissions.resources['agency_ids'] };
 		}
 	}
 
 	if ('resources' in userGtfsValidationPermissions) {
 		const filters = {
-			...(userGtfsValidationPermissions.resources['agency_ids'] && !userGtfsValidationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { 'gtfs_agency.agency_id': { $in: userGtfsValidationPermissions.resources['agency_ids'] } }),
+			...(userGtfsValidationPermissions.resources['agency_ids'] && !userGtfsValidationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG) && { agency_id: { $in: userGtfsValidationPermissions.resources['agency_ids'] } }),
 		};
 
-		const filteredgtfsValidations = await gtfsValidations.findMany(filters, { sort: { created_at: -1 } });
+		const filteredgtfsValidations = await goDb.operation.gtfsValidations.findMany(filters, { sort: { created_at: -1 } });
 
 		return reply.send({ data: filteredgtfsValidations, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -49,7 +50,7 @@ export async function getAllGtfsValidations(request: FastifyRequest, reply: Fast
 	//
 	// If no specific permissions are set, return all gtfsValidations
 
-	const allgtfsValidations = await gtfsValidations.findMany({}, { sort: { created_at: -1 } });
+	const allgtfsValidations = await goDb.operation.gtfsValidations.findMany({}, { sort: { created_at: -1 } });
 
 	return reply.send({ data: allgtfsValidations, error: null, statusCode: HTTP_STATUS.OK });
 

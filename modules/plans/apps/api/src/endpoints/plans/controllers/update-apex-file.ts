@@ -2,11 +2,12 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, plans, TransactionManager } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog, type Plan, type UpdatePlanDto } from '@tmlmobilidade/types';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
-import { pipeline } from 'node:stream/promises';
+import { finished } from 'node:stream/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
@@ -18,105 +19,84 @@ import { join } from 'path';
 export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanDto & { apex_file?: File }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
-	//
-	// Get the Plan from the database
-
-	const foundPlan = await plans.findById(request.params.id);
-
+	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-
-	//
-	// Check if the user has permission to update the Plan
 
 	const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.plans.actions.update_apex_file,
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: foundPlan.gtfs_agency.agency_id,
+		value: foundPlan.agency_id,
 	});
 
 	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this plan.');
 
-	//
-	// Parse multipart form data from the request
-
 	const requestData = await request.file();
-
 	if (!requestData) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file provided');
 
-	//
-	// Stream file to temporary disk location
-	// to avoid Out Of Memory issues with large files
+	let updatedPlanData: null | Plan = null;
+	const originalApexFileId = foundPlan.apex_file_id;
+	const tempFilePath = join(tmpdir(), `apex-file-upload-${Date.now()}-${Math.random().toString(36).substring(7)}`);
 
 	let buffer: Buffer;
 	let size: number;
-	let tempFilePath: null | string = null;
 
 	try {
-		// Create temporary file path
-		tempFilePath = join(tmpdir(), `apex-file-upload-${Date.now()}-${Math.random().toString(36).substring(7)}`);
-		// Stream directly to disk to avoid memory issues
 		const writeStream = createWriteStream(tempFilePath);
-		await pipeline(requestData.file, writeStream);
-		// Read file back as buffer for upload
+		requestData.file.pipe(writeStream);
+		await finished(writeStream);
 		buffer = readFileSync(tempFilePath);
 		size = buffer.length;
 	} catch (streamError) {
+		try {
+			unlinkSync(tempFilePath);
+		} catch (cleanupError) {
+			console.warn('Failed to cleanup temporary file:', tempFilePath, cleanupError);
+		}
 		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
 	}
 
-	//
-	// Use Transaction Manager to ensure data consistency
-	// across multiple collections (Plan update and file upload).
-
-	const transactionManager = new TransactionManager([plans, files] as const);
-
-	await transactionManager.withTransaction(async (collections, transactions) => {
+	try {
 		//
+		// Upload the new APEX file, point the plan at it, then drop the previous one.
+		// Failure modes (handled by storage saga + hooks):
+		// - upload fails → saga compensates blob/metadata; plan untouched
+		// - plan update fails → onSuccess throws → saga compensates the upload
+		// - old-file delete fails → onSuccess throws → onRollback restores plan → saga compensates the upload
 
-		//
-		// Destructure collections for easier access
-		// and get the appropriate transaction for each collection
+		await storageProvider.upload(
+			buffer,
+			{
+				created_by: request.me._id,
+				name: requestData.filename,
+				resource_id: foundPlan._id.toString(),
+				scope: PermissionCatalog.all.plans.scope,
+				size: size,
+				type: requestData.mimetype,
+				updated_by: request.me.email,
+			},
+			{
+				onRollback: async () => {
+					if (!updatedPlanData) return;
+					await goDb.operation.plans.updateById(foundPlan._id, {
+						apex_file_id: originalApexFileId,
+					});
+					updatedPlanData = null;
+				},
+				onSuccess: async (_ctx, result) => {
+					updatedPlanData = await goDb.operation.plans.updateById(
+						foundPlan._id,
+						{ apex_file_id: result._id },
+					);
 
-		const [plansCollection, filesCollection] = collections;
-
-		const plansTransaction = transactions.get(plansCollection);
-		const filesTransaction = transactions.get(filesCollection);
-
-		//
-		// Upload the APEX file
-
-		const uploadFileResult = await filesCollection.upload(buffer, {
-			created_by: request.me.email,
-			name: requestData.filename,
-			resource_id: foundPlan._id,
-			scope: 'plans',
-			size: size,
-			type: requestData.mimetype,
-			updated_by: request.me.email,
-		}, { session: filesTransaction.getSession() });
-
-		//
-		// Update the Plan with the APEX file reference
-
-		await plansCollection.updateById(foundPlan._id, { apex_file_id: uploadFileResult._id }, { session: plansTransaction.getSession() });
-
-		//
-		// Return the complete Plan object
-
-		return {
-			...foundPlan,
-			apex_file_id: uploadFileResult._id,
-		};
-
-		//
-	});
-
-	//
-	// Clean up temporary file
-
-	if (tempFilePath) {
+					if (originalApexFileId) {
+						await storageProvider.delete(originalApexFileId);
+					}
+				},
+			},
+		);
+	} finally {
 		try {
 			unlinkSync(tempFilePath);
 		} catch (cleanupError) {
@@ -124,21 +104,9 @@ export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanD
 		}
 	}
 
-	//
-	// Re-fetch the plan data to get the updated data
-
-	const updatedPlanData = await plans.findById(request.params.id);
-
-	if (!updatedPlanData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
-
-	//
-	// Send the updated plan data as the response
-
 	reply.send({
 		data: updatedPlanData,
 		error: null,
 		statusCode: HTTP_STATUS.OK,
 	});
-
-	//
 }

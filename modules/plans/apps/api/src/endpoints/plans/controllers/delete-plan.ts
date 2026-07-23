@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { plans } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -15,7 +16,7 @@ export async function deletePlan(request: FastifyRequest<{ Params: { id: string 
 
 	if (!request.params?.id) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing Plan ID in request params.');
 
-	const foundPlan = await plans.findById(request.params.id);
+	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
 	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found.');
 
@@ -27,7 +28,7 @@ export async function deletePlan(request: FastifyRequest<{ Params: { id: string 
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: foundPlan.gtfs_agency.agency_id,
+		value: foundPlan.agency_id,
 	})) {
 		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: delete plan');
 	}
@@ -35,7 +36,14 @@ export async function deletePlan(request: FastifyRequest<{ Params: { id: string 
 	//
 	// Actually delete the plan
 
-	await plans.deleteById(request.params.id);
+	await storageProvider.delete(foundPlan.operation_file_id, {
+		onRollback: async (_, error) => {
+			throw error;
+		},
+		onSuccess: async () => {
+			await goDb.operation.plans.deleteById(request.params.id);
+		},
+	});
 
 	reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 }

@@ -1,13 +1,14 @@
 /* * */
 
-import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
 import { OperationalDateInt, validateCalendarDate, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { rides } from '@tmlmobilidade/interfaces';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { getPublicLineId, getPublicPatternId, getPublicTripId, getPublicVehicleId } from '@tmlmobilidade/utils';
@@ -24,7 +25,7 @@ export async function publishVehiclesPositions() {
 	//
 	// Connect to databases
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	//
 	// Retrieve active plans from the database
@@ -41,7 +42,46 @@ export async function publishVehiclesPositions() {
 	//
 	// Retrieve active alerts from the database
 
-	const latestVehicleEventsData = await simplifiedVehicleEventsNew.getPositions();
+	const secondsAgo = 90;
+	const bearingInferenceLookbackSeconds = 300;
+	const bearingInferenceMaxGapMs = bearingInferenceLookbackSeconds * 1000;
+	const query = `
+			SELECT *
+			FROM (
+				SELECT
+					* REPLACE(
+						coalesce(
+							bearing,
+							if(
+								lagInFrame(created_at) OVER w IS NOT NULL
+								AND (created_at - lagInFrame(created_at) OVER w) <= ${bearingInferenceMaxGapMs}
+								AND (
+									abs(latitude - lagInFrame(latitude) OVER w) > 0.000001
+									OR abs(longitude - lagInFrame(longitude) OVER w) > 0.000001
+								),
+								toInt64(round(mod(
+									360 + degrees(atan2(
+										sin(radians(longitude - lagInFrame(longitude) OVER w)) * cos(radians(latitude)),
+										cos(radians(lagInFrame(latitude) OVER w)) * sin(radians(latitude))
+											- sin(radians(lagInFrame(latitude) OVER w)) * cos(radians(latitude))
+												* cos(radians(longitude - lagInFrame(longitude) OVER w))
+									)),
+									360
+								))),
+								NULL
+							)
+						) AS bearing
+					)
+				FROM "${this.databaseName}"."${this.tableName}"
+				WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo + bearingInferenceLookbackSeconds} SECOND)
+				WINDOW w AS (PARTITION BY agency_id, vehicle_id ORDER BY created_at)
+			)
+			WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo} SECOND)
+			ORDER BY created_at DESC
+			LIMIT 1 BY agency_id, vehicle_id
+		`;
+
+	const latestVehicleEventsData = await labDb.operation.vehicleEvents.queryFromString<SimplifiedVehicleEvent>(query);
 
 	const vehiclePositionsJson: HubVehiclePosition[] = [];
 
@@ -68,7 +108,7 @@ export async function publishVehiclesPositions() {
 				// Parse the vehicle position data
 				const vehiclePositionData: HubVehiclePosition = {
 					...vehicleEventData,
-					calendar_date: validateCalendarDate(vehicleEventData.operational_date),
+					calendar_date: validateCalendarDate(String(vehicleEventData.operational_date)),
 					direction_id: associatedRide?.direction_id,
 					geohash: vehicleEventData.geohash ?? null,
 					line_id: getPublicLineId(vehicleEventData.agency_id, String(associatedRide?.line_id || '-')),

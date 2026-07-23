@@ -1,5 +1,6 @@
 /* * */
 
+import { stopsIndexes } from '@/indexes/index.js';
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
 import { CreateStopDto, CreateStopSchema, Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
@@ -18,6 +19,6 @@ export class InfrastructureDatabase {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
 		// Create collection interfaces
-		this.stops = new MongoInterfaceTemplate<Stop, CreateStopDto, UpdateStopDto>('stops', this.database, CreateStopSchema, UpdateStopSchema);
+		this.stops = new MongoInterfaceTemplate<Stop, CreateStopDto, UpdateStopDto>('stops', this.database, CreateStopSchema, UpdateStopSchema, stopsIndexes);
 	}
 }

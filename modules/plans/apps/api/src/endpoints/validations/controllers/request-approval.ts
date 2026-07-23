@@ -4,7 +4,6 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { gtfsValidations } from '@tmlmobilidade/interfaces';
 import { type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -18,7 +17,7 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 	//
 	// Get the requested Validation data
 
-	const validationData = await gtfsValidations.findById(request.params.id);
+	const validationData = await goDb.operation.gtfsValidations.findById(request.params.id);
 
 	if (!validationData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
@@ -39,7 +38,7 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.gtfs_validations.scope,
-		value: validationData.gtfs_agency.agency_id,
+		value: validationData.agency_id,
 	});
 
 	if (!hasPermissionRequestApproval) {
@@ -49,7 +48,7 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 	//
 	// Get the TML contact emails for this Agency
 
-	const agencyData = await goDb.core.agencies.findById(validationData.gtfs_agency.agency_id);
+	const agencyData = await goDb.core.agencies.findById(validationData.agency_id);
 
 	if (!agencyData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');
@@ -60,7 +59,7 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 
 	await sendPlanApprovalRequestEmail({
 		data: {
-			agencyName: validationData.gtfs_agency.agency_name,
+			agencyName: agencyData.name,
 			endDate: validationData.gtfs_feed_info.feed_end_date,
 			firstName: request.me.first_name,
 			gtfsValidationId: validationData._id,
@@ -74,7 +73,7 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 	//
 	// Update the Validation document and send it to caller
 
-	const updatedValidation = await gtfsValidations.updateById(validationData._id, { notification_sent: true });
+	const updatedValidation = await goDb.operation.gtfsValidations.updateById(validationData._id, { notification_sent: true });
 
 	reply.send({ data: updatedValidation, error: null, statusCode: HTTP_STATUS.OK });
 
