@@ -4,8 +4,7 @@ import { cleanupOrphanHashedPatterns, cleanupOrphanHashedShapes, cleanupOrphanHa
 import { parsePlan } from '@/parse-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { plans } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 

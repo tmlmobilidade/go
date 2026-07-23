@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-clients-mongo": "*",
+		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*",
 		"luxon": "3.7.2",

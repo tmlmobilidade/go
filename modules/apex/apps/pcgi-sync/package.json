@@ -21,7 +21,6 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-apex-pckg-parsers": "*",
-		"@tmlmobilidade/go-interfaces-go-db": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-pcgi-file-manager": "*",
 		"@tmlmobilidade/go-types-apex": "*",

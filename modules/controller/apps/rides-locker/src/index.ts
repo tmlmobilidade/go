@@ -2,8 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { rideAcceptances } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
