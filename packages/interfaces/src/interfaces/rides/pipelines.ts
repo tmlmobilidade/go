@@ -325,7 +325,7 @@ type RidesPipelineFilter = OneOrTheOther<DatesRange, OperationalDateRange> & {
 	seen_statuses?: SeenStatus[]
 	stop_ids?: string[]
 	ticketing_status?: TicketingStatus[]
-	vehicle_ids?: number[]
+	vehicle_ids?: string[]
 };
 
 type FieldCondition = Record<string, unknown>;
