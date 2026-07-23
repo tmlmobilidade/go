@@ -61,4 +61,7 @@ class RawApexTransactionsClass extends MongoInterfaceTemplate<RawApexTransaction
 
 /* * */
 
+/**
+ * @deprecated Use RawDb.raw.apexTransactions instead.
+ */
 export const rawApexTransactions = asyncSingletonProxy(RawApexTransactionsClass);

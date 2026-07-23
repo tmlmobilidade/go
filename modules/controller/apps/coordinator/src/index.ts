@@ -3,8 +3,7 @@
 import { getRides } from '@/get-rides.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import Fastify from 'fastify';
 
 /* * */

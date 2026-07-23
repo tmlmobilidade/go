@@ -36,6 +36,7 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/normalizers": "*",
@@ -44,7 +45,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"@types/ws": "8.18.1",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",

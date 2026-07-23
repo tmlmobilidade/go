@@ -29,6 +29,7 @@ export const HubPatternSchema = z.object({
 	short_name: z.string(),
 	text_color: z.string(),
 	trips: z.array(HubTripSchema),
+	tts_hash: z.string(),
 	tts_headsign: z.string(),
 	valid_on: z.array(z.string()).default([]),
 	version_id: z.string(),

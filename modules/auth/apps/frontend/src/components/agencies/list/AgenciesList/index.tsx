@@ -42,6 +42,11 @@ export function AgenciesList() {
 			title: t('default:agencies.list.Table.columns.name'),
 			width: 600,
 		},
+		{
+			accessor: 'pta_name',
+			title: t('default:agencies.list.Table.columns.pta_name'),
+			width: 600,
+		},
 	];
 
 	//

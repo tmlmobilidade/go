@@ -1,7 +1,7 @@
 /* * */
 
-import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { alerts, files } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -75,7 +75,7 @@ export async function publishJsonFeed() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:alerts:published:json:cm', JSON.stringify(result));
+	await cacheDb.set('hub:v1:alerts:published:json:cm', JSON.stringify(result));
 
 	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
 

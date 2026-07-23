@@ -5,9 +5,9 @@ import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.js';
 import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { agencies, lines, patterns, routes, stops } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { stops } from '@tmlmobilidade/interfaces';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 
 import { exportFeedInfoFile } from './exports/feedInfo.js';
@@ -118,7 +118,7 @@ export async function exportGtfsV29(
 
 		const allAgenciesData = await Promise.all(
 			exportConfig.agency_ids.map(async (id) => {
-				const agencyData = await agencies.findById(id);
+				const agencyData = await goDb.core.agencies.findById(id);
 				if (!agencyData) throw new Error(`Agency with ID ${id} not found`);
 				return agencyData;
 			}),
@@ -156,7 +156,7 @@ export async function exportGtfsV29(
 			linesFilter._id = { $nin: exportConfig.lines_exclude };
 		}
 
-		const allLinesData = await lines.findMany(linesFilter, { sort: { code: 1 } });
+		const allLinesData = await goDb.offer.lines.findMany(linesFilter, { sort: { code: 1 } });
 
 		await updateProgress(progress, { progress_current: 0, progress_total: allLinesData.length });
 
@@ -214,7 +214,7 @@ export async function exportGtfsV29(
 
 			// 3.1.
 			// Fetch all routes for this line
-			const lineRoutes = await routes.findByLineId(lineData._id);
+			const lineRoutes = await goDb.offer.routes.findMany({ line_id: lineData._id });
 
 			if (lineRoutes.length === 0) {
 				Logger.info({ message: `  Skipping line ${lineData.code}: no routes found` });
@@ -227,7 +227,7 @@ export async function exportGtfsV29(
 				const routeId = routeData.code;
 
 				// Fetch all patterns for this route
-				const routePatterns = await patterns.findMany({
+				const routePatterns = await goDb.offer.patterns.findMany({
 					line_id: lineData._id,
 					route_id: routeData._id,
 				});
