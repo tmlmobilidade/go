@@ -4,7 +4,7 @@
 
 import pjson from '#/package.json';
 import { type Ampli, ampli } from '@/amplitude';
-import { isAmplitudeEnabled } from '@/utils/analytics/config';
+import { AMPLITUDE_BROWSER_OPTIONS, isAmplitudeEnabled } from '@/utils/analytics/config';
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 
 /* * */
@@ -74,8 +74,15 @@ export const AnalyticsContextProvider = ({ children }) => {
 		if (!isEnabled) return;
 
 		if (!ampli.isLoaded) {
-			ampli.load({ client: { configuration: { appVersion: pjson.version, autocapture: false } }, environment: 'default' });
-			ampli.client.setOptOut(false);
+			void ampli.load({
+				client: {
+					configuration: {
+						...AMPLITUDE_BROWSER_OPTIONS,
+						appVersion: pjson.version,
+					},
+				},
+				environment: 'default',
+			}).promise;
 		}
 
 		// Ping on mount and every minute while the WebView session is open

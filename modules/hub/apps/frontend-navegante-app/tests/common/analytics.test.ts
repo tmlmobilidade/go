@@ -1,4 +1,4 @@
-import { isAmplitudeEnabled } from '@/utils/analytics/config';
+import { AMPLITUDE_BROWSER_OPTIONS, isAmplitudeEnabled } from '@/utils/analytics/config';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 
@@ -11,5 +11,20 @@ describe('Amplitude environment configuration', () => {
 		assert.equal(isAmplitudeEnabled('staging'), false);
 		assert.equal(isAmplitudeEnabled('pr-123'), false);
 		assert.equal(isAmplitudeEnabled(undefined), false);
+	});
+
+	it('collects only the properties needed for audience measurement', () => {
+		assert.deepEqual(AMPLITUDE_BROWSER_OPTIONS, {
+			autocapture: false,
+			enableDiagnostics: false,
+			remoteConfig: {
+				fetchRemoteConfig: false,
+			},
+			trackingOptions: {
+				ipAddress: false,
+				language: false,
+				platform: false,
+			},
+		});
 	});
 });
