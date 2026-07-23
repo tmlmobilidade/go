@@ -1,0 +1,127 @@
+name: Preview Health Check
+
+on:
+  workflow_call:
+    inputs:
+      pr_number:
+        description: 'PR number for preview URL'
+        required: true
+        type: string
+      timeout_minutes:
+        description: 'Max minutes to wait for preview to respond'
+        required: false
+        default: 15
+        type: number
+      poll_seconds:
+        description: 'Seconds between health checks'
+        required: false
+        default: 30
+        type: number
+
+jobs:
+
+  # # #
+  # After first /build + infra notify: poll preview URL until OK or timeout.
+  # Marker <!-- preview-health --> skips on later builds.
+
+  check:
+    name: Check Preview Environment
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Skip if already reported
+        id: gate
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const marker = '<!-- preview-health -->';
+            const prNumber = Number('${{ inputs.pr_number }}');
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              per_page: 100,
+            });
+            const done = comments.some((c) => (c.body || '').includes(marker));
+            core.setOutput('skip', done ? 'true' : 'false');
+            if (done) {
+              core.info('Preview health already reported for this PR — skip');
+            }
+
+      - name: Poll preview URL
+        id: poll
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+          TIMEOUT_MINUTES: ${{ inputs.timeout_minutes }}
+          POLL_SECONDS: ${{ inputs.poll_seconds }}
+        run: |
+          set -euo pipefail
+          URL="https://pr-${PR_NUMBER}.go-stg.tmlmobilidade.pt/auth/api/health"
+          DEADLINE=$((SECONDS + TIMEOUT_MINUTES * 60))
+          echo "Polling ${URL} for up to ${TIMEOUT_MINUTES}m (every ${POLL_SECONDS}s)"
+
+          while (( SECONDS < DEADLINE )); do
+            CODE=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 10 -L "$URL" || echo "000")
+            echo "$(date -u +%H:%M:%S) HTTP ${CODE}"
+            if [[ "$CODE" =~ ^[23][0-9][0-9]$ ]]; then
+              echo "ready=true" >> "$GITHUB_OUTPUT"
+              echo "http_code=${CODE}" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep "${POLL_SECONDS}"
+          done
+
+          echo "ready=false" >> "$GITHUB_OUTPUT"
+          echo "http_code=${CODE:-000}" >> "$GITHUB_OUTPUT"
+
+      - name: Comment preview status
+        if: steps.gate.outputs.skip != 'true'
+        uses: actions/github-script@v8
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+          READY: ${{ steps.poll.outputs.ready }}
+          HTTP_CODE: ${{ steps.poll.outputs.http_code }}
+          TIMEOUT_MINUTES: ${{ inputs.timeout_minutes }}
+        with:
+          script: |
+            const prNumber = Number(process.env.PR_NUMBER);
+            const url = `https://pr-${prNumber}.go-stg.tmlmobilidade.pt`;
+            const ready = process.env.READY === 'true';
+            const code = process.env.HTTP_CODE || '000';
+            const timeout = process.env.TIMEOUT_MINUTES || '15';
+
+            const messages = [
+              'Test wisely, deploy bravely',
+              'With great power comes great responsibility',
+              'Quality first, deployment second',
+              'If it just works then its not good enough',
+              'Good systems grow, great code lasts',
+              'Write code like someone’s way home depends on it',
+              'For every line we put into production, someone finds a line to reach their destination.',
+            ];
+            const tagline = messages[Math.floor(Math.random() * messages.length)];
+
+            const body = ready
+              ? [
+                  '### Preview Environment',
+                  '',
+                  url,
+                  '',
+                  tagline,
+                ].join('\n')
+              : [
+                  '### Preview environment failed',
+                  '',
+                  `Creation of preview environment failed within ${timeout} minutes`,
+                ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body,
+            });
