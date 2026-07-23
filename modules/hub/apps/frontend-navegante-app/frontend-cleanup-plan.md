@@ -1,6 +1,6 @@
 # Frontend Navegante cleanup execution plan
 
-Last updated: 2026-07-22
+Last updated: 2026-07-23
 
 This document tracks the behavior-preserving cleanup of `frontend-navegante-app`. The source assessment and product regression checklist remain in the external cleanup handoff. MOTIS API background remains in `motis-ui-handoff.md`.
 
@@ -87,7 +87,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 10 | Extract the MOTIS API client and pure transitions from `RoutePlanner.context.tsx` | complete | 9 | Moved context-facing types, the MOTIS plan request, plan-start state, and travel-time-mode state into focused modules with transition coverage; preserved the complete context facade and reduced the provider file from 420 to 367 lines. |
 | 11 | Extract BaseMap focused-entity and derived-data hooks | complete | 2, 3 | Moved focused alert/line/stop/vehicle selection, focused geometry, route-specific map enrichment, and final operator filtering into map-owned hooks; reduced `BaseMap` from roughly 500 to 315 lines while preserving filtering precedence. |
 | 12 | Extract BaseMap camera synchronization, interactions, and layer composition | complete | 11 | Camera synchronization and map interactions are isolated behind map-owned hooks, render ordering lives in `BaseMapLayers`, and `BaseMap` is now a small composition root that retains one user-location hook instance. |
-| 13 | Introduce singleton user-location ownership | in progress | 3 | One root `UserLocationContextProvider` now owns geolocation and orientation subscriptions while the existing hook interface remains compatible; mobile permission and orientation flows still require manual verification. |
+| 13 | Introduce singleton user-location ownership | in progress | 3 | `UserLocationContextProvider` now exclusively owns fresh one-shot requests, one mode-aware continuous watch, structured sensor errors, orientation permission, and bearing listeners. Every user-center click requests a fresh high-accuracy position; the bearing transition starts GPS and WebKit orientation permission directly from the same click. Route-planner consumers no longer access browser sensors. Automated checks cover bearing/error normalization; React Native WebView and physical Mobile Safari permission/orientation flows still require manual verification. |
 | 14 | Consolidate bottom-sheet implementation and add snap behavior coverage | complete | 1 | Removed the legacy handcrafted sheet, made the `react-modal-sheet` adapter the canonical `BottomSheet`, colocated navigation types and shared snap constants, and covered map-interaction collapse and snap-state publication. |
 | 15 | Normalize context flags and memoize provider values | complete | 10–14 | Every local context provider now memoizes its value behind stable action/filter facades; boolean flags use `is_`/`has_` snake_case names, and permanently undefined/false flags were removed. |
 | 16 | Consolidate route/status design tokens and CSS duplication | in progress | Structural tasks complete | Route mode/status colors now use named Navegante tokens; compact/detail line pills and mode badges share size-aware primitives; filter triggers reuse the option button primitive; route CSS no longer carries fallback hex colors. Automated checks pass, but light/dark and responsive visual regression remains pending because no controllable browser was available. |
@@ -136,6 +136,7 @@ Status values: `pending`, `in progress`, `complete`, and `blocked`.
 | 22 | `refactor(hub): restore frontend quality baseline` | Remove dead local API contracts, resolve the app lint baseline, and normalize remaining component exports. |
 | 22 | `fix(hub): keep latest route planning request` | Use SWR Mutation to ignore stale completions, reset invalidated planning, and expose the active request loading state. |
 | 22 | `refactor(hub): deepen route planner workflow` | Colocate the complete route-planning context while retaining independent domain models, API helpers, and pure transitions. |
+| 13 | `refactor(hub): complete user location ownership` | Route all one-shot and continuous GPS access, orientation permission, bearing updates, and sensor errors through the root user-location context; refresh and recenter on every center-button click. |
 
 ## Verification
 
@@ -154,4 +155,4 @@ cd modules/hub/apps/frontend-navegante-app
 npx eslint src
 ```
 
-Each committed slice has passed its tests, TypeScript check, scoped ESLint, and `git diff --check`. Manual verification remains explicitly tracked for Tasks 13 and 16.
+Each committed slice has passed its tests, TypeScript check, scoped ESLint, and `git diff --check`. The current suite contains 61 tests. Manual verification remains explicitly tracked for Tasks 13 and 16.

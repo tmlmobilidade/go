@@ -45,7 +45,12 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 
 	const [dataMapState, setDataMapState] = useState<MapContextState['data']['map']>(undefined);
 
-	const { userLocation, userLocationTrackingMode } = useUserLocation();
+	const {
+		data: {
+			location: userLocation,
+			tracking_mode: userLocationTrackingMode,
+		},
+	} = useUserLocation();
 
 	const [activeBaseMapOverlays, setActiveBaseMapOverlays] = useSessionStorage<BaseMapOverlayType[]>({
 		defaultValue: ['alerts', 'vehicles'],
@@ -95,13 +100,13 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 		// Skip if the user location tracking mode is idle
 		if (userLocationTrackingMode === 'idle') return;
 		// Skip if the user location is not available
-		if (!userLocation?.latitude || !userLocation?.longitude) return;
+		if (!Number.isFinite(userLocation?.latitude) || !Number.isFinite(userLocation?.longitude)) return;
 		// Get the coordinates and bearing
 		const coordinates = [userLocation.longitude, userLocation.latitude];
-		const bearing = userLocationTrackingMode === 'follow-bearing' ? userLocation.bearing : undefined;
+		const bearing = userLocationTrackingMode === 'follow-bearing' ? userLocation.bearing ?? undefined : undefined;
 		// Move the map view
 		moveMapView(dataMapState, coordinates, { bearing, zoom: 15 });
-	}, [userLocationTrackingMode, userLocation, dataMapState]);
+	}, [dataMapState, userLocation, userLocationTrackingMode]);
 
 	//
 	// C. Define context value

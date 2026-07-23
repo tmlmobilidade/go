@@ -23,7 +23,7 @@ interface BaseMapLayersProps {
 	focusedEntities: ReturnType<typeof useBaseMapFocusedEntities>
 	onGetDirections: () => void
 	selectedMapLocation: MapLongPressLocation | null
-	userLocation: ReturnType<typeof useUserLocation>['userLocation']
+	userLocation: ReturnType<typeof useUserLocation>['data']['location']
 }
 
 /* * */

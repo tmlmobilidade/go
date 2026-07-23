@@ -41,8 +41,8 @@ export function useSearch(query: string): UseSearchResult {
 	const alertsContext = useAlertsContext();
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
-	const { userLocation } = useUserLocation();
-	const userCoordinates = useMemo(() => getSearchCoordinates(userLocation), [userLocation?.latitude, userLocation?.longitude]);
+	const userLocationContext = useUserLocation();
+	const userCoordinates = useMemo(() => getSearchCoordinates(userLocationContext.data.location), [userLocationContext.data.location?.latitude, userLocationContext.data.location?.longitude]);
 	const searchBiasCoordinates = userCoordinates ?? DEFAULT_SEARCH_COORDINATES;
 	const normalizedQuery = normalizeSearchText(query).trim();
 	const motisSearch = useMotisGeocode(query, {

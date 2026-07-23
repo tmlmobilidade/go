@@ -103,7 +103,10 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	const { t } = useTranslation();
 	const { clearActiveBottomSheets, setActiveBottomSheet } = useBottomSheet();
 	const linesContext = useLinesContext();
-	const { userLocation } = useUserLocation();
+	const {
+		actions: { requestCurrentLocation },
+		data: { location: userLocation },
+	} = useUserLocation();
 
 	const [destination, setDestinationState] = useState<null | RoutePlannerLocation>(null);
 	const [origin, setOriginState] = useState<null | RoutePlannerLocation>(null);
@@ -154,21 +157,11 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		return buildOriginFromCoordinates(userLocation.latitude, userLocation.longitude);
 	}, [buildOriginFromCoordinates, userLocation]);
 
-	const getCurrentBrowserLocationOrigin = useCallback(async (): Promise<null | RoutePlannerLocation> => {
-		if (typeof navigator === 'undefined' || !navigator.geolocation) return null;
-
-		return new Promise((resolve) => {
-			navigator.geolocation.getCurrentPosition(
-				position => resolve(buildOriginFromCoordinates(position.coords.latitude, position.coords.longitude)),
-				() => resolve(null),
-				{
-					enableHighAccuracy: true,
-					maximumAge: 30_000,
-					timeout: 10_000,
-				},
-			);
-		});
-	}, [buildOriginFromCoordinates]);
+	const getCurrentUserLocationOrigin = useCallback(async (): Promise<null | RoutePlannerLocation> => {
+		const location = await requestCurrentLocation();
+		if (!location) return null;
+		return buildOriginFromCoordinates(location.latitude, location.longitude);
+	}, [buildOriginFromCoordinates, requestCurrentLocation]);
 
 	const clearRoute = useCallback(() => {
 		resetPlanRequest();
@@ -280,7 +273,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		setWasOpenedFromPlace(true);
 		setActiveBottomSheet({ view: 'routes' });
 
-		const nextOrigin = origin || buildUserLocationOrigin() || await getCurrentBrowserLocationOrigin();
+		const nextOrigin = origin || buildUserLocationOrigin() || await getCurrentUserLocationOrigin();
 		if (!nextOrigin) {
 			setPlanError(t('default:routes.RoutePlanner.errors.location_unavailable'));
 			setViewMode('full-input');
@@ -289,7 +282,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 
 		setOriginState(nextOrigin);
 		await planRoute(nextOrigin, location, undefined, 'place-detail');
-	}, [buildUserLocationOrigin, getCurrentBrowserLocationOrigin, origin, planRoute, resetPlanRequest, setActiveBottomSheet, t]);
+	}, [buildUserLocationOrigin, getCurrentUserLocationOrigin, origin, planRoute, resetPlanRequest, setActiveBottomSheet, t]);
 
 	const openPlaceDetail = useCallback(() => {
 		setSelectedItineraryIndex(null);
@@ -304,7 +297,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		setSelectedItineraryIndex(0);
 		setWasOpenedFromPlace(false);
 
-		const nextOrigin = origin || buildUserLocationOrigin() || await getCurrentBrowserLocationOrigin();
+		const nextOrigin = origin || buildUserLocationOrigin() || await getCurrentUserLocationOrigin();
 		if (!nextOrigin) {
 			setPlanError(t('default:routes.RoutePlanner.errors.location_unavailable'));
 			setViewMode('full-input');
@@ -313,7 +306,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 
 		setOriginState(nextOrigin);
 		await planRoute(nextOrigin, location);
-	}, [buildUserLocationOrigin, getCurrentBrowserLocationOrigin, origin, planRoute, resetPlanRequest, t]);
+	}, [buildUserLocationOrigin, getCurrentUserLocationOrigin, origin, planRoute, resetPlanRequest, t]);
 
 	const openDirectionsTo = useCallback(async (location: RoutePlannerLocation) => {
 		setViewMode('results');

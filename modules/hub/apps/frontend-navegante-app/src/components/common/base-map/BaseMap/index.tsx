@@ -19,7 +19,7 @@ export function BaseMap() {
 	// A. Setup variables
 
 	const { data: { excludedBaseMapOperatorIds } } = useMapContext();
-	const { setUserLocationTrackingMode, userLocation } = useUserLocation();
+	const userLocationContext = useUserLocation();
 	const { activeBottomSheet } = useBottomSheet();
 
 	const focusedEntities = useBaseMapFocusedEntities({ activeBottomSheet });
@@ -39,7 +39,7 @@ export function BaseMap() {
 	});
 
 	const { handleGetDirections, mapViewInteractionProps, selectedMapLocation } = useBaseMapInteractions({
-		setUserLocationTrackingMode,
+		setUserLocationTrackingMode: userLocationContext.actions.setTrackingMode,
 	});
 
 	//
@@ -56,7 +56,7 @@ export function BaseMap() {
 				focusedEntities={focusedEntities}
 				onGetDirections={handleGetDirections}
 				selectedMapLocation={selectedMapLocation}
-				userLocation={userLocation}
+				userLocation={userLocationContext.data.location}
 			/>
 		</MapView>
 	);

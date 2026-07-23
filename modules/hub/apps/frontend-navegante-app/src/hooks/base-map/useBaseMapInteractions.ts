@@ -21,7 +21,7 @@ export const baseMapInteractiveLayerIds = [
 ];
 
 interface UseBaseMapInteractionsParams {
-	setUserLocationTrackingMode: ReturnType<typeof useUserLocation>['setUserLocationTrackingMode']
+	setUserLocationTrackingMode: ReturnType<typeof useUserLocation>['actions']['setTrackingMode']
 }
 
 /* * */

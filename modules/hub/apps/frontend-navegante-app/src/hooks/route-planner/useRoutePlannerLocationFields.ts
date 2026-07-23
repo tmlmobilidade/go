@@ -1,5 +1,6 @@
 'use client';
 
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { createRoutePlannerCurrentLocation } from '@/utils/route-planner/planning/locations';
 import { useEffect, useMemo, useState } from 'react';
@@ -29,6 +30,7 @@ export function useRoutePlannerLocationFields({ destination, onDestinationChange
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const userLocationContext = useUserLocation();
 	const [activeField, setActiveField] = useState<'destination' | 'origin' | null>(null);
 	const [destinationQuery, setDestinationQuery] = useState('');
 	const [originQuery, setOriginQuery] = useState('');
@@ -62,8 +64,20 @@ export function useRoutePlannerLocationFields({ destination, onDestinationChange
 	//
 	// C. Handle actions
 
-	const handleOriginLocationClick = () => {
-		handleCurrentLocationSelect(onOriginChange, setOriginQuery, currentLocationOption.label, currentLocationOption.detail);
+	const handleOriginLocationClick = async () => {
+		const userLocation = await userLocationContext.actions.requestCurrentLocation();
+		if (!userLocation) return;
+
+		const location = createRoutePlannerCurrentLocation({
+			detail: currentLocationOption.detail,
+			label: currentLocationOption.label,
+			latitude: userLocation.latitude,
+			longitude: userLocation.longitude,
+		});
+		if (!location) return;
+
+		onOriginChange(location);
+		setOriginQuery(location.label);
 	};
 
 	const handleOriginQueryChange = (value: string) => {
@@ -80,7 +94,7 @@ export function useRoutePlannerLocationFields({ destination, onDestinationChange
 
 	const handleOriginSelect = (location: RoutePlannerLocation) => {
 		if (location.id === CURRENT_LOCATION_OPTION_ID) {
-			handleOriginLocationClick();
+			void handleOriginLocationClick();
 			setActiveField(null);
 			return;
 		}
@@ -113,28 +127,4 @@ export function useRoutePlannerLocationFields({ destination, onDestinationChange
 	};
 
 	//
-}
-
-/* * */
-
-function handleCurrentLocationSelect(
-	onChange: (location: RoutePlannerLocation) => void,
-	setQuery: (query: string) => void,
-	label: string,
-	detail: string,
-) {
-	if (typeof navigator === 'undefined' || !navigator.geolocation) return;
-
-	navigator.geolocation.getCurrentPosition((position) => {
-		const location = createRoutePlannerCurrentLocation({
-			detail,
-			label,
-			latitude: position.coords.latitude,
-			longitude: position.coords.longitude,
-		});
-		if (!location) return;
-
-		onChange(location);
-		setQuery(label);
-	});
 }

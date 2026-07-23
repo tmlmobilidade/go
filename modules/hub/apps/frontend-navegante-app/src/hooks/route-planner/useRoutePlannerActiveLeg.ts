@@ -13,16 +13,16 @@ export function useRoutePlannerActiveLeg(): RoutePlannerActiveLegProgress {
 	//
 	// A. Setup variables
 
-	const { userLocation } = useUserLocation();
+	const userLocationContext = useUserLocation();
 	const routePlannerContext = useRoutePlannerContext();
 
 	//
 	// B. Transform data
 
 	const userPosition = useMemo(() => {
-		if (!userLocation) return null;
-		return [userLocation.longitude, userLocation.latitude] as GeoJSON.Position;
-	}, [userLocation]);
+		if (!userLocationContext.data.location) return null;
+		return [userLocationContext.data.location.longitude, userLocationContext.data.location.latitude] as GeoJSON.Position;
+	}, [userLocationContext.data.location]);
 
 	const activeLegProgress = useMemo(() => getRoutePlannerActiveLegProgress({
 		destination: routePlannerContext.data.destination,
