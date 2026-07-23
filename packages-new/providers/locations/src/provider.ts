@@ -19,60 +19,6 @@ class LocationsProviderClass {
 		return LocationsProviderClass._instance;
 	}
 
-	/*  Count */
-
-	async countDistricts(filter?: any): Promise<number> {
-		return goDb.locations.districts.count(filter);
-	}
-
-	async countLocalities(filter?: any): Promise<number> {
-		return goDb.locations.localities.count(filter);
-	}
-
-	async countMunicipalities(filter?: any): Promise<number> {
-		return goDb.locations.municipalities.count(filter);
-	}
-
-	async countParishes(filter?: any): Promise<number> {
-		return goDb.locations.parishes.count(filter);
-	}
-
-	/*  Find All */
-
-	async findDistricts(filter?: any, options?: any): Promise<District[]> {
-		return goDb.locations.districts.findMany(filter, options) as Promise<District[]>;
-	}
-
-	async findLocalities(filter?: any, options?: any): Promise<Locality[]> {
-		return goDb.locations.localities.findMany(filter, options) as Promise<Locality[]>;
-	}
-
-	async findMunicipalities(filter?: any, options?: any): Promise<Municipality[]> {
-		return goDb.locations.municipalities.findMany(filter, options) as Promise<Municipality[]>;
-	}
-
-	async findParishes(filter?: any, options?: any): Promise<Parish[]> {
-		return goDb.locations.parishes.findMany(filter, options) as Promise<Parish[]>;
-	}
-
-	/*  Find By Id */
-
-	async findDistrictById(id: string): Promise<District | null> {
-		return goDb.locations.districts.findById(id);
-	}
-
-	async findLocalityById(id: string): Promise<Locality | null> {
-		return goDb.locations.localities.findById(id);
-	}
-
-	async findMunicipalityById(id: string): Promise<Municipality | null> {
-		return goDb.locations.municipalities.findById(id);
-	}
-
-	async findParishById(id: string): Promise<null | Parish> {
-		return goDb.locations.parishes.findById(id);
-	}
-
 	/*  Find By Geo */
 
 	async findDistrictByGeo(lat: number, lon: number): Promise<District | null> {

@@ -2,6 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type Filter, type FindOptions } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
@@ -44,7 +45,7 @@ export class LocationsController {
 
 		try {
 			const options: FindOptions = { projection: { geometry: query.geojson === true ? 1 : 0 } };
-			const districts = await locationsProvider.findDistricts({}, options);
+			const districts = await goDb.locations.districts.findMany({}, options);
 
 			return reply.status(HTTP_STATUS.OK).send({
 				data: districts,
@@ -83,8 +84,8 @@ export class LocationsController {
 				skip: (query.page - 1) * query.limit,
 			};
 
-			const localities = await locationsProvider.findLocalities(filter, options);
-			const total = await locationsProvider.countLocalities(filter);
+			const localities = await goDb.locations.localities.findMany(filter, options);
+			const total = await goDb.locations.localities.count(filter);
 
 			return reply.status(HTTP_STATUS.OK).send({
 				data: localities,
@@ -120,7 +121,7 @@ export class LocationsController {
 			const filter: Filter<Municipality> = query.district_ids ? { district_id: { $in: query.district_ids } } : {};
 			const options: FindOptions = { projection: { geometry: query.geojson === true ? 1 : 0 } };
 
-			const municipalities = await locationsProvider.findMunicipalities(filter, options);
+			const municipalities = await goDb.locations.municipalities.findMany(filter, options);
 
 			return reply.status(HTTP_STATUS.OK).send({
 				data: municipalities,
@@ -158,8 +159,8 @@ export class LocationsController {
 				skip: (query.page - 1) * query.limit,
 			};
 
-			const parishes = await locationsProvider.findParishes(filter, options);
-			const total = await locationsProvider.countParishes(filter);
+			const parishes = await goDb.locations.parishes.findMany(filter, options);
+			const total = await goDb.locations.parishes.count(filter);
 
 			return reply.status(HTTP_STATUS.OK).send({
 				data: parishes,
