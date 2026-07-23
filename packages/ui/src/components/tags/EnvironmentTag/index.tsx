@@ -21,15 +21,11 @@ export function EnvironmentTag() {
 		return <Tag label="prd" variant="danger" />;
 	}
 
-	if (currentEnvironment === 'stg') {
-		return <Tag label="stg" variant="warning" />;
-	}
-
 	if (currentEnvironment === 'dev') {
 		return <Tag label="dev" variant="success" />;
 	}
 
-	return null;
+	return <Tag label={currentEnvironment} variant="warning" />;
 
 	//
 }

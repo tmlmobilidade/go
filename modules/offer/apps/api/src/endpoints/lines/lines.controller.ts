@@ -3,8 +3,8 @@
 import { populateLine, populateLines } from '@/utils/lines.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Filter } from '@tmlmobilidade/interfaces';
 import { CreateLineDto, type Line, type LineNormalized, PermissionCatalog, type UpdateLineDto } from '@tmlmobilidade/types';
 
 /* * */

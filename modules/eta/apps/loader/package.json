@@ -22,8 +22,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-eta-pckg-loader": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/utils": "*",
-		"ngeohash": "^0.6.3"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

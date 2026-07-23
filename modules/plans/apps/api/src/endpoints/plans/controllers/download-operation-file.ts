@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, plans } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +17,7 @@ export async function downloadOperationFile(request: FastifyRequest<{ Params: { 
 	//
 	// Get the Plan from the database
 
-	const planData = await plans.findById(request.params.id);
+	const planData = await goDb.operation.plans.findById(request.params.id);
 
 	if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
@@ -28,7 +29,7 @@ export async function downloadOperationFile(request: FastifyRequest<{ Params: { 
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: planData.gtfs_agency.agency_id,
+		value: planData.agency_id,
 	});
 
 	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
@@ -36,7 +37,7 @@ export async function downloadOperationFile(request: FastifyRequest<{ Params: { 
 	//
 	// Fetch the file associated with the plan
 
-	const foundFileData = await files.findById(planData.operation_file_id);
+	const foundFileData = await storageProvider.findById(planData.operation_file_id);
 
 	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan operation file not found');
 

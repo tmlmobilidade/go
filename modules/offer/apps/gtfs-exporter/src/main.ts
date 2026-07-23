@@ -6,7 +6,6 @@ import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.j
 import { ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { stops } from '@tmlmobilidade/interfaces';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 
@@ -59,7 +58,7 @@ async function updateProgress(
 		Logger.info({ message: `Progress: ${updates.progress_current || 0}/${updates.progress_total || 0}` });
 	} catch (error) {
 		Logger.error({ error, message: `Error updating progress for export ${exportDocument._id}` });
-		throw new Error(`Error updating progress: ${error}`);
+		throw new Error(`Error updating progress: ${error}`, { cause: error });
 	}
 }
 
@@ -174,7 +173,7 @@ export async function exportGtfsV29(
 		Logger.success(`Loaded ${allFaresMap.size} fares`);
 
 		Logger.info({ message: 'Fetching stops...' });
-		const allStopsData = await stops.findMany({}, { sort: { _id: 1 } });
+		const allStopsData = await goDb.infrastructure.stops.findMany({}, { sort: { _id: 1 } });
 		const allStopsMap = new Map(allStopsData.map(stop => [stop._id, stop]));
 		Logger.success(`Loaded ${allStopsMap.size} stops`);
 

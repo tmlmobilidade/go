@@ -6,12 +6,15 @@ import styles from './styles.module.css';
 
 import { useDataAgencies } from '../../../hooks/use-data/use-data-agencies';
 import { Label } from '../../display/Label';
+import { IdTag } from '../IdTag';
 import { Tag } from '../Tag';
 
 /* * */
 
 interface AgencyTagProps {
 	agencyId: string
+	copyOnClick?: boolean
+	showCode?: boolean
 	showId?: boolean
 	showName?: boolean
 	showShortName?: boolean
@@ -19,7 +22,7 @@ interface AgencyTagProps {
 
 /* * */
 
-export function AgencyTag({ agencyId, showId = true, showName = false, showShortName = false }: AgencyTagProps) {
+export function AgencyTag({ agencyId, copyOnClick = true, showCode = true, showId = true, showName = false, showShortName = false }: AgencyTagProps) {
 	//
 
 	//
@@ -30,16 +33,19 @@ export function AgencyTag({ agencyId, showId = true, showName = false, showShort
 	//
 	// B. Transform data
 
-	const agencyName = agenciesData.find(agency => agency._id === agencyId)?.name;
-	const agencyShortName = agenciesData.find(agency => agency._id === agencyId)?.short_name;
+	const agencyData = agenciesData.find(agency => agency._id === agencyId);
+	const agencyCode = agencyData?.code;
+	const agencyName = agencyData?.name;
+	const agencyShortName = agencyData?.short_name;
 
 	//
 	// C. Render components
 
 	return (
 		<div className={styles.wrapper}>
-			{showId && <Tag label={agencyId} variant="secondary" />}
-			{showName && agencyName && <Label>{agencyName}</Label>}
+			{showId && <IdTag copyOnClick={copyOnClick} id={agencyId} />}
+			{showCode && <Tag label={agencyCode} variant="secondary" />}
+			{showName && agencyCode && <Label>{agencyName}</Label>}
 			{showShortName && agencyShortName && <Label>{agencyShortName}</Label>}
 		</div>
 	);

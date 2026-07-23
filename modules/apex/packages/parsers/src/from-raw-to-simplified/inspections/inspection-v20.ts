@@ -41,7 +41,7 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		received_at: doc.received_at,
 		trip_id: doc.payload.controlServiceInfo.journeyID,
 		updated_at: Dates.now('utc').unix_timestamp,
-		vehicle_id: doc.payload.controlServiceInfo.vehicleID,
+		vehicle_id: String(doc.payload.controlServiceInfo.vehicleID),
 	};
 
 	return SimplifiedApexInspectionSchema.parse(result);

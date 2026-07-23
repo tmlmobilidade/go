@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { CreateOrganizationSchema, type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 
 /* * */
@@ -43,14 +43,14 @@ export class OrganizationsController {
 		// Delete associated logo files if they exist
 		if (organization.logo_dark) {
 			try {
-				await files.deleteById(organization.logo_dark);
+				await storageProvider.delete(organization.logo_dark);
 			} catch (error) {
 				throw new error();
 			}
 		}
 		if (organization.logo_light) {
 			try {
-				await files.deleteById(organization.logo_light);
+				await storageProvider.delete(organization.logo_light);
 			} catch (error) {
 				throw new error();
 			}
@@ -79,7 +79,7 @@ export class OrganizationsController {
 		}
 
 		// Delete the logo file from storage
-		await files.deleteById(logoField);
+		await storageProvider.delete(logoField);
 		// Update the organization to remove the logo reference
 		const updatedField = request.params.theme === 'dark' ? { logo_dark: null } : { logo_light: null };
 		await goDb.core.organizations.updateById(request.params.id, updatedField);
@@ -122,8 +122,8 @@ export class OrganizationsController {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
 		// Fetch logo files if they exist
-		const logoDark = await files.findById(organization.logo_dark);
-		const logoLight = await files.findById(organization.logo_light);
+		const logoDark = await storageProvider.findById(organization.logo_dark);
+		const logoLight = await storageProvider.findById(organization.logo_light);
 		// Send the response with logo URLs
 		reply.send({ data: { logo_dark: logoDark?.url ?? null, logo_light: logoLight?.url ?? null }, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -182,7 +182,7 @@ export class OrganizationsController {
 			const buffer = await file.toBuffer();
 			const size = buffer.buffer.byteLength;
 
-			const result = await files.upload(buffer, {
+			const result = await storageProvider.upload(buffer, {
 				created_by: request.me._id,
 				name: file.filename,
 				resource_id: id,
@@ -197,7 +197,7 @@ export class OrganizationsController {
 				// Delete old dark logo if it exists
 				if (organization.logo_dark) {
 					try {
-						await files.deleteById(organization.logo_dark);
+						await storageProvider.delete(organization.logo_dark);
 					} catch (error) {
 						throw new error();
 						continue;
@@ -209,7 +209,7 @@ export class OrganizationsController {
 				// Delete old light logo if it exists
 				if (organization.logo_light) {
 					try {
-						await files.deleteById(organization.logo_light);
+						await storageProvider.delete(organization.logo_light);
 					} catch (error) {
 						throw new error();
 						continue;

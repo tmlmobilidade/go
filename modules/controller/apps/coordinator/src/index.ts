@@ -1,8 +1,6 @@
 /* * */
 
 import { getRides } from '@/get-rides.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import Fastify from 'fastify';
 

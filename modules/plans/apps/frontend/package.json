@@ -22,10 +22,11 @@
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"jszip": "3.10.1",
-		"next": "16.2.10",
+		"next": "16.2.11",
 		"papaparse": "5.5.4",
-		"react": "19.2.7",
-		"react-dom": "19.2.7",
+		"react": "19.2.8",
+		"react-dom": "19.2.8",
+		"react-i18next": "17.0.10",
 		"swr": "2.4.2"
 	},
 	"devDependencies": {
