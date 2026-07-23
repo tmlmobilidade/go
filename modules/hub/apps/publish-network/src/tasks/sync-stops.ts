@@ -63,81 +63,81 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	const dbStops = await goDb.infrastructure.stops.findMany({}, { projection: { _id: 1, flags: 1, legacy_ids: 1 } });
 	const dbStopsMap = new Map(dbStops.map(stop => [stop._id, stop]));
 
-	const updatedStopsCounter = 0;
+	let updatedStopsCounter = 0;
 
 	Logger.info({ message: `Flags: ${JSON.stringify(dbStopsMap.get(100)?.flags)}` });
 
-	// for (const stop of allStops as QueryResult[]) {
-	// 	try {
-	// 		//
+	for (const stop of allStops as QueryResult[]) {
+		try {
+			//
 
-	// 		if (!stop.agency_ids?.length) {
-	// 			Logger.error({ message: `Skip processing: stop ${stop.stop_id} has no agency IDs.` });
-	// 			continue;
-	// 		}
+			if (!stop.agency_ids?.length) {
+				Logger.error({ message: `Skip processing: stop ${stop.stop_id} has no agency IDs.` });
+				continue;
+			}
 
-	// 		if (!stop.line_ids?.length) {
-	// 			Logger.error({ message: `Skip processing: stop ${stop.stop_id} has no line IDs.` });
-	// 			continue;
-	// 		}
+			if (!stop.line_ids?.length) {
+				Logger.error({ message: `Skip processing: stop ${stop.stop_id} has no line IDs.` });
+				continue;
+			}
 
-	// 		if (!stop.route_ids?.length) {
-	// 			Logger.error({ message: `Skip processing: stop ${stop.stop_id} has no route IDs.` });
-	// 			continue;
-	// 		}
+			if (!stop.route_ids?.length) {
+				Logger.error({ message: `Skip processing: stop ${stop.stop_id} has no route IDs.` });
+				continue;
+			}
 
-	// 		if (!stop.pattern_ids?.length) {
-	// 			Logger.error({ message: `Skip processing: stop ${stop.stop_id} has no pattern IDs.` });
-	// 			continue;
-	// 		}
+			if (!stop.pattern_ids?.length) {
+				Logger.error({ message: `Skip processing: stop ${stop.stop_id} has no pattern IDs.` });
+				continue;
+			}
 
-	// 		//
-	// 		// Build the final stop object
+			//
+			// Build the final stop object
 
-	// 		const dbStop = dbStopsMap.get(Number(stop.stop_id));
+			const dbStop = dbStopsMap.get(Number(stop.stop_id));
 
-	// 		const validatedStop: HubStop = {
-	// 			_id: Number(stop.stop_id),
-	// 			agency_ids: JSON.parse(stop.agency_ids),
-	// 			district_id: stop.district_id,
-	// 			district_name: stop.district_name,
-	// 			flags: dbStop?.flags ?? [],
-	// 			latitude: stop.stop_lat,
-	// 			legacy_ids: dbStop?.legacy_ids ?? [],
-	// 			lifecycle_status: 'active',
-	// 			line_ids: JSON.parse(stop.line_ids),
-	// 			locality_id: stop.locality_id,
-	// 			locality_name: stop.locality_name,
-	// 			longitude: stop.stop_lon,
-	// 			municipality_id: stop.municipality_id,
-	// 			municipality_name: stop.municipality_name,
-	// 			name: stop.stop_name,
-	// 			parish_id: stop.parish_id,
-	// 			parish_name: stop.parish_name,
-	// 			pattern_ids: JSON.parse(stop.pattern_ids),
-	// 			route_ids: JSON.parse(stop.route_ids),
-	// 			short_name: stop.stop_short_name ?? stop.stop_name,
-	// 			tts_name: stop.tts_stop_name,
-	// 		};
+			const validatedStop: HubStop = {
+				_id: Number(stop.stop_id),
+				agency_ids: JSON.parse(stop.agency_ids),
+				district_id: stop.district_id,
+				district_name: stop.district_name,
+				flags: dbStop?.flags ?? [],
+				latitude: stop.stop_lat,
+				legacy_ids: dbStop?.legacy_ids ?? [],
+				lifecycle_status: 'active',
+				line_ids: JSON.parse(stop.line_ids),
+				locality_id: stop.locality_id,
+				locality_name: stop.locality_name,
+				longitude: stop.stop_lon,
+				municipality_id: stop.municipality_id,
+				municipality_name: stop.municipality_name,
+				name: stop.stop_name,
+				parish_id: stop.parish_id,
+				parish_name: stop.parish_name,
+				pattern_ids: JSON.parse(stop.pattern_ids),
+				route_ids: JSON.parse(stop.route_ids),
+				short_name: stop.stop_short_name ?? stop.stop_name,
+				tts_name: stop.tts_stop_name,
+			};
 
-	// 		const parsedStop = HubStopSchema.parse(validatedStop);
+			const parsedStop = HubStopSchema.parse(validatedStop);
 
-	// 		exportedStopsData.push(parsedStop);
+			exportedStopsData.push(parsedStop);
 
-	// 		updatedStopsCounter++;
+			updatedStopsCounter++;
 
-	// 		//
-	// 	} catch (error) {
-	// 		Logger.error({ error, message: `Error processing stop ${stop.stop_id}:` });
-	// 		console.log(stop);
-	// 		continue;
-	// 	}
-	// }
+			//
+		} catch (error) {
+			Logger.error({ error, message: `Error processing stop ${stop.stop_id}:` });
+			console.log(stop);
+			continue;
+		}
+	}
 
 	//
 	// Save to the database
 
-	// await cacheDb.set('hub:v1:network:stops', JSON.stringify(exportedStopsData));
+	await cacheDb.set('hub:v1:network:stops', JSON.stringify(exportedStopsData));
 
 	Logger.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
 
