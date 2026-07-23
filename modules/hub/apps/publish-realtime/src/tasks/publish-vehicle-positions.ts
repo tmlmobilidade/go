@@ -72,7 +72,7 @@ export async function publishVehiclesPositions() {
 							)
 						) AS bearing
 					)
-				FROM "${this.databaseName}"."${this.tableName}"
+				FROM "operation"."simplified_vehicle_events"
 				WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL ${secondsAgo + bearingInferenceLookbackSeconds} SECOND)
 				WINDOW w AS (PARTITION BY agency_id, vehicle_id ORDER BY created_at)
 			)
