@@ -103,10 +103,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 	const { t } = useTranslation();
 	const { clearActiveBottomSheets, setActiveBottomSheet } = useBottomSheet();
 	const linesContext = useLinesContext();
-	const {
-		actions: { requestCurrentLocation },
-		data: { location: userLocation },
-	} = useUserLocation();
+	const { actions: { requestCurrentLocation }, data: { location: userLocation } } = useUserLocation();
 
 	const [destination, setDestinationState] = useState<null | RoutePlannerLocation>(null);
 	const [origin, setOriginState] = useState<null | RoutePlannerLocation>(null);

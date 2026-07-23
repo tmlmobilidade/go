@@ -45,12 +45,7 @@ export function MapContextProvider({ children }: PropsWithChildren) {
 
 	const [dataMapState, setDataMapState] = useState<MapContextState['data']['map']>(undefined);
 
-	const {
-		data: {
-			location: userLocation,
-			tracking_mode: userLocationTrackingMode,
-		},
-	} = useUserLocation();
+	const { data: { location: userLocation, tracking_mode: userLocationTrackingMode } } = useUserLocation();
 
 	const [activeBaseMapOverlays, setActiveBaseMapOverlays] = useSessionStorage<BaseMapOverlayType[]>({
 		defaultValue: ['alerts', 'vehicles'],

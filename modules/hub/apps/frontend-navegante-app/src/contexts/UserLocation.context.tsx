@@ -65,10 +65,7 @@ export function UserLocationContextProvider({ children }: PropsWithChildren) {
 	const [deviceOrientationError, setDeviceOrientationError] = useState<null | UserLocationError>(null);
 	const [isRequestingUserLocation, setIsRequestingUserLocation] = useState(false);
 	const [isBearingTrackingEnabled, setIsBearingTrackingEnabled] = useState(false);
-	const [userLocationTrackingMode, setUserLocationTrackingMode] = useSessionStorage<UserLocationTrackingMode>({
-		defaultValue: 'follow',
-		key: 'user-location-tracking-mode',
-	});
+	const [userLocationTrackingMode, setUserLocationTrackingMode] = useSessionStorage<UserLocationTrackingMode>({ defaultValue: 'follow', key: 'user-location-tracking-mode' });
 	const pendingLocationRequestCount = useRef(0);
 	const userLocationRef = useRef<null | UserLocation>(null);
 
