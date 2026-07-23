@@ -111,7 +111,13 @@ export function RoutePlannerItineraryDetailLeg({ alertsContext, isActive, leg, l
 						{delaySeconds !== 0 && (
 							<div className={styles.warningItem} data-kind={delaySeconds > 0 ? 'late' : 'early'}>
 								<IconAlertTriangle size={15} />
-								<span>{formatDelayDescription(delaySeconds)}</span>
+								<span>
+									{t(delaySeconds > 0
+										? 'default:routes.RoutePlanner.results.delay'
+										: 'default:routes.RoutePlanner.results.early', '', {
+										count: Math.max(1, Math.round(Math.abs(delaySeconds) / 60)),
+									})}
+								</span>
 							</div>
 						)}
 
@@ -172,10 +178,4 @@ function getIntermediateStops(leg: MotisPlanLeg) {
 
 function getStopName(stop: MotisPlanIntermediateStop) {
 	return stop.name || '';
-}
-
-function formatDelayDescription(delaySeconds: number) {
-	const absoluteMinutes = Math.max(1, Math.round(Math.abs(delaySeconds) / 60));
-	if (delaySeconds > 0) return `Atraso de ${absoluteMinutes} min`;
-	return `${absoluteMinutes} min adiantado`;
 }

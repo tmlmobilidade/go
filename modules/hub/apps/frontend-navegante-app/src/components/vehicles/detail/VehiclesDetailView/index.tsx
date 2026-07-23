@@ -61,7 +61,12 @@ export function VehiclesDetailView() {
 					<Image alt="" height={40} src={getAgencyLogo(vehiclesDetailContext.data.vehicle?.agency_id, '180x120', 'light')} width={60} />
 				</div>
 
-				<LineName align="center" longName={`Destino: ${activePatternData?.[0]?.headsign ?? 'desconhecido'}`} />
+				<LineName
+					align="center"
+					longName={t('default:vehicles.VehiclesDetailView.destination', '', {
+						destination: activePatternData?.[0]?.headsign ?? t('default:vehicles.VehiclesDetailView.unknown_destination'),
+					})}
+				/>
 
 				<CopyBadge value={vehiclesDetailContext.data.vehicle?.vehicle_id} />
 

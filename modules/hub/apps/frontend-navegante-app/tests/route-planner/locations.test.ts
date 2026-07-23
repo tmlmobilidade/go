@@ -33,7 +33,7 @@ describe('MOTIS geocode location mapping', () => {
 			zip: '1990-096',
 		};
 
-		assert.deepEqual(mapMotisGeocodeResultToLocation(result), {
+		assert.deepEqual(mapMotisGeocodeResultToLocation(result, 'Local sem nome'), {
 			areas: result.areas,
 			category: 'station',
 			country: 'PT',
@@ -63,8 +63,8 @@ describe('MOTIS geocode location mapping', () => {
 			type: 'PLACE',
 		};
 
-		assert.equal(mapMotisGeocodeResultToLocation(result).label, '38.7,-9.1');
-		assert.equal(mapMotisGeocodeResultToLocation(result).type, 'PLACE');
+		assert.equal(mapMotisGeocodeResultToLocation(result, 'Local sem nome').label, '38.7,-9.1');
+		assert.equal(mapMotisGeocodeResultToLocation(result, 'Local sem nome').type, 'PLACE');
 	});
 
 	it('omits generic, duplicate, and excess address parts from detail text', () => {
@@ -168,7 +168,7 @@ describe('route-planner stop and coordinate locations', () => {
 
 	it('parses valid coordinates and maps them to a selectable location', () => {
 		assert.deepEqual(parseRoutePlannerCoordinate(' 38.70775, -9.13659 '), { lat: 38.70775, lon: -9.13659 });
-		assert.deepEqual(routePlannerCoordinateToLocation(' 38.70775, -9.13659 '), {
+		assert.deepEqual(routePlannerCoordinateToLocation(' 38.70775, -9.13659 ', 'Coordenadas'), {
 			detail: 'Coordenadas | 38.70775, -9.13659',
 			label: '38.70775,-9.13659',
 			lat: 38.70775,
@@ -180,7 +180,7 @@ describe('route-planner stop and coordinate locations', () => {
 	it('rejects malformed and out-of-range coordinates', () => {
 		for (const value of ['38.7', 'north,west', '91,-9.1', '38.7,-181']) {
 			assert.equal(parseRoutePlannerCoordinate(value), null);
-			assert.equal(routePlannerCoordinateToLocation(value), null);
+			assert.equal(routePlannerCoordinateToLocation(value, 'Coordenadas'), null);
 		}
 	});
 });

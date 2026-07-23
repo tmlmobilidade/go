@@ -4,6 +4,7 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { AlertsDetailView } from '@/components/alerts/detail/AlertsDetailView';
 import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function AlertsDetail() {
 
 	const { activeBottomSheet, closeActiveBottomSheet } = useBottomSheet();
 	const alertsContext = useAlertsContext();
+	const { t } = useTranslation();
 
 	const alert = activeBottomSheet?.entityId ? alertsContext.actions.getAlertById(activeBottomSheet.entityId) : null;
 
@@ -25,7 +27,7 @@ export function AlertsDetail() {
 		<BottomSheet
 			onClose={closeActiveBottomSheet}
 			opened={activeBottomSheet?.view === 'alerts-detail'}
-			title="Alerta"
+			title={t('default:alerts.AlertsDetail.title')}
 		>
 			{activeBottomSheet?.entityId && alert && (
 				<AlertsDetailView alert={alert} />

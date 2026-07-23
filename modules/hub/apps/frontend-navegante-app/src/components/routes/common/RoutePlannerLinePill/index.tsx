@@ -1,10 +1,10 @@
 'use client';
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
+import { useMotisLegDisplayLabel } from '@/hooks/route-planner/useMotisLegDisplayLabel';
 import { type MotisPlanLeg } from '@/types/route-planner/models';
 import { getMotisLegModeKind, getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
-import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -24,14 +24,15 @@ export function RoutePlannerLinePill({ leg, lineByShortName, size = 'sm' }: Rout
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const getLegDisplayLabel = useMotisLegDisplayLabel();
 
 	//
 	// B. Transform data
 
-	const label = isMotisWalkingLeg(leg) ? t('default:routes.RoutePlanner.results.walk_label') : getMotisLegRouteLabel(leg);
+	const routeLabel = getMotisLegRouteLabel(leg);
+	const label = getLegDisplayLabel(leg);
 	const modeKind = getMotisLegModeKind(leg);
-	const lineData = lineByShortName.get(label);
+	const lineData = lineByShortName.get(routeLabel);
 
 	//
 	// C. Render components

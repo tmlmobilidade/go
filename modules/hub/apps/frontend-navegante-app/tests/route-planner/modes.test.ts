@@ -1,4 +1,5 @@
-import { getMotisModeKind } from '@/utils/route-planner/presentation/modes';
+import { type MotisPlanLeg } from '@/types/route-planner/models';
+import { getMotisLegDisplayLabel, getMotisLegRouteLabel, getMotisModeKind } from '@/utils/route-planner/presentation/modes';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 
@@ -36,5 +37,21 @@ describe('getMotisModeKind', () => {
 
 	it('uses the generic transit presentation for unknown modes', () => {
 		assert.equal(getMotisModeKind('OTHER'), 'transit');
+	});
+});
+
+describe('MOTIS route labels', () => {
+	it('keeps machine route labels separate from translated fallback labels', () => {
+		const leg = { mode: 'RAIL' } as MotisPlanLeg;
+
+		assert.equal(getMotisLegRouteLabel(leg), 'RAIL');
+		assert.equal(getMotisLegDisplayLabel(leg, mode => mode === 'rail' ? 'Comboio' : mode), 'Comboio');
+	});
+
+	it('preserves an explicit route label for matching and display', () => {
+		const leg = { mode: 'BUS', routeShortName: '728' } as MotisPlanLeg;
+
+		assert.equal(getMotisLegRouteLabel(leg), '728');
+		assert.equal(getMotisLegDisplayLabel(leg, mode => mode), '728');
 	});
 });

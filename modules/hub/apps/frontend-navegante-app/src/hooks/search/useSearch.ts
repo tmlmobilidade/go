@@ -10,6 +10,7 @@ import { type RoutePlannerLocation } from '@/types/route-planner/models';
 import { normalizeSearchText } from '@/utils/search/normalize';
 import { type HubAlert, type HubLine, type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -42,16 +43,18 @@ export function useSearch(query: string): UseSearchResult {
 	const linesContext = useLinesContext();
 	const stopsContext = useStopsContext();
 	const userLocationContext = useUserLocation();
+	const { t } = useTranslation();
 	const userCoordinates = useMemo(() => getSearchCoordinates(userLocationContext.data.location), [userLocationContext.data.location?.latitude, userLocationContext.data.location?.longitude]);
 	const searchBiasCoordinates = userCoordinates ?? DEFAULT_SEARCH_COORDINATES;
 	const normalizedQuery = normalizeSearchText(query).trim();
 	const motisSearch = useMotisGeocode(query, {
-		errorMessage: 'Erro ao pesquisar locais',
+		errorMessage: t('default:search.Search.error'),
 		placeBias: {
 			latitude: searchBiasCoordinates.latitude,
 			longitude: searchBiasCoordinates.longitude,
 			weight: MOTIS_PLACE_BIAS,
 		},
+		unnamedLocationLabel: t('default:common.locations.unnamed'),
 	});
 
 	//

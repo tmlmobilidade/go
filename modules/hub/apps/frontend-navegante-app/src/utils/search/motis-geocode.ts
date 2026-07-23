@@ -14,8 +14,8 @@ export function getMotisPlaceParam(location: RoutePlannerLocation) {
 	return location.label;
 }
 
-export function mapMotisGeocodeResultToLocation(result: MotisGeocodeResult): RoutePlannerLocation {
-	const label = result.name || formatCoordinateLabel(result.lat, result.lon) || 'Local sem nome';
+export function mapMotisGeocodeResultToLocation(result: MotisGeocodeResult, unnamedLocationLabel: string): RoutePlannerLocation {
+	const label = result.name || formatCoordinateLabel(result.lat, result.lon) || unnamedLocationLabel;
 
 	return {
 		areas: result.areas,
@@ -48,14 +48,14 @@ export function parseRoutePlannerCoordinate(value: string) {
 	return { lat, lon };
 }
 
-export function routePlannerCoordinateToLocation(value: string): null | RoutePlannerLocation {
+export function routePlannerCoordinateToLocation(value: string, coordinatesLabel: string): null | RoutePlannerLocation {
 	const coordinate = parseRoutePlannerCoordinate(value);
 	if (!coordinate) return null;
 
 	const label = `${coordinate.lat},${coordinate.lon}`;
 
 	return {
-		detail: `Coordenadas | ${coordinate.lat.toFixed(5)}, ${coordinate.lon.toFixed(5)}`,
+		detail: `${coordinatesLabel} | ${coordinate.lat.toFixed(5)}, ${coordinate.lon.toFixed(5)}`,
 		label,
 		lat: coordinate.lat,
 		lon: coordinate.lon,

@@ -8,6 +8,7 @@ import { routePlannerCoordinateToLocation } from '@/utils/search/motis-geocode';
 import { normalizeSearchText } from '@/utils/search/normalize';
 import { type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -26,11 +27,13 @@ export function useMotisLocationSearch(query: string): UseMotisLocationSearchRes
 	// A. Setup variables
 
 	const stopsContext = useStopsContext();
-	const coordinateLocation = routePlannerCoordinateToLocation(query.trim());
+	const { t } = useTranslation();
+	const coordinateLocation = routePlannerCoordinateToLocation(query.trim(), t('default:common.locations.coordinates'));
 	const localStopResults = useMemo(() => searchStops(stopsContext.data.stops, query), [query, stopsContext.data.stops]);
 	const motisSearch = useMotisGeocode(query, {
 		enabled: !coordinateLocation,
-		errorMessage: 'Erro ao pesquisar localizações',
+		errorMessage: t('default:routes.RoutePlannerInput.search.error'),
+		unnamedLocationLabel: t('default:common.locations.unnamed'),
 	});
 
 	//

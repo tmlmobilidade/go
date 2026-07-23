@@ -17,6 +17,7 @@ interface UseMotisGeocodeOptions {
 	enabled?: boolean
 	errorMessage: string
 	placeBias?: MotisGeocodePlaceBias
+	unnamedLocationLabel: string
 }
 
 interface UseMotisGeocodeResult {
@@ -80,14 +81,16 @@ export function useMotisGeocode(query: string, options: UseMotisGeocodeOptions):
 
 				const payload: { data: unknown } = await response.json();
 				const mappedResults = Array.isArray(payload.data)
-					? payload.data.map((result: MotisGeocodeResult) => mapMotisGeocodeResultToLocation(result))
+					? payload.data.map((result: MotisGeocodeResult) => mapMotisGeocodeResultToLocation(result, options.unnamedLocationLabel))
 					: [];
 
 				setData(mappedResults);
 			} catch (caughtError) {
 				if (caughtError instanceof DOMException && caughtError.name === 'AbortError') return;
+				// eslint-disable-next-line no-console
+				console.error(caughtError);
 				setData([]);
-				setError(caughtError instanceof Error ? caughtError.message : options.errorMessage);
+				setError(options.errorMessage);
 			} finally {
 				if (!abortController.signal.aborted) setIsLoading(false);
 			}
@@ -97,7 +100,7 @@ export function useMotisGeocode(query: string, options: UseMotisGeocodeOptions):
 			abortController.abort();
 			window.clearTimeout(timeout);
 		};
-	}, [enabled, options.errorMessage, placeBiasLatitude, placeBiasLongitude, placeBiasWeight, query]);
+	}, [enabled, options.errorMessage, options.unnamedLocationLabel, placeBiasLatitude, placeBiasLongitude, placeBiasWeight, query]);
 
 	//
 	// C. Return values

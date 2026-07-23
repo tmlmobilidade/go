@@ -66,6 +66,7 @@ interface RoutePlannerContextState {
 
 interface RoutePlanRequest {
 	destination: RoutePlannerLocation
+	errorMessage: string
 	origin: RoutePlannerLocation
 	travelTime: RoutePlannerTravelTime
 }
@@ -75,7 +76,7 @@ interface RoutePlanRequest {
 const ROUTE_PLAN_KEY = 'route-planner/plan';
 
 async function fetchRoutePlan(_key: string, { arg }: { arg: RoutePlanRequest }) {
-	return fetchMotisPlan(arg.origin, arg.destination, arg.travelTime);
+	return fetchMotisPlan(arg.origin, arg.destination, arg.travelTime, arg.errorMessage);
 }
 
 /* * */
@@ -194,6 +195,7 @@ export function RoutePlannerContextProvider({ children }: PropsWithChildren) {
 		await triggerPlanRequest(
 			{
 				destination: requestDestination,
+				errorMessage: t('default:routes.RoutePlanner.errors.unknown'),
 				origin: requestOrigin,
 				travelTime: requestTravelTime,
 			},

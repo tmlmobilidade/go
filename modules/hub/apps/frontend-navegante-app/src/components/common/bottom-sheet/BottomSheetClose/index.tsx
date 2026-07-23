@@ -1,6 +1,7 @@
 'use client';
 
 import { IconX } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -14,10 +15,12 @@ interface BottomSheetCloseProps {
 
 /* * */
 
-export function BottomSheetClose({ label = 'Fechar', onClick, size = 'default' }: BottomSheetCloseProps) {
+export function BottomSheetClose({ label, onClick, size = 'default' }: BottomSheetCloseProps) {
+	const { t } = useTranslation();
+
 	return (
 		<button
-			aria-label={label}
+			aria-label={label ?? t('default:common.BottomSheetClose.label')}
 			className={styles.button}
 			data-size={size}
 			onClick={onClick}

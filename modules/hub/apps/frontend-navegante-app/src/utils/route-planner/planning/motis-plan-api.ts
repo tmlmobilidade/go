@@ -27,11 +27,15 @@ export function buildMotisPlanParams(origin: RoutePlannerLocation, destination: 
 	return params;
 }
 
-export async function fetchMotisPlan(origin: RoutePlannerLocation, destination: RoutePlannerLocation, travelTime: RoutePlannerTravelTime) {
+export async function fetchMotisPlan(origin: RoutePlannerLocation, destination: RoutePlannerLocation, travelTime: RoutePlannerTravelTime, errorMessage: string) {
 	const params = buildMotisPlanParams(origin, destination, travelTime);
 	const response = await fetch(`${API_ROUTES.hub.MOTIS_PLAN}?${params.toString()}`);
 
-	if (!response.ok) throw new Error(`MOTIS returned HTTP ${response.status}`);
+	if (!response.ok) {
+		// eslint-disable-next-line no-console
+		console.error(`MOTIS plan returned HTTP ${response.status}`);
+		throw new Error(errorMessage);
+	}
 
 	const payload: { data: MotisPlanResponse } = await response.json();
 	return payload.data;

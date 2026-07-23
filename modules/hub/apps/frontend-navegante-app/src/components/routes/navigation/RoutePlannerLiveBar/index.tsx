@@ -4,6 +4,7 @@ import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { useLinesByShortName } from '@/hooks/route-planner/useLinesByShortName';
+import { useMotisLegDisplayLabel } from '@/hooks/route-planner/useMotisLegDisplayLabel';
 import { useRoutePlannerActiveLeg } from '@/hooks/route-planner/useRoutePlannerActiveLeg';
 import { formatMotisPlanDistance, formatMotisPlanTime } from '@/utils/route-planner/presentation/format';
 import { getMotisLegRouteLabel, isMotisWalkingLeg } from '@/utils/route-planner/presentation/modes';
@@ -24,6 +25,7 @@ export function RoutePlannerLiveBar() {
 	const { t } = useTranslation();
 	const { activeBottomSheet } = useBottomSheet();
 	const lineByShortName = useLinesByShortName();
+	const getLegDisplayLabel = useMotisLegDisplayLabel();
 	const routePlannerContext = useRoutePlannerContext();
 	const { activeLeg, activeLegIndex, remainingDistanceMeters, remainingMinutes } = useRoutePlannerActiveLeg();
 
@@ -48,8 +50,9 @@ export function RoutePlannerLiveBar() {
 
 		const routeLabel = getMotisLegRouteLabel(activeLeg);
 		const lineData = lineByShortName.get(routeLabel);
-		return activeLeg.headsign || lineData?.short_name || routeLabel || t('default:routes.RoutePlanner.results.route_summary');
-	}, [activeLeg, lineByShortName, routePlannerContext.data.destination?.label, t]);
+		const displayLabel = getLegDisplayLabel(activeLeg);
+		return activeLeg.headsign || lineData?.short_name || displayLabel || t('default:routes.RoutePlanner.results.route_summary');
+	}, [activeLeg, getLegDisplayLabel, lineByShortName, routePlannerContext.data.destination?.label, t]);
 
 	const activeStepDetail = useMemo(() => {
 		const details: string[] = [];
@@ -77,7 +80,9 @@ export function RoutePlannerLiveBar() {
 		return lineByShortName.get(getMotisLegRouteLabel(nextLeg)) ?? null;
 	}, [lineByShortName, nextLeg]);
 
-	const nextStepRouteLabel = nextLeg && !isMotisWalkingLeg(nextLeg) ? getMotisLegRouteLabel(nextLeg) : null;
+	const nextStepDisplayLabel = nextLeg && !isMotisWalkingLeg(nextLeg)
+		? getLegDisplayLabel(nextLeg)
+		: null;
 	const nextStepTime = nextLeg ? formatMotisPlanTime(nextLeg.startTime) : null;
 	const nextWalkingStepLabel = nextLeg && isMotisWalkingLeg(nextLeg) && nextStepTime
 		? t('default:routes.RoutePlanner.results.next_step_at', '', {
@@ -120,14 +125,14 @@ export function RoutePlannerLiveBar() {
 							<div className={styles.details}>
 								{activeStepDetail && <span>{activeStepDetail}</span>}
 								{activeStepDetail && nextLeg && <span aria-hidden="true">·</span>}
-								{nextStepRouteLabel && (
+								{nextStepDisplayLabel && (
 									<LineBadge
 										lineData={nextStepLine ?? undefined}
-										shortName={nextStepRouteLabel}
+										shortName={nextStepDisplayLabel}
 										size="sm"
 									/>
 								)}
-								{nextStepRouteLabel && nextStepTime && (
+								{nextStepDisplayLabel && nextStepTime && (
 									<span>{t('default:routes.RoutePlanner.results.at_time', '', { time: nextStepTime })}</span>
 								)}
 								{nextWalkingStepLabel && (

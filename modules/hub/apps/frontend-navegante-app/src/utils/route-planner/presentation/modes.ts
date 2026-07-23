@@ -32,20 +32,12 @@ export function getMotisLegRouteLabel(leg: MotisPlanLeg) {
 	const explicitLabel = leg.routeShortName;
 	if (explicitLabel) return explicitLabel;
 
-	const modeKind = getMotisLegModeKind(leg);
-	if (modeKind === 'bus') return 'BUS';
-	if (modeKind === 'bike') return 'BIKE';
-	if (modeKind === 'car') return 'CAR';
-	if (modeKind === 'subway') return 'METRO';
-	if (modeKind === 'rail') return 'TRAIN';
-	if (modeKind === 'tram') return 'TRAM';
-	if (modeKind === 'ferry') return 'BARCO';
-	if (modeKind === 'plane') return 'AVIÃO';
-	if (modeKind === 'scooter') return 'TROTINETE';
-	if (modeKind === 'elevator') return 'ELEVADOR';
-	if (modeKind === 'walk') return 'WALK';
-
 	return getMotisLegMode(leg);
+}
+
+export function getMotisLegDisplayLabel(leg: MotisPlanLeg, getModeLabel: (mode: MotisLegModeKind) => string) {
+	if (leg.routeShortName) return leg.routeShortName;
+	return getModeLabel(getMotisLegModeKind(leg));
 }
 
 export function getMotisLegTitle(leg: MotisPlanLeg) {
