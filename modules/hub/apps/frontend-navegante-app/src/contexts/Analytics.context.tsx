@@ -4,6 +4,7 @@
 
 import pjson from '#/package.json';
 import { type Ampli, ampli } from '@/amplitude';
+import { isAmplitudeEnabled } from '@/utils/analytics/config';
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 
 /* * */
@@ -41,9 +42,16 @@ export const AnalyticsContextProvider = ({ children }) => {
 	//
 
 	//
-	// A. Handle actions
+	// A. Setup variables
+
+	const isEnabled = isAmplitudeEnabled(process.env.NEXT_PUBLIC_ENVIRONMENT);
+
+	//
+	// B. Handle actions
 
 	const capture = useCallback((callback: (instance: Ampli, props: DefaultEventProps) => void) => {
+		// Skip if Amplitude is disabled for this environment
+		if (!isEnabled) return;
 		// Skip if Ampli is not loaded
 		if (!ampli?.isLoaded) return;
 		// Skip if window or document are not available
@@ -59,9 +67,12 @@ export const AnalyticsContextProvider = ({ children }) => {
 		};
 		// Execute the callback with the default event properties
 		callback(ampli, defaultProps);
-	}, []);
+	}, [isEnabled]);
 
 	useEffect(() => {
+		// Do not initialize Amplitude or create timers outside production
+		if (!isEnabled) return;
+
 		if (!ampli.isLoaded) {
 			ampli.load({ client: { configuration: { appVersion: pjson.version, autocapture: false } }, environment: 'default' });
 			ampli.client.setOptOut(false);
@@ -81,7 +92,7 @@ export const AnalyticsContextProvider = ({ children }) => {
 		return () => {
 			window.clearInterval(intervalId);
 		};
-	}, [capture]);
+	}, [capture, isEnabled]);
 
 	//
 	// C. Define context value
