@@ -102,6 +102,14 @@ jobs:
               return;
             }
 
+            // Preview enviroments need auth module always.
+            if (!buildAll) {
+              const hasAuth = modules.some((name) => name.toLowerCase() === 'auth');
+              if (!hasAuth) {
+                modules = ['auth', ...modules];
+              }
+            }
+
             core.info(`Dispatching build-modules for ${modules.join(', ')} on ref ${pr.head.ref}`);
             let runUrl = '';
             try {
