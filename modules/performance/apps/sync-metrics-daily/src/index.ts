@@ -1,6 +1,7 @@
 /* * */
 
 import { syncCategoryMetrics } from '@/tasks/sync-category-metrics.js';
+import { syncItrpMetrics } from '@/tasks/sync-itrp.js';
 import { syncPassengerImpactMetrics } from '@/tasks/sync-passenger-impact.js';
 import { syncPatternHourMetrics } from '@/tasks/sync-pattern-hour-metrics.js';
 import { syncProductMetrics } from '@/tasks/sync-product-metrics.js';
@@ -35,6 +36,7 @@ async function main() {
 		await syncCategoryMetrics();
 		await syncPassengerImpactMetrics();
 		await syncStopValidationsMetrics();
+		await syncItrpMetrics();
 
 		generatePerformanceSummary();
 
