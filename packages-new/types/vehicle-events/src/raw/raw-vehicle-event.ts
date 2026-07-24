@@ -13,7 +13,12 @@ import { RawVehicleEventPtTmlMlV1Schema } from '@/raw/pt/tml/ml/v1.js';
 import { RawVehicleEventPtTmlMobiV1Schema } from '@/raw/pt/tml/mobi/v1.js';
 import { RawVehicleEventPtTmlTcbV1Schema } from '@/raw/pt/tml/tcb/v1.js';
 import { RawVehicleEventPtTmlTtslV1Schema } from '@/raw/pt/tml/ttsl/v1.js';
-import { RawVehicleEventPtTmpUnirV1Schema } from '@/raw/pt/tmp/unir/v1.js';
+import { RawVehicleEventPtTmpUnirUt1V1Schema } from '@/raw/pt/tmp/unir/ut1/v1.js';
+import { RawVehicleEventPtTmpUnirUt2V1Schema } from '@/raw/pt/tmp/unir/ut2/v1.js';
+import { RawVehicleEventPtTmpUnirUt3V1Schema } from '@/raw/pt/tmp/unir/ut3/v1.js';
+import { RawVehicleEventPtTmpUnirUt4V1Schema } from '@/raw/pt/tmp/unir/ut4/v1.js';
+import { RawVehicleEventPtTmpUnirUt5V1Schema } from '@/raw/pt/tmp/unir/ut5/v1.js';
+import { RawVehicleEventPtTmpUnirUt6V1Schema } from '@/raw/pt/tmp/unir/ut6/v1.js';
 import { z } from 'zod';
 
 /* * */
@@ -32,7 +37,12 @@ export const RawVehicleEventSchema = z.discriminatedUnion('version', [
 	RawVehicleEventPtTmlMobiV1Schema,
 	RawVehicleEventPtTmlTcbV1Schema,
 	RawVehicleEventPtTmlTtslV1Schema,
-	RawVehicleEventPtTmpUnirV1Schema,
+	RawVehicleEventPtTmpUnirUt1V1Schema,
+	RawVehicleEventPtTmpUnirUt2V1Schema,
+	RawVehicleEventPtTmpUnirUt3V1Schema,
+	RawVehicleEventPtTmpUnirUt4V1Schema,
+	RawVehicleEventPtTmpUnirUt5V1Schema,
+	RawVehicleEventPtTmpUnirUt6V1Schema,
 ]);
 
 /**
