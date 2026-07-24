@@ -16,7 +16,7 @@ async function main() {
 
 		try {
 			await initSentryNode();
-			Logger.startNodeLogs({ app: 'cm-sync-core', message: 'Sentry Tracker CM Sync Core initialized', module: 'tracker', severity: 'info' });
+			Logger.startNodeLogs({ app: 'pt-tml-cm-core-sync', message: 'Sentry Tracker CM Sync Core initialized', module: 'tracker', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Tracker CM Sync Core' });
 		}
