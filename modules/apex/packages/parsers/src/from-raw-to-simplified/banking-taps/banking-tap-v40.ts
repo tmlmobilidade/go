@@ -1,5 +1,6 @@
 /* * */
 
+import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { ApexBankingBrandSchema, type RawApexTransactionBankingTapV40, type SimplifiedApexBankingTap, SimplifiedApexBankingTapSchema } from '@tmlmobilidade/go-types-apex';
 
@@ -19,7 +20,8 @@ export function parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap
 
 	const result: SimplifiedApexBankingTap = {
 		_id: doc.payload.transactionInfo.transactionId,
-		agency_id: doc.payload.operatorInfo.operatorLongID,
+		agency_code: doc.payload.operatorInfo.operatorLongID,
+		agency_id: getAgencyIdFromOperatorLongId(doc.payload.operatorInfo.operatorLongID),
 		apex_version: doc.payload.versionInfo.apexVersion,
 		banking_token: doc.payload.tapInInfo.bankingToken,
 		card_brand: ApexBankingBrandSchema.parse(String(doc.payload.tapInInfo.cardBrand)),

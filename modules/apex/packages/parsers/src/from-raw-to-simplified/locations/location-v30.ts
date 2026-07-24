@@ -1,5 +1,6 @@
 /* * */
 
+import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RawApexTransactionLocationV30, type SimplifiedApexLocation, SimplifiedApexLocationSchema } from '@tmlmobilidade/go-types-apex';
 
@@ -19,7 +20,8 @@ export function parseRawApexTransactionLocationV30IntoSimplifiedApexLocation(doc
 
 	const result: SimplifiedApexLocation = {
 		_id: doc.payload.transactionInfo.transactionId,
-		agency_id: doc.payload.operatorInfo.operatorLongID,
+		agency_code: doc.payload.operatorInfo.operatorLongID,
+		agency_id: getAgencyIdFromOperatorLongId(doc.payload.operatorInfo.operatorLongID),
 		apex_version: doc.payload.versionInfo.apexVersion,
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
