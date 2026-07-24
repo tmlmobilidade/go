@@ -62,6 +62,7 @@ const main = async () => {
 	try {
 		response = await externalClients.fertagus.trains();
 	} catch (error) {
+		console.log('error:', error);
 		Logger.error({ error, message: `[${ITERATION}] Error fetching Fertagus data from API:` });
 		return;
 	}
@@ -84,10 +85,10 @@ const main = async () => {
 		if (!ridesMap.has(rideKey)) {
 			try {
 				const ridesCollection = await goDb.operation.rides.getCollection();
-				const foundRides = await ridesCollection.aggregate<FoundRideDocument>([
+				const pipeline = [
 					{
 						$match: {
-							agency_id: '15',
+							agency_id: '7NTB1',
 							start_time_scheduled: Dates.fromISO(event.startsAt).unix_timestamp,
 						},
 					},
@@ -95,7 +96,7 @@ const main = async () => {
 						$lookup: {
 							as: 'hashed_pattern',
 							foreignField: '_id',
-							from: 'hashed_patterns',
+							from: 'hashed-patterns',
 							localField: 'hashed_pattern_id',
 						},
 					},
@@ -133,7 +134,8 @@ const main = async () => {
 							last_stop_id: event.stop_id_end,
 						},
 					},
-				]).toArray();
+				];
+				const foundRides = await ridesCollection.aggregate<FoundRideDocument>(pipeline).toArray();
 
 				//
 				// If no ride is found, skip this event.
