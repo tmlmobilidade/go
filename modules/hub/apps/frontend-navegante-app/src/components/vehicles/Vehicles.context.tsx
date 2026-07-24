@@ -73,7 +73,7 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 			].includes(vehicle.agency_id)) return;
 			// Skip if the vehicle position does not have the minimum
 			// required fields to identify the current service
-			if (!vehicle.trip_id || !vehicle.route_id || !vehicle.direction_id) return;
+			if (!vehicle.trip_id || !vehicle.route_id || vehicle.direction_id === undefined || vehicle.direction_id === null) return;
 			// Add the vehicle position to the collection
 			collection.features.push(transformVehicleDataIntoGeoJsonFeature(vehicle));
 		});
