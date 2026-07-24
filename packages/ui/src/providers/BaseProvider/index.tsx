@@ -19,9 +19,19 @@ import { themeData } from '../../styles/theme';
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
 	/**
+	 * The application name used to identify frontend logs in Sentry.
+	 */
+	app: string
+
+	/**
 	 * Set to false when Sentry is initialized through instrumentation-client.ts.
 	 */
 	initializeSentry?: boolean
+
+	/**
+	 * The module name used to identify frontend logs in Sentry.
+	 */
+	module: string
 
 	/**
 	 * Please avoid using this prop. It is only intended for very specific use cases.
