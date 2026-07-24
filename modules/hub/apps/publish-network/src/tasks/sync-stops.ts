@@ -60,12 +60,12 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	// For each item, update its entry in the database
 
 	const exportedStopsData: HubStop[] = [];
-	const dbStops = await goDb.infrastructure.stops.findMany({}, { projection: { _id: 1, flags: 1, legacy_ids: 1 } });
-	const dbStopsMap = new Map(dbStops.map(stop => [stop._id, stop]));
-
 	let updatedStopsCounter = 0;
 
-	Logger.info({ message: `Flags: ${JSON.stringify(dbStopsMap.get(100)?.flags)}` });
+	const dbStops = await goDb.infrastructure.stops.findMany();
+	const dbStopsMap = new Map(dbStops.map(stop => [stop._id, stop]));
+
+	Logger.info({ message: `Flags: ${JSON.stringify(dbStops)}` });
 
 	for (const stop of allStops as QueryResult[]) {
 		try {
