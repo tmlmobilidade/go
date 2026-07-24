@@ -111,7 +111,7 @@ export async function processCalendarFile(context: ImportGtfsContext, config: Im
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "calendar.txt" file.' });
-		throw new Error('✖︎ Error processing "calendar.txt" file.');
+		Logger.error({ error, message: `Error processing "calendar.txt" file: ${error.message}` });
+		throw new Error('✖︎ Error processing "calendar.txt" file.', error);
 	}
 }
