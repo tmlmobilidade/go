@@ -7,7 +7,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -25,7 +27,8 @@
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
-		"@tmlmobilidade/logger": "*"
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/strings": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
