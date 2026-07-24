@@ -1,5 +1,6 @@
 /* * */
 
+import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { ApexControlStatusSchema, ApexEnvironmentStatusSchema, type RawApexTransactionInspectionV20, type SimplifiedApexInspection, SimplifiedApexInspectionSchema } from '@tmlmobilidade/go-types-apex';
 import { toUInt64 } from '@tmlmobilidade/utils';
@@ -20,7 +21,8 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 
 	const result: SimplifiedApexInspection = {
 		_id: doc.payload.transactionInfo.transactionId,
-		agency_id: doc.payload.operatorInfo.operatorLongID,
+		agency_code: doc.payload.operatorInfo.operatorLongID,
+		agency_id: getAgencyIdFromOperatorLongId(doc.payload.operatorInfo.operatorLongID),
 		apex_version: doc.payload.versionInfo.apexVersion,
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		control_destination_stop_id: doc.payload.controlServiceInfo.controlDestinationStopLongID,
