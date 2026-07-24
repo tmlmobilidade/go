@@ -2,7 +2,7 @@
 
 import { type ClickHouseClient, type ClickHouseColumn, type ClickhouseField, type ClickHouseTableEngine, type ClickHouseTableSchema, type DataFormat } from '@tmlmobilidade/go-clients-clickhouse';
 import { ClickHouseError, preparePositionalQueryParams, queryFromFile, queryFromString, validateSqlParam } from '@tmlmobilidade/go-clients-clickhouse';
-import { Logger } from '@tmlmobilidade/logger';
+mport { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

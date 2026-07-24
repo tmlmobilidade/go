@@ -2,7 +2,7 @@
 
 import { preparePositionalQueryParams } from '@/utils/prepare-positional-query-params.js';
 import { type ClickHouseClient } from '@clickhouse/client';
-import { Logger } from '@tmlmobilidade/logger';
+mport { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /**
  * Executes a query from a string using positional parameters.

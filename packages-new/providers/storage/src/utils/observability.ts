@@ -1,7 +1,7 @@
 /* * */
 
 import { type OperationContext } from '@/types/operation-context.js';
-import { Logger } from '@tmlmobilidade/logger';
+mport { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

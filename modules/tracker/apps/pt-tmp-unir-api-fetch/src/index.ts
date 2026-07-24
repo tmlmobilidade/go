@@ -5,7 +5,7 @@ import { externalClients } from '@tmlmobilidade/external';
 import { UnirVehicleLocationResponse } from '@tmlmobilidade/external/dist/clients/unir/types.js';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmpUnirV1 } from '@tmlmobilidade/go-types-vehicle-events';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
@@ -40,8 +40,7 @@ const AGENCY_NAME_ID_MAP = {
 /* * */
 
 try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'pt-tmp-unir-api-fetch', message: 'Sentry Tracker TMP UNIR Fetch initialized', module: 'tracker', severity: 'info' });
+	await initSentry();
 } catch (error) {
 	Logger.error({ error, message: 'Error initializing Sentry Tracker TMP UNIR Fetch' });
 }
