@@ -10,6 +10,7 @@ import { Timer } from '@tmlmobilidade/timer';
 
 export interface ExportedAgencyRow {
 	agency_id: string
+	agency_code: string
 	agency_name: string
 	agency_email: string
 	agency_phone: string
@@ -43,6 +44,7 @@ export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsC
 	for (const agencyData of foundAgenciesData) {
 		const parsedAgencyRow: ExportedAgencyRow = {
 			agency_id: agencyData._id,
+			agency_code: agencyData.code,
 			agency_name: agencyData.public_name || agencyData.name,
 			agency_email: agencyData.public_email,
 			agency_phone: agencyData.phone,

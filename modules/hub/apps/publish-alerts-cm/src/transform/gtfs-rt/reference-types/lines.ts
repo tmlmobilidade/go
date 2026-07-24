@@ -24,6 +24,18 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 	}
 
 	//
+	// Get the agency data from the database
+
+	const agencyData = await goDb.core.agencies.findOne({
+		_id: alertData.agency_id,
+	});
+
+	if (!agencyData) {
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Agency data not found for the agency_id.` });
+		return;
+	}
+
+	//
 	// For each line, add its corresponding
 	// agency_id and route_id to the result
 
@@ -49,7 +61,7 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 		const foundRouteIds = await goDb.operation.rides.aggregate([
 			{
 				$match: {
-					agency_id: alertData.agency_id,
+					agency_id: agencyData.code,
 					line_id: reference.parent_id,
 					start_time_scheduled: {
 						$gte: alertData.active_period_start_date,
@@ -79,7 +91,7 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 			//
 
 			const parsedEntitySelector: GtfsRtEntitySelector = {
-				agency_id: alertData.agency_id,
+				agency_id: agencyData.code,
 				route_id: routeId,
 			};
 

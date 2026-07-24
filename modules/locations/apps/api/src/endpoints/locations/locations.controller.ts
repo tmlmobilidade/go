@@ -2,7 +2,9 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, type FindOptions, locations } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
+import { type Filter, type FindOptions } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type District, type GetAllDistrictsQuery, GetAllDistrictsQuerySchema, type GetAllLocalitiesQuery, GetAllLocalitiesQuerySchema, type GetAllMunicipalitiesQuery, GetAllMunicipalitiesQuerySchema, type GetAllParishesQuery, GetAllParishesQuerySchema, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
@@ -12,10 +14,10 @@ import { validateQueryParams } from '@tmlmobilidade/utils';
  */
 export class LocationsController {
 	static async findByCoordinates(request: FastifyRequest, reply: FastifyReply<Location>) {
-		const { census, lat, lon } = request.query as { census: boolean, lat: number, lon: number };
-		Logger.info({ message: `Received coordinates: ${census}, ${lat}, ${lon}` });
+		const { lat, lon } = request.query as { lat: number, lon: number };
+		Logger.info({ message: `Received coordinates: ${lat}, ${lon}` });
 		try {
-			const result = await locations.findLocationByGeo(Number(lat), Number(lon), { census: Boolean(census) });
+			const result = await locationsProvider.findLocationByGeo(Number(lat), Number(lon));
 			return reply.status(HTTP_STATUS.OK).send({
 				data: result,
 				error: null,
@@ -43,7 +45,7 @@ export class LocationsController {
 
 		try {
 			const options: FindOptions = { projection: { geometry: query.geojson === true ? 1 : 0 } };
-			const districts = await locations.findDistricts({}, options);
+			const districts = await goDb.locations.districts.findMany({}, options);
 
 			return reply.status(HTTP_STATUS.OK).send({
 				data: districts,
@@ -82,8 +84,8 @@ export class LocationsController {
 				skip: (query.page - 1) * query.limit,
 			};
 
-			const localities = await locations.findLocalities(filter, options);
-			const total = await locations.countLocalities(filter);
+			const localities = await goDb.locations.localities.findMany(filter, options);
+			const total = await goDb.locations.localities.count(filter);
 
 			return reply.status(HTTP_STATUS.OK).send({
 				data: localities,
@@ -119,7 +121,7 @@ export class LocationsController {
 			const filter: Filter<Municipality> = query.district_ids ? { district_id: { $in: query.district_ids } } : {};
 			const options: FindOptions = { projection: { geometry: query.geojson === true ? 1 : 0 } };
 
-			const municipalities = await locations.findMunicipalities(filter, options);
+			const municipalities = await goDb.locations.municipalities.findMany(filter, options);
 
 			return reply.status(HTTP_STATUS.OK).send({
 				data: municipalities,
@@ -157,8 +159,8 @@ export class LocationsController {
 				skip: (query.page - 1) * query.limit,
 			};
 
-			const parishes = await locations.findParishes(filter, options);
-			const total = await locations.countParishes(filter);
+			const parishes = await goDb.locations.parishes.findMany(filter, options);
+			const total = await goDb.locations.parishes.count(filter);
 
 			return reply.status(HTTP_STATUS.OK).send({
 				data: parishes,

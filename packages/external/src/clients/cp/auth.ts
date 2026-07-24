@@ -1,7 +1,7 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
-import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
+import { cpSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IncomingMessage } from 'node:http';
 import https from 'node:https';
@@ -158,7 +158,7 @@ export class CPAuthClient {
 		}
 
 		if (!this.tunnel) {
-			this.tunnel = goSshTunnel({ dstAddr: process.env.CP_AUTH_HOST, dstPort: 443 });
+			this.tunnel = cpSshTunnel({ dstAddr: process.env.CP_AUTH_HOST, dstPort: 443 });
 			await this.tunnel.connect();
 		}
 
