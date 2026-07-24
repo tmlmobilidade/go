@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
-mport { Logger } from '@tmlmobilidade/logger-logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { withRetry } from '@tmlmobilidade/utils';
 import { readFileSync } from 'node:fs';
 import { Readable } from 'node:stream';

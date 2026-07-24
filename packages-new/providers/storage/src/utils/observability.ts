@@ -1,7 +1,7 @@
 /* * */
 
 import { type OperationContext } from '@/types/operation-context.js';
-mport { Logger } from '@tmlmobilidade/logger-logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 
@@ -49,17 +49,16 @@ export function createLoggerObservability(): Observability {
 				: `[storage] ${rest.operation} failed (${durationMs}ms)`;
 
 			if (outcome === 'success') {
-				Logger.info({ contextOrSpacesAfter: rest, message });
+				Logger.info({ message });
 			} else {
-				Logger.error({ contextOrErrorOrSpacesAfter: rest, message });
+				Logger.error({ message });
 			}
 		},
 		onOperationStart: (ctx) => {
-			Logger.info({ contextOrSpacesAfter: ctx, message: `[storage] ${ctx.operation} started` });
+			Logger.info({ message: `[storage] ${ctx.operation} started` });
 		},
 		onStep: (ctx) => {
 			Logger.info({
-				contextOrSpacesAfter: ctx,
 				message: `[storage] ${ctx.operation} ${ctx.phase} ${ctx.step}`,
 			});
 		},

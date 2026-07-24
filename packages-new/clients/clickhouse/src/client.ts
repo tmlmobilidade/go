@@ -1,7 +1,7 @@
 /* * */
 
 import { ClickHouseClient, ClickHouseLogLevel, createClient } from '@clickhouse/client';
-mport { Logger } from '@tmlmobilidade/logger-logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { createSshTunnelFactory, SshTunnel, SshTunnelType } from '@tmlmobilidade/ssh';
 
 /* * */

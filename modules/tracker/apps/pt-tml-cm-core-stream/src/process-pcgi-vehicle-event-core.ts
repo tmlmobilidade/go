@@ -3,7 +3,7 @@
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { type RawVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-mport { Logger } from '@tmlmobilidade/logger-logger-backend';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
