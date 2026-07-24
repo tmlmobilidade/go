@@ -124,6 +124,7 @@
 		"prd:controller:rides-feeder": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-controller-rides-feeder",
 		"prd:controller:ui": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
 		"prd:eta": "npm run build:eta:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
+		"prd:hub:ui:navegante-app": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
 		"prd:plans": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
 		"prd:stops": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
 		"prd:tracker": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
