@@ -9,6 +9,7 @@ import { z } from 'zod';
 
 export const SimplifiedApexBankingTapSchema = z.object({
 	_id: z.string(),
+	agency_code: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
 	banking_token: z.string(),
