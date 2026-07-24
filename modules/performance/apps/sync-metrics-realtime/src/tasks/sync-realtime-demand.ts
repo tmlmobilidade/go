@@ -1,5 +1,6 @@
 /* * */
 
+import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
@@ -64,7 +65,6 @@ export const syncRealtimeDemand = async () => {
 	//
 	// Define agencies
 
-	const agency_ids = ['41', '42', '43', '44'];
 	const results: RealtimeDemand['data'] = {
 		agencies: {},
 		total: {
@@ -76,7 +76,7 @@ export const syncRealtimeDemand = async () => {
 	//
 	// Count validations per agency
 
-	for (const agencyId of agency_ids) {
+	for (const agencyId of LEGACY_CM_AGENCY_IDS) {
 		const agencyTimer = new Timer();
 		Logger.info({ message: `Processing Agency ${agencyId}...` });
 

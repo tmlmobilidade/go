@@ -1,3 +1,4 @@
+import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
@@ -99,6 +100,7 @@ export const syncDemandByPatternHourByDay = async () => {
 					.aggregate([
 						{
 							$match: {
+								agency_id: { $in: [...GO_CM_AGENCY_IDS] },
 								passengers_observed: { $gt: 0 },
 								start_time_scheduled: {
 									$gte: chunkData.start,

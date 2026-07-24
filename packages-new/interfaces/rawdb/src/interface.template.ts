@@ -188,12 +188,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 */
 	private async syncIndexes(): Promise<void> {
 		try {
-			if (this.indexDescription === false) {
-				Logger.info({ message: `MONGODB [${this.collectionName}]: Skipping index synchronization.` });
-				return;
-			}
-			// Start index synchronization process
-			Logger.info({ message: `MONGODB [${this.collectionName}]: Synchronizing indexes...` });
+			if (this.indexDescription === false) return;
 			// Normalize already applied and new indexes
 			// and filter the default _id index.
 			const existingIndexes = await this.collection.indexes();
@@ -208,13 +203,12 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 				// If not, mark them for creation.
 				if (!found) indexesToCreate.push(desiredIdx);
 			}
-			// Create indexes
+			// Create indexes (log only when something is actually added)
 			for (const idx of indexesToCreate) {
 				Logger.info({ message: `MONGODB [${this.collectionName}]: Creating index on keys ${JSON.stringify(idx.key)} with options ${JSON.stringify(prepareMongoIndexOptions(idx))}.` });
 				await this.collection.createIndex(idx.key, prepareMongoIndexOptions(idx) as CreateIndexesOptions);
 				Logger.success(`MONGODB [${this.collectionName}]: Created index on keys ${JSON.stringify(idx.key)}.`);
 			}
-			Logger.success(`MONGODB [${this.collectionName}]: Indexes synchronized.`);
 		} catch (error) {
 			Logger.error({ error, message: `MONGODB [${this.collectionName}]: Error @ syncIndexes(): ${(error as Error).message}` });
 			throw error;

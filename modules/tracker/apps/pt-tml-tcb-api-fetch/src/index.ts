@@ -15,16 +15,14 @@ let ITERATION = 0;
 
 /* * */
 
+try {
+	await initSentry();
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Tracker TCB Fetch' });
+}
+
 const main = async () => {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentry();
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker TCB Fetch' });
-	}
 
 	//
 	// Initialize the timer

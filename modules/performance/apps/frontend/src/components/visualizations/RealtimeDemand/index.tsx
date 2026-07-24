@@ -6,6 +6,7 @@ import { RecordDemand } from '@/components/visualizations/RecordDemand';
 import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
+import { getMetricAgencyData } from '@/utils/agencies';
 import { IconUser } from '@tabler/icons-react';
 import { type RealtimeDemand } from '@tmlmobilidade/types';
 import { Spacer } from '@tmlmobilidade/ui';
@@ -46,10 +47,10 @@ export function RealtimeDemand({ agency }: { agency?: AgencyType }) {
 
 		const agenciesData = selectedAgency === 'all'
 			? latest.data.total
-			: latest.data.agencies[selectedAgency];
+			: getMetricAgencyData(latest.data.agencies, selectedAgency);
 
-		const now = agenciesData.now;
-		const lastWeek = agenciesData.last_week;
+		const now = agenciesData?.now ?? 0;
+		const lastWeek = agenciesData?.last_week ?? 0;
 		const progress = lastWeek > 0 ? (now / lastWeek) * 100 : 0;
 
 		return {

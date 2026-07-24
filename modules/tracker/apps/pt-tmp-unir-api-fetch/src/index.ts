@@ -39,16 +39,14 @@ const AGENCY_NAME_ID_MAP = {
 
 /* * */
 
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'pt-tmp-unir-api-fetch', message: 'Sentry Tracker TMP UNIR Fetch initialized', module: 'tracker', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Tracker TMP UNIR Fetch' });
+}
+
 const main = async () => {
-	//
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pt-tmp-unir-api-fetch', message: 'Sentry Tracker TMP UNIR Fetch initialized', module: 'tracker', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker TMP UNIR Fetch' });
-	}
-
 	//
 
 	const timer = new Timer();

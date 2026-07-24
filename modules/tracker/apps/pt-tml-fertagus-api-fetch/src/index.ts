@@ -37,16 +37,14 @@ interface FoundRideDocument {
 
 /* * */
 
+try {
+	await initSentry();
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Tracker Fertagus Fetch' });
+}
+
 const main = async () => {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentry();
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker Fertagus Fetch' });
-	}
 
 	//
 	// Initialize the timer

@@ -1,3 +1,4 @@
+import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { metrics } from '@tmlmobilidade/interfaces';
@@ -128,8 +129,6 @@ export const syncRealtimeServiceCompliance = async () => {
 	//
 	// Initialize results object
 
-	const agencies = ['41', '42', '43', '44'];
-
 	const results: RealtimeServiceCompliance['data'] = {
 		agencies: {},
 		total: {
@@ -144,7 +143,7 @@ export const syncRealtimeServiceCompliance = async () => {
 		},
 	};
 
-	agencies.forEach((op) => {
+	GO_CM_AGENCY_IDS.forEach((op) => {
 		results.agencies[op] = {
 			accomplished_rides: { last_week: 0, now: 0 },
 			advanced_rides: { last_week: 0, now: 0 },
@@ -169,10 +168,14 @@ export const syncRealtimeServiceCompliance = async () => {
 	const todayTimer = new Timer();
 
 	const todayStream = ridesCollection
-		.find({ operational_date: currentOperationalDate, system_status: 'complete' })
+		.find({
+			agency_id: { $in: [...GO_CM_AGENCY_IDS] },
+			operational_date: currentOperationalDate,
+			system_status: 'complete',
+		})
 		.stream();
 
-	await processRidesStream(todayStream, results, agencies, 'now');
+	await processRidesStream(todayStream, results, [...GO_CM_AGENCY_IDS], 'now');
 	Logger.info({ message: `Processed today's rides in ${todayTimer.get()}` });
 
 	//
@@ -182,18 +185,19 @@ export const syncRealtimeServiceCompliance = async () => {
 	const lastWeekTimer = new Timer();
 
 	const lastWeekStream = ridesCollection.find({
+		agency_id: { $in: [...GO_CM_AGENCY_IDS] },
 		operational_date: previousOperationalDate,
 		start_time_observed: { $lte: previousUntilNowAsUnix },
 		system_status: 'complete',
 	}).stream();
 
-	await processRidesStream(lastWeekStream, results, agencies, 'last_week');
+	await processRidesStream(lastWeekStream, results, [...GO_CM_AGENCY_IDS], 'last_week');
 	Logger.info({ message: `Processed last week's rides in ${lastWeekTimer.get()}` });
 
 	//
 	// Compute mean delays
 
-	agencies.forEach((op) => {
+	GO_CM_AGENCY_IDS.forEach((op) => {
 		const opData = results.agencies[op];
 		opData.mean_delay_minutes.now = opData.scheduled_rides.now ? Number((opData.mean_delay_minutes.now / opData.scheduled_rides.now).toFixed(2)) : 0;
 		opData.mean_delay_minutes.last_week = opData.scheduled_rides.last_week ? Number((opData.mean_delay_minutes.last_week / opData.scheduled_rides.last_week).toFixed(2)) : 0;

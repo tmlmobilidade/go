@@ -311,7 +311,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "calendar.txt" file.' });
+		Logger.error({ error, message: `Error processing "calendar.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "calendar.txt" file.', error);
 	}
 
@@ -387,7 +387,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "calendar_dates.txt" file.' });
+		Logger.error({ error, message: `Error processing "calendar_dates.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "calendar_dates.txt" file.', error);
 	}
 
@@ -434,7 +434,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "trips.txt" file.' });
+		Logger.error({ error, message: `Error processing "trips.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "trips.txt" file.', error);
 	}
 
@@ -473,7 +473,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "routes.txt" file.' });
+		Logger.error({ error, message: `Error processing "routes.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "routes.txt" file.', error);
 	}
 
@@ -517,7 +517,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "shapes.txt" file.' });
+		Logger.error({ error, message: `Error processing "shapes.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "shapes.txt" file.', error);
 	}
 
@@ -554,7 +554,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "stops.txt" file.' });
+		Logger.error({ error, message: `Error processing "stops.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "stops.txt" file.', error);
 	}
 
