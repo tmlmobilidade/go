@@ -72,6 +72,8 @@ export function sentryConfig(nextConfig: NextConfig, tunnelRoute: string) {
 		...nextConfig,
 		env: {
 			...nextConfig.env,
+			APP: process.env.APP,
+			MODULE: process.env.MODULE,
 			SENTRY_NEXTJS_DSN: process.env.SENTRY_NEXTJS_DSN,
 			SENTRY_NEXTJS_TUNNEL: selfHostedSentry?.tunnel,
 		},

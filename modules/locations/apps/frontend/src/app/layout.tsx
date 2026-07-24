@@ -37,7 +37,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 	// B. Render components
 
 	return (
-		<BaseProvider module="locations" version={pjson.version}>
+		<BaseProvider version={pjson.version}>
 			<LayoutContextProvider>
 				<MapOptionsContextProvider>
 					{children}

@@ -1,3 +1,3 @@
 import { createSentryClientInstrumentation } from '@tmlmobilidade/logger-logger-frontend';
 
-export const { onRouterTransitionStart } = createSentryClientInstrumentation('frontend', 'fleet');
+export const { onRouterTransitionStart } = createSentryClientInstrumentation();

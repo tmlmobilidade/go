@@ -9,6 +9,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 
+import { getRuntimeLogContext } from '../../logger/utils/runtime-log-context.js';
 import { registerSentryNextRequestLogs } from '../connection/sentry-server.js';
 import { initSentry } from '../connection/sentry.js';
 
@@ -21,17 +22,13 @@ interface ProcessLike {
 }
 
 /**
- * Creates an object encapsulating Sentry instrumentation for a given app/module
- * in frontend (server) environments.
+ * Creates an object encapsulating Sentry instrumentation for frontend server environments.
  *
  * - onRequestError: Handler for request error events, compatible with Sentry's API.
- * - register: Initializes Sentry for the (app, module), and installs request log
+ * - register: Initializes Sentry using environment context and installs request log
  *   forwarding in Node.js runtimes.
- *
- * @param app - The current app name (e.g., 'frontend')
- * @param module - The domain module name (e.g., 'core')
  */
-export function createSentryInstrumentation(app: string, module: string) {
+export function createSentryInstrumentation() {
 	return {
 		/**
 		 * Error handler to be used for capturing request errors.
@@ -43,26 +40,23 @@ export function createSentryInstrumentation(app: string, module: string) {
 		 * if running in a 'nodejs' Next.js runtime.
 		 */
 		register() {
-			initSentry(app, module);
+			initSentry();
 			const processRef = Reflect.get(globalThis, 'process') as ProcessLike | undefined;
 			if (processRef?.env?.NEXT_RUNTIME === 'nodejs') {
-				registerSentryNextRequestLogs({ app, module });
+				registerSentryNextRequestLogs(getRuntimeLogContext());
 			}
 		},
 	};
 }
 
 /**
- * Creates an object encapsulating Sentry client-side instrumentation for a given
- * app/module combination.
+ * Creates an object encapsulating Sentry client-side instrumentation using
+ * environment context.
  *
  * - onRouterTransitionStart: Handler for tracking router transitions in Sentry.
- *
- * @param app - The current app name (e.g., 'frontend')
- * @param module - The domain module name (e.g., 'core')
  */
-export function createSentryClientInstrumentation(app: string, module: string) {
-	initSentry(app, module);
+export function createSentryClientInstrumentation() {
+	initSentry();
 
 	return {
 		/**

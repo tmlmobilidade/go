@@ -1,3 +1,3 @@
 import { createSentryInstrumentation } from '@tmlmobilidade/logger-logger-frontend';
 
-export const { onRequestError, register } = createSentryInstrumentation('frontend', 'performance');
+export const { onRequestError, register } = createSentryInstrumentation();
