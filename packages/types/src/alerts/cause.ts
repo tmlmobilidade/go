@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsRtCause } from '@/gtfs-rt/cause.js';
+import { type GtfsRtCause } from '@tmlmobilidade/go-types-gtfs-rt';
 import z from 'zod';
 
 /* * */

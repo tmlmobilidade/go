@@ -4,12 +4,14 @@ import { transformReferenceTypeAgencyIntoJson } from '@/transform/json/reference
 import { transformReferenceTypeLinesIntoJson } from '@/transform/json/reference-types/lines.js';
 import { transformReferenceTypeRidesIntoJson } from '@/transform/json/reference-types/rides.js';
 import { transformReferenceTypeStopsIntoJson } from '@/transform/json/reference-types/stops.js';
-import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { alerts, files } from '@tmlmobilidade/interfaces';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type AlertReference, type HubAlert, HubAlertSchema } from '@tmlmobilidade/types';
+import { type AlertReference } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -23,7 +25,7 @@ export async function publishJsonFeed() {
 	//
 	// Retrieve active alerts from the database
 
-	const findResult = await alerts.findMany(
+	const findResult = await goDb.operation.alerts.findMany(
 		{
 			$and: [
 				{
@@ -61,7 +63,7 @@ export async function publishJsonFeed() {
 
 			if (alertData.file_id) {
 				// Get the associated file data to prepare the image value
-				const fileData = await files.findById(alertData.file_id);
+				const fileData = await storageProvider.findById(alertData.file_id);
 				if (fileData?.url && fileData?.type) {
 					imageUrl = fileData.url;
 				}
@@ -127,7 +129,7 @@ export async function publishJsonFeed() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:alerts:published:json', JSON.stringify(result));
+	await cacheDb.set('hub:v1:alerts:published:json', JSON.stringify(result));
 
 	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
 

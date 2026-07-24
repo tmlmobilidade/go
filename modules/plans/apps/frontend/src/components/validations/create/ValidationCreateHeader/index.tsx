@@ -2,7 +2,7 @@
 
 import { useValidationCreateContext } from '@/components/validations/create/ValidationCreate.context';
 import { closeCreateValidationModal } from '@/components/validations/create/ValidationCreate.modal';
-import { Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { AgencyTag, Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -21,6 +21,7 @@ export function ValidationCreateHeader() {
 		<Toolbar>
 			<CloseButton onClick={closeCreateValidationModal} type="close" />
 			<Label size="lg" caps singleLine>Nova Validação GTFS</Label>
+			<AgencyTag agencyId={validationCreateContext.data.selected_agency_id} />
 			<Spacer />
 			<Button
 				disabled={!validationCreateContext.flags.can_create}

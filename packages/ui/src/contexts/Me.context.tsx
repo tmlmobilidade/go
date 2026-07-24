@@ -1,9 +1,9 @@
 'use client';
 
-import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ActionsOf, type FileExport, GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useContext, useEffect } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import { ErrorDisplay } from '../components/display/ErrorDisplay';
@@ -50,21 +50,28 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
-	// A. Fetch data
+	// A. Setup variables
+
+	const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+	//
+	// B. Fetch data
 
 	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<User, HttpException>(API_ROUTES.auth.USERS_ME, { refreshInterval: 15_000 });
 	const { data: fileExportsData, mutate: fileExportsMutate } = useSWR<FileExport[], HttpException>(API_ROUTES.exporter.EXPORTER_LIST, { refreshInterval: 5_000 });
-	const { mutate: userMutate } = useSWR<User>(meData?._id && API_ROUTES.auth.USERS_DETAIL('me'));
 
 	//
-	// B. Handle actions
+	// C. Handle actions
+
+	const isUnauthorized = meError?.statusCode === HTTP_STATUS.UNAUTHORIZED;
+	const isRedirectingToLogin = isLoggingOut || isUnauthorized || (!meLoading && !meData);
 
 	useEffect(() => {
-		// Skip if data is still loading
-		if (meLoading) return;
-		// If a user is not available redirect to login page
-		if (!meData) window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
-	}, [meLoading, meData]);
+		// Skip if data is still loading or logout is already redirecting
+		if (meLoading || isLoggingOut) return;
+		// Redirect to login when the session is missing or expired
+		if (!meData || isUnauthorized) window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
+	}, [meLoading, meData, isUnauthorized, isLoggingOut]);
 
 	const hasPermission = <S extends Permission['scope']>(scope: S, action: ActionsOf<S>) => {
 		if (!meData?.permissions) return false;
@@ -88,12 +95,17 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const logout = async () => {
-		// Call the logout endpoint
-		await fetch(API_ROUTES.auth.AUTH_LOGOUT, { credentials: 'include' });
-		// Mutate the SWR cache to remove user data
-		await meMutate(undefined, { revalidate: true });
-		// Redirect to home page
-		window.location.href = '/';
+		setIsLoggingOut(true);
+		try {
+			// Call the logout endpoint
+			await fetch(API_ROUTES.auth.AUTH_LOGOUT, { credentials: 'include' });
+			// Clear the SWR cache without revalidating — the session is already gone,
+			// so a revalidate would 401 and surface ErrorDisplay before redirect.
+			await meMutate(undefined, { revalidate: false });
+		} finally {
+			// Always redirect to login, even if logout or cache clear fails
+			window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
+		}
 	};
 
 	const getPreference = <T extends UserPreferenceValue>(scope: string, key: string): T | undefined => {
@@ -110,13 +122,10 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
 		// Call the update endpoint
 		await fetchData<User>(API_ROUTES.auth.USERS_ME, 'PUT', { preferences: updatedPreferences });
-		// Mutate the SWR cache to update user data
-		await meMutate();
-		await userMutate();
 	};
 
 	//
-	// C. Define context value
+	// D. Define context value
 
 	const contextValue: MeContextState = {
 		actions: {
@@ -133,7 +142,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		flags: {
 			error: meError,
-			loading: meLoading,
+			loading: meLoading || isLoggingOut,
 		},
 		mutate: {
 			fileExports: fileExportsMutate,
@@ -142,9 +151,9 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	//
-	// D. Render components
+	// E. Render components
 
-	if (meLoading) {
+	if (meLoading || isRedirectingToLogin) {
 		return <LoadingOverlay fullscreen />;
 	}
 

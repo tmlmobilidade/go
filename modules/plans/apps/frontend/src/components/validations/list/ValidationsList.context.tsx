@@ -77,13 +77,14 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 		// Normalize record fields
 		return allValidationsData.map(item => ({
 			...item,
-			agency_id_normalized: item.gtfs_agency.agency_id,
+			agency_code_normalized: item.gtfs_agency.agency_id,
+			agency_id_normalized: item.agency_id,
 			agency_name_normalized: normalizeString(item.gtfs_agency.agency_name),
 		}));
 	}, [allValidationsData]);
 
 	const searchResultsData = useSearch<ValidationNormalized>({
-		accessors: ['_id', 'agency_name_normalized'],
+		accessors: ['_id', 'agency_id_normalized', 'agency_name_normalized'],
 		data: normalizedValidationsData,
 		query: filterSearch.value,
 	});
@@ -97,7 +98,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 		const validityStatusSet = new Set(filterValidityStatus.value);
 		const filteredResultsData = searchResultsData.filter((item: ValidationNormalized) => {
 			// Filter by agency
-			if (!agencySet.has(item.gtfs_agency.agency_id)) return false;
+			if (!agencySet.has(item.agency_id)) return false;
 			// Filter by processing_status
 			if (!processingStatusSet.has(item.processing_status)) return false;
 			// Filter by validity_status

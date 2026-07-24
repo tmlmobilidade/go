@@ -1,0 +1,22 @@
+.tooltip {
+	position: relative;
+	padding: 8px 10px;
+	color: var(--color-system-text-100);
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1;
+	white-space: nowrap;
+	pointer-events: none;
+	background: var(--color-system-background-100);
+	border-radius: 4px;
+}
+
+.tip {
+	position: absolute;
+	bottom: -5px;
+	left: 50%;
+	width: 10px;
+	height: 10px;
+	background: var(--color-system-background-100);
+	transform: translateX(-50%) rotate(45deg);
+}

@@ -1,10 +1,11 @@
 /* * */
 
-import { apiCache, type ApiCacheKey } from '@tmlmobilidade/databases';
+import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
+import { cacheDb, type cacheDbKey } from '@tmlmobilidade/go-interfaces-cachedb';
+import { type HubShape, type HubShapePoint } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HubShape, type HubShapePoint } from '@tmlmobilidade/types';
 import * as turf from '@turf/turf';
 
 /* * */
@@ -36,7 +37,7 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		// Use the cache key as the key for the Map,
 		// as it will be used to compare and delete stale shapes.
 
-		const cacheKey: ApiCacheKey = `hub:v1:network:shapes:${shapeRaw.shape_id}`;
+		const cacheKey: cacheDbKey = `hub:v1:network:shapes:${shapeRaw.shape_id}`;
 
 		//
 		// Check if a shape object already exists, or create a new one.
@@ -93,6 +94,7 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		// Create geojson feature using turf
 
 		shapeData.geojson = turf.lineString(shapeData.points.map(point => [point.shape_pt_lon, point.shape_pt_lat]));
+		shapeData.encoded_polyline = encodePolylineFromGeoJson(shapeData.geojson);
 
 		//
 		// Calculate shape extension
@@ -104,8 +106,8 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		//
 		// Update or create new document
 
-		await apiCache.set(`hub:v1:network:shapes:${shapeData._id}`, JSON.stringify(shapeData));
-		// await apiCache.set(SERVERDB_KEYS.NETWORK.SHAPES.ID(shapeData.shape_id), JSON.stringify(shapeData));
+		await cacheDb.set(`hub:v1:network:shapes:${shapeData._id}`, JSON.stringify(shapeData));
+		// await cacheDb.set(SERVERDB_KEYS.NETWORK.SHAPES.ID(shapeData.shape_id), JSON.stringify(shapeData));
 
 		//
 	}
@@ -119,9 +121,9 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 
 	Logger.info({ message: `Removing stale Shapes from cache...` });
 
-	const allExistingShapeKeys = await apiCache.scan(`hub:network:shapes:*`);
+	const allExistingShapeKeys = await cacheDb.scan(`hub:network:shapes:*`);
 	const staleShapeKeys = allExistingShapeKeys.filter(key => !allShapesData.has(key));
-	if (staleShapeKeys.length) await apiCache.deleteMany(staleShapeKeys);
+	if (staleShapeKeys.length) await cacheDb.deleteMany(staleShapeKeys);
 
 	Logger.info({ message: `Deleted ${staleShapeKeys.length} stale Shapes from cache (${removeStaleShapesTimer.get()})` });
 

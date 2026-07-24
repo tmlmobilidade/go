@@ -1,6 +1,6 @@
 name: Build Modules
 
-run-name: ${{ inputs.pr_number != '' && format('build-module-{0}', inputs.pr_number) || github.ref_name }}
+run-name: "${{ inputs.pr_number != '' && format('#{0} - {1}: {2}', inputs.pr_number, inputs.pr_title || 'PR', inputs.module || 'all') || github.event_name == 'pull_request' && format('preview cleanup pr-{0}', github.event.pull_request.number) || github.event_name == 'workflow_dispatch' && format('build {0}', github.ref_name) || '' }}"
 
 on:
   workflow_dispatch:
@@ -17,6 +17,10 @@ on:
         type: boolean
       pr_number:
         description: 'PR number — sets image tag to pr-{N} when set (/build)'
+        required: false
+        type: string
+      pr_title:
+        description: 'PR title — shown in run-name for /build'
         required: false
         type: string
   pull_request:
@@ -42,31 +46,10 @@ jobs:
   discover:
     name: Discover Modules
     if: github.event_name != 'pull_request' || github.event.action != 'closed'
-    runs-on: ubuntu-24.04-arm
-    outputs:
-      modules: ${{ steps.discover.outputs.modules }}
-      modules-apps: ${{ steps.discover.outputs.modules-apps }}
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: ${{ github.event_name == 'push' && '0' || '2' }}
-
-      - id: scan
-        shell: bash
-        run: |
-          MAPPING=$(find modules/*/apps/* -maxdepth 0 -type d | sort | sed 's|modules/||; s|/apps/|:|')
-          {
-            echo "modules-apps<<EOF"
-            echo "$MAPPING"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
-      - id: discover
-        uses: ./.github/actions/discover-modules
-        with:
-          modules-apps: ${{ steps.scan.outputs.modules-apps }}
-          selected-module: ${{ inputs.module || 'all' }}
-          build-all: ${{ inputs.build_all || 'true' }}
+    uses: ./.github/workflows/_discover-modules.yml
+    with:
+      selected-module: ${{ inputs.module || 'all' }}
+      build-all: ${{ inputs.build_all || true }}
 
   # # #
   # Generate package-lock.json once,
@@ -95,30 +78,6 @@ jobs:
           retention-days: 1
 
   # # #
-  # Notify go-infra: preview deploy after /build, teardown on PR close.
-
-  notify-infra:
-    name: Notify Infrastructure
-    needs: [package-lock]
-    if: |
-      always() && (
-        (github.event_name == 'pull_request' && github.event.action == 'closed') ||
-        (inputs.pr_number != '' && needs.package-lock.result == 'success')
-      )
-    runs-on: ubuntu-24.04-arm
-    steps:
-      - uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.INFRA_REPO_TOKEN }}
-          repository: tmlmobilidade/go-infra
-          event-type: preview-pr
-          client-payload: >-
-            {
-              "pr_number": ${{ github.event_name == 'pull_request' && github.event.pull_request.number || inputs.pr_number }},
-              "pr_action": "${{ github.event_name == 'pull_request' && github.event.action || 'synchronize' }}"
-            }
-
-  # # #
   # Build and push Docker images for each module that needs it.
 
   build-module:
@@ -137,3 +96,49 @@ jobs:
       environment: ${{ inputs.pr_number != '' && format('pr-{0}', inputs.pr_number) || github.ref_name }}
       pr_number: ${{ inputs.pr_number }}
     secrets: inherit
+
+  # # #
+  # Notify go-infra: create/update PR overlay after successful /build.
+
+  notify-infra-build:
+    name: Notify Infrastructure (Build Preview)
+    needs: [build-module]
+    if: |
+      always() &&
+      inputs.pr_number != '' &&
+      needs.build-module.result != 'skipped' &&
+      needs.build-module.result != 'cancelled'
+    uses: ./.github/workflows/_notify-infra-preview.yml
+    with:
+      pr_number: ${{ inputs.pr_number }}
+      pr_action: build
+    secrets: inherit
+
+  # # #
+  # After first /build: poll preview URL until OK or 15m timeout.
+
+  preview-health:
+    name: Preview Health Check
+    needs: [notify-infra-build]
+    if: |
+      always() &&
+      inputs.pr_number != '' &&
+      needs.notify-infra-build.result == 'success'
+    uses: ./.github/workflows/_preview-health.yml
+    with:
+      pr_number: ${{ inputs.pr_number }}
+      timeout_minutes: 15
+      poll_seconds: 30
+
+  # # #
+  # Notify go-infra: remove PR overlay when PR is closed.
+
+  notify-infra-cleanup:
+    name: Notify Infrastructure (Cleanup Preview)
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    uses: ./.github/workflows/_notify-infra-preview.yml
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      pr_action: closed
+    secrets: inherit
+

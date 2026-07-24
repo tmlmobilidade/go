@@ -1,6 +1,6 @@
 /* * */
 
-import { type HubPattern, type HubRoute, type Timetable } from '@tmlmobilidade/types';
+import { type HubPattern, type HubRoute, type Timetable } from '@tmlmobilidade/go-types-public-info';
 
 /**
  * This function creates a timetable for a set of patterns of a line, for a specific stop and date.

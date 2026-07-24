@@ -1,8 +1,9 @@
 /* * */
 
-import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { alerts, files } from '@tmlmobilidade/interfaces';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Alert } from '@tmlmobilidade/types';
@@ -19,7 +20,7 @@ export async function publishJsonFeed() {
 	//
 	// Retrieve active alerts from the database
 
-	const findResult = await alerts.findMany(
+	const findResult = await goDb.operation.alerts.findMany(
 		{
 			$and: [
 				{
@@ -55,7 +56,7 @@ export async function publishJsonFeed() {
 
 			if (alertData.file_id) {
 			// Get the associated file data to prepare the image value
-				const fileData = await files.findById(alertData.file_id);
+				const fileData = await storageProvider.findById(alertData.file_id);
 				if (fileData?.url && fileData?.type) {
 					imageUrl = fileData.url;
 				}
@@ -75,7 +76,7 @@ export async function publishJsonFeed() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:alerts:published:json:cm', JSON.stringify(result));
+	await cacheDb.set('hub:v1:alerts:published:json:cm', JSON.stringify(result));
 
 	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
 

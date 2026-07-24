@@ -1,36 +1,36 @@
 import { type Line } from '@carrismetropolitana/api-types/network';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type ServiceAlertResponseItem } from '@tmlmobilidade/types';
-import { Alert, File } from '@tmlmobilidade/types';
+import { Alert, Attachment } from '@tmlmobilidade/types';
 import { type EntitySelector } from 'gtfs-types';
 
 async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAlertResponseItem> {
-	const informed_entity = (): EntitySelector[] => {
-		const informed_entity: EntitySelector[] = [];
+	const informedEntity = (): EntitySelector[] => {
+		const informedEntity: EntitySelector[] = [];
 
 		switch (alert.reference_type) {
 			case 'agency':
-				informed_entity.push({
+				informedEntity.push({
 					agency_id: alert.references[0].parent_id,
 				});
 				break;
 			case 'lines':
 				alert.references.forEach((reference) => {
 					const line = lines.find(line => line.id === reference.parent_id);
-					for (const route_id of line?.route_ids ?? []) {
+					for (const routeId of line?.route_ids ?? []) {
 						if (reference.child_ids.length === 0) {
 							const entity = {
-								route_id: route_id,
+								route_id: routeId,
 							};
-							informed_entity.push(entity);
+							informedEntity.push(entity);
 						} else {
-							reference.child_ids.forEach((child_id) => {
+							reference.child_ids.forEach((childId) => {
 								const entity = {
-									route_id: route_id,
-									stop_id: child_id,
+									route_id: routeId,
+									stop_id: childId,
 								};
-								informed_entity.push(entity);
+								informedEntity.push(entity);
 							});
 						}
 					}
@@ -38,7 +38,7 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 				break;
 			case 'rides':
 				alert.references.forEach((reference) => {
-					informed_entity.push({
+					informedEntity.push({
 						trip: {
 							// TODO: Should fetch from rides collection instead of regexing
 							trip_id: `[${reference.parent_id.split('-').shift() ?? ''}]${reference.parent_id.split('-').pop() ?? ''}`, // "[plan_id]-[trip_id]"
@@ -49,14 +49,14 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 			case 'stops':
 				alert.references.forEach((reference) => {
 					if (reference.child_ids.length === 0) {
-						informed_entity.push({
+						informedEntity.push({
 							stop_id: reference.parent_id,
 						});
 					} else {
-						reference.child_ids.forEach((child_id) => {
-							for (const route_id of lines.find(line => line.id === child_id)?.route_ids ?? []) {
-								informed_entity.push({
-									route_id: route_id,
+						reference.child_ids.forEach((childId) => {
+							for (const routeId of lines.find(line => line.id === childId)?.route_ids ?? []) {
+								informedEntity.push({
+									route_id: routeId,
 									stop_id: reference.parent_id,
 								});
 							}
@@ -68,12 +68,12 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 				throw new HttpException(HTTP_STATUS.BAD_REQUEST, `Invalid reference type: ${alert.reference_type}`);
 		}
 
-		return informed_entity;
+		return informedEntity;
 	};
 
-	let file: File | null = null;
+	let attachment: Attachment | null = null;
 	try {
-		file = await files.findById(alert.file_id);
+		attachment = await storageProvider.findById(alert.file_id);
 	} catch (error) {
 		console.error(error);
 	}
@@ -105,16 +105,16 @@ async function parseServiceAlert(alert: Alert, lines: Line[]): Promise<ServiceAl
 					},
 				],
 			},
-			image: file ? {
+			image: attachment ? {
 				localized_image: [
 					{
 						language: 'pt',
-						media_type: file.type ?? 'image/png',
-						url: file.url ?? '',
+						media_type: attachment.type ?? 'image/png',
+						url: attachment.url ?? '',
 					},
 				],
 			} : undefined,
-			informed_entity: informed_entity(),
+			informed_entity: informedEntity(),
 			url: {
 				translation: [
 					{

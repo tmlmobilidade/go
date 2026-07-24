@@ -1,11 +1,11 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /**
  * Returns a GTFS-RT JSON feed with service alerts for Carris Metropolitana.
@@ -15,7 +15,7 @@ import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 export async function getGtfsRtJsonFeed(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
 	//
 
-	const cachedData = await apiCache.get('hub:v1:alerts:published:gtfs');
+	const cachedData = await cacheDb.get('hub:v1:alerts:published:gtfs');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/alerts:getGtfsRtJsonFeed()] No GTFS-RT feed found in cache. Returning empty message.' });

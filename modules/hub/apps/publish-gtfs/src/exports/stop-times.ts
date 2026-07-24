@@ -2,8 +2,8 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type ExportGtfsContext } from '@/types/context.js';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_StopTime, type Plan } from '@tmlmobilidade/types';
 import { getPublicTripId } from '@tmlmobilidade/utils';
@@ -37,8 +37,8 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 	// Fetch all stops for the current agency
 	// and build a map of flag IDs to stop_id
 
-	const allStopsData = await stops.findMany(
-		{ 'flags.agency_ids': { $in: [planData.gtfs_agency.agency_id] } },
+	const allStopsData = await goDb.infrastructure.stops.findMany(
+		{ 'flags.agency_ids': { $in: [planData.agency_id] } },
 		{ sort: { _id: 1 }, projection: { _id: 1, flags: 1 } },
 	);
 
@@ -54,11 +54,11 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 		const stopTimeData: GTFS_StopTime = stopTimeItem;
 		const matchingStopId = allStopsMap.get(stopTimeData.stop_id);
 		if (!matchingStopId) {
-			Logger.error({ message: `Stop time ${stopTimeData.stop_id} not found in stops map for agency ${planData.gtfs_agency.agency_id}` });
+			Logger.error({ message: `Stop time ${stopTimeData.stop_id} not found in stops map for agency ${planData.agency_id}` });
 			continue;
 		}
 		const parsedStopTimesRow: ExportedStopTimesRow = {
-			trip_id: getPublicTripId(planData._id, planData.gtfs_agency.agency_id, stopTimeData.trip_id),
+			trip_id: getPublicTripId(planData._id, planData.agency_id, stopTimeData.trip_id),
 			arrival_time: stopTimeData.arrival_time,
 			departure_time: stopTimeData.departure_time,
 			stop_id: matchingStopId,

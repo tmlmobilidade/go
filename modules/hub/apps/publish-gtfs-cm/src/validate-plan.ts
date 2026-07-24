@@ -12,8 +12,13 @@ export function validatePlan(planData: Plan): boolean {
 	//
 	// Return false if the agency is not for the given IDs
 
-	if (!['41', '42', '43', '44'].includes(planData.gtfs_agency?.agency_id)) {
-		Logger.error({ message: `Skip processing: gtfs_agency is '${planData.gtfs_agency?.agency_id}'. Only '41', '42', '43', or '44' are allowed.` });
+	if (![
+		'A2L1N', // Alsa (CM)
+		'BNA17', // Rodoviária de Lisboa (CM)
+		'LA77N', // Viação Alvorada (CM)
+		'YA15B', // TST (CM)
+	].includes(planData.agency_id)) {
+		Logger.error({ message: `Skip processing: gtfs_agency is '${planData.agency_id}'. Only 'LA77N', 'BNA17', 'YA15B', or 'A2L1N' are allowed.` });
 		return false;
 	}
 

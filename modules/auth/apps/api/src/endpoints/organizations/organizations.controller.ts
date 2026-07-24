@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files, organizations } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { CreateOrganizationSchema, type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/types';
 
 /* * */
@@ -24,7 +25,7 @@ export class OrganizationsController {
 		// Set the updated_by field to the current user's id
 		validatedOrganization.data.updated_by = request.me._id;
 		// Update the organization in the database
-		const result = await organizations.insertOne(validatedOrganization.data);
+		const result = await goDb.core.organizations.insertOne(validatedOrganization.data);
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED }).status(HTTP_STATUS.CREATED);
 	}
 
@@ -35,27 +36,27 @@ export class OrganizationsController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		// Find the organization by ID
-		const organization = await organizations.findById(request.params.id);
+		const organization = await goDb.core.organizations.findById(request.params.id);
 		if (!organization) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
 		// Delete associated logo files if they exist
 		if (organization.logo_dark) {
 			try {
-				await files.deleteById(organization.logo_dark);
+				await storageProvider.delete(organization.logo_dark);
 			} catch (error) {
 				throw new error();
 			}
 		}
 		if (organization.logo_light) {
 			try {
-				await files.deleteById(organization.logo_light);
+				await storageProvider.delete(organization.logo_light);
 			} catch (error) {
 				throw new error();
 			}
 		}
 		// Delete the organization from the database
-		await organizations.deleteById(request.params.id);
+		await goDb.core.organizations.deleteById(request.params.id);
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -66,7 +67,7 @@ export class OrganizationsController {
 	 */
 	static async deleteImage(request: FastifyRequest<{ Params: { id: string, theme: 'dark' | 'light' } }>, reply: FastifyReply<void>) {
 		// Find the organization by ID
-		const organization = await organizations.findById(request.params.id);
+		const organization = await goDb.core.organizations.findById(request.params.id);
 		if (!organization) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
@@ -78,10 +79,10 @@ export class OrganizationsController {
 		}
 
 		// Delete the logo file from storage
-		await files.deleteById(logoField);
+		await storageProvider.delete(logoField);
 		// Update the organization to remove the logo reference
 		const updatedField = request.params.theme === 'dark' ? { logo_dark: null } : { logo_light: null };
-		await organizations.updateById(request.params.id, updatedField);
+		await goDb.core.organizations.updateById(request.params.id, updatedField);
 		// Send the response
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -92,7 +93,7 @@ export class OrganizationsController {
 	 * @param reply The reply object.
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Organization[]>) {
-		const allOrganizations = await organizations.findMany({}, { sort: { _id: 1 } });
+		const allOrganizations = await goDb.core.organizations.findMany({}, { sort: { _id: 1 } });
 		reply.send({ data: allOrganizations, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -102,7 +103,7 @@ export class OrganizationsController {
 	 * @param reply The reply object
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Organization>) {
-		const organizationData = await organizations.findById(request.params.id);
+		const organizationData = await goDb.core.organizations.findById(request.params.id);
 		if (!organizationData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
@@ -116,13 +117,13 @@ export class OrganizationsController {
 	 */
 	static async getLogo(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ logo_dark?: string, logo_light?: string }>) {
 		// Find the organization by ID
-		const organization = await organizations.findById(request.params.id);
+		const organization = await goDb.core.organizations.findById(request.params.id);
 		if (!organization) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
 		// Fetch logo files if they exist
-		const logoDark = await files.findById(organization.logo_dark);
-		const logoLight = await files.findById(organization.logo_light);
+		const logoDark = await storageProvider.findById(organization.logo_dark);
+		const logoLight = await storageProvider.findById(organization.logo_light);
 		// Send the response with logo URLs
 		reply.send({ data: { logo_dark: logoDark?.url ?? null, logo_light: logoLight?.url ?? null }, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -133,8 +134,8 @@ export class OrganizationsController {
 	 * @param reply Fastify reply.
 	 */
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Organization>) {
-		await organizations.toggleLockById(request.params.id);
-		const foundOrganization = await organizations.findById(request.params.id);
+		await goDb.core.organizations.toggleLockById(request.params.id);
+		const foundOrganization = await goDb.core.organizations.findById(request.params.id);
 		if (!foundOrganization) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
@@ -155,7 +156,7 @@ export class OrganizationsController {
 		// Set the updated_by field to the current user's id
 		request.body.updated_by = request.me._id;
 		// Update the organization in the database
-		const updatedOrganizationData = await organizations.updateById(request.params.id, validatedOrganization.data);
+		const updatedOrganizationData = await goDb.core.organizations.updateById(request.params.id, validatedOrganization.data);
 		reply.send({ data: updatedOrganizationData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -167,7 +168,7 @@ export class OrganizationsController {
 	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ logo_dark?: string, logo_light?: string }>) {
 		const { id } = request.params;
 
-		const organization = await organizations.findById(id);
+		const organization = await goDb.core.organizations.findById(id);
 
 		if (!organization) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
@@ -181,7 +182,7 @@ export class OrganizationsController {
 			const buffer = await file.toBuffer();
 			const size = buffer.buffer.byteLength;
 
-			const result = await files.upload(buffer, {
+			const result = await storageProvider.upload(buffer, {
 				created_by: request.me._id,
 				name: file.filename,
 				resource_id: id,
@@ -196,7 +197,7 @@ export class OrganizationsController {
 				// Delete old dark logo if it exists
 				if (organization.logo_dark) {
 					try {
-						await files.deleteById(organization.logo_dark);
+						await storageProvider.delete(organization.logo_dark);
 					} catch (error) {
 						throw new error();
 						continue;
@@ -208,7 +209,7 @@ export class OrganizationsController {
 				// Delete old light logo if it exists
 				if (organization.logo_light) {
 					try {
-						await files.deleteById(organization.logo_light);
+						await storageProvider.delete(organization.logo_light);
 					} catch (error) {
 						throw new error();
 						continue;
@@ -224,7 +225,7 @@ export class OrganizationsController {
 		}
 
 		// Update organization with new logo IDs
-		await organizations.updateById(id, updateFields);
+		await goDb.core.organizations.updateById(id, updateFields);
 
 		reply.send({ data: uploadedFiles, error: null, statusCode: HTTP_STATUS.OK });
 	}

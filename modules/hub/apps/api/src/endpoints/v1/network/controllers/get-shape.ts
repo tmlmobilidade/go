@@ -1,10 +1,10 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { type HubShape } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
-import { type HubShape } from '@tmlmobilidade/types';
 
 /**
  * Retrieves a shape by its ID from cache.
@@ -14,7 +14,7 @@ import { type HubShape } from '@tmlmobilidade/types';
 export async function getShape(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubShape>) {
 	//
 
-	const cachedData = await apiCache.get(`hub:v1:network:shapes:${request.params.id}`);
+	const cachedData = await cacheDb.get(`hub:v1:network:shapes:${request.params.id}`);
 
 	if (!cachedData) {
 		Logger.error({ message: `[hub/v1/network:getShapes(${request.params.id})] No cached data found for shape ${request.params.id}` });

@@ -11,8 +11,7 @@ import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import oneLineLogger from '@fastify/one-line-logger';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
 import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
@@ -290,6 +289,22 @@ export class FastifyService {
 	 * Sets up hooks for the Fastify server including error handling and response processing.
 	 */
 	private _setupHooks() {
+		/**
+		 * Decodes URI-encoded `id` path params so encoded slashes (e.g. `%2F`) are
+		 * available as literal characters in route handlers.
+		 */
+		this.server.addHook('preHandler', (request, _, done) => {
+			const params = request.params as { id?: string };
+			if (params.id !== undefined) {
+				try {
+					params.id = decodeURIComponent(params.id);
+				} catch {
+					// Malformed URI sequence — keep original value
+				}
+			}
+			done();
+		});
+
 		/**
 		 * Sets a global error handler for the Fastify server instance.
 		 * This handler checks if the error is an instance of HttpException.

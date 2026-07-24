@@ -16,19 +16,16 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/go-clients-mongo": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/ngeohash": "0.6.8",
-		"@types/node": "26.0.0",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
-		"tsc-watch": "7.2.0",
+		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"
 	}
 }

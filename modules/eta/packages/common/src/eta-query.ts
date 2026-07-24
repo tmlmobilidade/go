@@ -1,6 +1,6 @@
 import type { ClickHouseClient } from '@clickhouse/client';
 
-import { prepareNamedQueryParams, splitClickHouseStatements } from '@tmlmobilidade/databases';
+import { prepareNamedQueryParams, splitClickHouseStatements } from '@tmlmobilidade/go-clients-clickhouse';
 import { readFile } from 'node:fs/promises';
 
 import { substituteEtaDatabase } from './eta-database.js';

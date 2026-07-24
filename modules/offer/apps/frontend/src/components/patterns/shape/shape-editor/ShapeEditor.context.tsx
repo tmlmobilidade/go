@@ -21,6 +21,7 @@ interface ShapeAnchor extends RoutePreviewAnchor {
 interface RoutePreviewLeg {
 	distance: number
 	duration: number
+	encoded_polyline?: string
 	from_index: number
 	geojson: GeoJSON.Feature<GeoJSON.LineString, {
 		distance: number
@@ -35,6 +36,7 @@ interface RoutePreviewLeg {
 interface RoutePreviewResponse {
 	distance: number
 	duration: number
+	encoded_polyline?: string
 	geojson: GeoJSON.Feature<GeoJSON.LineString, {
 		distance: number
 		duration: number
@@ -256,6 +258,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 			const updatedShape: Shape = {
 				...(localShapeRef.current ?? {}),
 				anchors: nextAnchors,
+				encoded_polyline: res.data.encoded_polyline,
 				extension: Math.round(res.data.distance),
 				geojson: res.data.geojson,
 				legs: res.data.legs,

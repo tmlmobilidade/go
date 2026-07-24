@@ -5,7 +5,7 @@ import { useOperationalDate } from '@/components/common/operational-date/use-ope
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { useStopsContext } from '@/components/stops/Stops.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/types';
+import { type HubAlert, type HubLine, type HubPattern, type HubRoute, type HubShape, type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -222,7 +222,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		// Preselect the first pattern with a path, falling back to the first pattern
 		if (!filterActivePatternIdState) {
 			const firstWithPath = dataValidPatternsState.find(pattern => pattern.path.length > 0);
-			setFilterActivePatternIdState(firstWithPath._id);
+			setFilterActivePatternIdState(firstWithPath?._id);
 			setFlagIsInteractiveModeState(false);
 		}
 	}, [dataValidPatternsState, filterActivePatternIdState]);

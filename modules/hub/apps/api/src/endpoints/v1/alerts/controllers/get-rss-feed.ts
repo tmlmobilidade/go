@@ -1,8 +1,8 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
@@ -13,7 +13,7 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function getRssFeed(request: FastifyRequest, reply: FastifyReply<string>) {
 	//
 
-	const cachedData = await apiCache.get('hub:v1:alerts:published:rss');
+	const cachedData = await cacheDb.get('hub:v1:alerts:published:rss');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/alerts:getRssFeed()] No RSS feed found in cache. Returning empty message.' });

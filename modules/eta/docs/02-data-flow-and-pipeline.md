@@ -54,9 +54,8 @@ Once the base data is loaded, the pipeline triggers SQL macros to perform the he
 - **Build Historical Travel Times:** The system runs `sql/loader/2-build_hist_node_travel_times.sql` in date chunks. It spatially snaps millions of historical GPS events to the route shape nodes and computes the time it took to travel between them.
 - **Aggregate Travel Times:** `sql/loader/3-aggregate_hist_node_travel_times.sql` rolls up raw travel times into statistical distributions (min, max, avg, median) partitioned by:
   - Shape and node index.
-  - Season/Calendar Period (e.g., Summer, School, Christmas).
   - Time of day (Peak AM, Peak PM, Mid, Off Peak).
-  - Day type (Weekday, Weekend).
+  - Weekday and day type (Weekday, Weekend).
 
 ### 3. Materialized Views (Live Streaming)
 The true power of the ETA engine lies in ClickHouse's Materialized Views. They continuously react to the underlying state:

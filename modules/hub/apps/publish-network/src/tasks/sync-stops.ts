@@ -1,10 +1,11 @@
 /* * */
 
-import { apiCache } from '@tmlmobilidade/databases';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { type HubStop, HubStopSchema } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Stop_Extended, type HubStop, HubStopSchema } from '@tmlmobilidade/types';
+import { type GTFS_Stop_Extended } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -128,7 +129,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	//
 	// Save to the database
 
-	await apiCache.set('hub:v1:network:stops', JSON.stringify(exportedStopsData));
+	await cacheDb.set('hub:v1:network:stops', JSON.stringify(exportedStopsData));
 
 	Logger.success(`Done updating ${updatedStopsCounter} Stops (${globalTimer.get()})`);
 

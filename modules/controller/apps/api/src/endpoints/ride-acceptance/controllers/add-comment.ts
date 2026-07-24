@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { rideAcceptances } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type NoteComment, type RideAcceptance } from '@tmlmobilidade/types';
 
 /**
@@ -11,7 +11,7 @@ import { type NoteComment, type RideAcceptance } from '@tmlmobilidade/types';
 export async function addComment(request: FastifyRequest<{ Body: NoteComment, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
 
-	const rideAcceptanceData = await rideAcceptances.findByRideId(request.params.id);
+	const rideAcceptanceData = await goDb.operation.rideAcceptances.findOne({ ride_id: request.params.id });
 
 	if (!rideAcceptanceData) {
 		return reply.status(HTTP_STATUS.NOT_FOUND).send({
@@ -21,8 +21,8 @@ export async function addComment(request: FastifyRequest<{ Body: NoteComment, Pa
 		});
 	}
 
-	const updateResult = await rideAcceptances.updateByRideId(
-		request.params.id,
+	const updateResult = await goDb.operation.rideAcceptances.updateOne(
+		{ ride_id: request.params.id },
 		{ comments: [...rideAcceptanceData.comments, { ...request.body, created_by: request.me._id, updated_by: request.me._id }], updated_by: request.me._id },
 	);
 

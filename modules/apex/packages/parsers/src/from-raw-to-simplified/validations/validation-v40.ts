@@ -1,5 +1,6 @@
 /* * */
 
+import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { ApexEventTypeSchema, type RawApexTransactionValidationV40, type SimplifiedApexValidation, SimplifiedApexValidationSchema } from '@tmlmobilidade/go-types-apex';
 import { toUInt64 } from '@tmlmobilidade/utils';
@@ -20,7 +21,8 @@ export function parseRawApexTransactionValidationV40IntoSimplifiedApexValidation
 
 	const result: SimplifiedApexValidation = {
 		_id: doc.payload.transactionInfo.transactionId,
-		agency_id: doc.payload.operatorInfo.operatorLongID,
+		agency_code: doc.payload.operatorInfo.operatorLongID,
+		agency_id: getAgencyIdFromOperatorLongId(doc.payload.operatorInfo.operatorLongID),
 		apex_version: doc.payload.versionInfo.apexVersion,
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		category: 'subscription',
@@ -44,7 +46,7 @@ export function parseRawApexTransactionValidationV40IntoSimplifiedApexValidation
 		units_qty: doc.payload.validationInfo.unitsQuantity,
 		updated_at: Dates.now('utc').unix_timestamp,
 		validation_status: '0',
-		vehicle_id: doc.payload.serviceInfo.vehicleID,
+		vehicle_id: String(doc.payload.serviceInfo.vehicleID),
 	};
 
 	return SimplifiedApexValidationSchema.parse(result);

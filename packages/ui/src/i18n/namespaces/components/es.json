@@ -1,0 +1,134 @@
+{
+	"buttons": {
+		"DuplicateButton": {
+			"label": "Duplicar",
+			"tooltip": "Crear una copia de este documento"
+		},
+		"SaveButton": {
+			"label": "Guardar",
+			"tooltip": "Guardar cambios"
+		}
+	},
+	"files": {
+		"FileItem": {
+			"actions": {
+				"delete": {
+					"confirmation_cancel": "Cancelar",
+					"confirmation_confirm": "Eliminar",
+					"confirmation_description": "¿Está seguro de querer eliminar este archivo? Esta acción es irreversible.",
+					"confirmation_title": "¿Eliminar archivo?",
+					"label": "Eliminar archivo"
+				},
+				"download": {
+					"label": "Descargar"
+				}
+			}
+		}
+	},
+	"filters": {
+		"FilterTypeList": {
+			"toggle_all": "Seleccionar todo"
+		}
+	},
+	"inputs": {
+		"CoordinatesInput": {
+			"latitude": {
+				"placeholder": "Latitud (-90 a 90)"
+			},
+			"longitude": {
+				"placeholder": "Longitud (-180 a 180)"
+			}
+		},
+		"SearchInput": {
+			"placeholder": "Buscar..."
+		},
+		"Select": {
+			"nothing_found": "No se encontraron resultados"
+		}
+	},
+	"sidebar": {
+		"Sidebar": {
+			"agencies": "Operadores",
+			"alerts": "Alertas",
+			"annotations": "Anotaciones",
+			"calendar": "Calendario",
+			"collapse_sidebar_aria": "Contraer barra lateral",
+			"events": "Eventos y excepciones",
+			"fares": "Tarifas",
+			"gtfs_validations": "Validaciones GTFS",
+			"hide_sidebar_aria": "Contraer barra lateral",
+			"holidays": "Festivos",
+			"home": "Home",
+			"lines": "Líneas",
+			"organizations": "Organizaciones",
+			"performance": "Performance",
+			"pin_sidebar_aria": "Fijar barra lateral",
+			"plans": "Planes",
+			"reference": "Documentación",
+			"resize_rail_aria": "Redimensionar barra lateral",
+			"rides": "Circulaciones",
+			"roles": "Grupos de permisos",
+			"sams": "SAMS",
+			"stops": "Paradas",
+			"typologies": "Tipologías",
+			"unpin_sidebar_aria": "Desfijar barra lateral",
+			"users": "Usuarios",
+			"vehicles": "Vehículos",
+			"year_periods": "Períodos del año",
+			"zones": "Zonas"
+		},
+		"SidebarExports": {
+			"label": "Exportaciones",
+			"no_exports": "Sin exportaciones disponibles",
+			"title": "Exportaciones"
+		},
+		"SidebarExportsItem": {
+			"no_name": "Sin nombre"
+		},
+		"SidebarGroups": {
+			"administration": "Administración",
+			"calendar_management": "Calendario",
+			"fleet_management": "Flota",
+			"network_offer": "Oferta de red",
+			"offer": "Oferta",
+			"operation": "Operación",
+			"overview": "Visión general"
+		},
+		"SidebarNotifications": {
+			"label": "Notificaciones",
+			"no_notifications": "Sin notificaciones disponibles",
+			"read": "Leídas",
+			"unread": "No leídas"
+		},
+		"SidebarNotificationsItem": {
+			"mark_as_read_aria": "Marcar como leído",
+			"no_description": "Sin descripción",
+			"no_title": "Sin título"
+		},
+		"SidebarOptions": {
+			"account": "Cuenta",
+			"customisation": "Personalización",
+			"enable_notifications": "Activar notificaciones",
+			"enter_fullscreen": "Entrar en pantalla completa",
+			"exit_fullscreen": "Salir de pantalla completa",
+			"label": "Ajustes",
+			"language": "Idioma",
+			"logout": "Cerrar sesión",
+			"mode": "Modo",
+			"notifications_enabled": "Notificaciones activadas",
+			"theme": "Tema",
+			"version": "Versión"
+		}
+	},
+	"tags": {
+		"IdTag": {
+			"copied": "¡Copiado!",
+			"copy": "Haga clic para copiar el ID"
+		}
+	},
+	"topbar": {
+		"Topbar": {
+			"show_sidebar_aria": "Mostrar barra lateral"
+		}
+	}
+}

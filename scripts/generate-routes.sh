@@ -43,6 +43,11 @@ sanitize_route_name() {
     echo "$1" | sed -E 's|\([^)]+\)||g' | sed 's|\.|_|g' | sed 's|/|_|g' | sed 's|-|_|g' | sed 's|__|_|g' | sed 's|^_||' | sed 's|_$||'
 }
 
+# Wrap route path parameters with encodeURIComponent
+encode_route_params() {
+    echo "$1" | sed -E 's/\$\{([a-zA-Z][a-zA-Z0-9]*)\}/\${encodeURIComponent(\1)}/g'
+}
+
 # Function to scan frontend routes
 scan_frontend_routes() {
     local module_name="$1"
@@ -566,7 +571,8 @@ generate_routes_for_type() {
                         fi
                     done
                     # Convert to function format with getModuleConfig
-                    echo "		${route_name}: (${function_params}) => \`\${getModuleConfig('${module_name}', 'api_url')}/${clean_api_path}\`," >> "$output_file"
+                    encoded_api_path=$(encode_route_params "$clean_api_path")
+                    echo "		${route_name}: (${function_params}) => \`\${getModuleConfig('${module_name}', 'api_url')}/${encoded_api_path}\`," >> "$output_file"
                 else
                     # Regular string route with getModuleConfig
                     echo "		${route_name}: \`\${getModuleConfig('${module_name}', 'api_url')}/${clean_api_path}\`," >> "$output_file"
@@ -592,7 +598,8 @@ generate_routes_for_type() {
                     done
                     # Convert to function format with getModuleConfig
                     clean_path=$(echo "$clean_frontend_path" | sed 's|\\${\([^}]*\)}|${\1}|g')
-                    echo "		${route_name}: (${function_params}) => \`\${getModuleConfig('${module_name}', 'frontend_url')}/${clean_path}\`," >> "$output_file"
+                    encoded_path=$(encode_route_params "$clean_path")
+                    echo "		${route_name}: (${function_params}) => \`\${getModuleConfig('${module_name}', 'frontend_url')}/${encoded_path}\`," >> "$output_file"
                 else
                     # Regular string route with getModuleConfig
                     # Handle root route (empty path) - use frontend_url directly without trailing slash
