@@ -89,7 +89,7 @@
 		"dev:locations": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-locations-*",
 		"dev:offer": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-offer-api --filter=@tmlmobilidade/go-offer-frontend",
 		"dev:offer:gtfs-exporter": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-offer-gtfs-exporter",
-		"dev:performance": "npm run build:performance && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-performance-*",
+		"dev:performance": "npm run build:performance && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-performance-frontend --filter=@tmlmobilidade/go-performance-api",
 		"dev:performance:sync-metrics-daily": "npm run build:performance:sync-metrics-daily && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-performance-sync-metrics-daily",
 		"dev:performance:sync-metrics-realtime": "npm run build:performance:sync-metrics-realtime && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-performance-sync-metrics-realtime",
 		"dev:plans": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
