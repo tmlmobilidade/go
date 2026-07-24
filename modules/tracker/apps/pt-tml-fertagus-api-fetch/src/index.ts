@@ -94,37 +94,37 @@ const main = async () => {
 					},
 					{
 						$lookup: {
-							as: 'hashed_pattern',
+							as: 'hashed-pattern',
 							foreignField: '_id',
 							from: 'hashed-patterns',
 							localField: 'hashed_pattern_id',
 						},
 					},
 					{
-						$unwind: '$hashed_pattern',
+						$unwind: '$hashed-pattern',
 					},
 					{
 						$project: {
 							_id: 1,
 							agency_id: 1,
 							first_stop_id: {
-								$first: '$hashed_pattern.path.stop_id',
+								$first: '$hashed-pattern.path.stop_id',
 							},
 
 							last_stop_id: {
-								$last: '$hashed_pattern.path.stop_id',
+								$last: '$hashed-pattern.path.stop_id',
 							},
-							line_id: '$hashed_pattern.line_id',
-							line_long_name: '$hashed_pattern.line_long_name',
-							line_short_name: '$hashed_pattern.line_short_name',
-							pattern_id: '$hashed_pattern.pattern_id',
-							route_color: '$hashed_pattern.route_color',
-							route_id: '$hashed_pattern.route_id',
-							route_long_name: '$hashed_pattern.route_long_name',
-							route_short_name: '$hashed_pattern.route_short_name',
-							route_text_color: '$hashed_pattern.route_text_color',
+							line_id: '$hashed-pattern.line_id',
+							line_long_name: '$hashed-pattern.line_long_name',
+							line_short_name: '$hashed-pattern.line_short_name',
+							pattern_id: '$hashed-pattern.pattern_id',
+							route_color: '$hashed-pattern.route_color',
+							route_id: '$hashed-pattern.route_id',
+							route_long_name: '$hashed-pattern.route_long_name',
+							route_short_name: '$hashed-pattern.route_short_name',
+							route_text_color: '$hashed-pattern.route_text_color',
 
-							trip_headsign: '$hashed_pattern.trip_headsign',
+							trip_headsign: '$hashed-pattern.trip_headsign',
 							trip_id: 1,
 						},
 					},
