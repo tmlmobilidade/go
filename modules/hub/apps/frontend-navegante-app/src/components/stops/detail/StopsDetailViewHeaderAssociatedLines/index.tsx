@@ -33,6 +33,7 @@ export function StopsDetailViewHeaderAssociatedLines() {
 		stopsDetailContext.data.associated_lines?.forEach((line) => {
 			// Merge CM agencies into a single agency
 			const agencyId = ['41', '42', '43', '44'].includes(line.agency_id) ? 'CM' : line.agency_id;
+			// const agencyId = ['A2L1N', 'BNA17', 'LA77N', 'YA15B'].includes(line.agency_id) ? 'CM' : line.agency_id;
 			// Initialize the array for the agency ID if it doesn't exist
 			if (!groups[agencyId]) groups[agencyId] = { agency_id: agencyId, lines: [] };
 			// Add the line to the array for the agency ID
