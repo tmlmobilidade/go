@@ -55,51 +55,6 @@ const alsaWriter = createVehicleEventWriter(writerConfigs.alsa);
 export async function syncPcgidbCoreVehicleEvents(timeChunk: PerformInTimeChunksItem) {
 	//
 
-	throw new Error('Not implemented');
-
-	const chunkStartDate = Dates
-		.fromUnixTimestamp(timeChunk.start)
-		.setZone('Europe/Lisbon', 'offset_only');
-
-	const chunkEndDate = Dates
-		.fromUnixTimestamp(timeChunk.end)
-		.setZone('Europe/Lisbon', 'offset_only');
-
-	Logger.spacer(1);
-	Logger.divider(`CORE [${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${chunkEndDate.unix_timestamp}] › ${chunkStartDate.iso}[${chunkStartDate.unix_timestamp}]`, 150);
-
-	//
-	// Implement a simplified version of the replication process, since there is no possibility
-	// of comparing documents by ID. Only check the count of documents in each database for the
-	// current timestamp chunk, and if they are different, sync all of them.
-
-	const countStepTimer = new Timer();
-
-	const sourceQuery = {
-		millis: {
-			$gte: chunkStartDate.unix_timestamp,
-			$lte: chunkEndDate.unix_timestamp,
-		},
-	};
-
-	const sourceDbCount = await pcgiLegacy.coreManagement.vehicleEvents.count(sourceQuery);
-
-	// ! Fix the destination collection
-	const destinationDbCount = await rawDb.vehicleEvents.ptTmlCmVa.count({
-		received_at: {
-			$gte: chunkStartDate.unix_timestamp,
-			$lte: chunkEndDate.unix_timestamp,
-		},
-		version: 'pt-tml-cm-v1',
-	});
-
-	if (sourceDbCount === destinationDbCount) {
-		Logger.success(`[CORE] MATCH: Found the same number of documents in both databases: ${sourceDbCount} Source = ${destinationDbCount} Destination (${countStepTimer.get()})`);
-		return;
-	}
-
-	Logger.info({ message: `[CORE] MISMATCH: Document count was different for both databases: ${sourceDbCount} Source != ${destinationDbCount} Destination (${countStepTimer.get()})` });
-
 	//
 	// Sync all documents in the current timestamp chunk. We query the Source database for all documents
 	// in the current timestamp chunk, parse them and write them to the Destination database.
@@ -109,7 +64,7 @@ export async function syncPcgidbCoreVehicleEvents(timeChunk: PerformInTimeChunks
 
 	const vehicleEventsCollection = await pcgiLegacy.coreManagement.vehicleEvents.getCollection();
 
-	const vehicleEventsCursor = vehicleEventsCollection.find(sourceQuery).stream();
+	const vehicleEventsCursor = vehicleEventsCollection.find({}, { limit: 10 }).stream();
 
 	for await (const document of vehicleEventsCursor) {
 		const parsedDocuments = transformPcgiVehicleEventCore(document);

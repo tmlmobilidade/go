@@ -38,13 +38,7 @@ async function main() {
 		// Divide the time range into chunks
 		// and sync each one sequentially.
 
-		await performInTimeChunks({
-			onChunk: async (chunk) => {
-				await syncPcgidbCoreVehicleEvents(chunk);
-			},
-			splitBy: { hours: 1 },
-			startDate: earliestDate.unix_timestamp,
-		});
+		await syncPcgidbCoreVehicleEvents(chunk);
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 
