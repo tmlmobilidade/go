@@ -48,7 +48,7 @@ export const PcgiVehicleEventSchema = z.object({
 		header: z.object({
 			gtfsRealtimeVersion: z.literal('2.0'),
 			incrementality: z.string(),
-			timestamp: z.string(),
+			timestamp: z.union([z.string(), z.number()]),
 		}),
 	}),
 	millis: z.number(),

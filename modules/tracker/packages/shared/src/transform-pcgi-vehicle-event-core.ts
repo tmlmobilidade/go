@@ -1,7 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlCmAlsaV1, type RawVehicleEventPtTmlCmRlV1, type RawVehicleEventPtTmlCmTstV1, type RawVehicleEventPtTmlCmVaV1 } from '@tmlmobilidade/go-types-vehicle-events';
+import { type HashableRawVehicleEvent, type PcgiVehicleEvent, type RawVehicleEventPtTmlCmAlsaV1, type RawVehicleEventPtTmlCmRlV1, RawVehicleEventPtTmlCmSchema, type RawVehicleEventPtTmlCmTstV1, type RawVehicleEventPtTmlCmVaV1 } from '@tmlmobilidade/go-types-vehicle-events';
+import { Logger } from '@tmlmobilidade/logger';
 import crypto from 'node:crypto';
 
 /* * */
@@ -15,7 +16,7 @@ const AGENCY_ID_MAP = [
 
 /* * */
 
-export function transformPcgiVehicleEventCore(pcgiVehicleEvent): (RawVehicleEventPtTmlCmAlsaV1 | RawVehicleEventPtTmlCmRlV1 | RawVehicleEventPtTmlCmTstV1 | RawVehicleEventPtTmlCmVaV1)[] {
+export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent): (RawVehicleEventPtTmlCmAlsaV1 | RawVehicleEventPtTmlCmRlV1 | RawVehicleEventPtTmlCmTstV1 | RawVehicleEventPtTmlCmVaV1)[] {
 	//
 
 	const result: (RawVehicleEventPtTmlCmAlsaV1 | RawVehicleEventPtTmlCmRlV1 | RawVehicleEventPtTmlCmTstV1 | RawVehicleEventPtTmlCmVaV1)[] = [];
@@ -50,7 +51,11 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent): (RawVehicleEven
 			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
 			entity_id: entity._id,
 			payload: {
-				header: pcgiVehicleEvent.content.header,
+				header: {
+					gtfsRealtimeVersion: pcgiVehicleEvent.content.header.gtfsRealtimeVersion,
+					incrementality: pcgiVehicleEvent.content.header.incrementality,
+					timestamp: Number(pcgiVehicleEvent.content.header.timestamp),
+				},
 				vehicle: entity.vehicle,
 			},
 			version: matchingAgency.version,
@@ -65,11 +70,18 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent): (RawVehicleEven
 		// Write the new vehicle event document
 		// to the RawVehicleEvents collection
 
-		result.push({
+		const parsedDocument = RawVehicleEventPtTmlCmSchema.safeParse({
 			...hashableRawEvent,
 			_id: hashableRawEventId,
 			received_at: Dates.fromUnixTimestamp(pcgiVehicleEvent.millis).unix_timestamp,
-		} as typeof result[number]);
+		});
+
+		if (!parsedDocument.success) {
+			Logger.error({ error: parsedDocument.error, message: `Failed to insert document "${pcgiVehicleEvent._id}": ${parsedDocument.error.message}` });
+			continue;
+		}
+
+		result.push(parsedDocument.data);
 
 		//
 	}
