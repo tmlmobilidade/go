@@ -24,7 +24,7 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/import-gtfs": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",

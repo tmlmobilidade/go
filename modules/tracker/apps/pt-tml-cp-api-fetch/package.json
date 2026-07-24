@@ -22,7 +22,7 @@
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/ssh": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",

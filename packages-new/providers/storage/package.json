@@ -38,7 +38,7 @@
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-clients-oci-storage": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"

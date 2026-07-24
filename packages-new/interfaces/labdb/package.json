@@ -38,7 +38,7 @@
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},

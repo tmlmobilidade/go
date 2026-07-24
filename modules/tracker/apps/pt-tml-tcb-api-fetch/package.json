@@ -24,7 +24,7 @@
 		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"

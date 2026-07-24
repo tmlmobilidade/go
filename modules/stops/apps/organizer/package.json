@@ -21,7 +21,7 @@
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-stops-pckg-organize": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
