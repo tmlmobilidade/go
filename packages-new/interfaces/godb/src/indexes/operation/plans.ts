@@ -6,5 +6,5 @@ import { Plan } from '@tmlmobilidade/types';
 /* * */
 
 export const plansIndexes: SimplifiedMongoIndex<Plan>[] = [
-	{ key: { agency_id: 'text' } },
+	{ key: { agency_id: 1 } },
 ];
