@@ -18,7 +18,6 @@
 ## Runtime/temp logs
 **/logs
 **/*.log
-**/tmp
 **/temp
 
 ## Environment and secrets

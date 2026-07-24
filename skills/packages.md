@@ -177,9 +177,6 @@ Also contains batching, caching, generic object/array utilities. Check `packages
 
 ## Infrastructure packages
 
-### `@tmlmobilidade/databases`
-Typed database client definitions and interfaces. Used internally by `@tmlmobilidade/mongo` and other database packages.
-
 ### `@tmlmobilidade/mongo`
 MongoDB client with connection pooling and helpers. Used by `@tmlmobilidade/interfaces` — you rarely import this directly.
 

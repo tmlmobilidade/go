@@ -1,8 +1,8 @@
 /* * */
 
-import { simplifiedApexOnBoardRefundsNew } from '@tmlmobilidade/databases';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -13,9 +13,9 @@ const writer = new BatchWriter<SimplifiedApexOnBoardRefund>({
 	batch_size: 10_000,
 	batch_timeout: 30_000,
 	insertFn: async (data) => {
-		await simplifiedApexOnBoardRefundsNew.insert('JSONEachRow', data);
+		await labDb.simplifiedApex.refunds.insert('JSONEachRow', data);
 	},
-	title: await simplifiedApexOnBoardRefundsNew.getTableName(),
+	title: await labDb.simplifiedApex.refunds.getTableName(),
 });
 
 /**

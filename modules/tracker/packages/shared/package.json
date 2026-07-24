@@ -19,10 +19,8 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger-logger-backend": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*"
+		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/logger-logger-backend": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

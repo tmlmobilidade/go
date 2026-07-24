@@ -1,8 +1,8 @@
 /* * */
 
-import { simplifiedApexBankingTapsNew } from '@tmlmobilidade/databases';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -13,9 +13,9 @@ const writer = new BatchWriter<SimplifiedApexBankingTap>({
 	batch_size: 10_000,
 	batch_timeout: 30_000,
 	insertFn: async (data) => {
-		await simplifiedApexBankingTapsNew.insert('JSONEachRow', data);
+		await labDb.simplifiedApex.bankingTaps.insert('JSONEachRow', data);
 	},
-	title: await simplifiedApexBankingTapsNew.getTableName(),
+	title: await labDb.simplifiedApex.bankingTaps.getTableName(),
 });
 
 /**

@@ -4,8 +4,9 @@ import { type MergedGtfsExportConfig } from '@/types.js';
 import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { files, plans } from '@tmlmobilidade/interfaces';
 import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
@@ -92,9 +93,9 @@ export async function main() {
 	// Retrieve all Plans from the database
 	// and iterate on each one.
 
-	const plansCollection = await plans.getCollection();
+	const plansCollection = await goDb.operation.plans.getCollection();
 
-	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await goDb.operation.plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
@@ -134,7 +135,7 @@ export async function main() {
 
 			const planTimer = new Timer();
 
-			Logger.info({ message: `[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}` });
+			Logger.info({ message: `[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.agency_id} - Plan ${planData._id}` });
 
 			//
 			// Validate the Plan data before processing.
@@ -155,7 +156,7 @@ export async function main() {
 			//
 			// Get the operation file URL
 
-			const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.operation_file_id });
 
 			//
 			// Find out if this plan is a currently active plan.
@@ -233,7 +234,7 @@ export async function main() {
 			// Add the plan's referenced agency ID and farthest
 			// feed end date to the global variables for later export.
 
-			referencedAgencyIds.add(planData.gtfs_agency.agency_id);
+			referencedAgencyIds.add(planData.agency_id);
 
 			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
 				? planData.gtfs_feed_info.feed_end_date
@@ -242,7 +243,7 @@ export async function main() {
 			//
 			// Finally, write the plan entry into the plans.txt file.
 
-			await exportPlansFile(planData.gtfs_agency.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, exportConfig);
+			await exportPlansFile(planData.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, exportConfig);
 
 			//
 			// Mark the plan as complete in the database.
@@ -309,7 +310,7 @@ export async function main() {
 
 	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`);
 
-	await files.upload(fileStream, {
+	await storageProvider.replace(fileStream, {
 		_id: 'gtfs-cm-latest',
 		created_by: 'system',
 		name: `${exportConfig.version}.zip`,
@@ -318,7 +319,7 @@ export async function main() {
 		size: fs.statSync(`${exportConfig.workdir}/${exportConfig.version}.zip`).size,
 		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${exportConfig.version}.zip`)),
 		updated_by: 'system',
-	}, { override: true });
+	});
 
 	//
 	// Finalize the export process

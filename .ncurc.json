@@ -8,6 +8,7 @@
 	],
 	"reject": [
 		"zod",
+		"maplibre-gl",
 		"typescript"
 	]
 }

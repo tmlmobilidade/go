@@ -1,6 +1,6 @@
 /* * */
 
-import { stops } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type Alert, type AlertReference } from '@tmlmobilidade/types';
 import { getPublicLineId } from '@tmlmobilidade/utils';
@@ -32,7 +32,7 @@ export async function transformReferenceTypeStopsIntoJson(alertData: Alert): Pro
 	for (const reference of alertData.references) {
 		//
 
-		const foundStopData = await stops.findOne({
+		const foundStopData = await goDb.infrastructure.stops.findOne({
 			'flags.agency_ids': { $in: [alertData.agency_id] },
 			'flags.stop_id': reference.parent_id,
 		});

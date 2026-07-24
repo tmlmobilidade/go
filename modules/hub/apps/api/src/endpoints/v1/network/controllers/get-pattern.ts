@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubLine } from '@tmlmobilidade/go-types-public-info';
+import { type HubPattern } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /**
@@ -11,7 +11,7 @@ import { Logger } from '@tmlmobilidade/logger-logger-backend';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getPattern(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubLine[]>) {
+export async function getPattern(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubPattern[]>) {
 	//
 
 	const cachedData = await cacheDb.get(`hub:v1:network:patterns:${request.params.id}`);

@@ -4,10 +4,9 @@ import { processValidation } from '@/tasks/process-validation.js';
 import { SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSystemErrorEmail } from '@tmlmobilidade/emails';
-import { gtfsValidations } from '@tmlmobilidade/interfaces';
-import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
-import { GtfsValidation } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import pjson from 'pjson' with { type: 'json' };
 
@@ -16,13 +15,14 @@ import pjson from 'pjson' with { type: 'json' };
 async function main() {
 	//
 
-	// Initialize Sentry
+	// // Initialize Sentry
 
-	try {
-		await initSentry();
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Plans Validator' });
-	}
+	// try {
+	// 	await initSentryNode();
+	// 	Logger.startNodeLogs({ app: 'validator', message: 'Sentry Plans Validator initialized', module: 'plans', severity: 'info' });
+	// } catch (error) {
+	// 	Logger.error({ error, message: 'Error initializing Sentry Plans Validator' });
+	// }
 
 	//
 	// Initialize the logger
@@ -40,7 +40,7 @@ async function main() {
 		// Status "processing" is included to catch any validations
 		// that may be stuck due to previous crashes or errors.
 
-		const waitingOrStuckGtfsValidations = await gtfsValidations.findMany(
+		const waitingOrStuckGtfsValidations = await goDb.operation.gtfsValidations.findMany(
 			{ processing_status: { $in: ['waiting', 'processing'] } },
 			{ sort: { created_at: 1 } },
 		);
@@ -55,11 +55,10 @@ async function main() {
 		//
 		// Process each waiting validation
 
-		for (const gtfsValidationItem of waitingOrStuckGtfsValidations) {
-			const gtfsValidation = gtfsValidationItem as unknown as GtfsValidation;
-			Logger.title(`Processing GTFS Validation ${gtfsValidation._id} for File ${gtfsValidation.file_id}`);
-			await processValidation(gtfsValidation);
-			Logger.info({ message: `Finished processing validation ${gtfsValidation._id} in ${globalTimer.get()}ms` });
+		for (const gtfsValidationData of waitingOrStuckGtfsValidations) {
+			Logger.title(`Processing GTFS Validation ${gtfsValidationData._id} for File ${gtfsValidationData.file_id}`);
+			await processValidation(gtfsValidationData);
+			Logger.info({ message: `Finished processing validation ${gtfsValidationData._id} in ${globalTimer.get()}ms` });
 		}
 
 		//

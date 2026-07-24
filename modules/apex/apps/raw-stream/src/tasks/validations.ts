@@ -1,8 +1,8 @@
 /* * */
 
-import { simplifiedApexValidationsNew } from '@tmlmobilidade/databases';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionValidationV20IntoSimplifiedApexValidation, parseRawApexTransactionValidationV30IntoSimplifiedApexValidation, parseRawApexTransactionValidationV40IntoSimplifiedApexValidation, parseRawApexTransactionValidationV50IntoSimplifiedApexValidation } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -13,9 +13,9 @@ const writer = new BatchWriter<SimplifiedApexValidation>({
 	batch_size: 10_000,
 	batch_timeout: 30_000,
 	insertFn: async (data) => {
-		await simplifiedApexValidationsNew.insert('JSONEachRow', data);
+		await labDb.simplifiedApex.validations.insert('JSONEachRow', data);
 	},
-	title: await simplifiedApexValidationsNew.getTableName(),
+	title: await labDb.simplifiedApex.validations.getTableName(),
 });
 
 /**

@@ -2,8 +2,8 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { clampCoordinate } from '@tmlmobilidade/geo';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type HubGtfsExportStops, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-public-info';
-import { districts, localities, municipalities, parishes, stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -19,22 +19,22 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 	//
 	// Build a map of location entities
 
-	const allDistrictsData = await districts.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
+	const allDistrictsData = await goDb.locations.districts.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
 	const allDistrictsMap = new Map<string, string>(allDistrictsData.map(item => [item._id, item?.['properties']?.['name']]));
 
-	const allMunicipalitiesData = await municipalities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
+	const allMunicipalitiesData = await goDb.locations.municipalities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
 	const allMunicipalitiesMap = new Map<string, string>(allMunicipalitiesData.map(item => [item._id, item?.['properties']?.['name']]));
 
-	const allParishesData = await parishes.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
+	const allParishesData = await goDb.locations.parishes.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
 	const allParishesMap = new Map<string, string>(allParishesData.map(item => [item._id, item?.['properties']?.['name']]));
 
-	const allLocalitiesData = await localities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
+	const allLocalitiesData = await goDb.locations.localities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
 	const allLocalitiesMap = new Map<string, string>(allLocalitiesData.map(item => [item._id, item?.['properties']?.['name']]));
 
 	//
 	// Get all the stops for the specified agency IDs
 
-	const allStopsList = await stops.findMany(
+	const allStopsList = await goDb.infrastructure.stops.findMany(
 		{ 'flags.agency_ids': { $in: agencyIds }, 'is_deleted': false },
 		{ sort: { _id: 1 } },
 	);

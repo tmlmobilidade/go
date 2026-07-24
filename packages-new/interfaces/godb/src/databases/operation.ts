@@ -1,14 +1,16 @@
 /* * */
 
+import { alertsIndexes, hashedTripsIndexes, plansIndexes, rideAcceptancesIndexes, ridesIndexes, vehiclesIndexes } from '@/indexes/index.js';
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { type CreateGtfsValidationDto, CreateGtfsValidationSchema, type CreatePlanDto, CreatePlanSchema, type CreateRideAcceptanceDto, CreateRideAcceptanceSchema, type CreateRideDto, CreateRideSchema, type CreateSamDto, CreateSamSchema, type CreateVehicleDto, CreateVehicleSchema, DocumentSchema, type GtfsValidation, type HashedPattern, HashedPatternSchema, type HashedShape, type HashedTrip, HashedTripSchema, type Plan, type Ride, type RideAcceptance, type Sam, type UpdateGtfsValidationDto, UpdateGtfsValidationSchema, type UpdatePlanDto, UpdatePlanSchema, type UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema, type UpdateRideDto, UpdateRideSchema, type UpdateSamDto, UpdateSamSchema, type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, type CreateGtfsValidationDto, CreateGtfsValidationSchema, type CreatePlanDto, CreatePlanSchema, type CreateRideAcceptanceDto, CreateRideAcceptanceSchema, type CreateRideDto, CreateRideSchema, type CreateSamDto, CreateSamSchema, type CreateVehicleDto, CreateVehicleSchema, DocumentSchema, type GtfsValidation, type HashedPattern, HashedPatternSchema, type HashedShape, type HashedTrip, HashedTripSchema, type Plan, type Ride, type RideAcceptance, type Sam, type UpdateAlertDto, UpdateAlertSchema, type UpdateGtfsValidationDto, UpdateGtfsValidationSchema, type UpdatePlanDto, UpdatePlanSchema, type UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema, type UpdateRideDto, UpdateRideSchema, type UpdateSamDto, UpdateSamSchema, type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
 
 /* * */
 
 export class OperationDatabase {
 	//
 
+	public readonly alerts: MongoInterfaceTemplate<Alert, CreateAlertDto, UpdateAlertDto>;
 	public readonly gtfsValidations: MongoInterfaceTemplate<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto>;
 	public readonly hashedPatterns: MongoInterfaceTemplate<HashedPattern, HashedPattern, HashedPattern>;
 	public readonly hashedShapes: MongoInterfaceTemplate<HashedShape, HashedShape, HashedShape>;
@@ -26,14 +28,15 @@ export class OperationDatabase {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
 		// Create collection interfaces
-		this.gtfsValidations = new MongoInterfaceTemplate<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto>('gtfsValidations', this.database, CreateGtfsValidationSchema, UpdateGtfsValidationSchema);
-		this.hashedPatterns = new MongoInterfaceTemplate<HashedPattern, HashedPattern, HashedPattern>('hashedPatterns', this.database, HashedPatternSchema, HashedPatternSchema);
-		this.hashedShapes = new MongoInterfaceTemplate<HashedShape, HashedShape, HashedShape>('hashedShapes', this.database, DocumentSchema, DocumentSchema);
-		this.hashedTrips = new MongoInterfaceTemplate<HashedTrip, HashedTrip, HashedTrip>('hashedTrips', this.database, HashedTripSchema, HashedTripSchema);
-		this.plans = new MongoInterfaceTemplate<Plan, CreatePlanDto, UpdatePlanDto>('plans', this.database, CreatePlanSchema, UpdatePlanSchema);
-		this.rideAcceptances = new MongoInterfaceTemplate<RideAcceptance, CreateRideAcceptanceDto, UpdateRideAcceptanceDto>('rideAcceptances', this.database, CreateRideAcceptanceSchema, UpdateRideAcceptanceSchema);
-		this.rides = new MongoInterfaceTemplate<Ride, CreateRideDto, UpdateRideDto>('rides', this.database, CreateRideSchema, UpdateRideSchema);
+		this.alerts = new MongoInterfaceTemplate<Alert, CreateAlertDto, UpdateAlertDto>('alerts', this.database, CreateAlertSchema, UpdateAlertSchema, alertsIndexes);
+		this.gtfsValidations = new MongoInterfaceTemplate<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto>('gtfs-validations', this.database, CreateGtfsValidationSchema, UpdateGtfsValidationSchema);
+		this.hashedPatterns = new MongoInterfaceTemplate<HashedPattern, HashedPattern, HashedPattern>('hashed-patterns', this.database, HashedPatternSchema, HashedPatternSchema);
+		this.hashedShapes = new MongoInterfaceTemplate<HashedShape, HashedShape, HashedShape>('hashed-shapes', this.database, DocumentSchema, DocumentSchema);
+		this.hashedTrips = new MongoInterfaceTemplate<HashedTrip, HashedTrip, HashedTrip>('hashed-trips', this.database, HashedTripSchema, HashedTripSchema, hashedTripsIndexes);
+		this.plans = new MongoInterfaceTemplate<Plan, CreatePlanDto, UpdatePlanDto>('plans', this.database, CreatePlanSchema, UpdatePlanSchema, plansIndexes);
+		this.rideAcceptances = new MongoInterfaceTemplate<RideAcceptance, CreateRideAcceptanceDto, UpdateRideAcceptanceDto>('ride-acceptances', this.database, CreateRideAcceptanceSchema, UpdateRideAcceptanceSchema, rideAcceptancesIndexes);
+		this.rides = new MongoInterfaceTemplate<Ride, CreateRideDto, UpdateRideDto>('rides', this.database, CreateRideSchema, UpdateRideSchema, ridesIndexes);
 		this.sams = new MongoInterfaceTemplate<Sam, CreateSamDto, UpdateSamDto>('sams', this.database, CreateSamSchema, UpdateSamSchema);
-		this.vehicles = new MongoInterfaceTemplate<Vehicle, CreateVehicleDto, UpdateVehicleDto>('vehicles', this.database, CreateVehicleSchema, UpdateVehicleSchema);
+		this.vehicles = new MongoInterfaceTemplate<Vehicle, CreateVehicleDto, UpdateVehicleDto>('vehicles', this.database, CreateVehicleSchema, UpdateVehicleSchema, vehiclesIndexes);
 	}
 }

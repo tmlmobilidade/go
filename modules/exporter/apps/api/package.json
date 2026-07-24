@@ -23,6 +23,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/utils": "*"

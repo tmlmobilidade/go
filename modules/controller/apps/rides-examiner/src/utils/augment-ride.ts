@@ -45,11 +45,11 @@ export function augmentRide(analysisData: AnalysisData): Ride {
 	//
 	// Get the vehicle IDs found on the given analysis data
 
-	const foundVehicleIds = new Set<number>();
+	const foundVehicleIds = new Set<string>();
 
-	analysisData.vehicle_events.forEach(item => item.vehicle_id && foundVehicleIds.add(Number(item.vehicle_id)));
-	analysisData.simplified_apex_locations.forEach(item => item.vehicle_id && foundVehicleIds.add(item.vehicle_id));
-	analysisData.simplified_apex_validations.forEach(item => item.vehicle_id && foundVehicleIds.add(item.vehicle_id));
+	analysisData.vehicle_events.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
+	analysisData.simplified_apex_locations.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
+	analysisData.simplified_apex_validations.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
 
 	augmentedRide.vehicle_ids = Array.from(foundVehicleIds);
 

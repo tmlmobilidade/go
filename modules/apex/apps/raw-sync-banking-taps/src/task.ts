@@ -1,9 +1,10 @@
 /* * */
 
-import { rawApexTransactions, simplifiedApexBankingTapsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction, SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
@@ -15,9 +16,9 @@ import { type Filter } from 'mongodb';
 const writer = new BatchWriter<SimplifiedApexBankingTap>({
 	batch_size: 10_000,
 	insertFn: async (data) => {
-		await simplifiedApexBankingTapsNew.insert('JSONEachRow', data);
+		await labDb.simplifiedApex.bankingTaps.insert('JSONEachRow', data);
 	},
-	title: await simplifiedApexBankingTapsNew.getTableName(),
+	title: await labDb.simplifiedApex.bankingTaps.getTableName(),
 });
 
 /**
@@ -56,12 +57,12 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
-	const rawApexTransactionsCollection = await rawApexTransactions.getCollection();
+	const rawApexTransactionsCollection = await rawDb.apex.transactions.getCollection();
 
 	await replicate<RawApexTransaction>({
 
 		countDestinationDbFn: async () => {
-			return await simplifiedApexBankingTapsNew.count(
+			return await labDb.simplifiedApex.bankingTaps.count(
 				'*',
 				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
@@ -69,13 +70,13 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		countSourceDbFn: async () => {
-			const result = await rawApexTransactions.count(rawdbQuery);
+			const result = await rawDb.apex.transactions.count(rawdbQuery);
 			return result;
 		},
 
 		deleteDestinationDbFn: async (ids: string[]) => {
 			await performInChunks(ids, async (chunk) => {
-				await simplifiedApexBankingTapsNew.delete(
+				await labDb.simplifiedApex.bankingTaps.delete(
 					'_id IN $1',
 					{ 1: chunk },
 				);
@@ -83,7 +84,7 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await simplifiedApexBankingTapsNew.distinct(
+			return await labDb.simplifiedApex.bankingTaps.distinct(
 				'upper(toString(_id))',
 				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
@@ -91,7 +92,7 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawApexTransactions.distinct('_id', rawdbQuery);
+			const result = await rawDb.apex.transactions.distinct('_id', rawdbQuery);
 			return result.map(String);
 		},
 

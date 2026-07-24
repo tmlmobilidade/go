@@ -4,7 +4,7 @@
 
 import * as turf from '@turf/turf';
 import { MapRef } from '@vis.gl/react-maplibre';
-import maplibregl from 'maplibre-gl';
+import { LngLatBounds } from 'maplibre-gl';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 /* * */
@@ -111,7 +111,7 @@ export const MapOptionsContextProvider = ({ children }: { children: React.ReactN
 		// Calculate bounds
 		const bounds = coordinates.reduce((bounds: any, coord: any) => {
 			return bounds.extend(coord as [number, number]);
-		}, new maplibregl.LngLatBounds(coordinates[0] as [number, number], coordinates[0] as [number, number]));
+		}, new LngLatBounds(coordinates[0] as [number, number], coordinates[0] as [number, number]));
 
 		dataMapState.fitBounds(
 			bounds,

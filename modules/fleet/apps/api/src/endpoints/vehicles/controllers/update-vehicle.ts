@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { vehicles } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { PermissionCatalog, type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +16,7 @@ export async function updateVehicle(request: FastifyRequest<{ Body: UpdateVehicl
 	//
 	// Get the Vehicle from the database
 	if (Array.isArray(request.params.id)) {
-		const vehicleData = await vehicles.findMany({ _id: { $in: request.params.id } });
+		const vehicleData = await goDb.operation.vehicles.findMany({ _id: { $in: request.params.id } });
 
 		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicles not found');
 
@@ -31,7 +31,7 @@ export async function updateVehicle(request: FastifyRequest<{ Body: UpdateVehicl
 		// Update the vehicles
 
 		for (const vehicle of vehicleData) {
-			await vehicles.updateById(vehicle._id, vehicle);
+			await goDb.operation.vehicles.updateById(vehicle._id, vehicle);
 		}
 
 		//
@@ -43,7 +43,7 @@ export async function updateVehicle(request: FastifyRequest<{ Body: UpdateVehicl
 			statusCode: HTTP_STATUS.OK,
 		});
 	} else {
-		const vehicleData = await vehicles.findById(request.params.id);
+		const vehicleData = await goDb.operation.vehicles.findById(request.params.id);
 
 		if (!vehicleData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Vehicle not found');
 
@@ -57,7 +57,7 @@ export async function updateVehicle(request: FastifyRequest<{ Body: UpdateVehicl
 		//
 		// Update the vehicle
 
-		const updatedVehicle = await vehicles.updateById(vehicleData._id, vehicleData);
+		const updatedVehicle = await goDb.operation.vehicles.updateById(vehicleData._id, vehicleData);
 
 		//
 		// Send the updated vehicle data as the response

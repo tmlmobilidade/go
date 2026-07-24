@@ -72,6 +72,11 @@ export class BatchWriter<T> {
 	private idleTimeoutTimer: NodeJS.Timeout | null = null;
 	private sessionTimer = new Timer();
 
+	// ponytail: single in-flight guard, not a queue. Serializes overlapping
+	// flushes (timer-triggered vs batch-full) so inserts never run concurrently
+	// and callers applying backpressure await the same promise.
+	private flushInProgress: null | Promise<void> = null;
+
 	constructor(params: BatchWriterParams<T>) {
 		if (!params.title) throw new Error('BATCHWRITER: Title is required.');
 		if (!params.insertFn) throw new Error('BATCHWRITER: Insert function is required.');
@@ -86,6 +91,36 @@ export class BatchWriter<T> {
 	 * @param callback Optional callback to execute after the flush is complete, receiving the flushed data as a parameter
 	 */
 	async flush(callback?: (data?: T[]) => Promise<void>) {
+		// If a flush is already running, await it instead of starting a
+		// concurrent insert. This is the backpressure seam: the change-stream
+		// handler awaits write() -> flush() and cannot outrun the insert.
+		if (this.flushInProgress) {
+			await this.flushInProgress;
+			return;
+		}
+		this.flushInProgress = this.runFlush(callback);
+		try {
+			await this.flushInProgress;
+		} finally {
+			this.flushInProgress = null;
+		}
+	}
+
+	/**
+	 * Timer-triggered flush that guarantees the buffer is emptied even when a
+	 * flush was already in progress. If the guarded flush() coalesced into a
+	 * running flush, data written during that flush would strand on an idle tail
+	 * (timers are cleared at flush start and only re-armed by the next write()).
+	 * Re-flush while data remains and no timer is pending.
+	 */
+	private async drain(callback?: (data?: T[]) => Promise<void>) {
+		await this.flush(callback);
+		if (this.dataBucketAlwaysAvailable.length > 0 && !this.idleTimeoutTimer && !this.batchTimeoutTimer && !this.flushInProgress) {
+			await this.flush(callback);
+		}
+	}
+
+	private async runFlush(callback?: (data?: T[]) => Promise<void>) {
 		try {
 			//
 
@@ -227,7 +262,7 @@ export class BatchWriter<T> {
 		if (this.params.idle_timeout && this.params.idle_timeout > 0 && !this.idleTimeoutTimer) {
 			this.idleTimeoutTimer = setTimeout(async () => {
 				console.info(`BATCHWRITER [${this.params.title}]: Idle timeout reached. Flushing data...`);
-				await this.flush(flushCallback);
+				await this.drain(flushCallback);
 			}, this.params.idle_timeout);
 		}
 
@@ -238,7 +273,7 @@ export class BatchWriter<T> {
 		if (this.params.batch_timeout && this.params.batch_timeout > 0 && !this.batchTimeoutTimer) {
 			this.batchTimeoutTimer = setTimeout(async () => {
 				console.info(`BATCHWRITER [${this.params.title}]: Batch timeout reached. Flushing data...`);
-				await this.flush(flushCallback);
+				await this.drain(flushCallback);
 			}, this.params.batch_timeout);
 		}
 

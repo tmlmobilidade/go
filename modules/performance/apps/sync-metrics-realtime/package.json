@@ -27,8 +27,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"luxon": "3.7.2",
-		"p-limit": "7.3.0",
-			"@tmlmobilidade/logger-logger-backend": "*"
+		"p-limit": "7.3.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/interfaces": "*",

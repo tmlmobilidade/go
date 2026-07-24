@@ -2,8 +2,8 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type ExportGtfsContext } from '@/types/context.js';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { stops } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type GTFS_StopTime, type Plan } from '@tmlmobilidade/types';
 import { getPublicTripId } from '@tmlmobilidade/utils';
@@ -37,7 +37,7 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 	// Fetch all stops for the current agency
 	// and build a map of flag IDs to stop_id
 
-	const allStopsData = await stops.findMany(
+	const allStopsData = await goDb.infrastructure.stops.findMany(
 		{ 'flags.agency_ids': { $in: [planData.gtfs_agency.agency_id] } },
 		{ sort: { _id: 1 }, projection: { _id: 1, flags: 1 } },
 	);

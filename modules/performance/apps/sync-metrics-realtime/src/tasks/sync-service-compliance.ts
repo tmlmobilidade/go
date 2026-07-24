@@ -1,5 +1,6 @@
 import { Dates } from '@tmlmobilidade/dates';
-import { metrics, rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
@@ -106,14 +107,14 @@ export const syncRealtimeServiceCompliance = async () => {
 	Logger.title(`Sync Service Compliance Metrics in Realtime`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'realtime_service_compliance';
+	const metricKey = 'realtime_service_compliance';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
-	await metrics.deleteMany({ metric: METRIC });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
@@ -159,7 +160,7 @@ export const syncRealtimeServiceCompliance = async () => {
 	//
 	// Fetch rides collection
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	//
 	// Today's stream
@@ -208,11 +209,11 @@ export const syncRealtimeServiceCompliance = async () => {
 		data: results,
 		description: `Realtime service compliance metrics by agency and total, compared with previous week same time.`,
 		generated_at: new Date(),
-		metric: METRIC,
+		metric: metricKey,
 	};
 
 	await metrics.insertOne(metricToInsert);
-	Logger.terminate(`Processed ${METRIC} (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${metricKey} (${globalTimer.get()})`);
 };
 
 //

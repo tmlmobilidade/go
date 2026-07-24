@@ -1,6 +1,6 @@
 /* * */
 
-import { files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type RssRawImageInput, type RssRawItem } from '@tmlmobilidade/rss/dist/types/feed.types.js';
 import { type Alert } from '@tmlmobilidade/types';
@@ -25,7 +25,7 @@ export async function transformAlertIntoRssEntity(alertData: Alert, feedBaseUrl:
 		const fileIdOrder: string[] = [];
 		const seen = new Set<string>();
 
-		const attachedFiles = await files.findMany(
+		const attachedFiles = await storageProvider.findMany(
 			{ resource_id: alertData._id, scope: 'alerts' },
 			{ sort: { created_at: 1 } },
 		);
@@ -44,7 +44,7 @@ export async function transformAlertIntoRssEntity(alertData: Alert, feedBaseUrl:
 
 		for (const fileId of fileIdOrder) {
 			try {
-				const file = await files.findById(fileId);
+				const file = await storageProvider.findById(fileId);
 				if (!file?.url) continue;
 				images.push({
 					alt: alertData.title,

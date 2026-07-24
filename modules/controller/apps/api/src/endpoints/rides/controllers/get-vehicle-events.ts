@@ -1,12 +1,12 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { simplifiedVehicleEventsNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { rides, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 
 /**
  * Get SimplifiedVehicleEvents by Ride ID.
@@ -33,7 +33,7 @@ export async function getSimplifiedVehicleEvents(request: FastifyRequest<{ Param
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await rides.findById(request.params.id);
+		const rideData = await goDb.operation.rides.findById(request.params.id);
 
 		if (!rideData) {
 			return reply
@@ -51,21 +51,11 @@ export async function getSimplifiedVehicleEvents(request: FastifyRequest<{ Param
 
 		const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
 
-		let vehicleEventsData: SimplifiedVehicleEvent[];
-
-		if (['41', '42', '43', '44'].includes(rideData.agency_id)) {
-			vehicleEventsData = await simplifiedVehicleEvents.findMany({
-				created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
-				extra_trip_id: null,
-				trip_id: rideData.trip_id,
-			});
-		} else {
-			vehicleEventsData = await simplifiedVehicleEventsNew.select(
-				'*',
-				`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4 AND extra_trip_id IS NULL`,
-				{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },
-			);
-		}
+		const vehicleEventsData = await labDb.operation.vehicleEvents.select(
+			'*',
+			`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4 AND extra_trip_id IS NULL`,
+			{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },
+		);
 
 		//
 		// Send the ride data back to the client

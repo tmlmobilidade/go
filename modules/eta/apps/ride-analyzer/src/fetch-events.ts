@@ -1,9 +1,8 @@
 /* * */
 
-import type { TripRef } from '@/parse-trip-ref.js';
-import type { ClickHouseClient } from '@clickhouse/client';
-import type { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-
+import { type TripRef } from '@/parse-trip-ref.js';
+import { type ClickHouseClient } from '@clickhouse/client';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
