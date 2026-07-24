@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const RawVehicleEventPtTmlCmV1PayloadSchema = z.object({
+export const RawVehicleEventPtTmlCmAlsaV1PayloadSchema = z.object({
 	header: z.object({
 		gtfsRealtimeVersion: z.literal('2.0'),
 		incrementality: z.literal('DIFFERENTIAL'),
@@ -46,19 +46,14 @@ export const RawVehicleEventPtTmlCmV1PayloadSchema = z.object({
 	}),
 });
 
-export type RawVehicleEventPtTmlCmV1Payload = z.infer<typeof RawVehicleEventPtTmlCmV1PayloadSchema>;
+export type RawVehicleEventPtTmlCmAlsaV1Payload = z.infer<typeof RawVehicleEventPtTmlCmAlsaV1PayloadSchema>;
 
 /* * */
 
-export const RawVehicleEventPtTmlCmV1Schema = RawVehicleEventBaseSchema.extend({
-	agency_id: z.union([
-		z.literal('LA77N'), // Viação Alvorada
-		z.literal('BNA17'), // Rodoviária de Lisboa
-		z.literal('YA15B'), // Transportes Sul do Tejo
-		z.literal('A2L1N'), // Alsa Todi
-	]),
-	payload: RawVehicleEventPtTmlCmV1PayloadSchema,
-	version: z.literal('pt-tml-cm-v1'),
+export const RawVehicleEventPtTmlCmAlsaV1Schema = RawVehicleEventBaseSchema.extend({
+	agency_id: z.literal('A2L1N'),
+	payload: RawVehicleEventPtTmlCmAlsaV1PayloadSchema,
+	version: z.literal('pt-tml-cm-alsa-v1'),
 });
 
-export type RawVehicleEventPtTmlCmV1 = z.infer<typeof RawVehicleEventPtTmlCmV1Schema>;
+export type RawVehicleEventPtTmlCmAlsaV1 = z.infer<typeof RawVehicleEventPtTmlCmAlsaV1Schema>;

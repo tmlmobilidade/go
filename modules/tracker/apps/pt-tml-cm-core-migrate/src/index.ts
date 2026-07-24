@@ -55,14 +55,19 @@ async function main() {
 				// If the document created_at is before the earliest date, skip it
 				if (parsedDocument.created_at < earliestDate.unix_timestamp) continue;
 				// Write the document to the correct collection
-				if (parsedDocument.agency_id === 'LA77N') await rawDb.vehicleEvents.ptTmlCmVa.insertOne(parsedDocument);
-				if (parsedDocument.agency_id === 'BNA17') await rawDb.vehicleEvents.ptTmlCmRl.insertOne(parsedDocument);
-				if (parsedDocument.agency_id === 'YA15B') await rawDb.vehicleEvents.ptTmlCmTst.insertOne(parsedDocument);
-				if (parsedDocument.agency_id === 'A2L1N') await rawDb.vehicleEvents.ptTmlCmAlsa.insertOne(parsedDocument);
+				let result;
+				if (parsedDocument.agency_id === 'LA77N') result = await rawDb.vehicleEvents.ptTmlCmVa.insertOne(parsedDocument);
+				if (parsedDocument.agency_id === 'BNA17') result = await rawDb.vehicleEvents.ptTmlCmRl.insertOne(parsedDocument);
+				if (parsedDocument.agency_id === 'YA15B') result = await rawDb.vehicleEvents.ptTmlCmTst.insertOne(parsedDocument);
+				if (parsedDocument.agency_id === 'A2L1N') result = await rawDb.vehicleEvents.ptTmlCmAlsa.insertOne(parsedDocument);
+				if (!result) {
+					Logger.error({ message: `Failed to migrate document "${document._id}"` });
+					continue;
+				}
 			}
 			// Delete the document from the source database
 			// await vehicleEventsCollection.deleteOne({ _id: document._id });
-			Logger.success(`PCGI ID: ${document._id} -> (x${parsedDocuments.length}) [ ${parsedDocuments.map(doc => doc._id).join(' | ')} ]`, 1);
+			Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${parsedDocuments.length}) [ ${parsedDocuments.map(doc => doc._id).join(' | ')} ]`, 1);
 		}
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
