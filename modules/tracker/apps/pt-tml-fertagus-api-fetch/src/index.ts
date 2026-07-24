@@ -37,17 +37,15 @@ interface FoundRideDocument {
 
 /* * */
 
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'pt-tml-fertagus-api-fetch', message: 'Sentry Tracker Fertagus Fetch initialized', module: 'tracker', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Tracker Fertagus Fetch' });
+}
+
 const main = async () => {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pt-tml-fertagus-api-fetch', message: 'Sentry Tracker Fertagus Fetch initialized', module: 'tracker', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker Fertagus Fetch' });
-	}
 
 	//
 	// Initialize the timer

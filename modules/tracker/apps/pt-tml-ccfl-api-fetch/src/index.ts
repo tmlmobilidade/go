@@ -15,17 +15,15 @@ let ITERATION = 0;
 
 /* * */
 
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'pt-tml-ccfl-api-fetch', message: 'Sentry Tracker CCFL Fetch initialized', module: 'tracker', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Tracker CCFL Fetch' });
+}
+
 const main = async () => {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pt-tml-ccfl-api-fetch', message: 'Sentry Tracker CCFL Fetch initialized', module: 'tracker', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker CCFL Fetch' });
-	}
 
 	const timer = new Timer();
 
