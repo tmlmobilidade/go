@@ -30,7 +30,7 @@ export async function publishGtfsRtFeed() {
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
-					agency_id: { $in: ['41', '42', '43', '44'] },
+					agency_id: { $in: ['LA77N', 'BNA17', 'YA15B', 'A2L1N'] },
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
 					publish_status: 'published',
 				},
