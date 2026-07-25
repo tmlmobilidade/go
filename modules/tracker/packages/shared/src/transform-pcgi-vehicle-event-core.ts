@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type HashableRawVehicleEvent, type PcgiVehicleEvent, type RawVehicleEventPtTmlCmAlsaV1, type RawVehicleEventPtTmlCmRlV1, RawVehicleEventPtTmlCmSchema, type RawVehicleEventPtTmlCmTstV1, type RawVehicleEventPtTmlCmVaV1 } from '@tmlmobilidade/go-types-vehicle-events';
+import { type HashableRawVehicleEvent, type PcgiVehicleEvent, type RawVehicleEventPtTmlCm, RawVehicleEventPtTmlCmSchema } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
 import crypto from 'node:crypto';
 
@@ -16,10 +16,10 @@ const AGENCY_ID_MAP = [
 
 /* * */
 
-export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent): (RawVehicleEventPtTmlCmAlsaV1 | RawVehicleEventPtTmlCmRlV1 | RawVehicleEventPtTmlCmTstV1 | RawVehicleEventPtTmlCmVaV1)[] {
+export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent): RawVehicleEventPtTmlCm[] {
 	//
 
-	const result: (RawVehicleEventPtTmlCmAlsaV1 | RawVehicleEventPtTmlCmRlV1 | RawVehicleEventPtTmlCmTstV1 | RawVehicleEventPtTmlCmVaV1)[] = [];
+	const result: RawVehicleEventPtTmlCm[] = [];
 
 	//
 	// Transform each message into a RawVehicleEvent
@@ -46,7 +46,7 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 		// This allows us to identify duplicate events
 		// and avoid storing them multiple times in the database.
 
-		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlCmAlsaV1 | RawVehicleEventPtTmlCmRlV1 | RawVehicleEventPtTmlCmTstV1 | RawVehicleEventPtTmlCmVaV1> = {
+		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlCm> = {
 			agency_id: matchingAgency.agency_id,
 			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
 			entity_id: entity._id,

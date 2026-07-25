@@ -4,7 +4,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { UnirVehicleLocationResponse } from '@tmlmobilidade/external/dist/clients/unir/types.js';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
-import { type HashableRawVehicleEvent, type RawVehicleEventPtTmpUnirUt1V1, type RawVehicleEventPtTmpUnirUt2V1, type RawVehicleEventPtTmpUnirUt3V1, type RawVehicleEventPtTmpUnirUt4V1, type RawVehicleEventPtTmpUnirUt5V1 } from '@tmlmobilidade/go-types-vehicle-events';
+import { type HashableRawVehicleEvent, type RawVehicleEventPtTmpUnir } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -86,7 +86,7 @@ const main = async () => {
 			.update(JSON.stringify(event))
 			.digest('hex');
 
-		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmpUnirUt1V1 | RawVehicleEventPtTmpUnirUt2V1 | RawVehicleEventPtTmpUnirUt3V1 | RawVehicleEventPtTmpUnirUt4V1 | RawVehicleEventPtTmpUnirUt5V1> = {
+		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmpUnir> = {
 			agency_id: AGENCY_NAME_ID_MAP[event.nomeOperador].id,
 			created_at: Dates.fromFormat(event.recordedAtTime, 'yyyy-MM-dd HH:mm:ss', 'Europe/Lisbon').unix_timestamp,
 			entity_id: hashableRawEventHash,
