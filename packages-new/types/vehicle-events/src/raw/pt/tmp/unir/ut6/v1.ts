@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const RawVehicleEventPtTmpUnirV1PayloadSchema = z.object({
+export const RawVehicleEventPtTmpUnirUt6V1PayloadSchema = z.object({
 	atrasoMaximo: z.number().nullable().default(null),
 	atrasoMedio: z.number().nullable().default(null),
 	avancoMaximo: z.number().nullable().default(null),
@@ -41,20 +41,14 @@ export const RawVehicleEventPtTmpUnirV1PayloadSchema = z.object({
 	velocity: z.number().nullable().default(null),
 });
 
-export type RawVehicleEventPtTmpUnirV1Payload = z.infer<typeof RawVehicleEventPtTmpUnirV1PayloadSchema>;
+export type RawVehicleEventPtTmpUnirUt6V1Payload = z.infer<typeof RawVehicleEventPtTmpUnirUt6V1PayloadSchema>;
 
 /* * */
 
-export const RawVehicleEventPtTmpUnirV1Schema = RawVehicleEventBaseSchema.extend({
-	agency_id: z.union([
-		z.literal('KJTOU'),
-		z.literal('1H6XC'),
-		z.literal('OP1VZ'),
-		z.literal('VZAS3'),
-		z.literal('8NDX4'),
-	]),
-	payload: RawVehicleEventPtTmpUnirV1PayloadSchema,
-	version: z.literal('pt-tmp-unir-v1'),
+export const RawVehicleEventPtTmpUnirUt6V1Schema = RawVehicleEventBaseSchema.extend({
+	agency_id: z.literal('0AMEO'),
+	payload: RawVehicleEventPtTmpUnirUt6V1PayloadSchema,
+	version: z.literal('pt-tmp-unir-ut6-v1'),
 });
 
-export type RawVehicleEventPtTmpUnirV1 = z.infer<typeof RawVehicleEventPtTmpUnirV1Schema>;
+export type RawVehicleEventPtTmpUnirUt6V1 = z.infer<typeof RawVehicleEventPtTmpUnirUt6V1Schema>;

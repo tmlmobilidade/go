@@ -1,11 +1,11 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type RawVehicleEventPtTmlCmV1, type SimplifiedVehicleEvent, SimplifiedVehicleEventSchema } from '@tmlmobilidade/go-types-vehicle-events';
+import { type RawVehicleEventPtTmlCmVaV1, type SimplifiedVehicleEvent, SimplifiedVehicleEventSchema } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
 
-export function parseRawVehicleEventPtTmlCmV1(doc: RawVehicleEventPtTmlCmV1): null | SimplifiedVehicleEvent {
+export function parseRawVehicleEventPtTmlCmVaV1(doc: RawVehicleEventPtTmlCmVaV1): null | SimplifiedVehicleEvent {
 	return SimplifiedVehicleEventSchema.parse({
 		_id: doc._id,
 		agency_id: doc.agency_id,
