@@ -52,7 +52,6 @@ export function StopsDetailViewHeaderAssociatedLines() {
 	return linesByAgencyId.map(group => (
 		<ScrollChips key={group.agency_id}>
 			<div className={styles.row}>
-				{group.agency_id}
 				<Image
 					alt={t(`default:lines.LinesListGroup.logo.alt`, '', { agency_name: AGENCY_NAMES_MAP[group.agency_id]?.full })}
 					height={60}
