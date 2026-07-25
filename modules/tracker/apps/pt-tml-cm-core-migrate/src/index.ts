@@ -43,7 +43,7 @@ async function main() {
 
 	const vehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
-	const vehicleEventsCursor = vehicleEventsCollection.find({}, { limit: 10 }).stream();
+	const vehicleEventsCursor = vehicleEventsCollection.find({}, { limit: 10_000 }).stream();
 
 	for await (const document of vehicleEventsCursor) {
 		try {
@@ -75,4 +75,4 @@ async function main() {
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '30m', throwOnError: false });
+await runOnInterval(main, { intervalMs: '10s', throwOnError: false });
