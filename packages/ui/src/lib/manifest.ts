@@ -10,7 +10,7 @@ import { type MetadataRoute } from 'next';
 export function defaultManifest(): MetadataRoute.Manifest {
 	return {
 		background_color: '#F6F8FA',
-		description: 'Gestão Inteligente de Mobilidade',
+		description: 'Gestão Inteligente da Mobilidade',
 		display: 'standalone',
 		icons: [
 			{

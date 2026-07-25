@@ -77,6 +77,7 @@
 		"dev:hub:publish-plans": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-plans",
 		"dev:hub:publish-realtime": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-realtime",
 		"dev:hub:ui:navegante-app": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
+		"dev:hub:ui:navegante-app:prd": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
 		"dev:hub:ui:videowall": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-videowall",
 		"dev:locations": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-locations-*",
 		"dev:offer": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-offer-api --filter=@tmlmobilidade/go-offer-frontend",
