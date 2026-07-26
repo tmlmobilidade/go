@@ -75,7 +75,7 @@ async function main() {
 					await syncVehicleEvents(chunk, configItem);
 				}
 			},
-			splitBy: { hours: 2 },
+			splitBy: { hours: 1 },
 			startDate: earliestDate.unix_timestamp,
 		});
 
