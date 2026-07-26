@@ -105,6 +105,7 @@
 		"dev:tracker:pt-tml-tcb": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-tcb-*",
 		"dev:tracker:pt-tml-ttsl": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ttsl-*",
 		"dev:tracker:pt-tmp-unir": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tmp-unir-*",
+		"dev:tracker:rawdb-sync": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-rawdb-sync",
 
 		"helper:alerts:migrate-db": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-alerts-helpers-migrate-db",
 		"helper:dates:seed-periods": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-dates-helpers-seed-periods",
@@ -141,6 +142,7 @@
 		"prd:tracker:pt-tml-tcb": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-tcb-*",
 		"prd:tracker:pt-tml-ttsl": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ttsl-*",
 		"prd:tracker:pt-tmp-unir": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tmp-unir-*",
+		"prd:tracker:rawdb-sync": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-rawdb-sync",
 
 		"repo:assets": "bash ./scripts/set-public-symlinks.sh",
 		"repo:build": "turbo build --filter=./packages-new/**/* && turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/*",
