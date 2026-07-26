@@ -17,9 +17,8 @@ export class OperationDatabase {
 	public constructor(instance: ClickHouseClient) {
 		this.vehicleEvents = new ClickHouseInterfaceTemplate<SimplifiedVehicleEvent>(instance, this.databaseName, 'simplified_vehicle_events', simplifiedVehicleEventTableSchema, {
 			engine: 'ReplacingMergeTree(created_at)',
-			orderBy: ['operational_date', 'trip_id', 'vehicle_id', 'agency_id', 'created_at'],
-			partitionBy: 'toYYYYMM(fromUnixTimestamp64Milli(created_at))',
-			primaryKey: ['operational_date', 'trip_id', 'vehicle_id'],
+			orderBy: ['agency_id', 'operational_date', 'vehicle_id', 'created_at', '_id'],
+			partitionBy: 'intDiv(operational_date, 100)',
 		});
 	}
 
