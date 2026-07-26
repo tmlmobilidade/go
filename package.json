@@ -157,7 +157,7 @@
 		"@commitlint/config-conventional": "21.2.0",
 		"@tmlmobilidade/eslint": "*",
 		"husky": "9.1.7",
-		"turbo": "2.10.6"
+		"turbo": "2.10.7"
 	},
 	"packageManager": "npm@12.0.1",
 	"workspaces": [
@@ -168,7 +168,7 @@
 		"cli/*"
 	],
 	"overrides": {
-		"eslint": "10.7.0",
+		"eslint": "10.8.0",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
 		"zod": "3.25.76"
