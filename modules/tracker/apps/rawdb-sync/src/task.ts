@@ -122,7 +122,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 				// Write the simplified vehicle event document to the destination database
 				await writer.write(newSimplifiedVehicleEventDocument, { flushCallback: setRidesAsWaiting });
 			} catch (error) {
-				Logger.error({ message: `Error transforming APEX Banking Tap: ${sourceDbDocument._id} Reason: ${error.message}` });
+				Logger.error({ message: `Error transforming RawVehicleEvent document: ${sourceDbDocument._id} Reason: ${error.message}` });
 			}
 		},
 
