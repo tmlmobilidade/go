@@ -3,7 +3,7 @@
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
-import { parseRawVehicleEventIntoSimplifiedVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-parsers';
+import { handleStreamRawVehicleEventIntoSimplifiedVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -50,7 +50,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 				return;
 			}
 
-			await parseRawVehicleEventIntoSimplifiedVehicleEvent({
+			await handleStreamRawVehicleEventIntoSimplifiedVehicleEvent({
 				batchWriter: writer,
 				databaseOperation: change,
 				flushCallback: setRidesAsWaiting,
