@@ -11,9 +11,9 @@ import { BatchWriter } from '@tmlmobilidade/utils';
 /* * */
 
 const writer = new BatchWriter<SimplifiedVehicleEvent>({
-	batch_size: 5_000,
-	batch_timeout: 1_000,
-	idle_timeout: 1_000,
+	batch_size: 1_000,
+	batch_timeout: 250,
+	idle_timeout: 250,
 	insertFn: async (data) => {
 		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
 	},
