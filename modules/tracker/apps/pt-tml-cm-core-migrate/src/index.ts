@@ -43,7 +43,9 @@ async function main() {
 
 	const vehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
-	const vehicleEventsCursor = vehicleEventsCollection.find({}, { limit: 10_000 }).stream();
+	const vehicleEventsCursor = vehicleEventsCollection.find({}, { limit: 100_000 }).stream();
+
+	let count = 0;
 
 	for await (const document of vehicleEventsCursor) {
 		try {
@@ -65,14 +67,15 @@ async function main() {
 			// Delete the document from the source database
 			// await vehicleEventsCollection.deleteOne({ _id: document._id });
 			Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${parsedDocuments.length}) [ ${parsedDocuments.map(doc => doc._id).join(' | ')} ]`, 1);
+			count += parsedDocuments.length;
 		} catch (error) {
 			Logger.error({ error, message: `Failed to migrate document "${document._id}": ${error.message}` });
 		}
 	}
 
-	Logger.terminate(`Run took ${globalTimer.get()}.`);
+	Logger.terminate(`Run took ${globalTimer.get()}. Migrated ${count} documents.`);
 }
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '10s', throwOnError: false });
+await runOnInterval(main, { intervalMs: '5s', throwOnError: false });
