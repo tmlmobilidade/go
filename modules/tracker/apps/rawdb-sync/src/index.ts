@@ -72,10 +72,28 @@ async function main() {
 			endDate: Dates.now('utc').minus({ minutes: 10 }).unix_timestamp,
 			onChunk: async (chunk) => {
 				for (const configItem of syncConfig) {
-					await syncVehicleEvents(chunk, configItem);
+					try {
+						await syncVehicleEvents(chunk, configItem);
+					} catch (error) {
+						// Verify if the error is related to
+						// the distinct query being too big
+						const keywords = ['distinct', 'too', 'big'];
+						if (!keywords.some(keyword => error.message?.toLowerCase().includes(keyword))) throw error;
+						Logger.info({ message: `Distinct query too big — splitting chunk into smaller chunks... (${error.message})` });
+						// If it is, we need to repeat the process by splitting
+						// the current chunk into smaller chunks
+						await performInTimeChunks({
+							endDate: chunk.end,
+							onChunk: async (chunk) => {
+								await syncVehicleEvents(chunk, configItem);
+							},
+							splitBy: { minutes: 10 },
+							startDate: chunk.start,
+						});
+					}
 				}
 			},
-			splitBy: { hours: 1 },
+			splitBy: { hours: 2 },
 			startDate: earliestDate.unix_timestamp,
 		});
 
