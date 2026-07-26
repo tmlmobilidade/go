@@ -64,31 +64,25 @@ async function main() {
 					await rawDb.vehicleEvents.ptTmlCmVa.insertOne(parsedDocument);
 					currentInsertedDocumentIds.push(parsedDocument._id);
 					insertedCount++;
-					// Delete the document from the source database
-					await vehicleEventsCollection.deleteOne({ _id: document._id });
 				}
 				if (parsedDocument.agency_id === 'BNA17') {
 					await rawDb.vehicleEvents.ptTmlCmRl.insertOne(parsedDocument);
 					currentInsertedDocumentIds.push(parsedDocument._id);
 					insertedCount++;
-					// Delete the document from the source database
-					await vehicleEventsCollection.deleteOne({ _id: document._id });
 				}
 				if (parsedDocument.agency_id === 'YA15B') {
 					await rawDb.vehicleEvents.ptTmlCmTst.insertOne(parsedDocument);
 					currentInsertedDocumentIds.push(parsedDocument._id);
 					insertedCount++;
-					// Delete the document from the source database
-					await vehicleEventsCollection.deleteOne({ _id: document._id });
 				}
 				if (parsedDocument.agency_id === 'A2L1N') {
 					await rawDb.vehicleEvents.ptTmlCmAlsa.insertOne(parsedDocument);
 					currentInsertedDocumentIds.push(parsedDocument._id);
 					insertedCount++;
-					// Delete the document from the source database
-					await vehicleEventsCollection.deleteOne({ _id: document._id });
 				}
 			}
+			// Delete the document from the source database
+			await vehicleEventsCollection.deleteOne({ _id: document._id });
 			Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${currentInsertedDocumentIds.length}) [ ${currentInsertedDocumentIds.join(' | ')} ]`, 1);
 		} catch (error) {
 			Logger.error({ error, message: `Failed to migrate document "${document._id}": ${error.message}` });
