@@ -82,7 +82,7 @@ async function main() {
 				}
 			}
 			// Delete the document from the source database
-			// await vehicleEventsCollection.deleteOne({ _id: document._id });
+			await vehicleEventsCollection.deleteOne({ _id: document._id });
 			Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${currentInsertedDocumentIds.length}) [ ${currentInsertedDocumentIds.join(' | ')} ]`, 1);
 		} catch (error) {
 			Logger.error({ error, message: `Failed to migrate document "${document._id}": ${error.message}` });
