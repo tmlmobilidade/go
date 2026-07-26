@@ -90,7 +90,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 
 		distinctDestinationDbFn: async () => {
 			return await labDb.operation.vehicleEvents.distinct(
-				'upper(toString(_id))',
+				'_id',
 				'created_at >= $1 AND created_at < $2 AND agency_id = $3',
 				{ 1: timeChunk.start, 2: timeChunk.end, 3: configItem.agency_id },
 			);
