@@ -41,7 +41,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);
-	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] - ${chunkEndDate.iso}[${timeChunk.end}] › ${chunkStartDate.iso}[${timeChunk.start}]`, 150);
+	Logger.divider(`[${timeChunk.total - timeChunk.index}/${timeChunk.total}] ${configItem.agency_id} - ${chunkEndDate.iso}[${timeChunk.end}] › ${chunkStartDate.iso}[${timeChunk.start}]`, 150);
 
 	//
 	// Prepare the PCGIDB query to retrieve documents
