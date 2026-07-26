@@ -43,7 +43,7 @@ async function main() {
 
 	const vehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
-	const vehicleEventsCursor = vehicleEventsCollection.find({}, { limit: 100_000 }).stream();
+	const vehicleEventsCursor = vehicleEventsCollection.find({}, { limit: 100_000, sort: { millis: -1 } }).stream();
 
 	let insertedCount = 0;
 
