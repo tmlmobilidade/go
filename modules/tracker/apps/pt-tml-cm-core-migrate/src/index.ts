@@ -45,9 +45,10 @@ async function main() {
 
 	const vehicleEventsCursor = vehicleEventsCollection.find({}, { limit: 100_000 }).stream();
 
-	let count = 0;
+	let insertedCount = 0;
 
 	for await (const document of vehicleEventsCursor) {
+		const currentInsertedDocumentIds: string[] = [];
 		try {
 			Logger.progress({ message: `Migrating "${document._id}"...` });
 			// Transform the document
@@ -59,21 +60,36 @@ async function main() {
 				// If the document created_at is before the earliest date, skip it
 				if (parsedDocument.created_at < earliestDate.unix_timestamp) continue;
 				// Write the document to the correct collection
-				if (parsedDocument.agency_id === 'LA77N') await rawDb.vehicleEvents.ptTmlCmVa.insertOne(parsedDocument);
-				if (parsedDocument.agency_id === 'BNA17') await rawDb.vehicleEvents.ptTmlCmRl.insertOne(parsedDocument);
-				if (parsedDocument.agency_id === 'YA15B') await rawDb.vehicleEvents.ptTmlCmTst.insertOne(parsedDocument);
-				if (parsedDocument.agency_id === 'A2L1N') await rawDb.vehicleEvents.ptTmlCmAlsa.insertOne(parsedDocument);
+				if (parsedDocument.agency_id === 'LA77N') {
+					await rawDb.vehicleEvents.ptTmlCmVa.insertOne(parsedDocument);
+					currentInsertedDocumentIds.push(parsedDocument._id);
+					insertedCount++;
+				}
+				if (parsedDocument.agency_id === 'BNA17') {
+					await rawDb.vehicleEvents.ptTmlCmRl.insertOne(parsedDocument);
+					currentInsertedDocumentIds.push(parsedDocument._id);
+					insertedCount++;
+				}
+				if (parsedDocument.agency_id === 'YA15B') {
+					await rawDb.vehicleEvents.ptTmlCmTst.insertOne(parsedDocument);
+					currentInsertedDocumentIds.push(parsedDocument._id);
+					insertedCount++;
+				}
+				if (parsedDocument.agency_id === 'A2L1N') {
+					await rawDb.vehicleEvents.ptTmlCmAlsa.insertOne(parsedDocument);
+					currentInsertedDocumentIds.push(parsedDocument._id);
+					insertedCount++;
+				}
 			}
 			// Delete the document from the source database
 			// await vehicleEventsCollection.deleteOne({ _id: document._id });
-			Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${parsedDocuments.length}) [ ${parsedDocuments.map(doc => doc._id).join(' | ')} ]`, 1);
-			count += parsedDocuments.length;
+			Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${currentInsertedDocumentIds.length}) [ ${currentInsertedDocumentIds.join(' | ')} ]`, 1);
 		} catch (error) {
 			Logger.error({ error, message: `Failed to migrate document "${document._id}": ${error.message}` });
 		}
 	}
 
-	Logger.terminate(`Run took ${globalTimer.get()}. Migrated ${count} documents.`);
+	Logger.terminate(`Run took ${globalTimer.get()}. Migrated ${insertedCount} documents.`);
 }
 
 /* * */
