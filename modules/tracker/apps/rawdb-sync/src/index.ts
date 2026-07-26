@@ -1,6 +1,7 @@
 /* * */
 
 import { getEarliestDate } from '@tmlmobilidade/consts';
+import { Dates } from '@tmlmobilidade/dates';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -68,6 +69,7 @@ async function main() {
 		// and sync each one sequentially.
 
 		await performInTimeChunks({
+			endDate: Dates.now('utc').minus({ minutes: 10 }).unix_timestamp,
 			onChunk: async (chunk) => {
 				for (const configItem of syncConfig) {
 					await syncVehicleEvents(chunk, configItem);
