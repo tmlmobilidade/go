@@ -65,7 +65,12 @@ async function main() {
 
 	const vehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
-	const vehicleEventsCursor = vehicleEventsCollection.find({ _id: { $in: coreVehicleEventsBatch.map(id => new ObjectId(id)) as unknown as string[] } }).stream();
+	const vehicleEventsCursor = vehicleEventsCollection
+		.find(
+			{ _id: { $in: coreVehicleEventsBatch.map(id => new ObjectId(id)) as unknown as string[] } },
+			{ sort: { millis: -1 } },
+		)
+		.stream();
 
 	let insertedCount = 0;
 
