@@ -104,13 +104,14 @@ async function main() {
 				}
 			}
 			// Delete the document from the source database
-			await vehicleEventsCollection.deleteOne({ _id: document._id });
-			Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${currentInsertedDocumentIds.length}) [ ${currentInsertedDocumentIds.join(' | ')} ]`, 1);
+			const deleteResult = await vehicleEventsCollection.deleteOne({ _id: new ObjectId(document._id) as unknown as string });
+			Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${currentInsertedDocumentIds.length}) [ ${currentInsertedDocumentIds.join(' | ')} ] (deleted: ${deleteResult.deletedCount})`, 1);
 		} catch (error) {
 			Logger.error({ error, message: `Failed to migrate document "${document._id}": ${error.message}` });
 			if (error.message.startsWith('E11000')) {
 				Logger.error({ message: `Duplicate document "${document._id}" found in source database. Deleting it from source database.` });
-				await vehicleEventsCollection.deleteOne({ _id: document._id });
+				const deleteResult = await vehicleEventsCollection.deleteOne({ _id: new ObjectId(document._id) as unknown as string });
+				Logger.error({ message: `Deleted duplicate document "${document._id}" from source database (deleted: ${deleteResult.deletedCount})` });
 			}
 		}
 	}
