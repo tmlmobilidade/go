@@ -7,6 +7,7 @@ import { type SimplifiedApexBankingTap, SimplifiedApexInspection, SimplifiedApex
 
 export const simplifiedApexBankingTapTableSchema: ClickHouseTableSchema<SimplifiedApexBankingTap> = {
 	_id: { type: 'UUID' },
+	agency_code: { type: 'LowCardinality(String)' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	banking_token: { type: 'String' },
@@ -33,6 +34,7 @@ export const simplifiedApexBankingTapTableSchema: ClickHouseTableSchema<Simplifi
 
 export const simplifiedApexInspectionDecisionTableSchema: ClickHouseTableSchema<SimplifiedApexInspectionDecision> = {
 	_id: { type: 'UUID' },
+	agency_code: { type: 'LowCardinality(String)' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	created_at: { type: 'Int64' },
@@ -50,6 +52,7 @@ export const simplifiedApexInspectionDecisionTableSchema: ClickHouseTableSchema<
 
 export const simplifiedApexInspectionTableSchema: ClickHouseTableSchema<SimplifiedApexInspection> = {
 	_id: { type: 'UUID' },
+	agency_code: { type: 'LowCardinality(String)' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	card_serial_number: { type: 'Nullable(UInt64)' },
@@ -76,6 +79,7 @@ export const simplifiedApexInspectionTableSchema: ClickHouseTableSchema<Simplifi
 
 export const simplifiedApexLocationTableSchema: ClickHouseTableSchema<SimplifiedApexLocation> = {
 	_id: { type: 'UUID' },
+	agency_code: { type: 'LowCardinality(String)' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	created_at: { type: 'Int64' },
@@ -96,6 +100,7 @@ export const simplifiedApexLocationTableSchema: ClickHouseTableSchema<Simplified
 
 export const simplifiedApexOnBoardRefundTableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardRefund> = {
 	_id: { type: 'UUID' },
+	agency_code: { type: 'LowCardinality(String)' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	card_physical_type: { type: 'UInt8' },
@@ -124,6 +129,7 @@ export const simplifiedApexOnBoardRefundTableSchema: ClickHouseTableSchema<Simpl
 
 export const simplifiedApexOnBoardSaleTableSchema: ClickHouseTableSchema<SimplifiedApexOnBoardSale> = {
 	_id: { type: 'UUID' },
+	agency_code: { type: 'LowCardinality(String)' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	card_physical_type: { type: 'UInt8' },
@@ -153,6 +159,7 @@ export const simplifiedApexOnBoardSaleTableSchema: ClickHouseTableSchema<Simplif
 
 export const simplifiedApexValidationTableSchema: ClickHouseTableSchema<SimplifiedApexValidation> = {
 	_id: { type: 'UUID' },
+	agency_code: { type: 'LowCardinality(String)' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
 	card_serial_number: { type: 'Nullable(UInt64)' },

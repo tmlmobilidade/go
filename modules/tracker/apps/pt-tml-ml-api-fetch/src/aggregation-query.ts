@@ -44,7 +44,7 @@ function rideLookupHashedShapeStage(): AggregationPipeline<Ride> {
 			$lookup: {
 				as: 'hashed_shape',
 				foreignField: '_id',
-				from: 'hashed_shapes',
+				from: 'hashed-shapes',
 				localField: 'hashed_shape_id',
 			},
 		},

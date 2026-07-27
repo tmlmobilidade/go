@@ -35,7 +35,7 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 	//
 
 	const allStopsList = await goDb.infrastructure.stops.findMany(
-		{ 'flags.agency_ids': { $in: ['41', '42', '43', '44'] } }, // Only stops used by CM
+		{ 'flags.agency_ids': { $in: ['A2L1N', 'BNA17', 'LA77N', 'YA15B'] } }, // Only stops used by CM
 		{ sort: { _id: 1 } },
 	);
 
@@ -43,10 +43,10 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 		//
 
 		const matchingFlagData = stopData.flags?.find((flag) => {
-			const matches41 = flag.agency_ids.includes('41');
-			const matches42 = flag.agency_ids.includes('42');
-			const matches43 = flag.agency_ids.includes('43');
-			const matches44 = flag.agency_ids.includes('44');
+			const matches41 = flag.agency_ids.includes('LA77N');
+			const matches42 = flag.agency_ids.includes('BNA17');
+			const matches43 = flag.agency_ids.includes('YA15B');
+			const matches44 = flag.agency_ids.includes('A2L1N');
 			return matches41 || matches42 || matches43 || matches44;
 		});
 

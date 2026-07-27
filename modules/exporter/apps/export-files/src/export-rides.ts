@@ -64,7 +64,7 @@ export async function exportRidesFile(fileExport: FileExport): Promise<string> {
 				$lookup: {
 					as: 'acceptance',
 					foreignField: 'ride_id',
-					from: 'ride_acceptances',
+					from: 'ride-acceptances',
 					localField: '_id',
 				},
 			},

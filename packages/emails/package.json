@@ -40,10 +40,10 @@
 		"@tmlmobilidade/utils": "*",
 		"nodemailer": "9.0.3",
 		"react": "19.2.8",
-		"react-email": "6.9.0"
+		"react-email": "6.9.1"
 	},
 	"devDependencies": {
-		"@react-email/ui": "6.9.0",
+		"@react-email/ui": "6.9.1",
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "26.1.1",
 		"@types/nodemailer": "8.0.1",

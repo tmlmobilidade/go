@@ -20,8 +20,8 @@ export function ValidationsDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const validationsDetailContext = useValidationsDetailContext();
 	const meContext = useMeContext();
+	const validationsDetailContext = useValidationsDetailContext();
 
 	//
 	// B. Transform data

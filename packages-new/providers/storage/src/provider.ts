@@ -5,7 +5,7 @@ import { type StorageDeps } from '@/types/deps.js';
 import { type OperationHooks } from '@/types/hooks.js';
 import { type OperationContext } from '@/types/operation-context.js';
 import { createLoggerObservability } from '@/utils/observability.js';
-import { type Filter, type FindOptions } from '@tmlmobilidade/go-clients-mongo';
+import { type Filter, type FindOptions, MongoDatabaseClient } from '@tmlmobilidade/go-clients-mongo';
 import { OCIStorageClient } from '@tmlmobilidade/go-clients-oci-storage';
 import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
@@ -23,8 +23,11 @@ class StorageProviderClass {
 
 	public static async getInstance() {
 		if (!StorageProviderClass._instance) {
-			const ociStorageClient = await OCIStorageClient.getClient({ prefix: 'OCI_STORAGE' });
-			StorageProviderClass._instance = new StorageProviderClass({ blobs: ociStorageClient, observability: createLoggerObservability() });
+			const [mongoClient, ociStorageClient] = await Promise.all([
+				MongoDatabaseClient.getClient({ prefix: 'GODB', tunnelType: 'GO' }),
+				OCIStorageClient.getClient({ prefix: 'OCI_STORAGE' }),
+			]);
+			StorageProviderClass._instance = new StorageProviderClass({ blobs: ociStorageClient, mongoClient, observability: createLoggerObservability() });
 		}
 		return StorageProviderClass._instance;
 	}

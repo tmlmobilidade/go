@@ -37,7 +37,7 @@ const main = async () => {
 	await publishVehiclesPositions();
 
 	if (ITERATION % 30 === 0) await publishVehiclesMetadata(); // Every 30 iterations * 1s = 30 seconds
-	if (ITERATION % 30 === 0) await publishTripUpdates(); // Every 30 iterations * 1s = 30 seconds
+	// if (ITERATION % 30 === 0) await publishTripUpdates(); // Every 30 iterations * 1s = 30 seconds
 
 	ITERATION++;
 

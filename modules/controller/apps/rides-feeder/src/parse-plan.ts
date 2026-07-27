@@ -721,11 +721,11 @@ export async function parsePlan(planData: Plan) {
 				line_short_name: routeData.line_short_name,
 				path: sortedHashedPatternPath,
 				pattern_id: currentTrip.pattern_id,
-				route_color: routeData.route_color,
+				route_color: routeData.route_color ?? '#000000',
 				route_id: currentTrip.route_id,
 				route_long_name: routeData.route_long_name,
 				route_short_name: routeData.route_short_name,
-				route_text_color: routeData.route_text_color,
+				route_text_color: routeData.route_text_color ?? '#ffffff',
 				trip_headsign: currentTrip.trip_headsign,
 			};
 
