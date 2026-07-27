@@ -30,6 +30,10 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
 /* * */
 
+let PREVIOUS_PLANS_LIST_HASH: null | string = null;
+
+/* * */
+
 export async function main() {
 	//
 
