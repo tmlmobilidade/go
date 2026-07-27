@@ -30,19 +30,24 @@ async function main() {
 	const globalTimer = new Timer();
 
 	//
-	// Ask the coordinator for a batch of Ride IDs to process
+	// Ask the coordinator for a batch of Core Vehicle Events to process
 
 	const fetchCoordinatorTimer = new Timer();
 
 	const currentEnvironment = getCurrentEnvironment();
 	let coordinatorUrl: string;
 	if (currentEnvironment === 'dev') coordinatorUrl = `http://localhost:5050/core-vehicle-events`;
-	else coordinatorUrl = `http://${currentEnvironment}-controller-coordinator.${currentEnvironment}-controller.svc.cluster.local/core-vehicle-events`;
+	else coordinatorUrl = `http://${currentEnvironment}-tracker-pt-tml-cm-core-migrate-coordinator.${currentEnvironment}-tracker.svc.cluster.local/core-vehicle-events`;
 
 	const coreVehicleEventsBatchResponse = await fetch(coordinatorUrl);
 	const coreVehicleEventsBatch = await coreVehicleEventsBatchResponse.json() as string[];
 
 	console.log(`Fetched ${coreVehicleEventsBatch.length} core vehicle events from coordinator (fetch: ${fetchCoordinatorTimer.get()})`);
+
+	if (!coreVehicleEventsBatch.length) {
+		Logger.info({ message: `No core vehicle events to process` });
+		return;
+	}
 
 	//
 	// Get the earliest date from which we have data to sync,
