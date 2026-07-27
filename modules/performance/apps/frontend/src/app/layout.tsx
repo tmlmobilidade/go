@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider app={process.env.APP ?? 'frontend'} module={process.env.MODULE ?? 'performance'} version={pjson.version}>
+		<BaseProvider initializeSentry={true} version={pjson.version}>
 			<AppProvider>
 				<AppWrapper>
 					<ThemeProviders>

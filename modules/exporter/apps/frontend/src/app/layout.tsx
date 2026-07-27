@@ -36,7 +36,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 	// B. Render components
 
 	return (
-		<BaseProvider app={process.env.APP ?? 'frontend'} module={process.env.MODULE ?? 'exporter'} version={pjson.version}>
+		<BaseProvider initializeSentry={true} version={pjson.version}>
 			<AppProvider>
 				{children}
 			</AppProvider>

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider app={process.env.APP ?? 'frontend'} i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }} module={process.env.MODULE ?? 'hub'} version={pjson.version}>
+		<BaseProvider i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }} initializeSentry={true} version={pjson.version}>
 			<NuqsAdapter>
 				{children}
 			</NuqsAdapter>
