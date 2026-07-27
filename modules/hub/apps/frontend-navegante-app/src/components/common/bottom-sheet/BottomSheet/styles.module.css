@@ -5,6 +5,11 @@
 	z-index: 99 !important;
 }
 
+.root[data-layer='foreground'] {
+	/* Above map floating controls, which use z-index 101. */
+	z-index: 102 !important;
+}
+
 .backdrop {
 	z-index: 99 !important;
 	background-color: rgb(0 0 0 / 30%) !important;
@@ -88,4 +93,12 @@
 .content {
 	min-height: 0;
 	background-color: var(--color-system-background-200);
+}
+
+.footer {
+	z-index: 10;
+	flex: 0 0 auto;
+	padding: 12px 20px calc(20px + env(safe-area-inset-bottom));
+	background-color: var(--color-system-background-200);
+	border-top: 1px solid var(--color-system-border-100);
 }

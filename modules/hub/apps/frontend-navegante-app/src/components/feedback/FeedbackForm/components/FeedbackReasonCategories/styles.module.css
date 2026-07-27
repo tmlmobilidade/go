@@ -1,25 +1,11 @@
-.sheet {
+.container {
 	display: flex;
 	flex-direction: column;
 	gap: 20px;
 	padding: 20px;
 }
 
-.sheetHeader {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
-
-.sheetTitle {
-	margin: 0;
-	font-size: 22px;
-	font-weight: var(--font-weight-bold);
-	line-height: 1.2;
-	color: var(--color-system-text-100);
-}
-
-.sheetDescription {
+.description {
 	margin: 0;
 	font-size: 16px;
 	font-weight: var(--font-weight-medium);
@@ -27,13 +13,13 @@
 	color: var(--color-system-text-200);
 }
 
-.sheetOptions {
+.options {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
 }
 
-.sheetOption {
+.option {
 	display: flex;
 	gap: 12px;
 	align-items: center;
@@ -51,7 +37,12 @@
 	border-radius: 8px;
 }
 
-.sheetOption svg {
+.option svg {
 	flex: 0 0 auto;
 	color: var(--color-system-text-200);
+}
+
+.option:focus-visible {
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 2px;
 }

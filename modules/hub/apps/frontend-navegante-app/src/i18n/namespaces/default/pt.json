@@ -85,6 +85,9 @@
 		}
 	},
 	"common": {
+		"BottomSheetBack": {
+			"label": "Voltar"
+		},
 		"BottomSheetClose": {
 			"label": "Fechar"
 		},

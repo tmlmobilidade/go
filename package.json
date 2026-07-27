@@ -154,7 +154,7 @@
 		"repo:lint": "turbo lint",
 		"repo:lint:fix": "turbo lint:fix",
 		"repo:load-env-prd": "ENVIRONMENT=prd npx --yes @dotenv-run/cli -v -f ./environments/prd/.env.prd --",
-		"repo:load-env-stg": "ENVIRONMENT=dev npx --yes @dotenv-run/cli -v -f ./environments/stg/.env.stg --",
+		"repo:load-env-stg": "ENVIRONMENT=dev op run --env-file=./environments/stg/.env.stg --",
 		"repo:rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"repo:routes": "bash ./scripts/generate-routes.sh"
 	},

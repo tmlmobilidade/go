@@ -1,0 +1,7 @@
+.moodView {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 20px;
+	padding-bottom: calc(20px + env(safe-area-inset-bottom));
+}

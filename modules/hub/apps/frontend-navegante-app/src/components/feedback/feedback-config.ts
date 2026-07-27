@@ -22,9 +22,6 @@ export type FeedbackReasonGroups = Partial<Record<FeedbackReasonCategory, Feedba
 
 /* * */
 
-// use for checkbox limit ajusts :)
-export const FEEDBACK_REASON_SELECTION_LIMIT = 1;
-
 const CATEGORY_HEADINGS = {
 	driver: 'Motorista/Condutor',
 	line_service: 'Linha/Serviço',

@@ -27,3 +27,9 @@
 	outline: 2px solid var(--color-brand-navegante);
 	outline-offset: 2px;
 }
+
+.button:disabled {
+	pointer-events: none;
+	cursor: not-allowed;
+	opacity: 0.6;
+}

@@ -2,11 +2,12 @@
 
 /* * */
 
+import { BottomSheetBack } from '@/components/common/bottom-sheet/BottomSheetBack';
 import { BottomSheetClose } from '@/components/common/bottom-sheet/BottomSheetClose';
 import { ACTIVE_MAP_BOTTOM_SHEET_HEIGHT_CSS_PROPERTY, MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { registerActiveBottomSheetSnapController, useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { getBottomSheetSnapState } from '@/utils/bottom-sheet/behavior';
-import { type PropsWithChildren, useEffect, useId, useMemo, useRef } from 'react';
+import { type PropsWithChildren, type ReactNode, useEffect, useId, useMemo, useRef } from 'react';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
 
 import styles from './styles.module.css';
@@ -14,14 +15,18 @@ import styles from './styles.module.css';
 /* * */
 
 type BottomSheetHeaderMode = 'default' | 'handle';
+type BottomSheetLayer = 'default' | 'foreground';
 type BottomSheetSize = 'fit' | 'full' | 'half' | 'short';
 
 interface BottomSheetProps {
 	avoidKeyboard?: boolean
 	disableDismiss?: boolean
+	footer?: ReactNode
 	headerMode?: BottomSheetHeaderMode
 	initialSnap?: number
+	layer?: BottomSheetLayer
 	mapAware?: boolean
+	onBack?: () => void
 	onClose: () => void
 	onCloseEnd?: () => void
 	onOpenEnd?: () => void
@@ -52,9 +57,12 @@ export function BottomSheet({
 	avoidKeyboard = true,
 	children,
 	disableDismiss = false,
+	footer,
 	headerMode,
 	initialSnap,
+	layer = 'default',
 	mapAware = false,
+	onBack,
 	onClose,
 	onCloseEnd,
 	onOpenEnd,
@@ -89,16 +97,18 @@ export function BottomSheet({
 	// B. Handle actions
 
 	useEffect(() => {
-		if (!syncSnapState) return;
 		if (!opened) {
-			setActiveBottomSheetSnap({ snapIndex: null, snapPoint: null });
+			if (syncSnapState) setActiveBottomSheetSnap({ snapIndex: null, snapPoint: null });
 			return;
 		}
 
-		setActiveBottomSheetSnap({
-			snapIndex: selectedInitialSnap,
-			snapPoint: selectedInitialSnapPoint,
-		});
+		if (syncSnapState) {
+			setActiveBottomSheetSnap({
+				snapIndex: selectedInitialSnap,
+				snapPoint: selectedInitialSnapPoint,
+			});
+		}
+
 		sheetRef.current?.snapTo(selectedInitialSnap);
 	}, [opened, selectedInitialSnap, selectedInitialSnapPoint, setActiveBottomSheetSnap, snapPointsKey, syncSnapState]);
 
@@ -145,6 +155,7 @@ export function BottomSheet({
 			ref={sheetRef}
 			avoidKeyboard={avoidKeyboard}
 			className={styles.root}
+			data-layer={layer}
 			detent={detent}
 			disableDismiss={disableDismiss}
 			initialSnap={selectedInitialSnap}
@@ -167,7 +178,9 @@ export function BottomSheet({
 					data-mode={selectedHeaderMode}
 					data-with-background={withHeaderBackground}
 				>
-					<div className={styles.headerLeft} />
+					<div className={styles.headerLeft}>
+						{onBack && <BottomSheetBack onClick={onBack} />}
+					</div>
 
 					{selectedHeaderMode === 'handle' ? (
 						<div aria-hidden="true" className={styles.handle} />
@@ -190,6 +203,8 @@ export function BottomSheet({
 				<Sheet.Content className={styles.content}>
 					{children}
 				</Sheet.Content>
+
+				{footer && <div className={styles.footer}>{footer}</div>}
 			</Sheet.Container>
 
 			{withOverlay && <Sheet.Backdrop className={styles.backdrop} onTap={onClose} />}

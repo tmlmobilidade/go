@@ -1,14 +1,24 @@
 'use client';
 
-import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonCategories } from '@/components/feedback/feedback-config';
+import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonCategories, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
 import { FeedbackTrigger } from '@/components/feedback/FeedbackButton';
-import { FeedbackModal } from '@/components/feedback/FeedbackForm/components/FeedbackModal';
-import { FeedbackReasonOptionsSheet } from '@/components/feedback/FeedbackForm/sheets/FeedbackReasonOptionsSheet';
-import { FeedbackReasonsSheet } from '@/components/feedback/FeedbackForm/sheets/FeedbackReasonsSheet';
+import { FeedbackImprovementPrompt } from '@/components/feedback/FeedbackForm/components/FeedbackImprovement';
+import { FeedbackMoodSelector } from '@/components/feedback/FeedbackForm/components/FeedbackMoodSelector';
+import { FeedbackReasonCategories } from '@/components/feedback/FeedbackForm/components/FeedbackReasonCategories';
+import { FeedbackReasonOptions } from '@/components/feedback/FeedbackForm/components/FeedbackReasonOptions';
+import { FeedbackSubmitButton } from '@/components/feedback/FeedbackForm/components/FeedbackSubmitButton';
+import { FeedbackThankYou } from '@/components/feedback/FeedbackForm/components/FeedbackThankYou';
 import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { type FeedbackSheetView, getFeedbackBackTarget, getFeedbackReasonSelectionTarget, shouldShowFeedbackTrigger } from '@/utils/feedback/navigation';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PublicFeedback } from '@tmlmobilidade/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -28,58 +38,76 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	//
 	// A. Setup variables
 
-	const [isHappyReasonsSheetOpen, setIsHappyReasonsSheetOpen] = useState(false);
-	const [isUnhappyReasonsSheetOpen, setIsUnhappyReasonsSheetOpen] = useState(false);
-	const [activeReasonOptionsSheet, setActiveReasonOptionsSheet] = useState<FeedbackReasonCategory | null>(null);
-	const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+	const { t } = useTranslation();
+	const { activeBottomSheetSnap } = useBottomSheet();
+
+	const [activeCategory, setActiveCategory] = useState<FeedbackReasonCategory | null>(null);
+	const [activeView, setActiveView] = useState<FeedbackSheetView>('mood');
+	const [isFeedbackSheetOpen, setIsFeedbackSheetOpen] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [selectedReasonValues, setSelectedReasonValues] = useState<string[]>([]);
 	const [selectedMood, setSelectedMood] = useState<null | PublicFeedback['mood']>(null);
-	const [thankYouMessageKey, setThankYouMessageKey] = useState(0);
+	const [triggerPortalRoot, setTriggerPortalRoot] = useState<HTMLElement | null>(null);
 
 	const reasonCategories = getFeedbackReasonCategories(entityType) as readonly FeedbackReasonCategory[];
-	const isAnyReasonsSheetOpen = isHappyReasonsSheetOpen || isUnhappyReasonsSheetOpen || activeReasonOptionsSheet !== null;
+	const reasonGroups = getFeedbackReasonGroups(entityType, reasonId => t(`default:feedback.reasons.${reasonId}`));
+	const activeReasonGroup = activeCategory ? reasonGroups[activeCategory] : null;
 	const feedbackCooldown = useFeedbackCooldown(entityType === 'line' ? entityId : undefined);
+	const isTriggerVisible = shouldShowFeedbackTrigger(activeBottomSheetSnap.snapPoint, isFeedbackSheetOpen, feedbackCooldown.isCoolingDown);
+	const sheetTitle = getFeedbackSheetTitle(activeView, activeReasonGroup?.heading, selectedMood);
+	const canNavigateBack = activeView === 'categories' || activeView === 'reasons';
+	const canSubmitReasons = selectedReasonValues.length > 0 && !isSubmitting;
 
 	//
 	// B. Handle actions
 
-	const handleOpenReasonSelection = (openReasonsSheet: () => void) => {
-		if (reasonCategories.length === 1 && reasonCategories[0]) {
-			setActiveReasonOptionsSheet(reasonCategories[0]);
-			return;
-		}
-
-		openReasonsSheet();
-	};
-
-	const handleOpenHappyReasonsSheet = () => {
-		handleOpenReasonSelection(() => setIsHappyReasonsSheetOpen(true));
-	};
-
-	const handleSelectUnhappy = () => {
-		setSelectedMood('unhappy');
-		handleOpenReasonSelection(() => setIsUnhappyReasonsSheetOpen(true));
-	};
-
-	const handleCloseHappyReasonsSheet = () => {
-		setIsHappyReasonsSheetOpen(false);
-	};
-
-	const handleCloseReasonOptionsSheet = () => {
-		setActiveReasonOptionsSheet(null);
-	};
-
 	const resetFeedbackForm = () => {
-		setIsFeedbackModalOpen(false);
-		setIsHappyReasonsSheetOpen(false);
-		setIsUnhappyReasonsSheetOpen(false);
-		setActiveReasonOptionsSheet(null);
+		setActiveCategory(null);
+		setActiveView('mood');
+		setIsFeedbackSheetOpen(false);
+		setIsSubmitting(false);
 		setSelectedMood(null);
 		setSelectedReasonValues([]);
 	};
 
+	const openReasonSelection = () => {
+		const nextView = getFeedbackReasonSelectionTarget(reasonCategories.length);
+
+		if (nextView === 'reasons' && reasonCategories[0]) {
+			setActiveCategory(reasonCategories[0]);
+		}
+
+		setActiveView(nextView);
+	};
+
+	const handleBack = () => {
+		const nextView = getFeedbackBackTarget(activeView, reasonCategories.length);
+		if (!nextView) return;
+
+		if (nextView === 'categories') {
+			setActiveCategory(null);
+			setActiveView(nextView);
+			return;
+		}
+
+		setActiveCategory(null);
+		setActiveView(nextView);
+		setSelectedReasonValues([]);
+	};
+
+	const handleSelectCategory = (category: FeedbackReasonCategory) => {
+		setActiveCategory(category);
+		setSelectedReasonValues([]);
+		setActiveView('reasons');
+	};
+
+	const handleSelectUnhappy = () => {
+		setSelectedMood('unhappy');
+		openReasonSelection();
+	};
+
 	const submitFeedback = async (feedbackMood: null | PublicFeedback['mood'], feedbackReasonValues: string[]) => {
-		if (!agencyId || !entityId || !feedbackMood) return;
+		if (!agencyId || !entityId || !feedbackMood || isSubmitting) return;
 
 		const payload: PublicFeedback = {
 			agency_id: agencyId,
@@ -90,6 +118,8 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			reasons: feedbackReasonValues,
 			schema_version: 'v1',
 		};
+
+		setIsSubmitting(true);
 
 		try {
 			const response = await fetch(FEEDBACK_ENDPOINT, {
@@ -104,85 +134,108 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			}
 
 			feedbackCooldown.startCooldown();
-			setThankYouMessageKey(currentValue => currentValue + 1);
+			setActiveView('thank-you');
 		} catch (error) {
 			console.error({ error, message: 'Error submitting feedback.' });
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
-	const handleCancelFeedbackModal = () => {
-		resetFeedbackForm();
-	};
+	//
+	// C. Setup effects
 
-	const handleSubmitFeedbackModal = () => {
-		const feedbackMood = selectedMood;
-		const feedbackReasonValues = selectedReasonValues;
+	useEffect(() => {
+		setTriggerPortalRoot(document.body);
+	}, []);
 
-		resetFeedbackForm();
+	useEffect(() => {
+		if (activeView !== 'thank-you') return;
 
-		void submitFeedback(feedbackMood, feedbackReasonValues);
-	};
+		const timeout = window.setTimeout(() => {
+			resetFeedbackForm();
+		}, 2000);
 
-	const handleSubmitReasonOptionsSheet = (reasonValues: string[]) => {
-		const feedbackMood = selectedMood;
-
-		resetFeedbackForm();
-
-		void submitFeedback(feedbackMood, reasonValues);
-	};
+		return () => window.clearTimeout(timeout);
+	}, [activeView]);
 
 	//
-	// C. Render component
+	// D. Render components
 
 	if (!agencyId || !entityId) return null;
 
 	return (
 		<>
-			{!feedbackCooldown.isCoolingDown && (
-				<FeedbackTrigger onClick={() => setIsFeedbackModalOpen(true)} />
+			{triggerPortalRoot && isTriggerVisible && createPortal(
+				<FeedbackTrigger onClick={() => setIsFeedbackSheetOpen(true)} />,
+				triggerPortalRoot,
 			)}
 
-			<FeedbackModal
-				isAnyReasonsSheetOpen={isAnyReasonsSheetOpen}
-				onClose={handleCancelFeedbackModal}
-				onOpenHappyReasonsSheet={handleOpenHappyReasonsSheet}
-				onSelectHappy={() => setSelectedMood('happy')}
-				onSelectUnhappy={handleSelectUnhappy}
-				onSubmit={handleSubmitFeedbackModal}
-				opened={isFeedbackModalOpen}
-				selectedMood={selectedMood}
-				thankYouMessageKey={thankYouMessageKey}
-			/>
+			<BottomSheet
+				layer="foreground"
+				onBack={canNavigateBack ? handleBack : undefined}
+				onClose={resetFeedbackForm}
+				opened={isFeedbackSheetOpen}
+				size="fit"
+				syncSnapState={false}
+				title={sheetTitle}
+				footer={activeView === 'reasons' ? (
+					<FeedbackSubmitButton
+						disabled={!canSubmitReasons}
+						onClick={() => void submitFeedback(selectedMood, selectedReasonValues)}
+					/>
+				) : undefined}
+			>
+				{activeView === 'mood' && (
+					<div className={styles.moodView}>
+						<FeedbackMoodSelector
+							onSelectHappy={() => setSelectedMood('happy')}
+							onSelectUnhappy={handleSelectUnhappy}
+							selectedMood={selectedMood}
+						>
+							{selectedMood === 'happy' && (
+								<FeedbackImprovementPrompt onClick={openReasonSelection} />
+							)}
+						</FeedbackMoodSelector>
 
-			<FeedbackReasonsSheet
-				description="Ajude-nos a melhorar o serviço."
-				entityType={entityType}
-				heading="O que podemos melhorar?"
-				onClose={handleCloseHappyReasonsSheet}
-				onSelectCategory={setActiveReasonOptionsSheet}
-				opened={isHappyReasonsSheetOpen}
-			/>
+						{selectedMood === 'happy' && (
+							<FeedbackSubmitButton
+								disabled={isSubmitting}
+								onClick={() => void submitFeedback(selectedMood, selectedReasonValues)}
+							/>
+						)}
+					</div>
+				)}
 
-			<FeedbackReasonsSheet
-				description="Ajude-nos a melhorar o serviço."
-				entityType={entityType}
-				heading="Com o que está insatisfeito?"
-				onClose={() => setIsUnhappyReasonsSheetOpen(false)}
-				onSelectCategory={setActiveReasonOptionsSheet}
-				opened={isUnhappyReasonsSheetOpen}
-			/>
+				{activeView === 'categories' && (
+					<FeedbackReasonCategories
+						entityType={entityType}
+						onSelect={handleSelectCategory}
+					/>
+				)}
 
-			{reasonCategories.map(category => (
-				<FeedbackReasonOptionsSheet
-					key={category}
-					category={category}
-					entityType={entityType}
-					onClose={handleCloseReasonOptionsSheet}
-					onSubmit={handleSubmitReasonOptionsSheet}
-					opened={activeReasonOptionsSheet === category}
-					selectedValues={selectedReasonValues}
-				/>
-			))}
+				{activeView === 'reasons' && activeCategory && (
+					<FeedbackReasonOptions
+						category={activeCategory}
+						entityType={entityType}
+						onChange={setSelectedReasonValues}
+						selectedValues={selectedReasonValues}
+					/>
+				)}
+
+				{activeView === 'thank-you' && <FeedbackThankYou />}
+			</BottomSheet>
 		</>
 	);
+
+	//
+}
+
+/* * */
+
+function getFeedbackSheetTitle(view: FeedbackSheetView, reasonHeading: string | undefined, selectedMood: null | PublicFeedback['mood']) {
+	if (view === 'categories') return selectedMood === 'unhappy' ? 'Com o que está insatisfeito?' : 'O que podemos melhorar?';
+	if (view === 'reasons') return reasonHeading ?? 'Feedback';
+
+	return 'Feedback';
 }
