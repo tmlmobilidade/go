@@ -135,6 +135,8 @@
 		"prd:tracker:es-crtm-la-veloz": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-es-crtm-la-veloz-*",
 		"prd:tracker:pt-tml-ccfl": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ccfl-*",
 		"prd:tracker:pt-tml-cm": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-*",
+		"prd:tracker:pt-tml-cm-core-migrate": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-core-migrate",
+		"prd:tracker:pt-tml-cm-core-migrate-coordinator": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-core-migrate-coordinator",
 		"prd:tracker:pt-tml-cp": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cp-*",
 		"prd:tracker:pt-tml-fertagus": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-fertagus-*",
 		"prd:tracker:pt-tml-ml": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ml-*",

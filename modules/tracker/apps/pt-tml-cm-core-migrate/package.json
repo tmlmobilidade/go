@@ -26,7 +26,8 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/utils": "*",
+		"mongodb": "7.5.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
