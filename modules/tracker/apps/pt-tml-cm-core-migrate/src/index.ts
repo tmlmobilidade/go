@@ -5,6 +5,7 @@ import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { getCurrentEnvironment } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
@@ -29,6 +30,21 @@ async function main() {
 	const globalTimer = new Timer();
 
 	//
+	// Ask the coordinator for a batch of Ride IDs to process
+
+	const fetchCoordinatorTimer = new Timer();
+
+	const currentEnvironment = getCurrentEnvironment();
+	let coordinatorUrl: string;
+	if (currentEnvironment === 'dev') coordinatorUrl = `http://localhost:5050/core-vehicle-events`;
+	else coordinatorUrl = `http://${currentEnvironment}-controller-coordinator.${currentEnvironment}-controller.svc.cluster.local/core-vehicle-events`;
+
+	const coreVehicleEventsBatchResponse = await fetch(coordinatorUrl);
+	const coreVehicleEventsBatch = await coreVehicleEventsBatchResponse.json() as string[];
+
+	console.log(`Fetched ${coreVehicleEventsBatch.length} core vehicle events from coordinator (fetch: ${fetchCoordinatorTimer.get()})`);
+
+	//
 	// Get the earliest date from which we have data to sync,
 	// and perform the sync in time chunks until we reach the current date.
 
@@ -43,7 +59,7 @@ async function main() {
 
 	const vehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
-	const vehicleEventsCursor = vehicleEventsCollection.find({}, { limit: 100_000, sort: { millis: -1 } }).stream();
+	const vehicleEventsCursor = vehicleEventsCollection.find({ _id: { $in: coreVehicleEventsBatch } }).stream();
 
 	let insertedCount = 0;
 
