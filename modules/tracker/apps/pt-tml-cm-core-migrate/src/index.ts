@@ -7,6 +7,7 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { getCurrentEnvironment } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
+import { ObjectId } from 'mongodb';
 
 /* * */
 
@@ -64,7 +65,7 @@ async function main() {
 
 	const vehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
-	const vehicleEventsCursor = vehicleEventsCollection.find({ _id: { $in: coreVehicleEventsBatch } }).stream();
+	const vehicleEventsCursor = vehicleEventsCollection.find({ _id: { $in: coreVehicleEventsBatch.map(id => new ObjectId(id)) as unknown as string[] } }).stream();
 
 	let insertedCount = 0;
 
