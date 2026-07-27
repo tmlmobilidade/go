@@ -100,6 +100,8 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 			{ indexed: false, name: 'tts_stop_name', type: 'TEXT' },
 			{ indexed: false, name: 'district_id', type: 'TEXT' },
 			{ indexed: false, name: 'district_name', type: 'TEXT' },
+			{ indexed: false, name: 'flags', type: 'TEXT' },
+			{ indexed: false, name: 'legacy_ids', type: 'TEXT' },
 			{ indexed: false, name: 'municipality_id', type: 'TEXT' },
 			{ indexed: false, name: 'municipality_name', type: 'TEXT' },
 			{ indexed: false, name: 'parish_id', type: 'TEXT' },

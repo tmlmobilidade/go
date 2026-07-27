@@ -7,6 +7,7 @@ import { z } from 'zod';
 export const HubGtfsExportStopsSchema = z.object({
 	district_id: z.string(),
 	district_name: z.string(),
+	flags: z.string(),
 	legacy_ids: z.string(),
 	locality_id: z.string().optional(),
 	locality_name: z.string().optional(),

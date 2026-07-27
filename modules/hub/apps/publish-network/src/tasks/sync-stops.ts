@@ -11,6 +11,7 @@ import { type GTFS_Stop_Extended } from '@tmlmobilidade/types';
 
 interface QueryResult extends GTFS_Stop_Extended {
 	agency_ids: string
+	flags?: string
 	line_ids: string
 	pattern_ids: string
 	route_ids: string
@@ -29,31 +30,31 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 	// from the imported GTFS database
 
 	const allStops = importedGtfsSql.stops.query(`
-		SELECT
-			s.*,
-			r.agency_ids,
-			r.line_ids,
-			r.route_ids,
-			r.pattern_ids
-		FROM
-			stops s
-		LEFT JOIN (
-			SELECT
-				stop_id,
-				json_group_array(DISTINCT r.agency_id) AS agency_ids,
-				json_group_array(DISTINCT r.line_id) AS line_ids,
-				json_group_array(DISTINCT r.route_id) AS route_ids,
-				json_group_array(DISTINCT t.pattern_id) AS pattern_ids
-			FROM
-				stop_times st
-			JOIN
-				trips t ON st.trip_id = t.trip_id
-			JOIN
-				routes r ON t.route_id = r.route_id
-			GROUP BY
-				stop_id
-		) r ON s.stop_id = r.stop_id;
-	`);
+        SELECT
+            s.*,
+            r.agency_ids,
+            r.line_ids,
+            r.route_ids,
+            r.pattern_ids
+        FROM
+            stops s
+        LEFT JOIN (
+            SELECT
+                stop_id,
+                json_group_array(DISTINCT r.agency_id) AS agency_ids,
+                json_group_array(DISTINCT r.line_id) AS line_ids,
+                json_group_array(DISTINCT r.route_id) AS route_ids,
+                json_group_array(DISTINCT t.pattern_id) AS pattern_ids
+            FROM
+                stop_times st
+            JOIN
+                trips t ON st.trip_id = t.trip_id
+            JOIN
+                routes r ON t.route_id = r.route_id
+            GROUP BY
+                stop_id
+        ) r ON s.stop_id = r.stop_id;
+    `);
 
 	//
 	// For each item, update its entry in the database
@@ -93,9 +94,9 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				agency_ids: JSON.parse(stop.agency_ids),
 				district_id: stop.district_id,
 				district_name: stop.district_name,
-				flags: [],
+				flags: JSON.parse(stop.flags),
 				latitude: stop.stop_lat,
-				legacy_ids: [],
+				legacy_ids: JSON.parse(stop.legacy_ids),
 				lifecycle_status: 'active',
 				line_ids: JSON.parse(stop.line_ids),
 				locality_id: stop.locality_id,

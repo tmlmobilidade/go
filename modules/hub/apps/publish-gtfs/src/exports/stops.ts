@@ -50,6 +50,7 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 		const parsedStopsRow: HubGtfsExportStops = {
 			stop_id: stopData._id,
 			stop_code: stopData._id,
+			flags: JSON.stringify(stopData.flags),
 			legacy_ids: stopData.legacy_ids.join('|'),
 			stop_name: stopData.name,
 			tts_stop_name: stopData.tts_name ?? '',
