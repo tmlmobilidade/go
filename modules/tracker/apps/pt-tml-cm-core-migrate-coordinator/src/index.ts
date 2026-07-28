@@ -1,7 +1,7 @@
 /* * */
 
 import { getCoreVehicleEvents } from '@/get-core-vehicle-events.js';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import Fastify from 'fastify';
 
 /* * */
@@ -9,19 +9,13 @@ import Fastify from 'fastify';
 await (async function init() {
 	//
 
-	// const now = Dates.now('Europe/Lisbon').unix_timestamp;
-	// await rides.updateMany({ agency_id: { $in: ['crtm-aisa', 'crtm-laveloz'] }, start_time_scheduled: { $lt: now } }, { system_status: 'waiting' });
-	// console.log('Marked crtm-aisa and crtm-laveloz rides as waiting');
-
 	//
-	// Initialize Sentry
+	// Reset ststaus on init
 
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Coordinator' });
-	}
+	console.log('Resetting status on init...');
+	const coreVehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
+	const result = await coreVehicleEventsCollection.updateMany({ status: 'processing' }, { $set: { status: 'waiting' } });
+	console.log('Reset status on init:', result);
 
 	//
 	// Setup variables
@@ -41,7 +35,7 @@ await (async function init() {
 			console.log(err);
 			process.exit(1);
 		}
-		Logger.info({ message: `Server listening at ${address}` });
+		console.log(`Server listening at ${address}`);
 	});
 
 	//

@@ -1,7 +1,6 @@
 /* * */
 
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
-import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
@@ -26,7 +25,7 @@ export async function getCoreVehicleEvents(): Promise<string[]> {
 		// sequentially. To do that, we implement a simple lock mechanism.
 
 		while (IS_BUSY) {
-			Logger.info({ message: `[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})` });
+			console.log(`[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})`);
 			return [];
 		}
 
@@ -55,7 +54,7 @@ export async function getCoreVehicleEvents(): Promise<string[]> {
 		const fetchTimerResult = fetchTimer.get();
 
 		if (!latestCoreVehicleEvents.length) {
-			Logger.info({ message: `[${sessionId}] No core vehicle events to process (fetch: ${fetchTimerResult})` });
+			console.log(`[${sessionId}] No core vehicle events to process (fetch: ${fetchTimerResult})`);
 			return [];
 		}
 
@@ -69,13 +68,13 @@ export async function getCoreVehicleEvents(): Promise<string[]> {
 
 		await coreVehicleEventsCollection.updateMany({ _id: { $in: latestCoreVehicleEventsIds } }, { $set: { status: 'processing' } });
 
-		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestCoreVehicleEventsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
+		console.log(`[${sessionId}] New batch: Qty ${latestCoreVehicleEventsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 
 		return latestCoreVehicleEventsIds;
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: `[${sessionId}] Error getting core vehicle events: ${error.message}` });
+		console.error(`[${sessionId}] Error getting core vehicle events: ${error.message}`);
 		return [];
 	} finally {
 		IS_BUSY = false;
