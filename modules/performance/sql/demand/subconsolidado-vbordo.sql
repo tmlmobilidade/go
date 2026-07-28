@@ -11,7 +11,7 @@ SELECT
     count() AS quantidade,
     pax_value,
     cam_value,
-    sum(pax_value + cam_value) AS total_value
+    (pax_value + cam_value) * count() AS total_value
 FROM (
     SELECT
         agency_id,
