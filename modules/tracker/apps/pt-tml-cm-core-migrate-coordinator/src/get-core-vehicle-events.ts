@@ -45,7 +45,7 @@ export async function getCoreVehicleEvents(): Promise<string[]> {
 		const coreVehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
 		const latestCoreVehicleEvents = await coreVehicleEventsCollection
-			.find({ status: { $ne: 'processing' } }, { limit: 1_000, projection: { _id: 1 }, sort: { millis: -1 } })
+			.find({ status: { $ne: 'processing' } }, { limit: 10_000, projection: { _id: 1 }, sort: { millis: -1 } })
 			.toArray();
 
 		/* === FOR TESTING === */
