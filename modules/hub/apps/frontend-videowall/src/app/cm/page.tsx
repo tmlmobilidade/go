@@ -1,9 +1,9 @@
 /* * */
 
-import { CmDefault } from '@/components/agencies/cm/CmDefault';
+import { CmVideowall } from '@/agencies/cm/CmVideowall';
 
 /* * */
 
 export default function Page() {
-	return <CmDefault />;
+	return <CmVideowall />;
 }

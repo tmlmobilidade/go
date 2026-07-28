@@ -1,14 +1,14 @@
 /* * */
 
-import { AllScreens } from '@/areas/43/AllScreens';
+import { Agency43Videowall } from '@/agencies/43/Agency43Videowall';
 import { PasswordCheck } from '@/components/PasswordCheck';
 
 /* * */
 
-export default function Area1() {
+export default function Page() {
 	return (
 		<PasswordCheck id="43" password="F94S2">
-			<AllScreens />
+			<Agency43Videowall />
 		</PasswordCheck>
 	);
 }

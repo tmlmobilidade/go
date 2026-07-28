@@ -6,21 +6,20 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function ViewportHeader() {
+interface Props {
+	title: string
+}
+
+/* * */
+
+export function ViewportHeader({ title }: Props) {
 	//
 
-	//
-	// A. Setup variables
-
-	//
-	// B. Transform data
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<div className={styles.container}>
-			<p className={styles.title}>GO Videowall • CCFL</p>
+			<p className={styles.title}>{title}</p>
 		</div>
 	);
 

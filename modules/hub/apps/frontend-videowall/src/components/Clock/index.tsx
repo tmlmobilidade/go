@@ -2,6 +2,7 @@
 
 /* * */
 
+import { type MetricCardSize } from '@/components/MetricCard';
 import { Dates } from '@tmlmobilidade/dates';
 import { useEffect, useState } from 'react';
 
@@ -9,7 +10,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function Clock() {
+interface Props {
+	size: MetricCardSize
+}
+
+/* * */
+
+export function Clock({ size }: Props) {
 	//
 
 	//
@@ -39,7 +46,7 @@ export function Clock() {
 	// C. Render components
 
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} data-size={size}>
 			<p className={styles.hours}>{hours}</p>
 			<p className={styles.minutes}>{minutes}</p>
 			<p className={styles.seconds}>{seconds}</p>

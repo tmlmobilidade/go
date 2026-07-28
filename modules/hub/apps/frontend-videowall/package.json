@@ -11,13 +11,18 @@
 		"build": "next build",
 		"dev": "next dev -p 51102",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ./src"
+		"lint:fix": "eslint --fix ./src",
+		"test:agency-config": "node --import tsx ./src/tests/agency-config.ts",
+		"test:metric-card-refresh": "node --import tsx ./src/tests/metric-card-refresh.ts",
+		"test:metric-number-typography": "node --import tsx ./src/tests/metric-number-typography.ts"
 	},
 	"dependencies": {
+		"@mantine/core": "9.4.2",
+		"@mantine/hooks": "9.4.2",
 		"@tabler/icons-react": "3.45.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.2.12",

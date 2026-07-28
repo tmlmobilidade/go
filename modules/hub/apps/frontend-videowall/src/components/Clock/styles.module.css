@@ -16,16 +16,47 @@
 /* * */
 /* NUMBERS */
 
-.hours, .minutes, .seconds {
-	font-size: 120px;
+.hours,
+.minutes,
+.seconds {
 	font-weight: 800;
 	line-height: 1;
 	color: #fff;
 }
 
 .seconds {
+	opacity: 0.25;
+}
+
+.container[data-size="lg"] .hours,
+.container[data-size="lg"] .minutes {
+	font-size: 120px;
+}
+
+.container[data-size="lg"] .seconds {
+	min-width: 60px;
 	margin-top: 45px;
 	font-size: 40px;
-	opacity: 0.25;
-	min-width: 60px;
+}
+
+.container[data-size="md"] .hours,
+.container[data-size="md"] .minutes {
+	font-size: 72px;
+}
+
+.container[data-size="md"] .seconds {
+	min-width: 36px;
+	margin-top: 27px;
+	font-size: 24px;
+}
+
+.container[data-size="sm"] .hours,
+.container[data-size="sm"] .minutes {
+	font-size: 48px;
+}
+
+.container[data-size="sm"] .seconds {
+	min-width: 24px;
+	margin-top: 18px;
+	font-size: 16px;
 }

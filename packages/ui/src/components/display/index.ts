@@ -6,6 +6,7 @@ export * from './Indicator';
 export * from './Inline';
 export * from './Label';
 export * from './NoDataLabel';
+export * from './RollingNumber';
 export * from './SeenStatusIndicator';
 export * from './Stepper';
 export * from './Table';

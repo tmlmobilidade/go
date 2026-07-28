@@ -10,7 +10,13 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function Viewport({ children }: PropsWithChildren) {
+interface Props {
+	title: string
+}
+
+/* * */
+
+export function Viewport({ children, title }: PropsWithChildren<Props>) {
 	//
 
 	//
@@ -23,7 +29,7 @@ export function Viewport({ children }: PropsWithChildren) {
 
 	return (
 		<div className={styles.viewport}>
-			<ViewportHeader />
+			<ViewportHeader title={title} />
 			<div className={styles.content}>
 				{children}
 			</div>

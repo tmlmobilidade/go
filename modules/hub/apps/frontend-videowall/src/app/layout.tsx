@@ -4,11 +4,22 @@ import pjson from '#/package.json';
 import { i18nResourceKeysEs, i18nResourceKeysPt } from '@/i18n/resources';
 import { BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import { NuqsAdapter } from 'nuqs/adapters/react';
 import { type PropsWithChildren } from 'react';
 
 import '@/styles/reset.css';
-import '@/styles/videowall/color.css';
+import '@/styles/color.css';
+import '@/styles/font.css';
+
+/* * */
+
+const inter = Inter({
+	display: 'swap',
+	subsets: ['latin'],
+	variable: '--font-inter',
+	weight: ['400', '600', '900'],
+});
 
 /* * */
 
@@ -22,7 +33,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }} version={pjson.version}>
+		<BaseProvider
+			htmlClassName={inter.variable}
+			i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }}
+			version={pjson.version}
+		>
 			<NuqsAdapter>
 				{children}
 			</NuqsAdapter>

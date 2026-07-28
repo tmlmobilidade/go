@@ -1,0 +1,17 @@
+/* * */
+/* NUMBER */
+
+.number {
+	font-family: var(--font-family);
+	font-size: inherit;
+	font-style: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+	letter-spacing: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.number {
+		--rn-duration: 0ms !important;
+	}
+}

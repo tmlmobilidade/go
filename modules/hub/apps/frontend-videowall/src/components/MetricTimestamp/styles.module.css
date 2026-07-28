@@ -1,0 +1,10 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1;
+	color: inherit;
+	text-transform: uppercase;
+}

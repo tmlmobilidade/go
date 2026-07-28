@@ -1,14 +1,9 @@
 /* * */
 
-import { CcflDefault } from '@/components/agencies/ccfl/CcflDefault';
-import { Viewport } from '@/components/viewport/Viewport';
+import { CcflVideowall } from '@/agencies/ccfl/CcflVideowall';
 
 /* * */
 
 export default function Page() {
-	return (
-		<Viewport>
-			<CcflDefault />
-		</Viewport>
-	);
+	return <CcflVideowall />;
 }

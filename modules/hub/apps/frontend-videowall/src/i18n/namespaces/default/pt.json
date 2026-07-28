@@ -312,6 +312,24 @@
 			"wheelchair_accessible": "Mobilidade reduzida"
 		}
 	},
+	"videowall": {
+		"cards": {
+			"average_delay": "{agency} / Atraso médio do total de viagens",
+			"delayed_services": "{agency} / Viagens atrasadas > 5 min",
+			"demand": "{agency} / Passageiros transportados hoje, até agora",
+			"distance": "{agency} / VKm executados hoje, até agora",
+			"service_failures": "{agency} / Viagens não executadas hoje, até agora",
+			"service_failures_of": "de"
+		},
+		"timestamp": {
+			"days": "Atualizado há {count, plural, one {# dia} other {# dias}}",
+			"hours": "Atualizado há {count, plural, one {# hora} other {# horas}}",
+			"minutes": "Atualizado há {count, plural, one {# minuto} other {# minutos}}",
+			"seconds": "Atualizado há {count, plural, one {# segundo} other {# segundos}}",
+			"updating": "Em atualização..."
+		},
+		"unavailable": "Indisponível"
+	},
 	"viewport": {
 		"NavigationBar": {
 			"tabs": {
