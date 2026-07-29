@@ -19,7 +19,6 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
-		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"fastify": "5.10.0"
 	},
