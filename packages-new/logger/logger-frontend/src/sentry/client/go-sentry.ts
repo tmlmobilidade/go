@@ -12,6 +12,8 @@ export function getSentryClient(): string | undefined {
 
 	if (!process.env.SENTRY_NEXTJS_DSN) {
 		throw new Error('Missing SENTRY_NEXTJS_DSN. Please check your environment variables.');
+	} else {
+		console.log('SENTRY_NEXTJS_DSN', process.env.SENTRY_NEXTJS_DSN);
 	}
 
 	return process.env.SENTRY_NEXTJS_DSN;
