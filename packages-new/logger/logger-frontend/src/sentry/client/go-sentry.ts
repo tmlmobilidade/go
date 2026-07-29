@@ -7,5 +7,8 @@ export function validateSentryClient(): void {
 
 	if (!dsn) {
 		console.error(new Error('Missing SENTRY_NEXTJS_DSN. Please check your environment variables.'));
+		return undefined;
 	}
+
+	console.log('SENTRY_NEXTJS_DSN', dsn);
 }
