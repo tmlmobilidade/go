@@ -28,11 +28,7 @@ interface SelfHostedSentryConfig {
  * @param tunnelRoute- Route string for the tunnel endpoint (e.g., '/api/sentry/tunnel')
  * @returns Config for tunnel rewrites and destination, or undefined for sentry.io
  */
-function getSelfHostedSentryConfig(
-	dsn: string | undefined,
-	nextConfig: NextConfig,
-	tunnelRoute: string,
-): SelfHostedSentryConfig | undefined {
+function getSelfHostedSentryConfig(dsn: string | undefined, nextConfig: NextConfig, tunnelRoute: string): SelfHostedSentryConfig | undefined {
 	if (!dsn) return undefined;
 
 	const dsnUrl = new URL(dsn);
