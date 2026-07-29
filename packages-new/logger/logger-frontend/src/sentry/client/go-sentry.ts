@@ -3,7 +3,7 @@ export function getSentryClient(): string | undefined {
 
 	//
 	// If the environment is production, return the SENTRY_NEXTJS_DSN
-	if (process.env.NEXT_PUBLIC_ENVIRONMENT !== 'dev') {
+	if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'prd') {
 		return undefined;
 	}
 
