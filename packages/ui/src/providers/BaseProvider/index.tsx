@@ -4,7 +4,7 @@ import { MantineProvider, MantineProviderProps } from '@mantine/core';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import { initSentry } from '@tmlmobilidade/logger-logger-frontend';
+import { initSentry, validateSentryClient } from '@tmlmobilidade/logger-logger-frontend';
 import { swrFetcher } from '@tmlmobilidade/utils';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { type PropsWithChildren, Suspense, useEffect } from 'react';
@@ -44,6 +44,7 @@ export function BaseProvider({ children, i18n, initializeSentry, theme, version 
 
 	useEffect(() => {
 		if (initializeSentry) {
+			validateSentryClient();
 			initSentry();
 			return;
 		}
