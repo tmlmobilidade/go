@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@carrismetropolitana/tts": "20250418.51.6",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/go-providers-locations": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
