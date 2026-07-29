@@ -5,7 +5,8 @@
  * /envelope destination and tunnel rewrite route for Next.js to stream events to your
  * own relay or upstream. Otherwise, standard Sentry config is applied.
  *
- * Injects SENTRY_NEXTJS_DSN and SENTRY_NEXTJS_TUNNEL into process.env for downstream use.
+ * Injects SENTRY_NEXTJS_DSN and SENTRY_NEXTJS_TUNNEL into process.env for downstream use
+ * when the DSN is available at build time.
  */
 
 import { withSentryConfig } from '@sentry/nextjs';
@@ -20,20 +21,6 @@ interface SelfHostedSentryConfig {
 }
 
 /**
- * Reads the frontend DSN after Next.js has loaded the app environment and started
- * evaluating next.config.ts.
- */
-function getSentryDsn(): string {
-	const dsn = process.env.SENTRY_NEXTJS_DSN;
-
-	if (!dsn) {
-		throw new Error('Missing SENTRY_NEXTJS_DSN. Please check your environment variables.');
-	}
-
-	return dsn;
-}
-
-/**
  * Computes Sentry proxy/tunnel destinations for self-hosted Sentry (not sentry.io).
  * Returns `undefined` for official sentry.io DSNs.
  *
@@ -42,7 +29,9 @@ function getSentryDsn(): string {
  * @param tunnelRoute- Route string for the tunnel endpoint (e.g., '/api/sentry/tunnel')
  * @returns Config for tunnel rewrites and destination, or undefined for sentry.io
  */
-function getSelfHostedSentryConfig(dsn: string, nextConfig: NextConfig, tunnelRoute: string): SelfHostedSentryConfig | undefined {
+function getSelfHostedSentryConfig(dsn: string | undefined, nextConfig: NextConfig, tunnelRoute: string): SelfHostedSentryConfig | undefined {
+	if (!dsn) return undefined;
+
 	const dsnUrl = new URL(dsn);
 	// Ignore sentry.io (cloud) DSNs, only handle self-hosted
 	if (/^o\d+\.ingest(?:\.[a-z]{2})?\.sentry\.io$/.test(dsnUrl.hostname)) return undefined;
@@ -73,7 +62,7 @@ function getSelfHostedSentryConfig(dsn: string, nextConfig: NextConfig, tunnelRo
  * @returns Next.js config wrapped through withSentryConfig, with rewrites/env applied
  */
 export function sentryConfig(nextConfig: NextConfig, tunnelRoute: string) {
-	const dsn = getSentryDsn();
+	const dsn = process.env.SENTRY_NEXTJS_DSN;
 	const selfHostedSentry = getSelfHostedSentryConfig(dsn, nextConfig, tunnelRoute);
 	const originalRewrites = nextConfig.rewrites;
 
@@ -83,7 +72,7 @@ export function sentryConfig(nextConfig: NextConfig, tunnelRoute: string) {
 			...nextConfig.env,
 			APP: process.env.APP,
 			MODULE: process.env.MODULE,
-			SENTRY_NEXTJS_DSN: dsn,
+			...dsn && { SENTRY_NEXTJS_DSN: dsn },
 			SENTRY_NEXTJS_TUNNEL: selfHostedSentry?.tunnel,
 		},
 		// If this is a self-hosted DSN, prepend the envelope rewrite
