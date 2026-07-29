@@ -45,7 +45,6 @@ export function BaseProvider({ children, i18n, initializeSentry, theme, version 
 	useEffect(() => {
 		if (initializeSentry) {
 			initSentry();
-			console.log('Sentry initialized');
 			return;
 		}
 	}, [initializeSentry]);
