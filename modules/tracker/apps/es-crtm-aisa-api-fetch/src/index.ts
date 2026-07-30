@@ -15,17 +15,15 @@ let ITERATION = 0;
 
 /* * */
 
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'es-crtm-aisa-api-fetch', message: 'Sentry Tracker CRTM AISA Fetch initialized', module: 'tracker', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Tracker CRTM AISA Fetch' });
+}
+
 const main = async () => {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'es-crtm-aisa-api-fetch', message: 'Sentry Tracker CRTM AISA Fetch initialized', module: 'tracker', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker CRTM AISA Fetch' });
-	}
 
 	//
 	// Initialize the timer

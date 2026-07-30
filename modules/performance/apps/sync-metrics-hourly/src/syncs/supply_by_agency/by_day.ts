@@ -1,5 +1,6 @@
 /* * */
 
+import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromOperationalDate } from '@/utils/day-label.js';
 import { computeSupplyDerivedFields } from '@/utils/supply-derived.js';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
@@ -14,8 +15,7 @@ import pLimit from 'p-limit';
 /* * */
 
 /** CM (Carris Metropolitana) agency areas — temporary scope filter */
-const CM_AGENCY_IDS = ['41', '42', '43', '44'] as const;
-const CM_AGENCY_ID_SET = new Set<string>(CM_AGENCY_IDS);
+const GO_CM_AGENCY_ID_SET = new Set<string>(GO_CM_AGENCY_IDS);
 
 /* * */
 
@@ -31,7 +31,7 @@ export const syncSupplyByAgencyByDay = async () => {
 	Logger.info({ message: `Clearing existing '${metricKey}' metrics for CM agencies...` });
 	await metrics.deleteMany({
 		'metric': metricKey,
-		'properties.agency_id': { $in: [...CM_AGENCY_IDS] },
+		'properties.agency_id': { $in: [...GO_CM_AGENCY_IDS] },
 	});
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
@@ -49,7 +49,7 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	const agenciesDocs = await agenciesCollection
 		.find(
-			{ _id: { $in: [...CM_AGENCY_IDS] } },
+			{ _id: { $in: [...GO_CM_AGENCY_IDS] } },
 			{
 				projection: {
 					'_id': 1,
@@ -98,7 +98,7 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	const latestRide = await ridesCollection.findOne(
 		{
-			agency_id: { $in: [...CM_AGENCY_IDS] },
+			agency_id: { $in: [...GO_CM_AGENCY_IDS] },
 			operational_date: { $exists: true, $ne: null },
 		},
 		{ projection: { operational_date: 1 }, sort: { operational_date: -1 } },
@@ -132,7 +132,7 @@ export const syncSupplyByAgencyByDay = async () => {
 	Logger.info({ message: [
 		`Date range: ${earliestDataNeeded.operational_date} → ${latestOperationalData ?? 'today'}`,
 		`Total chunks: ${allTimestampChunks.length}`,
-		`CM agencies: ${CM_AGENCY_IDS.join(', ')}`,
+		`CM agencies: ${GO_CM_AGENCY_IDS.join(', ')}`,
 	] });
 
 	//
@@ -158,7 +158,7 @@ export const syncSupplyByAgencyByDay = async () => {
 					.aggregate([
 						{
 							$match: {
-								agency_id: { $in: [...CM_AGENCY_IDS] },
+								agency_id: { $in: [...GO_CM_AGENCY_IDS] },
 								operational_date: chunkData.operationalDate,
 							},
 						},
@@ -249,7 +249,7 @@ export const syncSupplyByAgencyByDay = async () => {
 		for (const agencyStats of ridesAgg) {
 			const agencyId = String(agencyStats._id ?? 'no-agency');
 
-			if (!CM_AGENCY_ID_SET.has(agencyId)) {
+			if (!GO_CM_AGENCY_ID_SET.has(agencyId)) {
 				continue;
 			}
 

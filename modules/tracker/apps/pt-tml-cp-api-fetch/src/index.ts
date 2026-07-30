@@ -14,18 +14,15 @@ import crypto from 'node:crypto';
 let ITERATION = 0;
 
 /* * */
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'pt-tml-cp-api-fetch', message: 'Sentry Tracker CP Fetch initialized', module: 'tracker', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Tracker CP Fetch' });
+}
 
 const main = async () => {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pt-tml-cp-api-fetch', message: 'Sentry Tracker CP Fetch initialized', module: 'tracker', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker CP Fetch' });
-	}
 
 	//
 	// Initialize the timer

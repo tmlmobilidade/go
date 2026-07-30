@@ -128,7 +128,7 @@ export async function main() {
 
 			const planTimer = new Timer();
 
-			Logger.info({ message: `[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}` });
+			Logger.info({ message: `[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.agency_id} - Plan ${planData._id}` });
 
 			//
 			// Validate the Plan data before processing.
@@ -136,7 +136,7 @@ export async function main() {
 			// and mark it as 'skipped' in the database.
 			// Otherwise, mark it as 'processing'.
 
-			const isValidPlan = validatePlan(planData);
+			const isValidPlan = await validatePlan(planData);
 
 			if (!isValidPlan) {
 				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
@@ -216,9 +216,9 @@ export async function main() {
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
 				const routeData: GTFS_Route_Extended = routeItem;
-				const publicRouteId = getPublicRouteId(planData.gtfs_agency.agency_id, routeData.route_id);
+				const publicRouteId = getPublicRouteId(planData.agency_id, routeData.route_id);
 				if (thisIsAnActivePlan || !routesMarkedForFinalExport[publicRouteId]) {
-					routesMarkedForFinalExport[publicRouteId] = routeData;
+					routesMarkedForFinalExport[publicRouteId] = { ...routeData, agency_id: planData.agency_id };
 				}
 			}
 
@@ -228,7 +228,7 @@ export async function main() {
 			// Add the plan's referenced agency ID and farthest
 			// feed end date to the global variables for later export.
 
-			referencedAgencyIds.add(planData.gtfs_agency.agency_id);
+			referencedAgencyIds.add(planData.agency_id);
 
 			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
 				? planData.gtfs_feed_info.feed_end_date
@@ -237,7 +237,7 @@ export async function main() {
 			//
 			// Finally, write the plan entry into the plans.txt file.
 
-			await exportPlansFile(planData.gtfs_agency.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, context);
+			await exportPlansFile(planData, context);
 
 			//
 			// Mark the plan as complete in the database.

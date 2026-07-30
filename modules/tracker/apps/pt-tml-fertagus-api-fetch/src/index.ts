@@ -37,17 +37,15 @@ interface FoundRideDocument {
 
 /* * */
 
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'pt-tml-fertagus-api-fetch', message: 'Sentry Tracker Fertagus Fetch initialized', module: 'tracker', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Tracker Fertagus Fetch' });
+}
+
 const main = async () => {
 	//
-
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'pt-tml-fertagus-api-fetch', message: 'Sentry Tracker Fertagus Fetch initialized', module: 'tracker', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Tracker Fertagus Fetch' });
-	}
 
 	//
 	// Initialize the timer
@@ -64,6 +62,7 @@ const main = async () => {
 	try {
 		response = await externalClients.fertagus.trains();
 	} catch (error) {
+		console.log('error:', error);
 		Logger.error({ error, message: `[${ITERATION}] Error fetching Fertagus data from API:` });
 		return;
 	}
@@ -86,46 +85,46 @@ const main = async () => {
 		if (!ridesMap.has(rideKey)) {
 			try {
 				const ridesCollection = await goDb.operation.rides.getCollection();
-				const foundRides = await ridesCollection.aggregate<FoundRideDocument>([
+				const pipeline = [
 					{
 						$match: {
-							agency_id: '15',
+							agency_id: '7NTB1',
 							start_time_scheduled: Dates.fromISO(event.startsAt).unix_timestamp,
 						},
 					},
 					{
 						$lookup: {
-							as: 'hashed_pattern',
+							as: 'hashed-pattern',
 							foreignField: '_id',
-							from: 'hashed_patterns',
+							from: 'hashed-patterns',
 							localField: 'hashed_pattern_id',
 						},
 					},
 					{
-						$unwind: '$hashed_pattern',
+						$unwind: '$hashed-pattern',
 					},
 					{
 						$project: {
 							_id: 1,
 							agency_id: 1,
 							first_stop_id: {
-								$first: '$hashed_pattern.path.stop_id',
+								$first: '$hashed-pattern.path.stop_id',
 							},
 
 							last_stop_id: {
-								$last: '$hashed_pattern.path.stop_id',
+								$last: '$hashed-pattern.path.stop_id',
 							},
-							line_id: '$hashed_pattern.line_id',
-							line_long_name: '$hashed_pattern.line_long_name',
-							line_short_name: '$hashed_pattern.line_short_name',
-							pattern_id: '$hashed_pattern.pattern_id',
-							route_color: '$hashed_pattern.route_color',
-							route_id: '$hashed_pattern.route_id',
-							route_long_name: '$hashed_pattern.route_long_name',
-							route_short_name: '$hashed_pattern.route_short_name',
-							route_text_color: '$hashed_pattern.route_text_color',
+							line_id: '$hashed-pattern.line_id',
+							line_long_name: '$hashed-pattern.line_long_name',
+							line_short_name: '$hashed-pattern.line_short_name',
+							pattern_id: '$hashed-pattern.pattern_id',
+							route_color: '$hashed-pattern.route_color',
+							route_id: '$hashed-pattern.route_id',
+							route_long_name: '$hashed-pattern.route_long_name',
+							route_short_name: '$hashed-pattern.route_short_name',
+							route_text_color: '$hashed-pattern.route_text_color',
 
-							trip_headsign: '$hashed_pattern.trip_headsign',
+							trip_headsign: '$hashed-pattern.trip_headsign',
 							trip_id: 1,
 						},
 					},
@@ -135,7 +134,8 @@ const main = async () => {
 							last_stop_id: event.stop_id_end,
 						},
 					},
-				]).toArray();
+				];
+				const foundRides = await ridesCollection.aggregate<FoundRideDocument>(pipeline).toArray();
 
 				//
 				// If no ride is found, skip this event.

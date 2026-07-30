@@ -20,7 +20,8 @@ export function parseRawApexTransactionValidationV50IntoSimplifiedApexValidation
 
 	const result: SimplifiedApexValidation = {
 		_id: doc.payload.transactionInfo.transactionId,
-		agency_id: doc.payload.operatorInfo.operatorLongID,
+		agency_code: doc.payload.operatorInfo.operatorLongID,
+		agency_id: doc.agency_id,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		category: 'subscription',

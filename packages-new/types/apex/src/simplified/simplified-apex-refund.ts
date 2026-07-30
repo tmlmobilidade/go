@@ -9,6 +9,7 @@ import { z } from 'zod';
 
 export const SimplifiedApexOnBoardRefundSchema = z.object({
 	_id: z.string(),
+	agency_code: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
 	card_physical_type: ApexCardTypeSchema.default('255'),

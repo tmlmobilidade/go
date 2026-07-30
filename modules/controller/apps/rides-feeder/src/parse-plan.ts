@@ -311,7 +311,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "calendar.txt" file.' });
+		Logger.error({ error, message: `Error processing "calendar.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "calendar.txt" file.', error);
 	}
 
@@ -387,7 +387,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "calendar_dates.txt" file.' });
+		Logger.error({ error, message: `Error processing "calendar_dates.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "calendar_dates.txt" file.', error);
 	}
 
@@ -434,7 +434,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "trips.txt" file.' });
+		Logger.error({ error, message: `Error processing "trips.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "trips.txt" file.', error);
 	}
 
@@ -473,7 +473,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "routes.txt" file.' });
+		Logger.error({ error, message: `Error processing "routes.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "routes.txt" file.', error);
 	}
 
@@ -517,7 +517,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "shapes.txt" file.' });
+		Logger.error({ error, message: `Error processing "shapes.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "shapes.txt" file.', error);
 	}
 
@@ -554,7 +554,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "stops.txt" file.' });
+		Logger.error({ error, message: `Error processing "stops.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "stops.txt" file.', error);
 	}
 
@@ -721,11 +721,11 @@ export async function parsePlan(planData: Plan) {
 				line_short_name: routeData.line_short_name,
 				path: sortedHashedPatternPath,
 				pattern_id: currentTrip.pattern_id,
-				route_color: routeData.route_color,
+				route_color: routeData.route_color ?? '#000000',
 				route_id: currentTrip.route_id,
 				route_long_name: routeData.route_long_name,
 				route_short_name: routeData.route_short_name,
-				route_text_color: routeData.route_text_color,
+				route_text_color: routeData.route_text_color ?? '#ffffff',
 				trip_headsign: currentTrip.trip_headsign,
 			};
 

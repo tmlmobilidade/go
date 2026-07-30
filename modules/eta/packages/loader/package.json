@@ -30,7 +30,7 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
-		"ngeohash": "0.6.3"
+		"ngeohash": "0.6.4"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

@@ -123,7 +123,7 @@ export async function fetchHistoricalRidesForDayIndex(ridesQuery: Filter<Ride>, 
 		{
 			$lookup: {
 				as: 'pattern',
-				from: 'hashed_patterns',
+				from: 'hashed-patterns',
 				let: { patternId: '$hashed_pattern_id' },
 				pipeline: [
 					{

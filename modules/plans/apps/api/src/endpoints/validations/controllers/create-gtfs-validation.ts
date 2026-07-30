@@ -5,6 +5,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CreateGtfsValidationDto, type GtfsAgency, type GtfsFeedInfo, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
@@ -33,11 +34,10 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 
 	if (!hasPermissionCreateValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: create validation');
 
-	const validationData: CreateGtfsValidationDto = {
+	const validationData: Omit<CreateGtfsValidationDto, 'file_id'> = {
 		agency_id: requestData.fields.agency_id['value'] as string,
 		created_at: Dates.now('utc').unix_timestamp,
 		created_by: request.me._id,
-		file_id: '',
 		gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
 		gtfs_feed_info: JSON.parse(requestData.fields.gtfs_feed_info['value'] as string) as GtfsFeedInfo,
 		is_locked: false,
@@ -67,14 +67,11 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error processing file stream', { cause: streamError });
 	}
 
-	const insertValidationResult = await goDb.operation.gtfsValidations.insertOne(validationData);
-
 	//
-	// Upload the GTFS file, then attach it to the validation.
-	// Failure modes (handled by storage saga + hooks):
-	// - upload fails → saga compensates blob/metadata; onRollback deletes the validation
-	// - validation update fails → onSuccess throws → onRollback deletes the validation → saga compensates the upload
+	// Upload the GTFS file and atomically insert its attachment metadata
+	// and validation document in the same MongoDB transaction.
 
+	const validationId = generateRandomString({ length: 5 });
 	let finalValidationData: GtfsValidation | null = null;
 
 	try {
@@ -83,22 +80,21 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 			{
 				created_by: request.me._id,
 				name: requestData.filename,
-				resource_id: insertValidationResult._id.toString(),
+				resource_id: validationId,
 				scope: 'gtfsValidations',
 				size: size,
 				type: requestData.mimetype,
 				updated_by: request.me.email,
 			},
 			{
-				onRollback: async () => {
-					await goDb.operation.gtfsValidations.deleteById(insertValidationResult._id);
-					finalValidationData = null;
-				},
-				onSuccess: async (_ctx, result) => {
-					finalValidationData = await goDb.operation.gtfsValidations.updateById(
-						insertValidationResult._id,
-						{ file_id: result._id },
-					);
+				onSuccess: async (_ctx, attachment, session) => {
+					finalValidationData = await goDb.operation.gtfsValidations.insertOne({
+						...validationData,
+						_id: validationId,
+						file_id: attachment._id,
+					}, {
+						options: { session },
+					});
 				},
 			},
 		);
