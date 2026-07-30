@@ -1,8 +1,7 @@
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type District, type Locality, type Municipality, type ParishFeature } from '@tmlmobilidade/types';
-import { fetchData } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -42,9 +41,7 @@ export async function getStopLocations(lat: number, lon: number): Promise<GetSto
 	//
 	// Fetch the relevant Location data for this coordinate pair
 
-	const locationsApiUrl = `${API_ROUTES.locations.LOCATIONS_COORDINATES}?lat=${lat}&lon=${lon}`;
-
-	const { data: locationsData } = await fetchData<LocationsApiResponse>(locationsApiUrl);
+	const locationsData = await locationsProvider.findLocationByGeo(lat, lon);
 
 	if (!locationsData) {
 		console.log({ message: `No locations data found for coordinates ${lat}, ${lon}.` });
