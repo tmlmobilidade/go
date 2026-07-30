@@ -3,24 +3,28 @@
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { FileComponent } from '@/components/common/FileComponent/index';
 import { gtfsrules, SeverityLevel, SeverityLevelSchema } from '@tmlmobilidade/types';
-import { Collapsible, Divider, FileButton, Grid, Label, Section, SegmentedControl, Spacer, Surface, Table, useToast } from '@tmlmobilidade/ui';
-import { useWatch } from 'react-hook-form';
+import { Collapsible, Divider, FileButton, Grid, Label, Section, SegmentedControl, Spacer, Surface, Table, useContextFormWatch, useToast } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
 
+/* * */
+
 export function AgencySectionValidationRules() {
 	//
 
 	//
 	// A. Setup variables
-	const agencyDetailContext = useAgencyDetailContext();
+
 	const { t } = useTranslation();
 
+	const agencyDetailContext = useAgencyDetailContext();
+
 	const availableOptions = SeverityLevelSchema.options.map(value => ({ label: value, value }));
-	const validationRules = useWatch({ control: agencyDetailContext.form.instance.control, name: 'validation_rules' });
+	const validationRules = useContextFormWatch({ control: agencyDetailContext.form.instance.control, name: 'validation_rules' });
+
 	//
 	// B. Handle actions
 

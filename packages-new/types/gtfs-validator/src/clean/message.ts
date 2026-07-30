@@ -1,6 +1,6 @@
 /* * */
 
-import { SeverityLevelSchema } from '@/gtfs-validation/severity-level.js';
+import { SeverityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -11,7 +11,7 @@ export const GtfsValidationMessageSchema = z.object({
 	message: z.string(),
 	rows: z.array(z.number()),
 	rule_id: z.string(),
-	severity: SeverityLevelSchema,
+	severity: SeverityStatusSchema,
 });
 
 export type GtfsValidationMessage = z.infer<typeof GtfsValidationMessageSchema>;
