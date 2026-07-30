@@ -3,9 +3,8 @@
 import { cleanupOrphanHashedPatterns, cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
 import { parsePlan } from '@/parse-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { plans } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -35,9 +34,9 @@ async function main() {
 		//
 		// Get all Plans and iterate on each one
 
-		const plansCollection = await plans.getCollection();
+		const plansCollection = await goDb.operation.plans.getCollection();
 
-		const allPlansData = await plans.all();
+		const allPlansData = await goDb.operation.plans.findMany({});
 
 		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
@@ -50,14 +49,15 @@ async function main() {
 				//
 
 				Logger.spacer(1);
-				Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.gtfs_agency.agency_id} - Plan ${currentPlan._id}`);
+				Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.agency_id} - Plan ${currentPlan._id}`);
 
 				//
-				// Only process Plans for specific agency IDs
+				// Only process Plans that are waiting or resuming processing
 
-				if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44', 'crtm-aisa', 'crtm-laveloz'].includes(currentPlan.gtfs_agency?.agency_id)) {
-					Logger.error({ message: `Skip processing: gtfs_agency is '${currentPlan.gtfs_agency?.agency_id}'. Only '1', '2', '4', '8', '15', '16', '21', '41', '42', '43', or '44' are allowed.` });
-					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'skipped', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+				const controllerStatus = currentPlan.apps?.controller?.status;
+
+				if (controllerStatus !== 'waiting' && controllerStatus !== 'processing') {
+					Logger.error({ message: `Skip processing: status_controller is '${controllerStatus}'.` });
 					continue;
 				}
 
@@ -67,14 +67,6 @@ async function main() {
 
 				if (currentPlan.hash === currentPlan.apps?.controller?.last_hash) {
 					Logger.error({ message: `Skip processing: Hash is the same as last_hash.` });
-					continue;
-				}
-
-				//
-				// Skip if its status is 'error'
-
-				if (currentPlan.apps?.controller?.status === 'error') {
-					Logger.error({ message: `Skip processing: status_controller is 'error'.` });
 					continue;
 				}
 

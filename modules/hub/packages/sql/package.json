@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@clickhouse/client": "1.23.1",
-		"@tmlmobilidade/databases": "*"
+		"@tmlmobilidade/go-clients-clickhouse": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

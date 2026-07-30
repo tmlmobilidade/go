@@ -1,9 +1,9 @@
-import { stops } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 export async function getStopByLegacyId(legacyId: string, cache: Map<string, { _id: string, name: string }>) {
 	const cached = cache.get(legacyId);
 	if (cached) return cached;
-	const stop = await stops.findOne({ legacy_id: legacyId });
+	const stop = await goDb.infrastructure.stops.findOne({ legacy_id: legacyId });
 	if (!stop) return null;
 	const entry = { _id: String(stop._id), name: stop.name };
 	cache.set(legacyId, entry);

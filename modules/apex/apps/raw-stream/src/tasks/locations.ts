@@ -1,8 +1,8 @@
 /* * */
 
-import { simplifiedApexLocationsNew } from '@tmlmobilidade/databases';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionLocationV30IntoSimplifiedApexLocation } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -13,9 +13,9 @@ const writer = new BatchWriter<SimplifiedApexLocation>({
 	batch_size: 10_000,
 	batch_timeout: 30_000,
 	insertFn: async (data) => {
-		await simplifiedApexLocationsNew.insert('JSONEachRow', data);
+		await labDb.simplifiedApex.locations.insert('JSONEachRow', data);
 	},
-	title: await simplifiedApexLocationsNew.getTableName(),
+	title: await labDb.simplifiedApex.locations.getTableName(),
 });
 
 /**

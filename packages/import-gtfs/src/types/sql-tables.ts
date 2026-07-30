@@ -1,7 +1,8 @@
 /* * */
 
+import { type HubGtfsExportStops } from '@tmlmobilidade/go-types-public-info';
 import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/sqlite';
-import { type GTFS_Route_Extended, type GTFS_Shape, type GTFS_Stop_Extended, type GTFS_StopTime, type GTFS_Trip_Extended } from '@tmlmobilidade/types';
+import { type GTFS_Route_Extended, type GTFS_Shape, type GTFS_StopTime, type GTFS_Trip_Extended } from '@tmlmobilidade/types';
 import { type OperationalDate } from '@tmlmobilidade/types';
 
 /**
@@ -19,6 +20,6 @@ export interface GtfsSQLTables {
 	routes: SQLiteTableInstance<GTFS_Route_Extended>
 	shapes: SQLiteTableInstance<GTFS_Shape>
 	stop_times: SQLiteTableInstance<GTFS_StopTime>
-	stops: SQLiteTableInstance<GTFS_Stop_Extended>
+	stops: SQLiteTableInstance<HubGtfsExportStops>
 	trips: SQLiteTableInstance<GTFS_Trip_Extended>
 }

@@ -9,6 +9,7 @@ import { z } from 'zod';
 export const RideSchema = DocumentSchema
 	.omit({ is_locked: true })
 	.extend({
+		agency_code: z.string(),
 		agency_id: z.string(),
 		analysis: z.object({
 			AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP: atLeastOneVehicleEventOnFirstStopSchema,
@@ -26,7 +27,7 @@ export const RideSchema = DocumentSchema
 			SIMPLE_ONE_VEHICLE_EVENT_OR_APEX_VALIDATION: simpleOneVehicleEventOrApexValidationSchema,
 			SIMPLE_THREE_VEHICLE_EVENTS: simpleThreeVehicleEventsSchema,
 			TRANSACTION_SEQUENTIALITY: transactionSequentialitySchema,
-		}).nullable(),
+		}).nullable().default(null),
 		apex_locations_qty: z.number().nullable(),
 		apex_on_board_refunds_amount: z.number().nullable(),
 		apex_on_board_refunds_qty: z.number().nullable(),
@@ -43,7 +44,7 @@ export const RideSchema = DocumentSchema
 		hashed_shape_id: z.string(),
 		hashed_trip_id: z.string(),
 		headsign: z.string(),
-		line_id: z.number(),
+		line_id: z.string().transform(String),
 		operational_date: OperationalDateSchema,
 		passengers_estimated: z.number().nullable(),
 		passengers_observed: z.number().nullable(),
@@ -61,7 +62,7 @@ export const RideSchema = DocumentSchema
 		start_time_scheduled: UnixTimestampSchema,
 		system_status: ProcessingStatusSchema.default('waiting'),
 		trip_id: z.string(),
-		vehicle_ids: z.array(z.number()),
+		vehicle_ids: z.array(z.string().transform(String)),
 	});
 
 export const CreateRideSchema = RideSchema.partial({ _id: true }).omit({ created_at: true, updated_at: true });

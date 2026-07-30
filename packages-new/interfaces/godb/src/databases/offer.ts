@@ -35,7 +35,7 @@ export class OfferDatabase {
 		this.patterns = new MongoInterfaceTemplate<Pattern, CreatePatternDto, UpdatePatternDto>('patterns', this.database, CreatePatternSchema, UpdatePatternSchema);
 		this.routes = new MongoInterfaceTemplate<Route, CreateRouteDto, UpdateRouteDto>('routes', this.database, CreateRouteSchema, UpdateRouteSchema);
 		this.typologies = new MongoInterfaceTemplate<Typology, CreateTypologyDto, UpdateTypologyDto>('typologies', this.database, CreateTypologySchema, UpdateTypologySchema);
-		this.yearPeriods = new MongoInterfaceTemplate<YearPeriod, CreateYearPeriodDto, UpdateYearPeriodDto>('yearPeriods', this.database, CreateYearPeriodSchema, UpdateYearPeriodSchema);
+		this.yearPeriods = new MongoInterfaceTemplate<YearPeriod, CreateYearPeriodDto, UpdateYearPeriodDto>('year-periods', this.database, CreateYearPeriodSchema, UpdateYearPeriodSchema);
 		this.zones = new MongoInterfaceTemplate<Zone, CreateZoneDto, UpdateZoneDto>('zones', this.database, CreateZoneSchema, UpdateZoneSchema);
 	}
 }

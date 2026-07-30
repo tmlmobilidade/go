@@ -1,7 +1,7 @@
 /* * */
 
-import { demandByAgencyByOperationalDate } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type OperationalDateInt, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 /* * */
@@ -50,9 +50,9 @@ export async function runDemandByAgencyByOperationalDate(timespan: typeof AVAILA
 	//
 	// Run the aggregation query to populate the table
 
-	await demandByAgencyByOperationalDate.delete('operational_date >= $1', { 1: startDate });
+	await labDb.performance.demandByAgencyByOperationalDate.delete('operational_date >= $1', { 1: startDate });
 
-	await demandByAgencyByOperationalDate.queryFromString(
+	await labDb.performance.demandByAgencyByOperationalDate.queryFromString(
 		`
 			INSERT INTO performance.demand_by_agency_by_operational_date
 			(

@@ -3,7 +3,8 @@
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
-import { files, hashedPatterns, hashedShapes, hashedTrips, plans, rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
@@ -42,10 +43,10 @@ export async function parsePlan(planData: Plan) {
 	//
 	// Connect to databases and setup MongoDB Writers
 
-	const hashedPatternsCollection = await hashedPatterns.getCollection();
-	const hashedShapesCollection = await hashedShapes.getCollection();
-	const hashedTripsCollection = await hashedTrips.getCollection();
-	const ridesCollection = await rides.getCollection();
+	const hashedPatternsCollection = await goDb.operation.hashedPatterns.getCollection();
+	const hashedShapesCollection = await goDb.operation.hashedShapes.getCollection();
+	const hashedTripsCollection = await goDb.operation.hashedTrips.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	const hashedPatternsDbWritter = new MongoDbWriter<HashedPattern>({ batch_size: 1000, collection: hashedPatternsCollection });
 	const hashedShapesDbWritter = new MongoDbWriter<HashedShape>({ batch_size: 1000, collection: hashedShapesCollection });
@@ -195,7 +196,7 @@ export async function parsePlan(planData: Plan) {
 
 	Logger.info({ message: `Fetching operation file from "${planData.operation_file_id}".` });
 
-	const operationFileData = await files.findById(planData.operation_file_id);
+	const operationFileData = await storageProvider.findById(planData.operation_file_id);
 
 	if (!operationFileData?.url) {
 		Logger.error({ message: `No operation file found for plan "${planData._id}".` });
@@ -310,7 +311,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "calendar.txt" file.' });
+		Logger.error({ error, message: `Error processing "calendar.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "calendar.txt" file.', error);
 	}
 
@@ -386,7 +387,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "calendar_dates.txt" file.' });
+		Logger.error({ error, message: `Error processing "calendar_dates.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "calendar_dates.txt" file.', error);
 	}
 
@@ -433,7 +434,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "trips.txt" file.' });
+		Logger.error({ error, message: `Error processing "trips.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "trips.txt" file.', error);
 	}
 
@@ -472,7 +473,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "routes.txt" file.' });
+		Logger.error({ error, message: `Error processing "routes.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "routes.txt" file.', error);
 	}
 
@@ -516,7 +517,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "shapes.txt" file.' });
+		Logger.error({ error, message: `Error processing "shapes.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "shapes.txt" file.', error);
 	}
 
@@ -553,7 +554,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "stops.txt" file.' });
+		Logger.error({ error, message: `Error processing "stops.txt" file: ${error.message}` });
 		throw new Error('✖︎ Error processing "stops.txt" file.', error);
 	}
 
@@ -720,11 +721,11 @@ export async function parsePlan(planData: Plan) {
 				line_short_name: routeData.line_short_name,
 				path: sortedHashedPatternPath,
 				pattern_id: currentTrip.pattern_id,
-				route_color: routeData.route_color,
+				route_color: routeData.route_color ?? '#000000',
 				route_id: currentTrip.route_id,
 				route_long_name: routeData.route_long_name,
 				route_short_name: routeData.route_short_name,
-				route_text_color: routeData.route_text_color,
+				route_text_color: routeData.route_text_color ?? '#ffffff',
 				trip_headsign: currentTrip.trip_headsign,
 			};
 
@@ -739,7 +740,7 @@ export async function parsePlan(planData: Plan) {
 			// Check if there is already a document with this unique ID value.
 			// If it does not exist, save it to the database.
 
-			const currentHashedPatternAlreadyExists = await hashedPatterns.existsById(uniqueIdValueForHashedPattern);
+			const currentHashedPatternAlreadyExists = await goDb.operation.hashedPatterns.existsById(uniqueIdValueForHashedPattern);
 
 			const finalHashedPattern: HashedPattern = {
 				...hashableHashedPattern,
@@ -817,7 +818,7 @@ export async function parsePlan(planData: Plan) {
 			// Check if there is already a document with this unique ID value.
 			// If it does not exist, save it to the database.
 
-			const currentHashedTripAlreadyExists = await hashedTrips.existsById(uniqueIdValueForHashedTrip);
+			const currentHashedTripAlreadyExists = await goDb.operation.hashedTrips.existsById(uniqueIdValueForHashedTrip);
 
 			const finalHashedTrip: HashedTrip = {
 				...hashableHashedTrip,
@@ -872,7 +873,7 @@ export async function parsePlan(planData: Plan) {
 			// Check if there is already a document with this unique ID value.
 			// If it does not exist, save it to the database.
 
-			const currentHashedShapeAlreadyExists = await hashedShapes.existsById(uniqueIdValueForHashedShape);
+			const currentHashedShapeAlreadyExists = await goDb.operation.hashedShapes.existsById(uniqueIdValueForHashedShape);
 
 			const finalHashedShape: HashedShape = {
 				...hashableHashedShape,
@@ -931,7 +932,8 @@ export async function parsePlan(planData: Plan) {
 
 				const finalRide: Ride = {
 					_id: uniqueIdValueForRide,
-					agency_id: routeData.agency_id,
+					agency_code: planData.gtfs_agency.agency_id,
+					agency_id: planData.agency_id,
 					analysis: null,
 					apex_locations_qty: null,
 					apex_on_board_refunds_amount: null,
@@ -951,7 +953,7 @@ export async function parsePlan(planData: Plan) {
 					hashed_shape_id: finalHashedShape._id,
 					hashed_trip_id: finalHashedTrip._id,
 					headsign: currentTrip.trip_headsign,
-					line_id: Number(routeData.line_id),
+					line_id: String(routeData.line_id),
 					operational_date: calendarDate,
 					passengers_estimated: null,
 					passengers_observed: null,
@@ -1039,7 +1041,7 @@ export async function parsePlan(planData: Plan) {
 	//
 	// Mark this plan as 'complete' to indicate that it was processed successfully
 
-	const plansCollection = await plans.getCollection();
+	const plansCollection = await goDb.operation.plans.getCollection();
 
 	await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.controller.last_hash': planData.hash, 'apps.controller.status': 'complete', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 

@@ -19,7 +19,8 @@ export function parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap
 
 	const result: SimplifiedApexBankingTap = {
 		_id: doc.payload.transactionInfo.transactionId,
-		agency_id: doc.payload.operatorInfo.operatorLongID,
+		agency_code: doc.payload.operatorInfo.operatorLongID,
+		agency_id: doc.agency_id,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		banking_token: doc.payload.tapInInfo.bankingToken,
 		card_brand: ApexBankingBrandSchema.parse(String(doc.payload.tapInInfo.cardBrand)),
@@ -40,7 +41,7 @@ export function parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap
 		stop_id: doc.payload.serviceInfo.stopLongID,
 		trip_id: doc.payload.serviceInfo.journeyID,
 		updated_at: Dates.now('utc').unix_timestamp,
-		vehicle_id: doc.payload.serviceInfo.vehicleID,
+		vehicle_id: String(doc.payload.serviceInfo.vehicleID),
 	};
 
 	return SimplifiedApexBankingTapSchema.parse(result);

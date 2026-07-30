@@ -7,7 +7,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -19,12 +21,14 @@
 	"dependencies": {
 		"@fastify/multipart": "10.1.0",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*"
+		"@tmlmobilidade/go-providers-storage": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/strings": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

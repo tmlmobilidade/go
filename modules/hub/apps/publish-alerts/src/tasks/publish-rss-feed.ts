@@ -3,7 +3,7 @@
 import { transformAlertIntoRssEntity } from '@/transform/rss/main.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { alerts } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { createRssFeed, type RssRawItem } from '@tmlmobilidade/rss';
 import { Timer } from '@tmlmobilidade/timer';
@@ -24,7 +24,7 @@ export async function publishRssFeed() {
 	//
 	// Retrieve active alerts from the database
 
-	const findResult = await alerts.findMany(
+	const findResult = await goDb.operation.alerts.findMany(
 		{
 			$and: [
 				{

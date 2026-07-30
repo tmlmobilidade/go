@@ -9,9 +9,8 @@ import { parseTripRef } from '@/parse-trip-ref.js';
 import { replayEvents } from '@/replay-events.js';
 import { runLoaderPhase } from '@/run-loader.js';
 import { writeOutput } from '@/write-output.js';
-import { GOClickHouseClient } from '@tmlmobilidade/databases';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -145,7 +144,7 @@ async function main() {
 	// D. Build the loader config
 
 	const config = buildLoaderConfig(args);
-	const clickhouseClient = await GOClickHouseClient.getClient();
+	const clickhouseClient = await labDb.getClient();
 
 	//
 	// E. Run the loader phase

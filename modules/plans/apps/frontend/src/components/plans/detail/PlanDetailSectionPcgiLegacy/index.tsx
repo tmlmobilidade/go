@@ -22,7 +22,7 @@ export function PlanDetailSectionPcgiLegacy() {
 		action: PermissionCatalog.all.plans.actions.update_pcgi_legacy,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: planDetailContext.data.plan.gtfs_agency.agency_id ?? '',
+		value: planDetailContext.data.plan.agency_id ?? '',
 	});
 
 	//

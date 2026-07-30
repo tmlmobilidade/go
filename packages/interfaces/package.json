@@ -35,10 +35,11 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-types-apex": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/ssh": "*",
@@ -47,8 +48,8 @@
 		"@tmlmobilidade/writers": "*",
 		"bcryptjs": "3.0.3",
 		"mongodb": "7.5.0",
-		"oci-common": "2.137.0",
-		"oci-objectstorage": "2.137.0",
+		"oci-common": "2.137.1",
+		"oci-objectstorage": "2.137.1",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
