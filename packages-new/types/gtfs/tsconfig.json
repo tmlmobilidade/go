@@ -8,6 +8,6 @@
 		"rootDir": "src",
 		"strictNullChecks": true
 	},
-	"include": ["src", "../../../packages/types/src/gtfs/routes-old.ts"],
+	"include": ["src"],
 	"exclude": ["node_modules", "dist"]
 }
