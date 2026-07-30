@@ -39,8 +39,26 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 		{ sort: { _id: 1 } },
 	);
 
+	//
+	// Export the stops
+
 	for (const stopData of allStopsList) {
 		//
+
+		//
+		// Format the stop flags to accomodate multiple IDs for each agency
+
+		const formattedStopFlagsValue: string[] = [];
+
+		for (const flagData of stopData.flags) {
+			for (const agencyId of flagData.agency_ids) {
+				if (!agencyIds.includes(agencyId)) continue;
+				formattedStopFlagsValue.push(`${agencyId}-${flagData.stop_id}`);
+			}
+		}
+
+		//
+		// Get the matching names for the stop's location entities
 
 		const matchingDistrictName = allDistrictsMap.get(stopData.district_id);
 		const matchingMunicipalityName = allMunicipalitiesMap.get(stopData.municipality_id);
@@ -50,7 +68,7 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 		const parsedStopsRow: HubGtfsExportStops = {
 			stop_id: stopData._id,
 			stop_code: stopData._id,
-			flags: JSON.stringify(stopData.flags),
+			flags: formattedStopFlagsValue.join('|'),
 			legacy_ids: stopData.legacy_ids.join('|'),
 			stop_name: stopData.name,
 			tts_stop_name: stopData.tts_name ?? '',
