@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 export const SimplifiedApexValidationSchema = z.object({
 	_id: z.string(),
+	agency_code: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
 	card_serial_number: z.string().nullable().default(null),
@@ -34,7 +35,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	units_qty: z.number().nullable().default(null),
 	updated_at: UnixTimestampSchema,
 	validation_status: ApexValidationStatusSchema,
-	vehicle_id: z.number().nullable().default(null),
+	vehicle_id: z.string().nullable().default(null),
 }).transform((val) => {
 	// Check whether the transaction has a valid units quantity field
 	// and allow zero as valid value (for subsidized trips). In those cases,
@@ -65,7 +66,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	const isValidValidationStatus = ValidApexValidationStatusSchema.safeParse(val.validation_status).success;
 	const isNotRefunded = val.on_board_refund_id == null;
 	// Combine the individual conditions
-	const isPassenger = val.is_ok && isValidValidationStatus && isNotRefunded;
+	const isPassenger = isValidValidationStatus && isNotRefunded;
 	// Return the transformed value
 	return { ...val, is_passenger: isPassenger };
 });

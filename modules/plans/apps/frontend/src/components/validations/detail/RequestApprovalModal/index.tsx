@@ -3,7 +3,7 @@
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { PlansCreateContextProvider, usePlansCreateContext } from '@/contexts/PlansCreate.context';
-import { Button, closeModal, Divider, Grid, Label, openModal, ProcessingStatusTag, Section, Tag, ValidityStatusTag } from '@tmlmobilidade/ui';
+import { AgencyTag, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, ProcessingStatusTag, Section, ValidityStatusTag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -14,9 +14,11 @@ export const REQUEST_APPROVAL_MODAL_ID = 'request-approval-modal';
 export const openRequestApprovalModalModal = (validation_id?: string) => {
 	openModal({
 		children: (
-			<PlansCreateContextProvider validationId={validation_id}>
-				<RequestApprovalModal />
-			</PlansCreateContextProvider>
+			<MeContextProvider>
+				<PlansCreateContextProvider validationId={validation_id}>
+					<RequestApprovalModal />
+				</PlansCreateContextProvider>
+			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
 		modalId: REQUEST_APPROVAL_MODAL_ID,
@@ -45,7 +47,7 @@ export default function RequestApprovalModal() {
 			<Section alignItems="center" flexDirection="row" gap="lg">
 				<ProcessingStatusTag value={plansCreateContext.data.validation?.processing_status} />
 				<ValidityStatusTag value={plansCreateContext.data.validation?.validity_status} />
-				<Tag label={plansCreateContext.data.validation?.gtfs_agency.agency_id} variant="secondary" />
+				<AgencyTag agencyId={plansCreateContext.data.validation?.agency_id} showShortName />
 				<Label size="md" caps>{plansCreateContext.data.validation._id}</Label>
 			</Section>
 

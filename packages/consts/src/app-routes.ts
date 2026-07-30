@@ -208,7 +208,7 @@ export const API_ROUTES = Object.freeze({
 		AGENCIES_LIST: `${getModuleConfig('auth', 'api_url')}/agencies`,
 
 		// APP-CONFIGS
-		APP_CONFIGS_APP_WRAPPER_BANNER: `${getModuleConfig('auth', 'api_url')}/app-configs/app-banner`,
+		APP_CONFIGS_APP_BANNER: `${getModuleConfig('auth', 'api_url')}/app-configs/app-banner`,
 
 		// AUTH
 		AUTH_CHANGE_PASSWORD: `${getModuleConfig('auth', 'api_url')}/auth/change-password`,

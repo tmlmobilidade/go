@@ -3,7 +3,7 @@
 import { transformAlertIntoGtfsRtEntity } from '@/transform/gtfs-rt/main.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { alerts } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/types';
@@ -20,7 +20,7 @@ export async function publishGtfsRtFeed() {
 	//
 	// Retrieve active alerts from the database
 
-	const findResult = await alerts.findMany(
+	const findResult = await goDb.operation.alerts.findMany(
 		{
 			$and: [
 				{
@@ -30,7 +30,7 @@ export async function publishGtfsRtFeed() {
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
-					agency_id: { $in: ['41', '42', '43', '44'] },
+					agency_id: { $in: ['LA77N', 'BNA17', 'YA15B', 'A2L1N'] },
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
 					publish_status: 'published',
 				},

@@ -1,6 +1,6 @@
 # # #
 
-FROM node:24-slim AS base
+FROM node:lts-slim AS base
 
 
 # # #
@@ -32,7 +32,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
+RUN turbo prune --docker @tmlmobilidade/go-${MODULE}-${APP}
 
 
 # # #
@@ -43,6 +43,10 @@ RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
 FROM base AS builder
 
 WORKDIR /app
+
+RUN apt-get update
+RUN apt-get install -y python3 build-essential
+RUN rm -rf /var/lib/apt/lists/*
 
 COPY --from=pruner /app/out/json/ .
 COPY .github/templates/docker/scripts /app/.docker/scripts
@@ -55,7 +59,7 @@ RUN npx @tmlmobilidade/repo-version --output=/app/modules/${MODULE}/apps/${APP}/
 
 RUN turbo run build --filter=@tmlmobilidade/go-${MODULE}-${APP}
 
-RUN npm prune --omit-dev
+RUN npm prune
 
 RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
 RUN node /app/.docker/scripts/trim-workspaces.js /app/packages /app/modules /app/packages-new

@@ -13,7 +13,7 @@ import { SidebarNavigation } from '../SidebarNavigation';
 /* * */
 
 export const SIDEBAR_WIDTH_COLLAPSED = 60 + 2; // 2px border
-export const SIDEBAR_WIDTH_EXPANDED = 250;
+export const SIDEBAR_WIDTH_EXPANDED = 280;
 
 /* * */
 

@@ -1,7 +1,7 @@
 /* * */
 
-import { simplifiedApexInspectionsNew } from '@tmlmobilidade/databases';
 import { parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexInspection } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -12,9 +12,9 @@ const writer = new BatchWriter<SimplifiedApexInspection>({
 	batch_size: 10_000,
 	batch_timeout: 30_000,
 	insertFn: async (data) => {
-		await simplifiedApexInspectionsNew.insert('JSONEachRow', data);
+		await labDb.simplifiedApex.inspections.insert('JSONEachRow', data);
 	},
-	title: await simplifiedApexInspectionsNew.getTableName(),
+	title: await labDb.simplifiedApex.inspections.getTableName(),
 });
 
 /**

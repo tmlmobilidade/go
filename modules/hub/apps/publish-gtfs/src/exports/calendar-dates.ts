@@ -27,7 +27,7 @@ export async function exportCalendarDatesFile(planData: Plan, sqlTables: GtfsSQL
 	for (const [serviceId, operationalDatesList] of Object.entries(sqlTables.calendar_dates)) {
 		for (const operationalDate of operationalDatesList.sort()) {
 			const parsedCalendarDatesRow: ExportedCalendarDatesRow = {
-				service_id: getPublicServiceId(planData._id, planData.gtfs_agency.agency_id, serviceId),
+				service_id: getPublicServiceId(planData._id, planData.agency_id, serviceId),
 				date: operationalDate,
 				exception_type: 1,
 			};

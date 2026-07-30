@@ -2,7 +2,8 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { alerts, files } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Alert } from '@tmlmobilidade/types';
@@ -19,7 +20,7 @@ export async function publishJsonFeed() {
 	//
 	// Retrieve active alerts from the database
 
-	const findResult = await alerts.findMany(
+	const findResult = await goDb.operation.alerts.findMany(
 		{
 			$and: [
 				{
@@ -29,7 +30,7 @@ export async function publishJsonFeed() {
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
-					agency_id: { $in: ['41', '42', '43', '44'] },
+					agency_id: { $in: ['A2L1N', 'BNA17', 'LA77N', 'YA15B'] },
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
 					publish_status: 'published',
 				},
@@ -55,7 +56,7 @@ export async function publishJsonFeed() {
 
 			if (alertData.file_id) {
 			// Get the associated file data to prepare the image value
-				const fileData = await files.findById(alertData.file_id);
+				const fileData = await storageProvider.findById(alertData.file_id);
 				if (fileData?.url && fileData?.type) {
 					imageUrl = fileData.url;
 				}

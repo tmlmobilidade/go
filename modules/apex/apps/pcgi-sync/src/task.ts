@@ -1,9 +1,9 @@
 /* * */
 
-import { rawApexTransactions } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { pcgiFileManager } from '@tmlmobilidade/go-interfaces-pcgi-file-manager';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -21,9 +21,9 @@ const writer = new BatchWriter<RawApexTransaction>({
 				upsert: true,
 			},
 		}));
-		await rawApexTransactions.bulkWrite(writeOps);
+		await rawDb.apex.transactions.bulkWrite(writeOps);
 	},
-	title: await rawApexTransactions.getCollectionName(),
+	title: 'rawdb|raw-apex-transactions',
 });
 
 /**
@@ -67,9 +67,9 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 
 	const distinctIdsTimer = new Timer();
 
-	const sourceDbDistinctIds = await pcgiFileManager.locationManagement.locationEntity.distinct('transactionId', sourceQuery);
+	const sourceDbDistinctIds = await pcgiFileManager.fileManagement.transactionEntity.distinct('transactionId', sourceQuery);
 
-	const matchingDocumentIds = await rawApexTransactions.findMany({ _id: { $in: sourceDbDistinctIds } }, { projection: { _id: 1 } });
+	const matchingDocumentIds = await rawDb.apex.transactions.findMany({ _id: { $in: sourceDbDistinctIds } }, { projection: { _id: 1 } });
 	const matchingDocumentIdsUnique = new Set(matchingDocumentIds.map(doc => doc._id));
 
 	const missingDocumentIds = sourceDbDistinctIds.filter(id => !matchingDocumentIdsUnique.has(id));
@@ -88,7 +88,7 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 	// because they are impossible to calculate without fetching and parsing all documents,
 	// so we just upsert them in the Destination database and the DB takes care of deduplication.
 
-	const pcgidbTransactionEntitiesCollection = await pcgiFileManager.locationManagement.locationEntity.getCollection();
+	const pcgidbTransactionEntitiesCollection = await pcgiFileManager.fileManagement.transactionEntity.getCollection();
 
 	const pcgidbTransactionEntitiesStream = pcgidbTransactionEntitiesCollection.find({ transactionId: { $in: missingDocumentIds } }).stream();
 

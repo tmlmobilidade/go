@@ -1,8 +1,7 @@
 'use client';
 
-import type { Map as MapLibre } from 'maplibre-gl';
-
 import { useMapContext } from '@/components/map/Map.context';
+import { type Map as MapLibre } from 'maplibre-gl';
 import { useEffect, useMemo, useState } from 'react';
 
 /* * */

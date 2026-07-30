@@ -31,9 +31,9 @@ export function AlertsList() {
 	const columns: DataTableColumn<Alert>[] = [
 		{
 			accessor: 'agency_id',
-			render: item => <AgencyTag agencyId={item.agency_id} showId />,
-			title: 'Oper.',
-			width: 55,
+			render: item => <AgencyTag agencyId={item.agency_id} copyOnClick={false} showShortName />,
+			title: 'Operador',
+			width: 180,
 		},
 		{
 			accessor: 'publish_status',

@@ -8,6 +8,7 @@ import styles from './styles.module.css';
 
 import { useMeContext } from '../../../contexts/Me.context';
 import { WhenMode } from '../../layout/WhenMode';
+import { Loader } from '../../loaders/Loader';
 
 /* * */
 
@@ -29,12 +30,12 @@ export function SidebarHeaderLogo() {
 
 	return (
 		<div className={styles.appLogo}>
-			{organizationLogoData && (
+			{organizationLogoData ? (
 				<WhenMode
 					dark={<Image key={organizationLogoData?.logo_dark} alt="Logo" fallbackSrc="/auth/assets/layout/sidebar/go-sidebar-fallback-dark.png" src={organizationLogoData?.logo_dark} width={70} />}
 					light={<Image key={organizationLogoData?.logo_light} alt="Logo" fallbackSrc="/auth/assets/layout/sidebar/go-sidebar-fallback-light.png" src={organizationLogoData?.logo_light} width={70} />}
 				/>
-			)}
+			) : <Loader size="sm" />}
 		</div>
 	);
 }

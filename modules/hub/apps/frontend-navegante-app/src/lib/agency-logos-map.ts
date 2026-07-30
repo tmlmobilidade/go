@@ -1,19 +1,19 @@
 /* * */
 
 const AGENCY_ID_TO_SHORT_NAME = {
-	1: 'ccfl',
-	15: 'fertagus',
-	16: 'mts',
-	2: 'ml',
-	21: 'mobi',
-	3: 'cp',
-	4: 'ttsl',
-	41: 'cmet',
-	42: 'cmet',
-	43: 'cmet',
-	44: 'cmet',
-	8: 'tcb',
-	CM: 'cmet',
+	'7NTB1': 'fertagus',
+	'A2L1N': 'cmet',
+	'A3H3M': 'tcb',
+	'BNA17': 'cmet',
+	'CM': 'cmet',
+	'HF16N': 'mobi',
+	'IA2N9': 'ml',
+	'IA9T6': 'ccfl',
+	'KB1F6': 'mts',
+	'LA77N': 'cmet',
+	'LTP61': 'ttsl',
+	'N18KL': 'cp',
+	'YA15B': 'cmet',
 };
 
 type AgencyLogoSize = '120x120' | '180x120';

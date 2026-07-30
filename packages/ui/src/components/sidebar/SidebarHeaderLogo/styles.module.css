@@ -2,17 +2,10 @@
 /* APP LOGO */
 
 .appLogo {
-	z-index: 100;
-	box-sizing: border-box;
 	display: flex;
 	flex-shrink: 0;
 	align-items: center;
 	justify-content: center;
 	width: 60px;
-	height: 100%;
-	padding: 0;
-	margin: 0;
-	background: none;
-	border: none;
-	box-shadow: none;
+	height: 60px;
 }
