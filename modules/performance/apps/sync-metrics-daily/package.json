@@ -21,6 +21,7 @@
 		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-performance-pckg-log": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/interfaces": "*",

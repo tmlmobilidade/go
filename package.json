@@ -35,6 +35,8 @@
 		"build:locations": "turbo run build --filter=@tmlmobilidade/go-locations-*",
 		"build:offer": "turbo run build --filter=@tmlmobilidade/go-offer-*",
 		"build:performance": "turbo run build --filter=@tmlmobilidade/go-performance-*",
+		"build:performance:sync-metrics-daily": "turbo run build --filter=@tmlmobilidade/go-performance-sync-metrics-daily",
+		"build:performance:sync-metrics-realtime": "turbo run build --filter=@tmlmobilidade/go-performance-sync-metrics-realtime",
 		"build:plans": "turbo run build --filter=@tmlmobilidade/go-plans-*",
 		"build:replicator": "turbo run build --filter=@tmlmobilidade/go-replicator-*",
 		"build:stops": "turbo run build --filter=@tmlmobilidade/go-stops-*",

@@ -2,7 +2,7 @@
 
 import { performanceSqlPath } from '@/lib/sql-path.js';
 import { buildStopSequenceLookup, patternStopKey } from '@/process/build-stop-sequence-lookup.js';
-import { queryEachStatementFromFile, queryFromFile, validationsByStopBySequence } from '@tmlmobilidade/databases';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -19,30 +19,24 @@ interface ValidationByStopRow {
 
 /* * */
 
+const METRIC = 'validations_by_stop_by_sequence';
+
 export const syncValidationsByStopBySequence = async () => {
 	Logger.title('Sync Validations by Stop by Sequence');
 	const globalTimer = new Timer();
-
-	const METRIC = 'validations_by_stop_by_sequence';
-
-	const clickhouseClient = await validationsByStopBySequence.getClient();
-	const tableName = await validationsByStopBySequence.getTableName();
 
 	//
 	// 1. Bootstrap table schema
 
 	Logger.info({ message: 'Running validations_by_stop_by_sequence.sql DDL' });
-	await queryEachStatementFromFile(clickhouseClient, performanceSqlPath('demand/stop-validations/validations_by_stop_by_sequence.sql'));
+	await labDb.queryEachStatementFromFile(performanceSqlPath('demand/stop-validations/validations_by_stop_by_sequence.sql'));
 
 	//
 	// 2. Fetch validations aggregated by stop from ClickHouse
 
 	const fetchTimer = new Timer();
 	Logger.info({ message: 'Fetching validations by stop from ClickHouse...' });
-	const validationsByStop = await queryFromFile<ValidationByStopRow>(
-		clickhouseClient,
-		performanceSqlPath('demand/stop-validations/select-validations-by-stop.sql'),
-	);
+	const validationsByStop = await labDb.queryFromFile<ValidationByStopRow>(performanceSqlPath('demand/stop-validations/select-validations-by-stop.sql'));
 	Logger.info({ message: `Fetched ${validationsByStop.length} validation rows (${fetchTimer.get()})` });
 
 	//
@@ -57,9 +51,9 @@ export const syncValidationsByStopBySequence = async () => {
 	const writer = new BatchWriter({
 		batch_size: 10_000,
 		insertFn: async (data) => {
-			await validationsByStopBySequence.insert('JSONEachRow', data);
+			await labDb.queryFromString(`INSERT INTO ${METRIC} JSONEachRow ${JSON.stringify(data)}`);
 		},
-		title: tableName,
+		title: METRIC,
 	});
 
 	let joinedRows = 0;
