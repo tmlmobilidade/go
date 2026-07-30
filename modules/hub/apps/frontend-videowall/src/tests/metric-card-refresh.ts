@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 /* * */
 
 const metricCardStyles = readFileSync(
-	new URL('../components/MetricCard/styles.module.css', import.meta.url),
+	new URL('../components/cards/MetricCard/styles.module.css', import.meta.url),
 	'utf8',
 );
 

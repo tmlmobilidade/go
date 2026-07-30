@@ -6,19 +6,19 @@ import { readFileSync } from 'node:fs';
 /* * */
 
 const metricNumberComponent = readFileSync(
-	new URL('../components/MetricNumber/index.tsx', import.meta.url),
+	new URL('../components/common/MetricNumber/index.tsx', import.meta.url),
 	'utf8',
 );
 const metricNumberStyles = readFileSync(
-	new URL('../components/MetricNumber/styles.module.css', import.meta.url),
+	new URL('../components/common/MetricNumber/styles.module.css', import.meta.url),
 	'utf8',
 );
 const metricCardStyles = readFileSync(
-	new URL('../components/MetricCard/styles.module.css', import.meta.url),
+	new URL('../components/cards/MetricCard/styles.module.css', import.meta.url),
 	'utf8',
 );
 const metricTimestampStyles = readFileSync(
-	new URL('../components/MetricTimestamp/styles.module.css', import.meta.url),
+	new URL('../components/common/MetricTimestamp/styles.module.css', import.meta.url),
 	'utf8',
 );
 const appFontStyles = readFileSync(
