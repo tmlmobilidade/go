@@ -12,6 +12,7 @@ export function Agency41Videowall() {
 		<CmOperatorVideowall
 			agencyId={agency.agency_id}
 			agencyLabel={agency.label}
+			demandDisplay="chart"
 			numberAnimation={agency.number_animation}
 		/>
 	);

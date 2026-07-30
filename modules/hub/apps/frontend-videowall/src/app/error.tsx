@@ -1,6 +1,6 @@
 'use client';
 
-import { AppError } from '@/components/AppError';
+import { AppError } from '@/components/common/AppError';
 
 /* * */
 

@@ -13,12 +13,18 @@ import { type NumberAnimationConfig } from '@/types/number-animation';
 interface Props {
 	agencyId: CmAgencyId
 	agencyLabel: string
+	demandDisplay?: 'cards' | 'chart'
 	numberAnimation: NumberAnimationConfig
 }
 
 /* * */
 
-export function CmOperatorVideowall({ agencyId, agencyLabel, numberAnimation }: Props) {
+export function CmOperatorVideowall({
+	agencyId,
+	agencyLabel,
+	demandDisplay = 'cards',
+	numberAnimation,
+}: Props) {
 	//
 
 	//
@@ -31,7 +37,11 @@ export function CmOperatorVideowall({ agencyId, agencyLabel, numberAnimation }: 
 
 	return (
 		<VideowallMetricsContextProvider agencyIds={CM_AGENCY_IDS} numberAnimation={numberAnimation}>
-			<CmOperatorPanels agencyId={agencyId} agencyLabel={agencyLabel} />
+			<CmOperatorPanels
+				agencyId={agencyId}
+				agencyLabel={agencyLabel}
+				demandDisplay={demandDisplay}
+			/>
 		</VideowallMetricsContextProvider>
 	);
 

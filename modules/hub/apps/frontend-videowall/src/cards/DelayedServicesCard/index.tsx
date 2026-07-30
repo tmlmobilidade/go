@@ -2,8 +2,8 @@
 
 /* * */
 
-import { MetricCard, type MetricCardSize } from '@/components/MetricCard';
-import { MetricNumber } from '@/components/MetricNumber';
+import { MetricCard, type MetricCardSize } from '@/components/cards/MetricCard';
+import { MetricNumber } from '@/components/common/MetricNumber';
 import { getPercentage } from '@/utils/videowall-metrics';
 import { IconClock } from '@tabler/icons-react';
 import { type VideowallServiceValue } from '@tmlmobilidade/go-types-public-info';

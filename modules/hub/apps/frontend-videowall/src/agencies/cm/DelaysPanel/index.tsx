@@ -5,7 +5,7 @@
 import { CM_AGENCIES } from '@/agencies/cm/constants';
 import { AverageDelayCard } from '@/cards/AverageDelayCard';
 import { DelayedServicesCard } from '@/cards/DelayedServicesCard';
-import { MetricGrid } from '@/components/MetricGrid';
+import { MetricGrid } from '@/components/cards/MetricGrid';
 import { useVideowallMetricsContext } from '@/contexts/VideowallMetrics.context';
 
 /* * */

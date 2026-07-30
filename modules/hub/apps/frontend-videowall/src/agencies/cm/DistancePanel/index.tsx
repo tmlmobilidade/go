@@ -4,8 +4,8 @@
 
 import { CM_AGENCIES } from '@/agencies/cm/constants';
 import { DistanceCard } from '@/cards/DistanceCard';
-import { Clock } from '@/components/Clock';
-import { MetricGrid } from '@/components/MetricGrid';
+import { MetricGrid } from '@/components/cards/MetricGrid';
+import { Clock } from '@/components/common/Clock';
 import { useVideowallMetricsContext } from '@/contexts/VideowallMetrics.context';
 
 /* * */

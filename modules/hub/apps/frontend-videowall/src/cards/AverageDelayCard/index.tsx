@@ -2,9 +2,9 @@
 
 /* * */
 
-import { MetricCard, type MetricCardSize } from '@/components/MetricCard';
-import { MetricDuration } from '@/components/MetricDuration';
-import { MetricNumber } from '@/components/MetricNumber';
+import { MetricCard, type MetricCardSize } from '@/components/cards/MetricCard';
+import { MetricDuration } from '@/components/cards/MetricDuration';
+import { MetricNumber } from '@/components/common/MetricNumber';
 import { IconClock } from '@tabler/icons-react';
 import { type VideowallServiceValue } from '@tmlmobilidade/go-types-public-info';
 import { useTranslation } from 'react-i18next';

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { MetricNumber } from '@/components/MetricNumber';
+import { MetricNumber } from '@/components/common/MetricNumber';
 
 import styles from './styles.module.css';
 

@@ -2,10 +2,11 @@
 
 /* * */
 
-import { MetricCard, type MetricCardSize } from '@/components/MetricCard';
-import { MetricNumber } from '@/components/MetricNumber';
+import { MetricCard, type MetricCardSize } from '@/components/cards/MetricCard';
+import { MetricSparkline } from '@/components/cards/MetricSparkline';
+import { MetricNumber } from '@/components/common/MetricNumber';
 import { IconCreditCardPay } from '@tabler/icons-react';
-import { type VideowallDemandValue } from '@tmlmobilidade/go-types-public-info';
+import { type PassengerDemandTrendPoint } from '@tmlmobilidade/go-types-public-info';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -16,12 +17,16 @@ interface Props {
 	isValidating?: boolean
 	size: MetricCardSize
 	timestamp?: number
-	value: null | undefined | VideowallDemandValue
+	trend?: PassengerDemandTrendPoint[]
+	value: null | undefined | {
+		comparison_index_pct: null | number
+		passenger_validations_qty_now: number
+	}
 }
 
 /* * */
 
-export function DemandCard({ agencyLabel, isLoading, isValidating, size, timestamp, value }: Props) {
+export function DemandCard({ agencyLabel, isLoading, isValidating, size, timestamp, trend, value }: Props) {
 	//
 
 	//
@@ -35,6 +40,7 @@ export function DemandCard({ agencyLabel, isLoading, isValidating, size, timesta
 
 	return (
 		<MetricCard
+			footerContent={trend && <MetricSparkline points={trend} />}
 			icon={<IconCreditCardPay />}
 			isLoading={isLoading}
 			isUnavailable={!value}

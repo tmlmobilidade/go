@@ -1,7 +1,7 @@
 /* * */
 
-import { MetricCardSkeleton } from '@/components/MetricCardSkeleton';
-import { MetricTimestamp } from '@/components/MetricTimestamp';
+import { MetricCardSkeleton } from '@/components/cards/MetricCardSkeleton';
+import { MetricTimestamp } from '@/components/common/MetricTimestamp';
 import { type ReactNode } from 'react';
 
 import styles from './styles.module.css';
@@ -12,6 +12,7 @@ export type MetricCardSentiment = 'bad' | 'good' | 'normal';
 export type MetricCardSize = 'lg' | 'md' | 'sm';
 
 interface Props {
+	footerContent?: ReactNode
 	icon?: ReactNode
 	isLoading?: boolean
 	isUnavailable?: boolean
@@ -27,6 +28,7 @@ interface Props {
 /* * */
 
 export function MetricCard({
+	footerContent,
 	icon,
 	isLoading = false,
 	isUnavailable = false,
@@ -67,6 +69,7 @@ export function MetricCard({
 
 			<div className={styles.footer}>
 				<MetricTimestamp timestamp={timestamp} />
+				{footerContent}
 			</div>
 		</article>
 	);

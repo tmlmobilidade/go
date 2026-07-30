@@ -1,0 +1,84 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	width: 100%;
+}
+
+.header,
+.labels {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.header {
+	font-size: clamp(10px, 1.1vw, 13px);
+	font-weight: 600;
+	color: var(--system-muted);
+	text-transform: uppercase;
+}
+
+.header strong {
+	font-size: clamp(13px, 1.5vw, 18px);
+	color: var(--demand-accent);
+}
+
+.labels {
+	padding: 0 28%;
+	font-size: clamp(9px, 0.9vw, 12px);
+	font-weight: 600;
+	color: var(--system-muted);
+}
+
+/* * */
+/* GAUGE */
+
+.gauge {
+	width: 100%;
+	height: clamp(40px, 5vh, 50px);
+	overflow: visible;
+}
+
+.belowRange {
+	fill: rgb(255 95 20 / 18%);
+	stroke: rgb(255 95 20 / 60%);
+	stroke-width: 0.35;
+	vector-effect: non-scaling-stroke;
+}
+
+.typicalRange {
+	fill: rgb(0 150 255 / 28%);
+	stroke: rgb(120 185 255 / 75%);
+	stroke-width: 0.35;
+	vector-effect: non-scaling-stroke;
+}
+
+.aboveRange {
+	fill: rgb(100 105 115 / 16%);
+	stroke: rgb(100 105 115 / 45%);
+	stroke-width: 0.35;
+	vector-effect: non-scaling-stroke;
+}
+
+.currentMarker {
+	stroke: var(--demand-accent);
+	stroke-width: 3;
+	vector-effect: non-scaling-stroke;
+}
+
+.referenceMarker {
+	stroke: var(--system-text);
+	stroke-dasharray: 4 3;
+	stroke-width: 2;
+	vector-effect: non-scaling-stroke;
+}
+
+.referenceValue {
+	font-size: 14px;
+	font-weight: 600;
+	fill: var(--system-text);
+}

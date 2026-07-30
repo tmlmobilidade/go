@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type MetricCardSize } from '@/components/MetricCard';
+import { type MetricCardSize } from '@/components/cards/MetricCard';
 import { Dates } from '@tmlmobilidade/dates';
 import { useEffect, useState } from 'react';
 

@@ -1,0 +1,18 @@
+.root {
+	width: min(45%, 180px);
+	height: 24px;
+	overflow: visible;
+	color: currentcolor;
+}
+
+.typicalBand {
+	fill: currentcolor;
+	opacity: 0.12;
+}
+
+.currentLine {
+	fill: none;
+	stroke: currentcolor;
+	stroke-width: 2;
+	vector-effect: non-scaling-stroke;
+}

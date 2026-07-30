@@ -321,6 +321,24 @@
 			"service_failures": "{agency} / Viajes no ejecutados hoy, hasta ahora",
 			"service_failures_of": "de"
 		},
+		"demand_chart": {
+			"comparison": "vs referencia",
+			"current_series": "Hoy",
+			"current_value": "Hoy {value}",
+			"reference_band": "Intervalo de referencia",
+			"reference_range": "Intervalo de referencia",
+			"reference_value": "Referencia {value}",
+			"status": {
+				"above_typical": "Por encima de lo típico",
+				"below_typical": "Por debajo de lo típico",
+				"typical": "Dentro del patrón",
+				"unavailable": "Referencia no disponible"
+			},
+			"subtitle": "pasajeros validados hasta ahora",
+			"title": "{agency} / Demanda",
+			"trend_title": "Evolución desde las 04:00",
+			"typical_series": "Referencia (mediana)"
+		},
 		"timestamp": {
 			"days": "Actualizado hace {count, plural, one {# día} other {# días}}",
 			"hours": "Actualizado hace {count, plural, one {# hora} other {# horas}}",

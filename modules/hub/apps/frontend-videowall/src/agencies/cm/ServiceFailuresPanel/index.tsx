@@ -2,10 +2,10 @@
 
 /* * */
 
-import { CmCompliance } from '@/agencies/cm/CmCompliance';
 import { CM_AGENCIES } from '@/agencies/cm/constants';
 import { ServiceFailuresCard } from '@/cards/ServiceFailuresCard';
-import { MetricGrid } from '@/components/MetricGrid';
+import { MetricGrid } from '@/components/cards/MetricGrid';
+import { Compliance } from '@/components/common/Compliance';
 import { useVideowallMetricsContext } from '@/contexts/VideowallMetrics.context';
 
 import styles from './styles.module.css';
@@ -49,7 +49,7 @@ export function ServiceFailuresPanel() {
 				))}
 			</MetricGrid>
 
-			<CmCompliance />
+			<Compliance />
 		</section>
 	);
 

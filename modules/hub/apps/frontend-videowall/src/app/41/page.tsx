@@ -1,7 +1,7 @@
 /* * */
 
 import { Agency41Videowall } from '@/agencies/41/Agency41Videowall';
-import { PasswordCheck } from '@/components/PasswordCheck';
+import { PasswordCheck } from '@/components/common/PasswordCheck';
 
 /* * */
 
