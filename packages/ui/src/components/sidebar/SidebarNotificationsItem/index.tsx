@@ -10,7 +10,7 @@ import { useNotificationsContext } from '../../../contexts/Notifications.context
 import { DeleteButton } from '../../buttons/DeleteButton';
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
-import { getSidebarNotificationScopeIcon } from '../sidebar-notification-scope-icon';
+import { getSidebarNotificationScopeIcon } from './sidebar-notification-scope-icon';
 
 /* * */
 

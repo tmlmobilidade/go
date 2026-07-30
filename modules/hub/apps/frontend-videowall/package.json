@@ -14,17 +14,17 @@
 		"lint:fix": "eslint --fix ./src"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.44.0",
+		"@tabler/icons-react": "3.45.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"next": "16.2.10",
-		"nuqs": "2.9.0",
-		"react": "19.2.7",
-		"react-dom": "19.2.7",
-		"react-i18next": "17.0.8",
+		"next": "16.2.12",
+		"nuqs": "2.9.2",
+		"react": "19.2.8",
+		"react-dom": "19.2.8",
+		"react-i18next": "17.0.11",
 		"sharp": "0.35.3",
 		"swr": "2.4.2"
 	},
@@ -33,7 +33,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/geojson": "7946.0.16",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"@types/react": "19.2.17",
 		"@types/react-dom": "19.2.3",
 		"typescript": "6.0.3"

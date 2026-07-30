@@ -9,7 +9,6 @@ import { LinesListGroup } from '@/components/lines/list/LinesListGroup';
 import { Space } from '@mantine/core';
 import { LoadingSection, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
-import { ViewportList } from 'react-viewport-list';
 
 /* * */
 

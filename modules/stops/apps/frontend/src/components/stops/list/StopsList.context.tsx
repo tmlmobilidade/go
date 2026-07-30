@@ -55,7 +55,9 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	const filterConnections = useFilterStateList('connections', StopConnectionSchema.options, StopConnectionSchema.options.map(item => ({ label: item, value: item })));
 	const filterLifecycleStatus = useFilterStateList('lifecycle_status', LifecycleStatusSchema.options, LifecycleStatusSchema.options.map(item => ({ label: item, value: item })));
 	const filterAgencies = useFilterStateList('agencies', agenciesContext.data.raw.map(item => item._id), agenciesContext.data.as_options);
-	const filterMunicipality = useFilterStateList('municipalities', locationsContext.data.municipality_ids, (locationsContext.data.municipalities ?? []).map(item => ({ label: item.name, value: item._id })).sort((a, b) => a.label.localeCompare(b.label, 'pt')));
+	const filterMunicipality = useFilterStateList('municipalities', locationsContext.data.municipality_ids, (locationsContext.data.municipalities ?? []).map(item => ({ label: item.name, value: item._id })).sort((a, b) => a.label?.localeCompare(b.label, 'pt')));
+
+	//
 	// B. Fetch data
 
 	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST, { refreshInterval: 5000 });
@@ -117,7 +119,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 				return lifecycleStatusMatch && matchesFacilities && matchesEquipment && matchesConnections && matchesAgencies && matchesMunicipalities;
 			})
 			.sort((a, b) => {
-				return String(a._id).localeCompare(String(b._id));
+				return String(a._id)?.localeCompare(String(b._id));
 			});
 	}, [
 		searchResultsData,

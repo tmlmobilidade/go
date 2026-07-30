@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { vehicles } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Vehicle } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +16,7 @@ export async function getAllVehicles(request: FastifyRequest, reply: FastifyRepl
 	//
 	// Fetch all vehicles
 
-	const allVehicles = await vehicles.findMany({}, { sort: { created_at: -1 } });
+	const allVehicles = await goDb.operation.vehicles.findMany({}, { sort: { created_at: -1 } });
 
 	return reply
 		.header('Access-Control-Allow-Origin', '*')

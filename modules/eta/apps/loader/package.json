@@ -22,15 +22,14 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-eta-pckg-loader": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/utils": "*",
-		"ngeohash": "^0.6.3"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.0",
+		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.0",
+		"tsx": "4.23.1",
 		"typescript": "6.0.3"
 	}
 }

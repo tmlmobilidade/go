@@ -1,9 +1,9 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type HubLine } from '@tmlmobilidade/go-types-public-info';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { type HubRoute } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
@@ -11,10 +11,10 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getRoutes(request: FastifyRequest, reply: FastifyReply<HubLine[]>) {
+export async function getRoutes(request: FastifyRequest, reply: FastifyReply<HubRoute[]>) {
 	//
 
-	const cachedData = await apiCache.get('hub:v1:network:routes');
+	const cachedData = await cacheDb.get('hub:v1:network:routes');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/network:getRoutes()] No cached data found for routes' });

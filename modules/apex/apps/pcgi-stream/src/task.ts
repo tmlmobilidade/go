@@ -1,7 +1,7 @@
 /* * */
 
-import { rawApexTransactions } from '@tmlmobilidade/databases';
 import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
@@ -19,9 +19,9 @@ const writer = new BatchWriter<RawApexTransaction>({
 				upsert: true,
 			},
 		}));
-		await rawApexTransactions.bulkWrite(writeOps);
+		await rawDb.apex.transactions.bulkWrite(writeOps);
 	},
-	title: await rawApexTransactions.getCollectionName(),
+	title: 'rawdb|raw-apex-transactions',
 });
 
 /**

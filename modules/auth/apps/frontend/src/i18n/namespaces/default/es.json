@@ -13,6 +13,17 @@
 				},
 				"title": "Alertas"
 			},
+			"SectionApex": {
+				"description": "Configuración del sistema APEX para este operador.",
+				"fields": {
+					"contact_emails": {
+						"description": "Emails que serán notificados cuando se dispongan de nuevos archivos de configuración APEX.",
+						"label": "Emails de contacto APEX",
+						"placeholder": "email@example.com"
+					}
+				},
+				"title": "Configuración APEX"
+			},
 			"SectionBasicInfo": {
 				"description": "Nombre, email, teléfono, URL y zona horaria.",
 				"fields": {
@@ -82,6 +93,24 @@
 				},
 				"title": "Información financiera de la agencia"
 			},
+			"SectionOpenData": {
+				"description": "Configuración de los datos abiertos.",
+				"fields": {
+					"eta_enabled": {
+						"label": "Disponibilizar estimativas de llegada"
+					},
+					"gtfs_enabled": {
+						"label": "Disponibilizar GTFS unificado."
+					},
+					"positions_enabled": {
+						"label": "Disponibilizar posiciones de los vehículos"
+					},
+					"service_alerts_enabled": {
+						"label": "Disponibilizar alertas de servicio"
+					}
+				},
+				"title": "Datos Abiertos"
+			},
 			"SectionValidationRules": {
 				"description": "Archivo de reglas de validación del GTFS",
 				"fields": {
@@ -131,7 +160,8 @@
 				"columns": {
 					"code": "Código",
 					"id": "#ID",
-					"name": "Nombre"
+					"name": "Nombre",
+					"pta_name": "Nombre de la Autoridad"
 				}
 			}
 		}

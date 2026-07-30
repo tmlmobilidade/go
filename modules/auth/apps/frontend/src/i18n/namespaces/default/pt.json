@@ -13,6 +13,17 @@
 				},
 				"title": "Alertas"
 			},
+			"SectionApex": {
+				"description": "Configurações do sistema APEX para este operador.",
+				"fields": {
+					"contact_emails": {
+						"description": "Emails que serão notificados quando forem disponibilizados novos ficheiros de configuração APEX.",
+						"label": "Emails de contacto APEX",
+						"placeholder": "email@example.com"
+					}
+				},
+				"title": "Configurações APEX"
+			},
 			"SectionBasicInfo": {
 				"description": "Nome, email, telefone, URL e fuso horário.",
 				"fields": {
@@ -31,6 +42,10 @@
 					"phone": {
 						"label": "Contacto Telefónico",
 						"placeholder": "912345678"
+					},
+					"pta_name": {
+						"label": "Nome da Autoridade",
+						"placeholder": "CIM..."
 					},
 					"public_email": {
 						"label": "Email Público",
@@ -82,6 +97,24 @@
 				},
 				"title": "Informação financeira da agência"
 			},
+			"SectionOpenData": {
+				"description": "Configurações dos dados abertos.",
+				"fields": {
+					"eta_enabled": {
+						"label": "Disponibilizar estimativas de chegada"
+					},
+					"gtfs_enabled": {
+						"label": "Disponibilizar GTFS unificado"
+					},
+					"positions_enabled": {
+						"label": "Disponibilizar posições dos veículos"
+					},
+					"service_alerts_enabled": {
+						"label": "Disponibilizar alertas de serviço"
+					}
+				},
+				"title": "Dados Abertos"
+			},
 			"SectionValidationRules": {
 				"description": "Ficheiro de regras de validação do GTFS",
 				"fields": {
@@ -131,7 +164,8 @@
 				"columns": {
 					"code": "Código",
 					"id": "#ID",
-					"name": "Nome"
+					"name": "Nome",
+					"pta_name": "Nome da Autoridade"
 				}
 			}
 		}

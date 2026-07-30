@@ -1,5 +1,5 @@
 import { type TaskProps } from '@/types.js';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /** Result type for median speed by agency */
 export interface AgencyMedianSpeedResult {
@@ -28,7 +28,7 @@ function median(values: number[]): number {
 export async function calculateMedianSpeed({ context, message }: TaskProps): Promise<AgencyMedianSpeedResult[]> {
 	message('Calculating median speeds per agency...');
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	// const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp;
 	// const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp;

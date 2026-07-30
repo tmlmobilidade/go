@@ -1,1 +1,1 @@
-export * from '@/pcgi/transaction-entity.js';
+export * from './transaction-entity.js';

@@ -1,8 +1,8 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { apiCache } from '@tmlmobilidade/databases';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Plan } from '@tmlmobilidade/types';
 
@@ -15,7 +15,7 @@ import { type Plan } from '@tmlmobilidade/types';
 export async function getApprovedPlans(request: FastifyRequest, reply: FastifyReply<Plan[]>) {
 	//
 
-	const cachedData = await apiCache.get('hub:v1:plans:approved:json');
+	const cachedData = await cacheDb.get('hub:v1:plans:approved:json');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/plans:getApprovedPlans()] No cached data found for approved plans' });
