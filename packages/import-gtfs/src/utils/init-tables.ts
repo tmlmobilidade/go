@@ -1,9 +1,10 @@
 /* * */
 
 import { type GtfsSQLTables } from '@/types/sql-tables.js';
+import { type HubGtfsExportStops } from '@tmlmobilidade/go-types-public-info';
 import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
 import { type OperationalDate } from '@tmlmobilidade/types';
-import { type GTFS_Route_Extended, type GTFS_Shape, type GTFS_Stop_Extended, type GTFS_StopTime, type GTFS_Trip_Extended } from '@tmlmobilidade/types';
+import { type GTFS_Route_Extended, type GTFS_Shape, type GTFS_StopTime, type GTFS_Trip_Extended } from '@tmlmobilidade/types';
 
 /**
  * Initializes GTFS SQL tables and writers.
@@ -69,33 +70,19 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		],
 	});
 
-	const stopsTable = database.registerTable<GTFS_Stop_Extended>('stops', {
+	const stopsTable = database.registerTable<HubGtfsExportStops>('stops', {
 		batch_size: 10000,
 		columns: [
-			{ indexed: false, name: 'level_id', type: 'TEXT' },
 			{ indexed: false, name: 'location_type', type: 'INTEGER' },
 			{ indexed: false, name: 'parent_station', type: 'TEXT' },
 			{ indexed: false, name: 'platform_code', type: 'TEXT' },
 			{ indexed: false, name: 'stop_code', type: 'TEXT' },
-			{ indexed: false, name: 'stop_desc', type: 'TEXT' },
 			{ indexed: true, name: 'stop_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_lat', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_lon', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_timezone', type: 'TEXT' },
-			{ indexed: false, name: 'stop_url', type: 'TEXT' },
 			{ indexed: false, name: 'wheelchair_boarding', type: 'INTEGER' },
-			{ indexed: false, name: 'zone_id', type: 'TEXT' },
-			{ indexed: false, name: 'has_bench', type: 'INTEGER' },
-			{ indexed: false, name: 'has_network_map', type: 'INTEGER' },
-			{ indexed: false, name: 'has_pip_real_time', type: 'INTEGER' },
-			{ indexed: false, name: 'has_schedules', type: 'INTEGER' },
-			{ indexed: false, name: 'has_shelter', type: 'INTEGER' },
-			{ indexed: false, name: 'has_stop_sign', type: 'INTEGER' },
-			{ indexed: false, name: 'has_tariffs_information', type: 'INTEGER' },
-			{ indexed: false, name: 'public_visible', type: 'INTEGER' },
-			{ indexed: false, name: 'shelter_code', type: 'TEXT' },
-			{ indexed: false, name: 'shelter_maintainer', type: 'TEXT' },
+			{ indexed: false, name: 'lifecycle_status', type: 'TEXT' },
 			{ indexed: false, name: 'stop_short_name', type: 'TEXT' },
 			{ indexed: false, name: 'tts_stop_name', type: 'TEXT' },
 			{ indexed: false, name: 'district_id', type: 'TEXT' },
