@@ -32,11 +32,11 @@ interface ItrpBaseRow {
 
 /* * */
 
+const METRIC = 'itrp_by_pattern';
+
 export const syncItrpByPattern = async () => {
 	Logger.title('Sync ITRP by Pattern');
 	const globalTimer = new Timer();
-
-	const METRIC = 'itrp_by_pattern';
 
 	const dates = {
 		end: validateOperationalDate('20251231'),
@@ -49,17 +49,14 @@ export const syncItrpByPattern = async () => {
 	// 1. Bootstrap table schema
 
 	Logger.info({ message: 'Running ITRP.sql DDL' });
-	await labDb.queryEachStatementFromFile(clickhouseClient, performanceSqlPath('demand/ITRP/ITRP.sql'));
+	await labDb.queryEachStatementFromFile(performanceSqlPath('demand/ITRP/ITRP.sql'));
 
 	//
 	// 2. Fetch base pattern rows from ClickHouse (agency_id, pattern_id, line_id, passengers)
 
 	const fetchTimer = new Timer();
 	Logger.info({ message: 'Fetching ITRP base patterns from ClickHouse...' });
-	const baseRows = await queryFromFile<ItrpBaseRow>(
-		clickhouseClient,
-		performanceSqlPath('demand/ITRP/select-itrp-base.sql'),
-	);
+	const baseRows = await labDb.queryFromFile<ItrpBaseRow>(performanceSqlPath('demand/ITRP/select-itrp-base.sql'));
 	Logger.info({ message: `Fetched ${baseRows.length} ITRP base rows (${fetchTimer.get()})` });
 
 	//
@@ -75,9 +72,9 @@ export const syncItrpByPattern = async () => {
 	const writer = new BatchWriter({
 		batch_size: 10_000,
 		insertFn: async (data) => {
-			await itrp.insert('JSONEachRow', data);
+			await labDb.queryFromString(`INSERT INTO ${METRIC} JSONEachRow ${JSON.stringify(data)}`);
 		},
-		title: tableName,
+		title: METRIC,
 	});
 
 	let joinedRows = 0;
