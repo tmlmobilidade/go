@@ -1,15 +1,14 @@
 /* * */
 
-import { GtfsExceptionTypeSchema } from '@/calendar-dates/exception-type.js';
-import { GtfsDateSchema } from '@/shared/gtfs-date.js';
+import { GtfsBinarySchema, GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsCalendarDatesSchema = z.object({
-	date: GtfsDateSchema,
-	exception_type: GtfsExceptionTypeSchema,
-	service_id: z.string(),
+export const GtfsStrictV1CalendarDatesSchema = GtfsCalendarDatesSchema.extend({
+	day_type: GtfsStrictV1DayTypeSchema,
+	holiday: GtfsBinarySchema,
+	period: GtfsStrictV1PeriodSchema,
 });
 
 /**

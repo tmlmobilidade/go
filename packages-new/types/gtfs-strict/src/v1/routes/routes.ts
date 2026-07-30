@@ -1,30 +1,36 @@
 /* * */
 
-import { GtfsRouteTypeSchema } from '@/routes/route-type.js';
-import { GtfsPickupDropoffTypeSchema } from '@/shared/pickup-dropoff-type.js';
+import { GtfsStrictV1PathTypeSchema } from '@/v1/routes/path-type.js';
+import { GtfsRoutesSchema, GtfsRouteTypeSchema, GtfsTernarySchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsRouteSchema = z.object({
+export const GtfsStrictV1RouteSchema = GtfsRoutesSchema.extend({
 	agency_id: z.string(),
-	continuous_drop_off: GtfsPickupDropoffTypeSchema.optional(),
-	continuous_pickup: GtfsPickupDropoffTypeSchema.optional(),
+	cemv_support: GtfsTernarySchema,
+	circular: z.number().optional(),
+	line_id: z.number(),
+	line_long_name: z.string(),
+	line_short_name: z.string(),
+	line_type: z.number(),
+	path_type: GtfsStrictV1PathTypeSchema.optional(),
 	route_color: z.string(),
-	route_desc: z.string().optional(),
+	route_destination: z.string().optional(),
 	route_id: z.string(),
 	route_long_name: z.string(),
+	route_origin: z.string().optional(),
+	route_remarks: z.string().optional(),
 	route_short_name: z.string(),
-	route_sort_order: z.number().optional(),
 	route_text_color: z.string(),
 	route_type: GtfsRouteTypeSchema,
-	route_url: z.string().optional(),
+	school: z.number().optional(),
 });
 
 /**
- * Represents a route in the GTFS format.
- * A route is a group of trips that operate on a specific path or service,
- * typically identified by a unique route ID. Each route can have various attributes
- * such as agency ID, route color, long name, short name, and type of service.
+ * Represents a route in the custom GTFS strict v1 format.
+ * It enforces certain fields that are optional in the standard GTFS format,
+ * and adds the `continuous_drop_off` and `continuous_pickup` fields to be able to
+ * accomodate multiple pickup and drop-off types for the same route.
  */
-export type GtfsRoute = z.infer<typeof GtfsRouteSchema>;
+export type GtfsStrictV1Route = z.infer<typeof GtfsStrictV1RouteSchema>;

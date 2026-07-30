@@ -1,2 +1,2 @@
 export * from './calendar-dates.js';
-export * from './exception-type.js';
+export * from './day-type.js';

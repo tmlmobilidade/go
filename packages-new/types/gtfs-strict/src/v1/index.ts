@@ -4,7 +4,6 @@ export * from '@/calendar/index.js';
 export * from '@/feed-info/index.js';
 export * from '@/routes/index.js';
 export * from '@/shapes/index.js';
-export * from '@/shared/index.js';
 export * from '@/stop-times/index.js';
 export * from '@/stops/index.js';
 export * from '@/trips/index.js';
