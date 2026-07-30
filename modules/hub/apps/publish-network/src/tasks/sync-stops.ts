@@ -96,7 +96,7 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				flags: JSON.parse(gtfsStop.flags),
 				latitude: gtfsStop.stop_lat,
 				legacy_ids: JSON.parse(gtfsStop.legacy_ids),
-				lifecycle_status: 'active',
+				lifecycle_status: gtfsStop.lifecycle_status,
 				line_ids: JSON.parse(gtfsStop.line_ids),
 				locality_id: gtfsStop.locality_id,
 				locality_name: gtfsStop.locality_name,

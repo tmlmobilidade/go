@@ -1,5 +1,6 @@
 /* * */
 
+import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -9,6 +10,7 @@ export const HubGtfsExportStopsSchema = z.object({
 	district_name: z.string(),
 	flags: z.string(),
 	legacy_ids: z.string(),
+	lifecycle_status: LifecycleStatusSchema,
 	locality_id: z.string().optional(),
 	locality_name: z.string().optional(),
 	location_type: z.enum(['0', '1', '2', '3', '4']),
