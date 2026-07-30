@@ -29,6 +29,11 @@ export interface ValhallaLocation {
 
 export interface ValhallaRouteRequest {
 	costing: 'auto' | 'bicycle' | 'bus' | 'pedestrian'
+	costing_options?: {
+		bus?: {
+			use_ferry?: number
+		}
+	}
 	directions_options?: {
 		units: 'kilometers' | 'miles'
 	}

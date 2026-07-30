@@ -1,54 +1,54 @@
 /* eslint-disable perfectionist/sort-objects */
 export const AGENCY_NAMES_MAP = Object.freeze({
-	1: {
+	'IA9T6': {
 		full: 'Carris',
 		short: 'Carris',
 	},
-	2: {
+	'IA2N9': {
 		full: 'Metro de Lisboa',
 		short: 'Metro',
 	},
-	3: {
+	'N18KL': {
 		full: 'Comboios de Portugal',
 		short: 'CP',
 	},
-	4: {
+	'LTP61': {
 		full: 'Transtejo Soflusa',
 		short: 'TTSL',
 	},
-	8: {
+	'A3H3M': {
 		full: 'Transportes Colectivos do Barreiro',
 		short: 'TCB',
 	},
-	15: {
+	'7NTB1': {
 		full: 'Fertagus',
 		short: 'Fertagus',
 	},
-	16: {
+	'KB1F6': {
 		full: 'Metro Transportes do Sul',
 		short: 'MTS',
 	},
-	21: {
+	'HF16N': {
 		full: 'MobiCascais',
 		short: 'Mobi',
 	},
-	41: {
+	'LA77N': {
 		full: 'Viação Alvorada',
 		short: 'VA',
 	},
-	42: {
-		full: 'Rodoviária de Lisboa',
+	'BNA17': {
+		full: 'Rodóviaria de Lisboa',
 		short: 'RL',
 	},
-	43: {
-		full: 'Transportes Sul do Tejo',
+	'YA15B': {
+		full: 'Trasnportes Sul do Tejo ',
 		short: 'TST',
 	},
-	44: {
+	'A2L1N': {
 		full: 'ALSA Todi',
 		short: 'ALSA',
 	},
-	CM: {
+	'CM': {
 		full: 'Carris Metropolitana',
 		short: 'CM',
 	},

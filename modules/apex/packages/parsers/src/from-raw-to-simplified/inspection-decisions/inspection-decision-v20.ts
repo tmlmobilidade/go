@@ -19,7 +19,8 @@ export function parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexIn
 
 	const result: SimplifiedApexInspectionDecision = {
 		_id: doc.payload.transactionInfo.transactionId,
-		agency_id: doc.payload.operatorInfo.operatorLongID,
+		agency_code: doc.payload.operatorInfo.operatorLongID,
+		agency_id: doc.agency_id,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,

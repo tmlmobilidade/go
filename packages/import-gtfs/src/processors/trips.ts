@@ -47,7 +47,7 @@ export async function processTripsFile(context: ImportGtfsContext): Promise<void
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "trips.txt" file.' });
-		throw new Error('✖︎ Error processing "trips.txt" file.');
+		Logger.error({ error, message: `Error processing "trips.txt" file: ${error.message}` });
+		throw new Error('✖︎ Error processing "trips.txt" file.', error);
 	}
 }

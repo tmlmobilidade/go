@@ -1,5 +1,6 @@
 /* * */
 
+import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type PcgiTransactionEntity } from '@tmlmobilidade/go-types-apex';
 import { type RawApexTransaction, type RawApexTransactionInspectionDecisionV20, RawApexTransactionInspectionDecisionV20PayloadSchema, RawApexTransactionInspectionDecisionV20Schema } from '@tmlmobilidade/go-types-apex';
@@ -23,7 +24,8 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionInspectionDecisi
 
 	const result: RawApexTransactionInspectionDecisionV20 = {
 		_id: pcgiTransactionEntity.transactionId,
-		agency_id: decodedTransaction.operatorInfo.operatorLongID,
+		agency_code: decodedTransaction.operatorInfo.operatorLongID,
+		agency_id: getAgencyIdFromOperatorLongId(decodedTransaction.operatorInfo.operatorLongID),
 		created_at: transactionDateValue.unix_timestamp,
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionInspectionDecisionV20PayloadSchema.parse(decodedTransaction),

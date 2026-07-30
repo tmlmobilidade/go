@@ -241,6 +241,11 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 				'POST',
 				{
 					costing: 'bus', // later change this to be dynamic based on pattern typology
+					costing_options: {
+						bus: {
+							use_ferry: 0,
+						},
+					},
 					points,
 				},
 			);

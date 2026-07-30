@@ -1,3 +1,4 @@
+import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AggregationPipeline, metrics } from '@tmlmobilidade/interfaces';
@@ -34,8 +35,6 @@ function median(values: number[]): number {
 export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	Map<OperationalDate, Map<AgencyId, AgencyDayStats>>
 > {
-	const agencyFilter: AgencyId[] = ['41', '42', '43', '44'];
-
 	// Target interval (operational cut-off at 04:00)
 	const startDate = Dates.now('Europe/Lisbon')
 		.set({ day: 1, hour: 4, month: 1, year: 2024 })
@@ -56,7 +55,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 	const ridesPipeline: AggregationPipeline<Ride> = [
 		{
 			$match: {
-				'agency_id': { $in: agencyFilter },
+				'agency_id': { $in: [...GO_CM_AGENCY_IDS] },
 				'analysis.SIMPLE_ONE_APEX_VALIDATION.grade': 'fail',
 				'analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade': 'fail',
 				'start_time_scheduled': { $gte: startDate, $lt: endDate },
@@ -144,7 +143,7 @@ export async function syncPassengerImpactServiceFailuresByDay(): Promise<
 		const passengersPipeline: AggregationPipeline<Ride> = [
 			{
 				$match: {
-					agency_id: { $in: agencyFilter },
+					agency_id: { $in: [...GO_CM_AGENCY_IDS] },
 					passengers_observed: { $ne: null },
 					start_time_scheduled: { $gte: start30dTs, $lt: endTs },
 				},
