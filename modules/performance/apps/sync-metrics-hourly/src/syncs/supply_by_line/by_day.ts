@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* * */
 
 import { dayLabelFromOperationalDate } from '@/utils/day-label.js';
@@ -8,7 +9,7 @@ import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { SupplyByAgencyByDay } from '@tmlmobilidade/types';
+import { SupplyByLineByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';
 
 /* * */
@@ -19,24 +20,21 @@ const CM_AGENCY_ID_SET = new Set<string>(CM_AGENCY_IDS);
 
 /* * */
 
-export const syncSupplyByAgencyByDay = async () => {
-	Logger.title(`Sync Supply Metrics by Agency by Day`);
+export const syncSupplyByLineByDay = async () => {
+	Logger.title(`Sync Supply Metrics by Line by Day`);
 	const globalTimer = new Timer();
-	const metricKey = 'supply_by_agency_by_day';
+	const METRIC = 'supply_by_line_by_day';
 
 	//
-	// Delete existing metrics (CM agencies only)
+	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${metricKey}' metrics for CM agencies...` });
-	await metrics.deleteMany({
-		'metric': metricKey,
-		'properties.agency_id': { $in: [...CM_AGENCY_IDS] },
-	});
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
+	await metrics.deleteMany({ metric: METRIC });
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
-	// Fetch rides collection
+	// Fetch operation collection
 
 	const ridesCollection = await goDb.operation.rides.getCollection();
 
@@ -70,7 +68,7 @@ export const syncSupplyByAgencyByDay = async () => {
 	const calendarJson = await Dates.fetchCalendarData();
 
 	if (!calendarJson.length) {
-		throw new Error('Calendar data unavailable — cannot build supply_by_agency_by_day metrics');
+		throw new Error('Calendar data unavailable — cannot build supply_by_line_by_day metrics');
 	}
 
 	//
@@ -96,7 +94,7 @@ export const syncSupplyByAgencyByDay = async () => {
 		year: 2024,
 	});
 
-	const latestRide = await ridesCollection.findOne(
+	const latestRide = await goDb.operation.rides.findOne(
 		{
 			agency_id: { $in: [...CM_AGENCY_IDS] },
 			operational_date: { $exists: true, $ne: null },
@@ -143,7 +141,7 @@ export const syncSupplyByAgencyByDay = async () => {
 	//
 	// Process each day in parallel
 
-	const agencyMap = new Map<string, SupplyByAgencyByDay>();
+	const lineMap = new Map<string, SupplyByLineByDay>();
 
 	const dayPromises = allTimestampChunks.map((chunkData, chunkIndex) =>
 		limit(async () => {
@@ -165,6 +163,7 @@ export const syncSupplyByAgencyByDay = async () => {
 						{
 							$project: {
 								agency_id: 1,
+								line_id: 1,
 
 								// supply
 								extension_scheduled: { $ifNull: ['$extension_scheduled', 0] },
@@ -198,7 +197,9 @@ export const syncSupplyByAgencyByDay = async () => {
 						},
 						{
 							$group: {
-								_id: '$agency_id',
+								_id: '$line_id',
+
+								agency_id: { $first: '$agency_id' },
 
 								// only valid rides for accomplished count
 								accomplished_rides: { $sum: { $cond: ['$is_valid', 1, 0] } },
@@ -209,14 +210,14 @@ export const syncSupplyByAgencyByDay = async () => {
 								scheduled_rides: { $sum: 1 },
 								vkms_scheduled: { $sum: '$extension_scheduled' },
 
-								// revenue per trip/day/agency
+								// revenue per trip/day/line
 								revenue: { $sum: '$revenue_row' },
 							},
 						},
 					])
 					.toArray();
 
-				Logger.info({ message: `Chunk ${chunkLabel} DONE - Found ${ridesAgg.length} agencies (${chunkTimer.get()})` });
+				Logger.info({ message: `Chunk ${chunkLabel} DONE - Found ${ridesAgg.length} lines (${chunkTimer.get()})` });
 				return { dayLabel, ridesAgg };
 			} catch (error) {
 				Logger.error({ message: `Chunk ${chunkLabel} FAILED operational_date=${chunkData.operationalDate} (${chunkTimer.get()})` });
@@ -246,61 +247,62 @@ export const syncSupplyByAgencyByDay = async () => {
 			continue;
 		}
 
-		for (const agencyStats of ridesAgg) {
-			const agencyId = String(agencyStats._id ?? 'no-agency');
+		for (const lineStats of ridesAgg) {
+			const line_id = String(lineStats._id ?? 'no-line');
+			const agency_id = String(lineStats.agency_id ?? 'no-agency');
 
-			if (!CM_AGENCY_ID_SET.has(agencyId)) {
+			if (!CM_AGENCY_ID_SET.has(agency_id)) {
 				continue;
 			}
 
-			if (!agencyMap.has(agencyId)) {
-				agencyMap.set(agencyId, {
+			if (!lineMap.has(line_id)) {
+				lineMap.set(line_id, {
 					data: {},
-					description: `Aggregated supply for agency ${agencyId}`,
+					description: `Aggregated supply for line ${line_id}`,
 					generated_at: new Date(),
-					metric: metricKey,
-					properties: { agency_id: agencyId },
+					metric: METRIC,
+					properties: { line_id },
 				});
 			}
 
-			const agencyDoc = agencyMap.get(agencyId);
+			const lineDoc = lineMap.get(line_id);
 
-			const pricePerKm = pricePerKmByAgency.get(agencyId) ?? 0;
+			const price_per_km = pricePerKmByAgency.get(agency_id) ?? 0;
 
 			// cost = vkms_scheduled * price_per_km / 1000
-			const cost = (Number(agencyStats.vkms_scheduled ?? 0) * Number(pricePerKm ?? 0)) / 1000;
-			const revenue = Number(agencyStats.revenue ?? 0);
-			const passengers_observed = Number(agencyStats.passengers_observed ?? 0);
+			const cost = (Number(lineStats.vkms_scheduled ?? 0) * Number(price_per_km ?? 0)) / 1000;
+			const revenue = Number(lineStats.revenue ?? 0);
+			const passengers_observed = Number(lineStats.passengers_observed ?? 0);
 			const derived = computeSupplyDerivedFields(cost, revenue, passengers_observed);
 
-			agencyDoc.data[dayLabel] = {
-				accomplished_rides: agencyStats.accomplished_rides,
+			lineDoc.data[dayLabel] = {
+				accomplished_rides: lineStats.accomplished_rides,
 				cost,
 				cost_per_pax: derived.cost_per_pax,
 				day_type: calendarProps.day_type,
 				holiday: calendarProps.holiday,
+				net_result: derived.net_result,
 				notes: calendarProps.notes,
 				passengers_observed,
 				period: calendarProps.period,
-				net_result: derived.net_result,
 				revenue,
 				revenue_per_pax: derived.revenue_per_pax,
-				scheduled_rides: agencyStats.scheduled_rides,
-				vkms_observed: agencyStats.vkms_observed,
-				vkms_scheduled: agencyStats.vkms_scheduled,
+				scheduled_rides: lineStats.scheduled_rides,
+				vkms_observed: lineStats.vkms_observed,
+				vkms_scheduled: lineStats.vkms_scheduled,
 			};
 		}
 	}
 
-	const results = Array.from(agencyMap.values());
+	const results = Array.from(lineMap.values());
 
 	Logger.info({ message: [
 		`Merge finished (${mergeTimer.get()})`,
 		`Skipped ${skippedCalendarDays} days without calendar`,
-		`Built ${results.length} agency metric documents`,
+		`Built ${results.length} line metric documents`,
 	] });
 	for (const doc of results) {
-		Logger.info({ message: `  agency ${doc.properties.agency_id}: ${Object.keys(doc.data).length} days in data` });
+		Logger.info({ message: `  line ${doc.properties.line_id}: ${Object.keys(doc.data).length} days in data` });
 	}
 
 	//
@@ -317,7 +319,7 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by day, calc in Mongo (Optimized)', key: 'loop_day_mongo_calc' },
-		metric: metricKey,
+		metric: METRIC,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

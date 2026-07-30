@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { type OperationalDate } from '@tmlmobilidade/types';
 
@@ -11,7 +11,7 @@ const CM_AGENCY_IDS = ['41', '42', '43', '44'] as const;
 
 export type DayType = '1' | '2' | '3';
 
-export type DayPeriod = 'PPM' | 'CD' | 'PPT' | 'N';
+export type DayPeriod = 'CD' | 'N' | 'PPM' | 'PPT';
 
 export interface ItrpDayTypeMetrics {
 	/** N.º de carreiras/serviços = circulações previstas neste day_type */
@@ -130,7 +130,7 @@ export async function buildItrpRidesLookup(
 		message: `Loaded calendar with ${dayTypeByOperationalDate.size} dates for day_type mapping`,
 	});
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	Logger.info({
 		message: `Aggregating rides for ITRP by pattern, operational_date and hour (${patternIds.length} patterns, ${dates.start} → ${dates.end})...`,
@@ -221,8 +221,7 @@ export async function buildItrpRidesLookup(
 			const dayMetrics = metrics.by_day_type[dayType];
 			dayMetrics.carreiras_servicos += circulationsScheduled;
 			dayMetrics.veiculos_km += circulationsScheduled * extensionKm;
-		}
-		else {
+		} else {
 			missingCalendarDates++;
 		}
 
@@ -230,8 +229,7 @@ export async function buildItrpRidesLookup(
 			const periodMetrics = metrics.by_period[period];
 			periodMetrics.carreiras_servicos += circulationsScheduled;
 			periodMetrics.veiculos_km += circulationsScheduled * extensionKm;
-		}
-		else {
+		} else {
 			missingPeriodHours++;
 		}
 	}

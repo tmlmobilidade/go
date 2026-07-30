@@ -30,11 +30,11 @@ async function main() {
 	Logger.divider();
 
 	try {
-		await syncPatternHourMetrics();
-		await syncProductMetrics();
-		await syncCategoryMetrics();
-		await syncPassengerImpactMetrics();
-		await syncStopValidationsMetrics();
+		// await syncPatternHourMetrics();
+		// await syncProductMetrics();
+		// await syncCategoryMetrics();
+		// await syncPassengerImpactMetrics();
+		// await syncStopValidationsMetrics();
 		await syncItrpMetrics();
 
 		generatePerformanceSummary();

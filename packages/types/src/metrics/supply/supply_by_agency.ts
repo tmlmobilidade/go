@@ -5,18 +5,21 @@ import { z } from 'zod';
 
 /* SUPPLY BY AGENCY */
 
+const SupplyByAgencyDataSchema = z.object({
+	accomplished_rides: z.number(),
+	cost: z.number(),
+	cost_per_pax: z.number(),
+	passengers_observed: z.number(),
+	net_result: z.number(),
+	revenue: z.number(),
+	revenue_per_pax: z.number(),
+	scheduled_rides: z.number(),
+	vkms_observed: z.number(),
+	vkms_scheduled: z.number(),
+});
+
 const SupplyByAgencySchema = MetricBaseSchema.extend({
-	data: z.record(
-		z.string(),
-		z.object({
-			accomplished_rides: z.number(),
-			cost_per_trip: z.number(),
-			revenue_per_trip: z.number(),
-			scheduled_rides: z.number(),
-			vkms_observed: z.number(),
-			vkms_scheduled: z.number(),
-		}),
-	),
+	data: z.record(z.string(), SupplyByAgencyDataSchema),
 	properties: z.object({
 		agency_id: z.string(),
 	}),
@@ -33,17 +36,11 @@ export const SupplyByAgencyByMonthSchema = SupplyByAgencySchema.extend({
 export const SupplyByAgencyByDaySchema = SupplyByAgencySchema.extend({
 	data: z.record(
 		z.string(),
-		z.object({
-			accomplished_rides: z.number(),
-			cost_per_trip: z.number(),
+		SupplyByAgencyDataSchema.extend({
 			day_type: z.enum(['1', '2', '3']),
 			holiday: z.enum(['0', '1']),
 			notes: z.string().nullable(),
 			period: z.enum(['1', '2', '3']),
-			revenue_per_trip: z.number(),
-			scheduled_rides: z.number(),
-			vkms_observed: z.number(),
-			vkms_scheduled: z.number(),
 		}),
 	),
 	metric: z.literal('supply_by_agency_by_day'),

@@ -5,7 +5,7 @@ import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { Metric, SupplyByAgencyByDay } from '@tmlmobilidade/types';
+import { Metric, SupplyByPatternByDay } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -37,11 +37,11 @@ const emptyTotals = (): SupplyTotals => ({
 
 /* * */
 
-export const syncSupplyByAgencyByMonth = async () => {
-	Logger.title(`Sync Supply Metrics by Agency by Month`);
+export const syncSupplyByPatternByMonth = async () => {
+	Logger.title(`Sync Supply Metrics by Pattern by Month`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'supply_by_agency_by_month';
+	const METRIC = 'supply_by_pattern_by_month';
 
 	//
 	// Delete existing metrics
@@ -56,42 +56,42 @@ export const syncSupplyByAgencyByMonth = async () => {
 
 	const metricsCollection = await metrics.getCollection();
 	const dailyMetrics = await metricsCollection
-		.find({ metric: 'supply_by_agency_by_day' })
-		.toArray() as SupplyByAgencyByDay[];
+		.find({ metric: 'supply_by_pattern_by_day' })
+		.toArray() as SupplyByPatternByDay[];
 
 	Logger.info({ message: `Fetched ${dailyMetrics.length} daily metrics (${fetchTimer.get()})` });
 
 	//
 	// Process daily metrics into monthly aggregates
 
-	const agencyMap = new Map<string, Metric>();
+	const patternMap = new Map<string, Metric>();
 
 	for (const dailyMetric of dailyMetrics) {
-		const agency_id = dailyMetric.properties.agency_id;
+		const pattern_id = dailyMetric.properties.pattern_id;
 
-		// Initialize agency if not exists
-		if (!agencyMap.has(agency_id)) {
-			agencyMap.set(agency_id, {
+		// Initialize pattern if not exists
+		if (!patternMap.has(pattern_id)) {
+			patternMap.set(pattern_id, {
 				data: {} as Record<string, SupplyTotals>,
-				description: `Aggregated supply for agency ${agency_id}`,
+				description: `Aggregated supply for pattern ${pattern_id}`,
 				generated_at: new Date(),
 				metric: METRIC,
-				properties: { agency_id },
+				properties: { pattern_id },
 			} as Metric);
 		}
 
-		const agencyDoc = agencyMap.get(agency_id);
+		const patternDoc = patternMap.get(pattern_id);
 
 		// Aggregate daily data into months
 		for (const [dayKey, dayData] of Object.entries(dailyMetric.data)) {
 			const monthKey = dayKey.slice(0, 7); // YYYY-MM
 
 			// Initialize month if not exists
-			if (!agencyDoc.data[monthKey]) {
-				agencyDoc.data[monthKey] = emptyTotals();
+			if (!patternDoc.data[monthKey]) {
+				patternDoc.data[monthKey] = emptyTotals();
 			}
 
-			const monthData = agencyDoc.data[monthKey] as SupplyTotals;
+			const monthData = patternDoc.data[monthKey] as SupplyTotals;
 
 			// Sum daily totals into monthly total
 			monthData.scheduled_rides += Number(dayData.scheduled_rides ?? 0);
@@ -109,7 +109,7 @@ export const syncSupplyByAgencyByMonth = async () => {
 		}
 	}
 
-	const results = Array.from(agencyMap.values());
+	const results = Array.from(patternMap.values());
 
 	//
 	// Insert all metrics

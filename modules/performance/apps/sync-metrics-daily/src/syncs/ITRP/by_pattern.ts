@@ -3,7 +3,7 @@
 import { performanceSqlPath } from '@/lib/sql-path.js';
 import { buildItrpOriginDestinationLookup } from '@/process/build-itrp-origin-destination-lookup.js';
 import { buildItrpRidesLookup } from '@/process/build-itrp-rides-lookup.js';
-import { itrp, queryEachStatementFromFile, queryFromFile } from '@tmlmobilidade/databases';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -45,14 +45,11 @@ export const syncItrpByPattern = async () => {
 
 	Logger.info({ message: `Date range: ${dates.start} to ${dates.end}` });
 
-	const clickhouseClient = await itrp.getClient();
-	const tableName = await itrp.getTableName();
-
 	//
 	// 1. Bootstrap table schema
 
 	Logger.info({ message: 'Running ITRP.sql DDL' });
-	await queryEachStatementFromFile(clickhouseClient, performanceSqlPath('demand/ITRP/ITRP.sql'));
+	await labDb.queryEachStatementFromFile(clickhouseClient, performanceSqlPath('demand/ITRP/ITRP.sql'));
 
 	//
 	// 2. Fetch base pattern rows from ClickHouse (agency_id, pattern_id, line_id, passengers)
@@ -106,46 +103,46 @@ export const syncItrpByPattern = async () => {
 		joinedRows++;
 		await writer.write({
 			agency_id: row.agency_id,
-			pattern_id: row.pattern_id,
-			line_id: row.line_id,
-			route_id: metrics.route_id,
-			subtipo: row.subtipo ?? '',
-			designacao: originDestination?.designacao ?? '',
-			sentido: row.sentido ?? '',
-			tipo_transporte: row.tipo_transporte ?? '',
-			origem_municipio: originDestination?.origem_municipio ?? '',
-			origem_dtcc: originDestination?.origem_dtcc ?? '',
-			destino_municipio: originDestination?.destino_municipio ?? '',
-			destino_dtcc: originDestination?.destino_dtcc ?? '',
-			classificacao: row.classificacao ?? '',
-			extension_scheduled: extensionScheduled,
-			extension_observed: extensionObserved,
-			circulations_scheduled: circulationsScheduled,
+			carreiras_servicos_1: byDayType['1'].carreiras_servicos,
+			carreiras_servicos_2: byDayType['2'].carreiras_servicos,
+			carreiras_servicos_3: byDayType['3'].carreiras_servicos,
+			carreiras_servicos_CD: byPeriod.CD.carreiras_servicos,
+			carreiras_servicos_N: byPeriod.N.carreiras_servicos,
+			carreiras_servicos_PPM: byPeriod.PPM.carreiras_servicos,
+			carreiras_servicos_PPT: byPeriod.PPT.carreiras_servicos,
 			circulations_observed: circulationsObserved,
+			circulations_scheduled: circulationsScheduled,
+			classificacao: row.classificacao ?? '',
+			designacao: originDestination?.designacao ?? '',
+			destino_dtcc: originDestination?.destino_dtcc ?? '',
+			destino_municipio: originDestination?.destino_municipio ?? '',
+			extension_observed: extensionObserved,
+			extension_scheduled: extensionScheduled,
+			line_id: row.line_id,
+			origem_dtcc: originDestination?.origem_dtcc ?? '',
+			origem_municipio: originDestination?.origem_municipio ?? '',
+			passageiros_1: Number(row.passageiros_1 ?? 0),
+			passageiros_2: Number(row.passageiros_2 ?? 0),
+			passageiros_3: Number(row.passageiros_3 ?? 0),
+			passageiros_CD: Number(row.passageiros_CD ?? 0),
+			passageiros_N: Number(row.passageiros_N ?? 0),
+			passageiros_PPM: Number(row.passageiros_PPM ?? 0),
+			passageiros_PPT: Number(row.passageiros_PPT ?? 0),
+			passengers: Number(row.passengers ?? 0),
+			pattern_id: row.pattern_id,
+			route_id: metrics.route_id,
+			sentido: row.sentido ?? '',
+			subtipo: row.subtipo ?? '',
+			tipo_transporte: row.tipo_transporte ?? '',
+			veiculos_km_1: byDayType['1'].veiculos_km,
+			veiculos_km_2: byDayType['2'].veiculos_km,
+			veiculos_km_3: byDayType['3'].veiculos_km,
+			veiculos_km_CD: byPeriod.CD.veiculos_km,
+			veiculos_km_N: byPeriod.N.veiculos_km,
+			veiculos_km_PPM: byPeriod.PPM.veiculos_km,
+			veiculos_km_PPT: byPeriod.PPT.veiculos_km,
 			veiculos_km_previsto: circulationsScheduled * extensionScheduled,
 			veiculos_km_produzido: circulationsObserved * extensionObserved,
-			passengers: Number(row.passengers ?? 0),
-			carreiras_servicos_1: byDayType['1'].carreiras_servicos,
-			veiculos_km_1: byDayType['1'].veiculos_km,
-			passageiros_1: Number(row.passageiros_1 ?? 0),
-			carreiras_servicos_2: byDayType['2'].carreiras_servicos,
-			veiculos_km_2: byDayType['2'].veiculos_km,
-			passageiros_2: Number(row.passageiros_2 ?? 0),
-			carreiras_servicos_3: byDayType['3'].carreiras_servicos,
-			veiculos_km_3: byDayType['3'].veiculos_km,
-			passageiros_3: Number(row.passageiros_3 ?? 0),
-			carreiras_servicos_PPM: byPeriod.PPM.carreiras_servicos,
-			veiculos_km_PPM: byPeriod.PPM.veiculos_km,
-			passageiros_PPM: Number(row.passageiros_PPM ?? 0),
-			carreiras_servicos_PPT: byPeriod.PPT.carreiras_servicos,
-			veiculos_km_PPT: byPeriod.PPT.veiculos_km,
-			passageiros_PPT: Number(row.passageiros_PPT ?? 0),
-			carreiras_servicos_CD: byPeriod.CD.carreiras_servicos,
-			veiculos_km_CD: byPeriod.CD.veiculos_km,
-			passageiros_CD: Number(row.passageiros_CD ?? 0),
-			carreiras_servicos_N: byPeriod.N.carreiras_servicos,
-			veiculos_km_N: byPeriod.N.veiculos_km,
-			passageiros_N: Number(row.passageiros_N ?? 0),
 		});
 	}
 

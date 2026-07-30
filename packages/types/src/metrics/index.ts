@@ -2,6 +2,9 @@ import { DemandByAgencyByDayByProductSchema, DemandByAgencyByDaySchema, DemandBy
 import { DemandAffectedByFailedCirculationsByDaySchema } from '@/metrics/passenger-impact/passenger-impact.js';
 import { RealtimeDemandSchema, RealtimeServiceComplianceSchema } from '@/metrics/realtime/index.js';
 import { SupplyByAgencyByDaySchema, SupplyByAgencyByMonthSchema, SupplyByAgencyByYearSchema } from '@/metrics/supply/supply_by_agency.js';
+import { SupplyByLineByDaySchema, SupplyByLineByMonthSchema, SupplyByLineByYearSchema } from '@/metrics/supply/supply_by_line.js';
+import { SupplyByPatternByDaySchema, SupplyByPatternByMonthSchema, SupplyByPatternByYearSchema } from '@/metrics/supply/supply_by_pattern.js';
+import { SupplyByPatternHourByDaySchema, SupplyByPatternHourByMonthSchema, SupplyByPatternHourByYearSchema } from '@/metrics/supply/supply_by_pattern_hour.js';
 import { z } from 'zod';
 
 /* * */
@@ -56,6 +59,15 @@ export const MetricSchema = z.discriminatedUnion('metric', [
 	SupplyByAgencyByDaySchema,
 	SupplyByAgencyByMonthSchema,
 	SupplyByAgencyByYearSchema,
+	SupplyByLineByDaySchema,
+	SupplyByLineByMonthSchema,
+	SupplyByLineByYearSchema,
+	SupplyByPatternByDaySchema,
+	SupplyByPatternByMonthSchema,
+	SupplyByPatternByYearSchema,
+	SupplyByPatternHourByDaySchema,
+	SupplyByPatternHourByMonthSchema,
+	SupplyByPatternHourByYearSchema,
 	DemandAffectedByFailedCirculationsByDaySchema,
 ]);
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { hashedTrips, locations, stops } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -27,25 +27,25 @@ interface HashedTripPatternAgg {
 /* * */
 
 /** flags.stop_id → municipality_id */
-let municipalityIdByStopCodeCache: Map<string, string> | null = null;
-let municipalityIdByStopCodeCachePromise: null | Promise<Map<string, string>> = null;
+let MUNICIPALITY_ID_BY_STOP_CODE_CACHE: Map<string, string> | null = null;
+let MUNICIPALITY_ID_BY_STOP_CODE_CACHE_PROMISE: null | Promise<Map<string, string>> = null;
 
 /** municipality_id → municipality name */
-let municipalityNameByIdCache: Map<string, string> | null = null;
-let municipalityNameByIdCachePromise: null | Promise<Map<string, string>> = null;
+let MUNICIPALITY_NAME_BY_ID_CACHE: Map<string, string> | null = null;
+let MUNICIPALITY_NAME_BY_ID_CACHE_PROMISE: null | Promise<Map<string, string>> = null;
 
 /* * */
 
 async function getMunicipalityIdByStopCodeCache(): Promise<Map<string, string>> {
-	if (municipalityIdByStopCodeCache) {
-		return municipalityIdByStopCodeCache;
+	if (MUNICIPALITY_ID_BY_STOP_CODE_CACHE) {
+		return MUNICIPALITY_ID_BY_STOP_CODE_CACHE;
 	}
 
-	if (!municipalityIdByStopCodeCachePromise) {
-		municipalityIdByStopCodeCachePromise = (async () => {
+	if (!MUNICIPALITY_ID_BY_STOP_CODE_CACHE_PROMISE) {
+		MUNICIPALITY_ID_BY_STOP_CODE_CACHE_PROMISE = (async () => {
 			Logger.info({ message: 'Caching stops (flags.stop_id → municipality_id)...' });
 
-			const allStops = await stops.findMany(
+			const allStops = await goDb.infrastructure.stops.findMany(
 				{},
 				{ projection: { flags: { stop_id: 1 }, municipality_id: 1 } },
 			);
@@ -71,24 +71,24 @@ async function getMunicipalityIdByStopCodeCache(): Promise<Map<string, string>> 
 				message: `Cached ${cache.size} stop-code → municipality_id mappings from ${allStops.length} stops`,
 			});
 
-			municipalityIdByStopCodeCache = cache;
+			MUNICIPALITY_ID_BY_STOP_CODE_CACHE = cache;
 			return cache;
 		})();
 	}
 
-	return municipalityIdByStopCodeCachePromise;
+	return MUNICIPALITY_ID_BY_STOP_CODE_CACHE_PROMISE;
 }
 
 async function getMunicipalityNameByIdCache(): Promise<Map<string, string>> {
-	if (municipalityNameByIdCache) {
-		return municipalityNameByIdCache;
+	if (MUNICIPALITY_NAME_BY_ID_CACHE) {
+		return MUNICIPALITY_NAME_BY_ID_CACHE;
 	}
 
-	if (!municipalityNameByIdCachePromise) {
-		municipalityNameByIdCachePromise = (async () => {
+	if (!MUNICIPALITY_NAME_BY_ID_CACHE_PROMISE) {
+		MUNICIPALITY_NAME_BY_ID_CACHE_PROMISE = (async () => {
 			Logger.info({ message: 'Caching municipalities (_id → name)...' });
 
-			const allMunicipalities = await locations.findMunicipalities(
+			const allMunicipalities = await goDb.locations.municipalities.findMany(
 				{},
 				{ projection: { _id: 1, properties: 1 } },
 			);
@@ -101,12 +101,12 @@ async function getMunicipalityNameByIdCache(): Promise<Map<string, string>> {
 				message: `Cached ${cache.size} municipality names`,
 			});
 
-			municipalityNameByIdCache = cache;
+			MUNICIPALITY_NAME_BY_ID_CACHE = cache;
 			return cache;
 		})();
 	}
 
-	return municipalityNameByIdCachePromise;
+	return MUNICIPALITY_NAME_BY_ID_CACHE_PROMISE;
 }
 
 function getEndpointStopIds(path: HashedTripPathWaypoint[]): null | { destination: string, origin: string } {
@@ -162,7 +162,7 @@ export async function buildItrpOriginDestinationLookup(
 		message: `Fetching hashed_trips designacao/endpoints for ${patternIds.length} patterns...`,
 	});
 
-	const hashedTripsCollection = await hashedTrips.getCollection();
+	const hashedTripsCollection = await goDb.operation.hashedTrips.getCollection();
 	const patternPaths = await hashedTripsCollection.aggregate<HashedTripPatternAgg>([
 		{ $match: { pattern_id: { $in: patternIds } } },
 		{

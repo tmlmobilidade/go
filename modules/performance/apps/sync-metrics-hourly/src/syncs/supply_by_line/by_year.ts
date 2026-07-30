@@ -5,7 +5,7 @@ import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { Metric, SupplyByAgencyByMonth } from '@tmlmobilidade/types';
+import { Metric, SupplyByLineByMonth } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -37,13 +37,13 @@ const emptyTotals = (): SupplyTotals => ({
 
 /* * */
 
-export const syncSupplyByAgencyByYear = async () => {
+export const syncSupplyByLineByYear = async () => {
 	//
 
-	Logger.title(`Sync Supply Metrics by Agency by Year`);
+	Logger.title(`Sync Supply Metrics by Line by Year`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'supply_by_agency_by_year';
+	const METRIC = 'supply_by_line_by_year';
 
 	//
 	// Delete existing metrics
@@ -58,41 +58,41 @@ export const syncSupplyByAgencyByYear = async () => {
 
 	const metricsCollection = await metrics.getCollection();
 	const monthlyMetrics = await metricsCollection
-		.find({ metric: 'supply_by_agency_by_month' })
-		.toArray() as SupplyByAgencyByMonth[];
+		.find({ metric: 'supply_by_line_by_month' })
+		.toArray() as SupplyByLineByMonth[];
 
 	Logger.info({ message: `Fetched ${monthlyMetrics.length} monthly metrics (${fetchTimer.get()})` });
 
 	// Process monthly metrics into yearly aggregates
 
-	const agencyMap = new Map<string, Metric>();
+	const lineMap = new Map<string, Metric>();
 
 	for (const monthlyMetric of monthlyMetrics) {
-		const agency_id = monthlyMetric.properties.agency_id;
+		const line_id = monthlyMetric.properties.line_id;
 
-		// Initialize agency if not exists
-		if (!agencyMap.has(agency_id)) {
-			agencyMap.set(agency_id, {
+		// Initialize line if not exists
+		if (!lineMap.has(line_id)) {
+			lineMap.set(line_id, {
 				data: {} as Record<string, SupplyTotals>,
-				description: `Aggregated supply for agency ${agency_id}`,
+				description: `Aggregated supply for line ${line_id}`,
 				generated_at: new Date(),
 				metric: METRIC,
-				properties: { agency_id },
+				properties: { line_id },
 			} as Metric);
 		}
 
-		const agencyDoc = agencyMap.get(agency_id);
+		const lineDoc = lineMap.get(line_id);
 
 		// Aggregate monthly data into years
 		for (const [monthKey, monthData] of Object.entries(monthlyMetric.data)) {
 			const yearKey = monthKey.slice(0, 4); // YYYY
 
 			// Initialize year if not exists
-			if (!agencyDoc.data[yearKey]) {
-				agencyDoc.data[yearKey] = emptyTotals();
+			if (!lineDoc.data[yearKey]) {
+				lineDoc.data[yearKey] = emptyTotals();
 			}
 
-			const yearData = agencyDoc.data[yearKey] as SupplyTotals;
+			const yearData = lineDoc.data[yearKey] as SupplyTotals;
 
 			// Sum monthly totals into yearly total
 			yearData.scheduled_rides += Number(monthData.scheduled_rides ?? 0);
@@ -110,7 +110,7 @@ export const syncSupplyByAgencyByYear = async () => {
 		}
 	}
 
-	const results = Array.from(agencyMap.values());
+	const results = Array.from(lineMap.values());
 
 	// Insert all metrics
 
