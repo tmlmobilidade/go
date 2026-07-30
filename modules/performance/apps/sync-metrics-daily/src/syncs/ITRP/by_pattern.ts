@@ -39,7 +39,7 @@ export const syncItrpByPattern = async () => {
 	const globalTimer = new Timer();
 
 	const dates = {
-		end: validateOperationalDate('20251231'),
+		end: validateOperationalDate('20250102'),
 		start: validateOperationalDate('20250101'),
 	};
 
@@ -49,7 +49,7 @@ export const syncItrpByPattern = async () => {
 	// 1. Bootstrap table schema
 
 	Logger.info({ message: 'Running ITRP.sql DDL' });
-	await labDb.queryEachStatementFromFile(performanceSqlPath('demand/ITRP/ITRP.sql'));
+	await labDb.queryFromFile(performanceSqlPath('demand/ITRP/ITRP.sql'));
 
 	//
 	// 2. Fetch base pattern rows from ClickHouse (agency_id, pattern_id, line_id, passengers)
@@ -72,7 +72,12 @@ export const syncItrpByPattern = async () => {
 	const writer = new BatchWriter({
 		batch_size: 10_000,
 		insertFn: async (data) => {
-			await labDb.queryFromString(`INSERT INTO ${METRIC} JSONEachRow ${JSON.stringify(data)}`);
+			const client = await labDb.getClient();
+			await client.insert({
+				format: 'JSONEachRow',
+				table: `performance.${METRIC}`,
+				values: data,
+			});
 		},
 		title: METRIC,
 	});

@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE performance.ITRP (
+CREATE OR REPLACE TABLE performance.itrp_by_pattern (
     agency_id String,
     pattern_id String,
     line_id String,

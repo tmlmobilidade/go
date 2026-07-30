@@ -7,7 +7,7 @@ import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
-const CM_AGENCY_IDS = ['41', '42', '43', '44'] as const;
+const CM_AGENCY_IDS = ['LA77N', 'BNA17', '4YA15B3', 'A2L1N'] as const;
 
 export type DayType = '1' | '2' | '3';
 

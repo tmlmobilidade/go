@@ -60,7 +60,7 @@ WHERE
     agency_id IS NOT NULL
     AND pattern_id IS NOT NULL
     AND line_id IS NOT NULL
-    AND agency_id IN ('41', '42', '43', '44')
+    AND agency_id IN ('LA77N', 'BNA17', '4YA15B3', 'A2L1N')
 
 GROUP BY
     agency_id,
