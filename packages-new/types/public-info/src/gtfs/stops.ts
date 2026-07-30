@@ -23,6 +23,7 @@ export const HubGtfsExportStopsSchema = z.object({
 	stop_lat: z.number(),
 	stop_lon: z.number(),
 	stop_name: z.string(),
+	stop_short_name: z.string(),
 	tts_stop_name: z.string(),
 	wheelchair_boarding: z.enum(['0', '1', '2']),
 });
