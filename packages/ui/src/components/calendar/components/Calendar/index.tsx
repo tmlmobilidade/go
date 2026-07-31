@@ -74,9 +74,8 @@ export function Calendar({
 			// First click: set start
 			if (!start) {
 				setRangeStart(day.date); // context converts Dates -> CalendarKey
-			}
-			// Second click: set end and finalize
-			else if (start && !end) {
+			} else if (start && !end) {
+				// Second click: set end and finalize
 				const finalStart = start < clickedKey ? start : clickedKey;
 				const finalEnd = start < clickedKey ? clickedKey : start;
 
@@ -85,17 +84,14 @@ export function Calendar({
 
 				// Fire callback using CalendarKeys (civil)
 				onRangeSelect({ end: finalEnd, start: finalStart }, clearRangeSelection);
-			}
-			// Third click: restart selection
-			else {
+			} else {
+				// Third click: restart selection
 				setRangeStart(day.date);
 			}
 
 			return;
-		}
-
-		// In month view or when onDayClick is provided
-		else if (onDayClick) {
+		} else if (onDayClick) {
+			// In month view or when onDayClick is provided
 			onDayClick(day.date);
 		} else {
 			// If no callback provided, navigate to the day's month and switch to month view
