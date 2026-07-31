@@ -5,7 +5,9 @@ import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobi
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateYearPeriodDto, OperationalDate, PermissionCatalog, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/types';
+import { type CreateYearPeriodDto, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
