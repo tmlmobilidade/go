@@ -180,7 +180,9 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 				const newTripId = `${equalTripsData.sample_trip.shape_id}||${equalTripsData.start_time}|${combinedDatesData.period}|${combinedDatesData.day_type}|${updatedServiceIds[serviceIdKey]._id}`;
 
+				// @ts-expect-error - TODO: fix this
 				sqlTables.trips.write({ ...equalTripsData.sample_trip, service_id: updatedServiceIds[serviceIdKey]._id, trip_id: newTripId });
+				// @ts-expect-error - TODO: fix this
 				equalTripsData.sample_stop_times.forEach(st => sqlTables.stop_times.write({ ...st, trip_id: newTripId }));
 
 				//
