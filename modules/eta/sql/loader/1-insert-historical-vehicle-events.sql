@@ -8,8 +8,8 @@ INSERT INTO eta.hist_vehicle_events
 WITH
     chunk_operational_bounds AS (
         SELECT
-            toDate({operational_date_min}) AS op_min,
-            toDate({operational_date_max}) AS op_max
+            toYYYYMMDD(toDate({operational_date_min})) AS op_min,
+            toYYYYMMDD(toDate({operational_date_max})) AS op_max
     ),
     rides AS (
         SELECT
