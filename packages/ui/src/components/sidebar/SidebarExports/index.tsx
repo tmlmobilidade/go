@@ -2,7 +2,7 @@
 
 import { type MenuProps } from '@mantine/core';
 import { IconCloudDown, IconCloudMinus } from '@tabler/icons-react';
-import { type FileExport } from '@tmlmobilidade/types';
+import { type FileExport } from '@tmlmobilidade/go-types-downloads';
 import { useTranslation } from 'react-i18next';
 
 import { useExportsContext } from '../../../contexts/exports.context';
