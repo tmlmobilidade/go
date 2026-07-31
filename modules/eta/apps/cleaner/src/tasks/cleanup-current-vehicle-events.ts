@@ -13,7 +13,6 @@ export async function cleanupCurrentVehicleEvents(clickhouseClient: Parameters<t
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
-		AppConfig.database,
 		pipelinePath(CLEANUP_CURRENT_VEHICLE_EVENTS_SQL),
 		{
 			window_hours_before: AppConfig.windowHoursBefore,

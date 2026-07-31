@@ -1,7 +1,7 @@
 /* * */
 
 import { type AppConfig } from '@/lib/config.js';
-import { pipelinePath, qualifiedTable, queryEtaFromFile, substituteEtaDatabase } from '@tmlmobilidade/go-eta-pckg-common';
+import { pipelinePath, qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 import { readFile } from 'node:fs/promises';
 
@@ -40,9 +40,9 @@ export async function detectRideStartEndEvents(clickhouseClient: Parameters<type
 
 	Logger.title('2b. Detect historical ride start/end events');
 
-	const histRidesTable = qualifiedTable(config.database, 'hist_rides');
-	const batchTable = qualifiedTable(config.database, BATCH_TABLE);
-	const valuesTable = qualifiedTable(config.database, VALUES_TABLE);
+	const histRidesTable = qualifiedTable('eta', 'hist_rides');
+	const batchTable = qualifiedTable('eta', BATCH_TABLE);
+	const valuesTable = qualifiedTable('eta', VALUES_TABLE);
 
 	//
 	// Create the staging tables once. They are truncated and repopulated per batch.
@@ -73,10 +73,9 @@ export async function detectRideStartEndEvents(clickhouseClient: Parameters<type
 	Logger.info({ message: `Detecting start/end events for ${rideIds.length} historical rides in batches of ${config.rideEventDetectionBatchSize}` });
 
 	//
-	// Pre-read + database-substitute the mutation SQL once (the detect SQL is read
-	// and substituted per call by queryEtaFromFile).
+	// Pre-read the mutation SQL once (the detect SQL is read per call by queryEtaFromFile).
 
-	const applySql = substituteEtaDatabase(config.database, await readFile(pipelinePath(APPLY_RIDE_START_END_EVENTS_SQL_FILE), { encoding: 'utf-8' }));
+	const applySql = await readFile(pipelinePath(APPLY_RIDE_START_END_EVENTS_SQL_FILE), { encoding: 'utf-8' });
 
 	const detectParams = {
 		buffer_radius_m: config.rideEventBufferRadiusMeters,
@@ -109,7 +108,7 @@ export async function detectRideStartEndEvents(clickhouseClient: Parameters<type
 		//
 		// Detect: writes one row per ride into the values staging table.
 
-		await queryEtaFromFile(clickhouseClient, config.database, pipelinePath(DETECT_RIDE_START_END_EVENTS_SQL_FILE), detectParams);
+		await queryEtaFromFile(clickhouseClient, pipelinePath(DETECT_RIDE_START_END_EVENTS_SQL_FILE), detectParams);
 
 		//
 		// Apply: in-place mutation of hist_rides from the staged values. Run

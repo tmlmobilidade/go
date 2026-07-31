@@ -13,7 +13,6 @@ export async function cleanupCurrentRides(clickhouseClient: Parameters<typeof qu
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
-		AppConfig.database,
 		pipelinePath(CLEANUP_CURRENT_RIDES_SQL),
 		{
 			window_hours_before: AppConfig.windowHoursBefore,

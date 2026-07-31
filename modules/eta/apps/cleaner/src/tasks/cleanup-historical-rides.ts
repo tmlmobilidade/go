@@ -1,8 +1,7 @@
-import { AppConfig } from '@/lib/config.js';
 import { pipelinePath, qualifiedTable, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
-const KEEP_TABLE = qualifiedTable(AppConfig.database, '_cleaner_hist_rides_keep');
+const KEEP_TABLE = qualifiedTable('eta', '_cleaner_hist_rides_keep');
 const CLEANUP_HIST_RIDES_SQL = 'cleanup/4-delete-out-of-window-hist-rides.sql';
 
 interface CleanupRowsResult {
@@ -43,7 +42,6 @@ export async function cleanupHistoricalRides(
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
-		AppConfig.database,
 		pipelinePath(CLEANUP_HIST_RIDES_SQL),
 	);
 
