@@ -3,7 +3,7 @@
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
 import { useFaresContext } from '@/contexts/Fares.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
-import { FARE_PAYMENT_METHOD, interchangeModeOptions, LineSchema } from '@tmlmobilidade/types';
+import { FARE_PAYMENT_METHOD, interchangeModeOptions, LineSchema } from '@tmlmobilidade/go-types-offer';
 import { Collapsible, MultiSelect, openConfirmModal, Section, Select, Text } from '@tmlmobilidade/ui';
 import { useMemo, useRef } from 'react';
 
