@@ -3,7 +3,7 @@
 
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { GtfsBinary, type GtfsRouteType } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29PathType, type GtfsStrictV29Route } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29PathType, type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -26,7 +26,7 @@ export interface ExportedRoutesRow {
 
 /* * */
 
-export async function exportRoutesFile(routesList: GtfsStrictV29Route[], exportConfig: MergedGtfsExportConfig) {
+export async function exportRoutesFile(routesList: GtfsStrictV29Routes[], exportConfig: MergedGtfsExportConfig) {
 	//
 
 	const sortedRoutesList = routesList.sort((a, b) => a.route_id.localeCompare(b.route_id));

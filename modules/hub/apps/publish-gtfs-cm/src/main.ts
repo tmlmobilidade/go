@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type GtfsStrictV29Route } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -87,7 +87,7 @@ export async function main() {
 	let farthestDateFound: OperationalDate;
 
 	const referencedAgencyIds = new Set<string>();
-	const routesMarkedForFinalExport: Record<string, GtfsStrictV29Route> = {};
+	const routesMarkedForFinalExport: Record<string, GtfsStrictV29Routes> = {};
 
 	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
 
@@ -224,7 +224,7 @@ export async function main() {
 			// This block only determines which routes should be exported; no files are written here.
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
-				const routeData: GtfsStrictV29Route = routeItem;
+				const routeData: GtfsStrictV29Routes = routeItem;
 				if (thisIsAnActivePlan || !routesMarkedForFinalExport[routeData.route_id]) {
 					routesMarkedForFinalExport[routeData.route_id] = routeData;
 				}

@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29RouteSchema = GtfsRoutesSchema.extend({
+export const GtfsStrictV29RoutesSchema = GtfsRoutesSchema.extend({
 	agency_id: z.string(),
 	cemv_support: GtfsTernarySchema,
 	circular: GtfsBinarySchema.optional(),
@@ -33,4 +33,4 @@ export const GtfsStrictV29RouteSchema = GtfsRoutesSchema.extend({
  * and adds the `continuous_drop_off` and `continuous_pickup` fields to be able to
  * accomodate multiple pickup and drop-off types for the same route.
  */
-export type GtfsStrictV29Route = z.infer<typeof GtfsStrictV29RouteSchema>;
+export type GtfsStrictV29Routes = z.infer<typeof GtfsStrictV29RoutesSchema>;

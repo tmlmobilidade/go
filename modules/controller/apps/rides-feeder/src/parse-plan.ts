@@ -6,7 +6,7 @@ import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { GtfsCalendar, GtfsCalendarSchema, validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { GtfsStrictV29CalendarDates, GtfsStrictV29CalendarDatesSchema, GtfsStrictV29Route, GtfsStrictV29RouteSchema, GtfsStrictV29Shapes, GtfsStrictV29ShapesSchema, GtfsStrictV29Stops, GtfsStrictV29StopsSchema, GtfsStrictV29StopTimes, GtfsStrictV29StopTimesSchema, type GtfsStrictV29Trips, GtfsStrictV29TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { GtfsStrictV29CalendarDates, GtfsStrictV29CalendarDatesSchema, GtfsStrictV29Routes, GtfsStrictV29RoutesSchema, GtfsStrictV29Shapes, GtfsStrictV29ShapesSchema, GtfsStrictV29Stops, GtfsStrictV29StopsSchema, GtfsStrictV29StopTimes, GtfsStrictV29StopTimesSchema, type GtfsStrictV29Trips, GtfsStrictV29TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
@@ -77,7 +77,7 @@ export async function parsePlan(planData: Plan) {
 		],
 	});
 
-	const savedRoutes = new SQLiteWriter<GtfsStrictV29Route>({
+	const savedRoutes = new SQLiteWriter<GtfsStrictV29Routes>({
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
@@ -462,9 +462,9 @@ export async function parsePlan(planData: Plan) {
 
 		Logger.info({ message: `Reading zip entry "routes.txt"...` });
 
-		const parseEachRow = async (data: GtfsStrictV29Route) => {
+		const parseEachRow = async (data: GtfsStrictV29Routes) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsStrictV29RouteSchema.safeParse(data);
+			const validatedData = GtfsStrictV29RoutesSchema.safeParse(data);
 			if (!validatedData.success) {
 				Logger.error({ message: `Invalid routes.txt row: ${JSON.stringify(data)}` });
 				return;
