@@ -1,4 +1,4 @@
-import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, MONTH_OPTIONS, StopsParameterOverride, WEEKDAY_OPTIONS, YearPeriod } from '@tmlmobilidade/types';
+import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, MONTH_OPTIONS, StopsParameterOverride, WEEKDAY_OPTIONS, YearPeriod } from '@tmlmobilidade/go-types-offer';
 
 /**
  * Builds the period portion of a rule summary.

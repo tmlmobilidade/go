@@ -1,4 +1,5 @@
-import type { EventReplacementRule, OperationalDate, YearPeriod } from '@tmlmobilidade/types';
+import type { EventReplacementRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
+import type { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 import { Dates } from '@/dates.js';
 

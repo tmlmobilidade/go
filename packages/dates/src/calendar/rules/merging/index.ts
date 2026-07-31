@@ -1,4 +1,4 @@
-import { Event, EventReplacementRule, EventRestrictionRule, EventRule, Pattern, ScheduleRule } from '@tmlmobilidade/types';
+import { Event, EventReplacementRule, EventRestrictionRule, EventRule, Pattern, ScheduleRule } from '@tmlmobilidade/go-types-offer';
 
 function eventRuleAffectsLine(rule: EventRule, lineId: string): boolean {
 	switch (rule.lines_mode) {

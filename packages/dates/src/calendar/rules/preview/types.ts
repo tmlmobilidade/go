@@ -1,4 +1,4 @@
-import { ScheduleRule } from '@tmlmobilidade/types';
+import { ScheduleRule } from '@tmlmobilidade/go-types-offer';
 
 /**
  * Detailed rule information for a specific day

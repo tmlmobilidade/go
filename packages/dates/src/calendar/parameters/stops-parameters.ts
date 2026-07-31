@@ -1,6 +1,6 @@
 /* * */
 
-import { type Path, type StopsParameter } from '@tmlmobilidade/types';
+import { type Path, type StopsParameter } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 

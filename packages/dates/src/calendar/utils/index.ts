@@ -2,7 +2,8 @@
 
 import { Dates } from '@/dates.js';
 import { TimezoneIdentified } from '@/lib/timezone-identified.js';
-import { Holiday, IsoWeekday, OperationalDate } from '@tmlmobilidade/types';
+import { Holiday, IsoWeekday } from '@tmlmobilidade/go-types-offer';
+import { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
