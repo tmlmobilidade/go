@@ -1,5 +1,5 @@
 import { CalendarRule } from '@/types.js';
-import { WEEKDAYS } from '@tmlmobilidade/types';
+import { WEEKDAYS } from '@tmlmobilidade/go-types-offer';
 
 const PERIODS = {
 	ESC: '99H2R',

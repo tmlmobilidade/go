@@ -1,6 +1,6 @@
 /* * */
 
-import { normalizeOperationalHhmmInput } from '@tmlmobilidade/types';
+import { normalizeOperationalHhmmInput } from '@tmlmobilidade/go-types-offer';
 import AdmZip from 'adm-zip';
 import fs from 'fs/promises';
 import Papa from 'papaparse';
