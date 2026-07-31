@@ -4,7 +4,7 @@ import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { IconArrowRight, IconCalendarCancel, IconCalendarRepeat } from '@tabler/icons-react';
 import { Dates, FORMATS } from '@tmlmobilidade/dates';
-import { EventRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
+import { EventRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/go-types-offer';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -55,7 +55,7 @@ export function RuleCard({ rule }: RuleCardProps) {
 		: 'Nenhuma linha';
 
 	// Build detailed lines description
-	let linesDescription = '';
+	let linesDescription;
 	if (linesMode === 'all') {
 		linesDescription = 'Todas as linhas';
 	} else if (linesMode === 'include' && rule.lines_to_include?.length) {
