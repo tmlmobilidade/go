@@ -2,12 +2,14 @@
 
 import { DAY_TYPES } from '@/day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
-import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig, type GTFS_Date } from '@/types.js';
+import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
+import { type GtfsCalendarDates, type GtfsStopTimes, type GtfsTrips, validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV29CalendarDates } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 import Papa from 'papaparse';
@@ -24,23 +26,24 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		Logger.error({ message: `Missing dates.txt file in ${process.cwd()}` });
 	}
 
-	const datesCat = Papa.parse<GTFS_Date>(fs.readFileSync('/Users/joao/Developer/tmlmobilidade/sae/plans/apps/export-posters/src/dates.txt', 'utf-8'), {
+	const datesCat = Papa.parse<GtfsStrictV29CalendarDates>(fs.readFileSync('/Users/joao/Developer/tmlmobilidade/sae/plans/apps/export-posters/src/dates.txt', 'utf-8'), {
 		header: true,
 		skipEmptyLines: true,
 	});
 
-	const datesMap = new Map<string, GTFS_Date>();
+	const datesMap = new Map<string, GtfsStrictV29CalendarDates>();
 	const dayTypesConfig: DayTypeConfig[] = DAY_TYPES;
 
 	datesCat.data.forEach((d) => {
 		// Ignore dates outside the export range
 		// if (d.date.localeCompare(exportConfig.date_range.start) > 0) console.log(d.date);
-		if (d.date < exportConfig.date_range.start || d.date > exportConfig.date_range.end) return;
+		const operationalDate = validateOperationalDate(d.date);
+		if (operationalDate < exportConfig.date_range.start || operationalDate > exportConfig.date_range.end) return;
 		// Add this date to the corresponding day_type_id
 		const dayTypeTable = dayTypesConfig.find(dt => dt.period === d.period && dt.day_type === d.day_type);
-		if (dayTypeTable) dayTypeTable.dates.push(d.date);
+		if (dayTypeTable) dayTypeTable.dates.push(operationalDate);
 		// Add to map
-		datesMap.set(d.date, d);
+		datesMap.set(operationalDate, d);
 	});
 
 	//
@@ -69,7 +72,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		//
 		// Group trips that have the same stop_times
 
-		const equalTrips: Record<string, { sample_stop_times: GTFS_StopTime[], sample_trip: GTFS_Trip_Extended, service_ids: string[], start_time: string, trip_ids: string[] }> = {};
+		const equalTrips: Record<string, { sample_stop_times: GtfsStopTimes[], sample_trip: GtfsTrips, service_ids: string[], start_time: string, trip_ids: string[] }> = {};
 
 		for (const tripData of allTripsForThisPatternId) {
 			// Get stop_times for this trip
@@ -175,7 +178,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				// This is because we are merging identical services into a single one. Before, there were more trips
 				// spread across multiple service_ids, now there will be fewer trips but with more dates on each service.
 
-				const newTripId = `${equalTripsData.sample_trip.pattern_id}|${equalTripsData.start_time}|${combinedDatesData.period}|${combinedDatesData.day_type}|${updatedServiceIds[serviceIdKey]._id}`;
+				const newTripId = `${equalTripsData.sample_trip.shape_id}||${equalTripsData.start_time}|${combinedDatesData.period}|${combinedDatesData.day_type}|${updatedServiceIds[serviceIdKey]._id}`;
 
 				sqlTables.trips.write({ ...equalTripsData.sample_trip, service_id: updatedServiceIds[serviceIdKey]._id, trip_id: newTripId });
 				equalTripsData.sample_stop_times.forEach(st => sqlTables.stop_times.write({ ...st, trip_id: newTripId }));
@@ -422,9 +425,9 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// Output all dates for this service_id
 		const sortedDates = serviceIdData.dates.sort();
 		for (const operationalDate of sortedDates) {
-			const data: GTFS_CalendarDate = {
-				date: operationalDate,
-				exception_type: 1,
+			const data: GtfsCalendarDates = {
+				date: validateGtfsDate(operationalDate),
+				exception_type: '1',
 				service_id: serviceIdData._id,
 			};
 			await calendarDatesCsv.write(data);

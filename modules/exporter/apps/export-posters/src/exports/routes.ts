@@ -1,9 +1,9 @@
 /* * */
 
 import { type ExportToHitouchConfig } from '@/types.js';
+import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GTFS_Route } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
 /* * */
@@ -17,17 +17,17 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 	//
 	// Get all routes and group them by line_id
 
-	const routesByLineId: Record<string, GTFS_Route[]> = {};
+	const routesByLineId: Record<string, GtfsRoutes[]> = {};
 
 	sqlTables.routes.all().forEach((route) => {
 		if (!routesByLineId[route.line_id]) routesByLineId[route.line_id] = [];
 		routesByLineId[route.line_id].push(route);
 	});
 
-	for await (const routesGroup of Object.values(routesByLineId)) {
+	for (const routesGroup of Object.values(routesByLineId)) {
 		// If this line only has one route, export it as is
 		if (routesGroup.length === 1) {
-			const data: GTFS_Route = {
+			const data: GtfsRoutes = {
 				agency_id: routesGroup[0].agency_id,
 				route_color: routesGroup[0].route_color,
 				route_desc: routesGroup[0].route_desc,
@@ -46,7 +46,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 		// to differentiate between them.
 		routesGroup.sort((a, b) => (a.route_id < b.route_id ? -1 : 1));
 		for (let i = 0; i < routesGroup.length; i++) {
-			const data: GTFS_Route = {
+			const data: GtfsRoutes = {
 				agency_id: routesGroup[i].agency_id,
 				route_color: routesGroup[i].route_color,
 				route_desc: routesGroup[i].route_desc,
