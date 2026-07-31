@@ -2,7 +2,7 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
-import { type GtfsStrictV29Shape } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29Shapes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Plan } from '@tmlmobilidade/types';
@@ -23,7 +23,7 @@ export async function exportShapesRows(planData: Plan, sqlTables: GtfsSQLTables,
 	//
 
 	for await (const shapesItem of sqlTables.shapes.stream('ORDER BY shape_id, shape_pt_sequence ASC')) {
-		const shapeData: GtfsStrictV29Shape = shapesItem;
+		const shapeData: GtfsStrictV29Shapes = shapesItem;
 		const parsedShapesRow: ExportedShapesRow = {
 			shape_id: `[${planData._id}]${shapeData.shape_id}`,
 			shape_pt_sequence: shapeData.shape_pt_sequence,

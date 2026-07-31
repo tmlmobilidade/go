@@ -2,9 +2,10 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type ExportGtfsContext } from '@/types/context.js';
+import { type GtfsStrictV29Shapes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GTFS_Shape, type Plan } from '@tmlmobilidade/types';
+import { type Plan } from '@tmlmobilidade/types';
 import { getPublicShapeId } from '@tmlmobilidade/utils';
 
 /* * */
@@ -27,7 +28,7 @@ export async function exportShapesFile(planData: Plan, sqlTables: GtfsSQLTables,
 	//
 
 	for await (const shapesItem of sqlTables.shapes.stream('ORDER BY shape_id, shape_pt_sequence ASC')) {
-		const shapeData: GTFS_Shape = shapesItem;
+		const shapeData: GtfsStrictV29Shapes = shapesItem;
 		const parsedShapesRow: ExportedShapesRow = {
 			shape_id: getPublicShapeId(planData._id, planData.agency_id, shapeData.shape_id),
 			shape_pt_sequence: shapeData.shape_pt_sequence,

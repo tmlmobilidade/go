@@ -6,7 +6,7 @@ import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { GtfsCalendar, GtfsCalendarSchema, validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { GtfsStrictV29CalendarDates, GtfsStrictV29CalendarDatesSchema, GtfsStrictV29Route, GtfsStrictV29RouteSchema, GtfsStrictV29Shape, GtfsStrictV29ShapeSchema, GtfsStrictV29Stops, GtfsStrictV29StopsSchema, GtfsStrictV29StopTimes, GtfsStrictV29StopTimesSchema, type GtfsStrictV29Trips, GtfsStrictV29TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { GtfsStrictV29CalendarDates, GtfsStrictV29CalendarDatesSchema, GtfsStrictV29Route, GtfsStrictV29RouteSchema, GtfsStrictV29Shapes, GtfsStrictV29ShapesSchema, GtfsStrictV29Stops, GtfsStrictV29StopsSchema, GtfsStrictV29StopTimes, GtfsStrictV29StopTimesSchema, type GtfsStrictV29Trips, GtfsStrictV29TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
@@ -102,7 +102,7 @@ export async function parsePlan(planData: Plan) {
 		],
 	});
 
-	const savedShapes = new SQLiteWriter<GtfsStrictV29Shape>({
+	const savedShapes = new SQLiteWriter<GtfsStrictV29Shapes>({
 		batch_size: 100000,
 		columns: [
 			{ indexed: true, name: 'shape_id', not_null: true, type: 'TEXT' },
@@ -506,9 +506,9 @@ export async function parsePlan(planData: Plan) {
 
 		Logger.info({ message: `Reading zip entry "shapes.txt"...` });
 
-		const parseEachRow = async (data: GtfsStrictV29Shape) => {
+		const parseEachRow = async (data: GtfsStrictV29Shapes) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsStrictV29ShapeSchema.safeParse(data);
+			const validatedData = GtfsStrictV29ShapesSchema.safeParse(data);
 			if (!validatedData.success) {
 				Logger.error({ message: `Invalid shapes.txt row: ${JSON.stringify(data)}` });
 				return;

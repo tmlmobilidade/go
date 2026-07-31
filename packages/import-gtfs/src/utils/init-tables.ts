@@ -1,7 +1,7 @@
 /* * */
 
 import { type GtfsSQLTables } from '@/types/sql-tables.js';
-import { type GtfsStrictV29Route, type GtfsStrictV29Shape, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29Route, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
 
@@ -58,7 +58,7 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		],
 	});
 
-	const shapesTable = database.registerTable<GtfsStrictV29Shape>('shapes', {
+	const shapesTable = database.registerTable<GtfsStrictV29Shapes>('shapes', {
 		batch_size: 100000,
 		columns: [
 			{ indexed: true, name: 'shape_id', not_null: true, type: 'TEXT' },
