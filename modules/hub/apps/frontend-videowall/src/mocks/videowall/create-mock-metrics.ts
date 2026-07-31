@@ -22,8 +22,7 @@ const AGENCY_WEIGHTS: Record<string, number> = {
 	LA77N: 0.28,
 	YA15B: 0.25,
 };
-const BASELINE_DATE_OFFSETS = [1, 2, 5, 6, 7, 8, 9, 12];
-const FIVE_MINUTES = 5 * 60 * 1_000;
+const BASELINE_DATE_OFFSETS = [7, 14, 21, 28, 35, 42, 49, 56];
 const FIFTEEN_MINUTES = 15 * 60 * 1_000;
 const TREND_POINT_COUNT = 49;
 
@@ -110,7 +109,6 @@ function createDemandValue(
 
 	return {
 		comparison_index_pct: lastWeekQty === 0 ? null : currentQty / lastWeekQty * 100,
-		completed_interval_validations_qty_now: currentQty,
 		deviation_status: getDemandDeviationStatus(currentQty, referenceLower, referenceUpper),
 		passenger_validations_qty_last_week: lastWeekQty,
 		passenger_validations_qty_now: currentQty,
@@ -181,7 +179,11 @@ export function createVideowallMockMetrics(
 	const operationalDateStartTimestamp = operationalDateStart.getTime();
 	const currentOperationalDate = getOperationalDateInt(operationalDateStart);
 	const latestCompleteInterval = operationalDateStartTimestamp + (TREND_POINT_COUNT - 1) * FIFTEEN_MINUTES;
-	const generatedAt = latestCompleteInterval + FIVE_MINUTES;
+	const currentCutoff = latestCompleteInterval + 60_000 - 1;
+	const generatedAt = currentCutoff + 5_000;
+	const lastWeekCutoffDate = new Date(currentCutoff);
+	lastWeekCutoffDate.setDate(lastWeekCutoffDate.getDate() - 7);
+	const lastWeekCutoff = lastWeekCutoffDate.getTime();
 	const weights = getAgencyWeights(agencyIds);
 	const isAvailable = VIDEOWALL_SCENARIOS[scenario].availability;
 	const readyScenario = scenario === 'unavailable' ? 'regular' : scenario;
@@ -220,18 +222,17 @@ export function createVideowallMockMetrics(
 	const unavailableAgencyIds = isAvailable ? [] : [...agencyIds];
 	const demandMetrics = PassengerDemandMetricsSchema.parse({
 		agencies: demandAgencies,
-		definition_version: 'passenger-demand-legacy-v1',
+		definition_version: 'passenger-demand-v2',
 		meta: {
 			baseline_operational_dates: baselineOperationalDates,
 			baseline_sample_size: isAvailable ? BASELINE_DATE_OFFSETS.length : 0,
 			baseline_sample_size_target: BASELINE_DATE_OFFSETS.length,
-			current_cutoff: generatedAt,
+			current_cutoff: currentCutoff,
 			current_operational_date: currentOperationalDate,
 			generated_at: generatedAt,
-			interval_minutes: 5,
-			last_week_cutoff: generatedAt - 7 * 24 * 60 * 60 * 1_000,
-			last_week_operational_date: baselineOperationalDates[4] ?? currentOperationalDate,
-			latest_complete_interval: latestCompleteInterval,
+			interval_minutes: 15,
+			last_week_cutoff: lastWeekCutoff,
+			last_week_operational_date: baselineOperationalDates[0] ?? currentOperationalDate,
 			requested_agency_ids: [...agencyIds],
 			source_watermark: generatedAt,
 			status: isAvailable ? 'complete' : 'partial',
@@ -247,12 +248,12 @@ export function createVideowallMockMetrics(
 		definition_version: 'videowall-v2',
 		meta: {
 			demand: {
-				current_cutoff: generatedAt,
+				current_cutoff: currentCutoff,
 				current_operational_date: currentOperationalDate,
-				definition_version: 'videowall-demand-v1',
+				definition_version: 'passenger-demand-v2',
 				generated_at: generatedAt,
-				last_week_cutoff: generatedAt - 7 * 24 * 60 * 60 * 1_000,
-				last_week_operational_date: baselineOperationalDates[4] ?? currentOperationalDate,
+				last_week_cutoff: lastWeekCutoff,
+				last_week_operational_date: baselineOperationalDates[0] ?? currentOperationalDate,
 			},
 			requested_agency_ids: [...agencyIds],
 			service: {

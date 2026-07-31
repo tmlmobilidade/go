@@ -101,7 +101,7 @@ export function DemandCard({
 
 			{value?.typical_range && value.typical_cumulative_qty !== null && (
 				<DemandRangeGauge
-					currentValue={value.completed_interval_validations_qty_now}
+					currentValue={value.passenger_validations_qty_now}
 					referenceValue={value.typical_cumulative_qty}
 					typicalRange={value.typical_range}
 				/>

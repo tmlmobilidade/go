@@ -15,6 +15,15 @@ const regular = createVideowallMockMetrics(CM_AGENCY_IDS, 'regular');
 const bad = createVideowallMockMetrics(CM_AGENCY_IDS, 'bad');
 const unavailable = createVideowallMockMetrics(CM_AGENCY_IDS, 'unavailable');
 
+function getWeekday(operationalDate: number) {
+	const value = String(operationalDate);
+	return new Date(Date.UTC(
+		Number(value.slice(0, 4)),
+		Number(value.slice(4, 6)) - 1,
+		Number(value.slice(6, 8)),
+	)).getUTCDay();
+}
+
 for (const fixture of [excellent, regular, bad, unavailable]) {
 	PassengerDemandMetricsSchema.parse(fixture.demand_metrics);
 	VideowallMetricsSchema.parse(fixture.metrics);
@@ -27,6 +36,15 @@ assert.equal(unavailable.demand_metrics.total.value, null);
 assert.equal(unavailable.metrics.total.service, null);
 assert.equal(unavailable.metrics.meta.status, 'partial');
 assert.equal(regular.demand_metrics.total.trend.length, 49);
+assert.equal(
+	regular.demand_metrics.meta.last_week_operational_date,
+	regular.demand_metrics.meta.baseline_operational_dates[0],
+);
+assert.ok(
+	regular.demand_metrics.meta.baseline_operational_dates.every(date =>
+		getWeekday(date) === getWeekday(regular.demand_metrics.meta.current_operational_date),
+	),
+);
 assert.ok(
 	(excellent.metrics.total.service?.delays.average_start_delay_minutes ?? Infinity)
 	< (bad.metrics.total.service?.delays.average_start_delay_minutes ?? 0),

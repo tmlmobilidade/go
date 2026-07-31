@@ -77,8 +77,8 @@ export const VideowallMetricsContextProvider = ({
 	// A. Setup variables
 
 	const agencyIdsQuery = agencyIds.map(encodeURIComponent).join(',');
-	const demandUrl = `${API_ROUTES.hub.BASE}/v2/metrics/passenger-demand?agency_ids=${agencyIdsQuery}`;
-	const url = `${API_ROUTES.hub.BASE}/v2/metrics/videowall?agency_ids=${agencyIdsQuery}`;
+	const demandUrl = `${API_ROUTES.hub.METRICS_PASSENGER_DEMAND}?agency_ids=${agencyIdsQuery}`;
+	const url = `${API_ROUTES.hub.METRICS_VIDEOWALL}?agency_ids=${agencyIdsQuery}`;
 	const isUsingMockData = VIDEOWALL_DATA_CONFIG.data_source === 'mock';
 	const hasVisibleMockState = ['ready', 'validating'].includes(VIDEOWALL_DATA_CONFIG.mock_state);
 	const isMockDataVisible = isUsingMockData && hasVisibleMockState;
