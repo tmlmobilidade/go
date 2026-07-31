@@ -5,7 +5,8 @@ import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconArrowBarToLeft, IconArrowBarToRight } from '@tabler/icons-react';
 import { buildAffectedDaysDetails, calendarKey, CalendarKey, Dates, datesFromCalendarKey, FORMATS } from '@tmlmobilidade/dates';
-import { CalendarEvent, HHMM, ScheduleRule } from '@tmlmobilidade/types';
+import { type HHMM, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
+import { type CalendarEvent } from '@tmlmobilidade/types';
 import { CloseButton, DayPeriodsTimepoints, Divider, EventsCalendar, Pane, Section, Surface, Text } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 

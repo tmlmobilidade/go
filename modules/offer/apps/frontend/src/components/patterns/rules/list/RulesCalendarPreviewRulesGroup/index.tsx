@@ -5,7 +5,7 @@ import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
 import { buildRuleSummary } from '@tmlmobilidade/dates';
 import { DayRuleDetail } from '@tmlmobilidade/dates/dist/calendar/rules/preview/types';
-import { HHMM, ScheduleRule } from '@tmlmobilidade/types';
+import { type HHMM, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
 import { DayPeriodsTimepoints, Section, Text, TimeChip } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

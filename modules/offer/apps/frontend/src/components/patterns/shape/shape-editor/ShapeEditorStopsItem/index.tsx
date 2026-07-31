@@ -3,7 +3,7 @@
 /* * */
 
 import { IconArrowBarToDown, IconArrowBarUp, IconClock } from '@tabler/icons-react';
-import { PopulatedPath } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { DeleteButton, Section, Tag, Text, useLocationsContext } from '@tmlmobilidade/ui';
 import { useMemo, useRef, useState } from 'react';
 

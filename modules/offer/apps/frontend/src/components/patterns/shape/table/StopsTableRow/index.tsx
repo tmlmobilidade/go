@@ -4,7 +4,7 @@
 
 import { StopsTableTableColumnDistance } from '@/components/patterns/shape/table/StopsTableColumnDistance';
 import { PathTableColumnStop } from '@/components/patterns/shape/table/StopsTableColumnStop';
-import { PopulatedPath } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { Checkbox, CheckboxProps, Text, Tooltip } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';

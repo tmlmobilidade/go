@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, type Typology } from '@tmlmobilidade/types';
+import { type Typology } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { useDataAgenciesNew, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';

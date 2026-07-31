@@ -1,6 +1,6 @@
 /* * */
 
-import { DocumentSchema, GeoJsonFeatureCollectionSchema } from '@tmlmobilidade/go-types-shared';
+import { DocumentSchema, GeoJsonFeatureCollectionSchema, GeoJsonFeatureSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const ZoneSchema = DocumentSchema.extend({
 	agency_ids: z.array(z.string()).min(1, 'At least one agency ID is required'),
 	code: z.string().trim().min(1).max(30),
-	geojson: GeoJsonFeatureCollectionSchema.nullable().default(null),
+	geojson: z.union([GeoJsonFeatureCollectionSchema, GeoJsonFeatureSchema]).nullable().default(null),
 	is_locked: z.boolean().default(false),
 	name: z.string().trim().min(1).max(50),
 });

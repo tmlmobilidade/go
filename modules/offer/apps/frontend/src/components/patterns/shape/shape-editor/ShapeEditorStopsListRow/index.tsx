@@ -3,7 +3,7 @@
 /* * */
 
 import { IconCirclePlus, IconX } from '@tabler/icons-react';
-import { PopulatedPath } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { IconButton, Select, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
