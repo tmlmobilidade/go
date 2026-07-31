@@ -5,10 +5,12 @@ import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { GtfsCalendar, GtfsCalendarSchema, validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsStrictV29CalendarDates, GtfsStrictV29CalendarDatesSchema, GtfsStrictV29Route, GtfsStrictV29RouteSchema, GtfsStrictV29Shape, GtfsStrictV29ShapeSchema, GtfsStrictV29Stops, GtfsStrictV29StopsSchema, GtfsStrictV29StopTimes, GtfsStrictV29StopTimesSchema, type GtfsStrictV29Trips, GtfsStrictV29TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { SQLiteWriter } from '@tmlmobilidade/sqlite';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Calendar_Raw, type GTFS_CalendarDate_Raw, type GTFS_Route_Extended, type GTFS_Route_Extended_Raw, type GTFS_Shape, type GTFS_Shape_Raw, type GTFS_Stop_Extended, type GTFS_Stop_Extended_Raw, type GTFS_StopTime, type GTFS_StopTime_Raw, type GTFS_Trip_Extended, type GTFS_Trip_Extended_Raw, type HashedPattern, type HashedPatternWaypoint, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, validateGtfsCalendar, validateGtfsCalendarDate, validateGtfsPickupDropoffType, validateGtfsRouteExtended, validateGtfsShape, validateGtfsStopExtended, validateGtfsStopTime, validateGtfsTripExtended } from '@tmlmobilidade/types';
+import { type HashedPattern, type HashedPatternWaypoint, type HashedShape, type HashedShapePoint, type HashedTrip, type HashedTripWaypoint, type OperationalDate, type Plan, type Ride, validateOperationalDate } from '@tmlmobilidade/types';
 import { convertGTFSTimeStringAndOperationalDateToUnixTimestamp } from '@tmlmobilidade/utils';
 import { MongoDbWriter, type MongoDbWriterWriteOptions } from '@tmlmobilidade/writers';
 import crypto from 'crypto';
@@ -58,7 +60,7 @@ export async function parsePlan(planData: Plan) {
 
 	const savedCalendarDates = new Map<string, OperationalDate[]>();
 
-	const savedTrips = new SQLiteWriter<GTFS_Trip_Extended>({
+	const savedTrips = new SQLiteWriter<GtfsStrictV29Trips>({
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
@@ -75,7 +77,7 @@ export async function parsePlan(planData: Plan) {
 		],
 	});
 
-	const savedRoutes = new SQLiteWriter<GTFS_Route_Extended>({
+	const savedRoutes = new SQLiteWriter<GtfsStrictV29Route>({
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
@@ -100,7 +102,7 @@ export async function parsePlan(planData: Plan) {
 		],
 	});
 
-	const savedShapes = new SQLiteWriter<GTFS_Shape>({
+	const savedShapes = new SQLiteWriter<GtfsStrictV29Shape>({
 		batch_size: 100000,
 		columns: [
 			{ indexed: true, name: 'shape_id', not_null: true, type: 'TEXT' },
@@ -111,7 +113,7 @@ export async function parsePlan(planData: Plan) {
 		],
 	});
 
-	const savedStops = new SQLiteWriter<GTFS_Stop_Extended>({
+	const savedStops = new SQLiteWriter<GtfsStrictV29Stops>({
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'level_id', type: 'TEXT' },
@@ -128,25 +130,25 @@ export async function parsePlan(planData: Plan) {
 			{ indexed: false, name: 'stop_url', type: 'TEXT' },
 			{ indexed: false, name: 'wheelchair_boarding', type: 'INTEGER' },
 			{ indexed: false, name: 'zone_id', type: 'TEXT' },
-			{ indexed: false, name: 'has_bench', type: 'INTEGER' },
-			{ indexed: false, name: 'has_network_map', type: 'INTEGER' },
-			{ indexed: false, name: 'has_pip_real_time', type: 'INTEGER' },
-			{ indexed: false, name: 'has_schedules', type: 'INTEGER' },
-			{ indexed: false, name: 'has_shelter', type: 'INTEGER' },
-			{ indexed: false, name: 'has_stop_sign', type: 'INTEGER' },
-			{ indexed: false, name: 'has_tariffs_information', type: 'INTEGER' },
-			{ indexed: false, name: 'municipality_id', type: 'TEXT' },
-			{ indexed: false, name: 'parish_id', type: 'TEXT' },
-			{ indexed: false, name: 'public_visible', type: 'INTEGER' },
-			{ indexed: false, name: 'region_id', type: 'TEXT' },
-			{ indexed: false, name: 'shelter_code', type: 'TEXT' },
-			{ indexed: false, name: 'shelter_maintainer', type: 'TEXT' },
-			{ indexed: false, name: 'stop_short_name', type: 'TEXT' },
-			{ indexed: false, name: 'tts_stop_name', type: 'TEXT' },
+			// { indexed: false, name: 'has_bench', type: 'INTEGER' },
+			// { indexed: false, name: 'has_network_map', type: 'INTEGER' },
+			// { indexed: false, name: 'has_pip_real_time', type: 'INTEGER' },
+			// { indexed: false, name: 'has_schedules', type: 'INTEGER' },
+			// { indexed: false, name: 'has_shelter', type: 'INTEGER' },
+			// { indexed: false, name: 'has_stop_sign', type: 'INTEGER' },
+			// { indexed: false, name: 'has_tariffs_information', type: 'INTEGER' },
+			// { indexed: false, name: 'municipality_id', type: 'TEXT' },
+			// { indexed: false, name: 'parish_id', type: 'TEXT' },
+			// { indexed: false, name: 'public_visible', type: 'INTEGER' },
+			// { indexed: false, name: 'region_id', type: 'TEXT' },
+			// { indexed: false, name: 'shelter_code', type: 'TEXT' },
+			// { indexed: false, name: 'shelter_maintainer', type: 'TEXT' },
+			// { indexed: false, name: 'stop_short_name', type: 'TEXT' },
+			// { indexed: false, name: 'tts_stop_name', type: 'TEXT' },
 		],
 	});
 
-	const savedStopTimes = new SQLiteWriter<GTFS_StopTime>({
+	const savedStopTimes = new SQLiteWriter<GtfsStrictV29StopTimes>({
 		batch_size: 100000,
 		columns: [
 			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
@@ -156,7 +158,6 @@ export async function parsePlan(planData: Plan) {
 			{ indexed: false, name: 'drop_off_type', type: 'INTEGER' },
 			{ indexed: false, name: 'pickup_type', type: 'INTEGER' },
 			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'stop_headsign', type: 'TEXT' },
 			{ indexed: true, name: 'stop_id', not_null: true, type: 'TEXT' },
 			{ indexed: true, name: 'trip_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },
@@ -249,20 +250,20 @@ export async function parsePlan(planData: Plan) {
 
 		Logger.info({ message: `Reading zip entry "calendar.txt"...` });
 
-		const parseEachRow = async (data: GTFS_Calendar_Raw) => {
+		const parseEachRow = async (data: GtfsCalendar) => {
 			//
 
 			//
 			// Validate the current row against the proper type
 
-			const validatedData = validateGtfsCalendar(data);
+			const validatedData = GtfsCalendarSchema.safeParse(data);
 
 			//
 			// Check if this service_id is between the given start_date and end_date.
 			// Clip the service_id's start and end dates to the given start and end dates.
 
-			let serviceIdStartDate = validatedData.start_date;
-			let serviceIdEndDate = validatedData.end_date;
+			let serviceIdStartDate = validateGtfsDate(validatedData.data.start_date);
+			let serviceIdEndDate = validateGtfsDate(validatedData.data.end_date);
 
 			if (serviceIdEndDate < planData.gtfs_feed_info.feed_start_date || serviceIdStartDate > planData.gtfs_feed_info.feed_end_date) return;
 
@@ -274,25 +275,25 @@ export async function parsePlan(planData: Plan) {
 			// For the configured weekly schedule, create the individual operational dates
 			// for each day of the week that is active.
 
-			const allOperationalDatesInRange = getOperationalDatesFromRange(serviceIdStartDate, serviceIdEndDate);
+			const allOperationalDatesInRange = getOperationalDatesFromRange(validateOperationalDate(serviceIdStartDate), validateOperationalDate(serviceIdEndDate));
 
 			const validOperationalDates = new Set<OperationalDate>();
 
 			for (const currentDate of allOperationalDatesInRange) {
 				const dayOfWeek = Dates.fromOperationalDate(currentDate, 'Europe/Lisbon').toFormat('c');
-				if (dayOfWeek === '1' && validatedData.monday === 1) validOperationalDates.add(currentDate);
-				if (dayOfWeek === '2' && validatedData.tuesday === 1) validOperationalDates.add(currentDate);
-				if (dayOfWeek === '3' && validatedData.wednesday === 1) validOperationalDates.add(currentDate);
-				if (dayOfWeek === '4' && validatedData.thursday === 1) validOperationalDates.add(currentDate);
-				if (dayOfWeek === '5' && validatedData.friday === 1) validOperationalDates.add(currentDate);
-				if (dayOfWeek === '6' && validatedData.saturday === 1) validOperationalDates.add(currentDate);
-				if (dayOfWeek === '7' && validatedData.sunday === 1) validOperationalDates.add(currentDate);
+				if (dayOfWeek === '1' && validatedData.data.monday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '2' && validatedData.data.tuesday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '3' && validatedData.data.wednesday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '4' && validatedData.data.thursday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '5' && validatedData.data.friday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '6' && validatedData.data.saturday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '7' && validatedData.data.sunday === '1') validOperationalDates.add(currentDate);
 			}
 
 			//
 			// Save the valid operational dates for this service_id
 
-			savedCalendarDates.set(validatedData.service_id, Array.from(validOperationalDates));
+			savedCalendarDates.set(validatedData.data.service_id, Array.from(validOperationalDates));
 
 			calendarDatesCounter += validOperationalDates.size;
 
@@ -330,44 +331,49 @@ export async function parsePlan(planData: Plan) {
 
 		Logger.info({ message: `Reading zip entry "calendar_dates.txt"...` });
 
-		const parseEachRow = async (data: GTFS_CalendarDate_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29CalendarDates) => {
 			//
 
 			//
 			// Validate the current row against the proper type
 
-			const validatedData = validateGtfsCalendarDate(data);
+			const validatedData = GtfsStrictV29CalendarDatesSchema.safeParse(data);
+
+			if (!validatedData.success) {
+				Logger.error({ message: `Invalid calendar_dates.txt row: ${JSON.stringify(data)}` });
+				return;
+			}
 
 			//
 			// Skip if this row's date is not between the given start and end dates
 
-			if (validatedData.date < planData.gtfs_feed_info.feed_start_date || validatedData.date > planData.gtfs_feed_info.feed_end_date) return;
+			if (validatedData.data.date < planData.gtfs_feed_info.feed_start_date || validatedData.data.date > planData.gtfs_feed_info.feed_end_date) return;
 
 			//
 			// If we're here, it means the service_id is valid between the given dates.
 			// Get the previously saved calendars and check if it exists for this service_id.
 
-			const savedCalendar = savedCalendarDates.get(validatedData.service_id);
+			const savedCalendar = savedCalendarDates.get(validatedData.data.service_id);
 
 			if (savedCalendar) {
 				// Create a new Set to avoid duplicated dates
 				const updatedCalendar = new Set(savedCalendar);
 				// If this service_id was previously saved, either add or remove the current date
 				// to it based on the exception_type value for this row.
-				if (validatedData.exception_type === 1) {
-					updatedCalendar.add(validatedData.date);
+				if (validatedData.data.exception_type === '1') {
+					updatedCalendar.add(validateOperationalDate(validatedData.data.date));
 					calendarDatesCounter++;
-				} else if (validatedData.exception_type === 2) {
-					updatedCalendar.delete(validatedData.date);
+				} else if (validatedData.data.exception_type === '2') {
+					updatedCalendar.delete(validateOperationalDate(validatedData.data.date));
 					calendarDatesCounter--;
 				}
 				// Update the service_id with the new dates
-				savedCalendarDates.set(validatedData.service_id, Array.from(updatedCalendar));
+				savedCalendarDates.set(validatedData.data.service_id, Array.from(updatedCalendar));
 			} else {
 				// If this is the first time we're seeing this service_id, then it is only necessary
 				// to initiate a new dates array if it is a service addition
-				if (validatedData.exception_type === 1) {
-					savedCalendarDates.set(validatedData.service_id, [validatedData.date]);
+				if (validatedData.data.exception_type === '1') {
+					savedCalendarDates.set(validatedData.data.service_id, [validateOperationalDate(validatedData.data.date)]);
 					calendarDatesCounter++;
 				}
 			}
@@ -406,17 +412,21 @@ export async function parsePlan(planData: Plan) {
 
 		Logger.info({ message: `Reading zip entry "trips.txt"...` });
 
-		const parseEachRow = async (data: GTFS_Trip_Extended_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29Trips) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsTripExtended(data);
+			const validatedData = GtfsStrictV29TripsSchema.safeParse(data);
+			if (!validatedData.success) {
+				Logger.error({ message: `Invalid trips.txt row: ${JSON.stringify(data)}` });
+				return;
+			}
 			// For each trip, check if the associated service_id was saved
 			// in the previous step or not. Include it if yes, skip otherwise.
-			if (!savedCalendarDates.has(validatedData.service_id)) return;
+			if (!savedCalendarDates.has(validatedData.data.service_id)) return;
 			// Save the exported row
-			savedTrips.write(validatedData);
+			savedTrips.write(validatedData.data);
 			// Reference the associated entities to filter them later.
-			referencedRouteIds.add(validatedData.route_id);
-			referencedShapeIds.add(validatedData.shape_id);
+			referencedRouteIds.add(validatedData.data.route_id);
+			referencedShapeIds.add(validatedData.data.shape_id);
 			// Log progress
 			if (tripsCounter % 10000 === 0) Logger.info({ message: `Parsed ${tripsCounter} trips.txt rows so far.` });
 			// Increment the counter
@@ -452,14 +462,18 @@ export async function parsePlan(planData: Plan) {
 
 		Logger.info({ message: `Reading zip entry "routes.txt"...` });
 
-		const parseEachRow = async (data: GTFS_Route_Extended_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29Route) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsRouteExtended(data);
+			const validatedData = GtfsStrictV29RouteSchema.safeParse(data);
+			if (!validatedData.success) {
+				Logger.error({ message: `Invalid routes.txt row: ${JSON.stringify(data)}` });
+				return;
+			}
 			// For each route, only save the ones referenced
 			// by the previously saved trips.
-			if (!referencedRouteIds.has(validatedData.route_id)) return;
+			if (!referencedRouteIds.has(validatedData.data.route_id)) return;
 			// Save the exported row
-			savedRoutes.write(validatedData);
+			savedRoutes.write(validatedData.data);
 		};
 
 		//
@@ -492,14 +506,18 @@ export async function parsePlan(planData: Plan) {
 
 		Logger.info({ message: `Reading zip entry "shapes.txt"...` });
 
-		const parseEachRow = async (data: GTFS_Shape_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29Shape) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsShape(data);
+			const validatedData = GtfsStrictV29ShapeSchema.safeParse(data);
+			if (!validatedData.success) {
+				Logger.error({ message: `Invalid shapes.txt row: ${JSON.stringify(data)}` });
+				return;
+			}
 			// For each route, only save the ones referenced
 			// by the previously saved trips.
-			if (!referencedShapeIds.has(validatedData.shape_id)) return;
+			if (!referencedShapeIds.has(validatedData.data.shape_id)) return;
 			// Save the exported row
-			savedShapes.write(validatedData);
+			savedShapes.write(validatedData.data);
 			// Log progress
 			if (shapesCounter % 100000 === 0) Logger.info({ message: `Parsed ${shapesCounter} shapes.txt rows so far.` });
 			// Increment the counter
@@ -536,11 +554,15 @@ export async function parsePlan(planData: Plan) {
 
 		Logger.info({ message: `Reading zip entry "stops.txt"...` });
 
-		const parseEachRow = async (data: GTFS_Stop_Extended_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29Stops) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsStopExtended(data);
+			const validatedData = GtfsStrictV29StopsSchema.safeParse(data);
+			if (!validatedData.success) {
+				Logger.error({ message: `Invalid stops.txt row: ${JSON.stringify(data)}` });
+				return;
+			}
 			// Save the exported row
-			savedStops.write(validatedData);
+			savedStops.write(validatedData.data);
 		};
 
 		//
@@ -574,17 +596,21 @@ export async function parsePlan(planData: Plan) {
 
 		Logger.info({ message: `Reading zip entry "stop_times.txt"...` });
 
-		const parseEachRow = async (data: GTFS_StopTime_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29StopTimes) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsStopTime(data);
+			const validatedData = GtfsStrictV29StopTimesSchema.safeParse(data);
+			if (!validatedData.success) {
+				Logger.error({ message: `Invalid stop_times.txt row: ${JSON.stringify(data)}` });
+				return;
+			}
 			// Skip if this row's trip_id was not saved before.
-			const tripData = savedTrips.get('trip_id', validatedData.trip_id);
+			const tripData = savedTrips.get('trip_id', validatedData.data.trip_id);
 			if (!tripData) return;
 			// Also, check if the stop_id is valid and was saved before.
-			const stopData = savedStops.get('stop_id', validatedData.stop_id);
+			const stopData = savedStops.get('stop_id', validatedData.data.stop_id);
 			if (!stopData) return;
 			// Save the exported row
-			savedStopTimes.write(validatedData);
+			savedStopTimes.write(validatedData.data);
 			// Log progress
 			if (stopTimesCounter % 100000 === 0) Logger.info({ message: `Parsed ${stopTimesCounter} stop_times.txt rows so far.` });
 			// Increment the counter
@@ -685,7 +711,7 @@ export async function parsePlan(planData: Plan) {
 			// Build the HashedPattern data, including formatting the path data by combining
 			// properties from stop_times and stops. Sort it by stop_sequence.
 
-			const formattedHashedPatternPath: HashedPatternWaypoint[] = sortedStopTimesData.map((stopTime) => {
+			const formattedHashedPatternPath: HashedPatternWaypoint[] = sortedStopTimesData.map((stopTime): HashedPatternWaypoint => {
 				// Get the stop data for this stop_time
 				const stopData = savedStops.get('stop_id', stopTime.stop_id);
 				if (!stopData) throw new Error(`Stop "${stopTime.stop_id}" not found for trip "${currentTrip.trip_id}" for Plan "${planData._id}".`);
@@ -693,15 +719,15 @@ export async function parsePlan(planData: Plan) {
 				const normalizedShapeDistTraveled = toMetersFromKilometersOrMeters(stopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
 				// Return the formatted path data for this stop_time
 				return {
-					drop_off_type: validateGtfsPickupDropoffType(stopTime.drop_off_type),
-					pickup_type: validateGtfsPickupDropoffType(stopTime.pickup_type),
+					drop_off_type: Number(stopTime.drop_off_type) as 0 | 1 | 2 | 3,
+					pickup_type: Number(stopTime.pickup_type) as 0 | 1 | 2 | 3,
 					shape_dist_traveled: normalizedShapeDistTraveled,
 					stop_id: stopTime.stop_id,
 					stop_lat: stopData.stop_lat,
 					stop_lon: stopData.stop_lon,
 					stop_name: stopData.stop_name,
 					stop_sequence: stopTime.stop_sequence,
-					timepoint: stopTime.timepoint,
+					timepoint: Number(stopTime.timepoint),
 				};
 			});
 
@@ -761,7 +787,7 @@ export async function parsePlan(planData: Plan) {
 			// Build the HashedTrip data, including formatting the path data by combining
 			// properties from stop_times and stops. Sort it by stop_sequence.
 
-			const formattedHashedTripPath: HashedTripWaypoint[] = sortedStopTimesData.map((stopTime) => {
+			const formattedHashedTripPath: HashedTripWaypoint[] = sortedStopTimesData.map((stopTime): HashedTripWaypoint => {
 				// Get the stop data for this stop_time
 				const stopData = savedStops.get('stop_id', stopTime.stop_id);
 				if (!stopData) throw new Error(`Stop "${stopTime.stop_id}" not found for trip "${currentTrip.trip_id}" for Plan "${planData._id}".`);
@@ -771,15 +797,15 @@ export async function parsePlan(planData: Plan) {
 				return {
 					arrival_time: stopTime.arrival_time,
 					departure_time: stopTime.departure_time,
-					drop_off_type: validateGtfsPickupDropoffType(stopTime.drop_off_type),
-					pickup_type: validateGtfsPickupDropoffType(stopTime.pickup_type),
+					drop_off_type: Number(stopTime.drop_off_type) as 0 | 1 | 2 | 3,
+					pickup_type: Number(stopTime.pickup_type) as 0 | 1 | 2 | 3,
 					shape_dist_traveled: normalizedShapeDistTraveled,
 					stop_id: stopTime.stop_id,
 					stop_lat: stopData.stop_lat,
 					stop_lon: stopData.stop_lon,
 					stop_name: stopData.stop_name,
 					stop_sequence: stopTime.stop_sequence,
-					timepoint: stopTime.timepoint,
+					timepoint: Number(stopTime.timepoint),
 				};
 			});
 
