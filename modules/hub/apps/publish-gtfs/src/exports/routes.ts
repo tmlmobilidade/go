@@ -2,9 +2,10 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type ExportGtfsContext } from '@/types/context.js';
+import { GtfsBinary, type GtfsRouteType } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsStrictV29PathType, type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Route_Extended, type GTFS_RouteType } from '@tmlmobilidade/types';
 import { getPublicLineId, getPublicRouteId } from '@tmlmobilidade/utils';
 
 /* * */
@@ -17,12 +18,12 @@ export interface ExportedRoutesRow {
 	route_id: string
 	route_short_name: string
 	route_long_name: string
-	route_type: GTFS_RouteType
+	route_type: GtfsRouteType
 	route_color: string
 	route_text_color: string
-	path_type: 1 | 2 | 3
-	circular: 0 | 1
-	school: 0 | 1
+	path_type: GtfsStrictV29PathType
+	circular: GtfsBinary
+	school: GtfsBinary
 }
 
 /**
@@ -30,7 +31,7 @@ export interface ExportedRoutesRow {
  * @param routesList The list of routes to export.
  * @param context The export context.
  */
-export async function exportRoutesFile(routesList: GTFS_Route_Extended[], context: ExportGtfsContext) {
+export async function exportRoutesFile(routesList: GtfsStrictV29Routes[], context: ExportGtfsContext) {
 	//
 
 	const timer = new Timer();
