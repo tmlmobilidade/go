@@ -17,6 +17,7 @@ import { themeData } from '../../styles/theme';
 /* * */
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
+	htmlClassName?: string
 	/**
 	 * Please avoid using this prop. It is only intended for very specific use cases.
 	 * @dangerous
@@ -30,7 +31,7 @@ type BaseProviderProps = LocaleContextProps & VersionContextProps & {
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n, theme, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ children, htmlClassName, i18n, theme, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
@@ -56,6 +57,7 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 
 	return (
 		<html
+			className={htmlClassName}
 			data-mode="light"
 			data-scroll-behavior="smooth"
 			data-theme="ocean"
