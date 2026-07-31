@@ -34,12 +34,12 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"luxon": "3.7.2",
+		"@tmlmobilidade/go-types-gtfs-strict": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/luxon": "3.7.2",
 		"@types/node": "26.1.1",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
