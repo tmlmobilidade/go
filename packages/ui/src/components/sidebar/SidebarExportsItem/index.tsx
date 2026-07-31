@@ -1,7 +1,7 @@
 'use client';
 
 import { IconCheck, IconCircleDashed, IconFileDownload, IconLoader2, IconX } from '@tabler/icons-react';
-import { FileExport } from '@tmlmobilidade/types';
+import { type FileExport } from '@tmlmobilidade/go-types-downloads';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
