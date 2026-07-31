@@ -1,6 +1,6 @@
 /* * */
 
-import { ClickHouseClient, ClickHouseDatabaseClient, queryFromFile, queryFromString } from '@tmlmobilidade/go-clients-clickhouse';
+import { ClickHouseClient, ClickHouseDatabaseClient, type ClickHouseQueryParams, queryFromFile, queryFromString } from '@tmlmobilidade/go-clients-clickhouse';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 import { OperationDatabase } from './databases/operation.js';
@@ -76,23 +76,22 @@ class LabDbClass {
 	 *   end_date: '2024-12-31',
 	 * });
 	*/
-	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryFromFile<T>> {
+	public async queryFromFile<T>(filePath: string, params?: ClickHouseQueryParams): ReturnType<typeof queryFromFile<T>> {
 		return await queryFromFile<T>(this.clickhouseClient, filePath, params);
 	}
 
 	/**
 	 * Executes a query from a string.
-	 * @param client The ClickHouse client to use for executing the query.
-	 * @param query The SQL query to execute, with optional {key} placeholders for parameters.
-	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+	 * @param query The SQL query to execute, with optional $1, $2 placeholders for parameters.
+	 * @param params Optional key-value substitutions mapping positional parameter numbers to values.
 	 * @returns Query result rows typed as `T`.
 	 * @example
 	 * const users = await queryFromString<User>(clickhouseClient,
-	 *   'SELECT * FROM users WHERE created_at >= {start_date} AND created_at <= {end_date}',
-	 *   { start_date: '2024-01-01', end_date: '2024-12-31' }
+	 *   'SELECT * FROM users WHERE created_at >= $1 AND created_at <= $2',
+	 *   { 1: '2024-01-01', 2: '2024-12-31' }
 	 * );
 	*/
-	public async queryFromString<T>(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
+	public async queryFromString<T>(query: string, params?: ClickHouseQueryParams): ReturnType<typeof queryFromString<T>> {
 		return await queryFromString<T>(this.clickhouseClient, query, params);
 	}
 }

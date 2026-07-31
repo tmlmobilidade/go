@@ -1,6 +1,6 @@
 /* * */
 
-import { type ClickHouseClient, type ClickHouseColumn, type ClickhouseField, type ClickHouseTableEngine, type ClickHouseTableSchema, type DataFormat } from '@tmlmobilidade/go-clients-clickhouse';
+import { type ClickHouseClient, type ClickHouseColumn, type ClickhouseField, type ClickHouseQueryParams, type ClickHouseTableEngine, type ClickHouseTableSchema, type DataFormat } from '@tmlmobilidade/go-clients-clickhouse';
 import { ClickHouseError, preparePositionalQueryParams, queryFromFile, queryFromString, validateSqlParam } from '@tmlmobilidade/go-clients-clickhouse';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -182,23 +182,22 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 *   end_date: '2024-12-31',
 	 * });
 	*/
-	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryFromFile<T>> {
+	public async queryFromFile<T>(filePath: string, params?: ClickHouseQueryParams): ReturnType<typeof queryFromFile<T>> {
 		return await queryFromFile<T>(this.client, filePath, params);
 	}
 
 	/**
 	 * Executes a query from a string.
-	 * @param client The ClickHouse client to use for executing the query.
-	 * @param query The SQL query to execute, with optional {key} placeholders for parameters.
-	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+	 * @param query The SQL query to execute, with optional $1, $2 placeholders for parameters.
+	 * @param params Optional key-value substitutions mapping positional parameter numbers to values.
 	 * @returns Query result rows typed as `T`.
 	 * @example
 	 * const users = await queryFromString<User>(clickhouseClient,
-	 *   'SELECT * FROM users WHERE created_at >= {start_date} AND created_at <= {end_date}',
-	 *   { start_date: '2024-01-01', end_date: '2024-12-31' }
+	 *   'SELECT * FROM users WHERE created_at >= $1 AND created_at <= $2',
+	 *   { 1: '2024-01-01', 2: '2024-12-31' }
 	 * );
 	*/
-	public async queryFromString<T>(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
+	public async queryFromString<T>(query: string, params?: ClickHouseQueryParams): ReturnType<typeof queryFromString<T>> {
 		return await queryFromString<T>(this.client, query, params);
 	}
 

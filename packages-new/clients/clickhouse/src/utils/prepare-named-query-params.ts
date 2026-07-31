@@ -1,5 +1,7 @@
 /* * */
 
+import { type ClickHouseQueryParams } from '@/types/query-params.js';
+
 import { getClickHouseParamType } from './get-clickhouse-param-type.js';
 import { validateSqlParam } from './validate-sql-param.js';
 
@@ -15,8 +17,8 @@ import { validateSqlParam } from './validate-sql-param.js';
  * @throws Will throw an error if any parameter key is invalid, if there are missing parameters required by the query, or if there are unused parameters provided.
  * @returns An object containing the normalized query string with typed parameters and a mapping of parameter names to their values.
  */
-export function prepareNamedQueryParams(query: string, params?: Record<string, number | string>, context?: string): { query: string, queryParams: Record<string, number | string> } {
-	const queryParams: Record<string, number | string> = {};
+export function prepareNamedQueryParams(query: string, params?: ClickHouseQueryParams, context?: string): { query: string, queryParams: ClickHouseQueryParams } {
+	const queryParams: ClickHouseQueryParams = {};
 	const providedParams = params ?? {};
 	const usedKeys = new Set<string>();
 

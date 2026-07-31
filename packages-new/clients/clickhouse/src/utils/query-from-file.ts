@@ -1,5 +1,6 @@
 /* * */
 
+import { type ClickHouseQueryParams } from '@/types/query-params.js';
 import { prepareNamedQueryParams } from '@/utils/prepare-named-query-params.js';
 import { type ClickHouseClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
@@ -119,7 +120,7 @@ export function splitClickHouseStatements(sql: string): string[] {
  *   end_date: '2024-12-31',
  * });
  */
-export async function queryFromFile<T>(client: ClickHouseClient, filePath: string, params?: Record<string, number | string>): Promise<T[]> {
+export async function queryFromFile<T>(client: ClickHouseClient, filePath: string, params?: ClickHouseQueryParams): Promise<T[]> {
 	let sql: string;
 	try {
 		sql = await readFile(filePath, { encoding: 'utf-8' });
@@ -145,7 +146,7 @@ export async function queryFromFile<T>(client: ClickHouseClient, filePath: strin
  * Like {@link queryFromFile}, but runs each `;`-terminated statement separately. Use when the file
  * contains multiple statements (ClickHouse rejects multi-statement queries by default).
  */
-export async function queryEachStatementFromFile<T>(client: ClickHouseClient, filePath: string, params?: Record<string, number | string>): Promise<T[]> {
+export async function queryEachStatementFromFile<T>(client: ClickHouseClient, filePath: string, params?: ClickHouseQueryParams): Promise<T[]> {
 	let sql: string;
 	try {
 		sql = await readFile(filePath, { encoding: 'utf-8' });
