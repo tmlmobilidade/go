@@ -1,8 +1,6 @@
 /* * */
 
-import { syncRealtimeDemand } from '@/tasks/sync-realtime-demand.js';
-import { syncRealtimeServiceCompliance } from '@/tasks/sync-service-compliance.js';
-// import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
+import { syncPassengerDemandMetrics } from '@/tasks/sync-passenger-demand.js';
 import { runDemandByAgencyByOperationalDate } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -29,15 +27,8 @@ async function main() {
 
 	//
 
-	await syncRealtimeDemand();
-
-	await syncRealtimeServiceCompliance();
-
-	await runDemandByAgencyByOperationalDate('full');
-
-	//
-
-	// generatePerformanceSummary();
+	await syncPassengerDemandMetrics();
+	// await runDemandByAgencyByOperationalDate('full');
 
 	//
 

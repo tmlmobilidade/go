@@ -11,25 +11,25 @@
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
+		"backfill:passenger-demand": "node --import tsx ./src/scripts/backfill-passenger-demand.ts",
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
+		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix",
-		"test": "tsx ./src/tests/index.ts"
+		"test": "node --import tsx ./src/tests/index.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/go-performance-pckg-log": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-performance-pckg-scripts": "*",
+		"@tmlmobilidade/go-types-apex": "*",
+		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"luxon": "3.7.2",
-		"p-limit": "7.3.1"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/node": "26.1.1",
