@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
+import { type GtfsStrictV29Route, GtfsStrictV29RouteSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Route_Extended_Raw, validateGtfsRouteExtended } from '@tmlmobilidade/types';
 
 /**
  * Processes the routes.txt file from the GTFS dataset.
@@ -19,14 +19,14 @@ export async function processRoutesFile(context: ImportGtfsContext): Promise<voi
 
 		Logger.info({ message: 'Reading zip entry "routes.txt"...' });
 
-		const parseEachRow = async (data: GTFS_Route_Extended_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29Route) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsRouteExtended(data);
+			const validatedData = GtfsStrictV29RouteSchema.safeParse(data);
 			// For each route, only save the ones referenced
 			// by the previously saved trips.
-			if (!context.referenced_route_ids.has(validatedData.route_id)) return;
+			if (!context.referenced_route_ids.has(validatedData.data.route_id)) return;
 			// Save the exported row
-			context.gtfs.routes.write(validatedData);
+			context.gtfs.routes.write(validatedData.data);
 		};
 
 		//

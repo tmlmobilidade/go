@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
+import { type GtfsStrictV29Shape, GtfsStrictV29ShapeSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Shape_Raw, validateGtfsShape } from '@tmlmobilidade/types';
 
 /**
  * Processes the shapes.txt file from the GTFS dataset.
@@ -19,14 +19,14 @@ export async function processShapesFile(context: ImportGtfsContext): Promise<voi
 
 		Logger.info({ message: 'Reading zip entry "shapes.txt"...' });
 
-		const parseEachRow = async (data: GTFS_Shape_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29Shape) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsShape(data);
+			const validatedData = GtfsStrictV29ShapeSchema.safeParse(data);
 			// For each route, only save the ones referenced
 			// by the previously saved trips.
-			if (!context.referenced_shape_ids.has(validatedData.shape_id)) return;
+			if (!context.referenced_shape_ids.has(validatedData.data.shape_id)) return;
 			// Save the exported row
-			context.gtfs.shapes.write(validatedData);
+			context.gtfs.shapes.write(validatedData.data);
 			// Log progress
 			if (context.counters.shapes % 100000 === 0) Logger.info({ message: `Parsed ${context.counters.shapes} shapes.txt rows so far (${shapesParseTimer.get()})` });
 			// Increment the counter

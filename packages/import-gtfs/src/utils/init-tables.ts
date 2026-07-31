@@ -1,10 +1,9 @@
 /* * */
 
 import { type GtfsSQLTables } from '@/types/sql-tables.js';
-import { type HubGtfsExportStops } from '@tmlmobilidade/go-types-public-info';
+import { type GtfsStrictV29Route, type GtfsStrictV29Shape, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
-import { type OperationalDate } from '@tmlmobilidade/types';
-import { type GTFS_Route_Extended, type GTFS_Shape, type GTFS_StopTime, type GTFS_Trip_Extended } from '@tmlmobilidade/types';
 
 /**
  * Initializes GTFS SQL tables and writers.
@@ -17,7 +16,7 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 
 	const database = new SQLiteDatabase();
 
-	const tripsTable = database.registerTable<GTFS_Trip_Extended>('trips', {
+	const tripsTable = database.registerTable<GtfsStrictV29Trips>('trips', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
@@ -34,7 +33,7 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		],
 	});
 
-	const routesTable = database.registerTable<GTFS_Route_Extended>('routes', {
+	const routesTable = database.registerTable<GtfsStrictV29Route>('routes', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
@@ -59,7 +58,7 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		],
 	});
 
-	const shapesTable = database.registerTable<GTFS_Shape>('shapes', {
+	const shapesTable = database.registerTable<GtfsStrictV29Shape>('shapes', {
 		batch_size: 100000,
 		columns: [
 			{ indexed: true, name: 'shape_id', not_null: true, type: 'TEXT' },
@@ -70,7 +69,7 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		],
 	});
 
-	const stopsTable = database.registerTable<HubGtfsExportStops>('stops', {
+	const stopsTable = database.registerTable<GtfsStrictV29Stops>('stops', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'location_type', type: 'INTEGER' },
@@ -82,23 +81,23 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 			{ indexed: false, name: 'stop_lon', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'wheelchair_boarding', type: 'INTEGER' },
-			{ indexed: false, name: 'lifecycle_status', type: 'TEXT' },
-			{ indexed: false, name: 'stop_short_name', type: 'TEXT' },
-			{ indexed: false, name: 'tts_stop_name', type: 'TEXT' },
-			{ indexed: false, name: 'district_id', type: 'TEXT' },
-			{ indexed: false, name: 'district_name', type: 'TEXT' },
-			{ indexed: false, name: 'flags', type: 'TEXT' },
-			{ indexed: false, name: 'legacy_ids', type: 'TEXT' },
-			{ indexed: false, name: 'municipality_id', type: 'TEXT' },
-			{ indexed: false, name: 'municipality_name', type: 'TEXT' },
-			{ indexed: false, name: 'parish_id', type: 'TEXT' },
-			{ indexed: false, name: 'parish_name', type: 'TEXT' },
-			{ indexed: false, name: 'locality_id', type: 'TEXT' },
-			{ indexed: false, name: 'locality_name', type: 'TEXT' },
+			// { indexed: false, name: 'lifecycle_status', type: 'TEXT' },
+			// { indexed: false, name: 'stop_short_name', type: 'TEXT' },
+			// { indexed: false, name: 'tts_stop_name', type: 'TEXT' },
+			// { indexed: false, name: 'district_id', type: 'TEXT' },
+			// { indexed: false, name: 'district_name', type: 'TEXT' },
+			// { indexed: false, name: 'flags', type: 'TEXT' },
+			// { indexed: false, name: 'legacy_ids', type: 'TEXT' },
+			// { indexed: false, name: 'municipality_id', type: 'TEXT' },
+			// { indexed: false, name: 'municipality_name', type: 'TEXT' },
+			// { indexed: false, name: 'parish_id', type: 'TEXT' },
+			// { indexed: false, name: 'parish_name', type: 'TEXT' },
+			// { indexed: false, name: 'locality_id', type: 'TEXT' },
+			// { indexed: false, name: 'locality_name', type: 'TEXT' },
 		],
 	});
 
-	const stopTimesTable = database.registerTable<GTFS_StopTime>('stop_times', {
+	const stopTimesTable = database.registerTable<GtfsStrictV29StopTimes>('stop_times', {
 		batch_size: 100000,
 		columns: [
 			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
@@ -108,7 +107,6 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 			{ indexed: false, name: 'drop_off_type', type: 'INTEGER' },
 			{ indexed: false, name: 'pickup_type', type: 'INTEGER' },
 			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'stop_headsign', type: 'TEXT' },
 			{ indexed: true, name: 'stop_id', not_null: true, type: 'TEXT' },
 			{ indexed: true, name: 'trip_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },

@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
+import { type GtfsStrictV29Trips, GtfsStrictV29TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Trip_Extended_Raw, validateGtfsTripExtended } from '@tmlmobilidade/types';
 
 /**
  * Processes the trips.txt file from the GTFS dataset.
@@ -19,17 +19,17 @@ export async function processTripsFile(context: ImportGtfsContext): Promise<void
 
 		Logger.info({ message: 'Reading zip entry "trips.txt"...' });
 
-		const parseEachRow = async (data: GTFS_Trip_Extended_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29Trips) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsTripExtended(data);
+			const validatedData = GtfsStrictV29TripsSchema.safeParse(data);
 			// For each trip, check if the associated service_id was saved
 			// in the previous step or not. Include it if yes, skip otherwise.
-			if (!context.gtfs.calendar_dates[validatedData.service_id]) return;
+			if (!context.gtfs.calendar_dates[validatedData.data.service_id]) return;
 			// Save the exported row
-			context.gtfs.trips.write(validatedData);
+			context.gtfs.trips.write(validatedData.data);
 			// Reference the associated entities to filter them later.
-			context.referenced_route_ids.add(validatedData.route_id);
-			context.referenced_shape_ids.add(validatedData.shape_id);
+			context.referenced_route_ids.add(validatedData.data.route_id);
+			context.referenced_shape_ids.add(validatedData.data.shape_id);
 			// Log progress
 			if (context.counters.trips % 10000 === 0) Logger.info({ message: `Parsed ${context.counters.trips} trips.txt rows so far (${tripsParseTimer.get()})` });
 			// Increment the counter

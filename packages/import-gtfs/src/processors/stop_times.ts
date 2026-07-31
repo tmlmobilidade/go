@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
+import { type GtfsStrictV29StopTimes, GtfsStrictV29StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_StopTime_Raw, validateGtfsStopTime } from '@tmlmobilidade/types';
 
 /**
  * Processes the stop_times.txt file from the GTFS dataset.
@@ -21,17 +21,17 @@ export async function processStopTimesFile(context: ImportGtfsContext): Promise<
 
 		Logger.info({ message: 'Reading zip entry "stop_times.txt"...' });
 
-		const parseEachRow = async (data: GTFS_StopTime_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29StopTimes) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsStopTime(data);
+			const validatedData = GtfsStrictV29StopTimesSchema.safeParse(data);
 			// Skip if this row's trip_id was not saved before.
-			const tripData = context.gtfs.trips.get('trip_id', validatedData.trip_id);
+			const tripData = context.gtfs.trips.get('trip_id', validatedData.data.trip_id);
 			if (!tripData) return;
 			// Also, check if the stop_id is valid and was saved before.
-			const stopData = context.gtfs.stops.get('stop_id', validatedData.stop_id);
+			const stopData = context.gtfs.stops.get('stop_id', validatedData.data.stop_id);
 			if (!stopData) return;
 			// Save the exported row
-			context.gtfs.stop_times.write(validatedData);
+			context.gtfs.stop_times.write(validatedData.data);
 			// Log progress
 			if (context.counters.stop_times % 100000 === 0) Logger.info({ message: `Parsed ${context.counters.stop_times} stop_times.txt rows so far (${stopTimesParseTimer.get()})` });
 			// Increment the counter

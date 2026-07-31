@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsShapeSchema = z.object({
+export const GtfsStrictV29ShapeSchema = z.object({
 	shape_dist_traveled: NonNegativeNumberSchema,
 	shape_id: z.string(),
 	shape_pt_lat: LatitudeSchema,
@@ -19,4 +19,4 @@ export const GtfsShapeSchema = z.object({
  * It includes information such as the shape ID, the distance traveled,
  * and the latitude and longitude of the points.
  */
-export type GtfsShape = z.infer<typeof GtfsShapeSchema>;
+export type GtfsStrictV29Shape = z.infer<typeof GtfsStrictV29ShapeSchema>;
