@@ -87,7 +87,7 @@ export function getFormattedDates(dates: OperationalDate[]): string {
 		const hasTwoDayRange = ranges.some(([a, b]) => b === a + 1);
 		const hasLongRange = ranges.some(([a, b]) => b > a + 1);
 
-		let formatted = '';
+		let formatted: string;
 
 		// Helper to format a range properly
 		const formatRange = ([a, b]: [number, number]) => (b === a + 1 ? `${a} e ${b}` : `de ${a} a ${b}`);

@@ -12,7 +12,7 @@ interface TokenResponse {
 
 export interface PDFStatus {
 	downloadLink?: string
-	status: 'done' | 'error' | string
+	status: string
 }
 
 /* * */
@@ -155,9 +155,26 @@ export class PostersController {
 			throw new Error(`PDF status failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
 		}
 
-		const pdfStatus = await response.json() as PDFStatus;
+		const responseData: unknown = await response.json();
 
-		return pdfStatus;
+		if (!responseData || typeof responseData !== 'object') {
+			throw new Error('PDF status response is missing a valid status.');
+		}
+
+		const { downloadLink, status } = responseData as Record<string, unknown>;
+
+		if (typeof status !== 'string') {
+			throw new Error('PDF status response is missing a valid status.');
+		}
+
+		if (downloadLink !== undefined && typeof downloadLink !== 'string') {
+			throw new Error('PDF status response has an invalid download URL.');
+		}
+
+		return {
+			downloadLink: typeof downloadLink === 'string' ? downloadLink : undefined,
+			status,
+		};
 	}
 
 	/**

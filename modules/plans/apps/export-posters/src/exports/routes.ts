@@ -12,7 +12,7 @@ import Papa from 'papaparse';
 
 export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
-	// Export calendar-related files
+	// Export routes.txt
 
 	const routesCsv = new CsvWriter('routes.txt', `${exportConfig.workdir}/routes.txt`, { batch_size: 100000 });
 
@@ -63,6 +63,10 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 		}
 	}
 
+	await routesCsv.flush();
+
+	Logger.info({ message: 'Exported routes.txt file.' });
+
 	//
 	// Export route canvas profiles by route and direction.
 
@@ -98,9 +102,4 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 	Logger.info({ message: 'Exported routesToCanvasExt.txt file.' });
 
 	//
-	// Flush the routes CSV file
-
-	await routesCsv.flush();
-
-	Logger.info({ message: 'Exported routes.txt file.' });
 }

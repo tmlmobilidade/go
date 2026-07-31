@@ -12,7 +12,7 @@ import Papa from 'papaparse';
 
 export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
-	// Export calendar-related files
+	// Export stops.txt
 
 	const stopsCsv = new CsvWriter('stops.txt', `${exportConfig.workdir}/stops.txt`, { batch_size: 100000 });
 
@@ -33,6 +33,10 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 		};
 		await stopsCsv.write(data);
 	}
+
+	await stopsCsv.flush();
+
+	Logger.info({ message: 'Exported stops.txt file.' });
 
 	//
 	// Export stop canvas profiles by stop and direction.
@@ -73,9 +77,4 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 	Logger.info({ message: 'Exported stopsToCanvasExt.txt file.' });
 
 	//
-	// Flush the stops CSV file
-
-	await stopsCsv.flush();
-
-	Logger.info({ message: 'Exported stops.txt file.' });
 }

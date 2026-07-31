@@ -100,7 +100,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				serviceDates.forEach((date) => {
 					// Get the generated metadata for this date
 					const matchingDateEntry = datesMap.get(date);
-					if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceId} has no generated date metadata` });
+					if (!matchingDateEntry) throw new Error(`Date ${date} for service_id ${serviceId} has no generated date metadata.`);
 					// Build a key for this combination.
 					// By categorizing by day_type and period, the concept of trips and services
 					// becomes more about the category of service rather than the specific service_id,
@@ -206,7 +206,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// day_type and period combinations exactly.
 
 		const matchedDayType = dayTypesConfig.find(dt => dt.day_type === serviceIdData.day_type && dt.period === serviceIdData.period);
-		if (!matchedDayType) return Logger.error({ message: `Service ID ${serviceIdData._id} with day_type ${serviceIdData.day_type} and period ${serviceIdData.period} does not match any known day_type and period combination.` });
+		if (!matchedDayType) throw new Error(`Service ID ${serviceIdData._id} with day_type ${serviceIdData.day_type} and period ${serviceIdData.period} does not match any known day_type and period combination.`);
 
 		const isExactMatch = serviceIdData.dates.length === matchedDayType.dates.length && matchedDayType.dates.every(date => serviceIdData.dates.includes(date));
 
@@ -225,7 +225,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		for (const date of serviceIdData.dates) {
 			// Get the generated metadata for this date
 			const matchingDateEntry = datesMap.get(date);
-			if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceIdData._id} has no generated date metadata` });
+			if (!matchingDateEntry) throw new Error(`Date ${date} for service_id ${serviceIdData._id} has no generated date metadata.`);
 			// Get the weekday code for this date
 			let weekdayCode = Dates
 				.fromOperationalDate(date, 'Europe/Lisbon')
@@ -244,7 +244,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		for (const date of matchedDayType.dates) {
 			// Get the generated metadata for this date
 			const matchingDateEntry = datesMap.get(date);
-			if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceIdData._id} has no generated date metadata` });
+			if (!matchingDateEntry) throw new Error(`Date ${date} for service_id ${serviceIdData._id} has no generated date metadata.`);
 			// Get the weekday code for this date
 			let weekdayCode = Dates
 				.fromOperationalDate(date, 'Europe/Lisbon')

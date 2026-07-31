@@ -7,8 +7,12 @@ import { ZipFile } from 'yazl';
 
 /* * */
 
+const UNSUPPORTED_HITOUCH_FILES = new Set(['feed_info.txt']);
+
+/* * */
+
 /**
- * Creates the HiTouch ZIP archive with all TXT files at the archive root.
+ * Creates the HiTouch ZIP archive with all supported TXT files at the archive root.
  */
 export async function createHitouchZip(exportConfig: ExportToHitouchConfig): Promise<string> {
 	//
@@ -17,7 +21,12 @@ export async function createHitouchZip(exportConfig: ExportToHitouchConfig): Pro
 	const temporaryOutputPath = `${outputPath}.tmp`;
 
 	const textFiles = fs.readdirSync(exportConfig.workdir, { withFileTypes: true })
-		.filter(entry => entry.isFile() && path.extname(entry.name).toLowerCase() === '.txt')
+		.filter((entry) => {
+			const isSupported = !UNSUPPORTED_HITOUCH_FILES.has(entry.name.toLowerCase());
+			const isTextFile = path.extname(entry.name).toLowerCase() === '.txt';
+
+			return entry.isFile() && isTextFile && isSupported;
+		})
 		.map(entry => entry.name)
 		.sort();
 

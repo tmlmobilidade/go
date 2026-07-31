@@ -166,7 +166,7 @@ async function main(): Promise<void> {
 		// Wait for the PDF generation to complete
 
 		while (pdfStatus.status !== 'done') {
-			if (pdfStatus.status === 'failed') {
+			if (pdfStatus.status === 'error' || pdfStatus.status === 'failed') {
 				planData = await goDb.operation.plans.updateById(planData._id, {
 					apps: {
 						...planData.apps,
@@ -190,7 +190,7 @@ async function main(): Promise<void> {
 		Logger.info({ message: `PDF generation completed.` });
 
 		//
-		// Download and upload the generated posters ZIP file
+		// Download the generated posters ZIP file and persist its metadata
 
 		const pdfFileUrl = pdfStatus.downloadLink;
 
@@ -213,7 +213,7 @@ async function main(): Promise<void> {
 		});
 
 		//
-		// Download and upload the generated posters ZIP file
+		// Download the archive to verify it is available and record its size
 
 		const pdfZip = await postersController.downloadPDF(pdfFileUrl);
 		const requestedBy = planData.apps.posters.requested_by ?? 'system';

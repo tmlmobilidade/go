@@ -10,7 +10,7 @@ import { CsvWriter } from '@tmlmobilidade/writers';
 
 export async function exportTripsFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
-	// Export calendar-related files
+	// Export trips.txt
 
 	const tripsCsv = new CsvWriter('trips.txt', `${exportConfig.workdir}/trips.txt`, { batch_size: 10000 });
 
@@ -29,5 +29,5 @@ export async function exportTripsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 
 	await tripsCsv.flush();
 
-	Logger.info({ message: 'Exported trip.txt file.' });
+	Logger.info({ message: 'Exported trips.txt file.' });
 }
