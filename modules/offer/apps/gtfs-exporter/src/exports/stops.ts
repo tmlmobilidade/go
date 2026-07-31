@@ -7,7 +7,49 @@ import { type Municipality, type Stop } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
 
-/* * */
+interface ExportsStopTemporaryWorkaround {
+	bench: ''
+	entrance_restriction: ''
+	equipment: ''
+	exit_restriction: ''
+	has_bench: 0 | 1
+	has_network_map: 0 | 1
+	has_pip_real_time: 0 | 1
+	has_schedules: 0 | 1
+	has_shelter: 0 | 1
+	has_stop_sign: 0 | 1
+	has_tariffs_information: 0 | 1
+	level_id: string
+	location_type: '0' | number
+	municipality: string
+	network_map: ''
+	observations: ''
+	parent_station: string
+	platform_code: string
+	preservation_state: ''
+	public_visible: 0
+	real_time_information: ''
+	region: string
+	schedule: ''
+	shelter: ''
+	signalling: ''
+	slot: ''
+	stop_code: string
+	stop_desc: string
+	stop_id: string
+	stop_id_stepp: '0'
+	stop_lat: number
+	stop_lon: number
+	stop_name: string
+	stop_remarks: ''
+	stop_short_name: string
+	stop_timezone: string
+	stop_url: string
+	tariff: ''
+	wheelchair_boarding: '0'
+	zone_id: string
+	zone_shift: ''
+}
 
 /**
  * Parses stop data into GTFS stops.txt format
@@ -20,7 +62,7 @@ export function parseStop(
 	stopData: Stop,
 	municipalityData: Municipality,
 	agencyId: string,
-): GtfsStrictV29Stops {
+): ExportsStopTemporaryWorkaround {
 	try {
 		const availabilityToBinary = (value?: string): 0 | 1 => (value === 'available' ? 1 : 0);
 
@@ -68,7 +110,7 @@ export function parseStop(
 			public_visible: 0,
 		};
 	} catch (error) {
-		throw new Error(`Error parsing stop ${stopData._id}: ${error}`);
+		throw new Error(`Error parsing stop ${stopData._id}: ${error}`, error);
 	}
 }
 
@@ -86,5 +128,5 @@ export async function exportStop(
 	// Use the first agency_id in exportConfig.agency_ids for this export
 	const agencyId = exportConfig.agency_ids[0];
 	const parsedStop = parseStop(stopData, municipalityData, agencyId);
-	await exportConfig.writers.stops.write(parsedStop);
+	await exportConfig.writers.stops.write(parsedStop as GtfsStrictV29Stops);
 }
