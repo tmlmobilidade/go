@@ -8,7 +8,8 @@ import { SAM_EXPORT_MODAL_ID, SamsExportContextProvider, type SamsExportSummaryF
 import { translateFilterKey, translateFilterValue } from '@/lib/translations';
 import { IconFileDownload } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
-import { type SamsAnalysisExportProperties, type SystemStatus, UnixTimestamp } from '@tmlmobilidade/types';
+import { type SamsAnalysisExportProperties } from '@tmlmobilidade/go-types-downloads';
+import { type SystemStatus, UnixTimestamp } from '@tmlmobilidade/types';
 import { Button, CloseButton, closeModal, Divider, ExportsContextProvider, Label, MeContextProvider, openModal, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

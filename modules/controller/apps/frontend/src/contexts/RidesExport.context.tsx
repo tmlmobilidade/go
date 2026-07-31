@@ -3,7 +3,8 @@
 import { RIDES_EXPORT_MODAL_ID } from '@/components/rides/export/RidesExportModal';
 import { RidesListContextState } from '@/components/rides/list/RidesList.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { CreateFileExportDto, DelayStatus, OperationalStatus, RideAnalysisGradeWithNone, RideExportProperties, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type CreateFileExportDto, type RideExportProperties } from '@tmlmobilidade/go-types-downloads';
+import { DelayStatus, OperationalStatus, RideAnalysisGradeWithNone, type UnixTimestamp } from '@tmlmobilidade/types';
 import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
