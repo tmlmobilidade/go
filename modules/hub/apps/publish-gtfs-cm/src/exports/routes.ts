@@ -2,8 +2,9 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
+import { GtfsBinary, type GtfsRouteType } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV29PathType, type GtfsStrictV29Route } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GTFS_Route_Extended, type GTFS_RouteType } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -15,17 +16,17 @@ export interface ExportedRoutesRow {
 	route_id: string
 	route_short_name: string
 	route_long_name: string
-	route_type: GTFS_RouteType
+	route_type: GtfsRouteType
 	route_color: string
 	route_text_color: string
-	path_type: 1 | 2 | 3
-	circular: 0 | 1
-	school: 0 | 1
+	path_type: GtfsStrictV29PathType
+	circular: GtfsBinary
+	school: GtfsBinary
 }
 
 /* * */
 
-export async function exportRoutesFile(routesList: GTFS_Route_Extended[], exportConfig: MergedGtfsExportConfig) {
+export async function exportRoutesFile(routesList: GtfsStrictV29Route[], exportConfig: MergedGtfsExportConfig) {
 	//
 
 	const sortedRoutesList = routesList.sort((a, b) => a.route_id.localeCompare(b.route_id));

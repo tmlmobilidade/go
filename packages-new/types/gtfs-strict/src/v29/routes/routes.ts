@@ -1,7 +1,7 @@
 /* * */
 
 import { GtfsStrictV29PathTypeSchema } from '@/v29/routes/path-type.js';
-import { GtfsRoutesSchema, GtfsRouteTypeSchema, GtfsTernarySchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsBinarySchema, GtfsRoutesSchema, GtfsRouteTypeSchema, GtfsTernarySchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
@@ -9,8 +9,8 @@ import { z } from 'zod';
 export const GtfsStrictV29RouteSchema = GtfsRoutesSchema.extend({
 	agency_id: z.string(),
 	cemv_support: GtfsTernarySchema,
-	circular: z.number().optional(),
-	line_id: z.number(),
+	circular: GtfsBinarySchema.optional(),
+	line_id: z.string(),
 	line_long_name: z.string(),
 	line_short_name: z.string(),
 	line_type: z.number(),
@@ -24,7 +24,7 @@ export const GtfsStrictV29RouteSchema = GtfsRoutesSchema.extend({
 	route_short_name: z.string(),
 	route_text_color: z.string(),
 	route_type: GtfsRouteTypeSchema,
-	school: z.number().optional(),
+	school: GtfsBinarySchema.optional(),
 });
 
 /**
