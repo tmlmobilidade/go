@@ -1,25 +1,25 @@
-/* * */
+// /* * */
 
-import { seedFromGoV1 } from '@/tasks/seed-from-go-v1.js';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+// import { seedFromGoV1 } from '@/tasks/seed-from-go-v1.js';
+// import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
-/* * */
+// /* * */
 
-(async function main() {
-	//
+// (async function main() {
+// 	//
 
-	//
-	// Delete existing zones
+// 	//
+// 	// Delete existing zones
 
-	console.log('Deleting All');
-	await goDb.offer.zones.deleteMany({});
+// 	console.log('Deleting All');
+// 	await goDb.offer.zones.deleteMany({});
 
-	//
-	// Run tasks
+// 	//
+// 	// Run tasks
 
-	await seedFromGoV1();
+// 	await seedFromGoV1();
 
-	console.log('Done');
+// 	console.log('Done');
 
-	//
-})();
+// 	//
+// })();
