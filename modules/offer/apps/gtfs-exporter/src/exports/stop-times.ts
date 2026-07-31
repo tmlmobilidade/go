@@ -3,8 +3,11 @@
 import { type TripSchedule } from '@/exports/trips.js';
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
+import { validateGtfsTime } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/go-types-offer';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GTFS_StopTime, HHMM, metersToGtfsKm, Path, type Pattern, type Stop, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/types';
+import { metersToGtfsKm, type Stop } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
 
@@ -100,15 +103,17 @@ export async function exportStopTimesForPattern(
 				const currentStopData = stopsData.find(s => s._id === pathItem.stop_id);
 				const stopId = currentStopData ? getAgencyStopId(currentStopData, agencyId) : String(pathItem.stop_id);
 
-				const stopTimeRow: GTFS_StopTime = {
-					arrival_time: formatGtfsTime(arrivalSeconds),
-					departure_time: formatGtfsTime(departureSeconds),
-					drop_off_type: pathItem.allow_drop_off ? 0 : 1,
-					pickup_type: pathItem.allow_pickup ? 0 : 1,
+				const stopTimeRow: GtfsStrictV29StopTimes = {
+					arrival_time: validateGtfsTime(formatGtfsTime(arrivalSeconds)),
+					continuous_drop_off: '0',
+					continuous_pickup: '0',
+					departure_time: validateGtfsTime(formatGtfsTime(departureSeconds)),
+					drop_off_type: pathItem.allow_drop_off ? '0' : '1',
+					pickup_type: pathItem.allow_pickup ? '0' : '1',
 					shape_dist_traveled: metersToGtfsKm(cumulativeDistanceMeters),
 					stop_id: stopId,
 					stop_sequence: exportConfig.stop_sequence_start + i,
-					timepoint: pathItem.timepoint ? 1 : 0,
+					timepoint: pathItem.timepoint ? '1' : '0',
 					trip_id: tripSchedule.trip_id,
 				};
 
@@ -117,6 +122,6 @@ export async function exportStopTimesForPattern(
 		}
 	} catch (error) {
 		Logger.error({ error, message: `Error exporting stop_times for pattern ${patternData.code}` });
-		throw new Error(`Error exporting stop_times for pattern ${patternData.code}: ${error}`);
+		throw new Error(`Error exporting stop_times for pattern ${patternData.code}: ${error}`, error);
 	}
 }

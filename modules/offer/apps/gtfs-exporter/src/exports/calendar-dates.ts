@@ -4,8 +4,9 @@ import { type ExportedCalendarDatesRow, type GtfsV29ExportConfig } from '@/types
 import { getDayType, getPeriodForDate } from '@/utils/calendar-helpers.js';
 import { type ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates, isHoliday } from '@tmlmobilidade/dates';
+import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Holiday, type YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -39,11 +40,11 @@ export async function exportCalendarDates(
 				const dateObj = Dates.fromOperationalDate(date, 'Europe/Lisbon');
 
 				const row: ExportedCalendarDatesRow = {
-					date,
-					day_type: getDayType(date, holidaysArray),
-					exception_type: 1, // Service added (all our dates are service additions)
-					holiday: isHoliday(dateObj, holidaysArray) ? 1 : 0,
-					period: getPeriodForDate(date, periods),
+					date: validateGtfsDate(date),
+					day_type: String(getDayType(date, holidaysArray)) as '1' | '2' | '3',
+					exception_type: '1', // Service added (all our dates are service additions)
+					holiday: isHoliday(dateObj, holidaysArray) ? '1' : '0',
+					period: String(getPeriodForDate(date, periods)) as '1' | '2' | '3',
 					service_id: serviceInfo.serviceId,
 				};
 
@@ -54,6 +55,6 @@ export async function exportCalendarDates(
 
 		Logger.success(`Exported ${allServices.size} service IDs (${totalRows} total rows) to calendar_dates.txt`);
 	} catch (error) {
-		throw new Error(`Error exporting calendar dates: ${error}`);
+		throw new Error(`Error exporting calendar dates: ${error}`, error);
 	}
 }

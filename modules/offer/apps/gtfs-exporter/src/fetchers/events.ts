@@ -1,7 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Event } from '@tmlmobilidade/types';
+import { type Event } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 
@@ -19,6 +19,6 @@ export async function fetchAllEvents(agencyIds: string[]): Promise<Map<string, E
 		}
 		return eventsMap;
 	} catch (error) {
-		throw new Error(`Error fetching events: ${error}`);
+		throw new Error(`Error fetching events: ${error}`, error);
 	}
 }

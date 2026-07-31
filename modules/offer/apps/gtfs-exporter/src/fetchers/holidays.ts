@@ -1,7 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Holiday } from '@tmlmobilidade/types';
+import { type Holiday } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 
@@ -19,6 +19,6 @@ export async function fetchAllHolidays(agencyIds: string[]): Promise<Map<string,
 		}
 		return holidaysMap;
 	} catch (error) {
-		throw new Error(`Error fetching holidays: ${error}`);
+		throw new Error(`Error fetching holidays: ${error}`, error);
 	}
 }

@@ -2,8 +2,9 @@
 /* * */
 
 import { type ExportedAfetacaoRow, type GtfsV29ExportConfig } from '@/types.js';
+import { type Fare, type Line, type Pattern, type Typology, type Zone } from '@tmlmobilidade/go-types-offer';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Agency, type Fare, type Line, type Pattern, Stop, type Typology, type Zone } from '@tmlmobilidade/types';
+import { type Agency, type Stop } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
 
@@ -111,7 +112,7 @@ export async function parseZoning(
 
 		return parsedZoning;
 	} catch (error) {
-		throw new Error(`Error parsing zoning for pattern ${patternData.code}: ${error}`);
+		throw new Error(`Error parsing zoning for pattern ${patternData.code}: ${error}`, error);
 	}
 }
 

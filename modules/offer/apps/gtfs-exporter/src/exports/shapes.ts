@@ -2,7 +2,10 @@
 /* * */
 
 import { type GtfsV29ExportConfig } from '@/types.js';
-import { GTFS_Shape, metersToGtfsKm, Shape, shapeDistTraveledMetersAtPoint } from '@tmlmobilidade/types';
+import { type GtfsStrictV29Shapes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type Shape } from '@tmlmobilidade/go-types-offer';
+import { validateLatitude, validateLongitude } from '@tmlmobilidade/go-types-shared';
+import { metersToGtfsKm, shapeDistTraveledMetersAtPoint } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -12,9 +15,9 @@ import { GTFS_Shape, metersToGtfsKm, Shape, shapeDistTraveledMetersAtPoint } fro
  * @param shapeData - The shape data
  * @returns Array of formatted shape rows
  */
-export function parseShape(shapeId: string, shapeData: Shape): GTFS_Shape[] {
+export function parseShape(shapeId: string, shapeData: Shape): GtfsStrictV29Shapes[] {
 	try {
-		const parsedShape: GTFS_Shape[] = [];
+		const parsedShape: GtfsStrictV29Shapes[] = [];
 		const coordinates = shapeData.geojson.geometry.coordinates;
 		const pointCount = coordinates.length;
 		const extensionMeters = Number(shapeData.extension ?? 0);
@@ -31,8 +34,8 @@ export function parseShape(shapeId: string, shapeData: Shape): GTFS_Shape[] {
 
 			parsedShape.push({
 				shape_id: shapeId,
-				shape_pt_lat: shapePtLat,
-				shape_pt_lon: shapePtLon,
+				shape_pt_lat: validateLatitude(shapePtLat),
+				shape_pt_lon: validateLongitude(shapePtLon),
 				shape_pt_sequence: sequence,
 				shape_dist_traveled: shapeDistTraveled,
 			});
@@ -40,7 +43,7 @@ export function parseShape(shapeId: string, shapeData: Shape): GTFS_Shape[] {
 
 		return parsedShape;
 	} catch (error) {
-		throw new Error(`Error parsing shape ${shapeId}: ${error}`);
+		throw new Error(`Error parsing shape ${shapeId}: ${error}`, error);
 	}
 }
 

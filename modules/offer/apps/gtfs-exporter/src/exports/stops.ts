@@ -2,7 +2,8 @@
 /* * */
 
 import { type GtfsV29ExportConfig } from '@/types.js';
-import { GtfsTMLStop, Municipality, Stop } from '@tmlmobilidade/types';
+import { type GtfsStrictV29Stops } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type Municipality, type Stop } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
 
@@ -19,7 +20,7 @@ export function parseStop(
 	stopData: Stop,
 	municipalityData: Municipality,
 	agencyId: string,
-): GtfsTMLStop {
+): GtfsStrictV29Stops {
 	try {
 		const availabilityToBinary = (value?: string): 0 | 1 => (value === 'available' ? 1 : 0);
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { IsoWeekday, Month } from '@tmlmobilidade/types';
+import { IsoWeekday, Month } from '@tmlmobilidade/go-types-offer';
 
 export interface ImportOptions {
 	gtfsPath: string

@@ -30,9 +30,8 @@ export function incrementTime(timeString: string, increment: number): string {
 
 		// Format the new time string
 		return `${padZero(newHours)}:${padZero(newMinutes)}:${padZero(newSeconds)}`;
-	}
-	catch (error) {
-		throw new Error(`Error at incrementTime(${timeString}, ${increment}): ${error}`);
+	} catch (error) {
+		throw new Error(`Error at incrementTime(${timeString}, ${increment}): ${error}`, error);
 	}
 }
 

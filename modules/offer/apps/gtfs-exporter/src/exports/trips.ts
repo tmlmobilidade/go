@@ -1,7 +1,9 @@
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { type ServiceId, type ServiceRegistry } from '@/utils/service-registry.js';
 import { buildOperationalDateRange, buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, Dates, getActivePeriodId, getTimepointsRemovedByEventRestriction, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap, yyyymmddToKey } from '@tmlmobilidade/dates';
-import { DayPeriod, type Event, GtfsBikesAllowed, GtfsTMLTrip, GtfsWheelchairBoarding, type HHMM, hhmm, type Holiday, type IsoWeekday, type ManualRule, type OperationalDate, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/types';
+import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { DayPeriod, type Event, type HHMM, hhmm, type Holiday, type IsoWeekday, type ManualRule, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
@@ -611,8 +613,8 @@ export async function exportTripsForPattern(
 				weekdays: metadata.weekdays,
 			});
 
-			const tripData: GtfsTMLTrip = {
-				bikes_allowed: '0' as GtfsBikesAllowed,
+			const tripData: GtfsStrictV29Trips = {
+				bikes_allowed: '0',
 				calendar_desc: '', // TODO: derive a readable description if needed
 				direction_id: patternDirectionMapper.toGtfs(patternData.direction),
 				pattern_id: patternData.code,
@@ -622,7 +624,7 @@ export async function exportTripsForPattern(
 				shape_id: shapeId,
 				trip_headsign: headsign,
 				trip_id: tripId,
-				wheelchair_accessible: '0' as GtfsWheelchairBoarding,
+				wheelchair_accessible: '0',
 			};
 
 			await exportConfig.writers.trips.write(tripData);
@@ -632,6 +634,6 @@ export async function exportTripsForPattern(
 
 		return tripSchedules;
 	} catch (error) {
-		throw new Error(`Error exporting trips for pattern ${patternData.code}: ${error}`);
+		throw new Error(`Error exporting trips for pattern ${patternData.code}: ${error}`, error);
 	}
 }

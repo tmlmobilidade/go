@@ -1,7 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { YearPeriod } from '@tmlmobilidade/types';
+import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 
@@ -18,6 +18,6 @@ export async function fetchAllYearPeriods(): Promise<Map<string, YearPeriod>> {
 		}
 		return periodsMap;
 	} catch (error) {
-		throw new Error(`Error fetching periods: ${error}`);
+		throw new Error(`Error fetching periods: ${error}`, error);
 	}
 }
