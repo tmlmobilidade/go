@@ -1,52 +1,83 @@
 /* * */
 
-import { OperationalDateIntSchema, ProcessingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { GtfsTripDirectionSchema } from '@tmlmobilidade/go-types-gtfs';
+import { NonNegativeNumberSchema, OperationalDateIntSchema, ProcessingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const RideSchema = z.object({
+const RideIdentitySchema = z.object({
 	_id: z.string(),
 	agency_code: z.string(),
 	agency_id: z.string(),
-	apex_locations_qty: z.number().nullable().default(null),
-	apex_refunds_amount: z.number().nullable().default(null),
-	apex_refunds_qty: z.number().nullable().default(null),
-	apex_sales_amount: z.number().nullable().default(null),
-	apex_sales_qty: z.number().nullable().default(null),
-	apex_validations_qty: z.number().nullable().default(null),
-	created_at: UnixTimestampSchema,
-	direction_id: z.number(),
-	driver_ids: z.array(z.string()),
+	direction_id: GtfsTripDirectionSchema,
+	hashed_path_id: z.string(),
+	headsign: z.string(),
+	operational_date: OperationalDateIntSchema,
+	plan_id: z.string(),
+	route_color: z.string(),
+	route_id: z.string(),
+	route_long_name: z.string(),
+	route_short_name: z.string(),
+	route_text_color: z.string(),
+	shape_id: z.string(),
+	shape_polyline: z.string(),
+	trip_id: z.string(),
+});
+
+const RideScheduleSchema = z.object({
 	end_time_observed: UnixTimestampSchema.nullable().default(null),
 	end_time_scheduled: UnixTimestampSchema,
-	extension_observed: z.number().nullable().default(null),
-	extension_scheduled: z.number(),
-	hashed_pattern_id: z.string(),
-	hashed_shape_id: z.string(),
-	hashed_trip_id: z.string(),
-	headsign: z.string(),
-	line_id: z.string(),
-	operational_date: OperationalDateIntSchema,
-	passengers_estimated: z.number().nullable(),
-	passengers_observed: z.number().nullable(),
-	passengers_observed_on_board_sales_qty: z.number().nullable(),
-	passengers_observed_prepaid_amount: z.number().nullable(),
-	passengers_observed_prepaid_qty: z.number().nullable(),
-	passengers_observed_sales_amount: z.number().nullable(),
-	passengers_observed_subscription_qty: z.number().nullable(),
-	pattern_id: z.string(),
-	plan_id: z.string(),
-	processing_status: ProcessingStatusSchema.default('waiting'),
-	route_id: z.string(),
-	seen_first_at: UnixTimestampSchema.nullable().default(null),
-	seen_last_at: UnixTimestampSchema.nullable().default(null),
+	extension_observed: NonNegativeNumberSchema.nullable().default(null),
+	extension_scheduled: NonNegativeNumberSchema,
 	start_time_observed: UnixTimestampSchema.nullable().default(null),
 	start_time_scheduled: UnixTimestampSchema,
-	trip_id: z.string(),
-	updated_at: UnixTimestampSchema,
-	vehicle_ids: z.array(z.string()),
 });
+
+const RideApexSchema = z.object({
+	apex_banking_taps_amount: NonNegativeNumberSchema.nullable().default(null),
+	apex_banking_taps_qty: NonNegativeNumberSchema.nullable().default(null),
+	apex_locations_qty: NonNegativeNumberSchema.nullable().default(null),
+	apex_refunds_amount: NonNegativeNumberSchema.nullable().default(null),
+	apex_refunds_qty: NonNegativeNumberSchema.nullable().default(null),
+	apex_sales_amount: NonNegativeNumberSchema.nullable().default(null),
+	apex_sales_qty: NonNegativeNumberSchema.nullable().default(null),
+	apex_validations_qty: NonNegativeNumberSchema.nullable().default(null),
+});
+
+const RidePassengersSchema = z.object({
+	passengers_estimated: NonNegativeNumberSchema.nullable().default(null),
+	passengers_observed: NonNegativeNumberSchema.nullable().default(null),
+	passengers_observed_banking_taps_amount: NonNegativeNumberSchema.nullable().default(null),
+	passengers_observed_banking_taps_qty: NonNegativeNumberSchema.nullable().default(null),
+	passengers_observed_prepaid_amount: NonNegativeNumberSchema.nullable().default(null),
+	passengers_observed_prepaid_qty: NonNegativeNumberSchema.nullable().default(null),
+	passengers_observed_sales_amount: NonNegativeNumberSchema.nullable().default(null),
+	passengers_observed_sales_qty: NonNegativeNumberSchema.nullable().default(null),
+	passengers_observed_subscription_qty: NonNegativeNumberSchema.nullable().default(null),
+});
+
+const RideOperationSchema = z.object({
+	driver_ids: z.array(z.string()).default([]),
+	seen_first_at: UnixTimestampSchema.nullable().default(null),
+	seen_last_at: UnixTimestampSchema.nullable().default(null),
+	vehicle_ids: z.array(z.string()).default([]),
+});
+
+const RideLifecycleSchema = z.object({
+	created_at: UnixTimestampSchema,
+	processing_status: ProcessingStatusSchema.default('waiting'),
+	updated_at: UnixTimestampSchema,
+});
+
+/* * */
+
+export const RideSchema = RideIdentitySchema
+	.merge(RideScheduleSchema)
+	.merge(RideApexSchema)
+	.merge(RidePassengersSchema)
+	.merge(RideOperationSchema)
+	.merge(RideLifecycleSchema);
 
 /**
  * A Ride represents a single vehicle journey on a single route for a single day.
