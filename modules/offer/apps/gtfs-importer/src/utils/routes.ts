@@ -1,14 +1,15 @@
 /* * */
 
 import { parseCsv, readGtfsFile, toNumberOrNull } from '@/helpers/index.js';
-import { CreateRouteDto, GtfsTMLRoute, GtfsTMLRouteSchema, pathTypeMapper } from '@tmlmobilidade/types';
+import { GtfsStrictV29Routes, GtfsStrictV29RoutesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { CreateRouteDto, pathTypeMapper } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 
 export async function loadGtfsRoutes(gtfsPath: string) {
 	const content = await readGtfsFile(gtfsPath, 'routes.txt');
-	const rawRoutes = parseCsv<GtfsTMLRoute>(content);
-	const routes: GtfsTMLRoute[] = [];
+	const rawRoutes = parseCsv<GtfsStrictV29Routes>(content);
+	const routes: GtfsStrictV29Routes[] = [];
 
 	for (const raw of rawRoutes) {
 		try {
@@ -18,8 +19,8 @@ export async function loadGtfsRoutes(gtfsPath: string) {
 				line_id: toNumberOrNull(raw.line_id),
 				line_type: toNumberOrNull(raw.line_type),
 				school: toNumberOrNull(raw.school),
-			} as GtfsTMLRoute;
-			routes.push(GtfsTMLRouteSchema.parse(normalized));
+			} as GtfsStrictV29Routes;
+			routes.push(GtfsStrictV29RoutesSchema.parse(normalized));
 		} catch (error) {
 			console.warn(`Skipping route due to validation error: ${error instanceof Error ? error.message : String(error)}`);
 		}
@@ -31,10 +32,10 @@ export async function loadGtfsRoutes(gtfsPath: string) {
 export function buildRoutesForLine(
 	lineId: string,
 	lineName: string,
-	lineRoutes: GtfsTMLRoute[] = [],
+	lineRoutes: GtfsStrictV29Routes[] = [],
 ): CreateRouteDto[] {
 	if (lineRoutes.length) {
-		const uniqueByRouteId = new Map<string, GtfsTMLRoute>();
+		const uniqueByRouteId = new Map<string, GtfsStrictV29Routes>();
 		for (const route of lineRoutes) {
 			if (!uniqueByRouteId.has(route.route_id)) uniqueByRouteId.set(route.route_id, route);
 		}

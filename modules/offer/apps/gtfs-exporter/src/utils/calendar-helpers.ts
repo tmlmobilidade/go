@@ -1,7 +1,8 @@
 /* * */
 
 import { calendarWeekday, Dates } from '@tmlmobilidade/dates';
-import { Holiday, OperationalDate, YearPeriod } from '@tmlmobilidade/types';
+import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 

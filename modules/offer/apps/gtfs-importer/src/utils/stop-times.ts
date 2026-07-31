@@ -1,14 +1,14 @@
 /* * */
 
 import { parseCsv, readGtfsFile, toNumberOrNull } from '@/helpers/index.js';
-import { GtfsTMLStopTimes, GtfsTMLStopTimesSchema } from '@tmlmobilidade/types';
+import { GtfsStrictV29StopTimes, GtfsStrictV29StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 
 /* * */
 
 export async function loadGtfsStopTimes(gtfsPath: string) {
 	const content = await readGtfsFile(gtfsPath, 'stop_times.txt');
-	const rawStopTimes = parseCsv<GtfsTMLStopTimes>(content);
-	const stopTimes: GtfsTMLStopTimes[] = [];
+	const rawStopTimes = parseCsv<GtfsStrictV29StopTimes>(content);
+	const stopTimes: GtfsStrictV29StopTimes[] = [];
 
 	for (const raw of rawStopTimes) {
 		try {
@@ -19,8 +19,8 @@ export async function loadGtfsStopTimes(gtfsPath: string) {
 				shape_dist_traveled: toNumberOrNull(raw.shape_dist_traveled),
 				stop_sequence: toNumberOrNull(raw.stop_sequence),
 				timepoint: raw.timepoint ?? '0',
-			} as GtfsTMLStopTimes;
-			stopTimes.push(GtfsTMLStopTimesSchema.parse(normalized));
+			} as GtfsStrictV29StopTimes;
+			stopTimes.push(GtfsStrictV29StopTimesSchema.parse(normalized));
 		} catch (error) {
 			console.warn(`Skipping stop_time due to validation error: ${error instanceof Error ? error.message : String(error)}`);
 		}
@@ -29,8 +29,8 @@ export async function loadGtfsStopTimes(gtfsPath: string) {
 	return stopTimes;
 }
 
-export function buildStopTimesByTrip(gtfsStopTimes: GtfsTMLStopTimes[]) {
-	const stopTimesByTrip = new Map<string, GtfsTMLStopTimes[]>();
+export function buildStopTimesByTrip(gtfsStopTimes: GtfsStrictV29StopTimes[]) {
+	const stopTimesByTrip = new Map<string, GtfsStrictV29StopTimes[]>();
 	for (const stopTime of gtfsStopTimes) {
 		if (!stopTimesByTrip.has(stopTime.trip_id)) stopTimesByTrip.set(stopTime.trip_id, []);
 		stopTimesByTrip.get(stopTime.trip_id)?.push(stopTime);
