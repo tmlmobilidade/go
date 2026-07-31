@@ -87,12 +87,21 @@ export class PostersController {
 	async generatePDF(exportConfig: ExportToHitouchConfig): Promise<string> {
 		//
 
+		//
+		// Generate a new access token
+
 		const accessToken = await this.generateToken();
 		const gtfsZipPath = path.resolve(exportConfig.workdir, exportConfig.output);
+
+		//
+		// Verify the HiTouch ZIP file exists and is not empty
 
 		if (!fs.existsSync(gtfsZipPath)) {
 			throw new Error(`HiTouch ZIP file does not exist: ${gtfsZipPath}`);
 		}
+
+		//
+		// Verify the HiTouch ZIP file is not empty
 
 		const gtfsZipSize = fs.statSync(gtfsZipPath).size;
 
@@ -100,13 +109,22 @@ export class PostersController {
 			throw new Error(`HiTouch ZIP file is empty: ${gtfsZipPath}`);
 		}
 
+		//
+		// Read the HiTouch ZIP file and parameters
+
 		const gtfsZip = await fs.promises.readFile(gtfsZipPath);
 		const parameters = JSON.stringify(parametersConfig);
 
 		const body = new FormData();
 
+		//
+		// Append the HiTouch ZIP file and parameters to the request body
+
 		body.append('gtfs.zip', new Blob([new Uint8Array(gtfsZip)], { type: 'application/zip' }), path.basename(gtfsZipPath));
 		body.append('parameters.json', new Blob([parameters], { type: 'application/json' }), 'parameters.json');
+
+		//
+		// Send the request to the API
 
 		const response = await fetch(getRequiredEnv('ZPHERES_GENERATE_SVG_URL'), {
 			body,

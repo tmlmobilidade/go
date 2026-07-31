@@ -16,6 +16,8 @@ import { Timer } from '@tmlmobilidade/timer';
 import { type Plan } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
+/* * */
+
 export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouchConfig> {
 	//
 
@@ -34,6 +36,9 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 		throw new Error(`Plan ${planData._id} is missing feed start or end dates.`);
 	}
 
+	//
+	// Import the GTFS feed into a local SQLite database
+
 	const importConfig: ImportGtfsToDatabaseConfig = {
 		source: {
 			url: operationFileUrl,
@@ -45,6 +50,9 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 			},
 		},
 	};
+
+	//
+	// Import the GTFS feed into a local SQLite database
 
 	const importContext = initImportGtfsContext();
 	const sqlGtfs = await importGtfsToDatabase(importConfig, importContext);
@@ -87,7 +95,7 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 	await exportRoutesFile(sqlGtfs, exportConfig);
 	await exportStopsFile(sqlGtfs, exportConfig);
 	await exportAgencyFile(planData, exportConfig);
-	// feed_info.txt is intentionally excluded because ZPHERES Studio does not support it.
+	// await exportFeedInfoFile(exportConfig); // feed_info.txt is intentionally excluded because ZPHERES Studio does not support it.
 	await exportDayTypesFile(exportConfig);
 
 	Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });

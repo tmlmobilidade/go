@@ -26,6 +26,9 @@ function getPostersForUpdate<T extends object>(posters: T): Omit<T, 'file'> {
 async function main(): Promise<void> {
 	//
 
+	//
+	// Initialize Sentry
+
 	try {
 		await initSentryNode();
 		Logger.startNodeLogs({ app: 'export-posters', message: 'Sentry Plans Export Posters initialized', module: 'plans', severity: 'info' });
