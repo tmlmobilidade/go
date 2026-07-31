@@ -5,6 +5,7 @@ import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type CreateAttachmentDto, HashablePlanMetadata, PermissionCatalog, type Plan, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
 import { createHash } from 'node:crypto';
 
@@ -39,8 +40,8 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 	//
 	// Validate the new feed info dates
 
-	const validatedFeedStartDate = validateOperationalDate(request.body.gtfs_feed_info?.feed_start_date);
-	const validatedFeedEndDate = validateOperationalDate(request.body.gtfs_feed_info?.feed_end_date);
+	const validatedFeedStartDate = validateGtfsDate(request.body.gtfs_feed_info?.feed_start_date);
+	const validatedFeedEndDate = validateGtfsDate(request.body.gtfs_feed_info?.feed_end_date);
 
 	if (validatedFeedStartDate > validatedFeedEndDate) {
 		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Feed start date cannot be after feed end date');
@@ -71,8 +72,8 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 
 		const updateDatesResult = await updateFeedInfoDates(
 			foundPlan.operation_file_id,
-			validatedFeedStartDate,
-			validatedFeedEndDate,
+			validateOperationalDate(validatedFeedStartDate),
+			validateOperationalDate(validatedFeedEndDate),
 		);
 
 		//
@@ -105,8 +106,8 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 			gtfs_agency: foundPlan.gtfs_agency,
 			gtfs_feed_info: {
 				...foundPlan.gtfs_feed_info,
-				feed_end_date: validatedFeedEndDate,
-				feed_start_date: validatedFeedStartDate,
+				feed_end_date: validateGtfsDate(validatedFeedEndDate),
+				feed_start_date: validateGtfsDate(validatedFeedStartDate),
 			},
 			operation_file_id: updateFileResult._id,
 		};
@@ -118,8 +119,8 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 		await goDb.operation.plans.updateById(foundPlan._id, {
 			gtfs_feed_info: {
 				...foundPlan.gtfs_feed_info,
-				feed_end_date: validatedFeedEndDate,
-				feed_start_date: validatedFeedStartDate,
+				feed_end_date: validateGtfsDate(validatedFeedEndDate),
+				feed_start_date: validateGtfsDate(validatedFeedStartDate),
 			},
 			hash: hashValue,
 			operation_file_id: updateFileResult._id,

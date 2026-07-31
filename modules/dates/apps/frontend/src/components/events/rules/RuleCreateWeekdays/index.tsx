@@ -1,6 +1,6 @@
 'use client';
 
-import { WEEKDAYS } from '@tmlmobilidade/types';
+import { WEEKDAYS } from '@tmlmobilidade/go-types-offer';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
 
 import { useRuleCreateContext } from '../RuleCreate.context';

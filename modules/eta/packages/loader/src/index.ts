@@ -39,7 +39,7 @@ export async function loadEta(config: AppConfig) {
 
 		if (config.pipelineSteps.truncatePipelineTables) {
 			Logger.info({ message: 'Running 0b-truncate.sql' });
-			await queryEachEtaStatementFromFile(clickhouseClient, config.database, pipelinePath('bootstrap/0b-truncate.sql'));
+			await queryEachEtaStatementFromFile(clickhouseClient, pipelinePath('bootstrap/0b-truncate.sql'));
 		}
 
 		//
@@ -47,17 +47,17 @@ export async function loadEta(config: AppConfig) {
 
 		if (config.pipelineSteps.runDdl) {
 			Logger.info({ message: 'Running 0a-ddl.sql' });
-			await queryEachEtaStatementFromFile(clickhouseClient, config.database, pipelinePath('bootstrap/0a-create-tables.sql'));
+			await queryEachEtaStatementFromFile(clickhouseClient, pipelinePath('bootstrap/0a-create-tables.sql'));
 
 			Logger.info({ message: 'Creating Materialized Views' });
 
-			await queryEachEtaStatementFromFile(clickhouseClient, config.database, pipelinePath('bootstrap/mv-sync-curr-vehicle-events.sql'));
+			await queryEachEtaStatementFromFile(clickhouseClient, pipelinePath('bootstrap/mv-sync-curr-vehicle-events.sql'));
 			Logger.progress({ message: 'Created mv-sync-curr-vehicle-events' });
 
-			await queryEachEtaStatementFromFile(clickhouseClient, config.database, pipelinePath('bootstrap/mv-predict-node-etas.sql'));
+			await queryEachEtaStatementFromFile(clickhouseClient, pipelinePath('bootstrap/mv-predict-node-etas.sql'));
 			Logger.progress({ message: 'Created mv-predict-node-etas' });
 
-			await queryEachEtaStatementFromFile(clickhouseClient, config.database, pipelinePath('bootstrap/mv-predict-trip-stop-etas.sql'));
+			await queryEachEtaStatementFromFile(clickhouseClient, pipelinePath('bootstrap/mv-predict-trip-stop-etas.sql'));
 			Logger.progress({ message: 'Created mv-predict-trip-stop-etas' });
 		}
 	}
@@ -72,7 +72,7 @@ export async function loadEta(config: AppConfig) {
 		Logger.title('1. Insert current window rides into clickhouse');
 
 		const currentWindowRides = await fetchCurrentWindowRides(ridesQuery, config);
-		await insertEtaRides(clickhouseClient, qualifiedTable(config.database, 'curr_rides'), currentWindowRides.map(parseRide), 'current window rides');
+		await insertEtaRides(clickhouseClient, qualifiedTable('eta', 'curr_rides'), currentWindowRides.map(parseRide), 'current window rides');
 
 		// Get distinct hashed trip ids for later use
 		currentWindowRides.forEach(ride => currentWindowDistinctHashedTrips.add(ride.hashed_trip_id));
@@ -106,7 +106,7 @@ export async function loadEta(config: AppConfig) {
 					Logger.info({ message: `Found ${historicalRides.length} historical rides` });
 
 					// Insert into clickhouse, _id, trip_id, hashed_shape_id
-					await insertEtaRides(clickhouseClient, qualifiedTable(config.database, 'hist_rides'), historicalRides.map(parseHistoricalRide), 'historical rides');
+					await insertEtaRides(clickhouseClient, qualifiedTable('eta', 'hist_rides'), historicalRides.map(parseHistoricalRide), 'historical rides');
 				})(),
 			);
 		}
@@ -154,7 +154,7 @@ export async function loadEta(config: AppConfig) {
 
 		//
 		Logger.info({ message: 'Running 5b-aggregate_hist_node_travel_times.sql query' });
-		await queryEtaFromFile(clickhouseClient, config.database, pipelinePath('loader/3-aggregate_hist_node_travel_times.sql'), {
+		await queryEtaFromFile(clickhouseClient, pipelinePath('loader/3-aggregate_hist_node_travel_times.sql'), {
 			window_end: historicalWindowEnd,
 			window_start: historicalWindowStart,
 		});
@@ -167,7 +167,7 @@ export async function loadEta(config: AppConfig) {
 		await syncCurrentWaypoints(clickhouseClient, Array.from(currentWindowDistinctHashedTrips), config);
 
 		Logger.info({ message: 'Snapping waypoints for current window' });
-		await queryEtaFromFile(clickhouseClient, config.database, pipelinePath('loader/4-snap-waypoints.sql'));
+		await queryEtaFromFile(clickhouseClient, pipelinePath('loader/4-snap-waypoints.sql'));
 	}
 
 	//

@@ -1,9 +1,9 @@
 /* * */
 
 import { type GtfsSQLTables } from '@/types/sql-tables.js';
+import { type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
-import { type OperationalDate } from '@tmlmobilidade/types';
-import { type GTFS_Route_Extended, type GTFS_Shape, type GTFS_Stop_Extended, type GTFS_StopTime, type GTFS_Trip_Extended } from '@tmlmobilidade/types';
 
 /**
  * Initializes GTFS SQL tables and writers.
@@ -16,7 +16,7 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 
 	const database = new SQLiteDatabase();
 
-	const tripsTable = database.registerTable<GTFS_Trip_Extended>('trips', {
+	const tripsTable = database.registerTable<GtfsStrictV29Trips>('trips', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
@@ -33,7 +33,7 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		],
 	});
 
-	const routesTable = database.registerTable<GTFS_Route_Extended>('routes', {
+	const routesTable = database.registerTable<GtfsStrictV29Routes>('routes', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
@@ -58,7 +58,7 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		],
 	});
 
-	const shapesTable = database.registerTable<GTFS_Shape>('shapes', {
+	const shapesTable = database.registerTable<GtfsStrictV29Shapes>('shapes', {
 		batch_size: 100000,
 		columns: [
 			{ indexed: true, name: 'shape_id', not_null: true, type: 'TEXT' },
@@ -69,47 +69,35 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		],
 	});
 
-	const stopsTable = database.registerTable<GTFS_Stop_Extended>('stops', {
+	const stopsTable = database.registerTable<GtfsStrictV29Stops>('stops', {
 		batch_size: 10000,
 		columns: [
-			{ indexed: false, name: 'level_id', type: 'TEXT' },
 			{ indexed: false, name: 'location_type', type: 'INTEGER' },
 			{ indexed: false, name: 'parent_station', type: 'TEXT' },
 			{ indexed: false, name: 'platform_code', type: 'TEXT' },
 			{ indexed: false, name: 'stop_code', type: 'TEXT' },
-			{ indexed: false, name: 'stop_desc', type: 'TEXT' },
 			{ indexed: true, name: 'stop_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_lat', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_lon', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'stop_timezone', type: 'TEXT' },
-			{ indexed: false, name: 'stop_url', type: 'TEXT' },
 			{ indexed: false, name: 'wheelchair_boarding', type: 'INTEGER' },
-			{ indexed: false, name: 'zone_id', type: 'TEXT' },
-			{ indexed: false, name: 'has_bench', type: 'INTEGER' },
-			{ indexed: false, name: 'has_network_map', type: 'INTEGER' },
-			{ indexed: false, name: 'has_pip_real_time', type: 'INTEGER' },
-			{ indexed: false, name: 'has_schedules', type: 'INTEGER' },
-			{ indexed: false, name: 'has_shelter', type: 'INTEGER' },
-			{ indexed: false, name: 'has_stop_sign', type: 'INTEGER' },
-			{ indexed: false, name: 'has_tariffs_information', type: 'INTEGER' },
-			{ indexed: false, name: 'public_visible', type: 'INTEGER' },
-			{ indexed: false, name: 'shelter_code', type: 'TEXT' },
-			{ indexed: false, name: 'shelter_maintainer', type: 'TEXT' },
-			{ indexed: false, name: 'stop_short_name', type: 'TEXT' },
-			{ indexed: false, name: 'tts_stop_name', type: 'TEXT' },
-			{ indexed: false, name: 'district_id', type: 'TEXT' },
-			{ indexed: false, name: 'district_name', type: 'TEXT' },
-			{ indexed: false, name: 'municipality_id', type: 'TEXT' },
-			{ indexed: false, name: 'municipality_name', type: 'TEXT' },
-			{ indexed: false, name: 'parish_id', type: 'TEXT' },
-			{ indexed: false, name: 'parish_name', type: 'TEXT' },
-			{ indexed: false, name: 'locality_id', type: 'TEXT' },
-			{ indexed: false, name: 'locality_name', type: 'TEXT' },
+			// { indexed: false, name: 'lifecycle_status', type: 'TEXT' },
+			// { indexed: false, name: 'stop_short_name', type: 'TEXT' },
+			// { indexed: false, name: 'tts_stop_name', type: 'TEXT' },
+			// { indexed: false, name: 'district_id', type: 'TEXT' },
+			// { indexed: false, name: 'district_name', type: 'TEXT' },
+			// { indexed: false, name: 'flags', type: 'TEXT' },
+			// { indexed: false, name: 'legacy_ids', type: 'TEXT' },
+			// { indexed: false, name: 'municipality_id', type: 'TEXT' },
+			// { indexed: false, name: 'municipality_name', type: 'TEXT' },
+			// { indexed: false, name: 'parish_id', type: 'TEXT' },
+			// { indexed: false, name: 'parish_name', type: 'TEXT' },
+			// { indexed: false, name: 'locality_id', type: 'TEXT' },
+			// { indexed: false, name: 'locality_name', type: 'TEXT' },
 		],
 	});
 
-	const stopTimesTable = database.registerTable<GTFS_StopTime>('stop_times', {
+	const stopTimesTable = database.registerTable<GtfsStrictV29StopTimes>('stop_times', {
 		batch_size: 100000,
 		columns: [
 			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
@@ -119,7 +107,6 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 			{ indexed: false, name: 'drop_off_type', type: 'INTEGER' },
 			{ indexed: false, name: 'pickup_type', type: 'INTEGER' },
 			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
-			{ indexed: false, name: 'stop_headsign', type: 'TEXT' },
 			{ indexed: true, name: 'stop_id', not_null: true, type: 'TEXT' },
 			{ indexed: true, name: 'trip_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },

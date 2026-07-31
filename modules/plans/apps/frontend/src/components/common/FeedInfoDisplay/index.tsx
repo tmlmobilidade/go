@@ -1,7 +1,7 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type GtfsFeedInfo } from '@tmlmobilidade/types';
+import { type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
 import { Grid, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -25,8 +25,7 @@ export function FeedInfoDisplay({ data }: FeedInfoDisplayProps) {
 			return Dates
 				.fromOperationalDate(data?.feed_start_date, 'Europe/Lisbon')
 				.toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR);
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(error);
 			return null;
 		}
@@ -38,8 +37,7 @@ export function FeedInfoDisplay({ data }: FeedInfoDisplayProps) {
 			return Dates
 				.fromOperationalDate(data?.feed_end_date, 'Europe/Lisbon')
 				.toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR);
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(error);
 			return null;
 		}

@@ -1,10 +1,10 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type FileExport, type StopExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
-import { FileExport, type StopExportProperties } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import os from 'os';
 import path from 'path';

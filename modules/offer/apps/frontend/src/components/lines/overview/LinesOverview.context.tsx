@@ -4,7 +4,7 @@ import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { PatternShapeMapInteractionState } from '@/types/lines-overview';
 import { getPatternFeaturesAtEvent } from '@/utils/lines-overview';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PatternShapeMapItem } from '@tmlmobilidade/types';
+import { type PatternShapeMapItem } from '@tmlmobilidade/go-types-offer';
 import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';

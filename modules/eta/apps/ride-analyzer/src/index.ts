@@ -166,15 +166,15 @@ async function main() {
 		process.exit(1);
 	}
 
-	const snapshots = await replayEvents(clickhouseClient, config.database, args.tripRef, events);
+	const snapshots = await replayEvents(clickhouseClient, 'eta', args.tripRef, events);
 
 	//
 	// G. Fetch the geometry context for the viewer (route polyline + stops)
 
-	const tripContext = await fetchTripHashes(clickhouseClient, config.database, args.tripRef.tripId);
+	const tripContext = await fetchTripHashes(clickhouseClient, 'eta', args.tripRef.tripId);
 	const [route, stops] = await Promise.all([
-		fetchRouteNodes(clickhouseClient, config.database, tripContext.hashedShapeId),
-		fetchStopWaypoints(clickhouseClient, config.database, tripContext.hashedTripId),
+		fetchRouteNodes(clickhouseClient, 'eta', tripContext.hashedShapeId),
+		fetchStopWaypoints(clickhouseClient, 'eta', tripContext.hashedTripId),
 	]);
 
 	//

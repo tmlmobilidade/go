@@ -1,11 +1,11 @@
-CREATE DATABASE IF NOT EXISTS {database};
+CREATE DATABASE IF NOT EXISTS eta;
 
 -- =============================================================================
 -- Ride sets (Mongo → ClickHouse via loader)
 -- =============================================================================
 
 -- Historical window: rides whose samples feed transformation / aggregation.
-CREATE TABLE IF NOT EXISTS {database}.hist_rides (
+CREATE TABLE IF NOT EXISTS eta.hist_rides (
     _id String,
     agency_id String,
     hashed_shape_id String,
@@ -28,7 +28,7 @@ ENGINE = ReplacingMergeTree()
 ORDER BY (_id);
 
 -- Current service window (same schema as hist_rides; used for live / near-term slices).
-CREATE TABLE IF NOT EXISTS {database}.curr_rides (
+CREATE TABLE IF NOT EXISTS eta.curr_rides (
     _id String,
     hashed_shape_id String,
     hashed_trip_id String,
@@ -44,7 +44,7 @@ ORDER BY (_id);
 -- Events & geometry
 -- =============================================================================
 
-CREATE TABLE IF NOT EXISTS {database}.hist_vehicle_events (
+CREATE TABLE IF NOT EXISTS eta.hist_vehicle_events (
     _id String,
     created_at UInt64,
     agency_id String,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS {database}.hist_vehicle_events (
 ENGINE = ReplacingMergeTree()
 ORDER BY (trip_id, ride_id, hashed_shape_id, created_at);
 
-CREATE TABLE IF NOT EXISTS {database}.hist_shape_nodes (
+CREATE TABLE IF NOT EXISTS eta.hist_shape_nodes (
     hashed_shape_id String,
     node_index UInt32,
     latitude Float64,
@@ -69,14 +69,14 @@ CREATE TABLE IF NOT EXISTS {database}.hist_shape_nodes (
 ENGINE = ReplacingMergeTree()
 ORDER BY (geohash, hashed_shape_id, node_index);
 
-ALTER TABLE {database}.hist_shape_nodes
+ALTER TABLE eta.hist_shape_nodes
     MATERIALIZE INDEX idx_geohash;
 
 -- =============================================================================
 -- Node travel times transformation outputs
 -- =============================================================================
 
-CREATE TABLE IF NOT EXISTS {database}.hist_node_travel_times (
+CREATE TABLE IF NOT EXISTS eta.hist_node_travel_times (
     event_id String,
     ride_id String,
     hashed_shape_id String,
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS {database}.hist_node_travel_times (
 ENGINE = ReplacingMergeTree()
 ORDER BY (ride_id, hashed_shape_id, node_index, hour);
 
-DROP TABLE IF EXISTS {database}.hist_node_travel_times_aggregation;
+DROP TABLE IF EXISTS eta.hist_node_travel_times_aggregation;
 
 -- The loader (3-aggregate_hist_node_travel_times.sql) re-aggregates the last
 -- N days on every run, so identical (hashed_shape_id, node_index,
@@ -101,7 +101,7 @@ DROP TABLE IF EXISTS {database}.hist_node_travel_times_aggregation;
 -- ReplacingMergeTree with `inserted_at` as the version keeps the latest row
 -- per ORDER BY key. Readers MUST use `FINAL` (or the equivalent setting) to
 -- get deduplicated results, because background merges run asynchronously.
-CREATE TABLE IF NOT EXISTS {database}.hist_node_travel_times_aggregation (
+CREATE TABLE IF NOT EXISTS eta.hist_node_travel_times_aggregation (
     hashed_shape_id String,
     node_index UInt32,
     operational_date UInt32,
@@ -123,7 +123,7 @@ ORDER BY
 -- Waypoints
 -- =============================================================================
 
-CREATE TABLE IF NOT EXISTS {database}.curr_waypoints
+CREATE TABLE IF NOT EXISTS eta.curr_waypoints
 (
     arrival_time String,
     departure_time String,
@@ -142,7 +142,7 @@ ENGINE = ReplacingMergeTree()
 ORDER BY (hashed_trip_id, stop_sequence, stop_id);
 
 -- Snapped waypoints: every stop on a trip resolved to its nearest shape node.
-CREATE TABLE IF NOT EXISTS {database}.curr_waypoints_snapped
+CREATE TABLE IF NOT EXISTS eta.curr_waypoints_snapped
 (
     hashed_trip_id String,
     hashed_shape_id String,

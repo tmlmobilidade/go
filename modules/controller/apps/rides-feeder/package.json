@@ -22,6 +22,8 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
+		"@tmlmobilidade/go-types-gtfs": "*",
+		"@tmlmobilidade/go-types-gtfs-strict": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/sqlite": "*",
 		"@tmlmobilidade/timer": "*",

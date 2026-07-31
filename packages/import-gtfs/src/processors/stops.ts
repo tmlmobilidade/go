@@ -2,9 +2,9 @@
 
 import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
+import { type GtfsStrictV29Stops, GtfsStrictV29StopsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Stop_Extended_Raw, validateGtfsStopExtended } from '@tmlmobilidade/types';
 
 /**
  * Processes the stops.txt file from the GTFS dataset.
@@ -20,13 +20,13 @@ export async function processStopsFile(context: ImportGtfsContext): Promise<void
 
 		Logger.info({ message: 'Reading zip entry "stops.txt"...' });
 
-		const parseEachRow = async (data: GTFS_Stop_Extended_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29Stops) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsStopExtended(data);
+			const validatedData = GtfsStrictV29StopsSchema.safeParse(data);
 			// Skip if stop already exists
-			if (context.gtfs.stops.get('stop_id', validatedData.stop_id)) return;
+			if (context.gtfs.stops.get('stop_id', validatedData.data.stop_id)) return;
 			// Save the exported row
-			context.gtfs.stops.write(validatedData);
+			context.gtfs.stops.write(validatedData.data);
 		};
 
 		//

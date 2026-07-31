@@ -1,7 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Fare } from '@tmlmobilidade/types';
+import { type Fare } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 
@@ -17,8 +17,7 @@ export async function fetchAllFares(): Promise<Map<string, Fare>> {
 			faresMap.set(fare._id, fare);
 		}
 		return faresMap;
-	}
-	catch (error) {
-		throw new Error(`Error fetching fares: ${error}`);
+	} catch (error) {
+		throw new Error(`Error fetching fares: ${error}`, error);
 	}
 }

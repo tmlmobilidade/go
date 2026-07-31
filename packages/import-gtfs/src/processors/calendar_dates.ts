@@ -3,9 +3,10 @@
 import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
 import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
+import { GtfsStrictV29CalendarDates, GtfsStrictV29CalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { GTFS_CalendarDate_Raw, validateGtfsCalendarDate } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 /**
@@ -24,20 +25,22 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 
 		Logger.info({ message: 'Reading zip entry "calendar_dates.txt"...' });
 
-		const parseEachRow = async (data: GTFS_CalendarDate_Raw) => {
+		const parseEachRow = async (data: GtfsStrictV29CalendarDates) => {
 			//
 
 			//
 			// Validate the current row against the proper type
 
-			const validatedData = validateGtfsCalendarDate(data);
+			const validatedData = GtfsStrictV29CalendarDatesSchema.safeParse(data);
+
+			const dateAsOperationalDate = validateOperationalDate(validatedData.data.date);
 
 			//
 			// Skip if this row's date is not between the given start and end dates
 			// if they are provided in the config.
 
 			if ('time_range' in config && config.time_range.date_range?.start && config.time_range.date_range?.end) {
-				if (validatedData.date < config.time_range.date_range.start || validatedData.date > config.time_range.date_range.end) return;
+				if (dateAsOperationalDate < config.time_range.date_range.start || dateAsOperationalDate > config.time_range.date_range.end) return;
 			}
 
 			//
@@ -45,34 +48,34 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 			// if it is provided in the config.
 
 			if ('time_range' in config && config.time_range.discrete_dates?.length) {
-				if (!config.time_range.discrete_dates.includes(validatedData.date)) return;
+				if (!config.time_range.discrete_dates.includes(dateAsOperationalDate)) return;
 			}
 
 			//
 			// If we're here, it means the service_id is valid between the given dates.
 			// Get the previously saved calendars and check if it exists for this service_id.
 
-			const savedCalendar = context.gtfs.calendar_dates[validatedData.service_id];
+			const savedCalendar = context.gtfs.calendar_dates[validatedData.data.service_id];
 
 			if (savedCalendar) {
 				// Create a new Set to avoid duplicated dates
 				const updatedCalendar = new Set(savedCalendar);
 				// If this service_id was previously saved, either add or remove the current date
 				// to it based on the exception_type value for this row.
-				if (validatedData.exception_type === 1) {
-					updatedCalendar.add(validatedData.date);
+				if (validatedData.data.exception_type === '1') {
+					updatedCalendar.add(dateAsOperationalDate);
 					context.counters.calendar_dates++;
-				} else if (validatedData.exception_type === 2) {
-					updatedCalendar.delete(validatedData.date);
+				} else if (validatedData.data.exception_type === '2') {
+					updatedCalendar.delete(dateAsOperationalDate);
 					context.counters.calendar_dates--;
 				}
 				// Update the service_id with the new dates
-				context.gtfs.calendar_dates[validatedData.service_id] = Array.from(updatedCalendar);
+				context.gtfs.calendar_dates[validatedData.data.service_id] = Array.from(updatedCalendar);
 			} else {
 				// If this is the first time we're seeing this service_id, then it is only necessary
 				// to initiate a new dates array if it is a service addition
-				if (validatedData.exception_type === 1) {
-					context.gtfs.calendar_dates[validatedData.service_id] = [validatedData.date];
+				if (validatedData.data.exception_type === '1') {
+					context.gtfs.calendar_dates[validatedData.data.service_id] = [dateAsOperationalDate];
 					context.counters.calendar_dates++;
 				}
 			}

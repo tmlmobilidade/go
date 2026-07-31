@@ -4,7 +4,8 @@ import { DatesSelector } from '@/components/annotations/detail/AnnotationsDatesS
 import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
 import { AnnotationsDetailHeader } from '@/components/annotations/detail/AnnotationsDetailHeader';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { AnnotationSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { AnnotationSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */
@@ -36,7 +37,7 @@ export function AnnotationsDetail() {
 	}
 
 	return (
-		<Pane header={[<AnnotationsDetailHeader />]}>
+		<Pane header={[<AnnotationsDetailHeader key="annotations-detail-header" />]}>
 			<Section>
 				<Grid columns="a" gap="lg">
 

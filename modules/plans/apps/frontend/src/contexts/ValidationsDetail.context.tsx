@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Attachment, type GtfsValidation, type ProcessingStatus } from '@tmlmobilidade/types';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
+import { type Attachment, type ProcessingStatus } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';

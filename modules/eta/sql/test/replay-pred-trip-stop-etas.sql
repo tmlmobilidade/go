@@ -1,6 +1,6 @@
--- Replay variant of {database}.mv_pred_trip_stop_etas + api/2-select-pred-trip-stop-etas-by-trip-id.sql.
+-- Replay variant of eta.mv_pred_trip_stop_etas + api/2-select-pred-trip-stop-etas-by-trip-id.sql.
 --
--- Computes stop ETAs from the current contents of {database}.curr_vehicle_events
+-- Computes stop ETAs from the current contents of eta.curr_vehicle_events
 -- for the given `{trip_id:String}`, treating `{now_ms:Int64}` as the wall clock.
 -- Returns enriched rows with the same shape as the API endpoint, so the analyzer
 -- can persist them directly without round-tripping through pred_trip_stop_etas
@@ -18,7 +18,7 @@ WITH
             vehicle_id,
             argMax(hashed_shape_id, created_at) AS hashed_shape_id,
             max(created_at)                     AS position_created_at
-        FROM {database}.curr_vehicle_events
+        FROM eta.curr_vehicle_events
         WHERE trip_id = {trip_id:String}
           AND created_at >= {now_ms:Int64} - 30 * 60 * 1000
         GROUP BY trip_id, vehicle_id
@@ -35,7 +35,7 @@ WITH
             max(e.node_index)      AS current_node_index,
             lf.position_created_at AS position_created_at
         FROM latest_fix AS lf
-        INNER JOIN {database}.curr_vehicle_events AS e
+        INNER JOIN eta.curr_vehicle_events AS e
             ON e.trip_id = lf.trip_id
            AND e.vehicle_id = lf.vehicle_id
         WHERE e.created_at BETWEEN lf.position_created_at - 2 * 60 * 1000
@@ -56,7 +56,7 @@ WITH
             lp.position_created_at AS position_created_at,
             fromUnixTimestamp64Milli(lp.position_created_at) AS pos_dt
         FROM latest_pos AS lp
-        INNER JOIN {database}.curr_rides AS d ON lp.trip_id = d.trip_id
+        INNER JOIN eta.curr_rides AS d ON lp.trip_id = d.trip_id
     ),
     pos_with_op_dt AS (
         SELECT
@@ -105,7 +105,7 @@ WITH
             e.node_index           AS node_index,
             e.created_at           AS created_at
         FROM pos_full AS pf
-        INNER JOIN {database}.curr_vehicle_events AS e
+        INNER JOIN eta.curr_vehicle_events AS e
             ON e.trip_id = pf.trip_id
            AND e.vehicle_id = pf.vehicle_id
         WHERE e.trip_id = {trip_id:String}
@@ -188,7 +188,7 @@ WITH
             lo.observed_seconds    AS observed_seconds,
             sum(p.predicted_travel_time_seconds) AS baseline_seconds
         FROM live_observed AS lo
-        LEFT JOIN {database}.pred_node_etas AS p
+        LEFT JOIN eta.pred_node_etas AS p
             ON p.hashed_shape_id = lo.hashed_shape_id
            AND p.period_of_day   = lo.period_of_day
            AND p.weekday         = lo.weekday
@@ -247,7 +247,7 @@ WITH
             w.stop_name            AS stop_name,
             w.node_index           AS stop_node_index
         FROM pos_full AS pf
-        INNER JOIN {database}.curr_waypoints_snapped AS w
+        INNER JOIN eta.curr_waypoints_snapped AS w
             ON pf.hashed_trip_id = w.hashed_trip_id
         WHERE w.node_index >= pf.current_node_index
     ),
@@ -277,7 +277,7 @@ WITH
             p.predicted_travel_time_seconds
                 * coalesce(lf.live_adjustment, toFloat64(1)) AS node_seconds
         FROM live_trips AS lt
-        INNER JOIN {database}.pred_node_etas AS p
+        INNER JOIN eta.pred_node_etas AS p
             ON p.hashed_shape_id = lt.hashed_shape_id
            AND p.period_of_day   = lt.period_of_day
            AND p.weekday         = lt.weekday
@@ -375,7 +375,7 @@ WITH
             hashed_trip_id,
             argMin(arrival_time, stop_sequence) AS first_arrival_time,
             argMax(stop_name, stop_sequence)    AS last_stop_name
-        FROM {database}.curr_waypoints_snapped
+        FROM eta.curr_waypoints_snapped
         GROUP BY hashed_trip_id
     )
 SELECT
@@ -440,9 +440,9 @@ SELECT
         toNullable(toInt64(toUnixTimestamp(assumeNotNull(e.eta_at))))
     )                                                                        AS estimated_arrival_unix
 FROM pred AS e
-LEFT JOIN {database}.curr_waypoints_snapped AS w
+LEFT JOIN eta.curr_waypoints_snapped AS w
     ON w.hashed_trip_id = e.hashed_trip_id AND w.stop_sequence = e.stop_sequence
-LEFT JOIN {database}.curr_rides AS r
+LEFT JOIN eta.curr_rides AS r
     ON r.trip_id = e.trip_id
 LEFT JOIN trip_summary AS ts
     ON ts.hashed_trip_id = e.hashed_trip_id
