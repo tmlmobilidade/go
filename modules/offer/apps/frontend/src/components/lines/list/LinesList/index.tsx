@@ -6,7 +6,7 @@ import { LinesListCellAgency } from '@/components/lines/list/LinesListCellAgency
 import { LinesListFiltersBar } from '@/components/lines/list/LinesListFiltersBar';
 import { LinesListHeader } from '@/components/lines/list/LinesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Line } from '@tmlmobilidade/types';
+import { type Line } from '@tmlmobilidade/go-types-offer';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
