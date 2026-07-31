@@ -2,7 +2,8 @@
 
 import { useHolidayCreateContext } from '@/components/holidays/create/HolidayCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { HolidaySchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { HolidaySchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { MultiSelect, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */

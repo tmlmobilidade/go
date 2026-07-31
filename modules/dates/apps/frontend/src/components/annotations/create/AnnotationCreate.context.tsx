@@ -2,7 +2,7 @@
 
 import { closeCreateAnnotationModal } from '@/components/annotations/create/AnnotationCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema } from '@tmlmobilidade/types';
+import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema } from '@tmlmobilidade/go-types-offer';
 import { keepUrlParams, type UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
