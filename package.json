@@ -36,7 +36,6 @@
 		"build:offer": "turbo run build --filter=@tmlmobilidade/go-offer-*",
 		"build:performance": "turbo run build --filter=@tmlmobilidade/go-performance-*",
 		"build:plans": "turbo run build --filter=@tmlmobilidade/go-plans-*",
-		"build:replicator": "turbo run build --filter=@tmlmobilidade/go-replicator-*",
 		"build:stops": "turbo run build --filter=@tmlmobilidade/go-stops-*",
 		"build:stops:pckg": "turbo run build --filter=@tmlmobilidade/go-stops-pckg-*",
 		"build:tracker": "turbo run build --filter=@tmlmobilidade/go-tracker-*",
