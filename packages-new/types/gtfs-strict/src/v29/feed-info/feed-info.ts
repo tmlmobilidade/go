@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV1FeedInfoSchema = GtfsFeedInfoSchema.extend({
+export const GtfsStrictV29FeedInfoSchema = GtfsFeedInfoSchema.extend({
 	default_lang: z.string(),
 	feed_contact_email: z.string(),
 	feed_contact_url: z.string(),
@@ -21,4 +21,4 @@ export const GtfsStrictV1FeedInfoSchema = GtfsFeedInfoSchema.extend({
  * Represents a feed info in the custom GTFS strict v1 format.
  * It enforces certain fields that are optional in the standard GTFS format.
  */
-export type GtfsStrictV1FeedInfo = z.infer<typeof GtfsStrictV1FeedInfoSchema>;
+export type GtfsStrictV29FeedInfo = z.infer<typeof GtfsStrictV29FeedInfoSchema>;

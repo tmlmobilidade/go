@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV1AgencySchema = GtfsAgencySchema.extend({
+export const GtfsStrictV29AgencySchema = GtfsAgencySchema.extend({
 	agency_code: z.string(),
 	agency_email: z.string(),
 	agency_fare_url: z.string(),
@@ -23,4 +23,4 @@ export const GtfsStrictV1AgencySchema = GtfsAgencySchema.extend({
  * and add the `agency_code` field to be able to accomodate multiple agencies
  * with the same code, that necessarily must have different `agency_id` values.
  */
-export type GtfsStrictV1Agency = z.infer<typeof GtfsStrictV1AgencySchema>;
+export type GtfsStrictV29Agency = z.infer<typeof GtfsStrictV29AgencySchema>;

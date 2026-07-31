@@ -1,16 +1,16 @@
 /* * */
 
-import { GtfsStrictV1DayTypeSchema } from '@/v1/calendar-dates/day-type.js';
-import { GtfsStrictV1PeriodSchema } from '@/v1/calendar-dates/period.js';
+import { GtfsStrictV29DayTypeSchema } from '@/v29/calendar-dates/day-type.js';
+import { GtfsStrictV29PeriodSchema } from '@/v29/calendar-dates/period.js';
 import { GtfsBinarySchema, GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV1CalendarDatesSchema = GtfsCalendarDatesSchema.extend({
-	day_type: GtfsStrictV1DayTypeSchema,
+export const GtfsStrictV29CalendarDatesSchema = GtfsCalendarDatesSchema.extend({
+	day_type: GtfsStrictV29DayTypeSchema,
 	holiday: GtfsBinarySchema,
-	period: GtfsStrictV1PeriodSchema,
+	period: GtfsStrictV29PeriodSchema,
 });
 
 /**
@@ -20,5 +20,5 @@ export const GtfsStrictV1CalendarDatesSchema = GtfsCalendarDatesSchema.extend({
  * This is used to override the regular calendar for a specific date.
  * GTFS strict v1 also supports using only this method for defining dates for services.
  */
-export type GtfsStrictV1CalendarDates = z.infer<typeof GtfsStrictV1CalendarDatesSchema>;
+export type GtfsStrictV29CalendarDates = z.infer<typeof GtfsStrictV29CalendarDatesSchema>;
 
