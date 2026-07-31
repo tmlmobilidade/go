@@ -1,10 +1,8 @@
 /* * */
 
-import { createGtfsMapper } from '@/gtfs-new/mapper.js';
-import { GtfsDirection } from '@/gtfs-new/trips.js';
-import { StopIdSchema } from '@/stops/stop-id.js';
-import { Stop } from '@/stops/stop.js';
+import { type GtfsTripDirection } from '@tmlmobilidade/go-types-gtfs';
 import { CommentSchema, DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { createGtfsMapper, type Stop, StopIdSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 import { StopsParametersListSchema } from './parameters.js';
@@ -20,7 +18,7 @@ export const PatternDirectionValues = [
 export const PatternDirectionSchema = z.enum(PatternDirectionValues);
 export type PatternDirection = z.infer<typeof PatternDirectionSchema>;
 
-export const patternDirectionMapper = createGtfsMapper<typeof PatternDirectionValues[number], GtfsDirection>({
+export const patternDirectionMapper = createGtfsMapper<typeof PatternDirectionValues[number], GtfsTripDirection>({
 	inbound: '1',
 	outbound: '0',
 });
