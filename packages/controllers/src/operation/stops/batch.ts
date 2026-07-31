@@ -64,7 +64,7 @@ export async function getOperationalStopsBatch(query: GetOperationalStopsBatchQu
 			$lookup: {
 				as: 'hashed_pattern_doc',
 				foreignField: '_id',
-				from: 'hashed_patterns',
+				from: 'hashed-patterns',
 				localField: 'hashed_pattern_id',
 			},
 		},

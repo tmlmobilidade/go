@@ -118,7 +118,7 @@ jobs:
                 .replace(/:/g, '-')
                 .replace(/\s+/g, ' ')
                 .trim()
-                .slice(0, 50);
+                .slice(0, 100);
 
               const dispatchedAt = Date.now();
               await github.rest.actions.createWorkflowDispatch({

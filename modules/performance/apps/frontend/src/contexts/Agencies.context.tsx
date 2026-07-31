@@ -1,7 +1,8 @@
 'use client';
 
-import { AGENCIES, type AgencyType } from '@/constants';
+import { AGENCY_IDS_BY_AREA, type AgencyType } from '@/constants';
 import { MetricsRoutes } from '@/routes';
+import { getMetricAgencyData } from '@/utils/agencies';
 import { calculateSystemHealthIndex, getSystemStatusInfo, type StatusInfo } from '@/utils/systemStatus';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency as APIAgency, type RealtimeDemand, type RealtimeServiceCompliance } from '@tmlmobilidade/types';
@@ -32,6 +33,7 @@ interface AgenciesContextState {
 /* * */
 
 const AgenciesContext = createContext<AgenciesContextState | undefined>(undefined);
+const TARGET_AGENCIES = [...AGENCY_IDS_BY_AREA, 'all'] as const;
 
 export const useAgenciesContext = () => {
 	const context = useContext(AgenciesContext);
@@ -51,7 +53,6 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 
 	const t = useTranslations();
 	const [systemStatuses, setSystemStatuses] = useState<Record<string, StatusInfo>>({});
-	const targetAgencies = [AGENCIES.AREA_1, AGENCIES.AREA_2, AGENCIES.AREA_3, AGENCIES.AREA_4, 'all'] as const;
 
 	//
 	// B. Fetch data
@@ -71,12 +72,12 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 		const serviceDataObj = serviceComplianceData[0].data;
 		const demandDataObj = demandData[0].data;
 
-		targetAgencies.forEach((agency) => {
+		TARGET_AGENCIES.forEach((agency) => {
 			// Merge metrics
 			const metricsData: Record<string, { last_week: number, now: number }> = {};
 
-			const serviceData = agency === 'all' ? serviceDataObj.total : serviceDataObj.agencies?.[agency];
-			const demandMetric = agency === 'all' ? demandDataObj.total : demandDataObj.agencies?.[agency];
+			const serviceData = agency === 'all' ? serviceDataObj.total : getMetricAgencyData(serviceDataObj.agencies, agency);
+			const demandMetric = agency === 'all' ? demandDataObj.total : getMetricAgencyData(demandDataObj.agencies, agency);
 
 			if (!serviceData || !demandMetric) return;
 
@@ -111,13 +112,14 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 		if (!allAgenciesData) return [];
 
 		return allAgenciesData
-			.filter(agency => targetAgencies.includes(agency._id as AgencyType))
+			.filter(agency => AGENCY_IDS_BY_AREA.includes(agency._id as AgencyType))
 			.map(agency => ({
 				...agency,
 				id: agency._id as AgencyType,
 				label: t(`agencies.${agency._id}`),
-			}));
-	}, [allAgenciesData, t, targetAgencies]);
+			}))
+			.sort((a, b) => AGENCY_IDS_BY_AREA.indexOf(a.id) - AGENCY_IDS_BY_AREA.indexOf(b.id));
+	}, [allAgenciesData, t]);
 
 	//
 	// E. Process agencies with "all" option
@@ -133,7 +135,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 		if (systemStatuses['all']) {
 			result.push({
 				id: 'all' as AgencyType,
-				label: t('default:agencies.all'),
+				label: t('agencies.all'),
 			} as Agency);
 		}
 

@@ -3,6 +3,7 @@ import { DateTime } from 'luxon';
 
 /**
  * Utility function that merges class names together
+ * @deprecated Do not use this pattern. Prefer data-attributes instead (e.g. `<p data-theme="dark">`).
  */
 export function cn(...inputs: ClassValue[]) {
 	return clsx(inputs);

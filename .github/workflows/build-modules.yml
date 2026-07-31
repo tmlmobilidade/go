@@ -1,6 +1,6 @@
 name: Build Modules
 
-run-name: "${{ inputs.pr_number != '' && format('build pr-{0} ({1}): {2}', inputs.pr_number, inputs.pr_title || 'PR', inputs.module || 'all') || format('build {0}: {1}', github.ref_name, inputs.module || 'changed') }}"
+run-name: "${{ inputs.pr_number != '' && format('#{0} - {1}: {2}', inputs.pr_number, inputs.pr_title || 'PR', inputs.module || 'all') || github.event_name == 'pull_request' && format('preview cleanup pr-{0}', github.event.pull_request.number) || github.event_name == 'workflow_dispatch' && format('build {0}', github.ref_name) || '' }}"
 
 on:
   workflow_dispatch:

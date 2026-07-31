@@ -57,7 +57,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 	// This function will handle the logic of counting, comparing, syncing and deleting documents
 	// between the source and destination databases based on the provided functions.
 
-	const rawApexTransactionsCollection = await rawDb.raw.rawApexTransactions.getCollection();
+	const rawApexTransactionsCollection = await rawDb.apex.transactions.getCollection();
 
 	await replicate<RawApexTransaction>({
 
@@ -70,7 +70,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		countSourceDbFn: async () => {
-			const result = await rawDb.raw.rawApexTransactions.count(rawdbQuery);
+			const result = await rawDb.apex.transactions.count(rawdbQuery);
 			return result;
 		},
 
@@ -92,7 +92,7 @@ export async function syncApexLocations(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctSourceDbFn: async () => {
-			const result = await rawDb.raw.rawApexTransactions.distinct('_id', rawdbQuery);
+			const result = await rawDb.apex.transactions.distinct('_id', rawdbQuery);
 			return result.map(String);
 		},
 

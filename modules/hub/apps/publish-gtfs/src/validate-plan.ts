@@ -1,20 +1,30 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
-export function validatePlan(planData: Plan): boolean {
+export async function validatePlan(planData: Plan): Promise<boolean> {
 	//
 
 	//
-	// Return false if the agency is not for the given IDs
+	// Return false if the agency is not found
 
-	// 3, 8, and 21 are currently disabled
-	if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(planData.agency_id)) {
-		Logger.error({ message: `Skip processing: gtfs_agency is '${planData.agency_id}'. Only '1', '2', '3', '4', '8', '15', '16', '41', '42', '43', or '44' are allowed.` });
+	const agencyData = await goDb.core.agencies.findById(planData.agency_id);
+
+	if (!agencyData) {
+		Logger.error({ message: `Skip processing: No agency data found for agency_id '${planData.agency_id}'.` });
+		return false;
+	}
+
+	//
+	// Return false if the agency does not have GTFS enabled
+
+	if (!agencyData.open_data.gtfs_enabled) {
+		Logger.error({ message: `Skip processing: Agency '${planData.agency_id}' does not have GTFS enabled.` });
 		return false;
 	}
 

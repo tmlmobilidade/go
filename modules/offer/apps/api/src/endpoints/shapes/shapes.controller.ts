@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* * */
 
 import { ValhallaRouteRequest, ValhallaRouteResponse } from '@/types/shapes.js';
@@ -16,6 +17,11 @@ interface RoutePreviewPoint {
 
 interface RoutePreviewDto {
 	costing?: 'auto' | 'bicycle' | 'bus' | 'pedestrian'
+	costing_options?: {
+		bus?: {
+			use_ferry?: number
+		}
+	}
 	points: RoutePreviewPoint[]
 }
 
@@ -75,7 +81,7 @@ export class ShapesController {
 		request: FastifyRequest<{ Body: RoutePreviewDto }>,
 		reply: FastifyReply<RoutePreviewResponse>,
 	) {
-		const { costing = 'bus', points } = request.body;
+		const { costing = 'bus', costing_options, points } = request.body;
 
 		if (!points || points.length < 2) {
 			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'At least 2 points are required');
@@ -99,6 +105,7 @@ export class ShapesController {
 
 			const valhallaPayload: ValhallaRouteRequest = {
 				costing,
+				costing_options,
 				directions_options: {
 					units: 'kilometers',
 				},

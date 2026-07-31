@@ -19,7 +19,7 @@ const writer = new BatchWriter<RawApexTransaction>({
 				upsert: true,
 			},
 		}));
-		await rawDb.raw.rawApexTransactions.bulkWrite(writeOps);
+		await rawDb.apex.transactions.bulkWrite(writeOps);
 	},
 	title: 'rawdb|raw-apex-transactions',
 });

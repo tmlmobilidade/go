@@ -3,8 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Filter } from '@tmlmobilidade/interfaces';
 import { type CreateYearPeriodDto, OperationalDate, PermissionCatalog, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
@@ -59,18 +59,13 @@ export class YearPeriodsController {
 		}
 
 		//
-		// Get parameters
-
-		const { agency_ids, dates: newDates, year_period_id } = request.body;
-
-		//
 		// Find all periods that have at least one matching agency (excluding the current period if provided)
 
 		const query: Filter<YearPeriod> = {
-			agency_ids: { $in: agency_ids },
+			agency_ids: { $in: request.body.agency_ids },
 		};
-		if (year_period_id) {
-			query._id = { $ne: year_period_id };
+		if (request.body.year_period_id) {
+			query._id = { $ne: request.body.year_period_id };
 		}
 
 		const agencyPeriods = await goDb.offer.yearPeriods.findMany(query);
@@ -96,10 +91,10 @@ export class YearPeriodsController {
 			if (!otherPeriod.dates || otherPeriod.dates.length === 0) continue;
 
 			// Only consider it a conflict if the agency sets are EXACTLY the same
-			if (!areAgencySetsEqual(agency_ids, otherPeriod.agency_ids)) continue;
+			if (!areAgencySetsEqual(request.body.agency_ids, otherPeriod.agency_ids)) continue;
 
 			// Find dates that conflict between the new dates and this year period
-			const conflictingDates = findCommonDates(newDates, otherPeriod.dates);
+			const conflictingDates = findCommonDates(request.body.dates, otherPeriod.dates);
 
 			if (conflictingDates.length > 0) {
 				conflicts.push({

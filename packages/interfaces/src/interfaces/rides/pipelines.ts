@@ -325,7 +325,7 @@ type RidesPipelineFilter = OneOrTheOther<DatesRange, OperationalDateRange> & {
 	seen_statuses?: SeenStatus[]
 	stop_ids?: string[]
 	ticketing_status?: TicketingStatus[]
-	vehicle_ids?: number[]
+	vehicle_ids?: string[]
 };
 
 type FieldCondition = Record<string, unknown>;
@@ -431,8 +431,8 @@ function buildSearchPipeline(filter: Pick<RidesPipelineFilter, 'search'>): Aggre
 	if (vehicleMatch) {
 		const vehicleIDs = vehicleMatch[1]
 			.split(',')
-			.map(id => Number(id.trim()))
-			.filter(id => !isNaN(id));
+			.map(id => id.trim())
+			.filter(Boolean);
 
 		if (vehicleIDs.length > 0) {
 			pipeline.push({ $match: { vehicle_ids: { $in: vehicleIDs } } });

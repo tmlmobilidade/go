@@ -74,7 +74,7 @@ export async function transformReferenceTypeStopsIntoGtfsRt(alertData: Alert): P
 				{
 					$match: {
 						agency_id: alertData.agency_id,
-						line_id: Number(childId),
+						line_id: childId,
 						start_time_scheduled: {
 							$gte: alertData.active_period_start_date,
 							$lte: alertData.active_period_end_date,

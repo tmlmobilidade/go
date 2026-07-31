@@ -29,6 +29,18 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 	}
 
 	//
+	// Get the agency data from the database
+
+	const agencyData = await goDb.core.agencies.findOne({
+		_id: alertData.agency_id,
+	});
+
+	if (!agencyData) {
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Agency data not found for the agency_id.` });
+		return;
+	}
+
+	//
 	// For each ride, add its corresponding
 	// agency_id and route_id to the result
 
@@ -50,7 +62,7 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 		}
 
 		const parsedEntitySelector: GtfsRtEntitySelector = {
-			agency_id: alertData.agency_id,
+			agency_id: agencyData.code,
 			trip: {
 				route_id: foundRide.route_id,
 				schedule_relationship: 'SCHEDULED',

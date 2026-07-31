@@ -33,7 +33,7 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 	// Watch for changes to the RawApexTransactions collection
 	// and process the documents immediately.
 
-	const rawApexTransactionsCollection = await rawDb.raw.rawApexTransactions.getCollection();
+	const rawApexTransactionsCollection = await rawDb.apex.transactions.getCollection();
 
 	rawApexTransactionsCollection
 		.watch([{ $match: { 'fullDocument.version': { $in: ['banking-tap-4.0'] } } }])

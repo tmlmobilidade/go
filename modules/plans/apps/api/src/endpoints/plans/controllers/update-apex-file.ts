@@ -59,11 +59,8 @@ export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanD
 
 	try {
 		//
-		// Upload the new APEX file, point the plan at it, then drop the previous one.
-		// Failure modes (handled by storage saga + hooks):
-		// - upload fails → saga compensates blob/metadata; plan untouched
-		// - plan update fails → onSuccess throws → saga compensates the upload
-		// - old-file delete fails → onSuccess throws → onRollback restores plan → saga compensates the upload
+		// Upload the new APEX file and atomically point the plan at it in the
+		// same MongoDB transaction. Drop the previous file only after commit.
 
 		await storageProvider.upload(
 			buffer,
@@ -77,25 +74,19 @@ export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanD
 				updated_by: request.me.email,
 			},
 			{
-				onRollback: async () => {
-					if (!updatedPlanData) return;
-					await goDb.operation.plans.updateById(foundPlan._id, {
-						apex_file_id: originalApexFileId,
-					});
-					updatedPlanData = null;
-				},
-				onSuccess: async (_ctx, result) => {
+				onSuccess: async (_ctx, attachment, session) => {
 					updatedPlanData = await goDb.operation.plans.updateById(
 						foundPlan._id,
-						{ apex_file_id: result._id },
+						{ apex_file_id: attachment._id },
+						{ session },
 					);
-
-					if (originalApexFileId) {
-						await storageProvider.delete(originalApexFileId);
-					}
 				},
 			},
 		);
+
+		if (originalApexFileId) {
+			await storageProvider.delete(originalApexFileId);
+		}
 	} finally {
 		try {
 			unlinkSync(tempFilePath);

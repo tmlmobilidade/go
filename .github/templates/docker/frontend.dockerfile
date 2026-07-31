@@ -41,7 +41,7 @@ WORKDIR /app
 # Copy everything including package-lock.json from workflow cache
 COPY . .
 
-RUN turbo prune --scope=@tmlmobilidade/go-${MODULE}-${APP} --docker
+RUN turbo prune --docker @tmlmobilidade/go-${MODULE}-${APP}
 
 
 # # #
@@ -53,6 +53,10 @@ ARG MODULE
 ARG APP
 
 WORKDIR /app
+
+RUN apt-get update
+RUN apt-get install -y python3 build-essential
+RUN rm -rf /var/lib/apt/lists/*
 
 # First install the dependencies (as they change less often)
 COPY --from=pruner /app/out/json/ .

@@ -11,7 +11,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-const AGENCY_ORDER = ['4', '2', '16', '15', 'CM', '1', '8'] as const;
+const AGENCY_ORDER = ['LTP61', 'IA2N9', 'KB1F6', '7NTB1', 'CM', 'IA9T6', 'A3H3M'] as const;
 
 /* * */
 
@@ -30,11 +30,10 @@ export function SearchAgencyChips() {
 		<ScrollChips>
 			{AGENCY_ORDER.map((agencyId) => {
 				const isChecked = filterAgency.value === agencyId;
-
 				return (
 					<button
 						key={agencyId}
-						aria-label={AGENCY_NAMES_MAP[agencyId as keyof typeof AGENCY_NAMES_MAP].short}
+						aria-label={AGENCY_NAMES_MAP[agencyId]?.short}
 						aria-pressed={isChecked}
 						onClick={() => filterAgency.set(isChecked ? '' : agencyId)}
 						type="button"

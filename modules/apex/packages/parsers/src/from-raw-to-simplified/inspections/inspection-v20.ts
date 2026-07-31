@@ -20,7 +20,8 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 
 	const result: SimplifiedApexInspection = {
 		_id: doc.payload.transactionInfo.transactionId,
-		agency_id: doc.payload.operatorInfo.operatorLongID,
+		agency_code: doc.payload.operatorInfo.operatorLongID,
+		agency_id: doc.agency_id,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
 		control_destination_stop_id: doc.payload.controlServiceInfo.controlDestinationStopLongID,
@@ -41,7 +42,7 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		received_at: doc.received_at,
 		trip_id: doc.payload.controlServiceInfo.journeyID,
 		updated_at: Dates.now('utc').unix_timestamp,
-		vehicle_id: doc.payload.controlServiceInfo.vehicleID,
+		vehicle_id: String(doc.payload.controlServiceInfo.vehicleID),
 	};
 
 	return SimplifiedApexInspectionSchema.parse(result);

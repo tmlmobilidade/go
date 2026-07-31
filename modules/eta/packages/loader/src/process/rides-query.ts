@@ -2,8 +2,8 @@
 
 import { type AppConfig } from '@/lib/config.js';
 import { Dates } from '@tmlmobilidade/dates';
+import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Filter } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type HashedPatternWaypoint, type Ride } from '@tmlmobilidade/types';
 
@@ -123,7 +123,7 @@ export async function fetchHistoricalRidesForDayIndex(ridesQuery: Filter<Ride>, 
 		{
 			$lookup: {
 				as: 'pattern',
-				from: 'hashed_patterns',
+				from: 'hashed-patterns',
 				let: { patternId: '$hashed_pattern_id' },
 				pipeline: [
 					{

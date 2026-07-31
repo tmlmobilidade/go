@@ -21,7 +21,7 @@ const writer = new BatchWriter<RawApexTransaction>({
 				upsert: true,
 			},
 		}));
-		await rawDb.raw.rawApexTransactions.bulkWrite(writeOps);
+		await rawDb.apex.transactions.bulkWrite(writeOps);
 	},
 	title: 'rawdb|raw-apex-transactions',
 });
@@ -69,7 +69,7 @@ export async function syncPcgiTransactionEntities(timeChunk: PerformInTimeChunks
 
 	const sourceDbDistinctIds = await pcgiFileManager.fileManagement.transactionEntity.distinct('transactionId', sourceQuery);
 
-	const matchingDocumentIds = await rawDb.raw.rawApexTransactions.findMany({ _id: { $in: sourceDbDistinctIds } }, { projection: { _id: 1 } });
+	const matchingDocumentIds = await rawDb.apex.transactions.findMany({ _id: { $in: sourceDbDistinctIds } }, { projection: { _id: 1 } });
 	const matchingDocumentIdsUnique = new Set(matchingDocumentIds.map(doc => doc._id));
 
 	const missingDocumentIds = sourceDbDistinctIds.filter(id => !matchingDocumentIdsUnique.has(id));

@@ -7,6 +7,7 @@ import { TrendChip } from '@/components/layout/TrendChip';
 import { AgencyType } from '@/constants';
 import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
+import { getMetricAgencyData } from '@/utils/agencies';
 import { IconBus } from '@tabler/icons-react';
 import { RealtimeServiceCompliance } from '@tmlmobilidade/types';
 import { Grid, SemiCircleProgress } from '@tmlmobilidade/ui';
@@ -51,7 +52,21 @@ export function ServiceCompliance({ agency }: { agency?: AgencyType }) {
 
 		const agencyData = selectedAgency === 'all'
 			? latest.data.total
-			: latest.data.agencies[selectedAgency];
+			: getMetricAgencyData(latest.data.agencies, selectedAgency);
+
+		if (!agencyData) {
+			return {
+				accomplishedRides: { last_week: 0, now: 0 },
+				advancedRides: { last_week: 0, now: 0 },
+				delayedRides: { last_week: 0, now: 0 },
+				lastUpdated: new Date(latest.generated_at),
+				noPassengerRides: { last_week: 0, now: 0 },
+				ridesWithSales: { last_week: 0, now: 0 },
+				scheduledRides: { last_week: 0, now: 0 },
+				validRides: { last_week: 0, now: 0 },
+				validRidesPct: 0,
+			};
+		}
 
 		const calculatePct = (part: number, total: number) => {
 			return total > 0 ? (part / total) * 100 : 0;

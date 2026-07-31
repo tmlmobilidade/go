@@ -1,6 +1,6 @@
 /* * */
 
-import { locations } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Municipality } from '@tmlmobilidade/types';
 
 /* * */
@@ -12,7 +12,7 @@ import { type Municipality } from '@tmlmobilidade/types';
  */
 export async function fetchAllMunicipalities(): Promise<Map<string, Municipality>> {
 	try {
-		const allMunicipalities = await locations.findMunicipalities({}, { projection: { _id: 1, properties: 1 } });
+		const allMunicipalities = await goDb.locations.municipalities.findMany({}, { projection: { _id: 1, properties: 1 } });
 
 		const municipalityMap = new Map<string, Municipality>();
 
@@ -21,8 +21,7 @@ export async function fetchAllMunicipalities(): Promise<Map<string, Municipality
 		}
 
 		return municipalityMap;
-	}
-	catch (error) {
-		throw new Error(`Failed to fetch municipalities: ${error}`);
+	} catch (error) {
+		throw new Error(`Failed to fetch municipalities: ${error}`, { cause: error });
 	}
 }

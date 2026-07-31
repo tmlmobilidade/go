@@ -7,7 +7,7 @@ import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFl
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 
 /* * */
 
@@ -69,6 +69,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	//
 	// B. Fetch data
 
+	const { mutate: plansListMutate } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
 	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
 	const planWithLegacyPostersFile = planData as PlanWithLegacyPostersFile | undefined;
 	const postersFileId = planData?.apps?.posters?.file_id;
@@ -102,7 +103,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			operationFileMutate();
 			postersFileMutate();
 			apexFileMutate();
-			mutate(API_ROUTES.plans.PLANS_LIST);
+			plansListMutate();
 		},
 	});
 
@@ -110,7 +111,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'DELETE'),
 		onSuccess: () => {
 			form.resetDirty();
-			mutate(API_ROUTES.plans.PLANS_LIST);
+			plansListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.plans.APPROVED_LIST));
 		},
 	});
@@ -122,7 +123,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			planMutate(updatedItem);
 			operationFileMutate();
 			postersFileMutate();
-			mutate(API_ROUTES.plans.PLANS_LIST);
+			plansListMutate();
 		},
 	});
 
@@ -133,7 +134,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			planMutate(updatedItem);
 			operationFileMutate();
 			postersFileMutate();
-			mutate(API_ROUTES.plans.PLANS_LIST);
+			plansListMutate();
 		},
 	});
 
