@@ -1,7 +1,7 @@
 /* * */
 
-import { createGtfsMapper } from '@/gtfs-new/mapper.js';
-import { GtfsPathType } from '@/gtfs-new/path-type.js';
+import { GtfsStrictV29PathType } from '@tmlmobilidade/go-types-gtfs-strict';
+import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */
@@ -22,7 +22,7 @@ export const RoutePathTypeSchema = z.enum(RoutePathTypeValues);
 
 export type RoutePathType = z.infer<typeof RoutePathTypeSchema>;
 
-export const pathTypeMapper = createGtfsMapper<RoutePathType, GtfsPathType>({
+export const pathTypeMapper = createGtfsMapper<RoutePathType, GtfsStrictV29PathType>({
 	base: '1',
 	partial: '2',
 	variant: '3',

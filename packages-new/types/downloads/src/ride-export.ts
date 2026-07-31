@@ -1,10 +1,8 @@
 /* * */
 
-import { AlertCauseSchema } from '@/alerts/cause.js';
-import { FileExportBaseSchema } from '@/file-exports/base.js';
-import { RideAcceptanceStatusSchema, RideJustificationSourceSchema } from '@/operation/rides/ride-acceptance.js';
-import { RideAnalysisGradeWithNoneSchema } from '@/operation/rides/ride-analysis.js';
+import { FileExportBaseSchema } from '@/base.js';
 import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { AlertCauseSchema, RideAcceptanceStatusSchema, RideAnalysisGradeWithNoneSchema, RideJustificationSourceSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */

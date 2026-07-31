@@ -1,9 +1,8 @@
 /* * */
 
-import { GtfsAgencySchema } from '@/gtfs/agency.js';
-import { GtfsFeedInfoSchema } from '@/gtfs/feed-info.js';
 import { PlanAppStatusSchema } from '@/plans/plan-app-status.js';
 import { PlanPcgiLegacySchema } from '@/plans/plan-pcgi-legacy.js';
+import { GtfsAgencySchema, GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-gtfs';
 import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 

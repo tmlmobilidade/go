@@ -36,7 +36,9 @@
 	"dependencies": {
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-gtfs-validator": "*",
+		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/types": "*",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {

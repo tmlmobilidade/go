@@ -1,6 +1,6 @@
 /* * */
 
-import { EventRuleSchema } from '@/offer/rules.js';
+import { EventRuleSchema } from '@/network/rules.js';
 import { DocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 

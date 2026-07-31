@@ -5,6 +5,7 @@ export * from '@/app-configs/index.js';
 export * from '@/attachment.js';
 export * from '@/auth/index.js';
 export * from '@/calendar/index.js';
+export * from '@/gtfs-new/index.js';
 export * from '@/gtfs-tml/index.js';
 export * from '@/gtfs/index.js';
 export * from '@/locations/index.js';

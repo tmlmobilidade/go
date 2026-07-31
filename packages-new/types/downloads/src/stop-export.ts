@@ -1,14 +1,8 @@
 /* * */
 
-import { FileExportBaseSchema } from '@/file-exports/base.js';
-import { StopConnectionSchema } from '@/stops/connections.js';
-import { StopEquipmentSchema } from '@/stops/equipment.js';
-import { StopFacilitySchema } from '@/stops/facilities.js';
-import { StopFlagSchema } from '@/stops/flag.js';
-import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
-import { StopRoadTypeSchema } from '@/stops/road-type.js';
-import { StopIdSchema } from '@/stops/stop-id.js';
+import { FileExportBaseSchema } from '@/base.js';
 import { AvailabilityStatusSchema, ConditionStatusSchema, LifecycleStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { StopConnectionSchema, StopEquipmentSchema, StopFacilitySchema, StopFlagSchema, StopIdSchema, StopJurisdictionSchema, StopRoadTypeSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */

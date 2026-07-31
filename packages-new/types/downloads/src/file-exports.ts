@@ -1,10 +1,10 @@
 /* * */
 
-import { GtfsExportSchema } from '@/file-exports/gtfs-export.js';
-import { RideExportSchema } from '@/file-exports/ride-export.js';
-import { SamsAnalysisExportSchema } from '@/file-exports/sams-analysis-export.js';
-import { StopExportSchema } from '@/file-exports/stop-export.js';
-import { VehicleExportSchema } from '@/file-exports/vehicle-export.js';
+import { GtfsExportSchema } from '@/gtfs-export.js';
+import { RideExportSchema } from '@/ride-export.js';
+import { SamsAnalysisExportSchema } from '@/sams-analysis-export.js';
+import { StopExportSchema } from '@/stop-export.js';
+import { VehicleExportSchema } from '@/vehicle-export.js';
 import { z } from 'zod';
 
 /* * */

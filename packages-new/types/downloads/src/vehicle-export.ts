@@ -1,6 +1,6 @@
 /* * */
 
-import { FileExportBaseSchema } from '@/file-exports/base.js';
+import { FileExportBaseSchema } from '@/base.js';
 import { z } from 'zod';
 
 /* * */

@@ -1,7 +1,7 @@
 /* * */
 
-import { createGtfsMapper } from '@/gtfs-new/mapper.js';
-import { GtfsRouteType } from '@/gtfs-new/route-type.js';
+import { GtfsRouteType } from '@tmlmobilidade/go-types-gtfs';
+import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */

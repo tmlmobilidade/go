@@ -1,7 +1,7 @@
 /* * */
 
-import { FileExportBaseSchema } from '@/file-exports/base.js';
-import { LinesModeSchema } from '@/offer/rules.js';
+import { FileExportBaseSchema } from '@/base.js';
+import { LinesModeSchema } from '@tmlmobilidade/go-types-offer';
 import { OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
