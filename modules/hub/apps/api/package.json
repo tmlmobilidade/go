@@ -14,7 +14,9 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix"
+		"lint:fix": "eslint ./src --fix",
+		"test:passenger-demand": "node --import tsx ./src/tests/passenger-demand.ts",
+		"test:videowall": "node --import tsx ./src/tests/videowall-metrics.ts"
 	},
 	"dependencies": {
 		"@fastify/websocket": "11.3.0",
@@ -26,6 +28,7 @@
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rss": "*"
