@@ -4,7 +4,8 @@ import { useFareDetailContext } from '@/components/fares/detail/FareDetail.conte
 import { FareDetailHeader } from '@/components/fares/detail/FareDetailHeader';
 import { currencyOptions, paymentMethodsOptions, transfersOptions } from '@/types/fares';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { FareSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { FareSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, NumberInput, Pane, Section, Select, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
 
 /* * */

@@ -2,7 +2,8 @@
 
 import { useLineCreateContext } from '@/components/lines/create/LineCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { LineSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { LineSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Section, Select, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
 
 /* * */
