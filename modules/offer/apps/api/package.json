@@ -27,6 +27,7 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
