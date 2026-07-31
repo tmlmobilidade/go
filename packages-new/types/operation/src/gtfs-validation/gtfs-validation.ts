@@ -1,7 +1,7 @@
 /* * */
 
-import { GtfsValidationSummarySchema } from '@/output/summary.js';
 import { GtfsAgencySchema, GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsValidationOutputSummarySchema } from '@tmlmobilidade/go-types-gtfs-validator';
 import { DocumentSchema, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -14,7 +14,7 @@ export const GtfsValidationSchema = DocumentSchema.extend({
 	gtfs_feed_info: GtfsFeedInfoSchema,
 	notification_sent: z.boolean().default(false),
 	processing_status: ProcessingStatusSchema.default('waiting'),
-	summary: GtfsValidationSummarySchema.nullish(),
+	summary: GtfsValidationOutputSummarySchema.nullish(),
 	validation_attempts: z.number().default(0),
 	validity_status: ValidityStatusSchema.default('unknown'),
 });

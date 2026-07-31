@@ -1,15 +1,8 @@
 /* * */
 
+import { GtfsValidationRuleCompareSchema } from '@/rules/compare.js';
 import { SeverityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
-
-/**
- * Represents a comparison entry for a GTFS validaton rule.
- */
-export const GtfsValidationRuleCompareSchema = z.object({
-	key: z.string(),
-	value: z.string(),
-});
 
 /**
  * Represents a GTFS validator rule.

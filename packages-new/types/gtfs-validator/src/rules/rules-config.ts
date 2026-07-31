@@ -1,6 +1,8 @@
 /* * */
 
-import { GtfsValidationRule } from './output/rule.js';
+import { GtfsValidationRule } from '@/rules/rule.js';
+
+/* * */
 
 export const gtfsValidationRulesConfig: GtfsValidationRule = {
 	agency_email_valid_address: {

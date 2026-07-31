@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsValidationMessageSchema = z.object({
+export const GtfsValidationOutputMessageSchema = z.object({
 	field: z.string(),
 	file_name: z.string(),
 	message: z.string(),
@@ -14,4 +14,4 @@ export const GtfsValidationMessageSchema = z.object({
 	severity: SeverityStatusSchema,
 });
 
-export type GtfsValidationMessage = z.infer<typeof GtfsValidationMessageSchema>;
+export type GtfsValidationOutputMessage = z.infer<typeof GtfsValidationOutputMessageSchema>;
