@@ -7,6 +7,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HubPlan, HubPlanSchema } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { validateOperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -36,8 +37,8 @@ export async function publishApprovedPlans() {
 			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
 			// Check if the plans is active
 			const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
-			const nowIsAfterStartDate = planData.gtfs_feed_info?.feed_start_date && currentOperationalDate >= planData.gtfs_feed_info?.feed_start_date;
-			const nowIsBeforeEndDate = planData.gtfs_feed_info?.feed_end_date && currentOperationalDate <= planData.gtfs_feed_info?.feed_end_date;
+			const nowIsAfterStartDate = planData.gtfs_feed_info?.feed_start_date && currentOperationalDate >= validateOperationalDate(planData.gtfs_feed_info?.feed_start_date);
+			const nowIsBeforeEndDate = planData.gtfs_feed_info?.feed_end_date && currentOperationalDate <= validateOperationalDate(planData.gtfs_feed_info?.feed_end_date);
 			const isActive = nowIsAfterStartDate && nowIsBeforeEndDate;
 			// Parse the plan data
 			const parsedPlan = HubPlanSchema.safeParse({
