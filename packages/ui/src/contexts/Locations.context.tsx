@@ -3,8 +3,8 @@
 import { ApiResponse } from '@carrismetropolitana/api-types/common';
 import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Zone } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { Zone } from '@tmlmobilidade/types';
 import { standardSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
