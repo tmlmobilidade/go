@@ -1,6 +1,6 @@
 'use client';
 
-import { IsoWeekday, WEEKDAY_OPTIONS } from '@tmlmobilidade/types';
+import { type IsoWeekday, WEEKDAY_OPTIONS } from '@tmlmobilidade/go-types-offer';
 import React from 'react';
 
 import { SegmentedMultiSelect } from '../SegmentedMultiSelect';
