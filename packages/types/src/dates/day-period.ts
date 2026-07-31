@@ -10,11 +10,11 @@ export interface DayPeriodTimeRange {
 }
 
 export const DAY_PERIOD_TIME_RANGES: Record<DayPeriod, DayPeriodTimeRange> = {
-	CD: { end: '15:59', start: '10:00' },
-	M: { end: '05:59', start: '00:00' },
-	N: { end: '23:59', start: '20:00' },
-	PPM: { end: '09:59', start: '06:00' },
-	PPT: { end: '19:59', start: '16:00' },
+	CD: { end: '16:59', start: '10:00' },
+	M: { end: '06:59', start: '04:00' },
+	N: { end: '03:59', start: '20:00' },
+	PPM: { end: '09:59', start: '07:00' },
+	PPT: { end: '19:59', start: '17:00' },
 };
 
 const DAY_PERIOD_LABEL_BASE: Record<DayPeriod, { long: string, short: string }> = {
