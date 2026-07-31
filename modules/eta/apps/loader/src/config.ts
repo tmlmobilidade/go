@@ -8,7 +8,7 @@ const isProduction = process.env.ENVIRONMENT === 'prd';
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
-	agencyIds: ['1', '8', '21', '41', '42', '43', '44'],
+	agencyIds: ['IA9T6', 'A3H3M', 'HF16N', 'LA77N', 'BNA17', 'YA15B', 'A2L1N'],
 
 	development: {
 		isDevelopment: !isProduction,
