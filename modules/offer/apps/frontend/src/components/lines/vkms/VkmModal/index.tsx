@@ -2,7 +2,7 @@
 
 import { useVkmModalContext, VkmModalContextProvider } from '@/contexts/VkmModal.context';
 import { IconCalculator, IconRulerMeasure } from '@tabler/icons-react';
-import { type VkmCalculationResult, type VkmExtensionSource, type VkmPeriodResult } from '@tmlmobilidade/types';
+import { type VkmCalculationResult, type VkmExtensionSource, type VkmPeriodResult } from '@tmlmobilidade/go-types-offer';
 import { Button, CloseButton, closeModal, Collapsible, DateInput, Divider, Grid, Label, Loader, MeContextProvider, openModal, Section, SegmentedControl, type SegmentedControlDataItem, Select, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
