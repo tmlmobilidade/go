@@ -2,6 +2,9 @@
 
 const dynamicKey = () => 'use-for-dynamic-key';
 
+export const hubV2PassengerDemandMetricsCacheKey = 'hub:v2:metrics:passenger-demand:json';
+export const hubV2VideowallMetricsCacheKey = 'hub:v2:metrics:videowall:json';
+
 export const cacheDbKeyValues = [
 	'hub:v1:navegante:app-enabled',
 	'hub:v1:alerts:published:json',
@@ -24,7 +27,9 @@ export const cacheDbKeyValues = [
 	'hub:v1:network:routes',
 	'hub:v1:network:plans',
 	'hub:v1:metrics:demand:by-agency:by-operational-date:json',
+	hubV2PassengerDemandMetricsCacheKey,
 	'hub:v1:network:vehicles:protobuf',
+	hubV2VideowallMetricsCacheKey,
 	`hub:v1:network:patterns:${dynamicKey()}`,
 	`hub:v1:network:shapes:${dynamicKey()}`,
 ] as const;
