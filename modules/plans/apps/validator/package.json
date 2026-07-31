@@ -23,6 +23,7 @@
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
+		"@tmlmobilidade/go-types-gtfs-validator": "*",
 		"@tmlmobilidade/gtfs-validator": "20260624.1438.43",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
