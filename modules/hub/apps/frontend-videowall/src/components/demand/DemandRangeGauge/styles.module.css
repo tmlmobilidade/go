@@ -8,8 +8,7 @@
 	width: 100%;
 }
 
-.header,
-.labels {
+.header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -20,18 +19,6 @@
 	font-weight: 600;
 	color: var(--system-muted);
 	text-transform: uppercase;
-}
-
-.header strong {
-	font-size: clamp(13px, 1.5vw, 18px);
-	color: var(--demand-accent);
-}
-
-.labels {
-	padding: 0 28%;
-	font-size: clamp(9px, 0.9vw, 12px);
-	font-weight: 600;
-	color: var(--system-muted);
 }
 
 /* * */
@@ -81,4 +68,10 @@
 	font-size: 14px;
 	font-weight: 600;
 	fill: var(--system-text);
+}
+
+.rangeValue {
+	font-size: 12px;
+	font-weight: 600;
+	fill: var(--system-muted);
 }

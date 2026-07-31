@@ -53,18 +53,13 @@ export function DemandRangeGauge({ currentValue, referenceValue, typicalRange }:
 		<section aria-label={t('default:videowall.demand_chart.reference_range')} className={styles.container}>
 			<div className={styles.header}>
 				<p>{t('default:videowall.demand_chart.reference_range')}</p>
-				<strong>
-					{t('default:videowall.demand_chart.current_value', '', {
-						value: numberFormatter.format(currentValue),
-					})}
-				</strong>
 			</div>
 
 			<svg
 				aria-hidden="true"
 				className={styles.gauge}
 				preserveAspectRatio="none"
-				viewBox="0 0 1000 54"
+				viewBox="0 0 1000 60"
 			>
 				<rect className={styles.belowRange} height="12" width={toSvgPosition(lowerPosition)} x="0" y="22" />
 				<rect
@@ -105,12 +100,23 @@ export function DemandRangeGauge({ currentValue, referenceValue, typicalRange }:
 					y1="18"
 					y2="38"
 				/>
+				<text
+					className={styles.rangeValue}
+					textAnchor="middle"
+					x={toSvgPosition(lowerPosition)}
+					y="56"
+				>
+					{numberFormatter.format(typicalRange.lower)}
+				</text>
+				<text
+					className={styles.rangeValue}
+					textAnchor="middle"
+					x={toSvgPosition(upperPosition)}
+					y="56"
+				>
+					{numberFormatter.format(typicalRange.upper)}
+				</text>
 			</svg>
-
-			<div className={styles.labels}>
-				<span>{numberFormatter.format(typicalRange.lower)}</span>
-				<span>{numberFormatter.format(typicalRange.upper)}</span>
-			</div>
 		</section>
 	);
 

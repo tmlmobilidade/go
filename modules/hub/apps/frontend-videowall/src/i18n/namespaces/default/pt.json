@@ -324,7 +324,6 @@
 		"demand_chart": {
 			"comparison": "vs referência",
 			"current_series": "Hoje",
-			"current_value": "Hoje {value}",
 			"reference_band": "Intervalo de referência",
 			"reference_range": "Intervalo de referência",
 			"reference_value": "Referência {value}",
