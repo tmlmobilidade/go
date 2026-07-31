@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/types';
+import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
 import jszip from 'jszip';
 import papa from 'papaparse';
 
@@ -37,8 +37,7 @@ self.addEventListener('message', async (event) => {
 
 		// Return the feed info data
 		self.postMessage({ agency: agencyData.data[0], feed_info: feedInfoData.data[0] });
-	}
-	catch (error) {
+	} catch (error) {
 		console.error('Error parsing GTFS file:', error);
 		self.postMessage({ error: error instanceof Error ? error : new Error('Unknown error') });
 	}

@@ -4,7 +4,8 @@
 
 import { closePlanChangeModal } from '@/components/plans/change/PlanChange.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { GtfsValidation, type Plan } from '@tmlmobilidade/types';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
+import { type Plan } from '@tmlmobilidade/types';
 import { useHandleUpdate, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';

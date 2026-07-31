@@ -3,7 +3,8 @@
 import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ApprovePlanModal';
 import { REQUEST_APPROVAL_MODAL_ID } from '@/components/validations/detail/RequestApprovalModal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type GtfsValidation, type Plan } from '@tmlmobilidade/types';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
+import { type Plan } from '@tmlmobilidade/types';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';

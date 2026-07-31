@@ -1,26 +1,26 @@
 /* * */
 
+import { type SeverityStatus } from '@tmlmobilidade/go-types-shared';
 import { Tag } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
 /* * */
 
-type Severity = 'error' | 'forbidden' | 'ignore' | 'warning';
-
 interface SeverityTagProps {
 	dimmed?: boolean
 	label?: string
 	onClick?: () => void
 	selected?: boolean
-	severity: Severity
+	severity: SeverityStatus
 }
 
 const SEVERITY_CONFIG = {
 	error: { ariaLabel: 'Filtrar por erros', defaultLabel: 'Erro', variant: 'danger' },
 	forbidden: { ariaLabel: 'Filtrar por proibidos', defaultLabel: 'Proibido', variant: 'danger' },
+	info: { ariaLabel: 'Filtrar por informações', defaultLabel: 'Informação', variant: 'secondary' },
 	warning: { ariaLabel: 'Filtrar por avisos', defaultLabel: 'Aviso', variant: 'warning' },
-} as const satisfies Record<Exclude<Severity, 'ignore'>, { ariaLabel: string, defaultLabel: string, variant: 'danger' | 'warning' }>;
+} as const satisfies Record<Exclude<SeverityStatus, 'ignore'>, { ariaLabel: string, defaultLabel: string, variant: 'danger' | 'secondary' | 'warning' }>;
 
 /* * */
 

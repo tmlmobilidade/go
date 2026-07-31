@@ -5,7 +5,7 @@ import { ValidationsDetailSectionResultCellRows } from '@/components/validations
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { getGtfsScheduleDocUrl } from '@/lib/gtfs-schedule-doc-url';
 import { IconExternalLink } from '@tabler/icons-react';
-import { type GtfsValidationMessage } from '@tmlmobilidade/types';
+import { type GtfsValidationOutputMessage } from '@tmlmobilidade/go-types-gtfs-validator';
 import { Collapsible, DataTable, DataTableColumn, Divider, Section } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
@@ -22,7 +22,7 @@ export function ValidationsDetailSectionResult() {
 	const validationsDetailContext = useValidationsDetailContext();
 	const [selectedSeverity, setSelectedSeverity] = useState<'error' | 'warning' | null>(null);
 
-	const columns: DataTableColumn<GtfsValidationMessage>[] = [
+	const columns: DataTableColumn<GtfsValidationOutputMessage>[] = [
 		{
 			accessor: 'file_name',
 			title: 'Ficheiro',
