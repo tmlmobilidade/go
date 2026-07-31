@@ -2,7 +2,7 @@
 
 import { closeCreateTypologyModal } from '@/components/typologies/create/TypologyCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateTypologyDto, CreateTypologySchema, Typology } from '@tmlmobilidade/types';
+import { CreateTypologyDto, CreateTypologySchema, Typology } from '@tmlmobilidade/go-types-offer';
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
