@@ -2,7 +2,8 @@
 
 import { useTypologyCreateContext } from '@/components/typologies/create/TypologyCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, TypologySchema } from '@tmlmobilidade/types';
+import { TypologySchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { MultiSelect, Section, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
 /* * */
 
