@@ -3,7 +3,7 @@
 import { LinesListContextProvider, useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { GtfsExportModalContextProvider, useGtfsExportModalContext } from '@/contexts/GtfsExport.context';
 import { IconFileDownload } from '@tabler/icons-react';
-import { LinesMode } from '@tmlmobilidade/types';
+import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { Button, Checkbox, CloseButton, closeModal, DateInput, Divider, Grid, Label, MeContextProvider, MultiSelect, NumberInput, openModal, Section, SegmentedControl, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
