@@ -1,4 +1,3 @@
-import { AppConfig } from '@/lib/config.js';
 import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -13,7 +12,6 @@ export async function cleanupCurrentWaypoints(clickhouseClient: Parameters<typeo
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
-		AppConfig.database,
 		pipelinePath(CLEANUP_CURRENT_WAYPOINTS_SQL),
 	);
 

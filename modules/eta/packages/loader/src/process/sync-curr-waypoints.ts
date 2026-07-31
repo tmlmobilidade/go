@@ -19,11 +19,11 @@ export async function syncCurrentWaypoints(clickhouseClient: Parameters<typeof q
 		insertFn: async (data) => {
 			await clickhouseClient.insert({
 				format: 'JSONEachRow',
-				table: qualifiedTable(config.database, 'curr_waypoints'),
+				table: qualifiedTable('eta', 'curr_waypoints'),
 				values: data,
 			});
 		},
-		title: qualifiedTable(config.database, 'curr_waypoints'),
+		title: qualifiedTable('eta', 'curr_waypoints'),
 	});
 
 	const hashedTripsCollection = await goDb.operation.hashedTrips.getCollection();
