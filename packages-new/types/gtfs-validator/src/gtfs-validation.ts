@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsValidationSummarySchema } from '@/clean/summary.js';
+import { GtfsValidationSummarySchema } from '@/output/summary.js';
 import { GtfsAgencySchema, GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-gtfs';
 import { DocumentSchema, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';

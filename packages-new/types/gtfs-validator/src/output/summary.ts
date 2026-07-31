@@ -1,6 +1,6 @@
 /* * */
 
-import { GtfsValidationMessageSchema } from '@/clean/message.js';
+import { GtfsValidationMessageSchema } from '@/output/message.js';
 import { z } from 'zod';
 
 /* * */
