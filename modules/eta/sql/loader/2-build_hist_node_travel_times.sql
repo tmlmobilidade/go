@@ -261,4 +261,7 @@ INNER JOIN (
     AND rn.node_index      = sn.node_index
 SETTINGS
     join_algorithm = 'full_sorting_merge',
-    max_bytes_in_join = 0;
+    max_bytes_in_join = 0,
+    -- Safety net: spill the per-event snap aggregation (GROUP BY e._id) to disk
+    -- instead of dying on unusually heavy days.
+    max_bytes_before_external_group_by = 4000000000;
