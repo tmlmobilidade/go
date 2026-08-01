@@ -1,6 +1,6 @@
 /* * */
 
-import { RideAnalysisBaseSchema } from '@/rides/analyses/analysis-base.js';
+import { RideAnalysisBaseSchema } from '@/ride-analyses/analysis-base.js';
 import { z } from 'zod';
 
 /* * */
