@@ -13,7 +13,7 @@ export async function getCoreVehicleEvents(): Promise<string[]> {
 	//
 
 	const timer = new Timer();
-	const sessionId = Math.random().toString(36).substring(2, 5).toUpperCase();
+	const sessionId = `${process.pid}-${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
 
 	try {
 		//
