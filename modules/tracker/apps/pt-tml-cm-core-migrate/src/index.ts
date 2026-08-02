@@ -25,15 +25,20 @@ async function main() {
 	if (currentEnvironment === 'dev') coordinatorUrl = `http://localhost:5050/core-vehicle-events`;
 	else coordinatorUrl = `http://${currentEnvironment}-tracker-pt-tml-cm-core-migrate-coordinator.${currentEnvironment}-tracker.svc.cluster.local/core-vehicle-events`;
 
-	const coreVehicleEventsSessionIdResponse = await fetch(coordinatorUrl);
-	const coreVehicleEventsSessionId = await coreVehicleEventsSessionIdResponse.json() as string;
-
-	console.log(`Fetched core vehicle events session ID from coordinator: ${coreVehicleEventsSessionId} (fetch: ${fetchCoordinatorTimer.get()})`);
+	const coreVehicleEventsSessionId = await fetch(coordinatorUrl)
+		.then(response => response.json())
+		.then(data => data)
+		.catch((error) => {
+			console.error(`Failed to fetch core vehicle events session ID from coordinator: ${error}`);
+			return null;
+		});
 
 	if (!coreVehicleEventsSessionId) {
-		console.log('No core vehicle events session ID received.');
+		console.error('No core vehicle events session ID received.');
 		return;
 	}
+
+	console.log(`Fetched core vehicle events session ID from coordinator: ${coreVehicleEventsSessionId} (fetch: ${fetchCoordinatorTimer.get()})`);
 
 	//
 	// Get the earliest date from which we have data to sync,
