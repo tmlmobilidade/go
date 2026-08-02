@@ -12,10 +12,10 @@ await (async function init() {
 	//
 	// Reset ststaus on init
 
-	console.log('Resetting status on init...');
+	console.log('Resetting session on init...');
 	const coreVehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
-	const result = await coreVehicleEventsCollection.updateMany({ status: 'processing' }, { $set: { status: 'waiting' } });
-	console.log('Reset status on init:', result);
+	const result = await coreVehicleEventsCollection.updateMany({ session: { $exists: true } }, { $unset: { session: true } });
+	console.log('Reset session on init:', result);
 
 	//
 	// Setup variables

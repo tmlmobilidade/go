@@ -25,13 +25,13 @@ async function main() {
 	if (currentEnvironment === 'dev') coordinatorUrl = `http://localhost:5050/core-vehicle-events`;
 	else coordinatorUrl = `http://${currentEnvironment}-tracker-pt-tml-cm-core-migrate-coordinator.${currentEnvironment}-tracker.svc.cluster.local/core-vehicle-events`;
 
-	const coreVehicleEventsBatchResponse = await fetch(coordinatorUrl);
-	const coreVehicleEventsBatch = await coreVehicleEventsBatchResponse.json() as string[];
+	const coreVehicleEventsSessionIdResponse = await fetch(coordinatorUrl);
+	const coreVehicleEventsSessionId = await coreVehicleEventsSessionIdResponse.json() as string;
 
-	console.log(`Fetched ${coreVehicleEventsBatch.length} core vehicle events from coordinator (fetch: ${fetchCoordinatorTimer.get()})`);
+	console.log(`Fetched core vehicle events session ID from coordinator: ${coreVehicleEventsSessionId} (fetch: ${fetchCoordinatorTimer.get()})`);
 
-	if (!coreVehicleEventsBatch.length) {
-		console.log('No core vehicle events to process');
+	if (!coreVehicleEventsSessionId) {
+		console.log('No core vehicle events session ID received.');
 		return;
 	}
 
@@ -51,7 +51,7 @@ async function main() {
 	const vehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
 	const vehicleEventsCursor = vehicleEventsCollection
-		.find({ _id: { $in: coreVehicleEventsBatch.map(id => new ObjectId(id)) as unknown as string[] } }, { sort: { millis: -1 } })
+		.find({ session: coreVehicleEventsSessionId }, { sort: { millis: -1 } })
 		.stream();
 
 	let insertedCount = 0;
