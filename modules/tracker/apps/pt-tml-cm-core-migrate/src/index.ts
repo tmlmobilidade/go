@@ -97,7 +97,7 @@ async function main() {
 			if (error.message.startsWith('E11000')) {
 				// Logger.error({ message: `Duplicate document "${document._id}" found in source database. Deleting it from source database.` });
 				const deleteResult = await vehicleEventsCollection.deleteOne({ _id: new ObjectId(document._id) as unknown as string });
-				// Logger.error({ message: `Deleted duplicate document "${document._id}" from source database (deleted: ${deleteResult.deletedCount})` });
+				console.error(`Deleted duplicate document "${document._id}" from source database (deleted: ${deleteResult.deletedCount})`);
 			} else {
 				console.error(`!-> Failed to migrate document "${document._id}": ${error.message}`);
 			}

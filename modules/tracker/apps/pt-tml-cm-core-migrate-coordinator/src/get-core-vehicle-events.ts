@@ -24,7 +24,7 @@ export async function getCoreVehicleEvents(): Promise<string[]> {
 		// we need to make sure that instances request the next batch of documents
 		// sequentially. To do that, we implement a simple lock mechanism.
 
-		while (IS_BUSY) {
+		if (IS_BUSY) {
 			console.log(`[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})`);
 			return [];
 		}
