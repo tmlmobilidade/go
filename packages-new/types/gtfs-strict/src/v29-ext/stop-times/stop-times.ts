@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29StopTimesSchema = z.object({
+export const GtfsStrictV29ExtStopTimesSchema = z.object({
 	arrival_time: GtfsTimeSchema,
 	departure_time: GtfsTimeSchema,
 	drop_off_type: GtfsPickupDropoffTypeSchema,
@@ -26,4 +26,4 @@ export const GtfsStrictV29StopTimesSchema = z.object({
  * coordinating transit services, allowing passengers to know when a vehicle will be at a particular stop
  * and what type of service is available at that stop.
  */
-export type GtfsStrictV29StopTimes = z.infer<typeof GtfsStrictV29StopTimesSchema>;
+export type GtfsStrictV29ExtStopTimes = z.infer<typeof GtfsStrictV29ExtStopTimesSchema>;

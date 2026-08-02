@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29TripsSchema = z.object({
+export const GtfsStrictV29ExtTripsSchema = z.object({
 	bikes_allowed: GtfsTernarySchema.optional(),
 	block_id: z.string().optional(),
 	calendar_desc: z.string(),
@@ -26,4 +26,4 @@ export const GtfsStrictV29TripsSchema = z.object({
  * scheduled to run on specific dates (`service_id`) and times (`stop_times`).
  * It also includes the `calendar_desc`, `pattern_id`, and `pattern_short_name` fields.
  */
-export type GtfsStrictV29Trips = z.infer<typeof GtfsStrictV29TripsSchema>;
+export type GtfsStrictV29ExtTrips = z.infer<typeof GtfsStrictV29ExtTripsSchema>;

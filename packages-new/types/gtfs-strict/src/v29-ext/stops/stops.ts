@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29StopsSchema = z.object({
+export const GtfsStrictV29ExtStopsSchema = z.object({
 	level_id: z.string().optional(),
 	location_type: GtfsLocationTypeSchema,
 	parent_station: z.string().optional(),
@@ -27,4 +27,4 @@ export const GtfsStrictV29StopsSchema = z.object({
  * A stop is a physical location where passengers can board or alight from a transit vehicle.
  * It includes information such as the stop ID, name, location, and type of service.
  */
-export type GtfsStrictV29Stops = z.infer<typeof GtfsStrictV29StopsSchema>;
+export type GtfsStrictV29ExtStops = z.infer<typeof GtfsStrictV29ExtStopsSchema>;

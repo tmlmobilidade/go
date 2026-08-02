@@ -1,12 +1,12 @@
 /* * */
 
-import { GtfsStrictV29PathTypeSchema } from '@/v29/routes/path-type.js';
+import { GtfsStrictV29ExtPathTypeSchema } from '@/v29-ext/routes/path-type.js';
 import { GtfsBinarySchema, GtfsPickupDropoffTypeSchema, GtfsRouteTypeSchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29RoutesSchema = z.object({
+export const GtfsStrictV29ExtRoutesSchema = z.object({
 	agency_id: z.string(),
 	circular: GtfsBinarySchema.optional().default('0'),
 	continuous_drop_off: GtfsPickupDropoffTypeSchema.optional().default('1'),
@@ -14,7 +14,7 @@ export const GtfsStrictV29RoutesSchema = z.object({
 	line_id: z.string(),
 	line_long_name: z.string(),
 	line_short_name: z.string(),
-	path_type: GtfsStrictV29PathTypeSchema.optional(),
+	path_type: GtfsStrictV29ExtPathTypeSchema.optional(),
 	route_color: z.string(),
 	route_desc: z.string().optional(),
 	route_destination: z.string().optional(),
@@ -34,4 +34,4 @@ export const GtfsStrictV29RoutesSchema = z.object({
  * and adds the `continuous_drop_off` and `continuous_pickup` fields to be able to
  * accomodate multiple pickup and drop-off types for the same route.
  */
-export type GtfsStrictV29Routes = z.infer<typeof GtfsStrictV29RoutesSchema>;
+export type GtfsStrictV29ExtRoutes = z.infer<typeof GtfsStrictV29ExtRoutesSchema>;

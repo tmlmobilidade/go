@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29CalendarDatesSchema = z.object({
+export const GtfsStrictV29ExtCalendarDatesSchema = z.object({
 	date: GtfsDateSchema,
 	day_type: GtfsStrictV29DayTypeSchema,
 	exception_type: z.literal('1'),
@@ -23,5 +23,5 @@ export const GtfsStrictV29CalendarDatesSchema = z.object({
  * This is used to override the regular calendar for a specific date.
  * GTFS strict v1 also supports using only this method for defining dates for services.
  */
-export type GtfsStrictV29CalendarDates = z.infer<typeof GtfsStrictV29CalendarDatesSchema>;
+export type GtfsStrictV29ExtCalendarDates = z.infer<typeof GtfsStrictV29ExtCalendarDatesSchema>;
 
