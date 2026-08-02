@@ -1,7 +1,17 @@
 -- =============================================================================
 -- Aggregates travel time statistics per shape, node, and calendar/time segment.
--- Source: node_travel_times_samples
--- Target: node_travel_times_aggregates
+-- Source: eta.hist_node_travel_times
+-- Target: eta.hist_node_travel_times_aggregation
+--
+-- Processes ONE operational day per run ({chunk_date}). The loader iterates the
+-- historical window day by day, so aggregation state stays bounded to a single
+-- day's groups instead of the whole window (which previously exceeded the query
+-- memory limit during the final GROUP BY merge).
+--
+-- {scan_start}/{scan_end} (ms epoch) bound the created_at scan generously
+-- around the operational day (timezone-agnostic padding); the exact row
+-- selection is done by the operational_date = {chunk_date} filter, so chunk
+-- boundaries can never split an aggregation group.
 --
 -- Dimensions produced:
 --   - operational_date : service date (pre-4h events shifted to previous day)
@@ -46,12 +56,13 @@ parsed_timestamps AS (
     FROM eta.hist_node_travel_times
     WHERE
         travel_time_seconds > 0  -- discard zero/null samples (GPS noise, missing segments)
-        AND created_at >= {window_start}
-        AND created_at < {window_end}
+        AND created_at >= {scan_start}
+        AND created_at < {scan_end}
 ),
 
 -- -----------------------------------------------------------------------------
--- Step 2: Derive date and time fields used for grouping and classification.
+-- Step 2: Derive date and time fields used for grouping and classification,
+--         and keep only rows belonging to this chunk's operational day.
 -- -----------------------------------------------------------------------------
 derived_fields AS (
     SELECT
@@ -62,6 +73,7 @@ derived_fields AS (
         toHour(event_ts)             AS event_hour,        -- raw wall-clock hour for period_of_day
         toDayOfWeek(operational_ts)  AS operational_weekday -- 1=Mon … 7=Sun
     FROM parsed_timestamps
+    WHERE toUInt32(formatDateTime(operational_ts, '%Y%m%d')) = {chunk_date}
 ),
 
 -- -----------------------------------------------------------------------------
@@ -102,6 +114,8 @@ classified AS (
 
 -- -----------------------------------------------------------------------------
 -- Final: Aggregate per shape/node/date/segment combination.
+-- quantile (reservoir sampling) instead of quantileExact: bounded memory per
+-- group; for small-integer travel times the difference is negligible.
 -- -----------------------------------------------------------------------------
 SELECT
     hashed_shape_id,
@@ -110,11 +124,11 @@ SELECT
     period_of_day,
     weekday,
     day_type,
-    round(avg(travel_time_seconds))                AS avg_travel_time_seconds,
-    round(min(travel_time_seconds))                AS min_travel_time_seconds,
-    round(max(travel_time_seconds))                AS max_travel_time_seconds,
-    round(quantileExact(0.5)(travel_time_seconds)) AS median_travel_time_seconds,
-    now()                                          AS inserted_at
+    round(avg(travel_time_seconds))           AS avg_travel_time_seconds,
+    round(min(travel_time_seconds))           AS min_travel_time_seconds,
+    round(max(travel_time_seconds))           AS max_travel_time_seconds,
+    round(quantile(0.5)(travel_time_seconds)) AS median_travel_time_seconds,
+    now()                                     AS inserted_at
 FROM classified
 GROUP BY
     hashed_shape_id,
@@ -122,4 +136,5 @@ GROUP BY
     operational_date,
     period_of_day,
     weekday,
-    day_type;
+    day_type
+SETTINGS max_bytes_before_external_group_by = 4000000000;

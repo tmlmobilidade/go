@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS eta;
+
 
 -- =============================================================================
 -- Ride sets (Mongo → ClickHouse via loader)
@@ -53,10 +53,21 @@ CREATE TABLE IF NOT EXISTS eta.hist_vehicle_events (
     hashed_shape_id String,
     latitude Float64,
     longitude Float64,
-    vehicle_id String
+    vehicle_id String,
+    -- Loader queries filter this table by created_at alone (chunk windows), which
+    -- the sort key cannot prune. Parts are inserted in rough time order, so a
+    -- minmax skip index on created_at prunes whole granules per chunk.
+    INDEX idx_created_at created_at TYPE minmax GRANULARITY 1
 )
 ENGINE = ReplacingMergeTree()
 ORDER BY (trip_id, ride_id, hashed_shape_id, created_at);
+
+-- Idempotent upgrade path for pre-existing deployments (CREATE IF NOT EXISTS
+-- above does not alter existing tables).
+ALTER TABLE eta.hist_vehicle_events
+    ADD INDEX IF NOT EXISTS idx_created_at created_at TYPE minmax GRANULARITY 1;
+ALTER TABLE eta.hist_vehicle_events
+    MATERIALIZE INDEX idx_created_at;
 
 CREATE TABLE IF NOT EXISTS eta.hist_shape_nodes (
     hashed_shape_id String,
@@ -86,12 +97,20 @@ CREATE TABLE IF NOT EXISTS eta.hist_node_travel_times (
     travel_time_seconds UInt32,
     speed_kmh Float64,
     latitude Float64,
-    longitude Float64
+    longitude Float64,
+    -- The per-day aggregation query filters by created_at alone; see
+    -- hist_vehicle_events.idx_created_at for rationale.
+    INDEX idx_created_at created_at TYPE minmax GRANULARITY 1
 )
 ENGINE = ReplacingMergeTree()
-ORDER BY (ride_id, hashed_shape_id, node_index, hour);
+ORDER BY (ride_id, hashed_shape_id, node_index, hour, created_at);
 
-DROP TABLE IF EXISTS eta.hist_node_travel_times_aggregation;
+ALTER TABLE eta.hist_node_travel_times
+    ADD INDEX IF NOT EXISTS idx_created_at created_at TYPE minmax GRANULARITY 1;
+ALTER TABLE eta.hist_node_travel_times
+    MATERIALIZE INDEX idx_created_at;
+
+-- DROP TABLE IF EXISTS eta.hist_node_travel_times_aggregation;
 
 -- The loader (3-aggregate_hist_node_travel_times.sql) re-aggregates the last
 -- N days on every run, so identical (hashed_shape_id, node_index,
