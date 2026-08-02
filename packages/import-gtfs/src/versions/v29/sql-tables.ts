@@ -1,7 +1,7 @@
 /* * */
 
 import { type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/sqlite';
 
 /**
@@ -13,9 +13,9 @@ import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/sq
  * The `_db` property provides access to the raw SQLite database instance
  * that can be used for executing custom queries or transactions.
  */
-export interface GtfsSQLTables {
+export interface GtfsStrictV29SQLTables {
 	_db: SQLiteDatabase['databaseInstance']
-	calendar_dates: Record<string, OperationalDate[]>
+	calendar_dates: Record<string, OperationalDateInt[]>
 	routes: SQLiteTableInstance<GtfsStrictV29Routes>
 	shapes: SQLiteTableInstance<GtfsStrictV29Shapes>
 	stop_times: SQLiteTableInstance<GtfsStrictV29StopTimes>

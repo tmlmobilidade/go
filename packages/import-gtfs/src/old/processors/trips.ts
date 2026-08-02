@@ -1,7 +1,7 @@
 /* * */
 
 import { type ImportGtfsContext } from '@/types/context.js';
-import { parseCsvFile } from '@/utils/parse-csv.js';
+import { parseCsvFile } from '@/old/utils/parse-csv.js';
 import { type GtfsStrictV29Trips, GtfsStrictV29TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

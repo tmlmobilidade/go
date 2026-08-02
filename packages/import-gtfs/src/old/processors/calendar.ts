@@ -2,7 +2,7 @@
 
 import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
 import { type ImportGtfsContext } from '@/types/context.js';
-import { parseCsvFile } from '@/utils/parse-csv.js';
+import { parseCsvFile } from '@/old/utils/parse-csv.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
 import { type GtfsCalendar, GtfsCalendarSchema } from '@tmlmobilidade/go-types-gtfs';
 import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';

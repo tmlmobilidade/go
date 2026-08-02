@@ -1,8 +1,8 @@
 /* * */
 
+import { unzipFile } from '@/old/utils/unzip-file.js';
 import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
 import { type ImportGtfsContext } from '@/types/context.js';
-import { unzipFile } from '@/utils/unzip-file.js';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 

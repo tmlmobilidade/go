@@ -7,11 +7,11 @@ import { processShapesFile } from '@/old/processors/shapes.js';
 import { processStopTimesFile } from '@/old/processors/stop_times.js';
 import { processStopsFile } from '@/old/processors/stops.js';
 import { processTripsFile } from '@/old/processors/trips.js';
-import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
-import { type ImportGtfsContext } from '@/types/context.js';
-import { type GtfsSQLTables } from '@/types/sql-tables.js';
 import { extractGtfsSource } from '@/old/utils/extract-source.js';
 import { initImportGtfsContext } from '@/old/utils/init-context.js';
+import { CombinedGtfsSQLTables } from '@/types/combine.js';
+import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
+import { type ImportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -21,7 +21,7 @@ import { Timer } from '@tmlmobilidade/timer';
  * @param customContext Optional existing context for the import process.
  * @returns The SQL tables containing the imported GTFS data.
  */
-export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig, customContext?: ImportGtfsContext): Promise<GtfsSQLTables> {
+export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig, customContext?: ImportGtfsContext): Promise<CombinedGtfsSQLTables> {
 	try {
 		//
 

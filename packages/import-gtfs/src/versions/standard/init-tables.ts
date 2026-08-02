@@ -1,22 +1,23 @@
 /* * */
 
-import { type GtfsSQLTables } from '@/types/sql-tables.js';
-import { type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type GtfsRoutes, type GtfsShapes, type GtfsStops, type GtfsStopTimes, type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
 
+import { type GtfsSQLTables } from './sql-tables.js';
+
 /**
- * Initializes GTFS SQL tables and writers.
+ * Initializes GTFS Strict v29 SQL tables and writers.
  * @returns The initialized GTFS SQL tables.
  */
 export function initGtfsSqlTables(): GtfsSQLTables {
 	//
 
-	const calendarDatesMap: Record<string, OperationalDate[]> = {};
+	const calendarDatesMap: Record<string, OperationalDateInt[]> = {};
 
 	const database = new SQLiteDatabase();
 
-	const tripsTable = database.registerTable<GtfsStrictV29Trips>('trips', {
+	const tripsTable = database.registerTable<GtfsTrips>('trips', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
@@ -27,13 +28,11 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 			{ indexed: false, name: 'service_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'shape_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'trip_headsign', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'trip_short_name', type: 'TEXT' },
 			{ indexed: false, name: 'wheelchair_accessible', type: 'INTEGER' },
-			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
 		],
 	});
 
-	const routesTable = database.registerTable<GtfsStrictV29Routes>('routes', {
+	const routesTable = database.registerTable<GtfsRoutes>('routes', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
@@ -44,21 +43,12 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 			{ indexed: true, name: 'route_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_long_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_short_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_sort_order', type: 'INTEGER' },
 			{ indexed: false, name: 'route_text_color', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_type', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'route_url', type: 'TEXT' },
-			{ indexed: false, name: 'circular', type: 'INTEGER' },
-			{ indexed: false, name: 'line_id', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'line_long_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'line_short_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'path_type', type: 'INTEGER' },
-			{ indexed: false, name: 'route_remarks', type: 'TEXT' },
-			{ indexed: false, name: 'school', type: 'INTEGER' },
 		],
 	});
 
-	const shapesTable = database.registerTable<GtfsStrictV29Shapes>('shapes', {
+	const shapesTable = database.registerTable<GtfsShapes>('shapes', {
 		batch_size: 100000,
 		columns: [
 			{ indexed: true, name: 'shape_id', not_null: true, type: 'TEXT' },
@@ -69,7 +59,7 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		],
 	});
 
-	const stopsTable = database.registerTable<GtfsStrictV29Stops>('stops', {
+	const stopsTable = database.registerTable<GtfsStops>('stops', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'location_type', type: 'INTEGER' },
@@ -97,12 +87,10 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		],
 	});
 
-	const stopTimesTable = database.registerTable<GtfsStrictV29StopTimes>('stop_times', {
+	const stopTimesTable = database.registerTable<GtfsStopTimes>('stop_times', {
 		batch_size: 100000,
 		columns: [
 			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'continuous_drop_off', type: 'INTEGER' },
-			{ indexed: false, name: 'continuous_pickup', type: 'INTEGER' },
 			{ indexed: false, name: 'departure_time', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'drop_off_type', type: 'INTEGER' },
 			{ indexed: false, name: 'pickup_type', type: 'INTEGER' },

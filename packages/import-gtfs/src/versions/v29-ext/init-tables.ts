@@ -4,13 +4,13 @@ import { type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29S
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
 
-import { type GtfsStrictV29SQLTables } from './sql-tables.js';
+import { type GtfsStrictV29ExtSQLTables } from './sql-tables.js';
 
 /**
  * Initializes GTFS Strict v29 SQL tables and writers.
  * @returns The initialized GTFS SQL tables.
  */
-export function initGtfsStrictV29SqlTables(): GtfsStrictV29SQLTables {
+export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 	//
 
 	const calendarDatesMap: Record<string, OperationalDateInt[]> = {};
