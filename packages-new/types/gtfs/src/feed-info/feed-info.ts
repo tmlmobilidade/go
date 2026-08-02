@@ -6,15 +6,15 @@ import { z } from 'zod';
 /* * */
 
 export const GtfsFeedInfoSchema = z.object({
-	default_lang: z.string().nullish(),
-	feed_contact_email: z.string().nullish(),
-	feed_contact_url: z.string().nullish(),
-	feed_end_date: GtfsDateSchema.nullish(),
+	default_lang: z.string().optional(),
+	feed_contact_email: z.string().optional(),
+	feed_contact_url: z.string().optional(),
+	feed_end_date: GtfsDateSchema.optional(),
 	feed_lang: z.string(),
-	feed_publisher_name: z.string().nullish(),
-	feed_publisher_url: z.string().nullish(),
-	feed_start_date: GtfsDateSchema.nullish(),
-	feed_version: z.string().nullish(),
+	feed_publisher_name: z.string().optional(),
+	feed_publisher_url: z.string().optional(),
+	feed_start_date: GtfsDateSchema.optional(),
+	feed_version: z.string().optional(),
 });
 
 /**
