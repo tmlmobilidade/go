@@ -51,7 +51,7 @@ async function main() {
 	const vehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
 	const vehicleEventsCursor = vehicleEventsCollection
-		.find({ session: coreVehicleEventsSessionId }, { sort: { millis: -1 } })
+		.find({ status: coreVehicleEventsSessionId }, { sort: { millis: -1 } })
 		.stream();
 
 	let insertedCount = 0;

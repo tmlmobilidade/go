@@ -14,7 +14,7 @@ await (async function init() {
 
 	console.log('Resetting session on init...');
 	const coreVehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
-	const result = await coreVehicleEventsCollection.updateMany({ session: { $exists: true } }, { $unset: { session: true } });
+	const result = await coreVehicleEventsCollection.updateMany({ status: { $exists: true } }, { $unset: { status: true } });
 	console.log('Reset session on init:', result);
 
 	//

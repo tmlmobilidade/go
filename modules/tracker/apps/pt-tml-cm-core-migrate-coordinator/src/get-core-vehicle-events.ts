@@ -44,7 +44,7 @@ export async function getCoreVehicleEvents(): Promise<null | string> {
 		const coreVehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
 		const latestCoreVehicleEvents = await coreVehicleEventsCollection
-			.find({ session: { $exists: false } }, { limit: 1_000, projection: { _id: 1 }, sort: { millis: -1 } })
+			.find({ status: { $exists: false } }, { limit: 1_000, projection: { _id: 1 }, sort: { millis: -1 } })
 			.toArray();
 
 		/* === FOR TESTING === */
@@ -66,7 +66,7 @@ export async function getCoreVehicleEvents(): Promise<null | string> {
 
 		const latestCoreVehicleEventsIds = latestCoreVehicleEvents.map(item => item._id);
 
-		await coreVehicleEventsCollection.updateMany({ _id: { $in: latestCoreVehicleEventsIds } }, { $set: { session: sessionId } });
+		await coreVehicleEventsCollection.updateMany({ _id: { $in: latestCoreVehicleEventsIds } }, { $set: { status: sessionId } });
 
 		console.log(`[${sessionId}] New batch: Qty ${latestCoreVehicleEventsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 
