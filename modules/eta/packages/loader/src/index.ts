@@ -145,7 +145,6 @@ export async function loadEta(config: AppConfig) {
 
 		Logger.title('5. Run Node Travel Times Transformation & Aggregation');
 
-		const historicalWindowEnd = Dates.now('Europe/Lisbon').unix_timestamp;
 		const historicalWindowStart = Dates.now('Europe/Lisbon').minus({ days: config.historicalDataDaysBack }).unix_timestamp;
 
 		//
@@ -153,11 +152,22 @@ export async function loadEta(config: AppConfig) {
 		await buildHistNodeTravelTimes(clickhouseClient, historicalWindowStart, config);
 
 		//
-		Logger.info({ message: 'Running 5b-aggregate_hist_node_travel_times.sql query' });
-		await queryEtaFromFile(clickhouseClient, pipelinePath('loader/3-aggregate_hist_node_travel_times.sql'), {
-			window_end: historicalWindowEnd,
-			window_start: historicalWindowStart,
-		});
+		// Aggregate one operational day per query so GROUP BY state stays bounded
+		// (aggregating the whole window at once exceeded the query memory limit).
+		Logger.info({ message: 'Running 5b-aggregate_hist_node_travel_times.sql query per operational day' });
+		const hourMs = 3_600_000;
+		for (let dayIndex = 0; dayIndex <= config.historicalDataDaysBack; dayIndex++) {
+			const day = Dates.now('Europe/Lisbon').minus({ days: dayIndex }).startOf('day');
+			Logger.progress({ message: `[${dayIndex + 1}/${config.historicalDataDaysBack + 1}] 5b operational day ${day.toFormat('yyyyMMdd')}` });
+			// Rows of an operational day have created_at within [00:00, next day 04:00)
+			// in the ClickHouse SERVER timezone; the ±padding below covers any server
+			// timezone offset. Exact row selection happens in SQL via operational_date.
+			await queryEtaFromFile(clickhouseClient, pipelinePath('loader/3-aggregate_hist_node_travel_times.sql'), {
+				chunk_date: Number(day.toFormat('yyyyMMdd')),
+				scan_end: day.unix_timestamp + 42 * hourMs,
+				scan_start: day.unix_timestamp - 16 * hourMs,
+			});
+		}
 	}
 
 	//
