@@ -1,12 +1,12 @@
 /* * */
 
-import { processCalendarFile } from '@/old/processors/calendar.js';
-import { processCalendarDatesFile } from '@/old/processors/calendar_dates.js';
-import { processRoutesFile } from '@/old/processors/routes.js';
-import { processShapesFile } from '@/old/processors/shapes.js';
-import { processStopTimesFile } from '@/old/processors/stop_times.js';
-import { processStopsFile } from '@/old/processors/stops.js';
-import { processTripsFile } from '@/old/processors/trips.js';
+import { processCalendarFile } from '@/versions/standard/processors/calendar.js';
+import { processCalendarDatesFile } from '@/versions/standard/processors/calendar_dates.js';
+import { processRoutesFile } from '@/versions/standard/processors/routes.js';
+import { processShapesFile } from '@/versions/standard/processors/shapes.js';
+import { processStopTimesFile } from '@/versions/standard/processors/stop_times.js';
+import { processStopsFile } from '@/versions/standard/processors/stops.js';
+import { processTripsFile } from '@/versions/standard/processors/trips.js';
 import { extractGtfsSource } from '@/old/utils/extract-source.js';
 import { initImportGtfsContext } from '@/old/utils/init-context.js';
 import { CombinedGtfsSQLTables } from '@/types/combine.js';

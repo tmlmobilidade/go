@@ -1,11 +1,11 @@
 /* * */
 
-import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
-import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/old/utils/parse-csv.js';
+import { type ImportGtfsContext } from '@/shared/init-context.js';
+import { type GtfsSQLTables } from '@/versions/standard/init-tables.js';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
-import { type GtfsCalendar, GtfsCalendarSchema } from '@tmlmobilidade/go-types-gtfs';
-import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type GtfsCalendar, GtfsCalendarSchema, type GtfsDate, validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
@@ -18,7 +18,7 @@ import fs from 'node:fs';
  * @param startDate The start date of the range to filter service_ids.
  * @param endDate The end date of the range to filter service_ids.
  */
-export async function processCalendarFile(context: ImportGtfsContext, config: ImportGtfsToDatabaseConfig): Promise<void> {
+export async function processGtfsCalendar(context: ImportGtfsContext<GtfsSQLTables>): Promise<void> {
 	try {
 		//
 
@@ -38,35 +38,35 @@ export async function processCalendarFile(context: ImportGtfsContext, config: Im
 			// Setup an array to keep track of the valid operational dates for this service_id
 			// for the given start_date and end_date or single dates from the config.
 
-			const allOperationalDatesInRange = new Set<OperationalDate>();
+			const allDatesInRange = new Set<GtfsDate>();
 
 			//
 			// If the config is of date-range type, check if this service_id
 			// is between the given start_date and end_date. Clip the service_id's
 			// start and end dates to the given start and end dates.
 
-			if ('time_range' in config && config.time_range?.date_range?.start && config.time_range?.date_range?.end) {
-				let serviceIdStartDate = validateOperationalDate(validatedData.data.start_date);
-				let serviceIdEndDate = validateOperationalDate(validatedData.data.end_date);
+			if ('time_range' in context.config && context.config.time_range?.date_range?.start && context.config.time_range?.date_range?.end) {
+				let serviceIdStartDate = validatedData.data.start_date;
+				let serviceIdEndDate = validatedData.data.end_date;
 
-				if (serviceIdEndDate < config.time_range.date_range.start || serviceIdStartDate > config.time_range.date_range.end) return;
+				if (serviceIdEndDate < context.config.time_range.date_range.start || serviceIdStartDate > context.config.time_range.date_range.end) return;
 
-				if (serviceIdStartDate < config.time_range.date_range.start) serviceIdStartDate = config.time_range.date_range.start;
-				if (serviceIdEndDate > config.time_range.date_range.end) serviceIdEndDate = config.time_range.date_range.end;
+				if (serviceIdStartDate < context.config.time_range.date_range.start) serviceIdStartDate = context.config.time_range.date_range.start;
+				if (serviceIdEndDate > context.config.time_range.date_range.end) serviceIdEndDate = context.config.time_range.date_range.end;
 
-				const operationalDates = getOperationalDatesFromRange(serviceIdStartDate, serviceIdEndDate);
+				const operationalDates = getOperationalDatesFromRange(validateOperationalDate(serviceIdStartDate), validateOperationalDate(serviceIdEndDate));
 
-				operationalDates.forEach(date => allOperationalDatesInRange.add(date));
+				operationalDates.forEach(date => allDatesInRange.add(validateGtfsDate(date)));
 			}
 
 			//
 			// If the config is of discrete-dates type, get the operational dates
 			// for this service_id that are in the given discrete dates array.
 
-			if ('time_range' in config && config.time_range?.discrete_dates?.length) {
-				config.time_range.discrete_dates.forEach((date) => {
-					if (date >= String(validatedData.data.start_date) && date <= String(validatedData.data.end_date)) {
-						allOperationalDatesInRange.add(date);
+			if ('time_range' in context.config && context.config.time_range?.discrete_dates?.length) {
+				context.config.time_range.discrete_dates.forEach((date) => {
+					if (date >= validatedData.data.start_date && date <= validatedData.data.end_date) {
+						allDatesInRange.add(date);
 					}
 				});
 			}
@@ -76,9 +76,9 @@ export async function processCalendarFile(context: ImportGtfsContext, config: Im
 			// For the configured weekly schedule, create the individual operational dates
 			// for each day of the week that is active.
 
-			const validOperationalDates = new Set<OperationalDate>();
+			const validOperationalDates = new Set<GtfsDate>();
 
-			for (const currentDate of allOperationalDatesInRange) {
+			for (const currentDate of allDatesInRange) {
 				const dayOfWeek = Dates.fromOperationalDate(currentDate, 'Europe/Lisbon').toFormat('c');
 				if (dayOfWeek === '1' && validatedData.data.monday === '1') validOperationalDates.add(currentDate);
 				if (dayOfWeek === '2' && validatedData.data.tuesday === '1') validOperationalDates.add(currentDate);

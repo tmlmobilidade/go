@@ -1,8 +1,9 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/old/utils/parse-csv.js';
-import { type GtfsStrictV29Routes, GtfsStrictV29RoutesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type ImportGtfsContext } from '@/shared/init-context.js';
+import { type GtfsSQLTables } from '@/versions/standard/init-tables.js';
+import { type GtfsRoutes, GtfsRoutesSchema } from '@tmlmobilidade/go-types-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -11,7 +12,7 @@ import { Timer } from '@tmlmobilidade/timer';
  * It filters routes based on the previously saved trips.
  * @param context The import GTFS context containing references to SQL tables and other metadata.
  */
-export async function processRoutesFile(context: ImportGtfsContext): Promise<void> {
+export async function processGtfsRoutes(context: ImportGtfsContext<GtfsSQLTables>): Promise<void> {
 	try {
 		//
 
@@ -19,9 +20,9 @@ export async function processRoutesFile(context: ImportGtfsContext): Promise<voi
 
 		Logger.info({ message: 'Reading zip entry "routes.txt"...' });
 
-		const parseEachRow = async (data: GtfsStrictV29Routes) => {
+		const parseEachRow = async (data: GtfsRoutes) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsStrictV29RoutesSchema.safeParse(data);
+			const validatedData = GtfsRoutesSchema.safeParse(data);
 			// For each route, only save the ones referenced
 			// by the previously saved trips.
 			if (!context.referenced_route_ids.has(validatedData.data.route_id)) return;
