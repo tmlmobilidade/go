@@ -9,7 +9,7 @@ export const vehicleEventsIndexes: SimplifiedMongoIndex<RawVehicleEvent>[] = [
 	{ key: { created_at: 1 } },
 	{ key: { agency_id: 1, created_at: 1 } },
 	// eslint-disable-next-line perfectionist/sort-objects
-	{ key: { version_id: 1, created_at: 1 } },
+	{ key: { version: 1, created_at: 1 } },
 	// eslint-disable-next-line perfectionist/sort-objects
-	{ key: { version_id: 1, received_at: 1 } },
+	{ key: { version: 1, received_at: 1 } },
 ];
