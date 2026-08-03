@@ -14,7 +14,7 @@ await (async function init() {
 
 	console.log('Resetting status on init...');
 	const coreVehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
-	const result = await coreVehicleEventsCollection.updateMany({ status: 'processing' }, { $set: { status: 'waiting' } });
+	const result = await coreVehicleEventsCollection.updateMany({ status: { $exists: true } }, { $unset: { status: true } });
 	console.log('Reset status on init:', result);
 
 	//
@@ -25,7 +25,7 @@ await (async function init() {
 	//
 	// Setup the API services
 
-	fastify.get('/core-vehicle-events', getCoreVehicleEvents);
+	fastify.get('/core-vehicle-events/:processorInstanceId', getCoreVehicleEvents);
 
 	//
 	// Start the API service
