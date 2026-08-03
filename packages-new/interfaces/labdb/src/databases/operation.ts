@@ -1,11 +1,11 @@
 /* * */
 
 import { ClickHouseInterfaceTemplate } from '@/interface.template.js';
-import { simplifiedVehicleEventTableSchema } from '@/schemas/operation.js';
+import { ridesTableSchema, simplifiedVehicleEventTableSchema } from '@/schemas/operation.js';
 import { ClickHouseClient } from '@tmlmobilidade/go-clients-clickhouse';
 import { type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisEndedAtLastStop, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -33,6 +33,11 @@ export class OperationDatabase {
 	private readonly databaseName = 'operation';
 
 	public constructor(instance: ClickHouseClient) {
+		this.rides = new ClickHouseInterfaceTemplate<Ride>(instance, this.databaseName, 'rides', ridesTableSchema, {
+			engine: 'ReplacingMergeTree(updated_at)',
+			orderBy: ['agency_id', 'operational_date', 'route_short_name', 'shape_id', 'start_time_scheduled', '_id'],
+			partitionBy: 'intDiv(operational_date, 100)',
+		});
 		this.simplifiedVehicleEvents = new ClickHouseInterfaceTemplate<SimplifiedVehicleEvent>(instance, this.databaseName, 'simplified_vehicle_events', simplifiedVehicleEventTableSchema, {
 			engine: 'ReplacingMergeTree(created_at)',
 			orderBy: ['agency_id', 'operational_date', 'vehicle_id', 'created_at', '_id'],

@@ -65,7 +65,6 @@ const RideOperationSchema = z.object({
 });
 
 const RideLifecycleSchema = z.object({
-	created_at: UnixTimestampSchema,
 	processing_status: ProcessingStatusSchema.default('waiting'),
 	updated_at: UnixTimestampSchema,
 });
