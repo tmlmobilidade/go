@@ -49,6 +49,7 @@ export function StopCreateStep1Coordinates() {
 		<Section gap="md">
 			<CoordinatesInput
 				onChange={handleSetCoordinates}
+				onDraftChange={handleSetCoordinates}
 				value={value}
 			/>
 		</Section>
