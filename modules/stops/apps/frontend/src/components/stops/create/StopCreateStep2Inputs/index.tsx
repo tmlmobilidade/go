@@ -27,12 +27,12 @@ export function StopCreateStep2Inputs() {
 						render={({ field, fieldState }) => (
 							<TextInput
 								description="Este é o nome principal e será apresentado nos canais digitais."
+								error={fieldState.error?.message}
 								label="Designação Completa da Paragem"
+								onChange={field.onChange}
+								value={field.value ?? ''}
 								data-autofocus
 								required
-								value={field.value ?? ''}
-								onChange={field.onChange}
-								error={fieldState.error?.message}
 							/>
 						)}
 					/>
@@ -50,8 +50,8 @@ export function StopCreateStep2Inputs() {
 							<TextInput
 								description="Esta versão abreviada automaticamente será utilizada em suportes com limitações de espaço, como postaletes e horários impressos."
 								label="Nome Curto (automático)"
-								readOnly
 								value={field.value ?? ''}
+								readOnly
 							/>
 						)}
 					/>
@@ -62,8 +62,8 @@ export function StopCreateStep2Inputs() {
 							<TextInput
 								description="O nome a ser utilizado pelo sistema de TTS (Text-to-Speech)."
 								label="Nome TTS (automático)"
-								readOnly
 								value={field.value ?? ''}
+								readOnly
 							/>
 						)}
 					/>
