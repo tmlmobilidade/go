@@ -2,10 +2,14 @@
 
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { Timer } from '@tmlmobilidade/timer';
+import crypto from 'crypto';
 import Fastify from 'fastify';
 import { type FastifyRequest } from 'fastify';
+import os from 'os';
 
 /* * */
+
+const PROCESS_ID = `${os.hostname()}-${process.pid}-${crypto.randomUUID().slice(0, 8)}`;
 
 let IS_BUSY = false;
 
@@ -13,6 +17,8 @@ let IS_BUSY = false;
 
 await (async function init() {
 	//
+
+	console.log(`[${PROCESS_ID}] Starting...`);
 
 	//
 	// Reset ststaus on init
@@ -34,7 +40,7 @@ await (async function init() {
 		//
 
 		const timer = new Timer();
-		const sessionId = `${process.pid}-${Math.random().toString(36).substring(2, 5).toUpperCase()}-${request.params.processorInstanceId}`;
+		const sessionId = `${PROCESS_ID}-${request.params.processorInstanceId}`;
 
 		try {
 			//
@@ -45,6 +51,8 @@ await (async function init() {
 			// we need to make sure that instances request the next batch of documents
 			// sequentially. To do that, we implement a simple lock mechanism.
 
+			console.log(`[${sessionId}] entering, busy=${IS_BUSY}`);
+
 			if (IS_BUSY) {
 				console.log(`[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})`);
 				return null;
@@ -53,6 +61,8 @@ await (async function init() {
 			//
 			// Set the busy flag to prevent other requests
 			// from being processed until the current one is done.
+
+			console.log(`[${sessionId}] acquired`);
 
 			IS_BUSY = true;
 
