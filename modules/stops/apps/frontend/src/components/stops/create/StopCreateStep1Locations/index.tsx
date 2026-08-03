@@ -43,28 +43,18 @@ export function StopCreateStep1Locations() {
 
 	return (
 		<Section>
-			<Grid columns="ab" gap="md">
-				<ContextFormController
-					control={form.control}
-					name="district_id"
-					render={({ field }) => <ValueDisplay label="Distrito" value={locationData?.district?.name ?? field.value ?? 'N/A'} variant="bordered" />}
-				/>
-				<ContextFormController
-					control={form.control}
-					name="municipality_id"
-					render={({ field }) => <ValueDisplay label="Município" value={locationData?.municipality?.name ?? field.value ?? 'N/A'} variant="bordered" />}
-				/>
-				<ContextFormController
-					control={form.control}
-					name="parish_id"
-					render={({ field }) => <ValueDisplay label="Freguesia" value={locationData?.parish?.name ?? field.value ?? 'N/A'} variant="bordered" />}
-				/>
-				<ContextFormController
-					control={form.control}
-					name="locality_id"
-					render={({ field }) => <ValueDisplay label="Localidade" value={locationData?.locality?.name ?? field.value ?? 'N/A'} variant="bordered" />}
-				/>
-			</Grid>
+			<ContextFormController
+				control={form.control}
+				name="district_id"
+				render={({ field }) => (
+					<Grid columns="ab" gap="md">
+						<ValueDisplay label="Distrito" value={locationData?.district?.name ?? field.value ?? 'N/A'} variant="bordered" />
+						<ValueDisplay label="Município" value={locationData?.municipality?.name ?? 'N/A'} variant="bordered" />
+						<ValueDisplay label="Freguesia" value={locationData?.parish?.name ?? 'N/A'} variant="bordered" />
+						<ValueDisplay label="Localidade" value={locationData?.locality?.name ?? 'N/A'} variant="bordered" />
+					</Grid>
+				)}
+			/>
 		</Section>
 	);
 
