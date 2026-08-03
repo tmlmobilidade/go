@@ -6,13 +6,11 @@ import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-sh
 import { Timer } from '@tmlmobilidade/timer';
 import { getCurrentEnvironment } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
-import crypto from 'crypto';
 import { ObjectId } from 'mongodb';
-import os from 'os';
 
 /* * */
 
-const PROCESS_ID = `${os.hostname()}-${process.pid}-${crypto.randomUUID().slice(0, 8)}`;
+const PROCESS_ID = `${process.pid}-${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
 
 /* * */
 
