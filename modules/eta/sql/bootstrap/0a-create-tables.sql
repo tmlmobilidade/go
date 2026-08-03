@@ -30,6 +30,7 @@ ORDER BY (_id);
 -- Current service window (same schema as hist_rides; used for live / near-term slices).
 CREATE TABLE IF NOT EXISTS eta.curr_rides (
     _id String,
+    agency_id String,
     hashed_shape_id String,
     hashed_trip_id String,
     trip_id String,
