@@ -89,14 +89,14 @@ await (async function init() {
 
 			console.log(`[${sessionId}] [${IS_BUSY}] New batch: Qty ${qty} (fetch: ${findAndUpdateTimer.get()})`);
 
+			IS_BUSY = false;
+
 			return sessionId;
 
 			//
 		} catch (error) {
 			console.error(`[${sessionId}] Error getting core vehicle events: ${error.message}`);
 			return null;
-		} finally {
-			IS_BUSY = false;
 		}
 	});
 
