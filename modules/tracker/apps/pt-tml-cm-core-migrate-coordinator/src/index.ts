@@ -64,24 +64,36 @@ await (async function init() {
 			// Find all Core Vehicle Events that are not already being processed,
 			// sorted in descending order to prioritize the most recent Core Vehicle Events.
 
-			const findAndUpdateTimer = new Timer();
+			const fetchTimer = new Timer();
 
 			const coreVehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
-			let qty = 0;
+			const latestCoreVehicleEvents = await coreVehicleEventsCollection
+				.find({ status: { $exists: false } }, { limit: 1_000, projection: { _id: 1 }, sort: { millis: -1 } })
+				.toArray();
 
-			console.log(`[${sessionId}] Finding and updating... (fetch: ${findAndUpdateTimer.get()})`);
+			/* === FOR TESTING === */
+			// const latestWaitingRides = await rides.findMany({ _id: 'DC0XN-44-20250303-4412_0_2|300|1955' })
+			/* === FOR TESTING === */
 
-			for (let i = 0; i < 1_000; i++) {
-				const result = await coreVehicleEventsCollection.findOneAndUpdate(
-					{ status: { $exists: false } },
-					{ $set: { status: sessionId } },
-					{ sort: { millis: -1 } },
-				);
-				if (result) qty++;
+			const fetchTimerResult = fetchTimer.get();
+
+			if (!latestCoreVehicleEvents.length) {
+				console.log(`[${sessionId}] No core vehicle events to process (fetch: ${fetchTimerResult})`);
+				return null;
 			}
 
-			console.log(`[${sessionId}] New batch: Qty ${qty} (fetch: ${findAndUpdateTimer.get()})`);
+			//
+			// Mark those Rides as 'processing' to ensure the next batch of Rdes does not include them,
+			// and return them to the caller instance.
+
+			const markTimer = new Timer();
+
+			const latestCoreVehicleEventsIds = latestCoreVehicleEvents.map(item => item._id);
+
+			await coreVehicleEventsCollection.updateMany({ _id: { $in: latestCoreVehicleEventsIds } }, { $set: { status: sessionId } });
+
+			console.log(`[${sessionId}] New batch: Qty ${latestCoreVehicleEventsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 
 			IS_BUSY = false;
 
