@@ -1,7 +1,7 @@
 /* * */
 
 import { type ClickHouseTableSchema } from '@tmlmobilidade/go-clients-clickhouse';
-import { type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisBase } from '@tmlmobilidade/go-types-operation';
+import { type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisBase, type RideAnalysisExpectedApexValidationInterval, RideAnalysisExpectedDriverIdQty, RideAnalysisExpectedStartTime, RideAnalysisExpectedVehicleEventDelay, RideAnalysisExpectedVehicleEventInterval, RideAnalysisExpectedVehicleEventQty, RideAnalysisExpectedVehicleIdQty, RideAnalysisMatchingApexLocations, RideAnalysisMatchingVehicleIds, RideAnalysisSimpleOneApexValidation, RideAnalysisSimpleOneVehicleEventOrApexValidation, RideAnalysisSimpleThreeVehicleEvents, RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
@@ -29,7 +29,9 @@ export const simplifiedVehicleEventTableSchema: ClickHouseTableSchema<Simplified
 /* * */
 
 const rideAnalysisBaseTableSchema: ClickHouseTableSchema<RideAnalysisBase> = {
+	agency_id: { type: 'LowCardinality(String)' },
 	is_accepted: { type: 'Bool' },
+	operational_date: { type: 'UInt32' },
 	processing_status: { type: 'LowCardinality(String)' },
 	reason: { type: 'LowCardinality(Nullable(String))' },
 	remarks: { type: 'Nullable(String) CODEC(ZSTD)' },
@@ -41,7 +43,120 @@ const rideAnalysisBaseTableSchema: ClickHouseTableSchema<RideAnalysisBase> = {
 
 export const rideAnalysisAtLeastOneVehicleEventOnFirstStopTableSchema: ClickHouseTableSchema<RideAnalysisAtLeastOneVehicleEventOnFirstStop> = {
 	...rideAnalysisBaseTableSchema,
-	value: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+	vehicle_events_on_first_stop_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisAtLeastOneVehicleEventOnLastStopTableSchema: ClickHouseTableSchema<RideAnalysisAtLeastOneVehicleEventOnLastStop> = {
+	...rideAnalysisBaseTableSchema,
+	vehicle_events_on_last_stop_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisExpectedApexValidationIntervalTableSchema: ClickHouseTableSchema<RideAnalysisExpectedApexValidationInterval> = {
+	...rideAnalysisBaseTableSchema,
+	observed_average_interval: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	observed_max_interval: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	observed_min_interval: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisExpectedDriverIdQtyTableSchema: ClickHouseTableSchema<RideAnalysisExpectedDriverIdQty> = {
+	...rideAnalysisBaseTableSchema,
+	observed_driver_ids_qty: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisExpectedStartTimeTableSchema: ClickHouseTableSchema<RideAnalysisExpectedStartTime> = {
+	...rideAnalysisBaseTableSchema,
+	observed_start_time: { type: 'Nullable(Int64)' },
+	observed_start_time_delta: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisExpectedVehicleEventDelayTableSchema: ClickHouseTableSchema<RideAnalysisExpectedVehicleEventDelay> = {
+	...rideAnalysisBaseTableSchema,
+	observed_average_delay: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	observed_max_delay: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	observed_min_delay: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisExpectedVehicleEventIntervalTableSchema: ClickHouseTableSchema<RideAnalysisExpectedVehicleEventInterval> = {
+	...rideAnalysisBaseTableSchema,
+	observed_average_interval: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	observed_max_interval: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	observed_min_interval: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisExpectedVehicleEventQtyTableSchema: ClickHouseTableSchema<RideAnalysisExpectedVehicleEventQty> = {
+	...rideAnalysisBaseTableSchema,
+	expected_vehicle_events_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	observed_vehicle_events_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisExpectedVehicleIdQtyTableSchema: ClickHouseTableSchema<RideAnalysisExpectedVehicleIdQty> = {
+	...rideAnalysisBaseTableSchema,
+	observed_vehicle_ids_qty: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisMatchingApexLocationsTableSchema: ClickHouseTableSchema<RideAnalysisMatchingApexLocations> = {
+	...rideAnalysisBaseTableSchema,
+	expected_apex_locations_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	matching_apex_locations_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	missing_apex_locations_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisMatchingVehicleIdsTableSchema: ClickHouseTableSchema<RideAnalysisMatchingVehicleIds> = {
+	...rideAnalysisBaseTableSchema,
+	extra_apex_vehicle_ids_qty: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+	extra_vehicle_events_vehicle_ids_qty: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+	matching_vehicle_ids_qty: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+	total_vehicle_ids_qty: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+};
+
+/* * */
+
+export const rideAnalysisSimpleOneApexValidationTableSchema: ClickHouseTableSchema<RideAnalysisSimpleOneApexValidation> = {
+	...rideAnalysisBaseTableSchema,
+};
+
+/* * */
+
+export const rideAnalysisSimpleOneVehicleEventOrApexValidationTableSchema: ClickHouseTableSchema<RideAnalysisSimpleOneVehicleEventOrApexValidation> = {
+	...rideAnalysisBaseTableSchema,
+};
+
+/* * */
+
+export const rideAnalysisSimpleThreeVehicleEventsTableSchema: ClickHouseTableSchema<RideAnalysisSimpleThreeVehicleEvents> = {
+	...rideAnalysisBaseTableSchema,
+	stop_ids_first: { type: 'Array(LowCardinality(String))' },
+	stop_ids_last: { type: 'Array(LowCardinality(String))' },
+	stop_ids_middle: { type: 'Array(LowCardinality(String))' },
+};
+
+/* * */
+
+export const rideAnalysisTransactionSequentialityTableSchema: ClickHouseTableSchema<RideAnalysisTransactionSequentiality> = {
+	...rideAnalysisBaseTableSchema,
+	expected_transactions_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	found_transactions_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	missing_transactions_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
 };
 
 /* * */
@@ -50,14 +165,14 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 	_id: { type: 'String' },
 	agency_code: { type: 'LowCardinality(String)' },
 	agency_id: { type: 'LowCardinality(String)' },
-	apex_banking_taps_amount: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	apex_banking_taps_qty: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	apex_locations_qty: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	apex_refunds_amount: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	apex_refunds_qty: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	apex_sales_amount: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	apex_sales_qty: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	apex_validations_qty: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
+	apex_banking_taps_amount: { type: 'Nullable(Int32) CODEC(T64, ZSTD)' },
+	apex_banking_taps_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	apex_locations_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	apex_refunds_amount: { type: 'Nullable(Int32) CODEC(T64, ZSTD)' },
+	apex_refunds_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	apex_sales_amount: { type: 'Nullable(Int32) CODEC(T64, ZSTD)' },
+	apex_sales_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	apex_validations_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
 	direction_id: { type: 'UInt8' },
 	driver_ids: { type: 'Array(LowCardinality(String))' },
 	end_time_observed: { type: 'Nullable(Int64) CODEC(DoubleDelta, ZSTD)' },
@@ -69,13 +184,13 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 	operational_date: { type: 'UInt32' },
 	passengers_estimated: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
 	passengers_observed: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	passengers_observed_banking_taps_amount: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	passengers_observed_banking_taps_qty: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	passengers_observed_prepaid_amount: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	passengers_observed_prepaid_qty: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	passengers_observed_sales_amount: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	passengers_observed_sales_qty: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
-	passengers_observed_subscription_qty: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
+	passengers_observed_banking_taps_amount: { type: 'Nullable(Int32) CODEC(T64, ZSTD)' },
+	passengers_observed_banking_taps_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	passengers_observed_prepaid_amount: { type: 'Nullable(Int32) CODEC(T64, ZSTD)' },
+	passengers_observed_prepaid_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	passengers_observed_sales_amount: { type: 'Nullable(Int32) CODEC(T64, ZSTD)' },
+	passengers_observed_sales_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	passengers_observed_subscription_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
 	plan_id: { type: 'LowCardinality(String)' },
 	processing_status: { type: 'LowCardinality(String)' },
 	route_color: { type: 'FixedString(6)' },
