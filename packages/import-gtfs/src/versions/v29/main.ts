@@ -1,64 +1,62 @@
 /* * */
 
-import { processCalendarFile } from '@/versions/standard/processors/calendar.js';
-import { processCalendarDatesFile } from '@/versions/standard/processors/calendar_dates.js';
-import { processRoutesFile } from '@/versions/standard/processors/routes.js';
-import { processShapesFile } from '@/versions/standard/processors/shapes.js';
-import { processStopTimesFile } from '@/versions/standard/processors/stop_times.js';
-import { processStopsFile } from '@/versions/standard/processors/stops.js';
-import { processTripsFile } from '@/versions/standard/processors/trips.js';
-import { extractGtfsSource } from '@/old/utils/extract-source.js';
-import { initImportGtfsContext } from '@/old/utils/init-context.js';
-import { CombinedGtfsSQLTables } from '@/types/combine.js';
-import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
-import { type ImportGtfsContext } from '@/types/context.js';
+import { extractGtfsSource } from '@/shared/extract-source.js';
+import { type ImportGtfsConfig, initImportGtfsContext } from '@/shared/init-context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { processGtfsStrictV29CalendarDates } from './processors/calendar-dates.js';
+import { processGtfsStrictV29Routes } from './processors/routes.js';
+import { processGtfsStrictV29Shapes } from './processors/shapes.js';
+import { processGtfsStrictV29StopTimes } from './processors/stop-times.js';
+import { processGtfsStrictV29Stops } from './processors/stops.js';
+import { processGtfsStrictV29Trips } from './processors/trips.js';
+import { initGtfsStrictV29SqlTables } from './tables.js';
+import { type GtfsStrictV29SQLTables } from './types.js';
+
 /**
- * Imports GTFS data into the database for a given plan.
+ * Imports GTFS Strict v29 data into the database for a given plan.
  * @param config The configuration for the import process.
  * @param customContext Optional existing context for the import process.
  * @returns The SQL tables containing the imported GTFS data.
  */
-export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig, customContext?: ImportGtfsContext): Promise<CombinedGtfsSQLTables> {
+export async function importGtfsStrictV29ToDatabase(config: ImportGtfsConfig): Promise<GtfsStrictV29SQLTables> {
 	try {
 		//
 
 		const globalTimer = new Timer();
 
-		Logger.info({ message: 'Starting GTFS import process...' });
+		Logger.info({ message: 'Starting GTFS Strict v29 import process...' });
 
 		//
 		// Initialize context for the import process.
 		// If an initial context is provided, use it, otherwise create a new one.
 
-		const context = customContext ? customContext : initImportGtfsContext();
+		const sqlTables = initGtfsStrictV29SqlTables();
+		const context = initImportGtfsContext(sqlTables, config);
 
 		//
 		// Download and extract the GTFS file.
 
-		await extractGtfsSource(context, config);
+		await extractGtfsSource(context);
 
 		//
 		// Process GTFS files in the correct order
 
-		await processCalendarFile(context, config);
-		await processCalendarDatesFile(context, config);
+		await processGtfsStrictV29CalendarDates(context);
+		await processGtfsStrictV29Trips(context);
+		await processGtfsStrictV29Routes(context);
+		await processGtfsStrictV29Shapes(context);
+		await processGtfsStrictV29Stops(context);
+		await processGtfsStrictV29StopTimes(context);
 
-		await processTripsFile(context);
-		await processRoutesFile(context);
-		await processShapesFile(context);
-		await processStopsFile(context);
-		await processStopTimesFile(context);
-
-		Logger.success(`Finished importing GTFS to database in ${globalTimer.get()}.`);
+		Logger.success(`Finished importing GTFS Strict v29 to database in ${globalTimer.get()}.`);
 
 		return context.gtfs;
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error importing GTFS to database.' });
+		Logger.error({ error, message: 'Error importing GTFS Strict v29 to database.' });
 		throw error;
 	}
 }

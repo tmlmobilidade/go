@@ -1,8 +1,7 @@
 /* * */
 
-import { unzipFile } from '@/old/utils/unzip-file.js';
-import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
-import { type ImportGtfsContext } from '@/types/context.js';
+import { type ImportGtfsContext } from '@/shared/init-context.js';
+import { unzipFile } from '@/shared/unzip-file.js';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 
@@ -11,7 +10,7 @@ import fs from 'node:fs';
  * @param source The source of the GTFS data to extract.
  * @param context The context for the import run.
  */
-export async function extractGtfsSource(context: ImportGtfsContext, config: ImportGtfsToDatabaseConfig) {
+export async function extractGtfsSource<T>(context: ImportGtfsContext<T>) {
 	//
 
 	//
@@ -27,18 +26,18 @@ export async function extractGtfsSource(context: ImportGtfsContext, config: Impo
 	// If source is a path, copy the GTFS file from the given path to the working directory.
 	// Then unzip it.
 
-	if ('url' in config.source) {
-		Logger.info({ message: `Downloading GTFS file from URL: ${config.source.url}` });
-		const downloadResponse = await fetch(config.source.url);
+	if ('url' in context.config.source) {
+		Logger.info({ message: `Downloading GTFS file from URL: ${context.config.source.url}` });
+		const downloadResponse = await fetch(context.config.source.url);
 		const downloadArrayBuffer = await downloadResponse.arrayBuffer();
 		fs.writeFileSync(context.workdir.download_file_path, Buffer.from(downloadArrayBuffer));
-		Logger.success(`Downloaded GTFS file from URL: ${config.source.url}`);
+		Logger.success(`Downloaded GTFS file from URL: ${context.config.source.url}`);
 	}
 
-	if ('path' in config.source) {
-		Logger.info({ message: `Copying GTFS file from path: ${config.source.path}` });
-		fs.copyFileSync(config.source.path, context.workdir.download_file_path);
-		Logger.success(`Copied GTFS file from path: ${config.source.path}`);
+	if ('path' in context.config.source) {
+		Logger.info({ message: `Copying GTFS file from path: ${context.config.source.path}` });
+		fs.copyFileSync(context.config.source.path, context.workdir.download_file_path);
+		Logger.success(`Copied GTFS file from path: ${context.config.source.path}`);
 	}
 
 	//

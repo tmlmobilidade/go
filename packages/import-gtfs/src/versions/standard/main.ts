@@ -1,19 +1,19 @@
 /* * */
 
-import { extractGtfsSource } from '@/old/utils/extract-source.js';
-import { type ImportGtfsToDatabaseConfig } from '@/shared/config-types.js';
-import { initImportGtfsContext } from '@/shared/init-context.js';
-import { processCalendarFile } from '@/versions/standard/processors/calendar.js';
-import { processCalendarDatesFile } from '@/versions/standard/processors/calendar_dates.js';
-import { processRoutesFile } from '@/versions/standard/processors/routes.js';
-import { processShapesFile } from '@/versions/standard/processors/shapes.js';
-import { processStopTimesFile } from '@/versions/standard/processors/stop_times.js';
-import { processGtfsStops } from '@/versions/standard/processors/stops.js';
+import { extractGtfsSource } from '@/shared/extract-source.js';
+import { type ImportGtfsConfig, initImportGtfsContext } from '@/shared/init-context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { type GtfsSQLTables, initGtfsSqlTables } from './init-tables.js';
+import { processGtfsCalendarDates } from './processors/calendar-dates.js';
+import { processGtfsCalendar } from './processors/calendar.js';
+import { processGtfsRoutes } from './processors/routes.js';
+import { processGtfsShapes } from './processors/shapes.js';
+import { processGtfsStopTimes } from './processors/stop-times.js';
+import { processGtfsStops } from './processors/stops.js';
 import { processGtfsTrips } from './processors/trips.js';
+import { initGtfsSqlTables } from './tables.js';
+import { type GtfsSQLTables } from './types.js';
 
 /**
  * Imports GTFS data into the database for a given plan.
@@ -21,7 +21,7 @@ import { processGtfsTrips } from './processors/trips.js';
  * @param customContext Optional existing context for the import process.
  * @returns The SQL tables containing the imported GTFS data.
  */
-export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig): Promise<GtfsSQLTables> {
+export async function importGtfsToDatabase(config: ImportGtfsConfig): Promise<GtfsSQLTables> {
 	try {
 		//
 
@@ -34,24 +34,23 @@ export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig): 
 		// If an initial context is provided, use it, otherwise create a new one.
 
 		const sqlTables = initGtfsSqlTables();
-		const context = initImportGtfsContext(sqlTables);
+		const context = initImportGtfsContext(sqlTables, config);
 
 		//
 		// Download and extract the GTFS file.
 
-		await extractGtfsSource(context, config);
+		await extractGtfsSource(context);
 
 		//
 		// Process GTFS files in the correct order
 
-		await processCalendarFile(context, config);
-		await processCalendarDatesFile(context, config);
-
+		await processGtfsCalendar(context);
+		await processGtfsCalendarDates(context);
 		await processGtfsTrips(context);
-		await processRoutesFile(context);
-		await processShapesFile(context);
+		await processGtfsRoutes(context);
+		await processGtfsShapes(context);
 		await processGtfsStops(context);
-		await processStopTimesFile(context);
+		await processGtfsStopTimes(context);
 
 		Logger.success(`Finished importing GTFS to database in ${globalTimer.get()}.`);
 

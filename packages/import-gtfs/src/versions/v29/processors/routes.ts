@@ -2,8 +2,8 @@
 
 import { type ImportGtfsContext } from '@/shared/init-context.js';
 import { parseCsvFile } from '@/shared/parse-csv.js';
-import { type GtfsSQLTables } from '@/versions/standard/types.js';
-import { type GtfsRoutes, GtfsRoutesSchema } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV29SQLTables } from '@/versions/v29/types.js';
+import { type GtfsStrictV29Routes, GtfsStrictV29RoutesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -12,7 +12,7 @@ import { Timer } from '@tmlmobilidade/timer';
  * It filters routes based on the previously saved trips.
  * @param context The import GTFS context containing references to SQL tables and other metadata.
  */
-export async function processGtfsRoutes(context: ImportGtfsContext<GtfsSQLTables>): Promise<void> {
+export async function processGtfsStrictV29Routes(context: ImportGtfsContext<GtfsStrictV29SQLTables>): Promise<void> {
 	try {
 		//
 
@@ -20,9 +20,9 @@ export async function processGtfsRoutes(context: ImportGtfsContext<GtfsSQLTables
 
 		Logger.info({ message: 'Reading zip entry "routes.txt"...' });
 
-		const parseEachRow = async (data: GtfsRoutes) => {
+		const parseEachRow = async (data: GtfsStrictV29Routes) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsRoutesSchema.safeParse(data);
+			const validatedData = GtfsStrictV29RoutesSchema.safeParse(data);
 			// For each route, only save the ones referenced
 			// by the previously saved trips.
 			if (!context.referenced_route_ids.has(validatedData.data.route_id)) return;
