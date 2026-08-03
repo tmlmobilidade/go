@@ -39,7 +39,6 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 		LEFT JOIN (
 			SELECT
 				stop_id,
-				flags,
 				json_group_array(DISTINCT r.agency_id) AS agency_ids,
 				json_group_array(DISTINCT r.line_id) AS line_ids,
 				json_group_array(DISTINCT r.route_id) AS route_ids,
@@ -93,9 +92,9 @@ export async function generateStops(importedGtfsSql: GtfsSQLTables) {
 				agency_ids: JSON.parse(gtfsStop.agency_ids),
 				district_id: gtfsStop.district_id,
 				district_name: gtfsStop.district_name,
-				flags: JSON.parse(gtfsStop.flags),
+				flags: gtfsStop.flags ? JSON.parse(gtfsStop.flags) : [],
 				latitude: gtfsStop.stop_lat,
-				legacy_ids: JSON.parse(gtfsStop.legacy_ids),
+				legacy_ids: gtfsStop.legacy_ids ? JSON.parse(gtfsStop.legacy_ids) : [],
 				lifecycle_status: gtfsStop.lifecycle_status,
 				line_ids: JSON.parse(gtfsStop.line_ids),
 				locality_id: gtfsStop.locality_id,
