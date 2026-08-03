@@ -24,4 +24,11 @@ export const HashedPathSchema = z.object({
 	updated_at: UnixTimestampSchema,
 });
 
+/**
+ * A HashedPath represents the unique sequence of stops, and the arrival and departure times for each stop,
+ * for a given set of trips. This is usually called a "pattern" in the public transit sector.
+ * The hash here means that equal paths are considered equal, even if the GTFS plan where they are defined
+ * is different. This allows for efficient data savings by not storing the same path multiple times,
+ * and becomes considerable when GTFS plans are large and frequently updated.
+ */
 export type HashedPath = z.infer<typeof HashedPathSchema>;
