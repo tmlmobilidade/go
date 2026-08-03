@@ -45,7 +45,6 @@ export async function importGtfsToDatabase(config: ImportGtfsConfig): Promise<Gt
 
 		await processGtfsCalendar(context);
 		await processGtfsCalendarDates(context);
-
 		await processGtfsTrips(context);
 		await processGtfsRoutes(context);
 		await processGtfsShapes(context);
