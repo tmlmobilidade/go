@@ -12,4 +12,11 @@ export const RideAnalysisSimpleThreeVehicleEventsSchema = RideAnalysisBaseSchema
 	stop_ids_middle: z.array(z.string()).nullable(),
 });
 
+/**
+ * Tests whether there are at least one vehicle event for the first, middle and last stops,
+ * using the stop_id from the GTFS vehicle events data.
+ * @param stop_ids_first The stop_ids for the group of stops in the beginning of the path.
+ * @param stop_ids_middle The stop_ids for the group of stops in the middle of the path.
+ * @param stop_ids_last The stop_ids for the group of stops in the end of the path.
+ */
 export type RideAnalysisSimpleThreeVehicleEvents = z.infer<typeof RideAnalysisSimpleThreeVehicleEventsSchema>;

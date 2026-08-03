@@ -1,6 +1,6 @@
 export * from './analysis-base.js';
 export * from './at-least-one-vehicle-event-on-first-stop.js';
-export * from './ended-at-last-stop.js';
+export * from './at-least-one-vehicle-event-on-last-stop.js';
 export * from './expected-apex-validation-interval.js';
 export * from './expected-driver-id-qty.js';
 export * from './expected-start-time.js';
