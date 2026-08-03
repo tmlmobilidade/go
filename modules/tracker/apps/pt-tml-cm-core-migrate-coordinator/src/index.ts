@@ -66,6 +66,8 @@ await (async function init() {
 
 			let qty = 0;
 
+			console.log(`[${sessionId}] [${IS_BUSY}] Finding and updating... (fetch: ${findAndUpdateTimer.get()})`);
+
 			for (let i = 0; i < 1_000; i++) {
 				const result = await coreVehicleEventsCollection.findOneAndUpdate(
 					{ status: { $exists: false } },
@@ -75,9 +77,7 @@ await (async function init() {
 				if (result) qty++;
 			}
 
-			console.log(`[${sessionId}] New batch: Qty ${qty} (fetch: ${findAndUpdateTimer.get()})`);
-
-			await new Promise(resolve => setTimeout(resolve, 1_000));
+			console.log(`[${sessionId}] [${IS_BUSY}] New batch: Qty ${qty} (fetch: ${findAndUpdateTimer.get()})`);
 
 			return sessionId;
 
