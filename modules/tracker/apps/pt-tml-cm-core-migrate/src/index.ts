@@ -15,6 +15,8 @@ async function main() {
 
 	const globalTimer = new Timer();
 
+	const processorInstanceId = Math.random().toString(36).substring(2, 5).toUpperCase();
+
 	//
 	// Ask the coordinator for a batch of Core Vehicle Events to process
 
@@ -25,20 +27,20 @@ async function main() {
 	if (currentEnvironment === 'dev') coordinatorUrl = `http://localhost:5050/core-vehicle-events`;
 	else coordinatorUrl = `http://${currentEnvironment}-tracker-pt-tml-cm-core-migrate-coordinator.${currentEnvironment}-tracker.svc.cluster.local/core-vehicle-events`;
 
-	const coreVehicleEventsSessionId = await fetch(coordinatorUrl)
-		.then(response => response.json())
-		.then(data => data)
+	console.log(`[${processorInstanceId}] Fetching core vehicle events session ID from coordinator: ${coordinatorUrl}/${processorInstanceId}`);
+	const coreVehicleEventsSessionId = await fetch(`${coordinatorUrl}/${processorInstanceId}`)
+		.then(response => response.text())
 		.catch((error) => {
-			console.error(`Failed to fetch core vehicle events session ID from coordinator: ${error}`);
+			console.error(`[${processorInstanceId}] Failed to fetch core vehicle events session ID from coordinator: ${error}`);
 			return null;
 		});
 
 	if (!coreVehicleEventsSessionId) {
-		console.error('No core vehicle events session ID received.');
+		console.error(`[${processorInstanceId}] No core vehicle events session ID received.`);
 		return;
 	}
 
-	console.log(`Fetched core vehicle events session ID from coordinator: ${coreVehicleEventsSessionId} (fetch: ${fetchCoordinatorTimer.get()})`);
+	console.log(`[${processorInstanceId}] Fetched core vehicle events session ID from coordinator: ${coreVehicleEventsSessionId} (fetch: ${fetchCoordinatorTimer.get()})`);
 
 	//
 	// Get the earliest date from which we have data to sync,
@@ -102,14 +104,14 @@ async function main() {
 			if (error.message.startsWith('E11000')) {
 				// Logger.error({ message: `Duplicate document "${document._id}" found in source database. Deleting it from source database.` });
 				const deleteResult = await vehicleEventsCollection.deleteOne({ _id: new ObjectId(document._id) as unknown as string });
-				console.error(`Deleted duplicate document "${document._id}" from source database (deleted: ${deleteResult.deletedCount})`);
+				console.error(`[${processorInstanceId}] Deleted duplicate document "${document._id}" from source database (deleted: ${deleteResult.deletedCount})`);
 			} else {
-				console.error(`!-> Failed to migrate document "${document._id}": ${error.message}`);
+				console.error(`[${processorInstanceId}] !-> Failed to migrate document "${document._id}": ${error.message}`);
 			}
 		}
 	}
 
-	console.log(`=> Run took ${globalTimer.get()}. Migrated ${insertedCount} documents.`);
+	console.log(`[${processorInstanceId}] => Run took ${globalTimer.get()}. Migrated ${insertedCount} documents.`);
 }
 
 /* * */

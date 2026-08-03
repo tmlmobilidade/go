@@ -25,7 +25,7 @@ await (async function init() {
 	//
 	// Setup the API services
 
-	fastify.get('/core-vehicle-events', getCoreVehicleEvents);
+	fastify.get('/core-vehicle-events/:processorInstanceId', getCoreVehicleEvents);
 
 	//
 	// Start the API service

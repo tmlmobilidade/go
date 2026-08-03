@@ -2,6 +2,7 @@
 
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { Timer } from '@tmlmobilidade/timer';
+import { type FastifyRequest } from 'fastify';
 
 /* * */
 
@@ -9,11 +10,11 @@ let IS_BUSY = false;
 
 /* * */
 
-export async function getCoreVehicleEvents(): Promise<null | string> {
+export async function getCoreVehicleEvents(request: FastifyRequest<{ Params: { processorInstanceId: string } }>): Promise<null | string> {
 	//
 
 	const timer = new Timer();
-	const sessionId = `${process.pid}-${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
+	const sessionId = `${process.pid}-${Math.random().toString(36).substring(2, 5).toUpperCase()}-${request.params.processorInstanceId}`;
 
 	try {
 		//
