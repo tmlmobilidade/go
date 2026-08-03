@@ -28,7 +28,7 @@ export async function processStopTimesFile(context: ImportGtfsContext): Promise<
 			const tripData = context.gtfs.trips.get('trip_id', validatedData.trip_id);
 			if (!tripData) return;
 			// Also, check if the stop_id is valid and was saved before.
-			const stopData = context.gtfs.stops.get('stop_id', Number(validatedData.stop_id));
+			const stopData = context.gtfs.stops.get('stop_id', validatedData.stop_id);
 			if (!stopData) return;
 			// Save the exported row
 			context.gtfs.stop_times.write(validatedData);
