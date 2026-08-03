@@ -10,7 +10,7 @@ import { ObjectId } from 'mongodb';
 
 /* * */
 
-const PROCESS_ID = `${process.pid}-${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
+const PROCESS_ID = `${process.pid}-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
 
 /* * */
 
