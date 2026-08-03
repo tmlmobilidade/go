@@ -5,7 +5,6 @@ import { type ImportGtfsConfig, initImportGtfsContext } from '@/shared/init-cont
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { type GtfsSQLTables, initGtfsSqlTables } from './init-tables.js';
 import { processGtfsCalendarDates } from './processors/calendar-dates.js';
 import { processGtfsCalendar } from './processors/calendar.js';
 import { processGtfsRoutes } from './processors/routes.js';
@@ -13,6 +12,8 @@ import { processGtfsShapes } from './processors/shapes.js';
 import { processGtfsStopTimes } from './processors/stop-times.js';
 import { processGtfsStops } from './processors/stops.js';
 import { processGtfsTrips } from './processors/trips.js';
+import { initGtfsSqlTables } from './tables.js';
+import { type GtfsSQLTables } from './types.js';
 
 /**
  * Imports GTFS data into the database for a given plan.

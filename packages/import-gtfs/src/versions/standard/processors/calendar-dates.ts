@@ -1,8 +1,8 @@
 /* * */
 
-import { parseCsvFile } from '@/old/utils/parse-csv.js';
 import { type ImportGtfsContext } from '@/shared/init-context.js';
-import { type GtfsSQLTables } from '@/versions/standard/init-tables.js';
+import { parseCsvFile } from '@/shared/parse-csv.js';
+import { type GtfsSQLTables } from '@/versions/standard/types.js';
 import { type GtfsCalendarDates, GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
