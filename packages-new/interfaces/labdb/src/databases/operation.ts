@@ -3,13 +3,31 @@
 import { ClickHouseInterfaceTemplate } from '@/interface.template.js';
 import { simplifiedVehicleEventTableSchema } from '@/schemas/operation.js';
 import { ClickHouseClient } from '@tmlmobilidade/go-clients-clickhouse';
+import { type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisEndedAtLastStop, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
 export class OperationDatabase {
 	//
 
+	public readonly rideAnalysisAtLeastOneVehicleEventOnFirstStop: ClickHouseInterfaceTemplate<RideAnalysisAtLeastOneVehicleEventOnFirstStop>;
+	public readonly rideAnalysisEndedAtLastStop: ClickHouseInterfaceTemplate<RideAnalysisEndedAtLastStop>;
+	public readonly rideAnalysisExpectedApexValidationInterval: ClickHouseInterfaceTemplate<RideAnalysisExpectedApexValidationInterval>;
+	public readonly rideAnalysisExpectedDriverIdQty: ClickHouseInterfaceTemplate<RideAnalysisExpectedDriverIdQty>;
+	public readonly rideAnalysisExpectedStartTime: ClickHouseInterfaceTemplate<RideAnalysisExpectedStartTime>;
+	public readonly rideAnalysisExpectedVehicleEventDelay: ClickHouseInterfaceTemplate<RideAnalysisExpectedVehicleEventDelay>;
+	public readonly rideAnalysisExpectedVehicleEventInterval: ClickHouseInterfaceTemplate<RideAnalysisExpectedVehicleEventInterval>;
+	public readonly rideAnalysisExpectedVehicleEventQty: ClickHouseInterfaceTemplate<RideAnalysisExpectedVehicleEventQty>;
+	public readonly rideAnalysisExpectedVehicleIdQty: ClickHouseInterfaceTemplate<RideAnalysisExpectedVehicleIdQty>;
+	public readonly rideAnalysisMatchingApexLocations: ClickHouseInterfaceTemplate<RideAnalysisMatchingApexLocations>;
+	public readonly rideAnalysisMatchingVehicleIds: ClickHouseInterfaceTemplate<RideAnalysisMatchingVehicleIds>;
+	public readonly rideAnalysisSimpleOneApexValidation: ClickHouseInterfaceTemplate<RideAnalysisSimpleOneApexValidation>;
+	public readonly rideAnalysisSimpleOneVehicleEventOrApexValidation: ClickHouseInterfaceTemplate<RideAnalysisSimpleOneVehicleEventOrApexValidation>;
+	public readonly rideAnalysisSimpleThreeVehicleEvents: ClickHouseInterfaceTemplate<RideAnalysisSimpleThreeVehicleEvents>;
+	public readonly rideAnalysisTransactionSequentiality: ClickHouseInterfaceTemplate<RideAnalysisTransactionSequentiality>;
+	public readonly rides: ClickHouseInterfaceTemplate<Ride>;
 	public readonly simplifiedVehicleEvents: ClickHouseInterfaceTemplate<SimplifiedVehicleEvent>;
 
 	private readonly databaseName = 'operation';
@@ -23,6 +41,22 @@ export class OperationDatabase {
 	}
 
 	public async init() {
+		await this.rideAnalysisAtLeastOneVehicleEventOnFirstStop.init();
+		await this.rideAnalysisEndedAtLastStop.init();
+		await this.rideAnalysisExpectedApexValidationInterval.init();
+		await this.rideAnalysisExpectedDriverIdQty.init();
+		await this.rideAnalysisExpectedStartTime.init();
+		await this.rideAnalysisExpectedVehicleEventDelay.init();
+		await this.rideAnalysisExpectedVehicleEventInterval.init();
+		await this.rideAnalysisExpectedVehicleEventQty.init();
+		await this.rideAnalysisExpectedVehicleIdQty.init();
+		await this.rideAnalysisMatchingApexLocations.init();
+		await this.rideAnalysisMatchingVehicleIds.init();
+		await this.rideAnalysisSimpleOneApexValidation.init();
+		await this.rideAnalysisSimpleOneVehicleEventOrApexValidation.init();
+		await this.rideAnalysisSimpleThreeVehicleEvents.init();
+		await this.rideAnalysisTransactionSequentiality.init();
+		await this.rides.init();
 		await this.simplifiedVehicleEvents.init();
 	}
 }
