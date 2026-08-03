@@ -93,8 +93,8 @@ export const rideAnalysisExpectedDriverIdQtyTableSchema: ClickHouseTableSchema<R
 
 export const rideAnalysisExpectedStartTimeTableSchema: ClickHouseTableSchema<RideAnalysisExpectedStartTime> = {
 	...rideAnalysisBaseTableSchema,
-	observed_start_time: { type: 'Nullable(Int64)' },
-	observed_start_time_delta: { type: 'Nullable(Int16)' },
+	observed_start_time: { type: 'Nullable(Int64) CODEC(DoubleDelta, ZSTD)' },
+	observed_start_time_delta: { type: 'Nullable(Int16) CODEC(T64, ZSTD)' },
 };
 
 /* * */

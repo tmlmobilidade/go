@@ -16,6 +16,7 @@ export type ClickHouseDataType =
   | 'LowCardinality(String)'
   | 'Nullable(Float64)'
   | 'Nullable(Int16)'
+  | 'Nullable(Int16) CODEC(T64, ZSTD)'
   | 'Nullable(Int32)'
   | 'Nullable(Int32) CODEC(T64, ZSTD)'
   | 'Nullable(Int64)'
