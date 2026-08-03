@@ -1,7 +1,7 @@
 /* * */
 
 import { ClickHouseInterfaceTemplate } from '@/interface.template.js';
-import { ridesTableSchema, simplifiedVehicleEventTableSchema } from '@/schemas/operation.js';
+import { rideAnalysisAtLeastOneVehicleEventOnFirstStopTableSchema, ridesTableSchema, simplifiedVehicleEventTableSchema } from '@/schemas/operation.js';
 import { ClickHouseClient } from '@tmlmobilidade/go-clients-clickhouse';
 import { type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisEndedAtLastStop, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
@@ -33,6 +33,11 @@ export class OperationDatabase {
 	private readonly databaseName = 'operation';
 
 	public constructor(instance: ClickHouseClient) {
+		this.rideAnalysisAtLeastOneVehicleEventOnFirstStop = new ClickHouseInterfaceTemplate<RideAnalysisAtLeastOneVehicleEventOnFirstStop>(instance, this.databaseName, 'ride_analysis_at_least_one_vehicle_event_on_first_stop', rideAnalysisAtLeastOneVehicleEventOnFirstStopTableSchema, {
+			engine: 'ReplacingMergeTree(updated_at)',
+			orderBy: ['ride_id', 'updated_at'],
+			partitionBy: 'intDiv(operational_date, 100)',
+		});
 		this.rides = new ClickHouseInterfaceTemplate<Ride>(instance, this.databaseName, 'rides', ridesTableSchema, {
 			engine: 'ReplacingMergeTree(updated_at)',
 			orderBy: ['agency_id', 'operational_date', 'route_short_name', 'shape_id', 'start_time_scheduled', '_id'],

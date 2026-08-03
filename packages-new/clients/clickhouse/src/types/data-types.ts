@@ -19,6 +19,7 @@ export type ClickHouseDataType =
   | 'Nullable(Int64)'
   | 'Nullable(Int64) CODEC(DoubleDelta, ZSTD)'
   | 'Nullable(String)'
+  | 'Nullable(String) CODEC(ZSTD)'
   | 'Nullable(UInt8) CODEC(T64, ZSTD)'
   | 'Nullable(UInt16)'
   | 'Nullable(UInt16) CODEC(T64, ZSTD)'
