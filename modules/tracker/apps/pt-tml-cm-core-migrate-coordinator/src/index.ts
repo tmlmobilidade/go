@@ -69,7 +69,7 @@ await (async function init() {
 			const coreVehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
 			const latestCoreVehicleEvents = await coreVehicleEventsCollection
-				.find({ status: { $exists: false } }, { limit: 1_000, projection: { _id: 1 }, sort: { millis: -1 } })
+				.find({ status: { $exists: false } }, { limit: 5_000, projection: { _id: 1 }, sort: { millis: -1 } })
 				.toArray();
 
 			/* === FOR TESTING === */
