@@ -1,10 +1,9 @@
 'use client';
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { useLocationsContext } from '@/contexts/Locations.context';
 import { Translations } from '@/lib/translations';
 import { StopJurisdictionSchema } from '@tmlmobilidade/types';
-import { Collapsible, Grid, Section, Select, ValueDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, Select, useLocationsContext, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -37,7 +36,7 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching district data is found
 		if (!matchingDistrictData) return;
 		// Return the matching data
-		return `${matchingDistrictData.name} (${matchingDistrictData._id})`;
+		return `${matchingDistrictData.name} (${matchingDistrictData.id})`;
 	}, [stopDetailContext.data.stop, locationsContext.data.districts_map]);
 
 	const associatedMunicipalityValue = useMemo(() => {
@@ -51,7 +50,7 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching municipality data is found
 		if (!matchingMunicipalityData) return;
 		// Return the matching data
-		return `${matchingMunicipalityData.name} (${matchingMunicipalityData._id})`;
+		return `${matchingMunicipalityData.name} (${matchingMunicipalityData.id})`;
 	}, [stopDetailContext.data.stop, locationsContext.data.municipalities_map]);
 
 	const associatedParishValue = useMemo(() => {
@@ -65,22 +64,22 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching parish data is found
 		if (!matchingParishData) return;
 		// Return the matching data
-		return `${matchingParishData.name} (${matchingParishData._id})`;
+		return `${matchingParishData.name} (${matchingParishData.id})`;
 	}, [stopDetailContext.data.stop, locationsContext.data.parishes_map]);
 
 	const associatedLocalityValue = useMemo(() => {
 		// Skip if localities are unavailable
-		if (!locationsContext.data.localities_map) return;
+		if (!locationsContext.data.localitites_map) return;
 		// Skip if stop does not yet have a locality
 		if (!stopDetailContext.data.stop?.locality_id) return;
 		// Get the locality from the map
 		const localityId = stopDetailContext.data.stop.locality_id;
-		const matchingLocalityData = locationsContext.data.localities_map.get(localityId);
+		const matchingLocalityData = locationsContext.data.localitites_map.get(localityId);
 		// Return if no matching locality data is found
 		if (!matchingLocalityData) return;
 		// Return the matching data
-		return `${matchingLocalityData.name} (${matchingLocalityData._id})`;
-	}, [stopDetailContext.data.stop, locationsContext.data.localities_map]);
+		return `${matchingLocalityData.name} (${matchingLocalityData.id})`;
+	}, [stopDetailContext.data.stop, locationsContext.data.localitites_map]);
 
 	//
 	// C. Render components

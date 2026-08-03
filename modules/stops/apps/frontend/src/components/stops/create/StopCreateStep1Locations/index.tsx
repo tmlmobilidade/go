@@ -1,9 +1,9 @@
 'use client';
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
-import { useLocationsContext } from '@/contexts/Locations.context';
-import { Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
-import { useCallback, useState } from 'react';
+import { type Location } from '@tmlmobilidade/types';
+import { ContextFormController, Grid, Section, useLocationsContext, ValueDisplay } from '@tmlmobilidade/ui';
+import { useEffect, useState } from 'react';
 
 /* * */
 
@@ -16,36 +16,54 @@ export function StopCreateStep1Locations() {
 	const stopCreateContext = useStopCreateContext();
 	const locationsContext = useLocationsContext();
 	const form = stopCreateContext.data.form;
-	const [, forceFormUpdate] = useState(0);
+	const [locationData, setLocationData] = useState<Location | null>(null);
 
-	const handleFormValuesChange = useCallback(() => {
-		forceFormUpdate(value => value + 1);
-	}, []);
+	useEffect(() => {
+		const [latitude, longitude] = stopCreateContext.data.coordinates;
+		if (latitude === undefined || longitude === undefined) {
+			setLocationData(null);
+			return;
+		}
 
-	form.watch('district_id', handleFormValuesChange);
-	form.watch('municipality_id', handleFormValuesChange);
-	form.watch('parish_id', handleFormValuesChange);
-	form.watch('locality_id', handleFormValuesChange);
+		let cancelled = false;
+		void locationsContext.actions.queryLocations(latitude, longitude).then((result) => {
+			if (cancelled) return;
 
-	//
-	// B. Transform data
+			setLocationData(result);
+			form.setValue('district_id', result?.district?._id);
+			form.setValue('locality_id', result?.locality?._id);
+			form.setValue('municipality_id', result?.municipality?._id);
+			form.setValue('parish_id', result?.parish?._id);
+		});
 
-	const formValues = form.getValues();
-	const associatedDistrict = formValues.district_id ? locationsContext.data.districts_map.get(formValues.district_id) : undefined;
-	const associatedMunicipality = formValues.municipality_id ? locationsContext.data.municipalities_map.get(formValues.municipality_id) : undefined;
-	const associatedParish = formValues.parish_id ? locationsContext.data.parishes_map.get(formValues.parish_id) : undefined;
-	const associatedLocality = formValues.locality_id ? locationsContext.data.localities_map.get(formValues.locality_id) : undefined;
-
-	//
-	// C. Render components
+		return () => {
+			cancelled = true;
+		};
+	}, [form, locationsContext.actions, stopCreateContext.data.coordinates]);
 
 	return (
 		<Section>
 			<Grid columns="ab" gap="md">
-				<ValueDisplay label="Distrito" value={associatedDistrict?.name ?? 'N/A'} variant="bordered" />
-				<ValueDisplay label="Município" value={associatedMunicipality?.name ?? 'N/A'} variant="bordered" />
-				<ValueDisplay label="Freguesia" value={associatedParish?.name ?? 'N/A'} variant="bordered" />
-				<ValueDisplay label="Localidade" value={associatedLocality?.name ?? 'N/A'} variant="bordered" />
+				<ContextFormController
+					control={form.control}
+					name="district_id"
+					render={({ field }) => <ValueDisplay label="Distrito" value={locationData?.district?.name ?? field.value ?? 'N/A'} variant="bordered" />}
+				/>
+				<ContextFormController
+					control={form.control}
+					name="municipality_id"
+					render={({ field }) => <ValueDisplay label="Município" value={locationData?.municipality?.name ?? field.value ?? 'N/A'} variant="bordered" />}
+				/>
+				<ContextFormController
+					control={form.control}
+					name="parish_id"
+					render={({ field }) => <ValueDisplay label="Freguesia" value={locationData?.parish?.name ?? field.value ?? 'N/A'} variant="bordered" />}
+				/>
+				<ContextFormController
+					control={form.control}
+					name="locality_id"
+					render={({ field }) => <ValueDisplay label="Localidade" value={locationData?.locality?.name ?? field.value ?? 'N/A'} variant="bordered" />}
+				/>
 			</Grid>
 		</Section>
 	);

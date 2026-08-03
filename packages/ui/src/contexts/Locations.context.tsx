@@ -4,8 +4,8 @@ import { ApiResponse } from '@carrismetropolitana/api-types/common';
 import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { Zone } from '@tmlmobilidade/types';
-import { standardSwrFetcher } from '@tmlmobilidade/utils';
+import { type Location, Zone } from '@tmlmobilidade/types';
+import { fetchData, standardSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -17,6 +17,7 @@ interface LocationsContextState {
 		getLocalityById: (localityId: string) => Locality | undefined
 		getMunicipalityById: (municipalityId: string) => Municipality | undefined
 		getParishById: (parishId: string) => Parish | undefined
+		queryLocations: (latitude: number, longitude: number) => Promise<Location | null>
 	}
 	data: {
 		district_ids: District['id'][]
@@ -161,6 +162,11 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 		return allLocalitiesData?.find(item => item.id === localityId);
 	}, [allLocalitiesData]);
 
+	const queryLocations = useCallback(async (latitude: number, longitude: number) => {
+		const response = await fetchData<Location>(`${API_ROUTES.locations.LOCATIONS_COORDINATES}?lat=${latitude}&lon=${longitude}`);
+		return response.data ?? null;
+	}, []);
+
 	//
 	// D. Define context value
 
@@ -170,6 +176,7 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 			getLocalityById,
 			getMunicipalityById,
 			getParishById,
+			queryLocations,
 		},
 		data: {
 			district_ids: allDistrictIds ?? [],

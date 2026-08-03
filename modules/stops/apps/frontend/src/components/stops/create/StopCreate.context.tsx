@@ -1,15 +1,14 @@
 'use client';
 
 import { closeCreateStopModal } from '@/components/stops/create/StopCreate.modal';
-import { useLocationsContext } from '@/contexts/Locations.context';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
 import { type CreateStopDto, CreateStopSchema, type Stop, StopSchema } from '@tmlmobilidade/types';
-import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { keepUrlParams, useContextForm, useContextFormWatch, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -21,7 +20,7 @@ interface StopCreateContextState {
 	}
 	data: {
 		coordinates: [number | undefined, number | undefined]
-		form: UseFormReturnType<CreateStopDto>
+		form: ReturnType<typeof useContextForm<CreateStopDto>>['form']
 	}
 	flags: {
 		error: Error | null
@@ -57,15 +56,12 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const router = useRouter();
 
-	const locationsContext = useLocationsContext();
-
 	const [isError, setIsError] = useState<Error | null>(null);
 	const [isSaving, setIsSaving] = useState(false);
 
 	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
 	const [modalCurrentStepValidState, setModalCurrentStepValidState] = useState<boolean>(false);
 	const [coordinates, setCoordinates] = useState<[number | undefined, number | undefined]>([undefined, undefined]);
-	const lastLoadedCoordsRef = useRef<null | { lat: number, lng: number }>(null);
 
 	//
 	// B. Fetch data
@@ -75,7 +71,13 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Setup form
 
-	const { form } = useTypicalForm<CreateStopDto>(CreateStopSchema);
+	const { form } = useContextForm<CreateStopDto>({});
+	const nameValue = useContextFormWatch({ control: form.control, name: 'name' });
+	const shortNameValue = useContextFormWatch({ control: form.control, name: 'short_name' });
+	const latitudeValue = useContextFormWatch({ control: form.control, name: 'latitude' });
+	const longitudeValue = useContextFormWatch({ control: form.control, name: 'longitude' });
+	const districtIdValue = useContextFormWatch({ control: form.control, name: 'district_id' });
+	const municipalityIdValue = useContextFormWatch({ control: form.control, name: 'municipality_id' });
 
 	//
 	// D. Handle actions
@@ -109,50 +111,11 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (currentLat === validatedLatitude && currentLng === validatedLongitude) return;
 
 		setCoordinates([validatedLatitude, validatedLongitude]);
-		form.setValues({ latitude: validatedLatitude, longitude: validatedLongitude });
+		form.setValue('latitude', validatedLatitude);
+		form.setValue('longitude', validatedLongitude);
 	}, [form]);
 
 	useEffect(() => {
-		const validatedLatitude = isValidLatitude(coordinates[0] ?? NaN);
-		const validatedLongitude = isValidLongitude(coordinates[1] ?? NaN);
-		if (validatedLatitude === false || validatedLongitude === false) return;
-
-		const latitude = validatedLatitude;
-		const longitude = validatedLongitude;
-
-		if (lastLoadedCoordsRef.current?.lat === latitude && lastLoadedCoordsRef.current?.lng === longitude) return;
-		lastLoadedCoordsRef.current = { lat: latitude, lng: longitude };
-
-		let cancelled = false;
-
-		async function loadLocations() {
-			const locationData = await locationsContext.actions.queryLocations(latitude, longitude);
-			if (cancelled) return;
-
-			const current = form.getValues();
-			const district_id = locationData?.district?._id;
-			const locality_id = locationData?.locality?._id;
-			const municipality_id = locationData?.municipality?._id;
-			const parish_id = locationData?.parish?._id;
-
-			if (
-				current.district_id === district_id
-				&& current.locality_id === locality_id
-				&& current.municipality_id === municipality_id
-				&& current.parish_id === parish_id
-			) return;
-
-			form.setValues({ district_id, locality_id, municipality_id, parish_id });
-		}
-
-		void loadLocations();
-
-		return () => {
-			cancelled = true;
-		};
-	}, [coordinates, form, locationsContext.actions]);
-
-	const validateCurrentStep = () => {
 		// Get latest form values
 		const currentValues = form.getValues();
 		// By default, set the current step as invalid
@@ -176,28 +139,17 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		if (modalCurrentStepState === 3) {
 			setModalCurrentStepValidState(true);
 		}
-	};
+	}, [districtIdValue, form, latitudeValue, longitudeValue, modalCurrentStepState, municipalityIdValue, nameValue, shortNameValue]);
 
-	form.watch('name', validateCurrentStep);
-	form.watch('short_name', validateCurrentStep);
-	form.watch('tts_name', validateCurrentStep);
-	form.watch('latitude', validateCurrentStep);
-	form.watch('longitude', validateCurrentStep);
-	form.watch('district_id', validateCurrentStep);
-	form.watch('municipality_id', validateCurrentStep);
-	form.watch('parish_id', validateCurrentStep);
-	useEffect(validateCurrentStep, [modalCurrentStepState]);
-
-	form.watch('name', ({ value }) => {
-		// Skip if no name is set
-		if (typeof value !== 'string') return;
+	useEffect(() => {
+		if (typeof nameValue !== 'string') return;
 		// Build the abbreviated and TTS names
-		const shortName = getStopShortName(value);
-		const ttsName = getStopTtsName(value);
+		const shortName = getStopShortName(nameValue);
+		const ttsName = getStopTtsName(nameValue);
 		// Set the form values
-		form.setFieldValue('short_name', shortName);
-		form.setFieldValue('tts_name', ttsName);
-	});
+		form.setValue('short_name', shortName);
+		form.setValue('tts_name', ttsName);
+	}, [form, nameValue]);
 
 	const handleCreateStop = async () => {
 		setIsSaving(true);
@@ -217,7 +169,6 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 		}
 		form.reset();
 		setCoordinates([undefined, undefined]);
-		lastLoadedCoordsRef.current = null;
 		allStopsMutate();
 		setIsSaving(false);
 		closeCreateStopModal();

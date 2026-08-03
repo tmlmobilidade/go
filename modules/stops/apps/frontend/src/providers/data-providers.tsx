@@ -1,8 +1,7 @@
 'use client';
 
 import { StopCreateContextProvider } from '@/components/stops/create/StopCreate.context';
-import { LocationsContextProvider } from '@/contexts/Locations.context';
-import { AgenciesContextProvider, AppProvider } from '@tmlmobilidade/ui';
+import { AgenciesContextProvider, AppProvider, LocationsContextProvider } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
 /* * */

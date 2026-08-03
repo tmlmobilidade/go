@@ -1,11 +1,10 @@
 'use client';
 
-import { useLocationsContext } from '@/contexts/Locations.context';
 import { type StopNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { LifecycleStatusSchema, type Stop, StopConnectionSchema, StopEquipmentSchema, StopFacilitySchema } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -55,7 +54,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	const filterConnections = useFilterStateList('connections', StopConnectionSchema.options, StopConnectionSchema.options.map(item => ({ label: item, value: item })));
 	const filterLifecycleStatus = useFilterStateList('lifecycle_status', LifecycleStatusSchema.options, LifecycleStatusSchema.options.map(item => ({ label: item, value: item })));
 	const filterAgencies = useFilterStateList('agencies', agenciesContext.data.raw.map(item => item._id), agenciesContext.data.as_options);
-	const filterMunicipality = useFilterStateList('municipalities', locationsContext.data.municipality_ids, (locationsContext.data.municipalities ?? []).map(item => ({ label: item.name, value: item._id })).sort((a, b) => a.label?.localeCompare(b.label, 'pt')));
+	const filterMunicipality = useFilterStateList('municipalities', locationsContext.data.municipality_ids, (locationsContext.data.municipalities ?? []).map(item => ({ label: item.name, value: item.id })).sort((a, b) => a.label?.localeCompare(b.label, 'pt')));
 
 	//
 	// B. Fetch data
@@ -73,7 +72,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 			...item,
 			district_name: locationsContext.data.districts_map.get(item.district_id)?.name ?? '',
 			legacy_ids_normalized: item.legacy_ids?.map(String).join(' '),
-			locality_name: locationsContext.data.localities_map.get(item.locality_id)?.name ?? 'N/A',
+			locality_name: locationsContext.data.localitites_map.get(item.locality_id)?.name ?? 'N/A',
 			municipality_name: locationsContext.data.municipalities_map.get(item.municipality_id)?.name ?? '',
 			name_normalized: normalizeString(item.name),
 			new_name_normalized: normalizeString(item.new_name),
@@ -82,7 +81,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	}, [
 		allStopsData,
 		locationsContext.data.districts_map,
-		locationsContext.data.localities_map,
+		locationsContext.data.localitites_map,
 		locationsContext.data.municipalities_map,
 		locationsContext.data.parishes_map,
 	]);
