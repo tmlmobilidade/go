@@ -71,6 +71,8 @@ export async function getCoreVehicleEvents(request: FastifyRequest<{ Params: { p
 
 		console.log(`[${sessionId}] New batch: Qty ${latestCoreVehicleEventsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 
+		await new Promise(resolve => setTimeout(resolve, 1_000));
+
 		return sessionId;
 
 		//
