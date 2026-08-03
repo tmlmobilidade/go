@@ -1,8 +1,9 @@
 /* * */
 
-import { type ImportGtfsContext } from '@/types/context.js';
-import { parseCsvFile } from '@/utils/parse-csv.js';
-import { type GtfsStrictV29StopTimes, GtfsStrictV29StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { parseCsvFile } from '@/old/utils/parse-csv.js';
+import { type ImportGtfsContext } from '@/shared/init-context.js';
+import { type GtfsSQLTables } from '@/versions/standard/init-tables.js';
+import { type GtfsStopTimes, GtfsStopTimesSchema } from '@tmlmobilidade/go-types-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -13,7 +14,7 @@ import { Timer } from '@tmlmobilidade/timer';
  * include the associated stop data right away to avoid another lookup later.
  * @param context The import GTFS context containing references to SQL tables and other metadata.
  */
-export async function processStopTimesFile(context: ImportGtfsContext): Promise<void> {
+export async function processGtfsStopTimes(context: ImportGtfsContext<GtfsSQLTables>): Promise<void> {
 	try {
 		//
 
@@ -21,9 +22,9 @@ export async function processStopTimesFile(context: ImportGtfsContext): Promise<
 
 		Logger.info({ message: 'Reading zip entry "stop_times.txt"...' });
 
-		const parseEachRow = async (data: GtfsStrictV29StopTimes) => {
+		const parseEachRow = async (data: GtfsStopTimes) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsStrictV29StopTimesSchema.safeParse(data);
+			const validatedData = GtfsStopTimesSchema.safeParse(data);
 			// Skip if this row's trip_id was not saved before.
 			const tripData = context.gtfs.trips.get('trip_id', validatedData.data.trip_id);
 			if (!tripData) return;

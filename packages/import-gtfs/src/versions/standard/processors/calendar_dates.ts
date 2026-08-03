@@ -1,10 +1,9 @@
 /* * */
 
-import { type ImportGtfsToDatabaseConfig } from '@/types/config.js';
-import { type ImportGtfsContext } from '@/types/context.js';
-import { parseCsvFile } from '@/utils/parse-csv.js';
-import { GtfsStrictV29CalendarDates, GtfsStrictV29CalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { parseCsvFile } from '@/old/utils/parse-csv.js';
+import { type ImportGtfsContext } from '@/shared/init-context.js';
+import { type GtfsSQLTables } from '@/versions/standard/init-tables.js';
+import { type GtfsCalendarDates, GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
@@ -17,7 +16,7 @@ import fs from 'node:fs';
  * @param startDate The start date of the range to filter service_ids.
  * @param endDate The end date of the range to filter service_ids.
  */
-export async function processCalendarDatesFile(context: ImportGtfsContext, config: ImportGtfsToDatabaseConfig): Promise<void> {
+export async function processGtfsCalendarDates(context: ImportGtfsContext<GtfsSQLTables>): Promise<void> {
 	try {
 		//
 
@@ -25,30 +24,28 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 
 		Logger.info({ message: 'Reading zip entry "calendar_dates.txt"...' });
 
-		const parseEachRow = async (data: GtfsStrictV29CalendarDates) => {
+		const parseEachRow = async (data: GtfsCalendarDates) => {
 			//
 
 			//
 			// Validate the current row against the proper type
 
-			const validatedData = GtfsStrictV29CalendarDatesSchema.safeParse(data);
-
-			const dateAsOperationalDate = validateOperationalDate(validatedData.data.date);
+			const validatedData = GtfsCalendarDatesSchema.safeParse(data);
 
 			//
 			// Skip if this row's date is not between the given start and end dates
 			// if they are provided in the config.
 
-			if ('time_range' in config && config.time_range.date_range?.start && config.time_range.date_range?.end) {
-				if (dateAsOperationalDate < config.time_range.date_range.start || dateAsOperationalDate > config.time_range.date_range.end) return;
+			if ('time_range' in context.config && context.config.time_range.date_range?.start && context.config.time_range.date_range?.end) {
+				if (validatedData.data.date < context.config.time_range.date_range.start || validatedData.data.date > context.config.time_range.date_range.end) return;
 			}
 
 			//
 			// Skip if this row's date is not in the given discrete dates array
 			// if it is provided in the config.
 
-			if ('time_range' in config && config.time_range.discrete_dates?.length) {
-				if (!config.time_range.discrete_dates.includes(dateAsOperationalDate)) return;
+			if ('time_range' in context.config && context.config.time_range.discrete_dates?.length) {
+				if (!context.config.time_range.discrete_dates.includes(validatedData.data.date)) return;
 			}
 
 			//
@@ -63,10 +60,10 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 				// If this service_id was previously saved, either add or remove the current date
 				// to it based on the exception_type value for this row.
 				if (validatedData.data.exception_type === '1') {
-					updatedCalendar.add(dateAsOperationalDate);
+					updatedCalendar.add(validatedData.data.date);
 					context.counters.calendar_dates++;
 				} else if (validatedData.data.exception_type === '2') {
-					updatedCalendar.delete(dateAsOperationalDate);
+					updatedCalendar.delete(validatedData.data.date);
 					context.counters.calendar_dates--;
 				}
 				// Update the service_id with the new dates
@@ -75,7 +72,7 @@ export async function processCalendarDatesFile(context: ImportGtfsContext, confi
 				// If this is the first time we're seeing this service_id, then it is only necessary
 				// to initiate a new dates array if it is a service addition
 				if (validatedData.data.exception_type === '1') {
-					context.gtfs.calendar_dates[validatedData.data.service_id] = [dateAsOperationalDate];
+					context.gtfs.calendar_dates[validatedData.data.service_id] = [validatedData.data.date];
 					context.counters.calendar_dates++;
 				}
 			}

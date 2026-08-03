@@ -1,6 +1,6 @@
 /* * */
 
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDateInt } from '@tmlmobilidade/types';
 
 /**
  * Source type of the GTFS data to import.
@@ -16,10 +16,10 @@ type ImportGtfsToDatabaseConfigSource = {
  */
 interface ImportGtfsToDatabaseConfigTimeRange {
 	date_range?: {
-		end: OperationalDate
-		start: OperationalDate
+		end: OperationalDateInt
+		start: OperationalDateInt
 	}
-	discrete_dates?: OperationalDate[]
+	discrete_dates?: OperationalDateInt[]
 }
 
 /**

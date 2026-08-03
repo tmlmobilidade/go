@@ -1,18 +1,19 @@
 /* * */
 
-import { type GtfsSQLTables } from '@/types/sql-tables.js';
 import { type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
 
+import { type GtfsStrictV29SQLTables } from './sql-tables.js';
+
 /**
- * Initializes GTFS SQL tables and writers.
+ * Initializes GTFS Strict v29 SQL tables and writers.
  * @returns The initialized GTFS SQL tables.
  */
-export function initGtfsSqlTables(): GtfsSQLTables {
+export function initGtfsStrictV29SqlTables(): GtfsStrictV29SQLTables {
 	//
 
-	const calendarDatesMap: Record<string, OperationalDate[]> = {};
+	const calendarDatesMap: Record<string, OperationalDateInt[]> = {};
 
 	const database = new SQLiteDatabase();
 
@@ -27,7 +28,6 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 			{ indexed: false, name: 'service_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'shape_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'trip_headsign', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'trip_short_name', type: 'TEXT' },
 			{ indexed: false, name: 'wheelchair_accessible', type: 'INTEGER' },
 			{ indexed: false, name: 'pattern_id', not_null: true, type: 'TEXT' },
 		],
@@ -44,10 +44,8 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 			{ indexed: true, name: 'route_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_long_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_short_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_sort_order', type: 'INTEGER' },
 			{ indexed: false, name: 'route_text_color', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_type', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'route_url', type: 'TEXT' },
 			{ indexed: false, name: 'circular', type: 'INTEGER' },
 			{ indexed: false, name: 'line_id', not_null: true, type: 'INTEGER' },
 			{ indexed: false, name: 'line_long_name', not_null: true, type: 'TEXT' },
@@ -101,8 +99,6 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 		batch_size: 100000,
 		columns: [
 			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'continuous_drop_off', type: 'INTEGER' },
-			{ indexed: false, name: 'continuous_pickup', type: 'INTEGER' },
 			{ indexed: false, name: 'departure_time', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'drop_off_type', type: 'INTEGER' },
 			{ indexed: false, name: 'pickup_type', type: 'INTEGER' },

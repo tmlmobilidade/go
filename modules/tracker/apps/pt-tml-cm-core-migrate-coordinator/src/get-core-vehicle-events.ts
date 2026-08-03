@@ -2,6 +2,7 @@
 
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { Timer } from '@tmlmobilidade/timer';
+import { type FastifyRequest } from 'fastify';
 
 /* * */
 
@@ -9,11 +10,11 @@ let IS_BUSY = false;
 
 /* * */
 
-export async function getCoreVehicleEvents(): Promise<string[]> {
+export async function getCoreVehicleEvents(request: FastifyRequest<{ Params: { processorInstanceId: string } }>): Promise<null | string> {
 	//
 
 	const timer = new Timer();
-	const sessionId = Math.random().toString(36).substring(2, 5).toUpperCase();
+	const sessionId = `${process.pid}-${Math.random().toString(36).substring(2, 5).toUpperCase()}-${request.params.processorInstanceId}`;
 
 	try {
 		//
@@ -24,9 +25,9 @@ export async function getCoreVehicleEvents(): Promise<string[]> {
 		// we need to make sure that instances request the next batch of documents
 		// sequentially. To do that, we implement a simple lock mechanism.
 
-		while (IS_BUSY) {
+		if (IS_BUSY) {
 			console.log(`[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})`);
-			return [];
+			return null;
 		}
 
 		//
@@ -44,7 +45,7 @@ export async function getCoreVehicleEvents(): Promise<string[]> {
 		const coreVehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
 		const latestCoreVehicleEvents = await coreVehicleEventsCollection
-			.find({ status: { $ne: 'processing' } }, { limit: 1_000, projection: { _id: 1 }, sort: { millis: -1 } })
+			.find({ status: { $exists: false } }, { limit: 1_000, projection: { _id: 1 }, sort: { millis: -1 } })
 			.toArray();
 
 		/* === FOR TESTING === */
@@ -55,7 +56,7 @@ export async function getCoreVehicleEvents(): Promise<string[]> {
 
 		if (!latestCoreVehicleEvents.length) {
 			console.log(`[${sessionId}] No core vehicle events to process (fetch: ${fetchTimerResult})`);
-			return [];
+			return null;
 		}
 
 		//
@@ -66,16 +67,18 @@ export async function getCoreVehicleEvents(): Promise<string[]> {
 
 		const latestCoreVehicleEventsIds = latestCoreVehicleEvents.map(item => item._id);
 
-		await coreVehicleEventsCollection.updateMany({ _id: { $in: latestCoreVehicleEventsIds } }, { $set: { status: 'processing' } });
+		await coreVehicleEventsCollection.updateMany({ _id: { $in: latestCoreVehicleEventsIds } }, { $set: { status: sessionId } });
 
 		console.log(`[${sessionId}] New batch: Qty ${latestCoreVehicleEventsIds.length} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})`);
 
-		return latestCoreVehicleEventsIds;
+		await new Promise(resolve => setTimeout(resolve, 1_000));
+
+		return sessionId;
 
 		//
 	} catch (error) {
 		console.error(`[${sessionId}] Error getting core vehicle events: ${error.message}`);
-		return [];
+		return null;
 	} finally {
 		IS_BUSY = false;
 	}
