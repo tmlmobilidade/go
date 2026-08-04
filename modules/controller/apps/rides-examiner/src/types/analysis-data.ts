@@ -1,14 +1,13 @@
 /* * */
 
 import { type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
+import { type HashedPath, type Ride } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { type HashedShape, type HashedTrip, type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
 export interface AnalysisData {
-	hashed_shape: HashedShape
-	hashed_trip: HashedTrip
+	hashed_path: HashedPath[]
 	ride: Ride
 	simplified_apex_locations: SimplifiedApexLocation[]
 	simplified_apex_on_board_refunds: SimplifiedApexOnBoardRefund[]

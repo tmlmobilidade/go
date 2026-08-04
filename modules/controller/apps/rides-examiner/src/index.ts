@@ -3,7 +3,7 @@
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { getCurrentEnvironment, UpdateRideSchema } from '@tmlmobilidade/types';
@@ -52,7 +52,7 @@ export async function validateRides() {
 
 		const fetchRideDocumentsTimer = new Timer();
 
-		const ridesBatch = await goDb.operation.rides.findMany({ _id: { $in: rideIdsBatch || [] } });
+		const ridesBatch = await labDb.operation.rides.select('*', '_id IN ($1)', { 1: rideIdsBatch.join(',') });
 
 		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 
@@ -81,8 +81,7 @@ export async function validateRides() {
 				// from the fetched dynamic data. Some of this data will be used by the analyzers.
 
 				const augmentedRideData = augmentRide({
-					hashed_shape: analysisData.hashed_shape,
-					hashed_trip: analysisData.hashed_trip,
+					hashed_path: analysisData.hashed_path,
 					ride: rideData,
 					simplified_apex_locations: analysisData.simplified_apex_locations,
 					simplified_apex_on_board_refunds: analysisData.simplified_apex_on_board_refunds,
@@ -96,8 +95,7 @@ export async function validateRides() {
 				// how many failed and how many errored.
 
 				augmentedRideData.analysis = analyzeRide({
-					hashed_shape: analysisData.hashed_shape,
-					hashed_trip: analysisData.hashed_trip,
+					hashed_path: analysisData.hashed_path,
 					ride: augmentedRideData,
 					simplified_apex_locations: analysisData.simplified_apex_locations,
 					simplified_apex_on_board_refunds: analysisData.simplified_apex_on_board_refunds,
