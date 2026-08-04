@@ -3,8 +3,9 @@
 import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
-/* * */
-
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export const HashedLineSchema = DocumentSchema
 	.omit({ created_by: true, is_locked: true, updated_by: true })
 	.extend({
@@ -21,4 +22,7 @@ export const HashedLineSchema = DocumentSchema
 		trip_headsign: z.string(),
 	});
 
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export type HashedLine = z.infer<typeof HashedLineSchema>;
