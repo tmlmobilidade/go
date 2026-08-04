@@ -160,7 +160,7 @@ export async function analyzeRides() {
 
 				//
 			} catch (error) {
-				await labDb.operation.rides.insert('JSONEachRow', [{ ...rideData, system_status: 'error', updated_at: Dates.now('utc').unix_timestamp }]);
+				await labDb.operation.rides.insert('JSONEachRow', [{ ...rideData, processing_status: 'error', updated_at: Dates.now('utc').unix_timestamp }]);
 				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
 			}
 		}
