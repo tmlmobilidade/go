@@ -52,6 +52,7 @@ const rideAnalysisBaseTableSchema: ClickHouseTableSchema<RideAnalysisBase> = {
 	agency_id: { type: 'LowCardinality(String)' },
 	is_accepted: { type: 'Bool' },
 	operational_date: { type: 'UInt32' },
+	processing_status: { type: 'LowCardinality(String)' },
 	reason: { type: 'LowCardinality(Nullable(String))' },
 	remarks: { type: 'Nullable(String) CODEC(ZSTD)' },
 	ride_id: { type: 'String' },
