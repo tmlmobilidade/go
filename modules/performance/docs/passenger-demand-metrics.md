@@ -107,6 +107,11 @@ on the following refresh.
 
 ## History and reconciliation
 
+The policy in this section applies to the current one-minute fact and realtime
+projection. The planned daily-dimensional historical fact follows a different
+full-rebuild and rolling-week strategy documented in
+`passenger-demand-storage-strategy.md`.
+
 When the fact table is empty, the worker bootstraps the previous 56 days before
 publishing the first current projection. This covers the eight preceding
 occurrences of the same weekday.
@@ -136,4 +141,3 @@ the weekday. Holidays and Offer year periods do not change the selection.
 - Re-running a refresh at the same source state is idempotent.
 - Public ratios and percentiles are derived by Hub; they are not persisted as
   additive facts.
-

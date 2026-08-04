@@ -1,9 +1,9 @@
 /* * */
 
 import { ClickHouseInterfaceTemplate } from '@/interface.template.js';
-import { demandByAgencyByOperationalDateTableSchema, metricRefreshTableSchema, passengerDemandByAgencyByMinuteTableSchema, passengerDemandRealtimeTableSchema } from '@/schemas/performance.js';
+import { demandByAgencyByOperationalDateTableSchema, metricRefreshTableSchema, passengerDemandByAgencyByMinuteTableSchema, passengerDemandByDimensionsByDayTableSchema, passengerDemandRealtimeTableSchema } from '@/schemas/performance.js';
 import { ClickHouseClient } from '@tmlmobilidade/go-clients-clickhouse';
-import { type DemandByAgencyByOperationalDate, type MetricRefresh, type PassengerDemandByAgencyByMinute,	type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
+import { type DemandByAgencyByOperationalDate, type MetricRefresh, type PassengerDemandByAgencyByMinute, type PassengerDemandByDimensionsByDay, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
 
 /* * */
 
@@ -13,6 +13,7 @@ export class PerformanceDatabase {
 	public readonly demandByAgencyByOperationalDate: ClickHouseInterfaceTemplate<DemandByAgencyByOperationalDate>;
 	public readonly metricRefreshes: ClickHouseInterfaceTemplate<MetricRefresh>;
 	public readonly passengerDemandByAgencyByMinute: ClickHouseInterfaceTemplate<PassengerDemandByAgencyByMinute>;
+	public readonly passengerDemandByDimensionsByDay: ClickHouseInterfaceTemplate<PassengerDemandByDimensionsByDay>;
 	public readonly passengerDemandRealtime: ClickHouseInterfaceTemplate<PassengerDemandRealtime>;
 
 	private readonly databaseName = 'performance';
@@ -33,6 +34,11 @@ export class PerformanceDatabase {
 			orderBy: ['definition_version', 'operational_date', 'agency_id', 'interval_start'],
 			partitionBy: 'intDiv(operational_date, 100)',
 		});
+		this.passengerDemandByDimensionsByDay = new ClickHouseInterfaceTemplate<PassengerDemandByDimensionsByDay>(instance, this.databaseName, 'passenger_demand_by_dimensions_by_day', passengerDemandByDimensionsByDayTableSchema, {
+			engine: 'MergeTree()',
+			orderBy: ['definition_version', 'operational_date', 'agency_id', 'line_id', 'pattern_id', 'product_id', 'category'],
+			partitionBy: 'intDiv(operational_date, 100)',
+		});
 		this.passengerDemandRealtime = new ClickHouseInterfaceTemplate<PassengerDemandRealtime>(instance, this.databaseName, 'passenger_demand_realtime', passengerDemandRealtimeTableSchema, {
 			engine: 'ReplacingMergeTree(calculated_at)',
 			orderBy: ['definition_version', 'current_operational_date', 'agency_id'],
@@ -45,6 +51,7 @@ export class PerformanceDatabase {
 			this.demandByAgencyByOperationalDate.init(),
 			this.metricRefreshes.init(),
 			this.passengerDemandByAgencyByMinute.init(),
+			this.passengerDemandByDimensionsByDay.init(),
 			this.passengerDemandRealtime.init(),
 		]);
 	}
