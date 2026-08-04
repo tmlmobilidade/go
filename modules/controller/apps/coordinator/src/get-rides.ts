@@ -44,7 +44,7 @@ export async function getRides(): Promise<string[]> {
 
 		const fetchTimer = new Timer();
 
-		const standardWindowInterval = Dates.now('utc').std_window;
+		const standardWindowInterval = Dates.now('utc').minus({ days: 1 }).std_window;
 
 		const latestWaitingRides: Pick<Ride, '_id' | 'operational_date' | 'start_time_scheduled'>[] = await labDb.operation.rides.select(
 			'_id, operational_date, start_time_scheduled',
