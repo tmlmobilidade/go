@@ -22,7 +22,7 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 		if (!analysisData.vehicle_events.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				observed_average_delay: null,
 				observed_max_delay: null,
 				observed_min_delay: null,

@@ -20,39 +20,15 @@ import { type RideAnalysesRegistry } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
-const rideAnalysesRegistry: { [K in keyof RideAnalysesRegistry]: (analysisData: AnalysisData) => RideAnalysesRegistry[K] } = {
-	atLeastOneVehicleEventOnFirstStop: atLeastOneVehicleEventOnFirstStopAnalyzer,
-	atLeastOneVehicleEventOnLastStop: atLeastOneVehicleEventOnLastStopAnalyzer,
-	expectedApexValidationInterval: expectedApexValidationIntervalAnalyzer,
-	expectedDriverIdQty: expectedDriverIdQtyAnalyzer,
-	expectedStartTime: expectedStartTimeAnalyzer,
-	expectedVehicleEventDelay: expectedVehicleEventDelayAnalyzer,
-	expectedVehicleEventInterval: expectedVehicleEventIntervalAnalyzer,
-	expectedVehicleEventQty: expectedVehicleEventQtyAnalyzer,
-	expectedVehicleIdQty: expectedVehicleIdQtyAnalyzer,
-	matchingApexLocations: matchingApexLocationsAnalyzer,
-	matchingVehicleIds: matchingVehicleIdsAnalyzer,
-	simpleOneApexValidation: simpleOneApexValidationAnalyzer,
-	simpleOneVehicleEventOrApexValidation: simpleOneVehicleEventOrApexValidationAnalyzer,
-	simpleThreeVehicleEvents: simpleThreeVehicleEventsAnalyzer,
-	transactionSequentiality: transactionSequentialityAnalyzer,
-};
-//  satisfies {
-// 	[K in keyof RideAnalysesRegistry]: (analysisData: AnalysisData) => RideAnalysesRegistry[K];
-// };
-
-/* * */
-
 interface AnalyzeRideMetrics {
-	complete: string[]
-	error: string[]
-	is_accepted_false: string[]
-	is_accepted_true: string[]
-	skipped: string[]
+	error: (keyof RideAnalysesRegistry)[]
+	fail: (keyof RideAnalysesRegistry)[]
+	pass: (keyof RideAnalysesRegistry)[]
+	skip: (keyof RideAnalysesRegistry)[]
 }
 
 interface AnalyzeRideReturnType {
-	analyses: typeof rideAnalysesRegistry
+	analyses: RideAnalysesRegistry
 	metrics: AnalyzeRideMetrics
 }
 
@@ -62,24 +38,36 @@ interface AnalyzeRideReturnType {
  * @returns The analysis results for the ride.
  */
 export function analyzeRide(analysisData: AnalysisData): AnalyzeRideReturnType {
-	const metrics: AnalyzeRideMetrics = {
-		complete: [],
-		error: [],
-		is_accepted_false: [],
-		is_accepted_true: [],
-		skipped: [],
+	// Run each analyzer and store the results
+	const analyses: RideAnalysesRegistry = {
+		atLeastOneVehicleEventOnFirstStop: atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData),
+		atLeastOneVehicleEventOnLastStop: atLeastOneVehicleEventOnLastStopAnalyzer(analysisData),
+		expectedApexValidationInterval: expectedApexValidationIntervalAnalyzer(analysisData),
+		expectedDriverIdQty: expectedDriverIdQtyAnalyzer(analysisData),
+		expectedStartTime: expectedStartTimeAnalyzer(analysisData),
+		expectedVehicleEventDelay: expectedVehicleEventDelayAnalyzer(analysisData),
+		expectedVehicleEventInterval: expectedVehicleEventIntervalAnalyzer(analysisData),
+		expectedVehicleEventQty: expectedVehicleEventQtyAnalyzer(analysisData),
+		expectedVehicleIdQty: expectedVehicleIdQtyAnalyzer(analysisData),
+		matchingApexLocations: matchingApexLocationsAnalyzer(analysisData),
+		matchingVehicleIds: matchingVehicleIdsAnalyzer(analysisData),
+		simpleOneApexValidation: simpleOneApexValidationAnalyzer(analysisData),
+		simpleOneVehicleEventOrApexValidation: simpleOneVehicleEventOrApexValidationAnalyzer(analysisData),
+		simpleThreeVehicleEvents: simpleThreeVehicleEventsAnalyzer(analysisData),
+		transactionSequentiality: transactionSequentialityAnalyzer(analysisData),
 	};
-
-	for (const [analyzerName, analyzerFn] of Object.entries(rideAnalysesRegistry)) {
-		// Run the analyzer
-		const result = analyzerFn(analysisData);
-		// Update the metrics
-		if (result.processing_status === 'error') metrics.error.push(analyzerName);
-		else if (result.processing_status === 'complete') results.complete.push(analyzerName);
-		else if (result.processing_status === 'skipped') results.skipped.push(analyzerName);
-		if (result.is_accepted) results.is_accepted_true.push(analyzerName);
-		else results.is_accepted_false.push(analyzerName);
+	// Setup a metrics object to track the results of the analyzers
+	const metrics: AnalyzeRideMetrics = { error: [], fail: [], pass: [], skip: [] };
+	// Update the metrics based on the analysis results
+	for (const analysisKey of Object.keys(analyses) as (keyof RideAnalysesRegistry)[]) {
+		// Get the analysis result
+		const analysisResult = analyses[analysisKey];
+		// Update the metrics based on the analysis result
+		if (analysisResult.grade_status === 'error') metrics.error.push(analysisKey);
+		else if (analysisResult.grade_status === 'fail') metrics.fail.push(analysisKey);
+		else if (analysisResult.grade_status === 'pass') metrics.pass.push(analysisKey);
+		else if (analysisResult.grade_status === 'skip') metrics.skip.push(analysisKey);
 	}
-
-	return results;
+	// Return the analyses and metrics
+	return { analyses, metrics };
 }

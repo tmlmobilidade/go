@@ -18,7 +18,7 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 			return {
 				agency_id: analysisData.ride.agency_id,
 				expected_apex_locations_qty: null,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				matching_apex_locations_qty: null,
 				missing_apex_locations_qty: null,
 				operational_date: analysisData.ride.operational_date,
@@ -33,7 +33,7 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 			return {
 				agency_id: analysisData.ride.agency_id,
 				expected_apex_locations_qty: null,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				matching_apex_locations_qty: null,
 				missing_apex_locations_qty: null,
 				operational_date: analysisData.ride.operational_date,

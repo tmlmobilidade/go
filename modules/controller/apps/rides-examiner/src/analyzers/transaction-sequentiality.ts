@@ -30,7 +30,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 				agency_id: analysisData.ride.agency_id,
 				expected_transactions_qty: null,
 				found_transactions_qty: null,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				missing_transactions_qty: null,
 				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_TRANSACTIONS',

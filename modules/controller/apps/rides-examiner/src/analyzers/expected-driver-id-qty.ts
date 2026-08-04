@@ -22,7 +22,7 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAna
 		if (!analysisData.vehicle_events.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				observed_driver_ids_qty: null,
 				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_VEHICLE_EVENTS',

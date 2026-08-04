@@ -5,10 +5,10 @@ import { z } from 'zod';
 /* * */
 
 export const GradeStatusValues = [
+	'skip',
 	'pass',
 	'fail',
 	'error',
-	'skipped',
 ] as const;
 
 export const GradeStatusSchema = z.enum(GradeStatusValues);

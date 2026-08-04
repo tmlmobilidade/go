@@ -18,7 +18,7 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 		if (!analysisData.apex_validations.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_APEX_VALIDATIONS',
 				remarks: null,

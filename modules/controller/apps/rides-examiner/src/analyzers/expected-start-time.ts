@@ -23,7 +23,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 		if (!analysisData.ride.start_time_scheduled) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				observed_start_time: null,
 				observed_start_time_delta: null,
 				operational_date: analysisData.ride.operational_date,
@@ -37,7 +37,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 		if (!analysisData.vehicle_events.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				observed_start_time: null,
 				observed_start_time_delta: null,
 				operational_date: analysisData.ride.operational_date,
@@ -51,7 +51,7 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 		if (!analysisData.ride.start_time_observed) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				observed_start_time: null,
 				observed_start_time_delta: null,
 				operational_date: analysisData.ride.operational_date,

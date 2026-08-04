@@ -25,7 +25,7 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 		if (!analysisData.vehicle_events.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				observed_average_interval: null,
 				observed_max_interval: null,
 				observed_min_interval: null,

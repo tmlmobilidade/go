@@ -20,7 +20,7 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 		if (!analysisData.hashed_trip.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_PATH_DATA',
 				remarks: null,

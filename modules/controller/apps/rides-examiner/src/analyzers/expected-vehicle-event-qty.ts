@@ -19,7 +19,7 @@ export function expectedVehicleEventQtyAnalyzer(analysisData: AnalysisData): Rid
 			return {
 				agency_id: analysisData.ride.agency_id,
 				expected_vehicle_events_qty: null,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				observed_vehicle_events_qty: null,
 				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_PATH_DATA',
@@ -33,7 +33,7 @@ export function expectedVehicleEventQtyAnalyzer(analysisData: AnalysisData): Rid
 			return {
 				agency_id: analysisData.ride.agency_id,
 				expected_vehicle_events_qty: null,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				observed_vehicle_events_qty: null,
 				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_VEHICLE_EVENTS',

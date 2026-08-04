@@ -13,7 +13,7 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
-export async function validateRides() {
+export async function analyzeRides() {
 	try {
 		//
 
@@ -22,7 +22,7 @@ export async function validateRides() {
 
 		try {
 			await initSentryNode();
-			Logger.startNodeLogs({ app: 'rides-examiner', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
+			Logger.startNodeLogs({ app: 'rides-analyzer', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Rides Examiner' });
 		}
@@ -82,17 +82,27 @@ export async function validateRides() {
 				// Augment the current Ride with additional information retrieved
 				// from the fetched dynamic data. Some of this data will be used by the analyzers.
 
+				const augmentRideTimer = new Timer();
+
 				const augmentedRideData = augmentRide(analysisData);
+
+				const augmentRideTime = augmentRideTimer.get();
 
 				//
 				// Run the analyzers and count how many passed,
 				// how many failed and how many errored.
 
+				const analyzeRideTimer = new Timer();
+
 				const analyzeRideResults = analyzeRide(analysisData);
+
+				const analyzeRideTime = analyzeRideTimer.get();
 
 				//
 				// Update the current Ride with the analysis result
 				// and 'complete' status to indicate that the ride has been processed.
+
+				const schemaValidationTimer = new Timer();
 
 				const updatedRide = RideSchema.parse({
 					...augmentedRideData,
@@ -100,17 +110,52 @@ export async function validateRides() {
 					updated_at: Dates.now('utc').unix_timestamp,
 				});
 
-				await labDb.operation.rides.insert('JSONEachRow', [updatedRide]);
+				const schemaValidationTime = schemaValidationTimer.get();
+
+				//
+				// Insert new versions of the Ride and RideAnalysis documents in parallel
+
+				const insertTimer = new Timer();
+
+				const insertPromises = [
+					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnFirstStop.insert('JSONEachRow', [analyzeRideResults.analyses.atLeastOneVehicleEventOnFirstStop]),
+					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnLastStop.insert('JSONEachRow', [analyzeRideResults.analyses.atLeastOneVehicleEventOnLastStop]),
+					labDb.operation.rideAnalysisExpectedApexValidationInterval.insert('JSONEachRow', [analyzeRideResults.analyses.expectedApexValidationInterval]),
+					labDb.operation.rideAnalysisExpectedDriverIdQty.insert('JSONEachRow', [analyzeRideResults.analyses.expectedDriverIdQty]),
+					labDb.operation.rideAnalysisExpectedStartTime.insert('JSONEachRow', [analyzeRideResults.analyses.expectedStartTime]),
+					labDb.operation.rideAnalysisExpectedVehicleEventDelay.insert('JSONEachRow', [analyzeRideResults.analyses.expectedVehicleEventDelay]),
+					labDb.operation.rideAnalysisExpectedVehicleEventInterval.insert('JSONEachRow', [analyzeRideResults.analyses.expectedVehicleEventInterval]),
+					labDb.operation.rideAnalysisExpectedVehicleEventQty.insert('JSONEachRow', [analyzeRideResults.analyses.expectedVehicleEventQty]),
+					labDb.operation.rideAnalysisExpectedVehicleIdQty.insert('JSONEachRow', [analyzeRideResults.analyses.expectedVehicleIdQty]),
+					labDb.operation.rideAnalysisMatchingApexLocations.insert('JSONEachRow', [analyzeRideResults.analyses.matchingApexLocations]),
+					labDb.operation.rideAnalysisMatchingVehicleIds.insert('JSONEachRow', [analyzeRideResults.analyses.matchingVehicleIds]),
+					labDb.operation.rideAnalysisSimpleOneApexValidation.insert('JSONEachRow', [analyzeRideResults.analyses.simpleOneApexValidation]),
+					labDb.operation.rideAnalysisSimpleOneVehicleEventOrApexValidation.insert('JSONEachRow', [analyzeRideResults.analyses.simpleOneVehicleEventOrApexValidation]),
+					labDb.operation.rideAnalysisSimpleThreeVehicleEvents.insert('JSONEachRow', [analyzeRideResults.analyses.simpleThreeVehicleEvents]),
+					labDb.operation.rideAnalysisTransactionSequentiality.insert('JSONEachRow', [analyzeRideResults.analyses.transactionSequentiality]),
+					labDb.operation.rides.insert('JSONEachRow', [updatedRide]),
+				];
+
+				await Promise.all(insertPromises);
+
+				const insertTime = insertTimer.get();
+
+				//
+				// Log the results
 
 				Logger.info({ message: [
 					'[', { a: 'right', c: 7, t: `${ridesBatch.length - rideIndex}/${ridesBatch.length}` }, ']',
-					' F: ', { c: 5, t: fetchAnalysisDataTime },
-					' T: ', { c: 7, t: rideAnalysisTimer.get() },
+					' FET: ', { c: 5, t: fetchAnalysisDataTime },
+					' AUG: ', { c: 5, t: augmentRideTime },
+					' ANA: ', { c: 5, t: analyzeRideTime },
+					' SCH: ', { c: 5, t: schemaValidationTime },
+					' INS: ', { c: 5, t: insertTime },
+					' TOT: ', { c: 7, t: rideAnalysisTimer.get() },
 					{ c: 50, t: rideData._id },
-					{ c: 10, t: `SKIP: ${analyzeRideResults.skipped.length} ` },
-					{ c: 10, t: `PASS: ${analyzeRideResults.passed.length} ` },
-					{ c: 10, t: `FAIL: ${analyzeRideResults.failed.length} ` },
-					{ c: 12, t: `ERROR: ${analyzeRideResults.error.length} [${analyzeRideResults.error.join('|')}]` },
+					{ c: 10, t: `SKIP: ${analyzeRideResults.metrics.skip.length} ` },
+					{ c: 10, t: `PASS: ${analyzeRideResults.metrics.pass.length} ` },
+					{ c: 10, t: `FAIL: ${analyzeRideResults.metrics.fail.length} ` },
+					{ c: 12, t: `ERROR: ${analyzeRideResults.metrics.error.length} [${analyzeRideResults.metrics.error.join('|')}]` },
 				] });
 
 				//
@@ -140,4 +185,4 @@ export async function validateRides() {
 
 /* * */
 
-await runOnInterval(validateRides, { intervalMs: '10s' });
+await runOnInterval(analyzeRides, { intervalMs: '10s' });

@@ -25,7 +25,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 		if (!analysisData.apex_validations.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				observed_average_interval: null,
 				observed_max_interval: null,
 				observed_min_interval: null,
@@ -40,7 +40,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 		if (analysisData.apex_validations.length < 2) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				grade_status: 'skipped',
+				grade_status: 'skip',
 				observed_average_interval: null,
 				observed_max_interval: null,
 				observed_min_interval: null,
