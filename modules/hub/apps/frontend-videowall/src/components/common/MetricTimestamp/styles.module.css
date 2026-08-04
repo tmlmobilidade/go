@@ -2,7 +2,7 @@
 /* CONTAINER */
 
 .container {
-	font-size: 13px;
+	font-size: clamp(13px, 1.1vw, 15px);
 	font-weight: 600;
 	line-height: 1;
 	color: inherit;

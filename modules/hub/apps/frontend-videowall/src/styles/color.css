@@ -36,8 +36,14 @@
 	--system-background: rgb(0 0 0);
 	--system-border: rgb(50 60 60);
 	--system-text: rgb(210 210 225 / 100%);
-	--system-muted: rgb(100 105 115);
+	--system-muted: rgb(145 150 160);
 	--system-link: rgb(15 125 225);
+	--status-healthy: var(--palette-green-500);
+	--status-healthy-soft: var(--palette-green-100);
+	--status-attention: var(--palette-orange-500);
+	--status-attention-soft: var(--palette-orange-100);
+	--status-unavailable: var(--system-muted);
+	--status-unavailable-soft: var(--system-light);
 
 }
 

@@ -15,7 +15,7 @@
 }
 
 .header {
-	font-size: clamp(10px, 1.1vw, 13px);
+	font-size: clamp(11px, 1.1vw, 15px);
 	font-weight: 600;
 	color: var(--system-muted);
 	text-transform: uppercase;
@@ -65,13 +65,13 @@
 }
 
 .referenceValue {
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: 600;
 	fill: var(--system-text);
 }
 
 .rangeValue {
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: 600;
 	fill: var(--system-muted);
 }

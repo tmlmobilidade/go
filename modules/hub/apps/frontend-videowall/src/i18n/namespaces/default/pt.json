@@ -321,6 +321,26 @@
 			"service_failures": "{agency} / Viagens não executadas hoje, até agora",
 			"service_failures_of": "de"
 		},
+		"delay_chart": {
+			"average_delay": "Atraso médio",
+			"coverage": "cobertura",
+			"current_percentage": "viagens atrasadas hoje",
+			"delay_10_to_20_series": "10–20 min",
+			"delay_5_to_10_series": "5–10 min",
+			"delay_more_than_20_series": "> 20 min",
+			"delayed_percentage_series": "% > 5 min",
+			"observed_rides": "viagens analisadas",
+			"reference_series": "Referência {value}%",
+			"status": {
+				"above_target": "Acima do objetivo",
+				"unavailable": "Referência indisponível",
+				"within_target": "Situação estável"
+			},
+			"subtitle": "viagens com partida > 5 min atrasada hoje",
+			"title": "{agency} / Atrasos",
+			"title_without_agency": "Atrasos",
+			"trend_title": "Evolução desde as 04:00"
+		},
 		"demand_chart": {
 			"comparison": "vs referência",
 			"current_series": "Hoje",
@@ -335,8 +355,30 @@
 			},
 			"subtitle": "passageiros validados até agora",
 			"title": "{agency} / Procura",
+			"title_without_agency": "Procura",
 			"trend_title": "Evolução desde as 04:00",
 			"typical_series": "Referência (mediana)"
+		},
+		"header": {
+			"current_time": "Hora atual",
+			"secondary_label": "Carris Metropolitana · Área {area}"
+		},
+		"service_compliance_chart": {
+			"compliance_series": "% de serviço",
+			"current_non_execution": "viagens não executadas",
+			"executed_series": "Executadas",
+			"reference_series": "Referência {value}%",
+			"scheduled_series": "Planeadas",
+			"status": {
+				"below_target": "Fora do objetivo",
+				"meets_target": "Dentro do objetivo",
+				"unavailable": "Referência indisponível"
+			},
+			"subtitle": "viagens não executadas hoje",
+			"title": "{agency} / Cumprimento do serviço",
+			"title_without_agency": "Cumprimento do serviço",
+			"trend_title": "Evolução desde as 04:00",
+			"without_evidence": "sem qualquer evidência de execução"
 		},
 		"timestamp": {
 			"days": "Atualizado há {count, plural, one {# dia} other {# dias}}",
@@ -345,7 +387,25 @@
 			"seconds": "Atualizado há {count, plural, one {# segundo} other {# segundos}}",
 			"updating": "Em atualização..."
 		},
-		"unavailable": "Indisponível"
+		"unavailable": "Indisponível",
+		"vkm_execution_chart": {
+			"current_execution": "execução face ao planeado",
+			"distance_to_plan": "por executar",
+			"executed_series": "Executados",
+			"execution_series": "% de execução",
+			"reference_series": "Referência {value}%",
+			"scheduled_series": "Planeados",
+			"scheduled_until_now": "planeados até agora",
+			"status": {
+				"below_target": "Fora do objetivo",
+				"unavailable": "Referência indisponível",
+				"within_target": "Dentro do objetivo"
+			},
+			"subtitle": "VKM executados hoje",
+			"title": "{agency} / Execução de VKM",
+			"title_without_agency": "Execução de VKM",
+			"trend_title": "Evolução desde as 04:00"
+		}
 	},
 	"viewport": {
 		"NavigationBar": {

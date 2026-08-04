@@ -59,7 +59,7 @@ assert.match(
 );
 assert.match(
 	metricTimestampStyles,
-	/font-size:\s*13px/u,
+	/font-size:\s*clamp\(13px,\s*1\.1vw,\s*15px\)/u,
 	'Metric timestamps must remain legible at videowall distance',
 );
 assert.match(

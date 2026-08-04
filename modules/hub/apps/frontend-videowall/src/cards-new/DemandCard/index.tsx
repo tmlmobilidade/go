@@ -19,7 +19,7 @@ import styles from './styles.module.css';
 /* * */
 
 interface Props {
-	agencyLabel: string
+	agencyLabel?: string
 	isLoading?: boolean
 	isValidating?: boolean
 	timestamp?: number
@@ -27,7 +27,7 @@ interface Props {
 	value: null | PassengerDemandValue | undefined
 }
 
-type DemandSentiment = 'bad' | 'good' | 'normal' | 'unavailable';
+type DemandSentiment = 'attention' | 'healthy' | 'unavailable';
 
 /* * */
 
@@ -46,17 +46,20 @@ export function DemandCard({
 
 	const { t } = useTranslation();
 	const sentiment: DemandSentiment = value?.deviation_status === 'below_typical'
-		? 'bad'
+		? 'attention'
 		: value?.deviation_status === 'above_typical'
-			? 'good'
+			? 'healthy'
 			: value?.deviation_status === 'typical'
-				? 'normal'
+				? 'healthy'
 				: 'unavailable';
 	const typicalComparisonIndex = value?.typical_comparison_index_pct ?? null;
 	const deviationPercentage = typicalComparisonIndex === null
 		? null
 		: typicalComparisonIndex - 100;
 	const statusLabel = t(`default:videowall.demand_chart.status.${value?.deviation_status ?? 'unavailable'}`);
+	const titleLabel = agencyLabel
+		? t('default:videowall.demand_chart.title', '', { agency: agencyLabel })
+		: t('default:videowall.demand_chart.title_without_agency');
 
 	//
 	// F. Render components
@@ -72,7 +75,7 @@ export function DemandCard({
 			<header className={styles.header}>
 				<div className={styles.title}>
 					<IconUsersGroup />
-					<h2>{t('default:videowall.demand_chart.title', '', { agency: agencyLabel })}</h2>
+					<h2>{titleLabel}</h2>
 				</div>
 				<MetricTimestamp timestamp={timestamp} />
 			</header>
