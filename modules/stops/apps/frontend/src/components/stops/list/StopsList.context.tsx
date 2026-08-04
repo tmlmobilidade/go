@@ -5,7 +5,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { LifecycleStatusSchema, type Stop, StopConnectionSchema, StopEquipmentSchema, StopFacilitySchema } from '@tmlmobilidade/types';
 import { type ListContextStateTemplate, useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -54,7 +54,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	const filterConnections = useFilterStateList('connections', StopConnectionSchema.options, StopConnectionSchema.options.map(item => ({ label: item, value: item })));
 	const filterLifecycleStatus = useFilterStateList('lifecycle_status', LifecycleStatusSchema.options, LifecycleStatusSchema.options.map(item => ({ label: item, value: item })));
 	const filterAgencies = useFilterStateList('agencies', agenciesContext.data.raw.map(item => item._id), agenciesContext.data.as_options);
-	const filterMunicipality = useFilterStateList('municipalities', Array.from(locationsContext.data.municipalities.keys()), Array.from(locationsContext.data.municipalities.values()).map(item => ({ label: item.name, value: item.id })).sort((a, b) => a.label?.localeCompare(b.label, 'pt')));
+	const filterMunicipality = useFilterStateList('municipalities', Array.from(locationsContext.data.municipalities.keys()), Array.from(locationsContext.data.municipalities.values()).map(item => ({ label: item.name, value: item._id })).sort((a, b) => a.label?.localeCompare(b.label, 'pt')));
 
 	//
 	// B. Fetch data

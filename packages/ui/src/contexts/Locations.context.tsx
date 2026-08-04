@@ -1,18 +1,17 @@
 'use client';
 
-import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Location, Zone } from '@tmlmobilidade/types';
+import { type District, type Locality, type Location, type Municipality, type Parish, type Zone } from '@tmlmobilidade/types';
 import { fetchData, unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-type DistrictsMap = Map<District['id'], District>;
-type MunicipalitiesMap = Map<Municipality['id'], Municipality>;
-type ParishesMap = Map<Parish['id'], Parish>;
-type LocalitiesMap = Map<Locality['id'], Locality>;
+type DistrictsMap = Map<District['_id'], District>;
+type MunicipalitiesMap = Map<Municipality['_id'], Municipality>;
+type ParishesMap = Map<Parish['_id'], Parish>;
+type LocalitiesMap = Map<Locality['_id'], Locality>;
 type ZonesMap = Map<Zone['_id'], Zone>;
 
 interface LocationsContextState {
@@ -65,19 +64,19 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Transform data
 
-	const districtsMap = useMemo(() => new Map(allDistrictsData?.map(item => [item.id, item]) ?? []), [allDistrictsData]);
-	const municipalitiesMap = useMemo(() => new Map(allMunicipalitiesData?.map(item => [item.id, item]) ?? []), [allMunicipalitiesData]);
-	const parishesMap = useMemo(() => new Map(allParishesData?.map(item => [item.id, item]) ?? []), [allParishesData]);
-	const localitiesMap = useMemo(() => new Map(allLocalitiesData?.map(item => [item.id, item]) ?? []), [allLocalitiesData]);
+	const districtsMap = useMemo(() => new Map(allDistrictsData?.map(item => [item._id, item]) ?? []), [allDistrictsData]);
+	const municipalitiesMap = useMemo(() => new Map(allMunicipalitiesData?.map(item => [item._id, item]) ?? []), [allMunicipalitiesData]);
+	const parishesMap = useMemo(() => new Map(allParishesData?.map(item => [item._id, item]) ?? []), [allParishesData]);
+	const localitiesMap = useMemo(() => new Map(allLocalitiesData?.map(item => [item._id, item]) ?? []), [allLocalitiesData]);
 	const zonesMap = useMemo(() => new Map(allZonesData?.map(item => [item._id, item]) ?? []), [allZonesData]);
 
 	//
 	// C. Handle actions
 
-	const getDistrict = useCallback((id: District['id']): District | undefined => districtsMap.get(id), [districtsMap]);
-	const getLocality = useCallback((id: Locality['id']): Locality | undefined => localitiesMap.get(id), [localitiesMap]);
-	const getMunicipality = useCallback((id: Municipality['id']): Municipality | undefined => municipalitiesMap.get(id), [municipalitiesMap]);
-	const getParish = useCallback((id: Parish['id']): Parish | undefined => parishesMap.get(id), [parishesMap]);
+	const getDistrict = useCallback((id: District['_id']): District | undefined => districtsMap.get(id), [districtsMap]);
+	const getLocality = useCallback((id: Locality['_id']): Locality | undefined => localitiesMap.get(id), [localitiesMap]);
+	const getMunicipality = useCallback((id: Municipality['_id']): Municipality | undefined => municipalitiesMap.get(id), [municipalitiesMap]);
+	const getParish = useCallback((id: Parish['_id']): Parish | undefined => parishesMap.get(id), [parishesMap]);
 	const getZone = useCallback((id: Zone['_id']): undefined | Zone => zonesMap.get(id), [zonesMap]);
 
 	const queryLocations = useCallback(async (latitude: number, longitude: number) => {
