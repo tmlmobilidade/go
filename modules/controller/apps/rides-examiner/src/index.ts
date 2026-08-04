@@ -94,13 +94,13 @@ export async function validateRides() {
 				// Update the current Ride with the analysis result
 				// and 'complete' status to indicate that the ride has been processed.
 
-				const validatedRide = RideSchema.parse({
+				const updatedRide = RideSchema.parse({
 					...augmentedRideData,
 					system_status: 'complete',
 					updated_at: Dates.now('utc').unix_timestamp,
 				});
 
-				await labDb.operation.rides.insert('JSONEachRow', [validatedRide]);
+				await labDb.operation.rides.insert('JSONEachRow', [updatedRide]);
 
 				Logger.info({ message: [
 					'[', { a: 'right', c: 7, t: `${ridesBatch.length - rideIndex}/${ridesBatch.length}` }, ']',
