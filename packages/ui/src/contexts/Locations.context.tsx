@@ -1,40 +1,35 @@
 'use client';
 
-import { ApiResponse } from '@carrismetropolitana/api-types/common';
 import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { normalizeString } from '@tmlmobilidade/strings';
 import { type Location, Zone } from '@tmlmobilidade/types';
-import { fetchData, standardSwrFetcher } from '@tmlmobilidade/utils';
-import { createContext, useCallback, useContext, useMemo } from 'react';
+import { fetchData, HttpResponse, unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
+type DistrictsMap = Map<District['id'], District>;
+type MunicipalitiesMap = Map<Municipality['id'], Municipality>;
+type ParishesMap = Map<Parish['id'], Parish>;
+type LocalitiesMap = Map<Locality['id'], Locality>;
+type ZonesMap = Map<Zone['_id'], Zone>;
+
 interface LocationsContextState {
 	actions: {
-		getDistrictById: (districtId: string) => District | undefined
-		getLocalityById: (localityId: string) => Locality | undefined
-		getMunicipalityById: (municipalityId: string) => Municipality | undefined
-		getParishById: (parishId: string) => Parish | undefined
+		getDistrict: (districtId: string) => District | undefined
+		getLocality: (localityId: string) => Locality | undefined
+		getMunicipality: (municipalityId: string) => Municipality | undefined
+		getParish: (parishId: string) => Parish | undefined
+		getZone: (zoneId: string) => undefined | Zone
 		queryLocations: (latitude: number, longitude: number) => Promise<Location | null>
 	}
 	data: {
-		district_ids: District['id'][]
-		districts: District[]
-		districts_map: Map<District['id'], District & { name_normalized: string }>
-		localitites: Locality[]
-		localitites_map: Map<Locality['id'], Locality & { name_normalized: string }>
-		locality_ids: Locality['id'][]
-		municipalities: Municipality[]
-		municipalities_map: Map<Municipality['id'], Municipality & { name_normalized: string }>
-		municipality_ids: Municipality['id'][]
-		parish_ids: Parish['id'][]
-		parishes: Parish[]
-		parishes_map: Map<Parish['id'], Parish & { name_normalized: string }>
-		zone_ids: Zone['_id'][]
-		zones: Zone[]
-		zones_map: Map<Zone['_id'], Zone & { name_normalized: string }>
+		districts: DistrictsMap
+		localities: LocalitiesMap
+		municipalities: MunicipalitiesMap
+		parishes: ParishesMap
+		zones: ZonesMap
 	}
 	flags: {
 		is_loading: boolean
@@ -55,112 +50,35 @@ export function useLocationsContext() {
 
 /* * */
 
-const CMET_API = process.env.NEXT_PUBLIC_CMET_API_URL ?? 'https://api.carrismetropolitana.pt/v2';
-
-export const LocationsContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data: fetchedDistrictsData, isLoading: fetchedDistrictsLoading } = useSWR<ApiResponse<District[]>, Error>(`${CMET_API}/locations/districts`, standardSwrFetcher);
-	const { data: fetchedMunicipalitiesData, isLoading: fetchedMunicipalitiesLoading } = useSWR<ApiResponse<Municipality[]>, Error>(`${CMET_API}/locations/municipalities`, standardSwrFetcher);
-	const { data: fetchedParishesData, isLoading: fetchedParishesLoading } = useSWR<ApiResponse<Parish[]>, Error>(`${CMET_API}/locations/parishes`, standardSwrFetcher);
-	const { data: fetchedLocalitiesData, isLoading: fetchedLocalitiesLoading } = useSWR<ApiResponse<Locality[]>, Error>(`${CMET_API}/locations/localities`, standardSwrFetcher);
-	const { data: allZonesData, isLoading: fetchedZonesLoading } = useSWR<Zone[], Error>(API_ROUTES.offer.ZONES_LIST);
+	const { data: allDistrictsData, isLoading: allDistrictsLoading } = useSWR<HttpResponse<District[]>, Error>(API_ROUTES.locations.LOCATIONS_DISTRICTS, unauthenticatedSwrFetcher);
+	const { data: allMunicipalitiesData, isLoading: allMunicipalitiesLoading } = useSWR<HttpResponse<Municipality[]>, Error>(API_ROUTES.locations.LOCATIONS_MUNICIPALITIES, unauthenticatedSwrFetcher);
+	const { data: allParishesData, isLoading: allParishesLoading } = useSWR<HttpResponse<Parish[]>, Error>(API_ROUTES.locations.LOCATIONS_PARISHES, unauthenticatedSwrFetcher);
+	const { data: allLocalitiesData, isLoading: allLocalitiesLoading } = useSWR<HttpResponse<Locality[]>, Error>(API_ROUTES.locations.LOCATIONS_LOCALITIES, unauthenticatedSwrFetcher);
+	const { data: allZonesData, isLoading: allZonesLoading } = useSWR<Zone[], Error>(API_ROUTES.offer.ZONES_LIST);
 
 	//
 	// B. Transform data
 
-	const allDistrictsData = useMemo(() => {
-		if (fetchedDistrictsData?.status !== 'success') return [];
-		return fetchedDistrictsData.data;
-	}, [fetchedDistrictsData]);
-
-	const allDistrictsMap = useMemo(() => {
-		return new Map(allDistrictsData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
-	}, [allDistrictsData]);
-
-	const allDistrictIds = useMemo(() => {
-		return allDistrictsData.map(item => item.id);
-	}, [allDistrictsData]);
-
-	//
-
-	const allMunicipalitiesData = useMemo(() => {
-		if (fetchedMunicipalitiesData?.status !== 'success') return [];
-		const AML = ['Alcochete', 'Almada', 'Amadora', 'Barreiro', 'Cascais', 'Lisboa', 'Loures', 'Mafra', 'Moita', 'Montijo', 'Odivelas', 'Oeiras', 'Palmela', 'Seixal', 'Sesimbra', 'Setúbal', 'Sintra', 'Vila Franca de Xira'];
-		return fetchedMunicipalitiesData.data
-			.filter(item => AML.includes(item.name))
-			.sort((a, b) => a.name.localeCompare(b.name));
-	}, [fetchedMunicipalitiesData]);
-
-	const allMunicipalitiesMap = useMemo(() => {
-		return new Map(allMunicipalitiesData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
-	}, [allMunicipalitiesData]);
-
-	const allMunicipalityIds = useMemo(() => {
-		return allMunicipalitiesData.map(item => item.id);
-	}, [allMunicipalitiesData]);
-
-	//
-
-	const allParishesData = useMemo(() => {
-		if (fetchedParishesData?.status !== 'success') return [];
-		return fetchedParishesData.data;
-	}, [fetchedParishesData]);
-
-	const allParishesMap = useMemo(() => {
-		return new Map(allParishesData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
-	}, [allParishesData]);
-
-	const allParishIds = useMemo(() => {
-		return allParishesData.map(item => item.id);
-	}, [allParishesData]);
-
-	//
-
-	const allLocalitiesData = useMemo(() => {
-		if (fetchedLocalitiesData?.status !== 'success') return [];
-		return fetchedLocalitiesData.data;
-	}, [fetchedLocalitiesData]);
-
-	const allLocalitiesMap = useMemo(() => {
-		return new Map(allLocalitiesData.map(item => [item.id, { ...item, name_normalized: normalizeString(item.name) }]));
-	}, [allLocalitiesData]);
-
-	const allLocalityIds = useMemo(() => {
-		return allLocalitiesData.map(item => item.id);
-	}, [allLocalitiesData]);
-
-	//
-
-	const allZonesMap = useMemo(() => {
-		return new Map(allZonesData?.map(item => [item._id, { ...item, name_normalized: normalizeString(item.name) }]));
-	}, [allZonesData]);
-
-	const allZoneIds = useMemo(() => {
-		return allZonesData?.map(item => item._id) ?? [];
-	}, [allZonesData]);
+	const districtsMap = useMemo(() => new Map(allDistrictsData?.data?.map(item => [item.id, item]) ?? []), [allDistrictsData]);
+	const municipalitiesMap = useMemo(() => new Map(allMunicipalitiesData?.data?.map(item => [item.id, item]) ?? []), [allMunicipalitiesData]);
+	const parishesMap = useMemo(() => new Map(allParishesData?.data?.map(item => [item.id, item]) ?? []), [allParishesData]);
+	const localitiesMap = useMemo(() => new Map(allLocalitiesData?.data?.map(item => [item.id, item]) ?? []), [allLocalitiesData]);
+	const zonesMap = useMemo(() => new Map(allZonesData?.map(item => [item._id, item]) ?? []), [allZonesData]);
 
 	//
 	// C. Handle actions
 
-	const getDistrictById = useCallback((districtId: string): District | undefined => {
-		return allDistrictsData.find(item => item.id === districtId);
-	}, [allDistrictsData]);
-
-	const getMunicipalityById = useCallback((municipalityId: string): Municipality | undefined => {
-		return allMunicipalitiesData.find(item => item.id === municipalityId);
-	}, [allMunicipalitiesData]);
-
-	const getParishById = useCallback((parishId: string): Parish | undefined => {
-		return allParishesData.find(item => item.id === parishId);
-	}, [allParishesData]);
-
-	const getLocalityById = useCallback((localityId: string): Locality | undefined => {
-		return allLocalitiesData?.find(item => item.id === localityId);
-	}, [allLocalitiesData]);
+	const getDistrict = useCallback((id: District['id']): District | undefined => districtsMap.get(id), [districtsMap]);
+	const getLocality = useCallback((id: Locality['id']): Locality | undefined => localitiesMap.get(id), [localitiesMap]);
+	const getMunicipality = useCallback((id: Municipality['id']): Municipality | undefined => municipalitiesMap.get(id), [municipalitiesMap]);
+	const getParish = useCallback((id: Parish['id']): Parish | undefined => parishesMap.get(id), [parishesMap]);
+	const getZone = useCallback((id: Zone['_id']): undefined | Zone => zonesMap.get(id), [zonesMap]);
 
 	const queryLocations = useCallback(async (latitude: number, longitude: number) => {
 		const response = await fetchData<Location>(`${API_ROUTES.locations.LOCATIONS_COORDINATES}?lat=${latitude}&lon=${longitude}`);
@@ -172,33 +90,24 @@ export const LocationsContextProvider = ({ children }: { children: React.ReactNo
 
 	const contextValue: LocationsContextState = useMemo(() => ({
 		actions: {
-			getDistrictById,
-			getLocalityById,
-			getMunicipalityById,
-			getParishById,
+			getDistrict,
+			getLocality,
+			getMunicipality,
+			getParish,
+			getZone,
 			queryLocations,
 		},
 		data: {
-			district_ids: allDistrictIds ?? [],
-			districts: allDistrictsData ?? [],
-			districts_map: allDistrictsMap || new Map(),
-			localitites: allLocalitiesData ?? [],
-			localitites_map: allLocalitiesMap || new Map(),
-			locality_ids: allLocalityIds ?? [],
-			municipalities: allMunicipalitiesData ?? [],
-			municipalities_map: allMunicipalitiesMap || new Map(),
-			municipality_ids: allMunicipalityIds ?? [],
-			parish_ids: allParishIds ?? [],
-			parishes: allParishesData ?? [],
-			parishes_map: allParishesMap || new Map(),
-			zone_ids: allZoneIds ?? [],
-			zones: allZonesData ?? [],
-			zones_map: allZonesMap || new Map(),
+			districts: districtsMap,
+			localities: localitiesMap,
+			municipalities: municipalitiesMap,
+			parishes: parishesMap,
+			zones: zonesMap,
 		},
 		flags: {
-			is_loading: fetchedDistrictsLoading || fetchedMunicipalitiesLoading || fetchedParishesLoading || fetchedLocalitiesLoading || fetchedZonesLoading,
+			is_loading: allDistrictsLoading || allMunicipalitiesLoading || allParishesLoading || allLocalitiesLoading || allZonesLoading,
 		},
-	}), [getDistrictById, getLocalityById, getMunicipalityById, getParishById, allDistrictIds, allDistrictsData, allDistrictsMap, allLocalitiesData, allLocalitiesMap, allLocalityIds, allMunicipalitiesData, allMunicipalitiesMap, allMunicipalityIds, allParishIds, allParishesData, allParishesMap, allZoneIds, allZonesData, allZonesMap, fetchedDistrictsLoading, fetchedMunicipalitiesLoading, fetchedParishesLoading, fetchedLocalitiesLoading, fetchedZonesLoading]);
+	}), [getDistrict, getLocality, getMunicipality, getParish, getZone, queryLocations, districtsMap, localitiesMap, municipalitiesMap, parishesMap, zonesMap, allDistrictsLoading, allMunicipalitiesLoading, allParishesLoading, allLocalitiesLoading, allZonesLoading]);
 
 	//
 	// E. Render components
