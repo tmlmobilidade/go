@@ -2,8 +2,8 @@
 
 import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, toLineStringFromHashedShape } from '@tmlmobilidade/geo';
+import { type HashedPath } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { type HashedShape, type HashedTrip } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,7 +17,7 @@ const INITIAL_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param analysisData The analysis data containing the vehicle events, hashed trip, and hashed shape.
  * @returns The event which starts the trip.
  */
-export function detectStartEvent(vehicleEventsData: SimplifiedVehicleEvent[], hashedTripData: HashedTrip, hashedShapeData: HashedShape): null | SimplifiedVehicleEvent {
+export function detectStartEvent(vehicleEventsData: SimplifiedVehicleEvent[], hashedPathData: HashedPath[]): null | SimplifiedVehicleEvent {
 	//
 
 	//
@@ -34,16 +34,16 @@ export function detectStartEvent(vehicleEventsData: SimplifiedVehicleEvent[], ha
 	//
 	// Ensure that the hashed trip is not empty.
 
-	if (!hashedTripData?.path?.length) {
+	if (!hashedPathData?.length) {
 		// throw new Error('Hashed Trip is empty.');
 		return null;
 	}
 
-	const sortedWaypoints = hashedTripData.path.sort((a, b) => {
+	const sortedPath = hashedPathData.sort((a, b) => {
 		return a.stop_sequence - b.stop_sequence;
 	});
 
-	const firstStopPosition = [Number(sortedWaypoints[0].stop_lon), Number(sortedWaypoints[0].stop_lat)];
+	const firstStopPosition = [Number(sortedPath[0].stop_lon), Number(sortedPath[0].stop_lat)];
 
 	//
 	// Ensure that the hashed shape has at least two points.

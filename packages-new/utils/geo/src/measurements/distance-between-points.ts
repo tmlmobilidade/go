@@ -1,7 +1,6 @@
 /* * */
 
-import { METERS_PER_DEGREE } from '@/constants/meters-per-degree.js';
-import { type GeoJsonPointGeometry, type GeoJsonPosition } from '@tmlmobilidade/go-types-shared';
+import { type GeoJsonPointGeometry, type GeoJsonPosition, METERS_PER_DEGREE } from '@tmlmobilidade/go-types-geo';
 
 /**
  * Calculates the distance between two points, in meters.

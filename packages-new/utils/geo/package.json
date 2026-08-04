@@ -36,7 +36,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-types-shared": "*"
+		"@tmlmobilidade/go-types-geo": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

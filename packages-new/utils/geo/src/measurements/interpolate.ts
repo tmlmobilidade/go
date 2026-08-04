@@ -1,6 +1,6 @@
 /* * */
 
-import { type GeoJsonPointGeometry, GeoJsonPointGeometrySchema, type GeoJsonPosition, LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-shared';
+import { type GeoJsonPointGeometry, GeoJsonPointGeometrySchema, type GeoJsonPosition, LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 
 /**
  * Interpolates between two points at a given ratio (0..1).

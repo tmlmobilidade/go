@@ -1,7 +1,8 @@
 /* * */
 
+import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { GtfsPickupDropoffTypeSchema, GtfsTimeSchema } from '@tmlmobilidade/go-types-gtfs';
-import { LatitudeSchema, LongitudeSchema, NonNegativeNumberSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeNumberSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
