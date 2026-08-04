@@ -10,7 +10,7 @@ import { z } from 'zod';
 /* * */
 
 const queryParamsSchema = z.object({
-	withGeometry: z.boolean().optional().default(false),
+	geometry: z.preprocess((val: unknown) => val === 'true' || val === '1', z.boolean()),
 });
 
 type QueryParams = z.infer<typeof queryParamsSchema>;
@@ -34,7 +34,7 @@ export async function getDistrictById(request: FastifyRequest<{ Params: { id: st
 	const district = await goDb.locations.districts.aggregate([
 		{ $match: { _id: request.params.id } },
 		// Remove the geometry field
-		{ $project: { geometry: params.withGeometry ? 1 : 0 } },
+		{ $project: { geometry: params.geometry ? 1 : 0 } },
 		// Flatten the properties object into the root object
 		{ $replaceRoot: { newRoot: { $mergeObjects: ['$$ROOT', '$properties'] } } },
 		{ $unset: 'properties' },
