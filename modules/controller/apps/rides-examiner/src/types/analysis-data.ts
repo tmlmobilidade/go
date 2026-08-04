@@ -7,7 +7,7 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
 /* * */
 
 export interface AnalysisData {
-	hashed_path: HashedTrip[]
+	hashed_trip: HashedTrip[]
 	ride: Ride
 	simplified_apex_locations: SimplifiedApexLocation[]
 	simplified_apex_on_board_refunds: SimplifiedApexOnBoardRefund[]

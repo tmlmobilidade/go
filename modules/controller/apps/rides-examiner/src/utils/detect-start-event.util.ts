@@ -17,7 +17,7 @@ const INITIAL_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param analysisData The analysis data containing the vehicle events, hashed trip, and hashed shape.
  * @returns The event which starts the trip.
  */
-export function detectStartEvent(vehicleEventsData: SimplifiedVehicleEvent[], hashedPathData: HashedTrip[]): null | SimplifiedVehicleEvent {
+export function detectStartEvent(vehicleEventsData: SimplifiedVehicleEvent[], hashedTripData: HashedTrip[]): null | SimplifiedVehicleEvent {
 	//
 
 	//
@@ -34,12 +34,12 @@ export function detectStartEvent(vehicleEventsData: SimplifiedVehicleEvent[], ha
 	//
 	// Ensure that the hashed trip is not empty.
 
-	if (!hashedPathData?.length) {
+	if (!hashedTripData?.length) {
 		// throw new Error('Hashed Trip is empty.');
 		return null;
 	}
 
-	const sortedPath = hashedPathData.sort((a, b) => {
+	const sortedPath = hashedTripData.sort((a, b) => {
 		return a.stop_sequence - b.stop_sequence;
 	});
 

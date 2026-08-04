@@ -20,7 +20,7 @@ export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 	//
 	// Fetch data from LABDB.
 
-	const hashedPathPromise = labDb.operation.hashedPaths.select('*', 'hashed_trip_id = $1', { 1: rideData.hashed_trip_id });
+	const hashedTripPromise = labDb.operation.hashedTrips.select('*', 'hashed_trip_id = $1', { 1: rideData.hashed_trip_id });
 	const simplifiedApexLocationsNewPromise = labDb.simplifiedApex.locations.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
 	const simplifiedApexOnBoardRefundsNewPromise = labDb.simplifiedApex.refunds.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
 	const simplifiedApexOnBoardSalesNewPromise = labDb.simplifiedApex.sales.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
@@ -28,14 +28,14 @@ export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 	const vehicleEventsPromise = labDb.operation.simplifiedVehicleEvents.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4 AND extra_trip_id IS NULL`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
 
 	const [
-		hashedPathData,
+		hashedTripData,
 		simplifiedApexLocationsData,
 		simplifiedApexOnBoardRefundsData,
 		simplifiedApexOnBoardSalesData,
 		simplifiedApexValidationsData,
 		vehicleEventsData,
 	] = await Promise.all([
-		hashedPathPromise,
+		hashedTripPromise,
 		simplifiedApexLocationsNewPromise,
 		simplifiedApexOnBoardRefundsNewPromise,
 		simplifiedApexOnBoardSalesNewPromise,
@@ -44,7 +44,7 @@ export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 	]);
 
 	return {
-		hashed_path: hashedPathData,
+		hashed_trip: hashedTripData,
 		ride: rideData,
 		simplified_apex_locations: simplifiedApexLocationsData,
 		simplified_apex_on_board_refunds: simplifiedApexOnBoardRefundsData,

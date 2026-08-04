@@ -28,7 +28,7 @@ export const simplifiedVehicleEventTableSchema: ClickHouseTableSchema<Simplified
 
 /* * */
 
-export const hashedPathTableSchema: ClickHouseTableSchema<HashedTrip> = {
+export const hashedTripTableSchema: ClickHouseTableSchema<HashedTrip> = {
 	_id: { type: 'String' },
 	agency_id: { type: 'LowCardinality(String)' },
 	arrival_time: { type: 'FixedString(8)' },

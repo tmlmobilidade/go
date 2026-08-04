@@ -40,12 +40,12 @@ export async function parsePlan(planData: Plan) {
 		title: await labDb.operation.rides.getTableName(),
 	});
 
-	const hashedPathsWritter = new BatchWriter<HashedTrip>({
+	const hashedTripsWritter = new BatchWriter<HashedTrip>({
 		batch_size: 10_000,
 		insertFn: async (data) => {
-			await labDb.operation.hashedPaths.insert('JSONEachRow', data);
+			await labDb.operation.hashedTrips.insert('JSONEachRow', data);
 		},
-		title: await labDb.operation.hashedPaths.getTableName(),
+		title: await labDb.operation.hashedTrips.getTableName(),
 	});
 
 	//
@@ -189,9 +189,9 @@ export async function parsePlan(planData: Plan) {
 			// Check if there are rows with this unique ID value.
 			// If there are no rows, save the HashedTrip items to the database.
 
-			const currentHashedTripAlreadyExists = await labDb.operation.hashedPaths.count('DISTINCT(_id)', 'WHERE _id = $1', { 1: uniqueIdValueForCreateHashedTrip }) > 0;
+			const currentHashedTripAlreadyExists = await labDb.operation.hashedTrips.count('DISTINCT(_id)', 'WHERE _id = $1', { 1: uniqueIdValueForCreateHashedTrip }) > 0;
 
-			const hashedPathItems = sortedCreateHashedTripItems.map((item): HashedTrip => {
+			const hashedTripItems = sortedCreateHashedTripItems.map((item): HashedTrip => {
 				return HashedTripSchema.parse({
 					...item,
 					_id: uniqueIdValueForCreateHashedTrip,
@@ -200,7 +200,7 @@ export async function parsePlan(planData: Plan) {
 			});
 
 			if (!currentHashedTripAlreadyExists) {
-				await hashedPathsWritter.write(hashedPathItems);
+				await hashedTripsWritter.write(hashedTripItems);
 				savedHashedTripIds.add(uniqueIdValueForCreateHashedTrip);
 			}
 
@@ -323,7 +323,7 @@ export async function parsePlan(planData: Plan) {
 		// Flush the writers to save all the data to the database
 		// before changing the Plan status to 'success'.
 
-		await hashedPathsWritter.flush();
+		await hashedTripsWritter.flush();
 		await ridesWritter.flush();
 
 		//
