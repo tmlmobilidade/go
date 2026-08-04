@@ -72,9 +72,9 @@ export const VIDEOWALL_SCENARIOS = {
 			trend_factor: 1.01,
 		},
 		service: {
-			average_delay_minutes: 2.4,
-			delayed_ratio: 0.07,
-			distance_delivery_ratio: 0.94,
+			average_delay_minutes: 2 + 5 / 60,
+			delayed_ratio: 0.071,
+			distance_delivery_ratio: 0.98319,
 			failure_ratio: 0.035,
 		},
 	},

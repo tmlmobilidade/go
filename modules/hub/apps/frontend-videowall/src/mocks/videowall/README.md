@@ -38,9 +38,13 @@ autocomplete and invalid options fail TypeScript checks.
   state.
 - `error`: no data is exposed and context error flags are set.
 
-The fixture factory returns `PassengerDemandMetrics` and `VideowallMetrics`.
+The fixture factory returns `PassengerDemandMetrics`, `DepartureDelayMetrics`,
+`ServiceComplianceMetrics`, `VkmExecutionMetrics`, and `VideowallMetrics`.
 Changes to the public response types therefore fail TypeScript checks and the
-mock schema regression test.
+mock schema regression test. Service compliance and VKm execution use fixed
+two-hour intervals from the 04:00 operational-day boundary. Departure delays
+use hourly intervals and split delayed rides into 5–10, 10–20, and
+over-20-minute severity bands. Targets are supplied in response metadata.
 
 ## Determinism
 
