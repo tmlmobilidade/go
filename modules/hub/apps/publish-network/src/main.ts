@@ -52,8 +52,6 @@ export async function main() {
 
 	await generateLinesRoutesPatterns(importedGtfsSql);
 
-	Logger.info({ message: `Removing import GTFS context workdir: ${importConfig.workdir.path}` });
-
 	fs.rmSync(ImportGtfsContext.workdir.path, { force: true, recursive: true });
 
 	//
