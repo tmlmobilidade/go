@@ -193,7 +193,7 @@ export const API_ROUTES = Object.freeze({
 		// OPERATION
 		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,
 		OPERATION_RIDES: `${getModuleConfig('alerts', 'api_url')}/operation/rides`,
-		OPERATION_RIDES_RIDE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/operation/rides/${encodeURIComponent(id)}/ride`,
+		OPERATION_RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/operation/rides/${encodeURIComponent(id)}/ride`,
 		OPERATION_RIDES_WS: `${getModuleConfig('alerts', 'api_url')}/operation/rides/ws`,
 		OPERATION_STOPS: `${getModuleConfig('alerts', 'api_url')}/operation/stops`,
 	},
@@ -375,11 +375,15 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('locations', 'api_url')}`,
 
 		// LOCATIONS
-		LOCATIONS_DISTRICTS: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/districts/${encodeURIComponent(id)}`,
-		LOCATIONS_LOCALITIES: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/localities/${encodeURIComponent(id)}`,
+		LOCATIONS_DISTRICTS: `${getModuleConfig('locations', 'api_url')}/locations/districts`,
+		LOCATIONS_DISTRICTS_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/districts/${encodeURIComponent(id)}`,
+		LOCATIONS_LOCALITIES: `${getModuleConfig('locations', 'api_url')}/locations/localities`,
+		LOCATIONS_LOCALITIES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/localities/${encodeURIComponent(id)}`,
 		LOCATIONS_LOCATION: `${getModuleConfig('locations', 'api_url')}/locations/location`,
-		LOCATIONS_MUNICIPALITIES: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/municipalities/${encodeURIComponent(id)}`,
-		LOCATIONS_PARISHES: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/parishes/${encodeURIComponent(id)}`,
+		LOCATIONS_MUNICIPALITIES: `${getModuleConfig('locations', 'api_url')}/locations/municipalities`,
+		LOCATIONS_MUNICIPALITIES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/municipalities/${encodeURIComponent(id)}`,
+		LOCATIONS_PARISHES: `${getModuleConfig('locations', 'api_url')}/locations/parishes`,
+		LOCATIONS_PARISHES_DETAIL: (id: string) => `${getModuleConfig('locations', 'api_url')}/locations/parishes/${encodeURIComponent(id)}`,
 	},
 
 	offer: {
