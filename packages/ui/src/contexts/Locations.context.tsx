@@ -21,7 +21,7 @@ interface LocationsContextState {
 		getMunicipality: (municipalityId: string) => Municipality | undefined
 		getParish: (parishId: string) => Parish | undefined
 		getZone: (zoneId: string) => undefined | Zone
-		queryLocations: (latitude: number, longitude: number) => Promise<Location | null>
+		queryLocation: (latitude: number, longitude: number) => Promise<Location | null>
 	}
 	data: {
 		districts: DistrictsMap
@@ -78,8 +78,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	const getMunicipality = useCallback((id: Municipality['_id']): Municipality | undefined => municipalitiesMap.get(id), [municipalitiesMap]);
 	const getParish = useCallback((id: Parish['_id']): Parish | undefined => parishesMap.get(id), [parishesMap]);
 	const getZone = useCallback((id: Zone['_id']): undefined | Zone => zonesMap.get(id), [zonesMap]);
-
-	const queryLocations = useCallback(async (latitude: number, longitude: number) => {
+	const queryLocation = useCallback(async (latitude: number, longitude: number) => {
 		const response = await fetchData<Location>(`${API_ROUTES.locations.LOCATIONS_LOCATION}?lat=${latitude}&lon=${longitude}`);
 		return response.data ?? null;
 	}, []);
@@ -94,7 +93,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 			getMunicipality,
 			getParish,
 			getZone,
-			queryLocations,
+			queryLocation,
 		},
 		data: {
 			districts: districtsMap,
@@ -106,7 +105,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 		flags: {
 			is_loading: allDistrictsLoading || allMunicipalitiesLoading || allParishesLoading || allLocalitiesLoading || allZonesLoading,
 		},
-	}), [getDistrict, getLocality, getMunicipality, getParish, getZone, queryLocations, districtsMap, localitiesMap, municipalitiesMap, parishesMap, zonesMap, allDistrictsLoading, allMunicipalitiesLoading, allParishesLoading, allLocalitiesLoading, allZonesLoading]);
+	}), [getDistrict, getLocality, getMunicipality, getParish, getZone, queryLocation, districtsMap, localitiesMap, municipalitiesMap, parishesMap, zonesMap, allDistrictsLoading, allMunicipalitiesLoading, allParishesLoading, allLocalitiesLoading, allZonesLoading]);
 
 	//
 	// E. Render components
