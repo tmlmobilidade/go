@@ -6,8 +6,9 @@ import { encodePolylineFromGeoJson, toMetersFromKilometersOrMeters } from '@tmlm
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
 import { CreateHashedTrip, CreateHashedTripSchema, type HashedTrip, HashedTripSchema, type Ride } from '@tmlmobilidade/go-types-operation';
-import { GeoJsonLineStringGeometrySchema, validateHexColor, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { validateHexColor, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
