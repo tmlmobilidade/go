@@ -26,19 +26,19 @@ export function StopCreateStep3Summary() {
 
 	const locationString = useMemo(() => {
 		// Skip if locations are not available
-		if (!locationsContext.data.municipalities_map) return;
-		if (!locationsContext.data.localitites_map) return;
+		if (locationsContext.data.municipalities.size === 0) return;
+		if (locationsContext.data.localities.size === 0) return;
 		// Skip if stop does not have a municipality
 		if (!municipalityId) return;
 		// Get the corresponding location names
-		const municipalityData = locationsContext.data.municipalities_map.get(municipalityId);
-		const localityData = locationsContext.data.localitites_map.get(localityId);
+		const municipalityData = locationsContext.actions.getMunicipality(municipalityId);
+		const localityData = locationsContext.actions.getLocality(localityId);
 		// Build the location string
 		if (!municipalityData && !localityData) return;
 		if (municipalityData && !localityData) return municipalityData.name;
 		if (!municipalityData && localityData) return localityData.name;
 		return `${localityData.name}, ${municipalityData.name}`;
-	}, [localityId, locationsContext.data.localitites_map, locationsContext.data.municipalities_map, municipalityId]);
+	}, [localityId, municipalityId, locationsContext]);
 
 	//
 	// C. Render components

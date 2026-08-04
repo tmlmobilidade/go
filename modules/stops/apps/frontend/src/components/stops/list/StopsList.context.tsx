@@ -54,7 +54,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	const filterConnections = useFilterStateList('connections', StopConnectionSchema.options, StopConnectionSchema.options.map(item => ({ label: item, value: item })));
 	const filterLifecycleStatus = useFilterStateList('lifecycle_status', LifecycleStatusSchema.options, LifecycleStatusSchema.options.map(item => ({ label: item, value: item })));
 	const filterAgencies = useFilterStateList('agencies', agenciesContext.data.raw.map(item => item._id), agenciesContext.data.as_options);
-	const filterMunicipality = useFilterStateList('municipalities', locationsContext.data.municipality_ids, (locationsContext.data.municipalities ?? []).map(item => ({ label: item.name, value: item.id })).sort((a, b) => a.label?.localeCompare(b.label, 'pt')));
+	const filterMunicipality = useFilterStateList('municipalities', Array.from(locationsContext.data.municipalities.keys()), Array.from(locationsContext.data.municipalities.values()).map(item => ({ label: item.name, value: item.id })).sort((a, b) => a.label?.localeCompare(b.label, 'pt')));
 
 	//
 	// B. Fetch data
@@ -70,21 +70,15 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		// Normalize record fields
 		return allStopsData.map((item): StopNormalized => ({
 			...item,
-			district_name: locationsContext.data.districts_map.get(item.district_id)?.name ?? '',
+			district_name: locationsContext.actions.getDistrict(item.district_id)?.name ?? '',
 			legacy_ids_normalized: item.legacy_ids?.map(String).join(' '),
-			locality_name: locationsContext.data.localitites_map.get(item.locality_id)?.name ?? 'N/A',
-			municipality_name: locationsContext.data.municipalities_map.get(item.municipality_id)?.name ?? '',
+			locality_name: locationsContext.actions.getLocality(item.locality_id)?.name ?? 'N/A',
+			municipality_name: locationsContext.actions.getMunicipality(item.municipality_id)?.name ?? '',
 			name_normalized: normalizeString(item.name),
 			new_name_normalized: normalizeString(item.new_name),
-			parish_name: locationsContext.data.parishes_map.get(item.parish_id)?.name ?? '',
+			parish_name: locationsContext.actions.getParish(item.parish_id)?.name ?? '',
 		}));
-	}, [
-		allStopsData,
-		locationsContext.data.districts_map,
-		locationsContext.data.localitites_map,
-		locationsContext.data.municipalities_map,
-		locationsContext.data.parishes_map,
-	]);
+	}, [allStopsData, locationsContext]);
 
 	const searchResultsData = useSearch<StopNormalized>({
 		accessors: ['_id', 'name_normalized', 'new_name_normalized', 'legacy_ids_normalized'],
