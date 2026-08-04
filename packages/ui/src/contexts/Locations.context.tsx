@@ -81,7 +81,7 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	const getZone = useCallback((id: Zone['_id']): undefined | Zone => zonesMap.get(id), [zonesMap]);
 
 	const queryLocations = useCallback(async (latitude: number, longitude: number) => {
-		const response = await fetchData<Location>(`${API_ROUTES.locations.LOCATIONS_COORDINATES}?lat=${latitude}&lon=${longitude}`);
+		const response = await fetchData<Location>(`${API_ROUTES.locations.LOCATIONS_LOCATION}?lat=${latitude}&lon=${longitude}`);
 		return response.data ?? null;
 	}, []);
 
