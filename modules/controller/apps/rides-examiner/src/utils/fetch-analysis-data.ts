@@ -7,7 +7,7 @@ import { type Ride } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
-export async function fetchAnalysisData(rideData: Ride): Promise<Omit<AnalysisData, 'ride'>> {
+export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 	//
 
 	//
@@ -45,6 +45,7 @@ export async function fetchAnalysisData(rideData: Ride): Promise<Omit<AnalysisDa
 
 	return {
 		hashed_path: hashedPathData,
+		ride: rideData,
 		simplified_apex_locations: simplifiedApexLocationsData,
 		simplified_apex_on_board_refunds: simplifiedApexOnBoardRefundsData,
 		simplified_apex_on_board_sales: simplifiedApexOnBoardSalesData,

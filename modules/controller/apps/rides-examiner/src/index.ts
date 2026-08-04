@@ -3,10 +3,12 @@
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
+import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { RideSchema } from '@tmlmobilidade/go-types-operation';
+import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { getCurrentEnvironment, UpdateRideSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
@@ -80,60 +82,40 @@ export async function validateRides() {
 				// Augment the current Ride with additional information retrieved
 				// from the fetched dynamic data. Some of this data will be used by the analyzers.
 
-				const augmentedRideData = augmentRide({
-					hashed_path: analysisData.hashed_path,
-					ride: rideData,
-					simplified_apex_locations: analysisData.simplified_apex_locations,
-					simplified_apex_on_board_refunds: analysisData.simplified_apex_on_board_refunds,
-					simplified_apex_on_board_sales: analysisData.simplified_apex_on_board_sales,
-					simplified_apex_validations: analysisData.simplified_apex_validations,
-					vehicle_events: analysisData.vehicle_events,
-				});
+				const augmentedRideData = augmentRide(analysisData);
 
 				//
 				// Run the analyzers and count how many passed,
 				// how many failed and how many errored.
 
-				augmentedRideData.analysis = analyzeRide({
-					hashed_path: analysisData.hashed_path,
-					ride: augmentedRideData,
-					simplified_apex_locations: analysisData.simplified_apex_locations,
-					simplified_apex_on_board_refunds: analysisData.simplified_apex_on_board_refunds,
-					simplified_apex_on_board_sales: analysisData.simplified_apex_on_board_sales,
-					simplified_apex_validations: analysisData.simplified_apex_validations,
-					vehicle_events: analysisData.vehicle_events,
-				});
-
-				const skipAnalysisCount = Object.entries(augmentedRideData.analysis).filter(([, value]) => value.grade === 'skip').map(([key]) => key);
-				const passAnalysisCount = Object.entries(augmentedRideData.analysis).filter(([, value]) => value.grade === 'pass').map(([key]) => key);
-				const failAnalysisCount = Object.entries(augmentedRideData.analysis).filter(([, value]) => value.grade === 'fail').map(([key]) => key);
-				const errorAnalysisCount = Object.entries(augmentedRideData.analysis).filter(([, value]) => value.grade === 'error').map(([key]) => key);
+				const analyzeRideResults = analyzeRide(analysisData);
 
 				//
 				// Update the current Ride with the analysis result
 				// and 'complete' status to indicate that the ride has been processed.
 
-				const validatedRide = UpdateRideSchema.parse(augmentedRideData);
-
-				await goDb.operation.rides.updateOne({ _id: rideData._id }, {
-					...validatedRide,
+				const validatedRide = RideSchema.parse({
+					...augmentedRideData,
 					system_status: 'complete',
+					updated_at: Dates.now('utc').unix_timestamp,
 				});
+
+				await labDb.operation.rides.insert('JSONEachRow', [validatedRide]);
 
 				Logger.info({ message: [
 					'[', { a: 'right', c: 7, t: `${ridesBatch.length - rideIndex}/${ridesBatch.length}` }, ']',
 					' F: ', { c: 5, t: fetchAnalysisDataTime },
 					' T: ', { c: 7, t: rideAnalysisTimer.get() },
 					{ c: 50, t: rideData._id },
-					{ c: 10, t: `SKIP: ${skipAnalysisCount.length} ` },
-					{ c: 10, t: `PASS: ${passAnalysisCount.length} ` },
-					{ c: 10, t: `FAIL: ${failAnalysisCount.length} ` },
-					{ c: 12, t: `ERROR: ${errorAnalysisCount.length} [${errorAnalysisCount.join('|')}]` },
+					{ c: 10, t: `SKIP: ${analyzeRideResults.skipped.length} ` },
+					{ c: 10, t: `PASS: ${analyzeRideResults.passed.length} ` },
+					{ c: 10, t: `FAIL: ${analyzeRideResults.failed.length} ` },
+					{ c: 12, t: `ERROR: ${analyzeRideResults.error.length} [${analyzeRideResults.error.join('|')}]` },
 				] });
 
 				//
 			} catch (error) {
-				await goDb.operation.rides.updateOne({ _id: rideData._id }, { system_status: 'error' });
+				await labDb.operation.rides.insert('JSONEachRow', [{ ...rideData, system_status: 'error', updated_at: Dates.now('utc').unix_timestamp }]);
 				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
 			}
 		}
