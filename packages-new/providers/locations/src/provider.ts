@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/types';
-import { asyncSingletonProxy } from '@tmlmobilidade/utils';
+import { asyncSingletonProxy, flattenObject } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -22,7 +22,8 @@ class LocationsProviderClass {
 	/*  Find By Geo */
 
 	async findDistrictByGeo(lat: number, lon: number): Promise<District | null> {
-		return goDb.locations.districts.findOne(this.geoFilter(lat, lon) as any);
+		const district = await goDb.locations.districts.findOne(this.geoFilter(lat, lon) as any);
+		if (!district) return null;
 	}
 
 	async findLocalityByGeo(lat: number, lon: number): Promise<Locality | null> {
