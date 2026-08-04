@@ -3,15 +3,15 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { Location } from '@tmlmobilidade/types';
+import { LatitudeSchema, Location, LongitudeSchema } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 import z from 'zod';
 
 /* * */
 
 const queryParamsSchema = z.object({
-	lat: z.number(),
-	lon: z.number(),
+	lat: LatitudeSchema,
+	lon: LongitudeSchema,
 });
 
 type QueryParams = z.infer<typeof queryParamsSchema>;
