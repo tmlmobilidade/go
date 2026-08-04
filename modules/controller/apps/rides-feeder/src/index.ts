@@ -1,6 +1,6 @@
 /* * */
 
-import { cleanupOrphanHashedPatterns, cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
+import { cleanupOrphanHashedPaths, cleanupOrphanRidesGlobally } from '@/cleanup.js';
 import { parsePlan } from '@/parse-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
@@ -105,9 +105,7 @@ async function main() {
 		// Perform the cleanup operations after processing all plans
 
 		await cleanupOrphanRidesGlobally();
-		await cleanupOrphanHashedPatterns();
-		await cleanupOrphanHashedShapes();
-		await cleanupOrphanHashedTrips();
+		await cleanupOrphanHashedPaths();
 
 		//
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { GtfsTripDirectionSchema } from '@tmlmobilidade/go-types-gtfs';
-import { NonNegativeNumberSchema, OperationalDateIntSchema, ProcessingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { HexColorSchema, NonNegativeNumberSchema, OperationalDateIntSchema, ProcessingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -15,11 +15,11 @@ const RideIdentitySchema = z.object({
 	headsign: z.string(),
 	operational_date: OperationalDateIntSchema,
 	plan_id: z.string(),
-	route_color: z.string(),
+	route_color: HexColorSchema.default('#000000'),
 	route_id: z.string(),
 	route_long_name: z.string(),
 	route_short_name: z.string(),
-	route_text_color: z.string(),
+	route_text_color: HexColorSchema.default('#FFFFFF'),
 	shape_id: z.string(),
 	shape_polyline: z.string(),
 	trip_id: z.string(),

@@ -32,3 +32,15 @@ export const HashedPathSchema = z.object({
  * and becomes considerable when GTFS plans are large and frequently updated.
  */
 export type HashedPath = z.infer<typeof HashedPathSchema>;
+
+/* * */
+
+export const CreateHashedPathSchema = HashedPathSchema.omit({
+	_id: true,
+	updated_at: true,
+});
+
+/**
+ * A specific type for creating a HashedPath, without the _id and updated_at fields.
+ */
+export type CreateHashedPath = z.infer<typeof CreateHashedPathSchema>;
