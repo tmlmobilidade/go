@@ -24,7 +24,7 @@ export async function cleanupOrphanRidesForPlan(planId: string, savedRideIds: Se
 	//
 	// Setup a stream for all Ride IDs that are in use by Rides
 
-	const existingRideIds: string[] = await labDb.operation.rides.distinct('_id', 'plan_id = $1', { 1: planId });
+	const existingRideIds = await labDb.operation.rides.distinct('_id', 'plan_id = $1', { 1: planId });
 	const staleRideIds = new Set<string>();
 
 	for (const rideId of existingRideIds) {

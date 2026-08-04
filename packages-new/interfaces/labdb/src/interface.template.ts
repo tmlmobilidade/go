@@ -85,7 +85,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
 	 * @returns A promise that resolves to an array of distinct values matching the query.
 	 */
-	public async distinct(field: keyof T, where: string, params?: Record<string, number | string>): Promise<T[keyof T][]> {
+	public async distinct<K extends keyof T>(field: K, where: string, params?: Record<string, number | string>): Promise<T[K][]> {
 		const result = await queryFromString<T>(this.client, `SELECT DISTINCT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
 		return result.map(doc => doc[field]);
 	}
