@@ -2,13 +2,14 @@
 
 import { cleanupOrphanRidesForPlan } from '@/cleanup.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { encodePolylineFromGeoJson, toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
+import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
 import { CreateHashedTrip, CreateHashedTripSchema, type HashedTrip, HashedTripSchema, type Ride } from '@tmlmobilidade/go-types-operation';
 import { validateHexColor, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-geo';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -211,12 +212,14 @@ export async function parsePlan(planData: Plan) {
 			// Transform the GTFS shape data into a GeoJSON LineString,
 			// and then encode it as a polyline string.
 
+			const sortedShapeData = shapeData.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
+
 			const shapeAsGeoJsonGeometry = GeoJsonLineStringGeometrySchema.parse({
-				coordinates: shapeData.map(point => [point.shape_pt_lon, point.shape_pt_lat]),
+				coordinates: sortedShapeData.map(point => [point.shape_pt_lon, point.shape_pt_lat]),
 				type: 'LineString',
 			});
 
-			const shapeAsEncodedPolyline = encodePolylineFromGeoJson(shapeAsGeoJsonGeometry);
+			const shapeAsEncodedPolyline = fromGeoJsonLineStringToEncodedPolyline(shapeAsGeoJsonGeometry);
 
 			/* * */
 			/* RIDES */
