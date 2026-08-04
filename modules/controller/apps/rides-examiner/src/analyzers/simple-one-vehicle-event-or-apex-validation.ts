@@ -21,9 +21,8 @@ export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: Anal
 		if (analysisData.vehicle_events.length > 0 || analysisData.apex_validations.length > 0) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: true,
+				grade_status: 'pass',
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'FOUND_VEHICLE_EVENT_OR_APEX_VALIDATION',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -33,9 +32,8 @@ export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: Anal
 
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'fail',
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'complete',
 			reason: 'NO_VEHICLE_EVENTS_OR_APEX_VALIDATIONS',
 			remarks: null,
 			ride_id: analysisData.ride._id,
@@ -46,9 +44,8 @@ export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: Anal
 	} catch (error) {
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'error',
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'error',
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,

@@ -20,9 +20,8 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 		if (!analysisData.hashed_trip.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NO_PATH_DATA',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -80,9 +79,8 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 		if (!foundFirstStopIds.size) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'fail',
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'MISSING_FIRST_STOPS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -96,9 +94,8 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 		if (!foundMiddleStopIds.size) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'fail',
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'MISSING_MIDDLE_STOPS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -112,9 +109,8 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 		if (!foundLastStopIds.size) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'fail',
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'MISSING_LAST_STOPS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -127,9 +123,8 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: true,
+			grade_status: 'pass',
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'complete',
 			reason: 'ALL_STOPS_FOUND',
 			remarks: null,
 			ride_id: analysisData.ride._id,
@@ -143,9 +138,8 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 	} catch (error) {
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'error',
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'error',
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,

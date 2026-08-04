@@ -27,9 +27,8 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 		if (!analysisData.hashed_trip.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NO_PATH_DATA',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -44,9 +43,8 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 		if (!analysisData.vehicle_events.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NO_VEHICLE_EVENTS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -75,9 +73,8 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 		if (eventsFoundOnLastStop > 0) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: true,
+				grade_status: 'pass',
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'ONE_OR_MORE_VEHICLE_EVENTS_ON_LAST_STOP',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -88,9 +85,8 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'fail',
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'complete',
 			reason: 'NO_VEHICLE_EVENTS_ON_LAST_STOP',
 			remarks: null,
 			ride_id: analysisData.ride._id,
@@ -102,9 +98,8 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 	} catch (error) {
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'error',
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'error',
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,

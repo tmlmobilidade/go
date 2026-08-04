@@ -23,11 +23,10 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 		if (!analysisData.ride.start_time_scheduled) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				observed_start_time: null,
 				observed_start_time_delta: null,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NO_START_TIME_SCHEDULED',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -38,11 +37,10 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 		if (!analysisData.vehicle_events.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				observed_start_time: null,
 				observed_start_time_delta: null,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NO_VEHICLE_EVENTS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -53,11 +51,10 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 		if (!analysisData.ride.start_time_observed) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				observed_start_time: null,
 				observed_start_time_delta: null,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'UNKNOWN_START',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -76,11 +73,10 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 		if (delayInMinutes <= -1) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'fail',
 				observed_start_time: analysisData.ride.start_time_observed,
 				observed_start_time_delta: delayInMinutes,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'EARLY_START',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -91,11 +87,10 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 		if (delayInMinutes > -1 && delayInMinutes <= 5) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: true,
+				grade_status: 'pass',
 				observed_start_time: analysisData.ride.start_time_observed,
 				observed_start_time_delta: delayInMinutes,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'START_ON_TIME',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -106,11 +101,10 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 		if (delayInMinutes > 5) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'fail',
 				observed_start_time: analysisData.ride.start_time_observed,
 				observed_start_time_delta: delayInMinutes,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'LATE_START',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -124,11 +118,10 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnaly
 	} catch (error) {
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'error',
 			observed_start_time: null,
 			observed_start_time_delta: null,
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'error',
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,

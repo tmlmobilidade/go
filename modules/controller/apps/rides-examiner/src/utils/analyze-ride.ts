@@ -43,7 +43,7 @@ const rideAnalysesRegistry: { [K in keyof RideAnalysesRegistry]: (analysisData: 
 
 /* * */
 
-interface AnalyzeRideResults {
+interface AnalyzeRideMetrics {
 	complete: string[]
 	error: string[]
 	is_accepted_false: string[]
@@ -51,13 +51,18 @@ interface AnalyzeRideResults {
 	skipped: string[]
 }
 
+interface AnalyzeRideReturnType {
+	analyses: typeof rideAnalysesRegistry
+	metrics: AnalyzeRideMetrics
+}
+
 /**
  * Analyzes the ride data and returns the analysis results.
  * @param analysisData The analysis data to use for the analysis.
  * @returns The analysis results for the ride.
  */
-export function analyzeRide(analysisData: AnalysisData): AnalyzeRideResults {
-	const results: AnalyzeRideResults = {
+export function analyzeRide(analysisData: AnalysisData): AnalyzeRideReturnType {
+	const metrics: AnalyzeRideMetrics = {
 		complete: [],
 		error: [],
 		is_accepted_false: [],
@@ -66,8 +71,10 @@ export function analyzeRide(analysisData: AnalysisData): AnalyzeRideResults {
 	};
 
 	for (const [analyzerName, analyzerFn] of Object.entries(rideAnalysesRegistry)) {
+		// Run the analyzer
 		const result = analyzerFn(analysisData);
-		if (result.processing_status === 'error') results.error.push(analyzerName);
+		// Update the metrics
+		if (result.processing_status === 'error') metrics.error.push(analyzerName);
 		else if (result.processing_status === 'complete') results.complete.push(analyzerName);
 		else if (result.processing_status === 'skipped') results.skipped.push(analyzerName);
 		if (result.is_accepted) results.is_accepted_true.push(analyzerName);

@@ -22,12 +22,11 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 		if (!analysisData.vehicle_events.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				observed_average_delay: null,
 				observed_max_delay: null,
 				observed_min_delay: null,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NO_VEHICLE_EVENTS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -66,12 +65,11 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 		if (countOfEventsWithDelay > 0) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'fail',
 				observed_average_delay: averageDelay,
 				observed_max_delay: maxDelay,
 				observed_min_delay: minDelay,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'UNEXPECTED_VEHICLE_EVENTS_DELAY',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -84,12 +82,11 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: true,
+			grade_status: 'pass',
 			observed_average_delay: averageDelay,
 			observed_max_delay: maxDelay,
 			observed_min_delay: minDelay,
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'complete',
 			reason: 'EXPECTED_VEHICLE_EVENTS_DELAY',
 			remarks: null,
 			ride_id: analysisData.ride._id,
@@ -103,12 +100,11 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 	} catch (error) {
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'error',
 			observed_average_delay: null,
 			observed_max_delay: null,
 			observed_min_delay: null,
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'error',
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,

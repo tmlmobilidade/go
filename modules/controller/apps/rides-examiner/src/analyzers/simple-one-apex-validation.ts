@@ -18,9 +18,8 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 		if (!analysisData.apex_validations.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NO_APEX_VALIDATIONS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -30,9 +29,8 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: true,
+			grade_status: 'pass',
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'complete',
 			reason: 'ONE_OR_MORE_APEX_VALIDATIONS',
 			remarks: null,
 			ride_id: analysisData.ride._id,
@@ -43,9 +41,8 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 	} catch (error) {
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'error',
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'error',
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,

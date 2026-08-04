@@ -22,10 +22,9 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAna
 		if (!analysisData.vehicle_events.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				observed_driver_ids_qty: null,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NO_VEHICLE_EVENTS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -36,10 +35,9 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAna
 		if (analysisData.ride.driver_ids.length > EXPECTED_DRIVER_IDS_QTY) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'fail',
 				observed_driver_ids_qty: analysisData.ride.driver_ids.length,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'UNEXPECTED_DRIVER_ID_QTY',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -49,10 +47,9 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAna
 
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: true,
+			grade_status: 'pass',
 			observed_driver_ids_qty: analysisData.ride.driver_ids.length,
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'complete',
 			reason: 'EXPECTED_DRIVER_ID_QTY',
 			remarks: null,
 			ride_id: analysisData.ride._id,
@@ -63,10 +60,9 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAna
 	} catch (error) {
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'error',
 			observed_driver_ids_qty: null,
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'error',
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,

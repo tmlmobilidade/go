@@ -25,12 +25,11 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 		if (!analysisData.vehicle_events.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				observed_average_interval: null,
 				observed_max_interval: null,
 				observed_min_interval: null,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NO_VEHICLE_EVENTS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -68,12 +67,11 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 		if (avgIntervalBetweenEvents <= EXPECTED_AVERAGE_VEHICLE_EVENT_INTERVAL) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: true,
+				grade_status: 'pass',
 				observed_average_interval: avgIntervalBetweenEvents,
 				observed_max_interval: maxIntervalBetweenEvents,
 				observed_min_interval: minIntervalBetweenEvents,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'EXPECTED_VEHICLE_EVENT_INTERVAL',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -83,12 +81,11 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'fail',
 			observed_average_interval: avgIntervalBetweenEvents,
 			observed_max_interval: maxIntervalBetweenEvents,
 			observed_min_interval: minIntervalBetweenEvents,
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'complete',
 			reason: 'UNEXPECTED_VEHICLE_EVENT_INTERVAL',
 			remarks: null,
 			ride_id: analysisData.ride._id,
@@ -99,12 +96,11 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 	} catch (error) {
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'error',
 			observed_average_interval: null,
 			observed_max_interval: null,
 			observed_min_interval: null,
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'error',
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,

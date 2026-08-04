@@ -25,12 +25,11 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 		if (!analysisData.apex_validations.length) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				observed_average_interval: null,
 				observed_max_interval: null,
 				observed_min_interval: null,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NO_APEX_VALIDATIONS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -41,12 +40,11 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 		if (analysisData.apex_validations.length < 2) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'skipped',
 				observed_average_interval: null,
 				observed_max_interval: null,
 				observed_min_interval: null,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'skipped',
 				reason: 'NOT_ENOUGH_VALIDATIONS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -112,12 +110,11 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 		if (tooShortIntervalsQty > 0) {
 			return {
 				agency_id: analysisData.ride.agency_id,
-				is_accepted: false,
+				grade_status: 'fail',
 				observed_average_interval: observedAverageInterval,
 				observed_max_interval: observedMaxInterval,
 				observed_min_interval: observedMinInterval,
 				operational_date: analysisData.ride.operational_date,
-				processing_status: 'complete',
 				reason: 'INTERVALS_TOO_SHORT',
 				remarks: null,
 				ride_id: analysisData.ride._id,
@@ -130,12 +127,11 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: true,
+			grade_status: 'pass',
 			observed_average_interval: observedAverageInterval,
 			observed_max_interval: observedMaxInterval,
 			observed_min_interval: observedMinInterval,
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'complete',
 			reason: 'EXPECTED_VALIDATION_INTERVALS',
 			remarks: null,
 			ride_id: analysisData.ride._id,
@@ -146,12 +142,11 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 	} catch (error) {
 		return {
 			agency_id: analysisData.ride.agency_id,
-			is_accepted: false,
+			grade_status: 'error',
 			observed_average_interval: null,
 			observed_max_interval: null,
 			observed_min_interval: null,
 			operational_date: analysisData.ride.operational_date,
-			processing_status: 'error',
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
