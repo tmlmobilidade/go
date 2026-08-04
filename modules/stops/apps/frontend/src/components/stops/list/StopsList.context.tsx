@@ -2,9 +2,11 @@
 
 import { type StopNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { LifecycleStatusSchema, type Stop, StopConnectionSchema, StopEquipmentSchema, StopFacilitySchema } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, MapOverlayMultipleStopsDataProps, useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { FeatureCollection, Point } from 'geojson';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -12,6 +14,7 @@ import useSWR from 'swr';
 
 interface StopsListContextState extends ListContextStateTemplate {
 	data: {
+		features: FeatureCollection<Point, MapOverlayMultipleStopsDataProps> | null
 		filtered: StopNormalized[]
 		raw: Stop[]
 	}
@@ -126,11 +129,31 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		filterMunicipality.value,
 	]);
 
+	const stopsAsGeojsonFC = useMemo(() => {
+		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayMultipleStopsDataProps>();
+		if (!filterResultsData?.length) return baseGeoJson;
+
+		baseGeoJson.features = filterResultsData.map(item => ({
+			geometry: {
+				coordinates: [item.longitude, item.latitude],
+				type: 'Point',
+			},
+			properties: {
+				id: String(item._id),
+				name: item.name,
+			},
+			type: 'Feature',
+		}));
+
+		return baseGeoJson;
+	}, [filterResultsData]);
+
 	//
 	// D. Define context value
 
 	const contextValue: StopsListContextState = {
 		data: {
+			features: stopsAsGeojsonFC,
 			filtered: filterResultsData,
 			raw: allStopsData ?? [],
 		},
