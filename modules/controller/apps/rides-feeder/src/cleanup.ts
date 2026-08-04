@@ -70,7 +70,7 @@ export async function cleanupOrphanRidesGlobally() {
 /**
  * Delete all HashedShapes that are not referenced by any Ride.
  */
-export async function cleanupOrphanHashedPaths() {
+export async function cleanupOrphanHashedTrips() {
 	//
 
 	const timer = new Timer();
@@ -78,7 +78,7 @@ export async function cleanupOrphanHashedPaths() {
 	Logger.spacer(1);
 	Logger.info({ message: `Starting cleanup of orphan Hashed Paths...` });
 
-	await labDb.operation.hashedPaths.delete('_id NOT IN (SELECT DISTINCT hashed_path_id FROM operation.rides)');
+	await labDb.operation.hashedPaths.delete('_id NOT IN (SELECT DISTINCT hashed_trip_id FROM operation.rides)');
 
 	Logger.success(`Hashed Paths cleanup complete. Deleted orphan Hashed Paths. (${timer.get()})`);
 

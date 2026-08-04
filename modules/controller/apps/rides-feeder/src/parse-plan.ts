@@ -6,7 +6,7 @@ import { encodePolylineFromGeoJson, toMetersFromKilometersOrMeters } from '@tmlm
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { CreateHashedPath, CreateHashedPathSchema, type HashedPath, HashedPathSchema, type Ride } from '@tmlmobilidade/go-types-operation';
+import { CreateHashedTrip, CreateHashedTripSchema, type HashedTrip, HashedTripSchema, type Ride } from '@tmlmobilidade/go-types-operation';
 import { GeoJsonLineStringGeometrySchema, validateHexColor, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -26,7 +26,7 @@ export async function parsePlan(planData: Plan) {
 	// Setup variables to save formatted entities found in this Plan
 
 	const savedRideIds = new Set<string>();
-	const savedHashedPathIds = new Set<string>();
+	const savedHashedTripIds = new Set<string>();
 
 	//
 	// Setup database writers
@@ -39,7 +39,7 @@ export async function parsePlan(planData: Plan) {
 		title: await labDb.operation.rides.getTableName(),
 	});
 
-	const hashedPathsWritter = new BatchWriter<HashedPath>({
+	const hashedPathsWritter = new BatchWriter<HashedTrip>({
 		batch_size: 10_000,
 		insertFn: async (data) => {
 			await labDb.operation.hashedPaths.insert('JSONEachRow', data);
@@ -78,7 +78,7 @@ export async function parsePlan(planData: Plan) {
 
 		const outputsTimer = new Timer();
 
-		Logger.title(`Generating Rides and HashedPaths...`);
+		Logger.title(`Generating Rides and HashedTrips...`);
 
 		Logger.info({ message: `calendar_dates: ${Object.values(importedGtfsSql.calendar_dates).flat().length} days for ${Object.keys(importedGtfsSql.calendar_dates).length} service IDs` });
 		Logger.info({ message: `trips: ${importedGtfsSql.trips.size} rows` });
@@ -143,11 +143,11 @@ export async function parsePlan(planData: Plan) {
 			/* HASHED PATH */
 
 			//
-			// Build the HashedPath data, including formatting the path data by combining
+			// Build the HashedTrip data, including formatting the path data by combining
 			// properties from stop_times and stops. Sort it by stop_sequence to ensure
 			// the order is stable for hashing.
 
-			const formattedCreateHashedPathItems: CreateHashedPath[] = [];
+			const formattedCreateHashedTripItems: CreateHashedTrip[] = [];
 
 			for (const stopTime of sortedStopTimesData) {
 				// Get the corresponding stop data for this stop_time
@@ -156,7 +156,7 @@ export async function parsePlan(planData: Plan) {
 				// Normalize the shape_dist_traveled to meters, if necessary
 				const normalizedShapeDistTraveled = toMetersFromKilometersOrMeters(stopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
 				// Validate this stop_time in the schema
-				const validatedCreateHashedPathItem = CreateHashedPathSchema.parse({
+				const validatedCreateHashedTripItem = CreateHashedTripSchema.parse({
 					drop_off_type: stopTime.drop_off_type,
 					pickup_type: stopTime.pickup_type,
 					shape_dist_traveled: normalizedShapeDistTraveled,
@@ -168,39 +168,39 @@ export async function parsePlan(planData: Plan) {
 					timepoint: stopTime.timepoint,
 				});
 				// Save the formatted path data for this stop_time
-				formattedCreateHashedPathItems.push(validatedCreateHashedPathItem);
+				formattedCreateHashedTripItems.push(validatedCreateHashedTripItem);
 			}
 
-			const sortedCreateHashedPathItems = formattedCreateHashedPathItems.sort((a, b) => {
+			const sortedCreateHashedTripItems = formattedCreateHashedTripItems.sort((a, b) => {
 				return a.stop_sequence - b.stop_sequence;
 			});
 
 			//
 			// Hash the object contents and check if it already exists in the database.
-			// The hash value is the _id of the HashedPath item.
+			// The hash value is the _id of the HashedTrip item.
 
-			const uniqueIdValueForCreateHashedPath = crypto
+			const uniqueIdValueForCreateHashedTrip = crypto
 				.createHash('sha256')
-				.update(JSON.stringify(sortedCreateHashedPathItems))
+				.update(JSON.stringify(sortedCreateHashedTripItems))
 				.digest('hex');
 
 			//
 			// Check if there are rows with this unique ID value.
-			// If there are no rows, save the HashedPath items to the database.
+			// If there are no rows, save the HashedTrip items to the database.
 
-			const currentHashedPathAlreadyExists = await labDb.operation.hashedPaths.count('DISTINCT(_id)', 'WHERE _id = $1', { 1: uniqueIdValueForCreateHashedPath }) > 0;
+			const currentHashedTripAlreadyExists = await labDb.operation.hashedPaths.count('DISTINCT(_id)', 'WHERE _id = $1', { 1: uniqueIdValueForCreateHashedTrip }) > 0;
 
-			const hashedPathItems = sortedCreateHashedPathItems.map((item): HashedPath => {
-				return HashedPathSchema.parse({
+			const hashedPathItems = sortedCreateHashedTripItems.map((item): HashedTrip => {
+				return HashedTripSchema.parse({
 					...item,
-					_id: uniqueIdValueForCreateHashedPath,
+					_id: uniqueIdValueForCreateHashedTrip,
 					updated_at: Dates.now('utc').unix_timestamp,
 				});
 			});
 
-			if (!currentHashedPathAlreadyExists) {
+			if (!currentHashedTripAlreadyExists) {
 				await hashedPathsWritter.write(hashedPathItems);
-				savedHashedPathIds.add(uniqueIdValueForCreateHashedPath);
+				savedHashedTripIds.add(uniqueIdValueForCreateHashedTrip);
 			}
 
 			/* * */
@@ -223,8 +223,8 @@ export async function parsePlan(planData: Plan) {
 			//
 			// Setup variable that will be used multiple times in the next steps.
 
-			const firstWaypoint = sortedCreateHashedPathItems[0];
-			const lastWaypoint = sortedCreateHashedPathItems[sortedCreateHashedPathItems.length - 1];
+			const firstWaypoint = sortedCreateHashedTripItems[0];
+			const lastWaypoint = sortedCreateHashedTripItems[sortedCreateHashedTripItems.length - 1];
 
 			const extensionScheduledInMeters = toMetersFromKilometersOrMeters(lastWaypoint.shape_dist_traveled, lastWaypoint.shape_dist_traveled);
 
@@ -267,7 +267,7 @@ export async function parsePlan(planData: Plan) {
 					end_time_scheduled: endTimeScheduledUnixTimestamp,
 					extension_observed: null,
 					extension_scheduled: extensionScheduledInMeters,
-					hashed_path_id: uniqueIdValueForCreateHashedPath,
+					hashed_trip_id: uniqueIdValueForCreateHashedTrip,
 					headsign: currentTrip.trip_headsign,
 					operational_date: validateOperationalDateInt(calendarDate),
 					passengers_estimated: null,
@@ -334,7 +334,7 @@ export async function parsePlan(planData: Plan) {
 		//
 		// Log progress
 
-		Logger.info({ message: `Saved ${savedRideIds.size} Rides and ${savedHashedPathIds.size} HashedPaths in ${outputsTimer.get()}.` });
+		Logger.info({ message: `Saved ${savedRideIds.size} Rides and ${savedHashedTripIds.size} HashedTrips in ${outputsTimer.get()}.` });
 
 		//
 	} catch (error) {

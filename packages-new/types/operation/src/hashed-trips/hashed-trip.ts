@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const HashedPathSchema = z.object({
+export const HashedTripSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
 	arrival_time: GtfsTimeSchema,
@@ -26,22 +26,22 @@ export const HashedPathSchema = z.object({
 });
 
 /**
- * A HashedPath represents the unique sequence of stops, and the arrival and departure times for each stop,
+ * A HashedTrip represents the unique sequence of stops, and the arrival and departure times for each stop,
  * for a given set of trips. This is usually called a "pattern" in the public transit sector.
  * The hash here means that equal paths are considered equal, even if the GTFS plan where they are defined
  * is different. This allows for efficient data savings by not storing the same path multiple times,
  * and becomes considerable when GTFS plans are large and frequently updated.
  */
-export type HashedPath = z.infer<typeof HashedPathSchema>;
+export type HashedTrip = z.infer<typeof HashedTripSchema>;
 
 /* * */
 
-export const CreateHashedPathSchema = HashedPathSchema.omit({
+export const CreateHashedTripSchema = HashedTripSchema.omit({
 	_id: true,
 	updated_at: true,
 });
 
 /**
- * A specific type for creating a HashedPath, without the _id and updated_at fields.
+ * A specific type for creating a HashedTrip, without the _id and updated_at fields.
  */
-export type CreateHashedPath = z.infer<typeof CreateHashedPathSchema>;
+export type CreateHashedTrip = z.infer<typeof CreateHashedTripSchema>;

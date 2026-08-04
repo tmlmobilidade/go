@@ -20,7 +20,7 @@ export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 	//
 	// Fetch data from LABDB.
 
-	const hashedPathPromise = labDb.operation.hashedPaths.select('*', 'hashed_path_id = $1', { 1: rideData.hashed_path_id });
+	const hashedPathPromise = labDb.operation.hashedPaths.select('*', 'hashed_trip_id = $1', { 1: rideData.hashed_trip_id });
 	const simplifiedApexLocationsNewPromise = labDb.simplifiedApex.locations.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
 	const simplifiedApexOnBoardRefundsNewPromise = labDb.simplifiedApex.refunds.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
 	const simplifiedApexOnBoardSalesNewPromise = labDb.simplifiedApex.sales.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });

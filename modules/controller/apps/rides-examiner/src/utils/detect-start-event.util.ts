@@ -2,7 +2,7 @@
 
 import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, toLineStringFromHashedShape } from '@tmlmobilidade/geo';
-import { type HashedPath } from '@tmlmobilidade/go-types-operation';
+import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
@@ -17,7 +17,7 @@ const INITIAL_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param analysisData The analysis data containing the vehicle events, hashed trip, and hashed shape.
  * @returns The event which starts the trip.
  */
-export function detectStartEvent(vehicleEventsData: SimplifiedVehicleEvent[], hashedPathData: HashedPath[]): null | SimplifiedVehicleEvent {
+export function detectStartEvent(vehicleEventsData: SimplifiedVehicleEvent[], hashedPathData: HashedTrip[]): null | SimplifiedVehicleEvent {
 	//
 
 	//

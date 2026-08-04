@@ -11,7 +11,7 @@ const RideIdentitySchema = z.object({
 	agency_code: z.string(),
 	agency_id: z.string(),
 	direction_id: GtfsTripDirectionSchema,
-	hashed_path_id: z.string(),
+	hashed_trip_id: z.string(),
 	headsign: z.string(),
 	operational_date: OperationalDateIntSchema,
 	plan_id: z.string(),
