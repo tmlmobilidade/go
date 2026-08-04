@@ -9,10 +9,12 @@ import { z } from 'zod';
 
 /* * */
 
+const queryParamsArrayStringSchema = z.preprocess(val => typeof val === 'string' ? val.split(',').map(s => s.trim()).filter(Boolean) : val, z.array(z.string()).nullish());
+
 const queryParamsSchema = z.object({
-	district_ids: z.array(z.string().uuid()).optional(),
-	municipality_ids: z.array(z.string().uuid()).optional(),
-	parish_ids: z.array(z.string().uuid()).optional(),
+	district_ids: queryParamsArrayStringSchema,
+	municipality_ids: queryParamsArrayStringSchema,
+	parish_ids: queryParamsArrayStringSchema,
 });
 
 type QueryParams = z.infer<typeof queryParamsSchema>;
