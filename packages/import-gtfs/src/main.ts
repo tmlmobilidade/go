@@ -35,6 +35,8 @@ export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig, c
 
 		const context = customContext ? customContext : initImportGtfsContext();
 
+		Logger.info({ message: 'Context: ' + JSON.stringify(context, null, 2) });
+
 		//
 		// Download and extract the GTFS file.
 
