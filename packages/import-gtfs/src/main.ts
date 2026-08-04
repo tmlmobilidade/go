@@ -14,6 +14,7 @@ import { extractGtfsSource } from '@/utils/extract-source.js';
 import { initImportGtfsContext } from '@/utils/init-context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { rmSync } from 'node:fs';
 
 /**
  * Imports GTFS data into the database for a given plan.
@@ -56,7 +57,10 @@ export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig, c
 
 		Logger.success(`Finished importing GTFS to database in ${globalTimer.get()}.`);
 
-		return context.gtfs;
+		rmSync(context.workdir.download_file_path, { recursive: true , force: true });
+		rmSync(context.workdir.extract_dir_path, { recursive: true , force: true });
+
+		return context.gtfs
 
 		//
 	} catch (error) {
