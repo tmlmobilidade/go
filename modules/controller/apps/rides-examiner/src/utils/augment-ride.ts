@@ -1,11 +1,11 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { detectEndEvent } from '@/utils/detect-end-event.util.js';
-import { detectFirstEvent } from '@/utils/detect-first-event.util.js';
-import { detectLastEvent } from '@/utils/detect-last-event.util.js';
-import { detectStartEvent } from '@/utils/detect-start-event.util.js';
-import { getObservedExtension } from '@/utils/get-observed-extension.util.js';
+import { detectEndEvent } from '@/utils/detect-end-event.js';
+import { detectFirstEvent } from '@/utils/detect-first-event.js';
+import { detectLastEvent } from '@/utils/detect-last-event.js';
+import { detectStartEvent } from '@/utils/detect-start-event.js';
+import { getObservedExtension } from '@/utils/get-observed-extension.js';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 
 /**
@@ -31,8 +31,8 @@ export function augmentRide(analysisData: AnalysisData): Ride {
 	//
 	// Detect the start and end times for this Ride
 
-	const detectedStartEvent = detectStartEvent(analysisData.vehicle_events, analysisData.hashed_trip, analysisData.hashed_shape);
-	const detectedEndEvent = detectEndEvent(analysisData.vehicle_events, analysisData.hashed_shape);
+	const detectedStartEvent = detectStartEvent(analysisData.ride, analysisData.hashed_trip, analysisData.vehicle_events);
+	const detectedEndEvent = detectEndEvent(analysisData.ride, analysisData.vehicle_events);
 
 	augmentedRide.start_time_observed = detectedStartEvent?.created_at ?? null;
 	augmentedRide.end_time_observed = detectedEndEvent?.created_at ?? null;

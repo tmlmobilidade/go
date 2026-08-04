@@ -1,9 +1,9 @@
 /* * */
 
-import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
-import { chunkLineByDistance, cutLineStringAtLength, getDistanceBetweenPositions, toLineStringFromHashedShape } from '@tmlmobilidade/geo';
-import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
+import { type GeoJsonPosition } from '@tmlmobilidade/go-types-geo';
+import { type HashedTrip, type Ride } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { chunkLineStringByDistance, cutLineStringAtLength, fromEncodedPolylineToGeoJsonLineString, getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
 
 /* * */
 
@@ -17,49 +17,37 @@ const INITIAL_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param analysisData The analysis data containing the vehicle events, hashed trip, and hashed shape.
  * @returns The event which starts the trip.
  */
-export function detectStartEvent(vehicleEventsData: SimplifiedVehicleEvent[], hashedTripData: HashedTrip[]): null | SimplifiedVehicleEvent {
+export function detectStartEvent(rideData: Ride, hashedTripData: HashedTrip[], vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
 	//
 
 	//
 	// Ensure that there are at least two vehicle events.
 	// Sort them by vehicle timestamp.
 
-	if (vehicleEventsData.length < 2) {
-		// throw new Error('There must be at least two Vehicle Events.');
-		return null;
-	}
+	if (vehicleEventsData.length < 2) return null;
 
-	const sortedVehicleEvents = sortByUnixTimestamp(vehicleEventsData, 'created_at');
+	const sortedVehicleEvents = vehicleEventsData.sort((a, b) => a.created_at - b.created_at);
 
 	//
 	// Ensure that the hashed trip is not empty.
 
-	if (!hashedTripData?.length) {
-		// throw new Error('Hashed Trip is empty.');
-		return null;
-	}
+	if (hashedTripData.length < 2) return null;
 
-	const sortedPath = hashedTripData.sort((a, b) => {
-		return a.stop_sequence - b.stop_sequence;
-	});
+	const sortedPath = hashedTripData.sort((a, b) => a.stop_sequence - b.stop_sequence);
 
-	const firstStopPosition = [Number(sortedPath[0].stop_lon), Number(sortedPath[0].stop_lat)];
+	const firstStopPosition: GeoJsonPosition = [sortedPath[0].stop_lon, sortedPath[0].stop_lat];
 
 	//
-	// Ensure that the hashed shape has at least two points.
-	// Transform the GTFS shape points into a GeoJSON LineString
-	// and cut it at 500 meters.
+	// Decode the EncodedPolyline of the shape into a GeoJSON LineString,
+	// cut it at the initial segment length, and chunk it into segments of the initial segment chunk length.
 
-	if (hashedShapeData?.points?.length < 2) {
-		// throw new Error('Hashed Shape must have at least two points.');
-		return null;
-	}
+	const shapeAsGeoJsonLineString = fromEncodedPolylineToGeoJsonLineString(rideData.shape_polyline);
+	if (!shapeAsGeoJsonLineString) return null;
 
-	const shapeAsLineString = toLineStringFromHashedShape(hashedShapeData);
+	const initialSegmentOfShape = cutLineStringAtLength(shapeAsGeoJsonLineString, INITIAL_SEGMENT_LENGTH);
+	if (!initialSegmentOfShape) return null;
 
-	const initialSegmentOfShape = cutLineStringAtLength(shapeAsLineString, INITIAL_SEGMENT_LENGTH);
-
-	const initialSegmentOfShapeNormalized = chunkLineByDistance(initialSegmentOfShape, INITIAL_SEGMENT_CHUNK_LENGTH);
+	const initialSegmentOfShapeNormalized = chunkLineStringByDistance(initialSegmentOfShape, INITIAL_SEGMENT_CHUNK_LENGTH);
 
 	//
 	// Detect the last event that is inside

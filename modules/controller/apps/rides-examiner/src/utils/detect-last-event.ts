@@ -1,11 +1,10 @@
 /* * */
 
-import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
 /**
  * Detect the last event in the vehicle events data.
- * @param vehicleEventsData
+ * @param vehicleEventsData The vehicle events data.
  * @returns The last event in the vehicle events data.
  */
 export function detectLastEvent(vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
@@ -14,18 +13,13 @@ export function detectLastEvent(vehicleEventsData: SimplifiedVehicleEvent[]): nu
 	//
 	// Return null if there are no vehicle events.
 
-	if (vehicleEventsData.length < 1) {
-		// throw new Error('No vehicle events were found.');
-		return null;
-	}
+	if (vehicleEventsData.length < 1) return null;
 
 	//
 	// Sort the vehicle events by vehicle timestamp in descending order.
 	// Return the first event found.
 
-	const sortedVehicleEvents = sortByUnixTimestamp(vehicleEventsData, 'created_at', 'desc');
+	const sortedVehicleEvents = vehicleEventsData.sort((a, b) => b.created_at - a.created_at);
 
 	return sortedVehicleEvents[0];
-
-	//
 }
