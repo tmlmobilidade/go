@@ -3,7 +3,7 @@
 import { type District, type Locality, type Municipality, type Parish } from '@carrismetropolitana/api-types/locations';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Location, Zone } from '@tmlmobilidade/types';
-import { fetchData, HttpResponse, unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
+import { fetchData, unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
