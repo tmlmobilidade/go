@@ -1,7 +1,7 @@
 /* * */
 
 import { atLeastOneVehicleEventOnFirstStopAnalyzer } from '@/analyzers/at-least-one-vehicle-event-on-first-stop.js';
-import { endedAtLastStopAnalyzer } from '@/analyzers/ended-at-last-stop.js';
+import { atLeastOneVehicleEventOnLastStopAnalyzer } from '@/analyzers/at-least-one-vehicle-event-on-last-stop.js';
 import { expectedApexValidationIntervalAnalyzer } from '@/analyzers/expected-apex-validation-interval.js';
 import { expectedDriverIdQtyAnalyzer } from '@/analyzers/expected-driver-id-qty.js';
 import { expectedStartTimeAnalyzer } from '@/analyzers/expected-start-time.js';
@@ -16,13 +16,38 @@ import { simpleOneVehicleEventOrApexValidationAnalyzer } from '@/analyzers/simpl
 import { simpleThreeVehicleEventsAnalyzer } from '@/analyzers/simple-three-vehicle-events.js';
 import { transactionSequentialityAnalyzer } from '@/analyzers/transaction-sequentiality.js';
 import { type AnalysisData } from '@/types/analysis-data.js';
+import { type RideAnalysesRegistry } from '@tmlmobilidade/go-types-operation';
+
+/* * */
+
+const rideAnalysesRegistry: { [K in keyof RideAnalysesRegistry]: (analysisData: AnalysisData) => RideAnalysesRegistry[K] } = {
+	atLeastOneVehicleEventOnFirstStop: atLeastOneVehicleEventOnFirstStopAnalyzer,
+	atLeastOneVehicleEventOnLastStop: atLeastOneVehicleEventOnLastStopAnalyzer,
+	expectedApexValidationInterval: expectedApexValidationIntervalAnalyzer,
+	expectedDriverIdQty: expectedDriverIdQtyAnalyzer,
+	expectedStartTime: expectedStartTimeAnalyzer,
+	expectedVehicleEventDelay: expectedVehicleEventDelayAnalyzer,
+	expectedVehicleEventInterval: expectedVehicleEventIntervalAnalyzer,
+	expectedVehicleEventQty: expectedVehicleEventQtyAnalyzer,
+	expectedVehicleIdQty: expectedVehicleIdQtyAnalyzer,
+	matchingApexLocations: matchingApexLocationsAnalyzer,
+	matchingVehicleIds: matchingVehicleIdsAnalyzer,
+	simpleOneApexValidation: simpleOneApexValidationAnalyzer,
+	simpleOneVehicleEventOrApexValidation: simpleOneVehicleEventOrApexValidationAnalyzer,
+	simpleThreeVehicleEvents: simpleThreeVehicleEventsAnalyzer,
+	transactionSequentiality: transactionSequentialityAnalyzer,
+};
+//  satisfies {
+// 	[K in keyof RideAnalysesRegistry]: (analysisData: AnalysisData) => RideAnalysesRegistry[K];
+// };
 
 /* * */
 
 interface AnalyzeRideResults {
+	complete: string[]
 	error: string[]
-	failed: string[]
-	passed: string[]
+	is_accepted_false: string[]
+	is_accepted_true: string[]
 	skipped: string[]
 }
 
@@ -33,27 +58,21 @@ interface AnalyzeRideResults {
  */
 export function analyzeRide(analysisData: AnalysisData): AnalyzeRideResults {
 	const results: AnalyzeRideResults = {
+		complete: [],
 		error: [],
-		failed: [],
-		passed: [],
+		is_accepted_false: [],
+		is_accepted_true: [],
 		skipped: [],
 	};
 
-	atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData);
-	endedAtLastStopAnalyzer(analysisData);
-	expectedApexValidationIntervalAnalyzer(analysisData);
-	expectedDriverIdQtyAnalyzer(analysisData);
-	expectedStartTimeAnalyzer(analysisData);
-	expectedVehicleEventDelayAnalyzer(analysisData);
-	expectedVehicleEventIntervalAnalyzer(analysisData);
-	expectedVehicleEventQtyAnalyzer(analysisData);
-	expectedVehicleIdQtyAnalyzer(analysisData);
-	matchingApexLocationsAnalyzer(analysisData);
-	matchingVehicleIdsAnalyzer(analysisData);
-	simpleOneApexValidationAnalyzer(analysisData);
-	simpleOneVehicleEventOrApexValidationAnalyzer(analysisData);
-	simpleThreeVehicleEventsAnalyzer(analysisData);
-	transactionSequentialityAnalyzer(analysisData);
+	for (const [analyzerName, analyzerFn] of Object.entries(rideAnalysesRegistry)) {
+		const result = analyzerFn(analysisData);
+		if (result.processing_status === 'error') results.error.push(analyzerName);
+		else if (result.processing_status === 'complete') results.complete.push(analyzerName);
+		else if (result.processing_status === 'skipped') results.skipped.push(analyzerName);
+		if (result.is_accepted) results.is_accepted_true.push(analyzerName);
+		else results.is_accepted_false.push(analyzerName);
+	}
 
 	return results;
 }

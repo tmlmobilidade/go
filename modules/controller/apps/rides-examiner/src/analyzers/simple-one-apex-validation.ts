@@ -1,7 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type RideAnalysisSimpleOneApexValidation } from '@tmlmobilidade/go-types-operation';
 
 /**
  * This analyzer tests if at least one validation is found for the trip.
@@ -10,31 +11,45 @@ import { type Ride } from '@tmlmobilidade/types';
  * → PASS = At least one Validation Transaction is found for the trip.
  * → FAIL = No Validation Transactions found for the trip.
  */
-export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Ride['analysis']['SIMPLE_ONE_APEX_VALIDATION'] {
+export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): RideAnalysisSimpleOneApexValidation {
 	try {
 		//
 
-		if (!analysisData.simplified_apex_validations.length) {
+		if (!analysisData.apex_validations.length) {
 			return {
-				grade: 'fail',
+				agency_id: analysisData.ride.agency_id,
+				is_accepted: false,
+				operational_date: analysisData.ride.operational_date,
+				processing_status: 'skipped',
 				reason: 'NO_APEX_VALIDATIONS',
-				value: analysisData.simplified_apex_validations.length,
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
 			};
 		}
 
 		return {
-			grade: 'pass',
+			agency_id: analysisData.ride.agency_id,
+			is_accepted: true,
+			operational_date: analysisData.ride.operational_date,
+			processing_status: 'complete',
 			reason: 'ONE_OR_MORE_APEX_VALIDATIONS',
-			value: analysisData.simplified_apex_validations.length,
+			remarks: null,
+			ride_id: analysisData.ride._id,
+			updated_at: Dates.now('utc').unix_timestamp,
 		};
 
 		//
 	} catch (error) {
 		return {
-			error_message: error.message,
-			grade: 'error',
+			agency_id: analysisData.ride.agency_id,
+			is_accepted: false,
+			operational_date: analysisData.ride.operational_date,
+			processing_status: 'error',
 			reason: null,
-			value: null,
+			remarks: error.message,
+			ride_id: analysisData.ride._id,
+			updated_at: Dates.now('utc').unix_timestamp,
 		};
 	}
 };

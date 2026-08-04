@@ -104,6 +104,9 @@ export const rideAnalysisExpectedVehicleEventDelayTableSchema: ClickHouseTableSc
 	observed_average_delay: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
 	observed_max_delay: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
 	observed_min_delay: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	vehicle_events_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
+	vehicle_events_with_delay_percent: { type: 'Nullable(UInt8) CODEC(T64, ZSTD)' },
+	vehicle_events_with_delay_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
 };
 
 /* * */

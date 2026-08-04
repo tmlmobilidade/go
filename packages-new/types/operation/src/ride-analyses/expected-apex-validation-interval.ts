@@ -1,16 +1,16 @@
 /* * */
 
-import { RideAnalysisBaseSchema } from '@/ride-analyses/analysis-base.js';
+import { RideAnalysisBaseSchema } from '@/ride-analyses/ride-analysis-base.js';
 import { NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const RideAnalysisExpectedApexValidationIntervalSchema = RideAnalysisBaseSchema.extend({
-	observed_average_interval: NonNegativeNumberSchema.nullable(),
-	observed_max_interval: NonNegativeNumberSchema.nullable(),
-	observed_min_interval: NonNegativeNumberSchema.nullable(),
-	reason: z.enum(['NO_APEX_VALIDATIONS', 'NOT_ENOUGH_VALIDATIONS', 'INTERVALS_TOO_SHORT', 'NON_ORGANIC_INTERVALS', 'EXPECTED_VALIDATION_INTERVALS']).nullable(),
+	observed_average_interval: NonNegativeNumberSchema.nullable().default(null),
+	observed_max_interval: NonNegativeNumberSchema.nullable().default(null),
+	observed_min_interval: NonNegativeNumberSchema.nullable().default(null),
+	reason: z.enum(['NO_APEX_VALIDATIONS', 'NOT_ENOUGH_VALIDATIONS', 'INTERVALS_TOO_SHORT', 'NON_ORGANIC_INTERVALS', 'EXPECTED_VALIDATION_INTERVALS']).nullable().default(null),
 });
 
 /**

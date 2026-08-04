@@ -1,4 +1,3 @@
-export * from './analysis-base.js';
 export * from './at-least-one-vehicle-event-on-first-stop.js';
 export * from './at-least-one-vehicle-event-on-last-stop.js';
 export * from './expected-apex-validation-interval.js';
@@ -10,6 +9,8 @@ export * from './expected-vehicle-event-qty.js';
 export * from './expected-vehicle-id-qty.js';
 export * from './matching-apex-locations.js';
 export * from './matching-vehicle-ids.js';
+export * from './ride-analyses-registry.js';
+export * from './ride-analysis-base.js';
 export * from './simple-one-apex-validation.js';
 export * from './simple-one-vehicle-event-or-apex-validation.js';
 export * from './simple-three-vehicle-events.js';

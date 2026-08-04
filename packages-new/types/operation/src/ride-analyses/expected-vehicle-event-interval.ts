@@ -1,16 +1,16 @@
 /* * */
 
-import { RideAnalysisBaseSchema } from '@/ride-analyses/analysis-base.js';
+import { RideAnalysisBaseSchema } from '@/ride-analyses/ride-analysis-base.js';
 import { NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const RideAnalysisExpectedVehicleEventIntervalSchema = RideAnalysisBaseSchema.extend({
-	observed_average_interval: NonNegativeNumberSchema.nullable(),
-	observed_max_interval: NonNegativeNumberSchema.nullable(),
-	observed_min_interval: NonNegativeNumberSchema.nullable(),
-	reason: z.enum(['NO_VEHICLE_EVENTS', 'EXPECTED_VEHICLE_EVENT_INTERVAL', 'UNEXPECTED_VEHICLE_EVENT_INTERVAL']),
+	observed_average_interval: NonNegativeNumberSchema.nullable().default(null),
+	observed_max_interval: NonNegativeNumberSchema.nullable().default(null),
+	observed_min_interval: NonNegativeNumberSchema.nullable().default(null),
+	reason: z.enum(['NO_VEHICLE_EVENTS', 'EXPECTED_VEHICLE_EVENT_INTERVAL', 'UNEXPECTED_VEHICLE_EVENT_INTERVAL']).nullable().default(null),
 });
 
 /**

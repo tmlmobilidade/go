@@ -1,6 +1,6 @@
 /* * */
 
-import { type GeoJsonPosition } from '@tmlmobilidade/go-types-geo';
+import { type GeoJson2dPosition } from '@tmlmobilidade/go-types-geo';
 import { type HashedTrip, type Ride } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { chunkLineStringByDistance, cutLineStringAtLength, fromEncodedPolylineToGeoJsonLineString, getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
@@ -35,7 +35,7 @@ export function detectStartEvent(rideData: Ride, hashedTripData: HashedTrip[], v
 
 	const sortedPath = hashedTripData.sort((a, b) => a.stop_sequence - b.stop_sequence);
 
-	const firstStopPosition: GeoJsonPosition = [sortedPath[0].stop_lon, sortedPath[0].stop_lat];
+	const firstStopPosition: GeoJson2dPosition = [sortedPath[0].stop_lon, sortedPath[0].stop_lat];
 
 	//
 	// Decode the EncodedPolyline of the shape into a GeoJSON LineString,

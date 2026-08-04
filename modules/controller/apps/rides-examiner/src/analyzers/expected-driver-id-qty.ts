@@ -1,7 +1,12 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type RideAnalysisExpectedDriverIdQty } from '@tmlmobilidade/go-types-operation';
+
+/* * */
+
+const EXPECTED_DRIVER_IDS_QTY = 2;
 
 /**
  * This analyzer tests if the trip has at most two drivers (at least one, maximum of two).
@@ -10,39 +15,62 @@ import { type Ride } from '@tmlmobilidade/types';
  * → PASS = At least one Driver, and maximum two Driver IDs for the trip.
  * → FAIL = No Driver or more than two Drivers IDs for the trip.
  */
-export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): Ride['analysis']['EXPECTED_DRIVER_ID_QTY'] {
+export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAnalysisExpectedDriverIdQty {
 	try {
 		//
 
 		if (!analysisData.vehicle_events.length) {
 			return {
-				grade: 'fail',
+				agency_id: analysisData.ride.agency_id,
+				is_accepted: false,
+				observed_driver_ids_qty: null,
+				operational_date: analysisData.ride.operational_date,
+				processing_status: 'skipped',
 				reason: 'NO_VEHICLE_EVENTS',
-				value: null,
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
 			};
 		}
 
-		if (analysisData.ride.driver_ids.length > 2) {
+		if (analysisData.ride.driver_ids.length > EXPECTED_DRIVER_IDS_QTY) {
 			return {
-				grade: 'fail',
+				agency_id: analysisData.ride.agency_id,
+				is_accepted: false,
+				observed_driver_ids_qty: analysisData.ride.driver_ids.length,
+				operational_date: analysisData.ride.operational_date,
+				processing_status: 'complete',
 				reason: 'UNEXPECTED_DRIVER_ID_QTY',
-				value: analysisData.ride.driver_ids.length,
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
 			};
 		}
 
 		return {
-			grade: 'pass',
+			agency_id: analysisData.ride.agency_id,
+			is_accepted: true,
+			observed_driver_ids_qty: analysisData.ride.driver_ids.length,
+			operational_date: analysisData.ride.operational_date,
+			processing_status: 'complete',
 			reason: 'EXPECTED_DRIVER_ID_QTY',
-			value: analysisData.ride.driver_ids.length,
+			remarks: null,
+			ride_id: analysisData.ride._id,
+			updated_at: Dates.now('utc').unix_timestamp,
 		};
 
 		//
 	} catch (error) {
 		return {
-			error_message: error.message,
-			grade: 'error',
+			agency_id: analysisData.ride.agency_id,
+			is_accepted: false,
+			observed_driver_ids_qty: null,
+			operational_date: analysisData.ride.operational_date,
+			processing_status: 'error',
 			reason: null,
-			value: null,
+			remarks: error.message,
+			ride_id: analysisData.ride._id,
+			updated_at: Dates.now('utc').unix_timestamp,
 		};
 	}
 };

@@ -1,16 +1,16 @@
 /* * */
 
-import { RideAnalysisBaseSchema } from '@/ride-analyses/analysis-base.js';
+import { RideAnalysisBaseSchema } from '@/ride-analyses/ride-analysis-base.js';
 import { NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const RideAnalysisTransactionSequentialitySchema = RideAnalysisBaseSchema.extend({
-	expected_transactions_qty: NonNegativeNumberSchema.nullable(),
-	found_transactions_qty: NonNegativeNumberSchema.nullable(),
-	missing_transactions_qty: NonNegativeNumberSchema.nullable(),
-	reason: z.enum(['NO_TRANSACTIONS', 'MISSING_TRANSACTIONS', 'ALL_TRANSACTIONS_RECEIVED']).nullable(),
+	expected_transactions_qty: NonNegativeNumberSchema.nullable().default(null),
+	found_transactions_qty: NonNegativeNumberSchema.nullable().default(null),
+	missing_transactions_qty: NonNegativeNumberSchema.nullable().default(null),
+	reason: z.enum(['NO_TRANSACTIONS', 'MISSING_TRANSACTIONS', 'ALL_TRANSACTIONS_RECEIVED']).nullable().default(null),
 });
 
 /**

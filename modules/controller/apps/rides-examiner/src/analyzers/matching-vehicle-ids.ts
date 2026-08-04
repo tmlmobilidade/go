@@ -1,7 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { RideAnalysisMatchingVehicleIds } from '@tmlmobilidade/go-types-operation';
 
 /**
  * This analyzer checks if the Vehicle IDs of APEX transactions match the Vehicle Events.
@@ -9,49 +10,90 @@ import { type Ride } from '@tmlmobilidade/types';
  * → PASS = At least one Vehicle, and maximum two Vehicle IDs for the trip.
  * → FAIL = No Vehicle or more than two Vehicles IDs for the trip.
  */
-export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): Ride['analysis']['MATCHING_VEHICLE_IDS'] {
+export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnalysisMatchingVehicleIds {
 	try {
 		//
 
-		if (!analysisData.simplified_apex_validations.length && !analysisData.simplified_apex_locations.length) {
+		const noTransactionsWithVehicleIdsFound =
+			!analysisData.apex_banking_taps.length
+			&& !analysisData.apex_locations.length
+			&& !analysisData.apex_validations.length;
+
+		if (noTransactionsWithVehicleIdsFound) {
 			return {
-				grade: 'skip',
+				agency_id: analysisData.ride.agency_id,
+				extra_apex_vehicle_ids_qty: null,
+				extra_vehicle_events_vehicle_ids_qty: null,
+				is_accepted: false,
+				matching_vehicle_ids_qty: null,
+				operational_date: analysisData.ride.operational_date,
+				processing_status: 'skipped',
 				reason: 'NO_APEX_TRANSACTIONS',
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				total_vehicle_ids_qty: null,
+				updated_at: Dates.now('utc').unix_timestamp,
 			};
 		}
 
 		if (!analysisData.vehicle_events.length) {
 			return {
-				grade: 'skip',
+				agency_id: analysisData.ride.agency_id,
+				extra_apex_vehicle_ids_qty: null,
+				extra_vehicle_events_vehicle_ids_qty: null,
+				is_accepted: false,
+				matching_vehicle_ids_qty: null,
+				operational_date: analysisData.ride.operational_date,
+				processing_status: 'skipped',
 				reason: 'NO_VEHICLE_EVENTS',
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				total_vehicle_ids_qty: null,
+				updated_at: Dates.now('utc').unix_timestamp,
 			};
 		}
 
 		//
 		// Get all unique Vehicle IDs from Apex Transactions and Vehicle Events
 
-		const uniqueIdsFromApexLocations = new Set(analysisData.simplified_apex_locations.map(item => String(item.vehicle_id)));
-		const uniqueIdsFromApexValidations = new Set(analysisData.simplified_apex_validations.map(item => String(item.vehicle_id)));
+		const uniqueIdsFromApexBankingTaps = new Set(analysisData.apex_banking_taps.map(item => String(item.vehicle_id)));
+		const uniqueIdsFromApexLocations = new Set(analysisData.apex_locations.map(item => String(item.vehicle_id)));
+		const uniqueIdsFromApexValidations = new Set(analysisData.apex_validations.map(item => String(item.vehicle_id)));
 		const uniqueIdsFromVehicleEvents = new Set(analysisData.vehicle_events.map(item => String(item.vehicle_id)));
 
 		//
 		// Combine all IDs and check if the size of the
 		// final set matches the size of the individual sets
 
-		const combinedUniqueVehicleIds = new Set([
+		const uniqueApexVehicleIds = new Set([
+			...uniqueIdsFromApexBankingTaps.values(),
 			...uniqueIdsFromApexLocations.values(),
 			...uniqueIdsFromApexValidations.values(),
+		]);
+
+		const combinedUniqueVehicleIds = new Set([
+			...uniqueApexVehicleIds.values(),
 			...uniqueIdsFromVehicleEvents.values(),
 		]);
 
-		const mismatchApexLocations = analysisData.simplified_apex_locations.length > 0 && combinedUniqueVehicleIds.size !== uniqueIdsFromApexLocations.size;
-		const mismatchApexValidations = analysisData.simplified_apex_validations.length > 0 && combinedUniqueVehicleIds.size !== uniqueIdsFromApexValidations.size;
-		const mismatchVehicleEvents = analysisData.vehicle_events.length > 0 && combinedUniqueVehicleIds.size !== uniqueIdsFromVehicleEvents.size;
+		const extraApexVehicleIds = Array.from(uniqueApexVehicleIds).filter(id => !combinedUniqueVehicleIds.has(id));
+		const extraVehicleEventsVehicleIds = Array.from(uniqueIdsFromVehicleEvents).filter(id => !combinedUniqueVehicleIds.has(id));
+		const matchingVehicleIds = Array.from(combinedUniqueVehicleIds).filter(id => uniqueApexVehicleIds.has(id) && uniqueIdsFromVehicleEvents.has(id));
 
-		if (mismatchApexLocations || mismatchApexValidations || mismatchVehicleEvents) {
+		if (extraApexVehicleIds.length > 0 || extraVehicleEventsVehicleIds.length > 0) {
 			return {
-				grade: 'fail',
+				agency_id: analysisData.ride.agency_id,
+				extra_apex_vehicle_ids_qty: extraApexVehicleIds.length,
+				extra_vehicle_events_vehicle_ids_qty: extraVehicleEventsVehicleIds.length,
+				is_accepted: false,
+				matching_vehicle_ids_qty: matchingVehicleIds.length,
+				operational_date: analysisData.ride.operational_date,
+				processing_status: 'complete',
 				reason: 'VEHICLE_ID_MISMATCH',
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				total_vehicle_ids_qty: combinedUniqueVehicleIds.size,
+				updated_at: Dates.now('utc').unix_timestamp,
 			};
 		}
 
@@ -60,16 +102,35 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): Ride['an
 		// it means we have a matching set of Vehicle IDs
 
 		return {
-			grade: 'pass',
+			agency_id: analysisData.ride.agency_id,
+			extra_apex_vehicle_ids_qty: extraApexVehicleIds.length,
+			extra_vehicle_events_vehicle_ids_qty: extraVehicleEventsVehicleIds.length,
+			is_accepted: true,
+			matching_vehicle_ids_qty: matchingVehicleIds.length,
+			operational_date: analysisData.ride.operational_date,
+			processing_status: 'complete',
 			reason: 'MATCHING_VEHICLE_IDS',
+			remarks: null,
+			ride_id: analysisData.ride._id,
+			total_vehicle_ids_qty: combinedUniqueVehicleIds.size,
+			updated_at: Dates.now('utc').unix_timestamp,
 		};
 
 		//
 	} catch (error) {
 		return {
-			error_message: error.message,
-			grade: 'error',
+			agency_id: analysisData.ride.agency_id,
+			extra_apex_vehicle_ids_qty: null,
+			extra_vehicle_events_vehicle_ids_qty: null,
+			is_accepted: false,
+			matching_vehicle_ids_qty: null,
+			operational_date: analysisData.ride.operational_date,
+			processing_status: 'error',
 			reason: null,
+			remarks: error.message,
+			ride_id: analysisData.ride._id,
+			total_vehicle_ids_qty: null,
+			updated_at: Dates.now('utc').unix_timestamp,
 		};
 	}
 };
