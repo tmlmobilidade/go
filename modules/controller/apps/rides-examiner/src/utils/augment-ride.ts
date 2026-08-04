@@ -47,9 +47,12 @@ export function augmentRide(analysisData: AnalysisData): Ride {
 
 	const foundVehicleIds = new Set<string>();
 
+	analysisData.apex_banking_taps.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
+	analysisData.apex_locations.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
+	analysisData.apex_refunds.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
+	analysisData.apex_sales.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
+	analysisData.apex_validations.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
 	analysisData.vehicle_events.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
-	analysisData.simplified_apex_locations.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
-	analysisData.simplified_apex_validations.forEach(item => item.vehicle_id && foundVehicleIds.add(String(item.vehicle_id)));
 
 	augmentedRide.vehicle_ids = Array.from(foundVehicleIds);
 
@@ -65,36 +68,40 @@ export function augmentRide(analysisData: AnalysisData): Ride {
 	//
 	// Add APEX transaction counters
 
-	augmentedRide.apex_locations_qty = analysisData.simplified_apex_locations.length;
+	augmentedRide.apex_banking_taps_qty = analysisData.apex_banking_taps.reduce((acc, item) => acc + (item.group_dimension ?? 1), 0);
+	augmentedRide.apex_banking_taps_amount = null;
 
-	augmentedRide.apex_on_board_refunds_qty = analysisData.simplified_apex_on_board_refunds.length;
-	augmentedRide.apex_on_board_refunds_amount = analysisData.simplified_apex_on_board_refunds.reduce((acc, item) => acc + (item.price || 0), 0);
+	augmentedRide.apex_locations_qty = analysisData.apex_locations.length;
 
-	augmentedRide.apex_on_board_sales_qty = analysisData.simplified_apex_on_board_sales.length;
-	augmentedRide.apex_on_board_sales_amount = analysisData.simplified_apex_on_board_sales.reduce((acc, item) => acc + (item.price || 0), 0);
+	augmentedRide.apex_refunds_qty = analysisData.apex_refunds.length;
+	augmentedRide.apex_refunds_amount = analysisData.apex_refunds.reduce((acc, item) => acc + (item.price || 0), 0);
 
-	augmentedRide.apex_validations_qty = analysisData.simplified_apex_validations.length;
+	augmentedRide.apex_sales_qty = analysisData.apex_sales.length;
+	augmentedRide.apex_sales_amount = analysisData.apex_sales.reduce((acc, item) => acc + (item.price || 0), 0);
+
+	augmentedRide.apex_validations_qty = analysisData.apex_validations.length;
 
 	//
 	// Add passenger counters from valid APEX Validations and On-Board Sales
 
-	const validApexValidations = analysisData.simplified_apex_validations.filter(item => item.is_passenger);
-	const validApexOnBoardSales = analysisData.simplified_apex_on_board_sales.filter(item => item.is_passenger);
+	const validApexSales = analysisData.apex_sales.filter(item => item.is_passenger);
+	const validApexValidations = analysisData.apex_validations.filter(item => item.is_passenger);
 
-	augmentedRide.passengers_observed = validApexValidations.length;
+	augmentedRide.passengers_observed = validApexValidations.length + augmentedRide.apex_banking_taps_qty;
 
 	augmentedRide.passengers_observed_subscription_qty = validApexValidations.filter(item => item.category === 'subscription').length;
 
 	augmentedRide.passengers_observed_prepaid_qty = validApexValidations.filter(item => item.category === 'prepaid').length;
 	augmentedRide.passengers_observed_prepaid_amount = validApexValidations.filter(item => item.category === 'prepaid').reduce((acc, item) => acc + (item.units_qty || 0), 0);
 
-	augmentedRide.passengers_observed_on_board_sales_qty = validApexValidations.filter(item => item.category === 'on_board_sale').length;
-	augmentedRide.passengers_observed_on_board_sales_amount = validApexOnBoardSales.reduce((acc, item) => acc + (item.price || 0), 0);
+	augmentedRide.passengers_observed_sales_qty = validApexValidations.filter(item => item.category === 'on_board_sale').length;
+	augmentedRide.passengers_observed_sales_amount = validApexSales.reduce((acc, item) => acc + (item.price || 0), 0);
+
+	augmentedRide.passengers_observed_banking_taps_qty = augmentedRide.apex_banking_taps_qty;
+	augmentedRide.passengers_observed_banking_taps_amount = null;
 
 	//
 	// Return the augmented Ride to the caller
 
 	return augmentedRide;
-
-	//
 }

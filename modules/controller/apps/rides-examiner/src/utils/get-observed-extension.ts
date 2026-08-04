@@ -8,7 +8,7 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
  * @param endEvent The detected vehicle event that represents the end of the ride.
  * @returns The observed extension in meters, measured by the odometer value of each vehicle event
  */
-export function getObservedExtension(startEvent: SimplifiedVehicleEvent, endEvent: SimplifiedVehicleEvent): null | number {
+export function getObservedExtension(startEvent: null | SimplifiedVehicleEvent, endEvent: null | SimplifiedVehicleEvent): null | number {
 	//
 
 	if (!startEvent?.odometer) return null;
