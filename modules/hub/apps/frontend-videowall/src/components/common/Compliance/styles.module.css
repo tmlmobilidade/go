@@ -13,3 +13,20 @@
 	border-bottom-left-radius: 8px;
 	box-shadow: 0 0 30px rgb(0 0 0 / 50%);
 }
+
+.container[data-variant="header"] {
+	position: relative;
+	top: auto;
+	right: auto;
+	width: clamp(190px, 19vw, 285px);
+	max-width: none;
+	padding: 3px 7px;
+	border-radius: 5px;
+	box-shadow: none;
+}
+
+.container[data-variant="header"] img {
+	display: block;
+	width: 100%;
+	height: auto;
+}

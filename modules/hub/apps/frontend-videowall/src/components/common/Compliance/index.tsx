@@ -7,9 +7,15 @@ import styles from './styles.module.css';
 
 /* * */
 
-export function Compliance() {
+interface Props {
+	variant?: 'floating' | 'header'
+}
+
+/* * */
+
+export function Compliance({ variant = 'floating' }: Props) {
 	return (
-		<div className={styles.container}>
+		<div className={styles.container} data-variant={variant}>
 			<Image alt="Portugal 2020" src={imageSrc} width={320} priority />
 		</div>
 	);

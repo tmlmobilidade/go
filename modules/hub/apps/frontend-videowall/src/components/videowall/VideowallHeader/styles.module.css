@@ -1,0 +1,122 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: space-between;
+	height: clamp(78px, 9vh, 100px);
+	padding: 10px clamp(18px, 2vw, 32px);
+	color: var(--system-text);
+	background:
+		radial-gradient(circle at 10% 0%, rgb(0 150 255 / 10%), transparent 30%),
+		rgb(4 10 18);
+	border-bottom: 2px solid rgb(20 32 47);
+}
+
+/* * */
+/* IDENTITY */
+
+.identity,
+.context,
+.time {
+	display: flex;
+	align-items: center;
+}
+
+.identity {
+	min-width: 0;
+}
+
+.operatorLogo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: clamp(90px, 8vw, 130px);
+	height: 58px;
+	padding: 4px 10px;
+	overflow: hidden;
+	background-color: rgb(255 255 255 / 4%);
+	border: 1px solid rgb(255 255 255 / 10%);
+	border-radius: 8px;
+}
+
+.operatorLogo img {
+	width: 100%;
+	height: auto;
+	object-fit: contain;
+}
+
+.agency {
+	min-width: 0;
+	padding-left: clamp(14px, 1.5vw, 24px);
+}
+
+.agency h1 {
+	overflow: hidden;
+	font-size: clamp(23px, 2.25vw, 36px);
+	font-weight: 900;
+	line-height: 1;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.agency p {
+	margin-top: 7px;
+	font-size: clamp(12px, 1vw, 16px);
+	font-weight: 600;
+	color: var(--system-muted);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+/* * */
+/* CONTEXT */
+
+.context {
+	flex: 0 0 auto;
+	gap: clamp(18px, 2vw, 30px);
+	height: 100%;
+}
+
+.clock {
+	min-width: clamp(155px, 14vw, 220px);
+	padding-left: clamp(18px, 2vw, 30px);
+	text-align: right;
+	border-left: 1px solid var(--system-border);
+}
+
+.time {
+	justify-content: flex-end;
+	font-size: clamp(30px, 3.4vw, 49px);
+	font-weight: 900;
+	line-height: 0.9;
+	color: white;
+	font-variant-numeric: tabular-nums;
+}
+
+.time small {
+	min-width: 24px;
+	margin-left: 8px;
+	font-size: clamp(12px, 1.3vw, 20px);
+	color: var(--system-muted);
+}
+
+.clock > p {
+	margin-top: 7px;
+	font-size: clamp(11px, 0.9vw, 15px);
+	font-weight: 600;
+	color: var(--system-muted);
+	text-transform: capitalize;
+}
+
+@media (max-width: 1050px) {
+	.context {
+		gap: 14px;
+	}
+
+	.clock {
+		padding-left: 14px;
+	}
+}

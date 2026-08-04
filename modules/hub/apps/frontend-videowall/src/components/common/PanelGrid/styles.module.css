@@ -10,3 +10,7 @@
 	overflow: hidden;
 	background-color: black;
 }
+
+.container[data-fill-container="true"] {
+	height: 100%;
+}
