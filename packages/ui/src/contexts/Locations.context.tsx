@@ -56,19 +56,19 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allDistrictsData, isLoading: allDistrictsLoading } = useSWR<HttpResponse<District[]>, Error>(API_ROUTES.locations.LOCATIONS_DISTRICTS, unauthenticatedSwrFetcher);
-	const { data: allMunicipalitiesData, isLoading: allMunicipalitiesLoading } = useSWR<HttpResponse<Municipality[]>, Error>(API_ROUTES.locations.LOCATIONS_MUNICIPALITIES, unauthenticatedSwrFetcher);
-	const { data: allParishesData, isLoading: allParishesLoading } = useSWR<HttpResponse<Parish[]>, Error>(API_ROUTES.locations.LOCATIONS_PARISHES, unauthenticatedSwrFetcher);
-	const { data: allLocalitiesData, isLoading: allLocalitiesLoading } = useSWR<HttpResponse<Locality[]>, Error>(API_ROUTES.locations.LOCATIONS_LOCALITIES, unauthenticatedSwrFetcher);
+	const { data: allDistrictsData, isLoading: allDistrictsLoading } = useSWR<District[], Error>(API_ROUTES.locations.LOCATIONS_DISTRICTS, unauthenticatedSwrFetcher);
+	const { data: allMunicipalitiesData, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[], Error>(API_ROUTES.locations.LOCATIONS_MUNICIPALITIES, unauthenticatedSwrFetcher);
+	const { data: allParishesData, isLoading: allParishesLoading } = useSWR<Parish[], Error>(API_ROUTES.locations.LOCATIONS_PARISHES, unauthenticatedSwrFetcher);
+	const { data: allLocalitiesData, isLoading: allLocalitiesLoading } = useSWR<Locality[], Error>(API_ROUTES.locations.LOCATIONS_LOCALITIES, unauthenticatedSwrFetcher);
 	const { data: allZonesData, isLoading: allZonesLoading } = useSWR<Zone[], Error>(API_ROUTES.offer.ZONES_LIST);
 
 	//
 	// B. Transform data
 
-	const districtsMap = useMemo(() => new Map(allDistrictsData?.data?.map(item => [item.id, item]) ?? []), [allDistrictsData]);
-	const municipalitiesMap = useMemo(() => new Map(allMunicipalitiesData?.data?.map(item => [item.id, item]) ?? []), [allMunicipalitiesData]);
-	const parishesMap = useMemo(() => new Map(allParishesData?.data?.map(item => [item.id, item]) ?? []), [allParishesData]);
-	const localitiesMap = useMemo(() => new Map(allLocalitiesData?.data?.map(item => [item.id, item]) ?? []), [allLocalitiesData]);
+	const districtsMap = useMemo(() => new Map(allDistrictsData?.map(item => [item.id, item]) ?? []), [allDistrictsData]);
+	const municipalitiesMap = useMemo(() => new Map(allMunicipalitiesData?.map(item => [item.id, item]) ?? []), [allMunicipalitiesData]);
+	const parishesMap = useMemo(() => new Map(allParishesData?.map(item => [item.id, item]) ?? []), [allParishesData]);
+	const localitiesMap = useMemo(() => new Map(allLocalitiesData?.map(item => [item.id, item]) ?? []), [allLocalitiesData]);
 	const zonesMap = useMemo(() => new Map(allZonesData?.map(item => [item._id, item]) ?? []), [allZonesData]);
 
 	//
