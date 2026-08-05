@@ -40,6 +40,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",

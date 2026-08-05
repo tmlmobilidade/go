@@ -1,9 +1,9 @@
 'use client';
 
-import { Line } from '@carrismetropolitana/api-types/network';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLoopRight, IconSelector, IconX } from '@tabler/icons-react';
+import { HubLine } from '@tmlmobilidade/go-types-public-info';
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 
@@ -16,7 +16,7 @@ import { LineDisplay } from '../LineDisplay';
 /* * */
 
 export interface LineSelectProps {
-	data: Line[]
+	data: HubLine[]
 	label?: string
 	loading?: boolean
 	nothingFound?: string
