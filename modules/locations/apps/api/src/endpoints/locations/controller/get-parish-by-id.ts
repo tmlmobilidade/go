@@ -40,11 +40,9 @@ export async function getParishById(request: FastifyRequest<{ Params: { id: stri
 		{ $unset: 'properties' },
 		// Sort by _id
 		{ $sort: { _id: 1 } },
-	]);
+	]) as unknown as Parish;
 
-	return reply
-		.header('Access-Control-Allow-Origin', '*')
-		.send({ data: parish, error: null, statusCode: HTTP_STATUS.OK });
+	return reply.send({ data: parish, error: null, statusCode: HTTP_STATUS.OK });
 
 	//
 }

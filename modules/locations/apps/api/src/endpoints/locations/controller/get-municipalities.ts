@@ -44,11 +44,9 @@ export async function getMunicipalities(request: FastifyRequest, reply: FastifyR
 		{ $unset: 'properties' },
 		// Sort by _id
 		{ $sort: { _id: 1 } },
-	]);
+	]) as unknown as Municipality[];
 
-	return reply
-		.header('Access-Control-Allow-Origin', '*')
-		.send({ data: municipalities, error: null, statusCode: HTTP_STATUS.OK });
+	return reply.send({ data: municipalities, error: null, statusCode: HTTP_STATUS.OK });
 
 	//
 }

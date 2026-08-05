@@ -40,10 +40,9 @@ export async function getMunicipalityById(request: FastifyRequest<{ Params: { id
 		{ $unset: 'properties' },
 		// Sort by _id
 		{ $sort: { _id: 1 } },
-	]);
+	]) as unknown as Municipality;
 
 	return reply
-		.header('Access-Control-Allow-Origin', '*')
 		.send({ data: municipality, error: null, statusCode: HTTP_STATUS.OK });
 
 	//

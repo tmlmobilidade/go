@@ -32,9 +32,9 @@ export async function getLocalities(request: FastifyRequest, reply: FastifyReply
 	const query = validateQueryParams<QueryParams>(request.query, queryParamsSchema);
 
 	//
-	// Fetch all parishes
+	// Fetch all localities
 
-	const parishes = await goDb.locations.parishes.aggregate([
+	const localities = await goDb.locations.localities.aggregate([
 		// Filter by district ids
 		{ $match: {
 			...(query.district_ids ? { 'properties.district_id': { $in: query.district_ids } } : {}),
@@ -48,11 +48,10 @@ export async function getLocalities(request: FastifyRequest, reply: FastifyReply
 		{ $unset: 'properties' },
 		// Sort by _id
 		{ $sort: { _id: 1 } },
-	]);
+	]) as unknown as Locality[];
 
 	return reply
-		.header('Access-Control-Allow-Origin', '*')
-		.send({ data: parishes, error: null, statusCode: HTTP_STATUS.OK });
+		.send({ data: localities, error: null, statusCode: HTTP_STATUS.OK });
 
 	//
 }

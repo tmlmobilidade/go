@@ -46,11 +46,9 @@ export async function getParishes(request: FastifyRequest, reply: FastifyReply<P
 		{ $unset: 'properties' },
 		// Sort by _id
 		{ $sort: { _id: 1 } },
-	]);
+	]) as unknown as Parish[];
 
-	return reply
-		.header('Access-Control-Allow-Origin', '*')
-		.send({ data: parishes, error: null, statusCode: HTTP_STATUS.OK });
+	return reply.send({ data: parishes, error: null, statusCode: HTTP_STATUS.OK });
 
 	//
 }

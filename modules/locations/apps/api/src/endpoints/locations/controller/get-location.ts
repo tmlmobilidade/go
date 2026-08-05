@@ -34,7 +34,6 @@ export async function getLocation(request: FastifyRequest, reply: FastifyReply<L
 	const location = await locationsProvider.findLocationByGeo(query.lat, query.lon);
 
 	return reply
-		.header('Access-Control-Allow-Origin', '*')
 		.send({ data: location, error: null, statusCode: HTTP_STATUS.OK });
 	//
 }

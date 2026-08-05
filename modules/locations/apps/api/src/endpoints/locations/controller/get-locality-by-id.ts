@@ -40,10 +40,9 @@ export async function getLocalityById(request: FastifyRequest<{ Params: { id: st
 		{ $unset: 'properties' },
 		// Sort by _id
 		{ $sort: { _id: 1 } },
-	]);
+	]) as unknown as Locality;
 
 	return reply
-		.header('Access-Control-Allow-Origin', '*')
 		.send({ data: locality, error: null, statusCode: HTTP_STATUS.OK });
 
 	//

@@ -24,11 +24,9 @@ export async function getDistricts(request: FastifyRequest, reply: FastifyReply<
 		{ $unset: 'properties' },
 		// Sort by _id
 		{ $sort: { _id: 1 } },
-	]);
+	]) as unknown as District[];
 
-	return reply
-		.header('Access-Control-Allow-Origin', '*')
-		.send({ data: districts, error: null, statusCode: HTTP_STATUS.OK });
+	return reply.send({ data: districts, error: null, statusCode: HTTP_STATUS.OK });
 
 	//
 }
