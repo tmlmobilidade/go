@@ -15,6 +15,7 @@
 		"test:aggregate-layout": "node --experimental-strip-types ./src/tests/aggregate-card-layout.ts",
 		"test:agency-config": "node --import tsx ./src/tests/agency-config.ts",
 		"test:ccfl-layout": "node --experimental-strip-types ./src/tests/ccfl-layout.ts",
+		"test:i18n-hydration": "node --experimental-strip-types ./src/tests/i18n-hydration.ts",
 		"test:mantine-provider": "node --experimental-strip-types ./src/tests/mantine-provider-compatibility.ts",
 		"test:metric-card-refresh": "node --import tsx ./src/tests/metric-card-refresh.ts",
 		"test:metric-number-typography": "node --import tsx ./src/tests/metric-number-typography.ts",

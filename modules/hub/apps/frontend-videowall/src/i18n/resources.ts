@@ -2,7 +2,14 @@
 
 import namespaceDefaultEs from '@/i18n/namespaces/default/es.json' with { type: 'json' };
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
-import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
+import { i18nResourceKeysEsShared, i18nResourceKeysPtShared, registerModuleTranslations } from '@tmlmobilidade/ui';
+
+/* * */
+
+registerModuleTranslations('default', {
+	es: namespaceDefaultEs,
+	pt: namespaceDefaultPt,
+});
 
 /**
  * Resource keys for i18n translations in Portuguese.
