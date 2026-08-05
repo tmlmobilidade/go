@@ -14,10 +14,6 @@ import {
 	type ServiceComplianceTrendPoint,
 	ServiceComplianceTrendPointSchema,
 	type ServiceComplianceValue,
-	type VideowallDemandValue,
-	type VideowallMetrics,
-	VideowallMetricsSchema,
-	type VideowallServiceValue,
 	type VkmExecutionMetrics,
 	VkmExecutionMetricsSchema,
 	type VkmExecutionTrendPoint,
@@ -67,7 +63,6 @@ const VKM_EXECUTION_TREND_SCHEDULE = [22_000, 25_000, 29_000, 30_000, 31_000, 30
 export interface VideowallMockMetrics {
 	demand_metrics: PassengerDemandMetrics
 	departure_delay_metrics: DepartureDelayMetrics
-	metrics: VideowallMetrics
 	service_compliance_metrics: ServiceComplianceMetrics
 	vkm_execution_metrics: VkmExecutionMetrics
 }
@@ -158,54 +153,6 @@ function createDemandValue(
 		typical_range: {
 			lower: referenceLower,
 			upper: referenceUpper,
-		},
-	};
-}
-
-function toVideowallDemandValue(value: PassengerDemandValue): VideowallDemandValue {
-	return {
-		comparison_index_pct: value.comparison_index_pct,
-		passenger_validations_qty_last_week: value.passenger_validations_qty_last_week,
-		passenger_validations_qty_now: value.passenger_validations_qty_now,
-	};
-}
-
-function createServiceValue(
-	scenario: Exclude<VideowallMockScenario, 'unavailable'>,
-	weight = 1,
-): VideowallServiceValue {
-	const definition = VIDEOWALL_SCENARIOS[scenario].service;
-	const scheduledUntilCutoff = scaleInteger(1_200, weight);
-	const scheduledTotal = scaleInteger(1_680, weight);
-	const scheduledDistance = scaleMeasure(84_000, weight);
-	const executedDistance = scheduledDistance * definition.distance_delivery_ratio;
-
-	return {
-		delays: {
-			average_start_delay_minutes: definition.average_delay_minutes,
-			delayed_for_more_than_five_minutes_rides_qty: Math.round(
-				scheduledUntilCutoff * definition.delayed_ratio,
-			),
-			start_delay_sample_qty: scheduledUntilCutoff,
-		},
-		sla: {
-			scheduled_rides_total_qty: scheduledTotal,
-			scheduled_rides_until_cutoff_qty: scheduledUntilCutoff,
-			simple_one_apex_validation_fail_rides_qty: Math.round(
-				scheduledUntilCutoff * definition.failure_ratio * 0.85,
-			),
-			simple_three_vehicle_events_fail_rides_qty: Math.round(
-				scheduledUntilCutoff * definition.failure_ratio * 0.75,
-			),
-			simple_three_vehicle_events_or_apex_validation_fail_rides_qty: Math.round(
-				scheduledUntilCutoff * definition.failure_ratio,
-			),
-		},
-		vkm: {
-			scheduled_distance_km: scheduledDistance,
-			simple_one_apex_validation_distance_km: executedDistance * 0.98,
-			simple_three_vehicle_events_distance_km: executedDistance * 0.97,
-			simple_three_vehicle_events_or_apex_validation_distance_km: executedDistance,
 		},
 	};
 }
@@ -435,7 +382,6 @@ export function createVideowallMockMetrics(
 		return getOperationalDateInt(date);
 	});
 	const totalDemandValue = isAvailable ? createDemandValue(readyScenario) : null;
-	const totalServiceValue = isAvailable ? createServiceValue(readyScenario) : null;
 	const totalTrend = isAvailable
 		? createTrend(readyScenario, operationalDateStartTimestamp)
 		: [];
@@ -465,18 +411,6 @@ export function createVideowallMockMetrics(
 			availability: isAvailable,
 			trend: isAvailable ? createTrend(readyScenario, operationalDateStartTimestamp, weight) : [],
 			value: isAvailable ? createDemandValue(readyScenario, weight) : null,
-		};
-	});
-	const agencies = demandAgencies.map((agency) => {
-		const weight = weights[agency.agency_id] ?? 0;
-		return {
-			agency_id: agency.agency_id,
-			availability: {
-				demand: isAvailable,
-				service: isAvailable,
-			},
-			demand: agency.value ? toVideowallDemandValue(agency.value) : null,
-			service: isAvailable ? createServiceValue(readyScenario, weight) : null,
 		};
 	});
 	const serviceComplianceAgencies = agencyIds.map((agencyId) => {
@@ -551,36 +485,6 @@ export function createVideowallMockMetrics(
 			value: totalDemandValue,
 		},
 	});
-	const metrics = VideowallMetricsSchema.parse({
-		agencies,
-		definition_version: 'videowall-v2',
-		meta: {
-			demand: {
-				current_cutoff: currentCutoff,
-				current_operational_date: currentOperationalDate,
-				definition_version: 'passenger-demand-v2',
-				generated_at: generatedAt,
-				last_week_cutoff: lastWeekCutoff,
-				last_week_operational_date: baselineOperationalDates[0] ?? currentOperationalDate,
-			},
-			requested_agency_ids: [...agencyIds],
-			service: {
-				definition_version: 'videowall-service-legacy-v1',
-				eligible_scheduled_cutoff: generatedAt - 5 * 60 * 1_000,
-				generated_at: generatedAt,
-				operational_date: currentOperationalDate,
-				reference_cutoff: generatedAt,
-			},
-			sources_aligned: true,
-			status: isAvailable ? 'complete' : 'partial',
-			unavailable_demand_agency_ids: unavailableAgencyIds,
-			unavailable_service_agency_ids: unavailableAgencyIds,
-		},
-		total: {
-			demand: totalDemandValue ? toVideowallDemandValue(totalDemandValue) : null,
-			service: totalServiceValue,
-		},
-	});
 	const serviceComplianceMetrics = ServiceComplianceMetricsSchema.parse({
 		agencies: serviceComplianceAgencies,
 		definition_version: 'service-compliance-v1',
@@ -639,7 +543,6 @@ export function createVideowallMockMetrics(
 	return {
 		demand_metrics: demandMetrics,
 		departure_delay_metrics: departureDelayMetrics,
-		metrics,
 		service_compliance_metrics: serviceComplianceMetrics,
 		vkm_execution_metrics: vkmExecutionMetrics,
 	};

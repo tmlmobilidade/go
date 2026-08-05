@@ -6,7 +6,7 @@ import { VIDEOWALL_DATA_CONFIG, type VideowallDataSource, type VideowallMockScen
 import { createVideowallMockMetrics } from '@/mocks/videowall/create-mock-metrics';
 import { DEFAULT_NUMBER_ANIMATION_CONFIG, type NumberAnimationConfig } from '@/types/number-animation';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type DepartureDelayAgencyMetrics, type DepartureDelayMetrics, type PassengerDemandAgencyMetrics, type PassengerDemandMetrics, type ServiceComplianceAgencyMetrics, type ServiceComplianceMetrics, type VideowallAgencyMetrics, type VideowallMetrics, type VkmExecutionAgencyMetrics, type VkmExecutionMetrics } from '@tmlmobilidade/go-types-public-info';
+import { type DepartureDelayAgencyMetrics, type DepartureDelayMetrics, type PassengerDemandAgencyMetrics, type PassengerDemandMetrics, type ServiceComplianceAgencyMetrics, type ServiceComplianceMetrics, type VkmExecutionAgencyMetrics, type VkmExecutionMetrics } from '@tmlmobilidade/go-types-public-info';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -14,12 +14,10 @@ import useSWR from 'swr';
 
 interface VideowallMetricsContextState {
 	data: {
-		agency_metrics: Record<string, VideowallAgencyMetrics>
 		demand_agency_metrics: Record<string, PassengerDemandAgencyMetrics>
 		demand_metrics: PassengerDemandMetrics | undefined
 		departure_delay_agency_metrics: Record<string, DepartureDelayAgencyMetrics>
 		departure_delay_metrics: DepartureDelayMetrics | undefined
-		metrics: undefined | VideowallMetrics
 		service_compliance_agency_metrics: Record<string, ServiceComplianceAgencyMetrics>
 		service_compliance_metrics: ServiceComplianceMetrics | undefined
 		vkm_execution_agency_metrics: Record<string, VkmExecutionAgencyMetrics>
@@ -28,17 +26,14 @@ interface VideowallMetricsContextState {
 	flags: {
 		has_demand_error: boolean
 		has_departure_delay_error: boolean
-		has_error: boolean
 		has_service_compliance_error: boolean
 		has_vkm_execution_error: boolean
 		is_demand_loading: boolean
 		is_demand_validating: boolean
 		is_departure_delay_loading: boolean
 		is_departure_delay_validating: boolean
-		is_loading: boolean
 		is_service_compliance_loading: boolean
 		is_service_compliance_validating: boolean
-		is_validating: boolean
 		is_vkm_execution_loading: boolean
 		is_vkm_execution_validating: boolean
 	}
@@ -83,7 +78,9 @@ export const VideowallMetricsContextProvider = ({
 
 	const agencyIdsQuery = agencyIds.map(encodeURIComponent).join(',');
 	const demandUrl = `${API_ROUTES.hub.METRICS_PASSENGER_DEMAND}?agency_ids=${agencyIdsQuery}`;
-	const url = `${API_ROUTES.hub.METRICS_VIDEOWALL}?agency_ids=${agencyIdsQuery}`;
+	const departureDelayUrl = `${API_ROUTES.hub.METRICS_DEPARTURE_DELAYS}?agency_ids=${agencyIdsQuery}`;
+	const serviceComplianceUrl = `${API_ROUTES.hub.METRICS_SERVICE_COMPLIANCE}?agency_ids=${agencyIdsQuery}`;
+	const vkmExecutionUrl = `${API_ROUTES.hub.METRICS_VKM_EXECUTION}?agency_ids=${agencyIdsQuery}`;
 	const isUsingMockData = VIDEOWALL_DATA_CONFIG.data_source === 'mock';
 	const hasVisibleMockState = ['ready', 'validating'].includes(VIDEOWALL_DATA_CONFIG.mock_state);
 	const isMockDataVisible = isUsingMockData && hasVisibleMockState;
@@ -91,15 +88,29 @@ export const VideowallMetricsContextProvider = ({
 	//
 	// B. Fetch data
 
-	const { data: metricsData, error: metricsError, isLoading: metricsLoading, isValidating: metricsValidating } = useSWR<VideowallMetrics, Error>(
-		isUsingMockData ? null : { credentials: 'omit', url },
+	const { data: demandMetricsData, error: demandMetricsError, isLoading: demandMetricsLoading, isValidating: demandMetricsValidating } = useSWR<PassengerDemandMetrics, Error>(
+		isUsingMockData ? null : { credentials: 'omit', url: demandUrl },
 		{
 			keepPreviousData: true,
 			refreshInterval: 15_000,
 		},
 	);
-	const { data: demandMetricsData, error: demandMetricsError, isLoading: demandMetricsLoading, isValidating: demandMetricsValidating } = useSWR<PassengerDemandMetrics, Error>(
-		isUsingMockData ? null : { credentials: 'omit', url: demandUrl },
+	const { data: departureDelayMetricsData, error: departureDelayMetricsError, isLoading: departureDelayMetricsLoading, isValidating: departureDelayMetricsValidating } = useSWR<DepartureDelayMetrics, Error>(
+		isUsingMockData ? null : { credentials: 'omit', url: departureDelayUrl },
+		{
+			keepPreviousData: true,
+			refreshInterval: 15_000,
+		},
+	);
+	const { data: serviceComplianceMetricsData, error: serviceComplianceMetricsError, isLoading: serviceComplianceMetricsLoading, isValidating: serviceComplianceMetricsValidating } = useSWR<ServiceComplianceMetrics, Error>(
+		isUsingMockData ? null : { credentials: 'omit', url: serviceComplianceUrl },
+		{
+			keepPreviousData: true,
+			refreshInterval: 15_000,
+		},
+	);
+	const { data: vkmExecutionMetricsData, error: vkmExecutionMetricsError, isLoading: vkmExecutionMetricsLoading, isValidating: vkmExecutionMetricsValidating } = useSWR<VkmExecutionMetrics, Error>(
+		isUsingMockData ? null : { credentials: 'omit', url: vkmExecutionUrl },
 		{
 			keepPreviousData: true,
 			refreshInterval: 15_000,
@@ -113,17 +124,10 @@ export const VideowallMetricsContextProvider = ({
 		agencyIds,
 		VIDEOWALL_DATA_CONFIG.mock_scenario,
 	), [agencyIds]);
-	const resolvedMetricsData = isUsingMockData ? isMockDataVisible ? mockData.metrics : undefined : metricsData;
 	const resolvedDemandMetricsData = isUsingMockData ? isMockDataVisible ? mockData.demand_metrics : undefined : demandMetricsData;
-	const resolvedDepartureDelayMetricsData = isUsingMockData ? isMockDataVisible ? mockData.departure_delay_metrics : undefined : undefined;
-	const resolvedServiceComplianceMetricsData = isUsingMockData ? isMockDataVisible ? mockData.service_compliance_metrics : undefined : undefined;
-	const resolvedVkmExecutionMetricsData = isUsingMockData ? isMockDataVisible ? mockData.vkm_execution_metrics : undefined : undefined;
-
-	const agencyMetrics = useMemo(() => {
-		return Object.fromEntries(
-			(resolvedMetricsData?.agencies ?? []).map(item => [item.agency_id, item]),
-		);
-	}, [resolvedMetricsData]);
+	const resolvedDepartureDelayMetricsData = isUsingMockData ? isMockDataVisible ? mockData.departure_delay_metrics : undefined : departureDelayMetricsData;
+	const resolvedServiceComplianceMetricsData = isUsingMockData ? isMockDataVisible ? mockData.service_compliance_metrics : undefined : serviceComplianceMetricsData;
+	const resolvedVkmExecutionMetricsData = isUsingMockData ? isMockDataVisible ? mockData.vkm_execution_metrics : undefined : vkmExecutionMetricsData;
 
 	const demandAgencyMetrics = useMemo(() => {
 		return Object.fromEntries(
@@ -151,12 +155,10 @@ export const VideowallMetricsContextProvider = ({
 
 	const contextValue = useMemo<VideowallMetricsContextState>(() => ({
 		data: {
-			agency_metrics: agencyMetrics,
 			demand_agency_metrics: demandAgencyMetrics,
 			demand_metrics: resolvedDemandMetricsData,
 			departure_delay_agency_metrics: departureDelayAgencyMetrics,
 			departure_delay_metrics: resolvedDepartureDelayMetricsData,
-			metrics: resolvedMetricsData,
 			service_compliance_agency_metrics: serviceComplianceAgencyMetrics,
 			service_compliance_metrics: resolvedServiceComplianceMetricsData,
 			vkm_execution_agency_metrics: vkmExecutionAgencyMetrics,
@@ -168,46 +170,37 @@ export const VideowallMetricsContextProvider = ({
 				: Boolean(demandMetricsError),
 			has_departure_delay_error: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'error'
-				: false,
-			has_error: isUsingMockData
-				? VIDEOWALL_DATA_CONFIG.mock_state === 'error'
-				: Boolean(metricsError) && Boolean(demandMetricsError),
+				: Boolean(departureDelayMetricsError),
 			has_service_compliance_error: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'error'
-				: false,
+				: Boolean(serviceComplianceMetricsError),
 			has_vkm_execution_error: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'error'
-				: false,
+				: Boolean(vkmExecutionMetricsError),
 			is_demand_loading: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'loading'
-				: demandMetricsLoading && demandMetricsData === undefined && metricsData === undefined,
+				: demandMetricsLoading,
 			is_demand_validating: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'validating'
 				: demandMetricsValidating,
 			is_departure_delay_loading: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'loading'
-				: false,
+				: departureDelayMetricsLoading,
 			is_departure_delay_validating: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'validating'
-				: false,
-			is_loading: isUsingMockData
-				? VIDEOWALL_DATA_CONFIG.mock_state === 'loading'
-				: metricsLoading && metricsData === undefined,
+				: departureDelayMetricsValidating,
 			is_service_compliance_loading: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'loading'
-				: false,
+				: serviceComplianceMetricsLoading,
 			is_service_compliance_validating: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'validating'
-				: false,
-			is_validating: isUsingMockData
-				? VIDEOWALL_DATA_CONFIG.mock_state === 'validating'
-				: metricsValidating,
+				: serviceComplianceMetricsValidating,
 			is_vkm_execution_loading: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'loading'
-				: false,
+				: vkmExecutionMetricsLoading,
 			is_vkm_execution_validating: isUsingMockData
 				? VIDEOWALL_DATA_CONFIG.mock_state === 'validating'
-				: false,
+				: vkmExecutionMetricsValidating,
 		},
 		settings: {
 			data_source: VIDEOWALL_DATA_CONFIG.data_source,
@@ -216,25 +209,27 @@ export const VideowallMetricsContextProvider = ({
 			number_animation: numberAnimation,
 		},
 	}), [
-		agencyMetrics,
 		demandAgencyMetrics,
-		demandMetricsData,
 		demandMetricsError,
 		demandMetricsLoading,
 		demandMetricsValidating,
+		departureDelayMetricsError,
+		departureDelayMetricsLoading,
+		departureDelayMetricsValidating,
 		departureDelayAgencyMetrics,
-		metricsData,
-		metricsError,
-		metricsLoading,
-		metricsValidating,
 		isUsingMockData,
 		numberAnimation,
 		resolvedDemandMetricsData,
 		resolvedDepartureDelayMetricsData,
-		resolvedMetricsData,
 		resolvedServiceComplianceMetricsData,
 		resolvedVkmExecutionMetricsData,
+		serviceComplianceMetricsError,
+		serviceComplianceMetricsLoading,
+		serviceComplianceMetricsValidating,
 		serviceComplianceAgencyMetrics,
+		vkmExecutionMetricsError,
+		vkmExecutionMetricsLoading,
+		vkmExecutionMetricsValidating,
 		vkmExecutionAgencyMetrics,
 	]);
 

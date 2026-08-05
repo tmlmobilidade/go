@@ -363,6 +363,8 @@
 			"typical_series": "Referência (mediana)"
 		},
 		"header": {
+			"aggregate_secondary_label": "Visão metropolitana · Áreas 1–4",
+			"aggregate_title": "Carris Metropolitana",
 			"current_time": "Hora atual",
 			"secondary_label": "Carris Metropolitana · Área {area}"
 		},

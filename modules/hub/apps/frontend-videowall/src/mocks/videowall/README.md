@@ -1,6 +1,6 @@
 # Videowall mock data
 
-The videowall can replace both metrics API responses with type-checked local
+The videowall can replace its metrics API responses with type-checked local
 fixtures. Live data remains the default.
 
 Edit `config.ts` and change the exported `VIDEOWALL_DATA_CONFIG`:
@@ -19,7 +19,7 @@ autocomplete and invalid options fail TypeScript checks.
 ## Data source
 
 - `live`: fetch the Hub API.
-- `mock`: skip both API requests and use local fixtures.
+- `mock`: skip the metrics API requests and use local fixtures.
 
 ## Scenarios
 
@@ -39,9 +39,9 @@ autocomplete and invalid options fail TypeScript checks.
 - `error`: no data is exposed and context error flags are set.
 
 The fixture factory returns `PassengerDemandMetrics`, `DepartureDelayMetrics`,
-`ServiceComplianceMetrics`, `VkmExecutionMetrics`, and `VideowallMetrics`.
+`ServiceComplianceMetrics`, and `VkmExecutionMetrics`.
 Changes to the public response types therefore fail TypeScript checks and the
-mock schema regression test. Service compliance and VKm execution use fixed
+mock schema regression test. Service compliance and VKM execution use fixed
 two-hour intervals from the 04:00 operational-day boundary. Departure delays
 use hourly intervals and split delayed rides into 5–10, 10–20, and
 over-20-minute severity bands. Targets are supplied in response metadata.

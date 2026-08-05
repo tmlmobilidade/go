@@ -13,10 +13,9 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface Props {
-	agencyName: string
-	areaNumber: number
-}
+type Props =
+  | { agencyName: string, areaNumber: number, scope: 'agency' }
+  | { scope: 'aggregate' };
 
 interface CurrentTime {
 	date: Date
@@ -40,7 +39,7 @@ function getCurrentTime(): CurrentTime {
 
 /* * */
 
-export function VideowallHeader({ agencyName, areaNumber }: Props) {
+export function VideowallHeader(props: Props) {
 	//
 
 	//
@@ -55,6 +54,12 @@ export function VideowallHeader({ agencyName, areaNumber }: Props) {
 		weekday: 'long',
 	}), [i18n.language]);
 	const formattedDate = currentTime ? dateFormatter.format(currentTime.date) : '—';
+	const agencyName = props.scope === 'agency'
+		? props.agencyName
+		: t('default:videowall.header.aggregate_title');
+	const secondaryLabel = props.scope === 'agency'
+		? t('default:videowall.header.secondary_label', '', { area: props.areaNumber })
+		: t('default:videowall.header.aggregate_secondary_label');
 
 	useEffect(() => {
 		setCurrentTime(getCurrentTime());
@@ -80,7 +85,7 @@ export function VideowallHeader({ agencyName, areaNumber }: Props) {
 				</div>
 				<div className={styles.agency}>
 					<h1>{agencyName}</h1>
-					<p>{t('default:videowall.header.secondary_label', '', { area: areaNumber })}</p>
+					<p>{secondaryLabel}</p>
 				</div>
 			</div>
 

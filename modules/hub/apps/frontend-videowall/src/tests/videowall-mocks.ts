@@ -6,7 +6,6 @@ import {
 	DepartureDelayMetricsSchema,
 	PassengerDemandMetricsSchema,
 	ServiceComplianceMetricsSchema,
-	VideowallMetricsSchema,
 	VkmExecutionMetricsSchema,
 } from '@tmlmobilidade/go-types-public-info';
 import assert from 'node:assert/strict';
@@ -31,7 +30,6 @@ for (const fixture of [excellent, regular, bad, unavailable]) {
 	DepartureDelayMetricsSchema.parse(fixture.departure_delay_metrics);
 	PassengerDemandMetricsSchema.parse(fixture.demand_metrics);
 	ServiceComplianceMetricsSchema.parse(fixture.service_compliance_metrics);
-	VideowallMetricsSchema.parse(fixture.metrics);
 	VkmExecutionMetricsSchema.parse(fixture.vkm_execution_metrics);
 }
 
@@ -41,9 +39,7 @@ assert.equal(bad.demand_metrics.total.value?.deviation_status, 'below_typical');
 assert.equal(unavailable.demand_metrics.total.value, null);
 assert.equal(unavailable.departure_delay_metrics.total.value, null);
 assert.equal(unavailable.service_compliance_metrics.total.value, null);
-assert.equal(unavailable.metrics.total.service, null);
 assert.equal(unavailable.vkm_execution_metrics.total.value, null);
-assert.equal(unavailable.metrics.meta.status, 'partial');
 assert.equal(regular.demand_metrics.total.trend.length, 49);
 assert.equal(regular.departure_delay_metrics.meta.interval_minutes, 60);
 assert.equal(regular.departure_delay_metrics.meta.target_pct, 10);
@@ -70,8 +66,8 @@ assert.ok(
 	),
 );
 assert.ok(
-	(excellent.metrics.total.service?.delays.average_start_delay_minutes ?? Infinity)
-	< (bad.metrics.total.service?.delays.average_start_delay_minutes ?? 0),
+	(excellent.departure_delay_metrics.total.value?.average_start_delay_minutes ?? Infinity)
+	< (bad.departure_delay_metrics.total.value?.average_start_delay_minutes ?? 0),
 );
 
 const regularDelayedRidesFromTrend = regular.departure_delay_metrics.total.trend.reduce(

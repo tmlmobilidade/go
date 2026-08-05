@@ -2,11 +2,10 @@
 
 /* * */
 
-import { AverageDelayCard } from '@/cards/AverageDelayCard';
-import { DelayedServicesCard } from '@/cards/DelayedServicesCard';
-import { DemandCard } from '@/cards/DemandCard';
-import { DistanceCard } from '@/cards/DistanceCard';
-import { ServiceFailuresCard } from '@/cards/ServiceFailuresCard';
+import { DelayCard } from '@/cards-new/DelayCard';
+import { DemandCard } from '@/cards-new/DemandCard';
+import { ServiceComplianceCard } from '@/cards-new/ServiceComplianceCard';
+import { VkmExecutionCard } from '@/cards-new/VkmExecutionCard';
 import { MetricGrid } from '@/components/cards/MetricGrid';
 import { Clock } from '@/components/common/Clock';
 import { useVideowallMetricsContext } from '@/contexts/VideowallMetrics.context';
@@ -20,55 +19,50 @@ export function CcflDashboard() {
 	// A. Setup variables
 
 	const { data, flags } = useVideowallMetricsContext();
-	const demandTimestamp = data.demand_metrics?.meta.generated_at ?? data.metrics?.meta.demand.generated_at;
-	const demandValue = data.demand_metrics?.total.value ?? data.metrics?.total.demand;
-	const serviceTimestamp = data.metrics?.meta.service.generated_at;
+	const demandMetrics = data.demand_metrics;
+	const departureDelayMetrics = data.departure_delay_metrics;
+	const serviceComplianceMetrics = data.service_compliance_metrics;
+	const vkmExecutionMetrics = data.vkm_execution_metrics;
 
 	//
 	// F. Render components
 
 	return (
-		<MetricGrid layout="sixDetails">
+		<MetricGrid layout="primaryWithFourDetails">
 			<DemandCard
 				agencyLabel="CCFL"
 				isLoading={flags.is_demand_loading}
 				isValidating={flags.is_demand_validating}
-				size="md"
-				timestamp={demandTimestamp}
-				trend={data.demand_metrics?.total.trend}
-				value={demandValue}
+				timestamp={demandMetrics?.meta.generated_at}
+				trend={demandMetrics?.total.trend}
+				value={demandMetrics?.total.value}
 			/>
-			<ServiceFailuresCard
+			<ServiceComplianceCard
 				agencyLabel="CCFL"
-				isLoading={flags.is_loading}
-				isValidating={flags.is_validating}
-				size="md"
-				timestamp={serviceTimestamp}
-				value={data.metrics?.total.service}
+				isLoading={flags.is_service_compliance_loading}
+				isValidating={flags.is_service_compliance_validating}
+				targetPercentage={serviceComplianceMetrics?.meta.target_pct ?? 95}
+				timestamp={serviceComplianceMetrics?.meta.generated_at}
+				trend={serviceComplianceMetrics?.total.trend}
+				value={serviceComplianceMetrics?.total.value}
 			/>
-			<AverageDelayCard
+			<DelayCard
 				agencyLabel="CCFL"
-				isLoading={flags.is_loading}
-				isValidating={flags.is_validating}
-				size="md"
-				timestamp={serviceTimestamp}
-				value={data.metrics?.total.service}
+				isLoading={flags.is_departure_delay_loading}
+				isValidating={flags.is_departure_delay_validating}
+				targetPercentage={departureDelayMetrics?.meta.target_pct ?? 10}
+				timestamp={departureDelayMetrics?.meta.generated_at}
+				trend={departureDelayMetrics?.total.trend}
+				value={departureDelayMetrics?.total.value}
 			/>
-			<DelayedServicesCard
+			<VkmExecutionCard
 				agencyLabel="CCFL"
-				isLoading={flags.is_loading}
-				isValidating={flags.is_validating}
-				size="md"
-				timestamp={serviceTimestamp}
-				value={data.metrics?.total.service}
-			/>
-			<DistanceCard
-				agencyLabel="CCFL"
-				isLoading={flags.is_loading}
-				isValidating={flags.is_validating}
-				size="md"
-				timestamp={serviceTimestamp}
-				value={data.metrics?.total.service}
+				isLoading={flags.is_vkm_execution_loading}
+				isValidating={flags.is_vkm_execution_validating}
+				targetPercentage={vkmExecutionMetrics?.meta.target_pct ?? 95}
+				timestamp={vkmExecutionMetrics?.meta.generated_at}
+				trend={vkmExecutionMetrics?.total.trend}
+				value={vkmExecutionMetrics?.total.value}
 			/>
 			<Clock size="md" />
 		</MetricGrid>

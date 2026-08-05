@@ -2,14 +2,13 @@
 
 /* * */
 
-import { CmOperatorPanels } from '@/agencies/cm/CmOperatorPanels';
+import { CmMetricsGrid } from '@/agencies/cm/CmMetricsGrid';
 import { CM_AGENCY_IDS, type CmAgencyId } from '@/agencies/cm/constants';
 import { VideowallHeader } from '@/components/videowall/VideowallHeader';
+import { VideowallLayout } from '@/components/videowall/VideowallLayout';
 import { VideowallMetricsContextProvider } from '@/contexts/VideowallMetrics.context';
 import { useAppReload } from '@/hooks/use-app-reload';
 import { type NumberAnimationConfig } from '@/types/number-animation';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -40,12 +39,11 @@ export function CmOperatorVideowall({
 
 	return (
 		<VideowallMetricsContextProvider agencyIds={CM_AGENCY_IDS} numberAnimation={numberAnimation}>
-			<div className={styles.container}>
-				<VideowallHeader agencyName={agencyName} areaNumber={areaNumber} />
-				<div className={styles.content}>
-					<CmOperatorPanels agencyId={agencyId} />
-				</div>
-			</div>
+			<VideowallLayout
+				header={<VideowallHeader agencyName={agencyName} areaNumber={areaNumber} scope="agency" />}
+			>
+				<CmMetricsGrid agencyId={agencyId} scope="agency" />
+			</VideowallLayout>
 		</VideowallMetricsContextProvider>
 	);
 
