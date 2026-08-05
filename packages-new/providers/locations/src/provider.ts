@@ -18,8 +18,8 @@ class LocationsProviderClass {
 	 * @param lon - Longitude of the point.
 	 * @returns The matching district, or null if none contains the point.
 	 */
-	async findDistrictByGeo(...params: Parameters<typeof districts.findByGeo>): Promise<District | null> {
-		return districts.findByGeo(...params);
+	async findDistrictByGeo(lat: number, lon: number): Promise<District | null> {
+		return districts.findByGeo(lat, lon);
 	}
 
 	/**
@@ -28,8 +28,8 @@ class LocationsProviderClass {
 	 * @param options - Optional query options.
 	 * @returns The district, or null if not found.
 	 */
-	async findDistrictById(...params: Parameters<typeof districts.findById>): Promise<District | null> {
-		return districts.findById(...params);
+	async findDistrictById(id: string, { geometry = false }: { geometry?: boolean } = {}): Promise<District | null> {
+		return districts.findById(id, { geometry });
 	}
 
 	/**
@@ -37,8 +37,8 @@ class LocationsProviderClass {
 	 * @param params - Optional filter criteria.
 	 * @returns Districts sorted by identifier.
 	 */
-	async findDistricts(...params: Parameters<typeof districts.findMany>): Promise<District[]> {
-		return districts.findMany(...params);
+	async findDistricts({ districtIds }: { districtIds?: string[] } = {}): Promise<District[]> {
+		return districts.findMany({ districtIds });
 	}
 
 	/**
@@ -46,8 +46,8 @@ class LocationsProviderClass {
 	 * @param params - Optional filter criteria.
 	 * @returns Localities sorted by identifier.
 	 */
-	async findLocalities(...params: Parameters<typeof localities.findMany>): Promise<Locality[]> {
-		return localities.findMany(...params);
+	async findLocalities({ districtIds, municipalityIds, parishIds }: { districtIds?: string[], municipalityIds?: string[], parishIds?: string[] } = {}): Promise<Locality[]> {
+		return localities.findMany({ districtIds, municipalityIds, parishIds });
 	}
 
 	/**
@@ -56,8 +56,8 @@ class LocationsProviderClass {
 	 * @param lon - Longitude of the point.
 	 * @returns The matching locality, or null if none contains the point.
 	 */
-	async findLocalityByGeo(...params: Parameters<typeof localities.findByGeo>): Promise<Locality | null> {
-		return localities.findByGeo(...params);
+	async findLocalityByGeo(lat: number, lon: number): Promise<Locality | null> {
+		return localities.findByGeo(lat, lon);
 	}
 
 	/**
@@ -66,8 +66,8 @@ class LocationsProviderClass {
 	 * @param options - Optional query options.
 	 * @returns The locality, or null if not found.
 	 */
-	async findLocalityById(...params: Parameters<typeof localities.findById>): Promise<Locality | null> {
-		return localities.findById(...params);
+	async findLocalityById(id: string, { geometry = false }: { geometry?: boolean } = {}): Promise<Locality | null> {
+		return localities.findById(id, { geometry });
 	}
 
 	/**
@@ -77,8 +77,8 @@ class LocationsProviderClass {
 	 * @returns District, municipality, parish, and locality for the point.
 	 * @throws An HTTP BAD_REQUEST error when latitude or longitude is missing.
 	 */
-	async findLocationByGeo(...params: Parameters<typeof location.findByGeo>) {
-		return location.findByGeo(...params);
+	async findLocationByGeo(lat: number, lon: number) {
+		return location.findByGeo(lat, lon);
 	}
 
 	/**
@@ -86,8 +86,8 @@ class LocationsProviderClass {
 	 * @param params - Optional filter criteria.
 	 * @returns Municipalities sorted by identifier.
 	 */
-	async findMunicipalities(...params: Parameters<typeof municipalities.findMany>): Promise<Municipality[]> {
-		return municipalities.findMany(...params);
+	async findMunicipalities({ districtIds }: { districtIds?: string[] } = {}): Promise<Municipality[]> {
+		return municipalities.findMany({ districtIds });
 	}
 
 	/**
@@ -96,8 +96,8 @@ class LocationsProviderClass {
 	 * @param lon - Longitude of the point.
 	 * @returns The matching municipality, or null if none contains the point.
 	 */
-	async findMunicipalityByGeo(...params: Parameters<typeof municipalities.findByGeo>): Promise<Municipality | null> {
-		return municipalities.findByGeo(...params);
+	async findMunicipalityByGeo(lat: number, lon: number): Promise<Municipality | null> {
+		return municipalities.findByGeo(lat, lon);
 	}
 
 	/**
@@ -106,8 +106,8 @@ class LocationsProviderClass {
 	 * @param options - Optional query options.
 	 * @returns The municipality, or null if not found.
 	 */
-	async findMunicipalityById(...params: Parameters<typeof municipalities.findById>): Promise<Municipality | null> {
-		return municipalities.findById(...params);
+	async findMunicipalityById(id: string, { geometry = false }: { geometry?: boolean } = {}): Promise<Municipality | null> {
+		return municipalities.findById(id, { geometry });
 	}
 
 	/**
@@ -116,8 +116,8 @@ class LocationsProviderClass {
 	 * @param lon - Longitude of the point.
 	 * @returns The matching parish, or null if none contains the point.
 	 */
-	async findParishByGeo(...params: Parameters<typeof parishes.findByGeo>): Promise<null | Parish> {
-		return parishes.findByGeo(...params);
+	async findParishByGeo(lat: number, lon: number): Promise<null | Parish> {
+		return parishes.findByGeo(lat, lon);
 	}
 
 	/**
@@ -126,8 +126,8 @@ class LocationsProviderClass {
 	 * @param options - Optional query options.
 	 * @returns The parish, or null if not found.
 	 */
-	async findParishById(...params: Parameters<typeof parishes.findById>): Promise<null | Parish> {
-		return parishes.findById(...params);
+	async findParishById(id: string, { geometry = false }: { geometry?: boolean } = {}): Promise<null | Parish> {
+		return parishes.findById(id, { geometry });
 	}
 
 	/**
@@ -135,8 +135,8 @@ class LocationsProviderClass {
 	 * @param params - Optional filter criteria.
 	 * @returns Parishes sorted by identifier.
 	 */
-	async findParishes(...params: Parameters<typeof parishes.findMany>): Promise<Parish[]> {
-		return parishes.findMany(...params);
+	async findParishes({ districtIds, municipalityIds }: { districtIds?: string[], municipalityIds?: string[], parishIds?: string[] } = {}): Promise<Parish[]> {
+		return parishes.findMany({ districtIds, municipalityIds });
 	}
 }
 
