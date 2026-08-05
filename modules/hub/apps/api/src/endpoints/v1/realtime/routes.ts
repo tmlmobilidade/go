@@ -1,12 +1,16 @@
 /* * */
 
-import { getTripUpdatesGtfsRtJson } from '@/endpoints/v1/realtime/controllers/get-trip-updates-gtfs-rt-json.js';
-import { getTripUpdatesGtfsRtProtobuf } from '@/endpoints/v1/realtime/controllers/get-trip-updates-gtfs-rt-protobuf.js';
-import { getVehicleMetadataJson } from '@/endpoints/v1/realtime/controllers/get-vehicle-metadata-json.js';
-import { getVehiclePositionsGtfsRtJson } from '@/endpoints/v1/realtime/controllers/get-vehicle-positions-gtfs-rt-json.js';
-import { getVehiclePositionsGtfsRtProtobuf } from '@/endpoints/v1/realtime/controllers/get-vehicle-positions-gtfs-rt-protobuf.js';
-import { getVehiclePositionsJson } from '@/endpoints/v1/realtime/controllers/get-vehicle-positions-json.js';
 import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+
+import { getEtaAll } from './controllers/get-eta-all.js';
+import { getEtaByStopId } from './controllers/get-eta-by-stop-id.js';
+import { getEtaByTripId } from './controllers/get-eta-by-trip-id.js';
+import { getTripUpdatesGtfsRtJson } from './controllers/get-trip-updates-gtfs-rt-json.js';
+import { getTripUpdatesGtfsRtProtobuf } from './controllers/get-trip-updates-gtfs-rt-protobuf.js';
+import { getVehicleMetadataJson } from './controllers/get-vehicle-metadata-json.js';
+import { getVehiclePositionsGtfsRtJson } from './controllers/get-vehicle-positions-gtfs-rt-json.js';
+import { getVehiclePositionsGtfsRtProtobuf } from './controllers/get-vehicle-positions-gtfs-rt-protobuf.js';
+import { getVehiclePositionsJson } from './controllers/get-vehicle-positions-json.js';
 
 /* * */
 
@@ -28,6 +32,10 @@ server.register(
 		instance.get('/trip-updates', getTripUpdatesGtfsRtJson);
 		instance.get('/trip-updates/gtfs', getTripUpdatesGtfsRtJson);
 		instance.get('/trip-updates/gtfs.pb', getTripUpdatesGtfsRtProtobuf);
+
+		instance.get('/eta', getEtaAll);
+		instance.get('/eta/by-trip/:id', getEtaByTripId);
+		instance.get('/eta/by-stop/:id', getEtaByStopId);
 
 		next();
 	},

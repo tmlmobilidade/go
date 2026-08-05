@@ -1,0 +1,1 @@
+SELECT * FROM eta.pred_trip_stop_etas;
