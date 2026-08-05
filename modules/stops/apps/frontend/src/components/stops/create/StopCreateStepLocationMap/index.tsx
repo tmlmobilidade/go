@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-export function StopCreateStep1Map() {
+export function StopCreateStepLocationMap() {
 	//
 
 	//
@@ -17,29 +17,10 @@ export function StopCreateStep1Map() {
 
 	const stopCreateContext = useStopCreateContext();
 	const stopsListContext = useStopsListContext();
-	const [latitude, longitude] = stopCreateContext.data.coordinates;
+	const [latitude, longitude] = stopCreateContext.form.instance.getValues(['latitude', 'longitude']);
 
 	//
 	// B. Transform data
-
-	const stopsAsGeojsonFC = useMemo(() => {
-		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayMultipleStopsDataProps>();
-		if (!stopsListContext.data.filtered) return baseGeoJson;
-
-		baseGeoJson.features = stopsListContext.data.filtered.map(item => ({
-			geometry: {
-				coordinates: [item.longitude, item.latitude],
-				type: 'Point',
-			},
-			properties: {
-				id: String(item._id),
-				name: item.name,
-			},
-			type: 'Feature',
-		}));
-
-		return baseGeoJson;
-	}, [stopsListContext.data.filtered]);
 
 	const selectedCoordinatesMapData = useMemo(() => {
 		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayPinsPointDataProps>();
@@ -65,7 +46,8 @@ export function StopCreateStep1Map() {
 	// C. Handle actions
 
 	const handleMapClick = (event) => {
-		stopCreateContext.actions.setLatLng(event.lngLat.lat, event.lngLat.lng);
+		stopCreateContext.form.instance.setValue('latitude', event.lngLat.lat);
+		stopCreateContext.form.instance.setValue('longitude', event.lngLat.lng);
 	};
 
 	//
@@ -74,7 +56,7 @@ export function StopCreateStep1Map() {
 	return (
 		<MapView cursor="crosshair" height={400} id="create-stop-map" onClick={handleMapClick}>
 			<MapOverlayMultipleStops
-				data={stopsAsGeojsonFC}
+				data={stopsListContext.data.features}
 				id="stops-list"
 				visible
 			/>
