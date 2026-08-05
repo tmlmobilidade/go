@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
+import { closeStopCreateModal } from './StopCreate.modal';
+
 /* * */
 
 interface StopCreateContextState extends CreateContextStateTemplate<CreateStopDto> {
@@ -137,6 +139,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			unblock();
 			allStopsMutate();
 			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(updatedItem._id.toString())));
+			closeStopCreateModal();
 		},
 	});
 
@@ -154,7 +157,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 			instance: form,
 			multi_step: multiStep,
 		},
-	}), [form, handleCreate, isCreating, multiStep]);
+	}), [form, handleCreate, isCreating, loadingLocations, multiStep]);
 
 	//
 	// E. Render components
