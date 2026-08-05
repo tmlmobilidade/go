@@ -1,16 +1,15 @@
 /* * */
 
 import { ClickHouseInterfaceTemplate } from '@/interface.template.js';
-import { demandByAgencyByOperationalDateTableSchema, metricRefreshTableSchema, passengerDemandByAgencyByMinuteTableSchema, passengerDemandByDimensionsByDayTableSchema, passengerDemandRealtimeTableSchema } from '@/schemas/performance.js';
+import { metricRefreshTableSchema, passengerDemandByAgencyByMinuteTableSchema, passengerDemandByDimensionsByDayTableSchema, passengerDemandRealtimeTableSchema } from '@/schemas/performance.js';
 import { ClickHouseClient } from '@tmlmobilidade/go-clients-clickhouse';
-import { type DemandByAgencyByOperationalDate, type MetricRefresh, type PassengerDemandByAgencyByMinute, type PassengerDemandByDimensionsByDay, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
+import { type MetricRefresh, type PassengerDemandByAgencyByMinute, type PassengerDemandByDimensionsByDay, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
 
 /* * */
 
 export class PerformanceDatabase {
 	//
 
-	public readonly demandByAgencyByOperationalDate: ClickHouseInterfaceTemplate<DemandByAgencyByOperationalDate>;
 	public readonly metricRefreshes: ClickHouseInterfaceTemplate<MetricRefresh>;
 	public readonly passengerDemandByAgencyByMinute: ClickHouseInterfaceTemplate<PassengerDemandByAgencyByMinute>;
 	public readonly passengerDemandByDimensionsByDay: ClickHouseInterfaceTemplate<PassengerDemandByDimensionsByDay>;
@@ -19,11 +18,6 @@ export class PerformanceDatabase {
 	private readonly databaseName = 'performance';
 
 	public constructor(instance: ClickHouseClient) {
-		this.demandByAgencyByOperationalDate = new ClickHouseInterfaceTemplate<DemandByAgencyByOperationalDate>(instance, this.databaseName, 'demand_by_agency_by_operational_date', demandByAgencyByOperationalDateTableSchema, {
-			engine: 'ReplacingMergeTree(updated_at)',
-			orderBy: ['operational_date', 'agency_id'],
-			partitionBy: 'intDiv(operational_date, 100)',
-		});
 		this.metricRefreshes = new ClickHouseInterfaceTemplate<MetricRefresh>(instance, this.databaseName, 'metric_refreshes', metricRefreshTableSchema, {
 			engine: 'ReplacingMergeTree(updated_at)',
 			orderBy: ['metric_name', 'range_start', 'refresh_id'],
@@ -48,7 +42,6 @@ export class PerformanceDatabase {
 
 	public async init() {
 		await Promise.all([
-			this.demandByAgencyByOperationalDate.init(),
 			this.metricRefreshes.init(),
 			this.passengerDemandByAgencyByMinute.init(),
 			this.passengerDemandByDimensionsByDay.init(),

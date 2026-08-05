@@ -1,7 +1,6 @@
 /* * */
 
 import { syncPassengerDemandMetrics } from '@/tasks/sync-passenger-demand.js';
-import { runDemandByAgencyByOperationalDate } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -28,7 +27,6 @@ async function main() {
 	//
 
 	await syncPassengerDemandMetrics();
-	// await runDemandByAgencyByOperationalDate('full');
 
 	//
 

@@ -1,6 +1,5 @@
 /* * */
 
-import { publishDemandByAgencyByOperationalDate } from '@/tasks/demand-by-agency-by-operational-date.js';
 import { publishPassengerDemandMetrics } from '@/tasks/passenger-demand.js';
 import { publishVideowallMetrics } from '@/tasks/videowall.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -10,7 +9,6 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 /* * */
 
 const tasks = [
-	// { name: 'Demand by Agency by Operational Date', run: publishDemandByAgencyByOperationalDate },
 	{ name: 'Passenger Demand Metrics', run: publishPassengerDemandMetrics },
 	// { name: 'Videowall Metrics V2', run: publishVideowallMetrics },
 ] as const;

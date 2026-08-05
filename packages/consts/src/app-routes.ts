@@ -346,7 +346,6 @@ export const API_ROUTES = Object.freeze({
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
 		// METRICS
-		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
 		METRICS_PASSENGER_DEMAND: `${getModuleConfig('hub', 'api_url')}/v2/metrics/passenger-demand`,
 		METRICS_VIDEOWALL: `${getModuleConfig('hub', 'api_url')}/v2/metrics/videowall`,
 

@@ -1,16 +1,9 @@
 /* * */
 
 import { type ClickHouseTableSchema } from '@tmlmobilidade/go-clients-clickhouse';
-import { type DemandByAgencyByOperationalDate, type MetricRefresh, type PassengerDemandByAgencyByMinute, type PassengerDemandByDimensionsByDay, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
+import { type MetricRefresh, type PassengerDemandByAgencyByMinute, type PassengerDemandByDimensionsByDay, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
 
 /* * */
-
-export const demandByAgencyByOperationalDateTableSchema: ClickHouseTableSchema<DemandByAgencyByOperationalDate> = {
-	agency_id: { type: 'LowCardinality(String)' },
-	operational_date: { type: 'UInt32' },
-	qty: { type: 'UInt64' },
-	updated_at: { type: 'Int64' },
-};
 
 export const metricRefreshTableSchema: ClickHouseTableSchema<MetricRefresh> = {
 	completed_at: { type: 'Nullable(Int64)' },

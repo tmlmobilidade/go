@@ -26,7 +26,6 @@ export const cacheDbKeyValues = [
 	'hub:v1:network:lines',
 	'hub:v1:network:routes',
 	'hub:v1:network:plans',
-	'hub:v1:metrics:demand:by-agency:by-operational-date:json',
 	hubV2PassengerDemandMetricsCacheKey,
 	'hub:v1:network:vehicles:protobuf',
 	hubV2VideowallMetricsCacheKey,
