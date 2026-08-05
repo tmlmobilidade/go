@@ -30,11 +30,11 @@ export function PathTableColumnStop({ pathItem }: { pathItem: PopulatedPath }) {
 		if (!pathItem.stop) return null;
 
 		const municipalityData = pathItem.stop.municipality_id
-			? locationsContext.data.municipalities_map?.get(pathItem.stop.municipality_id)
+			? locationsContext.actions.getMunicipality(pathItem.stop.municipality_id)
 			: undefined;
 
 		const localityData = pathItem.stop.locality_id
-			? locationsContext.data.localitites_map?.get(pathItem.stop.locality_id)
+			? locationsContext.actions.getLocality(pathItem.stop.locality_id)
 			: undefined;
 
 		const localityName = localityData?.name;
@@ -46,7 +46,7 @@ export function PathTableColumnStop({ pathItem }: { pathItem: PopulatedPath }) {
 		if (localityName === municipalityName) return localityName;
 
 		return `${localityName}, ${municipalityName}`;
-	}, [pathItem.stop, locationsContext.data.municipalities_map, locationsContext.data.localitites_map]);
+	}, [pathItem.stop, locationsContext]);
 
 	//
 	// C. Render components

@@ -13,10 +13,11 @@
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build": "tsc && resolve-tspaths",
+		"build": "tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"lint": "eslint ./src ./tests && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src ./tests",
+		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
