@@ -3,47 +3,17 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { buildRoutePreviewModel, buildRoutePreviewRecalculationPlan, composeRoutePreviewResponse, mergeRoutePreviewRange, type RoutePreviewAnchor, type RoutePreviewPoint, type RoutePreviewResponse } from '@/utils/route-preview';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Path, PopulatedPath, Shape, Stop } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useRef, useState } from 'react';
-
-import { buildRoutePreviewModel, type RoutePreviewAnchor, type RoutePreviewPoint } from '../../../../utils/route-preview';
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 /* * */
 
-interface ShapeAnchor extends RoutePreviewAnchor {
-	_id: string
-}
-
-interface RoutePreviewLeg {
-	distance: number
-	duration: number
-	encoded_polyline?: string
-	from_index: number
-	geojson: GeoJSON.Feature<GeoJSON.LineString, {
-		distance: number
-		duration: number
-		from_index: number
-		to_index: number
-	}>
-	geometry: [number, number][]
-	to_index: number
-}
-
-interface RoutePreviewResponse {
-	distance: number
-	duration: number
-	encoded_polyline?: string
-	geojson: GeoJSON.Feature<GeoJSON.LineString, {
-		distance: number
-		duration: number
-	}>
-	geometry: [number, number][]
-	legs: RoutePreviewLeg[]
-}
+type ShapeAnchor = RoutePreviewAnchor;
 
 interface HistoryEntry {
 	path: PopulatedPath[]
@@ -145,6 +115,29 @@ function applyRouteToPath(path: PopulatedPath[], routeData: RoutePreviewResponse
 	});
 }
 
+async function requestRoutePreview(points: RoutePreviewPoint[], signal?: AbortSignal) {
+	return fetchData<RoutePreviewResponse>(
+		API_ROUTES.offer.SHAPES_ROUTE_PREVIEW,
+		'POST',
+		{
+			costing: 'bus',
+			costing_options: {
+				bus: {
+					use_ferry: 0,
+				},
+			},
+			points: points.map(point => ({
+				lat: point.lat,
+				lon: point.lon,
+				type: point.type,
+			})),
+		},
+		{},
+		signal ? { signal } : {},
+		signal ? 0 : 3,
+	);
+}
+
 export function StopsEditorContextProvider({ children, onClose }: PropsWithChildren<{ onClose: () => void }>) {
 	const patternDetailContext = usePatternDetailContext();
 	const [routeData, setRouteData] = useState<null | RoutePreviewResponse>(null);
@@ -168,6 +161,9 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	// Keep a ref so recomputeRoute can read the latest shape without stale closures
 	const localShapeRef = useRef<Shape | undefined>(initialShape);
 	localShapeRef.current = localShape;
+	const previewAbortControllerRef = useRef<AbortController | null>(null);
+
+	useEffect(() => () => previewAbortControllerRef.current?.abort(), []);
 
 	// History stack — stored in refs to avoid re-renders on push; a small state
 	// object is used only to make canUndo / canRedo reactive.
@@ -232,45 +228,45 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 
 	const recomputeRoute = useCallback(async (nextPath: PopulatedPath[], nextAnchors: ShapeAnchor[] = anchors) => {
 		try {
+			previewAbortControllerRef.current?.abort();
+			previewAbortControllerRef.current = null;
 			setIsLoadingRoute(true);
 
-			const { points } = buildRoutePreviewModel(nextPath, nextAnchors);
+			const previousPoints = buildRoutePreviewModel(path, anchors).points;
+			const points = buildRoutePreviewModel(nextPath, nextAnchors).points;
+			const previousLegs = localShapeRef.current?.legs ?? [];
+			const plan = buildRoutePreviewRecalculationPlan(previousPoints, points, previousLegs);
+			const rangeResults = await Promise.all(plan.ranges.map(async range => ({
+				range,
+				response: await requestRoutePreview(points.slice(range.from_index, range.to_index + 1)),
+			})));
 
-			const res = await fetchData<RoutePreviewResponse>(
-				API_ROUTES.offer.SHAPES_ROUTE_PREVIEW,
-				'POST',
-				{
-					costing: 'bus', // later change this to be dynamic based on pattern typology
-					costing_options: {
-						bus: {
-							use_ferry: 0,
-						},
-					},
-					points,
-				},
-			);
+			for (const { range, response } of rangeResults) {
+				if (!response.isOk) {
+					useToast.error({
+						message: response.error,
+						title: 'Erro ao recalcular percurso',
+					});
+					return;
+				}
 
-			if (!res.isOk) {
-				useToast.error({
-					message: res.error,
-					title: 'Erro ao recalcular percurso',
-				});
-				return;
+				mergeRoutePreviewRange(plan.legs, range, response.data.legs);
 			}
 
-			const updatedPath = applyRouteToPath(nextPath, res.data, points);
+			const nextRouteData = composeRoutePreviewResponse(plan.legs);
+			const updatedPath = applyRouteToPath(nextPath, nextRouteData, points);
 
 			const updatedShape: Shape = {
 				...(localShapeRef.current ?? {}),
 				anchors: nextAnchors,
-				encoded_polyline: res.data.encoded_polyline,
-				extension: Math.round(res.data.distance),
-				geojson: res.data.geojson,
-				legs: res.data.legs,
+				encoded_polyline: nextRouteData.encoded_polyline,
+				extension: Math.round(nextRouteData.distance),
+				geojson: nextRouteData.geojson,
+				legs: nextRouteData.legs,
 			};
 
 			pushToHistory(updatedPath, updatedShape);
-			setRouteData(res.data);
+			setRouteData(nextRouteData);
 		} catch (error) {
 			useToast.error({
 				message: error instanceof Error ? error.message : 'Erro desconhecido',
@@ -279,28 +275,42 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		} finally {
 			setIsLoadingRoute(false);
 		}
-	}, [anchors, pushToHistory]);
+	}, [anchors, path, pushToHistory]);
 
 	const previewRoute = useCallback(async (nextPath: PopulatedPath[], nextAnchors: ShapeAnchor[] = anchors) => {
+		previewAbortControllerRef.current?.abort();
+		const abortController = new AbortController();
+		previewAbortControllerRef.current = abortController;
+
 		try {
-			const { points } = buildRoutePreviewModel(nextPath, nextAnchors);
+			const previousPoints = buildRoutePreviewModel(path, anchors).points;
+			const points = buildRoutePreviewModel(nextPath, nextAnchors).points;
+			const previousLegs = localShapeRef.current?.legs ?? [];
+			const plan = buildRoutePreviewRecalculationPlan(previousPoints, points, previousLegs);
+			const rangeResults = await Promise.all(plan.ranges.map(async range => ({
+				range,
+				response: await requestRoutePreview(
+					points.slice(range.from_index, range.to_index + 1),
+					abortController.signal,
+				),
+			})));
 
-			const res = await fetchData<RoutePreviewResponse>(
-				API_ROUTES.offer.SHAPES_ROUTE_PREVIEW,
-				'POST',
-				{
-					costing: 'bus',
-					points,
-				},
-			);
+			if (abortController.signal.aborted || previewAbortControllerRef.current !== abortController) return;
 
-			if (!res.isOk) return;
+			for (const { range, response } of rangeResults) {
+				if (!response.isOk) return;
+				mergeRoutePreviewRange(plan.legs, range, response.data.legs);
+			}
 
-			setRouteData(res.data);
+			setRouteData(composeRoutePreviewResponse(plan.legs));
 		} catch {
 			// Silent — preview failures are non-critical
+		} finally {
+			if (previewAbortControllerRef.current === abortController) {
+				previewAbortControllerRef.current = null;
+			}
 		}
-	}, [anchors]);
+	}, [anchors, path]);
 
 	const convertShapeToEditable = useCallback(async () => {
 		setMigrationWarningVisible(false);
