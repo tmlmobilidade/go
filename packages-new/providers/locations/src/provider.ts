@@ -1,100 +1,145 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import * as districts from '@/districts/index.js';
+import * as localities from '@/localities/index.js';
+import * as location from '@/location/index.js';
+import * as municipalities from '@/municipalities/index.js';
+import * as parishes from '@/parishes/index.js';
 import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/types';
-import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
 class LocationsProviderClass {
-	private static _instance: LocationsProviderClass;
+	//
 
-	private constructor() {}
-
-	public static async getInstance() {
-		if (!LocationsProviderClass._instance) {
-			LocationsProviderClass._instance = new LocationsProviderClass();
-		}
-		return LocationsProviderClass._instance;
+	/**
+	 * Finds the district containing the given coordinates.
+	 * @param lat - Latitude of the point.
+	 * @param lon - Longitude of the point.
+	 * @returns The matching district, or null if none contains the point.
+	 */
+	async findDistrictByGeo(...params: Parameters<typeof districts.findByGeo>): Promise<District | null> {
+		return districts.findByGeo(...params);
 	}
 
-	async findDistrictByGeo(lat: number, lon: number): Promise<District | null> {
-		const district = await goDb.locations.districts.findOne(this.geoFilter(lat, lon));
-		if (!district) return null;
-		return { _id: district._id, ...district.properties };
+	/**
+	 * Finds a district by its identifier.
+	 * @param id - District identifier.
+	 * @param options - Optional query options.
+	 * @returns The district, or null if not found.
+	 */
+	async findDistrictById(...params: Parameters<typeof districts.findById>): Promise<District | null> {
+		return districts.findById(...params);
 	}
 
-	async findDistrictById(id: string): Promise<District | null> {
-		const district = await goDb.locations.districts.findOne({ _id: id });
-		if (!district) return null;
-		return { _id: district._id, ...district.properties };
+	/**
+	 * Lists districts, optionally filtered by district identifiers.
+	 * @param params - Optional filter criteria.
+	 * @returns Districts sorted by identifier.
+	 */
+	async findDistricts(...params: Parameters<typeof districts.findMany>): Promise<District[]> {
+		return districts.findMany(...params);
 	}
 
-	async findLocalityByGeo(lat: number, lon: number): Promise<Locality | null> {
-		const locality = await goDb.locations.localities.findOne(this.geoFilter(lat, lon));
-		if (!locality) return null;
-		return { _id: locality._id, ...locality.properties };
+	/**
+	 * Lists localities, optionally filtered by district, municipality, or parish identifiers.
+	 * @param params - Optional filter criteria.
+	 * @returns Localities sorted by identifier.
+	 */
+	async findLocalities(...params: Parameters<typeof localities.findMany>): Promise<Locality[]> {
+		return localities.findMany(...params);
 	}
 
-	async findLocalityById(id: string): Promise<Locality | null> {
-		const locality = await goDb.locations.localities.findOne({ _id: id });
-		if (!locality) return null;
-		return { _id: locality._id, ...locality.properties };
+	/**
+	 * Finds the locality containing the given coordinates.
+	 * @param lat - Latitude of the point.
+	 * @param lon - Longitude of the point.
+	 * @returns The matching locality, or null if none contains the point.
+	 */
+	async findLocalityByGeo(...params: Parameters<typeof localities.findByGeo>): Promise<Locality | null> {
+		return localities.findByGeo(...params);
 	}
 
-	async findMunicipalityByGeo(lat: number, lon: number): Promise<Municipality | null> {
-		const municipality = await goDb.locations.municipalities.findOne(this.geoFilter(lat, lon));
-		if (!municipality) return null;
-		return { _id: municipality._id, ...municipality.properties };
+	/**
+	 * Finds a locality by its identifier.
+	 * @param id - Locality identifier.
+	 * @param options - Optional query options.
+	 * @returns The locality, or null if not found.
+	 */
+	async findLocalityById(...params: Parameters<typeof localities.findById>): Promise<Locality | null> {
+		return localities.findById(...params);
 	}
 
-	async findMunicipalityById(id: string): Promise<Municipality | null> {
-		const municipality = await goDb.locations.municipalities.findOne({ _id: id });
-		if (!municipality) return null;
-		return { _id: municipality._id, ...municipality.properties };
+	/**
+	 * Resolves all administrative divisions containing the given coordinates.
+	 * @param lat - Latitude of the point.
+	 * @param lon - Longitude of the point.
+	 * @returns District, municipality, parish, and locality for the point.
+	 * @throws An HTTP BAD_REQUEST error when latitude or longitude is missing.
+	 */
+	async findLocationByGeo(...params: Parameters<typeof location.findByGeo>) {
+		return location.findByGeo(...params);
 	}
 
-	async findParishByGeo(lat: number, lon: number): Promise<null | Parish> {
-		const parish = await goDb.locations.parishes.findOne(this.geoFilter(lat, lon));
-		if (!parish) return null;
-		return { _id: parish._id, ...parish.properties };
+	/**
+	 * Lists municipalities, optionally filtered by district identifiers.
+	 * @param params - Optional filter criteria.
+	 * @returns Municipalities sorted by identifier.
+	 */
+	async findMunicipalities(...params: Parameters<typeof municipalities.findMany>): Promise<Municipality[]> {
+		return municipalities.findMany(...params);
 	}
 
-	async findParishById(id: string): Promise<null | Parish> {
-		const parish = await goDb.locations.parishes.findOne({ _id: id });
-		if (!parish) return null;
-		return { _id: parish._id, ...parish.properties };
+	/**
+	 * Finds the municipality containing the given coordinates.
+	 * @param lat - Latitude of the point.
+	 * @param lon - Longitude of the point.
+	 * @returns The matching municipality, or null if none contains the point.
+	 */
+	async findMunicipalityByGeo(...params: Parameters<typeof municipalities.findByGeo>): Promise<Municipality | null> {
+		return municipalities.findByGeo(...params);
 	}
 
-	// Find Location by Geo
-	async findLocationByGeo(lat: number, lon: number) {
-		if (!lat || !lon) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing latitude or longitude');
-
-		const [district, locality, municipality, parish] = await Promise.all([
-			this.findDistrictByGeo(lat, lon),
-			this.findLocalityByGeo(lat, lon),
-			this.findMunicipalityByGeo(lat, lon),
-			this.findParishByGeo(lat, lon),
-		]);
-
-		return {
-			district,
-			latitude: lat,
-			locality,
-			longitude: lon,
-			municipality,
-			parish,
-		};
+	/**
+	 * Finds a municipality by its identifier.
+	 * @param id - Municipality identifier.
+	 * @param options - Optional query options.
+	 * @returns The municipality, or null if not found.
+	 */
+	async findMunicipalityById(...params: Parameters<typeof municipalities.findById>): Promise<Municipality | null> {
+		return municipalities.findById(...params);
 	}
 
-	/*  Private */
+	/**
+	 * Finds the parish containing the given coordinates.
+	 * @param lat - Latitude of the point.
+	 * @param lon - Longitude of the point.
+	 * @returns The matching parish, or null if none contains the point.
+	 */
+	async findParishByGeo(...params: Parameters<typeof parishes.findByGeo>): Promise<null | Parish> {
+		return parishes.findByGeo(...params);
+	}
 
-	private geoFilter(lat: number, lon: number) {
-		return { geometry: { $geoIntersects: { $geometry: { coordinates: [lon, lat], type: 'Point' } } } };
+	/**
+	 * Finds a parish by its identifier.
+	 * @param id - Parish identifier.
+	 * @param options - Optional query options.
+	 * @returns The parish, or null if not found.
+	 */
+	async findParishById(...params: Parameters<typeof parishes.findById>): Promise<null | Parish> {
+		return parishes.findById(...params);
+	}
+
+	/**
+	 * Lists parishes, optionally filtered by district or municipality identifiers.
+	 * @param params - Optional filter criteria.
+	 * @returns Parishes sorted by identifier.
+	 */
+	async findParishes(...params: Parameters<typeof parishes.findMany>): Promise<Parish[]> {
+		return parishes.findMany(...params);
 	}
 }
 
 /* * */
 
-export const locationsProvider = asyncSingletonProxy(LocationsProviderClass);
+export const locationsProvider = new LocationsProviderClass();
