@@ -2,9 +2,9 @@
 
 /* * */
 
-import { StopCreateStepLocationCoordinatesInput } from './components/StopCreateStepLocationCoordinatesInput';
-import { StopCreateStepLocationLocationsCards } from './components/StopCreateStepLocationLocationsCards';
-import { StopCreateStepLocationMap } from './components/StopCreateStepLocationMap';
+import { StopCreateStepLocationCoordinatesInput } from '@/components/stops/create/StopCreateStepLocationCoordinatesInput';
+import { StopCreateStepLocationLocationsCards } from '@/components/stops/create/StopCreateStepLocationLocationsCards';
+import { StopCreateStepLocationMap } from '@/components/stops/create/StopCreateStepLocationMap';
 
 /* * */
 

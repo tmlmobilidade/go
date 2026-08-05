@@ -1,6 +1,6 @@
 /* * */
 
-import { ContextFormController, Divider, Section, TextInput } from '@tmlmobilidade/ui';
+import { ContextFormController, Section, TextInput } from '@tmlmobilidade/ui';
 
 import { useStopCreateContext } from '../StopCreate.context';
 
