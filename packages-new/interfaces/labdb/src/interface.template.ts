@@ -80,14 +80,14 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 
 	/**
 	 * Executes a DISTINCT query on the ClickHouse table using the service's client.
-	 * @param select The columns to select in the query (e.g., `"*"`, `"column1, column2"`).
+	 * @param field The field to select distinct values for (e.g., `"field_name"`).
 	 * @param where The WHERE clause to filter the results (e.g., `"id = 1"`).
 	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
 	 * @returns A promise that resolves to an array of distinct values matching the query.
 	 */
 	public async distinct<K extends keyof T>(field: K, where: string, params?: Record<string, number | string>): Promise<T[K][]> {
-		const result = await queryFromString<T>(this.client, `SELECT DISTINCT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
-		return result.map(doc => doc[field]);
+		const result = await queryFromString<T[K]>(this.client, `SELECT DISTINCT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
+		return result;
 	}
 
 	/**
