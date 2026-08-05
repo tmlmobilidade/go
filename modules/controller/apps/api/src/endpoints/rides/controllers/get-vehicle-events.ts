@@ -51,7 +51,7 @@ export async function getSimplifiedVehicleEvents(request: FastifyRequest<{ Param
 
 		const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
 
-		const vehicleEventsData = await labDb.operation.vehicleEvents.select(
+		const vehicleEventsData = await labDb.operation.simplifiedVehicleEvents.select(
 			'*',
 			`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4 AND extra_trip_id IS NULL`,
 			{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },

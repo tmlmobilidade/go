@@ -1,7 +1,8 @@
 /* * */
 
+import { type ImportGtfsConfig } from '@/shared/config.js';
 import { extractGtfsSource } from '@/shared/extract-source.js';
-import { type ImportGtfsConfig, initImportGtfsContext } from '@/shared/init-context.js';
+import { initImportGtfsContext } from '@/shared/init-context.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 

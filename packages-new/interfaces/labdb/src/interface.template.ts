@@ -85,7 +85,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
 	 * @returns A promise that resolves to an array of distinct values matching the query.
 	 */
-	public async distinct<T>(field: keyof T, where: string, params?: Record<string, number | string>): Promise<T[keyof T][]> {
+	public async distinct<K extends keyof T>(field: K, where: string, params?: Record<string, number | string>): Promise<T[K][]> {
 		const result = await queryFromString<T>(this.client, `SELECT DISTINCT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
 		return result.map(doc => doc[field]);
 	}
@@ -120,7 +120,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 * @param values An array of data objects to insert into the table.
 	 * @returns A promise that resolves when the data is inserted successfully.
 	 */
-	public async insert<T>(format: DataFormat = 'JSONEachRow', values: T[]) {
+	public async insert(format: DataFormat = 'JSONEachRow', values: T[]) {
 		return this.client.insert<T>({
 			format: format,
 			table: `"${this.databaseName}"."${this.tableName}"`,
@@ -182,7 +182,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 *   end_date: '2024-12-31',
 	 * });
 	*/
-	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryFromFile<T>> {
+	public async queryFromFile(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryFromFile<T>> {
 		return await queryFromFile<T>(this.client, filePath, params);
 	}
 
@@ -198,7 +198,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 *   { start_date: '2024-01-01', end_date: '2024-12-31' }
 	 * );
 	*/
-	public async queryFromString<T>(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
+	public async queryFromString(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
 		return await queryFromString<T>(this.client, query, params);
 	}
 

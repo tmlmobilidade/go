@@ -1,6 +1,7 @@
 /* * */
 
-import { LatitudeSchema, LongitudeSchema, NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
+import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
+import { NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

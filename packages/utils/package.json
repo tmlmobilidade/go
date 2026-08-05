@@ -36,6 +36,8 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-types-gtfs": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
 		"luxon": "3.7.2",
