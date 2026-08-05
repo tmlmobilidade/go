@@ -12,7 +12,8 @@
 		"dev": "next dev -p 51010",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src",
-		"start": "next start"
+		"start": "next start",
+		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@mantine/core": "9.5.1",
