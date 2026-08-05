@@ -2,6 +2,7 @@
 
 /* * */
 
+import { MetricBreakdown, type MetricBreakdownItem } from '@/components/cards/MetricBreakdown';
 import { MetricCardSkeleton } from '@/components/cards/MetricCardSkeleton';
 import { MetricNumber } from '@/components/common/MetricNumber';
 import { MetricTimestamp } from '@/components/common/MetricTimestamp';
@@ -20,6 +21,7 @@ import styles from './styles.module.css';
 
 interface Props {
 	agencyLabel?: string
+	breakdown?: MetricBreakdownItem[]
 	isLoading?: boolean
 	isValidating?: boolean
 	timestamp?: number
@@ -33,6 +35,7 @@ type DemandSentiment = 'attention' | 'healthy' | 'unavailable';
 
 export function DemandCard({
 	agencyLabel,
+	breakdown,
 	isLoading = false,
 	isValidating = false,
 	timestamp,
@@ -70,6 +73,7 @@ export function DemandCard({
 		<article
 			aria-busy={isValidating}
 			className={styles.container}
+			data-layout={breakdown ? 'aggregate' : 'standard'}
 			data-sentiment={sentiment}
 		>
 			<header className={styles.header}>
@@ -102,7 +106,7 @@ export function DemandCard({
 				</div>
 			</div>
 
-			{value?.typical_range && value.typical_cumulative_qty !== null && (
+			{!breakdown && value?.typical_range && value.typical_cumulative_qty !== null && (
 				<DemandRangeGauge
 					currentValue={value.passenger_validations_qty_now}
 					referenceValue={value.typical_cumulative_qty}
@@ -111,6 +115,8 @@ export function DemandCard({
 			)}
 
 			<DemandTrend points={trend} />
+
+			{breakdown && <MetricBreakdown items={breakdown} />}
 
 			{!value && <p className={styles.unavailable}>{t('default:videowall.unavailable')}</p>}
 		</article>

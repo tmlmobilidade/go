@@ -313,6 +313,9 @@
 		}
 	},
 	"videowall": {
+		"breakdown": {
+			"operator_metrics": "Métricas por operador"
+		},
 		"cards": {
 			"average_delay": "{agency} / Atraso médio do total de viagens",
 			"delayed_services": "{agency} / Viagens atrasadas > 5 min",

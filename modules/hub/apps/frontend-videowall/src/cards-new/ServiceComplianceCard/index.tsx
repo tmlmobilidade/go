@@ -2,6 +2,7 @@
 
 /* * */
 
+import { MetricBreakdown, type MetricBreakdownItem } from '@/components/cards/MetricBreakdown';
 import { MetricCardSkeleton } from '@/components/cards/MetricCardSkeleton';
 import { MetricNumber } from '@/components/common/MetricNumber';
 import { MetricTimestamp } from '@/components/common/MetricTimestamp';
@@ -16,6 +17,7 @@ import styles from './styles.module.css';
 
 interface Props {
 	agencyLabel?: string
+	breakdown?: MetricBreakdownItem[]
 	isLoading?: boolean
 	isValidating?: boolean
 	targetPercentage: number
@@ -30,6 +32,7 @@ type ServiceComplianceSentiment = 'attention' | 'healthy' | 'unavailable';
 
 export function ServiceComplianceCard({
 	agencyLabel,
+	breakdown,
 	isLoading = false,
 	isValidating = false,
 	targetPercentage,
@@ -65,6 +68,7 @@ export function ServiceComplianceCard({
 		<article
 			aria-busy={isValidating}
 			className={styles.container}
+			data-layout={breakdown ? 'aggregate' : 'standard'}
 			data-sentiment={sentiment}
 		>
 			<header className={styles.header}>
@@ -94,6 +98,8 @@ export function ServiceComplianceCard({
 				points={trend}
 				targetPercentage={targetPercentage}
 			/>
+
+			{breakdown && <MetricBreakdown items={breakdown} />}
 
 			{!value && <p className={styles.unavailable}>{t('default:videowall.unavailable')}</p>}
 		</article>

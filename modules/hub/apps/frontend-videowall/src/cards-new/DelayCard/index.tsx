@@ -2,6 +2,7 @@
 
 /* * */
 
+import { MetricBreakdown, type MetricBreakdownItem } from '@/components/cards/MetricBreakdown';
 import { MetricCardSkeleton } from '@/components/cards/MetricCardSkeleton';
 import { MetricDuration } from '@/components/cards/MetricDuration';
 import { MetricNumber } from '@/components/common/MetricNumber';
@@ -17,6 +18,7 @@ import styles from './styles.module.css';
 
 interface Props {
 	agencyLabel?: string
+	breakdown?: MetricBreakdownItem[]
 	isLoading?: boolean
 	isValidating?: boolean
 	targetPercentage: number
@@ -31,6 +33,7 @@ type DelaySentiment = 'attention' | 'healthy' | 'unavailable';
 
 export function DelayCard({
 	agencyLabel,
+	breakdown,
 	isLoading = false,
 	isValidating = false,
 	targetPercentage,
@@ -63,6 +66,7 @@ export function DelayCard({
 		<article
 			aria-busy={isValidating}
 			className={styles.container}
+			data-layout={breakdown ? 'aggregate' : 'standard'}
 			data-sentiment={sentiment}
 		>
 			<header className={styles.header}>
@@ -99,6 +103,8 @@ export function DelayCard({
 			</div>
 
 			<DelayTrend points={trend} targetPercentage={targetPercentage} />
+
+			{breakdown && <MetricBreakdown items={breakdown} />}
 
 			{!value && <p className={styles.unavailable}>{t('default:videowall.unavailable')}</p>}
 		</article>

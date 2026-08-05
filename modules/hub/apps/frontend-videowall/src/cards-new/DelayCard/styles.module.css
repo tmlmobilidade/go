@@ -162,6 +162,49 @@
 }
 
 /* * */
+/* AGGREGATE LAYOUT */
+
+.container[data-layout="aggregate"] {
+	display: grid;
+	grid-template-rows: auto auto minmax(92px, 1fr) clamp(58px, 7vh, 70px);
+	gap: clamp(6px, 1vh, 10px);
+	padding: clamp(12px, 1.6vw, 20px);
+}
+
+.container[data-layout="aggregate"] .summary {
+	grid-template-columns: minmax(0, 1.35fr) minmax(170px, 0.65fr);
+	gap: clamp(12px, 1.2vw, 24px);
+}
+
+.container[data-layout="aggregate"] .primaryMetric > strong {
+	font-size: clamp(40px, 4vw, 64px);
+}
+
+.container[data-layout="aggregate"] .primaryMetric > p {
+	margin-top: 4px;
+	font-size: clamp(13px, 1vw, 18px);
+}
+
+.container[data-layout="aggregate"] .comparison {
+	padding: clamp(6px, 0.7vw, 12px);
+}
+
+.container[data-layout="aggregate"] .comparison > strong {
+	font-size: clamp(28px, 2.5vw, 42px);
+}
+
+.container[data-layout="aggregate"] .averageDelay {
+	gap: 7px;
+	margin-top: 5px;
+	padding-top: 5px;
+}
+
+.container[data-layout="aggregate"] .comparison > span {
+	margin-top: 5px;
+	padding-block: 3px;
+}
+
+/* * */
 /* UNAVAILABLE */
 
 .unavailable {

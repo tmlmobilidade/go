@@ -12,6 +12,7 @@
 		"dev": "next dev -p 51102",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src",
+		"test:aggregate-layout": "node --experimental-strip-types ./src/tests/aggregate-card-layout.ts",
 		"test:agency-config": "node --import tsx ./src/tests/agency-config.ts",
 		"test:metric-card-refresh": "node --import tsx ./src/tests/metric-card-refresh.ts",
 		"test:metric-number-typography": "node --import tsx ./src/tests/metric-number-typography.ts",
