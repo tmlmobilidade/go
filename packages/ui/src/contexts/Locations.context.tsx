@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type District, type Locality, type Location, type Municipality, type Parish, type Zone } from '@tmlmobilidade/types';
+import { type District, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
 import { fetchData, unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -12,7 +12,6 @@ type DistrictsMap = Map<District['_id'], District>;
 type MunicipalitiesMap = Map<Municipality['_id'], Municipality>;
 type ParishesMap = Map<Parish['_id'], Parish>;
 type LocalitiesMap = Map<Locality['_id'], Locality>;
-type ZonesMap = Map<Zone['_id'], Zone>;
 
 interface LocationsContextState {
 	actions: {
@@ -20,7 +19,6 @@ interface LocationsContextState {
 		getLocality: (localityId: string) => Locality | undefined
 		getMunicipality: (municipalityId: string) => Municipality | undefined
 		getParish: (parishId: string) => Parish | undefined
-		getZone: (zoneId: string) => undefined | Zone
 		queryLocation: (latitude: number, longitude: number) => Promise<Location | null>
 	}
 	data: {
@@ -28,7 +26,6 @@ interface LocationsContextState {
 		localities: LocalitiesMap
 		municipalities: MunicipalitiesMap
 		parishes: ParishesMap
-		zones: ZonesMap
 	}
 	flags: {
 		is_loading: boolean
@@ -55,11 +52,10 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allDistrictsData, isLoading: allDistrictsLoading } = useSWR<District[], Error>(API_ROUTES.locations.LOCATIONS_DISTRICTS, unauthenticatedSwrFetcher);
-	const { data: allMunicipalitiesData, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[], Error>(API_ROUTES.locations.LOCATIONS_MUNICIPALITIES, unauthenticatedSwrFetcher);
-	const { data: allParishesData, isLoading: allParishesLoading } = useSWR<Parish[], Error>(API_ROUTES.locations.LOCATIONS_PARISHES, unauthenticatedSwrFetcher);
-	const { data: allLocalitiesData, isLoading: allLocalitiesLoading } = useSWR<Locality[], Error>(API_ROUTES.locations.LOCATIONS_LOCALITIES, unauthenticatedSwrFetcher);
-	const { data: allZonesData, isLoading: allZonesLoading } = useSWR<Zone[], Error>(API_ROUTES.offer.ZONES_LIST);
+	const { data: allDistrictsData, isLoading: allDistrictsLoading } = useSWR<District[], Error>(API_ROUTES.locations.LOCATIONS_DISTRICTS, unauthenticatedSwrFetcher, { refreshInterval: Infinity });
+	const { data: allMunicipalitiesData, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[], Error>(API_ROUTES.locations.LOCATIONS_MUNICIPALITIES, unauthenticatedSwrFetcher, { refreshInterval: Infinity });
+	const { data: allParishesData, isLoading: allParishesLoading } = useSWR<Parish[], Error>(API_ROUTES.locations.LOCATIONS_PARISHES, unauthenticatedSwrFetcher, { refreshInterval: Infinity });
+	const { data: allLocalitiesData, isLoading: allLocalitiesLoading } = useSWR<Locality[], Error>(API_ROUTES.locations.LOCATIONS_LOCALITIES, unauthenticatedSwrFetcher, { refreshInterval: Infinity });
 
 	//
 	// B. Transform data
@@ -68,7 +64,6 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	const municipalitiesMap = useMemo(() => new Map(allMunicipalitiesData?.map(item => [item._id, item]) ?? []), [allMunicipalitiesData]);
 	const parishesMap = useMemo(() => new Map(allParishesData?.map(item => [item._id, item]) ?? []), [allParishesData]);
 	const localitiesMap = useMemo(() => new Map(allLocalitiesData?.map(item => [item._id, item]) ?? []), [allLocalitiesData]);
-	const zonesMap = useMemo(() => new Map(allZonesData?.map(item => [item._id, item]) ?? []), [allZonesData]);
 
 	//
 	// C. Handle actions
@@ -77,7 +72,6 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	const getLocality = useCallback((id: Locality['_id']): Locality | undefined => localitiesMap.get(id), [localitiesMap]);
 	const getMunicipality = useCallback((id: Municipality['_id']): Municipality | undefined => municipalitiesMap.get(id), [municipalitiesMap]);
 	const getParish = useCallback((id: Parish['_id']): Parish | undefined => parishesMap.get(id), [parishesMap]);
-	const getZone = useCallback((id: Zone['_id']): undefined | Zone => zonesMap.get(id), [zonesMap]);
 	const queryLocation = useCallback(async (latitude: number, longitude: number) => {
 		const response = await fetchData<Location>(`${API_ROUTES.locations.LOCATIONS_LOCATION}?lat=${latitude}&lon=${longitude}`);
 		return response.data ?? null;
@@ -92,7 +86,6 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 			getLocality,
 			getMunicipality,
 			getParish,
-			getZone,
 			queryLocation,
 		},
 		data: {
@@ -100,12 +93,11 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 			localities: localitiesMap,
 			municipalities: municipalitiesMap,
 			parishes: parishesMap,
-			zones: zonesMap,
 		},
 		flags: {
-			is_loading: allDistrictsLoading || allMunicipalitiesLoading || allParishesLoading || allLocalitiesLoading || allZonesLoading,
+			is_loading: allDistrictsLoading || allMunicipalitiesLoading || allParishesLoading || allLocalitiesLoading,
 		},
-	}), [getDistrict, getLocality, getMunicipality, getParish, getZone, queryLocation, districtsMap, localitiesMap, municipalitiesMap, parishesMap, zonesMap, allDistrictsLoading, allMunicipalitiesLoading, allParishesLoading, allLocalitiesLoading, allZonesLoading]);
+	}), [getDistrict, getLocality, getMunicipality, getParish, queryLocation, districtsMap, localitiesMap, municipalitiesMap, parishesMap, allDistrictsLoading, allMunicipalitiesLoading, allParishesLoading, allLocalitiesLoading]);
 
 	//
 	// E. Render components
