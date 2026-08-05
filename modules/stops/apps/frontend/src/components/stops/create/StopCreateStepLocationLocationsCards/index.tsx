@@ -15,14 +15,14 @@ export function StopCreateStepLocationLocationsCards() {
 	const stopCreateContext = useStopCreateContext();
 	const locationsContext = useLocationsContext();
 
-	const [district_id, locality_id, municipality_id, parish_id] = stopCreateContext.form.instance.getValues(['district_id', 'locality_id', 'municipality_id', 'parish_id']);
+	const [districtId, localityId, municipalityId, parishId] = stopCreateContext.form.instance.getValues(['district_id', 'locality_id', 'municipality_id', 'parish_id']);
 
 	const [districtLabel, localityLabel, municipalityLabel, parishLabel] = useMemo(() => [
-		locationsContext.actions.getDistrict(district_id)?.name ?? '-',
-		locationsContext.actions.getLocality(locality_id)?.name ?? '-',
-		locationsContext.actions.getMunicipality(municipality_id)?.name ?? '-',
-		locationsContext.actions.getParish(parish_id)?.name ?? '-',
-	], [district_id, locality_id, municipality_id, parish_id]);
+		locationsContext.actions.getDistrict(districtId)?.name ?? '-',
+		locationsContext.actions.getLocality(localityId)?.name ?? '-',
+		locationsContext.actions.getMunicipality(municipalityId)?.name ?? '-',
+		locationsContext.actions.getParish(parishId)?.name ?? '-',
+	], [districtId, localityId, municipalityId, parishId]);
 
 	//
 	// C. Render components
