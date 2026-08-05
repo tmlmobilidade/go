@@ -2,8 +2,8 @@
 
 /* * */
 
-import { Button, PasswordInput } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { Button, PasswordInput } from '@tmlmobilidade/ui';
 import { type FormEvent, type PropsWithChildren, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -64,10 +64,9 @@ export function PasswordCheck({ children, id, password }: PropsWithChildren<Pass
 
 			<Button
 				className={styles.validateButton}
+				label="Validate"
 				type="submit"
-			>
-				Validate
-			</Button>
+			/>
 
 		</form>
 	);

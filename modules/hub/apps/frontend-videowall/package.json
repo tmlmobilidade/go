@@ -15,13 +15,13 @@
 		"test:aggregate-layout": "node --experimental-strip-types ./src/tests/aggregate-card-layout.ts",
 		"test:agency-config": "node --import tsx ./src/tests/agency-config.ts",
 		"test:ccfl-layout": "node --experimental-strip-types ./src/tests/ccfl-layout.ts",
+		"test:mantine-provider": "node --experimental-strip-types ./src/tests/mantine-provider-compatibility.ts",
 		"test:metric-card-refresh": "node --import tsx ./src/tests/metric-card-refresh.ts",
 		"test:metric-number-typography": "node --import tsx ./src/tests/metric-number-typography.ts",
 		"test:mocks": "node --import tsx ./src/tests/videowall-mocks.ts"
 	},
 	"dependencies": {
-		"@mantine/core": "9.4.2",
-		"@mantine/hooks": "9.4.2",
+		"@mantine/hooks": "9.5.1",
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
