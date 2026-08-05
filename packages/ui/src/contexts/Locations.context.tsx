@@ -1,14 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Zone } from '@tmlmobilidade/go-types-offer';
-import { normalizeString } from '@tmlmobilidade/strings';
-import { standardSwrFetcher } from '@tmlmobilidade/utils';
-import { createContext, useCallback, useContext, useMemo } from 'react';
-import useSWR from 'swr';
 import { type District, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
