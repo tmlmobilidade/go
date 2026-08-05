@@ -29,10 +29,8 @@ server.register(
 		instance.get('/vehicles/positions/gtfs', getVehiclePositionsGtfsRtJson);
 		instance.get('/vehicles/positions/gtfs.pb', getVehiclePositionsGtfsRtProtobuf);
 
-		instance.get('/trip-updates', getTripUpdatesGtfsRtJson);
-		instance.get('/trip-updates/gtfs', getTripUpdatesGtfsRtJson);
-		instance.get('/trip-updates/gtfs.pb', getTripUpdatesGtfsRtProtobuf);
-
+		instance.get('/eta/gtfs.pb', getTripUpdatesGtfsRtProtobuf);
+		instance.get('/eta/gtfs', getTripUpdatesGtfsRtJson);
 		instance.get('/eta', getEtaAll);
 		instance.get('/eta/by-trip/:id', getEtaByTripId);
 		instance.get('/eta/by-stop/:id', getEtaByStopId);
