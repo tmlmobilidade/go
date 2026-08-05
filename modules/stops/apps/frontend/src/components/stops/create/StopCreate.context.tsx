@@ -1,36 +1,19 @@
 'use client';
 
-import { closeCreateStopModal } from '@/components/stops/create/StopCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
-import { type CreateStopDto, CreateStopSchema, type Stop, StopSchema } from '@tmlmobilidade/types';
-import { keepUrlParams, useContextForm, useContextFormWatch, useToast } from '@tmlmobilidade/ui';
+import { CreateStopDto, Stop } from '@tmlmobilidade/types';
+import { CreateContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useHandleUpdate, useLocationsContext, useMultiStep, UseMultiStepReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
 
-interface StopCreateContextState {
-	actions: {
-		createNewStop: () => void
-		setLatLng: (latitude: number, longitude: number) => void
-	}
-	data: {
-		coordinates: [number | undefined, number | undefined]
-		form: ReturnType<typeof useContextForm<CreateStopDto>>['form']
-	}
-	flags: {
-		error: Error | null
-		isSaving: boolean
-	}
-	modal: {
-		current_step: number
-		current_step_valid: boolean
-		nextStep: () => void
-		previousStep: () => void
+interface StopCreateContextState extends CreateContextStateTemplate<CreateStopDto> {
+	form: CreateContextStateTemplate<CreateStopDto>['form'] & {
+		multi_step: UseMultiStepReturnType
 	}
 }
 
@@ -54,162 +37,127 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
+	const locationsContext = useLocationsContext();
 	const router = useRouter();
 
-	const [isError, setIsError] = useState<Error | null>(null);
-	const [isSaving, setIsSaving] = useState(false);
+	//
+	// B. Setup form
 
-	const [modalCurrentStepState, setModalCurrentStepState] = useState<number>(1);
-	const [modalCurrentStepValidState, setModalCurrentStepValidState] = useState<boolean>(false);
-	const [coordinates, setCoordinates] = useState<[number | undefined, number | undefined]>([undefined, undefined]);
+	const { form, unblock } = useContextForm<CreateStopDto>({
+		// schema: CreateStopSchema,
+	});
+
+	const nameValue = useContextFormWatch({ control: form.control, name: 'name' });
+	const latitudeValue = useContextFormWatch({ control: form.control, name: 'latitude' });
+	const longitudeValue = useContextFormWatch({ control: form.control, name: 'longitude' });
+
+	const [loadingLocations, setLoadingLocations] = useState(false);
 
 	//
-	// B. Fetch data
+	// C. Fetch data
 
 	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
 
 	//
-	// C. Setup form
+	// D. Side Effects
 
-	const { form } = useContextForm<CreateStopDto>({});
-	const nameValue = useContextFormWatch({ control: form.control, name: 'name' });
-	const shortNameValue = useContextFormWatch({ control: form.control, name: 'short_name' });
-	const latitudeValue = useContextFormWatch({ control: form.control, name: 'latitude' });
-	const longitudeValue = useContextFormWatch({ control: form.control, name: 'longitude' });
-	const districtIdValue = useContextFormWatch({ control: form.control, name: 'district_id' });
-	const municipalityIdValue = useContextFormWatch({ control: form.control, name: 'municipality_id' });
-
-	//
-	// D. Handle actions
-
-	const previousStep = () => {
-		setModalCurrentStepState((prev) => {
-			if (prev > 1) return prev - 1;
-			return 1;
-		});
-	};
-
-	const nextStep = () => {
-		setModalCurrentStepState((prev) => {
-			if (prev < 3) return prev + 1;
-			return 3;
-		});
-	};
-
-	const setLatLng = useCallback((latitude: number, longitude: number) => {
-		setIsError(null);
-
-		const validatedLatitude = isValidLatitude(latitude);
-		const validatedLongitude = isValidLongitude(longitude);
-
-		if (!validatedLatitude || !validatedLongitude) {
-			setIsError(new Error('Coordenadas inválidas. Por favor verifique os valores introduzidos.'));
+	/**
+	 * Sets the abbreviated and TTS names when the name changes.
+	 */
+	useEffect(() => {
+		// Reset the fields if the name is not a string
+		if (typeof nameValue !== 'string') {
+			form.resetField('short_name');
+			form.resetField('tts_name');
 			return;
 		}
 
-		const { latitude: currentLat, longitude: currentLng } = form.getValues();
-		if (currentLat === validatedLatitude && currentLng === validatedLongitude) return;
-
-		setCoordinates([validatedLatitude, validatedLongitude]);
-		form.setValue('latitude', validatedLatitude);
-		form.setValue('longitude', validatedLongitude);
-	}, [form]);
-
-	useEffect(() => {
-		// Get latest form values
-		const currentValues = form.getValues();
-		// By default, set the current step as invalid
-		setModalCurrentStepValidState(false);
-		// Validate Step 1
-		if (modalCurrentStepState === 1) {
-			const hasValidLatitude = isValidLatitude(currentValues.latitude);
-			const hasValidLongitude = isValidLongitude(currentValues.longitude);
-			const hasValidDistrict = currentValues.district_id !== undefined;
-			const hasValidMunicipality = currentValues.municipality_id !== undefined;
-			const hasValidParish = true; // currentValues.parish_id !== undefined; // TODO - Verify missing parishes
-			setModalCurrentStepValidState(hasValidLatitude && hasValidLongitude && hasValidDistrict && hasValidMunicipality && hasValidParish);
-		}
-		// Validate Step 2
-		if (modalCurrentStepState === 2) {
-			const hasNameWithinLimits = currentValues.name?.length >= StopSchema.shape.name.minLength && currentValues.name?.length <= StopSchema.shape.name.maxLength;
-			const hasShortNameWithinLimits = currentValues.short_name?.length >= StopSchema.shape.short_name.minLength && currentValues.short_name?.length <= StopSchema.shape.short_name.maxLength;
-			setModalCurrentStepValidState(hasNameWithinLimits && hasShortNameWithinLimits);
-		}
-		// Validate Step 3
-		if (modalCurrentStepState === 3) {
-			setModalCurrentStepValidState(true);
-		}
-	}, [districtIdValue, form, latitudeValue, longitudeValue, modalCurrentStepState, municipalityIdValue, nameValue, shortNameValue]);
-
-	useEffect(() => {
-		if (typeof nameValue !== 'string') return;
 		// Build the abbreviated and TTS names
 		const shortName = getStopShortName(nameValue);
 		const ttsName = getStopTtsName(nameValue);
+
 		// Set the form values
 		form.setValue('short_name', shortName);
 		form.setValue('tts_name', ttsName);
-	}, [form, nameValue]);
+	}, [nameValue, form]);
 
-	const handleCreateStop = async () => {
-		setIsSaving(true);
-		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_LIST, 'POST', form.getValues());
-		if (response.error) {
-			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao criar organização' });
-				setIsSaving(false);
-				return;
-			}
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao criar organização' });
-			}
-			setIsSaving(false);
-			return;
-		}
-		form.reset();
-		setCoordinates([undefined, undefined]);
-		allStopsMutate();
-		setIsSaving(false);
-		closeCreateStopModal();
-		useToast.success({ message: 'Paragem criada com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(String(response.data._id))));
-	};
+	/**
+	 * Fetches Location data when the latitude and longitude change.
+	 */
+	useEffect(() => {
+		if (!latitudeValue || !longitudeValue) return;
+		setLoadingLocations(true);
+		locationsContext.actions.queryLocation(latitudeValue, longitudeValue).then((location) => {
+			if (!location) return;
+			form.setValue('district_id', location.district?._id);
+			form.setValue('municipality_id', location.municipality?._id);
+			form.setValue('parish_id', location.parish?._id);
+			form.setValue('locality_id', location.locality?._id);
+		}).finally(() => setLoadingLocations(false));
+	}, [latitudeValue, longitudeValue]);
 
 	//
-	// E. Define context value
+	// E. Multi-step setup
+	// Steps are memoized so useMultiStep only recalculates when agencies or permissions change,
+	// not on every form value change.
 
-	const contextValue: StopCreateContextState = useMemo(() => ({
-		actions: {
-			createNewStop: handleCreateStop,
-			setLatLng,
+	const steps = useMemo(() => [
+		{
+			id: 'location',
+			isValid: () => !!form.getValues('latitude') && !!form.getValues('longitude') && !!form.getValues('district_id') && !!form.getValues('municipality_id') && !!form.getValues('parish_id'),
+			isVisible: true,
+			label: 'Localização',
+			order: 0,
 		},
-		data: {
-			coordinates,
-			form,
+		{
+			id: 'names',
+			isValid: () => !!form.getValues('name') && !!form.getValues('short_name') && !!form.getValues('tts_name'),
+			isVisible: true,
+			label: 'Nomes',
+			order: 1,
+		},
+		{
+			id: 'summary',
+			isValid: () => true,
+			isVisible: true,
+			label: 'Resumo',
+			order: 2,
+		},
+	], [form]);
+
+	const multiStep = useMultiStep({ steps });
+
+	//
+	// F. Submit action
+
+	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.BASE, 'POST', form.getValues()),
+		onSuccess: (updatedItem) => {
+			form.reset();
+			unblock();
+			allStopsMutate();
+			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(updatedItem._id.toString())));
+		},
+	});
+
+	const contextValue = useMemo<StopCreateContextState>(() => ({
+		actions: {
+			create: handleCreate,
 		},
 		flags: {
-			error: isError,
-			isSaving,
+			canCreate: true,
+			error: undefined,
+			isCreating: isCreating,
+			isLoading: loadingLocations,
 		},
-		modal: {
-			current_step: modalCurrentStepState,
-			current_step_valid: modalCurrentStepValidState,
-			nextStep,
-			previousStep,
+		form: {
+			instance: form,
+			multi_step: multiStep,
 		},
-	}), [
-		coordinates,
-		form,
-		isError,
-		isSaving,
-		modalCurrentStepState,
-		modalCurrentStepValidState,
-		setLatLng,
-	]);
+	}), [form, handleCreate, isCreating, multiStep]);
 
 	//
-	// F. Render components
+	// E. Render components
 
 	return (
 		<StopCreateContext.Provider value={contextValue}>
