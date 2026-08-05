@@ -106,7 +106,7 @@ export async function analyzeRides() {
 
 				const updatedRide = RideSchema.parse({
 					...augmentedRideData,
-					system_status: 'complete',
+					processing_status: 'complete',
 					updated_at: Dates.now('utc').unix_timestamp,
 				});
 
