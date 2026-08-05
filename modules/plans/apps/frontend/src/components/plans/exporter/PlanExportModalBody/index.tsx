@@ -2,6 +2,7 @@
 
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { usePlanExportModalContext } from '@/contexts/PlanExport.context';
+import { Dates } from '@tmlmobilidade/dates';
 import { Divider, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -20,10 +21,15 @@ export function PlanExportModalBody() {
 
 	const plansOptions = useMemo(() => plansListContext.data.raw
 		.filter(plan => plan.agency_id === selectedAgencyId)
-		.map(plan => ({
-			label: `#${plan._id} · ${plan.gtfs_feed_info.feed_start_date} - ${plan.gtfs_feed_info.feed_end_date}`,
-			value: plan._id,
-		})), [plansListContext.data.raw, selectedAgencyId]);
+		.map((plan) => {
+			const startDate = Dates.fromOperationalDate(plan.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toFormat('dd-MM-yyyy');
+			const endDate = Dates.fromOperationalDate(plan.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toFormat('dd-MM-yyyy');
+
+			return {
+				label: `#${plan._id} · ${startDate} - ${endDate}`,
+				value: plan._id,
+			};
+		}), [plansListContext.data.raw, selectedAgencyId]);
 
 	//
 	// B. Render components
