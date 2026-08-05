@@ -36,6 +36,7 @@ export const AGENCY_ROUTE_CONFIG = {
 	ccfl: {
 		agency_id: 'IA9T6',
 		label: 'CCFL',
+		name: 'Carris',
 		number_animation: DEFAULT_NUMBER_ANIMATION_CONFIG,
 	},
 	cm: {

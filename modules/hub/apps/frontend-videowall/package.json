@@ -14,6 +14,7 @@
 		"lint:fix": "eslint --fix ./src",
 		"test:aggregate-layout": "node --experimental-strip-types ./src/tests/aggregate-card-layout.ts",
 		"test:agency-config": "node --import tsx ./src/tests/agency-config.ts",
+		"test:ccfl-layout": "node --experimental-strip-types ./src/tests/ccfl-layout.ts",
 		"test:metric-card-refresh": "node --import tsx ./src/tests/metric-card-refresh.ts",
 		"test:metric-number-typography": "node --import tsx ./src/tests/metric-number-typography.ts",
 		"test:mocks": "node --import tsx ./src/tests/videowall-mocks.ts"

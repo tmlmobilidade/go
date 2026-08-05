@@ -2,12 +2,11 @@
 
 /* * */
 
-import { DelayCard } from '@/cards-new/DelayCard';
-import { DemandCard } from '@/cards-new/DemandCard';
-import { ServiceComplianceCard } from '@/cards-new/ServiceComplianceCard';
-import { VkmExecutionCard } from '@/cards-new/VkmExecutionCard';
-import { MetricGrid } from '@/components/cards/MetricGrid';
-import { Clock } from '@/components/common/Clock';
+import { DelayCard } from '@/cards/DelayCard';
+import { DemandCard } from '@/cards/DemandCard';
+import { ServiceComplianceCard } from '@/cards/ServiceComplianceCard';
+import { VkmExecutionCard } from '@/cards/VkmExecutionCard';
+import { PanelGrid } from '@/components/common/PanelGrid';
 import { useVideowallMetricsContext } from '@/contexts/VideowallMetrics.context';
 
 /* * */
@@ -28,7 +27,7 @@ export function CcflDashboard() {
 	// F. Render components
 
 	return (
-		<MetricGrid layout="primaryWithFourDetails">
+		<PanelGrid fillContainer>
 			<DemandCard
 				agencyLabel="CCFL"
 				isLoading={flags.is_demand_loading}
@@ -64,8 +63,7 @@ export function CcflDashboard() {
 				trend={vkmExecutionMetrics?.total.trend}
 				value={vkmExecutionMetrics?.total.value}
 			/>
-			<Clock size="md" />
-		</MetricGrid>
+		</PanelGrid>
 	);
 
 	//

@@ -14,7 +14,7 @@ const cardNames = [
 
 for (const cardName of cardNames) {
 	const cardStyles = readFileSync(
-		new URL(`../cards-new/${cardName}/styles.module.css`, import.meta.url),
+		new URL(`../cards/${cardName}/styles.module.css`, import.meta.url),
 		'utf8',
 	);
 
@@ -31,7 +31,7 @@ for (const cardName of cardNames) {
 }
 
 const demandCard = readFileSync(
-	new URL('../cards-new/DemandCard/index.tsx', import.meta.url),
+	new URL('../cards/DemandCard/index.tsx', import.meta.url),
 	'utf8',
 );
 

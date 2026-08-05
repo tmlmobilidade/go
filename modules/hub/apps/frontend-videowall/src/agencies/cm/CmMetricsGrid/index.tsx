@@ -4,10 +4,10 @@
 
 import { type CmAgencyId } from '@/agencies/cm/constants';
 import { AGENCY_ROUTE_CONFIG } from '@/agencies/config';
-import { DelayCard } from '@/cards-new/DelayCard';
-import { DemandCard } from '@/cards-new/DemandCard';
-import { ServiceComplianceCard } from '@/cards-new/ServiceComplianceCard';
-import { VkmExecutionCard } from '@/cards-new/VkmExecutionCard';
+import { DelayCard } from '@/cards/DelayCard';
+import { DemandCard } from '@/cards/DemandCard';
+import { ServiceComplianceCard } from '@/cards/ServiceComplianceCard';
+import { VkmExecutionCard } from '@/cards/VkmExecutionCard';
 import { PanelGrid } from '@/components/common/PanelGrid';
 import { useVideowallMetricsContext } from '@/contexts/VideowallMetrics.context';
 import { getCmMetricBreakdowns } from '@/utils/cm-metric-breakdowns';

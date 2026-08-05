@@ -15,7 +15,8 @@ import styles from './styles.module.css';
 
 type Props =
   | { agencyName: string, areaNumber: number, scope: 'agency' }
-  | { scope: 'aggregate' };
+  | { scope: 'aggregate' }
+  | { agencyId: string, agencyName: string, scope: 'standalone', secondaryLabel: string };
 
 interface CurrentTime {
 	date: Date
@@ -54,12 +55,15 @@ export function VideowallHeader(props: Props) {
 		weekday: 'long',
 	}), [i18n.language]);
 	const formattedDate = currentTime ? dateFormatter.format(currentTime.date) : '—';
-	const agencyName = props.scope === 'agency'
-		? props.agencyName
-		: t('default:videowall.header.aggregate_title');
+	const agencyName = props.scope === 'aggregate'
+		? t('default:videowall.header.aggregate_title')
+		: props.agencyName;
 	const secondaryLabel = props.scope === 'agency'
 		? t('default:videowall.header.secondary_label', '', { area: props.areaNumber })
-		: t('default:videowall.header.aggregate_secondary_label');
+		: props.scope === 'aggregate'
+			? t('default:videowall.header.aggregate_secondary_label')
+			: props.secondaryLabel;
+	const logoAgencyId = props.scope === 'standalone' ? props.agencyId : 'CM';
 
 	useEffect(() => {
 		setCurrentTime(getCurrentTime());
@@ -76,9 +80,9 @@ export function VideowallHeader(props: Props) {
 			<div className={styles.identity}>
 				<div className={styles.operatorLogo}>
 					<Image
-						alt="Carris Metropolitana"
+						alt={agencyName}
 						height={120}
-						src={getAgencyLogo('CM', '180x120', 'light')}
+						src={getAgencyLogo(logoAgencyId, '180x120', 'light')}
 						width={180}
 						priority
 					/>
