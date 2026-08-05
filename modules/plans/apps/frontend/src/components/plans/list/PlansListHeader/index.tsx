@@ -1,6 +1,6 @@
 /* * */
 
-import { openGtfsExportModal } from '@/components/plans/exporter/GtfsExportModalOpen';
+import { openPlanExportModal } from '@/components/plans/exporter/PlanExportModalOpen';
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { IconDots, IconFileDownload, IconFileTypePdf } from '@tabler/icons-react';
 import { Label, Menu, MenuItem, MenuLabel, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
@@ -27,7 +27,7 @@ export function PlansListHeader() {
 				<MenuLabel>Ações</MenuLabel>
 				<MenuItem
 					leftSection={<IconFileDownload size={20} />}
-					onClick={openGtfsExportModal}
+					onClick={openPlanExportModal}
 					title="Exportar planos"
 				/>
 				<MenuItem

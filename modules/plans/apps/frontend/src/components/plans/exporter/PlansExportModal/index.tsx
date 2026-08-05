@@ -1,7 +1,7 @@
 'use client';
 
-import { GtfsExportModalBody } from '@/components/plans/exporter/GtfsExportModalBody';
-import { GtfsExportModalHeader } from '@/components/plans/exporter/GtfsExportModalHeader';
+import { GtfsExportModalBody } from '@/components/plans/exporter/PlansExportModalBody';
+import { GtfsExportModalHeader } from '@/components/plans/exporter/PlansExportModalHeader';
 import { closeModal } from '@tmlmobilidade/ui';
 
 import { GTFS_EXPORT_MODAL_ID } from './constants';

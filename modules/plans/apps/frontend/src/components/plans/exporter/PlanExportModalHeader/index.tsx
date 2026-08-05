@@ -1,24 +1,24 @@
 'use client';
 
-import { useGtfsExportModalContext } from '@/contexts/GtfsExport.context';
+import { usePlanExportModalContext } from '@/contexts/PlanExport.context';
 import { IconFileDownload } from '@tabler/icons-react';
 import { Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
-interface GtfsExportModalHeaderProps {
+interface PlanExportModalHeaderProps {
 	onClose: () => void
 }
 
 /* * */
 
-export function GtfsExportModalHeader({ onClose }: GtfsExportModalHeaderProps) {
+export function PlanExportModalHeader({ onClose }: PlanExportModalHeaderProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const context = useGtfsExportModalContext();
+	const context = usePlanExportModalContext();
 
 	//
 	// B. Render components
@@ -26,14 +26,14 @@ export function GtfsExportModalHeader({ onClose }: GtfsExportModalHeaderProps) {
 	return (
 		<Toolbar>
 			<CloseButton onClick={onClose} type="close" />
-			<Label size="lg" caps singleLine>Exportar GTFS</Label>
+			<Label size="lg" caps singleLine>Exportar plano</Label>
 			<Spacer />
 			<Button
 				disabled={!context.flags.canSave}
 				icon={<IconFileDownload />}
 				label="Exportar"
 				loading={context.flags.loading}
-				onClick={context.actions.exportGtfs}
+				onClick={context.actions.exportPlan}
 			/>
 		</Toolbar>
 	);

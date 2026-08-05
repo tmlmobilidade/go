@@ -1,22 +1,22 @@
 'use client';
 
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
-import { useGtfsExportModalContext } from '@/contexts/GtfsExport.context';
+import { usePlanExportModalContext } from '@/contexts/PlanExport.context';
 import { Divider, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
-export function GtfsExportModalBody() {
+export function PlanExportModalBody() {
 	//
 
 	//
 	// A. Setup variables
 
-	const context = useGtfsExportModalContext();
+	const context = usePlanExportModalContext();
 	const plansListContext = usePlansListContext();
 	const agencyOptions = plansListContext.filters.agency.options;
-	const selectedAgencyId = context.data.form.values.agency_ids[0];
+	const selectedAgencyId = context.data.agencyId;
 
 	const plansOptions = useMemo(() => plansListContext.data.raw
 		.filter(plan => plan.agency_id === selectedAgencyId)
@@ -56,7 +56,7 @@ export function GtfsExportModalBody() {
 							description="Selecione um plano deste operador"
 							label="Selecionar plano"
 							onChange={context.actions.setPlanId}
-							value={context.data.form.values.plan_ids[0] ?? null}
+							value={context.data.planId}
 							w="100%"
 						/>
 					</Section>

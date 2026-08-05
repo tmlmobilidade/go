@@ -1,29 +1,29 @@
-import { GtfsExportModalContextProvider } from '@/contexts/GtfsExport.context';
+import { PlanExportModalContextProvider } from '@/contexts/PlanExport.context';
 import { ExportsContextProvider, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 import { PlansListContextProvider } from '../../list/PlansList.context';
-import { GtfsExportModal } from '../GtfsExportModal';
-import { GTFS_EXPORT_MODAL_ID } from '../GtfsExportModal/constants';
+import { PlanExportModal } from '../PlanExportModal';
+import { PLAN_EXPORT_MODAL_ID } from '../PlanExportModal/constants';
 
-export { GTFS_EXPORT_MODAL_ID } from '../GtfsExportModal/constants';
+export { PLAN_EXPORT_MODAL_ID } from '../PlanExportModal/constants';
 
 /* * */
 
-export const openGtfsExportModal = () => {
+export const openPlanExportModal = () => {
 	openModal({
 		children: (
 			<MeContextProvider>
 				<ExportsContextProvider>
 					<PlansListContextProvider>
-						<GtfsExportModalContextProvider>
-							<GtfsExportModal />
-						</GtfsExportModalContextProvider>
+						<PlanExportModalContextProvider>
+							<PlanExportModal />
+						</PlanExportModalContextProvider>
 					</PlansListContextProvider>
 				</ExportsContextProvider>
 			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
-		modalId: GTFS_EXPORT_MODAL_ID,
+		modalId: PLAN_EXPORT_MODAL_ID,
 		padding: 0,
 		size: 'xl',
 		styles: { content: { overflow: 'scroll' } },

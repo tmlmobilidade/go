@@ -9,6 +9,7 @@ import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import fs from 'fs';
 
+import { exportPlanFile } from './export-plan.js';
 import { exportRidesFile } from './export-rides.js';
 import { exportSamsAnalysisFile } from './export-sams-analysis.js';
 import { exportStopsFile } from './export-stops.js';
@@ -61,6 +62,12 @@ async function main() {
 				case 'vehicle':
 					pathToFile = await exportVehiclesFile(fileExport);
 					break;
+				case 'plan': {
+					await goDb.core.exports.updateById(fileExport._id, { processing_status: 'processing' });
+					const file = await exportPlanFile(fileExport);
+					await goDb.core.exports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
+					continue;
+				}
 				case 'gtfs':
 				default:
 					// TODO: Implement GTFS export
