@@ -36,10 +36,7 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
-		"@tmlmobilidade/go-types-operation": "*",
-		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/go-types-operation": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

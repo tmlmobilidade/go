@@ -3,21 +3,11 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type HashedTrip, type Ride, RideSchema } from '@tmlmobilidade/go-types-operation';
-import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 /* * */
 
 class RidesProviderClass {
 	//
-
-	private static _instance: RidesProviderClass;
-
-	public static async getInstance() {
-		if (!RidesProviderClass._instance) {
-			RidesProviderClass._instance = new RidesProviderClass();
-		}
-		return RidesProviderClass._instance;
-	}
 
 	/**
 	 * Finds a ride by its ID. This helper function selects the Ride with the
@@ -98,4 +88,4 @@ class RidesProviderClass {
 
 /* * */
 
-export const ridesProvider = asyncSingletonProxy(RidesProviderClass);
+export const ridesProvider = new RidesProviderClass();
