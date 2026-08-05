@@ -27,6 +27,7 @@ export function parseHistoricalRide(ride: HistoricalRide) {
 export function parseRide(ride: Ride) {
 	return {
 		_id: ride._id,
+		agency_id: ride.agency_id,
 		end_time_observed: ride.end_time_observed,
 		hashed_shape_id: ride.hashed_shape_id,
 		hashed_trip_id: ride.hashed_trip_id,

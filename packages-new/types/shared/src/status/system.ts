@@ -2,8 +2,9 @@
 
 import { z } from 'zod';
 
-/* * */
-
+/**
+ * @deprecated Use ProcessingStatusValues instead
+ */
 export const SystemStatusValues = [
 	'waiting',
 	'incomplete',
@@ -11,6 +12,12 @@ export const SystemStatusValues = [
 	'error',
 ] as const;
 
+/**
+ * @deprecated Use ProcessingStatusSchema instead
+ */
 export const SystemStatusSchema = z.enum(SystemStatusValues);
 
+/**
+ * @deprecated Use ProcessingStatus instead
+ */
 export type SystemStatus = z.infer<typeof SystemStatusSchema>;

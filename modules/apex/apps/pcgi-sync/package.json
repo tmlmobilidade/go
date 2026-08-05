@@ -31,10 +31,10 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/luxon": "3.7.2",
-		"@types/node": "26.1.1",
+		"@types/luxon": "3.7.3",
+		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.1",
+		"tsx": "4.23.4",
 		"typescript": "6.0.3"
 	}
 }

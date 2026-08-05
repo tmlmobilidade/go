@@ -1,8 +1,10 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { getDistanceBetweenPositions } from '@tmlmobilidade/geo';
-import { type Ride } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type GeoJson2dPosition } from '@tmlmobilidade/go-types-geo';
+import { type RideAnalysisAtLeastOneVehicleEventOnFirstStop } from '@tmlmobilidade/go-types-operation';
+import { getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
 
 /* * */
 
@@ -15,18 +17,23 @@ const BUFFER_RADIUS = 50; // meters
  * → PASS = At least one event on the first stop.
  * → FAIL = No events found on the first stop.
  */
-export function atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData: AnalysisData): Ride['analysis']['AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP'] {
+export function atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData: AnalysisData): RideAnalysisAtLeastOneVehicleEventOnFirstStop {
 	try {
 		//
 
 		//
 		// Skip if the hashed trip is empty
 
-		if (!analysisData.hashed_trip.path.length) {
+		if (!analysisData.hashed_trip.length) {
 			return {
-				grade: 'skip',
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'skip',
+				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_PATH_DATA',
-				value: null,
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+				vehicle_events_on_first_stop_qty: null,
 			};
 		}
 
@@ -35,21 +42,27 @@ export function atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData: Analysis
 
 		if (!analysisData.vehicle_events.length) {
 			return {
-				grade: 'skip',
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'skip',
+				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_VEHICLE_EVENTS',
-				value: null,
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+				vehicle_events_on_first_stop_qty: null,
 			};
 		}
 
 		//
-		// Sort waypoints by stop sequence
+		// Sort hashed trip by stop sequence
 
-		const sortedWaypoints = analysisData.hashed_trip.path.sort((a, b) => {
+		const sortedHashedTrip = analysisData.hashed_trip.sort((a, b) => {
 			return a.stop_sequence - b.stop_sequence;
 		});
 
 		let eventsFoundOnFirstStop = 0;
-		const firstStopPosition = [Number(sortedWaypoints[0].stop_lon), Number(sortedWaypoints[0].stop_lat)];
+
+		const firstStopPosition: GeoJson2dPosition = [sortedHashedTrip[0].stop_lon, sortedHashedTrip[0].stop_lat];
 
 		for (const vehicleEvent of analysisData.vehicle_events) {
 			// Check if the current event is inside the buffer of the first stop.
@@ -59,25 +72,39 @@ export function atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData: Analysis
 
 		if (eventsFoundOnFirstStop > 0) {
 			return {
-				grade: 'pass',
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'pass',
+				operational_date: analysisData.ride.operational_date,
 				reason: 'ONE_OR_MORE_VEHICLE_EVENTS_ON_FIRST_STOP',
-				value: eventsFoundOnFirstStop,
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+				vehicle_events_on_first_stop_qty: eventsFoundOnFirstStop,
 			};
 		}
 
 		return {
-			grade: 'fail',
+			agency_id: analysisData.ride.agency_id,
+			grade_status: 'fail',
+			operational_date: analysisData.ride.operational_date,
 			reason: 'NO_VEHICLE_EVENTS_ON_FIRST_STOP',
-			value: eventsFoundOnFirstStop,
+			remarks: null,
+			ride_id: analysisData.ride._id,
+			updated_at: Dates.now('utc').unix_timestamp,
+			vehicle_events_on_first_stop_qty: eventsFoundOnFirstStop,
 		};
 
 		//
 	} catch (error) {
 		return {
-			error_message: error.message,
-			grade: 'error',
+			agency_id: analysisData.ride.agency_id,
+			grade_status: 'error',
+			operational_date: analysisData.ride.operational_date,
 			reason: null,
-			value: null,
+			remarks: error.message,
+			ride_id: analysisData.ride._id,
+			updated_at: Dates.now('utc').unix_timestamp,
+			vehicle_events_on_first_stop_qty: null,
 		};
 	}
 };

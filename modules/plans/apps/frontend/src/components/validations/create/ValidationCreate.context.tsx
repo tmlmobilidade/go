@@ -3,7 +3,8 @@
 import { closeCreateValidationModal } from '@/components/validations/create/ValidationCreate.modal';
 import { type WorkerMessage } from '@/types/worker';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateGtfsValidationDto, type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
+import { type CreateGtfsValidationDto, type GtfsValidation } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { type SelectDataItem, useDataAgencies, useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';

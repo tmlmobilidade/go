@@ -2,7 +2,8 @@
 
 import { useAnnotationCreateContext } from '@/components/annotations/create/AnnotationCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { AnnotationSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { AnnotationSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { MultiSelect, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */

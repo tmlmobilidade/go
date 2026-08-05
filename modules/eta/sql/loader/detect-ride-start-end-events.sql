@@ -25,8 +25,8 @@
 -- the observed times computed here).
 --
 -- This statement processes ONE BATCH of rides. The batch's ride ids are staged in
--- {database}._detect_hist_rides_batch (column _id String). Detected values are
--- written into {database}._detect_hist_rides_values (Join engine, _id String,
+-- eta._detect_hist_rides_batch (column _id String). Detected values are
+-- written into eta._detect_hist_rides_values (Join engine, _id String,
 -- start_time_observed Nullable(UInt64), end_time_observed Nullable(UInt64)); a
 -- subsequent ALTER TABLE ... UPDATE applies them in place to hist_rides via joinGet.
 --
@@ -41,7 +41,7 @@
 --   {ride_window_pre_ms}     UInt64  ms before scheduled start to start scanning events
 --   {ride_window_post_ms}    UInt64  ms after  scheduled start to stop  scanning events
 
-INSERT INTO {database}._detect_hist_rides_values
+INSERT INTO eta._detect_hist_rides_values
 WITH
     -- Only the rides in this batch (staged ids). first_stop_coordinates /
     -- last_stop_coordinates are Tuple(lat, lon): .1 = lat, .2 = lon.
@@ -57,8 +57,8 @@ WITH
             hr.last_stop_coordinates.2   AS last_stop_lon,
             substring(hr.first_stop_geohash, 1, {geohash_prefix_len}) AS first_stop_geohash_prefix,
             substring(hr.last_stop_geohash,  1, {geohash_prefix_len}) AS last_stop_geohash_prefix
-        FROM {database}.hist_rides AS hr
-        INNER JOIN {database}._detect_hist_rides_batch AS b
+        FROM eta.hist_rides AS hr
+        INNER JOIN eta._detect_hist_rides_batch AS b
             ON hr._id = b._id
     ),
     -- Candidate events: matched to a ride by agency_id + trip_id within the time

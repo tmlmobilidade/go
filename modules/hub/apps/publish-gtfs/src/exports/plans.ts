@@ -2,7 +2,7 @@
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { type OperationalDate, Plan } from '@tmlmobilidade/types';
+import { type OperationalDate, Plan, validateOperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -27,8 +27,8 @@ export async function exportPlansFile(planData: Plan, context: ExportGtfsContext
 	const parsedPlansRow: ExportedPlansRow = {
 		agency_id: planData.agency_id,
 		plan_id: planData._id,
-		plan_end_date: planData.gtfs_feed_info.feed_end_date,
-		plan_start_date: planData.gtfs_feed_info.feed_start_date,
+		plan_end_date: validateOperationalDate(planData.gtfs_feed_info.feed_end_date),
+		plan_start_date: validateOperationalDate(planData.gtfs_feed_info.feed_start_date),
 	};
 
 	await context.writers.plans.write(parsedPlansRow);

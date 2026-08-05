@@ -3,7 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type GtfsValidation, PermissionCatalog, type ProcessingStatus } from '@tmlmobilidade/types';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog, type ProcessingStatus } from '@tmlmobilidade/types';
 
 /**
  * Updates the processing status of a GTFS Validation by ID.

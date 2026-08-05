@@ -2,7 +2,8 @@
 
 import { usePeriodCreateContext } from '@/components/year-periods/create/PeriodsCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, YearPeriodSchema } from '@tmlmobilidade/types';
+import { YearPeriodSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ColorInput, MultiSelect, Section, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */

@@ -20,14 +20,14 @@
 	"dependencies": {
 		"@mantine/core": "9.4.2",
 		"@mantine/hooks": "9.4.2",
-		"@tabler/icons-react": "3.45.0",
+		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.2.12",
-		"nuqs": "2.9.2",
+		"nuqs": "2.9.4",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
 		"react-i18next": "17.0.11",
@@ -39,9 +39,9 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/geojson": "7946.0.16",
-		"@types/node": "26.1.1",
-		"@types/react": "19.2.17",
-		"@types/react-dom": "19.2.3",
+		"@types/node": "26.1.2",
+		"@types/react": "19.2.18",
+		"@types/react-dom": "19.2.4",
 		"typescript": "6.0.3"
 	}
 }
