@@ -131,7 +131,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// F. Submit action
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.BASE, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_LIST, 'POST', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.reset();
 			unblock();
