@@ -2,9 +2,8 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type District, type Locality, type Location, type Municipality, type Parish } from '@tmlmobilidade/types';
-import { fetchData, unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useCallback, useContext, useMemo } from 'react';
-import useSWR from 'swr';
+import { fetchData } from '@tmlmobilidade/utils';
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
@@ -12,6 +11,13 @@ type DistrictsMap = Map<District['_id'], District>;
 type MunicipalitiesMap = Map<Municipality['_id'], Municipality>;
 type ParishesMap = Map<Parish['_id'], Parish>;
 type LocalitiesMap = Map<Locality['_id'], Locality>;
+
+interface LocationsData {
+	districts: District[]
+	localities: Locality[]
+	municipalities: Municipality[]
+	parishes: Parish[]
+}
 
 interface LocationsContextState {
 	actions: {
@@ -29,6 +35,52 @@ interface LocationsContextState {
 	}
 	flags: {
 		is_loading: boolean
+	}
+}
+
+/* * */
+
+let cachedLocations: LocationsData | null = null;
+let loadLocationsPromise: null | Promise<LocationsData> = null;
+
+/**
+ * Loads the locations data from the API.
+ * @returns The locations data.
+ */
+async function loadLocations(): Promise<LocationsData> {
+	// If the locations data is already cached, return it.
+	if (cachedLocations) return cachedLocations;
+	// If the locations data is already being loaded, return the promise.
+	if (loadLocationsPromise !== null) return loadLocationsPromise;
+
+	// Create a promise to load the locations data.
+	loadLocationsPromise = (async () => {
+		// Loads all locations data from the API at once.
+		const [districts, municipalities, parishes, localities] = await Promise.all([
+			fetchData<District[]>(API_ROUTES.locations.LOCATIONS_DISTRICTS),
+			fetchData<Municipality[]>(API_ROUTES.locations.LOCATIONS_MUNICIPALITIES),
+			fetchData<Parish[]>(API_ROUTES.locations.LOCATIONS_PARISHES),
+			fetchData<Locality[]>(API_ROUTES.locations.LOCATIONS_LOCALITIES),
+		]);
+
+		// Cache the locations data.
+		cachedLocations = {
+			districts: districts.data ?? [],
+			localities: localities.data ?? [],
+			municipalities: municipalities.data ?? [],
+			parishes: parishes.data ?? [],
+		};
+
+		// Return the cached locations data.
+		return cachedLocations;
+	})();
+
+	// Wait for the promise to resolve.
+	try {
+		return await loadLocationsPromise;
+	} finally {
+		// Clear the promise.
+		loadLocationsPromise = null;
 	}
 }
 
@@ -52,18 +104,38 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allDistrictsData, isLoading: allDistrictsLoading } = useSWR<District[], Error>(API_ROUTES.locations.LOCATIONS_DISTRICTS, unauthenticatedSwrFetcher, { refreshInterval: Infinity });
-	const { data: allMunicipalitiesData, isLoading: allMunicipalitiesLoading } = useSWR<Municipality[], Error>(API_ROUTES.locations.LOCATIONS_MUNICIPALITIES, unauthenticatedSwrFetcher, { refreshInterval: Infinity });
-	const { data: allParishesData, isLoading: allParishesLoading } = useSWR<Parish[], Error>(API_ROUTES.locations.LOCATIONS_PARISHES, unauthenticatedSwrFetcher, { refreshInterval: Infinity });
-	const { data: allLocalitiesData, isLoading: allLocalitiesLoading } = useSWR<Locality[], Error>(API_ROUTES.locations.LOCATIONS_LOCALITIES, unauthenticatedSwrFetcher, { refreshInterval: Infinity });
+	const [locationsData, setLocationsData] = useState<LocationsData | null>(() => cachedLocations);
+	const [isLoading, setIsLoading] = useState(() => !cachedLocations);
+
+	/**
+	 * Loads the locations data from the API when the component mounts.
+	 * This is done to avoid loading the locations data multiple times.
+	 */
+	useEffect(() => {
+		// If the locations data is already cached, do nothing.
+		if (cachedLocations) return;
+
+		// Create a flag to track if the effect has been cancelled.
+		let cancelled = false;
+
+		// Load the locations data.
+		loadLocations()
+			.then(data => !cancelled && setLocationsData(data))
+			.finally(() => !cancelled && setIsLoading(false));
+
+		// Return a function to set the cancelled flag to true.
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	//
 	// B. Transform data
 
-	const districtsMap = useMemo(() => new Map(allDistrictsData?.map(item => [item._id, item]) ?? []), [allDistrictsData]);
-	const municipalitiesMap = useMemo(() => new Map(allMunicipalitiesData?.map(item => [item._id, item]) ?? []), [allMunicipalitiesData]);
-	const parishesMap = useMemo(() => new Map(allParishesData?.map(item => [item._id, item]) ?? []), [allParishesData]);
-	const localitiesMap = useMemo(() => new Map(allLocalitiesData?.map(item => [item._id, item]) ?? []), [allLocalitiesData]);
+	const districtsMap = useMemo(() => new Map(locationsData?.districts.map(item => [item._id, item]) ?? []), [locationsData?.districts]);
+	const municipalitiesMap = useMemo(() => new Map(locationsData?.municipalities.map(item => [item._id, item]) ?? []), [locationsData?.municipalities]);
+	const parishesMap = useMemo(() => new Map(locationsData?.parishes.map(item => [item._id, item]) ?? []), [locationsData?.parishes]);
+	const localitiesMap = useMemo(() => new Map(locationsData?.localities.map(item => [item._id, item]) ?? []), [locationsData?.localities]);
 
 	//
 	// C. Handle actions
@@ -95,9 +167,9 @@ export const LocationsContextProvider = ({ children }: PropsWithChildren) => {
 			parishes: parishesMap,
 		},
 		flags: {
-			is_loading: allDistrictsLoading || allMunicipalitiesLoading || allParishesLoading || allLocalitiesLoading,
+			is_loading: isLoading,
 		},
-	}), [getDistrict, getLocality, getMunicipality, getParish, queryLocation, districtsMap, localitiesMap, municipalitiesMap, parishesMap, allDistrictsLoading, allMunicipalitiesLoading, allParishesLoading, allLocalitiesLoading]);
+	}), [getDistrict, getLocality, getMunicipality, getParish, queryLocation, districtsMap, localitiesMap, municipalitiesMap, parishesMap, isLoading]);
 
 	//
 	// E. Render components
