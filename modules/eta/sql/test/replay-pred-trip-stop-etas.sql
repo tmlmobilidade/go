@@ -349,6 +349,43 @@ WITH
                eta_seconds, NULL) AS eta_seconds
         FROM eta_calc
     ),
+    go_stop_flags AS (
+        SELECT
+            agency_stop_id,
+            any(go_stop_id) AS go_stop_id
+        FROM (
+            SELECT
+                toString(go_stops._id)             AS go_stop_id,
+                JSONExtractString(flag, 'stop_id') AS agency_stop_id
+            FROM (
+                SELECT
+                    _id,
+                    flags
+                FROM infrastructure.stops
+                SETTINGS mongodb_throw_on_unsupported_query = 0
+            ) AS go_stops
+            ARRAY JOIN JSONExtractArrayRaw(assumeNotNull(go_stops.flags)) AS flag
+        )
+        WHERE agency_stop_id != ''
+        GROUP BY agency_stop_id
+    ),
+    eta_resolved AS (
+        SELECT
+            ec.trip_id,
+            ec.vehicle_id,
+            ec.hashed_trip_id,
+            ec.hashed_shape_id,
+            ec.current_node_index,
+            ec.position_created_at,
+            ec.stop_sequence,
+            coalesce(gs.go_stop_id, ec.stop_id) AS stop_id,
+            ec.stop_name,
+            ec.stop_node_index,
+            ec.eta_seconds
+        FROM eta_clean AS ec
+        LEFT JOIN go_stop_flags AS gs
+            ON gs.agency_stop_id = ec.stop_id
+    ),
     pred AS (
         SELECT
             trip_id,
@@ -368,7 +405,7 @@ WITH
                 fromUnixTimestamp64Milli(position_created_at)
                     + toIntervalSecond(toInt64(round(assumeNotNull(eta_seconds))))
             ) AS eta_at
-        FROM eta_clean
+        FROM eta_resolved
     ),
     trip_summary AS (
         SELECT

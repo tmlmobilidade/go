@@ -3,9 +3,8 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { pipelinePath } from '@tmlmobilidade/go-hub-pckg-sql';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type GtfsRtFeedMessage, type GtfsRtStopTimeUpdate, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type GtfsRtFeedMessage, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -27,19 +26,6 @@ export async function publishTripUpdates() {
 	const globalTimer = new Timer();
 
 	//
-	// Fetch all stops and build a map of legacy_ids to stop_id
-
-	const allStopsData = await goDb.infrastructure.stops.findMany({}, { projection: { _id: 1, flags: 1 }, sort: { _id: 1 } });
-
-	const allStopsMap = new Map<string, number>();
-
-	for (const stopData of allStopsData) {
-		for (const flag of stopData.flags) {
-			allStopsMap.set(flag.stop_id, stopData._id);
-		}
-	}
-
-	//
 	// Initialize a new GTFS-RT feed envelope
 
 	const feedResult: GtfsRtFeedMessage = {
@@ -52,9 +38,8 @@ export async function publishTripUpdates() {
 	};
 
 	//
-	// Retrieve GTFS-RT TripUpdate rows from ClickHouse
-	// and process the stop_time_update to replace the stop_id
-	// with the legacy_id from the stops map.
+	// Retrieve GTFS-RT TripUpdate rows from ClickHouse.
+	// pred_trip_stop_etas already carries GO stop _id (resolved in mv_pred_trip_stop_etas).
 
 	const clickhouseTimer = new Timer();
 
@@ -63,19 +48,7 @@ export async function publishTripUpdates() {
 	const allTripUpdates = await labDb.queryFromFile<ClickHouseEtaGtfsResponse>(pipelinePath('select-eta-gtfs.sql'));
 
 	allTripUpdates.forEach((row) => {
-		// Parse the trip update from the ClickHouse response
 		const tripUpdate: GtfsRtTripUpdate = JSON.parse(row.trip_update);
-		// Parse the stop_time_update to replace the stop_id
-		// with the legacy_id from the stops map
-		const parsedStopTimeUpdates: GtfsRtStopTimeUpdate[] = [];
-		tripUpdate.stop_time_update?.forEach((stopUpdate) => {
-			const stopId = allStopsMap.get(stopUpdate.stop_id);
-			if (!stopId) return;
-			parsedStopTimeUpdates.push({ ...stopUpdate, stop_id: String(stopId) });
-		});
-		// Replace the stop_time_update with the parsed stop_time_update
-		tripUpdate.stop_time_update = parsedStopTimeUpdates;
-		// Add the trip update to the feed result
 		feedResult.entity.push({ id: row.trip_id, trip_update: tripUpdate });
 	});
 
