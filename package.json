@@ -109,7 +109,6 @@
 
 		"helper:alerts:migrate-db": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-alerts-helpers-migrate-db",
 		"helper:dates:seed-periods": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-dates-helpers-seed-periods",
-		"helper:locations:seed-locations": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:offer:backfill-pattern-polylines": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-backfill-pattern-polylines",
 		"helper:offer:seed-fares": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-fares",
 		"helper:offer:seed-lines": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-lines",
