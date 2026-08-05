@@ -16,7 +16,7 @@
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix",
 		"test:passenger-demand": "node --import tsx ./src/tests/passenger-demand.ts",
-		"test:videowall": "node --import tsx ./src/tests/videowall-metrics.ts"
+		"test:ride-metrics": "node --import tsx ./src/tests/ride-metrics.ts"
 	},
 	"dependencies": {
 		"@fastify/websocket": "11.3.0",

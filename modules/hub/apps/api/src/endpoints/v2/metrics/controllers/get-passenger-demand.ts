@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { cacheDb, hubV2PassengerDemandMetricsCacheKey } from '@tmlmobilidade/go-interfaces-cachedb';
+import { cacheDb, hubPassengerDemandMetricsCacheKey } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type PassengerDemandMetrics, PassengerDemandMetricsSchema, type PassengerDemandMetricsSnapshot, PassengerDemandMetricsSnapshotSchema, type PassengerDemandSnapshotAgency, type PassengerDemandTrendPoint, type PassengerDemandValue } from '@tmlmobilidade/go-types-public-info';
 import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
@@ -289,7 +289,7 @@ export async function getPassengerDemand(
 	reply: FastifyReply<PassengerDemandMetrics>,
 ) {
 	const requestedAgencyIds = parseAgencyIds(request.query.agency_ids);
-	const raw = await cacheDb.get(hubV2PassengerDemandMetricsCacheKey);
+	const raw = await cacheDb.get(hubPassengerDemandMetricsCacheKey);
 
 	if (!raw) {
 		throw new HttpException(HTTP_STATUS.SERVICE_UNAVAILABLE, 'Passenger demand metrics are not available');

@@ -45,11 +45,6 @@ The bucket containing the cutoff is intentionally partial: at `16:03:27`, the
 latest closed minute is 16:02, so the 16:00 bucket contains only 16:00, 16:01,
 and 16:02. Historical dates are clipped to the same operational-minute index.
 
-The combined transitional `/v2/metrics/videowall` publication also obtains its
-demand headline from `passenger_demand_realtime`; it no longer performs a
-second direct validation calculation. Its service fields remain a separate
-legacy-compatible projection.
-
 ## API selection and calculations
 
 `GET /v2/metrics/passenger-demand` requires `agency_ids`. The API selects those

@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { cacheDb, hubV2PassengerDemandMetricsCacheKey } from '@tmlmobilidade/go-interfaces-cachedb';
+import { cacheDb, hubPassengerDemandMetricsCacheKey } from '@tmlmobilidade/go-interfaces-cachedb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type PassengerDemandByAgencyByMinute, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
 import { type PassengerDemandMetricsSnapshot, PassengerDemandMetricsSnapshotSchema, type PassengerDemandSeriesPoint, type PassengerDemandSnapshotAgency } from '@tmlmobilidade/go-types-public-info';
@@ -205,7 +205,7 @@ export async function publishPassengerDemandMetrics() {
 	const snapshot = buildPassengerDemandSnapshot(realtimeRows, factRows);
 
 	await cacheDb.set(
-		hubV2PassengerDemandMetricsCacheKey,
+		hubPassengerDemandMetricsCacheKey,
 		JSON.stringify(snapshot),
 	);
 

@@ -346,8 +346,10 @@ export const API_ROUTES = Object.freeze({
 		DEBUG_TIME: `${getModuleConfig('hub', 'api_url')}/v1/debug/time`,
 
 		// METRICS
+		METRICS_DEPARTURE_DELAYS: `${getModuleConfig('hub', 'api_url')}/v2/metrics/departure-delays`,
 		METRICS_PASSENGER_DEMAND: `${getModuleConfig('hub', 'api_url')}/v2/metrics/passenger-demand`,
-		METRICS_VIDEOWALL: `${getModuleConfig('hub', 'api_url')}/v2/metrics/videowall`,
+		METRICS_SERVICE_COMPLIANCE: `${getModuleConfig('hub', 'api_url')}/v2/metrics/service-compliance`,
+		METRICS_VKM_EXECUTION: `${getModuleConfig('hub', 'api_url')}/v2/metrics/vkm-execution`,
 
 		// NETWORK
 		NETWORK_LINES: `${getModuleConfig('hub', 'api_url')}/v1/network/lines`,

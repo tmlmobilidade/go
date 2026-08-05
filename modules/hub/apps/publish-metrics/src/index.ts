@@ -1,7 +1,7 @@
 /* * */
 
 import { publishPassengerDemandMetrics } from '@/tasks/passenger-demand.js';
-import { publishVideowallMetrics } from '@/tasks/videowall.js';
+import { publishRideMetrics } from '@/tasks/ride-metrics.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -10,7 +10,7 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 const tasks = [
 	{ name: 'Passenger Demand Metrics', run: publishPassengerDemandMetrics },
-	// { name: 'Videowall Metrics V2', run: publishVideowallMetrics },
+	{ name: 'Ride Metrics', run: publishRideMetrics },
 ] as const;
 
 const main = async () => {
