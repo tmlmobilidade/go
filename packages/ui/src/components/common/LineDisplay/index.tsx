@@ -12,7 +12,7 @@ import { LineName } from '../LineName';
 
 export interface LineDisplayProps {
 	color?: string
-	lineData?: HubLineLine
+	lineData?: HubLine
 	longName?: string
 	shortName?: string
 	size?: 'lg' | 'md'
