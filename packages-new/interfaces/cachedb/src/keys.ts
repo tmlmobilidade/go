@@ -16,6 +16,7 @@ export const cacheDbKeyValues = [
 	'hub:v1:realtime:vehicles:positions:gtfs',
 	'hub:v1:realtime:eta:json',
 	'hub:v1:realtime:eta:gtfs',
+	'hub:v1:realtime:eta:trip-stop-etas',
 	'hub:v1:network:dates',
 	'hub:v1:network:periods',
 	'hub:v1:network:stops',
@@ -29,4 +30,4 @@ export const cacheDbKeyValues = [
 	`hub:v1:network:shapes:${dynamicKey()}`,
 ] as const;
 
-export type cacheDbKey = typeof cacheDbKeyValues[number];
+export type CacheDbKey = typeof cacheDbKeyValues[number];
