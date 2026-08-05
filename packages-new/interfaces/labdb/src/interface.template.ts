@@ -182,7 +182,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 *   end_date: '2024-12-31',
 	 * });
 	*/
-	public async queryFromFile(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryFromFile<T>> {
+	public async queryFromFile<T>(filePath: string, params?: ClickHouseQueryParams): ReturnType<typeof queryFromFile<T>> {
 		return await queryFromFile<T>(this.client, filePath, params);
 	}
 
@@ -197,7 +197,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 *   { 1: '2024-01-01', 2: '2024-12-31' }
 	 * );
 	*/
-	public async queryFromString(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
+	public async queryFromString<T>(query: string, params?: ClickHouseQueryParams): ReturnType<typeof queryFromString<T>> {
 		return await queryFromString<T>(this.client, query, params);
 	}
 
