@@ -13,13 +13,15 @@ export interface FileButtonProps {
 	icon?: ReactNode
 	label: string
 	loading?: boolean
+	multiple?: boolean
 	onCancel?: () => void
 	onFileChange?: (file: File) => void
+	onFilesChange?: (files: File[]) => void
 }
 
 /* * */
 
-export function FileButton({ accept, disabled, icon, label, loading, onCancel, onFileChange }: FileButtonProps) {
+export function FileButton({ accept, disabled, icon, label, loading, multiple, onCancel, onFileChange, onFilesChange }: FileButtonProps) {
 	//
 
 	//
@@ -35,8 +37,11 @@ export function FileButton({ accept, disabled, icon, label, loading, onCancel, o
 		const input = document.createElement('input');
 		input.type = 'file';
 		input.accept = accept ?? '';
+		input.multiple = multiple ?? false;
 		input.onchange = (event) => {
-			const file = (event.target as HTMLInputElement).files?.[0];
+			const files = Array.from((event.target as HTMLInputElement).files ?? []);
+			if (multiple) onFilesChange?.(files);
+			const file = files[0];
 			if (file && onFileChange) onFileChange(file);
 			setIsLoading(false);
 		};

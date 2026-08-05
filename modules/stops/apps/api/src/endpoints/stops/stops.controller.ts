@@ -12,6 +12,8 @@ import { type Attachment, CreateStopSchema, PermissionCatalog, type Stop, type S
  * This is an example controller that is using the stops interface.
  */
 
+const MAX_STOP_IMAGES = 3;
+
 export class StopsController {
 	//
 
@@ -191,6 +193,151 @@ export class StopsController {
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
+	}
+
+	/**
+	 * Retrieves the images attached to a stop.
+	 */
+	static async getImages(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Attachment[]>) {
+		const foundStop = await goDb.infrastructure.stops.findById(Number(request.params.id));
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		}
+
+		if (foundStop.flags.length !== 0) {
+			const hasPermission = PermissionCatalog.hasPermissionResource({
+				action: PermissionCatalog.all.stops.actions.read,
+				permissions: request.permissions,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.stops.scope,
+				value: foundStop.flags.flatMap(flag => flag.agency_ids),
+			});
+
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this stop');
+			}
+		}
+
+		const imageIds = foundStop.image_ids ?? [];
+		const images = await Promise.all(imageIds.map(imageId => storageProvider.findById(imageId)));
+		reply.send({
+			data: images.filter((image): image is Attachment => image !== null),
+			error: null,
+			statusCode: HTTP_STATUS.OK,
+		});
+	}
+
+	/**
+	 * Uploads an image to a stop and stores its ID in the stop's image ID array.
+	 */
+	static async uploadImage(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Attachment>) {
+		const stopId = Number(request.params.id);
+		const foundStop = await goDb.infrastructure.stops.findById(stopId);
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		}
+
+		if (foundStop.flags.length !== 0) {
+			const hasPermission = PermissionCatalog.hasPermissionResource({
+				action: PermissionCatalog.all.stops.actions.update,
+				permissions: request.permissions,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.stops.scope,
+				value: foundStop.flags.flatMap(flag => flag.agency_ids),
+			});
+
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this stop');
+			}
+		}
+
+		if (foundStop.is_locked) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Stop is locked and cannot be updated');
+		}
+
+		const imageIds = foundStop.image_ids ?? [];
+		if (imageIds.length >= MAX_STOP_IMAGES) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, `A stop can have a maximum of ${MAX_STOP_IMAGES} images`);
+		}
+
+		const file = await request.file();
+		if (!file) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No image file provided');
+		}
+
+		if (!file.mimetype.startsWith('image/')) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Only image files are allowed');
+		}
+
+		const buffer = await file.toBuffer();
+		let uploadedImage: Attachment | undefined;
+		try {
+			uploadedImage = await storageProvider.upload(buffer, {
+				created_by: request.me._id,
+				name: file.filename,
+				resource_id: String(foundStop._id),
+				scope: 'stops',
+				size: buffer.byteLength,
+				type: file.mimetype,
+				updated_by: request.me._id,
+			});
+
+			await goDb.infrastructure.stops.updateById(stopId, {
+				image_ids: [...imageIds, uploadedImage._id],
+				updated_by: request.me._id,
+			});
+		} catch (error) {
+			if (uploadedImage) await storageProvider.delete(uploadedImage._id).catch(() => undefined);
+			throw error;
+		}
+
+		if (!uploadedImage) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to upload image');
+		}
+
+		reply.send({ data: uploadedImage, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Deletes an image from a stop and from the attachment storage.
+	 */
+	static async deleteImage(request: FastifyRequest<{ Params: { id: StopId, imageId: string } }>, reply: FastifyReply<Stop>) {
+		const stopId = Number(request.params.id);
+		const foundStop = await goDb.infrastructure.stops.findById(stopId);
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		}
+
+		if (foundStop.flags.length !== 0) {
+			const hasPermission = PermissionCatalog.hasPermissionResource({
+				action: PermissionCatalog.all.stops.actions.update,
+				permissions: request.permissions,
+				resource_key: 'agency_ids',
+				scope: PermissionCatalog.all.stops.scope,
+				value: foundStop.flags.flatMap(flag => flag.agency_ids),
+			});
+
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this stop');
+			}
+		}
+
+		if (foundStop.is_locked) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'Stop is locked and cannot be updated');
+		}
+
+		const imageIds = foundStop.image_ids ?? [];
+		if (!imageIds.includes(request.params.imageId)) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Image not found');
+		}
+
+		await storageProvider.delete(request.params.imageId);
+		const data = await goDb.infrastructure.stops.updateById(stopId, {
+			image_ids: imageIds.filter(imageId => imageId !== request.params.imageId),
+			updated_by: request.me._id,
+		});
+
+		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**

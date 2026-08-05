@@ -62,6 +62,22 @@ server.register(
 			StopsController.delete,
 		);
 
+		instance.get(
+			'/:id/images',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
+			StopsController.getImages,
+		);
+		instance.post(
+			'/:id/image',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.update]) },
+			StopsController.uploadImage,
+		);
+
+		instance.delete(
+			'/:id/image/:imageId',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.update]) },
+			StopsController.deleteImage,
+		);
 		next();
 	},
 	{ prefix: NAMESPACE },

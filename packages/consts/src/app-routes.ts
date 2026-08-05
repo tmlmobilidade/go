@@ -485,6 +485,9 @@ export const API_ROUTES = Object.freeze({
 
 		// STOPS
 		STOPS_DETAIL: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}`,
+		STOPS_DETAIL_IMAGES: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}/images`,
+		STOPS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}/image`,
+		STOPS_DETAIL_IMAGE_BY_ID: (id: string, imageId: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}/image/${encodeURIComponent(imageId)}`,
 		STOPS_DETAIL_LOCK: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}/lock`,
 		STOPS_LIST: `${getModuleConfig('stops', 'api_url')}/stops`,
 		STOPS_TTS: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/tts/${encodeURIComponent(id)}`,

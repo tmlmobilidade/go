@@ -1,5 +1,6 @@
 /* * */
 
+import fastifyMultipart from '@fastify/multipart';
 import { getModuleConfig } from '@tmlmobilidade/consts';
 import { FastifyService } from '@tmlmobilidade/fastify';
 
@@ -12,6 +13,10 @@ import { FastifyService } from '@tmlmobilidade/fastify';
 		module: 'stops',
 		origin: getModuleConfig('stops', 'cors_origin'),
 		port: getModuleConfig('stops', 'api_port'),
+	});
+
+	await fastifyService.server.register(fastifyMultipart, {
+		limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
 	});
 
 	await fastifyService.start();

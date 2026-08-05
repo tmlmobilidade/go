@@ -2,9 +2,9 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
-import { PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type Attachment, PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
+import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -15,13 +15,16 @@ interface StopDetailContextState {
 		closeCoordinatesEditor: () => void
 		closeNamesEditor: () => void
 		delete: () => void
+		deleteImage: (imageId: string) => Promise<void>
 		lock: () => void
 		openCoordinatesEditor: () => void
 		openNamesEditor: () => void
 		save: () => void
+		uploadImages: (files: File[]) => Promise<void>
 	}
 	data: {
 		form: UseFormReturnType<UpdateStopDto>
+		images: Attachment[] | undefined
 		stop: Stop | undefined
 	}
 	flags: {
@@ -31,11 +34,13 @@ interface StopDetailContextState {
 		error: Error | undefined
 		isCoordinatesEditorOpen: boolean
 		isDeleting: boolean
+		isDeletingImage: boolean
 		isLoading: boolean
 		isLocking: boolean
 		isNamesEditorOpen: boolean
 		isReadOnly: boolean
 		isSaving: boolean
+		isUploadingImages: boolean
 	}
 }
 
@@ -70,6 +75,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 
 	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
 	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId));
+	const { data: imagesData, mutate: imagesMutate } = useSWR<Attachment[]>(API_ROUTES.stops.STOPS_DETAIL_IMAGES(stopId));
 
 	//
 	// C. Setup form
@@ -119,6 +125,39 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			allStopsMutate();
 		},
 	});
+
+	const [isUploadingImages, setIsUploadingImages] = useState(false);
+	const [isDeletingImage, setIsDeletingImage] = useState(false);
+
+	const uploadImages = useCallback(async (files: File[]) => {
+		if (files.length === 0) return;
+
+		setIsUploadingImages(true);
+		for (const file of files) {
+			const response = await uploadFile<Attachment>(API_ROUTES.stops.STOPS_DETAIL_IMAGE(stopId), file);
+			if (response.error) {
+				useToast.error({ message: response.error, title: 'Erro ao carregar imagens' });
+				setIsUploadingImages(false);
+				return;
+			}
+		}
+
+		await Promise.all([imagesMutate(), stopMutate()]);
+		setIsUploadingImages(false);
+	}, [imagesMutate, stopId, stopMutate]);
+
+	const deleteImage = useCallback(async (imageId: string) => {
+		setIsDeletingImage(true);
+		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_IMAGE_BY_ID(stopId, imageId), 'DELETE');
+		if (response.error) {
+			useToast.error({ message: response.error, title: 'Erro ao apagar imagem' });
+			setIsDeletingImage(false);
+			return;
+		}
+
+		await Promise.all([imagesMutate(), stopMutate()]);
+		setIsDeletingImage(false);
+	}, [imagesMutate, stopId, stopMutate]);
 
 	//
 	// F. Setup flags
@@ -176,13 +215,16 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			closeCoordinatesEditor,
 			closeNamesEditor,
 			delete: handleDelete,
+			deleteImage,
 			lock: handleLock,
 			openCoordinatesEditor,
 			openNamesEditor,
 			save: handleSave,
+			uploadImages,
 		},
 		data: {
 			form,
+			images: imagesData,
 			stop: stopData,
 		},
 		flags: {
@@ -192,11 +234,13 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			error: stopError,
 			isCoordinatesEditorOpen,
 			isDeleting,
+			isDeletingImage,
 			isLoading: stopLoading,
 			isLocking,
 			isNamesEditorOpen,
 			isReadOnly,
 			isSaving: isSaving,
+			isUploadingImages,
 		},
 	}), [
 		closeCoordinatesEditor,
@@ -209,16 +253,21 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		canSave,
 		stopError,
 		isDeleting,
+		isDeletingImage,
 		stopLoading,
 		isLocking,
 		isReadOnly,
 		isSaving,
+		isUploadingImages,
+		imagesData,
 		form,
 		stopData,
 		formValuesSignature,
 		handleDelete,
 		handleLock,
 		handleSave,
+		deleteImage,
+		uploadImages,
 	]);
 	//
 	// H. Render components
