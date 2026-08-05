@@ -27,7 +27,7 @@ export async function getLastVehicleEvent(request: FastifyRequest<{ Params: { id
 			LIMIT 1
 		`;
 
-	const lastEvent = await labDb.operation.vehicleEvents.queryFromString<SimplifiedVehicleEvent>(query);
+	const lastEvent = await labDb.operation.simplifiedVehicleEvents.queryFromString(query);
 	if (!lastEvent || lastEvent.length === 0) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No last event found for vehicle');
 
 	//
