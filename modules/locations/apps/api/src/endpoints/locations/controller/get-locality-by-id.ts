@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { Locality } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 import { z } from 'zod';
@@ -31,16 +31,7 @@ export async function getLocalityById(request: FastifyRequest<{ Params: { id: st
 	//
 	// Fetch all locality
 
-	const locality = await goDb.locations.localities.aggregate([
-		{ $match: { _id: request.params.id } },
-		// Remove the geometry field
-		{ $project: { geometry: params.geometry ? 1 : 0 } },
-		// Flatten the properties object into the root object
-		{ $replaceRoot: { newRoot: { $mergeObjects: ['$$ROOT', '$properties'] } } },
-		{ $unset: 'properties' },
-		// Sort by _id
-		{ $sort: { _id: 1 } },
-	]) as unknown as Locality;
+	const locality = await locationsProvider.findLocalityById(request.params.id, { geometry: params.geometry });
 
 	return reply
 		.send({ data: locality, error: null, statusCode: HTTP_STATUS.OK });

@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { Parish } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 import { z } from 'zod';
@@ -33,20 +33,10 @@ export async function getParishes(request: FastifyRequest, reply: FastifyReply<P
 	//
 	// Fetch all parishes
 
-	const parishes = await goDb.locations.parishes.aggregate([
-		// Filter by district ids
-		{ $match: {
-			...(query.district_ids ? { 'properties.district_id': { $in: query.district_ids } } : {}),
-			...(query.municipality_ids ? { 'properties.municipality_id': { $in: query.municipality_ids } } : {}),
-		} },
-		// Remove the geometry field
-		{ $project: { geometry: 0 } },
-		// Flatten the properties object into the root object
-		{ $replaceRoot: { newRoot: { $mergeObjects: ['$$ROOT', '$properties'] } } },
-		{ $unset: 'properties' },
-		// Sort by _id
-		{ $sort: { _id: 1 } },
-	]) as unknown as Parish[];
+	const parishes = await locationsProvider.findParishes({
+		districtIds: query.district_ids,
+		municipalityIds: query.municipality_ids,
+	});
 
 	return reply.send({ data: parishes, error: null, statusCode: HTTP_STATUS.OK });
 
