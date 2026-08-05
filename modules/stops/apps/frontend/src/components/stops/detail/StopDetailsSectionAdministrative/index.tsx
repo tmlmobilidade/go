@@ -36,7 +36,7 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching district data is found
 		if (!matchingDistrictData) return;
 		// Return the matching data
-		return `${matchingDistrictData.name} (${matchingDistrictData.id})`;
+		return `${matchingDistrictData.name} (${matchingDistrictData._id})`;
 	}, [stopDetailContext.data.stop, locationsContext]);
 
 	const associatedMunicipalityValue = useMemo(() => {
@@ -50,7 +50,7 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching municipality data is found
 		if (!matchingMunicipalityData) return;
 		// Return the matching data
-		return `${matchingMunicipalityData.name} (${matchingMunicipalityData.id})`;
+		return `${matchingMunicipalityData.name} (${matchingMunicipalityData._id})`;
 	}, [stopDetailContext.data.stop, locationsContext]);
 
 	const associatedParishValue = useMemo(() => {
@@ -64,7 +64,7 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching parish data is found
 		if (!matchingParishData) return;
 		// Return the matching data
-		return `${matchingParishData.name} (${matchingParishData.id})`;
+		return `${matchingParishData.name} (${matchingParishData._id})`;
 	}, [stopDetailContext.data.stop, locationsContext]);
 
 	const associatedLocalityValue = useMemo(() => {
@@ -78,7 +78,7 @@ export function StopDetailsSectionAdministrative() {
 		// Return if no matching locality data is found
 		if (!matchingLocalityData) return;
 		// Return the matching data
-		return `${matchingLocalityData.name} (${matchingLocalityData.id})`;
+		return `${matchingLocalityData.name} (${matchingLocalityData._id})`;
 	}, [stopDetailContext.data.stop, locationsContext]);
 
 	//

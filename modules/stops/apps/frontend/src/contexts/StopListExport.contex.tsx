@@ -81,7 +81,7 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 			filters.push({ label: 'Conexões', value: stopsListContext.filters.connections.value.join(', ') });
 		}
 		if (stopsListContext.filters.municipality.isActive && stopsListContext.filters.municipality.value.length > 0) {
-			filters.push({ label: 'Municípios', value: Array.from(locationsContext.data.municipalities.values()).filter(option => stopsListContext.filters.municipality.value.includes(option.id)).map(option => option.name).join(', ') });
+			filters.push({ label: 'Municípios', value: Array.from(locationsContext.data.municipalities.values()).filter(option => stopsListContext.filters.municipality.value.includes(option._id)).map(option => option.name).join(', ') });
 		}
 
 		return filters;
