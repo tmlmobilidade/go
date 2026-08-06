@@ -1,5 +1,6 @@
 /* * */
 
+import { type RideAtomicUpdateFields, type RideFilterFields, type RideFilterKey } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type HashedTrip, type Ride, RideSchema } from '@tmlmobilidade/go-types-operation';
@@ -46,6 +47,53 @@ class RidesProviderClass {
 	}
 
 	/**
+	 * Finds rides by filtering fields. This helper function selects the Rides with the
+	 * most recent `updated_at` timestamp for each Ride, dealing with possible momentary duplicates.
+	 * @param fields The fields to filter the Rides by.
+	 * @returns A promise resolving to the rides.
+	 * @throws An error if the rides are not found for the given fields.
+	 */
+	async findRides<K extends RideFilterKey>(fields: RideFilterFields<K>): Promise<Ride[]> {
+		// Build the params object that will be used in the query
+		const params: Record<string, number | string> = {};
+		// Build the where clause from the fields params
+		const where = (Object.keys(fields) as K[])
+			.map((key) => {
+				// If the field is an array, build the IN clause
+				if (Array.isArray(fields[key])) {
+					const placeholders = fields[key].map((v, i) => {
+						const param = `${String(key)}_${i}`;
+						params[param] = v;
+						return `{${param}}`;
+					});
+					return `${String(key)} IN (${placeholders.join(', ')})`;
+				}
+				// If the field is not an array, build the = clause
+				params[String(key)] = fields[key];
+				return `${String(key)} = {${String(key)}}`;
+			})
+			.join(' AND ');
+		// Fetch the rides data from the database in a single query
+		const selectResult = await labDb.operation.rides.queryFromString(
+			`
+				SELECT *
+				FROM rides
+				WHERE ${where}
+				AND updated_at = (
+					SELECT max(updated_at)
+					FROM rides AS r2
+					WHERE r2._id = rides._id
+				)
+			`,
+			params,
+		);
+		// Throw an error if no rides are found
+		if (!selectResult?.length) throw new Error(`Rides not found using the following fields: ${JSON.stringify(fields)} and the following params: ${JSON.stringify(params)}`);
+		// Return the rides found
+		return selectResult;
+	}
+
+	/**
 	 * Finds a HashedTrip by its ID. This helper function selects the HashedTrip with the
 	 * most recent `updated_at` timestamp, dealing with possible momentary duplicates.
 	 * @param hashedTripId The ID of the HashedTrip to find.
@@ -80,6 +128,33 @@ class RidesProviderClass {
 	}
 
 	/**
+	 * Updates rides matching the given filter by inserting new versions with the
+	 * specified updated fields. This function is atomic, meaning that if any of the
+	 * @param filter The fields used to select rides to update.
+	 * @param updates The fields to overwrite on each selected ride.
+	 * @returns The number of new ride versions inserted.
+	 * @throws If no rides are found for the given filter.
+	 */
+	async updateRides<K extends RideFilterKey>(filter: RideFilterFields<K>, updates: RideAtomicUpdateFields): Promise<number> {
+		// Return 0 if there are no updates to apply
+		if (Object.keys(updates).length === 0) return 0;
+		// Fetch the latest versions of the matching rides
+		const foundRides = await this.findRides<K>(filter);
+		if (!foundRides?.length) throw new Error(`Rides not found using the following fields: ${JSON.stringify(filter)}`);
+		// Create the new ride versions with the new
+		// updated fields and the new updated_at timestamp
+		const newRides = foundRides.map(foundRide => ({
+			...foundRide,
+			...updates,
+			updated_at: Dates.now('utc').unix_timestamp,
+		}));
+		// Insert the new ride versions in the database
+		await labDb.operation.rides.insert('JSONEachRow', newRides);
+		// Return the number of new ride versions inserted
+		return newRides.length;
+	}
+
+	/**
 	 * Updates a ride by its ID.
 	 * @param rideId The ID of the Ride to update.
 	 * @param updateData The data to update the Ride with. Supports partial updates
@@ -87,7 +162,7 @@ class RidesProviderClass {
 	 * @returns A promise resolving to the updated ride.
 	 * @throws An error if the ride is not found for the given ID.
 	 */
-	async updateRideById(rideId: string, updateData: Partial<Omit<Ride, 'updated_at'>>): Promise<Ride> {
+	async updateRideById(rideId: string, updateData: RideAtomicUpdateFields): Promise<Ride> {
 		// Fetch the ride data from the database to use as a base for the update
 		const foundRideBeforeUpdateQuery = await labDb.operation.rides.select('*', '_id = $1 ORDER BY updated_at DESC LIMIT 1', { 1: rideId });
 		if (!foundRideBeforeUpdateQuery?.length) throw new Error('Ride not found for ID (when updating ride).');

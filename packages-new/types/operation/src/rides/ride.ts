@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 /* * */
 
-const RideIdentitySchema = z.object({
+export const RideIdentitySchema = z.object({
 	_id: z.string(),
 	agency_code: z.string(),
 	agency_id: z.string(),
@@ -26,7 +26,7 @@ const RideIdentitySchema = z.object({
 	trip_id: z.string(),
 });
 
-const RideScheduleSchema = z.object({
+export const RideScheduleSchema = z.object({
 	end_time_observed: UnixTimestampSchema.nullable().default(null),
 	end_time_scheduled: UnixTimestampSchema,
 	extension_observed: NonNegativeNumberSchema.nullable().default(null),
@@ -35,7 +35,7 @@ const RideScheduleSchema = z.object({
 	start_time_scheduled: UnixTimestampSchema,
 });
 
-const RideApexSchema = z.object({
+export const RideApexSchema = z.object({
 	apex_banking_taps_amount: NonNegativeNumberSchema.nullable().default(null),
 	apex_banking_taps_qty: NonNegativeNumberSchema.nullable().default(null),
 	apex_locations_qty: NonNegativeNumberSchema.nullable().default(null),
@@ -46,7 +46,7 @@ const RideApexSchema = z.object({
 	apex_validations_qty: NonNegativeNumberSchema.nullable().default(null),
 });
 
-const RidePassengersSchema = z.object({
+export const RidePassengersSchema = z.object({
 	passengers_estimated: NonNegativeNumberSchema.nullable().default(null),
 	passengers_observed: NonNegativeNumberSchema.nullable().default(null),
 	passengers_observed_banking_taps_amount: NonNegativeNumberSchema.nullable().default(null),
@@ -58,14 +58,14 @@ const RidePassengersSchema = z.object({
 	passengers_observed_subscription_qty: NonNegativeNumberSchema.nullable().default(null),
 });
 
-const RideOperationSchema = z.object({
+export const RideOperationSchema = z.object({
 	driver_ids: z.array(z.string()).default([]),
 	seen_first_at: UnixTimestampSchema.nullable().default(null),
 	seen_last_at: UnixTimestampSchema.nullable().default(null),
 	vehicle_ids: z.array(z.string()).default([]),
 });
 
-const RideLifecycleSchema = z.object({
+export const RideLifecycleSchema = z.object({
 	processing_status: ProcessingStatusSchema.default('waiting'),
 	updated_at: UnixTimestampSchema,
 });
