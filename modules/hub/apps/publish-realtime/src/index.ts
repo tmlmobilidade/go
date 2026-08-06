@@ -2,8 +2,8 @@
 
 import { publishEtas } from '@/tasks/publish-etas.js';
 import { publishTripUpdates } from '@/tasks/publish-trip-updates.js';
-import { publishVehiclesPositions } from '@/tasks/publish-vehicle-positions.js';
-import { publishVehiclesMetadata } from '@/tasks/publish-vehicles-metadata.js';
+import { publishVehiclesPositions } from '@/tasks/vehicles/publish-vehicle-positions.js';
+import { publishVehiclesMetadata } from '@/tasks/vehicles/publish-vehicles-metadata.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
