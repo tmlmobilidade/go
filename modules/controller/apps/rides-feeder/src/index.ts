@@ -36,6 +36,8 @@ async function main() {
 
 		const plansCollection = await goDb.operation.plans.getCollection();
 
+		await plansCollection.updateOne({ _id: 'YYS70' }, { $set: { 'apps.controller.status': 'waiting' } });
+
 		const allPlansData = await goDb.operation.plans.findMany({ _id: 'YYS70' });
 
 		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');

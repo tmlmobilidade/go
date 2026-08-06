@@ -342,7 +342,7 @@ export async function parsePlan(planData: Plan) {
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error transforming or saving Shapes, Trips or Rides to database.' });
+		Logger.error({ error, message: `Error transforming or saving Shapes, Trips or Rides to database: ${error.message}` });
 		throw new Error('✖︎ Error transforming or saving Shapes, Trips or Rides to database.', error);
 	}
 

@@ -1,22 +1,20 @@
 /* * */
 
-import { GtfsTernarySchema } from '@/shared/ternary.js';
-import { GtfsLocationTypeSchema } from '@/stops/location-type.js';
-import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
+import { GtfsLocationTypeSchema, GtfsTernarySchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsStopsSchema = z.object({
+export const GtfsStrictV29StopsSchema = z.object({
 	level_id: z.string().optional(),
-	location_type: GtfsLocationTypeSchema.optional(),
+	location_type: GtfsLocationTypeSchema,
 	parent_station: z.string().optional(),
 	platform_code: z.string().optional(),
 	stop_code: z.string(),
 	stop_desc: z.string().optional(),
 	stop_id: z.string(),
-	stop_lat: LatitudeSchema,
-	stop_lon: LongitudeSchema,
+	stop_lat: z.number(),
+	stop_lon: z.number(),
 	stop_name: z.string(),
 	stop_timezone: z.string().optional(),
 	stop_url: z.string().optional(),
@@ -29,4 +27,4 @@ export const GtfsStopsSchema = z.object({
  * A stop is a physical location where passengers can board or alight from a transit vehicle.
  * It includes information such as the stop ID, name, location, and type of service.
  */
-export type GtfsStops = z.infer<typeof GtfsStopsSchema>;
+export type GtfsStrictV29Stops = z.infer<typeof GtfsStrictV29StopsSchema>;
