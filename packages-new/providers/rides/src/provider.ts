@@ -82,11 +82,12 @@ class RidesProviderClass {
 	/**
 	 * Updates a ride by its ID.
 	 * @param rideId The ID of the Ride to update.
-	 * @param updateData The data to update the Ride with. Supports partial updates.
+	 * @param updateData The data to update the Ride with. Supports partial updates
+	 * and the `updated_at` timestamp is incremented automatically.
 	 * @returns A promise resolving to the updated ride.
 	 * @throws An error if the ride is not found for the given ID.
 	 */
-	async updateRideById(rideId: string, updateData: Partial<Ride>): Promise<Ride> {
+	async updateRideById(rideId: string, updateData: Partial<Omit<Ride, 'updated_at'>>): Promise<Ride> {
 		// Fetch the ride data from the database to use as a base for the update
 		const foundRideBeforeUpdateQuery = await labDb.operation.rides.select('*', '_id = $1 ORDER BY updated_at DESC LIMIT 1', { 1: rideId });
 		if (!foundRideBeforeUpdateQuery?.length) throw new Error('Ride not found for ID (when updating ride).');
