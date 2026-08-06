@@ -15,6 +15,6 @@ export const RideAnalysisExpectedStartTimeSchema = RideAnalysisBaseSchema.extend
 /**
  * Tests whether the start time is as expected.
  * @param observed_start_time The observed start time as a Unix timestamp.
- * @param observed_start_time_delta The observed start time delta, in seconds.
+ * @param observed_start_time_delta The observed start time delta, in minutes.
  */
 export type RideAnalysisExpectedStartTime = z.infer<typeof RideAnalysisExpectedStartTimeSchema>;
