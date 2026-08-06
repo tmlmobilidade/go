@@ -1,8 +1,8 @@
 -- ============================================================================
--- GTFS-RT TripUpdate JSON feed
+-- GTFS-RT TripUpdate JSON feed — grouped by stop (key/value)
 -- ============================================================================
--- Groups ETA predictions by trip and produces a JSON structure matching the
--- GTFS Realtime TripUpdate protobuf specification.
+-- One cache entry per stop_id; value is a JSON array of TripUpdate objects
+-- (one per trip serving that stop, each with a single stop_time_update).
 -- ============================================================================
 
 WITH trip_summary AS (
@@ -62,48 +62,55 @@ stops AS (
     LIMIT 1 BY trip_id, stop_id
 ),
 
-trip_agg AS (
+stop_trip_rows AS (
     SELECT
+        stop_id,
         trip_id,
-        any(vehicle_id)        AS vehicle_id,
+        any(vehicle_id)             AS vehicle_id,
         toInt64(max(position_unix)) AS timestamp,
+        any(stop_sequence)          AS stop_sequence,
+        any(estimated_arrival_unix) AS estimated_arrival_unix,
+        any(scheduled_arrival_unix) AS scheduled_arrival_unix
+    FROM stops
+    GROUP BY stop_id, trip_id
+),
+
+stop_agg AS (
+    SELECT
+        stop_id,
         arraySort(
             x -> x.1,
             groupArray(
                 tuple(
+                    trip_id,
+                    vehicle_id,
+                    timestamp,
                     stop_sequence,
-                    stop_id,
                     estimated_arrival_unix,
                     scheduled_arrival_unix
                 )
             )
-        )                      AS stop_rows
-    FROM stops
-    GROUP BY trip_id
+        ) AS trip_rows
+    FROM stop_trip_rows
+    GROUP BY stop_id
 )
 
 SELECT
-    trip_id,
-    vehicle_id,
+    stop_id AS key,
     toJSONString(
-        CAST(
-            (
-                -- trip { trip_id }
-                CAST(tuple(trip_id) AS Tuple(trip_id String)),
-
-                -- vehicle { id }
-                CAST(tuple(vehicle_id) AS Tuple(id String)),
-
-                -- stop_time_update[] { stop_sequence, stop_id, arrival { time, delay }, schedule_relationship }
-                arrayMap(
-                    s -> CAST(
+        arrayMap(
+            t -> CAST(
+                (
+                    CAST(tuple(t.1) AS Tuple(trip_id String)),
+                    CAST(tuple(t.2) AS Tuple(id String)),
+                    [CAST(
                         (
-                            s.1,
-                            s.2,
+                            t.4,
+                            stop_id,
                             CAST(
                                 (
-                                    s.3,
-                                    if(s.3 IS NULL OR s.4 IS NULL, NULL, s.3 - s.4)
+                                    t.5,
+                                    if(t.5 IS NULL OR t.6 IS NULL, NULL, t.5 - t.6)
                                 )
                                 AS Tuple(time Nullable(Int64), delay Nullable(Int64))
                             ),
@@ -115,27 +122,25 @@ SELECT
                             arrival Tuple(time Nullable(Int64), delay Nullable(Int64)),
                             schedule_relationship String
                         )
+                    )],
+                    t.3
+                )
+                AS Tuple(
+                    trip Tuple(trip_id String),
+                    vehicle Tuple(id String),
+                    stop_time_update Array(
+                        Tuple(
+                            stop_sequence UInt16,
+                            stop_id String,
+                            arrival Tuple(time Nullable(Int64), delay Nullable(Int64)),
+                            schedule_relationship String
+                        )
                     ),
-                    stop_rows
-                ),
-
-                -- timestamp
-                timestamp
-            )
-            AS Tuple(
-                trip Tuple(trip_id String),
-                vehicle Tuple(id String),
-                stop_time_update Array(
-                    Tuple(
-                        stop_sequence UInt16,
-                        stop_id String,
-                        arrival Tuple(time Nullable(Int64), delay Nullable(Int64)),
-                        schedule_relationship String
-                    )
-                ),
-                timestamp Int64
-            )
+                    timestamp Int64
+                )
+            ),
+            trip_rows
         )
-    ) AS trip_update
-FROM trip_agg
-ORDER BY trip_id
+    ) AS value
+FROM stop_agg
+ORDER BY key;

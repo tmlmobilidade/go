@@ -1,8 +1,8 @@
 -- ============================================================================
--- GTFS-RT TripUpdate JSON feed
+-- GTFS-RT TripUpdate JSON feed — grouped by trip (key/value)
 -- ============================================================================
--- Groups ETA predictions by trip and produces a JSON structure matching the
--- GTFS Realtime TripUpdate protobuf specification.
+-- Same TripUpdate payload as select-eta-gtfs.sql, keyed by composite trip_id
+-- for per-trip cache lookups (hub:v1:realtime:eta:by-trip:*:gtfs).
 -- ============================================================================
 
 WITH trip_summary AS (
@@ -65,7 +65,7 @@ stops AS (
 trip_agg AS (
     SELECT
         trip_id,
-        any(vehicle_id)        AS vehicle_id,
+        any(vehicle_id)             AS vehicle_id,
         toInt64(max(position_unix)) AS timestamp,
         arraySort(
             x -> x.1,
@@ -77,24 +77,18 @@ trip_agg AS (
                     scheduled_arrival_unix
                 )
             )
-        )                      AS stop_rows
+        )                           AS stop_rows
     FROM stops
     GROUP BY trip_id
 )
 
 SELECT
-    trip_id,
-    vehicle_id,
+    trip_id AS key,
     toJSONString(
         CAST(
             (
-                -- trip { trip_id }
                 CAST(tuple(trip_id) AS Tuple(trip_id String)),
-
-                -- vehicle { id }
                 CAST(tuple(vehicle_id) AS Tuple(id String)),
-
-                -- stop_time_update[] { stop_sequence, stop_id, arrival { time, delay }, schedule_relationship }
                 arrayMap(
                     s -> CAST(
                         (
@@ -118,8 +112,6 @@ SELECT
                     ),
                     stop_rows
                 ),
-
-                -- timestamp
                 timestamp
             )
             AS Tuple(
@@ -136,6 +128,6 @@ SELECT
                 timestamp Int64
             )
         )
-    ) AS trip_update
+    ) AS value
 FROM trip_agg
-ORDER BY trip_id
+ORDER BY key;

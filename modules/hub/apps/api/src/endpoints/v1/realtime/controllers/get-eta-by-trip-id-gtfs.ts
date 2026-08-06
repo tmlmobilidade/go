@@ -3,28 +3,29 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
- * Retrieves the trip updates GTFS RT JSON data from the cache.
+ * Retrieves a GTFS-RT TripUpdate for a trip from the cache.
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getTripUpdatesGtfsRtJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
-	const raw = await cacheDb.get('hub:v1:realtime:eta:all:gtfs');
+export async function getEtaByTripIdGtfs(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<unknown>) {
+	const raw = await cacheDb.get(`hub:v1:realtime:eta:by-trip:${request.params.id}:gtfs`);
+
 	if (!raw) {
-		Logger.error({ message: '[hub/v1/realtime:getTripUpdatesGtfsRtJson()] No data in cache.' });
+		Logger.error({ message: `[hub/v1/realtime:getEtaByTripIdGtfs(${request.params.id})] No data in cache.` });
 		return reply
 			.header('access-control-allow-origin', '*')
 			.header('cache-control', 'public, max-age=5')
 			.code(HTTP_STATUS.NO_CONTENT)
 			.send({
-				data: getEmptyGtfsRtFeedMessage(),
+				data: null,
 				error: null,
 				status_code: HTTP_STATUS.NO_CONTENT,
 			});
 	}
+
 	return reply
 		.header('access-control-allow-origin', '*')
 		.header('cache-control', 'public, max-age=5')
