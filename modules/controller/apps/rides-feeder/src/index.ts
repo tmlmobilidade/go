@@ -36,7 +36,7 @@ async function main() {
 
 		const plansCollection = await goDb.operation.plans.getCollection();
 
-		const allPlansData = await goDb.operation.plans.findMany({});
+		const allPlansData = await goDb.operation.plans.findMany({ _id: 'YYS70' });
 
 		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 

@@ -24,15 +24,15 @@ export async function processGtfsStopTimes(context: ImportGtfsContext<GtfsSQLTab
 
 		const parseEachRow = async (data: GtfsStopTimes) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsStopTimesSchema.safeParse(data);
+			const validatedData = GtfsStopTimesSchema.parse(data);
 			// Skip if this row's trip_id was not saved before.
-			const tripData = context.gtfs.trips.get('trip_id', validatedData.data.trip_id);
+			const tripData = context.gtfs.trips.get('trip_id', validatedData.trip_id);
 			if (!tripData) return;
 			// Also, check if the stop_id is valid and was saved before.
-			const stopData = context.gtfs.stops.get('stop_id', validatedData.data.stop_id);
+			const stopData = context.gtfs.stops.get('stop_id', validatedData.stop_id);
 			if (!stopData) return;
 			// Save the exported row
-			context.gtfs.stop_times.write(validatedData.data);
+			context.gtfs.stop_times.write(validatedData);
 			// Log progress
 			if (context.counters.stop_times % 100000 === 0) Logger.info({ message: `Parsed ${context.counters.stop_times} stop_times.txt rows so far (${stopTimesParseTimer.get()})` });
 			// Increment the counter

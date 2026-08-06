@@ -22,12 +22,12 @@ export async function processGtfsRoutes(context: ImportGtfsContext<GtfsSQLTables
 
 		const parseEachRow = async (data: GtfsRoutes) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsRoutesSchema.safeParse(data);
+			const validatedData = GtfsRoutesSchema.parse(data);
 			// For each route, only save the ones referenced
 			// by the previously saved trips.
-			if (!context.referenced_route_ids.has(validatedData.data.route_id)) return;
+			if (!context.referenced_route_ids.has(validatedData.route_id)) return;
 			// Save the exported row
-			context.gtfs.routes.write(validatedData.data);
+			context.gtfs.routes.write(validatedData);
 		};
 
 		//

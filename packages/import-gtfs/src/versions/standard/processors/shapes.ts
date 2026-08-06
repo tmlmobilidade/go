@@ -22,12 +22,12 @@ export async function processGtfsShapes(context: ImportGtfsContext<GtfsSQLTables
 
 		const parseEachRow = async (data: GtfsShapes) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsShapesSchema.safeParse(data);
+			const validatedData = GtfsShapesSchema.parse(data);
 			// For each route, only save the ones referenced
 			// by the previously saved trips.
-			if (!context.referenced_shape_ids.has(validatedData.data.shape_id)) return;
+			if (!context.referenced_shape_ids.has(validatedData.shape_id)) return;
 			// Save the exported row
-			context.gtfs.shapes.write(validatedData.data);
+			context.gtfs.shapes.write(validatedData);
 			// Log progress
 			if (context.counters.shapes % 100000 === 0) Logger.info({ message: `Parsed ${context.counters.shapes} shapes.txt rows so far (${shapesParseTimer.get()})` });
 			// Increment the counter
