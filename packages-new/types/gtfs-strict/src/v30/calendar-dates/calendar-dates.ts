@@ -1,27 +1,22 @@
 /* * */
 
-import { GtfsStrictV29DayTypeSchema } from '@/v29/calendar-dates/day-type.js';
-import { GtfsStrictV29PeriodSchema } from '@/v29/calendar-dates/period.js';
-import { GtfsBinarySchema, GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsDateSchema, GtfsExceptionTypeSchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29CalendarDatesSchema = z.object({
+export const GtfsStrictV30CalendarDatesSchema = z.object({
 	date: GtfsDateSchema,
-	day_type: GtfsStrictV29DayTypeSchema,
-	exception_type: z.literal('1'),
-	holiday: GtfsBinarySchema,
-	period: GtfsStrictV29PeriodSchema,
+	exception_type: GtfsExceptionTypeSchema,
 	service_id: z.string(),
 });
 
 /**
- * Represents a calendar date exception in the GTFS strict v1 format.
+ * Represents a calendar date exception in the GTFS Strict v30 format.
  * A calendar date exception indicates a specific date when a service
  * is either added or removed from the schedule.
  * This is used to override the regular calendar for a specific date.
- * GTFS strict v1 also supports using only this method for defining dates for services.
+ * GTFS Strict v30 also supports using only this method for defining dates for services.
  */
-export type GtfsStrictV29CalendarDates = z.infer<typeof GtfsStrictV29CalendarDatesSchema>;
+export type GtfsStrictV30CalendarDates = z.infer<typeof GtfsStrictV30CalendarDatesSchema>;
 

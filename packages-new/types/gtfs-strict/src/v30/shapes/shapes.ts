@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29ShapesSchema = z.object({
+export const GtfsStrictV30ShapesSchema = z.object({
 	shape_dist_traveled: NonNegativeNumberSchema,
 	shape_id: z.string(),
 	shape_pt_lat: LatitudeSchema,
@@ -15,9 +15,9 @@ export const GtfsStrictV29ShapesSchema = z.object({
 });
 
 /**
- * Represents a shape in the GTFS format.
+ * Represents a shape in the GTFS Strict v30 format.
  * A shape is a series of points that define the path of a route.
  * It includes information such as the shape ID, the distance traveled,
  * and the latitude and longitude of the points.
  */
-export type GtfsStrictV29Shapes = z.infer<typeof GtfsStrictV29ShapesSchema>;
+export type GtfsStrictV30Shapes = z.infer<typeof GtfsStrictV30ShapesSchema>;

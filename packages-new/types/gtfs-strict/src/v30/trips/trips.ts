@@ -5,13 +5,10 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29TripsSchema = z.object({
+export const GtfsStrictV30TripsSchema = z.object({
 	bikes_allowed: GtfsTernarySchema.optional(),
 	block_id: z.string().optional(),
-	calendar_desc: z.string(),
 	direction_id: GtfsTripDirectionSchema,
-	pattern_id: z.string(),
-	pattern_short_name: z.string(),
 	route_id: z.string(),
 	service_id: z.string(),
 	shape_id: z.string(),
@@ -21,9 +18,9 @@ export const GtfsStrictV29TripsSchema = z.object({
 });
 
 /**
- * Represents a trip in the custom GTFS strict v1 format.
+ * Represents a trip in the custom GTFS Strict v30 format.
  * A trip is the definition of a service of a given route,
  * scheduled to run on specific dates (`service_id`) and times (`stop_times`).
  * It also includes the `calendar_desc`, `pattern_id`, and `pattern_short_name` fields.
  */
-export type GtfsStrictV29Trips = z.infer<typeof GtfsStrictV29TripsSchema>;
+export type GtfsStrictV30Trips = z.infer<typeof GtfsStrictV30TripsSchema>;

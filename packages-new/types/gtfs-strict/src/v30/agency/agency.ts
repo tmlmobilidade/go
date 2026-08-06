@@ -4,7 +4,8 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29AgencySchema = z.object({
+export const GtfsStrictV30AgencySchema = z.object({
+	agency_code: z.string().optional(),
 	agency_email: z.string(),
 	agency_fare_url: z.string(),
 	agency_id: z.string(),
@@ -16,9 +17,9 @@ export const GtfsStrictV29AgencySchema = z.object({
 });
 
 /**
- * Represents an agency in the custom GTFS strict v1 format.
+ * Represents an agency in the custom GTFS strict v30 format.
  * It enforces certain fields that are optional in the standard GTFS format,
  * and add the `agency_code` field to be able to accomodate multiple agencies
  * with the same code, that necessarily must have different `agency_id` values.
  */
-export type GtfsStrictV29Agency = z.infer<typeof GtfsStrictV29AgencySchema>;
+export type GtfsStrictV30Agency = z.infer<typeof GtfsStrictV30AgencySchema>;

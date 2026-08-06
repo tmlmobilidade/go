@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29StopTimesSchema = z.object({
+export const GtfsStrictV30StopTimesSchema = z.object({
 	arrival_time: GtfsTimeSchema,
 	departure_time: GtfsTimeSchema,
 	drop_off_type: GtfsPickupDropoffTypeSchema,
@@ -19,11 +19,11 @@ export const GtfsStrictV29StopTimesSchema = z.object({
 });
 
 /**
- * Represents a stop time in the custom GTFS strict v29 format.
+ * Represents a stop time in the custom GTFS strict v30 format.
  * A stop time is a record of when a transit vehicle arrives at and departs from a specific stop.
  * It includes information such as the arrival and departure times, the stop ID, the trip ID,
  * and various pickup and drop-off types. This information is crucial for scheduling and
  * coordinating transit services, allowing passengers to know when a vehicle will be at a particular stop
  * and what type of service is available at that stop.
  */
-export type GtfsStrictV29StopTimes = z.infer<typeof GtfsStrictV29StopTimesSchema>;
+export type GtfsStrictV30StopTimes = z.infer<typeof GtfsStrictV30StopTimesSchema>;
