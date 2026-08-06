@@ -26,6 +26,26 @@ class RidesProviderClass {
 	}
 
 	/**
+	 * Finds rides by their IDs. This helper function selects the Rides with the
+	 * most recent `updated_at` timestamp for each Ride, dealing with possible momentary duplicates.
+	 * @param rideIds The IDs of the Rides to find.
+	 * @returns A promise resolving to the rides.
+	 * @throws An error if the rides are not found for the given IDs.
+	 */
+	async findRidesById(rideIds: string[]): Promise<Ride[]> {
+		// Fetch the rides data from the database in a single query
+		const selectResult = await labDb.operation.rides.select(
+			'*',
+			`_id IN ($1) AND updated_at = (SELECT max(updated_at) FROM rides AS r2 WHERE r2._id = rides._id)`,
+			{ 1: rideIds.join(',') },
+		);
+		// Throw an error if no rides are found
+		if (!selectResult?.length) throw new Error('Rides not found for IDs.');
+		// Return the rides found
+		return selectResult;
+	}
+
+	/**
 	 * Finds a HashedTrip by its ID. This helper function selects the HashedTrip with the
 	 * most recent `updated_at` timestamp, dealing with possible momentary duplicates.
 	 * @param hashedTripId The ID of the HashedTrip to find.
