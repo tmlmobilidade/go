@@ -11,7 +11,6 @@ export const GtfsStrictV30RoutesSchema = z.object({
 	continuous_drop_off: GtfsPickupDropoffTypeSchema.optional(),
 	continuous_pickup: GtfsPickupDropoffTypeSchema.optional(),
 	route_color: z.string(),
-	route_desc: z.string(),
 	route_id: z.string(),
 	route_long_name: z.string(),
 	route_short_name: z.string(),

@@ -40,7 +40,6 @@ export function initGtfsStrictV30SqlTables(): GtfsStrictV30SQLTables {
 			{ indexed: false, name: 'continuous_drop_off', type: 'INTEGER' },
 			{ indexed: false, name: 'continuous_pickup', type: 'INTEGER' },
 			{ indexed: false, name: 'route_color', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_desc', type: 'TEXT' },
 			{ indexed: true, name: 'route_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_long_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_short_name', not_null: true, type: 'TEXT' },
