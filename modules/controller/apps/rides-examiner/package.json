@@ -21,6 +21,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-providers-rides": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-operation": "*",
