@@ -14,7 +14,7 @@ export const GtfsStrictV30StopTimesSchema = z.object({
 	shape_dist_traveled: NonNegativeNumberSchema,
 	stop_id: z.string(),
 	stop_sequence: NonNegativeNumberSchema,
-	timepoint: GtfsBinarySchema,
+	timepoint: GtfsBinarySchema.optional(),
 	trip_id: z.string(),
 });
 

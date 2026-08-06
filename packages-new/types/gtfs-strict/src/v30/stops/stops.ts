@@ -12,13 +12,10 @@ export const GtfsStrictV30StopsSchema = z.object({
 	parent_station: z.string().optional(),
 	platform_code: z.string().optional(),
 	stop_code: z.string(),
-	stop_desc: z.string().optional(),
 	stop_id: z.string(),
 	stop_lat: LatitudeSchema,
 	stop_lon: LongitudeSchema,
 	stop_name: z.string(),
-	stop_timezone: z.string().optional(),
-	stop_url: z.string().optional(),
 	wheelchair_boarding: GtfsTernarySchema.optional(),
 });
 

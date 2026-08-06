@@ -33,7 +33,7 @@ export async function processGtfsStrictV30Calendar(context: ImportGtfsContext<Gt
 			//
 			// Validate the current row against the proper type
 
-			const validatedData = GtfsStrictV30CalendarSchema.safeParse(data);
+			const validatedData = GtfsStrictV30CalendarSchema.parse(data);
 
 			//
 			// Setup an array to keep track of the valid operational dates for this service_id
@@ -47,8 +47,8 @@ export async function processGtfsStrictV30Calendar(context: ImportGtfsContext<Gt
 			// start and end dates to the given start and end dates.
 
 			if ('time_range' in context.config && context.config.time_range?.date_range?.start && context.config.time_range?.date_range?.end) {
-				let serviceIdStartDate = validatedData.data.start_date;
-				let serviceIdEndDate = validatedData.data.end_date;
+				let serviceIdStartDate = validatedData.start_date;
+				let serviceIdEndDate = validatedData.end_date;
 
 				if (serviceIdEndDate < context.config.time_range.date_range.start || serviceIdStartDate > context.config.time_range.date_range.end) return;
 
@@ -66,7 +66,7 @@ export async function processGtfsStrictV30Calendar(context: ImportGtfsContext<Gt
 
 			if ('time_range' in context.config && context.config.time_range?.discrete_dates?.length) {
 				context.config.time_range.discrete_dates.forEach((date) => {
-					if (date >= validatedData.data.start_date && date <= validatedData.data.end_date) {
+					if (date >= validatedData.start_date && date <= validatedData.end_date) {
 						allDatesInRange.add(date);
 					}
 				});
@@ -81,19 +81,19 @@ export async function processGtfsStrictV30Calendar(context: ImportGtfsContext<Gt
 
 			for (const currentDate of allDatesInRange) {
 				const dayOfWeek = Dates.fromOperationalDate(currentDate, 'Europe/Lisbon').toFormat('c');
-				if (dayOfWeek === '1' && validatedData.data.monday === '1') validOperationalDates.add(currentDate);
-				if (dayOfWeek === '2' && validatedData.data.tuesday === '1') validOperationalDates.add(currentDate);
-				if (dayOfWeek === '3' && validatedData.data.wednesday === '1') validOperationalDates.add(currentDate);
-				if (dayOfWeek === '4' && validatedData.data.thursday === '1') validOperationalDates.add(currentDate);
-				if (dayOfWeek === '5' && validatedData.data.friday === '1') validOperationalDates.add(currentDate);
-				if (dayOfWeek === '6' && validatedData.data.saturday === '1') validOperationalDates.add(currentDate);
-				if (dayOfWeek === '7' && validatedData.data.sunday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '1' && validatedData.monday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '2' && validatedData.tuesday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '3' && validatedData.wednesday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '4' && validatedData.thursday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '5' && validatedData.friday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '6' && validatedData.saturday === '1') validOperationalDates.add(currentDate);
+				if (dayOfWeek === '7' && validatedData.sunday === '1') validOperationalDates.add(currentDate);
 			}
 
 			//
 			// Save the valid operational dates for this service_id
 
-			context.gtfs.calendar_dates[validatedData.data.service_id] = Array.from(validOperationalDates);
+			context.gtfs.calendar_dates[validatedData.service_id] = Array.from(validOperationalDates);
 
 			context.counters.calendar_dates += validOperationalDates.size;
 
