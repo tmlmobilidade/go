@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 export const GtfsStopsSchema = z.object({
 	level_id: z.string().optional(),
-	location_type: GtfsLocationTypeSchema,
+	location_type: GtfsLocationTypeSchema.optional(),
 	parent_station: z.string().optional(),
 	platform_code: z.string().optional(),
 	stop_code: z.string(),
