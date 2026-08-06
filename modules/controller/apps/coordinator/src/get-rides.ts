@@ -1,7 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -26,7 +27,7 @@ export async function getRides(): Promise<string[]> {
 		// we need to make sure that instances request the next batch of documents
 		// sequentially. To do that, we implement a simple lock mechanism.
 
-		while (IS_BUSY) {
+		if (IS_BUSY) {
 			Logger.info({ message: `[${sessionId}] Waiting for another request to complete... (elapsed: ${timer.get()})` });
 			return [];
 		}
@@ -43,18 +44,22 @@ export async function getRides(): Promise<string[]> {
 
 		const fetchTimer = new Timer();
 
-		const standardWindowInterval = Dates.now('utc').minus({ days: 1 }).std_window;
+		const standardWindowInterval = Dates.now('utc').std_window;
 
-		const latestWaitingRides = await goDb.operation.rides.findMany(
-			{
-				start_time_scheduled: { $lte: standardWindowInterval.end },
-				system_status: 'waiting',
-			},
-			{
-				limit: 750,
-				projection: { _id: 1, operational_date: 1, start_time_scheduled: 1 },
-				sort: { start_time_scheduled: -1 },
-			},
+		const latestWaitingRides: Pick<Ride, '_id' | 'operational_date' | 'start_time_scheduled'>[] = await labDb.operation.rides.select(
+			'_id, operational_date, start_time_scheduled',
+			`
+				start_time_scheduled <= $1
+				AND processing_status = 'waiting'
+				AND updated_at = (
+					SELECT max(updated_at)
+					FROM rides AS r2
+					WHERE r2._id = rides._id
+				)
+				ORDER BY start_time_scheduled DESC
+				LIMIT 750
+			`,
+			{ 1: standardWindowInterval.end },
 		);
 
 		/* === FOR TESTING === */
@@ -76,7 +81,7 @@ export async function getRides(): Promise<string[]> {
 
 		const latestWaitingRidesIds = latestWaitingRides.map(item => item._id);
 
-		await goDb.operation.rides.updateMany({ _id: { $in: latestWaitingRidesIds } }, { system_status: 'processing' });
+		await labDb.operation.rides.queryFromString('UPDATE rides SET processing_status = \'processing\' WHERE _id IN ($1)', { 1: latestWaitingRidesIds.join(',') });
 
 		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestWaitingRidesIds.length} | operational_date: ${latestWaitingRides[latestWaitingRides.length - 1].operational_date} | start_time_scheduled: ${latestWaitingRides[latestWaitingRides.length - 1].start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 

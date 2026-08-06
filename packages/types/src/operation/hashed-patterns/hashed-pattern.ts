@@ -3,8 +3,9 @@
 import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
-/* * */
-
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export const HashedPatternWaypointSchema = z.object({
 	drop_off_type: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]),
 	pickup_type: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]),
@@ -17,10 +18,14 @@ export const HashedPatternWaypointSchema = z.object({
 	timepoint: z.number(),
 });
 
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export type HashedPatternWaypoint = z.infer<typeof HashedPatternWaypointSchema>;
 
-/* * */
-
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export const HashedPatternSchema = DocumentSchema
 	.omit({ created_by: true, is_locked: true, updated_by: true })
 	.extend({
@@ -38,4 +43,7 @@ export const HashedPatternSchema = DocumentSchema
 		trip_headsign: z.string(),
 	});
 
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export type HashedPattern = z.infer<typeof HashedPatternSchema>;

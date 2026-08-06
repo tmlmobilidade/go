@@ -3,7 +3,8 @@
 import { usePeriodsDetailContext } from '@/components/year-periods/detail/PeriodsDetail.context';
 import { PeriodsDetailHeader } from '@/components/year-periods/detail/PeriodsDetailHeader';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, YearPeriodSchema } from '@tmlmobilidade/types';
+import { YearPeriodSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, ColorInput, ErrorDisplay, LoadingOverlay, MultiSelect, Pane, Section, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -42,7 +43,7 @@ export function PeriodsDetail() {
 	}
 
 	return (
-		<Pane header={[<PeriodsDetailHeader />]}>
+		<Pane header={[<PeriodsDetailHeader key="periods-detail-header" />]}>
 			<Section gap="lg">
 
 				<TextInput

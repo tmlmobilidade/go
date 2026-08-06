@@ -1,6 +1,7 @@
 /* * */
 
-import { LatitudeSchema, LongitudeSchema, NonNegativeNumberSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
+import { NonNegativeNumberSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 

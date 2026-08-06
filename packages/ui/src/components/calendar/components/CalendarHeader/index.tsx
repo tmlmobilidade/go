@@ -31,8 +31,7 @@ export function CalendarHeader({ month, monthName, onNavigate, onToday, onViewCh
 		if (view === 'month' && month && onNavigate) {
 			const prev = getPreviousMonth(year, month);
 			onNavigate(prev.month, prev.year);
-		}
-		else if (view === 'year' && onYearNavigate) {
+		} else if (view === 'year' && onYearNavigate) {
 			onYearNavigate(year - 1);
 		}
 	};
@@ -41,8 +40,7 @@ export function CalendarHeader({ month, monthName, onNavigate, onToday, onViewCh
 		if (view === 'month' && month && onNavigate) {
 			const next = getNextMonth(year, month);
 			onNavigate(next.month, next.year);
-		}
-		else if (view === 'year' && onYearNavigate) {
+		} else if (view === 'year' && onYearNavigate) {
 			onYearNavigate(year + 1);
 		}
 	};

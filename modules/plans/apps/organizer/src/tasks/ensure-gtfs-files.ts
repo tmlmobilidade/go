@@ -3,9 +3,10 @@
 import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GtfsAgency, type GtfsFeedInfo, HashablePlanMetadata } from '@tmlmobilidade/types';
+import { type HashablePlanMetadata } from '@tmlmobilidade/types';
 import { createHash } from 'node:crypto';
 import Papa from 'papaparse';
 

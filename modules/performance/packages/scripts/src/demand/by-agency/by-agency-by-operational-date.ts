@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type OperationalDateInt, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
@@ -31,7 +31,7 @@ export async function runDemandByAgencyByOperationalDate(timespan: typeof AVAILA
 
 	switch (timespan) {
 		case 'full':
-			startDate = validateOperationalDateInt(20010101);
+			startDate = OperationalDateIntSchema.parse(20010101);
 			break;
 		case 'realtime':
 			startDate = Dates

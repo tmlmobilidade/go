@@ -2,7 +2,8 @@
 
 import { useFareCreateContext } from '@/components/fares/create/FareCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { FareSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { FareSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { MultiSelect, Section, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
 
 /* * */

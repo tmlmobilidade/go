@@ -2,7 +2,8 @@
 
 import { useZoneCreateContext } from '@/components/zones/create/ZoneCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, ZoneSchema } from '@tmlmobilidade/types';
+import { ZoneSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { MultiSelect, Section, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
 /* * */
 

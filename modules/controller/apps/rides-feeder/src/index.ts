@@ -1,6 +1,6 @@
 /* * */
 
-import { cleanupOrphanHashedPatterns, cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
+import { cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
 import { parsePlan } from '@/parse-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
@@ -36,7 +36,9 @@ async function main() {
 
 		const plansCollection = await goDb.operation.plans.getCollection();
 
-		const allPlansData = await goDb.operation.plans.findMany({});
+		await plansCollection.updateOne({ _id: 'YYS70' }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'waiting' } });
+
+		const allPlansData = await goDb.operation.plans.findMany({ _id: 'YYS70' });
 
 		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
@@ -105,8 +107,6 @@ async function main() {
 		// Perform the cleanup operations after processing all plans
 
 		await cleanupOrphanRidesGlobally();
-		await cleanupOrphanHashedPatterns();
-		await cleanupOrphanHashedShapes();
 		await cleanupOrphanHashedTrips();
 
 		//

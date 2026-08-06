@@ -4,8 +4,9 @@ import { atLeastOneVehicleEventOnFirstStopSchema, endedAtLastStopSchema, expecte
 import { DocumentSchema, OperationalDateSchema, ProcessingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
-/* * */
-
+/**
+ * @deprecated Use the `Ride` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export const RideSchema = DocumentSchema
 	.omit({ is_locked: true })
 	.extend({
@@ -68,6 +69,15 @@ export const RideSchema = DocumentSchema
 export const CreateRideSchema = RideSchema.partial({ _id: true }).omit({ created_at: true, updated_at: true });
 export const UpdateRideSchema = CreateRideSchema.omit({ created_by: true }).partial();
 
+/**
+ * @deprecated Use the `Ride` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export type Ride = z.infer<typeof RideSchema>;
+/**
+ * @deprecated Use the `Ride` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export type CreateRideDto = z.infer<typeof CreateRideSchema>;
+/**
+ * @deprecated Use the `Ride` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export type UpdateRideDto = z.infer<typeof UpdateRideSchema>;

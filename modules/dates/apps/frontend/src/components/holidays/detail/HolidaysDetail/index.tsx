@@ -4,7 +4,8 @@ import { DatesSelector } from '@/components/holidays/detail/HolidaysDatesSelecto
 import { useHolidaysDetailContext } from '@/components/holidays/detail/HolidaysDetail.context';
 import { HolidaysDetailHeader } from '@/components/holidays/detail/HolidaysDetailHeader';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { HolidaySchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { HolidaySchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */

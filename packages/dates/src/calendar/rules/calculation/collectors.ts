@@ -1,6 +1,6 @@
 import type { DayContext } from './types.js';
 
-import { EventReplacementRule, HHMM, ManualRule } from '@tmlmobilidade/types';
+import { EventReplacementRule, HHMM, ManualRule } from '@tmlmobilidade/go-types-offer';
 
 import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
 

@@ -83,11 +83,12 @@ export async function syncApexInspectionDecisions(timeChunk: PerformInTimeChunks
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await labDb.simplifiedApex.inspectionDecisions.distinct(
-				'upper(toString(_id))',
+			const result = await labDb.simplifiedApex.inspectionDecisions.distinct(
+				'_id',
 				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
+			return result.map(id => String(id).toUpperCase());
 		},
 
 		distinctSourceDbFn: async () => {

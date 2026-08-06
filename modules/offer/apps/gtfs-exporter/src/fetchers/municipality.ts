@@ -1,6 +1,6 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type Municipality } from '@tmlmobilidade/types';
 
 /* * */
@@ -12,7 +12,7 @@ import { type Municipality } from '@tmlmobilidade/types';
  */
 export async function fetchAllMunicipalities(): Promise<Map<string, Municipality>> {
 	try {
-		const allMunicipalities = await goDb.locations.municipalities.findMany({}, { projection: { _id: 1, properties: 1 } });
+		const allMunicipalities = await locationsProvider.findMunicipalities();
 
 		const municipalityMap = new Map<string, Municipality>();
 

@@ -4,7 +4,6 @@ import { getSimplifiedApexLocations } from '@/endpoints/rides/controllers/get-ap
 import { getSimplifiedApexOnBoardRefunds } from '@/endpoints/rides/controllers/get-apex-refunds.js';
 import { getSimplifiedApexOnBoardSales } from '@/endpoints/rides/controllers/get-apex-sales.js';
 import { getSimplifiedApexValidations } from '@/endpoints/rides/controllers/get-apex-validations.js';
-import { getHashedShape } from '@/endpoints/rides/controllers/get-hashed-shape.js';
 import { getHashedTrip } from '@/endpoints/rides/controllers/get-hashed-trip.js';
 import { getSimplifiedVehicleEvents } from '@/endpoints/rides/controllers/get-vehicle-events.js';
 import { reprocessRideById } from '@/endpoints/rides/controllers/reprocess-ride.js';
@@ -51,12 +50,6 @@ server.register(
 			'/:id/hashed-trip',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
 			getHashedTrip,
-		);
-
-		instance.get(
-			'/:id/hashed-shape',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			getHashedShape,
 		);
 
 		instance.get(

@@ -7,9 +7,9 @@ import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfu
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsValidation, type GtfsValidationSummary } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };
@@ -108,7 +108,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'complete',
-			summary: gtfsValidationResult.summary as GtfsValidationSummary,
+			summary: gtfsValidationResult.summary as GtfsValidation['summary'],
 			validity_status: gtfsValidationResult.summary.total_errors === 0 ? 'valid' : 'invalid',
 		});
 

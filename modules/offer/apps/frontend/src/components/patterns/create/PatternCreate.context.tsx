@@ -2,7 +2,7 @@
 
 import { closeCreatePatternModal } from '@/components/patterns/create/PatternCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreatePatternDto, CreatePatternSchema, Pattern, Route } from '@tmlmobilidade/types';
+import { type CreatePatternDto, CreatePatternSchema, type Pattern, type Route } from '@tmlmobilidade/go-types-offer';
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
