@@ -12,18 +12,18 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 let ITERATION = 0;
 
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'publish-realtime', message: 'Sentry Hub Publish Realtime initialized', module: 'hub', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Hub Publish Realtime' });
+}
+
 const main = async () => {
 	//
-
-	//
-	// Initialize Sentry
-
-	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-realtime', message: 'Sentry Hub Publish Realtime initialized', module: 'hub', severity: 'info' });
-	} catch (error) {
-		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Realtime' });
-	}
 
 	//
 	// Initialize the logger
