@@ -102,7 +102,7 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 	});
 
 	return {
-		_db: database.databaseInstance,
+		_db: database,
 		calendar_dates: calendarDatesMap,
 		routes: routesTable,
 		shapes: shapesTable,

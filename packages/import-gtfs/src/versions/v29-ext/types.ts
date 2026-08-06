@@ -2,7 +2,7 @@
 
 import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29ExtRoutes, type GtfsStrictV29ExtShapes, type GtfsStrictV29ExtStops, type GtfsStrictV29ExtStopTimes, type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/sqlite';
+import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/sqlite';
 
 /**
  * Holds references to all GTFS-related SQL tables.
@@ -14,7 +14,7 @@ import { SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/sqlite'
  * that can be used for executing custom queries or transactions.
  */
 export interface GtfsStrictV29ExtSQLTables {
-	_db: SQLiteDatabase['databaseInstance']
+	_db: SQLiteDatabase
 	calendar_dates: Record<string, GtfsDate[]>
 	routes: SQLiteTableInstance<GtfsStrictV29ExtRoutes>
 	shapes: SQLiteTableInstance<GtfsStrictV29ExtShapes>

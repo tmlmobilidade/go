@@ -338,7 +338,7 @@ export async function parsePlan(planData: Plan) {
 		// Cleanup the saved entities to avoid
 		// storing so much data on disk.
 
-		importedGtfsSql._db.close();
+		importedGtfsSql._db.cleanup();
 
 		//
 		// Log progress

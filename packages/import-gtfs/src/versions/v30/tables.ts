@@ -92,7 +92,7 @@ export function initGtfsStrictV30SqlTables(): GtfsStrictV30SQLTables {
 	});
 
 	return {
-		_db: database.databaseInstance,
+		_db: database,
 		calendar_dates: calendarDatesMap,
 		routes: routesTable,
 		shapes: shapesTable,
