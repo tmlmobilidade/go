@@ -81,8 +81,8 @@ export function initGtfsStrictV30SqlTables(): GtfsStrictV30SQLTables {
 		columns: [
 			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'departure_time', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'drop_off_type', type: 'INTEGER' },
-			{ indexed: false, name: 'pickup_type', type: 'INTEGER' },
+			{ indexed: false, name: 'drop_off_type', type: 'TEXT' },
+			{ indexed: false, name: 'pickup_type', type: 'TEXT' },
 			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
 			{ indexed: true, name: 'stop_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },

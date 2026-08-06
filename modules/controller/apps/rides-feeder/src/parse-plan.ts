@@ -159,16 +159,21 @@ export async function parsePlan(planData: Plan) {
 				const normalizedShapeDistTraveled = toMetersFromKilometersOrMeters(stopTime.shape_dist_traveled, lastStopTime.shape_dist_traveled);
 				// Validate this stop_time in the schema
 				const validatedCreateHashedTripItem = CreateHashedTripSchema.parse({
+					agency_id: planData.agency_id,
+					arrival_time: stopTime.arrival_time,
+					departure_time: stopTime.departure_time,
 					drop_off_type: stopTime.drop_off_type,
 					pickup_type: stopTime.pickup_type,
 					shape_dist_traveled: normalizedShapeDistTraveled,
+					shape_id: currentTrip.shape_id,
 					stop_id: stopTime.stop_id,
 					stop_lat: stopData.stop_lat,
 					stop_lon: stopData.stop_lon,
 					stop_name: stopData.stop_name,
 					stop_sequence: stopTime.stop_sequence,
-					timepoint: stopTime.timepoint,
+					timepoint: stopTime.timepoint === '1' ? true : false,
 				});
+
 				// Save the formatted path data for this stop_time
 				formattedCreateHashedTripItems.push(validatedCreateHashedTripItem);
 			}
