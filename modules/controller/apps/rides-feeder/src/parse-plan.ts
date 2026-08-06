@@ -195,7 +195,7 @@ export async function parsePlan(planData: Plan) {
 			// Check if there are rows with this unique ID value.
 			// If there are no rows, save the HashedTrip items to the database.
 
-			const currentHashedTripAlreadyExists = await labDb.operation.hashedTrips.count('DISTINCT(_id)', 'WHERE _id = $1', { 1: uniqueIdValueForCreateHashedTrip }) > 0;
+			const currentHashedTripAlreadyExists = await labDb.operation.hashedTrips.count('DISTINCT(_id)', '_id = $1', { 1: uniqueIdValueForCreateHashedTrip });
 
 			const hashedTripItems = sortedCreateHashedTripItems.map((item): HashedTrip => {
 				return HashedTripSchema.parse({

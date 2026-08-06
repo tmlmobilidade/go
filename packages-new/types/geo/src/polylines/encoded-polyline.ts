@@ -4,14 +4,18 @@ import { Latitude, LatitudeSchema, Longitude, LongitudeSchema } from '@/geojson/
 import { z } from 'zod';
 
 /**
- * The encoded polyline for a geographic LineString.
+ * The encoded polyline for a geographic LineString,
+ * with values in E6 format (6 decimal places
+ * of precision in latitude and longitude).
  */
 export type EncodedPolyline = string & {
 	__brand: 'EncodedPolyline'
 };
 
 /**
- * The schema for a encoded polyline value.
+ * The schema for a encoded polyline value,
+ * with values in E6 format (6 decimal places
+ * of precision in latitude and longitude).
  */
 export const EncodedPolylineSchema = z
 	.string()
@@ -64,9 +68,6 @@ export function parseEncodedPolyline(encoded: string, onPoint?: (lat: Latitude, 
 			// and shift the result by the number of bits.
 			result |= (byte & 0x1f) << shift;
 			shift += 5;
-			// A valid polyline value should never require more than 6 groups
-			// (6 × 5 = 30 bits).
-			if (shift > 30) throw new Error('Encoded value is too large.');
 			// If the byte value is not the last byte, break the loop.
 			if ((byte & 0x20) === 0) break;
 		}
@@ -79,8 +80,8 @@ export function parseEncodedPolyline(encoded: string, onPoint?: (lat: Latitude, 
 		lat += readValue(); // Read the latitude value.
 		lng += readValue(); // Read the longitude value.
 		// Validate the latitude and longitude values.
-		const validatedLat = LatitudeSchema.parse(lat / 1e5);
-		const validatedLng = LongitudeSchema.parse(lng / 1e5);
+		const validatedLat = LatitudeSchema.parse(lat / 1e6);
+		const validatedLng = LongitudeSchema.parse(lng / 1e6);
 		// Call the callback function with the decoded coordinate.
 		onPoint?.(validatedLat, validatedLng);
 	}

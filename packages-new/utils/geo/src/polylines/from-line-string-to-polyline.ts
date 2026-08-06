@@ -18,29 +18,32 @@ export function fromGeoJsonLineStringToEncodedPolyline(lineString: GeoJsonLineSt
 	// Define a function to encode a value.
 	function encodeValue(value: number): string {
 		// Initialize the output string.
-		let result = '';
+		let encoded = '';
 		// If the value is negative, negate it.
 		value = value < 0 ? ~(value << 1) : value << 1;
 		// Loop until the value is less than 0x20.
 		while (value >= 0x20) {
 			// Add the encoded value to the output string.
-			result += String.fromCharCode((value & 0x1f) | 0x20 | 63);
+			encoded += String.fromCharCode((0x20 | (value & 0x1f)) + 63);
 			// Shift the value by 5 bits.
 			value >>= 5;
 		}
 		// Add the final encoded value to the output string.
-		result += String.fromCharCode(value + 63);
+		encoded += String.fromCharCode(value + 63);
 		// Return the encoded value.
-		return result;
+		return encoded;
 	}
 	// Loop through the coordinates of the polyline.
 	for (const [lng, lat] of validatedLineString.coordinates) {
+		// Convert the latitude and longitude values to E5 format.
+		const latE6 = Math.round(lat * 1e6);
+		const lngE6 = Math.round(lng * 1e6);
 		// Encode the latitude and longitude values.
-		result += encodeValue(lat - previousLat);
-		result += encodeValue(lng - previousLng);
+		result += encodeValue(latE6 - previousLat);
+		result += encodeValue(lngE6 - previousLng);
 		// Update the previous latitude and longitude values.
-		previousLat = lat;
-		previousLng = lng;
+		previousLat = latE6;
+		previousLng = lngE6;
 	}
 	// Validate and return the encoded polyline.
 	return EncodedPolylineSchema.parse(result);
