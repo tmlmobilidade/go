@@ -6,18 +6,24 @@
 CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
 (
     trip_id String,
+    agency_id String,
+    plan_id String,
     vehicle_id String,
     hashed_trip_id String,
     hashed_shape_id String,
     current_node_index UInt32,
+    current_node_latitude Float64,
+    current_node_longitude Float64,
     position_created_at Int64,
     stop_sequence UInt16,
     stop_id String,
     stop_name String,
     stop_node_index UInt32,
-    eta_seconds Nullable(Float64),
-    eta_at Nullable(DateTime64(3)),
-    refreshed_at DateTime DEFAULT now()
+    stop_node_latitude Float64,
+    stop_node_longitude Float64,
+    eta_seconds Nullable(UInt16),
+    eta_at Nullable(Int64),
+    refreshed_at Int64
 )
 ENGINE = ReplacingMergeTree(refreshed_at)
 ORDER BY (trip_id, vehicle_id, stop_sequence);
@@ -63,15 +69,22 @@ WITH
     ),
     pos_with_trip AS (
         SELECT
-            lp.trip_id             AS trip_id,
-            lp.vehicle_id          AS vehicle_id,
-            lp.hashed_shape_id     AS hashed_shape_id,
-            d.hashed_trip_id       AS hashed_trip_id,
-            lp.current_node_index  AS current_node_index,
-            lp.position_created_at AS position_created_at,
+            lp.trip_id                  AS trip_id,
+            lp.vehicle_id               AS vehicle_id,
+            lp.hashed_shape_id          AS hashed_shape_id,
+            d.agency_id                 AS agency_id,
+            d.plan_id                   AS plan_id,
+            d.hashed_trip_id            AS hashed_trip_id,
+            lp.current_node_index       AS current_node_index,
+            cn.latitude                 AS current_node_latitude,
+            cn.longitude                AS current_node_longitude,
+            lp.position_created_at      AS position_created_at,
             fromUnixTimestamp64Milli(lp.position_created_at) AS pos_dt
         FROM latest_pos AS lp
         INNER JOIN eta.curr_rides AS d ON lp.trip_id = d.trip_id
+        LEFT JOIN eta.hist_shape_nodes AS cn
+            ON cn.hashed_shape_id = lp.hashed_shape_id
+           AND cn.node_index = lp.current_node_index
     ),
     pos_with_op_dt AS (
         SELECT
@@ -247,22 +260,31 @@ WITH
     ),
     upcoming AS (
         SELECT
-            pf.trip_id             AS trip_id,
-            pf.vehicle_id          AS vehicle_id,
-            pf.hashed_shape_id     AS hashed_shape_id,
-            pf.hashed_trip_id      AS hashed_trip_id,
-            pf.current_node_index  AS current_node_index,
-            pf.position_created_at AS position_created_at,
-            pf.period_of_day       AS period_of_day,
-            pf.weekday             AS weekday,
-            pf.day_type            AS day_type,
-            w.stop_sequence        AS stop_sequence,
-            w.stop_id              AS stop_id,
-            w.stop_name            AS stop_name,
-            w.node_index           AS stop_node_index
+            pf.trip_id                  AS trip_id,
+            pf.vehicle_id               AS vehicle_id,
+            pf.agency_id                AS agency_id,
+            pf.plan_id                  AS plan_id,
+            pf.hashed_shape_id          AS hashed_shape_id,
+            pf.hashed_trip_id           AS hashed_trip_id,
+            pf.current_node_index       AS current_node_index,
+            pf.current_node_latitude    AS current_node_latitude,
+            pf.current_node_longitude   AS current_node_longitude,
+            pf.position_created_at      AS position_created_at,
+            pf.period_of_day            AS period_of_day,
+            pf.weekday                  AS weekday,
+            pf.day_type                 AS day_type,
+            w.stop_sequence             AS stop_sequence,
+            w.stop_id                   AS stop_id,
+            w.stop_name                 AS stop_name,
+            w.node_index                AS stop_node_index,
+            sn.latitude                 AS stop_node_latitude,
+            sn.longitude                AS stop_node_longitude
         FROM pos_full AS pf
         INNER JOIN eta.curr_waypoints_snapped AS w
             ON pf.hashed_trip_id = w.hashed_trip_id
+        LEFT JOIN eta.hist_shape_nodes AS sn
+            ON sn.hashed_shape_id = pf.hashed_shape_id
+           AND sn.node_index = w.node_index
         WHERE w.node_index >= pf.current_node_index
     ),
     -- One distinct (trip, vehicle) per live position. This is the driving set
@@ -332,15 +354,21 @@ WITH
         SELECT
             u.trip_id             AS trip_id,
             u.vehicle_id          AS vehicle_id,
+            u.agency_id           AS agency_id,
+            u.plan_id             AS plan_id,
             u.hashed_trip_id      AS hashed_trip_id,
-            u.hashed_shape_id     AS hashed_shape_id,
-            u.current_node_index  AS current_node_index,
-            u.position_created_at AS position_created_at,
-            u.stop_sequence       AS stop_sequence,
-            u.stop_id             AS stop_id,
-            u.stop_name           AS stop_name,
-            u.stop_node_index     AS stop_node_index,
-            if(c.cum_known_nodes > 0, c.cum_seconds, toFloat64(0)) AS eta_seconds
+            u.hashed_shape_id         AS hashed_shape_id,
+            u.current_node_index      AS current_node_index,
+            u.current_node_latitude   AS current_node_latitude,
+            u.current_node_longitude  AS current_node_longitude,
+            u.position_created_at     AS position_created_at,
+            u.stop_sequence           AS stop_sequence,
+            u.stop_id                 AS stop_id,
+            u.stop_name               AS stop_name,
+            u.stop_node_index         AS stop_node_index,
+            u.stop_node_latitude      AS stop_node_latitude,
+            u.stop_node_longitude     AS stop_node_longitude,
+            if(c.cum_known_nodes > 0, c.cum_seconds, toFloat64(0)) AS eta_seconds_raw
         FROM upcoming AS u
         ASOF LEFT JOIN trip_node_cum AS c
             ON c.trip_id     = u.trip_id
@@ -351,16 +379,22 @@ WITH
         SELECT
             trip_id,
             vehicle_id,
+            agency_id,
+            plan_id,
             hashed_trip_id,
             hashed_shape_id,
             current_node_index,
+            current_node_latitude,
+            current_node_longitude,
             position_created_at,
             stop_sequence,
             stop_id,
             stop_name,
             stop_node_index,
-            if(eta_seconds IS NOT NULL AND isFinite(assumeNotNull(eta_seconds)),
-               eta_seconds, NULL) AS eta_seconds
+            stop_node_latitude,
+            stop_node_longitude,
+            if(eta_seconds_raw IS NOT NULL AND isFinite(assumeNotNull(eta_seconds_raw)),
+               toUInt16(ceil(assumeNotNull(eta_seconds_raw))), NULL) AS eta_seconds
         FROM eta_calc
     ),
     -- Agency/GTFS stop_id → GO stop _id. curr_waypoints_snapped carries agency
@@ -390,15 +424,21 @@ WITH
     eta_resolved AS (
         SELECT
             ec.trip_id,
+            ec.agency_id,
+            ec.plan_id,
             ec.vehicle_id,
             ec.hashed_trip_id,
             ec.hashed_shape_id,
             ec.current_node_index,
+            ec.current_node_latitude,
+            ec.current_node_longitude,
             ec.position_created_at,
             ec.stop_sequence,
             coalesce(gs.go_stop_id, ec.stop_id) AS stop_id,
             ec.stop_name,
             ec.stop_node_index,
+            ec.stop_node_latitude,
+            ec.stop_node_longitude,
             ec.eta_seconds
         FROM eta_clean AS ec
         LEFT JOIN go_stop_flags AS gs
@@ -406,21 +446,26 @@ WITH
     )
 SELECT
     trip_id,
+    agency_id,
+    plan_id,
     vehicle_id,
     hashed_trip_id,
     hashed_shape_id,
     current_node_index,
+    current_node_latitude,
+    current_node_longitude,
     position_created_at,
     stop_sequence,
     stop_id,
     stop_name,
     stop_node_index,
+    stop_node_latitude,
+    stop_node_longitude,
     eta_seconds,
     if(
         eta_seconds IS NULL,
         NULL,
-        fromUnixTimestamp64Milli(position_created_at)
-            + toIntervalSecond(toInt64(round(assumeNotNull(eta_seconds))))
+        position_created_at + toInt64(assumeNotNull(eta_seconds)) * 1000
     ) AS eta_at,
-    now() AS refreshed_at
+    toUnixTimestamp64Milli(now64(3)) AS refreshed_at
 FROM eta_resolved;
