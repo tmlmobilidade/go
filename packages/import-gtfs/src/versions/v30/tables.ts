@@ -1,23 +1,23 @@
 /* * */
 
 import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29ExtRoutes, type GtfsStrictV29ExtShapes, type GtfsStrictV29ExtStops, type GtfsStrictV29ExtStopTimes, type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV30Routes, type GtfsStrictV30Shapes, type GtfsStrictV30Stops, type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
 
-import { type GtfsStrictV29ExtSQLTables } from './types.js';
+import { type GtfsStrictV30SQLTables } from './types.js';
 
 /**
- * Initializes GTFS Strict v29 Ext SQL tables and writers.
- * @returns The initialized GTFS Strict v29 Ext SQL tables.
+ * Initializes GTFS Strict v30 SQL tables and writers.
+ * @returns The initialized GTFS Strict v30 SQL tables.
  */
-export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
+export function initGtfsStrictV30SqlTables(): GtfsStrictV30SQLTables {
 	//
 
 	const calendarDatesMap: Record<string, GtfsDate[]> = {};
 
 	const database = new SQLiteDatabase();
 
-	const tripsTable = database.registerTable<GtfsStrictV29ExtTrips>('trips', {
+	const tripsTable = database.registerTable<GtfsStrictV30Trips>('trips', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
@@ -32,7 +32,7 @@ export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 		],
 	});
 
-	const routesTable = database.registerTable<GtfsStrictV29ExtRoutes>('routes', {
+	const routesTable = database.registerTable<GtfsStrictV30Routes>('routes', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
@@ -48,7 +48,7 @@ export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 		],
 	});
 
-	const shapesTable = database.registerTable<GtfsStrictV29ExtShapes>('shapes', {
+	const shapesTable = database.registerTable<GtfsStrictV30Shapes>('shapes', {
 		batch_size: 100000,
 		columns: [
 			{ indexed: true, name: 'shape_id', not_null: true, type: 'TEXT' },
@@ -59,7 +59,7 @@ export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 		],
 	});
 
-	const stopsTable = database.registerTable<GtfsStrictV29ExtStops>('stops', {
+	const stopsTable = database.registerTable<GtfsStrictV30Stops>('stops', {
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'location_type', type: 'INTEGER' },
@@ -87,7 +87,7 @@ export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 		],
 	});
 
-	const stopTimesTable = database.registerTable<GtfsStrictV29ExtStopTimes>('stop_times', {
+	const stopTimesTable = database.registerTable<GtfsStrictV30StopTimes>('stop_times', {
 		batch_size: 100000,
 		columns: [
 			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },

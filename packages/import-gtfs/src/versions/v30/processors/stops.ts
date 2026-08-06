@@ -2,8 +2,8 @@
 
 import { type ImportGtfsContext } from '@/shared/init-context.js';
 import { parseCsvFile } from '@/shared/parse-csv.js';
-import { type GtfsStrictV29ExtSQLTables } from '@/versions/v29-ext/types.js';
-import { type GtfsStrictV29ExtStops, GtfsStrictV29ExtStopsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV30SQLTables } from '@/versions/v30/types.js';
+import { type GtfsStrictV30Stops, GtfsStrictV30StopsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -13,7 +13,7 @@ import { Timer } from '@tmlmobilidade/timer';
  * By saving all of them, we also speed up the processing of each stop_time by including the stop data right away.
  * @param context The import GTFS context containing references to SQL tables and other metadata.
  */
-export async function processGtfsStrictV29ExtStops(context: ImportGtfsContext<GtfsStrictV29ExtSQLTables>): Promise<void> {
+export async function processGtfsStrictV30Stops(context: ImportGtfsContext<GtfsStrictV30SQLTables>): Promise<void> {
 	try {
 		//
 
@@ -21,9 +21,9 @@ export async function processGtfsStrictV29ExtStops(context: ImportGtfsContext<Gt
 
 		Logger.info({ message: 'Reading zip entry "stops.txt"...' });
 
-		const parseEachRow = async (data: GtfsStrictV29ExtStops) => {
+		const parseEachRow = async (data: GtfsStrictV30Stops) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsStrictV29ExtStopsSchema.safeParse(data);
+			const validatedData = GtfsStrictV30StopsSchema.safeParse(data);
 			// Skip if stop already exists
 			if (context.gtfs.stops.get('stop_id', validatedData.data.stop_id)) return;
 			// Save the exported row

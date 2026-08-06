@@ -2,8 +2,8 @@
 
 import { type ImportGtfsContext } from '@/shared/init-context.js';
 import { parseCsvFile } from '@/shared/parse-csv.js';
-import { type GtfsStrictV29ExtSQLTables } from '@/versions/v29-ext/types.js';
-import { type GtfsStrictV29ExtTrips, GtfsStrictV29ExtTripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV30SQLTables } from '@/versions/v30/types.js';
+import { type GtfsStrictV30Trips, GtfsStrictV30TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -12,7 +12,7 @@ import { Timer } from '@tmlmobilidade/timer';
  * It filters trips based on the previously saved calendar dates.
  * @param context The import GTFS context containing references to SQL tables and other metadata.
  */
-export async function processGtfsStrictV29ExtTrips(context: ImportGtfsContext<GtfsStrictV29ExtSQLTables>): Promise<void> {
+export async function processGtfsStrictV30Trips(context: ImportGtfsContext<GtfsStrictV30SQLTables>): Promise<void> {
 	try {
 		//
 
@@ -20,9 +20,9 @@ export async function processGtfsStrictV29ExtTrips(context: ImportGtfsContext<Gt
 
 		Logger.info({ message: 'Reading zip entry "trips.txt"...' });
 
-		const parseEachRow = async (data: GtfsStrictV29ExtTrips) => {
+		const parseEachRow = async (data: GtfsStrictV30Trips) => {
 			// Validate the current row against the proper type
-			const validatedData = GtfsStrictV29ExtTripsSchema.safeParse(data);
+			const validatedData = GtfsStrictV30TripsSchema.safeParse(data);
 			// For each trip, check if the associated service_id was saved
 			// in the previous step or not. Include it if yes, skip otherwise.
 			if (!context.gtfs.calendar_dates[validatedData.data.service_id]) return;
