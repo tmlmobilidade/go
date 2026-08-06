@@ -16,6 +16,11 @@ interface ClickHouseEtaGtfsResponse {
 	vehicle_id: string
 }
 
+interface ClickHouseEtaGtfsKeyValue {
+	key: string
+	value: string
+}
+
 /* * */
 
 export async function publishTripUpdates() {
@@ -53,6 +58,32 @@ export async function publishTripUpdates() {
 	});
 
 	Logger.info({ message: `Found ${allTripUpdates.length} trip updates in ${clickhouseTimer.get()}`, spacesAfterOrBefore: 1 });
+
+	//
+	// GTFS-RT TripUpdates grouped by trip
+
+	const byTripTimer = new Timer();
+
+	Logger.info({ message: 'Retrieving GTFS-RT TripUpdates grouped by trip from ClickHouse...' });
+
+	const tripUpdatesByTrip = await labDb.queryFromFile<ClickHouseEtaGtfsKeyValue>(pipelinePath('select-eta-by-trip-gtfs.sql'));
+
+	await Promise.all(tripUpdatesByTrip.map(row => cacheDb.set(`hub:v1:realtime:eta:by-trip:${row.key}:gtfs`, row.value)));
+
+	Logger.info({ message: `Cached ${tripUpdatesByTrip.length} trip GTFS-RT groups in ${byTripTimer.get()}`, spacesAfterOrBefore: 1 });
+
+	//
+	// GTFS-RT TripUpdates grouped by stop
+
+	const byStopTimer = new Timer();
+
+	Logger.info({ message: 'Retrieving GTFS-RT TripUpdates grouped by stop from ClickHouse...' });
+
+	const tripUpdatesByStop = await labDb.queryFromFile<ClickHouseEtaGtfsKeyValue>(pipelinePath('select-eta-by-stop-gtfs.sql'));
+
+	await Promise.all(tripUpdatesByStop.map(row => cacheDb.set(`hub:v1:realtime:eta:by-stop:${row.key}:gtfs`, row.value)));
+
+	Logger.info({ message: `Cached ${tripUpdatesByStop.length} stop GTFS-RT groups in ${byStopTimer.get()}`, spacesAfterOrBefore: 1 });
 
 	//
 	// CP Trip Updates (Already in GTFS-RT format)
