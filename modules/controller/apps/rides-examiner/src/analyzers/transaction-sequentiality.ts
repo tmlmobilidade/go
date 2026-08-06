@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisTransactionSequentiality, RideAnalysisTransactionSequentialitySchema } from '@tmlmobilidade/go-types-operation';
 
 /**
  * This analyzer tests if there are any missing Transactions for the given Ride.
@@ -26,7 +26,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 			&& !analysisData.apex_validations.length;
 
 		if (noTransactionsFound) {
-			return {
+			return RideAnalysisTransactionSequentialitySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				expected_transactions_qty: null,
 				found_transactions_qty: null,
@@ -37,7 +37,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		//
@@ -102,7 +102,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 		}
 
 		if (Object.keys(missingTransactions).length === 0) {
-			return {
+			return RideAnalysisTransactionSequentialitySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				expected_transactions_qty: expectedTransactionsQty,
 				found_transactions_qty: foundTransactionsQty,
@@ -113,7 +113,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		//
@@ -124,7 +124,7 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 			.entries(missingTransactions)
 			.map(([samSerialNumber, gaps]) => `${samSerialNumber}: ${gaps.join(', ')}`).join(' | ');
 
-		return {
+		return RideAnalysisTransactionSequentialitySchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			expected_transactions_qty: expectedTransactionsQty,
 			found_transactions_qty: foundTransactionsQty,
@@ -135,11 +135,11 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 			remarks: missingGapsRemarks,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisTransactionSequentialitySchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			expected_transactions_qty: null,
 			found_transactions_qty: null,
@@ -150,6 +150,6 @@ export function transactionSequentialityAnalyzer(analysisData: AnalysisData): Ri
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

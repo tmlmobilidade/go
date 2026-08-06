@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideAnalysisExpectedVehicleIdQty } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisExpectedVehicleIdQty, RideAnalysisExpectedVehicleIdQtySchema } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
@@ -20,7 +20,7 @@ export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): RideAn
 		//
 
 		if (!analysisData.vehicle_events.length) {
-			return {
+			return RideAnalysisExpectedVehicleIdQtySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'skip',
 				observed_vehicle_ids_qty: null,
@@ -29,11 +29,11 @@ export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): RideAn
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		if (analysisData.ride.vehicle_ids.length > EXPECTED_VEHICLE_IDS_QTY) {
-			return {
+			return RideAnalysisExpectedVehicleIdQtySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'fail',
 				observed_vehicle_ids_qty: analysisData.ride.vehicle_ids.length,
@@ -42,10 +42,10 @@ export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): RideAn
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
-		return {
+		return RideAnalysisExpectedVehicleIdQtySchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'pass',
 			observed_vehicle_ids_qty: analysisData.ride.vehicle_ids.length,
@@ -54,11 +54,11 @@ export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): RideAn
 			remarks: null,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisExpectedVehicleIdQtySchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'error',
 			observed_vehicle_ids_qty: null,
@@ -67,6 +67,6 @@ export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): RideAn
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

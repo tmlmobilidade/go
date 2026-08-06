@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideAnalysisSimpleThreeVehicleEvents } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisSimpleThreeVehicleEvents, RideAnalysisSimpleThreeVehicleEventsSchema } from '@tmlmobilidade/go-types-operation';
 
 /**
  * This analyzer tests if at least one stop_id is found for each segment of the trip.
@@ -18,18 +18,18 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 		//
 
 		if (!analysisData.hashed_trip.length) {
-			return {
+			return RideAnalysisSimpleThreeVehicleEventsSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'skip',
 				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_PATH_DATA',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				stop_ids_first: null,
-				stop_ids_last: null,
-				stop_ids_middle: null,
+				stop_ids_first: [],
+				stop_ids_last: [],
+				stop_ids_middle: [],
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		//
@@ -77,7 +77,7 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 		// If no stop is found for any segment, return a failed grade
 
 		if (!foundFirstStopIds.size) {
-			return {
+			return RideAnalysisSimpleThreeVehicleEventsSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'fail',
 				operational_date: analysisData.ride.operational_date,
@@ -88,11 +88,11 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 				stop_ids_last: Array.from(lastStopIds),
 				stop_ids_middle: Array.from(middleStopIds),
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		if (!foundMiddleStopIds.size) {
-			return {
+			return RideAnalysisSimpleThreeVehicleEventsSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'fail',
 				operational_date: analysisData.ride.operational_date,
@@ -103,11 +103,11 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 				stop_ids_last: Array.from(lastStopIds),
 				stop_ids_middle: Array.from(middleStopIds),
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		if (!foundLastStopIds.size) {
-			return {
+			return RideAnalysisSimpleThreeVehicleEventsSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'fail',
 				operational_date: analysisData.ride.operational_date,
@@ -118,10 +118,10 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 				stop_ids_last: Array.from(lastStopIds),
 				stop_ids_middle: Array.from(middleStopIds),
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
-		return {
+		return RideAnalysisSimpleThreeVehicleEventsSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'pass',
 			operational_date: analysisData.ride.operational_date,
@@ -132,21 +132,21 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 			stop_ids_last: Array.from(lastStopIds),
 			stop_ids_middle: Array.from(middleStopIds),
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisSimpleThreeVehicleEventsSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'error',
 			operational_date: analysisData.ride.operational_date,
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
-			stop_ids_first: null,
-			stop_ids_last: null,
-			stop_ids_middle: null,
+			stop_ids_first: [],
+			stop_ids_last: [],
+			stop_ids_middle: [],
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

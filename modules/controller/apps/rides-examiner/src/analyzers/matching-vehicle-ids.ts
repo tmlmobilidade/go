@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { RideAnalysisMatchingVehicleIds } from '@tmlmobilidade/go-types-operation';
+import { RideAnalysisMatchingVehicleIds, RideAnalysisMatchingVehicleIdsSchema } from '@tmlmobilidade/go-types-operation';
 
 /**
  * This analyzer checks if the Vehicle IDs of APEX transactions match the Vehicle Events.
@@ -20,7 +20,7 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 			&& !analysisData.apex_validations.length;
 
 		if (noTransactionsWithVehicleIdsFound) {
-			return {
+			return RideAnalysisMatchingVehicleIdsSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				extra_apex_vehicle_ids_qty: null,
 				extra_vehicle_events_vehicle_ids_qty: null,
@@ -32,11 +32,11 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 				ride_id: analysisData.ride._id,
 				total_vehicle_ids_qty: null,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		if (!analysisData.vehicle_events.length) {
-			return {
+			return RideAnalysisMatchingVehicleIdsSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				extra_apex_vehicle_ids_qty: null,
 				extra_vehicle_events_vehicle_ids_qty: null,
@@ -48,7 +48,7 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 				ride_id: analysisData.ride._id,
 				total_vehicle_ids_qty: null,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		//
@@ -79,7 +79,7 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 		const matchingVehicleIds = Array.from(combinedUniqueVehicleIds).filter(id => uniqueApexVehicleIds.has(id) && uniqueIdsFromVehicleEvents.has(id));
 
 		if (extraApexVehicleIds.length > 0 || extraVehicleEventsVehicleIds.length > 0) {
-			return {
+			return RideAnalysisMatchingVehicleIdsSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				extra_apex_vehicle_ids_qty: extraApexVehicleIds.length,
 				extra_vehicle_events_vehicle_ids_qty: extraVehicleEventsVehicleIds.length,
@@ -91,14 +91,14 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 				ride_id: analysisData.ride._id,
 				total_vehicle_ids_qty: combinedUniqueVehicleIds.size,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		//
 		// If we reach this point,
 		// it means we have a matching set of Vehicle IDs
 
-		return {
+		return RideAnalysisMatchingVehicleIdsSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			extra_apex_vehicle_ids_qty: extraApexVehicleIds.length,
 			extra_vehicle_events_vehicle_ids_qty: extraVehicleEventsVehicleIds.length,
@@ -110,11 +110,11 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 			ride_id: analysisData.ride._id,
 			total_vehicle_ids_qty: combinedUniqueVehicleIds.size,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisMatchingVehicleIdsSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			extra_apex_vehicle_ids_qty: null,
 			extra_vehicle_events_vehicle_ids_qty: null,
@@ -126,6 +126,6 @@ export function matchingVehicleIdsAnalyzer(analysisData: AnalysisData): RideAnal
 			ride_id: analysisData.ride._id,
 			total_vehicle_ids_qty: null,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

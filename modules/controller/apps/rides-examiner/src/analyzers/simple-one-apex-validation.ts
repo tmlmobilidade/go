@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideAnalysisSimpleOneApexValidation } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisSimpleOneApexValidation, RideAnalysisSimpleOneApexValidationSchema } from '@tmlmobilidade/go-types-operation';
 
 /**
  * This analyzer tests if at least one validation is found for the trip.
@@ -16,7 +16,7 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 		//
 
 		if (!analysisData.apex_validations.length) {
-			return {
+			return RideAnalysisSimpleOneApexValidationSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'skip',
 				operational_date: analysisData.ride.operational_date,
@@ -24,10 +24,10 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
-		return {
+		return RideAnalysisSimpleOneApexValidationSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'pass',
 			operational_date: analysisData.ride.operational_date,
@@ -35,11 +35,11 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 			remarks: null,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisSimpleOneApexValidationSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'error',
 			operational_date: analysisData.ride.operational_date,
@@ -47,6 +47,6 @@ export function simpleOneApexValidationAnalyzer(analysisData: AnalysisData): Rid
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

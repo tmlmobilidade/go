@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideAnalysisSimpleOneVehicleEventOrApexValidation } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisSimpleOneVehicleEventOrApexValidation, RideAnalysisSimpleOneVehicleEventOrApexValidationSchema } from '@tmlmobilidade/go-types-operation';
 
 /**
  * This analyzer tests if at least one vehicle event or one validation is found for the trip.
@@ -19,7 +19,7 @@ export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: Anal
 		// Test if at least one Vehicle Event is found
 
 		if (analysisData.vehicle_events.length > 0 || analysisData.apex_validations.length > 0) {
-			return {
+			return RideAnalysisSimpleOneVehicleEventOrApexValidationSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'pass',
 				operational_date: analysisData.ride.operational_date,
@@ -27,10 +27,10 @@ export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: Anal
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
-		return {
+		return RideAnalysisSimpleOneVehicleEventOrApexValidationSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'fail',
 			operational_date: analysisData.ride.operational_date,
@@ -38,11 +38,11 @@ export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: Anal
 			remarks: null,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisSimpleOneVehicleEventOrApexValidationSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'error',
 			operational_date: analysisData.ride.operational_date,
@@ -50,6 +50,6 @@ export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: Anal
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

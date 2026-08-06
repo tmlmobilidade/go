@@ -3,7 +3,7 @@
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { type RideAnalysisExpectedApexValidationInterval } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisExpectedApexValidationInterval, RideAnalysisExpectedApexValidationIntervalSchema } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
@@ -23,7 +23,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 		// Skip if there are not enough APEX Validations
 
 		if (!analysisData.apex_validations.length) {
-			return {
+			return RideAnalysisExpectedApexValidationIntervalSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'skip',
 				observed_average_interval: null,
@@ -34,11 +34,11 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		if (analysisData.apex_validations.length < 2) {
-			return {
+			return RideAnalysisExpectedApexValidationIntervalSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'skip',
 				observed_average_interval: null,
@@ -49,7 +49,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		//
@@ -108,7 +108,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 		// Fail the test if too short intervals were found
 
 		if (tooShortIntervalsQty > 0) {
-			return {
+			return RideAnalysisExpectedApexValidationIntervalSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'fail',
 				observed_average_interval: observedAverageInterval,
@@ -119,13 +119,13 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		//
 		// Return a passing grade otherwise
 
-		return {
+		return RideAnalysisExpectedApexValidationIntervalSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'pass',
 			observed_average_interval: observedAverageInterval,
@@ -136,11 +136,11 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 			remarks: null,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisExpectedApexValidationIntervalSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'error',
 			observed_average_interval: null,
@@ -151,6 +151,6 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

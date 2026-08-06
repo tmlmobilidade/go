@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideAnalysisExpectedVehicleEventDelay } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisExpectedVehicleEventDelay, RideAnalysisExpectedVehicleEventDelaySchema } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
@@ -20,7 +20,7 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 		//
 
 		if (!analysisData.vehicle_events.length) {
-			return {
+			return RideAnalysisExpectedVehicleEventDelaySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'skip',
 				observed_average_delay: null,
@@ -34,7 +34,7 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 				vehicle_events_qty: null,
 				vehicle_events_with_delay_percent: null,
 				vehicle_events_with_delay_qty: null,
-			};
+			});
 		}
 
 		//
@@ -63,7 +63,7 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 		// Return the result
 
 		if (countOfEventsWithDelay > 0) {
-			return {
+			return RideAnalysisExpectedVehicleEventDelaySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'fail',
 				observed_average_delay: averageDelay,
@@ -77,10 +77,10 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 				vehicle_events_qty: analysisData.vehicle_events.length,
 				vehicle_events_with_delay_percent: delayPercentage,
 				vehicle_events_with_delay_qty: countOfEventsWithDelay,
-			};
+			});
 		}
 
-		return {
+		return RideAnalysisExpectedVehicleEventDelaySchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'pass',
 			observed_average_delay: averageDelay,
@@ -94,11 +94,11 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 			vehicle_events_qty: analysisData.vehicle_events.length,
 			vehicle_events_with_delay_percent: delayPercentage,
 			vehicle_events_with_delay_qty: countOfEventsWithDelay,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisExpectedVehicleEventDelaySchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'error',
 			observed_average_delay: null,
@@ -112,6 +112,6 @@ export function expectedVehicleEventDelayAnalyzer(analysisData: AnalysisData): R
 			vehicle_events_qty: null,
 			vehicle_events_with_delay_percent: null,
 			vehicle_events_with_delay_qty: null,
-		};
+		});
 	}
 };

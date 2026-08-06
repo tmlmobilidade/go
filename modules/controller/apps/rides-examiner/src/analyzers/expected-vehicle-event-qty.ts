@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideAnalysisExpectedVehicleEventQty } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisExpectedVehicleEventQty, RideAnalysisExpectedVehicleEventQtySchema } from '@tmlmobilidade/go-types-operation';
 
 /**
  * This analyzer tests if at the trip has less than ten Vehicle Events.
@@ -16,7 +16,7 @@ export function expectedVehicleEventQtyAnalyzer(analysisData: AnalysisData): Rid
 		//
 
 		if (!analysisData.hashed_trip.length) {
-			return {
+			return RideAnalysisExpectedVehicleEventQtySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				expected_vehicle_events_qty: null,
 				grade_status: 'skip',
@@ -26,11 +26,11 @@ export function expectedVehicleEventQtyAnalyzer(analysisData: AnalysisData): Rid
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		if (!analysisData.vehicle_events.length) {
-			return {
+			return RideAnalysisExpectedVehicleEventQtySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				expected_vehicle_events_qty: null,
 				grade_status: 'skip',
@@ -40,7 +40,7 @@ export function expectedVehicleEventQtyAnalyzer(analysisData: AnalysisData): Rid
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		//
@@ -49,7 +49,7 @@ export function expectedVehicleEventQtyAnalyzer(analysisData: AnalysisData): Rid
 		const expectedQty = analysisData.hashed_trip.length * 2;
 
 		if (analysisData.vehicle_events.length > expectedQty) {
-			return {
+			return RideAnalysisExpectedVehicleEventQtySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				expected_vehicle_events_qty: expectedQty,
 				grade_status: 'pass',
@@ -59,10 +59,10 @@ export function expectedVehicleEventQtyAnalyzer(analysisData: AnalysisData): Rid
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
-		return {
+		return RideAnalysisExpectedVehicleEventQtySchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			expected_vehicle_events_qty: expectedQty,
 			grade_status: 'fail',
@@ -72,11 +72,11 @@ export function expectedVehicleEventQtyAnalyzer(analysisData: AnalysisData): Rid
 			remarks: null,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisExpectedVehicleEventQtySchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			expected_vehicle_events_qty: null,
 			grade_status: 'error',
@@ -86,6 +86,6 @@ export function expectedVehicleEventQtyAnalyzer(analysisData: AnalysisData): Rid
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

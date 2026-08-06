@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideAnalysisExpectedDriverIdQty } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisExpectedDriverIdQty, RideAnalysisExpectedDriverIdQtySchema } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
@@ -20,7 +20,7 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAna
 		//
 
 		if (!analysisData.vehicle_events.length) {
-			return {
+			return RideAnalysisExpectedDriverIdQtySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'skip',
 				observed_driver_ids_qty: null,
@@ -29,11 +29,11 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAna
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		if (analysisData.ride.driver_ids.length > EXPECTED_DRIVER_IDS_QTY) {
-			return {
+			return RideAnalysisExpectedDriverIdQtySchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'fail',
 				observed_driver_ids_qty: analysisData.ride.driver_ids.length,
@@ -42,10 +42,10 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAna
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
-		return {
+		return RideAnalysisExpectedDriverIdQtySchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'pass',
 			observed_driver_ids_qty: analysisData.ride.driver_ids.length,
@@ -54,11 +54,11 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAna
 			remarks: null,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisExpectedDriverIdQtySchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'error',
 			observed_driver_ids_qty: null,
@@ -67,6 +67,6 @@ export function expectedDriverIdQtyAnalyzer(analysisData: AnalysisData): RideAna
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

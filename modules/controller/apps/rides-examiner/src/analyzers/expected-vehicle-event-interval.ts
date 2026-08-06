@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideAnalysisExpectedVehicleEventInterval } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisExpectedVehicleEventInterval, RideAnalysisExpectedVehicleEventIntervalSchema } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
@@ -23,7 +23,7 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 		// Return a fail grade if there are no vehicle events
 
 		if (!analysisData.vehicle_events.length) {
-			return {
+			return RideAnalysisExpectedVehicleEventIntervalSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'skip',
 				observed_average_interval: null,
@@ -34,7 +34,7 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		//
@@ -65,7 +65,7 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 		const avgIntervalBetweenEvents = totalIntervalBetweenEvents / analysisData.vehicle_events.length;
 
 		if (avgIntervalBetweenEvents <= EXPECTED_AVERAGE_VEHICLE_EVENT_INTERVAL) {
-			return {
+			return RideAnalysisExpectedVehicleEventIntervalSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'pass',
 				observed_average_interval: avgIntervalBetweenEvents,
@@ -76,10 +76,10 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
-		return {
+		return RideAnalysisExpectedVehicleEventIntervalSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'fail',
 			observed_average_interval: avgIntervalBetweenEvents,
@@ -90,11 +90,11 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 			remarks: null,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisExpectedVehicleEventIntervalSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'error',
 			observed_average_interval: null,
@@ -105,6 +105,6 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

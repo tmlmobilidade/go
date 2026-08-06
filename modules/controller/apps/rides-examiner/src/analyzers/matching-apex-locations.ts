@@ -2,7 +2,7 @@
 
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideAnalysisMatchingApexLocations } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisMatchingApexLocations, RideAnalysisMatchingApexLocationsSchema } from '@tmlmobilidade/go-types-operation';
 
 /**
  * This analyzer tests if there are Location Transactions for all stops of the trip.
@@ -15,7 +15,7 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 		//
 
 		if (!analysisData.hashed_trip.length) {
-			return {
+			return RideAnalysisMatchingApexLocationsSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				expected_apex_locations_qty: null,
 				grade_status: 'skip',
@@ -26,11 +26,11 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		if (!analysisData.apex_locations.length) {
-			return {
+			return RideAnalysisMatchingApexLocationsSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				expected_apex_locations_qty: null,
 				grade_status: 'skip',
@@ -41,7 +41,7 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
 		//
@@ -86,7 +86,7 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 		// Assign grades to analysis
 
 		if (!allStopsFoundInApexLocations) {
-			return {
+			return RideAnalysisMatchingApexLocationsSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				expected_apex_locations_qty: distinctStopIds.length,
 				grade_status: 'fail',
@@ -97,10 +97,10 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 				remarks: null,
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
-			};
+			});
 		}
 
-		return {
+		return RideAnalysisMatchingApexLocationsSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			expected_apex_locations_qty: null,
 			grade_status: 'pass',
@@ -111,11 +111,11 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 			remarks: null,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisMatchingApexLocationsSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			expected_apex_locations_qty: null,
 			grade_status: 'error',
@@ -126,6 +126,6 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
-		};
+		});
 	}
 };

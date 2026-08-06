@@ -3,7 +3,7 @@
 import { type AnalysisData } from '@/types/analysis-data.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type GeoJson2dPosition } from '@tmlmobilidade/go-types-geo';
-import { type RideAnalysisAtLeastOneVehicleEventOnLastStop } from '@tmlmobilidade/go-types-operation';
+import { type RideAnalysisAtLeastOneVehicleEventOnLastStop, RideAnalysisAtLeastOneVehicleEventOnLastStopSchema } from '@tmlmobilidade/go-types-operation';
 import { getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
 
 /* * */
@@ -25,7 +25,7 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 		// Skip if the hashed trip is empty
 
 		if (!analysisData.hashed_trip.length) {
-			return {
+			return RideAnalysisAtLeastOneVehicleEventOnLastStopSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'skip',
 				operational_date: analysisData.ride.operational_date,
@@ -34,14 +34,14 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
 				vehicle_events_on_last_stop_qty: null,
-			};
+			});
 		}
 
 		//
 		// Skip if the ride has no events
 
 		if (!analysisData.vehicle_events.length) {
-			return {
+			return RideAnalysisAtLeastOneVehicleEventOnLastStopSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'skip',
 				operational_date: analysisData.ride.operational_date,
@@ -50,7 +50,7 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
 				vehicle_events_on_last_stop_qty: null,
-			};
+			});
 		}
 
 		//
@@ -71,7 +71,7 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 		}
 
 		if (eventsFoundOnLastStop > 0) {
-			return {
+			return RideAnalysisAtLeastOneVehicleEventOnLastStopSchema.parse({
 				agency_id: analysisData.ride.agency_id,
 				grade_status: 'pass',
 				operational_date: analysisData.ride.operational_date,
@@ -80,10 +80,10 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 				ride_id: analysisData.ride._id,
 				updated_at: Dates.now('utc').unix_timestamp,
 				vehicle_events_on_last_stop_qty: eventsFoundOnLastStop,
-			};
+			});
 		}
 
-		return {
+		return RideAnalysisAtLeastOneVehicleEventOnLastStopSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'fail',
 			operational_date: analysisData.ride.operational_date,
@@ -92,11 +92,11 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
 			vehicle_events_on_last_stop_qty: eventsFoundOnLastStop,
-		};
+		});
 
 		//
 	} catch (error) {
-		return {
+		return RideAnalysisAtLeastOneVehicleEventOnLastStopSchema.parse({
 			agency_id: analysisData.ride.agency_id,
 			grade_status: 'error',
 			operational_date: analysisData.ride.operational_date,
@@ -105,6 +105,6 @@ export function atLeastOneVehicleEventOnLastStopAnalyzer(analysisData: AnalysisD
 			ride_id: analysisData.ride._id,
 			updated_at: Dates.now('utc').unix_timestamp,
 			vehicle_events_on_last_stop_qty: null,
-		};
+		});
 	}
 };
