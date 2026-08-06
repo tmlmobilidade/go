@@ -214,8 +214,18 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`LABDB [${this.databaseName}]: Unsafe database name provided.`);
 		// Perform the query to create the database if it does not exist
 		try {
+			// First check if the database already exists
+			const result = await this.client.query({
+				query: `SELECT 1 FROM system.databases WHERE name = {name:String} LIMIT 1`,
+				query_params: { name: this.databaseName },
+			});
+			const resultData = await result.json();
+			const databaseAlreadyExists = resultData.data.length > 0;
+			// Always execute CREATE DATABASE IF NOT EXISTS to avoid race conditions
+			// if another instance creates the database after our existence check.
 			await this.client.command({ query: `CREATE DATABASE IF NOT EXISTS "${this.databaseName}"` });
-			Logger.info({ message: `LABDB [${this.databaseName}]: Database created.` });
+			// Only log if the database did not exist when we checked.
+			if (!databaseAlreadyExists) Logger.info({ message: `LABDB [${this.databaseName}]: Database created.` });
 		} catch (error) {
 			Logger.error({ error, message: `LABDB [${this.databaseName}]: Error @ createDatabase(): ${(error as Error).message}` });
 			throw error;
@@ -251,8 +261,18 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		`;
 		// Perform the query to create the table
 		try {
+			// Check whether the table already exists.
+			const result = await this.client.query({
+				query: `SELECT 1 FROM system.tables WHERE database = {database:String} AND name = {table:String} LIMIT 1`,
+				query_params: { database: this.databaseName, table: this.tableName },
+			});
+			const resultData = await result.json();
+			const tableAlreadyExists = resultData.data.length > 0;
+			// Always execute CREATE TABLE IF NOT EXISTS to avoid race conditions
+			// if another instance creates the table after our existence check.
 			await this.client.command({ query: createTableQuery });
-			Logger.info({ message: `LABDB [${this.tableName}]: Table created.` });
+			// Only log if the table did not exist when we checked.
+			if (!tableAlreadyExists) Logger.info({ message: `LABDB [${this.tableName}]: Table created.` });
 		} catch (error) {
 			// If the error is not an ACCESS_DENIED, throw it right away
 			if (!(error instanceof ClickHouseError) || error.code !== '497') {
