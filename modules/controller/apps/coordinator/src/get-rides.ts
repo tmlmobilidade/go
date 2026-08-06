@@ -48,7 +48,17 @@ export async function getRides(): Promise<string[]> {
 
 		const latestWaitingRides: Pick<Ride, '_id' | 'operational_date' | 'start_time_scheduled'>[] = await labDb.operation.rides.select(
 			'_id, operational_date, start_time_scheduled',
-			'start_time_scheduled <= $1 AND processing_status = \'waiting\' ORDER BY start_time_scheduled DESC LIMIT 750',
+			`
+				start_time_scheduled <= $1
+				AND processing_status = 'waiting'
+				AND updated_at = (
+					SELECT max(updated_at)
+					FROM rides AS r2
+					WHERE r2._id = rides._id
+				)
+				ORDER BY start_time_scheduled DESC
+				LIMIT 750
+			`,
 			{ 1: standardWindowInterval.end },
 		);
 
