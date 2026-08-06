@@ -43,6 +43,7 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-offer": "*",
+		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",

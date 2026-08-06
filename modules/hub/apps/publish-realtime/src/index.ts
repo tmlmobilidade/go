@@ -1,5 +1,6 @@
 /* * */
 
+import { publishEtas } from '@/tasks/publish-etas.js';
 import { publishTripUpdates } from '@/tasks/publish-trip-updates.js';
 import { publishVehiclesPositions } from '@/tasks/publish-vehicle-positions.js';
 import { publishVehiclesMetadata } from '@/tasks/publish-vehicles-metadata.js';
@@ -39,6 +40,7 @@ const main = async () => {
 
 	if (ITERATION % 15 === 0) await publishVehiclesMetadata(); // Every 15 iterations * 1s + execution time ≈ 30 seconds
 	if (ITERATION % 15 === 0) await publishTripUpdates(); // Every 15 iterations * 1s + execution time ≈ 30 seconds
+	if (ITERATION % 15 === 0) await publishEtas(); // Every 15 iterations * 1s + execution time ≈ 30 seconds
 
 	ITERATION++;
 

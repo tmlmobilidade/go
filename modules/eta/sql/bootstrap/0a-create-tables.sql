@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS eta.curr_rides (
     agency_id String,
     hashed_shape_id String,
     hashed_trip_id String,
+    plan_id String,
     trip_id String,
     start_time_observed UInt64,
     start_time_scheduled UInt64,

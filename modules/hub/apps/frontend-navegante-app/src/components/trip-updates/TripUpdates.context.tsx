@@ -49,7 +49,7 @@ export function TripUpdatesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: tripUpdatesData, error: tripUpdatesError, isLoading: tripUpdatesLoading } = useSWR<GtfsRtFeedMessage, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_TRIP_UPDATES }, { refreshInterval: 30_000 }); // 30 seconds
+	const { data: tripUpdatesData, error: tripUpdatesError, isLoading: tripUpdatesLoading } = useSWR<GtfsRtFeedMessage, Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_ETA_GTFS }, { refreshInterval: 15_000 }); // 15 seconds
 
 	//
 	// B. Transform data

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { Line } from '@carrismetropolitana/api-types/network';
 import { getModuleConfig, HttpException } from '@tmlmobilidade/consts';
+import { HubLine } from '@tmlmobilidade/go-types-public-info';
 import { CreateProposedChangeDto, ProposedChange, Stop, StopFacility, StopFacilitySchema } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -13,7 +13,7 @@ import { useToast } from '../hooks';
 /* * */
 
 export interface ScopeEntityMap {
-	line: Line
+	line: HubLine
 	stop: Stop
 }
 
@@ -87,8 +87,7 @@ export function ProposedChangesContextProvider<S extends ScopeKey>({ children, r
 			await fetchData(`${getModuleConfig('auth', 'api_url')}/proposed-changes/${id}`, 'PUT', { status: 'approved' });
 			useToast.success({ message: 'Proposta aprovada com sucesso', title: 'Sucesso' });
 			await mutate(key);
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Error approving proposed change:', error);
 			useToast.error({ message: 'Erro ao aprovar proposta', title: 'Erro' });
 			await mutate(key);
@@ -104,8 +103,7 @@ export function ProposedChangesContextProvider<S extends ScopeKey>({ children, r
 			await fetchData(`${getModuleConfig('auth', 'api_url')}/proposed-changes/${id}`, 'PUT', { status: 'rejected' });
 			useToast.success({ message: 'Proposta rejeitada com sucesso', title: 'Sucesso' });
 			await mutate(key);
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Error rejecting proposed change:', error);
 			useToast.error({ message: 'Erro ao reprovar proposta', title: 'Erro' });
 			await mutate(key);
@@ -120,8 +118,7 @@ export function ProposedChangesContextProvider<S extends ScopeKey>({ children, r
 			await fetchData(`${getModuleConfig('auth', 'api_url')}/proposed-changes`, 'POST', data);
 			useToast.success({ message: 'Proposta submetida com sucesso', title: 'Sucesso' });
 			await mutate(key);
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Error submitting proposed change:', error);
 			useToast.error({ message: 'Erro ao submeter proposta', title: 'Erro' });
 			await mutate(key);
