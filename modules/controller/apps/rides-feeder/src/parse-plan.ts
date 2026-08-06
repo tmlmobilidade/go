@@ -8,7 +8,7 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
 import { CreateHashedTrip, CreateHashedTripSchema, type HashedTrip, HashedTripSchema, type Ride } from '@tmlmobilidade/go-types-operation';
-import { validateHexColor, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { HexColorSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-geo';
 import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -273,7 +273,7 @@ export async function parsePlan(planData: Plan) {
 					extension_scheduled: extensionScheduledInMeters,
 					hashed_trip_id: uniqueIdValueForCreateHashedTrip,
 					headsign: currentTrip.trip_headsign,
-					operational_date: validateOperationalDateInt(calendarDate),
+					operational_date: OperationalDateIntSchema.parse(calendarDate),
 					passengers_estimated: null,
 					passengers_observed: null,
 					passengers_observed_banking_taps_amount: null,
@@ -285,11 +285,11 @@ export async function parsePlan(planData: Plan) {
 					passengers_observed_subscription_qty: null,
 					plan_id: planData._id,
 					processing_status: 'waiting',
-					route_color: validateHexColor(routeData.route_color),
+					route_color: HexColorSchema.parse(routeData.route_color),
 					route_id: routeData.route_id,
 					route_long_name: routeData.route_long_name,
 					route_short_name: routeData.route_short_name,
-					route_text_color: validateHexColor(routeData.route_text_color),
+					route_text_color: HexColorSchema.parse(routeData.route_text_color),
 					seen_first_at: null,
 					seen_last_at: null,
 					shape_id: currentTrip.shape_id,

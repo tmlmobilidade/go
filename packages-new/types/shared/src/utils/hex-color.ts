@@ -24,31 +24,8 @@ export type HexColor = string & {
  * ```
  */
 export const HexColorSchema = z
+	.coerce
 	.string()
-	.transform(validateHexColor);
-
-/**
- * This function validates if a value is a valid hex color.
- * @param value The value to be validated with or without the `#` prefix.
- * @returns The given value as a HexColor, without the `#` prefix.
- * @throws An error if the value is invalid.
- * @example
- * ```ts
- * const hexColor = validateHexColor('#000000');
- * // => '#000000' as HexColor
- *
- * const hexColor = validateHexColor('FFFFFF');
- * // => '#FFFFFF' as HexColor
- *
- * const hexColor = validateHexColor('not a hex color');
- * // => Throws an error: 'Invalid hex color format 'not a hex color', expected format: RRGGBB'
- *
- * const hexColor = validateHexColor('not a hex color');
- * // => Throws an error: 'Invalid hex color format 'not a hex color', expected format: RRGGBB'
- * ```
- */
-export function validateHexColor(value: string): HexColor {
-	if (!value.startsWith('#')) value = `#${value}`;
-	if (!value.match(/^#[0-9A-Fa-f]{6}$/)) throw new Error(`Invalid hex color format '${value}', expected format: #RRGGBB`);
-	return value.toUpperCase() as HexColor;
-}
+	.transform(value => value.startsWith('#') ? value : `#${value}`)
+	.refine(value => /^#[0-9A-Fa-f]{6}$/.test(value), { message: 'Expected a hex color in the format #RRGGBB' })
+	.transform(value => value.toUpperCase() as HexColor);
