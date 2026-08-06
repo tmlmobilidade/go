@@ -1,7 +1,7 @@
 /* * */
 
-import { publishEtas } from '@/tasks/publish-etas.js';
-import { publishTripUpdates } from '@/tasks/publish-trip-updates.js';
+import { publishTripUpdates } from '@/tasks/eta/gtfs/publish-trip-updates.js';
+import { publishEtas } from '@/tasks/eta/simplified/publish-etas.js';
 import { publishVehiclesPositions } from '@/tasks/vehicles/publish-vehicle-positions.js';
 import { publishVehiclesMetadata } from '@/tasks/vehicles/publish-vehicles-metadata.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
