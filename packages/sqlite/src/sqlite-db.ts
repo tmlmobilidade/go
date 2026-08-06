@@ -4,7 +4,7 @@ import { SQLiteColumn, SQLiteDatabaseConfig, SQLiteTable } from '@/types.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import BSQLite3, { type Database, Statement } from 'better-sqlite3';
-import fs, { rmSync } from 'node:fs';
+import fs from 'node:fs';
 import { Readable } from 'node:stream';
 
 /* * */
@@ -56,7 +56,7 @@ export class SQLiteDatabase {
 	public cleanup(): void {
 		this.databaseInstance.close();
 		if (this.config.instancePath) {
-			rmSync(this.config.instancePath, { force: true, recursive: true });
+			fs.rmSync(this.config.instancePath, { force: true, recursive: true });
 		}
 	}
 
