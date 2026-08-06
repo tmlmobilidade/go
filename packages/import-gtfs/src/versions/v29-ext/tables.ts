@@ -103,7 +103,7 @@ export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 	});
 
 	return {
-		_db: database.databaseInstance,
+		_db: database,
 		calendar_dates: calendarDatesMap,
 		routes: routesTable,
 		shapes: shapesTable,

@@ -259,7 +259,7 @@ export async function main() {
 			// Since SQLite sets up memory using C-level allocations, it is not possible
 			// to rely on garbage collection alone to free up memory in a timely manner.
 
-			importedGtfsSql._db.close();
+			importedGtfsSql._db.cleanup();
 
 			Logger.divider();
 
