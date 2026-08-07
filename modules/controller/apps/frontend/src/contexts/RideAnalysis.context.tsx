@@ -96,7 +96,7 @@ export function RideAnalysisContextProvider({ children, rideId }: PropsWithChild
 	const { data: simplifiedApexOnBoardSalesData, error: simplifiedApexOnBoardSalesError, isLoading: simplifiedApexOnBoardSalesLoading } = useSWR<SimplifiedApexOnBoardSale[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_SALES(rideId), { refreshInterval: 30_000 });
 	const { data: simplifiedApexOnBoardRefundsData, error: simplifiedApexOnBoardRefundsError, isLoading: simplifiedApexOnBoardRefundsLoading } = useSWR<SimplifiedApexOnBoardRefund[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_REFUNDS(rideId), { refreshInterval: 30_000 });
 	const { data: hashedTripData, error: hashedTripError, isLoading: hashedTripLoading } = useSWR<HashedTrip>(API_ROUTES.controller.RIDES_DETAIL_HASHED_TRIP(rideId));
-	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<HashedShape>(API_ROUTES.controller.RIDES_DETAIL_HASHED_SHAPE(rideId));
+	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<HashedShape>('');
 
 	const [selectedView, setSelectedView] = useState<keyof typeof RideAnalysisViewOptions>(Object.keys(RideAnalysisViewOptions)[0] as keyof typeof RideAnalysisViewOptions);
 
