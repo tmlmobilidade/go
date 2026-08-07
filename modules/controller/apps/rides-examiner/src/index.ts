@@ -49,6 +49,14 @@ export async function analyzeRides() {
 		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
 
 		//
+		// Skip this run if there are no rides to process
+
+		if (!rideIdsBatch?.length) {
+			Logger.info({ message: 'No rides to process. Skipping run.' });
+			return;
+		}
+
+		//
 		// With the list of Ride IDs, fetch the actual Ride documents to be processsed
 
 		const fetchRideDocumentsTimer = new Timer();

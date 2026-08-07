@@ -70,6 +70,7 @@ export async function getRides(): Promise<string[]> {
 
 		if (!latestWaitingRides.length) {
 			Logger.info({ message: `[${sessionId}] No documents waiting | start_time_scheduled: ${standardWindowInterval.end} (fetch: ${fetchTimerResult})` });
+			IS_BUSY = false;
 			return [];
 		}
 
