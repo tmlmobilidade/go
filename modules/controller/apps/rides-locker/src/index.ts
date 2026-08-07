@@ -1,9 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { rideAcceptances } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
@@ -75,7 +74,7 @@ async function main() {
 
 			//
 			// Fetch the ride acceptances.
-			const foundRides = await rideAcceptances.findMany({ created_at: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
+			const foundRides = await goDb.operation.rideAcceptances.findMany({ created_at: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
 
 			//
 			// Loop through the found rides and process
@@ -87,7 +86,7 @@ async function main() {
 
 				if (rideAcceptance.is_locked) continue;
 
-				await rideAcceptances.updateByRideId(rideAcceptance.ride_id, { is_locked: true, updated_by: 'system' });
+				await goDb.operation.rideAcceptances.updateById(rideAcceptance._id, { is_locked: true, updated_by: 'system' });
 				Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance.ride_id}.` });
 			}
 

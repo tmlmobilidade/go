@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
@@ -12,7 +12,7 @@ import { Logger } from '@tmlmobilidade/logger';
  */
 export async function getGtfs(request: FastifyRequest, reply: FastifyReply<string>) {
 	// Retrieve file data from database
-	const foundFileData = await files.findById('gtfs-latest');
+	const foundFileData = await storageProvider.findById('gtfs-latest');
 	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
 	// Stream the file in the given URL to the client
 	const storageServiceResponse = await fetch(foundFileData.url);

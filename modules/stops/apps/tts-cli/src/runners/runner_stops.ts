@@ -1,24 +1,18 @@
 /* * */
 
 import { generatePiperTtsAudio } from '@/services/piperTtsApi.js';
+import { deleteOldTtsFile } from '@/utils/deleteOldTTSFile.js';
+import { generateHash } from '@/utils/generateHash.js';
 import { makeStop } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
-import { files, stops } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import pLimit from 'p-limit';
 
 /* * */
 
-const RUNNER_CONCURRENCY = Number(process.env.TTS_RUNNER_CONCURRENCY ?? 5);
-
-async function deleteLegacyTtsFile(fileId: string) {
-	const existingFile = await files.findOne({ _id: fileId });
-	if (!existingFile) return;
-
-	await files.deleteOne({ _id: fileId });
-}
-
-async function processStop(stopIndex: number, total: number, stopData: Awaited<ReturnType<typeof stops.all>>[number]) {
+async function processStop(stopIndex: number, total: number, stopData: Awaited<ReturnType<typeof goDb.infrastructure.stops.findMany>>[number]) {
 	const stopTts = makeStop(stopData.name, {
 		airport: stopData.flags.some(flag => flag.short_name === 'airport'),
 		bike_parking: stopData.flags.some(flag => flag.short_name === 'bike_parking'),
@@ -33,6 +27,14 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 	if (!stopTts || stopTts === '#N/A') return;
 
 	const stopId = stopData._id.toString();
+	const hash = await generateHash(stopTts, stopId);
+
+	if (stopData.tts_hash === hash) {
+		Logger.info({
+			message: `[${stopIndex + 1}/${total}] Skipping Stop ${stopData._id} - TTS already exists`,
+		});
+		return;
+	}
 
 	Logger.info({
 		message: `[${stopIndex + 1}/${total}] Generating for Stop ${stopData._id} - ${stopTts}`,
@@ -41,22 +43,25 @@ async function processStop(stopIndex: number, total: number, stopData: Awaited<R
 	const audioBuffer = await generatePiperTtsAudio({
 		filename: stopId,
 		force: true,
+		resourceType: 'stops',
 		string: stopTts,
 	});
 
-	await deleteLegacyTtsFile(stopId);
-	await deleteLegacyTtsFile(`tts-${stopId}`);
+	await deleteOldTtsFile(stopId);
+	await deleteOldTtsFile(`tts-${stopId}`);
 
-	await files.upload(audioBuffer, {
+	await storageProvider.replace(audioBuffer, {
 		_id: `tts-${stopId}`,
 		created_by: 'system',
-		name: `${stopId}.mp3`,
+		name: `${hash}.mp3`,
 		resource_id: 'tts/live/stops',
 		scope: 'static',
 		size: audioBuffer.byteLength,
 		type: 'audio/mpeg',
 		updated_by: 'system',
-	}, { override: true });
+	});
+
+	await goDb.infrastructure.stops.updateById(stopData._id, { tts_hash: hash }, { forceIfLocked: true });
 }
 
 /* * */
@@ -68,12 +73,13 @@ export async function runnerStops() {
 	const globalTimer = new TIMETRACKER();
 
 	console.log('* Fetching all stops from database...');
-	const allStopsData = await stops.all();
+	const allStopsData = await goDb.infrastructure.stops.findMany();
 	const stopsToProcess = allStopsData.filter(stopData => !stopData.is_deleted);
 
-	console.log(`* Preparing ${stopsToProcess.length} stops (${RUNNER_CONCURRENCY} concurrent)...`);
+	const concurrency = Number(process.env.TTS_RUNNER_CONCURRENCY ?? 5);
+	console.log('* Preparing ' + stopsToProcess.length + ' stops (' + concurrency + ' concurrent)...');
 
-	const limit = pLimit(RUNNER_CONCURRENCY);
+	const limit = pLimit(concurrency);
 
 	await Promise.all(
 		stopsToProcess.map((stopData, stopIndex) => limit(async () => {

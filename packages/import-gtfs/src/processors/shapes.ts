@@ -44,7 +44,7 @@ export async function processShapesFile(context: ImportGtfsContext): Promise<voi
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "shapes.txt" file.' });
-		throw new Error('✖︎ Error processing "shapes.txt" file.');
+		Logger.error({ error, message: `Error processing "shapes.txt" file: ${error.message}` });
+		throw new Error('✖︎ Error processing "shapes.txt" file.', error);
 	}
 }

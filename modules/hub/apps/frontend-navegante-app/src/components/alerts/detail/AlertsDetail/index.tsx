@@ -2,7 +2,7 @@
 
 import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { AlertsDetailView } from '@/components/alerts/detail/AlertsDetailView';
-import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 
 /* * */

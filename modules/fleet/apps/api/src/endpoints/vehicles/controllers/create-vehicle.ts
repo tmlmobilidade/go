@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { vehicles } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateVehicleDto, PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
 
 /**
@@ -24,10 +24,10 @@ export async function createVehicle(request: FastifyRequest<{ Body: CreateVehicl
 	// Create the new vehicle
 
 	if (Array.isArray(request.body)) {
-		await vehicles.insertMany(request.body);
+		await goDb.operation.vehicles.insertMany(request.body);
 		reply.send({ data: null, error: null, statusCode: HTTP_STATUS.CREATED });
 	} else {
-		const newVehicle = await vehicles.insertOne(request.body);
+		const newVehicle = await goDb.operation.vehicles.insertOne(request.body);
 		reply.send({ data: newVehicle, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 }

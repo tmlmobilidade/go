@@ -33,11 +33,13 @@ export function IconButton({ color, disabled, icon, isLoading, isReadOnly, toolt
 	//
 
 	//
-	// A. Define variables
+	// A. Setup variables
+
 	const isLink = props.type === 'link';
 
 	//
 	// B. Handle actions
+
 	const handleClick = () => {
 		// If the button is loading or in read-only mode,
 		// do not trigger the onClick action
