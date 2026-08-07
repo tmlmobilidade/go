@@ -37,6 +37,7 @@
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint ./src/ && tsc --noEmit",
 		"lint:fix": "eslint ./src/ --fix",
+		"test": "node --import tsx ./src/tests/index.ts",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
@@ -50,6 +51,7 @@
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
+		"tsx": "4.23.4",
 		"typescript": "6.0.3"
 	}
 }

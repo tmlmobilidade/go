@@ -41,7 +41,9 @@ export function error(args: ErrorArgs): void {
 		context = undefined;
 	}
 
-	if (args.contextOrErrorOrSpacesAfter instanceof Error) {
+	if (args.error instanceof Error) {
+		parsedError = args.error;
+	} else if (args.contextOrErrorOrSpacesAfter instanceof Error) {
 		parsedError = args.contextOrErrorOrSpacesAfter;
 	} else if (args.message instanceof Error) {
 		parsedError = args.message;
