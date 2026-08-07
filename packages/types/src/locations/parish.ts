@@ -1,3 +1,5 @@
+import type { BaseLocation } from './base.js';
+
 /**
  * This type represents the properties of a Parish,
  * both for the geojson feature and the flattened codebase type.
@@ -9,20 +11,11 @@ export interface ParishProperties {
 	name: string
 }
 
-/**
- * This type represents the MongoDB document structure for a Parish,
- * including the full GeoJSON Feature with geometry and properties.
- */
-export interface ParishFeature extends GeoJSON.Feature<GeoJSON.Polygon> {
-	_id: string
-	properties: ParishProperties
-}
+export type ParishFeature = BaseLocation<ParishProperties>;
 
 /**
- * This type represents the flattened codebase structure for a Parish,
- * with properties at the top level and the full GeoJSON Feature in a separate field.
- * This type should be used throughout the application code.
+ * Represents a Parish with its ID and flattened properties.
  */
 export interface Parish extends ParishProperties {
 	_id: string
-};
+}

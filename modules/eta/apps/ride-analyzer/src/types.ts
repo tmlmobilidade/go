@@ -1,7 +1,7 @@
 /* * */
 
-import type { TripRef } from '@/parse-trip-ref.js';
-import type { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type TripRef } from '@/parse-trip-ref.js';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
 
@@ -17,6 +17,8 @@ export interface CliArgs {
 
 export interface EnrichedEta {
 	current_node_index: number
+	current_node_latitude: number
+	current_node_longitude: number
 	estimated_arrival: null | string
 	estimated_arrival_unix: null | number
 	eta_seconds: null | number
@@ -31,6 +33,8 @@ export interface EnrichedEta {
 	scheduled_arrival_unix: null | number
 	stop_id: string
 	stop_node_index: number
+	stop_node_latitude: number
+	stop_node_longitude: number
 	stop_sequence: number
 	trip_id: string
 	vehicle_id: string

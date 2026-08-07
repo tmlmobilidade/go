@@ -3,7 +3,7 @@
 import { AppConfig } from '@/lib/config.js';
 import { chunkLineByDistanceV2, hashedShapesToFeatureCollection } from '@tmlmobilidade/geo';
 import { qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { BatchWriter } from '@tmlmobilidade/utils';
 import geohash from 'ngeohash';
@@ -31,16 +31,16 @@ export async function syncShapeNodes(clickhouseClient: Parameters<typeof queryEt
 		insertFn: async (data) => {
 			await clickhouseClient.insert({
 				format: 'JSONEachRow',
-				table: qualifiedTable(config.database, 'hist_shape_nodes'),
+				table: qualifiedTable('eta', 'hist_shape_nodes'),
 				values: data,
 			});
 		},
-		title: qualifiedTable(config.database, 'hist_shape_nodes'),
+		title: qualifiedTable('eta', 'hist_shape_nodes'),
 	});
 
 	//
 	// Get distinct hashed shape ids from rides
-	const hashedShapesCollection = await goDB.operation.hashedShapes.getCollection();
+	const hashedShapesCollection = await goDb.operation.hashedShapes.getCollection();
 
 	//
 	// Get hashed shapes cursor

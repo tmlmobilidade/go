@@ -66,6 +66,7 @@ export interface UseMultiStepReturnType {
 		next: () => void
 		prev: () => void
 	}
+	length: number
 	progress: {
 		current: MultiStepItem | undefined
 		next: MultiStepItem | undefined
@@ -201,6 +202,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 			next,
 			prev,
 		},
+		length: availableSteps.length,
 		progress: {
 			current: currentStep,
 			next: nextStep,

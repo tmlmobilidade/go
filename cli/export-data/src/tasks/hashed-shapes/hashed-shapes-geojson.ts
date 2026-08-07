@@ -2,7 +2,7 @@
 
 import { type ExportType, type TaskProps } from '@/types.js';
 import { hashedShapesToFeatureCollection } from '@/utils/hashed-shapes-to-geojson.js';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type HashedShape } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
@@ -26,7 +26,7 @@ export async function exportHashedShapesGeoJSON({ context, hashedShapeIds, messa
 	const notFoundIds: string[] = [];
 
 	for (const id of hashedShapeIds) {
-		const hashedShape = await goDB.operation.hashedShapes.findById(id);
+		const hashedShape = await goDb.operation.hashedShapes.findById(id);
 		if (hashedShape) {
 			foundHashedShapes.push(hashedShape);
 		} else {

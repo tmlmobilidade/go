@@ -2,7 +2,7 @@
 
 import { type OriginalLineType } from '@/original-line.type.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { lines } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { INTERCHANGE_MODE, type Line, LineSchema, TransportType, TransportTypeValues } from '@tmlmobilidade/types';
 
@@ -158,8 +158,7 @@ export async function seedLinesFromGoV1() {
 					const newId = fareCodeToNewId.get(fareCode);
 					if (newId) {
 						newOnboardFareIds.push(newId);
-					}
-					else {
+					} else {
 						console.log(`No new fare ID found for code ${fareCode} (line ${originalLine.code})`);
 					}
 				}
@@ -211,12 +210,11 @@ export async function seedLinesFromGoV1() {
 		//
 		// Insert lines into DB
 
-		await lines.insertMany(preparedLines, { unsafe: true });
+		await goDb.offer.lines.insertMany(preparedLines, { unsafe: true });
 		console.log(`Inserted ${preparedLines.length} lines`);
 
 		//
-	}
-	catch (err) {
+	} catch (err) {
 		console.error('Error importing lines:', err);
 		process.exit(1);
 	}

@@ -2,7 +2,7 @@
 
 import { FastifyReply, type FastifyRequest } from '@/fastify-service.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/interfaces';
+import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
 import { type ActionsOf, type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
 
 /* * */

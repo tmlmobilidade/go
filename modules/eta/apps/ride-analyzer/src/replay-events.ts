@@ -1,11 +1,10 @@
 /* * */
 
-import type { TripRef } from '@/parse-trip-ref.js';
-import type { CurrVehicleEvent, EnrichedEta, ReplaySnapshot } from '@/types.js';
-import type { ClickHouseClient } from '@clickhouse/client';
-import type { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-
+import { type TripRef } from '@/parse-trip-ref.js';
+import { type CurrVehicleEvent, type EnrichedEta, type ReplaySnapshot } from '@/types.js';
+import { type ClickHouseClient } from '@clickhouse/client';
 import { pipelinePath, qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -79,14 +78,14 @@ export async function replayEvents(
 		const event = events[index];
 		const eventTimer = new Timer();
 
-		await queryEtaFromFile(clickhouseClient, database, pipelinePath(SYNC_CURR_VEHICLE_EVENT_SQL), {
+		await queryEtaFromFile(clickhouseClient, pipelinePath(SYNC_CURR_VEHICLE_EVENT_SQL), {
 			event_id: event._id,
 			trip_id: tripRef.tripId,
 		});
 
 		const currVehicleEvent = await readCurrVehicleEvent(clickhouseClient, database, event._id);
 
-		const etas = await queryEtaFromFile<EnrichedEta>(clickhouseClient, database, pipelinePath(REPLAY_PRED_TRIP_STOP_ETAS_SQL), {
+		const etas = await queryEtaFromFile<EnrichedEta>(clickhouseClient, pipelinePath(REPLAY_PRED_TRIP_STOP_ETAS_SQL), {
 			now_ms: event.created_at,
 			trip_id: tripRef.tripId,
 		});

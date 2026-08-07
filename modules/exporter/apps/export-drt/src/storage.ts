@@ -1,7 +1,7 @@
 /* * */
 
 import { mimeTypes } from '@tmlmobilidade/consts';
-import { files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'fs';
 
@@ -19,7 +19,7 @@ export async function saveDatabaseToStorage(config: DatabaseConfig): Promise<voi
 	const fileStream = fs.createReadStream(databasePath);
 	const fileStats = fs.statSync(databasePath);
 
-	const fileResult = await files.upload(fileStream, {
+	const fileResult = await storageProvider.replace(fileStream, {
 		_id: databaseName,
 		created_by: 'system',
 		name: `${databaseName}.db`,
@@ -28,7 +28,7 @@ export async function saveDatabaseToStorage(config: DatabaseConfig): Promise<voi
 		size: fileStats.size,
 		type: mimeTypes.sqlite,
 		updated_by: 'system',
-	}, { override: true });
+	});
 
 	Logger.success(`SQLite database saved to the storage service. (${fileResult._id})`);
 }

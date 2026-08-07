@@ -9,6 +9,7 @@ import { z } from 'zod';
 
 export const SimplifiedApexInspectionSchema = z.object({
 	_id: z.string(),
+	agency_code: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
 	card_serial_number: z.string().nullable().default(null),
@@ -30,7 +31,7 @@ export const SimplifiedApexInspectionSchema = z.object({
 	received_at: UnixTimestampSchema,
 	trip_id: z.string().nullable().default(null),
 	updated_at: UnixTimestampSchema,
-	vehicle_id: z.number().nullable().default(null),
+	vehicle_id: z.string().nullable().default(null),
 }).transform((val) => {
 	// Setup the individual conditions to consider
 	// this transaction as OK or NOT OK

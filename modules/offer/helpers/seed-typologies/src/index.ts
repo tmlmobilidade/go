@@ -1,7 +1,7 @@
 /* * */
 
 import { seedFromGoV1 } from '@/tasks/seed-from-go-v1.js';
-import { typologies } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /* * */
 
@@ -12,7 +12,7 @@ import { typologies } from '@tmlmobilidade/interfaces';
 	// Delete existing typologies
 
 	console.log('Deleting All');
-	await typologies.deleteMany({});
+	await goDb.offer.typologies.deleteMany({});
 
 	//
 	// Run tasks

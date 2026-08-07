@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { gtfsValidations } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsValidation, PermissionCatalog, type ProcessingStatus } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +16,7 @@ export async function updateProcessingStatus(request: FastifyRequest<{ Body: { p
 	//
 	// Get the requested Validation data
 
-	const gtfsValidationData = await gtfsValidations.findById(request.params.id);
+	const gtfsValidationData = await goDb.operation.gtfsValidations.findById(request.params.id);
 
 	if (!gtfsValidationData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'GTFS Validation not found');
@@ -30,7 +30,7 @@ export async function updateProcessingStatus(request: FastifyRequest<{ Body: { p
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.gtfs_validations.scope,
-		value: gtfsValidationData.gtfs_agency.agency_id,
+		value: gtfsValidationData.agency_id,
 	});
 
 	if (!hasPermissionChangeStatus) {
@@ -40,7 +40,7 @@ export async function updateProcessingStatus(request: FastifyRequest<{ Body: { p
 	//
 	// Update the Validation document and send it to caller
 
-	const updatedGtfsValidation = await gtfsValidations.updateById(gtfsValidationData._id, {
+	const updatedGtfsValidation = await goDb.operation.gtfsValidations.updateById(gtfsValidationData._id, {
 		processing_status: request.body.processing_status ?? 'error',
 		validation_attempts: 0,
 		validity_status: 'unknown',
