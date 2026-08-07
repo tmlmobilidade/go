@@ -38,7 +38,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"nodemailer": "9.0.3",
+		"nodemailer": "9.0.4",
 		"react": "19.2.8",
 		"react-email": "6.9.1"
 	},

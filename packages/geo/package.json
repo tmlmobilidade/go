@@ -39,7 +39,7 @@
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/types": "*",
-		"@turf/turf": "7.3.5"
+		"@turf/turf": "7.4.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

@@ -44,7 +44,7 @@
 		"@tmlmobilidade/go-providers-auth": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.11.0"
+		"fastify": "5.11.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

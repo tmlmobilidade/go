@@ -24,7 +24,7 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-gtfs-validator": "*",
-		"@tmlmobilidade/gtfs-validator": "20260731.1744.13",
+		"@tmlmobilidade/gtfs-validator": "20260803.96.36",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
@@ -34,7 +34,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.4",
+		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }

@@ -36,7 +36,7 @@
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"csv-parse": "7.0.1",
+		"csv-parse": "7.0.2",
 		"gtfs-types": "5.1.0",
 		"unzipper": "0.12.5"
 	},
@@ -44,7 +44,7 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.4",
+		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }

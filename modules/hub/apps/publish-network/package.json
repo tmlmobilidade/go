@@ -27,7 +27,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"@turf/turf": "7.3.5",
+		"@turf/turf": "7.4.0",
 		"gtfs-types": "5.1.0",
 		"yazl": "3.3.1"
 	},
@@ -36,7 +36,7 @@
 		"@types/node": "26.1.2",
 		"@types/yazl": "3.3.1",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.4",
+		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }
