@@ -3,7 +3,7 @@
 /* * */
 
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
-import { CreateFileExportDto, type StopExportProperties } from '@tmlmobilidade/types';
+import { type CreateFileExportDto, type StopExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { closeModal, useAgenciesContext, useExportsContext, useLocationsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
