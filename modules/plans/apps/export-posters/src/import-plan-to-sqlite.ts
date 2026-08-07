@@ -18,7 +18,7 @@ import fs from 'node:fs';
 
 /* * */
 
-export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouchConfig> {
+export async function importPlanToSqlite(planData: Plan, options?: { workdir?: string }): Promise<ExportToHitouchConfig> {
 	//
 
 	//
@@ -70,9 +70,9 @@ export async function importPlanToSqlite(planData: Plan): Promise<ExportToHitouc
 			end: feedEndDate,
 			start: feedStartDate,
 		},
-		output: `../${planData._id}-hitouch-posters.zip`,
+		output: options?.workdir ? `${planData._id}-hitouch-posters.zip` : `../${planData._id}-hitouch-posters.zip`,
 		source_has_calendar: sourceHasCalendar,
-		workdir: `/tmp/hitouch/${planData._id}`,
+		workdir: options?.workdir ?? `/tmp/hitouch/${planData._id}`,
 	};
 
 	if (fs.existsSync(exportConfig.workdir)) {

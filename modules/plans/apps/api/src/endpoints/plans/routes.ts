@@ -10,13 +10,11 @@ import { deleteApexFile } from './controllers/delete-apex-file.js';
 import { deletePlan } from './controllers/delete-plan.js';
 import { downloadApexFile } from './controllers/download-apex-file.js';
 import { downloadOperationFile } from './controllers/download-operation-file.js';
-import { listPlanToGeneratePosters } from './controllers/export-posters.js';
 import { getAllPlans } from './controllers/get-all-plans.js';
 import { getApexFile } from './controllers/get-apex-file.js';
 import { getDrtModel } from './controllers/get-drt-model.js';
 import { getOperationFile } from './controllers/get-operation-file.js';
 import { getPlan } from './controllers/get-plan.js';
-import { getPosterById } from './controllers/get-poster_by_id.js';
 import { lockPlan } from './controllers/lock-plan.js';
 import { sendApexNotification } from './controllers/send-apex-notification.js';
 import { updateApexFile } from './controllers/update-apex-file.js';
@@ -50,12 +48,6 @@ server.register(
 			'/:id/operation-file',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
 			getOperationFile,
-		);
-
-		instance.get(
-			'/:id/posters-file',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
-			getPosterById,
 		);
 
 		instance.get(
@@ -104,12 +96,6 @@ server.register(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update]) },
 			updatePlan,
-		);
-
-		instance.put(
-			'/:id/list-to-generate-posters',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.generate_pdf_posters]) },
-			listPlanToGeneratePosters,
 		);
 
 		instance.get(

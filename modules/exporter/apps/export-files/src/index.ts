@@ -37,7 +37,11 @@ async function main() {
 
 	const globalTimer = new Timer();
 
-	const waitingFileExports = await goDb.core.exports.findMany({ processing_status: ProcessingStatusSchema.enum.waiting });
+	const waitingFileExports = await goDb.core.exports.findMany({
+		processing_status: ProcessingStatusSchema.enum.waiting,
+		sorted: { created_at: -1 },
+		type: { $ne: 'plan_posters' },
+	});
 
 	Logger.info({ message: `Found ${waitingFileExports.length} waiting file exports.` });
 
@@ -68,6 +72,9 @@ async function main() {
 					await goDb.core.exports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
 					continue;
 				}
+				case 'plan_posters':
+					Logger.info({ message: `Skipping plan poster export ${fileExport._id}; it is handled by the Plans poster exporter.` });
+					continue;
 				case 'gtfs':
 				default:
 					// TODO: Implement GTFS export

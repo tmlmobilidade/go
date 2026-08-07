@@ -1,26 +1,30 @@
 'use client';
 
+import { usePlansListContext } from '@/components/plans/list/PlansList.context';
+import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/Posters/PlanPostersModal/constants';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { useHandleUpdate } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
+import { type CreateFileExportDto, PermissionCatalog, type PlanPostersExportProperties } from '@tmlmobilidade/types';
+import { closeModal, type SelectDataItem, useDataAgencies, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
 interface PlansExportPdfsContextState {
 	actions: {
-		generatePosters: () => Promise<void>
+		exportPosters: () => Promise<void>
+		setAgencyId: (value: null | string) => void
+		setPlanId: (value: null | string) => void
+	}
+	data: {
+		agencyId: null | string
+		agencyOptions: SelectDataItem[]
+		planId: null | string
 	}
 	flags: {
+		canSave: boolean
 		has_error: boolean
-		is_generating: boolean
+		loading: boolean
 	}
-}
-
-/* * */
-
-interface PlansExportPdfsResponse {
-	success: boolean
 }
 
 /* * */
@@ -30,45 +34,113 @@ const PlansExportPdfsContext = createContext<PlansExportPdfsContextState | undef
 export function usePlansExportPdfsContext() {
 	const context = useContext(PlansExportPdfsContext);
 	if (!context) {
-		throw new Error('usePlansExportPdfsContext must be used within a PlansExportPdfsContextProvider');
+		throw new Error('usePlansExportPdfsContext must be used within a PlansExportPdfsModalContextProvider');
 	}
 	return context;
 }
 
 /* * */
 
-export const PlansExportPdfsContextProvider = ({ children, planId }: PropsWithChildren<{ planId: string }>) => {
+export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
-	// A. Handle actions
+	// A. Setup variables
 
-	const { action: generatePosters, isError, isLoading } = useHandleUpdate<PlansExportPdfsResponse>({
-		fetchFn: async () => await fetchData<PlansExportPdfsResponse>(API_ROUTES.plans.PLANS_DETAIL_LIST_TO_GENERATE_POSTERS(planId), 'PUT', {}),
-		labels: {
-			error_message: 'Não foi possível processar o plano para gerar os posters PDF.',
-			error_title: 'Erro ao gerar posters',
-			success_message: 'A processar o plano para gerar os posters PDF. Aguarde alguns minutos para que os posters sejam gerados.',
-			success_title: 'Processando plano',
-		},
-		onSuccess: () => {},
+	const plansListContext = usePlansListContext();
+	const exports = useExportsContext();
+	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+		actions: [PermissionCatalog.all.plans.actions.generate_pdf_posters],
+		scope: PermissionCatalog.all.plans.scope,
 	});
+	const [agencyId, setAgencyId] = useState<null | string>(null);
+	const [planId, setPlanId] = useState<null | string>(null);
+	const [loading, setLoading] = useState(false);
 
 	//
-	// B. Define context value
+	// B. Derived state
+
+	const canSave = !!agencyId && !!planId;
+
+	//
+	// C. Handle actions
+
+	const selectAgencyId = useCallback((value: null | string) => {
+		setAgencyId(value);
+		setPlanId(null);
+	}, []);
+
+	const selectPlanId = useCallback((value: null | string) => {
+		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === value && plan.agency_id === agencyId);
+
+		setPlanId(selectedPlan?._id ?? null);
+	}, [agencyId, plansListContext.data.raw]);
+
+	useEffect(() => {
+		const selectedAgencyIsAvailable = agencyOptions.some(option => option.value === agencyId);
+
+		if (agencyOptions.length === 1 && agencyId !== agencyOptions[0].value) {
+			selectAgencyId(agencyOptions[0].value);
+		} else if (agencyOptions.length > 1 && agencyId && !selectedAgencyIsAvailable) {
+			selectAgencyId(null);
+		}
+	}, [agencyId, agencyOptions, selectAgencyId]);
+
+	const exportPosters = useCallback(async () => {
+		if (loading) return;
+		if (!agencyId || !planId) return;
+
+		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === planId && plan.agency_id === agencyId);
+		if (!selectedPlan?.operation_file_id) return;
+
+		const createFileExportDto: CreateFileExportDto<PlanPostersExportProperties> = {
+			created_by: 'will-be-set-by-api',
+			file_id: null,
+			file_name: `${selectedPlan._id}-pdf.zip`,
+			processing_status: 'waiting',
+			properties: {
+				agency_id: agencyId,
+				plan_id: planId,
+			},
+			type: 'plan_posters',
+		};
+
+		try {
+			setLoading(true);
+			const fileExport = await exports.actions.create(createFileExportDto);
+			if (!fileExport) return;
+			useToast.success({ message: 'A exportação dos PDFs foi iniciada', title: 'Sucesso' });
+			closeModal(PLAN_POSTERS_EXPORT_MODAL_ID);
+		} catch (error) {
+			useToast.error({ message: error instanceof Error ? error.message : 'Erro ao iniciar a exportação dos PDFs', title: 'Erro' });
+		} finally {
+			setLoading(false);
+		}
+	}, [agencyId, exports.actions, loading, planId, plansListContext.data.raw]);
+
+	//
+	// D. Define context value
 
 	const contextValue: PlansExportPdfsContextState = useMemo(() => ({
 		actions: {
-			generatePosters,
+			exportPosters,
+			setAgencyId: selectAgencyId,
+			setPlanId: selectPlanId,
+		},
+		data: {
+			agencyId,
+			agencyOptions,
+			planId,
 		},
 		flags: {
-			has_error: Boolean(isError),
-			is_generating: isLoading,
+			canSave,
+			has_error: false,
+			loading,
 		},
-	}), [generatePosters, isError, isLoading]);
+	}), [agencyId, agencyOptions, canSave, exportPosters, loading, planId, selectAgencyId, selectPlanId]);
 
 	//
-	// C. Render components
+	// E. Render components
 
 	return (
 		<PlansExportPdfsContext.Provider value={contextValue}>

@@ -4,7 +4,6 @@ import { GtfsAgencySchema } from '@/gtfs/agency.js';
 import { GtfsFeedInfoSchema } from '@/gtfs/feed-info.js';
 import { PlanAppStatusSchema } from '@/plans/plan-app-status.js';
 import { PlanPcgiLegacySchema } from '@/plans/plan-pcgi-legacy.js';
-import { PlanPostersStatusSchema } from '@/plans/plan-posters.js';
 import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -18,7 +17,6 @@ export const PlanSchema = DocumentSchema.extend({
 		hub_gtfs: PlanAppStatusSchema,
 		hub_schedules: PlanAppStatusSchema,
 		merger: PlanAppStatusSchema,
-		posters: PlanPostersStatusSchema,
 	}).default({}),
 	gtfs_agency: GtfsAgencySchema,
 	gtfs_feed_info: GtfsFeedInfoSchema,
