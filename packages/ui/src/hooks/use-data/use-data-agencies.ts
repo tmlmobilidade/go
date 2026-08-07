@@ -102,7 +102,7 @@ export function useDataAgencies<S extends Permission['scope']>(apiUrl: string, p
 		return filteredData.map((item): SelectDataItem => ({
 			checked: false,
 			disabled: false,
-			label: `${item._id} - ${item.name}`,
+			label: `[${item._id}] ${item.code} - ${item.name}`,
 			value: item._id,
 		}));
 	}, [filteredData]);

@@ -3,6 +3,8 @@
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { Button, Grid, Section } from '@tmlmobilidade/ui';
 
+import { closeStopCreateModal } from '../StopCreate.modal';
+
 /* * */
 
 export function StopCreateModalControls() {
@@ -20,16 +22,15 @@ export function StopCreateModalControls() {
 		<Section gap="md">
 			<Grid columns="ab" gap="md">
 				<Button
-					disabled={stopCreateContext.flags.isSaving || stopCreateContext.modal.current_step === 1}
-					label="Voltar"
-					loading={stopCreateContext.flags.isSaving}
-					onClick={stopCreateContext.modal.previousStep}
+					disabled={stopCreateContext.flags.isCreating}
+					label={stopCreateContext.form.multi_step.progress.current?.order === 0 ? 'Cancelar' : 'Voltar'}
+					onClick={stopCreateContext.form.multi_step.progress.current?.order === 0 ? closeStopCreateModal : stopCreateContext.form.multi_step.actions.prev}
 				/>
 				<Button
-					disabled={!stopCreateContext.modal.current_step_valid}
-					label={stopCreateContext.modal.current_step === 3 ? 'Criar Paragem' : 'Próximo Passo'}
-					loading={stopCreateContext.flags.isSaving}
-					onClick={stopCreateContext.modal.current_step === 3 ? stopCreateContext.actions.createNewStop : stopCreateContext.modal.nextStep}
+					disabled={!stopCreateContext.form.multi_step.progress.current?.isValid?.()}
+					label={stopCreateContext.form.multi_step.progress.current?.order === stopCreateContext.form.multi_step.length - 1 ? 'Criar Paragem' : 'Avançar'}
+					loading={stopCreateContext.flags.isCreating}
+					onClick={stopCreateContext.form.multi_step.progress.current?.order === stopCreateContext.form.multi_step.length - 1 ? stopCreateContext.actions.create : stopCreateContext.form.multi_step.actions.next}
 				/>
 			</Grid>
 		</Section>

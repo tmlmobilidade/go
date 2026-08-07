@@ -40,7 +40,7 @@ export async function processRoutesFile(context: ImportGtfsContext): Promise<voi
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "routes.txt" file.' });
-		throw new Error('✖︎ Error processing "routes.txt" file.');
+		Logger.error({ error, message: `Error processing "routes.txt" file: ${error.message}` });
+		throw new Error('✖︎ Error processing "routes.txt" file.', error);
 	}
 }

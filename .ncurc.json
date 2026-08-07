@@ -1,7 +1,14 @@
 {
+	"dep": [
+		"prod",
+		"dev",
+		"optional",
+		"packageManager",
+		"overrides"
+	],
 	"reject": [
 		"zod",
-		"eslint",
-		"@eslint/js"
+		"maplibre-gl",
+		"typescript"
 	]
 }
