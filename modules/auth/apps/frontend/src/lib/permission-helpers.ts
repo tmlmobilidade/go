@@ -40,5 +40,5 @@ export function calculateRolePermissions(roleIds: string[], roles: Role[]): Perm
  */
 export function hasRolePermission(scope: string, action: string, roleIds: string[], roles: Role[]): boolean {
 	const rolePermissions = calculateRolePermissions(roleIds, roles);
-	return rolePermissions.some(permission => permission.scope === scope && permission.action === action);
+	return rolePermissions.some(permission => permission?.scope === scope && permission?.action === action);
 }
