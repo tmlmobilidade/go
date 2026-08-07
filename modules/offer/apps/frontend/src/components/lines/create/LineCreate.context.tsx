@@ -2,7 +2,7 @@
 
 import { closeCreateLineModal } from '@/components/lines/create/LineCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateLineDto, CreateLineSchema, Line } from '@tmlmobilidade/types';
+import { type CreateLineDto, CreateLineSchema, type LineNormalized } from '@tmlmobilidade/types';
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -48,7 +48,7 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { mutate: linesListMutate } = useSWR<Line[]>(API_ROUTES.offer.LINES_LIST);
+	const { mutate: linesListMutate } = useSWR<LineNormalized[]>(API_ROUTES.offer.LINES_LIST);
 
 	//
 	// C. Setup form
@@ -59,7 +59,7 @@ export const LineCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Line>(API_ROUTES.offer.LINES_LIST, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<LineNormalized>(API_ROUTES.offer.LINES_LIST, 'POST', form.getValues()),
 		onSuccess: (newItem) => {
 			form.resetDirty();
 			linesListMutate();

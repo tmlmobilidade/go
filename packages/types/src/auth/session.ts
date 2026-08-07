@@ -13,7 +13,7 @@ export const SessionSchema = DocumentSchema
 		user_id: z.string(),
 	});
 
-export const CreateSessionSchema = SessionSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const CreateSessionSchema = SessionSchema.omit({ created_at: true, updated_at: true });
 export const UpdateSessionSchema = CreateSessionSchema.omit({ created_by: true }).partial();
 
 export type Session = z.infer<typeof SessionSchema>;

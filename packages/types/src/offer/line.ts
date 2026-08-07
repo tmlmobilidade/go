@@ -3,8 +3,10 @@
 import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
+import { FareSimplifiedSchema } from './fare.js';
 import { RouteSimplifiedSchema } from './route.js';
 import { TransportTypeSchema } from './transport-type.js';
+import { TypologySimplifiedSchema } from './typology.js';
 
 /* * */
 
@@ -32,14 +34,24 @@ export const LineSchema = DocumentSchema.extend({
 	name: z.string().trim().min(1).max(150),
 	onboard_fare_ids: z.array(z.string()).nullable().default([]),
 	prepaid_fare_id: z.string().nullable().default(null),
-	routes: z.array(RouteSimplifiedSchema).optional().default([]), // Computed field, not stored in DB
 	transport_type: TransportTypeSchema.default('bus'),
 	typology: z.string().nullable().default(null),
 });
 
+export const LineNormalizedSchema = LineSchema.extend({
+	onboard_fares_data: z.array(FareSimplifiedSchema).optional().default([]),
+	prepaid_fare_data: FareSimplifiedSchema.nullable().optional().default(null),
+	routes: z.array(RouteSimplifiedSchema).optional().default([]),
+	typology_data: TypologySimplifiedSchema.nullable().optional().default(null),
+});
+
 /* * */
 
-export const CreateLineSchema = LineSchema.omit({ _id: true, created_at: true, routes: true, updated_at: true });
+export const CreateLineSchema = LineSchema.omit({
+	_id: true,
+	created_at: true,
+	updated_at: true,
+});
 
 export const UpdateLineSchema = CreateLineSchema
 	.omit({ created_by: true })
@@ -50,3 +62,4 @@ export const UpdateLineSchema = CreateLineSchema
 export type Line = z.infer<typeof LineSchema>;
 export type CreateLineDto = z.infer<typeof CreateLineSchema>;
 export type UpdateLineDto = z.infer<typeof UpdateLineSchema>;
+export type LineNormalized = z.infer<typeof LineNormalizedSchema>;

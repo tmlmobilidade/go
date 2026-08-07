@@ -16,7 +16,7 @@ export const FlatRideSchema = z.object({
 	agency_id: z.string().nullable(),
 	driver_ids: z.string().nullable(),
 	headsign: z.string().nullable(),
-	line_id: z.number().nullable(),
+	line_id: z.string().nullable(),
 	pattern_id: z.string().nullable(),
 	plan_id: z.string().nullable(),
 	route_id: z.string().nullable(),

@@ -135,6 +135,4 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 			{children}
 		</AgencyDetailContext.Provider>
 	);
-
-	//
 };

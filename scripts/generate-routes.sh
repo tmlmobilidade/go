@@ -249,7 +249,35 @@ scan_api_routes() {
             done < "$routes_file"
         } | grep -v "^\s*$" > "$grep_temp"
 
+        # Collect paths first so we can detect list/detail pairs (e.g. /districts + /districts/:id)
+        local file_paths=()
         while IFS= read -r path; do
+            if [ -n "$path" ]; then
+                file_paths+=("$path")
+            fi
+        done < "$grep_temp"
+
+        local list_paths=()
+        for path in "${file_paths[@]}"; do
+            local list_clean_path
+            list_clean_path=$(echo "$path" | sed 's|^/||')
+            if [ -n "$list_clean_path" ] && ! echo "$list_clean_path" | grep -qE ':[a-zA-Z][a-zA-Z0-9]*'; then
+                list_paths+=("$list_clean_path")
+            fi
+        done
+
+        has_list_path() {
+            local resource="$1"
+            local list_path
+            for list_path in "${list_paths[@]}"; do
+                if [ "$list_path" = "$resource" ]; then
+                    return 0
+                fi
+            done
+            return 1
+        }
+
+        for path in "${file_paths[@]}"; do
             if [ -z "$path" ]; then
                 continue
             fi
@@ -326,6 +354,27 @@ scan_api_routes() {
                     local suffix_name=$(echo "$suffix_after_var" | sed 's|/|_|g' | sed 's|-|_|g' | sed -E 's|:[a-zA-Z][a-zA-Z0-9]*|VAR|g')
                     local route_name=$(to_snake_case "${last_namespace_part}_DETAIL_${suffix_name}")
                 fi
+            elif echo "$clean_path" | grep -qE '^[^/:]+/:[a-zA-Z][a-zA-Z0-9]*($|/)'; then
+                # Sub-resource detail route (e.g. districts/:id under /locations)
+                local resource_part
+                resource_part=$(echo "$clean_path" | sed -E 's|^([^/]+)/:.*|\1|')
+                local suffix_after_param
+                suffix_after_param=$(echo "$clean_path" | sed -E 's|^[^/]+/:[a-zA-Z][a-zA-Z0-9]*/||')
+                if [ -n "$suffix_after_param" ] && [ "$suffix_after_param" != "$clean_path" ]; then
+                    local suffix_name
+                    suffix_name=$(echo "$suffix_after_param" | sed 's|/|_|g' | sed 's|-|_|g')
+                    local route_name
+                    route_name=$(to_snake_case "${last_namespace_part}_${resource_part}_DETAIL_${suffix_name}")
+                elif has_list_path "$resource_part"; then
+                    local route_name
+                    route_name=$(to_snake_case "${last_namespace_part}_${resource_part}_DETAIL")
+                else
+                    # No corresponding list route (e.g. tts/:id)
+                    local route_suffix
+                    route_suffix=$(echo "$clean_path" | sed -E 's|:[a-zA-Z][a-zA-Z0-9]*||g' | sed 's|/|_|g' | sed 's|-|_|g')
+                    local route_name
+                    route_name=$(to_snake_case "${last_namespace_part}_${route_suffix}")
+                fi
             else
                 # Non-root path without leading variables - remove inline variables from naming
                 # e.g. public/:id/image -> PUBLIC_IMAGE (not PUBLIC_:ID_IMAGE)
@@ -336,7 +385,7 @@ scan_api_routes() {
 
             # Include file name and variables in route storage: route_name:route_path|file_name|variables
             routes+=("${route_name}:${route_path}|${file_name}|${route_variables}")
-        done < "$grep_temp"
+        done
 
         rm -f "$grep_temp"
     done < "$find_routes_temp"

@@ -73,6 +73,33 @@ export interface HasPermissionResourceArgs {
 }
 
 /**
+ * A scope/action pair used to collect resource access from one or more permissions.
+ */
+export interface PermissionResourceCheck<S extends Permission['scope'] = Permission['scope']> {
+	action: ActionsOf<S>
+	scope: S
+}
+
+/**
+ * Arguments for getPermissionResourceAccess function.
+ */
+export interface GetPermissionResourceAccessArgs {
+	checks: PermissionResourceCheck[]
+	permissions: Permission[]
+	resource_key: string
+}
+
+/**
+ * Aggregated access to a permission resource key.
+ * When allowAll is true, callers should ignore values and treat the user
+ * as having access to every value for that resource key.
+ */
+export interface PermissionResourceAccess<TValue = string> {
+	allowAll: boolean
+	values: TValue[]
+}
+
+/**
  * Arguments for getScopePermissions function.
  */
 export interface GetScopePermissionsArgs<S extends Permission['scope']> {
@@ -188,6 +215,71 @@ export class PermissionCatalog {
 	 */
 	static hasPermission<S extends Permission['scope']>(permissionEntries: Permission[], scope: S, action: ActionsOf<S>): boolean {
 		return permissionEntries.find(p => p.scope === scope && p.action === action) !== undefined;
+	}
+
+	/**
+	 * Collect allowed values for a resource key across multiple scope/action checks.
+	 *
+	 * Use this when a caller needs to build a database filter before loading
+	 * documents. For example, a list endpoint can combine `lines.read`,
+	 * `lines.update`, and `zones.nav` permissions into a single set of
+	 * allowed `agency_ids`, then query MongoDB with `{ agency_ids: { $in: values } }`.
+	 *
+	 * This complements `hasPermissionResource`: that method answers whether
+	 * a user can access a known resource value, while this method answers which
+	 * resource values the user can access for a set of allowed permissions.
+	 *
+	 * If any matching permission contains PermissionCatalog.ALLOW_ALL_FLAG for
+	 * the resource key, this returns `{ allowAll: true, values: [] }`.
+	 *
+	 * @param permissions The list of permissions from a user or request.
+	 * @param checks The scope/action pairs whose resource values should be merged.
+	 * @param resource_key The permission resource key to collect, e.g. `agency_ids`.
+	 * @returns The aggregated resource access for the requested checks.
+	 */
+	static getPermissionResourceAccess<TValue = string>(args: GetPermissionResourceAccessArgs): PermissionResourceAccess<TValue> {
+		//
+
+		if (!args.permissions?.length || !args.checks.length) {
+			return { allowAll: false, values: [] };
+		}
+
+		const values = new Set<TValue>();
+
+		for (const check of args.checks) {
+			const matchingPermissions = args.permissions.filter(permission => permission.scope === check.scope && permission.action === check.action);
+
+			for (const permission of matchingPermissions) {
+				const resourceValues = permission['resources']?.[args.resource_key];
+
+				if (!resourceValues) continue;
+
+				if (Array.isArray(resourceValues)) {
+					if (resourceValues.includes(this.ALLOW_ALL_FLAG)) {
+						return { allowAll: true, values: [] };
+					}
+
+					for (const resourceValue of resourceValues) {
+						values.add(resourceValue as TValue);
+					}
+
+					continue;
+				}
+
+				if (resourceValues === this.ALLOW_ALL_FLAG) {
+					return { allowAll: true, values: [] };
+				}
+
+				values.add(resourceValues as TValue);
+			}
+		}
+
+		return {
+			allowAll: false,
+			values: [...values],
+		};
+
+		//
 	}
 
 	/**

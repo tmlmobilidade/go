@@ -3,10 +3,12 @@
 import { useVkmModalContext, VkmModalContextProvider } from '@/contexts/VkmModal.context';
 import { IconCalculator, IconRulerMeasure } from '@tabler/icons-react';
 import { type VkmCalculationResult, type VkmExtensionSource, type VkmPeriodResult } from '@tmlmobilidade/types';
-import { AgenciesContextProvider, Button, CloseButton, closeModal, Collapsible, DateInput, Divider, Grid, Label, Loader, openModal, Section, SegmentedControl, type SegmentedControlDataItem, Select, Spacer, Text, Toolbar, useAgenciesContext } from '@tmlmobilidade/ui';
+import { Button, CloseButton, closeModal, Collapsible, DateInput, Divider, Grid, Label, Loader, MeContextProvider, openModal, Section, SegmentedControl, type SegmentedControlDataItem, Select, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
+
+import { LinesListContextProvider, useLinesListContext } from '../../list/LinesList.context';
 
 /* * */
 
@@ -49,11 +51,13 @@ const percentFormatter = new Intl.NumberFormat('pt-PT', { maximumFractionDigits:
 export const openVkmModal = () => {
 	openModal({
 		children: (
-			<AgenciesContextProvider>
-				<VkmModalContextProvider>
-					<VkmModal />
-				</VkmModalContextProvider>
-			</AgenciesContextProvider>
+			<MeContextProvider>
+				<LinesListContextProvider>
+					<VkmModalContextProvider>
+						<VkmModal />
+					</VkmModalContextProvider>
+				</LinesListContextProvider>
+			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
 		modalId: VKM_MODAL_ID,
@@ -109,11 +113,11 @@ function VkmModal() {
 	// A. Setup variables
 
 	const context = useVkmModalContext();
-	const agenciesContext = useAgenciesContext();
+	const linesListContext = useLinesListContext();
 
 	const selectedAgency = useMemo(() => {
-		return agenciesContext.data.raw.find(item => item._id === context.data.form.values.agency_id) ?? null;
-	}, [agenciesContext.data.raw, context.data.form.values.agency_id]);
+		return linesListContext.data.agencyOptions.find(item => item.value === context.data.form.values.agency_id) ?? null;
+	}, [linesListContext.data.agencyOptions, context.data.form.values.agency_id]);
 
 	const overviewCards = useMemo(() => {
 		if (!context.data.result) return [];
@@ -141,7 +145,7 @@ function VkmModal() {
 			<div className={styles.filtersPanel}>
 				<Section gap="md">
 					<Select
-						data={agenciesContext.data.as_options}
+						data={linesListContext.data.agencyOptions}
 						description="Selecione o operador para calcular os VKM da oferta planeada"
 						label="Operador"
 						placeholder="Selecionar operador"
@@ -226,7 +230,7 @@ function VkmModal() {
 								<Text fw={700} size="lg">Resumo do cálculo</Text>
 							</div>
 							<Text c="dimmed" size="sm">
-								{selectedAgency?.name ?? context.data.result.inputs.agency_name}
+								{selectedAgency?.label ?? context.data.result.inputs.agency_name}
 								{' · '}
 								{methodLabels[context.data.result.inputs.calculation_method]}
 								{' · '}

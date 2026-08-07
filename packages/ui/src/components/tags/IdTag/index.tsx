@@ -16,7 +16,7 @@ export interface IdTagProps {
 
 /* * */
 
-const IdTagBody = forwardRef<HTMLDivElement, IdTagProps & { onClick?: () => void }>((props, ref) => (
+const IdTagBody = forwardRef<HTMLDivElement, IdTagProps & { onClick?: (e: React.MouseEvent<HTMLDivElement>) => void }>((props, ref) => (
 	<div
 		ref={ref}
 		className={styles.idTag}
@@ -47,7 +47,9 @@ export function IdTag(props: IdTagProps) {
 	//
 	// B. Handle actions
 
-	const handleClick = () => {
+	const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+		e.preventDefault(); // Prevent the default behavior of the link
+		e.stopPropagation(); // Prevent the event from bubbling up to the parent
 		if (!props.id) return;
 		if (!props.copyOnClick) return;
 		clipboard.copy(String(props.id));

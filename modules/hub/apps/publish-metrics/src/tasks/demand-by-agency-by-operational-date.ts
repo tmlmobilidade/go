@@ -1,6 +1,7 @@
 /* * */
 
-import { apiCache, demandByAgencyByOperationalDate } from '@tmlmobilidade/databases';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -19,14 +20,14 @@ export async function publishDemandByAgencyByOperationalDate() {
 
 	const fetchTimer = new Timer();
 
-	const result = await demandByAgencyByOperationalDate.queryFromString<DemandByAgencyByOperationalDate>('SELECT * FROM performance.demand_by_agency_by_operational_date');
+	const result = await labDb.performance.demandByAgencyByOperationalDate.queryFromString<DemandByAgencyByOperationalDate>('SELECT * FROM performance.demand_by_agency_by_operational_date');
 
 	Logger.info({ message: `Fetched ${result.length} demand by agency by operational date in ${fetchTimer.get()}` });
 
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:metrics:demand:by-agency:by-operational-date:json', JSON.stringify(result));
+	await cacheDb.set('hub:v1:metrics:demand:by-agency:by-operational-date:json', JSON.stringify(result));
 
 	Logger.success(`Finished publishing Demand by Agency by Operational Date (${globalTimer.get()})`);
 

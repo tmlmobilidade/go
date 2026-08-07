@@ -40,7 +40,7 @@ export function ProposedChangesWrapper<S extends ScopeKey>({ children, inputName
 		const proposedChangesByRelatedIdAndField = proposedChangesContext.data.allProposedChangesByRelatedId?.filter(pc => pc.field === inputName);
 		setStatus(hasPending ? 'pending' : 'none');
 		setProposedChangesOfField(proposedChangesByRelatedIdAndField);
-	}, [proposedChangesContext.data.allProposedChangesByRelatedId]);
+	}, [inputName, proposedChangesContext.data.allProposedChangesByRelatedId]);
 
 	//
 	// B. Render Components

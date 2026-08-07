@@ -13,13 +13,13 @@ export function DataProviders({ agency_id, children }: PropsWithChildren<{ agenc
 	return (
 		<PeriodsContextProvider agencyId={agency_id}>
 			<HolidaysContextProvider agencyId={agency_id}>
-				<FaresContextProvider agencyId={agency_id}>
-					<TypologiesContextProvider agencyId={agency_id}>
-						<EventsContextProvider agencyId={agency_id}>
+				<EventsContextProvider agencyId={agency_id}>
+					<FaresContextProvider agencyId={agency_id}>
+						<TypologiesContextProvider agencyId={agency_id}>
 							{children}
-						</EventsContextProvider>
-					</TypologiesContextProvider>
-				</FaresContextProvider>
+						</TypologiesContextProvider>
+					</FaresContextProvider>
+				</EventsContextProvider>
 			</HolidaysContextProvider>
 		</PeriodsContextProvider>
 	);

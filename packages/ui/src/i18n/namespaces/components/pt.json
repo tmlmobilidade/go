@@ -9,6 +9,22 @@
 			"tooltip": "Guardar Alterações"
 		}
 	},
+	"files": {
+		"FileItem": {
+			"actions": {
+				"delete": {
+					"confirmation_cancel": "Cancelar",
+					"confirmation_confirm": "Eliminar",
+					"confirmation_description": "Tem a certeza que pretende eliminar este ficheiro? Esta ação é irreversível.",
+					"confirmation_title": "Eliminar ficheiro?",
+					"label": "Eliminar"
+				},
+				"download": {
+					"label": "Transferir"
+				}
+			}
+		}
+	},
 	"filters": {
 		"FilterTypeList": {
 			"toggle_all": "Selecionar tudo"
@@ -61,6 +77,14 @@
 			"year_periods": "Períodos do Ano",
 			"zones": "Zonas"
 		},
+		"SidebarExports": {
+			"label": "Exportações",
+			"no_exports": "Sem exportações disponíveis",
+			"title": "Exportações"
+		},
+		"SidebarExportsItem": {
+			"no_name": "Sem nome"
+		},
 		"SidebarGroups": {
 			"administration": "Administração",
 			"calendar_management": "Calendário",
@@ -69,6 +93,31 @@
 			"offer": "Oferta",
 			"operation": "Operação",
 			"overview": "Visão Geral"
+		},
+		"SidebarNotifications": {
+			"label": "Notificações",
+			"no_notifications": "Sem notificações disponíveis",
+			"read": "Lidas",
+			"unread": "Não Lidas"
+		},
+		"SidebarNotificationsItem": {
+			"mark_as_read_aria": "Marcar como lido",
+			"no_description": "Sem Descrição",
+			"no_title": "Sem titulo"
+		},
+		"SidebarOptions": {
+			"account": "Conta",
+			"customisation": "Personalização",
+			"enable_notifications": "Ativar Notificações",
+			"enter_fullscreen": "Entrar em Fullscreen",
+			"exit_fullscreen": "Sair do Fullscreen",
+			"label": "Definições",
+			"language": "Idioma",
+			"logout": "Logout",
+			"mode": "Modo",
+			"notifications_enabled": "Notificações Ativadas",
+			"theme": "Tema",
+			"version": "Versão"
 		}
 	},
 	"tags": {

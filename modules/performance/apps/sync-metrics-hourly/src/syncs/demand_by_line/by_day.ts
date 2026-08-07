@@ -1,5 +1,6 @@
 /* * */
 
+import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromStartIso } from '@/utils/day-label.js';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
@@ -97,6 +98,7 @@ export const syncDemandByLineByDay = async () => {
 			const validationsAgg = await validationsCollection.aggregate([
 				{
 					$match: {
+						agency_id: { $in: [...LEGACY_CM_AGENCY_IDS] },
 						created_at: { $gte: chunkData.start, $lt: chunkData.end },
 						is_passenger: true,
 					},

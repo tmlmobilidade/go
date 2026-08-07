@@ -26,7 +26,7 @@
 
 import type { ManualRule, Pattern, ScheduleRule, YearPeriod } from '@tmlmobilidade/types';
 
-import { lines, patterns, routes, yearPeriods } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 
@@ -88,11 +88,11 @@ async function parseArgs(argv: string[]) {
 }
 
 async function loadAgencyPatterns(agencyId: string, onlyRouted: boolean): Promise<Pattern[]> {
-	const agencyLines = await lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
+	const agencyLines = await goDb.offer.lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
 	const lineIds = agencyLines.map(line => line._id);
 	if (!lineIds.length) return [];
 
-	const all = await patterns.findMany(
+	const all = await goDb.offer.patterns.findMany(
 		{ line_id: { $in: lineIds } },
 		{ projection: { code: 1, line_id: 1, route_id: 1, rules: 1 } },
 	);
@@ -100,7 +100,7 @@ async function loadAgencyPatterns(agencyId: string, onlyRouted: boolean): Promis
 	if (!onlyRouted) return all;
 
 	const live = new Set(
-		(await routes.findMany({ line_id: { $in: lineIds } }, { projection: { _id: 1 } })).map(r => r._id),
+		(await goDb.offer.routes.findMany({ line_id: { $in: lineIds } }, { projection: { _id: 1 } })).map(r => r._id),
 	);
 	return all.filter(p => live.has(p.route_id));
 }
@@ -254,7 +254,7 @@ async function main() {
 
 	const [agencyPatterns, periods] = await Promise.all([
 		loadAgencyPatterns(agency, onlyRouted),
-		yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
+		goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
 	]);
 
 	const periodNames = buildPeriodNames(periods);

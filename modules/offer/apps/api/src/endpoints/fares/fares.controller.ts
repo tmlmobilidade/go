@@ -2,10 +2,19 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { fares, type Filter } from '@tmlmobilidade/interfaces';
-import { CreateFareDto, type Fare, PermissionCatalog, type UpdateFareDto } from '@tmlmobilidade/types';
+import { type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { CreateFareDto, type Fare, PermissionCatalog, type PermissionResourceCheck, type UpdateFareDto } from '@tmlmobilidade/types';
 
 /* * */;
+
+const FARES_READ_PERMISSION_CHECKS: PermissionResourceCheck[] = [
+	{ action: PermissionCatalog.all.lines.actions.read, scope: PermissionCatalog.all.lines.scope },
+	{ action: PermissionCatalog.all.lines.actions.update, scope: PermissionCatalog.all.lines.scope },
+	{ action: PermissionCatalog.all.fares.actions.nav, scope: PermissionCatalog.all.fares.scope },
+];
+
+/* * */
 
 export class FaresController {
 	//
@@ -48,7 +57,7 @@ export class FaresController {
 		//
 		// Create the new fare
 
-		const newFare = await fares.insertOne(request.body);
+		const newFare = await goDb.offer.fares.insertOne(request.body);
 
 		//
 		// Send the response
@@ -65,7 +74,7 @@ export class FaresController {
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		const { id } = request.params;
-		const fare = await fares.findById(id);
+		const fare = await goDb.offer.fares.findById(id);
 
 		if (!fare) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
@@ -100,7 +109,7 @@ export class FaresController {
 
 		//
 
-		await fares.deleteById(id);
+		await goDb.offer.fares.deleteById(id);
 
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -113,37 +122,22 @@ export class FaresController {
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Fare[]>) {
 		//
 
-		//
-		// Get the resource permissions for fares for the current user.
+		const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
+			checks: FARES_READ_PERMISSION_CHECKS,
+			permissions: request.permissions,
+			resource_key: 'agency_ids',
+		});
 
-		const userFarePermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.fares.scope, PermissionCatalog.all.fares.actions.read);
-
-		//
-		// If no permission found, deny access
-
-		if (!userFarePermissions) {
+		if (!agencyAccess.allowAll && !agencyAccess.values.length) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read fares');
 		}
 
-		//
-		// Build database query filters based on user permissions
-
-		const queryFilters: Filter<Fare> = {};
-
-		//
-		// If agency IDs are specified in resources and do not include the ALLOW_ALL_FLAG,
-		// filter fares by those agency IDs.
-
-		if ('resources' in userFarePermissions && 'agency_ids' in userFarePermissions.resources) {
-			if (!userFarePermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-				queryFilters.agency_ids = { $in: userFarePermissions.resources['agency_ids'] };
-			}
-		}
+		const queryFilters: Filter<Fare> = agencyAccess.allowAll ? {} : { agency_ids: { $in: agencyAccess.values } };
 
 		//
 		// Fetch fares based on query filters
 
-		const allFares = await fares.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allFares = await goDb.offer.fares.findMany(queryFilters, { sort: { created_at: -1 } });
 
 		return reply.send({ data: allFares, error: null, statusCode: HTTP_STATUS.OK });
 		//
@@ -160,36 +154,21 @@ export class FaresController {
 		//
 		// Get the Fare from the database
 
-		const fareData = await fares.findById(request.params.id);
+		const fareData = await goDb.offer.fares.findById(request.params.id);
 
 		if (!fareData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
 		}
 
-		//
-		// Get the resource permissions for fares for the current user.
-
-		const userFarePermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.fares.scope, PermissionCatalog.all.fares.actions.read);
-
-		//
-		// If no permission found, deny access
-
-		if (!userFarePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read fares');
-		}
-
-		//
-		// Validate that user has permission for at least one of this fare's agencies
-
-		const hasPermissionForAnyAgency = PermissionCatalog.hasPermissionResource({
-			action: PermissionCatalog.all.fares.actions.read,
+		const agencyAccess = PermissionCatalog.getPermissionResourceAccess({
+			checks: FARES_READ_PERMISSION_CHECKS,
 			permissions: request.permissions,
 			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.fares.scope,
-			value: fareData.agency_ids,
 		});
 
-		if (!hasPermissionForAnyAgency) {
+		const canReadFare = agencyAccess.allowAll || fareData.agency_ids.some(agencyId => agencyAccess.values.includes(agencyId));
+
+		if (!canReadFare) {
 			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this fare');
 		}
 
@@ -216,7 +195,7 @@ export class FaresController {
 		//
 		// Get the Fare from the database
 
-		const fareData = await fares.findById(request.params.id);
+		const fareData = await goDb.offer.fares.findById(request.params.id);
 
 		if (!fareData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
@@ -250,8 +229,8 @@ export class FaresController {
 		}
 
 		// If authorized, toggle the lock status of the fare
-		await fares.toggleLockById(request.params.id);
-		const foundFare = await fares.findById(request.params.id);
+		await goDb.offer.fares.toggleLockById(request.params.id);
+		const foundFare = await goDb.offer.fares.findById(request.params.id);
 		if (!foundFare) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
 		}
@@ -272,7 +251,7 @@ export class FaresController {
 		//
 		// Get the Fare from the database
 
-		const fareData = await fares.findById(request.params.id);
+		const fareData = await goDb.offer.fares.findById(request.params.id);
 
 		if (!fareData) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Fare not found');
@@ -308,7 +287,7 @@ export class FaresController {
 		//
 		// Update the fare
 
-		const updatedFare = await fares.updateById(fareData._id, request.body);
+		const updatedFare = await goDb.offer.fares.updateById(fareData._id, request.body);
 
 		//
 		// Send the updated fare data as the response

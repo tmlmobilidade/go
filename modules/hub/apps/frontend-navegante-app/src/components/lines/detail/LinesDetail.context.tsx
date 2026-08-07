@@ -222,7 +222,7 @@ export function LinesDetailContextProvider({ children, lineId }: PropsWithChildr
 		// Preselect the first pattern with a path, falling back to the first pattern
 		if (!filterActivePatternIdState) {
 			const firstWithPath = dataValidPatternsState.find(pattern => pattern.path.length > 0);
-			setFilterActivePatternIdState(firstWithPath._id);
+			setFilterActivePatternIdState(firstWithPath?._id);
 			setFlagIsInteractiveModeState(false);
 		}
 	}, [dataValidPatternsState, filterActivePatternIdState]);

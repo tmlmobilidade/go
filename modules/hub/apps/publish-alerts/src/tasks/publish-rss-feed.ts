@@ -1,9 +1,9 @@
 /* * */
 
 import { transformAlertIntoRssEntity } from '@/transform/rss/main.js';
-import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { alerts } from '@tmlmobilidade/interfaces';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { createRssFeed, type RssRawItem } from '@tmlmobilidade/rss';
 import { Timer } from '@tmlmobilidade/timer';
@@ -24,7 +24,7 @@ export async function publishRssFeed() {
 	//
 	// Retrieve active alerts from the database
 
-	const findResult = await alerts.findMany(
+	const findResult = await goDb.operation.alerts.findMany(
 		{
 			$and: [
 				{
@@ -66,7 +66,7 @@ export async function publishRssFeed() {
 		title: 'Carris Metropolitana - Alertas',
 	});
 
-	await apiCache.set('hub:v1:alerts:published:rss', rssFeed);
+	await cacheDb.set('hub:v1:alerts:published:rss', rssFeed);
 
 	Logger.success(`Finished publishing RSS feed (${globalTimer.get()})`);
 

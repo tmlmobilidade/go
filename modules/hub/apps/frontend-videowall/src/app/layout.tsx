@@ -1,7 +1,7 @@
 /* * */
 
 import pjson from '#/package.json';
-import { i18nResourceKeysPt } from '@/i18n/resources';
+import { i18nResourceKeysEs, i18nResourceKeysPt } from '@/i18n/resources';
 import { BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/react';
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<BaseProvider i18n={{ pt: i18nResourceKeysPt }} version={pjson.version}>
+		<BaseProvider i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }} version={pjson.version}>
 			<NuqsAdapter>
 				{children}
 			</NuqsAdapter>

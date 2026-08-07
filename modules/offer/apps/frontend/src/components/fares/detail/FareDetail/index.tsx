@@ -5,7 +5,7 @@ import { FareDetailHeader } from '@/components/fares/detail/FareDetailHeader';
 import { currencyOptions, paymentMethodsOptions, transfersOptions } from '@/types/fares';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { FareSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, NumberInput, Pane, Section, Select, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, NumberInput, Pane, Section, Select, TextInput, useDataAgenciesNew } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,11 +17,9 @@ export function FareDetail() {
 
 	const fareDetailContext = useFareDetailContext();
 
-	// Bypass permissions to show all agency labels in read-only mode
-	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: fareDetailContext.flags.isReadOnly ? undefined : [PermissionCatalog.all.fares.actions.update],
-		scope: fareDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.fares.scope,
+	const { options: agencyOptions } = useDataAgenciesNew(API_ROUTES.offer.AGENCIES_LIST, {
+		actions: [fareDetailContext.flags.isReadOnly ? PermissionCatalog.all.fares.actions.nav : PermissionCatalog.all.fares.actions.update],
+		scope: PermissionCatalog.all.fares.scope,
 	});
 
 	//
@@ -36,7 +34,7 @@ export function FareDetail() {
 	}
 
 	return (
-		<Pane header={[<FareDetailHeader />]}>
+		<Pane header={[<FareDetailHeader key="header" />]}>
 			<Section>
 				<Grid columns="a" gap="lg">
 

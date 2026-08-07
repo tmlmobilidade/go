@@ -10,6 +10,8 @@ import { z } from 'zod';
 /* * */
 
 export const PlanSchema = DocumentSchema.extend({
+	agency_id: z.string(),
+	apex_file_id: z.string().nullable().default(null),
 	apps: z.object({
 		controller: PlanAppStatusSchema,
 		hub_gtfs: PlanAppStatusSchema,
@@ -20,12 +22,12 @@ export const PlanSchema = DocumentSchema.extend({
 	gtfs_feed_info: GtfsFeedInfoSchema,
 	hash: z.string(),
 	is_locked: z.boolean().default(false),
-	operation_file_id: z.string(),
+	operation_file_id: z.string().nullable().default(null),
 	pcgi_legacy: PlanPcgiLegacySchema,
 });
 
-export const CreatePlanSchema = PlanSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdatePlanSchema = CreatePlanSchema.omit({ created_by: true }).partial();
+export const CreatePlanSchema = PlanSchema.omit({ _id: true, updated_at: true });
+export const UpdatePlanSchema = CreatePlanSchema.omit({ created_at: true, created_by: true }).partial();
 
 /* * */
 

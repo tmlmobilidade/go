@@ -36,22 +36,25 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@clack/prompts": "1.6.0",
+		"@clack/prompts": "1.7.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"exceljs": "^4.4.0"
+		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.0.1",
+		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"
 	}

@@ -2,6 +2,7 @@
 
 import { Notification } from '@tmlmobilidade/types';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -9,7 +10,7 @@ import { useNotificationsContext } from '../../../contexts/Notifications.context
 import { DeleteButton } from '../../buttons/DeleteButton';
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
-import { getSidebarNotificationScopeIcon } from '../sidebar-notification-scope-icon';
+import { getSidebarNotificationScopeIcon } from './sidebar-notification-scope-icon';
 
 /* * */
 
@@ -25,6 +26,7 @@ export function SidebarNotificationsItem({ notification }: SidebarNotificationsI
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const notificationsContext = useNotificationsContext();
 	const icon = getSidebarNotificationScopeIcon(notification.scope);
 
@@ -35,16 +37,16 @@ export function SidebarNotificationsItem({ notification }: SidebarNotificationsI
 	return (
 		<div className={styles.root}>
 			<div
-				aria-label="Marcar como lido"
+				aria-label={t('shared:components.sidebar.SidebarNotificationsItem.mark_as_read_aria')}
 				className={styles.left}
 				onClick={() => notificationsContext.actions.markAsRead(notification)}
 			>
 				<Section flexDirection="row" gap="sm" padding="none" width="fit-content">
 					<div className={styles.iconWrapper}>{icon && React.cloneElement(icon, { size: 20 })}</div>
 					<div>
-						<Label size="md">{notification.payload.title || 'Sem titulo'}</Label>
+						<Label size="md">{notification.payload.title || t('shared:components.sidebar.SidebarNotificationsItem.no_title')}</Label>
 						<div className={styles.body}>
-							<Label size="sm">{notification.payload.body || 'Sem Descrição'}</Label>
+							<Label size="sm">{notification.payload.body || t('shared:components.sidebar.SidebarNotificationsItem.no_description')}</Label>
 						</div>
 					</div>
 				</Section>

@@ -1,15 +1,14 @@
 /* * */
 
 import StatCard from '@/components/common/StatCard';
+import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { openGtfsImportModal } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsImport.modal';
 import { ShapeEditorModal } from '@/components/patterns/shape/shape-editor/ShapeEditor.modal';
 import { IconFileZip, IconShape } from '@tabler/icons-react';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Agency, Pattern } from '@tmlmobilidade/types';
+import { Pattern } from '@tmlmobilidade/types';
 import { Button, Collapsible, Grid, MapOverlayPatternShape, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
-import useSWR from 'swr';
 
 /* * */
 
@@ -19,8 +18,8 @@ export function PatternDetailSectionShape() {
 	//
 	// A. Setup variables
 
+	const linesListContext = useLinesListContext();
 	const patternDetailContext = usePatternDetailContext();
-	const { data: agencyData } = useSWR<Agency, Error>(API_ROUTES.auth.AGENCIES_DETAIL(patternDetailContext.data.agency_id || ''));
 
 	const [isEditorOpen, setIsEditorOpen] = useState(false);
 
@@ -32,6 +31,10 @@ export function PatternDetailSectionShape() {
 		if (patternDetailContext.data.form.values?.shape?.extension > 1000) return `${(patternDetailContext.data.form.values.shape.extension / 1000).toFixed(3)} km`;
 		else return `${patternDetailContext.data.form.values.shape.extension} m`;
 	}, [patternDetailContext.data.form.values]);
+
+	const agencyData = useMemo(() => {
+		return linesListContext.data.agencies.find(agency => agency._id === patternDetailContext.data.agency_id);
+	}, [linesListContext.data.agencies, patternDetailContext.data.agency_id]);
 
 	const shapeCost = useMemo(() => {
 		if (!patternDetailContext.data.form.values?.shape?.extension || !agencyData?.financials) return null;

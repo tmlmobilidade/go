@@ -13,6 +13,7 @@ export const StopsPermissionSchema = z.object({
 		'update',
 		'export',
 		'edit_coordinates',
+		'edit_name',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),

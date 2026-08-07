@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 export const RawApexTransactionBaseSchema = z.object({
 	_id: z.string(),
+	agency_code: z.string(),
 	agency_id: z.string(),
 	created_at: UnixTimestampSchema,
 	is_ok: z.boolean(),

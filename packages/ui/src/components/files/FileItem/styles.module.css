@@ -1,0 +1,20 @@
+/* * */
+/* BODY */
+
+.body {
+	display: flex;
+	flex-direction: row;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+	justify-content: center;
+	padding: var(--size-spacing-md);
+	color: var(--color-system-text-100);
+	cursor: pointer;
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-md);
+}
+
+.body:hover,
+.body[data-expanded="true"] {
+	background-color: var(--color-system-background-200);
+}

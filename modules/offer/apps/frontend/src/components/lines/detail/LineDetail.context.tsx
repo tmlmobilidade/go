@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Line, PermissionCatalog, type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/types';
+import { type LineNormalized, PermissionCatalog, type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -15,7 +15,7 @@ interface LineDetailContextState {
 	data: {
 		form: UseFormReturnType<UpdateLineDto>
 		id: string
-		line: Line | null
+		line: LineNormalized | null
 	}
 	flags: DetailContextStateTemplate['flags']
 }
@@ -46,8 +46,8 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	//
 	// B. Fetch data
 
-	const { mutate: linesListMutate } = useSWR<Line[]>(API_ROUTES.offer.LINES_LIST);
-	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<Line>(API_ROUTES.offer.LINES_DETAIL(lineId));
+	const { mutate: linesListMutate } = useSWR<LineNormalized[]>(API_ROUTES.offer.LINES_LIST);
+	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<LineNormalized>(API_ROUTES.offer.LINES_DETAIL(lineId));
 
 	//
 	// C. Setup form
@@ -58,7 +58,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Line>(API_ROUTES.offer.LINES_DETAIL(lineId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<LineNormalized>(API_ROUTES.offer.LINES_DETAIL(lineId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			lineMutate(updatedItem);
@@ -67,7 +67,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Line>(API_ROUTES.offer.LINES_DETAIL(lineId), 'DELETE', lineData),
+		fetchFn: async () => await fetchData<undefined>(API_ROUTES.offer.LINES_DETAIL(lineId), 'DELETE', lineData),
 		onSuccess: () => {
 			form.resetDirty();
 			linesListMutate();
@@ -76,7 +76,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Line>(API_ROUTES.offer.LINES_DETAIL_LOCK(lineId)),
+		fetchFn: async () => await fetchData<LineNormalized>(API_ROUTES.offer.LINES_DETAIL_LOCK(lineId)),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			lineMutate(updatedItem);
@@ -140,14 +140,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	}), [
-		lineData,
-		lineError,
-		lineLoading,
-		lineId,
-		form,
-		isSaving,
-	]);
+	}), [handleDelete, handleLock, handleSave, form, lineId, lineData, canDelete, canLock, canSave, lineError, isDeleting, lineLoading, isLocking, isReadOnly, isSaving]);
 
 	//
 	// G. Render components

@@ -16,15 +16,13 @@
 	},
 	"dependencies": {
 		"@carrismetropolitana/tts": "20250418.51.6",
-		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/types": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.0.1",
+		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
-		"tsc-watch": "7.2.0",
+		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"
 	}
 }

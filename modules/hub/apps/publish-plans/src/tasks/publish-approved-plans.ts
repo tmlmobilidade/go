@@ -1,9 +1,10 @@
 /* * */
 
-import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HubPlan, HubPlanSchema } from '@tmlmobilidade/go-types-public-info';
-import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -19,7 +20,7 @@ export async function publishApprovedPlans() {
 	//
 	// Retrieve all plans
 
-	const allPlansData = await plans.all();
+	const allPlansData = await goDb.operation.plans.findMany();
 
 	Logger.info({ message: `Retrieved ${allPlansData.length} approved plans...` });
 
@@ -31,7 +32,7 @@ export async function publishApprovedPlans() {
 	for (const planData of allPlansData) {
 		try {
 			// Get the operation file URL
-			const operationFile = await files.findById(planData.operation_file_id);
+			const operationFile = await storageProvider.findById(planData.operation_file_id);
 			if (!operationFile) throw new Error(`Operation file not found for plan ${planData._id}`);
 			// Check if the plans is active
 			const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
@@ -41,7 +42,7 @@ export async function publishApprovedPlans() {
 			// Parse the plan data
 			const parsedPlan = HubPlanSchema.safeParse({
 				...planData,
-				agency_id: planData.gtfs_agency?.agency_id,
+				agency_id: planData.agency_id,
 				is_active: isActive,
 				operation_file_url: operationFile.url,
 			});
@@ -58,7 +59,7 @@ export async function publishApprovedPlans() {
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:v1:plans:approved:json', JSON.stringify(approvedPlans));
+	await cacheDb.set('hub:v1:plans:approved:json', JSON.stringify(approvedPlans));
 
 	Logger.success(`Finished publishing ${approvedPlans.length} approved plans JSON feed. (${globalTimer.get()})`);
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { Line } from '@carrismetropolitana/api-types/network';
 import { IconInfoTriangleFilled } from '@tabler/icons-react';
+import { HubLine } from '@tmlmobilidade/go-types-public-info';
 
 import styles from './styles.module.css';
 
@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 
 export interface LineBadgeProps {
 	color?: string
-	lineData?: Line
+	lineData?: HubLine
 	lineId?: string
 	onClick?: () => void
 	shortName?: string
@@ -33,7 +33,7 @@ export function LineBadge({ color, lineData, onClick, shortName, size = 'md', te
 			onClick={onClick}
 			style={{ backgroundColor: color || lineData?.color, color: textColor || lineData?.text_color }}
 		>
-			{shortName || lineData?.id || '• • •'}
+			{shortName || lineData?._id || '• • •'}
 			{withAlertIcon && (
 				<div className={styles.alertIcon}>
 					<IconInfoTriangleFilled size={12} />

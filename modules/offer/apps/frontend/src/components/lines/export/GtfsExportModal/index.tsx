@@ -1,10 +1,10 @@
 'use client';
 
+import { LinesListContextProvider, useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { GtfsExportModalContextProvider, useGtfsExportModalContext } from '@/contexts/GtfsExport.context';
-import { LinesContextProvider, useLinesContext } from '@/contexts/Lines.context';
 import { IconFileDownload } from '@tabler/icons-react';
 import { LinesMode } from '@tmlmobilidade/types';
-import { AgenciesContextProvider, Button, Checkbox, CloseButton, closeModal, DateInput, Divider, Grid, Label, MultiSelect, NumberInput, openModal, Section, SegmentedControl, Spacer, Toolbar, useAgenciesContext } from '@tmlmobilidade/ui';
+import { Button, Checkbox, CloseButton, closeModal, DateInput, Divider, Grid, Label, MeContextProvider, MultiSelect, NumberInput, openModal, Section, SegmentedControl, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -16,13 +16,13 @@ export const GTFS_EXPORT_MODAL_ID = 'gtfs-export-modal';
 export const openGtfsExportModal = () => {
 	openModal({
 		children: (
-			<AgenciesContextProvider>
-				<LinesContextProvider>
+			<MeContextProvider>
+				<LinesListContextProvider>
 					<GtfsExportModalContextProvider>
 						<GtfsExportModal />
 					</GtfsExportModalContextProvider>
-				</LinesContextProvider>
-			</AgenciesContextProvider>
+				</LinesListContextProvider>
+			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
 		modalId: GTFS_EXPORT_MODAL_ID,
@@ -42,12 +42,11 @@ function GtfsExportModal() {
 	// A. Setup variables
 
 	const context = useGtfsExportModalContext();
-	const agenciesContext = useAgenciesContext();
-	const linesContext = useLinesContext();
+	const linesListContext = useLinesListContext();
 
 	const filteredLines = useMemo(() => {
-		return linesContext.data.raw.filter(line => context.data.form.values.agency_ids.includes(line.agency_id));
-	}, [context.data.form.values.agency_ids, linesContext.data.raw]);
+		return linesListContext.data.raw.filter(line => context.data.form.values.agency_ids.includes(line.agency_id));
+	}, [context.data.form.values.agency_ids, linesListContext.data.raw]);
 
 	const linesOptions = useMemo(() => filteredLines.map(line => ({
 		label: `${line.code} - ${line.name}`,
@@ -76,7 +75,7 @@ function GtfsExportModal() {
 
 			<Section gap="md">
 				<MultiSelect
-					data={agenciesContext.data.as_options}
+					data={linesListContext.data.agencyOptions}
 					description="Selecione um ou mais operadores para exportar os dados correspondentes"
 					label="Selecionar operadores"
 					onChange={context.actions.setAgencyIds}

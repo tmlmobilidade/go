@@ -9,6 +9,7 @@ import { z } from 'zod';
 
 export const SimplifiedApexBankingTapSchema = z.object({
 	_id: z.string(),
+	agency_code: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
 	banking_token: z.string(),
@@ -30,7 +31,7 @@ export const SimplifiedApexBankingTapSchema = z.object({
 	stop_id: z.string(),
 	trip_id: z.string().nullable().default(null),
 	updated_at: UnixTimestampSchema,
-	vehicle_id: z.number().nullable().default(null),
+	vehicle_id: z.string().nullable().default(null),
 }).transform((val) => {
 	// Setup the individual conditions to consider
 	// this transaction as OK or NOT OK

@@ -2,6 +2,7 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GTFS_StopTime, type Plan } from '@tmlmobilidade/types';
@@ -27,13 +28,25 @@ export interface ExportedStopTimesRow {
 export async function exportStopTimesRows(planData: Plan, sqlTables: GtfsSQLTables, exportConfig: MergedGtfsExportConfig) {
 	//
 
+	const allStopsList = await goDb.infrastructure.stops.findMany({}, { projection: { _id: 1, flags: 1, legacy_ids: 1 } });
+	const allStopsMap = new Map<string, string>();
+
+	allStopsList.forEach((stopData) => {
+		if (!stopData.flags?.length) allStopsMap.set(String(stopData._id), String(stopData._id));
+		stopData.flags?.forEach((flag) => {
+			if (flag.is_harmonized) allStopsMap.set(flag.stop_id, String(stopData._id));
+			else allStopsMap.set(flag.stop_id, flag.stop_id);
+		});
+	});
+
 	for await (const stopTimeItem of sqlTables.stop_times.stream('ORDER BY trip_id, stop_sequence ASC')) {
 		const stopTimeData: GTFS_StopTime = stopTimeItem;
+		const stopId = allStopsMap.get(stopTimeData.stop_id);
 		const parsedStopTimesRow: ExportedStopTimesRow = {
 			trip_id: `[${planData._id}]${stopTimeData.trip_id}`,
 			arrival_time: stopTimeData.arrival_time,
 			departure_time: stopTimeData.departure_time,
-			stop_id: stopTimeData.stop_id,
+			stop_id: stopId,
 			stop_sequence: stopTimeData.stop_sequence,
 			pickup_type: stopTimeData.pickup_type ?? 0,
 			drop_off_type: stopTimeData.drop_off_type ?? 0,
