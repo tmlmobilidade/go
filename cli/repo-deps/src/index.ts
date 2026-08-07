@@ -101,7 +101,8 @@ async function findDependencyUsage(
   return walk(directory);
 }
 
-(async function detectUnusedDependencies(rootDirectory: string) {
+(async function detectUnusedDependencies() {
+	const rootDirectory = process.cwd();
 	console.log(`Detecting unused dependencies in ${rootDirectory}`);
   const packageJsonFiles = await findPackageJsonFiles(rootDirectory);
   for (const packageJsonPath of packageJsonFiles) {
@@ -138,4 +139,4 @@ async function findDependencyUsage(
       console.error(`Failed to process ${packageJsonPath}`, err);
     }
   }
-})('/Users/joao/Developer/tmlmobilidade/go');
+})();
