@@ -23,7 +23,7 @@ export function PlanDetailSectionFeedInfo() {
 		action: PermissionCatalog.all.plans.actions.update_feed_info_dates,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: planDetailContext.data.plan.gtfs_agency.agency_id ?? '',
+		value: planDetailContext.data.plan.agency_id ?? '',
 	});
 
 	//

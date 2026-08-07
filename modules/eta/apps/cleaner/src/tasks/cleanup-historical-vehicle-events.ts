@@ -1,4 +1,3 @@
-import { AppConfig } from '@/lib/config.js';
 import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -19,7 +18,6 @@ export async function cleanupHistoricalVehicleEvents(clickhouseClient: Parameter
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
-		AppConfig.database,
 		pipelinePath(CLEANUP_HIST_VEHICLE_EVENTS_SQL),
 	);
 

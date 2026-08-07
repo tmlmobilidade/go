@@ -47,7 +47,7 @@ export interface ExportContext {
 		line_ids: string[]
 		pattern_ids: string[]
 		stop_ids: string[]
-		vehicle_ids: number[]
+		vehicle_ids: string[]
 	}
 	output: string
 }

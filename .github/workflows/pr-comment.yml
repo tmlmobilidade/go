@@ -47,13 +47,7 @@ jobs:
               '**Available modules:**',
               moduleList,
               '',
-              '---',
-              '',
-              '### Environment (after `/build`)',
-              '',
-              `https://pr-${prNumber}.go-stg.tmlmobilidade.pt/`,
-              '',
-              'Test wisely, deploy bravely'
+              'Note: Auth module is building automatically when building other modules.'
             ].join('\n');
 
             github.rest.issues.createComment({

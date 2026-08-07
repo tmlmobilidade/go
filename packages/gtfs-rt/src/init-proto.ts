@@ -6,7 +6,8 @@ import protobufjs from 'protobufjs';
 
 /* * */
 
-const PROTO_SPEC_FILE_URL = 'https://gtfs.org/documentation/realtime/gtfs-realtime.proto';
+// const PROTO_SPEC_FILE_URL = 'https://gtfs.org/documentation/realtime/gtfs-realtime.proto';
+const PROTO_SPEC_FILE_URL = 'https://go.tmlmobilidade.pt/auth/assets/gtfs/gtfs-realtime.proto';
 
 const PROTO_SPEC_FILE_PATH = '/tmp/go-gtfs-rt/gtfs-realtime.proto';
 
