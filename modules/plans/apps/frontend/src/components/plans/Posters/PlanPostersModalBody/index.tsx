@@ -8,11 +8,11 @@ import { useMemo, useState } from 'react';
 
 /* * */
 
-type LinesSelectionMode = 'all' | 'exclude' | 'include';
+type StopsSelectionMode = 'all' | 'exclude' | 'include';
 
-const linesSelectionOptions = [
-	{ label: 'Todas as linhas', value: 'all' },
-	{ label: 'Apenas estas linhas', value: 'include' },
+const stopsSelectionOptions = [
+	{ label: 'Todas as paragens', value: 'all' },
+	{ label: 'Apenas estas paragens', value: 'include' },
 	{ label: 'Todas exceto estas', value: 'exclude' },
 ];
 
@@ -26,8 +26,8 @@ export function PlanPostersExportModalBody() {
 
 	const context = usePlansExportPdfsContext();
 	const plansListContext = usePlansListContext();
-	const [lines, setLines] = useState('');
-	const [linesSelectionMode, setLinesSelectionMode] = useState<LinesSelectionMode>('all');
+	const [stops, setStops] = useState('');
+	const [stopsSelectionMode, setStopsSelectionMode] = useState<StopsSelectionMode>('all');
 
 	const plansOptions = useMemo(() => plansListContext.data.raw
 		.filter(plan => !!plan.operation_file_id && context.data.agencyOptions.some(option => option.value === plan.agency_id))
@@ -44,8 +44,8 @@ export function PlanPostersExportModalBody() {
 	//
 	// C. Handle actions
 
-	const handleLinesSelectionModeChange = (value: string) => {
-		setLinesSelectionMode(value as LinesSelectionMode);
+	const handleStopsSelectionModeChange = (value: string) => {
+		setStopsSelectionMode(value as StopsSelectionMode);
 	};
 
 	//
@@ -70,22 +70,22 @@ export function PlanPostersExportModalBody() {
 			{context.data.planId && (
 				<Section gap="md">
 					<SegmentedControl
-						data={linesSelectionOptions}
-						description="Escolha quais linhas pretende considerar"
+						data={stopsSelectionOptions}
+						description="Escolha quais paragens pretende considerar"
 						fullWidth={true}
-						label="Linhas"
-						onChange={handleLinesSelectionModeChange}
-						value={linesSelectionMode}
+						label="Paragens"
+						onChange={handleStopsSelectionModeChange}
+						value={stopsSelectionMode}
 					/>
 
-					{linesSelectionMode !== 'all' && (
+					{stopsSelectionMode !== 'all' && (
 						<Textarea
-							description="Separe os códigos das linhas por vírgulas"
-							label={linesSelectionMode === 'include' ? 'Linhas a exportar' : 'Linhas a excluir'}
+							description="Separe os códigos das paragens por vírgulas"
+							label={stopsSelectionMode === 'include' ? 'Paragens a exportar' : 'Paragens a excluir'}
 							minRows={3}
-							onChange={event => setLines(event.currentTarget.value)}
-							placeholder="Ex.: 1001, 1002, 1003"
-							value={lines}
+							onChange={event => setStops(event.currentTarget.value)}
+							placeholder="Ex.: 10001, 10002, 10003"
+							value={stops}
 						/>
 					)}
 				</Section>
