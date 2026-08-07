@@ -23,7 +23,7 @@ export interface VideowallDataConfig {
  * UI states above. TypeScript and editor autocomplete reject unknown values.
  */
 export const VIDEOWALL_DATA_CONFIG: VideowallDataConfig = {
-	data_source: 'live',
+	data_source: 'mock',
 	mock_scenario: 'regular',
 	mock_state: 'ready',
 };
