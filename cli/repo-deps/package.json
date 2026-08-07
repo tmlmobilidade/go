@@ -1,0 +1,30 @@
+{
+	"name": "@tmlmobilidade/repo-deps",
+	"description": "A CLI tool to detect unused dependencies in a repository.",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.js",
+	"bin": {
+		"repo-deps": "dist/index.js"
+	},
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint ./src --fix",
+		"dev": "tsc && resolve-tspaths && node dist/index.js"
+	},
+	"devDependencies": {
+		"@types/node": "26.1.2",
+		"resolve-tspaths": "0.8.23",
+		"typescript": "6.0.3"
+	}
+}
