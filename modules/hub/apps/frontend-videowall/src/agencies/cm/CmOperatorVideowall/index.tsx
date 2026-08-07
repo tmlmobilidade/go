@@ -3,30 +3,21 @@
 /* * */
 
 import { CmMetricsGrid } from '@/agencies/cm/CmMetricsGrid';
-import { CM_AGENCY_IDS, type CmAgencyId } from '@/agencies/cm/constants';
+import { CM_AGENCY_IDS, type CmAgency } from '@/agencies/cm/constants';
 import { VideowallHeader } from '@/components/videowall/VideowallHeader';
 import { VideowallLayout } from '@/components/videowall/VideowallLayout';
 import { VideowallMetricsContextProvider } from '@/contexts/VideowallMetrics.context';
 import { useAppReload } from '@/hooks/use-app-reload';
-import { type NumberAnimationConfig } from '@/types/number-animation';
 
 /* * */
 
 interface Props {
-	agencyId: CmAgencyId
-	agencyName: string
-	areaNumber: number
-	numberAnimation: NumberAnimationConfig
+	agency: CmAgency
 }
 
 /* * */
 
-export function CmOperatorVideowall({
-	agencyId,
-	agencyName,
-	areaNumber,
-	numberAnimation,
-}: Props) {
+export function CmOperatorVideowall({ agency }: Props) {
 	//
 
 	//
@@ -38,11 +29,11 @@ export function CmOperatorVideowall({
 	// B. Render components
 
 	return (
-		<VideowallMetricsContextProvider agencyIds={CM_AGENCY_IDS} numberAnimation={numberAnimation}>
+		<VideowallMetricsContextProvider agencyIds={CM_AGENCY_IDS} numberAnimation={agency.number_animation}>
 			<VideowallLayout
-				header={<VideowallHeader agencyName={agencyName} areaNumber={areaNumber} scope="agency" />}
+				header={<VideowallHeader agency={agency} areaNumber={agency.area_number} scope="agency" />}
 			>
-				<CmMetricsGrid agencyId={agencyId} scope="agency" />
+				<CmMetricsGrid agencyId={agency.agency_id} scope="agency" />
 			</VideowallLayout>
 		</VideowallMetricsContextProvider>
 	);

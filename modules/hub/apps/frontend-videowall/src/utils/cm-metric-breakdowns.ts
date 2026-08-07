@@ -61,7 +61,7 @@ export function getCmMetricBreakdowns({
 			: typicalComparisonIndex - 100;
 
 		return {
-			label: agency.label,
+			label: agency.short_name,
 			primaryDecimalScale: compactQuantity.decimalScale,
 			primarySuffix: compactQuantity.suffix,
 			primaryValue: compactQuantity.value,
@@ -80,7 +80,7 @@ export function getCmMetricBreakdowns({
 			: 100 - compliancePercentage;
 
 		return {
-			label: agency.label,
+			label: agency.short_name,
 			primaryValue: value?.unexecuted_rides_qty,
 			secondaryDecimalScale: 1,
 			secondarySuffix: '%',
@@ -92,7 +92,7 @@ export function getCmMetricBreakdowns({
 		const value = departureDelayMetrics[agency.agency_id]?.value;
 
 		return {
-			label: agency.label,
+			label: agency.short_name,
 			primaryValue: value?.delayed_more_than_five_minutes_rides_qty,
 			secondaryDecimalScale: 1,
 			secondarySuffix: '%',
@@ -105,7 +105,7 @@ export function getCmMetricBreakdowns({
 		const compactQuantity = getCompactQuantity(value?.executed_distance_km);
 
 		return {
-			label: agency.label,
+			label: agency.short_name,
 			primaryDecimalScale: compactQuantity.decimalScale,
 			primarySuffix: compactQuantity.suffix,
 			primaryValue: compactQuantity.value,

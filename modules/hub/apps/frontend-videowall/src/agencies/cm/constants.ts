@@ -13,4 +13,5 @@ export const CM_AGENCIES = [
 
 export const CM_AGENCY_IDS = CM_AGENCIES.map(agency => agency.agency_id);
 
+export type CmAgency = typeof CM_AGENCIES[number];
 export type CmAgencyId = typeof CM_AGENCIES[number]['agency_id'];

@@ -29,19 +29,13 @@ export function CmMetricsGrid(props: Props) {
 	const { data, flags } = useVideowallMetricsContext();
 	const isAggregate = props.scope === 'aggregate';
 	const agencyId = props.scope === 'agency' ? props.agencyId : undefined;
-	const agencyLabel = isAggregate ? AGENCY_ROUTE_CONFIG.cm.label : undefined;
-	const demandMetrics = agencyId
-		? data.demand_agency_metrics[agencyId]
-		: data.demand_metrics?.total;
-	const departureDelayMetrics = agencyId
-		? data.departure_delay_agency_metrics[agencyId]
-		: data.departure_delay_metrics?.total;
-	const serviceComplianceMetrics = agencyId
-		? data.service_compliance_agency_metrics[agencyId]
-		: data.service_compliance_metrics?.total;
-	const vkmExecutionMetrics = agencyId
-		? data.vkm_execution_agency_metrics[agencyId]
-		: data.vkm_execution_metrics?.total;
+	const agencyLabel = isAggregate ? AGENCY_ROUTE_CONFIG.cm.short_name : undefined;
+
+	const demandMetrics = agencyId ? data.demand_agency_metrics[agencyId] : data.demand_metrics?.total;
+	const departureDelayMetrics = agencyId ? data.departure_delay_agency_metrics[agencyId] : data.departure_delay_metrics?.total;
+	const serviceComplianceMetrics = agencyId ? data.service_compliance_agency_metrics[agencyId] : data.service_compliance_metrics?.total;
+	const vkmExecutionMetrics = agencyId ? data.vkm_execution_agency_metrics[agencyId] : data.vkm_execution_metrics?.total;
+
 	const breakdowns = isAggregate
 		? getCmMetricBreakdowns({
 			demandMetrics: data.demand_agency_metrics,
@@ -52,7 +46,7 @@ export function CmMetricsGrid(props: Props) {
 		: undefined;
 
 	//
-	// F. Render components
+	// B. Render components
 
 	return (
 		<PanelGrid fillContainer>

@@ -2,8 +2,8 @@
 
 /* * */
 
-import { CcflDashboard } from '@/agencies/ccfl/CcflDashboard';
 import { AGENCY_ROUTE_CONFIG } from '@/agencies/config';
+import { TtslDashboard } from '@/agencies/ttsl/TtslDashboard';
 import { VideowallHeader } from '@/components/videowall/VideowallHeader';
 import { VideowallLayout } from '@/components/videowall/VideowallLayout';
 import { VideowallMetricsContextProvider } from '@/contexts/VideowallMetrics.context';
@@ -11,27 +11,27 @@ import { useAppReload } from '@/hooks/use-app-reload';
 
 /* * */
 
-const CCFL_AGENCY_IDS = [AGENCY_ROUTE_CONFIG.ccfl.agency_id] as const;
+const TTSL_AGENCY_IDS = [AGENCY_ROUTE_CONFIG.ttsl.agency_id] as const;
 
 /* * */
 
-export function CcflVideowall() {
+export function TtslVideowall() {
 	useAppReload();
 
 	return (
 		<VideowallMetricsContextProvider
-			agencyIds={CCFL_AGENCY_IDS}
-			numberAnimation={AGENCY_ROUTE_CONFIG.ccfl.number_animation}
+			agencyIds={TTSL_AGENCY_IDS}
+			numberAnimation={AGENCY_ROUTE_CONFIG.ttsl.number_animation}
 		>
 			<VideowallLayout
 				header={(
 					<VideowallHeader
-						agency={AGENCY_ROUTE_CONFIG.ccfl}
+						agency={AGENCY_ROUTE_CONFIG.ttsl}
 						scope="standalone"
 					/>
 				)}
 			>
-				<CcflDashboard />
+				<TtslDashboard />
 			</VideowallLayout>
 		</VideowallMetricsContextProvider>
 	);

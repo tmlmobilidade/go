@@ -2,8 +2,9 @@
 
 /* * */
 
+import { AGENCY_INFO, type AgencyId, type AgencyInfo } from '@/agencies/config';
 import { Compliance } from '@/components/common/Compliance';
-import { getAgencyLogo } from '@/lib/agency-logos-map';
+import { getAgencyLogo } from '@/lib/agency-logo';
 import { Dates } from '@tmlmobilidade/dates';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
@@ -14,9 +15,9 @@ import styles from './styles.module.css';
 /* * */
 
 type Props =
-  | { agencyName: string, areaNumber: number, scope: 'agency' }
-  | { scope: 'aggregate' }
-  | { agencyId: string, agencyName: string, scope: 'standalone', secondaryLabel: string };
+  | { agency: AgencyInfo, areaNumber: number, scope: 'agency' }
+  | { agency: AgencyInfo, scope: 'standalone' }
+  | { scope: 'aggregate' };
 
 interface CurrentTime {
 	date: Date
@@ -57,13 +58,15 @@ export function VideowallHeader(props: Props) {
 	const formattedDate = currentTime ? dateFormatter.format(currentTime.date) : '—';
 	const agencyName = props.scope === 'aggregate'
 		? t('default:videowall.header.aggregate_title')
-		: props.agencyName;
+		: props.agency.name;
 	const secondaryLabel = props.scope === 'agency'
 		? t('default:videowall.header.secondary_label', '', { area: props.areaNumber })
 		: props.scope === 'aggregate'
 			? t('default:videowall.header.aggregate_secondary_label')
-			: props.secondaryLabel;
-	const logoAgencyId = props.scope === 'standalone' ? props.agencyId : 'CM';
+			: props.agency.short_name;
+	const logoAgencyId: AgencyId = props.scope === 'aggregate'
+		? AGENCY_INFO.CM.agency_id
+		: props.agency.agency_id;
 
 	useEffect(() => {
 		setCurrentTime(getCurrentTime());
