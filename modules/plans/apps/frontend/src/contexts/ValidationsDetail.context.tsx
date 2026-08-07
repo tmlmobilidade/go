@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type File, type GtfsValidation, type ProcessingStatus } from '@tmlmobilidade/types';
+import { type Attachment, type GtfsValidation, type ProcessingStatus } from '@tmlmobilidade/types';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
@@ -14,7 +14,7 @@ interface ValidationsDetailContextState {
 		updateProcessingStatus: (status: ProcessingStatus) => Promise<void>
 	}
 	data: {
-		file: File | null
+		file: Attachment | null
 		validation: GtfsValidation | null
 	}
 	flags: {
@@ -45,7 +45,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	// A. Fetch data
 
 	const { data: validationData, error: validationError, isLoading: validationLoading, mutate: validationMutate } = useSWR<GtfsValidation>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL(validationId), { refreshInterval: 3_000 });
-	const { data: fileData, error: fileError, isLoading: fileLoading } = useSWR<File>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL_FILE(validationId));
+	const { data: fileData, error: fileError, isLoading: fileLoading } = useSWR<Attachment>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL_FILE(validationId));
 
 	//
 	// B. Handle actions

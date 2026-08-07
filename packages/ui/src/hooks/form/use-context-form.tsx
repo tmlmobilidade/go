@@ -39,7 +39,6 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 
 	const form = useForm<T>({
 		defaultValues: defaultValues,
-		// @ts-expect-error zodResolver is compatible with ZodSchema<T>
 		resolver: schema ? zodResolver(schema) : undefined,
 	});
 

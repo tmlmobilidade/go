@@ -2,7 +2,7 @@
 
 import { TimestampTag } from '@/components/common/TimestampTag';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -49,11 +49,6 @@ export function RideAnalysisVehicleEvents() {
 		{
 			accessor: 'odometer',
 			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.odometer.label'),
-			width: 150,
-		},
-		{
-			accessor: 'door',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.door.label'),
 			width: 150,
 		},
 		{

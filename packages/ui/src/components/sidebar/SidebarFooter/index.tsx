@@ -1,38 +1,34 @@
 'use client';
 
-/* * */
-
-import type { MenuProps } from '@mantine/core';
-
 import styles from './styles.module.css';
 
+import { Spacer } from '../../layout/Spacer';
 import { EnvironmentTag } from '../../tags/EnvironmentTag';
+import { useSidebarContext } from '../Sidebar.context';
 import { SidebarExports } from '../SidebarExports';
 import { SidebarNotifications } from '../SidebarNotifications';
 import { SidebarOptions } from '../SidebarOptions';
 
 /* * */
 
-export interface SidebarFooterProps {
-	iconOnly?: boolean
-	menuPosition?: MenuProps['position']
-}
+export function SidebarFooter() {
+	//
 
-/* * */
+	//
+	// A. Setup variables
 
-export function SidebarFooter({ iconOnly = false, menuPosition }: SidebarFooterProps) {
+	const sidebarContext = useSidebarContext();
+
+	//
+	// B. Render components
+
 	return (
-		<div className={styles.footer} data-icon-only={iconOnly}>
-			<div className={styles.footerRow}>
-				<div className={styles.envSlot}>
-					<EnvironmentTag />
-				</div>
-				<div className={styles.actions}>
-					<SidebarExports menuPosition={menuPosition} />
-					<SidebarNotifications menuPosition={menuPosition} />
-					<SidebarOptions menuPosition={menuPosition} />
-				</div>
-			</div>
+		<div className={styles.footer}>
+			<SidebarExports />
+			{sidebarContext.presentation.visual_mode !== 'collapsed' && <SidebarNotifications />}
+			{sidebarContext.presentation.visual_mode !== 'collapsed' && <SidebarOptions />}
+			{sidebarContext.presentation.visual_mode !== 'collapsed' && <Spacer />}
+			{sidebarContext.presentation.visual_mode !== 'collapsed' && <EnvironmentTag />}
 		</div>
 	);
 }

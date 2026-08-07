@@ -9,7 +9,7 @@ import { createContext, type PropsWithChildren, useContext, useMemo, useState } 
 
 const DEFAULT_QTY_PER_AGENCY = 5;
 
-const DESIRED_AGENCY_ORDER = ['4', '2', '16', '15', '3', 'CM', '1', '21', '8'];
+const DESIRED_AGENCY_ORDER = ['LTP61', 'IA2N9', 'KB1F6', '7NTB1', 'CM', 'IA9T6', 'A3H3M'] as const;
 
 /* * */
 
@@ -68,7 +68,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		// Group data by agency ID
 		const groupedDataByAgencyId = searchResultsData?.reduce((acc: Record<string, HubLine[]>, line) => {
 			// Normalize agency ID for CM agencies
-			const agencyIdKey = ['41', '42', '43', '44'].includes(line.agency_id) ? 'CM' : line.agency_id;
+			const agencyIdKey = ['A2L1N', 'BNA17', 'LA77N', 'YA15B'].includes(line.agency_id) ? 'CM' : line.agency_id;
 			acc[agencyIdKey] = [...(acc[agencyIdKey] || []), line];
 			return acc;
 		}, {} as Record<string, HubLine[]>);

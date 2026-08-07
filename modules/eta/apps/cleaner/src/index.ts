@@ -8,10 +8,9 @@ import { cleanupHistoricalNodeTravelTimesAggregation } from '@/tasks/cleanup-his
 import { cleanupHistoricalNodeTravelTimes } from '@/tasks/cleanup-historical-node-travel-times.js';
 import { cleanupHistoricalRides } from '@/tasks/cleanup-historical-rides.js';
 import { cleanupHistoricalVehicleEvents } from '@/tasks/cleanup-historical-vehicle-events.js';
-import { GOClickHouseClient } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -41,7 +40,7 @@ export async function main() {
 	//
 	// Initialize the ClickHouse client
 
-	const clickhouseClient = await GOClickHouseClient.getClient();
+	const clickhouseClient = await labDb.getClient();
 
 	//
 	// Cleanup current rides

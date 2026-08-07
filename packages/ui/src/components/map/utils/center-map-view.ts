@@ -55,7 +55,7 @@ export function centerMapView(mapObject: MapRef, features: Feature<Geometry, Geo
 			featureCollectionEnvelope.bbox[3],
 		],
 		{
-			animate: true,
+			animate: false,
 			bearing: 0,
 			padding: 25,
 			pitch: 0,

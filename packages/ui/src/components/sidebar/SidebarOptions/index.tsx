@@ -136,6 +136,4 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 
 		</Menu>
 	);
-
-	//
 }

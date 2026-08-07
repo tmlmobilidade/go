@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector, UnixTimestamp } from '@tmlmobilidade/types';
 
@@ -20,6 +20,18 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 
 	if (!alertData.active_period_start_date) {
 		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.` });
+		return;
+	}
+
+	//
+	// Get the agency data from the database
+
+	const agencyData = await goDb.core.agencies.findOne({
+		_id: alertData.agency_id,
+	});
+
+	if (!agencyData) {
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Agency data not found for the agency_id.` });
 		return;
 	}
 
@@ -46,11 +58,11 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 		// for rides matching the line ID,
 		// the agency ID, and the alert start time.
 
-		const foundRouteIds = await rides.aggregate([
+		const foundRouteIds = await goDb.operation.rides.aggregate([
 			{
 				$match: {
-					agency_id: alertData.agency_id,
-					line_id: Number(reference.parent_id),
+					agency_id: agencyData.code,
+					line_id: reference.parent_id,
 					start_time_scheduled: {
 						$gte: alertData.active_period_start_date,
 						$lte: activePeriodEndDate,
@@ -79,7 +91,7 @@ export async function transformReferenceTypeLines(alertData: Alert): Promise<Gtf
 			//
 
 			const parsedEntitySelector: GtfsRtEntitySelector = {
-				agency_id: alertData.agency_id,
+				agency_id: agencyData.code,
 				route_id: routeId,
 			};
 
