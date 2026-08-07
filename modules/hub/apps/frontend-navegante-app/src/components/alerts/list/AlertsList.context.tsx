@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-const CM_AGENCY_IDS = new Set(['41', '42', '43', '44']);
+const CM_AGENCY_IDS = new Set(['A2L1N', 'BNA17', 'LA77N', 'YA15B']);
 
 /* * */
 
@@ -183,7 +183,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			const alertStartDateCompare = alertStartDate.startOf('day');
 			const formattedDate = alertStartDate.toFormat('d LLLL yyyy', { locale: displayLocale });
 
-			let formattedGroupLabel = '';
+			let formattedGroupLabel: string;
 			if (alertStartDateCompare.unix_timestamp === today.unix_timestamp) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.today', '', { value: formattedDate });
 			} else if (alertStartDateCompare.unix_timestamp === tomorrow.unix_timestamp) {

@@ -1,6 +1,6 @@
 import type { ClickHouseClient } from '@clickhouse/client';
 
-import { prepareNamedQueryParams, splitClickHouseStatements } from '@tmlmobilidade/databases';
+import { prepareNamedQueryParams, splitClickHouseStatements } from '@tmlmobilidade/go-clients-clickhouse';
 import { readFile } from 'node:fs/promises';
 
 async function querySqlFromSql<T>(client: ClickHouseClient, sql: string, context: string, params?: Record<string, number | string>): Promise<T[]> {

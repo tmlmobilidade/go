@@ -2,14 +2,17 @@
 
 const TTS_API_URL = process.env.TTS_API_URL ?? 'http://localhost:8086';
 
+type TtsResourceType = 'common' | 'patterns' | 'stops';
+
 export interface PiperTtsApiOptions {
 	filename: string
 	force?: boolean
+	resourceType?: TtsResourceType
 	speed?: number
 	string: string
 }
 
-interface GenerateResult { error?: string, generated?: boolean, stop_id?: string }
+interface GenerateResult { error?: string, generated?: boolean, id?: string, stop_id?: string }
 
 function parseGenerateJson(buffer: Buffer): GenerateResult | null {
 	try {
@@ -26,11 +29,11 @@ function isMp3Buffer(buffer: Buffer) {
 	);
 }
 
-export async function piperTtsApi({ filename, force = false, speed = 0.92, string }: PiperTtsApiOptions) {
+export async function piperTtsApi({ filename, force = false, resourceType = 'stops', speed = 0.92, string }: PiperTtsApiOptions) {
 	//
 
 	const response = await fetch(`${TTS_API_URL}/generate`, {
-		body: JSON.stringify({ force, speed, stop_id: filename, text: string }),
+		body: JSON.stringify({ filename, force, resource_type: resourceType, speed, stop_id: filename, text: string }),
 		headers: { 'Content-Type': 'application/json' },
 		method: 'POST',
 	});
@@ -38,7 +41,7 @@ export async function piperTtsApi({ filename, force = false, speed = 0.92, strin
 	const result = await response.json() as GenerateResult;
 
 	if (!response.ok || result.error) throw new Error(result.error ?? `TTS API failed (${response.status}) at ${TTS_API_URL}/generate`);
-	if (!result.stop_id) throw new Error('TTS API returned no stop_id');
+	if (!result.id && !result.stop_id) throw new Error('TTS API returned no id');
 
 	//
 }
@@ -55,11 +58,11 @@ export async function getPiperTtsAudio(filename: string): Promise<Buffer> {
 	//
 }
 
-export async function generatePiperTtsAudio({ filename, force = false, speed = 0.92, string }: PiperTtsApiOptions): Promise<Buffer> {
+export async function generatePiperTtsAudio({ filename, force = false, resourceType = 'stops', speed = 0.92, string }: PiperTtsApiOptions): Promise<Buffer> {
 	//
 
 	const response = await fetch(`${TTS_API_URL}/generate`, {
-		body: JSON.stringify({ force, return_audio: true, speed, stop_id: filename, text: string }),
+		body: JSON.stringify({ filename, force, resource_type: resourceType, return_audio: true, speed, stop_id: filename, text: string }),
 		headers: { 'Content-Type': 'application/json' },
 		method: 'POST',
 	});
@@ -74,7 +77,7 @@ export async function generatePiperTtsAudio({ filename, force = false, speed = 0
 
 	if (result?.error) throw new Error(result.error);
 	if (!response.ok) throw new Error(result?.error ?? `TTS API failed (${response.status}) at ${TTS_API_URL}/generate`);
-	if (result?.stop_id) return getPiperTtsAudio(filename);
+	if (result?.id || result?.stop_id) return getPiperTtsAudio(filename);
 
 	throw new Error('TTS API did not return audio');
 

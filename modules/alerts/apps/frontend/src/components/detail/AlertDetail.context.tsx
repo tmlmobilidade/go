@@ -2,7 +2,7 @@
 
 import { isValidOptionalAlertCoordinates } from '@/lib/alert-coordinates';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, type File as FileType, PermissionCatalog, type UpdateAlertDto } from '@tmlmobilidade/types';
+import { type Alert, type Attachment, PermissionCatalog, type UpdateAlertDto } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useDataAgencies, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -19,7 +19,7 @@ interface AlertDetailContextState extends DetailContextStateTemplate<UpdateAlert
 	data: {
 		alert: Alert | undefined
 		id: string | undefined
-		image: FileType | undefined
+		image: Attachment | undefined
 	}
 	flags: DetailContextStateTemplate<UpdateAlertDto>['flags'] & {
 		isDeletingImage: boolean
@@ -58,7 +58,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 
 	const { mutate: alertsListMutate } = useSWR<Alert[]>(API_ROUTES.alerts.ALERTS_LIST);
 	const { data: alertData, error: alertError, isLoading: alertLoading, isValidating: alertValidating, mutate: alertMutate } = useSWR<Alert>(API_ROUTES.alerts.ALERTS_DETAIL(alertId));
-	const { data: alertImage, mutate: alertImageMutate } = useSWR<FileType>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
+	const { data: alertImage, mutate: alertImageMutate } = useSWR<Attachment>(API_ROUTES.alerts.ALERTS_DETAIL_IMAGE(alertId));
 
 	//
 	// C. Setup form
@@ -299,7 +299,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 		form: {
 			instance: form,
 		},
-	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, form.formState.isDirty, isLocking, isReadOnly, isSaving, isUploadingImage]);
+	}), [agenciesLoading, alertData, alertError, alertId, alertImage, alertLoading, alertValidating, canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleDeleteImage, handleDuplicate, handleLock, handleSave, isDeleting, isDeletingImage, isDuplicating, isLocking, isReadOnly, isSaving, isUploadingImage]);
 
 	//
 	// F. Render components

@@ -2,7 +2,7 @@
 
 import { ClickHouseClient, ClickHouseLogLevel, createClient } from '@clickhouse/client';
 import { Logger } from '@tmlmobilidade/logger';
-import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
+import { createSshTunnelFactory, SshTunnel, SshTunnelType } from '@tmlmobilidade/ssh';
 
 /* * */
 
@@ -21,6 +21,8 @@ import { goSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 export interface ClickHouseDatabaseConfig {
 	/** Env var prefix (e.g. `"GO_CLICKHOUSE"`). */
 	prefix: string
+	/** Type of SSH tunnel to use. */
+	tunnelType?: SshTunnelType
 }
 
 /**
@@ -85,7 +87,8 @@ export class ClickHouseDatabaseClient {
 			this.entries.set(key, promise);
 		}
 
-		const entry = await this.entries.get(key)!;
+		const entry = await this.entries.get(key);
+		if (!entry) throw new Error(`[${key}] Client not found.`);
 		return entry.client;
 	}
 
@@ -107,7 +110,7 @@ export class ClickHouseDatabaseClient {
 				http_receive_timeout: 360 * 1000,
 				http_send_timeout: 360 * 1000,
 				max_execution_time: 360,
-				wait_for_async_insert: 0,
+				wait_for_async_insert: 1,
 			},
 			compression: {
 				request: true,
@@ -141,14 +144,20 @@ export class ClickHouseDatabaseClient {
 		const { prefix } = config;
 		const env = (name: string) => process.env[`${prefix}_${name}`];
 
-		if (!env('HOST') || !env('PORT')) throw new Error(`Missing ${prefix}_HOST or ${prefix}_PORT`);
-		if (!env('USER') || !env('PASSWORD')) throw new Error(`Missing ${prefix}_USER or ${prefix}_PASSWORD`);
+		const host = env('HOST');
+		const port = env('PORT');
+		const username = env('USERNAME');
+		const password = env('PASSWORD');
 
-		const tunnel = env('TUNNEL_ENABLED') === 'true' ? goSshTunnel({ dstAddr: env('HOST')!, dstPort: Number(env('PORT')) }) : null;
+		if (!host || !port) throw new Error(`Missing ${prefix}_HOST or ${prefix}_PORT`);
+		if (!username || !password) throw new Error(`Missing ${prefix}_USERNAME or ${prefix}_PASSWORD`);
+
+		const tunnel = config.tunnelType ? createSshTunnelFactory(config.tunnelType)({ dstAddr: host, dstPort: Number(port) }) : null;
+
 		if (!tunnel) {
 			return {
 				tunnel: null,
-				uri: `http://${env('USER')}:${env('PASSWORD')}@${env('HOST')}:${env('PORT')}`,
+				uri: `http://${username}:${password}@${host}:${port}`,
 			};
 		}
 
@@ -163,7 +172,7 @@ export class ClickHouseDatabaseClient {
 
 		return {
 			tunnel,
-			uri: `http://${env('USER')}:${env('PASSWORD')}@localhost:${addr.port}`,
+			uri: `http://${username}:${password}@localhost:${addr.port}`,
 		};
 	}
 }

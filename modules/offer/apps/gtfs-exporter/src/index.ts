@@ -1,9 +1,9 @@
 import { exportGtfsV29 } from '@/main.js';
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { Files } from '@tmlmobilidade/files';
-import { fileExports, files } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { type FileExport, type GtfsExportProperties, ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { CsvWriter } from '@tmlmobilidade/writers';
@@ -58,7 +58,7 @@ async function processExport(fileExport: FileExport) {
 
 	try {
 		// Mark as processing
-		await fileExports.updateById(fileExport._id, { processing_status: 'processing' });
+		await goDb.core.exports.updateById(fileExport._id, { processing_status: 'processing' });
 
 		// Ensure working directory exists
 		fs.mkdirSync(workdir, { recursive: true });
@@ -91,7 +91,7 @@ async function processExport(fileExport: FileExport) {
 
 		// Upload to storage
 		const fileStream = fs.createReadStream(zipPath);
-		const file = await files.upload(fileStream, {
+		const file = await storageProvider.upload(fileStream, {
 			created_by: 'system',
 			name: fileExport.file_name,
 			resource_id: fileExport._id,
@@ -102,12 +102,12 @@ async function processExport(fileExport: FileExport) {
 		});
 
 		// Mark as complete
-		await fileExports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
+		await goDb.core.exports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
 
 		Logger.success(`GTFS export ${fileExport._id} completed.`);
 	} catch (error) {
 		Logger.error({ error, message: `Error processing GTFS export ${fileExport._id}` });
-		await fileExports.updateById(fileExport._id, { processing_status: 'error' });
+		await goDb.core.exports.updateById(fileExport._id, { processing_status: 'error' });
 	} finally {
 		// Cleanup working directory
 		fs.rmSync(workdir, { force: true, recursive: true });
@@ -133,7 +133,7 @@ async function main() {
 	// Initialize the logger
 	Logger.init();
 
-	const waitingExports = await fileExports.findMany({
+	const waitingExports = await goDb.core.exports.findMany({
 		processing_status: ProcessingStatusSchema.enum.waiting,
 		type: 'gtfs',
 	});

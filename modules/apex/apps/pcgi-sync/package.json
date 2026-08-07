@@ -18,12 +18,11 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/databases": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-apex-pckg-parsers": "*",
-		"@tmlmobilidade/go-interfaces-go-db": "*",
+		"@tmlmobilidade/go-interfaces-pcgi-file-manager": "*",
+		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-types-apex": "*",
-		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
@@ -32,10 +31,10 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/luxon": "3.7.2",
-		"@types/node": "26.1.0",
+		"@types/luxon": "3.7.3",
+		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.0",
+		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }

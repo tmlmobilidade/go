@@ -8,6 +8,7 @@ import { AgencyType } from '@/constants';
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useDatesContext } from '@/contexts/Dates.context';
 import { Routes } from '@/routes';
+import { getMetricAgencyData } from '@/utils/agencies';
 import { TopDemandByAgencyByDayType } from '@tmlmobilidade/types';
 import { BarChart, Grid, MetricsSkeleton, Section, Skeleton, Surface } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
@@ -33,7 +34,7 @@ export default function RecordDemandByDayType() {
 	// C. Transform data
 
 	const transformedRecordData: Record<string, { date: string, qty: number }[]> = useMemo(() => {
-		if (!recordDemandByDayType) return {};
+		if (!recordDemandByDayType?.length) return {};
 
 		const data = recordDemandByDayType[0].data;
 
@@ -43,7 +44,7 @@ export default function RecordDemandByDayType() {
 		const agencyData = isAllSelected
 			? data.total
 			: selectedAgencies.length === 1
-				? data.agencies?.[selectedAgencies[0]]
+				? getMetricAgencyData(data.agencies, selectedAgencies[0])
 				: data.total; // Fallback to total for multiple specific agencies
 
 		if (!agencyData) return {};
@@ -105,10 +106,6 @@ export default function RecordDemandByDayType() {
 				</Section>
 			</Surface>
 		);
-	}
-
-	if (!transformedRecordData || Object.keys(transformedRecordData).length === 0) {
-		return null;
 	}
 
 	return (

@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { rideAcceptances } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type AlertCause, type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
 
 /**
@@ -12,7 +12,7 @@ import { type AlertCause, type RideAcceptance, RideAcceptanceStatusSchema } from
 export async function justifyRide(request: FastifyRequest<{ Body: { justification_cause: AlertCause, manual_trip_id?: string, pto_message: string }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
 
-	const updateResult = await rideAcceptances.updateByRideId(request.params.id, {
+	const updateResult = await goDb.operation.rideAcceptances.updateOne({ ride_id: request.params.id }, {
 		acceptance_status: RideAcceptanceStatusSchema.Values.under_review,
 		justification: {
 			created_at: Dates.now('utc').unix_timestamp,

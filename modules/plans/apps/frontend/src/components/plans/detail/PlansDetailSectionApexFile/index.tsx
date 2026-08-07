@@ -26,18 +26,18 @@ export function PlanDetailSectionApexFile() {
 			action: PermissionCatalog.all.plans.actions.update_apex_file,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: planDetailContext.data.plan?.gtfs_agency.agency_id ?? '',
+			value: planDetailContext.data.plan?.agency_id ?? '',
 		});
-	}, [meContext.actions, planDetailContext.data.plan?.gtfs_agency.agency_id]);
+	}, [meContext.actions, planDetailContext.data.plan?.agency_id]);
 
 	const hasPermissionDeleteApexFile = useMemo(() => {
 		return meContext.actions.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.delete_apex_file,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: planDetailContext.data.plan?.gtfs_agency.agency_id ?? '',
+			value: planDetailContext.data.plan?.agency_id ?? '',
 		});
-	}, [meContext.actions, planDetailContext.data.plan?.gtfs_agency.agency_id]);
+	}, [meContext.actions, planDetailContext.data.plan?.agency_id]);
 
 	//
 	// C. Handle actions
@@ -81,7 +81,7 @@ export function PlanDetailSectionApexFile() {
 							action={PermissionCatalog.all.plans.actions.send_apex_notification}
 							resourceKey="agency_ids"
 							scope={PermissionCatalog.all.plans.scope}
-							value={planDetailContext.data.plan?.gtfs_agency.agency_id ?? ''}
+							value={planDetailContext.data.plan?.agency_id ?? ''}
 						>
 							<Button
 								label="Enviar notificação APEX"

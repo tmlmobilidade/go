@@ -3,8 +3,9 @@
 import { DateTime } from 'luxon';
 import { z } from 'zod';
 
-/* * */
-
+/**
+ * The format for an operational date.
+ */
 export const OPERATIONAL_DATE_FORMAT = 'yyyyMMdd';
 
 /**
@@ -15,8 +16,19 @@ export type OperationalDateInt = number & {
 	__brand: 'OperationalDateInt'
 };
 
+/**
+ * The schema for an operational date value.
+ * @example
+ * ```ts
+ * const operationalDateInt = OperationalDateIntSchema.parse(20260620);
+ * // => 20260620 as OperationalDateInt
+ *
+ * const operationalDateInt = OperationalDateIntSchema.parse('20260620');
+ * // => 20260620 as OperationalDateInt
+ * ```
+ */
 export const OperationalDateIntSchema = z
-	.number()
+	.union([z.string(), z.number()])
 	.transform(validateOperationalDateInt);
 
 /**
@@ -24,9 +36,25 @@ export const OperationalDateIntSchema = z
  * Throws an error if the value is invalid.
  * @param value The value to be validated.
  * @returns The given value as an OperationalDateInt.
+ * @throws An error if the value is invalid.
+ * @example
+ * ```ts
+ * const operationalDateInt = validateOperationalDateInt(20260620);
+ * // => 20260620 as OperationalDateInt
+ *
+ * const operationalDateInt = validateOperationalDateInt('20260620');
+ * // => 20260620 as OperationalDateInt
+ *
+ * const operationalDateInt = validateOperationalDateInt('2026-06-20');
+ * // => 20260620 as OperationalDateInt
+ *
+ * const operationalDateInt = validateOperationalDateInt('not a number');
+ * // => Throws an error: 'Invalid value 'not a number', expected a number or string in format 'yyyyMMdd' or a string in format 'yyyy-MM-dd', but received a NaN'
+ * ```
  */
 export function validateOperationalDateInt(value: number | string): OperationalDateInt {
+	const valueAsString = String(value).replaceAll('-', '');
 	const parsedDate = DateTime.fromFormat(String(value), OPERATIONAL_DATE_FORMAT);
 	if (!parsedDate.isValid) throw new Error(`Invalid date format '${value}', expected format: ${OPERATIONAL_DATE_FORMAT}, explanation: ${parsedDate.invalidExplanation}`);
-	return Number(value) as OperationalDateInt;
+	return Number(valueAsString) as OperationalDateInt;
 }

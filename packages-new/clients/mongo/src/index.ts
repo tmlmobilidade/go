@@ -1,4 +1,7 @@
 export * from './client.js';
+export * from './transaction.js';
+export * from './types/index.js';
+export * from './utils/index.js';
 
 /* * */
 
@@ -12,6 +15,7 @@ export type {
 	ChangeStreamDocument,
 	ChangeStreamInsertDocument,
 	ChangeStreamUpdateDocument,
+	ClientSession,
 	Collection,
 	CreateIndexesOptions,
 	Db,
@@ -31,6 +35,7 @@ export type {
 	MongoClientOptions,
 	OptionalUnlessRequiredId,
 	Sort,
+	TransactionOptions,
 	UpdateDescription,
 	UpdateOptions,
 	UpdateResult,

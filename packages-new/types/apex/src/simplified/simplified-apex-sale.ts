@@ -9,6 +9,7 @@ import { z } from 'zod';
 
 export const SimplifiedApexOnBoardSaleSchema = z.object({
 	_id: z.string(),
+	agency_code: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
 	card_physical_type: ApexCardTypeSchema.default('255'),
@@ -33,7 +34,7 @@ export const SimplifiedApexOnBoardSaleSchema = z.object({
 	trip_id: z.string().nullable().default(null),
 	updated_at: UnixTimestampSchema,
 	validation_id: z.string().nullable().default(null),
-	vehicle_id: z.number().nullable().default(null),
+	vehicle_id: z.string().nullable().default(null),
 }).transform((val) => {
 	// Setup the individual conditions to consider
 	// this transaction as OK or NOT OK
