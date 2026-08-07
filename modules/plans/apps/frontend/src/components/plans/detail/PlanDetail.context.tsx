@@ -11,16 +11,6 @@ import useSWR from 'swr';
 
 /* * */
 
-type PlanWithLegacyPostersFile = Plan & {
-	apps: Plan['apps'] & {
-		posters: Plan['apps']['posters'] & {
-			file?: Attachment | null
-		}
-	}
-};
-
-/* * */
-
 interface PlanDetailContextState extends DetailContextStateTemplate {
 	actions: DetailContextStateTemplate['actions'] & {
 		controllerReprocessPlan: () => void
@@ -33,7 +23,6 @@ interface PlanDetailContextState extends DetailContextStateTemplate {
 		id: string
 		operation_file: Attachment | null
 		plan: null | Plan
-		posters_file: Attachment | null
 		user: null | User
 	}
 	flags: DetailContextStateTemplate['flags'] & {
@@ -71,14 +60,6 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 
 	const { mutate: plansListMutate } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
 	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
-	const planWithLegacyPostersFile = planData as PlanWithLegacyPostersFile | undefined;
-	const postersFileId = planData?.apps?.posters?.file_id;
-	const legacyPostersFile = planWithLegacyPostersFile?.apps?.posters?.file ?? null;
-
-	const { data: postersFileData, error: postersFileError, mutate: postersFileMutate } = useSWR<Attachment>(
-		postersFileId ? API_ROUTES.plans.PLANS_DETAIL_POSTERS_FILE(planId) : null,
-		{ shouldRetryOnError: false },
-	);
 	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<Attachment>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
 	const { data: apexFileData, mutate: apexFileMutate } = useSWR<Attachment>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId));
 	const { data: userData } = useSWR<User>(planId && API_ROUTES.auth.USERS_DETAIL(planData?.created_by));
@@ -101,7 +82,6 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			form.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
-			postersFileMutate();
 			apexFileMutate();
 			plansListMutate();
 		},
@@ -122,7 +102,6 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			form.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
-			postersFileMutate();
 			plansListMutate();
 		},
 	});
@@ -133,7 +112,6 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			form.resetDirty();
 			planMutate(updatedItem);
 			operationFileMutate();
-			postersFileMutate();
 			plansListMutate();
 		},
 	});
@@ -243,7 +221,6 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			id: planId,
 			operation_file: operationFileData,
 			plan: planData,
-			posters_file: postersFileError ? null : postersFileData ?? legacyPostersFile,
 			user: userData,
 		},
 		flags: {
@@ -267,14 +244,11 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 		canSave,
 		canChangePlan,
 		operationFileError,
-		postersFileError,
 		planError,
 		operationFileLoading,
 		apexFileData,
 		isDeleting,
 		operationFileData,
-		postersFileData,
-		legacyPostersFile,
 		isReprocessing,
 		planLoading,
 		isLocking,

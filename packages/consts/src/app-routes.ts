@@ -459,11 +459,9 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_APEX_FILE_SEND_NOTIFICATION: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file/send-notification`,
 		PLANS_DETAIL_CHANGE_GTFS: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/change-gtfs`,
 		PLANS_DETAIL_CONTROLLER_REPROCESS: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/controller-reprocess`,
-		PLANS_DETAIL_LIST_TO_GENERATE_POSTERS: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/list-to-generate-posters`,
 		PLANS_DETAIL_LOCK: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/lock`,
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file`,
 		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file/download`,
-		PLANS_DETAIL_POSTERS_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/posters-file`,
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans`,
 
