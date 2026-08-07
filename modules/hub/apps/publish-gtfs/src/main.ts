@@ -19,7 +19,6 @@ import { ZipFile } from 'yazl';
 
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarDatesFile } from '@/exports/calendar-dates.js';
-import { exportDatesFile } from '@/exports/dates.js';
 import { exportFeedInfoFile } from '@/exports/feed-info.js';
 import { exportPlansFile } from '@/exports/plans.js';
 import { exportRoutesFile } from '@/exports/routes.js';
@@ -252,7 +251,7 @@ export async function main() {
 			// Since SQLite sets up memory using C-level allocations, it is not possible
 			// to rely on garbage collection alone to free up memory in a timely manner.
 
-			importedGtfsSql._db.close();
+			importedGtfsSql._db.cleanup();
 
 			Logger.divider();
 
@@ -267,7 +266,6 @@ export async function main() {
 	//
 	// Export GTFS files from the merged dataset
 
-	await exportDatesFile(context);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), context);
 	await exportStopsFile(Array.from(referencedAgencyIds), context);
 	await exportAgencyFile(Array.from(referencedAgencyIds), context);

@@ -1,6 +1,7 @@
 /* * */
 
-import { DocumentSchema, GeoJsonFeatureCollectionSchema, GeoJsonFeatureSchema } from '@tmlmobilidade/go-types-shared';
+import { GeoJsonFeatureCollectionSchema, GeoJsonFeatureSchema } from '@tmlmobilidade/go-types-geo';
+import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

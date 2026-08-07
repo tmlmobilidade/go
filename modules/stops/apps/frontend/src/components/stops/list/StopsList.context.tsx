@@ -1,11 +1,12 @@
 'use client';
 
-import { useLocationsContext } from '@/contexts/Locations.context';
 import { type StopNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { LifecycleStatusSchema, type Stop, StopConnectionSchema, StopEquipmentSchema, StopFacilitySchema } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, MapOverlayMultipleStopsDataProps, useAgenciesContext, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { FeatureCollection, Point } from 'geojson';
 import { createContext, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -13,6 +14,7 @@ import useSWR from 'swr';
 
 interface StopsListContextState extends ListContextStateTemplate {
 	data: {
+		features: FeatureCollection<Point, MapOverlayMultipleStopsDataProps> | null
 		filtered: StopNormalized[]
 		raw: Stop[]
 	}
@@ -55,7 +57,7 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 	const filterConnections = useFilterStateList('connections', StopConnectionSchema.options, StopConnectionSchema.options.map(item => ({ label: item, value: item })));
 	const filterLifecycleStatus = useFilterStateList('lifecycle_status', LifecycleStatusSchema.options, LifecycleStatusSchema.options.map(item => ({ label: item, value: item })));
 	const filterAgencies = useFilterStateList('agencies', agenciesContext.data.raw.map(item => item._id), agenciesContext.data.as_options);
-	const filterMunicipality = useFilterStateList('municipalities', locationsContext.data.municipality_ids, (locationsContext.data.municipalities ?? []).map(item => ({ label: item.name, value: item._id })).sort((a, b) => a.label?.localeCompare(b.label, 'pt')));
+	const filterMunicipality = useFilterStateList('municipalities', Array.from(locationsContext.data.municipalities.keys()), Array.from(locationsContext.data.municipalities.values()).map(item => ({ label: item.name, value: item._id })).sort((a, b) => a.label?.localeCompare(b.label, 'pt')));
 
 	//
 	// B. Fetch data
@@ -71,21 +73,15 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		// Normalize record fields
 		return allStopsData.map((item): StopNormalized => ({
 			...item,
-			district_name: locationsContext.data.districts_map.get(item.district_id)?.name ?? '',
+			district_name: locationsContext.actions.getDistrict(item.district_id)?.name ?? '',
 			legacy_ids_normalized: item.legacy_ids?.map(String).join(' '),
-			locality_name: locationsContext.data.localities_map.get(item.locality_id)?.name ?? 'N/A',
-			municipality_name: locationsContext.data.municipalities_map.get(item.municipality_id)?.name ?? '',
+			locality_name: locationsContext.actions.getLocality(item.locality_id)?.name ?? 'N/A',
+			municipality_name: locationsContext.actions.getMunicipality(item.municipality_id)?.name ?? '',
 			name_normalized: normalizeString(item.name),
 			new_name_normalized: normalizeString(item.new_name),
-			parish_name: locationsContext.data.parishes_map.get(item.parish_id)?.name ?? '',
+			parish_name: locationsContext.actions.getParish(item.parish_id)?.name ?? '',
 		}));
-	}, [
-		allStopsData,
-		locationsContext.data.districts_map,
-		locationsContext.data.localities_map,
-		locationsContext.data.municipalities_map,
-		locationsContext.data.parishes_map,
-	]);
+	}, [allStopsData, locationsContext]);
 
 	const searchResultsData = useSearch<StopNormalized>({
 		accessors: ['_id', 'name_normalized', 'new_name_normalized', 'legacy_ids_normalized'],
@@ -133,11 +129,31 @@ export const StopsListContextProvider = ({ children }: { children: React.ReactNo
 		filterMunicipality.value,
 	]);
 
+	const stopsAsGeojsonFC = useMemo(() => {
+		const baseGeoJson = getBaseGeoJsonFeatureCollection<Point, MapOverlayMultipleStopsDataProps>();
+		if (!filterResultsData?.length) return baseGeoJson;
+
+		baseGeoJson.features = filterResultsData.map(item => ({
+			geometry: {
+				coordinates: [item.longitude, item.latitude],
+				type: 'Point',
+			},
+			properties: {
+				id: String(item._id),
+				name: item.name,
+			},
+			type: 'Feature',
+		}));
+
+		return baseGeoJson;
+	}, [filterResultsData]);
+
 	//
 	// D. Define context value
 
 	const contextValue: StopsListContextState = {
 		data: {
+			features: stopsAsGeojsonFC,
 			filtered: filterResultsData,
 			raw: allStopsData ?? [],
 		},

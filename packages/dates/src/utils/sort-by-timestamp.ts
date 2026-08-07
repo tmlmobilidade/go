@@ -9,6 +9,7 @@ import { type UnixTimestamp } from '@tmlmobilidade/types';
  * @param key The key of the objects to sort by, which must be a UnixTimestamp.
  * @param direction The direction to sort the data, either 'asc' for ascending or 'desc' for descending. Defaults to 'asc'.
  * @returns A new array of objects sorted by the specified Unix timestamp key.
+ * @deprecated Use a normal array sort function instead.
  */
 export function sortByUnixTimestamp<T, K extends keyof T>(data: T[], key: K extends keyof T ? (T[K] extends UnixTimestamp ? K : never) : never, direction: 'asc' | 'desc' = 'asc'): T[] {
 	//

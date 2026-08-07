@@ -25,12 +25,12 @@
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "20260509.2134.54",
+		"@carrismetropolitana/api-types": "20260730.2028.44",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.1",
+		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.1",
+		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }

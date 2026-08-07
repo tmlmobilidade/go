@@ -2,15 +2,18 @@
 
 import { GtfsStrictV29DayTypeSchema } from '@/v29/calendar-dates/day-type.js';
 import { GtfsStrictV29PeriodSchema } from '@/v29/calendar-dates/period.js';
-import { GtfsBinarySchema, GtfsCalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsBinarySchema, GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29CalendarDatesSchema = GtfsCalendarDatesSchema.extend({
+export const GtfsStrictV29CalendarDatesSchema = z.object({
+	date: GtfsDateSchema,
 	day_type: GtfsStrictV29DayTypeSchema,
+	exception_type: z.literal('1'),
 	holiday: GtfsBinarySchema,
 	period: GtfsStrictV29PeriodSchema,
+	service_id: z.string(),
 });
 
 /**

@@ -1,12 +1,10 @@
 /* * */
 
-import { GtfsAgencySchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29AgencySchema = GtfsAgencySchema.extend({
-	agency_code: z.string(),
+export const GtfsStrictV29AgencySchema = z.object({
 	agency_email: z.string(),
 	agency_fare_url: z.string(),
 	agency_id: z.string(),

@@ -49,12 +49,13 @@
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"exceljs": "4.4.0"
+		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.1",
+		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"
 	}

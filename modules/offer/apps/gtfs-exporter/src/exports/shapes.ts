@@ -2,9 +2,9 @@
 /* * */
 
 import { type GtfsV29ExportConfig } from '@/types.js';
+import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { type GtfsStrictV29Shapes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Shape } from '@tmlmobilidade/go-types-offer';
-import { validateLatitude, validateLongitude } from '@tmlmobilidade/go-types-shared';
 import { metersToGtfsKm, shapeDistTraveledMetersAtPoint } from '@tmlmobilidade/types';
 
 /* * */
@@ -34,8 +34,8 @@ export function parseShape(shapeId: string, shapeData: Shape): GtfsStrictV29Shap
 
 			parsedShape.push({
 				shape_id: shapeId,
-				shape_pt_lat: validateLatitude(shapePtLat),
-				shape_pt_lon: validateLongitude(shapePtLon),
+				shape_pt_lat: LatitudeSchema.parse(shapePtLat),
+				shape_pt_lon: LongitudeSchema.parse(shapePtLon),
 				shape_pt_sequence: sequence,
 				shape_dist_traveled: shapeDistTraveled,
 			});

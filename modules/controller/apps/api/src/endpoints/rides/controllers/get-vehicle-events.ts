@@ -3,8 +3,8 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { ridesProvider } from '@tmlmobilidade/go-providers-rides/dist/provider.js';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -33,25 +33,15 @@ export async function getSimplifiedVehicleEvents(request: FastifyRequest<{ Param
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await goDb.operation.rides.findById(request.params.id);
-
-		if (!rideData) {
-			return reply
-				.status(HTTP_STATUS.NOT_FOUND)
-				.send({
-					data: null,
-					error: 'Ride not found.',
-					status: HTTP_STATUS.NOT_FOUND,
-				});
-		}
+		const rideData = await ridesProvider.findRideById(request.params.id);
 
 		//
-		// Fetch the corresponding vehicle events data
+		// Fetch the simplified vehicle events data by ride ID
 		// and send it back to the client
 
 		const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
 
-		const vehicleEventsData = await labDb.operation.vehicleEvents.select(
+		const vehicleEventsData = await labDb.operation.simplifiedVehicleEvents.select(
 			'*',
 			`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4 AND extra_trip_id IS NULL`,
 			{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },
@@ -65,9 +55,10 @@ export async function getSimplifiedVehicleEvents(request: FastifyRequest<{ Param
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
+
+		//
 	} catch (error) {
 		Logger.issue({ context: { action: 'getVehicleEventsByRideId', feature: 'rides', request, value: request.body }, level: 'error', messageOrError: error });
-
 		reply
 			.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
 			.send(error);

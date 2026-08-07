@@ -13,11 +13,27 @@ export class OperationDatabase {
 
 	public readonly alerts: MongoInterfaceTemplate<Alert, CreateAlertDto, UpdateAlertDto>;
 	public readonly gtfsValidations: MongoInterfaceTemplate<GtfsValidation, CreateGtfsValidationDto, UpdateGtfsValidationDto>;
+
+	/**
+	 * @deprecated Rides now contain all the necessary data that used to be in the `HashedPatterns` collection.
+	 */
 	public readonly hashedPatterns: MongoInterfaceTemplate<HashedPattern, HashedPattern, HashedPattern>;
+
+	/**
+	 * @deprecated Replaced with the `ride.shape_polyline` field.
+	 */
 	public readonly hashedShapes: MongoInterfaceTemplate<HashedShape, HashedShape, HashedShape>;
+
+	/**
+	 * @deprecated Either use the `ridesProvider` or the `labDb.operation.hashedTrips` table instead.
+	 */
 	public readonly hashedTrips: MongoInterfaceTemplate<HashedTrip, HashedTrip, HashedTrip>;
 	public readonly plans: MongoInterfaceTemplate<Plan, CreatePlanDto, UpdatePlanDto>;
 	public readonly rideAcceptances: MongoInterfaceTemplate<RideAcceptance, CreateRideAcceptanceDto, UpdateRideAcceptanceDto>;
+
+	/**
+	 * @deprecated Either use the `ridesProvider` or the `labDb.operation.rides` table instead.
+	 */
 	public readonly rides: MongoInterfaceTemplate<Ride, CreateRideDto, UpdateRideDto>;
 	public readonly sams: MongoInterfaceTemplate<Sam, CreateSamDto, UpdateSamDto>;
 	public readonly vehicles: MongoInterfaceTemplate<Vehicle, CreateVehicleDto, UpdateVehicleDto>;

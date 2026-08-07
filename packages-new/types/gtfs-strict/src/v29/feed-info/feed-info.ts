@@ -1,11 +1,11 @@
 /* * */
 
-import { GtfsDateSchema, GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsStrictV29FeedInfoSchema = GtfsFeedInfoSchema.extend({
+export const GtfsStrictV29FeedInfoSchema = z.object({
 	default_lang: z.string(),
 	feed_contact_email: z.string(),
 	feed_contact_url: z.string(),

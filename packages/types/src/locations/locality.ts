@@ -1,3 +1,5 @@
+import type { BaseLocation } from './base.js';
+
 /**
  * This type represents the properties of a Locality,
  * both for the geojson feature and the flattened codebase type.
@@ -10,20 +12,11 @@ export interface LocalityProperties {
 	parish_id?: string
 }
 
-/**
- * This type represents the MongoDB document structure for a Locality,
- * including the full GeoJSON Feature with geometry and properties.
- */
-export interface LocalityFeature extends GeoJSON.Feature<GeoJSON.Polygon> {
-	_id: string
-	properties: LocalityProperties
-}
+export type LocalityFeature = BaseLocation<LocalityProperties>;
 
 /**
- * This type represents the flattened codebase structure for a Locality,
- * with properties at the top level and the full GeoJSON Feature in a separate field.
- * This type should be used throughout the application code.
+ * Represents a Locality with its ID and flattened properties.
  */
 export interface Locality extends LocalityProperties {
 	_id: string
-};
+}

@@ -12,7 +12,7 @@ import fastifyCors from '@fastify/cors';
 import oneLineLogger from '@fastify/one-line-logger';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
+import { HttpResponse } from '@tmlmobilidade/utils';
 import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
 import { type ContextConfigDefault, type FastifyBaseLogger, type FastifySchema, type FastifyServerOptions, type FastifyTypeProviderDefault, type RawReplyDefaultExpression, type RawRequestDefaultExpression, type RawServerBase, type RawServerDefault, type RouteGenericInterface } from 'fastify';
@@ -21,8 +21,8 @@ import { type ContextConfigDefault, type FastifyBaseLogger, type FastifySchema, 
 
 export { type FastifyRequest } from 'fastify';
 
-export type FastifyReply<T> = FastifyReplyType<RouteGenericInterface, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T> | ReadableStream | WithPagination<HttpResponse<T>>>;
-export type FastifyResponse<T> = FastifyReplyType<RouteGenericInterface & { Reply: HttpResponse<T> | WithPagination<HttpResponse<T>> }, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T> | WithPagination<HttpResponse<T>>>;
+export type FastifyReply<T> = FastifyReplyType<RouteGenericInterface, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T> | ReadableStream>;
+export type FastifyResponse<T> = FastifyReplyType<RouteGenericInterface & { Reply: HttpResponse<T> }, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T>>;
 export type FastifyInstance = FastifyInstanceType<RawServerDefault, RawRequestDefaultExpression, RawReplyDefaultExpression, FastifyBaseLogger, FastifyTypeProviderDefault>;
 
 /**

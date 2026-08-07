@@ -17,7 +17,7 @@ export async function loadGtfsRoutes(gtfsPath: string) {
 				...raw,
 				circular: toNumberOrNull(raw.circular),
 				line_id: toNumberOrNull(raw.line_id),
-				line_type: toNumberOrNull(raw.line_type),
+				// line_type: toNumberOrNull(raw.line_type),
 				school: toNumberOrNull(raw.school),
 			} as GtfsStrictV29Routes;
 			routes.push(GtfsStrictV29RoutesSchema.parse(normalized));

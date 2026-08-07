@@ -2,6 +2,7 @@ export * from './approval.js';
 export * from './availability.js';
 export * from './condition.js';
 export * from './delay.js';
+export * from './grade.js';
 export * from './lifecycle.js';
 export * from './operational.js';
 export * from './processing.js';
