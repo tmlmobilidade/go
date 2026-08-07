@@ -1,0 +1,32 @@
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-spacing-md);
+	margin-bottom: var(--size-spacing-md);
+}
+
+.pending {
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+	color: var(--color-status-warning-primary);
+	background: var(--color-status-warning-contrast);
+	border: 1px solid var(--color-status-warning-primary);
+	border-radius: var(--border-radius-sm);
+}
+
+.uploadAction {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: var(--size-spacing-md);
+}
+
+@media (width < 768px) {
+	.header {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.pending {
+		width: 100%;
+	}
+}

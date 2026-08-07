@@ -1,11 +1,10 @@
 'use client';
 
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
-import { Collapsible, FileButton, Grid, ImageUpload, Section, useToast } from '@tmlmobilidade/ui';
+import { IconPhotoPlus } from '@tabler/icons-react';
+import { Collapsible, FileButton, Grid, ImageUpload, Section, Text } from '@tmlmobilidade/ui';
 
-/* * */
-
-const MAX_STOP_IMAGES = 3;
+import styles from './styles.module.css';
 
 /* * */
 
@@ -16,19 +15,16 @@ export function StopDetailsSectionImages() {
 	// A. Setup variables
 
 	const stopDetailContext = useStopDetailContext();
-	const images = stopDetailContext.data.images ?? [];
-	const remainingSlots = MAX_STOP_IMAGES - images.length;
+	const pendingDeletedImageIds = stopDetailContext.data.pendingDeletedImageIds;
+	const images = (stopDetailContext.data.images ?? []).filter(image => !pendingDeletedImageIds.includes(image._id));
+	const pendingImages = stopDetailContext.data.pendingImages;
+	const totalImages = images.length + pendingImages.length;
 
 	//
 	// B. Handle actions
 
 	const handleFilesChange = (files: File[]) => {
-		if (files.length > remainingSlots) {
-			useToast.error({ message: `Só pode carregar ${remainingSlots} imagem(ns)`, title: 'Limite de imagens' });
-			return;
-		}
-
-		void stopDetailContext.actions.uploadImages(files);
+		stopDetailContext.actions.selectImages(files);
 	};
 
 	//
@@ -40,6 +36,12 @@ export function StopDetailsSectionImages() {
 			title="Imagens"
 		>
 			<Section>
+				<div className={styles.header}>
+					<div>
+						<Text size="lg" weight="semibold">Galeria da paragem</Text>
+						<Text c="var(--color-system-text-300)" size="sm">{totalImages} imagens</Text>
+					</div>
+				</div>
 				<Grid columns="abc" gap="md">
 					{images.map((image, index) => (
 						<ImageUpload
@@ -49,14 +51,25 @@ export function StopDetailsSectionImages() {
 							value={image.url ?? undefined}
 						/>
 					))}
+					{pendingImages.map((image, index) => (
+						<ImageUpload
+							key={image.previewUrl}
+							label={`Imagem ${images.length + index + 1} · por guardar`}
+							onDelete={!stopDetailContext.flags.isReadOnly ? () => stopDetailContext.actions.removePendingImage(index) : undefined}
+							value={image.previewUrl}
+						/>
+					))}
 				</Grid>
-				{remainingSlots > 0 && !stopDetailContext.flags.isReadOnly && (
-					<FileButton
-						accept="image/png,image/jpeg,image/jpg"
-						label="Carregar imagens"
-						onFilesChange={handleFilesChange}
-						multiple
-					/>
+				{!stopDetailContext.flags.isReadOnly && (
+					<div className={styles.uploadAction}>
+						<FileButton
+							accept="image/png,image/jpeg,image/jpg,image/HEIC"
+							icon={<IconPhotoPlus size={18} />}
+							label="Adicionar imagens"
+							onFilesChange={handleFilesChange}
+							multiple
+						/>
+					</div>
 				)}
 			</Section>
 		</Collapsible>

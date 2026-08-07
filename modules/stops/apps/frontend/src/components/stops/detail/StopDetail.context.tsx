@@ -3,10 +3,17 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-stops-pckg-organize';
 import { type Attachment, PermissionCatalog, type Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
-import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData, uploadFile } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { fetchData, HttpResponse, uploadFile } from '@tmlmobilidade/utils';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
+
+/* * */
+
+interface PendingStopImage {
+	file: File
+	previewUrl: string
+}
 
 /* * */
 
@@ -15,16 +22,19 @@ interface StopDetailContextState {
 		closeCoordinatesEditor: () => void
 		closeNamesEditor: () => void
 		delete: () => void
-		deleteImage: (imageId: string) => Promise<void>
+		deleteImage: (imageId: string) => void
 		lock: () => void
 		openCoordinatesEditor: () => void
 		openNamesEditor: () => void
+		removePendingImage: (index: number) => void
 		save: () => void
-		uploadImages: (files: File[]) => Promise<void>
+		selectImages: (files: File[]) => void
 	}
 	data: {
 		form: UseFormReturnType<UpdateStopDto>
 		images: Attachment[] | undefined
+		pendingDeletedImageIds: string[]
+		pendingImages: PendingStopImage[]
 		stop: Stop | undefined
 	}
 	flags: {
@@ -34,13 +44,11 @@ interface StopDetailContextState {
 		error: Error | undefined
 		isCoordinatesEditorOpen: boolean
 		isDeleting: boolean
-		isDeletingImage: boolean
 		isLoading: boolean
 		isLocking: boolean
 		isNamesEditorOpen: boolean
 		isReadOnly: boolean
 		isSaving: boolean
-		isUploadingImages: boolean
 	}
 }
 
@@ -99,12 +107,75 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// E. Handle actions
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+	const [pendingImages, setPendingImages] = useState<PendingStopImage[]>([]);
+	const [pendingDeletedImageIds, setPendingDeletedImageIds] = useState<string[]>([]);
+	const pendingImagesRef = useRef<PendingStopImage[]>([]);
+	pendingImagesRef.current = pendingImages;
+
+	useEffect(() => () => {
+		pendingImagesRef.current.forEach(({ previewUrl }) => URL.revokeObjectURL(previewUrl));
+	}, []);
+
+	const selectImages = useCallback((files: File[]) => {
+		if (files.length === 0) return;
+		setPendingImages(currentImages => [
+			...currentImages,
+			...files.map(file => ({ file, previewUrl: URL.createObjectURL(file) })),
+		]);
+	}, []);
+
+	const removePendingImage = useCallback((index: number) => {
+		setPendingImages((currentImages) => {
+			const image = currentImages[index];
+			if (image) URL.revokeObjectURL(image.previewUrl);
+			return currentImages.filter((_, imageIndex) => imageIndex !== index);
+		});
+	}, []);
+
+	const deleteImage = useCallback((imageId: string) => {
+		setPendingDeletedImageIds(currentIds => currentIds.includes(imageId) ? currentIds : [...currentIds, imageId]);
+	}, []);
+
+	const { action: handleSave, isLoading: isSaving } = useHandleUpdate<Stop>({
+		fetchFn: async () => {
+			const stopResponse = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'PUT', form.getValues());
+			if (stopResponse.error) return stopResponse;
+
+			for (const { file } of pendingImages) {
+				const imageResponse = await uploadFile<Attachment>(API_ROUTES.stops.STOPS_DETAIL_IMAGE(stopId), file);
+				if (imageResponse.error) {
+					return new HttpResponse<Stop>({
+						data: null,
+						error: imageResponse.error,
+						statusCode: imageResponse.statusCode,
+					});
+				}
+			}
+
+			for (const imageId of pendingDeletedImageIds) {
+				const imageUrl = `${API_ROUTES.stops.STOPS_DETAIL_IMAGE(stopId)}/${encodeURIComponent(imageId)}`;
+				const deleteResponse = await fetchData<Stop>(imageUrl, 'DELETE');
+				if (deleteResponse.error) {
+					return new HttpResponse<Stop>({
+						data: null,
+						error: deleteResponse.error,
+						statusCode: deleteResponse.statusCode,
+					});
+				}
+			}
+
+			return stopResponse;
+		},
+		onSuccess: () => {
 			form.resetDirty();
-			stopMutate(updatedItem);
+			setPendingImages((currentImages) => {
+				currentImages.forEach(({ previewUrl }) => URL.revokeObjectURL(previewUrl));
+				return [];
+			});
+			setPendingDeletedImageIds([]);
+			stopMutate();
 			allStopsMutate();
+			imagesMutate();
 		},
 	});
 
@@ -126,39 +197,6 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		},
 	});
 
-	const [isUploadingImages, setIsUploadingImages] = useState(false);
-	const [isDeletingImage, setIsDeletingImage] = useState(false);
-
-	const uploadImages = useCallback(async (files: File[]) => {
-		if (files.length === 0) return;
-
-		setIsUploadingImages(true);
-		for (const file of files) {
-			const response = await uploadFile<Attachment>(API_ROUTES.stops.STOPS_DETAIL_IMAGE(stopId), file);
-			if (response.error) {
-				useToast.error({ message: response.error, title: 'Erro ao carregar imagens' });
-				setIsUploadingImages(false);
-				return;
-			}
-		}
-
-		await Promise.all([imagesMutate(), stopMutate()]);
-		setIsUploadingImages(false);
-	}, [imagesMutate, stopId, stopMutate]);
-
-	const deleteImage = useCallback(async (imageId: string) => {
-		setIsDeletingImage(true);
-		const response = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_IMAGE_BY_ID(stopId, imageId), 'DELETE');
-		if (response.error) {
-			useToast.error({ message: response.error, title: 'Erro ao apagar imagem' });
-			setIsDeletingImage(false);
-			return;
-		}
-
-		await Promise.all([imagesMutate(), stopMutate()]);
-		setIsDeletingImage(false);
-	}, [imagesMutate, stopId, stopMutate]);
-
 	//
 	// F. Setup flags
 
@@ -176,7 +214,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.stops.scope, PermissionCatalog.all.stops.actions.update),
 		isDeleted: stopData?.is_deleted,
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: form.isDirty() || pendingImages.length > 0 || pendingDeletedImageIds.length > 0,
 		isLoading: stopLoading,
 		isLocked: stopData?.is_locked,
 		isLocking: isLocking,
@@ -219,12 +257,15 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			lock: handleLock,
 			openCoordinatesEditor,
 			openNamesEditor,
+			removePendingImage,
 			save: handleSave,
-			uploadImages,
+			selectImages,
 		},
 		data: {
 			form,
 			images: imagesData,
+			pendingDeletedImageIds,
+			pendingImages,
 			stop: stopData,
 		},
 		flags: {
@@ -234,13 +275,11 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 			error: stopError,
 			isCoordinatesEditorOpen,
 			isDeleting,
-			isDeletingImage,
 			isLoading: stopLoading,
 			isLocking,
 			isNamesEditorOpen,
 			isReadOnly,
 			isSaving: isSaving,
-			isUploadingImages,
 		},
 	}), [
 		closeCoordinatesEditor,
@@ -253,12 +292,12 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		canSave,
 		stopError,
 		isDeleting,
-		isDeletingImage,
+		pendingDeletedImageIds,
 		stopLoading,
 		isLocking,
 		isReadOnly,
 		isSaving,
-		isUploadingImages,
+		pendingImages,
 		imagesData,
 		form,
 		stopData,
@@ -267,7 +306,8 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 		handleLock,
 		handleSave,
 		deleteImage,
-		uploadImages,
+		removePendingImage,
+		selectImages,
 	]);
 	//
 	// H. Render components

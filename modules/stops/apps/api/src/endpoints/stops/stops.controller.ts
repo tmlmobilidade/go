@@ -12,8 +12,6 @@ import { type Attachment, CreateStopSchema, PermissionCatalog, type Stop, type S
  * This is an example controller that is using the stops interface.
  */
 
-const MAX_STOP_IMAGES = 3;
-
 export class StopsController {
 	//
 
@@ -256,9 +254,6 @@ export class StopsController {
 		}
 
 		const imageIds = foundStop.image_ids ?? [];
-		if (imageIds.length >= MAX_STOP_IMAGES) {
-			throw new HttpException(HTTP_STATUS.BAD_REQUEST, `A stop can have a maximum of ${MAX_STOP_IMAGES} images`);
-		}
 
 		const file = await request.file();
 		if (!file) {
