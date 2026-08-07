@@ -2,6 +2,8 @@
 
 import type { MetricTransformOptions, RawMetricData, TransformResult } from '../../types';
 
+import { getEquivalentAgencyIds } from '@/utils/agencies';
+
 import { getLatestTimestamp } from '../../utils';
 import { transformToProgressBar } from './barProgressTransformer';
 import { transformToPie } from './pieTransformer';
@@ -18,6 +20,8 @@ export function filterDataByAgencies(data: RawMetricData[], agencyIds?: string[]
 		return data;
 	}
 
+	const equivalentAgencyIds = new Set(agencyIds.flatMap(agencyId => getEquivalentAgencyIds(agencyId)));
+
 	return data.filter((item) => {
 		// Check if the item has agency information in properties
 		const agencyId = item.properties?.agency_id || item.properties?.operator_id;
@@ -28,7 +32,7 @@ export function filterDataByAgencies(data: RawMetricData[], agencyIds?: string[]
 		}
 
 		// Include only items that match the specified agency IDs
-		return agencyIds.includes(agencyId);
+		return equivalentAgencyIds.has(agencyId);
 	});
 }
 

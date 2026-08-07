@@ -1,6 +1,6 @@
 import { type TaskProps } from '@/types.js';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 export interface AgencyAverageRidesByDayTypeResult {
 	agencyId: string
@@ -13,7 +13,7 @@ export async function calculateAverageRidesByAgencyByDayType(
 ): Promise<AgencyAverageRidesByDayTypeResult[]> {
 	message('Calculating average rides per agency by day type...');
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	// Load calendar JSON
 	const calendarJson = await Dates.fetchCalendarData();

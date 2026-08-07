@@ -102,8 +102,25 @@ jobs:
               return;
             }
 
+            // Preview enviroments need auth module always.
+            if (!buildAll) {
+              const hasAuth = modules.some((name) => name.toLowerCase() === 'auth');
+              if (!hasAuth) {
+                modules = ['auth', ...modules];
+              }
+            }
+
             core.info(`Dispatching build-modules for ${modules.join(', ')} on ref ${pr.head.ref}`);
+            let runUrl = '';
             try {
+              const prTitle = String(pr.title || 'PR')
+                .replace(/["'`]/g, '')
+                .replace(/:/g, '-')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .slice(0, 100);
+
+              const dispatchedAt = Date.now();
               await github.rest.actions.createWorkflowDispatch({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -112,8 +129,30 @@ jobs:
                 inputs: {
                   module: modules.join(','),
                   pr_number: String(prNumber),
+                  pr_title: prTitle || 'PR',
                 },
               });
+
+              // createWorkflowDispatch returns no run id — poll for the new run.
+              for (let attempt = 0; attempt < 10; attempt++) {
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+                const { data } = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: 'build-modules.yml',
+                  event: 'workflow_dispatch',
+                  branch: pr.head.ref,
+                  per_page: 10,
+                });
+                const match = data.workflow_runs.find((run) => {
+                  const created = new Date(run.created_at).getTime();
+                  return created >= dispatchedAt - 15000 && run.head_sha === pr.head.sha;
+                });
+                if (match) {
+                  runUrl = match.html_url;
+                  break;
+                }
+              }
             } catch (error) {
               core.setFailed(`Failed to dispatch build-modules: ${error.message}`);
               return;
@@ -128,14 +167,19 @@ jobs:
               });
 
               const moduleLines = modules.map((name) => `- \`${name}\``).join('\n');
+              const body = [
+                `Building ${modules.length} module${modules.length === 1 ? '' : 's'}:`,
+                '',
+                moduleLines,
+              ];
+              if (runUrl) {
+                body.push('', `[View workflow run](${runUrl})`);
+              }
+
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
-                body: [
-                  `Building ${modules.length} module${modules.length === 1 ? '' : 's'}:`,
-                  '',
-                  moduleLines,
-                ].join('\n'),
+                body: body.join('\n'),
               });
             }

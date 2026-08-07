@@ -3,7 +3,8 @@
 
 .container {
 	display: grid;
-	grid-template-rows: 1fr;;
+	grid-template-rows: 1fr;
+	place-items: stretch !important;
 	width: 100%;
 }
 

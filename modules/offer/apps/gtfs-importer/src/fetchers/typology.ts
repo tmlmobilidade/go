@@ -1,4 +1,4 @@
-import { typologies } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Typology } from '@tmlmobilidade/types';
 
 /**
@@ -9,7 +9,7 @@ import { Typology } from '@tmlmobilidade/types';
 export async function fetchTypologiesByAgencyIds(agencyIds: string[]): Promise<Typology[]> {
 	try {
 		if (!agencyIds.length) return [];
-		return await typologies.findByAgencyIds(agencyIds);
+		return await goDb.offer.typologies.findMany({ agency_ids: { $in: agencyIds } });
 	} catch (error) {
 		throw new Error(`Error fetching typologies by agency IDs: ${error}`);
 	}
@@ -34,7 +34,7 @@ export async function getTypologyDetails(
 
 	// Otherwise, fetch individually
 	try {
-		return await typologies.findById(typologyId);
+		return await goDb.offer.typologies.findById(typologyId);
 	} catch (error) {
 		throw new Error(`Error fetching typology ${typologyId}: ${error}`);
 	}

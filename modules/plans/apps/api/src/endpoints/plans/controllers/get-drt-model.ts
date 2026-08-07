@@ -1,8 +1,7 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
 /**
  * Retrieves the DRT model file
@@ -10,8 +9,7 @@ import { files } from '@tmlmobilidade/interfaces';
  * @param reply Fastify reply
  */
 export async function getDrtModel(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-	const file = await files.findById(`drt-model-${request.params.id}`);
-	if (!file) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'DRT model file not found');
+	const file = await storageProvider.findById(`drt-model-${request.params.id}`);
 	// Redirect to the file download url
 	return reply.redirect(file.url);
 }

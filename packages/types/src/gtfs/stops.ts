@@ -128,6 +128,7 @@ export function validateGtfsStop(rawData: GTFS_Stop_Raw): GTFS_Stop {
 export interface GTFS_Stop_Extended extends GTFS_Stop {
 	district_id?: string
 	district_name?: string
+	flags?: string
 	has_bench?: GTFS_HasField
 	has_network_map?: GTFS_HasField
 	has_pip_real_time?: GTFS_HasField
@@ -135,6 +136,7 @@ export interface GTFS_Stop_Extended extends GTFS_Stop {
 	has_shelter?: GTFS_HasField
 	has_stop_sign?: GTFS_HasField
 	has_tariffs_information?: GTFS_HasField
+	legacy_ids?: string
 	locality_id?: string
 	locality_name?: string
 	municipality_id?: string
@@ -158,6 +160,7 @@ export interface GTFS_Stop_Extended extends GTFS_Stop {
 export interface GTFS_Stop_Extended_Raw extends GTFS_Stop_Raw {
 	district_id?: string
 	district_name?: string
+	flags?: string
 	has_bench?: string
 	has_network_map?: string
 	has_pip_real_time?: string
@@ -165,6 +168,7 @@ export interface GTFS_Stop_Extended_Raw extends GTFS_Stop_Raw {
 	has_shelter?: string
 	has_stop_sign?: string
 	has_tariffs_information?: string
+	legacy_ids?: string
 	locality_id?: string
 	locality_name?: string
 	municipality_id?: string
@@ -196,6 +200,7 @@ export function validateGtfsStopExtended(rawData: GTFS_Stop_Extended_Raw): GTFS_
 		...stop,
 		district_id: rawData.district_id,
 		district_name: rawData.district_name,
+		flags: rawData.flags,
 		has_bench: validateGtfsHasField(rawData.has_bench),
 		has_network_map: validateGtfsHasField(rawData.has_network_map),
 		has_pip_real_time: validateGtfsHasField(rawData.has_pip_real_time),
@@ -203,6 +208,7 @@ export function validateGtfsStopExtended(rawData: GTFS_Stop_Extended_Raw): GTFS_
 		has_shelter: validateGtfsBinary(rawData.has_shelter),
 		has_stop_sign: validateGtfsHasField(rawData.has_stop_sign),
 		has_tariffs_information: validateGtfsHasField(rawData.has_tariffs_information),
+		legacy_ids: rawData.legacy_ids,
 		locality_id: rawData.locality_id,
 		locality_name: rawData.locality_name,
 		municipality_id: rawData.municipality_id,
