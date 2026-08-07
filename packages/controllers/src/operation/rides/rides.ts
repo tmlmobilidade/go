@@ -1,9 +1,9 @@
 /* * */
 
 import { type RideChangeListener, ridesChangeStream } from '@/operation/rides/watch.js';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
@@ -56,7 +56,7 @@ export class RidesSharedController {
 
 		const searchQuery = parsedQuery.search?.trim() ?? '';
 
-		const foundRideById = await goDB.operation.rides.findOne({
+		const foundRideById = await goDb.operation.rides.findOne({
 			_id: searchQuery,
 			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
 		});
@@ -97,7 +97,7 @@ export class RidesSharedController {
 		//
 		// Fetch the rides batch from the database
 
-		const ridesBatch = await goDB.operation.rides.aggregate(pipeline);
+		const ridesBatch = await goDb.operation.rides.aggregate(pipeline);
 
 		//
 		// Send the response
@@ -146,7 +146,7 @@ export class RidesSharedController {
 		// If found, return it as the only result. This optimizes
 		// for the common case of searching by ride ID.
 
-		const foundRideById = await goDB.operation.rides.findOne({
+		const foundRideById = await goDb.operation.rides.findOne({
 			_id: request.params['id'],
 			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
 		});
@@ -198,7 +198,7 @@ export class RidesSharedController {
 
 		const ids = request.query['ids']?.split(',') ?? [];
 
-		const foundRidesByIds = await goDB.operation.rides.findMany({
+		const foundRidesByIds = await goDb.operation.rides.findMany({
 			_id: { $in: ids },
 			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
 		});

@@ -8,11 +8,10 @@ import { initDescriptionPrompt, titleFormatTemplatePrompt } from '@/prompts/init
 import { referenceTypePrompt } from '@/prompts/reference-type.js';
 import { userInstructionDelimitersPrompt, userInstructionPrompt } from '@/prompts/user-instructions.js';
 import { parseAlertGeneratedCopy, PromptBuilder } from '@/utils.js';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
 import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { Dates } from '@tmlmobilidade/dates';
-import { agencies } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Agency, type Alert, type I18nCode, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */
@@ -112,7 +111,7 @@ function createPromptBodyCollector(): DescribeAlertPromptBodyCollector {
 }
 
 async function getAgencyLabels(props: DescribeAlertProps): Promise<DescribeAlertAgencyLabels> {
-	const foundAgency = await agencies.findById(props.agency_id);
+	const foundAgency = await goDb.core.agencies.findById(props.agency_id);
 	if (!foundAgency) throw new Error('Agency not found for the given reference');
 
 	return {
@@ -211,7 +210,7 @@ async function addRidesReferenceContext(
 ) {
 	if (props.reference_type !== 'rides') return;
 
-	const foundRides = await goDB.operation.rides.findMany({ _id: { $in: props.references.map(ref => ref.parent_id) } });
+	const foundRides = await goDb.operation.rides.findMany({ _id: { $in: props.references.map(ref => ref.parent_id) } });
 	if (!foundRides?.length) throw new Error('Rides not found for the given references');
 
 	for (const rideData of foundRides) {

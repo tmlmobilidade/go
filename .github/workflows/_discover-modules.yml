@@ -1,0 +1,56 @@
+name: Discover Modules
+
+on:
+  workflow_call:
+    inputs:
+      selected-module:
+        description: 'Module(s) to build — comma/space separated, or "all"'
+        required: false
+        default: 'all'
+        type: string
+      build-all:
+        description: 'Build every module when no specific module is selected'
+        required: false
+        default: true
+        type: boolean
+    outputs:
+      modules:
+        description: 'JSON array of module names to build'
+        value: ${{ jobs.discover.outputs.modules }}
+      modules-apps:
+        description: 'JSON object mapping module names to their apps'
+        value: ${{ jobs.discover.outputs.modules-apps }}
+
+jobs:
+
+  # # #
+  # Auto-discover modules and module->apps mapping from filesystem,
+  # then filter down to the modules that actually need to build.
+
+  discover:
+    name: Discover Modules
+    runs-on: ubuntu-24.04-arm
+    outputs:
+      modules: ${{ steps.discover.outputs.modules }}
+      modules-apps: ${{ steps.discover.outputs.modules-apps }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: ${{ github.event_name == 'push' && '0' || '2' }}
+
+      - id: scan
+        shell: bash
+        run: |
+          MAPPING=$(find modules/*/apps/* -maxdepth 0 -type d | sort | sed 's|modules/||; s|/apps/|:|')
+          {
+            echo "modules-apps<<EOF"
+            echo "$MAPPING"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - id: discover
+        uses: ./.github/actions/discover-modules
+        with:
+          modules-apps: ${{ steps.scan.outputs.modules-apps }}
+          selected-module: ${{ inputs.selected-module }}
+          build-all: ${{ inputs.build-all }}

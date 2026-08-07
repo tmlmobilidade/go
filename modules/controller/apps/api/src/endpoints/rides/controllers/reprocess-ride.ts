@@ -1,8 +1,8 @@
 /* * */
 
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Ride } from '@tmlmobilidade/types';
 
@@ -36,7 +36,7 @@ export async function reprocessRideById(request: FastifyRequest, reply: FastifyR
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await goDB.operation.rides.updateById(rideId, { system_status: 'waiting' });
+		const rideData = await goDb.operation.rides.updateById(rideId, { system_status: 'waiting' });
 
 		if (!rideData) {
 			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');

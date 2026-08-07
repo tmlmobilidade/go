@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 /* * */
 
+import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromOperationalDate } from '@/utils/day-label.js';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
-import { agencies, metrics } from '@tmlmobilidade/interfaces';
+import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { SupplyByAgencyByDay } from '@tmlmobilidade/types';
@@ -14,42 +14,41 @@ import pLimit from 'p-limit';
 /* * */
 
 /** CM (Carris Metropolitana) agency areas — temporary scope filter */
-const CM_AGENCY_IDS = ['41', '42', '43', '44'] as const;
-const CM_AGENCY_ID_SET = new Set<string>(CM_AGENCY_IDS);
+const GO_CM_AGENCY_ID_SET = new Set<string>(GO_CM_AGENCY_IDS);
 
 /* * */
 
 export const syncSupplyByAgencyByDay = async () => {
 	Logger.title(`Sync Supply Metrics by Agency by Day`);
 	const globalTimer = new Timer();
-	const METRIC = 'supply_by_agency_by_day';
+	const metricKey = 'supply_by_agency_by_day';
 
 	//
-	// Delete existing metrics (CM agencies only)
+	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info({ message: `Clearing existing '${METRIC}' metrics for CM agencies...` });
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics for CM agencies...` });
 	await metrics.deleteMany({
-		'metric': METRIC,
-		'properties.agency_id': { $in: [...CM_AGENCY_IDS] },
+		'metric': metricKey,
+		'properties.agency_id': { $in: [...GO_CM_AGENCY_IDS] },
 	});
 	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch rides collection
 
-	const ridesCollection = await goDB.operation.rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	// Fetch agencies collection + build price map (agency_id -> price_per_km)
 
-	const agenciesCollection = await agencies.getCollection();
+	const agenciesCollection = await goDb.core.agencies.getCollection();
 
 	// Mapa: agency_id (string) -> price_per_km (number)
 	const pricePerKmByAgency = new Map<string, number>();
 
 	const agenciesDocs = await agenciesCollection
 		.find(
-			{ _id: { $in: [...CM_AGENCY_IDS] } },
+			{ _id: { $in: [...GO_CM_AGENCY_IDS] } },
 			{
 				projection: {
 					'_id': 1,
@@ -98,7 +97,7 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	const latestRide = await ridesCollection.findOne(
 		{
-			agency_id: { $in: [...CM_AGENCY_IDS] },
+			agency_id: { $in: [...GO_CM_AGENCY_IDS] },
 			operational_date: { $exists: true, $ne: null },
 		},
 		{ projection: { operational_date: 1 }, sort: { operational_date: -1 } },
@@ -132,7 +131,7 @@ export const syncSupplyByAgencyByDay = async () => {
 	Logger.info({ message: [
 		`Date range: ${earliestDataNeeded.operational_date} → ${latestOperationalData ?? 'today'}`,
 		`Total chunks: ${allTimestampChunks.length}`,
-		`CM agencies: ${CM_AGENCY_IDS.join(', ')}`,
+		`CM agencies: ${GO_CM_AGENCY_IDS.join(', ')}`,
 	] });
 
 	//
@@ -158,7 +157,7 @@ export const syncSupplyByAgencyByDay = async () => {
 					.aggregate([
 						{
 							$match: {
-								agency_id: { $in: [...CM_AGENCY_IDS] },
+								agency_id: { $in: [...GO_CM_AGENCY_IDS] },
 								operational_date: chunkData.operationalDate,
 							},
 						},
@@ -170,11 +169,13 @@ export const syncSupplyByAgencyByDay = async () => {
 								extension_scheduled: { $ifNull: ['$extension_scheduled', 0] },
 								grade: '$analysis.SIMPLE_THREE_VEHICLE_EVENTS.grade',
 
-								// revenue components
 								// divide apex_on_board_sales_amount and passengers_observed_prepaid_amount fields by 100 before summing
 								apex_on_board_sales_amount: {
 									$divide: [{ $ifNull: ['$apex_on_board_sales_amount', 0] }, 100],
 								},
+								apex_on_board_sales_qty: { $ifNull: ['$apex_on_board_sales_qty', 0] },
+								apex_validations_qty: { $ifNull: ['$apex_validations_qty', 0] },
+								passengers_observed: { $ifNull: ['$passengers_observed', 0] },
 								passengers_observed_prepaid_amount: {
 									$divide: [{ $ifNull: ['$passengers_observed_prepaid_amount', 0] }, 100],
 								},
@@ -183,8 +184,20 @@ export const syncSupplyByAgencyByDay = async () => {
 						},
 						{
 							$addFields: {
+								has_realtime_events: { $eq: ['$grade', 'pass'] },
+								has_ticketing: {
+									$or: [
+										{ $gt: ['$apex_validations_qty', 0] },
+										{ $gt: ['$apex_on_board_sales_qty', 0] },
+										{ $gt: ['$passengers_observed', 0] },
+									],
+								},
+							},
+						},
+						{
+							$addFields: {
 								is_valid: {
-									$and: [{ $eq: ['$grade', 'pass'] }],
+									$or: ['$has_realtime_events', '$has_ticketing'],
 								},
 								revenue_row: {
 									$add: [
@@ -245,34 +258,34 @@ export const syncSupplyByAgencyByDay = async () => {
 		}
 
 		for (const agencyStats of ridesAgg) {
-			const agency_id = String(agencyStats._id ?? 'no-agency');
+			const agencyId = String(agencyStats._id ?? 'no-agency');
 
-			if (!CM_AGENCY_ID_SET.has(agency_id)) {
+			if (!GO_CM_AGENCY_ID_SET.has(agencyId)) {
 				continue;
 			}
 
-			if (!agencyMap.has(agency_id)) {
-				agencyMap.set(agency_id, {
+			if (!agencyMap.has(agencyId)) {
+				agencyMap.set(agencyId, {
 					data: {},
-					description: `Aggregated supply for agency ${agency_id}`,
+					description: `Aggregated supply for agency ${agencyId}`,
 					generated_at: new Date(),
-					metric: METRIC,
-					properties: { agency_id },
+					metric: metricKey,
+					properties: { agency_id: agencyId },
 				});
 			}
 
-			const agencyDoc = agencyMap.get(agency_id);
+			const agencyDoc = agencyMap.get(agencyId);
 
-			const price_per_km = pricePerKmByAgency.get(agency_id) ?? 0;
+			const pricePerKm = pricePerKmByAgency.get(agencyId) ?? 0;
 
-			let cost_per_trip = Number(agencyStats.vkms_scheduled ?? 0) * Number(price_per_km ?? 0);
+			let costPerTrip = Number(agencyStats.vkms_scheduled ?? 0) * Number(pricePerKm ?? 0);
 
 			// divide the value of vkms_scheduled by 1000 (after obtaining the result)
-			cost_per_trip = cost_per_trip / 1000;
+			costPerTrip = costPerTrip / 1000;
 
 			agencyDoc.data[dayLabel] = {
 				accomplished_rides: agencyStats.accomplished_rides,
-				cost_per_trip,
+				cost_per_trip: costPerTrip,
 				day_type: calendarProps.day_type,
 				holiday: calendarProps.holiday,
 				notes: calendarProps.notes,
@@ -310,7 +323,7 @@ export const syncSupplyByAgencyByDay = async () => {
 
 	logMetricToFile({
 		approach: { description: 'Loop by day, calc in Mongo (Optimized)', key: 'loop_day_mongo_calc' },
-		metric: METRIC,
+		metric: metricKey,
 		queryCount: allTimestampChunks.length,
 		runtime: globalTimer.get(),
 		timestamp: new Date().toISOString(),

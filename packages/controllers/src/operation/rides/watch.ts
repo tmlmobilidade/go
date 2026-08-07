@@ -25,8 +25,8 @@
  * - Reduced database load and network overhead
 */
 
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { RideNormalized } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, HttpResponse } from '@tmlmobilidade/utils';
@@ -105,7 +105,7 @@ class RidesChangeStreamManager {
 	private async init() {
 		if (this.initialized) return;
 
-		const ridesCollection = await goDB.operation.rides.getCollection();
+		const ridesCollection = await goDb.operation.rides.getCollection();
 
 		// Watch all operations with full document updates
 		ridesCollection

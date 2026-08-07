@@ -1,6 +1,6 @@
 /* * */
 
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cache-db';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubLine, type HubPattern, type HubRoute, type HubScheduledArrival, type HubStop, type HubTrip, type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
@@ -276,6 +276,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 					short_name: routeRawData.line_short_name,
 					text_color: routeRawData.route_text_color ? `#${routeRawData.route_text_color}` : '#000000',
 					trips: [],
+					tts_hash: '',
 					tts_headsign: '',
 					valid_on: [],
 					version_id: currentPatternVersionHash,

@@ -40,7 +40,7 @@ export async function processStopsFile(context: ImportGtfsContext): Promise<void
 
 		//
 	} catch (error) {
-		Logger.error({ error, message: 'Error processing "stops.txt" file.' });
-		throw new Error('✖︎ Error processing "stops.txt" file.');
+		Logger.error({ error, message: `Error processing "stops.txt" file: ${error.message}` });
+		throw new Error('✖︎ Error processing "stops.txt" file.', error);
 	}
 }

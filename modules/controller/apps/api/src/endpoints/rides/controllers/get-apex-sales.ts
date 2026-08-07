@@ -1,12 +1,11 @@
 /* * */
 
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { simplifiedApexOnBoardSalesNew } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
-import { simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 
 /**
@@ -34,7 +33,7 @@ export async function getSimplifiedApexOnBoardSales(request: FastifyRequest<{ Pa
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await goDB.operation.rides.findById(request.params.id);
+		const rideData = await goDb.operation.rides.findById(request.params.id);
 
 		if (!rideData) {
 			return reply
@@ -52,21 +51,11 @@ export async function getSimplifiedApexOnBoardSales(request: FastifyRequest<{ Pa
 
 		const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
 
-		let simplifiedApexOnBoardSalesData: SimplifiedApexOnBoardSale[];
-
-		if (['41', '42', '43', '44'].includes(rideData.agency_id)) {
-			simplifiedApexOnBoardSalesData = await simplifiedApexOnBoardSales.findMany({
-				created_at: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
-				extra_trip_id: null,
-				trip_id: rideData.trip_id,
-			});
-		} else {
-			simplifiedApexOnBoardSalesData = await simplifiedApexOnBoardSalesNew.select(
-				'*',
-				`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`,
-				{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },
-			);
-		}
+		const simplifiedApexOnBoardSalesData = await labDb.simplifiedApex.sales.select(
+			'*',
+			`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`,
+			{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },
+		);
 
 		//
 		// Send the ride data back to the client

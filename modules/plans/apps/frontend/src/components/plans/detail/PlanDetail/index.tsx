@@ -44,7 +44,7 @@ export function PlanDetail() {
 				action={PermissionCatalog.all.plans.actions.read_apex_file}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
-				value={planDetailContext.data.plan.gtfs_agency.agency_id}
+				value={planDetailContext.data.plan.agency_id}
 			>
 				<PlanDetailSectionApexFile />
 			</HasPermission>
@@ -53,7 +53,7 @@ export function PlanDetail() {
 				action={PermissionCatalog.all.plans.actions.read_pcgi_legacy}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
-				value={planDetailContext.data.plan.gtfs_agency.agency_id}
+				value={planDetailContext.data.plan.agency_id}
 			>
 				<PlanDetailSectionPcgiLegacy />
 			</HasPermission>
@@ -62,7 +62,7 @@ export function PlanDetail() {
 				action={PermissionCatalog.all.plans.actions.read_controller}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
-				value={planDetailContext.data.plan.gtfs_agency.agency_id}
+				value={planDetailContext.data.plan.agency_id}
 			>
 				<PlanDetailSectionController />
 			</HasPermission>

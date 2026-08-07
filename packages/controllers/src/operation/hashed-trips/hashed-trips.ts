@@ -1,9 +1,9 @@
 /* * */
 
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { hashedTrips, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type HashedTrip, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -75,7 +75,7 @@ export class HashedTripsSharedController {
 		//
 		// Fetch the rides batch from the database
 
-		const ridesBatch = await goDB.operation.rides.aggregate(pipeline);
+		const ridesBatch = await goDb.operation.rides.aggregate(pipeline);
 
 		Logger.info({ message: `HashedTripsSharedController.getBatch - ridesBatch count: ${ridesBatch?.length ?? 0}` });
 
@@ -85,7 +85,7 @@ export class HashedTripsSharedController {
 
 		const hashedTripIds = ridesBatch.map(ride => ride.hashed_trip_id);
 
-		const hashedTripsBatch = await hashedTrips.findMany({ _id: { $in: hashedTripIds } });
+		const hashedTripsBatch = await goDb.operation.hashedTrips.findMany({ _id: { $in: hashedTripIds } });
 
 		//
 		// Send the response

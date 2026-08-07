@@ -16,6 +16,7 @@ export const planValidityStatusValues = planValidityStatusOptions.map(item => it
 /* * */
 
 export interface PlanNormalized extends Plan {
+	agency_code_normalized: string
 	agency_id_normalized: string
 	agency_name_normalized: string
 	validity_status: typeof planValidityStatusValues[number]
@@ -34,6 +35,7 @@ export const validationProcessingStatus = ProcessingStatusSchema.options.map((it
 /* * */
 
 export interface ValidationNormalized extends GtfsValidation {
+	agency_code_normalized: string
 	agency_id_normalized: string
 	agency_name_normalized: string
 }

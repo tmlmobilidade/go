@@ -1,10 +1,7 @@
 /* * */
 
 import { getRides } from '@/get-rides.js';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { Dates } from '@tmlmobilidade/dates';
-import { Logger } from '@tmlmobilidade/logger';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import Fastify from 'fastify';
 
 /* * */
@@ -13,7 +10,7 @@ await (async function init() {
 	//
 
 	// const now = Dates.now('Europe/Lisbon').unix_timestamp;
-	// await goDB.operation.rides.updateMany({ agency_id: { $in: ['crtm-aisa', 'crtm-laveloz'] }, start_time_scheduled: { $lt: now } }, { system_status: 'waiting' });
+	// await rides.updateMany({ agency_id: { $in: ['crtm-aisa', 'crtm-laveloz'] }, start_time_scheduled: { $lt: now } }, { system_status: 'waiting' });
 	// console.log('Marked crtm-aisa and crtm-laveloz rides as waiting');
 
 	//

@@ -1,9 +1,8 @@
 /* * */
 
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { hashedTrips } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type HashedTrip } from '@tmlmobilidade/types';
 
 /**
@@ -33,7 +32,7 @@ export async function getHashedTrip(request: FastifyRequest, reply: FastifyReply
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await goDB.operation.rides.findById(rideId);
+		const rideData = await goDb.operation.rides.findById(rideId);
 
 		if (!rideData) {
 			return reply
@@ -49,7 +48,7 @@ export async function getHashedTrip(request: FastifyRequest, reply: FastifyReply
 		// Fetch the corresponding vehicle events data
 		// and send it back to the client
 
-		const hashedTripData = await hashedTrips.findById(rideData.hashed_trip_id);
+		const hashedTripData = await goDb.operation.hashedTrips.findById(rideData.hashed_trip_id);
 
 		if (!hashedTripData) {
 			return reply

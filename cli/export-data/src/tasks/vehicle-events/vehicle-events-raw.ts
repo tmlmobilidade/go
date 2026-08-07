@@ -2,8 +2,8 @@
 
 import { type ExportType, type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { type Filter, simplifiedVehicleEvents } from '@tmlmobilidade/interfaces';
-import { type SimplifiedVehicleEvent } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 

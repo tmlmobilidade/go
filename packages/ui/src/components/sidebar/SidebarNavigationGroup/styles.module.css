@@ -1,0 +1,114 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	padding: var(--size-spacing-md) var(--size-spacing-xs);
+}
+
+.container[data-group-open="false"] {
+	padding-bottom: var(--size-spacing-xs);
+}
+
+/* * */
+/* HEADER */
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding-right: var(--size-spacing-xs);
+	padding-left: var(--size-spacing-sm);
+	color: var(--color-system-text-200);
+	cursor: pointer;
+}
+
+.container[data-group-open="true"] .header {
+	padding-bottom: var(--size-spacing-xs);
+}
+
+.container[data-group-active="true"] .header {
+	cursor: default;
+}
+
+.container[data-sidebar-collapsed='true'] .header {
+	padding-right: var(--size-spacing-xs);
+	padding-left: var(--size-spacing-xs);
+}
+
+/* * */
+/* RULE */
+
+.rule {
+	width: 100%;
+	height: 6px;
+	background-color: var(--color-system-border-100);
+	border-radius: 999px;
+	transition: opacity 300ms ease-out;
+}
+
+.container[data-sidebar-collapsed='false'] .rule {
+	width: 0;
+	opacity: 0;
+}
+
+/* * */
+/* LABEL */
+
+.label {
+	flex: 1;
+	width: 100%;
+	text-overflow: ellipsis;
+	font-size: 13px;
+	font-weight: 700;
+	text-align: left;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	white-space: nowrap;
+	user-select: none;
+	transition: opacity var(--transition-duration) var(--transition-easing);
+}
+
+.container[data-sidebar-collapsed='true'] .label {
+	width: 0;
+	padding-left: 0;
+	opacity: 0;
+	transition: none;
+}
+
+/* * */
+/* CHEVRON */
+
+.chevron {
+	flex-shrink: 0;
+	width: 14px;
+	transition:
+		transform var(--transition-duration) var(--transition-easing),
+		opacity var(--transition-duration) var(--transition-easing);
+}
+
+.container[data-group-open='true'] .chevron {
+	transform: rotate(-90deg);
+}
+
+.container[data-group-active="true"] .chevron {
+	opacity: 0;
+}
+
+.container[data-sidebar-collapsed='true'] .chevron {
+	width: 0;
+	padding-right: 0;
+	opacity: 0;
+}
+
+/* * */
+/* ITEMS */
+
+.items {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+}

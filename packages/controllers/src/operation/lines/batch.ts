@@ -1,6 +1,6 @@
 /* * */
 
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type AggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type GetOperationalLinesBatchQuery, type HashedPattern, type OperationalDate, type OperationalLine } from '@tmlmobilidade/types';
@@ -64,7 +64,7 @@ export async function getOperationalLinesBatch(query: GetOperationalLinesBatchQu
 			$lookup: {
 				as: 'hashed_pattern_doc',
 				foreignField: '_id',
-				from: 'hashed_patterns',
+				from: 'hashed-patterns',
 				localField: 'hashed_pattern_id',
 			},
 		},
@@ -86,7 +86,7 @@ export async function getOperationalLinesBatch(query: GetOperationalLinesBatchQu
 		},
 	];
 
-	const ridesCollection = await goDB.operation.rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	const pipelineResult = await ridesCollection
 		.aggregate<PipelineResult>(pipeline, { allowDiskUse: true })

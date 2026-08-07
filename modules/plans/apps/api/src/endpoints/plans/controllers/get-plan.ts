@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { plans } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { PermissionCatalog, type Plan } from '@tmlmobilidade/types';
 
 /**
@@ -16,7 +16,7 @@ export async function getPlan(request: FastifyRequest<{ Params: { id: string } }
 	//
 	// Get the Plan from the database
 
-	const planData = await plans.findById(request.params.id);
+	const planData = await goDb.operation.plans.findById(request.params.id);
 
 	if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 
@@ -28,7 +28,7 @@ export async function getPlan(request: FastifyRequest<{ Params: { id: string } }
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
-		value: planData.gtfs_agency.agency_id,
+		value: planData.agency_id,
 	});
 
 	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
