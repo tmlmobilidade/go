@@ -10,7 +10,15 @@ import fs from 'fs';
  * @returns A promise that resolves when the file is parsed.
  */
 export async function parseCsvFile<T>(filePath: string, rowParser: (rowData: T) => Promise<void>) {
-	const parser = csvParser({ bom: true, columns: true, record_delimiter: ['\n', '\r', '\r\n'], skip_empty_lines: true, trim: true });
+	const parser = csvParser({
+		bom: true,
+		cast: value => value === '' ? undefined : value,
+		columns: true,
+		record_delimiter: ['\n', '\r', '\r\n'],
+		skip_empty_lines: true,
+		skipRecordsWithEmptyValues: true,
+		trim: true,
+	});
 	const fileStream = fs.createReadStream(filePath);
 	const stream = fileStream.pipe(parser);
 	for await (const rowData of stream) {
