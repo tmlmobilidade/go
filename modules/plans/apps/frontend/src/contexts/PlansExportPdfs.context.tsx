@@ -12,7 +12,6 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useEffe
 interface PlansExportPdfsContextState {
 	actions: {
 		exportPosters: () => Promise<void>
-		setAgencyId: (value: null | string) => void
 		setPlanId: (value: null | string) => void
 	}
 	data: {
@@ -71,10 +70,11 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	}, []);
 
 	const selectPlanId = useCallback((value: null | string) => {
-		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === value && plan.agency_id === agencyId);
+		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === value && !!plan.operation_file_id);
 
 		setPlanId(selectedPlan?._id ?? null);
-	}, [agencyId, plansListContext.data.raw]);
+		setAgencyId(selectedPlan?.agency_id ?? null);
+	}, [plansListContext.data.raw]);
 
 	useEffect(() => {
 		const selectedAgencyIsAvailable = agencyOptions.some(option => option.value === agencyId);
@@ -124,7 +124,6 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	const contextValue: PlansExportPdfsContextState = useMemo(() => ({
 		actions: {
 			exportPosters,
-			setAgencyId: selectAgencyId,
 			setPlanId: selectPlanId,
 		},
 		data: {
@@ -137,7 +136,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 			has_error: false,
 			loading,
 		},
-	}), [agencyId, agencyOptions, canSave, exportPosters, loading, planId, selectAgencyId, selectPlanId]);
+	}), [agencyId, agencyOptions, canSave, exportPosters, loading, planId, selectPlanId]);
 
 	//
 	// E. Render components
