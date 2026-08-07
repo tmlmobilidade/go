@@ -1,8 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { files } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
@@ -22,7 +22,7 @@ export async function cleanOldValidations() {
 	//
 	// Get all GTFS Validation documents from the database
 
-	const allValidations = await goDB.operation.gtfsValidations.findMany({});
+	const allValidations = await goDb.operation.gtfsValidations.findMany();
 
 	Logger.info({ message: `Found ${allValidations.length} validations.` });
 
@@ -85,8 +85,8 @@ export async function cleanOldValidations() {
 		const fileDeletionTimer = new Timer();
 
 		try {
-			await goDB.operation.gtfsValidations.deleteById(validation._id);
-			await files.deleteById(validation.file_id);
+			await goDb.operation.gtfsValidations.deleteById(validation._id);
+			await storageProvider.delete(validation.file_id);
 			Logger.success(`Deleted validation ${validation._id} and its associated file ${validation.file_id} in ${fileDeletionTimer.get()}.`);
 		} catch (error) {
 			Logger.error({ error, message: `Failed to delete validation ${validation._id} or its associated file ${validation.file_id}:` });

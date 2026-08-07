@@ -1,16 +1,13 @@
 'use client';
 
 import { useDebouncedCallback } from '@mantine/hooks';
-import { type UserPreferenceValue } from '@tmlmobilidade/types';
-import { useEffect, useRef, useState } from 'react';
+import { Dates } from '@tmlmobilidade/dates';
+import { type UnixTimestamp, type UserPreferenceValue } from '@tmlmobilidade/types';
+import { type SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useMeContext } from '../contexts/Me.context';
 
 /* * */
-
-function isEqual(a: unknown, b: unknown) {
-	return JSON.stringify(a) === JSON.stringify(b);
-}
 
 export interface SetUserPreferenceOptions {
 	/** `false` skips persistence; `true` (default) debounces persistence (~500ms). */
@@ -19,12 +16,10 @@ export interface SetUserPreferenceOptions {
 
 /**
  * A hook to manage user preferences as state.
+ * Local edits are never overwritten by refreshed user data unless the
+ * server's `updated_at` is strictly more recent than the last local change.
  */
-export function useUserPreference<T extends UserPreferenceValue>(
-	scope: string,
-	key: string,
-	defaultValue: T,
-): [T, (value: T, options?: SetUserPreferenceOptions) => void] {
+export function useUserPreference<T extends UserPreferenceValue>(scope: string, key: string, defaultValue: T): [T, (value: SetStateAction<T>, options?: SetUserPreferenceOptions) => void] {
 	//
 
 	//
@@ -33,53 +28,64 @@ export function useUserPreference<T extends UserPreferenceValue>(
 	const meContext = useMeContext();
 
 	const [preferenceValue, setPreferenceValue] = useState<T>(defaultValue);
+	const preferenceValueRef = useRef<T>(defaultValue);
 
-	const hasLocalUpdateRef = useRef(false);
-	const latestLocalValueRef = useRef<T>(defaultValue);
-
-	//
-	// B. Sync from user data
-
-	useEffect(() => {
-		const valueFromUser = meContext.actions.getPreference<T>(scope, key) ?? defaultValue;
-
-		/**
-		 * If we just changed this preference locally, do not let an older `/me`
-		 * response overwrite the optimistic UI value.
-		 */
-		if (hasLocalUpdateRef.current) {
-			if (isEqual(valueFromUser, latestLocalValueRef.current)) {
-				hasLocalUpdateRef.current = false;
-			}
-
-			return;
-		}
-
-		setPreferenceValue(valueFromUser);
-		latestLocalValueRef.current = valueFromUser;
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [meContext.data.user, scope, key]);
+	/** Baseline: last local edit time, or last applied server `updated_at`. */
+	const latestUpdatedAtRef = useRef<UnixTimestamp>(0 as UnixTimestamp);
 
 	//
-	// C. Handle actions
+	// B. Handle actions
 
 	const savePreferenceValueDebounced = useDebouncedCallback((value: T) => {
+		const valueFromUserData = meContext.data.user?.preferences?.[scope]?.[key];
+		if (JSON.stringify(value) === JSON.stringify(valueFromUserData)) return;
 		meContext.actions.updatePreference(scope, key, value);
 	}, 500);
 
-	const handleSetPreferenceValue = (value: T, options?: SetUserPreferenceOptions) => {
-		hasLocalUpdateRef.current = true;
-		latestLocalValueRef.current = value;
+	useEffect(() => {
+		// Get the server's `updated_at`.
+		// Skip local sync if not available.
+		const serverUpdatedAt = meContext.data.user?.updated_at;
+		if (!serverUpdatedAt) return;
+		// Skip local sync unless the server document is strictly newer.
+		if (serverUpdatedAt <= latestUpdatedAtRef.current) return;
+		// Get the value from the server.
+		const valueFromUserData = (meContext.data.user?.preferences?.[scope]?.[key] as T | undefined) ?? defaultValue;
+		// Update the latest updated at.
+		latestUpdatedAtRef.current = serverUpdatedAt;
+		// Cancel the debounced save.
+		savePreferenceValueDebounced.cancel();
+		// Skip local sync if the value is already up to date.
+		if (JSON.stringify(preferenceValueRef.current) === JSON.stringify(valueFromUserData)) return;
+		// Update the preference value.
+		preferenceValueRef.current = valueFromUserData;
+		// Update the local state.
+		setPreferenceValue(valueFromUserData);
+	}, [defaultValue, key, meContext.data.user?.preferences, meContext.data.user?.updated_at, savePreferenceValueDebounced, scope]);
 
-		setPreferenceValue(value);
-
-		if (options?.save === false) return;
-
-		savePreferenceValueDebounced(value);
-	};
+	const handleSetPreferenceValue = useCallback((value: SetStateAction<T>, options?: SetUserPreferenceOptions) => {
+		// The next value is the current value,
+		// or the new value if a function is provided.
+		const nextValue = typeof value === 'function'
+			? (value as (prev: T) => T)(preferenceValueRef.current)
+			: value;
+		// Update the latest updated at.
+		latestUpdatedAtRef.current = Dates.now('utc').unix_timestamp;
+		// Update the preference value.
+		preferenceValueRef.current = nextValue;
+		// Update the local state.
+		setPreferenceValue(nextValue);
+		// Skip persistence if requested.
+		if (options?.save === false) {
+			savePreferenceValueDebounced.cancel();
+			return;
+		}
+		// Persist the value.
+		savePreferenceValueDebounced(nextValue);
+	}, [savePreferenceValueDebounced]);
 
 	//
-	// D. Return
+	// C. Return values
 
 	return [preferenceValue, handleSetPreferenceValue];
 

@@ -1,7 +1,7 @@
 /* * */
 
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { rides } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 
@@ -29,6 +29,18 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 	}
 
 	//
+	// Get the agency data from the database
+
+	const agencyData = await goDb.core.agencies.findOne({
+		_id: alertData.agency_id,
+	});
+
+	if (!agencyData) {
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Agency data not found for the agency_id.` });
+		return;
+	}
+
+	//
 	// For each ride, add its corresponding
 	// agency_id and route_id to the result
 
@@ -42,7 +54,7 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 		// for rides matching the ride ID,
 		// the agency ID, and the alert start time.
 
-		const foundRide = await rides.findById(reference.parent_id);
+		const foundRide = await goDb.operation.rides.findById(reference.parent_id);
 
 		if (!foundRide) {
 			Logger.error({ message: `[Alert ID: ${alertData._id}] No ride found for ride ID ${reference.parent_id}.` });
@@ -50,7 +62,7 @@ export async function transformReferenceTypeRides(alertData: Alert): Promise<Gtf
 		}
 
 		const parsedEntitySelector: GtfsRtEntitySelector = {
-			agency_id: alertData.agency_id,
+			agency_id: agencyData.code,
 			trip: {
 				route_id: foundRide.route_id,
 				schedule_relationship: 'SCHEDULED',

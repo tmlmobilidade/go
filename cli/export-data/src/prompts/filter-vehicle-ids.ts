@@ -4,7 +4,7 @@ import { note, text } from '@clack/prompts';
 
 /* * */
 
-export async function promptFilterByVehicleIds(): Promise<number[]> {
+export async function promptFilterByVehicleIds(): Promise<string[]> {
 	//
 
 	note(
@@ -27,5 +27,8 @@ export async function promptFilterByVehicleIds(): Promise<number[]> {
 
 	if (!value) return [];
 
-	return (value as string).split(',').map(id => Number(id.trim()));
+	return (value as string)
+		.split(',')
+		.map(id => id.trim())
+		.filter(Boolean);
 }

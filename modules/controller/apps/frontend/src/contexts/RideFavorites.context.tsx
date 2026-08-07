@@ -3,8 +3,6 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type RideNormalized } from '@tmlmobilidade/types';
 import { useUserPreference } from '@tmlmobilidade/ui';
-/* * */
-
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 

@@ -2,7 +2,7 @@
 
 import { generatePiperTtsAudio } from '@/services/piperTtsApi.js';
 import TIMETRACKER from '@helperkits/timer';
-import { files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import pLimit from 'p-limit';
 
@@ -17,10 +17,9 @@ const allCommonData = [
 ];
 
 async function deleteLegacyTtsFile(fileId: string) {
-	const existingFile = await files.findOne({ _id: fileId });
-	if (!existingFile) return;
-
-	await files.deleteOne({ _id: fileId });
+	const fileData = await storageProvider.findById(fileId);
+	if (!fileData) return;
+	await storageProvider.delete(fileId);
 }
 
 async function processCommon(commonIndex: number, total: number, commonData: typeof allCommonData[number]) {
@@ -38,7 +37,7 @@ async function processCommon(commonIndex: number, total: number, commonData: typ
 	await deleteLegacyTtsFile(commonData.id);
 	await deleteLegacyTtsFile(`tts-${commonData.id}`);
 
-	await files.upload(audioBuffer, {
+	await storageProvider.replace(audioBuffer, {
 		_id: `tts-${commonData.id}`,
 		created_by: 'system',
 		name: `${commonData.id}.mp3`,
@@ -47,7 +46,7 @@ async function processCommon(commonIndex: number, total: number, commonData: typ
 		size: audioBuffer.byteLength,
 		type: 'audio/mpeg',
 		updated_by: 'system',
-	}, { override: true });
+	});
 }
 
 /* * */
