@@ -325,7 +325,7 @@ type RidesPipelineFilter = OneOrTheOther<DatesRange, OperationalDateRange> & {
 	seen_statuses?: SeenStatus[]
 	stop_ids?: string[]
 	ticketing_status?: TicketingStatus[]
-	vehicle_ids?: number[]
+	vehicle_ids?: string[]
 };
 
 type FieldCondition = Record<string, unknown>;
@@ -431,8 +431,8 @@ function buildSearchPipeline(filter: Pick<RidesPipelineFilter, 'search'>): Aggre
 	if (vehicleMatch) {
 		const vehicleIDs = vehicleMatch[1]
 			.split(',')
-			.map(id => Number(id.trim()))
-			.filter(id => !isNaN(id));
+			.map(id => id.trim())
+			.filter(Boolean);
 
 		if (vehicleIDs.length > 0) {
 			pipeline.push({ $match: { vehicle_ids: { $in: vehicleIDs } } });
@@ -489,7 +489,7 @@ export function ridesBatchAggregationPipeline({ ...filter }: RidesPipelineFilter
 	pipeline.push({ $sort: { start_time_scheduled: 1 } });
 
 	// Stage 3: Filter by line IDs if provided
-	if (filter.line_ids?.length) pipeline.push({ $match: { line_id: { $in: filter.line_ids.map(id => Number(id)) } } });
+	if (filter.line_ids?.length) pipeline.push({ $match: { line_id: { $in: filter.line_ids } } });
 
 	// Stage 4: Search by term routing and selective fallback regex
 	pipeline.push(...buildSearchPipeline(filter));

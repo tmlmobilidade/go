@@ -9,7 +9,7 @@ export interface AppConfig {
 	database: string
 	development: {
 		isDevelopment: boolean
-		lineIds: number[]
+		lineIds: string[]
 		timeEnd: Dates
 		timeStart: Dates
 	}

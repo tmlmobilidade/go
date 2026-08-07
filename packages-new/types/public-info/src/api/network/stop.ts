@@ -1,8 +1,7 @@
 /* * */
 
-import { LifecycleStatusSchema } from '@tmlmobilidade/types';
-import { StopFlagSchema } from '@tmlmobilidade/types';
-import { StopIdSchema } from '@tmlmobilidade/types';
+import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { StopFlagSchema, StopIdSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */

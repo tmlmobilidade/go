@@ -1,9 +1,9 @@
 -- Per-node weighted predicted travel time + refreshable MV.
--- Depends: {database}.hist_node_travel_times_aggregation (01-historical-base-tables.sql).
+-- Depends: eta.hist_node_travel_times_aggregation (01-historical-base-tables.sql).
 
 -- Decomposes the segment-level weighted prediction in select-weighted-from-aggregation.sql
 -- to a single node. Refreshed periodically by mv_node_predictions.
-CREATE TABLE IF NOT EXISTS {database}.pred_node_etas
+CREATE TABLE IF NOT EXISTS eta.pred_node_etas
 (
     hashed_shape_id String,
     node_index UInt32,
@@ -16,11 +16,11 @@ CREATE TABLE IF NOT EXISTS {database}.pred_node_etas
 ENGINE = ReplacingMergeTree(refreshed_at)
 ORDER BY (hashed_shape_id, node_index, period_of_day, weekday, day_type);
 
--- Refreshable MV: rebuilds {database}.node_predictions every 5 minutes from the last
+-- Refreshable MV: rebuilds eta.node_predictions every 5 minutes from the last
 -- 30 days of node_travel_times_aggregates.
-CREATE MATERIALIZED VIEW IF NOT EXISTS {database}.mv_pred_node_etas
+CREATE MATERIALIZED VIEW IF NOT EXISTS eta.mv_pred_node_etas
 REFRESH EVERY 3 MINUTE
-TO {database}.pred_node_etas
+TO eta.pred_node_etas
 AS
 WITH
     toDate(now()) AS today_dt,
@@ -51,7 +51,7 @@ WITH
             day_type,
             period_of_day,
             median_travel_time_seconds
-        FROM {database}.hist_node_travel_times_aggregation FINAL
+        FROM eta.hist_node_travel_times_aggregation FINAL
         WHERE operational_date BETWEEN ymd_prev_30d AND ymd_prev_1d
     ),
     targets AS (

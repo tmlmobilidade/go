@@ -8,7 +8,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-const AGENCY_IDS = ['41', '42', '43', '44'];
+const AGENCY_IDS = ['IA9T6', 'A3H3M', 'HF16N', 'LA77N', 'BNA17', 'YA15B', 'A2L1N'];
 
 /**
  * Builds an AppConfig that mirrors the loader app's dev defaults but with the

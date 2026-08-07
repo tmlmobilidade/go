@@ -35,13 +35,13 @@ export async function exportTripsFile(planData: Plan, sqlTables: GtfsSQLTables, 
 	for await (const tripItem of sqlTables.trips.stream('ORDER BY trip_id ASC')) {
 		const tripData: GTFS_Trip_Extended = tripItem;
 		const parsedTripsRow: ExportedTripsRow = {
-			route_id: getPublicRouteId(planData.gtfs_agency.agency_id, tripData.route_id),
-			service_id: getPublicServiceId(planData._id, planData.gtfs_agency.agency_id, tripData.service_id),
-			trip_id: getPublicTripId(planData._id, planData.gtfs_agency.agency_id, tripData.trip_id),
-			pattern_id: getPublicPatternId(planData.gtfs_agency.agency_id, tripData.pattern_id),
+			route_id: getPublicRouteId(planData.agency_id, tripData.route_id),
+			service_id: getPublicServiceId(planData._id, planData.agency_id, tripData.service_id),
+			trip_id: getPublicTripId(planData._id, planData.agency_id, tripData.trip_id),
+			pattern_id: getPublicPatternId(planData.agency_id, tripData.pattern_id),
 			trip_headsign: tripData.trip_headsign,
 			direction_id: tripData.direction_id,
-			shape_id: getPublicShapeId(planData._id, planData.gtfs_agency.agency_id, tripData.shape_id),
+			shape_id: getPublicShapeId(planData._id, planData.agency_id, tripData.shape_id),
 			wheelchair_accessible: tripData.wheelchair_accessible ?? 0,
 			bikes_allowed: tripData.bikes_allowed ?? 0,
 			cars_allowed: 0,

@@ -13,10 +13,11 @@
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build": "tsc && resolve-tspaths",
+		"build": "tsc -p tsconfig.build.json && resolve-tspaths -p tsconfig.build.json",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"lint": "eslint ./src ./tests && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src ./tests",
+		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
@@ -25,13 +26,13 @@
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/go-interfaces-go-db": "*",
-		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/go-clients-mongo": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
-		"adm-zip": "0.5.18",
+		"adm-zip": "0.6.0",
 		"formidable": "3.5.4",
 		"papaparse": "5.5.4"
 	},
@@ -39,10 +40,11 @@
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/adm-zip": "0.5.8",
-		"@types/node": "26.1.0",
+		"@types/geojson": "7946.0.16",
+		"@types/node": "26.1.2",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.0",
+		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }

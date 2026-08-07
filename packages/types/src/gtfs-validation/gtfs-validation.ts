@@ -9,6 +9,7 @@ import { z } from 'zod';
 /* * */
 
 export const GtfsValidationSchema = DocumentSchema.extend({
+	agency_id: z.string(),
 	file_id: z.string(),
 	gtfs_agency: GtfsAgencySchema,
 	gtfs_feed_info: GtfsFeedInfoSchema,
@@ -19,8 +20,8 @@ export const GtfsValidationSchema = DocumentSchema.extend({
 	validity_status: ValidityStatusSchema.default('unknown'),
 });
 
-export const CreateGtfsValidationSchema = GtfsValidationSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateGtfsValidationSchema = CreateGtfsValidationSchema.omit({ created_by: true }).partial();
+export const CreateGtfsValidationSchema = GtfsValidationSchema.omit({ _id: true, updated_at: true });
+export const UpdateGtfsValidationSchema = CreateGtfsValidationSchema.omit({ created_at: true, created_by: true }).partial();
 
 export type GtfsValidation = z.infer<typeof GtfsValidationSchema>;
 export type CreateGtfsValidationDto = z.infer<typeof CreateGtfsValidationSchema>;

@@ -1,28 +1,20 @@
 /* * */
 
-import type { TimeSlot } from '@tmlmobilidade/dates';
-
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates, type TimeSlot } from '@tmlmobilidade/dates';
 
 /* * */
 
-const isProduction = true;// process.env.environment === 'prd';
-
-function getEtaDatabase(): string {
-	return isProduction ? 'eta' : 'eta_dev';
-}
+const isProduction = process.env.ENVIRONMENT === 'prd';
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
-	agencyIds: ['1', '8', '21', '41', '42', '43', '44'],
-
-	database: getEtaDatabase(),
+	agencyIds: ['IA9T6', 'A3H3M', 'HF16N', 'LA77N', 'BNA17', 'YA15B', 'A2L1N'],
 
 	development: {
 		isDevelopment: !isProduction,
-		lineIds: [77],
-		timeEnd: Dates.fromUnixTimestamp(1780836960000).plus({ hours: 1 }),
-		timeStart: Dates.fromUnixTimestamp(1780836960000),
+		lineIds: [],
+		timeEnd: Dates.now('Europe/Lisbon').plus({ hours: 1 }),
+		timeStart: Dates.now('Europe/Lisbon').minus({ hours: 1 }),
 	},
 
 	// Data and time settings

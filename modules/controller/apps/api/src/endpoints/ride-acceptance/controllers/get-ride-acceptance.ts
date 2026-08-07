@@ -2,8 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { enrichUserRefs } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type RideAcceptance } from '@tmlmobilidade/types';
 
 /**
@@ -12,14 +11,14 @@ import { type RideAcceptance } from '@tmlmobilidade/types';
 export async function getRideAcceptance(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
 
-	const rideAcceptanceData = await goDB.operation.rideAcceptances.findByRideId(request.params.id);
+	const rideAcceptanceData = await goDb.operation.rideAcceptances.findOne({ ride_id: request.params.id });
 
 	if (!rideAcceptanceData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride acceptance not found.');
 	}
 
 	return reply.send({
-		data: await enrichUserRefs(rideAcceptanceData),
+		data: rideAcceptanceData,
 		error: null,
 		statusCode: HTTP_STATUS.OK,
 	});

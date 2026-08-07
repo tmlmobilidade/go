@@ -1,9 +1,9 @@
 /* * */
 
-import { roles, users } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { PermissionCatalog } from '@tmlmobilidade/types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /**
  * Sanitizes permissions in both the "users" and "roles" collections.
@@ -19,11 +19,11 @@ export async function sanitizePermissions() {
 
 		const usersTimer = new Timer();
 
-		const allUsers = await users.findMany();
+		const allUsers = await goDb.core.users.findMany({});
 
 		for (const user of allUsers) {
 			const sanitizedPermissions = PermissionCatalog.sanitize(user.permissions);
-			await users.updateById(user._id, { permissions: sanitizedPermissions });
+			await goDb.core.users.updateById(user._id, { permissions: sanitizedPermissions });
 		}
 
 		Logger.success(`Updated ${allUsers.length} users with sanitized permissions in ${usersTimer.get()}.`);
@@ -33,11 +33,11 @@ export async function sanitizePermissions() {
 
 		const rolesTimer = new Timer();
 
-		const allRoles = await roles.findMany();
+		const allRoles = await goDb.core.roles.findMany();
 
 		for (const role of allRoles) {
 			const sanitizedPermissions = PermissionCatalog.sanitize(role.permissions);
-			await roles.updateById(role._id, { permissions: sanitizedPermissions });
+			await goDb.core.roles.updateById(role._id, { permissions: sanitizedPermissions });
 		}
 
 		Logger.success(`Updated ${allRoles.length} roles with sanitized permissions in ${rolesTimer.get()}.`);

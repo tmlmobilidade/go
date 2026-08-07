@@ -93,6 +93,24 @@
 				},
 				"title": "Información financiera de la agencia"
 			},
+			"SectionOpenData": {
+				"description": "Configuración de los datos abiertos.",
+				"fields": {
+					"eta_enabled": {
+						"label": "Disponibilizar estimativas de llegada"
+					},
+					"gtfs_enabled": {
+						"label": "Disponibilizar GTFS unificado."
+					},
+					"positions_enabled": {
+						"label": "Disponibilizar posiciones de los vehículos"
+					},
+					"service_alerts_enabled": {
+						"label": "Disponibilizar alertas de servicio"
+					}
+				},
+				"title": "Datos Abiertos"
+			},
 			"SectionValidationRules": {
 				"description": "Archivo de reglas de validación del GTFS",
 				"fields": {

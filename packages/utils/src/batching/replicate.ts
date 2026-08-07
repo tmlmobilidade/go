@@ -142,6 +142,7 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	const missingStepTimer = new Timer();
 
 	if (missingDocumentIds.length > 0) {
+		console.info(`Syncing ${missingDocumentIds.length} missing documents to the Destination database...`);
 		for await (const sourceDbDocument of missingDocumentsSourceDbAsyncIterator(missingDocumentIds)) {
 			await writeSourceDocumentToDestinationDbFn(sourceDbDocument);
 		}
@@ -155,6 +156,7 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	const deleteStepTimer = new Timer();
 
 	if (extraDocumentIds.length > 0 && deleteDestinationDbFn) {
+		console.info(`Deleting ${extraDocumentIds.length} extra documents in the Destination database...`);
 		await deleteDestinationDbFn(extraDocumentIds);
 		console.info(`Deleted ${extraDocumentIds.length} extra documents in the Destination database. (${deleteStepTimer.get()})`);
 	}
@@ -163,7 +165,10 @@ export async function replicate<SourceDocType>({ countDestinationDbFn, countSour
 	// After syncing the missing documents,
 	// run the onComplete callback function if provided.
 
-	if (onCompleteCallbackFn) await onCompleteCallbackFn();
+	if (onCompleteCallbackFn) {
+		console.info(`Running onComplete callback function...`);
+		await onCompleteCallbackFn();
+	}
 
 	console.info(`Replication complete (${globalTimer.get()})`);
 

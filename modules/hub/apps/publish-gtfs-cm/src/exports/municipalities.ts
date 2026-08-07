@@ -1,7 +1,7 @@
 /* * */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
-import { locations } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -24,7 +24,7 @@ export async function exportMunicipalitiesFile(exportConfig: MergedGtfsExportCon
 	// Get all the municipalities matching the specified IDs.
 	// These IDs are hardcoded, for now, to match only amL municipalities.
 
-	const allAmlMunicipalities = await locations.findMunicipalities({
+	const allAmlMunicipalities = await goDb.locations.municipalities.findMany({
 		_id: {
 			$in: [
 				'1502', '1503', '1115', '1504',
@@ -42,7 +42,7 @@ export async function exportMunicipalitiesFile(exportConfig: MergedGtfsExportCon
 
 	for (const municipalityData of allAmlMunicipalities) {
 		// Fetch the corresponding district data
-		const districtData = await locations.findDistrictById(municipalityData.district_id);
+		const districtData = await goDb.locations.districts.findById(municipalityData.district_id, { projection: { '_id': 1, 'properties.name': 1 } });
 		// Prepare the exported row
 		const parsedMunicipalitiesRow: ExportedMunicipalitiesRow = {
 			district_id: municipalityData.district_id,
