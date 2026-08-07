@@ -54,7 +54,7 @@ export function StopDetailsSectionImages() {
 					{pendingImages.map((image, index) => (
 						<ImageUpload
 							key={image.previewUrl}
-							label={`Imagem ${images.length + index + 1} · por guardar`}
+							label={`Imagem ${images.length + index + 1} - por guardar`}
 							onDelete={!stopDetailContext.flags.isReadOnly ? () => stopDetailContext.actions.removePendingImage(index) : undefined}
 							value={image.previewUrl}
 						/>

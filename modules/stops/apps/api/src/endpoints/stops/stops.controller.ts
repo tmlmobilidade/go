@@ -6,6 +6,7 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { generateRandomNumber } from '@tmlmobilidade/strings';
 import { type Attachment, CreateStopSchema, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
@@ -268,9 +269,10 @@ export class StopsController {
 		let uploadedImage: Attachment | undefined;
 		try {
 			uploadedImage = await storageProvider.upload(buffer, {
+				_id: `stop-${generateRandomNumber()}`,
 				created_by: request.me._id,
 				name: file.filename,
-				resource_id: String(foundStop._id),
+				resource_id: `stop-${foundStop._id}`,
 				scope: 'stops',
 				size: buffer.byteLength,
 				type: file.mimetype,
