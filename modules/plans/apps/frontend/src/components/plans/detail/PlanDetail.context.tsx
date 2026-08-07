@@ -2,7 +2,7 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type File as FileType, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
+import { type Attachment, PermissionCatalog, type Plan, type UpdatePlanDto, UpdatePlanSchema, User } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
@@ -18,10 +18,10 @@ interface PlanDetailContextState extends DetailContextStateTemplate {
 		setApexFileUpload: (file: File | null) => void
 	}
 	data: {
-		apex_file: FileType | null
+		apex_file: Attachment | null
 		form: UseFormReturnType<UpdatePlanDto>
 		id: string
-		operation_file: FileType | null
+		operation_file: Attachment | null
 		plan: null | Plan
 		user: null | User
 	}
@@ -60,8 +60,8 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 
 	const { mutate: plansListMutate } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
 	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
-	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<FileType>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
-	const { data: apexFileData, mutate: apexFileMutate } = useSWR<FileType>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId));
+	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<Attachment>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
+	const { data: apexFileData, mutate: apexFileMutate } = useSWR<Attachment>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId));
 	const { data: userData } = useSWR<User>(planId && API_ROUTES.auth.USERS_DETAIL(planData?.created_by));
 
 	//
@@ -117,7 +117,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	});
 
 	const { action: handleDeleteApexFile, isLoading: isDeletingApexFile } = useHandleUpdate({
-		fetchFn: async () => await fetchData<FileType>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId), 'DELETE'),
+		fetchFn: async () => await fetchData<Attachment>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId), 'DELETE'),
 		onSuccess: () => {
 			setApexFileUpload(null);
 			apexFileMutate(null);
@@ -133,7 +133,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			action: PermissionCatalog.all.plans.actions.update,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: planData?.gtfs_agency.agency_id ?? '',
+			value: planData?.agency_id ?? '',
 		}),
 		isDeleting: isDeleting || isDeletingApexFile,
 		isLoading: planLoading || isReprocessing,
@@ -147,7 +147,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			action: PermissionCatalog.all.plans.actions.update,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: planData?.gtfs_agency.agency_id ?? '',
+			value: planData?.agency_id ?? '',
 		}),
 		isDeleting: isDeleting || isDeletingApexFile,
 		isDirty: form.isDirty() || !!apexFileUpload,
@@ -162,7 +162,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			action: PermissionCatalog.all.plans.actions.lock,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: planData?.gtfs_agency.agency_id ?? '',
+			value: planData?.agency_id ?? '',
 		}),
 		isDeleting: isDeleting || isDeletingApexFile,
 		isDirty: form.isDirty() || !!apexFileUpload,
@@ -176,7 +176,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			action: PermissionCatalog.all.plans.actions.delete,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: planData?.gtfs_agency.agency_id ?? '',
+			value: planData?.agency_id ?? '',
 		}),
 		isDeleting: isDeleting || isDeletingApexFile,
 		isDirty: form.isDirty() || !!apexFileUpload,
@@ -199,7 +199,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			action: PermissionCatalog.all.plans.actions.update_gtfs_plan,
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
-			value: planData?.gtfs_agency.agency_id ?? '',
+			value: planData?.agency_id ?? '',
 		}),
 	]);
 

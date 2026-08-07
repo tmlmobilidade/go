@@ -24,7 +24,7 @@
 import type { OperationalDate, Pattern } from '@tmlmobilidade/types';
 
 import { buildOperationalDateRange, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
-import { events, holidays, lines, patterns, yearPeriods } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { writeFileSync } from 'node:fs';
 
 import {
@@ -113,9 +113,9 @@ function analyzePattern(
 	operationalDates: OperationalDate[],
 	gtfsTrips: GtfsTripEntry[],
 	serviceDates: Map<string, Set<string>>,
-	periods: Awaited<ReturnType<typeof yearPeriods.findMany>>,
-	holidaysList: Awaited<ReturnType<typeof holidays.findMany>>,
-	eventsList: Awaited<ReturnType<typeof events.findMany>>,
+	periods: Awaited<ReturnType<typeof goDb.offer.yearPeriods.findMany>>,
+	holidaysList: Awaited<ReturnType<typeof goDb.offer.holidays.findMany>>,
+	eventsList: Awaited<ReturnType<typeof goDb.offer.events.findMany>>,
 ): PatternReport {
 	const extensionM = getPatternExtensionMeters(pattern, 'go');
 	const mergedRules = resolvePatternRules(pattern, eventsList);
@@ -334,13 +334,13 @@ async function resolvePatternsToAnalyze(
 	allWithDelta: boolean,
 	gtfsIndex: ReturnType<typeof loadGtfsExportIndex>,
 	operationalDates: OperationalDate[],
-	periods: Awaited<ReturnType<typeof yearPeriods.findMany>>,
-	holidaysList: Awaited<ReturnType<typeof holidays.findMany>>,
-	eventsList: Awaited<ReturnType<typeof events.findMany>>,
+	periods: Awaited<ReturnType<typeof goDb.offer.yearPeriods.findMany>>,
+	holidaysList: Awaited<ReturnType<typeof goDb.offer.holidays.findMany>>,
+	eventsList: Awaited<ReturnType<typeof goDb.offer.events.findMany>>,
 ): Promise<Pattern[]> {
-	const agencyLines = await lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
+	const agencyLines = await goDb.offer.lines.findMany({ agency_id: agencyId }, { projection: { _id: 1 } });
 	const lineIds = agencyLines.map(l => l._id);
-	const allPatterns = await patterns.findMany(
+	const allPatterns = await goDb.offer.patterns.findMany(
 		{ line_id: { $in: lineIds } },
 		{ projection: { code: 1, line_id: 1, route_id: 1, rules: 1, shape: 1 } },
 	);
@@ -390,9 +390,9 @@ async function main() {
 
 	const gtfsIndex = loadGtfsExportIndex(gtfsDir, start, endOp);
 	const [periods, holidaysList, eventsList] = await Promise.all([
-		yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
-		holidays.findMany({ agency_ids: { $in: [agency] } }),
-		events.findMany({ agency_ids: { $in: [agency] } }),
+		goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
+		goDb.offer.holidays.findMany({ agency_ids: { $in: [agency] } }),
+		goDb.offer.events.findMany({ agency_ids: { $in: [agency] } }),
 	]);
 
 	const toAnalyze = await resolvePatternsToAnalyze(

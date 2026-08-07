@@ -167,10 +167,28 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 ];
 
 export const AGENCIES = {
-	AREA_1: '41',
-	AREA_2: '42',
-	AREA_3: '43',
-	AREA_4: '44',
+	AREA_1: 'LA77N',
+	AREA_2: 'BNA17',
+	AREA_3: 'YA15B',
+	AREA_4: 'A2L1N',
+} as const;
+
+export const AGENCY_IDS_BY_AREA = [
+	AGENCIES.AREA_1,
+	AGENCIES.AREA_2,
+	AGENCIES.AREA_3,
+	AGENCIES.AREA_4,
+] as const;
+
+export const AGENCY_ID_EQUIVALENTS = {
+	41: ['41', 'LA77N'],
+	42: ['42', 'BNA17'],
+	43: ['43', 'YA15B'],
+	44: ['44', 'A2L1N'],
+	A2L1N: ['A2L1N', '44'],
+	BNA17: ['BNA17', '42'],
+	LA77N: ['LA77N', '41'],
+	YA15B: ['YA15B', '43'],
 } as const;
 
 export type AgencyType = typeof AGENCIES[keyof typeof AGENCIES];

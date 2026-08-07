@@ -16,11 +16,11 @@
 	},
 	"dependencies": {
 		"@clickhouse/client": "1.23.1",
-		"@tmlmobilidade/databases": "*"
+		"@tmlmobilidade/go-clients-clickhouse": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.1",
+		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"

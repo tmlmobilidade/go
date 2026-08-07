@@ -1,5 +1,6 @@
 /* * */
 
+import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { type PcgiTransactionEntity } from '@tmlmobilidade/go-types-apex';
 import { type RawApexTransaction, type RawApexTransactionValidationV30, RawApexTransactionValidationV30PayloadSchema, RawApexTransactionValidationV30Schema } from '@tmlmobilidade/go-types-apex';
@@ -23,7 +24,8 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionValidationV30(pc
 
 	const result: RawApexTransactionValidationV30 = {
 		_id: pcgiTransactionEntity.transactionId,
-		agency_id: decodedTransaction.operatorInfo.operatorLongID,
+		agency_code: decodedTransaction.operatorInfo.operatorLongID,
+		agency_id: getAgencyIdFromOperatorLongId(decodedTransaction.operatorInfo.operatorLongID),
 		created_at: transactionDateValue.unix_timestamp,
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionValidationV30PayloadSchema.parse(decodedTransaction),

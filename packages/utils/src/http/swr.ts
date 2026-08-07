@@ -80,11 +80,11 @@ export async function swrFetcher<T>(urlOrOptions: string | SwrFetcherOptions): P
  * Fetches data from a URL using the SWR fetcher function.
  * @param urlOrOptions The URL to fetch from or the options object.
  * @returns Promise resolving to the fetched data
- * @deprecated Use `swrFetcher` with an options object instead.
+ * @example
  * ```ts
- * const data = await swrFetcher({ url: '/api/users/123', credentials: 'omit' });
+ * const data = await unauthenticatedSwrFetcher('/api/users/123');
  * ```
  */
-export async function unauthenticatedSwrFetcher<T>(url: string): Promise<T> {
+export async function unauthenticatedSwrFetcher<T>(url: string): ReturnType<typeof swrFetcher<T>> {
 	return swrFetcher<T>({ credentials: 'omit', url: url });
 }

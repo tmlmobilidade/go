@@ -2,10 +2,9 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
-import { Stop, StopId, StopSchema } from '@tmlmobilidade/types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type StopId, StopSchema } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
-import fs from 'node:fs';
 import Papa from 'papaparse';
 
 /* * */
@@ -45,7 +44,7 @@ export async function seedFromTmp() {
 		// 	ut1StopsData.data = ut1StopsData.data.filter(stop => !preparedStops.some((existingStop: Stop) => existingStop.previous_go_id === stop.stop_id));
 		// }
 
-		const stopsCollection = await goDB.infrastructure.stops.getCollection();
+		const stopsCollection = await goDb.infrastructure.stops.getCollection();
 		const deleteCount = await stopsCollection.deleteMany({ legacy_id: { $regex: '^prg:' } });
 		console.log(`Deleted ${deleteCount.deletedCount} existing stops with legacy_id starting with 'prg:'`);
 
