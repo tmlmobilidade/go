@@ -1,7 +1,7 @@
 /* * */
 
-import { SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
-import { Parish } from '@tmlmobilidade/types';
+import { type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
+import { type Parish } from '@tmlmobilidade/types';
 
 /* * */
 

@@ -3,6 +3,7 @@
 
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -43,17 +44,17 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 		//
 
 		const matchingFlagData = stopData.flags?.find((flag) => {
-			const matches41 = flag.agency_ids.includes('41');
-			const matches42 = flag.agency_ids.includes('42');
-			const matches43 = flag.agency_ids.includes('43');
-			const matches44 = flag.agency_ids.includes('44');
+			const matches41 = flag.agency_ids.includes('LA77N');
+			const matches42 = flag.agency_ids.includes('BNA17');
+			const matches43 = flag.agency_ids.includes('YA15B');
+			const matches44 = flag.agency_ids.includes('A2L1N');
 			return matches41 || matches42 || matches43 || matches44;
 		});
 
-		const matchingDistrictData = await goDb.locations.districts.findById(stopData.district_id, { projection: { '_id': 1, 'properties.name': 1 } });
-		const matchingMunicipalityData = await goDb.locations.municipalities.findById(stopData.municipality_id, { projection: { '_id': 1, 'properties.name': 1 } });
-		const matchingParishData = await goDb.locations.parishes.findById(stopData.parish_id, { projection: { '_id': 1, 'properties.name': 1 } });
-		const matchingLocalityData = await goDb.locations.localities.findById(stopData.locality_id, { projection: { '_id': 1, 'properties.name': 1 } });
+		const matchingDistrictData = await locationsProvider.findDistrictById(stopData.district_id);
+		const matchingMunicipalityData = await locationsProvider.findMunicipalityById(stopData.municipality_id);
+		const matchingParishData = await locationsProvider.findParishById(stopData.parish_id);
+		const matchingLocalityData = await locationsProvider.findLocalityById(stopData.locality_id);
 
 		const parsedStopsRow: ExportedStopsRow = {
 			stop_id: matchingFlagData?.stop_id ?? String(stopData._id),

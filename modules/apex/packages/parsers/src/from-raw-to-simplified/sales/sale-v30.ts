@@ -1,6 +1,5 @@
 /* * */
 
-import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { ApexCardTypeSchema, ApexPaymentMethodSchema, type RawApexTransactionSaleV30, type SimplifiedApexOnBoardSale, SimplifiedApexOnBoardSaleSchema } from '@tmlmobilidade/go-types-apex';
 import { toUInt64 } from '@tmlmobilidade/utils';
@@ -22,7 +21,7 @@ export function parseRawApexTransactionSaleV30IntoSimplifiedApexOnBoardSale(doc:
 	const result: SimplifiedApexOnBoardSale = {
 		_id: doc.payload.transactionInfo.transactionId,
 		agency_code: doc.payload.operatorInfo.operatorLongID,
-		agency_id: getAgencyIdFromOperatorLongId(doc.payload.operatorInfo.operatorLongID),
+		agency_id: doc.agency_id,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		card_physical_type: ApexCardTypeSchema.parse(String(doc.payload.cardInfo.cardPhysicalType)),
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),

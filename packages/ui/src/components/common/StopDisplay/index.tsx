@@ -1,6 +1,6 @@
 /* * */
 
-import type { Stop } from '@carrismetropolitana/api-types/network';
+import type { HubStop } from '@tmlmobilidade/go-types-public-info';
 
 import { Skeleton } from '@mantine/core';
 
@@ -14,7 +14,7 @@ import { StopDisplayName } from '../StopDisplayName';
 interface Props {
 	size?: 'lg' | 'md'
 	skeletonWidth?: number
-	stopData?: Stop
+	stopData?: HubStop
 }
 
 /* * */
@@ -23,8 +23,8 @@ export function StopDisplay({ size = 'md', skeletonWidth = 200, stopData }: Prop
 	return stopData
 		? (
 			<div className={`${styles.container} ${styles[size]}`}>
-				<StopBadge stopId={stopData.id} />
-				<StopDisplayName longName={stopData.long_name} size={size} />
+				<StopBadge stopId={stopData._id.toString()} />
+				<StopDisplayName longName={stopData.name} size={size} />
 			</div>
 		)
 		: (

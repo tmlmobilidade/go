@@ -1,7 +1,7 @@
 /* * */
 
-import { SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
-import { Ride } from '@tmlmobilidade/types';
+import { type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
+import { type Ride } from '@tmlmobilidade/types';
 
 /* * */
 

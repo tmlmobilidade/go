@@ -97,6 +97,7 @@
 		"dev:tracker:es-crtm-la-veloz": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-es-crtm-la-veloz-*",
 		"dev:tracker:pt-tml-ccfl": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ccfl-*",
 		"dev:tracker:pt-tml-cm": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-*",
+		"dev:tracker:pt-tml-cm-core-migrate": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-core-migrate",
 		"dev:tracker:pt-tml-cp": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cp-*",
 		"dev:tracker:pt-tml-fertagus": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-fertagus-*",
 		"dev:tracker:pt-tml-ml": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ml-*",
@@ -104,10 +105,10 @@
 		"dev:tracker:pt-tml-tcb": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-tcb-*",
 		"dev:tracker:pt-tml-ttsl": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ttsl-*",
 		"dev:tracker:pt-tmp-unir": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tmp-unir-*",
+		"dev:tracker:rawdb-sync": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-rawdb-sync",
 
 		"helper:alerts:migrate-db": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-alerts-helpers-migrate-db",
 		"helper:dates:seed-periods": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-dates-helpers-seed-periods",
-		"helper:locations:seed-locations": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:offer:backfill-pattern-polylines": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-backfill-pattern-polylines",
 		"helper:offer:seed-fares": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-fares",
 		"helper:offer:seed-lines": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-lines",
@@ -125,6 +126,7 @@
 		"prd:controller:rides-feeder": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-controller-rides-feeder",
 		"prd:controller:ui": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
 		"prd:eta": "npm run build:eta:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
+		"prd:hub:publish-realtime": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-realtime",
 		"prd:hub:ui:navegante-app": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
 		"prd:plans": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
 		"prd:stops": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
@@ -133,6 +135,8 @@
 		"prd:tracker:es-crtm-la-veloz": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-es-crtm-la-veloz-*",
 		"prd:tracker:pt-tml-ccfl": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ccfl-*",
 		"prd:tracker:pt-tml-cm": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-*",
+		"prd:tracker:pt-tml-cm-core-migrate": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-core-migrate",
+		"prd:tracker:pt-tml-cm-core-migrate-coordinator": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-core-migrate-coordinator",
 		"prd:tracker:pt-tml-cp": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cp-*",
 		"prd:tracker:pt-tml-fertagus": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-fertagus-*",
 		"prd:tracker:pt-tml-ml": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ml-*",
@@ -140,13 +144,15 @@
 		"prd:tracker:pt-tml-tcb": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-tcb-*",
 		"prd:tracker:pt-tml-ttsl": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ttsl-*",
 		"prd:tracker:pt-tmp-unir": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tmp-unir-*",
+		"prd:tracker:rawdb-sync": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-rawdb-sync",
 
 		"repo:assets": "bash ./scripts/set-public-symlinks.sh",
 		"repo:build": "turbo build --filter=./packages-new/**/* && turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/*",
+		"repo:deps": "npx --yes @tmlmobilidade/repo-deps",
 		"repo:init": "npm i && npm run repo:assets && npm run repo:build && npm run repo:routes",
 		"repo:lint": "turbo lint",
 		"repo:lint:fix": "turbo lint:fix",
-		"repo:load-env-prd": "ENVIRONMENT=prd npx --yes @dotenv-run/cli -v -f ./environments/prd/.env.prd --",
+		"repo:load-env-prd": "ENVIRONMENT=dev npx --yes @dotenv-run/cli -v -f ./environments/prd/.env.prd --",
 		"repo:load-env-stg": "ENVIRONMENT=dev npx --yes @dotenv-run/cli -v -f ./environments/stg/.env.stg --",
 		"repo:rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"repo:routes": "bash ./scripts/generate-routes.sh"
@@ -156,7 +162,7 @@
 		"@commitlint/config-conventional": "21.2.0",
 		"@tmlmobilidade/eslint": "*",
 		"husky": "9.1.7",
-		"turbo": "2.10.6"
+		"turbo": "2.10.7"
 	},
 	"packageManager": "npm@12.0.1",
 	"workspaces": [
@@ -167,7 +173,7 @@
 		"cli/*"
 	],
 	"overrides": {
-		"eslint": "10.7.0",
+		"eslint": "10.8.0",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
 		"zod": "3.25.76"

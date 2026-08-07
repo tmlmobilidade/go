@@ -27,10 +27,10 @@
 > Inventory of everything referenced or computed, used as the foundation for the rest of this document.
 
 ## Tables Referenced
-- `{database}.curr_vehicle_events`
-- `{database}.curr_rides`
-- `{database}.curr_waypoints_snapped`
-- `{database}.pred_node_etas`
+- `eta.curr_vehicle_events`
+- `eta.curr_rides`
+- `eta.curr_waypoints_snapped`
+- `eta.pred_node_etas`
 
 ## Views Referenced
 - `mv_pred_trip_stop_etas` (this MV)
@@ -221,13 +221,13 @@ Creates the output storage and the materialized view that refreshes it.
 
 ### SQL Fragment
 ```sql
-CREATE TABLE IF NOT EXISTS {database}.pred_trip_stop_etas (...)
+CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas (...)
 ENGINE = ReplacingMergeTree(refreshed_at)
 ORDER BY (trip_id, vehicle_id, stop_sequence);
 
-CREATE MATERIALIZED VIEW IF NOT EXISTS {database}.mv_pred_trip_stop_etas
+CREATE MATERIALIZED VIEW IF NOT EXISTS eta.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND
-TO {database}.pred_trip_stop_etas
+TO eta.pred_trip_stop_etas
 AS
 WITH ...
 SELECT ...

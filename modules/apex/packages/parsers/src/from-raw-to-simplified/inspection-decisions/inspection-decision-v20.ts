@@ -1,6 +1,5 @@
 /* * */
 
-import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { ApexControlStatusSchema, type RawApexTransactionInspectionDecisionV20, type SimplifiedApexInspectionDecision, SimplifiedApexInspectionDecisionSchema } from '@tmlmobilidade/go-types-apex';
 
@@ -21,7 +20,7 @@ export function parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexIn
 	const result: SimplifiedApexInspectionDecision = {
 		_id: doc.payload.transactionInfo.transactionId,
 		agency_code: doc.payload.operatorInfo.operatorLongID,
-		agency_id: getAgencyIdFromOperatorLongId(doc.payload.operatorInfo.operatorLongID),
+		agency_id: doc.agency_id,
 		apex_version: doc.payload.versionInfo.apexVersion,
 		created_at: transactionDateValue.unix_timestamp,
 		device_id: doc.payload.operatorInfo.deviceID,
