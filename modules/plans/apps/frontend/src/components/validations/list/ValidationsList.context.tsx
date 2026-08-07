@@ -2,8 +2,9 @@
 
 import { type ValidationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type GtfsValidation, PermissionCatalog, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/types';
+import { PermissionCatalog, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/types';
 import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

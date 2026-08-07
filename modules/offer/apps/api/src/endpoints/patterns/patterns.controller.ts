@@ -7,8 +7,9 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type CreatePatternDto, type Pattern, type PatternShapeMapItem, type PopulatedPath, type PopulatedPattern, type StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { CreatePatternDto, NoteComment, type Pattern, type PatternShapeMapItem, PermissionCatalog, PopulatedPath, PopulatedPattern, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { type NoteComment, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 

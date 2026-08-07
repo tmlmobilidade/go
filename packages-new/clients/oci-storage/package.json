@@ -38,7 +38,7 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*",
 		"oci-common": "2.139.0",
-		"oci-objectstorage": "2.137.1"
+		"oci-objectstorage": "2.139.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

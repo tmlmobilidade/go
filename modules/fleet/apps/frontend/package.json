@@ -19,6 +19,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",

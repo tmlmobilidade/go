@@ -4,7 +4,7 @@
 
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { ParameterCreateStopItem } from '@/components/patterns/shape/parameters/create/ParameterCreateStopItem';
-import { PopulatedPath } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 
 import styles from './styles.module.css';
 

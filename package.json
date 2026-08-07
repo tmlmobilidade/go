@@ -36,7 +36,6 @@
 		"build:offer": "turbo run build --filter=@tmlmobilidade/go-offer-*",
 		"build:performance": "turbo run build --filter=@tmlmobilidade/go-performance-*",
 		"build:plans": "turbo run build --filter=@tmlmobilidade/go-plans-*",
-		"build:replicator": "turbo run build --filter=@tmlmobilidade/go-replicator-*",
 		"build:stops": "turbo run build --filter=@tmlmobilidade/go-stops-*",
 		"build:stops:pckg": "turbo run build --filter=@tmlmobilidade/go-stops-pckg-*",
 		"build:tracker": "turbo run build --filter=@tmlmobilidade/go-tracker-*",
@@ -86,6 +85,7 @@
 		"dev:performance:sync-metrics-daily": "npm run build:performance:sync-metrics-daily && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-performance-sync-metrics-daily",
 		"dev:performance:sync-metrics-realtime": "npm run build:performance:sync-metrics-realtime && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-performance-sync-metrics-realtime",
 		"dev:plans": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
+		"dev:plans:ui": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-plans-api --filter=@tmlmobilidade/go-plans-frontend",
 		"dev:replicator": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-replicator-*",
 		"dev:replicator:helpers-dump-data": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-replicator-helpers-dump-data",
 		"dev:replicator:stream": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-replicator-stream",
@@ -162,9 +162,9 @@
 		"@commitlint/config-conventional": "21.2.0",
 		"@tmlmobilidade/eslint": "*",
 		"husky": "9.1.7",
-		"turbo": "2.10.7"
+		"turbo": "2.10.8"
 	},
-	"packageManager": "npm@12.0.1",
+	"packageManager": "npm@12.0.2",
 	"workspaces": [
 		"!**/.next",
 		"modules/**/*",

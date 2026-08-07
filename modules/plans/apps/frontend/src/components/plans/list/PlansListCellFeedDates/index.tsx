@@ -3,7 +3,7 @@
 import { type PlanNormalized } from '@/types/normalized';
 import { IconArrowRight } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { Indicator, Tag } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
@@ -11,8 +11,8 @@ import styles from './styles.module.css';
 /* * */
 
 interface PlansListCellFeedDatesProps {
-	endDate: OperationalDate
-	startDate: OperationalDate
+	endDate: GtfsDate
+	startDate: GtfsDate
 	validityStatus: PlanNormalized['validity_status']
 }
 

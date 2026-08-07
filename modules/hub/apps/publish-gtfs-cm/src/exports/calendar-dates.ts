@@ -2,9 +2,10 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type OperationalDate, type Plan } from '@tmlmobilidade/types';
+import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 

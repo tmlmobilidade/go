@@ -2,8 +2,9 @@
 
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 
-/* * */
-
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export interface HashedShapePoint {
 	shape_dist_traveled: number
 	shape_pt_lat: number
@@ -11,8 +12,9 @@ export interface HashedShapePoint {
 	shape_pt_sequence: number
 }
 
-/* * */
-
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export interface HashedShape {
 	_id: string
 	agency_id: string

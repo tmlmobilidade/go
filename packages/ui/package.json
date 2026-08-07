@@ -24,6 +24,7 @@
 		"swr": "2.x"
 	},
 	"dependencies": {
+		"@carrismetropolitana/api-types": "20260730.2028.44",
 		"@dnd-kit/core": "6.3.1",
 		"@dnd-kit/sortable": "10.0.0",
 		"@dnd-kit/utilities": "3.2.2",
@@ -40,6 +41,8 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-types-downloads": "*",
+		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/strings": "*",

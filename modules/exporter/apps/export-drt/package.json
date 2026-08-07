@@ -17,7 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@carrismetropolitana/api-types": "20260509.2134.54",
+		"@carrismetropolitana/api-types": "20260730.2028.44",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
