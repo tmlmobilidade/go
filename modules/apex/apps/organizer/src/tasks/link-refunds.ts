@@ -3,7 +3,7 @@
 // import { escapeClickHouseString, queryRows, updateById } from '@/utils/clickhouse.js';
 // import { Dates } from '@tmlmobilidade/dates';
 // import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/go-apex-pckg-parse';
-// import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+// import { goDd } from '@tmlmobilidade/go-interfaces-godb';
 // import { Logger } from '@tmlmobilidade/logger';
 // import { Timer } from '@tmlmobilidade/timer';
 
@@ -123,7 +123,7 @@
 // 			if (!validationTransaction.trip_id) continue;
 
 // 			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardRefund.created_at).std_window;
-// 			await goDB.operation.rides.updateMany(
+// 			await goDd.operation.rides.updateMany(
 // 				{
 // 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 // 					trip_id: validationTransaction.trip_id,

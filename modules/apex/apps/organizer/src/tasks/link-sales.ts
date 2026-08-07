@@ -5,7 +5,7 @@
 // import { simplifiedApexOnBoardSalesNew, simplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
 // import { Logger } from '@tmlmobilidade/logger';
 // import { Timer } from '@tmlmobilidade/timer';
-// import { goDB } from '@tmlmobilidade/go-interfaces-go-db';
+// import { goDd } from '@tmlmobilidade/go-interfaces-godb';
 
 // /* * */
 
@@ -94,7 +94,7 @@
 // 			});
 // 			//
 // 			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardSale.created_at).std_window;
-// 			await goDB.operation.rides.updateMany(
+// 			await goDd.operation.rides.updateMany(
 // 				{
 // 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 // 					trip_id: validationTransaction.trip_id,
