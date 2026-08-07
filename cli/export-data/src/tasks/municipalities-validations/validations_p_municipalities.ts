@@ -2,8 +2,9 @@ import { type ExportType, type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import ExcelJS from 'exceljs';
 import fs from 'node:fs';
+import Papa from 'papaparse';
+import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -264,22 +265,25 @@ export async function exportValidationsPMunicipalities({
 	message(`Rows finais: ${finalMap.size}`);
 
 	//
-	// Excel
+	// CSV
 
-	message('A gerar Excel...');
+	message('A gerar CSV...');
 
-	const workbook = new ExcelJS.Workbook();
+	const dirPath = `${context.output}/${TASK_ID}-${context.dates.start}-${context.dates.end}.csv`;
 
-	const worksheet = workbook.addWorksheet('municipalities_validations');
+	const writer = new BatchWriter({
+		batch_size: 100_000,
+		insertFn: async (data) => {
+			const fileAlreadyExists = fs.existsSync(dirPath);
+			let csvData = Papa.unparse(data, { header: !fileAlreadyExists, newline: '\n', skipEmptyLines: 'greedy' });
+			if (fileAlreadyExists) csvData = '\n' + csvData;
+			fs.appendFileSync(dirPath, csvData, { encoding: 'utf-8', flush: true });
+		},
+		title: 'municipalities_validations',
+	});
 
-	worksheet.columns = [
-		{ header: 'Dia', key: 'day', width: 15 },
-		{ header: 'Dia tipo', key: 'day_type', width: 15 },
-		{ header: 'Periodo', key: 'period', width: 15 },
-		{ header: 'Operador', key: 'operator', width: 15 },
-		{ header: 'Municipio', key: 'municipality', width: 30 },
-		{ header: 'Validations', key: 'validations', width: 20 },
-	];
+
+
 
 	//
 	// Rows
@@ -289,34 +293,22 @@ export async function exportValidationsPMunicipalities({
 
 		const calendarInfo = calendarMap.get(day);
 
-		worksheet.addRow({
+		writer.write([{
 			day,
 			day_type: calendarInfo?.day_type || '',
 			municipality,
 			operator,
 			period: calendarInfo?.period || '',
 			validations: validationsCount,
-		});
+		}]);
 	}
-
-	//
-	// Style
-
-	worksheet.getRow(1).font = { bold: true };
-
-	worksheet.autoFilter = {
-		from: 'A1',
-		to: 'F1',
-	};
 
 	//
 	// Save
 
-	const outputFile = `${context.output}/${TASK_ID}-${context.dates.start}-${context.dates.end}.xlsx`;
+	await writer.flush();
 
-	await workbook.xlsx.writeFile(outputFile);
-
-	message(`Export concluído: ${outputFile}`);
+	message(`Export concluído: ${dirPath}`);
 
 	//
 }

@@ -15,8 +15,8 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@mantine/hooks": "9.4.2",
-		"@tabler/icons-react": "3.45.0",
+		"@mantine/hooks": "9.5.1",
+		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
@@ -27,26 +27,26 @@
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"@turf/turf": "7.3.5",
-		"@vis.gl/react-maplibre": "8.1.1",
+		"@turf/turf": "7.4.0",
+		"@vis.gl/react-maplibre": "8.1.2",
 		"luxon": "3.7.2",
 		"maplibre-gl": "5.24.0",
-		"next": "16.2.12",
-		"nuqs": "2.9.2",
+		"next": "16.3.0",
+		"nuqs": "2.9.5",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
 		"react-i18next": "17.0.11",
 		"recharts": "3.10.1",
 		"sharp": "0.35.3",
-		"swr": "2.4.2"
+		"swr": "2.5.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/geojson": "7946.0.16",
-		"@types/luxon": "3.7.2",
-		"@types/node": "26.1.1",
-		"@types/react": "19.2.17",
-		"@types/react-dom": "19.2.3",
+		"@types/luxon": "3.7.3",
+		"@types/node": "26.1.2",
+		"@types/react": "19.2.18",
+		"@types/react-dom": "19.2.4",
 		"typescript": "6.0.3"
 	}
 }

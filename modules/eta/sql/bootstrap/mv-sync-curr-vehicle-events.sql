@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS eta.curr_vehicle_events
 (
     _id String,
+    agency_id String,
     trip_id String,
     vehicle_id String,
     hashed_shape_id String,
@@ -22,6 +23,7 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS eta.mv_curr_vehicle_events
 TO eta.curr_vehicle_events AS
 SELECT
     s._id AS _id,
+    s.agency_id AS agency_id,
     s.trip_id AS trip_id,
     s.vehicle_id AS vehicle_id,
     d.hashed_shape_id AS hashed_shape_id,
@@ -36,6 +38,7 @@ INNER JOIN eta.curr_rides AS d ON s.trip_id = d.trip_id
 INNER JOIN eta.hist_shape_nodes AS n ON d.hashed_shape_id = n.hashed_shape_id
 GROUP BY
     s._id,
+    s.agency_id,
     s.trip_id,
     s.vehicle_id,
     d.hashed_shape_id,

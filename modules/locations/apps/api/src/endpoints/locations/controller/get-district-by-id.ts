@@ -3,6 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { District } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 import { z } from 'zod';
@@ -31,16 +32,7 @@ export async function getDistrictById(request: FastifyRequest<{ Params: { id: st
 	//
 	// Fetch a district
 
-	const district = await goDb.locations.districts.aggregate([
-		{ $match: { _id: request.params.id } },
-		// Remove the geometry field
-		{ $project: { geometry: params.geometry ? 1 : 0 } },
-		// Flatten the properties object into the root object
-		{ $replaceRoot: { newRoot: { $mergeObjects: ['$$ROOT', '$properties'] } } },
-		{ $unset: 'properties' },
-		// Sort by _id
-		{ $sort: { _id: 1 } },
-	]);
+	const district = await locationsProvider.findDistrictById(request.params.id, { geometry: params.geometry });
 
 	return reply
 		.header('Access-Control-Allow-Origin', '*')

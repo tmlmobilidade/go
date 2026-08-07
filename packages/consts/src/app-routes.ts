@@ -361,9 +361,11 @@ export const API_ROUTES = Object.freeze({
 		PLANS_LIST: `${getModuleConfig('hub', 'api_url')}/v1/plans`,
 
 		// REALTIME
-		REALTIME_TRIP_UPDATES: `${getModuleConfig('hub', 'api_url')}/v1/realtime/trip-updates`,
-		REALTIME_TRIP_UPDATES_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/trip-updates/gtfs`,
-		REALTIME_TRIP_UPDATES_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/trip-updates/gtfs.pb`,
+		REALTIME_ETA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta`,
+		REALTIME_ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}`,
+		REALTIME_ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}`,
+		REALTIME_ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs`,
+		REALTIME_ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs.pb`,
 		REALTIME_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/metadata`,
 		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
 		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
