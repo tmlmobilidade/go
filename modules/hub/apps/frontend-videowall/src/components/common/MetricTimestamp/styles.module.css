@@ -2,9 +2,13 @@
 /* CONTAINER */
 
 .container {
+	flex: 0 0 240px;
 	font-size: clamp(13px, 1.1vw, 15px);
+	font-variant-numeric: tabular-nums;
 	font-weight: 600;
 	line-height: 1;
 	color: inherit;
+	text-align: right;
 	text-transform: uppercase;
+	white-space: nowrap;
 }
