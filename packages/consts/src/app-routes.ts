@@ -262,7 +262,6 @@ export const API_ROUTES = Object.freeze({
 		ACCEPTANCE_LOCK: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/acceptance/lock`,
 
 		// RIDES
-		RIDES_DETAIL_HASHED_SHAPE: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-shape`,
 		RIDES_DETAIL_HASHED_TRIP: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-trip`,
 		RIDES_DETAIL_REPROCESS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/reprocess`,
 		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/ride`,
@@ -363,7 +362,11 @@ export const API_ROUTES = Object.freeze({
 		// REALTIME
 		REALTIME_ETA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta`,
 		REALTIME_ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}`,
+		REALTIME_ETA_BY_STOP_GTFS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}/gtfs`,
+		REALTIME_ETA_BY_STOP_GTFS_PB: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}/gtfs.pb`,
 		REALTIME_ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}`,
+		REALTIME_ETA_BY_TRIP_GTFS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}/gtfs`,
+		REALTIME_ETA_BY_TRIP_GTFS_PB: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}/gtfs.pb`,
 		REALTIME_ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs`,
 		REALTIME_ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs.pb`,
 		REALTIME_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/metadata`,
