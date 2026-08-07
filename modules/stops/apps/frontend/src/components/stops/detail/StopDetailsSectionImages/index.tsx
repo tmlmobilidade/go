@@ -63,7 +63,7 @@ export function StopDetailsSectionImages() {
 				{!stopDetailContext.flags.isReadOnly && (
 					<div className={styles.uploadAction}>
 						<FileButton
-							accept="image/png,image/jpeg,image/jpg,image/HEIC"
+							accept="image/png,image/jpeg,image/jpg"
 							icon={<IconPhotoPlus size={18} />}
 							label="Adicionar imagens"
 							onFilesChange={handleFilesChange}
