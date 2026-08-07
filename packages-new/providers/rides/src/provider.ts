@@ -37,7 +37,7 @@ class RidesProviderClass {
 		// Fetch the rides data from the database in a single query
 		const selectResult = await labDb.operation.rides.select(
 			'*',
-			`_id IN ($1) AND updated_at = (SELECT max(updated_at) FROM rides AS r2 WHERE r2._id = rides._id)`,
+			`_id IN ($1) AND updated_at = (SELECT max(updated_at) FROM operation.rides AS r2 WHERE r2._id = operation.rides._id)`,
 			{ 1: rideIds.join(',') },
 		);
 		// Throw an error if no rides are found
@@ -77,12 +77,12 @@ class RidesProviderClass {
 		const selectResult = await labDb.operation.rides.queryFromString(
 			`
 				SELECT *
-				FROM rides
+				FROM operation.rides
 				WHERE ${where}
 				AND updated_at = (
 					SELECT max(updated_at)
-					FROM rides AS r2
-					WHERE r2._id = rides._id
+					FROM operation.rides AS r2
+					WHERE r2._id = operation.rides._id
 				)
 			`,
 			params,
