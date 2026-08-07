@@ -12,34 +12,36 @@
 		"dev": "next dev -p 51010",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix ./src",
-		"start": "next start"
+		"start": "next start",
+		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
-		"@tabler/icons-react": "3.45.0",
+		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"@vis.gl/react-maplibre": "8.1.1",
+		"@vis.gl/react-maplibre": "8.1.2",
 		"clsx": "2.1.1",
 		"jszip": "3.10.1",
 		"mantine-form-zod-resolver": "1.3.0",
-		"next": "16.2.12",
+		"next": "16.3.0",
 		"papaparse": "5.5.4",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
-		"swr": "2.4.2"
+		"swr": "2.5.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/luxon": "3.7.2",
-		"@types/node": "26.1.1",
+		"@types/luxon": "3.7.3",
+		"@types/node": "26.1.2",
 		"@types/papaparse": "5.5.2",
-		"@types/react": "19.2.17",
-		"@types/react-dom": "19.2.3",
+		"@types/react": "19.2.18",
+		"@types/react-dom": "19.2.4",
+		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }

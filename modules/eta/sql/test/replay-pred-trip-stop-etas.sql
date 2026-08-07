@@ -1,6 +1,6 @@
--- Replay variant of {database}.mv_pred_trip_stop_etas + api/2-select-pred-trip-stop-etas-by-trip-id.sql.
+-- Replay variant of eta.mv_pred_trip_stop_etas + api/2-select-pred-trip-stop-etas-by-trip-id.sql.
 --
--- Computes stop ETAs from the current contents of {database}.curr_vehicle_events
+-- Computes stop ETAs from the current contents of eta.curr_vehicle_events
 -- for the given `{trip_id:String}`, treating `{now_ms:Int64}` as the wall clock.
 -- Returns enriched rows with the same shape as the API endpoint, so the analyzer
 -- can persist them directly without round-tripping through pred_trip_stop_etas
@@ -18,7 +18,7 @@ WITH
             vehicle_id,
             argMax(hashed_shape_id, created_at) AS hashed_shape_id,
             max(created_at)                     AS position_created_at
-        FROM {database}.curr_vehicle_events
+        FROM eta.curr_vehicle_events
         WHERE trip_id = {trip_id:String}
           AND created_at >= {now_ms:Int64} - 30 * 60 * 1000
         GROUP BY trip_id, vehicle_id
@@ -35,7 +35,7 @@ WITH
             max(e.node_index)      AS current_node_index,
             lf.position_created_at AS position_created_at
         FROM latest_fix AS lf
-        INNER JOIN {database}.curr_vehicle_events AS e
+        INNER JOIN eta.curr_vehicle_events AS e
             ON e.trip_id = lf.trip_id
            AND e.vehicle_id = lf.vehicle_id
         WHERE e.created_at BETWEEN lf.position_created_at - 2 * 60 * 1000
@@ -48,15 +48,22 @@ WITH
     ),
     pos_with_trip AS (
         SELECT
-            lp.trip_id             AS trip_id,
-            lp.vehicle_id          AS vehicle_id,
-            lp.hashed_shape_id     AS hashed_shape_id,
-            d.hashed_trip_id       AS hashed_trip_id,
-            lp.current_node_index  AS current_node_index,
-            lp.position_created_at AS position_created_at,
+            lp.trip_id                  AS trip_id,
+            lp.vehicle_id               AS vehicle_id,
+            lp.hashed_shape_id          AS hashed_shape_id,
+            d.agency_id                 AS agency_id,
+            d.plan_id                   AS plan_id,
+            d.hashed_trip_id            AS hashed_trip_id,
+            lp.current_node_index       AS current_node_index,
+            cn.latitude                 AS current_node_latitude,
+            cn.longitude                AS current_node_longitude,
+            lp.position_created_at      AS position_created_at,
             fromUnixTimestamp64Milli(lp.position_created_at) AS pos_dt
         FROM latest_pos AS lp
-        INNER JOIN {database}.curr_rides AS d ON lp.trip_id = d.trip_id
+        INNER JOIN eta.curr_rides AS d ON lp.trip_id = d.trip_id
+        LEFT JOIN eta.hist_shape_nodes AS cn
+            ON cn.hashed_shape_id = lp.hashed_shape_id
+           AND cn.node_index = lp.current_node_index
     ),
     pos_with_op_dt AS (
         SELECT
@@ -105,7 +112,7 @@ WITH
             e.node_index           AS node_index,
             e.created_at           AS created_at
         FROM pos_full AS pf
-        INNER JOIN {database}.curr_vehicle_events AS e
+        INNER JOIN eta.curr_vehicle_events AS e
             ON e.trip_id = pf.trip_id
            AND e.vehicle_id = pf.vehicle_id
         WHERE e.trip_id = {trip_id:String}
@@ -188,7 +195,7 @@ WITH
             lo.observed_seconds    AS observed_seconds,
             sum(p.predicted_travel_time_seconds) AS baseline_seconds
         FROM live_observed AS lo
-        LEFT JOIN {database}.pred_node_etas AS p
+        LEFT JOIN eta.pred_node_etas AS p
             ON p.hashed_shape_id = lo.hashed_shape_id
            AND p.period_of_day   = lo.period_of_day
            AND p.weekday         = lo.weekday
@@ -233,22 +240,31 @@ WITH
     ),
     upcoming AS (
         SELECT
-            pf.trip_id             AS trip_id,
-            pf.vehicle_id          AS vehicle_id,
-            pf.hashed_shape_id     AS hashed_shape_id,
-            pf.hashed_trip_id      AS hashed_trip_id,
-            pf.current_node_index  AS current_node_index,
-            pf.position_created_at AS position_created_at,
-            pf.period_of_day       AS period_of_day,
-            pf.weekday             AS weekday,
-            pf.day_type            AS day_type,
-            w.stop_sequence        AS stop_sequence,
-            w.stop_id              AS stop_id,
-            w.stop_name            AS stop_name,
-            w.node_index           AS stop_node_index
+            pf.trip_id                  AS trip_id,
+            pf.vehicle_id               AS vehicle_id,
+            pf.agency_id                AS agency_id,
+            pf.plan_id                  AS plan_id,
+            pf.hashed_shape_id          AS hashed_shape_id,
+            pf.hashed_trip_id           AS hashed_trip_id,
+            pf.current_node_index       AS current_node_index,
+            pf.current_node_latitude    AS current_node_latitude,
+            pf.current_node_longitude   AS current_node_longitude,
+            pf.position_created_at      AS position_created_at,
+            pf.period_of_day            AS period_of_day,
+            pf.weekday                  AS weekday,
+            pf.day_type                 AS day_type,
+            w.stop_sequence             AS stop_sequence,
+            w.stop_id                   AS stop_id,
+            w.stop_name                 AS stop_name,
+            w.node_index                AS stop_node_index,
+            sn.latitude                 AS stop_node_latitude,
+            sn.longitude                AS stop_node_longitude
         FROM pos_full AS pf
-        INNER JOIN {database}.curr_waypoints_snapped AS w
+        INNER JOIN eta.curr_waypoints_snapped AS w
             ON pf.hashed_trip_id = w.hashed_trip_id
+        LEFT JOIN eta.hist_shape_nodes AS sn
+            ON sn.hashed_shape_id = pf.hashed_shape_id
+           AND sn.node_index = w.node_index
         WHERE w.node_index >= pf.current_node_index
     ),
     -- One distinct (trip, vehicle) per live position. This is the driving set
@@ -277,7 +293,7 @@ WITH
             p.predicted_travel_time_seconds
                 * coalesce(lf.live_adjustment, toFloat64(1)) AS node_seconds
         FROM live_trips AS lt
-        INNER JOIN {database}.pred_node_etas AS p
+        INNER JOIN eta.pred_node_etas AS p
             ON p.hashed_shape_id = lt.hashed_shape_id
            AND p.period_of_day   = lt.period_of_day
            AND p.weekday         = lt.weekday
@@ -318,15 +334,21 @@ WITH
         SELECT
             u.trip_id             AS trip_id,
             u.vehicle_id          AS vehicle_id,
+            u.agency_id           AS agency_id,
+            u.plan_id             AS plan_id,
             u.hashed_trip_id      AS hashed_trip_id,
-            u.hashed_shape_id     AS hashed_shape_id,
-            u.current_node_index  AS current_node_index,
-            u.position_created_at AS position_created_at,
-            u.stop_sequence       AS stop_sequence,
-            u.stop_id             AS stop_id,
-            u.stop_name           AS stop_name,
-            u.stop_node_index     AS stop_node_index,
-            if(c.cum_known_nodes > 0, c.cum_seconds, toFloat64(0)) AS eta_seconds
+            u.hashed_shape_id         AS hashed_shape_id,
+            u.current_node_index      AS current_node_index,
+            u.current_node_latitude   AS current_node_latitude,
+            u.current_node_longitude  AS current_node_longitude,
+            u.position_created_at     AS position_created_at,
+            u.stop_sequence           AS stop_sequence,
+            u.stop_id                 AS stop_id,
+            u.stop_name               AS stop_name,
+            u.stop_node_index         AS stop_node_index,
+            u.stop_node_latitude      AS stop_node_latitude,
+            u.stop_node_longitude     AS stop_node_longitude,
+            if(c.cum_known_nodes > 0, c.cum_seconds, toFloat64(0)) AS eta_seconds_raw
         FROM upcoming AS u
         ASOF LEFT JOIN trip_node_cum AS c
             ON c.trip_id     = u.trip_id
@@ -337,45 +359,99 @@ WITH
         SELECT
             trip_id,
             vehicle_id,
+            agency_id,
+            plan_id,
             hashed_trip_id,
             hashed_shape_id,
             current_node_index,
+            current_node_latitude,
+            current_node_longitude,
             position_created_at,
             stop_sequence,
             stop_id,
             stop_name,
             stop_node_index,
-            if(eta_seconds IS NOT NULL AND isFinite(assumeNotNull(eta_seconds)),
-               eta_seconds, NULL) AS eta_seconds
+            stop_node_latitude,
+            stop_node_longitude,
+            if(eta_seconds_raw IS NOT NULL AND isFinite(assumeNotNull(eta_seconds_raw)),
+               toUInt16(ceil(assumeNotNull(eta_seconds_raw))), NULL) AS eta_seconds
         FROM eta_calc
+    ),
+    go_stop_flags AS (
+        SELECT
+            agency_stop_id,
+            any(go_stop_id) AS go_stop_id
+        FROM (
+            SELECT
+                toString(go_stops._id)             AS go_stop_id,
+                JSONExtractString(flag, 'stop_id') AS agency_stop_id
+            FROM (
+                SELECT
+                    _id,
+                    flags
+                FROM infrastructure.stops
+                SETTINGS mongodb_throw_on_unsupported_query = 0
+            ) AS go_stops
+            ARRAY JOIN JSONExtractArrayRaw(assumeNotNull(go_stops.flags)) AS flag
+        )
+        WHERE agency_stop_id != ''
+        GROUP BY agency_stop_id
+    ),
+    eta_resolved AS (
+        SELECT
+            ec.trip_id,
+            ec.agency_id,
+            ec.plan_id,
+            ec.vehicle_id,
+            ec.hashed_trip_id,
+            ec.hashed_shape_id,
+            ec.current_node_index,
+            ec.current_node_latitude,
+            ec.current_node_longitude,
+            ec.position_created_at,
+            ec.stop_sequence,
+            coalesce(gs.go_stop_id, ec.stop_id) AS stop_id,
+            ec.stop_name,
+            ec.stop_node_index,
+            ec.stop_node_latitude,
+            ec.stop_node_longitude,
+            ec.eta_seconds
+        FROM eta_clean AS ec
+        LEFT JOIN go_stop_flags AS gs
+            ON gs.agency_stop_id = ec.stop_id
     ),
     pred AS (
         SELECT
             trip_id,
+            agency_id,
+            plan_id,
             vehicle_id,
             hashed_trip_id,
             hashed_shape_id,
             current_node_index,
+            current_node_latitude,
+            current_node_longitude,
             position_created_at,
             stop_sequence,
             stop_id,
             stop_name,
             stop_node_index,
+            stop_node_latitude,
+            stop_node_longitude,
             eta_seconds,
             if(
                 eta_seconds IS NULL,
                 NULL,
-                fromUnixTimestamp64Milli(position_created_at)
-                    + toIntervalSecond(toInt64(round(assumeNotNull(eta_seconds))))
+                position_created_at + toInt64(assumeNotNull(eta_seconds)) * 1000
             ) AS eta_at
-        FROM eta_clean
+        FROM eta_resolved
     ),
     trip_summary AS (
         SELECT
             hashed_trip_id,
             argMin(arrival_time, stop_sequence) AS first_arrival_time,
             argMax(stop_name, stop_sequence)    AS last_stop_name
-        FROM {database}.curr_waypoints_snapped
+        FROM eta.curr_waypoints_snapped
         GROUP BY hashed_trip_id
     )
 SELECT
@@ -384,7 +460,11 @@ SELECT
     e.stop_id                                                                AS stop_id,
     e.stop_sequence                                                          AS stop_sequence,
     e.current_node_index                                                     AS current_node_index,
+    e.current_node_latitude                                                  AS current_node_latitude,
+    e.current_node_longitude                                                 AS current_node_longitude,
     e.stop_node_index                                                        AS stop_node_index,
+    e.stop_node_latitude                                                     AS stop_node_latitude,
+    e.stop_node_longitude                                                    AS stop_node_longitude,
     e.position_created_at                                                    AS position_created_at,
     e.eta_seconds                                                            AS eta_seconds,
     arrayStringConcat(
@@ -432,17 +512,17 @@ SELECT
     if(
         e.eta_at IS NULL,
         NULL,
-        formatDateTime(assumeNotNull(e.eta_at), '%H:%i:%S', 'Europe/Lisbon')
+        formatDateTime(fromUnixTimestamp64Milli(assumeNotNull(e.eta_at)), '%H:%i:%S', 'Europe/Lisbon')
     )                                                                        AS estimated_arrival,
     if(
         e.eta_at IS NULL,
         NULL,
-        toNullable(toInt64(toUnixTimestamp(assumeNotNull(e.eta_at))))
+        toNullable(toInt64(intDiv(assumeNotNull(e.eta_at), 1000)))
     )                                                                        AS estimated_arrival_unix
 FROM pred AS e
-LEFT JOIN {database}.curr_waypoints_snapped AS w
+LEFT JOIN eta.curr_waypoints_snapped AS w
     ON w.hashed_trip_id = e.hashed_trip_id AND w.stop_sequence = e.stop_sequence
-LEFT JOIN {database}.curr_rides AS r
+LEFT JOIN eta.curr_rides AS r
     ON r.trip_id = e.trip_id
 LEFT JOIN trip_summary AS ts
     ON ts.hashed_trip_id = e.hashed_trip_id

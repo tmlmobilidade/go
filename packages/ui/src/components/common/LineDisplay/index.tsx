@@ -1,7 +1,7 @@
 /* * */
 
-import { Line } from '@carrismetropolitana/api-types/network';
 import { Skeleton } from '@mantine/core';
+import { HubLine } from '@tmlmobilidade/go-types-public-info';
 
 import styles from './styles.module.css';
 
@@ -12,7 +12,7 @@ import { LineName } from '../LineName';
 
 export interface LineDisplayProps {
 	color?: string
-	lineData?: Line
+	lineData?: HubLine
 	longName?: string
 	shortName?: string
 	size?: 'lg' | 'md'
