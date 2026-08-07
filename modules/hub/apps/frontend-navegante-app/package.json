@@ -34,6 +34,8 @@
 		"@tmlmobilidade/utils": "*",
 		"@turf/turf": "7.4.0",
 		"@vis.gl/react-maplibre": "8.1.2",
+		"@turf/turf": "7.4.0",
+		"@vis.gl/react-maplibre": "8.1.2",
 		"classnames": "2.5.1",
 		"clsx": "2.1.1",
 		"dayjs": "1.11.21",
@@ -52,12 +54,16 @@
 		"react-viewport-list": "7.1.2",
 		"sharp": "0.35.3",
 		"swr": "2.5.0"
+		"swr": "2.5.0"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
 		"@types/geojson": "7946.0.16",
+		"@types/node": "26.1.2",
+		"@types/react": "19.2.18",
+		"@types/react-dom": "19.2.4",
 		"@types/node": "26.1.2",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.4",
