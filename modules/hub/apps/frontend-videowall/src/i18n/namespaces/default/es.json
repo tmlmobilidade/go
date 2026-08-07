@@ -348,6 +348,7 @@
 			"comparison": "vs referencia",
 			"current_series": "Hoy",
 			"reference_band": "Intervalo de referencia",
+			"reference_percentage_range": "Intervalo: {lower} a {upper}",
 			"reference_range": "Intervalo de referencia",
 			"reference_value": "Referencia {value}",
 			"status": {

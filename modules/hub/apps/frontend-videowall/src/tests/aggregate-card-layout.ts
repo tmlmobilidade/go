@@ -3,6 +3,8 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
+import { getDemandReferenceDeviationRange } from '../utils/demand-reference-range';
+
 /* * */
 
 const cardNames = [
@@ -40,3 +42,17 @@ assert.match(
 	/!breakdown && value\?\.typical_range/u,
 	'Only the aggregate demand card should replace the reference gauge with the operator footer',
 );
+
+const referenceDeviationRange = getDemandReferenceDeviationRange({
+	comparison_index_pct: 85,
+	deviation_status: 'typical',
+	passenger_validations_qty_last_week: 100,
+	passenger_validations_qty_now: 85,
+	typical_comparison_index_pct: 85,
+	typical_cumulative_qty: 100,
+	typical_range: { lower: 80, upper: 110 },
+});
+
+assert.ok(referenceDeviationRange);
+assert.ok(Math.abs(referenceDeviationRange.lower - (-20)) < Number.EPSILON);
+assert.ok(Math.abs(referenceDeviationRange.upper - 10) < 1e-10);

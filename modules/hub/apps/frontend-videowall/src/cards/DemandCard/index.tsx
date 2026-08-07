@@ -8,6 +8,7 @@ import { MetricNumber } from '@/components/common/MetricNumber';
 import { MetricTimestamp } from '@/components/common/MetricTimestamp';
 import { DemandRangeGauge } from '@/components/demand/DemandRangeGauge';
 import { DemandTrend } from '@/components/demand/DemandTrend';
+import { getDemandReferenceDeviationRange } from '@/utils/demand-reference-range';
 import { IconUsersGroup } from '@tabler/icons-react';
 import {
 	type PassengerDemandTrendPoint,
@@ -33,6 +34,17 @@ type DemandSentiment = 'attention' | 'healthy' | 'unavailable';
 
 /* * */
 
+function formatDeviationPercentage(value: number, locale: string) {
+	const formattedValue = new Intl.NumberFormat(locale, {
+		maximumFractionDigits: 1,
+		minimumFractionDigits: 1,
+	}).format(value);
+
+	return `${value > 0 ? '+' : ''}${formattedValue}%`;
+}
+
+/* * */
+
 export function DemandCard({
 	agencyLabel,
 	breakdown,
@@ -47,7 +59,7 @@ export function DemandCard({
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
 	const sentiment: DemandSentiment = value?.deviation_status === 'below_typical'
 		? 'attention'
 		: value?.deviation_status === 'above_typical'
@@ -59,6 +71,13 @@ export function DemandCard({
 	const deviationPercentage = typicalComparisonIndex === null
 		? null
 		: typicalComparisonIndex - 100;
+	const referenceDeviationRange = getDemandReferenceDeviationRange(value);
+	const referenceRangeLabel = breakdown && referenceDeviationRange
+		? t('default:videowall.demand_chart.reference_percentage_range', '', {
+			lower: formatDeviationPercentage(referenceDeviationRange.lower, i18n.resolvedLanguage ?? 'pt'),
+			upper: formatDeviationPercentage(referenceDeviationRange.upper, i18n.resolvedLanguage ?? 'pt'),
+		})
+		: null;
 	const statusLabel = t(`default:videowall.demand_chart.status.${value?.deviation_status ?? 'unavailable'}`);
 	const titleLabel = agencyLabel
 		? t('default:videowall.demand_chart.title', '', { agency: agencyLabel })
@@ -102,7 +121,10 @@ export function DemandCard({
 						</strong>
 					</div>
 					<p>{t('default:videowall.demand_chart.comparison')}</p>
-					<span>{statusLabel}</span>
+					<div className={styles.status}>
+						<span>{statusLabel}</span>
+						{referenceRangeLabel && <small>{referenceRangeLabel}</small>}
+					</div>
 				</div>
 			</div>
 
