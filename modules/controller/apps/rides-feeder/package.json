@@ -28,7 +28,7 @@
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"csv-parse": "7.0.1",
+		"csv-parse": "7.0.2",
 		"gtfs-types": "5.1.0",
 		"unzipper": "0.12.5"
 	},

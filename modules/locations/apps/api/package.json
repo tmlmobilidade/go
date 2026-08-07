@@ -25,7 +25,7 @@
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"@turf/turf": "7.3.5",
+		"@turf/turf": "7.4.0",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {

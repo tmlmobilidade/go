@@ -29,7 +29,7 @@
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"csv-parse": "7.0.1",
+		"csv-parse": "7.0.2",
 		"extract-zip": "2.0.1",
 		"gtfs-types": "5.1.0",
 		"node-cron": "4.6.0"
