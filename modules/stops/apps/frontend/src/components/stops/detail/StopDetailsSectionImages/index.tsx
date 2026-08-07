@@ -4,8 +4,6 @@ import { useStopDetailContext } from '@/components/stops/detail/StopDetail.conte
 import { IconPhotoPlus } from '@tabler/icons-react';
 import { Collapsible, FileButton, Grid, ImageUpload, Section, Text } from '@tmlmobilidade/ui';
 
-import styles from './styles.module.css';
-
 /* * */
 
 export function StopDetailsSectionImages() {
@@ -35,13 +33,12 @@ export function StopDetailsSectionImages() {
 			description="Suportes visuais."
 			title="Imagens"
 		>
-			<Section>
-				<div className={styles.header}>
-					<div>
-						<Text size="lg" weight="semibold">Galeria da paragem</Text>
-						<Text c="var(--color-system-text-300)" size="sm">{totalImages} imagens</Text>
-					</div>
-				</div>
+			<Section gap="md">
+				<Text size="lg" weight="semibold">Galeria da paragem</Text>
+				<Text c="var(--color-system-text-300)" size="sm">{totalImages} imagens</Text>
+			</Section>
+
+			<Section gap="md">
 				<Grid columns="abc" gap="md">
 					{images.map((image, index) => (
 						<ImageUpload
@@ -61,16 +58,15 @@ export function StopDetailsSectionImages() {
 					))}
 				</Grid>
 				{!stopDetailContext.flags.isReadOnly && (
-					<div className={styles.uploadAction}>
-						<FileButton
-							accept="image/png,image/jpeg,image/jpg"
-							icon={<IconPhotoPlus size={18} />}
-							label="Adicionar imagens"
-							onFilesChange={handleFilesChange}
-							multiple
-						/>
-					</div>
+					<FileButton
+						accept="image/png,image/jpeg,image/jpg"
+						icon={<IconPhotoPlus size={18} />}
+						label="Adicionar imagens"
+						onFilesChange={handleFilesChange}
+						multiple
+					/>
 				)}
+
 			</Section>
 		</Collapsible>
 	);
