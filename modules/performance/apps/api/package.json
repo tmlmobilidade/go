@@ -14,12 +14,16 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"lint:fix": "eslint --fix .",
+		"test:demand-by-agency": "node --import tsx ./src/endpoints/metrics/tests/get-demand-by-agency.ts",
+		"test:demand-metrics": "node --import tsx --test ./src/endpoints/metrics/tests/*.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-performance-pckg-scripts": "*",
+		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*"
