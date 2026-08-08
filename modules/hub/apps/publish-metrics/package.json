@@ -15,8 +15,10 @@
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix",
-		"test:passenger-demand": "node --import tsx ./src/tests/passenger-demand.ts",
-		"test:ride-metrics": "node --import tsx ./src/tests/ride-metrics.ts"
+		"test:demand-by-agency": "node --import tsx ./src/tests/historical/demand-by-agency.ts",
+		"test:historical-demand": "node --import tsx ./src/tests/historical/demand-metrics.ts",
+		"test:passenger-demand": "node --import tsx ./src/tests/realtime/passenger-demand.ts",
+		"test:ride-metrics": "node --import tsx ./src/tests/realtime/ride-metrics.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",

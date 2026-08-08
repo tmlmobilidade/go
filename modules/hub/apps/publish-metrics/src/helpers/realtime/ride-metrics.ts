@@ -1,4 +1,4 @@
-/* * */
+/* Realtime ride metric publication helpers. */
 
 import { type RidePerformanceBucket, type RidePerformanceDay } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { type DepartureDelayMetrics, DepartureDelayMetricsSchema, type ServiceComplianceMetrics, ServiceComplianceMetricsSchema, type VkmExecutionMetrics, VkmExecutionMetricsSchema } from '@tmlmobilidade/go-types-public-info';

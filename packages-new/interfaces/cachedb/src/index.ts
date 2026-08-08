@@ -1,2 +1,2 @@
 export * from './interface.js';
-export * from './keys.js';
+export * from './keys/index.js';

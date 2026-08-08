@@ -1,7 +1,7 @@
 /* * */
 
-import { buildPublishedRideMetrics } from '@/helpers/ride-metrics.js';
-import { buildRidePerformanceDay, type RidePerformanceSourceRow } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { buildPublishedRideMetrics } from '@/helpers/realtime/ride-metrics.js';
+import { buildRidePerformanceDay, CURRENT_OPERATIONAL_DAY_QUERY, type RidePerformanceSourceRow } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { validateOperationalDateInt, validateUnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 
@@ -9,6 +9,12 @@ import assert from 'node:assert/strict';
 
 const operationalDateStart = validateUnixTimestamp(1_785_110_400_000);
 const currentCutoff = validateUnixTimestamp(operationalDateStart + 8 * 60 * 60 * 1_000);
+
+assert.match(
+	CURRENT_OPERATIONAL_DAY_QUERY,
+	/FROM operation\.rides AS rides FINAL/u,
+	'ClickHouse requires a table alias to precede the FINAL modifier',
+);
 
 function createRide(overrides: Partial<RidePerformanceSourceRow> = {}): RidePerformanceSourceRow {
 	return {

@@ -1,16 +1,47 @@
 /* * */
 
-import { publishPassengerDemandMetrics } from '@/tasks/passenger-demand.js';
-import { publishRideMetrics } from '@/tasks/ride-metrics.js';
+import { publishDemandByAgencyMetrics } from '@/tasks/historical/demand-by-agency.js';
+import { publishDemandByLineMetrics } from '@/tasks/historical/demand-by-line.js';
+import { publishDemandByPatternMetrics } from '@/tasks/historical/demand-by-pattern.js';
+import { publishPassengerDemandMetrics } from '@/tasks/realtime/passenger-demand.js';
+import { publishRideMetrics } from '@/tasks/realtime/ride-metrics.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
+const historicalDemandTasks = [
+	{ name: 'Historical Demand by Agency Metrics', run: publishDemandByAgencyMetrics },
+	{ name: 'Historical Demand by Line Metrics', run: publishDemandByLineMetrics },
+	{ name: 'Historical Demand by Pattern Metrics', run: publishDemandByPatternMetrics },
+] as const;
+
+const realtimeTasks = [
+	{ name: 'Realtime Passenger Demand Metrics', run: publishPassengerDemandMetrics },
+	{ name: 'Realtime Ride Metrics', run: publishRideMetrics },
+] as const;
+
+async function publishHistoricalDemandMetrics() {
+	const failures: unknown[] = [];
+
+	for (const task of historicalDemandTasks) {
+		try {
+			await task.run();
+		} catch (error) {
+			failures.push(error);
+			Logger.error({ error, message: `Failed to publish ${task.name}` });
+		}
+	}
+
+	if (failures.length) {
+		throw new AggregateError(failures, 'One or more historical demand publications failed');
+	}
+}
+
 const tasks = [
-	{ name: 'Passenger Demand Metrics', run: publishPassengerDemandMetrics },
-	{ name: 'Ride Metrics', run: publishRideMetrics },
+	{ name: 'Historical Demand Metrics', run: publishHistoricalDemandMetrics },
+	...realtimeTasks,
 ] as const;
 
 const main = async () => {

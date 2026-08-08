@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { cacheDb, hubPassengerDemandMetricsCacheKey } from '@tmlmobilidade/go-interfaces-cachedb';
+import { cacheDb, hubRealtimePassengerDemandMetricsCacheKey, legacyHubPassengerDemandMetricsCacheKey } from '@tmlmobilidade/go-interfaces-cachedb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type PassengerDemandByAgencyByMinute, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
 import { type PassengerDemandMetricsSnapshot, PassengerDemandMetricsSnapshotSchema, type PassengerDemandSeriesPoint, type PassengerDemandSnapshotAgency } from '@tmlmobilidade/go-types-public-info';
@@ -159,7 +159,7 @@ export function buildPassengerDemandSnapshot(
 export async function publishPassengerDemandMetrics() {
 	//
 
-	Logger.title('Publishing Passenger Demand Metrics...');
+	Logger.title('Publishing Realtime Passenger Demand Metrics...');
 	const timer = new Timer();
 	const currentOperationalDate = Dates.now(TIMEZONE).operational_date_int;
 
@@ -204,12 +204,13 @@ export async function publishPassengerDemandMetrics() {
 	);
 	const snapshot = buildPassengerDemandSnapshot(realtimeRows, factRows);
 
-	await cacheDb.set(
-		hubPassengerDemandMetricsCacheKey,
-		JSON.stringify(snapshot),
-	);
+	const serializedSnapshot = JSON.stringify(snapshot);
+	await cacheDb.setMany([
+		{ key: hubRealtimePassengerDemandMetricsCacheKey, value: serializedSnapshot },
+		{ key: legacyHubPassengerDemandMetricsCacheKey, value: serializedSnapshot },
+	]);
 
-	Logger.success(`Finished publishing Passenger Demand Metrics (${timer.get()})`);
+	Logger.success(`Finished publishing Realtime Passenger Demand Metrics (${timer.get()})`);
 
 	//
 }

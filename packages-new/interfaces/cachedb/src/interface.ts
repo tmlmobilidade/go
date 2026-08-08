@@ -3,7 +3,7 @@
 import { type RedisClientType, RedisDatabaseClient } from '@tmlmobilidade/go-clients-redis';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
-import { type cacheDbKey } from './keys.js';
+import { type CacheDbKey } from './keys/index.js';
 
 /* * */
 
@@ -54,7 +54,7 @@ class CacheDbClass {
 	 * @returns A promise that resolves when the deletion process is complete.
 	 * @throws Will throw an error if the deletion process fails.
 	 */
-	public async delete(key: cacheDbKey) {
+	public async delete(key: CacheDbKey) {
 		await this.client.del(key as string);
 	}
 
@@ -74,7 +74,7 @@ class CacheDbClass {
 	 * or `null` if not found.
 	 * @throws Will throw an error if the retrieval process fails.
 	 */
-	public async get(key: cacheDbKey): Promise<null | string> {
+	public async get(key: CacheDbKey): Promise<null | string> {
 		const result = await this.client.get(key);
 		if (typeof result !== 'string') return null;
 		return result;
@@ -102,12 +102,24 @@ class CacheDbClass {
 	 * @param value The value of the cache entry to save. Must be a string.
 	 * @param ttl Optional time-to-live (TTL) in seconds. Omit when not needed.
 	 */
-	public async set(key: cacheDbKey, value: string, ttl?: number) {
+	public async set(key: CacheDbKey, value: string, ttl?: number) {
 		// Validate value type before setting cache
 		if (typeof value !== 'string') throw new Error(`[cacheDb] Value must be a string. Got "${typeof value}" for key "${key}".`);
 		// Set cache with optional TTL
 		if (ttl) await this.client.set(key, value, { expiration: { type: 'EX', value: ttl } });
 		else await this.client.set(key, value);
+	}
+
+	/**
+	 * Saves multiple cache entries atomically using Redis MSET.
+	 * @param entries Cache keys and their serialized values.
+	 */
+	public async setMany(entries: { key: CacheDbKey, value: string }[]) {
+		if (!entries.length) return;
+
+		await this.client.mSet(Object.fromEntries(
+			entries.map(entry => [entry.key, entry.value]),
+		));
 	}
 
 	protected connectToClient() {

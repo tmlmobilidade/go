@@ -3,7 +3,7 @@
 import {
 	buildPassengerDemandSnapshot,
 	getComparableOperationalDates,
-} from '@/tasks/passenger-demand.js';
+} from '@/tasks/realtime/passenger-demand.js';
 import { Dates } from '@tmlmobilidade/dates';
 import {
 	PassengerDemandByAgencyByMinuteSchema,

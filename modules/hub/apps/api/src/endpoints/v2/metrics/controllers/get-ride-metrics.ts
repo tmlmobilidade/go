@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { cacheDb, hubDepartureDelayMetricsCacheKey, hubServiceComplianceMetricsCacheKey, hubVkmExecutionMetricsCacheKey } from '@tmlmobilidade/go-interfaces-cachedb';
+import { cacheDb, hubRealtimeDepartureDelayMetricsCacheKey, hubRealtimeServiceComplianceMetricsCacheKey, hubRealtimeVkmExecutionMetricsCacheKey, legacyHubDepartureDelayMetricsCacheKey, legacyHubServiceComplianceMetricsCacheKey, legacyHubVkmExecutionMetricsCacheKey } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type DepartureDelayAgencyMetrics, type DepartureDelayMetrics, type ServiceComplianceAgencyMetrics, type ServiceComplianceMetrics, type VkmExecutionAgencyMetrics, type VkmExecutionMetrics } from '@tmlmobilidade/go-types-public-info';
 import { DepartureDelayMetricsSchema, ServiceComplianceMetricsSchema, VkmExecutionMetricsSchema } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
@@ -236,8 +236,12 @@ export function selectVkmExecutionMetrics(
 
 /* * */
 
-async function readMetric<T>(cacheKey: Parameters<typeof cacheDb.get>[0], parse: (value: unknown) => T) {
-	const raw = await cacheDb.get(cacheKey);
+async function readMetric<T>(
+	cacheKey: Parameters<typeof cacheDb.get>[0],
+	legacyCacheKey: Parameters<typeof cacheDb.get>[0],
+	parse: (value: unknown) => T,
+) {
+	const raw = await cacheDb.get(cacheKey) ?? await cacheDb.get(legacyCacheKey);
 	if (!raw) throw new HttpException(HTTP_STATUS.SERVICE_UNAVAILABLE, 'Ride metrics are not available');
 
 	return parse(JSON.parse(raw));
@@ -258,7 +262,8 @@ export async function getServiceCompliance(
 	try {
 		const agencyIds = parseAgencyIds(request.query.agency_ids);
 		const snapshot = await readMetric(
-			hubServiceComplianceMetricsCacheKey,
+			hubRealtimeServiceComplianceMetricsCacheKey,
+			legacyHubServiceComplianceMetricsCacheKey,
 			value => ServiceComplianceMetricsSchema.parse(value),
 		);
 		return sendMetric(reply, selectServiceComplianceMetrics(snapshot, agencyIds));
@@ -276,7 +281,8 @@ export async function getDepartureDelays(
 	try {
 		const agencyIds = parseAgencyIds(request.query.agency_ids);
 		const snapshot = await readMetric(
-			hubDepartureDelayMetricsCacheKey,
+			hubRealtimeDepartureDelayMetricsCacheKey,
+			legacyHubDepartureDelayMetricsCacheKey,
 			value => DepartureDelayMetricsSchema.parse(value),
 		);
 		return sendMetric(reply, selectDepartureDelayMetrics(snapshot, agencyIds));
@@ -294,7 +300,8 @@ export async function getVkmExecution(
 	try {
 		const agencyIds = parseAgencyIds(request.query.agency_ids);
 		const snapshot = await readMetric(
-			hubVkmExecutionMetricsCacheKey,
+			hubRealtimeVkmExecutionMetricsCacheKey,
+			legacyHubVkmExecutionMetricsCacheKey,
 			value => VkmExecutionMetricsSchema.parse(value),
 		);
 		return sendMetric(reply, selectVkmExecutionMetrics(snapshot, agencyIds));
