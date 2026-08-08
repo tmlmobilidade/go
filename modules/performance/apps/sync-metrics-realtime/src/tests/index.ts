@@ -2,7 +2,9 @@
 
 import { mergeDemandRowsWithExistingKeys } from '@/handlers/passenger-demand/demand-facts.js';
 import { getCurrentRefreshRange, getHourlyReconciliationRange, getNightlyReconciliationRange, markCurrentRefreshCompleted, markHourlyReconciliationCompleted, markNightlyReconciliationCompleted } from '@/handlers/passenger-demand/refresh-cadence.js';
+import { getPassengerDemandHistoryRefreshSlot } from '@/tasks/refresh-passenger-demand-history.js';
 import { Dates } from '@tmlmobilidade/dates';
+import { buildPassengerDemandHistoryRefreshPlan } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { validateUnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 
@@ -46,6 +48,22 @@ assert.equal(
 assert.ok(rows.every(row => row.calculated_at === calculatedAt));
 
 const referenceNow = Dates.fromISO('2026-07-29T15:32:27.000+01:00');
+
+const historicalRefreshPlan = buildPassengerDemandHistoryRefreshPlan(referenceNow);
+assert.equal(historicalRefreshPlan.start_date, 20260723);
+assert.equal(historicalRefreshPlan.end_date, 20260729);
+assert.deepEqual(historicalRefreshPlan.partition_months, [202607]);
+assert.equal(
+	getPassengerDemandHistoryRefreshSlot(referenceNow),
+	Math.floor(referenceNow.unix_timestamp / (5 * 60 * 1_000)),
+);
+
+const crossMonthRefreshPlan = buildPassengerDemandHistoryRefreshPlan(
+	Dates.fromISO('2026-08-03T15:32:27.000+01:00'),
+);
+assert.equal(crossMonthRefreshPlan.start_date, 20260728);
+assert.equal(crossMonthRefreshPlan.end_date, 20260803);
+assert.deepEqual(crossMonthRefreshPlan.partition_months, [202607, 202608]);
 
 const currentRange = getCurrentRefreshRange(referenceNow);
 assert.ok(currentRange);

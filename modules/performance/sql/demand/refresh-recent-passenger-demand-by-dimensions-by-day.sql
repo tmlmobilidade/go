@@ -6,6 +6,7 @@
  *   partition_month UInt32  -- for example 202608
  *   start_date      UInt32  -- oldest operational date in the window
  *   end_date        UInt32  -- newest operational date in the window
+ *   source_cutoff   UInt64  -- captured once before refreshing any partition
  *
  * The staging partition combines unchanged canonical rows outside the window
  * with freshly aggregated rows inside it. REPLACE PARTITION publishes that
@@ -66,6 +67,7 @@ SELECT
 FROM simplified_apex.validations FINAL
 WHERE
 	validation_status IN ('0', '4', '5', '6')
+	AND updated_at <= {source_cutoff:UInt64}
 	AND operational_date BETWEEN {start_date:UInt32} AND {end_date:UInt32}
 	AND intDiv(operational_date, 100) = {partition_month:UInt32}
 GROUP BY
@@ -81,6 +83,7 @@ SELECT throwIf(
 	 FROM simplified_apex.validations FINAL
 	 WHERE
 		validation_status IN ('0', '4', '5', '6')
+		AND updated_at <= {source_cutoff:UInt64}
 		AND operational_date BETWEEN {start_date:UInt32} AND {end_date:UInt32}
 		AND intDiv(operational_date, 100) = {partition_month:UInt32})
 	!=
