@@ -11,12 +11,14 @@ import { SWRConfig, type SWRConfiguration } from 'swr';
 
 import { LoadingSection } from '../../components/loaders/LoadingSection';
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
+import { type TemporalSettings, TemporalSettingsContextProvider } from '../../contexts/TemporalSettings.context';
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
 import { themeData } from '../../styles/theme';
 
 /* * */
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
+	temporalSettings?: Partial<TemporalSettings>
 	/**
 	 * Please avoid using this prop. It is only intended for very specific use cases.
 	 * @dangerous
@@ -30,15 +32,22 @@ type BaseProviderProps = LocaleContextProps & VersionContextProps & {
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n, theme, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ children, i18n, temporalSettings, theme, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
 	// A. Setup variables
 
+	const resolvedTemporalSettings = {
+		locale: 'pt',
+		operationalDayStartHour: 4,
+		timezone: 'Europe/Lisbon',
+		...temporalSettings,
+	} satisfies TemporalSettings;
+
 	const mantineDatesSettings: Partial<DatesProviderSettings> = {
 		firstDayOfWeek: 1,
-		locale: 'pt',
+		locale: resolvedTemporalSettings.locale,
 		weekendDays: [6, 0],
 	};
 
@@ -66,14 +75,16 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 						<VersionContextProvider version={version}>
 							<SWRConfig value={swrSettings}>
 								<LocaleContextProvider i18n={i18n}>
-									<MantineProvider defaultColorScheme="auto" theme={theme ?? themeData}>
-										<DatesProvider settings={mantineDatesSettings}>
-											<ModalsProvider>
-												<Notifications position="bottom-right" />
-												{children}
-											</ModalsProvider>
-										</DatesProvider>
-									</MantineProvider>
+									<TemporalSettingsContextProvider settings={resolvedTemporalSettings}>
+										<MantineProvider defaultColorScheme="auto" theme={theme ?? themeData}>
+											<DatesProvider settings={mantineDatesSettings}>
+												<ModalsProvider>
+													<Notifications position="bottom-right" />
+													{children}
+												</ModalsProvider>
+											</DatesProvider>
+										</MantineProvider>
+									</TemporalSettingsContextProvider>
 								</LocaleContextProvider>
 							</SWRConfig>
 						</VersionContextProvider>

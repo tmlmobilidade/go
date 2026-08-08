@@ -11,3 +11,5 @@ export * from './components/TimeChip';
 export * from './components/YearlyCalendarMonth';
 export * from './contexts/CalendarUI.context';
 export * from './contexts/EventsCalendar.context';
+export { MonthView, Schedule, ScheduleHeader, YearView } from '@mantine/schedule';
+export type { DateStringValue, DateTimeStringValue, MonthViewProps, ScheduleEventData, ScheduleProps, ScheduleViewLevel, YearViewProps } from '@mantine/schedule';

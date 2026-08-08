@@ -2,13 +2,14 @@
 
 import { Dates } from '@/dates.js';
 import { TimezoneIdentified } from '@/lib/timezone-identified.js';
-import { Holiday, IsoWeekday, OperationalDate } from '@tmlmobilidade/types';
+import { type CalendarDate, Holiday, IsoWeekday, OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
 export const DEFAULT_CAL_TZ = 'Europe/Lisbon';
 
-export type CalendarKey = `${number}-${number}-${number}`; // "YYYY-MM-DD"
+/** @deprecated Use CalendarDate for civil calendar labels. */
+export type CalendarKey = CalendarDate;
 
 /* * */
 
@@ -45,8 +46,8 @@ export function calendarKey(d: Dates, tz: TimezoneIdentified = DEFAULT_CAL_TZ): 
 /**
  * CalendarKey -> Dates at noon Lisbon (stable for civil-day iteration)
  */
-export function datesFromCalendarKey(key: CalendarKey): Dates {
-	return Dates.fromFormat(`${key} 12:00`, 'yyyy-MM-dd HH:mm', DEFAULT_CAL_TZ);
+export function datesFromCalendarKey(key: CalendarKey, tz: TimezoneIdentified = DEFAULT_CAL_TZ): Dates {
+	return Dates.fromFormat(`${key} 12:00`, 'yyyy-MM-dd HH:mm', tz);
 }
 
 /**
