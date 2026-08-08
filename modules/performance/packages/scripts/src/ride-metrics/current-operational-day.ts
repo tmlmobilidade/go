@@ -11,7 +11,7 @@ const BASE_INTERVAL_MS = 60 * 60 * 1_000;
 const ELIGIBILITY_GRACE_MS = 5 * 60 * 1_000;
 const RIDE_END_GRACE_MS = 2 * 60 * 1_000;
 
-const CURRENT_OPERATIONAL_DAY_QUERY = `
+export const CURRENT_OPERATIONAL_DAY_QUERY = `
 	SELECT
 		rides._id AS ride_id,
 		rides.agency_id AS agency_id,
@@ -34,7 +34,7 @@ const CURRENT_OPERATIONAL_DAY_QUERY = `
 			ifNull(one_apex.updated_at, 0),
 			ifNull(three_events.updated_at, 0)
 		) AS updated_at
-	FROM operation.rides FINAL AS rides
+	FROM operation.rides AS rides FINAL
 	LEFT JOIN (
 		SELECT
 			ride_id,
