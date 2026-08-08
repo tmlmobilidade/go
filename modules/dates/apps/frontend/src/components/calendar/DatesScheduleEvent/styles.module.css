@@ -1,0 +1,19 @@
+.event {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	min-width: 0;
+}
+
+.event > span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.tooltip {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	max-width: 320px;
+}
