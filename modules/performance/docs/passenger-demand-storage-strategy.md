@@ -103,7 +103,8 @@ recreate it before the first managed rebuild.
 1. create the full-rebuild staging table if it does not exist;
 2. truncate the previous staging contents;
 3. aggregate all accepted validations from `simplified_apex.validations FINAL`;
-4. refuse promotion if the accepted source count is zero or differs from the
+4. pin population and validation to one `updated_at` source cutoff, then refuse
+   promotion if the accepted source count is zero or differs from the
    sum of staged facts;
 5. atomically exchange the canonical and staging table names.
 
@@ -112,8 +113,10 @@ It is available for inspection or rollback until the next daily run truncates
 it.
 
 `EXCHANGE TABLES` requires the `performance` database to use ClickHouse's
-`Atomic` database engine. Deployment must verify that prerequisite before the
-workflow is automated.
+`Atomic` database engine. The automated workflow and manual runbook check the
+actual engine and fail with a specific error before touching staging data when
+that prerequisite is not met. The LabDB interface currently relies on the
+server's default engine when creating databases; it does not force `Atomic`.
 
 ## Five-minute rolling-week refresh
 
@@ -123,7 +126,9 @@ operational dates. For each `YYYYMM` partition touched by that range, execute
 
 - `partition_month`: the affected `YYYYMM` value;
 - `start_date`: the oldest date in the rolling window;
-- `end_date`: the newest date in the rolling window.
+- `end_date`: the newest date in the rolling window;
+- `source_cutoff`: one timestamp captured before any affected partition is
+  rebuilt, preventing new arrivals from changing validation totals mid-run.
 
 The SQL builds the replacement partition from:
 
@@ -141,21 +146,40 @@ daily full rebuild remains the atomic whole-table checkpoint.
 
 ## Concurrency and observability
 
-The full rebuild and rolling-week refresh must share a distributed lock. A
-recent refresh must not copy canonical rows while the daily workflow is
-exchanging table names.
+The workflows are automated by the Performance metric workers:
 
-When these SQL workflows are automated, record them in
-`performance.metric_refreshes` using metric name
+- `sync-metrics-realtime` attempts the rolling seven-date refresh once per
+  five-minute slot. If another refresh owns the lock, it retries on its next
+  30-second worker cycle;
+- `sync-metrics-daily` runs the full rebuild after the legacy daily metric
+  syncs and waits up to ten minutes for an in-progress rolling refresh.
+
+Both paths call `@tmlmobilidade/go-performance-pckg-scripts`, which contains
+the packaged equivalents of the SQL runbooks. They share a token-owned Redis
+lease under `performance:passenger-demand-by-dimensions-by-day:refresh-lock`.
+The lease is renewed while work is running and can only be released by its
+owner. This prevents a recent refresh from copying canonical rows while the
+daily workflow exchanges table names. Both worker deployments therefore need
+the `CACHEDB_HOST` and `CACHEDB_PORT` connection settings as well as LabDB.
+
+The SQL files remain the operator-facing manual/recovery form of the same
+workflow. Changes to a transformation must be applied to both the packaged
+queries and its corresponding runbook.
+
+Both workflows record their lifecycle in `performance.metric_refreshes` using
+metric name
 `passenger_demand_by_dimensions_by_day`:
 
 - daily full rebuild: `reconciliation`, covering the complete source range;
 - five-minute rolling week: `reconciliation`, covering its seven dates;
 - one-off historical initialization: `backfill`.
 
-Record source and result quantities, source watermark, timestamps, status, and
-any error before releasing the lock. Alert on failed refreshes, mismatched
-totals, and a successful refresh age above the expected cadence.
+The `running` state is written after acquiring the lock. The terminal
+`succeeded` or `failed` state is written before releasing it, with source and
+result quantities, source watermark, timestamps, and any error. Runs skipped
+because another worker owns the lock do not create refresh records. Alerting on
+failed refreshes, mismatched totals, and a successful refresh age above the
+expected cadence remains deployment work.
 
 ## Reconciliation
 
@@ -182,10 +206,12 @@ complete available range after each daily rebuild.
 1. Create the interface-managed daily-dimensional table.
 2. Run and reconcile a full historical rebuild.
 3. Automate the five-minute rolling-week refresh and daily full rebuild.
-4. Run the existing and proposed metrics in parallel.
-5. Compare totals and grouped outputs for a representative historical period.
-6. Move historical metric consumers to queries over the new fact.
-7. Remove superseded aggregate tables and jobs only after an agreed parity
+   (Implemented.)
+4. Record refresh history. (Implemented.)
+5. Run the existing and proposed metrics in parallel.
+6. Compare totals and grouped outputs for a representative historical period.
+7. Move historical metric consumers to queries over the new fact.
+8. Remove superseded aggregate tables and jobs only after an agreed parity
    period.
-8. Reassess the minute fact and realtime projection separately; do not remove
+9. Reassess the minute fact and realtime projection separately; do not remove
    them as part of the historical-metric migration.

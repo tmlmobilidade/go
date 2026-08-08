@@ -22,6 +22,36 @@ occupancy and it is not a distinct-passenger count. Definition
 The operational timezone is `Europe/Lisbon`; an operational date starts at
 04:00 and ends immediately before 04:00 on the following civil date.
 
+## Two related workflows
+
+Passenger demand currently has two Performance workflows. They share the same
+accepted-validation definition but serve different consumers and grains.
+
+| Workflow | Canonical tables | Purpose | Used by the Videowall |
+| --- | --- | --- | --- |
+| Live intraday demand | `passenger_demand_by_agency_by_1_minute`, `passenger_demand_realtime` | Current headline, same-time comparisons, and intraday trends | Yes |
+| Historical dimensional demand | `passenger_demand_by_dimensions_by_day` | Daily analytics grouped by agency, line, pattern, product, and category | No, not in the current demand-card path |
+
+The historical table is intended to replace the legacy family of separately
+materialized day, month, and year demand metrics. It cannot replace the
+minute-grain fact while the Videowall requires intraday trends and exact
+same-time comparisons.
+
+## Runtime cadence
+
+| Work | Process cadence | Effective data cadence |
+| --- | --- | --- |
+| Live Performance worker | Every 30 seconds | Advances once for each newly closed minute |
+| Current-date minute facts | Checked every 30 seconds | Recalculated once per closed minute |
+| Previous two operational dates | Checked by the live worker | Reconciled once per process hour |
+| Previous fourteen operational dates | Checked by the live worker | Reconciled once per process day |
+| Recent daily-dimensional history | Checked every 30 seconds | Latest seven operational dates refreshed once per five-minute slot |
+| Complete daily-dimensional history | Every 24 hours | Full atomic rebuild |
+
+These are worker-loop intervals, not a promise that every displayed value is
+exactly that age. Source arrival, execution time, publication, and frontend
+polling contribute additional latency.
+
 ## Stored objects
 
 ### One-minute fact
@@ -70,6 +100,48 @@ It is a current read model, not the source of trend history.
 `performance.metric_refreshes` records each bounded backfill, incremental
 refresh, and reconciliation. Running and terminal states share a `refresh_id`
 and are replaced by `updated_at`.
+
+### Historical daily-dimensional fact
+
+`performance.passenger_demand_by_dimensions_by_day` stores accepted
+validations at the lowest shared daily analytical grain:
+
+```text
+definition_version
++ operational_date
++ agency_id
++ line_id
++ pattern_id
++ product_id
++ category
+```
+
+The fact is additive: coarser day, month, year, agency, line, or product
+metrics can be calculated with `sum(accepted_validations_qty)`.
+
+Two ClickHouse staging tables make its refreshes safe:
+
+- `passenger_demand_by_dimensions_by_day_recent_refresh` builds replacement
+  monthly partitions containing freshly calculated rows for the latest seven
+  operational dates and unchanged canonical rows outside that window. After
+  validation, `REPLACE PARTITION` publishes each affected month.
+- `passenger_demand_by_dimensions_by_day_full_rebuild` builds and validates a
+  complete historical copy. `EXCHANGE TABLES` then swaps it atomically with
+  the canonical table. After the exchange, the staging name contains the
+  previous canonical table until the next rebuild truncates it.
+
+The staging tables are internal workspaces. APIs and analytical consumers must
+query only the canonical table. They are created and reused by the refresh
+scripts and are not part of the public LabDB interfaces.
+
+Both historical refresh paths share a token-owned Redis lease so the
+five-minute partition refresh and full rebuild cannot modify the canonical
+table concurrently. Redis stores only this lock for the historical workflow;
+the historical facts themselves remain in ClickHouse. Each acquired run is
+also recorded in `performance.metric_refreshes`.
+
+See [Passenger Demand Storage Strategy](./passenger-demand-storage-strategy.md)
+for the detailed refresh, validation, and recovery rules.
 
 ## Closed-minute policy
 

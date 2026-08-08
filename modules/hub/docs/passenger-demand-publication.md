@@ -7,7 +7,7 @@ Hub publishes demand that Performance has already reconciled:
 ```text
 Performance one-minute facts and current projection
   -> hub/publish-metrics
-  -> hub:v2:metrics:passenger-demand:json
+  -> hub:v2:metrics:realtime:passenger-demand:json
   -> GET /v2/metrics/passenger-demand
   -> Videowall DemandCard
 ```
@@ -15,10 +15,31 @@ Performance one-minute facts and current projection
 The publisher runs independently from the API. A failed calculation does not
 overwrite the last valid cache snapshot.
 
+During the realtime cache namespace migration, the publisher also writes the
+legacy `hub:v2:metrics:passenger-demand:json` key. The API prefers the
+namespaced key and falls back to the legacy value until the compatibility path
+is removed.
+
 The detailed public field semantics live beside the endpoint in
 `modules/hub/apps/api/src/endpoints/v2/metrics/passenger-demand.md`.
 The Performance refresh and storage rules are documented in
 `modules/performance/docs/passenger-demand-metrics.md`.
+
+The end-to-end path from RawDB ingestion to the rendered card is summarized in
+the [Videowall README](../apps/frontend-videowall/README.md).
+
+## Runtime cadence and ownership
+
+| Stage | Cadence | Writes |
+| --- | --- | --- |
+| Performance live sync | Worker runs every 30 seconds; values advance once per closed minute | ClickHouse minute fact and realtime projection |
+| Hub metric publisher | Every 30 seconds | One validated JSON snapshot in CacheDB |
+| Hub API | On every request | Nothing; reads the snapshot and calculates the selected-agency response |
+| Videowall | Polls every 15 seconds | Nothing; renders the API response |
+
+The publisher and frontend may run more frequently than the metric advances.
+This is intentional: they make a newly closed and published minute visible
+quickly without exposing a partially counted minute.
 
 ## Publisher
 
@@ -44,6 +65,12 @@ One-minute facts are compacted into 15-minute trend buckets before caching.
 The bucket containing the cutoff is intentionally partial: at `16:03:27`, the
 latest closed minute is 16:02, so the 16:00 bucket contains only 16:00, 16:01,
 and 16:02. Historical dates are clipped to the same operational-minute index.
+
+The CacheDB value is a publication snapshot, not the canonical metric store.
+It contains additive per-agency inputs and compacted historical series. The
+request-specific percentiles and combined totals are calculated by the API and
+are not written back to CacheDB. If publication fails, the last valid snapshot
+is left in place.
 
 ## API selection and calculations
 
