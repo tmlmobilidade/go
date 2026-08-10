@@ -9,7 +9,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 export function OrganizationDetail() {
 	return (
-		<Pane header={[<OrganizationDetailHeader />]}>
+		<Pane header={[<OrganizationDetailHeader key="header" />]}>
 			<OrganizationDetailBasicInfo />
 			<OrganizationDetailQuickLinks />
 		</Pane>

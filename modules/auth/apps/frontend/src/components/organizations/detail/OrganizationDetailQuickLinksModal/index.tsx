@@ -1,12 +1,13 @@
 'use client';
 
 import { IconChooser } from '@/components/common/IconChooser';
+import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { HomeLink } from '@tmlmobilidade/types';
 
 /* * */
 
 import { isUrl } from '@tmlmobilidade/strings';
-import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
+import { Button, closeModal, ContextFormController, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -49,6 +50,7 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 	const [selectedIcon, setSelectedIcon] = useState<'' | string>(link?.icon || '');
 
 	const { t } = useTranslation();
+	const organizationDetailContext = useOrganizationsDetailContext();
 
 	//
 	// B. Handle actions
@@ -70,21 +72,36 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 
 	return (
 		<Section flexDirection="column" gap="sm" padding="lg">
-			<TextInput
-				key="link-title"
-				label={t('default:organizations.detail.QuickLinksModal.Fields.title.label')}
-				onChange={e => setNewLink(prev => ({ ...prev, title: e.target.value }))}
-				value={newLink.title}
-				required
+			<ContextFormController
+				control={organizationDetailContext.form.instance.control}
+				name="href"
+				render={({ field }) => (
+					<TextInput
+						key="link-href"
+						error={isUrl(field.value) ? null : t('default:organizations.detail.QuickLinksModal.Error.title')}
+						label={t('default:organizations.detail.QuickLinksModal.Fields.link.label')}
+						onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
+						value={field.value}
+						required
+					/>
+				)}
 			/>
-			<TextInput
-				key="link-href"
-				error={isUrl(newLink.href) ? null : t('default:organizations.detail.QuickLinksModal.Error.title')}
-				label={t('default:organizations.detail.QuickLinksModal.Fields.link.label')}
-				onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
-				value={newLink.href}
-				required
+
+			<ContextFormController
+				control={organizationDetailContext.form.instance.control}
+				name="href"
+				render={({ field }) => (
+					<TextInput
+						key="link-href"
+						error={isUrl(field.value) ? null : t('default:organizations.detail.QuickLinksModal.Error.title')}
+						label={t('default:organizations.detail.QuickLinksModal.Fields.link.label')}
+						onChange={e => setNewLink(prev => ({ ...prev, href: e.target.value }))}
+						value={field.value}
+						required
+					/>
+				)}
 			/>
+
 			<IconChooser selectedIcon={selectedIcon} setSelectedIcon={handleIconChange} />
 			<Divider />
 			<Grid columns="ab" gap="sm">

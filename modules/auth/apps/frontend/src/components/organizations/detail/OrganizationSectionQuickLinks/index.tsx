@@ -52,27 +52,26 @@ export function OrganizationDetailQuickLinks() {
 	//
 
 	const handleSubmit = (link: HomeLink) => {
-		if (!organizationDetailContext.data.form) return;
+		if (!organizationDetailContext.form.instance) return;
 
-		const links = organizationDetailContext.data.form.values.home_links;
+		const links = organizationDetailContext.form.instance.getValues('home_links');
 		const existingIndex = links.findIndex(l => l.order === link.order);
 
 		if (existingIndex === -1) {
 			link.order = links.length;
-			organizationDetailContext.data.form.values.home_links = [...links, link];
-		}
-		else {
+			organizationDetailContext.form.instance.setValue('home_links', [...links, link]);
+		} else {
 			const updatedLinks = links.map((l, idx) => idx === existingIndex ? link : l);
-			organizationDetailContext.data.form.values.home_links = updatedLinks;
+			organizationDetailContext.form.instance.setValue('home_links', updatedLinks);
 		}
 
 		organizationDetailContext.actions.save();
 	};
 
 	const handleDelete = (link: HomeLink) => {
-		if (!organizationDetailContext.data.form) return;
-		const updatedLinks = organizationDetailContext.data.form.values.home_links.filter(l => l.title !== link.title);
-		organizationDetailContext.data.form.values.home_links = updatedLinks;
+		if (!organizationDetailContext.form.instance) return;
+		const updatedLinks = organizationDetailContext.form.instance.getValues('home_links').filter(l => l.title !== link.title);
+		organizationDetailContext.form.instance.setValue('home_links', updatedLinks);
 		organizationDetailContext.actions.save();
 	};
 
@@ -81,11 +80,11 @@ export function OrganizationDetailQuickLinks() {
 	};
 
 	const quickLinkOptions = useMemo(() => {
-		return organizationDetailContext.data.form.values.home_links?.map(link => ({
+		return organizationDetailContext.form.instance.getValues('home_links')?.map(link => ({
 			...link,
 			actions: <OrganizationDetailQuickLinksActions handleDelete={handleDelete} handleEdit={handleEdit} link={link} />,
 		}));
-	}, [organizationDetailContext.data.form.values.home_links]);
+	}, [organizationDetailContext.form.instance]);
 
 	//
 	// C. Render components
@@ -97,15 +96,15 @@ export function OrganizationDetailQuickLinks() {
 		>
 			<Section gap="lg">
 				<Button
-					disabled={!organizationDetailContext.data.id}
+					disabled={!organizationDetailContext.form.instance.getValues('id')}
 					label={t('default:organizations.detail.QuickLinks.AddQuickLinkButton.label')}
 					onClick={() => openOrganizationQuickLinksModal({ handleSubmit: handleSubmit })}
 					variant="primary"
 				/>
-				{!organizationDetailContext.data.id && (
+				{!organizationDetailContext.form.instance.getValues('id') && (
 					<p>{t('default:organizations.detail.QuickLinks.NoOrganizationLabel.label')}</p>
 				)}
-				{organizationDetailContext.data.id && (
+				{organizationDetailContext.form.instance.getValues('id') && (
 					<DataTable
 						columns={columns}
 						records={quickLinkOptions}
