@@ -1,7 +1,8 @@
 'use client';
 
 import { UnixTimestamp } from '@tmlmobilidade/types';
-import { parseAsInteger, useQueryStates } from 'nuqs';
+import { parseAsInteger, useQueryState } from 'nuqs';
+import { useEffect, useMemo } from 'react';
 
 /* * */
 
@@ -13,54 +14,76 @@ export interface UseFilterStateDateIntervalReturnType {
 	isActive: boolean
 
 	/**
-	 * Function to set the filter value.
-	 * @param value The new value for the filter.
+	 * Function to set the end value of the filter.
+	 * @param value The new end value for the filter.
 	 */
-	set: (start: UnixTimestamp, end: null | UnixTimestamp) => void
+	setEnd: (value: null | UnixTimestamp) => void
+
 	/**
-	 * The current values of the filter.
+	 * Function to set the start value of the filter.
+	 * @param value The new start value for the filter.
+	 */
+	setStart: (value: null | UnixTimestamp) => void
+
+	/**
+	 * The current end value of the filter.
 	 */
 	value_end: null | number | UnixTimestamp
+
+	/**
+	 * The current start value of the filter.
+	 */
 	value_start: null | number | UnixTimestamp
 
 }
 
-export function useFilterStateDate(key: string): UseFilterStateDateIntervalReturnType {
+export function useFilterStateDate(key: string, defaultStart: null | UnixTimestamp, defaultEnd: null | UnixTimestamp): UseFilterStateDateIntervalReturnType {
 	//
 
 	//
 	// A. Setup variables
-	const [urlStates, setUrlStates] = useQueryStates({
-		[key + 'end']: parseAsInteger,
-		[key + 'start']: parseAsInteger,
-	});
 
-	const urlValueStart = urlStates[key + 'start'];
-	const urlValueEnd = urlStates[key + 'end'];
-
-	const handleSetValue = async (start: null | UnixTimestamp, end: null | UnixTimestamp) => {
-		const nextValueStart = start !== null ? start : urlValueStart;
-		const nextValueEnd = end !== null ? end : urlValueEnd;
-
-		if (nextValueStart === urlValueStart && nextValueEnd === urlValueEnd) {
-			return;
-		}
-
-		await setUrlStates({
-			[key + 'end']: nextValueEnd,
-			[key + 'start']: nextValueStart,
-		}, { history: 'push', shallow: true });
-	};
+	const [urlValueStart, setUrlValueStart] = useQueryState(`${key}-start`, parseAsInteger);
+	const [urlValueEnd, setUrlValueEnd] = useQueryState(`${key}-end`, parseAsInteger);
 
 	//
-	// B. Return data
+	// B. Transform data
+
+	const effectiveValueStart = useMemo(() => {
+		if (!urlValueStart) return defaultStart;
+		return urlValueStart;
+	}, [urlValueStart, defaultStart]);
+
+	const effectiveValueEnd = useMemo(() => {
+		if (!urlValueEnd) return defaultEnd;
+		return urlValueEnd;
+	}, [urlValueEnd, defaultEnd]);
+
+	const isActive = useMemo(() => {
+		// The filter is active only if the start or end values
+		// are set and are different from the default values.
+		const isActiveStart = !!urlValueStart && urlValueStart !== defaultStart;
+		const isActiveEnd = !!urlValueEnd && urlValueEnd !== defaultEnd;
+		return isActiveStart || isActiveEnd;
+	}, [urlValueStart, defaultStart, urlValueEnd, defaultEnd]);
+
+	//
+	// C. Handle actions
+
+	useEffect(() => {
+		// Clear URL values if the filter is not active
+		if (!isActive) setUrlValueStart(null);
+		if (!isActive) setUrlValueEnd(null);
+	}, [isActive]);
+
+	//
+	// D. Return data
 
 	return {
-		isActive: urlValueEnd !== null || urlValueStart !== null,
-		set: handleSetValue,
-		value_end: urlValueEnd,
-		value_start: urlValueStart,
+		isActive,
+		setEnd: setUrlValueEnd,
+		setStart: setUrlValueStart,
+		value_end: effectiveValueEnd,
+		value_start: effectiveValueStart,
 	};
-
-	//
 }
