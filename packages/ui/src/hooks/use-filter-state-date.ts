@@ -37,7 +37,7 @@ export interface UseFilterStateDateIntervalReturnType {
 
 }
 
-export function useFilterStateDate(key: string, defaultStart: null | UnixTimestamp, defaultEnd: null | UnixTimestamp): UseFilterStateDateIntervalReturnType {
+export function useFilterStateDate(key: string, defaultStart?: null | UnixTimestamp, defaultEnd?: null | UnixTimestamp): UseFilterStateDateIntervalReturnType {
 	//
 
 	//
