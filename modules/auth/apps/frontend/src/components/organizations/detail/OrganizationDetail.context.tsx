@@ -1,8 +1,8 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateOrganizationSchema, type Organization, PermissionCatalog, type UpdateOrganizationDto } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { type Organization, PermissionCatalog, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/types';
+import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
@@ -17,7 +17,6 @@ interface OrganizationsDetailContextState extends DetailContextStateTemplate {
 		fileChangedLight: (file: File) => void
 	}
 	data: {
-		form: UseFormReturnType<UpdateOrganizationDto>
 		id: string | undefined
 		logoDarkUrl: null | string
 		logoLightUrl: null | string
@@ -61,7 +60,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	//
 	// C. Initialize form
 
-	const { form } = useTypicalForm<UpdateOrganizationDto>(CreateOrganizationSchema, organizationData);
+	const { form } = useContextForm<UpdateOrganizationDto>({ apiData: organizationData, schema: UpdateOrganizationSchema });
 
 	//
 	// D. Handle actions
@@ -70,7 +69,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 		fetchFn: async () => await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId), 'PUT', form.getValues()),
 		onSuccess: async (updatedItem) => {
 			await uploadImages();
-			form.resetDirty();
+			form.reset(updatedItem);
 			meContext.mutate.me();
 			organizationMutate(updatedItem);
 			allOrganizationsMutate();
@@ -89,7 +88,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOCK(organizationId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			form.reset(updatedItem);
 			meContext.mutate.me();
 			organizationMutate(updatedItem);
 			allOrganizationsMutate();
@@ -163,30 +162,30 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	const { canSave } = useFlagCanSave({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: form.formState.isDirty,
 		isLoading: organizationLoading,
 		isLocked: organizationData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	const { canLock } = useFlagCanLock({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: form.formState.isDirty,
 		isLoading: organizationLoading,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	const { canDelete } = useFlagCanDelete({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: form.formState.isDirty,
 		isLoading: organizationLoading,
 		isLocked: organizationData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	//
@@ -202,7 +201,6 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 			save: handleSave,
 		},
 		data: {
-			form,
 			id: organizationId,
 			logoDarkUrl: logo?.logo_dark,
 			logoLightUrl: logo?.logo_light,
@@ -218,6 +216,9 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 			isLocking,
 			isReadOnly,
 			isSaving,
+		},
+		form: {
+			instance: form,
 		},
 	}), [
 		canDelete,
