@@ -40,6 +40,7 @@ export function UserDetailBasicInfo() {
 								onChange={field.onChange}
 								placeholder={t('default:users.detail.BasicInfo.fields.first_name.placeholder')}
 								readOnly={userDetailContext.flags.isReadOnly}
+								value={field.value}
 								withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
 							/>
 						)}
@@ -57,6 +58,7 @@ export function UserDetailBasicInfo() {
 								onChange={field.onChange}
 								placeholder={t('default:users.detail.BasicInfo.fields.last_name.placeholder')}
 								readOnly={userDetailContext.flags.isReadOnly}
+								value={field.value}
 								withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
 							/>
 						)}
@@ -74,6 +76,7 @@ export function UserDetailBasicInfo() {
 								onChange={field.onChange}
 								placeholder={t('default:users.detail.BasicInfo.fields.email.placeholder')}
 								readOnly={userDetailContext.flags.isReadOnly}
+								value={field.value}
 								withAsterisk={!CreateUserSchema.shape.email.isOptional()}
 							/>
 						)}
@@ -91,6 +94,7 @@ export function UserDetailBasicInfo() {
 								onChange={field.onChange}
 								placeholder={t('default:users.detail.BasicInfo.fields.phone.placeholder')}
 								readOnly={userDetailContext.flags.isReadOnly}
+								value={field.value}
 								withAsterisk={!CreateUserSchema.shape.phone.isOptional()}
 							/>
 						)}

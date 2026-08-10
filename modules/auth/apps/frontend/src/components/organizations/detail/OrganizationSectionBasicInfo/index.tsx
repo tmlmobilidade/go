@@ -41,6 +41,7 @@ export function OrganizationDetailBasicInfo() {
 								onChange={field.onChange}
 								placeholder={t('default:organizations.detail.SectionBasicInfo.fields.long_name.placeholder')}
 								readOnly={organizationDetailContext.flags.isReadOnly}
+								value={field.value}
 								withAsterisk={!CreateOrganizationSchema.shape.long_name.isOptional()}
 							/>
 						)}
@@ -58,6 +59,7 @@ export function OrganizationDetailBasicInfo() {
 								onChange={field.onChange}
 								placeholder={t('default:organizations.detail.SectionBasicInfo.fields.short_name.placeholder')}
 								readOnly={organizationDetailContext.flags.isReadOnly}
+								value={field.value}
 								withAsterisk={!CreateOrganizationSchema.shape.short_name.isOptional()}
 							/>
 						)}

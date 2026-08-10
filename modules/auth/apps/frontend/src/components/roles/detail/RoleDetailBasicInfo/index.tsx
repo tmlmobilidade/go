@@ -34,9 +34,11 @@ export function RoleDetailBasicInfo() {
 								error={fieldState.error?.message}
 								label={t('default:roles.detail.BasicInfo.fields.name.label')}
 								maxLength={255}
+								onBlur={field.onBlur}
 								onChange={field.onChange}
 								placeholder={t('default:roles.detail.BasicInfo.fields.name.placeholder')}
 								readOnly={roleDetailContext.flags.isReadOnly}
+								value={field.value}
 								withAsterisk
 							/>
 						)}
