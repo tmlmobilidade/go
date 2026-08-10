@@ -161,7 +161,6 @@ export async function parsePlan(planData: Plan) {
 					agency_id: planData.agency_id,
 					arrival_time: stopTime.arrival_time,
 					departure_time: stopTime.departure_time,
-					direction_id: currentTrip.direction_id,
 					drop_off_type: stopTime.drop_off_type,
 					pickup_type: stopTime.pickup_type,
 					shape_dist_traveled: normalizedShapeDistTraveled,
