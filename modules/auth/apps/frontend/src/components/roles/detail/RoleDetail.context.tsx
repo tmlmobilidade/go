@@ -53,8 +53,11 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	// TODO: Add schema, he give error on zod
-	const { form } = useContextForm<UpdateRoleDto>({ apiData: roleData });
+	// TODO: fix error on schema types
+	const { form } = useContextForm<UpdateRoleDto>({
+		apiData: roleData,
+		// schema: UpdateRoleSchema,
+	});
 
 	//
 	// D. Handle actions

@@ -55,8 +55,11 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	//
 	// C. Setup form
 
-	// TODO: Add schema, he give error on zod
-	const { form } = useContextForm<UpdateUserDto>({ apiData: userData });
+	// TODO: fix error on schema types
+	const { form } = useContextForm<UpdateUserDto>({
+		apiData: userData,
+		// schema: UpdateUserSchema,
+	});
 
 	//
 	// D. Handle actions
