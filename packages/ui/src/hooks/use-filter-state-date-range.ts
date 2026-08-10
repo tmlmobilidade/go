@@ -6,7 +6,7 @@ import { useEffect, useMemo } from 'react';
 
 /* * */
 
-export interface UseFilterStateDateIntervalReturnType {
+export interface UseFilterStateDateRangeReturnType {
 
 	/**
 	 * Indicates if the filter is currently active.
@@ -37,7 +37,7 @@ export interface UseFilterStateDateIntervalReturnType {
 
 }
 
-export function useFilterStateDate(key: string, defaultStart?: null | UnixTimestamp, defaultEnd?: null | UnixTimestamp): UseFilterStateDateIntervalReturnType {
+export function useFilterStateDateRange(key: string, defaultStart?: null | UnixTimestamp, defaultEnd?: null | UnixTimestamp): UseFilterStateDateRangeReturnType {
 	//
 
 	//

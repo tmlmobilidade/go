@@ -6,10 +6,10 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
- * Hook to manage the operational status filter for the rides list.
+ * Hook to manage the operational status filter for the rides list filter bar.
  * @returns The filter state management object.
  */
-export function useRidesOperationalStatusFilter(): UseFilterStateListReturnType {
+export function useRidesListFilterOperationalStatus(): UseFilterStateListReturnType {
 	//
 
 	const { t } = useTranslation();

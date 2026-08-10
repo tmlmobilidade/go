@@ -1,9 +1,9 @@
 /* * */
 
-import { useRidesListContext } from '@/components/rides/list/RidesList.context';
-import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { FilterTypeDateRange } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useRidesListFilterDateRange } from './use-rides-list-filter-date-range';
 
 /* * */
 
@@ -15,30 +15,19 @@ export function RidesListFilterDateRange() {
 
 	const { t } = useTranslation();
 
-	//
-	// B. Handle actions
-
-	const handleStartDateChange = (value: UnixTimestamp) => {
-		ridesListContext.actions.setFilterDateStart(value);
-	};
-
-	const handleEndDateChange = (value: UnixTimestamp) => {
-		ridesListContext.actions.setFilterDateEnd(value);
-	};
+	const filterDateRange = useRidesListFilterDateRange();
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<FilterTypeDateRange
-			active={true}
-			endDate={ridesListContext.filters.date_end as UnixTimestamp}
+			active={filterDateRange.isActive}
+			endDate={filterDateRange.value_end}
 			label={t('default:list.RidesListFilterDateRange.label')}
-			onEndDateChange={handleEndDateChange}
-			onStartDateChange={handleStartDateChange}
-			startDate={ridesListContext.filters.date_start as UnixTimestamp}
+			onEndDateChange={filterDateRange.setEnd}
+			onStartDateChange={filterDateRange.setStart}
+			startDate={filterDateRange.value_start}
 		/>
 	);
-
-	//
 }

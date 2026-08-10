@@ -3,7 +3,7 @@
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { useRidesAgencyFilter } from './use-rides-agency-filter';
+import { useRidesListFilterAgency } from './use-rides-list-filter-agency';
 
 /* * */
 
@@ -15,7 +15,7 @@ export function RidesListFilterAgency() {
 
 	const { t } = useTranslation();
 
-	const filterAgency = useRidesAgencyFilter();
+	const filterAgency = useRidesListFilterAgency();
 
 	//
 	// B. Render components

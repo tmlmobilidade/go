@@ -1,8 +1,9 @@
 /* * */
 
-import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useRidesListFilterAnalysisExpectedApexValidationInterval } from './use-rides-list-filter-analysis-expected-apex-validation-interval';
 
 /* * */
 
@@ -14,20 +15,18 @@ export function RidesListFilterAnalysisExpectedApexValidationInterval() {
 
 	const { t } = useTranslation();
 
-	const ridesListContext = useRidesListContext();
+	const filterAnalysisExpectedApexValidationInterval = useRidesListFilterAnalysisExpectedApexValidationInterval();
 
 	//
 	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={ridesListContext.filters.analysis_expected_apex_validation_interval.isActive}
+			active={filterAnalysisExpectedApexValidationInterval.isActive}
 			label={t('default:list.RidesListFilterAnalysisExpectedApexValidationInterval.label')}
-			onChange={ridesListContext.filters.analysis_expected_apex_validation_interval.set}
-			options={ridesListContext.filters.analysis_expected_apex_validation_interval.options}
+			onChange={filterAnalysisExpectedApexValidationInterval.set}
+			options={filterAnalysisExpectedApexValidationInterval.options}
 			withToggleAll
 		/>
 	);
-
-	//
 }

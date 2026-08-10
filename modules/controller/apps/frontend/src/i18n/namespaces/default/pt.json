@@ -64,7 +64,7 @@
 		"RidesListFilterAgency": {
 			"label": "Operador"
 		},
-		"RidesListFilterAnalysisEndedAtLastStop": {
+		"RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop": {
 			"label": "Fim na Última Paragem"
 		},
 		"RidesListFilterAnalysisExpectedApexValidationInterval": {
