@@ -195,7 +195,7 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 	apex_sales_amount: { type: 'Nullable(Int32) CODEC(T64, ZSTD)' },
 	apex_sales_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
 	apex_validations_qty: { type: 'Nullable(UInt16) CODEC(T64, ZSTD)' },
-	direction_id: { type: 'UInt8' },
+	direction_id: { type: 'FixedString(1)' },
 	driver_ids: { type: 'Array(LowCardinality(String))' },
 	end_time_observed: { type: 'Nullable(Int64) CODEC(DoubleDelta, ZSTD)' },
 	end_time_scheduled: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },

@@ -72,6 +72,8 @@ export async function analyzeRides() {
 			try {
 				//
 
+				console.log(rideData);
+
 				const rideAnalysisTimer = new Timer();
 
 				//
