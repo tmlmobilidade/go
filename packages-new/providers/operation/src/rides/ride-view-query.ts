@@ -1,12 +1,13 @@
 /* * */
 
+export const ridesViewQuery = `
 WITH
 
 	/*
 	 * The current time is captured once so every derived status in this
 	 * query uses exactly the same timestamp.
 	 */
-	toUnixTimestamp64Milli(now64(3)) AS now_ms
+	toUnixTimestamp64Milli(now64(3)) AS now_ms,
 
 	/*
 	 * -----------------------------------------------------------------------
@@ -28,8 +29,8 @@ WITH
 			*
 		FROM operation.rides
 		WHERE
-			start_time_scheduled >= 1641027600000 -- $1
-			AND start_time_scheduled <= 1786467600000 -- $2
+			start_time_scheduled >= $1
+			AND start_time_scheduled <= $2
 		ORDER BY
 			updated_at DESC
 		LIMIT 1 BY _id
@@ -116,16 +117,16 @@ WITH
 			r.*,
 
 			analysis_at_least_one_vehicle_event_on_last_stop.grade_status
-				AS analysis_at_least_one_vehicle_event_on_last_stop_grade,
+				AS _analysis_at_least_one_vehicle_event_on_last_stop_grade,
 
 			analysis_expected_apex_validation_interval.grade_status
-				AS analysis_expected_apex_validation_interval_grade,
+				AS _analysis_expected_apex_validation_interval_grade,
 
 			analysis_simple_three_vehicle_events.grade_status
-				AS analysis_simple_three_vehicle_events_grade,
+				AS _analysis_simple_three_vehicle_events_grade,
 
 			analysis_transaction_sequentiality.grade_status
-				AS analysis_transaction_sequentiality_grade
+				AS _analysis_transaction_sequentiality_grade
 
 		FROM rides_latest AS r
 
@@ -238,7 +239,12 @@ WITH
 	)
 
 SELECT
-	*,
+	* EXCEPT (
+		_analysis_at_least_one_vehicle_event_on_last_stop_grade,
+		_analysis_expected_apex_validation_interval_grade,
+		_analysis_simple_three_vehicle_events_grade,
+		_analysis_transaction_sequentiality_grade
+	),
 
 	/*
 	 * Analysis grades are not applicable while a ride is scheduled or
@@ -251,25 +257,28 @@ SELECT
 	CASE
 		WHEN operational_status IN ('scheduled', 'running')
 		THEN NULL
-		ELSE analysis_at_least_one_vehicle_event_on_last_stop_grade
+		ELSE _analysis_at_least_one_vehicle_event_on_last_stop_grade
 	END AS analysis_at_least_one_vehicle_event_on_last_stop_grade,
 
 	CASE
 		WHEN operational_status IN ('scheduled', 'running')
 		THEN NULL
-		ELSE analysis_expected_apex_validation_interval_grade
+		ELSE _analysis_expected_apex_validation_interval_grade
 	END AS analysis_expected_apex_validation_interval_grade,
 
 	CASE
 		WHEN operational_status IN ('scheduled', 'running')
 		THEN NULL
-		ELSE analysis_simple_three_vehicle_events_grade
+		ELSE _analysis_simple_three_vehicle_events_grade
 	END AS analysis_simple_three_vehicle_events_grade,
 
 	CASE
 		WHEN operational_status IN ('scheduled', 'running')
 		THEN NULL
-		ELSE analysis_transaction_sequentiality_grade
+		ELSE _analysis_transaction_sequentiality_grade
 	END AS analysis_transaction_sequentiality_grade
 
 FROM ride_with_statuses
+WHERE
+	/* RIDE_FILTERS */
+`;
