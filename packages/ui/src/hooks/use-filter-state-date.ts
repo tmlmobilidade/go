@@ -28,12 +28,12 @@ export interface UseFilterStateDateIntervalReturnType {
 	/**
 	 * The current end value of the filter.
 	 */
-	value_end: null | number | UnixTimestamp
+	value_end: null | UnixTimestamp
 
 	/**
 	 * The current start value of the filter.
 	 */
-	value_start: null | number | UnixTimestamp
+	value_start: null | UnixTimestamp
 
 }
 
@@ -51,12 +51,12 @@ export function useFilterStateDate(key: string, defaultStart?: null | UnixTimest
 
 	const effectiveValueStart = useMemo(() => {
 		if (!urlValueStart) return defaultStart;
-		return urlValueStart;
+		return urlValueStart as UnixTimestamp;
 	}, [urlValueStart, defaultStart]);
 
 	const effectiveValueEnd = useMemo(() => {
 		if (!urlValueEnd) return defaultEnd;
-		return urlValueEnd;
+		return urlValueEnd as UnixTimestamp;
 	}, [urlValueEnd, defaultEnd]);
 
 	const isActive = useMemo(() => {
