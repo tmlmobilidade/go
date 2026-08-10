@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/normalizers",
+	"name": "@tmlmobilidade/go-normalizers-operation",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -24,7 +24,9 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -35,7 +37,8 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/types": "*"
+		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-shared": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",

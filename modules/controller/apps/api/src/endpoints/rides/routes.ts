@@ -10,7 +10,8 @@ import { reprocessRideById } from '@/endpoints/rides/controllers/reprocess-ride.
 import { fastifyWebsocket } from '@fastify/websocket';
 import { RidesSharedController } from '@tmlmobilidade/controllers';
 import { authorizationMiddleware, type FastifyInstance, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
-import { type GetRidesBatchQuery, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
+import { type GetRidesBatchQuery, type RideNormalized } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 

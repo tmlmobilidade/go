@@ -1,6 +1,6 @@
 /* * */
 
-// import { RideAcceptanceStatusSchema } from '@/operation/rides/ride-acceptance.js';
+import { RideAcceptanceStatusSchema } from '@/ride-acceptances/acceptance-status.js';
 import { RideSchema } from '@/rides/ride.js';
 import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, SeenStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
@@ -8,7 +8,7 @@ import { z } from 'zod';
 /* * */
 
 export const RideNormalizedSchema = RideSchema.extend({
-	// acceptance_status: z.enum([...RideAcceptanceStatusSchema.options, 'none']),
+	acceptance_status: z.enum([...RideAcceptanceStatusSchema.options, 'none']),
 	analysis_ended_at_last_stop_grade: z.enum([...GradeStatusSchema.options, 'none']),
 	analysis_expected_apex_validation_interval: z.enum([...GradeStatusSchema.options, 'none']),
 	analysis_simple_three_vehicle_events_grade: z.enum([...GradeStatusSchema.options, 'none']),

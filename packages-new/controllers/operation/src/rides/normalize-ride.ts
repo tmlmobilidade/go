@@ -1,7 +1,10 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { DelayStatusSchema, type Ride, type RideAnalysisGrade, type RideNormalized } from '@tmlmobilidade/types';
+import { type Ride, type RideNormalized } from '@tmlmobilidade/go-types-operation';
+import { DelayStatusSchema } from '@tmlmobilidade/go-types-shared';
+
+import { getAnalysisGrade } from './get-analysis-grade.js';
 
 /**
  * This function normalizes a Ride object by adding additional properties
@@ -13,13 +16,11 @@ export function normalizeRide(ride: Ride): RideNormalized {
 	const operationalStatusValue = getOperationalStatus(ride.start_time_scheduled, ride.seen_last_at);
 	return {
 		...ride,
-		acceptance_status: ride['acceptance_status'] ?? 'none',
+		// acceptance_status: ride['acceptance_status'] ?? 'none',
 		analysis_ended_at_last_stop_grade: getAnalysisGrade(operationalStatusValue, ride.analysis?.ENDED_AT_LAST_STOP?.grade),
 		analysis_expected_apex_validation_interval: getAnalysisGrade(operationalStatusValue, ride.analysis?.EXPECTED_APEX_VALIDATION_INTERVAL?.grade),
 		analysis_simple_three_vehicle_events_grade: getAnalysisGrade(operationalStatusValue, ride.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade),
 		analysis_transaction_sequentiality: getAnalysisGrade(operationalStatusValue, ride.analysis?.TRANSACTION_SEQUENTIALITY?.grade),
-		delay_status: getDelayStatus(ride.start_time_scheduled, ride.start_time_observed),
-		delay_value_display: getDelayValueDisplay(ride.start_time_scheduled, ride.start_time_observed),
 		end_delay_status: getDelayStatus(ride.end_time_scheduled, ride.end_time_observed),
 		end_delay_value_display: getDelayValueDisplay(ride.end_time_scheduled, ride.end_time_observed),
 		end_time_observed_display: ride.end_time_observed ? Dates.fromUnixTimestamp(ride.end_time_observed).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm') : null,
@@ -31,24 +32,6 @@ export function normalizeRide(ride: Ride): RideNormalized {
 		start_time_observed_display: ride.start_time_observed ? Dates.fromUnixTimestamp(ride.start_time_observed).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm') : null,
 		start_time_scheduled_display: Dates.fromUnixTimestamp(ride.start_time_scheduled).setZone('Europe/Lisbon', 'offset_only').toFormat('HH:mm'),
 	};
-}
-
-/**
- * This function returns the analysis grade for a given Ride, based on its operational status and the provided grade.
- * @param operationalStatus The operational status of the Ride.
- * @param grade The grade to return if the operational status is not 'scheduled' or 'running'.
- * @returns The analysis grade for the Ride.
- */
-export function getAnalysisGrade(operationalStatus: RideNormalized['operational_status'], grade?: RideAnalysisGrade): 'none' | RideAnalysisGrade {
-	//
-
-	if (operationalStatus === 'scheduled' || operationalStatus === 'running') {
-		return 'none';
-	}
-
-	return grade ?? 'none';
-
-	//
 }
 
 /**
