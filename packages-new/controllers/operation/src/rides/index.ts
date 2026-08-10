@@ -1,1 +1,1 @@
-export * from './normalize-ride.js';
+export * from './controller.js';

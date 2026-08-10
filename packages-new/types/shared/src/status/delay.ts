@@ -8,7 +8,6 @@ export const DelayStatusValues = [
 	'ontime',
 	'delayed',
 	'early',
-	'none',
 ] as const;
 
 export const DelayStatusSchema = z.enum(DelayStatusValues);
