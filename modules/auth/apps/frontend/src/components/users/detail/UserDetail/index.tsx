@@ -6,7 +6,7 @@ import { UserDetailBasicInfo } from '@/components/users/detail/UserDetailBasicIn
 import { UserDetailHeader } from '@/components/users/detail/UserDetailHeader';
 import { UserDetailRolesAndOrganization } from '@/components/users/detail/UserDetailRolesAndOrganization';
 import { permissionsConfig } from '@/lib/permissions';
-import { Pane } from '@tmlmobilidade/ui';
+import { ContextFormController, Pane, useContextFormWatch } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,6 +17,8 @@ export function UserDetail() {
 	// A. Setup variables
 
 	const userDetailContext = useUserDetailContext();
+	const permissionsValue = useContextFormWatch({ control: userDetailContext.form.instance.control, name: 'permissions' });
+	const roleIdsValue = useContextFormWatch({ control: userDetailContext.form.instance.control, name: 'role_ids' });
 
 	//
 	// B. Render components
@@ -25,19 +27,28 @@ export function UserDetail() {
 		<Pane header={[<UserDetailHeader key="header" />]}>
 			<UserDetailBasicInfo />
 			<UserDetailRolesAndOrganization />
-			{permissionsConfig.map(item => (
-				<PermissionSection
-					key={item.scope}
-					configActions={item.actions}
-					description={item.description}
-					enabledPermissions={userDetailContext.data.form.values.permissions}
-					enabledRoleIds={userDetailContext.data.form.values.role_ids}
-					onResourceToggle={userDetailContext.actions.handlePermissionResourceToggle}
-					onToggle={userDetailContext.actions.handlePermissionToggle}
-					scope={item.scope}
-					title={item.title}
-				/>
-			))}
+			<ContextFormController
+				control={userDetailContext.form.instance.control}
+				name="permissions"
+				render={() => (
+					<>
+						{permissionsConfig.map(item => (
+							<PermissionSection
+								key={item.scope}
+								configActions={item.actions}
+								description={item.description}
+								enabledPermissions={permissionsValue ?? []}
+								enabledRoleIds={roleIdsValue}
+								onResourceToggle={userDetailContext.actions.handlePermissionResourceToggle}
+								onToggle={userDetailContext.actions.handlePermissionToggle}
+								scope={item.scope}
+								title={item.title}
+							/>
+						))}
+					</>
+				)}
+			/>
+
 		</Pane>
 	);
 

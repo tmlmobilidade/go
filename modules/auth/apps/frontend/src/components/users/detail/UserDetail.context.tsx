@@ -189,6 +189,9 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 			isReadOnly,
 			isSaving,
 		},
+		form: {
+			instance: form,
+		},
 	}), [
 		canDelete,
 		canLock,
@@ -201,6 +204,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 		isSaving,
 		userData,
 		userId,
+		form,
 	]);
 
 	//

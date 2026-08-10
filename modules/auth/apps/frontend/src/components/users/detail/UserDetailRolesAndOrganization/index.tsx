@@ -3,7 +3,7 @@
 import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useRolesContext } from '@/contexts/Roles.context';
-import { Collapsible, Grid, MultiSelect, Section, Select } from '@tmlmobilidade/ui';
+import { Collapsible, ContextFormController, Grid, MultiSelect, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -46,22 +46,38 @@ export function UserDetailRolesAndOrganization() {
 		<Collapsible description={t('default:users.detail.RolesAndOrganization.description')} title={t('default:users.detail.RolesAndOrganization.title')}>
 			<Section>
 				<Grid columns="a" gap="md">
-					<Select
-						key={userDetailContext.data.form.key('organization_id')}
-						clearable={false}
-						data={organizationItems}
-						label={t('default:users.detail.RolesAndOrganization.fields.organization.label')}
-						readOnly={userDetailContext.flags.isReadOnly}
-						required
-						{...userDetailContext.data.form.getInputProps('organization_id')}
+					<ContextFormController
+						control={userDetailContext.form.instance.control}
+						name="organization_id"
+						render={({ field, fieldState }) => (
+							<Select
+								clearable={false}
+								data={organizationItems}
+								error={fieldState.error?.message}
+								label={t('default:users.detail.RolesAndOrganization.fields.organization.label')}
+								onBlur={field.onBlur}
+								onChange={field.onChange}
+								readOnly={userDetailContext.flags.isReadOnly}
+								value={field.value}
+								required
+							/>
+						)}
 					/>
-					<MultiSelect
-						key={userDetailContext.data.form.key('role_ids')}
-						data={availableRoles}
-						label={t('default:users.detail.RolesAndOrganization.fields.roles.label')}
-						placeholder={t('default:users.detail.RolesAndOrganization.fields.roles.placeholder')}
-						readOnly={userDetailContext.flags.isReadOnly}
-						{...userDetailContext.data.form.getInputProps('role_ids', { multiple: true })}
+					<ContextFormController
+						control={userDetailContext.form.instance.control}
+						name="role_ids"
+						render={({ field, fieldState }) => (
+							<MultiSelect
+								data={availableRoles}
+								error={fieldState.error?.message}
+								label={t('default:users.detail.RolesAndOrganization.fields.roles.label')}
+								onBlur={field.onBlur}
+								onChange={field.onChange}
+								placeholder={t('default:users.detail.RolesAndOrganization.fields.roles.placeholder')}
+								readOnly={userDetailContext.flags.isReadOnly}
+								value={field.value}
+							/>
+						)}
 					/>
 				</Grid>
 			</Section>
