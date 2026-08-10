@@ -6,7 +6,7 @@ import { UserDetailBasicInfo } from '@/components/users/detail/UserDetailBasicIn
 import { UserDetailHeader } from '@/components/users/detail/UserDetailHeader';
 import { UserDetailRolesAndOrganization } from '@/components/users/detail/UserDetailRolesAndOrganization';
 import { permissionsConfig } from '@/lib/permissions';
-import { ContextFormController, Pane, useContextFormWatch } from '@tmlmobilidade/ui';
+import { Pane, useContextFormWatch } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -27,28 +27,19 @@ export function UserDetail() {
 		<Pane header={[<UserDetailHeader key="header" />]}>
 			<UserDetailBasicInfo />
 			<UserDetailRolesAndOrganization />
-			<ContextFormController
-				control={userDetailContext.form.instance.control}
-				name="permissions"
-				render={() => (
-					<>
-						{permissionsConfig.map(item => (
-							<PermissionSection
-								key={item.scope}
-								configActions={item.actions}
-								description={item.description}
-								enabledPermissions={permissionsValue ?? []}
-								enabledRoleIds={roleIdsValue}
-								onResourceToggle={userDetailContext.actions.handlePermissionResourceToggle}
-								onToggle={userDetailContext.actions.handlePermissionToggle}
-								scope={item.scope}
-								title={item.title}
-							/>
-						))}
-					</>
-				)}
-			/>
-
+			{permissionsConfig.map(item => (
+				<PermissionSection
+					key={item.scope}
+					configActions={item.actions}
+					description={item.description}
+					enabledPermissions={permissionsValue}
+					enabledRoleIds={roleIdsValue}
+					onResourceToggle={userDetailContext.actions.handlePermissionResourceToggle}
+					onToggle={userDetailContext.actions.handlePermissionToggle}
+					scope={item.scope}
+					title={item.title}
+				/>
+			))}
 		</Pane>
 	);
 

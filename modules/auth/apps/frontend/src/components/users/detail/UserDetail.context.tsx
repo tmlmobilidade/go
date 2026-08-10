@@ -11,8 +11,8 @@ import useSWR from 'swr';
 
 /* * */
 
-interface UserDetailContextState extends DetailContextStateTemplate<UpdateUserDto> {
-	actions: DetailContextStateTemplate<UpdateUserDto>['actions'] & {
+interface UserDetailContextState extends DetailContextStateTemplate {
+	actions: DetailContextStateTemplate['actions'] & {
 		handleChangePassword: (scope: string) => void
 		handlePermissionResourceToggle: (scope: string, action: string, resource: Record<string, unknown>) => void
 		handlePermissionToggle: (scope: string, action: string) => void
