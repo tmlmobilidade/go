@@ -17,6 +17,8 @@ export function OrganizationDetailBasicInfo() {
 	const organizationDetailContext = useOrganizationsDetailContext();
 
 	const { t } = useTranslation();
+	const logoDarkUrl = organizationDetailContext.data.logoDarkUrl;
+	const logoLightUrl = organizationDetailContext.data.logoLightUrl;
 
 	//
 	// B. Render components
@@ -33,7 +35,6 @@ export function OrganizationDetailBasicInfo() {
 						name="long_name"
 						render={({ field, fieldState }) => (
 							<TextInput
-								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:organizations.detail.SectionBasicInfo.fields.long_name.label')}
 								maxLength={255}
@@ -41,7 +42,7 @@ export function OrganizationDetailBasicInfo() {
 								onChange={field.onChange}
 								placeholder={t('default:organizations.detail.SectionBasicInfo.fields.long_name.placeholder')}
 								readOnly={organizationDetailContext.flags.isReadOnly}
-								value={field.value}
+								value={field.value ?? ''}
 								withAsterisk={!CreateOrganizationSchema.shape.long_name.isOptional()}
 							/>
 						)}
@@ -51,7 +52,6 @@ export function OrganizationDetailBasicInfo() {
 						name="short_name"
 						render={({ field, fieldState }) => (
 							<TextInput
-								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:organizations.detail.SectionBasicInfo.fields.short_name.label')}
 								maxLength={10}
@@ -59,7 +59,7 @@ export function OrganizationDetailBasicInfo() {
 								onChange={field.onChange}
 								placeholder={t('default:organizations.detail.SectionBasicInfo.fields.short_name.placeholder')}
 								readOnly={organizationDetailContext.flags.isReadOnly}
-								value={field.value}
+								value={field.value ?? ''}
 								withAsterisk={!CreateOrganizationSchema.shape.short_name.isOptional()}
 							/>
 						)}
@@ -67,29 +67,21 @@ export function OrganizationDetailBasicInfo() {
 				</Grid>
 				<Section>
 					<Grid columns="ab" gap="lg">
-						<ContextFormController
-							control={organizationDetailContext.form.instance.control}
-							name="logo_dark"
-							render={() => (
-								<UploadImage
-									imageUrl={organizationDetailContext.data.logoDarkUrl}
-									label={t('default:organizations.detail.SectionBasicInfo.fields.logo_dark.label')}
-									onDelete={() => organizationDetailContext.actions.deleteImage('dark')}
-									onFileChange={organizationDetailContext.actions.fileChangedDark}
-								/>
-							)}
+						<UploadImage
+							imageUrl={logoDarkUrl}
+							label={t('default:organizations.detail.SectionBasicInfo.fields.logo_dark.label')}
+							onFileChange={logoDarkUrl ? undefined : organizationDetailContext.actions.fileChangedDark}
+							onDelete={() => logoDarkUrl
+								? organizationDetailContext.actions.deleteImage('dark')
+								: organizationDetailContext.actions.fileChangedDark(null)}
 						/>
-						<ContextFormController
-							control={organizationDetailContext.form.instance.control}
-							name="logo_light"
-							render={() => (
-								<UploadImage
-									imageUrl={organizationDetailContext.data.logoLightUrl}
-									label={t('default:organizations.detail.SectionBasicInfo.fields.logo_light.label')}
-									onDelete={() => organizationDetailContext.actions.deleteImage('light')}
-									onFileChange={organizationDetailContext.actions.fileChangedLight}
-								/>
-							)}
+						<UploadImage
+							imageUrl={logoLightUrl}
+							label={t('default:organizations.detail.SectionBasicInfo.fields.logo_light.label')}
+							onFileChange={logoLightUrl ? undefined : organizationDetailContext.actions.fileChangedLight}
+							onDelete={() => logoLightUrl
+								? organizationDetailContext.actions.deleteImage('light')
+								: organizationDetailContext.actions.fileChangedLight(null)}
 						/>
 					</Grid>
 				</Section>

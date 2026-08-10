@@ -8,6 +8,33 @@ import { CreateOrganizationSchema, type Organization, type UpdateOrganizationDto
 
 /* * */
 
+function isStorageNotFoundError(error: unknown) {
+	return error instanceof Error && (error.name === 'NotFoundError' || ('code' in error && error.code === 'STORAGE_NOT_FOUND'));
+}
+
+async function deleteReplacedLogo(logoId: null | string, replacementId: string) {
+	if (!logoId) return;
+
+	try {
+		await storageProvider.delete(logoId);
+	} catch (error) {
+		if (isStorageNotFoundError(error)) return;
+		await storageProvider.delete(replacementId).catch(() => {});
+		throw error;
+	}
+}
+
+async function getLogoUrl(logoId: null | string) {
+	if (!logoId) return null;
+
+	try {
+		return (await storageProvider.findById(logoId))?.url ?? null;
+	} catch (error) {
+		if (isStorageNotFoundError(error)) return null;
+		throw error;
+	}
+}
+
 export class OrganizationsController {
 	//
 
@@ -42,18 +69,10 @@ export class OrganizationsController {
 		}
 		// Delete associated logo files if they exist
 		if (organization.logo_dark) {
-			try {
-				await storageProvider.delete(organization.logo_dark);
-			} catch (error) {
-				throw new error();
-			}
+			await storageProvider.delete(organization.logo_dark);
 		}
 		if (organization.logo_light) {
-			try {
-				await storageProvider.delete(organization.logo_light);
-			} catch (error) {
-				throw new error();
-			}
+			await storageProvider.delete(organization.logo_light);
 		}
 		// Delete the organization from the database
 		await goDb.core.organizations.deleteById(request.params.id);
@@ -121,11 +140,11 @@ export class OrganizationsController {
 		if (!organization) {
 			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
 		}
-		// Fetch logo files if they exist
-		const logoDark = await storageProvider.findById(organization.logo_dark);
-		const logoLight = await storageProvider.findById(organization.logo_light);
+		// Fetch logo files if they exist. A stale database ID should not block the detail page.
+		const logoDark = await getLogoUrl(organization.logo_dark);
+		const logoLight = await getLogoUrl(organization.logo_light);
 		// Send the response with logo URLs
-		reply.send({ data: { logo_dark: logoDark?.url ?? null, logo_light: logoLight?.url ?? null }, error: null, statusCode: HTTP_STATUS.OK });
+		reply.send({ data: { logo_dark: logoDark, logo_light: logoLight }, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -179,42 +198,29 @@ export class OrganizationsController {
 
 		// Process all uploaded files
 		for await (const file of request.files()) {
+			if (file.fieldname !== 'dark' && file.fieldname !== 'light') {
+				throw new HttpException(HTTP_STATUS.BAD_REQUEST, `Invalid organization logo field: ${file.fieldname}`);
+			}
+
 			const buffer = await file.toBuffer();
-			const size = buffer.buffer.byteLength;
 
 			const result = await storageProvider.upload(buffer, {
 				created_by: request.me._id,
 				name: file.filename,
 				resource_id: id,
 				scope: 'organizations',
-				size: size,
+				size: buffer.byteLength,
 				type: file.mimetype,
 				updated_by: request.me._id,
 			});
 
 			// Determine which logo to update based on fieldname
 			if (file.fieldname === 'dark') {
-				// Delete old dark logo if it exists
-				if (organization.logo_dark) {
-					try {
-						await storageProvider.delete(organization.logo_dark);
-					} catch (error) {
-						throw new error();
-						continue;
-					}
-				}
+				await deleteReplacedLogo(organization.logo_dark, result._id);
 				updateFields.logo_dark = result._id;
 				uploadedFiles.logo_dark = result._id;
 			} else if (file.fieldname === 'light') {
-				// Delete old light logo if it exists
-				if (organization.logo_light) {
-					try {
-						await storageProvider.delete(organization.logo_light);
-					} catch (error) {
-						throw new error();
-						continue;
-					}
-				}
+				await deleteReplacedLogo(organization.logo_light, result._id);
 				updateFields.logo_light = result._id;
 				uploadedFiles.logo_light = result._id;
 			}

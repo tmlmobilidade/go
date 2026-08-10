@@ -5,7 +5,7 @@ import { type Organization, PermissionCatalog, type UpdateOrganizationDto, Updat
 import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -13,8 +13,8 @@ import useSWR from 'swr';
 interface OrganizationsDetailContextState extends DetailContextStateTemplate {
 	actions: DetailContextStateTemplate['actions'] & {
 		deleteImage: (theme: 'dark' | 'light') => void
-		fileChangedDark: (file: File) => void
-		fileChangedLight: (file: File) => void
+		fileChangedDark: (file: File | null) => void
+		fileChangedLight: (file: File | null) => void
 	}
 	data: {
 		id: string | undefined
@@ -55,7 +55,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 
 	const { mutate: allOrganizationsMutate } = useSWR<Organization[]>(API_ROUTES.auth.ORGANIZATIONS_LIST);
 	const { data: organizationData, error: organizationError, isLoading: organizationLoading, mutate: organizationMutate } = useSWR<Organization>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId));
-	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(organizationId));
+	const { data: logo, isLoading: isLogoLoading, mutate: logoMutate } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(organizationId));
 
 	//
 	// C. Initialize form
@@ -127,13 +127,16 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 		const result = await response.json();
 
 		if (response.ok) {
+			await logoMutate();
+			setImageDark(null);
+			setImageLight(null);
 			useToast.success({ message: 'As imagens foram carregadas com sucesso', title: 'Sucesso' });
 		} else {
 			useToast.error({ message: result.error || 'Erro ao carregar imagens', title: 'Erro' });
 		}
 	};
 
-	const deleteImage = async (theme: 'dark' | 'light') => {
+	const deleteImage = useCallback(async (theme: 'dark' | 'light') => {
 		const themeImageRoute = API_ROUTES.auth.ORGANIZATIONS_DETAIL_VAR_IMAGE(organizationId, theme);
 		const response = await fetchData<Organization>(themeImageRoute + '?realtime=true', 'DELETE', organizationData);
 		if (response.error) {
@@ -145,10 +148,13 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 		}
 
 		useToast.success({ message: 'Imagem apagada com sucesso', title: 'Sucesso' });
-	};
+		await logoMutate();
+	}, [logoMutate, organizationData, organizationId]);
 
 	//
 	// E. Setup flags
+
+	const hasPendingImages = imageDark !== null || imageLight !== null;
 
 	const { isReadOnly } = useFlagReadOnly({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
@@ -162,7 +168,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	const { canSave } = useFlagCanSave({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.formState.isDirty,
+		isDirty: form.formState.isDirty || hasPendingImages,
 		isLoading: organizationLoading,
 		isLocked: organizationData?.is_locked,
 		isLocking: isLocking,
@@ -172,7 +178,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	const { canLock } = useFlagCanLock({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.formState.isDirty,
+		isDirty: form.formState.isDirty || hasPendingImages,
 		isLoading: organizationLoading,
 		isLocking: isLocking,
 		isValid: form.formState.isValid,
@@ -181,7 +187,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	const { canDelete } = useFlagCanDelete({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.formState.isDirty,
+		isDirty: form.formState.isDirty || hasPendingImages,
 		isLoading: organizationLoading,
 		isLocked: organizationData?.is_locked,
 		isLocking: isLocking,
@@ -195,8 +201,8 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 		actions: {
 			delete: handleDelete,
 			deleteImage: deleteImage,
-			fileChangedDark: (file: File) => setImageDark(file),
-			fileChangedLight: (file: File) => setImageLight(file),
+			fileChangedDark: (file: File | null) => setImageDark(file),
+			fileChangedLight: (file: File | null) => setImageLight(file),
 			lock: handleLock,
 			save: handleSave,
 		},
@@ -224,15 +230,22 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 		canDelete,
 		canLock,
 		canSave,
+		deleteImage,
+		handleDelete,
+		handleLock,
+		handleSave,
 		organizationError,
 		isDeleting,
 		organizationLoading,
 		isLocking,
 		isReadOnly,
 		isSaving,
+		isLogoLoading,
 		form,
 		organizationData,
 		organizationId,
+		logo?.logo_dark,
+		logo?.logo_light,
 	]);
 
 	//
