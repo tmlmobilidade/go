@@ -11,13 +11,23 @@ import { type Ride } from '@tmlmobilidade/go-types-operation';
  * @throws An error if the ride is not found for the given ID.
  */
 export async function findRideById(rideId: string): Promise<Ride> {
+	//
+
+	//
 	// Fetch the ride data from the database
+
 	const selectResult = await labDb.operation.rides.queryFromString(
 		`SELECT * FROM operation.rides FINAL WHERE _id = $1`,
 		{ 1: rideId },
 	);
+
+	//
 	// Throw an error if no ride is found
+
 	if (!selectResult?.length) throw new Error('Ride not found for ID.');
+
+	//
 	// Return the first ride found
+
 	return selectResult[0];
 }

@@ -12,11 +12,21 @@ import { type Ride } from '@tmlmobilidade/go-types-operation';
  * @throws An error if the rides are not found for the given fields.
  */
 export async function findRides<K extends RideFilterKey>(fields: RideFilterFields<K>): Promise<Ride[]> {
+	//
+
+	//
 	// Build the params object that will be used in the query
+
 	const params: Record<string, number | string> = {};
+
+	//
 	// Initialize the param index
+
 	let paramIndex = 1;
+
+	//
 	// Build the where clause from the fields params
+
 	const where = (Object.keys(fields) as K[])
 		.map((key) => {
 			// If the field is an array, build the IN clause
@@ -34,7 +44,10 @@ export async function findRides<K extends RideFilterKey>(fields: RideFilterField
 			return `${String(key)} = $${index}`;
 		})
 		.join(' AND ');
+
+	//
 	// Fetch the rides data from the database in a single query
+
 	const selectResult = await labDb.operation.rides.queryFromString(
 		`
 			SELECT *
@@ -43,8 +56,14 @@ export async function findRides<K extends RideFilterKey>(fields: RideFilterField
 		`,
 		params,
 	);
+
+	//
 	// Throw an error if no rides are found
+
 	if (!selectResult?.length) throw new Error(`Rides not found using the following fields: ${JSON.stringify(fields)} and the following params: ${JSON.stringify(params)}`);
+
+	//
 	// Return the rides found
+
 	return selectResult;
 }
