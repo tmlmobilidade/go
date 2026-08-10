@@ -4,7 +4,7 @@ import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type Alert, AlertReferenceTypeSchema, AlertSchema, PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useDataAgencies, useFilterStateDate, UseFilterStateDateIntervalReturnType, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useDataAgencies, useFilterStateDate, type UseFilterStateDateIntervalReturnType, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
