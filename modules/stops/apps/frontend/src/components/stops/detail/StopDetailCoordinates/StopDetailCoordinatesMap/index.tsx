@@ -5,7 +5,7 @@
 import { useStopDetailContext } from '@/components/stops/detail/StopDetail.context';
 import { toFiniteLngLat } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
 import { coordinatesToSearchQuery, getEditRadiusCircleFeatureCollection, getEditRadiusOutsideMaskFeatureCollection, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
-import { getBaseGeoJsonFeatureCollection, METERS_PER_DEGREE } from '@tmlmobilidade/geo';
+import { clampCoordinate, getBaseGeoJsonFeatureCollection, METERS_PER_DEGREE } from '@tmlmobilidade/geo';
 import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPolygon, MapView, useMapContext, useMapViewContext, useToast } from '@tmlmobilidade/ui';
 import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 import { type Point } from 'geojson';
@@ -130,8 +130,10 @@ export function StopDetailCoordinatesMap({ setDraftCoords }: { setDraftCoords: (
 	// C. Handle actions
 
 	const handleMapClick = (event: MapLayerMouseEvent) => {
-		const lat = event.lngLat.lat;
-		const lng = event.lngLat.lng;
+		const lat = clampCoordinate(event.lngLat.lat);
+		const lng = clampCoordinate(event.lngLat.lng);
+		if (lat === null || lng === null) return;
+
 		const anchor = toFiniteLngLat(stopDetailContext.data.stop?.latitude, stopDetailContext.data.stop?.longitude);
 		if (anchor && isLatLngOutsideEditRadius(anchor.latitude, anchor.longitude, lat, lng, STOP_COORDINATE_EDIT_RADIUS_METERS)) {
 			useToast.warning({

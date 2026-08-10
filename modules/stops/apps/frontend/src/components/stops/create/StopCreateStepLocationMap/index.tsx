@@ -2,7 +2,7 @@
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { useStopsListContext } from '@/components/stops/list/StopsList.context';
-import { getBaseGeoJsonFeatureCollection, isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
+import { clampCoordinate, getBaseGeoJsonFeatureCollection, isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
 import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView } from '@tmlmobilidade/ui';
 import { type Point } from 'geojson';
 import { useMemo } from 'react';
@@ -46,8 +46,12 @@ export function StopCreateStepLocationMap() {
 	// C. Handle actions
 
 	const handleMapClick = (event) => {
-		stopCreateContext.form.instance.setValue('latitude', event.lngLat.lat);
-		stopCreateContext.form.instance.setValue('longitude', event.lngLat.lng);
+		const latitude = clampCoordinate(event.lngLat.lat);
+		const longitude = clampCoordinate(event.lngLat.lng);
+		if (latitude === null || longitude === null) return;
+
+		stopCreateContext.form.instance.setValue('latitude', latitude);
+		stopCreateContext.form.instance.setValue('longitude', longitude);
 	};
 
 	//
