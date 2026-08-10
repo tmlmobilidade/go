@@ -23,12 +23,10 @@ export async function publishEtas() {
 	await cacheEtasByTripFromClickHouse();
 	await cacheEtasByStopFromClickHouse();
 
-	await cacheDb.delete('hub:v1:realtime:eta:all');
-
-	const cpEtas = await getCpEtas();
-	await cacheEtasByTrip(cpEtas);
-	await cacheEtasByStop(cpEtas);
-	await cacheCpEtasInAll(cpEtas);
+	// const cpEtas = await getCpEtas();
+	// await cacheEtasByTrip(cpEtas);
+	// await cacheEtasByStop(cpEtas);
+	// await cacheCpEtasInAll(cpEtas);
 
 	Logger.success(`Finished publishing trip stop ETAs (${globalTimer.get()})`);
 

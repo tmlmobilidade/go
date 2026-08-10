@@ -41,11 +41,11 @@ export async function publishTripUpdates() {
 
 	//
 	// CP TripUpdates
-	const cpTripUpdates = await getCpTripUpdates();
-	cpTripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
-	// Cache the CP trip updates by trip and stop
-	await cacheGtfsTripUpdatesByTrip(cpTripUpdates);
-	await cacheGtfsTripUpdatesByStop(cpTripUpdates);
+	// const cpTripUpdates = await getCpTripUpdates();
+	// cpTripUpdates.forEach(tripUpdate => feedResult.entity.push({ id: tripUpdate.trip.trip_id, trip_update: tripUpdate }));
+	// // Cache the CP trip updates by trip and stop
+	// await cacheGtfsTripUpdatesByTrip(cpTripUpdates);
+	// await cacheGtfsTripUpdatesByStop(cpTripUpdates);
 
 	//
 	// Cache the feed result
