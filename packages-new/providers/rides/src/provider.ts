@@ -19,7 +19,10 @@ class RidesProviderClass {
 	 */
 	async findRideById(rideId: string): Promise<Ride> {
 		// Fetch the ride data from the database
-		const selectResult = await labDb.operation.rides.select('*', '_id = $1 ORDER BY updated_at DESC LIMIT 1', { 1: rideId });
+		const selectResult = await labDb.operation.rides.queryFromString(
+			`SELECT * FROM operation.rides FINAL WHERE _id = $1`,
+			{ 1: rideId },
+		);
 		// Throw an error if no ride is found
 		if (!selectResult?.length) throw new Error('Ride not found for ID.');
 		// Return the first ride found
@@ -34,16 +37,8 @@ class RidesProviderClass {
 	 * @throws An error if the rides are not found for the given IDs.
 	 */
 	async findRidesById(rideIds: string[]): Promise<Ride[]> {
-		// Fetch the rides data from the database in a single query
-		const selectResult = await labDb.operation.rides.select(
-			'*',
-			`_id IN ($1) AND updated_at = (SELECT max(updated_at) FROM operation.rides AS r2 WHERE r2._id = operation.rides._id)`,
-			{ 1: rideIds.join(',') },
-		);
-		// Throw an error if no rides are found
-		if (!selectResult?.length) throw new Error('Rides not found for IDs.');
 		// Return the rides found
-		return selectResult;
+		return this.findRides({ _id: rideIds });
 	}
 
 	/**
@@ -56,34 +51,32 @@ class RidesProviderClass {
 	async findRides<K extends RideFilterKey>(fields: RideFilterFields<K>): Promise<Ride[]> {
 		// Build the params object that will be used in the query
 		const params: Record<string, number | string> = {};
+		// Initialize the param index
+		let paramIndex = 1;
 		// Build the where clause from the fields params
 		const where = (Object.keys(fields) as K[])
 			.map((key) => {
 				// If the field is an array, build the IN clause
 				if (Array.isArray(fields[key])) {
-					const placeholders = fields[key].map((v, i) => {
-						const param = `${String(key)}_${i}`;
-						params[param] = v;
-						return `{${param}}`;
+					const placeholders = fields[key].map((v) => {
+						const index = paramIndex++;
+						params[String(index)] = v;
+						return `$${index}`;
 					});
 					return `${String(key)} IN (${placeholders.join(', ')})`;
 				}
 				// If the field is not an array, build the = clause
-				params[String(key)] = fields[key];
-				return `${String(key)} = {${String(key)}}`;
+				const index = paramIndex++;
+				params[String(index)] = fields[key];
+				return `${String(key)} = $${index}`;
 			})
 			.join(' AND ');
 		// Fetch the rides data from the database in a single query
 		const selectResult = await labDb.operation.rides.queryFromString(
 			`
 				SELECT *
-				FROM operation.rides
+				FROM operation.rides FINAL
 				WHERE ${where}
-				AND updated_at = (
-					SELECT max(updated_at)
-					FROM operation.rides AS r2
-					WHERE r2._id = operation.rides._id
-				)
 			`,
 			params,
 		);
@@ -131,13 +124,13 @@ class RidesProviderClass {
 	 * Updates rides matching the given filter by inserting new versions with the
 	 * specified updated fields. This function is atomic, meaning that if any of the
 	 * @param filter The fields used to select rides to update.
-	 * @param updates The fields to overwrite on each selected ride.
+	 * @param updatedFields The fields to overwrite on each selected ride.
 	 * @returns The number of new ride versions inserted.
 	 * @throws If no rides are found for the given filter.
 	 */
-	async updateRides<K extends RideFilterKey>(filter: RideFilterFields<K>, updates: RideAtomicUpdateFields): Promise<number> {
+	async updateRides<K extends RideFilterKey>(filter: RideFilterFields<K>, updatedFields: RideAtomicUpdateFields): Promise<number> {
 		// Return 0 if there are no updates to apply
-		if (Object.keys(updates).length === 0) return 0;
+		if (Object.keys(updatedFields).length === 0) return 0;
 		// Fetch the latest versions of the matching rides
 		const foundRides = await this.findRides<K>(filter);
 		if (!foundRides?.length) throw new Error(`Rides not found using the following fields: ${JSON.stringify(filter)}`);
@@ -145,7 +138,7 @@ class RidesProviderClass {
 		// updated fields and the new updated_at timestamp
 		const newRides = foundRides.map(foundRide => ({
 			...foundRide,
-			...updates,
+			...updatedFields,
 			updated_at: Dates.now('utc').unix_timestamp,
 		}));
 		// Insert the new ride versions in the database
