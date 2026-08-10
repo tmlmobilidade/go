@@ -1,3 +1,3 @@
-export * from './query.js';
-export * from './ride-normalized.js';
+export * from './ride-query.js';
+export * from './ride-view.js';
 export * from './ride.js';

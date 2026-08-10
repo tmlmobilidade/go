@@ -7,12 +7,12 @@ import { z } from 'zod';
 
 /* * */
 
-export const RideNormalizedSchema = RideSchema.extend({
+export const RideViewSchema = RideSchema.extend({
 	acceptance_status: z.enum([...RideAcceptanceStatusSchema.options, 'none']),
 	analysis_at_least_one_vehicle_event_on_last_stop_grade: z.enum([...GradeStatusSchema.options, 'none']),
-	analysis_expected_apex_validation_interval: z.enum([...GradeStatusSchema.options, 'none']),
+	analysis_expected_apex_validation_interval_grade: z.enum([...GradeStatusSchema.options, 'none']),
 	analysis_simple_three_vehicle_events_grade: z.enum([...GradeStatusSchema.options, 'none']),
-	analysis_transaction_sequentiality: z.enum([...GradeStatusSchema.options, 'none']),
+	analysis_transaction_sequentiality_grades: z.enum([...GradeStatusSchema.options, 'none']),
 	end_delay_status: z.enum([...DelayStatusSchema.options, 'none']),
 	end_delay_value_display: z.string().nullable(),
 	end_time_observed_display: z.string().nullable(),
@@ -20,9 +20,6 @@ export const RideNormalizedSchema = RideSchema.extend({
 	operational_status: OperationalStatusSchema,
 	seen_status: SeenStatusSchema,
 	start_delay_status: z.enum([...DelayStatusSchema.options, 'none']),
-	start_delay_value_display: z.string().nullable(),
-	start_time_observed_display: z.string().nullable(),
-	start_time_scheduled_display: z.string(),
 });
 
 /**
@@ -31,4 +28,4 @@ export const RideNormalizedSchema = RideSchema.extend({
  * and the main ride analysis schemas to create a single object,
  * easier to work with in the frontend.
  */
-export type RideNormalized = z.infer<typeof RideNormalizedSchema>;
+export type RideView = z.infer<typeof RideViewSchema>;
