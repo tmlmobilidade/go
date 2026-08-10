@@ -14,7 +14,7 @@ export const GetRidesQuerySchema = z.object({
 
 	agency_ids: z
 		.array(z.string())
-		.optional(),
+		.default([]),
 
 	analyses: z.object({
 		at_least_one_vehicle_event_on_last_stop_grade: z

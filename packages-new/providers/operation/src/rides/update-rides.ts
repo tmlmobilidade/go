@@ -1,6 +1,6 @@
 /* * */
 
-import { type RideAtomicUpdateFields, type RideFilterFields, type RideFilterKey } from '@/types.js';
+import { type RideAtomicUpdateFields, type RideFilterFields, type RideFilterKey } from '@/rides/types.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 

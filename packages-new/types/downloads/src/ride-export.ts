@@ -1,7 +1,7 @@
 /* * */
 
 import { FileExportBaseSchema } from '@/base.js';
-import { AlertCauseSchema, RideAnalysisGradeWithNoneSchema, RideJustificationSourceSchema } from '@tmlmobilidade/go-types-operation';
+import { AlertCauseSchema, RideJustificationSourceSchema } from '@tmlmobilidade/go-types-operation';
 import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, SeenStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -115,10 +115,10 @@ export const RideExportPropertiesSchema = z.object({
 
 		/* * */
 
-		analysis_ended_at_last_stop: z.array(RideAnalysisGradeWithNoneSchema).optional().nullable(),
-		analysis_expected_apex_validation_interval: z.array(RideAnalysisGradeWithNoneSchema).optional().nullable(),
-		analysis_simple_three_vehicle_events: z.array(RideAnalysisGradeWithNoneSchema).optional().nullable(),
-		analysis_transaction_sequentiality: z.array(RideAnalysisGradeWithNoneSchema).optional().nullable(),
+		analysis_ended_at_last_stop: z.array(GradeStatusSchema).optional().nullable(),
+		analysis_expected_apex_validation_interval: z.array(GradeStatusSchema).optional().nullable(),
+		analysis_simple_three_vehicle_events: z.array(GradeStatusSchema).optional().nullable(),
+		analysis_transaction_sequentiality: z.array(GradeStatusSchema).optional().nullable(),
 
 		/* * */
 
@@ -137,7 +137,7 @@ export const RideExportPropertiesSchema = z.object({
 		stop_ids: z.array(z.string()).optional().nullable(),
 
 		/* * */
-		acceptance_status: z.array(RideAnalysisGradeWithNoneSchema).optional().nullable(),
+		acceptance_status: z.array(GradeStatusSchema).optional().nullable(),
 		search: z.string().optional().nullable(),
 	}),
 	type: z.literal('ride'),

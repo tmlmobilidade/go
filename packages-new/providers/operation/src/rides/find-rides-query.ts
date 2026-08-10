@@ -134,12 +134,11 @@ export async function findRidesByQuery(query: GetRidesQuery): Promise<Ride[]> {
 
 	if (query.search) {
 		const search = addParam(`%${query.search}%`);
-
 		conditions.push(`
 			(
 				toString(_id) ILIKE ${search}
-				OR toString(vehicle_id) ILIKE ${search}
-				OR toString(line_id) ILIKE ${search}
+				OR toString(headsign) ILIKE ${search}
+				OR toString(route_long_name) ILIKE ${search}
 			)
 		`);
 	}

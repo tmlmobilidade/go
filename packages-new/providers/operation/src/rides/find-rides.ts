@@ -1,6 +1,6 @@
 /* * */
 
-import { type RideFilterFields, type RideFilterKey } from '@/types.js';
+import { type RideFilterFields, type RideFilterKey } from '@/rides/types.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 
