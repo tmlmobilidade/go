@@ -16,7 +16,6 @@ SELECT
             )
         )
     ) AS value
-FROM eta.pred_trip_stop_etas
-FINAL
+FROM eta.pred_trip_stop_etas FINAL
 GROUP BY stop_id
 ORDER BY key

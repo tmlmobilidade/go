@@ -50,7 +50,7 @@ stops AS (
                 )
             )
         )                                                                        AS scheduled_arrival_unix
-    FROM eta.pred_trip_stop_etas AS e
+    FROM eta.pred_trip_stop_etas AS e FINAL
     LEFT JOIN eta.curr_waypoints_snapped AS w
         ON w.hashed_trip_id = e.hashed_trip_id AND w.stop_sequence = e.stop_sequence
     LEFT JOIN eta.curr_rides AS r

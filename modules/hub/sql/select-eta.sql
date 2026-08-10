@@ -4,6 +4,6 @@ SELECT
     stop_sequence,
     stop_id,
     stop_name,
-    eta_seconds,
+    intDiv(eta_at - toUnixTimestamp64Milli(now64(3)), 1000) AS eta_seconds,
     eta_at,
-FROM eta.pred_trip_stop_etas;
+FROM eta.pred_trip_stop_etas FINAL;
