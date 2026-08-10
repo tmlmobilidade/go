@@ -30,11 +30,12 @@ export function RidesList() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
 	const ridesListContext = useRidesListContext();
-	const { t } = useTranslation();
 
 	const formatTimestamp = (timestamp: UnixTimestamp) => {
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;

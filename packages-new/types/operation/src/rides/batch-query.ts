@@ -1,13 +1,11 @@
 /* * */
 
-import { RideAcceptanceStatusSchema } from '@/operation/rides/ride-acceptance.js';
-import { RideAnalysisGradeSchema } from '@/operation/rides/ride-analysis.js';
-import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema, TicketingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, SeenStatusSchema, TicketingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-const RideAnalysisGradeWithNoneSchema = RideAnalysisGradeSchema.or(z.literal('none'));
+const RideAnalysisGradeWithNoneSchema = GradeStatusSchema.or(z.literal('none'));
 
 /* * */
 
@@ -72,7 +70,7 @@ export const GetRidesBatchQuerySchema = z.object({
 	/* * */
 
 	acceptance_status: z
-		.preprocess((val: string) => (val && typeof val === 'string') ? val.split(',').map(status => status.trim()) : [], z.array(z.enum([...RideAcceptanceStatusSchema.options, 'none'])))
+		.preprocess((val: string) => (val && typeof val === 'string') ? val.split(',').map(status => status.trim()) : [], z.array(z.enum([...GradeStatusSchema.options, 'none'])))
 		.optional(),
 
 	/* * */
