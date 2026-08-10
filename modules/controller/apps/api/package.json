@@ -26,7 +26,7 @@
 		"@tmlmobilidade/go-controllers-operation": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
-		"@tmlmobilidade/go-providers-rides": "*",
+		"@tmlmobilidade/go-providers-operation": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/normalizers": "*",
