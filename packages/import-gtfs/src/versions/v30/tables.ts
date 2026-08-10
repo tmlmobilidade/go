@@ -20,15 +20,15 @@ export function initGtfsStrictV30SqlTables(): GtfsStrictV30SQLTables {
 	const tripsTable = database.registerTable<GtfsStrictV30Trips>('trips', {
 		batch_size: 10000,
 		columns: [
-			{ indexed: false, name: 'bikes_allowed', type: 'INTEGER' },
+			{ indexed: false, name: 'bikes_allowed', type: 'TEXT' },
 			{ indexed: false, name: 'block_id', type: 'TEXT' },
-			{ indexed: false, name: 'direction_id', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'direction_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'service_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'shape_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'trip_headsign', not_null: true, type: 'TEXT' },
 			{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
-			{ indexed: false, name: 'wheelchair_accessible', type: 'INTEGER' },
+			{ indexed: false, name: 'wheelchair_accessible', type: 'TEXT' },
 		],
 	});
 
@@ -37,15 +37,15 @@ export function initGtfsStrictV30SqlTables(): GtfsStrictV30SQLTables {
 		columns: [
 			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'cemv_support', type: 'TEXT' },
-			{ indexed: false, name: 'continuous_drop_off', type: 'INTEGER' },
-			{ indexed: false, name: 'continuous_pickup', type: 'INTEGER' },
+			{ indexed: false, name: 'continuous_drop_off', type: 'TEXT' },
+			{ indexed: false, name: 'continuous_pickup', type: 'TEXT' },
 			{ indexed: false, name: 'route_color', not_null: true, type: 'TEXT' },
 			{ indexed: true, name: 'route_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_long_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_short_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_sort_order', type: 'INTEGER' },
 			{ indexed: false, name: 'route_text_color', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_type', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'route_type', not_null: true, type: 'TEXT' },
 		],
 	});
 
@@ -72,7 +72,7 @@ export function initGtfsStrictV30SqlTables(): GtfsStrictV30SQLTables {
 			{ indexed: false, name: 'stop_lat', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_lon', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'wheelchair_boarding', type: 'INTEGER' },
+			{ indexed: false, name: 'wheelchair_boarding', type: 'TEXT' },
 		],
 	});
 
@@ -86,7 +86,7 @@ export function initGtfsStrictV30SqlTables(): GtfsStrictV30SQLTables {
 			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
 			{ indexed: true, name: 'stop_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'timepoint', type: 'INTEGER' },
+			{ indexed: false, name: 'timepoint', type: 'TEXT' },
 			{ indexed: true, name: 'trip_id', not_null: true, type: 'TEXT' },
 		],
 	});
