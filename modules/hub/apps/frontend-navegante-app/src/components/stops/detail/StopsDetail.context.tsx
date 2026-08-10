@@ -148,7 +148,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 		if (!validPatternsData || !operationalDate.selectedOperationalDate) return;
 		// Initialize the timetable data for the selected date
 		const timetableDataForSelectedDate: StopsDetailViewTimetableData[] = [];
-		const etaData = etaContext.actions.getEtasbyStop(stopId);
+		const etaData = etaContext.actions.getEtasByStop(stopId);
 		// Loop through each valid pattern, and each trip of the pattern
 		for (const patternData of validPatternsData) {
 			for (const tripData of patternData.trips) {
