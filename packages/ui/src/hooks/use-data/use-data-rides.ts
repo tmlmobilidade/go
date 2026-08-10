@@ -1,8 +1,9 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/dates';
-import { normalizeRide } from '@tmlmobilidade/normalizers';
-import { type GetRidesBatchQuery, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { normalizeRide } from '@tmlmobilidade/go-normalizers-operation';
+import { type GetRidesBatchQuery, type RideNormalized } from '@tmlmobilidade/go-types-operation';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { type SelectDataItem, useDebouncedState, useStateRef } from '@tmlmobilidade/ui';
 import { type HttpResponse } from '@tmlmobilidade/utils';
 import { useEffect, useMemo, useState } from 'react';
