@@ -9,7 +9,7 @@ import { referenceTypePrompt } from '@/prompts/reference-type.js';
 import { userInstructionDelimitersPrompt, userInstructionPrompt } from '@/prompts/user-instructions.js';
 import { parseAlertGeneratedCopy, PromptBuilder } from '@/utils.js';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
-import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
+// import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Agency, type Alert, type I18nCode, type UnixTimestamp } from '@tmlmobilidade/types';
@@ -165,42 +165,44 @@ async function addLinesReferenceContext(
 ) {
 	if (props.reference_type !== 'lines') return;
 
-	const foundLines = await getOperationalLinesBatch({
-		agency_ids: [props.agency_id],
-		date_end: props.active_period_end_date,
-		date_start: props.active_period_start_date,
-	});
-	if (!foundLines?.length) throw new Error('No Operational Lines found for the given references');
+	throw new Error('No Operational Lines found for the given references');
 
-	for (const selectedReference of props.references) {
-		const matchingLine = foundLines.find(line => String(line.line_id) === String(selectedReference.parent_id));
-		if (!matchingLine) throw new Error(`Operational Line not found for reference with parent_id ${selectedReference.parent_id}`);
-		collector.addBody(`Line (title): ${matchingLine.line_short_name}`);
-		collector.addBody(`Line: (${matchingLine.line_short_name}) ${matchingLine.line_long_name}`);
+	// const foundLines = await getOperationalLinesBatch({
+	// 	agency_ids: [props.agency_id],
+	// 	date_end: props.active_period_end_date,
+	// 	date_start: props.active_period_start_date,
+	// });
+	// if (!foundLines?.length) throw new Error('No Operational Lines found for the given references');
 
-		const resolvedChildLabels: string[] = [];
-		if (selectedReference.child_ids?.length) {
-			const matchingWaypoints = matchingLine.hashed_patterns
-				.flatMap(hp => hp.path)
-				.filter(waypoint => selectedReference.child_ids?.includes(String(waypoint.stop_id)));
-			if (matchingWaypoints?.length) {
-				collector.addBody('↳ Only on the following stops:');
-				for (const waypoint of matchingWaypoints) {
-					collector.addBody(`#${waypoint.stop_sequence} stop in path:`);
-					collector.appendBody(`[${waypoint.stop_id}] ${waypoint.stop_name}`);
-					resolvedChildLabels.push(`[${waypoint.stop_id}] ${waypoint.stop_name}`);
-				}
-			}
-		}
+	// for (const selectedReference of props.references) {
+	// 	const matchingLine = foundLines.find(line => String(line.line_id) === String(selectedReference.parent_id));
+	// 	if (!matchingLine) throw new Error(`Operational Line not found for reference with parent_id ${selectedReference.parent_id}`);
+	// 	collector.addBody(`Line (title): ${matchingLine.line_short_name}`);
+	// 	collector.addBody(`Line: (${matchingLine.line_short_name}) ${matchingLine.line_long_name}`);
 
-		resolvedReferences.push({
-			parent_id: selectedReference.parent_id,
-			reference_type: 'lines',
-			resolved_child_labels: resolvedChildLabels,
-			resolved_parent_label: `(${matchingLine.line_short_name}) ${matchingLine.line_long_name}`,
-			title_labels: [matchingLine.line_short_name],
-		});
-	}
+	// 	const resolvedChildLabels: string[] = [];
+	// 	if (selectedReference.child_ids?.length) {
+	// 		const matchingWaypoints = matchingLine.hashed_patterns
+	// 			.flatMap(hp => hp.path)
+	// 			.filter(waypoint => selectedReference.child_ids?.includes(String(waypoint.stop_id)));
+	// 		if (matchingWaypoints?.length) {
+	// 			collector.addBody('↳ Only on the following stops:');
+	// 			for (const waypoint of matchingWaypoints) {
+	// 				collector.addBody(`#${waypoint.stop_sequence} stop in path:`);
+	// 				collector.appendBody(`[${waypoint.stop_id}] ${waypoint.stop_name}`);
+	// 				resolvedChildLabels.push(`[${waypoint.stop_id}] ${waypoint.stop_name}`);
+	// 			}
+	// 		}
+	// 	}
+
+	// 	resolvedReferences.push({
+	// 		parent_id: selectedReference.parent_id,
+	// 		reference_type: 'lines',
+	// 		resolved_child_labels: resolvedChildLabels,
+	// 		resolved_parent_label: `(${matchingLine.line_short_name}) ${matchingLine.line_long_name}`,
+	// 		title_labels: [matchingLine.line_short_name],
+	// 	});
+	// }
 }
 
 async function addRidesReferenceContext(
@@ -210,22 +212,22 @@ async function addRidesReferenceContext(
 ) {
 	if (props.reference_type !== 'rides') return;
 
-	const foundRides = await goDb.operation.rides.findMany({ _id: { $in: props.references.map(ref => ref.parent_id) } });
-	if (!foundRides?.length) throw new Error('Rides not found for the given references');
+	// const foundRides = await goDb.operation.rides.findMany({ _id: { $in: props.references.map(ref => ref.parent_id) } });
+	// if (!foundRides?.length) throw new Error('Rides not found for the given references');
 
-	for (const rideData of foundRides) {
-		const startTimeFormated = Dates.fromUnixTimestamp(rideData.start_time_scheduled).toFormat('HH:mm');
-		collector.addBody(`Line (title): ${rideData.line_id}`);
-		collector.addBody(`Circulation (title): line ${rideData.line_id} at ${startTimeFormated} to ${rideData.headsign}`);
-		collector.addBody(`Ride: ${rideData.line_id} to ${rideData.headsign} departing at ${startTimeFormated}`);
-		resolvedReferences.push({
-			parent_id: rideData._id,
-			reference_type: 'rides',
-			resolved_child_labels: [],
-			resolved_parent_label: `${rideData.line_id} to ${rideData.headsign} departing at ${startTimeFormated}`,
-			title_labels: [String(rideData.line_id)],
-		});
-	}
+	// for (const rideData of foundRides) {
+	// 	const startTimeFormated = Dates.fromUnixTimestamp(rideData.start_time_scheduled).toFormat('HH:mm');
+	// 	collector.addBody(`Line (title): ${rideData.line_id}`);
+	// 	collector.addBody(`Circulation (title): line ${rideData.line_id} at ${startTimeFormated} to ${rideData.headsign}`);
+	// 	collector.addBody(`Ride: ${rideData.line_id} to ${rideData.headsign} departing at ${startTimeFormated}`);
+	// 	resolvedReferences.push({
+	// 		parent_id: rideData._id,
+	// 		reference_type: 'rides',
+	// 		resolved_child_labels: [],
+	// 		resolved_parent_label: `${rideData.line_id} to ${rideData.headsign} departing at ${startTimeFormated}`,
+	// 		title_labels: [String(rideData.line_id)],
+	// 	});
+	// }
 }
 
 async function addStopsReferenceContext(
@@ -235,42 +237,42 @@ async function addStopsReferenceContext(
 ) {
 	if (props.reference_type !== 'stops') return;
 
-	const foundStops = await getOperationalStopsBatch({
-		agency_ids: [props.agency_id],
-		date_end: props.active_period_end_date,
-		date_start: props.active_period_start_date,
-	});
-	if (!foundStops?.length) throw new Error('No Operational Stops found for the given references');
+	// const foundStops = await getOperationalStopsBatch({
+	// 	agency_ids: [props.agency_id],
+	// 	date_end: props.active_period_end_date,
+	// 	date_start: props.active_period_start_date,
+	// });
+	// if (!foundStops?.length) throw new Error('No Operational Stops found for the given references');
 
-	for (const selectedReference of props.references) {
-		const matchingStop = foundStops.find(stop => String(stop.stop_id) === String(selectedReference.parent_id));
-		if (!matchingStop) throw new Error(`Operational Stop not found for reference with parent_id ${selectedReference.parent_id}`);
-		collector.addBody(`Stop: [${matchingStop.stop_id}] ${matchingStop.stop_name}`);
+	// for (const selectedReference of props.references) {
+	// 	const matchingStop = foundStops.find(stop => String(stop.stop_id) === String(selectedReference.parent_id));
+	// 	if (!matchingStop) throw new Error(`Operational Stop not found for reference with parent_id ${selectedReference.parent_id}`);
+	// 	collector.addBody(`Stop: [${matchingStop.stop_id}] ${matchingStop.stop_name}`);
 
-		const resolvedChildLabels: string[] = [];
-		const titleLabels: string[] = [];
-		if (selectedReference.child_ids?.length) {
-			const matchingLines = matchingStop.hashed_patterns
-				.filter(line => selectedReference.child_ids?.includes(String(line.line_id)));
-			if (matchingLines?.length) {
-				collector.addBody('↳ Only for the following lines:');
-				for (const line of matchingLines) {
-					collector.addBody(`Line (title): ${line.line_short_name}`);
-					collector.addBody(`(${line.line_short_name}) ${line.line_long_name}`);
-					resolvedChildLabels.push(`(${line.line_short_name}) ${line.line_long_name}`);
-					titleLabels.push(line.line_short_name);
-				}
-			}
-		}
+	// 	const resolvedChildLabels: string[] = [];
+	// 	const titleLabels: string[] = [];
+	// 	if (selectedReference.child_ids?.length) {
+	// 		const matchingLines = matchingStop.hashed_patterns
+	// 			.filter(line => selectedReference.child_ids?.includes(String(line.line_id)));
+	// 		if (matchingLines?.length) {
+	// 			collector.addBody('↳ Only for the following lines:');
+	// 			for (const line of matchingLines) {
+	// 				collector.addBody(`Line (title): ${line.line_short_name}`);
+	// 				collector.addBody(`(${line.line_short_name}) ${line.line_long_name}`);
+	// 				resolvedChildLabels.push(`(${line.line_short_name}) ${line.line_long_name}`);
+	// 				titleLabels.push(line.line_short_name);
+	// 			}
+	// 		}
+	// 	}
 
-		resolvedReferences.push({
-			parent_id: selectedReference.parent_id,
-			reference_type: 'stops',
-			resolved_child_labels: resolvedChildLabels,
-			resolved_parent_label: `[${matchingStop.stop_id}] ${matchingStop.stop_name}`,
-			title_labels: titleLabels,
-		});
-	}
+	// 	resolvedReferences.push({
+	// 		parent_id: selectedReference.parent_id,
+	// 		reference_type: 'stops',
+	// 		resolved_child_labels: resolvedChildLabels,
+	// 		resolved_parent_label: `[${matchingStop.stop_id}] ${matchingStop.stop_name}`,
+	// 		title_labels: titleLabels,
+	// 	});
+	// }
 }
 
 async function buildDescribeAlertContextData(props: DescribeAlertProps): Promise<DescribeAlertContextData> {
