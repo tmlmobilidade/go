@@ -14,7 +14,7 @@ export const GetRidesQuerySchema = z.object({
 
 	agency_ids: z
 		.array(z.string())
-		.default([]),
+		.optional(),
 
 	analyses: z.object({
 		at_least_one_vehicle_event_on_last_stop_grade: z
@@ -29,10 +29,14 @@ export const GetRidesQuerySchema = z.object({
 		transaction_sequentiality: z
 			.array(GradeStatusSchema)
 			.optional(),
-	}),
+	}).optional(),
 
 	delay_statuses: z
 		.array(DelayStatusSchema)
+		.optional(),
+
+	driver_ids: z
+		.array(z.string())
 		.optional(),
 
 	operational_statuses: z
@@ -59,8 +63,12 @@ export const GetRidesQuerySchema = z.object({
 		.array(z.string())
 		.optional(),
 
-	ticketing_status: z
+	ticketing_statuses: z
 		.array(TicketingStatusSchema)
+		.optional(),
+
+	vehicle_ids: z
+		.array(z.string())
 		.optional(),
 
 });
