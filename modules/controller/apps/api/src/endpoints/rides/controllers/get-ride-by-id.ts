@@ -10,41 +10,31 @@ import { type Ride } from '@tmlmobilidade/go-types-operation';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getRideById(request: FastifyRequest<{ Params: { ride_id: string } }>, reply: FastifyReply<Ride>) {
-	try {
-		//
+export async function getRideById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Ride>) {
+	//
 
-		//
-		// Validate the request parameters
+	//
+	// Validate the request parameters
 
-		const rideId = request.params.ride_id;
-
-		if (!rideId) {
-			return reply
-				.status(HTTP_STATUS.BAD_REQUEST)
-				.send({
-					data: null,
-					error: 'Missing ride_id parameter.',
-					status: HTTP_STATUS.BAD_REQUEST,
-				});
-		}
-
-		//
-		// Fetch the ride data by ride ID
-		// and send it back to the client
-
-		const rideData = await ridesProvider.findRideById(rideId);
-
-		reply.send({
-			data: rideData,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
-		});
-
-		//
-	} catch (error) {
-		reply
-			.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
-			.send(error);
+	if (!request.params.id) {
+		return reply
+			.status(HTTP_STATUS.BAD_REQUEST)
+			.send({
+				data: null,
+				error: 'Missing ride_id parameter.',
+				status: HTTP_STATUS.BAD_REQUEST,
+			});
 	}
+
+	//
+	// Fetch the ride data by ride ID
+	// and send it back to the client
+
+	const rideData = await ridesProvider.findRideById(request.params.id);
+
+	reply.send({
+		data: rideData,
+		error: null,
+		statusCode: HTTP_STATUS.OK,
+	});
 }
