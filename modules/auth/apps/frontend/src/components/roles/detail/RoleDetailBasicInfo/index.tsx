@@ -30,7 +30,6 @@ export function RoleDetailBasicInfo() {
 						name="name"
 						render={({ field, fieldState }) => (
 							<TextInput
-								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:roles.detail.BasicInfo.fields.name.label')}
 								maxLength={255}
@@ -38,7 +37,7 @@ export function RoleDetailBasicInfo() {
 								onChange={field.onChange}
 								placeholder={t('default:roles.detail.BasicInfo.fields.name.placeholder')}
 								readOnly={roleDetailContext.flags.isReadOnly}
-								value={field.value}
+								value={field.value ?? ''}
 								withAsterisk
 							/>
 						)}
