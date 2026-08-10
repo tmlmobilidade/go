@@ -1,8 +1,8 @@
 /* * */
 
 import { FileExportBaseSchema } from '@/base.js';
-import { DelayStatusSchema, OperationalStatusSchema, SeenStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
-import { AlertCauseSchema, RideAcceptanceStatusSchema, RideAnalysisGradeWithNoneSchema, RideJustificationSourceSchema } from '@tmlmobilidade/types';
+import { AlertCauseSchema, RideAnalysisGradeWithNoneSchema, RideJustificationSourceSchema } from '@tmlmobilidade/go-types-operation';
+import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, SeenStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -100,7 +100,7 @@ export const FlatRideSchema = z.object({
 	/* ACCEPTANCE / JUSTIFICATION */
 	/* * */
 
-	acceptance_status: z.enum(RideAcceptanceStatusSchema.options).nullish().nullable(),
+	acceptance_status: z.enum(GradeStatusSchema.options).nullish().nullable(),
 	justification_cause: AlertCauseSchema.nullish().nullable(),
 	justification_source: z.enum(RideJustificationSourceSchema.options).nullish().nullable(),
 	manual_trip_id: z.string().nullish().nullable(),
@@ -137,7 +137,7 @@ export const RideExportPropertiesSchema = z.object({
 		stop_ids: z.array(z.string()).optional().nullable(),
 
 		/* * */
-		acceptance_status: z.array(z.enum([...RideAcceptanceStatusSchema.options, 'none'])).optional().nullable(),
+		acceptance_status: z.array(RideAnalysisGradeWithNoneSchema).optional().nullable(),
 		search: z.string().optional().nullable(),
 	}),
 	type: z.literal('ride'),

@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-const RideAnalysisGradeWithNoneSchema = GradeStatusSchema.or(z.literal('none'));
+export const RideAnalysisGradeWithNoneSchema = GradeStatusSchema.or(z.literal('none'));
 
 /* * */
 
