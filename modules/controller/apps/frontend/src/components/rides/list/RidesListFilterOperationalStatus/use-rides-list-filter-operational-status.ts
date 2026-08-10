@@ -1,6 +1,6 @@
 'use client';
 
-import { OperationalStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { type OperationalStatus, OperationalStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
  * Hook to manage the operational status filter for the rides list filter bar.
  * @returns The filter state management object.
  */
-export function useRidesListFilterOperationalStatus(): UseFilterStateListReturnType {
+export function useRidesListFilterOperationalStatus(): UseFilterStateListReturnType<OperationalStatus> {
 	//
 
 	const { t } = useTranslation();

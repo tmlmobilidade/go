@@ -1,8 +1,10 @@
 'use client';
 
 import { RidesListLastUpdatedAt } from '@/components/rides/list/RidesListLastUpdatedAt';
-import { Label, SearchInput, Spacer, Toolbar, useFilterStateString } from '@tmlmobilidade/ui';
+import { Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useRidesListFilterSearch } from './use-rides-list-filter-search';
 
 /* * */
 
@@ -14,7 +16,7 @@ export function RidesListHeader() {
 
 	const { t } = useTranslation();
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useRidesListFilterSearch();
 
 	//
 	// B. Render components

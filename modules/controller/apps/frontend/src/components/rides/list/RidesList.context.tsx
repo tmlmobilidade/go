@@ -1,23 +1,26 @@
 'use client';
 
-import { useRideFavoritesContext } from '@/contexts/RideFavorites.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
-import { type DelayStatus, DelayStatusSchema, type OperationalStatus, OperationalStatusSchema, type TicketingStatus, TicketingStatusSchema, UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { parseAsInteger, useDataAgencies, useDataRides, useDebouncedValue, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useQueryState } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { type DelayStatus, type OperationalStatus, type TicketingStatus, UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { useDataRides, type UseFilterStateListReturnType, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+
+import { useRidesListFilterAcceptanceStatus } from './RidesListFilterAcceptanceStatus/use-rides-list-filter-acceptance-status';
+import { useRidesListFilterAgency } from './RidesListFilterAgency/use-rides-list-filter-agency';
+import { useRidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop } from './RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop/use-rides-list-filter-analysis-at-least-one-vehicle-event-on-last-stop';
+import { useRidesListFilterAnalysisExpectedApexValidationInterval } from './RidesListFilterAnalysisExpectedApexValidationInterval/use-rides-list-filter-analysis-expected-apex-validation-interval';
+import { useRidesListFilterAnalysisSimpleThreeEvents } from './RidesListFilterAnalysisSimpleThreeEvents/use-rides-list-filter-analysis-simple-three-events';
+import { useRidesListFilterAnalysisTransactionSequentiality } from './RidesListFilterAnalysisTransactionSequentiality/use-rides-list-filter-analysis-transaction-sequentiality';
+import { useRidesListFilterDateRange } from './RidesListFilterDateRange/use-rides-list-filter-date-range';
+import { useRidesListFilterDelayStatus } from './RidesListFilterDelayStatus/use-rides-list-filter-delay-status';
+import { useRidesListFilterOperationalStatus } from './RidesListFilterOperationalStatus/use-rides-list-filter-operational-status';
+import { useRidesListFilterTicketingStatus } from './RidesListFilterTicketingStatus/use-rides-list-filter-ticketing-status';
+import { useRidesListFilterSearch } from './RidesListHeader/use-rides-list-filter-search';
 
 /* * */
 
 export interface RidesListContextState {
-	actions: {
-		setFavoritesEnabled: () => void
-		setFilterDateEnd: (value: number) => void
-		setFilterDateStart: (value: number) => void
-	}
 	data: {
 		filtered: Ride[]
 		filteredByFavoriteIds: Ride[]
@@ -31,7 +34,6 @@ export interface RidesListContextState {
 	}
 	flags: {
 		error: null | string
-		favoritesEnabled: boolean
 		last_updated_at: null | UnixTimestamp
 		loading: boolean
 	}
@@ -57,46 +59,35 @@ export function RidesListContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
-	const rideFavoritesContext = useRideFavoritesContext();
-
-	const [favoritesEnabled, setFavoritesEnabled] = useState<boolean>(false);
-
-	const filterSearch = useFilterStateString('search');
-	const [debouncedFilterSearch] = useDebouncedValue(filterSearch.value.trim(), 500);
-
-	const [filterDateEnd, setFilterDateEnd] = useQueryState<number>('date_end', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').plus({ minutes: 5 }).unix_timestamp, [])));
-	const [filterDateStart, setFilterDateStart] = useQueryState<number>('date_start', parseAsInteger.withDefault(useMemo(() => Dates.now('Europe/Lisbon').minus({ minutes: 5 }).unix_timestamp, [])));
-
-	const filterDelayStatuses = useFilterStateList('delay_statuses', DelayStatusSchema.options, DelayStatusSchema.options.map(item => ({ label: t(`shared:status.delay_status.${item}`), value: item })));
-	const filterOperationalStatuses = useFilterStateList('operational_statuses', OperationalStatusSchema.options, OperationalStatusSchema.options.map(item => ({ label: t(`shared:status.operational_status.${item}`), value: item })));
-	const filterTicketingStatuses = useFilterStateList('ticketing_statuses', TicketingStatusSchema.options, TicketingStatusSchema.options.map(item => ({ label: t(`default:list.RidesListFilterTicketingStatus.options.${item}`), value: item })));
+	const filterAcceptanceStatus = useRidesListFilterAcceptanceStatus();
+	const filterAgency = useRidesListFilterAgency();
+	const filterAnalysisAtLeastOneVehicleEventOnLastStop = useRidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop();
+	const filterAnalysisExpectedApexValidationInterval = useRidesListFilterAnalysisExpectedApexValidationInterval();
+	const filterAnalysisSimpleThreeEvents = useRidesListFilterAnalysisSimpleThreeEvents();
+	const filterAnalysisTransactionSequentiality = useRidesListFilterAnalysisTransactionSequentiality();
+	const filterDateRange = useRidesListFilterDateRange();
+	const filterDelayStatus = useRidesListFilterDelayStatus();
+	const filterOperationalStatus = useRidesListFilterOperationalStatus();
+	const filterSearch = useRidesListFilterSearch();
+	const filterTicketingStatus = useRidesListFilterTicketingStatus();
 
 	//
 	// B. Fetch data
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.rides.actions.analysis_read],
-		scope: PermissionCatalog.all.rides.scope,
-	});
-
-	const filterAgencyIds = useFilterStateList('agency_ids', filteredAgencyIds, filteredAgencyOptions);
-
 	const { error: ridesError, isLoading: ridesLoading, lastUpdatedAt: ridesLastUpdatedAt, raw: ridesData } = useDataRides(API_ROUTES.controller.RIDES_LIST, {
 		query: {
-			agency_ids: filterAgencyIds.value,
-			analyses: {
-				at_least_one_vehicle_event_on_last_stop_grade: null,
-				expected_apex_validation_interval_grade: null,
-				simple_three_vehicle_events_grade: null,
-				transaction_sequentiality_grades: null,
-			},
-			delay_statuses: filterDelayStatuses.value,
-			operational_statuses: filterOperationalStatuses.value,
-			search: debouncedFilterSearch,
-			start_time_scheduled_end: filterDateEnd as UnixTimestamp,
-			start_time_scheduled_start: filterDateStart as UnixTimestamp,
-			ticketing_statuses: filterTicketingStatuses.value,
+			acceptance_statuses: filterAcceptanceStatus.value,
+			agency_ids: filterAgency.value,
+			analysis_at_least_one_vehicle_event_on_last_stop_grade: filterAnalysisAtLeastOneVehicleEventOnLastStop.value,
+			analysis_expected_apex_validation_interval_grade: filterAnalysisExpectedApexValidationInterval.value,
+			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeEvents.value,
+			analysis_transaction_sequentiality_grades: filterAnalysisTransactionSequentiality.value,
+			delay_statuses: filterDelayStatus.value,
+			operational_statuses: filterOperationalStatus.value,
+			search: filterSearch.value,
+			start_time_scheduled_end: filterDateRange.value_end,
+			start_time_scheduled_start: filterDateRange.value_start,
+			ticketing_statuses: filterTicketingStatus.value,
 		},
 	});
 
@@ -104,11 +95,6 @@ export function RidesListContextProvider({ children }: PropsWithChildren) {
 	// D. Define context value
 
 	const contextValue: RidesListContextState = useMemo(() => ({
-		actions: {
-			setFavoritesEnabled: () => setFavoritesEnabled(!favoritesEnabled),
-			setFilterDateEnd,
-			setFilterDateStart,
-		},
 		data: {
 			filtered: ridesData ?? [],
 			filteredByFavoriteIds: rideFavoritesContext.data.favoriteRides,
@@ -126,7 +112,7 @@ export function RidesListContextProvider({ children }: PropsWithChildren) {
 			last_updated_at: ridesLastUpdatedAt,
 			loading: ridesLoading,
 		},
-	}), [favoritesEnabled, filterAgencyIds, filterDelayStatuses, filterOperationalStatuses, filterSearch, filterTicketingStatuses, rideFavoritesContext.data.favoriteRides, ridesData, ridesError, ridesLastUpdatedAt, ridesLoading, setFilterDateEnd, setFilterDateStart]);
+	}), [filterSearch, ridesData, ridesError, ridesLastUpdatedAt, ridesLoading]);
 
 	//
 	// E. Render components

@@ -115,25 +115,25 @@ export async function findRidesByQuery(query: GetRidesQuery): Promise<Ride[]> {
 	//
 	// Analysis grades
 
-	// if (validatedQuery.analyses?.at_least_one_vehicle_event_on_last_stop_grade?.length) {
-	// 	const placeholders = validatedQuery.analyses.at_least_one_vehicle_event_on_last_stop_grade.map(addParam);
-	// 	conditions.push(`analysis_ended_at_last_stop_grade IN (${placeholders.join(', ')})`);
-	// }
+	if (validatedQuery.analysis_at_least_one_vehicle_event_on_last_stop_grade?.length) {
+		// const placeholders = validatedQuery.analysis_at_least_one_vehicle_event_on_last_stop_grade.map(addParam);
+		// conditions.push(`analysis_ended_at_last_stop_grade IN (${placeholders.join(', ')})`);
+	}
 
-	// if (validatedQuery.analyses?.expected_apex_validation_interval_grade?.length) {
-	// 	const placeholders = validatedQuery.analyses.expected_apex_validation_interval_grade.map(addParam);
-	// 	conditions.push(`analysis_expected_apex_validation_interval IN (${placeholders.join(', ')})`);
-	// }
+	if (validatedQuery.analysis_expected_apex_validation_interval_grade?.length) {
+		// const placeholders = validatedQuery.analysis_expected_apex_validation_interval_grade.map(addParam);
+		// conditions.push(`analysis_expected_apex_validation_interval IN (${placeholders.join(', ')})`);
+	}
 
-	// if (validatedQuery.analyses?.simple_three_vehicle_events_grade?.length) {
-	// 	const placeholders = validatedQuery.analyses.simple_three_vehicle_events_grade.map(addParam);
-	// 	conditions.push(`analysis_simple_three_vehicle_events_grade IN (${placeholders.join(', ')})`);
-	// }
+	if (validatedQuery.analysis_simple_three_vehicle_events_grade?.length) {
+		// const placeholders = validatedQuery.analysis_simple_three_vehicle_events_grade.map(addParam);
+		// conditions.push(`analysis_simple_three_vehicle_events_grade IN (${placeholders.join(', ')})`);
+	}
 
-	// if (validatedQuery.analyses?.transaction_sequentiality_grades?.length) {
-	// 	const placeholders = validatedQuery.analyses.transaction_sequentiality_grades.map(addParam);
-	// 	conditions.push(`analysis_transaction_sequentiality IN (${placeholders.join(', ')})`);
-	// }
+	if (validatedQuery.analysis_transaction_sequentiality_grades?.length) {
+		// const placeholders = validatedQuery.analysis_transaction_sequentiality_grades.map(addParam);
+		// conditions.push(`analysis_transaction_sequentiality IN (${placeholders.join(', ')})`);
+	}
 
 	//
 	// Search

@@ -1,7 +1,6 @@
 'use client';
 
-import { RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
-import { GradeStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { type RideAcceptanceStatus, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +9,7 @@ import { useTranslation } from 'react-i18next';
  * Hook to manage the acceptance status filter for the rides list filter bar.
  * @returns The filter state management object.
  */
-export function useRidesListFilterAcceptanceStatus(): UseFilterStateListReturnType {
+export function useRidesListFilterAcceptanceStatus(): UseFilterStateListReturnType<RideAcceptanceStatus> {
 	//
 
 	const { t } = useTranslation();
@@ -24,7 +23,7 @@ export function useRidesListFilterAcceptanceStatus(): UseFilterStateListReturnTy
 
 	return useFilterStateList(
 		'acceptance_status',
-		GradeStatusSchema.options,
+		RideAcceptanceStatusSchema.options,
 		selectOptions,
 	);
 }

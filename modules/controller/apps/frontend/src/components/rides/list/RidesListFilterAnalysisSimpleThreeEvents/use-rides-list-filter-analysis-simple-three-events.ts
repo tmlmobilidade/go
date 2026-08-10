@@ -1,6 +1,6 @@
 'use client';
 
-import { GradeStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { type GradeStatus, GradeStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
  * Hook to manage the analysis simple three events filter for the rides list filter bar.
  * @returns The filter state management object.
  */
-export function useRidesListFilterAnalysisSimpleThreeEvents(): UseFilterStateListReturnType {
+export function useRidesListFilterAnalysisSimpleThreeEvents(): UseFilterStateListReturnType<GradeStatus> {
 	//
 
 	const { t } = useTranslation();

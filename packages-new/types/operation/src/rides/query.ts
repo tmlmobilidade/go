@@ -16,20 +16,21 @@ export const GetRidesQuerySchema = z.object({
 		.array(z.string())
 		.default([]),
 
-	analyses: z.object({
-		at_least_one_vehicle_event_on_last_stop_grade: z
-			.array(GradeStatusSchema)
-			.optional(),
-		expected_apex_validation_interval_grade: z
-			.array(GradeStatusSchema)
-			.optional(),
-		simple_three_vehicle_events_grade: z
-			.array(GradeStatusSchema)
-			.optional(),
-		transaction_sequentiality_grades: z
-			.array(GradeStatusSchema)
-			.optional(),
-	}).optional(),
+	analysis_at_least_one_vehicle_event_on_last_stop_grade: z
+		.array(GradeStatusSchema)
+		.optional(),
+
+	analysis_expected_apex_validation_interval_grade: z
+		.array(GradeStatusSchema)
+		.optional(),
+
+	analysis_simple_three_vehicle_events_grade: z
+		.array(GradeStatusSchema)
+		.optional(),
+
+	analysis_transaction_sequentiality_grades: z
+		.array(GradeStatusSchema)
+		.optional(),
 
 	delay_statuses: z
 		.array(DelayStatusSchema)
