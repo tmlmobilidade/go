@@ -16,53 +16,55 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 	try {
 		//
 
-		const timer = new Timer();
+		throw new Error('Not implemented');
 
-		//
-		// Skip if there's no data to process
+		// const timer = new Timer();
 
-		if (!data || data.length === 0) return;
+		// //
+		// // Skip if there's no data to process
 
-		//
-		// Build out the query to find all Rides
-		// that are affected by the new data.
+		// if (!data || data.length === 0) return;
 
-		const updateRidesOps = data
-			// Filter out documents that don't have a trip_id,
-			// as they can't be associated with a Ride.
-			.filter(item => !!item.trip_id)
-			// Map each document to a query that will match
-			// Rides that are affected by the new data.
-			.map((item: SimplifiedVehicleEvent) => {
-				const standardWindowInterval = Dates
-					.fromUnixTimestamp(item.created_at)
-					.std_window;
-				return {
-					agency_id: item.agency_id,
-					start_time_scheduled: {
-						$gte: standardWindowInterval.start,
-						$lte: standardWindowInterval.end,
-					},
-					trip_id: item.trip_id,
-				};
-			});
+		// //
+		// // Build out the query to find all Rides
+		// // that are affected by the new data.
 
-		//
-		// Skip if there are no valid queries to run
+		// const updateRidesOps = data
+		// 	// Filter out documents that don't have a trip_id,
+		// 	// as they can't be associated with a Ride.
+		// 	.filter(item => !!item.trip_id)
+		// 	// Map each document to a query that will match
+		// 	// Rides that are affected by the new data.
+		// 	.map((item: SimplifiedVehicleEvent) => {
+		// 		const standardWindowInterval = Dates
+		// 			.fromUnixTimestamp(item.created_at)
+		// 			.std_window;
+		// 		return {
+		// 			agency_id: item.agency_id,
+		// 			start_time_scheduled: {
+		// 				$gte: standardWindowInterval.start,
+		// 				$lte: standardWindowInterval.end,
+		// 			},
+		// 			trip_id: item.trip_id,
+		// 		};
+		// 	});
 
-		if (!updateRidesOps.length) return;
+		// //
+		// // Skip if there are no valid queries to run
 
-		//
-		// Run the update query to mark all affected Rides as 'waiting',
-		// which will trigger the necessary reprocessing in the system.
+		// if (!updateRidesOps.length) return;
 
-		const updateRidesResult = await goDb.operation.rides.updateMany(
-			{ $or: updateRidesOps },
-			{ system_status: 'waiting' },
-			{ returnResults: false },
-		);
+		// //
+		// // Run the update query to mark all affected Rides as 'waiting',
+		// // which will trigger the necessary reprocessing in the system.
 
-		Logger.info({ message: `Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${timer.get()})` });
+		// const updateRidesResult = await goDb.operation.rides.updateMany(
+		// 	{ $or: updateRidesOps },
+		// 	{ system_status: 'waiting' },
+		// 	{ returnResults: false },
+		// );
+
+		// Logger.info({ message: `Marked as 'waiting': ${updateRidesResult.modifiedCount} Rides (${timer.get()})` });
 
 		//
 	} catch (error) {
