@@ -123,13 +123,13 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 		setLastUpdatedAt(Dates.now('Europe/Lisbon').unix_timestamp);
 	}, [fetchedRidesData]);
 
-	useEffect(() => {
-		const interval = setInterval(() => {
-			const normalizedRidesData = ridesData.ref.current.map(item => normalizeRide(item));
-			ridesData.set(normalizedRidesData);
-		}, 1_000);
-		return () => clearInterval(interval);
-	}, []);
+	// useEffect(() => {
+	// 	const interval = setInterval(() => {
+	// 		const normalizedRidesData = ridesData.ref.current.map(item => normalizeRide(item));
+	// 		ridesData.set(normalizedRidesData);
+	// 	}, 1_000);
+	// 	return () => clearInterval(interval);
+	// }, []);
 
 	useEffect(() => {
 		// Skip if no filters are set

@@ -1,6 +1,7 @@
 'use client';
 
-import { type GetRidesBatchQuery, type HashedTrip, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type GetRidesBatchQuery, type HashedTrip } from '@tmlmobilidade/go-types-operation';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { type SelectDataItem, useDebouncedState } from '@tmlmobilidade/ui';
 import { useEffect, useMemo } from 'react';
 import useSWR from 'swr';
@@ -71,16 +72,11 @@ export function useDataHashedTrips(apiUrl: string, props?: UseDataHashedTripsPro
 	const optionsData = useMemo(() => {
 		if (!fetchedHashedTripsData) return [];
 		return fetchedHashedTripsData.map(item => ({
-			label: item.route_long_name,
+			label: 'route-long-name',
 			value: item._id,
 		}));
-		const uniqueLinesMap = new Map<number, string>();
-		fetchedHashedTripsData.forEach((item) => {
-			if (uniqueLinesMap.has(item.line_id)) return;
-			uniqueLinesMap.set(item.line_id, `[${item.line_short_name}] ${item.line_long_name}`);
-		});
-		return Array.from(uniqueLinesMap, ([value, label]) => ({ label, value: String(value) }));
 	}, [fetchedHashedTripsData]);
+
 	//
 	// D. Return data
 
