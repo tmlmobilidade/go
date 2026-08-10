@@ -5,7 +5,7 @@ import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.conte
 import { RoleDetailBasicInfo } from '@/components/roles/detail/RoleDetailBasicInfo';
 import { RoleDetailHeader } from '@/components/roles/detail/RoleDetailHeader';
 import { permissionsConfig } from '@/lib/permissions';
-import { Pane } from '@tmlmobilidade/ui';
+import { Pane, useContextFormWatch } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -16,6 +16,7 @@ export function RoleDetail() {
 	// A. Setup variables
 
 	const rolesDetailContext = useRoleDetailContext();
+	const permissionsValue = useContextFormWatch({ control: rolesDetailContext.form.instance.control, name: 'permissions' });
 
 	//
 	// B. Render components
@@ -28,7 +29,7 @@ export function RoleDetail() {
 					key={item.scope}
 					configActions={item.actions}
 					description={item.description}
-					enabledPermissions={rolesDetailContext.data.form.values.permissions}
+					enabledPermissions={permissionsValue}
 					onResourceToggle={rolesDetailContext.actions.handlePermissionResourceToggle}
 					onToggle={rolesDetailContext.actions.handlePermissionToggle}
 					scope={item.scope}

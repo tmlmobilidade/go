@@ -1,7 +1,7 @@
 'use client';
 
 import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
-import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, ContextFormController, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -25,14 +25,21 @@ export function RoleDetailBasicInfo() {
 		>
 			<Section gap="md">
 				<Grid columns="ab" gap="xl">
-					<TextInput
-						key={roleDetailContext.data.form.key('name')}
-						label={t('default:roles.detail.BasicInfo.fields.name.label')}
-						maxLength={255}
-						placeholder={t('default:roles.detail.BasicInfo.fields.name.placeholder')}
-						readOnly={roleDetailContext.flags.isReadOnly}
-						withAsterisk
-						{...roleDetailContext.data.form.getInputProps('name')}
+					<ContextFormController
+						control={roleDetailContext.form.instance.control}
+						name="name"
+						render={({ field, fieldState }) => (
+							<TextInput
+								defaultValue={field.value}
+								error={fieldState.error?.message}
+								label={t('default:roles.detail.BasicInfo.fields.name.label')}
+								maxLength={255}
+								onChange={field.onChange}
+								placeholder={t('default:roles.detail.BasicInfo.fields.name.placeholder')}
+								readOnly={roleDetailContext.flags.isReadOnly}
+								withAsterisk
+							/>
+						)}
 					/>
 				</Grid>
 			</Section>
