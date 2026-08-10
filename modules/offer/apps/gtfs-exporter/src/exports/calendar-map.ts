@@ -16,7 +16,7 @@ export async function exportCalendarMap(
 	exportConfig: GtfsV29ExportConfig,
 ): Promise<void> {
 	try {
-		Logger.info('Exporting calendar_map.txt...');
+		Logger.info({ message: 'Exporting calendar_map.txt...' });
 
 		// Sort entries by numeric value ascending for a clean output
 		const sorted = Array.from(mapping.entries()).sort(([, a], [, b]) => Number(a) - Number(b));

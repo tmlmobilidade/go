@@ -27,7 +27,7 @@ export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig, c
 
 		const globalTimer = new Timer();
 
-		Logger.info(`Starting GTFS import process...`);
+		Logger.info({ message: 'Starting GTFS import process...' });
 
 		//
 		// Initialize context for the import process.
@@ -58,7 +58,7 @@ export async function importGtfsToDatabase(config: ImportGtfsToDatabaseConfig, c
 
 		//
 	} catch (error) {
-		Logger.error('Error importing GTFS to database.', error);
+		Logger.error({ error, message: 'Error importing GTFS to database.' });
 		throw error;
 	}
 }

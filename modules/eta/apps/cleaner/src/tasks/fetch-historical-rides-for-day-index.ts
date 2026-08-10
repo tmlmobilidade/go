@@ -1,9 +1,10 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { Filter, rides } from '@tmlmobilidade/interfaces';
+import { Filter } from '@tmlmobilidade/go-clients-mongo';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
-import { Ride } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -11,9 +12,9 @@ export async function fetchHistoricalRidesForDayIndex(ridesQuery: Filter<Ride>, 
 	const start = Dates.now('Europe/Lisbon').minus({ days: dayIndex, hours: 1 });
 	const end = Dates.now('Europe/Lisbon').minus({ days: dayIndex }).plus({ hours: 2 });
 
-	Logger.progress(`Getting historical rides for date range: ${start.iso} → ${end.iso}`);
+	Logger.progress({ message: `Getting historical rides for date range: ${start.iso} → ${end.iso}` });
 
-	return await rides.aggregate([
+	return await goDb.operation.rides.aggregate([
 		{ $match: {
 			...ridesQuery,
 			start_time_scheduled: {

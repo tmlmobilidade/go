@@ -112,7 +112,7 @@ export const FareDetailContextProvider = ({ children, fareId }: PropsWithChildre
 	const permissions = useMemo(() => ({
 		delete: editPermissions.delete,
 		lock: editPermissions.lock,
-		read: viewPermissions.read,
+		read: viewPermissions.nav,
 		update: editPermissions.update,
 	}), [editPermissions, viewPermissions]);
 

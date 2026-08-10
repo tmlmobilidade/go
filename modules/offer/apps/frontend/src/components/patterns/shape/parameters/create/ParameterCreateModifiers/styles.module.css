@@ -1,0 +1,95 @@
+.container {
+	display: flex;
+	width: 100%;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	padding: var(--size-spacing-md);
+	background-color: var(--color-system-background-200);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--size-spacing-xs);
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-spacing-sm);
+}
+
+.headerText {
+	display: flex;
+	min-width: 0;
+	flex: 1;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.actions {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(320px, 380px));
+	gap: var(--size-spacing-sm);
+	padding-top: var(--size-spacing-sm);
+}
+
+.actionCard {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	align-items: start;
+	gap: var(--size-spacing-sm);
+	padding: var(--size-spacing-sm);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--size-spacing-xs);
+}
+
+.copyCard {
+	grid-column: 1 / -1;
+	width: min(380px, 100%);
+}
+
+.actionIcon {
+	display: flex;
+	width: 32px;
+	height: 32px;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-300);
+	border-radius: var(--size-spacing-xs);
+}
+
+.actionContent {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.actionControls {
+	display: grid;
+	grid-column: 1 / -1;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: center;
+	gap: var(--size-spacing-xs);
+}
+
+.numberInput {
+	width: 100%;
+	min-width: 0;
+}
+
+@media (max-width: 520px) {
+	.header {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.actions {
+		grid-template-columns: 1fr;
+	}
+
+	.actionControls {
+		grid-template-columns: 1fr;
+	}
+}

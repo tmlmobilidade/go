@@ -17,13 +17,19 @@
 		"dev": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/production/secrets/.env tsx watch src/index.ts",
 		"dev:local": "ENVIRONMENT=development dotenv-run -f ./modules/offer/environments/production/secrets/.env tsx src/local.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"lint:fix": "eslint --fix .",
+		"rules:overlaps": "dotenv-run -f ../../environments/staging/secrets/.env -- tsx src/scripts/vkm-export-alignment/scan-overlapping-timepoints.ts",
+		"vkm:check": "dotenv-run -f ../../environments/staging/secrets/.env -- tsx src/scripts/vkm-export-alignment/compare-vkm-summary.ts",
+		"vkm:dates": "dotenv-run -f ../../environments/staging/secrets/.env -- tsx src/scripts/vkm-export-alignment/compare-circulation-dates.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/fastify": "*",
 		"@tmlmobilidade/files": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-locations": "*",
+		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rabbitmq": "*",
@@ -31,17 +37,17 @@
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
-		"adm-zip": "0.5.17",
+		"adm-zip": "0.6.0",
 		"formidable": "3.5.4",
-		"papaparse": "5.5.3"
+		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/adm-zip": "0.5.8",
-		"@types/node": "25.9.3",
+		"@types/node": "26.1.2",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.4",
+		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }

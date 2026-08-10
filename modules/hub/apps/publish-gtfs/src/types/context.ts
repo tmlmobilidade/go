@@ -9,7 +9,7 @@ import { ExportedRoutesRow } from '@/exports/routes.js';
 import { ExportedShapesRow } from '@/exports/shapes.js';
 import { ExportedStopTimesRow } from '@/exports/stop-times.js';
 import { ExportedTripsRow } from '@/exports/trips.js';
-import { type HubGtfsExportStops } from '@tmlmobilidade/types';
+import { type HubGtfsExportStops } from '@tmlmobilidade/go-types-public-info';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */

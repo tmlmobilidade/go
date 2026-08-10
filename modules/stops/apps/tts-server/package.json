@@ -1,0 +1,12 @@
+{
+	"name": "@tmlmobilidade/go-stops-tts-server",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"scripts": {
+		"build": "true"
+	}
+}

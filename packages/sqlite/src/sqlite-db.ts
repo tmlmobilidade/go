@@ -37,7 +37,7 @@ export class SQLiteDatabase {
 		if (!config.instancePath && !config.memory) {
 			config.instancePath = `/tmp/${config.instanceName}/${config.instanceName}.db`;
 			fs.mkdirSync(`/tmp/${config.instanceName}`, { recursive: true });
-			Logger.info(`[SQLITE] Created database at ${config.instancePath}`);
+			Logger.info({ message: `[SQLITE] Created database at ${config.instancePath}` });
 		}
 
 		if (!config.databaseInstance) {

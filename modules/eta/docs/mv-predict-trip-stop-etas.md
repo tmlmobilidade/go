@@ -27,10 +27,10 @@
 > Inventory of everything referenced or computed, used as the foundation for the rest of this document.
 
 ## Tables Referenced
-- `{database}.curr_vehicle_events`
-- `{database}.curr_rides`
-- `{database}.curr_waypoints_snapped`
-- `{database}.pred_node_etas`
+- `eta.curr_vehicle_events`
+- `eta.curr_rides`
+- `eta.curr_waypoints_snapped`
+- `eta.pred_node_etas`
 
 ## Views Referenced
 - `mv_pred_trip_stop_etas` (this MV)
@@ -200,7 +200,7 @@ sequenceDiagram
   E->>MV: latest_fix (max created_at)
   E->>MV: latest_pos (max forward node in recent window)
   R->>MV: add hashed_trip_id
-  MV->>MV: classify operational date + day/period
+  MV->>MV: classify operational date + time-of-day
   E->>MV: recent_events (10-min history)
   MV->>MV: live_observed speed
   P->>MV: baseline vs observed, compute live_factor
@@ -221,13 +221,13 @@ Creates the output storage and the materialized view that refreshes it.
 
 ### SQL Fragment
 ```sql
-CREATE TABLE IF NOT EXISTS {database}.pred_trip_stop_etas (...)
+CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas (...)
 ENGINE = ReplacingMergeTree(refreshed_at)
 ORDER BY (trip_id, vehicle_id, stop_sequence);
 
-CREATE MATERIALIZED VIEW IF NOT EXISTS {database}.mv_pred_trip_stop_etas
+CREATE MATERIALIZED VIEW IF NOT EXISTS eta.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND
-TO {database}.pred_trip_stop_etas
+TO eta.pred_trip_stop_etas
 AS
 WITH ...
 SELECT ...
@@ -309,7 +309,7 @@ Attach trip identifiers and classify the event into operational time buckets.
 pos_with_trip ... JOIN curr_rides
 pos_with_op_dt ... compute operational_dt
 pos_classified ... compute operational_date, dow, period_of_day
-pos_full ... compute weekday, day_type, school/holiday period
+pos_full ... compute weekday, day_type
 ```
 
 ### Detailed Explanation
@@ -356,7 +356,7 @@ upcoming AS (
   SELECT ... FROM pos_full
   JOIN curr_waypoints_snapped
   WHERE w.node_index >= current_node_index
-    AND period != 'Unknown'
+    AND w.node_index >= pf.current_node_index
 )
 ```
 
@@ -475,7 +475,7 @@ SELECT ..., eta_at = position_created_at + eta_seconds
 | Name | `pos_full` |
 | Purpose | Calendar classification |
 | Inputs | pos_classified |
-| Outputs | weekday, day_type, period |
+| Outputs | weekday, day_type |
 | Dependencies | pos_classified |
 | Complexity | Medium |
 
@@ -655,7 +655,7 @@ Potential optimizations:
 # 11. ETA Prediction Logic
 
 1. Find latest fix and current node.
-2. Determine time-of-day and service period.
+2. Determine time-of-day context.
 3. Compute a live adjustment ratio based on recent movement.
 4. Use predicted per-node travel times plus live adjustment.
 5. Sum from current node to stop node.

@@ -1,8 +1,8 @@
 /* * */
 
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { organizeStop } from '@tmlmobilidade/go-stops-pckg-organize';
-import { stops } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -11,6 +11,19 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 async function main() {
 	//
 
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Stops Organizer initialized', module: 'stops', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Stops Organizer' });
+	}
+
+	//
+	// Initialize the logger
+
 	Logger.init();
 
 	const globalTimer = new Timer();
@@ -18,9 +31,9 @@ async function main() {
 	//
 	// Get all Stop documents from the database
 
-	const allStopsData = await stops.all();
+	const allStopsData = await goDb.infrastructure.stops.findMany();
 
-	Logger.info(`Found ${allStopsData.length} stops.`);
+	Logger.info({ message: `Found ${allStopsData.length} stops.` });
 
 	//
 	// Loop through all stops and request updated attributes for each document
@@ -28,11 +41,11 @@ async function main() {
 	for (const [stopIndex, stopData] of allStopsData.entries()) {
 		//
 
-		Logger.info(`[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...`);
+		Logger.info({ message: `[${allStopsData.length - stopIndex}/${allStopsData.length}] Processing Stop ${stopData._id}...` });
 
 		const organizedStopData = await organizeStop(stopData);
 
-		await stops.updateById(stopData._id, organizedStopData);
+		await goDb.infrastructure.stops.updateById(stopData._id, organizedStopData);
 
 		//
 	}

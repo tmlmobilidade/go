@@ -3,8 +3,8 @@
 import { cleanupOrphanHashedPatterns, cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
 import { parsePlan } from '@/parse-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { plans } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -14,6 +14,19 @@ async function main() {
 	try {
 		//
 
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.startNodeLogs({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error({ error, message: 'Error initializing Sentry Rides Feeder' });
+		}
+
+		//
+		// Initialize the logger
+
 		Logger.init();
 
 		const globalTimer = new Timer();
@@ -21,29 +34,30 @@ async function main() {
 		//
 		// Get all Plans and iterate on each one
 
-		const plansCollection = await plans.getCollection();
+		const plansCollection = await goDb.operation.plans.getCollection();
 
-		const allPlansData = await plans.all();
+		const allPlansData = await goDb.operation.plans.findMany({});
 
 		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
 		const allPlansDataSorted = allPlansData.sort((a, b) => (b.gtfs_feed_info?.feed_start_date || '').localeCompare(a.gtfs_feed_info?.feed_start_date || ''));
 
-		Logger.info(`Found ${allPlansData.length} Plans to process...`);
+		Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
 
 		for (const [planIndex, currentPlan] of allPlansDataSorted.entries()) {
 			try {
 				//
 
 				Logger.spacer(1);
-				Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.gtfs_agency.agency_id} - Plan ${currentPlan._id}`);
+				Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.agency_id} - Plan ${currentPlan._id}`);
 
 				//
-				// Only process Plans for specific agency IDs
+				// Only process Plans that are waiting or resuming processing
 
-				if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(currentPlan.gtfs_agency?.agency_id)) {
-					Logger.error(`Skip processing: gtfs_agency is '${currentPlan.gtfs_agency?.agency_id}'. Only '1', '2', '4', '8', '15', '16', '21', '41', '42', '43', or '44' are allowed.`);
-					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'skipped', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+				const controllerStatus = currentPlan.apps?.controller?.status;
+
+				if (controllerStatus !== 'waiting' && controllerStatus !== 'processing') {
+					Logger.error({ message: `Skip processing: status_controller is '${controllerStatus}'.` });
 					continue;
 				}
 
@@ -52,15 +66,7 @@ async function main() {
 				// as it means the plan did not change since last run
 
 				if (currentPlan.hash === currentPlan.apps?.controller?.last_hash) {
-					Logger.error(`Skip processing: Hash is the same as last_hash.`);
-					continue;
-				}
-
-				//
-				// Skip if its status is 'error'
-
-				if (currentPlan.apps?.controller?.status === 'error') {
-					Logger.error(`Skip processing: status_controller is 'error'.`);
+					Logger.error({ message: `Skip processing: Hash is the same as last_hash.` });
 					continue;
 				}
 
@@ -68,7 +74,7 @@ async function main() {
 				// Mark as error if it does not have an associated operation file
 
 				if (!currentPlan.operation_file_id) {
-					Logger.error(`Skip processing: No operation file found.`);
+					Logger.error({ message: `Skip processing: No operation file found.` });
 					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
 					continue;
 				}
@@ -90,7 +96,7 @@ async function main() {
 				//
 			} catch (error) {
 				await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
-				Logger.error(`Error processing plan ${currentPlan._id}`, error);
+				Logger.error({ error, message: `Error processing plan ${currentPlan._id}` });
 				Logger.divider();
 			}
 		}
@@ -109,8 +115,8 @@ async function main() {
 
 		//
 	} catch (error) {
-		Logger.error('An error occurred. Halting execution.', error);
-		Logger.error('Retrying in 10 seconds...');
+		Logger.error({ error, message: 'An error occurred. Halting execution.' });
+		Logger.error({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

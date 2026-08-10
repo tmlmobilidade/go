@@ -3,7 +3,7 @@
 /* * */
 import { AlertActivePeriodStart } from '@/components/alerts/common/AlertActivePeriod';
 import { AlertsListItemImageThumbnail } from '@/components/alerts/list/AlertsListItemImageThumbnail';
-import { type HubAlert } from '@tmlmobilidade/types';
+import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 import { Section } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

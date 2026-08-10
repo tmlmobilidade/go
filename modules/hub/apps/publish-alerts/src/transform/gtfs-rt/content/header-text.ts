@@ -12,7 +12,7 @@ export function transformHeaderText(alertData: Alert): GtfsRtTranslatedString | 
 	// Validate required input properties
 
 	if (!alertData.title) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert title is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert title is missing.` });
 		return undefined;
 	}
 

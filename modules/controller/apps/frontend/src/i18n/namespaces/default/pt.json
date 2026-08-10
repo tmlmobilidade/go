@@ -17,6 +17,12 @@
 				"driver_ids": {
 					"label": "Driver IDs"
 				},
+				"duration_observed": {
+					"label": "Observado"
+				},
+				"duration_scheduled": {
+					"label": "Duração"
+				},
 				"end_time_observed": {
 					"label": "Observado"
 				},

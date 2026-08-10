@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { type OptionalIf } from '@tmlmobilidade/types';
 import { Filter } from 'mongodb';
 
 interface MatchStage<T> { $match: Filter<T> }
@@ -15,7 +16,18 @@ interface LimitStage { $limit: number }
 interface SkipStage { $skip: number }
 interface UnwindStage { $unwind: string | { path: string, preserveNullAndEmptyArrays: boolean } }
 interface AddFieldsStage { $addFields: Record<string, any> }
-interface LookupStage { $lookup: { as: string, foreignField: string, from: string, localField: string } }
+interface LookupStage {
+	$lookup: OptionalIf<{
+		as: string
+		foreignField?: string
+		from: string
+		let?: Record<string, any>
+		localField?: string
+		pipeline?: any[]
+	}, 'pipeline', 'foreignField' | 'localField'>
+}
+interface SetStage { $set: Record<string, any> }
+interface UnsetStage { $unset: string | string[] }
 
 type AggregationStage<T> =
   | AddFieldsStage
@@ -25,8 +37,10 @@ type AggregationStage<T> =
   | MatchStage<T>
   | ProjectStage<T>
   | ReplaceRootStage
+  | SetStage
   | SkipStage
   | SortStage<T>
+  | UnsetStage
   | UnwindStage;
 
 export type AggregationPipeline<T> = AggregationStage<T>[];

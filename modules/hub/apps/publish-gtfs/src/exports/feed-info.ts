@@ -14,8 +14,8 @@ export interface ExportedFeedInfoRow {
 	feed_end_date: OperationalDate
 	feed_publisher_name: 'TML - Transportes Metropolitanos de Lisboa'
 	feed_publisher_url: 'https://tmlmobilidade.pt'
-	feed_contact_email: 'iso@tmlmobilidade.pt'
-	feed_contact_url: 'https://tmlmobilidade.pt'
+	feed_contact_email: 'go@tmlmobilidade.pt'
+	feed_contact_url: 'https://go.tmlmobilidade.pt'
 	feed_lang: 'pt'
 	default_lang: 'pt'
 }
@@ -31,7 +31,7 @@ export async function exportFeedInfoFile(startDate: OperationalDate, endDate: Op
 
 	const timer = new Timer();
 
-	Logger.info('Exporting feed_info.txt file...');
+	Logger.info({ message: 'Exporting feed_info.txt file...' });
 
 	const parsedFeedInfoRow: ExportedFeedInfoRow = {
 		feed_version: context.run_id,
@@ -39,8 +39,8 @@ export async function exportFeedInfoFile(startDate: OperationalDate, endDate: Op
 		feed_end_date: endDate,
 		feed_publisher_name: 'TML - Transportes Metropolitanos de Lisboa',
 		feed_publisher_url: 'https://tmlmobilidade.pt',
-		feed_contact_email: 'iso@tmlmobilidade.pt',
-		feed_contact_url: 'https://tmlmobilidade.pt',
+		feed_contact_email: 'go@tmlmobilidade.pt',
+		feed_contact_url: 'https://go.tmlmobilidade.pt',
 		feed_lang: 'pt',
 		default_lang: 'pt',
 	};

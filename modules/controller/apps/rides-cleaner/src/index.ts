@@ -1,7 +1,7 @@
 /* * */
 
-import { rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -10,6 +10,19 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 async function reprocessStuckRides() {
 	try {
 		//
+
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.startNodeLogs({ app: 'rides-cleaner', message: 'Sentry Rides Cleaner initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error({ error, message: 'Error initializing Sentry Rides Cleaner' });
+		}
+
+		//
+		// Initialize the logger
 
 		Logger.init();
 
@@ -20,12 +33,12 @@ async function reprocessStuckRides() {
 
 		const fetchTimerA = new Timer();
 
-		const processingRidesA = await rides.findMany({ system_status: { $in: ['processing', 'error'] } });
+		const processingRidesA = await goDb.operation.rides.findMany({ system_status: { $in: ['processing', 'error'] } });
 		const processingRideIdsA = processingRidesA.map(item => item._id);
 
 		const fetchTimerResultA = fetchTimerA.get();
 
-		Logger.info(`A: Fetched ${processingRideIdsA.length} 'processing' rides. (${fetchTimerResultA})`);
+		Logger.info({ message: `A: Fetched ${processingRideIdsA.length} 'processing' rides. (${fetchTimerResultA})` });
 
 		//
 		// Wait 3 minutes before checking again
@@ -40,12 +53,12 @@ async function reprocessStuckRides() {
 
 		const fetchTimerB = new Timer();
 
-		const processingRidesB = await rides.findMany({ system_status: { $in: ['processing', 'error'] } });
+		const processingRidesB = await goDb.operation.rides.findMany({ system_status: { $in: ['processing', 'error'] } });
 		const processingRideIdsB = processingRidesB.map(item => item._id);
 
 		const fetchTimerResultB = fetchTimerB.get();
 
-		Logger.info(`B: Fetched ${processingRideIdsB.length} 'processing' rides. (${fetchTimerResultB})`);
+		Logger.info({ message: `B: Fetched ${processingRideIdsB.length} 'processing' rides. (${fetchTimerResultB})` });
 
 		//
 		// Wait another 3 minutes before checking again
@@ -58,12 +71,12 @@ async function reprocessStuckRides() {
 
 		const fetchTimerC = new Timer();
 
-		const processingRidesC = await rides.findMany({ system_status: { $in: ['processing', 'error'] } });
+		const processingRidesC = await goDb.operation.rides.findMany({ system_status: { $in: ['processing', 'error'] } });
 		const processingRideIdsC = processingRidesC.map(item => item._id);
 
 		const fetchTimerResultC = fetchTimerC.get();
 
-		Logger.info(`C: Fetched ${processingRideIdsC.length} 'processing' rides. (${fetchTimerResultC})`);
+		Logger.info({ message: `C: Fetched ${processingRideIdsC.length} 'processing' rides. (${fetchTimerResultC})` });
 
 		//
 		// Now, we have two lists of stuck rides. We need to find the rides that are present
@@ -79,15 +92,15 @@ async function reprocessStuckRides() {
 
 			const updateTimer = new Timer();
 
-			const ridesCollection = await rides.getCollection();
+			const ridesCollection = await goDb.operation.rides.getCollection();
 			await ridesCollection.updateMany({ _id: { $in: stuckRideIds } }, { $set: { system_status: 'waiting' } });
 
-			Logger.info(`Found ${stuckRideIds.length} stuck rides that were marked as 'waiting'. (${updateTimer.get()})`);
+			Logger.info({ message: `Found ${stuckRideIds.length} stuck rides that were marked as 'waiting'. (${updateTimer.get()})` });
 			Logger.spacer(1);
 
 			//
 		} else {
-			Logger.info(`No stuck rides found!`);
+			Logger.info({ message: `No stuck rides found!` });
 			Logger.spacer(1);
 		}
 
@@ -97,8 +110,8 @@ async function reprocessStuckRides() {
 
 		//
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
-		Logger.error('Retrying in 10 seconds...');
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.error({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

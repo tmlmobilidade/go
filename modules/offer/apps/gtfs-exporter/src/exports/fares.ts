@@ -23,7 +23,7 @@ export function parseFareAttributes(
 			currency_type: fareData.currency_type,
 			payment_method: Number(fareData.payment_method),
 			transfers: fareData.transfers === 'unlimited' ? 999 : Number(fareData.transfers),
-			agency_id: agencyData._id,
+			agency_id: agencyData.code,
 		};
 	} catch (error) {
 		throw new Error(`Error parsing fare attributes: ${error}`);
@@ -46,7 +46,7 @@ export function parseFareRules(
 		return {
 			fare_id: fareData.code,
 			route_id: routeData.code,
-			agency_id: agencyData._id,
+			agency_id: agencyData.code,
 		};
 	} catch (error) {
 		throw new Error(`Error parsing fare rules: ${error}`);

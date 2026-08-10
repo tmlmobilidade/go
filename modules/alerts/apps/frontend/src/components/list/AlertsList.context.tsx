@@ -73,7 +73,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	const filterCause = useFilterStateList('cause', AlertSchema.shape.cause.options, AlertSchema.shape.cause.options.map(item => ({ label: t(`shared:alerts.causes.${item}.title`), value: item })));
 	const filterCreatedAt = useFilterStateDate('created_at');
 	const filterEffect = useFilterStateList('effect', AlertSchema.shape.effect.options, AlertSchema.shape.effect.options.map(item => ({ label: t(`shared:alerts.effects.${item}.title`), value: item })));
-	const filterMunicipality = useFilterStateList('municipality', locationsContext.data.municipality_ids, locationsContext.data.municipalities.map(item => ({ label: item.name, value: item.id })));
+	const filterMunicipality = useFilterStateList('municipality', Array.from(locationsContext.data.municipalities.keys()), Array.from(locationsContext.data.municipalities.values()).map(item => ({ label: item.name, value: item._id })));
 
 	//
 	// D. Transform data

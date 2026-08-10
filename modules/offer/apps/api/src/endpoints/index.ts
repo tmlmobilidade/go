@@ -1,7 +1,10 @@
+import '@/endpoints/agencies/agencies.routes.js';
 import '@/endpoints/lines/lines.routes.js';
 import '@/endpoints/routes/routes.routes.js';
 import '@/endpoints/typologies/typologies.routes.js';
 import '@/endpoints/patterns/patterns.routes.js';
 import '@/endpoints/gtfs/gtfs.routes.js';
 import '@/endpoints/fares/fares.routes.js';
+import '@/endpoints/vkm/vkm.routes.js';
 import '@/endpoints/zones/zones.routes.js';
+import '@/endpoints/shapes/shapes.routes.js';

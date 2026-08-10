@@ -6,7 +6,7 @@ import { useVehiclesDetailContext } from '@/components/vehicles/detail/VehiclesD
 import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { HubPattern } from '@tmlmobilidade/types';
+import { type HubPattern } from '@tmlmobilidade/go-types-public-info';
 import { LineBadge, LineName, Section } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import { useMemo } from 'react';

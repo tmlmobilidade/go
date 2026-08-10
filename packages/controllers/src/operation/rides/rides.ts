@@ -3,7 +3,9 @@
 import { type RideChangeListener, ridesChangeStream } from '@/operation/rides/watch.js';
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { Logger } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type Permission, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
 import { type WebSocket } from 'ws';
@@ -32,7 +34,18 @@ export class RidesSharedController {
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) {
+			Logger.issue({
+				context: {
+					action: 'getBatch',
+					feature: 'rides',
+					request,
+				},
+				level: 'info',
+				messageOrError: 'No agency_ids found in permissions',
+			});
+			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		}
 
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
@@ -43,7 +56,7 @@ export class RidesSharedController {
 
 		const searchQuery = parsedQuery.search?.trim() ?? '';
 
-		const foundRideById = await rides.findOne({
+		const foundRideById = await goDb.operation.rides.findOne({
 			_id: searchQuery,
 			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
 		});
@@ -84,7 +97,7 @@ export class RidesSharedController {
 		//
 		// Fetch the rides batch from the database
 
-		const ridesBatch = await rides.aggregate(pipeline);
+		const ridesBatch = await goDb.operation.rides.aggregate(pipeline);
 
 		//
 		// Send the response
@@ -112,7 +125,19 @@ export class RidesSharedController {
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) {
+			Logger.issue({
+				context: {
+					action: 'getRideById',
+					feature: 'rides',
+					request,
+					value: request.params['id'],
+				},
+				level: 'info',
+				messageOrError: 'No agency_ids found in permissions',
+			});
+			return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		}
 
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
@@ -121,7 +146,7 @@ export class RidesSharedController {
 		// If found, return it as the only result. This optimizes
 		// for the common case of searching by ride ID.
 
-		const foundRideById = await rides.findOne({
+		const foundRideById = await goDb.operation.rides.findOne({
 			_id: request.params['id'],
 			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
 		});
@@ -150,7 +175,19 @@ export class RidesSharedController {
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) {
+			Logger.issue({
+				context: {
+					action: 'getRideByIds',
+					feature: 'rides',
+					request,
+					value: request.query['ids'],
+				},
+				level: 'info',
+				messageOrError: 'No agency_ids found in permissions',
+			});
+			return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		}
 
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
@@ -161,7 +198,7 @@ export class RidesSharedController {
 
 		const ids = request.query['ids']?.split(',') ?? [];
 
-		const foundRidesByIds = await rides.findMany({
+		const foundRidesByIds = await goDb.operation.rides.findMany({
 			_id: { $in: ids },
 			...(allowAllAgencies ? {} : { agency_id: { $in: ridesPermission['resources'].agency_ids } }),
 		});

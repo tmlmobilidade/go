@@ -1,0 +1,185 @@
+name: PR Module Build
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to build'
+        required: true
+        type: string
+      module:
+        description: 'Module(s) to build — space or comma separated, or "all"'
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  build:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.issue.pull_request &&
+        github.event.action == 'created' &&
+        startsWith(github.event.comment.body, '/build')
+      )
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch module build
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const BLOCKED = new Set(['NONE', 'FIRST_TIMER']);
+
+            const listModules = async (ref) => {
+              const { data: contents } = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path: 'modules',
+                ref,
+              });
+              return contents
+                .filter((item) => item.type === 'dir')
+                .map((item) => item.name)
+                .sort();
+            };
+
+            const isManual = context.eventName === 'workflow_dispatch';
+
+            if (!isManual) {
+              const association = context.payload.comment?.author_association;
+              core.info(`Actor: ${context.actor}, association: ${association || 'not set'}`);
+
+              if (association && BLOCKED.has(association)) {
+                core.info(`Skip — ${association} cannot trigger builds`);
+                return;
+              }
+            }
+
+            const prNumber = isManual
+              ? Number(context.payload.inputs.pr_number)
+              : context.issue.number;
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+
+            let buildAll = false;
+            let modules = [];
+
+            if (isManual) {
+              const args = context.payload.inputs.module.trim();
+              if (!args) {
+                core.setFailed('Usage: module required');
+                return;
+              }
+              buildAll = args.toLowerCase() === 'all';
+              modules = buildAll
+                ? await listModules(pr.head.ref)
+                : args.split(/[\s,]+/).map(name => name.trim()).filter(Boolean);
+            } else {
+              const args = context.payload.comment.body.replace(/^\/build\s*/i, '').trim();
+              if (!args) {
+                core.setFailed('Usage: /build <module> or /build <module> <module> or /build all');
+                return;
+              }
+              buildAll = args.toLowerCase() === 'all';
+              modules = buildAll
+                ? await listModules(pr.head.ref)
+                : args.split(/[\s,]+/).map(name => name.trim()).filter(Boolean);
+            }
+
+            if (modules.length === 0) {
+              core.setFailed('No modules found to build');
+              return;
+            }
+
+            // Preview enviroments need auth module always.
+            if (!buildAll) {
+              const hasAuth = modules.some((name) => name.toLowerCase() === 'auth');
+              if (!hasAuth) {
+                modules = ['auth', ...modules];
+              }
+            }
+
+            core.info(`Dispatching build-modules for ${modules.join(', ')} on ref ${pr.head.ref}`);
+            let runUrl = '';
+            try {
+              const prTitle = String(pr.title || 'PR')
+                .replace(/["'`]/g, '')
+                .replace(/:/g, '-')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .slice(0, 100);
+
+              const dispatchedAt = Date.now();
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'build-modules.yml',
+                ref: pr.head.ref,
+                inputs: {
+                  module: modules.join(','),
+                  pr_number: String(prNumber),
+                  pr_title: prTitle || 'PR',
+                },
+              });
+
+              // createWorkflowDispatch returns no run id — poll for the new run.
+              for (let attempt = 0; attempt < 10; attempt++) {
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+                const { data } = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: 'build-modules.yml',
+                  event: 'workflow_dispatch',
+                  branch: pr.head.ref,
+                  per_page: 10,
+                });
+                const match = data.workflow_runs.find((run) => {
+                  const created = new Date(run.created_at).getTime();
+                  return created >= dispatchedAt - 15000 && run.head_sha === pr.head.sha;
+                });
+                if (match) {
+                  runUrl = match.html_url;
+                  break;
+                }
+              }
+            } catch (error) {
+              core.setFailed(`Failed to dispatch build-modules: ${error.message}`);
+              return;
+            }
+
+            if (!isManual) {
+              await github.rest.reactions.createForIssueComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: context.payload.comment.id,
+                content: 'rocket',
+              });
+
+              const moduleLines = modules.map((name) => `- \`${name}\``).join('\n');
+              const body = [
+                `Building ${modules.length} module${modules.length === 1 ? '' : 's'}:`,
+                '',
+                moduleLines,
+              ];
+              if (runUrl) {
+                body.push('', `[View workflow run](${runUrl})`);
+              }
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: body.join('\n'),
+              });
+            }

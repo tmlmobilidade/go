@@ -1,28 +1,20 @@
 /* * */
 
-import type { TimeSlot } from '@tmlmobilidade/dates';
-
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates, type TimeSlot } from '@tmlmobilidade/dates';
 
 /* * */
 
-const isDevelopment = process.env.ENVIRONMENT === 'development';
-
-function getEtaDatabase(): string {
-	return process.env.ENVIRONMENT === 'dev' ? 'eta_dev' : 'eta';
-}
+const isProduction = process.env.ENVIRONMENT === 'prd';
 
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
-	agencyIds: ['1', '8', '21', '41', '42', '43', '44'],
-
-	database: getEtaDatabase(),
+	agencyIds: ['IA9T6', 'A3H3M', 'HF16N', 'LA77N', 'BNA17', 'YA15B', 'A2L1N'],
 
 	development: {
-		isDevelopment,
-		lineIds: [1215],
-		timeEnd: Dates.fromUnixTimestamp(1779062400000).plus({ hours: 1 }),
-		timeStart: Dates.fromUnixTimestamp(1779062400000),
+		isDevelopment: !isProduction,
+		lineIds: [],
+		timeEnd: Dates.now('Europe/Lisbon').plus({ hours: 1 }),
+		timeStart: Dates.now('Europe/Lisbon').minus({ hours: 1 }),
 	},
 
 	// Data and time settings
@@ -34,15 +26,23 @@ export const AppConfig = Object.freeze({
 	// Geometry settings
 	shapeNodeChunkLength: 25, // meters
 
+	// Ride start/end event detection settings
+	rideEventBufferRadiusMeters: 50, // meters (matches rides-controller BUFFER_RADIUS)
+	rideEventDetectionBatchSize: 500, // hist_rides per detect+mutation batch
+	rideEventGeohashPrefixLength: 6, // geohash-7 cell + neighbours around each stop
+	rideEventWindowPostMs: 10 * 60 * 60 * 1000, // 10h after scheduled start (matches temp.sql window)
+	rideEventWindowPreMs: 10 * 60 * 60 * 1000, // 10h before scheduled start (matches temp.sql window)
+
 	// App Pipeline Steps
 	pipelineSteps: {
+		detectRideStartEndEvents: true,
 		insertCurrentWindowRides: true,
 		insertCurrentWindowWaypoints: true,
 		insertHistoricalRidesByDay: true,
 		insertHistoricalShapeNodes: true,
 		insertHistoricalVehicleEvents: true,
-		runDdl: false, // true,
+		runDdl: !isProduction,
 		runTransformationAndAggregationQueries: true,
-		truncatePipelineTables: false, // isDevelopment ? true : false,
+		truncatePipelineTables: !isProduction,
 	},
 });

@@ -31,11 +31,11 @@ export class FertagusAuthClient {
 
 	public async getToken() {
 		if (!this.token) {
-			Logger.info('[FertagusAuthClient] No token found, fetching a new one...');
+			Logger.info({ message: '[FertagusAuthClient] No token found, fetching a new one...' });
 			await this.connect();
 		}
 		if (this.expiresAt - Date.now() < 60 * 1000) {
-			Logger.info('[FertagusAuthClient] Token is about to expire, refreshing...');
+			Logger.info({ message: '[FertagusAuthClient] Token is about to expire, refreshing...' });
 			await this.connect();
 		}
 		return this.token;
@@ -65,7 +65,7 @@ export class FertagusAuthClient {
 	private async connect() {
 		//
 
-		Logger.info('[FertagusAuthClient] Connecting and fetching token...');
+		Logger.info({ message: '[FertagusAuthClient] Connecting and fetching token...' });
 
 		//
 		// Make the POST request to the Authentication API through the SSH tunnel,

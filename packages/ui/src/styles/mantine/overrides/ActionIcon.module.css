@@ -10,21 +10,21 @@
 }
 
 .root[data-variant='primary'] {
-	color: var(--color-contrast);
+	--ai-color: var(--color-contrast);
 	background-color: var(--color-primary);
 	border-color: var(--color-secondary);
 	box-shadow: 0 1px 3px 0 var(--color-shadow);
 }
 
 .root[data-variant='secondary'] {
-	color: var(--color-primary);
+	--ai-color: var(--color-primary);
 	background-color: var(--color-background);
 	border-color: var(--color-primary);
 	box-shadow: 0 1px 3px 0 var(--color-shadow);
 }
 
 .root[data-variant='muted'] {
-	color: var(--color-system-text-300);
+	--ai-color: var(--color-system-text-300);
 	background-color: var(--color-system-background-100);
 	border-color: var(--color-system-text-300);
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
@@ -32,7 +32,7 @@
 
 .root[data-disabled],
 .root[data-variant='disabled'] {
-	color: var(--color-system-border-100);
+	--ai-color: var(--color-system-border-100);
 	cursor: not-allowed;
 	background-color: var(--color-system-background-200);
 	border-color: transparent;
@@ -40,14 +40,14 @@
 }
 
 .root[data-variant='danger'] {
-	color: var(--color-status-danger-primary);
+	--ai-color: var(--color-status-danger-primary);
 	background-color: var(--color-status-danger-contrast);
 	border-color: var(--color-status-danger-primary);
 	box-shadow: 0 1px 3px 0 var(--color-status-danger-shadow);
 }
 
 .root[data-variant='success'] {
-	color: var(--color-status-success-primary);
+	--ai-color: var(--color-status-success-primary);
 	background-color: var(--color-status-success-contrast);
 	border-color: var(--color-status-success-primary);
 	box-shadow: 0 1px 3px 0 var(--color-status-success-shadow);

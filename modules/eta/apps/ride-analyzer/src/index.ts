@@ -9,8 +9,8 @@ import { parseTripRef } from '@/parse-trip-ref.js';
 import { replayEvents } from '@/replay-events.js';
 import { runLoaderPhase } from '@/run-loader.js';
 import { writeOutput } from '@/write-output.js';
-import { GOClickHouseClient } from '@tmlmobilidade/databases';
-import { Logger } from '@tmlmobilidade/logger';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -118,58 +118,67 @@ async function main() {
 	//
 
 	//
-	// A. Initialize the logger
+	// A. Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'ride-analyzer', message: 'Sentry ETA Ride Analyzer initialized', module: 'eta', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry ETA Ride Analyzer' });
+	}
+
+	//
+	// B. Initialize the logger
 
 	Logger.init();
 	const totalTimer = new Timer();
 	const startedAt = new Date().toISOString();
 
 	//
-	// B. Parse the command-line arguments
+	// C. Parse the command-line arguments
 
 	const args = parseCliArgs();
-	Logger.info(`ride-analyzer args: ${JSON.stringify(args)}`);
+	Logger.info({ message: `ride-analyzer args: ${JSON.stringify(args)}` });
 
 	//
-	// C. Build the loader config
+	// D. Build the loader config
 
 	const config = buildLoaderConfig(args);
-	const clickhouseClient = await GOClickHouseClient.getClient();
+	const clickhouseClient = await labDb.getClient();
 
 	//
-	// D. Run the loader phase
+	// E. Run the loader phase
 
 	if (args.skipLoader) {
-		Logger.info('Skipping loader phase (--skip-loader)');
+		Logger.info({ message: 'Skipping loader phase (--skip-loader)' });
 	} else {
 		await runLoaderPhase(clickhouseClient, config);
 	}
 
 	//
-	// E. Fetch the events for the trip
+	// F. Fetch the events for the trip
 
 	const events = await fetchEventsForTrip(clickhouseClient, args.tripRef);
 	if (events.length === 0) {
 		Logger.error(
-			`No simplified vehicle events found for trip_id=${args.tripRef.tripId} `
-			+ `operational_date=${args.tripRef.operationalDate}; nothing to replay.`,
+			{ message: `No simplified vehicle events found for trip_id=${args.tripRef.tripId} ` + `operational_date=${args.tripRef.operationalDate}; nothing to replay.` },
 		);
 		process.exit(1);
 	}
 
-	const snapshots = await replayEvents(clickhouseClient, config.database, args.tripRef, events);
+	const snapshots = await replayEvents(clickhouseClient, 'eta', args.tripRef, events);
 
 	//
-	// F. Fetch the geometry context for the viewer (route polyline + stops)
+	// G. Fetch the geometry context for the viewer (route polyline + stops)
 
-	const tripContext = await fetchTripHashes(clickhouseClient, config.database, args.tripRef.tripId);
+	const tripContext = await fetchTripHashes(clickhouseClient, 'eta', args.tripRef.tripId);
 	const [route, stops] = await Promise.all([
-		fetchRouteNodes(clickhouseClient, config.database, tripContext.hashedShapeId),
-		fetchStopWaypoints(clickhouseClient, config.database, tripContext.hashedTripId),
+		fetchRouteNodes(clickhouseClient, 'eta', tripContext.hashedShapeId),
+		fetchStopWaypoints(clickhouseClient, 'eta', tripContext.hashedTripId),
 	]);
 
 	//
-	// G. Write the output
+	// H. Write the output
 
 	await writeOutput({
 		metadata: {
@@ -186,7 +195,7 @@ async function main() {
 	});
 
 	//
-	// H. Log the completion
+	// I. Log the completion
 
 	Logger.success(`ride-analyzer completed in ${totalTimer.get()} seconds`);
 }

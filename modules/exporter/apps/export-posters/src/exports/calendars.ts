@@ -21,7 +21,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	// Import the dates.txt file into a map of date strings and their associated categorizations
 
 	if (!fs.existsSync('/Users/joao/Developer/tmlmobilidade/sae/plans/apps/export-posters/src/dates.txt')) {
-		Logger.error(`Missing dates.txt file in ${process.cwd()}`);
+		Logger.error({ message: `Missing dates.txt file in ${process.cwd()}` });
 	}
 
 	const datesCat = Papa.parse<GTFS_Date>(fs.readFileSync('/Users/joao/Developer/tmlmobilidade/sae/plans/apps/export-posters/src/dates.txt', 'utf-8'), {
@@ -49,7 +49,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	const allPatternIds = sqlTables.trips.all().map(trip => trip.pattern_id).sort();
 	const allUniquePatternIds = Array.from(new Set(allPatternIds));
 
-	Logger.info(`Found ${allUniquePatternIds.length} unique pattern IDs in trips.`);
+	Logger.info({ message: `Found ${allUniquePatternIds.length} unique pattern IDs in trips.` });
 
 	const updatedServiceIds: Record<string, { _id: string, dates: OperationalDate[], day_type: string, exceptions: string[], period: string }> = {};
 
@@ -115,7 +115,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				serviceDates.forEach((date) => {
 					// Get the date entry from dates.txt
 					const matchingDateEntry = datesMap.get(date);
-					if (!matchingDateEntry) return Logger.error(`Date ${date} for service_id ${serviceId} not found in dates.txt`);
+					if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceId} not found in dates.txt` });
 					// Build a key for this combination.
 					// By categorizing by day_type and period, the concept of trips and services
 					// becomes more about the category of service rather than the specific service_id,
@@ -221,12 +221,12 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// day_type and period combinations exactly.
 
 		const matchedDayType = DAY_TYPES.find(dt => dt.day_type === serviceIdData.day_type && dt.period === serviceIdData.period);
-		if (!matchedDayType) return Logger.error(`Service ID ${serviceIdData._id} with day_type ${serviceIdData.day_type} and period ${serviceIdData.period} does not match any known day_type and period combination.`);
+		if (!matchedDayType) return Logger.error({ message: `Service ID ${serviceIdData._id} with day_type ${serviceIdData.day_type} and period ${serviceIdData.period} does not match any known day_type and period combination.` });
 
 		const isExactMatch = serviceIdData.dates.length === matchedDayType.dates.length && matchedDayType.dates.every(date => serviceIdData.dates.includes(date));
 
 		if (isExactMatch) {
-			Logger.info(`Service ID "${serviceIdData._id}" [CASE 1] Matches exactly the day_type ${serviceIdData.day_type} and period ${serviceIdData.period}. Qty # ${serviceIdData.dates.length} dates.`);
+			Logger.info({ message: `Service ID "${serviceIdData._id}" [CASE 1] Matches exactly the day_type ${serviceIdData.day_type} and period ${serviceIdData.period}. Qty # ${serviceIdData.dates.length} dates.` });
 			continue;
 		}
 
@@ -240,7 +240,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		for (const date of serviceIdData.dates) {
 			// Get the date entry from dates.txt
 			const matchingDateEntry = datesMap.get(date);
-			if (!matchingDateEntry) return Logger.error(`Date ${date} for service_id ${serviceIdData._id} not found in dates.txt`);
+			if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceIdData._id} not found in dates.txt` });
 			// Get the weekday code for this date
 			let weekdayCode = Dates
 				.fromOperationalDate(date, 'Europe/Lisbon')
@@ -259,7 +259,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		for (const date of matchedDayType.dates) {
 			// Get the date entry from dates.txt
 			const matchingDateEntry = datesMap.get(date);
-			if (!matchingDateEntry) return Logger.error(`Date ${date} for service_id ${serviceIdData._id} not found in dates.txt`);
+			if (!matchingDateEntry) return Logger.error({ message: `Date ${date} for service_id ${serviceIdData._id} not found in dates.txt` });
 			// Get the weekday code for this date
 			let weekdayCode = Dates
 				.fromOperationalDate(date, 'Europe/Lisbon')
@@ -300,7 +300,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			// Add exception
 			updatedServiceIds[serviceIdKey].exceptions.push(`Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}.`);
 			// Log and continue to next service ID
-			Logger.info(`Service ID "${serviceIdData._id}" [CASE 2] Is regular on all expected weekdays (${weekdayNames.join(', ')}) during ${periodName}. Qty # ${serviceIdData.dates.length} dates.`);
+			Logger.info({ message: `Service ID "${serviceIdData._id}" [CASE 2] Is regular on all expected weekdays (${weekdayNames.join(', ')}) during ${periodName}. Qty # ${serviceIdData.dates.length} dates.` });
 			continue;
 		}
 
@@ -332,7 +332,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			// Add exception
 			updatedServiceIds[serviceIdKey].exceptions.push(`Às ${weekdayNames.join(', ').replace(/, ([^,]*)$/, ' e $1')} de ${periodName}, ${prefix} ${exceptionDatesFormatted}.`);
 			// Log and continue to next service ID
-			Logger.info(`Service ID "${serviceIdData._id}" [CASE 3] Is regular on some weekdays (${weekdayNames.join(', ')}) during ${periodName}. Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.`);
+			Logger.info({ message: `Service ID "${serviceIdData._id}" [CASE 3] Is regular on some weekdays (${weekdayNames.join(', ')}) during ${periodName}. Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.` });
 			continue;
 		}
 
@@ -354,7 +354,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			// Add exception
 			updatedServiceIds[serviceIdKey].exceptions.push(`Excepto ${exceptionDatesFormatted}`);
 			// Log and continue to next service ID
-			Logger.info(`Service ID "${serviceIdData._id}" [CASE 4] Is irregular with more active dates (${datesWhereServiceIsActive.length}) than missing ones (${datesWhereServiceIsMissingButIsExpected.length}). Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.`);
+			Logger.info({ message: `Service ID "${serviceIdData._id}" [CASE 4] Is irregular with more active dates (${datesWhereServiceIsActive.length}) than missing ones (${datesWhereServiceIsMissingButIsExpected.length}). Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.` });
 			continue;
 		}
 
@@ -371,7 +371,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 
 		updatedServiceIds[serviceIdKey].exceptions.push(`Disponível ${exceptionDatesFormatted}`);
 
-		Logger.info(`Service ID "${serviceIdData._id}" [CASE 5] Is irregular with more missing dates (${datesWhereServiceIsMissingButIsExpected.length}) than active ones (${datesWhereServiceIsActive.length}). Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.`);
+		Logger.info({ message: `Service ID "${serviceIdData._id}" [CASE 5] Is irregular with more missing dates (${datesWhereServiceIsMissingButIsExpected.length}) than active ones (${datesWhereServiceIsActive.length}). Qty # ${serviceIdData.dates.length} dates. Exceptions: ${exceptionDatesFormatted.length} dates.` });
 
 		//
 	}
@@ -435,15 +435,15 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 	await calendarDatesCsv.flush();
 	await calendarExtCsv.flush();
 
-	Logger.info('Exported calendar_assignmentsExt.txt and calendarExt.txt files.');
+	Logger.info({ message: 'Exported calendar_assignmentsExt.txt and calendarExt.txt files.' });
 
 	//
 	// Log completion
 
-	Logger.info('Merged service IDs into new calendars.');
+	Logger.info({ message: 'Merged service IDs into new calendars.' });
 
 	for (const serviceIdData of Object.values(updatedServiceIds)) {
-		Logger.info(`Service ID "${serviceIdData._id}" has ${serviceIdData.dates.length} dates and ${serviceIdData.exceptions.length} exceptions.`);
+		Logger.info({ message: `Service ID "${serviceIdData._id}" has ${serviceIdData.dates.length} dates and ${serviceIdData.exceptions.length} exceptions.` });
 	}
 
 	//

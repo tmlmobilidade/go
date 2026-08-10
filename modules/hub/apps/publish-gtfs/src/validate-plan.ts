@@ -1,20 +1,30 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
-export function validatePlan(planData: Plan): boolean {
+export async function validatePlan(planData: Plan): Promise<boolean> {
 	//
 
 	//
-	// Return false if the agency is not for the given IDs
+	// Return false if the agency is not found
 
-	// 3, 8, and 21 are currently disabled
-	if (!['1', '2', '3', '4', '8', '15', '16', '21', '41', '42', '43', '44'].includes(planData.gtfs_agency?.agency_id)) {
-		Logger.error(`Skip processing: gtfs_agency is '${planData.gtfs_agency?.agency_id}'. Only '1', '2', '3', '4', '8', '15', '16', '41', '42', '43', or '44' are allowed.`);
+	const agencyData = await goDb.core.agencies.findById(planData.agency_id);
+
+	if (!agencyData) {
+		Logger.error({ message: `Skip processing: No agency data found for agency_id '${planData.agency_id}'.` });
+		return false;
+	}
+
+	//
+	// Return false if the agency does not have GTFS enabled
+
+	if (!agencyData.open_data.gtfs_enabled) {
+		Logger.error({ message: `Skip processing: Agency '${planData.agency_id}' does not have GTFS enabled.` });
 		return false;
 	}
 
@@ -22,7 +32,7 @@ export function validatePlan(planData: Plan): boolean {
 	// Return false if it does not have an associated operation file
 
 	if (!planData.operation_file_id) {
-		Logger.error(`Skip processing: No operation file found.`);
+		Logger.error({ message: `Skip processing: No operation file found.` });
 		return false;
 	}
 
@@ -30,12 +40,12 @@ export function validatePlan(planData: Plan): boolean {
 	// Return false if it does not have feed_info start and end dates
 
 	if (!planData.gtfs_feed_info?.feed_start_date) {
-		Logger.error(`Skip processing: No feed_info start date.`);
+		Logger.error({ message: `Skip processing: No feed_info start date.` });
 		return false;
 	}
 
 	if (!planData.gtfs_feed_info?.feed_end_date) {
-		Logger.error(`Skip processing: No feed_info end date.`);
+		Logger.error({ message: `Skip processing: No feed_info end date.` });
 		return false;
 	}
 
@@ -45,7 +55,7 @@ export function validatePlan(planData: Plan): boolean {
 	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
 
 	if (planData.gtfs_feed_info.feed_end_date < currentOperationalDate) {
-		Logger.error(`Skip processing: Plan is no longer active as feed_end_date '${planData.gtfs_feed_info.feed_end_date}' is before current operational date '${currentOperationalDate}'.`);
+		Logger.error({ message: `Skip processing: Plan is no longer active as feed_end_date '${planData.gtfs_feed_info.feed_end_date}' is before current operational date '${currentOperationalDate}'.` });
 		return false;
 	}
 

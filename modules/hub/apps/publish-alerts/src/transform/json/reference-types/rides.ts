@@ -1,6 +1,6 @@
 /* * */
 
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type AlertReference } from '@tmlmobilidade/types';
 import { getPublicTripId } from '@tmlmobilidade/utils';
@@ -14,12 +14,12 @@ export async function transformReferenceTypeRidesIntoJson(alertData: Alert): Pro
 	// Validate required input properties
 
 	if (!alertData.agency_id) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert agency_id is missing for "rides" reference type.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert agency_id is missing for "rides" reference type.` });
 		return;
 	}
 
 	if (!alertData.references?.length) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert references are missing for "rides" reference type or are empty.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert references are missing for "rides" reference type or are empty.` });
 		return;
 	}
 
@@ -36,10 +36,10 @@ export async function transformReferenceTypeRidesIntoJson(alertData: Alert): Pro
 		// Find the ride document by its ID
 		// and prepare the AlertReference object
 
-		const foundRide = await rides.findById(reference.parent_id);
+		const foundRide = await goDb.operation.rides.findById(reference.parent_id);
 
 		if (!foundRide) {
-			Logger.error(`[Alert ID: ${alertData._id}] No ride found for ride ID ${reference.parent_id}.`);
+			Logger.error({ message: `[Alert ID: ${alertData._id}] No ride found for ride ID ${reference.parent_id}.` });
 			continue;
 		}
 

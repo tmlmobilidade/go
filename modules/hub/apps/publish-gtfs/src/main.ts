@@ -4,8 +4,8 @@ import { initExportGtfsContext } from '@/utils/init-contex.js';
 import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { files, plans } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
@@ -18,7 +18,6 @@ import { ZipFile } from 'yazl';
 
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarDatesFile } from '@/exports/calendar-dates.js';
-import { exportDatesFile } from '@/exports/dates.js';
 import { exportFeedInfoFile } from '@/exports/feed-info.js';
 import { exportPlansFile } from '@/exports/plans.js';
 import { exportRoutesFile } from '@/exports/routes.js';
@@ -26,6 +25,8 @@ import { exportShapesFile } from '@/exports/shapes.js';
 import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { initSentryNode } from '@tmlmobilidade/logger';
 
 /* * */
 
@@ -35,6 +36,21 @@ let PREVIOUS_PLANS_LIST_HASH: null | string = null;
 
 export async function main() {
 	//
+
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'publish-gtfs', message: 'Sentry Hub Publish GTFS initialized', module: 'hub', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS' });
+	}
+
+	//
+	// Initialize the logger
+
+	Logger.init();
 
 	const globalTimer = new Timer();
 
@@ -51,7 +67,7 @@ export async function main() {
 		fs.mkdirSync(context.workdir.path, { recursive: true });
 		Logger.success(`Prepared working directory at "${context.workdir.path}".`, 1);
 	} catch (error) {
-		Logger.error(`Error preparing workdir path "${context.workdir.path}".`, error);
+		Logger.error({ error, message: `Error preparing workdir path "${context.workdir.path}".` });
 		process.exit(1);
 	}
 
@@ -69,13 +85,13 @@ export async function main() {
 	// Retrieve all Plans from the database
 	// and iterate on each one.
 
-	const plansCollection = await plans.getCollection();
+	const plansCollection = await goDb.operation.plans.getCollection();
 
-	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await goDb.operation.plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
-	Logger.info(`Found ${allPlansData.length} Plans to process...`);
+	Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
 
 	//
 	// Hash the allPlansData response and check if it differs
@@ -111,7 +127,7 @@ export async function main() {
 
 			const planTimer = new Timer();
 
-			Logger.info(`[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}`);
+			Logger.info({ message: `[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.agency_id} - Plan ${planData._id}` });
 
 			//
 			// Validate the Plan data before processing.
@@ -119,11 +135,11 @@ export async function main() {
 			// and mark it as 'skipped' in the database.
 			// Otherwise, mark it as 'processing'.
 
-			const isValidPlan = validatePlan(planData);
+			const isValidPlan = await validatePlan(planData);
 
 			if (!isValidPlan) {
 				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
-				Logger.info(`Skipped plan ${planData._id} as it was ineligible for processing.`);
+				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
 				continue;
 			}
 
@@ -132,7 +148,7 @@ export async function main() {
 			//
 			// Get the operation file URL
 
-			const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.operation_file_id });
 
 			//
 			// Find out if this plan is a currently active plan.
@@ -199,19 +215,19 @@ export async function main() {
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
 				const routeData: GTFS_Route_Extended = routeItem;
-				const publicRouteId = getPublicRouteId(planData.gtfs_agency.agency_id, routeData.route_id);
+				const publicRouteId = getPublicRouteId(planData.agency_id, routeData.route_id);
 				if (thisIsAnActivePlan || !routesMarkedForFinalExport[publicRouteId]) {
-					routesMarkedForFinalExport[publicRouteId] = routeData;
+					routesMarkedForFinalExport[publicRouteId] = { ...routeData, agency_id: planData.agency_id };
 				}
 			}
 
-			Logger.info(`Added route references for plan ${planData._id}.`);
+			Logger.info({ message: `Added route references for plan ${planData._id}.` });
 
 			//
 			// Add the plan's referenced agency ID and farthest
 			// feed end date to the global variables for later export.
 
-			referencedAgencyIds.add(planData.gtfs_agency.agency_id);
+			referencedAgencyIds.add(planData.agency_id);
 
 			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
 				? planData.gtfs_feed_info.feed_end_date
@@ -220,7 +236,7 @@ export async function main() {
 			//
 			// Finally, write the plan entry into the plans.txt file.
 
-			await exportPlansFile(planData.gtfs_agency.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, context);
+			await exportPlansFile(planData, context);
 
 			//
 			// Mark the plan as complete in the database.
@@ -241,7 +257,7 @@ export async function main() {
 			//
 		} catch (error) {
 			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'error', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
-			Logger.error(`Error processing plan ${planData._id}`, error);
+			Logger.error({ error, message: `Error processing plan ${planData._id}` });
 			Logger.divider();
 		}
 	}
@@ -249,7 +265,6 @@ export async function main() {
 	//
 	// Export GTFS files from the merged dataset
 
-	await exportDatesFile(context);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), context);
 	await exportStopsFile(Array.from(referencedAgencyIds), context);
 	await exportAgencyFile(Array.from(referencedAgencyIds), context);
@@ -261,7 +276,7 @@ export async function main() {
 
 	const zipTimer = new Timer();
 
-	Logger.info('Zipping GTFS export...');
+	Logger.info({ message: 'Zipping GTFS export...' });
 
 	const outputZip = new ZipFile();
 
@@ -285,11 +300,11 @@ export async function main() {
 	// Upload the GTFS zip file to the Files collection,
 	// which handles storage and retrieval.
 
-	Logger.info('Uploading GTFS zip file to Files collection...');
+	Logger.info({ message: 'Uploading GTFS zip file to Files collection...' });
 
 	const fileStream = fs.createReadStream(`${context.workdir.path}/${context.run_id}.zip`);
 
-	await files.upload(fileStream, {
+	await storageProvider.replace(fileStream, {
 		_id: 'gtfs-latest',
 		created_by: 'system',
 		name: `${context.run_id}.zip`,
@@ -298,10 +313,16 @@ export async function main() {
 		size: fs.statSync(`${context.workdir.path}/${context.run_id}.zip`).size,
 		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${context.run_id}.zip`)),
 		updated_by: 'system',
-	}, { override: true });
+	});
 
 	//
 	// Finalize the export process
+
+	try {
+		fs.rmSync(context.workdir.path, { force: true, recursive: true });
+	} catch (error) {
+		Logger.error({ error, message: `Error removing export workdir "${context.workdir.path}".` });
+	}
 
 	Logger.terminate(`Run took ${globalTimer.get()}`);
 

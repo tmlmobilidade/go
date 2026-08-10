@@ -43,6 +43,11 @@ sanitize_route_name() {
     echo "$1" | sed -E 's|\([^)]+\)||g' | sed 's|\.|_|g' | sed 's|/|_|g' | sed 's|-|_|g' | sed 's|__|_|g' | sed 's|^_||' | sed 's|_$||'
 }
 
+# Wrap route path parameters with encodeURIComponent
+encode_route_params() {
+    echo "$1" | sed -E 's/\$\{([a-zA-Z][a-zA-Z0-9]*)\}/\${encodeURIComponent(\1)}/g'
+}
+
 # Function to scan frontend routes
 scan_frontend_routes() {
     local module_name="$1"
@@ -196,13 +201,14 @@ scan_api_routes() {
 
     # Find all *.routes.ts files
     local find_routes_temp=$(mktemp)
-    find "$endpoints_dir" -name "*.routes.ts" -type f > "$find_routes_temp"
+    find "$endpoints_dir" \( -name "*.routes.ts" -o -name "routes.ts" \) -type f > "$find_routes_temp"
 
     while IFS= read -r routes_file; do
         local namespace=""
         local endpoint_name=$(basename "$(dirname "$routes_file")")
         # Extract file name without extension (e.g., "alerts.routes.ts" -> "alerts")
-        local file_name=$(basename "$routes_file" | sed 's|\.routes\.ts$||')
+        local file_name=$(basename "$(dirname "$routes_file")")
+
 
         # Extract namespace from the routes file (handle both const namespace and const NAMESPACE)
         namespace=$(grep -E "^\s*(const\s+)?(namespace|NAMESPACE)\s*=\s*['\"](.*)['\"]" "$routes_file" | head -1 | sed -E "s/.*['\"](.*)['\"].*/\1/" | sed 's|^/||')
@@ -243,7 +249,35 @@ scan_api_routes() {
             done < "$routes_file"
         } | grep -v "^\s*$" > "$grep_temp"
 
+        # Collect paths first so we can detect list/detail pairs (e.g. /districts + /districts/:id)
+        local file_paths=()
         while IFS= read -r path; do
+            if [ -n "$path" ]; then
+                file_paths+=("$path")
+            fi
+        done < "$grep_temp"
+
+        local list_paths=()
+        for path in "${file_paths[@]}"; do
+            local list_clean_path
+            list_clean_path=$(echo "$path" | sed 's|^/||')
+            if [ -n "$list_clean_path" ] && ! echo "$list_clean_path" | grep -qE ':[a-zA-Z][a-zA-Z0-9]*'; then
+                list_paths+=("$list_clean_path")
+            fi
+        done
+
+        has_list_path() {
+            local resource="$1"
+            local list_path
+            for list_path in "${list_paths[@]}"; do
+                if [ "$list_path" = "$resource" ]; then
+                    return 0
+                fi
+            done
+            return 1
+        }
+
+        for path in "${file_paths[@]}"; do
             if [ -z "$path" ]; then
                 continue
             fi
@@ -320,6 +354,27 @@ scan_api_routes() {
                     local suffix_name=$(echo "$suffix_after_var" | sed 's|/|_|g' | sed 's|-|_|g' | sed -E 's|:[a-zA-Z][a-zA-Z0-9]*|VAR|g')
                     local route_name=$(to_snake_case "${last_namespace_part}_DETAIL_${suffix_name}")
                 fi
+            elif echo "$clean_path" | grep -qE '^[^/:]+/:[a-zA-Z][a-zA-Z0-9]*($|/)'; then
+                # Sub-resource detail route (e.g. districts/:id under /locations)
+                local resource_part
+                resource_part=$(echo "$clean_path" | sed -E 's|^([^/]+)/:.*|\1|')
+                local suffix_after_param
+                suffix_after_param=$(echo "$clean_path" | sed -E 's|^[^/]+/:[a-zA-Z][a-zA-Z0-9]*/||')
+                if [ -n "$suffix_after_param" ] && [ "$suffix_after_param" != "$clean_path" ]; then
+                    local suffix_name
+                    suffix_name=$(echo "$suffix_after_param" | sed 's|/|_|g' | sed 's|-|_|g')
+                    local route_name
+                    route_name=$(to_snake_case "${last_namespace_part}_${resource_part}_DETAIL_${suffix_name}")
+                elif has_list_path "$resource_part"; then
+                    local route_name
+                    route_name=$(to_snake_case "${last_namespace_part}_${resource_part}_DETAIL")
+                else
+                    # No corresponding list route (e.g. tts/:id)
+                    local route_suffix
+                    route_suffix=$(echo "$clean_path" | sed -E 's|:[a-zA-Z][a-zA-Z0-9]*||g' | sed 's|/|_|g' | sed 's|-|_|g')
+                    local route_name
+                    route_name=$(to_snake_case "${last_namespace_part}_${route_suffix}")
+                fi
             else
                 # Non-root path without leading variables - remove inline variables from naming
                 # e.g. public/:id/image -> PUBLIC_IMAGE (not PUBLIC_:ID_IMAGE)
@@ -330,7 +385,7 @@ scan_api_routes() {
 
             # Include file name and variables in route storage: route_name:route_path|file_name|variables
             routes+=("${route_name}:${route_path}|${file_name}|${route_variables}")
-        done < "$grep_temp"
+        done
 
         rm -f "$grep_temp"
     done < "$find_routes_temp"
@@ -565,7 +620,8 @@ generate_routes_for_type() {
                         fi
                     done
                     # Convert to function format with getModuleConfig
-                    echo "		${route_name}: (${function_params}) => \`\${getModuleConfig('${module_name}', 'api_url')}/${clean_api_path}\`," >> "$output_file"
+                    encoded_api_path=$(encode_route_params "$clean_api_path")
+                    echo "		${route_name}: (${function_params}) => \`\${getModuleConfig('${module_name}', 'api_url')}/${encoded_api_path}\`," >> "$output_file"
                 else
                     # Regular string route with getModuleConfig
                     echo "		${route_name}: \`\${getModuleConfig('${module_name}', 'api_url')}/${clean_api_path}\`," >> "$output_file"
@@ -591,7 +647,8 @@ generate_routes_for_type() {
                     done
                     # Convert to function format with getModuleConfig
                     clean_path=$(echo "$clean_frontend_path" | sed 's|\\${\([^}]*\)}|${\1}|g')
-                    echo "		${route_name}: (${function_params}) => \`\${getModuleConfig('${module_name}', 'frontend_url')}/${clean_path}\`," >> "$output_file"
+                    encoded_path=$(encode_route_params "$clean_path")
+                    echo "		${route_name}: (${function_params}) => \`\${getModuleConfig('${module_name}', 'frontend_url')}/${encoded_path}\`," >> "$output_file"
                 else
                     # Regular string route with getModuleConfig
                     # Handle root route (empty path) - use frontend_url directly without trailing slash

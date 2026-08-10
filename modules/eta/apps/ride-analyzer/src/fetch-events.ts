@@ -1,9 +1,8 @@
 /* * */
 
-import type { TripRef } from '@/parse-trip-ref.js';
-import type { ClickHouseClient } from '@clickhouse/client';
-import type { SimplifiedVehicleEvent } from '@tmlmobilidade/types';
-
+import { type TripRef } from '@/parse-trip-ref.js';
+import { type ClickHouseClient } from '@clickhouse/client';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -16,10 +15,8 @@ import { Logger } from '@tmlmobilidade/logger';
 export async function fetchEventsForTrip(clickhouseClient: ClickHouseClient, tripRef: TripRef): Promise<SimplifiedVehicleEvent[]> {
 	Logger.title('Phase 2: Fetching simplified vehicle events');
 	Logger.info(
-		`Loading events for trip_id=${tripRef.tripId} operational_date=${tripRef.operationalDate}`
-		+ (tripRef.rideId ? ` (ride_id=${tripRef.rideId})` : ''),
+		{ message: `Loading events for trip_id=${tripRef.tripId} operational_date=${tripRef.operationalDate}` + (tripRef.rideId ? ` (ride_id=${tripRef.rideId})` : '') },
 	);
-
 	const result = await clickhouseClient.query({
 		format: 'JSONEachRow',
 		query: `
@@ -36,6 +33,6 @@ export async function fetchEventsForTrip(clickhouseClient: ClickHouseClient, tri
 	});
 
 	const events = await result.json<SimplifiedVehicleEvent>();
-	Logger.progress(`Found ${events.length} events for trip_id=${tripRef.tripId}`);
+	Logger.progress({ message: `Found ${events.length} events for trip_id=${tripRef.tripId}`, spacesAfterOrBefore: 1 });
 	return events;
 }

@@ -4,8 +4,8 @@ import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AUTH_SESSION_COOKIE_NAME, authProvider, users, verificationTokens } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/types';
 
@@ -19,34 +19,39 @@ export class AuthController {
 	 */
 	static async changePassword(request: FastifyRequest<{ Body: { password_hash: string, token: string } }>, reply: FastifyReply<void>) {
 		// Check if the verification token is valid
-		const tokenResult = await verificationTokens.findOne({ token: { $eq: request.body.token } });
+		const tokenResult = await goDb.core.verificationTokens.findOne({ token: { $eq: request.body.token } });
 		// If the token is invalid or expired, throw an error
 		if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_timestamp) {
 			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid or expired token');
-		};
+		}
 		// Update the user's password in the database
-		await users.updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
+		await goDb.core.users.updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
 		// Once the token is validated, delete it from the database
-		await verificationTokens.deleteOne({ token: { $eq: request.body.token } });
+		await goDb.core.verificationTokens.deleteOne({ token: { $eq: request.body.token } });
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
-		// Log the password change event
-		Logger.info(`Password changed for user ID: ${tokenResult.user_id}`);
 	}
 
 	/**
 	 * Authenticate a user from a login request and create a new session.
 	 */
 	static async login(request: FastifyRequest<{ Body: LoginDto }>, reply: FastifyReply<Session>) {
-		// Validate the request body against the LoginDto schema
 		const result = LoginDtoSchema.safeParse(request.body);
-		// If validation fails, throw a bad request error
-		if (!result.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
-		// Call the authProvider to login the user
-		const newSession = await authProvider.login({
-			email: result.data.email,
-			password: result.data.password,
-		});
+		if (!result.success) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
+		}
+		let newSession: Session;
+		try {
+			newSession = await authProvider.login({
+				email: result.data.email,
+				password: result.data.password,
+			});
+		} catch (error) {
+			if (error instanceof HttpException) {
+				throw error;
+			}
+			throw error;
+		}
 		// Set the session token cookie in the response
 		reply.setCookie(AUTH_SESSION_COOKIE_NAME, newSession.token, {
 			httpOnly: true,
@@ -57,8 +62,6 @@ export class AuthController {
 		});
 		// Send the session data in the response
 		reply.send({ data: newSession, error: null, statusCode: HTTP_STATUS.OK });
-		// Log the login event
-		Logger.info(`User logged in: ${newSession.user_id}`);
 	}
 
 	/**
@@ -86,13 +89,15 @@ export class AuthController {
 	 */
 	static async sendPasswordResetEmail(request: FastifyRequest<{ Body: { email: string } }>, reply: FastifyReply<void>) {
 		// Search user by the email provided in the request body
-		const foundUser = await users.findByEmail(request.body.email);
-		if (!foundUser) throw new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
+		const foundUser = await goDb.core.users.findOne({ email: { $eq: request.body.email } });
+		if (!foundUser) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
+		}
 		// Generate a random token for password reset
 		const randomToken = generateRandomToken();
 		// Create a verification token entry in the database
 		// with an expiration time of 1 hour
-		await verificationTokens.insertOne({
+		await goDb.core.verificationTokens.insertOne({
 			expires_at: Dates.now('utc').plus({ hours: 1 }).unix_timestamp,
 			token: randomToken,
 			user_id: foundUser._id,
@@ -107,8 +112,6 @@ export class AuthController {
 		});
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
-		// Log the password reset email event
-		Logger.info(`Password reset email sent to "${request.body.email}" for User ID ${foundUser._id}`);
 	}
 
 	//

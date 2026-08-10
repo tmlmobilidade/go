@@ -25,8 +25,7 @@ export function hashedShapesToFeatureCollection(hashedShapes: HashedShape | Hash
 			features: hashedShapes.map(toFeature),
 			type: 'FeatureCollection',
 		};
-	}
-	else {
+	} else {
 		return {
 			features: [toFeature(hashedShapes)],
 			type: 'FeatureCollection',

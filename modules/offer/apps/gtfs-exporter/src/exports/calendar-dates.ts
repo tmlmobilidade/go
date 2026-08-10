@@ -25,10 +25,10 @@ export async function exportCalendarDates(
 	exportConfig: GtfsV29ExportConfig,
 ) {
 	try {
-		Logger.info('Exporting calendar dates...');
+		Logger.info({ message: 'Exporting calendar dates...' });
 
 		const allServices = serviceRegistry.getAllServices();
-		Logger.info(`Exporting ${allServices.size} unique service IDs...`);
+		Logger.info({ message: `Exporting ${allServices.size} unique service IDs...` });
 
 		const holidaysArray = Array.from(holidays.values());
 

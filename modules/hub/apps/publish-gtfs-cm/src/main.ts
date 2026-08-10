@@ -4,9 +4,10 @@ import { type MergedGtfsExportConfig } from '@/types.js';
 import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { files, plans } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
@@ -38,6 +39,21 @@ let PREVIOUS_PLANS_LIST_HASH: null | string = null;
 export async function main() {
 	//
 
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'publish-gtfs-cm', message: 'Sentry Hub Publish GTFS CM initialized', module: 'hub', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS CM' });
+	}
+
+	//
+	// Initialize the logger
+
+	Logger.init();
+
 	const globalTimer = new Timer();
 
 	//
@@ -52,18 +68,18 @@ export async function main() {
 		version: exportVersion,
 		workdir: `/tmp/${exportVersion}`,
 		writers: {
-			agency: new CsvWriter('agency.txt', `/tmp/${exportVersion}/agency.txt`, { batch_size: 100000 }),
-			calendar_dates: new CsvWriter('calendar_dates.txt', `/tmp/${exportVersion}/calendar_dates.txt`, { batch_size: 100000 }),
-			dates: new CsvWriter('dates.txt', `/tmp/${exportVersion}/dates.txt`, { batch_size: 100000 }),
-			feed_info: new CsvWriter('feed_info.txt', `/tmp/${exportVersion}/feed_info.txt`, { batch_size: 100000 }),
-			municipalities: new CsvWriter('municipalities.txt', `/tmp/${exportVersion}/municipalities.txt`, { batch_size: 100000 }),
-			periods: new CsvWriter('periods.txt', `/tmp/${exportVersion}/periods.txt`, { batch_size: 100000 }),
-			plans: new CsvWriter('plans.txt', `/tmp/${exportVersion}/plans.txt`, { batch_size: 100000 }),
-			routes: new CsvWriter('routes.txt', `/tmp/${exportVersion}/routes.txt`, { batch_size: 100000 }),
-			shapes: new CsvWriter('shapes.txt', `/tmp/${exportVersion}/shapes.txt`, { batch_size: 100000 }),
-			stop_times: new CsvWriter('stop_times.txt', `/tmp/${exportVersion}/stop_times.txt`, { batch_size: 100000 }),
-			stops: new CsvWriter('stops.txt', `/tmp/${exportVersion}/stops.txt`, { batch_size: 100000 }),
-			trips: new CsvWriter('trips.txt', `/tmp/${exportVersion}/trips.txt`, { batch_size: 100000 }),
+			agency: new CsvWriter('agency.txt', `/tmp/${exportVersion}/agency.txt`, { batch_size: 10000 }),
+			calendar_dates: new CsvWriter('calendar_dates.txt', `/tmp/${exportVersion}/calendar_dates.txt`, { batch_size: 10000 }),
+			dates: new CsvWriter('dates.txt', `/tmp/${exportVersion}/dates.txt`, { batch_size: 10000 }),
+			feed_info: new CsvWriter('feed_info.txt', `/tmp/${exportVersion}/feed_info.txt`, { batch_size: 10000 }),
+			municipalities: new CsvWriter('municipalities.txt', `/tmp/${exportVersion}/municipalities.txt`, { batch_size: 10000 }),
+			periods: new CsvWriter('periods.txt', `/tmp/${exportVersion}/periods.txt`, { batch_size: 10000 }),
+			plans: new CsvWriter('plans.txt', `/tmp/${exportVersion}/plans.txt`, { batch_size: 10000 }),
+			routes: new CsvWriter('routes.txt', `/tmp/${exportVersion}/routes.txt`, { batch_size: 10000 }),
+			shapes: new CsvWriter('shapes.txt', `/tmp/${exportVersion}/shapes.txt`, { batch_size: 10000 }),
+			stop_times: new CsvWriter('stop_times.txt', `/tmp/${exportVersion}/stop_times.txt`, { batch_size: 10000 }),
+			stops: new CsvWriter('stops.txt', `/tmp/${exportVersion}/stops.txt`, { batch_size: 10000 }),
+			trips: new CsvWriter('trips.txt', `/tmp/${exportVersion}/trips.txt`, { batch_size: 10000 }),
 		},
 	};
 
@@ -78,13 +94,13 @@ export async function main() {
 	// Retrieve all Plans from the database
 	// and iterate on each one.
 
-	const plansCollection = await plans.getCollection();
+	const plansCollection = await goDb.operation.plans.getCollection();
 
-	const allPlansData = await plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await goDb.operation.plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
-	Logger.info(`Found ${allPlansData.length} Plans to process...`);
+	Logger.info({ message: `Found ${allPlansData.length} Plans to process...` });
 
 	//
 	// Hash the allPlansData response and check if it differs
@@ -120,7 +136,7 @@ export async function main() {
 
 			const planTimer = new Timer();
 
-			Logger.info(`[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.gtfs_agency.agency_id} - Plan ${planData._id}`);
+			Logger.info({ message: `[${planIndex + 1}/${allPlansData.length}] - Agency ${planData.agency_id} - Plan ${planData._id}` });
 
 			//
 			// Validate the Plan data before processing.
@@ -132,7 +148,7 @@ export async function main() {
 
 			if (!isValidPlan) {
 				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'skipped', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
-				Logger.info(`Skipped plan ${planData._id} as it was ineligible for processing.`);
+				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
 				continue;
 			}
 
@@ -141,7 +157,7 @@ export async function main() {
 			//
 			// Get the operation file URL
 
-			const operationFileUrl = await files.getFileUrl({ file_id: planData.operation_file_id });
+			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: planData.operation_file_id });
 
 			//
 			// Find out if this plan is a currently active plan.
@@ -213,13 +229,13 @@ export async function main() {
 				}
 			}
 
-			Logger.info(`Added route references for plan ${planData._id}.`);
+			Logger.info({ message: `Added route references for plan ${planData._id}.` });
 
 			//
 			// Add the plan's referenced agency ID and farthest
 			// feed end date to the global variables for later export.
 
-			referencedAgencyIds.add(planData.gtfs_agency.agency_id);
+			referencedAgencyIds.add(planData.agency_id);
 
 			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
 				? planData.gtfs_feed_info.feed_end_date
@@ -228,7 +244,7 @@ export async function main() {
 			//
 			// Finally, write the plan entry into the plans.txt file.
 
-			await exportPlansFile(planData.gtfs_agency.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, exportConfig);
+			await exportPlansFile(planData.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, exportConfig);
 
 			//
 			// Mark the plan as complete in the database.
@@ -249,7 +265,7 @@ export async function main() {
 			//
 		} catch (error) {
 			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.merger.last_hash': null, 'apps.merger.status': 'error', 'apps.merger.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
-			Logger.error(`Error processing plan ${planData._id}`, error);
+			Logger.error({ error, message: `Error processing plan ${planData._id}` });
 			Logger.divider();
 		}
 	}
@@ -295,7 +311,7 @@ export async function main() {
 
 	const fileStream = fs.createReadStream(`${exportConfig.workdir}/${exportConfig.version}.zip`);
 
-	await files.upload(fileStream, {
+	await storageProvider.replace(fileStream, {
 		_id: 'gtfs-cm-latest',
 		created_by: 'system',
 		name: `${exportConfig.version}.zip`,
@@ -304,10 +320,16 @@ export async function main() {
 		size: fs.statSync(`${exportConfig.workdir}/${exportConfig.version}.zip`).size,
 		type: Files.getFileExtensionFromMimeType(Files.getFileExtension(`${exportConfig.version}.zip`)),
 		updated_by: 'system',
-	}, { override: true });
+	});
 
 	//
 	// Finalize the export process
+
+	try {
+		fs.rmSync(exportConfig.workdir, { force: true, recursive: true });
+	} catch (error) {
+		Logger.error({ error, message: `Error removing export workdir "${exportConfig.workdir}".` });
+	}
 
 	Logger.terminate(`Run took ${globalTimer.get()}`);
 

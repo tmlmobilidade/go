@@ -17,7 +17,6 @@ import { themeData } from '../../styles/theme';
 /* * */
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
-
 	/**
 	 * Please avoid using this prop. It is only intended for very specific use cases.
 	 * @dangerous
@@ -46,10 +45,9 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 	const swrSettings: SWRConfiguration = {
 		fetcher: swrFetcher,
 		refreshInterval: 600_000, // 10 minutes
-		refreshWhenHidden: true,
+		refreshWhenHidden: false,
 		revalidateIfStale: true,
 		revalidateOnFocus: true,
-		revalidateOnMount: true,
 	};
 
 	//

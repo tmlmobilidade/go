@@ -44,5 +44,5 @@ export async function exportFeedInfoFile(startDate: OperationalDate, endDate: Op
 
 	await exportConfig.writers.feed_info.flush();
 
-	Logger.info('Exported feed_info.txt file.');
+	Logger.info({ message: 'Exported feed_info.txt file.' });
 }

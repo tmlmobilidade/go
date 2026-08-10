@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* * */
 
 import '@fastify/cors';
@@ -10,7 +11,8 @@ import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import oneLineLogger from '@fastify/one-line-logger';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { HttpResponse, WithPagination } from '@tmlmobilidade/utils';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { HttpResponse } from '@tmlmobilidade/utils';
 import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
 import { type ContextConfigDefault, type FastifyBaseLogger, type FastifySchema, type FastifyServerOptions, type FastifyTypeProviderDefault, type RawReplyDefaultExpression, type RawRequestDefaultExpression, type RawServerBase, type RawServerDefault, type RouteGenericInterface } from 'fastify';
@@ -19,8 +21,8 @@ import { type ContextConfigDefault, type FastifyBaseLogger, type FastifySchema, 
 
 export { type FastifyRequest } from 'fastify';
 
-export type FastifyReply<T> = FastifyReplyType<RouteGenericInterface, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T> | ReadableStream | WithPagination<HttpResponse<T>>>;
-export type FastifyResponse<T> = FastifyReplyType<RouteGenericInterface & { Reply: HttpResponse<T> | WithPagination<HttpResponse<T>> }, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T> | WithPagination<HttpResponse<T>>>;
+export type FastifyReply<T> = FastifyReplyType<RouteGenericInterface, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T> | ReadableStream>;
+export type FastifyResponse<T> = FastifyReplyType<RouteGenericInterface & { Reply: HttpResponse<T> }, RawServerBase, RawRequestDefaultExpression<RawServerBase>, RawReplyDefaultExpression<RawServerBase>, ContextConfigDefault, FastifySchema, FastifyTypeProviderDefault, HttpResponse<T>>;
 export type FastifyInstance = FastifyInstanceType<RawServerDefault, RawRequestDefaultExpression, RawReplyDefaultExpression, FastifyBaseLogger, FastifyTypeProviderDefault>;
 
 /**
@@ -28,13 +30,18 @@ export type FastifyInstance = FastifyInstanceType<RawServerDefault, RawRequestDe
  * It extends FastifyServerOptions and adds optional properties for origin and port.
  */
 export interface FastifyServiceOptions extends FastifyServerOptions {
-
 	/**
 	 * The host on which the Fastify server will listen.
 	 * If not provided, it defaults to '0.0.0.0'.
 	 * @default '0.0.0.0'
 	 */
 	host?: string
+
+	/**
+	 * The module name for the Fastify server.
+	 * @default 'fastify'
+	 */
+	module?: string
 
 	/**
 	 * The origin for CORS requests.
@@ -57,6 +64,7 @@ const defaultFastifyServiceOptions: FastifyServiceOptions = {
 	bodyLimit: 1024 * 1024 * 10, // 10MB
 	host: '0.0.0.0',
 	logger: true,
+	module: 'fastify',
 	origin: true,
 	port: 5050,
 	routerOptions: {
@@ -64,13 +72,15 @@ const defaultFastifyServiceOptions: FastifyServiceOptions = {
 	},
 };
 
-const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
+const createLoggerOptions = (getModuleName: () => string): FastifyLoggerOptions<RawServerDefault> & { module?: string } => ({
 	level: 'debug',
+	module: getModuleName(),
 	stream: oneLineLogger({
 		colorize: true, // nice colors,
 		colorizeObjects: true,
 		messageFormat(log, messageKey, _, extras) {
 			const c = extras.colors;
+			const moduleName = getModuleName();
 
 			const palette = {
 				error: c.redBright,
@@ -155,10 +165,26 @@ const loggerOptions: FastifyLoggerOptions<RawServerDefault> = {
 				message,
 			];
 
-			return palette.pipe(parts.join(' | ')) + stackTrace;
+			const logMessage = palette.pipe(parts.join(' | ')) + stackTrace;
+			const shouldSendToSentry = message !== 'incoming request' && message !== 'request completed';
+
+			if (shouldSendToSentry) {
+				Logger.startNodeLogs({
+					app: 'api',
+					message: message,
+					method: method,
+					module: moduleName,
+					path: path,
+					reqId: reqId,
+					severity: 'info',
+					status: statusCode,
+				});
+			}
+
+			return logMessage;
 		},
 	}),
-};
+});
 
 /**
  * FastifyService is a singleton class that provides a Fastify server instance.
@@ -181,8 +207,8 @@ export class FastifyService {
 	 */
 	private constructor(options: FastifyServiceOptions) {
 		const mergedOptions = { ...defaultFastifyServiceOptions, ...options };
-		this.server = fastify({ ...mergedOptions, logger: loggerOptions });
 		this.options = mergedOptions;
+		this.server = fastify({ ...mergedOptions, logger: createLoggerOptions(() => this.options.module ?? 'fastify') });
 		this._setupDefaultRoutes();
 		this._setupPlugins();
 	}
@@ -207,15 +233,26 @@ export class FastifyService {
 	 * @return A promise that resolves to the URL of the Fastify server.
 	 * @throws Will throw an error if the server fails to start.
 	 */
-	async start(): Promise<string> {
+	async start(moduleName?: string): Promise<string> {
+		if (moduleName) this.options.module = moduleName;
+
 		try {
-			const serverUrl = await this.server.listen({ host: this.options.host, port: this.options.port });
+			await initSentryNode();
+		} catch (error) {
+			this.server.log.error({ err: error }, 'Error sending startup log to Sentry.');
+		}
+
+		try {
+			const serverUrl = await this.server.listen({
+				host: this.options.host,
+				port: this.options.port,
+			});
+
 			this.server.log.info(`Server is running at ${serverUrl}`);
-			this.server.log.info(`CORS enabled for origin: ${this.options.origin}`);
-			this.server.log.info(`Listening on ${this.options.host}:${this.options.port}`);
+
 			return serverUrl;
 		} catch (error) {
-			this.server.log.error({ error, message: 'Error starting server.' });
+			this.server.log.error({ err: error }, 'Error starting server.');
 			process.exit(1);
 		}
 	}
@@ -253,17 +290,36 @@ export class FastifyService {
 	 */
 	private _setupHooks() {
 		/**
+		 * Decodes URI-encoded `id` path params so encoded slashes (e.g. `%2F`) are
+		 * available as literal characters in route handlers.
+		 */
+		this.server.addHook('preHandler', (request, _, done) => {
+			const params = request.params as { id?: string };
+			if (params.id !== undefined) {
+				try {
+					params.id = decodeURIComponent(params.id);
+				} catch {
+					// Malformed URI sequence — keep original value
+				}
+			}
+			done();
+		});
+
+		/**
 		 * Sets a global error handler for the Fastify server instance.
 		 * This handler checks if the error is an instance of HttpException.
 		 * If so, it sends a response with the appropriate status code and error message.
 		 * This ensures consistent error responses for HTTP exceptions throughout the application.
 		 */
-		this.server.setErrorHandler((error, _, reply) => {
+		this.server.setErrorHandler((error, request, reply) => {
 			// Log the error with full stack trace
 			const errorMessage = error instanceof Error ? error.message : 'Unhandled error';
 			this.server.log.error({ err: error }, errorMessage);
 			// Handle HttpException errors
 			if (error instanceof HttpException) {
+				if (error.statusCode === HTTP_STATUS.INTERNAL_SERVER_ERROR) {
+					Logger.issue({ context: { action: 'errorHandler', feature: this.options.module, request, value: request.body }, level: 'error', messageOrError: error });
+				}
 				reply
 					.status(error.statusCode)
 					.send({
@@ -272,6 +328,7 @@ export class FastifyService {
 						statusCode: error.statusCode,
 					});
 			} else {
+				Logger.issue({ context: { action: 'errorHandler', feature: this.options.module, request, value: request.body }, level: 'error', messageOrError: 'Internal server error' });
 				reply
 					.status(HTTP_STATUS.INTERNAL_SERVER_ERROR)
 					.send({
@@ -295,9 +352,7 @@ export class FastifyService {
 			try {
 				const payloadJson = JSON.parse(payload as string) as HttpResponse<unknown>;
 				reply.code(payloadJson.statusCode ?? HTTP_STATUS.OK);
-			}
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			catch (error) {
+			} catch {
 				// Do nothing
 			} finally {
 				done();

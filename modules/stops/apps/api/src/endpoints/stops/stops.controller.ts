@@ -3,12 +3,15 @@
 import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter, patterns, stops } from '@tmlmobilidade/interfaces';
-import { CreateStopSchema, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
+import { type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type Attachment, CreateStopSchema, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
 
 /**
  * This is an example controller that is using the stops interface.
  */
+
 export class StopsController {
 	//
 
@@ -37,7 +40,8 @@ export class StopsController {
 		// if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to create this stop, because you do not have permission for all the agencies involved in the stop.');
 
 		const newStopId = await generateStopId();
-		const result = await stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
+		const result = await goDb.infrastructure.stops.insertOne({ ...data, _id: newStopId }, { unsafe: true });
+
 		reply.send({ data: result, error: null, statusCode: HTTP_STATUS.CREATED });
 	}
 
@@ -49,8 +53,10 @@ export class StopsController {
 	static async delete(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		//
 		// Get the stop from the database
-		const foundStop = await stops.findById(Number(request.params.id));
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		const foundStop = await goDb.infrastructure.stops.findById(Number(request.params.id));
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		}
 
 		if (foundStop.flags.length !== 0) {
 			// Check if the user has permission to run this action
@@ -62,11 +68,13 @@ export class StopsController {
 				value: foundStop.flags.flatMap(flag => flag.agency_ids),
 			});
 
-			if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this stop');
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to delete this stop');
+			}
 		}
 
 		// If authorized, toggle the deleted status of the stop
-		await stops.toggleDeleteById(request.params.id);
+		await goDb.infrastructure.stops.updateOne({ _id: request.params.id }, { is_deleted: !foundStop.is_deleted });
 
 		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -93,11 +101,24 @@ export class StopsController {
 				];
 			}
 		}
-		const data = await stops.findMany(queryFilters, {
+		const data = await goDb.infrastructure.stops.findMany(queryFilters, {
 			projection: { _id: 1, flags: 1, is_deleted: 1, latitude: 1, legacy_ids: 1, lifecycle_status: 1, longitude: 1, municipality_id: 1, name: 1, system_status: 1 },
 			sort: { created_at: -1 },
 		});
+		if (!data) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not get stops from database');
+		}
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
+	}
+
+	/**
+	 * Gets organization logo from the database.
+	 * @param request The request object containing the organization ID in the params.
+	 * @param reply The reply object used to send the response.
+	 */
+	static async getTTS(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
+		const fileData = await storageProvider.findById(request.params.id);
+		reply.send({ data: fileData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -108,6 +129,10 @@ export class StopsController {
 	 */
 	static async getValidId(request: FastifyRequest, reply: FastifyReply<StopId>) {
 		const newStopId = await generateStopId();
+		if (!newStopId) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Can not generate a new stop ID');
+		}
+
 		reply.send({ data: newStopId, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -118,8 +143,10 @@ export class StopsController {
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		// Get the stop from the database
-		const foundStop = await stops.findById(Number(request.params.id));
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		const foundStop = await goDb.infrastructure.stops.findById(Number(request.params.id));
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, `Can not find stop with ID ${request.params.id}`);
+		}
 
 		if (foundStop.flags.length !== 0) {
 			// Check if the user has permission to run this action
@@ -131,13 +158,15 @@ export class StopsController {
 				value: foundStop.flags.flatMap(flag => flag.agency_ids),
 			});
 
-			if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this stop');
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to read this stop');
+			}
 		}
 
 		//
 		// Get pattern ids that reference this event in manual pattern rules
 
-		const associatedPatterns = await patterns.findMany(
+		const associatedPatterns = await goDb.offer.patterns.findMany(
 			{
 				'path.stop_id': Number(request.params.id),
 			},
@@ -153,6 +182,10 @@ export class StopsController {
 			},
 		);
 
+		if (!associatedPatterns) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, `Can not get associated patterns for stop with ID ${request.params.id}`);
+		}
+
 		reply.send({
 			data: { ...foundStop, associated_patterns: associatedPatterns },
 			error: null,
@@ -167,8 +200,10 @@ export class StopsController {
 	 */
 	static async lock(request: FastifyRequest<{ Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		// Get the stop from the database
-		const foundStop = await stops.findById(Number(request.params.id));
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		const foundStop = await goDb.infrastructure.stops.findById(Number(request.params.id));
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		}
 
 		if (foundStop.flags.length !== 0) {
 			// Check if the user has permission to run this action
@@ -180,11 +215,13 @@ export class StopsController {
 				value: foundStop.flags.flatMap(flag => flag.agency_ids),
 			});
 
-			if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock or unlock this stop');
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to lock or unlock this stop');
+			}
 		}
 
 		// If authorized, toggle the lock status of the stop
-		await stops.toggleLockById(foundStop._id);
+		await goDb.infrastructure.stops.toggleLockById(foundStop._id);
 
 		reply.send({ data: foundStop, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -196,8 +233,10 @@ export class StopsController {
 	 */
 	static async update(request: FastifyRequest<{ Body: UpdateStopDto, Params: { id: StopId } }>, reply: FastifyReply<Stop>) {
 		// Get the stop from the database
-		const foundStop = await stops.findById(Number(request.params.id));
-		if (!foundStop) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		const foundStop = await goDb.infrastructure.stops.findById(Number(request.params.id));
+		if (!foundStop) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Stop not found');
+		}
 
 		if (
 			foundStop.flags.length !== 0
@@ -215,7 +254,9 @@ export class StopsController {
 				value: foundStop.flags.flatMap(flag => flag.agency_ids),
 			});
 
-			if (!hasPermission) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this stop');
+			if (!hasPermission) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this stop');
+			}
 		}
 
 		// Ensure the flag IDs are saved in the legacy IDs array
@@ -224,7 +265,7 @@ export class StopsController {
 		flagIds.forEach(flagId => existingLegacyIds.add(flagId));
 		request.body.legacy_ids = Array.from(existingLegacyIds);
 		// Perform the update
-		const data = await stops.updateById(Number(request.params.id), request.body);
+		const data = await goDb.infrastructure.stops.updateById(Number(request.params.id), request.body);
 		reply.send({ data, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }

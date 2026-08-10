@@ -2,8 +2,8 @@
 
 import { fetchProtobuf } from '@/protobuf.js';
 import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { alerts } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type CreateAlertDto, type ServiceAlertResponse, UnixTimestamp } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -23,6 +23,19 @@ const ProtobufPath = path.resolve(__dirname, './gtfs-realtime.proto');
 async function main() {
 	//
 
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'sync-datik', message: 'Sentry Alerts Sync Datik initialized', module: 'alerts', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Alerts Sync Datik' });
+	}
+
+	//
+	// Initialize the logger
+
 	Logger.init();
 
 	const globalTimer = new Timer();
@@ -31,15 +44,15 @@ async function main() {
 	const serviceAlertResponse = await fetchProtobuf<ServiceAlertResponse>(DatikServiceAlertsUrl, ProtobufPath, 'transit_realtime.FeedMessage');
 
 	for (const serviceAlert of serviceAlertResponse.entity) {
-		const alert = await alerts.findByExternalId(serviceAlert.id);
+		const alert = await goDb.operation.alerts.findOne({ external_id: serviceAlert.id });
 		if (alert) {
-			Logger.error(`Alert with external ID ${serviceAlert.id} already exists, skipping...`);
+			Logger.error({ message: `Alert with external ID ${serviceAlert.id} already exists, skipping...` });
 		} else {
 			//
-			Logger.info(`Alert with external ID ${serviceAlert.id} does not exist, creating...`);
+			Logger.info({ message: `Alert with external ID ${serviceAlert.id} does not exist, creating...` });
 
 			if (serviceAlert.alert.informed_entity.find(entity => entity.trip?.trip_id) === undefined) {
-				Logger.error(`Alert with external ID ${serviceAlert.id} has no trip ID, skipping...`);
+				Logger.error({ message: `Alert with external ID ${serviceAlert.id} has no trip ID, skipping...` });
 				continue;
 			}
 
@@ -84,8 +97,8 @@ async function main() {
 				user_instructions: '',
 			};
 
-			const alertRealtime = await alerts.insertOne(createAlertDto);
-			Logger.info(`Alert created | Internal ID: ${alertRealtime._id}, External ID: ${alertRealtime.external_id}`);
+			const alertRealtime = await goDb.operation.alerts.insertOne(createAlertDto);
+			Logger.info({ message: `Alert created | Internal ID: ${alertRealtime._id}, External ID: ${alertRealtime.external_id}` });
 		}
 	}
 

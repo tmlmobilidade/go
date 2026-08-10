@@ -1,7 +1,7 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { SshTunnelService } from '@tmlmobilidade/ssh';
+import { SshTunnel } from '@tmlmobilidade/ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IncomingMessage } from 'node:http';
 import https from 'node:https';
@@ -25,7 +25,7 @@ export class MLAuthClient {
 
 	private expiresAt: number = 0;
 	private token: null | string = null;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
@@ -35,11 +35,11 @@ export class MLAuthClient {
 
 	public async getToken() {
 		if (!this.token) {
-			Logger.info('[MLAuthClient] No token found, fetching a new one...');
+			Logger.info({ message: '[MLAuthClient] No token found, fetching a new one...' });
 			await this.connect();
 		}
 		if (this.expiresAt - Date.now() < 60 * 1000) {
-			Logger.info('[MLAuthClient] Token is about to expire, refreshing...');
+			Logger.info({ message: '[MLAuthClient] Token is about to expire, refreshing...' });
 			await this.connect();
 		}
 		return this.token;
@@ -69,7 +69,7 @@ export class MLAuthClient {
 	private async connect() {
 		//
 
-		Logger.info('[MLAuthClient] Connecting and fetching token...');
+		Logger.info({ message: '[MLAuthClient] Connecting and fetching token...' });
 
 		//
 		// Make the POST request to the Authentication API through the SSH tunnel,

@@ -27,3 +27,18 @@
 .root[data-size='xl'] {
 	font-size: var(--font-size-xl);
 }
+
+/* * */
+/* PROPS / WEIGHT */
+
+.root[data-weight='bold'] {
+	font-weight: var(--font-weight-bold);
+}
+
+.root[data-weight='semibold'] {
+	font-weight: var(--font-weight-semibold);
+}
+
+.root[data-weight='medium'] {
+	font-weight: var(--font-weight-medium);
+}

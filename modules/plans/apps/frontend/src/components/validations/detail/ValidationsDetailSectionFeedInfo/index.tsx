@@ -1,10 +1,9 @@
 /* * */
 
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
-import { FileComponent } from '@/components/common/FileComponent';
 import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Collapsible, Label, Section, useToast } from '@tmlmobilidade/ui';
+import { Collapsible, FileItem, Label, Section, useToast } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -23,8 +22,7 @@ export function ValidationsDetailSectionFeedInfo() {
 		try {
 			// Open file.url in a new window
 			window.open(API_ROUTES.plans.VALIDATIONS_DETAIL_FILE_DOWNLOAD(validationsDetailContext.data.validation?._id), '_blank');
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({
 				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
 				title: 'Erro ao transferir ficheiro',
@@ -47,9 +45,10 @@ export function ValidationsDetailSectionFeedInfo() {
 
 			<Section gap="sm">
 				{validationsDetailContext.data.file ? (
-					<FileComponent
-						fileData={validationsDetailContext.data.file}
-						onClick={handleDownload}
+					<FileItem
+						fileName={validationsDetailContext.data.file.name}
+						fileType={validationsDetailContext.data.file.type}
+						onDownload={handleDownload}
 					/>
 				) : (
 					<Label>Nenhum ficheiro selecionado</Label>

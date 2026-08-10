@@ -1,1 +1,1 @@
-export * from '@/api/alerts/alert.js';
+export * from './alert.js';

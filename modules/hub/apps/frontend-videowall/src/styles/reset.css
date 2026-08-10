@@ -1,0 +1,15 @@
+/* * */
+
+:root {
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	user-select: none;
+}
+
+div {
+	touch-action: pan-y;
+}
+
+html, body {
+	touch-action: none;
+}

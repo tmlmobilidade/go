@@ -1,11 +1,12 @@
 'use client';
 
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
-import { Anchor } from '@mantine/core';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import { Button, MiniCalendar, Section, Text, TimeChip } from '@tmlmobilidade/ui';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -122,7 +123,7 @@ export function DatesSelector() {
 			<Text size="sm">Selecione as datas da ocorrência</Text>
 
 			<Section flexDirection="row" gap="md" padding="none">
-				<Section alignItems="center" gap="xs" padding="none" width="fit-content">
+				<Section alignItems="center" gap="md" padding="none" width="fit-content">
 					<MiniCalendar
 						displayedMonth={displayedMonth}
 						onDisplayedMonthChange={setDisplayedMonth}
@@ -136,7 +137,7 @@ export function DatesSelector() {
 						}}
 					/>
 					{!isDisabled && (
-						<Button label={isAllDisplayedMonthSelected ? 'Remover mês' : 'Selecionar mês'} onClick={handleToggleDisplayedMonth} size="xs" style={{ color: 'var(--color-primary)', textDecoration: 'underline' }} variant="transparent" />
+						<Button className={styles.calendarMonthButton} label={isAllDisplayedMonthSelected ? 'Remover mês' : 'Selecionar mês'} onClick={handleToggleDisplayedMonth} size="xs" variant="transparent" />
 					)}
 				</Section>
 
@@ -159,9 +160,13 @@ export function DatesSelector() {
 									<div style={{ alignItems: 'center', display: 'flex', gap: 8, justifyContent: 'space-between' }}>
 										<Text fw={600} size="sm" style={{ textTransform: 'capitalize' }}>{monthLabel}</Text>
 										{!isDisabled && (
-											<Anchor c="dimmed" onClick={removeMonth} size="xs" underline="hover">
+											<button
+												className={styles.monthSmallButton}
+												onClick={removeMonth}
+												type="button"
+											>
 												Remover mês
-											</Anchor>
+											</button>
 										)}
 									</div>
 									<div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>

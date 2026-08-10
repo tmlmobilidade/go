@@ -232,7 +232,7 @@ export function MapOverlayObservedPath({ id, lineData, pointsData, visible = tru
 						'icon-allow-overlap': true,
 						'icon-anchor': 'center',
 						'icon-ignore-placement': true,
-						'icon-image': 'map-line-direction-offset-padding',
+						'icon-image': 'map-shape-arrow-offset-padding',
 						'icon-offset': [0, 80],
 						'icon-rotate': 0,
 						'icon-size': [
@@ -269,7 +269,7 @@ export function MapOverlayObservedPath({ id, lineData, pointsData, visible = tru
 						'icon-allow-overlap': true,
 						'icon-anchor': 'center',
 						'icon-ignore-placement': true,
-						'icon-image': 'map-line-direction-offset',
+						'icon-image': 'map-shape-arrow-offset',
 						'icon-offset': [0, 80],
 						'icon-rotate': 0,
 						'icon-size': [

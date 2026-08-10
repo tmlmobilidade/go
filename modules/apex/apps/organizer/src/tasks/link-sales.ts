@@ -2,9 +2,10 @@
 
 // import { Dates } from '@tmlmobilidade/dates';
 // import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/go-apex-pckg-parse';
-// import { rides, simplifiedApexOnBoardSalesNew, simplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
+// import { simplifiedApexOnBoardSalesNew, simplifiedApexValidationsNew } from '@tmlmobilidade/interfaces';
 // import { Logger } from '@tmlmobilidade/logger';
 // import { Timer } from '@tmlmobilidade/timer';
+// import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 // /* * */
 
@@ -40,7 +41,7 @@
 // 		//
 
 // 		Logger.init();
-// 		Logger.info('Linking Sales to Validations...');
+// 		Logger.info({ message: 'Linking Sales to Validations...' });
 
 // 		const globalTimer = new Timer();
 
@@ -62,7 +63,7 @@
 
 // 		for (const onBoardSale of unlinkedOnBoardSales) {
 // 			totalUnlinkedOnBoardSales++;
-// 			if (totalUnlinkedOnBoardSales % 10000 === 0) Logger.info(`Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far and linked ${totalLinkedOnBoardSales} of them to Validations.`);
+// 			if (totalUnlinkedOnBoardSales % 10000 === 0) Logger.info({ message: `Gone through ${totalUnlinkedOnBoardSales} OnBoardSales so far and linked ${totalLinkedOnBoardSales} of them to Validations.` });
 // 			// Fetch the corresponding Validation transaction.
 // 			// If no transaction is found, skip this iteration.
 // 			const [validationTransaction] = await simplifiedApexValidationsNew.queryFromString<ValidationRow>(`
@@ -93,7 +94,7 @@
 // 			});
 // 			//
 // 			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardSale.created_at).std_window;
-// 			await rides.updateMany(
+// 			await goDb.operation.rides.updateMany(
 // 				{
 // 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 // 					trip_id: validationTransaction.trip_id,

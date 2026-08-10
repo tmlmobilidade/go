@@ -1,8 +1,9 @@
 // /* * */
 
 import { Files } from '@tmlmobilidade/files';
-import { fileExports, files } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -18,20 +19,35 @@ import { exportVehiclesFile } from './export-vehicles.js';
 async function main() {
 	//
 
+	//
+	// Initialize Sentry
+
+	try {
+		await initSentryNode();
+		Logger.startNodeLogs({ app: 'export-files', message: 'Sentry Exporter Files initialized', module: 'exporter', severity: 'info' });
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Exporter Files' });
+	}
+
+	//
+	// Initialize the logger
+
 	Logger.init();
 
 	const globalTimer = new Timer();
 
-	const waitingFileExports = await fileExports.findMany({ processing_status: ProcessingStatusSchema.enum.waiting });
+	const waitingFileExports = await goDb.core.exports.findMany({ processing_status: ProcessingStatusSchema.enum.waiting });
 
-	Logger.info(`Found ${waitingFileExports.length} waiting file exports.`);
+	Logger.info({ message: `Found ${waitingFileExports.length} waiting file exports.` });
 
 	for (const fileExport of waitingFileExports) {
 		let pathToFile: string | undefined;
 
 		try {
-		//
-		// Process the file export.
+			Logger.info({ message: `Processing file export ${fileExport._id} (${fileExport.type}).` });
+
+			//
+			// Process the file export.
 			switch (fileExport.type) {
 				case 'ride':
 					pathToFile = await exportRidesFile(fileExport);
@@ -48,8 +64,8 @@ async function main() {
 				case 'gtfs':
 				default:
 					// TODO: Implement GTFS export
-					Logger.error(`GTFS export not implemented yet.`);
-					Logger.error(`Unknown file export type: ${fileExport.type}.`);
+					Logger.error({ message: `GTFS export not implemented yet.` });
+					Logger.error({ message: `Unknown file export type: ${fileExport.type}.` });
 					continue;
 			}
 
@@ -58,7 +74,7 @@ async function main() {
 			if (pathToFile) {
 				const fileStream = fs.createReadStream(pathToFile, 'utf-8');
 
-				const file = await files.upload(fileStream, {
+				const file = await storageProvider.upload(fileStream, {
 					created_by: 'system',
 					name: fileExport.file_name,
 					resource_id: fileExport._id,
@@ -68,12 +84,12 @@ async function main() {
 					updated_by: 'system',
 				});
 
-				await fileExports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
+				await goDb.core.exports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
 			}
 		} catch (error) {
 			Logger.error(error);
-			Logger.error(`Error processing file export: ${error instanceof Error ? error.message : 'Unknown error'}.`);
-			await fileExports.updateById(fileExport._id, { processing_status: 'error' });
+			Logger.error({ message: `Error processing file export ${fileExport._id} (${fileExport.type}): ${error instanceof Error ? error.message : 'Unknown error'}.` });
+			await goDb.core.exports.updateById(fileExport._id, { processing_status: 'error' });
 			continue;
 		}
 	}

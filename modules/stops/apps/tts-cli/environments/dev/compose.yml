@@ -1,0 +1,9 @@
+name: tmlmobilidade-go-stops-tts-dev
+
+services:
+  tts:
+    build:
+      context: ../../../../../..
+      dockerfile: modules/stops/apps/tts/Dockerfile
+    ports:
+      - "8086:8000"

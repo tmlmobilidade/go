@@ -2,8 +2,8 @@
 
 import { isEmpty, testRide } from '@/utils.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { alerts, rideAcceptances, rides } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Ride, type RideAcceptance } from '@tmlmobilidade/types';
@@ -30,7 +30,7 @@ async function createRideAcceptances(ride: Ride) {
 
 		//
 		// Create the acceptance.
-		await rideAcceptances.createByRideId(ride._id, {
+		await goDb.operation.rideAcceptances.insertOne({
 			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
 			analysis_summary: requiredTestsSummary,
 			comments: [],
@@ -38,11 +38,11 @@ async function createRideAcceptances(ride: Ride) {
 			is_locked: false,
 			justification: null,
 			ride_id: ride._id,
-		}, { returnResult: false });
+		});
 
-		Logger.info(`Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
+		Logger.info({ message: `Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.` });
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
 
@@ -56,21 +56,21 @@ async function updateRideAcceptances(ride: Ride, acceptance: RideAcceptance) {
 			return;
 		}
 
-		await rideAcceptances.updateByRideId(ride._id, {
+		await goDb.operation.rideAcceptances.updateOne({ ride_id: ride._id }, {
 			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
 			analysis_summary: requiredTestsSummary,
 		}, { returnResult: false });
 
-		Logger.info(`Updated acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.`);
+		Logger.info({ message: `Updated acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.` });
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
 	}
 }
 
 async function alertJustification(ride: Ride) {
 	try {
 		//
-		const foundAlert = await alerts.findOne({
+		const foundAlert = await goDb.operation.alerts.findOne({
 			created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 2 }).unix_timestamp },
 			reference_type: { $in: ['rides', 'lines'] },
 			references: { $elemMatch: { parent_id: { $in: [ride._id, ride.line_id] } } },
@@ -78,7 +78,7 @@ async function alertJustification(ride: Ride) {
 
 		if (!foundAlert) return;
 
-		await rideAcceptances.updateByRideId(ride._id, {
+		await goDb.operation.rideAcceptances.updateOne({ ride_id: ride._id }, {
 			acceptance_status: 'under_review',
 			justification: {
 				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
@@ -90,16 +90,29 @@ async function alertJustification(ride: Ride) {
 			},
 		});
 
-		Logger.info(`Justified ride ${ride._id} with alert ${foundAlert._id}.`);
+		Logger.info({ message: `Justified ride ${ride._id} with alert ${foundAlert._id}.` });
 	} catch (error) {
-		Logger.error('An error occurred. Halting execution.', error);
-		Logger.info('Retrying in 10 seconds...');
+		Logger.error({ error, message: 'An error occurred. Halting execution.' });
+		Logger.info({ message: 'Retrying in 10 seconds...' });
 	}
 }
 
 async function main() {
 	try {
 		//
+
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.startNodeLogs({ app: 'rides-acceptor', message: 'Sentry Rides Acceptor initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error({ error, message: 'Error initializing Sentry Rides Acceptor' });
+		}
+
+		//
+		// Initialize the logger
 
 		Logger.init();
 
@@ -149,11 +162,11 @@ async function main() {
 
 			//
 			// Fetch the rides.
-			const foundRides = await rides.findMany({ start_time_scheduled: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
+			const foundRides = await goDb.operation.rides.findMany({ start_time_scheduled: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
 
 			//
 			// Bulk fetch acceptances.
-			const acceptances: RideAcceptance[] = await rideAcceptances.findMany({ ride_id: { $in: foundRides.map(r => r._id) } });
+			const acceptances: RideAcceptance[] = await goDb.operation.rideAcceptances.findMany({ ride_id: { $in: foundRides.map(r => r._id) } });
 			const acceptanceMap = new Map<string, RideAcceptance>(acceptances.map(a => [a.ride_id, a]));
 
 			//
@@ -184,16 +197,16 @@ async function main() {
 
 			//
 
-			Logger.info(`Found ${totalRides} rides. (${chunkTimer.get()})`);
+			Logger.info({ message: `Found ${totalRides} rides. (${chunkTimer.get()})` });
 
 			Logger.spacer(1);
 			Logger.divider();
 		}
 
-		Logger.info(`Total rides: ${totalRides}. (${globalTimer.get()})`);
+		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
-		Logger.info('Retrying in 10 seconds...');
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.info({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

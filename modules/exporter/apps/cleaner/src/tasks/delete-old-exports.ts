@@ -1,7 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { fileExports, files, TransactionManager } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 
@@ -15,7 +16,7 @@ const DELETION_TIMEOUT_HOURS = 4;
 export async function deleteOldFileExports(): Promise<void> {
 	const cutoffTimestamp = Dates.now('local').minus({ hours: DELETION_TIMEOUT_HOURS }).unix_timestamp;
 
-	const oldExports = await fileExports.findMany({
+	const oldExports = await goDb.core.exports.findMany({
 		processing_status: { $in: [
 			ProcessingStatusSchema.enum.complete,
 			ProcessingStatusSchema.enum.error,
@@ -24,28 +25,33 @@ export async function deleteOldFileExports(): Promise<void> {
 	});
 
 	if (oldExports.length === 0) {
-		Logger.info('No old file exports found to delete.');
+		Logger.info({ message: 'No old file exports found to delete.' });
 		return;
 	}
 
-	Logger.info(`Deleting ${oldExports.length} old file exports...`);
-
-	const trasactionManager = new TransactionManager([files, fileExports] as const);
+	Logger.info({ message: `Deleting ${oldExports.length} old file exports...` });
 
 	for (const item of oldExports) {
 		try {
-			await trasactionManager.withTransaction(async (collections, transactions) => {
-				const [filesCollection, fileExportsCollection] = collections;
-				const filesTransaction = transactions.get(filesCollection);
-				const fileExportsTransaction = transactions.get(fileExportsCollection);
+			if (item.file_id) {
+				//
+				// Delete the blob/metadata first, then drop the export record.
+				// Failure modes (handled by storage saga + hooks):
+				// - file delete fails → export kept for a later retry
+				// - export delete fails → onSuccess throws; file is already gone
 
-				await filesCollection.deleteById(item.file_id, { session: filesTransaction.getSession() });
-				await fileExportsCollection.deleteById(item._id, { session: fileExportsTransaction.getSession() });
+				await storageProvider.delete(item.file_id, {
+					onSuccess: async () => {
+						await goDb.core.exports.deleteById(item._id);
+					},
+				});
+			} else {
+				await goDb.core.exports.deleteById(item._id);
+			}
 
-				Logger.success(`Deleted file export ${item._id}.`);
-			});
+			Logger.success(`Deleted file export ${item._id}.`);
 		} catch (error) {
-			Logger.error(`Failed to delete file export ${item._id}:`, error);
+			Logger.error({ error, message: `Failed to delete file export ${item._id}:` });
 		}
 	}
 }

@@ -12,7 +12,7 @@ const MODAL_ID = 'create-rule-modal';
 
 /* * */
 
-export const openCreateRuleModal = (agencyId: string, onSubmit: (rule: ManualRule) => void, initialValues?: ManualRule, onDelete?: () => void) => {
+export const openCreateRuleModal = (agencyId: string, onSubmit: (rule: ManualRule) => void, initialValues?: ManualRule, onDelete?: () => void, onDuplicate?: (rule: ManualRule) => void) => {
 	openModal({
 		children: (
 			<MeContextProvider>
@@ -20,6 +20,7 @@ export const openCreateRuleModal = (agencyId: string, onSubmit: (rule: ManualRul
 					<RuleCreateContextProvider
 						initialValues={initialValues}
 						onDelete={onDelete}
+						onDuplicate={onDuplicate}
 						onSubmit={onSubmit}
 					>
 						<RuleCreate />

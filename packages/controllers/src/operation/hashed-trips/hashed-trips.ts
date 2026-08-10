@@ -2,7 +2,8 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { hashedTrips, rides, ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { type ActionsOf, type GetRidesBatchQuery, GetRidesBatchQuerySchema, type HashedTrip, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -30,7 +31,18 @@ export class HashedTripsSharedController {
 
 		const ridesPermission = PermissionCatalog.get(request.permissions, scope, action);
 
-		if (!ridesPermission['resources']?.agency_ids?.length) return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		if (!ridesPermission['resources']?.agency_ids?.length) {
+			Logger.issue({
+				context: {
+					action: 'getBatch',
+					feature: 'hashedTrips',
+					request,
+				},
+				level: 'info',
+				messageOrError: 'No agency_ids found in permissions',
+			});
+			return reply.send({ data: [], error: null, statusCode: HTTP_STATUS.OK });
+		}
 
 		const allowAllAgencies = ridesPermission['resources'].agency_ids.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 
@@ -63,9 +75,9 @@ export class HashedTripsSharedController {
 		//
 		// Fetch the rides batch from the database
 
-		const ridesBatch = await rides.aggregate(pipeline);
+		const ridesBatch = await goDb.operation.rides.aggregate(pipeline);
 
-		Logger.info(`HashedTripsSharedController.getBatch - ridesBatch count: ${ridesBatch?.length ?? 0}`);
+		Logger.info({ message: `HashedTripsSharedController.getBatch - ridesBatch count: ${ridesBatch?.length ?? 0}` });
 
 		//
 		// From the given batch of hashed_trip_ids,
@@ -73,7 +85,7 @@ export class HashedTripsSharedController {
 
 		const hashedTripIds = ridesBatch.map(ride => ride.hashed_trip_id);
 
-		const hashedTripsBatch = await hashedTrips.findMany({ _id: { $in: hashedTripIds } });
+		const hashedTripsBatch = await goDb.operation.hashedTrips.findMany({ _id: { $in: hashedTripIds } });
 
 		//
 		// Send the response

@@ -37,7 +37,7 @@ export class DatesController {
 				statusCode: HTTP_STATUS.OK,
 			});
 		} catch (error) {
-			Logger.error('Error fetching calendar data:', error);
+			Logger.error({ error, message: 'Error fetching calendar data' });
 
 			if (error instanceof HttpException) {
 				throw error;

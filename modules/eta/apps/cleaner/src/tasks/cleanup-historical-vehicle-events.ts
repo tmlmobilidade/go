@@ -1,4 +1,3 @@
-import { AppConfig } from '@/lib/config.js';
 import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -19,11 +18,10 @@ export async function cleanupHistoricalVehicleEvents(clickhouseClient: Parameter
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
-		AppConfig.database,
 		pipelinePath(CLEANUP_HIST_VEHICLE_EVENTS_SQL),
 	);
 
 	const rowsToDelete = result[0]?.rows_to_delete ?? 0;
-	Logger.progress(`Deleted ${rowsToDelete} orphan historical vehicle events`);
+	Logger.progress({ message: `Deleted ${rowsToDelete} orphan historical vehicle events` });
 	return rowsToDelete;
 }

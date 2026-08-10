@@ -1,6 +1,6 @@
 /* * */
 
-import { fileExports, vehicles } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
@@ -36,14 +36,14 @@ export async function exportVehiclesFile(fileExport: FileExport): Promise<string
 	// Setup a timer to track the execution time
 	const timer = new Timer();
 
-	await fileExports.updateById(fileExport._id, { processing_status: 'processing' });
+	await goDb.core.exports.updateById(fileExport._id, { processing_status: 'processing' });
 
 	//
 	// Build vehicle ids from export properties
 	const properties = fileExport.properties as VehicleExportProperties['properties'];
 	const vehicleIds = getVehicleIdsFromExportProperties(properties);
 
-	const vehiclesCollection = await vehicles.getCollection();
+	const vehiclesCollection = await goDb.operation.vehicles.getCollection();
 	const vehiclesCursor = vehiclesCollection.find({ _id: { $in: vehicleIds } }, { batchSize: 5000 });
 
 	//
@@ -60,7 +60,7 @@ export async function exportVehiclesFile(fileExport: FileExport): Promise<string
 	await csvWriter.flush();
 
 	Logger.success(`Exported ${count} vehicles in ${timer.get()}`, 1);
-	Logger.info(`File path: ${tempFilePath}`);
+	Logger.info({ message: `File path: ${tempFilePath}` });
 	Logger.spacer(1);
 
 	return tempFilePath;

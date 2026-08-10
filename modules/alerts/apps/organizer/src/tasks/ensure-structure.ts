@@ -2,7 +2,7 @@
 
 import { getAutoTextValue } from '@/utils/get-auto-text-value.js';
 import { getPublishStatusValue } from '@/utils/get-publish-status-value.js';
-import { alerts } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { AlertSchema } from '@tmlmobilidade/types';
@@ -19,15 +19,15 @@ export async function ensureStructure() {
 	//
 	// Get all Alert documents from the database
 
-	const alertsQty = await alerts.count();
+	const alertsQty = await goDb.operation.alerts.count();
 
-	const alertsCollection = await alerts.getCollection();
+	const alertsCollection = await goDb.operation.alerts.getCollection();
 
 	const allAlertsStream = alertsCollection
 		.find({}, { sort: { publish_start_date: -1 } })
 		.stream();
 
-	Logger.info(`Found ${alertsQty} alerts.`);
+	Logger.info({ message: `Found ${alertsQty} alerts.` });
 
 	//
 	// Loop through all alerts and request updated attributes for each document
@@ -38,7 +38,7 @@ export async function ensureStructure() {
 		try {
 			//
 
-			Logger.info(`[${counter}/${alertsQty}] Processing Alert ${alertData._id}...`);
+			Logger.info({ message: `[${counter}/${alertsQty}] Processing Alert ${alertData._id}...` });
 
 			counter--;
 
@@ -64,11 +64,11 @@ export async function ensureStructure() {
 			//
 			// Save the organized alert data
 
-			await alerts.updateById(alertData._id, parseResult.data);
+			await goDb.operation.alerts.updateById(alertData._id, parseResult.data);
 
 			//
 		} catch (error) {
-			Logger.error(`Error processing Alert ${alertData._id}:`, error);
+			Logger.error({ error, message: `Error processing Alert ${alertData._id}:` });
 		}
 	}
 

@@ -19,16 +19,20 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-locations": "*",
 		"@tmlmobilidade/interfaces": "*",
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"@turf/turf": "7.3.5"
+		"@turf/turf": "7.4.0",
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
-		"@types/node": "25.9.3",
+		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.22.4",
+		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }

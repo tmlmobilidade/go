@@ -1,5 +1,6 @@
 /* * */
 
+import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
@@ -21,9 +22,9 @@ export const syncRealtimeDemand = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
 	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch validations collection
@@ -64,7 +65,6 @@ export const syncRealtimeDemand = async () => {
 	//
 	// Define agencies
 
-	const agency_ids = ['41', '42', '43', '44'];
 	const results: RealtimeDemand['data'] = {
 		agencies: {},
 		total: {
@@ -76,9 +76,9 @@ export const syncRealtimeDemand = async () => {
 	//
 	// Count validations per agency
 
-	for (const agencyId of agency_ids) {
+	for (const agencyId of LEGACY_CM_AGENCY_IDS) {
 		const agencyTimer = new Timer();
-		Logger.info(`Processing Agency ${agencyId}...`);
+		Logger.info({ message: `Processing Agency ${agencyId}...` });
 
 		//
 		// Count validations for today so far
@@ -111,7 +111,7 @@ export const syncRealtimeDemand = async () => {
 		results.total.last_week += lastWeekValidCount;
 		results.total.now += todayValidCount;
 
-		Logger.info(`Processed agency ${agencyId} in ${agencyTimer.get()}`);
+		Logger.info({ message: `Processed agency ${agencyId} in ${agencyTimer.get()}` });
 	}
 
 	const metricToInsert: RealtimeDemand = {

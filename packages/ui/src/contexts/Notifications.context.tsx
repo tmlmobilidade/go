@@ -3,7 +3,7 @@
 import { API_ROUTES, getModuleConfig, HttpException } from '@tmlmobilidade/consts';
 import { Notification as TmlNotification } from '@tmlmobilidade/types';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo } from 'react';
 import useSWR, { mutate } from 'swr';
 
 /* * */
@@ -12,6 +12,7 @@ interface NotificationsContextState {
 	actions: {
 		deleteNotification: (id: string) => void
 		markAsRead: (notification: TmlNotification) => void
+		requestNotificationPermission: () => Promise<boolean>
 		triggerNotificationToast: (title: string, body: string) => void
 	}
 	data: {
@@ -47,11 +48,95 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 	const { data: notificationsData, error: notificationsError, isLoading: notificationsLoading } = useSWR<TmlNotification[], HttpException>(API_ROUTES.auth.NOTIFICATIONS_LIST, { refreshInterval: 10_000 });
 
 	//
-	// C. Transform data
+	// D. Handle actions
+
+	const askNotificationPermission = useCallback(async (): Promise<boolean> => {
+		if (typeof window === 'undefined') return false;
+
+		if (!('Notification' in window)) {
+			console.warn('This browser does not support notifications.');
+			return false;
+		}
+
+		if (!window.isSecureContext) {
+			console.warn('Notifications require HTTPS or localhost.');
+			return false;
+		}
+
+		if (window.Notification.permission === 'granted') {
+			return true;
+		}
+
+		if (window.Notification.permission === 'denied') {
+			console.warn('Notification permission was denied.');
+			return false;
+		}
+
+		try {
+			const permission = await window.Notification.requestPermission();
+			return permission === 'granted';
+		} catch (err) {
+			console.error('Error requesting notification permission:', err);
+			return false;
+		}
+	}, []);
+
+	const isBrowserNotificationGranted = (): boolean => {
+		if (typeof window === 'undefined' || !('Notification' in window)) return false;
+		return window.Notification.permission === 'granted';
+	};
+
+	const triggerNotificationToast = useCallback(async (title: string, body: string) => {
+		try {
+			const allowed = await askNotificationPermission();
+			if (!allowed) {
+				console.warn('Notifications not allowed, skipping.');
+				return;
+			}
+
+			const notification = new window.Notification(title, { body });
+			notification.onclick = () => {
+				window.focus();
+			};
+		} catch (err) {
+			console.error('Failed to trigger notification:', err);
+		}
+	}, [askNotificationPermission]);
+
+	const deleteNotification = useCallback(async (id: string) => {
+		if (!notificationsData) return;
+
+		// Optimistically update UI
+		mutate(
+			notificationsData.filter(n => n._id !== id),
+			false, // don't revalidate yet
+		);
+
+		try {
+			await fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${id}`, 'DELETE');
+
+			// Revalidate after successful delete to ensure consistency
+			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
+		} catch (error) {
+			// Rollback if something goes wrong
+			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
+			console.error('Failed to delete notification:', error);
+		}
+	}, [notificationsData]);
+
+	const markAsRead = async (notification: TmlNotification) => {
+		if (notification.payload.href) {
+			fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
+			window.location.href = notification.payload.href;
+		} else {
+			await fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
+			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
+		}
+	};
 
 	useEffect(() => {
 		askNotificationPermission();
-	}, []);
+	}, [askNotificationPermission]);
 
 	/**
 	 * Effect to trigger a notification toast when new notifications are detected.
@@ -74,89 +159,7 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 				);
 			}
 		});
-	}, [notificationsData, notificationsLoading, notificationsError]);
-
-	//
-	// D. Handle actions
-
-	const askNotificationPermission = async (): Promise<boolean> => {
-		if (typeof window === 'undefined') return false;
-
-		if (!('Notification' in window)) {
-			console.warn('This browser does not support notifications.');
-			return false;
-		}
-
-		if (!window.isSecureContext) {
-			console.warn('Notifications require HTTPS or localhost.');
-			return false;
-		}
-
-		if (Notification.permission === 'granted') {
-			return true;
-		}
-
-		if (Notification.permission === 'denied') {
-			console.warn('Notification permission was denied.');
-			return false;
-		}
-
-		try {
-			const permission = await Notification.requestPermission();
-			return permission === 'granted';
-		} catch (err) {
-			console.error('Error requesting notification permission:', err);
-			return false;
-		}
-	};
-
-	const triggerNotificationToast = async (title: string, body: string) => {
-		try {
-			const allowed = await askNotificationPermission();
-			if (!allowed) {
-				console.warn('Notifications not allowed, skipping.');
-				return;
-			}
-
-			const notification = new Notification(title, { body });
-			notification.onclick = () => {
-				window.focus();
-			};
-		} catch (err) {
-			console.error('Failed to trigger notification:', err);
-		}
-	};
-
-	const deleteNotification = async (id: string) => {
-		if (!notificationsData) return;
-
-		// Optimistically update UI
-		mutate(
-			notificationsData.filter(n => n._id !== id),
-			false, // don't revalidate yet
-		);
-
-		try {
-			await fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${id}`, 'DELETE');
-
-			// Revalidate after successful delete to ensure consistency
-			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
-		} catch (error) {
-			// Rollback if something goes wrong
-			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
-			console.error('Failed to delete notification:', error);
-		}
-	};
-
-	const markAsRead = async (notification: TmlNotification) => {
-		if (notification.payload.href) {
-			fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
-			window.location.href = notification.payload.href;
-		} else {
-			await fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
-			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
-		}
-	};
+	}, [notificationsData, notificationsLoading, notificationsError, triggerNotificationToast]);
 
 	//
 	// E. Define context value
@@ -165,6 +168,7 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 		actions: {
 			deleteNotification,
 			markAsRead,
+			requestNotificationPermission: askNotificationPermission,
 			triggerNotificationToast,
 		},
 		data: {
@@ -173,15 +177,11 @@ export const NotificationsContextProvider = ({ children }: PropsWithChildren) =>
 			unreadNotifications: notificationsData?.filter(n => !n.is_read) ?? [],
 		},
 		flags: {
-			enabled: Notification.permission === 'granted',
+			enabled: isBrowserNotificationGranted(),
 			error: notificationsError,
 			loading: notificationsLoading,
 		},
-	}), [
-		notificationsData,
-		notificationsError,
-		notificationsLoading,
-	]);
+	}), [deleteNotification, notificationsData, notificationsError, notificationsLoading, triggerNotificationToast]);
 
 	//
 	// E. Render components

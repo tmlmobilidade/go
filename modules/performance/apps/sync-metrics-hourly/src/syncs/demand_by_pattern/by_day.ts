@@ -1,5 +1,6 @@
 /* * */
 
+import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromStartIso } from '@/utils/day-label.js';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
@@ -23,9 +24,9 @@ export const syncDemandByPatternByDay = async () => {
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
+	Logger.info({ message: `Clearing existing '${METRIC}' metrics...` });
 	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch validations collection
@@ -92,6 +93,7 @@ export const syncDemandByPatternByDay = async () => {
 			const validationsAgg = await validationsCollection.aggregate([
 				{
 					$match: {
+						agency_id: { $in: [...LEGACY_CM_AGENCY_IDS] },
 						created_at: { $gte: chunkData.start, $lt: chunkData.end },
 						is_passenger: true,
 					},
@@ -104,7 +106,7 @@ export const syncDemandByPatternByDay = async () => {
 				},
 			], { hint: 'is_passenger_1_pattern_id_1_created_at_1' }).toArray();
 
-			Logger.info(`Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} patterns (${chunkTimer.get()})`);
+			Logger.info({ message: `Chunk ${chunkIndex + 1}/${allTimestampChunks.length} - Found ${validationsAgg.length} patterns (${chunkTimer.get()})` });
 			return { dayLabel, validationsAgg };
 		}),
 	);
@@ -118,7 +120,7 @@ export const syncDemandByPatternByDay = async () => {
 		const calendarProps = calendarMap.get(dayLabel);
 
 		if (!calendarProps) {
-			Logger.info(`No calendar entry for ${dayLabel}, skipping day`);
+			Logger.info({ message: `No calendar entry for ${dayLabel}, skipping day` });
 			continue;
 		}
 
@@ -152,7 +154,7 @@ export const syncDemandByPatternByDay = async () => {
 	// Insert all metrics
 
 	if (results.length === 0) {
-		Logger.info('No metric documents to insert — skipping insertMany');
+		Logger.info({ message: 'No metric documents to insert — skipping insertMany' });
 	} else {
 		await metrics.insertMany(results);
 	}

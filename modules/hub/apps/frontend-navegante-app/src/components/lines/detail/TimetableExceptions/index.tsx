@@ -1,8 +1,7 @@
 /* * */
 
-import type { Timetable } from '@tmlmobilidade/types';
-
 import { TimetableExceptionsLink } from '@/components/lines/detail/TimetableExceptionsLink';
+import { type Timetable } from '@tmlmobilidade/go-types-public-info';
 
 import styles from './styles.module.css';
 

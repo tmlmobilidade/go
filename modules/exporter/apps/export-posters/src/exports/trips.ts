@@ -29,5 +29,5 @@ export async function exportTripsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 
 	await tripsCsv.flush();
 
-	Logger.info('Exported trip.txt file.');
+	Logger.info({ message: 'Exported trip.txt file.' });
 }

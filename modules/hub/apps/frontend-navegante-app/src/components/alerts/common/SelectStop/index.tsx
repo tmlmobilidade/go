@@ -5,7 +5,7 @@
 import { StopDisplay } from '@/components/stops/common/StopDisplay';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { IconBusStop, IconSelector, IconX } from '@tabler/icons-react';
-import { type HubStop } from '@tmlmobilidade/types';
+import { type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { useSearch } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -7,7 +7,8 @@ import { PlanDetailSectionAgency } from '@/components/plans/detail/PlanDetailSec
 import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetailSectionController';
 import { PlanDetailSectionFeedInfo } from '@/components/plans/detail/PlanDetailSectionFeedInfo';
 import { PlanDetailSectionPcgiLegacy } from '@/components/plans/detail/PlanDetailSectionPcgiLegacy';
-import { PlanDetailSectionFiles } from '@/components/plans/detail/PlansDetailSectionFiles';
+import { PlanDetailSectionApexFile } from '@/components/plans/detail/PlansDetailSectionApexFile';
+import { PlanDetailSectionOperationFile } from '@/components/plans/detail/PlansDetailSectionOperationFile';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
@@ -37,13 +38,22 @@ export function PlanDetail() {
 
 			<PlanDetailSectionAgency />
 			<PlanDetailSectionFeedInfo />
-			<PlanDetailSectionFiles />
+			<PlanDetailSectionOperationFile />
+
+			<HasPermission
+				action={PermissionCatalog.all.plans.actions.read_apex_file}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.plans.scope}
+				value={planDetailContext.data.plan.agency_id}
+			>
+				<PlanDetailSectionApexFile />
+			</HasPermission>
 
 			<HasPermission
 				action={PermissionCatalog.all.plans.actions.read_pcgi_legacy}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
-				value={planDetailContext.data.plan.gtfs_agency.agency_id}
+				value={planDetailContext.data.plan.agency_id}
 			>
 				<PlanDetailSectionPcgiLegacy />
 			</HasPermission>
@@ -52,7 +62,7 @@ export function PlanDetail() {
 				action={PermissionCatalog.all.plans.actions.read_controller}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.plans.scope}
-				value={planDetailContext.data.plan.gtfs_agency.agency_id}
+				value={planDetailContext.data.plan.agency_id}
 			>
 				<PlanDetailSectionController />
 			</HasPermission>

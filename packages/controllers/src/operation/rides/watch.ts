@@ -26,7 +26,7 @@
 */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { normalizeRide } from '@tmlmobilidade/normalizers';
 import { RideNormalized } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, HttpResponse } from '@tmlmobilidade/utils';
@@ -105,7 +105,7 @@ class RidesChangeStreamManager {
 	private async init() {
 		if (this.initialized) return;
 
-		const ridesCollection = await rides.getCollection();
+		const ridesCollection = await goDb.operation.rides.getCollection();
 
 		// Watch all operations with full document updates
 		ridesCollection

@@ -1,8 +1,9 @@
 /* * */
 
-import { apiCache } from '@tmlmobilidade/databases';
 import { Dates } from '@tmlmobilidade/dates';
-import { alerts, files } from '@tmlmobilidade/interfaces';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Alert } from '@tmlmobilidade/types';
@@ -19,7 +20,7 @@ export async function publishJsonFeed() {
 	//
 	// Retrieve active alerts from the database
 
-	const findResult = await alerts.findMany(
+	const findResult = await goDb.operation.alerts.findMany(
 		{
 			$and: [
 				{
@@ -29,7 +30,7 @@ export async function publishJsonFeed() {
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
-					agency_id: { $in: ['41', '42', '43', '44'] },
+					agency_id: { $in: ['A2L1N', 'BNA17', 'LA77N', 'YA15B'] },
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
 					publish_status: 'published',
 				},
@@ -40,7 +41,7 @@ export async function publishJsonFeed() {
 		},
 	);
 
-	Logger.info(`Retrieved ${findResult.length} active alerts...`);
+	Logger.info({ message: `Retrieved ${findResult.length} active alerts...` });
 
 	//
 	// Transform alerts into GTFS-RT feed entities
@@ -55,7 +56,7 @@ export async function publishJsonFeed() {
 
 			if (alertData.file_id) {
 			// Get the associated file data to prepare the image value
-				const fileData = await files.findById(alertData.file_id);
+				const fileData = await storageProvider.findById(alertData.file_id);
 				if (fileData?.url && fileData?.type) {
 					imageUrl = fileData.url;
 				}
@@ -66,16 +67,16 @@ export async function publishJsonFeed() {
 				image_url: imageUrl,
 			});
 		} catch (error) {
-			Logger.error(`Error processing alert with ID ${alertData._id}:`, error);
+			Logger.error({ error, message: `Error processing alert with ID ${alertData._id}:` });
 		}
 	}
 
-	Logger.info(`Transformed ${result.length} alerts into JSON feed entities (${globalTimer.get()})`);
+	Logger.info({ message: `Transformed ${result.length} alerts into JSON feed entities (${globalTimer.get()})` });
 
 	//
 	// Save the result in API Cache
 
-	await apiCache.set('hub:alerts:published:json:cm', JSON.stringify(result));
+	await cacheDb.set('hub:v1:alerts:published:json:cm', JSON.stringify(result));
 
 	Logger.success(`Finished publishing JSON feed (${globalTimer.get()})`);
 

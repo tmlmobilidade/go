@@ -64,13 +64,13 @@ export class PostgresWriter {
 
 			await this.DB_CLIENT.query(insertQuery, values);
 
-			Logger.info(`POSTGRESWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | DB Table: ${this.DB_TABLE} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})`);
+			Logger.info({ message: `POSTGRESWRITER [${this.INSTANCE_NAME}]: Flush | Length: ${this.CURRENT_BATCH_DATA.length} | DB Table: ${this.DB_TABLE} (session: ${sssionTimerResult}) (flush: ${flushTimer.get()})` });
 
 			this.CURRENT_BATCH_DATA = [];
 
 			//
 		} catch (error) {
-			Logger.error(`POSTGRESWRITER [${this.INSTANCE_NAME}]: Error @ flush(): ${error.message}`);
+			Logger.error({ error, message: `POSTGRESWRITER [${this.INSTANCE_NAME}]: Error @ flush(): ${error.message}` });
 		}
 	}
 

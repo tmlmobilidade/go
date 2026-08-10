@@ -7,7 +7,7 @@ import styles from './styles.module.css';
 interface SpacerProps {
 	orientation?: 'horizontal' | 'vertical'
 	shrink?: boolean
-	size?: 'full' | 'lg' | 'md' | 'sm'
+	size?: 'full' | 'lg' | 'md' | 'sm' | 'xs'
 }
 
 /* * */

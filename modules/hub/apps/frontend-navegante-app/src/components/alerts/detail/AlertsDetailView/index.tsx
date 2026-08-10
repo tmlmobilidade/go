@@ -4,7 +4,7 @@ import { useAlertsContext } from '@/components/alerts/Alerts.context';
 import { AlertDetailContent } from '@/components/alerts/detail/AlertDetailContent';
 import { AlertDetailViewHeader } from '@/components/alerts/detail/AlertDetailViewHeader';
 import { Space } from '@mantine/core';
-import { type HubAlert } from '@tmlmobilidade/types';
+import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 import { LoadingSection, Section } from '@tmlmobilidade/ui';
 
 /* * */

@@ -107,6 +107,7 @@ const DATETIME_FULL_WITH_SECONDS = {
 } as DatesFormat;
 
 export const OPERATIONAL_DATE_FORMAT = 'yyyyMMdd';
+export const CALENDAR_DATE_FORMAT = 'yyyy-MM-dd';
 
 export const FORMATS = {
 	DATE_FULL,

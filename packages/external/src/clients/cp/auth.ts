@@ -1,9 +1,8 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { type SshConfig, SshTunnelService, type SshTunnelServiceOptions } from '@tmlmobilidade/ssh';
+import { cpSshTunnel, SshTunnel } from '@tmlmobilidade/ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
-import { readFileSync } from 'node:fs';
 import { IncomingMessage } from 'node:http';
 import https from 'node:https';
 
@@ -26,7 +25,7 @@ export class CPAuthClient {
 
 	private expiresAt: number = 0;
 	private token: null | string = null;
-	private tunnel: null | SshTunnelService = null;
+	private tunnel: null | SshTunnel = null;
 
 	/**
 	 * Disallow direct instantiation of the service.
@@ -36,11 +35,11 @@ export class CPAuthClient {
 
 	public async getToken() {
 		if (!this.token) {
-			Logger.info('[CPAuthClient] No token found, fetching a new one...');
+			Logger.info({ message: '[CPAuthClient] No token found, fetching a new one...' });
 			await this.connect();
 		}
 		if (this.expiresAt - Date.now() < 60 * 1000) {
-			Logger.info('[CPAuthClient] Token is about to expire, refreshing...');
+			Logger.info({ message: '[CPAuthClient] Token is about to expire, refreshing...' });
 			await this.connect();
 		}
 		return this.token;
@@ -70,7 +69,7 @@ export class CPAuthClient {
 	private async connect() {
 		//
 
-		Logger.info('[CPAuthClient] Connecting and fetching token...');
+		Logger.info({ message: '[CPAuthClient] Connecting and fetching token...' });
 
 		//
 		// Get the authentication URL, which also sets up the SSH tunnel if needed.
@@ -158,49 +157,12 @@ export class CPAuthClient {
 			throw new Error('Missing CP_AUTH_CLIENT_ID or CP_AUTH_CLIENT_SECRET environment variables.');
 		}
 
-		if (!process.env.CP_TUNNEL_LOCAL_PORT) {
-			throw new Error('Missing CP_TUNNEL_LOCAL_PORT environment variable.');
-		}
-
-		if (!process.env.CP_TUNNEL_SSH_HOST || !process.env.CP_TUNNEL_SSH_USERNAME) {
-			throw new Error('Missing CP_TUNNEL_SSH_HOST or CP_TUNNEL_SSH_USERNAME environment variables.');
-		}
-
-		const sshConfig: SshConfig = {
-			forwardOptions: {
-				dstAddr: process.env.CP_AUTH_HOST,
-				dstPort: 443,
-				srcAddr: 'localhost',
-				srcPort: Number(process.env.CP_TUNNEL_LOCAL_PORT),
-			},
-			serverOptions: {
-				port: Number(process.env.CP_TUNNEL_LOCAL_PORT),
-			},
-			sshOptions: {
-				agent: process.env.CP_TUNNEL_SSH_KEY_PATH ? undefined : process.env.SSH_AUTH_SOCK,
-				host: process.env.CP_TUNNEL_SSH_HOST,
-				keepaliveCountMax: 20,
-				keepaliveInterval: 10_000,
-				port: 22,
-				privateKey: process.env.CP_TUNNEL_SSH_KEY_PATH ? readFileSync(process.env.CP_TUNNEL_SSH_KEY_PATH) : process.env.CP_TUNNEL_SSH_KEY,
-				username: process.env.CP_TUNNEL_SSH_USERNAME,
-			},
-			tunnelOptions: {
-				autoClose: false,
-				reconnectOnError: true,
-			},
-		};
-
-		const sshOptions: SshTunnelServiceOptions = {
-			maxRetries: 3,
-		};
-
 		if (!this.tunnel) {
-			this.tunnel = new SshTunnelService(sshConfig, sshOptions);
+			this.tunnel = cpSshTunnel({ dstAddr: process.env.CP_AUTH_HOST, dstPort: 443 });
 			await this.tunnel.connect();
 		}
 
-		Logger.info('[CPAuthClient] Setting up SSH Tunnel...');
+		Logger.info({ message: '[CPAuthClient] Setting up SSH Tunnel...' });
 
 		const addr = this.tunnel.server.address();
 

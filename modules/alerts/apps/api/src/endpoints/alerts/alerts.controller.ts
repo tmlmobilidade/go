@@ -3,8 +3,10 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { describeAlert, type DescribeAlertProps, type DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
-import { alerts, files } from '@tmlmobilidade/interfaces';
-import { type Alert, type CreateAlertDto, CreateAlertSchema, type File, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { Logger } from '@tmlmobilidade/logger';
+import { type Alert, type Attachment, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -17,7 +19,11 @@ export class AlertsController {
 	 * @param reply The reply object.
 	 */
 	static async create(request: FastifyRequest<{ Body: CreateAlertDto }>, reply: FastifyReply<Alert>) {
-		const insertResult = await alerts.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
+		const insertResult = await goDb.operation.alerts.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
+		if (!insertResult) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to create alert');
+		}
+
 		// await notifications.sendNotification(PermissionCatalog.all.alerts.scope, 'created_alert', request.me, insertResult._id, insertResult.title, insertResult.description);
 		reply.send({ data: insertResult, error: null, statusCode: HTTP_STATUS.CREATED }).status(HTTP_STATUS.CREATED);
 	}
@@ -28,7 +34,11 @@ export class AlertsController {
 	 * @param reply The reply object.
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-		await alerts.deleteById(request.params.id);
+		const deleteResult = await goDb.operation.alerts.deleteById(request.params.id);
+		if (!deleteResult) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete alert');
+		}
+
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -40,17 +50,29 @@ export class AlertsController {
 	static async deleteImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 		console.log('===> Deleting image for alert ID:', request.params.id);
 		// Ensure the alert exists and has an image
-		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Alert not found' });
-		if (!foundAlert.file_id) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Image not found' });
-		console.log('===> Found alert with image ID:', foundAlert.file_id);
+		const foundAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
+		// If the alert does not exist, return an error
+		if (!foundAlert) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		}
+
+		// Ensure the alert has an associated image file.
+		if (!foundAlert.file_id) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Image not found for alert');
+		}
+
+		Logger.info({ message: `===> Found alert with image ID: ${foundAlert.file_id}` });
 		// Delete the image file and update the alert
 		// await files.deleteById(foundAlert.file_id);
-		console.log('===> Deleted image file ID:', foundAlert.file_id);
-		await alerts.updateById(request.params.id, { file_id: null });
+		Logger.info({ message: `===> Deleted image file ID: ${foundAlert.file_id}` });
+		await goDb.operation.alerts.updateOne({ _id: request.params.id }, { file_id: null });
 		// Send the updated Alert to the client
-		const updatedAlert = await alerts.findById(request.params.id);
-		if (!updatedAlert) return reply.status(HTTP_STATUS.NOT_FOUND).send({ message: 'Alert not found' });
+		const updatedAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
+		// If the updated alert does not exist, return an error
+		if (!updatedAlert) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete image for alert');
+		}
+
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -62,6 +84,7 @@ export class AlertsController {
 	static async getAll(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
 		// Retrieve permissions for the current user
 		const userReadPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read);
+
 		// Setup a query filter based on permissions
 		const permissionsQuery = userReadPermissions.resources?.agency_ids?.includes(PermissionCatalog.ALLOW_ALL_FLAG)
 			// If user has access to all agencies, no filter is applied
@@ -69,7 +92,8 @@ export class AlertsController {
 			// Otherwise, filter by the allowed agency IDs
 			: { agency_id: { $in: userReadPermissions.resources?.agency_ids ?? [] } };
 		// Retrieve and send all alerts
-		const allAlerts = await alerts.findMany({ ...permissionsQuery }, { sort: { active_period_start_date: -1 } });
+		const allAlerts = await goDb.operation.alerts.findMany({ ...permissionsQuery }, { sort: { active_period_start_date: -1 } });
+
 		// Send the alerts to the client
 		reply.send({ data: allAlerts, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -80,8 +104,14 @@ export class AlertsController {
 	 * @param reply The reply object.
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
-		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		//
+
+		const foundAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
+		// If the alert does not exist, return an error
+		if (!foundAlert) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		}
+
 		reply.send({ data: foundAlert, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -90,17 +120,28 @@ export class AlertsController {
 	 * @param request The request object containing the alert ID in the params.
 	 * @param reply The reply object.
 	 */
-	static async getImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
+	q;
+
+	static async getImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
 		// Ensure the alert exists
-		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		const foundAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
+		if (!foundAlert) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		}
+
 		// Ensure the alert has an associated image file.
 		// Since it is optional, return null if not present
-		if (!foundAlert.file_id) return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		if (!foundAlert.file_id) {
+			return reply.send({ data: null, error: null, statusCode: HTTP_STATUS.OK });
+		}
+
 		// Retrieve and send the image file
-		const foundImageFile = await files.findById(foundAlert.file_id);
-		if (!foundImageFile) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
-		return reply.send({ data: foundImageFile, error: null, statusCode: HTTP_STATUS.OK });
+		const foundImageFile = await storageProvider.findById(foundAlert.file_id);
+		if (!foundImageFile) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Image file not found');
+		}
+
+		reply.send({ data: foundImageFile, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -109,10 +150,12 @@ export class AlertsController {
 	 * @param reply Fastify reply.
 	 */
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
-		await alerts.toggleLockById(request.params.id);
-		const foundAlert = await alerts.findById(request.params.id);
+		const foundAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
 		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
-		reply.send({ data: foundAlert, error: null, statusCode: HTTP_STATUS.OK });
+		await goDb.operation.alerts.updateOne({ _id: request.params.id }, { is_locked: !foundAlert.is_locked });
+		const updatedAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
+		if (!updatedAlert) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to toggle lock status for alert');
+		reply.send({ data: updatedAlert, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**
@@ -122,7 +165,7 @@ export class AlertsController {
 	 */
 	static async describe(request: FastifyRequest<{ Body: DescribeAlertProps }>, reply: FastifyReply<DescribeAlertReturnType>) {
 		const describeResult = await describeAlert(request.body);
-		if (!describeResult) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to describe alert.');
+
 		reply.send({ data: describeResult, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -133,8 +176,11 @@ export class AlertsController {
 	 */
 	static async duplicate(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
 		// Retrieve the existing alert
-		const existingAlert = await alerts.findById(request.params.id);
-		if (!existingAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		const existingAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
+		if (!existingAlert) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		}
+
 		// Update necessary properties to indicate a copy
 		const duplicatedAlertData = CreateAlertSchema.parse({
 			...existingAlert,
@@ -145,7 +191,8 @@ export class AlertsController {
 		});
 		// Insert the duplicated alert into the database
 		// and send the duplicated alert to the client
-		const insertResult = await alerts.insertOne(duplicatedAlertData);
+		const insertResult = await goDb.operation.alerts.insertOne(duplicatedAlertData);
+
 		reply.send({ data: insertResult, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -157,9 +204,13 @@ export class AlertsController {
 	static async update(request: FastifyRequest<{ Body: UpdateAlertDto, Params: { id: string } }>, reply: FastifyReply<Alert>) {
 		// Validate the request body
 		const validatedAlert = UpdateAlertSchema.safeParse(request.body);
-		if (!validatedAlert.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Dados inválidos', validatedAlert.error);
+		if (!validatedAlert.success) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Dados inválidos', validatedAlert.error);
+		}
+
 		// Update the alert in the database
-		const updatedAlertData = await alerts.updateById(request.params.id, validatedAlert.data);
+		const updatedAlertData = await goDb.operation.alerts.updateOne({ _id: request.params.id }, validatedAlert.data);
+
 		reply.send({ data: updatedAlertData, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -168,17 +219,23 @@ export class AlertsController {
 	 * @param request The request object containing the alert ID in the params and the image file in the body.
 	 * @param reply The reply object.
 	 */
-	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<File>) {
+	static async uploadImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
 		// Retrieve the alert from the database
-		const foundAlert = await alerts.findById(request.params.id);
-		if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		const foundAlert = await goDb.operation.alerts.findById(request.params.id);
+		if (!foundAlert) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
+		}
+
 		// Extract the file data from the request
 		const fileData = await request.file();
-		if (!fileData) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file uploaded');
+		if (!fileData) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file data found');
+		}
+
 		const buffer = await fileData.toBuffer();
 		const size = buffer.buffer.byteLength;
 		// Upload the file to the database
-		const fileUploadResult = await files.upload(buffer, {
+		const fileUploadResult = await storageProvider.upload(buffer, {
 			created_by: request.me._id,
 			name: fileData.filename,
 			resource_id: foundAlert._id,
@@ -187,16 +244,18 @@ export class AlertsController {
 			type: fileData.mimetype,
 			updated_by: request.me._id,
 		});
+
+		// If the file upload result is not found, return an error
+		if (!fileUploadResult) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to upload image');
+		}
+
 		// Delete the old image if it exists
 		if (foundAlert.file_id) {
-			try {
-				await files.deleteById(foundAlert.file_id);
-			} catch (error) {
-				console.error(error);
-			}
+			await storageProvider.delete(foundAlert.file_id);
 		}
 		// Update the alert with the new file ID
-		await alerts.updateById(foundAlert._id, { file_id: fileUploadResult._id.toString() });
+		await goDb.operation.alerts.updateOne({ _id: foundAlert._id }, { file_id: fileUploadResult._id.toString() });
 		reply.send({ data: fileUploadResult, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

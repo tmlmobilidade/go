@@ -25,7 +25,7 @@ export function parseRoute(
 ): GtfsTMLRoute {
 	try {
 		return {
-			agency_id: agencyData._id,
+			agency_id: agencyData.code,
 
 			line_id: Number(lineData.code),
 			line_short_name: lineData.code.replace(/  +/g, ' ').trim(),

@@ -5,3 +5,4 @@ export * from '@/lib/date-format.js';
 export * from '@/lib/time-slot.js';
 export * from '@/lib/timezone-identified.js';
 export * from '@/utils/index.js';
+export * from '@/vkm.js';

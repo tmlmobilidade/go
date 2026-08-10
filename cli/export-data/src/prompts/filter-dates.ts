@@ -1,7 +1,7 @@
 /* * */
 
 import { cancel, isCancel, note, text } from '@clack/prompts';
-import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 

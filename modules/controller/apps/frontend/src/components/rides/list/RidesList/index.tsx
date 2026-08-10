@@ -12,11 +12,15 @@ import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideNormalized, UnixTimestamp } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
+import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Section, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+
+/* * */
+
+const MS_PER_MINUTE = 60_000;
 
 /* * */
 
@@ -36,6 +40,23 @@ export function RidesList() {
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
 	};
 
+	const formatDuration = (startTimestamp: null | UnixTimestamp, endTimestamp: null | UnixTimestamp) => {
+		if (!startTimestamp || !endTimestamp) return null;
+
+		return Math.round((endTimestamp - startTimestamp) / MS_PER_MINUTE) + ' min';
+	};
+
+	const formatDurationDeviation = (item: RideNormalized) => {
+		if (!item.start_time_observed || !item.end_time_observed) return null;
+
+		const plannedDuration = item.end_time_scheduled - item.start_time_scheduled;
+		const observedDuration = item.end_time_observed - item.start_time_observed;
+		const deviationInMinutes = Math.round((observedDuration - plannedDuration) / MS_PER_MINUTE);
+
+		if (deviationInMinutes === 0) return ' 0 min';
+		return (deviationInMinutes > 0 ? '+' : '') + deviationInMinutes + ' min';
+	};
+
 	const columns: DataTableColumn<RideNormalized>[] = [
 		{
 			accessor: 'seen_last_at',
@@ -47,7 +68,7 @@ export function RidesList() {
 			accessor: 'operational_status',
 			render: item => <OperationalStatusTag value={item.operational_status} />,
 			title: t('default:list.RidesList.columns.operational_status.label'),
-			width: 150,
+			width: 180,
 		},
 		{
 			accessor: 'operational_date',
@@ -75,9 +96,15 @@ export function RidesList() {
 		},
 		{
 			accessor: 'start_time_observed',
-			render: item => <StartTimeStatusTag startTimeObserved={formatTimestamp(item.start_time_observed)} status={item.start_delay_status} />,
+			render: item => (
+				<StartTimeStatusTag
+					delayValue={item.start_delay_value_display}
+					startTimeObserved={formatTimestamp(item.start_time_observed)}
+					status={item.start_delay_status}
+				/>
+			),
 			title: t('default:list.RidesList.columns.start_time_observed.label'),
-			width: 180,
+			width: 230,
 		},
 		{
 			accessor: 'end_time_scheduled',
@@ -87,10 +114,49 @@ export function RidesList() {
 		},
 		{
 			accessor: 'end_time_observed',
-			render: item => item.operational_status === 'ended' ? <StartTimeStatusTag startTimeObserved={formatTimestamp(item.end_time_observed)} status={item.end_delay_status} /> : null,
+			render: item => item.operational_status === 'ended'
+				? (
+					<StartTimeStatusTag
+						delayValue={item.end_delay_value_display}
+						startTimeObserved={formatTimestamp(item.end_time_observed)}
+						status={item.end_delay_status}
+					/>
+				)
+				: null,
 			title: t('default:list.RidesList.columns.end_time_observed.label'),
-			width: 180,
+			width: 230,
 		},
+
+		{
+			accessor: 'end_time_scheduled',
+			render: (item) => {
+				const duration = formatDuration(item.start_time_scheduled, item.end_time_scheduled);
+				if (!duration) return null;
+
+				return <Tag label={duration} variant="muted" />;
+			},
+			title: t('default:list.RidesList.columns.duration_scheduled.label'),
+			width: 80,
+		},
+		{
+			accessor: 'end_time_observed',
+			render: (item) => {
+				const duration = formatDuration(item.start_time_observed, item.end_time_observed);
+				const deviation = formatDurationDeviation(item);
+
+				if (!duration && !deviation) return null;
+
+				return (
+					<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+						{duration && <Tag label={duration} variant="secondary" />}
+						{deviation && <Tag label={deviation} variant="warning" />}
+					</Section>
+				);
+			},
+			title: t('default:list.RidesList.columns.duration_observed.label'),
+			width: 160,
+		},
+
 		{
 			accessor: 'driver_ids',
 			render: item => <RidesListCellDrivers value={item.driver_ids} />,
@@ -139,16 +205,13 @@ export function RidesList() {
 	//
 	// C. Render components
 
-	if (ridesListContext.flags.error) {
-		return <ErrorDisplay message={ridesListContext.flags.error.message} />;
-	}
-
 	return (
 		<Pane header={[
 			<RidesListHeader key="header" />,
 			<RidesListFiltersBar key="filters" />,
 		]}
 		>
+			{ridesListContext.flags.error && <ErrorDisplay message={ridesListContext.flags.error.message} />}
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}

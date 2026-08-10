@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
-import { type HubVehiclePosition } from '@tmlmobilidade/types';
+import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -48,16 +48,38 @@ export function VehiclesContextProvider({ children }: PropsWithChildren) {
 	//
 	// A. Fetch data
 
-	const { data: allVehiclesPositionsData, isLoading: allVehiclesPositionsLoading } = useSWR<HubVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, { refreshInterval: 5_000 }); // 1 second
+	const { data: allVehiclesPositionsData, isLoading: allVehiclesPositionsLoading } = useSWR<HubVehiclePosition[], Error>({ credentials: 'omit', url: API_ROUTES.hub.REALTIME_VEHICLES_POSITIONS }, { refreshInterval: 5_000 }); // 5 seconds
 
 	//
 	// B. Transform data
 
 	const vehiclesGeoJsonFeatureCollection = useMemo(() => {
 		const collection = getBaseGeoJsonFeatureCollection<GeoJSON.Point, HubVehiclePosition>();
-		allVehiclesPositionsData?.forEach(vehicle => collection.features.push(transformVehicleDataIntoGeoJsonFeature(vehicle)));
+		allVehiclesPositionsData?.forEach((vehicle) => {
+			// Skip if vehicle position is not from an allowed agency
+			if (![
+				'2IA2N9', // Metro de Lisboa
+				'7NTB1', // Fertagus
+				'A2L1N', // Alsa (CM)
+				'A3H3M', // TCB
+				'BNA17', // Rodoviária de Lisboa (CM)
+				'HF16N', // MobiCascais
+				'IA9T6', // Carris
+				'KB1F6', // Metro Transportes do Sul
+				'LA77N', // Viação Alvorada (CM)
+				'LTP61', // Transtejo
+				'N18KL', // Comboios de Portugal
+				'YA15B', // TST (CM)
+			].includes(vehicle.agency_id)) return;
+			// Skip if the vehicle position does not have the minimum
+			// required fields to identify the current service
+			if (!vehicle.trip_id || !vehicle.route_id || vehicle.direction_id === undefined || vehicle.direction_id === null) return;
+			// Add the vehicle position to the collection
+			collection.features.push(transformVehicleDataIntoGeoJsonFeature(vehicle));
+		});
 		return collection;
 	}, [allVehiclesPositionsData]);
+
 	//
 	// B. Handle actions
 

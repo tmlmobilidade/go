@@ -1,8 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { rideAcceptances } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
@@ -14,6 +14,19 @@ const SYNC_DAYS_BACK = 90;
 async function main() {
 	try {
 		//
+
+		//
+		// Initialize Sentry
+
+		try {
+			await initSentryNode();
+			Logger.startNodeLogs({ app: 'rides-locker', message: 'Sentry Rides Locker initialized', module: 'controller', severity: 'info' });
+		} catch (error) {
+			Logger.error({ error, message: 'Error initializing Sentry Rides Locker' });
+		}
+
+		//
+		// Initialize the logger
 
 		Logger.init();
 
@@ -61,7 +74,7 @@ async function main() {
 
 			//
 			// Fetch the ride acceptances.
-			const foundRides = await rideAcceptances.findMany({ created_at: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
+			const foundRides = await goDb.operation.rideAcceptances.findMany({ created_at: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
 
 			//
 			// Loop through the found rides and process
@@ -73,22 +86,22 @@ async function main() {
 
 				if (rideAcceptance.is_locked) continue;
 
-				await rideAcceptances.updateByRideId(rideAcceptance.ride_id, { is_locked: true, updated_by: 'system' });
-				Logger.info(`Locked ride acceptance for ride ${rideAcceptance.ride_id}.`);
+				await goDb.operation.rideAcceptances.updateById(rideAcceptance._id, { is_locked: true, updated_by: 'system' });
+				Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance.ride_id}.` });
 			}
 
 			//
 
-			Logger.info(`Found ${totalRides} ride acceptances. (${chunkTimer.get()})`);
+			Logger.info({ message: `Found ${totalRides} ride acceptances. (${chunkTimer.get()})` });
 
 			Logger.spacer(1);
 			Logger.divider();
 		}
 
-		Logger.info(`Total rides: ${totalRides}. (${globalTimer.get()})`);
+		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });
 	} catch (err) {
-		Logger.error('An error occurred. Halting execution.', err);
-		Logger.info('Retrying in 10 seconds...');
+		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.info({ message: 'Retrying in 10 seconds...' });
 		setTimeout(() => {
 			process.exit(1); // End process
 		}, 10000); // after 10 seconds

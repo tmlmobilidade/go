@@ -1,6 +1,6 @@
 /* * */
 
-import { rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 
@@ -13,17 +13,29 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Gtf
 	// Validate required input properties
 
 	if (!alertData.agency_id || !alertData.references?.length) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert references are missing for "stops" reference type.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert references are missing for "stops" reference type.` });
 		return;
 	}
 
 	if (!alertData.active_period_start_date) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_start_date is missing.` });
 		return;
 	}
 
 	if (!alertData.active_period_end_date) {
-		Logger.error(`[Alert ID: ${alertData._id}] Alert active_period_end_date is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Alert active_period_end_date is missing.` });
+		return;
+	}
+
+	//
+	// Get the agency data from the database
+
+	const agencyData = await goDb.core.agencies.findOne({
+		_id: alertData.agency_id,
+	});
+
+	if (!agencyData) {
+		Logger.error({ message: `[Alert ID: ${alertData._id}] Agency data not found for the agency_id.` });
 		return;
 	}
 
@@ -37,7 +49,7 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Gtf
 		//
 
 		const parsedEntitySelector: GtfsRtEntitySelector = {
-			agency_id: alertData.agency_id,
+			agency_id: agencyData.code,
 			stop_id: reference.parent_id,
 		};
 
@@ -59,11 +71,11 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Gtf
 			// for rides matching the line ID,
 			// the agency ID, and the alert start time.
 
-			const foundRouteIds = await rides.aggregate([
+			const foundRouteIds = await goDb.operation.rides.aggregate([
 				{
 					$match: {
 						agency_id: alertData.agency_id,
-						line_id: Number(childId),
+						line_id: childId,
 						start_time_scheduled: {
 							$gte: alertData.active_period_start_date,
 							$lte: alertData.active_period_end_date,
@@ -78,7 +90,7 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Gtf
 			]);
 
 			if (!foundRouteIds?.length) {
-				Logger.error(`[Alert ID: ${alertData._id}] No rides found for line ID ${childId} and start time ${alertData.active_period_start_date}.`);
+				Logger.error({ message: `[Alert ID: ${alertData._id}] No rides found for line ID ${childId} and start time ${alertData.active_period_start_date}.` });
 				continue;
 			}
 
@@ -90,7 +102,7 @@ export async function transformReferenceTypeStops(alertData: Alert): Promise<Gtf
 
 			for (const routeId of uniqueRouteIds) {
 				result.push({
-					agency_id: alertData.agency_id,
+					agency_id: agencyData.code,
 					route_id: routeId,
 					stop_id: reference.parent_id,
 				});

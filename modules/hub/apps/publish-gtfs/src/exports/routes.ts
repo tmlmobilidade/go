@@ -35,7 +35,7 @@ export async function exportRoutesFile(routesList: GTFS_Route_Extended[], contex
 
 	const timer = new Timer();
 
-	Logger.info('Exporting routes.txt file...');
+	Logger.info({ message: 'Exporting routes.txt file...' });
 
 	const sortedRoutesList = routesList.sort((a, b) => a.route_id.localeCompare(b.route_id));
 

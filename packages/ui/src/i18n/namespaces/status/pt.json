@@ -32,10 +32,10 @@
 		"voided": "Anulado"
 	},
 	"operational_status": {
-		"ended": "ENDED",
-		"missed": "MISSED",
-		"running": "RUNNING",
-		"scheduled": "SCHEDULED"
+		"ended": "Ended",
+		"missed": "Missed",
+		"running": "Running",
+		"scheduled": "Scheduled"
 	},
 	"processing_status": {
 		"complete": "Concluído",

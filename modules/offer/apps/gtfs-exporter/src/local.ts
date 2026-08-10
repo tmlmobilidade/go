@@ -13,17 +13,17 @@ import path from 'node:path';
 
 /* * */
 
-const AGENCY_IDS = ['41', '42', '43', '44'];
+const AGENCY_IDS = ['41'];
 
 function buildLocalExportConfig(agencyId: string): GtfsV29ExportConfig {
 	const workdir = path.resolve(`./output_${agencyId}`);
 
 	return {
 		agency_ids: [agencyId],
-		calendars_clip_end_date: '20261231' as OperationalDate,
+		calendars_clip_end_date: '20270101' as OperationalDate,
 		calendars_clip_start_date: '20260101' as OperationalDate,
 		clip_calendars: true,
-		feed_end_date: '20261231' as OperationalDate,
+		feed_end_date: '20270101' as OperationalDate,
 		feed_start_date: '20260101' as OperationalDate,
 		lines_exclude: [],
 		lines_include: [],
@@ -56,7 +56,7 @@ async function main() {
 	for (const agencyId of AGENCY_IDS) {
 		const exportConfig = buildLocalExportConfig(agencyId);
 
-		Logger.info(`Starting export for agency ${agencyId} → ${exportConfig.workdir}`);
+		Logger.info({ message: `Starting export for agency ${agencyId} → ${exportConfig.workdir}` });
 
 		fs.mkdirSync(exportConfig.workdir, { recursive: true });
 
@@ -76,6 +76,6 @@ async function main() {
 }
 
 main().catch((error) => {
-	Logger.error(`Local export failed: ${error instanceof Error ? error.message : error}`);
+	Logger.error({ error, message: 'Local export failed' });
 	process.exit(1);
 });

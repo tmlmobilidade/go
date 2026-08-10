@@ -8,6 +8,7 @@ export interface LocaleConfig {
 	_id: string
 	alias: string[]
 	enabled: boolean
+	name: string
 }
 
 export const availableLocales: LocaleConfig[] = [
@@ -15,6 +16,13 @@ export const availableLocales: LocaleConfig[] = [
 		_id: 'pt',
 		alias: ['pt-PT', 'pt_PT', 'pt-BR', 'pt_BR', 'pt-GW', 'pt_GW', 'pt-MZ', 'pt_MZ'],
 		enabled: true,
+		name: 'Português',
+	},
+	{
+		_id: 'es',
+		alias: ['es-ES', 'es_ES', 'es-MX', 'es_MX', 'es-AR', 'es_AR'],
+		enabled: true,
+		name: 'Español',
 	},
 ];
 
@@ -32,4 +40,16 @@ export function getMatchingLocale(localeCode: string) {
 	const matchingLocale = enabledLocales.find(item => item._id === localeCode || item.alias.includes(localeCode));
 	if (matchingLocale) return matchingLocale;
 	else return null;
+}
+
+export function getBrowserLocale() {
+	if (typeof window === 'undefined') return DEFAULT_LOCALE_CODE;
+
+	const browserLocales = navigator.languages ? navigator.languages : [navigator.language];
+	for (const browserLocale of browserLocales) {
+		const matchingBrowserLocale = getMatchingLocale(browserLocale.split('-')[0]);
+		if (matchingBrowserLocale) return matchingBrowserLocale._id;
+	}
+
+	return DEFAULT_LOCALE_CODE;
 }

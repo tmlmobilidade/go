@@ -21,17 +21,13 @@ export function StopsDetailAlerts() {
 	//
 	// B. Render components
 
-	if (!stopsDetailContext.data.stop || !stopsDetailContext.data['active_alerts'] || stopsDetailContext.data['active_alerts']?.length === 0) {
+	if (!stopsDetailContext.data.stop || !stopsDetailContext.data.active_alerts?.length) {
 		return null;
 	}
 
 	return (
-		<Surface variant="bordered">
-			<Section padding="md">
-				<h2>{t('default:stops.StopsDetailAlerts.heading')}</h2>
-				<p>{t('default:stops.StopsDetailAlerts.subheading')}</p>
-				<AlertsCarousel alerts={stopsDetailContext.data['active_alerts']} />
-			</Section>
+		<Surface variant="plain">
+			<AlertsCarousel alerts={stopsDetailContext.data.active_alerts} />
 		</Surface>
 	);
 

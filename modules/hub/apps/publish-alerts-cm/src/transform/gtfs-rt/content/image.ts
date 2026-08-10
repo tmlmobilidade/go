@@ -1,6 +1,6 @@
 /* * */
 
-import { files } from '@tmlmobilidade/interfaces';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Alert, type GtfsRtTranslatedImage } from '@tmlmobilidade/types';
 
@@ -17,20 +17,20 @@ export async function transformImage(alertData: Alert): Promise<GtfsRtTranslated
 	//
 	// Get the associated file data to prepare the image value
 
-	const fileData = await files.findById(alertData.file_id);
+	const fileData = await storageProvider.findById(alertData.file_id);
 
 	if (!fileData) {
-		Logger.error(`[Alert ID: ${alertData._id}] File ${alertData.file_id} not found.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] File ${alertData.file_id} not found.` });
 		return undefined;
 	}
 
 	if (!fileData.url) {
-		Logger.error(`[Alert ID: ${alertData._id}] File ${alertData.file_id} URL is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] File ${alertData.file_id} URL is missing.` });
 		return undefined;
 	}
 
 	if (!fileData.type) {
-		Logger.error(`[Alert ID: ${alertData._id}] File ${alertData.file_id} type is missing.`);
+		Logger.error({ message: `[Alert ID: ${alertData._id}] File ${alertData.file_id} type is missing.` });
 		return undefined;
 	}
 

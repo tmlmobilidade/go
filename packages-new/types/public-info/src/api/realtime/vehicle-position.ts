@@ -1,7 +1,6 @@
 /* * */
 
-import { CalendarDateSchema } from '@tmlmobilidade/types';
-import { UnixTimestampSchema } from '@tmlmobilidade/types';
+import { CalendarDateSchema, OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -13,6 +12,7 @@ export const HubVehiclePositionSchema = z.object({
 	calendar_date: CalendarDateSchema,
 	created_at: UnixTimestampSchema,
 	current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']).nullable().default(null),
+	direction_id: z.number().nullable().default(null),
 	geohash: z.string().nullable().default(null),
 	latitude: z.number()
 		.min(-90)
@@ -25,9 +25,11 @@ export const HubVehiclePositionSchema = z.object({
 		.max(180)
 		.transform(value => value.toFixed(6))
 		.transform(value => parseFloat(value)),
+	operational_date: OperationalDateIntSchema,
 	pattern_id: z.string().nullable().default(null),
 	received_at: UnixTimestampSchema,
 	ride_id: z.string().nullable().default(null),
+	route_id: z.string().nullable().default(null),
 	speed: z.number().nullable().default(null),
 	stop_id: z.string().nullable().default(null),
 	trip_id: z.string(),

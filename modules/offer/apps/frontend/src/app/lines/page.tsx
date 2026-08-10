@@ -1,13 +1,14 @@
-'use client';
+/* * */
 
-import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
+import { LinesOverview } from '@/components/lines/overview/LinesOverview';
+import { LinesOverviewContextProvider } from '@/components/lines/overview/LinesOverview.context';
 
 /* * */
 
-export default function Page() {
+export default async function LinesOverviewPage() {
 	return (
-		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text="Selecione uma Linha" />
-		</Surface>
+		<LinesOverviewContextProvider>
+			<LinesOverview />
+		</LinesOverviewContextProvider>
 	);
 }

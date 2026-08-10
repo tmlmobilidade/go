@@ -34,6 +34,7 @@ export const FlatStopSchema = z.object({
 	latitude: z.number(),
 	locality_id: z.string().nullable().default(null),
 	longitude: z.number(),
+	municapility_name: z.string().optional(),
 	municipality_id: z.string(),
 	parish_id: z.string().nullable().default(null),
 

@@ -4,7 +4,8 @@ import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AUTH_SESSION_COOKIE_NAME, authProvider, organizations, users } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
 import { type CreateUserDto, type SimplifiedUser, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
 
 /* * */
@@ -24,7 +25,9 @@ export class UsersController {
 		// Register the new user using the auth provider
 		const verificationToken = await authProvider.register(request.body);
 
-		if (!verificationToken) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to register user');
+		if (!verificationToken) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to register user');
+		}
 
 		// Send a welcome email to the user with the verification token
 		await sendWelcomeEmail({
@@ -37,7 +40,7 @@ export class UsersController {
 
 		// Fetch the newly created user to ensure it was created successfully
 		// and send a response back to the client
-		const newUser = await users.findByEmail(request.body.email);
+		const newUser = await goDb.core.users.findOne({ email: request.body.email });
 		reply.send({ data: newUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -47,7 +50,11 @@ export class UsersController {
 	 * @param reply The reply object.
 	 */
 	static async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
-		await users.deleteById(request.params.id);
+		const result = await goDb.core.users.deleteById(request.params.id);
+		if (!result) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to delete user');
+		}
+
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -57,7 +64,11 @@ export class UsersController {
 	 * @param reply The reply object.
 	 */
 	static async getAll(request: FastifyRequest, reply: FastifyReply<User[]>) {
-		const foundUsers = await users.findMany({}, { sort: { created_at: -1 } });
+		const foundUsers = await goDb.core.users.findMany({}, { sort: { created_at: -1 } });
+		if (!foundUsers) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to get users');
+		}
+
 		reply.send({ data: foundUsers, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -67,8 +78,7 @@ export class UsersController {
 	 * @param reply The reply object.
 	 */
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
-		const foundUser = await users.findById(request.params.id);
-		if (!foundUser) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		const foundUser = await goDb.core.users.findById(request.params.id);
 		reply.send({ data: foundUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -96,9 +106,10 @@ export class UsersController {
 
 		try {
 			userData = await authProvider.getUserFromSessionToken(sessionToken);
-			if (!userData) throw new Error('User not found');
-		} catch (error) {
-			console.error('Error retrieving user data:', error);
+			if (!userData) {
+				throw new Error('User not found');
+			}
+		} catch {
 			await authProvider.logout(sessionToken);
 			return reply
 				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
@@ -119,7 +130,7 @@ export class UsersController {
 		//
 		// Add seen_last_at for this user asynchronously
 
-		await users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
+		await goDb.core.users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
 
 		//
 	}
@@ -131,11 +142,17 @@ export class UsersController {
 	 */
 	static async getSimplifiedById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedUser>) {
 		// Find the user by ID
-		const userData = await users.findById(request.params.id);
-		if (!userData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		const userData = await goDb.core.users.findById(request.params.id);
+		if (!userData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		}
+
 		// Find the organization data associated with the user
-		const organizationData = await organizations.findById(userData.organization_id);
-		if (!organizationData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		const organizationData = await goDb.core.organizations.findById(userData.organization_id);
+		if (!organizationData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		}
+
 		// Simplify the user data by selecting only specific fields
 		const simplifiedUserData: SimplifiedUser = {
 			_id: userData._id,
@@ -155,9 +172,13 @@ export class UsersController {
 	 * @param reply Fastify reply.
 	 */
 	static async lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
-		await users.toggleLockById(request.params.id);
-		const foundUser = await users.findById(request.params.id);
-		if (!foundUser) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		await goDb.core.users.toggleLockById(request.params.id);
+
+		const foundUser = await goDb.core.users.findById(request.params.id);
+		if (!foundUser) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		}
+
 		reply.send({ data: foundUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
@@ -171,12 +192,15 @@ export class UsersController {
 		request.body.updated_by = request.me._id;
 		// Validate the request body against the UpdateUserDto schema
 		const validatedUserData = UpdateUserSchema.safeParse(request.body);
-		if (!validatedUserData.success) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
+		if (!validatedUserData.success) {
+			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
+		}
+
 		// Remove password field if not provided to avoid
 		// overwriting existing password with undefined
 		if (!validatedUserData.data.password_hash) delete validatedUserData.data.password_hash;
 		// Update the user in the database
-		const updateResult = await users.updateById(request.params.id, validatedUserData.data);
+		const updateResult = await goDb.core.users.updateById(request.params.id, validatedUserData.data);
 		// Send the updated user data back in the response
 		reply.send({ data: updateResult, error: null, statusCode: HTTP_STATUS.OK });
 	}
@@ -191,7 +215,11 @@ export class UsersController {
 		const userData = await authProvider.getUserFromSessionToken(sessionToken);
 
 		// For now, only the preferences field is allowed to be updated by the current user
-		const updatedUser = await users.updateById(userData._id, { preferences: request.body.preferences });
+		const updatedUser = await goDb.core.users.updateById(userData._id, { preferences: request.body.preferences });
+		if (!updatedUser) {
+			throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to update user');
+		}
+
 		reply.send({ data: updatedUser, error: null, statusCode: HTTP_STATUS.OK });
 	}
 }

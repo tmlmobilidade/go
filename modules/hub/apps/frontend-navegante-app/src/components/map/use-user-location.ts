@@ -1,7 +1,6 @@
 'use client';
 
 import { useSessionStorage } from '@mantine/hooks';
-import { Logger } from '@tmlmobilidade/logger';
 import { useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -64,17 +63,15 @@ export function useUserLocation(): UseUserLocationReturnType {
 		// Set the callback functions to handle the success and error cases
 		const successCallback = (position: GeolocationPosition) => {
 			setUserLocationError(null);
-			// Update user location
 			setUserLocation(prev => ({
 				...prev,
 				accuracy: position.coords.accuracy,
 				latitude: position.coords.latitude,
 				longitude: position.coords.longitude,
 			}));
-			Logger.info(`User location coordinates updated to ${position.coords.longitude}, ${position.coords.latitude}`);
 		};
 		const errorCallback = (error: GeolocationPositionError) => {
-			Logger.info(`User location error: ${error.code} - ${error.message}`);
+			console.log({ message: `User location error: ${error.code} - ${error.message}` });
 			setUserLocationError(error.message);
 		};
 		// Watch for user location changes

@@ -1,6 +1,8 @@
 import { type Stop, type StopExportData } from '@tmlmobilidade/types';
 
-export type StopExportCsvData = Omit<StopExportData, 'flags'>;
+export type StopExportCsvData = Omit<StopExportData, 'flags'> & {
+	municipality_name: null | string
+};
 
 /**
  * The ordered fields of the stop export CSV data.
@@ -24,6 +26,7 @@ export const STOP_EXPORT_ORDERED_FIELDS = [
 	'latitude',
 	'locality_id',
 	'longitude',
+	'municipality_name',
 	'municipality_id',
 	'parish_id',
 
@@ -68,6 +71,7 @@ export const STOP_EXPORT_ORDERED_FIELDS = [
 
 interface ParseStopRow {
 	_id?: null | number
+	municipality_name: null | string
 	stop: Stop
 }
 
@@ -79,7 +83,7 @@ function toOrderedCsvData(source: StopExportCsvData): StopExportCsvData {
 /* * */
 
 export function parseStops(row: ParseStopRow): StopExportCsvData {
-	const { _id, stop } = row;
+	const { _id, municipality_name: municipalityName, stop } = row;
 
 	return toOrderedCsvData({
 		_id: _id ?? stop._id,
@@ -107,6 +111,7 @@ export function parseStops(row: ParseStopRow): StopExportCsvData {
 		locality_id: stop.locality_id,
 		longitude: stop.longitude,
 		municipality_id: stop.municipality_id,
+		municipality_name: municipalityName ?? null,
 		name: stop.name,
 		new_name: stop.new_name,
 		parish_id: stop.parish_id,

@@ -116,11 +116,9 @@ export function BottomSheet({
 				>
 					<div className={styles.headerLeft} />
 
-					{title && (
-						<h1 className={styles.title} id={titleId}>
-							{title}
-						</h1>
-					)}
+					<h1 className={styles.title} id={titleId}>
+						{title ?? ''}
+					</h1>
 
 					<div className={styles.headerRight}>
 						<BottomSheetClose ref={closeButtonRef} onClick={onClose} />

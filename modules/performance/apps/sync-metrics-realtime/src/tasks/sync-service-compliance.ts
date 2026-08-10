@@ -1,5 +1,7 @@
+import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { metrics, rides } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { metrics } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type RealtimeServiceCompliance, type Ride } from '@tmlmobilidade/types';
@@ -106,15 +108,15 @@ export const syncRealtimeServiceCompliance = async () => {
 	Logger.title(`Sync Service Compliance Metrics in Realtime`);
 	const globalTimer = new Timer();
 
-	const METRIC = 'realtime_service_compliance';
+	const metricKey = 'realtime_service_compliance';
 
 	//
 	// Delete existing metrics
 
 	const deleteTimer = new Timer();
-	Logger.info(`Clearing existing '${METRIC}' metrics...`);
-	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Clearing existing '${metricKey}' metrics...` });
+	await metrics.deleteMany({ metric: metricKey });
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Setup timestamp boundaries
@@ -126,8 +128,6 @@ export const syncRealtimeServiceCompliance = async () => {
 
 	//
 	// Initialize results object
-
-	const agencies = ['41', '42', '43', '44'];
 
 	const results: RealtimeServiceCompliance['data'] = {
 		agencies: {},
@@ -143,7 +143,7 @@ export const syncRealtimeServiceCompliance = async () => {
 		},
 	};
 
-	agencies.forEach((op) => {
+	GO_CM_AGENCY_IDS.forEach((op) => {
 		results.agencies[op] = {
 			accomplished_rides: { last_week: 0, now: 0 },
 			advanced_rides: { last_week: 0, now: 0 },
@@ -159,40 +159,45 @@ export const syncRealtimeServiceCompliance = async () => {
 	//
 	// Fetch rides collection
 
-	const ridesCollection = await rides.getCollection();
+	const ridesCollection = await goDb.operation.rides.getCollection();
 
 	//
 	// Today's stream
 
-	Logger.info(`Processing rides for current operational date: ${currentOperationalDate}`);
+	Logger.info({ message: `Processing rides for current operational date: ${currentOperationalDate}` });
 	const todayTimer = new Timer();
 
 	const todayStream = ridesCollection
-		.find({ operational_date: currentOperationalDate, system_status: 'complete' })
+		.find({
+			agency_id: { $in: [...GO_CM_AGENCY_IDS] },
+			operational_date: currentOperationalDate,
+			system_status: 'complete',
+		})
 		.stream();
 
-	await processRidesStream(todayStream, results, agencies, 'now');
-	Logger.info(`Processed today's rides in ${todayTimer.get()}`);
+	await processRidesStream(todayStream, results, [...GO_CM_AGENCY_IDS], 'now');
+	Logger.info({ message: `Processed today's rides in ${todayTimer.get()}` });
 
 	//
 	// Last week's stream
 
-	Logger.info(`Processing rides for last week's operational date: ${previousOperationalDate}`);
+	Logger.info({ message: `Processing rides for last week's operational date: ${previousOperationalDate}` });
 	const lastWeekTimer = new Timer();
 
 	const lastWeekStream = ridesCollection.find({
+		agency_id: { $in: [...GO_CM_AGENCY_IDS] },
 		operational_date: previousOperationalDate,
 		start_time_observed: { $lte: previousUntilNowAsUnix },
 		system_status: 'complete',
 	}).stream();
 
-	await processRidesStream(lastWeekStream, results, agencies, 'last_week');
-	Logger.info(`Processed last week's rides in ${lastWeekTimer.get()}`);
+	await processRidesStream(lastWeekStream, results, [...GO_CM_AGENCY_IDS], 'last_week');
+	Logger.info({ message: `Processed last week's rides in ${lastWeekTimer.get()}` });
 
 	//
 	// Compute mean delays
 
-	agencies.forEach((op) => {
+	GO_CM_AGENCY_IDS.forEach((op) => {
 		const opData = results.agencies[op];
 		opData.mean_delay_minutes.now = opData.scheduled_rides.now ? Number((opData.mean_delay_minutes.now / opData.scheduled_rides.now).toFixed(2)) : 0;
 		opData.mean_delay_minutes.last_week = opData.scheduled_rides.last_week ? Number((opData.mean_delay_minutes.last_week / opData.scheduled_rides.last_week).toFixed(2)) : 0;
@@ -208,11 +213,11 @@ export const syncRealtimeServiceCompliance = async () => {
 		data: results,
 		description: `Realtime service compliance metrics by agency and total, compared with previous week same time.`,
 		generated_at: new Date(),
-		metric: METRIC,
+		metric: metricKey,
 	};
 
 	await metrics.insertOne(metricToInsert);
-	Logger.terminate(`Processed ${METRIC} (${globalTimer.get()})`);
+	Logger.terminate(`Processed ${metricKey} (${globalTimer.get()})`);
 };
 
 //

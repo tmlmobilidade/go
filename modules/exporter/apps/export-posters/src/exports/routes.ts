@@ -63,5 +63,5 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 
 	await routesCsv.flush();
 
-	Logger.info('Exported routes.txt file.');
+	Logger.info({ message: 'Exported routes.txt file.' });
 }

@@ -2,11 +2,11 @@
 
 import { AlertsListContextProvider } from '@/components/alerts/list/AlertsList.context';
 import { AlertsListViewList } from '@/components/alerts/list/AlertsListViewList';
-import { BottomSheet } from '@/components/common/bottom-sheet/BottomSheet';
+import { BottomSheet } from '@/components/common/bottom-sheet/ReactModalSheet';
 import { useBottomSheet } from '@/components/common/bottom-sheet/use-bottom-sheet';
 import { LinesListContextProvider } from '@/components/lines/list/LinesList.context';
 import { LinesListViewAll } from '@/components/lines/list/LinesListViewAll';
-import { SearchToolbar, type SearchType } from '@/components/search/SearchToolBar';
+import { SearchToolbar, type SearchType } from '@/components/search/SearchToolbar';
 import { StopsListContextProvider } from '@/components/stops/list/StopsList.context';
 import { StopsListViewList } from '@/components/stops/list/StopsListViewList';
 import { useState } from 'react';

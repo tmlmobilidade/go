@@ -21,7 +21,7 @@ export const syncDemandByProductByAgencyByYear = async () => {
 
 	const deleteTimer = new Timer();
 	await metrics.deleteMany({ metric: METRIC });
-	Logger.info(`Cleared existing metrics in ${deleteTimer.get()}`);
+	Logger.info({ message: `Cleared existing metrics in ${deleteTimer.get()}` });
 
 	//
 	// Fetch by_month metrics from the metrics collection
@@ -33,7 +33,7 @@ export const syncDemandByProductByAgencyByYear = async () => {
 		metric: 'demand_by_product_by_agency_by_month',
 	}).toArray() as DemandByProductByAgencyByMonth[];
 
-	Logger.info(`Fetched ${monthlyMetrics.length} monthly metrics (${fetchTimer.get()})`);
+	Logger.info({ message: `Fetched ${monthlyMetrics.length} monthly metrics (${fetchTimer.get()})` });
 
 	//
 	// Process monthly metrics into yearly aggregates
@@ -84,7 +84,7 @@ export const syncDemandByProductByAgencyByYear = async () => {
 
 	const insertTimer = new Timer();
 	await metrics.insertMany(results);
-	Logger.info(`Inserted ${results.length} yearly metrics (${insertTimer.get()})`);
+	Logger.info({ message: `Inserted ${results.length} yearly metrics (${insertTimer.get()})` });
 
 	logMetricToFile({
 		approach: { description: 'Aggregate from by_month metrics', key: 'aggregate_from_monthly' },

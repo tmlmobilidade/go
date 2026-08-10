@@ -3,7 +3,7 @@
 // import { escapeClickHouseString, queryRows, updateById } from '@/utils/clickhouse.js';
 // import { Dates } from '@tmlmobilidade/dates';
 // import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/go-apex-pckg-parse';
-// import { rides } from '@tmlmobilidade/interfaces';
+// import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 // import { Logger } from '@tmlmobilidade/logger';
 // import { Timer } from '@tmlmobilidade/timer';
 
@@ -47,7 +47,7 @@
 // 		//
 
 // 		Logger.init();
-// 		Logger.info('Linking Refunds to Sales and Validations...');
+// 		Logger.info({ message: 'Linking Refunds to Sales and Validations...' });
 
 // 		const globalTimer = new Timer();
 
@@ -69,7 +69,7 @@
 
 // 		for (const onBoardRefund of unlinkedOnBoardRefunds) {
 // 			totalUnlinkedOnBoardRefunds++;
-// 			if (totalUnlinkedOnBoardRefunds % 10000 === 0) Logger.info(`Gone through ${totalUnlinkedOnBoardRefunds} Refunds so far and linked ${totalLinkedOnBoardRefunds} of them to Sales and Validations.`);
+// 			if (totalUnlinkedOnBoardRefunds % 10000 === 0) Logger.info({ message: `Gone through ${totalUnlinkedOnBoardRefunds} Refunds so far and linked ${totalLinkedOnBoardRefunds} of them to Sales and Validations.` });
 // 			// Fetch the corresponding Validation transaction.
 // 			// If no transaction is found, skip this iteration.
 // 			const [validationTransaction] = await queryRows<ValidationRow>(`
@@ -123,7 +123,7 @@
 // 			if (!validationTransaction.trip_id) continue;
 
 // 			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardRefund.created_at).std_window;
-// 			await rides.updateMany(
+// 			await goDb.operation.rides.updateMany(
 // 				{
 // 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },
 // 					trip_id: validationTransaction.trip_id,
