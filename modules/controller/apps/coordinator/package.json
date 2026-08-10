@@ -20,7 +20,7 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
-		"@tmlmobilidade/go-providers-rides": "*",
+		"@tmlmobilidade/go-providers-operation": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

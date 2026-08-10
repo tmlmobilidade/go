@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { ridesProvider } from '@tmlmobilidade/go-providers-rides';
+import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger';
 

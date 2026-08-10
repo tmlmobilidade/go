@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { ridesProvider } from '@tmlmobilidade/go-providers-rides';
+import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { type GetRidesBatchQuery, GetRidesBatchQuerySchema, type Ride } from '@tmlmobilidade/go-types-operation';
 import { type ActionsOf, type Permission, PermissionCatalog } from '@tmlmobilidade/types';
 

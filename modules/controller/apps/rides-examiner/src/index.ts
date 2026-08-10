@@ -4,7 +4,7 @@ import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { ridesProvider } from '@tmlmobilidade/go-providers-rides';
+import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -61,7 +61,7 @@ export async function analyzeRides() {
 
 		const fetchRideDocumentsTimer = new Timer();
 
-		const ridesBatch = await ridesProvider.findRidesById(rideIdsBatch);
+		const ridesBatch = await ridesProvider.findRides({ _id: rideIdsBatch });
 
 		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 

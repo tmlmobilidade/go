@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { ridesProvider } from '@tmlmobilidade/go-providers-rides';
+import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 

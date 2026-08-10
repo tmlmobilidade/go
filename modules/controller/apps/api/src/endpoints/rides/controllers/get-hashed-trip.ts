@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { ridesProvider } from '@tmlmobilidade/go-providers-rides';
+import { hashedTripsProvider } from '@tmlmobilidade/go-providers-operation';
 import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
 
 /**
@@ -33,7 +33,7 @@ export async function getHashedTrip(request: FastifyRequest, reply: FastifyReply
 		// Fetch the hashed trip data by ride ID
 		// and send it back to the client
 
-		const hashedTripData = await ridesProvider.findHashedTripByRideId(rideId);
+		const hashedTripData = await hashedTripsProvider.findHashedTripByRideId(rideId);
 
 		reply.send({
 			data: hashedTripData,
