@@ -22,6 +22,8 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-downloads": "*",
+		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/strings": "*",

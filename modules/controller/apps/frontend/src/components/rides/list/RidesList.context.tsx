@@ -3,9 +3,9 @@
 import { useRideFavoritesContext } from '@/contexts/RideFavorites.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type OperationalStatus, PermissionCatalog, type RideNormalized, RideNormalizedSchema, TicketingStatus, TicketingStatusSchema } from '@tmlmobilidade/types';
-import { DelayStatusSchema, OperationalStatusSchema } from '@tmlmobilidade/types';
-import { RIDE_ANALYSIS_GRADE_OPTIONS, type UnixTimestamp } from '@tmlmobilidade/types';
+import { RideAcceptanceStatusSchema, type RideNormalized } from '@tmlmobilidade/go-types-operation';
+import { type DelayStatus, DelayStatusSchema, GradeStatusSchema, type OperationalStatus, OperationalStatusSchema, type TicketingStatus, TicketingStatusSchema, UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { parseAsInteger, useDataAgencies, useDataRides, useDebouncedValue, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useQueryState } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,7 @@ export interface RidesListContextState {
 		analysis_transaction_sequentiality: UseFilterStateListReturnType
 		date_end: number
 		date_start: number
-		delay_status: UseFilterStateListReturnType<RideNormalized['delay_status']>
+		delay_status: UseFilterStateListReturnType<DelayStatus>
 		operational_status: UseFilterStateListReturnType<OperationalStatus>
 		search: UseFilterStateStringReturnType
 		ticketing_status: UseFilterStateListReturnType<TicketingStatus>
@@ -59,7 +59,7 @@ export function useRidesListContext() {
 
 /* * */
 
-export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
+export function RidesListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -90,11 +90,11 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 	const filterDelayStatus = useFilterStateList('delay_status', DelayStatusSchema.options, DelayStatusSchema.options.map(item => ({ label: t(`shared:status.delay_status.${item}`), value: item })));
 	const filterOperationalStatus = useFilterStateList('operational_status', OperationalStatusSchema.options, OperationalStatusSchema.options.map(item => ({ label: t(`shared:status.operational_status.${item}`), value: item })));
-	const filterAnalysisSimpleThreeVehicleEvents = useFilterStateList('analysis_simple_three_vehicle_events', [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'], [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(item => ({ label: item, value: item })));
-	const filterAnalysisEndedAtLastStop = useFilterStateList('analysis_ended_at_last_stop', [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'], [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(item => ({ label: item, value: item })));
-	const filterAnalysisExpectedApexValidationInterval = useFilterStateList('analysis_expected_apex_validation_interval', [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'], [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(item => ({ label: item, value: item })));
-	const filterAnalysisTransactionSequentiality = useFilterStateList('analysis_transaction_sequentiality', [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'], [...RIDE_ANALYSIS_GRADE_OPTIONS, 'none'].map(item => ({ label: item, value: item })));
-	const filterAcceptanceStatus = useFilterStateList('acceptance_status', RideNormalizedSchema.shape.acceptance_status.options, RideNormalizedSchema.shape.acceptance_status.options.map(item => ({ label: t(`ride_status:acceptance_status.${item}`), value: item })));
+	const filterAnalysisSimpleThreeVehicleEvents = useFilterStateList('analysis_simple_three_vehicle_events', [...GradeStatusSchema.options, 'none'], [...GradeStatusSchema.options, 'none'].map(item => ({ label: item, value: item })));
+	const filterAnalysisEndedAtLastStop = useFilterStateList('analysis_ended_at_last_stop', [...GradeStatusSchema.options, 'none'], [...GradeStatusSchema.options, 'none'].map(item => ({ label: item, value: item })));
+	const filterAnalysisExpectedApexValidationInterval = useFilterStateList('analysis_expected_apex_validation_interval', [...GradeStatusSchema.options, 'none'], [...GradeStatusSchema.options, 'none'].map(item => ({ label: item, value: item })));
+	const filterAnalysisTransactionSequentiality = useFilterStateList('analysis_transaction_sequentiality', [...GradeStatusSchema.options, 'none'], [...GradeStatusSchema.options, 'none'].map(item => ({ label: item, value: item })));
+	const filterAcceptanceStatus = useFilterStateList('acceptance_status', RideAcceptanceStatusSchema.options, RideAcceptanceStatusSchema.options.map(item => ({ label: t(`ride_status:acceptance_status.${item}`), value: item })));
 	const filterTicketingStatus = useFilterStateList('ticketing_status', TicketingStatusSchema.options, TicketingStatusSchema.options.map(item => ({ label: t(`default:list.RidesListFilterTicketingStatus.options.${item}`), value: item })));
 
 	const { error: ridesError, isLoading: ridesLoading, lastUpdatedAt: ridesLastUpdatedAt, raw: ridesData } = useDataRides(API_ROUTES.controller.RIDES_LIST, {
@@ -103,7 +103,7 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			date_end: filterDateEnd as UnixTimestamp,
 			date_start: filterDateStart as UnixTimestamp,
 			// line_ids: filterLines.value,
-			acceptance_status: filterAcceptanceStatus.value,
+			// acceptance_status: filterAcceptanceStatus.value,
 			analysis_ended_at_last_stop_grade: filterAnalysisEndedAtLastStop.value,
 			analysis_expected_apex_validation_interval: filterAnalysisExpectedApexValidationInterval.value,
 			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeVehicleEvents.value,
@@ -180,6 +180,4 @@ export const RidesListContextProvider = ({ children }: PropsWithChildren) => {
 			{children}
 		</RidesListContext.Provider>
 	);
-
-	//
 };

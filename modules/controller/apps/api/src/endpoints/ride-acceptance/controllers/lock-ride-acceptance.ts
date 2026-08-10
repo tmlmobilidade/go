@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type RideAcceptance, type UpdateRideAcceptanceDto } from '@tmlmobilidade/types';
+import { type RideAcceptance, type UpdateRideAcceptanceDto } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Locks a justification by ride ID
