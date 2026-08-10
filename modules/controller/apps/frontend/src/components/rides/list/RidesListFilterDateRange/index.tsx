@@ -15,8 +15,6 @@ export function RidesListFilterDateRange() {
 
 	const { t } = useTranslation();
 
-	const ridesListContext = useRidesListContext();
-
 	//
 	// B. Handle actions
 

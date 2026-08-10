@@ -26,7 +26,7 @@ export const GetRidesQuerySchema = z.object({
 		simple_three_vehicle_events_grade: z
 			.array(GradeStatusSchema)
 			.optional(),
-		transaction_sequentiality: z
+		transaction_sequentiality_grades: z
 			.array(GradeStatusSchema)
 			.optional(),
 	}).optional(),

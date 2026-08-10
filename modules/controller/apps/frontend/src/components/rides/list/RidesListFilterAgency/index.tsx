@@ -1,8 +1,9 @@
 /* * */
 
-import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useRidesAgencyFilter } from './use-rides-agency-filter';
 
 /* * */
 
@@ -14,21 +15,19 @@ export function RidesListFilterAgency() {
 
 	const { t } = useTranslation();
 
-	const ridesListContext = useRidesListContext();
+	const filterAgency = useRidesAgencyFilter();
 
 	//
 	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={ridesListContext.filters.agency.isActive}
+			active={filterAgency.isActive}
 			label={t('default:list.RidesListFilterAgency.label')}
-			onChange={ridesListContext.filters.agency.set}
-			options={ridesListContext.filters.agency.options}
+			onChange={filterAgency.set}
+			options={filterAgency.options}
 			isMultiple
 			withToggleAll
 		/>
 	);
-
-	//
 }

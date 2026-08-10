@@ -12,7 +12,8 @@ import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Section, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -43,11 +44,10 @@ export function RidesList() {
 
 	const formatDuration = (startTimestamp: null | UnixTimestamp, endTimestamp: null | UnixTimestamp) => {
 		if (!startTimestamp || !endTimestamp) return null;
-
 		return Math.round((endTimestamp - startTimestamp) / MS_PER_MINUTE) + ' min';
 	};
 
-	const formatDurationDeviation = (item: RideNormalized) => {
+	const formatDurationDeviation = (item: Ride) => {
 		if (!item.start_time_observed || !item.end_time_observed) return null;
 
 		const plannedDuration = item.end_time_scheduled - item.start_time_scheduled;
@@ -58,7 +58,7 @@ export function RidesList() {
 		return (deviationInMinutes > 0 ? '+' : '') + deviationInMinutes + ' min';
 	};
 
-	const columns: DataTableColumn<RideNormalized>[] = [
+	const columns: DataTableColumn<Ride>[] = [
 		{
 			accessor: 'seen_last_at',
 			render: item => <SeenStatusIndicator status={item.seen_status} tooltip={formatTimestamp(item.seen_last_at)} />,
@@ -199,7 +199,7 @@ export function RidesList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: RideNormalized) => {
+	const handleRowClick = (item: Ride) => {
 		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_DETAIL(item._id)));
 	};
 
