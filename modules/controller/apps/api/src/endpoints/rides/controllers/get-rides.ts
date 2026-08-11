@@ -2,29 +2,26 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
-import { type GetRidesQuery, type Ride } from '@tmlmobilidade/go-types-operation';
+import { type ControllerRidesListFilters, type ControllerRidesListItem, getControllerRidesList } from '@tmlmobilidade/go-controller-pckg-queries';
 
 /**
  * Get rides by query.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getRides(request: FastifyRequest<{ Body: GetRidesQuery }>, reply: FastifyReply<Ride[]>) {
+export async function getRides(request: FastifyRequest<{ Body: ControllerRidesListFilters }>, reply: FastifyReply<ControllerRidesListItem[]>) {
 	//
 
 	//
 	// Fetch the rides data by query
 	// and send it back to the client
 
-	console.log('request.body', request.body);
+	const result = await getControllerRidesList(request.body);
 
-	const ridesData = await ridesProvider.findRidesByQuery(request.body);
-
-	console.log('ridesData', ridesData);
+	console.log('result', result);
 
 	reply.send({
-		data: ridesData,
+		data: result,
 		error: null,
 		statusCode: HTTP_STATUS.OK,
 	});
