@@ -109,7 +109,6 @@
 
 		"helper:alerts:migrate-db": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-alerts-helpers-migrate-db",
 		"helper:dates:seed-periods": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-dates-helpers-seed-periods",
-		"helper:locations:seed-locations": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-locations-helpers-seed-locations",
 		"helper:offer:backfill-pattern-polylines": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-backfill-pattern-polylines",
 		"helper:offer:seed-fares": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-fares",
 		"helper:offer:seed-lines": "npm run repo:load-env-stg -- turbo run start --filter=@tmlmobilidade/go-offer-helpers-seed-lines",
@@ -127,6 +126,7 @@
 		"prd:controller:rides-feeder": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-controller-rides-feeder",
 		"prd:controller:ui": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
 		"prd:eta": "npm run build:eta:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
+		"prd:hub:publish-realtime": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-realtime",
 		"prd:hub:ui:navegante-app": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
 		"prd:plans": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
 		"prd:stops": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
@@ -148,11 +148,12 @@
 
 		"repo:assets": "bash ./scripts/set-public-symlinks.sh",
 		"repo:build": "turbo build --filter=./packages-new/**/* && turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/*",
+		"repo:deps": "npx --yes @tmlmobilidade/repo-deps",
 		"repo:init": "npm i && npm run repo:assets && npm run repo:build && npm run repo:routes",
 		"repo:lint": "turbo lint",
 		"repo:lint:fix": "turbo lint:fix",
-		"repo:load-env-prd": "ENVIRONMENT=prd npx --yes @dotenv-run/cli -v -f ./environments/prd/.env.prd --",
-		"repo:load-env-stg": "ENVIRONMENT=dev op run --env-file=./environments/stg/.env.stg --",
+		"repo:load-env-prd": "ENVIRONMENT=dev npx --yes @dotenv-run/cli -v -f ./environments/prd/.env.prd --",
+		"repo:load-env-stg": "ENVIRONMENT=dev npx --yes @dotenv-run/cli -v -f ./environments/stg/.env.stg --",
 		"repo:rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"repo:routes": "bash ./scripts/generate-routes.sh"
 	},

@@ -3,6 +3,7 @@
 import { type ExportGtfsContext } from '@/types/context.js';
 import { clampCoordinate } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type HubGtfsExportStops, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -19,17 +20,17 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 	//
 	// Build a map of location entities
 
-	const allDistrictsData = await goDb.locations.districts.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
-	const allDistrictsMap = new Map<string, string>(allDistrictsData.map(item => [item._id, item?.['properties']?.['name']]));
+	const allDistrictsData = await locationsProvider.findDistricts();
+	const allDistrictsMap = new Map<string, string>(allDistrictsData.map(item => [item._id, item.name]));
 
-	const allMunicipalitiesData = await goDb.locations.municipalities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
-	const allMunicipalitiesMap = new Map<string, string>(allMunicipalitiesData.map(item => [item._id, item?.['properties']?.['name']]));
+	const allMunicipalitiesData = await locationsProvider.findMunicipalities();
+	const allMunicipalitiesMap = new Map<string, string>(allMunicipalitiesData.map(item => [item._id, item.name]));
 
-	const allParishesData = await goDb.locations.parishes.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
-	const allParishesMap = new Map<string, string>(allParishesData.map(item => [item._id, item?.['properties']?.['name']]));
+	const allParishesData = await locationsProvider.findParishes();
+	const allParishesMap = new Map<string, string>(allParishesData.map(item => [item._id, item.name]));
 
-	const allLocalitiesData = await goDb.locations.localities.findMany({}, { projection: { '_id': 1, 'properties.name': 1 } });
-	const allLocalitiesMap = new Map<string, string>(allLocalitiesData.map(item => [item._id, item?.['properties']?.['name']]));
+	const allLocalitiesData = await locationsProvider.findLocalities();
+	const allLocalitiesMap = new Map<string, string>(allLocalitiesData.map(item => [item._id, item.name]));
 
 	//
 	// Get all the stops for the specified agency IDs
