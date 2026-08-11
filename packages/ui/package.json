@@ -41,7 +41,6 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/go-normalizers-operation": "*",
 		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-operation": "*",
