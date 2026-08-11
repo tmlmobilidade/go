@@ -84,6 +84,9 @@ export const PAGE_ROUTES = Object.freeze({
 		HOLIDAYS_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/holidays/${encodeURIComponent(id)}`,
 		HOLIDAYS_LIST: `${getModuleConfig('dates', 'frontend_url')}/holidays`,
 
+		// YEAR_PERIODS_DATES
+		YEAR_PERIODS_DATES_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/year-periods/${encodeURIComponent(id)}/dates`,
+
 		// YEAR_PERIODS
 		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('dates', 'frontend_url')}/year-periods/${encodeURIComponent(id)}`,
 		YEAR_PERIODS_LIST: `${getModuleConfig('dates', 'frontend_url')}/year-periods`,
