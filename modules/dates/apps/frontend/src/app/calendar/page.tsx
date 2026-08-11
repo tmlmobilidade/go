@@ -1,6 +1,6 @@
 'use client';
 
-import { DatesSchedule } from '@/components/calendar/DatesSchedule';
+import { CalendarSchedule } from '@/components/calendar/schedule/CalendarSchedule';
 import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -8,7 +8,7 @@ import { Pane } from '@tmlmobilidade/ui';
 export default function Page() {
 	return (
 		<Pane>
-			<DatesSchedule />
+			<CalendarSchedule />
 		</Pane>
 	);
 }
