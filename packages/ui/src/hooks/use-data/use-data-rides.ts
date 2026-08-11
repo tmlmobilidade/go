@@ -40,6 +40,8 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 	//
 	// B. Fetch data
 
+	const serializedQuery = JSON.stringify(props?.query);
+
 	useEffect(() => {
 		(async () => {
 			try {
@@ -47,9 +49,9 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 				setIsLoading(true);
 				// Skip if no API URL is provided
 				if (!apiUrl) return;
-				if (!props?.query) return;
+				if (!serializedQuery) return;
 				// Validate the query against the schema
-				const validatedQuery = GetRidesQuerySchema.parse(props.query);
+				const validatedQuery = GetRidesQuerySchema.parse(JSON.parse(serializedQuery));
 				// Fetch the data and parse the response
 				const responseData = await fetchData<RideView[]>(apiUrl, 'POST', validatedQuery);
 				if (!responseData.data) return;
@@ -63,7 +65,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 				setIsLoading(false);
 			}
 		})();
-	}, [apiUrl, props.query]);
+	}, [apiUrl, serializedQuery]);
 
 	//
 	// C. Transform data
