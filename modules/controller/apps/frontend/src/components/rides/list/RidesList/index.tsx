@@ -11,7 +11,7 @@ import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-queries';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusDisplay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, DelayStatusDisplay, ErrorDisplay, OperationalStatusDisplay, Pane, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -96,7 +96,13 @@ export function RidesList() {
 		},
 		{
 			accessor: 'end_time_observed',
-			render: item => item.operational_status === 'ended' && <RidesListCellTimeObserved delayStatus={item.end_delay_status} observedTimestamp={item.end_time_observed} scheduledTimestamp={item.end_time_scheduled} />,
+			render: item => item.operational_status === 'ended' && (
+				<DelayStatusDisplay
+					endTimestamp={item.end_time_observed}
+					startTimestamp={item.end_time_scheduled}
+					status={item.end_delay_status}
+				/>
+			),
 			title: t('default:list.RidesList.columns.end_time_observed.label'),
 			width: 230,
 		},
@@ -113,7 +119,13 @@ export function RidesList() {
 		},
 		{
 			accessor: 'duration_observed',
-			render: item => <RidesListCellTimeObserved observedTimestamp={item.end_time_observed} scheduledTimestamp={item.end_time_scheduled} />,
+			render: item => (
+				<DelayStatusDisplay
+					endTimestamp={item.end_time_observed}
+					startTimestamp={item.end_time_scheduled}
+					status={item.end_delay_status}
+				/>
+			),
 			title: t('default:list.RidesList.columns.duration_observed.label'),
 			width: 160,
 		},

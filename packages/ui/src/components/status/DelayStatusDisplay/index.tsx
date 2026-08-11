@@ -1,7 +1,7 @@
 'use client';
 
 import { type DelayStatus, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { displayUnixTimestamp, Section, Tag } from '@tmlmobilidade/ui';
+import { displayDuration, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,24 +10,24 @@ import { useTranslation } from 'react-i18next';
 interface DelayStatusDisplayProps {
 
 	/**
-	 * The delay difference in minutes.
+	 * The end timestamp.
 	 */
-	delay?: null | number
+	endTimestamp?: null | UnixTimestamp
+
+	/**
+	 * The start timestamp.
+	 */
+	startTimestamp?: null | UnixTimestamp
 
 	/**
 	 * The delay status.
 	 */
 	status?: DelayStatus | null
-
-	/**
-	 * The timestamp of the observed time.
-	 */
-	timestamp?: null | UnixTimestamp
 }
 
 /* * */
 
-export function DelayStatusDisplay({ delay, status, timestamp }: DelayStatusDisplayProps) {
+export function DelayStatusDisplay({ endTimestamp, startTimestamp, status }: DelayStatusDisplayProps) {
 	//
 
 	//
@@ -38,25 +38,9 @@ export function DelayStatusDisplay({ delay, status, timestamp }: DelayStatusDisp
 	//
 	// B. Transform data
 
-	const timestampValue = useMemo(() => {
-		return displayUnixTimestamp(timestamp);
-	}, [timestamp]);
-
-	const delayValue = useMemo(() => {
-		let result: null | string = null;
-		// Set the sign of the delay
-		if (delay > 0) result = '+';
-		if (delay < 0) result = '-';
-		// Separate the absolute value into hours and minutes
-		const hours = Math.floor(Math.abs(delay) / 60);
-		const minutes = Math.abs(delay) % 60;
-		// Only include hours if greater than 0
-		if (hours > 0) result += `${hours}h`;
-		// Only include minutes if greater than 0
-		if (minutes > 0) result += `${minutes}min`;
-		// Return the formatted value
-		return result;
-	}, [delay]);
+	const durationValue = useMemo(() => {
+		return displayDuration(startTimestamp, endTimestamp);
+	}, [startTimestamp, endTimestamp]);
 
 	//
 	// C. Render components
@@ -67,31 +51,28 @@ export function DelayStatusDisplay({ delay, status, timestamp }: DelayStatusDisp
 
 	if (status === 'ontime') {
 		return (
-			<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-				{timestampValue && <Tag label={timestampValue} variant="secondary" />}
-				{!delayValue && <Tag label={t('shared:status.delay_status.ontime')} variant="success" />}
-				{delayValue && <Tag label={delayValue} variant="success" />}
-			</Section>
+			<>
+				{!durationValue && <Tag label={t('shared:status.delay_status.ontime')} variant="success" />}
+				{durationValue && <Tag label={durationValue} variant="success" />}
+			</>
 		);
 	}
 
 	if (status === 'delayed') {
 		return (
-			<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-				{timestampValue && <Tag label={timestampValue} variant="warning" />}
-				{!delayValue && <Tag label={t('shared:status.delay_status.delayed')} variant="warning" />}
-				{delayValue && <Tag label={delayValue} variant="warning" />}
-			</Section>
+			<>
+				{!durationValue && <Tag label={t('shared:status.delay_status.delayed')} variant="warning" />}
+				{durationValue && <Tag label={durationValue} variant="warning" />}
+			</>
 		);
 	}
 
 	if (status === 'early') {
 		return (
-			<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-				{timestampValue && <Tag label={timestampValue} variant="danger" />}
-				{!delayValue && <Tag label={t('shared:status.delay_status.early')} variant="danger" />}
-				{delayValue && <Tag label={delayValue} variant="danger" />}
-			</Section>
+			<>
+				{!durationValue && <Tag label={t('shared:status.delay_status.early')} variant="danger" />}
+				{durationValue && <Tag label={durationValue} variant="danger" />}
+			</>
 		);
 	}
 }
