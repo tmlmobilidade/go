@@ -18,8 +18,6 @@ export async function getRides(request: FastifyRequest<{ Body: ControllerRidesLi
 
 	const result = await getControllerRidesList(request.body);
 
-	console.log('result', result);
-
 	reply.send({
 		data: result,
 		error: null,
