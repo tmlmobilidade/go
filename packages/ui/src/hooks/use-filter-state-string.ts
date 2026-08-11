@@ -71,9 +71,9 @@ export function useFilterStateString(key: string, defaults = ''): UseFilterState
 	//
 	// D. Return data
 
-	return {
+	return useMemo(() => ({
 		isActive,
 		set: setUrlValue,
 		value: effectiveValue,
-	};
+	}), [isActive, setUrlValue, effectiveValue]);
 }

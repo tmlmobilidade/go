@@ -1,6 +1,7 @@
 'use client';
 
 import { parseAsBoolean, useQueryState } from 'nuqs';
+import { useMemo } from 'react';
 
 /* * */
 
@@ -29,10 +30,10 @@ export function useFilterStateToggle(key: string): UseFilterStateToggleReturnTyp
 	//
 	// D. Return data
 
-	return {
+	return useMemo(() => ({
 		isActive: urlValue === true,
 		set: setUrlValue,
 		toggle: () => setUrlValue(prev => !prev),
 		value: urlValue === true,
-	};
+	}), [setUrlValue, urlValue]);
 }

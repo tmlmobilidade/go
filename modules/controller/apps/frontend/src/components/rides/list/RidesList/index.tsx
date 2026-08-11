@@ -3,7 +3,6 @@
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { OperationalDateTag } from '@/components/common/OperationalDateTag';
 import { StartTimeStatusTag } from '@/components/common/StartTimeStatusTag';
-import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { RidesListCellDrivers } from '@/components/rides/list/RidesListCellDrivers';
 import { RidesListCellHeadsign } from '@/components/rides/list/RidesListCellHeadsign';
 import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPassengers';
@@ -12,12 +11,14 @@ import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideView } from '@tmlmobilidade/go-types-operation';
+import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-queries';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Section, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+
+import { useRidesListData } from './use-rides-list-data';
 
 /* * */
 
@@ -36,7 +37,7 @@ export function RidesList() {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
-	const ridesListContext = useRidesListContext();
+	const ridesData = useRidesListData();
 
 	const formatTimestamp = (timestamp: UnixTimestamp) => {
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
@@ -47,7 +48,7 @@ export function RidesList() {
 		return Math.round((endTimestamp - startTimestamp) / MS_PER_MINUTE) + ' min';
 	};
 
-	const formatDurationDeviation = (item: RideView) => {
+	const formatDurationDeviation = (item: ControllerRidesListItem) => {
 		if (!item.start_time_observed || !item.end_time_observed) return null;
 
 		const plannedDuration = item.end_time_scheduled - item.start_time_scheduled;
@@ -58,7 +59,7 @@ export function RidesList() {
 		return (deviationInMinutes > 0 ? '+' : '') + deviationInMinutes + ' min';
 	};
 
-	const columns: DataTableColumn<RideView>[] = [
+	const columns: DataTableColumn<ControllerRidesListItem>[] = [
 		{
 			accessor: 'seen_last_at',
 			render: item => <SeenStatusIndicator status={item.seen_status} tooltip={formatTimestamp(item.seen_last_at)} />,
@@ -196,7 +197,7 @@ export function RidesList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: RideView) => {
+	const handleRowClick = (item: ControllerRidesListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_DETAIL(item._id)));
 	};
 
@@ -209,16 +210,14 @@ export function RidesList() {
 			<RidesListFiltersBar key="filters" />,
 		]}
 		>
-			{ridesListContext.flags.error && <ErrorDisplay message={ridesListContext.flags.error} />}
+			{ridesData.error && <ErrorDisplay message={ridesData.error} />}
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={ridesListContext.data.filtered}
+				records={ridesData.data}
 				rowIdAccessor="_id"
 				selectedId={decodeURIComponent(params.id ?? '')}
 			/>
 		</Pane>
 	);
-
-	//
 }

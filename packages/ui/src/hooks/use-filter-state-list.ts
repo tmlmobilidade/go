@@ -76,12 +76,10 @@ export function useFilterStateList<T extends string>(key: string, defaults: T[],
 	//
 	// D. Return data
 
-	return {
+	return useMemo(() => ({
 		isActive,
 		options: parsedOptions,
 		set: setUrlValue,
 		value: effectiveValue,
-	};
-
-	//
+	}), [isActive, parsedOptions, effectiveValue]);
 }

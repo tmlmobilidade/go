@@ -79,11 +79,11 @@ export function useFilterStateDateRange(key: string, defaultStart?: null | UnixT
 	//
 	// D. Return data
 
-	return {
+	return useMemo(() => ({
 		isActive,
 		setEnd: setUrlValueEnd,
 		setStart: setUrlValueStart,
 		value_end: effectiveValueEnd,
 		value_start: effectiveValueStart,
-	};
+	}), [isActive, setUrlValueEnd, setUrlValueStart, effectiveValueEnd, effectiveValueStart]);
 }
