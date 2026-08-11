@@ -1,7 +1,7 @@
 'use client';
 
 import { type SeenStatus, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { displayUnixTimestamp, SeenStatusIndicator } from '@tmlmobilidade/ui';
+import { displayUnixTimestamp, SeenStatusDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -20,5 +20,5 @@ export function RidesListCellSeenLastAt({ status, timestamp }: RidesListCellSeen
 		return displayUnixTimestamp(timestamp);
 	}, [timestamp]);
 
-	return <SeenStatusIndicator status={status} tooltip={tooltipValue} />;
+	return <SeenStatusDisplay status={status} tooltip={tooltipValue} />;
 }
