@@ -50,9 +50,9 @@ export function RidesDetailHeader() {
 			<CloseButton onClick={handleClose} type="close" />
 			<IdTag id={rideAnalysisContext.data.ride_id} copyOnClick />
 			<Spacer />
-			<ProcessingStatusDisplay disabled={true} value={rideAnalysisContext.data.ride?.system_status} />
+			{/* <ProcessingStatusDisplay disabled={true} value={rideAnalysisContext.data.ride?.system_status} />
 			<AnalysisStatusTag grade={rideAnalysisContext.data.ride?.analysis_simple_three_vehicle_events_grade} />
-			<OperationalStatusDisplay value={rideAnalysisContext.data.ride?.operational_status} />
+			<OperationalStatusDisplay value={rideAnalysisContext.data.ride?.operational_status} /> */}
 			<IconButton
 				disabled={!rideAnalysisContext.data.ride_id || rideFavoritesContext.flags.loading}
 				icon={isFavorite ? <IconHeartFilled /> : <IconHeart />}

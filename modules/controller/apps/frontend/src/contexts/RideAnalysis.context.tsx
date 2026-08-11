@@ -5,9 +5,9 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/geo';
 import { type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { normalizeRide } from '@tmlmobilidade/normalizers';
-import { type HashedShape, type HashedTrip, PermissionCatalog, type Ride, type RideNormalized } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { getCssVariableValue } from '@tmlmobilidade/ui';
 import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -45,9 +45,9 @@ interface RideAnalysisContextState {
 		setSelectedView: (value: keyof typeof RideAnalysisViewOptions) => void
 	}
 	data: {
-		hashed_shape: HashedShape | null
-		hashed_trip: HashedTrip | null
-		ride: null | RideNormalized
+		hashed_shape: null
+		hashed_trip: null
+		ride: null
 		ride_id: Ride['_id']
 		selected_view: keyof typeof RideAnalysisViewOptions
 		simplified_apex_locations: SimplifiedApexLocation[]
@@ -95,8 +95,8 @@ export function RideAnalysisContextProvider({ children, rideId }: PropsWithChild
 	const { data: simplifiedApexValidationsData, error: simplifiedApexValidationsError, isLoading: simplifiedApexValidationsLoading } = useSWR<SimplifiedApexValidation[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_VALIDATIONS(rideId), { refreshInterval: 30_000 });
 	const { data: simplifiedApexOnBoardSalesData, error: simplifiedApexOnBoardSalesError, isLoading: simplifiedApexOnBoardSalesLoading } = useSWR<SimplifiedApexOnBoardSale[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_SALES(rideId), { refreshInterval: 30_000 });
 	const { data: simplifiedApexOnBoardRefundsData, error: simplifiedApexOnBoardRefundsError, isLoading: simplifiedApexOnBoardRefundsLoading } = useSWR<SimplifiedApexOnBoardRefund[]>(API_ROUTES.controller.RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_REFUNDS(rideId), { refreshInterval: 30_000 });
-	const { data: hashedTripData, error: hashedTripError, isLoading: hashedTripLoading } = useSWR<HashedTrip>(API_ROUTES.controller.RIDES_DETAIL_HASHED_TRIP(rideId));
-	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<HashedShape>('');
+	const { data: hashedTripData, error: hashedTripError, isLoading: hashedTripLoading } = useSWR<any>(API_ROUTES.controller.RIDES_DETAIL_HASHED_TRIP(rideId));
+	const { data: hashedShapeData, error: hashedShapeError, isLoading: hashedShapeLoading } = useSWR<any>('');
 
 	const [selectedView, setSelectedView] = useState<keyof typeof RideAnalysisViewOptions>(Object.keys(RideAnalysisViewOptions)[0] as keyof typeof RideAnalysisViewOptions);
 
@@ -105,7 +105,7 @@ export function RideAnalysisContextProvider({ children, rideId }: PropsWithChild
 
 	const rideDataNormalized = useMemo(() => {
 		if (!rideData) return null;
-		return normalizeRide(rideData);
+		return null;
 	}, [rideData]);
 
 	const observedEventsFC: FeatureCollection<Point, MapOverlayObservedPathPointsDataProps> = useMemo(() => {
