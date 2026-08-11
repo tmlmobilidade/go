@@ -54,6 +54,7 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 	const mapContext = useMapContext();
 
 	const [cursor, setCursor] = useState<string>('auto');
+	const [areMapAssetsLoaded, setAreMapAssetsLoaded] = useState(false);
 
 	//
 	// B. Transform data
@@ -66,12 +67,15 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 	//
 	// C. Handle actions
 
-	const handleOnLoad = (event: MapLibreEvent) => {
-		loadMapAssets(event.target, MAP_ASSETS_ALERTS);
-		loadMapAssets(event.target, MAP_ASSETS_MISC);
-		loadMapAssets(event.target, MAP_ASSETS_SHAPES);
-		loadMapAssets(event.target, MAP_ASSETS_STOPS);
-		loadMapAssets(event.target, MAP_ASSETS_VEHICLES);
+	const handleOnLoad = async (event: MapLibreEvent) => {
+		await Promise.all([
+			loadMapAssets(event.target, MAP_ASSETS_ALERTS),
+			loadMapAssets(event.target, MAP_ASSETS_MISC),
+			loadMapAssets(event.target, MAP_ASSETS_SHAPES),
+			loadMapAssets(event.target, MAP_ASSETS_STOPS),
+			loadMapAssets(event.target, MAP_ASSETS_VEHICLES),
+		]);
+		setAreMapAssetsLoaded(true);
 	};
 
 	const handleOnMouseEnter = useCallback((event) => {
@@ -135,7 +139,7 @@ export function MapView({ children, id, interactiveLayerIds = [], onClick, onDra
 			>
 
 				<div className={styles.childrenWrapper}>
-					{children}
+					{areMapAssetsLoaded && children}
 				</div>
 
 			</Map>
