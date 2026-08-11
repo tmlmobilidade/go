@@ -1,5 +1,6 @@
 'use client';
 
+import { AnnotationsContextProvider } from '@/contexts/Annotations.context';
 import { EventsContextProvider } from '@/contexts/Events.context';
 import { HolidaysContextProvider } from '@/contexts/Holidays.context';
 import { PeriodsContextProvider } from '@/contexts/Periods.context';
@@ -18,13 +19,15 @@ export const openRulesCalendarPreviewModal = (agencyId: string, rules: ScheduleR
 	openModal({
 		children: (
 			<MeContextProvider>
-				<EventsContextProvider agencyId={agencyId}>
-					<PeriodsContextProvider agencyId={agencyId}>
-						<HolidaysContextProvider agencyId={agencyId}>
-							<RulesCalendarPreview patternCode={patternCode} rules={rules} />
-						</HolidaysContextProvider>
-					</PeriodsContextProvider>
-				</EventsContextProvider>
+				<AnnotationsContextProvider agencyId={agencyId}>
+					<EventsContextProvider agencyId={agencyId}>
+						<PeriodsContextProvider agencyId={agencyId}>
+							<HolidaysContextProvider agencyId={agencyId}>
+								<RulesCalendarPreview patternCode={patternCode} rules={rules} />
+							</HolidaysContextProvider>
+						</PeriodsContextProvider>
+					</EventsContextProvider>
+				</AnnotationsContextProvider>
 			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
