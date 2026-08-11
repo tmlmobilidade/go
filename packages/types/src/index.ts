@@ -1,5 +1,4 @@
 export * from '@/agencies/index.js';
-export * from '@/alerts/index.js';
 export * from '@/api/index.js';
 export * from '@/app-configs/index.js';
 export * from '@/attachment.js';

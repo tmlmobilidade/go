@@ -1,8 +1,6 @@
 /* * */
 
-import { AlertCauseSchema } from '@/alerts/cause.js';
-import { AlertEffectSchema } from '@/alerts/effect.js';
-import { AlertReferenceTypeSchema } from '@/alerts/reference-type.js';
+import { AlertCauseSchema, AlertEffectSchema, AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
 import { z } from 'zod';
 
 /* * */
