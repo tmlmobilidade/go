@@ -1,14 +1,16 @@
 /* * */
 
+import { applyYearPeriodDateChanges } from '@/utils/year-periods-dates.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { findCommonDates, mergeDateArrays, removeDatesFromArray } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { type ClientSession, type Filter, MongoDatabaseClient, withTransaction } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateYearPeriodDto, OperationalDate, PermissionCatalog, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/types';
+import { type CreateYearPeriodDto, type OperationalDate, PermissionCatalog, type UpdateYearPeriodDatesDto, UpdateYearPeriodDatesSchema, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/types';
 
 /* * */
 
+// TODO: Migrate this legacy controller to the newer one-file-per-handler endpoint structure.
 export class YearPeriodsController {
 	//
 
@@ -459,6 +461,81 @@ export class YearPeriodsController {
 	}
 
 	/**
+	 * Applies explicit date additions and removals to a year period in one transaction.
+	 * Added dates are removed from conflicting periods with the exact same agency set.
+	 * @param request Fastify request containing period ID and date changes
+	 * @param reply Fastify reply
+	 */
+	static async updateDates(request: FastifyRequest<{ Body: UpdateYearPeriodDatesDto, Params: { id: string } }>, reply: FastifyReply<YearPeriod>) {
+		//
+
+		//
+		// Get and validate the target period
+
+		const periodData = await goDb.offer.yearPeriods.findById(request.params.id);
+		if (!periodData) {
+			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'YearPeriod not found');
+		}
+
+		const parsedChanges = UpdateYearPeriodDatesSchema.safeParse(request.body);
+		if (!parsedChanges.success) {
+			throw new HttpException(
+				HTTP_STATUS.BAD_REQUEST,
+				parsedChanges.error.issues.map(issue => issue.message).join('; '),
+			);
+		}
+
+		//
+		// Validate update permissions for every agency in the period
+
+		const userYearPeriodPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.year_periods.scope, PermissionCatalog.all.year_periods.actions.update);
+		if (!userYearPeriodPermissions) {
+			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update year periods');
+		}
+
+		if ('resources' in userYearPeriodPermissions && 'agency_ids' in userYearPeriodPermissions.resources) {
+			const userAgencyIds = userYearPeriodPermissions.resources['agency_ids'];
+			const hasAllowAll = userAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
+			const hasAllAgencies = periodData.agency_ids.every(agencyId => userAgencyIds.includes(agencyId));
+
+			if (!hasAllowAll && !hasAllAgencies) {
+				throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this period');
+			}
+		}
+
+		//
+		// Apply the target update and conflict transfers atomically
+
+		const updatedDates = applyYearPeriodDateChanges(
+			periodData.dates ?? [],
+			parsedChanges.data.add_dates,
+			parsedChanges.data.remove_dates,
+		);
+		const mongoClient = await MongoDatabaseClient.getClient({ prefix: 'GODB', tunnelType: 'GO' });
+		const updatedPeriod = await withTransaction(mongoClient, async (session) => {
+			const result = await goDb.offer.yearPeriods.updateById(periodData._id, { dates: updatedDates }, { session });
+
+			await YearPeriodsController.handleDateAssignment(
+				periodData.agency_ids,
+				parsedChanges.data.add_dates,
+				periodData._id,
+				[],
+				session,
+			);
+
+			return result;
+		});
+
+		return reply.send({
+			data: updatedPeriod,
+			error: null,
+			statusCode: HTTP_STATUS.OK,
+		});
+
+		//
+	}
+
+	/**
 	 * Utility function to handle date assignment with conflict resolution.
 	 * Merges new dates with existing dates and removes conflicts from other year periods with the EXACT same agency set.
 	 * @param agencyIds - Array of agency IDs
@@ -472,6 +549,7 @@ export class YearPeriodsController {
 		newDates: OperationalDate[],
 		yearPeriodId?: string,
 		existingDates: OperationalDate[] = [],
+		session?: ClientSession,
 	): Promise<OperationalDate[]> {
 		//
 
@@ -490,7 +568,7 @@ export class YearPeriodsController {
 			query._id = { $ne: yearPeriodId };
 		}
 
-		const agencyPeriods = await goDb.offer.yearPeriods.findMany(query);
+		const agencyPeriods = await goDb.offer.yearPeriods.findMany(query, { session });
 
 		//
 		// Helper function to check if two agency arrays are exactly the same (regardless of order)
@@ -517,7 +595,7 @@ export class YearPeriodsController {
 			if (conflicts.length > 0) {
 				// Remove conflicting dates from this year period
 				const updatedDates = removeDatesFromArray(otherPeriod.dates, conflicts);
-				await goDb.offer.yearPeriods.updateById(otherPeriod._id, { dates: updatedDates });
+				await goDb.offer.yearPeriods.updateById(otherPeriod._id, { dates: updatedDates }, { session });
 			}
 		}
 

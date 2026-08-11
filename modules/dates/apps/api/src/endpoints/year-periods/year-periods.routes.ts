@@ -46,6 +46,12 @@ server.register(
 			YearPeriodsController.update,
 		);
 
+		instance.put(
+			'/:id/dates',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.update]) },
+			YearPeriodsController.updateDates,
+		);
+
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.lock]) },
