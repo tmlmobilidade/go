@@ -147,7 +147,7 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 			)}
 			<div className={styles.children}>
 				<MapViewAttribution />
-				{children}
+				{!mapViewContext.flags.loading && children}
 			</div>
 		</Map>
 	);
