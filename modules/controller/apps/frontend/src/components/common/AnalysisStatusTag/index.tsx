@@ -1,14 +1,14 @@
 'use client';
 
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { type RideAnalysis } from '@tmlmobilidade/types';
+import { type GradeStatus } from '@tmlmobilidade/go-types-shared';
 import { Tag } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
 interface AnalysisStatusTagProps {
-	grade: 'none' | RideAnalysis['grade']
+	grade: 'none' | GradeStatus
 }
 
 /* * */

@@ -1,6 +1,5 @@
 'use client';
 
-import { RidesListContextState } from '@/components/rides/list/RidesList.context';
 import { AgenciesContextProvider, useAgenciesContext } from '@/contexts/Agencies.context';
 import { RidesExportModalContextProvider, useRidesExportModalContext } from '@/contexts/RidesExport.context';
 import { IconFileDownload } from '@tabler/icons-react';
@@ -17,7 +16,7 @@ export const RIDES_EXPORT_MODAL_ID = 'rides-export-modal';
 
 /* * */
 
-export const openRideExportModal = (filters: RidesListContextState['filters']) => {
+export const openRideExportModal = (filters: any) => {
 	openModal({
 		children: (
 			<ExportsContextProvider>

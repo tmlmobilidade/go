@@ -1,7 +1,7 @@
 'use client';
 
 import { IconAlertCircle, IconCheck, IconClock, IconX } from '@tabler/icons-react';
-import { RideAcceptanceStatus } from '@tmlmobilidade/types';
+import { type RideAcceptanceStatus } from '@tmlmobilidade/go-types-operation';
 import { Tag } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
