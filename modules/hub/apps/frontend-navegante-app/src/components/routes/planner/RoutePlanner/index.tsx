@@ -42,9 +42,9 @@ interface RoutePlannerSheetTitles {
 // force this otherwise), and treats `snapTo(0)` as an alias for closing the sheet rather than
 // animating to it. So index 0 is always "closed" here, and the smallest *visible* snap is index 1.
 const ROUTE_PLANNER_SHEET_SNAP_POINTS = {
-	destinationSearch: [0, 0.72, 0.95],
-	fullInput: [0, 0.52, 0.95],
-	itineraryDetail: [0, 0.14, MAP_BOTTOM_SHEET_SNAP_POINTS[MAP_BOTTOM_SHEET_INITIAL_SNAP], 0.64, 0.95],
+	destinationSearch: [0, 0.72, 0.95, 1],
+	fullInput: [0, 0.52, 0.95, 1],
+	itineraryDetail: [0, 0.14, MAP_BOTTOM_SHEET_SNAP_POINTS[MAP_BOTTOM_SHEET_INITIAL_SNAP], 0.64, 0.95, 1],
 };
 
 /* * */

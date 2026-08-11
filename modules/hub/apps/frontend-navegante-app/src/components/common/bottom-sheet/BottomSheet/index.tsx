@@ -46,7 +46,7 @@ interface BottomSheetProps {
 
 const SHEET_SNAP_POINTS_BY_SIZE: Record<BottomSheetSize, number[]> = {
 	fit: [0, 1],
-	full: [0, 0.95],
+	full: [0, 0.95, 1],
 	half: [0, 0.55],
 	short: [0, 0.32],
 };
