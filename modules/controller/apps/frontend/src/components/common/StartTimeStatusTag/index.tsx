@@ -7,23 +7,23 @@ import { Section, Tag } from '@tmlmobilidade/ui';
 
 interface Props {
 	delayValue?: null | string
-	startTimeObserved: null | string
 	status: DelayStatus
+	timeObserved: null | string
 }
 
 /* * */
 
-export function StartTimeStatusTag({ delayValue, startTimeObserved, status }: Props) {
+export function TimeObservedStatusTag({ delayValue, status, timeObserved }: Props) {
 	//
 
-	if (!startTimeObserved) {
+	if (!timeObserved) {
 		return null;
 	}
 
 	if (status === 'ontime') {
 		return (
 			<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-				<Tag label={startTimeObserved} variant="secondary" />
+				<Tag label={timeObserved} variant="secondary" />
 				<Tag label="Ontime" variant="success" />
 			</Section>
 		);
@@ -32,7 +32,7 @@ export function StartTimeStatusTag({ delayValue, startTimeObserved, status }: Pr
 	if (status === 'delayed') {
 		return (
 			<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-				<Tag label={startTimeObserved} variant="warning" />
+				<Tag label={timeObserved} variant="warning" />
 				<Tag label={delayValue ? `Delayed ${delayValue}` : 'Delayed'} variant="warning" />
 			</Section>
 		);
@@ -41,7 +41,7 @@ export function StartTimeStatusTag({ delayValue, startTimeObserved, status }: Pr
 	if (status === 'early') {
 		return (
 			<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-				<Tag label={startTimeObserved} variant="danger" />
+				<Tag label={timeObserved} variant="danger" />
 				<Tag label={delayValue ? `Early ${delayValue}` : 'Early'} variant="danger" />
 			</Section>
 		);

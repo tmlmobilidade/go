@@ -13,11 +13,13 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-queries';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Section, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Section, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
+import { RidesListCellSeenLastAt } from '../RidesListCellSeenLastAt';
+import { RidesListCellTimeScheduled } from '../RidesListCellTimeScheduled';
 import { useRidesListData } from './use-rides-list-data';
 
 /* * */
@@ -62,7 +64,7 @@ export function RidesList() {
 	const columns: DataTableColumn<ControllerRidesListItem>[] = [
 		{
 			accessor: 'seen_last_at',
-			render: item => <SeenStatusIndicator status={item.seen_status} tooltip={formatTimestamp(item.seen_last_at)} />,
+			render: item => <RidesListCellSeenLastAt status={item.seen_status} timestamp={item.seen_last_at} />,
 			title: t('default:list.RidesList.columns.seen_last_at.label'),
 			width: 24,
 		},
@@ -92,7 +94,7 @@ export function RidesList() {
 		},
 		{
 			accessor: 'start_time_scheduled',
-			render: item => <Tag label={formatTimestamp(item.start_time_scheduled)} variant="muted" />,
+			render: item => <RidesListCellTimeScheduled timestamp={item.start_time_scheduled} />,
 			title: t('default:list.RidesList.columns.start_time_scheduled.label'),
 			width: 80,
 		},
@@ -110,7 +112,7 @@ export function RidesList() {
 		},
 		{
 			accessor: 'end_time_scheduled',
-			render: item => <Tag label={formatTimestamp(item.end_time_scheduled)} variant="muted" />,
+			render: item => <RidesListCellTimeScheduled timestamp={item.end_time_scheduled} />,
 			title: t('default:list.RidesList.columns.end_time_scheduled.label'),
 			width: 80,
 		},
@@ -170,25 +172,25 @@ export function RidesList() {
 		},
 		{
 			accessor: 'analysis_simple_three_vehicle_events_grade',
-			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis_simple_three_vehicle_events_grade} /> : null,
+			render: item => item.operational_status === 'ended' && <AnalysisStatusTag grade={item.analysis_simple_three_vehicle_events_grade} />,
 			title: '3 Eventos',
 			width: 100,
 		},
 		{
 			accessor: 'analysis_at_least_one_vehicle_event_on_last_stop_grade',
-			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis_at_least_one_vehicle_event_on_last_stop_grade} /> : null,
+			render: item => item.operational_status === 'ended' && <AnalysisStatusTag grade={item.analysis_at_least_one_vehicle_event_on_last_stop_grade} />,
 			title: 'Last Stop',
 			width: 100,
 		},
 		{
 			accessor: 'analysis_expected_apex_validation_interval_grade',
-			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis_expected_apex_validation_interval_grade} /> : null,
+			render: item => item.operational_status === 'ended' && <AnalysisStatusTag grade={item.analysis_expected_apex_validation_interval_grade} />,
 			title: 'Int. APEX',
 			width: 100,
 		},
 		{
 			accessor: 'analysis_transaction_sequentiality_grade',
-			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis_transaction_sequentiality_grade} /> : null,
+			render: item => item.operational_status === 'ended' && <AnalysisStatusTag grade={item.analysis_transaction_sequentiality_grade} />,
 			title: 'Seq. APEX',
 			width: 120,
 		},
