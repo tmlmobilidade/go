@@ -12,7 +12,7 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="periods"
 			panes={[
-				<PeriodsListContextProvider>
+				<PeriodsListContextProvider key="periods-list">
 					<PeriodsList />
 				</PeriodsListContextProvider>,
 				children,
