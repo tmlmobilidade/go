@@ -9,7 +9,7 @@ import { RideAnalysisMetadata } from '@/components/rides/analysis/RideAnalysisMe
 import { RideAnalysisAnalysisResult } from '@/components/rides/analysis/RideAnalysisResult';
 import { RideAnalysisVehicleEvents } from '@/components/rides/analysis/RideAnalysisVehicleEvents';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { useMemo } from 'react';
 
 /* * */
@@ -24,11 +24,12 @@ export function RideAnalysisAnalysis() {
 	// B. Transform data
 
 	const analysisItems = useMemo(() => {
+		return [];
 		// Skip if no analysis data is available
-		if (!rideAnalysisContext.data.ride?.analysis) return [];
+		// if (!rideAnalysisContext.data.ride?.analysis) return [];
 		// Transform the analysis data into an array of items
-		return Object.entries(rideAnalysisContext.data.ride.analysis).map(([id, item]) => ({ id: id as keyof Ride['analysis'], ...(item as RideAnalysis) }));
-	}, [rideAnalysisContext.data.ride?.analysis]);
+		// return Object.entries(rideAnalysisContext.data.ride.analysis).map(([id, item]) => ({ id: id as keyof Ride['analysis'], ...(item as RideAnalysis) }));
+	}, []);
 
 	//
 	// C. Render components

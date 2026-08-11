@@ -1,7 +1,7 @@
 'use client';
 
 import { RideAnalysisAnalysisResultItem } from '@/components/rides/analysis/RideAnalysisResultItem';
-import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 interface RideAnalysisAnalysisResultProps {
 	defaultOpen?: boolean
-	items: (RideAnalysis & { id: keyof Ride['analysis'] })[]
+	items: (any & { id: string })[]
 }
 
 /* * */
