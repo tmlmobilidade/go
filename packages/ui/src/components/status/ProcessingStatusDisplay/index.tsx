@@ -5,21 +5,21 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Select } from '../../inputs/Select';
-import { Tag } from '../Tag';
+import { Tag } from '../../tags/Tag';
 
 /* * */
 
-interface ProcessingStatusTagProps {
+interface ProcessingStatusDisplayProps {
 	disabled?: boolean
 	onChange?: (value: ProcessingStatus) => void
 	onClick?: () => void
 	tooltip?: string
-	value: ProcessingStatus
+	value?: null | ProcessingStatus
 }
 
 /* * */
 
-export function ProcessingStatusTag({ disabled, onChange, onClick, tooltip, value }: ProcessingStatusTagProps) {
+export function ProcessingStatusDisplay({ disabled, onChange, onClick, tooltip, value }: ProcessingStatusDisplayProps) {
 	//
 
 	//

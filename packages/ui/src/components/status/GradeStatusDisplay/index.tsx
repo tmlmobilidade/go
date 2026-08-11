@@ -3,26 +3,20 @@
 import { type GradeStatus } from '@tmlmobilidade/types';
 import { useTranslation } from 'react-i18next';
 
-import { Tag } from '../Tag';
+import { Tag } from '../../tags/Tag';
 
 /* * */
 
-interface GradeStatusTagProps {
-	value: GradeStatus
+interface GradeStatusDisplayProps {
+	value?: GradeStatus | null
 }
 
 /* * */
 
-export function GradeStatusTag({ value }: GradeStatusTagProps) {
+export function GradeStatusDisplay({ value }: GradeStatusDisplayProps) {
 	//
-
-	//
-	// A. Setup variables
 
 	const { t } = useTranslation();
-
-	//
-	// B. Render components
 
 	if (!value) return;
 

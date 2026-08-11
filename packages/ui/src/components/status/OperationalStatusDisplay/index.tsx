@@ -4,26 +4,20 @@ import { IconFlag3Filled, IconPlayerPlayFilled, IconPlayerTrackNextFilled, IconX
 import { type OperationalStatus } from '@tmlmobilidade/types';
 import { useTranslation } from 'react-i18next';
 
-import { Tag } from '../Tag';
+import { Tag } from '../../tags/Tag';
 
 /* * */
 
-interface OperationalStatusTagProps {
-	value?: OperationalStatus
+interface OperationalStatusDisplayProps {
+	value?: null | OperationalStatus
 }
 
 /* * */
 
-export function OperationalStatusTag({ value }: OperationalStatusTagProps) {
+export function OperationalStatusDisplay({ value }: OperationalStatusDisplayProps) {
 	//
-
-	//
-	// A. Setup variables
 
 	const { t } = useTranslation();
-
-	//
-	// B. Render components
 
 	if (value === 'scheduled') {
 		return <Tag icon={<IconPlayerTrackNextFilled />} label={t('shared:status.operational_status.scheduled')} variant="muted" />;
@@ -40,6 +34,4 @@ export function OperationalStatusTag({ value }: OperationalStatusTagProps) {
 	if (value === 'ended') {
 		return <Tag icon={<IconFlag3Filled />} label={t('shared:status.operational_status.ended')} variant="secondary" />;
 	}
-
-	//
 }

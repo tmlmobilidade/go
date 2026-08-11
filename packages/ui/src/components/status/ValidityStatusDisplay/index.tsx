@@ -5,21 +5,21 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Select } from '../../inputs/Select';
-import { Tag } from '../Tag';
+import { Tag } from '../../tags/Tag';
 
 /* * */
 
-interface ValidityStatusTagProps {
+interface ValidityStatusDisplayProps {
 	disabled?: boolean
 	onChange?: (value: ValidityStatus) => void
 	onClick?: () => void
 	showUnknown?: boolean
-	value: ValidityStatus
+	value?: null | ValidityStatus
 }
 
 /* * */
 
-export function ValidityStatusTag({ disabled, onChange, onClick, showUnknown = false, value }: ValidityStatusTagProps) {
+export function ValidityStatusDisplay({ disabled, onChange, onClick, showUnknown = false, value }: ValidityStatusDisplayProps) {
 	//
 
 	//

@@ -2,18 +2,18 @@
 
 import { type SeenStatus } from '@tmlmobilidade/types';
 
-import { Indicator } from '../Indicator';
+import { Indicator } from '../../display/Indicator';
 
 /* * */
 
-interface SeenStatusIndicatorProps {
-	status?: SeenStatus
+interface SeenStatusDisplayProps {
+	status?: null | SeenStatus
 	tooltip?: string
 }
 
 /* * */
 
-export function SeenStatusIndicator({ status, tooltip }: SeenStatusIndicatorProps) {
+export function SeenStatusDisplay({ status, tooltip }: SeenStatusDisplayProps) {
 	//
 
 	if (status === 'unseen') {

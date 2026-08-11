@@ -5,20 +5,20 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Select } from '../../inputs/Select';
-import { Tag } from '../Tag';
+import { Tag } from '../../tags/Tag';
 
 /* * */
 
-interface PublishStatusTagProps {
+interface PublishStatusDisplayProps {
 	disabled?: boolean
 	onChange?: (value: PublishStatus) => void
 	onClick?: () => void
-	value: PublishStatus
+	value?: null | PublishStatus
 }
 
 /* * */
 
-export function PublishStatusTag({ disabled, onChange, onClick, value }: PublishStatusTagProps) {
+export function PublishStatusDisplay({ disabled, onChange, onClick, value }: PublishStatusDisplayProps) {
 	//
 
 	//
