@@ -5,7 +5,7 @@ import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
 
-const DEFAULT_MOTIS_API_BASE_URL = 'http://localhost:8080';
+const DEFAULT_MOTIS_API_BASE_URL = 'https://motis.go.tmlmobilidade.pt';
 
 /* * */
 
