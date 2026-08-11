@@ -1,7 +1,7 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type GetRidesQuery, GetRidesQuerySchema, type Ride } from '@tmlmobilidade/go-types-operation';
+import { type GetRidesQuery, GetRidesQuerySchema, type RideView } from '@tmlmobilidade/go-types-operation';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { type SelectDataItem, useStateRef } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -20,7 +20,7 @@ interface UseDataRidesReturnType {
 	isLoading: boolean
 	lastUpdatedAt: null | UnixTimestamp
 	options: SelectDataItem[]
-	raw: Ride[]
+	raw: RideView[]
 }
 
 /* * */
@@ -31,7 +31,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 	//
 	// A. Setup variables
 
-	const ridesData = useStateRef<Ride[]>([]);
+	const ridesData = useStateRef<RideView[]>([]);
 
 	const [isError, setIsError] = useState<null | string>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -51,7 +51,7 @@ export function useDataRides(apiUrl: string, props?: UseDataRidesProps): UseData
 				// Validate the query against the schema
 				const validatedQuery = GetRidesQuerySchema.parse(props.query);
 				// Fetch the data and parse the response
-				const responseData = await fetchData<Ride[]>(apiUrl, 'POST', validatedQuery);
+				const responseData = await fetchData<RideView[]>(apiUrl, 'POST', validatedQuery);
 				if (!responseData.data) return;
 				// Set the data in the state
 				ridesData.set(responseData.data);

@@ -1,6 +1,6 @@
 /* * */
 
-import { RideNormalized } from '@tmlmobilidade/types';
+import { type DelayStatus } from '@tmlmobilidade/go-types-shared';
 import { Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */
@@ -8,7 +8,7 @@ import { Section, Tag } from '@tmlmobilidade/ui';
 interface Props {
 	delayValue?: null | string
 	startTimeObserved: null | string
-	status: RideNormalized['start_delay_status']
+	status: DelayStatus
 }
 
 /* * */

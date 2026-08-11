@@ -17,7 +17,11 @@ export async function getRides(request: FastifyRequest<{ Body: GetRidesQuery }>,
 	// Fetch the rides data by query
 	// and send it back to the client
 
+	console.log('request.body', request.body);
+
 	const ridesData = await ridesProvider.findRidesByQuery(request.body);
+
+	console.log('ridesData', ridesData);
 
 	reply.send({
 		data: ridesData,

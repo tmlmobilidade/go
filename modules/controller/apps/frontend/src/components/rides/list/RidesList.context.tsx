@@ -1,9 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
-import { type DelayStatus, type OperationalStatus, type TicketingStatus, UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { useDataRides, type UseFilterStateListReturnType, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { type RideView } from '@tmlmobilidade/go-types-operation';
+import { UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { useDataRides } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useRidesListFilterAcceptanceStatus } from './RidesListFilterAcceptanceStatus/use-rides-list-filter-acceptance-status';
@@ -22,15 +22,7 @@ import { useRidesListFilterSearch } from './RidesListHeader/use-rides-list-filte
 
 export interface RidesListContextState {
 	data: {
-		filtered: Ride[]
-		filteredByFavoriteIds: Ride[]
-	}
-	filters: {
-		agency_ids: UseFilterStateListReturnType<string>
-		delay_statuses: UseFilterStateListReturnType<DelayStatus>
-		operational_statuses: UseFilterStateListReturnType<OperationalStatus>
-		search: UseFilterStateStringReturnType
-		ticketing_statuses: UseFilterStateListReturnType<TicketingStatus>
+		filtered: RideView[]
 	}
 	flags: {
 		error: null | string
@@ -76,13 +68,13 @@ export function RidesListContextProvider({ children }: PropsWithChildren) {
 
 	const { error: ridesError, isLoading: ridesLoading, lastUpdatedAt: ridesLastUpdatedAt, raw: ridesData } = useDataRides(API_ROUTES.controller.RIDES_LIST, {
 		query: {
-			acceptance_statuses: filterAcceptanceStatus.value,
+			// acceptance_statuses: filterAcceptanceStatus.value,
 			agency_ids: filterAgency.value,
-			analysis_at_least_one_vehicle_event_on_last_stop_grade: filterAnalysisAtLeastOneVehicleEventOnLastStop.value,
-			analysis_expected_apex_validation_interval_grade: filterAnalysisExpectedApexValidationInterval.value,
-			analysis_simple_three_vehicle_events_grade: filterAnalysisSimpleThreeEvents.value,
+			analysis_at_least_one_vehicle_event_on_last_stop_grades: filterAnalysisAtLeastOneVehicleEventOnLastStop.value,
+			analysis_expected_apex_validation_interval_grades: filterAnalysisExpectedApexValidationInterval.value,
+			analysis_simple_three_vehicle_events_grades: filterAnalysisSimpleThreeEvents.value,
 			analysis_transaction_sequentiality_grades: filterAnalysisTransactionSequentiality.value,
-			delay_statuses: filterDelayStatus.value,
+			// delay_statuses: filterDelayStatus.value,
 			operational_statuses: filterOperationalStatus.value,
 			search: filterSearch.value,
 			start_time_scheduled_end: filterDateRange.value_end,
@@ -97,22 +89,14 @@ export function RidesListContextProvider({ children }: PropsWithChildren) {
 	const contextValue: RidesListContextState = useMemo(() => ({
 		data: {
 			filtered: ridesData ?? [],
-			filteredByFavoriteIds: rideFavoritesContext.data.favoriteRides,
-		},
-		filters: {
-			agency_ids: filterAgencyIds,
-			delay_statuses: filterDelayStatuses,
-			operational_statuses: filterOperationalStatuses,
-			search: filterSearch,
-			ticketing_statuses: filterTicketingStatuses,
+			filteredByFavoriteIds: [],
 		},
 		flags: {
 			error: ridesError,
-			favoritesEnabled,
 			last_updated_at: ridesLastUpdatedAt,
 			loading: ridesLoading,
 		},
-	}), [filterSearch, ridesData, ridesError, ridesLastUpdatedAt, ridesLoading]);
+	}), [ridesData, ridesError, ridesLastUpdatedAt, ridesLoading]);
 
 	//
 	// E. Render components

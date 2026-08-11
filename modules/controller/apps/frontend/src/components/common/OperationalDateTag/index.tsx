@@ -1,13 +1,13 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type RideNormalized } from '@tmlmobilidade/types';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface OperationalDateTagProps {
-	value: RideNormalized['operational_date']
+	value: OperationalDateInt
 }
 
 /* * */
@@ -19,11 +19,11 @@ export function OperationalDateTag({ value }: OperationalDateTagProps) {
 		return <Tag label="N/A" variant="muted" />;
 	}
 
-	const parsedOperationalDate = Dates
-		.fromOperationalDate(value, 'Europe/Lisbon')
-		.toFormat('yyyy-LL-dd');
+	// const parsedOperationalDate = Dates
+	// 	.fromOperationalDate(value, 'local')
+	// 	.toFormat('yyyy-LL-dd');
 
-	return <Tag label={parsedOperationalDate} variant="muted" />;
+	return <Tag label={value} variant="muted" />;
 
 	//
 }

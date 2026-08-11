@@ -12,7 +12,7 @@ import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { type RideView } from '@tmlmobilidade/go-types-operation';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { DataTable, DataTableColumn, ErrorDisplay, OperationalStatusTag, Pane, Section, SeenStatusIndicator, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
@@ -47,7 +47,7 @@ export function RidesList() {
 		return Math.round((endTimestamp - startTimestamp) / MS_PER_MINUTE) + ' min';
 	};
 
-	const formatDurationDeviation = (item: Ride) => {
+	const formatDurationDeviation = (item: RideView) => {
 		if (!item.start_time_observed || !item.end_time_observed) return null;
 
 		const plannedDuration = item.end_time_scheduled - item.start_time_scheduled;
@@ -58,7 +58,7 @@ export function RidesList() {
 		return (deviationInMinutes > 0 ? '+' : '') + deviationInMinutes + ' min';
 	};
 
-	const columns: DataTableColumn<Ride>[] = [
+	const columns: DataTableColumn<RideView>[] = [
 		{
 			accessor: 'seen_last_at',
 			render: item => <SeenStatusIndicator status={item.seen_status} tooltip={formatTimestamp(item.seen_last_at)} />,
@@ -79,7 +79,7 @@ export function RidesList() {
 		},
 		{
 			accessor: 'headsign',
-			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.pattern_id} />,
+			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.shape_id} />,
 			title: t('default:list.RidesList.columns.headsign.label'),
 			width: 500,
 		},
@@ -99,7 +99,7 @@ export function RidesList() {
 			accessor: 'start_time_observed',
 			render: item => (
 				<StartTimeStatusTag
-					delayValue={item.start_delay_value_display}
+					delayValue={item.start_delay_status}
 					startTimeObserved={formatTimestamp(item.start_time_observed)}
 					status={item.start_delay_status}
 				/>
@@ -115,15 +115,13 @@ export function RidesList() {
 		},
 		{
 			accessor: 'end_time_observed',
-			render: item => item.operational_status === 'ended'
-				? (
-					<StartTimeStatusTag
-						delayValue={item.end_delay_value_display}
-						startTimeObserved={formatTimestamp(item.end_time_observed)}
-						status={item.end_delay_status}
-					/>
-				)
-				: null,
+			render: item => item.operational_status === 'ended' && (
+				<StartTimeStatusTag
+					delayValue={item.end_delay_status}
+					startTimeObserved={formatTimestamp(item.end_time_observed)}
+					status={item.end_delay_status}
+				/>
+			),
 			title: t('default:list.RidesList.columns.end_time_observed.label'),
 			width: 230,
 		},
@@ -133,7 +131,6 @@ export function RidesList() {
 			render: (item) => {
 				const duration = formatDuration(item.start_time_scheduled, item.end_time_scheduled);
 				if (!duration) return null;
-
 				return <Tag label={duration} variant="muted" />;
 			},
 			title: t('default:list.RidesList.columns.duration_scheduled.label'),
@@ -172,25 +169,25 @@ export function RidesList() {
 		},
 		{
 			accessor: 'analysis_simple_three_vehicle_events_grade',
-			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis?.SIMPLE_THREE_VEHICLE_EVENTS?.grade} /> : null,
+			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis_simple_three_vehicle_events_grade} /> : null,
 			title: '3 Eventos',
 			width: 100,
 		},
 		{
-			accessor: 'analysis_ended_at_last_stop_grade',
-			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis?.ENDED_AT_LAST_STOP?.grade} /> : null,
+			accessor: 'analysis_at_least_one_vehicle_event_on_last_stop_grade',
+			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis_at_least_one_vehicle_event_on_last_stop_grade} /> : null,
 			title: 'Last Stop',
 			width: 100,
 		},
 		{
-			accessor: 'analysis_expected_apex_validation_interval',
-			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis?.EXPECTED_APEX_VALIDATION_INTERVAL?.grade} /> : null,
+			accessor: 'analysis_expected_apex_validation_interval_grade',
+			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis_expected_apex_validation_interval_grade} /> : null,
 			title: 'Int. APEX',
 			width: 100,
 		},
 		{
-			accessor: 'analysis_transaction_sequentiality',
-			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis?.TRANSACTION_SEQUENTIALITY?.grade} /> : null,
+			accessor: 'analysis_transaction_sequentiality_grade',
+			render: item => item.operational_status === 'ended' ? <AnalysisStatusTag grade={item.analysis_transaction_sequentiality_grade} /> : null,
 			title: 'Seq. APEX',
 			width: 120,
 		},
@@ -199,7 +196,7 @@ export function RidesList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: Ride) => {
+	const handleRowClick = (item: RideView) => {
 		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_DETAIL(item._id)));
 	};
 
@@ -212,11 +209,11 @@ export function RidesList() {
 			<RidesListFiltersBar key="filters" />,
 		]}
 		>
-			{ridesListContext.flags.error && <ErrorDisplay message={ridesListContext.flags.error.message} />}
+			{ridesListContext.flags.error && <ErrorDisplay message={ridesListContext.flags.error} />}
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={ridesListContext.flags.favoritesEnabled ? ridesListContext.data.filteredByFavoriteIds : ridesListContext.data.filtered}
+				records={ridesListContext.data.filtered}
 				rowIdAccessor="_id"
 				selectedId={decodeURIComponent(params.id ?? '')}
 			/>
