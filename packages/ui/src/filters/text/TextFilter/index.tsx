@@ -2,8 +2,9 @@
 
 import { useRef } from 'react';
 
-import { Label, SearchField, Section } from '../../../components';
+import { Label, Section } from '../../../components';
 import { FilterWrapper, type FilterWrapperRef } from '../../shared/FilterWrapper';
+import { SearchField } from '../SearchField';
 
 /* * */
 
