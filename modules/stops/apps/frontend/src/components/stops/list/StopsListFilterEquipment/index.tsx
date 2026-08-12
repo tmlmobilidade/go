@@ -1,8 +1,9 @@
 'use client';
 
-import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { Translations } from '@/lib/translations';
 import { FilterTypeList } from '@tmlmobilidade/ui';
+
+import { useStopsListFilterEquipment } from './use-stops-list-filter-equipment';
 
 /* * */
 
@@ -12,17 +13,17 @@ export function StopsListFilterEquipment() {
 	//
 	// A. Setup variables
 
-	const stopsListContext = useStopsListContext();
+	const filterEquipment = useStopsListFilterEquipment();
 
 	//
 	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={stopsListContext.filters.equipment.isActive}
+			active={filterEquipment.isActive}
 			label="Equipamentos"
-			onChange={stopsListContext.filters.equipment.set}
-			options={stopsListContext.filters.equipment.options.map(option => ({
+			onChange={filterEquipment.set}
+			options={filterEquipment.options.map(option => ({
 				...option,
 				label: Translations.EQUIPMENT[option.value as keyof typeof Translations.EQUIPMENT],
 			}))}

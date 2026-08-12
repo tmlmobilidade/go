@@ -1,9 +1,9 @@
 'use client';
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
-import { useStopsListContext } from '@/components/stops/list/StopsList.context';
+import { useStopsListData } from '@/components/stops/list/StopsList/use-stops-list-data';
 import { getBaseGeoJsonFeatureCollection, isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
-import { MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView } from '@tmlmobilidade/ui';
+import { MapOverlayMultipleStops, MapOverlayPins, type MapOverlayPinsPointDataProps, MapView } from '@tmlmobilidade/ui';
 import { type Point } from 'geojson';
 import { useMemo } from 'react';
 
@@ -16,7 +16,7 @@ export function StopCreateStepLocationMap() {
 	// A. Setup variables
 
 	const stopCreateContext = useStopCreateContext();
-	const stopsListContext = useStopsListContext();
+	const stopsListData = useStopsListData();
 	const [latitude, longitude] = stopCreateContext.form.instance.getValues(['latitude', 'longitude']);
 
 	//
@@ -56,7 +56,7 @@ export function StopCreateStepLocationMap() {
 	return (
 		<MapView cursor="crosshair" height={400} id="create-stop-map" onClick={handleMapClick}>
 			<MapOverlayMultipleStops
-				data={stopsListContext.data.features}
+				data={stopsListData.data.features}
 				id="stops-list"
 				visible
 			/>
