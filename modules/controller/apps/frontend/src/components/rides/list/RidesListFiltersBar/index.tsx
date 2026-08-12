@@ -7,9 +7,10 @@ import { RidesListFilterAnalysisExpectedApexValidationInterval } from '@/compone
 import { RidesListFilterAnalysisSimpleThreeEvents } from '@/components/rides/list/RidesListFilterAnalysisSimpleThreeEvents';
 import { RidesListFilterAnalysisTransactionSequentiality } from '@/components/rides/list/RidesListFilterAnalysisTransactionSequentiality';
 import { RidesListFilterDateRange } from '@/components/rides/list/RidesListFilterDateRange';
-import { RidesListFilterDelayStatus } from '@/components/rides/list/RidesListFilterDelayStatus';
+import { RidesListFilterEndDelayStatus } from '@/components/rides/list/RidesListFilterEndDelayStatus';
 import { RidesListFilterFavorites } from '@/components/rides/list/RidesListFilterFavorites';
 import { RidesListFilterOperationalStatus } from '@/components/rides/list/RidesListFilterOperationalStatus';
+import { RidesListFilterStartDelayStatus } from '@/components/rides/list/RidesListFilterStartDelayStatus';
 import { RidesListFilterTicketingStatus } from '@/components/rides/list/RidesListFilterTicketingStatus';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
@@ -22,7 +23,8 @@ export function RidesListFiltersBar() {
 			<RidesListFilterDateRange />
 			<RidesListFilterAgency />
 			<RidesListFilterOperationalStatus />
-			<RidesListFilterDelayStatus />
+			<RidesListFilterStartDelayStatus />
+			<RidesListFilterEndDelayStatus />
 			<RidesListFilterAcceptanceStatus />
 			<RidesListFilterAnalysisSimpleThreeEvents />
 			<RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop />

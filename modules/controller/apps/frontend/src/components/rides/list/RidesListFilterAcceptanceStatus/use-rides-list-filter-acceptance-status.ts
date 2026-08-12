@@ -14,8 +14,10 @@ export function useRidesListFilterAcceptanceStatus(): UseFilterStateListReturnTy
 
 	const { t } = useTranslation();
 
+	const options = [...RideAcceptanceStatusSchema.options, 'none'] as const;
+
 	const selectOptions = useMemo(() =>
-		RideAcceptanceStatusSchema.options.map(item => ({
+		options.map(item => ({
 			label: t(`ride_status:acceptance_status.${item}`),
 			value: item,
 		})),
