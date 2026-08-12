@@ -54,8 +54,6 @@ export async function handleStreamRawVehicleEventIntoSimplifiedVehicleEvent({ ba
 		//
 		// Write the new vehicle event document to the SimplifiedVehicleEvents collection
 
-		console.log('newSimplifiedVehicleEventDocument', newSimplifiedVehicleEventDocument);
-
 		await batchWriter.write(newSimplifiedVehicleEventDocument, { flushCallback });
 
 		//
