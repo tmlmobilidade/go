@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useFilterStateString, UseFilterStateTextReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useFilterStateText, UseFilterStateTextReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -72,8 +72,8 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 
 	const { i18n, t } = useTranslation();
 
-	const filterSearch = useFilterStateString('search');
-	const filterAgency = useFilterStateString('agency');
+	const filterSearch = useFilterStateText('search');
+	const filterAgency = useFilterStateText('agency');
 
 	const [currentView, setCurrentView] = useLocalStorage<'current' | 'future' | 'map'>({ defaultValue: 'current', key: 'alerts-current-view' });
 	const [filterByLineIdState, setFilterByLineIdState] = useQueryState('line_id');

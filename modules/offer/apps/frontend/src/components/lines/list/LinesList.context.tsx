@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type LineNormalized } from '@tmlmobilidade/go-types-offer';
 import { type Agency, PermissionCatalog } from '@tmlmobilidade/types';
-import { type SelectDataItem, useDataAgenciesNew, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { type SelectDataItem, useDataAgenciesNew, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -57,7 +57,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Setup filters
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 	const filterAgencies = useFilterStateList('agency', agencyIds, agencyOptions);
 
 	//

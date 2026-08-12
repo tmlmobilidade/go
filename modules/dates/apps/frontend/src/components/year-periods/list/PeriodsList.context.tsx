@@ -5,7 +5,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -58,7 +58,7 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Setup filters
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 
 	//

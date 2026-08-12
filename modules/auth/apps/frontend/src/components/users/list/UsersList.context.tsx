@@ -6,7 +6,7 @@ import { type UserNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type User } from '@tmlmobilidade/types';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -54,7 +54,7 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 	//
 	// B. Setup filters
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 	const filterRoleIds = useFilterStateList('role_ids', rolesContext.data.raw.map(item => item._id), rolesContext.data.raw.map(item => ({ label: item.name, value: item._id })));
 	const filterOrganizationIds = useFilterStateList('organization_ids', organizationsContext.data.raw.map(item => item._id), organizationsContext.data.raw.map(item => ({ label: item.long_name, value: item._id })));
 

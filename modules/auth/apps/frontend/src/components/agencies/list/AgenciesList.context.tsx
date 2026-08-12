@@ -3,7 +3,7 @@
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { type AgencyNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useFilterStateString, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
@@ -43,7 +43,7 @@ export function AgenciesListContextProvider({ children }: PropsWithChildren) {
 
 	const agenciesContext = useAgenciesContext();
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 
 	//
 	// B. Transform data
