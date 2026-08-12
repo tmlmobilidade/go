@@ -6,7 +6,7 @@ import { type UserNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { type User } from '@tmlmobilidade/types';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -20,7 +20,7 @@ interface UsersListContextState {
 	filters: {
 		organization_ids: UseFilterStateListReturnType
 		role_ids: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		error: Error | undefined

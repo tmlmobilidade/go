@@ -1,6 +1,6 @@
 'use client';
 
-import { UnixTimestamp } from '@tmlmobilidade/types';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useEffect, useMemo } from 'react';
 

@@ -1,11 +1,11 @@
 'use client';
 
-import { useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { useFilterStateString, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
 
 /**
  * Hook to manage the search filter for the rides list filter bar.
  * @returns The filter state management object.
  */
-export function useRidesListFilterSearch(): UseFilterStateStringReturnType {
+export function useRidesListFilterSearch(): UseFilterStateTextReturnType {
 	return useFilterStateString('search');
 }

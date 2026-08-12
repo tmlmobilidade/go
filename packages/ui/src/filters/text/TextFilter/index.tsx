@@ -2,14 +2,12 @@
 
 import { useRef } from 'react';
 
-import { Label } from '../../display/Label';
-import { SearchInput } from '../../inputs/SearchInput';
-import { Section } from '../../layout/Section';
+import { Label, SearchInput, Section } from '../../../components';
 import { FilterWrapper, type FilterWrapperRef } from '../../shared/FilterWrapper';
 
 /* * */
 
-interface FilterTypeStringProps {
+interface TextFilterProps {
 	active?: boolean
 	description?: string
 	disabled?: boolean
@@ -22,7 +20,7 @@ interface FilterTypeStringProps {
 
 /* * */
 
-export function FilterTypeString({ active, description, disabled, label, onChange, onClose, placeholder, value }: FilterTypeStringProps) {
+export function TextFilter({ active, description, disabled, label, onChange, onClose, placeholder, value }: TextFilterProps) {
 	//
 
 	//

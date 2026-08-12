@@ -2,8 +2,7 @@
 
 import { type PropsWithChildren } from 'react';
 
-import { Label } from '../../display';
-import { Toolbar } from '../../layout/Toolbar';
+import { Label, Toolbar } from '../../../components';
 
 /* * */
 

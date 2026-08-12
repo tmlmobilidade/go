@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useDataAgencies, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -22,7 +22,7 @@ export interface VehicleListContextState {
 	}
 	filters: {
 		agency: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		error: Error | undefined

@@ -3,8 +3,8 @@
 import { useQueryState } from 'nuqs';
 import { useEffect, useMemo } from 'react';
 
-import { type SelectDataItem } from '../components/inputs/Select';
-import { parseAsArrayOfStrings } from '../utils/parse-string-array';
+import { type SelectDataItem } from '../../components';
+import { parseAsArrayOfStrings } from '../../utils';
 
 /* * */
 

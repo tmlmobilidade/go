@@ -3,7 +3,7 @@
 import { useRolesContext } from '@/contexts/Roles.context';
 import { type RoleNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useFilterStateString, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
@@ -13,7 +13,7 @@ interface RolesListContextState {
 		filtered: RoleNormalized[]
 	}
 	filters: {
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		error: Error | undefined

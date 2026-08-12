@@ -6,7 +6,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
 import { type AlertCause, type AlertEffect } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useFilterStateString, UseFilterStateStringReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useFilterStateString, UseFilterStateTextReturnType, useLocalStorage, useQueryState, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -36,11 +36,11 @@ interface AlertsListContextState extends ListContextStateTemplate {
 		grouped: AlertGroup[]
 	}
 	filters: {
-		agency: UseFilterStateStringReturnType
+		agency: UseFilterStateTextReturnType
 		cause: AlertCause | null
 		effect: AlertEffect | null
 		line_id: null | string
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 		stop_id: null | string
 	}
 	view: {

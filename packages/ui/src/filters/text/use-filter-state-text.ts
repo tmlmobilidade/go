@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react';
 
 /* * */
 
-export interface UseFilterStateStringReturnType {
+export interface UseFilterStateTextReturnType {
 
 	/**
 	 * Indicates if the filter is currently active.
@@ -26,16 +26,16 @@ export interface UseFilterStateStringReturnType {
 }
 
 /**
- * Hook to manage filter state with URL synchronization for strings.
+ * Hook to manage filter state with URL synchronization for text.
  * This is a wrapper around nuqs `useQueryState` to handle
  * setting dynamic default values, preparing options and checking
- * if the filter is active. Use this hook with the `UseFilterStateStringReturnType`
+ * if the filter is active. Use this hook with the `UseFilterStateTextReturnType`
  * interface to manage filter states in string contexts.
  * @param key The key to use in the URL query string.
  * @param defaults The default value for the filter. Defaults to an empty string.
  * @returns The filter state management object.
  */
-export function useFilterStateString(key: string, defaults = ''): UseFilterStateStringReturnType {
+export function useFilterStateText(key: string, defaults = ''): UseFilterStateTextReturnType {
 	//
 
 	//

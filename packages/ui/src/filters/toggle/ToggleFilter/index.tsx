@@ -4,7 +4,7 @@ import { FilterTarget } from '../../shared/FilterTarget';
 
 /* * */
 
-interface FilterTypeToggleProps {
+interface ToggleFilterProps {
 	active?: boolean
 	disabled?: boolean
 	label: string
@@ -13,7 +13,7 @@ interface FilterTypeToggleProps {
 
 /* * */
 
-export function FilterTypeToggle({ active, disabled, label, onToggle }: FilterTypeToggleProps) {
+export function ToggleFilter({ active, disabled, label, onToggle }: ToggleFilterProps) {
 	return (
 		<FilterTarget
 			active={active}

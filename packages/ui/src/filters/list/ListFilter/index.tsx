@@ -4,12 +4,12 @@ import { Checkbox, ScrollArea } from '@mantine/core';
 import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { SelectDataItem } from '../../inputs/Select';
-import { FilterWrapper, FilterWrapperRef } from '../../shared/FilterWrapper';
+import { SelectDataItem } from '../../../components';
+import { FilterWrapper, FilterWrapperRef } from '../../shared';
 
 /* * */
 
-interface FilterTypeListProps {
+interface ListFilterProps {
 	active?: boolean
 	disabled?: boolean
 	isMultiple?: boolean
@@ -22,7 +22,7 @@ interface FilterTypeListProps {
 
 /* * */
 
-export function FilterTypeList({ active, disabled, isMultiple = true, label, onChange, onClose, options, withToggleAll }: FilterTypeListProps) {
+export function ListFilter({ active, disabled, isMultiple = true, label, onChange, onClose, options, withToggleAll }: ListFilterProps) {
 	//
 
 	//

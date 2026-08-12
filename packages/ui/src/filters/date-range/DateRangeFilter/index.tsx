@@ -2,15 +2,12 @@
 
 import { type UnixTimestamp } from '@tmlmobilidade/types';
 
-import { DateTimeInput } from '../../dates/DateTimeInput';
-import { Label } from '../../display/Label';
-import { Section } from '../../layout/Section';
-import { Spacer } from '../../layout/Spacer';
-import { FilterWrapper } from '../../shared/FilterWrapper';
+import { DateTimeInput, Label, Section, Spacer } from '../../../components';
+import { FilterWrapper } from '../../shared';
 
 /* * */
 
-interface FilterTypeDateRangeProps {
+interface DateRangeFilterProps {
 	active?: boolean
 	clearable?: boolean
 	disabled?: boolean
@@ -23,7 +20,7 @@ interface FilterTypeDateRangeProps {
 
 /* * */
 
-export function FilterTypeDateRange({ active, clearable = false, disabled, endDate, label, onEndDateChange, onStartDateChange, startDate }: FilterTypeDateRangeProps) {
+export function DateRangeFilter({ active, clearable = false, disabled, endDate, label, onEndDateChange, onStartDateChange, startDate }: DateRangeFilterProps) {
 	return (
 		<FilterWrapper
 			active={active}
