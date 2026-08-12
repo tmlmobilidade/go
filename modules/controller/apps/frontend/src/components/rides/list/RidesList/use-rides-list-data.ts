@@ -15,8 +15,9 @@ import { useRidesListFilterAnalysisExpectedApexValidationInterval } from '../Rid
 import { useRidesListFilterAnalysisSimpleThreeEvents } from '../RidesListFilterAnalysisSimpleThreeEvents/use-rides-list-filter-analysis-simple-three-events';
 import { useRidesListFilterAnalysisTransactionSequentiality } from '../RidesListFilterAnalysisTransactionSequentiality/use-rides-list-filter-analysis-transaction-sequentiality';
 import { useRidesListFilterDateRange } from '../RidesListFilterDateRange/use-rides-list-filter-date-range';
-import { useRidesListFilterDelayStatus } from '../RidesListFilterStartDelayStatus/use-rides-list-filter-start-delay-status';
+import { useRidesListFilterEndDelayStatus } from '../RidesListFilterEndDelayStatus/use-rides-list-filter-end-delay-status';
 import { useRidesListFilterOperationalStatus } from '../RidesListFilterOperationalStatus/use-rides-list-filter-operational-status';
+import { useRidesListFilterStartDelayStatus } from '../RidesListFilterStartDelayStatus/use-rides-list-filter-start-delay-status';
 import { useRidesListFilterTicketingStatus } from '../RidesListFilterTicketingStatus/use-rides-list-filter-ticketing-status';
 import { useRidesListFilterSearch } from '../RidesListHeader/use-rides-list-filter-search';
 
@@ -47,7 +48,8 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	const filterAnalysisSimpleThreeEvents = useRidesListFilterAnalysisSimpleThreeEvents();
 	const filterAnalysisTransactionSequentiality = useRidesListFilterAnalysisTransactionSequentiality();
 	const filterDateRange = useRidesListFilterDateRange();
-	const filterDelayStatus = useRidesListFilterDelayStatus();
+	const filterStartDelayStatus = useRidesListFilterStartDelayStatus();
+	const filterEndDelayStatus = useRidesListFilterEndDelayStatus();
 	const filterOperationalStatus = useRidesListFilterOperationalStatus();
 	const filterSearch = useRidesListFilterSearch();
 	const filterTicketingStatus = useRidesListFilterTicketingStatus();
@@ -69,7 +71,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 		start_time_scheduled_end: filterDateRange.value_end,
 		start_time_scheduled_start: filterDateRange.value_start,
 		// ticketing_statuses: filterTicketingStatus.value,
-	}), [filterAcceptanceStatus.value, filterAgency.value, filterAnalysisAtLeastOneVehicleEventOnLastStop.value, filterAnalysisExpectedApexValidationInterval.value, filterAnalysisSimpleThreeEvents.value, filterAnalysisTransactionSequentiality.value, filterDelayStatus.value, filterOperationalStatus.value, filterSearch.value, filterDateRange.value_end, filterDateRange.value_start, filterTicketingStatus.value]);
+	}), [filterAcceptanceStatus.value, filterAgency.value, filterAnalysisAtLeastOneVehicleEventOnLastStop.value, filterAnalysisExpectedApexValidationInterval.value, filterAnalysisSimpleThreeEvents.value, filterAnalysisTransactionSequentiality.value, filterStartDelayStatus.value, filterEndDelayStatus.value, filterOperationalStatus.value, filterSearch.value, filterDateRange.value_end, filterDateRange.value_start, filterTicketingStatus.value]);
 
 	//
 	// C. Fetch data

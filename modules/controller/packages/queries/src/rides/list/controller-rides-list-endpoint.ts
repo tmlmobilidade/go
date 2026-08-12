@@ -130,44 +130,47 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	}
 
 	//
-	// Analysis grades
-	//
-	// NULL is a meaningful filter value here:
-	//
-	//   NULL = analysis is unavailable / not applicable.
-	//
-	// Therefore it must be translated to IS NULL rather than IN (...)
 
-	const addNullableGradeFilter = (column: string, values: Array<null | string>): void => {
-		const grades = values.filter((grade): grade is NonNullable<typeof grade> => grade !== null);
-		const includesNull = values.includes(null);
+	// Analysis grades
+
+	//
+
+	// `none` represents a NULL analysis grade in the database.
+
+	//
+
+	//   none          -> IS NULL
+
+	//   pass/fail/... -> IN (...)
+
+	//
+
+	const addGradeFilter = (column: string, values: Array<string>): void => {
+		const grades = values.filter(grade => grade !== 'none');
+		const includesNone = values.includes('none');
 		const gradeConditions: string[] = [];
 		if (grades.length) {
 			const placeholders = grades.map(addParam);
 			gradeConditions.push(`${column} IN (${placeholders.join(', ')})`);
 		}
-		if (includesNull) gradeConditions.push(`${column} IS NULL`);
-		conditions.push(`
-			(
-				${gradeConditions.join('\n\t\t\t\tOR ')}
-			)
-		`);
+		if (includesNone) gradeConditions.push(`${column} IS NULL`);
+		conditions.push(`(${gradeConditions.join('\n\t\t\tOR ')})`);
 	};
 
 	if (validatedFilters.analysis_at_least_one_vehicle_event_on_last_stop_grades?.length) {
-		addNullableGradeFilter('analysis_at_least_one_vehicle_event_on_last_stop_grade', validatedFilters.analysis_at_least_one_vehicle_event_on_last_stop_grades);
+		addGradeFilter('analysis_at_least_one_vehicle_event_on_last_stop_grade', validatedFilters.analysis_at_least_one_vehicle_event_on_last_stop_grades);
 	}
 
 	if (validatedFilters.analysis_expected_apex_validation_interval_grades?.length) {
-		addNullableGradeFilter('analysis_expected_apex_validation_interval_grade', validatedFilters.analysis_expected_apex_validation_interval_grades);
+		addGradeFilter('analysis_expected_apex_validation_interval_grade', validatedFilters.analysis_expected_apex_validation_interval_grades);
 	}
 
 	if (validatedFilters.analysis_simple_three_vehicle_events_grades?.length) {
-		addNullableGradeFilter('analysis_simple_three_vehicle_events_grade', validatedFilters.analysis_simple_three_vehicle_events_grades);
+		addGradeFilter('analysis_simple_three_vehicle_events_grade', validatedFilters.analysis_simple_three_vehicle_events_grades);
 	}
 
 	if (validatedFilters.analysis_transaction_sequentiality_grades?.length) {
-		addNullableGradeFilter('analysis_transaction_sequentiality_grade', validatedFilters.analysis_transaction_sequentiality_grades);
+		addGradeFilter('analysis_transaction_sequentiality_grade', validatedFilters.analysis_transaction_sequentiality_grades);
 	}
 
 	//
