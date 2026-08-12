@@ -26,7 +26,7 @@
 		}
 	},
 	"filters": {
-		"FilterTypeList": {
+		"ListFilter": {
 			"toggle_all": "Selecionar tudo"
 		}
 	},

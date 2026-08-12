@@ -1,6 +1,6 @@
 /* * */
 
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop } from './use-rides-list-filter-analysis-at-least-one-vehicle-event-on-last-stop';
@@ -21,7 +21,7 @@ export function RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterAnalysisAtLeastOneVehicleEventOnLastStop.isActive}
 			label={t('default:list.RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop.label')}
 			onChange={filterAnalysisAtLeastOneVehicleEventOnLastStop.set}

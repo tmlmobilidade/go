@@ -1,7 +1,7 @@
 /* * */
 
 import { useUsersListContext } from '@/components/users/list/UsersList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -20,7 +20,7 @@ export function UsersListFilterOrganization() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={usersListContext.filters.organization_ids.isActive}
 			label={t('default:users.list.FilterBar.organization.label')}
 			onChange={usersListContext.filters.organization_ids.set}

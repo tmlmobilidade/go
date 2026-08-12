@@ -1,6 +1,6 @@
 /* * */
 
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRidesListFilterAnalysisExpectedApexValidationInterval } from './use-rides-list-filter-analysis-expected-apex-validation-interval';
@@ -21,7 +21,7 @@ export function RidesListFilterAnalysisExpectedApexValidationInterval() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterAnalysisExpectedApexValidationInterval.isActive}
 			label={t('default:list.RidesListFilterAnalysisExpectedApexValidationInterval.label')}
 			onChange={filterAnalysisExpectedApexValidationInterval.set}

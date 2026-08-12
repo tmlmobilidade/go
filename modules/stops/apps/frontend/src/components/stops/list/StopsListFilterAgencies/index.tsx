@@ -1,7 +1,7 @@
 'use client';
 
 import { getVisibleAgencyIds } from '@/lib/visibleAgencies';
-import { FilterTypeList, useAgenciesContext, useMeContext } from '@tmlmobilidade/ui';
+import { ListFilter, useAgenciesContext, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { useStopsListFilterAgencies } from './use-stops-list-filter-agencies';
@@ -31,7 +31,7 @@ export function StopsListFilterAgencies() {
 	if (visibleAgencyIds.length <= 1) return null;
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterAgencies.isActive}
 			label="Operadores"
 			onChange={filterAgencies.set}

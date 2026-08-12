@@ -1,7 +1,7 @@
 'use client';
 
 import { Translations } from '@/lib/translations';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 import { useStopsListFilterLifecycleStatus } from './use-stops-list-filter-lifecycle-status';
 
@@ -19,7 +19,7 @@ export function StopsListFilterLifecycleStatus() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterLifecycleStatus.isActive}
 			label="Estado"
 			onChange={filterLifecycleStatus.set}

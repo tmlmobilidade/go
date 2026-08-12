@@ -1,7 +1,7 @@
 'use client';
 
 import { Translations } from '@/lib/translations';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 import { useStopsListFilterFacilities } from './use-stops-list-filter-facilities';
 
@@ -19,7 +19,7 @@ export function StopsListFilterFacilities() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterFacilities.isActive}
 			label="Serviços"
 			onChange={filterFacilities.set}

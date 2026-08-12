@@ -1,6 +1,6 @@
 /***/
 
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRidesListFilterTicketingStatus } from './use-rides-list-filter-ticketing-status';
@@ -17,7 +17,7 @@ export function RidesListFilterTicketingStatus() {
 	const filterTicketingStatus = useRidesListFilterTicketingStatus();
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterTicketingStatus.isActive}
 			label={t('default:list.RidesListFilterTicketingStatus.label')}
 			onChange={filterTicketingStatus.set}

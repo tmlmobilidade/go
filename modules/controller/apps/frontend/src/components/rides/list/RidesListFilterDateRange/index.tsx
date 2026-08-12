@@ -1,6 +1,6 @@
 /* * */
 
-import { FilterTypeDateRange } from '@tmlmobilidade/ui';
+import { DateRangeFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRidesListFilterDateRange } from './use-rides-list-filter-date-range';
@@ -21,7 +21,7 @@ export function RidesListFilterDateRange() {
 	// B. Render components
 
 	return (
-		<FilterTypeDateRange
+		<DateRangeFilter
 			active={filterDateRange.isActive}
 			endDate={filterDateRange.value_end}
 			label={t('default:list.RidesListFilterDateRange.label')}

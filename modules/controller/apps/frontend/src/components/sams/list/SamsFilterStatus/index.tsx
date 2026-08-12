@@ -2,7 +2,7 @@
 
 import { useSamsListContext } from '@/contexts/SamList.context';
 import { translateFilterValue } from '@/lib/translations';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -19,7 +19,7 @@ export function SamsFilterStatus() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={samsListContext.filters.status.isActive}
 			disabled={samsListContext.flags.favoritesEnabled}
 			label={t('default:sams.list.SamsFiltersStatus.label')}

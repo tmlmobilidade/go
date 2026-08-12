@@ -1,6 +1,6 @@
 /* * */
 
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRidesListFilterOperationalStatus } from './use-rides-list-filter-operational-status';
@@ -21,7 +21,7 @@ export function RidesListFilterOperationalStatus() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterOperationalStatus.isActive}
 			label={t('default:list.RidesListFilterOperationalStatus.label')}
 			onChange={filterOperationalStatus.set}

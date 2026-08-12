@@ -1,7 +1,7 @@
 /* * */
 
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
-import { FilterTypeDateRange } from '@tmlmobilidade/ui';
+import { DateRangeFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function AlertsListFilterCreatedAt() {
 	// B. Render components
 
 	return (
-		<FilterTypeDateRange
+		<DateRangeFilter
 			active={alertsListContext.filters.created_at.isActive}
 			endDate={alertsListContext.filters.created_at.value_end}
 			label="Data de Criação"

@@ -1,6 +1,6 @@
 /* * */
 
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRidesListFilterAgency } from './use-rides-list-filter-agency';
@@ -21,7 +21,7 @@ export function RidesListFilterAgency() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterAgency.isActive}
 			label={t('default:list.RidesListFilterAgency.label')}
 			onChange={filterAgency.set}

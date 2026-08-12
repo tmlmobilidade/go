@@ -1,6 +1,6 @@
 /* * */
 
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRidesListFilterAnalysisTransactionSequentiality } from './use-rides-list-filter-analysis-transaction-sequentiality';
@@ -21,7 +21,7 @@ export function RidesListFilterAnalysisTransactionSequentiality() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterAnalysisTransactionSequentiality.isActive}
 			label={t('default:list.RidesListFilterAnalysisTransactionSequentiality.label')}
 			onChange={filterAnalysisTransactionSequentiality.set}

@@ -1,6 +1,6 @@
 /* * */
 
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRidesListFilterStartDelayStatus } from './use-rides-list-filter-start-delay-status';
@@ -21,7 +21,7 @@ export function RidesListFilterStartDelayStatus() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterStartDelayStatus.isActive}
 			label={t('default:list.RidesListFilterStartDelayStatus.label')}
 			onChange={filterStartDelayStatus.set}

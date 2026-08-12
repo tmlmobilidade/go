@@ -1,7 +1,7 @@
 /* * */
 
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function AlertsListFilterAgency() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={alertsListContext.filters.agency.isActive}
 			label="Operador"
 			onChange={alertsListContext.filters.agency.set}

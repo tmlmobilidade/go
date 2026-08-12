@@ -1,7 +1,7 @@
 /* * */
 
 import { useHolidaysListContext } from '@/components/holidays/list/HolidaysList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function HolidaysListFilterAgencies() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={holidaysListContext.filters.agency.isActive}
 			label="Operadores"
 			onChange={holidaysListContext.filters.agency.set}

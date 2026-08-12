@@ -1,6 +1,6 @@
 /* * */
 
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRidesListFilterAcceptanceStatus } from './use-rides-list-filter-acceptance-status';
@@ -21,7 +21,7 @@ export function RidesListFilterAcceptanceStatus() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={filterAcceptanceStatus.isActive}
 			label={t('default:list.RidesListFilterAcceptanceStatus.label')}
 			onChange={filterAcceptanceStatus.set}
