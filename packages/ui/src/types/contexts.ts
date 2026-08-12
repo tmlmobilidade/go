@@ -2,7 +2,7 @@
 
 import { type UseFormReturn } from 'react-hook-form';
 
-import { type UseFilterStateStringReturnType } from '../hooks/use-filter-state-string';
+import { type UseFilterStateStringReturnType } from '../filters/text/use-filter-state-string';
 
 /**
  * Use this interface to type the state of **List** contexts.

@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import { Label } from '../../display/Label';
 import { SearchInput } from '../../inputs/SearchInput';
 import { Section } from '../../layout/Section';
-import { FilterWrapper, type FilterWrapperRef } from '../FilterWrapper';
+import { FilterWrapper, type FilterWrapperRef } from '../../shared/FilterWrapper';
 
 /* * */
 

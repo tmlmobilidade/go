@@ -6,7 +6,7 @@ import { DateTimeInput } from '../../dates/DateTimeInput';
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
 import { Spacer } from '../../layout/Spacer';
-import { FilterWrapper } from '../FilterWrapper';
+import { FilterWrapper } from '../../shared/FilterWrapper';
 
 /* * */
 

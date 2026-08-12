@@ -5,7 +5,7 @@ import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SelectDataItem } from '../../inputs/Select';
-import { FilterWrapper, FilterWrapperRef } from '../FilterWrapper';
+import { FilterWrapper, FilterWrapperRef } from '../../shared/FilterWrapper';
 
 /* * */
 

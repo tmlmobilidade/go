@@ -1,6 +1,6 @@
 'use client';
 
-import { FilterTarget } from '../FilterTarget';
+import { FilterTarget } from '../../shared/FilterTarget';
 
 /* * */
 
