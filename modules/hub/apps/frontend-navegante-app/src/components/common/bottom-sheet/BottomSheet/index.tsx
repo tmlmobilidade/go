@@ -108,8 +108,6 @@ export function BottomSheet({
 				snapPoint: selectedInitialSnapPoint,
 			});
 		}
-
-		sheetRef.current?.snapTo(selectedInitialSnap);
 	}, [opened, selectedInitialSnap, selectedInitialSnapPoint, setActiveBottomSheetSnap, snapPointsKey, syncSnapState]);
 
 	useEffect(() => {
