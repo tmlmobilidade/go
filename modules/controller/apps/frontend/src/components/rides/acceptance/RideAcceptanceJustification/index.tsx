@@ -3,7 +3,8 @@
 import { AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { IconCheck, IconEdit } from '@tabler/icons-react';
-import { AlertCause, AlertCauseSchema, PermissionCatalog, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/types';
+import { AlertCause, AlertCauseSchema, RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, HasPermission, IconButton, Label, Section, Select, Text, Textarea, TextInput, useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -74,7 +75,7 @@ export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_
 
 	const { t } = useTranslation();
 
-	const { actions } = useRideAcceptanceContext();
+	// const { actions } = useRideAcceptanceContext();
 	const [isEditing, setIsEditing] = useState(false);
 	const [status, setStatus] = useState<RideAcceptance['acceptance_status']>(grade);
 
@@ -82,10 +83,9 @@ export function AcceptanceStatus({ grade }: { grade: RideAcceptance['acceptance_
 	// B. Handle actions
 	const handleSubmit = async () => {
 		try {
-			await actions.changeStatus(status);
+			// await actions.changeStatus(status);
 			setIsEditing(false);
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({
 				message: error.message,
 				title: 'Erro ao alterar estado da aceitação',
@@ -142,8 +142,6 @@ export function RideAcceptanceJustification() {
 	const { t } = useTranslation();
 	const { acceptance } = data;
 
-	if (!acceptance) return null;
-
 	const { acceptance_status, justification } = acceptance;
 
 	const [message, setMessage] = useState(justification?.pto_message ?? '');
@@ -153,6 +151,8 @@ export function RideAcceptanceJustification() {
 	const handleSubmit = () => actions.justify(message, cause, manualTripId);
 
 	const fallback = useMemo(() => <JustificationReadOnly cause={cause} manualTripId={manualTripId} message={message} />, [cause, message, manualTripId]);
+
+	if (!acceptance) return null;
 
 	return (
 		<Section gap="md" width="100%">

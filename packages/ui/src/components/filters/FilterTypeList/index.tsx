@@ -64,7 +64,7 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 			return [allOption, ...options];
 		}
 		return options;
-	}, [options, isMultiple, withToggleAll, toggleAllActive]);
+	}, [options, isMultiple, withToggleAll, toggleAllActive, t]);
 
 	//
 	// C. Handle actions
@@ -140,6 +140,4 @@ export function FilterTypeList({ active, disabled, isMultiple = true, label, onC
 			</ScrollArea.Autosize>
 		</FilterWrapper>
 	);
-
-	//
 }

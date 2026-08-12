@@ -1,5 +1,3 @@
-/* * */
-
 export * from '@/exports/afetacao.js';
 export * from '@/exports/agency.js';
 export * from '@/exports/calendar-dates.js';

@@ -4,14 +4,14 @@ import { getSimplifiedApexLocations } from '@/endpoints/rides/controllers/get-ap
 import { getSimplifiedApexOnBoardRefunds } from '@/endpoints/rides/controllers/get-apex-refunds.js';
 import { getSimplifiedApexOnBoardSales } from '@/endpoints/rides/controllers/get-apex-sales.js';
 import { getSimplifiedApexValidations } from '@/endpoints/rides/controllers/get-apex-validations.js';
-import { getHashedShape } from '@/endpoints/rides/controllers/get-hashed-shape.js';
 import { getHashedTrip } from '@/endpoints/rides/controllers/get-hashed-trip.js';
+import { getRideById } from '@/endpoints/rides/controllers/get-ride-by-id.js';
+import { getRides } from '@/endpoints/rides/controllers/get-rides.js';
 import { getSimplifiedVehicleEvents } from '@/endpoints/rides/controllers/get-vehicle-events.js';
 import { reprocessRideById } from '@/endpoints/rides/controllers/reprocess-ride.js';
 import { fastifyWebsocket } from '@fastify/websocket';
-import { RidesSharedController } from '@tmlmobilidade/controllers';
-import { authorizationMiddleware, type FastifyInstance, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
-import { type GetRidesBatchQuery, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
+import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -28,35 +28,21 @@ server.register(
 		await instance.register(fastifyWebsocket);
 
 		instance.get(
-			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>) => RidesSharedController.getBatch(request, reply, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read),
-		);
-
-		instance.get(
-			'/ws',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]), websocket: true },
-			(socket) => {
-				RidesSharedController.websocket(socket);
-			},
-		);
-
-		instance.get(
 			'/:id/ride',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<RideNormalized>) => RidesSharedController.getRideById(request, reply, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read),
+			getRideById,
+		);
+
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getRides,
 		);
 
 		instance.get(
 			'/:id/hashed-trip',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
 			getHashedTrip,
-		);
-
-		instance.get(
-			'/:id/hashed-shape',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			getHashedShape,
 		);
 
 		instance.get(
@@ -95,11 +81,11 @@ server.register(
 			reprocessRideById,
 		);
 
-		instance.get(
-			'/favorites',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			(request: FastifyRequest<{ Querystring: { ids: string } }>, reply: FastifyReply<RideNormalized[]>) => RidesSharedController.getRideByIds(request, reply, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read),
-		);
+		// instance.get(
+		// 	'/favorites',
+		// 	{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+		// 	(request: FastifyRequest<{ Querystring: { ids: string } }>, reply: FastifyReply<RideNormalized[]>) => RidesSharedController.getRideByIds(request, reply, PermissionCatalog.all.rides.scope, PermissionCatalog.all.rides.actions.analysis_read),
+		// );
 
 		//
 	},

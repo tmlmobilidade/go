@@ -77,7 +77,7 @@ export function ReplayEvents({ onReplayIndexChange, replayIndex }: ReplayEventsP
 	//
 	// C. Render guards
 
-	if (rideAnalysisContext.data.ride?.operational_status !== 'ended') return;
+	// if (rideAnalysisContext.data.ride?.operational_status !== 'ended') return;
 
 	if (eventCount === 0) return;
 

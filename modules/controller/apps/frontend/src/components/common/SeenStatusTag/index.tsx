@@ -1,12 +1,12 @@
 /* * */
 
-import { type RideNormalized } from '@tmlmobilidade/types';
+import { type SeenStatus } from '@tmlmobilidade/go-types-shared';
 import { Indicator } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface Props {
-	value?: RideNormalized['seen_status']
+	value?: SeenStatus
 }
 
 /* * */

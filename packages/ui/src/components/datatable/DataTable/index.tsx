@@ -69,7 +69,7 @@ export interface DataTableColumn<T> {
 	/**
 	 * The row's object property key.
 	 */
-	accessor: keyof T
+	accessor: keyof T | string
 
 	/**
 	 * Center the column content.

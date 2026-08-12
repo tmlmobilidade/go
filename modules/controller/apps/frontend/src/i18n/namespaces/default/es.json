@@ -64,7 +64,7 @@
 		"RidesListFilterAgency": {
 			"label": "Operador"
 		},
-		"RidesListFilterAnalysisEndedAtLastStop": {
+		"RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop": {
 			"label": "Fin en la última parada"
 		},
 		"RidesListFilterAnalysisExpectedApexValidationInterval": {
@@ -510,10 +510,6 @@
 				"justification_required": "Justificación necesaria",
 				"rejected": "Rechazada",
 				"under_review": "En revisión"
-			},
-			"RidesDetailAnalysisStatusTag": {
-				"fail": "Fail",
-				"pass": "Pass"
 			}
 		},
 		"export": {

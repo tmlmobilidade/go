@@ -1,0 +1,26 @@
+/* * */
+
+import { GtfsTernarySchema, GtfsTripDirectionSchema } from '@tmlmobilidade/go-types-gtfs';
+import { z } from 'zod';
+
+/* * */
+
+export const GtfsStrictV30TripsSchema = z.object({
+	bikes_allowed: GtfsTernarySchema.optional(),
+	block_id: z.string().optional(),
+	direction_id: GtfsTripDirectionSchema,
+	route_id: z.string(),
+	service_id: z.string(),
+	shape_id: z.string(),
+	trip_headsign: z.string(),
+	trip_id: z.string(),
+	wheelchair_accessible: GtfsTernarySchema.optional(),
+});
+
+/**
+ * Represents a trip in the custom GTFS Strict v30 format.
+ * A trip is the definition of a service of a given route,
+ * scheduled to run on specific dates (`service_id`) and times (`stop_times`).
+ * It also includes the `calendar_desc`, `pattern_id`, and `pattern_short_name` fields.
+ */
+export type GtfsStrictV30Trips = z.infer<typeof GtfsStrictV30TripsSchema>;

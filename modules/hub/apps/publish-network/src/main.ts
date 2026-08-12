@@ -3,7 +3,7 @@
 import { generateLinesRoutesPatterns } from '@/tasks/sync-lines-routes-patterns.js';
 import { generateShapes } from '@/tasks/sync-shapes.js';
 import { generateStops } from '@/tasks/sync-stops.js';
-import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
+import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -17,6 +17,7 @@ export async function main() {
 
 	try {
 		await initSentry();
+		Logger.startLogs({ app: 'publish-network', message: 'Sentry Hub Publish Network initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Network' });
 	}
@@ -33,10 +34,11 @@ export async function main() {
 	//
 	// Set up the import config
 
-	const importConfig: ImportGtfsToDatabaseConfig = {
+	const importConfig: ImportGtfsConfig = {
 		source: {
 			url: 'https://go.tmlmobilidade.pt/hub/api/v1/plans/gtfs',
 		},
+
 	};
 
 	const importedGtfsSql = await importGtfsToDatabase(importConfig);
@@ -49,6 +51,8 @@ export async function main() {
 	await generateShapes(importedGtfsSql);
 
 	await generateLinesRoutesPatterns(importedGtfsSql);
+
+	importedGtfsSql._db.cleanup();
 
 	//
 	// Finalize the export process

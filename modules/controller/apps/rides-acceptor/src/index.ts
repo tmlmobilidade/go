@@ -1,219 +1,220 @@
-/* * */
+// /* * */
 
-import { isEmpty, testRide } from '@/utils.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
-import { normalizeRide } from '@tmlmobilidade/normalizers';
-import { Timer } from '@tmlmobilidade/timer';
-import { type Ride, type RideAcceptance } from '@tmlmobilidade/types';
-import { compareObjects, runOnInterval } from '@tmlmobilidade/utils';
-import { Interval } from 'luxon';
+// import { isEmpty, testRide } from '@/utils.js';
+// import { Dates } from '@tmlmobilidade/dates';
+// import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+// import { type Ride, type RideAcceptance } from '@tmlmobilidade/go-types-operation';
+// import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
+// import { Timer } from '@tmlmobilidade/timer';
+// import { compareObjects, runOnInterval } from '@tmlmobilidade/utils';
+// import { Interval } from 'luxon';
 
-/* * */
+// /* * */
 
-const SYNC_DAYS_BACK = 3;
+// const SYNC_DAYS_BACK = 3;
 
-async function createRideAcceptances(ride: Ride) {
-	try {
-		//
-		// Normalize the ride.
-		const normalizedRide = normalizeRide(ride);
+// async function createRideAcceptances(ride: Ride) {
+// 	try {
+// 		//
 
-		//
-		// If the ride is not ended or missed, skip it.
-		if (normalizedRide.operational_status !== 'ended' && normalizedRide.operational_status !== 'missed') return;
+// 		//
+// 		// If the ride is not ended or missed, skip it.
+// 		if (ride.operational_status !== 'ended' && ride.operational_status !== 'missed') return;
 
-		//
-		// Test the ride against the required tests.
-		const [allRequiredTestsArePass, requiredTestsSummary] = testRide(normalizedRide.analysis);
+// 		//
+// 		// Test the ride against the required tests.
+// 		const [allRequiredTestsArePass, requiredTestsSummary] = testRide(ride.analysis);
 
-		//
-		// Create the acceptance.
-		await goDb.operation.rideAcceptances.insertOne({
-			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
-			analysis_summary: requiredTestsSummary,
-			comments: [],
-			created_by: 'system',
-			is_locked: false,
-			justification: null,
-			ride_id: ride._id,
-		});
+// 		//
+// 		// Create the acceptance.
+// 		await goDb.operation.rideAcceptances.insertOne({
+// 			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
+// 			analysis_summary: requiredTestsSummary,
+// 			comments: [],
+// 			created_by: 'system',
+// 			is_locked: false,
+// 			justification: null,
+// 			overrides: {
+// 				trip_id: null,
+// 			},
+// 			ride_id: ride._id,
+// 		});
 
-		Logger.info({ message: `Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.` });
-	} catch (err) {
-		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
-	}
-}
+// 		Logger.info({ message: `Created acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.` });
+// 	} catch (err) {
+// 		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+// 	}
+// }
 
-async function updateRideAcceptances(ride: Ride, acceptance: RideAcceptance) {
-	try {
-		//
-		const [allRequiredTestsArePass, requiredTestsSummary] = testRide(ride.analysis);
-		const diff = compareObjects(requiredTestsSummary, acceptance.analysis_summary);
+// async function updateRideAcceptances(ride: Ride, acceptance: RideAcceptance) {
+// 	try {
+// 		//
+// 		const [allRequiredTestsArePass, requiredTestsSummary] = testRide(ride.analysis);
+// 		const diff = compareObjects(requiredTestsSummary, acceptance.analysis_summary);
 
-		if (isEmpty(diff)) {
-			return;
-		}
+// 		if (isEmpty(diff)) {
+// 			return;
+// 		}
 
-		await goDb.operation.rideAcceptances.updateOne({ ride_id: ride._id }, {
-			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
-			analysis_summary: requiredTestsSummary,
-		}, { returnResult: false });
+// 		await goDb.operation.rideAcceptances.updateOne({ ride_id: ride._id }, {
+// 			acceptance_status: allRequiredTestsArePass ? 'accepted' : 'justification_required',
+// 			analysis_summary: requiredTestsSummary,
+// 		}, { returnResult: false });
 
-		Logger.info({ message: `Updated acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.` });
-	} catch (err) {
-		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
-	}
-}
+// 		Logger.info({ message: `Updated acceptance for ride ${ride._id} with status ${allRequiredTestsArePass ? 'accepted' : 'justification_required'}.` });
+// 	} catch (err) {
+// 		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+// 	}
+// }
 
-async function alertJustification(ride: Ride) {
-	try {
-		//
-		const foundAlert = await goDb.operation.alerts.findOne({
-			created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 2 }).unix_timestamp },
-			reference_type: { $in: ['rides', 'lines'] },
-			references: { $elemMatch: { parent_id: { $in: [ride._id, ride.line_id] } } },
-		});
+// async function alertJustification(ride: Ride) {
+// 	try {
+// 		//
+// 		const foundAlert = await goDb.operation.alerts.findOne({
+// 			created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 2 }).unix_timestamp },
+// 			reference_type: { $in: ['rides', 'lines'] },
+// 			references: { $elemMatch: { parent_id: { $in: [ride._id, ride.line_id] } } },
+// 		});
 
-		if (!foundAlert) return;
+// 		if (!foundAlert) return;
 
-		await goDb.operation.rideAcceptances.updateOne({ ride_id: ride._id }, {
-			acceptance_status: 'under_review',
-			justification: {
-				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
-				created_by: foundAlert.created_by,
-				justification_cause: foundAlert.cause,
-				justification_source: 'ALERT',
-				pto_message: foundAlert.description,
-				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
-			},
-		});
+// 		await goDb.operation.rideAcceptances.updateOne({ ride_id: ride._id }, {
+// 			acceptance_status: 'under_review',
+// 			justification: {
+// 				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+// 				created_by: foundAlert.created_by,
+// 				justification_cause: foundAlert.cause,
+// 				justification_source: 'ALERT',
+// 				pto_message: foundAlert.description,
+// 				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+// 			},
+// 		});
 
-		Logger.info({ message: `Justified ride ${ride._id} with alert ${foundAlert._id}.` });
-	} catch (error) {
-		Logger.error({ error, message: 'An error occurred. Halting execution.' });
-		Logger.info({ message: 'Retrying in 10 seconds...' });
-	}
-}
+// 		Logger.info({ message: `Justified ride ${ride._id} with alert ${foundAlert._id}.` });
+// 	} catch (error) {
+// 		Logger.error({ error, message: 'An error occurred. Halting execution.' });
+// 		Logger.info({ message: 'Retrying in 10 seconds...' });
+// 	}
+// }
 
-async function main() {
-	try {
-		//
+// async function main() {
+// 	try {
+// 		//
 
-		//
-		// Initialize Sentry
+// 		//
+// 		// Initialize Sentry
 
-		try {
-			await initSentry();
-		} catch (error) {
-			Logger.error({ error, message: 'Error initializing Sentry Rides Acceptor' });
-		}
+// 		try {
+// 			await initSentry();
+// 			Logger.startLogs({ app: 'rides-acceptor', message: 'Sentry Rides Acceptor initialized', module: 'controller', severity: 'info' });
+// 		} catch (error) {
+// 			Logger.error({ error, message: 'Error initializing Sentry Rides Acceptor' });
+// 		}
 
-		//
-		// Initialize the logger
+// 		//
+// 		// Initialize the logger
 
-		Logger.init();
+// 		Logger.init();
 
-		const globalTimer = new Timer();
-		//
-		// In order to sync both collections in a manageable way, due to the high volume of data,
-		// it is necessary to divide the process into smaller blocks. Instead of syncing all documents at once,
-		// divide the process by timestamps chunks and iterate over each one, getting all document IDs from both databases.
-		// Like this we can more easily compare the IDs in memory and sync only the missing documents.
-		// More recent data is more important than older data, so we start syncing the most recent data first.
-		// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
+// 		const globalTimer = new Timer();
+// 		//
+// 		// In order to sync both collections in a manageable way, due to the high volume of data,
+// 		// it is necessary to divide the process into smaller blocks. Instead of syncing all documents at once,
+// 		// divide the process by timestamps chunks and iterate over each one, getting all document IDs from both databases.
+// 		// Like this we can more easily compare the IDs in memory and sync only the missing documents.
+// 		// More recent data is more important than older data, so we start syncing the most recent data first.
+// 		// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
 
-		const thirtySecondsAgo = Dates
-			.now('Europe/Lisbon')
-			.minus({ seconds: 30 });
-		const earliestDataNeeded = Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK });
+// 		const thirtySecondsAgo = Dates
+// 			.now('Europe/Lisbon')
+// 			.minus({ seconds: 30 });
+// 		const earliestDataNeeded = Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK });
 
-		const allTimestampChunks = Interval
-			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 2 })
-			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
-			.sort((a, b) => b.start - a.start);
+// 		const allTimestampChunks = Interval
+// 			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
+// 			.splitBy({ hour: 2 })
+// 			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
+// 			.sort((a, b) => b.start - a.start);
 
-		//
-		// Iterate over each timestamp chunk and sync the documents.
-		// Timestamp chunks are sorted in descending order, so that more recent data is processed first.
-		// Timestamp chunks are in the format { start: day1, end: day2 }, so end is always greater than start.
-		// This might be confusing as the array of chunks itself is sorted in descending order, but the chunks individually are not.
+// 		//
+// 		// Iterate over each timestamp chunk and sync the documents.
+// 		// Timestamp chunks are sorted in descending order, so that more recent data is processed first.
+// 		// Timestamp chunks are in the format { start: day1, end: day2 }, so end is always greater than start.
+// 		// This might be confusing as the array of chunks itself is sorted in descending order, but the chunks individually are not.
 
-		const totalRides = 0;
-		for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
-			//
+// 		const totalRides = 0;
+// 		for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
+// 			//
 
-			const chunkTimer = new Timer();
-			const progress = `[${chunkIndex + 1}/${allTimestampChunks.length}]`;
+// 			const chunkTimer = new Timer();
+// 			const progress = `[${chunkIndex + 1}/${allTimestampChunks.length}]`;
 
-			const chunkStartDate = Dates
-				.fromUnixTimestamp(chunkData.start)
-				.setZone('Europe/Lisbon', 'offset_only');
+// 			const chunkStartDate = Dates
+// 				.fromUnixTimestamp(chunkData.start)
+// 				.setZone('Europe/Lisbon', 'offset_only');
 
-			const chunkEndDate = Dates
-				.fromUnixTimestamp(chunkData.end)
-				.setZone('Europe/Lisbon', 'offset_only');
+// 			const chunkEndDate = Dates
+// 				.fromUnixTimestamp(chunkData.end)
+// 				.setZone('Europe/Lisbon', 'offset_only');
 
-			Logger.spacer(1);
-			Logger.title(`${progress} - ${chunkEndDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)} › ${chunkStartDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)}`);
+// 			Logger.spacer(1);
+// 			Logger.title(`${progress} - ${chunkEndDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)} › ${chunkStartDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)}`);
 
-			//
-			// Fetch the rides.
-			const foundRides = await goDb.operation.rides.findMany({ start_time_scheduled: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
+// 			//
+// 			// Fetch the rides.
+// 			const foundRides = await goDb.operation.rides.findMany({ start_time_scheduled: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
 
-			//
-			// Bulk fetch acceptances.
-			const acceptances: RideAcceptance[] = await goDb.operation.rideAcceptances.findMany({ ride_id: { $in: foundRides.map(r => r._id) } });
-			const acceptanceMap = new Map<string, RideAcceptance>(acceptances.map(a => [a.ride_id, a]));
+// 			//
+// 			// Bulk fetch acceptances.
+// 			const acceptances: RideAcceptance[] = await goDb.operation.rideAcceptances.findMany({ ride_id: { $in: foundRides.map(r => r._id) } });
+// 			const acceptanceMap = new Map<string, RideAcceptance>(acceptances.map(a => [a.ride_id, a]));
 
-			//
-			// Loop through the found rides and process
-			let totalRides = 0;
-			for (const ride of foundRides) {
-				//
+// 			//
+// 			// Loop through the found rides and process
+// 			let totalRides = 0;
+// 			for (const ride of foundRides) {
+// 				//
 
-				totalRides++;
+// 				totalRides++;
 
-				//
-				// If the ride does not have an acceptance, create one.
-				if (!acceptanceMap.has(ride._id)) {
-					await createRideAcceptances(ride);
-					continue;
-				}
+// 				//
+// 				// If the ride does not have an acceptance, create one.
+// 				if (!acceptanceMap.has(ride._id)) {
+// 					await createRideAcceptances(ride);
+// 					continue;
+// 				}
 
-				//
-				// If the ride has an acceptance, update it.
-				await updateRideAcceptances(ride, acceptanceMap.get(ride._id));
+// 				//
+// 				// If the ride has an acceptance, update it.
+// 				await updateRideAcceptances(ride, acceptanceMap.get(ride._id));
 
-				//
-				// Justify
-				if (acceptanceMap.get(ride._id)?.acceptance_status === 'justification_required') {
-					await alertJustification(ride);
-				}
-			}
+// 				//
+// 				// Justify
+// 				if (acceptanceMap.get(ride._id)?.acceptance_status === 'justification_required') {
+// 					await alertJustification(ride);
+// 				}
+// 			}
 
-			//
+// 			//
 
-			Logger.info({ message: `Found ${totalRides} rides. (${chunkTimer.get()})` });
+// 			Logger.info({ message: `Found ${totalRides} rides. (${chunkTimer.get()})` });
 
-			Logger.spacer(1);
-			Logger.divider();
-		}
+// 			Logger.spacer(1);
+// 			Logger.divider();
+// 		}
 
-		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });
-	} catch (err) {
-		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
-		Logger.info({ message: 'Retrying in 10 seconds...' });
-		setTimeout(() => {
-			process.exit(1); // End process
-		}, 10000); // after 10 seconds
-	}
+// 		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });
+// 	} catch (err) {
+// 		Logger.error({ error: err, message: 'An error occurred. Halting execution.' });
+// 		Logger.info({ message: 'Retrying in 10 seconds...' });
+// 		setTimeout(() => {
+// 			process.exit(1); // End process
+// 		}, 10000); // after 10 seconds
+// 	}
 
-	//
-}
+// 	//
+// }
 
-//
+// //
 
-await runOnInterval(main, { intervalMs: '10m' });
+// await runOnInterval(main, { intervalMs: '10m' });

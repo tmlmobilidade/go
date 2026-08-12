@@ -1,7 +1,12 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type RideAnalysisExpectedVehicleIdQty, RideAnalysisExpectedVehicleIdQtySchema } from '@tmlmobilidade/go-types-operation';
+
+/* * */
+
+const EXPECTED_VEHICLE_IDS_QTY = 2;
 
 /**
  * This analyzer tests if the trip has at most two vehicle IDs (at least one, maximum of two).
@@ -10,39 +15,58 @@ import { type Ride } from '@tmlmobilidade/types';
  * → PASS = At least one Vehicle, and maximum two Vehicle IDs for the trip.
  * → FAIL = No Vehicle or more than two Vehicle IDs for the trip.
  */
-export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): Ride['analysis']['EXPECTED_VEHICLE_ID_QTY'] {
+export function expectedVehicleIdQtyAnalyzer(analysisData: AnalysisData): RideAnalysisExpectedVehicleIdQty {
 	try {
 		//
 
 		if (!analysisData.vehicle_events.length) {
-			return {
-				grade: 'fail',
+			return RideAnalysisExpectedVehicleIdQtySchema.parse({
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'skip',
+				observed_vehicle_ids_qty: null,
+				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_VEHICLE_EVENTS',
-				value: null,
-			};
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+			});
 		}
 
-		if (analysisData.ride.vehicle_ids.length > 2) {
-			return {
-				grade: 'fail',
+		if (analysisData.ride.vehicle_ids.length > EXPECTED_VEHICLE_IDS_QTY) {
+			return RideAnalysisExpectedVehicleIdQtySchema.parse({
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'fail',
+				observed_vehicle_ids_qty: analysisData.ride.vehicle_ids.length,
+				operational_date: analysisData.ride.operational_date,
 				reason: 'UNEXPECTED_VEHICLE_ID_QTY',
-				value: analysisData.ride.vehicle_ids.length,
-			};
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+			});
 		}
 
-		return {
-			grade: 'pass',
+		return RideAnalysisExpectedVehicleIdQtySchema.parse({
+			agency_id: analysisData.ride.agency_id,
+			grade_status: 'pass',
+			observed_vehicle_ids_qty: analysisData.ride.vehicle_ids.length,
+			operational_date: analysisData.ride.operational_date,
 			reason: 'EXPECTED_VEHICLE_ID_QTY',
-			value: analysisData.ride.vehicle_ids.length,
-		};
+			remarks: null,
+			ride_id: analysisData.ride._id,
+			updated_at: Dates.now('utc').unix_timestamp,
+		});
 
 		//
 	} catch (error) {
-		return {
-			error_message: error.message,
-			grade: 'error',
+		return RideAnalysisExpectedVehicleIdQtySchema.parse({
+			agency_id: analysisData.ride.agency_id,
+			grade_status: 'error',
+			observed_vehicle_ids_qty: null,
+			operational_date: analysisData.ride.operational_date,
 			reason: null,
-			value: null,
-		};
+			remarks: error.message,
+			ride_id: analysisData.ride._id,
+			updated_at: Dates.now('utc').unix_timestamp,
+		});
 	}
 };

@@ -1,10 +1,9 @@
 /* * */
 
-/* * */
-
-import { useRidesListContext } from '@/components/rides/list/RidesList.context';
-import { FilterTarget } from '@tmlmobilidade/ui';
+import { FilterTypeToggle } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useRidesListFilterFavorites } from './use-rides-list-filter-favorites';
 
 /* * */
 
@@ -16,19 +15,16 @@ export function RidesListFilterFavorites() {
 
 	const { t } = useTranslation();
 
-	const ridesListContext = useRidesListContext();
+	const filterFavorites = useRidesListFilterFavorites();
 
 	//
 	// B. Render components
 
 	return (
-		<FilterTarget
-			active={ridesListContext.flags.favoritesEnabled}
-			disabled={ridesListContext.flags.loading}
+		<FilterTypeToggle
+			active={filterFavorites.value}
 			label={t('default:list.RidesList.columns.favorites.label')}
-			onClick={() => {
-				ridesListContext.actions.setFavoritesEnabled();
-			}}
+			onToggle={filterFavorites.toggle}
 		/>
 	);
 }

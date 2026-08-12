@@ -6,10 +6,11 @@ import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -85,7 +86,7 @@ export async function main() {
 	let farthestDateFound: OperationalDate;
 
 	const referencedAgencyIds = new Set<string>();
-	const routesMarkedForFinalExport: Record<string, GTFS_Route_Extended> = {};
+	const routesMarkedForFinalExport: Record<string, GtfsStrictV29Routes> = {};
 
 	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
 
@@ -172,13 +173,13 @@ export async function main() {
 				},
 				time_range: {
 					date_range: {
-						end: planData.gtfs_feed_info.feed_end_date,
-						start: planData.gtfs_feed_info.feed_start_date,
+						end: validateOperationalDate(planData.gtfs_feed_info.feed_end_date),
+						start: validateOperationalDate(planData.gtfs_feed_info.feed_start_date),
 					},
 				},
 			};
 
-			if (currentOperationalDate >= planData.gtfs_feed_info.feed_start_date && currentOperationalDate <= planData.gtfs_feed_info.feed_end_date) {
+			if (currentOperationalDate >= validateOperationalDate(planData.gtfs_feed_info.feed_start_date) && currentOperationalDate <= validateOperationalDate(planData.gtfs_feed_info.feed_end_date)) {
 				// If the plan is currently active, set the start date
 				// to a far past date to be able to provide a full year of data.
 				importConfig.time_range.date_range.start = validateOperationalDate('20010101');
@@ -222,7 +223,7 @@ export async function main() {
 			// This block only determines which routes should be exported; no files are written here.
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
-				const routeData: GTFS_Route_Extended = routeItem;
+				const routeData: GtfsStrictV29Routes = routeItem;
 				if (thisIsAnActivePlan || !routesMarkedForFinalExport[routeData.route_id]) {
 					routesMarkedForFinalExport[routeData.route_id] = routeData;
 				}
@@ -236,14 +237,14 @@ export async function main() {
 
 			referencedAgencyIds.add(planData.agency_id);
 
-			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
-				? planData.gtfs_feed_info.feed_end_date
+			farthestDateFound = !farthestDateFound || validateOperationalDate(planData.gtfs_feed_info.feed_end_date) > farthestDateFound
+				? validateOperationalDate(planData.gtfs_feed_info.feed_end_date)
 				: farthestDateFound;
 
 			//
 			// Finally, write the plan entry into the plans.txt file.
 
-			await exportPlansFile(planData.agency_id, planData._id, planData.gtfs_feed_info.feed_start_date, planData.gtfs_feed_info.feed_end_date, exportConfig);
+			await exportPlansFile(planData.agency_id, planData._id, validateOperationalDate(planData.gtfs_feed_info.feed_start_date), validateOperationalDate(planData.gtfs_feed_info.feed_end_date), exportConfig);
 
 			//
 			// Mark the plan as complete in the database.
@@ -257,7 +258,7 @@ export async function main() {
 			// Since SQLite sets up memory using C-level allocations, it is not possible
 			// to rely on garbage collection alone to free up memory in a timely manner.
 
-			importedGtfsSql._db.close();
+			importedGtfsSql._db.cleanup();
 
 			Logger.divider();
 

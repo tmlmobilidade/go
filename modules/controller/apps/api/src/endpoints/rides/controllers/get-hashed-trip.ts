@@ -2,8 +2,8 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type HashedTrip } from '@tmlmobilidade/types';
+import { hashedTripsProvider } from '@tmlmobilidade/go-providers-operation';
+import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Get a HashedTrip by Ride ID.
@@ -30,44 +30,18 @@ export async function getHashedTrip(request: FastifyRequest, reply: FastifyReply
 		}
 
 		//
-		// Fetch the ride data from the database
-
-		const rideData = await goDb.operation.rides.findById(rideId);
-
-		if (!rideData) {
-			return reply
-				.status(HTTP_STATUS.NOT_FOUND)
-				.send({
-					data: null,
-					error: 'Ride not found.',
-					status: HTTP_STATUS.NOT_FOUND,
-				});
-		}
-
-		//
-		// Fetch the corresponding vehicle events data
+		// Fetch the hashed trip data by ride ID
 		// and send it back to the client
 
-		const hashedTripData = await goDb.operation.hashedTrips.findById(rideData.hashed_trip_id);
-
-		if (!hashedTripData) {
-			return reply
-				.status(HTTP_STATUS.NOT_FOUND)
-				.send({
-					data: null,
-					error: 'HashedTrip not found.',
-					status: HTTP_STATUS.NOT_FOUND,
-				});
-		}
-
-		//
-		// Send the ride data back to the client
+		const hashedTripData = await hashedTripsProvider.findHashedTripByRideId(rideId);
 
 		reply.send({
 			data: hashedTripData,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
+
+		//
 	} catch (error) {
 		reply
 			.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)

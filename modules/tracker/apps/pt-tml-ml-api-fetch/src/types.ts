@@ -1,9 +1,9 @@
-import { type HashedShape, type HashedTrip, type HashedTripWaypoint } from '@tmlmobilidade/types';
+import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
 
 export interface AggregationResult {
 	_id: string
-	hashed_shape: HashedShape
-	hashed_trip: Omit<HashedTrip, 'path'> & { path: (HashedTripWaypoint & { stop_codes: string[] })[] }
+	hashed_shape: any
+	hashed_trip: Omit<HashedTrip, 'path'> & { path: (any & { stop_codes: string[] })[] }
 	trip_id: string
 }
 

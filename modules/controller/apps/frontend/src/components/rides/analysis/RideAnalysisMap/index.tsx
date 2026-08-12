@@ -21,7 +21,7 @@ export function RideAnalysisMap() {
 	const observedEvents = rideAnalysisContext.geojson.observed_events;
 	const observedShape = rideAnalysisContext.geojson.observed_shape;
 	const eventCount = observedEvents.features.length;
-	const showReplay = rideAnalysisContext.data.ride?.operational_status === 'ended' && eventCount > 0;
+	const showReplay = false; // rideAnalysisContext.data.ride?.operational_status === 'ended' && eventCount > 0;
 
 	const rideId = rideAnalysisContext.data.ride_id;
 	const prevRideIdRef = useRef<string | undefined>(undefined);

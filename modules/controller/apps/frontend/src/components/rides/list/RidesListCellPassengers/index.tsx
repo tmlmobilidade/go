@@ -1,13 +1,12 @@
 'use client';
 
 import { IconUserFilled } from '@tabler/icons-react';
-import { type RideNormalized } from '@tmlmobilidade/types';
 import { Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface RidesListCellPassengersProps {
-	value: RideNormalized['passengers_estimated'] | RideNormalized['passengers_observed']
+	value: number | number
 }
 
 /* * */

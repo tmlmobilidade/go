@@ -38,11 +38,11 @@
 	"dependencies": {
 		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/strings": "*",
-		"better-sqlite3": "13.0.1"
+		"better-sqlite3": "13.0.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/better-sqlite3": "7.6.13",
+		"@types/better-sqlite3": "9.6.0",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",

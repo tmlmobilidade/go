@@ -4,7 +4,8 @@ import { RideAnalysisAnalysisResultItem } from '@/components/rides/analysis/Ride
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
-import { PermissionCatalog, Ride, RideAcceptance, UserDisplay } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog, UserDisplay } from '@tmlmobilidade/types';
 import { CommentInput, CommentItemProps, CommentList, HasPermission, Label, Section, Tooltip } from '@tmlmobilidade/ui';
 import React, { createElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -128,8 +129,8 @@ export function RideAcceptanceCommentList() {
 				item.iconTopMargin = 25;
 				item.icon = createElement(CommentAnalysisSummaryProps.icon, { color: CommentAnalysisSummaryProps.color });
 
-				const analysisSummary = comment.curr_value as RideAcceptance['analysis_summary'];
-				const analysisItems = Object.entries(analysisSummary).map(([id, item]) => ({ id: id as keyof Ride['analysis'], ...item }));
+				const analysisSummary = comment.curr_value as any;
+				const analysisItems = []; //  Object.entries(analysisSummary).map(([id, item]) => ({ id: id, ...item }));
 
 				item.content = (
 					<div className={styles.messageContainer}>

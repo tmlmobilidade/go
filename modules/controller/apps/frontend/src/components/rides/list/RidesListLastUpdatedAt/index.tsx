@@ -1,10 +1,11 @@
 'use client';
 
-import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { Indicator, IndicatorProps, Loader } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useRidesListData } from '../RidesList/use-rides-list-data';
 
 /* * */
 
@@ -16,7 +17,7 @@ export function RidesListLastUpdatedAt() {
 
 	const { t } = useTranslation();
 
-	const ridesListContext = useRidesListContext();
+	const { isLoading, isValidating, lastUpdatedAt } = useRidesListData();
 
 	const [indicatorVariant, setIndicatorVariant] = useState<IndicatorProps['variant']>('muted');
 	const [tooltipValue, setTooltipValue] = useState<string>('---');
@@ -26,7 +27,7 @@ export function RidesListLastUpdatedAt() {
 
 	useEffect(() => {
 		const updateTooltipValue = () => {
-			const diff = DateTime.now().toMillis() - (ridesListContext.flags.last_updated_at ?? 0);
+			const diff = DateTime.now().toMillis() - (lastUpdatedAt ?? 0);
 			if (diff < 1000) return setTooltipValue(t('default:list.RidesListLastUpdatedAt.just_now'));
 			if (diff < 60 * 1000) return setTooltipValue(`${Math.floor(diff / 1000)} seg`);
 			if (diff < 60 * 60 * 1000) return setTooltipValue(`${Math.floor(diff / 1000 / 60)} min`);
@@ -36,23 +37,23 @@ export function RidesListLastUpdatedAt() {
 		updateTooltipValue();
 		const interval = setInterval(() => updateTooltipValue(), 1_000);
 		return () => clearInterval(interval);
-	}, [ridesListContext.flags.last_updated_at]);
+	}, [lastUpdatedAt, t]);
 
 	useEffect(() => {
 		const updateIndicatorVariant = () => {
-			const diff = DateTime.now().toMillis() - (ridesListContext.flags.last_updated_at ?? 0);
+			const diff = DateTime.now().toMillis() - (lastUpdatedAt ?? 0);
 			if (diff < 10_000) return setIndicatorVariant('primary');
 			return setIndicatorVariant('muted');
 		};
 		updateIndicatorVariant();
 		const interval = setInterval(() => updateIndicatorVariant(), 1_000);
 		return () => clearInterval(interval);
-	}, [ridesListContext.flags.last_updated_at]);
+	}, [lastUpdatedAt]);
 
 	//
 	// C. Render components
 
-	if (ridesListContext.flags.loading) {
+	if (isLoading || isValidating) {
 		return <Loader size="sm" />;
 	}
 
@@ -63,6 +64,4 @@ export function RidesListLastUpdatedAt() {
 			filled
 		/>
 	);
-
-	//
 }

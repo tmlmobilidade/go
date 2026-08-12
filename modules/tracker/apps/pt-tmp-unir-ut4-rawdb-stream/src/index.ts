@@ -15,7 +15,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	batch_timeout: 250,
 	idle_timeout: 250,
 	insertFn: async (data) => {
-		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
+		await labDb.operation.simplifiedVehicleEvents.insert('JSONEachRow', data);
 	},
 	title: `pt-tmp-unir-ut4-rawdb-stream`,
 });

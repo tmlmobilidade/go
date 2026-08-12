@@ -28,33 +28,8 @@ export type OperationalDateInt = number & {
  * ```
  */
 export const OperationalDateIntSchema = z
-	.union([z.string(), z.number()])
-	.transform(validateOperationalDateInt);
-
-/**
- * This function validates if a value is a valid operational date.
- * Throws an error if the value is invalid.
- * @param value The value to be validated.
- * @returns The given value as an OperationalDateInt.
- * @throws An error if the value is invalid.
- * @example
- * ```ts
- * const operationalDateInt = validateOperationalDateInt(20260620);
- * // => 20260620 as OperationalDateInt
- *
- * const operationalDateInt = validateOperationalDateInt('20260620');
- * // => 20260620 as OperationalDateInt
- *
- * const operationalDateInt = validateOperationalDateInt('2026-06-20');
- * // => 20260620 as OperationalDateInt
- *
- * const operationalDateInt = validateOperationalDateInt('not a number');
- * // => Throws an error: 'Invalid value 'not a number', expected a number or string in format 'yyyyMMdd' or a string in format 'yyyy-MM-dd', but received a NaN'
- * ```
- */
-export function validateOperationalDateInt(value: number | string): OperationalDateInt {
-	const valueAsString = String(value).replaceAll('-', '');
-	const parsedDate = DateTime.fromFormat(String(value), OPERATIONAL_DATE_FORMAT);
-	if (!parsedDate.isValid) throw new Error(`Invalid date format '${value}', expected format: ${OPERATIONAL_DATE_FORMAT}, explanation: ${parsedDate.invalidExplanation}`);
-	return Number(valueAsString) as OperationalDateInt;
-}
+	.coerce
+	.string()
+	.transform(value => value.replaceAll('-', ''))
+	.refine(value => DateTime.fromFormat(value, OPERATIONAL_DATE_FORMAT).isValid, { message: `Expected a date in the format ${OPERATIONAL_DATE_FORMAT} (or yyyy-MM-dd)` })
+	.transform(value => Number(value) as OperationalDateInt);

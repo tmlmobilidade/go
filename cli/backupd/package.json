@@ -23,7 +23,6 @@
 		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
-		"@types/archiver": "8.0.0",
 		"archiver": "8.0.0",
 		"mongodb": "7.5.0",
 		"nodemailer": "9.0.4",
@@ -34,6 +33,7 @@
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@types/node": "26.1.2",
+		"@types/archiver": "8.0.0",
 		"@types/nodemailer": "8.0.1",
 		"typescript": "6.0.3"
 	}

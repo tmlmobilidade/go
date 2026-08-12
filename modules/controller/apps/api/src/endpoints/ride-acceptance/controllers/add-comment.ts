@@ -3,7 +3,8 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type NoteComment, type RideAcceptance } from '@tmlmobilidade/types';
+import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
+import { type NoteComment } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Adds a comment to a ride acceptance by ride ID

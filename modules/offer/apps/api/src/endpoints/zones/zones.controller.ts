@@ -4,7 +4,8 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { CreateZoneDto, PermissionCatalog, type PermissionResourceCheck, type UpdateZoneDto, type Zone } from '@tmlmobilidade/types';
+import { type CreateZoneDto, type UpdateZoneDto, type Zone } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog, type PermissionResourceCheck } from '@tmlmobilidade/types';
 
 /* * */;
 

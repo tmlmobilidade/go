@@ -1,8 +1,9 @@
 /* * */
 
-import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useRidesListFilterDelayStatus } from './use-rides-list-filter-delay-status';
 
 /* * */
 
@@ -14,20 +15,18 @@ export function RidesListFilterDelayStatus() {
 
 	const { t } = useTranslation();
 
-	const ridesListContext = useRidesListContext();
+	const filterDelayStatus = useRidesListFilterDelayStatus();
 
 	//
 	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={ridesListContext.filters.delay_status.isActive}
+			active={filterDelayStatus.isActive}
 			label={t('default:list.RidesListFilterDelayStatus.label')}
-			onChange={ridesListContext.filters.delay_status.set}
-			options={ridesListContext.filters.delay_status.options}
+			onChange={filterDelayStatus.set}
+			options={filterDelayStatus.options}
 			withToggleAll
 		/>
 	);
-
-	//
 }

@@ -26,11 +26,11 @@ export interface UseFilterStateStringReturnType {
 }
 
 /**
- * Hook to manage filter state with URL synchronization for lists.
+ * Hook to manage filter state with URL synchronization for strings.
  * This is a wrapper around nuqs `useQueryState` to handle
  * setting dynamic default values, preparing options and checking
  * if the filter is active. Use this hook with the `UseFilterStateStringReturnType`
- * interface to manage filter states in list contexts.
+ * interface to manage filter states in string contexts.
  * @param key The key to use in the URL query string.
  * @param defaults The default value for the filter. Defaults to an empty string.
  * @returns The filter state management object.
@@ -71,11 +71,9 @@ export function useFilterStateString(key: string, defaults = ''): UseFilterState
 	//
 	// D. Return data
 
-	return {
+	return useMemo(() => ({
 		isActive,
 		set: setUrlValue,
 		value: effectiveValue,
-	};
-
-	//
+	}), [isActive, setUrlValue, effectiveValue]);
 }

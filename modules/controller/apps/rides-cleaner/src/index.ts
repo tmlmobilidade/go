@@ -1,6 +1,6 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -16,6 +16,7 @@ async function reprocessStuckRides() {
 
 		try {
 			await initSentry();
+			Logger.startLogs({ app: 'rides-cleaner', message: 'Sentry Rides Cleaner initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Rides Cleaner' });
 		}
@@ -32,7 +33,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerA = new Timer();
 
-		const processingRidesA = await goDb.operation.rides.findMany({ system_status: { $in: ['processing', 'error'] } });
+		const processingRidesA = await ridesProvider.findRides({ processing_status: ['processing', 'error'] });
 		const processingRideIdsA = processingRidesA.map(item => item._id);
 
 		const fetchTimerResultA = fetchTimerA.get();
@@ -52,7 +53,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerB = new Timer();
 
-		const processingRidesB = await goDb.operation.rides.findMany({ system_status: { $in: ['processing', 'error'] } });
+		const processingRidesB = await ridesProvider.findRides({ processing_status: ['processing', 'error'] });
 		const processingRideIdsB = processingRidesB.map(item => item._id);
 
 		const fetchTimerResultB = fetchTimerB.get();
@@ -70,7 +71,7 @@ async function reprocessStuckRides() {
 
 		const fetchTimerC = new Timer();
 
-		const processingRidesC = await goDb.operation.rides.findMany({ system_status: { $in: ['processing', 'error'] } });
+		const processingRidesC = await ridesProvider.findRides({ processing_status: ['processing', 'error'] });
 		const processingRideIdsC = processingRidesC.map(item => item._id);
 
 		const fetchTimerResultC = fetchTimerC.get();
@@ -87,23 +88,14 @@ async function reprocessStuckRides() {
 		// Mark the rides as 'waiting' to be reprocessed.
 
 		if (stuckRideIds.length > 0) {
-			//
-
 			const updateTimer = new Timer();
-
-			const ridesCollection = await goDb.operation.rides.getCollection();
-			await ridesCollection.updateMany({ _id: { $in: stuckRideIds } }, { $set: { system_status: 'waiting' } });
-
+			await ridesProvider.updateRides({ _id: stuckRideIds }, { processing_status: 'waiting' });
 			Logger.info({ message: `Found ${stuckRideIds.length} stuck rides that were marked as 'waiting'. (${updateTimer.get()})` });
 			Logger.spacer(1);
-
-			//
 		} else {
 			Logger.info({ message: `No stuck rides found!` });
 			Logger.spacer(1);
 		}
-
-		//
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);
 

@@ -1,10 +1,10 @@
 /* * */
 
-import { type Ride } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
-type RideAnalysisLabels = Record<keyof Ride['analysis'], {
+type RideAnalysisLabels = Record<string, {
 	description: string
 	title: string
 }>;

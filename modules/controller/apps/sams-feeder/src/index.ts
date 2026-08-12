@@ -19,7 +19,7 @@
 
 // 		try {
 // 			await initSentry();
-// 			Logger.startNodeLogs({ app: 'sams-feeder', message: 'Sentry Sams Feeder initialized', module: 'controller', severity: 'info' });
+// 			Logger.startLogs({ app: 'sams-feeder', message: 'Sentry Sams Feeder initialized', module: 'controller', severity: 'info' });
 // 		} catch (error) {
 // 			Logger.error({ error, message: 'Error initializing Sentry Sams Feeder' });
 // 		}

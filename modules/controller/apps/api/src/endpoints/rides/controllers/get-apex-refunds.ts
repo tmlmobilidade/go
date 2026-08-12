@@ -3,8 +3,8 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
@@ -33,20 +33,10 @@ export async function getSimplifiedApexOnBoardRefunds(request: FastifyRequest<{ 
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await goDb.operation.rides.findById(request.params.id);
-
-		if (!rideData) {
-			return reply
-				.status(HTTP_STATUS.NOT_FOUND)
-				.send({
-					data: null,
-					error: 'Ride not found.',
-					status: HTTP_STATUS.NOT_FOUND,
-				});
-		}
+		const rideData = await ridesProvider.findRideById(request.params.id);
 
 		//
-		// Fetch the corresponding vehicle events data
+		// Fetch the simplified apex on board refunds data by ride ID
 		// and send it back to the client
 
 		const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
@@ -65,6 +55,8 @@ export async function getSimplifiedApexOnBoardRefunds(request: FastifyRequest<{ 
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
+
+		//
 	} catch (error) {
 		Logger.issue({ context: { action: 'getSimplifiedApexOnBoardRefundsByRideId', feature: 'rides', request, value: request.body }, level: 'error', messageOrError: error });
 		reply

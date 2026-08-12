@@ -12,16 +12,11 @@ import { Readable } from 'node:stream';
 export class SQLiteDatabase {
 	//
 
-	//
-	//  Properties
-
 	public databaseInstance: Database;
 
+	private config: SQLiteDatabaseConfig;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	private tables = new Map<string, SQLiteTableInstance<any>>();
-
-	//
-	//  Constructor
 
 	constructor(config: SQLiteDatabaseConfig = {}) {
 		//
@@ -47,10 +42,22 @@ export class SQLiteDatabase {
 		//
 		// Initialize the database instance
 
+		this.config = config;
 		this.databaseInstance = config.databaseInstance;
 		this.databaseInstance.pragma('journal_mode = WAL');
 		this.databaseInstance.pragma('synchronous = ON');
 		this.databaseInstance.pragma('temp_store = MEMORY');
+	}
+
+	/**
+	 * Closes the database instance and handles cleanup of the
+	 * database file, either if the database is in memory or on disk.
+	 */
+	public cleanup(): void {
+		this.databaseInstance.close();
+		if (this.config.instancePath) {
+			fs.rmSync(this.config.instancePath, { force: true, recursive: true });
+		}
 	}
 
 	/**

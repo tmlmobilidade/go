@@ -14,9 +14,9 @@
 // const writer = new BatchWriter<SimplifiedVehicleEvent>({
 // 	batch_size: 10_000,
 // 	insertFn: async (data) => {
-// 		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
+// 		await labDb.operation.simplifiedVehicleEvents.insert('JSONEachRow', data);
 // 	},
-// 	title: await labDb.operation.vehicleEvents.getTableName(),
+// 	title: await labDb.operation.simplifiedVehicleEvents.getTableName(),
 // });
 
 // /**
@@ -59,7 +59,7 @@
 // 	await replicate<RawVehicleEvent>({
 
 // 		countDestinationDbFn: async () => {
-// 			return await labDb.operation.vehicleEvents.count(
+// 			return await labDb.operation.simplifiedVehicleEvents.count(
 // 				'*',
 // 				'created_at >= $1 AND created_at <= $2',
 // 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },
@@ -72,14 +72,14 @@
 // 		},
 
 // 		deleteDestinationDbFn: async (ids: string[]) => {
-// 			await labDb.operation.vehicleEvents.delete(
+// 			await labDb.operation.simplifiedVehicleEvents.delete(
 // 				'_id IN ($1)',
 // 				{ 1: ids.map(id => `'${id}'`).join(', ') },
 // 			);
 // 		},
 
 // 		distinctDestinationDbFn: async () => {
-// 			return await labDb.operation.vehicleEvents.distinct(
+// 			return await labDb.operation.simplifiedVehicleEvents.distinct(
 // 				'_id',
 // 				'created_at >= $1 AND created_at <= $2',
 // 				{ 1: chunkStartDate.unix_timestamp, 2: chunkEndDate.unix_timestamp },

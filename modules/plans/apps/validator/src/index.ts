@@ -18,8 +18,8 @@ async function main() {
 	// // Initialize Sentry
 
 	// try {
-	// 	await initSentryNode();
-	// 	Logger.startNodeLogs({ app: 'validator', message: 'Sentry Plans Validator initialized', module: 'plans', severity: 'info' });
+	// 	await initSentry();
+	// 	Logger.startLogs({ app: 'validator', message: 'Sentry Plans Validator initialized', module: 'plans', severity: 'info' });
 	// } catch (error) {
 	// 	Logger.error({ error, message: 'Error initializing Sentry Plans Validator' });
 	// }

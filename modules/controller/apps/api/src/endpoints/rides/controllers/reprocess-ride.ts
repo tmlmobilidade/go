@@ -2,9 +2,9 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
-import { type Ride } from '@tmlmobilidade/types';
 
 /**
  * Reprocess a Ride by ID.
@@ -23,7 +23,6 @@ export async function reprocessRideById(request: FastifyRequest, reply: FastifyR
 		if (!rideId) {
 			const error = new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing ride_id parameter.');
 			Logger.issue({ context: { action: 'reprocessRideById', feature: 'rides', request, value: rideId }, level: 'error', messageOrError: error });
-
 			return reply
 				.status(HTTP_STATUS.BAD_REQUEST)
 				.send({
@@ -36,29 +35,15 @@ export async function reprocessRideById(request: FastifyRequest, reply: FastifyR
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await goDb.operation.rides.updateById(rideId, { system_status: 'waiting' });
-
-		if (!rideData) {
-			const error = new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride not found.');
-			Logger.issue({ context: { action: 'reprocessRideById', feature: 'rides', request, value: rideId }, level: 'error', messageOrError: error });
-
-			return reply
-				.status(HTTP_STATUS.NOT_FOUND)
-				.send({
-					data: null,
-					error: 'Ride not found.',
-					status: HTTP_STATUS.NOT_FOUND,
-				});
-		}
-
-		//
-		// Send the ride data back to the client
+		const updateResult = await ridesProvider.updateRideById(rideId, { processing_status: 'waiting' });
 
 		reply.send({
-			data: rideData,
+			data: updateResult,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});
+
+		//
 	} catch (error) {
 		reply
 			.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)

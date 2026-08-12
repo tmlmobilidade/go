@@ -1,6 +1,7 @@
 import type { DayContext } from './types.js';
 
-import { type EventReplacementRule, type EventRestrictionRule, HHMM, type ManualRule, type OperationalDate, type ScheduleRule, timeToMinutes } from '@tmlmobilidade/types';
+import { type EventReplacementRule, type EventRestrictionRule, HHMM, type ManualRule, type ScheduleRule, timeToMinutes } from '@tmlmobilidade/go-types-offer';
+import { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
 

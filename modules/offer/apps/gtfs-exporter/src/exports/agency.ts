@@ -1,9 +1,9 @@
 /* * */
 /* eslint-disable perfectionist/sort-objects */
 
-import type { Agency, GtfsTMLAgency } from '@tmlmobilidade/types';
-
 import { type GtfsV29ExportConfig } from '@/types.js';
+import { GtfsStrictV29Agency } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type Agency } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -12,9 +12,10 @@ import { type GtfsV29ExportConfig } from '@/types.js';
  * @param agencyData - The agency data from the database
  * @returns The formatted agency row
  */
-export function parseAgency(agencyData: Agency): GtfsTMLAgency {
+export function parseAgency(agencyData: Agency): GtfsStrictV29Agency {
 	try {
 		return {
+			agency_code: agencyData.code,
 			agency_email: agencyData.public_email || '',
 			agency_fare_url: agencyData.fare_url || '',
 			agency_id: agencyData.code,
@@ -25,7 +26,7 @@ export function parseAgency(agencyData: Agency): GtfsTMLAgency {
 			agency_phone: agencyData.phone, // '210410400',
 		};
 	} catch (error) {
-		throw new Error(`Error parsing agency: ${error}`);
+		throw new Error(`Error parsing agency: ${error}`, error);
 	}
 }
 

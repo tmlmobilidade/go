@@ -1,14 +1,15 @@
 'use client';
 
-import { type Ride, type RideAnalysis } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { GradeStatus } from '@tmlmobilidade/go-types-shared';
 import { Label, Section, Surface, Tag, Text } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
 interface RideAnalysisAnalysisResultItemProps {
-	grade: RideAnalysis['grade']
-	id: keyof Ride['analysis']
+	grade: GradeStatus
+	id: string
 }
 
 /* * */
@@ -28,10 +29,10 @@ export function RideAnalysisAnalysisResultItem({ grade, id }: RideAnalysisAnalys
 		<Surface height="full">
 			<Section gap="xs" height="100%" justifyContent="space-between" padding="sm">
 				<div>
-					<Label size="sm">{id}</Label>
+					{/* <Label size="sm">{id}</Label> */}
 					<div>
-						<Label>{t(`ride_analysis:${id}.label`)}</Label>
-						<Text size="sm">{t(`ride_analysis:${id}.description`)}</Text>
+						{/* <Label>{t(`ride_analysis:${id}.label`)}</Label> */}
+						{/* <Text size="sm">{t(`ride_analysis:${id}.description`)}</Text> */}
 					</div>
 				</div>
 				{grade === 'error' && <Tag label={t('default:rides.analysis.RideAnalysisResultItem.statuses.failed')} variant="danger" filled />}

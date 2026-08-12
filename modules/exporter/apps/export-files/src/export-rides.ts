@@ -2,11 +2,12 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
+import { type FileExport } from '@tmlmobilidade/go-types-downloads';
 import { ridesBatchAggregationPipeline } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
-import { FileExport, PermissionCatalog, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
+import { PermissionCatalog, RideAcceptance, RideNormalized } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import os from 'os';
 import path from 'path';

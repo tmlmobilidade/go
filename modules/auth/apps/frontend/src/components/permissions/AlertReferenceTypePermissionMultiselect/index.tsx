@@ -1,6 +1,7 @@
 /* * */
 
-import { AlertReferenceTypeSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { MultiSelect } from '@tmlmobilidade/ui';
 
 /* * */

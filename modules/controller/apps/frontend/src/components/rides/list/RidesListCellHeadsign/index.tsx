@@ -1,13 +1,12 @@
 'use client';
 
-import { type RideNormalized } from '@tmlmobilidade/types';
 import { Label, Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface RidesListCellHeadsignProps {
-	headsign: RideNormalized['headsign']
-	patternId: RideNormalized['pattern_id']
+	headsign: string
+	patternId: string
 }
 
 /* * */

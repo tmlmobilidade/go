@@ -1,14 +1,14 @@
 'use client';
 
 import { IconSteeringWheelFilled } from '@tabler/icons-react';
-import { type RideNormalized } from '@tmlmobilidade/types';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { TagGroup, TagProps } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
 interface RidesListCellDriversProps {
-	value: RideNormalized['driver_ids']
+	value: Ride['driver_ids']
 }
 
 /* * */
@@ -31,6 +31,4 @@ export function RidesListCellDrivers({ value }: RidesListCellDriversProps) {
 	// B. Render components
 
 	return <TagGroup limit={1} tags={formattedTags} />;
-
-	//
 }

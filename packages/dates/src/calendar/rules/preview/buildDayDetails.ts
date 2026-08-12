@@ -1,6 +1,6 @@
 import { calendarKey, CalendarKey, datesFromCalendarKey } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
-import { type Event, HHMM, Holiday, type ScheduleRule, timeToMinutes, type YearPeriod } from '@tmlmobilidade/types';
+import { type Event, HHMM, Holiday, type ScheduleRule, timeToMinutes, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 
 import { computeActiveRules } from '../calculation/index.js';
 import { DayRuleDetail, DayScheduleDetail } from './types.js';

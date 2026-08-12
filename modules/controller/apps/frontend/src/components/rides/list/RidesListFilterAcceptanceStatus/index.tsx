@@ -1,8 +1,9 @@
 /* * */
 
-import { useRidesListContext } from '@/components/rides/list/RidesList.context';
 import { FilterTypeList } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useRidesListFilterAcceptanceStatus } from './use-rides-list-filter-acceptance-status';
 
 /* * */
 
@@ -14,20 +15,18 @@ export function RidesListFilterAcceptanceStatus() {
 
 	const { t } = useTranslation();
 
-	const ridesListContext = useRidesListContext();
+	const filterAcceptanceStatus = useRidesListFilterAcceptanceStatus();
 
 	//
 	// B. Render components
 
 	return (
 		<FilterTypeList
-			active={ridesListContext.filters.acceptance_status.isActive}
+			active={filterAcceptanceStatus.isActive}
 			label={t('default:list.RidesListFilterAcceptanceStatus.label')}
-			onChange={ridesListContext.filters.acceptance_status.set}
-			options={ridesListContext.filters.acceptance_status.options}
+			onChange={filterAcceptanceStatus.set}
+			options={filterAcceptanceStatus.options}
 			withToggleAll
 		/>
 	);
-
-	//
 }

@@ -3,7 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
  * Toggles the lock status of a GTFS Validation by ID.
