@@ -6,7 +6,6 @@ export * from '@/attachment.js';
 export * from '@/auth/index.js';
 export * from '@/calendar/index.js';
 export * from '@/dates/index.js';
-export * from '@/feedback/index.js';
 export * from '@/file-exports/index.js';
 export * from '@/gtfs-new/index.js';
 export * from '@/gtfs-tml/index.js';
