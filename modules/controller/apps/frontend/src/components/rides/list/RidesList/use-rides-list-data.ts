@@ -56,13 +56,14 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	// B. Transform data
 
 	const query = useMemo<ControllerRidesListFilters>(() => ({
-		acceptance_statuses: filterAcceptanceStatus.value,
+		// acceptance_statuses: filterAcceptanceStatus.value,
 		agency_ids: filterAgency.value,
-		analysis_at_least_one_vehicle_event_on_last_stop_grades: filterAnalysisAtLeastOneVehicleEventOnLastStop.value,
-		analysis_expected_apex_validation_interval_grades: filterAnalysisExpectedApexValidationInterval.value,
-		analysis_simple_three_vehicle_events_grades: filterAnalysisSimpleThreeEvents.value,
-		analysis_transaction_sequentiality_grades: filterAnalysisTransactionSequentiality.value,
-		// delay_statuses: filterDelayStatus.value,
+		// analysis_at_least_one_vehicle_event_on_last_stop_grades: filterAnalysisAtLeastOneVehicleEventOnLastStop.value,
+		// analysis_expected_apex_validation_interval_grades: filterAnalysisExpectedApexValidationInterval.value,
+		// analysis_simple_three_vehicle_events_grades: filterAnalysisSimpleThreeEvents.value,
+		// analysis_transaction_sequentiality_grades: filterAnalysisTransactionSequentiality.value,
+		// start_delay_statuses: filterStartDelayStatus.value,
+		// end_delay_statuses: filterEndDelayStatus.value,
 		operational_statuses: filterOperationalStatus.value,
 		search: filterSearch.value,
 		start_time_scheduled_end: filterDateRange.value_end,

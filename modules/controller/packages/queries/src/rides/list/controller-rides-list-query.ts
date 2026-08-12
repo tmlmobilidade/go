@@ -294,8 +294,9 @@ FROM ride_view
 
 WHERE
 	1 = 1
+	--DYNAMIC FILTERS HERE--
 
-	/*
-	 * Additional controller filters are appended here by the provider.
-	 */
+ORDER BY
+	start_time_scheduled ASC,
+	agency_id ASC;
 `;

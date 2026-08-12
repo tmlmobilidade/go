@@ -3,7 +3,7 @@
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
 import { type ControllerRidesListFilters, ControllerRidesListFiltersSchema } from './controller-rides-list-filters.js';
-import { type ControllerRidesListItem, ControllerRidesListItemSchema } from './controller-rides-list-item.js';
+import { type ControllerRidesListItem } from './controller-rides-list-item.js';
 import { controllerRidesListQuery } from './controller-rides-list-query.js';
 
 /* * */
@@ -88,16 +88,6 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	}
 
 	//
-	// Seen statuses
-
-	if (validatedFilters.seen_statuses?.length) {
-		const placeholders = validatedFilters.seen_statuses.map(addParam);
-		conditions.push(
-			`seen_status IN (${placeholders.join(', ')})`,
-		);
-	}
-
-	//
 	// Delay statuses
 	//
 	// A nullable status filter can contain:
@@ -111,34 +101,32 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	// NULL must be handled separately because SQL NULL cannot be compared
 	// with IN (...)
 
-	if (validatedFilters.delay_statuses?.length) {
-		const delayStatuses = validatedFilters.delay_statuses.filter(
+	if (validatedFilters.start_delay_statuses?.length) {
+		const startDelayStatuses = validatedFilters.start_delay_statuses.filter(
 			(status): status is NonNullable<typeof status> => status !== null,
 		);
-		const includesNull = validatedFilters.delay_statuses.includes(null);
-		const delayConditions: string[] = [];
-		if (delayStatuses.length) {
-			const placeholders = delayStatuses.map(addParam);
-			delayConditions.push(
-				`start_delay_status IN (${placeholders.join(', ')})`,
-			);
-			delayConditions.push(
-				`end_delay_status IN (${placeholders.join(', ')})`,
-			);
+		const includesNull = validatedFilters.start_delay_statuses.includes(null);
+		const startDelayConditions: string[] = [];
+		if (startDelayStatuses.length) {
+			const placeholders = startDelayStatuses.map(addParam);
+			startDelayConditions.push(`start_delay_status IN (${placeholders.join(', ')})`);
 		}
-		if (includesNull) {
-			delayConditions.push(
-				`start_delay_status IS NULL`,
-			);
-			delayConditions.push(
-				`end_delay_status IS NULL`,
-			);
+		if (includesNull) startDelayConditions.push(`start_delay_status IS NULL`);
+		conditions.push(`(${startDelayConditions.join('\n\t\t\t\tOR ')})`);
+	}
+
+	if (validatedFilters.end_delay_statuses?.length) {
+		const endDelayStatuses = validatedFilters.end_delay_statuses.filter(
+			(status): status is NonNullable<typeof status> => status !== null,
+		);
+		const includesNull = validatedFilters.end_delay_statuses.includes(null);
+		const endDelayConditions: string[] = [];
+		if (endDelayStatuses.length) {
+			const placeholders = endDelayStatuses.map(addParam);
+			endDelayConditions.push(`end_delay_status IN (${placeholders.join(', ')})`);
 		}
-		conditions.push(`
-			(
-				${delayConditions.join('\n\t\t\t\tOR ')}
-			)
-		`);
+		if (includesNull) endDelayConditions.push(`end_delay_status IS NULL`);
+		conditions.push(`(${endDelayConditions.join('\n\t\t\t\tOR ')})`);
 	}
 
 	//
@@ -201,15 +189,8 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	const where = conditions.length
 		? `\n\tAND ${conditions.join('\n\tAND ')}`
 		: '';
-	const sql = `${controllerRidesListQuery}${where}\n\tORDER BY start_time_scheduled ASC`;
 
-	//
-	// Execute the query
+	const sql = controllerRidesListQuery.replace('--DYNAMIC FILTERS HERE--', where);
 
-	const result = await labDb.operation.rides.queryFromString(sql, params);
-
-	//
-	// Validate and return the result
-
-	return ControllerRidesListItemSchema.array().parse(result ?? []);
+	return await labDb.operation.rides.queryFromString(sql, params);
 }

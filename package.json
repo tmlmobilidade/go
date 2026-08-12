@@ -60,7 +60,7 @@
 		"dev:controller:coordinator": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-controller-coordinator",
 		"dev:controller:rides-examiner": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-controller-rides-examiner",
 		"dev:controller:rides-feeder": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-controller-rides-feeder",
-		"dev:controller:ui": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
+		"dev:controller:ui": "npm run build:controller:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-controller-api --filter=@tmlmobilidade/go-controller-frontend",
 		"dev:dates": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-dates-*",
 		"dev:eta": "npm run build:eta:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
 		"dev:exporter": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-exporter-*",

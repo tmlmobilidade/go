@@ -1,7 +1,7 @@
 /* * */
 
 import { RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
-import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, SeenStatusSchema, TicketingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, TicketingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -32,12 +32,12 @@ export const ControllerRidesListFiltersSchema = z.object({
 		.array(GradeStatusSchema.nullable())
 		.optional(),
 
-	delay_statuses: z
-		.array(DelayStatusSchema.nullable())
-		.optional(),
-
 	driver_ids: z
 		.array(z.string())
+		.optional(),
+
+	end_delay_statuses: z
+		.array(DelayStatusSchema.nullable())
 		.optional(),
 
 	operational_statuses: z
@@ -52,8 +52,8 @@ export const ControllerRidesListFiltersSchema = z.object({
 		.string()
 		.optional(),
 
-	seen_statuses: z
-		.array(SeenStatusSchema)
+	start_delay_statuses: z
+		.array(DelayStatusSchema.nullable())
 		.optional(),
 
 	start_time_scheduled_end: UnixTimestampSchema,
