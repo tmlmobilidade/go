@@ -79,6 +79,9 @@
 		"RidesListFilterDateRange": {
 			"label": "Intervalo de datas"
 		},
+		"RidesListFilterDriver": {
+			"label": "Motorista"
+		},
 		"RidesListFilterEndDelayStatus": {
 			"label": "Atraso à Chegada"
 		},

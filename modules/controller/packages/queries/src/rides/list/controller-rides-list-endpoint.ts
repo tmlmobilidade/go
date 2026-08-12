@@ -82,21 +82,15 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	//
 	// Driver IDs
 
-	if (validatedFilters.driver_ids?.length) {
-		const placeholders = validatedFilters.driver_ids.map(addParam);
-		conditions.push(
-			`hasAny(driver_ids, [${placeholders.join(', ')}])`,
-		);
+	if (validatedFilters.driver_ids) {
+		conditions.push(`hasAny(driver_ids, [${addParam(validatedFilters.driver_ids)}])`);
 	}
 
 	//
 	// Vehicle IDs
 
-	if (validatedFilters.vehicle_ids?.length) {
-		const placeholders = validatedFilters.vehicle_ids.map(addParam);
-		conditions.push(
-			`hasAny(vehicle_ids, [${placeholders.join(', ')}])`,
-		);
+	if (validatedFilters.vehicle_ids) {
+		conditions.push(`hasAny(vehicle_ids, [${addParam(validatedFilters.vehicle_ids)}])`);
 	}
 
 	//
