@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 
-import { Label, SearchInput, Section } from '../../../components';
+import { Label, SearchField, Section } from '../../../components';
 import { FilterWrapper, type FilterWrapperRef } from '../../shared/FilterWrapper';
 
 /* * */
@@ -34,7 +34,7 @@ export function TextFilter({ active, description, disabled, label, onChange, onC
 	return (
 		<FilterWrapper ref={filterWrapperRef} active={active} disabled={disabled} label={label} onClose={onClose}>
 			<Section gap="sm" height="auto" padding="md" width="auto">
-				<SearchInput
+				<SearchField
 					onChange={onChange}
 					placeholder={placeholder}
 					value={value}

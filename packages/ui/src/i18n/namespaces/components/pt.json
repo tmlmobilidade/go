@@ -39,7 +39,7 @@
 				"placeholder": "Longitude (-180 to 180)"
 			}
 		},
-		"SearchInput": {
+		"SearchField": {
 			"placeholder": "Pesquisar..."
 		},
 		"Select": {

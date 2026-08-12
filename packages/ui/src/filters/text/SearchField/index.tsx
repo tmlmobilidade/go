@@ -5,7 +5,7 @@ import { IconSearch } from '@tabler/icons-react';
 
 /* * */
 
-export interface SearchInputProps {
+export interface SearchFieldProps {
 	onChange: (value: string) => void
 	placeholder?: string
 	size?: 'sm' | 'xl'
@@ -14,7 +14,7 @@ export interface SearchInputProps {
 
 /* * */
 
-export function SearchInput({ onChange, placeholder = 'Pesquisar...', size = 'sm', value }: SearchInputProps) {
+export function SearchField({ onChange, placeholder = 'Pesquisar...', size = 'sm', value }: SearchFieldProps) {
 	//
 
 	//

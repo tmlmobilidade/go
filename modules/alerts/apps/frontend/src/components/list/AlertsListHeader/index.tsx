@@ -1,7 +1,7 @@
 /* * */
 
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
-import { Label, Loader, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Label, Loader, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -21,7 +21,7 @@ export function AlertsListHeader() {
 			<Label size="lg" caps singleLine>Alertas</Label>
 			<Loader size="sm" visible={alertsListContext.flags.isValidating} />
 			<Spacer />
-			<SearchInput onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
+			<SearchField onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
 		</Toolbar>
 	);
 

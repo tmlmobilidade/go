@@ -4,7 +4,7 @@ import { openCreateEventModal } from '@/components/events/create/EventCreate.mod
 import { useEventsListContext } from '@/components/events/list/EventsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, HasPermission, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -23,7 +23,7 @@ export function EventsListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>Eventos</Label>
 			<Spacer />
-			<SearchInput onChange={eventsListContext.filters.search.set} value={eventsListContext.filters.search.value} />
+			<SearchField onChange={eventsListContext.filters.search.set} value={eventsListContext.filters.search.value} />
 			<HasPermission action={PermissionCatalog.all.events.actions.create} scope={PermissionCatalog.all.events.scope}>
 				<Button label="Novo Evento" leftSection={<IconPlus />} onClick={openCreateEventModal} />
 			</HasPermission>

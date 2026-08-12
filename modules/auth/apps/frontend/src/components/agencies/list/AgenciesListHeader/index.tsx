@@ -1,7 +1,7 @@
 /* * */
 
 import { useAgenciesListContext } from '@/components/agencies/list/AgenciesList.context';
-import { Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -22,7 +22,7 @@ export function AgenciesListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>{t('default:agencies.list.Header.title')}</Label>
 			<Spacer />
-			<SearchInput onChange={agenciesListContext.filters.search.set} value={agenciesListContext.filters.search.value} />
+			<SearchField onChange={agenciesListContext.filters.search.set} value={agenciesListContext.filters.search.value} />
 		</Toolbar>
 	);
 
