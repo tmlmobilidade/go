@@ -76,7 +76,7 @@ export function RidesList() {
 			accessor: 'start_time_observed',
 			render: item => (
 				<RidesListCellTimeObserved
-					delayStatus="delayed"
+					delayStatus={item.start_delay_status}
 					observedTimestamp={item.start_time_observed}
 					scheduledTimestamp={item.start_time_scheduled}
 				/>
