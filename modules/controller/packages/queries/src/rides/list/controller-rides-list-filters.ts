@@ -9,7 +9,7 @@ import { z } from 'zod';
 export const ControllerRidesListFiltersSchema = z.object({
 
 	acceptance_statuses: z
-		.array(RideAcceptanceStatusSchema)
+		.array(z.union([RideAcceptanceStatusSchema, z.literal('none')]))
 		.optional(),
 
 	agency_ids: z
@@ -17,19 +17,19 @@ export const ControllerRidesListFiltersSchema = z.object({
 		.default([]),
 
 	analysis_at_least_one_vehicle_event_on_last_stop_grades: z
-		.array(GradeStatusSchema.nullable())
+		.array(z.union([GradeStatusSchema, z.literal('none')]))
 		.optional(),
 
 	analysis_expected_apex_validation_interval_grades: z
-		.array(GradeStatusSchema.nullable())
+		.array(z.union([GradeStatusSchema, z.literal('none')]))
 		.optional(),
 
 	analysis_simple_three_vehicle_events_grades: z
-		.array(GradeStatusSchema.nullable())
+		.array(z.union([GradeStatusSchema, z.literal('none')]))
 		.optional(),
 
 	analysis_transaction_sequentiality_grades: z
-		.array(GradeStatusSchema.nullable())
+		.array(z.union([GradeStatusSchema, z.literal('none')]))
 		.optional(),
 
 	driver_ids: z
@@ -37,7 +37,7 @@ export const ControllerRidesListFiltersSchema = z.object({
 		.optional(),
 
 	end_delay_statuses: z
-		.array(DelayStatusSchema.nullable())
+		.array(z.union([DelayStatusSchema, z.literal('none')]))
 		.optional(),
 
 	operational_statuses: z
@@ -53,7 +53,7 @@ export const ControllerRidesListFiltersSchema = z.object({
 		.optional(),
 
 	start_delay_statuses: z
-		.array(DelayStatusSchema.nullable())
+		.array(z.union([DelayStatusSchema, z.literal('none')]))
 		.optional(),
 
 	start_time_scheduled_end: UnixTimestampSchema,
