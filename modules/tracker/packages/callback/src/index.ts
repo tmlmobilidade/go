@@ -7,8 +7,6 @@ import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-eve
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
-import { trackerRidesCallbackQuery } from './tracker-rides-callback-query.js';
-
 /* * */
 
 export interface TrackerRidesCallbackWindow {

@@ -3,6 +3,7 @@
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
+import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
@@ -110,6 +111,8 @@ export async function analyzeRides() {
 
 				const insertTimer = new Timer();
 
+				const nowUnixTimestamp = Dates.now('utc').unix_timestamp;
+
 				const insertPromises = [
 					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnFirstStop.insert('JSONEachRow', [analyzeRideResults.analyses.atLeastOneVehicleEventOnFirstStop]),
 					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnLastStop.insert('JSONEachRow', [analyzeRideResults.analyses.atLeastOneVehicleEventOnLastStop]),
@@ -126,7 +129,7 @@ export async function analyzeRides() {
 					labDb.operation.rideAnalysisSimpleOneVehicleEventOrApexValidation.insert('JSONEachRow', [analyzeRideResults.analyses.simpleOneVehicleEventOrApexValidation]),
 					labDb.operation.rideAnalysisSimpleThreeVehicleEvents.insert('JSONEachRow', [analyzeRideResults.analyses.simpleThreeVehicleEvents]),
 					labDb.operation.rideAnalysisTransactionSequentiality.insert('JSONEachRow', [analyzeRideResults.analyses.transactionSequentiality]),
-					ridesProvider.updateRideById(rideData._id, { ...augmentedRideData, processing_status: 'complete' }),
+					labDb.operation.rides.insert('JSONEachRow', [{ ...augmentedRideData, processing_status: 'complete', updated_at: nowUnixTimestamp }]),
 				];
 
 				await Promise.all(insertPromises);
