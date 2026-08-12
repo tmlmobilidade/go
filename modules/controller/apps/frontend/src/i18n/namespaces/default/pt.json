@@ -95,6 +95,9 @@
 				"no_ticketing": "Sem bilhética"
 			}
 		},
+		"RidesListFilterVehicle": {
+			"label": "Veículo"
+		},
 		"RidesListHeader": {
 			"export": "Exportar circulações",
 			"title": "Circulações"

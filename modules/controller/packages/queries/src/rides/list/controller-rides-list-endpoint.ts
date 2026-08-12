@@ -177,11 +177,14 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	// Search
 
 	if (validatedFilters.search) {
-		const search = addParam(`%${validatedFilters.search}%`);
+		const search = validatedFilters.search.trim();
+		const exactSearch = addParam(search);
+		const partialSearch = addParam(`%${search}%`);
 		conditions.push(`
 			(
-				_id ILIKE ${search}
-				OR toString(headsign) ILIKE ${search}
+				_id = ${exactSearch}
+				OR _id ILIKE ${partialSearch}
+				OR headsign ILIKE ${partialSearch}
 			)
 		`);
 	}

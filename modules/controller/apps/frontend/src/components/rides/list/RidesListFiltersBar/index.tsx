@@ -12,6 +12,7 @@ import { RidesListFilterFavorites } from '@/components/rides/list/RidesListFilte
 import { RidesListFilterOperationalStatus } from '@/components/rides/list/RidesListFilterOperationalStatus';
 import { RidesListFilterStartDelayStatus } from '@/components/rides/list/RidesListFilterStartDelayStatus';
 import { RidesListFilterTicketingStatus } from '@/components/rides/list/RidesListFilterTicketingStatus';
+import { RidesListFilterVehicle } from '@/components/rides/list/RidesListFilterVehicle';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
@@ -31,6 +32,7 @@ export function RidesListFiltersBar() {
 			<RidesListFilterAnalysisExpectedApexValidationInterval />
 			<RidesListFilterAnalysisTransactionSequentiality />
 			<RidesListFilterTicketingStatus />
+			<RidesListFilterVehicle />
 		</FiltersBar>
 	);
 }
