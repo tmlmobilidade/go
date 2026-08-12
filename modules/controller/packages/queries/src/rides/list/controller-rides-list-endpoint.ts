@@ -90,60 +90,38 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	//
 	// Delay statuses
 	//
-	// A nullable status filter can contain:
+	// `none` represents a NULL delay status in ClickHouse.
 	//
-	//   ['delayed', 'ontime']
-	//
-	// or:
-	//
-	//   [null, 'delayed']
-	//
-	// NULL must be handled separately because SQL NULL cannot be compared
-	// with IN (...)
+	//   none          -> IS NULL
+	//   delayed/...   -> IN (...)
+
+	const addDelayStatusFilter = (column: string, values: Array<string>): void => {
+		const statuses = values.filter(status => status !== 'none');
+		const includesNone = values.includes('none');
+		const delayConditions: string[] = [];
+		if (statuses.length) {
+			const placeholders = statuses.map(addParam);
+			delayConditions.push(`${column} IN (${placeholders.join(', ')})`);
+		}
+		if (includesNone) delayConditions.push(`${column} IS NULL`);
+		conditions.push(`(${delayConditions.join('\n\t\t\tOR ')})`);
+	};
 
 	if (validatedFilters.start_delay_statuses?.length) {
-		const startDelayStatuses = validatedFilters.start_delay_statuses.filter(
-			(status): status is NonNullable<typeof status> => status !== null,
-		);
-		const includesNull = validatedFilters.start_delay_statuses.includes(null);
-		const startDelayConditions: string[] = [];
-		if (startDelayStatuses.length) {
-			const placeholders = startDelayStatuses.map(addParam);
-			startDelayConditions.push(`start_delay_status IN (${placeholders.join(', ')})`);
-		}
-		if (includesNull) startDelayConditions.push(`start_delay_status IS NULL`);
-		conditions.push(`(${startDelayConditions.join('\n\t\t\t\tOR ')})`);
+		addDelayStatusFilter('start_delay_status', validatedFilters.start_delay_statuses);
 	}
 
 	if (validatedFilters.end_delay_statuses?.length) {
-		const endDelayStatuses = validatedFilters.end_delay_statuses.filter(
-			(status): status is NonNullable<typeof status> => status !== null,
-		);
-		const includesNull = validatedFilters.end_delay_statuses.includes(null);
-		const endDelayConditions: string[] = [];
-		if (endDelayStatuses.length) {
-			const placeholders = endDelayStatuses.map(addParam);
-			endDelayConditions.push(`end_delay_status IN (${placeholders.join(', ')})`);
-		}
-		if (includesNull) endDelayConditions.push(`end_delay_status IS NULL`);
-		conditions.push(`(${endDelayConditions.join('\n\t\t\t\tOR ')})`);
+		addDelayStatusFilter('end_delay_status', validatedFilters.end_delay_statuses);
 	}
 
 	//
-
 	// Analysis grades
-
 	//
-
 	// `none` represents a NULL analysis grade in the database.
-
 	//
-
 	//   none          -> IS NULL
-
 	//   pass/fail/... -> IN (...)
-
-	//
 
 	const addGradeFilter = (column: string, values: Array<string>): void => {
 		const grades = values.filter(grade => grade !== 'none');
