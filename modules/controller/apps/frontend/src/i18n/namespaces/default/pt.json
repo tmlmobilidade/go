@@ -510,10 +510,6 @@
 				"justification_required": "Justificação Necessária",
 				"rejected": "Rejeitada",
 				"under_review": "Em Revisão"
-			},
-			"RidesDetailAnalysisStatusTag": {
-				"fail": "Fail",
-				"pass": "Pass"
 			}
 		},
 		"export": {

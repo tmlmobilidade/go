@@ -1,6 +1,5 @@
 'use client';
 
-import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
 import { RidesListCellDrivers } from '@/components/rides/list/RidesListCellDrivers';
 import { RidesListCellHeadsign } from '@/components/rides/list/RidesListCellHeadsign';
 import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPassengers';
@@ -9,7 +8,7 @@ import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-queries';
-import { DataTable, DataTableColumn, ErrorDisplay, OperationalDateDisplay, OperationalStatusDisplay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, GradeStatusDisplay, OperationalDateDisplay, OperationalStatusDisplay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -77,7 +76,7 @@ export function RidesList() {
 			accessor: 'start_time_observed',
 			render: item => (
 				<RidesListCellTimeObserved
-					delayStatus={item.start_delay_status}
+					delayStatus="delayed"
 					observedTimestamp={item.start_time_observed}
 					scheduledTimestamp={item.start_time_scheduled}
 				/>
@@ -113,7 +112,7 @@ export function RidesList() {
 				/>
 			),
 			title: t('default:list.RidesList.columns.duration_scheduled.label'),
-			width: 90,
+			width: 100,
 		},
 		{
 			accessor: 'duration_observed',
@@ -143,25 +142,25 @@ export function RidesList() {
 		},
 		{
 			accessor: 'analysis_simple_three_vehicle_events_grade',
-			render: item => item.operational_status === 'ended' && <AnalysisStatusTag grade={item.analysis_simple_three_vehicle_events_grade} />,
+			render: item => item.operational_status === 'ended' && <GradeStatusDisplay value={item.analysis_simple_three_vehicle_events_grade} />,
 			title: '3 Eventos',
 			width: 100,
 		},
 		{
 			accessor: 'analysis_at_least_one_vehicle_event_on_last_stop_grade',
-			render: item => item.operational_status === 'ended' && <AnalysisStatusTag grade={item.analysis_at_least_one_vehicle_event_on_last_stop_grade} />,
+			render: item => item.operational_status === 'ended' && <GradeStatusDisplay value={item.analysis_at_least_one_vehicle_event_on_last_stop_grade} />,
 			title: 'Last Stop',
 			width: 100,
 		},
 		{
 			accessor: 'analysis_expected_apex_validation_interval_grade',
-			render: item => item.operational_status === 'ended' && <AnalysisStatusTag grade={item.analysis_expected_apex_validation_interval_grade} />,
+			render: item => item.operational_status === 'ended' && <GradeStatusDisplay value={item.analysis_expected_apex_validation_interval_grade} />,
 			title: 'Int. APEX',
 			width: 100,
 		},
 		{
 			accessor: 'analysis_transaction_sequentiality_grade',
-			render: item => item.operational_status === 'ended' && <AnalysisStatusTag grade={item.analysis_transaction_sequentiality_grade} />,
+			render: item => item.operational_status === 'ended' && <GradeStatusDisplay value={item.analysis_transaction_sequentiality_grade} />,
 			title: 'Seq. APEX',
 			width: 120,
 		},
