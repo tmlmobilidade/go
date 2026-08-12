@@ -298,7 +298,7 @@ WHERE
 
 ORDER BY
 	start_time_scheduled ASC,
-	agency_id ASC
+	_id ASC
 
 LIMIT 10000;
 `;
