@@ -49,6 +49,9 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 				return;
 			}
 
+			// Skip documents before 2026-07-15
+			if (change.fullDocument.created_at < 1784084400000) return;
+
 			await handleStreamRawVehicleEventIntoSimplifiedVehicleEvent({
 				batchWriter: writer,
 				databaseOperation: change,

@@ -44,12 +44,12 @@
 		"@tmlmobilidade/go-providers-auth": "*",
 		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/utils": "*",
-		"fastify": "5.10.0"
+		"fastify": "5.11.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
 		"@tmlmobilidade/types": "*",
-		"@types/node": "26.1.1",
+		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"

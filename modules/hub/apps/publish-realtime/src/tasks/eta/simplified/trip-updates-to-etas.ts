@@ -1,0 +1,119 @@
+/* * */
+
+import { Dates } from '@tmlmobilidade/dates';
+import { type GtfsRtStopTimeEvent, type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
+
+import { type TripStopEta, type TripStopEtaCached } from '../types.js';
+import { getScheduledArrival, getScheduledArrivalUnix, resolveOperationalDate, type TripScheduleIndex } from './trip-schedule-index.js';
+
+/* * */
+
+function getStopTimeEventUnix(
+	event: GtfsRtStopTimeEvent | undefined,
+	scheduledUnix?: number,
+): number | undefined {
+	if (!event) return undefined;
+	if (event.time != null) return event.time;
+
+	const scheduledTime = (event as { scheduled_time?: number }).scheduled_time;
+	if (scheduledTime != null && event.delay != null) return scheduledTime + event.delay;
+	if (scheduledUnix != null && event.delay != null) return scheduledUnix + event.delay;
+
+	return undefined;
+};
+
+export function toCachedEta(eta: TripStopEta): TripStopEtaCached {
+	return {
+		eta_at: String(eta.eta_at),
+		eta_seconds: String(eta.eta_seconds),
+		stop_id: eta.stop_id,
+		stop_name: eta.stop_name,
+		stop_sequence: String(eta.stop_sequence),
+		trip_id: eta.trip_id,
+		vehicle_id: eta.vehicle_id,
+	};
+};
+
+export function groupEtasByTrip(etas: TripStopEta[]): Map<string, TripStopEta[]> {
+	const byTrip = new Map<string, TripStopEta[]>();
+
+	for (const eta of etas) {
+		const tripEtas = byTrip.get(eta.trip_id) ?? [];
+		tripEtas.push(eta);
+		byTrip.set(eta.trip_id, tripEtas);
+	}
+
+	return byTrip;
+};
+
+export function groupEtasByStop(etas: TripStopEta[]): Map<string, TripStopEta[]> {
+	const byStop = new Map<string, TripStopEta[]>();
+
+	for (const eta of etas) {
+		const stopEtas = byStop.get(eta.stop_id) ?? [];
+		stopEtas.push(eta);
+		byStop.set(eta.stop_id, stopEtas);
+	}
+
+	return byStop;
+};
+
+export function tripUpdateToEtas(
+	tripUpdate: GtfsRtTripUpdate,
+	stopNames: ReadonlyMap<string, string> = new Map(),
+	scheduleIndex?: TripScheduleIndex,
+): TripStopEta[] {
+	const tripId = tripUpdate.trip?.trip_id;
+	if (!tripId) return [];
+
+	const vehicleId = tripUpdate.vehicle?.id ?? '';
+	const operationalDate = resolveOperationalDate(tripId);
+	const nowUnix = Dates.now('Europe/Lisbon').unix_timestamp / 1000;
+	const etas: TripStopEta[] = [];
+
+	for (const stopTimeUpdate of tripUpdate.stop_time_update ?? []) {
+		if (!stopTimeUpdate.stop_id) continue;
+
+		const scheduledArrival = scheduleIndex
+			? getScheduledArrival(
+				scheduleIndex,
+				tripId,
+				operationalDate,
+				stopTimeUpdate.stop_sequence ?? undefined,
+				stopTimeUpdate.stop_id,
+			)
+			: undefined;
+		const stopSequence = stopTimeUpdate.stop_sequence ?? scheduledArrival?.stop_sequence ?? 0;
+		const scheduledUnix = scheduleIndex
+			? getScheduledArrivalUnix(
+				scheduleIndex,
+				tripId,
+				stopSequence,
+				operationalDate,
+				stopTimeUpdate.stop_id,
+			)
+			: undefined;
+		const arrivalUnix = getStopTimeEventUnix(stopTimeUpdate.arrival, scheduledUnix) ?? getStopTimeEventUnix(stopTimeUpdate.departure, scheduledUnix);
+		if (arrivalUnix == null) continue;
+
+		etas.push({
+			eta_at: arrivalUnix * 1000,
+			eta_seconds: Math.max(0, Math.round(arrivalUnix - nowUnix)),
+			stop_id: stopTimeUpdate.stop_id,
+			stop_name: stopNames.get(stopTimeUpdate.stop_id) ?? '',
+			stop_sequence: stopSequence,
+			trip_id: tripId,
+			vehicle_id: vehicleId,
+		});
+	}
+
+	return etas;
+};
+
+export function tripUpdatesToEtas(
+	tripUpdates: GtfsRtTripUpdate[],
+	stopNames: ReadonlyMap<string, string> = new Map(),
+	scheduleIndex?: TripScheduleIndex,
+): TripStopEta[] {
+	return tripUpdates.flatMap(tripUpdate => tripUpdateToEtas(tripUpdate, stopNames, scheduleIndex));
+};

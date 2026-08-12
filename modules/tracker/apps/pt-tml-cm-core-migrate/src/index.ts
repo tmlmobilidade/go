@@ -5,7 +5,13 @@ import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
+import { getCurrentEnvironment } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
+import { ObjectId } from 'mongodb';
+
+/* * */
+
+const PROCESS_ID = `${process.pid}-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
 
 /* * */
 
@@ -21,11 +27,33 @@ async function main() {
 	}
 
 	//
-	// Initialize the logger
-
-	Logger.init();
 
 	const globalTimer = new Timer();
+
+	//
+	// Ask the coordinator for a batch of Core Vehicle Events to process
+
+	const fetchCoordinatorTimer = new Timer();
+
+	const currentEnvironment = getCurrentEnvironment();
+	let coordinatorUrl: string;
+	if (currentEnvironment === 'dev') coordinatorUrl = `http://localhost:5050/core-vehicle-events`;
+	else coordinatorUrl = `http://${currentEnvironment}-tracker-pt-tml-cm-core-migrate-coordinator.${currentEnvironment}-tracker.svc.cluster.local/core-vehicle-events`;
+
+	console.log(`[${PROCESS_ID}] Fetching core vehicle events session ID from coordinator: ${coordinatorUrl}/${PROCESS_ID}`);
+	const coreVehicleEventsSessionId = await fetch(`${coordinatorUrl}/${PROCESS_ID}`)
+		.then(response => response.text())
+		.catch((error) => {
+			console.error(`[${PROCESS_ID}] Failed to fetch core vehicle events session ID from coordinator: ${error}`);
+			return null;
+		});
+
+	if (!coreVehicleEventsSessionId) {
+		console.error(`[${PROCESS_ID}] No core vehicle events session ID received.`);
+		return;
+	}
+
+	console.log(`[${PROCESS_ID}] Fetched core vehicle events session ID from coordinator: ${coreVehicleEventsSessionId} (fetch: ${fetchCoordinatorTimer.get()})`);
 
 	//
 	// Get the earliest date from which we have data to sync,
@@ -42,14 +70,16 @@ async function main() {
 
 	const vehicleEventsCollection = await rawDb.coreManagementCopy.vehicleEvents.getCollection();
 
-	const vehicleEventsCursor = vehicleEventsCollection.find({}, { limit: 100_000, sort: { millis: -1 } }).stream();
+	const vehicleEventsCursor = vehicleEventsCollection
+		.find({ status: coreVehicleEventsSessionId }, { sort: { millis: -1 } })
+		.stream();
 
 	let insertedCount = 0;
 
 	for await (const document of vehicleEventsCursor) {
 		const currentInsertedDocumentIds: string[] = [];
 		try {
-			Logger.progress({ message: `Migrating "${document._id}"...` });
+			// Logger.progress({ message: `Migrating "${document._id}"...` });
 			// Transform the document
 			const parsedDocuments = transformPcgiVehicleEventCore(document);
 			// Write the documents to the destination databases
@@ -81,20 +111,22 @@ async function main() {
 				}
 			}
 			// Delete the document from the source database
-			await vehicleEventsCollection.deleteOne({ _id: document._id });
-			Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${currentInsertedDocumentIds.length}) [ ${currentInsertedDocumentIds.join(' | ')} ]`, 1);
+			const deleteResult = await vehicleEventsCollection.deleteOne({ _id: new ObjectId(document._id) as unknown as string });
+			// Logger.success(`PCGI ID "${document._id}" -> [${parsedDocuments.map(doc => doc.agency_id).join('|')}] (x${currentInsertedDocumentIds.length}) [ ${currentInsertedDocumentIds.join(' | ')} ] (deleted: ${deleteResult.deletedCount})`, 1);
 		} catch (error) {
-			Logger.error({ error, message: `Failed to migrate document "${document._id}": ${error.message}` });
 			if (error.message.startsWith('E11000')) {
-				Logger.error({ message: `Duplicate document "${document._id}" found in source database. Deleting it from source database.` });
-				await vehicleEventsCollection.deleteOne({ _id: document._id });
+				// Logger.error({ message: `Duplicate document "${document._id}" found in source database. Deleting it from source database.` });
+				const deleteResult = await vehicleEventsCollection.deleteOne({ _id: new ObjectId(document._id) as unknown as string });
+				console.error(`[${PROCESS_ID}] Deleted duplicate document "${document._id}" from source database (deleted: ${deleteResult.deletedCount})`);
+			} else {
+				console.error(`[${PROCESS_ID}] !-> Failed to migrate document "${document._id}": ${error.message}`);
 			}
 		}
 	}
 
-	Logger.terminate(`Run took ${globalTimer.get()}. Migrated ${insertedCount} documents.`);
+	console.log(`[${PROCESS_ID}] => Run took ${globalTimer.get()}. Migrated ${insertedCount} documents.`);
 }
 
 /* * */
 
-await runOnInterval(main, { intervalMs: '5s', throwOnError: false });
+await runOnInterval(main, { intervalMs: '1s', throwOnError: true });

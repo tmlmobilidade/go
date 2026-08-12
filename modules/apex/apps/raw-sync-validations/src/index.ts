@@ -38,7 +38,27 @@ async function main() {
 		// and sync each one sequentially.
 
 		await performInTimeChunks({
-			onChunk: syncApexValidations,
+			onChunk: async (chunk) => {
+				try {
+					await syncApexValidations(chunk);
+				} catch (error) {
+					// Verify if the error is related to
+					// the distinct query being too big
+					const keywords = ['distinct', 'too', 'big'];
+					if (!keywords.some(keyword => error.message?.toLowerCase().includes(keyword))) throw error;
+					Logger.info({ message: `Distinct query too big — splitting chunk into smaller chunks... (${error.message})` });
+					// If it is, we need to repeat the process by splitting
+					// the current chunk into smaller chunks
+					await performInTimeChunks({
+						endDate: chunk.end,
+						onChunk: async (chunk) => {
+							await syncApexValidations(chunk);
+						},
+						splitBy: { minutes: 5 },
+						startDate: chunk.start,
+					});
+				}
+			},
 			splitBy: { hours: 2 },
 			startDate: earliestDate.unix_timestamp,
 		});

@@ -80,13 +80,13 @@ export async function getRides(): Promise<string[]> {
 
 		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestWaitingRidesIds.length} | operational_date: ${latestWaitingRides[latestWaitingRides.length - 1].operational_date} | start_time_scheduled: ${latestWaitingRides[latestWaitingRides.length - 1].start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 
+		IS_BUSY = false;
+
 		return latestWaitingRidesIds;
 
 		//
 	} catch (error) {
 		Logger.error({ error, message: `[${sessionId}] Error getting rides: ${error.message}` });
 		return [];
-	} finally {
-		IS_BUSY = false;
 	}
 }

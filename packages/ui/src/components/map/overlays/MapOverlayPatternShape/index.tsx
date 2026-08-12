@@ -240,7 +240,7 @@ export function MapOverlayPatternShape({
 
 	// Debounce timer for live drag preview — fires onAnchorDragPreview after cursor
 	// pauses for DRAG_PREVIEW_DEBOUNCE_MS during a drag, avoiding per-frame API calls.
-	const DRAG_PREVIEW_DEBOUNCE_MS = 50;
+	const DRAG_PREVIEW_DEBOUNCE_MS = 150;
 	const dragPreviewTimerRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
 	const stopsSourceId = useMemo(() => `${id}:pattern-shape:source:stops`, [id]);

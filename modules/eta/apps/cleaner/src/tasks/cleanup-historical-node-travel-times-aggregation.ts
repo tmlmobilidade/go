@@ -20,7 +20,6 @@ export async function cleanupHistoricalNodeTravelTimesAggregation(clickhouseClie
 
 	const result = await queryEachEtaStatementFromFile<CleanupRowsResult>(
 		clickhouseClient,
-		AppConfig.database,
 		pipelinePath(CLEANUP_HIST_NODE_TRAVEL_TIMES_AGG_SQL),
 		{
 			historical_data_days_back: AppConfig.historicalDataDaysBack,

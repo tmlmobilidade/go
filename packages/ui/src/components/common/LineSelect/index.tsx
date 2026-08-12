@@ -1,9 +1,9 @@
 'use client';
 
-import { Line } from '@carrismetropolitana/api-types/network';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLoopRight, IconSelector, IconX } from '@tabler/icons-react';
+import { HubLine } from '@tmlmobilidade/go-types-public-info';
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 
@@ -16,7 +16,7 @@ import { LineDisplay } from '../LineDisplay';
 /* * */
 
 export interface LineSelectProps {
-	data: Line[]
+	data: HubLine[]
 	label?: string
 	loading?: boolean
 	nothingFound?: string
@@ -42,9 +42,9 @@ export function LineSelect({ data = [], label, loading, nothingFound = 'Nenhuma 
 	// B. Transform data
 
 	const { search } = useMemo(() => {
-		const boostedData = data.map(item => ({ ...item, boost: selectedLineId === item.id ? 10 : 1 }));
+		const boostedData = data.map(item => ({ ...item, boost: selectedLineId === item._id.toString() ? 10 : 1 }));
 		return createDocCollection(boostedData, {
-			id: 1,
+			_id: 1,
 			locality_ids: 0.8,
 			long_name: 0.8,
 			short_name: 0.7,
@@ -53,7 +53,7 @@ export function LineSelect({ data = [], label, loading, nothingFound = 'Nenhuma 
 	}, [data]);
 
 	const selectedLineData = useMemo(() => {
-		return data.find(item => item.id === selectedLineId);
+		return data.find(item => item._id.toString() === selectedLineId);
 	}, [selectedLineId, data]);
 
 	//
@@ -154,7 +154,7 @@ export function LineSelect({ data = [], label, loading, nothingFound = 'Nenhuma 
 					{allLinesDataFilteredBySearchQuery.length === 0
 						? <Combobox.Empty>{nothingFound}</Combobox.Empty>
 						: allLinesDataFilteredBySearchQuery.map(item => (
-							<Combobox.Option key={item.id} className={item.id === selectedLineData?.id ? styles.selected : ''} value={item.id}>
+							<Combobox.Option key={item._id} className={item._id === selectedLineData?._id ? styles.selected : ''} value={item._id.toString()}>
 								<div className={styles.comboboxOption}>
 									<LineDisplay lineData={item} />
 								</div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
-import { closeCreateStopModal } from '@/components/stops/create/StopCreate.modal';
+import { closeStopCreateModal } from '@/components/stops/create/StopCreate.modal';
 import { CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
@@ -19,10 +19,10 @@ export function StopCreateModalHeader() {
 
 	return (
 		<Toolbar>
-			<CloseButton onClick={closeCreateStopModal} type="close" />
+			<CloseButton onClick={closeStopCreateModal} type="close" />
 			<Label size="lg" singleLine>Nova paragem</Label>
 			<Spacer />
-			<Label size="md" caps singleLine>Passo {stopCreateContext.modal.current_step} de 3</Label>
+			<Label size="md" caps singleLine>Passo {stopCreateContext.form.multi_step.progress.current?.order + 1} de {stopCreateContext.form.multi_step.length}</Label>
 		</Toolbar>
 	);
 

@@ -23,7 +23,7 @@ export function AlertsListCellMunicipalities({ values }: AlertsListCellMunicipal
 
 	const preparedTags = values
 		.map((item): TagProps => {
-			const municipalityData = localtionsContext.data.municipalities_map.get(item);
+			const municipalityData = localtionsContext.actions.getMunicipality(item);
 			if (!municipalityData) return null;
 			return { label: municipalityData.name, variant: 'muted' };
 		})

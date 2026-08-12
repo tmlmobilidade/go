@@ -1,7 +1,7 @@
 /* * */
 
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
-import { cacheDb, type cacheDbKey } from '@tmlmobilidade/go-interfaces-cachedb';
+import { cacheDb, type CacheDbKey } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubShape, type HubShapePoint } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
@@ -37,7 +37,7 @@ export async function generateShapes(importedGtfsSql: GtfsSQLTables) {
 		// Use the cache key as the key for the Map,
 		// as it will be used to compare and delete stale shapes.
 
-		const cacheKey: cacheDbKey = `hub:v1:network:shapes:${shapeRaw.shape_id}`;
+		const cacheKey: CacheDbKey = `hub:v1:network:shapes:${shapeRaw.shape_id}`;
 
 		//
 		// Check if a shape object already exists, or create a new one.

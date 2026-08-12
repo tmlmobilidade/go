@@ -12,7 +12,7 @@ import { Logger } from '@tmlmobilidade/logger-logger-backend';
  * @param reply The reply object.
  */
 export async function getTripUpdatesGtfsRtJson(request: FastifyRequest, reply: FastifyReply<unknown>) {
-	const raw = await cacheDb.get('hub:v1:realtime:eta:gtfs');
+	const raw = await cacheDb.get('hub:v1:realtime:eta:all:gtfs');
 	if (!raw) {
 		Logger.error({ message: '[hub/v1/realtime:getTripUpdatesGtfsRtJson()] No data in cache.' });
 		return reply

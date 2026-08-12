@@ -61,10 +61,9 @@ export function BaseProvider({ children, i18n, initializeSentry, theme, version 
 	const swrSettings: SWRConfiguration = {
 		fetcher: swrFetcher,
 		refreshInterval: 600_000, // 10 minutes
-		refreshWhenHidden: true,
+		refreshWhenHidden: false,
 		revalidateIfStale: true,
 		revalidateOnFocus: true,
-		revalidateOnMount: true,
 	};
 
 	//

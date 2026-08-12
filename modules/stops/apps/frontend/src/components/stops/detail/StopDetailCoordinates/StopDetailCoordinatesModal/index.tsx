@@ -6,6 +6,7 @@ import { useStopDetailContext } from '@/components/stops/detail/StopDetail.conte
 import { StopDetailCoordinatesMap } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesMap';
 import { coordinatesToSearchQuery, getStopCoordinateEditRadiusWarningMessage, isLatLngOutsideEditRadius, STOP_COORDINATE_EDIT_RADIUS_METERS, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID, STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_TITLE } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesModal/coordinates-query';
 import { StopDetailCoordinatesSelect } from '@/components/stops/detail/StopDetailCoordinates/StopDetailCoordinatesSelect';
+import { isValidLatitude, isValidLongitude } from '@tmlmobilidade/geo';
 import { Divider, Label, MapContextProvider, Modal, Pane, Spacer, Toolbar, useMapContext, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -13,6 +14,9 @@ import { useCallback, useEffect, useState } from 'react';
 
 // Separate preference scope so modal search-pin / toolbar state does not overwrite the detail page map.
 const DETAIL_COORDINATES_MAP_SCOPE = 'map:stop-detail-coordinates-modal';
+const STOP_COORDINATE_INVALID_TOAST_ID = 'stop-detail-coordinates-invalid';
+
+type Coords = [number | undefined, number | undefined];
 
 export function StopDetailCoordinatesModalBody() {
 	//
@@ -26,7 +30,7 @@ export function StopDetailCoordinatesModalBody() {
 	const { form } = stopDetailContext.data;
 	const stop = stopDetailContext.data.stop;
 
-	const [draft, setDraft] = useState<[number | undefined, number | undefined]>(() => {
+	const [draft, setDraft] = useState<Coords>(() => {
 		const lat = form.values.latitude;
 		const lng = form.values.longitude;
 		const latN = typeof lat === 'number' ? lat : Number(lat);
@@ -63,13 +67,22 @@ export function StopDetailCoordinatesModalBody() {
 		setDraft([lat, lng]);
 	}, []);
 
-	const handleConfirmDraft = useCallback(() => {
-		const [lat, lng] = draft;
-		if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+	const handleConfirmDraft = useCallback((nextDraft: Coords) => {
+		const [lat, lng] = nextDraft;
+		const validatedLatitude = isValidLatitude(lat ?? NaN);
+		const validatedLongitude = isValidLongitude(lng ?? NaN);
+		if (validatedLatitude === false || validatedLongitude === false) {
+			useToast.error({
+				id: STOP_COORDINATE_INVALID_TOAST_ID,
+				message: 'Por favor verifique os valores introduzidos.',
+				title: 'Coordenadas inválidas',
+			});
+			return;
+		}
 		const latitudeN = typeof stop?.latitude === 'number' ? stop.latitude : Number(stop?.latitude);
 		const longitudeN = typeof stop?.longitude === 'number' ? stop.longitude : Number(stop?.longitude);
 		if (stop?._id && Number.isFinite(latitudeN) && Number.isFinite(longitudeN)) {
-			if (isLatLngOutsideEditRadius(latitudeN, longitudeN, lat, lng, STOP_COORDINATE_EDIT_RADIUS_METERS)) {
+			if (isLatLngOutsideEditRadius(latitudeN, longitudeN, validatedLatitude, validatedLongitude, STOP_COORDINATE_EDIT_RADIUS_METERS)) {
 				useToast.warning({
 					autoClose: 6000,
 					id: STOP_COORDINATE_EDIT_RADIUS_WARNING_TOAST_ID,
@@ -79,11 +92,11 @@ export function StopDetailCoordinatesModalBody() {
 				return;
 			}
 		}
-		form.setFieldValue('latitude', lat);
-		form.setFieldValue('longitude', lng);
-		mapContext.actions.handleSearch(coordinatesToSearchQuery(lat, lng));
+		form.setFieldValue('latitude', validatedLatitude);
+		form.setFieldValue('longitude', validatedLongitude);
+		mapContext.actions.handleSearch(coordinatesToSearchQuery(validatedLatitude, validatedLongitude));
 		stopDetailContext.actions.closeCoordinatesEditor();
-	}, [draft, form, mapContext.actions, stop, stopDetailContext.actions]);
+	}, [form, mapContext.actions, stop, stopDetailContext.actions]);
 
 	//
 	// C. Render components
