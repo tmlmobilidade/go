@@ -17,6 +17,10 @@ export function getFeedbackReasonSelectionTarget(reasonCategoryCount: number): F
 	return reasonCategoryCount === 1 ? 'reasons' : 'categories';
 }
 
+export function hasFeedbackTarget(entityType: 'line' | 'stop', entityId: string | undefined, agencyId: string | undefined) {
+	return !!entityId && (entityType === 'stop' || !!agencyId);
+}
+
 export function shouldShowFeedbackTrigger(snapPoint: null | number, isFeedbackSheetOpen: boolean, isCoolingDown: boolean) {
 	return snapPoint !== null && snapPoint >= FEEDBACK_TRIGGER_MINIMUM_SNAP_POINT && !isFeedbackSheetOpen && !isCoolingDown;
 }

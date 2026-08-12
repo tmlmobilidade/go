@@ -1,43 +1,56 @@
 'use client';
 
+import { getFeedbackCooldownEndsAt, getFeedbackCooldownKey, isFeedbackCooldownActive } from '@/utils/feedback/cooldown';
+import { type PublicFeedbackEntityType } from '@tmlmobilidade/go-types-public-info';
 import { useEffect, useState } from 'react';
 
-// use for enable or disable cooldown :)
-const FEEDBACK_COOLDOWN_CONTROL = false;
-// use for change cooldown duration :)
-const FEEDBACK_COOLDOWN_DURATION_MS = 24 * 60 * 60 * 1000;
+/* * */
 
-function getFeedbackCooldownKey(lineId: string) {
-	return `feedback-cooldown:${lineId}`;
-}
-
-export function useFeedbackCooldown(lineId?: string) {
+export function useFeedbackCooldown(entityType: PublicFeedbackEntityType, entityId?: string) {
 	const [isCoolingDown, setIsCoolingDown] = useState(false);
 
 	const startCooldown = () => {
-		if (!FEEDBACK_COOLDOWN_CONTROL || !lineId) return;
+		if (!entityId) return;
 
-		window.localStorage.setItem(getFeedbackCooldownKey(lineId), String(Date.now() + FEEDBACK_COOLDOWN_DURATION_MS));
 		setIsCoolingDown(true);
+
+		try {
+			window.localStorage.setItem(getFeedbackCooldownKey(entityType, entityId), String(getFeedbackCooldownEndsAt()));
+		} catch {
+			// The in-memory cooldown still prevents another prompt during this visit.
+		}
 	};
 
 	useEffect(() => {
-		if (!FEEDBACK_COOLDOWN_CONTROL || !lineId) {
+		if (!entityId) {
 			setIsCoolingDown(false);
 			return;
 		}
 
-		const cooldownKey = getFeedbackCooldownKey(lineId);
-		const cooldownEndsAt = Number(window.localStorage.getItem(cooldownKey));
+		const cooldownKey = getFeedbackCooldownKey(entityType, entityId);
 
-		if (cooldownEndsAt > Date.now()) {
-			setIsCoolingDown(true);
-			return;
+		try {
+			const storedEndsAt = window.localStorage.getItem(cooldownKey);
+
+			if (isFeedbackCooldownActive(storedEndsAt)) {
+				const remainingDuration = Number(storedEndsAt) - Date.now();
+				setIsCoolingDown(true);
+
+				const timeout = window.setTimeout(() => {
+					window.localStorage.removeItem(cooldownKey);
+					setIsCoolingDown(false);
+				}, remainingDuration);
+
+				return () => window.clearTimeout(timeout);
+			}
+
+			window.localStorage.removeItem(cooldownKey);
+		} catch {
+			// Storage availability must not prevent the feedback trigger from rendering.
 		}
 
-		window.localStorage.removeItem(cooldownKey);
 		setIsCoolingDown(false);
-	}, [lineId]);
+	}, [entityId, entityType]);
 
 	return {
 		isCoolingDown,

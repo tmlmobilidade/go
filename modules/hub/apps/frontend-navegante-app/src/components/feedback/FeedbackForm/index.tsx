@@ -11,9 +11,10 @@ import { FeedbackSubmitButton } from '@/components/feedback/FeedbackForm/compone
 import { FeedbackThankYou } from '@/components/feedback/FeedbackForm/components/FeedbackThankYou';
 import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown';
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
-import { type FeedbackSheetView, getFeedbackBackTarget, getFeedbackReasonSelectionTarget, shouldShowFeedbackTrigger } from '@/utils/feedback/navigation';
+import { type FeedbackSheetView, getFeedbackBackTarget, getFeedbackReasonSelectionTarget, hasFeedbackTarget, shouldShowFeedbackTrigger } from '@/utils/feedback/navigation';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PublicFeedback } from '@tmlmobilidade/types';
+import { type PublicFeedbackReason, type PublicFeedbackSubmission } from '@tmlmobilidade/go-types-public-info';
+import { AlertMessage } from '@tmlmobilidade/ui';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +29,7 @@ interface FeedbackFormProps {
 	entityType?: FeedbackEntityType
 }
 
-const FEEDBACK_ENDPOINT = `${API_ROUTES.hub.BASE}/v1/feedback`;
+const FEEDBACK_ENDPOINT = API_ROUTES.hub.FEEDBACK_LIST;
 
 /* * */
 
@@ -45,16 +46,25 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	const [activeView, setActiveView] = useState<FeedbackSheetView>('mood');
 	const [isFeedbackSheetOpen, setIsFeedbackSheetOpen] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [selectedReasonValues, setSelectedReasonValues] = useState<string[]>([]);
-	const [selectedMood, setSelectedMood] = useState<null | PublicFeedback['mood']>(null);
+	const [hasSubmissionError, setHasSubmissionError] = useState(false);
+	const [selectedReasonValues, setSelectedReasonValues] = useState<PublicFeedbackReason[]>([]);
+	const [selectedMood, setSelectedMood] = useState<null | PublicFeedbackSubmission['mood']>(null);
 	const [triggerPortalRoot, setTriggerPortalRoot] = useState<HTMLElement | null>(null);
 
-	const reasonCategories = getFeedbackReasonCategories(entityType) as readonly FeedbackReasonCategory[];
-	const reasonGroups = getFeedbackReasonGroups(entityType, reasonId => t(`default:feedback.reasons.${reasonId}`));
+	const reasonCategories: readonly FeedbackReasonCategory[] = getFeedbackReasonCategories(entityType);
+	const reasonGroups = getFeedbackReasonGroups(
+		entityType,
+		category => t(`default:feedback.categories.${category}`),
+		reasonId => t(`default:feedback.reasons.${reasonId}`),
+	);
 	const activeReasonGroup = activeCategory ? reasonGroups[activeCategory] : null;
-	const feedbackCooldown = useFeedbackCooldown(entityType === 'line' ? entityId : undefined);
+	const feedbackCooldown = useFeedbackCooldown(entityType, entityId);
 	const isTriggerVisible = shouldShowFeedbackTrigger(activeBottomSheetSnap.snapPoint, isFeedbackSheetOpen, feedbackCooldown.isCoolingDown);
-	const sheetTitle = getFeedbackSheetTitle(activeView, activeReasonGroup?.heading, selectedMood);
+	const sheetTitle = activeView === 'categories'
+		? t(selectedMood === 'unhappy' ? 'default:feedback.form.categories_unhappy_title' : 'default:feedback.form.categories_happy_title')
+		: activeView === 'reasons'
+			? activeReasonGroup?.heading ?? t('default:feedback.form.title')
+			: t('default:feedback.form.title');
 	const canNavigateBack = activeView === 'categories' || activeView === 'reasons';
 	const canSubmitReasons = selectedReasonValues.length > 0 && !isSubmitting;
 
@@ -64,6 +74,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	const resetFeedbackForm = () => {
 		setActiveCategory(null);
 		setActiveView('mood');
+		setHasSubmissionError(false);
 		setIsFeedbackSheetOpen(false);
 		setIsSubmitting(false);
 		setSelectedMood(null);
@@ -106,19 +117,22 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 		openReasonSelection();
 	};
 
-	const submitFeedback = async (feedbackMood: null | PublicFeedback['mood'], feedbackReasonValues: string[]) => {
-		if (!agencyId || !entityId || !feedbackMood || isSubmitting) return;
+	const submitFeedback = async (feedbackMood: null | PublicFeedbackSubmission['mood'], feedbackReasonValues: PublicFeedbackReason[]) => {
+		if (!entityId || !feedbackMood || isSubmitting) return;
+		if (entityType === 'line' && !agencyId) return;
 
-		const payload: PublicFeedback = {
-			agency_id: agencyId,
-			created_at: Date.now() as PublicFeedback['created_at'],
+		const commonPayload = {
 			entity_id: entityId,
-			entity_type: entityType,
 			mood: feedbackMood,
 			reasons: feedbackReasonValues,
 			schema_version: 'v1',
-		};
+		} as const;
 
+		const payload: PublicFeedbackSubmission = entityType === 'line'
+			? { ...commonPayload, agency_id: agencyId, entity_type: 'line' }
+			: { ...commonPayload, entity_type: 'stop' };
+
+		setHasSubmissionError(false);
 		setIsSubmitting(true);
 
 		try {
@@ -129,14 +143,14 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			});
 
 			if (!response.ok) {
-				console.error({ message: 'Failed to submit feedback.', status: response.status });
+				setHasSubmissionError(true);
 				return;
 			}
 
 			feedbackCooldown.startCooldown();
 			setActiveView('thank-you');
-		} catch (error) {
-			console.error({ error, message: 'Error submitting feedback.' });
+		} catch {
+			setHasSubmissionError(true);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -162,7 +176,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 	//
 	// D. Render components
 
-	if (!agencyId || !entityId) return null;
+	if (!hasFeedbackTarget(entityType, entityId, agencyId)) return null;
 
 	return (
 		<>
@@ -224,18 +238,15 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 				)}
 
 				{activeView === 'thank-you' && <FeedbackThankYou />}
+
+				{hasSubmissionError && (
+					<div className={styles.error} role="alert">
+						<AlertMessage title={t('default:feedback.form.submit_error')} variant="danger" raised />
+					</div>
+				)}
 			</BottomSheet>
 		</>
 	);
 
 	//
-}
-
-/* * */
-
-function getFeedbackSheetTitle(view: FeedbackSheetView, reasonHeading: string | undefined, selectedMood: null | PublicFeedback['mood']) {
-	if (view === 'categories') return selectedMood === 'unhappy' ? 'Com o que está insatisfeito?' : 'O que podemos melhorar?';
-	if (view === 'reasons') return reasonHeading ?? 'Feedback';
-
-	return 'Feedback';
 }

@@ -17,4 +17,10 @@ describe('feedback reason selection', () => {
 
 		assert.deepEqual(selection, ['too_crowded']);
 	});
+
+	it('does not exceed the public feedback reason limit', () => {
+		const selection = toggleFeedbackReason(['early', 'late', 'detour', 'long_headway'], 'too_crowded');
+
+		assert.deepEqual(selection, ['early', 'late', 'detour', 'long_headway']);
+	});
 });

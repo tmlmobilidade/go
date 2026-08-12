@@ -32,14 +32,18 @@ export function FeedbackReasonCategories({ entityType, onSelect }: FeedbackReaso
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const reasonGroups = getFeedbackReasonGroups(entityType, reasonId => t(`default:feedback.reasons.${reasonId}`));
+	const reasonGroups = getFeedbackReasonGroups(
+		entityType,
+		category => t(`default:feedback.categories.${category}`),
+		reasonId => t(`default:feedback.reasons.${reasonId}`),
+	);
 
 	//
 	// B. Render components
 
 	return (
 		<div className={styles.container}>
-			<p className={styles.description}>Ajude-nos a melhorar o serviço.</p>
+			<p className={styles.description}>{t('default:feedback.form.categories_prompt')}</p>
 
 			<div className={styles.options}>
 				{Object.entries(reasonGroups).map(([category, reasonGroup]) => (

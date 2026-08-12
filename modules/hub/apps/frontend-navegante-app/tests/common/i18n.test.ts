@@ -14,6 +14,9 @@ describe('createI18nInstance', () => {
 		});
 
 		assert.equal(instance.t('default:action-bar.ActionBar.search.label'), 'Pesquisar');
+		assert.equal(instance.t('default:feedback.form.submit_error'), 'Não foi possível enviar o feedback. Tenta novamente.');
+		assert.equal(instance.t('default:feedback.mood.question'), 'Estás satisfeito com este serviço?');
+		assert.equal(instance.t('default:feedback.trigger.label'), 'Dá-nos o teu feedback');
 	});
 
 	it('keeps application translations isolated between instances', () => {

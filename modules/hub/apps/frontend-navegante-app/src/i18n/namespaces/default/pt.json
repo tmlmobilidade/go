@@ -100,6 +100,27 @@
 		}
 	},
 	"feedback": {
+		"categories": {
+			"driver": "Motorista/Condutor",
+			"line_service": "Linha/Serviço",
+			"stop": "Paragem",
+			"vehicle": "Veículo"
+		},
+		"form": {
+			"categories_happy_title": "O que podemos melhorar?",
+			"categories_prompt": "Ajude-nos a melhorar o serviço.",
+			"categories_unhappy_title": "Com o que está insatisfeito?",
+			"reasons_prompt": "Selecione os motivos que se aplicam.",
+			"submit": "Enviar feedback",
+			"submit_error": "Não foi possível enviar o feedback. Tenta novamente.",
+			"title": "Feedback"
+		},
+		"mood": {
+			"improvement_prompt": "O que poderíamos melhorar?",
+			"no": "Não",
+			"question": "Estás satisfeito com este serviço?",
+			"yes": "Sim"
+		},
 		"reasons": {
 			"accessibility_issue": "Problema de acessibilidade",
 			"audio_announcement_issue": "Problema nos anúncios sonoros",
@@ -146,6 +167,13 @@
 			"validator_issue": "Problema no validador",
 			"weather_exposure_issue": "Exposição ao mau tempo",
 			"wrong_panel_information": "Informação errada no painel"
+		},
+		"thank_you": {
+			"description": "A tua resposta foi enviada.",
+			"title": "Obrigado pelo feedback!"
+		},
+		"trigger": {
+			"label": "Dá-nos o teu feedback"
 		}
 	},
 	"help": {
