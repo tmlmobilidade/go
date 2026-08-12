@@ -42,13 +42,13 @@ export async function exportMunicipalitiesFile(exportConfig: MergedGtfsExportCon
 
 	for (const municipalityData of allAmlMunicipalities) {
 		// Fetch the corresponding district data
-		const districtData = await goDb.locations.districts.findById(municipalityData.district_id, { projection: { '_id': 1, 'properties.name': 1 } });
+		const districtData = await goDb.locations.districts.findById(municipalityData.properties.district_id, { projection: { '_id': 1, 'properties.name': 1 } });
 		// Prepare the exported row
 		const parsedMunicipalitiesRow: ExportedMunicipalitiesRow = {
-			district_id: municipalityData.district_id,
-			district_name: districtData?.name ?? '-',
+			district_id: municipalityData.properties.district_id,
+			district_name: districtData?.properties.name ?? '-',
 			municipality_id: municipalityData._id,
-			municipality_name: municipalityData.name,
+			municipality_name: municipalityData.properties.name,
 		};
 		// Write the row to the municipalities.txt file
 		await exportConfig.writers.municipalities.write(parsedMunicipalitiesRow);
