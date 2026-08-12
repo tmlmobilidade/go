@@ -53,8 +53,18 @@ export function RidesListLastUpdatedAt() {
 	//
 	// C. Render components
 
-	if (isLoading || isValidating) {
+	if (isLoading) {
 		return <Loader size="sm" />;
+	}
+
+	if (isValidating) {
+		return (
+			<Indicator
+				tooltip={tooltipValue}
+				variant="warning"
+				filled
+			/>
+		);
 	}
 
 	return (

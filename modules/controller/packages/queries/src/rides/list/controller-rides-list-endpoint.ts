@@ -17,6 +17,28 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	const validatedFilters = ControllerRidesListFiltersSchema.parse(filters);
 
 	//
+	// If any of the filters are filled but are empty arrays,
+	// then there is no data to return, so return an empty array.
+
+	const hasEmptyFilter = [
+		validatedFilters.agency_ids,
+		validatedFilters.acceptance_statuses,
+		validatedFilters.analysis_at_least_one_vehicle_event_on_last_stop_grades,
+		validatedFilters.analysis_expected_apex_validation_interval_grades,
+		validatedFilters.analysis_simple_three_vehicle_events_grades,
+		validatedFilters.analysis_transaction_sequentiality_grades,
+		validatedFilters.start_delay_statuses,
+		validatedFilters.end_delay_statuses,
+		validatedFilters.driver_ids,
+		validatedFilters.operational_statuses,
+		validatedFilters.route_short_names,
+		validatedFilters.ticketing_statuses,
+		validatedFilters.vehicle_ids,
+	].some(value => Array.isArray(value) && value.length === 0);
+
+	if (hasEmptyFilter) return [];
+
+	//
 	// Build query parameters
 
 	const params: Record<string, number | string> = {
