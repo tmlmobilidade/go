@@ -189,7 +189,7 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 		const search = addParam(`%${validatedFilters.search}%`);
 		conditions.push(`
 			(
-				toString(_id) ILIKE ${search}
+				_id ILIKE ${search}
 				OR toString(headsign) ILIKE ${search}
 			)
 		`);
@@ -201,7 +201,7 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	const where = conditions.length
 		? `\n\tAND ${conditions.join('\n\tAND ')}`
 		: '';
-	const sql = `${controllerRidesListQuery}${where}`;
+	const sql = `${controllerRidesListQuery}${where}\n\tORDER BY start_time_scheduled ASC`;
 
 	//
 	// Execute the query

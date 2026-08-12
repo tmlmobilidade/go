@@ -24,6 +24,7 @@
 		"build:apex:raw-sync-validations": "turbo run build --filter=@tmlmobilidade/go-apex-raw-sync-validations",
 		"build:auth": "turbo run build --filter=@tmlmobilidade/go-auth-*",
 		"build:controller": "turbo run build --filter=@tmlmobilidade/go-controller-*",
+		"build:controller:pckg": "turbo run build --filter=@tmlmobilidade/go-controller-pckg-*",
 		"build:dates": "turbo run build --filter=@tmlmobilidade/go-dates-*",
 		"build:eslint": "turbo build --filter=@tmlmobilidade/eslint",
 		"build:eta": "turbo run build --filter=@tmlmobilidade/go-eta-*",
