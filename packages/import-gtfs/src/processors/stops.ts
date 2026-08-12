@@ -2,9 +2,10 @@
 
 import { type ImportGtfsContext } from '@/types/context.js';
 import { parseCsvFile } from '@/utils/parse-csv.js';
+import { HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-public-info';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Stop_Extended_Raw, validateGtfsStopExtended } from '@tmlmobilidade/types';
+import { type GTFS_Stop_Extended_Raw } from '@tmlmobilidade/types';
 
 /**
  * Processes the stops.txt file from the GTFS dataset.
@@ -22,7 +23,13 @@ export async function processStopsFile(context: ImportGtfsContext): Promise<void
 
 		const parseEachRow = async (data: GTFS_Stop_Extended_Raw) => {
 			// Validate the current row against the proper type
-			const validatedData = validateGtfsStopExtended(data);
+			const validatedData = HubGtfsExportStopsSchema.parse({
+				...data,
+				stop_code: Number(data.stop_code),
+				stop_id: Number(data.stop_id),
+				stop_lat: Number(data.stop_lat),
+				stop_lon: Number(data.stop_lon),
+			});
 			// Skip if stop already exists
 			if (context.gtfs.stops.get('stop_id', validatedData.stop_id)) return;
 			// Save the exported row
