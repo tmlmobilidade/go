@@ -39,15 +39,17 @@ export async function findRideForTrain({ destinationId, now }: FindRideForTrainP
 
 	if (!destinationStop) return null;
 
-	const ridesCollection = await goDb.operation.rides.getCollection();
+	// const ridesCollection = await goDb.operation.rides.getCollection();
 
-	const ridesAggregationResult = await ridesCollection.aggregate(
-		aggregationQuery({
-			endTimeScheduled: now.plus({ hours: 1 }).unix_timestamp,
-			headsign: destinationStop.name,
-			startTimeScheduled: now.minus({ hours: 1 }).unix_timestamp,
-		}),
-	).toArray() as AggregationResult[];
+	// const ridesAggregationResult = await ridesCollection.aggregate(
+	// 	aggregationQuery({
+	// 		endTimeScheduled: now.plus({ hours: 1 }).unix_timestamp,
+	// 		headsign: destinationStop.name,
+	// 		startTimeScheduled: now.minus({ hours: 1 }).unix_timestamp,
+	// 	}),
+	// ).toArray() as AggregationResult[];
+
+	const ridesAggregationResult: AggregationResult[] = [];
 
 	if (ridesAggregationResult.length === 0) return null;
 

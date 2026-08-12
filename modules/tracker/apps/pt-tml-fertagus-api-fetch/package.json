@@ -19,8 +19,9 @@
 	"dependencies": {
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/external": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
+		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",

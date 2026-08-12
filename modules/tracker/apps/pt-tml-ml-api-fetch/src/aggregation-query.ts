@@ -1,7 +1,7 @@
 /* * */
 
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { type AggregationPipeline } from '@tmlmobilidade/interfaces';
-import { type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
