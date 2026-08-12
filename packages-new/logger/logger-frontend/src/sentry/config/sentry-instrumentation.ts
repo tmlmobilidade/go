@@ -39,8 +39,8 @@ export function createSentryInstrumentation() {
 		 * Initiates Sentry instrumentation and enables request log forwarding
 		 * if running in a 'nodejs' Next.js runtime.
 		 */
-		register() {
-			initSentry();
+		async register() {
+			await initSentry();
 			const processRef = Reflect.get(globalThis, 'process') as ProcessLike | undefined;
 			if (processRef?.env?.NEXT_RUNTIME === 'nodejs') {
 				registerSentryNextRequestLogs(getRuntimeLogContext());
@@ -56,7 +56,7 @@ export function createSentryInstrumentation() {
  * - onRouterTransitionStart: Handler for tracking router transitions in Sentry.
  */
 export function createSentryClientInstrumentation() {
-	initSentry();
+	void initSentry();
 
 	return {
 		/**

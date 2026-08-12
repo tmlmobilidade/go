@@ -31,6 +31,10 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
+		},
+		"./sentry/tunnel": {
+			"types": "./dist/sentry/tunnel/index.d.ts",
+			"default": "./dist/sentry/tunnel/index.js"
 		}
 	},
 	"scripts": {
