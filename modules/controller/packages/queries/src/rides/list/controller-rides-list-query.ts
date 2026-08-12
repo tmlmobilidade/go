@@ -153,23 +153,24 @@ WITH
 			/*
 			 * Operational status
 			 */
-			multiIf(
+			CASE
+				WHEN
+					seen_last_at IS NULL
+					AND now_ms - start_time_scheduled <= 600000
+				THEN 'scheduled'
 
-				seen_last_at IS NOT NULL
-					AND seen_last_at >= now_ms - 600000,
-				'running',
+				WHEN
+					seen_last_at IS NULL
+					AND now_ms - start_time_scheduled > 600000
+				THEN 'missed'
 
-				seen_last_at IS NULL
-					AND start_time_scheduled >= now_ms - 600000,
-				'scheduled',
+				WHEN
+					seen_last_at IS NOT NULL
+					AND now_ms - seen_last_at <= 600000
+				THEN 'running'
 
-				seen_last_at IS NULL
-					AND start_time_scheduled < now_ms - 600000,
-				'missed',
-
-				'ended'
-
-			) AS operational_status,
+				ELSE 'ended'
+			END AS operational_status,
 
 			/*
 			 * Seen status
