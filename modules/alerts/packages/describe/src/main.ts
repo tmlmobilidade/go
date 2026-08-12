@@ -12,7 +12,9 @@ import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
 // import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Agency, type Alert, type I18nCode, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type Alert } from '@tmlmobilidade/go-types-operation';
+import { type I18nCode, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type Agency } from '@tmlmobilidade/types';
 
 /* * */
 

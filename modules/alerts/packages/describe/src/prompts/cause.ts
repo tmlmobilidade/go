@@ -1,6 +1,7 @@
 /* * */
 
-import { type AlertCause, type I18nCode } from '@tmlmobilidade/types';
+import { type AlertCause } from '@tmlmobilidade/go-types-operation';
+import { type I18nCode } from '@tmlmobilidade/go-types-shared';
 
 const externalCauseClosingPrompt = 'No final da descrição, usa um fecho empático sem assumir culpa do operador, como "Agradecemos a sua compreensão." ou formulação equivalente.';
 

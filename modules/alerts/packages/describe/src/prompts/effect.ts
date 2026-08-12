@@ -1,6 +1,7 @@
 /* * */
 
-import { type AlertEffect, type I18nCode } from '@tmlmobilidade/types';
+import { type AlertEffect } from '@tmlmobilidade/go-types-operation';
+import { type I18nCode } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Effect specific instructions to be included in the prompt for the generation of the alert descriptions.

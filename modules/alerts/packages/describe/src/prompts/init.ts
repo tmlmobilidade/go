@@ -1,6 +1,6 @@
 /* * */
 
-import { type I18nCode } from '@tmlmobilidade/types';
+import { type I18nCode } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Initial part of the prompt for generating title and description together.
