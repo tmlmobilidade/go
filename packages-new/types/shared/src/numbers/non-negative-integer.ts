@@ -3,11 +3,11 @@
 import { z } from 'zod';
 
 /**
- * A schema for non-negative numbers.
- * It coerces the value to a number and ensures it is non-negative.
+ * A schema for non-negative integers.
+ * It coerces the value to an integer and ensures it is non-negative.
  * @example
  * ```ts
- * const schema = NonNegativeNumberSchema.parse(1);
+ * const schema = NonNegativeIntegerSchema.parse(1);
  * // => 1
  * const schema = NonNegativeNumberSchema.parse(-1);
  * // => throws an error
@@ -15,6 +15,8 @@ import { z } from 'zod';
  * // => 1
  * ```
  */
-export const NonNegativeNumberSchema = z.coerce
+export const NonNegativeIntegerSchema = z
+	.coerce
 	.number()
+	.int()
 	.nonnegative();

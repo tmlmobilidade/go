@@ -1,19 +1,19 @@
 /* * */
 
 import { RideAnalysisBaseSchema } from '@/ride-analyses/ride-analysis-base.js';
-import { NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const RideAnalysisExpectedVehicleEventDelaySchema = RideAnalysisBaseSchema.extend({
-	observed_average_delay: NonNegativeNumberSchema.nullable().default(null),
-	observed_max_delay: NonNegativeNumberSchema.nullable().default(null),
-	observed_min_delay: NonNegativeNumberSchema.nullable().default(null),
+	observed_average_delay: NonNegativeIntegerSchema.nullable().default(null),
+	observed_max_delay: NonNegativeIntegerSchema.nullable().default(null),
+	observed_min_delay: NonNegativeIntegerSchema.nullable().default(null),
 	reason: z.enum(['NO_VEHICLE_EVENTS', 'UNEXPECTED_VEHICLE_EVENTS_DELAY', 'EXPECTED_VEHICLE_EVENTS_DELAY']).nullable().default(null),
-	vehicle_events_qty: NonNegativeNumberSchema.nullable().default(null),
-	vehicle_events_with_delay_percent: NonNegativeNumberSchema.nullable().default(null),
-	vehicle_events_with_delay_qty: NonNegativeNumberSchema.nullable().default(null),
+	vehicle_events_qty: NonNegativeIntegerSchema.nullable().default(null),
+	vehicle_events_with_delay_percent: NonNegativeIntegerSchema.nullable().default(null),
+	vehicle_events_with_delay_qty: NonNegativeIntegerSchema.nullable().default(null),
 });
 
 /**

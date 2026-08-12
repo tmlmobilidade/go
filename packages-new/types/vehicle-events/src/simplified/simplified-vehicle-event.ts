@@ -1,7 +1,7 @@
 /* * */
 
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
-import { NonNegativeNumberSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -10,7 +10,7 @@ import { z } from 'zod';
 export const SimplifiedVehicleEventSchema = z.object({
 	_id: z.string(),
 	agency_id: z.string(),
-	bearing: NonNegativeNumberSchema.nullable().default(null),
+	bearing: NonNegativeIntegerSchema.nullable().default(null),
 	created_at: UnixTimestampSchema,
 	current_status: z.enum(['INCOMING_AT', 'STOPPED_AT', 'IN_TRANSIT_TO']).nullable().default(null),
 	driver_id: z.string().nullable().default(null),
@@ -18,10 +18,10 @@ export const SimplifiedVehicleEventSchema = z.object({
 	geohash: z.string().nullable().default(null),
 	latitude: LatitudeSchema,
 	longitude: LongitudeSchema,
-	odometer: NonNegativeNumberSchema.nullable().default(null),
+	odometer: NonNegativeIntegerSchema.nullable().default(null),
 	operational_date: OperationalDateIntSchema,
 	received_at: UnixTimestampSchema,
-	speed: NonNegativeNumberSchema.nullable().default(null),
+	speed: NonNegativeIntegerSchema.nullable().default(null),
 	stop_id: z.string().nullable().default(null),
 	trip_id: z.string(),
 	vehicle_id: z.string(),

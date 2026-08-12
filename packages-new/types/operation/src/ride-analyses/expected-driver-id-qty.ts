@@ -1,13 +1,13 @@
 /* * */
 
 import { RideAnalysisBaseSchema } from '@/ride-analyses/ride-analysis-base.js';
-import { NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const RideAnalysisExpectedDriverIdQtySchema = RideAnalysisBaseSchema.extend({
-	observed_driver_ids_qty: NonNegativeNumberSchema.nullable().default(null),
+	observed_driver_ids_qty: NonNegativeIntegerSchema.nullable().default(null),
 	reason: z.enum(['NO_VEHICLE_EVENTS', 'UNEXPECTED_DRIVER_ID_QTY', 'EXPECTED_DRIVER_ID_QTY']).nullable().default(null),
 });
 

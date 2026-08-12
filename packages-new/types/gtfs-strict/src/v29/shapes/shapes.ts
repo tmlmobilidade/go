@@ -1,17 +1,17 @@
 /* * */
 
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
-import { NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeFloatSchema, NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const GtfsStrictV29ShapesSchema = z.object({
-	shape_dist_traveled: NonNegativeNumberSchema,
+	shape_dist_traveled: NonNegativeFloatSchema,
 	shape_id: z.string(),
 	shape_pt_lat: LatitudeSchema,
 	shape_pt_lon: LongitudeSchema,
-	shape_pt_sequence: NonNegativeNumberSchema,
+	shape_pt_sequence: NonNegativeIntegerSchema,
 });
 
 /**
