@@ -13,6 +13,8 @@ import { z } from 'zod';
  * // => throws an error
  * const schema = NonNegativeFloatSchema.parse('1');
  * // => 1
+ * const schema = NonNegativeFloatSchema.parse(0);
+ * // => 0
  * ```
  */
 export const NonNegativeFloatSchema = z
