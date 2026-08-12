@@ -37,13 +37,11 @@ export function RidesListCellTimeObserved({ delayStatus, observedTimestamp, sche
 	//
 	// B. Render components
 
-	if (!observedTimeDisplay || !durationDisplay) return;
-
 	return (
 		<Section flexDirection="row" gap="sm" padding="none">
-			<Tag label={observedTimeDisplay} variant={variantValue} />
-			<DelayStatusDisplay status={delayStatus} />
-			<Tag label={durationDisplay} variant={variantValue} />
+			{observedTimeDisplay && <Tag label={observedTimeDisplay} variant={variantValue} />}
+			{delayStatus && <DelayStatusDisplay status={delayStatus} />}
+			{durationDisplay && <Tag label={durationDisplay} variant={variantValue} />}
 		</Section>
 	);
 }

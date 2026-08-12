@@ -45,14 +45,11 @@ export function displayDuration(startTimestamp?: null | UnixTimestamp, endTimest
 
 	const result: string[] = [];
 
-	if (options?.signed && durationValue > 0) result.push('+');
-	if (options?.signed && durationValue < 0) result.push('-');
-
 	//
 	// Split the duration into hours and minutes
 
 	const hours = Math.abs(durationValue) >= 60 ? Math.floor(Math.abs(durationValue) / 60) : 0;
-	const minutes = Math.abs(durationValue) % 60;
+	const minutes = Math.ceil(Math.abs(durationValue) % 60);
 
 	//
 	// Only include hours if greater than 0
@@ -67,5 +64,10 @@ export function displayDuration(startTimestamp?: null | UnixTimestamp, endTimest
 	//
 	// Return the formatted value
 
-	return result.join('').trim();
+	let resultString = result.join('').trim();
+
+	if (options?.signed && resultString.length && durationValue > 0) resultString = `+${resultString}`;
+	if (options?.signed && resultString.length && durationValue < 0) resultString = `-${resultString}`;
+
+	return resultString;
 };
