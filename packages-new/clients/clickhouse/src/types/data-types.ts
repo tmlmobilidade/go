@@ -3,6 +3,7 @@
  * can be used in ClickHouse table schemas.
  */
 export type ClickHouseDataType =
+  | 'Array(String)'
   | 'Bool'
   | 'Date'
   | 'Float32'

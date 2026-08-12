@@ -120,7 +120,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 * @param values An array of data objects to insert into the table.
 	 * @returns A promise that resolves when the data is inserted successfully.
 	 */
-	public async insert<T>(format: DataFormat = 'JSONEachRow', values: T[]) {
+	public async insert(format: DataFormat = 'JSONEachRow', values: T[]) {
 		return this.client.insert<T>({
 			format: format,
 			table: `"${this.databaseName}"."${this.tableName}"`,
