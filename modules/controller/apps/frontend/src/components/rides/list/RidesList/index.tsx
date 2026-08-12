@@ -1,7 +1,6 @@
 'use client';
 
 import { AnalysisStatusTag } from '@/components/common/AnalysisStatusTag';
-import { OperationalDateTag } from '@/components/common/OperationalDateTag';
 import { RidesListCellDrivers } from '@/components/rides/list/RidesListCellDrivers';
 import { RidesListCellHeadsign } from '@/components/rides/list/RidesListCellHeadsign';
 import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPassengers';
@@ -10,20 +9,17 @@ import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar
 import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-queries';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { DataTable, DataTableColumn, DelayStatusDisplay, ErrorDisplay, OperationalStatusDisplay, Pane, Tag } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, ErrorDisplay, OperationalDateDisplay, OperationalStatusDisplay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
+import { RidesListCellDurationObserved } from '../RidesListCellDurationObserved';
+import { RidesListCellDurationScheduled } from '../RidesListCellDurationScheduled';
 import { RidesListCellSeenLastAt } from '../RidesListCellSeenLastAt';
 import { RidesListCellTimeObserved } from '../RidesListCellTimeObserved';
 import { RidesListCellTimeScheduled } from '../RidesListCellTimeScheduled';
 import { useRidesListData } from './use-rides-list-data';
-
-/* * */
-
-const MS_PER_MINUTE = 60_000;
 
 /* * */
 
@@ -40,11 +36,6 @@ export function RidesList() {
 
 	const ridesData = useRidesListData();
 
-	const formatDuration = (startTimestamp: null | UnixTimestamp, endTimestamp: null | UnixTimestamp) => {
-		if (!startTimestamp || !endTimestamp) return null;
-		return Math.round((endTimestamp - startTimestamp) / MS_PER_MINUTE) + ' min';
-	};
-
 	const columns: DataTableColumn<ControllerRidesListItem>[] = [
 		{
 			accessor: 'seen_last_at',
@@ -56,11 +47,11 @@ export function RidesList() {
 			accessor: 'operational_status',
 			render: item => <OperationalStatusDisplay value={item.operational_status} />,
 			title: t('default:list.RidesList.columns.operational_status.label'),
-			width: 180,
+			width: 150,
 		},
 		{
 			accessor: 'operational_date',
-			render: item => <OperationalDateTag value={item.operational_date} />,
+			render: item => <OperationalDateDisplay value={item.operational_date} />,
 			title: t('default:list.RidesList.columns.operational_date.label'),
 			width: 150,
 		},
@@ -84,9 +75,15 @@ export function RidesList() {
 		},
 		{
 			accessor: 'start_time_observed',
-			render: item => <RidesListCellTimeObserved delayStatus={item.start_delay_status} observedTimestamp={item.start_time_observed} scheduledTimestamp={item.start_time_scheduled} />,
+			render: item => (
+				<RidesListCellTimeObserved
+					delayStatus={item.start_delay_status}
+					observedTimestamp={item.start_time_observed}
+					scheduledTimestamp={item.start_time_scheduled}
+				/>
+			),
 			title: t('default:list.RidesList.columns.start_time_observed.label'),
-			width: 230,
+			width: 300,
 		},
 		{
 			accessor: 'end_time_scheduled',
@@ -97,37 +94,39 @@ export function RidesList() {
 		{
 			accessor: 'end_time_observed',
 			render: item => item.operational_status === 'ended' && (
-				<DelayStatusDisplay
-					endTimestamp={item.end_time_observed}
-					startTimestamp={item.end_time_scheduled}
-					status={item.end_delay_status}
+				<RidesListCellTimeObserved
+					delayStatus={item.end_delay_status}
+					observedTimestamp={item.end_time_observed}
+					scheduledTimestamp={item.end_time_scheduled}
 				/>
 			),
 			title: t('default:list.RidesList.columns.end_time_observed.label'),
-			width: 230,
+			width: 300,
 		},
 
 		{
 			accessor: 'duration_scheduled',
-			render: (item) => {
-				const duration = formatDuration(item.start_time_scheduled, item.end_time_scheduled);
-				if (!duration) return null;
-				return <Tag label={duration} variant="muted" />;
-			},
+			render: item => item.operational_status === 'ended' && (
+				<RidesListCellDurationScheduled
+					endTimeScheduled={item.end_time_scheduled}
+					startTimeScheduled={item.start_time_scheduled}
+				/>
+			),
 			title: t('default:list.RidesList.columns.duration_scheduled.label'),
-			width: 80,
+			width: 90,
 		},
 		{
 			accessor: 'duration_observed',
-			render: item => (
-				<DelayStatusDisplay
-					endTimestamp={item.end_time_observed}
-					startTimestamp={item.end_time_scheduled}
-					status={item.end_delay_status}
+			render: item => item.operational_status === 'ended' && (
+				<RidesListCellDurationObserved
+					endTimeObserved={item.end_time_observed}
+					endTimeScheduled={item.end_time_scheduled}
+					startTimeObserved={item.start_time_observed}
+					startTimeScheduled={item.start_time_scheduled}
 				/>
 			),
 			title: t('default:list.RidesList.columns.duration_observed.label'),
-			width: 160,
+			width: 200,
 		},
 
 		{

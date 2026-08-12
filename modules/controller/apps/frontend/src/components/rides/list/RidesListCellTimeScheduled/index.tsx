@@ -15,9 +15,11 @@ interface RidesListCellTimeScheduledProps {
 export function RidesListCellTimeScheduled({ timestamp }: RidesListCellTimeScheduledProps) {
 	//
 
-	const labelValue = useMemo(() => {
-		return displayUnixTimestamp(timestamp) ?? '-';
+	const scheduledTimeDisplay = useMemo(() => {
+		return displayUnixTimestamp(timestamp);
 	}, [timestamp]);
 
-	return <Tag label={labelValue} variant="muted" />;
+	if (!scheduledTimeDisplay) return null;
+
+	return <Tag label={scheduledTimeDisplay} variant="muted" />;
 }

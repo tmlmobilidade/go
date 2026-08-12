@@ -26,6 +26,7 @@ interface UseRidesListDataReturnType {
 	data: ControllerRidesListItem[]
 	error: null | string
 	isLoading: boolean
+	isValidating: boolean
 	lastUpdatedAt: null | UnixTimestamp
 }
 
@@ -72,7 +73,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data: data, error: error, isLoading: isLoading } = useSWR<ControllerRidesListItem[]>([API_ROUTES.controller.RIDES_LIST, query], {
+	const { data, error, isLoading, isValidating } = useSWR<ControllerRidesListItem[]>([API_ROUTES.controller.RIDES_LIST, query], {
 		fetcher: async ([url, query]) => {
 			const response = await fetchData<ControllerRidesListItem[]>(url, 'POST', query);
 			return response.data;
@@ -81,6 +82,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 			const now = Dates.now('local').unix_timestamp;
 			setLastUpdatedAt(now);
 		},
+		refreshInterval: 10_000, // 10 seconds
 	});
 
 	//
@@ -90,6 +92,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 		data,
 		error,
 		isLoading,
+		isValidating,
 		lastUpdatedAt,
-	}), [data, error, isLoading, lastUpdatedAt]);
+	}), [data, error, isLoading, isValidating, lastUpdatedAt]);
 };

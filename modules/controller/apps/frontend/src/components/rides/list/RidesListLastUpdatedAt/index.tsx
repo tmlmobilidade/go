@@ -17,7 +17,7 @@ export function RidesListLastUpdatedAt() {
 
 	const { t } = useTranslation();
 
-	const { isLoading, lastUpdatedAt } = useRidesListData();
+	const { isLoading, isValidating, lastUpdatedAt } = useRidesListData();
 
 	const [indicatorVariant, setIndicatorVariant] = useState<IndicatorProps['variant']>('muted');
 	const [tooltipValue, setTooltipValue] = useState<string>('---');
@@ -53,7 +53,7 @@ export function RidesListLastUpdatedAt() {
 	//
 	// C. Render components
 
-	if (isLoading) {
+	if (isLoading || isValidating) {
 		return <Loader size="sm" />;
 	}
 

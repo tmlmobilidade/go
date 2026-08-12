@@ -31,6 +31,4 @@ export function RidesListCellDrivers({ value }: RidesListCellDriversProps) {
 	// B. Render components
 
 	return <TagGroup limit={1} tags={formattedTags} />;
-
-	//
 }
