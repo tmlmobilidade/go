@@ -1,11 +1,10 @@
 'use client';
 
+import { useRidesListData } from '@/components/rides/list/shared/RidesList/use-rides-list-data';
 import { Indicator, IndicatorProps, Loader } from '@tmlmobilidade/ui';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { useRidesListData } from '../RidesList/use-rides-list-data';
 
 /* * */
 

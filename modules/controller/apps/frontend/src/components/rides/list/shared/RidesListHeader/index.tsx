@@ -1,6 +1,6 @@
 'use client';
 
-import { RidesListLastUpdatedAt } from '@/components/rides/list/RidesListLastUpdatedAt';
+import { RidesListLastUpdatedAt } from '@/components/rides/list/shared/RidesListLastUpdatedAt';
 import { Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

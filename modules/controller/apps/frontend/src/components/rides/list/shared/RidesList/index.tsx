@@ -1,11 +1,16 @@
 'use client';
 
-import { RidesListCellDrivers } from '@/components/rides/list/RidesListCellDrivers';
-import { RidesListCellHeadsign } from '@/components/rides/list/RidesListCellHeadsign';
-import { RidesListCellPassengers } from '@/components/rides/list/RidesListCellPassengers';
-import { RidesListCellVehicles } from '@/components/rides/list/RidesListCellVehicles';
-import { RidesListFiltersBar } from '@/components/rides/list/RidesListFiltersBar';
-import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
+import { RidesListFiltersBar } from '@/components/rides/list/filters/RidesListFiltersBar';
+import { RidesListHeader } from '@/components/rides/list/shared/RidesListHeader';
+import { RidesListCellDrivers } from '@/components/rides/list/table/RidesListCellDrivers';
+import { RidesListCellDurationObserved } from '@/components/rides/list/table/RidesListCellDurationObserved';
+import { RidesListCellDurationScheduled } from '@/components/rides/list/table/RidesListCellDurationScheduled';
+import { RidesListCellHeadsign } from '@/components/rides/list/table/RidesListCellHeadsign';
+import { RidesListCellPassengers } from '@/components/rides/list/table/RidesListCellPassengers';
+import { RidesListCellSeenLastAt } from '@/components/rides/list/table/RidesListCellSeenLastAt';
+import { RidesListCellTimeObserved } from '@/components/rides/list/table/RidesListCellTimeObserved';
+import { RidesListCellTimeScheduled } from '@/components/rides/list/table/RidesListCellTimeScheduled';
+import { RidesListCellVehicles } from '@/components/rides/list/table/RidesListCellVehicles';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-queries';
 import { DataTable, DataTableColumn, ErrorDisplay, GradeStatusDisplay, OperationalDateDisplay, OperationalStatusDisplay, Pane } from '@tmlmobilidade/ui';
@@ -13,11 +18,6 @@ import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
-import { RidesListCellDurationObserved } from '../RidesListCellDurationObserved';
-import { RidesListCellDurationScheduled } from '../RidesListCellDurationScheduled';
-import { RidesListCellSeenLastAt } from '../RidesListCellSeenLastAt';
-import { RidesListCellTimeObserved } from '../RidesListCellTimeObserved';
-import { RidesListCellTimeScheduled } from '../RidesListCellTimeScheduled';
 import { useRidesListData } from './use-rides-list-data';
 
 /* * */

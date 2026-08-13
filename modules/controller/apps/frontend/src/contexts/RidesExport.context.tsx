@@ -1,6 +1,6 @@
 'use client';
 
-import { RIDES_EXPORT_MODAL_ID } from '@/components/rides/list/RidesExportModal';
+import { RIDES_EXPORT_MODAL_ID } from '@/components/rides/list/export/RidesExportModal';
 import { Dates } from '@tmlmobilidade/dates';
 import { type CreateFileExportDto, type RideExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { DelayStatus, OperationalStatus, type UnixTimestamp } from '@tmlmobilidade/types';
