@@ -1,2 +1,2 @@
-export * from './detail/ride/index.js';
+export * from './detail/index.js';
 export * from './list/index.js';
