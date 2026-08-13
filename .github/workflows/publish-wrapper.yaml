@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - go-695-passar-o-validador-para-o-go
+      # - go-695-passar-o-validador-para-o-go
+      - production
     paths:
       - ".github/workflows/publish-wrapper.yaml"
       - "modules/plans/apps/validator/compile.sh"
@@ -44,11 +45,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - uses: tmlmobilidade/core/.github/actions/setup-node@production
+      - name: Use Node.js 24
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
-          directory: modules/plans/apps/validator/ts-wrapper
-          with-turbo-cache: false
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build package
         working-directory: modules/plans/apps/validator/ts-wrapper
