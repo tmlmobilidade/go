@@ -194,7 +194,6 @@ export const API_ROUTES = Object.freeze({
 		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,
 		OPERATION_RIDES: `${getModuleConfig('alerts', 'api_url')}/operation/rides`,
 		OPERATION_RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/operation/rides/${encodeURIComponent(id)}/ride`,
-		OPERATION_RIDES_WS: `${getModuleConfig('alerts', 'api_url')}/operation/rides/ws`,
 		OPERATION_STOPS: `${getModuleConfig('alerts', 'api_url')}/operation/stops`,
 	},
 
@@ -272,7 +271,6 @@ export const API_ROUTES = Object.freeze({
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/vehicle-events`,
 		RIDES_FAVORITES: `${getModuleConfig('controller', 'api_url')}/rides/favorites`,
 		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides`,
-		RIDES_WS: `${getModuleConfig('controller', 'api_url')}/rides/ws`,
 
 		// SAMS
 		SAMS_APEX_VERSIONS: `${getModuleConfig('controller', 'api_url')}/sams/apex-versions`,
