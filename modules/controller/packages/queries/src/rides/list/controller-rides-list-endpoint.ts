@@ -42,9 +42,10 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	const params: Record<string, number | string> = {
 		1: validatedFilters.start_time_scheduled_start,
 		2: validatedFilters.start_time_scheduled_end,
+		3: validatedFilters.search ?? '',
 	};
 
-	let paramIndex = 3;
+	let paramIndex = 4;
 
 	const addParam = (value: number | string): string => {
 		const index = paramIndex++;
@@ -62,9 +63,7 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 
 	if (validatedFilters.agency_ids.length) {
 		const placeholders = validatedFilters.agency_ids.map(addParam);
-		conditions.push(
-			`agency_id IN (${placeholders.join(', ')})`,
-		);
+		conditions.push(`agency_id IN (${placeholders.join(', ')})`);
 	}
 
 	//
@@ -72,9 +71,7 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 
 	if (validatedFilters.route_short_names?.length) {
 		const placeholders = validatedFilters.route_short_names.map(addParam);
-		conditions.push(
-			`route_short_name IN (${placeholders.join(', ')})`,
-		);
+		conditions.push(`route_short_name IN (${placeholders.join(', ')})`);
 	}
 
 	//
@@ -172,12 +169,10 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 
 	if (validatedFilters.search) {
 		const search = validatedFilters.search.trim();
-		const exactSearch = addParam(search);
 		const partialSearch = addParam(`%${search}%`);
 		conditions.push(`
 			(
-				_id = ${exactSearch}
-				OR _id ILIKE ${partialSearch}
+				_id ILIKE ${partialSearch}
 				OR headsign ILIKE ${partialSearch}
 			)
 		`);

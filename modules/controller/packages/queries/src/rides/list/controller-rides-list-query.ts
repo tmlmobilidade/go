@@ -11,6 +11,26 @@ WITH
 
 	/*
 	 * -----------------------------------------------------------------------
+	 * Exact Ride version
+	 * -----------------------------------------------------------------------
+	 *
+	 * Select the exact ride version explicitly by its ID using
+	 * text search parameter $3.
+	 */
+	exact_ride AS
+	(
+		SELECT
+			*
+		FROM operation.rides
+		WHERE
+			_id = $3
+		ORDER BY
+			updated_at DESC
+		LIMIT 1 BY _id
+	),
+
+	/*
+	 * -----------------------------------------------------------------------
 	 * Latest Ride version
 	 * -----------------------------------------------------------------------
 	 *
@@ -36,6 +56,25 @@ WITH
 
 	/*
 	 * -----------------------------------------------------------------------
+	 * Rides available to this query
+	 * -----------------------------------------------------------------------
+	 *
+	 * The exact Ride is added to the normal date-filtered set.
+	 *
+	 * DISTINCT prevents the exact Ride from appearing twice when it already
+	 * belongs to the requested date range.
+	 */
+	rides_for_query AS
+	(
+		SELECT *
+		FROM rides_latest
+		UNION DISTINCT
+		SELECT *
+		FROM exact_ride
+	),
+
+	/*
+	 * -----------------------------------------------------------------------
 	 * Latest analysis versions
 	 * -----------------------------------------------------------------------
 	 *
@@ -56,7 +95,7 @@ WITH
 		WHERE operational_date IN
 		(
 			SELECT DISTINCT operational_date
-			FROM rides_latest
+			FROM rides_for_query
 		)
 		GROUP BY ride_id
 	),
@@ -70,7 +109,7 @@ WITH
 		WHERE operational_date IN
 		(
 			SELECT DISTINCT operational_date
-			FROM rides_latest
+			FROM rides_for_query
 		)
 		GROUP BY ride_id
 	),
@@ -84,7 +123,7 @@ WITH
 		WHERE operational_date IN
 		(
 			SELECT DISTINCT operational_date
-			FROM rides_latest
+			FROM rides_for_query
 		)
 		GROUP BY ride_id
 	),
@@ -98,7 +137,7 @@ WITH
 		WHERE operational_date IN
 		(
 			SELECT DISTINCT operational_date
-			FROM rides_latest
+			FROM rides_for_query
 		)
 		GROUP BY ride_id
 	),
@@ -125,7 +164,7 @@ WITH
 			analysis_transaction_sequentiality.grade_status
 				AS _analysis_transaction_sequentiality_grade
 
-		FROM rides_latest AS r
+		FROM rides_for_query AS r
 
 		LEFT JOIN analysis_at_least_one_vehicle_event_on_last_stop
 			ON analysis_at_least_one_vehicle_event_on_last_stop.ride_id = r._id
