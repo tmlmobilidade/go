@@ -1,7 +1,7 @@
 'use client';
 
+import { Dates } from '@tmlmobilidade/dates';
 import { Indicator, IndicatorProps, Loader } from '@tmlmobilidade/ui';
-import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,7 +32,7 @@ export function LoadingActivity({ isLoading, isValidating, lastUpdatedAt }: Load
 	useEffect(() => {
 		const updateTooltipValue = () => {
 			if (!lastUpdatedAt) return;
-			const diff = DateTime.now().toMillis() - lastUpdatedAt;
+			const diff = Dates.now('local').unix_timestamp - lastUpdatedAt;
 			if (diff < 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.just_now'));
 			if (diff < 60 * 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.seconds_ago', '', { count: Math.floor(diff / 1000) }));
 			if (diff < 60 * 60 * 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.minutes_ago', '', { count: Math.floor(diff / 1000 / 60) }));
@@ -47,7 +47,7 @@ export function LoadingActivity({ isLoading, isValidating, lastUpdatedAt }: Load
 	useEffect(() => {
 		const updateIndicatorVariant = () => {
 			if (!lastUpdatedAt) return;
-			const diff = DateTime.now().toMillis() - lastUpdatedAt;
+			const diff = Dates.now('local').unix_timestamp - lastUpdatedAt;
 			if (diff < 10_000) return setIndicatorVariant('primary');
 			return setIndicatorVariant('muted');
 		};
