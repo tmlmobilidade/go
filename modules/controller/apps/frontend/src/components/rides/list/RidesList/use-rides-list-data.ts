@@ -70,7 +70,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 		// analysis_transaction_sequentiality_grades: filterAnalysisTransactionSequentiality.value,
 		// start_delay_statuses: filterStartDelayStatus.value,
 		// end_delay_statuses: filterEndDelayStatus.value,
-		driver_ids: filterDriver.value,
+		driver_ids: filterDriver.value.join(','),
 		operational_statuses: filterOperationalStatus.value,
 		search: filterSearch.value,
 		start_time_scheduled_end: filterDateRange.value_end,

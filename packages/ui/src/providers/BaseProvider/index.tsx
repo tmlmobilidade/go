@@ -5,7 +5,7 @@ import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { swrFetcher } from '@tmlmobilidade/utils';
-import { NuqsAdapter } from 'nuqs/adapters/next';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren, Suspense } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
@@ -36,10 +36,11 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 	//
 	// A. Setup variables
 
-	const mantineDatesSettings: Partial<DatesProviderSettings> = {
-		firstDayOfWeek: 1,
-		locale: 'pt',
-		weekendDays: [6, 0],
+	const nuqsSettings = {
+		processUrlSearchParams: (search: URLSearchParams) => {
+			search.sort();
+			return search;
+		},
 	};
 
 	const swrSettings: SWRConfiguration = {
@@ -48,6 +49,12 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 		refreshWhenHidden: false,
 		revalidateIfStale: true,
 		revalidateOnFocus: true,
+	};
+
+	const mantineDatesSettings: Partial<DatesProviderSettings> = {
+		firstDayOfWeek: 1,
+		locale: 'pt',
+		weekendDays: [6, 0],
 	};
 
 	//
@@ -61,7 +68,7 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 			lang="pt"
 		>
 			<body>
-				<NuqsAdapter>
+				<NuqsAdapter {...nuqsSettings}>
 					<Suspense fallback={<LoadingSection fullHeight />}>
 						<VersionContextProvider version={version}>
 							<SWRConfig value={swrSettings}>

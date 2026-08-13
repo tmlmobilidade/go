@@ -7,6 +7,7 @@ import { RidesListFilterAnalysisExpectedApexValidationInterval } from '@/compone
 import { RidesListFilterAnalysisSimpleThreeEvents } from '@/components/rides/list/RidesListFilterAnalysisSimpleThreeEvents';
 import { RidesListFilterAnalysisTransactionSequentiality } from '@/components/rides/list/RidesListFilterAnalysisTransactionSequentiality';
 import { RidesListFilterDateRange } from '@/components/rides/list/RidesListFilterDateRange';
+import { RidesListFilterDriver } from '@/components/rides/list/RidesListFilterDriver';
 import { RidesListFilterEndDelayStatus } from '@/components/rides/list/RidesListFilterEndDelayStatus';
 import { RidesListFilterFavorites } from '@/components/rides/list/RidesListFilterFavorites';
 import { RidesListFilterOperationalStatus } from '@/components/rides/list/RidesListFilterOperationalStatus';
@@ -27,12 +28,13 @@ export function RidesListFiltersBar() {
 			<RidesListFilterStartDelayStatus />
 			<RidesListFilterEndDelayStatus />
 			<RidesListFilterAcceptanceStatus />
+			<RidesListFilterDriver />
+			<RidesListFilterVehicle />
+			<RidesListFilterTicketingStatus />
 			<RidesListFilterAnalysisSimpleThreeEvents />
 			<RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop />
 			<RidesListFilterAnalysisExpectedApexValidationInterval />
 			<RidesListFilterAnalysisTransactionSequentiality />
-			<RidesListFilterTicketingStatus />
-			<RidesListFilterVehicle />
 		</FiltersBar>
 	);
 }

@@ -1,11 +1,11 @@
 'use client';
 
-import { useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
+import { useFilterStateTag, type UseFilterStateTagReturnType } from '@tmlmobilidade/ui';
 
 /**
  * Hook to manage the date range filter for the rides list filter bar.
  * @returns The filter state management object.
  */
-export function useRidesListFilterDriver(): UseFilterStateTextReturnType {
-	return useFilterStateText('driver');
+export function useRidesListFilterDriver(): UseFilterStateTagReturnType {
+	return useFilterStateTag('driver');
 }

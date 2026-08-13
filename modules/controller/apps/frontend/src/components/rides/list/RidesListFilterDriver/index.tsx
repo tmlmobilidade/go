@@ -1,6 +1,6 @@
 /* * */
 
-import { TextFilter } from '@tmlmobilidade/ui';
+import { TagFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRidesListFilterDriver } from './use-rides-list-filter-driver';
@@ -21,7 +21,7 @@ export function RidesListFilterDriver() {
 	// B. Render components
 
 	return (
-		<TextFilter
+		<TagFilter
 			active={filterDriver.isActive}
 			label={t('default:list.RidesListFilterDriver.label')}
 			onChange={filterDriver.set}

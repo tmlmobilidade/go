@@ -7,14 +7,14 @@ import { createParser } from 'nuqs';
 const parseFn = (queryValue: string) => {
 	// Skip if the query value is invalid.
 	if (!queryValue || typeof queryValue !== 'string') return null;
-	// Handle the special case where the query value is 'none'.
-	if (queryValue === 'none') return [];
+	// Handle the special case where the query value is empty.
+	if (!queryValue.length) return null;
 	// Split the query value by commas, trim each item,
 	// filter out empty items, and return a sorted unique string.
 	return queryValue
 		.split(',')
 		.map(item => item.trim())
-		.filter(item => item !== 'none' && item !== '');
+		.filter(item => item !== '');
 };
 
 /* * */
@@ -23,7 +23,7 @@ const serializeFn = (value: string[]) => {
 	// Skip if the value is not a valid array.
 	if (!Array.isArray(value)) return null;
 	// Handle the special case where the value is empty.
-	if (value.length === 0) return 'none';
+	if (value.length === 0) return null;
 	// Return a sorted unique string of values.
 	// This ensures that the values are unique and sorted,
 	// which is essential for consistent filtering.

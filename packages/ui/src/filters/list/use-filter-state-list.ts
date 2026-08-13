@@ -4,7 +4,7 @@ import { useQueryState } from 'nuqs';
 import { useEffect, useMemo } from 'react';
 
 import { type SelectDataItem } from '../../components';
-import { parseAsArrayOfStrings } from '../../utils';
+import { parseAsArrayOfStringsWithNone } from '../../utils';
 
 /* * */
 
@@ -32,7 +32,7 @@ export function useFilterStateList<T extends string>(key: string, defaults: T[],
 	//
 	// A. Setup variables
 
-	const [urlValue, setUrlValue] = useQueryState<string[]>(key, parseAsArrayOfStrings);
+	const [urlValue, setUrlValue] = useQueryState<string[]>(key, parseAsArrayOfStringsWithNone);
 
 	//
 	// B. Transform data

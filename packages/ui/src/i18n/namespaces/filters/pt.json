@@ -1,0 +1,8 @@
+{
+	"ListFilter": {
+		"toggle_all": "Selecionar tudo"
+	},
+	"TagFilter": {
+		"placeholder": "Pesquisar por blocos..."
+	}
+}

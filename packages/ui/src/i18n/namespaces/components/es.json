@@ -25,11 +25,6 @@
 			}
 		}
 	},
-	"filters": {
-		"ListFilter": {
-			"toggle_all": "Seleccionar todo"
-		}
-	},
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {
