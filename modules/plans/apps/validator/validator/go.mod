@@ -6,7 +6,13 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/olekukonko/tablewriter v0.0.5
 	modernc.org/sqlite v1.40.1
+	main/types v1.0.0
+	main/database v1.0.0
 )
+
+replace main/types => ../../../packages-new/types/gtfs-validator/src/validation
+
+replace main/database => ../../../packages-new/interfaces/validator-db/src/
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
