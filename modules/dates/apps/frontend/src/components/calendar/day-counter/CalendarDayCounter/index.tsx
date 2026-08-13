@@ -4,7 +4,7 @@ import { useCalendarDayCounterContext } from '@/components/calendar/day-counter/
 import { CalendarDayCounterCriteria } from '@/components/calendar/day-counter/CalendarDayCounterCriteria';
 import { closeCalendarDayCounterModal } from '@/components/calendar/day-counter/CalendarDayCounterModal/CalendarDayCounter.modal';
 import { CalendarDayCounterPreview } from '@/components/calendar/day-counter/CalendarDayCounterPreview';
-import { Button, CloseButton, CopyButton, Label, Pane, Section, Spacer, Surface, Text, Toolbar, Tooltip } from '@tmlmobilidade/ui';
+import { Button, CalendarAffectedDaysCount, CloseButton, Label, Pane, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -42,23 +42,7 @@ export function CalendarDayCounter() {
 						<Text c="dimmed" size="sm">Escolha os critérios para calcular os dias afetados.</Text>
 					</Section>
 					<Spacer />
-					<CopyButton value={String(dayCounterContext.data.ruleImpact.count)}>
-						{({ copied, copy }) => (
-							<Tooltip label={copied ? 'Número de dias copiado' : 'Copiar número de dias'} position="bottom" withArrow>
-								<button
-									aria-label={copied ? 'Número de dias copiado' : 'Copiar número de dias afetados'}
-									className={styles.resultButton}
-									onClick={copy}
-									type="button"
-								>
-									<Surface align="center" className={styles.result} justify="center" variant="primary" withBackground>
-										<Text c="var(--color-primary)" size="xl" weight="bold">{dayCounterContext.data.ruleImpact.count}</Text>
-										<Text size="sm" weight="extra-bold">dias afetados</Text>
-									</Surface>
-								</button>
-							</Tooltip>
-						)}
-					</CopyButton>
+					<CalendarAffectedDaysCount count={dayCounterContext.data.ruleImpact.count} />
 				</Toolbar>,
 			]}
 		>

@@ -1,0 +1,39 @@
+.root {
+	display: flex;
+	flex: 0 0 170px;
+	width: 170px;
+	padding: 0;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	border-radius: var(--border-radius-sm);
+}
+
+.root[data-layout='inline'] {
+	flex-basis: auto;
+	width: auto;
+}
+
+.surface {
+	padding: var(--size-spacing-xs) var(--size-spacing-md);
+	transition: background-color 120ms ease, box-shadow 120ms ease;
+}
+
+.root[data-layout='inline'] .surface {
+	flex-direction: row;
+	gap: var(--size-spacing-xs);
+	width: auto;
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
+}
+
+.root:hover .surface {
+	background-color: color-mix(in srgb, var(--color-primary), transparent 92%);
+	box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary), transparent 80%);
+}
+
+.root:focus-visible {
+	outline: 3px solid color-mix(in srgb, var(--color-primary), transparent 50%);
+	outline-offset: 2px;
+}

@@ -1,3 +1,4 @@
+export * from './components/CalendarAffectedDaysCount';
 export * from './components/CalendarSchedule';
 export * from './components/CalendarScheduleDaySummary';
 export * from './components/CalendarScheduleEvent';
