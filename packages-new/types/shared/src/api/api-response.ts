@@ -1,6 +1,7 @@
 /* * */
 
 import { HttpStatusSchema } from '@/api/http-status.js';
+import { UnixTimestampSchema } from '@/dates/unix-timestamp.js';
 import { z } from 'zod';
 
 /* * */
@@ -13,6 +14,7 @@ export const ApiResponseSuccessSchema = z.object({
 		'201', // Created
 		'204', // No Content
 	]),
+	timestamp: UnixTimestampSchema,
 });
 
 export type ApiResponseSuccess<T> = Omit<z.infer<typeof ApiResponseSuccessSchema>, 'data'> & { data: T };
@@ -29,6 +31,7 @@ export const ApiResponseErrorSchema = z.object({
 		'404', // Not Found
 		'500', // Internal Server Error
 	]),
+	timestamp: UnixTimestampSchema,
 });
 
 export type ApiResponseError = z.infer<typeof ApiResponseErrorSchema>;
