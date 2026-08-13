@@ -75,8 +75,8 @@ type Stop struct {
 	StopCode              *string  `json:"stop_code,omitempty"`
 	StopDesc              *string  `json:"stop_desc,omitempty"`
 	StopId                *string  `json:"stop_id"`
-	StopLat               *float32 `json:"stop_lat,omitempty"`
-	StopLon               *float32 `json:"stop_lon,omitempty"`
+	StopLat               *float64 `json:"stop_lat,omitempty"`
+	StopLon               *float64 `json:"stop_lon,omitempty"`
 	StopName              *string  `json:"stop_name,omitempty"`
 	StopShortName         *string  `json:"stop_short_name,omitempty"`
 	StopTimezone          *string  `json:"stop_timezone,omitempty"`
@@ -215,8 +215,8 @@ type FareRule struct {
 /* SHAPES */
 type Shape struct {
 	ShapeId           *string  `json:"shape_id"`
-	ShapePtLat        *float32 `json:"shape_pt_lat"`
-	ShapePtLon        *float32 `json:"shape_pt_lon"`
+	ShapePtLat        *float64 `json:"shape_pt_lat"`
+	ShapePtLon        *float64 `json:"shape_pt_lon"`
 	ShapePtSequence   *int     `json:"shape_pt_sequence"`
 	ShapeDistTraveled *float64 `json:"shape_dist_traveled"`
 }

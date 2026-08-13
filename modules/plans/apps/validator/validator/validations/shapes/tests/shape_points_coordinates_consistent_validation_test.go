@@ -15,14 +15,14 @@ func TestShapePointsCoordinatesConsistentValidationUsesConfiguredTolerance(t *te
 		{
 			ShapeId:         lib.Ptr("shape-a"),
 			ShapePtSequence: lib.Ptr(1),
-			ShapePtLat:      lib.Ptr(float32(38.0)),
-			ShapePtLon:      lib.Ptr(float32(-9.0)),
+			ShapePtLat:      lib.Ptr(38.0),
+			ShapePtLon:      lib.Ptr(-9.0),
 		},
 		{
 			ShapeId:         lib.Ptr("shape-a"),
 			ShapePtSequence: lib.Ptr(2),
-			ShapePtLat:      lib.Ptr(float32(38.011)),
-			ShapePtLon:      lib.Ptr(float32(-9.0)),
+			ShapePtLat:      lib.Ptr(38.011),
+			ShapePtLon:      lib.Ptr(-9.0),
 		},
 	}
 
