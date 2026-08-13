@@ -12,7 +12,7 @@ require (
 
 replace main/types => ../../../../packages-new/types/gtfs-validator/src/validation
 
-replace main/database => ../../../../packages-new/interfaces/validator-db/src/database
+replace main/database => ../../../../packages-new/interfaces/validator-db/src/
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
