@@ -22,6 +22,7 @@ export function RidesListFilterTicketingStatus() {
 			label={t('default:list.RidesListFilterTicketingStatus.label')}
 			onChange={filterTicketingStatus.set}
 			options={filterTicketingStatus.options}
+			disabled
 			withToggleAll
 		/>
 
