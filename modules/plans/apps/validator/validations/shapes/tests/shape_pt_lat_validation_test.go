@@ -1,0 +1,34 @@
+package shapes
+
+import (
+	"main/lib/test_helpers"
+	"main/services"
+	"main/types"
+	validations "main/validations/shapes/validations"
+	"testing"
+)
+
+func TestAllShapePtLatValidationTestCases(t *testing.T) {
+	validOptions := test_helpers.GetFloat32ValidOptions()
+	invalidOption := float32(100.0) // out of range
+	for _, tc := range test_helpers.GetGenericRequiredFieldTestCases("shape_pt_lat") {
+		if tc.Name == "Recommended_Missing" {
+			continue
+		}
+		t.Run(tc.Name, func(t *testing.T) {
+			services.AppMessageService.Clear()
+
+			var shapePtLat *float32
+			if tc.Name == "Invalid_Value" {
+				shapePtLat = &invalidOption
+			} else if tc.Value != nil {
+				shapePtLat = &validOptions[0]
+			} else {
+				shapePtLat = nil
+			}
+			validations.ShapePtLatValidation(&types.Shape{ShapePtLat: shapePtLat}, tc.Row)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedErrors, tc.Name, types.SEVERITY_ERROR)
+			test_helpers.AssertMessageCount(t, services.AppMessageService, tc.ExpectedWarnings, tc.Name, types.SEVERITY_WARNING)
+		})
+	}
+}
