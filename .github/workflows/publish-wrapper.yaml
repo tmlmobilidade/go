@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - production
+      - go-695-passar-o-validador-para-o-go
     paths:
       - ".github/workflows/publish-wrapper.yaml"
       - "ts-wrapper/**/*"
