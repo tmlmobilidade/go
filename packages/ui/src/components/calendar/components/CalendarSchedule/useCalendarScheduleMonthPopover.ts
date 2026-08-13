@@ -3,6 +3,8 @@
 import { type ScheduleEventData } from '@mantine/schedule';
 import { type FocusEvent, type MouseEvent, useEffect, useRef, useState } from 'react';
 
+import { filterCalendarScheduleEventsForDate } from '../../utils/calendar-schedule-event-range';
+
 /* * */
 
 export interface CalendarScheduleMonthPopoverState {
@@ -14,12 +16,6 @@ export interface CalendarScheduleMonthPopoverState {
 		top: number
 		width: number
 	}
-}
-
-/* * */
-
-function getEventCalendarDate(value: Date | string) {
-	return typeof value === 'string' ? value.slice(0, 10) : value.toISOString().slice(0, 10);
 }
 
 /* * */
@@ -63,9 +59,7 @@ export function useCalendarScheduleMonthPopover(events: ScheduleEventData[]) {
 		clearOpenTimeout();
 		clearCloseTimeout();
 
-		const dayEvents = events.filter(event => (
-			getEventCalendarDate(event.start) <= day && day < getEventCalendarDate(event.end)
-		));
+		const dayEvents = filterCalendarScheduleEventsForDate(events, day);
 		if (dayEvents.length === 0) {
 			setState(null);
 			return;

@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
+import { filterCalendarScheduleEventsForDate } from '../../utils/calendar-schedule-event-range';
 import { buildCalendarScheduleEvents, type CalendarScheduleEventType, type CalendarScheduleSources, isCalendarSchedulePayload } from '../../utils/calendar-schedule-events';
 import { CalendarScheduleEvent } from '../CalendarScheduleEvent';
 import { CalendarScheduleMonthPopover } from '../CalendarScheduleMonthPopover';
@@ -156,7 +157,7 @@ export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAct
 	const renderYearDay = (date: string, dayEvents: ScheduleEventData[]) => (
 		<CalendarScheduleYearDay
 			date={date}
-			events={dayEvents}
+			events={filterCalendarScheduleEventsForDate(dayEvents, date)}
 			locale={locale}
 			onEventClick={onEventClick}
 		/>
