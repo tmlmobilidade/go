@@ -6,7 +6,7 @@ import { ValidationsListFiltersBar } from '@/components/validations/list/Validat
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { type ValidationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusDisplay, ValidityStatusTag } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusDisplay, ValidityStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -44,7 +44,7 @@ export function ValidationsList() {
 		},
 		{
 			accessor: 'validity_status',
-			render: item => <ValidityStatusTag value={item.validity_status} />,
+			render: item => <ValidityStatusDisplay value={item.validity_status} />,
 			title: 'Resultado',
 			width: 110,
 		},
