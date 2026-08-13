@@ -77,7 +77,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 		start_time_scheduled_start: filterDateRange.value_start,
 		vehicle_ids: filterVehicle.value,
 		// ticketing_statuses: filterTicketingStatus.value,
-	}), [filterAcceptanceStatus.value, filterAgency.value, filterAnalysisAtLeastOneVehicleEventOnLastStop.value, filterAnalysisExpectedApexValidationInterval.value, filterAnalysisSimpleThreeEvents.value, filterAnalysisTransactionSequentiality.value, filterStartDelayStatus.value, filterEndDelayStatus.value, filterOperationalStatus.value, filterSearch.value, filterDateRange.value_end, filterDateRange.value_start, filterTicketingStatus.value]);
+	}), [filterAcceptanceStatus.value, filterDriver.value, filterVehicle.value, filterAgency.value, filterAnalysisAtLeastOneVehicleEventOnLastStop.value, filterAnalysisExpectedApexValidationInterval.value, filterAnalysisSimpleThreeEvents.value, filterAnalysisTransactionSequentiality.value, filterStartDelayStatus.value, filterEndDelayStatus.value, filterOperationalStatus.value, filterSearch.value, filterDateRange.value_end, filterDateRange.value_start, filterTicketingStatus.value]);
 
 	//
 	// C. Fetch data

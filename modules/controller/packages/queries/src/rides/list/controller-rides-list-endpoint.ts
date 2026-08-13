@@ -17,7 +17,7 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	const validatedFilters = ControllerRidesListFiltersSchema.parse(filters);
 
 	//
-	// If any of the filters are filled but are empty arrays,
+	// If any of the required filters are empty arrays,
 	// then there is no data to return, so return an empty array.
 
 	const hasEmptyFilter = [
