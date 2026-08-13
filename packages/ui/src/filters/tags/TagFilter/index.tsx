@@ -3,7 +3,7 @@
 import { TagsInput } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 
-import { Section } from '../../../components';
+import { Label, Section } from '../../../components';
 import { FilterWrapper } from '../../shared';
 
 /* * */
@@ -33,7 +33,9 @@ export function TagFilter({ active, disabled, label, onChange, options, value }:
 					placeholder={t('shared:filters.TagFilter.placeholder')}
 					splitChars={[' ', ',', ';', '|']}
 					value={value}
+					w="100%"
 				/>
+				<Label size="sm" variant="muted">{t('shared:filters.TagFilter.description')}</Label>
 			</Section>
 		</FilterWrapper>
 	);

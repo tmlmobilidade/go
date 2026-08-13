@@ -33,7 +33,7 @@ export const ControllerRidesListFiltersSchema = z.object({
 		.optional(),
 
 	driver_ids: z
-		.string()
+		.array(z.string())
 		.optional(),
 
 	end_delay_statuses: z
@@ -65,7 +65,7 @@ export const ControllerRidesListFiltersSchema = z.object({
 		.optional(),
 
 	vehicle_ids: z
-		.string()
+		.array(z.string())
 		.optional(),
 
 });

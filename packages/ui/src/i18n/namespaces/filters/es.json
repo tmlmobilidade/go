@@ -3,6 +3,7 @@
 		"toggle_all": "Seleccionar todo"
 	},
 	"TagFilter": {
-		"placeholder": "Buscar por bloques..."
+		"description": "Escriba y separe por comas o espacios.",
+		"placeholder": "Buscar..."
 	}
 }

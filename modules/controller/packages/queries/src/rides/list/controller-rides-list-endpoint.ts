@@ -29,11 +29,9 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 		validatedFilters.analysis_transaction_sequentiality_grades,
 		validatedFilters.start_delay_statuses,
 		validatedFilters.end_delay_statuses,
-		validatedFilters.driver_ids,
 		validatedFilters.operational_statuses,
 		validatedFilters.route_short_names,
 		validatedFilters.ticketing_statuses,
-		validatedFilters.vehicle_ids,
 	].some(value => Array.isArray(value) && value.length === 0);
 
 	if (hasEmptyFilter) return [];
@@ -82,15 +80,17 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 	//
 	// Driver IDs
 
-	if (validatedFilters.driver_ids) {
-		conditions.push(`hasAny(driver_ids, [${addParam(validatedFilters.driver_ids)}])`);
+	if (validatedFilters.driver_ids?.length) {
+		const placeholders = validatedFilters.driver_ids.map(addParam);
+		conditions.push(`hasAny(driver_ids, [${placeholders.join(', ')}])`);
 	}
 
 	//
 	// Vehicle IDs
 
-	if (validatedFilters.vehicle_ids) {
-		conditions.push(`hasAny(vehicle_ids, [${addParam(validatedFilters.vehicle_ids)}])`);
+	if (validatedFilters.vehicle_ids?.length) {
+		const placeholders = validatedFilters.vehicle_ids.map(addParam);
+		conditions.push(`hasAny(vehicle_ids, [${placeholders.join(', ')}])`);
 	}
 
 	//

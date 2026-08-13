@@ -3,6 +3,7 @@
 		"toggle_all": "Selecionar tudo"
 	},
 	"TagFilter": {
-		"placeholder": "Pesquisar por blocos..."
+		"description": "Escreva e separe por vírgulas ou espaços.",
+		"placeholder": "Pesquisar..."
 	}
 }
