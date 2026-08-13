@@ -43,11 +43,11 @@
 	},
 	"loaders": {
 		"LoadingActivity": {
-			"days_ago": "{{count}} días atrás",
-			"hours_ago": "{{count}} horas atrás",
+			"days_ago": "{count} días atrás",
+			"hours_ago": "{count} horas atrás",
 			"just_now": "Ahora mismo",
-			"minutes_ago": "{{count}} minutos atrás",
-			"seconds_ago": "{{count}} segundos atrás"
+			"minutes_ago": "{count} minutos atrás",
+			"seconds_ago": "{count} segundos atrás"
 		}
 	},
 	"sidebar": {
