@@ -2,7 +2,7 @@
 
 import { RideAcceptanceCommentList } from '@/components/rides/detail/acceptance/RideAcceptanceCommentList';
 import { RideAcceptanceJustification } from '@/components/rides/detail/acceptance/RideAcceptanceJustification';
-import { RideAnalysisAnalysisResult } from '@/components/rides/analysis/RideAnalysisResult';
+import { RideAnalysisAnalysisResult } from '@/components/rides/detail/analysis/RideAnalysisResult';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { Divider, ErrorDisplay, Grid, LoadingOverlay, Section } from '@tmlmobilidade/ui';

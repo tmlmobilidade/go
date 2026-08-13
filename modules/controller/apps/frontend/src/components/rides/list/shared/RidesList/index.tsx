@@ -2,6 +2,7 @@
 
 import { RidesListFiltersBar } from '@/components/rides/list/filters/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/shared/RidesListHeader';
+import { useRidesListData } from '@/components/rides/list/shared/use-rides-list-data';
 import { RidesListCellDrivers } from '@/components/rides/list/table/RidesListCellDrivers';
 import { RidesListCellDurationObserved } from '@/components/rides/list/table/RidesListCellDurationObserved';
 import { RidesListCellDurationScheduled } from '@/components/rides/list/table/RidesListCellDurationScheduled';
@@ -17,8 +18,6 @@ import { DataTable, DataTableColumn, ErrorDisplay, GradeStatusDisplay, Operation
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-
-import { useRidesListData } from './use-rides-list-data';
 
 /* * */
 

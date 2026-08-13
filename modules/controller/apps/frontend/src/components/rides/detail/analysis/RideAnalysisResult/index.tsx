@@ -1,6 +1,6 @@
 'use client';
 
-import { RideAnalysisAnalysisResultItem } from '@/components/rides/analysis/RideAnalysisResultItem';
+import { RideAnalysisAnalysisResultItem } from '@/components/rides/detail/analysis/RideAnalysisResultItem';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';

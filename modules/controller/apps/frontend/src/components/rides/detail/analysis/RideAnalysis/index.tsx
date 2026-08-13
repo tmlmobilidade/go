@@ -1,13 +1,13 @@
 'use client';
 
-import { RideAnalysisApexLocations } from '@/components/rides/analysis/RideAnalysisApexLocations';
-import { RideAnalysisApexOnBoardRefunds } from '@/components/rides/analysis/RideAnalysisApexOnBoardRefunds';
-import { RideAnalysisApexOnBoardSales } from '@/components/rides/analysis/RideAnalysisApexOnBoardSales';
-import { RideAnalysisApexValidations } from '@/components/rides/analysis/RideAnalysisApexValidations';
-import { RideAnalysisMap } from '@/components/rides/analysis/RideAnalysisMap';
-import { RideAnalysisMetadata } from '@/components/rides/analysis/RideAnalysisMetadata';
-import { RideAnalysisAnalysisResult } from '@/components/rides/analysis/RideAnalysisResult';
-import { RideAnalysisVehicleEvents } from '@/components/rides/analysis/RideAnalysisVehicleEvents';
+import { RideAnalysisApexLocations } from '@/components/rides/detail/analysis/RideAnalysisApexLocations';
+import { RideAnalysisApexOnBoardRefunds } from '@/components/rides/detail/analysis/RideAnalysisApexOnBoardRefunds';
+import { RideAnalysisApexOnBoardSales } from '@/components/rides/detail/analysis/RideAnalysisApexOnBoardSales';
+import { RideAnalysisApexValidations } from '@/components/rides/detail/analysis/RideAnalysisApexValidations';
+import { RideAnalysisMap } from '@/components/rides/detail/analysis/RideAnalysisMap';
+import { RideAnalysisMetadata } from '@/components/rides/detail/analysis/RideAnalysisMetadata';
+import { RideAnalysisAnalysisResult } from '@/components/rides/detail/analysis/RideAnalysisResult';
+import { RideAnalysisVehicleEvents } from '@/components/rides/detail/analysis/RideAnalysisVehicleEvents';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { useMemo } from 'react';
