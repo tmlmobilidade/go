@@ -3,7 +3,7 @@
 import { useCalendarScheduleData } from '@/components/calendar/schedule/useCalendarScheduleData';
 import { Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
 import { type CalendarDate, type IsoWeekday, type ManualRule, type Month, MONTH_OPTIONS, toCalendarDate } from '@tmlmobilidade/types';
-import { type CalendarScheduleSources, useTemporalSettingsContext } from '@tmlmobilidade/ui';
+import { type CalendarScheduleSources } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */
@@ -65,11 +65,10 @@ export function CalendarDayCounterContextProvider({ children, initialAgencyId = 
 	//
 	// A. Setup variables
 
-	const temporalSettings = useTemporalSettingsContext();
 	const [agencyId, setAgencyId] = useState<null | string>(initialAgencyId);
 	const [months, setMonths] = useState<Month[]>([...ALL_MONTHS]);
 	const [periodIds, setPeriodIds] = useState<string[]>([]);
-	const [visibleDate, setVisibleDate] = useState<CalendarDate>(() => Dates.now(temporalSettings.timezone).calendar_date);
+	const [visibleDate, setVisibleDate] = useState<CalendarDate>(() => Dates.now('local').calendar_date);
 	const [weekdays, setWeekdays] = useState<IsoWeekday[]>([]);
 	const scheduleData = useCalendarScheduleData(agencyId);
 
@@ -102,9 +101,8 @@ export function CalendarDayCounterContextProvider({ children, initialAgencyId = 
 			holidays: scheduleData.sources.holidays,
 			periods: scheduleData.sources.yearPeriods,
 			startDate: toCalendarDate(`${previewYear}-01-01`),
-			timezone: temporalSettings.timezone,
 		});
-	}, [canCalculate, months, periodIds, previewYear, scheduleData.sources.holidays, scheduleData.sources.yearPeriods, temporalSettings.timezone, weekdays]);
+	}, [canCalculate, months, periodIds, previewYear, scheduleData.sources.holidays, scheduleData.sources.yearPeriods, weekdays]);
 
 	//
 	// C. Handle actions

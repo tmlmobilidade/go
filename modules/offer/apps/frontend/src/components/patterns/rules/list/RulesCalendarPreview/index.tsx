@@ -8,7 +8,7 @@ import { IconArrowBarToLeft, IconArrowBarToRight, IconHandClick } from '@tabler/
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { buildAffectedDaysDetails, type CalendarKey, Dates, datesFromCalendarKey, FORMATS } from '@tmlmobilidade/dates';
 import { type CalendarDate, type HHMM, type ScheduleRule, toCalendarDate } from '@tmlmobilidade/types';
-import { AlertMessage, buildCalendarScheduleRuleImpactEvents, CalendarSchedule, type CalendarScheduleSources, CloseButton, DayPeriodsTimepoints, Divider, isCalendarSchedulePayload, Pane, type ScheduleEventData, Section, Surface, Text, useTemporalSettingsContext } from '@tmlmobilidade/ui';
+import { AlertMessage, buildCalendarScheduleRuleImpactEvents, CalendarSchedule, type CalendarScheduleSources, CloseButton, DayPeriodsTimepoints, Divider, isCalendarSchedulePayload, Pane, type ScheduleEventData, Section, Surface, Text, useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -31,14 +31,14 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 	//
 	// A. Setup variables
 
-	const temporalSettings = useTemporalSettingsContext();
+	const localeContext = useLocaleContext();
 	const annotationsContext = useAnnotationsContext();
 	const eventsContext = useEventsContext();
 	const holidaysContext = useHolidaysContext();
 	const periodsContext = usePeriodsContext();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [selectedDate, setSelectedDate] = useState<CalendarKey | null>(null);
-	const [visibleDate, setVisibleDate] = useState<CalendarDate>(() => Dates.now(temporalSettings.timezone).calendar_date);
+	const [visibleDate, setVisibleDate] = useState<CalendarDate>(() => Dates.now('local').calendar_date);
 	const previewYear = Number(visibleDate.slice(0, 4));
 	const periods = periodsContext.data.raw;
 	const holidays = holidaysContext.data.raw;
@@ -55,8 +55,8 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 	}, [eventsContext.data.raw, rules, periods, holidays, previewYear]);
 
 	const ruleImpactEvents = useMemo(
-		() => buildCalendarScheduleRuleImpactEvents(Array.from(affectedDaysMap.keys()), temporalSettings.timezone),
-		[affectedDaysMap, temporalSettings.timezone],
+		() => buildCalendarScheduleRuleImpactEvents(Array.from(affectedDaysMap.keys())),
+		[affectedDaysMap],
 	);
 
 	const sources = useMemo<CalendarScheduleSources>(() => ({
@@ -74,8 +74,8 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 	const formattedSelectedDate = useMemo(() => {
 		if (!selectedDate) return '';
 		const date = datesFromCalendarKey(selectedDate);
-		return date.toLocaleString(FORMATS.DATE_HUGE, 'pt-PT');
-	}, [selectedDate]);
+		return date.toLocaleString(FORMATS.DATE_HUGE, localeContext.data.locale);
+	}, [localeContext.data.locale, selectedDate]);
 
 	//
 	// C. Handle actions
@@ -139,12 +139,11 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 					<CalendarSchedule
 						date={visibleDate}
 						events={ruleImpactEvents}
-						locale={temporalSettings.locale}
+						locale={localeContext.data.locale}
 						onDateChange={handleVisibleDateChange}
 						onDayClick={handleDayClick}
 						onEventClick={handleEventClick}
 						sources={sources}
-						timezone={temporalSettings.timezone}
 						view="year"
 						yearViewProps={{ viewSelectProps: { views: ['year'] } }}
 					/>

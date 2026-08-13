@@ -1,7 +1,6 @@
 /* * */
 
 import { calendarKey, CalendarKey, calendarWeekday, datesFromCalendarKey, keyToYYYYMMDD } from '@/calendar/utils/index.js';
-import { type TimezoneIdentified } from '@/lib/timezone-identified.js';
 import { type CalendarDate, Event, Holiday, ManualRule, OperationalDate, toCalendarDate, YearPeriod } from '@tmlmobilidade/types';
 
 /**
@@ -18,8 +17,6 @@ interface CalendarContext {
 	periods: YearPeriod[]
 	/** Start date of the calendar range */
 	startDate: CalendarDate
-	/** Timezone used for civil-day iteration and weekday calculation */
-	timezone: TimezoneIdentified
 }
 
 /**
@@ -55,7 +52,7 @@ function isInPeriod(rule: ManualRule, key: CalendarKey, activePeriodDates: Set<O
  * Checks both period membership and weekday matching.
  */
 function ruleAppliesToCivilKey(rule: ManualRule, key: CalendarKey, ctx: CalendarContext, activePeriodDates: Set<OperationalDate>): boolean {
-	const weekday = calendarWeekday(key, ctx.holidays, ctx.timezone);
+	const weekday = calendarWeekday(key, ctx.holidays);
 
 	// 1) YearPeriod required
 	if (!isInPeriod(rule, key, activePeriodDates)) return false;
@@ -106,7 +103,7 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 			if (key >= from && key <= to) {
 				// If weekdays are specified, narrow event dates to matching weekdays only
 				if (rule.weekdays?.length) {
-					const weekday = calendarWeekday(key, ctx.holidays, ctx.timezone);
+					const weekday = calendarWeekday(key, ctx.holidays);
 					if (!rule.weekdays.includes(weekday)) continue;
 				}
 				// If year periods are specified, narrow event dates to matching periods only
@@ -125,11 +122,11 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 		return { count: affected.length, dates: affected };
 	}
 
-	let current = datesFromCalendarKey(from, ctx.timezone);
-	const end = datesFromCalendarKey(to, ctx.timezone);
+	let current = datesFromCalendarKey(from);
+	const end = datesFromCalendarKey(to);
 
 	while (current.unix_timestamp <= end.unix_timestamp) {
-		const key = calendarKey(current, ctx.timezone);
+		const key = calendarKey(current);
 
 		if (ruleAppliesToCivilKey(rule, key, ctx, activePeriodDates)) {
 			affected.push(key);

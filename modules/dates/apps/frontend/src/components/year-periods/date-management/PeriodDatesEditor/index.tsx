@@ -4,7 +4,7 @@ import { usePeriodsDetailContext } from '@/components/year-periods/detail/Period
 import { IconInfoCircle } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CalendarDate } from '@tmlmobilidade/types';
-import { buildCalendarScheduleRuleImpactEvents, CalendarSchedule, type CalendarScheduleDateRangeAction, ErrorDisplay, isCalendarSchedulePayload, LoadingOverlay, Pane, type ScheduleEventData, Surface, Text, useTemporalSettingsContext } from '@tmlmobilidade/ui';
+import { buildCalendarScheduleRuleImpactEvents, CalendarSchedule, type CalendarScheduleDateRangeAction, ErrorDisplay, isCalendarSchedulePayload, LoadingOverlay, Pane, type ScheduleEventData, Surface, Text, useLocaleContext } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -24,14 +24,14 @@ export function PeriodDatesEditor() {
 
 	const periodsDetailContext = usePeriodsDetailContext();
 	const editorContext = usePeriodDatesEditorContext();
-	const temporalSettings = useTemporalSettingsContext();
+	const localeContext = useLocaleContext();
 
 	//
 	// B. Transform data
 
 	const previewEvents = useMemo(
-		() => buildCalendarScheduleRuleImpactEvents(editorContext.data.previewDates, temporalSettings.timezone),
-		[editorContext.data.previewDates, temporalSettings.timezone],
+		() => buildCalendarScheduleRuleImpactEvents(editorContext.data.previewDates),
+		[editorContext.data.previewDates],
 	);
 	const previewDateSet = useMemo(() => new Set(editorContext.data.previewDates), [editorContext.data.previewDates]);
 	const conflictFooter = (
@@ -86,13 +86,12 @@ export function PeriodDatesEditor() {
 							events={previewEvents}
 							eventTypeFilters={{ annotation: false, event: false }}
 							isDateRangeDateApplicable={isDateRangeDateApplicable}
-							locale={temporalSettings.locale}
+							locale={localeContext.data.locale}
 							onDateChange={editorContext.actions.setVisibleDate}
 							onEventClick={handleEventClick}
 							onSelectedDateRangeChange={editorContext.flags.can_edit ? editorContext.actions.setSelectedRange : undefined}
 							selectedDateRange={editorContext.data.selectedRange}
 							sources={editorContext.data.sources}
-							timezone={temporalSettings.timezone}
 							view="year"
 							yearViewProps={{ highlightToday: false, viewSelectProps: { views: ['year'] } }}
 						/>

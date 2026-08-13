@@ -1,5 +1,5 @@
 import { type ScheduleEventData } from '@mantine/schedule';
-import { getZonedCalendarDayInterval, type TimezoneIdentified } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { type CalendarDate, type CalendarEventType, type OperationalDate, toCalendarDate } from '@tmlmobilidade/types';
 
 import { EVENT_TYPE_DEFS } from '../../../icons/event-types';
@@ -54,7 +54,11 @@ function getUniqueCalendarDates(dates: OperationalDate[]): CalendarDate[] {
 	return Array.from(new Set(dates.map(toCalendarDate))).sort();
 }
 
-function groupConsecutiveDates(dates: OperationalDate[], timezone: TimezoneIdentified): CalendarDate[][] {
+function getNextCalendarDate(date: CalendarDate): CalendarDate {
+	return Dates.fromFormat(date, 'yyyy-MM-dd', 'utc').plus({ days: 1 }).calendar_date;
+}
+
+function groupConsecutiveDates(dates: OperationalDate[]): CalendarDate[][] {
 	const sortedDates = getUniqueCalendarDates(dates);
 
 	return sortedDates.reduce<CalendarDate[][]>((groups, date) => {
@@ -66,7 +70,7 @@ function groupConsecutiveDates(dates: OperationalDate[], timezone: TimezoneIdent
 			return groups;
 		}
 
-		const nextCalendarDate = getZonedCalendarDayInterval(previousDate, timezone).endExclusive.calendar_date;
+		const nextCalendarDate = getNextCalendarDate(previousDate);
 		if (date === nextCalendarDate) {
 			currentGroup.push(date);
 		} else {
@@ -80,11 +84,10 @@ function groupConsecutiveDates(dates: OperationalDate[], timezone: TimezoneIdent
 function buildSourceEvents(
 	source: DatedScheduleSource,
 	type: Exclude<CalendarScheduleEventType, 'period' | 'rule-impact'>,
-	timezone: TimezoneIdentified,
 	agencyNames: Map<string, string>,
 ): ScheduleEventData<CalendarSchedulePayload>[] {
 	return getUniqueCalendarDates(source.dates).map((date) => {
-		const endExclusive = getZonedCalendarDayInterval(date, timezone).endExclusive.calendar_date;
+		const endExclusive = getNextCalendarDate(date);
 
 		return {
 			color: EVENT_TYPE_DEFS[type].color,
@@ -108,15 +111,14 @@ function buildSourceEvents(
 
 export function buildCalendarScheduleEvents(
 	sources: CalendarScheduleSources,
-	timezone: TimezoneIdentified,
 ): ScheduleEventData<CalendarSchedulePayload>[] {
 	const agencyNames = new Map((sources.agencies ?? []).map(agency => [agency._id, agency.short_name || agency.name]));
 
 	const periodEvents = (sources.yearPeriods ?? []).flatMap((period) => {
-		return groupConsecutiveDates(period.dates ?? [], timezone).map((range): ScheduleEventData<CalendarSchedulePayload> => {
+		return groupConsecutiveDates(period.dates ?? []).map((range): ScheduleEventData<CalendarSchedulePayload> => {
 			const startDate = range[0];
 			const endDate = range.at(-1) ?? startDate;
-			const endExclusive = getZonedCalendarDayInterval(endDate, timezone).endExclusive.calendar_date;
+			const endExclusive = getNextCalendarDate(endDate);
 
 			return {
 				color: period.color || EVENT_TYPE_DEFS.period.color,
@@ -136,9 +138,9 @@ export function buildCalendarScheduleEvents(
 
 	return [
 		...periodEvents,
-		...(sources.holidays ?? []).flatMap(source => buildSourceEvents(source, 'holiday', timezone, agencyNames)),
-		...(sources.annotations ?? []).flatMap(source => buildSourceEvents(source, 'annotation', timezone, agencyNames)),
-		...(sources.events ?? []).flatMap(source => buildSourceEvents(source, 'event', timezone, agencyNames)),
+		...(sources.holidays ?? []).flatMap(source => buildSourceEvents(source, 'holiday', agencyNames)),
+		...(sources.annotations ?? []).flatMap(source => buildSourceEvents(source, 'annotation', agencyNames)),
+		...(sources.events ?? []).flatMap(source => buildSourceEvents(source, 'event', agencyNames)),
 	];
 }
 
@@ -146,14 +148,11 @@ export function buildCalendarScheduleEvents(
 
 export function buildCalendarScheduleRuleImpactEvents(
 	affectedDates: CalendarDate[],
-	timezone: TimezoneIdentified,
 ): ScheduleEventData<CalendarScheduleRuleImpactPayload>[] {
 	return affectedDates.map((date) => {
-		const interval = getZonedCalendarDayInterval(date, timezone);
-
 		return {
 			color: 'var(--color-primary)',
-			end: `${interval.endExclusive.calendar_date} 00:00:00`,
+			end: `${getNextCalendarDate(date)} 00:00:00`,
 			id: `rule-impact:${date}`,
 			payload: {
 				sourceId: date,

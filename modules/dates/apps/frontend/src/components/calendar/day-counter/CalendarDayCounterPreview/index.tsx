@@ -2,7 +2,7 @@
 
 import { useCalendarDayCounterContext } from '@/components/calendar/day-counter/CalendarDayCounter.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { buildCalendarScheduleRuleImpactEvents, CalendarSchedule, isCalendarSchedulePayload, type ScheduleEventData, Surface, useTemporalSettingsContext } from '@tmlmobilidade/ui';
+import { buildCalendarScheduleRuleImpactEvents, CalendarSchedule, isCalendarSchedulePayload, type ScheduleEventData, Surface, useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -16,14 +16,14 @@ export function CalendarDayCounterPreview() {
 	// A. Setup variables
 
 	const dayCounterContext = useCalendarDayCounterContext();
-	const temporalSettings = useTemporalSettingsContext();
+	const localeContext = useLocaleContext();
 
 	//
 	// B. Transform data
 
 	const ruleImpactEvents = useMemo(
-		() => buildCalendarScheduleRuleImpactEvents(dayCounterContext.data.ruleImpact.dates, temporalSettings.timezone),
-		[dayCounterContext.data.ruleImpact.dates, temporalSettings.timezone],
+		() => buildCalendarScheduleRuleImpactEvents(dayCounterContext.data.ruleImpact.dates),
+		[dayCounterContext.data.ruleImpact.dates],
 	);
 
 	//
@@ -51,12 +51,11 @@ export function CalendarDayCounterPreview() {
 				<CalendarSchedule
 					date={dayCounterContext.filters.visibleDate}
 					events={ruleImpactEvents}
-					locale={temporalSettings.locale}
+					locale={localeContext.data.locale}
 					mode="static"
 					onDateChange={dayCounterContext.actions.setVisibleDate}
 					onEventClick={handleEventClick}
 					sources={dayCounterContext.data.sources}
-					timezone={temporalSettings.timezone}
 					view="year"
 					yearViewProps={{ highlightToday: false, viewSelectProps: { views: ['year'] } }}
 				/>

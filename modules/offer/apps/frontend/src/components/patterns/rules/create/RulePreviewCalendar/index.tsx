@@ -5,9 +5,9 @@ import { useEventsContext } from '@/contexts/Events.context';
 import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates, type TimezoneIdentified } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/types';
-import { buildCalendarScheduleRuleImpactEvents, CalendarSchedule, type CalendarScheduleSources, isCalendarSchedulePayload, type ScheduleEventData, useTemporalSettingsContext } from '@tmlmobilidade/ui';
+import { buildCalendarScheduleRuleImpactEvents, CalendarSchedule, type CalendarScheduleSources, isCalendarSchedulePayload, type ScheduleEventData, useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 
 /* * */
@@ -15,31 +15,29 @@ import { useMemo, useState } from 'react';
 export interface RulePreviewCalendarProps {
 	affectedDates: CalendarDate[]
 	onVisibleYearChange?: (year: number) => void
-	timezone?: TimezoneIdentified
 }
 
 /* * */
 
-export function RulePreviewCalendar({ affectedDates, onVisibleYearChange, timezone }: RulePreviewCalendarProps) {
+export function RulePreviewCalendar({ affectedDates, onVisibleYearChange }: RulePreviewCalendarProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const temporalSettings = useTemporalSettingsContext();
+	const localeContext = useLocaleContext();
 	const annotationsContext = useAnnotationsContext();
 	const eventsContext = useEventsContext();
 	const holidaysContext = useHolidaysContext();
 	const periodsContext = usePeriodsContext();
-	const resolvedTimezone = timezone ?? temporalSettings.timezone;
-	const [visibleDate, setVisibleDate] = useState<CalendarDate>(() => Dates.now(resolvedTimezone).calendar_date);
+	const [visibleDate, setVisibleDate] = useState<CalendarDate>(() => Dates.now('local').calendar_date);
 
 	//
 	// B. Transform data
 
 	const ruleImpactEvents = useMemo(
-		() => buildCalendarScheduleRuleImpactEvents(affectedDates, resolvedTimezone),
-		[affectedDates, resolvedTimezone],
+		() => buildCalendarScheduleRuleImpactEvents(affectedDates),
+		[affectedDates],
 	);
 
 	const sources = useMemo<CalendarScheduleSources>(() => ({
@@ -78,12 +76,11 @@ export function RulePreviewCalendar({ affectedDates, onVisibleYearChange, timezo
 		<CalendarSchedule
 			date={visibleDate}
 			events={ruleImpactEvents}
-			locale={temporalSettings.locale}
+			locale={localeContext.data.locale}
 			mode="static"
 			onDateChange={handleVisibleDateChange}
 			onEventClick={handleEventClick}
 			sources={sources}
-			timezone={resolvedTimezone}
 			view="year"
 			yearViewProps={{ viewSelectProps: { views: ['year'] } }}
 		/>

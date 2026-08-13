@@ -3,7 +3,7 @@
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/types';
-import { type CalendarScheduleEventType, ErrorDisplay, isCalendarSchedulePayload, LoadingOverlay, type ScheduleEventData, type ScheduleViewLevel, CalendarSchedule as UICalendarSchedule, useQueryState, useTemporalSettingsContext } from '@tmlmobilidade/ui';
+import { type CalendarScheduleEventType, ErrorDisplay, isCalendarSchedulePayload, LoadingOverlay, type ScheduleEventData, type ScheduleViewLevel, CalendarSchedule as UICalendarSchedule, useLocaleContext, useQueryState } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -29,8 +29,8 @@ export function CalendarSchedule() {
 	//
 	// A. Setup variables
 
-	const temporalSettings = useTemporalSettingsContext();
-	const today = Dates.now(temporalSettings.timezone).calendar_date;
+	const localeContext = useLocaleContext();
+	const today = Dates.now('local').calendar_date;
 	const [date, setDate] = useState<CalendarDate>(today);
 	const [view, setView] = useState<ScheduleViewLevel>('month');
 	const [enabledTypes, setEnabledTypes] = useState(INITIAL_FILTERS);
@@ -107,7 +107,7 @@ export function CalendarSchedule() {
 				counts={scheduleData.counts}
 				date={date}
 				enabledTypes={enabledTypes}
-				locale={temporalSettings.locale}
+				locale={localeContext.data.locale}
 				onAgencyChange={handleAgencyChange}
 				onDateChange={handleDateChange}
 				onToggle={handleFilterToggle}
@@ -118,14 +118,13 @@ export function CalendarSchedule() {
 				<UICalendarSchedule
 					date={date}
 					eventTypeFilters={eventTypeFilters}
-					locale={temporalSettings.locale}
+					locale={localeContext.data.locale}
 					monthViewProps={{ viewSelectProps: { views: ['month', 'year'] } }}
 					onDateChange={handleDateChange}
 					onDayClick={handleDayClick}
 					onEventClick={handleEventClick}
 					onViewChange={handleViewChange}
 					sources={scheduleData.sources}
-					timezone={temporalSettings.timezone}
 					view={view}
 					yearViewProps={{ viewSelectProps: { views: ['month', 'year'] } }}
 				/>

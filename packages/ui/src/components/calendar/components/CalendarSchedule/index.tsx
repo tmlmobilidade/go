@@ -1,7 +1,6 @@
 'use client';
 
 import { type MonthViewProps, Schedule, ScheduleEvent, type ScheduleEventData, type ScheduleEventProps, type ScheduleProps, type ScheduleViewLevel } from '@mantine/schedule';
-import { type TimezoneIdentified } from '@tmlmobilidade/dates';
 import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/types';
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
@@ -88,13 +87,12 @@ export interface CalendarScheduleProps extends Omit<ScheduleProps, 'classNames' 
 	onSelectedDateRangeChange?: (value: CalendarScheduleDateRange | null) => void
 	selectedDateRange?: CalendarScheduleDateRange | null
 	sources?: CalendarScheduleSources
-	timezone?: TimezoneIdentified
 	yearViewProps?: CalendarScheduleYearViewProps
 }
 
 /* * */
 
-export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAction, defaultView = 'month', events = [], eventTypeFilters, isDateRangeDateApplicable, labels, locale = 'pt', mode = 'default', monthViewProps, onDayClick, onEventClick, onSelectedDateRangeChange, onViewChange, selectedDateRange, sources, timezone = 'Europe/Lisbon', view, withEventResize, withEventsDragAndDrop, yearViewProps, ...props }: CalendarScheduleProps) {
+export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAction, defaultView = 'month', events = [], eventTypeFilters, isDateRangeDateApplicable, labels, locale = 'pt', mode = 'default', monthViewProps, onDayClick, onEventClick, onSelectedDateRangeChange, onViewChange, selectedDateRange, sources, view, withEventResize, withEventsDragAndDrop, yearViewProps, ...props }: CalendarScheduleProps) {
 	//
 
 	//
@@ -107,7 +105,7 @@ export function CalendarSchedule({ className, dateChanges, dateRangeSelectionAct
 	//
 	// B. Transform data
 
-	const sourceEvents = useMemo(() => sources ? buildCalendarScheduleEvents(sources, timezone) : [], [sources, timezone]);
+	const sourceEvents = useMemo(() => sources ? buildCalendarScheduleEvents(sources) : [], [sources]);
 	const resolvedEvents = useMemo(() => [...sourceEvents, ...events].filter((event) => {
 		if (!isCalendarSchedulePayload(event.payload)) return true;
 		return eventTypeFilters?.[event.payload.type] ?? true;

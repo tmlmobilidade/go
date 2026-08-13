@@ -6,7 +6,7 @@ import { usePeriodsContext } from '@/contexts/Periods.context';
 import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type CalendarDate, ManualRule, ManualRuleSchema, toCalendarDate } from '@tmlmobilidade/types';
-import { useForm, type UseFormReturnType, useTemporalSettingsContext } from '@tmlmobilidade/ui';
+import { useForm, type UseFormReturnType } from '@tmlmobilidade/ui';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
@@ -62,11 +62,10 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	const periodsContext = usePeriodsContext();
 	const holidaysContext = useHolidaysContext();
 	const eventsContext = useEventsContext();
-	const temporalSettings = useTemporalSettingsContext();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isEventExceptionEnabled, setIsEventExceptionEnabled] = useState(Boolean(initialValues?.event_id));
 
-	const [previewYear, setPreviewYear] = useState(Number(Dates.now(temporalSettings.timezone).toFormat('yyyy')));
+	const [previewYear, setPreviewYear] = useState(Number(Dates.now('local').toFormat('yyyy')));
 
 	//
 	// B. Fetch data
@@ -110,10 +109,9 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 				holidays: holidaysContext.data.raw,
 				periods: periodsContext.data.raw,
 				startDate,
-				timezone: temporalSettings.timezone,
 			},
 		);
-	}, [eventsContext.data.raw, form.values, periodsContext.data.raw, holidaysContext.data.raw, previewYear, temporalSettings.timezone]);
+	}, [eventsContext.data.raw, form.values, periodsContext.data.raw, holidaysContext.data.raw, previewYear]);
 
 	//
 	// D. Handle actions

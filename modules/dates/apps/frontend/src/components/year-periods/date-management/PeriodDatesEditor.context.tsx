@@ -5,7 +5,7 @@ import { usePeriodsDetailContext } from '@/components/year-periods/detail/Period
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type CalendarDate, type OperationalDate, toCalendarDate, type UpdateYearPeriodDatesDto, validateOperationalDate, type YearPeriod } from '@tmlmobilidade/types';
-import { type CalendarScheduleDateRange, type CalendarScheduleSources, useTemporalSettingsContext, useToast } from '@tmlmobilidade/ui';
+import { type CalendarScheduleDateRange, type CalendarScheduleSources, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { mutate } from 'swr';
@@ -106,13 +106,12 @@ export function PeriodDatesEditorContextProvider({ children }: PropsWithChildren
 	// A. Setup variables
 
 	const periodsDetailContext = usePeriodsDetailContext();
-	const temporalSettings = useTemporalSettingsContext();
 	const scheduleData = useCalendarScheduleData(null);
 	const period = periodsDetailContext.data.period;
 	const conflictRequestId = useRef(0);
 	const [selectedRange, setSelectedRangeState] = useState<CalendarScheduleDateRange | null>(null);
 	const [selectionAction, setSelectionAction] = useState<null | PeriodDatesEditorSelectionAction>(null);
-	const [visibleDate, setVisibleDateState] = useState<CalendarDate>(() => Dates.now(temporalSettings.timezone).calendar_date);
+	const [visibleDate, setVisibleDateState] = useState<CalendarDate>(() => Dates.now('local').calendar_date);
 	const [draftChanges, setDraftChanges] = useState<DraftChanges>(() => ({ added: new Set(), removed: new Set() }));
 	const [conflicts, setConflicts] = useState<{ dates: OperationalDate[], yearPeriod: YearPeriod }[]>([]);
 	const [conflictError, setConflictError] = useState<null | string>(null);
@@ -297,8 +296,8 @@ export function PeriodDatesEditorContextProvider({ children }: PropsWithChildren
 		setConflicts([]);
 		setConflictError(null);
 		setConflictAcknowledged(false);
-		setVisibleDateState(Dates.now(temporalSettings.timezone).calendar_date);
-	}, [period?._id, temporalSettings.timezone]);
+		setVisibleDateState(Dates.now('local').calendar_date);
+	}, [period?._id]);
 
 	//
 	// D. Define context value
