@@ -185,6 +185,7 @@ export function RidesList() {
 			{ridesData.error && <ErrorDisplay message={ridesData.error} />}
 			<DataTable
 				columns={columns}
+				isLoading={ridesData.isLoading}
 				onRowClick={handleRowClick}
 				records={ridesData.data}
 				rowIdAccessor="_id"

@@ -13,6 +13,12 @@ export interface DataTableProps<T> {
 	columns: DataTableColumn<T>[]
 
 	/**
+	 * Indicates if the data the table
+	 * will be displaying is still loading.
+	 */
+	isLoading?: boolean
+
+	/**
 	 * The maximum height of the table in pixels.
 	 * @default 100%
 	 */
