@@ -5,8 +5,9 @@ import { RuleCreateBasicInfo } from '@/components/patterns/rules/create/RuleCrea
 import { RuleCreateFooter } from '@/components/patterns/rules/create/RuleCreateFooter';
 import { RuleCreateHeader } from '@/components/patterns/rules/create/RuleCreateHeader';
 import { RulePreviewCalendar } from '@/components/patterns/rules/create/RulePreviewCalendar';
+import { RulePreviewSummary } from '@/components/patterns/rules/create/RulePreviewSummary';
 import { IconArrowBarToLeft, IconArrowBarToRight } from '@tabler/icons-react';
-import { CloseButton, Divider, Grid, Section, Surface, Tag, Text } from '@tmlmobilidade/ui';
+import { CalendarAffectedDaysCount, CloseButton, Spacer, Surface, Tag } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 
@@ -19,6 +20,9 @@ export function RuleCreate() {
 	// A. Setup variables
 
 	const createRuleContext = useRuleCreateContext();
+
+	//
+	// B. Render components
 
 	return (
 		<div className={styles.container}>
@@ -57,27 +61,15 @@ export function RuleCreate() {
 						<div className={styles.drawerHeader}>
 							<CloseButton onClick={() => createRuleContext.actions.closeDrawer()} type="close" />
 							<Tag label="Validação da regra" variant="muted" />
+							<Spacer />
+							<CalendarAffectedDaysCount count={createRuleContext.data.ruleImpact?.count ?? 0} layout="inline" />
 						</div>
 
 						<div className={styles.drawerContent}>
-							<Grid columns="ab" gap="md">
-								<Surface height="full">
-									<Section gap="sm">
-										<Text>Resumo:</Text>
-										<Divider />
-										<Text>{createRuleContext.data.ruleSummary.long}</Text>
-										<Text>Horários: {createRuleContext.data.form.values.timepoints?.join(', ')}</Text>
-									</Section>
-								</Surface>
-
-								<Surface height="full">
-									<Section gap="sm">
-										<Text>Impacto:</Text>
-										<Divider />
-										<Text>{createRuleContext.data.ruleImpact?.count ?? 0} dias afetados no próximo ano</Text>
-									</Section>
-								</Surface>
-							</Grid>
+							<RulePreviewSummary
+								summary={createRuleContext.data.ruleSummary.long}
+								timepointCount={createRuleContext.data.form.values.timepoints?.length ?? 0}
+							/>
 
 							<Surface>
 								<RulePreviewCalendar affectedDates={createRuleContext.data.ruleImpact?.dates ?? []} onVisibleYearChange={createRuleContext.actions.setPreviewYear} />

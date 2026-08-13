@@ -127,7 +127,7 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 			<div className={styles.mainContent}>
 				<Pane
 					header={[
-						<RulesCalendarPreviewHeader key="header" patternCode={patternCode} />,
+						<RulesCalendarPreviewHeader key="header" affectedDayCount={affectedDaysMap.size} patternCode={patternCode} />,
 						<AlertMessage
 							key="calendar-hint"
 							icon={<IconHandClick size={20} />}
