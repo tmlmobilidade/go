@@ -12,7 +12,7 @@ import { useRidesDetailRideId } from './use-rides-detail-ride-id';
 /* * */
 
 interface UseRidesDetailRideDataReturnType {
-	data: ControllerRidesDetailRideItem[]
+	data: ControllerRidesDetailRideItem
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -34,7 +34,7 @@ export function useRidesDetailRideData(): UseRidesDetailRideDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ControllerRidesDetailRideItem[]>(API_ROUTES.controller.RIDES_DETAIL_RIDE(rideId), {
+	const { data, error, isLoading, isValidating } = useSWR<ControllerRidesDetailRideItem>(API_ROUTES.controller.RIDES_DETAIL_RIDE(rideId), {
 		onSuccess: () => {
 			const now = Dates.now('local').unix_timestamp;
 			setLastUpdatedAt(now);

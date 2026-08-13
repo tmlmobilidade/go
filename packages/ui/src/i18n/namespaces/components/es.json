@@ -41,6 +41,15 @@
 			"nothing_found": "No se encontraron resultados"
 		}
 	},
+	"loaders": {
+		"LoadingActivity": {
+			"days_ago": "{{count}} días atrás",
+			"hours_ago": "{{count}} horas atrás",
+			"just_now": "Ahora mismo",
+			"minutes_ago": "{{count}} minutos atrás",
+			"seconds_ago": "{{count}} segundos atrás"
+		}
+	},
 	"sidebar": {
 		"Sidebar": {
 			"agencies": "Operadores",

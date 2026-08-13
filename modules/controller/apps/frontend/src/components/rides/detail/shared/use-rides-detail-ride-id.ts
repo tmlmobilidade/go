@@ -17,9 +17,9 @@ export function useRidesDetailRideId(): UseRidesDetailRideIdReturnType {
 	//
 	// A. Setup variables
 
-	const params = useParams<{ rideId: string }>();
+	const params = useParams<{ ride_id: string }>();
 
-	const rideId = params.rideId;
+	const rideId = decodeURIComponent(params.ride_id);
 
 	//
 	// B. Return data

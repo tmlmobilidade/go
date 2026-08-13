@@ -104,9 +104,6 @@
 		"RidesListHeader": {
 			"export": "Exportar circulações",
 			"title": "Circulações"
-		},
-		"RidesListLastUpdatedAt": {
-			"just_now": "Agora mesmo"
 		}
 	},
 	"rides": {

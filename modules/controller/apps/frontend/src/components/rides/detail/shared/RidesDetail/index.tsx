@@ -7,7 +7,7 @@ import { RideAnalysisAudit } from '@/components/rides/detail/audit';
 import { RidesDetailHeader } from '@/components/rides/detail/shared/RidesDetailHeader';
 import { useRidesDetailRideData } from '@/components/rides/detail/shared/use-rides-detail-ride-data';
 import { useRidesDetailCurrentView } from '@/components/rides/detail/shared/use-rides-detail-view';
-import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -33,7 +33,8 @@ export function RidesDetail() {
 			<RideAnalysisViewNavigation key="navigation" />,
 		]}
 		>
-			{error && <ErrorDisplay message={error} />}
+			{/* {error && <ErrorDisplay message={error} />} */}
+			{error && <pre>{JSON.stringify(error, null, 2)}</pre>}
 			{currentView === 'analysis' && <RideAnalysisAnalysis />}
 			{currentView === 'audit' && <RideAnalysisAudit />}
 			{currentView === 'acceptance' && <RideAcceptance />}

@@ -1,13 +1,12 @@
 'use client';
 
-import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { useRideFavoritesContext } from '@/contexts/RideFavorites.context';
-import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CloseButton, GradeStatusDisplay, IconButton, IdTag, OperationalStatusDisplay, ProcessingStatusDisplay, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, IdTag, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+
+import { useRidesDetailRideData } from '../use-rides-detail-ride-data';
+import { useRidesDetailRideId } from '../use-rides-detail-ride-id';
 
 /* * */
 
@@ -18,16 +17,18 @@ export function RidesDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const rideAnalysisContext = useRideAnalysisContext();
-	const rideFavoritesContext = useRideFavoritesContext();
+	const { rideId } = useRidesDetailRideId();
+	const { data: rideData, isLoading: isLoadingRideData, isValidating: isValidatingRideData, lastUpdatedAt: lastUpdatedAtRideData } = useRidesDetailRideData();
+
+	// const rideFavoritesContext = useRideFavoritesContext();
 
 	//
 	// B. Transform data
 
-	const isFavorite = useMemo(() => {
-		if (!rideAnalysisContext.data.ride_id) return false;
-		return rideFavoritesContext.data.favorites.includes(rideAnalysisContext.data.ride_id);
-	}, [rideAnalysisContext.data.ride_id, rideFavoritesContext.data.favorites]);
+	// const isFavorite = useMemo(() => {
+	// 	if (!rideAnalysisContext.data.ride_id) return false;
+	// 	return rideFavoritesContext.data.favorites.includes(rideAnalysisContext.data.ride_id);
+	// }, [rideAnalysisContext.data.ride_id, rideFavoritesContext.data.favorites]);
 
 	//
 	// C. Handle actions
@@ -36,10 +37,10 @@ export function RidesDetailHeader() {
 		router.push(keepUrlParams(PAGE_ROUTES.controller.RIDES_LIST));
 	};
 
-	const handleToggleFavorite = () => {
-		if (!rideAnalysisContext.data.ride_id || rideFavoritesContext.flags.loading) return;
-		void rideFavoritesContext.actions.toggleFavorite(rideAnalysisContext.data.ride_id);
-	};
+	// const handleToggleFavorite = () => {
+	// 	if (!rideAnalysisContext.data.ride_id || rideFavoritesContext.flags.loading) return;
+	// 	void rideFavoritesContext.actions.toggleFavorite(rideAnalysisContext.data.ride_id);
+	// };
 
 	//
 	// D. Render components
@@ -47,18 +48,23 @@ export function RidesDetailHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={handleClose} type="close" />
-			<IdTag id={rideAnalysisContext.data.ride_id} copyOnClick />
+			<IdTag id={rideId} copyOnClick />
 			<Spacer />
-			{/* <ProcessingStatusDisplay disabled={true} value={rideAnalysisContext.data.ride?.system_status} />
-			<GradeStatusDisplay value={rideAnalysisContext.data.ride?.analysis_simple_three_vehicle_events_grade} />
-			<OperationalStatusDisplay value={rideAnalysisContext.data.ride?.operational_status} /> */}
-			<IconButton
+			<LoadingActivity
+				isLoading={isLoadingRideData}
+				isValidating={isValidatingRideData}
+				lastUpdatedAt={lastUpdatedAtRideData}
+			/>
+			<ProcessingStatusDisplay disabled={true} value={rideData?.processing_status} />
+			{/* <GradeStatusDisplay value={rideData?.analysis_simple_three_vehicle_events_grade} /> */}
+			<OperationalStatusDisplay value={rideData?.operational_status} />
+			{/* <IconButton
 				disabled={!rideAnalysisContext.data.ride_id || rideFavoritesContext.flags.loading}
 				icon={isFavorite ? <IconHeartFilled /> : <IconHeart />}
 				onClick={handleToggleFavorite}
 				tooltip={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
 				variant="primary"
-			/>
+			/> */}
 		</Toolbar>
 	);
 }
