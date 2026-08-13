@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
 import { type ControllerRidesListFilters, type ControllerRidesListItem, getControllerRidesList } from '@tmlmobilidade/go-controller-pckg-queries';
 
 /**
@@ -18,9 +17,5 @@ export async function getRides(request: FastifyRequest<{ Body: ControllerRidesLi
 
 	const result = await getControllerRidesList(request.body);
 
-	reply.send({
-		data: result,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, result);
 }

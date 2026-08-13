@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
 import { type ControllerRidesDetailRideItem, getControllerRidesDetailRide } from '@tmlmobilidade/go-controller-pckg-queries';
 
 /**
@@ -16,9 +15,10 @@ export async function getRideById(request: FastifyRequest<{ Params: { id: string
 	// Validate the request parameters
 
 	if (!request.params.id) {
-		return reply
-			.status(HTTP_STATUS.BAD_REQUEST)
-			.send({ data: null, error: 'Missing ride_id parameter.', status: HTTP_STATUS.BAD_REQUEST });
+		return sendErrorApiResponse(reply, {
+			error: 'Missing ride_id parameter.',
+			status_code: '400',
+		});
 	}
 
 	//
@@ -27,9 +27,5 @@ export async function getRideById(request: FastifyRequest<{ Params: { id: string
 
 	const result = await getControllerRidesDetailRide(request.params.id);
 
-	reply.send({
-		data: result,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, result);
 }

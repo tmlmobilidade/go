@@ -1,8 +1,8 @@
 /* * */
 
+import { type FastifyReply } from '@/fastify-service.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type ApiResponseSuccess, ApiResponseSuccessSchema } from '@tmlmobilidade/go-types-shared';
-import { type FastifyReply } from 'fastify';
+import { type ApiResponseSuccess } from '@tmlmobilidade/go-types-shared';
 
 import { type ApiResponseOptions, getCacheControlHeader } from './response-options.js';
 
@@ -15,19 +15,19 @@ interface SendSuccessApiResponseOptions<T> extends ApiResponseOptions {
 	 * The status code to send in the successful response.
 	 * Defaults to `200`.
 	 */
-	statusCode?: ApiResponseSuccess<T>['status_code']
+	status_code?: ApiResponseSuccess<T>['status_code']
 }
 
 /**
  * A function that sends a successful HTTP response.
  */
-export function sendSuccessApiResponse<T>(reply: FastifyReply, data: T, options?: SendSuccessApiResponseOptions<T>) {
+export function sendSuccessApiResponse<T>(reply: FastifyReply<T>, data: T, options?: SendSuccessApiResponseOptions<T>) {
 	//
 
 	//
 	// Set the status code
 
-	const statusCodeValue = options?.statusCode || '200';
+	const statusCodeValue = options?.status_code || '200';
 	reply.status(Number(statusCodeValue));
 
 	//
@@ -39,12 +39,12 @@ export function sendSuccessApiResponse<T>(reply: FastifyReply, data: T, options?
 	//
 	// Return with the prepared response
 
-	const response = ApiResponseSuccessSchema.parse({
+	const response: ApiResponseSuccess<T> = {
 		data,
 		error: null,
 		status_code: statusCodeValue,
 		timestamp: Dates.now('local').unix_timestamp,
-	});
+	};
 
 	return reply.send(response);
 }

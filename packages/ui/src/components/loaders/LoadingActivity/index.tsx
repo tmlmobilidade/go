@@ -1,6 +1,7 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/dates';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { Indicator, IndicatorProps, Loader } from '@tmlmobilidade/ui';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,12 +11,12 @@ import { useTranslation } from 'react-i18next';
 interface LoadingActivityProps {
 	isLoading: boolean
 	isValidating: boolean
-	lastUpdatedAt: number
+	timestamp: null | UnixTimestamp
 }
 
 /* * */
 
-export function LoadingActivity({ isLoading, isValidating, lastUpdatedAt }: LoadingActivityProps) {
+export function LoadingActivity({ isLoading, isValidating, timestamp }: LoadingActivityProps) {
 	//
 
 	//
@@ -31,8 +32,8 @@ export function LoadingActivity({ isLoading, isValidating, lastUpdatedAt }: Load
 
 	useEffect(() => {
 		const updateTooltipValue = () => {
-			if (!lastUpdatedAt) return;
-			const diff = Dates.now('local').unix_timestamp - lastUpdatedAt;
+			if (!timestamp) return;
+			const diff = Dates.now('local').unix_timestamp - timestamp;
 			if (diff < 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.just_now'));
 			if (diff < 60 * 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.seconds_ago', '', { count: Math.floor(diff / 1000) }));
 			if (diff < 60 * 60 * 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.minutes_ago', '', { count: Math.floor(diff / 1000 / 60) }));
@@ -42,19 +43,19 @@ export function LoadingActivity({ isLoading, isValidating, lastUpdatedAt }: Load
 		updateTooltipValue();
 		const interval = setInterval(() => updateTooltipValue(), 1_000);
 		return () => clearInterval(interval);
-	}, [lastUpdatedAt, t]);
+	}, [timestamp, t]);
 
 	useEffect(() => {
 		const updateIndicatorVariant = () => {
-			if (!lastUpdatedAt) return;
-			const diff = Dates.now('local').unix_timestamp - lastUpdatedAt;
+			if (!timestamp) return;
+			const diff = Dates.now('local').unix_timestamp - timestamp;
 			if (diff < 10_000) return setIndicatorVariant('primary');
 			return setIndicatorVariant('muted');
 		};
 		updateIndicatorVariant();
 		const interval = setInterval(() => updateIndicatorVariant(), 1_000);
 		return () => clearInterval(interval);
-	}, [lastUpdatedAt]);
+	}, [timestamp]);
 
 	//
 	// C. Render components

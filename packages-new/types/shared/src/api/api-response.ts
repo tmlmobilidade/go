@@ -7,7 +7,7 @@ import { z } from 'zod';
 /* * */
 
 export const ApiResponseSuccessSchema = z.object({
-	data: z.any(),
+	data: z.unknown(),
 	error: z.null(),
 	status_code: HttpStatusSchema.extract([
 		'200', // OK

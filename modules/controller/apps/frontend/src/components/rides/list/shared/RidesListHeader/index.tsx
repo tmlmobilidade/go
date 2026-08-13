@@ -16,7 +16,7 @@ export function RidesListHeader() {
 
 	const { t } = useTranslation();
 
-	const { isLoading, isValidating, lastUpdatedAt } = useRidesListData();
+	const { isLoading, isValidating, timestamp } = useRidesListData();
 
 	const filterSearch = useRidesListFilterSearch();
 
@@ -26,7 +26,7 @@ export function RidesListHeader() {
 	return (
 		<Toolbar>
 			<Label size="lg" caps>{t('default:list.RidesListHeader.title')}</Label>
-			<LoadingActivity isLoading={isLoading} isValidating={isValidating} lastUpdatedAt={lastUpdatedAt} />
+			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer shrink />
 			<SearchField onChange={filterSearch.set} value={filterSearch.value} />
 		</Toolbar>

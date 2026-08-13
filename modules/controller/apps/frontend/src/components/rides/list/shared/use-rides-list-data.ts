@@ -15,10 +15,9 @@ import { useRidesListFilterTicketingStatus } from '@/components/rides/list/filte
 import { useRidesListFilterVehicle } from '@/components/rides/list/filters/RidesListFilterVehicle/use-rides-list-filter-vehicle';
 import { useRidesListFilterSearch } from '@/components/rides/list/shared/RidesListHeader/use-rides-list-filter-search';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
 import { type ControllerRidesListFilters, type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-queries';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchDataNew } from '@tmlmobilidade/utils';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -29,7 +28,7 @@ interface UseRidesListDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	lastUpdatedAt: null | UnixTimestamp
+	timestamp: null | UnixTimestamp
 }
 
 /* * */
@@ -40,7 +39,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	//
 	// A. Setup variables
 
-	const [lastUpdatedAt, setLastUpdatedAt] = useState<null | UnixTimestamp>(null);
+	const [timestamp, setTimestamp] = useState<null | UnixTimestamp>(null);
 
 	const filterAcceptanceStatus = useRidesListFilterAcceptanceStatus();
 	const filterAgency = useRidesListFilterAgency();
@@ -83,12 +82,9 @@ export function useRidesListData(): UseRidesListDataReturnType {
 
 	const { data, error, isLoading, isValidating } = useSWR<ControllerRidesListItem[]>([API_ROUTES.controller.RIDES_LIST, query], {
 		fetcher: async ([url, query]) => {
-			const response = await fetchData<ControllerRidesListItem[]>(url, 'POST', query);
+			const response = await fetchDataNew<ControllerRidesListItem[]>(url, 'POST', query);
+			setTimestamp(response.timestamp);
 			return response.data;
-		},
-		onSuccess: () => {
-			const now = Dates.now('local').unix_timestamp;
-			setLastUpdatedAt(now);
 		},
 		refreshInterval: 10_000, // 10 seconds
 	});
@@ -101,6 +97,6 @@ export function useRidesListData(): UseRidesListDataReturnType {
 		error,
 		isLoading,
 		isValidating,
-		lastUpdatedAt,
-	}), [data, error, isLoading, isValidating, lastUpdatedAt]);
+		timestamp,
+	}), [data, error, isLoading, isValidating, timestamp]);
 };
