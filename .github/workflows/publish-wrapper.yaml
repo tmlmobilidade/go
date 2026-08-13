@@ -12,7 +12,7 @@ on:
       - "modules/plans/apps/validator/compile.sh"
       - "modules/plans/apps/validator/ts-wrapper/**/*"
       - "modules/plans/apps/validator/validator/**/*"
-      - '!modules/plans/apps/validator/bin/**/*'
+      - '!bin/**/*'
 
 permissions:
   contents: write
@@ -92,8 +92,8 @@ jobs:
           gh release create "$VERSION" \
             --title "$VERSION" \
             --notes "Validator binaries for version $VERSION" \
-            modules/plans/apps/validator/bin/validator-linux-amd64 \
-            modules/plans/apps/validator/bin/validator-linux-arm64 \
-            modules/plans/apps/validator/bin/validator-darwin-amd64 \
-            modules/plans/apps/validator/bin/validator-darwin-arm64 \
-            modules/plans/apps/validator/bin/validator.exe
+            bin/validator-linux-amd64 \
+            bin/validator-linux-arm64 \
+            bin/validator-darwin-amd64 \
+            bin/validator-darwin-arm64 \
+            bin/validator.exe

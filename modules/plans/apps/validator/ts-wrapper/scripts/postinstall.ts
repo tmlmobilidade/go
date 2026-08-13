@@ -21,7 +21,9 @@ const BINARY_DISTRIBUTIONS_FILES: Record<string, string> = {
 	'windows-x64': 'validator.exe', // Alias for win32-x64
 } as const;
 
-const DEV_BIN_PATH = join(__dirname, '..', '..', 'bin');
+const isCompiledScript = path.basename(dirname(__dirname)) === 'dist';
+const packageRoot = isCompiledScript ? join(__dirname, '..', '..') : join(__dirname, '..');
+const DEV_BIN_PATH = join(packageRoot, '..', '..', '..', '..', '..', 'bin');
 const LOCAL_BIN_PATH = join(__dirname, '..', 'bin');
 
 /**
@@ -34,9 +36,9 @@ const LOCAL_BIN_PATH = join(__dirname, '..', 'bin');
 function getRemoteBinPath(): string {
 	const version = process.env.npm_package_version;
 	if (version) {
-		return `https://github.com/tmlmobilidade/validator/releases/download/${version}/`;
+		return `https://github.com/tmlmobilidade/go/releases/download/${version}/`;
 	}
-	return 'https://github.com/tmlmobilidade/validator/releases/latest/download/';
+	return 'https://github.com/tmlmobilidade/go/releases/latest/download/';
 }
 
 /**

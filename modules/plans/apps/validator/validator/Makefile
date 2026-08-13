@@ -1,15 +1,17 @@
 APP_NAME := gtfs-validator
 MAIN_PKG := ./
+BIN_DIR := ../../../../../bin
 
 .PHONY: all build run test clean help
 
 all: build
 
 build:
-	go build -o ./../bin/$(APP_NAME) $(MAIN_PKG)
+	mkdir -p $(BIN_DIR)
+	go build -o $(BIN_DIR)/$(APP_NAME) $(MAIN_PKG)
 
 run: build
-	./../bin/$(APP_NAME) $(ARGS)
+	$(BIN_DIR)/$(APP_NAME) $(ARGS)
 
 dev:
 	go run main.go version.go -out=output.json -rules=../tml-rules.json -lang=pt -log=debug --input=$(INPUT)
@@ -17,7 +19,7 @@ test:
 	go test ./...
 
 clean:
-	rm -rf bin
+	rm -f $(BIN_DIR)/$(APP_NAME)
 
 help:
 	@echo "Available targets:"

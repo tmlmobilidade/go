@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy all binaries first
 COPY bin/ /app/bin/
 
-# Copy the data directory
-COPY data/ /app/data/
+# Copy the validator data directory from the monorepo
+COPY modules/plans/apps/validator/data/ /app/data/
 
 # Set proper permissions
 RUN chmod +x /app/bin/validator-*
