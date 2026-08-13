@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	dbops "main/database"
+	dbops "main/services/database"
 
 	_ "modernc.org/sqlite"
 )

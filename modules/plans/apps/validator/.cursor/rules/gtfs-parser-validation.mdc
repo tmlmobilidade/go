@@ -1,0 +1,136 @@
+---
+description: A parser rule to follow best practices
+globs: 
+alwaysApply: false
+---
+# GTFS Parser Rule
+
+## Purpose
+
+This rule provides a template and best practices for implementing parsers for GTFS `.txt` files. It is based on the patterns in `parse_fare_attributes.go` and `parse_trips.go`.
+
+---
+
+## General Structure
+
+1. **Function Signature**  
+   Each parser should be a function named `Parse<Entity>` (e.g., `ParseTrips`, `ParseFareAttributes`) that takes:
+   - `raw<Entity> map[string]string` (raw row data)
+   - `row int` (row number for error reporting)
+   - `gtfs *types.Gtfs` (pointer to the GTFS struct, if needed)
+   - Returns the corresponding `types.<Entity>` struct.
+
+2. **Variable Declarations**  
+   - Declare a variable for the output struct.
+   - Declare variables for each field (grouped by type: string, int, float, etc.).
+   - Prepare a `messages []types.Message` slice for collecting errors.
+
+3. **Field Maps**  
+   - Create maps for string, int, and float fields, mapping field names to pointers to the variables.
+
+4. **Error Message Helper**  
+   - Define an `addMessage` function to append error messages to the `messages` slice.
+
+5. **Parsing Fields**  
+   - Loop through each field map and use `lib.ParseStringToPrimitive` to parse and assign values.
+   - If parsing fails, add an error message.
+
+6. **Error Handling**  
+   - If any errors were collected, add them to `services.AppMessageService` and return the zero-value struct.
+
+7. **Assign Parsed Values**  
+   - For required fields, assign directly.
+   - For optional fields, use `lib.IfThenElse` to assign pointers or nil based on presence in the raw data.
+
+8. **Return the Struct**  
+   - Return the populated struct.
+
+---
+
+## Example Template
+
+```go
+func Parse<Entity>(raw<Entity> map[string]string, row int, gtfs *types.Gtfs) types.<Entity> {
+	var (
+		entity types.<Entity> = types.<Entity>{}
+		// Declare variables for each field
+		// e.g., field1 string, field2 int, field3 float64
+		messages []types.Message
+	)
+
+	stringFields := map[string]*string{
+		// "field_name": &fieldVar,
+	}
+
+	intFields := map[string]*int{
+		// "field_name": &fieldVar,
+	}
+
+	floatFields := map[string]*float64{
+		// "field_name": &fieldVar,
+	}
+
+	addMessage := func(field, msg string) {
+		messages = append(messages, types.Message{
+			Field:        field,
+			FileName:     "<entity>.txt",
+			Rows:         []int{row},
+			Message:      msg,
+			Severity:     types.SEVERITY_ERROR,
+			ValidationID: "<entity>_parse",
+		})
+	}
+
+	// Parse string fields
+	for field, target := range stringFields {
+		if errMsg := lib.ParseStringToPrimitive(raw<Entity>[field], target); errMsg != "" {
+			addMessage(field, errMsg)
+		}
+	}
+
+	// Parse int fields
+	for field, target := range intFields {
+		if errMsg := lib.ParseStringToPrimitive(raw<Entity>[field], target); errMsg != "" {
+			addMessage(field, errMsg)
+		}
+	}
+
+	// Parse float fields
+	for field, target := range floatFields {
+		if errMsg := lib.ParseStringToPrimitive(raw<Entity>[field], target); errMsg != "" {
+			addMessage(field, errMsg)
+		}
+	}
+
+	if len(messages) > 0 {
+		services.AppMessageService.AddMessages(messages)
+		return entity
+	}
+
+	// Assign required and optional fields
+	// entity.Field = value or lib.IfThenElse(...)
+
+	return entity
+}
+```
+
+---
+
+## Best Practices
+
+- **Consistency:** Follow the same structure for all GTFS parsers.
+- **Error Reporting:** Always collect and report all parsing errors for a row.
+- **Optional Fields:** Use `lib.IfThenElse` to assign pointers for optional fields.
+- **Required Fields:** Assign directly.
+- **Extensibility:** Add new field types (e.g., bool) as needed, following the same pattern.
+
+---
+
+## References
+
+- [`parse_fare_attributes.go`](validator/validations/fare_attributes/parse_fare_attributes.go)
+- [`parse_trips.go`](validator/validations/trips/validations/parse_trips.go)
+
+---
+
+_This rule is intended to standardize and simplify the creation of new GTFS file parsers in the codebase._

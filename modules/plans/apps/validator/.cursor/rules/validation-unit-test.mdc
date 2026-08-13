@@ -1,0 +1,87 @@
+---
+description: Unit tests for validations
+globs: 
+alwaysApply: false
+---
+# Cursor Rule: Create Go Unit Tests for Validation Functions
+
+## Purpose
+Quickly scaffold unit tests for Go validation functions, following the conventions and style of this codebase.
+
+---
+
+## How to Use
+- Select a Go validation function (e.g., `func MyValidation(...)`) and run this rule.
+- Cursor will generate or update the appropriate test file in the `tests/` directory, using the template and conventions below.
+
+---
+
+## Test Template
+
+```go
+package <validation_package_name>
+
+import (
+	"main/lib"
+	"main/services"
+	"main/types"
+	validations "main/validations/<relative_path_to_validation_package>"
+	"testing"
+)
+
+func Test<ValidationName>_<CaseName>(t *testing.T) {
+	services.AppMessageService.Clear()
+	// Setup input struct(s)
+	<setup_code>
+	validations.<ValidationName>(<args>)
+	assertion := lib.AssertionMessage{
+		Expected: <expected_error_count>,
+		Actual: services.AppMessageService.GetSummary().TotalErrors,
+		Message: "<description>",
+	}
+	if assert := lib.Assert(assertion); assert != "" {
+		t.Error(assert)
+	}
+}
+```
+
+---
+
+## Rule Instructions
+
+1. **Package Name:**
+   - Use the same package as the validation file.
+2. **Imports:**
+   - Always import `"main/lib"`, `"main/services"`, `"main/types"`, and the validation package as `validations`.
+3. **Test Cases:**
+   - For each validation, create at least:
+     - A test for missing required fields (should error)
+     - A test for invalid foreign keys (should error)
+     - A test for valid input (should not error)
+4. **Assertions:**
+   - Use `lib.AssertionMessage` and `lib.Assert` for error count checks.
+5. **Message Service:**
+   - Always call `services.AppMessageService.Clear()` at the start of each test.
+6. **Naming:**
+   - Use `Test<ValidationName>_<CaseName>` for test function names.
+
+---
+
+## Example
+
+```go
+func TestFareIdValidation_MissingFareId(t *testing.T) {
+	services.AppMessageService.Clear()
+	fareRule := &types.FareRule{FareId: nil}
+	gtfs := &types.Gtfs{}
+	validations.FareIdValidation(fareRule, 1, gtfs)
+	assertion := lib.AssertionMessage{
+		Expected: 1,
+		Actual: services.AppMessageService.GetSummary().TotalErrors,
+		Message: "Missing fare_id should error",
+	}
+	if assert := lib.Assert(assertion); assert != "" {
+		t.Error(assert)
+	}
+}
+```
