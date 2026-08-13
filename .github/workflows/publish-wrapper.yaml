@@ -1,3 +1,5 @@
+# TODO: Verify if this workflow is still needed
+
 name: 'Build & Publish GTFS Validator'
 
 on:
