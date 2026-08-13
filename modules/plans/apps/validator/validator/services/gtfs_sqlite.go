@@ -96,6 +96,7 @@ func ImportGTFSZipToSQLite(zipPath, sqlitePath string) (*GtfsSQLite, error) {
 	// Even with WAL mode, concurrent writes can cause locking
 	for _, file := range zr.File {
 		if file.FileInfo().IsDir() || isMacOSMetadata(file.Name) {
+			lib.AppLogger.Debug("Skipping ZIP metadata: " + file.Name)
 			continue
 		}
 
