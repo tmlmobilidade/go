@@ -16,7 +16,7 @@ import (
 	"unicode/utf8"
 
 	"main/config"
-	dbops "main/services/database"
+	dbops "main/database"
 
 	_ "modernc.org/sqlite"
 )
