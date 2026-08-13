@@ -31,36 +31,35 @@ import (
 )
 
 // StopNameValidation validates the presence of stop_name in stops.txt according to location_type
+// func StopNameValidation(stop *types.Stop, row int, rules *types.StopsRules, stopsData *types.StopsDataCache) {
 func StopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 	ctx := lib.NewValidationContext("stop_name", "stops.txt", "stop_name_required_by_location_type", row, services.AppMessageService)
 	if rules != nil && rules.StopName.Severity != "" {
 		ctx.WithSeverity(rules.StopName.Severity)
 	}
 
-	// If stop_name is present, return
-	if stop.StopName != nil && *stop.StopName != "" {
+	isPresent := stop.StopName != nil && *stop.StopName != ""
+
+	if !isPresent {
+		locationType := -1
+		if stop.LocationType != nil {
+			locationType = *stop.LocationType
+		}
+
+		if locationType == 0 || locationType == 1 || locationType == 2 {
+			ctx.AddError(ctx.GetTranslatedMessage("stop_short_name_validation.required_location_type"))
+			return
+		}
+
+		if !ctx.ShouldIgnore() {
+			message := ctx.GetRequiredMessage("stop_short_name_validation.required", "stop_short_name_validation.recommended")
+			ctx.AddMessageWithSeverity(message)
+			return
+		}
+
 		return
 	}
 
-	// Check presence of stop_name based on location_type
-	locationType := -1
-	if stop.LocationType != nil {
-		locationType = *stop.LocationType
-	}
-
-	if locationType == 0 || locationType == 1 || locationType == 2 {
-		ctx.AddError(ctx.GetTranslatedMessage("stop_short_name_validation.required_location_type"))
-		return
-	}
-
-	// Check presence of stop_name based on severity
-	if !ctx.ShouldIgnore() {
-		message := ctx.GetRequiredMessage("stop_short_name_validation.required", "stop_short_name_validation.recommended")
-		ctx.AddMessageWithSeverity(message)
-		return
-	}
-
-	// Validate rules
 	if rules != nil && rules.StopName.Options != nil {
 		if slices.Contains(*rules.StopName.Options, types.ALL_OPTIONS) {
 			return
@@ -71,4 +70,25 @@ func StopNameValidation(stop *types.Stop, row int, rules *types.StopsRules) {
 			return
 		}
 	}
+
+	// // Check if stop_name matches the pre-computed stops_data.json cache
+	// ctx = lib.NewValidationContext("stop_name", "stops.txt", "stop_name_matches_stops_data", row, services.AppMessageService)
+	// if rules != nil && rules.StopNameMatchesData.Severity != "" {
+	// 	ctx.WithSeverity(rules.StopNameMatchesData.Severity)
+	// }
+	// if stop.StopId != nil && *stop.StopId != "" && stopsData != nil && len(stopsData.ByStopID) > 0 {
+	// 	record, exists := stopsData.ByStopID[*stop.StopId]
+	// 	if !exists {
+	// 		return
+	// 	}
+
+	// 	if record.Name != *stop.StopName {
+	// 		if ctx.ShouldSkip() {
+	// 			return
+	// 		}
+
+	// 		ctx.AddMessageWithSeverity(ctx.GetTranslatedMessage("stop_name_validation.does_not_match_stops_data", *stop.StopName))
+	// 		return
+	// 	}
+	// }
 }

@@ -16,9 +16,9 @@ func TestAllStopLatValidationTestCases(t *testing.T) {
 	for _, tc := range test_helpers.GetGenericRequiredFieldTestCases("stop_lat") {
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
-			stop := &types.Stop{StopLat: lib.Ptr(validOptions[0]), LocationType: lib.Ptr(0)}
+			stop := &types.Stop{StopLat: lib.Ptr(float64(validOptions[0])), LocationType: lib.Ptr(0)}
 			if tc.Name == "Invalid_Value" {
-				stop = &types.Stop{StopLat: &invalidOption, LocationType: lib.Ptr(0)}
+				stop = &types.Stop{StopLat: lib.Ptr(float64(invalidOption)), LocationType: lib.Ptr(0)}
 			}
 			if tc.Name == "Required" {
 				stop = &types.Stop{StopLat: nil, LocationType: lib.Ptr(0)}

@@ -9,15 +9,15 @@ import (
 )
 
 func TestAllShapePtLonValidationTestCases(t *testing.T) {
-	validOptions := test_helpers.GetFloat32ValidOptions()
-	invalidOption := float32(200.0) // out of range
+	validOptions := test_helpers.GetFloat64ValidOptions()
+	invalidOption := float64(200.0) // out of range
 	for _, tc := range test_helpers.GetGenericRequiredFieldTestCases("shape_pt_lon") {
 		if tc.Name == "Recommended_Missing" {
 			continue
 		}
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
-			var shapePtLon *float32
+			var shapePtLon *float64
 			if tc.Name == "Invalid_Value" {
 				shapePtLon = &invalidOption
 			} else if tc.Value != nil {

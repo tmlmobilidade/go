@@ -17,6 +17,7 @@ type CliOptions struct {
 	OutputPath string // Path to the output file
 	LogLevel   string // Log level (debug, info, error)
 	RulesPath  string // Path to the rules file
+	StopsPath  string // Path to the stops_data.json file
 	RulesLang  string // Rules language (en, pt)
 	Version    bool   // Show version
 }
@@ -42,6 +43,7 @@ func (c *CLI) Parse() {
 	flag.StringVar(&c.Options.OutputPath, "o", "", "Path to the output file")
 	flag.StringVar(&c.Options.LogLevel, "log", "info", "Log level (debug, info, error)")
 	flag.StringVar(&c.Options.RulesPath, "rules", "", "Path to the rules file")
+	flag.StringVar(&c.Options.StopsPath, "stops", "", "Path to the stops_data.json file")
 	flag.StringVar(&c.Options.RulesLang, "lang", "en", "Rules language (en, pt)")
 	flag.BoolVar(&c.Options.Version, "v", false, "Show version")
 	flag.BoolVar(&c.Options.Version, "version", false, "Show help")

@@ -95,11 +95,11 @@ func ValidatePhone(p string) bool {
 	return len(digitMatches) >= 7
 }
 
-func ValidateLongitude(lon float32) bool {
+func ValidateLongitude(lon float64) bool {
 	return lon >= -180 && lon <= 180
 }
 
-func ValidateLatitude(lat float32) bool {
+func ValidateLatitude(lat float64) bool {
 	return lat >= -90 && lat <= 90
 }
 

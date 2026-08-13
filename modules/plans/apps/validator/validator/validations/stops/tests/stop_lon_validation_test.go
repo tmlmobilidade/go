@@ -16,10 +16,10 @@ func TestAllStopLonValidationTestCases(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
 
-			stop := &types.Stop{StopLon: lib.Ptr(validOptions[0]), LocationType: lib.Ptr(0)}
+			stop := &types.Stop{StopLon: lib.Ptr(float64(validOptions[0])), LocationType: lib.Ptr(0)}
 
 			if tc.Name == "Invalid_Value" {
-				stop = &types.Stop{StopLon: &invalidOption, LocationType: lib.Ptr(0)}
+				stop = &types.Stop{StopLon: lib.Ptr(float64(invalidOption)), LocationType: lib.Ptr(0)}
 			}
 			if tc.Name == "Required" {
 				stop = &types.Stop{StopLon: nil, LocationType: lib.Ptr(0)}

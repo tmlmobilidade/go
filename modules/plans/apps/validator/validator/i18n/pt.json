@@ -404,7 +404,7 @@
         "forbidden": "O campo \"stop_id\" é proibido",
         "required": "O campo \"stop_id\" é obrigatório",
         "recommended": "O campo \"stop_id\" é recomendado",
-        "not_found": "O campo \"stop_id\" \"%s\" não existe em stops.txt",
+        "does_not_exist": "O campo \"stop_id\" \"%s\" não existe, verifique se o id está correto",
         "duplicate": "Campo \"stop_id\" \"%s\" duplicado encontrado. O campo \"stop_id\" deve ser único",
         "not_allowed": "O campo \"stop_id\" \"%s\" não é permitido",
         "forbidden_location_group_id_location_id": "O campo \"stop_id\" é proibido se \"location_group_id\" ou \"location_id\" estiverem definidos",
@@ -423,7 +423,8 @@
         "forbidden": "O campo \"stop_name\" é proibido",
         "required": "O campo \"stop_name\" é obrigatório",
         "recommended": "O campo \"stop_name\" é recomendado",
-        "not_allowed": "O campo \"stop_name\" \"%s\" não é permitido"
+        "not_allowed": "O campo \"stop_name\" \"%s\" não é permitido",
+        "does_not_match_stops_data": "O campo \"stop_name\" \"%s\" não corresponde a stops_data.json"
     },
     "timepoint_validation": {
         "forbidden": "O campo \"timepoint\" é proibido",
@@ -597,13 +598,15 @@
         "forbidden": "O campo \"stop_lat\" é proibido",
         "required": "O campo \"stop_lat\" é obrigatório",
         "recommended": "O campo \"stop_lat\" é recomendado",
-        "invalid": "O campo \"stop_lat\" deve ser uma latitude válida, intervalo esperado: -90 a 90, recebido: %f"
+        "invalid": "O campo \"stop_lat\" deve ser uma latitude válida, intervalo esperado: -90 a 90, recebido: %f",
+        "does_not_match_stops_data": "O campo \"stop_lat\" %f não corresponde a stops_data.json"
     },
     "stop_lon_validation": {
         "forbidden": "O campo \"stop_lon\" é proibido",
         "required": "O campo \"stop_lon\" é obrigatório",
         "recommended": "O campo \"stop_lon\" é recomendado",
-        "invalid": "O campo \"stop_lon\" deve ser uma longitude válida, intervalo esperado: -180 a 180, recebido: %f"
+        "invalid": "O campo \"stop_lon\" deve ser uma longitude válida, intervalo esperado: -180 a 180, recebido: %f",
+        "does_not_match_stops_data": "O campo \"stop_lon\" %f não corresponde a stops_data.json"
     },
     "stop_short_name_validation": {
         "forbidden": "O campo \"stop_short_name\" é proibido",

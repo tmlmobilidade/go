@@ -75,10 +75,10 @@ func TestParseStop_ValidInput(t *testing.T) {
 	if stop.WheelchairBoarding == nil || *stop.WheelchairBoarding != 2 {
 		t.Errorf("Expected WheelchairBoarding '2', got '%v'", *stop.WheelchairBoarding)
 	}
-	if stop.StopLat == nil || *stop.StopLat != float32(40.1234) {
+	if stop.StopLat == nil || *stop.StopLat != 40.1234 {
 		t.Errorf("Expected StopLat '40.1234', got '%v'", *stop.StopLat)
 	}
-	if stop.StopLon == nil || *stop.StopLon != float32(-8.5678) {
+	if stop.StopLon == nil || *stop.StopLon != -8.5678 {
 		t.Errorf("Expected StopLon '-8.5678', got '%v'", *stop.StopLon)
 	}
 	if stop.TtsStopName == nil || *stop.TtsStopName != "Main St" {

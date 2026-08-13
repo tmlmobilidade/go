@@ -10,6 +10,7 @@ import (
 	"main/lib"
 	"main/types"
 	"os"
+	"path"
 	"reflect"
 	"strings"
 	"sync"
@@ -94,13 +95,19 @@ func ImportGTFSZipToSQLite(zipPath, sqlitePath string) (*GtfsSQLite, error) {
 	// Process files sequentially to avoid SQLite locking issues
 	// Even with WAL mode, concurrent writes can cause locking
 	for _, file := range zr.File {
+		// Normalise the entry name: strip any leading directory so that ZIPs
+		// where files are nested inside a single top-level folder (e.g. created
+		// by compressing the folder itself on macOS) are handled identically to
+		// flat ZIPs whose files sit at the root.
+		baseName := path.Base(file.Name)
+
 		// Only process known GTFS files
-		if _, ok := config.GTFSFiles[file.Name]; ok {
+		if _, ok := config.GTFSFiles[baseName]; ok {
 			if err := processGTFSFile(gtfsDB.db, file, &dbMutex); err != nil {
-				lib.AppLogger.Error(fmt.Sprintf("Error processing %s: %v", file.Name, err))
+				lib.AppLogger.Error(fmt.Sprintf("Error processing %s: %v", baseName, err))
 				AppMessageService.AddMessage(types.Message{
-					FileName: file.Name,
-					Message:  fmt.Sprintf("Error processing file: %s - %v", file.Name, err),
+					FileName: baseName,
+					Message:  fmt.Sprintf("Error processing file: %s - %v", baseName, err),
 					RuleID:   "file_validation",
 					Severity: types.SEVERITY_ERROR,
 					Field:    "N/A",
@@ -158,7 +165,7 @@ func processGTFSFile(db *sql.DB, file *zip.File, dbMutex *sync.Mutex) error {
 		return fmt.Errorf("could not read CSV header: %w", err)
 	}
 
-	table := strings.TrimSuffix(file.Name, ".txt")
+	table := strings.TrimSuffix(path.Base(file.Name), ".txt")
 
 	// Create table if it doesn't exist (serialized to prevent locking)
 	dbMutex.Lock()

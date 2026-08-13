@@ -22,10 +22,10 @@ func TestParseShape_ValidInput(t *testing.T) {
 	if shape.ShapeId == nil || *shape.ShapeId != "SHP1" {
 		t.Errorf("Expected ShapeId 'SHP1', got '%v'", shape.ShapeId)
 	}
-	if shape.ShapePtLat == nil || *shape.ShapePtLat != float32(37.61956) {
+	if shape.ShapePtLat == nil || *shape.ShapePtLat != 37.61956 {
 		t.Errorf("Expected ShapePtLat 37.61956, got '%v'", shape.ShapePtLat)
 	}
-	if shape.ShapePtLon == nil || *shape.ShapePtLon != float32(-122.48161) {
+	if shape.ShapePtLon == nil || *shape.ShapePtLon != -122.48161 {
 		t.Errorf("Expected ShapePtLon -122.48161, got '%v'", shape.ShapePtLon)
 	}
 	if shape.ShapePtSequence == nil || *shape.ShapePtSequence != 0 {
@@ -91,10 +91,10 @@ func TestParseShape_OptionalFieldsEmpty(t *testing.T) {
 	if shape.ShapeId == nil || *shape.ShapeId != "SHP4" {
 		t.Errorf("Expected ShapeId 'SHP4', got '%v'", shape.ShapeId)
 	}
-	if shape.ShapePtLat == nil || *shape.ShapePtLat != float32(37.61956) {
+	if shape.ShapePtLat == nil || *shape.ShapePtLat != 37.61956 {
 		t.Errorf("Expected ShapePtLat 37.61956, got '%v'", shape.ShapePtLat)
 	}
-	if shape.ShapePtLon == nil || *shape.ShapePtLon != float32(-122.48161) {
+	if shape.ShapePtLon == nil || *shape.ShapePtLon != -122.48161 {
 		t.Errorf("Expected ShapePtLon -122.48161, got '%v'", shape.ShapePtLon)
 	}
 	if shape.ShapePtSequence == nil || *shape.ShapePtSequence != 2 {

@@ -9,11 +9,11 @@ import (
 // ParseStop parses a row from stops.txt into a Stop struct, following gtfs-parser-validation best practices
 func ParseStop(rawStop types.StopRaw, row int) types.Stop {
 	var (
-		stop                                                                                                                                                                                                      types.Stop = types.Stop{}
-		stopId, stopCode, stopName, stopDesc, zoneId, stopUrl, parentStation, stopTimezone, levelId, platformCode, ttsStopName, shelterCode, shelterMaintainer, stopShortName, municipalityId, parishId, regionId string
-		locationType, wheelchairBoarding, hasBench, hasNetworkMap, hasPipRealTime, hasSchedules, hasShelter, hasStopSign, hasTariffsInformation, publicVisible, stopAccess                                        int
-		stopLat, stopLon                                                                                                                                                                                          float32
-		messages                                                                                                                                                                                                  []types.Message
+		stop                                                                                                                                                                                                                  types.Stop = types.Stop{}
+		stopId, stopCode, stopName, stopDesc, zoneId, stopUrl, parentStation, stopTimezone, levelId, platformCode, ttsStopName, shelterCode, shelterMaintainer, stopShortName, municipalityId, parishId, regionId             string
+		locationType, wheelchairBoarding, hasBench, hasNetworkMap, hasPipRealTime, hasSchedules, hasShelter, hasStopSign, hasTariffsInformation, publicVisible, stopAccess                                                     int
+		stopLat, stopLon                                                                                                                                                                                                      float64
+		messages                                                                                                                                                                                                              []types.Message
 	)
 
 	stringFields := map[string]*string{
@@ -50,19 +50,19 @@ func ParseStop(rawStop types.StopRaw, row int) types.Stop {
 		"stop_access":             &stopAccess,
 	}
 
-	float32Fields := map[string]*float32{
+	float64Fields := map[string]*float64{
 		"stop_lat": &stopLat,
 		"stop_lon": &stopLon,
 	}
 
 	addMessage := func(field, msg string) {
 		messages = append(messages, types.Message{
-			Field:        field,
-			FileName:     "stops.txt",
-			Rows:         []int{row},
-			Message:      msg,
-			Severity:     types.SEVERITY_ERROR,
-			RuleID:       "stops_values_parse",
+			Field:    field,
+			FileName: "stops.txt",
+			Rows:     []int{row},
+			Message:  msg,
+			Severity: types.SEVERITY_ERROR,
+			RuleID:   "stops_values_parse",
 		})
 	}
 
@@ -79,7 +79,7 @@ func ParseStop(rawStop types.StopRaw, row int) types.Stop {
 		}
 	}
 	// Parse float32 fields
-	for field, target := range float32Fields {
+	for field, target := range float64Fields {
 		if errMsg := lib.ParseStringToPrimitive(lib.GetFieldByTag(&rawStop, "gtfs", field), target); errMsg != "" {
 			addMessage(field, errMsg)
 		}

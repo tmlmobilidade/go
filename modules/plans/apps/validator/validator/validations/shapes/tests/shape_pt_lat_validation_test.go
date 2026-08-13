@@ -9,8 +9,8 @@ import (
 )
 
 func TestAllShapePtLatValidationTestCases(t *testing.T) {
-	validOptions := test_helpers.GetFloat32ValidOptions()
-	invalidOption := float32(100.0) // out of range
+	validOptions := test_helpers.GetFloat64ValidOptions()
+	invalidOption := float64(100.0) // out of range
 	for _, tc := range test_helpers.GetGenericRequiredFieldTestCases("shape_pt_lat") {
 		if tc.Name == "Recommended_Missing" {
 			continue
@@ -18,7 +18,7 @@ func TestAllShapePtLatValidationTestCases(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			services.AppMessageService.Clear()
 
-			var shapePtLat *float32
+			var shapePtLat *float64
 			if tc.Name == "Invalid_Value" {
 				shapePtLat = &invalidOption
 			} else if tc.Value != nil {

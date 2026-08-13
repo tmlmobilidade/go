@@ -33,8 +33,8 @@ func getShapePointsCoordinatesConsistentToleranceMeters(rules *types.ShapesRules
 
 func buildShapeFromPointsCoordinatesConsistentPoint(point shapePointsCoordinatesConsistentPoint) *types.Shape {
 	return &types.Shape{
-		ShapePtLat: lib.Ptr(float32(point.lat)),
-		ShapePtLon: lib.Ptr(float32(point.lon)),
+		ShapePtLat: lib.Ptr(float64(point.lat)),
+		ShapePtLon: lib.Ptr(float64(point.lon)),
 	}
 }
 
@@ -85,8 +85,8 @@ func ShapePointsCoordinatesConsistentValidation(shapes []types.Shape, rules *typ
 			id:       *shape.ShapeId,
 			row:      i,
 			sequence: *shape.ShapePtSequence,
-			lat:      float64(*shape.ShapePtLat),
-			lon:      float64(*shape.ShapePtLon),
+			lat:      *shape.ShapePtLat,
+			lon:      *shape.ShapePtLon,
 		})
 	}
 
