@@ -1,191 +1,191 @@
-/* * */
+// /* * */
 
-import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+// import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
-import { type ControllerRidesDetailFilters, ControllerRidesDetailFiltersSchema } from './controller-rides-detail-filters.js';
-import { type ControllerRidesDetailItem } from './controller-rides-detail-item.js';
-import { controllerRidesDetailQuery } from './controller-rides-detail-query.js';
+// import { type ControllerRidesDetailFilters, ControllerRidesDetailFiltersSchema } from './controller-rides-detail-filters.js';
+// import { type ControllerRidesDetailItem } from './controller-rides-detail-item.js';
+// import { controllerRidesDetailQuery } from './controller-rides-detail-query.js';
 
-/* * */
+// /* * */
 
-export async function getControllerRidesDetail(filters: ControllerRidesDetailFilters): Promise<ControllerRidesDetailItem> {
-	//
+// export async function getControllerRidesDetail(filters: ControllerRidesDetailFilters): Promise<ControllerRidesDetailItem> {
+// 	//
 
-	//
-	// Validate the filters
+// 	//
+// 	// Validate the filters
 
-	const validatedFilters = ControllerRidesDetailFiltersSchema.parse(filters);
+// 	const validatedFilters = ControllerRidesDetailFiltersSchema.parse(filters);
 
-	//
-	// If any of the required filters are empty arrays,
-	// then there is no data to return, so return an empty array.
+// 	//
+// 	// If any of the required filters are empty arrays,
+// 	// then there is no data to return, so return an empty array.
 
-	const hasEmptyFilter = [
-		validatedFilters.agency_ids,
-		validatedFilters.acceptance_statuses,
-		validatedFilters.analysis_at_least_one_vehicle_event_on_last_stop_grades,
-		validatedFilters.analysis_expected_apex_validation_interval_grades,
-		validatedFilters.analysis_simple_three_vehicle_events_grades,
-		validatedFilters.analysis_transaction_sequentiality_grades,
-		validatedFilters.start_delay_statuses,
-		validatedFilters.end_delay_statuses,
-		validatedFilters.operational_statuses,
-		validatedFilters.route_short_names,
-		validatedFilters.ticketing_statuses,
-	].some(value => Array.isArray(value) && value.length === 0);
+// 	const hasEmptyFilter = [
+// 		validatedFilters.agency_ids,
+// 		validatedFilters.acceptance_statuses,
+// 		validatedFilters.analysis_at_least_one_vehicle_event_on_last_stop_grades,
+// 		validatedFilters.analysis_expected_apex_validation_interval_grades,
+// 		validatedFilters.analysis_simple_three_vehicle_events_grades,
+// 		validatedFilters.analysis_transaction_sequentiality_grades,
+// 		validatedFilters.start_delay_statuses,
+// 		validatedFilters.end_delay_statuses,
+// 		validatedFilters.operational_statuses,
+// 		validatedFilters.route_short_names,
+// 		validatedFilters.ticketing_statuses,
+// 	].some(value => Array.isArray(value) && value.length === 0);
 
-	if (hasEmptyFilter) return [];
+// 	if (hasEmptyFilter) return [];
 
-	//
-	// Build query parameters
+// 	//
+// 	// Build query parameters
 
-	const params: Record<string, number | string> = {
-		1: validatedFilters.start_time_scheduled_start,
-		2: validatedFilters.start_time_scheduled_end,
-		3: validatedFilters.search ?? '',
-	};
+// 	const params: Record<string, number | string> = {
+// 		1: validatedFilters.start_time_scheduled_start,
+// 		2: validatedFilters.start_time_scheduled_end,
+// 		3: validatedFilters.search ?? '',
+// 	};
 
-	let paramIndex = 4;
+// 	let paramIndex = 4;
 
-	const addParam = (value: number | string): string => {
-		const index = paramIndex++;
-		params[String(index)] = value;
-		return `$${index}`;
-	};
+// 	const addParam = (value: number | string): string => {
+// 		const index = paramIndex++;
+// 		params[String(index)] = value;
+// 		return `$${index}`;
+// 	};
 
-	//
-	// Build WHERE conditions
+// 	//
+// 	// Build WHERE conditions
 
-	const conditions: string[] = [];
+// 	const conditions: string[] = [];
 
-	//
-	// Agency IDs
+// 	//
+// 	// Agency IDs
 
-	if (validatedFilters.agency_ids.length) {
-		const placeholders = validatedFilters.agency_ids.map(addParam);
-		conditions.push(`agency_id IN (${placeholders.join(', ')})`);
-	}
+// 	if (validatedFilters.agency_ids.length) {
+// 		const placeholders = validatedFilters.agency_ids.map(addParam);
+// 		conditions.push(`agency_id IN (${placeholders.join(', ')})`);
+// 	}
 
-	//
-	// Route short names
+// 	//
+// 	// Route short names
 
-	if (validatedFilters.route_short_names?.length) {
-		const placeholders = validatedFilters.route_short_names.map(addParam);
-		conditions.push(`route_short_name IN (${placeholders.join(', ')})`);
-	}
+// 	if (validatedFilters.route_short_names?.length) {
+// 		const placeholders = validatedFilters.route_short_names.map(addParam);
+// 		conditions.push(`route_short_name IN (${placeholders.join(', ')})`);
+// 	}
 
-	//
-	// Driver IDs
+// 	//
+// 	// Driver IDs
 
-	if (validatedFilters.driver_ids?.length) {
-		const placeholders = validatedFilters.driver_ids.map(addParam);
-		conditions.push(`hasAny(driver_ids, [${placeholders.join(', ')}])`);
-	}
+// 	if (validatedFilters.driver_ids?.length) {
+// 		const placeholders = validatedFilters.driver_ids.map(addParam);
+// 		conditions.push(`hasAny(driver_ids, [${placeholders.join(', ')}])`);
+// 	}
 
-	//
-	// Vehicle IDs
+// 	//
+// 	// Vehicle IDs
 
-	if (validatedFilters.vehicle_ids?.length) {
-		const placeholders = validatedFilters.vehicle_ids.map(addParam);
-		conditions.push(`hasAny(vehicle_ids, [${placeholders.join(', ')}])`);
-	}
+// 	if (validatedFilters.vehicle_ids?.length) {
+// 		const placeholders = validatedFilters.vehicle_ids.map(addParam);
+// 		conditions.push(`hasAny(vehicle_ids, [${placeholders.join(', ')}])`);
+// 	}
 
-	//
-	// Operational statuses
+// 	//
+// 	// Operational statuses
 
-	if (validatedFilters.operational_statuses?.length) {
-		const placeholders = validatedFilters.operational_statuses.map(addParam);
-		conditions.push(
-			`operational_status IN (${placeholders.join(', ')})`,
-		);
-	}
+// 	if (validatedFilters.operational_statuses?.length) {
+// 		const placeholders = validatedFilters.operational_statuses.map(addParam);
+// 		conditions.push(
+// 			`operational_status IN (${placeholders.join(', ')})`,
+// 		);
+// 	}
 
-	//
-	// Delay statuses
-	//
-	// `none` represents a NULL delay status in ClickHouse.
-	//
-	//   none          -> IS NULL
-	//   delayed/...   -> IN (...)
+// 	//
+// 	// Delay statuses
+// 	//
+// 	// `none` represents a NULL delay status in ClickHouse.
+// 	//
+// 	//   none          -> IS NULL
+// 	//   delayed/...   -> IN (...)
 
-	const addDelayStatusFilter = (column: string, values: Array<string>): void => {
-		const statuses = values.filter(status => status !== 'none');
-		const includesNone = values.includes('none');
-		const delayConditions: string[] = [];
-		if (statuses.length) {
-			const placeholders = statuses.map(addParam);
-			delayConditions.push(`${column} IN (${placeholders.join(', ')})`);
-		}
-		if (includesNone) delayConditions.push(`${column} IS NULL`);
-		conditions.push(`(${delayConditions.join('\n\t\t\tOR ')})`);
-	};
+// 	const addDelayStatusFilter = (column: string, values: Array<string>): void => {
+// 		const statuses = values.filter(status => status !== 'none');
+// 		const includesNone = values.includes('none');
+// 		const delayConditions: string[] = [];
+// 		if (statuses.length) {
+// 			const placeholders = statuses.map(addParam);
+// 			delayConditions.push(`${column} IN (${placeholders.join(', ')})`);
+// 		}
+// 		if (includesNone) delayConditions.push(`${column} IS NULL`);
+// 		conditions.push(`(${delayConditions.join('\n\t\t\tOR ')})`);
+// 	};
 
-	if (validatedFilters.start_delay_statuses?.length) {
-		addDelayStatusFilter('start_delay_status', validatedFilters.start_delay_statuses);
-	}
+// 	if (validatedFilters.start_delay_statuses?.length) {
+// 		addDelayStatusFilter('start_delay_status', validatedFilters.start_delay_statuses);
+// 	}
 
-	if (validatedFilters.end_delay_statuses?.length) {
-		addDelayStatusFilter('end_delay_status', validatedFilters.end_delay_statuses);
-	}
+// 	if (validatedFilters.end_delay_statuses?.length) {
+// 		addDelayStatusFilter('end_delay_status', validatedFilters.end_delay_statuses);
+// 	}
 
-	//
-	// Analysis grades
-	//
-	// `none` represents a NULL analysis grade in the database.
-	//
-	//   none          -> IS NULL
-	//   pass/fail/... -> IN (...)
+// 	//
+// 	// Analysis grades
+// 	//
+// 	// `none` represents a NULL analysis grade in the database.
+// 	//
+// 	//   none          -> IS NULL
+// 	//   pass/fail/... -> IN (...)
 
-	const addGradeFilter = (column: string, values: Array<string>): void => {
-		const grades = values.filter(grade => grade !== 'none');
-		const includesNone = values.includes('none');
-		const gradeConditions: string[] = [];
-		if (grades.length) {
-			const placeholders = grades.map(addParam);
-			gradeConditions.push(`${column} IN (${placeholders.join(', ')})`);
-		}
-		if (includesNone) gradeConditions.push(`${column} IS NULL`);
-		conditions.push(`(${gradeConditions.join('\n\t\t\tOR ')})`);
-	};
+// 	const addGradeFilter = (column: string, values: Array<string>): void => {
+// 		const grades = values.filter(grade => grade !== 'none');
+// 		const includesNone = values.includes('none');
+// 		const gradeConditions: string[] = [];
+// 		if (grades.length) {
+// 			const placeholders = grades.map(addParam);
+// 			gradeConditions.push(`${column} IN (${placeholders.join(', ')})`);
+// 		}
+// 		if (includesNone) gradeConditions.push(`${column} IS NULL`);
+// 		conditions.push(`(${gradeConditions.join('\n\t\t\tOR ')})`);
+// 	};
 
-	if (validatedFilters.analysis_at_least_one_vehicle_event_on_last_stop_grades?.length) {
-		addGradeFilter('analysis_at_least_one_vehicle_event_on_last_stop_grade', validatedFilters.analysis_at_least_one_vehicle_event_on_last_stop_grades);
-	}
+// 	if (validatedFilters.analysis_at_least_one_vehicle_event_on_last_stop_grades?.length) {
+// 		addGradeFilter('analysis_at_least_one_vehicle_event_on_last_stop_grade', validatedFilters.analysis_at_least_one_vehicle_event_on_last_stop_grades);
+// 	}
 
-	if (validatedFilters.analysis_expected_apex_validation_interval_grades?.length) {
-		addGradeFilter('analysis_expected_apex_validation_interval_grade', validatedFilters.analysis_expected_apex_validation_interval_grades);
-	}
+// 	if (validatedFilters.analysis_expected_apex_validation_interval_grades?.length) {
+// 		addGradeFilter('analysis_expected_apex_validation_interval_grade', validatedFilters.analysis_expected_apex_validation_interval_grades);
+// 	}
 
-	if (validatedFilters.analysis_simple_three_vehicle_events_grades?.length) {
-		addGradeFilter('analysis_simple_three_vehicle_events_grade', validatedFilters.analysis_simple_three_vehicle_events_grades);
-	}
+// 	if (validatedFilters.analysis_simple_three_vehicle_events_grades?.length) {
+// 		addGradeFilter('analysis_simple_three_vehicle_events_grade', validatedFilters.analysis_simple_three_vehicle_events_grades);
+// 	}
 
-	if (validatedFilters.analysis_transaction_sequentiality_grades?.length) {
-		addGradeFilter('analysis_transaction_sequentiality_grade', validatedFilters.analysis_transaction_sequentiality_grades);
-	}
+// 	if (validatedFilters.analysis_transaction_sequentiality_grades?.length) {
+// 		addGradeFilter('analysis_transaction_sequentiality_grade', validatedFilters.analysis_transaction_sequentiality_grades);
+// 	}
 
-	//
-	// Search
+// 	//
+// 	// Search
 
-	if (validatedFilters.search) {
-		const search = validatedFilters.search.trim();
-		const partialSearch = addParam(`%${search}%`);
-		conditions.push(`
-			(
-				_id ILIKE ${partialSearch}
-				OR headsign ILIKE ${partialSearch}
-			)
-		`);
-	}
+// 	if (validatedFilters.search) {
+// 		const search = validatedFilters.search.trim();
+// 		const partialSearch = addParam(`%${search}%`);
+// 		conditions.push(`
+// 			(
+// 				_id ILIKE ${partialSearch}
+// 				OR headsign ILIKE ${partialSearch}
+// 			)
+// 		`);
+// 	}
 
-	//
-	// Append the dynamic filters to the query
+// 	//
+// 	// Append the dynamic filters to the query
 
-	const where = conditions.length
-		? `\n\tAND ${conditions.join('\n\tAND ')}`
-		: '';
+// 	const where = conditions.length
+// 		? `\n\tAND ${conditions.join('\n\tAND ')}`
+// 		: '';
 
-	const sql = controllerRidesDetailQuery.replace('--DYNAMIC FILTERS HERE--', where);
+// 	const sql = controllerRidesDetailQuery.replace('--DYNAMIC FILTERS HERE--', where);
 
-	return await labDb.operation.rides.queryFromString(sql, params);
-}
+// 	return await labDb.operation.rides.queryFromString(sql, params);
+// }
