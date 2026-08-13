@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const ControllerRidesListFiltersSchema = z.object({
+export const OperationLinesListFiltersSchema = z.object({
 
 	agency_ids: z.array(z.string()),
 
@@ -16,7 +16,7 @@ export const ControllerRidesListFiltersSchema = z.object({
 });
 
 /**
- * The filters schema for getting rides.
- * It is intended for use in the controller module.
+ * The filters schema for getting operation lines.
+ * It is intended for use in the alerts module.
  */
-export type ControllerRidesListFilters = z.infer<typeof ControllerRidesListFiltersSchema>;
+export type OperationLinesListFilters = z.infer<typeof OperationLinesListFiltersSchema>;
