@@ -43,8 +43,8 @@ export function useFilterStateDateRange(key: string, defaultStart?: null | UnixT
 	//
 	// A. Setup variables
 
-	const [urlValueStart, setUrlValueStart] = useQueryState(`${key}-start`, parseAsInteger);
-	const [urlValueEnd, setUrlValueEnd] = useQueryState(`${key}-end`, parseAsInteger);
+	const [urlValueStart, setUrlValueStart] = useQueryState(`${key}-start`, parseAsInteger.withDefault(defaultStart));
+	const [urlValueEnd, setUrlValueEnd] = useQueryState(`${key}-end`, parseAsInteger.withDefault(defaultEnd));
 
 	//
 	// B. Transform data

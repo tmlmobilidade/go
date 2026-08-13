@@ -11,8 +11,13 @@ import { useMemo } from 'react';
 export function useRidesListFilterDateRange(): UseFilterStateDateRangeReturnType {
 	//
 
-	const defaultStartValue = useMemo(() => Dates.now('local').minus({ minutes: 30 }).unix_timestamp, []);
-	const defaultEndValue = useMemo(() => Dates.now('local').plus({ minutes: 30 }).unix_timestamp, []);
+	const defaultStartValue = useMemo(() => {
+		return Dates.now('local').minus({ minutes: 30 }).unix_timestamp;
+	}, []);
+
+	const defaultEndValue = useMemo(() => {
+		return Dates.now('local').plus({ minutes: 30 }).unix_timestamp;
+	}, []);
 
 	return useFilterStateDateRange(
 		'date_range',
