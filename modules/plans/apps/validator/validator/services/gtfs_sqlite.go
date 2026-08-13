@@ -95,6 +95,10 @@ func ImportGTFSZipToSQLite(zipPath, sqlitePath string) (*GtfsSQLite, error) {
 	// Process files sequentially to avoid SQLite locking issues
 	// Even with WAL mode, concurrent writes can cause locking
 	for _, file := range zr.File {
+		if file.FileInfo().IsDir() || isMacOSMetadata(file.Name) {
+			continue
+		}
+
 		// Normalise the entry name: strip any leading directory so that ZIPs
 		// where files are nested inside a single top-level folder (e.g. created
 		// by compressing the folder itself on macOS) are handled identically to
@@ -127,6 +131,17 @@ func ImportGTFSZipToSQLite(zipPath, sqlitePath string) (*GtfsSQLite, error) {
 		}
 	}
 	return gtfsDB, nil
+}
+
+func isMacOSMetadata(fileName string) bool {
+	for _, part := range strings.Split(fileName, "/") {
+		if part == "__MACOSX" {
+			return true
+		}
+	}
+
+	baseName := path.Base(fileName)
+	return baseName == ".DS_Store" || strings.HasPrefix(baseName, "._")
 }
 
 // processGTFSFile processes a single GTFS file from the zip archive
