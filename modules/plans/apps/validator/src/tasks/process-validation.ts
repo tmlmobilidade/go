@@ -1,6 +1,7 @@
 /* * */
 
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
+import { runProjectValidator } from '@/utils/run-project-validator.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
@@ -8,7 +9,6 @@ import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 import { join } from 'node:path';
@@ -91,12 +91,12 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		Logger.info({ message: `Custom validation rules saved to: ${gtfsValidationRulesPath}` });
 
 		//
-		// Perform the GTFS validation using the GtfsValidator library
+		// Perform the GTFS validation using the project binary
 		// and update the GTFS validation document in MongoDB with the results.
 
 		Logger.info({ message: 'Performing the actual GTFS validation...' });
 
-		const gtfsValidationResult = await GtfsValidator(gtfsFilePath, {
+		const gtfsValidationSummary = await runProjectValidator(gtfsFilePath, {
 			lang: 'pt',
 			log_level: 'debug',
 			out_file: gtfsValidationResultPath,
@@ -108,8 +108,8 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'complete',
-			summary: gtfsValidationResult.summary as GtfsValidation['summary'],
-			validity_status: gtfsValidationResult.summary.total_errors === 0 ? 'valid' : 'invalid',
+			summary: gtfsValidationSummary as GtfsValidation['summary'],
+			validity_status: gtfsValidationSummary.total_errors === 0 ? 'valid' : 'invalid',
 		});
 
 		//
@@ -133,7 +133,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 						firstName: foundUser.first_name,
 						gtfsValidationId: gtfsValidation._id,
 						gtfsValidationUrl: PAGE_ROUTES.plans.VALIDATIONS_DETAIL(gtfsValidation._id),
-						totalWarnings: gtfsValidationResult.summary.total_warnings,
+						totalWarnings: gtfsValidationSummary.total_warnings,
 					},
 					to: foundUser.email,
 				});
@@ -143,8 +143,8 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 						firstName: foundUser.first_name,
 						gtfsValidationId: gtfsValidation._id,
 						gtfsValidationUrl: PAGE_ROUTES.plans.VALIDATIONS_DETAIL(gtfsValidation._id),
-						totalErrors: gtfsValidationResult.summary.total_errors,
-						totalWarnings: gtfsValidationResult.summary.total_warnings,
+						totalErrors: gtfsValidationSummary.total_errors,
+						totalWarnings: gtfsValidationSummary.total_warnings,
 					},
 					to: foundUser.email,
 				});
