@@ -5,7 +5,8 @@ import { RideAnalysisAnalysis } from '@/components/rides/detail/analysis/RideAna
 import { RideAnalysisViewNavigation } from '@/components/rides/detail/analysis/RideAnalysisViewNavigation';
 import { RideAnalysisAudit } from '@/components/rides/detail/audit';
 import { RidesDetailHeader } from '@/components/rides/detail/shared/RidesDetailHeader';
-import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
+import { useRidesDetailRideData } from '@/components/rides/detail/shared/use-rides-detail-ride-data';
+import { useRidesDetailCurrentView } from '@/components/rides/detail/shared/use-rides-detail-view';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -16,12 +17,13 @@ export function RidesDetail() {
 	//
 	// A. Setup variables
 
-	const rideAnalysisContext = useRideAnalysisContext();
+	const { currentView } = useRidesDetailCurrentView();
+	const { error, isLoading } = useRidesDetailRideData();
 
 	//
 	// B. Render components
 
-	if (rideAnalysisContext.flags.loading) {
+	if (isLoading) {
 		return <LoadingOverlay />;
 	}
 
@@ -31,12 +33,10 @@ export function RidesDetail() {
 			<RideAnalysisViewNavigation key="navigation" />,
 		]}
 		>
-			{rideAnalysisContext.flags.error && <ErrorDisplay message={rideAnalysisContext.flags.error.message} />}
-			{rideAnalysisContext.data.selected_view === 'ANALYSIS' && <RideAnalysisAnalysis />}
-			{rideAnalysisContext.data.selected_view === 'AUDIT' && <RideAnalysisAudit />}
-			{rideAnalysisContext.data.selected_view === 'ACCEPTANCE' && <RideAcceptance />}
+			{error && <ErrorDisplay message={error} />}
+			{currentView === 'analysis' && <RideAnalysisAnalysis />}
+			{currentView === 'audit' && <RideAnalysisAudit />}
+			{currentView === 'acceptance' && <RideAcceptance />}
 		</Pane>
 	);
-
-	//
 }
