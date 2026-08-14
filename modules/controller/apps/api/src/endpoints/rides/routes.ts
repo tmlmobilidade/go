@@ -5,6 +5,7 @@ import { getSimplifiedApexOnBoardRefunds } from '@/endpoints/rides/controllers/g
 import { getSimplifiedApexOnBoardSales } from '@/endpoints/rides/controllers/get-apex-sales.js';
 import { getSimplifiedApexValidations } from '@/endpoints/rides/controllers/get-apex-validations.js';
 import { getHashedTrip } from '@/endpoints/rides/controllers/get-hashed-trip.js';
+import { getRideAnalyses } from '@/endpoints/rides/controllers/get-ride-analyses.js';
 import { getRideById } from '@/endpoints/rides/controllers/get-ride-by-id.js';
 import { getRides } from '@/endpoints/rides/controllers/get-rides.js';
 import { getSimplifiedVehicleEvents } from '@/endpoints/rides/controllers/get-vehicle-events.js';
@@ -27,12 +28,6 @@ server.register(
 
 		await instance.register(fastifyWebsocket);
 
-		instance.get(
-			'/:id/ride',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			getRideById,
-		);
-
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
@@ -40,9 +35,21 @@ server.register(
 		);
 
 		instance.get(
+			'/:id/ride',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getRideById,
+		);
+
+		instance.get(
 			'/:id/hashed-trip',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
 			getHashedTrip,
+		);
+
+		instance.get(
+			'/:id/analyses',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getRideAnalyses,
 		);
 
 		instance.get(
