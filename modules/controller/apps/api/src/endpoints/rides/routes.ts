@@ -1,5 +1,6 @@
 /* * */
 
+import { getSimplifiedApexBankingTaps } from '@/endpoints/rides/controllers/get-apex-banking-taps.js';
 import { getSimplifiedApexLocations } from '@/endpoints/rides/controllers/get-apex-locations.js';
 import { getSimplifiedApexOnBoardRefunds } from '@/endpoints/rides/controllers/get-apex-refunds.js';
 import { getSimplifiedApexOnBoardSales } from '@/endpoints/rides/controllers/get-apex-sales.js';
@@ -59,25 +60,31 @@ server.register(
 		);
 
 		instance.get(
-			'/:id/simplified-apex-locations',
+			'/:id/apex-banking-taps',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
+			getSimplifiedApexBankingTaps,
+		);
+
+		instance.get(
+			'/:id/apex-locations',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
 			getSimplifiedApexLocations,
 		);
 
 		instance.get(
-			'/:id/simplified-apex-validations',
+			'/:id/apex-validations',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
 			getSimplifiedApexValidations,
 		);
 
 		instance.get(
-			'/:id/simplified-apex-on-board-sales',
+			'/:id/apex-sales',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
 			getSimplifiedApexOnBoardSales,
 		);
 
 		instance.get(
-			'/:id/simplified-apex-on-board-refunds',
+			'/:id/apex-refunds',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
 			getSimplifiedApexOnBoardRefunds,
 		);

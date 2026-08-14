@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
+import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchDataNew } from '@tmlmobilidade/utils';
 import { useMemo, useState } from 'react';
@@ -11,8 +11,8 @@ import { useRidesDetailRideId } from './use-rides-detail-ride-id';
 
 /* * */
 
-interface UseRidesDetailHashedTripDataReturnType {
-	data: HashedTrip[]
+interface UseRidesDetailApexRefundsDataReturnType {
+	data: SimplifiedApexOnBoardRefund[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -21,7 +21,7 @@ interface UseRidesDetailHashedTripDataReturnType {
 
 /* * */
 
-export function useRidesDetailHashedTripData(): UseRidesDetailHashedTripDataReturnType {
+export function useRidesDetailApexRefundsData(): UseRidesDetailApexRefundsDataReturnType {
 	//
 
 	//
@@ -34,9 +34,9 @@ export function useRidesDetailHashedTripData(): UseRidesDetailHashedTripDataRetu
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<HashedTrip[]>(rideId && API_ROUTES.controller.RIDES_DETAIL_HASHED_TRIP(rideId), {
+	const { data, error, isLoading, isValidating } = useSWR<SimplifiedApexOnBoardRefund[]>(rideId && API_ROUTES.controller.RIDES_DETAIL_APEX_REFUNDS(rideId), {
 		fetcher: async (url) => {
-			const response = await fetchDataNew<HashedTrip[]>(url);
+			const response = await fetchDataNew<SimplifiedApexOnBoardRefund[]>(url);
 			setTimestamp(response.timestamp);
 			return response.data;
 		},
