@@ -1,10 +1,9 @@
 'use client';
 
 import { TimestampTag } from '@/components/common/TimestampTag';
-import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { sortByUnixTimestamp } from '@tmlmobilidade/dates';
+import { useRidesDetailApexLocationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-locations-data';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,8 +15,9 @@ export function RideAnalysisApexLocations() {
 	//
 	// A. Setup variables
 
-	const rideAnalysisContext = useRideAnalysisContext();
 	const { t } = useTranslation();
+
+	const { data: simplifiedApexLocationsData } = useRidesDetailApexLocationsData();
 
 	const columns: DataTableColumn<SimplifiedApexLocation>[] = [
 		{
@@ -52,27 +52,20 @@ export function RideAnalysisApexLocations() {
 	// B. Transform data
 
 	const sortedSimplifiedApexLocations = useMemo(() => {
-		return sortByUnixTimestamp(rideAnalysisContext.data.simplified_apex_locations, 'created_at', 'asc');
-	}, [rideAnalysisContext.data.simplified_apex_locations]);
+		if (!simplifiedApexLocationsData?.length) return [];
+		return simplifiedApexLocationsData.sort((a, b) => a.created_at - b.created_at);
+	}, [simplifiedApexLocationsData]);
 
 	//
 	// C. Render components
 
 	return (
 		<Collapsible description={t('default:rides.analysis.RideAnalysisApexLocations.description')} title={t('default:rides.analysis.RideAnalysisApexLocations.title')}>
-			{sortedSimplifiedApexLocations.length > 0 ? (
-				<DataTable
-					columns={columns}
-					records={sortedSimplifiedApexLocations}
-					rowIdAccessor="_id"
-				/>
-			) : (
-				<Section padding="md">
-					<NoDataLabel text={t('default:rides.analysis.RideAnalysisApexLocations.no_data')} />
-				</Section>
-			)}
+			<DataTable
+				columns={columns}
+				records={sortedSimplifiedApexLocations}
+				rowIdAccessor="_id"
+			/>
 		</Collapsible>
 	);
-
-	//
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { TimestampTag } from '@/components/common/TimestampTag';
-import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
+import { useRidesDetailVehicleEventsData } from '@/components/rides/detail/shared/use-rides-detail-vehicle-events-data';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -15,9 +15,9 @@ export function RideAnalysisVehicleEvents() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const { data: vehicleEventsData } = useRidesDetailVehicleEventsData();
 
-	const rideAnalysisContext = useRideAnalysisContext();
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
@@ -67,8 +67,9 @@ export function RideAnalysisVehicleEvents() {
 	// B. Transform data
 
 	const sortedVehicleEvents = useMemo(() => {
-		return rideAnalysisContext.data.vehicle_events.sort((a, b) => a.created_at - b.created_at);
-	}, [rideAnalysisContext.data.vehicle_events]);
+		if (!vehicleEventsData?.length) return [];
+		return vehicleEventsData.sort((a, b) => a.created_at - b.created_at);
+	}, [vehicleEventsData]);
 
 	//
 	// C. Render components
@@ -80,12 +81,9 @@ export function RideAnalysisVehicleEvents() {
 		>
 			<DataTable
 				columns={columns}
-				maxHeight={600}
 				records={sortedVehicleEvents}
 				rowIdAccessor="_id"
 			/>
 		</Collapsible>
 	);
-
-	//
 }

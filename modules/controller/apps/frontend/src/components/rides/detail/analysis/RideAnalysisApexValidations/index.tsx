@@ -3,9 +3,9 @@
 import { ApexValidationIsPassengerTag } from '@/components/common/ApexValidationIsPassengerTag';
 import { ApexValidationStatusTag } from '@/components/common/ApexValidationStatusTag';
 import { TimestampTag } from '@/components/common/TimestampTag';
-import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
+import { useRidesDetailApexValidationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-validations-data';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -17,8 +17,9 @@ export function RideAnalysisApexValidations() {
 	//
 	// A. Setup variables
 
-	const RideAnalysisContext = useRideAnalysisContext();
 	const { t } = useTranslation();
+
+	const { data: simplifiedApexValidationsData } = useRidesDetailApexValidationsData();
 
 	const columns: DataTableColumn<SimplifiedApexValidation>[] = [
 		{
@@ -90,27 +91,20 @@ export function RideAnalysisApexValidations() {
 	// B. Transform data
 
 	const sortedSimplifiedApexValidations = useMemo(() => {
-		return RideAnalysisContext.data.simplified_apex_validations.sort((a, b) => a.created_at - b.created_at);
-	}, [RideAnalysisContext.data.simplified_apex_validations]);
+		if (!simplifiedApexValidationsData?.length) return [];
+		return simplifiedApexValidationsData?.sort((a, b) => a.created_at - b.created_at);
+	}, [simplifiedApexValidationsData]);
 
 	//
 	// C. Render components
 
 	return (
 		<Collapsible description={t('default:rides.analysis.RideAnalysisApexValidations.description')} title={t('default:rides.analysis.RideAnalysisApexValidations.title')}>
-			{sortedSimplifiedApexValidations.length > 0 ? (
-				<DataTable
-					columns={columns}
-					records={sortedSimplifiedApexValidations}
-					rowIdAccessor="_id"
-				/>
-			) : (
-				<Section padding="md">
-					<NoDataLabel text={t('default:rides.analysis.RideAnalysisApexValidations.no_data')} />
-				</Section>
-			)}
+			<DataTable
+				columns={columns}
+				records={sortedSimplifiedApexValidations}
+				rowIdAccessor="_id"
+			/>
 		</Collapsible>
 	);
-
-	//
 }

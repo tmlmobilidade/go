@@ -4,22 +4,23 @@ import { ApexCardTypeTag } from '@/components/common/ApexCardTypeTag';
 import { ApexPaymentMethodTag } from '@/components/common/ApexPaymentMethodTag';
 import { CurrencyTag } from '@/components/common/CurrencyTag';
 import { TimestampTag } from '@/components/common/TimestampTag';
-import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
+import { useRidesDetailApexRefundsData } from '@/components/rides/detail/shared/use-rides-detail-apex-refunds-data';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, NoDataLabel, Section } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export function RideAnalysisApexOnBoardRefunds() {
+export function RideAnalysisApexRefunds() {
 	//
 
 	//
 	// A. Setup variables
 
-	const RideAnalysisContext = useRideAnalysisContext();
 	const { t } = useTranslation();
+
+	const { data: simplifiedApexRefundsData } = useRidesDetailApexRefundsData();
 
 	const columns: DataTableColumn<SimplifiedApexOnBoardRefund>[] = [
 		{
@@ -87,28 +88,20 @@ export function RideAnalysisApexOnBoardRefunds() {
 	// B. Transform data
 
 	const sortedSimplifiedApexOnBoardRefunds = useMemo(() => {
-		return RideAnalysisContext.data.simplified_apex_on_board_refunds.sort((a, b) => a.created_at - b.created_at);
-	}, [RideAnalysisContext.data.simplified_apex_on_board_refunds]);
+		if (!simplifiedApexRefundsData?.length) return [];
+		return simplifiedApexRefundsData.sort((a, b) => a.created_at - b.created_at);
+	}, [simplifiedApexRefundsData]);
 
 	//
 	// C. Render components
 
 	return (
 		<Collapsible description={t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.description')} title={t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.title')}>
-			{sortedSimplifiedApexOnBoardRefunds?.length > 0 ? (
-				<DataTable
-					columns={columns}
-					records={sortedSimplifiedApexOnBoardRefunds}
-					rowIdAccessor="_id"
-				/>
-			) : (
-				<Section padding="md">
-					<NoDataLabel text={t('default:rides.analysis.RideAnalysisApexOnBoardRefunds.no_data')} />
-				</Section>
-			)}
-
+			<DataTable
+				columns={columns}
+				records={sortedSimplifiedApexOnBoardRefunds}
+				rowIdAccessor="_id"
+			/>
 		</Collapsible>
 	);
-
-	//
 }

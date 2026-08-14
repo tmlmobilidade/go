@@ -1,12 +1,12 @@
 'use client';
 
+import { RideAnalysisAnalyses } from '@/components/rides/detail/analysis/RideAnalysisAnalyses';
 import { RideAnalysisApexLocations } from '@/components/rides/detail/analysis/RideAnalysisApexLocations';
-import { RideAnalysisApexOnBoardRefunds } from '@/components/rides/detail/analysis/RideAnalysisApexOnBoardRefunds';
-import { RideAnalysisApexOnBoardSales } from '@/components/rides/detail/analysis/RideAnalysisApexOnBoardSales';
+import { RideAnalysisApexRefunds } from '@/components/rides/detail/analysis/RideAnalysisApexRefunds';
+import { RideAnalysisApexSales } from '@/components/rides/detail/analysis/RideAnalysisApexSales';
 import { RideAnalysisApexValidations } from '@/components/rides/detail/analysis/RideAnalysisApexValidations';
 import { RideAnalysisMap } from '@/components/rides/detail/analysis/RideAnalysisMap';
 import { RideAnalysisMetadata } from '@/components/rides/detail/analysis/RideAnalysisMetadata';
-import { RideAnalysisResult } from '@/components/rides/detail/analysis/RideAnalysisResult';
 import { RideAnalysisVehicleEvents } from '@/components/rides/detail/analysis/RideAnalysisVehicleEvents';
 
 /* * */
@@ -16,11 +16,11 @@ export function RideAnalysis() {
 		<>
 			<RideAnalysisMap />
 			<RideAnalysisMetadata />
-			<RideAnalysisResult />
+			<RideAnalysisAnalyses />
 			<RideAnalysisVehicleEvents />
 			<RideAnalysisApexValidations />
-			<RideAnalysisApexOnBoardSales />
-			<RideAnalysisApexOnBoardRefunds />
+			<RideAnalysisApexSales />
+			<RideAnalysisApexRefunds />
 			<RideAnalysisApexLocations />
 		</>
 	);

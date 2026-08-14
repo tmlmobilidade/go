@@ -2,7 +2,7 @@
 
 import { RideAcceptanceCommentList } from '@/components/rides/detail/acceptance/RideAcceptanceCommentList';
 import { RideAcceptanceJustification } from '@/components/rides/detail/acceptance/RideAcceptanceJustification';
-import { RideAnalysisResult } from '@/components/rides/detail/analysis/RideAnalysisResult';
+// import { RideAnalysisAnalyses, RideAnalysisResult } from '@/components/rides/detail/analysis/RideAnalysisAnalyses';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { Divider, ErrorDisplay, Grid, LoadingOverlay, Section } from '@tmlmobilidade/ui';
@@ -47,7 +47,7 @@ export function RideAcceptance() {
 			</Grid>
 			<div style={{ width: '100%' }}>
 				<Divider />
-				<RideAnalysisResult defaultOpen={true} items={analysisItems} />
+				{/* <RideAnalysisAnalyses /> */}
 			</div>
 		</Section>
 	);

@@ -30,6 +30,13 @@ export function RideAnalysisMap() {
 	const { data: apexValidationsData } = useRidesDetailApexValidationsData();
 	const { data: vehicleEventsData } = useRidesDetailVehicleEventsData();
 
+	const [replayIndex, setReplayIndex] = useState(0);
+
+	const showReplay = rideData?.operational_status === 'ended' && vehicleEventsData?.length > 0;
+
+	const rideId = rideData?._id;
+	const prevRideIdRef = useRef<string | undefined>(undefined);
+
 	//
 	// B. Transform data
 
@@ -148,13 +155,6 @@ export function RideAnalysisMap() {
 
 	//
 
-	const showReplay = rideData?.operational_status === 'ended' && vehicleEventsData?.length > 0;
-
-	const rideId = rideData?._id;
-	const prevRideIdRef = useRef<string | undefined>(undefined);
-
-	const [replayIndex, setReplayIndex] = useState(0);
-
 	useEffect(() => {
 		const cap = Math.max(0, observedEventsFC.features.length - 1);
 		if (observedEventsFC.features.length === 0) {
@@ -211,17 +211,21 @@ export function RideAnalysisMap() {
 	// B. Render components
 
 	return (
-		<Collapsible description={t('default:rides.analysis.RideAnalysisMap.description')} title={t('default:rides.analysis.RideAnalysisMap.title')} defaultOpen>
+		<Collapsible
+			description={t('default:rides.analysis.RideAnalysisMap.description')}
+			title={t('default:rides.analysis.RideAnalysisMap.title')}
+			defaultOpen
+		>
 			<div className={styles.mapWrapper}>
 				<MapView id="RideAnalysisMap">
 					<MapOverlayScheduledPath
-						id="2"
+						id="scheduled-path"
 						lineData={scheduledShapeFC}
 						pointsData={scheduledPathFC}
 						visible={showScheduledPath}
 					/>
 					<MapOverlayObservedPath
-						id="1"
+						id="observed-path"
 						lineData={observedLineData}
 						pointsData={observedPointsData}
 						visible={showObservedPath}
@@ -240,11 +244,7 @@ export function RideAnalysisMap() {
 				<Switch checked={showGeofences} label={t('default:rides.analysis.RideAnalysisMap.switches.geofences.label')} onChange={() => setShowGeofences(prev => !prev)} />
 			</Section>
 			<Divider />
-			{showReplay && (
-				<ReplayEvents onReplayIndexChange={setReplayIndex} replayIndex={replayIndex} />
-			)}
+			{showReplay && <ReplayEvents onReplayIndexChange={setReplayIndex} replayIndex={replayIndex} />}
 		</Collapsible>
 	);
-
-	//
 }
