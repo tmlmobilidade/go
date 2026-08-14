@@ -1,8 +1,7 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { hashedTripsProvider } from '@tmlmobilidade/go-providers-operation';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
 
 /**
@@ -10,41 +9,35 @@ import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getHashedTrip(request: FastifyRequest, reply: FastifyReply<HashedTrip>) {
-	try {
-		//
+export async function getHashedTrip(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HashedTrip[]>) {
+	//
 
-		//
-		// Validate the request parameters
+	//
+	// Validate the request parameters
 
-		const rideId = request.params['id'];
-
-		if (!rideId) {
-			return reply
-				.status(HTTP_STATUS.BAD_REQUEST)
-				.send({
-					data: null,
-					error: 'Missing ride_id parameter.',
-					status: HTTP_STATUS.BAD_REQUEST,
-				});
-		}
-
-		//
-		// Fetch the hashed trip data by ride ID
-		// and send it back to the client
-
-		const hashedTripData = await hashedTripsProvider.findHashedTripByRideId(rideId);
-
-		reply.send({
-			data: hashedTripData,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
+	if (!request.params.id) {
+		return sendErrorApiResponse(reply, {
+			error: 'Missing ride "id" parameter.',
+			status_code: '400',
 		});
-
-		//
-	} catch (error) {
-		reply
-			.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
-			.send(error);
 	}
+
+	//
+	// Fetch the hashed trip data by ride ID
+	// and send it back to the client
+
+	const foundHashedTripData = await labDb.operation.hashedTrips.select(
+		'*',
+		'ride_id = $1 ORDER BY updated_at DESC LIMIT 1 BY ride_id',
+		{ 1: request.params.id },
+	);
+
+	if (!foundHashedTripData?.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'Hashed Trip not found.',
+			status_code: '404',
+		});
+	}
+
+	return sendSuccessApiResponse(reply, foundHashedTripData);
 }

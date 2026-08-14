@@ -22,7 +22,7 @@ export async function getControllerRidesDetailRide(rideId: string): Promise<Cont
 
 	const sql = controllerRidesDetailRideQuery;
 
-	const result = await labDb.operation.rides.queryFromString(sql, params);
+	const result = await labDb.queryFromString<ControllerRidesDetailRideItem>(sql, params);
 
 	//
 	// Return the result

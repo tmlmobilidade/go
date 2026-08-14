@@ -4,7 +4,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
-import { Ride } from '@tmlmobilidade/go-types-operation';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Get SimplifiedApexOnBoardSales by Ride ID.

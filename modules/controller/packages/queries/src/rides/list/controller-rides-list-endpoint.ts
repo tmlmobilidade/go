@@ -187,5 +187,5 @@ export async function getControllerRidesList(filters: ControllerRidesListFilters
 
 	const sql = controllerRidesListQuery.replace('--DYNAMIC FILTERS HERE--', where);
 
-	return await labDb.operation.rides.queryFromString(sql, params);
+	return await labDb.queryFromString<ControllerRidesListItem>(sql, params);
 }
