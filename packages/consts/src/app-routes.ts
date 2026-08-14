@@ -57,7 +57,7 @@ export const PAGE_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('controller', 'frontend_url')}`,
 
 		// RIDES
-		RIDES_DETAIL: (id: string) => `${getModuleConfig('controller', 'frontend_url')}/rides/${encodeURIComponent(id)}`,
+		RIDES_DETAIL: (rideId: string) => `${getModuleConfig('controller', 'frontend_url')}/rides/${encodeURIComponent(rideId)}`,
 		RIDES_LIST: `${getModuleConfig('controller', 'frontend_url')}/rides`,
 
 		// SAMS
@@ -261,6 +261,7 @@ export const API_ROUTES = Object.freeze({
 		ACCEPTANCE_LOCK: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/acceptance/lock`,
 
 		// RIDES
+		RIDES_DETAIL_ANALYSES: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/analyses`,
 		RIDES_DETAIL_HASHED_TRIP: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-trip`,
 		RIDES_DETAIL_REPROCESS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/reprocess`,
 		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/ride`,

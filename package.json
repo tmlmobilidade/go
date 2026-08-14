@@ -23,6 +23,7 @@
 		"build:apex:raw-sync-sales": "turbo run build --filter=@tmlmobilidade/go-apex-raw-sync-sales",
 		"build:apex:raw-sync-validations": "turbo run build --filter=@tmlmobilidade/go-apex-raw-sync-validations",
 		"build:auth": "turbo run build --filter=@tmlmobilidade/go-auth-*",
+		"build:cli": "turbo run build --filter=./cli/**/*",
 		"build:controller": "turbo run build --filter=@tmlmobilidade/go-controller-*",
 		"build:controller:pckg": "turbo run build --filter=@tmlmobilidade/go-controller-pckg-*",
 		"build:dates": "turbo run build --filter=@tmlmobilidade/go-dates-*",
