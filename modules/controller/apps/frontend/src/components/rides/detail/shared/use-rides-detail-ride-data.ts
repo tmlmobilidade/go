@@ -34,7 +34,7 @@ export function useRidesDetailRideData(): UseRidesDetailRideDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ControllerRidesDetailRideItem>(API_ROUTES.controller.RIDES_DETAIL_RIDE(rideId), {
+	const { data, error, isLoading, isValidating } = useSWR<ControllerRidesDetailRideItem>(rideId && API_ROUTES.controller.RIDES_DETAIL_RIDE(rideId), {
 		fetcher: async (url) => {
 			const response = await fetchDataNew<ControllerRidesDetailRideItem>(url);
 			setTimestamp(response.timestamp);

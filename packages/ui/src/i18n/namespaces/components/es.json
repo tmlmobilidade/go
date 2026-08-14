@@ -43,11 +43,11 @@
 	},
 	"loaders": {
 		"LoadingActivity": {
-			"days_ago": "{count} días atrás",
-			"hours_ago": "{count} horas atrás",
-			"just_now": "Ahora mismo",
-			"minutes_ago": "{count} minutos atrás",
-			"seconds_ago": "{count} segundos atrás"
+			"days_ago": "Actualizado hace {count, plural, =1 {1 día} other {# días}}",
+			"hours_ago": "Actualizado hace {count, plural, =1 {1 hora} other {# horas}}",
+			"just_now": "Actualizado ahora",
+			"minutes_ago": "Actualizado hace {count, plural, =1 {1 minuto} other {# minutos}}",
+			"seconds_ago": "Actualizado hace {count, plural, =1 {1 segundo} other {# segundos}}"
 		}
 	},
 	"sidebar": {

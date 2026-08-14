@@ -16,7 +16,7 @@ export async function getRideById(request: FastifyRequest<{ Params: { id: string
 
 	if (!request.params.id) {
 		return sendErrorApiResponse(reply, {
-			error: 'Missing ride_id parameter.',
+			error: 'Missing ride "id" parameter.',
 			status_code: '400',
 		});
 	}

@@ -18,7 +18,7 @@ export function RidesDetailHeader() {
 
 	const router = useRouter();
 	const { rideId } = useRidesDetailRideId();
-	const { data: rideData, isLoading: isLoadingRideData, isValidating: isValidatingRideData, timestamp: timestampRideData } = useRidesDetailRideData();
+	const { data: rideData, isLoading: rideIsLoading, isValidating: rideIsValidating, timestamp: rideTimestamp } = useRidesDetailRideData();
 
 	// const rideFavoritesContext = useRideFavoritesContext();
 
@@ -51,9 +51,9 @@ export function RidesDetailHeader() {
 			<IdTag id={rideId} copyOnClick />
 			<Spacer />
 			<LoadingActivity
-				isLoading={isLoadingRideData}
-				isValidating={isValidatingRideData}
-				timestamp={timestampRideData}
+				isLoading={rideIsLoading}
+				isValidating={rideIsValidating}
+				timestamp={rideTimestamp}
 			/>
 			<ProcessingStatusDisplay disabled={true} value={rideData?.processing_status} />
 			{/* <GradeStatusDisplay value={rideData?.analysis_simple_three_vehicle_events_grade} /> */}
