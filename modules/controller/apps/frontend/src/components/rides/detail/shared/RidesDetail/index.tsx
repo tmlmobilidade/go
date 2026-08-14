@@ -9,6 +9,8 @@ import { useRidesDetailRideData } from '@/components/rides/detail/shared/use-rid
 import { useRidesDetailCurrentView } from '@/components/rides/detail/shared/use-rides-detail-view';
 import { LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
+import { useRidesDetailRideAnalysesData } from '../use-rides-detail-ride-analyses-data';
+
 /* * */
 
 export function RidesDetail() {
@@ -18,12 +20,14 @@ export function RidesDetail() {
 	// A. Setup variables
 
 	const { currentView } = useRidesDetailCurrentView();
-	const { error, isLoading } = useRidesDetailRideData();
+
+	const { error: rideError, isLoading: rideIsLoading } = useRidesDetailRideData();
+	const { error: rideAnalysesError, isLoading: rideAnalysesIsLoading } = useRidesDetailRideAnalysesData();
 
 	//
 	// B. Render components
 
-	if (isLoading) {
+	if (rideIsLoading || rideAnalysesIsLoading) {
 		return <LoadingOverlay />;
 	}
 
@@ -34,7 +38,8 @@ export function RidesDetail() {
 		]}
 		>
 			{/* {error && <ErrorDisplay message={error} />} */}
-			{error && <pre>{JSON.stringify(error, null, 2)}</pre>}
+			{rideError && <pre>{JSON.stringify(rideError, null, 2)}</pre>}
+			{rideAnalysesError && <pre>{JSON.stringify(rideAnalysesError, null, 2)}</pre>}
 			{currentView === 'analysis' && <RideAnalysisAnalysis />}
 			{currentView === 'audit' && <RideAnalysisAudit />}
 			{currentView === 'acceptance' && <RideAcceptance />}

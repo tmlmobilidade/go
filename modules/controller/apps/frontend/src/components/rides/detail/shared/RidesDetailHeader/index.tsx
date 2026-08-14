@@ -5,6 +5,7 @@ import { CloseButton, IdTag, LoadingActivity, OperationalStatusDisplay, Processi
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
+import { useRidesDetailRideAnalysesData } from '../use-rides-detail-ride-analyses-data';
 import { useRidesDetailRideData } from '../use-rides-detail-ride-data';
 import { useRidesDetailRideId } from '../use-rides-detail-ride-id';
 
@@ -17,8 +18,11 @@ export function RidesDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
+
 	const { rideId } = useRidesDetailRideId();
+
 	const { data: rideData, isLoading: rideIsLoading, isValidating: rideIsValidating, timestamp: rideTimestamp } = useRidesDetailRideData();
+	const { data: rideAnalysesData, isLoading: rideAnalysesIsLoading, isValidating: rideAnalysesIsValidating, timestamp: rideAnalysesTimestamp } = useRidesDetailRideAnalysesData();
 
 	// const rideFavoritesContext = useRideFavoritesContext();
 
@@ -51,9 +55,9 @@ export function RidesDetailHeader() {
 			<IdTag id={rideId} copyOnClick />
 			<Spacer />
 			<LoadingActivity
-				isLoading={rideIsLoading}
-				isValidating={rideIsValidating}
-				timestamp={rideTimestamp}
+				isLoading={rideIsLoading || rideAnalysesIsLoading}
+				isValidating={rideIsValidating || rideAnalysesIsValidating}
+				timestamp={rideTimestamp || rideAnalysesTimestamp}
 			/>
 			<ProcessingStatusDisplay disabled={true} value={rideData?.processing_status} />
 			{/* <GradeStatusDisplay value={rideData?.analysis_simple_three_vehicle_events_grade} /> */}
