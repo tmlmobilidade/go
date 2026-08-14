@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type ControllerRidesDetailRideAnalysesItem } from '@tmlmobilidade/go-controller-pckg-queries';
+import { type RideAnalysesRegistry } from '@tmlmobilidade/go-types-operation';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchDataNew } from '@tmlmobilidade/utils';
 import { useMemo, useState } from 'react';
@@ -12,7 +12,7 @@ import { useRidesDetailRideId } from './use-rides-detail-ride-id';
 /* * */
 
 interface UseRidesDetailRideAnalysesDataReturnType {
-	data: ControllerRidesDetailRideAnalysesItem
+	data: RideAnalysesRegistry
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -34,9 +34,9 @@ export function useRidesDetailRideAnalysesData(): UseRidesDetailRideAnalysesData
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ControllerRidesDetailRideAnalysesItem>(rideId && API_ROUTES.controller.RIDES_DETAIL_ANALYSES(rideId), {
+	const { data, error, isLoading, isValidating } = useSWR<RideAnalysesRegistry>(rideId && API_ROUTES.controller.RIDES_DETAIL_ANALYSES(rideId), {
 		fetcher: async (url) => {
-			const response = await fetchDataNew<ControllerRidesDetailRideAnalysesItem>(url);
+			const response = await fetchDataNew<RideAnalysesRegistry>(url);
 			setTimestamp(response.timestamp);
 			return response.data;
 		},

@@ -20,6 +20,20 @@ interface SendSuccessApiResponseOptions<T> extends ApiResponseOptions {
 
 /**
  * A function that sends a successful HTTP response.
+ * @example
+ * ```ts
+ * sendSuccessApiResponse(reply, { message: 'Hello, world!' });
+ * ```
+ * @example
+ * ```ts
+ * // With a different status code (e.g. 201 Created)
+ * sendSuccessApiResponse<Item[]>(reply, queryResult, { status_code: '201' });
+ * ```
+ * @example
+ * ```ts
+ * // With a cache control header (e.g. 1 minute)
+ * sendSuccessApiResponse<PublicResource>(reply, queryResult, { max_age: 60 });
+ * ```
  */
 export function sendSuccessApiResponse<T>(reply: FastifyReply<T>, data: T, options?: SendSuccessApiResponseOptions<T>) {
 	//

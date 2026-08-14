@@ -1,12 +1,10 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Get SimplifiedApexOnBoardSales by Ride ID.
@@ -21,19 +19,28 @@ export async function getSimplifiedApexOnBoardSales(request: FastifyRequest<{ Pa
 		// Validate the request parameters
 
 		if (!request.params.id) {
-			return reply
-				.status(HTTP_STATUS.BAD_REQUEST)
-				.send({
-					data: null,
-					error: 'Missing ride_id parameter.',
-					status: HTTP_STATUS.BAD_REQUEST,
-				});
+			return sendErrorApiResponse(reply, {
+				error: 'Missing ride "id" parameter.',
+				status_code: '400',
+			});
 		}
 
 		//
 		// Fetch the ride data from the database
 
-		const rideData = await ridesProvider.findRideById(request.params.id);
+		const ridesQueryResult = await labDb.queryFromString<Pick<Ride, 'agency_id' | 'start_time_scheduled' | 'trip_id'>>(
+			'SELECT * FROM operation.rides WHERE _id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id',
+			{ 1: request.params.id },
+		);
+
+		if (!ridesQueryResult?.length) {
+			return sendErrorApiResponse(reply, {
+				error: 'Ride not found.',
+				status_code: '404',
+			});
+		}
+
+		const rideData = ridesQueryResult[0];
 
 		//
 		// Fetch the simplified apex on board sales data by ride ID
@@ -50,17 +57,13 @@ export async function getSimplifiedApexOnBoardSales(request: FastifyRequest<{ Pa
 		//
 		// Send the ride data back to the client
 
-		reply.send({
-			data: simplifiedApexOnBoardSalesData ?? [],
-			error: null,
-			statusCode: HTTP_STATUS.OK,
-		});
+		return sendSuccessApiResponse(reply, simplifiedApexOnBoardSalesData ?? []);
 
 		//
 	} catch (error) {
-		Logger.issue({ context: { action: 'getSimplifiedApexOnBoardSalesByRideId', feature: 'rides', request, value: request.body }, level: 'error', messageOrError: error });
-		reply
-			.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
-			.send(error);
+		return sendErrorApiResponse(reply, {
+			error: error.message,
+			status_code: '500',
+		});
 	}
 }

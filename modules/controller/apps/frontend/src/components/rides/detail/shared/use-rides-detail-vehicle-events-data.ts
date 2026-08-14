@@ -1,8 +1,8 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type ControllerRidesDetailRideItem } from '@tmlmobilidade/go-controller-pckg-queries';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { fetchDataNew } from '@tmlmobilidade/utils';
 import { useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -11,8 +11,8 @@ import { useRidesDetailRideId } from './use-rides-detail-ride-id';
 
 /* * */
 
-interface UseRidesDetailRideDataReturnType {
-	data: ControllerRidesDetailRideItem
+interface UseRidesDetailVehicleEventsDataReturnType {
+	data: SimplifiedVehicleEvent[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -21,7 +21,7 @@ interface UseRidesDetailRideDataReturnType {
 
 /* * */
 
-export function useRidesDetailRideData(): UseRidesDetailRideDataReturnType {
+export function useRidesDetailVehicleEventsData(): UseRidesDetailVehicleEventsDataReturnType {
 	//
 
 	//
@@ -34,9 +34,9 @@ export function useRidesDetailRideData(): UseRidesDetailRideDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ControllerRidesDetailRideItem>(rideId && API_ROUTES.controller.RIDES_DETAIL_RIDE(rideId), {
+	const { data, error, isLoading, isValidating } = useSWR<SimplifiedVehicleEvent[]>(rideId && API_ROUTES.controller.RIDES_DETAIL_VEHICLE_EVENTS(rideId), {
 		fetcher: async (url) => {
-			const response = await fetchDataNew<ControllerRidesDetailRideItem>(url);
+			const response = await fetchDataNew<SimplifiedVehicleEvent[]>(url);
 			setTimestamp(response.timestamp);
 			return response.data;
 		},

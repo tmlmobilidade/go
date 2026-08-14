@@ -22,7 +22,7 @@ export function RidesDetailHeader() {
 	const { rideId } = useRidesDetailRideId();
 
 	const { data: rideData, isLoading: rideIsLoading, isValidating: rideIsValidating, timestamp: rideTimestamp } = useRidesDetailRideData();
-	const { data: rideAnalysesData, isLoading: rideAnalysesIsLoading, isValidating: rideAnalysesIsValidating, timestamp: rideAnalysesTimestamp } = useRidesDetailRideAnalysesData();
+	const { isLoading: rideAnalysesIsLoading, isValidating: rideAnalysesIsValidating, timestamp: rideAnalysesTimestamp } = useRidesDetailRideAnalysesData();
 
 	// const rideFavoritesContext = useRideFavoritesContext();
 

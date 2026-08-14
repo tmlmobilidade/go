@@ -3,15 +3,15 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
+import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 
 /**
- * Get SimplifiedApexLocations by Ride ID.
+ * Get SimplifiedApexBankingTaps by Ride ID.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getSimplifiedApexLocations(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedApexLocation[]>) {
+export async function getSimplifiedApexBankingTaps(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedApexBankingTap[]>) {
 	//
 
 	//
@@ -47,7 +47,7 @@ export async function getSimplifiedApexLocations(request: FastifyRequest<{ Param
 
 	const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
 
-	const simplifiedApexLocationsData = await labDb.simplifiedApex.locations.select(
+	const simplifiedApexBankingTapsData = await labDb.simplifiedApex.bankingTaps.select(
 		'*',
 		`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`,
 		{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },
@@ -56,5 +56,5 @@ export async function getSimplifiedApexLocations(request: FastifyRequest<{ Param
 	//
 	// Send the ride data back to the client
 
-	return sendSuccessApiResponse(reply, simplifiedApexLocationsData ?? []);
+	return sendSuccessApiResponse(reply, simplifiedApexBankingTapsData ?? []);
 }
