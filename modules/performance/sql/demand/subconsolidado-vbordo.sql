@@ -55,7 +55,7 @@ from (
         )) as cam_value
     from (
         select
-            agency_code as agency_id,
+            agency_id as agency_id,
             price,
             product_id,
             fromUnixTimestamp64Milli(toInt64(created_at)) as created_at_dt,
@@ -129,7 +129,7 @@ from (
         )) as cam_value
     from (
         select
-            agency_code as agency_id,
+            agency_id as agency_id,
             price,
             product_id,
             fromUnixTimestamp64Milli(toInt64(created_at)) as created_at_dt,
