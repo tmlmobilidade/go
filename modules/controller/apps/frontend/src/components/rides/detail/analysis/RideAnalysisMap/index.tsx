@@ -1,8 +1,17 @@
 'use client';
 
 import { ReplayEvents } from '@/components/common/ReplayEvents';
-import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { Collapsible, Divider, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';
+import { useRidesDetailApexValidationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-validations-data';
+import { useRidesDetailHashedTripData } from '@/components/rides/detail/shared/use-rides-detail-hashed-trip-data';
+import { useRidesDetailRideData } from '@/components/rides/detail/shared/use-rides-detail-ride-data';
+import { useRidesDetailVehicleEventsData } from '@/components/rides/detail/shared/use-rides-detail-vehicle-events-data';
+import { Dates } from '@tmlmobilidade/dates';
+import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/geo';
+import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
+import { fromEncodedPolylineToGeoJsonLineString } from '@tmlmobilidade/go-utils-geo';
+import { Collapsible, Divider, getCssVariableValue, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';
+import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
+import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,21 +25,139 @@ export function RideAnalysisMap() {
 	//
 	// A. Setup variables
 
-	const rideAnalysisContext = useRideAnalysisContext();
+	const { data: rideData } = useRidesDetailRideData();
+	const { data: hashedTripData } = useRidesDetailHashedTripData();
+	const { data: apexValidationsData } = useRidesDetailApexValidationsData();
+	const { data: vehicleEventsData } = useRidesDetailVehicleEventsData();
 
-	const observedEvents = rideAnalysisContext.geojson.observed_events;
-	const observedShape = rideAnalysisContext.geojson.observed_shape;
-	const eventCount = observedEvents.features.length;
-	const showReplay = false; // rideAnalysisContext.data.ride?.operational_status === 'ended' && eventCount > 0;
+	//
+	// B. Transform data
 
-	const rideId = rideAnalysisContext.data.ride_id;
+	const observedEventsFC: FeatureCollection<Point, MapOverlayObservedPathPointsDataProps> = useMemo(() => {
+		// Setup an empty feature collection
+		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayObservedPathPointsDataProps>();
+		// If no vehicle events data, return the empty feature collection
+		if (!vehicleEventsData) return featureCollection;
+		// Prepare the feature collection with vehicle events data
+		featureCollection.features = vehicleEventsData
+			.sort((a, b) => a.created_at - b.created_at)
+			.filter(vehicleEvent => vehicleEvent.latitude && vehicleEvent.longitude)
+			.map((vehicleEvent, index) => ({
+				geometry: {
+					coordinates: [vehicleEvent.longitude, vehicleEvent.latitude],
+					type: 'Point',
+				},
+				properties: {
+					id: vehicleEvent._id,
+					sequence: index,
+					stop_id: vehicleEvent.stop_id,
+					timestamp: Dates
+						.fromUnixTimestamp(vehicleEvent.created_at)
+						.setZone('local', 'offset_only')
+						.toFormat('dd/MM/yyyy HH:mm:ss'),
+					trigger_door: '-',
+				},
+				type: 'Feature',
+			}));
+		return featureCollection;
+	}, [vehicleEventsData]);
+
+	const observedShapeFC: FeatureCollection<LineString, MapOverlayObservedPathLineDataProps> = useMemo(() => {
+		// If no vehicle events data, return an empty feature collection
+		const featureCollection = getBaseGeoJsonFeatureCollection<LineString, MapOverlayObservedPathLineDataProps>();
+		// If no vehicle events data, return the empty feature collection
+		if (!vehicleEventsData) return featureCollection;
+		// Prepare the feature collection with vehicle events data
+		const lineString = getBaseGeoJsonFeature<LineString, MapOverlayObservedPathLineDataProps>('LineString');
+		lineString.geometry.coordinates = vehicleEventsData
+			.sort((a, b) => a.created_at - b.created_at)
+			.filter(vehicleEvent => vehicleEvent.latitude && vehicleEvent.longitude)
+			.map(vehicleEvent => [vehicleEvent.longitude, vehicleEvent.latitude]);
+		lineString.properties['color'] = getCssVariableValue('--color-primary');
+		featureCollection.features = [lineString];
+		return featureCollection;
+	}, [vehicleEventsData]);
+
+	const scheduledPathFC: FeatureCollection<Point, MapOverlayScheduledPathPointsDataProps> = useMemo(() => {
+		// Setup an empty feature collection
+		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayScheduledPathPointsDataProps>();
+		// If no hashed trip data, return the empty feature collection
+		if (!hashedTripData?.length) return featureCollection;
+		// Group simplified apex validations by stop ID
+		const validationsByStopId: Record<string, SimplifiedApexValidation[]> = {};
+		apexValidationsData?.forEach((validation) => {
+			if (!validation.stop_id) return;
+			if (!validation.is_passenger) return;
+			if (!validationsByStopId[validation.stop_id]) validationsByStopId[validation.stop_id] = [];
+			validationsByStopId[validation.stop_id].push(validation);
+		});
+		// Prepare the feature collection with hashed trip data
+		featureCollection.features = hashedTripData
+			.sort((a, b) => a.stop_sequence - b.stop_sequence)
+			.map(waypoint => ({
+				geometry: {
+					coordinates: [waypoint.stop_lon, waypoint.stop_lat],
+					type: 'Point',
+				},
+				properties: {
+					arrival_time: waypoint.arrival_time,
+					id: waypoint.stop_id,
+					name: waypoint.stop_name,
+					passengers_observed: validationsByStopId[waypoint.stop_id]?.length || 0,
+					sequence: waypoint.stop_sequence,
+				},
+				type: 'Feature',
+			}));
+		return featureCollection;
+	}, [hashedTripData, apexValidationsData]);
+
+	const scheduledPathGeofencesFC: FeatureCollection<Polygon, MapOverlayGeofencesPolygonDataProps> = useMemo(() => {
+		// Setup an empty feature collection
+		const featureCollection = getBaseGeoJsonFeatureCollection<Polygon, MapOverlayGeofencesPolygonDataProps>();
+		// If no hashed trip data or hashed shape data, return the empty feature collection
+		if (!hashedTripData?.length) return featureCollection;
+		// Prepare the feature collection with hashed trip data
+		featureCollection.features = hashedTripData
+			.sort((a, b) => a.stop_sequence - b.stop_sequence)
+			.map((waypoint) => {
+				const geofenceData = getGeofenceOnPosition([waypoint.stop_lon, waypoint.stop_lat], 50);
+				return {
+					...geofenceData,
+					properties: {
+						id: waypoint.stop_id,
+					},
+				};
+			});
+		return featureCollection;
+	}, [hashedTripData]);
+
+	const scheduledShapeFC: FeatureCollection<LineString, MapOverlayScheduledPathLineDataProps> = useMemo(() => {
+		// Setup an empty feature collection
+		const featureCollection = getBaseGeoJsonFeatureCollection<LineString, MapOverlayScheduledPathLineDataProps>();
+		// If no hashed shape data, return the empty feature collection
+		if (!rideData?.shape_polyline) return featureCollection;
+		// Decode the polyline
+		const decodedPolyline = fromEncodedPolylineToGeoJsonLineString(rideData.shape_polyline);
+		// Build a feature of the decoded polyline
+		const feature = getBaseGeoJsonFeature<LineString, MapOverlayScheduledPathLineDataProps>('LineString');
+		feature.geometry = decodedPolyline;
+		feature.properties.id = rideData._id;
+		featureCollection.features.push(feature);
+		return featureCollection;
+	}, [rideData._id, rideData.shape_polyline]);
+
+	//
+
+	const showReplay = rideData?.operational_status === 'ended' && vehicleEventsData?.length > 0;
+
+	const rideId = rideData?._id;
 	const prevRideIdRef = useRef<string | undefined>(undefined);
 
 	const [replayIndex, setReplayIndex] = useState(0);
 
 	useEffect(() => {
-		const cap = Math.max(0, eventCount - 1);
-		if (eventCount === 0) {
+		const cap = Math.max(0, observedEventsFC.features.length - 1);
+		if (observedEventsFC.features.length === 0) {
 			setReplayIndex(0);
 			return;
 		}
@@ -40,20 +167,20 @@ export function RideAnalysisMap() {
 			return;
 		}
 		setReplayIndex(prev => Math.min(prev, cap));
-	}, [eventCount, rideId]);
+	}, [observedEventsFC.features.length, rideId]);
 
 	const observedPointsData = useMemo(() => {
-		if (!showReplay) return observedEvents;
+		if (!showReplay) return observedEventsFC;
 		return {
-			...observedEvents,
-			features: observedEvents.features.slice(0, replayIndex + 1),
+			...observedEventsFC,
+			features: observedEventsFC.features.slice(0, replayIndex + 1),
 		};
-	}, [showReplay, observedEvents, replayIndex]);
+	}, [showReplay, observedEventsFC, replayIndex]);
 
 	const observedLineData = useMemo(() => {
-		if (!showReplay) return observedShape;
-		const lineFeature = observedShape.features[0];
-		if (lineFeature?.geometry.type !== 'LineString') return observedShape;
+		if (!showReplay) return observedShapeFC;
+		const lineFeature = observedShapeFC.features[0];
+		if (lineFeature?.geometry.type !== 'LineString') return observedShapeFC;
 		const fullCoords = lineFeature.geometry.coordinates;
 		let coordinates = fullCoords.slice(0, replayIndex + 1);
 		if (coordinates.length === 1) {
@@ -61,7 +188,7 @@ export function RideAnalysisMap() {
 			coordinates = [c, c];
 		}
 		return {
-			...observedShape,
+			...observedShapeFC,
 			features: [
 				{
 					...lineFeature,
@@ -72,7 +199,7 @@ export function RideAnalysisMap() {
 				},
 			],
 		};
-	}, [showReplay, observedShape, replayIndex]);
+	}, [showReplay, observedShapeFC, replayIndex]);
 
 	const [showScheduledPath, setShowScheduledPath] = useState(true);
 	const [showObservedPath, setShowObservedPath] = useState(true);
@@ -89,8 +216,8 @@ export function RideAnalysisMap() {
 				<MapView id="RideAnalysisMap">
 					<MapOverlayScheduledPath
 						id="2"
-						lineData={rideAnalysisContext.geojson.scheduled_shape}
-						pointsData={rideAnalysisContext.geojson.scheduled_path}
+						lineData={scheduledShapeFC}
+						pointsData={scheduledPathFC}
 						visible={showScheduledPath}
 					/>
 					<MapOverlayObservedPath
@@ -100,7 +227,7 @@ export function RideAnalysisMap() {
 						visible={showObservedPath}
 					/>
 					<MapOverlayGeofences
-						geofencesData={rideAnalysisContext.geojson.scheduled_path_geofences}
+						geofencesData={scheduledPathGeofencesFC}
 						id="geofences"
 						visible={showGeofences}
 					/>

@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
+import { type HashedTrip, type Ride } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Get a HashedTrip by Ride ID.
@@ -23,13 +23,30 @@ export async function getHashedTrip(request: FastifyRequest<{ Params: { id: stri
 	}
 
 	//
+	// Fetch the ride data from the database
+
+	const ridesQueryResult = await labDb.queryFromString<Pick<Ride, 'hashed_trip_id'>>(
+		'SELECT hashed_trip_id FROM operation.rides WHERE _id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id',
+		{ 1: request.params.id },
+	);
+
+	if (!ridesQueryResult?.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'Ride not found.',
+			status_code: '404',
+		});
+	}
+
+	const rideData = ridesQueryResult[0];
+
+	//
 	// Fetch the hashed trip data by ride ID
 	// and send it back to the client
 
 	const foundHashedTripData = await labDb.operation.hashedTrips.select(
 		'*',
-		'ride_id = $1 ORDER BY updated_at DESC LIMIT 1 BY ride_id',
-		{ 1: request.params.id },
+		'_id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id, stop_sequence',
+		{ 1: rideData.hashed_trip_id },
 	);
 
 	if (!foundHashedTripData?.length) {

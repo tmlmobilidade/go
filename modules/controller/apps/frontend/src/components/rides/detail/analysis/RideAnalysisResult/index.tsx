@@ -13,7 +13,7 @@ interface RideAnalysisResultProps {
 
 /* * */
 
-export function RideAnalysisResult({ defaultOpen = false, items }: RideAnalysisResultProps) {
+export function RideAnalysisResult() {
 	//
 
 	//
@@ -25,9 +25,9 @@ export function RideAnalysisResult({ defaultOpen = false, items }: RideAnalysisR
 	// B. Render components
 
 	return (
-		<Collapsible defaultOpen={defaultOpen} description={t('default:rides.analysis.RideAnalysisResult.description')} title={t('default:rides.analysis.RideAnalysisResult.title')}>
+		<Collapsible description={t('default:rides.analysis.RideAnalysisResult.description')} title={t('default:rides.analysis.RideAnalysisResult.title')} defaultOpen>
 			<Section>
-				{!items.length ? (
+				{/* {!items.length ? (
 					<Label size="lg" caps>{t('default:rides.analysis.RideAnalysisResult.no_data')}</Label>
 				) : (
 					<Grid columns="abc" gap="md">
@@ -35,7 +35,7 @@ export function RideAnalysisResult({ defaultOpen = false, items }: RideAnalysisR
 							<RideAnalysisResultItem key={item.id} grade={item.grade} id={item.id} />
 						))}
 					</Grid>
-				)}
+				)} */}
 			</Section>
 		</Collapsible>
 	);

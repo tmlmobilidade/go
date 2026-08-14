@@ -12,11 +12,19 @@ export function useRidesListFilterDateRange(): UseFilterStateDateRangeReturnType
 	//
 
 	const defaultStartValue = useMemo(() => {
-		return Dates.now('local').minus({ minutes: 30 }).unix_timestamp;
+		return Dates
+			.now('local')
+			.minus({ minutes: 30 })
+			.set({ millisecond: 0, second: 0 })
+			.unix_timestamp;
 	}, []);
 
 	const defaultEndValue = useMemo(() => {
-		return Dates.now('local').plus({ minutes: 30 }).unix_timestamp;
+		return Dates
+			.now('local')
+			.plus({ minutes: 30 })
+			.set({ millisecond: 0, second: 0 })
+			.unix_timestamp;
 	}, []);
 
 	return useFilterStateDateRange(
