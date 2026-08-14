@@ -1,3 +1,22 @@
+-- SUBCONSOLIDADO VBORDO
+
+CREATE TABLE IF NOT EXISTS performance.subconsolidado_vbordo (
+    agency_id String,
+    operational_date Date,
+    product_long_id String,
+    processed_date Date,
+    calendar_date Date,
+    calendar_month String,
+    quantidade Int32,
+    pax_value Int32,
+    cam_value Int32,
+    total_value Int32,
+) ENGINE = MergeTree()
+ORDER BY (agency_id, operational_date, product_long_id, processed_date, calendar_date, calendar_month)
+PARTITION BY toYYYYMM(operational_date)
+
+
+
 -- RELATÓRIO DO SUBCONSOLIDADO DAS VENDAS A BORDO PARA DEPARTAMENTO FINANCEIRO
 
 insert into performance.subconsolidado_vbordo
