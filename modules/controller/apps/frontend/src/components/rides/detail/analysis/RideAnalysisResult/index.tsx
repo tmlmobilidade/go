@@ -1,20 +1,19 @@
 'use client';
 
-import { RideAnalysisAnalysisResultItem } from '@/components/rides/detail/analysis/RideAnalysisResultItem';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { RideAnalysisResultItem } from '@/components/rides/detail/analysis/RideAnalysisResultItem';
 import { Collapsible, Grid, Label, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-interface RideAnalysisAnalysisResultProps {
+interface RideAnalysisResultProps {
 	defaultOpen?: boolean
 	items: (any & { id: string })[]
 }
 
 /* * */
 
-export function RideAnalysisAnalysisResult({ defaultOpen = false, items }: RideAnalysisAnalysisResultProps) {
+export function RideAnalysisResult({ defaultOpen = false, items }: RideAnalysisResultProps) {
 	//
 
 	//
@@ -33,7 +32,7 @@ export function RideAnalysisAnalysisResult({ defaultOpen = false, items }: RideA
 				) : (
 					<Grid columns="abc" gap="md">
 						{items.map(item => (
-							<RideAnalysisAnalysisResultItem key={item.id} grade={item.grade} id={item.id} />
+							<RideAnalysisResultItem key={item.id} grade={item.grade} id={item.id} />
 						))}
 					</Grid>
 				)}

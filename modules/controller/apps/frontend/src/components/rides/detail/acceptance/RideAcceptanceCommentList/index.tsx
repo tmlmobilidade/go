@@ -1,6 +1,6 @@
 'use client';
 
-import { RideAnalysisAnalysisResultItem } from '@/components/rides/detail/analysis/RideAnalysisResultItem';
+import { RideAnalysisResultItem } from '@/components/rides/detail/analysis/RideAnalysisResultItem';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
@@ -139,7 +139,7 @@ export function RideAcceptanceCommentList() {
 							{analysisItems.map(item => (
 								<Tooltip
 									key={item.id}
-									label={<RideAnalysisAnalysisResultItem grade={item.grade} id={item.id} />}
+									label={<RideAnalysisResultItem grade={item.grade} id={item.id} />}
 									p={0}
 									radius="md"
 								>

@@ -6,7 +6,7 @@ import { RideAnalysisApexOnBoardSales } from '@/components/rides/detail/analysis
 import { RideAnalysisApexValidations } from '@/components/rides/detail/analysis/RideAnalysisApexValidations';
 import { RideAnalysisMap } from '@/components/rides/detail/analysis/RideAnalysisMap';
 import { RideAnalysisMetadata } from '@/components/rides/detail/analysis/RideAnalysisMetadata';
-import { RideAnalysisAnalysisResult } from '@/components/rides/detail/analysis/RideAnalysisResult';
+import { RideAnalysisResult } from '@/components/rides/detail/analysis/RideAnalysisResult';
 import { RideAnalysisVehicleEvents } from '@/components/rides/detail/analysis/RideAnalysisVehicleEvents';
 import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
@@ -14,7 +14,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-export function RideAnalysisAnalysis() {
+export function RideAnalysis() {
 	//
 	// A. Setup variables
 
@@ -38,7 +38,7 @@ export function RideAnalysisAnalysis() {
 		<>
 			<RideAnalysisMap />
 			<RideAnalysisMetadata />
-			<RideAnalysisAnalysisResult items={analysisItems} />
+			<RideAnalysisResult items={analysisItems} />
 			<RideAnalysisVehicleEvents />
 			<RideAnalysisApexValidations />
 			<RideAnalysisApexOnBoardSales />

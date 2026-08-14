@@ -7,14 +7,14 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-interface RideAnalysisAnalysisResultItemProps {
+interface RideAnalysisResultItemProps {
 	grade: GradeStatus
 	id: string
 }
 
 /* * */
 
-export function RideAnalysisAnalysisResultItem({ grade, id }: RideAnalysisAnalysisResultItemProps) {
+export function RideAnalysisResultItem({ grade, id }: RideAnalysisResultItemProps) {
 	//
 
 	//
