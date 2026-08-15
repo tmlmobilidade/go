@@ -23,7 +23,7 @@ export function GradeStatusDisplay({ tooltip, value }: GradeStatusDisplayProps) 
 
 	return (
 		<>
-			{value === 'pass' && <Tag label={t('shared:status.grade_status.pass')} tooltip={tooltip} variant="success" />}
+			{value === 'pass' && <Tag label={t('shared:status.grade_status.pass')} tooltip={tooltip} variant="success" filled />}
 			{value === 'fail' && <Tag label={t('shared:status.grade_status.fail')} tooltip={tooltip} variant="danger" />}
 			{value === 'skip' && <Tag label={t('shared:status.grade_status.skip')} tooltip={tooltip} variant="muted" />}
 			{value === 'error' && <Tag label={t('shared:status.grade_status.error')} tooltip={tooltip} variant="danger" filled />}
