@@ -1,13 +1,17 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CloseButton, IdTag, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, SegmentedControl, Spacer, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
+import { CloseButton, IdTag, keepUrlParams, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, SegmentedControl, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useRidesDetailApexBankingTapsData } from '../use-rides-detail-apex-banking-taps-data';
+import { useRidesDetailApexRefundsData } from '../use-rides-detail-apex-refunds-data';
+import { useRidesDetailApexSalesData } from '../use-rides-detail-apex-sales-data';
+import { useRidesDetailApexValidationsData } from '../use-rides-detail-apex-validations-data';
 import { useRidesDetailCurrentView } from '../use-rides-detail-current-view';
+import { useRidesDetailHashedTripData } from '../use-rides-detail-hashed-trip-data';
 import { useRidesDetailRideAnalysesData } from '../use-rides-detail-ride-analyses-data';
 import { useRidesDetailRideData } from '../use-rides-detail-ride-data';
 import { useRidesDetailRideId } from '../use-rides-detail-ride-id';
@@ -29,6 +33,11 @@ export function RidesDetailHeader() {
 
 	const { data: rideData, isLoading: rideIsLoading, isValidating: rideIsValidating, timestamp: rideTimestamp } = useRidesDetailRideData();
 	const { isLoading: rideAnalysesIsLoading, isValidating: rideAnalysesIsValidating, timestamp: rideAnalysesTimestamp } = useRidesDetailRideAnalysesData();
+	const { isLoading: hashedTripIsLoading, isValidating: hashedTripIsValidating, timestamp: hashedTripTimestamp } = useRidesDetailHashedTripData();
+	const { isLoading: simplifiedApexBankingTapsIsLoading, isValidating: simplifiedApexBankingTapsIsValidating, timestamp: simplifiedApexBankingTapsTimestamp } = useRidesDetailApexBankingTapsData();
+	const { isLoading: simplifiedApexValidationsIsLoading, isValidating: simplifiedApexValidationsIsValidating, timestamp: simplifiedApexValidationsTimestamp } = useRidesDetailApexValidationsData();
+	const { isLoading: simplifiedApexSalesIsLoading, isValidating: simplifiedApexSalesIsValidating, timestamp: simplifiedApexSalesTimestamp } = useRidesDetailApexSalesData();
+	const { isLoading: simplifiedApexRefundsIsLoading, isValidating: simplifiedApexRefundsIsValidating, timestamp: simplifiedApexRefundsTimestamp } = useRidesDetailApexRefundsData();
 
 	// const rideFavoritesContext = useRideFavoritesContext();
 
@@ -68,9 +77,9 @@ export function RidesDetailHeader() {
 			<IdTag id={rideId} copyOnClick />
 			<Spacer />
 			<LoadingActivity
-				isLoading={rideIsLoading || rideAnalysesIsLoading}
-				isValidating={rideIsValidating || rideAnalysesIsValidating}
-				timestamp={rideTimestamp || rideAnalysesTimestamp}
+				isLoading={rideIsLoading || rideAnalysesIsLoading || hashedTripIsLoading || simplifiedApexBankingTapsIsLoading || simplifiedApexValidationsIsLoading || simplifiedApexSalesIsLoading || simplifiedApexRefundsIsLoading}
+				isValidating={rideIsValidating || rideAnalysesIsValidating || hashedTripIsValidating || simplifiedApexBankingTapsIsValidating || simplifiedApexValidationsIsValidating || simplifiedApexSalesIsValidating || simplifiedApexRefundsIsValidating}
+				timestamp={[rideTimestamp, rideAnalysesTimestamp, hashedTripTimestamp, simplifiedApexBankingTapsTimestamp, simplifiedApexValidationsTimestamp, simplifiedApexSalesTimestamp, simplifiedApexRefundsTimestamp]}
 			/>
 			<ProcessingStatusDisplay disabled={true} value={rideData?.processing_status} />
 			{/* <GradeStatusDisplay value={rideData?.analysis_simple_three_vehicle_events_grade} /> */}

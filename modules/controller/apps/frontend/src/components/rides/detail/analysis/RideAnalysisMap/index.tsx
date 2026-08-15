@@ -151,7 +151,7 @@ export function RideAnalysisMap() {
 		feature.properties.id = rideData._id;
 		featureCollection.features.push(feature);
 		return featureCollection;
-	}, [rideData._id, rideData.shape_polyline]);
+	}, [rideData?._id, rideData?.shape_polyline]);
 
 	//
 

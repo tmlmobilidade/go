@@ -3,7 +3,7 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { Indicator, IndicatorProps, Loader } from '@tmlmobilidade/ui';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 interface LoadingActivityProps {
 	isLoading: boolean
 	isValidating: boolean
-	timestamp: null | UnixTimestamp
+	timestamp: null | UnixTimestamp | UnixTimestamp[]
 }
 
 /* * */
@@ -30,10 +30,18 @@ export function LoadingActivity({ isLoading, isValidating, timestamp }: LoadingA
 	//
 	// B. Transform data
 
+	const effectiveTimestampValue = useMemo(() => {
+		if (!timestamp) return;
+		if (Array.isArray(timestamp)) {
+			const filteredTimestamps = [...timestamp].filter(Boolean);
+			return Math.min(...filteredTimestamps) as UnixTimestamp;
+		} else return timestamp;
+	}, [timestamp]);
+
 	useEffect(() => {
 		const updateTooltipValue = () => {
-			if (!timestamp) return;
-			const diff = Dates.now('local').unix_timestamp - timestamp;
+			if (!effectiveTimestampValue) return;
+			const diff = Dates.now('local').unix_timestamp - effectiveTimestampValue;
 			if (diff < 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.just_now'));
 			if (diff < 60 * 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.seconds_ago', '', { count: Math.floor(diff / 1000) }));
 			if (diff < 60 * 60 * 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.minutes_ago', '', { count: Math.floor(diff / 1000 / 60) }));
@@ -43,19 +51,19 @@ export function LoadingActivity({ isLoading, isValidating, timestamp }: LoadingA
 		updateTooltipValue();
 		const interval = setInterval(() => updateTooltipValue(), 1_000);
 		return () => clearInterval(interval);
-	}, [timestamp, t]);
+	}, [effectiveTimestampValue, t]);
 
 	useEffect(() => {
 		const updateIndicatorVariant = () => {
-			if (!timestamp) return;
-			const diff = Dates.now('local').unix_timestamp - timestamp;
+			if (!effectiveTimestampValue) return;
+			const diff = Dates.now('local').unix_timestamp - effectiveTimestampValue;
 			if (diff < 10_000) return setIndicatorVariant('primary');
 			return setIndicatorVariant('muted');
 		};
 		updateIndicatorVariant();
 		const interval = setInterval(() => updateIndicatorVariant(), 1_000);
 		return () => clearInterval(interval);
-	}, [timestamp]);
+	}, [effectiveTimestampValue]);
 
 	//
 	// C. Render components
