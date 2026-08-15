@@ -26,3 +26,8 @@
  - use new ApiReponse with cache for public endpoints
  - better documentation for public endpoints
  - add license to public data
+
+# tracker
+ - fix fertagus idiom
+ - fix metro
+ - fix cp
