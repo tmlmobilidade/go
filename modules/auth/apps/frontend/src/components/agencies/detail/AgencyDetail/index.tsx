@@ -8,7 +8,7 @@ import { AgencyDetailBasicInfo } from '@/components/agencies/detail/AgencySectio
 import { AgencySectionContacts } from '@/components/agencies/detail/AgencySectionContacts';
 import { AgencySectionFinancials } from '@/components/agencies/detail/AgencySectionFinancials';
 import { AgencySectionOpenData } from '@/components/agencies/detail/AgencySectionOpenData';
-import { AgencySectionValidationRules } from '@/components/agencies/detail/AgencySectionValidationRules';
+// import { AgencySectionValidationRules } from '@/components/agencies/detail/AgencySectionValidationRules';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -39,7 +39,7 @@ export function AgencyDetail() {
 			<AgencySectionContacts />
 			<AgencySectionOpenData />
 			<AgencySectionApex />
-			<AgencySectionValidationRules />
+			{/* <AgencySectionValidationRules /> */}
 			<AgencySectionAlertsMap />
 		</Pane>
 	);
