@@ -2,12 +2,15 @@
 
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { FileComponent } from '@/components/common/FileComponent/index';
-import { Collapsible, FileButton, Grid, Label, Section, Spacer, useToast } from '@tmlmobilidade/ui';
+import { gtfsrules, SeverityLevel, SeverityLevelSchema } from '@tmlmobilidade/types';
+import { Collapsible, Divider, FileButton, Grid, Label, Section, SegmentedControl, Spacer, Surface, Table, useContextFormWatch, useToast } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
+
+/* * */
 
 export function AgencySectionValidationRules() {
 	//
@@ -15,11 +18,25 @@ export function AgencySectionValidationRules() {
 	//
 	// A. Setup variables
 
-	const agencyDetailContext = useAgencyDetailContext();
 	const { t } = useTranslation();
+
+	const agencyDetailContext = useAgencyDetailContext();
+
+	const availableOptions = SeverityLevelSchema.options.map(value => ({ label: value, value }));
+	const validationRules = useContextFormWatch({ control: agencyDetailContext.form.instance.control, name: 'validation_rules' });
 
 	//
 	// B. Handle actions
+
+	const rules = Object.entries(gtfsrules).flatMap(([sectionName, section]) => Object.entries(section).filter(([ruleName]) => ruleName !== '_file').map(([ruleName, rule]) => {
+		const config = rule as { severity: SeverityLevel };
+		return {
+			id: `${sectionName}.${ruleName}`,
+			name: ruleName,
+			section: sectionName,
+			severity: config.severity,
+		};
+	}));
 
 	const handleFileChange = (file: File) => {
 		// Respect read-only / locked state
@@ -66,7 +83,7 @@ export function AgencySectionValidationRules() {
 	return (
 		<Collapsible
 			description={t('default:agencies.detail.SectionValidationRules.description')}
-			title={t('default:agencies.detail.SectionValidationRules.title')}
+			title={t('default:agencies.detail.SectionValidationRules.title.GTFS_validation_rules.title')}
 		>
 			<Grid columns="ab" gap="sm">
 				<Section alignItems="center" gap="lg">
@@ -88,8 +105,47 @@ export function AgencySectionValidationRules() {
 							label={t('default:agencies.detail.SectionValidationRules.fields.file_content.button')}
 						/>
 					) : <Label>{t('default:agencies.detail.SectionValidationRules.fields.file_content.no_content')}</Label>}
+
 				</Section>
 			</Grid>
+			<Section padding="lg">
+				<Grid columns="a" gap="lg">
+					<Surface variant="bordered">
+
+						<Divider />
+						<Table highlightOnHover>
+							<Table.Thead>
+								<Table.Tr>
+									<Table.Th style={{ fontSize: '1.2rem' }}>{t('default:agencies.detail.SectionValidationRules.fields.Rules.label')}</Table.Th>
+									<Table.Th style={{ fontSize: '1.2rem' }}>{t('default:agencies.detail.SectionValidationRules.fields.Severity.label')}</Table.Th>
+								</Table.Tr>
+							</Table.Thead>
+							<Table.Tbody>
+								{rules.map(rule => (
+									<Table.Tr key={rule.id}>
+										<Table.Td>{rule.name}</Table.Td>
+										<Table.Td>
+											<SegmentedControl
+												data={availableOptions}
+												readOnly={agencyDetailContext.flags.isReadOnly}
+												value={validationRules?.[rule.section]?.[rule.name]?.severity ?? rule.severity}
+												onChange={value => agencyDetailContext.form.instance.setValue(`validation_rules.${rule.section}.${rule.name}.severity`, value,
+													{
+														shouldDirty: true,
+														shouldTouch: true,
+														shouldValidate: true,
+													},
+												)}
+												fullWidth
+											/>
+										</Table.Td>
+									</Table.Tr>
+								))}
+							</Table.Tbody>
+						</Table>
+					</Surface>
+				</Grid>
+			</Section>
 		</Collapsible>
 	);
 }
