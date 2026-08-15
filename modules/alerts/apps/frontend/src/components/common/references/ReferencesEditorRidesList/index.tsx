@@ -4,7 +4,7 @@ import { useReferencesEditorContext } from '@/components/common/references/Refer
 import { RidesListCellHeadsign } from '@/components/create/RidesListCellHeadsign';
 import { Dates } from '@tmlmobilidade/dates';
 import { type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
-import { Checkbox, DataTable, DataTableColumn, LoadingSection, NoDataLabel, OperationalStatusTag, Section, SeenStatusIndicator, Surface, Tag } from '@tmlmobilidade/ui';
+import { Checkbox, DataTable, DataTableColumn, LoadingSection, NoDataLabel, OperationalStatusDisplay, Section, SeenStatusIndicator, Surface, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -42,7 +42,7 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 		},
 		{
 			accessor: 'operational_status',
-			render: item => <OperationalStatusTag value={item.operational_status} />,
+			render: item => <OperationalStatusDisplay value={item.operational_status} />,
 			title: 'Estado',
 			width: 190,
 		},

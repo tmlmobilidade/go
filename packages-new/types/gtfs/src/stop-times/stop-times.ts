@@ -3,7 +3,7 @@
 import { GtfsBinarySchema } from '@/shared/binary.js';
 import { GtfsTimeSchema } from '@/shared/gtfs-time.js';
 import { GtfsPickupDropoffTypeSchema } from '@/shared/pickup-dropoff-type.js';
-import { NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeFloatSchema, NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -15,10 +15,10 @@ export const GtfsStopTimesSchema = z.object({
 	departure_time: GtfsTimeSchema,
 	drop_off_type: GtfsPickupDropoffTypeSchema.optional(),
 	pickup_type: GtfsPickupDropoffTypeSchema.optional(),
-	shape_dist_traveled: NonNegativeNumberSchema.optional(),
+	shape_dist_traveled: NonNegativeFloatSchema.optional(),
 	stop_headsign: z.string().optional(),
 	stop_id: z.string(),
-	stop_sequence: NonNegativeNumberSchema,
+	stop_sequence: NonNegativeIntegerSchema,
 	timepoint: GtfsBinarySchema,
 	trip_id: z.string(),
 });

@@ -3,7 +3,7 @@
 import { useReferencesEditorContext } from '@/components/common/references/ReferencesEditor.context';
 import { IconArrowLoopRight } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Grid, MultiSelect, SearchInput, Section, SegmentedControl, useDataOperationalLines } from '@tmlmobilidade/ui';
+import { Grid, MultiSelect, SearchField, Section, SegmentedControl, useDataOperationalLines } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -57,7 +57,7 @@ export function ReferencesEditorRidesFilters({ lineIdsFilterValue, searchFilterV
 
 				{viewMode === 'all' && (
 					<>
-						<SearchInput onChange={setSearchFilterValue} value={searchFilterValue} />
+						<SearchField onChange={setSearchFilterValue} value={searchFilterValue} />
 
 						<Grid columns="ab" gap="md">
 							<MultiSelect

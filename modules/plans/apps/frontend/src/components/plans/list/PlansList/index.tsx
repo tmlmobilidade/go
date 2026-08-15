@@ -7,7 +7,7 @@ import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { type PlanNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusTag } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -52,7 +52,7 @@ export function PlansList() {
 		{
 			accessor: 'apps',
 			render: item => (
-				<ProcessingStatusTag
+				<ProcessingStatusDisplay
 					value={item.apps?.controller?.status}
 					tooltip={item.apps?.controller?.timestamp && Dates
 						.fromUnixTimestamp(item.apps?.controller?.timestamp)
@@ -66,7 +66,7 @@ export function PlansList() {
 		{
 			accessor: 'apps',
 			render: item => (
-				<ProcessingStatusTag
+				<ProcessingStatusDisplay
 					value={item.apps?.merger?.status}
 					tooltip={item.apps?.merger?.timestamp && Dates
 						.fromUnixTimestamp(item.apps?.merger?.timestamp)
@@ -80,7 +80,7 @@ export function PlansList() {
 		{
 			accessor: 'apps',
 			render: item => (
-				<ProcessingStatusTag
+				<ProcessingStatusDisplay
 					value={item.apps?.hub_gtfs?.status}
 					tooltip={item.apps?.hub_gtfs?.timestamp && Dates
 						.fromUnixTimestamp(item.apps?.hub_gtfs?.timestamp)

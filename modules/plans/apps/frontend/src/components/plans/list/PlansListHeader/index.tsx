@@ -1,7 +1,7 @@
 /* * */
 
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
-import { Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,7 +20,7 @@ export function PlansListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>Planos</Label>
 			<Spacer />
-			<SearchInput onChange={plansListContext.filters.search.set} value={plansListContext.filters.search.value} />
+			<SearchField onChange={plansListContext.filters.search.set} value={plansListContext.filters.search.value} />
 		</Toolbar>
 	);
 

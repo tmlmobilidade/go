@@ -3,8 +3,9 @@
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
+import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { ridesProvider } from '@tmlmobilidade/go-providers-rides';
+import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -49,11 +50,19 @@ export async function analyzeRides() {
 		const fetchCoordinatorTimerResult = fetchCoordinatorTimer.get();
 
 		//
+		// Skip this run if there are no rides to process
+
+		if (!rideIdsBatch?.length) {
+			Logger.info({ message: 'No rides to process. Skipping run.' });
+			return;
+		}
+
+		//
 		// With the list of Ride IDs, fetch the actual Ride documents to be processsed
 
 		const fetchRideDocumentsTimer = new Timer();
 
-		const ridesBatch = await ridesProvider.findRidesById(rideIdsBatch);
+		const ridesBatch = await ridesProvider.findRides({ _id: rideIdsBatch });
 
 		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 
@@ -102,23 +111,25 @@ export async function analyzeRides() {
 
 				const insertTimer = new Timer();
 
+				const nowUnixTimestamp = Dates.now('utc').unix_timestamp;
+
 				const insertPromises = [
-					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnFirstStop.insert('JSONEachRow', [analyzeRideResults.analyses.atLeastOneVehicleEventOnFirstStop]),
-					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnLastStop.insert('JSONEachRow', [analyzeRideResults.analyses.atLeastOneVehicleEventOnLastStop]),
-					labDb.operation.rideAnalysisExpectedApexValidationInterval.insert('JSONEachRow', [analyzeRideResults.analyses.expectedApexValidationInterval]),
-					labDb.operation.rideAnalysisExpectedDriverIdQty.insert('JSONEachRow', [analyzeRideResults.analyses.expectedDriverIdQty]),
-					labDb.operation.rideAnalysisExpectedStartTime.insert('JSONEachRow', [analyzeRideResults.analyses.expectedStartTime]),
-					labDb.operation.rideAnalysisExpectedVehicleEventDelay.insert('JSONEachRow', [analyzeRideResults.analyses.expectedVehicleEventDelay]),
-					labDb.operation.rideAnalysisExpectedVehicleEventInterval.insert('JSONEachRow', [analyzeRideResults.analyses.expectedVehicleEventInterval]),
-					labDb.operation.rideAnalysisExpectedVehicleEventQty.insert('JSONEachRow', [analyzeRideResults.analyses.expectedVehicleEventQty]),
-					labDb.operation.rideAnalysisExpectedVehicleIdQty.insert('JSONEachRow', [analyzeRideResults.analyses.expectedVehicleIdQty]),
-					labDb.operation.rideAnalysisMatchingApexLocations.insert('JSONEachRow', [analyzeRideResults.analyses.matchingApexLocations]),
-					labDb.operation.rideAnalysisMatchingVehicleIds.insert('JSONEachRow', [analyzeRideResults.analyses.matchingVehicleIds]),
-					labDb.operation.rideAnalysisSimpleOneApexValidation.insert('JSONEachRow', [analyzeRideResults.analyses.simpleOneApexValidation]),
-					labDb.operation.rideAnalysisSimpleOneVehicleEventOrApexValidation.insert('JSONEachRow', [analyzeRideResults.analyses.simpleOneVehicleEventOrApexValidation]),
-					labDb.operation.rideAnalysisSimpleThreeVehicleEvents.insert('JSONEachRow', [analyzeRideResults.analyses.simpleThreeVehicleEvents]),
-					labDb.operation.rideAnalysisTransactionSequentiality.insert('JSONEachRow', [analyzeRideResults.analyses.transactionSequentiality]),
-					ridesProvider.updateRideById(rideData._id, { ...augmentedRideData, processing_status: 'complete' }),
+					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnFirstStop.insert('JSONEachRow', [analyzeRideResults.analyses.at_least_one_vehicle_event_on_first_stop]),
+					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnLastStop.insert('JSONEachRow', [analyzeRideResults.analyses.at_least_one_vehicle_event_on_last_stop]),
+					labDb.operation.rideAnalysisExpectedApexValidationInterval.insert('JSONEachRow', [analyzeRideResults.analyses.expected_apex_validation_interval]),
+					labDb.operation.rideAnalysisExpectedDriverIdQty.insert('JSONEachRow', [analyzeRideResults.analyses.expected_driver_id_qty]),
+					labDb.operation.rideAnalysisExpectedStartTime.insert('JSONEachRow', [analyzeRideResults.analyses.expected_start_time]),
+					labDb.operation.rideAnalysisExpectedVehicleEventDelay.insert('JSONEachRow', [analyzeRideResults.analyses.expected_vehicle_event_delay]),
+					labDb.operation.rideAnalysisExpectedVehicleEventInterval.insert('JSONEachRow', [analyzeRideResults.analyses.expected_vehicle_event_interval]),
+					labDb.operation.rideAnalysisExpectedVehicleEventQty.insert('JSONEachRow', [analyzeRideResults.analyses.expected_vehicle_event_qty]),
+					labDb.operation.rideAnalysisExpectedVehicleIdQty.insert('JSONEachRow', [analyzeRideResults.analyses.expected_vehicle_id_qty]),
+					labDb.operation.rideAnalysisMatchingApexLocations.insert('JSONEachRow', [analyzeRideResults.analyses.matching_apex_locations]),
+					labDb.operation.rideAnalysisMatchingVehicleIds.insert('JSONEachRow', [analyzeRideResults.analyses.matching_vehicle_ids]),
+					labDb.operation.rideAnalysisSimpleOneApexValidation.insert('JSONEachRow', [analyzeRideResults.analyses.simple_one_apex_validation]),
+					labDb.operation.rideAnalysisSimpleOneVehicleEventOrApexValidation.insert('JSONEachRow', [analyzeRideResults.analyses.simple_one_vehicle_event_or_apex_validation]),
+					labDb.operation.rideAnalysisSimpleThreeVehicleEvents.insert('JSONEachRow', [analyzeRideResults.analyses.simple_three_vehicle_events]),
+					labDb.operation.rideAnalysisTransactionSequentiality.insert('JSONEachRow', [analyzeRideResults.analyses.transaction_sequentiality]),
+					labDb.operation.rides.insert('JSONEachRow', [{ ...augmentedRideData, processing_status: 'complete', updated_at: nowUnixTimestamp }]),
 				];
 
 				await Promise.all(insertPromises);

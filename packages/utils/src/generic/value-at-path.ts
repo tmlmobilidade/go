@@ -77,14 +77,17 @@ export function setValueAtPath<T extends object, P extends DotPath<T>>(obj: T, p
 	let current: any = obj;
 
 	keys.slice(0, -1).forEach((key) => {
-		if (!(key in current)) {
-			// If numeric key, initialize as array
-			current[key] = /^\d+$/.test(key) ? [] : {};
+		if (!Object.prototype.hasOwnProperty.call(current, key)) {
+			// If numeric key, initialize as array; otherwise use a prototype-less object
+			current[key] = /^\d+$/.test(key) ? [] : Object.create(null);
 		}
 		current = current[key];
 	});
 
 	const lastKey = keys[keys.length - 1];
+	if (UNSAFE_KEYS.has(lastKey)) {
+		throw new Error(`Unsafe path segment: "${lastKey}"`);
+	}
 	current[lastKey] = value;
 
 	return obj;

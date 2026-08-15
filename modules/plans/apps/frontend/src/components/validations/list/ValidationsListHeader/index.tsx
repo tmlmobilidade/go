@@ -4,7 +4,7 @@ import { openCreateValidationModal } from '@/components/validations/create/Valid
 import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, HasPermission, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, HasPermission, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -23,7 +23,7 @@ export function ValidationsListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>Validações GTFS</Label>
 			<Spacer />
-			<SearchInput onChange={validationsListContext.filters.search.set} value={validationsListContext.filters.search.value} />
+			<SearchField onChange={validationsListContext.filters.search.set} value={validationsListContext.filters.search.value} />
 			<HasPermission action={PermissionCatalog.all.gtfs_validations.actions.create} scope={PermissionCatalog.all.gtfs_validations.scope}>
 				<Button label="Nova validação" leftSection={<IconPlus />} onClick={openCreateValidationModal} />
 			</HasPermission>

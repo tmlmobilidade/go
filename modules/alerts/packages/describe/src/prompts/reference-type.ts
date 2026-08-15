@@ -1,6 +1,7 @@
 /* * */
 
-import { type AlertReferenceType, type I18nCode } from '@tmlmobilidade/types';
+import { type AlertReferenceType } from '@tmlmobilidade/go-types-operation';
+import { type I18nCode } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Reference type specific instructions to be included in the prompt

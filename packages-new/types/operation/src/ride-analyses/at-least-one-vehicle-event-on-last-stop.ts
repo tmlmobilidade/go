@@ -1,14 +1,14 @@
 /* * */
 
 import { RideAnalysisBaseSchema } from '@/ride-analyses/ride-analysis-base.js';
-import { NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const RideAnalysisAtLeastOneVehicleEventOnLastStopSchema = RideAnalysisBaseSchema.extend({
 	reason: z.enum(['NO_PATH_DATA', 'NO_VEHICLE_EVENTS', 'NO_VEHICLE_EVENTS_ON_LAST_STOP', 'ONE_OR_MORE_VEHICLE_EVENTS_ON_LAST_STOP']).nullable().default(null),
-	vehicle_events_on_last_stop_qty: NonNegativeNumberSchema.nullable().default(null),
+	vehicle_events_on_last_stop_qty: NonNegativeIntegerSchema.nullable().default(null),
 });
 
 /**

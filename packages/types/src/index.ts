@@ -1,6 +1,4 @@
 export * from '@/agencies/index.js';
-export * from '@/alerts/index.js';
-export * from '@/api/index.js';
 export * from '@/app-configs/index.js';
 export * from '@/attachment.js';
 export * from '@/auth/index.js';
@@ -12,7 +10,6 @@ export * from '@/gtfs/index.js';
 export * from '@/locations/index.js';
 export * from '@/metrics/index.js';
 export * from '@/notification.js';
-export * from '@/operation/index.js';
 export * from '@/organization.js';
 export * from '@/permissions/index.js';
 export * from '@/plans/index.js';

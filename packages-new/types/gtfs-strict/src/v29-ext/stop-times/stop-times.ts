@@ -1,7 +1,7 @@
 /* * */
 
 import { GtfsBinarySchema, GtfsPickupDropoffTypeSchema, GtfsTimeSchema } from '@tmlmobilidade/go-types-gtfs';
-import { NonNegativeNumberSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeFloatSchema, NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -11,9 +11,9 @@ export const GtfsStrictV29ExtStopTimesSchema = z.object({
 	departure_time: GtfsTimeSchema,
 	drop_off_type: GtfsPickupDropoffTypeSchema,
 	pickup_type: GtfsPickupDropoffTypeSchema,
-	shape_dist_traveled: NonNegativeNumberSchema,
+	shape_dist_traveled: NonNegativeFloatSchema,
 	stop_id: z.string(),
-	stop_sequence: NonNegativeNumberSchema,
+	stop_sequence: NonNegativeIntegerSchema,
 	timepoint: GtfsBinarySchema,
 	trip_id: z.string(),
 });

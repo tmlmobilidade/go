@@ -5,7 +5,7 @@ import { openVehicleListExportModal } from '@/components/Vehicles/list/VehicleLi
 import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
 import { IconFileDownload, IconPlus, IconUpload } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, HasPermission, IconButton, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, HasPermission, IconButton, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 import { openImportVehicleModal } from '../../import/VehicleImport.modal';
 
@@ -26,7 +26,7 @@ export function VehiclesListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>veículos</Label>
 			<Spacer />
-			<SearchInput onChange={vehiclesListContext.filters.search.set} value={vehiclesListContext.filters.search.value} />
+			<SearchField onChange={vehiclesListContext.filters.search.set} value={vehiclesListContext.filters.search.value} />
 			<HasPermission action={PermissionCatalog.all.vehicles.actions.create} scope={PermissionCatalog.all.vehicles.scope}>
 				<Button label="Novo veículo" leftSection={<IconPlus />} onClick={openCreateVehicleModal} />
 			</HasPermission>

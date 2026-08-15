@@ -200,4 +200,4 @@ Related open resources:
 
 **Route constants out of date** — After adding/renaming `page.tsx` or `*.routes.ts` files, run `npm run generate-routes` (also part of `build:packages`).
 
-If you find a bug or have a question, [open an issue](https://github.com/tmlmobilidade/go/issues) or see [how to report bugs](https://go.tmlmobilidade.pt/reference/bugs).
+If you find a bug or have a question, [open an issue](https://github.com/tmlmobilidade/go/issues) or see [how to report bugs](https://go.tmlmobilidade.pt/reference/bugs)..

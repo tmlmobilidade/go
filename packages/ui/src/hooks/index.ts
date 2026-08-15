@@ -7,8 +7,6 @@ export * from './use-css-variable';
 export * from './use-current-url';
 export * from './use-data/index';
 export * from './use-detail-state';
-export * from './use-filter-state-list';
-export * from './use-filter-state-string';
 export * from './use-handle-update';
 export * from './use-multi-step';
 export * from './use-organization-logo';

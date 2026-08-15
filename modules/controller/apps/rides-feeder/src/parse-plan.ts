@@ -20,7 +20,7 @@ import crypto from 'crypto';
 /* * */
 
 const ridesWritter = new BatchWriter<Ride>({
-	batch_size: 5, // 10_000,
+	batch_size: 10_000,
 	insertFn: async (data) => {
 		await labDb.operation.rides.insert('JSONEachRow', data);
 	},
@@ -28,7 +28,7 @@ const ridesWritter = new BatchWriter<Ride>({
 });
 
 const hashedTripsWritter = new BatchWriter<HashedTrip>({
-	batch_size: 5, // 10_000,
+	batch_size: 10_000,
 	insertFn: async (data) => {
 		await labDb.operation.hashedTrips.insert('JSONEachRow', data);
 	},

@@ -5,8 +5,9 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { describeAlert, type DescribeAlertProps, type DescribeAlertReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { Alert, CreateAlertDto, CreateAlertSchema, UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type Attachment, type CreateAlertDto, CreateAlertSchema, PermissionCatalog, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/types';
+import { Attachment, PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
 

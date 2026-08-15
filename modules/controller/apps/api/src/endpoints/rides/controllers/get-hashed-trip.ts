@@ -1,50 +1,60 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { ridesProvider } from '@tmlmobilidade/go-providers-rides';
-import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type HashedTrip, type Ride } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Get a HashedTrip by Ride ID.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getHashedTrip(request: FastifyRequest, reply: FastifyReply<HashedTrip>) {
-	try {
-		//
+export async function getHashedTrip(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HashedTrip[]>) {
+	//
 
-		//
-		// Validate the request parameters
+	//
+	// Validate the request parameters
 
-		const rideId = request.params['id'];
-
-		if (!rideId) {
-			return reply
-				.status(HTTP_STATUS.BAD_REQUEST)
-				.send({
-					data: null,
-					error: 'Missing ride_id parameter.',
-					status: HTTP_STATUS.BAD_REQUEST,
-				});
-		}
-
-		//
-		// Fetch the hashed trip data by ride ID
-		// and send it back to the client
-
-		const hashedTripData = await ridesProvider.findHashedTripByRideId(rideId);
-
-		reply.send({
-			data: hashedTripData,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
+	if (!request.params.id) {
+		return sendErrorApiResponse(reply, {
+			error: 'Missing ride "id" parameter.',
+			status_code: '400',
 		});
-
-		//
-	} catch (error) {
-		reply
-			.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
-			.send(error);
 	}
+
+	//
+	// Fetch the ride data from the database
+
+	const ridesQueryResult = await labDb.queryFromString<Pick<Ride, 'hashed_trip_id'>>(
+		'SELECT hashed_trip_id FROM operation.rides WHERE _id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id',
+		{ 1: request.params.id },
+	);
+
+	if (!ridesQueryResult?.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'Ride not found.',
+			status_code: '404',
+		});
+	}
+
+	const rideData = ridesQueryResult[0];
+
+	//
+	// Fetch the hashed trip data by ride ID
+	// and send it back to the client
+
+	const foundHashedTripData = await labDb.operation.hashedTrips.select(
+		'*',
+		'_id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id, stop_sequence',
+		{ 1: rideData.hashed_trip_id },
+	);
+
+	if (!foundHashedTripData?.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'Hashed Trip not found.',
+			status_code: '404',
+		});
+	}
+
+	return sendSuccessApiResponse(reply, foundHashedTripData);
 }

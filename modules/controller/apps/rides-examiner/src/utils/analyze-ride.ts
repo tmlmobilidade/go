@@ -40,21 +40,21 @@ interface AnalyzeRideReturnType {
 export function analyzeRide(analysisData: AnalysisData): AnalyzeRideReturnType {
 	// Run each analyzer and store the results
 	const analyses: RideAnalysesRegistry = {
-		atLeastOneVehicleEventOnFirstStop: atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData),
-		atLeastOneVehicleEventOnLastStop: atLeastOneVehicleEventOnLastStopAnalyzer(analysisData),
-		expectedApexValidationInterval: expectedApexValidationIntervalAnalyzer(analysisData),
-		expectedDriverIdQty: expectedDriverIdQtyAnalyzer(analysisData),
-		expectedStartTime: expectedStartTimeAnalyzer(analysisData),
-		expectedVehicleEventDelay: expectedVehicleEventDelayAnalyzer(analysisData),
-		expectedVehicleEventInterval: expectedVehicleEventIntervalAnalyzer(analysisData),
-		expectedVehicleEventQty: expectedVehicleEventQtyAnalyzer(analysisData),
-		expectedVehicleIdQty: expectedVehicleIdQtyAnalyzer(analysisData),
-		matchingApexLocations: matchingApexLocationsAnalyzer(analysisData),
-		matchingVehicleIds: matchingVehicleIdsAnalyzer(analysisData),
-		simpleOneApexValidation: simpleOneApexValidationAnalyzer(analysisData),
-		simpleOneVehicleEventOrApexValidation: simpleOneVehicleEventOrApexValidationAnalyzer(analysisData),
-		simpleThreeVehicleEvents: simpleThreeVehicleEventsAnalyzer(analysisData),
-		transactionSequentiality: transactionSequentialityAnalyzer(analysisData),
+		at_least_one_vehicle_event_on_first_stop: atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData),
+		at_least_one_vehicle_event_on_last_stop: atLeastOneVehicleEventOnLastStopAnalyzer(analysisData),
+		expected_apex_validation_interval: expectedApexValidationIntervalAnalyzer(analysisData),
+		expected_driver_id_qty: expectedDriverIdQtyAnalyzer(analysisData),
+		expected_start_time: expectedStartTimeAnalyzer(analysisData),
+		expected_vehicle_event_delay: expectedVehicleEventDelayAnalyzer(analysisData),
+		expected_vehicle_event_interval: expectedVehicleEventIntervalAnalyzer(analysisData),
+		expected_vehicle_event_qty: expectedVehicleEventQtyAnalyzer(analysisData),
+		expected_vehicle_id_qty: expectedVehicleIdQtyAnalyzer(analysisData),
+		matching_apex_locations: matchingApexLocationsAnalyzer(analysisData),
+		matching_vehicle_ids: matchingVehicleIdsAnalyzer(analysisData),
+		simple_one_apex_validation: simpleOneApexValidationAnalyzer(analysisData),
+		simple_one_vehicle_event_or_apex_validation: simpleOneVehicleEventOrApexValidationAnalyzer(analysisData),
+		simple_three_vehicle_events: simpleThreeVehicleEventsAnalyzer(analysisData),
+		transaction_sequentiality: transactionSequentialityAnalyzer(analysisData),
 	};
 	// Setup a metrics object to track the results of the analyzers
 	const metrics: AnalyzeRideMetrics = { error: [], fail: [], pass: [], skip: [] };

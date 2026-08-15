@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type RideAcceptance } from '@tmlmobilidade/types';
+import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Gets a ride acceptance by ride ID

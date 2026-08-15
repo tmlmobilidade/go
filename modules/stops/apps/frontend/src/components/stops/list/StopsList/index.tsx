@@ -1,6 +1,5 @@
 'use client';
 
-import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { StopsListFilterBar } from '@/components/stops/list/StopsListFilterBar';
 import { StopsListHeader } from '@/components/stops/list/StopsListHeader';
 import { type StopNormalized } from '@/types/normalized';
@@ -8,6 +7,8 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { DataTable, DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+
+import { useStopsListData } from './use-stops-list-data';
 
 /* * */
 
@@ -20,7 +21,7 @@ export function StopsList() {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
-	const stopsListContext = useStopsListContext();
+	const stopsListData = useStopsListData();
 
 	const columns: DataTableColumn<StopNormalized>[] = [
 		{
@@ -76,12 +77,12 @@ export function StopsList() {
 	//
 	// C. Render components
 
-	if (stopsListContext.flags.isLoading) {
+	if (stopsListData.isLoading) {
 		return <LoadingOverlay />;
 	}
 
-	if (stopsListContext.flags.error) {
-		return <ErrorDisplay message={stopsListContext.flags.error.message} />;
+	if (stopsListData.error) {
+		return <ErrorDisplay message={stopsListData.error.message} />;
 	}
 
 	return (
@@ -93,7 +94,7 @@ export function StopsList() {
 			<DataTable
 				columns={columns}
 				onRowClick={handleRowClick}
-				records={stopsListContext.data.filtered}
+				records={stopsListData.data.filtered}
 				rowIdAccessor="_id"
 				selectedId={Number(params.id)}
 			/>

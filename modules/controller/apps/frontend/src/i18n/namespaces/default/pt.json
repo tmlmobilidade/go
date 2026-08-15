@@ -64,7 +64,7 @@
 		"RidesListFilterAgency": {
 			"label": "Operador"
 		},
-		"RidesListFilterAnalysisEndedAtLastStop": {
+		"RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop": {
 			"label": "Fim na Última Paragem"
 		},
 		"RidesListFilterAnalysisExpectedApexValidationInterval": {
@@ -79,11 +79,17 @@
 		"RidesListFilterDateRange": {
 			"label": "Intervalo de datas"
 		},
-		"RidesListFilterDelayStatus": {
-			"label": "Atraso"
+		"RidesListFilterDriver": {
+			"label": "Motorista"
+		},
+		"RidesListFilterEndDelayStatus": {
+			"label": "Atraso à Chegada"
 		},
 		"RidesListFilterOperationalStatus": {
 			"label": "Estado"
+		},
+		"RidesListFilterStartDelayStatus": {
+			"label": "Atraso à Partida"
 		},
 		"RidesListFilterTicketingStatus": {
 			"label": "Bilhética",
@@ -92,12 +98,12 @@
 				"no_ticketing": "Sem bilhética"
 			}
 		},
+		"RidesListFilterVehicle": {
+			"label": "Veículo"
+		},
 		"RidesListHeader": {
 			"export": "Exportar circulações",
 			"title": "Circulações"
-		},
-		"RidesListLastUpdatedAt": {
-			"just_now": "Agora mesmo"
 		}
 	},
 	"rides": {
@@ -164,6 +170,54 @@
 			}
 		},
 		"analysis": {
+			"RideAnalysisApexBankingTaps": {
+				"description": "Transações APEX associadas a esta Ride.",
+				"no_data": "Nenhuma Transação Registada",
+				"table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"created_at": {
+							"label": "Criado em"
+						},
+						"event_type": {
+							"label": "Tipo de Evento"
+						},
+						"id_on_board_refund": {
+							"label": "ID do Reembolso a Bordo"
+						},
+						"id_on_board_sale": {
+							"label": "ID da Venda a Bordo"
+						},
+						"id_validation": {
+							"label": "ID da Validação"
+						},
+						"is_passenger": {
+							"label": "Passageiro"
+						},
+						"mac_sam_serial_number": {
+							"label": "SAM SN"
+						},
+						"product_id": {
+							"label": "ID do Produto"
+						},
+						"stop_id": {
+							"label": "ID da Paragem"
+						},
+						"tx_valid": {
+							"label": "Tx Valid"
+						},
+						"validation_status": {
+							"label": "Estado da Validação"
+						},
+						"vehicle_id": {
+							"label": "ID do Veículo"
+						}
+					}
+				},
+				"title": "Transações APEX"
+			},
 			"RideAnalysisApexLocations": {
 				"Table": {
 					"columns": {
@@ -386,6 +440,47 @@
 				},
 				"title": "Metadados"
 			},
+			"RideAnalysisPath": {
+				"description": "Distribuição dos passageiros por paragem",
+				"table": {
+					"columns": {
+						"passengers_observed": {
+							"label": "Qtd"
+						},
+						"passengers_observed_banking_taps_qty": {
+							"label": "Qtd"
+						},
+						"passengers_observed_prepaid_amount": {
+							"label": "Qtd"
+						},
+						"passengers_observed_prepaid_qty": {
+							"label": "Qtd"
+						},
+						"passengers_observed_sales_amount": {
+							"label": "Qtd"
+						},
+						"passengers_observed_sales_qty": {
+							"label": "Qtd"
+						},
+						"passengers_observed_subscription_qty": {
+							"label": "Qtd"
+						},
+						"seen_first_at": {
+							"label": "Hora de Início Observada"
+						},
+						"seen_last_at": {
+							"label": "Hora de Fim Observada"
+						},
+						"stop_name": {
+							"label": "Paragem"
+						},
+						"stop_sequence": {
+							"label": "Seq."
+						}
+					}
+				},
+				"title": "Visão por Paragem"
+			},
 			"RideAnalysisPerformance": {
 				"description": "Dados de desempenho da circulação",
 				"no_data": "Sem Dados",
@@ -511,9 +606,17 @@
 				"rejected": "Rejeitada",
 				"under_review": "Em Revisão"
 			},
-			"RidesDetailAnalysisStatusTag": {
-				"fail": "Fail",
-				"pass": "Pass"
+
+			"RidesDetailViewNavigation": {
+				"acceptance": {
+					"label": "Aceitação"
+				},
+				"analysis": {
+					"label": "Análise"
+				},
+				"audit": {
+					"label": "Auditoria"
+				}
 			}
 		},
 		"export": {

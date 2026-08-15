@@ -5,7 +5,7 @@ import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -32,7 +32,7 @@ export interface SamsListContextState {
 	filters: {
 		agency: UseFilterStateListReturnType
 		apex_version: UseFilterStateListReturnType<string>
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 		seen_first_at: null | UnixTimestamp
 		seen_last_at: null | UnixTimestamp
 		status: UseFilterStateListReturnType<SystemStatus>
@@ -70,7 +70,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const [favoritesEnabled, setFavoritesEnabled] = useState<boolean>(false);
 	const [timelineById, setTimelineById] = useState<Record<number, null | Sam['timeline_summary'] | undefined>>({});
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 	const [debouncedFilterSearch, setDebouncedFilterSearch] = useState('');
 	const inflightTimelineIdsRef = useRef<Set<number>>(new Set());
 	const timelineByIdRef = useRef<Record<number, null | Sam['timeline_summary'] | undefined>>({});

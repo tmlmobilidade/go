@@ -1,7 +1,7 @@
 /* * */
 
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function AlertsListFilterEffect() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={alertsListContext.filters.effect.isActive}
 			label="Efeito"
 			onChange={alertsListContext.filters.effect.set}

@@ -130,7 +130,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 			setDateInputValue(undefined);
 			setTimePickerValue(undefined);
 		}
-	}, [props.value, props.defaultValue]);
+	}, [props.value, props.defaultValue, timezone]);
 
 	useEffect(() => {
 		// Skip if onChange is not provided
@@ -153,7 +153,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 			console.log('DateTimeInput: Invalid date format', error);
 			return;
 		}
-	}, [dateInputValue, timePickerValue, props.onChange, timezone, props.value]);
+	}, [dateInputValue, timePickerValue, props.onChange, timezone, props.value, props]);
 
 	//
 	// C. Render components
@@ -168,9 +168,9 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				error={props.error}
 				label={props.label}
 				leftSection={<IconCalendar size={20} />}
-				popoverProps={{ withinPortal: false }}
 				onChange={setDateInputValue}
 				placeholder={props.placeholder ?? 'Selecione uma data...'}
+				popoverProps={{ withinPortal: false }}
 				readOnly={props.readOnly}
 				type="default"
 				value={dateInputValue}
@@ -183,8 +183,8 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				label={props.label ? ' ' : undefined}
 				leftSection={<IconClock size={20} />}
 				onChange={setTimePickerValue}
-				readOnly={props.readOnly}
 				popoverProps={{ withinPortal: false }}
+				readOnly={props.readOnly}
 				value={timePickerValue}
 				withSeconds={props.withSeconds}
 				presets={[

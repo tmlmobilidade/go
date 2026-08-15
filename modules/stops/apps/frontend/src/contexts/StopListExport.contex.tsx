@@ -1,8 +1,13 @@
 'use client';
 
-/* * */
-
-import { useStopsListContext } from '@/components/stops/list/StopsList.context';
+import { useStopsListData } from '@/components/stops/list/StopsList/use-stops-list-data';
+import { useStopsListFilterAgencies } from '@/components/stops/list/StopsListFilterAgencies/use-stops-list-filter-agencies';
+import { useStopsListFilterConnections } from '@/components/stops/list/StopsListFilterConnections/use-stops-list-filter-connections';
+import { useStopsListFilterEquipment } from '@/components/stops/list/StopsListFilterEquipment/use-stops-list-filter-equipment';
+import { useStopsListFilterFacilities } from '@/components/stops/list/StopsListFilterFacilities/use-stops-list-filter-facilities';
+import { useStopsListFilterLifecycleStatus } from '@/components/stops/list/StopsListFilterLifecycleStatus/use-stops-list-filter-lifecycle-status';
+import { useStopsListFilterMunicipality } from '@/components/stops/list/StopsListFilterMunicipality/use-stops-list-filter-municipality';
+import { useStopsListFilterSearch } from '@/components/stops/list/StopsListHeader/use-stops-list-filter-search';
 import { CreateFileExportDto, type StopExportProperties } from '@tmlmobilidade/types';
 import { closeModal, useAgenciesContext, useExportsContext, useLocationsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
@@ -47,7 +52,14 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 	const locationsContext = useLocationsContext();
 
 	const exports = useExportsContext();
-	const stopsListContext = useStopsListContext();
+	const stopsListData = useStopsListData();
+	const filterSearch = useStopsListFilterSearch();
+	const filterAgencies = useStopsListFilterAgencies();
+	const filterLifecycleStatus = useStopsListFilterLifecycleStatus();
+	const filterFacilities = useStopsListFilterFacilities();
+	const filterEquipment = useStopsListFilterEquipment();
+	const filterConnections = useStopsListFilterConnections();
+	const filterMunicipality = useStopsListFilterMunicipality();
 	const [loading, setLoading] = useState(false);
 
 	//
@@ -55,74 +67,74 @@ export const StopListExportContextProvider = ({ children }: PropsWithChildren) =
 
 	const activeFilters = useMemo(() => {
 		const filters: StopListExportSummaryFilter[] = [];
-		const searchValue = stopsListContext.filters.search.value.trim();
+		const searchValue = filterSearch.value.trim();
 
 		if (searchValue.length > 0) {
 			filters.push({ label: 'Pesquisa', value: searchValue });
 		}
 
-		if (stopsListContext.filters.agencies.isActive && stopsListContext.filters.agencies.value.length > 0) {
-			filters.push({ label: 'Operadores', value: agenciesContext.data.as_options.filter(option => stopsListContext.filters.agencies.value.includes(option.value)).map(option => option.label).join(', ') });
+		if (filterAgencies.isActive && filterAgencies.value.length > 0) {
+			filters.push({ label: 'Operadores', value: agenciesContext.data.as_options.filter(option => filterAgencies.value.includes(option.value)).map(option => option.label).join(', ') });
 		}
 
-		if (stopsListContext.filters.lifecycle_status.isActive && stopsListContext.filters.lifecycle_status.value.length > 0) {
-			filters.push({ label: 'Estado', value: stopsListContext.filters.lifecycle_status.value.join(', ') });
+		if (filterLifecycleStatus.isActive && filterLifecycleStatus.value.length > 0) {
+			filters.push({ label: 'Estado', value: filterLifecycleStatus.value.join(', ') });
 		}
 
-		if (stopsListContext.filters.facilities.isActive && stopsListContext.filters.facilities.value.length > 0) {
-			filters.push({ label: 'Serviços', value: stopsListContext.filters.facilities.value.join(', ') });
+		if (filterFacilities.isActive && filterFacilities.value.length > 0) {
+			filters.push({ label: 'Serviços', value: filterFacilities.value.join(', ') });
 		}
 
-		if (stopsListContext.filters.equipment.isActive && stopsListContext.filters.equipment.value.length > 0) {
-			filters.push({ label: 'Equipamentos', value: stopsListContext.filters.equipment.value.join(', ') });
+		if (filterEquipment.isActive && filterEquipment.value.length > 0) {
+			filters.push({ label: 'Equipamentos', value: filterEquipment.value.join(', ') });
 		}
 
-		if (stopsListContext.filters.connections.isActive && stopsListContext.filters.connections.value.length > 0) {
-			filters.push({ label: 'Conexões', value: stopsListContext.filters.connections.value.join(', ') });
+		if (filterConnections.isActive && filterConnections.value.length > 0) {
+			filters.push({ label: 'Conexões', value: filterConnections.value.join(', ') });
 		}
-		if (stopsListContext.filters.municipality.isActive && stopsListContext.filters.municipality.value.length > 0) {
-			filters.push({ label: 'Municípios', value: Array.from(locationsContext.data.municipalities.values()).filter(option => stopsListContext.filters.municipality.value.includes(option._id)).map(option => option.name).join(', ') });
+		if (filterMunicipality.isActive && filterMunicipality.value.length > 0) {
+			filters.push({ label: 'Municípios', value: Array.from(locationsContext.data.municipalities.values()).filter(option => filterMunicipality.value.includes(option._id)).map(option => option.name).join(', ') });
 		}
 
 		return filters;
-	}, [stopsListContext.filters.search.value, stopsListContext.filters.agencies.isActive, stopsListContext.filters.agencies.value, stopsListContext.filters.lifecycle_status.isActive, stopsListContext.filters.lifecycle_status.value, stopsListContext.filters.facilities.isActive, stopsListContext.filters.facilities.value, stopsListContext.filters.equipment.isActive, stopsListContext.filters.equipment.value, stopsListContext.filters.connections.isActive, stopsListContext.filters.connections.value, stopsListContext.filters.municipality.isActive, stopsListContext.filters.municipality.value, agenciesContext.data.as_options, locationsContext.data.municipalities]);
+	}, [filterSearch.value, filterAgencies.isActive, filterAgencies.value, filterLifecycleStatus.isActive, filterLifecycleStatus.value, filterFacilities.isActive, filterFacilities.value, filterEquipment.isActive, filterEquipment.value, filterConnections.isActive, filterConnections.value, filterMunicipality.isActive, filterMunicipality.value, agenciesContext.data.as_options, locationsContext.data.municipalities]);
 
 	const exportProperties = useMemo((): StopExportProperties['properties'] => {
-		const searchValue = stopsListContext.filters.search.value.trim();
+		const searchValue = filterSearch.value.trim();
 		const hasSearch = searchValue.length > 0;
-		const activeConnections = stopsListContext.filters.connections.value as StopExportProperties['properties']['connections'];
-		const activeEquipment = stopsListContext.filters.equipment.value as StopExportProperties['properties']['equipment'];
-		const activeFacilities = stopsListContext.filters.facilities.value as StopExportProperties['properties']['facilities'];
-		const activeLifecycleStatuses = stopsListContext.filters.lifecycle_status.value as StopExportProperties['properties']['lifecycle_statuses'];
-		const stopIds = stopsListContext.data.filtered.map(stop => stop._id);
+		const activeConnections = filterConnections.value as StopExportProperties['properties']['connections'];
+		const activeEquipment = filterEquipment.value as StopExportProperties['properties']['equipment'];
+		const activeFacilities = filterFacilities.value as StopExportProperties['properties']['facilities'];
+		const activeLifecycleStatuses = filterLifecycleStatus.value as StopExportProperties['properties']['lifecycle_statuses'];
+		const stopIds = stopsListData.data.filtered.map(stop => stop._id);
 
 		return {
-			connections: stopsListContext.filters.connections.isActive && stopsListContext.filters.connections.value.length > 0
+			connections: filterConnections.isActive && filterConnections.value.length > 0
 				? activeConnections
 				: undefined,
-			equipment: stopsListContext.filters.equipment.isActive && stopsListContext.filters.equipment.value.length > 0
+			equipment: filterEquipment.isActive && filterEquipment.value.length > 0
 				? activeEquipment
 				: undefined,
-			facilities: stopsListContext.filters.facilities.isActive && stopsListContext.filters.facilities.value.length > 0
+			facilities: filterFacilities.isActive && filterFacilities.value.length > 0
 				? activeFacilities
 				: undefined,
-			lifecycle_statuses: stopsListContext.filters.lifecycle_status.isActive && stopsListContext.filters.lifecycle_status.value.length > 0
+			lifecycle_statuses: filterLifecycleStatus.isActive && filterLifecycleStatus.value.length > 0
 				? activeLifecycleStatuses
 				: undefined,
 			search: hasSearch ? searchValue : undefined,
 			stop_ids: stopIds,
 		};
 	}, [
-		stopsListContext.data.filtered,
-		stopsListContext.filters.connections.isActive,
-		stopsListContext.filters.connections.value,
-		stopsListContext.filters.equipment.isActive,
-		stopsListContext.filters.equipment.value,
-		stopsListContext.filters.facilities.isActive,
-		stopsListContext.filters.facilities.value,
-		stopsListContext.filters.lifecycle_status.isActive,
-		stopsListContext.filters.lifecycle_status.value,
-		stopsListContext.filters.search.value,
+		stopsListData.data.filtered,
+		filterConnections.isActive,
+		filterConnections.value,
+		filterEquipment.isActive,
+		filterEquipment.value,
+		filterFacilities.isActive,
+		filterFacilities.value,
+		filterLifecycleStatus.isActive,
+		filterLifecycleStatus.value,
+		filterSearch.value,
 	]);
 
 	//
