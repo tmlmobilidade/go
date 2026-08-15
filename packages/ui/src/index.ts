@@ -1,5 +1,6 @@
 export * from './components';
 export * from './contexts';
+export * from './display';
 export * from './filters';
 export * from './hooks';
 export * from './i18n';
