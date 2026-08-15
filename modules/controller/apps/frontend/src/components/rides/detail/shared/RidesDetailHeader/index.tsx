@@ -1,10 +1,13 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CloseButton, IdTag, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, IdTag, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, SegmentedControl, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import { useRidesDetailCurrentView } from '../use-rides-detail-current-view';
 import { useRidesDetailRideAnalysesData } from '../use-rides-detail-ride-analyses-data';
 import { useRidesDetailRideData } from '../use-rides-detail-ride-data';
 import { useRidesDetailRideId } from '../use-rides-detail-ride-id';
@@ -19,7 +22,10 @@ export function RidesDetailHeader() {
 
 	const router = useRouter();
 
+	const { t } = useTranslation();
+
 	const { rideId } = useRidesDetailRideId();
+	const { availableViews, currentView, setCurrentView } = useRidesDetailCurrentView();
 
 	const { data: rideData, isLoading: rideIsLoading, isValidating: rideIsValidating, timestamp: rideTimestamp } = useRidesDetailRideData();
 	const { isLoading: rideAnalysesIsLoading, isValidating: rideAnalysesIsValidating, timestamp: rideAnalysesTimestamp } = useRidesDetailRideAnalysesData();
@@ -28,6 +34,13 @@ export function RidesDetailHeader() {
 
 	//
 	// B. Transform data
+
+	const viewOptions = useMemo(() => {
+		return availableViews.map(item => ({
+			label: t(`default:rides.detail.RidesDetailViewNavigation.${item}.label`),
+			value: item,
+		}));
+	}, [availableViews, t]);
 
 	// const isFavorite = useMemo(() => {
 	// 	if (!rideAnalysisContext.data.ride_id) return false;
@@ -69,6 +82,11 @@ export function RidesDetailHeader() {
 				tooltip={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
 				variant="primary"
 			/> */}
+			<SegmentedControl
+				data={viewOptions}
+				onChange={setCurrentView}
+				value={currentView}
+			/>
 		</Toolbar>
 	);
 }

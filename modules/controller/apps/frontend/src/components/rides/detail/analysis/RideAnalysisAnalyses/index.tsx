@@ -1,9 +1,8 @@
 'use client';
 
-import { RideAnalysisAnalysesItem } from '@/components/rides/detail/analysis/RideAnalysisAnalysesItem';
 import { useRidesDetailRideAnalysesData } from '@/components/rides/detail/shared/use-rides-detail-ride-analyses-data';
 import { type RideAnalysesRegistry } from '@tmlmobilidade/go-types-operation';
-import { Collapsible, DataTable, DataTableColumn, GradeStatusDisplay, Grid, Label, Section, Table, TableData, Text } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, GradeStatusDisplay, Label, Section, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -60,7 +59,10 @@ export function RideAnalysisAnalyses() {
 	// C. Render components
 
 	return (
-		<Collapsible description={t('default:rides.analysis.RideAnalysisResult.description')} title={t('default:rides.analysis.RideAnalysisResult.title')} defaultOpen>
+		<Collapsible
+			description={t('default:rides.analysis.RideAnalysisResult.description')}
+			title={t('default:rides.analysis.RideAnalysisResult.title')}
+		>
 			<DataTable
 				columns={columns}
 				records={rideAnalysesList}

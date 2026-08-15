@@ -392,6 +392,47 @@
 				},
 				"title": "Metadados"
 			},
+			"RideAnalysisPath": {
+				"description": "Distribuição dos passageiros por paragem",
+				"table": {
+					"columns": {
+						"passengers_observed": {
+							"label": "Qtd"
+						},
+						"passengers_observed_banking_taps_qty": {
+							"label": "Qtd"
+						},
+						"passengers_observed_prepaid_amount": {
+							"label": "Qtd"
+						},
+						"passengers_observed_prepaid_qty": {
+							"label": "Qtd"
+						},
+						"passengers_observed_sales_amount": {
+							"label": "Qtd"
+						},
+						"passengers_observed_sales_qty": {
+							"label": "Qtd"
+						},
+						"passengers_observed_subscription_qty": {
+							"label": "Qtd"
+						},
+						"seen_first_at": {
+							"label": "Hora de Início Observada"
+						},
+						"seen_last_at": {
+							"label": "Hora de Fim Observada"
+						},
+						"stop_name": {
+							"label": "Paragem"
+						},
+						"stop_sequence": {
+							"label": "Seq."
+						}
+					}
+				},
+				"title": "Visão por Paragem"
+			},
 			"RideAnalysisPerformance": {
 				"description": "Dados de desempenho da circulação",
 				"no_data": "Sem Dados",
@@ -516,6 +557,17 @@
 				"justification_required": "Justificação Necessária",
 				"rejected": "Rejeitada",
 				"under_review": "Em Revisão"
+			},
+			"RidesDetailViewNavigation": {
+				"acceptance": {
+					"label": "Aceitação"
+				},
+				"analysis": {
+					"label": "Análise"
+				},
+				"audit": {
+					"label": "Auditoria"
+				}
 			}
 		},
 		"export": {
