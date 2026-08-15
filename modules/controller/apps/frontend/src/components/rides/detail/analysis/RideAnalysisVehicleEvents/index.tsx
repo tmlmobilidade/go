@@ -1,9 +1,8 @@
 'use client';
 
-import { TimestampTag } from '@/components/common/TimestampTag';
 import { useRidesDetailVehicleEventsData } from '@/components/rides/detail/shared/use-rides-detail-vehicle-events-data';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -22,43 +21,43 @@ export function RideAnalysisVehicleEvents() {
 	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
 			accessor: '_id',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns._id.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns._id.label'),
 			width: 250,
 		},
 		{
 			accessor: 'created_at',
-			render: item => <TimestampTag value={item.created_at} />,
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.created_at.label'),
+			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.created_at.label'),
 			width: 280,
 		},
 		{
 			accessor: 'stop_id',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.stop_id.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.stop_id.label'),
 			width: 150,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.vehicle_id.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.vehicle_id.label'),
 			width: 150,
 		},
 		{
 			accessor: 'driver_id',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.driver_id.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.driver_id.label'),
 			width: 150,
 		},
 		{
 			accessor: 'odometer',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.odometer.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.odometer.label'),
 			width: 150,
 		},
 		{
 			accessor: 'latitude',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.latitude.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.latitude.label'),
 			width: 220,
 		},
 		{
 			accessor: 'longitude',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.longitude.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.longitude.label'),
 			width: 220,
 		},
 	];

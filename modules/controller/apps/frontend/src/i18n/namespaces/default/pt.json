@@ -171,8 +171,7 @@
 		},
 		"analysis": {
 			"RideAnalysisApexBankingTaps": {
-				"description": "Transações APEX associadas a esta Ride.",
-				"no_data": "Nenhuma Transação Registada",
+				"description": "Transações APEX associadas a esta circulação.",
 				"table": {
 					"columns": {
 						"card_serial_number": {
@@ -219,7 +218,8 @@
 				"title": "Transações APEX"
 			},
 			"RideAnalysisApexLocations": {
-				"Table": {
+				"description": "Localizações APEX associadas a esta Ride.",
+				"table": {
 					"columns": {
 						"created_at": {
 							"label": "Timestamp"
@@ -238,12 +238,11 @@
 						}
 					}
 				},
-				"description": "Localizações APEX associadas a esta Ride.",
-				"no_data": "Nenhuma Localização APEX Registada",
 				"title": "APEX Locations"
 			},
 			"RideAnalysisApexOnBoardRefunds": {
-				"Table": {
+				"description": "Reembolsos APEX associados a esta circulação.",
+				"table": {
 					"columns": {
 						"card_serial_number": {
 							"label": "Card SN"
@@ -280,12 +279,11 @@
 						}
 					}
 				},
-				"description": "Reembolsos APEX associados a esta Ride.",
-				"no_data": "Nenhum Reembolso Registado",
 				"title": "APEX On Board Refunds"
 			},
 			"RideAnalysisApexOnBoardSales": {
-				"Table": {
+				"description": "Vendas APEX associadas a esta circulação.",
+				"table": {
 					"columns": {
 						"card_serial_number": {
 							"label": "Card SN"
@@ -322,13 +320,10 @@
 						}
 					}
 				},
-				"description": "Vendas APEX associadas a esta Ride.",
-				"no_data": "Nenhuma Venda Registada",
 				"title": "APEX On Board Sales"
 			},
 			"RideAnalysisApexValidations": {
 				"description": "Validações APEX associadas a esta circulação.",
-				"no_data": "Nenhuma Validação Registada",
 				"table": {
 					"columns": {
 						"card_serial_number": {
@@ -473,12 +468,11 @@
 				"title": "Visão por Paragem"
 			},
 			"RideAnalysisPerformance": {
-				"description": "Dados de desempenho da circulação",
-				"no_data": "Sem Dados",
+				"description": "Dados de desempenho da circulação.",
 				"title": "Performance"
 			},
 			"RideAnalysisResult": {
-				"description": "Eventos dos veículos mapeados",
+				"description": "Resultado das análises à circulação.",
 				"labels": {
 					"AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP": {
 						"description": "Uma circulação deve ter pelo menos um evento na primeira paragem.",
@@ -552,7 +546,8 @@
 				}
 			},
 			"RideAnalysisVehicleEvents": {
-				"Table": {
+				"description": "Eventos GTFS-RT gerados pelo veículo.",
+				"table": {
 					"columns": {
 						"_id": {
 							"label": "ID"
@@ -586,7 +581,6 @@
 						}
 					}
 				},
-				"description": "Eventos GTFS-RT gerados pelo veículo.",
 				"title": "Eventos do Veículo"
 			}
 		},
