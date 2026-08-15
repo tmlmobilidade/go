@@ -9,6 +9,10 @@
 	overflow: hidden;
 }
 
+.container[data-is-collapsed='true'] {
+	gap: var(--size-spacing-xs);
+}
+
 /* * */
 /* INNER WRAPPER */
 

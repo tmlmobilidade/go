@@ -181,7 +181,12 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 	}
 
 	return (
-		<div ref={containerRef} className={styles.container} style={{ gridTemplateColumns }}>
+		<div
+			ref={containerRef}
+			className={styles.container}
+			data-is-collapsed={collapsedPane !== 'none'}
+			style={{ gridTemplateColumns }}
+		>
 			{visiblePanes.map((pane, index) => {
 				const isCollapsed = collapsedPane === index;
 

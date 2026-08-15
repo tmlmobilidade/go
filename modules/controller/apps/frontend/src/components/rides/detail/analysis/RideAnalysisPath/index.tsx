@@ -89,7 +89,7 @@ export function RideAnalysisPath() {
 			render: item => (
 				<Section alignItems="center" flexDirection="row" gap="md" padding="none">
 					<NumberDisplay value={item.passengers_observed_prepaid_qty} />
-					<NumberDisplay prefix="€" value={item.passengers_observed_prepaid_amount} />
+					<NumberDisplay prefix="€" value={item.passengers_observed_prepaid_amount / 100} />
 				</Section>
 			),
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.passengers_observed_prepaid.label'),
@@ -100,7 +100,7 @@ export function RideAnalysisPath() {
 			render: item => (
 				<Section alignItems="center" flexDirection="row" gap="md" padding="none">
 					<NumberDisplay value={item.passengers_observed_sales_qty} />
-					<NumberDisplay prefix="€" value={item.passengers_observed_sales_amount} />
+					<NumberDisplay prefix="€" value={item.passengers_observed_sales_amount / 100} />
 				</Section>
 			),
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.passengers_observed_sales.label'),
