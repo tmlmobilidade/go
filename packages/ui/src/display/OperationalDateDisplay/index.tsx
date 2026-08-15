@@ -2,8 +2,9 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+
+import { Tag } from '../../components/tags';
 
 /* * */
 

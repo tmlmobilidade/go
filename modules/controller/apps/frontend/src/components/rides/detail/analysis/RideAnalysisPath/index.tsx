@@ -7,7 +7,7 @@ import { useRidesDetailApexValidationsData } from '@/components/rides/detail/sha
 import { useRidesDetailHashedTripData } from '@/components/rides/detail/shared/use-rides-detail-hashed-trip-data';
 import { type SimplifiedApexBankingTap, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { Collapsible, DataTable, DataTableColumn, IdTag, Label, ScrollArea, Section } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, IdTag, Label, NumberDisplay, ScrollArea, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -66,49 +66,49 @@ export function RideAnalysisPath() {
 		{
 			accessor: 'passengers_observed',
 			center: true,
-			render: item => !!item.passengers_observed && item.passengers_observed,
+			render: item => <NumberDisplay value={item.passengers_observed} />,
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.passengers_observed.label'),
 			width: 100,
 		},
 		{
 			accessor: 'passengers_observed_banking_taps_qty',
 			center: true,
-			render: item => !!item.passengers_observed_banking_taps_qty && item.passengers_observed_banking_taps_qty,
+			render: item => <NumberDisplay value={item.passengers_observed_banking_taps_qty} />,
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.passengers_observed_banking_taps_qty.label'),
 			width: 100,
 		},
 		{
 			accessor: 'passengers_observed_prepaid_amount',
 			center: true,
-			render: item => !!item.passengers_observed_prepaid_amount && item.passengers_observed_prepaid_amount,
+			render: item => <NumberDisplay value={item.passengers_observed_prepaid_amount} />,
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.passengers_observed_prepaid_amount.label'),
 			width: 100,
 		},
 		{
 			accessor: 'passengers_observed_prepaid_qty',
 			center: true,
-			render: item => !!item.passengers_observed_prepaid_qty && item.passengers_observed_prepaid_qty,
+			render: item => <NumberDisplay value={item.passengers_observed_prepaid_qty} />,
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.passengers_observed_prepaid_qty.label'),
 			width: 100,
 		},
 		{
 			accessor: 'passengers_observed_sales_amount',
 			center: true,
-			render: item => !!item.passengers_observed_sales_amount && item.passengers_observed_sales_amount,
+			render: item => <NumberDisplay value={item.passengers_observed_sales_amount} />,
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.passengers_observed_sales_amount.label'),
 			width: 100,
 		},
 		{
 			accessor: 'passengers_observed_sales_qty',
 			center: true,
-			render: item => !!item.passengers_observed_sales_qty && item.passengers_observed_sales_qty,
+			render: item => <NumberDisplay value={item.passengers_observed_sales_qty} />,
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.passengers_observed_sales_qty.label'),
 			width: 100,
 		},
 		{
 			accessor: 'passengers_observed_subscription_qty',
 			center: true,
-			render: item => !!item.passengers_observed_subscription_qty && item.passengers_observed_subscription_qty,
+			render: item => <NumberDisplay value={item.passengers_observed_subscription_qty} />,
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.passengers_observed_subscription_qty.label'),
 			width: 100,
 		},
