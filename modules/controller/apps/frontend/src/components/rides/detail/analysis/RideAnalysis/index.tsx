@@ -20,12 +20,12 @@ export function RideAnalysis() {
 			<RideAnalysisMetadata />
 			<RideAnalysisAnalyses />
 			<RideAnalysisPath />
-			<RideAnalysisVehicleEvents />
 			<RideAnalysisApexValidations />
 			<RideAnalysisApexSales />
 			<RideAnalysisApexRefunds />
 			<RideAnalysisApexBankingTaps />
 			<RideAnalysisApexLocations />
+			<RideAnalysisVehicleEvents />
 		</>
 	);
 }

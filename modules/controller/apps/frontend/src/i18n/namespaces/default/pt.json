@@ -170,6 +170,54 @@
 			}
 		},
 		"analysis": {
+			"RideAnalysisApexBankingTaps": {
+				"description": "Transações APEX associadas a esta Ride.",
+				"no_data": "Nenhuma Transação Registada",
+				"table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"created_at": {
+							"label": "Criado em"
+						},
+						"event_type": {
+							"label": "Tipo de Evento"
+						},
+						"id_on_board_refund": {
+							"label": "ID do Reembolso a Bordo"
+						},
+						"id_on_board_sale": {
+							"label": "ID da Venda a Bordo"
+						},
+						"id_validation": {
+							"label": "ID da Validação"
+						},
+						"is_passenger": {
+							"label": "Passageiro"
+						},
+						"mac_sam_serial_number": {
+							"label": "SAM SN"
+						},
+						"product_id": {
+							"label": "ID do Produto"
+						},
+						"stop_id": {
+							"label": "ID da Paragem"
+						},
+						"tx_valid": {
+							"label": "Tx Valid"
+						},
+						"validation_status": {
+							"label": "Estado da Validação"
+						},
+						"vehicle_id": {
+							"label": "ID do Veículo"
+						}
+					}
+				},
+				"title": "Transações APEX"
+			},
 			"RideAnalysisApexLocations": {
 				"Table": {
 					"columns": {
@@ -558,6 +606,7 @@
 				"rejected": "Rejeitada",
 				"under_review": "Em Revisão"
 			},
+
 			"RidesDetailViewNavigation": {
 				"acceptance": {
 					"label": "Aceitação"
