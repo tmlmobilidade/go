@@ -1,10 +1,8 @@
 'use client';
 
-import { RideAnalysisAnalysesItem } from '@/components/rides/detail/analysis/RideAnalysisAnalysesItem';
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog, UserDisplay } from '@tmlmobilidade/types';
 import { CommentInput, CommentItemProps, CommentList, HasPermission, Label, Section, Tooltip } from '@tmlmobilidade/ui';
 import React, { createElement, useMemo } from 'react';
@@ -139,7 +137,8 @@ export function RideAcceptanceCommentList() {
 							{analysisItems.map(item => (
 								<Tooltip
 									key={item.id}
-									label={<RideAnalysisAnalysesItem grade={item.grade} id={item.id} />}
+									// label={<RideAnalysisAnalysesItem value={item.grade} id={item.id} />}
+									label={item.grade}
 									p={0}
 									radius="md"
 								>
