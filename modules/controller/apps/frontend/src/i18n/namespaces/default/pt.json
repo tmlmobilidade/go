@@ -327,7 +327,9 @@
 				"title": "APEX On Board Sales"
 			},
 			"RideAnalysisApexValidations": {
-				"Table": {
+				"description": "Validações APEX associadas a esta circulação.",
+				"no_data": "Nenhuma Validação Registada",
+				"table": {
 					"columns": {
 						"card_serial_number": {
 							"label": "Card SN"
@@ -336,7 +338,7 @@
 							"label": "Timestamp"
 						},
 						"event_type": {
-							"label": "Event Type"
+							"label": "Event"
 						},
 						"id_on_board_refund": {
 							"label": "ID On Board Refund"
@@ -367,8 +369,6 @@
 						}
 					}
 				},
-				"description": "Validações APEX associadas a esta Ride.",
-				"no_data": "Nenhuma Validação Registada",
 				"title": "Validações APEX"
 			},
 			"RideAnalysisMap": {
@@ -445,31 +445,22 @@
 				"table": {
 					"columns": {
 						"passengers_observed": {
-							"label": "Qtd"
+							"label": "Pax"
 						},
 						"passengers_observed_banking_taps_qty": {
-							"label": "Qtd"
+							"label": "CUT"
 						},
-						"passengers_observed_prepaid_amount": {
-							"label": "Qtd"
+						"passengers_observed_prepaid": {
+							"label": "Pré-pago"
 						},
-						"passengers_observed_prepaid_qty": {
-							"label": "Qtd"
-						},
-						"passengers_observed_sales_amount": {
-							"label": "Qtd"
-						},
-						"passengers_observed_sales_qty": {
-							"label": "Qtd"
+						"passengers_observed_sales": {
+							"label": "Vendas"
 						},
 						"passengers_observed_subscription_qty": {
-							"label": "Qtd"
+							"label": "Val."
 						},
-						"seen_first_at": {
-							"label": "Hora de Início Observada"
-						},
-						"seen_last_at": {
-							"label": "Hora de Fim Observada"
+						"seen_at": {
+							"label": "Intervalo"
 						},
 						"stop_name": {
 							"label": "Paragem"

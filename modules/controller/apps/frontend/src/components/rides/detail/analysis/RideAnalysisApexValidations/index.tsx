@@ -2,10 +2,9 @@
 
 import { ApexValidationIsPassengerTag } from '@/components/common/ApexValidationIsPassengerTag';
 import { ApexValidationStatusTag } from '@/components/common/ApexValidationStatusTag';
-import { TimestampTag } from '@/components/common/TimestampTag';
 import { useRidesDetailApexValidationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-validations-data';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, IdTag, NumberDisplay, ScrollArea, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,65 +23,71 @@ export function RideAnalysisApexValidations() {
 	const columns: DataTableColumn<SimplifiedApexValidation>[] = [
 		{
 			accessor: 'created_at',
-			render: item => <TimestampTag value={item.created_at} />,
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.created_at.label'),
-			width: 280,
+			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.created_at.label'),
+			width: 180,
 		},
 		{
 			accessor: 'event_type',
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.event_type.label'),
-			width: 100,
+			center: true,
+			render: item => <NumberDisplay value={Number(item.event_type)} />,
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.event_type.label'),
+			width: 50,
 		},
 		{
 			accessor: 'stop_id',
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.stop_id.label'),
+			render: item => <IdTag id={item.stop_id} copyOnClick />,
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.stop_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'card_serial_number',
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.card_serial_number.label'),
-			width: 220,
+			render: item => <IdTag id={item.card_serial_number} copyOnClick />,
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.card_serial_number.label'),
+			width: 180,
 		},
 		{
 			accessor: 'product_id',
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.product_id.label'),
-			width: 450,
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.product_id.label'),
+			width: 400,
 		},
 		{
 			accessor: 'validation_status',
 			render: item => <ApexValidationStatusTag value={item.validation_status} />,
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.status.label'),
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.status.label'),
 			width: 250,
 		},
 		{
 			accessor: 'is_passenger',
 			render: item => <ApexValidationIsPassengerTag value={item.is_passenger} />,
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.tx_valid.label'),
-			width: 150,
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.tx_valid.label'),
+			width: 100,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.vehicle_id.label'),
-			width: 120,
+			render: item => <IdTag id={item.vehicle_id} copyOnClick />,
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.vehicle_id.label'),
+			width: 100,
 		},
 		{
 			accessor: 'mac_sam_serial_number',
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.mac_sam_serial_number.label'),
+			render: item => <IdTag id={item.mac_sam_serial_number} copyOnClick />,
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.mac_sam_serial_number.label'),
 			width: 160,
 		},
 		{
 			accessor: '_id',
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.id_validation.label'),
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.id_validation.label'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_sale_id',
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.id_on_board_sale.label'),
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.id_on_board_sale.label'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_refund_id',
-			title: t('default:rides.analysis.RideAnalysisApexValidations.Table.columns.id_on_board_refund.label'),
+			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.id_on_board_refund.label'),
 			width: 400,
 		},
 	];
@@ -99,12 +104,18 @@ export function RideAnalysisApexValidations() {
 	// C. Render components
 
 	return (
-		<Collapsible description={t('default:rides.analysis.RideAnalysisApexValidations.description')} title={t('default:rides.analysis.RideAnalysisApexValidations.title')}>
-			<DataTable
-				columns={columns}
-				records={sortedSimplifiedApexValidations}
-				rowIdAccessor="_id"
-			/>
+		<Collapsible
+			description={t('default:rides.analysis.RideAnalysisApexValidations.description')}
+			title={t('default:rides.analysis.RideAnalysisApexValidations.title')}
+			defaultOpen
+		>
+			<ScrollArea>
+				<DataTable
+					columns={columns}
+					records={sortedSimplifiedApexValidations}
+					rowIdAccessor="_id"
+				/>
+			</ScrollArea>
 		</Collapsible>
 	);
 }

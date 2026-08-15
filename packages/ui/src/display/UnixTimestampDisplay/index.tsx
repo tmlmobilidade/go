@@ -9,20 +9,58 @@ import { Tag } from '../../components/tags';
 /* * */
 
 interface UnixTimestampDisplayProps {
+
+	/**
+	 * Whether to show the date
+	 * @default false
+	 */
+	showDate?: boolean
+
+	/**
+	 * Whether to show the seconds
+	 * @default false
+	 */
+	showSeconds?: boolean
+
+	/**
+	 * Whether to show the time
+	 * @default true
+	 */
+	showTime?: boolean
+
+	/**
+	 * The UnixTimestamp to display, in milliseconds
+	 * @example 1718534400000
+	 */
 	value: UnixTimestamp
 }
 
 /* * */
 
-export function UnixTimestampDisplay({ value }: UnixTimestampDisplayProps) {
+export function UnixTimestampDisplay({ showDate = false, showSeconds = false, showTime = true, value }: UnixTimestampDisplayProps) {
 	//
 
+	//
+	// A. Transform data
+
+	const format = useMemo(() => {
+		const format: string[] = [];
+		if (showDate) format.push('yyyy-LL-dd ');
+		if (showTime) format.push('HH:mm');
+		if (showTime && showSeconds) format.push(':ss');
+		return format.join('').trim();
+	}, [showDate, showSeconds, showTime]);
+
 	const unixTimestampDisplayValue = useMemo(() => {
-		if (!value) return null;
-		return Dates
-			.fromUnixTimestamp(value)
-			.toFormat('yyyy-LL-dd HH:mm:ss');
-	}, [value]);
+		// Skip if no value or value is Infinity
+		if (!value) return;
+		if (value === Infinity || value === -Infinity) return;
+		// Format the timestamp
+		return Dates.fromUnixTimestamp(value).toFormat(format);
+	}, [value, format]);
+
+	//
+	// B. Render components
 
 	if (!unixTimestampDisplayValue) return;
 
