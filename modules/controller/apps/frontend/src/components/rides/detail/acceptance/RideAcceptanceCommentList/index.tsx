@@ -137,7 +137,6 @@ export function RideAcceptanceCommentList() {
 							{analysisItems.map(item => (
 								<Tooltip
 									key={item.id}
-									// label={<RideAnalysisAnalysesItem value={item.grade} id={item.id} />}
 									label={item.grade}
 									p={0}
 									radius="md"

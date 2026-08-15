@@ -28,19 +28,19 @@ export function RideAnalysisAnalyses() {
 					<Text size="sm">{t(`ride_analysis:${item[0]}.description`)}</Text>
 				</Section>
 			),
-			title: t('default:rides.analysis.RideAnalysisApexLocations.Table.columns.created_at.label'),
+			title: t('default:rides.analysis.RideAnalysisApexLocations.table.columns.created_at.label'),
 			width: 500,
 		},
 		{
 			accessor: 'grade_status',
 			render: item => <GradeStatusDisplay tooltip={item[1].remarks} value={item[1].grade_status} />,
-			title: t('default:rides.analysis.RideAnalysisApexLocations.Table.columns.stop_id.label'),
+			title: t('default:rides.analysis.RideAnalysisApexLocations.table.columns.stop_id.label'),
 			width: 100,
 		},
 		{
 			accessor: 'reason',
 			render: item => <Label>{item[1].reason}</Label>,
-			title: t('default:rides.analysis.RideAnalysisApexLocations.Table.columns.vehicle_id.label'),
+			title: t('default:rides.analysis.RideAnalysisApexLocations.table.columns.vehicle_id.label'),
 			width: 500,
 		},
 	];
