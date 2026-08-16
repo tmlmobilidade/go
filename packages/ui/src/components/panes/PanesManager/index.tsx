@@ -194,9 +194,9 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 					return (
 						<button key={index} className={styles.collapsedPane} onClick={handleExpand}>
 							{index === 0 ? (
-								<IconCaretRightFilled size={30} />
+								<IconCaretRightFilled size={20} />
 							) : (
-								<IconCaretLeftFilled size={30} />
+								<IconCaretLeftFilled size={20} />
 							)}
 						</button>
 					);
