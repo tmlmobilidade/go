@@ -48,7 +48,7 @@ export function RideAnalysisPath() {
 		{
 			accessor: 'stop_sequence',
 			center: true,
-			render: item => <IdTag id={`#${item.stop_sequence}`} />,
+			render: item => `#${item.stop_sequence}`,
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.stop_sequence.label'),
 			width: 50,
 		},
