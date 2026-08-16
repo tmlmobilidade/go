@@ -2,7 +2,7 @@
 
 import { useRidesDetailApexBankingTapsData } from '@/components/rides/detail/shared/use-rides-detail-apex-banking-taps-data';
 import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -84,12 +84,17 @@ export function RideAnalysisApexBankingTaps() {
 	// C. Render components
 
 	return (
-		<Collapsible description={t('default:rides.analysis.RideAnalysisApexBankingTaps.description')} title={t('default:rides.analysis.RideAnalysisApexBankingTaps.title')}>
-			<DataTable
-				columns={columns}
-				records={sortedSimplifiedApexBankingTaps}
-				rowIdAccessor="_id"
-			/>
+		<Collapsible
+			description={t('default:rides.analysis.RideAnalysisApexBankingTaps.description')}
+			title={t('default:rides.analysis.RideAnalysisApexBankingTaps.title')}
+		>
+			<DataTableScroller>
+				<DataTable
+					columns={columns}
+					records={sortedSimplifiedApexBankingTaps}
+					rowIdAccessor="_id"
+				/>
+			</DataTableScroller>
 		</Collapsible>
 	);
 }

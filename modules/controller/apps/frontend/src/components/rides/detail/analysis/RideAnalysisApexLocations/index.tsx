@@ -2,7 +2,7 @@
 
 import { useRidesDetailApexLocationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-locations-data';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -59,12 +59,17 @@ export function RideAnalysisApexLocations() {
 	// C. Render components
 
 	return (
-		<Collapsible description={t('default:rides.analysis.RideAnalysisApexLocations.description')} title={t('default:rides.analysis.RideAnalysisApexLocations.title')}>
-			<DataTable
-				columns={columns}
-				records={sortedSimplifiedApexLocations}
-				rowIdAccessor="_id"
-			/>
+		<Collapsible
+			description={t('default:rides.analysis.RideAnalysisApexLocations.description')}
+			title={t('default:rides.analysis.RideAnalysisApexLocations.title')}
+		>
+			<DataTableScroller>
+				<DataTable
+					columns={columns}
+					records={sortedSimplifiedApexLocations}
+					rowIdAccessor="_id"
+				/>
+			</DataTableScroller>
 		</Collapsible>
 	);
 }

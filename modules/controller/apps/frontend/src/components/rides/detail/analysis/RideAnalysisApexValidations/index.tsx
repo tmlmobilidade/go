@@ -4,7 +4,7 @@ import { ApexValidationIsPassengerTag } from '@/components/common/ApexValidation
 import { ApexValidationStatusTag } from '@/components/common/ApexValidationStatusTag';
 import { useRidesDetailApexValidationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-validations-data';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, IdTag, NumberDisplay, ScrollArea, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, IdTag, NumberDisplay, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -107,15 +107,14 @@ export function RideAnalysisApexValidations() {
 		<Collapsible
 			description={t('default:rides.analysis.RideAnalysisApexValidations.description')}
 			title={t('default:rides.analysis.RideAnalysisApexValidations.title')}
-			defaultOpen
 		>
-			<ScrollArea>
+			<DataTableScroller>
 				<DataTable
 					columns={columns}
 					records={sortedSimplifiedApexValidations}
 					rowIdAccessor="_id"
 				/>
-			</ScrollArea>
+			</DataTableScroller>
 		</Collapsible>
 	);
 }

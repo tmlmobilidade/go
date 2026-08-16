@@ -2,7 +2,7 @@
 
 import { useRidesDetailRideAnalysesData } from '@/components/rides/detail/shared/use-rides-detail-ride-analyses-data';
 import { type RideAnalysesRegistry } from '@tmlmobilidade/go-types-operation';
-import { Collapsible, DataTable, DataTableColumn, GradeStatusDisplay, Label, Section, Text } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, GradeStatusDisplay, Label, Section, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -63,11 +63,13 @@ export function RideAnalysisAnalyses() {
 			description={t('default:rides.analysis.RideAnalysisResult.description')}
 			title={t('default:rides.analysis.RideAnalysisResult.title')}
 		>
-			<DataTable
-				columns={columns}
-				records={rideAnalysesList}
-				rowIdAccessor="0"
-			/>
+			<DataTableScroller>
+				<DataTable
+					columns={columns}
+					records={rideAnalysesList}
+					rowIdAccessor="0"
+				/>
+			</DataTableScroller>
 		</Collapsible>
 	);
 }

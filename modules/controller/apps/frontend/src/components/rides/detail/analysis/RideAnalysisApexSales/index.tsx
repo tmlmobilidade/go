@@ -5,7 +5,7 @@ import { ApexPaymentMethodTag } from '@/components/common/ApexPaymentMethodTag';
 import { CurrencyTag } from '@/components/common/CurrencyTag';
 import { useRidesDetailApexSalesData } from '@/components/rides/detail/shared/use-rides-detail-apex-sales-data';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -95,12 +95,17 @@ export function RideAnalysisApexSales() {
 	// C. Render components
 
 	return (
-		<Collapsible description={t('default:rides.analysis.RideAnalysisApexOnBoardSales.description')} title={t('default:rides.analysis.RideAnalysisApexOnBoardSales.title')}>
-			<DataTable
-				columns={columns}
-				records={sortedSimplifiedApexOnBoardSales}
-				rowIdAccessor="_id"
-			/>
+		<Collapsible
+			description={t('default:rides.analysis.RideAnalysisApexOnBoardSales.description')}
+			title={t('default:rides.analysis.RideAnalysisApexOnBoardSales.title')}
+		>
+			<DataTableScroller>
+				<DataTable
+					columns={columns}
+					records={sortedSimplifiedApexOnBoardSales}
+					rowIdAccessor="_id"
+				/>
+			</DataTableScroller>
 		</Collapsible>
 	);
 }

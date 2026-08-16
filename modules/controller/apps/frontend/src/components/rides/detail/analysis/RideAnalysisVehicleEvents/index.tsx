@@ -2,7 +2,7 @@
 
 import { useRidesDetailVehicleEventsData } from '@/components/rides/detail/shared/use-rides-detail-vehicle-events-data';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { Collapsible, DataTable, DataTableColumn, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -78,11 +78,13 @@ export function RideAnalysisVehicleEvents() {
 			description={t('default:rides.analysis.RideAnalysisVehicleEvents.description')}
 			title={t('default:rides.analysis.RideAnalysisVehicleEvents.title')}
 		>
-			<DataTable
-				columns={columns}
-				records={sortedVehicleEvents}
-				rowIdAccessor="_id"
-			/>
+			<DataTableScroller>
+				<DataTable
+					columns={columns}
+					records={sortedVehicleEvents}
+					rowIdAccessor="_id"
+				/>
+			</DataTableScroller>
 		</Collapsible>
 	);
 }

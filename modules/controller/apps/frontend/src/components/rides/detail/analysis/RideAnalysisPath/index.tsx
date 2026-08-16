@@ -7,7 +7,7 @@ import { useRidesDetailApexValidationsData } from '@/components/rides/detail/sha
 import { useRidesDetailHashedTripData } from '@/components/rides/detail/shared/use-rides-detail-hashed-trip-data';
 import { type SimplifiedApexBankingTap, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { Collapsible, DataTable, DataTableColumn, IdTag, Label, NumberDisplay, ScrollArea, Section, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, IdTag, Label, NumberDisplay, Section, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -206,13 +206,13 @@ export function RideAnalysisPath() {
 			description={t('default:rides.analysis.RideAnalysisPath.description')}
 			title={t('default:rides.analysis.RideAnalysisPath.title')}
 		>
-			<ScrollArea>
+			<DataTableScroller>
 				<DataTable
 					columns={columns}
 					records={tableData}
 					rowIdAccessor="stop_id"
 				/>
-			</ScrollArea>
+			</DataTableScroller>
 		</Collapsible>
 	);
 }

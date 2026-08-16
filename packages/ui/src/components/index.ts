@@ -20,4 +20,4 @@ export * from './tags';
 export * from './upload';
 export * from './wrapper';
 
-export { ScrollArea } from '@mantine/core';
+export { ScrollArea, Scroller } from '@mantine/core';
