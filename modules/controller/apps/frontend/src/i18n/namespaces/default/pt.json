@@ -170,8 +170,56 @@
 			}
 		},
 		"analysis": {
+			"RideAnalysisApexBankingTaps": {
+				"description": "Transações APEX associadas a esta circulação.",
+				"table": {
+					"columns": {
+						"card_serial_number": {
+							"label": "Card SN"
+						},
+						"created_at": {
+							"label": "Criado em"
+						},
+						"event_type": {
+							"label": "Tipo de Evento"
+						},
+						"id_on_board_refund": {
+							"label": "ID do Reembolso a Bordo"
+						},
+						"id_on_board_sale": {
+							"label": "ID da Venda a Bordo"
+						},
+						"id_validation": {
+							"label": "ID da Validação"
+						},
+						"is_passenger": {
+							"label": "Passageiro"
+						},
+						"mac_sam_serial_number": {
+							"label": "SAM SN"
+						},
+						"product_id": {
+							"label": "ID do Produto"
+						},
+						"stop_id": {
+							"label": "ID da Paragem"
+						},
+						"tx_valid": {
+							"label": "Tx Valid"
+						},
+						"validation_status": {
+							"label": "Estado da Validação"
+						},
+						"vehicle_id": {
+							"label": "ID do Veículo"
+						}
+					}
+				},
+				"title": "Transações APEX"
+			},
 			"RideAnalysisApexLocations": {
-				"Table": {
+				"description": "Localizações APEX associadas a esta Ride.",
+				"table": {
 					"columns": {
 						"created_at": {
 							"label": "Timestamp"
@@ -190,12 +238,11 @@
 						}
 					}
 				},
-				"description": "Localizações APEX associadas a esta Ride.",
-				"no_data": "Nenhuma Localização APEX Registada",
 				"title": "APEX Locations"
 			},
 			"RideAnalysisApexOnBoardRefunds": {
-				"Table": {
+				"description": "Reembolsos APEX associados a esta circulação.",
+				"table": {
 					"columns": {
 						"card_serial_number": {
 							"label": "Card SN"
@@ -232,12 +279,11 @@
 						}
 					}
 				},
-				"description": "Reembolsos APEX associados a esta Ride.",
-				"no_data": "Nenhum Reembolso Registado",
 				"title": "APEX On Board Refunds"
 			},
 			"RideAnalysisApexOnBoardSales": {
-				"Table": {
+				"description": "Vendas APEX associadas a esta circulação.",
+				"table": {
 					"columns": {
 						"card_serial_number": {
 							"label": "Card SN"
@@ -274,12 +320,11 @@
 						}
 					}
 				},
-				"description": "Vendas APEX associadas a esta Ride.",
-				"no_data": "Nenhuma Venda Registada",
 				"title": "APEX On Board Sales"
 			},
 			"RideAnalysisApexValidations": {
-				"Table": {
+				"description": "Validações APEX associadas a esta circulação.",
+				"table": {
 					"columns": {
 						"card_serial_number": {
 							"label": "Card SN"
@@ -288,7 +333,7 @@
 							"label": "Timestamp"
 						},
 						"event_type": {
-							"label": "Event Type"
+							"label": "Event"
 						},
 						"id_on_board_refund": {
 							"label": "ID On Board Refund"
@@ -319,8 +364,6 @@
 						}
 					}
 				},
-				"description": "Validações APEX associadas a esta Ride.",
-				"no_data": "Nenhuma Validação Registada",
 				"title": "Validações APEX"
 			},
 			"RideAnalysisMap": {
@@ -392,13 +435,44 @@
 				},
 				"title": "Metadados"
 			},
+			"RideAnalysisPath": {
+				"description": "Distribuição dos passageiros por paragem",
+				"table": {
+					"columns": {
+						"passengers_observed": {
+							"label": "Pax"
+						},
+						"passengers_observed_banking_taps_qty": {
+							"label": "CUT"
+						},
+						"passengers_observed_prepaid": {
+							"label": "Pré-pago"
+						},
+						"passengers_observed_sales": {
+							"label": "Vendas"
+						},
+						"passengers_observed_subscription_qty": {
+							"label": "Val."
+						},
+						"seen_at": {
+							"label": "Intervalo"
+						},
+						"stop_name": {
+							"label": "Paragem"
+						},
+						"stop_sequence": {
+							"label": "Seq."
+						}
+					}
+				},
+				"title": "Visão por Paragem"
+			},
 			"RideAnalysisPerformance": {
-				"description": "Dados de desempenho da circulação",
-				"no_data": "Sem Dados",
+				"description": "Dados de desempenho da circulação.",
 				"title": "Performance"
 			},
 			"RideAnalysisResult": {
-				"description": "Eventos dos veículos mapeados",
+				"description": "Resultado das análises à circulação.",
 				"labels": {
 					"AT_LEAST_ONE_VEHICLE_EVENT_ON_FIRST_STOP": {
 						"description": "Uma circulação deve ter pelo menos um evento na primeira paragem.",
@@ -472,7 +546,8 @@
 				}
 			},
 			"RideAnalysisVehicleEvents": {
-				"Table": {
+				"description": "Eventos GTFS-RT gerados pelo veículo.",
+				"table": {
 					"columns": {
 						"_id": {
 							"label": "ID"
@@ -506,7 +581,6 @@
 						}
 					}
 				},
-				"description": "Eventos GTFS-RT gerados pelo veículo.",
 				"title": "Eventos do Veículo"
 			}
 		},
@@ -516,6 +590,18 @@
 				"justification_required": "Justificação Necessária",
 				"rejected": "Rejeitada",
 				"under_review": "Em Revisão"
+			},
+
+			"RidesDetailViewNavigation": {
+				"acceptance": {
+					"label": "Aceitação"
+				},
+				"analysis": {
+					"label": "Análise"
+				},
+				"audit": {
+					"label": "Auditoria"
+				}
 			}
 		},
 		"export": {

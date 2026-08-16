@@ -16,9 +16,9 @@ import { useRidesListFilterVehicle } from '@/components/rides/list/filters/Rides
 import { useRidesListFilterSearch } from '@/components/rides/list/shared/RidesListHeader/use-rides-list-filter-search';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListFilters, type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-queries';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchDataNew } from '@tmlmobilidade/utils';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -38,8 +38,6 @@ export function useRidesListData(): UseRidesListDataReturnType {
 
 	//
 	// A. Setup variables
-
-	const [timestamp, setTimestamp] = useState<null | UnixTimestamp>(null);
 
 	const filterAcceptanceStatus = useRidesListFilterAcceptanceStatus();
 	const filterAgency = useRidesListFilterAgency();
@@ -80,12 +78,8 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ControllerRidesListItem[]>([API_ROUTES.controller.RIDES_LIST, query], {
-		fetcher: async ([url, query]) => {
-			const response = await fetchDataNew<ControllerRidesListItem[]>(url, 'POST', query);
-			setTimestamp(response.timestamp);
-			return response.data;
-		},
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<ControllerRidesListItem[]>>([API_ROUTES.controller.RIDES_LIST, query], {
+		fetcher: async ([url, query]) => await fetchDataNew<ControllerRidesListItem[]>(url, 'POST', query),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
@@ -93,10 +87,10 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	// D. Return data
 
 	return useMemo(() => ({
-		data,
-		error,
+		data: data?.data,
+		error: error?.error,
 		isLoading,
 		isValidating,
-		timestamp,
-	}), [data, error, isLoading, isValidating, timestamp]);
+		timestamp: data?.timestamp,
+	}), [data, error, isLoading, isValidating]);
 };

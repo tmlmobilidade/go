@@ -2,9 +2,9 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type RideAnalysesRegistry } from '@tmlmobilidade/go-types-operation';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchDataNew } from '@tmlmobilidade/utils';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import { useRidesDetailRideId } from './use-rides-detail-ride-id';
@@ -29,28 +29,22 @@ export function useRidesDetailRideAnalysesData(): UseRidesDetailRideAnalysesData
 
 	const { rideId } = useRidesDetailRideId();
 
-	const [timestamp, setTimestamp] = useState<null | UnixTimestamp>(null);
-
 	//
-	// C. Fetch data
+	// B. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<RideAnalysesRegistry>(rideId && API_ROUTES.controller.RIDES_DETAIL_ANALYSES(rideId), {
-		fetcher: async (url) => {
-			const response = await fetchDataNew<RideAnalysesRegistry>(url);
-			setTimestamp(response.timestamp);
-			return response.data;
-		},
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<RideAnalysesRegistry>>(rideId && API_ROUTES.controller.RIDES_DETAIL_ANALYSES(rideId), {
+		fetcher: async url => await fetchDataNew<RideAnalysesRegistry>(url),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
 	//
-	// D. Return data
+	// C. Return data
 
 	return useMemo(() => ({
-		data,
-		error,
+		data: data?.data,
+		error: error?.error,
 		isLoading,
 		isValidating,
-		timestamp,
-	}), [data, error, isLoading, isValidating, timestamp]);
+		timestamp: data?.timestamp,
+	}), [data, error, isLoading, isValidating]);
 };

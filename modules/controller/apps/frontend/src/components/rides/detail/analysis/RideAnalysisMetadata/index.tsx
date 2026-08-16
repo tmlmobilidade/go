@@ -1,7 +1,6 @@
 'use client';
 
-import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
-import { Collapsible, Divider, Grid, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, Divider, Grid, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -12,7 +11,6 @@ export function RideAnalysisMetadata() {
 	//
 	// A. Setup variables
 
-	const RideAnalysisContext = useRideAnalysisContext();
 	const { t } = useTranslation();
 
 	//

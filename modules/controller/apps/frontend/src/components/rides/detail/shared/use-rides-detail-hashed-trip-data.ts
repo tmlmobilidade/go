@@ -2,9 +2,9 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchDataNew } from '@tmlmobilidade/utils';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import { useRidesDetailRideId } from './use-rides-detail-ride-id';
@@ -29,28 +29,22 @@ export function useRidesDetailHashedTripData(): UseRidesDetailHashedTripDataRetu
 
 	const { rideId } = useRidesDetailRideId();
 
-	const [timestamp, setTimestamp] = useState<null | UnixTimestamp>(null);
-
 	//
-	// C. Fetch data
+	// B. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<HashedTrip[]>(rideId && API_ROUTES.controller.RIDES_DETAIL_HASHED_TRIP(rideId), {
-		fetcher: async (url) => {
-			const response = await fetchDataNew<HashedTrip[]>(url);
-			setTimestamp(response.timestamp);
-			return response.data;
-		},
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<HashedTrip[]>>(rideId && API_ROUTES.controller.RIDES_DETAIL_HASHED_TRIP(rideId), {
+		fetcher: async url => await fetchDataNew<HashedTrip[]>(url),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
 	//
-	// D. Return data
+	// C. Return data
 
 	return useMemo(() => ({
-		data,
-		error,
+		data: data?.data,
+		error: error?.error,
 		isLoading,
 		isValidating,
-		timestamp,
-	}), [data, error, isLoading, isValidating, timestamp]);
+		timestamp: data?.timestamp,
+	}), [data, error, isLoading, isValidating]);
 };

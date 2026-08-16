@@ -19,3 +19,5 @@ export * from './status';
 export * from './tags';
 export * from './upload';
 export * from './wrapper';
+
+export { ScrollArea, Scroller } from '@mantine/core';

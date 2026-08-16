@@ -31,5 +31,5 @@
 }
 
 .cellContent[data-center="true"] {
-	margin: 0 auto;
+	justify-content: center;
 }

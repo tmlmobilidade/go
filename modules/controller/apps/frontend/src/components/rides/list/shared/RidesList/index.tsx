@@ -1,5 +1,6 @@
 'use client';
 
+import { useRidesDetailRideId } from '@/components/rides/detail/shared/use-rides-detail-ride-id';
 import { RidesListFiltersBar } from '@/components/rides/list/filters/RidesListFiltersBar';
 import { RidesListHeader } from '@/components/rides/list/shared/RidesListHeader';
 import { useRidesListData } from '@/components/rides/list/shared/use-rides-list-data';
@@ -16,7 +17,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-queries';
 import { DataTable, DataTableColumn, ErrorDisplay, GradeStatusDisplay, OperationalDateDisplay, OperationalStatusDisplay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -29,8 +30,9 @@ export function RidesList() {
 
 	const { t } = useTranslation();
 
+	const { rideId } = useRidesDetailRideId();
+
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
 
 	const ridesData = useRidesListData();
 
@@ -188,7 +190,7 @@ export function RidesList() {
 				onRowClick={handleRowClick}
 				records={ridesData.data}
 				rowIdAccessor="_id"
-				selectedId={decodeURIComponent(params.id ?? '')}
+				selectedId={rideId}
 			/>
 		</Pane>
 	);

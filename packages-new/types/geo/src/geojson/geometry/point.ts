@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 export const GeoJsonPointGeometrySchema = z.object({
 	coordinates: GeoJsonPositionSchema,
-	type: z.literal('Point'),
+	type: z.literal('Point').default('Point'),
 });
 
 export type GeoJsonPointGeometry = z.infer<typeof GeoJsonPointGeometrySchema>;

@@ -1,9 +1,8 @@
 'use client';
 
-import { TimestampTag } from '@/components/common/TimestampTag';
-import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
+import { useRidesDetailVehicleEventsData } from '@/components/rides/detail/shared/use-rides-detail-vehicle-events-data';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { Collapsible, DataTable, DataTableColumn } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,50 +14,50 @@ export function RideAnalysisVehicleEvents() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const { data: vehicleEventsData } = useRidesDetailVehicleEventsData();
 
-	const rideAnalysisContext = useRideAnalysisContext();
+	const { t } = useTranslation();
 
 	const columns: DataTableColumn<SimplifiedVehicleEvent>[] = [
 		{
 			accessor: '_id',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns._id.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns._id.label'),
 			width: 250,
 		},
 		{
 			accessor: 'created_at',
-			render: item => <TimestampTag value={item.created_at} />,
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.created_at.label'),
+			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.created_at.label'),
 			width: 280,
 		},
 		{
 			accessor: 'stop_id',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.stop_id.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.stop_id.label'),
 			width: 150,
 		},
 		{
 			accessor: 'vehicle_id',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.vehicle_id.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.vehicle_id.label'),
 			width: 150,
 		},
 		{
 			accessor: 'driver_id',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.driver_id.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.driver_id.label'),
 			width: 150,
 		},
 		{
 			accessor: 'odometer',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.odometer.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.odometer.label'),
 			width: 150,
 		},
 		{
 			accessor: 'latitude',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.latitude.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.latitude.label'),
 			width: 220,
 		},
 		{
 			accessor: 'longitude',
-			title: t('default:rides.analysis.RideAnalysisVehicleEvents.Table.columns.longitude.label'),
+			title: t('default:rides.analysis.RideAnalysisVehicleEvents.table.columns.longitude.label'),
 			width: 220,
 		},
 	];
@@ -67,8 +66,9 @@ export function RideAnalysisVehicleEvents() {
 	// B. Transform data
 
 	const sortedVehicleEvents = useMemo(() => {
-		return rideAnalysisContext.data.vehicle_events.sort((a, b) => a.created_at - b.created_at);
-	}, [rideAnalysisContext.data.vehicle_events]);
+		if (!vehicleEventsData?.length) return [];
+		return vehicleEventsData.sort((a, b) => a.created_at - b.created_at);
+	}, [vehicleEventsData]);
 
 	//
 	// C. Render components
@@ -78,14 +78,13 @@ export function RideAnalysisVehicleEvents() {
 			description={t('default:rides.analysis.RideAnalysisVehicleEvents.description')}
 			title={t('default:rides.analysis.RideAnalysisVehicleEvents.title')}
 		>
-			<DataTable
-				columns={columns}
-				maxHeight={600}
-				records={sortedVehicleEvents}
-				rowIdAccessor="_id"
-			/>
+			<DataTableScroller>
+				<DataTable
+					columns={columns}
+					records={sortedVehicleEvents}
+					rowIdAccessor="_id"
+				/>
+			</DataTableScroller>
 		</Collapsible>
 	);
-
-	//
 }
