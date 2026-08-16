@@ -2,28 +2,37 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Alert } from '@tmlmobilidade/go-types-operation';
+import { AlertsListFilters, AlertsListFiltersQuerySchema, AlertsListItem, getAlertsList } from '@tmlmobilidade/go-alerts-pckg-queries';
 import { PermissionCatalog } from '@tmlmobilidade/types';
+import { validateQueryParams } from '@tmlmobilidade/utils';
 
 /**
  * Returns all Alerts sorted by ID.
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getAll(request: FastifyRequest, reply: FastifyReply<Alert[]>) {
-	// Retrieve permissions for the current user
-	const userReadPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read);
+export async function getAll(request: FastifyRequest<{ Querystring: AlertsListFilters }>, reply: FastifyReply<AlertsListItem[]>) {
+	//
 
-	// Setup a query filter based on permissions
-	const permissionsQuery = userReadPermissions.resources?.agency_ids?.includes(PermissionCatalog.ALLOW_ALL_FLAG)
-		// If user has access to all agencies, no filter is applied
-		? {}
-		// Otherwise, filter by the allowed agency IDs
-		: { agency_id: { $in: userReadPermissions.resources?.agency_ids ?? [] } };
-	// Retrieve and send all alerts
-	const allAlerts = await goDb.operation.alerts.findMany({ ...permissionsQuery }, { sort: { active_period_start_date: -1 } });
+	//
+	// Validate query params
+	const query = validateQueryParams<AlertsListFilters>(request.query, AlertsListFiltersQuerySchema);
 
-	// Send the alerts to the client
-	reply.send({ data: allAlerts, error: null, statusCode: HTTP_STATUS.OK });
+	//
+	// Apply permission filters to the request query
+	query.agency_ids = PermissionCatalog.filterPermissionResourceValues<string>({
+		action: PermissionCatalog.all.alerts.actions.read,
+		permissions: request.permissions,
+		resourceKey: 'agency_ids',
+		scope: PermissionCatalog.all.alerts.scope,
+		values: query.agency_ids ?? [],
+	});
+	//
+	// Fetch the alerts data by query
+	// and send it back to the client
+
+	const result = await getAlertsList(query);
+
+	return reply
+		.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
 }

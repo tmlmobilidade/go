@@ -1,5 +1,7 @@
 'use client';
 
+import { DataTableColumn } from '@tmlmobilidade/ui';
+import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -15,7 +17,7 @@ export function AlertsList() {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
-	const alertsListContext = useAlertsListContext();
+	const alertsListContext = useAlertListData();
 
 	const columns: DataTableColumn<Alert>[] = [
 		{
