@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { getOperationLinesList, type OperationLinesListFilters, type OperationLinesListItem } from '@tmlmobilidade/go-alerts-pckg-queries';
+import { getOperationLinesList, type OperationLinesListFilters, type OperationLinesListItem } from '@tmlmobilidade/go-alerts-pckg-types';
 
 /**
  * Get lines by query.

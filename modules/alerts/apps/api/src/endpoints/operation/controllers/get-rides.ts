@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { getOperationRidesList, type OperationRidesListFilters, type OperationRidesListItem } from '@tmlmobilidade/go-alerts-pckg-queries';
+import { getOperationRidesList, type OperationRidesListFilters, type OperationRidesListItem } from '@tmlmobilidade/go-alerts-pckg-types';
 
 /**
  * Get rides by query.

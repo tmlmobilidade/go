@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { AlertsListFilters, AlertsListFiltersQuerySchema, AlertsListItem, getAlertsList } from '@tmlmobilidade/go-alerts-pckg-queries';
+import { AlertsListFilters, AlertsListFiltersQuerySchema, AlertsListItem, getAlertsList } from '@tmlmobilidade/go-alerts-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 
