@@ -190,6 +190,9 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/lock`,
 		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts/list`,
+
+		// OPERATION-DATA
+		OPERATION_DATA_RIDES: `${getModuleConfig('alerts', 'api_url')}/operation-data/rides`,
 	},
 
 	auth: {

@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const AlertsStopsListItemSchema = z.object({
+export const AlertsStopsItemSchema = z.object({
 	routes: z.array(z.object({
 		route_long_name: z.string(),
 		route_shape_id: z.string(),
@@ -20,4 +20,4 @@ export const AlertsStopsListItemSchema = z.object({
  * A read model combining the canonical stops data with derived data, including routes.
  * It is intended for use in the alerts module.
  */
-export type AlertsStopsListItem = z.infer<typeof AlertsStopsListItemSchema>;
+export type AlertsStopsItem = z.infer<typeof AlertsStopsItemSchema>;

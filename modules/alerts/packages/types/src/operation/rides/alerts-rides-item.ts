@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const AlertsRideItemSchema = RideSchema
+export const AlertsRidesItemSchema = RideSchema
 	.pick({
 		_id: true,
 		agency_id: true,
@@ -27,4 +27,4 @@ export const AlertsRideItemSchema = RideSchema
  * A read model combining the canonical ride data with derived statuses.
  * It is intended for use in the alerts module.
  */
-export type AlertsRideItem = z.infer<typeof AlertsRideItemSchema>;
+export type AlertsRidesItem = z.infer<typeof AlertsRidesItemSchema>;

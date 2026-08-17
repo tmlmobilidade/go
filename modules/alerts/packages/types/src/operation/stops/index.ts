@@ -1,3 +1,3 @@
-export * from './alerts-stops-list-filters.js';
-export * from './alerts-stops-list-item.js';
-export * from './alerts-stops-list-query.js';
+export * from './alerts-stops-filters.js';
+export * from './alerts-stops-item.js';
+export * from './alerts-stops-query.js';
