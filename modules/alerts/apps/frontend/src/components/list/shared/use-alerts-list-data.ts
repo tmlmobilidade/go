@@ -15,16 +15,19 @@ import { useRidesListFilterTicketingStatus } from '@/components/rides/list/filte
 import { useRidesListFilterVehicle } from '@/components/rides/list/filters/RidesListFilterVehicle/use-rides-list-filter-vehicle';
 import { useRidesListFilterSearch } from '@/components/rides/list/shared/RidesListHeader/use-rides-list-filter-search';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
 import { type ControllerRidesListFilters, type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchDataNew } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
+import { useAlertsListFilterReferenceType } from '../filters/AlertsListFilterReferenceType/use-alerts-list-filter-reference-type';
+
 /* * */
 
 interface UseAlertsListDataReturnType {
-	data: ControllerRidesListItem[]
+	data: AlertsListItem[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -39,20 +42,9 @@ export function useRidesListData(): UseAlertsListDataReturnType {
 	//
 	// A. Setup variables
 
-	const filterAcceptanceStatus = useRidesListFilterAcceptanceStatus();
-	const filterAgency = useRidesListFilterAgency();
-	const filterAnalysisAtLeastOneVehicleEventOnLastStop = useRidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop();
-	const filterAnalysisExpectedApexValidationInterval = useRidesListFilterAnalysisExpectedApexValidationInterval();
-	const filterAnalysisSimpleThreeEvents = useRidesListFilterAnalysisSimpleThreeEvents();
-	const filterAnalysisTransactionSequentiality = useRidesListFilterAnalysisTransactionSequentiality();
-	const filterDateRange = useRidesListFilterDateRange();
-	const filterVehicle = useRidesListFilterVehicle();
-	const filterDriver = useRidesListFilterDriver();
-	const filterStartDelayStatus = useRidesListFilterStartDelayStatus();
-	const filterEndDelayStatus = useRidesListFilterEndDelayStatus();
-	const filterOperationalStatus = useRidesListFilterOperationalStatus();
-	const filterSearch = useRidesListFilterSearch();
-	const filterTicketingStatus = useRidesListFilterTicketingStatus();
+	const filterReferenceType = useAlertsListFilterReferenceType();
+	const filterAgency = useAlertsListFilterAgency();
+	const filterSearch = useAlertsListFilterSearch();
 
 	//
 	// B. Transform data

@@ -26,11 +26,11 @@ export const AlertsListFiltersSchema = z.object({
 
 	publish_status: z
 		.array(PublishStatusSchema)
-		.optional(),
+		.default([]),
 
 	reference_type: z
 		.array(AlertReferenceTypeSchema)
-		.optional(),
+		.default([]),
 
 	search: z
 		.string()
