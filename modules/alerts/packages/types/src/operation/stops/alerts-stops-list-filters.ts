@@ -5,9 +5,11 @@ import { z } from 'zod';
 
 /* * */
 
-export const OperationStopsListFiltersSchema = z.object({
+export const AlertsStopsListFiltersSchema = z.object({
 
-	agency_ids: z.array(z.string()),
+	agency_ids: z
+		.array(z.string())
+		.default([]),
 
 	start_time_scheduled_end: UnixTimestampSchema,
 
@@ -16,7 +18,7 @@ export const OperationStopsListFiltersSchema = z.object({
 });
 
 /**
- * The filters schema for getting operation stops.
+ * The filters schema for getting stops for alerts.
  * It is intended for use in the alerts module.
  */
-export type OperationStopsListFilters = z.infer<typeof OperationStopsListFiltersSchema>;
+export type AlertsStopsListFilters = z.infer<typeof AlertsStopsListFiltersSchema>;

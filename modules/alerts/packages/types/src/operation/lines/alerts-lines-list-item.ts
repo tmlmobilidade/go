@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const OperationLinesListItemSchema = z.object({
+export const AlertsLinesListItemSchema = z.object({
 	routes: z.array(z.object({
 		route_long_name: z.string(),
 		route_shape_id: z.string(),
@@ -17,7 +17,7 @@ export const OperationLinesListItemSchema = z.object({
 });
 
 /**
- * A read model combining the canonical stop data with derived data, including routes.
+ * A read model combining the canonical lines data with derived data, including routes.
  * It is intended for use in the alerts module.
  */
-export type OperationLinesListItem = z.infer<typeof OperationLinesListItemSchema>;
+export type AlertsLinesListItem = z.infer<typeof AlertsLinesListItemSchema>;
