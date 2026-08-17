@@ -1,7 +1,10 @@
 /* * */
 
-import { useAlertsListContext } from '@/components/list/AlertsList.context';
-import { Label, Loader, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { AlertsListFilterSearch } from '../../filters/AlertsListFilterSearch';
+import { useAlertsListData } from '../use-alerts-list-data';
 
 /* * */
 
@@ -11,19 +14,19 @@ export function AlertsListHeader() {
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertsListContext();
+	const { t } = useTranslation();
+
+	const { isLoading, isValidating, timestamp } = useAlertsListData();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>Alertas</Label>
-			<Loader size="sm" visible={alertsListContext.flags.isValidating} />
-			<Spacer />
-			<SearchInput onChange={alertsListContext.filters.search.set} value={alertsListContext.filters.search.value} />
+			<Label size="lg" caps>{t('alerts:list.AlertsListHeader.title')}</Label>
+			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
+			<Spacer shrink />
+			<AlertsListFilterSearch />
 		</Toolbar>
 	);
-
-	//
 }

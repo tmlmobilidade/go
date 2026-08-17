@@ -27,7 +27,7 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get(
+		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			listAlerts,

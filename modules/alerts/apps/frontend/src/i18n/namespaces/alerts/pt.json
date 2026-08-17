@@ -36,6 +36,40 @@
 		}
 	},
 	"list": {
+		"AlertsList": {
+			"columns": {
+				"agency_id": {
+					"label": "Operador"
+				},
+				"cause_effect": {
+					"label": "Causa & Efeito"
+				},
+				"created_at": {
+					"label": "Data de criação"
+				},
+				"lines": {
+					"label": "Linhas"
+				},
+				"publish_date": {
+					"label": "Data de Publicação"
+				},
+				"publish_status": {
+					"label": "Estado de Publicação"
+				},
+				"reference_type": {
+					"label": "Referência"
+				},
+				"stops": {
+					"label": "Paragens"
+				},
+				"title": {
+					"label": "Título"
+				}
+			}
+		},
+		"AlertsListHeader": {
+			"title": "Alertas"
+		},
 		"filters": {
 			"active_period": {
 				"label": "Período Ativo"
