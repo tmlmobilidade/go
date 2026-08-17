@@ -6,15 +6,14 @@ import { normalizeValidationRules } from '@/utils/normalize-validation-rules.js'
 import { runValidator } from '@/utils/run-validator/index.js';
 // import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 // import { sendSucessfulGtfsValidationEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
-import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
-import { join } from 'node:path';
-import pjson from 'pjson' with { type: 'json' };
+
+import { setupPathsForValidation } from './setup-paths-for-validation.js';
 
 /* * */
 
@@ -27,11 +26,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// Setup temporary directory paths for this validation process
 		// to avoid any conflicts with other concurrent validations.
 
-		const tempWorkdirPath = getTmpWorkdirPath(null, true);
-
-		const gtfsFilePath = join(tempWorkdirPath, `${gtfsValidation.file_id}.zip`);
-		const gtfsValidationRulesPath = join(tempWorkdirPath, `rules_${gtfsValidation._id}.json`);
-		const gtfsValidationResultPath = join(tempWorkdirPath, `result_${gtfsValidation._id}.json`);
+		const { gtfsFilePath, gtfsValidationResultPath, gtfsValidationRulesPath } = setupPathsForValidation(gtfsValidation);
 
 		//
 		// Update the gtfs validation document to 'processing' status
