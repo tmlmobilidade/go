@@ -1,0 +1,68 @@
+'use client';
+
+import { PermissionCatalog } from '@tmlmobilidade/types';
+import { Button, HasPermission, PublishStatusDisplay, Spacer, Toolbar, useContextFormWatch } from '@tmlmobilidade/ui';
+
+import { useAlertsCreateFormContext } from '../AlertsCreateForm.context';
+import { useAlertsCreateFormStepsContext } from '../AlertsCreateFormSteps.context';
+
+/* * */
+
+export function AlertCreateFooter() {
+	//
+
+	//
+	// A. Setup variables
+
+	const { form: alertsCreateForm } = useAlertsCreateFormContext();
+	const { actions: alertsCreateFormStepsActions, progress: alertsCreateFormStepsProgress } = useAlertsCreateFormStepsContext();
+
+	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const publishStatusValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'publish_status' });
+
+	//
+	// B. Render components
+
+	return (
+		<Toolbar>
+
+			<HasPermission
+				action={PermissionCatalog.all.alerts.actions.update_publish_status}
+				resourceKey="agency_ids"
+				scope={PermissionCatalog.all.alerts.scope}
+				value={agencyIdValue}
+			>
+				<PublishStatusDisplay
+					onChange={value => alertsCreateForm.setValue('publish_status', value, { shouldDirty: true })}
+					value={publishStatusValue}
+				/>
+			</HasPermission>
+
+			<Spacer />
+
+			<Button
+				disabled={alertsCreateFormStepsProgress.current?.id === 'cause'}
+				label="Voltar"
+				onClick={alertsCreateFormStepsActions.prev}
+				variant="secondary"
+			/>
+
+			{alertsCreateFormStepsProgress.current?.id !== 'summary' && (
+				<Button
+					disabled={!alertsCreateFormStepsProgress.current?.isValid()}
+					label="Avançar"
+					onClick={alertsCreateFormStepsActions.next}
+				/>
+			)}
+
+			{alertsCreateFormStepsProgress.current?.id === 'summary' && (
+				<Button
+					disabled={!alertsCreateFormStepsProgress.current?.isValid()}
+					label="Publicar"
+					// loading={alertsCreateFormFlags.isCreating}
+					// onClick={alertsCreateFormActions.create}
+				/>
+			)}
+		</Toolbar>
+	);
+}

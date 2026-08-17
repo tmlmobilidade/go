@@ -1,44 +1,47 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import { type DefaultValues, useForm, type UseFormReturn } from 'react-hook-form';
 import { type ZodSchema } from 'zod';
 
-import { usePreventNavigation } from '../use-prevent-navigation';
+import { usePreventNavigation } from '../hooks/use-prevent-navigation';
 
 /* * */
 
-interface UseContextFormProps<T> {
-	apiData?: null | T
-	defaultValues?: DefaultValues<T>
-	mode?: 'controlled' | 'uncontrolled'
-	schema?: ZodSchema<T>
-}
-
-export interface UseContextFormReturnType<T> {
+interface UseManagedFormContextReturnType<T = any> {
 	form: UseFormReturn<T>
 	unblock: () => void
 }
 
-/**
- * A custom hook that sets up a context form with validation
- * and state management using Mantine's useForm and Zod schema.
- * It also handles form initialization with API data and prevents
- * navigation if the form is dirty.
- * @param schema The Zod schema to validate the form data.
- * @param apiData Optional initial data to populate the form.
- * @param defaultValues Optional initial values to set when creating new forms.
- * @returns The form methods and state from React Hook Form.
- */
-export function useContextForm<T>({ apiData, defaultValues, schema }: UseContextFormProps<T>): UseContextFormReturnType<T> {
+interface ManagedFormContextProviderProps<T> {
+	apiData?: null | T
+	defaultValues: DefaultValues<T>
+	schema: ZodSchema
+}
+
+/* * */
+
+const ManagedFormContext = createContext<undefined | UseManagedFormContextReturnType>(undefined);
+
+export const useManagedFormContext = () => {
+	const context = useContext(ManagedFormContext);
+	if (!context) {
+		throw new Error('useManagedFormContext must be used within a ManagedFormContextProvider');
+	}
+	return context;
+};
+
+/* * */
+
+export function ManagedFormContextProvider<T>({ apiData, children, defaultValues, schema }: PropsWithChildren<ManagedFormContextProviderProps<T>>) {
 	//
 
 	//
 	// Setup form and its related logic
 
 	const form = useForm<T>({
-		defaultValues: defaultValues,
+		defaultValues,
 		resolver: schema ? zodResolver(schema) : undefined,
 	});
 
@@ -56,14 +59,9 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 	// Initialize form with API data
 
 	useEffect(() => {
-		// Skip if no API data
 		if (!apiData) return;
-		// Skip if form is dirty
 		if (isFormDirty) return;
-		// Initialize form with API data
 		form.reset(apiData);
-		// eslint-disable-next-line no-console
-		console.info(`Form initialized with values from API.`);
 	}, [apiData, form, isFormDirty]);
 
 	//
@@ -72,7 +70,11 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 	const unblock = usePreventNavigation(isFormDirty);
 
 	//
-	// Return hook values and functions
+	// Return context value
 
-	return { form, unblock };
+	return (
+		<ManagedFormContext.Provider value={{ form, unblock }}>
+			{children}
+		</ManagedFormContext.Provider>
+	);
 }
