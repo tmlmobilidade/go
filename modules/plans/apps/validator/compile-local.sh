@@ -32,6 +32,9 @@ esac
 
 BINARY_PATH="$REPO_ROOT/bin/validator-$GOOS-$BINARY_ARCH"
 
+echo "Removing old local GTFS validator binaries: $REPO_ROOT/bin"
+rm -rf -- "$REPO_ROOT/bin"
+
 mkdir -p "$REPO_ROOT/bin"
 
 echo "Building local GTFS validator: $BINARY_PATH"
