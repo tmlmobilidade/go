@@ -7,20 +7,17 @@ import { runValidator } from '@/utils/run-validator/index.js';
 // import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 // import { sendSucessfulGtfsValidationEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 // import pjson from 'pjson' with { type: 'json' };
 
+import { downloadGtfs } from './download-gtfs.js';
 import { setupPathsForValidation } from './setup-paths-for-validation.js';
 
 /* * */
 
 export async function processValidation(gtfsValidation: GtfsValidation) {
-	let isClaimed = false;
-
 	try {
 		//
 
@@ -45,21 +42,13 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			validity_status: 'unknown',
 		}, { returnResult: false });
 
-		isClaimed = true;
 		Logger.info({ message: `GTFS Validation ${gtfsValidation._id} is processing. Preparing the GTFS file and rules...` });
 
 		//
 		// Get the associated file document from MongoDB
 		// and download the GTFS file to the temporary directory.
 
-		Logger.info({ message: 'Downloading GTFS file...' });
-
-		const gtfsFile = await storageProvider.findById(gtfsValidation.file_id);
-		if (!gtfsFile) throw new Error(`File not found: ${gtfsValidation.file_id}`);
-
-		const fileBuffer = await fetch(gtfsFile.url).then(res => res.arrayBuffer());
-
-		fs.writeFileSync(gtfsFilePath, Buffer.from(fileBuffer));
+		await downloadGtfs(gtfsValidation, gtfsFilePath);
 
 		//
 		// Normalize the agency-specific rules against the shared defaults
@@ -75,15 +64,6 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		fs.writeFileSync(gtfsValidationRulesPath, rulesContent, { encoding: 'utf-8' });
 
 		Logger.info({ message: `Normalized validation rules saved to: ${gtfsValidationRulesPath}` });
-
-		const routesRules = normalizedRules.routes ?? {};
-		console.log('GTFS validator rules runtime:', {
-			has_legacy_routes_line_id: Object.hasOwn(routesRules, 'line_id'),
-			has_legacy_routes_line_long_name: Object.hasOwn(routesRules, 'line_long_name'),
-			has_legacy_routes_line_short_name: Object.hasOwn(routesRules, 'line_short_name'),
-			rules_path: gtfsValidationRulesPath,
-			sha256: createHash('sha256').update(rulesContent).digest('hex'),
-		});
 
 		//
 		// Perform the GTFS validation using the project binary
@@ -124,7 +104,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		const updatedGtfsValidation = await goDb.operation.gtfsValidations.findById(gtfsValidation._id);
 
 		if (!updatedGtfsValidation) throw new Error(`GTFS Validation not found after update: ${gtfsValidation._id}`);
-		if (!updatedGtfsValidation.created_by) throw new Error(`No creator information found for file: ${gtfsFile._id}`);
+		if (!updatedGtfsValidation.created_by) throw new Error(`No creator information found for file: ${gtfsValidation.file_id}`);
 
 		const foundUser = await goDb.core.users.findById(updatedGtfsValidation.created_by);
 		if (!foundUser) throw new Error(`User not found: ${updatedGtfsValidation.created_by}`);
@@ -172,8 +152,6 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// If any errors occur during validation, catch them and format
 		// a custom error result to be saved in the database and sent via email.
 		Logger.error({ error, message: `Error processing GTFS Validation ${gtfsValidation._id}:` });
-
-		if (!isClaimed) return;
 
 		const errorResult = await goDb.operation.gtfsValidations.updateOne({
 			_id: gtfsValidation._id,
