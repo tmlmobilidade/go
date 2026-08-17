@@ -1,11 +1,14 @@
 /* * */
 
-import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AlertEffect, AlertEffectValues, PermissionCatalog } from '@tmlmobilidade/types';
+import { type AlertEffect, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { AlertEffectIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
+import { useAlertsCreateFormStepsContext } from '../../shared/AlertsCreateFormSteps.context';
 
 /* * */
 
@@ -17,11 +20,12 @@ export function AlertCreateStepEffect() {
 
 	const { t } = useTranslation();
 
-	const alertCreateContext = useAlertCreateContext();
+	const { form: alertsCreateForm } = useAlertsCreateFormContext();
+	const { actions: alertsCreateFormStepsActions } = useAlertsCreateFormStepsContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'agency_id' });
-	const causeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'cause' });
-	const effectValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'effect' });
+	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const causeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'cause' });
+	const effectValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'effect' });
 
 	//
 	// B. Fetch data
@@ -51,8 +55,8 @@ export function AlertCreateStepEffect() {
 	// D. Handle actions
 
 	const handleSelectEffect = (value: AlertEffect) => {
-		alertCreateContext.form.instance.setValue('effect', value, { shouldDirty: true });
-		alertCreateContext.form.multi_step.actions.next();
+		alertsCreateForm.setValue('effect', value, { shouldDirty: true });
+		alertsCreateFormStepsActions.next();
 	};
 
 	//
@@ -65,7 +69,7 @@ export function AlertCreateStepEffect() {
 	if (!preparedOptions.length) {
 		return (
 			<Section alignItems="center" height="100%" justifyContent="center" padding="lg">
-				<NoDataLabel text={t('default:alerts.create.effects.no_data')} />
+				<NoDataLabel text={t('alerts:create.effects.no_data')} />
 			</Section>
 		);
 	}

@@ -21,7 +21,7 @@ interface MultiStepItem {
 	 * Usually determined by the completion
 	 * of previous steps.
 	 */
-	isEnabled?: () => boolean
+	isEnabled?: boolean
 
 	/**
 	 * Indicates whether the step is valid.
@@ -144,15 +144,19 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		if (!availableSteps.length) return;
 		// If there is a current step already set,
 		// check if it can be enabled still
-		if (currentStepId && currentStep?.isEnabled?.() === false) {
-			// If the current step cannot be enabled,
-			// then go back to the previous step
+		if (currentStepId && currentStep?.isEnabled === false) {
+			// If the current step cannot be enabled anymore,
+			// then go back to the previous step, if possible
 			setCurrentStepId(prevStep?.id);
+			console.log('had to go back to previous step', prevStep?.id);
 			return;
 		}
-		// Otherwise, set the current step
-		// to the first available step
-		setCurrentStepId(availableSteps[0].id);
+		// Otherwise, if there is no current step already set,
+		// set it to the first available step, if possible
+		if (!currentStepId) {
+			setCurrentStepId(availableSteps[0].id);
+			console.log('set to first available step', availableSteps[0].id);
+		}
 	}, [availableSteps, currentStepId, currentStep, prevStep]);
 
 	//
@@ -165,8 +169,6 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		if (currentStep.isValid?.() === false) return;
 		// Exit if no next step
 		if (!nextStep) return;
-		// Exit if next step is not enabled
-		if (nextStep.isEnabled?.() === false) return;
 		// Proceed to the next step
 		setCurrentStepId(nextStep.id);
 	}, [currentStep, nextStep]);
@@ -176,8 +178,6 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		if (!currentStep) return;
 		// Exit if no previous step
 		if (!prevStep) return;
-		// Exit if previous step is not enabled
-		if (prevStep.isEnabled?.() === false) return;
 		// Proceed to the previous step
 		setCurrentStepId(prevStep.id);
 	}, [currentStep, prevStep]);
@@ -188,7 +188,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 		// Exit if the step is not found
 		if (!destStep) return;
 		// Exit if the desired step is not enabled
-		if (destStep.isEnabled?.() === false) return;
+		if (destStep.isEnabled === false) return;
 		// Proceed to set the current step
 		setCurrentStepId(id);
 	}, [availableSteps]);
@@ -203,7 +203,7 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 	//
 	// C. Return values
 
-	return {
+	return useMemo(() => ({
 		actions: {
 			goTo,
 			goToIndex,
@@ -217,5 +217,5 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 			prev: prevStep,
 			steps: availableSteps,
 		},
-	};
+	}), [availableSteps, currentStep, goTo, goToIndex, next, nextStep, prev, prevStep]);
 }

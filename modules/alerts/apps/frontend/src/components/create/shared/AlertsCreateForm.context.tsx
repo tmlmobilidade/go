@@ -88,8 +88,6 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	// D. Side effects
 
 	useEffect(() => {
-		console.log('agenciesData', agenciesData);
-		console.log('form.getValues("agency_id")', form.getValues('agency_id'));
 		// Pre-select agency when only one is available
 		if (!agenciesData?.length) return;
 		if (agenciesData?.length !== 1) return;
@@ -100,6 +98,8 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	}, [agenciesData, form]);
 
 	useEffect(() => {
+		// Skip if effect is not set
+		if (!form.getValues('effect')) return;
 		// Reset effect field when cause changes
 		form.setValue('effect', undefined);
 		// eslint-disable-next-line no-console
@@ -107,6 +107,9 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	}, [causeValue, form]);
 
 	useEffect(() => {
+		// Skip if reference_type or references are not set
+		if (!form.getValues('reference_type')) return;
+		if (!form.getValues('references')?.length) return;
 		// Reset reference_type and references when effect changes
 		form.setValue('reference_type', undefined);
 		form.setValue('references', []);
@@ -115,6 +118,8 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	}, [effectValue, form]);
 
 	useEffect(() => {
+		// Skip if no title and description are set
+		if (!form.getValues('title') && !form.getValues('description')) return;
 		// If auto_texts is enabled, reset texts when references change
 		if (!form.getValues('auto_texts')) return;
 		form.setValue('title', '');
@@ -173,6 +178,8 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 
 	//
 	// H. Return state
+
+	if (!agenciesData?.length) return null;
 
 	return (
 		<AlertsCreateFormContext.Provider value={{ form, unblock }}>

@@ -2,7 +2,7 @@
 
 import { useAlertsCreateFormStepsContext } from '@/components/create/shared/AlertsCreateFormSteps.context';
 import { AlertCreateStepAgency } from '@/components/create/steps/AlertCreateStepAgency';
-// import { AlertCreateStepCause } from '@/components/create/steps/AlertCreateStepCause';
+import { AlertCreateStepCause } from '@/components/create/steps/AlertCreateStepCause';
 // import { AlertCreateStepDates } from '@/components/create/steps/AlertCreateStepDates';
 // import { AlertCreateStepEffect } from '@/components/create/steps/AlertCreateStepEffect';
 // import { AlertCreateStepReferences } from '@/components/create/steps/AlertCreateStepReferences';
@@ -37,7 +37,7 @@ export function AlertCreateSteps() {
 	return (
 		<>
 			{alertsCreateFormStepsProgress.current?.id === 'agency' && <AlertCreateStepAgency />}
-			{/* {alertsCreateFormStepsContext.progress.current?.id === 'cause' && <AlertCreateStepCause />} */}
+			{alertsCreateFormStepsProgress.current?.id === 'cause' && <AlertCreateStepCause />}
 			{/* {alertsCreateFormStepsContext.progress.current?.id === 'effect' && <AlertCreateStepEffect />} */}
 			{/* {alertsCreateFormStepsContext.progress.current?.id === 'dates' && <AlertCreateStepDates />} */}
 			{/* {alertsCreateFormStepsContext.progress.current?.id === 'references' && <AlertCreateStepReferences />} */}

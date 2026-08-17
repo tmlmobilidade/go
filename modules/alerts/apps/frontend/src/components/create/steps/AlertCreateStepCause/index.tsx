@@ -1,11 +1,14 @@
 /* * */
 
-import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AlertCause, AlertCauseValues, PermissionCatalog } from '@tmlmobilidade/types';
+import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { AlertCauseIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
+import { useAlertsCreateFormStepsContext } from '../../shared/AlertsCreateFormSteps.context';
 
 /* * */
 
@@ -17,10 +20,11 @@ export function AlertCreateStepCause() {
 
 	const { t } = useTranslation();
 
-	const alertCreateContext = useAlertCreateContext();
+	const { form: alertsCreateForm } = useAlertsCreateFormContext();
+	const { actions: alertsCreateFormStepsActions } = useAlertsCreateFormStepsContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'agency_id' });
-	const causeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'cause' });
+	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const causeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'cause' });
 
 	//
 	// B. Fetch data
@@ -51,8 +55,8 @@ export function AlertCreateStepCause() {
 	// D. Handle actions
 
 	const handleSelectCause = (value: AlertCause) => {
-		alertCreateContext.form.instance.setValue('cause', value, { shouldDirty: true });
-		alertCreateContext.form.multi_step.actions.next();
+		alertsCreateForm.setValue('cause', value, { shouldDirty: true });
+		alertsCreateFormStepsActions.next();
 	};
 
 	//
@@ -65,7 +69,7 @@ export function AlertCreateStepCause() {
 	if (!preparedOptions.length) {
 		return (
 			<Section alignItems="center" height="100%" justifyContent="center" padding="lg">
-				<NoDataLabel text={t('default:alerts.create.causes.no_data')} />
+				<NoDataLabel text={t('alerts:create.causes.no_data')} />
 			</Section>
 		);
 	}

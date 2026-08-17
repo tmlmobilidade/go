@@ -41,23 +41,23 @@ export function AlertCreateFooter() {
 			<Spacer />
 
 			<Button
-				disabled={alertsCreateFormStepsProgress.current?.id === 'cause'}
+				disabled={!alertsCreateFormStepsProgress.prev?.id}
 				label="Voltar"
 				onClick={alertsCreateFormStepsActions.prev}
 				variant="secondary"
 			/>
 
-			{alertsCreateFormStepsProgress.current?.id !== 'summary' && (
+			{alertsCreateFormStepsProgress.next?.id && (
 				<Button
-					disabled={!alertsCreateFormStepsProgress.current?.isValid()}
+					disabled={!alertsCreateFormStepsProgress.current?.isValid?.()}
 					label="Avançar"
 					onClick={alertsCreateFormStepsActions.next}
 				/>
 			)}
 
-			{alertsCreateFormStepsProgress.current?.id === 'summary' && (
+			{!alertsCreateFormStepsProgress.next?.id && (
 				<Button
-					disabled={!alertsCreateFormStepsProgress.current?.isValid()}
+					disabled={!alertsCreateFormStepsProgress.current?.isValid?.()}
 					label="Publicar"
 					// loading={alertsCreateFormFlags.isCreating}
 					// onClick={alertsCreateFormActions.create}
