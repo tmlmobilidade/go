@@ -1,14 +1,14 @@
 'use client';
 
-import { useReferencesEditorContext } from '@/components/references/ReferencesEditor.context';
-import { ReferencesEditorStopsItem } from '@/components/references/ReferencesEditorStopsItem';
+import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
+import { ReferencesEditorLinesItem } from '@/components/references/lines/ReferencesEditorLinesItem';
 import { IconPlus } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Button, LoadingSection, NoDataLabel, Section, Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function ReferencesEditorStops() {
+export function ReferencesEditorLines() {
 	//
 
 	//
@@ -19,7 +19,7 @@ export function ReferencesEditorStops() {
 	//
 	// B. Fetch data
 
-	const { isLoading: operationalStopsLoading } = useDataOperationalStops(API_ROUTES.alerts.OPERATION_STOPS, {
+	const { isLoading: operationalLinesLoading } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
 		filters: {
 			agency_ids: [referencesEditorContext.data.selected_agency_id],
 			date_end: referencesEditorContext.data.active_period_end_date,
@@ -30,7 +30,7 @@ export function ReferencesEditorStops() {
 	//
 	// C. Render components
 
-	if (operationalStopsLoading) {
+	if (operationalLinesLoading) {
 		return <LoadingSection />;
 	}
 
@@ -40,13 +40,13 @@ export function ReferencesEditorStops() {
 			{!referencesEditorContext.data.selected_references?.length && (
 				<Surface>
 					<Section alignItems="center">
-						<NoDataLabel text="Nenhuma paragem adicionada" />
+						<NoDataLabel text="Nenhuma linha adicionada" />
 					</Section>
 				</Surface>
 			)}
 
 			{referencesEditorContext.data.selected_references.map((reference, index) => (
-				<ReferencesEditorStopsItem
+				<ReferencesEditorLinesItem
 					key={index}
 					index={index}
 					onRemoveReference={referencesEditorContext.actions.removeReference}
@@ -58,7 +58,7 @@ export function ReferencesEditorStops() {
 			{!referencesEditorContext.flags.isReadonly && (
 				<Button
 					icon={<IconPlus />}
-					label="Adicionar Paragem"
+					label="Adicionar Linha"
 					onClick={referencesEditorContext.actions.addReference}
 					variant="secondary"
 				/>

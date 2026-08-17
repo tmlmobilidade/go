@@ -1,8 +1,8 @@
 'use client';
 
-import { useReferencesEditorContext } from '@/components/references/ReferencesEditor.context';
-import { ReferencesEditorRidesFilters } from '@/components/references/ReferencesEditorRidesFilters';
-import { ReferencesEditorRidesList } from '@/components/references/ReferencesEditorRidesList';
+import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
+import { ReferencesEditorRidesFilters } from '@/components/references/rides/ReferencesEditorRidesFilters';
+import { ReferencesEditorRidesList } from '@/components/references/rides/ReferencesEditorRidesList';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { useEffect, useMemo, useState } from 'react';
 

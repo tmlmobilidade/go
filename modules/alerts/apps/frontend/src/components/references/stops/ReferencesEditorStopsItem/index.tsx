@@ -1,6 +1,6 @@
 'use client';
 
-import { useReferencesEditorContext } from '@/components/references/ReferencesEditor.context';
+import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { IconCornerDownRight, IconMinus } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/go-types-operation';

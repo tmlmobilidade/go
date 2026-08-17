@@ -1,6 +1,6 @@
 'use client';
 
-import { useReferencesEditorContext } from '@/components/references/ReferencesEditor.context';
+import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { Checkbox, DataTable, DataTableColumn, LoadingSection, NoDataLabel, Section, Surface, Tag } from '@tmlmobilidade/ui';

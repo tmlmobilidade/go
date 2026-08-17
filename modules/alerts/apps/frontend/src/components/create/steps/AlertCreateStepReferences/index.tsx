@@ -1,6 +1,6 @@
 'use client';
 
-import { ReferencesEditor } from '@/components/references/ReferencesEditor';
+import { ReferencesEditor } from '@/components/references/shared/ReferencesEditor';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/types';
