@@ -15,7 +15,6 @@ export const GtfsValidationSchema = DocumentSchema.extend({
 	notification_sent: z.boolean().default(false),
 	processing_status: ProcessingStatusSchema.default('waiting'),
 	summary: GtfsValidationSummarySchema.nullish(),
-	validation_attempts: z.number().default(0),
 	validity_status: ValidityStatusSchema.default('unknown'),
 });
 

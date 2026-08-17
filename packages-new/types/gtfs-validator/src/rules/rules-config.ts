@@ -896,24 +896,6 @@ export const gtfsValidationRulesConfig = {
 		],
 		severity: 'ignore',
 	},
-	line_id_required: {
-		depends_on: [
-			'routes_file_required',
-		],
-		severity: 'warning',
-	},
-	line_long_name_present_when_line_id_present: {
-		depends_on: [
-			'routes_file_required',
-		],
-		severity: 'warning',
-	},
-	line_short_name_present_when_line_id_present: {
-		depends_on: [
-			'routes_file_required',
-		],
-		severity: 'warning',
-	},
 	location_group_id_consistent_with_trip_id_and_stops: {
 		depends_on: [
 			'stop_times_file_required',

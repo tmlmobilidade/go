@@ -43,6 +43,7 @@
 		"build:stops:pckg": "turbo run build --filter=@tmlmobilidade/go-stops-pckg-*",
 		"build:tracker": "turbo run build --filter=@tmlmobilidade/go-tracker-*",
 		"build:tracker:pckg": "turbo run build --filter=@tmlmobilidade/go-tracker-pckg-*",
+		"build:validator": "turbo run build --filter=@tmlmobilidade/go-plans-* && npm --prefix ./modules/plans/apps/validator/ts-wrapper run build",
 
 		"dev:alerts": "npm run build:alerts:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
 		"dev:alerts:ui": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-alerts-api --filter=@tmlmobilidade/go-alerts-frontend",
