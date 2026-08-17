@@ -1,6 +1,6 @@
 /* * */
 
-import { type I18nCode } from '@tmlmobilidade/types';
+import { type I18nCode } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Branding and title-structure rules for multi-operator alerts (CM areas 41–44 have specific labels).

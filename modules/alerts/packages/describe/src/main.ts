@@ -9,12 +9,11 @@ import { referenceTypePrompt } from '@/prompts/reference-type.js';
 import { userInstructionDelimitersPrompt, userInstructionPrompt } from '@/prompts/user-instructions.js';
 import { parseAlertGeneratedCopy, PromptBuilder } from '@/utils.js';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/ai';
-// import { getOperationalLinesBatch, getOperationalStopsBatch } from '@tmlmobilidade/controllers';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { type I18nCode, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { type Agency } from '@tmlmobilidade/types';
 
 /* * */
 
