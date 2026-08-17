@@ -3,22 +3,14 @@
 import { type GtfsValidationOutputSummary, GtfsValidationOutputSummarySchema } from '@tmlmobilidade/go-types-gtfs-validator';
 import { execFile, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readdirSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
+
+import { getValidatorBinaryPath } from './run-validator/get-validator-binary-path.js';
 
 /* * */
 
-const BINARY_NAMES: Partial<Record<`${NodeJS.Platform}-${string}`, string>> = {
-	'darwin-arm64': 'validator-darwin-arm64',
-	'darwin-x64': 'validator-darwin-amd64',
-	'linux-arm64': 'validator-linux-arm64',
-	'linux-x64': 'validator-linux-amd64',
-};
-
-const FORCE_KILL_DELAY_MS = 60_000;
+const FORCE_KILL_DELAY_MS = 60_000; // 1 minute
 const execFileAsync = promisify(execFile);
 
 interface ProjectValidatorOptions {
@@ -36,7 +28,7 @@ interface ProjectValidatorOptions {
  * @returns The validation output summary.
  */
 export async function runProjectValidator(inputPath: string, options: ProjectValidatorOptions): Promise<GtfsValidationOutputSummary> {
-	const binaryPath = await getProjectValidatorBinaryPath();
+	const binaryPath = await getValidatorBinaryPath();
 	const binaryContent = await readFile(binaryPath);
 	const { stdout: versionOutput } = await execFileAsync(binaryPath, ['-version'], {
 		encoding: 'utf-8',
@@ -62,48 +54,6 @@ export async function runProjectValidator(inputPath: string, options: ProjectVal
 
 	const resultContent = await readFile(options.out_file, 'utf8');
 	return GtfsValidationOutputSummarySchema.parse(JSON.parse(resultContent));
-}
-
-export async function getProjectValidatorBinaryPath(): Promise<string> {
-	const platformKey = `${process.platform}-${process.arch}` as const;
-	const binaryName = BINARY_NAMES[platformKey];
-	if (!binaryName) {
-		throw new Error(`Unsupported validator platform: ${platformKey}`);
-	}
-
-	const currentDirectory = dirname(fileURLToPath(import.meta.url));
-	console.log('currentDirectory', currentDirectory);
-	console.log('process.cwd()', process.cwd());
-
-	return findExecutable(process.cwd() + '/../../', binaryName);
-	// return findExecutableBinary(binaryName, [process.cwd() + '/../../apps/validator']);
-}
-
-/**
- * Recursively searches for an executable/file by name
- * inside the given directory and all its child directories.
- *
- * @returns Full path to the executable, or null if not found.
- */
-export function findExecutable(rootPath: string, executableName: string): null | string {
-	const entries = readdirSync(rootPath, { withFileTypes: true });
-	for (const entry of entries) {
-		const fullPath = join(rootPath, entry.name);
-
-		if (entry.isFile() && entry.name === executableName) {
-			return fullPath;
-		}
-
-		if (entry.isDirectory()) {
-			const result = findExecutable(fullPath, executableName);
-
-			if (result) {
-				return result;
-			}
-		}
-	}
-
-	return null;
 }
 
 async function runValidatorProcess(binaryPath: string, args: string[], timeout: number): Promise<void> {
