@@ -17,13 +17,10 @@ export function ReferencesEditorLines() {
 
 	const referencesEditorContext = useReferencesEditorContext();
 
-	//
-	// B. Fetch data
-
 	const { isLoading: alertsLinesLoading } = useAlertsLinesData();
 
 	//
-	// C. Render components
+	// B. Render components
 
 	if (alertsLinesLoading) {
 		return <LoadingSection />;
