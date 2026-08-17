@@ -1,13 +1,13 @@
 'use client';
 
-import { type Alert } from '@tmlmobilidade/types';
+import { type AlertReferenceType } from '@tmlmobilidade/go-types-operation';
 import { Tag } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
 interface AlertsListCellReferenceTypeProps {
-	value: Alert['reference_type']
+	value: AlertReferenceType
 }
 
 /* * */
@@ -23,7 +23,5 @@ export function AlertsListCellReferenceType({ value }: AlertsListCellReferenceTy
 	//
 	// B. Render components
 
-	return <Tag label={t(`shared:alerts.reference_types.${value}.title`)} />;
-
-	//
+	return <Tag label={t(`reference_types:${value}`)} />;
 }

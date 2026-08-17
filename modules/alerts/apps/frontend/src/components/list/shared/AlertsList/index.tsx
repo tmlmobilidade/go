@@ -4,11 +4,10 @@ import { useAlertsDetailAlertId } from '@/components/detail/shared/use-alerts-de
 import { AlertsListFiltersBar } from '@/components/list/filters/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/list/shared/AlertsListHeader';
 import { AlertsListCellCauseEffect } from '@/components/list/table/AlertsListCellCauseEffect';
-import { AlertsListCellDate } from '@/components/list/table/AlertsListCellDate';
 import { AlertsListCellReferenceType } from '@/components/list/table/AlertsListCellReferenceType';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane, PublishStatusDisplay } from '@tmlmobilidade/ui';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane, PublishStatusDisplay, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -56,13 +55,13 @@ export function AlertsList() {
 		},
 		{
 			accessor: 'created_at',
-			render: item => <AlertsListCellDate value={item.created_at} />,
+			render: item => <UnixTimestampDisplay value={item.created_at} />,
 			title: t('alerts:list.AlertsList.columns.created_at.label'),
 			width: 225,
 		},
 		{
 			accessor: 'publish_start_date',
-			render: item => <AlertsListCellDate value={item.publish_start_date} />,
+			render: item => <UnixTimestampDisplay value={item.publish_start_date} />,
 			title: t('alerts:list.AlertsList.columns.publish_date.label'),
 			width: 225,
 		},

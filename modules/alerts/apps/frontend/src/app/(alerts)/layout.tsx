@@ -1,9 +1,8 @@
 /* * */
 
 import { AlertsList } from '@/components/list/shared/AlertsList';
-import { AlertsListContextProvider } from '@/components/list/AlertsList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
-import { type PropsWithChildren } from 'react';
+import { Fragment, type PropsWithChildren } from 'react';
 
 /* * */
 
@@ -12,10 +11,8 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="alerts"
 			panes={[
-				<AlertsListContextProvider key="alerts-list">
-					<AlertsList />
-				</AlertsListContextProvider>,
-				children,
+				<AlertsList key="alerts-list" />,
+				<Fragment key="alerts-detail">{children}</Fragment>,
 			]}
 		/>
 	);
