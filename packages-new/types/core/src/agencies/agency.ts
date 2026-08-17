@@ -1,16 +1,16 @@
 /* * */
 
-import { AgencyAlertMapSchema } from '@/agencies/alert-map.js';
+import { AgencyAlertsMapSchema } from '@/agencies/alerts-map.js';
 import { AgencyApexSchema } from '@/agencies/apex.js';
 import { AgencyFinancialsSchema } from '@/agencies/financials.js';
 import { AgencyOpenDataSchema } from '@/agencies/open-data.js';
-import { DocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { DocumentSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const AgencySchema = DocumentSchema.extend({
-	alerts_map: AgencyAlertMapSchema,
+	alerts_map: AgencyAlertsMapSchema,
 	apex: AgencyApexSchema,
 	code: z.string().max(20),
 	contact_emails_pta: z.array(z.string().email()).default([]),
@@ -19,7 +19,7 @@ export const AgencySchema = DocumentSchema.extend({
 	financials: AgencyFinancialsSchema,
 	name: z.string(),
 	open_data: AgencyOpenDataSchema,
-	operation_start_date: OperationalDateSchema.nullable().default(null),
+	operation_start_date: OperationalDateIntSchema.nullable().default(null),
 	phone: z.string(),
 	pta_name: z.string(),
 	public_email: z.string().email(),

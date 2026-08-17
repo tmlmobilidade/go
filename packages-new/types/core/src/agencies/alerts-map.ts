@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const AgencyAlertMapSchema = z.record(
+export const AgencyAlertsMapSchema = z.record(
 	AlertCauseSchema,
 	z.record(
 		AlertEffectSchema,
@@ -18,4 +18,4 @@ export const AgencyAlertMapSchema = z.record(
 
 /* * */
 
-export type AgencyAlertMap = z.infer<typeof AgencyAlertMapSchema>;
+export type AgencyAlertsMap = z.infer<typeof AgencyAlertsMapSchema>;
