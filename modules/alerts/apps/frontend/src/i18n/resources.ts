@@ -2,6 +2,8 @@
 
 import namespaceAlertsEs from '@/i18n/namespaces/alerts/es.json' with { type: 'json' };
 import namespaceAlertsPt from '@/i18n/namespaces/alerts/pt.json' with { type: 'json' };
+import namespaceReferenceTypesEs from '@/i18n/namespaces/reference-types/es.json' with { type: 'json' };
+import namespaceReferenceTypesPt from '@/i18n/namespaces/reference-types/pt.json' with { type: 'json' };
 import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
 /**
@@ -14,6 +16,7 @@ import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilida
 export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
 	alerts: namespaceAlertsPt,
+	reference_types: namespaceReferenceTypesPt,
 } as const;
 
 /**
@@ -22,4 +25,5 @@ export const i18nResourceKeysPt = {
 export const i18nResourceKeysEs = {
 	...i18nResourceKeysEsShared,
 	alerts: namespaceAlertsEs,
+	reference_types: namespaceReferenceTypesEs,
 } as const;

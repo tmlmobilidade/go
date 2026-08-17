@@ -23,7 +23,7 @@ export function AlertsListFilterReferenceType() {
 	return (
 		<ListFilter
 			active={filterReferenceType.isActive}
-			label={t('default:list.AlertsListFilterReferenceType.label')}
+			label={t('alerts:list.filters.reference_type.label')}
 			onChange={filterReferenceType.set}
 			options={filterReferenceType.options}
 			disabled

@@ -18,7 +18,7 @@ export function useAlertsListFilterReferenceType(): UseFilterStateListReturnType
 
 	const selectOptions = useMemo(() =>
 		options.map(item => ({
-			label: t(`default:list.AlertsListFilterReferenceType.${item}`),
+			label: t(`reference_types:${item}`),
 			value: item,
 		})),
 	[t]);
