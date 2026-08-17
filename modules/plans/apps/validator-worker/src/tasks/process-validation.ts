@@ -4,8 +4,8 @@ import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
 import { GTFS_VALIDATION_TIMEOUT_MS } from '@/consts/timeout.js';
 import { normalizeValidationRules } from '@/utils/normalize-validation-rules.js';
 import { runValidator } from '@/utils/run-validator/index.js';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { sendSucessfulGtfsValidationEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
+// import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+// import { sendSucessfulGtfsValidationEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
@@ -135,26 +135,26 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		try {
 			if (updatedGtfsValidation.validity_status === 'valid') {
-				await sendSucessfulGtfsValidationEmail({
-					data: {
-						firstName: foundUser.first_name,
-						gtfsValidationId: gtfsValidation._id,
-						gtfsValidationUrl: PAGE_ROUTES.plans.VALIDATIONS_DETAIL(gtfsValidation._id),
-						totalWarnings: gtfsValidationSummary.total_warnings,
-					},
-					to: foundUser.email,
-				});
+				// await sendSucessfulGtfsValidationEmail({
+				// 	data: {
+				// 		firstName: foundUser.first_name,
+				// 		gtfsValidationId: gtfsValidation._id,
+				// 		gtfsValidationUrl: PAGE_ROUTES.plans.VALIDATIONS_DETAIL(gtfsValidation._id),
+				// 		totalWarnings: gtfsValidationSummary.total_warnings,
+				// 	},
+				// 	to: foundUser.email,
+				// });
 			} else {
-				await sendUnsuccessfulGtfsValidationEmail({
-					data: {
-						firstName: foundUser.first_name,
-						gtfsValidationId: gtfsValidation._id,
-						gtfsValidationUrl: PAGE_ROUTES.plans.VALIDATIONS_DETAIL(gtfsValidation._id),
-						totalErrors: gtfsValidationSummary.total_errors,
-						totalWarnings: gtfsValidationSummary.total_warnings,
-					},
-					to: foundUser.email,
-				});
+				// await sendUnsuccessfulGtfsValidationEmail({
+				// 	data: {
+				// 		firstName: foundUser.first_name,
+				// 		gtfsValidationId: gtfsValidation._id,
+				// 		gtfsValidationUrl: PAGE_ROUTES.plans.VALIDATIONS_DETAIL(gtfsValidation._id),
+				// 		totalErrors: gtfsValidationSummary.total_errors,
+				// 		totalWarnings: gtfsValidationSummary.total_warnings,
+				// 	},
+				// 	to: foundUser.email,
+				// });
 			}
 		} catch (error) {
 			Logger.error({ error, message: 'Error sending validation result email:' });
