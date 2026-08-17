@@ -29,122 +29,9 @@ WITH
 		WHERE
 			start_time_scheduled >= $1
 			AND start_time_scheduled <= $2
-			AND agency_id IN ($3)
 		ORDER BY
 			updated_at DESC
 		LIMIT 1 BY _id
-	),
-
-	rides_for_query AS
-	(
-		SELECT *
-		FROM rides_latest
-	),
-
-	/*
-	 * -----------------------------------------------------------------------
-	 * Latest analysis versions
-	 * -----------------------------------------------------------------------
-	 *
-	 * Each analysis table uses ReplacingMergeTree(updated_at).
-	 *
-	 * argMax() returns the grade from the latest version without requiring
-	 * FINAL.
-	 *
-	 * Only rides in the selected date range are considered.
-	 */
-
-	analysis_at_least_one_vehicle_event_on_last_stop AS
-	(
-		SELECT
-			ride_id,
-			argMax(grade_status, updated_at) AS grade_status
-		FROM operation.ride_analysis_at_least_one_vehicle_event_on_last_stop
-		WHERE operational_date IN
-		(
-			SELECT DISTINCT operational_date
-			FROM rides_for_query
-		)
-		GROUP BY ride_id
-	),
-
-	analysis_expected_apex_validation_interval AS
-	(
-		SELECT
-			ride_id,
-			argMax(grade_status, updated_at) AS grade_status
-		FROM operation.ride_analysis_expected_apex_validation_interval
-		WHERE operational_date IN
-		(
-			SELECT DISTINCT operational_date
-			FROM rides_for_query
-		)
-		GROUP BY ride_id
-	),
-
-	analysis_simple_three_vehicle_events AS
-	(
-		SELECT
-			ride_id,
-			argMax(grade_status, updated_at) AS grade_status
-		FROM operation.ride_analysis_simple_three_vehicle_events
-		WHERE operational_date IN
-		(
-			SELECT DISTINCT operational_date
-			FROM rides_for_query
-		)
-		GROUP BY ride_id
-	),
-
-	analysis_transaction_sequentiality AS
-	(
-		SELECT
-			ride_id,
-			argMax(grade_status, updated_at) AS grade_status
-		FROM operation.ride_analysis_transaction_sequentiality
-		WHERE operational_date IN
-		(
-			SELECT DISTINCT operational_date
-			FROM rides_for_query
-		)
-		GROUP BY ride_id
-	),
-
-	/*
-	 * -----------------------------------------------------------------------
-	 * Join the latest Ride with the latest analysis results.
-	 * -----------------------------------------------------------------------
-	 */
-	ride_with_analyses AS
-	(
-		SELECT
-			r.*,
-
-			analysis_at_least_one_vehicle_event_on_last_stop.grade_status
-				AS _analysis_at_least_one_vehicle_event_on_last_stop_grade,
-
-			analysis_expected_apex_validation_interval.grade_status
-				AS _analysis_expected_apex_validation_interval_grade,
-
-			analysis_simple_three_vehicle_events.grade_status
-				AS _analysis_simple_three_vehicle_events_grade,
-
-			analysis_transaction_sequentiality.grade_status
-				AS _analysis_transaction_sequentiality_grade
-
-		FROM rides_for_query AS r
-
-		LEFT JOIN analysis_at_least_one_vehicle_event_on_last_stop
-			ON analysis_at_least_one_vehicle_event_on_last_stop.ride_id = r._id
-
-		LEFT JOIN analysis_expected_apex_validation_interval
-			ON analysis_expected_apex_validation_interval.ride_id = r._id
-
-		LEFT JOIN analysis_simple_three_vehicle_events
-			ON analysis_simple_three_vehicle_events.ride_id = r._id
-
-		LEFT JOIN analysis_transaction_sequentiality
-			ON analysis_transaction_sequentiality.ride_id = r._id
 	),
 
 	/*
@@ -206,150 +93,73 @@ WITH
 				THEN 'early'
 
 				ELSE 'ontime'
-			END AS start_delay_status,
+			END AS start_delay_status
 
-			/*
-			 * End delay status
-			 */
-			CASE
-				WHEN end_time_observed IS NULL
-				THEN NULL
-
-				WHEN end_time_observed - end_time_scheduled > 300000
-				THEN 'delayed'
-
-				WHEN end_time_observed - end_time_scheduled < -60000
-				THEN 'early'
-
-				ELSE 'ontime'
-			END AS end_delay_status
-
-		FROM ride_with_analyses
+		FROM rides_latest
 	),
 
 	/*
 	 * -----------------------------------------------------------------------
-	 * Calculate the effective analysis grades.
+	 * Apply alert filters
 	 * -----------------------------------------------------------------------
 	 *
-	 * Analysis is not applicable while a ride is scheduled or running.
-	 * Therefore those states intentionally produce NULL.
+	 * Filters are applied to individual rides before route aggregation.
 	 *
-	 * For missed/ended rides:
-	 *
-	 *   analysis exists     -> its grade
-	 *   analysis unavailable -> NULL
+	 * DYNAMIC FILTERS HERE is expected to be replaced by the query builder.
 	 */
-	ride_view AS
-	(
-		SELECT
-			*,
-
-			CASE
-				WHEN operational_status IN ('scheduled', 'running')
-				THEN NULL
-				ELSE _analysis_at_least_one_vehicle_event_on_last_stop_grade
-			END AS analysis_at_least_one_vehicle_event_on_last_stop_grade,
-
-			CASE
-				WHEN operational_status IN ('scheduled', 'running')
-				THEN NULL
-				ELSE _analysis_expected_apex_validation_interval_grade
-			END AS analysis_expected_apex_validation_interval_grade,
-
-			CASE
-				WHEN operational_status IN ('scheduled', 'running')
-				THEN NULL
-				ELSE _analysis_simple_three_vehicle_events_grade
-			END AS analysis_simple_three_vehicle_events_grade,
-
-			CASE
-				WHEN operational_status IN ('scheduled', 'running')
-				THEN NULL
-				ELSE _analysis_transaction_sequentiality_grade
-			END AS analysis_transaction_sequentiality_grade
-
-		FROM ride_with_statuses
-	),
-
-	/*
-	 * -----------------------------------------------------------------------
-	 * Latest hashed_trips stops for rides in range
-	 * -----------------------------------------------------------------------
-	 *
-	 * hashed_trips uses ReplacingMergeTree(updated_at) ordered by
-	 * (_id, stop_sequence). Take the latest physical version per stop
-	 * without FINAL.
-	 *
-	 * Only hashed_trip_ids referenced by rides in the selected date range
-	 * are considered, so the stop list reflects that window.
-	 */
-	hashed_trips_latest AS
+	filtered_rides AS
 	(
 		SELECT
 			*
-		FROM operation.hashed_trips
-		WHERE _id IN
-		(
-			SELECT DISTINCT hashed_trip_id
-			FROM rides_for_query
-		)
-		ORDER BY
-			updated_at DESC
-		LIMIT 1 BY _id, stop_sequence
+		FROM ride_with_statuses
+
+		WHERE
+			1 = 1
+
+			--DYNAMIC FILTERS HERE--
 	),
 
 	/*
-	 * Distinct stops per shape_id, ordered by stop_sequence.
+	 * -----------------------------------------------------------------------
+	 * Route summary
+	 * -----------------------------------------------------------------------
 	 *
-	 * The same stop_id can appear across multiple hashed_trips for one
-	 * shape; keep the earliest sequence seen.
+	 * Group all matching rides by route_short_name.
+	 *
+	 * route_ids:
+	 *   Contains every route_id that has at least one matching Ride.
+	 *
+	 * route_long_name:
+	 *   Uses the route_long_name belonging to the smallest route_id.
+	 *   This gives us the "base route".
 	 */
-	stops_deduped AS
+	route_summary AS
 	(
 		SELECT
-			shape_id,
-			stop_id,
-			any(stop_name) AS stop_name,
-			min(stop_sequence) AS stop_sequence
-		FROM hashed_trips_latest
-		GROUP BY
-			shape_id,
-			stop_id
-	),
+			route_short_name,
 
-	stops_by_shape AS
-	(
-		SELECT
-			shape_id,
-			arrayMap(
-				t -> map('stop_sequence', t.1, 'stop_id', t.2, 'stop_name', t.3),
-				arraySort(
-					t -> t.1,
-					groupArray((stop_sequence, stop_id, stop_name))
-				)
-			) AS stops
-		FROM stops_deduped
-		GROUP BY shape_id
+			arraySort(
+				groupUniqArray(route_id)
+			) AS route_ids,
+
+			argMin(
+				route_long_name,
+				route_id
+			) AS route_long_name
+
+		FROM filtered_rides
+
+		GROUP BY
+			route_short_name
 	)
 
-SELECT DISTINCT
-    rv.route_short_name,
-    rv.route_long_name,
-    rv.shape_id,
-	rv.headsign,
-	sbs.stops
-FROM ride_view AS rv
+SELECT
+	route_ids,
+	route_short_name,
+	route_long_name
 
-LEFT JOIN stops_by_shape AS sbs
-	ON sbs.shape_id = rv.shape_id
-
-WHERE
-	1 = 1
-    AND rv.operational_status IN ('scheduled')
+FROM route_summary
 
 ORDER BY
-    rv.shape_id ASC
-
-LIMIT 10000;
+	route_short_name ASC;
 `;

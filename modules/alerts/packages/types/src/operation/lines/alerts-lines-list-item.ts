@@ -5,15 +5,10 @@ import { z } from 'zod';
 /* * */
 
 export const AlertsLinesListItemSchema = z.object({
-	routes: z.array(z.object({
-		route_long_name: z.string(),
-		route_shape_id: z.string(),
-		route_short_name: z.string(),
-	})),
-	stop_id: z.string(),
-	stop_lat: z.number(),
-	stop_lon: z.number(),
-	stop_name: z.string(),
+	agency_id: z.string(),
+	route_ids: z.array(z.string()),
+	route_long_name: z.string(),
+	route_short_name: z.string(),
 });
 
 /**

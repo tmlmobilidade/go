@@ -1,6 +1,6 @@
 /* * */
 
-export const aletsRidesListQuery = `
+export const alertsRidesListQuery = `
 WITH
 
 	/*
@@ -8,26 +8,6 @@ WITH
 	 * the same timestamp.
 	 */
 	toUnixTimestamp64Milli(now64(3)) AS now_ms,
-
-	/*
-	 * -----------------------------------------------------------------------
-	 * Exact Ride version
-	 * -----------------------------------------------------------------------
-	 *
-	 * Select the exact ride version explicitly by its ID using
-	 * text search parameter $3.
-	 */
-	exact_ride AS
-	(
-		SELECT
-			*
-		FROM operation.rides
-		WHERE
-			_id = $3
-		ORDER BY
-			updated_at DESC
-		LIMIT 1 BY _id
-	),
 
 	/*
 	 * -----------------------------------------------------------------------
