@@ -12,6 +12,7 @@ import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
+// import pjson from 'pjson' with { type: 'json' };
 
 import { setupPathsForValidation } from './setup-paths-for-validation.js';
 
@@ -26,7 +27,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// Setup temporary directory paths for this validation process
 		// to avoid any conflicts with other concurrent validations.
 
-		const { gtfsFilePath, gtfsValidationResultPath, gtfsValidationRulesPath } = setupPathsForValidation(gtfsValidation);
+		const { gtfsFilePath, gtfsValidationResultPath, gtfsValidationRulesPath, tempWorkdirPath } = setupPathsForValidation(gtfsValidation);
 
 		//
 		// Update the gtfs validation document to 'processing' status

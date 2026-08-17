@@ -10,7 +10,7 @@ import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
-import pjson from 'pjson' with { type: 'json' };
+// import pjson from 'pjson' with { type: 'json' };
 
 /* * */
 

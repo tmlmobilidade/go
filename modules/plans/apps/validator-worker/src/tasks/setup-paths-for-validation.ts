@@ -13,5 +13,6 @@ export function setupPathsForValidation(gtfsValidation: GtfsValidation) {
 		gtfsFilePath,
 		gtfsValidationResultPath,
 		gtfsValidationRulesPath,
+		tempWorkdirPath,
 	};
 }
