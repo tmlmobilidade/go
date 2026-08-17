@@ -2,14 +2,15 @@
 
 import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { Dates } from '@tmlmobilidade/dates';
+import { AlertsRidesItem } from '@tmlmobilidade/go-alerts-pckg-types';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { Checkbox, DataTable, DataTableColumn, LoadingSection, NoDataLabel, Section, Surface, Tag } from '@tmlmobilidade/ui';
+import { Checkbox, DataTable, DataTableColumn, displayUnixTimestamp, Label, LoadingSection, NoDataLabel, OperationalStatusDisplay, Section, SeenStatusDisplay, Surface, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface ReferencesEditorRidesListProps {
 	isLoading: boolean
-	ridesData: RideNormalized[]
+	ridesData: AlertsRidesItem[]
 }
 
 /* * */
@@ -26,7 +27,7 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
 	};
 
-	const columns: DataTableColumn<RideNormalized>[] = [
+	const columns: DataTableColumn<AlertsRidesItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <Checkbox checked={referencesEditorContext.data.selected_references?.some(reference => reference.parent_id === item._id) ?? false} />,
@@ -35,13 +36,13 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 		},
 		{
 			accessor: 'seen_last_at',
-			render: item => <SeenStatusIndicator status={item.seen_status} />,
+			render: item => <SeenStatusDisplay status={item.seen_status} tooltip={displayUnixTimestamp(item.seen_last_at)} />,
 			title: '',
 			width: 24,
 		},
 		{
 			accessor: 'operational_status',
-			render: item => <OperationalStatusTag value={item.operational_status} />,
+			render: item => <OperationalStatusDisplay value={item.operational_status} />,
 			title: 'Estado',
 			width: 190,
 		},
@@ -53,7 +54,12 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 		},
 		{
 			accessor: 'headsign',
-			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.pattern_id} />,
+			render: item => (
+				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+					<Tag label={item.shape_id} variant="secondary" />
+					<Label size="md" singleLine>{item.headsign}</Label>
+				</Section>
+			),
 			title: 'Pattern',
 			width: 500,
 		},
@@ -81,13 +87,11 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 	return (
 		<DataTable
 			columns={columns}
-			onRowClick={item => referencesEditorContext.actions.toggleRideSelection(item._id)}
+			onRowClick={item => referencesEditorContext.actions.toggleReferenceSelection(item._id)}
 			records={ridesData}
 			rowIdAccessor="_id"
 			selectedIds={referencesEditorContext.data.selected_references?.map(reference => reference.parent_id) ?? []}
 			withTopBorder
 		/>
 	);
-
-	//
 }

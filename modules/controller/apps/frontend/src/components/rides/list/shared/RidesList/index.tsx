@@ -7,15 +7,13 @@ import { useRidesListData } from '@/components/rides/list/shared/use-rides-list-
 import { RidesListCellDrivers } from '@/components/rides/list/table/RidesListCellDrivers';
 import { RidesListCellDurationObserved } from '@/components/rides/list/table/RidesListCellDurationObserved';
 import { RidesListCellDurationScheduled } from '@/components/rides/list/table/RidesListCellDurationScheduled';
-import { RidesListCellHeadsign } from '@/components/rides/list/table/RidesListCellHeadsign';
 import { RidesListCellPassengers } from '@/components/rides/list/table/RidesListCellPassengers';
-import { RidesListCellSeenLastAt } from '@/components/rides/list/table/RidesListCellSeenLastAt';
 import { RidesListCellTimeObserved } from '@/components/rides/list/table/RidesListCellTimeObserved';
 import { RidesListCellTimeScheduled } from '@/components/rides/list/table/RidesListCellTimeScheduled';
 import { RidesListCellVehicles } from '@/components/rides/list/table/RidesListCellVehicles';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-types';
-import { DataTable, DataTableColumn, ErrorDisplay, GradeStatusDisplay, OperationalDateDisplay, OperationalStatusDisplay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, DataTableColumn, displayUnixTimestamp, ErrorDisplay, GradeStatusDisplay, Label, OperationalDateDisplay, OperationalStatusDisplay, Pane, Section, SeenStatusDisplay, Tag } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +37,7 @@ export function RidesList() {
 	const columns: DataTableColumn<ControllerRidesListItem>[] = [
 		{
 			accessor: 'seen_last_at',
-			render: item => <RidesListCellSeenLastAt status={item.seen_status} timestamp={item.seen_last_at} />,
+			render: item => <SeenStatusDisplay status={item.seen_status} tooltip={displayUnixTimestamp(item.seen_last_at)} />,
 			title: t('default:list.RidesList.columns.seen_last_at.label'),
 			width: 24,
 		},
@@ -57,7 +55,12 @@ export function RidesList() {
 		},
 		{
 			accessor: 'headsign',
-			render: item => <RidesListCellHeadsign headsign={item.headsign} patternId={item.shape_id} />,
+			render: item => (
+				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
+					<Tag label={item.shape_id} variant="secondary" />
+					<Label size="md" singleLine>{item.headsign}</Label>
+				</Section>
+			),
 			title: t('default:list.RidesList.columns.headsign.label'),
 			width: 500,
 		},

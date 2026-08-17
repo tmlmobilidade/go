@@ -3,8 +3,9 @@
 import { ReferencesEditorRidesFilters } from '@/components/references/rides/ReferencesEditorRidesFilters';
 import { ReferencesEditorRidesList } from '@/components/references/rides/ReferencesEditorRidesList';
 import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+
+import { useAlertsRidesData } from '../use-alerts-rides-data';
 
 /* * */
 
@@ -16,43 +17,20 @@ export function ReferencesEditorRides() {
 
 	const referencesEditorContext = useReferencesEditorContext();
 
+	const { data: alertsRidesData, isLoading: alertsRidesLoading } = useAlertsRidesData();
+
 	const [viewMode, setViewMode] = useState<'all' | 'selected'>('all');
 	const [searchFilterValue, setSearchFilterValue] = useState<string>();
 	const [lineIdsFilterValue, setLineIdsFilterValue] = useState<string[]>();
 	const [stopIdsFilterValue, setStopIdsFilterValue] = useState<string[]>();
 
 	//
-	// B. Fetch data
-
-	const { isLoading: filteredRidesLoading, raw: filteredRidesData } = useDataRides(API_ROUTES.alerts.OPERATION_RIDES, {
-		filters: {
-			agency_ids: [referencesEditorContext.data.selected_agency_id],
-			date_end: referencesEditorContext.data.active_period_end_date,
-			date_start: referencesEditorContext.data.active_period_start_date,
-			line_ids: lineIdsFilterValue,
-			operational_statuses: ['running', 'missed', 'scheduled'],
-			search: searchFilterValue,
-			stop_ids: stopIdsFilterValue,
-		},
-	});
-
-	//
-	// C. Transform data
+	// B. Transform data
 
 	const visibleRides = useMemo(() => {
-		if (viewMode === 'all') return filteredRidesData;
-		return referencesEditorContext.data.selected_rides_data;
-	}, [filteredRidesData, referencesEditorContext.data.selected_rides_data, viewMode]);
-
-	//
-	// D. Handle actions
-
-	useEffect(() => {
-		// Skip if no selected references
-		if (!referencesEditorContext.data.selected_references.length) return;
-		// Set filter mode to 'all' if there are no selected references
-		setViewMode('all');
-	}, [referencesEditorContext.data.selected_references.length]);
+		if (viewMode === 'all') return alertsRidesData;
+		return referencesEditorContext.data.selected_references.map(reference => alertsRidesData?.find(ride => ride._id === reference.child_ids[0]));
+	}, [alertsRidesData, referencesEditorContext.data.selected_references, viewMode]);
 
 	//
 	// E. Render components
@@ -72,7 +50,7 @@ export function ReferencesEditorRides() {
 			/>
 
 			<ReferencesEditorRidesList
-				isLoading={filteredRidesLoading}
+				isLoading={alertsRidesLoading}
 				ridesData={visibleRides}
 			/>
 

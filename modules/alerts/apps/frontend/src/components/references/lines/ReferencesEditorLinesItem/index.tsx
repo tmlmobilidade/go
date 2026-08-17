@@ -2,7 +2,7 @@
 
 import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { IconCornerDownRight, IconMinus } from '@tabler/icons-react';
-import { type Alert } from '@tmlmobilidade/go-types-operation';
+import { type AlertReference } from '@tmlmobilidade/go-types-operation';
 import { Button, Grid, MultiSelect, Section, Select, type SelectDataItem, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -14,7 +14,7 @@ interface ReferencesEditorLinesItemProps {
 	index: number
 	onRemoveReference: (index: number) => void
 	onUpdateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
-	reference: Alert['references'][number]
+	reference: AlertReference
 }
 
 /* * */
@@ -94,6 +94,4 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 			</Section>
 		</Surface>
 	);
-
-	//
 }
