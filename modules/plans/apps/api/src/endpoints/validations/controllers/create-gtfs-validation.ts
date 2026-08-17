@@ -45,7 +45,6 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 		is_locked: false,
 		notification_sent: false,
 		processing_status: 'waiting',
-		validation_attempts: 0,
 		validity_status: 'unknown',
 	};
 
