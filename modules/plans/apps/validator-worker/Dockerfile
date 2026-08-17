@@ -24,7 +24,9 @@ WORKDIR /app/modules/plans/apps/validator/validator
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} go build \
 	-ldflags "-X main.version=${VALIDATOR_VERSION}" \
 	-o /validator-bin/validator-linux-${TARGETARCH} \
-	.
+	. \
+	&& /validator-bin/validator-linux-${TARGETARCH} -version \
+	&& sha256sum /validator-bin/validator-linux-${TARGETARCH}
 
 FROM node:lts-slim AS base
 
@@ -40,7 +42,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN turbo prune --docker @tmlmobilidade/go-plans-validator
+RUN turbo prune --docker @tmlmobilidade/go-plans-validator-worker
 
 FROM base AS builder
 
@@ -58,8 +60,8 @@ RUN npm ci
 COPY --from=pruner /app/out/full/ .
 COPY --from=validator-builder /validator-bin ./bin
 
-RUN npx @tmlmobilidade/repo-version --output=/app/modules/plans/apps/validator/package.json
-RUN turbo run build --filter=@tmlmobilidade/go-plans-validator
+RUN npx @tmlmobilidade/repo-version --output=/app/modules/plans/apps/validator-worker/package.json
+RUN turbo run build --filter=@tmlmobilidade/go-plans-validator-worker
 RUN chmod +x /app/bin/validator-*
 RUN npm prune
 RUN node /app/.docker/scripts/trim-node-modules.js /app/node_modules
@@ -76,12 +78,12 @@ ENV ENVIRONMENT=${ENVIRONMENT}
 ENV GTFS_VALIDATOR_BIN_PATH=/app/bin/validator-linux-${TARGETARCH}
 ENV NODE_ENV=production
 
-COPY --from=builder /app/modules/plans/apps/validator/package.json ./package.json
+COPY --from=builder /app/modules/plans/apps/validator-worker/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/packages-new ./packages-new
 COPY --from=builder /app/modules ./modules
 COPY --from=builder /app/bin ./bin
-COPY --from=builder /app/modules/plans/apps/validator/dist ./dist
+COPY --from=builder /app/modules/plans/apps/validator-worker/dist ./dist
 
 CMD ["./dist/index.js"]

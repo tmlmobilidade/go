@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-plans-validator",
+	"name": "@tmlmobilidade/go-plans-validator-worker",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",

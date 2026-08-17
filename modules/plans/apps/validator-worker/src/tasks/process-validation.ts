@@ -23,33 +23,11 @@ export const PROCESSING_STALE_AFTER_MS = GTFS_VALIDATION_TIMEOUT_MS + 5 * 60 * 1
 /* * */
 
 export async function processValidation(gtfsValidation: GtfsValidation) {
-	let claimedAttempt: null | number = null;
+	let isClaimed = false;
 
 	try {
 		//
 
-		//
-		// Check if the GTFS validation has already been attempted 3 times.
-		// If so, mark it as 'error' to avoid infinite retries on problematic files.
-
-		if ((gtfsValidation.validation_attempts ?? 0) >= 3) {
-			Logger.error({ message: `GTFS Validation ${gtfsValidation._id} has already been attempted 3 times. Marking as error.` });
-			await goDb.operation.gtfsValidations.updateOne({
-				_id: gtfsValidation._id,
-				processing_status: gtfsValidation.processing_status,
-				updated_at: gtfsValidation.updated_at,
-			}, {
-				processing_status: 'error',
-				summary: {
-					messages: [SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED],
-					total_errors: 1,
-					total_warnings: 0,
-				},
-			}, { returnResult: false });
-			return;
-		}
-
-		//
 		// Setup temporary directory paths for this validation process
 		// to avoid any conflicts with other concurrent validations.
 
@@ -65,8 +43,6 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		Logger.info({ message: 'Updating GTFS Validation document...' });
 
-		claimedAttempt = (gtfsValidation.validation_attempts ?? 0) + 1;
-
 		const claimResult = await goDb.operation.gtfsValidations.updateOne({
 			_id: gtfsValidation._id,
 			processing_status: gtfsValidation.processing_status,
@@ -74,7 +50,6 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		}, {
 			processing_status: 'processing',
 			summary: null,
-			validation_attempts: claimedAttempt,
 			validity_status: 'unknown',
 		}, { returnResult: false });
 
@@ -82,6 +57,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			Logger.info({ message: `GTFS Validation ${gtfsValidation._id} was claimed by another worker. Skipping...` });
 			return;
 		}
+		isClaimed = true;
 
 		//
 		// Get the associated file document from MongoDB
@@ -130,7 +106,6 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		const completionResult = await goDb.operation.gtfsValidations.updateOne({
 			_id: gtfsValidation._id,
 			processing_status: 'processing',
-			validation_attempts: claimedAttempt,
 		}, {
 			processing_status: 'complete',
 			summary: gtfsValidationSummary as GtfsValidation['summary'],
@@ -138,7 +113,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		}, { returnResult: false });
 
 		if (completionResult.matchedCount === 0) {
-			Logger.info({ message: `Ignoring stale completion for GTFS Validation ${gtfsValidation._id}, attempt ${claimedAttempt}.` });
+			Logger.info({ message: `Ignoring stale completion for GTFS Validation ${gtfsValidation._id}.` });
 			return;
 		}
 
@@ -200,12 +175,11 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// a custom error result to be saved in the database and sent via email.
 		Logger.error({ error, message: 'Error during GTFS validation:' });
 
-		if (claimedAttempt === null) return;
+		if (!isClaimed) return;
 
 		const errorResult = await goDb.operation.gtfsValidations.updateOne({
 			_id: gtfsValidation._id,
 			processing_status: 'processing',
-			validation_attempts: claimedAttempt,
 		}, {
 			processing_status: 'error',
 			summary: {
@@ -221,7 +195,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		}, { returnResult: false });
 
 		if (errorResult.matchedCount === 0) {
-			Logger.info({ message: `Ignoring stale error for GTFS Validation ${gtfsValidation._id}, attempt ${claimedAttempt}.` });
+			Logger.info({ message: `Ignoring stale error for GTFS Validation ${gtfsValidation._id}.` });
 			return;
 		}
 

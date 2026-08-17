@@ -149,10 +149,6 @@ func (rp *RulesParser) validateRules(rules *types.GtfsRules) error {
 		validateRuleConfig(rules.Routes.RouteTextColor, "routes.route_text_color_valid_hex_contrast")
 		validateRuleConfig(rules.Routes.ContinuousPickup, "routes.continuous_pickup_valid_gtfs_enum")
 		validateRuleConfig(rules.Routes.ContinuousDropOff, "routes.continuous_drop_off_valid_gtfs_enum")
-		// validateRuleConfig(rules.Routes.LineId, "routes.line_id")
-		// validateRuleConfig(rules.Routes.LineShortName, "routes.line_short_name")
-		// validateRuleConfig(rules.Routes.LineLongName, "routes.line_long_name")
-		
 	}
 
 	// Add validation for other rule types (trips, stop_times, calendar, etc.)

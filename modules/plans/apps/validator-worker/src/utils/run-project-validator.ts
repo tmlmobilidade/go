@@ -1,10 +1,12 @@
 /* * */
 
 import { type GtfsValidationOutputSummary, GtfsValidationOutputSummarySchema } from '@tmlmobilidade/go-types-gtfs-validator';
-import { spawn } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { access, constants, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 
 /* * */
 
@@ -17,6 +19,7 @@ const BINARY_NAMES: Partial<Record<`${NodeJS.Platform}-${string}`, string>> = {
 };
 
 const FORCE_KILL_DELAY_MS = 60_000;
+const execFileAsync = promisify(execFile);
 
 interface ProjectValidatorOptions {
 	lang: 'en' | 'pt'
@@ -28,6 +31,19 @@ interface ProjectValidatorOptions {
 
 export async function runProjectValidator(inputPath: string, options: ProjectValidatorOptions): Promise<GtfsValidationOutputSummary> {
 	const binaryPath = await getProjectValidatorBinaryPath();
+	const binaryContent = await readFile(binaryPath);
+	const { stdout: versionOutput } = await execFileAsync(binaryPath, ['-version'], {
+		encoding: 'utf-8',
+		env: process.env,
+		windowsHide: true,
+	});
+
+	console.log('GTFS validator runtime:', {
+		binary_path: binaryPath,
+		sha256: createHash('sha256').update(binaryContent).digest('hex'),
+		version: versionOutput.trim(),
+	});
+
 	const args = [
 		'-input', inputPath,
 		'-out', options.out_file,

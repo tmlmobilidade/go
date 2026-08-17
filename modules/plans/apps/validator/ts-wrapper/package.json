@@ -34,24 +34,17 @@
 		"lint": "eslint ./src && tsc -p tsconfig.json --noEmit --noEmit",
 		"lint:fix": "eslint --fix ./src",
 		"postinstall": "if [ ! -d dist ]; then tsx ./scripts/postinstall.ts; else node ./dist/scripts/postinstall.js; fi",
-		"rinse": "npx --yes @tmlmobilidade/repo-rinse",
-		"test": "vitest run --config vitest.config.ts",
-		"test:coverage": "vitest run --config vitest.config.ts --coverage",
-		"test:integration": "vitest run --config vitest.config.ts -t integration",
-		"test:unit": "vitest run --config vitest.config.ts -t unit",
-		"test:watch": "vitest --config vitest.config.ts"
+		"rinse": "npx --yes @tmlmobilidade/repo-rinse"
 	},
 	"dependencies": {
-		"@tmlmobilidade/types": "20260526.939.0"
+		"@tmlmobilidade/go-types-gtfs-validator": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "20260526.939.0",
 		"@tmlmobilidade/tsconfig": "20260526.939.0",
 		"@types/node": "25.9.1",
-		"@vitest/coverage-v8": "4.1.7",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.22.3",
-		"typescript": "6.0.3",
-		"vitest": "4.1.7"
+		"typescript": "6.0.3"
 	}
 }

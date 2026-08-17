@@ -43,6 +43,7 @@ export async function updateProcessingStatus(request: FastifyRequest<{ Body: { p
 
 	const updatedGtfsValidation = await goDb.operation.gtfsValidations.updateById(gtfsValidationData._id, {
 		processing_status: request.body.processing_status ?? 'error',
+		summary: null,
 		validity_status: 'unknown',
 	});
 

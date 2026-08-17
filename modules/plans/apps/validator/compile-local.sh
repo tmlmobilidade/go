@@ -4,7 +4,14 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/../../../.." && pwd)"
-VERSION="${1:-development}"
+GIT_REVISION="$(git -C "$REPO_ROOT" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)"
+DEFAULT_VERSION="local-$GIT_REVISION"
+
+if [[ -n "$(git -C "$REPO_ROOT" status --porcelain 2>/dev/null)" ]]; then
+	DEFAULT_VERSION="$DEFAULT_VERSION-dirty"
+fi
+
+VERSION="${1:-$DEFAULT_VERSION}"
 
 case "$(uname -s)" in
 	Darwin) GOOS="darwin" ;;
@@ -34,20 +41,22 @@ BIN_DIR="$REPO_ROOT/bin"
 BINARY_PATH="$BIN_DIR/validator-$GOOS-$BINARY_ARCH"
 LEGACY_WRAPPER_BIN_DIR="$SCRIPT_DIR/ts-wrapper/bin"
 LEGACY_WRAPPER_DIST_BIN_DIR="$SCRIPT_DIR/ts-wrapper/dist/bin"
+VALIDATOR_GO_CACHE_DIR="${TMPDIR:-/tmp}/go-plans-validator-cache"
 
 echo "Removing old local GTFS validator binaries"
 rm -rf -- "$BIN_DIR" "$LEGACY_WRAPPER_BIN_DIR" "$LEGACY_WRAPPER_DIST_BIN_DIR"
 
 mkdir -p "$BIN_DIR"
+mkdir -p "$VALIDATOR_GO_CACHE_DIR"
 
 echo "Building local GTFS validator: $BINARY_PATH"
 (
 	cd "$SCRIPT_DIR/validator"
-	CGO_ENABLED=0 GOOS="$GOOS" GOARCH="$GOARCH" go build \
+	CGO_ENABLED=0 GOCACHE="$VALIDATOR_GO_CACHE_DIR" GOOS="$GOOS" GOARCH="$GOARCH" go build \
 		-ldflags "-X main.version=$VERSION" \
 		-o "$BINARY_PATH" \
 		.
 )
 
 chmod +x "$BINARY_PATH"
-echo "Local GTFS validator ready"
+echo "Local GTFS validator ready: $("$BINARY_PATH" -version)"
