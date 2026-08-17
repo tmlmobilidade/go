@@ -1,9 +1,8 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type Alert, type AlertReference, type AlertReferenceType } from '@tmlmobilidade/go-types-operation';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { Label, openConfirmModal } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -11,20 +10,20 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useEffe
 export interface ReferencesEditorContextProps {
 	activePeriodEndDate: undefined | UnixTimestamp
 	activePeriodStartDate: undefined | UnixTimestamp
-	enabledReferenceTypes: Alert['reference_type'][]
-	onChangeReferences: (references: Alert['references']) => void
-	onChangeReferenceType: (type: Alert['reference_type']) => void
+	enabledReferenceTypes: AlertReferenceType[]
+	onChangeReferences: (references: AlertReference[]) => void
+	onChangeReferenceType: (type: AlertReferenceType) => void
 	readonly?: boolean
-	selectedAgencyId: Alert['agency_id']
-	selectedMunicipalityIds?: Alert['municipality_ids']
-	selectedReferences: Alert['references']
-	selectedReferenceType: Alert['reference_type']
+	selectedAgencyId: string
+	selectedMunicipalityIds?: string[]
+	selectedReferences: AlertReference[]
+	selectedReferenceType: AlertReferenceType
 };
 
 interface ReferencesEditorContextState {
 	actions: {
 		addReference: () => void
-		changeReferenceType: (value: Alert['reference_type']) => void
+		changeReferenceType: (value: AlertReferenceType) => void
 		removeAllRides: () => void
 		removeReference: (index: number) => void
 		toggleRideSelection: (rideId: string) => void
@@ -33,11 +32,10 @@ interface ReferencesEditorContextState {
 	data: {
 		active_period_end_date: UnixTimestamp
 		active_period_start_date: UnixTimestamp
-		enabled_reference_types: Alert['reference_type'][]
-		selected_agency_id: Alert['agency_id']
-		selected_reference_type: Alert['reference_type']
-		selected_references: Alert['references']
-		selected_rides_data: RideNormalized[]
+		enabled_reference_types: AlertReferenceType[]
+		selected_agency_id: string
+		selected_reference_type: AlertReferenceType
+		selected_references: AlertReference[]
 	}
 	flags: {
 		isReadonly: boolean
@@ -50,9 +48,7 @@ const ReferencesEditorContext = createContext<ReferencesEditorContextState | und
 
 export function useReferencesEditorContext() {
 	const context = useContext(ReferencesEditorContext);
-	if (!context) {
-		throw new Error('useReferencesEditorContext must be used within a ReferencesEditorContextProvider');
-	}
+	if (!context) throw new Error('useReferencesEditorContext must be used within a ReferencesEditorContextProvider');
 	return context;
 }
 
@@ -64,7 +60,7 @@ export function ReferencesEditorContextProvider({ activePeriodEndDate, activePer
 	//
 	// A. Setup variables
 
-	const [selectedRidesData, setSelectedRidesData] = useState<RideNormalized[]>([]);
+	const [selectedRidesData, setSelectedRidesData] = useState<Alert['references']>([]);
 
 	//
 	// B. Handle actions

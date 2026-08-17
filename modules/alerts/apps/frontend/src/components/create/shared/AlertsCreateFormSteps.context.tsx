@@ -14,9 +14,7 @@ const AlertsCreateFormStepsContext = createContext<undefined | UseMultiStepRetur
 
 export function useAlertsCreateFormStepsContext() {
 	const context = useContext(AlertsCreateFormStepsContext);
-	if (!context) {
-		throw new Error('useAlertsCreateFormStepsContext must be used within a AlertsCreateFormStepsContextProvider');
-	}
+	if (!context) throw new Error('useAlertsCreateFormStepsContext must be used within a AlertsCreateFormStepsContextProvider');
 	return context;
 }
 

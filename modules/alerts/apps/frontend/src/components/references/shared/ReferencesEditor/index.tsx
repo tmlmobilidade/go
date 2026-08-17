@@ -1,7 +1,7 @@
 'use client';
 
-import { ReferencesEditorMain } from '@/components/references/ReferencesEditorMain';
 import { type ReferencesEditorContextProps, ReferencesEditorContextProvider } from '@/components/references/shared/ReferencesEditor.context';
+import { ReferencesEditorMain } from '@/components/references/shared/ReferencesEditorMain';
 
 /* * */
 

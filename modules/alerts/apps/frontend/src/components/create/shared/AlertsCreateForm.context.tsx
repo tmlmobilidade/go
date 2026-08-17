@@ -13,9 +13,7 @@ const AlertsCreateFormContext = createContext<undefined | UseContextFormReturnTy
 
 export function useAlertsCreateFormContext() {
 	const context = useContext(AlertsCreateFormContext);
-	if (!context) {
-		throw new Error('useAlertsCreateFormContext must be used within a AlertsCreateFormContextProvider');
-	}
+	if (!context) throw new Error('useAlertsCreateFormContext must be used within a AlertsCreateFormContextProvider');
 	return context;
 }
 
