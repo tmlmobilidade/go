@@ -1,35 +1,15 @@
 'use client';
 
-import { Dates } from '@tmlmobilidade/dates';
-import { useFilterStateDateRange, UseFilterStateDateRangeReturnType } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { useFilterStateDateRange, type UseFilterStateDateRangeReturnType } from '@tmlmobilidade/ui';
 
 /**
  * Hook to manage the active period filter for the alerts list filter bar.
  * @returns The filter state management object.
  */
 export function useAlertsListFilterActivePeriod(): UseFilterStateDateRangeReturnType {
-	//
-
-	const defaultStartValue = useMemo(() => {
-		return Dates
-			.now('local')
-			.minus({ days: 30 })
-			.startOf('day')
-			.unix_timestamp;
-	}, []);
-
-	const defaultEndValue = useMemo(() => {
-		return Dates
-			.now('local')
-			.plus({ days: 30 })
-			.endOf('day')
-			.unix_timestamp;
-	}, []);
-
 	return useFilterStateDateRange(
 		'active_period',
-		defaultStartValue,
-		defaultEndValue,
+		undefined,
+		undefined,
 	);
 }

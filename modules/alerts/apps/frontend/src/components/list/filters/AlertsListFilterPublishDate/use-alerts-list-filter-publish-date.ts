@@ -1,7 +1,7 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/dates';
-import { useFilterStateDateRange, UseFilterStateDateRangeReturnType } from '@tmlmobilidade/ui';
+import { useFilterStateDateRange, type UseFilterStateDateRangeReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /**
