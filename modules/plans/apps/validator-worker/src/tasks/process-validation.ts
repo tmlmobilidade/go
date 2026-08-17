@@ -2,7 +2,7 @@
 
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
 import { normalizeValidationRules } from '@/utils/normalize-validation-rules.js';
-import { runProjectValidator } from '@/utils/run-project-validator.js';
+import { runValidator } from '@/utils/run-validator/index.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
@@ -100,7 +100,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		Logger.info({ message: `GTFS Validation ${gtfsValidation._id} is processing. Starting the Go validator...` });
 
-		const gtfsValidationSummary = await runProjectValidator(gtfsFilePath, {
+		const gtfsValidationSummary = await runValidator(gtfsFilePath, {
 			lang: 'pt',
 			log_level: 'debug',
 			out_file: gtfsValidationResultPath,
@@ -206,13 +206,13 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			return;
 		}
 
-		await sendSystemErrorEmail({
-			data: {
-				errorMessage: error.message ?? 'Unknown error',
-				serviceName: pjson.name,
-				timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-			},
-			to: SYSTEM_CONTACT_EMAIL,
-		});
+		// await sendSystemErrorEmail({
+		// 	data: {
+		// 		errorMessage: error.message ?? 'Unknown error',
+		// 		serviceName: pjson.name,
+		// 		timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+		// 	},
+		// 	to: SYSTEM_CONTACT_EMAIL,
+		// });
 	}
 }
