@@ -16,12 +16,17 @@ export function AlertCreateHeader() {
 	const { actions: alertsCreateFormStepsActions, progress: alertsCreateFormStepsProgress } = useAlertsCreateFormStepsContext();
 
 	const preparedSteps = useMemo(() => {
-		return alertsCreateFormStepsProgress.steps.map((step): StepperDataItem => ({
-			id: step.id,
-			isEnabled: step.isEnabled ? step.isEnabled() : true,
-			label: step.label,
-		}));
+		return alertsCreateFormStepsProgress.steps.map((step): StepperDataItem => {
+			console.log('step', step.id, step.isEnabled?.());
+			return {
+				id: step.id,
+				isEnabled: step.isEnabled ? step.isEnabled() : true,
+				label: step.label,
+			};
+		});
 	}, [alertsCreateFormStepsProgress.steps]);
+
+	console.log('preparedSteps', preparedSteps);
 
 	//
 	// C. Render components

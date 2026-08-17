@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react';
 import { type DefaultValues, useForm, type UseFormReturn } from 'react-hook-form';
 import { type ZodSchema } from 'zod';
 
-import { usePreventNavigation } from '../use-prevent-navigation';
+import { usePreventNavigation } from '../hooks/use-prevent-navigation';
 
 /* * */
 

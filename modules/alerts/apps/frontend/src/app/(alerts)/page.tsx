@@ -1,15 +1,9 @@
 /* * */
 
-// import { AlertCreate } from '@/components/create/AlertCreate';
-// import { AlertCreateContextProvider } from '@/components/create/AlertCreate.context';
+import { AlertCreate } from '@/components/create/shared/AlertCreate';
 
 /* * */
 
 export default async function Page() {
-	return <div>Hello World</div>;
-	// return (
-	// 	<AlertCreateContextProvider>
-	// 		<AlertCreate />
-	// 	</AlertCreateContextProvider>
-	// );
+	return <AlertCreate />;
 }

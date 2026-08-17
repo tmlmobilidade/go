@@ -88,7 +88,10 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	// D. Side effects
 
 	useEffect(() => {
+		console.log('agenciesData', agenciesData);
+		console.log('form.getValues("agency_id")', form.getValues('agency_id'));
 		// Pre-select agency when only one is available
+		if (!agenciesData?.length) return;
 		if (agenciesData?.length !== 1) return;
 		if (form.getValues('agency_id')) return;
 		form.setValue('agency_id', agenciesData[0]._id, { shouldDirty: false });

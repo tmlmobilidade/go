@@ -56,7 +56,10 @@ export function AlertsCreateFormStepsContextProvider({ children }: PropsWithChil
 	const steps = useMemo(() => [
 		{
 			id: 'agency',
-			isValid: () => !!agencyIdValue,
+			isValid: () => {
+				console.log('agencyIdValue multistep', agencyIdValue);
+				return !!agencyIdValue;
+			},
 			isVisible: agenciesData?.length > 1,
 			label: 'Operador',
 			order: 0,
