@@ -1,1 +1,1 @@
-import './alerts/alerts.routes.js';
+import './alerts/routes.js';

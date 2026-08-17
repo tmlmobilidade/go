@@ -8,8 +8,8 @@ import { getSimplifiedApexValidations } from '@/endpoints/rides/controllers/get-
 import { getHashedTrip } from '@/endpoints/rides/controllers/get-hashed-trip.js';
 import { getRideAnalyses } from '@/endpoints/rides/controllers/get-ride-analyses.js';
 import { getRideById } from '@/endpoints/rides/controllers/get-ride-by-id.js';
-import { getRides } from '@/endpoints/rides/controllers/get-rides.js';
 import { getSimplifiedVehicleEvents } from '@/endpoints/rides/controllers/get-vehicle-events.js';
+import { listRides } from '@/endpoints/rides/controllers/list-rides.js';
 import { reprocessRideById } from '@/endpoints/rides/controllers/reprocess-ride.js';
 import { fastifyWebsocket } from '@fastify/websocket';
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
@@ -32,7 +32,7 @@ server.register(
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [PermissionCatalog.all.rides.actions.analysis_read]) },
-			getRides,
+			listRides,
 		);
 
 		instance.get(

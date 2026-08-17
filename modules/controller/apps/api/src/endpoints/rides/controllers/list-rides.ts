@@ -10,7 +10,7 @@ import { PermissionCatalog } from '@tmlmobilidade/types';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getRides(request: FastifyRequest<{ Body: ControllerRidesListFilters }>, reply: FastifyReply<ControllerRidesListItem[]>) {
+export async function listRides(request: FastifyRequest<{ Body: ControllerRidesListFilters }>, reply: FastifyReply<ControllerRidesListItem[]>) {
 	//
 
 	//

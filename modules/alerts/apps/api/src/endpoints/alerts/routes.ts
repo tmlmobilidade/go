@@ -8,9 +8,9 @@ import { deleteImage } from './controllers/delete-image.js';
 import { deleteAlert } from './controllers/delete.js';
 import { describe } from './controllers/describe.js';
 import { duplicate } from './controllers/duplicate.js';
-import { getAll } from './controllers/get-all.js';
 import { getById } from './controllers/get-by-id.js';
 import { getImage } from './controllers/get-image.js';
+import { listAlerts } from './controllers/list-alerts.js';
 import { lock } from './controllers/lock.js';
 import { update } from './controllers/update.js';
 import { uploadImage } from './controllers/upload-image.js';
@@ -30,7 +30,7 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			getAll,
+			listAlerts,
 		);
 
 		instance.get(
