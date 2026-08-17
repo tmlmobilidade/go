@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AlertsLinesFilters, type AlertsLinesItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsStopsFilters, type AlertsStopsItem } from '@tmlmobilidade/go-alerts-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchDataNew } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
@@ -11,8 +11,8 @@ import { useReferencesEditorContext } from './ReferencesEditor.context';
 
 /* * */
 
-interface UseAlertsLinesDataReturnType {
-	data: AlertsLinesItem[]
+interface UseAlertsStopsDataReturnType {
+	data: AlertsStopsItem[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -21,7 +21,7 @@ interface UseAlertsLinesDataReturnType {
 
 /* * */
 
-export function useAlertsLinesData(): UseAlertsLinesDataReturnType {
+export function useAlertsStopsData(): UseAlertsStopsDataReturnType {
 	//
 
 	//
@@ -32,7 +32,7 @@ export function useAlertsLinesData(): UseAlertsLinesDataReturnType {
 	//
 	// B. Transform data
 
-	const query = useMemo<AlertsLinesFilters>(() => ({
+	const query = useMemo<AlertsStopsFilters>(() => ({
 		agency_id: referencesEditorContext.data.selected_agency_id,
 		start_time_scheduled_end: referencesEditorContext.data.active_period_end_date,
 		start_time_scheduled_start: referencesEditorContext.data.active_period_start_date,
@@ -41,8 +41,8 @@ export function useAlertsLinesData(): UseAlertsLinesDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsLinesItem[]>>([API_ROUTES.alerts.ALERTS_LIST, query], {
-		fetcher: async ([url, query]) => await fetchDataNew<AlertsLinesItem[]>(url, 'POST', query),
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsStopsItem[]>>([API_ROUTES.alerts.ALERTS_LIST, query], {
+		fetcher: async ([url, query]) => await fetchDataNew<AlertsStopsItem[]>(url, 'POST', query),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
