@@ -6,28 +6,25 @@ import { z } from 'zod';
 
 /* * */
 
-export const OperationRidesListItemSchema = RideSchema
+export const AlertsRidesListItemSchema = RideSchema
 	.pick({
 		_id: true,
 		agency_id: true,
-		end_time_observed: true,
-		end_time_scheduled: true,
 		headsign: true,
 		operational_date: true,
 		seen_last_at: true,
+		shape_id: true,
 		start_time_observed: true,
 		start_time_scheduled: true,
 	})
 	.extend({
-		end_delay_status: DelayStatusSchema.nullable().default(null),
 		operational_status: OperationalStatusSchema,
 		seen_status: SeenStatusSchema,
 		start_delay_status: DelayStatusSchema.nullable().default(null),
 	});
 
 /**
- * A read model combining the canonical ride data with derived
- * data, including acceptance state, delay state, and analysis results.
+ * A read model combining the canonical ride data with derived statuses.
  * It is intended for use in the alerts module.
  */
-export type OperationRidesListItem = z.infer<typeof OperationRidesListItemSchema>;
+export type AlertsRidesListItem = z.infer<typeof AlertsRidesListItemSchema>;

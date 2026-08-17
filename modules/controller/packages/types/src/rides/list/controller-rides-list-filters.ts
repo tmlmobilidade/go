@@ -52,6 +52,10 @@ export const ControllerRidesListFiltersSchema = z.object({
 		.string()
 		.optional(),
 
+	shape_ids: z
+		.array(z.string())
+		.optional(),
+
 	start_delay_statuses: z
 		.array(z.union([DelayStatusSchema, z.literal('none')]))
 		.optional(),
