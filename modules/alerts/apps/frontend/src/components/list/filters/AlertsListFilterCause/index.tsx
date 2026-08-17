@@ -1,7 +1,9 @@
 /* * */
 
-import { useAlertsListContext } from '@/components/list/AlertsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useAlertsListFilterCause } from './use-alerts-list-filter-cause';
 
 /* * */
 
@@ -11,20 +13,21 @@ export function AlertsListFilterCause() {
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertsListContext();
+	const { t } = useTranslation();
+
+	const filterCause = useAlertsListFilterCause();
 
 	//
 	// B. Render components
 
 	return (
-		<FilterTypeList
-			active={alertsListContext.filters.cause.isActive}
-			label="Causa"
-			onChange={alertsListContext.filters.cause.set}
-			options={alertsListContext.filters.cause.options}
+		<ListFilter
+			active={filterCause.isActive}
+			label={t('alerts:list.filters.cause.label')}
+			onChange={filterCause.set}
+			options={filterCause.options}
+			disabled
 			withToggleAll
 		/>
 	);
-
-	//
 }

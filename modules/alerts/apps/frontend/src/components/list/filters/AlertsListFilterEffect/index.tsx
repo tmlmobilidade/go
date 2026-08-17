@@ -1,7 +1,9 @@
 /* * */
 
-import { useAlertsListContext } from '@/components/list/AlertsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useAlertsListFilterEffect } from './use-alerts-list-filter-effect';
 
 /* * */
 
@@ -11,20 +13,21 @@ export function AlertsListFilterEffect() {
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertsListContext();
+	const { t } = useTranslation();
+
+	const filterEffect = useAlertsListFilterEffect();
 
 	//
 	// B. Render components
 
 	return (
-		<FilterTypeList
-			active={alertsListContext.filters.effect.isActive}
-			label="Efeito"
-			onChange={alertsListContext.filters.effect.set}
-			options={alertsListContext.filters.effect.options}
+		<ListFilter
+			active={filterEffect.isActive}
+			label={t('alerts:list.filters.effect.label')}
+			onChange={filterEffect.set}
+			options={filterEffect.options}
+			disabled
 			withToggleAll
 		/>
 	);
-
-	//
 }

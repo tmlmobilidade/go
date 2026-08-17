@@ -1,7 +1,9 @@
 /* * */
 
-import { useAlertsListContext } from '@/components/list/AlertsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useAlertsListFilterPublishStatus } from './use-alerts-list-filter-publish-status';
 
 /* * */
 
@@ -11,20 +13,21 @@ export function AlertsListFilterPublishStatus() {
 	//
 	// A. Setup variables
 
-	const alertsListContext = useAlertsListContext();
+	const { t } = useTranslation();
+
+	const filterPublishStatus = useAlertsListFilterPublishStatus();
 
 	//
 	// B. Render components
 
 	return (
-		<FilterTypeList
-			active={alertsListContext.filters.publish_status.isActive}
-			label="Estado"
-			onChange={alertsListContext.filters.publish_status.set}
-			options={alertsListContext.filters.publish_status.options}
+		<ListFilter
+			active={filterPublishStatus.isActive}
+			label={t('alerts:list.filters.publish_status.label')}
+			onChange={filterPublishStatus.set}
+			options={filterPublishStatus.options}
+			disabled
 			withToggleAll
 		/>
 	);
-
-	//
 }

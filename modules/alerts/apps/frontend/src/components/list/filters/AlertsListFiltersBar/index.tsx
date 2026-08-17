@@ -1,12 +1,12 @@
 /* * */
 
-import { AlertsListFilterAgency } from '@/components/list/AlertsListFilterAgency';
-import { AlertsListFilterCause } from '@/components/list/AlertsListFilterCause';
-import { AlertsListFilterEffect } from '@/components/list/AlertsListFilterEffect';
-import { AlertsListFilterMunicipality } from '@/components/list/AlertsListFilterMunicipality';
-import { AlertsListFilterPublishStatus } from '@/components/list/AlertsListFilterPublishStatus';
-import { AlertsListFilterReferenceType } from '@/components/list/AlertsListFilterReferenceType';
 import { FiltersBar } from '@tmlmobilidade/ui';
+
+import { AlertsListFilterAgency } from '../AlertsListFilterAgency';
+import { AlertsListFilterCause } from '../AlertsListFilterCause';
+import { AlertsListFilterEffect } from '../AlertsListFilterEffect';
+import { AlertsListFilterPublishStatus } from '../AlertsListFilterPublishStatus';
+import { AlertsListFilterReferenceType } from '../AlertsListFilterReferenceType';
 
 /* * */
 
@@ -18,11 +18,6 @@ export function AlertsListFiltersBar() {
 			<AlertsListFilterReferenceType />
 			<AlertsListFilterCause />
 			<AlertsListFilterEffect />
-			<AlertsListFilterMunicipality />
-			{/* <LineFilter /> */}
-			{/* <StopFilter /> */}
-			{/* <PublishDateFilter /> */}
-			{/* <ValidityDateFilter /> */}
 		</FiltersBar>
 	);
 }

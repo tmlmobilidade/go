@@ -1,14 +1,14 @@
 'use client';
 
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
+import { AlertsListFiltersBar } from '@/components/list/filters/AlertsListFiltersBar';
+import { AlertsListHeader } from '@/components/list/shared/AlertsListHeader';
 import { AlertsListCellCauseEffect } from '@/components/list/table/AlertsListCellCauseEffect';
 import { AlertsListCellDate } from '@/components/list/table/AlertsListCellDate';
 import { AlertsListCellLines } from '@/components/list/table/AlertsListCellLines';
 import { AlertsListCellMunicipalities } from '@/components/list/table/AlertsListCellMunicipalities';
 import { AlertsListCellReferenceType } from '@/components/list/table/AlertsListCellReferenceType';
 import { AlertsListCellStops } from '@/components/list/table/AlertsListCellStops';
-import { AlertsListFiltersBar } from '@/components/list/AlertsListFiltersBar';
-import { AlertsListHeader } from '@/components/list/shared/AlertsListHeader';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';

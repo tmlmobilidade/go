@@ -40,6 +40,15 @@
 			"agency": {
 				"label": "Operador"
 			},
+			"cause": {
+				"label": "Causa"
+			},
+			"effect": {
+				"label": "Efeito"
+			},
+			"publish_status": {
+				"label": "Status de Publicação"
+			},
 			"reference_type": {
 				"label": "Tipo de Referência"
 			}
