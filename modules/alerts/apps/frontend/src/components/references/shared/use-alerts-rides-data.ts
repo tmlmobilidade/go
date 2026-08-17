@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AlertsListFilters, type AlertsRidesItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsRidesFilters, type AlertsRidesItem } from '@tmlmobilidade/go-alerts-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchDataNew } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
@@ -19,7 +19,7 @@ import { useAlertsListFilterSearch } from '../filters/AlertsListFilterSearch/use
 /* * */
 
 interface UseAlertsRidesDataReturnType {
-	data: AlertsListItem[]
+	data: AlertsRidesItem[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean

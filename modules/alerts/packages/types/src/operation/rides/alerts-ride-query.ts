@@ -1,6 +1,6 @@
 /* * */
 
-export const alertsRidesQuery = `
+export const alertsRideQuery = `
 WITH
 
 	/*
