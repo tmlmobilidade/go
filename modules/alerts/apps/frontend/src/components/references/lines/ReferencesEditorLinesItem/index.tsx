@@ -30,7 +30,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 	const { data: alertsLinesData } = useAlertsLinesData();
 
 	//
-	// C. Transform data
+	// B. Transform data
 
 	const linesAsSelectData: SelectDataItem[] = useMemo(() => {
 		return alertsLinesData?.map(item => ({ label: item.route_short_name, value: item.route_short_name }));
@@ -49,7 +49,7 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 	}, [currentLineData]);
 
 	//
-	// D. Render components
+	// C. Render components
 
 	return (
 		<Surface>
