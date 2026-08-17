@@ -30,12 +30,15 @@ case "$(uname -m)" in
 		;;
 esac
 
-BINARY_PATH="$REPO_ROOT/bin/validator-$GOOS-$BINARY_ARCH"
+BIN_DIR="$REPO_ROOT/bin"
+BINARY_PATH="$BIN_DIR/validator-$GOOS-$BINARY_ARCH"
+LEGACY_WRAPPER_BIN_DIR="$SCRIPT_DIR/ts-wrapper/bin"
+LEGACY_WRAPPER_DIST_BIN_DIR="$SCRIPT_DIR/ts-wrapper/dist/bin"
 
-echo "Removing old local GTFS validator binaries: $REPO_ROOT/bin"
-rm -rf -- "$REPO_ROOT/bin"
+echo "Removing old local GTFS validator binaries"
+rm -rf -- "$BIN_DIR" "$LEGACY_WRAPPER_BIN_DIR" "$LEGACY_WRAPPER_DIST_BIN_DIR"
 
-mkdir -p "$REPO_ROOT/bin"
+mkdir -p "$BIN_DIR"
 
 echo "Building local GTFS validator: $BINARY_PATH"
 (
