@@ -142,10 +142,18 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 	useEffect(() => {
 		// Skip if no available steps
 		if (!availableSteps.length) return;
-		// If no current step is set,
-		// default to the first available step
-		if (!currentStepId) setCurrentStepId(availableSteps[0].id);
-	}, [availableSteps, currentStepId]);
+		// If there is a current step already set,
+		// check if it can be enabled still
+		if (currentStepId && currentStep?.isEnabled?.() === false) {
+			// If the current step cannot be enabled,
+			// then go back to the previous step
+			setCurrentStepId(prevStep?.id);
+			return;
+		}
+		// Otherwise, set the current step
+		// to the first available step
+		setCurrentStepId(availableSteps[0].id);
+	}, [availableSteps, currentStepId, currentStep, prevStep]);
 
 	//
 	// C. Handle actions
@@ -210,6 +218,4 @@ export function useMultiStep({ steps }: UseMultiStepProps): UseMultiStepReturnTy
 			steps: availableSteps,
 		},
 	};
-
-	//
 }
