@@ -1,4 +1,3 @@
-export * from '@/agencies/index.js';
 export * from '@/app-configs/index.js';
 export * from '@/attachment.js';
 export * from '@/auth/index.js';
