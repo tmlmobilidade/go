@@ -1,5 +1,6 @@
 'use client';
 
+import { useAlertsDetailAlertId } from '@/components/detail/shared/use-alerts-detail-alert-id';
 import { useAlertsListContext } from '@/components/list/AlertsList.context';
 import { AlertsListFiltersBar } from '@/components/list/filters/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/list/shared/AlertsListHeader';
@@ -14,6 +15,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, LoadingSection, Pane, PublishStatusTag } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -23,10 +25,13 @@ export function AlertsList() {
 	//
 	// A. Setup variables
 
-	const router = useRouter();
-	const params = useParams<{ id?: string }>();
+	const { t } = useTranslation();
 
-	const alertsListContext = useAlertsListContext();
+	const { alertId } = useAlertsDetailAlertId();
+
+	const router = useRouter();
+
+	const ridesData = useAlertsListData();
 
 	const columns: DataTableColumn<Alert>[] = [
 		{

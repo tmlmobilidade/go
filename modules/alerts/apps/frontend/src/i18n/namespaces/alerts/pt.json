@@ -37,6 +37,9 @@
 	},
 	"list": {
 		"filters": {
+			"active_period": {
+				"label": "Período Ativo"
+			},
 			"agency": {
 				"label": "Operador"
 			},
@@ -46,11 +49,14 @@
 			"effect": {
 				"label": "Efeito"
 			},
+			"publish_date": {
+				"label": "Data de Publicação"
+			},
 			"publish_status": {
-				"label": "Status de Publicação"
+				"label": "Estado"
 			},
 			"reference_type": {
-				"label": "Tipo de Referência"
+				"label": "Referência"
 			}
 		}
 	}

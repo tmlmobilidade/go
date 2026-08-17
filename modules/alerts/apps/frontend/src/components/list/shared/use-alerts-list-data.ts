@@ -1,27 +1,30 @@
 'use client';
 
-import { useRidesListFilterAcceptanceStatus } from '@/components/rides/list/filters/RidesListFilterAcceptanceStatus/use-rides-list-filter-acceptance-status';
-import { useRidesListFilterAgency } from '@/components/rides/list/filters/RidesListFilterAgency/use-rides-list-filter-agency';
-import { useRidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop } from '@/components/rides/list/filters/RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop/use-rides-list-filter-analysis-at-least-one-vehicle-event-on-last-stop';
-import { useRidesListFilterAnalysisExpectedApexValidationInterval } from '@/components/rides/list/filters/RidesListFilterAnalysisExpectedApexValidationInterval/use-rides-list-filter-analysis-expected-apex-validation-interval';
-import { useRidesListFilterAnalysisSimpleThreeEvents } from '@/components/rides/list/filters/RidesListFilterAnalysisSimpleThreeEvents/use-rides-list-filter-analysis-simple-three-events';
-import { useRidesListFilterAnalysisTransactionSequentiality } from '@/components/rides/list/filters/RidesListFilterAnalysisTransactionSequentiality/use-rides-list-filter-analysis-transaction-sequentiality';
-import { useRidesListFilterDateRange } from '@/components/rides/list/filters/RidesListFilterDateRange/use-rides-list-filter-date-range';
-import { useRidesListFilterDriver } from '@/components/rides/list/filters/RidesListFilterDriver/use-rides-list-filter-driver';
-import { useRidesListFilterEndDelayStatus } from '@/components/rides/list/filters/RidesListFilterEndDelayStatus/use-rides-list-filter-end-delay-status';
-import { useRidesListFilterOperationalStatus } from '@/components/rides/list/filters/RidesListFilterOperationalStatus/use-rides-list-filter-operational-status';
-import { useRidesListFilterStartDelayStatus } from '@/components/rides/list/filters/RidesListFilterStartDelayStatus/use-rides-list-filter-start-delay-status';
-import { useRidesListFilterTicketingStatus } from '@/components/rides/list/filters/RidesListFilterTicketingStatus/use-rides-list-filter-ticketing-status';
-import { useRidesListFilterVehicle } from '@/components/rides/list/filters/RidesListFilterVehicle/use-rides-list-filter-vehicle';
-import { useRidesListFilterSearch } from '@/components/rides/list/shared/RidesListHeader/use-rides-list-filter-search';
+import { useAlertsListFilterAcceptanceStatus } from '@/components/rides/list/filters/AlertsListFilterAcceptanceStatus/use-rides-list-filter-acceptance-status';
+import { useAlertsListFilterAgency } from '@/components/rides/list/filters/AlertsListFilterAgency/use-rides-list-filter-agency';
+import { useAlertsListFilterAnalysisAtLeastOneVehicleEventOnLastStop } from '@/components/rides/list/filters/AlertsListFilterAnalysisAtLeastOneVehicleEventOnLastStop/use-rides-list-filter-analysis-at-least-one-vehicle-event-on-last-stop';
+import { useAlertsListFilterAnalysisExpectedApexValidationInterval } from '@/components/rides/list/filters/AlertsListFilterAnalysisExpectedApexValidationInterval/use-rides-list-filter-analysis-expected-apex-validation-interval';
+import { useAlertsListFilterAnalysisSimpleThreeEvents } from '@/components/rides/list/filters/AlertsListFilterAnalysisSimpleThreeEvents/use-rides-list-filter-analysis-simple-three-events';
+import { useAlertsListFilterAnalysisTransactionSequentiality } from '@/components/rides/list/filters/AlertsListFilterAnalysisTransactionSequentiality/use-rides-list-filter-analysis-transaction-sequentiality';
+import { useAlertsListFilterDateRange } from '@/components/rides/list/filters/AlertsListFilterDateRange/use-rides-list-filter-date-range';
+import { useAlertsListFilterDriver } from '@/components/rides/list/filters/AlertsListFilterDriver/use-rides-list-filter-driver';
+import { useAlertsListFilterEndDelayStatus } from '@/components/rides/list/filters/AlertsListFilterEndDelayStatus/use-rides-list-filter-end-delay-status';
+import { useAlertsListFilterOperationalStatus } from '@/components/rides/list/filters/AlertsListFilterOperationalStatus/use-rides-list-filter-operational-status';
+import { useAlertsListFilterStartDelayStatus } from '@/components/rides/list/filters/AlertsListFilterStartDelayStatus/use-rides-list-filter-start-delay-status';
+import { useAlertsListFilterTicketingStatus } from '@/components/rides/list/filters/AlertsListFilterTicketingStatus/use-rides-list-filter-ticketing-status';
+import { useAlertsListFilterVehicle } from '@/components/rides/list/filters/AlertsListFilterVehicle/use-rides-list-filter-vehicle';
+import { useAlertsListFilterSearch } from '@/components/rides/list/shared/AlertsListHeader/use-rides-list-filter-search';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
-import { type ControllerRidesListFilters, type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-types';
+import { AlertsListFilters, AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type ControllerAlertsListFilters, type ControllerAlertsListItem } from '@tmlmobilidade/go-controller-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchDataNew } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
+import { useAlertsListFilterCause } from '../filters/AlertsListFilterCause/use-alerts-list-filter-cause';
+import { useAlertsListFilterEffect } from '../filters/AlertsListFilterEffect/use-alerts-list-filter-effect';
+import { useAlertsListFilterPublishStatus } from '../filters/AlertsListFilterPublishStatus/use-alerts-list-filter-publish-status';
 import { useAlertsListFilterReferenceType } from '../filters/AlertsListFilterReferenceType/use-alerts-list-filter-reference-type';
 
 /* * */
@@ -36,42 +39,36 @@ interface UseAlertsListDataReturnType {
 
 /* * */
 
-export function useRidesListData(): UseAlertsListDataReturnType {
+export function useAlertsListData(): UseAlertsListDataReturnType {
 	//
 
 	//
 	// A. Setup variables
 
 	const filterReferenceType = useAlertsListFilterReferenceType();
+	const filterPublishStatus = useAlertsListFilterPublishStatus();
+	const filterCause = useAlertsListFilterCause();
+	const filterEffect = useAlertsListFilterEffect();
 	const filterAgency = useAlertsListFilterAgency();
 	const filterSearch = useAlertsListFilterSearch();
 
 	//
 	// B. Transform data
 
-	const query = useMemo<ControllerRidesListFilters>(() => ({
-		// acceptance_statuses: filterAcceptanceStatus.value,
+	const query = useMemo<AlertsListFilters>(() => ({
 		agency_ids: filterAgency.value,
-		analysis_at_least_one_vehicle_event_on_last_stop_grades: filterAnalysisAtLeastOneVehicleEventOnLastStop.value,
-		analysis_expected_apex_validation_interval_grades: filterAnalysisExpectedApexValidationInterval.value,
-		analysis_simple_three_vehicle_events_grades: filterAnalysisSimpleThreeEvents.value,
-		analysis_transaction_sequentiality_grades: filterAnalysisTransactionSequentiality.value,
-		driver_ids: filterDriver.value,
-		end_delay_statuses: filterEndDelayStatus.value,
-		operational_statuses: filterOperationalStatus.value,
+		cause: filterCause.value,
+		effect: filterEffect.value,
+		publish_status: filterPublishStatus.value,
+		reference_type: filterReferenceType.value,
 		search: filterSearch.value,
-		start_delay_statuses: filterStartDelayStatus.value,
-		start_time_scheduled_end: filterDateRange.value_end,
-		start_time_scheduled_start: filterDateRange.value_start,
-		vehicle_ids: filterVehicle.value,
-		// ticketing_statuses: filterTicketingStatus.value,
-	}), [filterAcceptanceStatus.value, filterDriver.value, filterVehicle.value, filterAgency.value, filterAnalysisAtLeastOneVehicleEventOnLastStop.value, filterAnalysisExpectedApexValidationInterval.value, filterAnalysisSimpleThreeEvents.value, filterAnalysisTransactionSequentiality.value, filterStartDelayStatus.value, filterEndDelayStatus.value, filterOperationalStatus.value, filterSearch.value, filterDateRange.value_end, filterDateRange.value_start, filterTicketingStatus.value]);
+	}), [filterAgency.value, filterPublishStatus.value, filterReferenceType.value, filterCause.value, filterEffect.value, filterSearch.value]);
 
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<ControllerRidesListItem[]>>([API_ROUTES.controller.RIDES_LIST, query], {
-		fetcher: async ([url, query]) => await fetchDataNew<ControllerRidesListItem[]>(url, 'POST', query),
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<ControllerAlertsListItem[]>>([API_ROUTES.controller.RIDES_LIST, query], {
+		fetcher: async ([url, query]) => await fetchDataNew<ControllerAlertsListItem[]>(url, 'POST', query),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
