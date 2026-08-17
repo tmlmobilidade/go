@@ -28,7 +28,7 @@ server.register(
 		//
 
 		instance.post(
-			'/',
+			'/list',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
 			listAlerts,
 		);
@@ -46,7 +46,7 @@ server.register(
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
 			create,
 		);
