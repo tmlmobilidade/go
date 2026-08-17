@@ -2,9 +2,10 @@
 
 import { type AlertNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Alert, AlertReferenceTypeSchema, AlertSchema } from '@tmlmobilidade/go-types-operation';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type Alert, AlertReferenceTypeSchema, AlertSchema, PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
+import { PermissionCatalog, PublishStatusSchema } from '@tmlmobilidade/types';
+import { type ListContextStateTemplate, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, useLocationsContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -63,7 +64,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	//
 	// C. Setup filters
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 	const filterAlertReferenceType = useFilterStateList('reference_type', AlertReferenceTypeSchema.options, AlertReferenceTypeSchema.options.map(item => ({ label: t(`shared:alerts.reference_types.${item}.title`), value: item })));
 	const filterPublishStatus = useFilterStateList('publish_status', PublishStatusSchema.options, PublishStatusSchema.options.map(item => ({ label: t(`shared:status.publish_status.${item}`), value: item })));

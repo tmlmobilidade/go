@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertsList } from '@/components/list/AlertsList';
+import { AlertsList } from '@/components/list/shared/AlertsList';
 import { AlertsListContextProvider } from '@/components/list/AlertsList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';

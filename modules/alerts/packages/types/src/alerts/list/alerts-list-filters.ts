@@ -2,12 +2,11 @@
 
 import { AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
 import { PublishStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
-import { toQueryParamsSchema } from '@tmlmobilidade/utils';
 import { z } from 'zod';
 
 /* * */
 
-const alertsListFiltersShape = {
+export const AlertsListFiltersSchema = z.object({
 
 	agency_ids: z
 		.array(z.string())
@@ -26,28 +25,17 @@ const alertsListFiltersShape = {
 		.optional(),
 
 	publish_status: z
-		.union([PublishStatusSchema, z.literal('all')])
-		.default('all'),
+		.array(PublishStatusSchema)
+		.optional(),
 
 	reference_type: z
-		.union([AlertReferenceTypeSchema, z.literal('all')])
-		.default('all'),
+		.array(AlertReferenceTypeSchema)
+		.optional(),
 
 	search: z
 		.string()
 		.optional(),
 
-} as const;
-
-export const AlertsListFiltersSchema = z.object(alertsListFiltersShape);
-
-export const AlertsListFiltersQuerySchema = toQueryParamsSchema(alertsListFiltersShape, {
-	agency_ids: 'array',
-	publish_end_date_end: 'optional',
-	publish_end_date_start: 'optional',
-	publish_start_date_end: 'optional',
-	publish_start_date_start: 'optional',
-	search: 'optional',
 });
 
 /**

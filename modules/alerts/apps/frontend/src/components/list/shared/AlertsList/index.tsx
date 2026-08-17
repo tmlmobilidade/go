@@ -8,7 +8,7 @@ import { AlertsListCellMunicipalities } from '@/components/list/AlertsListCellMu
 import { AlertsListCellReferenceType } from '@/components/list/AlertsListCellReferenceType';
 import { AlertsListCellStops } from '@/components/list/AlertsListCellStops';
 import { AlertsListFiltersBar } from '@/components/list/AlertsListFiltersBar';
-import { AlertsListHeader } from '@/components/list/AlertsListHeader';
+import { AlertsListHeader } from '@/components/list/shared/AlertsListHeader';
 import { getAvailableLines, getAvailableStops } from '@/lib/alert-utils';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/types';
