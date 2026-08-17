@@ -1,6 +1,7 @@
 /* * */
 
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
+import { normalizeValidationRules } from '@/utils/normalize-validation-rules.js';
 import { runProjectValidator } from '@/utils/run-project-validator.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
@@ -16,7 +17,14 @@ import pjson from 'pjson' with { type: 'json' };
 
 /* * */
 
+const GTFS_VALIDATION_TIMEOUT_MS = 60 * 60 * 1000;
+export const PROCESSING_STALE_AFTER_MS = GTFS_VALIDATION_TIMEOUT_MS + 5 * 60 * 1000;
+
+/* * */
+
 export async function processValidation(gtfsValidation: GtfsValidation) {
+	let claimedAttempt: null | number = null;
+
 	try {
 		//
 
@@ -26,14 +34,18 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		if ((gtfsValidation.validation_attempts ?? 0) >= 3) {
 			Logger.error({ message: `GTFS Validation ${gtfsValidation._id} has already been attempted 3 times. Marking as error.` });
-			await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
+			await goDb.operation.gtfsValidations.updateOne({
+				_id: gtfsValidation._id,
+				processing_status: gtfsValidation.processing_status,
+				updated_at: gtfsValidation.updated_at,
+			}, {
 				processing_status: 'error',
 				summary: {
 					messages: [SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED],
 					total_errors: 1,
 					total_warnings: 0,
 				},
-			});
+			}, { returnResult: false });
 			return;
 		}
 
@@ -53,12 +65,23 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		Logger.info({ message: 'Updating GTFS Validation document...' });
 
-		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
+		claimedAttempt = (gtfsValidation.validation_attempts ?? 0) + 1;
+
+		const claimResult = await goDb.operation.gtfsValidations.updateOne({
+			_id: gtfsValidation._id,
+			processing_status: gtfsValidation.processing_status,
+			updated_at: gtfsValidation.updated_at,
+		}, {
 			processing_status: 'processing',
 			summary: null,
-			validation_attempts: (gtfsValidation.validation_attempts ?? 0) + 1,
+			validation_attempts: claimedAttempt,
 			validity_status: 'unknown',
-		});
+		}, { returnResult: false });
+
+		if (claimResult.matchedCount === 0) {
+			Logger.info({ message: `GTFS Validation ${gtfsValidation._id} was claimed by another worker. Skipping...` });
+			return;
+		}
 
 		//
 		// Get the associated file document from MongoDB
@@ -74,21 +97,19 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		fs.writeFileSync(gtfsFilePath, Buffer.from(fileBuffer));
 
 		//
-		// Get the agency-specific validation rules, if they exist,
-		// and download them to the working directory. Throw an error
-		// if no agency is found or if the rules file is not accessible.
+		// Normalize the agency-specific rules against the shared defaults
+		// and write the complete rules structure to the working directory.
+		// Missing or invalid rules inherit their configured default severity.
 
 		const foundAgency = await goDb.core.agencies.findById(gtfsValidation.agency_id);
 		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.agency_id}`);
-		if (!foundAgency.validation_rules) throw new Error(`No validation rules found for agency: ${gtfsValidation.agency_id}`);
 
-		const rulesContent = typeof foundAgency.validation_rules === 'string'
-			? foundAgency.validation_rules
-			: JSON.stringify(foundAgency.validation_rules);
+		const normalizedRules = normalizeValidationRules(foundAgency.validation_rules);
+		const rulesContent = JSON.stringify(normalizedRules);
 
 		fs.writeFileSync(gtfsValidationRulesPath, rulesContent, { encoding: 'utf-8' });
 
-		Logger.info({ message: `Custom validation rules saved to: ${gtfsValidationRulesPath}` });
+		Logger.info({ message: `Normalized validation rules saved to: ${gtfsValidationRulesPath}` });
 
 		//
 		// Perform the GTFS validation using the project binary
@@ -101,16 +122,25 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			log_level: 'debug',
 			out_file: gtfsValidationResultPath,
 			rules_path: gtfsValidationRulesPath,
-			timeout: 60 * 60 * 1000, // 1 hour timeout
+			timeout: GTFS_VALIDATION_TIMEOUT_MS,
 		});
 
 		Logger.info({ message: 'Validation completed. Updating GTFS Validation document with results...' });
 
-		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
+		const completionResult = await goDb.operation.gtfsValidations.updateOne({
+			_id: gtfsValidation._id,
+			processing_status: 'processing',
+			validation_attempts: claimedAttempt,
+		}, {
 			processing_status: 'complete',
 			summary: gtfsValidationSummary as GtfsValidation['summary'],
 			validity_status: gtfsValidationSummary.total_errors === 0 ? 'valid' : 'invalid',
-		});
+		}, { returnResult: false });
+
+		if (completionResult.matchedCount === 0) {
+			Logger.info({ message: `Ignoring stale completion for GTFS Validation ${gtfsValidation._id}, attempt ${claimedAttempt}.` });
+			return;
+		}
 
 		//
 		// After successful validation, even if there are validation errors,
@@ -169,7 +199,14 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// If any errors occur during validation, catch them and format
 		// a custom error result to be saved in the database and sent via email.
 		Logger.error({ error, message: 'Error during GTFS validation:' });
-		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
+
+		if (claimedAttempt === null) return;
+
+		const errorResult = await goDb.operation.gtfsValidations.updateOne({
+			_id: gtfsValidation._id,
+			processing_status: 'processing',
+			validation_attempts: claimedAttempt,
+		}, {
 			processing_status: 'error',
 			summary: {
 				messages: [{
@@ -181,7 +218,13 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 				total_errors: 1,
 				total_warnings: 0,
 			},
-		});
+		}, { returnResult: false });
+
+		if (errorResult.matchedCount === 0) {
+			Logger.info({ message: `Ignoring stale error for GTFS Validation ${gtfsValidation._id}, attempt ${claimedAttempt}.` });
+			return;
+		}
+
 		await sendSystemErrorEmail({
 			data: {
 				errorMessage: error.message ?? 'Unknown error',

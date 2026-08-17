@@ -56,12 +56,7 @@ export async function getProjectValidatorBinaryPath(): Promise<string> {
 	}
 
 	const currentDirectory = dirname(fileURLToPath(import.meta.url));
-	const packageRoot = resolve(currentDirectory, '..', '..');
-	const repositoryRoot = resolve(packageRoot, '..', '..', '..', '..');
-	const binaryPath = resolve(repositoryRoot, 'bin', binaryName);
-
-	await assertExecutable(binaryPath);
-	return binaryPath;
+	return findExecutableBinary(binaryName, [process.cwd(), currentDirectory]);
 }
 
 async function assertExecutable(binaryPath: string): Promise<void> {
@@ -70,6 +65,33 @@ async function assertExecutable(binaryPath: string): Promise<void> {
 	} catch (error) {
 		throw new Error(`Validator binary not found or not executable: ${binaryPath}`, { cause: error });
 	}
+}
+
+async function findExecutableBinary(binaryName: string, startDirectories: string[]): Promise<string> {
+	const checkedPaths = new Set<string>();
+
+	for (const startDirectory of startDirectories) {
+		let currentDirectory = resolve(startDirectory);
+
+		while (dirname(currentDirectory) !== currentDirectory) {
+			const candidatePath = resolve(currentDirectory, 'bin', binaryName);
+
+			if (!checkedPaths.has(candidatePath)) {
+				checkedPaths.add(candidatePath);
+
+				try {
+					await access(candidatePath, constants.F_OK | constants.X_OK);
+					return candidatePath;
+				} catch {
+					// Continue searching parent directories.
+				}
+			}
+
+			currentDirectory = dirname(currentDirectory);
+		}
+	}
+
+	throw new Error(`Validator binary ${binaryName} not found or not executable. Checked: ${[...checkedPaths].join(', ')}`);
 }
 
 async function runValidatorProcess(binaryPath: string, args: string[], timeout: number): Promise<void> {

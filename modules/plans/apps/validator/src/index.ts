@@ -1,12 +1,13 @@
 /* * */
 
-import { processValidation } from '@/tasks/process-validation.js';
+import { PROCESSING_STALE_AFTER_MS, processValidation } from '@/tasks/process-validation.js';
 import { SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendSystemErrorEmail } from '@tmlmobilidade/emails';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
+import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import pjson from 'pjson' with { type: 'json' };
 
@@ -34,14 +35,20 @@ async function main() {
 	try {
 		//
 
+		const staleProcessingCutoff = (Dates.now('utc').unix_timestamp - PROCESSING_STALE_AFTER_MS) as UnixTimestamp;
+
 		//
-		// Fetch waiting and processing validations from the database,
-		// sorted ascending by creation date (oldest first).
-		// Status "processing" is included to catch any validations
-		// that may be stuck due to previous crashes or errors.
+		// Fetch waiting validations and processing validations that have
+		// remained unchanged beyond the validator timeout. Active processing
+		// validations must not be picked up by another worker.
 
 		const waitingOrStuckGtfsValidations = await goDb.operation.gtfsValidations.findMany(
-			{ processing_status: { $in: ['waiting', 'processing'] } },
+			{
+				$or: [
+					{ processing_status: 'processing', updated_at: { $lte: staleProcessingCutoff } },
+					{ processing_status: 'waiting' },
+				],
+			},
 			{ sort: { created_at: 1 } },
 		);
 

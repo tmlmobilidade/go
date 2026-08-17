@@ -70,8 +70,10 @@ FROM gcr.io/distroless/nodejs24-debian13 AS runner
 WORKDIR /app
 
 ARG ENVIRONMENT
+ARG TARGETARCH
 
 ENV ENVIRONMENT=${ENVIRONMENT}
+ENV GTFS_VALIDATOR_BIN_PATH=/app/bin/validator-linux-${TARGETARCH}
 ENV NODE_ENV=production
 
 COPY --from=builder /app/modules/plans/apps/validator/package.json ./package.json
