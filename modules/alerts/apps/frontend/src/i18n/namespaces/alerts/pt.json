@@ -35,6 +35,16 @@
 					"placeholder": "Ex: Desvio pela Rua X, sentido Y, devido a Z."
 				}
 			}
+		},
+		"list": {
+			"filters": {
+				"agency": {
+					"label": "Operador"
+				},
+				"reference_type": {
+					"label": "Tipo de Referência"
+				}
+			}
 		}
 	}
 }

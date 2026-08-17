@@ -23,7 +23,7 @@ export function AlertsListFilterAgency() {
 	return (
 		<ListFilter
 			active={filterAgency.isActive}
-			label={t('default:list.AlertsListFilterAgency.label')}
+			label={t('default:list.filters.agency.label')}
 			onChange={filterAgency.set}
 			options={filterAgency.options}
 			isMultiple

@@ -1,7 +1,7 @@
 'use client';
 
-import namespaceDefaultEs from '@/i18n/namespaces/default/es.json' with { type: 'json' };
-import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
+import namespaceAlertsEs from '@/i18n/namespaces/alerts/es.json' with { type: 'json' };
+import namespaceAlertsPt from '@/i18n/namespaces/alerts/pt.json' with { type: 'json' };
 import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
 /**
@@ -13,7 +13,7 @@ import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilida
  */
 export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
-	default: namespaceDefaultPt,
+	alerts: namespaceAlertsPt,
 } as const;
 
 /**
@@ -21,5 +21,5 @@ export const i18nResourceKeysPt = {
  */
 export const i18nResourceKeysEs = {
 	...i18nResourceKeysEsShared,
-	default: namespaceDefaultEs,
+	alerts: namespaceAlertsEs,
 } as const;
