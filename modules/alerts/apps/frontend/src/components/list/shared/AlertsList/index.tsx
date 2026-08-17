@@ -1,8 +1,17 @@
 'use client';
 
-import { DataTableColumn } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { useAlertsDetailAlertId } from '@/components/detail/shared/use-alerts-detail-alert-id';
+import { AlertsListFiltersBar } from '@/components/list/filters/AlertsListFiltersBar';
+import { AlertsListHeader } from '@/components/list/shared/AlertsListHeader';
+import { AlertsListCellCauseEffect } from '@/components/list/table/AlertsListCellCauseEffect';
+import { AlertsListCellReferenceType } from '@/components/list/table/AlertsListCellReferenceType';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane, PublishStatusDisplay, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+
+import { useAlertsListData } from '../use-alerts-list-data';
 
 /* * */
 
@@ -14,83 +23,60 @@ export function AlertsList() {
 
 	const { t } = useTranslation();
 
+	const { alertId } = useAlertsDetailAlertId();
+
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
 
-	const alertsListContext = useAlertListData();
+	const alertsData = useAlertsListData();
 
-	const columns: DataTableColumn<Alert>[] = [
+	const columns: DataTableColumn<AlertsListItem>[] = [
 		{
 			accessor: 'agency_id',
 			render: item => <AgencyTag agencyId={item.agency_id} copyOnClick={false} showShortName />,
-			title: 'Operador',
+			title: t('alerts:list.AlertsList.columns.agency_id.label'),
 			width: 180,
 		},
 		{
 			accessor: 'publish_status',
-			render: item => <PublishStatusTag value={item.publish_status} />,
-			title: 'Estado',
+			render: item => <PublishStatusDisplay value={item.publish_status} />,
+			title: t('alerts:list.AlertsList.columns.publish_status.label'),
 			width: 125,
 		},
 		{
 			accessor: 'reference_type',
 			render: item => <AlertsListCellReferenceType value={item.reference_type} />,
-			title: 'Tipo',
+			title: t('alerts:list.AlertsList.columns.reference_type.label'),
 			width: 150,
 		},
 		{
 			accessor: 'title',
-			title: 'Título',
+			title: t('alerts:list.AlertsList.columns.title.label'),
 			width: 500,
 		},
 		{
 			accessor: 'created_at',
-			render: item => <AlertsListCellDate value={item.created_at} />,
-			title: 'Data de criação',
+			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
+			title: t('alerts:list.AlertsList.columns.created_at.label'),
 			width: 225,
 		},
 		{
 			accessor: 'publish_start_date',
-			render: item => <AlertsListCellDate value={item.publish_start_date} />,
-			title: 'Data de início',
-			width: 225,
-		},
-		{
-			accessor: 'publish_end_date',
-			render: item => <AlertsListCellDate value={item.publish_end_date} />,
-			title: 'Data de fim',
+			render: item => <UnixTimestampDisplay value={item.publish_start_date} showDate />,
+			title: t('alerts:list.AlertsList.columns.publish_date.label'),
 			width: 225,
 		},
 		{
 			accessor: 'cause',
 			render: item => <AlertsListCellCauseEffect cause={item.cause} effect={item.effect} />,
-			title: 'Causa & Efeito',
+			title: t('alerts:list.AlertsList.columns.cause_effect.label'),
 			width: 500,
-		},
-		{
-			accessor: 'municipality_ids',
-			render: item => <AlertsListCellMunicipalities values={item.municipality_ids} />,
-			title: 'Municípios',
-			width: 300,
-		},
-		{
-			accessor: '_id',
-			render: item => <AlertsListCellLines values={getAvailableLines(item)} />,
-			title: 'Linhas',
-			width: 175,
-		},
-		{
-			accessor: '_id',
-			render: item => <AlertsListCellStops values={getAvailableStops(item)} />,
-			title: 'Paragens',
-			width: 800,
 		},
 	];
 
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: Alert) => {
+	const handleRowClick = (item: AlertsListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(item._id)));
 	};
 
@@ -104,23 +90,14 @@ export function AlertsList() {
 				<AlertsListFiltersBar key="filters" />,
 			]}
 		>
-
-			{alertsListContext.flags.isLoading && <LoadingSection fullHeight />}
-
-			{alertsListContext.flags.error && <ErrorDisplay message={alertsListContext.flags.error.message} />}
-
-			{!alertsListContext.flags.isLoading && !alertsListContext.flags.error && (
-				<DataTable
-					columns={columns}
-					onRowClick={handleRowClick}
-					records={alertsListContext.data.filtered}
-					rowIdAccessor="_id"
-					selectedId={params.id}
-				/>
-			)}
-
+			{alertsData.error && <ErrorDisplay message={alertsData.error} />}
+			<DataTable
+				columns={columns}
+				onRowClick={handleRowClick}
+				records={alertsData.data}
+				rowIdAccessor="_id"
+				selectedId={alertId}
+			/>
 		</Pane>
 	);
-
-	//
 }

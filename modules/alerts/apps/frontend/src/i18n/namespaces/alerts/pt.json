@@ -1,0 +1,97 @@
+{
+	"create": {
+		"causes": {
+			"no_data": "Nenhuma causa disponível"
+		},
+		"effects": {
+			"no_data": "Nenhum efeito disponível"
+		},
+		"references": {
+			"no_data": "Nenhum tipo de referência disponível"
+		},
+		"summary": {
+			"auto_texts": {
+				"label": "Textos Automáticos"
+			},
+			"coordinates": {
+				"label": "Coordenadas Geográficas"
+			},
+			"description": {
+				"label": "Descrição"
+			},
+			"generate_text": {
+				"label": "Gerar Texto Automático"
+			},
+			"info_url": {
+				"description": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
+				"label": "Link Adicional"
+			},
+			"title": {
+				"label": "Título"
+			},
+			"user_instructions": {
+				"label": "Informações adicionais para geração do texto automático (opcional)",
+				"placeholder": "Ex: Desvio pela Rua X, sentido Y, devido a Z."
+			}
+		}
+	},
+	"list": {
+		"AlertsList": {
+			"columns": {
+				"agency_id": {
+					"label": "Operador"
+				},
+				"cause_effect": {
+					"label": "Causa & Efeito"
+				},
+				"created_at": {
+					"label": "Data de criação"
+				},
+				"lines": {
+					"label": "Linhas"
+				},
+				"publish_date": {
+					"label": "Data de Publicação"
+				},
+				"publish_status": {
+					"label": "Estado"
+				},
+				"reference_type": {
+					"label": "Referência"
+				},
+				"stops": {
+					"label": "Paragens"
+				},
+				"title": {
+					"label": "Título"
+				}
+			}
+		},
+		"AlertsListHeader": {
+			"title": "Alertas"
+		},
+		"filters": {
+			"active_period": {
+				"label": "Período Ativo"
+			},
+			"agency": {
+				"label": "Operador"
+			},
+			"cause": {
+				"label": "Causa"
+			},
+			"effect": {
+				"label": "Efeito"
+			},
+			"publish_date": {
+				"label": "Data de Publicação"
+			},
+			"publish_status": {
+				"label": "Estado"
+			},
+			"reference_type": {
+				"label": "Referência"
+			}
+		}
+	}
+}

@@ -14,7 +14,7 @@ export const PAGE_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('alerts', 'frontend_url')}`,
 
 		// ALERTS
-		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'frontend_url')}/${encodeURIComponent(id)}`,
+		ALERTS_DETAIL: (alertId: string) => `${getModuleConfig('alerts', 'frontend_url')}/${encodeURIComponent(alertId)}`,
 		ALERTS_LIST: `${getModuleConfig('alerts', 'frontend_url')}`,
 	},
 
@@ -183,18 +183,13 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('alerts', 'api_url')}`,
 
 		// ALERTS
+		ALERTS_CREATE: `${getModuleConfig('alerts', 'api_url')}/alerts/create`,
 		ALERTS_DESCRIBE: `${getModuleConfig('alerts', 'api_url')}/alerts/describe`,
 		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}`,
 		ALERTS_DETAIL_DUPLICATE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/duplicate`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/lock`,
-		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts`,
-
-		// OPERATION
-		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,
-		OPERATION_RIDES: `${getModuleConfig('alerts', 'api_url')}/operation/rides`,
-		OPERATION_RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/operation/rides/${encodeURIComponent(id)}/ride`,
-		OPERATION_STOPS: `${getModuleConfig('alerts', 'api_url')}/operation/stops`,
+		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts/list`,
 	},
 
 	auth: {
@@ -272,7 +267,7 @@ export const API_ROUTES = Object.freeze({
 		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/ride`,
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/vehicle-events`,
 		RIDES_FAVORITES: `${getModuleConfig('controller', 'api_url')}/rides/favorites`,
-		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides`,
+		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides/list`,
 
 		// SAMS
 		SAMS_APEX_VERSIONS: `${getModuleConfig('controller', 'api_url')}/sams/apex-versions`,

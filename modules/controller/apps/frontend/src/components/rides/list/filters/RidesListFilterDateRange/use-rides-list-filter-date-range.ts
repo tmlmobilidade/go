@@ -1,7 +1,7 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/dates';
-import { useFilterStateDateRange, UseFilterStateDateRangeReturnType } from '@tmlmobilidade/ui';
+import { useFilterStateDateRange, type UseFilterStateDateRangeReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /**
@@ -14,16 +14,16 @@ export function useRidesListFilterDateRange(): UseFilterStateDateRangeReturnType
 	const defaultStartValue = useMemo(() => {
 		return Dates
 			.now('local')
-			.minus({ minutes: 30 })
-			.set({ millisecond: 0, second: 0 })
+			.minus({ hours: 1 })
+			.startOf('hour')
 			.unix_timestamp;
 	}, []);
 
 	const defaultEndValue = useMemo(() => {
 		return Dates
 			.now('local')
-			.plus({ minutes: 30 })
-			.set({ millisecond: 0, second: 0 })
+			.plus({ hours: 1 })
+			.endOf('hour')
 			.unix_timestamp;
 	}, []);
 

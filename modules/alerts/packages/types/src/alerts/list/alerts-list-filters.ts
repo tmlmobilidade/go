@@ -1,53 +1,47 @@
 /* * */
 
-import { AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
+import { AlertCauseSchema, AlertEffectSchema, AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
 import { PublishStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
-import { toQueryParamsSchema } from '@tmlmobilidade/utils';
 import { z } from 'zod';
 
 /* * */
 
-const alertsListFiltersShape = {
+export const AlertsListFiltersSchema = z.object({
+
+	active_period_end: UnixTimestampSchema
+		.optional(),
+
+	active_period_start: UnixTimestampSchema
+		.optional(),
 
 	agency_ids: z
 		.array(z.string())
 		.default([]),
 
-	publish_end_date_end: UnixTimestampSchema
-		.optional(),
+	causes: z
+		.array(AlertCauseSchema)
+		.default([]),
 
-	publish_end_date_start: UnixTimestampSchema
-		.optional(),
+	effects: z
+		.array(AlertEffectSchema)
+		.default([]),
 
-	publish_start_date_end: UnixTimestampSchema
-		.optional(),
+	publish_date_end: UnixTimestampSchema,
 
-	publish_start_date_start: UnixTimestampSchema
-		.optional(),
+	publish_date_start: UnixTimestampSchema,
 
 	publish_status: z
-		.union([PublishStatusSchema, z.literal('all')])
-		.default('all'),
+		.array(PublishStatusSchema)
+		.default([]),
 
 	reference_type: z
-		.union([AlertReferenceTypeSchema, z.literal('all')])
-		.default('all'),
+		.array(AlertReferenceTypeSchema)
+		.default([]),
 
 	search: z
 		.string()
 		.optional(),
 
-} as const;
-
-export const AlertsListFiltersSchema = z.object(alertsListFiltersShape);
-
-export const AlertsListFiltersQuerySchema = toQueryParamsSchema(alertsListFiltersShape, {
-	agency_ids: 'array',
-	publish_end_date_end: 'optional',
-	publish_end_date_start: 'optional',
-	publish_start_date_end: 'optional',
-	publish_start_date_start: 'optional',
-	search: 'optional',
 });
 
 /**

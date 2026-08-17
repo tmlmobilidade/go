@@ -14,7 +14,7 @@ export default function Layout({ children }: PropsWithChildren) {
 				id="rides"
 				panes={[
 					<RidesList key="rides-list" />,
-					<Fragment key="rides-detail-pane">{children}</Fragment>,
+					<Fragment key="rides-detail">{children}</Fragment>,
 				]}
 			/>
 		</RideFavoritesContextProvider>

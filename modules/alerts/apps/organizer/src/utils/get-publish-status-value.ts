@@ -1,7 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type Alert, type PublishStatus } from '@tmlmobilidade/types';
+import { type Alert } from '@tmlmobilidade/go-types-operation';
+import { type PublishStatus } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Determines the publish status of an alert based
