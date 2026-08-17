@@ -81,7 +81,7 @@ export interface FilterPermissionResourceValuesArgs<TValue = string> {
 	permissions: Permission[]
 	resourceKey: string
 	scope: Permission['scope']
-	values: TValue[]
+	values: TValue[] | undefined
 }
 
 /**
@@ -492,7 +492,7 @@ export class PermissionCatalog {
 	*/
 	static filterPermissionResourceValues<TValue = string>({ action, permissions, resourceKey, scope, values }: FilterPermissionResourceValuesArgs<TValue>): TValue[] {
 		// No filter was requested, so preserve the original values.
-		if (values.length === 0) return values;
+		if (!values || values.length === 0) return values ?? [];
 
 		if (!permissions?.length) return [];
 

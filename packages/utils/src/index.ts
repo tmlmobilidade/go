@@ -8,6 +8,7 @@ export * from '@/maps/index.js';
 export * from '@/numbers/index.js';
 export * from '@/objects/index.js';
 export * from '@/permissions.js';
+export * from '@/query-param-schemas.js';
 export * from '@/run-on-interval.js';
 export * from '@/run-with-concurrency.js';
 export * from '@/singleton-proxy.js';
