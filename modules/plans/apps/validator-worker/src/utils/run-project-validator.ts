@@ -3,8 +3,9 @@
 import { type GtfsValidationOutputSummary, GtfsValidationOutputSummarySchema } from '@tmlmobilidade/go-types-gtfs-validator';
 import { execFile, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { access, constants, readFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { readdirSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 
@@ -28,6 +29,12 @@ interface ProjectValidatorOptions {
 	timeout: number
 }
 
+/**
+ * Runs the project validator on the given input file.
+ * @param inputPath - Path to the input GTFS file.
+ * @param options - Options for the validator.
+ * @returns The validation output summary.
+ */
 export async function runProjectValidator(inputPath: string, options: ProjectValidatorOptions): Promise<GtfsValidationOutputSummary> {
 	const binaryPath = await getProjectValidatorBinaryPath();
 	const binaryContent = await readFile(binaryPath);
@@ -58,12 +65,6 @@ export async function runProjectValidator(inputPath: string, options: ProjectVal
 }
 
 export async function getProjectValidatorBinaryPath(): Promise<string> {
-	const configuredPath = process.env.GTFS_VALIDATOR_BIN_PATH;
-	if (configuredPath) {
-		await assertExecutable(configuredPath);
-		return configuredPath;
-	}
-
 	const platformKey = `${process.platform}-${process.arch}` as const;
 	const binaryName = BINARY_NAMES[platformKey];
 	if (!binaryName) {
@@ -71,42 +72,38 @@ export async function getProjectValidatorBinaryPath(): Promise<string> {
 	}
 
 	const currentDirectory = dirname(fileURLToPath(import.meta.url));
-	return findExecutableBinary(binaryName, [process.cwd(), currentDirectory]);
+	console.log('currentDirectory', currentDirectory);
+	console.log('process.cwd()', process.cwd());
+
+	return findExecutable(process.cwd() + '/../../', binaryName);
+	// return findExecutableBinary(binaryName, [process.cwd() + '/../../apps/validator']);
 }
 
-async function assertExecutable(binaryPath: string): Promise<void> {
-	try {
-		await access(binaryPath, constants.F_OK | constants.X_OK);
-	} catch (error) {
-		throw new Error(`Validator binary not found or not executable: ${binaryPath}`, { cause: error });
-	}
-}
+/**
+ * Recursively searches for an executable/file by name
+ * inside the given directory and all its child directories.
+ *
+ * @returns Full path to the executable, or null if not found.
+ */
+export function findExecutable(rootPath: string, executableName: string): null | string {
+	const entries = readdirSync(rootPath, { withFileTypes: true });
+	for (const entry of entries) {
+		const fullPath = join(rootPath, entry.name);
 
-async function findExecutableBinary(binaryName: string, startDirectories: string[]): Promise<string> {
-	const checkedPaths = new Set<string>();
+		if (entry.isFile() && entry.name === executableName) {
+			return fullPath;
+		}
 
-	for (const startDirectory of startDirectories) {
-		let currentDirectory = resolve(startDirectory);
+		if (entry.isDirectory()) {
+			const result = findExecutable(fullPath, executableName);
 
-		while (dirname(currentDirectory) !== currentDirectory) {
-			const candidatePath = resolve(currentDirectory, 'bin', binaryName);
-
-			if (!checkedPaths.has(candidatePath)) {
-				checkedPaths.add(candidatePath);
-
-				try {
-					await access(candidatePath, constants.F_OK | constants.X_OK);
-					return candidatePath;
-				} catch {
-					// Continue searching parent directories.
-				}
+			if (result) {
+				return result;
 			}
-
-			currentDirectory = dirname(currentDirectory);
 		}
 	}
 
-	throw new Error(`Validator binary ${binaryName} not found or not executable. Checked: ${[...checkedPaths].join(', ')}`);
+	return null;
 }
 
 async function runValidatorProcess(binaryPath: string, args: string[], timeout: number): Promise<void> {

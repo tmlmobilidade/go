@@ -53,7 +53,7 @@ import (
 )
 
 func init() {
-	services.SetDisplayVersion(version)
+	services.SetDisplayVersion("1.0.0")
 }
 
 func runValidations(gtfs types.Gtfs, tracker *lib.PerformanceTracker, rules *types.GtfsRules) {
@@ -116,7 +116,7 @@ func main() {
 
 	//
 	// lib.AppLogger.Clear()
-	lib.AppLogger.Divider("GTFS Validator v" + version)
+	lib.AppLogger.Divider("GTFS Validator v1.0.0")
 
 	//
 	// 0.4 Start Performance Tracker

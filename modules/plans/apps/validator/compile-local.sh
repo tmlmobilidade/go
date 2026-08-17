@@ -3,7 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd -- "$SCRIPT_DIR/../../../.." && pwd)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR" && pwd)"
 
 case "$(uname -s)" in
 	Darwin) GOOS="darwin" ;;
@@ -41,7 +41,7 @@ mkdir -p "$VALIDATOR_GO_CACHE_DIR"
 
 echo "Building local GTFS validator: $BINARY_PATH"
 (
-	cd "$SCRIPT_DIR/validator"
+	cd "$SCRIPT_DIR/src"
 	CGO_ENABLED=0 GOCACHE="$VALIDATOR_GO_CACHE_DIR" GOOS="$GOOS" GOARCH="$GOARCH" go build \
 		-o "$BINARY_PATH" \
 		.
