@@ -6,7 +6,15 @@ import { z } from 'zod';
 
 export const AlertsLinesListItemSchema = z.object({
 	agency_id: z.string(),
-	route_ids: z.array(z.string()),
+	patterns: z.array(z.object({
+		headsign: z.string(),
+		route_id: z.string(),
+		shape_id: z.string(),
+		stops: z.array(z.object({
+			stop_id: z.string(),
+			stop_name: z.string(),
+		})),
+	})),
 	route_long_name: z.string(),
 	route_short_name: z.string(),
 });
