@@ -7,7 +7,7 @@ import { fetchDataNew } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useReferencesEditorContext } from './ReferencesEditor.context';
+import { useReferencesEditorContext } from '../shared/ReferencesEditor.context';
 
 /* * */
 

@@ -1,10 +1,11 @@
 'use client';
 
-import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { ReferencesEditorLinesItem } from '@/components/references/lines/ReferencesEditorLinesItem';
+import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
 import { IconPlus } from '@tabler/icons-react';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Button, LoadingSection, NoDataLabel, Section, Surface } from '@tmlmobilidade/ui';
+
+import { useAlertsLinesData } from '../use-alerts-lines-data';
 
 /* * */
 
@@ -19,18 +20,12 @@ export function ReferencesEditorLines() {
 	//
 	// B. Fetch data
 
-	const { isLoading: operationalLinesLoading } = useDataOperationalLines(API_ROUTES.alerts.OPERATION_LINES, {
-		filters: {
-			agency_ids: [referencesEditorContext.data.selected_agency_id],
-			date_end: referencesEditorContext.data.active_period_end_date,
-			date_start: referencesEditorContext.data.active_period_start_date,
-		},
-	});
+	const { isLoading: alertsLinesLoading } = useAlertsLinesData();
 
 	//
 	// C. Render components
 
-	if (operationalLinesLoading) {
+	if (alertsLinesLoading) {
 		return <LoadingSection />;
 	}
 
