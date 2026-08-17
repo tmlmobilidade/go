@@ -1,12 +1,15 @@
 /* * */
 
-import { AlertsDetail } from '@/components/detail/AlertsDetail';
+import { AlertDetail } from '@/components/detail/AlertDetail';
+import { AlertDetailContextProvider } from '@/components/detail/AlertDetail.context';
 
 /* * */
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	return (
-		<AlertsDetail key="alerts-detail" />
+		<AlertDetailContextProvider alertId={id}>
+			<AlertDetail />
+		</AlertDetailContextProvider>
 	);
 }

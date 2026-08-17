@@ -2,6 +2,7 @@
 
 import pjson from '#/package.json';
 import { i18nResourceKeysEs, i18nResourceKeysPt } from '@/i18n/resources';
+import { DataProviders } from '@/providers/data-providers';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
 import { type Metadata } from 'next';
 import { type PropsWithChildren } from 'react';
@@ -19,9 +20,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<BaseProvider i18n={{ es: i18nResourceKeysEs, pt: i18nResourceKeysPt }} version={pjson.version}>
 			<AppProvider>
-				<AppWrapper>
-					{children}
-				</AppWrapper>
+				<DataProviders>
+					<AppWrapper>
+						{children}
+					</AppWrapper>
+				</DataProviders>
 			</AppProvider>
 		</BaseProvider>
 	);
