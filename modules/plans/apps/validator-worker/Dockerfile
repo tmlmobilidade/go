@@ -1,7 +1,6 @@
 FROM golang:1.25-bookworm AS validator-builder
 
 ARG TARGETARCH
-ARG VALIDATOR_VERSION=1.0.0
 
 WORKDIR /app
 
@@ -22,7 +21,6 @@ COPY packages-new/types/gtfs-validator/src/validation ./packages-new/types/gtfs-
 WORKDIR /app/modules/plans/apps/validator/validator
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} go build \
-	-ldflags "-X main.version=${VALIDATOR_VERSION}" \
 	-o /validator-bin/validator-linux-${TARGETARCH} \
 	. \
 	&& /validator-bin/validator-linux-${TARGETARCH} -version \

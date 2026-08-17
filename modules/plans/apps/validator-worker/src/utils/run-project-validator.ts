@@ -15,7 +15,6 @@ const BINARY_NAMES: Partial<Record<`${NodeJS.Platform}-${string}`, string>> = {
 	'darwin-x64': 'validator-darwin-amd64',
 	'linux-arm64': 'validator-linux-arm64',
 	'linux-x64': 'validator-linux-amd64',
-	'win32-x64': 'validator.exe',
 };
 
 const FORCE_KILL_DELAY_MS = 60_000;
@@ -114,12 +113,18 @@ async function runValidatorProcess(binaryPath: string, args: string[], timeout: 
 	await new Promise<void>((resolvePromise, rejectPromise) => {
 		const validatorProcess = spawn(binaryPath, args, {
 			env: process.env,
-			stdio: ['ignore', 'inherit', 'inherit'],
+			stdio: ['ignore', 'inherit', 'pipe'],
 			windowsHide: true,
 		});
 
+		const stderrChunks: Buffer[] = [];
 		let timedOut = false;
 		let forceKillTimer: NodeJS.Timeout | undefined;
+
+		validatorProcess.stderr?.on('data', (chunk: Buffer) => {
+			stderrChunks.push(chunk);
+			process.stderr.write(chunk);
+		});
 
 		const timeoutTimer = setTimeout(() => {
 			timedOut = true;
@@ -139,6 +144,7 @@ async function runValidatorProcess(binaryPath: string, args: string[], timeout: 
 
 		validatorProcess.once('close', (exitCode, signal) => {
 			cleanup();
+			const stderr = Buffer.concat(stderrChunks).toString('utf8').trim();
 
 			if (timedOut) {
 				rejectPromise(new Error(`GTFS validation timed out after ${timeout}ms`));
@@ -149,7 +155,7 @@ async function runValidatorProcess(binaryPath: string, args: string[], timeout: 
 				return;
 			}
 			if (exitCode !== 0) {
-				rejectPromise(new Error(`GTFS validator exited with code ${exitCode ?? 'unknown'}`));
+				rejectPromise(new Error(`GTFS validator exited with code ${exitCode ?? 'unknown'}${stderr ? `: ${stderr}` : ''}`));
 				return;
 			}
 

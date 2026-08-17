@@ -11,6 +11,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };
@@ -41,23 +42,20 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		// Update the gtfs validation document to 'processing' status
 		// and save the paths for reference in case of errors
 
-		Logger.info({ message: 'Updating GTFS Validation document...' });
+		Logger.info({ message: `Transitioning GTFS Validation ${gtfsValidation._id} from ${gtfsValidation.processing_status} to processing...` });
 
-		const claimResult = await goDb.operation.gtfsValidations.updateOne({
+		await goDb.operation.gtfsValidations.updateOne({
 			_id: gtfsValidation._id,
 			processing_status: gtfsValidation.processing_status,
-			updated_at: gtfsValidation.updated_at,
+			...(gtfsValidation.processing_status === 'processing' && { updated_at: gtfsValidation.updated_at }),
 		}, {
 			processing_status: 'processing',
 			summary: null,
 			validity_status: 'unknown',
 		}, { returnResult: false });
 
-		if (claimResult.matchedCount === 0) {
-			Logger.info({ message: `GTFS Validation ${gtfsValidation._id} was claimed by another worker. Skipping...` });
-			return;
-		}
 		isClaimed = true;
+		Logger.info({ message: `GTFS Validation ${gtfsValidation._id} is processing. Preparing the GTFS file and rules...` });
 
 		//
 		// Get the associated file document from MongoDB
@@ -87,11 +85,20 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		Logger.info({ message: `Normalized validation rules saved to: ${gtfsValidationRulesPath}` });
 
+		const routesRules = normalizedRules.routes ?? {};
+		console.log('GTFS validator rules runtime:', {
+			has_legacy_routes_line_id: Object.hasOwn(routesRules, 'line_id'),
+			has_legacy_routes_line_long_name: Object.hasOwn(routesRules, 'line_long_name'),
+			has_legacy_routes_line_short_name: Object.hasOwn(routesRules, 'line_short_name'),
+			rules_path: gtfsValidationRulesPath,
+			sha256: createHash('sha256').update(rulesContent).digest('hex'),
+		});
+
 		//
 		// Perform the GTFS validation using the project binary
 		// and update the GTFS validation document in MongoDB with the results.
 
-		Logger.info({ message: 'Performing the actual GTFS validation...' });
+		Logger.info({ message: `GTFS Validation ${gtfsValidation._id} is processing. Starting the Go validator...` });
 
 		const gtfsValidationSummary = await runProjectValidator(gtfsFilePath, {
 			lang: 'pt',
@@ -173,7 +180,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 	} catch (error) {
 		// If any errors occur during validation, catch them and format
 		// a custom error result to be saved in the database and sent via email.
-		Logger.error({ error, message: 'Error during GTFS validation:' });
+		Logger.error({ error, message: `Error processing GTFS Validation ${gtfsValidation._id}:` });
 
 		if (!isClaimed) return;
 

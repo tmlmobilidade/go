@@ -7,7 +7,7 @@ import (
 	"slices"
 )
 
-// displayVersion is set by main.init() from build-injected main.version
+// displayVersion is set by main.init() from version.go.
 var displayVersion string
 
 func SetDisplayVersion(v string) { displayVersion = v }

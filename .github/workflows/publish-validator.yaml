@@ -1,0 +1,60 @@
+name: 'Build & Publish GTFS Validator'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - go-695-passar-o-validador-para-o-go
+      # - production
+    paths:
+      - '.github/workflows/publish-validator.yaml'
+      - 'modules/plans/apps/validator/compile.sh'
+      - 'modules/plans/apps/validator/validator/**'
+      - 'packages-new/interfaces/validator-db/src/**'
+      - 'packages-new/types/gtfs-validator/src/validation/**'
+      - '!bin/**'
+
+permissions:
+  contents: write
+
+jobs:
+  release-validator:
+    name: Release Validator Binaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Read validator version
+        id: validator-version
+        shell: bash
+        run: |
+          VERSION="$(sed -n 's/^const version = "\([^"]*\)"/\1/p' modules/plans/apps/validator/validator/version.go)"
+          test -n "$VERSION"
+          echo "Validator version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build binaries
+        shell: bash
+        run: bash modules/plans/apps/validator/compile.sh
+
+      - name: Verify binary version
+        shell: bash
+        run: |
+          EXPECTED_VERSION="${{ steps.validator-version.outputs.version }}"
+          ACTUAL_VERSION="$(bin/validator-linux-amd64 -version)"
+          echo "$ACTUAL_VERSION"
+          [[ "$ACTUAL_VERSION" == *"$EXPECTED_VERSION"* ]]
+
+      - name: Create GitHub release with binaries
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.validator-version.outputs.version }}"
+          gh release create "$VERSION" \
+            --title "$VERSION" \
+            --notes "Validator binaries for version $VERSION" \
+            bin/validator-linux-amd64 \
+            bin/validator-linux-arm64 \
+            bin/validator-darwin-amd64 \
+            bin/validator-darwin-arm64
