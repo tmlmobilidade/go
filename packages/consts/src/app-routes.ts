@@ -192,7 +192,9 @@ export const API_ROUTES = Object.freeze({
 		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts/list`,
 
 		// OPERATION-DATA
+		OPERATION_DATA_LINES: `${getModuleConfig('alerts', 'api_url')}/operation-data/lines`,
 		OPERATION_DATA_RIDES: `${getModuleConfig('alerts', 'api_url')}/operation-data/rides`,
+		OPERATION_DATA_STOPS: `${getModuleConfig('alerts', 'api_url')}/operation-data/stops`,
 	},
 
 	auth: {
