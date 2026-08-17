@@ -7,9 +7,7 @@ import { z } from 'zod';
 
 export const AlertsLinesListFiltersSchema = z.object({
 
-	agency_ids: z
-		.array(z.string())
-		.default([]),
+	agency_id: z.string(),
 
 	start_time_scheduled_end: UnixTimestampSchema,
 

@@ -7,9 +7,7 @@ import { z } from 'zod';
 
 export const AlertsRidesListFiltersSchema = z.object({
 
-	agency_ids: z
-		.array(z.string())
-		.default([]),
+	agency_id: z.string(),
 
 	operational_statuses: z
 		.array(OperationalStatusSchema)

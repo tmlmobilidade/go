@@ -27,8 +27,9 @@ WITH
 			*
 		FROM operation.rides
 		WHERE
-			start_time_scheduled >= $1
-			AND start_time_scheduled <= $2
+			agency_id = $1
+			AND start_time_scheduled >= $2
+			AND start_time_scheduled <= $3
 		ORDER BY
 			updated_at DESC
 		LIMIT 1 BY _id
