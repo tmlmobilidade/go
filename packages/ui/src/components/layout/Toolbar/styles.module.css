@@ -1,7 +1,6 @@
 /* * */
-/* TOOLBAR */
 
-.toolbar {
+.container {
 	display: grid;
 	grid-template-columns: 1fr;
 	width: 100%;
@@ -9,9 +8,13 @@
 	overflow-x: auto;
 }
 
-.toolbarItems {
+.content {
 	display: flex;
 	gap: var(--size-spacing-md);
 	align-items: center;
 	justify-content: flex-start;
+}
+
+.control {
+	display: none;
 }

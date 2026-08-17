@@ -35,6 +35,7 @@
 		"watch": "tsc-watch -p tsconfig.build.json --onSuccess 'resolve-tspaths -p tsconfig.build.json'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/types": "*",

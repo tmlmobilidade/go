@@ -1,5 +1,6 @@
 'use client';
 
+import { Dates } from '@tmlmobilidade/dates';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useEffect, useMemo } from 'react';
@@ -43,8 +44,18 @@ export function useFilterStateDateRange(key: string, defaultStart?: null | UnixT
 	//
 	// A. Setup variables
 
-	const [urlValueStart, setUrlValueStart] = useQueryState(`${key}-start`, parseAsInteger.withDefault(defaultStart));
-	const [urlValueEnd, setUrlValueEnd] = useQueryState(`${key}-end`, parseAsInteger.withDefault(defaultEnd));
+	const defaultStartValueSecondsPrecision = useMemo(() => {
+		if (!defaultStart) return null;
+		return Dates.fromUnixTimestamp(defaultStart).set({ millisecond: 0 }).unix_timestamp;
+	}, [defaultStart]);
+
+	const defaultEndValueSecondsPrecision = useMemo(() => {
+		if (!defaultEnd) return null;
+		return Dates.fromUnixTimestamp(defaultEnd).set({ millisecond: 0 }).unix_timestamp;
+	}, [defaultEnd]);
+
+	const [urlValueStart, setUrlValueStart] = useQueryState(`${key}-start`, parseAsInteger.withDefault(defaultStartValueSecondsPrecision));
+	const [urlValueEnd, setUrlValueEnd] = useQueryState(`${key}-end`, parseAsInteger.withDefault(defaultEndValueSecondsPrecision));
 
 	//
 	// B. Transform data
@@ -85,5 +96,5 @@ export function useFilterStateDateRange(key: string, defaultStart?: null | UnixT
 		setStart: setUrlValueStart,
 		value_end: effectiveValueEnd,
 		value_start: effectiveValueStart,
-	}), [isActive, setUrlValueEnd, setUrlValueStart, effectiveValueEnd, effectiveValueStart]);
+	}), [isActive, setUrlValueEnd, setUrlValueStart, urlValueEnd, urlValueStart]);
 }

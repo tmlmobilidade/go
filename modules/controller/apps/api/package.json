@@ -23,7 +23,7 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/fastify": "*",
-		"@tmlmobilidade/go-controller-pckg-queries": "*",
+		"@tmlmobilidade/go-controller-pckg-types": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-providers-operation": "*",

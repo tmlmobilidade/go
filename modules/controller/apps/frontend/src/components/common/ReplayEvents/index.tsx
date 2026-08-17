@@ -1,6 +1,6 @@
 'use client';
 
-import { useRideAnalysisContext } from '@/contexts/RideAnalysis.context';
+import { useRidesDetailVehicleEventsData } from '@/components/rides/detail/shared/use-rides-detail-vehicle-events-data';
 import { IconPlayerPauseFilled, IconPlayerPlayFilled } from '@tabler/icons-react';
 import { Button, Section, Slider } from '@tmlmobilidade/ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -24,9 +24,9 @@ export function ReplayEvents({ onReplayIndexChange, replayIndex }: ReplayEventsP
 	//
 	// A. Setup variables
 
-	const rideAnalysisContext = useRideAnalysisContext();
+	const { data: vehicleEventsData } = useRidesDetailVehicleEventsData();
 
-	const eventCount = rideAnalysisContext.geojson.observed_events.features.length;
+	const eventCount = vehicleEventsData?.length ?? 0;
 	const maxIndex = eventCount - 1;
 
 	const [isPlaying, setIsPlaying] = useState(false);

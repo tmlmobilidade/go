@@ -1,9 +1,13 @@
 /* * */
 
 import { fastifyWebsocket } from '@fastify/websocket';
-import { OperationalLinesSharedController, OperationalStopsSharedController, RidesSharedController } from '@tmlmobilidade/controllers';
-import { authorizationMiddleware, FastifyInstance, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
-import { type GetOperationalLinesBatchQuery, type GetOperationalStopsBatchQuery, type GetRidesBatchQuery, type OperationalLine, type OperationalStop, PermissionCatalog, type RideNormalized } from '@tmlmobilidade/types';
+import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { PermissionCatalog } from '@tmlmobilidade/types';
+
+import { getLines } from './controllers/get-lines.js';
+import { getRideById } from './controllers/get-ride-by-id.js';
+import { getRides } from './controllers/get-rides.js';
+import { getStops } from './controllers/get-stops.js';
 
 /* * */
 
@@ -20,35 +24,27 @@ server.register(
 		await instance.register(fastifyWebsocket);
 
 		instance.get(
-			'/rides',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			(request: FastifyRequest<{ Querystring: GetRidesBatchQuery }>, reply: FastifyReply<RideNormalized[]>) => RidesSharedController.getBatch(request, reply, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read),
-		);
-
-		instance.get(
-			'/rides/ws',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]), websocket: true },
-			(socket) => {
-				RidesSharedController.websocket(socket);
-			},
-		);
-
-		instance.get(
 			'/rides/:id/ride',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			(request: FastifyRequest, reply: FastifyReply<RideNormalized>) => RidesSharedController.getRideById(request, reply, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read),
+			getRideById,
+		);
+
+		instance.post(
+			'/rides',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
+			getRides,
 		);
 
 		instance.get(
 			'/lines',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			(request: FastifyRequest<{ Querystring: GetOperationalLinesBatchQuery }>, reply: FastifyReply<OperationalLine[]>) => OperationalLinesSharedController.getBatch(request, reply, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read),
+			getLines,
 		);
 
 		instance.get(
 			'/stops',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			(request: FastifyRequest<{ Querystring: GetOperationalStopsBatchQuery }>, reply: FastifyReply<OperationalStop[]>) => OperationalStopsSharedController.getBatch(request, reply, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.read),
+			getStops,
 		);
 
 		//

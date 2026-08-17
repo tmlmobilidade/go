@@ -1,40 +1,52 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
+import { type ControllerRidesDetailRideItem, ControllerRidesDetailRideItemSchema, controllerRidesDetailRideQuery } from '@tmlmobilidade/go-controller-pckg-types';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
 /**
  * Get a ride by its ID.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getRideById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Ride>) {
+export async function getRideById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<ControllerRidesDetailRideItem>) {
 	//
 
 	//
 	// Validate the request parameters
 
 	if (!request.params.id) {
-		return reply
-			.status(HTTP_STATUS.BAD_REQUEST)
-			.send({
-				data: null,
-				error: 'Missing ride_id parameter.',
-				status: HTTP_STATUS.BAD_REQUEST,
-			});
+		return sendErrorApiResponse(reply, {
+			error: 'Missing ride "id" parameter.',
+			status_code: '400',
+		});
 	}
 
 	//
-	// Fetch the ride data by ride ID
-	// and send it back to the client
+	// Build query parameters
 
-	const rideData = await ridesProvider.findRideById(request.params.id);
+	const params: Record<string, number | string> = {
+		1: request.params.id,
+	};
 
-	reply.send({
-		data: rideData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	//
+	// Execute the query
+
+	const sql = controllerRidesDetailRideQuery;
+
+	const queryResult = await labDb.queryFromString<ControllerRidesDetailRideItem>(sql, params);
+
+	//
+	// Parse and return the result
+
+	if (!queryResult?.length) {
+		return sendErrorApiResponse(reply, {
+			error: `Ride not found: ${request.params.id}`,
+			status_code: '404',
+		});
+	}
+
+	const parsedResult = ControllerRidesDetailRideItemSchema.parse(queryResult[0]);
+
+	return sendSuccessApiResponse(reply, parsedResult);
 }

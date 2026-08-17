@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Agency, PermissionCatalog, type UpdateAgencyDto } from '@tmlmobilidade/types';
+import { type Agency, type UpdateAgencyDto } from '@tmlmobilidade/go-types-core';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, useContextForm, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
