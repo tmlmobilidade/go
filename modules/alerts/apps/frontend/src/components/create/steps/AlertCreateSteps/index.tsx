@@ -3,9 +3,9 @@
 import { useAlertsCreateFormStepsContext } from '@/components/create/shared/AlertsCreateFormSteps.context';
 import { AlertCreateStepAgency } from '@/components/create/steps/AlertCreateStepAgency';
 import { AlertCreateStepCause } from '@/components/create/steps/AlertCreateStepCause';
-// import { AlertCreateStepDates } from '@/components/create/steps/AlertCreateStepDates';
-// import { AlertCreateStepEffect } from '@/components/create/steps/AlertCreateStepEffect';
-// import { AlertCreateStepReferences } from '@/components/create/steps/AlertCreateStepReferences';
+import { AlertCreateStepDates } from '@/components/create/steps/AlertCreateStepDates';
+import { AlertCreateStepEffect } from '@/components/create/steps/AlertCreateStepEffect';
+import { AlertCreateStepReferences } from '@/components/create/steps/AlertCreateStepReferences';
 // import { AlertCreateStepSummary } from '@/components/create/steps/AlertCreateStepSummary';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { NoDataLabel, Surface, useMeContext } from '@tmlmobilidade/ui';
@@ -38,9 +38,9 @@ export function AlertCreateSteps() {
 		<>
 			{alertsCreateFormStepsProgress.current?.id === 'agency' && <AlertCreateStepAgency />}
 			{alertsCreateFormStepsProgress.current?.id === 'cause' && <AlertCreateStepCause />}
-			{/* {alertsCreateFormStepsContext.progress.current?.id === 'effect' && <AlertCreateStepEffect />} */}
-			{/* {alertsCreateFormStepsContext.progress.current?.id === 'dates' && <AlertCreateStepDates />} */}
-			{/* {alertsCreateFormStepsContext.progress.current?.id === 'references' && <AlertCreateStepReferences />} */}
+			{alertsCreateFormStepsProgress.current?.id === 'effect' && <AlertCreateStepEffect />}
+			{alertsCreateFormStepsProgress.current?.id === 'dates' && <AlertCreateStepDates />}
+			{alertsCreateFormStepsProgress.current?.id === 'references' && <AlertCreateStepReferences />}
 			{/* {alertsCreateFormStepsContext.progress.current?.id === 'summary' && <AlertCreateStepSummary />} */}
 		</>
 	);

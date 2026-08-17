@@ -1,12 +1,14 @@
 'use client';
 
-import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
-import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
+import { ReferencesEditor } from '@/components/references/ReferencesEditor';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, AlertReferenceTypeValues, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { LoadingSection, NoDataLabel, Section, useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
 
 /* * */
 
@@ -18,16 +20,16 @@ export function AlertCreateStepReferences() {
 
 	const { t } = useTranslation();
 
-	const alertCreateContext = useAlertCreateContext();
+	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'agency_id' });
-	const causeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'cause' });
-	const effectValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'effect' });
-	const activePeriodEndDateValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'active_period_end_date' });
-	const activePeriodStartDateValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'active_period_start_date' });
-	const municipalityIdsValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'municipality_ids' });
-	const referencesValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'references' });
-	const referenceTypeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'reference_type' });
+	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const causeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'cause' });
+	const effectValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'effect' });
+	const activePeriodEndDateValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'active_period_end_date' });
+	const activePeriodStartDateValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'active_period_start_date' });
+	const municipalityIdsValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'municipality_ids' });
+	const referencesValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'references' });
+	const referenceTypeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
 
 	//
 	// B. Fetch data
@@ -56,11 +58,11 @@ export function AlertCreateStepReferences() {
 	// D. Handle actions
 
 	const handleChangeReferenceType = (value: Alert['reference_type']) => {
-		alertCreateContext.form.instance.setValue('reference_type', value, { shouldDirty: true });
+		alertsCreateForm.setValue('reference_type', value, { shouldDirty: true });
 	};
 
 	const handleChangeReferences = (value: Alert['references']) => {
-		alertCreateContext.form.instance.setValue('references', value, { shouldDirty: true });
+		alertsCreateForm.setValue('references', value, { shouldDirty: true });
 	};
 
 	//
@@ -73,7 +75,7 @@ export function AlertCreateStepReferences() {
 	if (!preparedOptions.length) {
 		return (
 			<Section alignItems="center" height="100%" justifyContent="center" padding="lg">
-				<NoDataLabel text={t('default:alerts.create.references.no_data')} />
+				<NoDataLabel text={t('alerts:create.references.no_data')} />
 			</Section>
 		);
 	}

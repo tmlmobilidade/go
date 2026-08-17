@@ -1,8 +1,10 @@
 'use client';
 
-import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ContextFormController, DateTimeInput, Divider, Grid, Label, Section, Text, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
 
 /* * */
 
@@ -12,11 +14,13 @@ export function AlertCreateStepDates() {
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
-	const alertCreateContext = useAlertCreateContext();
+	const { t } = useTranslation();
 
-	const agencyIdValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'agency_id' });
-	const referenceTypeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'reference_type' });
+	const meContext = useMeContext();
+	const { form: alertsCreateForm } = useAlertsCreateFormContext();
+
+	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const referenceTypeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
 
 	//
 	// B. Transform data
@@ -43,16 +47,16 @@ export function AlertCreateStepDates() {
 		<>
 
 			<Section gap="sm">
-				<Label size="lg" caps>Período de Vigência</Label>
-				<Text size="sm" weight="medium">Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).</Text>
+				<Label size="lg" caps>{t('alerts:create.AlertCreateStepDates.sections.active_period.title')}</Label>
+				<Text size="sm" weight="medium">{t('alerts:create.AlertCreateStepDates.sections.active_period.description')}</Text>
 				<Grid columns="ab" gap="md">
 					<ContextFormController
-						control={alertCreateContext.form.instance.control}
+						control={alertsCreateForm.control}
 						name="active_period_start_date"
 						render={({ field, fieldState }) => (
 							<DateTimeInput
 								error={fieldState.error?.message}
-								label="Data de Início"
+								label={t('alerts:create.AlertCreateStepDates.sections.active_period.fields.active_period_start_date.label')}
 								onChange={field.onChange}
 								readOnly={!hasPermissionToEdit}
 								value={field.value}
@@ -60,12 +64,12 @@ export function AlertCreateStepDates() {
 						)}
 					/>
 					<ContextFormController
-						control={alertCreateContext.form.instance.control}
+						control={alertsCreateForm.control}
 						name="active_period_end_date"
 						render={({ field, fieldState }) => (
 							<DateTimeInput
 								error={fieldState.error?.message}
-								label="Data de Fim"
+								label={t('alerts:create.AlertCreateStepDates.sections.active_period.fields.active_period_end_date.label')}
 								onChange={field.onChange}
 								readOnly={!hasPermissionToEdit}
 								value={field.value}
@@ -79,16 +83,16 @@ export function AlertCreateStepDates() {
 			<Divider />
 
 			<Section gap="sm">
-				<Label size="lg" caps>Agendamento</Label>
-				<Text size="sm" weight="medium">É possível agendar a permanência do alerta nos canais digitais. A visibilidade do alerta é diferente do seu período de vigência.</Text>
+				<Label size="lg" caps>{t('alerts:create.AlertCreateStepDates.sections.publish_date.title')}</Label>
+				<Text size="sm" weight="medium">{t('alerts:create.AlertCreateStepDates.sections.publish_date.description')}</Text>
 				<Grid columns="ab" gap="md">
 					<ContextFormController
-						control={alertCreateContext.form.instance.control}
+						control={alertsCreateForm.control}
 						name="publish_start_date"
 						render={({ field, fieldState }) => (
 							<DateTimeInput
 								error={fieldState.error?.message}
-								label="Data de Início"
+								label={t('alerts:create.AlertCreateStepDates.sections.publish_date.fields.publish_date_start_date.label')}
 								onChange={field.onChange}
 								readOnly={!hasPermissionToEdit}
 								value={field.value}
@@ -97,12 +101,12 @@ export function AlertCreateStepDates() {
 						)}
 					/>
 					<ContextFormController
-						control={alertCreateContext.form.instance.control}
+						control={alertsCreateForm.control}
 						name="publish_end_date"
 						render={({ field, fieldState }) => (
 							<DateTimeInput
 								error={fieldState.error?.message}
-								label="Data de Fim"
+								label={t('alerts:create.AlertCreateStepDates.sections.publish_date.fields.publish_date_end_date.label')}
 								onChange={field.onChange}
 								readOnly={!hasPermissionToEdit}
 								value={field.value}

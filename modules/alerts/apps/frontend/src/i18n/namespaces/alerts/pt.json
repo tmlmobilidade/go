@@ -1,5 +1,33 @@
 {
 	"create": {
+		"AlertCreateStepDates": {
+			"sections": {
+				"active_period": {
+					"description": "Período no qual decorre o que está a causar o efeito do alerta. O alerta pode estar publicado mas não ser ainda válido (ex: um alerta para um desvio causado por um corte de estrada é publicado uma semana antes, mas o corte em si é apenas durante 2 dias).",
+					"fields": {
+						"active_period_end_date": {
+							"label": "Data de Fim"
+						},
+						"active_period_start_date": {
+							"label": "Data de Início"
+						}
+					},
+					"title": "Período de Validade"
+				},
+				"publish_date": {
+					"description": "Período em que o alerta está publicado, e por isso visível nos canais digitais. É possível agendar quando o alerta será publicado, assim como quando deverá ser retirado dos canais digitais.",
+					"fields": {
+						"publish_date_end_date": {
+							"label": "Data de Fim"
+						},
+						"publish_date_start_date": {
+							"label": "Data de Início"
+						}
+					},
+					"title": "Agendamento da Publicação"
+				}
+			}
+		},
 		"causes": {
 			"no_data": "Nenhuma causa disponível"
 		},
