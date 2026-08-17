@@ -1,7 +1,8 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
-import { type ControllerRidesDetailRideItem, getControllerRidesDetailRide } from '@tmlmobilidade/go-controller-pckg-queries';
+import { type ControllerRidesDetailRideItem, ControllerRidesDetailRideItemSchema, controllerRidesDetailRideQuery } from '@tmlmobilidade/go-controller-pckg-types';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
 /**
  * Get a ride by its ID.
@@ -22,10 +23,30 @@ export async function getRideById(request: FastifyRequest<{ Params: { id: string
 	}
 
 	//
-	// Fetch the ride data by ID
-	// and send it back to the client
+	// Build query parameters
 
-	const result = await getControllerRidesDetailRide(request.params.id);
+	const params: Record<string, number | string> = {
+		1: request.params.id,
+	};
 
-	return sendSuccessApiResponse(reply, result);
+	//
+	// Execute the query
+
+	const sql = controllerRidesDetailRideQuery;
+
+	const queryResult = await labDb.queryFromString<ControllerRidesDetailRideItem>(sql, params);
+
+	//
+	// Parse and return the result
+
+	if (!queryResult?.length) {
+		return sendErrorApiResponse(reply, {
+			error: `Ride not found: ${request.params.id}`,
+			status_code: '404',
+		});
+	}
+
+	const parsedResult = ControllerRidesDetailRideItemSchema.parse(queryResult[0]);
+
+	return sendSuccessApiResponse(reply, parsedResult);
 }

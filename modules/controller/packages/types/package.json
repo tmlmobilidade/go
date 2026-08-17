@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-controller-pckg-queries",
+	"name": "@tmlmobilidade/go-controller-pckg-types",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -15,7 +15,6 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"zod": "3.25.76"

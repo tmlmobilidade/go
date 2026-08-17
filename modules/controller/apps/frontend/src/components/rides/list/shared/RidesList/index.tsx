@@ -14,7 +14,7 @@ import { RidesListCellTimeObserved } from '@/components/rides/list/table/RidesLi
 import { RidesListCellTimeScheduled } from '@/components/rides/list/table/RidesListCellTimeScheduled';
 import { RidesListCellVehicles } from '@/components/rides/list/table/RidesListCellVehicles';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-queries';
+import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-types';
 import { DataTable, DataTableColumn, ErrorDisplay, GradeStatusDisplay, OperationalDateDisplay, OperationalStatusDisplay, Pane } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
