@@ -36,13 +36,15 @@ export async function listAlerts(request: FastifyRequest<{ Body: AlertsListFilte
 	const pipeline: AggregationPipeline<AlertsListItem> = [
 		{
 			$match: {
-				...(validatedFilters.agency_ids.length > 0 ? { agency_id: { $in: validatedFilters.agency_ids } } : {}),
-				...(validatedFilters.publish_end_date_start ? { publish_end_date: { $gte: validatedFilters.publish_end_date_start } } : {}),
-				...(validatedFilters.publish_end_date_end ? { publish_end_date: { $lte: validatedFilters.publish_end_date_end } } : {}),
-				...(validatedFilters.publish_start_date_start ? { publish_start_date: { $gte: validatedFilters.publish_start_date_start } } : {}),
-				...(validatedFilters.publish_start_date_end ? { publish_start_date: { $lte: validatedFilters.publish_start_date_end } } : {}),
-				...(validatedFilters.publish_status.length > 0 ? { publish_status: { $in: validatedFilters.publish_status } } : {}),
-				...(validatedFilters.reference_type.length > 0 ? { reference_type: { $in: validatedFilters.reference_type } } : {}),
+				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },
+				...{ publish_status: { $in: validatedFilters.publish_status ?? [] } },
+				...{ reference_type: { $in: validatedFilters.reference_type ?? [] } },
+				...{ cause: { $in: validatedFilters.causes ?? [] } },
+				...{ effect: { $in: validatedFilters.effects ?? [] } },
+				...(validatedFilters.publish_date_start ? { publish_start_date: { $gte: validatedFilters.publish_date_start } } : {}),
+				...(validatedFilters.publish_date_end ? { publish_end_date: { $lte: validatedFilters.publish_date_end } } : {}),
+				...(validatedFilters.active_period_start ? { active_period_start_date: { $gte: validatedFilters.active_period_start } } : {}),
+				...(validatedFilters.active_period_end ? { active_period_end_date: { $lte: validatedFilters.active_period_end } } : {}),
 			},
 			$project: Object.fromEntries(Object.keys(AlertsListItemSchema.shape).map(key => [key, 1])),
 		},

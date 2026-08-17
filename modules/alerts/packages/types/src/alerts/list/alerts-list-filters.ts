@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
+import { AlertCauseSchema, AlertEffectSchema, AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
 import { PublishStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -16,6 +16,14 @@ export const AlertsListFiltersSchema = z.object({
 
 	agency_ids: z
 		.array(z.string())
+		.default([]),
+
+	causes: z
+		.array(AlertCauseSchema)
+		.default([]),
+
+	effects: z
+		.array(AlertEffectSchema)
 		.default([]),
 
 	publish_date_end: UnixTimestampSchema
