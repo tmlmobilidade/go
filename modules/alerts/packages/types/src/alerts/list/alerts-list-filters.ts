@@ -26,11 +26,9 @@ export const AlertsListFiltersSchema = z.object({
 		.array(AlertEffectSchema)
 		.default([]),
 
-	publish_date_end: UnixTimestampSchema
-		.optional(),
+	publish_date_end: UnixTimestampSchema,
 
-	publish_date_start: UnixTimestampSchema
-		.optional(),
+	publish_date_start: UnixTimestampSchema,
 
 	publish_status: z
 		.array(PublishStatusSchema)
