@@ -1,6 +1,7 @@
 /* * */
 
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
+import { GTFS_VALIDATION_TIMEOUT_MS } from '@/consts/timeout.js';
 import { normalizeValidationRules } from '@/utils/normalize-validation-rules.js';
 import { runValidator } from '@/utils/run-validator/index.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
@@ -15,11 +16,6 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };
-
-/* * */
-
-const GTFS_VALIDATION_TIMEOUT_MS = 60 * 60 * 1000;
-export const PROCESSING_STALE_AFTER_MS = GTFS_VALIDATION_TIMEOUT_MS + 5 * 60 * 1000;
 
 /* * */
 

@@ -1,6 +1,7 @@
 /* * */
 
-import { PROCESSING_STALE_AFTER_MS, processValidation } from '@/tasks/process-validation.js';
+import { PROCESSING_STALE_AFTER_MS } from '@/consts/timeout.js';
+import { processValidation } from '@/tasks/process-validation.js';
 // import { SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 // import { sendSystemErrorEmail } from '@tmlmobilidade/emails';
