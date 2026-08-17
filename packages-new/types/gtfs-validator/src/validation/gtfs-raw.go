@@ -59,14 +59,14 @@ type RouteRaw struct {
 	// Required fields
 	RouteId   string `gtfs:"route_id"`
 	RouteType string `gtfs:"route_type"`
-	LineId    string `gtfs:"line_id"`
+	// LineId    string `gtfs:"line_id"`
 
 	// Optional fields
 	AgencyId          string `gtfs:"agency_id"`
 	ContinuousDropOff string `gtfs:"continuous_drop_off"`
 	ContinuousPickup  string `gtfs:"continuous_pickup"`
-	LineShortName     string `gtfs:"line_short_name"`
-	LineLongName      string `gtfs:"line_long_name"`
+	// LineShortName     string `gtfs:"line_short_name"`
+	// LineLongName      string `gtfs:"line_long_name"`
 	RouteColor        string `gtfs:"route_color"`
 	RouteDesc         string `gtfs:"route_desc"`
 	RouteLongName     string `gtfs:"route_long_name"`

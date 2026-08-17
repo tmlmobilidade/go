@@ -73,13 +73,13 @@ func RunValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		validations.RouteIdValidation(&route, i, &gtfs)
 
 		// Validate line_id
-		validations.LineIdValidation(&route, i, &gtfs, routeRules)
+		// validations.LineIdValidation(&route, i, &gtfs, routeRules)
 
 		// Validate line_short_name
-		validations.LineShortNameValidation(&route, i, &gtfs, routeRules)
+		// validations.LineShortNameValidation(&route, i, &gtfs, routeRules)
 
 		// Validate line_long_name
-		validations.LineLongNameValidation(&route, i, &gtfs, routeRules)
+		// validations.LineLongNameValidation(&route, i, &gtfs, routeRules)
 
 		// Validate agency_id
 		validations.AgencyIdValidation(&route, i, gtfs, routeRules)

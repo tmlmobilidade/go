@@ -62,9 +62,9 @@ type StopsRules struct {
 
 type RoutesRules struct {
 	File              Severity   `json:"_file"`
-	LineId            RuleConfig `json:"line_id_required"`
-	LineShortName     RuleConfig `json:"line_short_name_present_when_line_id_present"`
-	LineLongName      RuleConfig `json:"line_long_name_present_when_line_id_present"`
+	// LineId            RuleConfig `json:"line_id_required"`
+	// LineShortName     RuleConfig `json:"line_short_name_present_when_line_id_present"`
+	// LineLongName      RuleConfig `json:"line_long_name_present_when_line_id_present"`
 	RouteId           RuleConfig `json:"route_id_unique"`
 	AgencyId          RuleConfig `json:"route_agency_id_references_agency_table"`
 	RouteShortName    RuleConfig `json:"route_short_name_or_long_name_present"`
