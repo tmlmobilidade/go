@@ -46,8 +46,9 @@ export async function listAlerts(request: FastifyRequest<{ Body: AlertsListFilte
 				...(validatedFilters.active_period_start ? { active_period_start_date: { $gte: validatedFilters.active_period_start } } : {}),
 				...(validatedFilters.active_period_end ? { active_period_end_date: { $lte: validatedFilters.active_period_end } } : {}),
 			},
-			$project: Object.fromEntries(Object.keys(AlertsListItemSchema.shape).map(key => [key, 1])),
+
 		},
+		{ $project: Object.fromEntries(Object.keys(AlertsListItemSchema.shape).map(key => [key, 1])) },
 		{ $sort: { created_at: -1 } },
 	];
 

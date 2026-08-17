@@ -26,7 +26,6 @@ export function AlertsListFilterReferenceType() {
 			label={t('alerts:list.filters.reference_type.label')}
 			onChange={filterReferenceType.set}
 			options={filterReferenceType.options}
-			disabled
 			withToggleAll
 		/>
 	);

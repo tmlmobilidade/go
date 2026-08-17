@@ -26,7 +26,6 @@ export function AlertsListFilterPublishStatus() {
 			label={t('alerts:list.filters.publish_status.label')}
 			onChange={filterPublishStatus.set}
 			options={filterPublishStatus.options}
-			disabled
 			withToggleAll
 		/>
 	);

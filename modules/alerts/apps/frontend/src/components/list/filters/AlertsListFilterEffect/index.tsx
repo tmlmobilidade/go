@@ -26,7 +26,6 @@ export function AlertsListFilterEffect() {
 			label={t('alerts:list.filters.effect.label')}
 			onChange={filterEffect.set}
 			options={filterEffect.options}
-			disabled
 			withToggleAll
 		/>
 	);

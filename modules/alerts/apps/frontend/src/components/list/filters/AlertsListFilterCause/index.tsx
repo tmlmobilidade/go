@@ -26,7 +26,6 @@ export function AlertsListFilterCause() {
 			label={t('alerts:list.filters.cause.label')}
 			onChange={filterCause.set}
 			options={filterCause.options}
-			disabled
 			withToggleAll
 		/>
 	);

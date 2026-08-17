@@ -54,7 +54,7 @@
 					"label": "Data de Publicação"
 				},
 				"publish_status": {
-					"label": "Estado de Publicação"
+					"label": "Estado"
 				},
 				"reference_type": {
 					"label": "Referência"

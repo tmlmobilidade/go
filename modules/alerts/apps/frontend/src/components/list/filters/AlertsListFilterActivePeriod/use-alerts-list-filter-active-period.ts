@@ -14,16 +14,16 @@ export function useAlertsListFilterActivePeriod(): UseFilterStateDateRangeReturn
 	const defaultStartValue = useMemo(() => {
 		return Dates
 			.now('local')
-			.minus({ minutes: 30 })
-			.set({ millisecond: 0, second: 0 })
+			.minus({ days: 30 })
+			.startOf('day')
 			.unix_timestamp;
 	}, []);
 
 	const defaultEndValue = useMemo(() => {
 		return Dates
 			.now('local')
-			.plus({ minutes: 30 })
-			.set({ millisecond: 0, second: 0 })
+			.plus({ days: 30 })
+			.endOf('day')
 			.unix_timestamp;
 	}, []);
 

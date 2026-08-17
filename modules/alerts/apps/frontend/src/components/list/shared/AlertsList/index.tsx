@@ -55,13 +55,13 @@ export function AlertsList() {
 		},
 		{
 			accessor: 'created_at',
-			render: item => <UnixTimestampDisplay value={item.created_at} />,
+			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
 			title: t('alerts:list.AlertsList.columns.created_at.label'),
 			width: 225,
 		},
 		{
 			accessor: 'publish_start_date',
-			render: item => <UnixTimestampDisplay value={item.publish_start_date} />,
+			render: item => <UnixTimestampDisplay value={item.publish_start_date} showDate />,
 			title: t('alerts:list.AlertsList.columns.publish_date.label'),
 			width: 225,
 		},
