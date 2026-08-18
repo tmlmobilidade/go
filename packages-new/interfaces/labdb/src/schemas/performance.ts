@@ -1,7 +1,7 @@
 /* * */
 
 import { type ClickHouseTableSchema } from '@tmlmobilidade/go-clients-clickhouse';
-import { type MetricRefresh, type PassengerDemandByAgencyByMinute, type PassengerDemandByDimensionsByDay, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
+import { type MetricRefresh, type PassengerDemandByAgencyByMinute, type PassengerDemandByDimensionsBy5Minutes, type PassengerDemandByDimensionsByDay, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
 
 /* * */
 
@@ -30,6 +30,20 @@ export const passengerDemandByAgencyByMinuteTableSchema: ClickHouseTableSchema<P
 	interval_start: { type: 'Int64' },
 	operational_date: { type: 'UInt32' },
 	source_watermark: { type: 'Nullable(Int64)' },
+};
+
+export const passengerDemandByDimensionsBy5MinutesTableSchema: ClickHouseTableSchema<PassengerDemandByDimensionsBy5Minutes> = {
+	accepted_validations_qty: { type: 'UInt64' },
+	agency_id: { type: 'LowCardinality(String)' },
+	calculated_at: { type: 'Int64' },
+	data_status: { type: `Enum8('provisional' = 1, 'reconciled' = 2)` },
+	definition_version: { type: 'LowCardinality(String)' },
+	interval_start: { type: 'Int64' },
+	line_id: { type: 'LowCardinality(String)' },
+	operational_date: { type: 'UInt32' },
+	pattern_id: { type: 'LowCardinality(String)' },
+	source_watermark: { type: 'Nullable(Int64)' },
+	stop_id: { type: 'LowCardinality(String)' },
 };
 
 export const passengerDemandByDimensionsByDayTableSchema: ClickHouseTableSchema<PassengerDemandByDimensionsByDay> = {
