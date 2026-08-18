@@ -16,7 +16,8 @@
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint --fix .",
 		"test:demand-by-agency": "node --import tsx ./src/endpoints/metrics/tests/get-demand-by-agency.ts",
-		"test:demand-metrics": "node --import tsx --test ./src/endpoints/metrics/tests/*.ts"
+		"test:demand-metrics": "node --import tsx --test ./src/endpoints/metrics/tests/*.ts ./src/endpoints/passenger-demand/tests/*.ts",
+		"test:network": "node --import tsx --test ./src/endpoints/network/tests/*.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
@@ -24,6 +25,7 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-performance-pckg-scripts": "*",
 		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*"

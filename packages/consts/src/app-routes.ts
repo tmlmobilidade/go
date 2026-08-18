@@ -454,8 +454,18 @@ export const API_ROUTES = Object.freeze({
 		METRICS_DETAIL: (id: string) => `${getModuleConfig('performance', 'api_url')}/metrics/${encodeURIComponent(id)}`,
 
 		// NETWORK
+		NETWORK_AGENCIES: `${getModuleConfig('performance', 'api_url')}/network/agencies`,
+		NETWORK_LINE_DETAIL: (id: string) => `${getModuleConfig('performance', 'api_url')}/network/lines/${encodeURIComponent(id)}`,
 		NETWORK_LINES: `${getModuleConfig('performance', 'api_url')}/network/lines`,
 		NETWORK_PATTERNS: `${getModuleConfig('performance', 'api_url')}/network/patterns`,
+
+		// PASSENGER-DEMAND
+		PASSENGER_DEMAND_BY_LINE: `${getModuleConfig('performance', 'api_url')}/passenger-demand/by-line`,
+		PASSENGER_DEMAND_BY_PATTERN: `${getModuleConfig('performance', 'api_url')}/passenger-demand/by-pattern`,
+		PASSENGER_DEMAND_BY_STOP: `${getModuleConfig('performance', 'api_url')}/passenger-demand/by-stop`,
+		PASSENGER_DEMAND_COMPARISON: `${getModuleConfig('performance', 'api_url')}/passenger-demand/comparison`,
+		PASSENGER_DEMAND_OVER_TIME: `${getModuleConfig('performance', 'api_url')}/passenger-demand/over-time`,
+		PASSENGER_DEMAND_TOTAL: `${getModuleConfig('performance', 'api_url')}/passenger-demand/total`,
 	},
 
 	plans: {

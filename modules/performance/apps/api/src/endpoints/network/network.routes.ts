@@ -17,9 +17,21 @@ server.register(
 		//
 
 		instance.get(
+			'/agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
+			NetworkController.getAgencies,
+		);
+
+		instance.get(
 			'/lines',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
-			NetworkController.getUniqueLineIds,
+			NetworkController.getLines,
+		);
+
+		instance.get(
+			'/lines/:lineId',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.performance.scope, [PermissionCatalog.all.performance.actions.read]) },
+			NetworkController.getLine,
 		);
 
 		instance.get(
