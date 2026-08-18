@@ -1,2 +1,1 @@
-export * from './alerts/index.js';
-export * from './operation/index.js';
+export * from './main.js';
