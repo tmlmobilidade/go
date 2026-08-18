@@ -65,14 +65,15 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	// C. Handle actions
 
 	const isUnauthorized = meError?.statusCode === HTTP_STATUS.UNAUTHORIZED;
-	const isRedirectingToLogin = isLoggingOut || isUnauthorized || (!meLoading && !meData);
+	const isMissingSession = !meLoading && !meError && !meData;
+	const isRedirectingToLogin = isLoggingOut || isUnauthorized || isMissingSession;
 
 	useEffect(() => {
 		// Skip if data is still loading or logout is already redirecting
 		if (meLoading || isLoggingOut) return;
 		// Redirect to login when the session is missing or expired
-		if (!meData || isUnauthorized) window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
-	}, [meLoading, meData, isUnauthorized, isLoggingOut]);
+		if (isMissingSession || isUnauthorized) window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
+	}, [isMissingSession, isUnauthorized, isLoggingOut, meLoading]);
 
 	const hasPermission = <S extends Permission['scope']>(scope: S, action: ActionsOf<S>) => {
 		if (!meData?.permissions) return false;

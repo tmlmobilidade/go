@@ -5,6 +5,8 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
 import { type ActionsOf, type Organization, type Permission, PermissionCatalog, type User } from '@tmlmobilidade/types';
 
+import { isUnauthorizedError } from './authorization-errors.js';
+
 /* * */
 
 interface AuthorizationPermissionCheck<S extends Permission['scope'] = Permission['scope']> {
@@ -76,9 +78,14 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 			request.organization = organizationData;
 		} catch (error) {
 			console.error('Authorization Middleware Error:', error);
-			return reply
-				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-				.send({ data: null, error: 'Authorization Middleware Error', statusCode: HTTP_STATUS.UNAUTHORIZED });
+
+			if (isUnauthorizedError(error)) {
+				return reply
+					.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
+					.send({ data: null, error: error.message, statusCode: HTTP_STATUS.UNAUTHORIZED });
+			}
+
+			throw error;
 		}
 
 		//

@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest, isUnauthorizedError } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
 import { type CreateUserDto, type SimplifiedUser, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
@@ -107,13 +107,16 @@ export class UsersController {
 		try {
 			userData = await authProvider.getUserFromSessionToken(sessionToken);
 			if (!userData) {
-				throw new Error('User not found');
+				throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
 			}
-		} catch {
+		} catch (error) {
+			if (!isUnauthorizedError(error)) throw error;
+
 			await authProvider.logout(sessionToken);
 			return reply
 				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-				.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+				.status(HTTP_STATUS.UNAUTHORIZED)
+				.send({ data: undefined, error: error.message, statusCode: HTTP_STATUS.UNAUTHORIZED });
 		}
 
 		//
