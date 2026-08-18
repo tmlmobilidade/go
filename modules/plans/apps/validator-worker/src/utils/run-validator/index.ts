@@ -27,6 +27,9 @@ interface ValidatorOptions {
  */
 export async function runValidator(inputPath: string, options: ValidatorOptions): Promise<GtfsValidationOutputSummary> {
 	const binaryPath = await getValidatorBinaryPath();
+
+	// Log an immutable fingerprint and the self-reported version so deployed
+	// validation results can be traced to the exact executable artifact.
 	const binaryContent = readFileSync(binaryPath);
 	const { stdout: versionOutput } = await execFileAsync(binaryPath, ['-version'], {
 		encoding: 'utf-8',
@@ -50,6 +53,8 @@ export async function runValidator(inputPath: string, options: ValidatorOptions)
 
 	await runValidatorProcess(binaryPath, args, options.timeout);
 
+	// Treat malformed or schema-incompatible output as a worker failure rather
+	// than persisting an incomplete summary.
 	const resultContent = readFileSync(options.out_file, 'utf8');
 	return GtfsValidationOutputSummarySchema.parse(JSON.parse(resultContent));
 }

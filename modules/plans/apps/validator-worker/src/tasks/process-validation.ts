@@ -21,14 +21,14 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 	try {
 		//
 
-		// Setup temporary directory paths for this validation process
-		// to avoid any conflicts with other concurrent validations.
+		// Give each validation an isolated workspace for its input, normalized
+		// rules, and validator output.
 
 		const { gtfsFilePath, gtfsValidationResultPath, gtfsValidationRulesPath, tempWorkdirPath } = setupPathsForValidation(gtfsValidation);
 
 		//
-		// Update the gtfs validation document to 'processing' status
-		// and save the paths for reference in case of errors
+		// Compare against the state that was fetched by the polling loop. For a
+		// retried processing record, updated_at also prevents claiming a newer run.
 
 		Logger.info({ message: `Transitioning GTFS Validation ${gtfsValidation._id} from ${gtfsValidation.processing_status} to processing...` });
 
@@ -66,8 +66,8 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		Logger.info({ message: `Normalized validation rules saved to: ${gtfsValidationRulesPath}` });
 
 		//
-		// Perform the GTFS validation using the project binary
-		// and update the GTFS validation document in MongoDB with the results.
+		// Run the project-owned Go binary. It writes its JSON summary to the output
+		// path, which runValidator parses and validates before returning.
 
 		Logger.info({ message: `GTFS Validation ${gtfsValidation._id} is processing. Starting the Go validator...` });
 
@@ -81,6 +81,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		Logger.info({ message: 'Validation completed. Updating GTFS Validation document with results...' });
 
+		// Do not replace a terminal state written while this process was running.
 		const completionResult = await goDb.operation.gtfsValidations.updateOne({
 			_id: gtfsValidation._id,
 			processing_status: 'processing',
@@ -96,8 +97,9 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		}
 
 		//
-		// After successful validation, even if there are validation errors,
-		// we consider the process complete and send the results to the user via email.
+		// A successful validator execution is complete even when the feed itself is
+		// invalid. Feed errors are domain results, not worker failures.
+		//
 		// Fetch the user details from the created_by field of the GTFS Validation document
 		// to personalize the email content and include a link to the validation detail.
 
@@ -137,8 +139,8 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		}
 
 		//
-		// Cleanup the working directory by removing
-		// the downloaded GTFS file and the validation result file.
+		// Cleanup failure should be logged without changing an otherwise successful
+		// validation into a worker error.
 
 		try {
 			fs.rmSync(tempWorkdirPath, { force: true, recursive: true });
@@ -149,10 +151,11 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		//
 	} catch (error) {
-		// If any errors occur during validation, catch them and format
-		// a custom error result to be saved in the database and sent via email.
+		// Infrastructure and execution failures become a synthetic system-error
+		// summary, distinct from validation errors emitted by the Go binary.
 		Logger.error({ error, message: `Error processing GTFS Validation ${gtfsValidation._id}:` });
 
+		// As with completion, preserve any terminal state written concurrently.
 		const errorResult = await goDb.operation.gtfsValidations.updateOne({
 			_id: gtfsValidation._id,
 			processing_status: 'processing',

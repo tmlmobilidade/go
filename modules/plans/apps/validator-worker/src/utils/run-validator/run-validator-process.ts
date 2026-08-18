@@ -12,6 +12,8 @@ export async function runValidatorProcess(binaryPath: string, args: string[], ti
 	await new Promise<void>((resolvePromise, rejectPromise) => {
 		const validatorProcess = spawn(binaryPath, args);
 
+		// Preserve stderr for the final error while still streaming diagnostics to
+		// the worker logs as the validator runs.
 		const stderrChunks: Buffer[] = [];
 		let timedOut = false;
 		let forceKillTimer: NodeJS.Timeout | undefined;
@@ -21,12 +23,14 @@ export async function runValidatorProcess(binaryPath: string, args: string[], ti
 			process.stderr.write(chunk);
 		});
 
+		// Give the child a graceful shutdown window before escalating to SIGKILL.
 		const timeoutTimer = setTimeout(() => {
 			timedOut = true;
 			validatorProcess.kill('SIGTERM');
 			forceKillTimer = setTimeout(() => validatorProcess.kill('SIGKILL'), FORCE_KILL_DELAY_MS);
 		}, timeout);
 
+		// Either process event may settle the promise; always disarm both timers.
 		const cleanup = () => {
 			clearTimeout(timeoutTimer);
 			if (forceKillTimer) clearTimeout(forceKillTimer);

@@ -36,6 +36,8 @@ async function main() {
 	try {
 		//
 
+		// Timestamps are stored in milliseconds, so the duration can be
+		// subtracted directly to obtain the oldest active processing timestamp.
 		const staleProcessingCutoff = (Dates.now('utc').unix_timestamp - PROCESSING_STALE_AFTER_MS) as UnixTimestamp;
 
 		//
@@ -61,7 +63,8 @@ async function main() {
 		Logger.info({ message: `Found ${waitingOrStuckGtfsValidations.length} waiting or stuck validations...` });
 
 		//
-		// Process each waiting validation
+		// Process sequentially so a worker runs at most one CPU-intensive Go
+		// validator process at a time.
 
 		for (const gtfsValidationData of waitingOrStuckGtfsValidations) {
 			Logger.title(`Processing GTFS Validation ${gtfsValidationData._id} for File ${gtfsValidationData.file_id}`);

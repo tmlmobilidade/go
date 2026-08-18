@@ -10,6 +10,8 @@ import { findExecutable } from './find-executable.js';
  * @returns The path to the validator binary.
  */
 export async function getValidatorBinaryPath(): Promise<string> {
+	// Node and Go use different architecture names for x64/amd64, so resolve the
+	// exact build artifact through the explicit mapping.
 	const platformKey = `${process.platform}-${process.arch}` as const;
 	const binaryName = BINARY_NAMES[platformKey];
 	if (!binaryName) {
@@ -20,5 +22,7 @@ export async function getValidatorBinaryPath(): Promise<string> {
 	console.log('currentDirectory', currentDirectory);
 	console.log('process.cwd()', process.cwd());
 
+	// Both local development and the container place generated binaries above
+	// the compiled worker directory; search from the shared ancestor.
 	return findExecutable(process.cwd() + '/../../', binaryName);
 }

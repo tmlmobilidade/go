@@ -7,6 +7,11 @@ import { buildConfiguredRules, NestedValidationRules } from './build-configurati
 const VALID_SEVERITIES = new Set(['error', 'forbidden', 'ignore', 'warning']);
 
 /* * */
+
+/**
+ * Overlays valid agency rules on the complete shared configuration. Missing or
+ * malformed values retain their centrally configured defaults.
+ */
 export function normalizeValidationRules(input: unknown): NestedValidationRules {
 	const configuredRules = buildConfiguredRules();
 	const parsedInput = parseInput(input);
@@ -17,6 +22,8 @@ export function normalizeValidationRules(input: unknown): NestedValidationRules 
 		const inputGroup = parsedInput[groupName];
 		if (!isRecord(inputGroup)) continue;
 
+		// Iterate configured rules rather than stored rules so unknown legacy keys
+		// cannot leak into the payload sent to the Go validator.
 		for (const ruleId of Object.keys(configuredGroup)) {
 			const inputRule = inputGroup[ruleId];
 
@@ -40,6 +47,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function parseInput(input: unknown): unknown {
+	// Mongo may contain either the structured object or its legacy JSON string.
 	if (typeof input !== 'string') return input;
 
 	try {

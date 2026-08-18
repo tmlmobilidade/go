@@ -2,7 +2,10 @@ import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { join } from 'node:path';
 
+/** Creates the isolated input, rules, and result paths for one validation run. */
 export function setupPathsForValidation(gtfsValidation: GtfsValidation) {
+	// getTmpWorkdirPath creates a unique directory, which prevents filename
+	// collisions when multiple worker instances process validations.
 	const tempWorkdirPath = getTmpWorkdirPath(null, true);
 
 	const gtfsFilePath = join(tempWorkdirPath, `${gtfsValidation.file_id}.zip`);

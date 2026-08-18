@@ -3,9 +3,12 @@ import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 
+/** Downloads the validation record's source archive into its local workspace. */
 export async function downloadGtfs(gtfsValidation: GtfsValidation, gtfsFilePath: string) {
 	Logger.info({ message: 'Downloading GTFS file...' });
 
+	// Resolve the storage metadata first because validation records retain only
+	// the file identifier, not the provider URL.
 	const gtfsFile = await storageProvider.findById(gtfsValidation.file_id);
 	if (!gtfsFile) throw new Error(`File not found: ${gtfsValidation.file_id}`);
 

@@ -17,6 +17,8 @@ export function findExecutable(rootPath: string, executableName: string): null |
 		}
 
 		if (entry.isDirectory()) {
+			// Return immediately once found to avoid traversing the rest of a large
+			// pruned monorepo or development checkout.
 			const result = findExecutable(fullPath, executableName);
 
 			if (result) {
