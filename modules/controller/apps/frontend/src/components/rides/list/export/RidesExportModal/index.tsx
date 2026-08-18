@@ -1,10 +1,10 @@
 'use client';
 
-import { AgenciesContextProvider, useAgenciesContext } from '@/contexts/Agencies.context';
 import { RidesExportModalContextProvider, useRidesExportModalContext } from '@/contexts/RidesExport.context';
 import { IconFileDownload } from '@tabler/icons-react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { UnixTimestamp } from '@tmlmobilidade/types';
-import { Button, CloseButton, closeModal, DateTimeInput, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, closeModal, DateTimeInput, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Spacer, Text, Toolbar, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -20,11 +20,9 @@ export const openRideExportModal = (filters: any) => {
 	openModal({
 		children: (
 			<ExportsContextProvider>
-				<AgenciesContextProvider>
-					<RidesExportModalContextProvider initialFilters={filters}>
-						<RidesExportModal />
-					</RidesExportModalContextProvider>
-				</AgenciesContextProvider>
+				<RidesExportModalContextProvider initialFilters={filters}>
+					<RidesExportModal />
+				</RidesExportModalContextProvider>
 			</ExportsContextProvider>
 		),
 		closeOnClickOutside: false,
@@ -45,7 +43,7 @@ export default function RidesExportModal() {
 	// A. Setup variables
 
 	const context = useRidesExportModalContext();
-	const agenciesContext = useAgenciesContext();
+	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
 	const { t } = useTranslation();
 
 	//
@@ -53,11 +51,11 @@ export default function RidesExportModal() {
 
 	const agencyMap = useMemo(() => {
 		const map = new Map<string, string>();
-		agenciesContext.data.raw.forEach((agency) => {
+		agenciesData.forEach((agency) => {
 			map.set(agency._id, agency.name);
 		});
 		return map;
-	}, [agenciesContext.data.raw]);
+	}, [agenciesData]);
 
 	const getFormattedValue = (key: string, value: number | string | string[]): string => {
 		if (Array.isArray(value)) {
