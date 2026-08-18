@@ -50,20 +50,24 @@ export async function listLines(request: FastifyRequest<{ Body: AlertsLinesFilte
 	//
 	// Parse and return the result
 
-	const parsedResult: AlertsLinesItem[] = queryResult.map(row => ({
-		agency_id: row.agency_id,
-		patterns: row.patterns.map(([headsign, routeId, shapeId, stops]) => ({
-			headsign,
-			route_id: routeId,
-			shape_id: shapeId,
-			stops: stops.map(([stopId, stopName]) => ({
-				stop_id: stopId,
-				stop_name: stopName,
-			})),
-		})),
-		route_long_name: row.route_long_name,
-		route_short_name: row.route_short_name,
-	}));
+	const parsedResult: AlertsLinesItem[] = queryResult
+		.map(row => ({
+			agency_id: row.agency_id,
+			patterns: row.patterns
+				.map(([headsign, routeId, shapeId, stops]) => ({
+					headsign,
+					route_id: routeId,
+					shape_id: shapeId,
+					stops: stops.map(([stopId, stopName]) => ({
+						stop_id: stopId,
+						stop_name: stopName,
+					})),
+				}))
+				.sort((a, b) => a.shape_id.localeCompare(b.shape_id)),
+			route_long_name: row.route_long_name,
+			route_short_name: row.route_short_name,
+		}))
+		.sort((a, b) => a.route_short_name.localeCompare(b.route_short_name));
 
 	const validatedResult = AlertsLinesItemSchema.array().parse(parsedResult);
 

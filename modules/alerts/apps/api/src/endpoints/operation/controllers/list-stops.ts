@@ -50,17 +50,21 @@ export async function listStops(request: FastifyRequest<{ Body: AlertsStopsFilte
 	//
 	// Parse and return the result
 
-	const parsedResult: AlertsStopsItem[] = queryResult.map(row => ({
-		routes: row.routes.map(([routeLongName, routeShortName, routeShapeId]) => ({
-			route_long_name: routeLongName,
-			route_shape_id: routeShapeId,
-			route_short_name: routeShortName,
-		})),
-		stop_id: row.stop_id,
-		stop_lat: row.stop_lat,
-		stop_lon: row.stop_lon,
-		stop_name: row.stop_name,
-	}));
+	const parsedResult: AlertsStopsItem[] = queryResult
+		.map(row => ({
+			routes: row.routes
+				.map(([routeLongName, routeShapeId, routeShortName]) => ({
+					route_long_name: routeLongName,
+					route_shape_id: routeShapeId,
+					route_short_name: routeShortName,
+				}))
+				.sort((a, b) => a.route_short_name.localeCompare(b.route_short_name)),
+			stop_id: row.stop_id,
+			stop_lat: row.stop_lat,
+			stop_lon: row.stop_lon,
+			stop_name: row.stop_name,
+		}))
+		.sort((a, b) => a.stop_id.localeCompare(b.stop_id));
 
 	const validatedResult = AlertsStopsItemSchema.array().parse(parsedResult);
 

@@ -69,7 +69,7 @@ export function useContextForm<T>({ apiData, defaultValues, schema }: UseContext
 	//
 	// Prevent navigation if form is dirty
 
-	const unblock = usePreventNavigation(isFormDirty);
+	const unblock = usePreventNavigation(false); // (isFormDirty);
 
 	//
 	// Return hook values and functions

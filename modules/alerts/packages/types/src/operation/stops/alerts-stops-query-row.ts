@@ -8,8 +8,8 @@ export const AlertsStopsQueryRowSchema = z.object({
 	routes: z.array(
 		z.tuple([
 			z.string(), // route_long_name
-			z.string(), // route_short_name
 			z.string(), // route_shape_id
+			z.string(), // route_short_name
 		]),
 	),
 	stop_id: z.string(),

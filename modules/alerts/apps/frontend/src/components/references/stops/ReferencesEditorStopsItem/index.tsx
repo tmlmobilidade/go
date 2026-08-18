@@ -32,20 +32,34 @@ export function ReferencesEditorStopsItem({ index, onRemoveReference, onUpdateRe
 	//
 	// B. Transform data
 
-	const stopsAsSelectData: SelectDataItem[] = useMemo(() => {
-		return alertsStopsData?.map(item => ({ label: item.stop_name, value: item.stop_id }));
-	}, [alertsStopsData]);
-
 	const currentStopData = useMemo(() => {
 		// Find the matching stop for the reference.parent_id
 		return alertsStopsData?.find(item => String(item.stop_id) === String(reference.parent_id));
 	}, [alertsStopsData, reference.parent_id]);
 
+	const stopsAsSelectData: SelectDataItem[] = useMemo(() => {
+		return alertsStopsData?.map(item => ({
+			label: `[${item.stop_id}] ${item.stop_name}`,
+			value: item.stop_id,
+		}));
+	}, [alertsStopsData]);
+
 	const linesAsSelectData: SelectDataItem[] = useMemo(() => {
 		// Skip if parent_id is not set
 		if (!currentStopData) return [];
+		// Set a map of unique stop ids to avoid duplicates
+		const lineLabels = new Map<string, string>();
+		currentStopData.routes?.forEach((route) => {
+			if (!lineLabels.has(route.route_short_name)) {
+				const newLabelValue = `[${route.route_short_name}] ${route.route_long_name} | ${route.route_shape_id}`;
+				lineLabels.set(route.route_short_name, newLabelValue);
+			} else {
+				const updatedLabelValue = `${lineLabels.get(route.route_short_name)} ${route.route_shape_id}`;
+				lineLabels.set(route.route_short_name, updatedLabelValue);
+			}
+		});
 		// Return the lines as an array of SelectDataItem.
-		return currentStopData.routes.map(line => ({ label: line.route_long_name, value: line.route_short_name }));
+		return Array.from(lineLabels.entries()).map(([routeShortName, label]) => ({ label, value: routeShortName }));
 	}, [currentStopData]);
 
 	//
