@@ -16,8 +16,13 @@ import { setupPathsForValidation } from './setup-paths-for-validation.js';
 
 /* * */
 
-/** Runs the complete lifecycle for one persisted GTFS validation record. */
+/**
+ * Runs the complete lifecycle for one persisted GTFS validation record.
+ * @param gtfsValidation - The validation record.
+ */
 export async function processValidation(gtfsValidation: GtfsValidation) {
+	//
+
 	try {
 		// Each run receives its own workspace so its input, rules, and output cannot
 		// collide with files produced by another worker instance.

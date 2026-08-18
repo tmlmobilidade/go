@@ -1,14 +1,17 @@
 /* * */
 
-import { processValidation } from '@/tasks/index.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
+import { processValidation } from './tasks/process-validation.js';
+
 /* * */
 
-/** Polls the validation queue and processes the oldest records first. */
+/**
+ * Polls the validation queue and processes the oldest records first.
+ */
 async function main() {
 	Logger.init();
 

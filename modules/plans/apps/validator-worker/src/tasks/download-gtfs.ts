@@ -3,7 +3,11 @@ import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 
-/** Downloads the validation record's source archive into its local workspace. */
+/**
+ * Downloads the validation record's source archive into its local workspace.
+ * @param gtfsValidation - The validation record.
+ * @param gtfsFilePath - Path to the local workspace directory.
+ */
 export async function downloadGtfs(gtfsValidation: GtfsValidation, gtfsFilePath: string) {
 	Logger.info({ message: 'Downloading GTFS file...' });
 

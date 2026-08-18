@@ -4,8 +4,14 @@ import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
 
-/** Writes the agency rules, completed with shared defaults, for the Go validator. */
+/**
+ * Writes the agency rules, completed with shared defaults, for the Go validator.
+ * @param gtfsValidation - The validation record.
+ * @param rulesPath - Path to the rules file.
+ */
 export async function prepareValidationRules(gtfsValidation: GtfsValidation, rulesPath: string) {
+	//
+
 	const foundAgency = await goDb.core.agencies.findById(gtfsValidation.agency_id);
 	if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.agency_id}`);
 

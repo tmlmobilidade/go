@@ -5,8 +5,14 @@ import { type GtfsValidationOutputSummary } from '@tmlmobilidade/go-types-gtfs-v
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 
-/** Sends the appropriate validation result email to the user who created the validation. */
+/**
+ * Sends the appropriate validation result email to the user who created the validation.
+ * @param gtfsValidation - The validation record.
+ * @param summary - The validation summary.
+ */
 export async function sendValidationResultEmail(gtfsValidation: GtfsValidation, summary: GtfsValidationOutputSummary) {
+	//
+
 	try {
 		// Re-read after completion so both the final validity status and creator are
 		// taken from the persisted record rather than the queue snapshot.

@@ -8,8 +8,13 @@ import pjson from 'pjson' with { type: 'json' };
 
 /* * */
 
-/** Notifies the system contact about a validation worker failure. */
+/**
+ * Notifies the system contact about a validation worker failure.
+ * @param error - The error.
+ */
 export async function sendValidationSystemErrorEmail(error: unknown) {
+	//
+
 	try {
 		await sendSystemErrorEmail({
 			data: {
