@@ -20,6 +20,7 @@ export async function sendValidationSystemErrorEmail(error: unknown) {
 			to: SYSTEM_CONTACT_EMAIL,
 		});
 	} catch (emailError) {
+		// Keep the original validation failure as the primary worker outcome.
 		Logger.error({ error: emailError, message: 'Error sending validation system error email:' });
 	}
 }

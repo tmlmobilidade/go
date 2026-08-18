@@ -8,6 +8,8 @@ import { Logger } from '@tmlmobilidade/logger';
 /** Sends the appropriate validation result email to the user who created the validation. */
 export async function sendValidationResultEmail(gtfsValidation: GtfsValidation, summary: GtfsValidationOutputSummary) {
 	try {
+		// Re-read after completion so both the final validity status and creator are
+		// taken from the persisted record rather than the queue snapshot.
 		const updatedGtfsValidation = await goDb.operation.gtfsValidations.findById(gtfsValidation._id);
 
 		if (!updatedGtfsValidation) throw new Error(`GTFS Validation not found after update: ${gtfsValidation._id}`);
@@ -39,6 +41,7 @@ export async function sendValidationResultEmail(gtfsValidation: GtfsValidation, 
 			});
 		}
 	} catch (error) {
+		// Email must not turn a successfully persisted validation into an error.
 		Logger.error({ error, message: 'Error sending validation result email:' });
 	}
 }

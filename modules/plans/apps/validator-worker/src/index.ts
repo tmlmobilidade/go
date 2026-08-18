@@ -8,12 +8,15 @@ import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
+/** Polls the validation queue and processes the oldest records first. */
 async function main() {
 	Logger.init();
 
 	const globalTimer = new Timer();
 
 	try {
+		// Include processing records so work left behind by an interrupted worker
+		// can be considered again alongside new waiting records.
 		const waitingOrProcessingGtfsValidations = await goDb.operation.gtfsValidations.findMany(
 			{
 				$or: [
@@ -47,4 +50,6 @@ async function main() {
 
 /* * */
 
+// runOnInterval waits for main to settle before scheduling the next poll, which
+// prevents overlapping batches inside this worker process.
 await runOnInterval(main, { intervalMs: '1s' });
