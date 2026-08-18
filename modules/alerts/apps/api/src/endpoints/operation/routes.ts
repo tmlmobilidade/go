@@ -9,7 +9,7 @@ import { listStops } from './controllers/list-stops.js';
 
 /* * */
 
-const namespace = '/operation-data';
+const namespace = '/operation';
 
 /* * */
 

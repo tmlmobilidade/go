@@ -1,7 +1,8 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
-import { type AlertsLinesFilters, AlertsLinesFiltersSchema, type AlertsLinesItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsLinesFilters, AlertsLinesFiltersSchema, type AlertsLinesItem, alertsLinesQuery } from '@tmlmobilidade/go-alerts-pckg-types';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -36,8 +37,19 @@ export async function listLines(request: FastifyRequest<{ Body: AlertsLinesFilte
 	const validatedFilters = AlertsLinesFiltersSchema.parse(request.body);
 
 	//
+	// Build query parameters and execute the query
+
+	const params: Record<string, number | string> = {
+		1: validatedFilters.agency_id,
+		2: validatedFilters.start_time_scheduled_start,
+		3: validatedFilters.start_time_scheduled_end,
+	};
+
+	const queryResult = await labDb.queryFromString<AlertsLinesItem>(alertsLinesQuery, params);
+
+	//
 	// Parse and return the result
 
-	return sendSuccessApiResponse(reply, []);
+	return sendSuccessApiResponse(reply, queryResult);
 }
 
