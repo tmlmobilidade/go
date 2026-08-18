@@ -99,4 +99,4 @@ export const causePrompt: Record<AlertCause, Record<I18nCode, string>> = {
 		pt: `Causa: Condições Meteorológicas ou Mau Tempo (escolhe um). ${externalCauseClosingPrompt}`,
 	},
 
-};
+} as const;
