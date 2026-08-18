@@ -3,10 +3,13 @@
 import { type I18nCode } from '@tmlmobilidade/go-types-shared';
 
 /**
- * Branding and title-structure rules for multi-operator alerts (CM areas 41–44 have specific labels).
+ * Branding and title-structure rules for multi-operator alerts.
+ * Some operators, like Carris Metropolitana (CM areas 41-44), have specific labels.
  */
 export const brandingPrompt: Record<I18nCode, string> = {
+
 	en: '',
+
 	pt: `
 		Operador (plataforma multi-operador):
 		- Quando o contexto incluir "Passenger-facing operator label", esse é o nome mostrado
@@ -22,4 +25,5 @@ export const brandingPrompt: Record<I18nCode, string> = {
 		nem a descrição com a marca do operador; privilegia primeiro as linhas/circulações/paragens
 		afetadas e a informação prática para o passageiro.
 	`,
+
 };
