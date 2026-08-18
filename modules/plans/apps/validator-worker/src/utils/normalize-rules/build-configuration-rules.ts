@@ -1,6 +1,6 @@
 import { GtfsValidationRuleConfig, gtfsValidationRulesConfig } from '@tmlmobilidade/go-types-gtfs-validator';
 
-type NestedValidationRules = Record<string, Record<string, GtfsValidationRuleConfig | string>>;
+export type NestedValidationRules = Record<string, Record<string, GtfsValidationRuleConfig | string>>;
 
 const FILE_RULE_SUFFIX = '_file_required';
 

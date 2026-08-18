@@ -2,7 +2,7 @@
 
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
 import { GTFS_VALIDATION_TIMEOUT_MS } from '@/consts/timeout.js';
-import { normalizeValidationRules } from '@/utils/normalize-validation-rules.js';
+import { normalizeValidationRules } from '@/utils/normalize-rules/normalize-rules.js';
 import { runValidator } from '@/utils/run-validator/index.js';
 // import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 // import { sendSucessfulGtfsValidationEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';

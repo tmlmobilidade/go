@@ -1,5 +1,7 @@
 import { GtfsValidationRuleConfigSchema } from '@tmlmobilidade/go-types-gtfs-validator';
 
+import { buildConfiguredRules, NestedValidationRules } from './build-configuration-rules.js';
+
 /* * */
 
 const VALID_SEVERITIES = new Set(['error', 'forbidden', 'ignore', 'warning']);
@@ -31,4 +33,18 @@ export function normalizeValidationRules(input: unknown): NestedValidationRules 
 	}
 
 	return configuredRules;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function parseInput(input: unknown): unknown {
+	if (typeof input !== 'string') return input;
+
+	try {
+		return JSON.parse(input) as unknown;
+	} catch {
+		return null;
+	}
 }
