@@ -1,3 +1,5 @@
+import { isRecord } from '@/lib/is-record.js';
+import { parseInput } from '@/lib/parse-input.js';
 import { GtfsValidationRuleConfigSchema } from '@tmlmobilidade/go-types-gtfs-validator';
 
 import { buildConfiguredRules, NestedValidationRules } from './build-configuration-rules.js';
@@ -11,8 +13,11 @@ const VALID_SEVERITIES = new Set(['error', 'forbidden', 'ignore', 'warning']);
 /**
  * Overlays valid agency rules on the complete shared configuration. Missing or
  * malformed values retain their centrally configured defaults.
+ * @param input - The input to normalize.
  */
 export function normalizeValidationRules(input: unknown): NestedValidationRules {
+	//
+
 	const configuredRules = buildConfiguredRules();
 	const parsedInput = parseInput(input);
 
@@ -40,19 +45,4 @@ export function normalizeValidationRules(input: unknown): NestedValidationRules 
 	}
 
 	return configuredRules;
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-	return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function parseInput(input: unknown): unknown {
-	// Mongo may contain either the structured object or its legacy JSON string.
-	if (typeof input !== 'string') return input;
-
-	try {
-		return JSON.parse(input) as unknown;
-	} catch {
-		return null;
-	}
 }
