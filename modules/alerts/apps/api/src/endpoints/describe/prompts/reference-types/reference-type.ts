@@ -8,6 +8,7 @@ import { type I18nCode } from '@tmlmobilidade/go-types-shared';
  * for the generation of the alert descriptions.
  */
 export const referenceTypePrompt: Record<AlertReferenceType, Record<I18nCode, string>> = {
+
 	agency: {
 		en: '',
 		pt: `
@@ -17,6 +18,7 @@ export const referenceTypePrompt: Record<AlertReferenceType, Record<I18nCode, st
 			A descrição deve indicar que todos os serviços da rede podem estar impactados.
 		`,
 	},
+
 	lines: {
 		en: '',
 		pt: `
@@ -58,6 +60,7 @@ export const referenceTypePrompt: Record<AlertReferenceType, Record<I18nCode, st
 			algo como "o desvio passará pelo {PONTO_DE_REFERÊNCIA}" ou "passará a servir a paragem {STOP_NAME}".
 		`,
 	},
+
 	rides: {
 		en: '',
 		pt: `
@@ -86,6 +89,7 @@ export const referenceTypePrompt: Record<AlertReferenceType, Record<I18nCode, st
 			não serão servidas.
 		`,
 	},
+
 	stops: {
 		en: '',
 		pt: `
@@ -109,4 +113,5 @@ export const referenceTypePrompt: Record<AlertReferenceType, Record<I18nCode, st
 			e agradecemos a sua compreensão.
 		`,
 	},
+
 };
