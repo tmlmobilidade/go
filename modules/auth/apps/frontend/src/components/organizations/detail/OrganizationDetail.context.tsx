@@ -1,11 +1,11 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateOrganizationSchema, type Organization, PermissionCatalog, type UpdateOrganizationDto } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
+import { type Organization, PermissionCatalog, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/types';
+import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -13,11 +13,10 @@ import useSWR from 'swr';
 interface OrganizationsDetailContextState extends DetailContextStateTemplate {
 	actions: DetailContextStateTemplate['actions'] & {
 		deleteImage: (theme: 'dark' | 'light') => void
-		fileChangedDark: (file: File) => void
-		fileChangedLight: (file: File) => void
+		fileChangedDark: (file: File | null) => void
+		fileChangedLight: (file: File | null) => void
 	}
 	data: {
-		form: UseFormReturnType<UpdateOrganizationDto>
 		id: string | undefined
 		logoDarkUrl: null | string
 		logoLightUrl: null | string
@@ -56,12 +55,12 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 
 	const { mutate: allOrganizationsMutate } = useSWR<Organization[]>(API_ROUTES.auth.ORGANIZATIONS_LIST);
 	const { data: organizationData, error: organizationError, isLoading: organizationLoading, mutate: organizationMutate } = useSWR<Organization>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId));
-	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(organizationId));
+	const { data: logo, isLoading: isLogoLoading, mutate: logoMutate } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(organizationId));
 
 	//
 	// C. Initialize form
 
-	const { form } = useTypicalForm<UpdateOrganizationDto>(CreateOrganizationSchema, organizationData);
+	const { form } = useContextForm<UpdateOrganizationDto>({ apiData: organizationData, schema: UpdateOrganizationSchema });
 
 	//
 	// D. Handle actions
@@ -70,7 +69,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 		fetchFn: async () => await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId), 'PUT', form.getValues()),
 		onSuccess: async (updatedItem) => {
 			await uploadImages();
-			form.resetDirty();
+			form.reset(updatedItem);
 			meContext.mutate.me();
 			organizationMutate(updatedItem);
 			allOrganizationsMutate();
@@ -89,7 +88,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOCK(organizationId)),
 		onSuccess: (updatedItem) => {
-			form.resetDirty();
+			form.reset(updatedItem);
 			meContext.mutate.me();
 			organizationMutate(updatedItem);
 			allOrganizationsMutate();
@@ -128,13 +127,16 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 		const result = await response.json();
 
 		if (response.ok) {
+			await logoMutate();
+			setImageDark(null);
+			setImageLight(null);
 			useToast.success({ message: 'As imagens foram carregadas com sucesso', title: 'Sucesso' });
 		} else {
 			useToast.error({ message: result.error || 'Erro ao carregar imagens', title: 'Erro' });
 		}
 	};
 
-	const deleteImage = async (theme: 'dark' | 'light') => {
+	const deleteImage = useCallback(async (theme: 'dark' | 'light') => {
 		const themeImageRoute = API_ROUTES.auth.ORGANIZATIONS_DETAIL_VAR_IMAGE(organizationId, theme);
 		const response = await fetchData<Organization>(themeImageRoute + '?realtime=true', 'DELETE', organizationData);
 		if (response.error) {
@@ -146,10 +148,13 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 		}
 
 		useToast.success({ message: 'Imagem apagada com sucesso', title: 'Sucesso' });
-	};
+		await logoMutate();
+	}, [logoMutate, organizationData, organizationId]);
 
 	//
 	// E. Setup flags
+
+	const hasPendingImages = imageDark !== null || imageLight !== null;
 
 	const { isReadOnly } = useFlagReadOnly({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
@@ -163,30 +168,30 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	const { canSave } = useFlagCanSave({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: form.formState.isDirty || hasPendingImages,
 		isLoading: organizationLoading,
 		isLocked: organizationData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	const { canLock } = useFlagCanLock({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: form.formState.isDirty || hasPendingImages,
 		isLoading: organizationLoading,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	const { canDelete } = useFlagCanDelete({
 		hasPermission: meContext.actions.hasPermission(PermissionCatalog.all.organizations.scope, PermissionCatalog.all.organizations.actions.update),
 		isDeleting: isDeleting,
-		isDirty: form.isDirty(),
+		isDirty: form.formState.isDirty || hasPendingImages,
 		isLoading: organizationLoading,
 		isLocked: organizationData?.is_locked,
 		isLocking: isLocking,
-		isValid: form.isValid(),
+		isValid: form.formState.isValid,
 	});
 
 	//
@@ -196,13 +201,12 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 		actions: {
 			delete: handleDelete,
 			deleteImage: deleteImage,
-			fileChangedDark: (file: File) => setImageDark(file),
-			fileChangedLight: (file: File) => setImageLight(file),
+			fileChangedDark: (file: File | null) => setImageDark(file),
+			fileChangedLight: (file: File | null) => setImageLight(file),
 			lock: handleLock,
 			save: handleSave,
 		},
 		data: {
-			form,
 			id: organizationId,
 			logoDarkUrl: logo?.logo_dark,
 			logoLightUrl: logo?.logo_light,
@@ -219,19 +223,29 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 			isReadOnly,
 			isSaving,
 		},
+		form: {
+			instance: form,
+		},
 	}), [
 		canDelete,
 		canLock,
 		canSave,
+		deleteImage,
+		handleDelete,
+		handleLock,
+		handleSave,
 		organizationError,
 		isDeleting,
 		organizationLoading,
 		isLocking,
 		isReadOnly,
 		isSaving,
+		isLogoLoading,
 		form,
 		organizationData,
 		organizationId,
+		logo?.logo_dark,
+		logo?.logo_light,
 	]);
 
 	//

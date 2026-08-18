@@ -34,7 +34,7 @@ export function OrganizationDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<IdTag id={organizationDetailContext.data.id} copyOnClick />
-			<Label size="lg" singleLine>{organizationDetailContext.data.form.values.long_name}</Label>
+			<Label size="lg" singleLine>{organizationDetailContext.form.instance.getValues('long_name')}</Label>
 
 			<Spacer />
 

@@ -60,7 +60,7 @@ export function UploadImage({
 
 	const handleDelete = () => {
 		setPreview(null);
-		if (imageUrl && onDelete) onDelete();
+		onDelete?.();
 	};
 
 	//

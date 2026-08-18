@@ -22,6 +22,7 @@ export function calculateRolePermissions(roleIds: string[], roles: Role[]): Perm
 
 			if (!existingPermission) {
 				const validatedPermission = PermissionSchema.safeParse(permission);
+				if (!validatedPermission.success) return;
 				rolePermissions.push(validatedPermission.data);
 			}
 		});

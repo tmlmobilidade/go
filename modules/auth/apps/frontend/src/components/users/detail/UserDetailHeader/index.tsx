@@ -35,7 +35,7 @@ export function UserDetailHeader() {
 		<Toolbar>
 			<CloseButton onClick={handleClose} type="close" />
 			<IdTag id={userDetailContext.data.id} copyOnClick />
-			<Label size="lg" singleLine>{userDetailContext.data.form.values.email}</Label>
+			<Label size="lg" singleLine>{userDetailContext.form.instance.getValues('email')}</Label>
 
 			<Spacer />
 
