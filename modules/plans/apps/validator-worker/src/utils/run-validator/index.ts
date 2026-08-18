@@ -1,4 +1,5 @@
 import { GtfsValidationOutputSummary, GtfsValidationOutputSummarySchema } from '@tmlmobilidade/go-types-gtfs-validator';
+import { Logger } from '@tmlmobilidade/logger';
 import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -37,11 +38,11 @@ export async function runValidator(inputPath: string, options: ValidatorOptions)
 		windowsHide: true,
 	});
 
-	console.log('GTFS validator runtime:', {
+	Logger.info({ message: `GTFS validator runtime: ${JSON.stringify({
 		binary_path: binaryPath,
 		sha256: createHash('sha256').update(binaryContent).digest('hex'),
 		version: versionOutput.trim(),
-	});
+	})}` });
 
 	const args = [
 		'-input', inputPath,

@@ -1,4 +1,5 @@
 import { BINARY_NAMES } from '@/consts/binaries.js';
+import { Logger } from '@tmlmobilidade/logger';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -19,8 +20,7 @@ export async function getValidatorBinaryPath(): Promise<string> {
 	}
 
 	const currentDirectory = dirname(fileURLToPath(import.meta.url));
-	console.log('currentDirectory', currentDirectory);
-	console.log('process.cwd()', process.cwd());
+	Logger.info({ message: `currentDirectory: ${currentDirectory}` });
 
 	// Both local development and the container place generated binaries above
 	// the compiled worker directory; search from the shared ancestor.
