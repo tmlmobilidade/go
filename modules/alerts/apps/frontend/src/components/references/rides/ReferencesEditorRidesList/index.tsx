@@ -72,7 +72,7 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 		return <LoadingSection />;
 	}
 
-	if (!ridesData.length) {
+	if (!ridesData?.length) {
 		return (
 			<Section>
 				<Surface>

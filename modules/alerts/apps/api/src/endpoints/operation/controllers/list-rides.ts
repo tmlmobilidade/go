@@ -1,7 +1,8 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
-import { type AlertsRidesFilters, AlertsRidesFiltersSchema, type AlertsRidesItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsRidesFilters, AlertsRidesFiltersSchema, type AlertsRidesItem, alertsRidesQuery } from '@tmlmobilidade/go-alerts-pckg-types';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
@@ -36,8 +37,40 @@ export async function listRides(request: FastifyRequest<{ Body: AlertsRidesFilte
 	const validatedFilters = AlertsRidesFiltersSchema.parse(request.body);
 
 	//
+	// Build query parameters
+
+	const params: Record<string, number | string> = {
+		1: validatedFilters.start_time_scheduled_start,
+		2: validatedFilters.start_time_scheduled_end,
+		3: validatedFilters.search ?? '',
+	};
+
+	//
+	// Build WHERE conditions
+
+	const conditions: string[] = [];
+
+	//
+	// Append the dynamic filters to the query
+
+	const where = conditions.length
+		? `\n\tAND ${conditions.join('\n\tAND ')}`
+		: '';
+
+	const sql = alertsRidesQuery.replace('--DYNAMIC FILTERS HERE--', where);
+
+	const queryResult = await labDb.queryFromString<AlertsRidesItem>(sql, params);
+
+	//
 	// Parse and return the result
 
-	return sendSuccessApiResponse(reply, []);
+	if (!queryResult?.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'No alerts rides found matching the filters',
+			status_code: '404',
+		});
+	}
+
+	return sendSuccessApiResponse(reply, queryResult);
 }
 
