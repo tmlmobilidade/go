@@ -11,6 +11,7 @@ import { cleanupValidation } from './cleanup-validation.js';
 import { downloadGtfs } from './download-gtfs.js';
 import { prepareValidationRules } from './prepare-validation-rules.js';
 import { sendValidationResultEmail } from './send-validation-result-email.js';
+import { sendValidationSystemErrorEmail } from './send-validation-system-error-email.js';
 import { setupPathsForValidation } from './setup-paths-for-validation.js';
 
 /* * */
@@ -86,13 +87,6 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			Logger.info({ message: `Ignoring stale error for GTFS Validation ${gtfsValidation._id}.` });
 		}
 
-		// await sendSystemErrorEmail({
-		// 	data: {
-		// 		errorMessage: error.message ?? 'Unknown error',
-		// 		serviceName: pjson.name,
-		// 		timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
-		// 	},
-		// 	to: SYSTEM_CONTACT_EMAIL,
-		// });
+		await sendValidationSystemErrorEmail(error);
 	}
 }
