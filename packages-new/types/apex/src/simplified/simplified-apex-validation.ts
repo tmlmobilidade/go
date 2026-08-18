@@ -64,7 +64,7 @@ export const SimplifiedApexValidationSchema = z.object({
 	// Setup the individual conditions to consider
 	// this transaction as a valid passenger
 	const isValidValidationStatus = ValidApexValidationStatusSchema.safeParse(val.validation_status).success;
-	const isNotRefunded = val.on_board_refund_id == null;
+	const isNotRefunded = val.on_board_refund_id === null;
 	// Combine the individual conditions
 	const isPassenger = isValidValidationStatus && isNotRefunded;
 	// Return the transformed value

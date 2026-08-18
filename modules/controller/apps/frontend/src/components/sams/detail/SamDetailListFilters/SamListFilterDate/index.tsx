@@ -3,7 +3,7 @@
 /* * */
 
 import { useSamsDetailContext } from '@/contexts/SamDetail.context';
-import { FilterTypeDateRange } from '@tmlmobilidade/ui';
+import { DateRangeFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -28,7 +28,7 @@ export function SamsDetailListFilterDate() {
 	// C. Render components
 
 	return (
-		<FilterTypeDateRange
+		<DateRangeFilter
 			active={active}
 			endDate={analysisFilterEndTime}
 			label={t('default:sams.detail.SamsDetailList.SamsDetailListFilterDate.label')}

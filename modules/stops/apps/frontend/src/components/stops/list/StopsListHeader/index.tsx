@@ -2,10 +2,11 @@
 
 import { openStopCreateModal } from '@/components/stops/create/StopCreate.modal';
 import { openStopListExportModal } from '@/components/stops/list/StopListExportModal/StopListExport.modal';
-import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { IconFileDownload, IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, HasPermission, IconButton, Label, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, HasPermission, IconButton, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+
+import { useStopsListFilterSearch } from './use-stops-list-filter-search';
 
 /* * */
 
@@ -15,7 +16,7 @@ export function StopsListHeader() {
 	//
 	// A. Setup variables
 
-	const stopsListContext = useStopsListContext();
+	const filterSearch = useStopsListFilterSearch();
 
 	//
 	// B. Render components
@@ -24,7 +25,7 @@ export function StopsListHeader() {
 		<Toolbar>
 			<Label size="lg" caps>Paragens</Label>
 			<Spacer />
-			<SearchInput onChange={stopsListContext.filters.search.set} value={stopsListContext.filters.search.value} />
+			<SearchField onChange={filterSearch.set} value={filterSearch.value} />
 			<HasPermission action={PermissionCatalog.all.stops.actions.create} scope={PermissionCatalog.all.stops.scope}>
 				<Button label="Nova Paragem" leftSection={<IconPlus size={20} />} onClick={openStopCreateModal} />
 			</HasPermission>

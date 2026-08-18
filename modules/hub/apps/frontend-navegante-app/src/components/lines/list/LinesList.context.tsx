@@ -2,7 +2,7 @@
 
 import { useLinesContext } from '@/components/lines/Lines.context';
 import { type HubLine } from '@tmlmobilidade/go-types-public-info';
-import { type ListContextStateTemplate, useFilterStateString, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useFilterStateText, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 /* * */
@@ -51,7 +51,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const linesContext = useLinesContext();
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 
 	const [qtyPerAgency, setQtyPerAgency] = useState<Record<string, number>>({});
 

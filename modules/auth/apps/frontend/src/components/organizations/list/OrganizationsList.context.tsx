@@ -3,7 +3,7 @@
 import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { type OrganizationNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
@@ -13,7 +13,7 @@ interface OrganizationsListContextState {
 		filtered: OrganizationNormalized[]
 	}
 	filters: {
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -43,7 +43,7 @@ export function OrganizationsListContextProvider({ children }: PropsWithChildren
 
 	const organizationsContext = useOrganizationsContext();
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 
 	//
 	// B. Transform data

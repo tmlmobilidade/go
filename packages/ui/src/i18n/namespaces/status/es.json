@@ -23,6 +23,13 @@
 		"none": "(sin valor)",
 		"ontime": "A tiempo"
 	},
+	"grade_status": {
+		"error": "Error",
+		"fail": "Fail",
+		"none": "(sin valor)",
+		"pass": "Pass",
+		"skip": "Skip"
+	},
 	"lifecycle_status": {
 		"active": "Activo",
 		"draft": "Borrador",

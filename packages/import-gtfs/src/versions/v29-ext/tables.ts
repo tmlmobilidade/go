@@ -21,14 +21,14 @@ export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 		batch_size: 10000,
 		columns: [
 			{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
-			{ indexed: false, name: 'bikes_allowed', type: 'INTEGER' },
+			{ indexed: false, name: 'bikes_allowed', type: 'TEXT' },
 			{ indexed: false, name: 'block_id', type: 'TEXT' },
-			{ indexed: false, name: 'direction_id', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'direction_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'service_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'shape_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'trip_headsign', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'wheelchair_accessible', type: 'INTEGER' },
+			{ indexed: false, name: 'wheelchair_accessible', type: 'TEXT' },
 		],
 	});
 
@@ -36,15 +36,15 @@ export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 		batch_size: 10000,
 		columns: [
 			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'continuous_drop_off', type: 'INTEGER' },
-			{ indexed: false, name: 'continuous_pickup', type: 'INTEGER' },
+			{ indexed: false, name: 'continuous_drop_off', type: 'TEXT' },
+			{ indexed: false, name: 'continuous_pickup', type: 'TEXT' },
 			{ indexed: false, name: 'route_color', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_desc', type: 'TEXT' },
 			{ indexed: true, name: 'route_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_long_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_short_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_text_color', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'route_type', not_null: true, type: 'INTEGER' },
+			{ indexed: false, name: 'route_type', not_null: true, type: 'TEXT' },
 		],
 	});
 
@@ -62,7 +62,7 @@ export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 	const stopsTable = database.registerTable<GtfsStrictV29ExtStops>('stops', {
 		batch_size: 10000,
 		columns: [
-			{ indexed: false, name: 'location_type', type: 'INTEGER' },
+			{ indexed: false, name: 'location_type', type: 'TEXT' },
 			{ indexed: false, name: 'parent_station', type: 'TEXT' },
 			{ indexed: false, name: 'platform_code', type: 'TEXT' },
 			{ indexed: false, name: 'stop_code', type: 'TEXT' },
@@ -70,7 +70,7 @@ export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 			{ indexed: false, name: 'stop_lat', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_lon', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'wheelchair_boarding', type: 'INTEGER' },
+			{ indexed: false, name: 'wheelchair_boarding', type: 'TEXT' },
 			// { indexed: false, name: 'lifecycle_status', type: 'TEXT' },
 			// { indexed: false, name: 'stop_short_name', type: 'TEXT' },
 			// { indexed: false, name: 'tts_stop_name', type: 'TEXT' },
@@ -92,13 +92,13 @@ export function initGtfsStrictV29ExtSqlTables(): GtfsStrictV29ExtSQLTables {
 		columns: [
 			{ indexed: false, name: 'arrival_time', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'departure_time', not_null: true, type: 'TEXT' },
-			{ indexed: false, name: 'drop_off_type', type: 'INTEGER' },
-			{ indexed: false, name: 'pickup_type', type: 'INTEGER' },
+			{ indexed: false, name: 'drop_off_type', type: 'TEXT' },
+			{ indexed: false, name: 'pickup_type', type: 'TEXT' },
 			{ indexed: false, name: 'shape_dist_traveled', not_null: true, type: 'REAL' },
 			{ indexed: true, name: 'stop_id', not_null: true, type: 'TEXT' },
 			{ indexed: true, name: 'trip_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_sequence', not_null: true, type: 'INTEGER' },
-			{ indexed: false, name: 'timepoint', type: 'INTEGER' },
+			{ indexed: false, name: 'timepoint', type: 'TEXT' },
 		],
 	});
 

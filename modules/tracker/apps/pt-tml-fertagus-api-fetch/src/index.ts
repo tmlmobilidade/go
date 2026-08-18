@@ -3,12 +3,10 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { TrainsResponse } from '@tmlmobilidade/external/dist/clients/fertagus/types.js';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlFertagusV1 } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type HashedPattern, type Ride } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
@@ -17,21 +15,21 @@ import crypto from 'node:crypto';
 let ITERATION = 0;
 
 interface FoundRideDocument {
-	_id: Ride['_id']
-	agency_id: Ride['agency_id']
+	_id: string
+	agency_id: string
 	first_stop_id: string
 	last_stop_id: string
-	line_id: HashedPattern['line_id']
-	line_long_name: HashedPattern['line_long_name']
-	line_short_name: HashedPattern['line_short_name']
-	pattern_id: HashedPattern['pattern_id']
-	route_color: HashedPattern['route_color']
-	route_id: HashedPattern['route_id']
-	route_long_name: HashedPattern['route_long_name']
-	route_short_name: HashedPattern['route_short_name']
-	route_text_color: HashedPattern['route_text_color']
-	trip_headsign: HashedPattern['trip_headsign']
-	trip_id: Ride['trip_id']
+	line_id: string
+	line_long_name: string
+	line_short_name: string
+	pattern_id: string
+	route_color: string
+	route_id: string
+	route_long_name: string
+	route_short_name: string
+	route_text_color: string
+	trip_headsign: string
+	trip_id: string
 
 }
 
@@ -84,7 +82,6 @@ const main = async () => {
 
 		if (!ridesMap.has(rideKey)) {
 			try {
-				const ridesCollection = await goDb.operation.rides.getCollection();
 				const pipeline = [
 					{
 						$match: {
@@ -135,7 +132,7 @@ const main = async () => {
 						},
 					},
 				];
-				const foundRides = await ridesCollection.aggregate<FoundRideDocument>(pipeline).toArray();
+				const foundRides: FoundRideDocument[] = []; // await ridesCollection.aggregate<FoundRideDocument>(pipeline).toArray();
 
 				//
 				// If no ride is found, skip this event.

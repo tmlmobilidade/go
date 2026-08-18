@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -46,16 +46,12 @@ export async function getRides(): Promise<string[]> {
 
 		const standardWindowInterval = Dates.now('utc').std_window;
 
-		const latestWaitingRides: Pick<Ride, '_id' | 'operational_date' | 'start_time_scheduled'>[] = await labDb.operation.rides.select(
-			'_id, operational_date, start_time_scheduled',
+		const latestWaitingRides = await labDb.operation.rides.queryFromString(
 			`
-				start_time_scheduled <= $1
-				AND processing_status = 'waiting'
-				AND updated_at = (
-					SELECT max(updated_at)
-					FROM operation.rides AS r2
-					WHERE r2._id = operation.rides._id
-				)
+				SELECT *
+				FROM operation.rides FINAL
+				WHERE processing_status = 'waiting'
+				AND start_time_scheduled <= $1
 				ORDER BY start_time_scheduled DESC
 				LIMIT 750
 			`,
@@ -82,7 +78,7 @@ export async function getRides(): Promise<string[]> {
 
 		const latestWaitingRidesIds = latestWaitingRides.map(item => item._id);
 
-		await labDb.operation.rides.queryFromString('UPDATE rides SET processing_status = \'processing\' WHERE _id IN ($1)', { 1: latestWaitingRidesIds.join(',') });
+		await ridesProvider.updateRides({ _id: latestWaitingRidesIds }, { processing_status: 'processing' });
 
 		Logger.info({ message: `[${sessionId}] New batch: Qty ${latestWaitingRidesIds.length} | operational_date: ${latestWaitingRides[latestWaitingRides.length - 1].operational_date} | start_time_scheduled: ${latestWaitingRides[latestWaitingRides.length - 1].start_time_scheduled} (fetch: ${fetchTimerResult} | total: ${markTimer.get()})` });
 
@@ -93,6 +89,7 @@ export async function getRides(): Promise<string[]> {
 		//
 	} catch (error) {
 		Logger.error({ error, message: `[${sessionId}] Error getting rides: ${error.message}` });
+		IS_BUSY = false;
 		return [];
 	}
 }

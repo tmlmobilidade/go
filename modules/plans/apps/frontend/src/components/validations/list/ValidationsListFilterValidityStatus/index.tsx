@@ -1,7 +1,7 @@
 /* * */
 
 import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function ValidationsListFilterValidityStatus() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={validationsListContext.filters.validity_status.isActive}
 			label="Resultado"
 			onChange={validationsListContext.filters.validity_status.set}

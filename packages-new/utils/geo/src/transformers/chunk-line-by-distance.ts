@@ -36,7 +36,7 @@ export function chunkLineStringByDistance(inputLineString: GeoJsonLineStringGeom
 
 	if (totalLength === 0) return inputLineString;
 
-	const result: GeoJsonPosition[] = [inputLineString.coordinates[0]];
+	const result: GeoJsonPosition[] = inputLineString.coordinates;
 
 	//
 	// Walk the polyline placing a node every segmentLength meters

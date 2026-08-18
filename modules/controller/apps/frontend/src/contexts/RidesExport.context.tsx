@@ -1,10 +1,9 @@
 'use client';
 
-import { RIDES_EXPORT_MODAL_ID } from '@/components/rides/export/RidesExportModal';
-import { RidesListContextState } from '@/components/rides/list/RidesList.context';
+import { RIDES_EXPORT_MODAL_ID } from '@/components/rides/list/export/RidesExportModal';
 import { Dates } from '@tmlmobilidade/dates';
 import { type CreateFileExportDto, type RideExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { DelayStatus, OperationalStatus, RideAnalysisGradeWithNone, type UnixTimestamp } from '@tmlmobilidade/types';
+import { DelayStatus, OperationalStatus, type UnixTimestamp } from '@tmlmobilidade/types';
 import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
@@ -16,7 +15,7 @@ interface RidesExportModalContextState {
 		setFilterDateEnd: (value: number) => void
 		setFilterDateStart: (value: number) => void
 	}
-	filters: RidesListContextState['filters']
+	filters: any
 	flags: {
 		canSave: boolean
 		error: Error | undefined
@@ -38,7 +37,7 @@ export function useRidesExportModalContext() {
 
 /* * */
 
-export const RidesExportModalContextProvider = ({ children, initialFilters }: PropsWithChildren<{ initialFilters: RidesListContextState['filters'] }>) => {
+export const RidesExportModalContextProvider = ({ children, initialFilters }: PropsWithChildren<{ initialFilters: any }>) => {
 	//
 
 	//
@@ -66,10 +65,10 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 			properties: {
 				acceptance_status: initialFilters.acceptance_status.value,
 				agency_ids: initialFilters.agency.value,
-				analysis_ended_at_last_stop_grade: initialFilters.analysis_ended_at_last_stop.value as RideAnalysisGradeWithNone[],
-				analysis_expected_apex_validation_interval: initialFilters.analysis_expected_apex_validation_interval.value as RideAnalysisGradeWithNone[],
-				analysis_simple_three_vehicle_events_grade: initialFilters.analysis_simple_three_vehicle_events_grade.value as RideAnalysisGradeWithNone[],
-				analysis_transaction_sequentiality: initialFilters.analysis_transaction_sequentiality.value as RideAnalysisGradeWithNone[],
+				analysis_ended_at_last_stop_grade: initialFilters.analysis_ended_at_last_stop.value,
+				analysis_expected_apex_validation_interval: initialFilters.analysis_expected_apex_validation_interval.value,
+				analysis_simple_three_vehicle_events_grade: initialFilters.analysis_simple_three_vehicle_events_grade.value,
+				analysis_transaction_sequentiality: initialFilters.analysis_transaction_sequentiality.value,
 				date_end: filterDateEnd as UnixTimestamp,
 				date_start: filterDateStart as UnixTimestamp,
 				delay_statuses: initialFilters.delay_status.value as DelayStatus[],

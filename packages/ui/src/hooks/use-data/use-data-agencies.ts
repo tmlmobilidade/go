@@ -1,6 +1,7 @@
 'use client';
 
-import { ActionsOf, type Agency, Permission } from '@tmlmobilidade/types';
+import { type Agency } from '@tmlmobilidade/go-types-core';
+import { ActionsOf, Permission } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 

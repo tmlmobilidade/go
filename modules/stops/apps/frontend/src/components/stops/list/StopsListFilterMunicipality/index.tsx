@@ -1,19 +1,20 @@
 'use client';
 
-import { useStopsListContext } from '@/components/stops/list/StopsList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
+
+import { useStopsListFilterMunicipality } from './use-stops-list-filter-municipality';
 
 export function StopsListFilterMunicipality() {
 //
 
-	const stopsListContext = useStopsListContext();
+	const filterMunicipality = useStopsListFilterMunicipality();
 
 	return (
-		<FilterTypeList
-			active={stopsListContext.filters.municipality.isActive}
+		<ListFilter
+			active={filterMunicipality.isActive}
 			label="Municípios"
-			onChange={stopsListContext.filters.municipality.set}
-			options={stopsListContext.filters.municipality.options}
+			onChange={filterMunicipality.set}
+			options={filterMunicipality.options}
 			isMultiple
 			withToggleAll
 

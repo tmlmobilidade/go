@@ -1,14 +1,14 @@
 /* * */
 
 import { RideAnalysisBaseSchema } from '@/ride-analyses/ride-analysis-base.js';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { IntegerSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const RideAnalysisExpectedStartTimeSchema = RideAnalysisBaseSchema.extend({
 	observed_start_time: UnixTimestampSchema.nullable().default(null),
-	observed_start_time_delta: z.number().nullable().default(null),
+	observed_start_time_delta: IntegerSchema.nullable().default(null),
 	reason: z.enum(['NO_START_TIME_SCHEDULED', 'NO_VEHICLE_EVENTS', 'UNKNOWN_START', 'EARLY_START', 'LATE_START', 'START_ON_TIME']).nullable().default(null),
 });
 

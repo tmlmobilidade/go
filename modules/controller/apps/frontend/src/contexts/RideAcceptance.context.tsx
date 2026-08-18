@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AlertCause, type RideAcceptance } from '@tmlmobilidade/types';
+import { type AlertCause, type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, useContext, useMemo } from 'react';
@@ -60,8 +60,7 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 			}
 
 			acceptanceMutate();
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({ message: error.message, title: 'Erro ao adicionar comentário' });
 		}
 	}
@@ -76,8 +75,7 @@ export const RideAcceptanceContextProvider = ({ children, rideId }) => {
 			}
 
 			acceptanceMutate();
-		}
-		catch (error) {
+		} catch (error) {
 			useToast.error({ message: error.message, title: 'Erro ao alterar status' });
 		}
 	}

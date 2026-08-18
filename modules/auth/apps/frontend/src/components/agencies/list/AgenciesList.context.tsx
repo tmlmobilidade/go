@@ -3,7 +3,7 @@
 import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { type AgencyNormalized } from '@/types/normalized';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
@@ -13,7 +13,7 @@ interface AgenciesListContextState {
 		filtered: AgencyNormalized[]
 	}
 	filters: {
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -43,7 +43,7 @@ export function AgenciesListContextProvider({ children }: PropsWithChildren) {
 
 	const agenciesContext = useAgenciesContext();
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 
 	//
 	// B. Transform data
@@ -54,7 +54,7 @@ export function AgenciesListContextProvider({ children }: PropsWithChildren) {
 		// Normalize record fields
 		return agenciesContext.data.raw
 			.map(item => ({ ...item, name_normalized: normalizeString(item.name) }))
-			.sort((a, b) => a.code.localeCompare(b.code, undefined, { numeric: true }));
+			.sort((a, b) => a.code?.localeCompare(b.code, undefined, { numeric: true }));
 	}, [agenciesContext.data.raw]);
 
 	const searchResultsData = useSearch<AgencyNormalized>({
@@ -87,6 +87,4 @@ export function AgenciesListContextProvider({ children }: PropsWithChildren) {
 			{children}
 		</AgenciesListContext.Provider>
 	);
-
-	//
 };

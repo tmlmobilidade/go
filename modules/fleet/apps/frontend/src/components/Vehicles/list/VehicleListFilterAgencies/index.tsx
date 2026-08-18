@@ -1,7 +1,7 @@
 /* * */
 
 import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
-import { FilterTypeList, useAgenciesContext } from '@tmlmobilidade/ui';
+import { ListFilter, useAgenciesContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -44,7 +44,7 @@ export function VehiclesListFilterAgencies() {
 	// C. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={isActive}
 			label="Operadores"
 			onChange={vehiclesListContext.filters.agency.set}

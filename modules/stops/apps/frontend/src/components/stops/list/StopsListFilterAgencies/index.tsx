@@ -1,14 +1,10 @@
 'use client';
 
-import { FilterTypeList, useAgenciesContext, useMeContext } from '@tmlmobilidade/ui';
-
-/* * */
-
-import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { getVisibleAgencyIds } from '@/lib/visibleAgencies';
+import { ListFilter, useAgenciesContext, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-/* * */
+import { useStopsListFilterAgencies } from './use-stops-list-filter-agencies';
 
 export function StopsListFilterAgencies() {
 	//
@@ -17,7 +13,7 @@ export function StopsListFilterAgencies() {
 	// A. Setup variables
 
 	const agenciesContext = useAgenciesContext();
-	const stopsListContext = useStopsListContext();
+	const filterAgencies = useStopsListFilterAgencies();
 	const meContext = useMeContext();
 
 	const visibleAgencyIds = useMemo(() => {
@@ -26,8 +22,8 @@ export function StopsListFilterAgencies() {
 
 	const visibleOptions = useMemo(() => {
 		const visibleIds = new Set(visibleAgencyIds);
-		return stopsListContext.filters.agencies.options.filter(option => visibleIds.has(option.value));
-	}, [stopsListContext.filters.agencies.options, visibleAgencyIds]);
+		return filterAgencies.options.filter(option => visibleIds.has(option.value));
+	}, [filterAgencies.options, visibleAgencyIds]);
 
 	//
 	// B. Render components
@@ -35,10 +31,10 @@ export function StopsListFilterAgencies() {
 	if (visibleAgencyIds.length <= 1) return null;
 
 	return (
-		<FilterTypeList
-			active={stopsListContext.filters.agencies.isActive}
+		<ListFilter
+			active={filterAgencies.isActive}
 			label="Operadores"
-			onChange={stopsListContext.filters.agencies.set}
+			onChange={filterAgencies.set}
 			options={visibleOptions}
 			isMultiple
 			withToggleAll

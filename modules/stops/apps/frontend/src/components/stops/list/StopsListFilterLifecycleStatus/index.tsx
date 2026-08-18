@@ -1,8 +1,9 @@
 'use client';
 
-import { useStopsListContext } from '@/components/stops/list/StopsList.context';
 import { Translations } from '@/lib/translations';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
+
+import { useStopsListFilterLifecycleStatus } from './use-stops-list-filter-lifecycle-status';
 
 /* * */
 
@@ -12,17 +13,17 @@ export function StopsListFilterLifecycleStatus() {
 	//
 	// A. Setup variables
 
-	const stopsListContext = useStopsListContext();
+	const filterLifecycleStatus = useStopsListFilterLifecycleStatus();
 
 	//
 	// B. Render components
 
 	return (
-		<FilterTypeList
-			active={stopsListContext.filters.lifecycle_status.isActive}
+		<ListFilter
+			active={filterLifecycleStatus.isActive}
 			label="Estado"
-			onChange={stopsListContext.filters.lifecycle_status.set}
-			options={stopsListContext.filters.lifecycle_status.options.map(option => ({
+			onChange={filterLifecycleStatus.set}
+			options={filterLifecycleStatus.options.map(option => ({
 				...option,
 				label: Translations.LIFECYCLE_STATUS[option.value as keyof typeof Translations.LIFECYCLE_STATUS],
 			}))}

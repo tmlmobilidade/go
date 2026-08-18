@@ -2,7 +2,7 @@
 
 import { EncodedPolylineSchema } from '@tmlmobilidade/go-types-geo';
 import { GtfsTripDirectionSchema } from '@tmlmobilidade/go-types-gtfs';
-import { HexColorSchema, NonNegativeNumberSchema, OperationalDateIntSchema, ProcessingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema, ProcessingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -29,33 +29,33 @@ export const RideIdentitySchema = z.object({
 export const RideScheduleSchema = z.object({
 	end_time_observed: UnixTimestampSchema.nullable().default(null),
 	end_time_scheduled: UnixTimestampSchema,
-	extension_observed: NonNegativeNumberSchema.nullable().default(null),
-	extension_scheduled: NonNegativeNumberSchema,
+	extension_observed: NonNegativeIntegerSchema.nullable().default(null),
+	extension_scheduled: NonNegativeIntegerSchema,
 	start_time_observed: UnixTimestampSchema.nullable().default(null),
 	start_time_scheduled: UnixTimestampSchema,
 });
 
 export const RideApexSchema = z.object({
-	apex_banking_taps_amount: NonNegativeNumberSchema.nullable().default(null),
-	apex_banking_taps_qty: NonNegativeNumberSchema.nullable().default(null),
-	apex_locations_qty: NonNegativeNumberSchema.nullable().default(null),
-	apex_refunds_amount: NonNegativeNumberSchema.nullable().default(null),
-	apex_refunds_qty: NonNegativeNumberSchema.nullable().default(null),
-	apex_sales_amount: NonNegativeNumberSchema.nullable().default(null),
-	apex_sales_qty: NonNegativeNumberSchema.nullable().default(null),
-	apex_validations_qty: NonNegativeNumberSchema.nullable().default(null),
+	apex_banking_taps_amount: NonNegativeIntegerSchema.nullable().default(null),
+	apex_banking_taps_qty: NonNegativeIntegerSchema.nullable().default(null),
+	apex_locations_qty: NonNegativeIntegerSchema.nullable().default(null),
+	apex_refunds_amount: NonNegativeIntegerSchema.nullable().default(null),
+	apex_refunds_qty: NonNegativeIntegerSchema.nullable().default(null),
+	apex_sales_amount: NonNegativeIntegerSchema.nullable().default(null),
+	apex_sales_qty: NonNegativeIntegerSchema.nullable().default(null),
+	apex_validations_qty: NonNegativeIntegerSchema.nullable().default(null),
 });
 
 export const RidePassengersSchema = z.object({
-	passengers_estimated: NonNegativeNumberSchema.nullable().default(null),
-	passengers_observed: NonNegativeNumberSchema.nullable().default(null),
-	passengers_observed_banking_taps_amount: NonNegativeNumberSchema.nullable().default(null),
-	passengers_observed_banking_taps_qty: NonNegativeNumberSchema.nullable().default(null),
-	passengers_observed_prepaid_amount: NonNegativeNumberSchema.nullable().default(null),
-	passengers_observed_prepaid_qty: NonNegativeNumberSchema.nullable().default(null),
-	passengers_observed_sales_amount: NonNegativeNumberSchema.nullable().default(null),
-	passengers_observed_sales_qty: NonNegativeNumberSchema.nullable().default(null),
-	passengers_observed_subscription_qty: NonNegativeNumberSchema.nullable().default(null),
+	passengers_estimated: NonNegativeIntegerSchema.nullable().default(null),
+	passengers_observed: NonNegativeIntegerSchema.nullable().default(null),
+	passengers_observed_banking_taps_amount: NonNegativeIntegerSchema.nullable().default(null),
+	passengers_observed_banking_taps_qty: NonNegativeIntegerSchema.nullable().default(null),
+	passengers_observed_prepaid_amount: NonNegativeIntegerSchema.nullable().default(null),
+	passengers_observed_prepaid_qty: NonNegativeIntegerSchema.nullable().default(null),
+	passengers_observed_sales_amount: NonNegativeIntegerSchema.nullable().default(null),
+	passengers_observed_sales_qty: NonNegativeIntegerSchema.nullable().default(null),
+	passengers_observed_subscription_qty: NonNegativeIntegerSchema.nullable().default(null),
 });
 
 export const RideOperationSchema = z.object({

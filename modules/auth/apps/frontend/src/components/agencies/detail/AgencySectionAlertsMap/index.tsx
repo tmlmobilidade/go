@@ -1,7 +1,7 @@
 'use client';
 
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
-import { type AlertCause, AlertCauseValues, type AlertEffect, AlertEffectValues, type AlertReferenceType, AlertReferenceTypeValues } from '@tmlmobilidade/types';
+import { type AlertCause, AlertCauseValues, type AlertEffect, AlertEffectValues, type AlertReferenceType, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
 import { Checkbox, Collapsible, ContextFormController, Divider, Grid, Inline, Section, Surface, Table } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

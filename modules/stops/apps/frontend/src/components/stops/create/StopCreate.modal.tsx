@@ -1,7 +1,6 @@
 'use client';
 
 import { StopCreateContextProvider } from '@/components/stops/create/StopCreate.context';
-import { StopsListContextProvider } from '@/components/stops/list/StopsList.context';
 import { DataProviders } from '@/providers/data-providers';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
@@ -18,11 +17,9 @@ export const openStopCreateModal = () => {
 		children: (
 			<DataProviders>
 				<MeContextProvider>
-					<StopsListContextProvider>
-						<StopCreateContextProvider>
-							<StopCreate />
-						</StopCreateContextProvider>
-					</StopsListContextProvider>
+					<StopCreateContextProvider>
+						<StopCreate />
+					</StopCreateContextProvider>
 				</MeContextProvider>
 			</DataProviders>
 		),

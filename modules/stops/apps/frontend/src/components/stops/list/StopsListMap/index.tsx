@@ -1,6 +1,6 @@
 'use client';
 
-import { useStopsListContext } from '@/components/stops/list/StopsList.context';
+import { useStopsListData } from '@/components/stops/list/StopsList/use-stops-list-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { keepUrlParams, MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -14,7 +14,7 @@ export function StopsListMap() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const stopsListContext = useStopsListContext();
+	const stopsListData = useStopsListData();
 
 	//
 	// B. Handle actions
@@ -30,7 +30,7 @@ export function StopsListMap() {
 		<Pane>
 			<MapView id="stops-list">
 				<MapOverlayMultipleStops
-					data={stopsListContext.data.features}
+					data={stopsListData.data.features}
 					id="stops-list"
 					onClick={handleStopClick}
 					visible
