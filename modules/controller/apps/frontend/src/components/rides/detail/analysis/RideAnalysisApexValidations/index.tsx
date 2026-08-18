@@ -44,7 +44,7 @@ export function RideAnalysisApexValidations() {
 			accessor: 'card_serial_number',
 			render: item => <IdTag id={item.card_serial_number} copyOnClick />,
 			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.card_serial_number.label'),
-			width: 180,
+			width: 190,
 		},
 		{
 			accessor: 'product_id',
@@ -77,16 +77,19 @@ export function RideAnalysisApexValidations() {
 		},
 		{
 			accessor: '_id',
+			render: item => <IdTag id={item._id} copyOnClick />,
 			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.id_validation.label'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_sale_id',
+			render: item => item.on_board_sale_id && <IdTag id={item.on_board_sale_id} copyOnClick />,
 			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.id_on_board_sale.label'),
 			width: 400,
 		},
 		{
 			accessor: 'on_board_refund_id',
+			render: item => item.on_board_refund_id && <IdTag id={item.on_board_refund_id} copyOnClick />,
 			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.id_on_board_refund.label'),
 			width: 400,
 		},

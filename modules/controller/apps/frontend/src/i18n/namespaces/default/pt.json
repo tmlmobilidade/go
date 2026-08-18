@@ -336,13 +336,13 @@
 							"label": "Event"
 						},
 						"id_on_board_refund": {
-							"label": "ID On Board Refund"
+							"label": "Refund ID"
 						},
 						"id_on_board_sale": {
-							"label": "ID On Board Sale"
+							"label": "Sale ID"
 						},
 						"id_validation": {
-							"label": "ID Validation"
+							"label": "Validation ID"
 						},
 						"mac_sam_serial_number": {
 							"label": "SAM SN"
