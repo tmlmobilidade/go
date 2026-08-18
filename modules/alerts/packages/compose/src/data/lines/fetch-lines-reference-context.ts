@@ -1,17 +1,17 @@
 /* * */
 
-import { type AlertsDescribeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
-import { fetchLinesReferenceContextQuery } from './fetch-lines-public-reference-context.js';
 import { type FetchLinesReferenceContextItem } from './fetch-lines-reference-context-item.js';
+import { fetchLinesReferenceContextQuery } from './fetch-lines-reference-context-query.js';
 
 /**
  * Extracts the lines public names from the request.
  * @param request The request data.
  * @returns The lines public names.
  */
-export async function fetchLinesReferenceContext(request: AlertsDescribeRequest): Promise<string[]> {
+export async function fetchLinesReferenceContext(request: AlertsComposeRequest): Promise<string[]> {
 	//
 
 	//

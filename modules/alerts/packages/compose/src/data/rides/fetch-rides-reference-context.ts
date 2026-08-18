@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type AlertsDescribeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
 import { type FetchRidesReferenceContextItem } from './fetch-rides-reference-context-item.js';
@@ -12,7 +12,7 @@ import { fetchRidesReferenceContextQuery } from './fetch-rides-reference-context
  * @param request The request data.
  * @returns The rides public names.
  */
-export async function fetchRidesReferenceContext(request: AlertsDescribeRequest): Promise<string[]> {
+export async function fetchRidesReferenceContext(request: AlertsComposeRequest): Promise<string[]> {
 	//
 
 	//

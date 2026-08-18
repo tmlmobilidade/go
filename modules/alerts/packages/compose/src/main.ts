@@ -1,6 +1,6 @@
 /* * */
 
-import { type AlertsDescribeRequest, AlertsDescribeRequestSchema, type AlertsDescribeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsComposeRequest, AlertsComposeRequestSchema, type AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/go-providers-ai';
 import { I18nCodeValues } from '@tmlmobilidade/go-types-shared';
 
@@ -18,22 +18,22 @@ import { referenceTypePrompt } from './prompts/reference-types/reference-type.js
 import { parseAiResult } from './utils/parse-ai-result.js';
 
 /**
- * Generates a description and title for an alert based on its properties.
+ * Composes a description and title for an alert based on its properties.
  * @param props The properties of the alert to be described.
  * @returns An object containing the description and title of the alert
  * in multiple languages, or undefined if required properties are missing.
  */
-export async function generateAlertTitleAndDescription(request: AlertsDescribeRequest): Promise<AlertsDescribeResponse> {
+export async function composeAlertTitleAndDescription(request: AlertsComposeRequest): Promise<AlertsComposeResponse> {
 	//
 
 	const result = {
 		pt: { description: '', title: '' },
-	} satisfies AlertsDescribeResponse;
+	} satisfies AlertsComposeResponse;
 
 	//
 	// Validate the request parameters
 
-	const validatedRequestData = AlertsDescribeRequestSchema.parse(request);
+	const validatedRequestData = AlertsComposeRequestSchema.parse(request);
 
 	//
 	// Fetch reference context data only once for all languages,

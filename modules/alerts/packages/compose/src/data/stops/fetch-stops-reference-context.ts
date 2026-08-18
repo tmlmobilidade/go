@@ -1,6 +1,6 @@
 /* * */
 
-import { type AlertsDescribeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
 import { type FetchStopsReferenceContextItem } from './fetch-stops-reference-context-item.js';
@@ -11,7 +11,7 @@ import { fetchStopsReferenceContextQuery } from './fetch-stops-reference-context
  * @param request The request data.
  * @returns The stops public names.
  */
-export async function fetchStopsReferenceContext(request: AlertsDescribeRequest): Promise<string[]> {
+export async function fetchStopsReferenceContext(request: AlertsComposeRequest): Promise<string[]> {
 	//
 
 	//

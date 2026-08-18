@@ -1,6 +1,6 @@
 /* * */
 
-import { type AlertsDescribeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /**
@@ -8,7 +8,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
  * @param request The request data.
  * @returns The agency public name.
  */
-export async function fetchAgencyReferenceContext(request: AlertsDescribeRequest): Promise<string> {
+export async function fetchAgencyReferenceContext(request: AlertsComposeRequest): Promise<string> {
 	//
 
 	const foundAgency = await goDb.core.agencies.findById(request.agency_id);

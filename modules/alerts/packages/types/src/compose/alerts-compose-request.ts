@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const AlertsDescribeRequestSchema = z.object({
+export const AlertsComposeRequestSchema = z.object({
 
 	active_period_end_date: UnixTimestampSchema,
 
@@ -52,6 +52,6 @@ export const AlertsDescribeRequestSchema = z.object({
 });
 
 /**
- * A request model for describing an alert.
+ * A request model for composing an alert.
  */
-export type AlertsDescribeRequest = z.infer<typeof AlertsDescribeRequestSchema>;
+export type AlertsComposeRequest = z.infer<typeof AlertsComposeRequestSchema>;
