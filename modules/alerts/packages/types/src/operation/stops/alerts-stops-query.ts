@@ -21,9 +21,9 @@ WITH
 		FROM operation.rides
 
 		WHERE
-			agency_id = {agency_id:String}
-			AND start_time_scheduled >= {start_time_scheduled_start:Int64}
-			AND start_time_scheduled <= {start_time_scheduled_end:Int64}
+			agency_id = $1
+			AND start_time_scheduled >= $2
+			AND start_time_scheduled <= $3
 
 		ORDER BY
 			updated_at DESC
@@ -67,7 +67,7 @@ WITH
 		FROM operation.hashed_trips
 
 		WHERE
-			agency_id = {agency_id:String}
+			agency_id = $1
 			AND _id IN (
 				SELECT
 					hashed_trip_id

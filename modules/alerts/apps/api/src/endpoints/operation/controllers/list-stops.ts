@@ -1,11 +1,12 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
-import { type AlertsStopsFilters, AlertsStopsFiltersSchema, type AlertsStopsItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsStopsFilters, AlertsStopsFiltersSchema, type AlertsStopsItem, AlertsStopsItemSchema, alertsStopsQuery, AlertsStopsQueryRow } from '@tmlmobilidade/go-alerts-pckg-types';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /**
- * Get rides by query.
+ * Get stops by query.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
@@ -36,8 +37,33 @@ export async function listStops(request: FastifyRequest<{ Body: AlertsStopsFilte
 	const validatedFilters = AlertsStopsFiltersSchema.parse(request.body);
 
 	//
+	// Build query parameters and execute the query
+
+	const params: Record<string, number | string> = {
+		1: validatedFilters.agency_id,
+		2: validatedFilters.start_time_scheduled_start,
+		3: validatedFilters.start_time_scheduled_end,
+	};
+
+	const queryResult = await labDb.queryFromString<AlertsStopsQueryRow>(alertsStopsQuery, params);
+
+	//
 	// Parse and return the result
 
-	return sendSuccessApiResponse(reply, []);
+	const parsedResult: AlertsStopsItem[] = queryResult.map(row => ({
+		routes: row.routes.map(([routeLongName, routeShortName, routeShapeId]) => ({
+			route_long_name: routeLongName,
+			route_shape_id: routeShapeId,
+			route_short_name: routeShortName,
+		})),
+		stop_id: row.stop_id,
+		stop_lat: row.stop_lat,
+		stop_lon: row.stop_lon,
+		stop_name: row.stop_name,
+	}));
+
+	const validatedResult = AlertsStopsItemSchema.array().parse(parsedResult);
+
+	return sendSuccessApiResponse(reply, validatedResult);
 }
 
