@@ -96,6 +96,18 @@ func runValidations(gtfs types.Gtfs, tracker *lib.PerformanceTracker, rules *typ
 	tracker.End()
 }
 
+func outputSummary() {
+	if services.AppCLI.Options.OutputPath != "" {
+		if err := services.AppMessageService.WriteToFile(services.AppCLI.Options.OutputPath); err != nil {
+			log.Fatalf("Error writing validation summary: %v", err)
+		}
+		lib.AppLogger.Info("Summary written to: " + services.AppCLI.Options.OutputPath)
+		return
+	}
+
+	services.AppMessageService.PrintJSON()
+}
+
 func main() {
 
 	//
@@ -131,7 +143,7 @@ func main() {
 
 	// If there are errors in the GTFS, print the errors and exit
 	if services.AppMessageService.TotalErrors() > 0 {
-		services.AppMessageService.PrintJSON()
+		outputSummary()
 		return
 	}
 
@@ -140,7 +152,7 @@ func main() {
 	// File validations add messages directly to AppMessageService
 	// Only exit early if there are errors (warnings are ok to continue)
 	if hasErrors := file_validation.NewFileValidation().Validate(gtfs, rules); hasErrors {
-		services.AppMessageService.WriteToFile(services.AppCLI.Options.OutputPath)
+		outputSummary()
 		lib.AppLogger.Error("File validations found errors. Exiting.")
 		return
 	}
@@ -164,10 +176,5 @@ func main() {
 
 	//
 	// 5. Output Summary
-	if services.AppCLI.Options.OutputPath != "" {
-		services.AppMessageService.WriteToFile(services.AppCLI.Options.OutputPath)
-		lib.AppLogger.Info("Summary written to: " + services.AppCLI.Options.OutputPath)
-	} else {
-		services.AppMessageService.PrintJSON()
-	}
+	outputSummary()
 }

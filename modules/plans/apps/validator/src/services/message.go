@@ -82,7 +82,14 @@ func (ms *MessageService) AddMessage(message types.Message) {
 	// Exit if total errors + warnings exceeds TotalIssuesLimit
 	if ms.errorCount+ms.warningCount >= config.TotalIssuesLimit {
 		lib.AppLogger.Error("Too many issues (errors + warnings > " + strconv.Itoa(config.TotalIssuesLimit) + "). Exiting.")
-		ms.PrintJSON()
+		if AppCLI.Options.OutputPath != "" {
+			if err := ms.WriteToFile(AppCLI.Options.OutputPath); err != nil {
+				lib.AppLogger.Error(err.Error())
+				os.Exit(1)
+			}
+		} else {
+			ms.PrintJSON()
+		}
 		os.Exit(0)
 	}
 }
@@ -166,14 +173,17 @@ func (ms *MessageService) PrintJSON() {
 	lib.PrintMap(ms.GetSummary(), true)
 }
 
-func (ms *MessageService) WriteToFile(filename string) {
-	json, err := json.Marshal(ms.GetSummary())
+func (ms *MessageService) WriteToFile(filename string) error {
+	content, err := json.Marshal(ms.GetSummary())
 	if err != nil {
-		lib.AppLogger.Error("Error marshalling summary to JSON: " + err.Error())
-		return
+		return fmt.Errorf("error marshalling summary to JSON: %w", err)
 	}
 
-	os.WriteFile(filename, json, 0644)
+	if err := os.WriteFile(filename, content, 0644); err != nil {
+		return fmt.Errorf("error writing summary to %s: %w", filename, err)
+	}
+
+	return nil
 }
 
 func (ms *MessageService) Clear() {
