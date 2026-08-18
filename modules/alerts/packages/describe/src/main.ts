@@ -31,16 +31,36 @@ export async function generateAlertTitleAndDescription(request: AlertsDescribeRe
 	} satisfies AlertsDescribeResponse;
 
 	//
+	// Validate the request parameters
+
+	const validatedRequestData = AlertsDescribeRequestSchema.parse(request);
+
+	//
+	// Fetch reference context data only once for all languages,
+	// dependning on the requested reference type
+
+	const agencyReferenceContext = validatedRequestData.reference_type === 'agency'
+		? await fetchAgencyReferenceContext(validatedRequestData)
+		: null;
+
+	const linesReferenceContext = validatedRequestData.reference_type === 'lines'
+		? await fetchLinesReferenceContext(validatedRequestData)
+		: null;
+
+	const stopsReferenceContext = validatedRequestData.reference_type === 'stops'
+		? await fetchStopsReferenceContext(validatedRequestData)
+		: null;
+
+	const ridesReferenceContext = validatedRequestData.reference_type === 'rides'
+		? await fetchRidesReferenceContext(validatedRequestData)
+		: null;
+
+	//
 	// Iterate on the available language codes to generate
 	// a title and description for each language
 
 	for (const i18nCode of I18nCodeValues.filter(code => code === 'pt')) {
 		//
-
-		//
-		// Validate the request parameters
-
-		const validatedRequestData = AlertsDescribeRequestSchema.parse(request);
 
 		//
 		// Initialize the prompt context
@@ -60,27 +80,23 @@ export async function generateAlertTitleAndDescription(request: AlertsDescribeRe
 		//
 		// Fetch additional data depending on the reference type
 
-		if (validatedRequestData.reference_type === 'agency') {
+		if (validatedRequestData.reference_type === 'agency' && agencyReferenceContext) {
 			appendToPromptContext(promptContext, i18nCode, 'body', referenceTypePrompt['agency'][i18nCode]);
-			const agencyReferenceContext = await fetchAgencyReferenceContext(validatedRequestData);
 			appendToPromptContext(promptContext, i18nCode, 'data', agencyReferenceContext);
 		}
 
-		if (validatedRequestData.reference_type === 'lines') {
+		if (validatedRequestData.reference_type === 'lines' && linesReferenceContext) {
 			appendToPromptContext(promptContext, i18nCode, 'body', referenceTypePrompt['lines'][i18nCode]);
-			const linesReferenceContext = await fetchLinesReferenceContext(validatedRequestData);
 			appendToPromptContext(promptContext, i18nCode, 'data', linesReferenceContext);
 		}
 
-		if (validatedRequestData.reference_type === 'stops') {
+		if (validatedRequestData.reference_type === 'stops' && stopsReferenceContext) {
 			appendToPromptContext(promptContext, i18nCode, 'body', referenceTypePrompt['stops'][i18nCode]);
-			const stopsReferenceContext = await fetchStopsReferenceContext(validatedRequestData);
 			appendToPromptContext(promptContext, i18nCode, 'data', stopsReferenceContext);
 		}
 
-		if (validatedRequestData.reference_type === 'rides') {
+		if (validatedRequestData.reference_type === 'rides' && ridesReferenceContext) {
 			appendToPromptContext(promptContext, i18nCode, 'body', referenceTypePrompt['rides'][i18nCode]);
-			const ridesReferenceContext = await fetchRidesReferenceContext(validatedRequestData);
 			appendToPromptContext(promptContext, i18nCode, 'data', ridesReferenceContext);
 		}
 
