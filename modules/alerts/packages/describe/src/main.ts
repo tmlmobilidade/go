@@ -38,23 +38,23 @@ export async function generateAlertTitleAndDescription(request: AlertsDescribeRe
 	// Fetch additional data depending on the reference type
 
 	if (validatedRequestData.reference_type === 'agency') {
-		const agencyPublicName = await fetchAgencyReferenceContext(validatedRequestData);
-		appendToPromptContext(promptContext, 'pt', 'data', `Agency: ${agencyPublicName}`);
+		const agencyReferenceContext = await fetchAgencyReferenceContext(validatedRequestData);
+		appendToPromptContext(promptContext, 'pt', 'data', `Agency: ${agencyReferenceContext}`);
 	}
 
 	if (validatedRequestData.reference_type === 'lines') {
-		const linesPublicNames = await fetchLinesReferenceContext(validatedRequestData);
-		appendToPromptContext(promptContext, 'pt', 'data', linesPublicNames);
+		const linesReferenceContext = await fetchLinesReferenceContext(validatedRequestData);
+		appendToPromptContext(promptContext, 'pt', 'data', linesReferenceContext);
 	}
 
 	if (validatedRequestData.reference_type === 'stops') {
-		const stopsPublicNames = await fetchStopsReferenceContext(validatedRequestData);
-		appendToPromptContext(promptContext, 'pt', 'data', stopsPublicNames);
+		const stopsReferenceContext = await fetchStopsReferenceContext(validatedRequestData);
+		appendToPromptContext(promptContext, 'pt', 'data', stopsReferenceContext);
 	}
 
 	if (validatedRequestData.reference_type === 'rides') {
-		const ridesPublicNames = await fetchRidesReferenceContext(validatedRequestData);
-		appendToPromptContext(promptContext, 'pt', 'data', ridesPublicNames);
+		const ridesReferenceContext = await fetchRidesReferenceContext(validatedRequestData);
+		appendToPromptContext(promptContext, 'pt', 'data', ridesReferenceContext);
 	}
 
 	//
