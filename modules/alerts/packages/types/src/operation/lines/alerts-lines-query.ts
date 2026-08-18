@@ -105,11 +105,13 @@ WITH
 				arraySort(
 					stop ->
 						stop.1,
-					groupArray(
-						(
-							stop_sequence,
-							stop_id,
-							stop_name
+					arrayDistinct(
+						groupArray(
+							(
+								stop_sequence,
+								stop_id,
+								stop_name
+							)
 						)
 					)
 				)

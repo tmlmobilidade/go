@@ -41,7 +41,7 @@ export function useAlertsRidesData(): UseAlertsRidesDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsRidesItem[]>>([API_ROUTES.alerts.ALERTS_LIST, query], {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsRidesItem[]>>([API_ROUTES.alerts.OPERATION_RIDES, query], {
 		fetcher: async ([url, query]) => await fetchDataNew<AlertsRidesItem[]>(url, 'POST', query),
 		refreshInterval: 10_000, // 10 seconds
 	});

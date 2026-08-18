@@ -55,7 +55,6 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 			.now('local')
 			.startOf('day')
 			.unix_timestamp,
-
 		publish_status: 'published',
 
 		references: [],

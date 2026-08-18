@@ -41,7 +41,7 @@ export function useAlertsStopsData(): UseAlertsStopsDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsStopsItem[]>>([API_ROUTES.alerts.ALERTS_LIST, query], {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsStopsItem[]>>([API_ROUTES.alerts.OPERATION_STOPS, query], {
 		fetcher: async ([url, query]) => await fetchDataNew<AlertsStopsItem[]>(url, 'POST', query),
 		refreshInterval: 10_000, // 10 seconds
 	});

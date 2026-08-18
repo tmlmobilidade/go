@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
-import { type AlertsLinesFilters, AlertsLinesFiltersSchema, type AlertsLinesItem, alertsLinesQuery } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AlertsLinesFilters, AlertsLinesFiltersSchema, type AlertsLinesItem, AlertsLinesItemSchema, alertsLinesQuery, AlertsLinesQueryRow } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
@@ -45,11 +45,28 @@ export async function listLines(request: FastifyRequest<{ Body: AlertsLinesFilte
 		3: validatedFilters.start_time_scheduled_end,
 	};
 
-	const queryResult = await labDb.queryFromString<AlertsLinesItem>(alertsLinesQuery, params);
+	const queryResult = await labDb.queryFromString<AlertsLinesQueryRow>(alertsLinesQuery, params);
 
 	//
 	// Parse and return the result
 
-	return sendSuccessApiResponse(reply, queryResult);
+	const parsedResult: AlertsLinesItem[] = queryResult.map(row => ({
+		agency_id: row.agency_id,
+		patterns: row.patterns.map(([headsign, routeId, shapeId, stops]) => ({
+			headsign,
+			route_id: routeId,
+			shape_id: shapeId,
+			stops: stops.map(([stopId, stopName]) => ({
+				stop_id: stopId,
+				stop_name: stopName,
+			})),
+		})),
+		route_long_name: row.route_long_name,
+		route_short_name: row.route_short_name,
+	}));
+
+	const validatedResult = AlertsLinesItemSchema.array().parse(parsedResult);
+
+	return sendSuccessApiResponse(reply, validatedResult);
 }
 

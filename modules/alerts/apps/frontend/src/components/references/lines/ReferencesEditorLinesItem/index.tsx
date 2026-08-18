@@ -32,20 +32,36 @@ export function ReferencesEditorLinesItem({ index, onRemoveReference, onUpdateRe
 	//
 	// B. Transform data
 
-	const linesAsSelectData: SelectDataItem[] = useMemo(() => {
-		return alertsLinesData?.map(item => ({ label: item.route_short_name, value: item.route_short_name }));
-	}, [alertsLinesData]);
-
 	const currentLineData = useMemo(() => {
 		// Find the matching line for the reference.parent_id
 		return alertsLinesData?.find(item => String(item.route_short_name) === String(reference.parent_id));
 	}, [alertsLinesData, reference.parent_id]);
 
+	const linesAsSelectData: SelectDataItem[] = useMemo(() => {
+		return alertsLinesData?.map(item => ({
+			label: `[${item.route_short_name}] ${item.route_long_name}`,
+			value: item.route_short_name,
+		}));
+	}, [alertsLinesData]);
+
 	const stopsAsSelectData: SelectDataItem[] = useMemo(() => {
 		// Skip if parent_id is not set
 		if (!currentLineData) return [];
+		// Set a map of unique stop ids to avoid duplicates
+		const stopLabels = new Map<string, string>();
+		currentLineData.patterns?.forEach((pattern) => {
+			pattern.stops?.forEach((stop) => {
+				if (!stopLabels.has(stop.stop_id)) {
+					const newLabelValue = `[${stop.stop_id}] ${stop.stop_name} | ${pattern.shape_id}`;
+					stopLabels.set(stop.stop_id, newLabelValue);
+				} else {
+					const updatedLabelValue = `${stopLabels.get(stop.stop_id)} ${pattern.shape_id}`;
+					stopLabels.set(stop.stop_id, updatedLabelValue);
+				}
+			});
+		});
 		// Return the stops as an array of SelectDataItem.
-		return currentLineData.patterns.flatMap(pattern => pattern.stops.map(stop => ({ label: stop.stop_name, value: stop.stop_id })));
+		return Array.from(stopLabels.entries()).map(([stopId, label]) => ({ label, value: stopId }));
 	}, [currentLineData]);
 
 	//
