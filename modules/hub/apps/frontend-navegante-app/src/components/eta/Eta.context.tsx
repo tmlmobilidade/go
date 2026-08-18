@@ -21,8 +21,8 @@ export interface PreparedTripUpdate {
 
 interface EtaContextState {
 	actions: {
-		getEtasbyStop: (stopId: string) => PreparedTripUpdate[]
-		getEtasbyTrip: (tripId: string) => PreparedTripUpdate[]
+		getEtasByStop: (stopId: string) => PreparedTripUpdate[]
+		getEtasByTrip: (tripId: string) => PreparedTripUpdate[]
 	}
 	data: {
 		all: PreparedTripUpdate[]
@@ -75,8 +75,8 @@ export const EtaContextProvider = ({ children }: PropsWithChildren) => {
 	const contextValue: EtaContextState = useMemo(() => {
 		return {
 			actions: {
-				getEtasbyStop: (stopId: string) => byStopMap.get(stopId) ?? [],
-				getEtasbyTrip: (tripId: string) => byTripMap.get(tripId) ?? [],
+				getEtasByStop: (stopId: string) => byStopMap.get(stopId) ?? [],
+				getEtasByTrip: (tripId: string) => byTripMap.get(tripId) ?? [],
 			},
 			data: {
 				all: etaData ?? [],
