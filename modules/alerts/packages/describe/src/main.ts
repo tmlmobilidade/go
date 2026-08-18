@@ -9,6 +9,7 @@ import { fetchLinesReferenceContext } from './data/lines/fetch-lines-reference-c
 import { fetchRidesReferenceContext } from './data/rides/fetch-rides-reference-context.js';
 import { fetchStopsReferenceContext } from './data/stops/fetch-stops-reference-context.js';
 import { initDescriptionPrompt } from './prompts/general/init.js';
+import { referenceTypePrompt } from './prompts/reference-types/reference-type.js';
 import { DescribeAlertReturnType } from './types/main.js';
 import { parseAiResult } from './utils/parse-ai-result.js';
 
@@ -38,21 +39,25 @@ export async function generateAlertTitleAndDescription(request: AlertsDescribeRe
 	// Fetch additional data depending on the reference type
 
 	if (validatedRequestData.reference_type === 'agency') {
+		appendToPromptContext(promptContext, 'pt', 'body', referenceTypePrompt['agency']['pt']);
 		const agencyReferenceContext = await fetchAgencyReferenceContext(validatedRequestData);
-		appendToPromptContext(promptContext, 'pt', 'data', `Agency: ${agencyReferenceContext}`);
+		appendToPromptContext(promptContext, 'pt', 'data', agencyReferenceContext);
 	}
 
 	if (validatedRequestData.reference_type === 'lines') {
+		appendToPromptContext(promptContext, 'pt', 'body', referenceTypePrompt['lines']['pt']);
 		const linesReferenceContext = await fetchLinesReferenceContext(validatedRequestData);
 		appendToPromptContext(promptContext, 'pt', 'data', linesReferenceContext);
 	}
 
 	if (validatedRequestData.reference_type === 'stops') {
+		appendToPromptContext(promptContext, 'pt', 'body', referenceTypePrompt['stops']['pt']);
 		const stopsReferenceContext = await fetchStopsReferenceContext(validatedRequestData);
 		appendToPromptContext(promptContext, 'pt', 'data', stopsReferenceContext);
 	}
 
 	if (validatedRequestData.reference_type === 'rides') {
+		appendToPromptContext(promptContext, 'pt', 'body', referenceTypePrompt['rides']['pt']);
 		const ridesReferenceContext = await fetchRidesReferenceContext(validatedRequestData);
 		appendToPromptContext(promptContext, 'pt', 'data', ridesReferenceContext);
 	}

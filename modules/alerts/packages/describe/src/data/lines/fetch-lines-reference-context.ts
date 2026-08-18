@@ -31,5 +31,5 @@ export async function fetchLinesReferenceContext(request: AlertsDescribeRequest)
 
 	if (!queryResult?.length) throw new Error(`No lines found for the request.`);
 
-	return queryResult.map(item => `${item.route_short_name} - ${item.route_long_name}`);
+	return queryResult.map(item => `Line Short Name: ${item.route_short_name} - Line Long Name: ${item.route_long_name}`);
 }

@@ -31,5 +31,5 @@ export async function fetchStopsReferenceContext(request: AlertsDescribeRequest)
 
 	if (!queryResult?.length) throw new Error(`No stops found for the request.`);
 
-	return queryResult.map(item => item.stop_name);
+	return queryResult.map(item => `Stop Name: ${item.stop_name}`);
 }

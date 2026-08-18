@@ -15,6 +15,6 @@ export async function fetchAgencyReferenceContext(request: AlertsDescribeRequest
 
 	if (!foundAgency) throw new Error(`Agency ${request.agency_id} not found in database.`);
 
-	if (!foundAgency.public_name) return foundAgency.name;
-	else return foundAgency.public_name;
+	if (!foundAgency.public_name) return `Agency Name: ${foundAgency.name}`;
+	else return `Agency Name: ${foundAgency.public_name}`;
 }
