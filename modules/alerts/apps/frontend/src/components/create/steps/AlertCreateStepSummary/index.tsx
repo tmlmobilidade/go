@@ -1,6 +1,5 @@
 /* * */
 
-import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
 import { normalizeAlertCoordinatesInput } from '@/lib/alert-coordinates';
 import { IconLink } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
@@ -9,6 +8,8 @@ import { Button, ContextFormController, CoordinatesInput, Grid, Section, Surface
 import { fetchData } from '@tmlmobilidade/utils';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
 
 /* * */
 
@@ -28,11 +29,12 @@ export function AlertCreateStepSummary() {
 	const { t } = useTranslation();
 
 	const meContext = useMeContext();
-	const alertCreateContext = useAlertCreateContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'agency_id' });
-	const referenceTypeValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'reference_type' });
-	const autoTextsValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'auto_texts' });
+	const { form: alertsCreateForm } = useAlertsCreateFormContext();
+
+	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const referenceTypeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
+	const autoTextsValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'auto_texts' });
 
 	//
 	// B. Transform data
@@ -72,7 +74,7 @@ export function AlertCreateStepSummary() {
 
 	const { action: generateText, isLoading: isLoadingGeneratingText } = useHandleUpdate<DescribeAlertReturnType>({
 		fetchFn: async () => {
-			const formValues = alertCreateContext.form.instance.getValues();
+			const formValues = alertsCreateForm.getValues();
 			if (!formValues.auto_texts) return;
 			if (!formValues.cause) return;
 			if (!formValues.effect) return;
@@ -94,8 +96,8 @@ export function AlertCreateStepSummary() {
 			console.error('Error generating alert description', { error });
 		},
 		onSuccess: (data) => {
-			alertCreateContext.form.instance.setValue('description', data.pt.description, { shouldDirty: true });
-			alertCreateContext.form.instance.setValue('title', data.pt.title, { shouldDirty: true });
+			alertsCreateForm.setValue('description', data.pt.description, { shouldDirty: true });
+			alertsCreateForm.setValue('title', data.pt.title, { shouldDirty: true });
 		},
 	});
 
@@ -103,11 +105,11 @@ export function AlertCreateStepSummary() {
 
 	useEffect(() => {
 		if (initialGeneration.current) return;
-		if (alertCreateContext.form.instance.getValues('title')?.length) return;
-		if (alertCreateContext.form.instance.getValues('description')?.length) return;
+		if (alertsCreateForm.getValues('title')?.length) return;
+		if (alertsCreateForm.getValues('description')?.length) return;
 		initialGeneration.current = true;
 		(async () => await generateText())();
-	}, [alertCreateContext.form.instance, generateText]);
+	}, [alertsCreateForm, generateText]);
 
 	//
 	// D. Render components
@@ -120,7 +122,7 @@ export function AlertCreateStepSummary() {
 					<Section gap="md">
 						{(hasPermissionToCreate || hasPermissionToUpdateTexts) && (
 							<ContextFormController
-								control={alertCreateContext.form.instance.control}
+								control={alertsCreateForm.control}
 								name="auto_texts"
 								render={({ field }) => (
 									<Switch
@@ -135,7 +137,7 @@ export function AlertCreateStepSummary() {
 						{(autoTextsValue && hasPermissionToCreate) && (
 							<>
 								<ContextFormController
-									control={alertCreateContext.form.instance.control}
+									control={alertsCreateForm.control}
 									name="user_instructions"
 									render={({ field }) => (
 										<TextInput
@@ -161,7 +163,7 @@ export function AlertCreateStepSummary() {
 				</Surface>
 
 				<ContextFormController
-					control={alertCreateContext.form.instance.control}
+					control={alertsCreateForm.control}
 					name="title"
 					render={({ field, fieldState }) => (
 						<TextInput
@@ -177,7 +179,7 @@ export function AlertCreateStepSummary() {
 				/>
 
 				<ContextFormController
-					control={alertCreateContext.form.instance.control}
+					control={alertsCreateForm.control}
 					name="description"
 					render={({ field, fieldState }) => (
 						<Textarea
@@ -195,7 +197,7 @@ export function AlertCreateStepSummary() {
 				/>
 
 				<ContextFormController
-					control={alertCreateContext.form.instance.control}
+					control={alertsCreateForm.control}
 					name="coordinates"
 					render={({ field }) => (
 						<CoordinatesInput
@@ -208,7 +210,7 @@ export function AlertCreateStepSummary() {
 				/>
 
 				<ContextFormController
-					control={alertCreateContext.form.instance.control}
+					control={alertsCreateForm.control}
 					name="info_url"
 					render={({ field, fieldState }) => (
 						<TextInput
