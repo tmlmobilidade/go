@@ -4,21 +4,21 @@ ARG TARGETARCH
 
 WORKDIR /app
 
-COPY modules/plans/apps/validator/validator/go.mod modules/plans/apps/validator/validator/go.sum ./modules/plans/apps/validator/validator/
+COPY modules/plans/apps/validator/src/go.mod modules/plans/apps/validator/src/go.sum ./modules/plans/apps/validator/src/
 COPY packages-new/interfaces/validator-db/src/go.mod ./packages-new/interfaces/validator-db/src/go.mod
 COPY packages-new/types/gtfs-validator/src/validation/go.mod ./packages-new/types/gtfs-validator/src/validation/go.mod
 
-WORKDIR /app/modules/plans/apps/validator/validator
+WORKDIR /app/modules/plans/apps/validator/src
 
 RUN go mod download
 
 WORKDIR /app
 
-COPY modules/plans/apps/validator/validator ./modules/plans/apps/validator/validator
+COPY modules/plans/apps/validator/src ./modules/plans/apps/validator/src
 COPY packages-new/interfaces/validator-db/src ./packages-new/interfaces/validator-db/src
 COPY packages-new/types/gtfs-validator/src/validation ./packages-new/types/gtfs-validator/src/validation
 
-WORKDIR /app/modules/plans/apps/validator/validator
+WORKDIR /app/modules/plans/apps/validator/src
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} go build \
 	-o /validator-bin/validator-linux-${TARGETARCH} \

@@ -9,10 +9,10 @@ on:
     paths:
       - '.github/workflows/publish-validator.yaml'
       - 'modules/plans/apps/validator/compile.sh'
-      - 'modules/plans/apps/validator/validator/**'
+      - 'modules/plans/apps/validator/src/**'
       - 'packages-new/interfaces/validator-db/src/**'
       - 'packages-new/types/gtfs-validator/src/validation/**'
-      - '!bin/**'
+      - '!modules/plans/apps/validator/bin/**'
 
 permissions:
   contents: write
@@ -25,36 +25,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Read validator version
-        id: validator-version
-        shell: bash
-        run: |
-          VERSION="$(sed -n 's/^const version = "\([^"]*\)"/\1/p' modules/plans/apps/validator/validator/version.go)"
-          test -n "$VERSION"
-          echo "Validator version: $VERSION"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
       - name: Build binaries
         shell: bash
         run: bash modules/plans/apps/validator/compile.sh
-
-      - name: Verify binary version
-        shell: bash
-        run: |
-          EXPECTED_VERSION="${{ steps.validator-version.outputs.version }}"
-          ACTUAL_VERSION="$(bin/validator-linux-amd64 -version)"
-          echo "$ACTUAL_VERSION"
-          [[ "$ACTUAL_VERSION" == *"$EXPECTED_VERSION"* ]]
 
       - name: Create GitHub release with binaries
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ steps.validator-version.outputs.version }}"
-          gh release create "$VERSION" \
-            --title "$VERSION" \
-            --notes "Validator binaries for version $VERSION" \
-            bin/validator-linux-amd64 \
-            bin/validator-linux-arm64 \
-            bin/validator-darwin-amd64 \
-            bin/validator-darwin-arm64
+          RELEASE_TAG="validator-build-${GITHUB_RUN_NUMBER}"
+          gh release create "$RELEASE_TAG" \
+            --target "$GITHUB_SHA" \
+            --title "Validator build ${GITHUB_RUN_NUMBER}" \
+            --notes "Validator binaries built from commit ${GITHUB_SHA}." \
+            modules/plans/apps/validator/bin/validator-linux-amd64 \
+            modules/plans/apps/validator/bin/validator-linux-arm64 \
+            modules/plans/apps/validator/bin/validator-darwin-amd64 \
+            modules/plans/apps/validator/bin/validator-darwin-arm64

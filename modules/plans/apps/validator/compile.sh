@@ -9,9 +9,9 @@ cd "$SCRIPT_DIR"
 
 mkdir -p "$BIN_DIR"
 
-cd validator
+cd src
 
-# Compile the validator for linux (use . to include version.go)
+# Compile the validator for linux
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o "$BIN_DIR/validator-linux-amd64" .
 
 # Compile the validator for linux arm64
