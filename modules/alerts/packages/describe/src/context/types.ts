@@ -7,8 +7,9 @@ import { type I18nCode } from '@tmlmobilidade/go-types-shared';
  */
 export type PromptContextBlock =
   | 'body'
+  | 'data'
   | 'footer'
-  | 'init';
+  | 'header';
 
 /**
  * The prompt context type.

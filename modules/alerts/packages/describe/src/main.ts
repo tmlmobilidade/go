@@ -5,9 +5,14 @@ import { type AlertsDescribeRequest, AlertsDescribeRequestSchema, type AlertsDes
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/go-providers-ai';
 import { type I18nCode } from '@tmlmobilidade/go-types-shared';
 
-import { appendToPromptContext, initPromptContext } from './context/index.js';
-import { fetchAgencyPublicName } from './data/fetch-agency-public-name.js';
+import { appendToPromptContext, getFinalPrompt, initPromptContext } from './context/index.js';
+import { fetchAgencyPublicName } from './data/agencies/fetch-agency-public-name.js';
+import { fetchLinesPublicNames } from './data/lines/fetch-lines-public-names.js';
+import { fetchRidesPublicNames } from './data/rides/fetch-rides-public-names.js';
+import { fetchStopsPublicNames } from './data/stops/fetch-stops-public-names.js';
 import { initDescriptionPrompt } from './prompts/general/init.js';
+import { DescribeAlertReturnType } from './types/main.js';
+import { parseAiResult } from './utils/parse-ai-result.js';
 
 /**
  * Generates a description and title for an alert based on its properties.
@@ -29,31 +34,29 @@ export async function generateAlertTitleAndDescription(request: AlertsDescribeRe
 
 	const promptContext = initPromptContext();
 
-	appendToPromptContext(promptContext, 'pt', 'init', initDescriptionPrompt['pt']);
-	appendToPromptContext(promptContext, 'pt', 'footer', 'This is a test footer');
-	appendToPromptContext(promptContext, 'pt', 'body', 'This is a test body');
+	appendToPromptContext(promptContext, 'pt', 'header', initDescriptionPrompt['pt']);
 
 	//
-	// Simplify the request data depending on the reference type
+	// Fetch additional data depending on the reference type
 
 	if (validatedRequestData.reference_type === 'agency') {
 		const agencyPublicName = await fetchAgencyPublicName(validatedRequestData);
-		appendToPromptContext(promptContext, 'pt', 'body', `Agency: ${agencyPublicName}`);
+		appendToPromptContext(promptContext, 'pt', 'data', `Agency: ${agencyPublicName}`);
 	}
 
 	if (validatedRequestData.reference_type === 'lines') {
-		const lineLabels = await fetchLinesPublicNames(validatedRequestData);
-		appendToPromptContext(promptContext, 'pt', 'body', `Line: ${lineLabels.name}`);
+		const linesPublicNames = await fetchLinesPublicNames(validatedRequestData);
+		appendToPromptContext(promptContext, 'pt', 'data', linesPublicNames);
 	}
 
 	if (validatedRequestData.reference_type === 'stops') {
-		const stopLabels = await getStopLabels(validatedRequestData);
-		appendToPromptContext(promptContext, 'pt', 'body', `Stop: ${stopLabels.name}`);
+		const stopsPublicNames = await fetchStopsPublicNames(validatedRequestData);
+		appendToPromptContext(promptContext, 'pt', 'data', stopsPublicNames);
 	}
 
 	if (validatedRequestData.reference_type === 'rides') {
-		const routeLabels = await getRouteLabels(validatedRequestData);
-		appendToPromptContext(promptContext, 'pt', 'body', `Route: ${routeLabels.name}`);
+		const ridesPublicNames = await fetchRidesPublicNames(validatedRequestData);
+		appendToPromptContext(promptContext, 'pt', 'data', ridesPublicNames);
 	}
 
 	//
@@ -62,26 +65,22 @@ export async function generateAlertTitleAndDescription(request: AlertsDescribeRe
 
 	const ociGenerativeAIProvider = new OCIGenerativeAIProvider();
 
-	const aiResult = await ociGenerativeAIProvider.run(prompt.compressed, { temperature: 0.3 });
+	const finalPrompt = getFinalPrompt(promptContext, 'pt');
+
+	const aiResult = await ociGenerativeAIProvider.run(finalPrompt, { temperature: 0.3 });
+
+	const parsedAiResult = parseAiResult(aiResult);
 
 	//
-	//
-	//
-	//
-
-	const contextData = await buildDescribeAlertContextData(props);
-	const i18nCode: I18nCode = 'pt';
+	// Add this result to the language result
 
 	const result: DescribeAlertReturnType = {
 		en: { description: '', title: '' },
 		pt: { description: '', title: '' },
 	};
 
-	const prompt = buildPromptForLanguage(props, contextData, i18nCode);
-
-	const generated = parseAlertGeneratedCopy(aiResult);
-	result['pt'].title = generated.title;
-	result['pt'].description = generated.description;
+	result['pt'].title = parsedAiResult.title;
+	result['pt'].description = parsedAiResult.description;
 
 	return result;
 }

@@ -12,8 +12,9 @@ import { type PromptContext, type PromptContextBlock } from './types.js';
  * @param text The text to append.
  * @returns The prompt context.
  */
-export function appendToPromptContext(context: PromptContext, i18n: I18nCode, block: PromptContextBlock, text: string): PromptContext {
-	context[i18n][block].push(text);
+export function appendToPromptContext(context: PromptContext, i18n: I18nCode, block: PromptContextBlock, text: string | string[]): PromptContext {
+	if (Array.isArray(text)) text.forEach(item => context[i18n][block].push(item));
+	else context[i18n][block].push(text);
 	return context;
 }
 
@@ -25,7 +26,8 @@ export function appendToPromptContext(context: PromptContext, i18n: I18nCode, bl
  * @param text The text to prepend.
  * @returns The prompt context.
  */
-export function prependToPromptContext(context: PromptContext, i18n: I18nCode, block: PromptContextBlock, text: string): PromptContext {
-	context[i18n][block].unshift(text);
+export function prependToPromptContext(context: PromptContext, i18n: I18nCode, block: PromptContextBlock, text: string | string[]): PromptContext {
+	if (Array.isArray(text)) text.forEach(item => context[i18n][block].unshift(item));
+	else context[i18n][block].unshift(text);
 	return context;
 }
