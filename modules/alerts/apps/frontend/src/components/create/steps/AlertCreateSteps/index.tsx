@@ -6,7 +6,7 @@ import { AlertCreateStepCause } from '@/components/create/steps/AlertCreateStepC
 import { AlertCreateStepDates } from '@/components/create/steps/AlertCreateStepDates';
 import { AlertCreateStepEffect } from '@/components/create/steps/AlertCreateStepEffect';
 import { AlertCreateStepReferences } from '@/components/create/steps/AlertCreateStepReferences';
-// import { AlertCreateStepSummary } from '@/components/create/steps/AlertCreateStepSummary';
+import { AlertCreateStepSummary } from '@/components/create/steps/AlertCreateStepSummary';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { NoDataLabel, Surface, useMeContext } from '@tmlmobilidade/ui';
 
@@ -41,7 +41,7 @@ export function AlertCreateSteps() {
 			{alertsCreateFormStepsProgress.current?.id === 'effect' && <AlertCreateStepEffect />}
 			{alertsCreateFormStepsProgress.current?.id === 'dates' && <AlertCreateStepDates />}
 			{alertsCreateFormStepsProgress.current?.id === 'references' && <AlertCreateStepReferences />}
-			{/* {alertsCreateFormStepsContext.progress.current?.id === 'summary' && <AlertCreateStepSummary />} */}
+			{alertsCreateFormStepsProgress.current?.id === 'summary' && <AlertCreateStepSummary />}
 		</>
 	);
 }

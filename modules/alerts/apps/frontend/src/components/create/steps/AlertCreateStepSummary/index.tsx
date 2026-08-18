@@ -126,7 +126,7 @@ export function AlertCreateStepSummary() {
 									<Switch
 										checked={field.value ?? false}
 										disabled={!hasPermissionToUpdateTexts}
-										label={t('default:alerts.create.summary.auto_texts.label')}
+										label={t('alerts:create.summary.auto_texts.label')}
 										onChange={e => field.onChange(e.currentTarget.checked)}
 									/>
 								)}
@@ -140,10 +140,10 @@ export function AlertCreateStepSummary() {
 									render={({ field }) => (
 										<TextInput
 											disabled={isLoadingGeneratingText}
-											label={t('default:alerts.create.summary.user_instructions.label')}
+											label={t('alerts:create.summary.user_instructions.label')}
 											onBlur={field.onBlur}
 											onChange={e => field.onChange(e.currentTarget.value)}
-											placeholder={t('default:alerts.create.summary.user_instructions.placeholder')}
+											placeholder={t('alerts:create.summary.user_instructions.placeholder')}
 											readOnly={isLoadingGeneratingText}
 											value={field.value ?? ''}
 											w="100%"
@@ -151,7 +151,7 @@ export function AlertCreateStepSummary() {
 									)}
 								/>
 								<Button
-									label={t('default:alerts.create.summary.generate_text.label')}
+									label={t('alerts:create.summary.generate_text.label')}
 									loading={isLoadingGeneratingText}
 									onClick={generateText}
 								/>
@@ -167,7 +167,7 @@ export function AlertCreateStepSummary() {
 						<TextInput
 							disabled={isLoadingGeneratingText}
 							error={fieldState.error?.message}
-							label={t('default:alerts.create.summary.title.label')}
+							label={t('alerts:create.summary.title.label')}
 							onBlur={field.onBlur}
 							onChange={e => field.onChange(e.currentTarget.value)}
 							readOnly={!hasPermissionToUpdateTexts}
@@ -183,7 +183,7 @@ export function AlertCreateStepSummary() {
 						<Textarea
 							disabled={isLoadingGeneratingText}
 							error={fieldState.error?.message}
-							label={t('default:alerts.create.summary.description.label')}
+							label={t('alerts:create.summary.description.label')}
 							minRows={4}
 							onBlur={field.onBlur}
 							onChange={e => field.onChange(e.currentTarget.value)}
@@ -200,7 +200,7 @@ export function AlertCreateStepSummary() {
 					render={({ field }) => (
 						<CoordinatesInput
 							key="key"
-							label={t('default:alerts.create.summary.coordinates.label')}
+							label={t('alerts:create.summary.coordinates.label')}
 							onChange={nextValue => field.onChange(normalizeAlertCoordinatesInput(nextValue))}
 							value={field.value ?? undefined}
 						/>
@@ -212,9 +212,9 @@ export function AlertCreateStepSummary() {
 					name="info_url"
 					render={({ field, fieldState }) => (
 						<TextInput
-							description={t('default:alerts.create.summary.info_url.description')}
+							description={t('alerts:create.summary.info_url.description')}
 							error={fieldState.error?.message}
-							label={t('default:alerts.create.summary.info_url.label')}
+							label={t('alerts:create.summary.info_url.label')}
 							leftSection={<IconLink />}
 							onBlur={field.onBlur}
 							onChange={e => field.onChange(e.currentTarget.value)}
@@ -228,6 +228,4 @@ export function AlertCreateStepSummary() {
 			</Grid>
 		</Section>
 	);
-
-	//
 }
