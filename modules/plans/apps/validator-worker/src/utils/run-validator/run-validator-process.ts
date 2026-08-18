@@ -12,6 +12,10 @@ export async function runValidatorProcess(binaryPath: string, args: string[], ti
 	await new Promise<void>((resolvePromise, rejectPromise) => {
 		const validatorProcess = spawn(binaryPath, args);
 
+		// The Go validator writes progress and its summary to stdout. Drain the
+		// stream so a full pipe cannot block the child process.
+		validatorProcess.stdout?.pipe(process.stdout);
+
 		// Preserve stderr for the final error while still streaming diagnostics to
 		// the worker logs as the validator runs.
 		const stderrChunks: Buffer[] = [];
