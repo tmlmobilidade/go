@@ -26,6 +26,7 @@
 		"@tmlmobilidade/go-alerts-pckg-describe": "*",
 		"@tmlmobilidade/go-alerts-pckg-types": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-providers-operation": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-operation": "*",

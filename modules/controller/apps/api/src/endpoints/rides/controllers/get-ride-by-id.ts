@@ -32,9 +32,7 @@ export async function getRideById(request: FastifyRequest<{ Params: { id: string
 	//
 	// Execute the query
 
-	const sql = controllerRidesDetailRideQuery;
-
-	const queryResult = await labDb.queryFromString<ControllerRidesDetailRideItem>(sql, params);
+	const queryResult = await labDb.queryFromString<ControllerRidesDetailRideItem>(controllerRidesDetailRideQuery, params);
 
 	//
 	// Parse and return the result

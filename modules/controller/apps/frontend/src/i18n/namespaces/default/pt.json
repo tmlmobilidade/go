@@ -171,7 +171,7 @@
 		},
 		"analysis": {
 			"RideAnalysisApexBankingTaps": {
-				"description": "Transações APEX associadas a esta circulação.",
+				"description": "Taps bancários associados a esta circulação.",
 				"table": {
 					"columns": {
 						"card_serial_number": {
@@ -215,7 +215,7 @@
 						}
 					}
 				},
-				"title": "Transações APEX"
+				"title": "Taps Bancários (CUT)"
 			},
 			"RideAnalysisApexLocations": {
 				"description": "Localizações APEX associadas a esta Ride.",
@@ -336,13 +336,13 @@
 							"label": "Event"
 						},
 						"id_on_board_refund": {
-							"label": "ID On Board Refund"
+							"label": "Refund ID"
 						},
 						"id_on_board_sale": {
-							"label": "ID On Board Sale"
+							"label": "Sale ID"
 						},
 						"id_validation": {
-							"label": "ID Validation"
+							"label": "Validation ID"
 						},
 						"mac_sam_serial_number": {
 							"label": "SAM SN"
