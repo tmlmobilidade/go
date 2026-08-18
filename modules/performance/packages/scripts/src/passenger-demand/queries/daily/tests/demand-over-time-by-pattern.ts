@@ -1,12 +1,13 @@
 /* * */
 
-import { buildDemandByPatternMetrics, buildDemandByPatternQuery } from '@/passenger-demand-metrics/demand-by-pattern.js';
 import { DemandByPatternQueryInputSchema } from '@tmlmobilidade/go-types-performance';
 import assert from 'node:assert/strict';
 
+import { buildDailyPassengerDemandByPatternMetrics, buildDailyPassengerDemandOverTimeByPatternQuery } from '../demand-over-time-by-pattern.js';
+
 /* * */
 
-const monthlyQuery = buildDemandByPatternQuery(DemandByPatternQueryInputSchema.parse({
+const monthlyQuery = buildDailyPassengerDemandOverTimeByPatternQuery(DemandByPatternQueryInputSchema.parse({
 	end_date: 20261231,
 	pattern_ids: ['1201_0_1'],
 	time_grain: 'month',
@@ -21,7 +22,7 @@ assert.deepEqual(monthlyQuery.params, {
 	3: 20261231,
 });
 
-const unfilteredDailyQuery = buildDemandByPatternQuery(DemandByPatternQueryInputSchema.parse({
+const unfilteredDailyQuery = buildDailyPassengerDemandOverTimeByPatternQuery(DemandByPatternQueryInputSchema.parse({
 	time_grain: 'day',
 }));
 
@@ -31,7 +32,7 @@ assert.deepEqual(unfilteredDailyQuery.params, {
 });
 
 const generatedAt = new Date('2026-08-07T12:00:00.000Z');
-const yearlyMetrics = buildDemandByPatternMetrics(
+const yearlyMetrics = buildDailyPassengerDemandByPatternMetrics(
 	[
 		{ pattern_id: '1201_0_1', period: '2025', qty: '500' },
 		{ pattern_id: '1201_0_1', period: 2026, qty: 600 },

@@ -1,17 +1,18 @@
 /* * */
 
-import { PASSENGER_DEMAND_HISTORY_DEFINITION_VERSION } from '@/passenger-demand-history/constants.js';
-import { DEMAND_PERIOD_EXPRESSIONS, formatDemandPeriod } from '@/passenger-demand-metrics/utils/period.js';
 import { enrichOperationalDate } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type DemandByAgencyByDay, type DemandByAgencyByMonth, type DemandByAgencyByYear, type DemandByAgencyMetric, DemandByAgencyMetricSchema, type DemandByAgencyQueryInput, type DemandByAgencyQueryRow, DemandByAgencyQueryRowSchema, type DemandByAgencyTimeGrain } from '@tmlmobilidade/go-types-performance';
 
+import { PASSENGER_DEMAND_DEFINITION_VERSION } from '../../definition.js';
+import { DEMAND_PERIOD_EXPRESSIONS, formatDemandPeriod } from './period.js';
+
 /* * */
 
-export function buildDemandByAgencyQuery(input: DemandByAgencyQueryInput) {
+export function buildDailyPassengerDemandOverTimeByAgencyQuery(input: DemandByAgencyQueryInput) {
 	const conditions = ['definition_version = $1'];
 	const params: Record<string, number | string | string[]> = {
-		1: PASSENGER_DEMAND_HISTORY_DEFINITION_VERSION,
+		1: PASSENGER_DEMAND_DEFINITION_VERSION,
 	};
 	let nextParamIndex = 2;
 
@@ -126,7 +127,7 @@ function buildSummaryDemandByAgencyMetrics(
 	return [...metricsByAgency.values()];
 }
 
-export function buildDemandByAgencyMetrics(
+export function buildDailyPassengerDemandByAgencyMetrics(
 	rows: DemandByAgencyQueryRow[],
 	timeGrain: DemandByAgencyTimeGrain,
 	generatedAt = new Date(),
@@ -138,9 +139,9 @@ export function buildDemandByAgencyMetrics(
 	return DemandByAgencyMetricSchema.array().parse(metrics);
 }
 
-export async function queryDemandByAgency(input: DemandByAgencyQueryInput) {
-	const { params, query } = buildDemandByAgencyQuery(input);
+export async function queryDailyPassengerDemandOverTimeByAgency(input: DemandByAgencyQueryInput) {
+	const { params, query } = buildDailyPassengerDemandOverTimeByAgencyQuery(input);
 	const rawRows = await labDb.performance.passengerDemandByDimensionsByDay.queryFromString<DemandByAgencyQueryRow>(query, params);
 	const rows = DemandByAgencyQueryRowSchema.array().parse(rawRows);
-	return buildDemandByAgencyMetrics(rows, input.time_grain);
+	return buildDailyPassengerDemandByAgencyMetrics(rows, input.time_grain);
 }

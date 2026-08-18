@@ -1,17 +1,18 @@
 /* * */
 
-import { PASSENGER_DEMAND_HISTORY_DEFINITION_VERSION } from '@/passenger-demand-history/constants.js';
-import { DEMAND_PERIOD_EXPRESSIONS, formatDemandPeriod } from '@/passenger-demand-metrics/utils/period.js';
 import { enrichOperationalDate } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type DemandByLineByDay, type DemandByLineByMonth, type DemandByLineByYear, type DemandByLineMetric, DemandByLineMetricSchema, type DemandByLineQueryInput, type DemandByLineQueryRow, DemandByLineQueryRowSchema, type DemandByLineTimeGrain } from '@tmlmobilidade/go-types-performance';
 
+import { PASSENGER_DEMAND_DEFINITION_VERSION } from '../../definition.js';
+import { DEMAND_PERIOD_EXPRESSIONS, formatDemandPeriod } from './period.js';
+
 /* * */
 
-export function buildDemandByLineQuery(input: DemandByLineQueryInput) {
+export function buildDailyPassengerDemandOverTimeByLineQuery(input: DemandByLineQueryInput) {
 	const conditions = ['definition_version = $1'];
 	const params: Record<string, number | string | string[]> = {
-		1: PASSENGER_DEMAND_HISTORY_DEFINITION_VERSION,
+		1: PASSENGER_DEMAND_DEFINITION_VERSION,
 	};
 	let nextParamIndex = 2;
 
@@ -123,7 +124,7 @@ function buildSummaryDemandByLineMetrics(
 	return [...metricsByLine.values()];
 }
 
-export function buildDemandByLineMetrics(
+export function buildDailyPassengerDemandByLineMetrics(
 	rows: DemandByLineQueryRow[],
 	timeGrain: DemandByLineTimeGrain,
 	generatedAt = new Date(),
@@ -135,9 +136,9 @@ export function buildDemandByLineMetrics(
 	return DemandByLineMetricSchema.array().parse(metrics);
 }
 
-export async function queryDemandByLine(input: DemandByLineQueryInput) {
-	const { params, query } = buildDemandByLineQuery(input);
+export async function queryDailyPassengerDemandOverTimeByLine(input: DemandByLineQueryInput) {
+	const { params, query } = buildDailyPassengerDemandOverTimeByLineQuery(input);
 	const rawRows = await labDb.performance.passengerDemandByDimensionsByDay.queryFromString<DemandByLineQueryRow>(query, params);
 	const rows = DemandByLineQueryRowSchema.array().parse(rawRows);
-	return buildDemandByLineMetrics(rows, input.time_grain);
+	return buildDailyPassengerDemandByLineMetrics(rows, input.time_grain);
 }

@@ -1,12 +1,13 @@
 /* * */
 
-import { buildDemandByLineMetrics, buildDemandByLineQuery } from '@/passenger-demand-metrics/demand-by-line.js';
 import { DemandByLineQueryInputSchema } from '@tmlmobilidade/go-types-performance';
 import assert from 'node:assert/strict';
 
+import { buildDailyPassengerDemandByLineMetrics, buildDailyPassengerDemandOverTimeByLineQuery } from '../demand-over-time-by-line.js';
+
 /* * */
 
-const dailyQuery = buildDemandByLineQuery(DemandByLineQueryInputSchema.parse({
+const dailyQuery = buildDailyPassengerDemandOverTimeByLineQuery(DemandByLineQueryInputSchema.parse({
 	end_date: 20260807,
 	line_ids: ['1201', '1202'],
 	start_date: 20260801,
@@ -24,7 +25,7 @@ assert.deepEqual(dailyQuery.params, {
 	4: 20260807,
 });
 
-const unfilteredYearlyQuery = buildDemandByLineQuery(DemandByLineQueryInputSchema.parse({
+const unfilteredYearlyQuery = buildDailyPassengerDemandOverTimeByLineQuery(DemandByLineQueryInputSchema.parse({
 	time_grain: 'year',
 }));
 
@@ -34,7 +35,7 @@ assert.deepEqual(unfilteredYearlyQuery.params, {
 });
 
 const generatedAt = new Date('2026-08-07T12:00:00.000Z');
-const dailyMetrics = buildDemandByLineMetrics(
+const dailyMetrics = buildDailyPassengerDemandByLineMetrics(
 	[
 		{ line_id: '1201', period: 20260806, qty: '120' },
 		{ line_id: '1201', period: 20260807, qty: 130 },

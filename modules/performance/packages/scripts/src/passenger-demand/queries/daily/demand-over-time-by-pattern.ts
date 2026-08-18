@@ -1,17 +1,18 @@
 /* * */
 
-import { PASSENGER_DEMAND_HISTORY_DEFINITION_VERSION } from '@/passenger-demand-history/constants.js';
-import { DEMAND_PERIOD_EXPRESSIONS, formatDemandPeriod } from '@/passenger-demand-metrics/utils/period.js';
 import { enrichOperationalDate } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type DemandByPatternByDay, type DemandByPatternByMonth, type DemandByPatternByYear, type DemandByPatternMetric, DemandByPatternMetricSchema, type DemandByPatternQueryInput, type DemandByPatternQueryRow, DemandByPatternQueryRowSchema, type DemandByPatternTimeGrain } from '@tmlmobilidade/go-types-performance';
 
+import { PASSENGER_DEMAND_DEFINITION_VERSION } from '../../definition.js';
+import { DEMAND_PERIOD_EXPRESSIONS, formatDemandPeriod } from './period.js';
+
 /* * */
 
-export function buildDemandByPatternQuery(input: DemandByPatternQueryInput) {
+export function buildDailyPassengerDemandOverTimeByPatternQuery(input: DemandByPatternQueryInput) {
 	const conditions = ['definition_version = $1'];
 	const params: Record<string, number | string | string[]> = {
-		1: PASSENGER_DEMAND_HISTORY_DEFINITION_VERSION,
+		1: PASSENGER_DEMAND_DEFINITION_VERSION,
 	};
 	let nextParamIndex = 2;
 
@@ -123,7 +124,7 @@ function buildSummaryDemandByPatternMetrics(
 	return [...metricsByPattern.values()];
 }
 
-export function buildDemandByPatternMetrics(
+export function buildDailyPassengerDemandByPatternMetrics(
 	rows: DemandByPatternQueryRow[],
 	timeGrain: DemandByPatternTimeGrain,
 	generatedAt = new Date(),
@@ -135,9 +136,9 @@ export function buildDemandByPatternMetrics(
 	return DemandByPatternMetricSchema.array().parse(metrics);
 }
 
-export async function queryDemandByPattern(input: DemandByPatternQueryInput) {
-	const { params, query } = buildDemandByPatternQuery(input);
+export async function queryDailyPassengerDemandOverTimeByPattern(input: DemandByPatternQueryInput) {
+	const { params, query } = buildDailyPassengerDemandOverTimeByPatternQuery(input);
 	const rawRows = await labDb.performance.passengerDemandByDimensionsByDay.queryFromString<DemandByPatternQueryRow>(query, params);
 	const rows = DemandByPatternQueryRowSchema.array().parse(rawRows);
-	return buildDemandByPatternMetrics(rows, input.time_grain);
+	return buildDailyPassengerDemandByPatternMetrics(rows, input.time_grain);
 }

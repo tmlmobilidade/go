@@ -1,12 +1,13 @@
 /* * */
 
-import { buildDemandByAgencyMetrics, buildDemandByAgencyQuery } from '@/passenger-demand-metrics/demand-by-agency.js';
 import { DemandByAgencyQueryInputSchema } from '@tmlmobilidade/go-types-performance';
 import assert from 'node:assert/strict';
 
+import { buildDailyPassengerDemandByAgencyMetrics, buildDailyPassengerDemandOverTimeByAgencyQuery } from '../demand-over-time-by-agency.js';
+
 /* * */
 
-const dailyQuery = buildDemandByAgencyQuery(DemandByAgencyQueryInputSchema.parse({
+const dailyQuery = buildDailyPassengerDemandOverTimeByAgencyQuery(DemandByAgencyQueryInputSchema.parse({
 	agency_ids: ['41', '42'],
 	end_date: 20260807,
 	start_date: 20260801,
@@ -24,7 +25,7 @@ assert.deepEqual(dailyQuery.params, {
 	4: 20260807,
 });
 
-const monthlyQuery = buildDemandByAgencyQuery(DemandByAgencyQueryInputSchema.parse({
+const monthlyQuery = buildDailyPassengerDemandOverTimeByAgencyQuery(DemandByAgencyQueryInputSchema.parse({
 	end_date: 20261231,
 	time_grain: 'month',
 }));
@@ -38,7 +39,7 @@ assert.deepEqual(monthlyQuery.params, {
 });
 
 const generatedAt = new Date('2026-08-07T12:00:00.000Z');
-const dailyMetrics = buildDemandByAgencyMetrics(
+const dailyMetrics = buildDailyPassengerDemandByAgencyMetrics(
 	[
 		{ agency_id: '41', period: 20260806, qty: '120' },
 		{ agency_id: '41', period: 20260807, qty: 130 },
@@ -72,7 +73,7 @@ assert.deepEqual(dailyMetrics[0], {
 	properties: { agency_id: '41' },
 });
 
-const yearlyMetrics = buildDemandByAgencyMetrics(
+const yearlyMetrics = buildDailyPassengerDemandByAgencyMetrics(
 	[
 		{ agency_id: '41', period: '2025', qty: '500' },
 		{ agency_id: '41', period: 2026, qty: 600 },
