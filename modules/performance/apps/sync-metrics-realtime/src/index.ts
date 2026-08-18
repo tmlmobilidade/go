@@ -1,6 +1,7 @@
 /* * */
 
-import { refreshPassengerDemandHistory } from '@/tasks/refresh-passenger-demand-history.js';
+import { refreshPassengerDemandDaily } from '@/tasks/refresh-passenger-demand-daily.js';
+import { refreshPassengerDemandFiveMinute } from '@/tasks/refresh-passenger-demand-five-minute.js';
 import { syncPassengerDemandMetrics } from '@/tasks/sync-passenger-demand.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -30,9 +31,12 @@ async function main() {
 	// Keep the minute-grain agency facts and current videowall projection in sync.
 	await syncPassengerDemandMetrics();
 
+	// Publish the current operational date at the canonical five-minute grain.
+	await refreshPassengerDemandFiveMinute();
+
 	// Separately refresh the seven-day window of the daily dimensional history.
 	// This task enforces its own five-minute cadence even though this worker runs every 30 seconds.
-	await refreshPassengerDemandHistory();
+	await refreshPassengerDemandDaily();
 
 	//
 

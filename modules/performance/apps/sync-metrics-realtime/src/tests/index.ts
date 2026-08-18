@@ -2,9 +2,9 @@
 
 import { mergeDemandRowsWithExistingKeys } from '@/handlers/passenger-demand/demand-facts.js';
 import { getCurrentRefreshRange, getHourlyReconciliationRange, getNightlyReconciliationRange, markCurrentRefreshCompleted, markHourlyReconciliationCompleted, markNightlyReconciliationCompleted } from '@/handlers/passenger-demand/refresh-cadence.js';
-import { getPassengerDemandHistoryRefreshSlot } from '@/tasks/refresh-passenger-demand-history.js';
+import { getPassengerDemandDailyRefreshSlot } from '@/tasks/refresh-passenger-demand-daily.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { buildPassengerDemandHistoryRefreshPlan } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { buildPassengerDemandDailyRefreshPlan } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { validateUnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 
@@ -49,16 +49,16 @@ assert.ok(rows.every(row => row.calculated_at === calculatedAt));
 
 const referenceNow = Dates.fromISO('2026-07-29T15:32:27.000+01:00');
 
-const historicalRefreshPlan = buildPassengerDemandHistoryRefreshPlan(referenceNow);
-assert.equal(historicalRefreshPlan.start_date, 20260723);
-assert.equal(historicalRefreshPlan.end_date, 20260729);
-assert.deepEqual(historicalRefreshPlan.partition_months, [202607]);
+const dailyRefreshPlan = buildPassengerDemandDailyRefreshPlan(referenceNow);
+assert.equal(dailyRefreshPlan.start_date, 20260723);
+assert.equal(dailyRefreshPlan.end_date, 20260729);
+assert.deepEqual(dailyRefreshPlan.partition_months, [202607]);
 assert.equal(
-	getPassengerDemandHistoryRefreshSlot(referenceNow),
+	getPassengerDemandDailyRefreshSlot(referenceNow),
 	Math.floor(referenceNow.unix_timestamp / (5 * 60 * 1_000)),
 );
 
-const crossMonthRefreshPlan = buildPassengerDemandHistoryRefreshPlan(
+const crossMonthRefreshPlan = buildPassengerDemandDailyRefreshPlan(
 	Dates.fromISO('2026-08-03T15:32:27.000+01:00'),
 );
 assert.equal(crossMonthRefreshPlan.start_date, 20260728);
