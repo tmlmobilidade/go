@@ -68,45 +68,45 @@ export async function generateAlertTitleAndDescription(request: AlertsDescribeRe
 
 		const promptContext = initPromptContext();
 
-		appendToPromptContext(promptContext, i18nCode, 'header', initDescriptionPrompt[i18nCode]);
-		appendToPromptContext(promptContext, i18nCode, 'header', titleFormatTemplatePrompt[i18nCode]);
+		appendToPromptContext(promptContext, 'header', initDescriptionPrompt[i18nCode]);
+		appendToPromptContext(promptContext, 'header', titleFormatTemplatePrompt[i18nCode]);
 
 		//
 		// Add the cause and effect prompts
 
-		appendToPromptContext(promptContext, i18nCode, 'body', causePrompt[validatedRequestData.cause][i18nCode]);
-		appendToPromptContext(promptContext, i18nCode, 'body', effectPrompt[validatedRequestData.effect][i18nCode]);
+		appendToPromptContext(promptContext, 'body', causePrompt[validatedRequestData.cause][i18nCode]);
+		appendToPromptContext(promptContext, 'body', effectPrompt[validatedRequestData.effect][i18nCode]);
 
 		//
 		// Fetch additional data depending on the reference type
 
 		if (validatedRequestData.reference_type === 'agency' && agencyReferenceContext) {
-			appendToPromptContext(promptContext, i18nCode, 'body', referenceTypePrompt['agency'][i18nCode]);
-			appendToPromptContext(promptContext, i18nCode, 'data', agencyReferenceContext);
+			appendToPromptContext(promptContext, 'body', referenceTypePrompt['agency'][i18nCode]);
+			appendToPromptContext(promptContext, 'data', agencyReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'lines' && linesReferenceContext) {
-			appendToPromptContext(promptContext, i18nCode, 'body', referenceTypePrompt['lines'][i18nCode]);
-			appendToPromptContext(promptContext, i18nCode, 'data', linesReferenceContext);
+			appendToPromptContext(promptContext, 'body', referenceTypePrompt['lines'][i18nCode]);
+			appendToPromptContext(promptContext, 'data', linesReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'stops' && stopsReferenceContext) {
-			appendToPromptContext(promptContext, i18nCode, 'body', referenceTypePrompt['stops'][i18nCode]);
-			appendToPromptContext(promptContext, i18nCode, 'data', stopsReferenceContext);
+			appendToPromptContext(promptContext, 'body', referenceTypePrompt['stops'][i18nCode]);
+			appendToPromptContext(promptContext, 'data', stopsReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'rides' && ridesReferenceContext) {
-			appendToPromptContext(promptContext, i18nCode, 'body', referenceTypePrompt['rides'][i18nCode]);
-			appendToPromptContext(promptContext, i18nCode, 'data', ridesReferenceContext);
+			appendToPromptContext(promptContext, 'body', referenceTypePrompt['rides'][i18nCode]);
+			appendToPromptContext(promptContext, 'data', ridesReferenceContext);
 		}
 
 		//
 		// Add the user instructions
 
 		if (validatedRequestData.user_instructions) {
-			appendToPromptContext(promptContext, i18nCode, 'footer', userInstructionPromptStart[i18nCode]);
-			appendToPromptContext(promptContext, i18nCode, 'footer', validatedRequestData.user_instructions);
-			appendToPromptContext(promptContext, i18nCode, 'footer', userInstructionPromptEnd[i18nCode]);
+			appendToPromptContext(promptContext, 'footer', userInstructionPromptStart[i18nCode]);
+			appendToPromptContext(promptContext, 'footer', validatedRequestData.user_instructions);
+			appendToPromptContext(promptContext, 'footer', userInstructionPromptEnd[i18nCode]);
 		}
 
 		//
@@ -115,7 +115,7 @@ export async function generateAlertTitleAndDescription(request: AlertsDescribeRe
 
 		const ociGenerativeAIProvider = new OCIGenerativeAIProvider();
 
-		const finalPrompt = getFinalPrompt(promptContext, i18nCode);
+		const finalPrompt = getFinalPrompt(promptContext);
 
 		console.log('finalPrompt', finalPrompt);
 

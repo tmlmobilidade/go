@@ -1,7 +1,5 @@
 /* * */
 
-import { type I18nCode } from '@tmlmobilidade/go-types-shared';
-
 /**
  * The allowed steps for the prompt context.
  */
@@ -14,4 +12,4 @@ export type PromptContextBlock =
 /**
  * The prompt context type.
  */
-export type PromptContext = Record<I18nCode, Record<PromptContextBlock, string[]>>;
+export type PromptContext = Record<PromptContextBlock, string[]>;

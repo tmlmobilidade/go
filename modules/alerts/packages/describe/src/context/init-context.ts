@@ -1,14 +1,6 @@
 /* * */
 
-import { type PromptContext, type PromptContextBlock } from './types.js';
-
-/* * */
-
-const emptyPromptContextBlocks: Record<PromptContextBlock, string[]> = {
-	body: [],
-	footer: [],
-	init: [],
-};
+import { type PromptContext } from './types.js';
 
 /**
  * Initializes the prompt context.
@@ -16,7 +8,9 @@ const emptyPromptContextBlocks: Record<PromptContextBlock, string[]> = {
  */
 export function initPromptContext(): PromptContext {
 	return {
-		en: emptyPromptContextBlocks,
-		pt: emptyPromptContextBlocks,
+		body: [],
+		data: [],
+		footer: [],
+		header: [],
 	};
 }
