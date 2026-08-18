@@ -1,11 +1,10 @@
 'use client';
 
-import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
+import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -112,18 +111,18 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	const samsFavoritesContext = useSamsFavoritesContext();
-	const agenciesContext = useAgenciesContext();
-	const agencyIdsOrdered = agenciesContext.data.ids;
+
+	const { filtered: agenciesData, filteredIds: agencyIdsOrdered, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
 
 	const agencyOptions = useMemo(
 		() =>
-			agenciesContext.data.raw.map(item => ({
+			agenciesData.map(item => ({
 				checked: false,
 				disabled: false,
 				label: `${item._id} - ${item.name}`,
 				value: item._id,
 			})),
-		[agenciesContext.data.raw],
+		[agenciesData],
 	);
 
 	const filterAgency = useFilterStateList('agency_id', agencyIdsOrdered, agencyOptions);
@@ -143,10 +142,10 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	const apexVersionsUrl = useMemo(() => {
-		if (agenciesContext.flags.loading) return null;
+		if (agenciesLoading) return null;
 		const base = `${API_ROUTES.controller.SAMS_LIST}/apex-versions`;
 		return baseQueryString ? `${base}?${baseQueryString}` : base;
-	}, [agenciesContext.flags.loading, baseQueryString]);
+	}, [agenciesLoading, baseQueryString]);
 
 	const { data: apexVersionsData } = useSWR<string[], Error>(apexVersionsUrl);
 
@@ -202,10 +201,10 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	const samsListUrl = useMemo(() => {
-		if (agenciesContext.flags.loading) return null;
+		if (agenciesLoading) return null;
 		const base = API_ROUTES.controller.SAMS_BASE;
 		return samsListQueryString ? `${base}?${samsListQueryString}` : base;
-	}, [agenciesContext.flags.loading, samsListQueryString]);
+	}, [agenciesLoading, samsListQueryString]);
 
 	//
 
