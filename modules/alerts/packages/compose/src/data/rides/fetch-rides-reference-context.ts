@@ -22,7 +22,7 @@ export async function fetchRidesReferenceContext(request: AlertsComposeRequest):
 		1: request.agency_id,
 		2: request.active_period_start_date,
 		3: request.active_period_end_date,
-		4: request.references_data.map(reference => reference.parent_id),
+		4: request.references.map(reference => reference.parent_id),
 	};
 
 	//

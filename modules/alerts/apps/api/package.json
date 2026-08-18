@@ -23,6 +23,7 @@
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-alerts-pckg-compose": "*",
 		"@tmlmobilidade/go-alerts-pckg-types": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",

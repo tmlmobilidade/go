@@ -1,7 +1,7 @@
 /* * */
 
 import { fetchProtobuf } from '@/protobuf.js';
-import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-compose';
+import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-alerts-pckg-compose';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
@@ -58,7 +58,7 @@ async function main() {
 			}
 
 			//
-			const alertDescribeResult = await describeAlert({
+			const alertDescribeResult = await composeAlertTitleAndDescription({
 				active_period_end_date: serviceAlert.alert.active_period[0].end as UnixTimestamp,
 				active_period_start_date: serviceAlert.alert.active_period[0].start as UnixTimestamp,
 				agency_id: '43',

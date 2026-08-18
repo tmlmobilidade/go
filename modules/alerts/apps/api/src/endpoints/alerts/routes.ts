@@ -3,10 +3,10 @@
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
+import { composeAlert } from './controllers/compose-alert.js';
 import { create } from './controllers/create.js';
 import { deleteImage } from './controllers/delete-image.js';
 import { deleteAlert } from './controllers/delete.js';
-import { describeAlert } from './controllers/describe-alert.js';
 import { duplicate } from './controllers/duplicate.js';
 import { getById } from './controllers/get-by-id.js';
 import { getImage } from './controllers/get-image.js';
@@ -88,9 +88,9 @@ server.register(
 		);
 
 		instance.post(
-			'/describe',
+			'/compose',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
-			describeAlert,
+			composeAlert,
 		);
 
 		next();

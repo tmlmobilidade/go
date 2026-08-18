@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertCauseSchema, AlertEffectSchema, AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
+import { AlertCauseSchema, AlertEffectSchema, AlertReferenceSchema, AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -20,18 +20,7 @@ export const AlertsComposeRequestSchema = z.object({
 
 	reference_type: AlertReferenceTypeSchema,
 
-	references_data: z.array(
-		z.object({
-			child_ids: z.array(
-				z.object({
-					id: z.string(),
-					label: z.string(),
-				}),
-			),
-			label: z.string(),
-			parent_id: z.string(),
-		}),
-	),
+	references: z.array(AlertReferenceSchema),
 
 	user_instructions: z
 		.string()
