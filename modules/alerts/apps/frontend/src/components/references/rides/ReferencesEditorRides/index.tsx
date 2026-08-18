@@ -29,11 +29,14 @@ export function ReferencesEditorRides() {
 
 	const visibleRides = useMemo(() => {
 		if (viewMode === 'all') return alertsRidesData;
-		return referencesEditorContext.data.selected_references.map(reference => alertsRidesData?.find(ride => ride._id === reference.child_ids[0]));
+		else if (viewMode === 'selected') return referencesEditorContext.data.selected_references
+			.map(reference => alertsRidesData?.find(ride => ride._id === reference.parent_id))
+			.filter(Boolean);
+		else return [];
 	}, [alertsRidesData, referencesEditorContext.data.selected_references, viewMode]);
 
 	//
-	// E. Render components
+	// C. Render components
 
 	return (
 		<>
@@ -56,6 +59,4 @@ export function ReferencesEditorRides() {
 
 		</>
 	);
-
-	//
 }

@@ -11,52 +11,33 @@ WITH
 
 	/*
 	 * -----------------------------------------------------------------------
-	 * Latest Ride version
+	 * Latest rides
 	 * -----------------------------------------------------------------------
 	 *
 	 * Rides use ReplacingMergeTree(updated_at).
 	 *
-	 * Select the latest physical version explicitly instead of using FINAL.
-	 *
-	 * The scheduled start time range is applied before LIMIT BY so that
-	 * ClickHouse can discard irrelevant data as early as possible.
+	 * Select the latest version explicitly instead of using FINAL.
 	 */
 	rides_latest AS
 	(
 		SELECT
 			*
 		FROM operation.rides
+
 		WHERE
 			agency_id = $1
 			AND start_time_scheduled >= $2
 			AND start_time_scheduled <= $3
+
 		ORDER BY
 			updated_at DESC
+
 		LIMIT 1 BY _id
 	),
 
 	/*
 	 * -----------------------------------------------------------------------
-	 * Rides available to this query
-	 * -----------------------------------------------------------------------
-	 *
-	 * The exact Ride is added to the normal date-filtered set.
-	 *
-	 * DISTINCT prevents the exact Ride from appearing twice when it already
-	 * belongs to the requested date range.
-	 */
-	rides_for_query AS
-	(
-		SELECT *
-		FROM rides_latest
-		UNION DISTINCT
-		SELECT *
-		FROM exact_ride
-	),
-
-	/*
-	 * -----------------------------------------------------------------------
-	 * Calculate derived statuses.
+	 * Calculate derived statuses
 	 * -----------------------------------------------------------------------
 	 */
 	ride_with_statuses AS
@@ -113,10 +94,10 @@ WITH
 				THEN 'early'
 
 				ELSE 'ontime'
-			END AS start_delay_status,
+			END AS start_delay_status
 
-		FROM rides_for_query
-	),
+		FROM rides_latest
+	)
 
 SELECT
 	_id,
@@ -130,7 +111,7 @@ SELECT
 
 	operational_status,
 	seen_status,
-	start_delay_status,
+	start_delay_status
 
 FROM ride_with_statuses
 

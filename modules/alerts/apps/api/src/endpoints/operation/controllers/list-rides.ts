@@ -40,9 +40,9 @@ export async function listRides(request: FastifyRequest<{ Body: AlertsRidesFilte
 	// Build query parameters
 
 	const params: Record<string, number | string> = {
-		1: validatedFilters.start_time_scheduled_start,
-		2: validatedFilters.start_time_scheduled_end,
-		3: validatedFilters.search ?? '',
+		1: validatedFilters.agency_id,
+		2: validatedFilters.start_time_scheduled_start,
+		3: validatedFilters.start_time_scheduled_end,
 	};
 
 	//

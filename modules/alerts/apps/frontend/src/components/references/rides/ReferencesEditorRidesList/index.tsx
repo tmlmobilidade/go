@@ -38,7 +38,7 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 			accessor: 'operational_status',
 			render: item => <OperationalStatusDisplay value={item.operational_status} />,
 			title: 'Estado',
-			width: 190,
+			width: 150,
 		},
 		{
 			accessor: 'operational_date',
@@ -66,7 +66,7 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 	];
 
 	//
-	// C. Render components
+	// B. Render components
 
 	if (isLoading) {
 		return <LoadingSection />;
