@@ -183,8 +183,8 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('alerts', 'api_url')}`,
 
 		// ALERTS
+		ALERTS_COMPOSE: `${getModuleConfig('alerts', 'api_url')}/alerts/compose`,
 		ALERTS_CREATE: `${getModuleConfig('alerts', 'api_url')}/alerts/create`,
-		ALERTS_DESCRIBE: `${getModuleConfig('alerts', 'api_url')}/alerts/describe`,
 		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}`,
 		ALERTS_DETAIL_DUPLICATE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/duplicate`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/image`,
