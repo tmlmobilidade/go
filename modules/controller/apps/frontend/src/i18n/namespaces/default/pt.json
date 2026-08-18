@@ -171,7 +171,7 @@
 		},
 		"analysis": {
 			"RideAnalysisApexBankingTaps": {
-				"description": "Transações APEX associadas a esta circulação.",
+				"description": "Taps bancários associados a esta circulação.",
 				"table": {
 					"columns": {
 						"card_serial_number": {
@@ -215,7 +215,7 @@
 						}
 					}
 				},
-				"title": "Transações APEX"
+				"title": "Taps Bancários (CUT)"
 			},
 			"RideAnalysisApexLocations": {
 				"description": "Localizações APEX associadas a esta Ride.",
