@@ -2,7 +2,7 @@
 
 import { getHistoricalDemandMetricsPublishSlot } from '@/helpers/historical/demand-metrics.js';
 import { cacheDb, hubHistoricalDemandByAgencyMetricsCacheKey } from '@tmlmobilidade/go-interfaces-cachedb';
-import { queryDemandByAgency } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { queryDailyPassengerDemandOverTimeByAgency } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { type DemandByAgencyMetricsByTimeGrain, DemandByAgencyMetricsByTimeGrainSchema } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -21,9 +21,9 @@ export function parseDemandByAgencyMetricsCacheValue(
 
 async function fetchDemandByAgencyMetrics() {
 	const [day, month, year] = await Promise.all([
-		queryDemandByAgency({ time_grain: 'day' }),
-		queryDemandByAgency({ time_grain: 'month' }),
-		queryDemandByAgency({ time_grain: 'year' }),
+		queryDailyPassengerDemandOverTimeByAgency({ time_grain: 'day' }),
+		queryDailyPassengerDemandOverTimeByAgency({ time_grain: 'month' }),
+		queryDailyPassengerDemandOverTimeByAgency({ time_grain: 'year' }),
 	]);
 
 	return parseDemandByAgencyMetricsCacheValue({ day, month, year });

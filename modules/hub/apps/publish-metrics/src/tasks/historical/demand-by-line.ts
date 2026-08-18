@@ -2,7 +2,7 @@
 
 import { buildDemandMetricsByEntity, getDemandMetricTimeGrain, getHistoricalDemandMetricsPublishSlot, replaceDemandMetricsCache } from '@/helpers/historical/demand-metrics.js';
 import { hubHistoricalDemandByLineMetricsCacheKey, hubHistoricalDemandByLineMetricsCachePattern } from '@tmlmobilidade/go-interfaces-cachedb';
-import { queryDemandByLine } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { queryDailyPassengerDemandOverTimeByLine } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { DemandByLineMetricsByTimeGrainSchema } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -24,9 +24,9 @@ export async function publishDemandByLineMetrics(
 	Logger.title('Publishing Historical Demand by Line Metrics...');
 	const timer = new Timer();
 	const metrics = (await Promise.all([
-		queryDemandByLine({ time_grain: 'day' }),
-		queryDemandByLine({ time_grain: 'month' }),
-		queryDemandByLine({ time_grain: 'year' }),
+		queryDailyPassengerDemandOverTimeByLine({ time_grain: 'day' }),
+		queryDailyPassengerDemandOverTimeByLine({ time_grain: 'month' }),
+		queryDailyPassengerDemandOverTimeByLine({ time_grain: 'year' }),
 	])).flat().filter(metric => metric.properties.line_id !== UNKNOWN_DIMENSION_ID);
 
 	const metricsByLine = buildDemandMetricsByEntity({

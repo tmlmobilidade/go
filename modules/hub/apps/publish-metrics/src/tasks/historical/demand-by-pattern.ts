@@ -2,7 +2,7 @@
 
 import { buildDemandMetricsByEntity, getDemandMetricTimeGrain, getHistoricalDemandMetricsPublishSlot, replaceDemandMetricsCache } from '@/helpers/historical/demand-metrics.js';
 import { hubHistoricalDemandByPatternMetricsCacheKey, hubHistoricalDemandByPatternMetricsCachePattern } from '@tmlmobilidade/go-interfaces-cachedb';
-import { queryDemandByPattern } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { queryDailyPassengerDemandOverTimeByPattern } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { DemandByPatternMetricsByTimeGrainSchema } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -24,9 +24,9 @@ export async function publishDemandByPatternMetrics(
 	Logger.title('Publishing Historical Demand by Pattern Metrics...');
 	const timer = new Timer();
 	const metrics = (await Promise.all([
-		queryDemandByPattern({ time_grain: 'day' }),
-		queryDemandByPattern({ time_grain: 'month' }),
-		queryDemandByPattern({ time_grain: 'year' }),
+		queryDailyPassengerDemandOverTimeByPattern({ time_grain: 'day' }),
+		queryDailyPassengerDemandOverTimeByPattern({ time_grain: 'month' }),
+		queryDailyPassengerDemandOverTimeByPattern({ time_grain: 'year' }),
 	])).flat().filter(metric => metric.properties.pattern_id !== UNKNOWN_DIMENSION_ID);
 
 	const metricsByPattern = buildDemandMetricsByEntity({

@@ -3,7 +3,7 @@
 import { parseDateRange, parseIds } from '@/endpoints/metrics/utils/query-params.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { queryDemandByPattern } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { queryDailyPassengerDemandOverTimeByPattern } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { type DemandByPatternMetric, DemandByPatternQueryInputSchema, type GetDemandByPatternQuery, GetDemandByPatternQuerySchema } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/logger';
 import { buildMetricDataNotFoundMessage } from '@tmlmobilidade/utils';
@@ -44,7 +44,7 @@ export async function getDemandByPattern(
 		}
 
 		const queryInput = buildDemandByPatternQueryInput(parsedQuery.data);
-		const metricDocs = await queryDemandByPattern(queryInput);
+		const metricDocs = await queryDailyPassengerDemandOverTimeByPattern(queryInput);
 
 		if (metricDocs.length === 0) {
 			throw new HttpException(

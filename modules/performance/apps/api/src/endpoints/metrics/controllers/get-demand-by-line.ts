@@ -3,7 +3,7 @@
 import { parseDateRange, parseIds } from '@/endpoints/metrics/utils/query-params.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { queryDemandByLine } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { queryDailyPassengerDemandOverTimeByLine } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { type DemandByLineMetric, DemandByLineQueryInputSchema, type GetDemandByLineQuery, GetDemandByLineQuerySchema } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/logger';
 import { buildMetricDataNotFoundMessage } from '@tmlmobilidade/utils';
@@ -44,7 +44,7 @@ export async function getDemandByLine(
 		}
 
 		const queryInput = buildDemandByLineQueryInput(parsedQuery.data);
-		const metricDocs = await queryDemandByLine(queryInput);
+		const metricDocs = await queryDailyPassengerDemandOverTimeByLine(queryInput);
 
 		if (metricDocs.length === 0) {
 			throw new HttpException(
