@@ -9,7 +9,6 @@ import { RidesListCellDurationObserved } from '@/components/rides/list/table/Rid
 import { RidesListCellDurationScheduled } from '@/components/rides/list/table/RidesListCellDurationScheduled';
 import { RidesListCellPassengers } from '@/components/rides/list/table/RidesListCellPassengers';
 import { RidesListCellTimeObserved } from '@/components/rides/list/table/RidesListCellTimeObserved';
-import { RidesListCellTimeScheduled } from '@/components/rides/list/table/RidesListCellTimeScheduled';
 import { RidesListCellVehicles } from '@/components/rides/list/table/RidesListCellVehicles';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-types';
@@ -72,7 +71,7 @@ export function RidesList() {
 		},
 		{
 			accessor: 'start_time_scheduled',
-			render: item => <RidesListCellTimeScheduled timestamp={item.start_time_scheduled} />,
+			render: item => <Tag label={displayUnixTimestamp(item.start_time_scheduled)} variant="muted" />,
 			title: t('default:list.RidesList.columns.start_time_scheduled.label'),
 			width: 80,
 		},
@@ -90,7 +89,7 @@ export function RidesList() {
 		},
 		{
 			accessor: 'end_time_scheduled',
-			render: item => <RidesListCellTimeScheduled timestamp={item.end_time_scheduled} />,
+			render: item => item.end_time_scheduled && <Tag label={displayUnixTimestamp(item.end_time_scheduled)} variant="muted" />,
 			title: t('default:list.RidesList.columns.end_time_scheduled.label'),
 			width: 80,
 		},

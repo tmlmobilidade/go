@@ -1,10 +1,8 @@
 'use client';
 
 import { useReferencesEditorContext } from '@/components/references/shared/ReferencesEditor.context';
-import { Dates } from '@tmlmobilidade/dates';
 import { AlertsRidesItem } from '@tmlmobilidade/go-alerts-pckg-types';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { Checkbox, DataTable, DataTableColumn, displayUnixTimestamp, Label, LoadingSection, NoDataLabel, OperationalStatusDisplay, Section, SeenStatusDisplay, Surface, Tag } from '@tmlmobilidade/ui';
+import { Checkbox, DataTable, DataTableColumn, displayUnixTimestamp, Label, LoadingSection, NoDataLabel, OperationalDateDisplay, OperationalStatusDisplay, Section, SeenStatusDisplay, Surface, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,10 +20,6 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 	// A. Setup variables
 
 	const referencesEditorContext = useReferencesEditorContext();
-
-	const formatTimestamp = (timestamp: UnixTimestamp) => {
-		return timestamp ? Dates.fromUnixTimestamp(timestamp).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt') : null;
-	};
 
 	const columns: DataTableColumn<AlertsRidesItem>[] = [
 		{
@@ -47,8 +41,14 @@ export function ReferencesEditorRidesList({ isLoading, ridesData }: ReferencesEd
 			width: 190,
 		},
 		{
+			accessor: 'operational_date',
+			render: item => <OperationalDateDisplay value={item.operational_date} />,
+			title: 'Data',
+			width: 150,
+		},
+		{
 			accessor: 'start_time_scheduled',
-			render: item => <Tag label={formatTimestamp(item.start_time_scheduled)} variant="muted" />,
+			render: item => <Tag label={displayUnixTimestamp(item.start_time_scheduled)} variant="muted" />,
 			title: 'Partida',
 			width: 80,
 		},
