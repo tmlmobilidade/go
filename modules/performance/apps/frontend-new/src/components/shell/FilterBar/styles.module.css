@@ -1,0 +1,40 @@
+.root {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+	padding: 10px 14px 8px;
+}
+
+.scrollArea {
+	display: flex;
+	flex: 1;
+	gap: 10px;
+	min-width: 0;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
+.scrollArea::-webkit-scrollbar {
+	display: none;
+}
+
+.refresh {
+	display: grid;
+	flex: 0 0 auto;
+	width: 42px;
+	height: 42px;
+	color: var(--color-system-text-200);
+	cursor: pointer;
+	background: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+	place-items: center;
+}
+
+.refresh:hover,
+.refresh:focus-visible {
+	color: var(--color-primary);
+	border-color: color-mix(in srgb, var(--color-primary) 50%, var(--color-system-border-100));
+	outline: none;
+}

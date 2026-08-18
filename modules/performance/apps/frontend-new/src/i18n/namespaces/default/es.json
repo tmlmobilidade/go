@@ -1,0 +1,216 @@
+{
+	"filters": {
+		"comparison": {
+			"equivalentDays": "Días equivalentes",
+			"equivalentDescription": "Mediana de días operativos comparables",
+			"label": "Comparación",
+			"previousDay": "Día anterior",
+			"previousWeek": "Semana anterior"
+		},
+		"date": {
+			"label": "Fecha operativa",
+			"today": "Hoy",
+			"yesterday": "Ayer"
+		},
+		"operator": {
+			"all": "Todos",
+			"hint": "Los resultados combinan todos los operadores seleccionados.",
+			"label": "Operador",
+			"selectedCount": "{count} seleccionados"
+		},
+		"refresh": "Actualizar datos"
+	},
+	"lineDetail": {
+		"breadcrumb": {
+			"ariaLabel": "Ubicación de la página"
+		},
+		"demand": {
+			"ariaLabel": "Demanda de la línea",
+			"comparison": "vs. el mismo periodo del mes anterior",
+			"empty": "No existen validaciones para esta línea en el periodo seleccionado.",
+			"error": "No se pudo cargar la demanda de esta línea.",
+			"historySubtitle": "Últimos 7 días con datos del mes actual",
+			"historyTitle": "Demanda diaria",
+			"totalTitle": "Validaciones del mes"
+		},
+		"error": {
+			"back": "Volver a la lista de líneas",
+			"description": "No se pudo cargar la línea {lineId}.",
+			"title": "Línea no encontrada"
+		},
+		"header": {
+			"patternCount": "{count} patrones"
+		},
+		"navigation": {
+			"ariaLabel": "Navegación del detalle de la línea",
+			"data": "Datos",
+			"demand": "Demanda",
+			"offer": "Oferta y capacidad",
+			"overview": "Vista general",
+			"patterns": "Patrones y paradas",
+			"reliability": "Fiabilidad",
+			"service": "Servicio realizado"
+		},
+		"operationalPreview": {
+			"advances": {
+				"target": "Objetivo: ≤ 3,0%",
+				"title": "Adelantos"
+			},
+			"ariaLabel": "Indicadores operativos provisionales",
+			"badge": "Datos de demostración",
+			"comparison": "vs. periodo comparable",
+			"delays": {
+				"target": "Objetivo: ≤ 10,0%",
+				"title": "Retrasos"
+			},
+			"description": "Valores provisionales mientras la integración operativa no está disponible.",
+			"service": {
+				"target": "Objetivo: ≥ 95,0%",
+				"title": "Servicio realizado"
+			},
+			"title": "Rendimiento operativo"
+		},
+		"patternsTable": {
+			"ariaLabel": "Rendimiento de los patrones de la línea",
+			"columns": {
+				"advances": "Adelantos",
+				"delays": "Retrasos",
+				"pattern": "Patrón",
+				"service": "Servicio",
+				"validations": "Validaciones"
+			},
+			"description": "Comparación de los sentidos y variantes de la línea",
+			"empty": "Esta línea no tiene patrones disponibles.",
+			"identityOnly": "Identidad real · operación simulada",
+			"mixedData": "Identidad y demanda reales · operación simulada",
+			"title": "Patrones"
+		},
+		"reliabilityHeatmap": {
+			"ariaLabel": "{metric} por día de la semana y hora",
+			"badge": "Datos de demostración",
+			"days": {
+				"friday": "Vie",
+				"monday": "Lun",
+				"saturday": "Sáb",
+				"sunday": "Dom",
+				"thursday": "Jue",
+				"tuesday": "Mar",
+				"wednesday": "Mié"
+			},
+			"metricLabel": "Métrica",
+			"metrics": {
+				"advances": {
+					"description": "Circulaciones con salida adelantada más de 1 minuto",
+					"label": "Adelantos",
+					"legend": {
+						"1": "≤ 1%",
+						"2": "1–2%",
+						"3": "2–3%",
+						"4": "3–4%",
+						"5": "> 4%"
+					}
+				},
+				"delays": {
+					"description": "Circulaciones con salida retrasada más de 5 minutos",
+					"label": "Retrasos",
+					"legend": {
+						"1": "≤ 5%",
+						"2": "5–7%",
+						"3": "7–10%",
+						"4": "10–15%",
+						"5": "> 15%"
+					}
+				},
+				"service": {
+					"description": "Porcentaje de circulaciones planificadas que fueron realizadas",
+					"label": "Servicio realizado",
+					"legend": {
+						"1": "≥ 98%",
+						"2": "95–98%",
+						"3": "90–95%",
+						"4": "85–90%",
+						"5": "< 85%"
+					}
+				},
+				"validations": {
+					"description": "Número de validaciones registradas en cada intervalo horario",
+					"label": "Validaciones",
+					"legend": {
+						"1": "< 25",
+						"2": "25–49",
+						"3": "50–74",
+						"4": "75–99",
+						"5": "≥ 100"
+					}
+				}
+			},
+			"title": "Rendimiento por día de la semana y hora"
+		}
+	},
+	"navigation": {
+		"ariaLabel": "Navegación de Performance",
+		"network": {
+			"ariaLabel": "Navegación de la red",
+			"label": "Red",
+			"lines": {
+				"description": "Seleccione una línea y abra su expediente",
+				"title": "Líneas"
+			},
+			"overview": {
+				"description": "Análisis agregado de la red filtrada",
+				"title": "Vista general de la red"
+			},
+			"patterns": {
+				"description": "Disponible después de seleccionar una línea",
+				"title": "Patrones"
+			},
+			"structure": "Estructura de la red"
+		},
+		"pulse": "Pulse"
+	},
+	"networkLines": {
+		"breadcrumb": {
+			"ariaLabel": "Ubicación de la página"
+		},
+		"confidence": {
+			"high": "Alta",
+			"medium": "Media"
+		},
+		"empty": "Ninguna línea coincide con los filtros aplicados.",
+		"filters": {
+			"all": "Todas",
+			"attention": "Necesitan atención",
+			"search": "Buscar por línea o destino",
+			"viewAriaLabel": "Filtrar líneas por estado"
+		},
+		"subtitle": "{count} líneas en el ámbito seleccionado",
+		"summary": {
+			"activeAlerts": "{count} alertas activas",
+			"ariaLabel": "Resumen de la red filtrada",
+			"belowServiceTarget": "{count} líneas por debajo del objetivo de servicio",
+			"dataCoverage": "Cobertura de datos 96%",
+			"elevatedDelays": "{count} con retrasos elevados"
+		},
+		"table": {
+			"advances": "Adelantos",
+			"alerts": "Alertas",
+			"backendNote": "Servicio, retrasos, adelantos y alertas simulados",
+			"confidence": "Confianza",
+			"delays": "Retrasos",
+			"demoData": "Datos de demostración",
+			"line": "Línea",
+			"loading": "Cargando datos reales…",
+			"mixedData": "Identidad y demanda reales · operación simulada",
+			"openLine": "Abrir línea",
+			"openLineLabel": "Abrir detalle de la línea {lineId}",
+			"operator": "Operador",
+			"rowsPerPage": "Líneas por página",
+			"service": "Servicio realizado",
+			"thousands": "{value} mil",
+			"title": "Rendimiento por línea",
+			"validations": "Validaciones",
+			"visibleRange": "{start}–{end} de {total} líneas"
+		},
+		"title": "Líneas"
+	}
+}

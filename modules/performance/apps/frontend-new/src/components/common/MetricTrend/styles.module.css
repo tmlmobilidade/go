@@ -1,0 +1,46 @@
+.root {
+	display: inline-flex;
+	gap: 4px;
+	align-items: center;
+	min-width: 0;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+	line-height: 1.2;
+	white-space: nowrap;
+}
+
+.root svg {
+	flex: 0 0 auto;
+}
+
+.root strong {
+	font: inherit;
+}
+
+.root[data-size='sm'] {
+	gap: 2px;
+	font-size: var(--font-size-xs);
+}
+
+.root[data-sentiment='positive'] {
+	color: var(--color-status-success-primary);
+}
+
+.root[data-sentiment='negative'] {
+	color: var(--color-status-danger-primary);
+}
+
+.root[data-sentiment='warning'] {
+	color: var(--color-status-warning-primary);
+}
+
+.root[data-sentiment='neutral'] {
+	color: var(--color-system-text-200);
+}
+
+.comparison {
+	overflow: hidden;
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-200);
+	text-overflow: ellipsis;
+}

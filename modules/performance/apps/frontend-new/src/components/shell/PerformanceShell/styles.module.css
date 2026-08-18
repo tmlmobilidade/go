@@ -1,0 +1,23 @@
+.root {
+	flex: 1;
+	width: 100%;
+	min-width: 0;
+	background: var(--color-system-background-200);
+}
+
+.header {
+	display: flex;
+	flex: 0 0 auto;
+	flex-direction: column;
+	width: 100%;
+	background: var(--color-system-background-100);
+	border-bottom: 1px solid var(--color-system-border-100);
+}
+
+.content {
+	flex: 1;
+	width: 100%;
+	min-height: 0;
+	overflow: auto;
+	background: var(--color-system-background-200);
+}

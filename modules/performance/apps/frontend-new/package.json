@@ -1,0 +1,34 @@
+{
+	"name": "@tmlmobilidade/go-performance-frontend-new",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"private": true,
+	"scripts": {
+		"build": "next build",
+		"dev": "next dev -p 51016",
+		"lint": "eslint ./src && tsc --noEmit",
+		"lint:fix": "eslint --fix ./src"
+	},
+	"dependencies": {
+		"@tabler/icons-react": "3.46.0",
+		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/go-types-performance": "*",
+		"@tmlmobilidade/ui": "*",
+		"next": "16.2.12",
+		"react": "19.2.8",
+		"react-dom": "19.2.8",
+		"react-i18next": "17.0.11",
+		"swr": "2.4.2"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/tsconfig": "*",
+		"@types/node": "26.1.2",
+		"@types/react": "19.2.18",
+		"@types/react-dom": "19.2.4",
+		"typescript": "6.0.3"
+	}
+}
