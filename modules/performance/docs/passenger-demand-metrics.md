@@ -140,7 +140,7 @@ table concurrently. Redis stores only this lock for the historical workflow;
 the historical facts themselves remain in ClickHouse. Each acquired run is
 also recorded in `performance.metric_refreshes`.
 
-See [Passenger Demand Storage Strategy](./passenger-demand-storage-strategy.md)
+See [Daily Passenger Demand Storage Strategy](./passenger-demand-daily-storage-strategy.md)
 for the detailed refresh, validation, and recovery rules.
 
 ## Closed-minute policy
@@ -182,7 +182,7 @@ on the following refresh.
 The policy in this section applies to the current one-minute fact and realtime
 projection. The planned daily-dimensional historical fact follows a different
 full-rebuild and rolling-week strategy documented in
-`passenger-demand-storage-strategy.md`.
+`passenger-demand-daily-storage-strategy.md`.
 
 When the fact table is empty, the worker bootstraps the previous 56 days before
 publishing the first current projection. This covers the eight preceding

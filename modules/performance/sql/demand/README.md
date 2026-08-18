@@ -16,5 +16,5 @@ DDL.
 - `benchmark-existing-demand-metrics.sql`: benchmark existing metric shapes
   against the daily-dimensional fact.
 
-See `modules/performance/docs/passenger-demand-storage-strategy.md` for the
+See `modules/performance/docs/passenger-demand-daily-storage-strategy.md` for the
 ownership model, refresh cadence, atomicity guarantees, and migration plan.

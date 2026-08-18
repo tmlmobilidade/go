@@ -101,7 +101,7 @@ CacheDB publication snapshot.
 
 - [Passenger Demand Metrics](../../../performance/docs/passenger-demand-metrics.md)
   defines the metric, live facts, closed-minute policy, and reconciliation.
-- [Passenger Demand Storage Strategy](../../../performance/docs/passenger-demand-storage-strategy.md)
+- [Daily Passenger Demand Storage Strategy](../../../performance/docs/passenger-demand-daily-storage-strategy.md)
   defines the historical daily fact, staging tables, locking, and atomic
   publication strategy.
 - [Passenger Demand Publication](../../docs/passenger-demand-publication.md)

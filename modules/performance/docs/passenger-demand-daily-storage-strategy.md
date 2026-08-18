@@ -1,4 +1,10 @@
-# Passenger Demand Storage Strategy
+# Daily Passenger Demand Storage Strategy
+
+The five-minute dimensional fact introduced for Performance V2 is documented
+separately in [passenger-demand-five-minute-storage-strategy.md](./passenger-demand-five-minute-storage-strategy.md).
+
+The shared code organization and query-selection rules are documented in
+[Passenger Demand Architecture](./passenger-demand-architecture.md).
 
 ## Decision
 
