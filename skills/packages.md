@@ -12,7 +12,7 @@ When adding a new utility, type, component, or integration — check here first 
 |---|---|
 | `@tmlmobilidade/[name]` | Root-level shared package (`packages/[name]`) |
 | `@tmlmobilidade/go-[module]-[app]` | Module app (e.g. `go-alerts-api`, `go-alerts-frontend`) |
-| `@tmlmobilidade/go-[module]-pckg-[name]` | Module-internal package (e.g. `go-alerts-pckg-describe`) |
+| `@tmlmobilidade/go-[module]-pckg-[name]` | Module-internal package (e.g. `go-alerts-pckg-compose`) |
 
 ---
 

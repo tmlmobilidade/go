@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { generateAlertDescription, type GenerateAlertDescriptionProps, type GenerateAlertDescriptionReturnType } from '@tmlmobilidade/go-alerts-pckg-describe';
+import { generateAlertDescription, type GenerateAlertDescriptionProps, type GenerateAlertDescriptionReturnType } from '@tmlmobilidade/go-alerts-pckg-compose';
 
 /**
  * Generates a description for an alert.

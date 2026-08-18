@@ -1,7 +1,7 @@
 /* * */
 
 import { fetchProtobuf } from '@/protobuf.js';
-import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
+import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-compose';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
