@@ -1,6 +1,6 @@
 /* * */
 
-export const fetchRidesPublicNamesQuery = `
+export const fetchRidesReferenceContextQuery = `
 WITH
 
 	/*

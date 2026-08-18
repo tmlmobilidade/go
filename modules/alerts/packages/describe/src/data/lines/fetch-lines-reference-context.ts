@@ -3,15 +3,15 @@
 import { type AlertsDescribeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
-import { type FetchLinesPublicNamesItem } from './fetch-lines-public-names-item.js';
-import { fetchLinesPublicNamesQuery } from './fetch-lines-public-names-query.js';
+import { fetchLinesReferenceContextQuery } from './fetch-lines-public-reference-context.js';
+import { type FetchLinesReferenceContextItem } from './fetch-lines-reference-context-item.js';
 
 /**
  * Extracts the lines public names from the request.
  * @param request The request data.
  * @returns The lines public names.
  */
-export async function fetchLinesPublicNames(request: AlertsDescribeRequest): Promise<string[]> {
+export async function fetchLinesReferenceContext(request: AlertsDescribeRequest): Promise<string[]> {
 	//
 
 	//
@@ -27,7 +27,7 @@ export async function fetchLinesPublicNames(request: AlertsDescribeRequest): Pro
 	//
 	// Execute the query and return the lines public names
 
-	const queryResult = await labDb.queryFromString<FetchLinesPublicNamesItem>(fetchLinesPublicNamesQuery, params);
+	const queryResult = await labDb.queryFromString<FetchLinesReferenceContextItem>(fetchLinesReferenceContextQuery, params);
 
 	if (!queryResult?.length) throw new Error(`No lines found for the request.`);
 

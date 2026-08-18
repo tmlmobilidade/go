@@ -1,6 +1,6 @@
 /* * */
 
-export const fetchLinesPublicNamesQuery = `
+export const fetchLinesReferenceContextQuery = `
 WITH
 
 	/*

@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const FetchRidesPublicNamesItemSchema = RideSchema.pick({
+export const FetchRidesReferenceContextItemSchema = RideSchema.pick({
 	headsign: true,
 	route_short_name: true,
 	start_time_scheduled: true,
@@ -14,4 +14,4 @@ export const FetchRidesPublicNamesItemSchema = RideSchema.pick({
 /**
  * A item model for the rides public names query.
  */
-export type FetchRidesPublicNamesItem = z.infer<typeof FetchRidesPublicNamesItemSchema>;
+export type FetchRidesReferenceContextItem = z.infer<typeof FetchRidesReferenceContextItemSchema>;

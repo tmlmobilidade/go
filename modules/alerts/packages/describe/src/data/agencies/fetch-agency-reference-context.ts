@@ -8,7 +8,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
  * @param request The request data.
  * @returns The agency public name.
  */
-export async function fetchAgencyPublicName(request: AlertsDescribeRequest): Promise<string> {
+export async function fetchAgencyReferenceContext(request: AlertsDescribeRequest): Promise<string> {
 	//
 
 	const foundAgency = await goDb.core.agencies.findById(request.agency_id);

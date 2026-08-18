@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const FetchLinesPublicNamesItemSchema = z.object({
+export const FetchLinesReferenceContextItemSchema = z.object({
 	route_long_name: z.string(),
 	route_short_name: z.string(),
 });
@@ -12,4 +12,4 @@ export const FetchLinesPublicNamesItemSchema = z.object({
 /**
  * A item model for the lines public names query.
  */
-export type FetchLinesPublicNamesItem = z.infer<typeof FetchLinesPublicNamesItemSchema>;
+export type FetchLinesReferenceContextItem = z.infer<typeof FetchLinesReferenceContextItemSchema>;

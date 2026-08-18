@@ -1,15 +1,13 @@
 /* * */
 
-import { parseAlertGeneratedCopy } from '@/utils/utils.js';
 import { type AlertsDescribeRequest, AlertsDescribeRequestSchema, type AlertsDescribeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/go-providers-ai';
-import { type I18nCode } from '@tmlmobilidade/go-types-shared';
 
 import { appendToPromptContext, getFinalPrompt, initPromptContext } from './context/index.js';
-import { fetchAgencyPublicName } from './data/agencies/fetch-agency-public-name.js';
-import { fetchLinesPublicNames } from './data/lines/fetch-lines-public-names.js';
-import { fetchRidesPublicNames } from './data/rides/fetch-rides-public-names.js';
-import { fetchStopsPublicNames } from './data/stops/fetch-stops-public-names.js';
+import { fetchAgencyReferenceContext } from './data/agencies/fetch-agency-reference-context.js';
+import { fetchLinesReferenceContext } from './data/lines/fetch-lines-reference-context.js';
+import { fetchRidesReferenceContext } from './data/rides/fetch-rides-reference-context.js';
+import { fetchStopsReferenceContext } from './data/stops/fetch-stops-reference-context.js';
 import { initDescriptionPrompt } from './prompts/general/init.js';
 import { DescribeAlertReturnType } from './types/main.js';
 import { parseAiResult } from './utils/parse-ai-result.js';
@@ -40,22 +38,22 @@ export async function generateAlertTitleAndDescription(request: AlertsDescribeRe
 	// Fetch additional data depending on the reference type
 
 	if (validatedRequestData.reference_type === 'agency') {
-		const agencyPublicName = await fetchAgencyPublicName(validatedRequestData);
+		const agencyPublicName = await fetchAgencyReferenceContext(validatedRequestData);
 		appendToPromptContext(promptContext, 'pt', 'data', `Agency: ${agencyPublicName}`);
 	}
 
 	if (validatedRequestData.reference_type === 'lines') {
-		const linesPublicNames = await fetchLinesPublicNames(validatedRequestData);
+		const linesPublicNames = await fetchLinesReferenceContext(validatedRequestData);
 		appendToPromptContext(promptContext, 'pt', 'data', linesPublicNames);
 	}
 
 	if (validatedRequestData.reference_type === 'stops') {
-		const stopsPublicNames = await fetchStopsPublicNames(validatedRequestData);
+		const stopsPublicNames = await fetchStopsReferenceContext(validatedRequestData);
 		appendToPromptContext(promptContext, 'pt', 'data', stopsPublicNames);
 	}
 
 	if (validatedRequestData.reference_type === 'rides') {
-		const ridesPublicNames = await fetchRidesPublicNames(validatedRequestData);
+		const ridesPublicNames = await fetchRidesReferenceContext(validatedRequestData);
 		appendToPromptContext(promptContext, 'pt', 'data', ridesPublicNames);
 	}
 

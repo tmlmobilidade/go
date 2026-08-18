@@ -4,15 +4,15 @@ import { Dates } from '@tmlmobilidade/dates';
 import { type AlertsDescribeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
-import { type FetchRidesPublicNamesItem } from './fetch-rides-public-names-item.js';
-import { fetchRidesPublicNamesQuery } from './fetch-rides-public-names-query.js';
+import { type FetchRidesReferenceContextItem } from './fetch-rides-reference-context-item.js';
+import { fetchRidesReferenceContextQuery } from './fetch-rides-reference-context-query.js';
 
 /**
  * Extracts the rides public names from the request.
  * @param request The request data.
  * @returns The rides public names.
  */
-export async function fetchRidesPublicNames(request: AlertsDescribeRequest): Promise<string[]> {
+export async function fetchRidesReferenceContext(request: AlertsDescribeRequest): Promise<string[]> {
 	//
 
 	//
@@ -28,7 +28,7 @@ export async function fetchRidesPublicNames(request: AlertsDescribeRequest): Pro
 	//
 	// Execute the query and return the stops public names
 
-	const queryResult = await labDb.queryFromString<FetchRidesPublicNamesItem>(fetchRidesPublicNamesQuery, params);
+	const queryResult = await labDb.queryFromString<FetchRidesReferenceContextItem>(fetchRidesReferenceContextQuery, params);
 
 	if (!queryResult?.length) throw new Error(`No rides found for the request.`);
 

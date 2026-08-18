@@ -3,15 +3,15 @@
 import { type AlertsDescribeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 
-import { type FetchStopsPublicNamesItem } from './fetch-stops-public-names-item.js';
-import { fetchStopsPublicNamesQuery } from './fetch-stops-public-names-query.js';
+import { type FetchStopsReferenceContextItem } from './fetch-stops-reference-context-item.js';
+import { fetchStopsReferenceContextQuery } from './fetch-stops-reference-context-query.js';
 
 /**
  * Extracts the stops public names from the request.
  * @param request The request data.
  * @returns The stops public names.
  */
-export async function fetchStopsPublicNames(request: AlertsDescribeRequest): Promise<string[]> {
+export async function fetchStopsReferenceContext(request: AlertsDescribeRequest): Promise<string[]> {
 	//
 
 	//
@@ -27,7 +27,7 @@ export async function fetchStopsPublicNames(request: AlertsDescribeRequest): Pro
 	//
 	// Execute the query and return the stops public names
 
-	const queryResult = await labDb.queryFromString<FetchStopsPublicNamesItem>(fetchStopsPublicNamesQuery, params);
+	const queryResult = await labDb.queryFromString<FetchStopsReferenceContextItem>(fetchStopsReferenceContextQuery, params);
 
 	if (!queryResult?.length) throw new Error(`No stops found for the request.`);
 
