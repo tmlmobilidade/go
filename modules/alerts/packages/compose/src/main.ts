@@ -12,7 +12,6 @@ import { fetchRidesReferenceContext } from './data/rides/fetch-rides-reference-c
 import { fetchStopsReferenceContext } from './data/stops/fetch-stops-reference-context.js';
 import { initPrompt } from './prompts/general/init.js';
 import { terminationPrompt } from './prompts/general/termination.js';
-// import { userInstructionPromptEnd, userInstructionPromptStart } from './prompts/general/user-instructions.js';
 import { activePeriodPrompt } from './prompts/references/active-period.js';
 import { causePrompt } from './prompts/references/cause.js';
 import { effectPrompt } from './prompts/references/effect.js';
