@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { ApexEventTypeSchema, type RawApexTransactionValidationV50, type SimplifiedApexValidation, SimplifiedApexValidationSchema } from '@tmlmobilidade/go-types-apex';
+import { ApexEventTypeSchema, ApexValidationStatusSchema, type RawApexTransactionValidationV50, type SimplifiedApexValidation, SimplifiedApexValidationSchema } from '@tmlmobilidade/go-types-apex';
 import { toUInt64 } from '@tmlmobilidade/utils';
 
 /* * */
@@ -44,7 +44,7 @@ export function parseRawApexTransactionValidationV50IntoSimplifiedApexValidation
 		trip_id: doc.payload.serviceInfo.journeyID,
 		units_qty: doc.payload.validationInfo.unitsQuantity,
 		updated_at: Dates.now('utc').unix_timestamp,
-		validation_status: '0',
+		validation_status: ApexValidationStatusSchema.parse(String(doc.payload.validationInfo.validationStatus)),
 		vehicle_id: String(doc.payload.serviceInfo.vehicleID),
 	};
 
