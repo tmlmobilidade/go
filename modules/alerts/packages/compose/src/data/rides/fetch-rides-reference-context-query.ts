@@ -26,6 +26,7 @@ WITH
 			agency_id = $1
 			AND start_time_scheduled >= $2
 			AND start_time_scheduled <= $3
+			AND _id IN ($4)
 
 		ORDER BY
 			updated_at DESC

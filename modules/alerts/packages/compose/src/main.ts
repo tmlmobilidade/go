@@ -1,6 +1,8 @@
 /* * */
 
+import { Dates } from '@tmlmobilidade/dates';
 import { type AlertsComposeRequest, AlertsComposeRequestSchema, type AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/go-providers-ai';
 import { I18nCodeValues } from '@tmlmobilidade/go-types-shared';
 
@@ -10,8 +12,8 @@ import { fetchLinesReferenceContext } from './data/lines/fetch-lines-reference-c
 import { fetchRidesReferenceContext } from './data/rides/fetch-rides-reference-context.js';
 import { fetchStopsReferenceContext } from './data/stops/fetch-stops-reference-context.js';
 import { initDescriptionPrompt } from './prompts/general/init.js';
-import { titleFormatTemplatePrompt } from './prompts/general/title-prompt.js';
 import { userInstructionPromptEnd, userInstructionPromptStart } from './prompts/general/user-instructions.js';
+import { activePeriodPrompt } from './prompts/references/active-period.js';
 import { causePrompt } from './prompts/references/cause.js';
 import { effectPrompt } from './prompts/references/effect.js';
 import { referenceTypePrompt } from './prompts/references/reference-type.js';
@@ -36,11 +38,18 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 	const validatedRequestData = AlertsComposeRequestSchema.parse(request);
 
 	//
+	// Fetch the agency data
+
+	const foundAgency = await goDb.core.agencies.findById(request.agency_id);
+
+	if (!foundAgency) throw new Error(`Agency ${request.agency_id} not found in database.`);
+
+	//
 	// Fetch reference context data only once for all languages,
 	// dependning on the requested reference type
 
 	const agencyReferenceContext = validatedRequestData.reference_type === 'agency'
-		? await fetchAgencyReferenceContext(validatedRequestData)
+		? foundAgency.public_name ? `Agency Name: ${foundAgency.public_name}` : `Agency Name: ${foundAgency.name}`
 		: null;
 
 	const linesReferenceContext = validatedRequestData.reference_type === 'lines'
@@ -69,44 +78,57 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 		const promptContext = initPromptContext();
 
 		appendToPromptContext(promptContext, 'intro', initDescriptionPrompt[i18nCode]);
-		appendToPromptContext(promptContext, 'intro', titleFormatTemplatePrompt[i18nCode]);
 
 		//
 		// Add the cause and effect prompts
 
-		appendToPromptContext(promptContext, 'references', causePrompt[validatedRequestData.cause][i18nCode]);
-		appendToPromptContext(promptContext, 'references', effectPrompt[validatedRequestData.effect][i18nCode]);
+		appendToPromptContext(promptContext, 'intro', causePrompt[validatedRequestData.cause][i18nCode]);
+		appendToPromptContext(promptContext, 'intro', effectPrompt[validatedRequestData.effect][i18nCode]);
+
+		//
+		// Add the active period prompt
+
+		const activePeriodStart = Dates
+			.fromUnixTimestamp(validatedRequestData.active_period_start_date)
+			.setZone(foundAgency.timezone, 'offset_only')
+			.toFormat('yyyy-MM-dd HH:mm');
+
+		const activePeriodEnd = Dates
+			.fromUnixTimestamp(validatedRequestData.active_period_end_date)
+			.toFormat('yyyy-MM-dd HH:mm');
+
+		appendToPromptContext(promptContext, 'intro', activePeriodPrompt[i18nCode](activePeriodStart, activePeriodEnd));
 
 		//
 		// Fetch additional data depending on the reference type
 
 		if (validatedRequestData.reference_type === 'agency' && agencyReferenceContext) {
-			appendToPromptContext(promptContext, 'references', referenceTypePrompt['agency'][i18nCode]);
-			appendToPromptContext(promptContext, 'data', agencyReferenceContext);
+			appendToPromptContext(promptContext, 'intro', referenceTypePrompt['agency'][i18nCode]);
+			appendToPromptContext(promptContext, 'intro', agencyReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'lines' && linesReferenceContext) {
-			appendToPromptContext(promptContext, 'references', referenceTypePrompt['lines'][i18nCode]);
-			appendToPromptContext(promptContext, 'data', linesReferenceContext);
+			appendToPromptContext(promptContext, 'intro', referenceTypePrompt['lines'][i18nCode]);
+			appendToPromptContext(promptContext, 'intro', linesReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'stops' && stopsReferenceContext) {
-			appendToPromptContext(promptContext, 'references', referenceTypePrompt['stops'][i18nCode]);
-			appendToPromptContext(promptContext, 'data', stopsReferenceContext);
+			appendToPromptContext(promptContext, 'intro', referenceTypePrompt['stops'][i18nCode]);
+			appendToPromptContext(promptContext, 'intro', stopsReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'rides' && ridesReferenceContext) {
-			appendToPromptContext(promptContext, 'references', referenceTypePrompt['rides'][i18nCode]);
-			appendToPromptContext(promptContext, 'data', ridesReferenceContext);
+			appendToPromptContext(promptContext, 'intro', referenceTypePrompt['rides'][i18nCode]);
+			appendToPromptContext(promptContext, 'intro', ridesReferenceContext);
 		}
 
 		//
 		// Add the user instructions
 
 		if (validatedRequestData.user_instructions) {
-			appendToPromptContext(promptContext, 'user_instructions', userInstructionPromptStart[i18nCode]);
-			appendToPromptContext(promptContext, 'user_instructions', validatedRequestData.user_instructions);
-			appendToPromptContext(promptContext, 'user_instructions', userInstructionPromptEnd[i18nCode]);
+			appendToPromptContext(promptContext, 'intro', userInstructionPromptStart[i18nCode]);
+			appendToPromptContext(promptContext, 'intro', validatedRequestData.user_instructions);
+			appendToPromptContext(promptContext, 'intro', userInstructionPromptEnd[i18nCode]);
 		}
 
 		//
