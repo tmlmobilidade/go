@@ -44,7 +44,7 @@
 		"build:tracker:pckg": "turbo run build --filter=@tmlmobilidade/go-tracker-pckg-*",
 
 		"dev:alerts": "npm run build:alerts:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-alerts-*",
-		"dev:alerts:ui": "npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-alerts-api --filter=@tmlmobilidade/go-alerts-frontend",
+		"dev:alerts:ui": "npm run build:alerts:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-alerts-api --filter=@tmlmobilidade/go-alerts-frontend",
 		"dev:apex": "npm run build:apex:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-apex-*",
 		"dev:apex:pcgi-stream": "npm run build:apex:pcgi-stream && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-apex-pcgi-stream",
 		"dev:apex:pcgi-sync": "npm run build:apex:pcgi-sync && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-apex-pcgi-sync",
