@@ -22,13 +22,13 @@ export function AlertCreateStepSummaryAi() {
 
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
+	const { data: composeData, isLoading: isLoadingComposeData, isValidating: isValidatingComposeData } = useAlertsComposeData();
+
 	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
 	const referenceTypeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
 	const autoTextsValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'auto_texts' });
 	const titleValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'title' });
 	const descriptionValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'description' });
-
-	const { data: composeData, isLoading: isLoadingComposeData, isValidating: isValidatingComposeData } = useAlertsComposeData();
 
 	//
 	// B. Transform data
@@ -118,26 +118,32 @@ export function AlertCreateStepSummaryAi() {
 					)}
 				</Section>
 
-				<Divider lineStyle="dashed" />
+				{(autoTextsValue && hasPermissionToCreate) && (
+					<>
 
-				<Section>
+						<Divider lineStyle="dashed" />
 
-					{composeData && (
-						<Section gap="sm" padding="none">
-							<Label size="md" variant="muted" caps>Proposta</Label>
-							<Text weight="semibold">{composeData.pt.title}</Text>
-							<Text>{composeData.pt.description}</Text>
-							{!isProposalAccepted && <Inline onClick={handleAcceptProposal} dotted>Aceitar proposta</Inline>}
+						<Section>
+
+							{composeData && (
+								<Section gap="sm" padding="none">
+									<Label size="md" variant="muted" caps>Proposta</Label>
+									<Text weight="semibold">{composeData.pt.title}</Text>
+									<Text>{composeData.pt.description}</Text>
+									{!isProposalAccepted && <Inline onClick={handleAcceptProposal} dotted>Aceitar proposta</Inline>}
+								</Section>
+							)}
+
+							<LoadingThinking
+								size="md"
+								text="Generating summary..."
+								visible={isLoadingComposeData || isValidatingComposeData}
+							/>
+
 						</Section>
-					)}
 
-					<LoadingThinking
-						size="md"
-						text="Generating summary..."
-						visible={isLoadingComposeData || isValidatingComposeData}
-					/>
-
-				</Section>
+					</>
+				)}
 
 			</Surface>
 		</Section>
