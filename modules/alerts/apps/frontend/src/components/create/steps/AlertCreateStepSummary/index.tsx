@@ -3,20 +3,14 @@
 import { normalizeAlertCoordinatesInput } from '@/lib/alert-coordinates';
 import { IconLink } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type I18nCode, PermissionCatalog } from '@tmlmobilidade/types';
+import { AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
+import { PermissionCatalog } from '@tmlmobilidade/types';
 import { Button, ContextFormController, CoordinatesInput, Grid, Section, Surface, Switch, Textarea, TextInput, useContextFormWatch, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
-
-/* * */
-
-type DescribeAlertReturnType = Record<I18nCode, {
-	description: string
-	title: string
-}>;
 
 /* * */
 
@@ -72,7 +66,7 @@ export function AlertCreateStepSummary() {
 	//
 	// C. Handle actions
 
-	const { action: generateText, isLoading: isLoadingGeneratingText } = useHandleUpdate<DescribeAlertReturnType>({
+	const { action: generateText, isLoading: isLoadingGeneratingText } = useHandleUpdate<AlertsComposeResponse>({
 		fetchFn: async () => {
 			const formValues = alertsCreateForm.getValues();
 			if (!formValues.auto_texts) return;
@@ -80,7 +74,7 @@ export function AlertCreateStepSummary() {
 			if (!formValues.effect) return;
 			if (!formValues.reference_type) return;
 			if (!formValues.references?.length) return;
-			return await fetchData<DescribeAlertReturnType>(API_ROUTES.alerts.ALERTS_DESCRIBE, 'POST', {
+			return await fetchData<AlertsComposeResponse>(API_ROUTES.alerts.ALERTS_COMPOSE, 'POST', {
 				active_period_end_date: formValues.active_period_end_date,
 				active_period_start_date: formValues.active_period_start_date,
 				agency_id: formValues.agency_id,

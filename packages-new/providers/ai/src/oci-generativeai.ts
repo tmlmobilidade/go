@@ -20,20 +20,39 @@ export class OCIGenerativeAIProvider {
 	private readonly ociClient: GenerativeAiInferenceClient;
 
 	constructor() {
+		//
+
+		//
 		// Validate that all required environment variables are set
+
 		if (!process.env.OCI_AI_FINGERPRINT) throw new Error('Missing OCI_AI_FINGERPRINT environment variable for OCI Generative AI Provider');
 		if (!process.env.OCI_AI_PRIVATE_KEY_PATH && !process.env.OCI_AI_PRIVATE_KEY) throw new Error('Missing OCI_AI_PRIVATE_KEY_PATH or OCI_AI_PRIVATE_KEY environment variable for OCI Generative AI Provider');
 		if (!process.env.OCI_AI_REGION) throw new Error('Missing OCI_AI_REGION environment variable for OCI Generative AI Provider');
 		if (!process.env.OCI_AI_TENANCY) throw new Error('Missing OCI_AI_TENANCY environment variable for OCI Generative AI Provider');
 		if (!process.env.OCI_AI_USER) throw new Error('Missing OCI_AI_USER environment variable for OCI Generative AI Provider');
 		if (!process.env.OCI_AI_COMPARTMENT) throw new Error('Missing OCI_AI_COMPARTMENT environment variable for OCI Generative AI Provider');
+
+		//
+		// Resolve private key
+
+		const privateKeyPath = process.env.OCI_AI_PRIVATE_KEY_PATH;
+		const privateKeyValue = process.env.OCI_AI_PRIVATE_KEY;
+		if (!privateKeyPath && !privateKeyValue) throw new Error('OCI_AI_PRIVATE_KEY or OCI_AI_PRIVATE_KEY_PATH is not set');
+
+		let privateKey: string;
+		if (privateKeyPath) privateKey = readFileSync(privateKeyPath, 'utf8');
+		else if (privateKeyValue) privateKey = privateKeyValue.replace(/\\n/g, '\n');
+		else throw new Error('Could not resolve private key for OCI Generative AI Provider (missing OCI_AI_PRIVATE_KEY or OCI_AI_PRIVATE_KEY_PATH)');
+
+		//
 		// Build the OCI client using the environment variables for authentication
+
 		this.ociClient = new GenerativeAiInferenceClient({
 			authenticationDetailsProvider: new SimpleAuthenticationDetailsProvider(
 				process.env.OCI_AI_TENANCY,
 				process.env.OCI_AI_USER,
 				process.env.OCI_AI_FINGERPRINT,
-				process.env.OCI_AI_PRIVATE_KEY_PATH ? readFileSync(process.env.OCI_AI_PRIVATE_KEY_PATH, 'utf8') : process.env.OCI_AI_PRIVATE_KEY,
+				privateKey,
 				null,
 				Region.fromRegionId(process.env.OCI_AI_REGION),
 			),
