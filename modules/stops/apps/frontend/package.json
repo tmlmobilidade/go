@@ -19,7 +19,6 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-stops-pckg-organize": "*",
-		"@tmlmobilidade/logger-logger-frontend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",

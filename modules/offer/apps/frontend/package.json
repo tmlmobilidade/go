@@ -23,7 +23,6 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-offer": "*",
-		"@tmlmobilidade/logger-logger-frontend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",

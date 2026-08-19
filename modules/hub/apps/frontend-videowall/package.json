@@ -18,7 +18,6 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-types-performance": "*",
-		"@tmlmobilidade/logger-logger-frontend": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"next": "16.3.0",

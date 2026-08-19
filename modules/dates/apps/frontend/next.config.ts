@@ -1,6 +1,5 @@
 /* * */
 
-import { sentryConfig } from '@tmlmobilidade/logger-logger-frontend';
 import { type NextConfig } from 'next';
 
 /* * */
@@ -31,4 +30,4 @@ const nextConfig: NextConfig = {
 
 /* * */
 
-export default sentryConfig(nextConfig, '/sentry-tunnel');
+export default nextConfig;
