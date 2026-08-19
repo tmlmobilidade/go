@@ -1,6 +1,6 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { type PublishStatus } from '@tmlmobilidade/go-types-shared';
 

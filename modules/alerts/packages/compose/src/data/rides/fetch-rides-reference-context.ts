@@ -1,8 +1,8 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { type AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { type FetchRidesReferenceContextItem } from './fetch-rides-reference-context-item.js';
 import { fetchRidesReferenceContextQuery } from './fetch-rides-reference-context-query.js';
