@@ -1,17 +1,19 @@
 /**
  * Sentry request log integration for Next.js server environments.
  *
- * This module captures outgoing HTTP request logs from the process's stdout,
- * parses relevant request information, and enriches log entries sent to Sentry
- * with runtime context and request metadata.
+ * This module captures Next.js development request lines from stdout and
+ * completed Node.js responses in production, then enriches the Sentry log with
+ * runtime context and request metadata.
  *
  * Usage:
  *   Call `registerSentryNextRequestLogs(context)` at server bootstrap to enable
  *   Sentry request log enrichment.
  */
 
+import type { IncomingMessage, Server, ServerResponse } from 'node:http';
+
 import { getRuntimeLogContext, type RuntimeLogContext } from '@/logger/utils/runtime-log-context.js';
-import * as Sentry from '@sentry/nextjs';
+import { getGlobalScope, logger } from '@sentry/core';
 
 /**
  * Mimics a Node.js-like stdout with an overridable 'write' method
@@ -24,7 +26,15 @@ interface StdoutLike {
  * Mimics the process object with optional stdout
  */
 interface ProcessLike {
+	env?: Record<string, string | undefined>
+	getBuiltinModule?: (id: 'node:http') => HttpModule | undefined
 	stdout?: StdoutLike
+}
+
+interface HttpModule {
+	IncomingMessage: typeof import('node:http').IncomingMessage
+	Server: typeof import('node:http').Server
+	ServerResponse: typeof import('node:http').ServerResponse
 }
 
 /**
@@ -36,6 +46,8 @@ interface RequestLogContext extends RuntimeLogContext {
 	path: string // Request path, e.g., /api/user
 	status_code: number // HTTP status code, e.g., 200
 }
+
+const SERVER_REQUEST_LOGS_REGISTERED = Symbol.for('@tmlmobilidade/logger-frontend/server-request-logs-registered');
 
 /**
  * Pattern for matching standardized HTTP request logs:
@@ -49,8 +61,7 @@ const REQUEST_LOG_PATTERN = /\b(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+(\S+)\
 const VT_CONTROL_PATTERN = new RegExp(`${String.fromCharCode(27)}\\[[0-?]*[ -/]*[@-~]`, 'g');
 
 /**
- * Installs a hook on process.stdout.write to capture HTTP request logs,
- * normalize and parse them, and forward to Sentry with contextual attributes.
+ * Installs the request-log hook appropriate for the current environment.
  *
  * This should only be called once per process.
  *
@@ -58,6 +69,21 @@ const VT_CONTROL_PATTERN = new RegExp(`${String.fromCharCode(27)}\\[[0-?]*[ -/]*
  */
 export function registerSentryNextRequestLogs(context: RuntimeLogContext): void {
 	const processRef = Reflect.get(globalThis, 'process') as ProcessLike | undefined;
+
+	if (processRef?.env?.NODE_ENV === 'production') {
+		registerProductionRequestLogs(context, processRef);
+		return;
+	}
+
+	registerDevelopmentRequestLogs(context, processRef);
+}
+
+/**
+ * Next.js prints completed request lines to stdout only in development. Keep
+ * parsing those lines locally so the terminal output and its Sentry copy stay
+ * identical.
+ */
+function registerDevelopmentRequestLogs(context: RuntimeLogContext, processRef: ProcessLike | undefined): void {
 	const stdout = processRef?.stdout;
 
 	// Abort if stdout isn't available
@@ -76,6 +102,62 @@ export function registerSentryNextRequestLogs(context: RuntimeLogContext): void 
 }
 
 /**
+ * The production Next.js server does not print its development request lines.
+ * Observe Node's completed responses instead so Preview emits the equivalent
+ * method, path, status and duration log from real response data.
+ */
+function registerProductionRequestLogs(context: RuntimeLogContext, processRef: ProcessLike): void {
+	const http = processRef.getBuiltinModule?.('node:http');
+	if (!http) return;
+
+	const incomingMessageConstructor = http.IncomingMessage;
+	const serverConstructor = http.Server;
+	const serverResponseConstructor = http.ServerResponse;
+	const serverPrototype = serverConstructor.prototype as object;
+	if (Reflect.get(serverPrototype, SERVER_REQUEST_LOGS_REGISTERED)) return;
+
+	const originalEmit = Reflect.get(serverPrototype, 'emit') as (this: Server, eventName: string | symbol, ...args: unknown[]) => boolean;
+
+	Reflect.set(serverPrototype, SERVER_REQUEST_LOGS_REGISTERED, true);
+	Reflect.set(serverPrototype, 'emit', function (this: Server, eventName: string | symbol, ...args: unknown[]): boolean {
+		if (eventName === 'request') {
+			const [request, response] = args;
+			if (request instanceof incomingMessageConstructor && response instanceof serverResponseConstructor) {
+				captureCompletedRequest(request, response, context);
+			}
+		}
+
+		return originalEmit.call(this, eventName, ...args);
+	});
+}
+
+function captureCompletedRequest(request: IncomingMessage, response: ServerResponse, context: RuntimeLogContext): void {
+	const startedAt = performance.now();
+
+	response.once('finish', () => {
+		const durationMs = Math.max(0, performance.now() - startedAt);
+		const method = request.method ?? 'UNKNOWN';
+		const path = request.url ?? '/';
+		const statusCode = response.statusCode;
+		const message = `${method} ${path} ${statusCode} in ${formatDuration(durationMs)}`;
+
+		getGlobalScope().setAttributes(getRuntimeLogContext(context));
+		logger.info(message, {
+			...getRuntimeLogContext(context),
+			duration_ms: durationMs,
+			method,
+			path,
+			status_code: statusCode,
+		});
+	});
+}
+
+function formatDuration(durationMs: number): string {
+	if (durationMs >= 1000) return `${(durationMs / 1000).toFixed(1)}s`;
+	return `${Math.round(durationMs)}ms`;
+}
+
+/**
  * Attempts to normalize a log chunk into a string, strips ANSI/VT codes,
  * and extracts HTTP request info for forwarding to Sentry.
  *
@@ -89,8 +171,8 @@ function captureRequestLog(chunk: unknown, context: RuntimeLogContext): void {
 	const requestLogContext = parseRequestLog(message, context);
 	if (!requestLogContext) return;
 
-	Sentry.getGlobalScope().setAttributes(getRuntimeLogContext(context));
-	Sentry.logger.info(message, requestLogContext);
+	getGlobalScope().setAttributes(getRuntimeLogContext(context));
+	logger.info(message, requestLogContext);
 }
 
 /**
