@@ -3,17 +3,17 @@
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { Divider, Section, SegmentedControl, Select, Textarea } from '@tmlmobilidade/ui';
-import { useMemo, useState } from 'react';
+import { type LinesMode } from '@tmlmobilidade/types';
+import { Divider, MultiSelect, Section, SegmentedControl, Select } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 
 /* * */
 
-type StopsSelectionMode = 'all' | 'exclude' | 'include';
-
-const stopsSelectionOptions = [
-	{ label: 'Todas as paragens', value: 'all' },
-	{ label: 'Apenas estas paragens', value: 'include' },
-	{ label: 'Todas exceto estas', value: 'exclude' },
+const canvasProfileOptions = [
+	{ label: '0Master.A', value: '0Master.A' },
+	{ label: '0Master.B', value: '0Master.B' },
+	{ label: '0Master.C', value: '0Master.C' },
+	{ label: '0Master.F', value: '0Master.F' },
 ];
 
 /* * */
@@ -26,11 +26,9 @@ export function PlanPostersExportModalBody() {
 
 	const context = usePlansExportPdfsContext();
 	const plansListContext = usePlansListContext();
-	const [stops, setStops] = useState('');
-	const [stopsSelectionMode, setStopsSelectionMode] = useState<StopsSelectionMode>('all');
 
 	const plansOptions = useMemo(() => plansListContext.data.raw
-		.filter(plan => !!plan.operation_file_id && context.data.agencyOptions.some(option => option.value === plan.agency_id))
+		.filter(plan => !!plan.operation_file_id && plan.agency_id === context.data.agencyId)
 		.map((plan) => {
 			const startDate = Dates.fromOperationalDate(plan.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toFormat('dd-MM-yyyy');
 			const endDate = Dates.fromOperationalDate(plan.gtfs_feed_info.feed_end_date, 'Europe/Lisbon').toFormat('dd-MM-yyyy');
@@ -39,14 +37,15 @@ export function PlanPostersExportModalBody() {
 				label: `#${plan._id} · ${startDate} - ${endDate}`,
 				value: plan._id,
 			};
-		}), [context.data.agencyOptions, plansListContext.data.raw]);
+		}), [context.data.agencyId, plansListContext.data.raw]);
 
-	//
-	// C. Handle actions
-
-	const handleStopsSelectionModeChange = (value: string) => {
-		setStopsSelectionMode(value as StopsSelectionMode);
-	};
+	const linesOptions = useMemo(() => context.data.lines
+		.filter(line => line.agency_id === context.data.agencyId)
+		.sort((a, b) => a.code.localeCompare(b.code))
+		.map(line => ({
+			label: `${line.code} - ${line.name}`,
+			value: line._id,
+		})), [context.data.agencyId, context.data.lines]);
 
 	//
 	// D. Render components
@@ -57,8 +56,21 @@ export function PlanPostersExportModalBody() {
 
 			<Section gap="md">
 				<Select
+					data={context.data.agencyOptions}
+					description="As linhas e os planos são apresentados para este operador"
+					label="Selecionar operador"
+					onChange={context.actions.setAgencyId}
+					value={context.data.agencyId}
+					w="100%"
+				/>
+			</Section>
+			<Divider />
+
+			<Section gap="md">
+				<Select
 					data={plansOptions}
 					description="Selecione um plano"
+					disabled={!context.data.agencyId}
 					label="Selecionar plano"
 					onChange={context.actions.setPlanId}
 					value={context.data.planId}
@@ -67,27 +79,41 @@ export function PlanPostersExportModalBody() {
 			</Section>
 			<Divider />
 
-			{context.data.planId && (
+			{context.data.agencyId && context.data.planId && (
 				<Section gap="md">
 					<SegmentedControl
-						data={stopsSelectionOptions}
-						description="Escolha quais paragens pretende considerar"
 						fullWidth={true}
-						label="Paragens"
-						onChange={handleStopsSelectionModeChange}
-						value={stopsSelectionMode}
+						label="Linhas a exportar"
+						onChange={value => context.actions.setLinesMode(value as LinesMode)}
+						value={context.data.linesMode}
+						data={[
+							{ label: 'Todas as linhas', value: 'all' },
+							{ label: 'Apenas estas linhas', value: 'include' },
+							{ label: 'Todas exceto estas', value: 'exclude' },
+						]}
 					/>
 
-					{stopsSelectionMode !== 'all' && (
-						<Textarea
-							description="Separe os códigos das paragens por vírgulas"
-							label={stopsSelectionMode === 'include' ? 'Paragens a exportar' : 'Paragens a excluir'}
-							minRows={3}
-							onChange={event => setStops(event.currentTarget.value)}
-							placeholder="Ex.: 10001, 10002, 10003"
-							value={stops}
+					{context.data.linesMode !== 'all' && (
+						<MultiSelect
+							data={linesOptions}
+							label={context.data.linesMode === 'include' ? 'Linhas a incluir' : 'Linhas a excluir'}
+							onChange={context.actions.setLineIds}
+							value={context.data.lineIds}
+							w="100%"
+							description={context.data.linesMode === 'include'
+								? 'Apenas estas linhas serão exportadas'
+								: 'Todas as linhas serão exportadas, exceto estas'}
 						/>
 					)}
+
+					<Select
+						data={canvasProfileOptions}
+						description="Este perfil será aplicado às paragens das linhas selecionadas"
+						label="Canvas profile"
+						onChange={context.actions.setCanvasProfile}
+						value={context.data.canvasProfile}
+						w="100%"
+					/>
 				</Section>
 			)}
 		</>

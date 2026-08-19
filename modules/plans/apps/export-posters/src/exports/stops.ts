@@ -16,7 +16,7 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 
 	const stopsCsv = new CsvWriter('stops.txt', `${exportConfig.workdir}/stops.txt`, { batch_size: 100000 });
 
-	for await (const stopData of sqlTables.stops.stream()) {
+	for (const stopData of sqlTables.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times)')) {
 		const data: GTFS_Stop = {
 			location_type: stopData.location_type,
 			parent_station: stopData.parent_station,
@@ -48,7 +48,7 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 		INNER JOIN trips ON trips.trip_id = stop_times.trip_id
 		ORDER BY stop_times.stop_id ASC, trips.direction_id ASC `,
 	).all().map((row: { direction_id: number, stop_id: string }): StopsToCanvasExt => ({
-		canvas_profile: '0Master.C',
+		canvas_profile: exportConfig.canvas_profile,
 		direction_id: row.direction_id,
 		stop_id: row.stop_id,
 	}));

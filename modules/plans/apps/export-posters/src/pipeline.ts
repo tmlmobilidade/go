@@ -4,7 +4,7 @@ import { PostersController } from '@/controller/poster.js';
 import { importPlanToSqlite } from '@/import-plan-to-sqlite.js';
 import { type ExportToHitouchConfig } from '@/types.js';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Plan } from '@tmlmobilidade/types';
+import { type LinesMode, type Plan } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 /* * */
@@ -25,13 +25,13 @@ function isZipFile(file: Buffer): boolean {
 
 /* * */
 
-export async function generatePlanPostersZip(planData: Plan, exportId: string): Promise<Buffer> {
+export async function generatePlanPostersZip(planData: Plan, exportId: string, options?: { canvas_profile?: ExportToHitouchConfig['canvas_profile'], line_codes?: string[], lines_mode?: LinesMode }): Promise<Buffer> {
 	const postersController = new PostersController();
 	let exportConfig: ExportToHitouchConfig | undefined;
 
 	try {
 		Logger.info({ message: `Preparing GTFS files for poster export ${exportId} (Plan ${planData._id}).` });
-		exportConfig = await importPlanToSqlite(planData, { workdir: `/tmp/hitouch/export-${exportId}` });
+		exportConfig = await importPlanToSqlite(planData, { ...options, workdir: `/tmp/hitouch/export-${exportId}` });
 		Logger.info({ message: `Submitting poster GTFS for export ${exportId} to ZPHERES.` });
 		const pdfId = await postersController.generatePDF(exportConfig);
 		Logger.info({ message: `Created ZPHERES PDF job ${pdfId} for poster export ${exportId}.` });

@@ -5,6 +5,7 @@ import { type OperationalDate } from '@tmlmobilidade/types';
 /* * */
 
 export interface ExportToHitouchConfig {
+	canvas_profile: '0Master.A' | '0Master.B' | '0Master.C' | '0Master.F'
 	date_range: {
 		end: OperationalDate
 		start: OperationalDate

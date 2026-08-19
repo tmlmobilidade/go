@@ -13,12 +13,12 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { importGtfsToDatabase, ImportGtfsToDatabaseConfig, initImportGtfsContext } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type Plan } from '@tmlmobilidade/types';
+import { type LinesMode, type Plan } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 /* * */
 
-export async function importPlanToSqlite(planData: Plan, options?: { workdir?: string }): Promise<ExportToHitouchConfig> {
+export async function importPlanToSqlite(planData: Plan, options?: { canvas_profile?: ExportToHitouchConfig['canvas_profile'], line_codes?: string[], lines_mode?: LinesMode, workdir?: string }): Promise<ExportToHitouchConfig> {
 	//
 
 	//
@@ -56,6 +56,37 @@ export async function importPlanToSqlite(planData: Plan, options?: { workdir?: s
 
 	const importContext = initImportGtfsContext();
 	const sqlGtfs = await importGtfsToDatabase(importConfig, importContext);
+
+	if (options?.lines_mode !== 'all' && options?.line_codes?.length) {
+		const placeholders = options.line_codes.map(() => '?').join(', ');
+		const matchingRoutes = sqlGtfs.routes.all(`WHERE CAST(line_id AS TEXT) IN (${placeholders})`, options.line_codes);
+
+		if (!matchingRoutes.length) {
+			throw new Error(`None of the selected lines exist in Plan ${planData._id}.`);
+		}
+		const selectedLineCodes = new Set(matchingRoutes.map(route => String(route.line_id)));
+		const missingLineCodes = options.line_codes.filter(lineCode => !selectedLineCodes.has(lineCode));
+		if (missingLineCodes.length) {
+			throw new Error(`Lines ${missingLineCodes.join(', ')} do not exist in Plan ${planData._id}.`);
+		}
+
+		const selectedRoutes = options.lines_mode === 'exclude'
+			? sqlGtfs.routes.all(`WHERE CAST(line_id AS TEXT) NOT IN (${placeholders})`, options.line_codes)
+			: matchingRoutes;
+		if (!selectedRoutes.length) {
+			throw new Error(`The selected line filter removes every route from Plan ${planData._id}.`);
+		}
+
+		const selectedRouteIds = selectedRoutes.map(route => route.route_id);
+		const routePlaceholders = selectedRouteIds.map(() => '?').join(', ');
+		const filterTransaction = sqlGtfs._db.transaction(() => {
+			sqlGtfs.stop_times.run(`DELETE FROM stop_times WHERE trip_id NOT IN (SELECT trip_id FROM trips WHERE route_id IN (${routePlaceholders}))`, selectedRouteIds);
+			sqlGtfs.trips.run(`DELETE FROM trips WHERE route_id NOT IN (${routePlaceholders})`, selectedRouteIds);
+			sqlGtfs.routes.run(`DELETE FROM routes WHERE route_id NOT IN (${routePlaceholders})`, selectedRouteIds);
+		});
+		filterTransaction();
+	}
+
 	const sourceHasCalendar = fs.existsSync(`${importContext.workdir.extract_dir_path}/calendar.txt`);
 	const [agencyHolidays, agencyYearPeriods] = await Promise.all([
 		goDb.offer.holidays.findMany({ agency_ids: { $in: [agencyId] } }),
@@ -66,6 +97,7 @@ export async function importPlanToSqlite(planData: Plan, options?: { workdir?: s
 	// Setup the export config
 
 	const exportConfig: ExportToHitouchConfig = {
+		canvas_profile: options?.canvas_profile ?? '0Master.C',
 		date_range: {
 			end: feedEndDate,
 			start: feedStartDate,

@@ -3,20 +3,29 @@
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/Posters/PlanPostersModal/constants';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateFileExportDto, PermissionCatalog, type PlanPostersExportProperties } from '@tmlmobilidade/types';
+import { type CreateFileExportDto, type Line, type LinesMode, type PlanPostersExportProperties } from '@tmlmobilidade/types';
 import { closeModal, type SelectDataItem, useDataAgencies, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import useSWR from 'swr';
 
 /* * */
 
 interface PlansExportPdfsContextState {
 	actions: {
 		exportPosters: () => Promise<void>
+		setAgencyId: (value: null | string) => void
+		setCanvasProfile: (value: null | string) => void
+		setLineIds: (value: string[]) => void
+		setLinesMode: (value: LinesMode) => void
 		setPlanId: (value: null | string) => void
 	}
 	data: {
 		agencyId: null | string
 		agencyOptions: SelectDataItem[]
+		canvasProfile: null | string
+		lineIds: string[]
+		lines: Line[]
+		linesMode: LinesMode
 		planId: null | string
 	}
 	flags: {
@@ -48,33 +57,40 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 
 	const plansListContext = usePlansListContext();
 	const exports = useExportsContext();
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.plans.actions.generate_pdf_posters],
-		scope: PermissionCatalog.all.plans.scope,
-	});
+	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
+	const { data: linesData } = useSWR<Line[], Error>(API_ROUTES.offer.LINES_LIST);
 	const [agencyId, setAgencyId] = useState<null | string>(null);
+	const [canvasProfile, setCanvasProfile] = useState<null | string>('0Master.C');
+	const [lineIds, setLineIds] = useState<string[]>([]);
+	const [linesMode, setLinesMode] = useState<LinesMode>('all');
 	const [planId, setPlanId] = useState<null | string>(null);
 	const [loading, setLoading] = useState(false);
 
 	//
 	// B. Derived state
 
-	const canSave = !!agencyId && !!planId;
+	const canSave = !!agencyId && !!planId && !!canvasProfile && (linesMode === 'all' || lineIds.length > 0);
 
 	//
 	// C. Handle actions
 
 	const selectAgencyId = useCallback((value: null | string) => {
 		setAgencyId(value);
+		setLineIds([]);
+		setLinesMode('all');
 		setPlanId(null);
 	}, []);
 
+	const selectLinesMode = useCallback((value: LinesMode) => {
+		setLinesMode(value);
+		setLineIds([]);
+	}, []);
+
 	const selectPlanId = useCallback((value: null | string) => {
-		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === value && !!plan.operation_file_id);
+		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === value && plan.agency_id === agencyId && !!plan.operation_file_id);
 
 		setPlanId(selectedPlan?._id ?? null);
-		setAgencyId(selectedPlan?.agency_id ?? null);
-	}, [plansListContext.data.raw]);
+	}, [agencyId, plansListContext.data.raw]);
 
 	useEffect(() => {
 		const selectedAgencyIsAvailable = agencyOptions.some(option => option.value === agencyId);
@@ -88,7 +104,8 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 
 	const exportPosters = useCallback(async () => {
 		if (loading) return;
-		if (!agencyId || !planId) return;
+		if (!agencyId || !canvasProfile || !planId) return;
+		if (linesMode !== 'all' && !lineIds.length) return;
 
 		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === planId && plan.agency_id === agencyId);
 		if (!selectedPlan?.operation_file_id) return;
@@ -100,6 +117,9 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 			processing_status: 'waiting',
 			properties: {
 				agency_id: agencyId,
+				canvas_profile: canvasProfile as '0Master.A' | '0Master.B' | '0Master.C' | '0Master.F',
+				line_ids: linesMode === 'all' ? undefined : lineIds,
+				lines_mode: linesMode,
 				plan_id: planId,
 			},
 			type: 'plan_posters',
@@ -116,7 +136,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 		} finally {
 			setLoading(false);
 		}
-	}, [agencyId, exports.actions, loading, planId, plansListContext.data.raw]);
+	}, [agencyId, canvasProfile, exports.actions, lineIds, linesMode, loading, planId, plansListContext.data.raw]);
 
 	//
 	// D. Define context value
@@ -124,11 +144,19 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	const contextValue: PlansExportPdfsContextState = useMemo(() => ({
 		actions: {
 			exportPosters,
+			setAgencyId: selectAgencyId,
+			setCanvasProfile,
+			setLineIds,
+			setLinesMode: selectLinesMode,
 			setPlanId: selectPlanId,
 		},
 		data: {
 			agencyId,
 			agencyOptions,
+			canvasProfile,
+			lineIds,
+			lines: linesData ?? [],
+			linesMode,
 			planId,
 		},
 		flags: {
@@ -136,7 +164,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 			has_error: false,
 			loading,
 		},
-	}), [agencyId, agencyOptions, canSave, exportPosters, loading, planId, selectPlanId]);
+	}), [agencyId, agencyOptions, canSave, canvasProfile, exportPosters, lineIds, linesData, linesMode, loading, planId, selectAgencyId, selectLinesMode, selectPlanId]);
 
 	//
 	// E. Render components

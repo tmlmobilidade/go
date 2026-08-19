@@ -28,7 +28,35 @@ export async function exportPlanPostersFile(fileExport: FileExport): Promise<Att
 		throw new Error(`Plan ${planData._id} has no operation file for poster export`);
 	}
 
-	const pdfZip = await generatePlanPostersZip(planData, fileExport._id);
+	const linesMode = properties.lines_mode ?? (properties.line_ids?.length ? 'include' : 'all');
+	const selectedLineIds = linesMode === 'all' ? [] : properties.line_ids ?? [];
+	if (linesMode !== 'all' && !selectedLineIds.length) {
+		throw new Error(`Poster export ${fileExport._id} requires selected lines for ${linesMode} mode.`);
+	}
+
+	const selectedLines = selectedLineIds.length
+		? await goDb.offer.lines.findMany({ _id: { $in: selectedLineIds } })
+		: [];
+
+	if (selectedLineIds.length && selectedLines.length !== new Set(selectedLineIds).size) {
+		throw new Error(`One or more selected lines do not exist for poster export ${fileExport._id}.`);
+	}
+
+	if (selectedLines.some(line => line.agency_id !== properties.agency_id)) {
+		throw new Error(`One or more selected lines do not belong to agency ${properties.agency_id}.`);
+	}
+
+	const lineCodes = selectedLines.map((line) => {
+		const numericCode = Number(line.code);
+		if (!Number.isFinite(numericCode)) throw new Error(`Line ${line._id} has a non-numeric GTFS code: ${line.code}.`);
+		return String(numericCode);
+	});
+
+	const pdfZip = await generatePlanPostersZip(planData, fileExport._id, {
+		canvas_profile: properties.canvas_profile,
+		line_codes: lineCodes,
+		lines_mode: linesMode,
+	});
 
 	return storageProvider.upload(pdfZip, {
 		created_by: 'system',
