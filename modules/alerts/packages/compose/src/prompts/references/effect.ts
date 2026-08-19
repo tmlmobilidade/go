@@ -52,12 +52,12 @@ export const effectPrompt: Record<AlertEffect, Record<I18nCode, string>> = {
 
 	ON_BOARD_SALE_ISSUE: {
 		en: '',
-		pt: 'Efeito: Impedimento dos sistemas de venda a bordo',
+		pt: 'Efeito: Venda a bordo condicionada',
 	},
 
 	REALTIME_INFO_ISSUE: {
 		en: '',
-		pt: 'Efeito: Problema com a informação em tempo real',
+		pt: 'Efeito: Informação em tempo real limitada',
 	},
 
 	REDUCED_SERVICE: {

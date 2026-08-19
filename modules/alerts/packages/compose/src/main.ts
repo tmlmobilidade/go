@@ -9,12 +9,12 @@ import { fetchAgencyReferenceContext } from './data/agencies/fetch-agency-refere
 import { fetchLinesReferenceContext } from './data/lines/fetch-lines-reference-context.js';
 import { fetchRidesReferenceContext } from './data/rides/fetch-rides-reference-context.js';
 import { fetchStopsReferenceContext } from './data/stops/fetch-stops-reference-context.js';
-import { causePrompt } from './prompts/causes/cause.js';
-import { effectPrompt } from './prompts/effects/effect.js';
 import { initDescriptionPrompt } from './prompts/general/init.js';
 import { titleFormatTemplatePrompt } from './prompts/general/title-prompt.js';
 import { userInstructionPromptEnd, userInstructionPromptStart } from './prompts/general/user-instructions.js';
-import { referenceTypePrompt } from './prompts/reference-types/reference-type.js';
+import { causePrompt } from './prompts/references/cause.js';
+import { effectPrompt } from './prompts/references/effect.js';
+import { referenceTypePrompt } from './prompts/references/reference-type.js';
 import { parseAiResult } from './utils/parse-ai-result.js';
 
 /**
