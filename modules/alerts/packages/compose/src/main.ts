@@ -12,7 +12,7 @@ import { fetchRidesReferenceContext } from './data/rides/fetch-rides-reference-c
 import { fetchStopsReferenceContext } from './data/stops/fetch-stops-reference-context.js';
 import { initPrompt } from './prompts/general/init.js';
 import { terminationPrompt } from './prompts/general/termination.js';
-import { userInstructionPromptEnd, userInstructionPromptStart } from './prompts/general/user-instructions.js';
+// import { userInstructionPromptEnd, userInstructionPromptStart } from './prompts/general/user-instructions.js';
 import { activePeriodPrompt } from './prompts/references/active-period.js';
 import { causePrompt } from './prompts/references/cause.js';
 import { effectPrompt } from './prompts/references/effect.js';
@@ -80,26 +80,6 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 		addToPromptContext(promptContext, initPrompt[i18nCode]);
 
 		//
-		// Add the cause and effect prompts
-
-		addToPromptContext(promptContext, causePrompt[validatedRequestData.cause][i18nCode]);
-		addToPromptContext(promptContext, effectPrompt[validatedRequestData.effect][i18nCode]);
-
-		//
-		// Add the active period prompt
-
-		const activePeriodStart = Dates
-			.fromUnixTimestamp(validatedRequestData.active_period_start_date)
-			.setZone(foundAgency.timezone, 'offset_only')
-			.toFormat('yyyy-MM-dd HH:mm');
-
-		const activePeriodEnd = Dates
-			.fromUnixTimestamp(validatedRequestData.active_period_end_date)
-			.toFormat('yyyy-MM-dd HH:mm');
-
-		addToPromptContext(promptContext, activePeriodPrompt[i18nCode](activePeriodStart, activePeriodEnd));
-
-		//
 		// Fetch additional data depending on the reference type
 
 		if (validatedRequestData.reference_type === 'agency' && agencyReferenceContext) {
@@ -125,11 +105,31 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 		//
 		// Add the user instructions
 
-		if (validatedRequestData.user_instructions) {
-			addToPromptContext(promptContext, userInstructionPromptStart[i18nCode]);
-			addToPromptContext(promptContext, validatedRequestData.user_instructions);
-			addToPromptContext(promptContext, userInstructionPromptEnd[i18nCode]);
-		}
+		// if (validatedRequestData.user_instructions) {
+		// 	addToPromptContext(promptContext, userInstructionPromptStart[i18nCode]);
+		// 	addToPromptContext(promptContext, validatedRequestData.user_instructions);
+		// 	addToPromptContext(promptContext, userInstructionPromptEnd[i18nCode]);
+		// }
+
+		//
+		// Add the active period prompt
+
+		const activePeriodStart = Dates
+			.fromUnixTimestamp(validatedRequestData.active_period_start_date)
+			.setZone(foundAgency.timezone, 'offset_only')
+			.toFormat('yyyy-MM-dd HH:mm');
+
+		const activePeriodEnd = Dates
+			.fromUnixTimestamp(validatedRequestData.active_period_end_date)
+			.toFormat('yyyy-MM-dd HH:mm');
+
+		addToPromptContext(promptContext, activePeriodPrompt[i18nCode](activePeriodStart, activePeriodEnd));
+
+		//
+		// Add the cause and effect prompts
+
+		addToPromptContext(promptContext, causePrompt[validatedRequestData.cause][i18nCode]);
+		addToPromptContext(promptContext, effectPrompt[validatedRequestData.effect][i18nCode]);
 
 		//
 		// Add the termination prompt
