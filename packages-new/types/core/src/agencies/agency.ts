@@ -4,7 +4,7 @@ import { AgencyAlertsMapSchema } from '@/agencies/alerts-map.js';
 import { AgencyApexSchema } from '@/agencies/apex.js';
 import { AgencyFinancialsSchema } from '@/agencies/financials.js';
 import { AgencyOpenDataSchema } from '@/agencies/open-data.js';
-import { DocumentSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { DocumentSchema, OperationalDateIntSchema, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -25,7 +25,7 @@ export const AgencySchema = DocumentSchema.extend({
 	public_email: z.string().email(),
 	public_name: z.string(),
 	short_name: z.string().max(4),
-	timezone: z.string().default('Europe/Lisbon'),
+	timezone: TimezoneIdentifiedSchema.default('Europe/Lisbon'),
 	validation_rules: z.any().nullable().default(null),
 	website_url: z.string().url(),
 });
