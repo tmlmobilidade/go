@@ -34,7 +34,10 @@ async function initializeSentry(isBrowser: boolean): Promise<ReturnType<typeof S
 		...config.tunnel && { tunnel: config.tunnel },
 	});
 
-	if (isBrowser) enableConsoleLogBridge();
+	if (isBrowser) {
+		enableConsoleLogBridge();
+		console.log('Sentry frontend connection initialized.');
+	}
 
 	return client;
 }
