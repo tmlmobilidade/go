@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { CALENDAR_DATE_FORMAT, type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/lib/date-format.js';
-import { type TimezoneIdentified, TimezoneIdentifiedSchema, TimezoneIdentifiedValues } from '@tmlmobilidade/go-types-shared';
-import { type CalendarDate, type OperationalDate, type OperationalDateInt, type UnixTimestamp } from '@tmlmobilidade/types';
+import { CALENDAR_DATE_FORMAT, type CalendarDate, DateFormat, OPERATIONAL_DATE_FORMAT, type OperationalDateInt, type TimezoneIdentified, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
+
+import { DateFormatConfigMap } from './date-format.js';
 
 /* * */
 
@@ -11,29 +11,13 @@ interface DatesConstructor {
 	calendar_date: CalendarDate
 	iso: null | string
 	js_date: Date
-	/**
-	 * @deprecated Use the operational_date_int field instead, for better performance.
-	 */
-	operational_date: OperationalDate
 	operational_date_int: OperationalDateInt
 	std_window: { end: UnixTimestamp, start: UnixTimestamp }
 	unix_timestamp: UnixTimestamp
 }
 
-export interface CalendarEntry {
-	date: string
-	day_type: '1' | '2' | '3'
-	holiday: '0' | '1'
-	notes: string
-	period: '1' | '2' | '3'
-}
-
 /* * */
 
-/**
- * A class that represents a date and time.
- * @deprecated Use the Dates class from `@tmlmobilidade/go-utils-dates` instead.
- */
 export class Dates {
 	//
 
@@ -42,10 +26,6 @@ export class Dates {
 	public calendar_date: CalendarDate;
 	public iso: null | string;
 	public js_date: Date;
-	/**
-	 * @deprecated Use the operational_date_int field instead, for better performance.
-	 */
-	public operational_date: OperationalDate;
 	public operational_date_int: OperationalDateInt;
 	public std_window: { end: UnixTimestamp, start: UnixTimestamp };
 	public unix_timestamp: UnixTimestamp;
@@ -54,17 +34,10 @@ export class Dates {
 		this.calendar_date = params.calendar_date;
 		this.iso = params.iso ?? null;
 		this.js_date = params.js_date;
-		this.operational_date = params.operational_date;
 		this.operational_date_int = params.operational_date_int;
 		this.std_window = params.std_window;
 		this.unix_timestamp = params.unix_timestamp;
 	}
-
-	static get FORMATS() { return FORMATS; }
-
-	static get TIMEZONE_LIST() { return TimezoneIdentifiedValues; }
-
-	static get TIMEZONE_LIST_VALUES() { return TimezoneIdentifiedSchema.Values; }
 
 	/**
 	 * Creates a Dates object from a date/time string in a specific format.
@@ -82,7 +55,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -101,7 +73,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -121,29 +92,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
-			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
-			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
-		});
-	}
-
-	/**
-	 * Creates a Dates object from an operational date string in 'yyyyMMdd' format.
-	 * @param date The operational date string in 'yyyyMMdd' format or an OperationalDate object.
-	 * @param timezone The timezone to set for the Dates object.
-	 * @returns A new Dates object created from the operational date.
-	 */
-	static fromOperationalDate(date: OperationalDate | string, timezone: 'local' | 'utc' | TimezoneIdentified): Dates {
-		const dateTime = DateTime
-			.fromFormat(date, OPERATIONAL_DATE_FORMAT)
-			.setZone(timezone, { keepLocalTime: true })
-			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 }); // Start of the operational date
-		return new Dates({
-			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
-			iso: dateTime.toISO(),
-			js_date: dateTime.toJSDate(),
-			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -165,7 +113,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -185,7 +132,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -205,7 +151,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -225,26 +170,10 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
 		});
-	}
-
-	/**
-	 * Fetches calendar data from the public API
-	 * Returns an empty array if the request fails
-	 */
-	static async fetchCalendarData(): Promise<CalendarEntry[]> {
-		try {
-			let calendarJson: CalendarEntry[] = [];
-			const response = await fetch('https://go.carrismetropolitana.pt/api/dates/public');
-			calendarJson = !response.ok ? [] : await response.json() as CalendarEntry[];
-			return calendarJson;
-		} catch (error) {
-			console.error('Error fetching calendar data:', error);
-		}
 	}
 
 	/**
@@ -275,7 +204,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -296,7 +224,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -317,7 +244,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -338,7 +264,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -362,7 +287,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -383,7 +307,6 @@ export class Dates {
 			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
 			iso: dateTime.toISO(),
 			js_date: dateTime.toJSDate(),
-			operational_date: this.getOperationalDate(dateTime.toISO()),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
 			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
@@ -409,40 +332,6 @@ export class Dates {
 	}
 
 	/**
-	 * Returns a human-readable, localized string for the time remaining until a given unix_timestamp (in ms) from now.
-	 * @param unixTimestamp The target timestamp in milliseconds
-	 * @param locale Optional locale string (e.g., 'en', 'pt')
-	 * @returns A localized string like "2 days, 3 hours, 15 minutes"
-	 */
-	timeUntilLocaleString(unixTimestamp: UnixTimestamp, locale: 'en' | 'pt' = 'pt'): string {
-		const now = Date.now();
-		const diffMs = unixTimestamp - now;
-
-		const parts: string[] = [];
-
-		if (diffMs < 60 * 1000) {
-			return locale === 'en' ? 'Arriving' : 'A Chegar';
-		}
-
-		const totalMinutes = Math.round(diffMs / (1000 * 60));
-		const days = Math.floor(totalMinutes / (60 * 24));
-		const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-		const minutes = totalMinutes % 60;
-
-		if (days > 0) {
-			parts.push(`${days} ${days === 1 ? locale === 'en' ? 'day' : 'dia' : locale === 'en' ? 'days' : 'dias'}`);
-		}
-		if (hours > 0) {
-			parts.push(`${hours} ${hours === 1 ? locale === 'en' ? 'hour' : 'hora' : locale === 'en' ? 'hours' : 'horas'}`);
-		}
-		if (minutes > 0 || parts.length === 0) {
-			parts.push(`${minutes} ${minutes === 1 ? locale === 'en' ? 'minute' : 'minuto' : locale === 'en' ? 'minutes' : 'minutos'}`);
-		}
-
-		return parts.join(', ');
-	}
-
-	/**
 	 * Returns the date as a string in the specified format.
 	 * @param format The format string (see Luxon tokens documentation)
 	 * @param opts Optional formatting options (e.g., { locale: 'pt' })
@@ -459,19 +348,21 @@ export class Dates {
 	 * @param format The format string (see Luxon tokens documentation)
 	 * @returns The date as a string in the specified format
 	 */
-	toLocaleString(format: DatesFormat, locale?: string): string {
+	toLocaleString(format: DateFormat, locale?: string): string {
 		if (!this.iso) throw new Error('ISO date is not set.');
 		const dateTime = DateTime.fromISO(this.iso, { setZone: true });
 		if (locale) dateTime.setLocale(locale);
-		return dateTime.toLocaleString(format, { locale: locale });
+		const dateFormatConfig = DateFormatConfigMap[format];
+		if (!dateFormatConfig) throw new Error(`Invalid date format: ${format}`);
+		return dateTime.toLocaleString(dateFormatConfig, { locale: locale });
 	}
 
 	/**
 	 * Returns the operational date based on the provided timestamp and format.
-	 * @param timestamp - The timestamp to be parsed.
+	 * @param isoDate The ISO date string to calculate the operational date.
 	 * @returns The operational date in the yyyyLLdd format.
 	 */
-	private getOperationalDate(isoDate: null | string): OperationalDate {
+	private getOperationalDateInt(isoDate: null | string): OperationalDateInt {
 		// Skip if the ISO date is not set
 		if (!isoDate) throw new Error('ISO date is not set.');
 		// Get the date object
@@ -489,11 +380,7 @@ export class Dates {
 			operationalDate = dateObject.toFormat(OPERATIONAL_DATE_FORMAT);
 		}
 		// Return the date as an operational date
-		return operationalDate as OperationalDate;
-	}
-
-	private getOperationalDateInt(isoDate: null | string): OperationalDateInt {
-		return Number(this.getOperationalDate(isoDate)) as OperationalDateInt;
+		return Number(operationalDate) as OperationalDateInt;
 	}
 
 	/**

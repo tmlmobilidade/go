@@ -24,6 +24,9 @@ export const TimeSlotValues = [
 
 export const TimeSlotSchema = z.enum(TimeSlotValues);
 
+/**
+ * A time slot in human readable format.
+ */
 export type TimeSlot = z.infer<typeof TimeSlotSchema>;
 
 /* * */

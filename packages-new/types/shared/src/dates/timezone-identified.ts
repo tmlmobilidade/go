@@ -343,4 +343,7 @@ export const TimezoneIdentifiedValues = [
 
 export const TimezoneIdentifiedSchema = z.enum(TimezoneIdentifiedValues);
 
+/**
+ * A timezone identified by the IANA timezone database.
+ */
 export type TimezoneIdentified = z.infer<typeof TimezoneIdentifiedSchema>;

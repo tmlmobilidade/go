@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@/dates.js';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Returns an array of individual dates from a given range of operational dates.
@@ -9,7 +9,7 @@ import { type OperationalDate } from '@tmlmobilidade/types';
  * @param end The end date of the range, in OperationalDate format.
  * @returns An array of OperationalDate objects representing each date in the range.
  */
-export function getOperationalDatesFromRange(start: OperationalDate, end: OperationalDate): OperationalDate[] {
+export function getOperationalDatesFromRange(start: OperationalDateInt, end: OperationalDateInt): OperationalDateInt[] {
 	//
 
 	//
@@ -22,19 +22,19 @@ export function getOperationalDatesFromRange(start: OperationalDate, end: Operat
 	//
 	// Parse the start and end dates to ensure they are in the correct format
 
-	const startDate = Dates.fromOperationalDate(start, 'Europe/Lisbon');
-	const endDate = Dates.fromOperationalDate(end, 'Europe/Lisbon');
+	const startDate = Dates.fromOperationalDateInt(start, 'Europe/Lisbon');
+	const endDate = Dates.fromOperationalDateInt(end, 'Europe/Lisbon');
 
 	//
 	// Create an array to hold the individual dates and iterate
 	// from the start date to the end date, adding each date to the array
 
-	const dates: OperationalDate[] = [];
+	const dates: OperationalDateInt[] = [];
 
 	let current = startDate;
 
-	while (current.operational_date <= endDate.operational_date) {
-		dates.push(current.operational_date);
+	while (current.operational_date_int <= endDate.operational_date_int) {
+		dates.push(current.operational_date_int);
 		current = current.plus({ days: 1 });
 	}
 
