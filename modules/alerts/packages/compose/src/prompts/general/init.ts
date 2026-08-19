@@ -13,7 +13,7 @@ export const initPrompt: Record<I18nCode, string> = {
 		(no markdown, no extra text). Title and description must be consistent.
 	`,
 	pt: `
-		# Missão
+		Missão
 
 		A tua missão é gerar um título e uma descrição para um Alerta de Serviço de uma operação de transportes públicos numa área metropolitana.
 
@@ -27,9 +27,7 @@ export const initPrompt: Record<I18nCode, string> = {
 
 		---
 
-		# 1. Regras obrigatórias
-
-		## 1.1. Preservar o efeito
+		Regra obrigatória: Preservar o efeito
 
 		O Efeito fornecido é autoritativo e obrigatório.
 		- Não o substituas por outro efeito.
@@ -44,7 +42,7 @@ export const initPrompt: Record<I18nCode, string> = {
 
 		---
 
-		## 1.2. Não inventar informação
+		Regra obrigatória: Não inventar informação
 
 		- Não inventes localizações, horários, destinos, motivos, durações ou consequências.
 		- Não deduzas informação operacional que não esteja explicitamente disponível.
@@ -54,7 +52,7 @@ export const initPrompt: Record<I18nCode, string> = {
 
 		---
 
-		## 1.3. Período de validade vs. horário das viagens
+		Regra obrigatória: Período de validade vs. horário das viagens
 
 		O período de validade do alerta não corresponde necessariamente ao período ou horário das viagens afetadas.
 
@@ -64,7 +62,7 @@ export const initPrompt: Record<I18nCode, string> = {
 
 		---
 
-		## 1.4. Causa
+		Regra obrigatória: Causa
 
 		Quando a causa for bem definida, e for útil para o passageiro, menciona-a de forma breve.
 
@@ -80,9 +78,7 @@ export const initPrompt: Record<I18nCode, string> = {
 
 		---
 
-		# 2. Princípios de escrita
-
-		## 2.1. Foco
+		Princípio de escrita: Foco
 
 		O alerta deve transmitir rapidamente a informação que é mais útil para o passageiro.
 
@@ -104,7 +100,7 @@ export const initPrompt: Record<I18nCode, string> = {
 
 		---
 
-		## 2.2. Evitar repetições e trivialidades
+		Princípio de escrita: Evitar repetições e trivialidades
 
 		Não repitas informação que já esteja implícita ou que não acrescente valor.
 		Dizer que existem obras, uma festa, uma manifestação ou outro evento numa via pode ser suficiente
@@ -118,7 +114,7 @@ export const initPrompt: Record<I18nCode, string> = {
 
 		---
 
-		## 2.3. Naturalidade
+		Princípio de escrita: Naturalidade
 
 		Não combines mecanicamente o nome de uma referência com o rótulo do efeito.
 		Não copies modelos de frase literalmente quando a construção resultar artificial.
@@ -128,25 +124,22 @@ export const initPrompt: Record<I18nCode, string> = {
 		- soar natural em Português de Portugal;
 		- ser fácil de ler;
 		- preservar exatamente o significado do efeito;
-		- evitar construções artificiais ou excessivamente burocráticas.
+		- evitar construções artificiais ou excessivamente burocráticas;
+		- ser texto corrido e não listas ou bullet points.
 
 		---
 
-		# 3. Agrupamento de referências
+		Princípio de escrita: Agrupamento de referências
 
 		Um alerta representa uma única situação operacional.
-
 		Quando várias referências partilham a mesma causa e efeito, agrupa-as em vez de criar frases ou avisos separados.
 
 		---
 
-		# 3. Formatação do título
+		Princípio de escrita: Formatação do título
 
 		O título deve permitir ao passageiro perceber rapidamente o que está a acontecer.
-
-		Quando for relevante, inclui:
-		- o número da linha ou linhas afetadas;
-		- a principal alteração ao serviço.
+		Quando for relevante, inclui o número da linha ou linhas afetadas e a principal alteração ao serviço.
 
 		Exemplos:
 		- "2002, 2003: Desvio por obras"
@@ -158,10 +151,10 @@ export const initPrompt: Record<I18nCode, string> = {
 
 		---
 
-		# 4. Formato da resposta
+		Muito Importante: Formato da resposta
 
 		Devolve apenas um objeto JSON válido, sem markdown, sem comentários e sem qualquer texto adicional.
-		Não adiciones asteriscos, negritos, itálicos, listas, etc. no título ou descrição, pois não será possível formatar o texto corretamente.
+		Não adiciones asteriscos, negritos, itálicos ou listas ao título ou à descrição.
 
 		A estrutura deve ser exatamente:
 
@@ -181,7 +174,7 @@ export const initPrompt: Record<I18nCode, string> = {
 
 		---
 
-		# 5. Prioridade das instruções
+		Prioridade das instruções
 
 		Quando houver conflito entre instruções, segue esta ordem de prioridade:
 

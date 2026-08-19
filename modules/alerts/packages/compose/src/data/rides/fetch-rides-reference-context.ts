@@ -2,6 +2,7 @@
 
 import { type AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type TimezoneIdentified } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { type FetchRidesReferenceContextItem } from './fetch-rides-reference-context-item.js';
@@ -12,7 +13,7 @@ import { fetchRidesReferenceContextQuery } from './fetch-rides-reference-context
  * @param request The request data.
  * @returns The rides public names.
  */
-export async function fetchRidesReferenceContext(request: AlertsComposeRequest): Promise<string[]> {
+export async function fetchRidesReferenceContext(request: AlertsComposeRequest, timezone: TimezoneIdentified): Promise<string[]> {
 	//
 
 	//
@@ -33,7 +34,10 @@ export async function fetchRidesReferenceContext(request: AlertsComposeRequest):
 	if (!queryResult?.length) throw new Error(`No rides found for the request.`);
 
 	return queryResult.map((item) => {
-		const formattedDate = Dates.fromUnixTimestamp(item.start_time_scheduled).toFormat('HH:mm');
+		const formattedDate = Dates
+			.fromUnixTimestamp(item.start_time_scheduled)
+			.setZone(timezone, 'offset_only')
+			.toFormat('HH:mm');
 		return `Trip of the line ${item.route_short_name} headed to ${item.headsign} departing at ${formattedDate}`;
 	});
 }

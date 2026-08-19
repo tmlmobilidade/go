@@ -60,7 +60,7 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 		: null;
 
 	const ridesReferenceContext = validatedRequestData.reference_type === 'rides'
-		? await fetchRidesReferenceContext(validatedRequestData)
+		? await fetchRidesReferenceContext(validatedRequestData, foundAgency.timezone)
 		: null;
 
 	//
