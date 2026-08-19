@@ -10,13 +10,18 @@ import { type PromptContext } from './types.js';
 export function getFinalPrompt(context: PromptContext): string {
 	//
 
-	let finalPrompt: string;
+	let finalPrompt: string = '';
 
-	finalPrompt = context.header.join('\n');
+	finalPrompt += context.intro.join('\n');
 
-	finalPrompt += context.body.join('\n');
+	finalPrompt += context.references.join('\n');
 
-	finalPrompt += context.footer.join('\n');
+	finalPrompt += context.data.join('\n');
 
-	return finalPrompt;
+	finalPrompt += context.user_instructions.join('\n');
+
+	return finalPrompt
+		.replace(/\n+/g, '\n') // Remove duplicate newlines
+		.replace(/[ \t]+/g, ' ') // Remove duplicate spaces
+		.trim();
 }

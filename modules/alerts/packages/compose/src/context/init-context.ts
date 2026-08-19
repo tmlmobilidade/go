@@ -8,9 +8,9 @@ import { type PromptContext } from './types.js';
  */
 export function initPromptContext(): PromptContext {
 	return {
-		body: [],
 		data: [],
-		footer: [],
-		header: [],
+		intro: [],
+		references: [],
+		user_instructions: [],
 	};
 }

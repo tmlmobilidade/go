@@ -4,10 +4,10 @@
  * The allowed steps for the prompt context.
  */
 export type PromptContextBlock =
-  | 'body'
   | 'data'
-  | 'footer'
-  | 'header';
+  | 'intro'
+  | 'references'
+  | 'user_instructions';
 
 /**
  * The prompt context type.

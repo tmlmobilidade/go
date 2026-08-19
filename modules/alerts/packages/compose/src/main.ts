@@ -68,35 +68,35 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 
 		const promptContext = initPromptContext();
 
-		appendToPromptContext(promptContext, 'header', initDescriptionPrompt[i18nCode]);
-		appendToPromptContext(promptContext, 'header', titleFormatTemplatePrompt[i18nCode]);
+		appendToPromptContext(promptContext, 'intro', initDescriptionPrompt[i18nCode]);
+		appendToPromptContext(promptContext, 'intro', titleFormatTemplatePrompt[i18nCode]);
 
 		//
 		// Add the cause and effect prompts
 
-		appendToPromptContext(promptContext, 'body', causePrompt[validatedRequestData.cause][i18nCode]);
-		appendToPromptContext(promptContext, 'body', effectPrompt[validatedRequestData.effect][i18nCode]);
+		appendToPromptContext(promptContext, 'references', causePrompt[validatedRequestData.cause][i18nCode]);
+		appendToPromptContext(promptContext, 'references', effectPrompt[validatedRequestData.effect][i18nCode]);
 
 		//
 		// Fetch additional data depending on the reference type
 
 		if (validatedRequestData.reference_type === 'agency' && agencyReferenceContext) {
-			appendToPromptContext(promptContext, 'body', referenceTypePrompt['agency'][i18nCode]);
+			appendToPromptContext(promptContext, 'references', referenceTypePrompt['agency'][i18nCode]);
 			appendToPromptContext(promptContext, 'data', agencyReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'lines' && linesReferenceContext) {
-			appendToPromptContext(promptContext, 'body', referenceTypePrompt['lines'][i18nCode]);
+			appendToPromptContext(promptContext, 'references', referenceTypePrompt['lines'][i18nCode]);
 			appendToPromptContext(promptContext, 'data', linesReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'stops' && stopsReferenceContext) {
-			appendToPromptContext(promptContext, 'body', referenceTypePrompt['stops'][i18nCode]);
+			appendToPromptContext(promptContext, 'references', referenceTypePrompt['stops'][i18nCode]);
 			appendToPromptContext(promptContext, 'data', stopsReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'rides' && ridesReferenceContext) {
-			appendToPromptContext(promptContext, 'body', referenceTypePrompt['rides'][i18nCode]);
+			appendToPromptContext(promptContext, 'references', referenceTypePrompt['rides'][i18nCode]);
 			appendToPromptContext(promptContext, 'data', ridesReferenceContext);
 		}
 
@@ -104,9 +104,9 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 		// Add the user instructions
 
 		if (validatedRequestData.user_instructions) {
-			appendToPromptContext(promptContext, 'footer', userInstructionPromptStart[i18nCode]);
-			appendToPromptContext(promptContext, 'footer', validatedRequestData.user_instructions);
-			appendToPromptContext(promptContext, 'footer', userInstructionPromptEnd[i18nCode]);
+			appendToPromptContext(promptContext, 'user_instructions', userInstructionPromptStart[i18nCode]);
+			appendToPromptContext(promptContext, 'user_instructions', validatedRequestData.user_instructions);
+			appendToPromptContext(promptContext, 'user_instructions', userInstructionPromptEnd[i18nCode]);
 		}
 
 		//
