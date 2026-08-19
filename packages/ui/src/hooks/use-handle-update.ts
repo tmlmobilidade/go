@@ -1,6 +1,6 @@
 'use client';
 
-import { type HttpResponse } from '@tmlmobilidade/utils';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { useCallback, useRef, useState } from 'react';
 
 import { useToast } from './toast';
@@ -8,7 +8,7 @@ import { useToast } from './toast';
 /* * */
 
 interface UseHandleUpdateProps<T> {
-	fetchFn: () => Promise<HttpResponse<T>>
+	fetchFn: () => Promise<ApiResponse<T>>
 	labels?: {
 		error_message?: string
 		error_title?: string
@@ -74,10 +74,6 @@ export function useHandleUpdate<T>({ fetchFn, labels, onError, onSuccess }: UseH
 				setIsError(new Error(response.error));
 				onErrorRef.current?.(new Error(response.error));
 				return;
-			}
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: labelsRef.current?.error_title ?? 'Erro' });
 			}
 			setIsLoading(false);
 			setIsError(new Error('Erro ao atualizar item'));

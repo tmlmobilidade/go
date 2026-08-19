@@ -1,9 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AlertsDescribeRequest, type AlertsDescribeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
+import { AlertsComposeRequest, AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { useContextFormWatch } from '@tmlmobilidade/ui';
+import { useContextFormWatch, useDebouncedValue } from '@tmlmobilidade/ui';
 import { fetchDataNew } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -12,8 +12,8 @@ import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.contex
 
 /* * */
 
-interface UseAlertsDescribeDataReturnType {
-	data: AlertsDescribeResponse
+interface UseAlertsComposeDataReturnType {
+	data: AlertsComposeResponse
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -22,7 +22,7 @@ interface UseAlertsDescribeDataReturnType {
 
 /* * */
 
-export function useAlertsDescribeData(): UseAlertsDescribeDataReturnType {
+export function useAlertsComposeData(): UseAlertsComposeDataReturnType {
 	//
 
 	//
@@ -39,10 +39,12 @@ export function useAlertsDescribeData(): UseAlertsDescribeDataReturnType {
 	const referencesValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'references' });
 	const userInstructionsValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'user_instructions' });
 
+	const [debouncedUserInstructions] = useDebouncedValue(userInstructionsValue, 1_000, { leading: false });
+
 	//
 	// B. Transform data
 
-	const requestBody = useMemo<AlertsDescribeRequest>(() => ({
+	const requestBody = useMemo<AlertsComposeRequest>(() => ({
 		active_period_end_date: activePeriodEndDateValue,
 		active_period_start_date: activePeriodStartDateValue,
 		agency_id: agencyIdValue,
@@ -50,15 +52,18 @@ export function useAlertsDescribeData(): UseAlertsDescribeDataReturnType {
 		effect: effectValue,
 		reference_type: referenceTypeValue,
 		references: referencesValue,
-		user_instructions: userInstructionsValue,
-	}), [agencyIdValue, activePeriodEndDateValue, activePeriodStartDateValue, causeValue, effectValue, referenceTypeValue, referencesValue, userInstructionsValue]);
+		user_instructions: debouncedUserInstructions,
+	}), [agencyIdValue, activePeriodEndDateValue, activePeriodStartDateValue, causeValue, effectValue, referenceTypeValue, referencesValue, debouncedUserInstructions]);
 
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsDescribeResponse>>([API_ROUTES.alerts.ALERTS_DESCRIBE, requestBody], {
-		fetcher: async ([url, requestBody]) => await fetchDataNew<AlertsDescribeResponse>(url, 'POST', requestBody),
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsComposeResponse>>([API_ROUTES.alerts.ALERTS_COMPOSE, requestBody], {
+		fetcher: async ([url, requestBody]) => await fetchDataNew<AlertsComposeResponse>(url, 'POST', requestBody),
 		refreshInterval: 0, // Disabled
+		revalidateIfStale: false,
+		revalidateOnFocus: false,
+		revalidateOnReconnect: false,
 	});
 
 	//
