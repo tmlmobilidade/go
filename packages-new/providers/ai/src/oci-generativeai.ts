@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 import { NoRetryConfigurationDetails, Region, SimpleAuthenticationDetailsProvider } from 'oci-common';
 import { GenerativeAiInferenceClient, requests } from 'oci-generativeaiinference';
 
+import { availableAiModels } from './models.js';
+
 /**
  * This is a simple wrapper around the OCI Generative AI SDK to make it easier
  * to use in our application. It currently only supports running a text prompt
@@ -16,7 +18,6 @@ export interface OCIGenerativeAIRunOptions {
 export class OCIGenerativeAIProvider {
 	//
 
-	private readonly modelOCID = 'ocid1.generativeaimodel.oc1.eu-frankfurt-1.amaaaaaask7dceyacn5rezarysrnds7bjsu6iy5nrxdvq6hyqcygode5o5xq';
 	private readonly ociClient: GenerativeAiInferenceClient;
 
 	constructor() {
@@ -103,7 +104,7 @@ export class OCIGenerativeAIProvider {
 				},
 				compartmentId: process.env.OCI_AI_COMPARTMENT,
 				servingMode: {
-					modelId: this.modelOCID,
+					modelId: availableAiModels['google.gemini-2.5-flash'].ocid,
 					servingType: 'ON_DEMAND',
 				},
 			},

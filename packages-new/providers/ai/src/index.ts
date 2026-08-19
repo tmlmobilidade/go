@@ -1,1 +1,1 @@
-export * from '@/oci-generativeai.js';
+export * from './oci-generativeai.js';

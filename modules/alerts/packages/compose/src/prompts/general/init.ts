@@ -45,19 +45,29 @@ export const initDescriptionPrompt: Record<I18nCode, string> = {
 		✅ Exemplo do que se deve escrever: "Devido a obras não será possível utilizar as paragens {Paragem 1}, {Paragem 2}..."
 		---
 
+		---
+		Importante: Consistência
 		O efeito fornecido é autoritativo e obrigatório: não o substituas por outro.
 		Não ignores um detalhe mais específico para escrever uma versão genérica do alerta.
 		Não inventes detalhes de localização se eles não estiverem explicitamente mencionados.
-
 		Não combines mecanicamente o nome da referência com o rótulo do efeito nem copies modelos de frase
 		de forma literal. Se uma construção soar artificial, reescreve-a com bom senso mantendo o mesmo significado.
+		---
 
+		---
 		Importante: Formato da Resposta
-		Devolve um pequeno resumo da tua motivação de escolha de palavras, com as principais características que consideras
-		relevantes para o título e descrição. Este texto deve ser breve, mas podes utilizar qualquer método que consideras
-		adequado para expressar a tua motivação.
-		No final da tua resposta, é OBRIGATÓRIO devolver um objeto JSON válido com as chaves "title" e "description" (sem markdown, sem texto extra),
-		que será o resultado final do título e descrição, com a tua melhor escolha de palavras. Mantém-te consistente entre o texto resumo, o título e a descrição,
-		assim como a estrutura do objeto JSON devolvido.
+		Devolve apenas um objecto JSON válido com a seguinte estrutura (sem markdown, sem texto extra):
+		{ "title": "string", "description": "string", "motivation": "string" }
+		No campo "motivation", escreve um pequeno resumo da tua motivação de escolha de palavras, com as principais características
+		que consideras relevantes para o título e descrição. Este texto deve ser breve, mas podes utilizar qualquer método que consideras
+		adequado para expressar a tua motivação. Os campos "title" e "description" são o resultado final do título e descrição, com a tua melhor escolha de palavras.
+		Mantém-te consistente entre o texto resumo, o título e a descrição, assim como a estrutura do objeto JSON devolvido.
+		---
+
+		---
+		Importante: Formatação do título
+		Para o título, tenta incluir logo o número da linha e as principais informações, para que seja logo percebido pelo utilizador.
+		Exemplo: "2002, 2003: Desvio por obras". Se o número da linha não fizer sentido ou não for relevante (ex: "1: Desvio por obras"), então não o incluas.
+		---
 	`,
 };
