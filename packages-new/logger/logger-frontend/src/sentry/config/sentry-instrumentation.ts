@@ -14,14 +14,6 @@ import { registerSentryNextRequestLogs } from '../connection/sentry-server.js';
 import { initSentry } from '../connection/sentry.js';
 
 /**
- * A minimal representation of the Node.js process,
- * used for runtime detection.
- */
-interface ProcessLike {
-	env?: Record<string, string | undefined>
-}
-
-/**
  * Creates an object encapsulating Sentry instrumentation for frontend server environments.
  *
  * - onRequestError: Handler for request error events, compatible with Sentry's API.
@@ -41,10 +33,7 @@ export function createSentryInstrumentation() {
 		 */
 		async register() {
 			await initSentry();
-			const processRef = Reflect.get(globalThis, 'process') as ProcessLike | undefined;
-			if (processRef?.env?.NEXT_RUNTIME === 'nodejs') {
-				registerSentryNextRequestLogs(getRuntimeLogContext());
-			}
+			registerSentryNextRequestLogs(getRuntimeLogContext());
 		},
 	};
 }
