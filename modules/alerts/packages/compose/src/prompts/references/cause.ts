@@ -32,12 +32,12 @@ export const causePrompt: Record<AlertCause, Record<I18nCode, string>> = {
 
 	DRIVER_ABSENCE: {
 		en: '',
-		pt: `Causa: Questão Operacional.`,
+		pt: `Causa: Imprevisto Operacional.`,
 	},
 
 	DRIVER_ISSUE: {
 		en: '',
-		pt: `Causa: Questão Operacional.`,
+		pt: `Causa: Imprevisto Operacional.`,
 	},
 
 	HIGH_PASSENGER_LOAD: {
