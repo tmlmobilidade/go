@@ -79,7 +79,7 @@ export function PlanPostersExportModalBody() {
 			</Section>
 			<Divider />
 
-			{context.data.agencyId && context.data.planId && (
+			{context.data.agencyId && (
 				<Section gap="md">
 					<SegmentedControl
 						fullWidth={true}
@@ -95,6 +95,7 @@ export function PlanPostersExportModalBody() {
 
 					{context.data.linesMode !== 'all' && (
 						<MultiSelect
+							key={`${context.data.agencyId}-${context.data.linesMode}`}
 							data={linesOptions}
 							label={context.data.linesMode === 'include' ? 'Linhas a incluir' : 'Linhas a excluir'}
 							onChange={context.actions.setLineIds}
@@ -106,6 +107,11 @@ export function PlanPostersExportModalBody() {
 						/>
 					)}
 
+				</Section>
+			)}
+
+			{context.data.agencyId && (
+				<Section gap="md">
 					<Select
 						data={canvasProfileOptions}
 						description="Este perfil será aplicado às paragens das linhas selecionadas"

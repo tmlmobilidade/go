@@ -15,6 +15,7 @@ import { getApexFile } from './controllers/get-apex-file.js';
 import { getDrtModel } from './controllers/get-drt-model.js';
 import { getOperationFile } from './controllers/get-operation-file.js';
 import { getPlan } from './controllers/get-plan.js';
+import { getPosterLines } from './controllers/get-poster-lines.js';
 import { lockPlan } from './controllers/lock-plan.js';
 import { sendApexNotification } from './controllers/send-apex-notification.js';
 import { updateApexFile } from './controllers/update-apex-file.js';
@@ -36,6 +37,12 @@ server.register(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
 			getAllPlans,
+		);
+
+		instance.get(
+			'/poster-lines',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.generate_pdf_posters]) },
+			getPosterLines,
 		);
 
 		instance.get(
