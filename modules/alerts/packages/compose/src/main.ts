@@ -1,17 +1,17 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { type AlertsComposeRequest, AlertsComposeRequestSchema, type AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/go-providers-ai';
 import { I18nCodeValues } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
-import { appendToPromptContext, getFinalPrompt, initPromptContext } from './context/index.js';
-import { fetchAgencyReferenceContext } from './data/agencies/fetch-agency-reference-context.js';
+import { addToPromptContext, getFinalPrompt } from './context/index.js';
 import { fetchLinesReferenceContext } from './data/lines/fetch-lines-reference-context.js';
 import { fetchRidesReferenceContext } from './data/rides/fetch-rides-reference-context.js';
 import { fetchStopsReferenceContext } from './data/stops/fetch-stops-reference-context.js';
-import { initDescriptionPrompt } from './prompts/general/init.js';
+import { initPrompt } from './prompts/general/init.js';
+import { terminationPrompt } from './prompts/general/termination.js';
 import { userInstructionPromptEnd, userInstructionPromptStart } from './prompts/general/user-instructions.js';
 import { activePeriodPrompt } from './prompts/references/active-period.js';
 import { causePrompt } from './prompts/references/cause.js';
@@ -75,15 +75,15 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 		// Initialize the prompt context
 		// with the shared values for the current language
 
-		const promptContext = initPromptContext();
+		const promptContext: string[] = [];
 
-		appendToPromptContext(promptContext, 'intro', initDescriptionPrompt[i18nCode]);
+		addToPromptContext(promptContext, initPrompt[i18nCode]);
 
 		//
 		// Add the cause and effect prompts
 
-		appendToPromptContext(promptContext, 'intro', causePrompt[validatedRequestData.cause][i18nCode]);
-		appendToPromptContext(promptContext, 'intro', effectPrompt[validatedRequestData.effect][i18nCode]);
+		addToPromptContext(promptContext, causePrompt[validatedRequestData.cause][i18nCode]);
+		addToPromptContext(promptContext, effectPrompt[validatedRequestData.effect][i18nCode]);
 
 		//
 		// Add the active period prompt
@@ -97,39 +97,44 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 			.fromUnixTimestamp(validatedRequestData.active_period_end_date)
 			.toFormat('yyyy-MM-dd HH:mm');
 
-		appendToPromptContext(promptContext, 'intro', activePeriodPrompt[i18nCode](activePeriodStart, activePeriodEnd));
+		addToPromptContext(promptContext, activePeriodPrompt[i18nCode](activePeriodStart, activePeriodEnd));
 
 		//
 		// Fetch additional data depending on the reference type
 
 		if (validatedRequestData.reference_type === 'agency' && agencyReferenceContext) {
-			appendToPromptContext(promptContext, 'intro', referenceTypePrompt['agency'][i18nCode]);
-			appendToPromptContext(promptContext, 'intro', agencyReferenceContext);
+			addToPromptContext(promptContext, referenceTypePrompt['agency'][i18nCode]);
+			addToPromptContext(promptContext, agencyReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'lines' && linesReferenceContext) {
-			appendToPromptContext(promptContext, 'intro', referenceTypePrompt['lines'][i18nCode]);
-			appendToPromptContext(promptContext, 'intro', linesReferenceContext);
+			addToPromptContext(promptContext, referenceTypePrompt['lines'][i18nCode]);
+			addToPromptContext(promptContext, linesReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'stops' && stopsReferenceContext) {
-			appendToPromptContext(promptContext, 'intro', referenceTypePrompt['stops'][i18nCode]);
-			appendToPromptContext(promptContext, 'intro', stopsReferenceContext);
+			addToPromptContext(promptContext, referenceTypePrompt['stops'][i18nCode]);
+			addToPromptContext(promptContext, stopsReferenceContext);
 		}
 
 		if (validatedRequestData.reference_type === 'rides' && ridesReferenceContext) {
-			appendToPromptContext(promptContext, 'intro', referenceTypePrompt['rides'][i18nCode]);
-			appendToPromptContext(promptContext, 'intro', ridesReferenceContext);
+			addToPromptContext(promptContext, referenceTypePrompt['rides'][i18nCode]);
+			addToPromptContext(promptContext, ridesReferenceContext);
 		}
 
 		//
 		// Add the user instructions
 
 		if (validatedRequestData.user_instructions) {
-			appendToPromptContext(promptContext, 'intro', userInstructionPromptStart[i18nCode]);
-			appendToPromptContext(promptContext, 'intro', validatedRequestData.user_instructions);
-			appendToPromptContext(promptContext, 'intro', userInstructionPromptEnd[i18nCode]);
+			addToPromptContext(promptContext, userInstructionPromptStart[i18nCode]);
+			addToPromptContext(promptContext, validatedRequestData.user_instructions);
+			addToPromptContext(promptContext, userInstructionPromptEnd[i18nCode]);
 		}
+
+		//
+		// Add the termination prompt
+
+		addToPromptContext(promptContext, terminationPrompt[i18nCode]);
 
 		//
 		// Setup the OCI generative AI provider
