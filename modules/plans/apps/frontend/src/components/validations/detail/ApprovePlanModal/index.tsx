@@ -4,7 +4,7 @@ import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { PlansCreateContextProvider, usePlansCreateContext } from '@/contexts/PlansCreate.context';
 import { IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
-import { AgencyTag, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, ProcessingStatusDisplay, Section, ValidityStatusTag } from '@tmlmobilidade/ui';
+import { AgencyTag, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, ProcessingStatusDisplay, Section, ValidityStatusDisplay } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -47,7 +47,7 @@ export default function ApprovePlanModal() {
 
 			<Section alignItems="center" flexDirection="row" gap="lg">
 				<ProcessingStatusDisplay value={plansCreateContext.data.validation.processing_status} />
-				<ValidityStatusTag value={plansCreateContext.data.validation.validity_status} />
+				<ValidityStatusDisplay value={plansCreateContext.data.validation.validity_status} />
 				<AgencyTag agencyId={plansCreateContext.data.validation?.agency_id} showShortName />
 				<Label size="md" caps>{plansCreateContext.data.validation._id}</Label>
 			</Section>

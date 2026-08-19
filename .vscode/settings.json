@@ -6,6 +6,12 @@
 		},
 		"editor.defaultFormatter": "vscode.css-language-features"
 	},
+	"[go]": {
+		"editor.defaultFormatter": "golang.go",
+		"editor.formatOnSave": true,
+		"editor.formatOnSaveMode": "file"
+	},
+	"go.formatTool": "gofmt",
 
 	"[typescriptreact]": {
 		"editor.defaultFormatter": "vscode.typescript-language-features"

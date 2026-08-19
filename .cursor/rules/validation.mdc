@@ -1,0 +1,84 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Purpose
+
+This rule governs the structure and requirements for all field validation implementations. Each validation must include a well-documented comment header block and follow Go idioms for clean and maintainable code. This rule ensures clarity, traceability, and alignment with GTFS specifications.
+
+## Structure
+
+### 1. Comment Block
+
+Each validation function must begin with a comment block containing:
+
+```
+/*
+# Attributes
+
+- File: [<filename>.txt]
+- Field: <field_name>
+- Presence: <Required | Optional>
+- Type: <Enum | Text | Non-negative integer | etc.>
+
+# Description
+
+<Brief but clear explanation of the field's purpose and valid values or behavior.>
+
+[<filename>.txt]: https://gtfs.org/schedule/reference/#<filename>txt
+*/
+```
+
+If this comment block is not present when a rule is requested, you **must** prompt for it before proceeding with the implementation.
+
+### 2. Function Naming Convention
+
+Use PascalCase that describes the validation purpose, e.g.:
+
+```go
+func PaymentMethodValidation(...)
+func TransferDurationValidation(...)
+func TripShortNameValidation(...)
+```
+
+### 3. Message Structure
+
+Validation errors must be reported using the `services.AppMessageService.AddMessage` method and follow this structure:
+
+```go
+types.Message{
+	Field:        "<field_name>",
+	FileName:     "<filename>.txt",
+	Rows:         []int{row},
+	Message:      "<error message>",
+	Severity:     <types.SEVERITY_XXX>,
+	ValidationID: "<field_name>_validation",
+}
+```
+
+### 4. Severity Handling
+
+If severity is optional, default to `types.SEVERITY_IGNORE` and skip validation if it matches.
+IMPORTANT: If a field is Optional then it should have a severety.
+
+### 5. Validations
+
+Ensure each rule:
+
+* Checks for presence (if required).
+* Validates data type and constraints (e.g., enum values, min/max range).
+* Returns immediately after a failure.
+* Avoids duplicate error messages.
+
+### 6. Examples
+
+- [payment_method_validation.go](mdc:validator/validations/fare_attributes/validations/payment_method_validation.go) 
+- [trip_short_name_validation.go](mdc:validator/validations/trips/validations/trip_short_name_validation.go) 
+- [transfers_validation.go](mdc:validator/validations/fare_attributes/validations/transfers_validation.go) 
+
+
+
+
+
+
