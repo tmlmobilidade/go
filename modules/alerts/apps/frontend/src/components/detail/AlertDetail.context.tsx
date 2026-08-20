@@ -1,6 +1,6 @@
 'use client';
 
-import { isValidOptionalAlertCoordinates } from '@/lib/alert-coordinates';
+// import { isValidOptionalAlertCoordinates } from '@/lib/alert-coordinates';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type Attachment, PermissionCatalog, type UpdateAlertDto } from '@tmlmobilidade/types';
 import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useDataAgencies, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';

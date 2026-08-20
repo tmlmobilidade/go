@@ -5,6 +5,7 @@ import { Button, HasPermission, PublishStatusDisplay, Spacer, Toolbar, useContex
 
 import { useAlertsCreateFormContext } from '../AlertsCreateForm.context';
 import { useAlertsCreateFormStepsContext } from '../AlertsCreateFormSteps.context';
+import { useAlertsCreatePublish } from '../use-alerts-create-publish';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function AlertCreateFooter() {
 
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 	const { actions: alertsCreateFormStepsActions, progress: alertsCreateFormStepsProgress } = useAlertsCreateFormStepsContext();
+	const { isLoading: isCreating, publish } = useAlertsCreatePublish();
 
 	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
 	const publishStatusValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'publish_status' });
@@ -49,7 +51,7 @@ export function AlertCreateFooter() {
 
 			{alertsCreateFormStepsProgress.next?.id && (
 				<Button
-					disabled={!alertsCreateFormStepsProgress.current?.isValid?.()}
+					disabled={!alertsCreateFormStepsProgress.current?.isValid}
 					label="Avançar"
 					onClick={alertsCreateFormStepsActions.next}
 				/>
@@ -57,10 +59,10 @@ export function AlertCreateFooter() {
 
 			{!alertsCreateFormStepsProgress.next?.id && (
 				<Button
-					disabled={!alertsCreateFormStepsProgress.current?.isValid?.()}
+					disabled={!alertsCreateFormStepsProgress.current?.isValid}
 					label="Publicar"
-					// loading={alertsCreateFormFlags.isCreating}
-					// onClick={alertsCreateFormActions.create}
+					loading={isCreating}
+					onClick={publish}
 				/>
 			)}
 		</Toolbar>

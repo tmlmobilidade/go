@@ -3,7 +3,7 @@
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { useCallback, useRef, useState } from 'react';
 
-import { useToast } from './toast';
+import { useToast } from '../hooks/toast';
 
 /* * */
 
@@ -16,7 +16,7 @@ interface UseHandleUpdateProps<T> {
 		success_title?: string
 	}
 	onError?: (error: Error) => void
-	onSuccess: (item: T) => void
+	onSuccess: (response: ApiResponse<T>) => void
 }
 
 interface UseHandleUpdateReturnType {
@@ -82,7 +82,7 @@ export function useHandleUpdate<T>({ fetchFn, labels, onError, onSuccess }: UseH
 		}
 		setIsLoading(false);
 		useToast.success({ message: labelsRef.current?.success_message, title: labelsRef.current?.success_title ?? 'Sucesso' });
-		onSuccessRef.current(response.data);
+		onSuccessRef.current(response);
 	}, []);
 
 	//

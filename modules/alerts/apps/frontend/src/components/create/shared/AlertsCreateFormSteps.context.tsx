@@ -1,6 +1,5 @@
 'use client';
 
-import { isValidOptionalAlertCoordinates } from '@/lib/alert-coordinates';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { useContextFormWatch, useDataAgencies, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
@@ -36,6 +35,8 @@ export function AlertsCreateFormStepsContextProvider({ children }: PropsWithChil
 	const activePeriodEndDateValue = useContextFormWatch({ control: createAlertForm.control, name: 'active_period_end_date' });
 	const referenceTypeValue = useContextFormWatch({ control: createAlertForm.control, name: 'reference_type' });
 	const referencesValue = useContextFormWatch({ control: createAlertForm.control, name: 'references' });
+	const titleValue = useContextFormWatch({ control: createAlertForm.control, name: 'title' });
+	const descriptionValue = useContextFormWatch({ control: createAlertForm.control, name: 'description' });
 
 	//
 	// C. Fetch data
@@ -55,52 +56,59 @@ export function AlertsCreateFormStepsContextProvider({ children }: PropsWithChil
 	const steps = useMemo(() => [
 		{
 			id: 'agency',
-			isValid: () => !!createAlertForm.getValues('agency_id'),
+			isEnabled: true,
+			isValid: !!agencyIdValue,
 			isVisible: agenciesData?.length > 1,
 			label: 'Operador',
 			order: 0,
+			validate: () => !!createAlertForm.getValues('agency_id'),
 		},
 		{
 			id: 'cause',
 			isEnabled: !!agencyIdValue,
-			isValid: () => !!createAlertForm.getValues('cause'),
+			isValid: !!causeValue,
 			isVisible: true,
 			label: 'Causa',
 			order: 1,
+			validate: () => !!createAlertForm.getValues('cause'),
 		},
 		{
 			id: 'effect',
 			isEnabled: !!agencyIdValue && !!causeValue,
-			isValid: () => !!createAlertForm.getValues('effect'),
+			isValid: !!effectValue,
 			isVisible: true,
 			label: 'Efeito',
 			order: 2,
+			validate: () => !!createAlertForm.getValues('effect'),
 		},
 		{
 			id: 'dates',
 			isEnabled: !!agencyIdValue && !!causeValue && !!effectValue,
-			isValid: () => !!createAlertForm.getValues('active_period_end_date'),
+			isValid: !!activePeriodEndDateValue,
 			isVisible: hasCreateDatesPermission,
 			label: 'Datas',
 			order: 3,
+			validate: () => !!createAlertForm.getValues('active_period_end_date'),
 		},
 		{
 			id: 'references',
 			isEnabled: !!agencyIdValue && !!causeValue && !!effectValue && !!activePeriodEndDateValue,
-			isValid: () => !!createAlertForm.getValues('reference_type') && !!createAlertForm.getValues('agency_id') && !!createAlertForm.getValues('references')?.length,
+			isValid: !!referenceTypeValue && !!referencesValue?.length,
 			isVisible: true,
 			label: 'Referências',
 			order: 4,
+			validate: () => !!createAlertForm.getValues('reference_type') && !!createAlertForm.getValues('references')?.length,
 		},
 		{
 			id: 'summary',
-			isEnabled: !!agencyIdValue && !!causeValue && !!effectValue && !!activePeriodEndDateValue && !!referenceTypeValue && !!referencesValue?.length,
-			isValid: () => !!createAlertForm.getValues('cause') && !!createAlertForm.getValues('effect') && !!createAlertForm.getValues('active_period_end_date') && !!createAlertForm.getValues('reference_type') && !!createAlertForm.getValues('agency_id') && !!createAlertForm.getValues('references')?.length && !!createAlertForm.getValues('title')?.length && !!createAlertForm.getValues('description')?.length && isValidOptionalAlertCoordinates(createAlertForm.getValues('coordinates')),
+			isEnabled: !!causeValue && !!effectValue && !!activePeriodEndDateValue && !!referenceTypeValue && !!referencesValue?.length,
+			isValid: !!titleValue && !!descriptionValue,
 			isVisible: true,
 			label: 'Resumo',
 			order: 5,
+			validate: () => !!createAlertForm.getValues('title')?.length && !!createAlertForm.getValues('description')?.length,
 		},
-	], [agenciesData?.length, agencyIdValue, causeValue, effectValue, hasCreateDatesPermission, activePeriodEndDateValue, referenceTypeValue, referencesValue?.length, createAlertForm]);
+	], [agencyIdValue, agenciesData?.length, causeValue, effectValue, activePeriodEndDateValue, hasCreateDatesPermission, referenceTypeValue, referencesValue?.length, titleValue, descriptionValue, createAlertForm]);
 
 	const multiStep = useMultiStep({ steps });
 

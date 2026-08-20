@@ -1,6 +1,5 @@
 /* * */
 
-import { normalizeAlertCoordinatesInput } from '@/lib/alert-coordinates';
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 import { ContextFormController, CoordinatesInput, Grid, Section, Textarea, TextInput, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
@@ -89,7 +88,7 @@ export function AlertCreateStepSummaryFinal() {
 						<CoordinatesInput
 							key="key"
 							label={t('alerts:create.summary.coordinates.label')}
-							onChange={nextValue => field.onChange(normalizeAlertCoordinatesInput(nextValue))}
+							onChange={nextValue => field.onChange(nextValue)}
 							value={field.value ?? undefined}
 						/>
 					)}

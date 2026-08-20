@@ -23,6 +23,7 @@ interface UseAlertsListDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
+	mutate: () => void
 	timestamp: null | UnixTimestamp
 }
 
@@ -62,7 +63,7 @@ export function useAlertsListData(): UseAlertsListDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsListItem[]>>([API_ROUTES.alerts.ALERTS_LIST, query], {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<AlertsListItem[]>>([API_ROUTES.alerts.ALERTS_LIST, query], {
 		fetcher: async ([url, query]) => await fetchDataNew<AlertsListItem[]>(url, 'POST', query),
 		refreshInterval: 10_000, // 10 seconds
 	});
@@ -75,6 +76,7 @@ export function useAlertsListData(): UseAlertsListDataReturnType {
 		error: error?.error,
 		isLoading,
 		isValidating,
+		mutate,
 		timestamp: data?.timestamp,
-	}), [data, error, isLoading, isValidating]);
+	}), [data, error, isLoading, isValidating, mutate]);
 };

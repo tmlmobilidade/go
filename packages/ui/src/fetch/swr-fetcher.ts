@@ -1,7 +1,6 @@
 /* * */
 
-import { HttpResponse } from '@/http/response.js';
-import { HttpException } from '@tmlmobilidade/consts';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 

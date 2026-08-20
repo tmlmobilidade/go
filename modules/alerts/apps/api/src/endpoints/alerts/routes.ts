@@ -4,7 +4,7 @@ import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 import { composeAlert } from './controllers/compose-alert.js';
-import { create } from './controllers/create.js';
+import { createAlert } from './controllers/create-alert.js';
 import { deleteImage } from './controllers/delete-image.js';
 import { deleteAlert } from './controllers/delete.js';
 import { duplicate } from './controllers/duplicate.js';
@@ -48,7 +48,7 @@ server.register(
 		instance.post(
 			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
-			create,
+			createAlert,
 		);
 
 		instance.put(
