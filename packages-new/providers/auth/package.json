@@ -35,8 +35,9 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
