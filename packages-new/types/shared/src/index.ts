@@ -1,6 +1,5 @@
 export * from './api/index.js';
 export * from './conditions/index.js';
-export * from './configs/index.js';
 export * from './dates/index.js';
 export * from './documents/index.js';
 export * from './numbers/index.js';

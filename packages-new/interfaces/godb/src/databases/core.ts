@@ -3,9 +3,8 @@
 import { exportsIndexes } from '@/indexes/index.js';
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { type Agency, type CreateAgencyDto, CreateAgencySchema, type CreateSessionDto, CreateSessionSchema, type CreateVerificationTokenDto, CreateVerificationTokenSchema, type Session, type UpdateAgencyDto, UpdateAgencySchema, type UpdateSessionDto, UpdateSessionSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type VerificationToken } from '@tmlmobilidade/go-types-core';
+import { type Agency, type AppConfig, type Attachment, type CreateAgencyDto, CreateAgencySchema, type CreateAttachmentDto, CreateAttachmentSchema, type CreateOrganizationDto, CreateOrganizationSchema, type CreateRoleDto, CreateRoleSchema, type CreateSessionDto, CreateSessionSchema, type CreateUserDto, CreateUserSchema, type CreateVerificationTokenDto, CreateVerificationTokenSchema, type Organization, type Role, type Session, type UpdateAgencyDto, UpdateAgencySchema, type UpdateAttachmentDto, UpdateAttachmentSchema, type UpdateOrganizationDto, UpdateOrganizationSchema, type UpdateRoleDto, UpdateRoleSchema, type UpdateSessionDto, UpdateSessionSchema, type UpdateUserDto, UpdateUserSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type User, type VerificationToken } from '@tmlmobilidade/go-types-core';
 import { type CreateFileExportDto, CreateFileExportSchema, type FileExport, UpdateFileExportSchema } from '@tmlmobilidade/go-types-downloads';
-import { type AppConfig, type Attachment, type CreateAttachmentDto, CreateAttachmentSchema, type CreateOrganizationDto, CreateOrganizationSchema, type CreateRoleDto, CreateRoleSchema, type CreateUserDto, CreateUserSchema, type Organization, type Role, type UpdateAttachmentDto, UpdateAttachmentSchema, type UpdateOrganizationDto, UpdateOrganizationSchema, type UpdateRoleDto, UpdateRoleSchema, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
 
 /* * */
 

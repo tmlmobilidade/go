@@ -3,7 +3,7 @@
 import { stopsIndexes } from '@/indexes/index.js';
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { CreateStopDto, CreateStopSchema, Stop, UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/types';
+import { type CreateStopDto, CreateStopSchema, type Stop, type UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/go-types-infrastructure';
 
 /* * */
 

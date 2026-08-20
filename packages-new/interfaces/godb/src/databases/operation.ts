@@ -5,8 +5,7 @@ import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
 import { type CreateGtfsValidationDto, CreateGtfsValidationSchema, type GtfsValidation, type UpdateGtfsValidationDto, UpdateGtfsValidationSchema } from '@tmlmobilidade/go-types-operation';
 import { type CreateRideAcceptanceDto, CreateRideAcceptanceSchema, type RideAcceptance, type UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema } from '@tmlmobilidade/go-types-operation';
-import { type Alert, type CreateAlertDto, CreateAlertSchema, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-types-operation';
-import { type CreatePlanDto, CreatePlanSchema, type CreateSamDto, CreateSamSchema, type CreateVehicleDto, CreateVehicleSchema, type Plan, type Sam, type UpdatePlanDto, UpdatePlanSchema, type UpdateSamDto, UpdateSamSchema, type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/types';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, type CreatePlanDto, CreatePlanSchema, type CreateSamDto, CreateSamSchema, type CreateVehicleDto, CreateVehicleSchema, type Plan, type Sam, type UpdateAlertDto, UpdateAlertSchema, type UpdatePlanDto, UpdatePlanSchema, type UpdateSamDto, UpdateSamSchema, type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
