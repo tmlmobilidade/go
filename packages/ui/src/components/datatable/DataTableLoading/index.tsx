@@ -2,7 +2,7 @@
 
 import styles from './styles.module.css';
 
-import { Loader } from '../../loaders';
+import { Loader } from '../../../loaders';
 
 /* * */
 

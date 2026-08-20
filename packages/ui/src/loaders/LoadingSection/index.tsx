@@ -1,6 +1,6 @@
 /* * */
 
-import { Section } from '../../layout/Section';
+import { Section } from '../../components/layout';
 import { Loader, type LoaderProps } from '../Loader';
 
 /* * */
