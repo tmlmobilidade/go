@@ -7,7 +7,6 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
 import { generateRandomToken } from '@tmlmobilidade/strings';
-import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -30,38 +29,6 @@ export class AuthController {
 		await goDb.core.verificationTokens.deleteOne({ token: { $eq: request.body.token } });
 		// Send a success response
 		reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
-	}
-
-	/**
-	 * Authenticate a user from a login request and create a new session.
-	 */
-	static async login(request: FastifyRequest<{ Body: LoginDto }>, reply: FastifyReply<Session>) {
-		const result = LoginDtoSchema.safeParse(request.body);
-		if (!result.success) {
-			throw new HttpException(HTTP_STATUS.BAD_REQUEST, result.error.message);
-		}
-		let newSession: Session;
-		try {
-			newSession = await authProvider.login({
-				email: result.data.email,
-				password: result.data.password,
-			});
-		} catch (error) {
-			if (error instanceof HttpException) {
-				throw error;
-			}
-			throw error;
-		}
-		// Set the session token cookie in the response
-		reply.setCookie(AUTH_SESSION_COOKIE_NAME, newSession.token, {
-			httpOnly: true,
-			maxAge: 30 * 24 * 60 * 60, // 30 days
-			path: '/',
-			sameSite: 'lax',
-			secure: true,
-		});
-		// Send the session data in the response
-		reply.send({ data: newSession, error: null, statusCode: HTTP_STATUS.OK });
 	}
 
 	/**

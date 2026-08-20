@@ -3,6 +3,8 @@
 import { AuthController } from '@/endpoints/auth/auth.controller.js';
 import { FastifyService } from '@tmlmobilidade/fastify';
 
+import { login } from './controllers/login.js';
+
 /* * */
 
 const NAMESPACE = '/auth';
@@ -15,7 +17,7 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.post('/login', AuthController.login);
+		instance.post('/login', login);
 
 		instance.get('/logout', AuthController.logout);
 
