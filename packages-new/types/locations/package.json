@@ -37,7 +37,6 @@
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/geojson": "7946.0.16",
 		"gtfs-types": "5.1.0",
 		"luxon": "3.7.2",

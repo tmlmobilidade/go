@@ -21,7 +21,6 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"archiver": "8.0.0",
 		"mongodb": "7.5.0",
@@ -32,8 +31,8 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.2",
 		"@types/archiver": "8.0.0",
+		"@types/node": "26.1.2",
 		"@types/nodemailer": "8.0.1",
 		"typescript": "6.0.3"
 	}

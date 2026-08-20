@@ -30,7 +30,6 @@
 	"dependencies": {
 		"@clack/prompts": "1.7.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/types": "*",
 		"archiver": "8.0.0",
 		"chalk": "6.0.0",
 		"dotenv": "17.4.2",

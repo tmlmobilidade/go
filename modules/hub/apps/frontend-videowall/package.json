@@ -31,7 +31,6 @@
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/geojson": "7946.0.16",
 		"@types/node": "26.1.2",
 		"@types/react": "19.2.18",

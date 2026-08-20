@@ -21,9 +21,9 @@
 		"@fastify/websocket": "11.3.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
-		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-alerts-pckg-compose": "*",
 		"@tmlmobilidade/go-alerts-pckg-types": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-providers-ai": "*",
@@ -36,9 +36,7 @@
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@carrismetropolitana/api-types": "20260730.2028.44",
 		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",
