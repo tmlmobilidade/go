@@ -58,12 +58,6 @@ server.register(
 			UsersController.getSimplifiedById,
 		);
 
-		instance.put(
-			'/me',
-			{ preHandler: authorizationMiddleware() },
-			UsersController.updateMe,
-		);
-
 		next();
 	},
 	{ prefix: NAMESPACE },
