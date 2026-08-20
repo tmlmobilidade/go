@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertsLinesFilters, type AlertsLinesItem } from '@tmlmobilidade/go-alerts-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { fetchDataNew } from '@tmlmobilidade/utils';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -42,7 +42,7 @@ export function useAlertsLinesData(): UseAlertsLinesDataReturnType {
 	// C. Fetch data
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsLinesItem[]>>([API_ROUTES.alerts.OPERATION_LINES, query], {
-		fetcher: async ([url, query]) => await fetchDataNew<AlertsLinesItem[]>(url, 'POST', query),
+		fetcher: async ([url, query]) => await fetchApiData<AlertsLinesItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 

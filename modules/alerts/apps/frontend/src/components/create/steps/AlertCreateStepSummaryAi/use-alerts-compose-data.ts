@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { AlertsComposeRequest, AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { useContextFormWatch, useDebouncedValue } from '@tmlmobilidade/ui';
-import { fetchDataNew } from '@tmlmobilidade/utils';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -59,7 +59,7 @@ export function useAlertsComposeData(): UseAlertsComposeDataReturnType {
 	// C. Fetch data
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AlertsComposeResponse>>([API_ROUTES.alerts.ALERTS_COMPOSE, requestBody], {
-		fetcher: async ([url, requestBody]) => await fetchDataNew<AlertsComposeResponse>(url, 'POST', requestBody),
+		fetcher: async ([url, requestBody]) => await fetchApiData<AlertsComposeResponse>({ body: requestBody, method: 'POST', url }),
 		refreshInterval: 0, // Disabled
 		revalidateIfStale: false,
 		revalidateOnFocus: false,
