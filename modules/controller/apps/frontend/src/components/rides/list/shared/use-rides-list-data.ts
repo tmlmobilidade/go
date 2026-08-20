@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListFilters, type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { fetchData } from '@tmlmobilidade/ui';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -80,7 +80,7 @@ export function useRidesListData(): UseRidesListDataReturnType {
 	// C. Fetch data
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<ControllerRidesListItem[]>>([API_ROUTES.controller.RIDES_LIST, query], {
-		fetcher: async ([url, query]) => await fetchDataNew<ControllerRidesListItem[]>(url, 'POST', query),
+		fetcher: async ([url, query]: [string, ControllerRidesListFilters]) => await fetchApiData<ControllerRidesListItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 

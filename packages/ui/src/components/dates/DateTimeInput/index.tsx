@@ -3,8 +3,8 @@
 import { Fieldset, Input } from '@mantine/core';
 import { DateInput as MantineDateInput, TimePicker as MantineTimePicker } from '@mantine/dates';
 import { IconCalendar, IconClock } from '@tabler/icons-react';
-import { Dates, TimezoneIdentified } from '@tmlmobilidade/dates';
-import { type UnixTimestamp, validateUnixTimestamp } from '@tmlmobilidade/types';
+import { type TimezoneIdentified, type UnixTimestamp, validateUnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
