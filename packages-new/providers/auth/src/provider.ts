@@ -3,9 +3,10 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type LoginDto, type Session } from '@tmlmobilidade/go-types-core';
+import { type CreateUserDto, type Organization, type User } from '@tmlmobilidade/go-types-core';
+import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
-import { type CreateUserDto, type Organization, type Permission, type User } from '@tmlmobilidade/types';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 
