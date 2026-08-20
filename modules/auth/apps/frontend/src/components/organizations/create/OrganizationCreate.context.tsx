@@ -3,10 +3,9 @@
 import { closeCreateOrganizationModal } from '@/components/organizations/create/OrganizationCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateOrganizationDto, CreateOrganizationSchema, Organization } from '@tmlmobilidade/types';
-import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { fetchApiData, keepUrlParams, UseFormReturnType, useHandleUpdate, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
 /* * */
@@ -45,8 +44,6 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 
 	const router = useRouter();
 
-	const [isSaving, setIsSaving] = useState(false);
-
 	//
 	// B. Fetch data
 
@@ -60,36 +57,23 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 	//
 	// D. Handle actions
 
-	const handleCreateOrganization = async () => {
-		setIsSaving(true);
-		const response = await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_LIST, 'POST', form.getValues());
-		if (response.error) {
-			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: 'Erro ao criar organização' });
-				setIsSaving(false);
-				return;
-			}
-			const errors = JSON.parse(response.error);
-			for (const error of errors) {
-				useToast.error({ message: error.message, title: 'Erro ao criar organização' });
-			}
-			setIsSaving(false);
-			return;
-		}
-		form.reset();
-		allOrganizationsMutate();
-		setIsSaving(false);
-		closeCreateOrganizationModal();
-		useToast.success({ message: 'Organização criada com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(response.data._id)));
-	};
+	const { action: saveOrganization, isLoading: isSaving } = useHandleUpdate({
+		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'POST', url: API_ROUTES.auth.ORGANIZATIONS_LIST }),
+		onSuccess: ({ data }) => {
+			form.reset();
+			allOrganizationsMutate();
+			closeCreateOrganizationModal();
+			useToast.success({ message: 'Organização criada com sucesso', title: 'Sucesso' });
+			if (data?._id) router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(data._id)));
+		},
+	});
 
 	//
 	// E. Define context value
 
 	const contextValue: OrganizationCreateContextState = useMemo(() => ({
 		actions: {
-			saveOrganization: handleCreateOrganization,
+			saveOrganization,
 		},
 		data: {
 			form,

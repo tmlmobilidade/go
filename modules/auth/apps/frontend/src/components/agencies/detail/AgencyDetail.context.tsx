@@ -3,8 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency, type UpdateAgencyDto } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, useContextForm, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type DetailContextStateTemplate, fetchApiData, useContextForm, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -57,19 +56,19 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(agencyId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
-			form.reset(updatedItem);
-			agencyMutate(updatedItem);
+		fetchFn: async () => await fetchApiData<Agency>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.auth.AGENCIES_DETAIL(agencyId) }),
+		onSuccess: ({ data }) => {
+			form.reset(data);
+			agencyMutate(data);
 			allAgenciesMutate();
 		},
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Agency>(API_ROUTES.auth.AGENCIES_DETAIL_LOCK(agencyId)),
-		onSuccess: (updatedItem) => {
-			form.reset(updatedItem);
-			agencyMutate(updatedItem);
+		fetchFn: async () => await fetchApiData<Agency>({ url: API_ROUTES.auth.AGENCIES_DETAIL_LOCK(agencyId) }),
+		onSuccess: ({ data }) => {
+			form.reset(data);
+			agencyMutate(data);
 			allAgenciesMutate();
 		},
 	});
