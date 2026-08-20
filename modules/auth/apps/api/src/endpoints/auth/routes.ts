@@ -5,6 +5,7 @@ import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify'
 
 import { getMe } from './controllers/get-me.js';
 import { login } from './controllers/login.js';
+import { updateMe } from './controllers/update-me.js';
 
 /* * */
 
@@ -18,15 +19,37 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.post('/login', login);
+		instance.post(
+			'/login',
+			login,
+		);
 
-		instance.get('/logout', AuthController.logout);
+		instance.get(
+			'/logout',
+			AuthController.logout,
+		);
 
-		instance.post('/send-password-reset-email', AuthController.sendPasswordResetEmail);
+		instance.post(
+			'/send-password-reset-email',
+			AuthController.sendPasswordResetEmail,
+		);
 
-		instance.post('/change-password', AuthController.changePassword);
+		instance.post(
+			'/change-password',
+			AuthController.changePassword,
+		);
 
-		instance.get('/me', { preHandler: authorizationMiddleware() }, getMe);
+		instance.get(
+			'/me',
+			{ preHandler: authorizationMiddleware() },
+			getMe,
+		);
+
+		instance.put(
+			'/me',
+			{ preHandler: authorizationMiddleware() },
+			updateMe,
+		);
 
 		next();
 	},

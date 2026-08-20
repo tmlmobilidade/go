@@ -213,6 +213,7 @@ export const API_ROUTES = Object.freeze({
 		AUTH_CHANGE_PASSWORD: `${getModuleConfig('auth', 'api_url')}/auth/change-password`,
 		AUTH_LOGIN: `${getModuleConfig('auth', 'api_url')}/auth/login`,
 		AUTH_LOGOUT: `${getModuleConfig('auth', 'api_url')}/auth/logout`,
+		AUTH_ME: `${getModuleConfig('auth', 'api_url')}/auth/me`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('auth', 'api_url')}/auth/send-password-reset-email`,
 
 		// NOTIFICATIONS
