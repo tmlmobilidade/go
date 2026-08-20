@@ -5,8 +5,6 @@ import React from 'react';
 
 import styles from './styles.module.css';
 
-import { cn } from '../../../lib/utils';
-
 /* * */
 
 export interface BadgeProps extends MantineBadgeProps {
@@ -40,9 +38,10 @@ export default function Badge({
 }: BadgeProps) {
 	//
 
-	const badgeClass = cn(
-		styles.badge,
-		!disabled && {
+	const badgeClass = `
+		${styles.badge}
+		${className}
+		${!disabled && {
 			[styles.active]: variant === 'active',
 			[styles.danger]: variant === 'danger',
 			[styles.info]: variant === 'info',
@@ -51,14 +50,13 @@ export default function Badge({
 			[styles.secondary]: variant === 'secondary',
 			[styles.success]: variant === 'success',
 			[styles.warning]: variant === 'warning',
-		},
-		disabled && styles.disabled,
-		type === 'pill' && styles.pill,
-		type === 'tag' && styles.tag,
-		fullWidth && styles.fullWidth,
-		styles[`font${size}`],
-		className,
-	);
+		}}
+		${disabled && styles.disabled}
+		${type === 'pill' && styles.pill}
+		${type === 'tag' && styles.tag}
+		${fullWidth && styles.fullWidth}
+		${styles[`font${size}`]}
+	`;
 
 	if (onClick) {
 		return (

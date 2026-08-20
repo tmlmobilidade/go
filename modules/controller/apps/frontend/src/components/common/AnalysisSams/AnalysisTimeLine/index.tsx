@@ -2,7 +2,6 @@
 
 /* * */
 
-import { cn } from '@/lib/utils';
 import { type SamTimelineAccent, type SamTimelineSummary } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 import { useMemo } from 'react';
@@ -176,7 +175,7 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 	if (summarySections.length === 0 && placeholderSections.length === 0) {
 		if (timelineSummary) {
 			return (
-				<div className={cn(styles.byDayInline, className)}>
+				<div className={styles.byDayInline}>
 					<AnalysisSquare
 						accent="white"
 						className={styles.monthSquare}
@@ -226,7 +225,7 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 			))
 			: null;
 	return (
-		<div className={cn(styles.byDayInline, className)}>
+		<div className={styles.byDayInline}>
 			{renderedSquares}
 		</div>
 	);
