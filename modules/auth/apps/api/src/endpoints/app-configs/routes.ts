@@ -1,6 +1,6 @@
 /* * */
 
-import { getAppBanner } from '@/endpoints/app-configs/controller/get-app-banner.js';
+import { getAppBannerHandler } from '@/endpoints/app-configs/handlers/get-app-banner.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
@@ -15,11 +15,7 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get(
-			'/app-banner',
-			{ preHandler: authorizationMiddleware() },
-			getAppBanner,
-		);
+		instance.get('/app-banner', { preHandler: authorizationMiddleware() }, getAppBannerHandler);
 
 		next();
 	},
