@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { fetchDataNew } from '@tmlmobilidade/utils';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -33,7 +33,7 @@ export function useRidesDetailApexBankingTapsData(): UseRidesDetailApexBankingTa
 	// B. Fetch data
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SimplifiedApexBankingTap[]>>(rideId && API_ROUTES.controller.RIDES_DETAIL_APEX_BANKING_TAPS(rideId), {
-		fetcher: async url => await fetchDataNew<SimplifiedApexBankingTap[]>(url),
+		fetcher: async url => await fetchApiData<SimplifiedApexBankingTap[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
