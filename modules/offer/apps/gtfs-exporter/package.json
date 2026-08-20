@@ -25,7 +25,7 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-locations": "*",

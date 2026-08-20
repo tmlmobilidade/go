@@ -2,7 +2,7 @@
 
 import { generateStopId } from '@/utils/generate-stop-id.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';

@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getEtaAll } from './controllers/get-eta-all.js';
 import { getEtaByStopIdGtfsProtobuf } from './controllers/get-eta-by-stop-id-gtfs-protobuf.js';

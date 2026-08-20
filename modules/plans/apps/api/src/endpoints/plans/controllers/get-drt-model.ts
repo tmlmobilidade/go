@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
 /**

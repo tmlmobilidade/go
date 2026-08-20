@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AlertsLinesFilters, AlertsLinesFiltersSchema, type AlertsLinesItem, AlertsLinesItemSchema, alertsLinesQuery, AlertsLinesQueryRow } from '@tmlmobilidade/go-alerts-pckg-types';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { PermissionCatalog } from '@tmlmobilidade/types';

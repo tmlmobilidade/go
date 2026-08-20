@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
+import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { Location } from '@tmlmobilidade/types';

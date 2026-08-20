@@ -21,7 +21,7 @@
 		"@fastify/websocket": "11.3.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
-		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-alerts-pckg-compose": "*",
 		"@tmlmobilidade/go-alerts-pckg-types": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",

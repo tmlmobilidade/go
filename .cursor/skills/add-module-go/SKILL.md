@@ -43,10 +43,10 @@ Path: `modules/[module]/apps/api/package.json`
 - `"name": "@tmlmobilidade/go-[module]-api"`
 - `"version": "0.0.1"`
 - Extend `@tmlmobilidade/tsconfig/node.json`
-- Deps: `@tmlmobilidade/fastify`, `@tmlmobilidade/types`, `@tmlmobilidade/interfaces`, `@tmlmobilidade/consts`, `@tmlmobilidade/mongo`
+- Deps: `@tmlmobilidade/go-clients-fastify`, `@tmlmobilidade/types`, `@tmlmobilidade/interfaces`, `@tmlmobilidade/consts`, `@tmlmobilidade/mongo`
 
 ### 4. API app — bootstrap files
-`src/main.ts` — imports `FastifyService` from `@tmlmobilidade/fastify`, imports `./index.js`, starts the server
+`src/main.ts` — imports `FastifyService` from `@tmlmobilidade/go-clients-fastify`, imports `./index.js`, starts the server
 `src/index.ts` — imports `./endpoints/index.js`
 `src/endpoints/index.ts` — empty for now, will collect route imports
 

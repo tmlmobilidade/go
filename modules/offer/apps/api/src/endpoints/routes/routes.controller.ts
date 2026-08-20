@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateRouteDto, type PatternSimplified, type Route, type UpdateRouteDto } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/types';

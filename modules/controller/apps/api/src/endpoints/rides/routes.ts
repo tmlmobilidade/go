@@ -12,7 +12,7 @@ import { getSimplifiedVehicleEvents } from '@/endpoints/rides/controllers/get-ve
 import { listRides } from '@/endpoints/rides/controllers/list-rides.js';
 import { reprocessRideById } from '@/endpoints/rides/controllers/reprocess-ride.js';
 import { fastifyWebsocket } from '@fastify/websocket';
-import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */

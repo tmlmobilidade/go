@@ -1,7 +1,7 @@
 // /* * */
 
 // import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-// import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+// import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 // import { notifications } from '@tmlmobilidade/interfaces';
 // import { type Notification } from '@tmlmobilidade/types';
 

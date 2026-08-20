@@ -1,7 +1,7 @@
 /* * */
 
 import { ZonesController } from '@/endpoints/zones/zones.controller.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */

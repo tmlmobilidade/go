@@ -8,7 +8,7 @@
 // import { getSamByIds } from '@/endpoints/sams/controllers/get-sam-by-ids.js';
 // import { getTimelineSummaryByIds } from '@/endpoints/sams/controllers/get-timeline-summary.js';
 // import { postTimelineSummaryByIds } from '@/endpoints/sams/controllers/post-timeline-summary.js';
-// import { authorizationMiddleware, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
+// import { authorizationMiddleware, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 // import { type GetSamsBatchQuery, PermissionCatalog, type Sam, type SamListItem } from '@tmlmobilidade/types';
 
 // /* * */

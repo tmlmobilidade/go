@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type HashedTrip, type Ride } from '@tmlmobilidade/go-types-operation';
 

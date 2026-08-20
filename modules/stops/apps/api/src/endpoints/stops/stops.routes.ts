@@ -1,7 +1,7 @@
 /* * */
 
 import { StopsController } from '@/endpoints/stops/stops.controller.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */

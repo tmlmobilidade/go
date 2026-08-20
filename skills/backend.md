@@ -6,10 +6,10 @@ GO-specific backend conventions. Load after the `tml-context` skill.
 
 ## Stack
 
-- **HTTP framework:** Fastify (via `@tmlmobilidade/fastify`)
+- **HTTP framework:** Fastify (via `@tmlmobilidade/go-clients-fastify`)
 - **Validation:** Zod (schemas from `@tmlmobilidade/types`)
 - **Database:** MongoDB (via `@tmlmobilidade/interfaces` and `@tmlmobilidade/mongo`)
-- **Auth:** Permission-based middleware from `@tmlmobilidade/fastify`
+- **Auth:** Permission-based middleware from `@tmlmobilidade/go-clients-fastify`
 
 ---
 
@@ -37,7 +37,7 @@ The routes file registers endpoints under a namespaced prefix. Every route gets 
 
 ```ts
 import { ResourceController } from '@/endpoints/resource/resource.controller.js';
-import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */
@@ -96,7 +96,7 @@ Controllers are static classes. Each method is a Fastify handler. JSDoc every me
 
 ```ts
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { resource } from '@tmlmobilidade/interfaces';
 import { type CreateResourceDto, CreateResourceSchema, type Resource, type UpdateResourceDto, UpdateResourceSchema } from '@tmlmobilidade/types';
 
@@ -183,7 +183,7 @@ Do not use `reply.status(...).send(...)` for errors — always throw.
 
 ## Authentication and permissions
 
-`request.me` contains the authenticated user (injected by `@tmlmobilidade/fastify`). `request.permissions` contains the user's resolved permissions.
+`request.me` contains the authenticated user (injected by `@tmlmobilidade/go-clients-fastify`). `request.permissions` contains the user's resolved permissions.
 
 For permission-filtered queries (e.g. a user can only see their agency's data):
 

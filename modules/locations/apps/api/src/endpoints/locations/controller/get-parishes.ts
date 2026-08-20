@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
+import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { Parish } from '@tmlmobilidade/types';
 import { validateQueryParams } from '@tmlmobilidade/utils';

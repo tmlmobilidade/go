@@ -132,7 +132,7 @@ Use this for: all UI in GO module frontends. Do not import from Mantine directly
 
 ---
 
-### `@tmlmobilidade/fastify`
+### `@tmlmobilidade/go-clients-fastify`
 **Fastify server setup, typed request/reply, and auth middleware for GO API apps.**
 
 ```ts
@@ -142,7 +142,7 @@ import {
   type FastifyReply,
   type FastifyRequest,
   FastifyService,
-} from '@tmlmobilidade/fastify';
+} from '@tmlmobilidade/go-clients-fastify';
 
 // Get the singleton server instance
 const server: FastifyInstance = FastifyService.getInstance().server;
@@ -183,7 +183,7 @@ MongoDB client with connection pooling and helpers. Used by `@tmlmobilidade/inte
 ### `@tmlmobilidade/rabbitmq`
 RabbitMQ client for inter-service messaging. Used in worker apps that consume or publish events.
 
-### `@tmlmobilidade/fastify`
+### `@tmlmobilidade/go-clients-fastify`
 See above — covers all Fastify server setup.
 
 ---

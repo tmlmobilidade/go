@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog, validateOperationalDate } from '@tmlmobilidade/types';

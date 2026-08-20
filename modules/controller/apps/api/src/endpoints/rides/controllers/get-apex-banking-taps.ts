@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
 import { type Ride } from '@tmlmobilidade/go-types-operation';

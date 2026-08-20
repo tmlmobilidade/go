@@ -4,7 +4,7 @@ import { generateComments } from '@/utils/comments.js';
 import { mergePatternWithEventRules } from '@/utils/rules.js';
 import { createImportedStopResolver } from '@/utils/stops.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreatePatternDto, type Pattern, type PatternShapeMapItem, type PopulatedPath, type PopulatedPattern, type StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';

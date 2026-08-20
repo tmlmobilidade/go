@@ -1,6 +1,6 @@
 /* * */
 
-import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 import { listLines } from './controllers/list-lines.js';

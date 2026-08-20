@@ -1,7 +1,7 @@
 /* * */
 
 import { MetricsController } from '@/endpoints/metrics/metrics.controller.js';
-import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/types';
 
 /* * */

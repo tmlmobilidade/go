@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { sendResetPasswordEmail } from '@tmlmobilidade/emails';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
 import { generateRandomToken } from '@tmlmobilidade/strings';

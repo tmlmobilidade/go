@@ -23,7 +23,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",

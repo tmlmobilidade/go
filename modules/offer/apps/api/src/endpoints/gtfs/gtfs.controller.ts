@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import AdmZip from 'adm-zip';
 import Papa from 'papaparse';
 

@@ -20,7 +20,7 @@
 		"@fastify/websocket": "11.3.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",

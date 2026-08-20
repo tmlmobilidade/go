@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/go-types-operation';
 

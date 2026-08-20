@@ -1,7 +1,7 @@
 /* * */
 
 import { AuthController } from '@/endpoints/auth/auth.controller.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getMe } from './controllers/get-me.js';
 import { login } from './controllers/login.js';

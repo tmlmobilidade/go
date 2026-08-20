@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';

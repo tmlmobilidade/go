@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-alerts-pckg-compose';
 import { type AlertsComposeRequest, type AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
 

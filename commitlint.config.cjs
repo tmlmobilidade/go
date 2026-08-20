@@ -60,7 +60,7 @@ module.exports = {
         'interfaces', // @tmlmobilidade/interfaces — MongoDB collection methods
         'consts',     // @tmlmobilidade/consts — API routes, page routes, HTTP codes
         'utils',      // @tmlmobilidade/utils — shared utilities
-        'fastify',    // @tmlmobilidade/fastify — Fastify server + auth middleware
+        'fastify',    // @tmlmobilidade/go-clients-fastify — Fastify server + auth middleware
         'mongo',      // @tmlmobilidade/mongo — MongoDB client
         'rabbitmq',   // @tmlmobilidade/rabbitmq — message queue client
 
