@@ -2,7 +2,7 @@
 
 import { API_ROUTES, HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type FileExport } from '@tmlmobilidade/go-types-downloads';
-import { type ActionsOf, GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
+import { type ActionsOf, ApiResponse, GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions, type User, type UserPreferenceValue } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
@@ -58,7 +58,11 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<User>(API_ROUTES.auth.USERS_ME, { refreshInterval: 15_000 });
+	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<ApiResponse<User>>(API_ROUTES.auth.AUTH_ME, {
+		fetcher: async (url: string) => await fetchApiData<User>({ url }),
+		refreshInterval: 10_000, // 10 seconds
+	});
+
 	const { data: fileExportsData, mutate: fileExportsMutate } = useSWR<FileExport[]>(API_ROUTES.exporter.EXPORTER_LIST, { refreshInterval: 5_000 });
 
 	//
