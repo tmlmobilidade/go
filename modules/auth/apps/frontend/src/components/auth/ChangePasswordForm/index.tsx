@@ -3,8 +3,7 @@
 import { AuthenticationForm } from '@/components/common/AuthenticationForm';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PasswordRequirementsSchema } from '@tmlmobilidade/types';
-import { Session } from '@tmlmobilidade/types';
+import { PasswordRequirementsSchema, type Session } from '@tmlmobilidade/go-types-core';
 import { PasswordInput, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
