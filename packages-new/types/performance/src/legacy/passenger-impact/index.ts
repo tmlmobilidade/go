@@ -1,1 +1,1 @@
-export * from '@/metrics/passenger-impact/passenger-impact.js';
+export * from './passenger-impact.js';

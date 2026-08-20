@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 /* * */
 
-import { MetricBaseSchema } from '@/metrics/common.js';
+import { MetricBaseSchema } from '../common.js';
 
 /* * */
 

@@ -1,11 +1,12 @@
 /* * */
 
-import { AgencyAlertsMapSchema } from '@/agencies/alerts-map.js';
-import { AgencyApexSchema } from '@/agencies/apex.js';
-import { AgencyFinancialsSchema } from '@/agencies/financials.js';
-import { AgencyOpenDataSchema } from '@/agencies/open-data.js';
 import { DocumentSchema, OperationalDateIntSchema, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { AgencyAlertsMapSchema } from './alerts-map.js';
+import { AgencyApexSchema } from './apex.js';
+import { AgencyFinancialsSchema } from './financials.js';
+import { AgencyOpenDataSchema } from './open-data.js';
 
 /* * */
 

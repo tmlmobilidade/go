@@ -1,6 +1,6 @@
 import { DayPeriodSchema } from '@/dates/day-period.js';
 import { WEEKDAYS } from '@/dates/weekdays.js';
-import { StopIdSchema } from '@tmlmobilidade/types';
+import { StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { z } from 'zod';
 
 /* * */

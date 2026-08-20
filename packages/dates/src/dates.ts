@@ -2,7 +2,7 @@
 
 import { CALENDAR_DATE_FORMAT, type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/lib/date-format.js';
 import { type TimezoneIdentified, TimezoneIdentifiedSchema, TimezoneIdentifiedValues } from '@tmlmobilidade/go-types-shared';
-import { type CalendarDate, type OperationalDate, type OperationalDateInt, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type CalendarDate, type OperationalDate, type OperationalDateInt, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
 
 /* * */

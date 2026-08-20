@@ -1,7 +1,8 @@
 /* * */
 
-import { AppBannerSchema } from '@/app-configs/app-banner.js';
 import { z } from 'zod';
+
+import { AppBannerSchema } from './app-banner.js';
 
 /* * */
 

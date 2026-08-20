@@ -1,7 +1,7 @@
 /* * */
 
 import { CalendarKey, calendarKey, datesFromCalendarKey, keyToYYYYMMDD } from '@/calendar/utils/index.js';
-import { OperationalDate } from '@tmlmobilidade/types';
+import { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 

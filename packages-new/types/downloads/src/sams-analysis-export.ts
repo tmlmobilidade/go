@@ -1,8 +1,8 @@
 /* * */
 
 import { FileExportBaseSchema } from '@/base.js';
+import { SamAnalysisSchema } from '@tmlmobilidade/go-types-operation';
 import { SystemStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
-import { SamAnalysisSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */

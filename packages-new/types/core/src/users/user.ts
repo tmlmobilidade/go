@@ -1,6 +1,6 @@
 /* * */
 
-import { PermissionSchema } from '@/permissions/index.js';
+import { PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { DocumentSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 

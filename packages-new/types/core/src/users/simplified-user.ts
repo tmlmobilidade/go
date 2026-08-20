@@ -1,7 +1,8 @@
 /* * */
 
-import { UserSchema } from '@/auth/user.js';
 import { z } from 'zod';
+
+import { UserSchema } from './user.js';
 
 /* * */
 

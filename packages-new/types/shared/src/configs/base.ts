@@ -1,7 +1,8 @@
 /* * */
 
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { DocumentSchema } from '../documents/document.js';
 
 /* * */
 

@@ -1,7 +1,8 @@
 /* * */
 
-import { MetricBaseSchema } from '@/metrics/common.js';
 import { z } from 'zod';
+
+import { MetricBaseSchema } from '../common.js';
 
 /* SUPPLY BY AGENCY */
 
