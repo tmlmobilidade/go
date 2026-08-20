@@ -26,7 +26,7 @@
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/ssh": "*",
+		"@tmlmobilidade/go-clients-ssh": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},

@@ -42,7 +42,7 @@
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/mongo": "*",
-		"@tmlmobilidade/ssh": "*",
+		"@tmlmobilidade/go-clients-ssh": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",

@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/ssh",
+	"name": "@tmlmobilidade/go-clients-ssh",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",

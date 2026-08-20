@@ -250,7 +250,7 @@ Timer and interval utilities for scheduled tasks.
 ### `@tmlmobilidade/files`
 File system utilities (reading, writing, path helpers).
 
-### `@tmlmobilidade/ssh`
+### `@tmlmobilidade/go-clients-ssh`
 SSH connection utilities for remote operations.
 
 ### `@tmlmobilidade/sqlite`
