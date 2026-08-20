@@ -29,7 +29,8 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/strings": "*"
+		"@tmlmobilidade/strings": "*",
+		"@tmlmobilidade/types": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/tsconfig": "*",
