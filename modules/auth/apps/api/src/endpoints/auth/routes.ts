@@ -1,11 +1,13 @@
 /* * */
 
-import { AuthController } from '@/endpoints/auth/auth.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
-import { getMe } from './controllers/get-me.js';
-import { login } from './controllers/login.js';
-import { updateMe } from './controllers/update-me.js';
+import { changePasswordHandler } from './handlers/change-password.js';
+import { getMeHandler } from './handlers/get-me.js';
+import { loginHandler } from './handlers/login.js';
+import { logoutHandler } from './handlers/logout.js';
+import { sendPasswordResetEmailHandler } from './handlers/send-password-reset-email.js';
+import { updateMeHandler } from './handlers/update-me.js';
 
 /* * */
 
@@ -19,17 +21,17 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.post('/login', login);
+		instance.post('/login', loginHandler);
 
-		instance.get('/logout', AuthController.logout);
+		instance.get('/logout', logoutHandler);
 
-		instance.post('/send-password-reset-email', AuthController.sendPasswordResetEmail);
+		instance.post('/send-password-reset-email', sendPasswordResetEmailHandler);
 
-		instance.post('/change-password', AuthController.changePassword);
+		instance.post('/change-password', changePasswordHandler);
 
-		instance.get('/me', { preHandler: authorizationMiddleware() }, getMe);
+		instance.get('/me', { preHandler: authorizationMiddleware() }, getMeHandler);
 
-		instance.put('/me', { preHandler: authorizationMiddleware() }, updateMe);
+		instance.put('/me', { preHandler: authorizationMiddleware() }, updateMeHandler);
 
 		next();
 	},

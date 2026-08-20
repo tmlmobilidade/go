@@ -2,12 +2,11 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
-import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/types';
-
+import { type LoginDto, LoginDtoSchema, type Session } from '@tmlmobilidade/go-types-core';
 /**
  * Authenticate a user from a login request and create a new session.
  */
-export async function login(request: FastifyRequest<{ Body: LoginDto }>, reply: FastifyReply<Session>) {
+export async function loginHandler(request: FastifyRequest<{ Body: LoginDto }>, reply: FastifyReply<Session>) {
 	//
 
 	//

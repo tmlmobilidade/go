@@ -11,7 +11,7 @@ import { type User } from '@tmlmobilidade/types';
  * @param request The request object
  * @param reply The reply object
  */
-export async function getMe(request: FastifyRequest, reply: FastifyReply<User>) {
+export async function getMeHandler(request: FastifyRequest, reply: FastifyReply<User>) {
 	//
 
 	//
