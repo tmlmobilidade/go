@@ -58,12 +58,6 @@ server.register(
 			UsersController.getSimplifiedById,
 		);
 
-		instance.get(
-			'/me',
-			{ preHandler: authorizationMiddleware() },
-			UsersController.getMe,
-		);
-
 		instance.put(
 			'/me',
 			{ preHandler: authorizationMiddleware() },

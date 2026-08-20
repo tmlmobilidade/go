@@ -28,6 +28,7 @@
 		"@tmlmobilidade/go-providers-auth": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
 		"gray-matter": "4.0.3",

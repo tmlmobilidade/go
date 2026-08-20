@@ -1,7 +1,6 @@
 /* * */
 
 import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
 import { sendWelcomeEmail } from '@tmlmobilidade/emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
@@ -80,59 +79,6 @@ export class UsersController {
 	static async getById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<User>) {
 		const foundUser = await goDb.core.users.findById(request.params.id);
 		reply.send({ data: foundUser, error: null, statusCode: HTTP_STATUS.OK });
-	}
-
-	/**
-	 * Get the current user from the session token.
-	 * @param request The request object
-	 * @param reply The reply object
-	 */
-	static async getMe(request: FastifyRequest, reply: FastifyReply<User>) {
-		//
-
-		//
-		// Extract the session token from authentication cookie
-
-		const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
-
-		//
-		// Retrieve user data using the session token.
-		// If the user is not found, log out the session token
-		// and return an error response. Do this to force the user
-		// to log in again and to avoid an infinite loop of trying
-		// to get user data with an invalid session token.
-
-		let userData: User;
-
-		try {
-			userData = await authProvider.getUserFromSessionToken(sessionToken);
-			if (!userData) {
-				throw new Error('User not found');
-			}
-		} catch {
-			await authProvider.logout(sessionToken);
-			return reply
-				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-				.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
-		}
-
-		//
-		// Retrieve roles and permissions for the user
-		// and merge them into the user data.
-
-		userData.permissions = await authProvider.getPermissionsFromSessionToken(sessionToken);
-
-		//
-		// Send the user data back in the response.
-
-		reply.send({ data: userData, error: null, statusCode: HTTP_STATUS.OK });
-
-		//
-		// Add seen_last_at for this user asynchronously
-
-		await goDb.core.users.updateById(userData._id, { seen_last_at: Dates.now('Europe/Lisbon').unix_timestamp });
-
-		//
 	}
 
 	/**

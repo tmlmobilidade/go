@@ -1,8 +1,9 @@
 /* * */
 
 import { AuthController } from '@/endpoints/auth/auth.controller.js';
-import { FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
 
+import { getMe } from './controllers/get-me.js';
 import { login } from './controllers/login.js';
 
 /* * */
@@ -24,6 +25,8 @@ server.register(
 		instance.post('/send-password-reset-email', AuthController.sendPasswordResetEmail);
 
 		instance.post('/change-password', AuthController.changePassword);
+
+		instance.get('/me', { preHandler: authorizationMiddleware() }, getMe);
 
 		next();
 	},
