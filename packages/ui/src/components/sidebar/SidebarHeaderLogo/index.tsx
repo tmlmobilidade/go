@@ -6,9 +6,9 @@ import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
-import { useMeContext } from '../../../contexts/Me.context';
-import { WhenMode } from '../../layout/WhenMode';
-import { Loader } from '../../loaders/Loader';
+import { useMeContext } from '../../../contexts';
+import { Loader } from '../../../loaders';
+import { WhenMode } from '../../layout';
 
 /* * */
 

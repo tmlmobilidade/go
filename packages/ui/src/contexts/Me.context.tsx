@@ -8,7 +8,7 @@ import { createContext, type PropsWithChildren, useContext, useEffect, useState 
 import useSWR from 'swr';
 
 import { ErrorDisplay } from '../components/display/ErrorDisplay';
-import { LoadingOverlay } from '../components/loaders/LoadingOverlay';
+import { LoadingOverlay } from '../loaders/LoadingOverlay';
 
 /* * */
 
