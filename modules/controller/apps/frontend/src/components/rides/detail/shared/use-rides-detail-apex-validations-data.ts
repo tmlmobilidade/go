@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { fetchDataNew } from '@tmlmobilidade/utils';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -33,7 +33,7 @@ export function useRidesDetailApexValidationsData(): UseRidesDetailApexValidatio
 	// B. Fetch data
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SimplifiedApexValidation[]>>(rideId && API_ROUTES.controller.RIDES_DETAIL_APEX_VALIDATIONS(rideId), {
-		fetcher: async url => await fetchDataNew<SimplifiedApexValidation[]>(url),
+		fetcher: async (url: string) => await fetchApiData<SimplifiedApexValidation[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 

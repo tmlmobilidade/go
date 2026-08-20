@@ -33,7 +33,7 @@ export function useRidesDetailApexBankingTapsData(): UseRidesDetailApexBankingTa
 	// B. Fetch data
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SimplifiedApexBankingTap[]>>(rideId && API_ROUTES.controller.RIDES_DETAIL_APEX_BANKING_TAPS(rideId), {
-		fetcher: async url => await fetchApiData<SimplifiedApexBankingTap[]>({ url }),
+		fetcher: async (url: string) => await fetchApiData<SimplifiedApexBankingTap[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 

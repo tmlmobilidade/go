@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type SimplifiedApexOnBoardSale } from '@tmlmobilidade/go-types-apex';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { fetchDataNew } from '@tmlmobilidade/utils';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -33,7 +33,7 @@ export function useRidesDetailApexSalesData(): UseRidesDetailApexSalesDataReturn
 	// B. Fetch data
 
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SimplifiedApexOnBoardSale[]>>(rideId && API_ROUTES.controller.RIDES_DETAIL_APEX_SALES(rideId), {
-		fetcher: async url => await fetchDataNew<SimplifiedApexOnBoardSale[]>(url),
+		fetcher: async (url: string) => await fetchApiData<SimplifiedApexOnBoardSale[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
