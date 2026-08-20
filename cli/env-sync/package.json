@@ -36,7 +36,7 @@
 		"mongodb": "7.5.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/archiver": "8.0.0",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",

@@ -38,7 +38,7 @@
 		"tunnel-ssh": "5.2.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",

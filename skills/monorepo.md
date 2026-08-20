@@ -209,11 +209,11 @@ The `ENVIRONMENT` variable controls which env file is loaded at runtime. The roo
 
 ## TypeScript
 
-All apps and packages extend from `@tmlmobilidade/tsconfig`. Each app's `tsconfig.json` looks like:
+All apps and packages extend from `@tmlmobilidade/go-utils-tsconfig`. Each app's `tsconfig.json` looks like:
 
 ```json
 {
-  "extends": "@tmlmobilidade/tsconfig/[base|nextjs|node].json",
+  "extends": "@tmlmobilidade/go-utils-tsconfig/[base|nextjs|node].json",
   "compilerOptions": {
     "outDir": "./dist"
   }

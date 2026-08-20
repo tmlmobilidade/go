@@ -38,7 +38,7 @@
 		"amqplib": "2.0.1"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/amqplib": "0.10.8",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",

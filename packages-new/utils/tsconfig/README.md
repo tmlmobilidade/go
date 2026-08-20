@@ -1,4 +1,4 @@
-## @tmlmobilidade/tsconfig
+## @tmlmobilidade/go-utils-tsconfig
 
 This package contains the shared TypeScript configuration for the Transportes Metropolitanos de Lisboa organization.
 Centralize and standardize TypeScript settings across all projects, ensuring consistency, maintainability, and ease of setup.
@@ -11,7 +11,7 @@ Centralize and standardize TypeScript settings across all projects, ensuring con
 
 ### Instalation
 ```
-npm install -D @tmlmobilidade/tsconfig
+npm install -D @tmlmobilidade/go-utils-tsconfig
 ```
 
 ### Options
@@ -26,7 +26,7 @@ Several options are provided depending on the project type:
 In your tsconfig.json:
 ```
 {
-  "extends": "@tmlmobilidade/tsconfig/{your-project-type}.json",
+  "extends": "@tmlmobilidade/go-utils-tsconfig/{your-project-type}.json",
   "compilerOptions": {
     // Add any project-specific overrides here
   }

@@ -1,23 +1,24 @@
 /* * */
 
-import { AgenciesPermissionSchema } from '@/permissions/agencies.js';
-import { AlertsPermissionSchema } from '@/permissions/alerts.js';
-import { RidesPermissionSchema, SamsPermissionSchema } from '@/permissions/controller.js';
-import { AnnotationsPermissionSchema, EventsPermissionSchema, HolidaysPermissionSchema, YearPeriodsPermissionSchema } from '@/permissions/dates.js';
-import { FaresPermissionSchema } from '@/permissions/fares.js';
-import { GtfsValidationsPermissionSchema } from '@/permissions/gtfs-validations.js';
-import { HomePermissionSchema } from '@/permissions/home.js';
-import { LinesPermissionSchema } from '@/permissions/lines.js';
-import { OrganizationsPermissionSchema } from '@/permissions/organizations.js';
-import { PerformancePermissionSchema } from '@/permissions/performance.js';
-import { PlansPermissionSchema } from '@/permissions/plans.js';
-import { RolesPermissionSchema } from '@/permissions/roles.js';
-import { StopsPermissionSchema } from '@/permissions/stops.js';
-import { TypologiesPermissionSchema } from '@/permissions/typologies.js';
-import { UsersPermissionSchema } from '@/permissions/users.js';
-import { VehiclesPermissionSchema } from '@/permissions/vehicles.js';
-import { ZonesPermissionSchema } from '@/permissions/zones.js';
 import { z } from 'zod';
+
+import { AgenciesPermissionSchema } from './agencies.js';
+import { AlertsPermissionSchema } from './alerts.js';
+import { RidesPermissionSchema, SamsPermissionSchema } from './controller.js';
+import { AnnotationsPermissionSchema, EventsPermissionSchema, HolidaysPermissionSchema, YearPeriodsPermissionSchema } from './dates.js';
+import { FaresPermissionSchema } from './fares.js';
+import { GtfsValidationsPermissionSchema } from './gtfs-validations.js';
+import { HomePermissionSchema } from './home.js';
+import { LinesPermissionSchema } from './lines.js';
+import { OrganizationsPermissionSchema } from './organizations.js';
+import { PerformancePermissionSchema } from './performance.js';
+import { PlansPermissionSchema } from './plans.js';
+import { RolesPermissionSchema } from './roles.js';
+import { StopsPermissionSchema } from './stops.js';
+import { TypologiesPermissionSchema } from './typologies.js';
+import { UsersPermissionSchema } from './users.js';
+import { VehiclesPermissionSchema } from './vehicles.js';
+import { ZonesPermissionSchema } from './zones.js';
 
 /* * */
 

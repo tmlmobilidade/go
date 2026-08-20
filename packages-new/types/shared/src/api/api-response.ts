@@ -1,8 +1,9 @@
 /* * */
 
-import { HttpStatusSchema } from '@/api/http-status.js';
-import { UnixTimestampSchema } from '@/dates/unix-timestamp.js';
 import { z } from 'zod';
+
+import { UnixTimestampSchema } from '../dates/unix-timestamp.js';
+import { HttpStatusSchema } from './http-status.js';
 
 /* * */
 

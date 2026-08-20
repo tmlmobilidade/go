@@ -42,7 +42,7 @@ Path: `modules/[module]/apps/api/package.json`
 
 - `"name": "@tmlmobilidade/go-[module]-api"`
 - `"version": "0.0.1"`
-- Extend `@tmlmobilidade/tsconfig/node.json`
+- Extend `@tmlmobilidade/go-utils-tsconfig/node.json`
 - Deps: `@tmlmobilidade/go-clients-fastify`, `@tmlmobilidade/types`, `@tmlmobilidade/interfaces`, `@tmlmobilidade/consts`, `@tmlmobilidade/mongo`
 
 ### 4. API app — bootstrap files
@@ -54,7 +54,7 @@ Path: `modules/[module]/apps/api/package.json`
 Path: `modules/[module]/apps/frontend/package.json`
 
 - `"name": "@tmlmobilidade/go-[module]-frontend"`
-- Extend `@tmlmobilidade/tsconfig/nextjs.json`
+- Extend `@tmlmobilidade/go-utils-tsconfig/nextjs.json`
 - Deps: `@tmlmobilidade/ui`, `@tmlmobilidade/types`, `@tmlmobilidade/consts`, `@tmlmobilidade/utils`, `next`, `react`, `react-dom`, `swr`
 
 ### 6. Register types in packages/types

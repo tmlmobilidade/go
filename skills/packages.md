@@ -218,7 +218,7 @@ Typed write helpers for bulk database operations.
 ### `@tmlmobilidade/eslint`
 Shared ESLint config. Extended by all apps and packages in the monorepo.
 
-### `@tmlmobilidade/tsconfig`
+### `@tmlmobilidade/go-utils-tsconfig`
 Shared TypeScript configs. Extended by `tsconfig.json` in every package.
 
 ---

@@ -47,7 +47,7 @@
 		"swr": "2.5.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/geojson": "7946.0.16",
 		"@types/luxon": "3.7.3",
 		"@types/node": "26.1.2",
