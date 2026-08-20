@@ -9,7 +9,7 @@ import { runSaga } from '@/utils/operation-runner.js';
 import { buildStorageKey, storageKey, tempStorageKey } from '@/utils/storage-key.js';
 import { ConflictError, MetadataError, NotFoundError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Attachment, type CreateAttachmentDto, CreateAttachmentSchema } from '@tmlmobilidade/types';
+import { type Attachment, type CreateAttachmentDto, CreateAttachmentSchema } from '@tmlmobilidade/go-types-core';
 import { convertObject } from '@tmlmobilidade/utils';
 
 /**
