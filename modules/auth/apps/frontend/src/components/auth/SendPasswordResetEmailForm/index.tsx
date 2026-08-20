@@ -2,7 +2,7 @@
 
 import { AuthenticationForm } from '@/components/common/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Session } from '@tmlmobilidade/types';
+import { type Session } from '@tmlmobilidade/go-types-core';
 import { TextInput, useQueryState, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useState } from 'react';
