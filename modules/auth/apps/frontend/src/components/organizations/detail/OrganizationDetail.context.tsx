@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateOrganizationSchema, type Organization, PermissionCatalog, type UpdateOrganizationDto } from '@tmlmobilidade/types';
+import { CreateOrganizationSchema, type Organization, type UpdateOrganizationDto } from '@tmlmobilidade/go-types-core';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
