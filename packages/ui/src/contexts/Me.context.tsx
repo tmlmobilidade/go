@@ -84,23 +84,23 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	}, [meLoading, meData, isUnauthorized, isLoggingOut]);
 
 	const hasPermission = <S extends Permission['scope']>(scope: S, action: ActionsOf<S>) => {
-		if (!meData?.permissions) return false;
-		return PermissionCatalog.hasPermission(meData.permissions, scope, action);
+		if (!meData?.data?.permissions) return false;
+		return PermissionCatalog.hasPermission(meData.data.permissions, scope, action);
 	};
 
 	const hasPermissionResource = (args: HasPermissionResourceArgs | HasPermissionResourceArgs[]) => {
 		// Skip if user or permissions are not available
-		if (!meData?.permissions) return false;
+		if (!meData?.data?.permissions) return false;
 		// If args is an array, ensure all conditions are met to return true
-		if (Array.isArray(args)) return args.every(arg => PermissionCatalog.hasPermissionResource({ ...arg, permissions: meData.permissions }));
+		if (Array.isArray(args)) return args.every(arg => PermissionCatalog.hasPermissionResource({ ...arg, permissions: meData.data.permissions }));
 		// Otherwise, check the single condition
-		else return PermissionCatalog.hasPermissionResource({ ...args, permissions: meData.permissions });
+		else return PermissionCatalog.hasPermissionResource({ ...args, permissions: meData.data.permissions });
 	};
 
 	const getScopePermissions = <S extends Permission['scope']>(args: Omit<GetScopePermissionsArgs<S>, 'permissions'>): ScopePermissions<S> => {
 		return PermissionCatalog.getScopePermissions({
 			...args,
-			permissions: meData?.permissions || [],
+			permissions: meData?.data?.permissions || [],
 		});
 	};
 
@@ -119,14 +119,14 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const getPreference = <T extends UserPreferenceValue>(scope: string, key: string): T | undefined => {
-		return meData?.preferences?.[scope]?.[key] as T | undefined;
+		return meData?.data?.preferences?.[scope]?.[key] as T | undefined;
 	};
 
 	const updatePreference = async (scope: string, key: string, value: undefined | UserPreferenceValue) => {
 		// Skip if user data is not available
-		if (!meData) return;
+		if (!meData?.data) return;
 		// Merge current with updated preferences
-		const currentPreferences = meData.preferences ?? {};
+		const currentPreferences = meData.data.preferences ?? {};
 		const currentScope = currentPreferences[scope] ?? {};
 		const updatedScope = { ...currentScope, [key]: value };
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
@@ -148,7 +148,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		data: {
 			fileExports: fileExportsData || [],
-			user: meData,
+			user: meData?.data,
 		},
 		flags: {
 			error: meError,
