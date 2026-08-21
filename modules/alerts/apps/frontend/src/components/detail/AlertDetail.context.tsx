@@ -74,7 +74,7 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	//
 	// C. Transform data
 
-	const { isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});

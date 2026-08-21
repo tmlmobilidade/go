@@ -63,7 +63,7 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 	//
 	// B. Fetch data
 
-	const { error: agenciesError, filtered: permittedAgencies, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { error: agenciesError, filtered: permittedAgencies, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.gtfs_validations.actions.create],
 		scope: PermissionCatalog.all.gtfs_validations.scope,
 	});

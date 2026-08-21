@@ -68,8 +68,8 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	//
 	// B. Fetch data
 
-	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
-	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId));
+	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.infrastructure.STOPS_LIST);
+	const { data: stopData, error: stopError, isLoading: stopLoading, mutate: stopMutate } = useSWR<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(stopId));
 
 	//
 	// C. Setup form
@@ -94,7 +94,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	// E. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(stopId), 'PUT', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			stopMutate(updatedItem);
@@ -103,7 +103,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId), 'DELETE'),
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(stopId), 'DELETE'),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			stopMutate(updatedItem);
@@ -112,7 +112,7 @@ export const StopDetailContextProvider = ({ children, stopId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL_LOCK(stopId)),
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL_LOCK(stopId)),
 		onSuccess: (updatedItem) => {
 			form.resetDirty();
 			stopMutate(updatedItem);

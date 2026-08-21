@@ -48,8 +48,8 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	//
 	// B. Fetch data
 
-	const { mutate: allRolesMutate } = useSWR<Role[]>(API_ROUTES.auth.ROLES_LIST);
-	const { data: roleData, error: roleError, isLoading: roleLoading, mutate: roleMutate } = useSWR<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId));
+	const { mutate: allRolesMutate } = useSWR<Role[]>(API_ROUTES.core.ROLES_LIST);
+	const { data: roleData, error: roleError, isLoading: roleLoading, mutate: roleMutate } = useSWR<Role>(API_ROUTES.core.ROLES_DETAIL(roleId));
 
 	//
 	// C. Setup form
@@ -60,7 +60,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.auth.ROLES_DETAIL(roleId) }),
+		fetchFn: async () => await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_DETAIL(roleId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();
@@ -70,16 +70,16 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Role>({ method: 'DELETE', url: API_ROUTES.auth.ROLES_DETAIL(roleId) }),
+		fetchFn: async () => await fetchApiData<Role>({ method: 'DELETE', url: API_ROUTES.core.ROLES_DETAIL(roleId) }),
 		onSuccess: () => {
 			meContext.mutate.me();
 			allRolesMutate();
-			router.push(keepUrlParams(PAGE_ROUTES.auth.ROLES_LIST));
+			router.push(keepUrlParams(PAGE_ROUTES.core.ROLES_LIST));
 		},
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Role>({ url: API_ROUTES.auth.ROLES_DETAIL_LOCK(roleId) }),
+		fetchFn: async () => await fetchApiData<Role>({ url: API_ROUTES.core.ROLES_DETAIL_LOCK(roleId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();

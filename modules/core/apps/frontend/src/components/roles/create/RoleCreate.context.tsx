@@ -50,7 +50,7 @@ export const RoleCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { mutate: allRolesMutate } = useSWR<Role[]>(API_ROUTES.auth.ROLES_LIST);
+	const { mutate: allRolesMutate } = useSWR<Role[]>(API_ROUTES.core.ROLES_LIST);
 
 	//
 	// C. Setup form
@@ -62,7 +62,7 @@ export const RoleCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const handleCreateRole = async () => {
 		setIsSaving(true);
-		const response = await fetchData<Role>(API_ROUTES.auth.ROLES_LIST, 'POST', form.getValues());
+		const response = await fetchData<Role>(API_ROUTES.core.ROLES_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar grupo de permissões' });
@@ -81,7 +81,7 @@ export const RoleCreateContextProvider = ({ children }: PropsWithChildren) => {
 		setIsSaving(false);
 		closeCreateRoleModal();
 		useToast.success({ message: 'Grupo de permissões criado com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.auth.ROLES_DETAIL(response.data._id)));
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.core.ROLES_DETAIL(response.data._id)));
 	};
 
 	//

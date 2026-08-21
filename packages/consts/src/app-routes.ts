@@ -247,7 +247,6 @@ export const API_ROUTES = Object.freeze({
 		AUTH_CHANGE_PASSWORD: `${getModuleConfig('core', 'api_url')}/auth/change-password`,
 		AUTH_LOGIN: `${getModuleConfig('core', 'api_url')}/auth/login`,
 		AUTH_LOGOUT: `${getModuleConfig('core', 'api_url')}/auth/logout`,
-		AUTH_ME: `${getModuleConfig('core', 'api_url')}/auth/me`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
 
 		// ORGANIZATIONS
@@ -256,6 +255,12 @@ export const API_ROUTES = Object.freeze({
 		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/lock`,
 		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/${encodeURIComponent(theme)}/image`,
 		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations`,
+
+		// PLATFORM
+		PLATFORM_AGENCIES: `${getModuleConfig('core', 'api_url')}/platform/agencies`,
+		PLATFORM_DOWNLOADS: `${getModuleConfig('core', 'api_url')}/platform/downloads`,
+		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
+		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
 
 		// ROLES
 		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}`,

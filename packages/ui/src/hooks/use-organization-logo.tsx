@@ -27,7 +27,7 @@ export function useOrganizationLogo(organization_id: string): null | string | un
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading } = useSWR<GetLogoSchema, HttpException>(`${getModuleConfig('auth', 'api_url')}/organizations/${organization_id}/logo`);
+	const { data, error, isLoading } = useSWR<GetLogoSchema, HttpException>(`${getModuleConfig('core', 'api_url')}/organizations/${organization_id}/logo`);
 
 	//
 	// C. Handle actions

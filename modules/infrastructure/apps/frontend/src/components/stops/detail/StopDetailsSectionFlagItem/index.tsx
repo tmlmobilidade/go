@@ -25,7 +25,7 @@ export function StopDetailsSectionFlagItem({ index }: StopDetailsSectionFlagItem
 	//
 	// B. Transform data
 
-	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
+	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
 
 	//
 	// C. Transform data

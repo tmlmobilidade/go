@@ -69,7 +69,7 @@ export function UsersList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: UserNormalized) => {
-		router.push(keepUrlParams(PAGE_ROUTES.auth.USERS_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.core.USERS_DETAIL(item._id)));
 	};
 
 	//

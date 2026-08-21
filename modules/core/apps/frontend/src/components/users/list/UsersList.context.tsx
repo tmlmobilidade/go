@@ -61,7 +61,7 @@ export function UsersListContextProvider({ children }: PropsWithChildren) {
 	//
 	// C. Fetch data
 
-	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>(API_ROUTES.auth.USERS_LIST);
+	const { data: allUsersData, error: allUsersError, isLoading: allUsersLoading } = useSWR<User[], Error>(API_ROUTES.core.USERS_LIST);
 
 	//
 	// D. Transform data

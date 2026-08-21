@@ -41,8 +41,8 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	//
 	// B. Fetch data
 
-	const { mutate: allAgenciesMutate } = useSWR<Agency>(API_ROUTES.auth.AGENCIES_LIST);
-	const { data: agencyData, error: agencyError, isLoading: agencyLoading, mutate: agencyMutate } = useSWR<Agency>(API_ROUTES.auth.AGENCIES_DETAIL(agencyId));
+	const { mutate: allAgenciesMutate } = useSWR<Agency>(API_ROUTES.core.AGENCIES_LIST);
+	const { data: agencyData, error: agencyError, isLoading: agencyLoading, mutate: agencyMutate } = useSWR<Agency>(API_ROUTES.core.AGENCIES_DETAIL(agencyId));
 
 	//
 	// C. Setup form
@@ -56,7 +56,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Agency>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.auth.AGENCIES_DETAIL(agencyId) }),
+		fetchFn: async () => await fetchApiData<Agency>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) }),
 		onSuccess: ({ data }) => {
 			form.reset(data);
 			agencyMutate(data);
@@ -65,7 +65,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Agency>({ url: API_ROUTES.auth.AGENCIES_DETAIL_LOCK(agencyId) }),
+		fetchFn: async () => await fetchApiData<Agency>({ url: API_ROUTES.core.AGENCIES_DETAIL_LOCK(agencyId) }),
 		onSuccess: ({ data }) => {
 			form.reset(data);
 			agencyMutate(data);

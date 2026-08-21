@@ -25,7 +25,7 @@ export function UserDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.auth.USERS_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.core.USERS_LIST));
 	};
 
 	//

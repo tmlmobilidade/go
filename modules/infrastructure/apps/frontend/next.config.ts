@@ -5,10 +5,10 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
-	basePath: '/stops',
+	basePath: '/infrastructure',
 	devIndicators: false,
 	env: {
-		NEXT_PUBLIC_BASE_PATH: '/stops',
+		NEXT_PUBLIC_BASE_PATH: '/infrastructure',
 		NEXT_PUBLIC_ENVIRONMENT: process.env.ENVIRONMENT,
 	},
 	experimental: {
@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
 		return [
 			{
 				basePath: false,
-				destination: '/stops',
+				destination: '/infrastructure',
 				permanent: true,
 				source: '/',
 			},

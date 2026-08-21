@@ -24,7 +24,7 @@ export function StopDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_LIST));
 	};
 
 	//

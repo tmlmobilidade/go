@@ -37,7 +37,7 @@ export const RolesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allRolesData, error: allRolesError, isLoading: allRolesLoading } = useSWR<Role[], Error>(API_ROUTES.auth.ROLES_LIST);
+	const { data: allRolesData, error: allRolesError, isLoading: allRolesLoading } = useSWR<Role[], Error>(API_ROUTES.core.ROLES_LIST);
 
 	//
 	// B. Define context value

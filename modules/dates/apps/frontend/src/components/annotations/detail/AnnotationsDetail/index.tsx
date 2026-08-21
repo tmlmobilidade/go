@@ -20,7 +20,7 @@ export function AnnotationsDetail() {
 
 	// Bypass permissions to show all agency labels in read-only mode
 	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: agencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: annotationsDetailContext.flags.isReadOnly ? undefined : [PermissionCatalog.all.annotations.actions.update],
 		scope: annotationsDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.annotations.scope,
 	});

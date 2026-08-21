@@ -24,7 +24,7 @@ export function RoleDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.auth.ROLES_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.core.ROLES_LIST));
 	};
 
 	//

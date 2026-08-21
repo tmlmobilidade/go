@@ -16,7 +16,7 @@ export function HolidayCreateBasicInfo() {
 
 	const holidayCreateContext = useHolidayCreateContext();
 
-	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.holidays.actions.create],
 		scope: PermissionCatalog.all.holidays.scope,
 	});

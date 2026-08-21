@@ -24,7 +24,7 @@ export function AgencyDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.auth.AGENCIES_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.core.AGENCIES_LIST));
 	};
 
 	//

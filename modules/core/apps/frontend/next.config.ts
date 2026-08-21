@@ -5,10 +5,10 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
-	basePath: '/auth',
+	basePath: '/core',
 	devIndicators: false,
 	env: {
-		NEXT_PUBLIC_BASE_PATH: '/auth',
+		NEXT_PUBLIC_BASE_PATH: '/core',
 		NEXT_PUBLIC_ENVIRONMENT: process.env.ENVIRONMENT,
 	},
 	experimental: {
@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
 		return [
 			{
 				basePath: false,
-				destination: '/auth',
+				destination: '/core',
 				permanent: true,
 				source: '/',
 			},

@@ -21,7 +21,7 @@ export function EventsDetail() {
 
 	// Bypass permissions to show all agency labels in read-only mode
 	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: agencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: eventsDetailContext.flags.isReadOnly ? undefined : [PermissionCatalog.all.events.actions.update],
 		scope: eventsDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.events.scope,
 	});

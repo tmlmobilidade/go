@@ -135,7 +135,7 @@ export default function SamsExportModal() {
 	// A. Setup variables
 
 	const context = useSamsExportContext();
-	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
+	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
 	const { t } = useTranslation();
 
 	//

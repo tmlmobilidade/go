@@ -30,7 +30,7 @@ export function AlertCreateStepEffect() {
 	//
 	// B. Fetch data
 
-	const { filtered: agenciesData, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filtered: agenciesData, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});

@@ -17,7 +17,7 @@ export function AlertCreateStepAgency() {
 
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
-	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});

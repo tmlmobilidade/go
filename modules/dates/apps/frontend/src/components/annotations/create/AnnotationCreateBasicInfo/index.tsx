@@ -16,7 +16,7 @@ export function AnnotationCreateBasicInfo() {
 
 	const annotationCreateContext = useAnnotationCreateContext();
 
-	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.annotations.actions.create],
 		scope: PermissionCatalog.all.annotations.scope,
 	});

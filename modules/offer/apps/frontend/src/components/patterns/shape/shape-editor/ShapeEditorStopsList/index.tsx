@@ -64,7 +64,7 @@ export function StopsList() {
 		if (!stopId || addStopIndex === null) return;
 		setSelectedStopId(stopId);
 
-		const selectedStopResult = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(stopId));
+		const selectedStopResult = await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(stopId));
 		if (!selectedStopResult.isOk) {
 			useToast.error({ message: selectedStopResult.error, title: 'Erro ao carregar paragem' });
 			return;

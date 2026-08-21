@@ -11,8 +11,8 @@ import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 	const fastifyService = FastifyService.getInstance({
 		module: 'core',
-		origin: getModuleConfig('auth', 'cors_origin'),
-		port: getModuleConfig('auth', 'api_port'),
+		origin: getModuleConfig('core', 'cors_origin'),
+		port: getModuleConfig('core', 'api_port'),
 	});
 
 	await fastifyService.server.register(fastifyMultipart, {

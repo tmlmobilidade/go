@@ -54,9 +54,9 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	//
 	// B. Fetch data
 
-	const { mutate: allOrganizationsMutate } = useSWR<Organization[]>(API_ROUTES.auth.ORGANIZATIONS_LIST);
-	const { data: organizationData, error: organizationError, isLoading: organizationLoading, mutate: organizationMutate } = useSWR<Organization>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId));
-	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL_IMAGE(organizationId));
+	const { mutate: allOrganizationsMutate } = useSWR<Organization[]>(API_ROUTES.core.ORGANIZATIONS_LIST);
+	const { data: organizationData, error: organizationError, isLoading: organizationLoading, mutate: organizationMutate } = useSWR<Organization>(organizationId && API_ROUTES.core.ORGANIZATIONS_DETAIL(organizationId));
+	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(organizationId && API_ROUTES.core.ORGANIZATIONS_DETAIL_IMAGE(organizationId));
 
 	//
 	// C. Initialize form
@@ -67,7 +67,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId) }),
+		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ORGANIZATIONS_DETAIL(organizationId) }),
 		onSuccess: async ({ data }) => {
 			await uploadImages();
 			form.resetDirty();
@@ -78,16 +78,16 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId) }),
+		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.core.ORGANIZATIONS_DETAIL(organizationId) }),
 		onSuccess: () => {
 			meContext.mutate.me();
 			allOrganizationsMutate();
-			router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_LIST));
+			router.push(keepUrlParams(PAGE_ROUTES.core.ORGANIZATIONS_LIST));
 		},
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Organization>({ url: API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOCK(organizationId) }),
+		fetchFn: async () => await fetchApiData<Organization>({ url: API_ROUTES.core.ORGANIZATIONS_DETAIL_LOCK(organizationId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();
@@ -119,7 +119,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 			formData.append('light', imagesToUpload.light);
 		}
 
-		const response = await fetch(API_ROUTES.auth.ORGANIZATIONS_DETAIL_IMAGE(organizationId), {
+		const response = await fetch(API_ROUTES.core.ORGANIZATIONS_DETAIL_IMAGE(organizationId), {
 			body: formData,
 			credentials: 'include',
 			method: 'POST',
@@ -135,7 +135,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	};
 
 	const deleteImage = async (theme: 'dark' | 'light') => {
-		const themeImageRoute = API_ROUTES.auth.ORGANIZATIONS_DETAIL_VAR_IMAGE(organizationId, theme);
+		const themeImageRoute = API_ROUTES.core.ORGANIZATIONS_DETAIL_VAR_IMAGE(organizationId, theme);
 		const response = await fetchApiData<Organization>({ method: 'DELETE', url: themeImageRoute + '?realtime=true' });
 		if (response.error) {
 			const errors = JSON.parse(response.error);

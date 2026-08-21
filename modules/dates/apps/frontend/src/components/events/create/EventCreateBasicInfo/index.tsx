@@ -16,7 +16,7 @@ export function EventCreateBasicInfo() {
 
 	const eventCreateContext = useEventCreateContext();
 
-	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.events.actions.create],
 		scope: PermissionCatalog.all.events.scope,
 	});

@@ -21,7 +21,7 @@ export function AgencyPermissionMultiselect({ disabled, onChange, value }: Agenc
 	//
 	// A. Fetch data
 
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
+	const { options: agencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
 
 	//
 	// B. Transform data

@@ -58,7 +58,7 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Fetch data
 
-	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
+	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.infrastructure.STOPS_LIST);
 
 	//
 	// D. Side Effects
@@ -133,12 +133,12 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// F. Submit action
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_LIST, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_LIST, 'POST', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.reset();
 			unblock();
 			allStopsMutate();
-			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(updatedItem._id.toString())));
+			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(updatedItem._id.toString())));
 			closeStopCreateModal();
 		},
 	});

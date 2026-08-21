@@ -343,7 +343,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const enrichPath = useCallback(async (path: Path[]): Promise<PopulatedPath[]> => {
 		const stopIds = [...new Set(path.map(p => p.stop_id))];
 		const results = await Promise.all(
-			stopIds.map(id => fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(String(id)))),
+			stopIds.map(id => fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(String(id)))),
 		);
 		const stopsMap = new Map(
 			results.flatMap(r => r.isOk && r.data ? [[r.data._id, r.data]] : []),
