@@ -2,6 +2,7 @@
 
 import { Image } from '@mantine/core';
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
+import { fetchData } from '@tmlmobilidade/utils';
 import useSWR from 'swr';
 
 import styles from './styles.module.css';
@@ -23,19 +24,31 @@ export function SidebarHeaderLogo() {
 	//
 	// B. Fetch data
 
-	const { data: organizationLogoData } = useSWR<{ logo_dark: null | string, logo_light: null | string }, HttpException>(meContext.data.user?.organization_id && API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(meContext.data.user.organization_id));
+	const { data: organizationLogoData, isLoading: organizationLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }, HttpException>(
+		meContext.data.user?.organization_id ? API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(meContext.data.user.organization_id) : null,
+		{
+			fetcher: async (url: string) => {
+				const response = await fetchData<{ logo_dark: null | string, logo_light: null | string }>(url);
+				if (response.error) throw new HttpException(response.statusCode, response.error);
+				return response.data ?? { logo_dark: null, logo_light: null };
+			},
+		},
+	);
+
+	const fallbackDark = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/assets/layout/sidebar/go-sidebar-fallback-dark.png`;
+	const fallbackLight = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/assets/layout/sidebar/go-sidebar-fallback-light.png`;
 
 	//
 	// C. Render components
 
 	return (
 		<div className={styles.appLogo}>
-			{organizationLogoData ? (
+			{organizationLogoLoading ? <Loader size="sm" /> : (
 				<WhenMode
-					dark={<Image key={organizationLogoData?.logo_dark} alt="Logo" fallbackSrc={`${process.env.NEXT_PUBLIC_BASE_PATH}/assets/layout/sidebar/go-sidebar-fallback-dark.png`} src={organizationLogoData?.logo_dark} width={70} />}
-					light={<Image key={organizationLogoData?.logo_light} alt="Logo" fallbackSrc={`${process.env.NEXT_PUBLIC_BASE_PATH}/assets/layout/sidebar/go-sidebar-fallback-light.png`} src={organizationLogoData?.logo_light} width={70} />}
+					dark={<Image key={organizationLogoData?.logo_dark ?? fallbackDark} alt="Logo" fallbackSrc={fallbackDark} src={organizationLogoData?.logo_dark ?? fallbackDark} width={70} />}
+					light={<Image key={organizationLogoData?.logo_light ?? fallbackLight} alt="Logo" fallbackSrc={fallbackLight} src={organizationLogoData?.logo_light ?? fallbackLight} width={70} />}
 				/>
-			) : <Loader size="sm" />}
+			)}
 		</div>
 	);
 }
