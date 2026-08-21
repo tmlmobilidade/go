@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES, getModuleConfig, HttpException } from '@tmlmobilidade/consts';
-import { Notification as TmlNotification } from '@tmlmobilidade/types';
+import { Notification as TmlNotification } from '@tmlmobilidade/go-types-core';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo } from 'react';
 import useSWR, { mutate } from 'swr';

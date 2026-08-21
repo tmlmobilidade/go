@@ -1,6 +1,6 @@
 'use client';
 import { getModuleConfig, HttpException } from '@tmlmobilidade/consts';
-import { type Organization } from '@tmlmobilidade/types';
+import { type Organization } from '@tmlmobilidade/go-types-core';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 

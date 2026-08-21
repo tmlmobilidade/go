@@ -1,6 +1,6 @@
 'use client';
 
-import { Notification } from '@tmlmobilidade/types';
+import { Notification } from '@tmlmobilidade/go-types-core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

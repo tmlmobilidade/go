@@ -1,6 +1,6 @@
 /* * */
 
-import { type UnixTimestamp } from '@tmlmobilidade/types';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 
 import { DateTimeInput, Label, Section, Spacer } from '../../../components';
 import { FilterWrapper } from '../../shared';
