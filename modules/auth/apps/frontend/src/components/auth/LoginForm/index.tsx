@@ -38,7 +38,8 @@ export function LoginForm() {
 				message: t('unauthenticated:LoginForm.success.description'),
 				title: t('unauthenticated:LoginForm.success.title'),
 			});
-			window.location.href = redirectToValue;
+			console.log('redirectToValue', redirectToValue);
+			// window.location.href = redirectToValue;
 		},
 	});
 
