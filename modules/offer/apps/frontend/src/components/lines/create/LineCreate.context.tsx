@@ -2,7 +2,7 @@
 
 import { closeCreateLineModal } from '@/components/lines/create/LineCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateLineDto, CreateLineSchema, type LineNormalized } from '@tmlmobilidade/types';
+import { type CreateLineDto, CreateLineSchema, type LineNormalized } from '@tmlmobilidade/go-types-offer';
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';

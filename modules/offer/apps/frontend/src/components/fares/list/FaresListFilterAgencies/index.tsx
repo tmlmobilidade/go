@@ -1,7 +1,7 @@
 /* * */
 
 import { useFaresListContext } from '@/components/fares/list/FaresList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function FaresListFilterAgencies() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={annotationsListContext.filters.agencies.isActive}
 			label="Operadores"
 			onChange={annotationsListContext.filters.agencies.set}

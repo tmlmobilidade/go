@@ -10,10 +10,12 @@ import { buildDatesMap } from '@/utils/build-dates-map.js';
 import { createHitouchZip } from '@/utils/create-hitouch-zip.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { importGtfsToDatabase, ImportGtfsToDatabaseConfig, initImportGtfsContext } from '@tmlmobilidade/import-gtfs';
+import { type LinesMode } from '@tmlmobilidade/go-types-offer';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type ImportGtfsConfig, importGtfsStrictV29ExtToDatabase } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type LinesMode, type Plan } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 /* * */
@@ -39,7 +41,7 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 	//
 	// Import the GTFS feed into a local SQLite database
 
-	const importConfig: ImportGtfsToDatabaseConfig = {
+	const importConfig: ImportGtfsConfig = {
 		source: {
 			url: operationFileUrl,
 		},
@@ -54,8 +56,7 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 	//
 	// Import the GTFS feed into a local SQLite database
 
-	const importContext = initImportGtfsContext();
-	const sqlGtfs = await importGtfsToDatabase(importConfig, importContext);
+	const sqlGtfs = await importGtfsStrictV29ExtToDatabase(importConfig);
 
 	if (options?.lines_mode !== 'all' && options?.line_codes?.length) {
 		const placeholders = options.line_codes.map(() => '?').join(', ');
@@ -79,7 +80,7 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 
 		const selectedRouteIds = selectedRoutes.map(route => route.route_id);
 		const routePlaceholders = selectedRouteIds.map(() => '?').join(', ');
-		const filterTransaction = sqlGtfs._db.transaction(() => {
+		const filterTransaction = sqlGtfs._db.databaseInstance.transaction(() => {
 			sqlGtfs.stop_times.run(`DELETE FROM stop_times WHERE trip_id NOT IN (SELECT trip_id FROM trips WHERE route_id IN (${routePlaceholders}))`, selectedRouteIds);
 			sqlGtfs.trips.run(`DELETE FROM trips WHERE route_id NOT IN (${routePlaceholders})`, selectedRouteIds);
 			sqlGtfs.routes.run(`DELETE FROM routes WHERE route_id NOT IN (${routePlaceholders})`, selectedRouteIds);
@@ -87,7 +88,7 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 		filterTransaction();
 	}
 
-	const sourceHasCalendar = fs.existsSync(`${importContext.workdir.extract_dir_path}/calendar.txt`);
+	const sourceHasCalendar = true;
 	const [agencyHolidays, agencyYearPeriods] = await Promise.all([
 		goDb.offer.holidays.findMany({ agency_ids: { $in: [agencyId] } }),
 		goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [agencyId] } }),
@@ -99,8 +100,8 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 	const exportConfig: ExportToHitouchConfig = {
 		canvas_profile: options?.canvas_profile ?? '0Master.C',
 		date_range: {
-			end: feedEndDate,
-			start: feedStartDate,
+			end: validateOperationalDate(feedEndDate),
+			start: validateOperationalDate(feedStartDate),
 		},
 		output: options?.workdir ? `${planData._id}-hitouch-posters.zip` : `../${planData._id}-hitouch-posters.zip`,
 		source_has_calendar: sourceHasCalendar,

@@ -3,7 +3,8 @@
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/Posters/PlanPostersModal/constants';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateFileExportDto, type Line, type LinesMode, type PlanPostersExportProperties } from '@tmlmobilidade/types';
+import { type CreateFileExportDto, type PlanPostersExportProperties } from '@tmlmobilidade/go-types-downloads';
+import { type Line, type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { closeModal, type SelectDataItem, useDataAgencies, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';

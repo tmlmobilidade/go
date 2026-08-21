@@ -1,10 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { CreateFareDto, type Fare, PermissionCatalog, type PermissionResourceCheck, type UpdateFareDto } from '@tmlmobilidade/types';
+import { type CreateFareDto, type Fare, type UpdateFareDto } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog, type PermissionResourceCheck } from '@tmlmobilidade/types';
 
 /* * */;
 

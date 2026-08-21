@@ -1,7 +1,7 @@
 /* * */
 
 import { AgenciesSharedController } from '@tmlmobilidade/controllers';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

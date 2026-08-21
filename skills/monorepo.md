@@ -83,9 +83,9 @@ Apps inside a module follow the pattern `@tmlmobilidade/go-[module]-[app]`:
 Module-internal packages follow `@tmlmobilidade/go-[module]-pckg-[name]`:
 
 ```
-@tmlmobilidade/go-alerts-pckg-describe
+@tmlmobilidade/go-alerts-pckg-compose
 @tmlmobilidade/go-alerts-pckg-organize
-@tmlmobilidade/go-stops-pckg-organize
+@tmlmobilidade/go-infrastructure-pckg-organize
 @tmlmobilidade/go-tracker-pckg-parsers
 ```
 
@@ -103,7 +103,7 @@ Key packages most apps depend on:
 | `@tmlmobilidade/consts` | API routes, page routes, HTTP status codes |
 | `@tmlmobilidade/interfaces` | MongoDB collection methods |
 | `@tmlmobilidade/ui` | React components, hooks, auth context |
-| `@tmlmobilidade/fastify` | Fastify server, request/reply types, auth middleware |
+| `@tmlmobilidade/go-clients-fastify` | Fastify server, request/reply types, auth middleware |
 | `@tmlmobilidade/utils` | fetchData, uploadFile, general utilities |
 
 ---
@@ -209,11 +209,11 @@ The `ENVIRONMENT` variable controls which env file is loaded at runtime. The roo
 
 ## TypeScript
 
-All apps and packages extend from `@tmlmobilidade/tsconfig`. Each app's `tsconfig.json` looks like:
+All apps and packages extend from `@tmlmobilidade/go-utils-tsconfig`. Each app's `tsconfig.json` looks like:
 
 ```json
 {
-  "extends": "@tmlmobilidade/tsconfig/[base|nextjs|node].json",
+  "extends": "@tmlmobilidade/go-utils-tsconfig/[base|nextjs|node].json",
   "compilerOptions": {
     "outDir": "./dist"
   }

@@ -1,10 +1,10 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type Attachment, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Attachment, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Retrieves the file for a Validation by ID

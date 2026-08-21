@@ -12,7 +12,7 @@ When adding a new utility, type, component, or integration — check here first 
 |---|---|
 | `@tmlmobilidade/[name]` | Root-level shared package (`packages/[name]`) |
 | `@tmlmobilidade/go-[module]-[app]` | Module app (e.g. `go-alerts-api`, `go-alerts-frontend`) |
-| `@tmlmobilidade/go-[module]-pckg-[name]` | Module-internal package (e.g. `go-alerts-pckg-describe`) |
+| `@tmlmobilidade/go-[module]-pckg-[name]` | Module-internal package (e.g. `go-alerts-pckg-compose`) |
 
 ---
 
@@ -132,7 +132,7 @@ Use this for: all UI in GO module frontends. Do not import from Mantine directly
 
 ---
 
-### `@tmlmobilidade/fastify`
+### `@tmlmobilidade/go-clients-fastify`
 **Fastify server setup, typed request/reply, and auth middleware for GO API apps.**
 
 ```ts
@@ -142,7 +142,7 @@ import {
   type FastifyReply,
   type FastifyRequest,
   FastifyService,
-} from '@tmlmobilidade/fastify';
+} from '@tmlmobilidade/go-clients-fastify';
 
 // Get the singleton server instance
 const server: FastifyInstance = FastifyService.getInstance().server;
@@ -180,10 +180,10 @@ Also contains batching, caching, generic object/array utilities. Check `packages
 ### `@tmlmobilidade/mongo`
 MongoDB client with connection pooling and helpers. Used by `@tmlmobilidade/interfaces` — you rarely import this directly.
 
-### `@tmlmobilidade/rabbitmq`
+### `@tmlmobilidade/go-clients-rabbitmq`
 RabbitMQ client for inter-service messaging. Used in worker apps that consume or publish events.
 
-### `@tmlmobilidade/fastify`
+### `@tmlmobilidade/go-clients-fastify`
 See above — covers all Fastify server setup.
 
 ---
@@ -218,14 +218,14 @@ Typed write helpers for bulk database operations.
 ### `@tmlmobilidade/eslint`
 Shared ESLint config. Extended by all apps and packages in the monorepo.
 
-### `@tmlmobilidade/tsconfig`
+### `@tmlmobilidade/go-utils-tsconfig`
 Shared TypeScript configs. Extended by `tsconfig.json` in every package.
 
 ---
 
 ## Email and messaging
 
-### `@tmlmobilidade/emails`
+### `@tmlmobilidade/go-providers-emails`
 React Email templates for transactional emails. Contains components, styles, and rendered templates.
 
 ### `@tmlmobilidade/rss`
@@ -250,10 +250,10 @@ Timer and interval utilities for scheduled tasks.
 ### `@tmlmobilidade/files`
 File system utilities (reading, writing, path helpers).
 
-### `@tmlmobilidade/ssh`
+### `@tmlmobilidade/go-clients-ssh`
 SSH connection utilities for remote operations.
 
-### `@tmlmobilidade/sqlite`
+### `@tmlmobilidade/go-clients-sqlite`
 SQLite client for local data storage in CLI tools.
 
 ### `@tmlmobilidade/ai`

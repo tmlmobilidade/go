@@ -1,7 +1,7 @@
 /* * */
 
 import parametersConfig from '@/parameters.json' with { type: 'json' };
-import { ExportToHitouchConfig } from '@/types.js';
+import { type ExportToHitouchConfig } from '@/types.js';
 import fs from 'node:fs';
 import path from 'node:path';
 

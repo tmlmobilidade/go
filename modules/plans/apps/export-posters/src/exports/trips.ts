@@ -1,21 +1,21 @@
 /* * */
 
 import { type ExportToHitouchConfig } from '@/types.js';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GTFS_Trip } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
 /* * */
 
-export async function exportTripsFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportTripsFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 	// Export trips.txt
 
 	const tripsCsv = new CsvWriter('trips.txt', `${exportConfig.workdir}/trips.txt`, { batch_size: 10000 });
 
 	for await (const tripData of sqlTables.trips.stream('ORDER BY trip_id ASC')) {
-		const data: GTFS_Trip = {
+		const data: GtfsTrips = {
 			direction_id: tripData.direction_id,
 			route_id: tripData.route_id,
 			service_id: tripData.service_id,

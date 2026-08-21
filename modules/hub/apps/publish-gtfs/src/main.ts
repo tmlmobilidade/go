@@ -5,10 +5,11 @@ import { validatePlan } from '@/validate-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { getPublicRouteId } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -18,7 +19,6 @@ import { ZipFile } from 'yazl';
 
 import { exportAgencyFile } from '@/exports/agency.js';
 import { exportCalendarDatesFile } from '@/exports/calendar-dates.js';
-import { exportDatesFile } from '@/exports/dates.js';
 import { exportFeedInfoFile } from '@/exports/feed-info.js';
 import { exportPlansFile } from '@/exports/plans.js';
 import { exportRoutesFile } from '@/exports/routes.js';
@@ -78,7 +78,7 @@ export async function main() {
 	let farthestDateFound: OperationalDate;
 
 	const referencedAgencyIds = new Set<string>();
-	const routesMarkedForFinalExport: Record<string, GTFS_Route_Extended> = {};
+	const routesMarkedForFinalExport: Record<string, GtfsStrictV29Routes> = {};
 
 	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
 
@@ -165,13 +165,13 @@ export async function main() {
 				},
 				time_range: {
 					date_range: {
-						end: planData.gtfs_feed_info.feed_end_date,
-						start: planData.gtfs_feed_info.feed_start_date,
+						end: validateOperationalDate(planData.gtfs_feed_info.feed_end_date),
+						start: validateOperationalDate(planData.gtfs_feed_info.feed_start_date),
 					},
 				},
 			};
 
-			if (currentOperationalDate >= planData.gtfs_feed_info.feed_start_date && currentOperationalDate <= planData.gtfs_feed_info.feed_end_date) {
+			if (currentOperationalDate >= validateOperationalDate(planData.gtfs_feed_info.feed_start_date) && currentOperationalDate <= validateOperationalDate(planData.gtfs_feed_info.feed_end_date)) {
 				// If the plan is currently active, set the start date
 				// to a far past date to be able to provide a full year of data.
 				importConfig.time_range.date_range.start = validateOperationalDate('20010101');
@@ -215,7 +215,7 @@ export async function main() {
 			// This block only determines which routes should be exported; no files are written here.
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
-				const routeData: GTFS_Route_Extended = routeItem;
+				const routeData: GtfsStrictV29Routes = routeItem;
 				const publicRouteId = getPublicRouteId(planData.agency_id, routeData.route_id);
 				if (thisIsAnActivePlan || !routesMarkedForFinalExport[publicRouteId]) {
 					routesMarkedForFinalExport[publicRouteId] = { ...routeData, agency_id: planData.agency_id };
@@ -230,8 +230,8 @@ export async function main() {
 
 			referencedAgencyIds.add(planData.agency_id);
 
-			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
-				? planData.gtfs_feed_info.feed_end_date
+			farthestDateFound = !farthestDateFound || validateOperationalDate(planData.gtfs_feed_info.feed_end_date) > farthestDateFound
+				? validateOperationalDate(planData.gtfs_feed_info.feed_end_date)
 				: farthestDateFound;
 
 			//
@@ -251,7 +251,7 @@ export async function main() {
 			// Since SQLite sets up memory using C-level allocations, it is not possible
 			// to rely on garbage collection alone to free up memory in a timely manner.
 
-			importedGtfsSql._db.close();
+			importedGtfsSql._db.cleanup();
 
 			Logger.divider();
 
@@ -266,7 +266,6 @@ export async function main() {
 	//
 	// Export GTFS files from the merged dataset
 
-	await exportDatesFile(context);
 	await exportRoutesFile(Object.values(routesMarkedForFinalExport), context);
 	await exportStopsFile(Array.from(referencedAgencyIds), context);
 	await exportAgencyFile(Array.from(referencedAgencyIds), context);

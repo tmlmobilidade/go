@@ -2,7 +2,7 @@
 
 import { IconAlertCircle, IconCircleCheck, IconInfoCircle, IconServerCog } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AppBanner, type AppBannerVariant } from '@tmlmobilidade/types';
+import { type AppBanner, type AppBannerVariant } from '@tmlmobilidade/go-types-core';
 import { type ReactNode } from 'react';
 import useSWR from 'swr';
 

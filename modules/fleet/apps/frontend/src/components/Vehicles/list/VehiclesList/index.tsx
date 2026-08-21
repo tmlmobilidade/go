@@ -4,10 +4,10 @@ import { VehiclesListFiltersBar } from '@/components/Vehicles/list/VehiclesListF
 import { VehiclesListHeader } from '@/components/Vehicles/list/VehiclesListHeader';
 import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
 import { VehicleNormalized } from '@/types/normalized';
-import { formatDate } from '@/utils/formatDate';
 import { FormatlLicensePlate } from '@/utils/formatLicencePlate';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
+import { OperationalDateInt } from '@tmlmobilidade/types';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, OperationalDateDisplay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -46,7 +46,7 @@ export function VehiclesList() {
 		},
 		{
 			accessor: 'registration_date',
-			render: item => <Tag label={formatDate(item.registration_date)} />,
+			render: item => <OperationalDateDisplay value={Number(item.registration_date) as OperationalDateInt} />,
 			title: 'Data de Registo',
 			width: 300,
 		},

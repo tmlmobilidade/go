@@ -1,6 +1,6 @@
 /* * */
 
-import { type Attachment } from '@tmlmobilidade/types';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
 
 import { getFileExtension } from './mime.js';
 

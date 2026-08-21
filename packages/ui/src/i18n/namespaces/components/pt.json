@@ -25,11 +25,6 @@
 			}
 		}
 	},
-	"filters": {
-		"FilterTypeList": {
-			"toggle_all": "Selecionar tudo"
-		}
-	},
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {
@@ -39,11 +34,20 @@
 				"placeholder": "Longitude (-180 to 180)"
 			}
 		},
-		"SearchInput": {
+		"SearchField": {
 			"placeholder": "Pesquisar..."
 		},
 		"Select": {
 			"nothing_found": "Nenhum resultado encontrado"
+		}
+	},
+	"loaders": {
+		"LoadingActivity": {
+			"days_ago": "Atualizado há {count, plural, =1 {1 dia} other {# dias}}",
+			"hours_ago": "Atualizado há {count, plural, =1 {1 hora} other {# horas}}",
+			"just_now": "Atualizado agora",
+			"minutes_ago": "Atualizado há {count, plural, =1 {1 minuto} other {# minutos}}",
+			"seconds_ago": "Atualizado há {count, plural, =1 {1 segundo} other {# segundos}}"
 		}
 	},
 	"sidebar": {

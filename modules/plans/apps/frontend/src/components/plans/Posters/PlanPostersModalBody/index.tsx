@@ -3,7 +3,7 @@
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { type LinesMode } from '@tmlmobilidade/types';
+import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { Divider, MultiSelect, Section, SegmentedControl, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

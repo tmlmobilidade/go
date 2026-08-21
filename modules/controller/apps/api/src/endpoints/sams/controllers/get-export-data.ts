@@ -1,7 +1,7 @@
 // /* * */
 
 // import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-// import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+// import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 // import { buildSamsMatch, sams, samsAnalysisExportAggregationPipeline } from '@tmlmobilidade/interfaces';
 // import { type GetSamsBatchQuery, GetSamsBatchQuerySchema, type Sam } from '@tmlmobilidade/types';
 

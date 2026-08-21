@@ -1,7 +1,7 @@
 /* * */
 
 import { type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
-import { type District } from '@tmlmobilidade/types';
+import { type District } from '@tmlmobilidade/go-types-locations';
 
 /* * */
 

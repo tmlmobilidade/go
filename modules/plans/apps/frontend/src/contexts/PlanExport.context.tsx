@@ -1,7 +1,7 @@
 'use client';
 
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
-import { type CreateFileExportDto, type PlanExportProperties } from '@tmlmobilidade/types';
+import { type CreateFileExportDto, type PlanExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 

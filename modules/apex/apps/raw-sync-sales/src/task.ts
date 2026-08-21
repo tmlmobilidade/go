@@ -84,11 +84,12 @@ export async function syncApexSales(timeChunk: PerformInTimeChunksItem) {
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await labDb.simplifiedApex.sales.distinct(
-				'upper(toString(_id))',
+			const result = await labDb.simplifiedApex.sales.distinct(
+				'_id',
 				'created_at >= $1 AND created_at < $2',
 				{ 1: timeChunk.start, 2: timeChunk.end },
 			);
+			return result.map(id => String(id).toUpperCase());
 		},
 
 		distinctSourceDbFn: async () => {

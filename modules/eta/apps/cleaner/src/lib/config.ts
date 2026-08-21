@@ -1,4 +1,4 @@
-import type { TimeSlot } from '@tmlmobilidade/dates';
+import { type TimeSlot } from '@tmlmobilidade/go-types-shared';
 
 export const AppConfig = Object.freeze({
 	historicalDataDaysBack: 30,

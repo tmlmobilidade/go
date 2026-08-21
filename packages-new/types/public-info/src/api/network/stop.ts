@@ -1,7 +1,7 @@
 /* * */
 
+import { StopFlagSchema, StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
-import { StopFlagSchema, StopIdSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */

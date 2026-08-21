@@ -2,7 +2,7 @@
 
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Collapsible, DateInput, Grid, Section, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */

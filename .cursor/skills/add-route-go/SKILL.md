@@ -18,7 +18,7 @@ You are adding a new API route to a GO module. Follow every step in order. Ask f
 Path: `modules/[module]/apps/api/src/endpoints/[resource]/[resource].routes.ts`
 
 - Import the controller from `@/endpoints/[resource]/[resource].controller.js`
-- Import `authorizationMiddleware`, `FastifyInstance`, `FastifyService` from `@tmlmobilidade/fastify`
+- Import `authorizationMiddleware`, `FastifyInstance`, `FastifyService` from `@tmlmobilidade/go-clients-fastify`
 - Import `PermissionCatalog` from `@tmlmobilidade/types`
 - Set `const namespace = '/[resource]s'` (plural)
 - Register via `server.register(...)` with `{ prefix: namespace }`

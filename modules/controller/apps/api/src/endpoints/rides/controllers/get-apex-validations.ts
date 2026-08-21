@@ -1,12 +1,10 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
+import { type Ride } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Get SimplifiedApexValidations by Ride ID.
@@ -14,62 +12,49 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param reply The Fastify reply object.
  */
 export async function getSimplifiedApexValidations(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedApexValidation[]>) {
-	try {
-		//
+	//
 
-		//
-		// Validate the request parameters
+	//
+	// Validate the request parameters
 
-		if (!request.params.id) {
-			return reply
-				.status(HTTP_STATUS.BAD_REQUEST)
-				.send({
-					data: null,
-					error: 'Missing ride_id parameter.',
-					status: HTTP_STATUS.BAD_REQUEST,
-				});
-		}
-
-		//
-		// Fetch the ride data from the database
-
-		const rideData = await goDb.operation.rides.findById(request.params.id);
-
-		if (!rideData) {
-			return reply
-				.status(HTTP_STATUS.NOT_FOUND)
-				.send({
-					data: null,
-					error: 'Ride not found.',
-					status: HTTP_STATUS.NOT_FOUND,
-				});
-		}
-
-		//
-		// Fetch the corresponding vehicle events data
-		// and send it back to the client
-
-		const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
-
-		const simplifiedApexValidationsData = await labDb.simplifiedApex.validations.select(
-			'*',
-			`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`,
-			{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },
-		);
-
-		//
-		// Send the ride data back to the client
-
-		reply.send({
-			data: simplifiedApexValidationsData ?? [],
-			error: null,
-			statusCode: HTTP_STATUS.OK,
+	if (!request.params.id) {
+		return sendErrorApiResponse(reply, {
+			error: 'Missing ride "id" parameter.',
+			status_code: '400',
 		});
-	} catch (error) {
-		Logger.issue({ context: { action: 'getSimplifiedApexValidationsByRideId', feature: 'rides', request, value: request.body }, level: 'error', messageOrError: error });
-
-		reply
-			.status(error.statusCode ?? HTTP_STATUS.INTERNAL_SERVER_ERROR)
-			.send(error);
 	}
+
+	//
+	// Fetch the ride data from the database
+
+	const ridesQueryResult = await labDb.queryFromString<Pick<Ride, 'agency_id' | 'start_time_scheduled' | 'trip_id'>>(
+		'SELECT agency_id, start_time_scheduled, trip_id FROM operation.rides WHERE _id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id',
+		{ 1: request.params.id },
+	);
+
+	if (!ridesQueryResult?.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'Ride not found.',
+			status_code: '404',
+		});
+	}
+
+	const rideData = ridesQueryResult[0];
+
+	//
+	// Fetch the simplified apex validations data by ride ID
+	// and send it back to the client
+
+	const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
+
+	const simplifiedApexValidationsData = await labDb.simplifiedApex.validations.select(
+		'*',
+		`created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`,
+		{ 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id },
+	);
+
+	//
+	// Send the ride data back to the client
+
+	return sendSuccessApiResponse(reply, simplifiedApexValidationsData ?? []);
 }

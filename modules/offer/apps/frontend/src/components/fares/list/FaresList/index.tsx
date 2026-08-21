@@ -5,7 +5,7 @@ import { FaresListCellAgencies } from '@/components/fares/list/FaresListCellAgen
 import { FaresListFiltersBar } from '@/components/fares/list/FaresListFiltersBar';
 import { FaresListHeader } from '@/components/fares/list/FaresListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Fare } from '@tmlmobilidade/types';
+import { type Fare } from '@tmlmobilidade/go-types-offer';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';

@@ -2,7 +2,7 @@
 
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Shape } from '@tmlmobilidade/types';
+import { type Shape } from '@tmlmobilidade/go-types-offer';
 
 import { fetchTypologiesByAgencyIds } from './fetchers/typology.js';
 import { type ImportOptions } from './types.js';

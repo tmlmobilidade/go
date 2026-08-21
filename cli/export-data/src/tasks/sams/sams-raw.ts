@@ -3,8 +3,9 @@
 import { type SamExport } from '@/tasks/sams/sams-raw.types.js';
 import { type ExportType, type TaskProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type Filter, sams } from '@tmlmobilidade/interfaces';
-import { type Sam } from '@tmlmobilidade/types';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Sam } from '@tmlmobilidade/go-types-operation';
+import { type Filter } from '@tmlmobilidade/interfaces';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 
@@ -33,7 +34,7 @@ export async function exportSamsRaw({ context, message }: TaskProps): Promise<vo
 
 	message(`A iniciar ligação à base de dados...`);
 
-	const samsCollection = await sams.getCollection();
+	const samsCollection = await goDb.operation.sams.getCollection();
 
 	const stream = samsCollection.find(filterQuery).stream();
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { IconCheck, IconCircleDashed, IconFileDownload, IconLoader2, IconX } from '@tabler/icons-react';
-import { FileExport } from '@tmlmobilidade/types';
+import { type FileExport } from '@tmlmobilidade/go-types-downloads';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -45,11 +45,11 @@ export function SidebarExportsItem({ fileExport }: SidebarExportsItemProps) {
 	// B. Render components
 
 	return (
-		<div className={styles.root}>
-			<div
-				className={styles.left}
-				onClick={() => fileExport.processing_status === 'complete' && exportsContext.actions.download(fileExport._id)}
-			>
+		<div
+			className={styles.root}
+			onClick={() => fileExport.processing_status === 'complete' && exportsContext.actions.download(fileExport._id)}
+		>
+			<div className={styles.left}>
 				<Section flexDirection="row" gap="sm" justifyContent="space-between" padding="none" width="fit-content">
 					<div className={styles.iconWrapper}>{icon}</div>
 					<div>

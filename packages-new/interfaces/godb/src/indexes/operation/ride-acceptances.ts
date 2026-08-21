@@ -1,7 +1,7 @@
 /* * */
 
 import { type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
-import { type RideAcceptance } from '@tmlmobilidade/types';
+import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 

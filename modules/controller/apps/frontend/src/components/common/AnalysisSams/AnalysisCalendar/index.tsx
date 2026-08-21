@@ -2,7 +2,6 @@
 
 /* * */
 
-import { cn } from '@/lib/utils';
 import { type SamAnalysis } from '@tmlmobilidade/types';
 import { DateTime } from 'luxon';
 import { useMemo } from 'react';
@@ -54,21 +53,21 @@ export function AnalysisCalendar({ analyses, className, onDayClick, rangeEndTs, 
 	}
 
 	return (
-		<div className={cn(styles.byMonthGroups, className)}>
-			<div className={cn(styles.organizedByDates, styles.organizedByMonths)}>
+		<div className={styles.byMonthGroups}>
+			<div className={`${styles.organizedByDates} ${styles.organizedByMonths}`}>
 				{sections.map((section) => {
 					const daySections = section.dayKey === SEM_DATA_KEY ? [] : monthDaySectionsByKey.get(section.dayKey) ?? [];
 
 					return (
 						<div key={section.dayKey} className={styles.monthGroup}>
 							<div
-								className={cn(
-									styles.dayGroup,
-									section.accent === 'green' && styles.dayGroupGreen,
-									section.accent === 'orange' && styles.dayGroupOrange,
-									section.accent === 'red' && styles.dayGroupRed,
-									section.accent === 'white' && styles.dayGroupWhite,
-								)}
+								className={`
+									${styles.dayGroup}
+									${section.accent === 'green' && styles.dayGroupGreen}
+									${section.accent === 'orange' && styles.dayGroupOrange}
+									${section.accent === 'red' && styles.dayGroupRed}
+									${section.accent === 'white' && styles.dayGroupWhite}
+								`}
 							>
 								<div className={styles.dayLabel}>{section.label}</div>
 								<div className={styles.daySquares}>

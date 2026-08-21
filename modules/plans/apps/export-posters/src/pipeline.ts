@@ -3,8 +3,9 @@
 import { PostersController } from '@/controller/poster.js';
 import { importPlanToSqlite } from '@/import-plan-to-sqlite.js';
 import { type ExportToHitouchConfig } from '@/types.js';
+import { type LinesMode } from '@tmlmobilidade/go-types-offer';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
-import { type LinesMode, type Plan } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 
 /* * */

@@ -1,16 +1,17 @@
 /* * */
 
 import { type ExportToHitouchConfig, type RoutesToCanvasExt } from '@/types.js';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV29ExtRoutes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GTFS_Route } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 import Papa from 'papaparse';
 
 /* * */
 
-export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportRoutesFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 	// Export routes.txt
 
@@ -19,7 +20,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 	//
 	// Get all routes and group them by line_id
 
-	const routesByLineId: Record<string, GTFS_Route[]> = {};
+	const routesByLineId: Record<string, GtfsStrictV29ExtRoutes[]> = {};
 
 	sqlTables.routes.all().forEach((route) => {
 		if (!routesByLineId[route.line_id]) routesByLineId[route.line_id] = [];
@@ -29,7 +30,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 	for (const routesGroup of Object.values(routesByLineId)) {
 		// If this line only has one route, export it as is
 		if (routesGroup.length === 1) {
-			const data: GTFS_Route = {
+			const data: GtfsRoutes = {
 				agency_id: routesGroup[0].agency_id,
 				route_color: routesGroup[0].route_color,
 				route_desc: routesGroup[0].route_desc,
@@ -38,7 +39,6 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 				route_short_name: routesGroup[0].route_short_name,
 				route_text_color: routesGroup[0].route_text_color,
 				route_type: routesGroup[0].route_type,
-				route_url: routesGroup[0].route_url,
 			};
 			await routesCsv.write(data);
 			continue;
@@ -48,7 +48,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 		// to differentiate between them.
 		routesGroup.sort((a, b) => (a.route_id < b.route_id ? -1 : 1));
 		for (let i = 0; i < routesGroup.length; i++) {
-			const data: GTFS_Route = {
+			const data: GtfsRoutes = {
 				agency_id: routesGroup[i].agency_id,
 				route_color: routesGroup[i].route_color,
 				route_desc: routesGroup[i].route_desc,
@@ -57,7 +57,6 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 				route_short_name: `${routesGroup[i].route_short_name}${String.fromCharCode(65 + i)}`, // 65 is 'A' in ASCII
 				route_text_color: routesGroup[i].route_text_color,
 				route_type: routesGroup[i].route_type,
-				route_url: routesGroup[i].route_url,
 			};
 			await routesCsv.write(data);
 		}
@@ -71,7 +70,7 @@ export async function exportRoutesFile(sqlTables: GtfsSQLTables, exportConfig: E
 	// Export route canvas profiles by route and direction.
 
 	const routesToCanvasExtFields: (keyof RoutesToCanvasExt)[] = ['route_id', 'canvas_profile', 'direction_id'];
-	const routesToCanvasExtRows = sqlTables._db.prepare(
+	const routesToCanvasExtRows = sqlTables._db.databaseInstance.prepare(
 		` SELECT DISTINCT route_id, direction_id
 		FROM trips
 		ORDER BY route_id ASC, direction_id ASC `,

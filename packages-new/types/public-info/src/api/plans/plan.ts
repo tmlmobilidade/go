@@ -1,7 +1,7 @@
 /* * */
 
+import { GtfsAgencySchema, GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-gtfs';
 import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
-import { GtfsAgencySchema, GtfsFeedInfoSchema } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 /* * */

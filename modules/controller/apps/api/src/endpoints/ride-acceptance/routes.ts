@@ -5,8 +5,8 @@ import { changeStatus } from '@/endpoints/ride-acceptance/controllers/change-sta
 import { getRideAcceptance } from '@/endpoints/ride-acceptance/controllers/get-ride-acceptance.js';
 import { justifyRide } from '@/endpoints/ride-acceptance/controllers/justify-ride.js';
 import { lockRideAcceptance } from '@/endpoints/ride-acceptance/controllers/lock-ride-acceptance.js';
-import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 

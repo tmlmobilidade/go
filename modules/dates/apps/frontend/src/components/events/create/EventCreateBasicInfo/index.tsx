@@ -2,7 +2,8 @@
 
 import { useEventCreateContext } from '@/components/events/create/EventCreate.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { EventSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { EventSchema } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { MultiSelect, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */

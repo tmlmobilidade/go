@@ -6,8 +6,8 @@ import { type CalendarEvent, CalendarEventType } from '@tmlmobilidade/types';
 import { useRouter } from 'next/navigation';
 
 import { EVENT_TYPE_DEFS } from '../../../../icons/event-types';
+import { LoadingOverlay } from '../../../../loaders';
 import { ErrorDisplay } from '../../../display/ErrorDisplay';
-import { LoadingOverlay } from '../../../loaders/LoadingOverlay';
 import { useCalendarUIContext } from '../../contexts/CalendarUI.context';
 import { EventsCalendarProvider, useEventsCalendarContext } from '../../contexts/EventsCalendar.context';
 import { Calendar } from '../Calendar';

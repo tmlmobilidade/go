@@ -135,7 +135,7 @@ const { canSave } = useFlagCanSave({
 Permissions are always checked via `PermissionCatalog` from `@tmlmobilidade/types` and `useMeContext` from `@tmlmobilidade/ui`.
 
 ```tsx
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { useMeContext } from '@tmlmobilidade/ui';
 
 const meContext = useMeContext();

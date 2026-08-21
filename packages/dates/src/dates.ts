@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { CALENDAR_DATE_FORMAT, type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/lib/date-format.js';
-import { type TimezoneIdentified, TimezoneIdentifiedSchema, TimezoneIdentifiedValues } from '@/lib/timezone-identified.js';
-import { type CalendarDate, type OperationalDate, type OperationalDateInt, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type TimezoneIdentified, TimezoneIdentifiedSchema, TimezoneIdentifiedValues } from '@tmlmobilidade/go-types-shared';
+import { type CalendarDate, type OperationalDate, type OperationalDateInt, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
 
 /* * */
@@ -30,6 +30,10 @@ export interface CalendarEntry {
 
 /* * */
 
+/**
+ * A class that represents a date and time.
+ * @deprecated Use the Dates class from `@tmlmobilidade/go-utils-dates` instead.
+ */
 export class Dates {
 	//
 
@@ -133,6 +137,28 @@ export class Dates {
 	static fromOperationalDate(date: OperationalDate | string, timezone: 'local' | 'utc' | TimezoneIdentified): Dates {
 		const dateTime = DateTime
 			.fromFormat(date, OPERATIONAL_DATE_FORMAT)
+			.setZone(timezone, { keepLocalTime: true })
+			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 }); // Start of the operational date
+		return new Dates({
+			calendar_date: dateTime.toFormat(CALENDAR_DATE_FORMAT) as CalendarDate,
+			iso: dateTime.toISO(),
+			js_date: dateTime.toJSDate(),
+			operational_date: this.prototype.getOperationalDate(dateTime.toISO()),
+			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
+			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
+			unix_timestamp: dateTime.toMillis() as UnixTimestamp,
+		});
+	}
+
+	/**
+	 * Creates a Dates object from an operational date integer.
+	 * @param date The operational date integer in 'yyyyMMdd' format.
+	 * @param timezone The timezone to set for the Dates object.
+	 * @returns A new Dates object created from the operational date.
+	 */
+	static fromOperationalDateInt(date: OperationalDateInt | string, timezone: 'local' | 'utc' | TimezoneIdentified): Dates {
+		const dateTime = DateTime
+			.fromFormat(String(date), OPERATIONAL_DATE_FORMAT)
 			.setZone(timezone, { keepLocalTime: true })
 			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 }); // Start of the operational date
 		return new Dates({

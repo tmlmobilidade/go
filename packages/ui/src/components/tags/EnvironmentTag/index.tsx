@@ -1,6 +1,6 @@
 /* * */
 
-import { getCurrentEnvironment } from '@tmlmobilidade/types';
+import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 
 import { Tag } from '../Tag';
 

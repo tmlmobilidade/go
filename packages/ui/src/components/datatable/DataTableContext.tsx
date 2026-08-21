@@ -6,7 +6,6 @@ import { getValueAtPath } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, type RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { type ViewportListRef } from 'react-viewport-list';
 
-import { tryParseDateToTimestamp } from '../../lib/utils';
 import { type DataTableColumn } from './DataTable';
 
 /* * */
@@ -89,13 +88,6 @@ export function DataTableContextProvider<T>({ children, columns, records }: Prop
 			if (![typeof aValue, typeof bValue].every(type => type === 'string' || type === 'number')) {
 				console.warn(`Sorting key: "${accessor}" is not sortable`);
 				return 0;
-			}
-
-			const aTimestamp = typeof aValue === 'string' ? tryParseDateToTimestamp(aValue) : null;
-			const bTimestamp = typeof bValue === 'string' ? tryParseDateToTimestamp(bValue) : null;
-
-			if (aTimestamp && bTimestamp) {
-				return sortFn(aTimestamp, bTimestamp);
 			}
 
 			return sortFn(aValue as number | string, bValue as number | string);

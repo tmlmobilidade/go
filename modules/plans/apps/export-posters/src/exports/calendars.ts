@@ -3,18 +3,20 @@
 import { DAY_TYPES } from '@/day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
 import { type CalendarAssignmentsExt, type CalendarExt, type DayTypeConfig, type ExportToHitouchConfig, type GtfsDate } from '@/types.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsCalendar, type GtfsCalendarDates, validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV29ExtStopTimes, type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type GTFS_Calendar, type GTFS_CalendarDate, type GTFS_StopTime, type GTFS_Trip_Extended, type OperationalDate } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 import Papa from 'papaparse';
 
 /* * */
 
-export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig, datesMap: Map<OperationalDate, GtfsDate>) {
+export async function exportCalendarFiles(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig, datesMap: Map<OperationalDate, GtfsDate>) {
 	//
 
 	//
@@ -54,7 +56,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		//
 		// Group trips that have the same stop_times
 
-		const equalTrips: Record<string, { sample_stop_times: GTFS_StopTime[], sample_trip: GTFS_Trip_Extended, service_ids: string[], start_time: string, trip_ids: string[] }> = {};
+		const equalTrips: Record<string, { sample_stop_times: GtfsStrictV29ExtStopTimes[], sample_trip: GtfsStrictV29ExtTrips, service_ids: string[], start_time: string, trip_ids: string[] }> = {};
 
 		for (const tripData of allTripsForThisPatternId) {
 			// Get stop_times for this trip
@@ -97,7 +99,8 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				const serviceDates = sqlTables.calendar_dates[serviceId];
 				if (!serviceDates.length) continue;
 				// Categorize each date
-				serviceDates.forEach((date) => {
+				serviceDates.forEach((gtfsDate) => {
+					const date = validateOperationalDate(gtfsDate);
 					// Get the generated metadata for this date
 					const matchingDateEntry = datesMap.get(date);
 					if (!matchingDateEntry) throw new Error(`Date ${date} for service_id ${serviceId} has no generated date metadata.`);
@@ -160,7 +163,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 				// This is because we are merging identical services into a single one. Before, there were more trips
 				// spread across multiple service_ids, now there will be fewer trips but with more dates on each service.
 
-				const newTripId = `${equalTripsData.sample_trip.pattern_id}|${equalTripsData.start_time}|${combinedDatesData.period}|${combinedDatesData.day_type}|${updatedServiceIds[serviceIdKey]._id}`;
+				const newTripId = `${equalTripsData.sample_trip.shape_id}||${equalTripsData.start_time}|${combinedDatesData.period}|${combinedDatesData.day_type}|${updatedServiceIds[serviceIdKey]._id}`;
 
 				sqlTables.trips.write({ ...equalTripsData.sample_trip, service_id: updatedServiceIds[serviceIdKey]._id, trip_id: newTripId });
 				equalTripsData.sample_stop_times.forEach(st => sqlTables.stop_times.write({ ...st, trip_id: newTripId }));
@@ -228,7 +231,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			if (!matchingDateEntry) throw new Error(`Date ${date} for service_id ${serviceIdData._id} has no generated date metadata.`);
 			// Get the weekday code for this date
 			let weekdayCode = Dates
-				.fromOperationalDate(date, 'Europe/Lisbon')
+				.fromOperationalDateInt(date, 'Europe/Lisbon')
 				.toFormat('c'); // '1' (Mon) to '7' (Sun)
 			// Treat holidays as Sundays
 			if (matchingDateEntry.holiday === '1') weekdayCode = '7';
@@ -247,7 +250,7 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			if (!matchingDateEntry) throw new Error(`Date ${date} for service_id ${serviceIdData._id} has no generated date metadata.`);
 			// Get the weekday code for this date
 			let weekdayCode = Dates
-				.fromOperationalDate(date, 'Europe/Lisbon')
+				.fromOperationalDateInt(date, 'Europe/Lisbon')
 				.toFormat('c'); // '1' (Mon) to '7' (Sun)
 			// Treat holidays as Sundays
 			if (matchingDateEntry.holiday === '1') weekdayCode = '7';
@@ -399,17 +402,17 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 			//
 			// Output the calendar data
 
-			const calendarData: GTFS_Calendar = {
-				end_date: sortedDates.at(-1) ?? exportConfig.date_range.end,
-				friday: 0,
-				monday: 0,
-				saturday: 0,
+			const calendarData: GtfsCalendar = {
+				end_date: validateGtfsDate(sortedDates.at(-1) ?? exportConfig.date_range.end),
+				friday: '0',
+				monday: '0',
+				saturday: '0',
 				service_id: serviceIdData._id,
-				start_date: sortedDates.at(0) ?? exportConfig.date_range.start,
-				sunday: 0,
-				thursday: 0,
-				tuesday: 0,
-				wednesday: 0,
+				start_date: validateGtfsDate(sortedDates.at(0) ?? exportConfig.date_range.start),
+				sunday: '0',
+				thursday: '0',
+				tuesday: '0',
+				wednesday: '0',
 			};
 			await calendarCsv.write(calendarData);
 		}
@@ -448,9 +451,9 @@ export async function exportCalendarFiles(sqlTables: GtfsSQLTables, exportConfig
 		// Output all dates for this service_id
 
 		for (const operationalDate of sortedDates) {
-			const data: GTFS_CalendarDate = {
-				date: operationalDate,
-				exception_type: 1,
+			const data: GtfsCalendarDates = {
+				date: validateGtfsDate(operationalDate),
+				exception_type: '1',
 				service_id: serviceIdData._id,
 			};
 			await calendarDatesCsv.write(data);

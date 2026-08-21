@@ -1,76 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* * */
 
-import { ValhallaRouteRequest, ValhallaRouteResponse } from '@/types/shapes.js';
-import { decodeValhallaShape } from '@/utils/shapes.js';
+import { type RoutePreviewDto, type RoutePreviewResponse } from '@/types/shapes.js';
+import { routeWithValhalla } from '@/utils/route-preview.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
-import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 
-interface RoutePreviewPoint {
-	lat: number
-	lon: number
-	type?: 'break' | 'through' | 'via'
-}
-
-interface RoutePreviewDto {
-	costing?: 'auto' | 'bicycle' | 'bus' | 'pedestrian'
-	costing_options?: {
-		bus?: {
-			use_ferry?: number
-		}
-	}
-	points: RoutePreviewPoint[]
-}
-
-interface RoutePreviewLeg {
-	distance: number
-	duration: number
-	encoded_polyline: string
-	from_index: number
-	geojson: {
-		geometry: {
-			coordinates: [number, number][]
-			type: 'LineString'
-		}
-		properties: {
-			distance: number
-			duration: number
-			from_index: number
-			to_index: number
-		}
-		type: 'Feature'
-	}
-	geometry: [number, number][]
-	to_index: number
-}
-
-interface RoutePreviewResponse {
-	distance: number
-	duration: number
-	encoded_polyline: string
-	geojson: {
-		geometry: {
-			coordinates: [number, number][]
-			type: 'LineString'
-		}
-		properties: {
-			distance: number
-			duration: number
-		}
-		type: 'Feature'
-	}
-	geometry: [number, number][]
-	legs: RoutePreviewLeg[]
-}
-
-/* * */
-
-const VALHALLA_URL = process.env.VALHALLA_URL ?? 'https://valhalla.carrismetropolitana.pt';
-
-const toMeters = (distanceInKm: number) => Math.round(distanceInKm * 1000);
+const VALHALLA_URL = process.env.VALHALLA_URL ?? 'https://valhalla-stg.go.tmlmobilidade.pt';
 
 /* * */
 
@@ -93,120 +31,32 @@ export class ShapesController {
 			}
 		}
 
-		const fullGeometry: [number, number][] = [];
-		const legs: RoutePreviewLeg[] = [];
+		const abortController = new AbortController();
+		const abortRoute = () => abortController.abort();
+		request.raw.once('aborted', abortRoute);
+		reply.raw.once('close', abortRoute);
 
-		let totalDistance = 0;
-		let totalDuration = 0;
+		let routePreview: RoutePreviewResponse;
 
-		for (let index = 0; index < points.length - 1; index++) {
-			const from = points[index];
-			const to = points[index + 1];
-
-			const valhallaPayload: ValhallaRouteRequest = {
+		try {
+			routePreview = await routeWithValhalla(points, {
 				costing,
 				costing_options,
-				directions_options: {
-					units: 'kilometers',
-				},
-				locations: [
-					{
-						lat: from.lat,
-						lon: from.lon,
-						type: 'break',
-					},
-					{
-						lat: to.lat,
-						lon: to.lon,
-						type: 'break',
-					},
-				],
-			};
-
-			const valhallaResponse = await fetch(`${VALHALLA_URL}/route`, {
-				body: JSON.stringify(valhallaPayload),
-				headers: { 'Content-Type': 'application/json' },
-				method: 'POST',
+				signal: abortController.signal,
+				url: VALHALLA_URL,
 			});
-
-			if (!valhallaResponse.ok) {
-				const errorText = await valhallaResponse.text();
-
-				throw new HttpException(
-					HTTP_STATUS.BAD_GATEWAY,
-					`Valhalla route request failed on segment ${index + 1}: ${errorText}`,
-				);
-			}
-
-			const valhallaData = await valhallaResponse.json() as ValhallaRouteResponse;
-
-			const encodedShape = valhallaData?.trip?.legs?.[0]?.shape;
-
-			if (!encodedShape) {
-				throw new HttpException(
-					HTTP_STATUS.BAD_GATEWAY,
-					`Valhalla response did not include a shape for segment ${index + 1}`,
-				);
-			}
-
-			const segmentGeometry = decodeValhallaShape(encodedShape);
-			const segmentDistance = toMeters(valhallaData?.trip?.summary?.length ?? 0);
-			const segmentDuration = valhallaData?.trip?.summary?.time ?? 0;
-			const segmentGeoJson = {
-				geometry: {
-					coordinates: segmentGeometry,
-					type: 'LineString' as const,
-				},
-				properties: {
-					distance: segmentDistance,
-					duration: segmentDuration,
-					from_index: index,
-					to_index: index + 1,
-				},
-				type: 'Feature' as const,
-			};
-
-			totalDistance += segmentDistance;
-			totalDuration += segmentDuration;
-
-			if (fullGeometry.length > 0) {
-				fullGeometry.push(...segmentGeometry.slice(1));
-			} else {
-				fullGeometry.push(...segmentGeometry);
-			}
-
-			legs.push({
-				distance: segmentDistance,
-				duration: segmentDuration,
-				encoded_polyline: encodePolylineFromGeoJson(segmentGeoJson),
-				from_index: index,
-				geojson: segmentGeoJson,
-				geometry: segmentGeometry,
-				to_index: index + 1,
-			});
+		} catch (error) {
+			throw new HttpException(
+				HTTP_STATUS.BAD_GATEWAY,
+				error instanceof Error ? error.message : 'Valhalla route request failed',
+			);
+		} finally {
+			request.raw.off('aborted', abortRoute);
+			reply.raw.off('close', abortRoute);
 		}
 
-		const fullGeoJson = {
-			geometry: {
-				coordinates: fullGeometry,
-				type: 'LineString' as const,
-			},
-			properties: {
-				distance: totalDistance,
-				duration: totalDuration,
-			},
-			type: 'Feature' as const,
-		};
-
 		return reply.send({
-			data: {
-				distance: totalDistance,
-				duration: totalDuration,
-				encoded_polyline: encodePolylineFromGeoJson(fullGeoJson),
-				geojson: fullGeoJson,
-				geometry: fullGeometry,
-				legs,
-			},
+			data: routePreview,
 			error: null,
 			statusCode: HTTP_STATUS.OK,
 		});

@@ -1,7 +1,7 @@
 /* * */
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Label, Section, UserTag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

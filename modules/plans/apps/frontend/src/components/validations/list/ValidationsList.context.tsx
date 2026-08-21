@@ -2,9 +2,10 @@
 
 import { type ValidationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { type GtfsValidation, PermissionCatalog, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useSearch } from '@tmlmobilidade/ui';
+import { PermissionCatalog, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/types';
+import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -19,7 +20,7 @@ interface ValidationsListContextState {
 	filters: {
 		agency: UseFilterStateListReturnType
 		processing_status: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 		validity_status: UseFilterStateListReturnType
 	}
 	flags: {
@@ -63,7 +64,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// C. Setup filters
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 	const filterProcessingStatus = useFilterStateList('processing_status', ProcessingStatusSchema.options, ProcessingStatusSchema.options.map(item => ({ label: t(`shared:status.processing_status.${item}`), value: item })));
 	const filterValidityStatus = useFilterStateList('validity_status', ValidityStatusSchema.options, ValidityStatusSchema.options.map(item => ({ label: t(`shared:status.validity_status.${item}`), value: item })));

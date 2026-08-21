@@ -1,12 +1,11 @@
 /* * */
 
-import { HashedShape } from '@tmlmobilidade/types';
 import { Feature, FeatureCollection, LineString, Position } from 'geojson';
 
 /* * */
 
-export function hashedShapesToFeatureCollection(hashedShapes: HashedShape | HashedShape[]): FeatureCollection<LineString, GeoJSON.GeoJsonProperties> {
-	function toFeature(shape: HashedShape): Feature<LineString, GeoJSON.GeoJsonProperties> {
+export function hashedShapesToFeatureCollection(hashedShapes: any | any[]): FeatureCollection<LineString, GeoJSON.GeoJsonProperties> {
+	function toFeature(shape: any): Feature<LineString, GeoJSON.GeoJsonProperties> {
 		return {
 			geometry: {
 				coordinates: shape.points.map(point => [point.shape_pt_lon, point.shape_pt_lat] as Position),

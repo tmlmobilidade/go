@@ -3,7 +3,7 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { IconArrowRight } from '@tabler/icons-react';
-import { StopsParameter } from '@tmlmobilidade/types';
+import { StopsParameter } from '@tmlmobilidade/go-types-offer';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';

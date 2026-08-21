@@ -1,8 +1,9 @@
 /* * */
 
 import { type GtfsDate } from '@/types.js';
-import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
-import { type Holiday, type OperationalDate, type YearPeriod } from '@tmlmobilidade/types';
+import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type OperationalDate, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
@@ -32,10 +33,11 @@ export function buildDatesMap(dateRange: { end: OperationalDate, start: Operatio
 
 	const datesMap = new Map<OperationalDate, GtfsDate>();
 
-	for (const date of getOperationalDatesFromRange(dateRange.start, dateRange.end)) {
+	for (const dateInt of getOperationalDatesFromRange(OperationalDateIntSchema.parse(dateRange.start), OperationalDateIntSchema.parse(dateRange.end))) {
+		const date = validateOperationalDate(String(dateInt));
 		const holidayNames = holidayByDate.get(date) ?? [];
 		const holiday = holidayNames.length > 0;
-		const weekday = Dates.fromOperationalDate(date, 'Europe/Lisbon').toFormat('c');
+		const weekday = Dates.fromOperationalDateInt(dateInt, 'Europe/Lisbon').toFormat('c');
 
 		const dayType: GtfsDate['day_type'] = holiday || weekday === '7'
 			? '3'

@@ -1,0 +1,42 @@
+/* * */
+
+import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
+import { encodeGtfsRtFeed, getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
+import { Logger } from '@tmlmobilidade/logger';
+
+/**
+ * Retrieves GTFS-RT TripUpdate protobuf feeds for a stop from the cache.
+ * @param request The request object.
+ * @param reply The reply object.
+ */
+export async function getEtaByStopIdGtfsProtobuf(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<unknown>) {
+	const raw = await cacheDb.get(`hub:v1:realtime:eta:by-stop:${request.params.id}:gtfs`);
+
+	if (!raw) {
+		Logger.error({ message: `[hub/v1/realtime:getEtaByStopIdGtfsProtobuf(${request.params.id})] No data in cache.` });
+		return reply
+			.header('access-control-allow-origin', '*')
+			.header('cache-control', 'public, max-age=5')
+			.code(HTTP_STATUS.NO_CONTENT)
+			.send();
+	}
+
+	const tripUpdates = JSON.parse(raw) as GtfsRtTripUpdate[];
+	const feed = getEmptyGtfsRtFeedMessage();
+	feed.entity.push(...tripUpdates.map(tripUpdate => ({
+		id: tripUpdate.trip.trip_id,
+		trip_update: tripUpdate,
+	})));
+
+	const buffer = await encodeGtfsRtFeed(feed);
+
+	return reply
+		.header('access-control-allow-origin', '*')
+		.header('cache-control', 'public, max-age=5')
+		.type('application/octet-stream')
+		.code(HTTP_STATUS.OK)
+		.send(Buffer.from(buffer));
+}

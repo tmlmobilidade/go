@@ -1,7 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { type Ride } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type RideAnalysisExpectedStartTime, RideAnalysisExpectedStartTimeSchema } from '@tmlmobilidade/go-types-operation';
 
 /**
  * This analyzer tests if there is an excess delay starting the trip using geographic data.
@@ -12,7 +13,7 @@ import { type Ride } from '@tmlmobilidade/types';
  * → PASS = Ride start time delay is less than or equal to five minutes.
  * → FAIL = Ride start time delay is greater than five minutes.
  */
-export function expectedStartTimeAnalyzer(analysisData: AnalysisData): Ride['analysis']['EXPECTED_START_TIME'] {
+export function expectedStartTimeAnalyzer(analysisData: AnalysisData): RideAnalysisExpectedStartTime {
 	try {
 		//
 
@@ -20,27 +21,45 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): Ride['ana
 		// Validate that the test has the necessary data
 
 		if (!analysisData.ride.start_time_scheduled) {
-			return {
-				grade: 'skip',
+			return RideAnalysisExpectedStartTimeSchema.parse({
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'skip',
+				observed_start_time: null,
+				observed_start_time_delta: null,
+				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_START_TIME_SCHEDULED',
-				value: null,
-			};
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+			});
 		}
 
 		if (!analysisData.vehicle_events.length) {
-			return {
-				grade: 'fail',
+			return RideAnalysisExpectedStartTimeSchema.parse({
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'skip',
+				observed_start_time: null,
+				observed_start_time_delta: null,
+				operational_date: analysisData.ride.operational_date,
 				reason: 'NO_VEHICLE_EVENTS',
-				value: null,
-			};
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+			});
 		}
 
 		if (!analysisData.ride.start_time_observed) {
-			return {
-				grade: 'skip',
+			return RideAnalysisExpectedStartTimeSchema.parse({
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'skip',
+				observed_start_time: null,
+				observed_start_time_delta: null,
+				operational_date: analysisData.ride.operational_date,
 				reason: 'UNKNOWN_START',
-				value: null,
-			};
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+			});
 		}
 
 		//
@@ -52,36 +71,61 @@ export function expectedStartTimeAnalyzer(analysisData: AnalysisData): Ride['ana
 		// Classify the delay
 
 		if (delayInMinutes <= -1) {
-			return {
-				grade: 'fail',
+			return RideAnalysisExpectedStartTimeSchema.parse({
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'fail',
+				observed_start_time: analysisData.ride.start_time_observed,
+				observed_start_time_delta: delayInMinutes,
+				operational_date: analysisData.ride.operational_date,
 				reason: 'EARLY_START',
-				value: delayInMinutes,
-			};
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+			});
 		}
 
 		if (delayInMinutes > -1 && delayInMinutes <= 5) {
-			return {
-				grade: 'pass',
+			return RideAnalysisExpectedStartTimeSchema.parse({
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'pass',
+				observed_start_time: analysisData.ride.start_time_observed,
+				observed_start_time_delta: delayInMinutes,
+				operational_date: analysisData.ride.operational_date,
 				reason: 'START_ON_TIME',
-				value: delayInMinutes,
-			};
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+			});
 		}
 
 		if (delayInMinutes > 5) {
-			return {
-				grade: 'fail',
+			return RideAnalysisExpectedStartTimeSchema.parse({
+				agency_id: analysisData.ride.agency_id,
+				grade_status: 'fail',
+				observed_start_time: analysisData.ride.start_time_observed,
+				observed_start_time_delta: delayInMinutes,
+				operational_date: analysisData.ride.operational_date,
 				reason: 'LATE_START',
-				value: delayInMinutes,
-			};
+				remarks: null,
+				ride_id: analysisData.ride._id,
+				updated_at: Dates.now('utc').unix_timestamp,
+			});
 		}
+
+		throw new Error(`Unexpected delay in minutes: ${delayInMinutes}`);
 
 		//
 	} catch (error) {
-		return {
-			error_message: error.message,
-			grade: 'error',
+		return RideAnalysisExpectedStartTimeSchema.parse({
+			agency_id: analysisData.ride.agency_id,
+			grade_status: 'error',
+			observed_start_time: null,
+			observed_start_time_delta: null,
+			operational_date: analysisData.ride.operational_date,
 			reason: null,
-			value: null,
-		};
+			remarks: error.message,
+			ride_id: analysisData.ride._id,
+			updated_at: Dates.now('utc').unix_timestamp,
+		});
 	}
 };

@@ -2,7 +2,8 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type Attachment, type FileExport, type PlanPostersExportProperties } from '@tmlmobilidade/types';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
+import { type FileExport, type PlanPostersExportProperties } from '@tmlmobilidade/go-types-downloads';
 
 import { generatePlanPostersZip } from './pipeline.js';
 

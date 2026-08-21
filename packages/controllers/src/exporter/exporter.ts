@@ -1,11 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/go-types-downloads';
 import { Logger } from '@tmlmobilidade/logger';
-import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/types';
 
 /* * */
 

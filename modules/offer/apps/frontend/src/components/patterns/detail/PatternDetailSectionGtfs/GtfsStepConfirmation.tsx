@@ -3,7 +3,7 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Pattern } from '@tmlmobilidade/types';
+import { type Pattern } from '@tmlmobilidade/go-types-offer';
 import { Button, closeModal, Divider, Grid, Section, Text, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useState } from 'react';

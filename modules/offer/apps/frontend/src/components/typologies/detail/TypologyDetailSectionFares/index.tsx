@@ -2,7 +2,7 @@
 
 import { useTypologyDetailContext } from '@/components/typologies/detail/TypologyDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Fare, FARE_PAYMENT_METHOD } from '@tmlmobilidade/types';
+import { Fare, FARE_PAYMENT_METHOD } from '@tmlmobilidade/go-types-offer';
 import { Collapsible, MultiSelect, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';

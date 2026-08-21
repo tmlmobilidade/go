@@ -7,8 +7,8 @@ import { runSaga } from '@/utils/operation-runner.js';
 import { storageKey } from '@/utils/storage-key.js';
 import { MetadataError, NotFoundError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Attachment, CreateAttachmentSchema } from '@tmlmobilidade/go-types-core';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type Attachment, CreateAttachmentSchema } from '@tmlmobilidade/types';
 import { convertObject } from '@tmlmobilidade/utils';
 
 import { type StorageDeps } from '../types/deps.js';

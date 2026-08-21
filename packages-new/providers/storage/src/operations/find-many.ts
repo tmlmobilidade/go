@@ -7,7 +7,7 @@ import type { Filter, FindOptions } from '@tmlmobilidade/go-clients-mongo';
 
 import { runOperation } from '@/utils/operation-runner.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Attachment } from '@tmlmobilidade/types';
+import { Attachment } from '@tmlmobilidade/go-types-core';
 
 /* * */
 

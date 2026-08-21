@@ -1,7 +1,7 @@
 /* * */
 
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function PlansListFilterValidityStatus() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={plansListContext.filters.validity_status.isActive}
 			label="Estado de Validade"
 			onChange={plansListContext.filters.validity_status.set}

@@ -9,7 +9,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 export function PeriodAssign() {
 	return (
-		<Pane header={[<PeriodAssignHeader />]}>
+		<Pane header={[<PeriodAssignHeader key="period-assign-header" />]}>
 			<PeriodsListContextProvider>
 				<PeriodAssignContent />
 			</PeriodsListContextProvider>

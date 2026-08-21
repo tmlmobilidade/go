@@ -12,9 +12,9 @@ export const AppConfig = Object.freeze({
 
 	development: {
 		isDevelopment: !isProduction,
-		lineIds: [77],
-		timeEnd: Dates.fromUnixTimestamp(1780836960000).plus({ hours: 1 }),
-		timeStart: Dates.fromUnixTimestamp(1780836960000),
+		lineIds: [],
+		timeEnd: Dates.now('Europe/Lisbon').plus({ hours: 1 }),
+		timeStart: Dates.now('Europe/Lisbon').minus({ hours: 1 }),
 	},
 
 	// Data and time settings

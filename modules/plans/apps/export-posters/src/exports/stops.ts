@@ -1,23 +1,23 @@
 /* * */
 
 import { type ExportToHitouchConfig, type StopsToCanvasExt } from '@/types.js';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsStrictV29ExtStops } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29ExtSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GTFS_Stop } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';
 import Papa from 'papaparse';
 
 /* * */
 
-export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: ExportToHitouchConfig) {
+export async function exportStopsFile(sqlTables: GtfsStrictV29ExtSQLTables, exportConfig: ExportToHitouchConfig) {
 	//
 	// Export stops.txt
 
 	const stopsCsv = new CsvWriter('stops.txt', `${exportConfig.workdir}/stops.txt`, { batch_size: 100000 });
 
 	for (const stopData of sqlTables.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times)')) {
-		const data: GTFS_Stop = {
+		const data: GtfsStrictV29ExtStops = {
 			location_type: stopData.location_type,
 			parent_station: stopData.parent_station,
 			platform_code: stopData.platform_code,
@@ -42,7 +42,7 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 	// Export stop canvas profiles by stop and direction.
 
 	const stopsToCanvasExtFields: (keyof StopsToCanvasExt)[] = ['stop_id', 'canvas_profile', 'direction_id'];
-	const stopsToCanvasExtRows = sqlTables._db.prepare(
+	const stopsToCanvasExtRows = sqlTables._db.databaseInstance.prepare(
 		` SELECT DISTINCT stop_times.stop_id, trips.direction_id
 		FROM stop_times
 		INNER JOIN trips ON trips.trip_id = stop_times.trip_id

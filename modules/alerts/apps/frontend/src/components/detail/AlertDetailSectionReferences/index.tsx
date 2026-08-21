@@ -1,9 +1,10 @@
 'use client';
 
-import { ReferencesEditor } from '@/components/common/references/ReferencesEditor';
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { ReferencesEditor } from '@/components/references/shared/ReferencesEditor';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, AlertReferenceTypeValues, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Collapsible, ContextFormController, Label, openConfirmModal, Section, Select, useContextFormWatch, useDataAgencies, useMeContext } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
 

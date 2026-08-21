@@ -1,7 +1,7 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { createGtfsValidation } from './controllers/create-gtfs-validation.js';
 import { downloadGtfsValidationFile } from './controllers/download-gtfs-validation-file.js';

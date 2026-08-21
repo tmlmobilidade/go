@@ -1,6 +1,7 @@
 /* * */
 
-import { type GtfsRtFeedMessage, ServiceAlertResponse } from '@tmlmobilidade/types';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
+import { type ServiceAlertResponse } from '@tmlmobilidade/types';
 import { IncomingMessage } from 'node:http';
 import https from 'node:https';
 

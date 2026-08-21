@@ -2,8 +2,9 @@
 
 import { getStopByLegacyId } from '@/utils/stops.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { GtfsStrictV29StopTimes, GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type CreatePatternDto, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type CreatePatternDto, GtfsTMLStopTimes, GtfsTMLTrip, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/types';
 
 import {
 	normalizeGtfsDistance,
@@ -29,10 +30,10 @@ export async function buildPatternsForRoute(params: {
 	lineId: string
 	missingZoneCodes: Set<string>
 	routeDocsByCode: Map<string, { _id: string }>
-	routeTrips: GtfsTMLTrip[]
+	routeTrips: GtfsStrictV29Trips[]
 	shapesById: Map<string, Shape>
 	stopCache: Map<string, { _id: string, name: string }>
-	stopTimesByTrip: Map<string, GtfsTMLStopTimes[]>
+	stopTimesByTrip: Map<string, GtfsStrictV29StopTimes[]>
 	zoneIdByCode: Map<string, string>
 	zonesByPatternStop: Map<string, string[]>
 	zonesByStop: Map<string, string[]>
@@ -57,7 +58,7 @@ export async function buildPatternsForRoute(params: {
 	//
 	// A. Build patterns per direction
 
-	const patternsByDirection = new Map<string, Map<string, { patternKey: string, stopTimes: GtfsTMLStopTimes[], trip: GtfsTMLTrip }>>();
+	const patternsByDirection = new Map<string, Map<string, { patternKey: string, stopTimes: GtfsStrictV29StopTimes[], trip: GtfsStrictV29Trips }>>();
 	for (const trip of routeTrips) {
 		const directionId = patternDirectionMapper.fromGtfs(trip.direction_id ?? '0') as PatternDirection;
 		const stopTimes = stopTimesByTrip.get(trip.trip_id) ?? [];

@@ -80,14 +80,14 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 
 	/**
 	 * Executes a DISTINCT query on the ClickHouse table using the service's client.
-	 * @param select The columns to select in the query (e.g., `"*"`, `"column1, column2"`).
+	 * @param field The field to select distinct values for (e.g., `"field_name"`).
 	 * @param where The WHERE clause to filter the results (e.g., `"id = 1"`).
 	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
 	 * @returns A promise that resolves to an array of distinct values matching the query.
 	 */
-	public async distinct<T>(field: keyof T, where: string, params?: Record<string, number | string>): Promise<T[keyof T][]> {
-		const result = await queryFromString<T>(this.client, `SELECT DISTINCT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
-		return result.map(doc => doc[field]);
+	public async distinct<K extends keyof T>(field: K, where: string, params?: Record<string, number | string>): Promise<T[K][]> {
+		const result = await queryFromString<T[K]>(this.client, `SELECT DISTINCT ${String(field)} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
+		return result;
 	}
 
 	/**
@@ -120,7 +120,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 * @param values An array of data objects to insert into the table.
 	 * @returns A promise that resolves when the data is inserted successfully.
 	 */
-	public async insert<T>(format: DataFormat = 'JSONEachRow', values: T[]) {
+	public async insert(format: DataFormat = 'JSONEachRow', values: T[]) {
 		return this.client.insert<T>({
 			format: format,
 			table: `"${this.databaseName}"."${this.tableName}"`,
@@ -182,7 +182,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 *   end_date: '2024-12-31',
 	 * });
 	*/
-	public async queryFromFile<T>(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryFromFile<T>> {
+	public async queryFromFile(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryFromFile<T>> {
 		return await queryFromFile<T>(this.client, filePath, params);
 	}
 
@@ -198,7 +198,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 *   { start_date: '2024-01-01', end_date: '2024-12-31' }
 	 * );
 	*/
-	public async queryFromString<T>(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
+	public async queryFromString(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
 		return await queryFromString<T>(this.client, query, params);
 	}
 
@@ -214,8 +214,18 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		if (!validateSqlParam(this.databaseName, false)) throw new Error(`LABDB [${this.databaseName}]: Unsafe database name provided.`);
 		// Perform the query to create the database if it does not exist
 		try {
+			// First check if the database already exists
+			const result = await this.client.query({
+				query: `SELECT 1 FROM system.databases WHERE name = {name:String} LIMIT 1`,
+				query_params: { name: this.databaseName },
+			});
+			const resultData = await result.json();
+			const databaseAlreadyExists = resultData.data.length > 0;
+			// Always execute CREATE DATABASE IF NOT EXISTS to avoid race conditions
+			// if another instance creates the database after our existence check.
 			await this.client.command({ query: `CREATE DATABASE IF NOT EXISTS "${this.databaseName}"` });
-			Logger.info({ message: `LABDB [${this.databaseName}]: Database created.` });
+			// Only log if the database did not exist when we checked.
+			if (!databaseAlreadyExists) Logger.info({ message: `LABDB [${this.databaseName}]: Database created.` });
 		} catch (error) {
 			Logger.error({ error, message: `LABDB [${this.databaseName}]: Error @ createDatabase(): ${(error as Error).message}` });
 			throw error;
@@ -251,8 +261,18 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 		`;
 		// Perform the query to create the table
 		try {
+			// Check whether the table already exists.
+			const result = await this.client.query({
+				query: `SELECT 1 FROM system.tables WHERE database = {database:String} AND name = {table:String} LIMIT 1`,
+				query_params: { database: this.databaseName, table: this.tableName },
+			});
+			const resultData = await result.json();
+			const tableAlreadyExists = resultData.data.length > 0;
+			// Always execute CREATE TABLE IF NOT EXISTS to avoid race conditions
+			// if another instance creates the table after our existence check.
 			await this.client.command({ query: createTableQuery });
-			Logger.info({ message: `LABDB [${this.tableName}]: Table created.` });
+			// Only log if the table did not exist when we checked.
+			if (!tableAlreadyExists) Logger.info({ message: `LABDB [${this.tableName}]: Table created.` });
 		} catch (error) {
 			// If the error is not an ACCESS_DENIED, throw it right away
 			if (!(error instanceof ClickHouseError) || error.code !== '497') {

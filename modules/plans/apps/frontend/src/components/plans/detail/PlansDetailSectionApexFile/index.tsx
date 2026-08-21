@@ -2,7 +2,7 @@
 
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, Collapsible, FileItem, FileUpload, HasPermission, Label, Section, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useMemo } from 'react';

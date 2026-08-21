@@ -1,10 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/emails';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/go-providers-emails';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type GtfsValidation, PermissionCatalog } from '@tmlmobilidade/types';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog, validateOperationalDate } from '@tmlmobilidade/types';
 
 /**
  * Requests approval for a Validation by ID
@@ -60,12 +61,12 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 	await sendPlanApprovalRequestEmail({
 		data: {
 			agencyName: agencyData.name,
-			endDate: validationData.gtfs_feed_info.feed_end_date,
+			endDate: validateOperationalDate(validationData.gtfs_feed_info.feed_end_date),
 			firstName: request.me.first_name,
 			gtfsValidationId: validationData._id,
 			gtfsValidationUrl: `${process.env.FRONTEND_URL}/validations/${validationData._id.toString()}`,
 			requestedBy: request.me.first_name + ' ' + request.me.last_name,
-			startDate: validationData.gtfs_feed_info.feed_start_date,
+			startDate: validateOperationalDate(validationData.gtfs_feed_info.feed_start_date),
 		},
 		to: agencyData.contact_emails_pta || [],
 	});

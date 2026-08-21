@@ -5,7 +5,7 @@ import { openGtfsExportModal } from '@/components/lines/export/GtfsExportModal';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { openVkmModal } from '@/components/lines/vkms/VkmModal';
 import { IconDots, IconFileDownload, IconPlus, IconSearch } from '@tabler/icons-react';
-import { Label, Menu, MenuItem, MenuLabel, SearchInput, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Label, Menu, MenuItem, MenuLabel, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -24,7 +24,7 @@ export function LinesListHeader() {
 		<Toolbar>
 			<Label size="lg" caps singleLine>Linhas</Label>
 			<Spacer />
-			<SearchInput onChange={linesListContext.filters.search.set} value={linesListContext.filters.search.value} />
+			<SearchField onChange={linesListContext.filters.search.set} value={linesListContext.filters.search.value} />
 			<Menu icon={IconDots} label="Mais opções">
 				<MenuLabel>Ações</MenuLabel>
 				<MenuItem

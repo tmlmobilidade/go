@@ -15,7 +15,7 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	batch_timeout: 250,
 	idle_timeout: 250,
 	insertFn: async (data) => {
-		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
+		await labDb.operation.simplifiedVehicleEvents.insert('JSONEachRow', data);
 	},
 	title: `pt-tml-cm-alsa-rawdb-stream`,
 });
@@ -49,6 +49,9 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 				Logger.error({ message: `[pt-tml-cm-alsa-rawdb-stream] WARNING: unexpected changeStream document: operationType="${change.operationType}"` });
 				return;
 			}
+
+			// Skip documents before 2026-07-15
+			if (change.fullDocument.created_at < 1784084400000) return;
 
 			await handleStreamRawVehicleEventIntoSimplifiedVehicleEvent({
 				batchWriter: writer,

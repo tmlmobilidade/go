@@ -1,21 +1,21 @@
 'use client';
 
-import { type Stop } from '@carrismetropolitana/api-types/network';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconBusStop, IconSelector, IconX } from '@tabler/icons-react';
+import { type HubStop } from '@tmlmobilidade/go-types-public-info';
 import { useMemo, useState } from 'react';
 
 import styles from './styles.module.css';
 
 import { createDocCollection } from '../../../hooks/use-other-search';
-import { Loader } from '../../loaders/Loader';
+import { Loader } from '../../../loaders';
 import { StopDisplay } from '../StopDisplay';
 
 /* * */
 
 interface SelectStopProps {
-	data: Stop[]
+	data: HubStop[]
 	label?: string
 	loading?: boolean
 	nothingFound?: string
@@ -43,16 +43,16 @@ export function StopSelect({ data = [], label, loading, nothingFound = 'Nenhuma 
 
 	const { search } = useMemo(() => {
 		// Prepare data for search function
-		const preparedSearchCollection = data.map(item => ({ ...item, boost: selectedStopId === item.id ? 10 : 1 }));
+		const preparedSearchCollection = data.map(item => ({ ...item, boost: selectedStopId === item._id.toString() ? 10 : 1, id: item._id.toString() }));
 		return createDocCollection(preparedSearchCollection, {
 			id: 1,
-			long_name: 0.8,
+			name: 0.8,
 			short_name: 0.7,
 		});
 	}, [data]);
 
 	const selectedStopData = useMemo(() => {
-		return data.find(item => item.id === selectedStopId);
+		return data.find(item => item._id.toString() === selectedStopId);
 	}, [data, selectedStopId]);
 
 	//
@@ -148,7 +148,7 @@ export function StopSelect({ data = [], label, loading, nothingFound = 'Nenhuma 
 					{allStopsDataFilteredBySearchQuery.length === 0
 						? <Combobox.Empty>{nothingFound}</Combobox.Empty>
 						: allStopsDataFilteredBySearchQuery.map(item => (
-							<Combobox.Option key={item.id} className={item.id === selectedStopData?.id ? styles.selected : ''} value={item.id}>
+							<Combobox.Option key={item._id} className={item._id === selectedStopData?._id ? styles.selected : ''} value={item._id.toString()}>
 								<div className={styles.comboboxOption}>
 									<StopDisplay stopData={item} />
 								</div>

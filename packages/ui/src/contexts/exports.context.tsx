@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
-import { CreateFileExportDto, FileExport, FileExportType } from '@tmlmobilidade/types';
+import { type CreateFileExportDto, type FileExport, type FileExportType } from '@tmlmobilidade/go-types-downloads';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';

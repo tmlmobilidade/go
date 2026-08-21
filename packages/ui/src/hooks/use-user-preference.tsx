@@ -2,7 +2,8 @@
 
 import { useDebouncedCallback } from '@mantine/hooks';
 import { Dates } from '@tmlmobilidade/dates';
-import { type UnixTimestamp, type UserPreferenceValue } from '@tmlmobilidade/types';
+import { type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { type SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useMeContext } from '../contexts/Me.context';
