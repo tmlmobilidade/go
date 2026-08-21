@@ -31,6 +31,12 @@ server.register(
 			listOrganizationsHandler,
 		);
 
+		instance.post(
+			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.create]) },
+			createOrganizationHandler,
+		);
+
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware() },
@@ -49,16 +55,10 @@ server.register(
 			uploadImageHandler,
 		);
 
-		instance.post(
-			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.create]) },
-			createOrganizationHandler,
-		);
-
-		instance.delete(
-			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.delete]) },
-			deleteOrganizationHandler,
+		instance.get(
+			'/:id/image',
+			{ preHandler: authorizationMiddleware() },
+			getImageHandler,
 		);
 
 		instance.delete(
@@ -68,15 +68,15 @@ server.register(
 		);
 
 		instance.get(
-			'/:id/logo',
-			{ preHandler: authorizationMiddleware() },
-			getImageHandler,
-		);
-
-		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.lock]) },
 			lockOrganizationHandler,
+		);
+
+		instance.delete(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.delete]) },
+			deleteOrganizationHandler,
 		);
 
 		next();

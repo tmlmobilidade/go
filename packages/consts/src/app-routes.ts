@@ -30,7 +30,6 @@ export const PAGE_ROUTES = Object.freeze({
 		CHANGE_PASSWORD_LIST: `${getModuleConfig('auth', 'frontend_url')}/change-password`,
 
 		// HOME
-		HOME_DETAIL: (id: string) => `${getModuleConfig('auth', 'frontend_url')}/home/${encodeURIComponent(id)}`,
 		HOME_LIST: `${getModuleConfig('auth', 'frontend_url')}/home`,
 
 		// LOGIN
@@ -216,22 +215,12 @@ export const API_ROUTES = Object.freeze({
 		AUTH_ME: `${getModuleConfig('auth', 'api_url')}/auth/me`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('auth', 'api_url')}/auth/send-password-reset-email`,
 
-		// NOTIFICATIONS
-		NOTIFICATIONS_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/notifications/${encodeURIComponent(id)}`,
-		NOTIFICATIONS_DETAIL_MARK_AS_READ: (id: string) => `${getModuleConfig('auth', 'api_url')}/notifications/${encodeURIComponent(id)}/mark-as-read`,
-		NOTIFICATIONS_LIST: `${getModuleConfig('auth', 'api_url')}/notifications`,
-
 		// ORGANIZATIONS
 		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}`,
 		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/image`,
 		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/lock`,
-		ORGANIZATIONS_DETAIL_LOGO: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/logo`,
 		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/${encodeURIComponent(theme)}/image`,
 		ORGANIZATIONS_LIST: `${getModuleConfig('auth', 'api_url')}/organizations`,
-
-		// PROPOSED-CHANGES
-		PROPOSED_CHANGES_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/proposed-changes/${encodeURIComponent(id)}`,
-		PROPOSED_CHANGES_LIST: `${getModuleConfig('auth', 'api_url')}/proposed-changes`,
 
 		// ROLES
 		ROLES_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/roles/${encodeURIComponent(id)}`,
@@ -243,11 +232,6 @@ export const API_ROUTES = Object.freeze({
 		USERS_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/users/${encodeURIComponent(id)}/lock`,
 		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('auth', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
 		USERS_LIST: `${getModuleConfig('auth', 'api_url')}/users`,
-		USERS_ME: `${getModuleConfig('auth', 'api_url')}/users/me`,
-
-		// WIKI
-		WIKI_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/wiki/${encodeURIComponent(id)}`,
-		WIKI_LIST: `${getModuleConfig('auth', 'api_url')}/wiki`,
 	},
 
 	controller: {
