@@ -3,7 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { AgenciesPlatformRequest, AgenciesPlatformRequestSchema, AgenciesPlatformResponse } from '@tmlmobilidade/go-types-core';
+import { type AgenciesPlatformRequest, AgenciesPlatformRequestSchema, type AgenciesPlatformResponse, AgenciesPlatformResponseSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -20,35 +20,30 @@ export async function listPlatformAgenciesHandler(request: FastifyRequest<{ Body
 	const validatedFilters = AgenciesPlatformRequestSchema.parse(request.body);
 
 	//
+	// Get the agency IDs from the permissions
+
+	const resourceAgencyIds = validatedFilters.actions?.flatMap(action => request.permissions
+		.filter(permission => permission.scope === validatedFilters.scope && permission.action === action)
+		.flatMap(permission => 'resources' in permission ? permission.resources.agency_ids ?? [] : []),
+	) ?? [];
+
+	//
 	// Build aggregation pipeline
 
-	const pipeline: AggregationPipeline<AlertsListItem> = [
-		{
-			$match: {
-				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },
-				...{ publish_status: { $in: validatedFilters.publish_status ?? [] } },
-				...{ reference_type: { $in: validatedFilters.reference_type ?? [] } },
-				...{ cause: { $in: validatedFilters.causes ?? [] } },
-				...{ effect: { $in: validatedFilters.effects ?? [] } },
-				...{ publish_start_date: { $gte: validatedFilters.publish_date_start } },
-				...{ publish_end_date: { $lte: validatedFilters.publish_date_end } },
-				...(validatedFilters.active_period_start ? { active_period_start_date: { $gte: validatedFilters.active_period_start } } : {}),
-				...(validatedFilters.active_period_end ? { active_period_end_date: { $lte: validatedFilters.active_period_end } } : {}),
-			},
-
-		},
-		{ $project: Object.fromEntries(Object.keys(AlertsListItemSchema.shape).map(key => [key, 1])) },
-		{ $sort: { created_at: -1 } },
+	const pipeline: AggregationPipeline<AgenciesPlatformResponse> = [
+		{ $match: resourceAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG) ? {} : { agency_id: { $in: resourceAgencyIds } } },
+		{ $project: Object.fromEntries(Object.keys(AgenciesPlatformResponseSchema.shape).map(key => [key, 1])) },
+		{ $sort: { _id: -1 } },
 	];
 
-	const aggregationResult = await goDb.operation.alerts.aggregate(pipeline);
+	const aggregationResult = await goDb.core.agencies.aggregate(pipeline);
 
 	//
 	// Parse and return the result
 
 	if (!aggregationResult?.length) {
 		return sendErrorApiResponse(reply, {
-			error: 'No alerts found matching the filters',
+			error: 'No agencies found matching the filters',
 			status_code: '404',
 		});
 	}

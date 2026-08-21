@@ -1,8 +1,7 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
+import { useAgenciesData, useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**
  * Hook to manage the agency IDs filter for the alerts list filter bar.
@@ -11,10 +10,10 @@ import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType 
 export function useAlertsListFilterAgency(): UseFilterStateListReturnType {
 	//
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
+	const { ids, options } = useAgenciesData({
 		actions: [PermissionCatalog.all.alerts.actions.read],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
 
-	return useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	return useFilterStateList('agency', ids, options);
 }
