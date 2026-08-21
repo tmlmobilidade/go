@@ -1,7 +1,7 @@
 /* * */
 
 import { usePlansListContext } from '@/components/plans/list/PlansList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -17,7 +17,7 @@ export function PlansListFilterAgency() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={plansListContext.filters.agency.isActive}
 			label="Operador"
 			onChange={plansListContext.filters.agency.set}

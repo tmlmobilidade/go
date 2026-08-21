@@ -3,9 +3,9 @@
 import { getAutoTextValue } from '@/utils/get-auto-text-value.js';
 import { getPublishStatusValue } from '@/utils/get-publish-status-value.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { AlertSchema } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
-import { AlertSchema } from '@tmlmobilidade/types';
 
 /* * */
 

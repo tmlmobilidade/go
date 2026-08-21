@@ -1,7 +1,7 @@
 /* * */
 
 import { useSamsListContext } from '@/contexts/SamList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -18,7 +18,7 @@ export function SamsFiltersApexVersion() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={samsListContext.filters.apex_version.isActive}
 			disabled={samsListContext.flags.favoritesEnabled}
 			label={t('default:sams.list.SamsFiltersApexVersion.label')}

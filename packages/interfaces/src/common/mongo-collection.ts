@@ -3,9 +3,9 @@
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, Flatten, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
 import { z } from 'zod';
 

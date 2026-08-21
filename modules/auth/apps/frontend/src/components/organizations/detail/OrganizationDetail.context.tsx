@@ -1,9 +1,9 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateOrganizationSchema, type Organization, PermissionCatalog, type UpdateOrganizationDto } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { CreateOrganizationSchema, type Organization, type UpdateOrganizationDto } from '@tmlmobilidade/go-types-core';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
@@ -67,18 +67,18 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId), 'PUT', form.getValues()),
-		onSuccess: async (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId) }),
+		onSuccess: async ({ data }) => {
 			await uploadImages();
 			form.resetDirty();
 			meContext.mutate.me();
-			organizationMutate(updatedItem);
+			organizationMutate(data);
 			allOrganizationsMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId), 'DELETE'),
+		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId) }),
 		onSuccess: () => {
 			meContext.mutate.me();
 			allOrganizationsMutate();
@@ -87,11 +87,11 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Organization>(API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOCK(organizationId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Organization>({ url: API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOCK(organizationId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();
-			organizationMutate(updatedItem);
+			organizationMutate(data);
 			allOrganizationsMutate();
 		},
 	});
@@ -136,7 +136,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 
 	const deleteImage = async (theme: 'dark' | 'light') => {
 		const themeImageRoute = API_ROUTES.auth.ORGANIZATIONS_DETAIL_VAR_IMAGE(organizationId, theme);
-		const response = await fetchData<Organization>(themeImageRoute + '?realtime=true', 'DELETE', organizationData);
+		const response = await fetchApiData<Organization>({ method: 'DELETE', url: themeImageRoute + '?realtime=true' });
 		if (response.error) {
 			const errors = JSON.parse(response.error);
 			for (const error of errors) {

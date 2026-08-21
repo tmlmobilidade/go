@@ -2,8 +2,8 @@
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusTag, SaveButton, Spacer, Toolbar, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusDisplay, SaveButton, Spacer, Toolbar, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -60,7 +60,7 @@ export function AlertDetailHeader() {
 
 			<IdTag id={alertDetailContext.data.id} copyOnClick />
 
-			<PublishStatusTag
+			<PublishStatusDisplay
 				disabled={!hasPermissionToChangePublishStatus}
 				onChange={value => alertDetailContext.form.instance.setValue('publish_status', value, { shouldDirty: true })}
 				value={publishStatusValue}

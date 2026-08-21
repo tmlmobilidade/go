@@ -5,14 +5,13 @@ import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { initSentry } from '@tmlmobilidade/logger-logger-frontend';
-import { swrFetcher } from '@tmlmobilidade/utils';
-import { NuqsAdapter } from 'nuqs/adapters/next';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren, Suspense, useEffect } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
-import { LoadingSection } from '../../components/loaders/LoadingSection';
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
+import { LoadingSection } from '../../loaders';
 import { themeData } from '../../styles/theme';
 
 /* * */
@@ -43,27 +42,30 @@ export function BaseProvider({ children, i18n, initializeSentry, theme, version 
 	// A. Initialize frontend logging
 
 	useEffect(() => {
-		if (initializeSentry) {
-			void initSentry();
-			return;
-		}
+		if (initializeSentry) void initSentry();
 	}, [initializeSentry]);
 
 	//
 	// B. Setup variables
 
-	const mantineDatesSettings: Partial<DatesProviderSettings> = {
-		firstDayOfWeek: 1,
-		locale: 'pt',
-		weekendDays: [6, 0],
+	const nuqsSettings = {
+		processUrlSearchParams: (search: URLSearchParams) => {
+			search.sort();
+			return search;
+		},
 	};
 
 	const swrSettings: SWRConfiguration = {
-		fetcher: swrFetcher,
 		refreshInterval: 600_000, // 10 minutes
 		refreshWhenHidden: false,
 		revalidateIfStale: true,
 		revalidateOnFocus: true,
+	};
+
+	const mantineDatesSettings: Partial<DatesProviderSettings> = {
+		firstDayOfWeek: 1,
+		locale: 'pt',
+		weekendDays: [6, 0],
 	};
 
 	//
@@ -77,7 +79,7 @@ export function BaseProvider({ children, i18n, initializeSentry, theme, version 
 			lang="pt"
 		>
 			<body>
-				<NuqsAdapter>
+				<NuqsAdapter {...nuqsSettings}>
 					<Suspense fallback={<LoadingSection fullHeight />}>
 						<VersionContextProvider version={version}>
 							<SWRConfig value={swrSettings}>

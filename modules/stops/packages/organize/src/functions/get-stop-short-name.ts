@@ -1,6 +1,6 @@
 /* * */
 
-import { StopNameAbbreviationRules, StopSchema } from '@tmlmobilidade/types';
+import { StopNameAbbreviationRules, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
 
 /**
  * Sets the short name for a stop based on its regular name.

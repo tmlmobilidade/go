@@ -1,7 +1,7 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { changeOperationFile } from './controllers/change-operation-file.js';
 import { controllerReprocessPlan } from './controllers/controller-reprocess-plan.js';

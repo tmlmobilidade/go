@@ -26,21 +26,21 @@ export async function syncCurrentWaypoints(clickhouseClient: Parameters<typeof q
 		title: qualifiedTable('eta', 'curr_waypoints'),
 	});
 
-	const hashedTripsCollection = await goDb.operation.hashedTrips.getCollection();
-	const hashedTripsCursor = hashedTripsCollection.find({ _id: { $in: hashedTripIds } }).batchSize(10_000).stream();
+	// const hashedTripsCollection = await goDb.operation.hashedTrips.getCollection();
+	// const hashedTripsCursor = hashedTripsCollection.find({ _id: { $in: hashedTripIds } }).batchSize(10_000).stream();
 
-	let waypointsCount = 0;
-	for await (const hashedTrip of hashedTripsCursor) {
-		waypointsCount += hashedTrip.path.length;
-		for (const waypoint of hashedTrip.path) {
-			await writer.write({
-				...waypoint,
-				hashed_trip_id: hashedTrip._id,
-			});
-		}
-	}
+	// let waypointsCount = 0;
+	// for await (const hashedTrip of hashedTripsCursor) {
+	// 	waypointsCount += hashedTrip.path.length;
+	// 	for (const waypoint of hashedTrip.path) {
+	// 		await writer.write({
+	// 			...waypoint,
+	// 			hashed_trip_id: hashedTrip._id,
+	// 		});
+	// 	}
+	// }
 
 	await writer.flush();
 
-	Logger.progress({ message: `Found ${waypointsCount} waypoints` });
+	// Logger.progress({ message: `Found ${waypointsCount} waypoints` });
 }

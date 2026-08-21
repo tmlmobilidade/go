@@ -1,8 +1,9 @@
 /* * */
 
 import { type GtfsTripDirection } from '@tmlmobilidade/go-types-gtfs';
+import { type Stop, StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { CommentSchema, DocumentSchema } from '@tmlmobilidade/go-types-shared';
-import { createGtfsMapper, type Stop, StopIdSchema } from '@tmlmobilidade/types';
+import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 import { StopsParametersListSchema } from './parameters.js';

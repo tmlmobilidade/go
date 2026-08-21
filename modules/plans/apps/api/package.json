@@ -22,8 +22,8 @@
 		"@fastify/multipart": "10.1.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/emails": "*",
-		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-providers-emails": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
@@ -33,8 +33,7 @@
 		"@tmlmobilidade/strings": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",

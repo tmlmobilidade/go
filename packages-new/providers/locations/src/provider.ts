@@ -5,7 +5,7 @@ import * as localities from '@/localities/index.js';
 import * as location from '@/location/index.js';
 import * as municipalities from '@/municipalities/index.js';
 import * as parishes from '@/parishes/index.js';
-import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/types';
+import { type District, type Locality, type Municipality, type Parish } from '@tmlmobilidade/go-types-locations';
 
 /* * */
 

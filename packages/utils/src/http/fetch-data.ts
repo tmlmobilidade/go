@@ -10,6 +10,7 @@ import { HttpResponse } from '@/http/response.js';
  * @param headers - Optional request headers
  * @param options - Optional fetch options (excluding body, headers, method)
  * @returns Promise resolving to HttpResponse containing data, error and status
+ * @deprecated Use `fetchApiData` instead, with the `ApiResponse<T>` type.
  * @example
  * ```ts
  * // GET request

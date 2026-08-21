@@ -33,12 +33,12 @@
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/ssh": "*",
+		"@tmlmobilidade/go-clients-ssh": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",

@@ -4,7 +4,7 @@ import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { normalizeAlertCoordinatesInput } from '@/lib/alert-coordinates';
 import { IconLink } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type I18nCode, PermissionCatalog } from '@tmlmobilidade/types';
+import { type I18nCode, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, Collapsible, ContextFormController, CoordinatesInput, Grid, ImageUpload, Section, Surface, Switch, Textarea, TextInput, useContextFormWatch, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useTranslation } from 'react-i18next';

@@ -6,7 +6,7 @@ import { AlertReferenceTypePermissionMultiselect } from '@/components/permission
 import { useRolesContext } from '@/contexts/Roles.context';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
-import { type Permission } from '@tmlmobilidade/types';
+import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { Grid } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -17,7 +17,7 @@ interface PermissionSectionItemProps {
 	enabledPermissions: Permission[]
 	enabledRoleIds?: string[]
 	onResourceToggle: (scope: string, action: string, resource: Partial<Record<string, unknown>>) => void
-	onToggle: (scope: string, action: string,) => void
+	onToggle: (scope: string, action: string) => void
 	scope: string
 }
 

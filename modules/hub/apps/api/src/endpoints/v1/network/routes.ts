@@ -5,7 +5,7 @@ import { getPattern } from '@/endpoints/v1/network/controllers/get-pattern.js';
 import { getRoutes } from '@/endpoints/v1/network/controllers/get-routes.js';
 import { getShape } from '@/endpoints/v1/network/controllers/get-shape.js';
 import { getStops } from '@/endpoints/v1/network/controllers/get-stops.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

@@ -7,8 +7,7 @@ import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { useRolesContext } from '@/contexts/Roles.context';
 import { type UserNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -60,7 +59,7 @@ export function UsersList() {
 		},
 		{
 			accessor: 'seen_last_at',
-			render: item => item.seen_last_at && <Tag label={Dates.fromUnixTimestamp(item.seen_last_at).toLocaleString(Dates.FORMATS.DATETIME_MEDIUM, 'pt-PT')} variant="secondary" />,
+			render: item => item.seen_last_at && <UnixTimestampDisplay value={item.seen_last_at} showDate />,
 			title: t('default:users.list.Table.columns.lastSeenAt.label'),
 			width: 200,
 		},

@@ -2,7 +2,7 @@
 
 import { useUserCreateContext } from '@/components/users/create/UserCreate.context';
 import { IconMail } from '@tabler/icons-react';
-import { CreateUserSchema } from '@tmlmobilidade/types';
+import { CreateUserSchema } from '@tmlmobilidade/go-types-core';
 import { Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

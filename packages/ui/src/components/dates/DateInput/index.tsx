@@ -2,7 +2,7 @@
 
 import { DateInput as MantineDateInput, DateInputProps as MantineDateInputProps } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
-import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDate, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
@@ -45,12 +45,11 @@ export function DateInput({ leftSection = <IconCalendar size={20} />, ...props }
 		// If it fails, call onChange with null
 		try {
 			const formatttedValue = value.replaceAll('-', '');
-			const validatedOperationalDate = validateOperationalDate(formatttedValue);
+			const validatedOperationalDate = OperationalDateSchema.parse(formatttedValue);
 			console.log('DateInput: Valid date selected', validatedOperationalDate);
 			props.onChange(validatedOperationalDate);
 			return;
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('DateInput: Invalid date format', error);
 			props.onChange(null);
 			return;

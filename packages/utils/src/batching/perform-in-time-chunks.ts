@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
-import { UnixTimestamp } from '@tmlmobilidade/types';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { DurationObjectUnits, Interval } from 'luxon';
 
 /* * */

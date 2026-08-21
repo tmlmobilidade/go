@@ -49,8 +49,8 @@
 		"@tmlmobilidade/consts": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.0",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"

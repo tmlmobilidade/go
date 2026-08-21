@@ -2,8 +2,10 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
+import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type Annotation, Event, Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { Agency, type CalendarEvent, PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type CalendarEvent } from '@tmlmobilidade/types';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

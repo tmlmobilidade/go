@@ -1,7 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Locality } from '@tmlmobilidade/types';
+import { type Locality } from '@tmlmobilidade/go-types-locations';
 
 /* * */
 

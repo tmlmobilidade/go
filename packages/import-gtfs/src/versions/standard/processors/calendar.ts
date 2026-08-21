@@ -3,9 +3,9 @@
 import { type ImportGtfsContext } from '@/shared/init-context.js';
 import { parseCsvFile } from '@/shared/parse-csv.js';
 import { type GtfsSQLTables } from '@/versions/standard/types.js';
-import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/dates';
-import { type GtfsCalendar, GtfsCalendarSchema, type GtfsDate, validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type GtfsCalendar, GtfsCalendarSchema, type GtfsDate, GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
@@ -54,9 +54,9 @@ export async function processGtfsCalendar(context: ImportGtfsContext<GtfsSQLTabl
 				if (serviceIdStartDate < context.config.time_range.date_range.start) serviceIdStartDate = context.config.time_range.date_range.start;
 				if (serviceIdEndDate > context.config.time_range.date_range.end) serviceIdEndDate = context.config.time_range.date_range.end;
 
-				const operationalDates = getOperationalDatesFromRange(validateOperationalDate(serviceIdStartDate), validateOperationalDate(serviceIdEndDate));
+				const operationalDates = getOperationalDatesFromRange(OperationalDateIntSchema.parse(serviceIdStartDate), OperationalDateIntSchema.parse(serviceIdEndDate));
 
-				operationalDates.forEach(date => allDatesInRange.add(validateGtfsDate(date)));
+				operationalDates.forEach(date => allDatesInRange.add(GtfsDateSchema.parse(date)));
 			}
 
 			//
@@ -79,7 +79,7 @@ export async function processGtfsCalendar(context: ImportGtfsContext<GtfsSQLTabl
 			const validOperationalDates = new Set<GtfsDate>();
 
 			for (const currentDate of allDatesInRange) {
-				const dayOfWeek = Dates.fromOperationalDate(currentDate, 'Europe/Lisbon').toFormat('c');
+				const dayOfWeek = Dates.fromOperationalDateInt(currentDate, 'Europe/Lisbon').toFormat('c');
 				if (dayOfWeek === '1' && validatedData.monday === '1') validOperationalDates.add(currentDate);
 				if (dayOfWeek === '2' && validatedData.tuesday === '1') validOperationalDates.add(currentDate);
 				if (dayOfWeek === '3' && validatedData.wednesday === '1') validOperationalDates.add(currentDate);

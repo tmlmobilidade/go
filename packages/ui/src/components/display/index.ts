@@ -6,7 +6,6 @@ export * from './Indicator';
 export * from './Inline';
 export * from './Label';
 export * from './NoDataLabel';
-export * from './OperationalDateDisplay';
 export * from './Stepper';
 export * from './Table';
 export * from './Tabs';

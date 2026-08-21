@@ -1,7 +1,7 @@
 /* * */
 
 import { getTime } from '@/endpoints/v1/debug/controllers/get-time.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

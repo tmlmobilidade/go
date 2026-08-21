@@ -25,12 +25,11 @@
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",

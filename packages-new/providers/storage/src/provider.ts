@@ -7,7 +7,7 @@ import { type OperationContext } from '@/types/operation-context.js';
 import { createLoggerObservability } from '@/utils/observability.js';
 import { type Filter, type FindOptions, MongoDatabaseClient } from '@tmlmobilidade/go-clients-mongo';
 import { OCIStorageClient } from '@tmlmobilidade/go-clients-oci-storage';
-import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types';
+import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/go-types-core';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 import * as operations from './operations/index.js';

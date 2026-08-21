@@ -23,7 +23,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
@@ -38,8 +38,7 @@
 		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/adm-zip": "0.5.8",
 		"@types/node": "26.1.2",
 		"@types/papaparse": "5.5.2",

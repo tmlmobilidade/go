@@ -17,11 +17,10 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger-logger-backend": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"archiver": "8.0.0",
 		"mongodb": "7.5.0",
@@ -31,9 +30,9 @@
 		"yaml": "2.9.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@types/node": "26.1.2",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/archiver": "8.0.0",
+		"@types/node": "26.1.2",
 		"@types/nodemailer": "8.0.1",
 		"typescript": "6.0.3"
 	}

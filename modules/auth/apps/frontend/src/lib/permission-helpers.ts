@@ -1,6 +1,7 @@
 /* * */
 
-import { type Permission, PermissionSchema, type Role } from '@tmlmobilidade/types';
+import { type Role } from '@tmlmobilidade/go-types-core';
+import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Calculate permissions that a user has from their assigned roles

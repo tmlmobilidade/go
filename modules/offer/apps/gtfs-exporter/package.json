@@ -25,7 +25,7 @@
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-locations": "*",
@@ -40,7 +40,6 @@
 		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"adm-zip": "0.6.0",
@@ -48,7 +47,7 @@
 		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/adm-zip": "0.5.8",
 		"@types/node": "26.1.2",
 		"@types/papaparse": "5.5.2",

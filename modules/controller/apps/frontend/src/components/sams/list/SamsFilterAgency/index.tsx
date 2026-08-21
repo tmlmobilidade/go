@@ -1,7 +1,7 @@
 /* * */
 
 import { useSamsListContext } from '@/contexts/SamList.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,7 +27,7 @@ export function SamsFiltersAgency() {
 	// B. Render components
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={samsListContext.filters.agency.isActive}
 			disabled={samsListContext.flags.favoritesEnabled}
 			label={t('default:sams.list.SamsListFilterAgency.label')}

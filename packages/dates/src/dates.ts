@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { CALENDAR_DATE_FORMAT, type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/lib/date-format.js';
-import { type TimezoneIdentified, TimezoneIdentifiedSchema, TimezoneIdentifiedValues } from '@/lib/timezone-identified.js';
-import { type CalendarDate, type OperationalDate, type OperationalDateInt, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type TimezoneIdentified, TimezoneIdentifiedSchema, TimezoneIdentifiedValues } from '@tmlmobilidade/go-types-shared';
+import { type CalendarDate, type OperationalDate, type OperationalDateInt, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
 
 /* * */
@@ -30,6 +30,10 @@ export interface CalendarEntry {
 
 /* * */
 
+/**
+ * A class that represents a date and time.
+ * @deprecated Use the Dates class from `@tmlmobilidade/go-utils-dates` instead.
+ */
 export class Dates {
 	//
 

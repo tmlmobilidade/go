@@ -4,7 +4,7 @@ import { usePeriodsDetailContext } from '@/components/year-periods/detail/Period
 import { PeriodsDetailHeader } from '@/components/year-periods/detail/PeriodsDetailHeader';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { YearPeriodSchema } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, ColorInput, ErrorDisplay, LoadingOverlay, MultiSelect, Pane, Section, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 

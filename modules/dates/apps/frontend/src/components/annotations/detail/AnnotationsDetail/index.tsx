@@ -5,7 +5,7 @@ import { useAnnotationsDetailContext } from '@/components/annotations/detail/Ann
 import { AnnotationsDetailHeader } from '@/components/annotations/detail/AnnotationsDetailHeader';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { AnnotationSchema } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */

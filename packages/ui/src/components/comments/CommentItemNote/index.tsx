@@ -2,7 +2,7 @@
 
 import { IconMessageCircle } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
-import { NoteComment } from '@tmlmobilidade/types';
+import { NoteComment } from '@tmlmobilidade/go-types-shared';
 
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';

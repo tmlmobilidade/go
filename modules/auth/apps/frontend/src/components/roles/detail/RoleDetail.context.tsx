@@ -1,9 +1,9 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type ActionsOf, type Permission, PermissionCatalog, PermissionSchema, type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/go-types-core';
+import { type ActionsOf, type Permission, PermissionCatalog, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
+import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -60,17 +60,17 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.auth.ROLES_DETAIL(roleId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();
-			roleMutate(updatedItem);
+			roleMutate(data);
 			allRolesMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL(roleId), 'DELETE'),
+		fetchFn: async () => await fetchApiData<Role>({ method: 'DELETE', url: API_ROUTES.auth.ROLES_DETAIL(roleId) }),
 		onSuccess: () => {
 			meContext.mutate.me();
 			allRolesMutate();
@@ -79,11 +79,11 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Role>(API_ROUTES.auth.ROLES_DETAIL_LOCK(roleId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Role>({ url: API_ROUTES.auth.ROLES_DETAIL_LOCK(roleId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();
-			roleMutate(updatedItem);
+			roleMutate(data);
 			allRolesMutate();
 		},
 	});

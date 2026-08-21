@@ -4,7 +4,7 @@
 
 import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type JSX } from 'react';
 
 import { i18nResourceKeysPtShared } from '../../i18n/resources';

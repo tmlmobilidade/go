@@ -14,7 +14,7 @@ export const PAGE_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('alerts', 'frontend_url')}`,
 
 		// ALERTS
-		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'frontend_url')}/${encodeURIComponent(id)}`,
+		ALERTS_DETAIL: (alertId: string) => `${getModuleConfig('alerts', 'frontend_url')}/${encodeURIComponent(alertId)}`,
 		ALERTS_LIST: `${getModuleConfig('alerts', 'frontend_url')}`,
 	},
 
@@ -57,7 +57,7 @@ export const PAGE_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('controller', 'frontend_url')}`,
 
 		// RIDES
-		RIDES_DETAIL: (id: string) => `${getModuleConfig('controller', 'frontend_url')}/rides/${encodeURIComponent(id)}`,
+		RIDES_DETAIL: (rideId: string) => `${getModuleConfig('controller', 'frontend_url')}/rides/${encodeURIComponent(rideId)}`,
 		RIDES_LIST: `${getModuleConfig('controller', 'frontend_url')}/rides`,
 
 		// SAMS
@@ -183,18 +183,17 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('alerts', 'api_url')}`,
 
 		// ALERTS
-		ALERTS_DESCRIBE: `${getModuleConfig('alerts', 'api_url')}/alerts/describe`,
+		ALERTS_COMPOSE: `${getModuleConfig('alerts', 'api_url')}/alerts/compose`,
+		ALERTS_CREATE: `${getModuleConfig('alerts', 'api_url')}/alerts/create`,
 		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}`,
 		ALERTS_DETAIL_DUPLICATE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/duplicate`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/lock`,
-		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts`,
+		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts/list`,
 
 		// OPERATION
 		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,
 		OPERATION_RIDES: `${getModuleConfig('alerts', 'api_url')}/operation/rides`,
-		OPERATION_RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/operation/rides/${encodeURIComponent(id)}/ride`,
-		OPERATION_RIDES_WS: `${getModuleConfig('alerts', 'api_url')}/operation/rides/ws`,
 		OPERATION_STOPS: `${getModuleConfig('alerts', 'api_url')}/operation/stops`,
 	},
 
@@ -214,6 +213,7 @@ export const API_ROUTES = Object.freeze({
 		AUTH_CHANGE_PASSWORD: `${getModuleConfig('auth', 'api_url')}/auth/change-password`,
 		AUTH_LOGIN: `${getModuleConfig('auth', 'api_url')}/auth/login`,
 		AUTH_LOGOUT: `${getModuleConfig('auth', 'api_url')}/auth/logout`,
+		AUTH_ME: `${getModuleConfig('auth', 'api_url')}/auth/me`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('auth', 'api_url')}/auth/send-password-reset-email`,
 
 		// NOTIFICATIONS
@@ -262,17 +262,18 @@ export const API_ROUTES = Object.freeze({
 		ACCEPTANCE_LOCK: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/acceptance/lock`,
 
 		// RIDES
+		RIDES_DETAIL_ANALYSES: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/analyses`,
+		RIDES_DETAIL_APEX_BANKING_TAPS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-banking-taps`,
+		RIDES_DETAIL_APEX_LOCATIONS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-locations`,
+		RIDES_DETAIL_APEX_REFUNDS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-refunds`,
+		RIDES_DETAIL_APEX_SALES: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-sales`,
+		RIDES_DETAIL_APEX_VALIDATIONS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-validations`,
 		RIDES_DETAIL_HASHED_TRIP: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-trip`,
 		RIDES_DETAIL_REPROCESS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/reprocess`,
 		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/ride`,
-		RIDES_DETAIL_SIMPLIFIED_APEX_LOCATIONS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/simplified-apex-locations`,
-		RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_REFUNDS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/simplified-apex-on-board-refunds`,
-		RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_SALES: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/simplified-apex-on-board-sales`,
-		RIDES_DETAIL_SIMPLIFIED_APEX_VALIDATIONS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/simplified-apex-validations`,
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/vehicle-events`,
 		RIDES_FAVORITES: `${getModuleConfig('controller', 'api_url')}/rides/favorites`,
-		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides`,
-		RIDES_WS: `${getModuleConfig('controller', 'api_url')}/rides/ws`,
+		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides/list`,
 
 		// SAMS
 		SAMS_APEX_VERSIONS: `${getModuleConfig('controller', 'api_url')}/sams/apex-versions`,

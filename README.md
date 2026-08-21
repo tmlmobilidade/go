@@ -157,7 +157,7 @@ Key packages most apps depend on:
 | `@tmlmobilidade/consts` | API/page routes, HTTP status codes |
 | `@tmlmobilidade/interfaces` | Typed MongoDB collection accessors |
 | `@tmlmobilidade/ui` | Shared React components and hooks |
-| `@tmlmobilidade/fastify` | Fastify server, auth middleware |
+| `@tmlmobilidade/go-clients-fastify` | Fastify server, auth middleware |
 | `@tmlmobilidade/utils` | `fetchData`, upload helpers, utilities |
 
 ## Open data

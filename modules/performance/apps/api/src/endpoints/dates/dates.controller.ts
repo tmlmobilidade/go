@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { FastifyReply, FastifyRequest } from '@tmlmobilidade/fastify';
+import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */

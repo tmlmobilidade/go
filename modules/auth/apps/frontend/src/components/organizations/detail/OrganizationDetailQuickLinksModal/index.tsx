@@ -1,7 +1,7 @@
 'use client';
 
 import { IconChooser } from '@/components/common/IconChooser';
-import { HomeLink } from '@tmlmobilidade/types';
+import { HomeLink } from '@tmlmobilidade/go-types-core';
 
 /* * */
 

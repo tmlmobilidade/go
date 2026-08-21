@@ -36,8 +36,7 @@
 		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"@types/papaparse": "5.5.2",
 		"resolve-tspaths": "0.8.23",

@@ -92,7 +92,7 @@ class LabDbClass {
 	 *   { start_date: '2024-01-01', end_date: '2024-12-31' }
 	 * );
 	*/
-	public async queryFromString<T>(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
+	public async queryFromString<T>(query: string, params?: Record<string, number | string | string[]>): ReturnType<typeof queryFromString<T>> {
 		return await queryFromString<T>(this.clickhouseClient, query, params);
 	}
 }

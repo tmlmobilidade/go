@@ -1,9 +1,9 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type ActionsOf, type Permission, PermissionCatalog, PermissionSchema, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/go-types-core';
+import { type ActionsOf, type Permission, PermissionCatalog, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
+import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -62,17 +62,17 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<User>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.auth.USERS_DETAIL(userId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();
-			userMutate(updatedItem);
+			userMutate(data);
 			allUsersMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL(userId), 'DELETE'),
+		fetchFn: async () => await fetchApiData<User>({ method: 'DELETE', url: API_ROUTES.auth.USERS_DETAIL(userId) }),
 		onSuccess: () => {
 			meContext.mutate.me();
 			allUsersMutate();
@@ -81,11 +81,11 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<User>(API_ROUTES.auth.USERS_DETAIL_LOCK(userId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<User>({ url: API_ROUTES.auth.USERS_DETAIL_LOCK(userId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();
-			userMutate(updatedItem);
+			userMutate(data);
 			allUsersMutate();
 		},
 	});

@@ -2,7 +2,7 @@
 
 import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { type Vehicle } from '@tmlmobilidade/types';
+import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 

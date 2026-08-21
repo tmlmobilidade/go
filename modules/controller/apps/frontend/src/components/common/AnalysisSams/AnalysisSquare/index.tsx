@@ -3,7 +3,6 @@
 /* * */
 
 // External imports
-import { cn } from '@/lib/utils';
 import { type SamAnalysis } from '@tmlmobilidade/types';
 import { Tooltip } from '@tmlmobilidade/ui';
 
@@ -94,13 +93,13 @@ export function AnalysisSquare({ accent, analyses, className, filled = false, fu
 		<div
 			data-state={dataState}
 			tabIndex={resolvedTooltip ? 0 : -1}
-			className={cn(
-				styles.square,
-				filled ? filledClass : toneClass,
-				className,
-				fullWidth && styles.squareFullWidth,
-				onClick && styles.squareClickable,
-			)}
+			className={`
+				${styles.square}
+				${filled ? filledClass : toneClass}
+				${className}
+				${fullWidth && styles.squareFullWidth}
+				${onClick && styles.squareClickable}
+			`}
 			onClick={onClick
 				? (event) => {
 					event.stopPropagation();
@@ -112,7 +111,7 @@ export function AnalysisSquare({ accent, analyses, className, filled = false, fu
 		</div>
 	);
 	return (
-		<div className={cn(styles.squareWithDetails)}>
+		<div className={styles.squareWithDetails}>
 			{resolvedTooltip ? (
 				<Tooltip
 					closeDelay={80}
@@ -162,7 +161,7 @@ export function AnalysisSquareRow({
 	}
 
 	return (
-		<div className={cn(styles.row, className)}>
+		<div className={styles.row}>
 			{analyses.map((value, index) => (
 				<AnalysisSquare
 					key={`${value.first_transaction_id ?? ''}-${value.last_transaction_id ?? ''}-${index}`}

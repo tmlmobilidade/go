@@ -2,7 +2,7 @@
 
 import { ZonesList } from '@/components/zones/list/ZonesList';
 import { ZonesListContextProvider } from '@/components/zones/list/ZonesList.context';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ErrorDisplay, HasPermission, PanesManager } from '@tmlmobilidade/ui';
 import { Fragment, type PropsWithChildren } from 'react';
 

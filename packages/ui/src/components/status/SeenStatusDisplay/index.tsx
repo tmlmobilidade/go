@@ -1,6 +1,6 @@
 /* * */
 
-import { type SeenStatus } from '@tmlmobilidade/types';
+import { type SeenStatus } from '@tmlmobilidade/go-types-shared';
 
 import { Indicator } from '../../display/Indicator';
 

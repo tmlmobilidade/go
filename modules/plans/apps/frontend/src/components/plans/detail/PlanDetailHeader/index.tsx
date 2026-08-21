@@ -4,7 +4,7 @@ import { openPlanChangeModal } from '@/components/plans/change/PlanChange.modal'
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
 import { IconRefresh } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, CloseButton, DeleteButton, HasPermission, IconButton, IdTag, LockButton, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';

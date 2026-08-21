@@ -79,11 +79,14 @@
 		"RidesListFilterDateRange": {
 			"label": "Intervalo de fechas"
 		},
-		"RidesListFilterDelayStatus": {
-			"label": "Retraso"
+		"RidesListFilterEndDelayStatus": {
+			"label": "Retraso a la llegada"
 		},
 		"RidesListFilterOperationalStatus": {
 			"label": "Estado"
+		},
+		"RidesListFilterStartDelayStatus": {
+			"label": "Retraso a la salida"
 		},
 		"RidesListFilterTicketingStatus": {
 			"label": "Billeteo",

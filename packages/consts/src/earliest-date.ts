@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
-import { getCurrentEnvironment } from '@tmlmobilidade/types';
+import { getCurrentEnvironment, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * Get the earliest date for data synchronization
@@ -17,7 +17,7 @@ export function getEarliestDate(): Dates {
 
 	if (getCurrentEnvironment() === 'prd') {
 		return Dates
-			.fromOperationalDate('20240101', 'Europe/Lisbon')
+			.fromOperationalDateInt(OperationalDateIntSchema.parse(20240101), 'Europe/Lisbon')
 			.set({ hour: 4, millisecond: 0, minute: 0, second: 0 });
 	}
 

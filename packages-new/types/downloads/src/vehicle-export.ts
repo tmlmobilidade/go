@@ -1,7 +1,8 @@
 /* * */
 
-import { FileExportBaseSchema } from '@/base.js';
 import { z } from 'zod';
+
+import { FileExportBaseSchema } from './base.js';
 
 /* * */
 /* PROPERTIES SCHEMA */

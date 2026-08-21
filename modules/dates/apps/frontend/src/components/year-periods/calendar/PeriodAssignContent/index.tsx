@@ -4,7 +4,7 @@ import { usePeriodAssignContext } from '@/components/year-periods/calendar/Perio
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { IconAlertTriangle, IconCalendar } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Alert, Button, ColorInput, ColorSwatch, Label, MultiSelect, Radio, Section, Select, Text, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

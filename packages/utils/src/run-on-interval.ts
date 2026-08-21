@@ -1,6 +1,6 @@
 /* * */
 
-import { type TimeSlot, TimeSlotMap } from '@tmlmobilidade/dates';
+import { type TimeSlot, TimeSlotMap } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 

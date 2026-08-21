@@ -49,7 +49,7 @@ export function displayDuration(startTimestamp?: null | UnixTimestamp, endTimest
 	// Split the duration into hours and minutes
 
 	const hours = Math.abs(durationValue) >= 60 ? Math.floor(Math.abs(durationValue) / 60) : 0;
-	const minutes = Math.ceil(Math.abs(durationValue) % 60);
+	const minutes = Math.round(Math.abs(durationValue) % 60);
 
 	//
 	// Only include hours if greater than 0

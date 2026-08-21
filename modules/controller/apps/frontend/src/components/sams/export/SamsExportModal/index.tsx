@@ -2,15 +2,15 @@
 
 /* * */
 
-import { AgenciesContextProvider, useAgenciesContext } from '@/contexts/Agencies.context';
 import { SamsListContextState } from '@/contexts/SamList.context';
 import { SAM_EXPORT_MODAL_ID, SamsExportContextProvider, type SamsExportSummaryFilter, useSamsExportContext } from '@/contexts/SamsExport.context';
 import { translateFilterKey, translateFilterValue } from '@/lib/translations';
 import { IconFileDownload } from '@tabler/icons-react';
+import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type SamsAnalysisExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { type SystemStatus, UnixTimestamp } from '@tmlmobilidade/types';
-import { Button, CloseButton, closeModal, Divider, ExportsContextProvider, Label, MeContextProvider, openModal, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, closeModal, Divider, ExportsContextProvider, Label, MeContextProvider, openModal, Section, Spacer, Text, Toolbar, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -106,16 +106,14 @@ export const openSamExportModal = (payload: SamsExportModalPayload) => {
 		children: (
 			<MeContextProvider>
 				<ExportsContextProvider>
-					<AgenciesContextProvider>
-						<SamsExportContextProvider
-							favoritesEnabled={normalizedPayload.favoritesEnabled}
-							initialExportProperties={normalizedPayload.exportProperties}
-							initialSummaryFilters={normalizedPayload.summaryFilters}
-							samIds={normalizedPayload.samIds}
-						>
-							<SamsExportModal />
-						</SamsExportContextProvider>
-					</AgenciesContextProvider>
+					<SamsExportContextProvider
+						favoritesEnabled={normalizedPayload.favoritesEnabled}
+						initialExportProperties={normalizedPayload.exportProperties}
+						initialSummaryFilters={normalizedPayload.summaryFilters}
+						samIds={normalizedPayload.samIds}
+					>
+						<SamsExportModal />
+					</SamsExportContextProvider>
 				</ExportsContextProvider>
 			</MeContextProvider>
 		),
@@ -137,7 +135,7 @@ export default function SamsExportModal() {
 	// A. Setup variables
 
 	const context = useSamsExportContext();
-	const agenciesContext = useAgenciesContext();
+	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
 	const { t } = useTranslation();
 
 	//
@@ -145,11 +143,11 @@ export default function SamsExportModal() {
 
 	const agencyMap = useMemo(() => {
 		const map = new Map<string, string>();
-		agenciesContext.data.raw.forEach((agency) => {
+		agenciesData.forEach((agency) => {
 			map.set(agency._id, agency.name);
 		});
 		return map;
-	}, [agenciesContext.data.raw]);
+	}, [agenciesData]);
 
 	const getFormattedValue = (key: string, value: number | string | string[]): string => {
 		if (Array.isArray(value)) {

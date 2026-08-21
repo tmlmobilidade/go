@@ -1,10 +1,9 @@
 /* * */
 
-import type { Db, MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import type { DistrictFeature, LocalityFeature, MunicipalityFeature, ParishFeature } from '@tmlmobilidade/types';
-
 import { districtsIndexes, localitiesIndexes, municipalitiesIndexes, parishesIndexes } from '@/indexes/index.js';
 import { MongoInterfaceTemplate } from '@/interface.template.js';
+import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
+import { type DistrictFeature, type LocalityFeature, type MunicipalityFeature, type ParishFeature } from '@tmlmobilidade/go-types-locations';
 
 /* * */
 

@@ -2,7 +2,7 @@
 
 import { closeCreateRoleModal } from '@/components/roles/create/RoleCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateRoleDto, CreateRoleSchema, Role } from '@tmlmobilidade/types';
+import { CreateRoleDto, CreateRoleSchema, Role } from '@tmlmobilidade/go-types-core';
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';

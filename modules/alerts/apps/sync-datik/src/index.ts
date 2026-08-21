@@ -1,11 +1,12 @@
 /* * */
 
 import { fetchProtobuf } from '@/protobuf.js';
-import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
+import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-alerts-pckg-compose';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
 import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
-import { type CreateAlertDto, type ServiceAlertResponse, UnixTimestamp } from '@tmlmobilidade/types';
+import { type ServiceAlertResponse, UnixTimestamp } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -28,6 +29,7 @@ async function main() {
 
 	try {
 		await initSentry();
+		Logger.startLogs({ app: 'sync-datik', message: 'Sentry Alerts Sync Datik initialized', module: 'alerts', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Alerts Sync Datik' });
 	}
@@ -56,7 +58,7 @@ async function main() {
 			}
 
 			//
-			const alertDescribeResult = await describeAlert({
+			const alertDescribeResult = await composeAlertTitleAndDescription({
 				active_period_end_date: serviceAlert.alert.active_period[0].end as UnixTimestamp,
 				active_period_start_date: serviceAlert.alert.active_period[0].start as UnixTimestamp,
 				agency_id: '43',

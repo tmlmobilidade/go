@@ -35,11 +35,11 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/logger-logger-backend": "*",
-		"@tmlmobilidade/ssh": "*",
+		"@tmlmobilidade/go-clients-ssh": "*",
 		"mongodb": "7.5.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/luxon": "3.7.3",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",

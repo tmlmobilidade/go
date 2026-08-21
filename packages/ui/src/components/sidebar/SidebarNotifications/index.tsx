@@ -4,7 +4,7 @@
 
 import { type MenuProps } from '@mantine/core';
 import { IconBell, IconBellOff } from '@tabler/icons-react';
-import { type Notification } from '@tmlmobilidade/types';
+import { type Notification } from '@tmlmobilidade/go-types-core';
 import { useTranslation } from 'react-i18next';
 
 import { useNotificationsContext } from '../../../contexts/Notifications.context';

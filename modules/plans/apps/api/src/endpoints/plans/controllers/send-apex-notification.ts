@@ -1,8 +1,8 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/emails';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/go-providers-emails';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog, validateOperationalDate } from '@tmlmobilidade/types';

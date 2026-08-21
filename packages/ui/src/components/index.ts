@@ -7,16 +7,15 @@ export * from './datatable';
 export * from './dates';
 export * from './display';
 export * from './files';
-export * from './filters';
 export * from './inputs';
 export * from './layout';
-export * from './loaders';
 export * from './map';
 export * from './menu';
 export * from './modals';
 export * from './panes';
-export * from './proposedChanges';
 export * from './status';
 export * from './tags';
 export * from './upload';
 export * from './wrapper';
+
+export { ScrollArea, Scroller } from '@mantine/core';

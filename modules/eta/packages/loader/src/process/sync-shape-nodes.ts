@@ -40,35 +40,35 @@ export async function syncShapeNodes(clickhouseClient: Parameters<typeof queryEt
 
 	//
 	// Get distinct hashed shape ids from rides
-	const hashedShapesCollection = await goDb.operation.hashedShapes.getCollection();
+	// const hashedShapesCollection = await goDb.operation.hashedShapes.getCollection();
 
 	//
 	// Get hashed shapes cursor
-	const hashedShapesCursor = hashedShapesCollection.find(
-		{ _id: { $in: hashedShapeIds } },
-		{ projection: { _id: 1, points: { shape_pt_lat: 1, shape_pt_lon: 1 } } },
-	).batchSize(10_000).stream();
+	// const hashedShapesCursor = hashedShapesCollection.find(
+	// 	{ _id: { $in: hashedShapeIds } },
+	// 	{ projection: { _id: 1, points: { shape_pt_lat: 1, shape_pt_lon: 1 } } },
+	// ).batchSize(10_000).stream();
 
 	//
 	// Create shape nodes for each hashed shape
 	Logger.info({ message: `Creating shape nodes for ${hashedShapeIds.length} hashed shape ids` });
 
-	let shapeNodesProcessed = 0;
-	for await (const hashedShape of hashedShapesCursor) {
-		const geojson = hashedShapesToFeatureCollection(hashedShape);
-		const chunks = chunkLineByDistanceV2(geojson.features[0].geometry, config.shapeNodeChunkLength);
+	const shapeNodesProcessed = 0;
+	// for await (const hashedShape of hashedShapesCursor) {
+	// 	const geojson = hashedShapesToFeatureCollection(hashedShape);
+	// 	const chunks = chunkLineByDistanceV2(geojson.features[0].geometry, config.shapeNodeChunkLength);
 
-		for (const [idx, chunk] of chunks.coordinates.entries()) {
-			shapeNodesProcessed++;
-			await writer.write({
-				geohash: geohash.encode(chunk[1], chunk[0], 7),
-				hashed_shape_id: hashedShape._id,
-				latitude: chunk[1],
-				longitude: chunk[0],
-				node_index: idx,
-			});
-		}
-	}
+	// 	for (const [idx, chunk] of chunks.coordinates.entries()) {
+	// 		shapeNodesProcessed++;
+	// 		await writer.write({
+	// 			geohash: geohash.encode(chunk[1], chunk[0], 7),
+	// 			hashed_shape_id: hashedShape._id,
+	// 			latitude: chunk[1],
+	// 			longitude: chunk[0],
+	// 			node_index: idx,
+	// 		});
+	// 	}
+	// }
 
 	//
 	// Flush writer

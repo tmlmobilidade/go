@@ -5,7 +5,7 @@ import { ZoneDetailHeader } from '@/components/zones/detail/ZoneDetailHeader';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { ZoneSchema } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Divider, ErrorDisplay, GeoJsonInput, Grid, LoadingOverlay, MapOverlayPolygon, MapOverlayPolygonDataProps, MapView, MultiSelect, Pane, Section, TextInput, useCssVariable, useDataAgenciesNew } from '@tmlmobilidade/ui';
 import { Feature, type FeatureCollection, MultiPolygon, type Polygon } from 'geojson';
 import { useEffect, useState } from 'react';

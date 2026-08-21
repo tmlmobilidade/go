@@ -31,8 +31,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",

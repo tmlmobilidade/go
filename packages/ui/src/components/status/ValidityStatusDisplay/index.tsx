@@ -1,6 +1,6 @@
 'use client';
 
-import { type ValidityStatus, ValidityStatusSchema } from '@tmlmobilidade/types';
+import { type ValidityStatus, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -2,7 +2,7 @@
 
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { CreateAgencySchema } from '@tmlmobilidade/types';
+import { CreateAgencySchema } from '@tmlmobilidade/go-types-core';
 import { Collapsible, ContextFormController, Grid, Section, Select, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

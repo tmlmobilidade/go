@@ -1,7 +1,7 @@
 /* * */
 
 import { getDemandByAgencyByOperationalDate } from '@/endpoints/v1/metrics/controllers/get-demand-by-agency-by-operational-date.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

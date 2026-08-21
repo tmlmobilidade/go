@@ -9,8 +9,8 @@ import { buildStorageKey } from '@/utils/storage-key.js';
 import { withTransaction } from '@tmlmobilidade/go-clients-mongo';
 import { StorageError, toStorageError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/go-types-core';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type Attachment, type CreateAttachmentDto } from '@tmlmobilidade/types';
 
 /* * */
 
