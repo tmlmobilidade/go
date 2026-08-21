@@ -1,7 +1,7 @@
 /* * */
 
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
-import { type Sam } from '@tmlmobilidade/types';
+import { type Sam } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Builds a pipeline that enumerates all distinct `latest_apex_version`
