@@ -1,6 +1,6 @@
 'use client';
 
-import { type GradeStatus } from '@tmlmobilidade/types';
+import { type GradeStatus } from '@tmlmobilidade/go-types-shared';
 import { useTranslation } from 'react-i18next';
 
 import { Tag } from '../../tags/Tag';

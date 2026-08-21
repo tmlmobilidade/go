@@ -2,7 +2,7 @@
 
 import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { iconMap } from '@/lib/icons';
-import { HomeLink } from '@tmlmobilidade/types';
+import { HomeLink } from '@tmlmobilidade/go-types-core';
 import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import React from 'react';
@@ -60,8 +60,7 @@ export function OrganizationDetailQuickLinks() {
 		if (existingIndex === -1) {
 			link.order = links.length;
 			organizationDetailContext.data.form.values.home_links = [...links, link];
-		}
-		else {
+		} else {
 			const updatedLinks = links.map((l, idx) => idx === existingIndex ? link : l);
 			organizationDetailContext.data.form.values.home_links = updatedLinks;
 		}

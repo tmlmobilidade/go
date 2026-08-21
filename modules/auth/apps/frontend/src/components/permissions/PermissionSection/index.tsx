@@ -2,7 +2,7 @@
 
 import { PermissionSectionItem } from '@/components/permissions/PermissionSectionItem';
 import { PermissionConfigAction } from '@/lib/permissions';
-import { type Permission } from '@tmlmobilidade/types';
+import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 
 /* * */
