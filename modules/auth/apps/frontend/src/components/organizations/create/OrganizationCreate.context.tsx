@@ -2,7 +2,7 @@
 
 import { closeCreateOrganizationModal } from '@/components/organizations/create/OrganizationCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateOrganizationDto, CreateOrganizationSchema, Organization } from '@tmlmobilidade/types';
+import { type CreateOrganizationDto, CreateOrganizationSchema, type Organization } from '@tmlmobilidade/go-types-core';
 import { fetchApiData, keepUrlParams, UseFormReturnType, useHandleUpdate, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';

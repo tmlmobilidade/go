@@ -1,7 +1,7 @@
 'use client';
 
 import { useOrganizationCreateContext } from '@/components/organizations/create/OrganizationCreate.context';
-import { CreateOrganizationSchema } from '@tmlmobilidade/types';
+import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
 import { Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

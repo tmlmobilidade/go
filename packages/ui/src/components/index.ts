@@ -13,7 +13,6 @@ export * from './map';
 export * from './menu';
 export * from './modals';
 export * from './panes';
-export * from './proposedChanges';
 export * from './status';
 export * from './tags';
 export * from './upload';
