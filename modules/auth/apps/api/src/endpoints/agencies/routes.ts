@@ -20,13 +20,28 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/', listAgenciesHandler);
+		instance.get(
+			'/',
+			listAgenciesHandler,
+		);
 
-		instance.get('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.read]) }, getAgencyHandler);
+		instance.get(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.read]) },
+			getAgencyHandler,
+		);
 
-		instance.put('/:id', { preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.update]) }, updateAgencyHandler);
+		instance.put(
+			'/:id',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.update]) },
+			updateAgencyHandler,
+		);
 
-		instance.get('/:id/lock', { preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.lock]) }, lockAgencyHandler);
+		instance.get(
+			'/:id/lock',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.lock]) },
+			lockAgencyHandler,
+		);
 
 		next();
 	},

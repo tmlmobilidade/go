@@ -1,8 +1,15 @@
 /* * */
 
-import { UsersController } from '@/endpoints/users/users.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+
+import { createUserHandler } from './handlers/create-user.js';
+import { deleteUserHandler } from './handlers/delete-user.js';
+import { getUserSimplifiedHandler } from './handlers/get-user-simplified.js';
+import { getUserHandler } from './handlers/get-user.js';
+import { listUsersHandler } from './handlers/list-users.js';
+import { lockUserHandler } from './handlers/lock-user.js';
+import { updateUserHandler } from './handlers/update-user.js';
 
 /* * */
 
@@ -19,43 +26,43 @@ server.register(
 		instance.get(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.read]) },
-			UsersController.getAll,
+			listUsersHandler,
 		);
 
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.read]) },
-			UsersController.getById,
+			getUserHandler,
 		);
 
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.create]) },
-			UsersController.create,
+			createUserHandler,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.update]) },
-			UsersController.update,
+			updateUserHandler,
 		);
 
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.delete]) },
-			UsersController.delete,
+			deleteUserHandler,
 		);
 
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.lock]) },
-			UsersController.lock,
+			lockUserHandler,
 		);
 
 		instance.get(
 			'/:id/simplified',
 			{ preHandler: authorizationMiddleware() },
-			UsersController.getSimplifiedById,
+			getUserSimplifiedHandler,
 		);
 
 		next();
