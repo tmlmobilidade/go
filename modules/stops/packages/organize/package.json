@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@carrismetropolitana/tts": "20250418.51.6",
-		"@tmlmobilidade/types": "*"
+		"@tmlmobilidade/go-types-infrastructure": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

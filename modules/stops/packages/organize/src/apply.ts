@@ -2,7 +2,7 @@
 
 import { getStopShortName } from '@/functions/get-stop-short-name.js';
 import { getStopTtsName } from '@/functions/get-stop-tts-name.js';
-import { type Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 
 /**
  * Organizes a stop by applying various organization functions.
