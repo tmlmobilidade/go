@@ -6,7 +6,7 @@ import { Spacer } from '../../layout/Spacer';
 import { EnvironmentTag } from '../../tags/EnvironmentTag';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarExports } from '../SidebarExports';
-import { SidebarNotifications } from '../SidebarNotifications';
+// import { SidebarNotifications } from '../SidebarNotifications';
 import { SidebarOptions } from '../SidebarOptions';
 
 /* * */
@@ -25,7 +25,7 @@ export function SidebarFooter() {
 	return (
 		<div className={styles.footer}>
 			<SidebarExports />
-			{sidebarContext.presentation.visual_mode !== 'collapsed' && <SidebarNotifications />}
+			{/* {sidebarContext.presentation.visual_mode !== 'collapsed' && <SidebarNotifications />} */}
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && <SidebarOptions />}
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && <Spacer />}
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && <EnvironmentTag />}
