@@ -1,17 +1,15 @@
 'use client';
 
-import { useAlertsDetailAlertId } from '@/components/detail/shared/use-alerts-detail-alert-id';
-import { AlertsListFiltersBar } from '@/components/list/filters/AlertsListFiltersBar';
-import { AlertsListHeader } from '@/components/list/shared/AlertsListHeader';
-import { AlertsListCellCauseEffect } from '@/components/list/table/AlertsListCellCauseEffect';
-import { AlertsListCellReferenceType } from '@/components/list/table/AlertsListCellReferenceType';
+import { useSchoolsDetailSchoolId } from '@/components/detail/shared/use-schools-detail-school-id';
+import { SchoolsListFiltersBar } from '@/components/list/filters/SchoolsListFiltersBar';
+import { SchoolsListHeader } from '@/components/list/shared/SchoolsListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane, PublishStatusDisplay, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { type SchoolsListItem } from '@tmlmobilidade/go-schools-pckg-types';
+import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
-import { useAlertsListData } from '../use-alerts-list-data';
+import { useSchoolsListData } from '../use-schools-list-data';
 
 /* * */
 
@@ -21,63 +19,21 @@ export function SchoolsList() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
-
-	const { alertId } = useAlertsDetailAlertId();
+	const { schoolId } = useSchoolsDetailSchoolId();
 
 	const router = useRouter();
 
-	const alertsData = useAlertsListData();
+	const schoolsData = useSchoolsListData();
 
-	const columns: DataTableColumn<AlertsListItem>[] = [
-		{
-			accessor: 'agency_id',
-			render: item => <AgencyTag agencyId={item.agency_id} copyOnClick={false} showShortName />,
-			title: t('alerts:list.AlertsList.columns.agency_id.label'),
-			width: 180,
-		},
-		{
-			accessor: 'publish_status',
-			render: item => <PublishStatusDisplay value={item.publish_status} />,
-			title: t('alerts:list.AlertsList.columns.publish_status.label'),
-			width: 125,
-		},
-		{
-			accessor: 'reference_type',
-			render: item => <AlertsListCellReferenceType value={item.reference_type} />,
-			title: t('alerts:list.AlertsList.columns.reference_type.label'),
-			width: 150,
-		},
-		{
-			accessor: 'title',
-			title: t('alerts:list.AlertsList.columns.title.label'),
-			width: 500,
-		},
-		{
-			accessor: 'created_at',
-			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
-			title: t('alerts:list.AlertsList.columns.created_at.label'),
-			width: 225,
-		},
-		{
-			accessor: 'publish_start_date',
-			render: item => <UnixTimestampDisplay value={item.publish_start_date} showDate />,
-			title: t('alerts:list.AlertsList.columns.publish_date.label'),
-			width: 225,
-		},
-		{
-			accessor: 'cause',
-			render: item => <AlertsListCellCauseEffect cause={item.cause} effect={item.effect} />,
-			title: t('alerts:list.AlertsList.columns.cause_effect.label'),
-			width: 500,
-		},
+	const columns: DataTableColumn<SchoolsListItem>[] = [
+
 	];
 
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: AlertsListItem) => {
-		router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(item._id)));
+	const handleRowClick = (item: SchoolsListItem) => {
+		router.push(keepUrlParams(PAGE_ROUTES.operation.SCHOOLS_DETAIL(item._id)));
 	};
 
 	//
@@ -86,18 +42,18 @@ export function SchoolsList() {
 	return (
 		<Pane
 			header={[
-				<AlertsListHeader key="header" />,
-				<AlertsListFiltersBar key="filters" />,
+				<SchoolsListHeader key="header" />,
+				<SchoolsListFiltersBar key="filters" />,
 			]}
 		>
-			{alertsData.error && <ErrorDisplay message={alertsData.error} />}
+			{schoolsData.error && <ErrorDisplay message={schoolsData.error} />}
 			<DataTable
 				columns={columns}
-				isLoading={alertsData.isLoading}
+				isLoading={schoolsData.isLoading}
 				onRowClick={handleRowClick}
-				records={alertsData.data}
+				records={schoolsData.data}
 				rowIdAccessor="_id"
-				selectedId={alertId}
+				selectedId={schoolId}
 			/>
 		</Pane>
 	);

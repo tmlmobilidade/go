@@ -28,7 +28,6 @@ export function useSchoolsListData(): UseSchoolsListDataReturnType {
 	//
 	// A. Setup variables
 
-
 	const filterSearch = useSchoolsListFilterSearch();
 
 	//
@@ -41,7 +40,7 @@ export function useSchoolsListData(): UseSchoolsListDataReturnType {
 	//
 	// C. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<SchoolsListItem[]>>([API_ROUTES.schools.SCHOOLS_LIST, query], {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<SchoolsListItem[]>>([API_ROUTES.operation.SCHOOLS_LIST, query], {
 		fetcher: async ([url, query]) => await fetchApiData<SchoolsListItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

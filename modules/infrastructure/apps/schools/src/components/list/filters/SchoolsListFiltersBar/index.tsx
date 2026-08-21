@@ -4,10 +4,10 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function AlertsListFiltersBar() {
+export function SchoolsListFiltersBar() {
 	return (
 		<FiltersBar>
-<p>NO FILTERS YET</p>
+			<p>NO FILTERS YET</p>
 		</FiltersBar>
 	);
 }

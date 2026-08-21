@@ -1,6 +1,6 @@
 'use client';
 
-import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
+import { useSchoolDetailContext } from '@/components/detail/SchoolDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusDisplay, SaveButton, Spacer, Toolbar, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-export function AlertDetailHeader() {
+export function SchoolDetailHeader() {
 	//
 
 	//
@@ -17,9 +17,9 @@ export function AlertDetailHeader() {
 
 	const router = useRouter();
 	const meContext = useMeContext();
-	const alertDetailContext = useAlertDetailContext();
+	const schoolDetailContext = useSchoolDetailContext();
 
-	const publishStatusValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'publish_status' });
+	const publishStatusValue = useContextFormWatch({ control: schoolDetailContext.form.instance.control, name: 'publish_status' });
 
 	//
 	// B. Transform data
@@ -32,16 +32,16 @@ export function AlertDetailHeader() {
 				action: PermissionCatalog.all.alerts.actions.update_publish_status,
 				resource_key: 'agency_ids',
 				scope: PermissionCatalog.all.alerts.scope,
-				value: alertDetailContext.data.alert.agency_id,
+				value: schoolDetailContext.data.school.agency_id,
 			},
 			{
 				action: PermissionCatalog.all.alerts.actions.update_publish_status,
 				resource_key: 'reference_types',
 				scope: PermissionCatalog.all.alerts.scope,
-				value: alertDetailContext.data.alert.reference_type,
+				value: schoolDetailContext.data.school.reference_type,
 			},
 		]);
-	}, [meContext.actions, alertDetailContext.data.alert.agency_id, alertDetailContext.data.alert.reference_type]);
+	}, [meContext.actions, schoolDetailContext.data.school.agency_id, schoolDetailContext.data.school.reference_type]);
 
 	//
 	// C. Handle actions
@@ -58,11 +58,11 @@ export function AlertDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 
-			<IdTag id={alertDetailContext.data.id} copyOnClick />
+			<IdTag id={schoolDetailContext.data.id} copyOnClick />
 
 			<PublishStatusDisplay
 				disabled={!hasPermissionToChangePublishStatus}
-				onChange={value => alertDetailContext.form.instance.setValue('publish_status', value, { shouldDirty: true })}
+				onChange={value => schoolDetailContext.form.instance.setValue('publish_status', value, { shouldDirty: true })}
 				value={publishStatusValue}
 			/>
 
@@ -73,16 +73,16 @@ export function AlertDetailHeader() {
 				scope={PermissionCatalog.all.alerts.scope}
 			>
 				<DuplicateButton
-					isDisabled={!alertDetailContext.flags.canDuplicate}
-					isLoading={alertDetailContext.flags.isDuplicating}
-					onClick={alertDetailContext.actions.duplicate}
+					isDisabled={!schoolDetailContext.flags.canDuplicate}
+					isLoading={schoolDetailContext.flags.isDuplicating}
+					onClick={schoolDetailContext.actions.duplicate}
 				/>
 			</HasPermission>
 
 			<SaveButton
-				isDisabled={!alertDetailContext.flags.canSave}
-				isLoading={alertDetailContext.flags.isSaving}
-				onClick={alertDetailContext.actions.save}
+				isDisabled={!schoolDetailContext.flags.canSave}
+				isLoading={schoolDetailContext.flags.isSaving}
+				onClick={schoolDetailContext.actions.save}
 			/>
 
 			<HasPermission
@@ -90,10 +90,10 @@ export function AlertDetailHeader() {
 				scope={PermissionCatalog.all.alerts.scope}
 			>
 				<LockButton
-					isDisabled={!alertDetailContext.flags.canLock}
-					isLoading={alertDetailContext.flags.isLocking}
-					isLocked={alertDetailContext.data.alert?.is_locked}
-					onClick={alertDetailContext.actions.lock}
+					isDisabled={!schoolDetailContext.flags.canLock}
+					isLoading={schoolDetailContext.flags.isLocking}
+					isLocked={schoolDetailContext.data.school?.is_locked}
+					onClick={schoolDetailContext.actions.lock}
 				/>
 			</HasPermission>
 
@@ -104,9 +104,9 @@ export function AlertDetailHeader() {
 				<DeleteButton
 					confirmMessage="Tem a certeza que pretende eliminar este Alerta? Esta ação é irreversível."
 					confirmTitle="Eliminar Alerta"
-					isDisabled={!alertDetailContext.flags.canDelete}
-					isLoading={alertDetailContext.flags.isDeleting}
-					onDelete={alertDetailContext.actions.delete}
+					isDisabled={!schoolDetailContext.flags.canDelete}
+					isLoading={schoolDetailContext.flags.isDeleting}
+					onDelete={schoolDetailContext.actions.delete}
 					showConfirmation={true}
 				/>
 			</HasPermission>
