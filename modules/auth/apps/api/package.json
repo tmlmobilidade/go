@@ -20,7 +20,7 @@
 	"dependencies": {
 		"@fastify/multipart": "10.1.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-auth": "*",

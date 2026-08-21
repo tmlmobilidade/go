@@ -1,5 +1,5 @@
 import { Dates } from '@tmlmobilidade/dates';
-import { renderSystemErrorTemplate } from '@tmlmobilidade/emails';
+import { renderSystemErrorTemplate } from '@tmlmobilidade/go-providers-emails';
 import nodemailer, { Transporter } from 'nodemailer';
 
 export interface MailOptions {

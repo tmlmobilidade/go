@@ -225,7 +225,7 @@ Shared TypeScript configs. Extended by `tsconfig.json` in every package.
 
 ## Email and messaging
 
-### `@tmlmobilidade/emails`
+### `@tmlmobilidade/go-providers-emails`
 React Email templates for transactional emails. Contains components, styles, and rendered templates.
 
 ### `@tmlmobilidade/rss`

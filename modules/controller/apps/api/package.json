@@ -21,7 +21,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/emails": "*",
+		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-controller-pckg-types": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
