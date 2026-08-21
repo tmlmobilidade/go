@@ -95,7 +95,7 @@ Auth is required for most UIs. Start it first, then the module you care about:
 
 ```bash
 # Authentication (required by most frontends)
-npm run dev:auth
+npm run dev:core
 
 # Example modules
 npm run dev:offer
@@ -109,7 +109,7 @@ UI-only variants (API + frontend, no workers) are available for some modules:
 ```bash
 npm run dev:alerts:ui
 npm run dev:controller:ui
-npm run dev:stops:ui
+npm run dev:infrastructure:ui
 ```
 
 ### Useful commands
