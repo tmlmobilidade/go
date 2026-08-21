@@ -34,7 +34,8 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"protobufjs": "8.7.1"
+		"protobufjs": "8.7.1",
+		"@tmlmobilidade/go-types-gtfs-rt": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
