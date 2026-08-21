@@ -1,6 +1,7 @@
 /* * */
 
-import type { Dates, TimeSlot } from '@tmlmobilidade/dates';
+import { type Dates } from '@tmlmobilidade/dates';
+import { type TimeSlot } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 

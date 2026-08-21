@@ -3,8 +3,8 @@
 import { type AppConfig } from '@/lib/config.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { pipelinePath, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
-import { UnixTimestamp } from '@tmlmobilidade/types';
 import { performInTimeChunks } from '@tmlmobilidade/utils';
 
 /* * */
