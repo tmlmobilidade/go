@@ -1,7 +1,7 @@
 /* * */
 
-import { type AgenciesListItem, AgenciesListItemSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type AgenciesListItem, AgenciesListItemSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /**
