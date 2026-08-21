@@ -3,8 +3,8 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
+import { type User } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type User } from '@tmlmobilidade/types';
 
 /**
  * Get the current user from the session token.

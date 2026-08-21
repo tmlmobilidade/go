@@ -1,9 +1,9 @@
 /* * */
 
 import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { sendResetPasswordEmail } from '@tmlmobilidade/go-providers-emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { sendResetPasswordEmail } from '@tmlmobilidade/go-providers-emails';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 
