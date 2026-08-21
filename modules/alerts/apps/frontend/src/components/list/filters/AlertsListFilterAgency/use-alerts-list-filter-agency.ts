@@ -11,8 +11,10 @@ export function useAlertsListFilterAgency(): UseFilterStateListReturnType {
 	//
 
 	const { ids, options } = useAgenciesData({
-		actions: [PermissionCatalog.all.alerts.actions.read],
-		scope: PermissionCatalog.all.alerts.scope,
+		permissions: {
+			actions: [PermissionCatalog.all.alerts.actions.read],
+			scope: PermissionCatalog.all.alerts.scope,
+		},
 	});
 
 	return useFilterStateList('agency', ids, options);

@@ -27,13 +27,13 @@ interface UseAgenciesDataReturnType {
  * @param props The request to fetch the agencies data.
  * @returns An object containing the agencies data.
  */
-export function useAgenciesData(props: AgenciesPlatformRequest): UseAgenciesDataReturnType {
+export function useAgenciesData(permissions: AgenciesPlatformRequest): UseAgenciesDataReturnType {
 	//
 
 	//
 	// A. Transform data
 
-	const query = useMemo<AgenciesPlatformRequest>(() => ({ ...props }), [props]);
+	const query = useMemo<AgenciesPlatformRequest>(() => ({ ...permissions }), [permissions]);
 
 	//
 	// B. Fetch data

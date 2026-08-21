@@ -1,9 +1,8 @@
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { AlertCauseIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
+import { AlertCauseIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useAgenciesData, useContextFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,9 +28,11 @@ export function AlertCreateStepCause() {
 	//
 	// B. Fetch data
 
-	const { filtered: agenciesData, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.create],
-		scope: PermissionCatalog.all.alerts.scope,
+	const { data: agenciesData, isLoading: agenciesLoading } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.alerts.actions.create],
+			scope: PermissionCatalog.all.alerts.scope,
+		},
 	});
 
 	//

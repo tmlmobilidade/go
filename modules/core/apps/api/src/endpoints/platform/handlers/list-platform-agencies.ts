@@ -22,17 +22,21 @@ export async function listPlatformAgenciesHandler(request: FastifyRequest<{ Body
 	//
 	// Get the agency IDs from the permissions
 
-	const resourceAgencyIds = validatedFilters.actions?.flatMap(action => request.permissions
-		.filter(permission => permission.scope === validatedFilters.scope && permission.action === action)
+	const resourceAgencyIds = validatedFilters.permissions.actions?.flatMap(action => request.permissions
+		.filter(permission => permission.scope === validatedFilters.permissions.scope && permission.action === action)
 		.flatMap(permission => 'resources' in permission ? permission.resources.agency_ids ?? [] : []),
 	) ?? [];
 
 	//
 	// Build aggregation pipeline
 
+	const matchedAgencyIds = !resourceAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG)
+		? { agency_id: { $in: resourceAgencyIds } }
+		: {};
+
 	const pipeline: AggregationPipeline<AgenciesPlatformResponse> = [
-		{ $match: resourceAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG) ? {} : { agency_id: { $in: resourceAgencyIds } } },
-		{ $project: Object.fromEntries(Object.keys(AgenciesPlatformResponseSchema.shape).map(key => [key, 1])) },
+		{ $match: matchedAgencyIds },
+		{ $project: Object.fromEntries(Object.keys([AgenciesPlatformResponseSchema.shape]).map(key => [key, 1])) },
 		{ $sort: { _id: -1 } },
 	];
 

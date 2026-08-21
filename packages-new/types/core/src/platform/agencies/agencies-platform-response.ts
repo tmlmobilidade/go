@@ -5,12 +5,10 @@ import { z } from 'zod';
 
 /* * */
 
-export const AgenciesPlatformResponseSchema = AgencySchema.pick({
-	_id: true,
-	code: true,
-	name: true,
-	pta_name: true,
-	short_name: true,
+export const AgenciesPlatformResponseSchema = AgencySchema.omit({
+	apex: true,
+	contact_emails_pta: true,
+	contact_emails_pto: true,
 });
 
 /* * */

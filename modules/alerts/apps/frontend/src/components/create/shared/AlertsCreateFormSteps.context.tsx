@@ -1,8 +1,7 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useContextFormWatch, useDataAgencies, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
+import { useAgenciesData, useContextFormWatch, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useAlertsCreateFormContext } from './AlertsCreateForm.context';
@@ -41,9 +40,11 @@ export function AlertsCreateFormStepsContextProvider({ children }: PropsWithChil
 	//
 	// C. Fetch data
 
-	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.create],
-		scope: PermissionCatalog.all.alerts.scope,
+	const { data: agenciesData } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.alerts.actions.create],
+			scope: PermissionCatalog.all.alerts.scope,
+		},
 	});
 
 	//

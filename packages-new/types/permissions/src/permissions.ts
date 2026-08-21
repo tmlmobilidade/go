@@ -2,8 +2,8 @@
 
 import { z } from 'zod';
 
-import { AgenciesPermissionSchema } from './scopes/agencies.js';
-import { AlertsPermissionSchema } from './scopes/alerts.js';
+import { AgenciesPermissionSchema } from './scopes/agencies/permission.js';
+import { AlertsPermissionSchema } from './scopes/alerts/permission.js';
 import { RidesPermissionSchema, SamsPermissionSchema } from './scopes/controller.js';
 import { AnnotationsPermissionSchema, EventsPermissionSchema, HolidaysPermissionSchema, YearPeriodsPermissionSchema } from './scopes/dates.js';
 import { FaresPermissionSchema } from './scopes/fares.js';

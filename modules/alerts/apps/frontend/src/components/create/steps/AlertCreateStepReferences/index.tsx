@@ -1,10 +1,9 @@
 'use client';
 
 import { ReferencesEditor } from '@/components/references/shared/ReferencesEditor';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { LoadingSection, NoDataLabel, Section, useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
+import { LoadingSection, NoDataLabel, Section, useAgenciesData, useContextFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,16 +26,17 @@ export function AlertCreateStepReferences() {
 	const effectValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'effect' });
 	const activePeriodEndDateValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'active_period_end_date' });
 	const activePeriodStartDateValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'active_period_start_date' });
-	const municipalityIdsValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'municipality_ids' });
 	const referencesValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'references' });
 	const referenceTypeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
 
 	//
 	// B. Fetch data
 
-	const { filtered: agenciesData, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.create],
-		scope: PermissionCatalog.all.alerts.scope,
+	const { data: agenciesData, isLoading: agenciesLoading } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.alerts.actions.create],
+			scope: PermissionCatalog.all.alerts.scope,
+		},
 	});
 
 	//
@@ -88,7 +88,6 @@ export function AlertCreateStepReferences() {
 			onChangeReferences={handleChangeReferences}
 			onChangeReferenceType={handleChangeReferenceType}
 			selectedAgencyId={agencyIdValue}
-			selectedMunicipalityIds={municipalityIdsValue}
 			selectedReferences={referencesValue}
 			selectedReferenceType={referenceTypeValue}
 		/>

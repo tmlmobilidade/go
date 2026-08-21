@@ -1,10 +1,9 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { AlertReferenceTypeValues, type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useContextForm, type UseContextFormReturnType, useContextFormWatch, useDataAgencies, useMeContext } from '@tmlmobilidade/ui';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { useAgenciesData, useContextForm, type UseContextFormReturnType, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 
 /* * */
@@ -77,9 +76,11 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	//
 	// C. Fetch data
 
-	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.create],
-		scope: PermissionCatalog.all.alerts.scope,
+	const { data: agenciesData } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.alerts.actions.create],
+			scope: PermissionCatalog.all.alerts.scope,
+		},
 	});
 
 	//
