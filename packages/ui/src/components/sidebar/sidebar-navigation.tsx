@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSchool, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type JSX } from 'react';
@@ -136,6 +136,12 @@ export const sidebarNavigationGroups = [
 				href: PAGE_ROUTES.offer.LINES_LIST,
 				icon: <IconRoute />,
 				permissions: [{ action: PermissionCatalog.all.lines.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.lines.scope }],
+			},
+			{
+				_id: 'schools',
+				href: PAGE_ROUTES.schools.SCHOOLS_LIST,
+				icon: <IconSchool />,
+				permissions: [{ action: PermissionCatalog.all.schools.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.schools.scope }],
 			},
 			{
 				_id: 'typologies',
