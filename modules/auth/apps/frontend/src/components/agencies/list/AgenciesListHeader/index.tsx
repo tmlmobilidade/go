@@ -13,6 +13,7 @@ export function AgenciesListHeader() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+
 	const agenciesListContext = useAgenciesListContext();
 
 	//
@@ -25,6 +26,4 @@ export function AgenciesListHeader() {
 			<SearchField onChange={agenciesListContext.filters.search.set} value={agenciesListContext.filters.search.value} />
 		</Toolbar>
 	);
-
-	//
 }
