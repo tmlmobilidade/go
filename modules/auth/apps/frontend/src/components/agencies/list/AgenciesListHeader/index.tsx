@@ -1,8 +1,10 @@
 /* * */
 
-import { useAgenciesListContext } from '@/components/agencies/list/AgenciesList.context';
-import { Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { AgenciesListFilterSearch } from '../AgenciesListFilterSearch';
+import { useAgenciesListData } from '../use-agencies-list-data';
 
 /* * */
 
@@ -14,7 +16,7 @@ export function AgenciesListHeader() {
 
 	const { t } = useTranslation();
 
-	const agenciesListContext = useAgenciesListContext();
+	const { isLoading, isValidating, timestamp } = useAgenciesListData();
 
 	//
 	// B. Render components
@@ -22,8 +24,9 @@ export function AgenciesListHeader() {
 	return (
 		<Toolbar>
 			<Label size="lg" caps singleLine>{t('default:agencies.list.Header.title')}</Label>
+			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
-			<SearchField onChange={agenciesListContext.filters.search.set} value={agenciesListContext.filters.search.value} />
+			<AgenciesListFilterSearch />
 		</Toolbar>
 	);
 }

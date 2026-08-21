@@ -22,6 +22,7 @@ server.register(
 
 		instance.get(
 			'/',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.read]) },
 			listAgenciesHandler,
 		);
 

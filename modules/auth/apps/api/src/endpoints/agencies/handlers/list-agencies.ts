@@ -1,19 +1,27 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type AgenciesListItem, AgenciesListItemSchema } from '@tmlmobilidade/go-auth-pckg-types';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Agency } from '@tmlmobilidade/go-types-core';
 
 /**
  * Returns all Agencies sorted by ID.
  * @param request The request object
  * @param reply The reply object
  */
-export async function listAgenciesHandler(request: FastifyRequest, reply: FastifyReply<Agency[]>) {
-	const allAgencies = await goDb.core.agencies.findMany({}, { projection: { validation_rules: 0 }, sort: { _id: 1 } });
-	if (!allAgencies) {
-		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error getting agencies from database');
+export async function listAgenciesHandler(request: FastifyRequest, reply: FastifyReply<AgenciesListItem[]>) {
+	//
+
+	const foundAgencies = await goDb.core.agencies.findMany();
+
+	if (!foundAgencies?.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'No agencies found',
+			status_code: '404',
+		});
 	}
-	reply.send({ data: allAgencies, error: null, statusCode: HTTP_STATUS.OK });
+
+	const validatedAgencies = AgenciesListItemSchema.array().parse(foundAgencies);
+
+	return sendSuccessApiResponse(reply, validatedAgencies);
 }

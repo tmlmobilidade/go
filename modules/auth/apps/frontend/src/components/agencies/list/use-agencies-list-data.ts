@@ -1,9 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AlertsListFilters, type AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type AgenciesListItem } from '@tmlmobilidade/go-auth-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData } from '@tmlmobilidade/ui';
+import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -12,7 +12,7 @@ import { useAgenciesListFilterSearch } from './AgenciesListFilterSearch/use-agen
 /* * */
 
 interface UseAgenciesListDataReturnType {
-	data: AlertsListItem[]
+	data: AgenciesListItem[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -31,29 +31,31 @@ export function useAgenciesListData(): UseAgenciesListDataReturnType {
 	const filterSearch = useAgenciesListFilterSearch();
 
 	//
-	// B. Transform data
+	// B. Fetch data
 
-	const query = useMemo<AgenciesListFilters>(() => ({
-		search: filterSearch.value,
-	}), [filterSearch.value]);
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<AgenciesListItem[]>>(API_ROUTES.auth.AGENCIES_LIST, {
+		fetcher: async (url: string) => await fetchApiData<AgenciesListItem[]>({ url }),
+		refreshInterval: 10_000, // 10 seconds
+	});
 
 	//
-	// C. Fetch data
+	// C. Transform data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<AlertsListItem[]>>([API_ROUTES.alerts.ALERTS_LIST, query], {
-		fetcher: async ([url, query]) => await fetchApiData<AlertsListItem[]>({ body: query, method: 'POST', url }),
-		refreshInterval: 10_000, // 10 seconds
+	const searchResultsData = useSearch<AgenciesListItem>({
+		accessors: ['_id', 'code', 'name_normalized', 'short_name'],
+		data: data?.data,
+		query: filterSearch.value,
 	});
 
 	//
 	// D. Return data
 
 	return useMemo(() => ({
-		data: data?.data,
+		data: searchResultsData,
 		error: error?.error,
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [data, error, isLoading, isValidating, mutate]);
+	}), [searchResultsData, data?.timestamp, error, isLoading, isValidating, mutate]);
 };

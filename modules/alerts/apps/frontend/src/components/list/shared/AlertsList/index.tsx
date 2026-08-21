@@ -93,6 +93,7 @@ export function AlertsList() {
 			{alertsData.error && <ErrorDisplay message={alertsData.error} />}
 			<DataTable
 				columns={columns}
+				isLoading={alertsData.isLoading}
 				onRowClick={handleRowClick}
 				records={alertsData.data}
 				rowIdAccessor="_id"

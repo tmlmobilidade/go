@@ -1,13 +1,14 @@
 'use client';
 
-import { useAgenciesListContext } from '@/components/agencies/list/AgenciesList.context';
 import { AgenciesListHeader } from '@/components/agencies/list/AgenciesListHeader';
-import { type AgencyNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { IdTag, keepUrlParams } from '@tmlmobilidade/ui';
-import { DataTable, type DataTableColumn, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { DataTable, type DataTableColumn, ErrorDisplay, Pane } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+
+import { useAgenciesDetailAgencyId } from '../../detail/use-agencies-detail-agency-id';
+import { type AgencyExtended, useAgenciesListData } from '../use-agencies-list-data';
 
 /* * */
 
@@ -20,11 +21,12 @@ export function AgenciesList() {
 	const { t } = useTranslation();
 
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
 
-	const agenciesListContext = useAgenciesListContext();
+	const { agencyId } = useAgenciesDetailAgencyId();
 
-	const columns: DataTableColumn<AgencyNormalized>[] = [
+	const agenciesData = useAgenciesListData();
+
+	const columns: DataTableColumn<AgencyExtended>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -52,32 +54,28 @@ export function AgenciesList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: AgencyNormalized) => {
+	const handleRowClick = (item: AgencyExtended) => {
 		router.push(keepUrlParams(PAGE_ROUTES.auth.AGENCIES_DETAIL(item._id)));
 	};
 
 	//
 	// C. Render components
 
-	if (agenciesListContext.flags.loading) {
-		return <LoadingOverlay />;
-	}
-
-	if (agenciesListContext.flags.error) {
-		return <ErrorDisplay message={agenciesListContext.flags.error.message} />;
-	}
-
 	return (
-		<Pane header={[<AgenciesListHeader key="header" />]}>
+		<Pane
+			header={[
+				<AgenciesListHeader key="header" />,
+			]}
+		>
+			{agenciesData.error && <ErrorDisplay message={agenciesData.error} />}
 			<DataTable
 				columns={columns}
+				isLoading={agenciesData.isLoading}
 				onRowClick={handleRowClick}
-				records={agenciesListContext.data.filtered}
+				records={agenciesData.data}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={agencyId}
 			/>
 		</Pane>
 	);
-
-	//
 }

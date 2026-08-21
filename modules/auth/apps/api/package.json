@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@fastify/multipart": "10.1.0",
 		"@tmlmobilidade/consts": "*",
+		"@tmlmobilidade/go-auth-pckg-types": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
