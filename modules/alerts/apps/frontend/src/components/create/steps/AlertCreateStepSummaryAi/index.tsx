@@ -1,6 +1,6 @@
 /* * */
 
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ContextFormController, Divider, Inline, Label, LoadingThinking, Section, Surface, Switch, Text, TextInput, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

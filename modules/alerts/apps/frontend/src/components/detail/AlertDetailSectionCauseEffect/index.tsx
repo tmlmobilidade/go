@@ -1,7 +1,7 @@
 'use client';
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { AlertCauseSchema, AlertEffectSchema, PermissionCatalog } from '@tmlmobilidade/types';
+import { AlertCauseSchema, AlertEffectSchema, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AlertCauseIcons, AlertEffectIcons, Collapsible, ContextFormController, Grid, Section, Select, useMeContext } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

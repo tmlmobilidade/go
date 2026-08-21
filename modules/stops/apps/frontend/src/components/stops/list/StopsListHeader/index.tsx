@@ -3,7 +3,7 @@
 import { openStopCreateModal } from '@/components/stops/create/StopCreate.modal';
 import { openStopListExportModal } from '@/components/stops/list/StopListExportModal/StopListExport.modal';
 import { IconFileDownload, IconPlus } from '@tabler/icons-react';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, HasPermission, IconButton, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 import { useStopsListFilterSearch } from './use-stops-list-filter-search';

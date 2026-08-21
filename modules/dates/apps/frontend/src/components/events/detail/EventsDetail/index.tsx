@@ -6,7 +6,7 @@ import { EventsDetailHeader } from '@/components/events/detail/EventsDetailHeade
 import { RuleCard } from '@/components/events/rules/RuleCard';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { EventRule, EventSchema } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, Divider, ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Spacer, Text, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
 
 /* * */

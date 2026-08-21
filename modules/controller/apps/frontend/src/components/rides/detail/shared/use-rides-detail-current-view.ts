@@ -1,7 +1,7 @@
 'use client';
 
 import { useSessionStorage } from '@mantine/hooks';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

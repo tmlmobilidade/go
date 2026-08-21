@@ -1,7 +1,7 @@
 /* * */
 
 import { IconLink } from '@tabler/icons-react';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ContextFormController, CoordinatesInput, Grid, Section, Textarea, TextInput, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

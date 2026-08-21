@@ -3,7 +3,7 @@
 import { openCreatePeriodModal } from '@/components/year-periods/create/PeriodCreate.modal';
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { IconPlus } from '@tabler/icons-react';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, HasPermission, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */

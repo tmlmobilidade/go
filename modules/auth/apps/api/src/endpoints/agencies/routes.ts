@@ -1,7 +1,7 @@
 /* * */
 
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { getAgencyHandler } from './handlers/get-agency.js';
 import { listAgenciesHandler } from './handlers/list-agencies.js';

@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type LineNormalized } from '@tmlmobilidade/go-types-offer';
-import { type Agency, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Agency, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type SelectDataItem, useDataAgenciesNew, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';

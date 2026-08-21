@@ -1,6 +1,6 @@
 'use client';
 
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, HasPermission, PublishStatusDisplay, Spacer, Toolbar, useContextFormWatch } from '@tmlmobilidade/ui';
 
 import { useAlertsCreateFormContext } from '../AlertsCreateForm.context';

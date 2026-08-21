@@ -3,7 +3,7 @@
 import { ReferencesEditor } from '@/components/references/shared/ReferencesEditor';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { LoadingSection, NoDataLabel, Section, useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';

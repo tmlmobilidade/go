@@ -1,7 +1,7 @@
 'use client';
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Collapsible, ContextFormController, DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */

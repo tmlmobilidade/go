@@ -7,7 +7,7 @@ import { AlertCreateStepDates } from '@/components/create/steps/AlertCreateStepD
 import { AlertCreateStepEffect } from '@/components/create/steps/AlertCreateStepEffect';
 import { AlertCreateStepReferences } from '@/components/create/steps/AlertCreateStepReferences';
 import { AlertCreateStepSummary } from '@/components/create/steps/AlertCreateStepSummary';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { NoDataLabel, Surface, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */

@@ -1,7 +1,7 @@
 /* * */
 
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { composeAlert } from './controllers/compose-alert.js';
 import { createAlert } from './controllers/create-alert.js';

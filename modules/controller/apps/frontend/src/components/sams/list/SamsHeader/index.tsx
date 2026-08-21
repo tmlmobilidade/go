@@ -3,7 +3,7 @@
 import { openSamExportModal } from '@/components/sams/export/SamsExportModal';
 import { useSamsListContext } from '@/contexts/SamList.context';
 import { IconFileDownload } from '@tabler/icons-react';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { HasPermission, IconButton, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

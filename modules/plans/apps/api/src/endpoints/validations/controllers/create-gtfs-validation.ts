@@ -8,7 +8,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
 import { type CreateGtfsValidationDto, type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { finished } from 'node:stream/promises';

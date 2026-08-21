@@ -3,7 +3,7 @@
 import { QuickLinks } from '@/components/home/QuickLinks';
 import { WelcomeMessage } from '@/components/home/WelcomeMessage';
 import { WikiList } from '@/components/home/WikiList';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Divider, Pane, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */

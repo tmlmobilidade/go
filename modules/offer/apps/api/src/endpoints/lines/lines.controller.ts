@@ -6,7 +6,7 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-client
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateLineDto, type Line, type LineNormalized, type UpdateLineDto } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 

@@ -4,7 +4,7 @@ import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { ReferencesEditor } from '@/components/references/shared/ReferencesEditor';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Collapsible, ContextFormController, Label, openConfirmModal, Section, Select, useContextFormWatch, useDataAgencies, useMeContext } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
 

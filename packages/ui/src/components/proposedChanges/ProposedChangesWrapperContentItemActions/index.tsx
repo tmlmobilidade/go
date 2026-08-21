@@ -1,7 +1,7 @@
 /* * */
 
 import { IconCheck, IconPlus, IconX } from '@tabler/icons-react';
-import { Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { ButtonGroup, ButtonGroupProps } from '../../buttons/ButtonGroup';
 

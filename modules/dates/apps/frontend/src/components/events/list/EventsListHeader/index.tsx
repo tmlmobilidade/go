@@ -3,7 +3,7 @@
 import { openCreateEventModal } from '@/components/events/create/EventCreate.modal';
 import { useEventsListContext } from '@/components/events/list/EventsList.context';
 import { IconPlus } from '@tabler/icons-react';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, HasPermission, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */

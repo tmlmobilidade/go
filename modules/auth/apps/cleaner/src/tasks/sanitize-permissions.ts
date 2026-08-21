@@ -1,9 +1,9 @@
 /* * */
 
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /**
  * Sanitizes permissions in both the "users" and "roles" collections.

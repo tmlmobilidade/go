@@ -9,7 +9,7 @@ import { PlanDetailSectionFeedInfo } from '@/components/plans/detail/PlanDetailS
 import { PlanDetailSectionPcgiLegacy } from '@/components/plans/detail/PlanDetailSectionPcgiLegacy';
 import { PlanDetailSectionApexFile } from '@/components/plans/detail/PlansDetailSectionApexFile';
 import { PlanDetailSectionOperationFile } from '@/components/plans/detail/PlansDetailSectionOperationFile';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */

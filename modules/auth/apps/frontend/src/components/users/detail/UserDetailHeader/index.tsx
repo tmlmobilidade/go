@@ -2,7 +2,7 @@
 
 import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton } from '@tmlmobilidade/ui';
 import { CloseButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
