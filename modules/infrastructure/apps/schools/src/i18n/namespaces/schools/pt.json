@@ -1,65 +1,12 @@
 {
 	"create": {
-		"AlertCreateStepDates": {
+		"SchoolCreateStepDates": {
 			"sections": {
-				"active_period": {
-					"description": "Período no qual decorre o que está a causar o efeito do alerta. O alerta pode estar publicado mas não ser ainda válido (ex: um alerta para um desvio causado por um corte de estrada é publicado uma semana antes, mas o corte em si é apenas durante 2 dias).",
-					"fields": {
-						"active_period_end_date": {
-							"label": "Data de Fim"
-						},
-						"active_period_start_date": {
-							"label": "Data de Início"
-						}
-					},
-					"title": "Período de Validade"
-				},
-				"publish_date": {
-					"description": "Período em que o alerta está publicado, e por isso visível nos canais digitais. É possível agendar quando o alerta será publicado, assim como quando deverá ser retirado dos canais digitais.",
-					"fields": {
-						"publish_date_end_date": {
-							"label": "Data de Fim"
-						},
-						"publish_date_start_date": {
-							"label": "Data de Início"
-						}
-					},
-					"title": "Agendamento da Publicação"
-				}
 			}
 		},
-		"causes": {
-			"no_data": "Nenhuma causa disponível"
-		},
-		"effects": {
-			"no_data": "Nenhum efeito disponível"
-		},
-		"references": {
-			"no_data": "Nenhum tipo de referência disponível"
-		},
 		"summary": {
-			"auto_texts": {
-				"label": "Textos Automáticos"
-			},
-			"coordinates": {
-				"label": "Coordenadas Geográficas"
-			},
-			"description": {
-				"label": "Descrição"
-			},
-			"generate_text": {
-				"label": "Gerar Texto Automático"
-			},
-			"info_url": {
-				"description": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
-				"label": "Link Adicional"
-			},
 			"title": {
 				"label": "Título"
-			},
-			"user_instructions": {
-				"label": "Informações adicionais para geração do texto automático (opcional)",
-				"placeholder": "Ex: Desvio pela Rua X, sentido Y, devido a Z."
 			}
 		}
 	},
@@ -68,58 +15,13 @@
 			"columns": {
 				"agency_id": {
 					"label": "Operador"
-				},
-				"cause_effect": {
-					"label": "Causa & Efeito"
-				},
-				"created_at": {
-					"label": "Data de criação"
-				},
-				"lines": {
-					"label": "Linhas"
-				},
-				"publish_date": {
-					"label": "Data de Publicação"
-				},
-				"publish_status": {
-					"label": "Estado"
-				},
-				"reference_type": {
-					"label": "Referência"
-				},
-				"stops": {
-					"label": "Paragens"
-				},
-				"title": {
-					"label": "Título"
 				}
 			}
 		},
-		"AlertsListHeader": {
-			"title": "Alertas"
+		"SchoolsListHeader": {
+			"title": "Escolas"
 		},
 		"filters": {
-			"active_period": {
-				"label": "Período Ativo"
-			},
-			"agency": {
-				"label": "Operador"
-			},
-			"cause": {
-				"label": "Causa"
-			},
-			"effect": {
-				"label": "Efeito"
-			},
-			"publish_date": {
-				"label": "Data de Publicação"
-			},
-			"publish_status": {
-				"label": "Estado"
-			},
-			"reference_type": {
-				"label": "Referência"
-			}
 		}
 	}
 }

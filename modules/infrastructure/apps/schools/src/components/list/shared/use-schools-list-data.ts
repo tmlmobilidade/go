@@ -7,7 +7,7 @@ import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useAlertsListFilterSearch } from '../filters/AlertsListFilterSearch/use-alerts-list-filter-search';
+import { useSchoolsListFilterSearch } from '../filters/SchoolsListFilterSearch/use-schools-list-filter-search';
 
 /* * */
 
@@ -29,13 +29,12 @@ export function useSchoolsListData(): UseSchoolsListDataReturnType {
 	// A. Setup variables
 
 
-	const filterSearch = useAlertsListFilterSearch();
+	const filterSearch = useSchoolsListFilterSearch();
 
 	//
 	// B. Transform data
 
 	const query = useMemo<SchoolsListFilters>(() => ({
-		agency_ids: filterAgency.value,
 		search: filterSearch.value,
 	}), [filterSearch.value]);
 

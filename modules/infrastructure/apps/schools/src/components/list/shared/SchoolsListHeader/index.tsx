@@ -8,7 +8,7 @@ import { useSchoolsListData } from '../use-schools-list-data';
 
 /* * */
 
-export function AlertsListHeader() {
+export function SchoolsListHeader() {
 	//
 
 	//
@@ -23,10 +23,10 @@ export function AlertsListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps>{t('alerts:list.AlertsListHeader.title')}</Label>
+			<Label size="lg" caps>{t('schools:list.SchoolsListHeader.title')}</Label>
 			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer shrink />
-			<AlertsListFilterSearch />
+			<SchoolsListFilterSearch />
 		</Toolbar>
 	);
 }
