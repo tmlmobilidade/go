@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { APP_BANNER_CONFIG_ID, type AppBanner } from '@tmlmobilidade/types';
+import { APP_BANNER_CONFIG_ID, type AppBanner } from '@tmlmobilidade/go-types-core';
 
 /* * */
 

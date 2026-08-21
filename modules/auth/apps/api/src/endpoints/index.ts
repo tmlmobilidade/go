@@ -3,4 +3,4 @@ import './auth/routes.js';
 import './agencies/routes.js';
 import './roles/routes.js';
 import './users/users.routes.js';
-import './organizations/organizations.routes.js';
+import './organizations/routes.js';
