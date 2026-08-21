@@ -76,7 +76,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 		onSuccess: () => {
 			meContext.mutate.me();
 			allUsersMutate();
-			router.push(keepUrlParams(PAGE_ROUTES.auth.USERS_LIST));
+			router.push(keepUrlParams(PAGE_ROUTES.core.USERS_LIST));
 		},
 	});
 

@@ -56,7 +56,7 @@ export function AgenciesList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: AgenciesListItem) => {
-		router.push(keepUrlParams(PAGE_ROUTES.auth.AGENCIES_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.core.AGENCIES_DETAIL(item._id)));
 	};
 
 	//

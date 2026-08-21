@@ -17,7 +17,7 @@ export function LoginForm() {
 
 	const { t } = useTranslation();
 
-	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: PAGE_ROUTES.auth.HOME_LIST });
+	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: PAGE_ROUTES.core.HOME_LIST });
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
 	const [passwordValue, setPasswordValue] = useState('');
@@ -50,7 +50,7 @@ export function LoginForm() {
 		<AuthenticationForm
 			description={t('unauthenticated:LoginForm.description')}
 			footerLabel={t('unauthenticated:LoginForm.footer.label')}
-			footerUrl={PAGE_ROUTES.auth.RESET_PASSWORD_LIST}
+			footerUrl={PAGE_ROUTES.core.RESET_PASSWORD_LIST}
 			loading={isLoggingIn}
 			onSubmit={handleLogin}
 			submitDisabled={passwordValue.length < 8 || emailValue.length === 0 || isLoggingIn}

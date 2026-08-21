@@ -41,7 +41,7 @@ export function OrganizationsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: OrganizationNormalized) => {
-		router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.core.ORGANIZATIONS_DETAIL(item._id)));
 	};
 
 	//

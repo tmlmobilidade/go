@@ -31,7 +31,7 @@ export const sidebarNavigationGroups = [
 		items: [
 			{
 				_id: 'home',
-				href: PAGE_ROUTES.auth.HOME_LIST,
+				href: PAGE_ROUTES.core.HOME_LIST,
 				icon: <IconHome />,
 				permissions: [
 					{ action: PermissionCatalog.all.home.actions.read_links, scope: PermissionCatalog.all.home.scope },
@@ -57,25 +57,25 @@ export const sidebarNavigationGroups = [
 		items: [
 			{
 				_id: 'agencies',
-				href: PAGE_ROUTES.auth.AGENCIES_LIST,
+				href: PAGE_ROUTES.core.AGENCIES_LIST,
 				icon: <IconBuildings />,
 				permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
 			},
 			{
 				_id: 'organizations',
-				href: PAGE_ROUTES.auth.ORGANIZATIONS_LIST,
+				href: PAGE_ROUTES.core.ORGANIZATIONS_LIST,
 				icon: <IconSitemap />,
 				permissions: [{ action: PermissionCatalog.all.organizations.actions.read, scope: PermissionCatalog.all.organizations.scope }],
 			},
 			{
 				_id: 'roles',
-				href: PAGE_ROUTES.auth.ROLES_LIST,
+				href: PAGE_ROUTES.core.ROLES_LIST,
 				icon: <IconKey />,
 				permissions: [{ action: PermissionCatalog.all.roles.actions.read, scope: PermissionCatalog.all.roles.scope }],
 			},
 			{
 				_id: 'users',
-				href: PAGE_ROUTES.auth.USERS_LIST,
+				href: PAGE_ROUTES.core.USERS_LIST,
 				icon: <IconUser />,
 				permissions: [{ action: PermissionCatalog.all.users.actions.read, scope: PermissionCatalog.all.users.scope }],
 			},

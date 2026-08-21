@@ -45,7 +45,7 @@ export function SendPasswordResetEmailForm() {
 		}
 		// Show success message and redirect to login page
 		useToast.success({ message: t('unauthenticated:SendPasswordResetEmailForm.success.description'), title: t('unauthenticated:SendPasswordResetEmailForm.success.title') });
-		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
+		window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
 	};
 
 	//
@@ -55,7 +55,7 @@ export function SendPasswordResetEmailForm() {
 		<AuthenticationForm
 			description={t('unauthenticated:SendPasswordResetEmailForm.description')}
 			footerLabel={t('unauthenticated:SendPasswordResetEmailForm.footer.label')}
-			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
+			footerUrl={PAGE_ROUTES.core.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={emailValue.length === 0}

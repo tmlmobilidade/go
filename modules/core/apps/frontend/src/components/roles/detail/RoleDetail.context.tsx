@@ -74,7 +74,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 		onSuccess: () => {
 			meContext.mutate.me();
 			allRolesMutate();
-			router.push(keepUrlParams(PAGE_ROUTES.auth.ROLES_LIST));
+			router.push(keepUrlParams(PAGE_ROUTES.core.ROLES_LIST));
 		},
 	});
 

@@ -23,7 +23,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 	if (sessionToken) {
 		// Redirect to the main page
 		// if the user is already logged in.
-		redirect(PAGE_ROUTES.auth.HOME_LIST);
+		redirect(PAGE_ROUTES.core.HOME_LIST);
 	}
 
 	//

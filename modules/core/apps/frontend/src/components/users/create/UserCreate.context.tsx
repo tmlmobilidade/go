@@ -81,7 +81,7 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 		setIsSaving(false);
 		closeCreateUserModal();
 		useToast.success({ message: 'Utilizador criado com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.auth.USERS_DETAIL(response.data._id)));
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.core.USERS_DETAIL(response.data._id)));
 	};
 
 	//

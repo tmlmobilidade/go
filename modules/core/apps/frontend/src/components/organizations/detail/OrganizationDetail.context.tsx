@@ -82,7 +82,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 		onSuccess: () => {
 			meContext.mutate.me();
 			allOrganizationsMutate();
-			router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_LIST));
+			router.push(keepUrlParams(PAGE_ROUTES.core.ORGANIZATIONS_LIST));
 		},
 	});
 

@@ -74,7 +74,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		// Skip if data is still loading or logout is already redirecting
 		if (meLoading || isLoggingOut) return;
 		// Redirect to login when the session is missing or expired
-		// if (!meData || isUnauthorized) window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
+		// if (!meData || isUnauthorized) window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
 	}, [meLoading, meData, isUnauthorized, isLoggingOut]);
 
 	const hasPermission = <S extends Permission['scope']>(scope: S, action: ActionsOf<S>) => {
@@ -108,7 +108,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 			meMutate();
 		} finally {
 			// Always redirect to login, even if logout or cache clear fails
-			window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
+			window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
 		}
 	};
 

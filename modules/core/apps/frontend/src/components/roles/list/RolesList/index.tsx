@@ -46,7 +46,7 @@ export function RolesList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: RoleNormalized) => {
-		router.push(keepUrlParams(PAGE_ROUTES.auth.ROLES_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.core.ROLES_DETAIL(item._id)));
 	};
 
 	//

@@ -81,7 +81,7 @@ export const RoleCreateContextProvider = ({ children }: PropsWithChildren) => {
 		setIsSaving(false);
 		closeCreateRoleModal();
 		useToast.success({ message: 'Grupo de permissões criado com sucesso', title: 'Sucesso' });
-		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.auth.ROLES_DETAIL(response.data._id)));
+		if (response.data?._id) router.push(keepUrlParams(PAGE_ROUTES.core.ROLES_DETAIL(response.data._id)));
 	};
 
 	//

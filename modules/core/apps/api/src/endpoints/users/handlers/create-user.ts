@@ -27,7 +27,7 @@ export async function createUserHandler(request: FastifyRequest<{ Body: CreateUs
 	await sendWelcomeEmail({
 		data: {
 			firstName: request.body.first_name,
-			resetPasswordUrl: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(request.body.email)}`,
+			resetPasswordUrl: `${PAGE_ROUTES.core.CHANGE_PASSWORD_LIST}?token=${verificationToken}&email=${encodeURIComponent(request.body.email)}`,
 		},
 		to: request.body.email,
 	});

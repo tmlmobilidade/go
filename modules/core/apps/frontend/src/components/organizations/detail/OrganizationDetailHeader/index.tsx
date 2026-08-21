@@ -23,7 +23,7 @@ export function OrganizationDetailHeader() {
 	// B. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.auth.ORGANIZATIONS_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.core.ORGANIZATIONS_LIST));
 	};
 
 	//
