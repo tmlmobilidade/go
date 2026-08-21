@@ -1,4 +1,3 @@
-export * from './authentication';
 export * from './buttons';
 export * from './calendar';
 export * from './comments';

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMeContext } from '../../../contexts/Me.context';
+import { useMeContext } from '../../contexts/Me.context';
 
 /* * */
 

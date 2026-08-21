@@ -1,13 +1,13 @@
 'use client';
 
-import { API_ROUTES, HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type User, type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
 import { type FileExport } from '@tmlmobilidade/go-types-downloads';
 import { type ActionsOf, type GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions } from '@tmlmobilidade/go-types-permissions';
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
+import { useMeData } from '../auth';
 import { ErrorDisplay } from '../components/display/ErrorDisplay';
 import { fetchApiData } from '../fetch/fetch-api-data';
 import { LoadingOverlay } from '../loaders/LoadingOverlay';
@@ -57,23 +57,17 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useMeData();
+
 	//
 	// B. Fetch data
-
-	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<ApiResponse<User>>(API_ROUTES.auth.AUTH_ME, {
-		fetcher: async (url: string) => await fetchApiData<User>({ url }),
-		refreshInterval: 10_000, // 10 seconds
-	});
 
 	const { data: fileExportsData, mutate: fileExportsMutate } = useSWR<FileExport[]>(API_ROUTES.exporter.EXPORTER_LIST, { refreshInterval: 5_000 });
 
 	//
 	// C. Handle actions
 
-	console.log('meError', meError);
-	console.log('meData', meData);
-
-	const isUnauthorized = meError?.statusCode === HTTP_STATUS.UNAUTHORIZED;
+	const isUnauthorized = meError;
 	const isRedirectingToLogin = isLoggingOut || isUnauthorized || (!meLoading && !meData);
 
 	useEffect(() => {
@@ -84,23 +78,23 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	}, [meLoading, meData, isUnauthorized, isLoggingOut]);
 
 	const hasPermission = <S extends Permission['scope']>(scope: S, action: ActionsOf<S>) => {
-		if (!meData?.data?.permissions) return false;
-		return PermissionCatalog.hasPermission(meData.data.permissions, scope, action);
+		if (!meData?.permissions) return false;
+		return PermissionCatalog.hasPermission(meData.permissions, scope, action);
 	};
 
 	const hasPermissionResource = (args: HasPermissionResourceArgs | HasPermissionResourceArgs[]) => {
 		// Skip if user or permissions are not available
-		if (!meData?.data?.permissions) return false;
+		if (!meData?.permissions) return false;
 		// If args is an array, ensure all conditions are met to return true
-		if (Array.isArray(args)) return args.every(arg => PermissionCatalog.hasPermissionResource({ ...arg, permissions: meData.data.permissions }));
+		if (Array.isArray(args)) return args.every(arg => PermissionCatalog.hasPermissionResource({ ...arg, permissions: meData.permissions }));
 		// Otherwise, check the single condition
-		else return PermissionCatalog.hasPermissionResource({ ...args, permissions: meData.data.permissions });
+		else return PermissionCatalog.hasPermissionResource({ ...args, permissions: meData.permissions });
 	};
 
 	const getScopePermissions = <S extends Permission['scope']>(args: Omit<GetScopePermissionsArgs<S>, 'permissions'>): ScopePermissions<S> => {
 		return PermissionCatalog.getScopePermissions({
 			...args,
-			permissions: meData?.data?.permissions || [],
+			permissions: meData?.permissions || [],
 		});
 	};
 
@@ -111,7 +105,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 			await fetch(API_ROUTES.auth.AUTH_LOGOUT, { credentials: 'include' });
 			// Clear the SWR cache without revalidating — the session is already gone,
 			// so a revalidate would 401 and surface ErrorDisplay before redirect.
-			await meMutate(undefined, { revalidate: false });
+			meMutate();
 		} finally {
 			// Always redirect to login, even if logout or cache clear fails
 			window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
@@ -119,19 +113,19 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const getPreference = <T extends UserPreferenceValue>(scope: string, key: string): T | undefined => {
-		return meData?.data?.preferences?.[scope]?.[key] as T | undefined;
+		return meData?.preferences?.[scope]?.[key] as T | undefined;
 	};
 
 	const updatePreference = async (scope: string, key: string, value: undefined | UserPreferenceValue) => {
 		// Skip if user data is not available
-		if (!meData?.data) return;
+		if (!meData) return;
 		// Merge current with updated preferences
-		const currentPreferences = meData.data.preferences ?? {};
+		const currentPreferences = meData.preferences ?? {};
 		const currentScope = currentPreferences[scope] ?? {};
 		const updatedScope = { ...currentScope, [key]: value };
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
 		// Call the update endpoint
-		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.auth.USERS_ME });
+		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.auth.AUTH_ME });
 	};
 
 	//
@@ -148,10 +142,10 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		},
 		data: {
 			fileExports: fileExportsData || [],
-			user: meData?.data,
+			user: meData,
 		},
 		flags: {
-			error: meError,
+			error: null,
 			loading: meLoading || isLoggingOut,
 		},
 		mutate: {
@@ -168,7 +162,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	}
 
 	if (meError) {
-		return <ErrorDisplay message={meError.message} />;
+		return <ErrorDisplay message={meError} />;
 	}
 
 	return (
