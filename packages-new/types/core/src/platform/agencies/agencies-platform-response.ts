@@ -1,31 +1,21 @@
 /* * */
 
-import { AlertSchema } from '@tmlmobilidade/go-types-operation';
+import { AgencySchema } from '@/agencies/agency.js';
 import { z } from 'zod';
 
 /* * */
 
-export const AlertsListItemSchema = AlertSchema.pick({
+export const AgenciesPlatformResponseSchema = AgencySchema.pick({
 	_id: true,
-	active_period_end_date: true,
-	active_period_start_date: true,
-	agency_id: true,
-	cause: true,
-	created_at: true,
-	created_by: true,
-	effect: true,
-	publish_end_date: true,
-	publish_start_date: true,
-	publish_status: true,
-	reference_type: true,
-	title: true,
-	updated_at: true,
-	updated_by: true,
+	code: true,
+	name: true,
+	pta_name: true,
+	short_name: true,
 });
 
 /* * */
 
 /**
- * A read model for the alert list item.
+ * A read model for the agencies platform response.
  */
-export type AlertsListItem = z.infer<typeof AlertsListItemSchema>;
+export type AgenciesPlatformResponse = z.infer<typeof AgenciesPlatformResponseSchema>;

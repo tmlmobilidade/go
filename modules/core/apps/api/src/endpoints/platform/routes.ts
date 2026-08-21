@@ -21,11 +21,11 @@ server.register(
 
 		instance.put('/me', { preHandler: authorizationMiddleware() }, updateMeHandler);
 
-		instance.get('/agencies', { preHandler: authorizationMiddleware() }, getMeHandler);
-
 		instance.get('/downloads', { preHandler: authorizationMiddleware() }, getMeHandler);
 
 		instance.get('/notifications', { preHandler: authorizationMiddleware() }, getMeHandler);
+
+		instance.post('/agencies', { preHandler: authorizationMiddleware() }, getMeHandler);
 
 		next();
 	},

@@ -18,39 +18,6 @@ export const PAGE_ROUTES = Object.freeze({
 		ALERTS_LIST: `${getModuleConfig('alerts', 'frontend_url')}`,
 	},
 
-	auth: {
-		// BASE
-		BASE: `${getModuleConfig('auth', 'frontend_url')}`,
-
-		// AGENCIES
-		AGENCIES_DETAIL: (id: string) => `${getModuleConfig('auth', 'frontend_url')}/agencies/${encodeURIComponent(id)}`,
-		AGENCIES_LIST: `${getModuleConfig('auth', 'frontend_url')}/agencies`,
-
-		// CHANGE_PASSWORD
-		CHANGE_PASSWORD_LIST: `${getModuleConfig('auth', 'frontend_url')}/change-password`,
-
-		// HOME
-		HOME_LIST: `${getModuleConfig('auth', 'frontend_url')}/home`,
-
-		// LOGIN
-		LOGIN_LIST: `${getModuleConfig('auth', 'frontend_url')}/login`,
-
-		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('auth', 'frontend_url')}/organizations/${encodeURIComponent(id)}`,
-		ORGANIZATIONS_LIST: `${getModuleConfig('auth', 'frontend_url')}/organizations`,
-
-		// RESET_PASSWORD
-		RESET_PASSWORD_LIST: `${getModuleConfig('auth', 'frontend_url')}/reset-password`,
-
-		// ROLES
-		ROLES_DETAIL: (id: string) => `${getModuleConfig('auth', 'frontend_url')}/roles/${encodeURIComponent(id)}`,
-		ROLES_LIST: `${getModuleConfig('auth', 'frontend_url')}/roles`,
-
-		// USERS
-		USERS_DETAIL: (id: string) => `${getModuleConfig('auth', 'frontend_url')}/users/${encodeURIComponent(id)}`,
-		USERS_LIST: `${getModuleConfig('auth', 'frontend_url')}/users`,
-	},
-
 	controller: {
 		// BASE
 		BASE: `${getModuleConfig('controller', 'frontend_url')}`,
@@ -62,6 +29,39 @@ export const PAGE_ROUTES = Object.freeze({
 		// SAMS
 		SAMS_DETAIL: (id: string) => `${getModuleConfig('controller', 'frontend_url')}/sams/${encodeURIComponent(id)}`,
 		SAMS_LIST: `${getModuleConfig('controller', 'frontend_url')}/sams`,
+	},
+
+	core: {
+		// BASE
+		BASE: `${getModuleConfig('core', 'frontend_url')}`,
+
+		// AGENCIES
+		AGENCIES_DETAIL: (agencyId: string) => `${getModuleConfig('core', 'frontend_url')}/agencies/${encodeURIComponent(agencyId)}`,
+		AGENCIES_LIST: `${getModuleConfig('core', 'frontend_url')}/agencies`,
+
+		// CHANGE_PASSWORD
+		CHANGE_PASSWORD_LIST: `${getModuleConfig('core', 'frontend_url')}/change-password`,
+
+		// HOME
+		HOME_LIST: `${getModuleConfig('core', 'frontend_url')}/home`,
+
+		// LOGIN
+		LOGIN_LIST: `${getModuleConfig('core', 'frontend_url')}/login`,
+
+		// ORGANIZATIONS
+		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('core', 'frontend_url')}/organizations/${encodeURIComponent(id)}`,
+		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'frontend_url')}/organizations`,
+
+		// RESET_PASSWORD
+		RESET_PASSWORD_LIST: `${getModuleConfig('core', 'frontend_url')}/reset-password`,
+
+		// ROLES
+		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'frontend_url')}/roles/${encodeURIComponent(id)}`,
+		ROLES_LIST: `${getModuleConfig('core', 'frontend_url')}/roles`,
+
+		// USERS
+		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'frontend_url')}/users/${encodeURIComponent(id)}`,
+		USERS_LIST: `${getModuleConfig('core', 'frontend_url')}/users`,
 	},
 
 	dates: {
@@ -95,6 +95,15 @@ export const PAGE_ROUTES = Object.freeze({
 		// VEHICLES
 		VEHICLES_DETAIL: (id: string) => `${getModuleConfig('fleet', 'frontend_url')}/vehicles/${encodeURIComponent(id)}`,
 		VEHICLES_LIST: `${getModuleConfig('fleet', 'frontend_url')}/vehicles`,
+	},
+
+	infrastructure: {
+		// BASE
+		BASE: `${getModuleConfig('infrastructure', 'frontend_url')}`,
+
+		// INFRASTRUCTURE
+		INFRASTRUCTURE_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/${encodeURIComponent(id)}`,
+		INFRASTRUCTURE_LIST: `${getModuleConfig('infrastructure', 'frontend_url')}`,
 	},
 
 	offer: {
@@ -164,15 +173,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// REFERENCE
 		REFERENCE_LIST: `${getModuleConfig('root', 'frontend_url')}/reference`,
 	},
-
-	stops: {
-		// BASE
-		BASE: `${getModuleConfig('stops', 'frontend_url')}`,
-
-		// STOPS
-		STOPS_DETAIL: (id: string) => `${getModuleConfig('stops', 'frontend_url')}/${encodeURIComponent(id)}`,
-		STOPS_LIST: `${getModuleConfig('stops', 'frontend_url')}`,
-	},
 } as const);
 
 export const API_ROUTES = Object.freeze({
@@ -194,44 +194,6 @@ export const API_ROUTES = Object.freeze({
 		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,
 		OPERATION_RIDES: `${getModuleConfig('alerts', 'api_url')}/operation/rides`,
 		OPERATION_STOPS: `${getModuleConfig('alerts', 'api_url')}/operation/stops`,
-	},
-
-	auth: {
-		// BASE
-		BASE: `${getModuleConfig('auth', 'api_url')}`,
-
-		// AGENCIES
-		AGENCIES_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/agencies/${encodeURIComponent(id)}`,
-		AGENCIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/agencies/${encodeURIComponent(id)}/lock`,
-		AGENCIES_LIST: `${getModuleConfig('auth', 'api_url')}/agencies`,
-
-		// APP-CONFIGS
-		APP_CONFIGS_APP_BANNER: `${getModuleConfig('auth', 'api_url')}/app-configs/app-banner`,
-
-		// AUTH
-		AUTH_CHANGE_PASSWORD: `${getModuleConfig('auth', 'api_url')}/auth/change-password`,
-		AUTH_LOGIN: `${getModuleConfig('auth', 'api_url')}/auth/login`,
-		AUTH_LOGOUT: `${getModuleConfig('auth', 'api_url')}/auth/logout`,
-		AUTH_ME: `${getModuleConfig('auth', 'api_url')}/auth/me`,
-		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('auth', 'api_url')}/auth/send-password-reset-email`,
-
-		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}`,
-		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/image`,
-		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/lock`,
-		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/${encodeURIComponent(theme)}/image`,
-		ORGANIZATIONS_LIST: `${getModuleConfig('auth', 'api_url')}/organizations`,
-
-		// ROLES
-		ROLES_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/roles/${encodeURIComponent(id)}`,
-		ROLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/roles/${encodeURIComponent(id)}/lock`,
-		ROLES_LIST: `${getModuleConfig('auth', 'api_url')}/roles`,
-
-		// USERS
-		USERS_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/users/${encodeURIComponent(id)}`,
-		USERS_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/users/${encodeURIComponent(id)}/lock`,
-		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('auth', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
-		USERS_LIST: `${getModuleConfig('auth', 'api_url')}/users`,
 	},
 
 	controller: {
@@ -267,6 +229,49 @@ export const API_ROUTES = Object.freeze({
 		SAMS_FAVORITES: `${getModuleConfig('controller', 'api_url')}/sams/favorites`,
 		SAMS_LIST: `${getModuleConfig('controller', 'api_url')}/sams`,
 		SAMS_TIMELINE_SUMMARY: `${getModuleConfig('controller', 'api_url')}/sams/timeline-summary`,
+	},
+
+	core: {
+		// BASE
+		BASE: `${getModuleConfig('core', 'api_url')}`,
+
+		// AGENCIES
+		AGENCIES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/agencies/${encodeURIComponent(id)}`,
+		AGENCIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/agencies/${encodeURIComponent(id)}/lock`,
+		AGENCIES_LIST: `${getModuleConfig('core', 'api_url')}/agencies`,
+
+		// APP-CONFIGS
+		APP_CONFIGS_APP_BANNER: `${getModuleConfig('core', 'api_url')}/app-configs/app-banner`,
+
+		// AUTH
+		AUTH_CHANGE_PASSWORD: `${getModuleConfig('core', 'api_url')}/auth/change-password`,
+		AUTH_LOGIN: `${getModuleConfig('core', 'api_url')}/auth/login`,
+		AUTH_LOGOUT: `${getModuleConfig('core', 'api_url')}/auth/logout`,
+		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
+
+		// ORGANIZATIONS
+		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}`,
+		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/image`,
+		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/lock`,
+		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/${encodeURIComponent(theme)}/image`,
+		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations`,
+
+		// PLATFORM
+		PLATFORM_AGENCIES: `${getModuleConfig('core', 'api_url')}/platform/agencies`,
+		PLATFORM_DOWNLOADS: `${getModuleConfig('core', 'api_url')}/platform/downloads`,
+		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
+		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
+
+		// ROLES
+		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}`,
+		ROLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}/lock`,
+		ROLES_LIST: `${getModuleConfig('core', 'api_url')}/roles`,
+
+		// USERS
+		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}`,
+		USERS_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/lock`,
+		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
+		USERS_LIST: `${getModuleConfig('core', 'api_url')}/users`,
 	},
 
 	dates: {
@@ -358,6 +363,18 @@ export const API_ROUTES = Object.freeze({
 		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
 		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
 		REALTIME_VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs.pb`,
+	},
+
+	infrastructure: {
+		// BASE
+		BASE: `${getModuleConfig('infrastructure', 'api_url')}`,
+
+		// STOPS
+		STOPS_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/${encodeURIComponent(id)}`,
+		STOPS_DETAIL_LOCK: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/${encodeURIComponent(id)}/lock`,
+		STOPS_LIST: `${getModuleConfig('infrastructure', 'api_url')}/stops`,
+		STOPS_TTS: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/tts/${encodeURIComponent(id)}`,
+		STOPS_VALID_ID: `${getModuleConfig('infrastructure', 'api_url')}/stops/valid-id`,
 	},
 
 	locations: {
@@ -467,17 +484,5 @@ export const API_ROUTES = Object.freeze({
 		VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/processing-status`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/request-approval`,
 		VALIDATIONS_LIST: `${getModuleConfig('plans', 'api_url')}/validations`,
-	},
-
-	stops: {
-		// BASE
-		BASE: `${getModuleConfig('stops', 'api_url')}`,
-
-		// STOPS
-		STOPS_DETAIL: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}`,
-		STOPS_DETAIL_LOCK: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}/lock`,
-		STOPS_LIST: `${getModuleConfig('stops', 'api_url')}/stops`,
-		STOPS_TTS: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/tts/${encodeURIComponent(id)}`,
-		STOPS_VALID_ID: `${getModuleConfig('stops', 'api_url')}/stops/valid-id`,
 	},
 } as const);

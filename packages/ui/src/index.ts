@@ -1,6 +1,7 @@
 export * from './auth';
 export * from './components';
 export * from './contexts';
+export * from './data';
 export * from './display';
 export * from './fetch';
 export * from './filters';

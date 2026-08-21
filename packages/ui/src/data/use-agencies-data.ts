@@ -1,136 +1,80 @@
 'use client';
 
-import { type Agency } from '@tmlmobilidade/go-types-core';
-import { ActionsOf, Permission } from '@tmlmobilidade/go-types-permissions';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type AgenciesPlatformRequest, type AgenciesPlatformResponse } from '@tmlmobilidade/go-types-core';
+import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { type SelectDataItem } from '../../components/inputs/Select';
-import { useMeContext } from '../../contexts/Me.context';
-
-/* * */
-
-interface UseAgenciesDataProps<S extends Permission['scope']> {
-	actions?: ActionsOf<S>[]
-	scope?: S
-}
+import { type SelectDataItem } from '../components/inputs/Select';
+import { fetchApiData } from '../fetch/fetch-api-data';
 
 /* * */
 
 interface UseAgenciesDataReturnType {
-
-	/**
-	 * The error encountered while fetching data, if any.
-	 */
-	error: Error | undefined
-
-	/**
-	 * The raw agencies data.
-	 */
-	filtered: Agency[]
-
-	/**
-	 * The IDs of the filtered agencies.
-	 */
-	filteredIds: string[]
-
-	/**
-	 * Indicates if the data is still loading.
-	 */
+	data: AgenciesPlatformResponse[]
+	error: null | string
+	ids: string[]
 	isLoading: boolean
-
-	/**
-	 * The agencies data formatted for select inputs.
-	 */
+	isValidating: boolean
 	options: SelectDataItem[]
-
-	/**
-	 * The raw agencies data.
-	 */
-	raw: Agency[]
-
+	timestamp: null | UnixTimestamp
 }
 
 /**
  * Hook to fetch agencies data. Useful for supplying data
  * to filters or select components.
- * @param apiUrl The API URL to fetch the agencies data.
- * @param props The properties to filter the agencies data.
+ * @param props The request to fetch the agencies data.
  * @returns An object containing the agencies data.
  */
-export function useAgenciesData<S extends Permission['scope']>(apiUrl: string, props?: UseAgenciesDataProps<S>): UseAgenciesDataReturnType {
+export function useAgenciesData(props: AgenciesPlatformRequest): UseAgenciesDataReturnType {
 	//
 
 	//
 	// A. Transform data
 
-	const query = useMemo<AgenciesListFilters>(() => ({
-		active_period_end: filterActivePeriod.value_end,
-		active_period_start: filterActivePeriod.value_start,
-		agency_ids: filterAgency.value,
-		causes: filterCause.value,
-		effects: filterEffect.value,
-		publish_date_end: filterPublishDate.value_end,
-		publish_date_start: filterPublishDate.value_start,
-		publish_status: filterPublishStatus.value,
-		reference_type: filterReferenceType.value,
-		search: filterSearch.value,
-	}), [filterAgency.value, filterPublishStatus.value, filterReferenceType.value, filterCause.value, filterEffect.value, filterSearch.value, filterActivePeriod.value_end, filterActivePeriod.value_start, filterPublishDate.value_end, filterPublishDate.value_start]);
+	const query = useMemo<AgenciesPlatformRequest>(() => ({ ...props }), [props]);
 
 	//
 	// B. Fetch data
 
-	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(apiUrl && apiUrl);
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<AgenciesPlatformResponse[]>>([API_ROUTES.core.PLATFORM_AGENCIES, query], {
+		fetcher: async ([url, query]) => await fetchApiData<AgenciesPlatformResponse[]>({ body: query, method: 'POST', url }),
+		refreshInterval: 10_000, // 10 seconds
+	});
 
 	//
 	// C. Transform data
 
-	const filteredData = useMemo(() => {
-		// Skip if no data is available
-		if (!allAgenciesData?.length) return [];
-		// Check if permissions are set
-		if (!props?.actions || !props?.scope) return allAgenciesData;
-		// Map data to SelectDataItem format
-		return allAgenciesData
-			.filter(item => props.actions.some(action => meContext.actions.hasPermissionResource({
-				action,
-				resource_key: 'agency_ids',
-				scope: props.scope,
-				value: item._id,
-			})))
-			.sort((a, b) => Number(a._id) - Number(b._id));
-	}, [allAgenciesData, props?.actions, props?.scope]);
-
 	const filteredIds = useMemo(() => {
 		// Skip if no data is available
-		if (!filteredData?.length) return [];
-		// Keep only the IDs of the filtered data
-		return filteredData.map(item => item._id);
-	}, [filteredData]);
+		if (!data?.data?.length) return [];
+		// Keep only the IDs of the response data
+		return data.data.map(item => item._id);
+	}, [data?.data]);
 
 	const optionsData = useMemo(() => {
 		// Skip if no data is available
-		if (!filteredData?.length) return [];
+		if (!data?.data?.length) return [];
 		// Map data to SelectDataItem format
-		return filteredData.map((item): SelectDataItem => ({
+		return data.data.map((item): SelectDataItem => ({
 			checked: false,
 			disabled: false,
 			label: `[${item._id}] ${item.code} - ${item.name}`,
 			value: item._id,
 		}));
-	}, [filteredData]);
+	}, [data?.data]);
 
 	//
 	// D. Return value
 
-	return {
-		error: allAgenciesError,
-		filtered: filteredData,
-		filteredIds: filteredIds,
-		isLoading: allAgenciesLoading,
+	return useMemo(() => ({
+		data: data?.data ?? [],
+		error: error?.error,
+		ids: filteredIds,
+		isLoading: isLoading,
+		isValidating: isValidating,
 		options: optionsData,
-		raw: allAgenciesData ?? [],
-	};
-
-	//
+		timestamp: data?.timestamp ?? null,
+	}), [data?.data, error?.error, filteredIds, isLoading, isValidating, optionsData, data?.timestamp]);
 };
