@@ -9,7 +9,7 @@ import { Wrapper } from '@/components/Wrapper/index.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
 import { Dates } from '@tmlmobilidade/dates';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { render } from 'react-email';
 
 /* * */
