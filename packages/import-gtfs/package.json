@@ -42,7 +42,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/sqlite": "*",
+		"@tmlmobilidade/go-clients-sqlite": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
 		"csv-parse": "7.0.2",

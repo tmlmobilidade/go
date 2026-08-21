@@ -56,7 +56,7 @@ export const OrganizationsDetailContextProvider = ({ children, organizationId }:
 
 	const { mutate: allOrganizationsMutate } = useSWR<Organization[]>(API_ROUTES.auth.ORGANIZATIONS_LIST);
 	const { data: organizationData, error: organizationError, isLoading: organizationLoading, mutate: organizationMutate } = useSWR<Organization>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL(organizationId));
-	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL_LOGO(organizationId));
+	const { data: logo, isLoading: isLogoLoading } = useSWR<{ logo_dark: null | string, logo_light: null | string }>(organizationId && API_ROUTES.auth.ORGANIZATIONS_DETAIL_IMAGE(organizationId));
 
 	//
 	// C. Initialize form

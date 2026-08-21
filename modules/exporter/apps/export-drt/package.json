@@ -25,7 +25,7 @@
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/lib": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/sqlite": "*",
+		"@tmlmobilidade/go-clients-sqlite": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",

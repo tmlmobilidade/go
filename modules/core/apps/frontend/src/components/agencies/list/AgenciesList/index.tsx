@@ -2,13 +2,14 @@
 
 import { AgenciesListHeader } from '@/components/agencies/list/AgenciesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type AgenciesListItem } from '@tmlmobilidade/go-core-pckg-types';
 import { IdTag, keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 import { useAgenciesDetailAgencyId } from '../../detail/use-agencies-detail-agency-id';
-import { type AgencyExtended, useAgenciesListData } from '../use-agencies-list-data';
+import { useAgenciesListData } from '../use-agencies-list-data';
 
 /* * */
 
@@ -26,7 +27,7 @@ export function AgenciesList() {
 
 	const agenciesData = useAgenciesListData();
 
-	const columns: DataTableColumn<AgencyExtended>[] = [
+	const columns: DataTableColumn<AgenciesListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -54,7 +55,7 @@ export function AgenciesList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: AgencyExtended) => {
+	const handleRowClick = (item: AgenciesListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.auth.AGENCIES_DETAIL(item._id)));
 	};
 

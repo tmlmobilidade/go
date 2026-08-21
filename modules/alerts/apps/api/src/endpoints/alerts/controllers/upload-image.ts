@@ -4,7 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Attachment } from '@tmlmobilidade/types';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
 
 /**
  * Uploads an alert image to the database
