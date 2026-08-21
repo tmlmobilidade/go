@@ -67,7 +67,7 @@ export function AgencyDetailBasicInfo() {
 								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionBasicInfo.fields.short_name.label')}
-								maxLength={CreateAgencySchema.shape.short_name.maxLength}
+								maxLength={CreateAgencySchema.shape.short_name._def.innerType.maxLength}
 								onChange={field.onChange}
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.short_name.placeholder')}
 								readOnly={agencyDetailContext.flags.isReadOnly}
@@ -188,7 +188,7 @@ export function AgencyDetailBasicInfo() {
 								defaultValue={field.value}
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionBasicInfo.fields.pta_name.label')}
-								maxLength={CreateAgencySchema.shape.pta_name.maxLength}
+								maxLength={CreateAgencySchema.shape.pta_name._def.innerType.maxLength}
 								onChange={field.onChange}
 								placeholder={t('default:agencies.detail.SectionBasicInfo.fields.pta_name.placeholder')}
 								readOnly={agencyDetailContext.flags.isReadOnly}
