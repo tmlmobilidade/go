@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AVAILABLE_MODES, AVAILABLE_THEMES, useLayoutContext } from '../../../contexts/Layout.context';
 import { useMeContext } from '../../../contexts/Me.context';
-// import { useNotificationsContext } from '../../../contexts/Notifications.context';
+import { useNotificationsContext } from '../../../contexts/Notifications.context';
 import { useVersionContext } from '../../../contexts/Version.context';
 import { enabledLocales } from '../../../i18n/locales';
 import { Menu } from '../../menu/Menu';
@@ -29,7 +29,7 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 	const meContext = useMeContext();
 	const layoutContext = useLayoutContext();
 	const versionContext = useVersionContext();
-	// const notificationsContext = useNotificationsContext();
+	const notificationsContext = useNotificationsContext();
 
 	//
 	// B. Render components
@@ -112,7 +112,7 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 
 			<MantineMenu.Label>{t('shared:components.sidebar.SidebarOptions.account')}</MantineMenu.Label>
 
-			{/* <MantineMenu.Item
+			<MantineMenu.Item
 				leftSection={<IconBellRinging size={20} />}
 				onClick={notificationsContext.actions.requestNotificationPermission}
 				rightSection={notificationsContext.flags.enabled ? <IconCheck size={16} /> : null}
@@ -120,7 +120,7 @@ export function SidebarOptions({ menuPosition }: SidebarOptionsProps = {}) {
 				{notificationsContext.flags.enabled
 					? t('shared:components.sidebar.SidebarOptions.notifications_enabled')
 					: t('shared:components.sidebar.SidebarOptions.enable_notifications')}
-			</MantineMenu.Item> */}
+			</MantineMenu.Item>
 
 			<MantineMenu.Item
 				color="var(--color-status-danger-primary)"

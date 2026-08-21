@@ -215,6 +215,11 @@ export const API_ROUTES = Object.freeze({
 		AUTH_ME: `${getModuleConfig('auth', 'api_url')}/auth/me`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('auth', 'api_url')}/auth/send-password-reset-email`,
 
+		// NOTIFICATIONS
+		NOTIFICATIONS_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/notifications/${encodeURIComponent(id)}`,
+		NOTIFICATIONS_DETAIL_MARK_AS_READ: (id: string) => `${getModuleConfig('auth', 'api_url')}/notifications/${encodeURIComponent(id)}/mark-as-read`,
+		NOTIFICATIONS_LIST: `${getModuleConfig('auth', 'api_url')}/notifications`,
+
 		// ORGANIZATIONS
 		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}`,
 		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/image`,

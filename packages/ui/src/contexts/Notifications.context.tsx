@@ -1,196 +1,182 @@
-// 'use client';
+'use client';
 
-// import { API_ROUTES, getModuleConfig, HttpException } from '@tmlmobilidade/consts';
-// import { Notification as TmlNotification } from '@tmlmobilidade/go-types-core';
-// import { fetchData } from '@tmlmobilidade/utils';
-// import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo } from 'react';
-// import useSWR, { mutate } from 'swr';
+import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
+import { type Notification as TmlNotification } from '@tmlmobilidade/go-types-core';
+import { fetchData } from '@tmlmobilidade/utils';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import useSWR from 'swr';
 
-// /* * */
+/* * */
 
-// interface NotificationsContextState {
-// 	actions: {
-// 		deleteNotification: (id: string) => void
-// 		markAsRead: (notification: TmlNotification) => void
-// 		requestNotificationPermission: () => Promise<boolean>
-// 		triggerNotificationToast: (title: string, body: string) => void
-// 	}
-// 	data: {
-// 		allNotifications: TmlNotification[]
-// 		readNotifications: TmlNotification[]
-// 		unreadNotifications: TmlNotification[]
-// 	}
-// 	flags: {
-// 		enabled: boolean
-// 		error?: HttpException
-// 		loading: boolean
-// 	}
-// }
+interface NotificationsContextState {
+	actions: {
+		deleteNotification: (id: string) => Promise<void>
+		markAsRead: (notification: TmlNotification) => Promise<void>
+		requestNotificationPermission: () => Promise<boolean>
+		triggerNotificationToast: (title: string, body: string) => Promise<void>
+	}
+	data: {
+		allNotifications: TmlNotification[]
+		readNotifications: TmlNotification[]
+		unreadNotifications: TmlNotification[]
+	}
+	flags: {
+		enabled: boolean
+		error?: HttpException
+		loading: boolean
+	}
+}
 
-// /* * */
+/* * */
 
-// const NotificationsContext = createContext<NotificationsContextState | undefined>(undefined);
+const NotificationsContext = createContext<NotificationsContextState | undefined>(undefined);
 
-// export function useNotificationsContext() {
-// 	const context = useContext(NotificationsContext);
-// 	if (!context) throw new Error('useNotificationsContext must be used within a NotificationsContextProvider');
-// 	return context;
-// }
+/* * */
 
-// /* * */
+export function useNotificationsContext() {
+	const context = useContext(NotificationsContext);
+	if (!context) throw new Error('useNotificationsContext must be used within a NotificationsContextProvider');
+	return context;
+}
 
-// export const NotificationsContextProvider = ({ children }: PropsWithChildren) => {
-// 	//
+/* * */
 
-// 	//
-// 	// A. Setup variables
+export const NotificationsContextProvider = ({ children }: PropsWithChildren) => {
+	//
 
-// 	const { data: notificationsData, error: notificationsError, isLoading: notificationsLoading } = useSWR<TmlNotification[], HttpException>(API_ROUTES.auth.NOTIFICATIONS_LIST, { refreshInterval: 10_000 });
+	//
+	// A. Setup variables
 
-// 	//
-// 	// D. Handle actions
+	const previousNotificationIdsRef = useRef<Set<string> | undefined>(undefined);
+	const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
-// 	const askNotificationPermission = useCallback(async (): Promise<boolean> => {
-// 		if (typeof window === 'undefined') return false;
+	//
+	// B. Fetch data
 
-// 		if (!('Notification' in window)) {
-// 			console.warn('This browser does not support notifications.');
-// 			return false;
-// 		}
+	const {
+		data: notificationsData,
+		error: notificationsError,
+		isLoading: notificationsLoading,
+		mutate: notificationsMutate,
+	} = useSWR<TmlNotification[], HttpException>(API_ROUTES.auth.NOTIFICATIONS_LIST, {
+		fetcher: async (url: string) => {
+			const response = await fetchData<TmlNotification[]>(url);
+			if (response.error) throw new HttpException(response.statusCode, response.error);
+			return response.data ?? [];
+		},
+		refreshInterval: 10_000,
+	});
 
-// 		if (!window.isSecureContext) {
-// 			console.warn('Notifications require HTTPS or localhost.');
-// 			return false;
-// 		}
+	//
+	// C. Handle actions
 
-// 		if (window.Notification.permission === 'granted') {
-// 			return true;
-// 		}
+	const requestNotificationPermission = useCallback(async (): Promise<boolean> => {
+		if (typeof window === 'undefined' || !('Notification' in window) || !window.isSecureContext) return false;
+		if (window.Notification.permission === 'denied') return false;
 
-// 		if (window.Notification.permission === 'denied') {
-// 			console.warn('Notification permission was denied.');
-// 			return false;
-// 		}
+		const permission = window.Notification.permission === 'granted'
+			? 'granted'
+			: await window.Notification.requestPermission();
 
-// 		try {
-// 			const permission = await window.Notification.requestPermission();
-// 			return permission === 'granted';
-// 		} catch (err) {
-// 			console.error('Error requesting notification permission:', err);
-// 			return false;
-// 		}
-// 	}, []);
+		const isGranted = permission === 'granted';
+		setNotificationsEnabled(isGranted);
+		return isGranted;
+	}, []);
 
-// 	const isBrowserNotificationGranted = (): boolean => {
-// 		if (typeof window === 'undefined' || !('Notification' in window)) return false;
-// 		return window.Notification.permission === 'granted';
-// 	};
+	const triggerNotificationToast = useCallback(async (title: string, body: string): Promise<void> => {
+		if (typeof window === 'undefined' || !('Notification' in window)) return;
+		if (window.Notification.permission !== 'granted') return;
 
-// 	const triggerNotificationToast = useCallback(async (title: string, body: string) => {
-// 		try {
-// 			const allowed = await askNotificationPermission();
-// 			if (!allowed) {
-// 				console.warn('Notifications not allowed, skipping.');
-// 				return;
-// 			}
+		const notification = new window.Notification(title, { body });
+		notification.onclick = () => window.focus();
+	}, []);
 
-// 			const notification = new window.Notification(title, { body });
-// 			notification.onclick = () => {
-// 				window.focus();
-// 			};
-// 		} catch (err) {
-// 			console.error('Failed to trigger notification:', err);
-// 		}
-// 	}, [askNotificationPermission]);
+	const deleteNotification = useCallback(async (id: string): Promise<void> => {
+		await notificationsMutate(
+			currentNotifications => currentNotifications?.filter(notification => notification._id !== id),
+			{ revalidate: false },
+		);
 
-// 	const deleteNotification = useCallback(async (id: string) => {
-// 		if (!notificationsData) return;
+		const response = await fetchData<undefined>(API_ROUTES.auth.NOTIFICATIONS_DETAIL(id), 'DELETE');
+		if (response.error) {
+			await notificationsMutate();
+			throw new HttpException(response.statusCode, response.error);
+		}
 
-// 		// Optimistically update UI
-// 		mutate(
-// 			notificationsData.filter(n => n._id !== id),
-// 			false, // don't revalidate yet
-// 		);
+		await notificationsMutate();
+	}, [notificationsMutate]);
 
-// 		try {
-// 			await fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${id}`, 'DELETE');
+	const markAsRead = useCallback(async (notification: TmlNotification): Promise<void> => {
+		const response = await fetchData<TmlNotification>(API_ROUTES.auth.NOTIFICATIONS_DETAIL_MARK_AS_READ(notification._id));
+		if (response.error) throw new HttpException(response.statusCode, response.error);
 
-// 			// Revalidate after successful delete to ensure consistency
-// 			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
-// 		} catch (error) {
-// 			// Rollback if something goes wrong
-// 			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
-// 			console.error('Failed to delete notification:', error);
-// 		}
-// 	}, [notificationsData]);
+		await notificationsMutate(
+			currentNotifications => currentNotifications?.map(currentNotification => (
+				currentNotification._id === notification._id
+					? { ...currentNotification, is_read: true }
+					: currentNotification
+			)),
+			{ revalidate: false },
+		);
 
-// 	const markAsRead = async (notification: TmlNotification) => {
-// 		if (notification.payload.href) {
-// 			fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
-// 			window.location.href = notification.payload.href;
-// 		} else {
-// 			await fetchData(`${getModuleConfig('auth', 'api_url')}/notifications/${notification._id}/mark-as-read`);
-// 			mutate(`${getModuleConfig('auth', 'api_url')}/notifications`);
-// 		}
-// 	};
+		if (notification.payload.href) window.location.href = notification.payload.href;
+	}, [notificationsMutate]);
 
-// 	useEffect(() => {
-// 		askNotificationPermission();
-// 	}, [askNotificationPermission]);
+	//
+	// D. Handle side effects
 
-// 	/**
-// 	 * Effect to trigger a notification toast when new notifications are detected.
-// 	 *
-// 	 * This effect compares the current list of user notification IDs with the previous list.
-// 	 * If there are new notification IDs (i.e., notifications that were not present before),
-// 	 * and this is not the initial load (prevIds.length > 0), it triggers a notification toast.
-// 	 *
-// 	 * Dependencies:
-// 	 * - userNotifications: The current list of user notifications.
-// 	 * - notificationsLoading: Loading state for notifications.
-// 	 */
-// 	useEffect(() => {
-// 		if (!notificationsData || !notificationsLoading || !notificationsError) return;
-// 		notificationsData.map((n) => {
-// 			if (!n.is_read) {
-// 				triggerNotificationToast(
-// 					'Tem uma nova notificação',
-// 					'Clique no sino para ver suas notificações.',
-// 				);
-// 			}
-// 		});
-// 	}, [notificationsData, notificationsLoading, notificationsError, triggerNotificationToast]);
+	useEffect(() => {
+		if (typeof window === 'undefined' || !('Notification' in window)) return;
+		setNotificationsEnabled(window.Notification.permission === 'granted');
+	}, []);
 
-// 	//
-// 	// E. Define context value
+	useEffect(() => {
+		if (!notificationsData) return;
 
-// 	const contextValue: NotificationsContextState = useMemo(() => ({
-// 		actions: {
-// 			deleteNotification,
-// 			markAsRead,
-// 			requestNotificationPermission: askNotificationPermission,
-// 			triggerNotificationToast,
-// 		},
-// 		data: {
-// 			allNotifications: notificationsData ?? [],
-// 			readNotifications: notificationsData?.filter(n => n.is_read) ?? [],
-// 			unreadNotifications: notificationsData?.filter(n => !n.is_read) ?? [],
-// 		},
-// 		flags: {
-// 			enabled: isBrowserNotificationGranted(),
-// 			error: notificationsError,
-// 			loading: notificationsLoading,
-// 		},
-// 	}), [deleteNotification, notificationsData, notificationsError, notificationsLoading, triggerNotificationToast]);
+		const currentNotificationIds = new Set(notificationsData.map(notification => notification._id));
+		const previousNotificationIds = previousNotificationIdsRef.current;
 
-// 	//
-// 	// E. Render components
+		if (previousNotificationIds) {
+			for (const notification of notificationsData) {
+				if (!notification.is_read && !previousNotificationIds.has(notification._id)) {
+					void triggerNotificationToast(notification.payload.title, notification.payload.body);
+				}
+			}
+		}
 
-// 	return (
-// 		<NotificationsContext.Provider value={contextValue}>
-// 			{children}
-// 		</NotificationsContext.Provider>
-// 	);
+		previousNotificationIdsRef.current = currentNotificationIds;
+	}, [notificationsData, triggerNotificationToast]);
 
-// 	//
-// };
+	//
+	// E. Define context value
+
+	const contextValue: NotificationsContextState = useMemo(() => ({
+		actions: {
+			deleteNotification,
+			markAsRead,
+			requestNotificationPermission,
+			triggerNotificationToast,
+		},
+		data: {
+			allNotifications: notificationsData ?? [],
+			readNotifications: notificationsData?.filter(notification => notification.is_read) ?? [],
+			unreadNotifications: notificationsData?.filter(notification => !notification.is_read) ?? [],
+		},
+		flags: {
+			enabled: notificationsEnabled,
+			error: notificationsError,
+			loading: notificationsLoading,
+		},
+	}), [deleteNotification, markAsRead, notificationsData, notificationsEnabled, notificationsError, notificationsLoading, requestNotificationPermission, triggerNotificationToast]);
+
+	//
+	// F. Render components
+
+	return (
+		<NotificationsContext.Provider value={contextValue}>
+			{children}
+		</NotificationsContext.Provider>
+	);
+
+	//
+};

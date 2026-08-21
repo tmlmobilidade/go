@@ -3,7 +3,7 @@
 import { exportsIndexes } from '@/indexes/index.js';
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { type Agency, type AppConfig, type Attachment, type CreateAgencyDto, CreateAgencySchema, type CreateAttachmentDto, CreateAttachmentSchema, type CreateOrganizationDto, CreateOrganizationSchema, type CreateRoleDto, CreateRoleSchema, type CreateSessionDto, CreateSessionSchema, type CreateUserDto, CreateUserSchema, type CreateVerificationTokenDto, CreateVerificationTokenSchema, type Organization, type Role, type Session, type UpdateAgencyDto, UpdateAgencySchema, type UpdateAttachmentDto, UpdateAttachmentSchema, type UpdateOrganizationDto, UpdateOrganizationSchema, type UpdateRoleDto, UpdateRoleSchema, type UpdateSessionDto, UpdateSessionSchema, type UpdateUserDto, UpdateUserSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type User, type VerificationToken } from '@tmlmobilidade/go-types-core';
+import { type Agency, type AppConfig, type Attachment, type CreateAgencyDto, CreateAgencySchema, type CreateAttachmentDto, CreateAttachmentSchema, type CreateNotificationDto, CreateNotificationSchema, type CreateOrganizationDto, CreateOrganizationSchema, type CreateRoleDto, CreateRoleSchema, type CreateSessionDto, CreateSessionSchema, type CreateUserDto, CreateUserSchema, type CreateVerificationTokenDto, CreateVerificationTokenSchema, type Notification, type Organization, type Role, type Session, type UpdateAgencyDto, UpdateAgencySchema, type UpdateAttachmentDto, UpdateAttachmentSchema, type UpdateNotificationDto, UpdateNotificationSchema, type UpdateOrganizationDto, UpdateOrganizationSchema, type UpdateRoleDto, UpdateRoleSchema, type UpdateSessionDto, UpdateSessionSchema, type UpdateUserDto, UpdateUserSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type User, type VerificationToken } from '@tmlmobilidade/go-types-core';
 import { type CreateFileExportDto, CreateFileExportSchema, type FileExport, UpdateFileExportSchema } from '@tmlmobilidade/go-types-downloads';
 
 /* * */
@@ -15,6 +15,7 @@ export class CoreDatabase {
 	public readonly appConfigs: MongoInterfaceTemplate<AppConfig, null, null>;
 	public readonly attachments: MongoInterfaceTemplate<Attachment, CreateAttachmentDto, UpdateAttachmentDto>;
 	public readonly exports: MongoInterfaceTemplate<FileExport, CreateFileExportDto<any>, Partial<FileExport>>;
+	public readonly notifications: MongoInterfaceTemplate<Notification, CreateNotificationDto, UpdateNotificationDto>;
 	public readonly organizations: MongoInterfaceTemplate<Organization, CreateOrganizationDto, UpdateOrganizationDto>;
 	public readonly roles: MongoInterfaceTemplate<Role, CreateRoleDto, UpdateRoleDto>;
 	public readonly sessions: MongoInterfaceTemplate<Session, CreateSessionDto, UpdateSessionDto>;
@@ -31,6 +32,7 @@ export class CoreDatabase {
 		this.agencies = new MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>('agencies', this.database, CreateAgencySchema, UpdateAgencySchema);
 		this.appConfigs = new MongoInterfaceTemplate<AppConfig, null, null>('app-configs', this.database, null, null);
 		this.exports = new MongoInterfaceTemplate<FileExport, CreateFileExportDto<any>, Partial<FileExport>>('exports', this.database, CreateFileExportSchema, UpdateFileExportSchema, exportsIndexes);
+		this.notifications = new MongoInterfaceTemplate<Notification, CreateNotificationDto, UpdateNotificationDto>('notifications', this.database, CreateNotificationSchema, UpdateNotificationSchema);
 		this.organizations = new MongoInterfaceTemplate<Organization, CreateOrganizationDto, UpdateOrganizationDto>('organizations', this.database, CreateOrganizationSchema, UpdateOrganizationSchema);
 		this.roles = new MongoInterfaceTemplate<Role, CreateRoleDto, UpdateRoleDto>('roles', this.database, CreateRoleSchema, UpdateRoleSchema);
 		this.sessions = new MongoInterfaceTemplate<Session, CreateSessionDto, UpdateSessionDto>('sessions', this.database, CreateSessionSchema, UpdateSessionSchema);
