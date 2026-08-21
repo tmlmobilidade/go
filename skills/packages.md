@@ -180,7 +180,7 @@ Also contains batching, caching, generic object/array utilities. Check `packages
 ### `@tmlmobilidade/mongo`
 MongoDB client with connection pooling and helpers. Used by `@tmlmobilidade/interfaces` — you rarely import this directly.
 
-### `@tmlmobilidade/rabbitmq`
+### `@tmlmobilidade/go-clients-rabbitmq`
 RabbitMQ client for inter-service messaging. Used in worker apps that consume or publish events.
 
 ### `@tmlmobilidade/go-clients-fastify`
