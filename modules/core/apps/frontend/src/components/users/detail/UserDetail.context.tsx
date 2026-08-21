@@ -50,8 +50,8 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	//
 	// B. Fetch data
 
-	const { mutate: allUsersMutate } = useSWR<User[]>(API_ROUTES.auth.USERS_LIST);
-	const { data: userData, error: userError, isLoading: userLoading, mutate: userMutate } = useSWR<User>(userId === 'new' ? null : API_ROUTES.auth.USERS_DETAIL(userId));
+	const { mutate: allUsersMutate } = useSWR<User[]>(API_ROUTES.core.USERS_LIST);
+	const { data: userData, error: userError, isLoading: userLoading, mutate: userMutate } = useSWR<User>(userId === 'new' ? null : API_ROUTES.core.USERS_DETAIL(userId));
 
 	//
 	// C. Setup form
@@ -62,7 +62,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<User>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.auth.USERS_DETAIL(userId) }),
+		fetchFn: async () => await fetchApiData<User>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.USERS_DETAIL(userId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();
@@ -72,7 +72,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<User>({ method: 'DELETE', url: API_ROUTES.auth.USERS_DETAIL(userId) }),
+		fetchFn: async () => await fetchApiData<User>({ method: 'DELETE', url: API_ROUTES.core.USERS_DETAIL(userId) }),
 		onSuccess: () => {
 			meContext.mutate.me();
 			allUsersMutate();
@@ -81,7 +81,7 @@ export const UserDetailContextProvider = ({ children, userId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<User>({ url: API_ROUTES.auth.USERS_DETAIL_LOCK(userId) }),
+		fetchFn: async () => await fetchApiData<User>({ url: API_ROUTES.core.USERS_DETAIL_LOCK(userId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();

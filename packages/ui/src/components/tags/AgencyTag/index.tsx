@@ -28,7 +28,7 @@ export function AgencyTag({ agencyId, copyOnClick = true, showCode = true, showI
 	//
 	// A. Fetch data
 
-	const { raw: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
+	const { raw: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
 
 	//
 	// B. Transform data

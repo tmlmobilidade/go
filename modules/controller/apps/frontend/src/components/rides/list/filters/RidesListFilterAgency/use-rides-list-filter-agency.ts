@@ -11,7 +11,7 @@ import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType 
 export function useRidesListFilterAgency(): UseFilterStateListReturnType {
 	//
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.rides.actions.analysis_read],
 		scope: PermissionCatalog.all.rides.scope,
 	});

@@ -41,7 +41,7 @@ export function AlertsCreateFormStepsContextProvider({ children }: PropsWithChil
 	//
 	// C. Fetch data
 
-	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});

@@ -32,7 +32,7 @@ export function SendPasswordResetEmailForm() {
 		setIsLoading(true);
 		// Perform password reset email request
 		const response = await fetchData<Session>(
-			API_ROUTES.auth.AUTH_SEND_PASSWORD_RESET_EMAIL,
+			API_ROUTES.core.AUTH_SEND_PASSWORD_RESET_EMAIL,
 			'POST',
 			{ email: emailValue },
 		);

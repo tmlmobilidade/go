@@ -102,7 +102,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		setIsLoggingOut(true);
 		try {
 			// Call the logout endpoint
-			await fetch(API_ROUTES.auth.AUTH_LOGOUT, { credentials: 'include' });
+			await fetch(API_ROUTES.core.AUTH_LOGOUT, { credentials: 'include' });
 			// Clear the SWR cache without revalidating — the session is already gone,
 			// so a revalidate would 401 and surface ErrorDisplay before redirect.
 			meMutate();
@@ -125,7 +125,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		const updatedScope = { ...currentScope, [key]: value };
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
 		// Call the update endpoint
-		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.auth.AUTH_ME });
+		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.core.AUTH_ME });
 	};
 
 	//

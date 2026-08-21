@@ -31,7 +31,7 @@ export function AlertDetailSectionReferences() {
 	//
 	// B. Fetch data
 
-	const { filtered: agenciesData, options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filtered: agenciesData, options: agenciesOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.read, PermissionCatalog.all.alerts.actions.update],
 		scope: PermissionCatalog.all.alerts.scope,
 	});

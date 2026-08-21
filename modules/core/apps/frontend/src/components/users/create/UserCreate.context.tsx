@@ -50,7 +50,7 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { mutate: allUsersMutate } = useSWR<User[]>(API_ROUTES.auth.USERS_LIST);
+	const { mutate: allUsersMutate } = useSWR<User[]>(API_ROUTES.core.USERS_LIST);
 
 	//
 	// C. Setup form
@@ -62,7 +62,7 @@ export const UserCreateContextProvider = ({ children }: PropsWithChildren) => {
 
 	const handleCreateUser = async () => {
 		setIsSaving(true);
-		const response = await fetchData<User>(API_ROUTES.auth.USERS_LIST, 'POST', form.getValues());
+		const response = await fetchData<User>(API_ROUTES.core.USERS_LIST, 'POST', form.getValues());
 		if (response.error) {
 			if (typeof response.error === 'string') {
 				useToast.error({ message: response.error, title: 'Erro ao criar utilizador' });

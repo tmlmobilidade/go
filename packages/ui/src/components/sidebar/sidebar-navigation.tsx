@@ -127,7 +127,7 @@ export const sidebarNavigationGroups = [
 		items: [
 			{
 				_id: 'stops',
-				href: PAGE_ROUTES.stops.STOPS_LIST,
+				href: PAGE_ROUTES.infrastructure.STOPS_LIST,
 				icon: <IconBusStop />,
 				permissions: [{ action: PermissionCatalog.all.stops.actions.read, resources: { agency_ids: [], municipality_ids: [] }, scope: PermissionCatalog.all.stops.scope }],
 			},

@@ -26,7 +26,7 @@ export function LoginForm() {
 	// B. Handle actions
 
 	const { action: handleLogin, isLoading: isLoggingIn } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Session>({ body: { email: emailValue, password: passwordValue }, method: 'POST', url: API_ROUTES.auth.AUTH_LOGIN }),
+		fetchFn: async () => await fetchApiData<Session>({ body: { email: emailValue, password: passwordValue }, method: 'POST', url: API_ROUTES.core.AUTH_LOGIN }),
 		onError: (error) => {
 			useToast.error({
 				message: error.message ?? t('unauthenticated:LoginForm.error.description'),

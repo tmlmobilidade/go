@@ -47,7 +47,7 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 	//
 	// B. Fetch data
 
-	const { mutate: allOrganizationsMutate } = useSWR<Organization[]>(API_ROUTES.auth.ORGANIZATIONS_LIST);
+	const { mutate: allOrganizationsMutate } = useSWR<Organization[]>(API_ROUTES.core.ORGANIZATIONS_LIST);
 
 	//
 	// C. Setup form
@@ -58,7 +58,7 @@ export const OrganizationCreateContextProvider = ({ children }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: saveOrganization, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'POST', url: API_ROUTES.auth.ORGANIZATIONS_LIST }),
+		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'POST', url: API_ROUTES.core.ORGANIZATIONS_LIST }),
 		onSuccess: ({ data }) => {
 			form.reset();
 			allOrganizationsMutate();

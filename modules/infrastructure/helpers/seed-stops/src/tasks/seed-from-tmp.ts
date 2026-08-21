@@ -50,7 +50,7 @@ export async function seedFromTmp() {
 
 		for (const [index, originalStop] of ut1StopsData.data.entries()) {
 			console.log(`Processing stop ${index + 1}/${ut1StopsData.data.length}: ${originalStop.stop_name} (${originalStop.stop_id})`);
-			const newStopId = await fetchData<StopId>(API_ROUTES.stops.STOPS_VALID_ID);
+			const newStopId = await fetchData<StopId>(API_ROUTES.infrastructure.STOPS_VALID_ID);
 			console.log(`Generated new stop ID`, newStopId.data);
 			const stop = StopSchema.safeParse({
 				_id: newStopId.data,
@@ -90,7 +90,7 @@ export async function seedFromTmp() {
 		// for (const preparedStopData of preparedStops) {
 		// 	const duplicateStop = preparedStops.find(s => s._id === preparedStopData._id);
 		// 	if (duplicateStop) {
-		// 		const newStopId = await fetchData<StopId>(API_ROUTES.stops.STOPS_VALID_ID);
+		// 		const newStopId = await fetchData<StopId>(API_ROUTES.infrastructure.STOPS_VALID_ID);
 		// 		duplicateStop._id = newStopId.data;
 		// 		console.log(`Duplicate stop ID detected for stop ${preparedStopData.name}. Assigned new ID: ${duplicateStop._id}`);
 		// 	}

@@ -75,7 +75,7 @@ export function ChangePasswordForm() {
 		const passwordHash = bcrypt.hashSync(passwordValue);
 		// Send the request to change the password
 		const response = await fetchData<Session>(
-			API_ROUTES.auth.AUTH_CHANGE_PASSWORD,
+			API_ROUTES.core.AUTH_CHANGE_PASSWORD,
 			'POST',
 			{ password_hash: passwordHash, token: tokenValue },
 		);
