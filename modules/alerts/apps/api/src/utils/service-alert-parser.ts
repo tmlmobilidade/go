@@ -1,8 +1,8 @@
 import { type Line } from '@carrismetropolitana/api-types/network';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
-import { type Attachment } from '@tmlmobilidade/types';
 import { type ServiceAlertResponseItem } from '@tmlmobilidade/types';
 import { type EntitySelector } from 'gtfs-types';
 
