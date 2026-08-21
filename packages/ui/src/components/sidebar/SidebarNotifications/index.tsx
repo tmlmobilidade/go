@@ -7,7 +7,6 @@ import { IconBell, IconBellOff } from '@tabler/icons-react';
 import { type Notification } from '@tmlmobilidade/go-types-core';
 import { useTranslation } from 'react-i18next';
 
-import { useNotificationsContext } from '../../../contexts/Notifications.context';
 import { Menu } from '../../menu/Menu';
 import { MenuList } from '../../menu/MenuList';
 import { MenuNoContent } from '../../menu/MenuNoContent';
@@ -34,26 +33,26 @@ export function SidebarNotifications({ menuPosition }: SidebarNotificationsProps
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const notificationsContext = useNotificationsContext();
+	// const notificationsContext = useNotificationsContext();
 
-	const notifications = notificationsContext.data.allNotifications || [];
-	const unreadNotifications = notificationsContext.data.unreadNotifications || [];
-	const readNotifications = notificationsContext.data.readNotifications || [];
+	// const notifications = notificationsContext.data.allNotifications || [];
+	// const unreadNotifications = notificationsContext.data.unreadNotifications || [];
+	// const readNotifications = notificationsContext.data.readNotifications || [];
 
 	//
 	// B. Render components
 
-	return (
-		<Menu counter={unreadNotifications.length} icon={IconBell} label={t('shared:components.sidebar.SidebarNotifications.label')} menuPosition={menuPosition} variant="danger">
+	return null;
 
-			<MenuList data={unreadNotifications} getItemKey={item => item._id} itemComponent={SidebarNotificationsMenuItem} title={t('shared:components.sidebar.SidebarNotifications.unread')} />
-			<MenuList data={readNotifications} getItemKey={item => item._id} itemComponent={SidebarNotificationsMenuItem} title={t('shared:components.sidebar.SidebarNotifications.read')} />
+	// return (
+	// 	<Menu counter={unreadNotifications.length} icon={IconBell} label={t('shared:components.sidebar.SidebarNotifications.label')} menuPosition={menuPosition} variant="danger">
 
-			{notifications.length === 0 && (
-				<MenuNoContent icon={IconBellOff} text={t('shared:components.sidebar.SidebarNotifications.no_notifications')} />
-			)}
-		</Menu>
-	);
+	// 		<MenuList data={unreadNotifications} getItemKey={item => item._id} itemComponent={SidebarNotificationsMenuItem} title={t('shared:components.sidebar.SidebarNotifications.unread')} />
+	// 		<MenuList data={readNotifications} getItemKey={item => item._id} itemComponent={SidebarNotificationsMenuItem} title={t('shared:components.sidebar.SidebarNotifications.read')} />
 
-	//
+	// 		{notifications.length === 0 && (
+	// 			<MenuNoContent icon={IconBellOff} text={t('shared:components.sidebar.SidebarNotifications.no_notifications')} />
+	// 		)}
+	// 	</Menu>
+	// );
 }

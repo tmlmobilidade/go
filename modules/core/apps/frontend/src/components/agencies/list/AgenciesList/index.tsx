@@ -2,7 +2,7 @@
 
 import { AgenciesListHeader } from '@/components/agencies/list/AgenciesListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { AgenciesListItem } from '@tmlmobilidade/go-core-pckg-types';
+import { type AgenciesListItem } from '@tmlmobilidade/go-core-pckg-types';
 import { IdTag, keepUrlParams } from '@tmlmobilidade/ui';
 import { DataTable, type DataTableColumn, ErrorDisplay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -55,7 +55,7 @@ export function AgenciesList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: AgencyExtended) => {
+	const handleRowClick = (item: AgenciesListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.auth.AGENCIES_DETAIL(item._id)));
 	};
 
