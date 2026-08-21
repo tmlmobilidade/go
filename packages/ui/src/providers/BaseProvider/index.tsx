@@ -4,9 +4,8 @@ import { MantineProvider, MantineProviderProps } from '@mantine/core';
 import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import { initSentry } from '@tmlmobilidade/logger-logger-frontend';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { type PropsWithChildren, Suspense, useEffect } from 'react';
+import { type PropsWithChildren, Suspense } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
@@ -17,11 +16,6 @@ import { themeData } from '../../styles/theme';
 /* * */
 
 type BaseProviderProps = LocaleContextProps & VersionContextProps & {
-	/**
-	 * Set to false when Sentry is initialized through instrumentation-client.ts.
-	 */
-	initializeSentry: boolean
-
 	/**
 	 * Please avoid using this prop. It is only intended for very specific use cases.
 	 * @dangerous
@@ -35,18 +29,11 @@ type BaseProviderProps = LocaleContextProps & VersionContextProps & {
  * wrapped with this component, including non-authenticated parts. Set this on the Root layout,
  * without `<html>` or `<body>` HTML tags.
  */
-export function BaseProvider({ children, i18n, initializeSentry, theme, version }: PropsWithChildren<BaseProviderProps>) {
+export function BaseProvider({ children, i18n, theme, version }: PropsWithChildren<BaseProviderProps>) {
 	//
 
 	//
-	// A. Initialize frontend logging
-
-	useEffect(() => {
-		if (initializeSentry) void initSentry();
-	}, [initializeSentry]);
-
-	//
-	// B. Setup variables
+	// A. Setup variables
 
 	const nuqsSettings = {
 		processUrlSearchParams: (search: URLSearchParams) => {
@@ -69,7 +56,7 @@ export function BaseProvider({ children, i18n, initializeSentry, theme, version 
 	};
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<html
