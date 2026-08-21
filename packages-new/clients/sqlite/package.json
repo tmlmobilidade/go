@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/sqlite",
+	"name": "@tmlmobilidade/go-clients-sqlite",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",

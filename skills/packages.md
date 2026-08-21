@@ -253,7 +253,7 @@ File system utilities (reading, writing, path helpers).
 ### `@tmlmobilidade/go-clients-ssh`
 SSH connection utilities for remote operations.
 
-### `@tmlmobilidade/sqlite`
+### `@tmlmobilidade/go-clients-sqlite`
 SQLite client for local data storage in CLI tools.
 
 ### `@tmlmobilidade/ai`

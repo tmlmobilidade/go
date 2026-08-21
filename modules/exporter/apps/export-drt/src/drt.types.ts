@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-interfaces */
 /* * */
 
-import { SQLiteDatabase, SQLiteTableInstance } from '@tmlmobilidade/sqlite';
+import { SQLiteDatabase, SQLiteTableInstance } from '@tmlmobilidade/go-clients-sqlite';
 import { OperationalDate, UnixTimestamp } from '@tmlmobilidade/types';
 
 /* * */

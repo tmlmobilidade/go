@@ -1,7 +1,7 @@
 /* * */
 
 import { type GtfsDate, type GtfsRoutes, type GtfsShapes, type GtfsStops, type GtfsStopTimes, type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
-import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
+import { SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
 
 import { type GtfsSQLTables } from './types.js';
 

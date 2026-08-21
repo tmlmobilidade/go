@@ -2,7 +2,7 @@
 
 import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV30Routes, type GtfsStrictV30Shapes, type GtfsStrictV30Stops, type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { SQLiteDatabase } from '@tmlmobilidade/sqlite';
+import { SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
 
 import { type GtfsStrictV30SQLTables } from './types.js';
 
