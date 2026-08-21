@@ -1,6 +1,6 @@
 'use client';
 
-import { type ProcessingStatus, ProcessingStatusSchema } from '@tmlmobilidade/types';
+import { type ProcessingStatus, ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
