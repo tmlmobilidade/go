@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type ActionsOf, type Permission, PermissionCatalog, PermissionSchema, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
+import { type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/go-types-core';
+import { type ActionsOf, type Permission, PermissionCatalog, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
