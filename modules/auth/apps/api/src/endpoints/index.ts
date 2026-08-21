@@ -1,6 +1,6 @@
-import '@/endpoints/agencies/routes.js';
-import '@/endpoints/app-configs/routes.js';
-import '@/endpoints/auth/routes.js';
-import '@/endpoints/roles/roles.routes.js';
-import '@/endpoints/users/users.routes.js';
-import '@/endpoints/organizations/organizations.routes.js';
+import './app-configs/routes.js';
+import './auth/routes.js';
+import './agencies/routes.js';
+import './roles/routes.js';
+import './users/users.routes.js';
+import './organizations/organizations.routes.js';

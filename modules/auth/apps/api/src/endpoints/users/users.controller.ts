@@ -1,11 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { sendWelcomeEmail } from '@tmlmobilidade/go-providers-emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
-import { type CreateUserDto, type SimplifiedUser, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/types';
+import { sendWelcomeEmail } from '@tmlmobilidade/go-providers-emails';
+import { type CreateUserDto, type SimplifiedUser, type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/go-types-core';
 
 /* * */
 
