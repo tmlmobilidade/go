@@ -2,7 +2,7 @@
 
 import { UploadImage } from '@/components/common/UploadImage';
 import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
-import { CreateOrganizationSchema } from '@tmlmobilidade/types';
+import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
 import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

@@ -2,7 +2,7 @@
 
 import { closeCreateUserModal } from '@/components/users/create/UserCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateUserDto, CreateUserSchema, type User } from '@tmlmobilidade/types';
+import { type CreateUserDto, CreateUserSchema, type User } from '@tmlmobilidade/go-types-core';
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
