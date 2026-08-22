@@ -11,8 +11,8 @@ import { GtfsValidationsPermissionSchema } from './scopes/gtfs-validations/permi
 import { HolidaysPermissionSchema } from './scopes/holidays/permission.js';
 import { HomePermissionSchema } from './scopes/home/permission.js';
 import { LinesPermissionSchema } from './scopes/lines/permission.js';
-import { OrganizationsPermissionSchema } from './scopes/organizations.js';
-import { PerformancePermissionSchema } from './scopes/performance.js';
+import { OrganizationsPermissionSchema } from './scopes/organizations/permission.js';
+import { PerformancePermissionSchema } from './scopes/performance/permission.js';
 import { PlansPermissionSchema } from './scopes/plans.js';
 import { RidesPermissionSchema } from './scopes/rides/permission.js';
 import { RolesPermissionSchema } from './scopes/roles.js';

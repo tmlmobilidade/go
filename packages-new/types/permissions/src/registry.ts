@@ -11,6 +11,8 @@ import { GtfsValidationsPermissionRegistrySchema } from './scopes/gtfs-validatio
 import { HolidaysPermissionRegistrySchema } from './scopes/holidays/registry.js';
 import { HomePermissionRegistrySchema } from './scopes/home/registry.js';
 import { LinesPermissionRegistrySchema } from './scopes/lines/registry.js';
+import { OrganizationsPermissionRegistrySchema } from './scopes/organizations/registry.js';
+import { PerformancePermissionRegistrySchema } from './scopes/performance/registry.js';
 import { RidesPermissionRegistrySchema } from './scopes/rides/registry.js';
 import { SamsPermissionRegistrySchema } from './scopes/sams/registry.js';
 import { YearPeriodsPermissionRegistrySchema } from './scopes/year-periods/registry.js';
@@ -30,6 +32,8 @@ export const PermissionsRegistrySchema = z.discriminatedUnion('scope', [
 	GtfsValidationsPermissionRegistrySchema,
 	HomePermissionRegistrySchema,
 	LinesPermissionRegistrySchema,
+	OrganizationsPermissionRegistrySchema,
+	PerformancePermissionRegistrySchema,
 ]);
 
 export type PermissionsRegistry = z.infer<typeof PermissionsRegistrySchema>;
