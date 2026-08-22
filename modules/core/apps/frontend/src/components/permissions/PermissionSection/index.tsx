@@ -12,8 +12,8 @@ interface PermissionSectionProps {
 	description: string
 	enabledPermissions: Permission[]
 	enabledRoleIds?: string[]
-	onResourceToggle?: (scope: string, action: string, resource: Partial<Record<string, unknown>>) => void
-	onToggle: (scope: string, action: string, send_email?: boolean) => void
+	onResourceToggle?: (permission: Permission) => void
+	onToggle: (permission: Permission) => void
 	scope: string
 	title: string
 }

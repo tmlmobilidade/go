@@ -5,7 +5,7 @@ import { normalizeAlertCoordinatesInput } from '@/lib/alert-coordinates';
 import { IconLink } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type I18nCode, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, Collapsible, ContextFormController, CoordinatesInput, Grid, ImageUpload, Section, Surface, Switch, Textarea, TextInput, useContextFormWatch, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
+import { Button, Collapsible, StandardFormController, CoordinatesInput, Grid, ImageUpload, Section, Surface, Switch, Textarea, TextInput, useStandardFormWatch, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -29,7 +29,7 @@ export function AlertDetailSectionTexts() {
 	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
 
-	const autoTextsValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'auto_texts' });
+	const autoTextsValue = useStandardFormWatch({ control: alertDetailContext.form.instance.control, name: 'auto_texts' });
 
 	//
 	// B. Transform data
@@ -115,7 +115,7 @@ export function AlertDetailSectionTexts() {
 
 					<Section gap="md">
 
-						<ContextFormController
+						<StandardFormController
 							control={alertDetailContext.form.instance.control}
 							name="auto_texts"
 							render={({ field }) => (
@@ -130,7 +130,7 @@ export function AlertDetailSectionTexts() {
 
 						{autoTextsValue && (
 							<>
-								<ContextFormController
+								<StandardFormController
 									control={alertDetailContext.form.instance.control}
 									name="user_instructions"
 									render={({ field }) => (
@@ -161,7 +161,7 @@ export function AlertDetailSectionTexts() {
 
 				<Grid gap="md">
 
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="title"
 						render={({ field, fieldState }) => (
@@ -176,7 +176,7 @@ export function AlertDetailSectionTexts() {
 						)}
 					/>
 
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="description"
 						render={({ field, fieldState }) => (
@@ -193,7 +193,7 @@ export function AlertDetailSectionTexts() {
 						)}
 					/>
 
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="coordinates"
 						render={({ field }) => (
@@ -206,7 +206,7 @@ export function AlertDetailSectionTexts() {
 						)}
 					/>
 
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="info_url"
 						render={({ field, fieldState }) => (

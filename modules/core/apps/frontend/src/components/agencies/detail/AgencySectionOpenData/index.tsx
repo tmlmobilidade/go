@@ -1,7 +1,7 @@
 'use client';
 
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
-import { Collapsible, ContextFormController, Section, Switch } from '@tmlmobilidade/ui';
+import { Collapsible, StandardFormController, Section, Switch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -24,7 +24,7 @@ export function AgencySectionOpenData() {
 			title={t('default:agencies.detail.SectionOpenData.title')}
 		>
 			<Section gap="lg">
-				<ContextFormController
+				<StandardFormController
 					control={agencyDetailContext.form.instance.control}
 					name="open_data.gtfs_enabled"
 					render={({ field, fieldState }) => (
@@ -37,7 +37,7 @@ export function AgencySectionOpenData() {
 						/>
 					)}
 				/>
-				<ContextFormController
+				<StandardFormController
 					control={agencyDetailContext.form.instance.control}
 					name="open_data.positions_enabled"
 					render={({ field, fieldState }) => (
@@ -50,7 +50,7 @@ export function AgencySectionOpenData() {
 						/>
 					)}
 				/>
-				<ContextFormController
+				<StandardFormController
 					control={agencyDetailContext.form.instance.control}
 					name="open_data.eta_enabled"
 					render={({ field, fieldState }) => (
@@ -63,7 +63,7 @@ export function AgencySectionOpenData() {
 						/>
 					)}
 				/>
-				<ContextFormController
+				<StandardFormController
 					control={agencyDetailContext.form.instance.control}
 					name="open_data.service_alerts_enabled"
 					render={({ field, fieldState }) => (

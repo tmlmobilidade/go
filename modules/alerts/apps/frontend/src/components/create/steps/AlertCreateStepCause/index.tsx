@@ -2,7 +2,7 @@
 
 import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { AlertCauseIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useAgenciesData, useContextFormWatch } from '@tmlmobilidade/ui';
+import { AlertCauseIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useAgenciesData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -22,8 +22,8 @@ export function AlertCreateStepCause() {
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 	const { actions: alertsCreateFormStepsActions } = useAlertsCreateFormStepsContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const causeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'cause' });
+	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const causeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'cause' });
 
 	//
 	// B. Fetch data

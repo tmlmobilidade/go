@@ -9,22 +9,23 @@ import { usePreventNavigation } from '../hooks/use-prevent-navigation';
 
 /* * */
 
-// interface UseContextFormProps<T> {
+// interface UseStandardFormProps<T> {
 // 	apiData?: null | T
 // 	defaultValues?: DefaultValues<T>
 // 	mode?: 'controlled' | 'uncontrolled'
 // 	schema?: ZodSchema<T>
 // }
 
-interface UseContextFormProps<TSchema extends ZodType> {
-	apiData?: null | z.output<TSchema>
-	defaultValues?: DefaultValues<z.input<TSchema>>
+interface UseStandardFormProps<T, TSchema extends ZodType> {
+	apiData?: null | T
+	defaultValues?: DefaultValues<T>
 	mode?: 'controlled' | 'uncontrolled'
 	schema?: TSchema
 }
 
-export interface UseContextFormReturnType<T> {
+export interface UseStandardFormReturnType<T> {
 	form: UseFormReturn<T>
+	isDirty: boolean
 	unblock: () => void
 }
 
@@ -38,7 +39,7 @@ export interface UseContextFormReturnType<T> {
  * @param defaultValues Optional initial values to set when creating new forms.
  * @returns The form methods and state from React Hook Form.
  */
-export function useContextForm<TSchema extends ZodType>({ apiData, defaultValues, schema }: UseContextFormProps<TSchema>): UseContextFormReturnType<TSchema> {
+export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultValues, schema }: UseStandardFormProps<T, TSchema>): UseStandardFormReturnType<T> {
 	//
 
 	//
@@ -49,7 +50,7 @@ export function useContextForm<TSchema extends ZodType>({ apiData, defaultValues
 		resolver: schema ? zodResolver(schema) : undefined,
 	});
 
-	const isFormDirty = useMemo(() => {
+	const isDirty = useMemo(() => {
 		// This is necessary due to a mismatch between isDirty flag and dirtyFields
 		// in React Hook Form. isDirty is a boolean that indicates if any field is dirty,
 		// while dirtyFields is an object that tracks which specific fields are dirty.
@@ -66,20 +67,20 @@ export function useContextForm<TSchema extends ZodType>({ apiData, defaultValues
 		// Skip if no API data
 		if (!apiData) return;
 		// Skip if form is dirty
-		if (isFormDirty) return;
+		if (isDirty) return;
 		// Initialize form with API data
 		form.reset(apiData);
 		// eslint-disable-next-line no-console
 		console.info(`Form initialized with values from API.`);
-	}, [apiData, form, isFormDirty]);
+	}, [apiData, form, isDirty]);
 
 	//
 	// Prevent navigation if form is dirty
 
-	const unblock = usePreventNavigation(false); // (isFormDirty);
+	const unblock = usePreventNavigation(false); // (isDirty);
 
 	//
 	// Return hook values and functions
 
-	return { form, unblock };
+	return { form, isDirty, unblock };
 }

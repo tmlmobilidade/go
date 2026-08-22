@@ -1,6 +1,6 @@
 'use client';
 
-import { ContextFormController, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { StandardFormController, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRolesCreateFormContext } from '../RolesCreateForm.context';
@@ -23,7 +23,7 @@ export function RolesCreateBasicInfo() {
 	return (
 		<Section gap="md">
 			<Grid columns="a" gap="xl">
-				<ContextFormController
+				<StandardFormController
 					control={form.control}
 					name="name"
 					render={({ field, fieldState }) => (

@@ -79,7 +79,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Role>({ url: API_ROUTES.core.ROLES_DETAIL_LOCK(roleId) }),
+		fetchFn: async () => await fetchApiData<Role>({ method: 'PUT', url: API_ROUTES.core.ROLES_DETAIL(roleId) }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			meContext.mutate.me();
@@ -111,7 +111,7 @@ export const RoleDetailContextProvider = ({ children, roleId }: PropsWithChildre
 			action,
 			resource,
 		);
-			// Update the form with the new permissions array
+		// Update the form with the new permissions array
 		form.setFieldValue('permissions', updatedPermissions);
 	};
 

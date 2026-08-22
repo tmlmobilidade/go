@@ -3,7 +3,7 @@
 import { ReferencesEditor } from '@/components/references/shared/ReferencesEditor';
 import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { LoadingSection, NoDataLabel, Section, useAgenciesData, useContextFormWatch } from '@tmlmobilidade/ui';
+import { LoadingSection, NoDataLabel, Section, useAgenciesData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,13 +21,13 @@ export function AlertCreateStepReferences() {
 
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const causeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'cause' });
-	const effectValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'effect' });
-	const activePeriodEndDateValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'active_period_end_date' });
-	const activePeriodStartDateValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'active_period_start_date' });
-	const referencesValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'references' });
-	const referenceTypeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
+	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const causeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'cause' });
+	const effectValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'effect' });
+	const activePeriodEndDateValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'active_period_end_date' });
+	const activePeriodStartDateValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'active_period_start_date' });
+	const referencesValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'references' });
+	const referenceTypeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
 
 	//
 	// B. Fetch data

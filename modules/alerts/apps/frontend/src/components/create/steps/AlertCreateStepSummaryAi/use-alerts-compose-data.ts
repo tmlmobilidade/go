@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { AlertsComposeRequest, AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { useContextFormWatch, useDebouncedValue } from '@tmlmobilidade/ui';
+import { useStandardFormWatch, useDebouncedValue } from '@tmlmobilidade/ui';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -30,14 +30,14 @@ export function useAlertsComposeData(): UseAlertsComposeDataReturnType {
 
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const activePeriodEndDateValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'active_period_end_date' });
-	const activePeriodStartDateValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'active_period_start_date' });
-	const causeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'cause' });
-	const effectValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'effect' });
-	const referenceTypeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
-	const referencesValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'references' });
-	const userInstructionsValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'user_instructions' });
+	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const activePeriodEndDateValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'active_period_end_date' });
+	const activePeriodStartDateValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'active_period_start_date' });
+	const causeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'cause' });
+	const effectValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'effect' });
+	const referenceTypeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
+	const referencesValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'references' });
+	const userInstructionsValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'user_instructions' });
 
 	const [debouncedUserInstructions] = useDebouncedValue(userInstructionsValue, 1_000, { leading: false });
 

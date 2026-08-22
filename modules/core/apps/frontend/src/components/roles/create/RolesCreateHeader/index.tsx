@@ -4,7 +4,7 @@ import { closeRolesCreateModal } from '@/components/roles/create/RolesCreate.mod
 import { IconUpload } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Role } from '@tmlmobilidade/go-types-core';
-import { Button, CloseButton, fetchApiData, keepUrlParams, Label, Spacer, Tag, Toolbar, useContextFormWatch, useHandleUpdate } from '@tmlmobilidade/ui';
+import { Button, CloseButton, fetchApiData, keepUrlParams, Label, Spacer, Tag, Toolbar, useStandardFormWatch, useHandleUpdate } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRolesListData } from '../../list/use-roles-list-data';
@@ -24,7 +24,7 @@ export function RolesCreateHeader() {
 
 	const { form, unblock } = useRolesCreateFormContext();
 
-	const nameValue = useContextFormWatch({ control: form.control, name: 'name' });
+	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
 
 	//
 	// B. Handle actions

@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency, type UpdateAgencyDto } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type DetailContextStateTemplate, fetchApiData, useContextForm, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
+import { type DetailContextStateTemplate, fetchApiData, useStandardForm, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -47,7 +47,7 @@ export const AgencyDetailContextProvider = ({ agencyId, children }: PropsWithChi
 	//
 	// C. Setup form
 
-	const { form } = useContextForm<UpdateAgencyDto>({
+	const { form } = useStandardForm<UpdateAgencyDto>({
 		apiData: agencyData,
 		// schema: UpdateAgencySchema,
 	});

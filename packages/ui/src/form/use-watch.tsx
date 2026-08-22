@@ -4,5 +4,5 @@
 // allowing it to be imported from this module instead of directly from react-hook-form.
 // This removes the need to declare react-hook-form as a dependency in modules code.
 
-export { useWatch as useContextFormWatch } from 'react-hook-form';
+export { useWatch as useStandardFormWatch } from 'react-hook-form';
 

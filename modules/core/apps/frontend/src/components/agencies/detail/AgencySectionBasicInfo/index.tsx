@@ -3,7 +3,7 @@
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { CreateAgencySchema } from '@tmlmobilidade/go-types-core';
-import { Collapsible, ContextFormController, Grid, Section, Select, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, StandardFormController, Grid, Section, Select, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -27,7 +27,7 @@ export function AgencyDetailBasicInfo() {
 		>
 			<Section gap="lg">
 				<Grid columns="abcd" gap="lg">
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="name"
 						render={({ field, fieldState }) => (
@@ -43,7 +43,7 @@ export function AgencyDetailBasicInfo() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="public_name"
 						render={({ field, fieldState }) => (
@@ -59,7 +59,7 @@ export function AgencyDetailBasicInfo() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="short_name"
 						render={({ field, fieldState }) => (
@@ -75,7 +75,7 @@ export function AgencyDetailBasicInfo() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="code"
 						render={({ field, fieldState }) => (
@@ -93,7 +93,7 @@ export function AgencyDetailBasicInfo() {
 					/>
 				</Grid>
 				<Grid columns="abc" gap="lg">
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="public_email"
 						render={({ field, fieldState }) => (
@@ -110,7 +110,7 @@ export function AgencyDetailBasicInfo() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="phone"
 						render={({ field, fieldState }) => (
@@ -127,7 +127,7 @@ export function AgencyDetailBasicInfo() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="website_url"
 						render={({ field, fieldState }) => (
@@ -144,7 +144,7 @@ export function AgencyDetailBasicInfo() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="fare_url"
 						render={({ field, fieldState }) => (
@@ -161,7 +161,7 @@ export function AgencyDetailBasicInfo() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="timezone"
 						render={({ field, fieldState }) => (
@@ -180,7 +180,7 @@ export function AgencyDetailBasicInfo() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="pta_name"
 						render={({ field, fieldState }) => (

@@ -1,12 +1,12 @@
 'use client';
 
-import { type CreateRoleDto, CreateRoleSchema } from '@tmlmobilidade/go-types-core';
-import { useContextForm, type UseContextFormReturnType } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { CreateRoleDto, CreateRoleSchema } from '@tmlmobilidade/go-types-core';
+import { useStandardForm, type UseStandardFormReturnType } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useContext } from 'react';
 
 /* * */
 
-const RolesCreateFormContext = createContext<undefined | UseContextFormReturnType<CreateRoleDto>>(undefined);
+const RolesCreateFormContext = createContext<undefined | UseStandardFormReturnType<CreateRoleDto>>(undefined);
 
 export function useRolesCreateFormContext() {
 	const context = useContext(RolesCreateFormContext);
@@ -22,18 +22,15 @@ export function RolesCreateFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// A. Setup form
 
-	const formDefaultValues = useMemo<Partial<CreateRoleDto>>(() => CreateRoleSchema.parse({}), []);
-
-	const { form, unblock } = useContextForm<CreateRoleDto>({
-		defaultValues: formDefaultValues,
-		// schema: CreateRoleSchema,
+	const { form, isDirty, unblock } = useStandardForm<CreateRoleDto, typeof CreateRoleSchema>({
+		schema: CreateRoleSchema,
 	});
 
 	//
 	// B. Return state
 
 	return (
-		<RolesCreateFormContext.Provider value={{ form, unblock }}>
+		<RolesCreateFormContext.Provider value={{ form, isDirty, unblock }}>
 			{children}
 		</RolesCreateFormContext.Provider>
 	);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
-import { Collapsible, ContextFormController, Grid, Section, TagsInput } from '@tmlmobilidade/ui';
+import { Collapsible, StandardFormController, Grid, Section, TagsInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -25,7 +25,7 @@ export function AgencySectionApex() {
 		>
 			<Section gap="lg">
 				<Grid>
-					<ContextFormController
+					<StandardFormController
 						control={agencyDetailContext.form.instance.control}
 						name="apex.contact_emails"
 						render={({ field, fieldState }) => (

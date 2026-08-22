@@ -6,7 +6,7 @@ import { AlertReferenceTypePermissionMultiselect } from '@/components/permission
 import { useRolesContext } from '@/contexts/Roles.context';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
-import { type Permission } from '@tmlmobilidade/go-types-permissions';
+import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { Grid } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -16,8 +16,8 @@ interface PermissionSectionItemProps {
 	configAction: PermissionConfigAction
 	enabledPermissions: Permission[]
 	enabledRoleIds?: string[]
-	onResourceToggle: (scope: string, action: string, resource: Partial<Record<string, unknown>>) => void
-	onToggle: (scope: string, action: string) => void
+	onResourceToggle: (permission: Permission) => void
+	onToggle: (permission: Permission) => void
 	scope: string
 }
 
@@ -58,7 +58,15 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 
 	const handleToggle = () => {
 		if (hasPermissionFromRole) return;
-		onToggle(scope, configAction.action);
+		const validatedPermission = PermissionSchema.safeParse({ action: configAction.action, scope });
+		if (!validatedPermission.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(validatedPermission.error));
+		onToggle(validatedPermission.data);
+	};
+
+	const handleResourceToggle = (resource: Record<string, unknown>) => {
+		const validatedPermission = PermissionSchema.safeParse({ action: configAction.action, resources: resource, scope });
+		if (!validatedPermission.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(validatedPermission.error));
+		onResourceToggle(validatedPermission.data);
 	};
 
 	//
@@ -78,7 +86,7 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 				{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
 					<AgencyPermissionMultiselect
 						disabled={hasPermissionFromRole}
-						onChange={(inputValue: string[]) => onResourceToggle(scope, configAction.action, { agency_ids: inputValue })}
+						onChange={(inputValue: string[]) => handleResourceToggle({ agency_ids: inputValue })}
 						value={selectedAgencyIds}
 					/>
 				)}
@@ -86,7 +94,7 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 				{onResourceToggle && configAction.resources?.includes('ALERT_REFERENCE_TYPES') && (
 					<AlertReferenceTypePermissionMultiselect
 						disabled={hasPermissionFromRole}
-						onChange={(inputValue: string[]) => onResourceToggle(scope, configAction.action, { reference_types: inputValue })}
+						onChange={(inputValue: string[]) => handleResourceToggle({ reference_types: inputValue })}
 						value={selectedAlertReferenceTypeIds}
 					/>
 				)}

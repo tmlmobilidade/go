@@ -2,7 +2,7 @@
 
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { type AlertCause, AlertCauseValues, type AlertEffect, AlertEffectValues, type AlertReferenceType, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
-import { Checkbox, Collapsible, ContextFormController, Divider, Grid, Inline, Section, Surface, Table } from '@tmlmobilidade/ui';
+import { Checkbox, Collapsible, StandardFormController, Divider, Grid, Inline, Section, Surface, Table } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -117,7 +117,7 @@ export function AgencySectionAlertsMap() {
 												</Table.Td>
 												{AlertReferenceTypeValues.map(referenceTypeValue => (
 													<Table.Td key={`${causeValue}-${effectValue}-${referenceTypeValue}`}>
-														<ContextFormController
+														<StandardFormController
 															control={agencyDetailContext.form.instance.control}
 															name={`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`}
 															render={({ field, fieldState }) => (

@@ -1,24 +1,34 @@
 'use client';
 
-import { useRoleDetailContext } from '@/components/roles/detail/RoleDetail.context';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { Role } from '@tmlmobilidade/go-types-core';
+import { hasPermissionResource, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, DeleteButton, fetchApiData, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton, Spacer, Toolbar, useStandardFormWatch, useFormFlags, useHandleUpdate, useMeData } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
+import { useRolesListData } from '../../list/use-roles-list-data';
+import { useRolesDetailFormContext } from '../RolesDetailForm.context';
+import { useRolesDetailData } from '../use-roles-detail-data';
+import { useRolesDetailRoleId } from '../use-roles-detail-role-id';
+
 /* * */
 
-export function RoleDetailHeader() {
+export function RolesDetailHeader() {
 	//
 
 	//
 	// A. Setup variables
 
-	const router = useRouter();
-	const roleDetailContext = useRoleDetailContext();
-
 	const { t } = useTranslation();
+
+	const router = useRouter();
+
+	const { roleId } = useRolesDetailRoleId();
+
+	const { actions, flags, form } = useRolesDetailFormContext();
+
+	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
 
 	//
 	// B. Handle actions
@@ -34,8 +44,8 @@ export function RoleDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<IdTag id={roleDetailContext.data.id} copyOnClick />
-			<Label size="lg" singleLine>{roleDetailContext.data.form.values.name}</Label>
+			<IdTag id={roleId} copyOnClick />
+			<Label size="lg" singleLine>{nameValue}</Label>
 
 			<Spacer />
 
@@ -44,9 +54,9 @@ export function RoleDetailHeader() {
 				scope={PermissionCatalog.all.roles.scope}
 			>
 				<SaveButton
-					isDisabled={!roleDetailContext.flags.canSave}
-					isLoading={roleDetailContext.flags.isSaving}
-					onClick={roleDetailContext.actions.save}
+					isDisabled={!flags.updateEnabled}
+					isLoading={flags.}
+					onClick={actions.save}
 				/>
 			</HasPermission>
 

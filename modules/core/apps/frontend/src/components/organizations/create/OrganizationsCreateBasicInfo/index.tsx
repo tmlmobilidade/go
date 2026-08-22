@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { ContextFormController, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { StandardFormController, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsCreateFormContext } from '../OrganizationsCreateForm.context';
@@ -25,7 +25,7 @@ export function OrganizationsCreateBasicInfo() {
 		<Section gap="md">
 			<Grid columns="a" gap="xl">
 
-				<ContextFormController
+				<StandardFormController
 					control={form.control}
 					name="long_name"
 					render={({ field, fieldState }) => (
@@ -43,7 +43,7 @@ export function OrganizationsCreateBasicInfo() {
 					)}
 				/>
 
-				<ContextFormController
+				<StandardFormController
 					control={form.control}
 					name="short_name"
 					render={({ field, fieldState }) => (

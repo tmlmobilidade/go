@@ -2,7 +2,7 @@
 
 import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ContextFormController, Grid, Label, openConfirmModal, Section, Select, useAgenciesData } from '@tmlmobilidade/ui';
+import { StandardFormController, Grid, Label, openConfirmModal, Section, Select, useAgenciesData } from '@tmlmobilidade/ui';
 
 import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
 
@@ -53,7 +53,7 @@ export function AlertCreateStepAgency() {
 		<Section>
 			<Grid gap="md">
 				{agenciesOptions.length > 1 && (
-					<ContextFormController
+					<StandardFormController
 						control={alertsCreateForm.control}
 						name="agency_id"
 						render={({ field, fieldState }) => (

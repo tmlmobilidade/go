@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-organize';
 import { CreateStopDto, Stop } from '@tmlmobilidade/types';
-import { CreateContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useHandleUpdate, useLocationsContext, useMultiStep, UseMultiStepReturnType } from '@tmlmobilidade/ui';
+import { CreateContextStateTemplate, keepUrlParams, useStandardForm, useStandardFormWatch, useHandleUpdate, useLocationsContext, useMultiStep, UseMultiStepReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -45,13 +45,13 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Setup form
 
-	const { form, unblock } = useContextForm<CreateStopDto>({
+	const { form, unblock } = useStandardForm<CreateStopDto>({
 		// schema: CreateStopSchema,
 	});
 
-	const nameValue = useContextFormWatch({ control: form.control, name: 'name' });
-	const latitudeValue = useContextFormWatch({ control: form.control, name: 'latitude' });
-	const longitudeValue = useContextFormWatch({ control: form.control, name: 'longitude' });
+	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
+	const latitudeValue = useStandardFormWatch({ control: form.control, name: 'latitude' });
+	const longitudeValue = useStandardFormWatch({ control: form.control, name: 'longitude' });
 
 	const [loadingLocations, setLoadingLocations] = useState(false);
 
