@@ -1,6 +1,6 @@
 'use client';
 
-import { openCreateRoleModal } from '@/components/roles/create/RoleCreate.modal';
+import { openRolesCreateModal } from '@/components/roles/create/RolesCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -29,9 +29,7 @@ export function RolesListHeader() {
 			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
 			<RolesListFilterSearch />
-			<Button icon={<IconPlus size={20} />} label={t('default:roles.list.Header.NewRoleButton.label')} onClick={openCreateRoleModal} />
+			<Button icon={<IconPlus size={20} />} label={t('default:roles.list.Header.NewRoleButton.label')} onClick={openRolesCreateModal} />
 		</Toolbar>
 	);
-
-	//
 }

@@ -49,14 +49,14 @@ export const PAGE_ROUTES = Object.freeze({
 		LOGIN_LIST: `${getModuleConfig('core', 'frontend_url')}/login`,
 
 		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('core', 'frontend_url')}/organizations/${encodeURIComponent(id)}`,
+		ORGANIZATIONS_DETAIL: (organizationId: string) => `${getModuleConfig('core', 'frontend_url')}/organizations/${encodeURIComponent(organizationId)}`,
 		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'frontend_url')}/organizations`,
 
 		// RESET_PASSWORD
 		RESET_PASSWORD_LIST: `${getModuleConfig('core', 'frontend_url')}/reset-password`,
 
 		// ROLES
-		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'frontend_url')}/roles/${encodeURIComponent(id)}`,
+		ROLES_DETAIL: (roleId: string) => `${getModuleConfig('core', 'frontend_url')}/roles/${encodeURIComponent(roleId)}`,
 		ROLES_LIST: `${getModuleConfig('core', 'frontend_url')}/roles`,
 
 		// USERS
@@ -250,11 +250,15 @@ export const API_ROUTES = Object.freeze({
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
 
 		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}`,
-		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/image`,
-		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/lock`,
-		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/${encodeURIComponent(theme)}/image`,
-		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations`,
+		ORGANIZATIONS_CREATE: `${getModuleConfig('core', 'api_url')}/organizations/create`,
+		ORGANIZATIONS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/delete/${encodeURIComponent(id)}`,
+		ORGANIZATIONS_DELETE_DETAIL_: (id: string, theme: string) => `${getModuleConfig('core', 'api_url')}/THEME_IMAGE:/core/api/organizations/delete/${encodeURIComponent(id)}/${encodeURIComponent(theme)}/image`,
+		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/detail/${encodeURIComponent(id)}`,
+		ORGANIZATIONS_DETAIL_DETAIL_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/detail/${encodeURIComponent(id)}/image`,
+		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations/list`,
+		ORGANIZATIONS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/lock/${encodeURIComponent(id)}`,
+		ORGANIZATIONS_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/update/${encodeURIComponent(id)}`,
+		ORGANIZATIONS_UPDATE_DETAIL_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/update/${encodeURIComponent(id)}/image`,
 
 		// PLATFORM
 		PLATFORM_AGENCIES: `${getModuleConfig('core', 'api_url')}/platform/agencies`,
@@ -263,9 +267,12 @@ export const API_ROUTES = Object.freeze({
 		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
 
 		// ROLES
+		ROLES_CREATE: `${getModuleConfig('core', 'api_url')}/roles/create`,
+		ROLES_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/delete/${encodeURIComponent(id)}`,
 		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}`,
-		ROLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}/lock`,
-		ROLES_LIST: `${getModuleConfig('core', 'api_url')}/roles`,
+		ROLES_LIST: `${getModuleConfig('core', 'api_url')}/roles/list`,
+		ROLES_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/lock/${encodeURIComponent(id)}`,
+		ROLES_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/update/${encodeURIComponent(id)}`,
 
 		// USERS
 		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}`,

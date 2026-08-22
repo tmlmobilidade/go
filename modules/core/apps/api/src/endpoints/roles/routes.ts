@@ -23,7 +23,7 @@ server.register(
 		//
 
 		instance.get(
-			'/',
+			'/list',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.read]) },
 			listRolesHandler,
 		);
@@ -35,25 +35,25 @@ server.register(
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.create]) },
 			createRoleHandler,
 		);
 
 		instance.put(
-			'/:id',
+			'/update/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.update]) },
 			updateRoleHandler,
 		);
 
 		instance.delete(
-			'/:id',
+			'/delete/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.delete]) },
 			deleteRoleHandler,
 		);
 
 		instance.get(
-			'/:id/lock',
+			'/lock/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.roles.scope, [PermissionCatalog.all.roles.actions.lock]) },
 			lockRoleHandler,
 		);

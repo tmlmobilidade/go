@@ -26,55 +26,55 @@ server.register(
 		//
 
 		instance.get(
-			'/',
+			'/list',
 			{ preHandler: authorizationMiddleware() },
 			listOrganizationsHandler,
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.create]) },
 			createOrganizationHandler,
 		);
 
 		instance.get(
-			'/:id',
+			'/detail/:id',
 			{ preHandler: authorizationMiddleware() },
 			getOrganizationHandler,
 		);
 
 		instance.put(
-			'/:id',
+			'/update/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.update]) },
 			updateOrganizationHandler,
 		);
 
 		instance.post(
-			'/:id/image',
+			'/update/:id/image',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.update]) },
 			uploadImageHandler,
 		);
 
 		instance.get(
-			'/:id/image',
+			'/detail/:id/image',
 			{ preHandler: authorizationMiddleware() },
 			getImageHandler,
 		);
 
 		instance.delete(
-			'/:id/:theme/image',
+			'/delete/:id/:theme/image',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.delete]) },
 			deleteImageHandler,
 		);
 
 		instance.get(
-			'/:id/lock',
+			'/lock/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.lock]) },
 			lockOrganizationHandler,
 		);
 
 		instance.delete(
-			'/:id',
+			'/delete/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.organizations.scope, [PermissionCatalog.all.organizations.actions.delete]) },
 			deleteOrganizationHandler,
 		);
