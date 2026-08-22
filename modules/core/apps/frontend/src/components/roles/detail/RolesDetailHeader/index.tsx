@@ -1,15 +1,12 @@
 'use client';
 
-import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Role } from '@tmlmobilidade/go-types-core';
-import { hasPermissionResource, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, fetchApiData, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton, Spacer, Toolbar, useStandardFormWatch, useFormFlags, useHandleUpdate, useMeData } from '@tmlmobilidade/ui';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton, Spacer, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
-import { useRolesListData } from '../../list/use-roles-list-data';
 import { useRolesDetailFormContext } from '../RolesDetailForm.context';
-import { useRolesDetailData } from '../use-roles-detail-data';
 import { useRolesDetailRoleId } from '../use-roles-detail-role-id';
 
 /* * */
@@ -26,7 +23,7 @@ export function RolesDetailHeader() {
 
 	const { roleId } = useRolesDetailRoleId();
 
-	const { actions, flags, form } = useRolesDetailFormContext();
+	const { actions, capabilities, form, status } = useRolesDetailFormContext();
 
 	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
 
@@ -54,9 +51,9 @@ export function RolesDetailHeader() {
 				scope={PermissionCatalog.all.roles.scope}
 			>
 				<SaveButton
-					isDisabled={!flags.updateEnabled}
-					isLoading={flags.}
-					onClick={actions.save}
+					isDisabled={!capabilities.updateEnabled}
+					isLoading={status.isLoading}
+					onClick={actions.update}
 				/>
 			</HasPermission>
 
@@ -65,9 +62,9 @@ export function RolesDetailHeader() {
 				scope={PermissionCatalog.all.roles.scope}
 			>
 				<LockButton
-					isLoading={roleDetailContext.flags.isLocking}
-					isLocked={roleDetailContext.data.role?.is_locked}
-					onClick={roleDetailContext.actions.lock}
+					isLoading={status.isLocking}
+					isLocked={status.isLocked}
+					onClick={actions.lock}
 				/>
 			</HasPermission>
 
@@ -78,16 +75,14 @@ export function RolesDetailHeader() {
 				<DeleteButton
 					confirmMessage={t('default:roles.detail.header.DeleteButton.confirm.message')}
 					confirmTitle={t('default:roles.detail.header.DeleteButton.confirm.title')}
-					isDisabled={!roleDetailContext.flags.canDelete}
-					isLoading={roleDetailContext.flags.isDeleting}
-					onDelete={roleDetailContext.actions.delete}
-					onRestore={roleDetailContext.actions.delete}
+					isDisabled={!capabilities.deleteEnabled}
+					isLoading={status.isDeleting}
+					onDelete={actions.delete}
+					onRestore={actions.delete}
 					showConfirmation={true}
 				/>
 			</HasPermission>
 
 		</Toolbar>
 	);
-
-	//
 }

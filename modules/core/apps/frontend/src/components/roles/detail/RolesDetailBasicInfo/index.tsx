@@ -1,6 +1,6 @@
 'use client';
 
-import { Collapsible, StandardFormController, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRolesDetailFormContext } from '../RolesDetailForm.context';
@@ -48,6 +48,4 @@ export function RolesDetailBasicInfo() {
 			</Section>
 		</Collapsible>
 	);
-
-	//
 }

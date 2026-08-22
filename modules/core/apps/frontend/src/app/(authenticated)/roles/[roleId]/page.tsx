@@ -1,21 +1,14 @@
 /* * */
 
-import { RoleDetailContextProvider } from '@/components/roles/detail/RoleDetail.context';
-import { RoleDetail } from '@/components/roles/detail/RolesDetail';
+import { RolesDetail } from '@/components/roles/detail/RolesDetail';
+import { RolesDetailFormContextProvider } from '@/components/roles/detail/RolesDetailForm.context';
 
 /* * */
 
-interface Props {
-	params: Promise<{ id: string }>
-}
-
-/* * */
-
-export default async function Page({ params }: Props) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<RoleDetailContextProvider roleId={id}>
-			<RoleDetail />
-		</RoleDetailContextProvider>
+		<RolesDetailFormContextProvider>
+			<RolesDetail />
+		</RolesDetailFormContextProvider>
 	);
 }

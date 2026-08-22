@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { type FormContextStateTemplate, useStandardForm, useFormFlags, useMeData } from '@tmlmobilidade/ui';
+import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -14,7 +14,7 @@ import { useRolesDetailRoleId } from './use-roles-detail-role-id';
 
 /* * */
 
-const RolesDetailFormContext = createContext<FormContextStateTemplate<UpdateRoleDto> | undefined>(undefined);
+const RolesDetailFormContext = createContext<StandardFormContextValue<UpdateRoleDto> | undefined>(undefined);
 
 export function useRolesDetailFormContext() {
 	const context = useContext(RolesDetailFormContext);
@@ -38,7 +38,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { mutate: rolesListMutate } = useRolesListData();
 
-	const { data: roleData, mutate: rolesDetailMutate } = useRolesDetailData();
+	const { data: roleData, isLoading: roleDataLoading, mutate: rolesDetailMutate } = useRolesDetailData();
 
 	//
 	// B. Setup form
@@ -51,7 +51,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// D. Handle actions
 
-	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
+	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_DETAIL(roleId) }),
 		onSuccess: ({ data }) => {
 			form.reset(data);
@@ -94,25 +94,39 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 		});
 	}, [meData?.permissions]);
 
-	const { deleteEnabled, editEnabled, lockEnabled, updateEnabled } = useFormFlags({
-		deletePermission: hasDeletePermission,
-		isDirty: form.formState.isDirty,
-		isLoading: isSaving || isDeleting || isLocking,
-		isLocked: roleData?.is_locked,
-		isValid: form.formState.isValid,
-		updatePermission: hasUpdatePermission,
+	const { deleteEnabled, editEnabled, lockEnabled, updateEnabled } = useStandardFormCapabilities({
+		delete: {
+			hasPermission: hasDeletePermission,
+			isDeleting: isDeleting,
+		},
+		form: {
+			isDirty: isDirty,
+			isValid: form.formState.isValid,
+		},
+		loading: {
+			isLoading: roleDataLoading,
+		},
+		locked: {
+			hasPermission: hasUpdatePermission,
+			isLocked: roleData?.is_locked ?? false,
+			isLocking: isLocking,
+		},
+		update: {
+			hasPermission: hasUpdatePermission,
+			isUpdating: isUpdating,
+		},
 	});
 
 	//
 	// E. Return state
 
-	const stateValue: FormContextStateTemplate<UpdateRoleDto> = useMemo(() => ({
+	const stateValue: StandardFormContextValue<UpdateRoleDto> = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
-			save: handleSave,
+			update: handleUpdate,
 		},
-		flags: {
+		capabilities: {
 			deleteEnabled,
 			editEnabled,
 			lockEnabled,
@@ -120,8 +134,17 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 		},
 		form,
 		isDirty,
+		status: {
+			isDeleting,
+			isDirty,
+			isLoading: roleDataLoading,
+			isLocked: roleData?.is_locked,
+			isLocking,
+			isUpdating,
+			isValid: form.formState.isValid,
+		},
 		unblock,
-	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleSave, isDirty, lockEnabled, unblock, updateEnabled]);
+	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isDirty, isLocking, isUpdating, lockEnabled, roleData?.is_locked, roleDataLoading, unblock, updateEnabled]);
 
 	return (
 		<RolesDetailFormContext.Provider value={stateValue}>

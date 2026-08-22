@@ -1,2 +1,2 @@
 export * from './context-value';
-export * from './use-standard-form-flags';
+export * from './use-standard-form-capabilities';

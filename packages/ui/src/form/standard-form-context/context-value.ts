@@ -1,12 +1,12 @@
 /* * */
 
 import { type UseStandardFormReturnType } from '../standard-form/use-standard-form';
-import { type UseStandardFormFlagsReturnType } from './use-standard-form-flags';
+import { type UseStandardFormCapabilitiesReturnType } from './use-standard-form-capabilities';
 
 /**
  * Use this interface to type the state of **StandardFormContext** contexts.
  * It extends the `UseStandardFormReturnType` interface and adds an `actions` section,
- * with a save, lock and delete method and a `flags` section, with flags for delete, duplicate, lock and save.
+ * with a save, lock and delete method and a `capabilities` section, with capabilities for delete, duplicate, lock and save.
  */
 export interface StandardFormContextValue<T> extends UseStandardFormReturnType<T> {
 
@@ -17,12 +17,24 @@ export interface StandardFormContextValue<T> extends UseStandardFormReturnType<T
 		delete?: () => void
 		duplicate?: () => void
 		lock?: () => void
-		save: () => void
+		update: () => void
 	}
 
 	/**
-	 * The flags to determine if the actions are enabled and the form is valid.
+	 * The capabilities to determine if the actions are enabled.
 	 */
-	flags: Partial<UseStandardFormFlagsReturnType>
+	capabilities: Partial<UseStandardFormCapabilitiesReturnType>
+
+	status: {
+		isDeleting?: boolean
+		isDirty?: boolean
+		isDuplicating?: boolean
+		isLoading?: boolean
+		isLocked?: boolean
+		isLocking?: boolean
+		isUpdating?: boolean
+		isValid?: boolean
+		isValidating?: boolean
+	}
 
 }
