@@ -13,7 +13,9 @@ import { HomePermissionRegistrySchema } from './scopes/home/registry.js';
 import { LinesPermissionRegistrySchema } from './scopes/lines/registry.js';
 import { OrganizationsPermissionRegistrySchema } from './scopes/organizations/registry.js';
 import { PerformancePermissionRegistrySchema } from './scopes/performance/registry.js';
+import { PlansPermissionRegistrySchema } from './scopes/plans/registry.js';
 import { RidesPermissionRegistrySchema } from './scopes/rides/registry.js';
+import { RolesPermissionRegistrySchema } from './scopes/roles/registry.js';
 import { SamsPermissionRegistrySchema } from './scopes/sams/registry.js';
 import { YearPeriodsPermissionRegistrySchema } from './scopes/year-periods/registry.js';
 
@@ -34,6 +36,8 @@ export const PermissionsRegistrySchema = z.discriminatedUnion('scope', [
 	LinesPermissionRegistrySchema,
 	OrganizationsPermissionRegistrySchema,
 	PerformancePermissionRegistrySchema,
+	PlansPermissionRegistrySchema,
+	RolesPermissionRegistrySchema,
 ]);
 
 export type PermissionsRegistry = z.infer<typeof PermissionsRegistrySchema>;
