@@ -4,7 +4,7 @@
 			"label": "Duplicar",
 			"tooltip": "Criar cópia deste documento"
 		},
-		"SaveButton": {
+		"UpdateButton": {
 			"label": "Guardar",
 			"tooltip": "Guardar Alterações"
 		}

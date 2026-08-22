@@ -2,7 +2,7 @@
 import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, UpdateButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -42,7 +42,7 @@ export function OrganizationDetailHeader() {
 				action={PermissionCatalog.all.organizations.actions.update}
 				scope={PermissionCatalog.all.organizations.scope}
 			>
-				<SaveButton
+				<UpdateButton
 					isDisabled={!organizationDetailContext.flags.canSave}
 					isLoading={organizationDetailContext.flags.isSaving}
 					onClick={organizationDetailContext.actions.save}

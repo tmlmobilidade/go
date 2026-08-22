@@ -54,7 +54,7 @@ export function RolesCreateHeader() {
 			<Button
 				disabled={!nameValue}
 				icon={<IconUpload size={28} />}
-				label={t('default:roles.create.Header.SaveButton.label')}
+				label={t('default:roles.create.Header.UpdateButton.label')}
 				loading={isLoading}
 				onClick={action}
 				variant="primary"

@@ -190,7 +190,7 @@ Common components:
 | `LoadingOverlay` | Full-pane loading state |
 | `ErrorDisplay` | Full-pane error state |
 | `ComponentWrapper` | Labelled section wrapper |
-| `SaveButton` / `DeleteButton` / `LockButton` / `DuplicateButton` | Action buttons with built-in loading state |
+| `UpdateButton` / `DeleteButton` / `LockButton` / `DuplicateButton` | Action buttons with built-in loading state |
 
 ```tsx
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';

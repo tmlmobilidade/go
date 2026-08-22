@@ -28,7 +28,7 @@ export function UserCreateHeader() {
 			<Button
 				disabled={!userCreateContext.data.form.isValid()}
 				icon={<IconPlus size={28} />}
-				label={t('default:users.create.Header.SaveButton.label')}
+				label={t('default:users.create.Header.UpdateButton.label')}
 				loading={userCreateContext.flags.isSaving}
 				onClick={userCreateContext.actions.saveUser}
 				variant="primary"

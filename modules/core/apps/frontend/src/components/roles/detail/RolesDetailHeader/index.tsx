@@ -2,7 +2,7 @@
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton, Spacer, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -50,9 +50,9 @@ export function RolesDetailHeader() {
 				action={PermissionCatalog.all.roles.actions.update}
 				scope={PermissionCatalog.all.roles.scope}
 			>
-				<SaveButton
+				<UpdateButton
 					isDisabled={!capabilities.updateEnabled}
-					isLoading={status.isLoading}
+					isLoading={status.isUpdating}
 					onClick={actions.update}
 				/>
 			</HasPermission>

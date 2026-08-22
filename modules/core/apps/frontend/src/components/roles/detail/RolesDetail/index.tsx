@@ -31,13 +31,13 @@ export function RolesDetail() {
 		// and if it does, remove it from the form values
 		if (latestValues.permissions?.find(p => p.scope === permission.scope && p.action === permission.action)) {
 			const updatedPermissions = latestValues.permissions.filter(p => p.scope !== permission.scope || p.action !== permission.action);
-			form.setValue('permissions', updatedPermissions);
+			form.setValue('permissions', updatedPermissions, { shouldDirty: true });
 			return;
 		}
 		// If it doesn't exist, add a new permission entry and validate it
 		const validatedPermission = PermissionSchema.safeParse(permission);
 		if (!validatedPermission.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(validatedPermission.error));
-		form.setValue('permissions', [...latestValues.permissions ?? [], validatedPermission.data]);
+		form.setValue('permissions', [...latestValues.permissions ?? [], validatedPermission.data], { shouldDirty: true });
 	};
 
 	function handlePermissionResourceToggle(permission: Permission) {
@@ -50,7 +50,12 @@ export function RolesDetail() {
 		const permissionIndex = latestValues.permissions?.findIndex(p => p.scope === permission.scope && p.action === permission.action);
 		if (permissionIndex === -1) return alert('Permissão não encontrada na lista de permissões');
 		// Update the permission with the new resources
-		form.setValue('permissions', [...latestValues.permissions.slice(0, permissionIndex), permission, ...latestValues.permissions.slice(permissionIndex + 1)]);
+		const updatedPermissions = [
+			...latestValues.permissions.slice(0, permissionIndex),
+			permission,
+			...latestValues.permissions.slice(permissionIndex + 1),
+		];
+		form.setValue('permissions', updatedPermissions, { shouldDirty: true });
 	};
 
 	//

@@ -3,7 +3,7 @@
 import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, SaveButton } from '@tmlmobilidade/ui';
+import { DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, UpdateButton } from '@tmlmobilidade/ui';
 import { CloseButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +43,7 @@ export function UserDetailHeader() {
 				action={PermissionCatalog.all.users.actions.update}
 				scope={PermissionCatalog.all.users.scope}
 			>
-				<SaveButton
+				<UpdateButton
 					isDisabled={!userDetailContext.flags.canSave}
 					isLoading={userDetailContext.flags.isSaving}
 					onClick={userDetailContext.actions.save}

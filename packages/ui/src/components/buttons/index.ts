@@ -6,4 +6,4 @@ export * from './DuplicateButton';
 export * from './IconButton';
 export * from './LargeButton';
 export * from './LockButton';
-export * from './SaveButton';
+export * from './UpdateButton';

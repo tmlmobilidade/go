@@ -3,7 +3,7 @@
 import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { HasPermission, IdTag, keepUrlParams, LockButton, SaveButton, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { HasPermission, IdTag, keepUrlParams, LockButton, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -39,7 +39,7 @@ export function AgencyDetailHeader() {
 
 			<Spacer />
 
-			<SaveButton
+			<UpdateButton
 				isDisabled={!agencyDetailContext.flags.canSave}
 				isLoading={agencyDetailContext.flags.isSaving}
 				onClick={agencyDetailContext.actions.save}

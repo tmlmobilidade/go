@@ -4,7 +4,7 @@ import { useStopDetailContext } from '@/components/stops/detail/StopDetail.conte
 import { IconWorldShare } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, HasPermission, IconButton, IdTag, keepUrlParams, LockButton, SaveButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IconButton, IdTag, keepUrlParams, LockButton, UpdateButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import { StopDetailPatternsMenu } from '../StopDetailPatternsMenu';
@@ -47,7 +47,7 @@ export function StopDetailHeader() {
 				action={PermissionCatalog.all.stops.actions.update}
 				scope={PermissionCatalog.all.stops.scope}
 			>
-				<SaveButton
+				<UpdateButton
 					isDisabled={!stopDetailContext.flags.canSave}
 					isLoading={stopDetailContext.flags.isSaving}
 					onClick={stopDetailContext.actions.save}
