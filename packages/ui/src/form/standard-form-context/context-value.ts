@@ -27,13 +27,11 @@ export interface StandardFormContextValue<T> extends UseStandardFormReturnType<T
 
 	status: {
 		isDeleting?: boolean
-		isDirty?: boolean
 		isDuplicating?: boolean
 		isLoading?: boolean
 		isLocked?: boolean
 		isLocking?: boolean
 		isUpdating?: boolean
-		isValid?: boolean
 		isValidating?: boolean
 	}
 

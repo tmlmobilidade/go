@@ -43,7 +43,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// B. Setup form
 
-	const { form, isDirty, unblock } = useStandardForm<UpdateRoleDto, typeof UpdateRoleSchema>({
+	const { form, unblock } = useStandardForm<UpdateRoleDto, typeof UpdateRoleSchema>({
 		apiData: roleData,
 		schema: UpdateRoleSchema,
 	});
@@ -52,7 +52,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	// D. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_DETAIL(roleId) }),
+		fetchFn: async () => await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_UPDATE(roleId) }),
 		onSuccess: ({ data }) => {
 			form.reset(data);
 			rolesDetailMutate();
@@ -100,7 +100,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 			isDeleting: isDeleting,
 		},
 		form: {
-			isDirty: isDirty,
+			isDirty: form.formState.isDirty,
 			isValid: form.formState.isValid,
 		},
 		loading: {
@@ -133,18 +133,15 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 			updateEnabled,
 		},
 		form,
-		isDirty,
 		status: {
 			isDeleting,
-			isDirty,
 			isLoading: roleDataLoading,
 			isLocked: roleData?.is_locked,
 			isLocking,
 			isUpdating,
-			isValid: form.formState.isValid,
 		},
 		unblock,
-	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isDirty, isLocking, isUpdating, lockEnabled, roleData?.is_locked, roleDataLoading, unblock, updateEnabled]);
+	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isLocking, isUpdating, lockEnabled, roleData?.is_locked, roleDataLoading, unblock, updateEnabled]);
 
 	return (
 		<RolesDetailFormContext.Provider value={stateValue}>

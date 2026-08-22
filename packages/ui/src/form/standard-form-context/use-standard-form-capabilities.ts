@@ -129,6 +129,8 @@ export function useStandardFormCapabilities(props: UseStandardFormCapabilitiesPr
 		return true;
 	})();
 
+	// console.log('updateEnabled', updateEnabled, props);
+
 	const duplicateEnabled = ((): boolean => {
 		if (!props.duplicate?.hasPermission) return false;
 		if (props.loading?.isLoading) return false;
