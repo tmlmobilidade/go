@@ -17,37 +17,37 @@ import { PlansPermissionSchema } from './scopes/plans/permission.js';
 import { RidesPermissionSchema } from './scopes/rides/permission.js';
 import { RolesPermissionSchema } from './scopes/roles/permission.js';
 import { SamsPermissionSchema } from './scopes/sams/permission.js';
-import { StopsPermissionSchema } from './scopes/stops.js';
-import { TypologiesPermissionSchema } from './scopes/typologies.js';
-import { UsersPermissionSchema } from './scopes/users.js';
-import { VehiclesPermissionSchema } from './scopes/vehicles.js';
+import { StopsPermissionSchema } from './scopes/stops/permission.js';
+import { TypologiesPermissionSchema } from './scopes/typologies/permission.js';
+import { UsersPermissionSchema } from './scopes/users/permission.js';
+import { VehiclesPermissionSchema } from './scopes/vehicles/permission.js';
 import { YearPeriodsPermissionSchema } from './scopes/year-periods/permission.js';
-import { ZonesPermissionSchema } from './scopes/zones.js';
+import { ZonesPermissionSchema } from './scopes/zones/permission.js';
 
 /* * */
 
 export const PermissionSchema = z.discriminatedUnion('scope', [
 	AgenciesPermissionSchema,
 	AlertsPermissionSchema,
-	RidesPermissionSchema,
-	SamsPermissionSchema,
+	AnnotationsPermissionSchema,
+	EventsPermissionSchema,
+	FaresPermissionSchema,
 	GtfsValidationsPermissionSchema,
+	HolidaysPermissionSchema,
 	HomePermissionSchema,
+	LinesPermissionSchema,
 	OrganizationsPermissionSchema,
 	PerformancePermissionSchema,
 	PlansPermissionSchema,
+	RidesPermissionSchema,
 	RolesPermissionSchema,
+	SamsPermissionSchema,
 	StopsPermissionSchema,
+	TypologiesPermissionSchema,
 	UsersPermissionSchema,
 	VehiclesPermissionSchema,
-	FaresPermissionSchema,
-	AnnotationsPermissionSchema,
 	YearPeriodsPermissionSchema,
-	HolidaysPermissionSchema,
-	EventsPermissionSchema,
 	ZonesPermissionSchema,
-	TypologiesPermissionSchema,
-	LinesPermissionSchema,
 ]);
 
 export type Permission = z.infer<typeof PermissionSchema>;
