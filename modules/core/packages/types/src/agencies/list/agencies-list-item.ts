@@ -14,9 +14,9 @@ export const AgenciesListItemSchema = AgencySchema
 		pta_name: true,
 		short_name: true,
 	})
-	.transform(value => ({
-		...value,
-		name_normalized: normalizeString(value.name),
+	.transform(item => ({
+		...item,
+		name_normalized: normalizeString(item.name),
 	}));
 
 /**
