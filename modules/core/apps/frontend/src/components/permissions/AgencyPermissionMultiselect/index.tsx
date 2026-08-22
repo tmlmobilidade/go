@@ -1,8 +1,7 @@
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { MultiSelect, useDataAgencies } from '@tmlmobilidade/ui';
+import { MultiSelect, useAgenciesData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -21,7 +20,12 @@ export function AgencyPermissionMultiselect({ disabled, onChange, value }: Agenc
 	//
 	// A. Fetch data
 
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
+	const { options: agencyOptions } = useAgenciesData({
+		permissions: {
+			actions: ['read'],
+			scope: 'roles',
+		},
+	});
 
 	//
 	// B. Transform data
@@ -64,6 +68,4 @@ export function AgencyPermissionMultiselect({ disabled, onChange, value }: Agenc
 			value={value}
 		/>
 	);
-
-	//
 }

@@ -61,7 +61,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Role>({ method: 'DELETE', url: API_ROUTES.core.ROLES_DETAIL(roleId) }),
+		fetchFn: async () => await fetchApiData<Role>({ method: 'DELETE', url: API_ROUTES.core.ROLES_DELETE(roleId) }),
 		onSuccess: () => {
 			rolesListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.core.ROLES_LIST));

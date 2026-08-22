@@ -3,7 +3,7 @@
 import { CheckCard } from '@/components/common/CheckCard';
 import { AgencyPermissionMultiselect } from '@/components/permissions/AgencyPermissionMultiselect';
 import { AlertReferenceTypePermissionMultiselect } from '@/components/permissions/AlertReferenceTypePermissionMultiselect';
-import { useRolesContext } from '@/contexts/Roles.context';
+import { useRolesData } from '@/components/shared/use-roles-data';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
@@ -29,7 +29,7 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 	//
 	// A. Setup variables
 
-	const rolesContext = useRolesContext();
+	const { data: rolesData } = useRolesData();
 
 	//
 	// B. Transform data
@@ -38,8 +38,8 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 
 	const hasPermissionFromRole = useMemo(() => {
 		if (!enabledRoleIds || enabledRoleIds.length === 0) return false;
-		return hasRolePermission(scope, configAction.action, enabledRoleIds, rolesContext.data.raw);
-	}, [scope, configAction.action, enabledRoleIds, rolesContext.data.raw]);
+		return hasRolePermission(scope, configAction.action, enabledRoleIds, rolesData);
+	}, [scope, configAction.action, enabledRoleIds, rolesData]);
 
 	const selectedAgencyIds = (() => {
 		if (!currentPermissionEntry) return [];
@@ -102,6 +102,4 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 			</Grid>
 		</CheckCard>
 	);
-
-	//
 }
