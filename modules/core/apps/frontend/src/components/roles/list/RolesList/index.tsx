@@ -1,12 +1,14 @@
 'use client';
 
-import { useRolesListContext } from '@/components/roles/list/RolesList.context';
 import { RolesListHeader } from '@/components/roles/list/RolesListHeader';
-import { type RoleNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, LoadingOverlay, Pane, TagGroup } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { RolesListItem } from '@tmlmobilidade/go-core-pckg-types';
+import { DataTable, DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, TagGroup } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+
+import { useRolesDetailRoleId } from '../../detail/use-roles-detail-role-id';
+import { useRolesListData } from '../use-roles-list-data';
 
 /* * */
 
@@ -16,13 +18,15 @@ export function RolesList() {
 	//
 	// A. Setup variables
 
-	const router = useRouter();
-	const params = useParams<{ id?: string }>();
-
-	const rolesListContext = useRolesListContext();
 	const { t } = useTranslation();
 
-	const columns: DataTableColumn<RoleNormalized>[] = [
+	const router = useRouter();
+
+	const { roleId } = useRolesDetailRoleId();
+
+	const rolesData = useRolesListData();
+
+	const columns: DataTableColumn<RolesListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -45,32 +49,28 @@ export function RolesList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: RoleNormalized) => {
+	const handleRowClick = (item: RolesListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.core.ROLES_DETAIL(item._id)));
 	};
 
 	//
 	// C. Render components
 
-	if (rolesListContext.flags.loading) {
-		return <LoadingOverlay />;
-	}
-
-	if (rolesListContext.flags.error) {
-		return <ErrorDisplay message={rolesListContext.flags.error.message} />;
-	}
-
 	return (
-		<Pane header={[<RolesListHeader key="header" />]}>
+		<Pane
+			header={[
+				<RolesListHeader key="header" />,
+			]}
+		>
+			{rolesData.error && <ErrorDisplay message={rolesData.error} />}
 			<DataTable
 				columns={columns}
+				isLoading={rolesData.isLoading}
 				onRowClick={handleRowClick}
-				records={rolesListContext.data.filtered}
+				records={rolesData.data}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={roleId}
 			/>
 		</Pane>
 	);
-
-	//
 }

@@ -21,7 +21,7 @@ export async function listRolesHandler(request: FastifyRequest, reply: FastifyRe
 		});
 	}
 
-	const validatedRoles = RolesListItemSchema.array().parse(foundRoles);
+	// const validatedRoles = RolesListItemSchema.array().parse(foundRoles);
 
-	return sendSuccessApiResponse(reply, validatedRoles);
+	return sendSuccessApiResponse(reply, foundRoles);
 }
