@@ -249,6 +249,9 @@ export const API_ROUTES = Object.freeze({
 		AUTH_LOGOUT: `${getModuleConfig('core', 'api_url')}/auth/logout`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
 
+		// HOME
+		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
+
 		// ORGANIZATIONS
 		ORGANIZATIONS_CREATE: `${getModuleConfig('core', 'api_url')}/organizations/create`,
 		ORGANIZATIONS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/delete/${encodeURIComponent(id)}`,
@@ -265,6 +268,7 @@ export const API_ROUTES = Object.freeze({
 		PLATFORM_DOWNLOADS: `${getModuleConfig('core', 'api_url')}/platform/downloads`,
 		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
 		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
+		PLATFORM_ORGANIZATIONS: `${getModuleConfig('core', 'api_url')}/platform/organizations`,
 
 		// ROLES
 		ROLES_CREATE: `${getModuleConfig('core', 'api_url')}/roles/create`,

@@ -2,7 +2,7 @@
 
 import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { iconMap } from '@/lib/icons';
-import { HomeLink } from '@tmlmobilidade/go-types-core';
+import { HomeQuickLink } from '@tmlmobilidade/go-types-core';
 import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import React from 'react';
@@ -23,7 +23,7 @@ export function OrganizationDetailQuickLinks() {
 
 	const { t } = useTranslation();
 
-	const columns: DataTableColumn<HomeLink & { actions: React.ReactNode }>[] = [
+	const columns: DataTableColumn<HomeQuickLink & { actions: React.ReactNode }>[] = [
 		{
 			accessor: 'title',
 			title: t('default:organizations.detail.QuickLinks.table.columns.name.label'),
@@ -51,7 +51,7 @@ export function OrganizationDetailQuickLinks() {
 	// B. Handle actions
 	//
 
-	const handleSubmit = (link: HomeLink) => {
+	const handleSubmit = (link: HomeQuickLink) => {
 		if (!organizationDetailContext.data.form) return;
 
 		const links = organizationDetailContext.data.form.values.home_links;
@@ -68,14 +68,14 @@ export function OrganizationDetailQuickLinks() {
 		organizationDetailContext.actions.save();
 	};
 
-	const handleDelete = (link: HomeLink) => {
+	const handleDelete = (link: HomeQuickLink) => {
 		if (!organizationDetailContext.data.form) return;
 		const updatedLinks = organizationDetailContext.data.form.values.home_links.filter(l => l.title !== link.title);
 		organizationDetailContext.data.form.values.home_links = updatedLinks;
 		organizationDetailContext.actions.save();
 	};
 
-	const handleEdit = (link: HomeLink) => {
+	const handleEdit = (link: HomeQuickLink) => {
 		openOrganizationQuickLinksModal({ handleSubmit: handleSubmit, link });
 	};
 

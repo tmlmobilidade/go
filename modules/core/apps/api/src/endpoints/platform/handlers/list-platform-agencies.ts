@@ -7,7 +7,7 @@ import { type AgenciesPlatformRequest, AgenciesPlatformRequestSchema, type Agenc
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Get rides by query.
+ * Get agencies platform data.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */

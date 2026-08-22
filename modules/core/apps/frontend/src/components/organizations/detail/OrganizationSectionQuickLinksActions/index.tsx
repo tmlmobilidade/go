@@ -1,12 +1,12 @@
 'use client';
 
-import { HomeLink } from '@tmlmobilidade/go-types-core';
+import { HomeQuickLink } from '@tmlmobilidade/go-types-core';
 import { Button, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export function OrganizationDetailQuickLinksActions({ handleDelete, handleEdit, link }: { handleDelete: (link: HomeLink) => void, handleEdit: (link: HomeLink) => void, link: HomeLink }) {
+export function OrganizationDetailQuickLinksActions({ handleDelete, handleEdit, link }: { handleDelete: (link: HomeQuickLink) => void, handleEdit: (link: HomeQuickLink) => void, link: HomeQuickLink }) {
 	//
 
 	//
