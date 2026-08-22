@@ -3,17 +3,24 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useMemo } from 'react';
 import { type DefaultValues, useForm, type UseFormReturn } from 'react-hook-form';
-import { type ZodSchema } from 'zod';
+import { z, type ZodType } from 'zod';
 
 import { usePreventNavigation } from '../hooks/use-prevent-navigation';
 
 /* * */
 
-interface UseContextFormProps<T> {
-	apiData?: null | T
-	defaultValues?: DefaultValues<T>
+// interface UseContextFormProps<T> {
+// 	apiData?: null | T
+// 	defaultValues?: DefaultValues<T>
+// 	mode?: 'controlled' | 'uncontrolled'
+// 	schema?: ZodSchema<T>
+// }
+
+interface UseContextFormProps<TSchema extends ZodType> {
+	apiData?: null | z.output<TSchema>
+	defaultValues?: DefaultValues<z.input<TSchema>>
 	mode?: 'controlled' | 'uncontrolled'
-	schema?: ZodSchema<T>
+	schema?: TSchema
 }
 
 export interface UseContextFormReturnType<T> {
@@ -31,14 +38,14 @@ export interface UseContextFormReturnType<T> {
  * @param defaultValues Optional initial values to set when creating new forms.
  * @returns The form methods and state from React Hook Form.
  */
-export function useContextForm<T>({ apiData, defaultValues, schema }: UseContextFormProps<T>): UseContextFormReturnType<T> {
+export function useContextForm<TSchema extends ZodType>({ apiData, defaultValues, schema }: UseContextFormProps<TSchema>): UseContextFormReturnType<TSchema> {
 	//
 
 	//
 	// Setup form and its related logic
 
-	const form = useForm<T>({
-		defaultValues: defaultValues,
+	const form = useForm<z.input<TSchema>>({
+		defaultValues,
 		resolver: schema ? zodResolver(schema) : undefined,
 	});
 

@@ -33,7 +33,7 @@ export function useOrganizationsListData(): UseOrganizationsListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<OrganizationsListItem[]>>(API_ROUTES.core.ROLES_LIST, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<OrganizationsListItem[]>>(API_ROUTES.core.ORGANIZATIONS_LIST, {
 		fetcher: async (url: string) => await fetchApiData<OrganizationsListItem[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

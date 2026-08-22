@@ -65,7 +65,8 @@
 		"react-i18next": "17.0.11",
 		"react-viewport-list": "7.1.2",
 		"swr": "2.5.0",
-		"ukkonen": "2.2.0"
+		"ukkonen": "2.2.0",
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@turf/turf": "7.4.0",

@@ -158,7 +158,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	// E. Render components
 
 	if (meLoading || isRedirectingToLogin) {
-		return <LoadingOverlay fullscreen />;
+		return <LoadingOverlay size="lg" fullscreen />;
 	}
 
 	if (meError) {

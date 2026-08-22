@@ -1,5 +1,6 @@
 'use client';
 
+import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
 import { ContextFormController, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -41,6 +42,24 @@ export function OrganizationsCreateBasicInfo() {
 						/>
 					)}
 				/>
+
+				<ContextFormController
+					control={form.control}
+					name="short_name"
+					render={({ field, fieldState }) => (
+						<TextInput
+							error={fieldState.error?.message}
+							label={t('default:organizations.create.SectionBasicInfo.fields.short_name.label')}
+							maxLength={CreateOrganizationSchema.shape.short_name.maxLength}
+							onBlur={field.onBlur}
+							onChange={e => field.onChange(e.currentTarget.value)}
+							placeholder={t('default:organizations.create.SectionBasicInfo.fields.short_name.placeholder')}
+							value={field.value ?? ''}
+							withAsterisk
+						/>
+					)}
+				/>
+
 			</Grid>
 		</Section>
 	);

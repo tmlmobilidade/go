@@ -1,12 +1,12 @@
 'use client';
 
-import { type CreateOrganizationDto, CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
+import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
 import { useContextForm, type UseContextFormReturnType } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext } from 'react';
 
 /* * */
 
-const OrganizationsCreateFormContext = createContext<undefined | UseContextFormReturnType<CreateOrganizationDto>>(undefined);
+const OrganizationsCreateFormContext = createContext<undefined | UseContextFormReturnType<typeof CreateOrganizationSchema>>(undefined);
 
 export function useOrganizationsCreateFormContext() {
 	const context = useContext(OrganizationsCreateFormContext);
@@ -22,11 +22,8 @@ export function OrganizationsCreateFormContextProvider({ children }: PropsWithCh
 	//
 	// A. Setup form
 
-	const formDefaultValues = useMemo<Partial<CreateOrganizationDto>>(() => CreateOrganizationSchema.parse({}), []);
-
-	const { form, unblock } = useContextForm<CreateOrganizationDto>({
-		defaultValues: formDefaultValues,
-		// schema: CreateOrganizationSchema,
+	const { form, unblock } = useContextForm<typeof CreateOrganizationSchema>({
+		schema: CreateOrganizationSchema,
 	});
 
 	//

@@ -32,7 +32,7 @@ export function useSidebarHeaderLogo(): UseSidebarHeaderLogoReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Pick<Organization, 'logo_dark' | 'logo_light'>>>(meContext.data.user?.organization_id && API_ROUTES.core.ORGANIZATIONS_DETAIL_IMAGE(meContext.data.user.organization_id), {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Pick<Organization, 'logo_dark' | 'logo_light'>>>(meContext.data.user?.organization_id && API_ROUTES.core.ORGANIZATIONS_DETAIL_DETAIL_IMAGE(meContext.data.user.organization_id), {
 		fetcher: async (url: string) => await fetchApiData<Pick<Organization, 'logo_dark' | 'logo_light'>>({ url }),
 	});
 
