@@ -36,7 +36,7 @@ export async function listPlatformAgenciesHandler(request: FastifyRequest<{ Body
 
 	const pipeline: AggregationPipeline<AgenciesPlatformResponse> = [
 		{ $match: matchedAgencyIds },
-		{ $project: Object.fromEntries(Object.keys([AgenciesPlatformResponseSchema.shape]).map(key => [key, 1])) },
+		{ $project: Object.fromEntries(Object.keys(AgenciesPlatformResponseSchema.shape).map(key => [key, 1])) },
 		{ $sort: { _id: -1 } },
 	];
 
