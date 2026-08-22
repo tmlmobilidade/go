@@ -4,11 +4,11 @@ import { type UseStandardFormReturnType } from '../standard-form/use-standard-fo
 import { type UseStandardFormFlagsReturnType } from './use-standard-form-flags';
 
 /**
- * Use this interface to type the state of **Form** contexts.
+ * Use this interface to type the state of **StandardFormContext** contexts.
  * It extends the `UseStandardFormReturnType` interface and adds an `actions` section,
  * with a save, lock and delete method and a `flags` section, with flags for delete, duplicate, lock and save.
  */
-export interface StandardFormContextValue<T> {
+export interface StandardFormContextValue<T> extends UseStandardFormReturnType<T> {
 
 	/**
 	 * The actions to perform on the form.
@@ -24,10 +24,5 @@ export interface StandardFormContextValue<T> {
 	 * The flags to determine if the actions are enabled and the form is valid.
 	 */
 	flags: Partial<UseStandardFormFlagsReturnType>
-
-	/**
-	 * The form instance.
-	 */
-	form: UseStandardFormReturnType<T>
 
 }
