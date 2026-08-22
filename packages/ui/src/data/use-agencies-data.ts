@@ -46,7 +46,7 @@ export function useAgenciesData(permissions: AgenciesPlatformRequest): UseAgenci
 	//
 	// C. Transform data
 
-	const filteredIds = useMemo(() => {
+	const idsData = useMemo(() => {
 		// Skip if no data is available
 		if (!data?.data?.length) return [];
 		// Keep only the IDs of the response data
@@ -71,10 +71,10 @@ export function useAgenciesData(permissions: AgenciesPlatformRequest): UseAgenci
 	return useMemo(() => ({
 		data: data?.data ?? [],
 		error: error?.error,
-		ids: filteredIds,
+		ids: idsData,
 		isLoading: isLoading,
 		isValidating: isValidating,
 		options: optionsData,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.data, error?.error, filteredIds, isLoading, isValidating, optionsData, data?.timestamp]);
+	}), [data?.data, error?.error, idsData, isLoading, isValidating, optionsData, data?.timestamp]);
 };

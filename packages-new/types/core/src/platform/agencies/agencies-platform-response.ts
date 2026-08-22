@@ -11,8 +11,6 @@ export const AgenciesPlatformResponseSchema = AgencySchema.omit({
 	contact_emails_pto: true,
 });
 
-/* * */
-
 /**
  * A read model for the agencies platform response.
  */
