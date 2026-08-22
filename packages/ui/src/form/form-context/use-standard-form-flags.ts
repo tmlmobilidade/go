@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 /* * */
 
-interface UseFormFlagsProps {
+interface UseStandardFormFlagsProps {
 
 	/**
 	 * Indicates if the user has permission to delete the item.
@@ -62,7 +62,7 @@ interface UseFormFlagsProps {
 
 }
 
-export interface UseFormFlagsReturnType {
+export interface UseStandardFormFlagsReturnType {
 
 	/**
 	 * Indicates if the item can be deleted.
@@ -97,7 +97,7 @@ export interface UseFormFlagsReturnType {
  * @param props The properties to determine read-only status.
  * @returns An object containing the form flags.
  */
-export function useFormFlags(props: UseFormFlagsProps): UseFormFlagsReturnType {
+export function useStandardFormFlags(props: UseStandardFormFlagsProps): UseStandardFormFlagsReturnType {
 	//
 
 	const deleteEnabled = useMemo(() => {

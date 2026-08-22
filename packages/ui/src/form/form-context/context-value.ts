@@ -1,7 +1,7 @@
 /* * */
 
-import { type UseStandardFormReturnType } from '../form/use-standard-form';
-import { type UseFormFlagsReturnType } from '../form/use-form-flags';
+import { type UseStandardFormReturnType } from '../standard-form/use-standard-form';
+import { type UseStandardFormFlagsReturnType } from './use-standard-form-flags';
 
 /**
  * Use this interface to type the state of **Form** contexts.
@@ -23,7 +23,7 @@ export interface StandardFormContextValue<T> {
 	/**
 	 * The flags to determine if the actions are enabled and the form is valid.
 	 */
-	flags: Partial<UseFormFlagsReturnType>
+	flags: Partial<UseStandardFormFlagsReturnType>
 
 	/**
 	 * The form instance.
