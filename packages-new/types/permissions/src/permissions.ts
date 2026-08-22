@@ -4,9 +4,11 @@ import { z } from 'zod';
 
 import { AgenciesPermissionSchema } from './scopes/agencies/permission.js';
 import { AlertsPermissionSchema } from './scopes/alerts/permission.js';
-import { AnnotationsPermissionSchema, EventsPermissionSchema, HolidaysPermissionSchema, YearPeriodsPermissionSchema } from './scopes/dates.js';
+import { AnnotationsPermissionSchema } from './scopes/annotations/permission.js';
+import { EventsPermissionSchema } from './scopes/events/permission.js';
 import { FaresPermissionSchema } from './scopes/fares/permission.js';
-import { GtfsValidationsPermissionSchema } from './scopes/gtfs-validations.js';
+import { GtfsValidationsPermissionSchema } from './scopes/gtfs-validations/permission.js';
+import { HolidaysPermissionSchema } from './scopes/holidays/permission.js';
 import { HomePermissionSchema } from './scopes/home.js';
 import { LinesPermissionSchema } from './scopes/lines.js';
 import { OrganizationsPermissionSchema } from './scopes/organizations.js';
@@ -19,6 +21,7 @@ import { StopsPermissionSchema } from './scopes/stops.js';
 import { TypologiesPermissionSchema } from './scopes/typologies.js';
 import { UsersPermissionSchema } from './scopes/users.js';
 import { VehiclesPermissionSchema } from './scopes/vehicles.js';
+import { YearPeriodsPermissionSchema } from './scopes/year-periods/permission.js';
 import { ZonesPermissionSchema } from './scopes/zones.js';
 
 /* * */
