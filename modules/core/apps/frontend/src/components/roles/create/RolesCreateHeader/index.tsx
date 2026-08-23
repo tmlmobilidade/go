@@ -17,7 +17,7 @@ export function RolesCreateHeader() {
 
 	const { t } = useTranslation();
 
-	const { actions, form, status } = useRolesCreateFormContext();
+	const { actions, capabilities, form, status } = useRolesCreateFormContext();
 
 	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
 
@@ -31,7 +31,7 @@ export function RolesCreateHeader() {
 			<Label size="lg" singleLine>{nameValue}</Label>
 			<Spacer />
 			<Button
-				disabled={!nameValue}
+				disabled={!capabilities.createEnabled}
 				icon={<IconUpload size={28} />}
 				label={t('default:roles.create.Header.UpdateButton.label')}
 				loading={status.isCreating}

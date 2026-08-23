@@ -2,7 +2,8 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateRoleDto, CreateRoleSchema, Role } from '@tmlmobilidade/go-types-core';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleUpdate, useStandardForm } from '@tmlmobilidade/ui';
+import { hasPermission } from '@tmlmobilidade/go-types-permissions';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleUpdate, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -29,6 +30,8 @@ export function RolesCreateFormContextProvider({ children }: PropsWithChildren) 
 
 	const router = useRouter();
 
+	const { data: meData } = useMeData();
+
 	const { mutate } = useRolesListData();
 
 	//
@@ -54,6 +57,27 @@ export function RolesCreateFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	//
+	// C. Setup flags
+
+	const hasCreatePermission = useMemo(() => {
+		return hasPermission(meData?.permissions, {
+			action: 'create',
+			scope: 'roles',
+		});
+	}, [meData?.permissions]);
+
+	const { createEnabled, editEnabled } = useStandardFormCapabilities({
+		create: {
+			hasPermission: hasCreatePermission,
+			isCreating: isCreating,
+		},
+		form: {
+			isDirty: form.formState.isDirty,
+			isValid: form.formState.isValid,
+		},
+	});
+
+	//
 	// D. Return context value
 
 	const stateValue: StandardFormContextValue<CreateRoleDto> = useMemo(() => ({
@@ -61,14 +85,15 @@ export function RolesCreateFormContextProvider({ children }: PropsWithChildren) 
 			create: handleCreate,
 		},
 		capabilities: {
-			updateEnabled: false,
+			createEnabled,
+			editEnabled,
 		},
 		form,
 		status: {
 			isCreating,
 		},
 		unblock,
-	}), [form, handleCreate, isCreating, unblock]);
+	}), [createEnabled, editEnabled, form, handleCreate, isCreating, unblock]);
 
 	return (
 		<RolesCreateFormContext.Provider value={stateValue}>

@@ -7,6 +7,16 @@ import { useMemo } from 'react';
 interface UseStandardFormCapabilitiesProps {
 
 	/**
+	 * The properties to determine if the item can be created.
+	 * @property createPermission The permission to create the item.
+	 * @property isCreating The state of the item being created.
+	 */
+	create?: {
+		hasPermission?: boolean
+		isCreating?: boolean
+	}
+
+	/**
 	 * The properties to determine if the item can be deleted.
 	 * @property deletePermission The permission to delete the item.
 	 * @property isDeleted The state of the item.
@@ -76,6 +86,11 @@ interface UseStandardFormCapabilitiesProps {
 export interface UseStandardFormCapabilitiesReturnType {
 
 	/**
+	 * Indicates if the item can be created.
+	 */
+	createEnabled: boolean
+
+	/**
 	 * Indicates if the item can be deleted.
 	 */
 	deleteEnabled: boolean
@@ -116,7 +131,8 @@ export function useStandardFormCapabilities(props: UseStandardFormCapabilitiesPr
 		|| props.locked?.isLocking
 		|| props.delete?.isDeleting
 		|| props.duplicate?.isDuplicating
-		|| props.update?.isUpdating;
+		|| props.update?.isUpdating
+		|| props.create?.isCreating;
 
 	const deleteEnabled = (() => {
 		if (!props.delete?.hasPermission) return false;
@@ -135,8 +151,6 @@ export function useStandardFormCapabilities(props: UseStandardFormCapabilitiesPr
 		if (!props.form.isValid) return false;
 		return true;
 	})();
-
-	// console.log('updateEnabled', updateEnabled, props);
 
 	const duplicateEnabled = ((): boolean => {
 		if (!props.duplicate?.hasPermission) return false;
@@ -157,18 +171,25 @@ export function useStandardFormCapabilities(props: UseStandardFormCapabilitiesPr
 	})();
 
 	const editEnabled = ((): boolean => {
-		if (!props.update?.hasPermission) return false;
 		if (props.delete?.isDeleted) return false;
 		if (props.locked?.isLocked) return false;
 		if (isBeingModified) return false;
 		return true;
 	})();
 
+	const createEnabled = ((): boolean => {
+		if (!props.create?.hasPermission) return false;
+		if (!props.form.isValid) return false;
+		if (isBeingModified) return false;
+		return true;
+	})();
+
 	return useMemo(() => ({
+		createEnabled,
 		deleteEnabled,
 		duplicateEnabled,
 		editEnabled,
 		lockEnabled,
 		updateEnabled,
-	}), [deleteEnabled, duplicateEnabled, editEnabled, lockEnabled, updateEnabled]);
+	}), [createEnabled, deleteEnabled, duplicateEnabled, editEnabled, lockEnabled, updateEnabled]);
 };
