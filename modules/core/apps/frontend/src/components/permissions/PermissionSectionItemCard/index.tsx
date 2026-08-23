@@ -7,7 +7,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-export interface CheckCardProps {
+export interface PermissionSectionItemCardProps {
 	checked: boolean
 	description?: string
 	disabled?: boolean
@@ -16,7 +16,7 @@ export interface CheckCardProps {
 	onChange: (checked: boolean) => void
 }
 
-export function CheckCard({ checked, children, description, disabled = false, footnote, label, onChange }: PropsWithChildren<CheckCardProps>) {
+export function PermissionSectionItemCard({ checked, children, description, disabled = false, footnote, label, onChange }: PropsWithChildren<PermissionSectionItemCardProps>) {
 	//
 
 	//

@@ -1,6 +1,6 @@
 'use client';
 
-import { AuthenticationForm } from '@/components/common/AuthenticationForm';
+import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PasswordRequirementsSchema, type Session } from '@tmlmobilidade/go-types-core';

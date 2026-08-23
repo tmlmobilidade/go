@@ -1,6 +1,6 @@
 'use client';
 
-import { AuthenticationForm } from '@/components/common/AuthenticationForm';
+import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Session } from '@tmlmobilidade/go-types-core';
 import { fetchApiData, PasswordInput, TextInput, useHandleUpdate, useQueryState, useToast } from '@tmlmobilidade/ui';

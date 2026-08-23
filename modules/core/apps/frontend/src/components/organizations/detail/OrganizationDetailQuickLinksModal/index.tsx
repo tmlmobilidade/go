@@ -1,14 +1,12 @@
 'use client';
 
-import { IconChooser } from '@/components/common/IconChooser';
-import { HomeQuickLink } from '@tmlmobilidade/go-types-core';
-
-/* * */
-
+import { type HomeQuickLink } from '@tmlmobilidade/go-types-core';
 import { isUrl } from '@tmlmobilidade/strings';
 import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { OrganizationDetailQuickLinksIconChooser } from '../OrganizationDetailQuickLinksIconChooser';
 
 /* * */
 
@@ -85,7 +83,10 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 				value={newLink.href}
 				required
 			/>
-			<IconChooser selectedIcon={selectedIcon} setSelectedIcon={handleIconChange} />
+			<OrganizationDetailQuickLinksIconChooser
+				selectedIcon={selectedIcon}
+				setSelectedIcon={handleIconChange}
+			/>
 			<Divider />
 			<Grid columns="ab" gap="sm">
 				<Button

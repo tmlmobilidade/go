@@ -10,13 +10,13 @@ const iconData = Object.entries(iconMap).map(([key, icon]) => ({ icon, label: ke
 
 /* * */
 
-interface IconChooserProps {
+interface OrganizationDetailQuickLinksIconChooserProps {
 	selectedIcon?: string
 	setSelectedIcon?: (icon: string) => void
 }
 
 /* * */
-export function IconChooser({ selectedIcon, setSelectedIcon }: IconChooserProps) {
+export function OrganizationDetailQuickLinksIconChooser({ selectedIcon, setSelectedIcon }: OrganizationDetailQuickLinksIconChooserProps) {
 	//
 
 	//

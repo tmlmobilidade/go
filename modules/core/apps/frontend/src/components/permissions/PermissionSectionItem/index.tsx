@@ -1,8 +1,8 @@
 'use client';
 
-import { CheckCard } from '@/components/common/CheckCard';
 import { AgencyPermissionMultiselect } from '@/components/permissions/AgencyPermissionMultiselect';
 import { AlertReferenceTypePermissionMultiselect } from '@/components/permissions/AlertReferenceTypePermissionMultiselect';
+import { PermissionSectionItemCard } from '@/components/permissions/PermissionSectionItemCard';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Role } from '@tmlmobilidade/go-types-core';
@@ -71,7 +71,7 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 	// D. Render components
 
 	return (
-		<CheckCard
+		<PermissionSectionItemCard
 			checked={!!currentPermissionEntry || hasPermissionFromRole}
 			description={configAction.description}
 			disabled={disabled || hasPermissionFromRole}
@@ -99,6 +99,6 @@ export function PermissionSectionItem({ agenciesOptions, configAction, disabled,
 				)}
 
 			</Grid>
-		</CheckCard>
+		</PermissionSectionItemCard>
 	);
 }

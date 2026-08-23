@@ -1,8 +1,7 @@
 'use client';
 
-import { UploadImage } from '@/components/common/UploadImage';
 import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { Collapsible, Grid, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, ImageUpload, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsDetailFormContext } from '../OrganizationsDetailForm.context';
@@ -72,17 +71,17 @@ export function OrganizationsDetailBasicInfo() {
 				</Grid>
 
 				<Grid columns="ab" gap="lg">
-					<UploadImage
-						imageUrl={logoLightUrlValue}
+					<ImageUpload
 						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_light.label')}
+						// onChange={actions.fileChangedLight}
 						// onDelete={() => actions.deleteImage('light')}
-						// onFileChange={actions.fileChangedLight}
+						value={logoLightUrlValue}
 					/>
-					<UploadImage
-						imageUrl={logoDarkUrlValue}
+					<ImageUpload
 						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_dark.label')}
+						// onChange={actions.fileChangedDark}
 						// onDelete={() => actions.deleteImage('dark')}
-						// onFileChange={actions.fileChangedDark}
+						value={logoDarkUrlValue}
 					/>
 				</Grid>
 
