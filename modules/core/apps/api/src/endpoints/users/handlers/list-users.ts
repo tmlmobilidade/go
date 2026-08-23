@@ -12,11 +12,11 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 export async function listUsersHandler(request: FastifyRequest, reply: FastifyReply<UsersListItem[]>) {
 	//
 
-	const foundUsers = await goDb.core.roles.findMany();
+	const foundUsers = await goDb.core.users.findMany();
 
 	if (!foundUsers?.length) {
 		return sendErrorApiResponse(reply, {
-			error: 'No roles found',
+			error: 'No users found',
 			status_code: '404',
 		});
 	}

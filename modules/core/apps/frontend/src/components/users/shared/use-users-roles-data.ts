@@ -11,6 +11,7 @@ import useSWR from 'swr';
 
 interface UseUsersRolesDataReturnType {
 	error: null | string
+	ids: string[]
 	options: SelectDataItem[]
 	timestamp: null | UnixTimestamp
 }
@@ -34,6 +35,13 @@ export function useUsersRolesData(): UseUsersRolesDataReturnType {
 	//
 	// B. Transform data
 
+	const idsData = useMemo(() => {
+		// Skip if no data is available
+		if (!data?.data?.length) return [];
+		// Keep only the IDs of the response data
+		return data.data.map(item => item._id);
+	}, [data?.data]);
+
 	const optionsData = useMemo(() => {
 		// Skip if no data is available
 		if (!data?.data?.length) return [];
@@ -51,7 +59,8 @@ export function useUsersRolesData(): UseUsersRolesDataReturnType {
 
 	return useMemo(() => ({
 		error: error?.error,
+		ids: idsData,
 		options: optionsData,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.data, error?.error, isLoading, isValidating, optionsData, data?.timestamp]);
+	}), [data?.data, error?.error, isLoading, isValidating, optionsData, data?.timestamp, idsData]);
 };

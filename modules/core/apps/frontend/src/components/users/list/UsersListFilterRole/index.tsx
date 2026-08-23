@@ -26,6 +26,7 @@ export function UsersListFilterRole() {
 			label={t('default:users.list.FilterBar.role.label')}
 			onChange={filterRole.set}
 			options={filterRole.options}
+			isMultiple
 			withToggleAll
 		/>
 	);
