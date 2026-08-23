@@ -1,5 +1,6 @@
 'use client';
 
+import { CreateRoleSchema } from '@tmlmobilidade/go-types-core';
 import { Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +32,7 @@ export function RolesCreateBasicInfo() {
 							disabled={!capabilities.editEnabled}
 							error={fieldState.error?.message}
 							label={t('default:roles.create.BasicInfo.fields.name.label')}
-							maxLength={255}
+							maxLength={CreateRoleSchema.shape.name.maxLength}
 							onBlur={field.onBlur}
 							onChange={e => field.onChange(e.currentTarget.value)}
 							placeholder={t('default:roles.create.BasicInfo.fields.name.placeholder')}

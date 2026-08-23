@@ -78,8 +78,7 @@ export function RolesDetailHeader() {
 					isDisabled={!capabilities.deleteEnabled}
 					isLoading={status.isDeleting}
 					onDelete={actions.delete}
-					onRestore={actions.delete}
-					showConfirmation={true}
+					showConfirmation
 				/>
 			</HasPermission>
 

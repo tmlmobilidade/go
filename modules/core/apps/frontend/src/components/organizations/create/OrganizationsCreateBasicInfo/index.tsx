@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { StandardFormController, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsCreateFormContext } from '../OrganizationsCreateForm.context';
@@ -16,7 +16,7 @@ export function OrganizationsCreateBasicInfo() {
 
 	const { t } = useTranslation();
 
-	const { form } = useOrganizationsCreateFormContext();
+	const { capabilities, form } = useOrganizationsCreateFormContext();
 
 	//
 	// B. Render components
@@ -30,9 +30,10 @@ export function OrganizationsCreateBasicInfo() {
 					name="long_name"
 					render={({ field, fieldState }) => (
 						<TextInput
+							disabled={!capabilities.editEnabled}
 							error={fieldState.error?.message}
 							label={t('default:organizations.create.SectionBasicInfo.fields.long_name.label')}
-							maxLength={255}
+							maxLength={CreateOrganizationSchema.shape.long_name.maxLength}
 							onBlur={field.onBlur}
 							onChange={e => field.onChange(e.currentTarget.value)}
 							placeholder={t('default:organizations.create.SectionBasicInfo.fields.long_name.placeholder')}
@@ -48,6 +49,7 @@ export function OrganizationsCreateBasicInfo() {
 					name="short_name"
 					render={({ field, fieldState }) => (
 						<TextInput
+							disabled={!capabilities.editEnabled}
 							error={fieldState.error?.message}
 							label={t('default:organizations.create.SectionBasicInfo.fields.short_name.label')}
 							maxLength={CreateOrganizationSchema.shape.short_name.maxLength}

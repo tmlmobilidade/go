@@ -1,44 +1,46 @@
 'use client';
 
-import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { iconMap } from '@/lib/icons';
 import { HomeQuickLink } from '@tmlmobilidade/go-types-core';
-import { Button, Collapsible, DataTable, DataTableColumn, Section } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
+import { Button, Collapsible, DataTable, DataTableColumn, DataTableScroller, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useCallback, useMemo } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { openOrganizationQuickLinksModal } from '../OrganizationDetailQuickLinksModal';
+import { useOrganizationsDetailFormContext } from '../OrganizationsDetailForm.context';
 import { OrganizationDetailQuickLinksActions } from '../OrganizationSectionQuickLinksActions';
 
 /* * */
 
-export function OrganizationDetailQuickLinks() {
+export function OrganizationsDetailQuickLinks() {
 	//
 
 	//
 	// A. Setup variables
 
-	const organizationDetailContext = useOrganizationsDetailContext();
-
 	const { t } = useTranslation();
 
+	const { form } = useOrganizationsDetailFormContext();
+
+	const homeLinksValue = useStandardFormWatch({ control: form.control, name: 'home_links' });
+
 	const columns: DataTableColumn<HomeQuickLink & { actions: React.ReactNode }>[] = [
-		{
-			accessor: 'title',
-			title: t('default:organizations.detail.QuickLinks.table.columns.name.label'),
-			width: 250,
-		},
-		{
-			accessor: 'href',
-			title: t('default:organizations.detail.QuickLinks.table.columns.link.label'),
-			width: 400,
-		},
 		{
 			accessor: 'icon',
 			render: item => iconMap[item.icon],
 			title: t('default:organizations.detail.QuickLinks.table.columns.icon.label'),
+			width: 75,
+		},
+		{
+			accessor: 'title',
+			title: t('default:organizations.detail.QuickLinks.table.columns.name.label'),
 			width: 300,
+		},
+		{
+			accessor: 'href',
+			title: t('default:organizations.detail.QuickLinks.table.columns.link.label'),
+			width: 500,
 		},
 		{
 			accessor: 'actions',
@@ -48,43 +50,43 @@ export function OrganizationDetailQuickLinks() {
 		},
 	];
 
-	// B. Handle actions
 	//
+	// B. Handle actions
 
-	const handleSubmit = (link: HomeQuickLink) => {
-		if (!organizationDetailContext.data.form) return;
-
-		const links = organizationDetailContext.data.form.values.home_links;
-		const existingIndex = links.findIndex(l => l.order === link.order);
-
+	const handleSubmit = useCallback((link: HomeQuickLink) => {
+		// Get the index of the link with the same order
+		const existingIndex = homeLinksValue.findIndex(l => l.order === link.order);
+		// If the link does not exist, add it to the end of the list
 		if (existingIndex === -1) {
-			link.order = links.length;
-			organizationDetailContext.data.form.values.home_links = [...links, link];
+			link.order = homeLinksValue.length;
+			form.setValue('home_links', [...homeLinksValue, link], { shouldDirty: true });
 		} else {
-			const updatedLinks = links.map((l, idx) => idx === existingIndex ? link : l);
-			organizationDetailContext.data.form.values.home_links = updatedLinks;
+			const updatedLinks = homeLinksValue.map((l, idx) => idx === existingIndex ? link : l);
+			form.setValue('home_links', updatedLinks, { shouldDirty: true });
 		}
+	}, [form, homeLinksValue]);
 
-		organizationDetailContext.actions.save();
-	};
+	const handleDelete = useCallback((link: HomeQuickLink) => {
+		const updatedLinks = homeLinksValue.filter(l => l.title !== link.title);
+		form.setValue('home_links', updatedLinks, { shouldDirty: true });
+	}, [form, homeLinksValue]);
 
-	const handleDelete = (link: HomeQuickLink) => {
-		if (!organizationDetailContext.data.form) return;
-		const updatedLinks = organizationDetailContext.data.form.values.home_links.filter(l => l.title !== link.title);
-		organizationDetailContext.data.form.values.home_links = updatedLinks;
-		organizationDetailContext.actions.save();
-	};
-
-	const handleEdit = (link: HomeQuickLink) => {
+	const handleEdit = useCallback((link: HomeQuickLink) => {
 		openOrganizationQuickLinksModal({ handleSubmit: handleSubmit, link });
-	};
+	}, [handleSubmit]);
 
 	const quickLinkOptions = useMemo(() => {
-		return organizationDetailContext.data.form.values.home_links?.map(link => ({
+		return homeLinksValue?.map(link => ({
 			...link,
-			actions: <OrganizationDetailQuickLinksActions handleDelete={handleDelete} handleEdit={handleEdit} link={link} />,
+			actions: (
+				<OrganizationDetailQuickLinksActions
+					handleDelete={handleDelete}
+					handleEdit={handleEdit}
+					link={link}
+				/>
+			),
 		}));
-	}, [organizationDetailContext.data.form.values.home_links]);
+	}, [handleDelete, handleEdit, homeLinksValue]);
 
 	//
 	// C. Render components
@@ -96,22 +98,18 @@ export function OrganizationDetailQuickLinks() {
 		>
 			<Section gap="lg">
 				<Button
-					disabled={!organizationDetailContext.data.id}
 					label={t('default:organizations.detail.QuickLinks.AddQuickLinkButton.label')}
 					onClick={() => openOrganizationQuickLinksModal({ handleSubmit: handleSubmit })}
 					variant="primary"
 				/>
-				{!organizationDetailContext.data.id && (
-					<p>{t('default:organizations.detail.QuickLinks.NoOrganizationLabel.label')}</p>
-				)}
-				{organizationDetailContext.data.id && (
-					<DataTable
-						columns={columns}
-						records={quickLinkOptions}
-						rowIdAccessor="title"
-					/>
-				)}
 			</Section>
+			<DataTableScroller>
+				<DataTable
+					columns={columns}
+					records={quickLinkOptions}
+					rowIdAccessor="title"
+				/>
+			</DataTableScroller>
 		</Collapsible>
 
 	);

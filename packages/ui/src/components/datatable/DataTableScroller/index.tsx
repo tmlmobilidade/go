@@ -13,6 +13,7 @@ export function DataTableScroller({ children }: PropsWithChildren) {
 			showEndControl={false}
 			showStartControl={false}
 			startControlIcon={<></>}
+			styles={{ content: { display: 'initial', minWidth: '100%' } }}
 		>
 			<div>
 				{children}

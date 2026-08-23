@@ -1,14 +1,18 @@
 'use client';
-import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
+
+import { useOrganizationsDetailFormContext } from '@/components/organizations/detail/OrganizationsDetailForm.context';
+import { useOrganizationsDetailOrganizationId } from '@/components/organizations/detail/use-organizations-detail-organization-id';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, Spacer, Toolbar, UpdateButton } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
+import { useOrganizationsDetailData } from '../use-organizations-detail-data';
+
 /* * */
 
-export function OrganizationDetailHeader() {
+export function OrganizationsDetailHeader() {
 	//
 
 	//
@@ -17,7 +21,14 @@ export function OrganizationDetailHeader() {
 	const { t } = useTranslation();
 
 	const router = useRouter();
-	const organizationDetailContext = useOrganizationsDetailContext();
+
+	const { organizationId } = useOrganizationsDetailOrganizationId();
+
+	const { data: organizationData } = useOrganizationsDetailData();
+
+	const { actions, capabilities, form, status } = useOrganizationsDetailFormContext();
+
+	const longNameValue = useStandardFormWatch({ control: form.control, name: 'long_name' });
 
 	//
 	// B. Handle actions
@@ -33,8 +44,8 @@ export function OrganizationDetailHeader() {
 		<Toolbar>
 
 			<CloseButton onClick={handleClose} type="close" />
-			<IdTag id={organizationDetailContext.data.id} copyOnClick />
-			<Label size="lg" singleLine>{organizationDetailContext.data.form.values.long_name}</Label>
+			<IdTag id={organizationId} copyOnClick />
+			<Label size="lg" singleLine>{longNameValue}</Label>
 
 			<Spacer />
 
@@ -43,9 +54,9 @@ export function OrganizationDetailHeader() {
 				scope={PermissionCatalog.all.organizations.scope}
 			>
 				<UpdateButton
-					disabled={!organizationDetailContext.flags.canSave}
-					loading={organizationDetailContext.flags.isSaving}
-					onClick={organizationDetailContext.actions.save}
+					disabled={!capabilities.updateEnabled}
+					loading={status.isUpdating}
+					onClick={actions.update}
 				/>
 			</HasPermission>
 
@@ -54,9 +65,9 @@ export function OrganizationDetailHeader() {
 				scope={PermissionCatalog.all.organizations.scope}
 			>
 				<LockButton
-					isLoading={organizationDetailContext.flags.isLocking}
-					isLocked={organizationDetailContext.data.organization?.is_locked}
-					onClick={organizationDetailContext.actions.lock}
+					isLoading={status.isLocking}
+					isLocked={organizationData?.is_locked}
+					onClick={actions.lock}
 				/>
 			</HasPermission>
 
@@ -67,16 +78,13 @@ export function OrganizationDetailHeader() {
 				<DeleteButton
 					confirmMessage={t('default:organizations.detail.Header.DeleteButton.Confirm.message')}
 					confirmTitle={t('default:organizations.detail.Header.DeleteButton.Confirm.title')}
-					isDisabled={!organizationDetailContext.flags.canDelete}
-					isLoading={organizationDetailContext.flags.isDeleting}
-					onDelete={organizationDetailContext.actions.delete}
-					onRestore={organizationDetailContext.actions.delete}
-					showConfirmation={true}
+					isDisabled={!capabilities.deleteEnabled}
+					isLoading={status.isDeleting}
+					onDelete={actions.delete}
+					showConfirmation
 				/>
 			</HasPermission>
 
 		</Toolbar>
 	);
-
-	//
 }
