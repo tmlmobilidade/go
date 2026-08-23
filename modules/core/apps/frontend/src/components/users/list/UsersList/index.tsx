@@ -1,15 +1,14 @@
 'use client';
 
-import { useUsersListContext } from '@/components/users/list/UsersList.context';
-import { UsersListFilterBar } from '@/components/users/list/UsersListFilterBar';
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';
-import { useOrganizationsContext } from '@/contexts/Organizations.context';
-import { useRolesContext } from '@/contexts/Roles.context';
-import { type UserNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, LoadingOverlay, Pane, Tag, TagGroup, UnixTimestampDisplay } from '@tmlmobilidade/ui';
-import { useParams, useRouter } from 'next/navigation';
+import { UsersListItem } from '@tmlmobilidade/go-core-pckg-types';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+
+import { useUsersDetailUserId } from '../../detail/use-users-detail-user-id';
+import { useUsersListData } from '../use-users-list-data';
 
 /* * */
 
@@ -22,13 +21,12 @@ export function UsersList() {
 	const { t } = useTranslation();
 
 	const router = useRouter();
-	const params = useParams<{ id?: string }>();
 
-	const rolesContext = useRolesContext();
-	const organizationsContext = useOrganizationsContext();
-	const usersListContext = useUsersListContext();
+	const { userId } = useUsersDetailUserId();
 
-	const columns: DataTableColumn<UserNormalized>[] = [
+	const usersData = useUsersListData();
+
+	const columns: DataTableColumn<UsersListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -45,18 +43,18 @@ export function UsersList() {
 			title: t('default:users.list.Table.columns.email.label'),
 			width: 350,
 		},
-		{
-			accessor: 'organization_id',
-			render: item => <Tag label={organizationsContext.data.raw.find(organizationData => organizationData._id === item.organization_id)?.long_name} variant="secondary" />,
-			title: t('default:users.list.Table.columns.organizationId.label'),
-			width: 300,
-		},
-		{
-			accessor: 'role_ids',
-			render: item => <TagGroup tags={item.role_ids.map(roleId => ({ label: rolesContext.data.raw.find(roleData => roleData._id === roleId)?.name, variant: 'secondary' }))} />,
-			title: t('default:users.list.Table.columns.roleIds.label'),
-			width: 500,
-		},
+		// {
+		// 	accessor: 'organization_id',
+		// 	render: item => <Tag label={organizationsContext.data.raw.find(organizationData => organizationData._id === item.organization_id)?.long_name} variant="secondary" />,
+		// 	title: t('default:users.list.Table.columns.organizationId.label'),
+		// 	width: 300,
+		// },
+		// {
+		// 	accessor: 'user_ids',
+		// 	render: item => <TagGroup tags={item.user_ids.map(userId => ({ label: usersContext.data.raw.find(userData => userData._id === userId)?.name, variant: 'secondary' }))} />,
+		// 	title: t('default:users.list.Table.columns.userIds.label'),
+		// 	width: 500,
+		// },
 		{
 			accessor: 'seen_last_at',
 			render: item => item.seen_last_at && <UnixTimestampDisplay value={item.seen_last_at} showDate />,
@@ -68,36 +66,24 @@ export function UsersList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: UserNormalized) => {
-		router.push(keepUrlParams(PAGE_ROUTES.core.USERS_DETAIL(item._id)));
+	const handleRowClick = (item: UsersListItem) => {
+		router.push(keepUrlParams(PAGE_ROUTES.core.ROLES_DETAIL(item._id)));
 	};
 
 	//
 	// C. Render components
 
-	if (usersListContext.flags.loading) {
-		return <LoadingOverlay />;
-	}
-
-	if (usersListContext.flags.error) {
-		return <ErrorDisplay message={usersListContext.flags.error.message} />;
-	}
-
 	return (
-		<Pane header={[
-			<UsersListHeader key="header" />,
-			<UsersListFilterBar key="filters" />,
-		]}
-		>
+		<Pane header={[<UsersListHeader key="header" />]}>
+			{usersData.error && <ErrorDisplay message={usersData.error} />}
 			<DataTable
 				columns={columns}
+				isLoading={usersData.isLoading}
 				onRowClick={handleRowClick}
-				records={usersListContext.data.filtered}
+				records={usersData.data}
 				rowIdAccessor="_id"
-				selectedId={params.id}
+				selectedId={userId}
 			/>
 		</Pane>
 	);
-
-	//
 }

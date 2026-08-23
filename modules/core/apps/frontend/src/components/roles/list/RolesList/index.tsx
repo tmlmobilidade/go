@@ -57,11 +57,7 @@ export function RolesList() {
 	// C. Render components
 
 	return (
-		<Pane
-			header={[
-				<RolesListHeader key="header" />,
-			]}
-		>
+		<Pane header={[<RolesListHeader key="header" />]}>
 			{rolesData.error && <ErrorDisplay message={rolesData.error} />}
 			<DataTable
 				columns={columns}
