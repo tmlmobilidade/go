@@ -14,18 +14,23 @@ export interface StandardFormContextValue<T> extends UseStandardFormReturnType<T
 	 * The actions to perform on the form.
 	 */
 	actions: {
+		create?: () => void
 		delete?: () => void
 		duplicate?: () => void
 		lock?: () => void
-		update: () => void
+		update?: () => void
 	}
 
 	/**
 	 * The capabilities to determine if the actions are enabled.
 	 */
-	capabilities: Partial<UseStandardFormCapabilitiesReturnType>
+	capabilities?: Partial<UseStandardFormCapabilitiesReturnType>
 
+	/**
+	 * The status of the form.
+	 */
 	status: {
+		isCreating?: boolean
 		isDeleting?: boolean
 		isDuplicating?: boolean
 		isLoading?: boolean

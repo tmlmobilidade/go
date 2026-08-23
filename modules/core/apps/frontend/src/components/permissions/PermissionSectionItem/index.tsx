@@ -3,9 +3,9 @@
 import { CheckCard } from '@/components/common/CheckCard';
 import { AgencyPermissionMultiselect } from '@/components/permissions/AgencyPermissionMultiselect';
 import { AlertReferenceTypePermissionMultiselect } from '@/components/permissions/AlertReferenceTypePermissionMultiselect';
-import { useCoreRolesData } from '@/components/shared/use-core-roles-data';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
+import { type Role } from '@tmlmobilidade/go-types-core';
 import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { Grid, type SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -15,25 +15,22 @@ import { useMemo } from 'react';
 interface PermissionSectionItemProps {
 	agenciesOptions: SelectDataItem[]
 	configAction: PermissionConfigAction
+	disabled?: boolean
 	enabledPermissions: Permission[]
 	enabledRoleIds?: string[]
 	onResourceToggle: (permission: Permission) => void
 	onToggle: (permission: Permission) => void
+	rolesData: Role	[]
 	scope: string
 }
 
 /* * */
 
-export function PermissionSectionItem({ agenciesOptions, configAction, enabledPermissions, enabledRoleIds, onResourceToggle, onToggle, scope }: PermissionSectionItemProps) {
+export function PermissionSectionItem({ agenciesOptions, configAction, disabled, enabledPermissions, enabledRoleIds, onResourceToggle, onToggle, rolesData, scope }: PermissionSectionItemProps) {
 	//
 
 	//
-	// A. Setup variables
-
-	const { data: rolesData } = useCoreRolesData();
-
-	//
-	// B. Transform data
+	// A. Transform data
 
 	const currentPermissionEntry = enabledPermissions?.find(p => p.scope === scope && p.action === configAction.action);
 
@@ -77,7 +74,7 @@ export function PermissionSectionItem({ agenciesOptions, configAction, enabledPe
 		<CheckCard
 			checked={!!currentPermissionEntry || hasPermissionFromRole}
 			description={configAction.description}
-			disabled={hasPermissionFromRole}
+			disabled={disabled || hasPermissionFromRole}
 			footnote={hasPermissionFromRole && 'Permissão Herdada pelo grupo de permissões'}
 			label={configAction.label}
 			onChange={handleToggle}
@@ -86,7 +83,7 @@ export function PermissionSectionItem({ agenciesOptions, configAction, enabledPe
 
 				{onResourceToggle && configAction.resources?.includes('AGENCIES') && (
 					<AgencyPermissionMultiselect
-						disabled={hasPermissionFromRole}
+						disabled={disabled || hasPermissionFromRole}
 						onChange={(inputValue: string[]) => handleResourceToggle({ agency_ids: inputValue })}
 						options={agenciesOptions}
 						value={selectedAgencyIds}
@@ -95,7 +92,7 @@ export function PermissionSectionItem({ agenciesOptions, configAction, enabledPe
 
 				{onResourceToggle && configAction.resources?.includes('ALERT_REFERENCE_TYPES') && (
 					<AlertReferenceTypePermissionMultiselect
-						disabled={hasPermissionFromRole}
+						disabled={disabled || hasPermissionFromRole}
 						onChange={(inputValue: string[]) => handleResourceToggle({ reference_types: inputValue })}
 						value={selectedAlertReferenceTypeIds}
 					/>

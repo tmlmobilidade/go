@@ -111,6 +111,13 @@ export interface UseStandardFormCapabilitiesReturnType {
 export function useStandardFormCapabilities(props: UseStandardFormCapabilitiesProps): UseStandardFormCapabilitiesReturnType {
 	//
 
+	const isBeingModified =
+		!!props.loading?.isLoading
+		|| props.locked?.isLocking
+		|| props.delete?.isDeleting
+		|| props.duplicate?.isDuplicating
+		|| props.update?.isUpdating;
+
 	const deleteEnabled = (() => {
 		if (!props.delete?.hasPermission) return false;
 		if (props.loading?.isLoading) return false;
@@ -150,13 +157,11 @@ export function useStandardFormCapabilities(props: UseStandardFormCapabilitiesPr
 	})();
 
 	const editEnabled = ((): boolean => {
-		if (!props.update?.hasPermission) return true;
+		if (!props.update?.hasPermission) return false;
 		if (props.delete?.isDeleted) return false;
-		if (props.loading?.isLoading) return true;
-		if (props.locked?.isLocked) return true;
-		if (props.form.isDirty) return true;
-		if (!props.form.isValid) return true;
-		return false;
+		if (props.locked?.isLocked) return false;
+		if (isBeingModified) return false;
+		return true;
 	})();
 
 	return useMemo(() => ({

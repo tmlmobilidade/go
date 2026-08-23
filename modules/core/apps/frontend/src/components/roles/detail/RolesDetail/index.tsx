@@ -18,7 +18,7 @@ export function RolesDetail() {
 	//
 	// A. Setup variables
 
-	const { form } = useRolesDetailFormContext();
+	const { capabilities, form } = useRolesDetailFormContext();
 
 	const { options: rolesAgenciesOptions } = useRolesAgenciesData();
 
@@ -73,9 +73,11 @@ export function RolesDetail() {
 					agenciesOptions={rolesAgenciesOptions}
 					configActions={item.actions}
 					description={item.description}
+					disabled={!capabilities.editEnabled}
 					enabledPermissions={permissionsValue}
 					onResourceToggle={handlePermissionResourceToggle}
 					onToggle={handlePermissionToggle}
+					rolesData={[]}
 					scope={item.scope}
 					title={item.title}
 				/>

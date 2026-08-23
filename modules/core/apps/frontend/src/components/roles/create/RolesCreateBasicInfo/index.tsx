@@ -1,6 +1,6 @@
 'use client';
 
-import { StandardFormController, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useRolesCreateFormContext } from '../RolesCreateForm.context';
@@ -15,7 +15,7 @@ export function RolesCreateBasicInfo() {
 
 	const { t } = useTranslation();
 
-	const { form } = useRolesCreateFormContext();
+	const { form, status } = useRolesCreateFormContext();
 
 	//
 	// B. Render components
@@ -28,6 +28,7 @@ export function RolesCreateBasicInfo() {
 					name="name"
 					render={({ field, fieldState }) => (
 						<TextInput
+							disabled={status.isCreating}
 							error={fieldState.error?.message}
 							label={t('default:roles.create.BasicInfo.fields.name.label')}
 							maxLength={255}

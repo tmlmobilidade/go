@@ -15,7 +15,7 @@ export function RolesDetailBasicInfo() {
 
 	const { t } = useTranslation();
 
-	const { form } = useRolesDetailFormContext();
+	const { capabilities, form } = useRolesDetailFormContext();
 
 	//
 	// B. Render components
@@ -32,6 +32,7 @@ export function RolesDetailBasicInfo() {
 						name="name"
 						render={({ field, fieldState }) => (
 							<TextInput
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:roles.detail.BasicInfo.fields.name.label')}
 								maxLength={255}
