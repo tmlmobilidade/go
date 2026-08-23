@@ -279,12 +279,15 @@ export const API_ROUTES = Object.freeze({
 		ROLES_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/update/${encodeURIComponent(id)}`,
 
 		// USERS
+		USERS_CREATE: `${getModuleConfig('core', 'api_url')}/users/create`,
+		USERS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/delete/${encodeURIComponent(id)}`,
 		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}`,
-		USERS_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/lock`,
 		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
 		USERS_LIST: `${getModuleConfig('core', 'api_url')}/users/list`,
 		USERS_LIST_ORGANIZATIONS: `${getModuleConfig('core', 'api_url')}/users/list-organizations`,
 		USERS_LIST_ROLES: `${getModuleConfig('core', 'api_url')}/users/list-roles`,
+		USERS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/users/lock/${encodeURIComponent(id)}`,
+		USERS_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/update/${encodeURIComponent(id)}`,
 	},
 
 	dates: {

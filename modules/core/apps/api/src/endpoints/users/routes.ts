@@ -49,25 +49,25 @@ server.register(
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware('users', ['create']) },
 			createUserHandler,
 		);
 
 		instance.put(
-			'/:id',
+			'/update/:id',
 			{ preHandler: authorizationMiddleware('users', ['update']) },
 			updateUserHandler,
 		);
 
 		instance.delete(
-			'/:id',
+			'/delete/:id',
 			{ preHandler: authorizationMiddleware('users', ['delete']) },
 			deleteUserHandler,
 		);
 
 		instance.get(
-			'/:id/lock',
+			'/lock/:id',
 			{ preHandler: authorizationMiddleware('users', ['lock']) },
 			lockUserHandler,
 		);
