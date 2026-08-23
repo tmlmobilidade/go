@@ -1,19 +1,21 @@
 'use client';
 
-import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
-import { Collapsible, StandardFormController, Section, Switch } from '@tmlmobilidade/ui';
+import { Collapsible, Section, StandardFormController, Switch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
 
 /* * */
 
-export function AgencySectionOpenData() {
+export function AgenciesDetailOpenData() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const agencyDetailContext = useAgencyDetailContext();
+
+	const { capabilities, form } = useAgenciesDetailFormContext();
 
 	//
 	// B. Render components
@@ -25,7 +27,7 @@ export function AgencySectionOpenData() {
 		>
 			<Section gap="lg">
 				<StandardFormController
-					control={agencyDetailContext.form.instance.control}
+					control={form.control}
 					name="open_data.gtfs_enabled"
 					render={({ field, fieldState }) => (
 						<Switch
@@ -33,12 +35,12 @@ export function AgencySectionOpenData() {
 							error={fieldState.error?.message}
 							label={t('default:agencies.detail.SectionOpenData.fields.gtfs_enabled.label')}
 							onChange={field.onChange}
-							readOnly={agencyDetailContext.flags.isReadOnly}
+							readOnly={!capabilities.editEnabled}
 						/>
 					)}
 				/>
 				<StandardFormController
-					control={agencyDetailContext.form.instance.control}
+					control={form.control}
 					name="open_data.positions_enabled"
 					render={({ field, fieldState }) => (
 						<Switch
@@ -46,12 +48,12 @@ export function AgencySectionOpenData() {
 							error={fieldState.error?.message}
 							label={t('default:agencies.detail.SectionOpenData.fields.positions_enabled.label')}
 							onChange={field.onChange}
-							readOnly={agencyDetailContext.flags.isReadOnly}
+							readOnly={!capabilities.editEnabled}
 						/>
 					)}
 				/>
 				<StandardFormController
-					control={agencyDetailContext.form.instance.control}
+					control={form.control}
 					name="open_data.eta_enabled"
 					render={({ field, fieldState }) => (
 						<Switch
@@ -59,12 +61,12 @@ export function AgencySectionOpenData() {
 							error={fieldState.error?.message}
 							label={t('default:agencies.detail.SectionOpenData.fields.eta_enabled.label')}
 							onChange={field.onChange}
-							readOnly={agencyDetailContext.flags.isReadOnly}
+							readOnly={!capabilities.editEnabled}
 						/>
 					)}
 				/>
 				<StandardFormController
-					control={agencyDetailContext.form.instance.control}
+					control={form.control}
 					name="open_data.service_alerts_enabled"
 					render={({ field, fieldState }) => (
 						<Switch
@@ -72,7 +74,7 @@ export function AgencySectionOpenData() {
 							error={fieldState.error?.message}
 							label={t('default:agencies.detail.SectionOpenData.fields.service_alerts_enabled.label')}
 							onChange={field.onChange}
-							readOnly={agencyDetailContext.flags.isReadOnly}
+							readOnly={!capabilities.editEnabled}
 						/>
 					)}
 				/>

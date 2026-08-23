@@ -1,12 +1,12 @@
 'use client';
 
+import { AgenciesDetailAlertsMap } from '@/components/agencies/detail/AgenciesDetailAlertsMap';
+import { AgenciesDetailApex } from '@/components/agencies/detail/AgenciesDetailApex';
+import { AgenciesDetailBasicInfo } from '@/components/agencies/detail/AgenciesDetailBasicInfo';
+import { AgenciesDetailContacts } from '@/components/agencies/detail/AgenciesDetailContacts';
+import { AgenciesDetailFinancials } from '@/components/agencies/detail/AgenciesDetailFinancials';
 import { AgenciesDetailHeader } from '@/components/agencies/detail/AgenciesDetailHeader';
-import { AgencySectionAlertsMap } from '@/components/agencies/detail/AgencySectionAlertsMap';
-import { AgencySectionApex } from '@/components/agencies/detail/AgencySectionApex';
-import { AgencyDetailBasicInfo } from '@/components/agencies/detail/AgencySectionBasicInfo';
-import { AgencySectionContacts } from '@/components/agencies/detail/AgencySectionContacts';
-import { AgencySectionFinancials } from '@/components/agencies/detail/AgencySectionFinancials';
-import { AgencySectionOpenData } from '@/components/agencies/detail/AgencySectionOpenData';
+import { AgenciesDetailOpenData } from '@/components/agencies/detail/AgenciesDetailOpenData';
 import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,13 +14,13 @@ import { Pane } from '@tmlmobilidade/ui';
 export function AgenciesDetail() {
 	return (
 		<Pane header={[<AgenciesDetailHeader key="header" />]}>
-			<AgencyDetailBasicInfo />
-			<AgencySectionFinancials />
-			<AgencySectionContacts />
-			<AgencySectionOpenData />
-			<AgencySectionApex />
+			<AgenciesDetailBasicInfo />
+			<AgenciesDetailFinancials />
+			<AgenciesDetailContacts />
+			<AgenciesDetailOpenData />
+			<AgenciesDetailApex />
 			{/* <AgencySectionValidationRules /> */}
-			<AgencySectionAlertsMap />
+			<AgenciesDetailAlertsMap />
 		</Pane>
 	);
 }

@@ -1,19 +1,21 @@
 'use client';
 
-import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
-import { Collapsible, StandardFormController, Grid, Section, TagsInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, StandardFormController, TagsInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
 
 /* * */
 
-export function AgencySectionContacts() {
+export function AgenciesDetailContacts() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const agencyDetailContext = useAgencyDetailContext();
+
+	const { capabilities, form } = useAgenciesDetailFormContext();
 
 	//
 	// B. Render components
@@ -26,7 +28,7 @@ export function AgencySectionContacts() {
 			<Section gap="lg">
 				<Grid>
 					<StandardFormController
-						control={agencyDetailContext.form.instance.control}
+						control={form.control}
 						name="contact_emails_pto"
 						render={({ field, fieldState }) => (
 							<TagsInput
@@ -34,13 +36,13 @@ export function AgencySectionContacts() {
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionContacts.fields.contact_emails_pto.label')}
 								onChange={field.onChange}
-								readOnly={agencyDetailContext.flags.isReadOnly}
+								readOnly={!capabilities.editEnabled}
 								value={field.value}
 							/>
 						)}
 					/>
 					<StandardFormController
-						control={agencyDetailContext.form.instance.control}
+						control={form.control}
 						name="contact_emails_pta"
 						render={({ field, fieldState }) => (
 							<TagsInput
@@ -48,7 +50,7 @@ export function AgencySectionContacts() {
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionContacts.fields.contact_emails_pta.label')}
 								onChange={field.onChange}
-								readOnly={agencyDetailContext.flags.isReadOnly}
+								readOnly={!capabilities.editEnabled}
 								value={field.value}
 							/>
 						)}

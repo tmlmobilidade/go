@@ -1,19 +1,21 @@
 'use client';
 
-import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
-import { Collapsible, StandardFormController, Grid, Section, TagsInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, StandardFormController, TagsInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
 
 /* * */
 
-export function AgencySectionApex() {
+export function AgenciesDetailApex() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const agencyDetailContext = useAgencyDetailContext();
+
+	const { capabilities, form } = useAgenciesDetailFormContext();
 
 	//
 	// B. Render components
@@ -26,7 +28,7 @@ export function AgencySectionApex() {
 			<Section gap="lg">
 				<Grid>
 					<StandardFormController
-						control={agencyDetailContext.form.instance.control}
+						control={form.control}
 						name="apex.contact_emails"
 						render={({ field, fieldState }) => (
 							<TagsInput
@@ -34,7 +36,7 @@ export function AgencySectionApex() {
 								error={fieldState.error?.message}
 								label={t('default:agencies.detail.SectionApex.fields.contact_emails.label')}
 								onChange={field.onChange}
-								readOnly={agencyDetailContext.flags.isReadOnly}
+								readOnly={!capabilities.editEnabled}
 								value={field.value}
 							/>
 						)}

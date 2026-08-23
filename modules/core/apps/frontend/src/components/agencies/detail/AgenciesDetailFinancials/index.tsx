@@ -1,19 +1,21 @@
 'use client';
 
-import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
-import { Collapsible, StandardFormController, Divider, Grid, NumberInput, Section, Text, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Collapsible, Divider, Grid, NumberInput, Section, StandardFormController, Text, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
 
 /* * */
 
-export function AgencySectionFinancials() {
+export function AgenciesDetailFinancials() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const agencyDetailContext = useAgencyDetailContext();
+
+	const { capabilities, form } = useAgenciesDetailFormContext();
 
 	const months = [
 		'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -23,7 +25,7 @@ export function AgencySectionFinancials() {
 	//
 	// B. Transform data
 
-	const vkmPerMonthValue = useStandardFormWatch({ control: agencyDetailContext.form.instance.control, name: 'financials.vkm_per_month' }) || [];
+	const vkmPerMonthValue = useStandardFormWatch({ control: form.control, name: 'financials.vkm_per_month' }) || [];
 
 	const totalVkmsPerYear = vkmPerMonthValue?.reduce((acc, curr) => acc + Number(curr || 0), 0) || 0;
 
@@ -38,7 +40,7 @@ export function AgencySectionFinancials() {
 			<Section gap="lg">
 				<Grid columns="ab" gap="lg">
 					<StandardFormController
-						control={agencyDetailContext.form.instance.control}
+						control={form.control}
 						name="financials.price_per_km"
 						render={({ field, fieldState }) => (
 							<NumberInput
@@ -46,7 +48,7 @@ export function AgencySectionFinancials() {
 								label={t('default:agencies.detail.SectionFinancials.fields.price_per_km.label')}
 								onChange={field.onChange}
 								placeholder={t('default:agencies.detail.SectionFinancials.fields.price_per_km.placeholder')}
-								readOnly={agencyDetailContext.flags.isReadOnly}
+								readOnly={!capabilities.editEnabled}
 								step={0.01}
 								value={field.value}
 							/>
@@ -68,7 +70,7 @@ export function AgencySectionFinancials() {
 					{months.map((month, index) => (
 						<StandardFormController
 							key={month}
-							control={agencyDetailContext.form.instance.control}
+							control={form.control}
 							name={`financials.vkm_per_month.${index}`}
 							render={({ field, fieldState }) => (
 								<NumberInput
@@ -76,7 +78,7 @@ export function AgencySectionFinancials() {
 									label={month}
 									onChange={field.onChange}
 									placeholder="100000"
-									readOnly={agencyDetailContext.flags.isReadOnly}
+									readOnly={!capabilities.editEnabled}
 									step={1}
 									value={field.value}
 								/>

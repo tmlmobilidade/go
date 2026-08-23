@@ -1,13 +1,14 @@
 'use client';
 
-import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 import { type AlertCause, AlertCauseValues, type AlertEffect, AlertEffectValues, type AlertReferenceType, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
-import { Checkbox, Collapsible, StandardFormController, Divider, Grid, Inline, Section, Surface, Table } from '@tmlmobilidade/ui';
+import { Checkbox, Collapsible, Divider, Grid, Inline, Section, StandardFormController, Surface, Table } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
 
 /* * */
 
-export function AgencySectionAlertsMap() {
+export function AgenciesDetailAlertsMap() {
 	//
 
 	//
@@ -15,20 +16,20 @@ export function AgencySectionAlertsMap() {
 
 	const { t } = useTranslation();
 
-	const agencyDetailContext = useAgencyDetailContext();
+	const { capabilities, form } = useAgenciesDetailFormContext();
 
 	//
 	// B. Handle actions
 
 	const handleCauseClick = (causeValue: AlertCause) => {
 		// Skip if the form is read-only
-		if (agencyDetailContext.flags.isReadOnly) return;
+		if (!capabilities.editEnabled) return;
 		// Count how many reference types are currently enabled,
 		// to determine whether to set them all to false or all to true.
 		let enabledCount = 0;
 		for (const effectValue of AlertEffectValues) {
 			for (const referenceTypeValue of AlertReferenceTypeValues) {
-				const isEnabled = agencyDetailContext.form.instance.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
+				const isEnabled = form.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
 				if (isEnabled) enabledCount++;
 			}
 		}
@@ -38,19 +39,19 @@ export function AgencySectionAlertsMap() {
 		// Toggle the value of all reference types for the given cause and effect
 		for (const effectValue of AlertEffectValues) {
 			for (const referenceTypeValue of AlertReferenceTypeValues) {
-				agencyDetailContext.form.instance.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
+				form.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
 			}
 		}
 	};
 
 	const handleEffectClick = (causeValue: AlertCause, effectValue: AlertEffect) => {
 		// Skip if the form is read-only
-		if (agencyDetailContext.flags.isReadOnly) return;
+		if (!capabilities.editEnabled) return;
 		// Count how many reference types are currently enabled,
 		// to determine whether to set them all to false or all to true.
 		let enabledCount = 0;
 		for (const referenceTypeValue of AlertReferenceTypeValues) {
-			const isEnabled = agencyDetailContext.form.instance.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
+			const isEnabled = form.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
 			if (isEnabled) enabledCount++;
 		}
 		// If all reference types are currently enabled, set them all to false.
@@ -58,18 +59,18 @@ export function AgencySectionAlertsMap() {
 		const newValue = enabledCount === AlertReferenceTypeValues.length ? false : true;
 		// Toggle the value of all reference types for the given cause and effect
 		for (const referenceTypeValue of AlertReferenceTypeValues) {
-			agencyDetailContext.form.instance.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
+			form.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
 		}
 	};
 
 	const handleReferenceTypeClick = (causeValue: AlertCause, referenceTypeValue: AlertReferenceType) => {
 		// Skip if the form is read-only
-		if (agencyDetailContext.flags.isReadOnly) return;
+		if (!capabilities.editEnabled) return;
 		// Count how many reference types are currently enabled,
 		// to determine whether to set them all to false or all to true.
 		let enabledCount = 0;
 		for (const effectValue of AlertEffectValues) {
-			const isEnabled = agencyDetailContext.form.instance.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
+			const isEnabled = form.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
 			if (isEnabled) enabledCount++;
 		}
 		// If all reference types are currently enabled, set them all to false.
@@ -77,7 +78,7 @@ export function AgencySectionAlertsMap() {
 		const newValue = enabledCount === AlertEffectValues.length ? false : true;
 		// Toggle the value of all reference types for the given cause and effect
 		for (const effectValue of AlertEffectValues) {
-			agencyDetailContext.form.instance.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
+			form.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
 		}
 	};
 
@@ -91,6 +92,7 @@ export function AgencySectionAlertsMap() {
 		>
 			<Section gap="lg">
 				<Grid columns="a" gap="lg">
+
 					{AlertCauseValues.map(causeValue => (
 						<Surface key={causeValue} variant="bordered">
 							<Section key={causeValue} padding="none">
@@ -118,14 +120,14 @@ export function AgencySectionAlertsMap() {
 												{AlertReferenceTypeValues.map(referenceTypeValue => (
 													<Table.Td key={`${causeValue}-${effectValue}-${referenceTypeValue}`}>
 														<StandardFormController
-															control={agencyDetailContext.form.instance.control}
+															control={form.control}
 															name={`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`}
 															render={({ field, fieldState }) => (
 																<Checkbox
 																	checked={field.value ?? false}
 																	error={fieldState.error?.message}
 																	onChange={field.onChange}
-																	readOnly={agencyDetailContext.flags.isReadOnly}
+																	readOnly={!capabilities.editEnabled}
 																/>
 															)}
 														/>
@@ -138,6 +140,7 @@ export function AgencySectionAlertsMap() {
 							</Section>
 						</Surface>
 					))}
+
 				</Grid>
 			</Section>
 		</Collapsible>
