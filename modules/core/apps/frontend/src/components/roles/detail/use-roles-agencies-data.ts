@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Agency } from '@tmlmobilidade/go-types-core';
+import { type RolesAgencyItem } from '@tmlmobilidade/go-core-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -26,8 +26,8 @@ export function useRolesAgenciesData(): UseRolesAgenciesDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<Agency[]>>(API_ROUTES.core.ROLES_LIST_AGENCIES, {
-		fetcher: async (url: string) => await fetchApiData<Agency[]>({ url }),
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<RolesAgencyItem[]>>(API_ROUTES.core.ROLES_LIST_AGENCIES, {
+		fetcher: async (url: string) => await fetchApiData<RolesAgencyItem[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
@@ -41,7 +41,7 @@ export function useRolesAgenciesData(): UseRolesAgenciesDataReturnType {
 		return data.data.map((item): SelectDataItem => ({
 			checked: false,
 			disabled: false,
-			label: `[${item._id}] ${item.name}`,
+			label: `[${item._id}] ${item.code} - ${item.name}`,
 			value: item._id,
 		}));
 	}, [data?.data]);
