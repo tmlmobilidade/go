@@ -3,6 +3,7 @@
 import { PermissionSection } from '@/components/permissions/PermissionSection';
 import { UsersDetailBasicInfo } from '@/components/users/detail/UsersDetailBasicInfo';
 import { UsersDetailHeader } from '@/components/users/detail/UsersDetailHeader';
+import { UsersDetailOrganizationAndRoles } from '@/components/users/detail/UsersDetailOrganizationAndRoles';
 import { permissionsConfig } from '@/lib/permissions';
 import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
@@ -69,6 +70,7 @@ export function UsersDetail() {
 	return (
 		<Pane header={[<UsersDetailHeader key="header" />]}>
 			<UsersDetailBasicInfo />
+			<UsersDetailOrganizationAndRoles />
 			{permissionsConfig.map(item => (
 				<PermissionSection
 					key={item.scope}
