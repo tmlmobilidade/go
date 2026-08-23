@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { DeleteButton } from '../../buttons/DeleteButton';
+import { DeleteButton } from '../../../buttons';
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
 import { getSidebarNotificationScopeIcon } from './sidebar-notification-scope-icon';

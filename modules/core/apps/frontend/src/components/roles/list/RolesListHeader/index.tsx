@@ -29,7 +29,11 @@ export function RolesListHeader() {
 			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
 			<RolesListFilterSearch />
-			<Button icon={<IconPlus size={20} />} label={t('default:roles.list.Header.NewRoleButton.label')} onClick={openRolesCreateModal} />
+			<Button
+				icon={<IconPlus size={20} />}
+				label={t('default:roles.list.Header.NewRoleButton.label')}
+				onClick={openRolesCreateModal}
+			/>
 		</Toolbar>
 	);
 }

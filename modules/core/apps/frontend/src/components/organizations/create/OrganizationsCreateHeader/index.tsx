@@ -1,8 +1,7 @@
 'use client';
 
 import { closeOrganizationsCreateModal } from '@/components/organizations/create/OrganizationsCreate.modal';
-import { IconUpload } from '@tabler/icons-react';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { CloseButton, CreateButton, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsCreateFormContext } from '../OrganizationsCreateForm.context';
@@ -19,7 +18,7 @@ export function OrganizationsCreateHeader() {
 
 	const { actions, capabilities, form, status } = useOrganizationsCreateFormContext();
 
-	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
+	const longNameValue = useStandardFormWatch({ control: form.control, name: 'long_name' });
 
 	//
 	// B. Render components
@@ -28,15 +27,12 @@ export function OrganizationsCreateHeader() {
 		<Toolbar>
 			<CloseButton onClick={closeOrganizationsCreateModal} type="close" />
 			<Tag label={t('default:organizations.create.Header.NewOrganizationButton.label')} variant="secondary" />
-			<Label size="lg" singleLine>{nameValue}</Label>
+			<Label size="lg" singleLine>{longNameValue}</Label>
 			<Spacer />
-			<Button
+			<CreateButton
 				disabled={!capabilities.createEnabled}
-				icon={<IconUpload size={28} />}
-				label={t('default:organizations.create.Header.UpdateButton.label')}
 				loading={status.isCreating}
 				onClick={actions.create}
-				variant="primary"
 			/>
 		</Toolbar>
 	);

@@ -8,14 +8,14 @@ import { Button } from '../Button';
 /* * */
 
 interface UpdateButtonProps {
-	isDisabled?: boolean
-	isLoading?: boolean
+	disabled?: boolean
+	loading?: boolean
 	onClick: () => void
 }
 
 /* * */
 
-export function UpdateButton({ isDisabled, isLoading, onClick }: UpdateButtonProps) {
+export function UpdateButton({ disabled, loading, onClick }: UpdateButtonProps) {
 	//
 
 	//
@@ -29,7 +29,7 @@ export function UpdateButton({ isDisabled, isLoading, onClick }: UpdateButtonPro
 	const handleClick = () => {
 		// If the button is loading or in read-only mode,
 		// do not trigger the onClick action
-		if (isLoading || isDisabled) return;
+		if (loading || disabled) return;
 		// Trigger the onClick action
 		onClick();
 	};
@@ -39,15 +39,15 @@ export function UpdateButton({ isDisabled, isLoading, onClick }: UpdateButtonPro
 
 	return (
 		<Tooltip
-			disabled={isDisabled}
+			disabled={disabled}
 			label={t('shared:components.buttons.UpdateButton.tooltip')}
 			position="bottom"
 			withArrow
 		>
 			<Button
-				disabled={isDisabled}
+				disabled={disabled}
 				label={t('shared:components.buttons.UpdateButton.label')}
-				loading={isLoading}
+				loading={loading}
 				onClick={handleClick}
 				variant="primary"
 			/>

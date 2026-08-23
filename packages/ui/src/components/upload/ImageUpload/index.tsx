@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
 
+import { DeleteButton } from '../../../buttons';
 import { useToast } from '../../../hooks/toast';
-import { DeleteButton } from '../../buttons/DeleteButton';
 import { ComponentWrapper } from '../../common/ComponentWrapper';
 import { Label } from '../../display/Label';
 import { FileButton } from '../FileButton';
