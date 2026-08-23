@@ -24,7 +24,7 @@ export function OrganizationsCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeOrganizationsCreateModal} type="close" />
-			<Tag label={t('default:organizations.create.Header.NewOrganizationButton.label')} variant="secondary" />
+			<Tag label={t('default:organizations.create.Header.title')} variant="secondary" />
 			<Spacer />
 			<CreateButton
 				isDisabled={!capabilities.createEnabled}
