@@ -3,7 +3,7 @@
 import { ActionIcon } from '@mantine/core';
 import { IconLockFilled, IconLockOpen2 } from '@tabler/icons-react';
 
-import { Tooltip } from '../../common/Tooltip';
+import { Tooltip } from '../../components/common/Tooltip';
 
 /* * */
 
@@ -70,6 +70,4 @@ export function LockButton({ isDisabled, isLoading, isLocked, onClick }: LockBut
 			</ActionIcon>
 		</Tooltip>
 	);
-
-	//
 }

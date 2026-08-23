@@ -2,7 +2,7 @@
 
 import { ActionIcon, FloatingPosition } from '@mantine/core';
 
-import { Tooltip } from '../../common/Tooltip';
+import { Tooltip } from '../../components/common/Tooltip';
 
 /* * */
 

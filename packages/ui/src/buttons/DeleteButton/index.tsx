@@ -4,8 +4,8 @@ import { ActionIcon } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { IconRestore, IconTrash } from '@tabler/icons-react';
 
-import { Tooltip } from '../../common/Tooltip';
-import { Label } from '../../display/Label';
+import { Tooltip } from '../../components/common/Tooltip';
+import { Label } from '../../components/display/Label';
 
 /* * */
 
@@ -160,6 +160,4 @@ export function DeleteButton(props: DeleteButtonProps) {
 			</ActionIcon>
 		</Tooltip>
 	);
-
-	//
 }

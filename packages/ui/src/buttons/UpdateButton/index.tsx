@@ -2,12 +2,12 @@
 
 import { useTranslation } from 'react-i18next';
 
-import { Tooltip } from '../../common/Tooltip';
+import { Tooltip } from '../../components/common/Tooltip';
 import { Button } from '../Button';
 
 /* * */
 
-interface DuplicateButtonProps {
+interface UpdateButtonProps {
 	isDisabled?: boolean
 	isLoading?: boolean
 	onClick: () => void
@@ -15,7 +15,7 @@ interface DuplicateButtonProps {
 
 /* * */
 
-export function DuplicateButton({ isDisabled, isLoading, onClick }: DuplicateButtonProps) {
+export function UpdateButton({ isDisabled, isLoading, onClick }: UpdateButtonProps) {
 	//
 
 	//
@@ -40,19 +40,17 @@ export function DuplicateButton({ isDisabled, isLoading, onClick }: DuplicateBut
 	return (
 		<Tooltip
 			disabled={isDisabled}
-			label={t('shared:components.buttons.DuplicateButton.tooltip')}
+			label={t('shared:components.buttons.UpdateButton.tooltip')}
 			position="bottom"
 			withArrow
 		>
 			<Button
 				disabled={isDisabled}
-				label={t('shared:components.buttons.DuplicateButton.label')}
+				label={t('shared:components.buttons.UpdateButton.label')}
 				loading={isLoading}
 				onClick={handleClick}
-				variant="secondary"
+				variant="primary"
 			/>
 		</Tooltip>
 	);
-
-	//
 }

@@ -2,12 +2,9 @@
 
 import { closeOrganizationsCreateModal } from '@/components/organizations/create/OrganizationsCreate.modal';
 import { IconUpload } from '@tabler/icons-react';
-import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Organization } from '@tmlmobilidade/go-types-core';
-import { Button, CloseButton, fetchApiData, keepUrlParams, Label, Spacer, Tag, Toolbar, useStandardFormWatch, useHandleUpdate } from '@tmlmobilidade/ui';
+import { Button, CloseButton, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { useOrganizationsListData } from '../../list/use-organizations-list-data';
 import { useOrganizationsCreateFormContext } from '../OrganizationsCreateForm.context';
 
 /* * */
@@ -20,43 +17,25 @@ export function OrganizationsCreateHeader() {
 
 	const { t } = useTranslation();
 
-	const { mutate } = useOrganizationsListData();
+	const { actions, capabilities, form, status } = useOrganizationsCreateFormContext();
 
-	const { form, unblock } = useOrganizationsCreateFormContext();
-
-	const longNameValue = useStandardFormWatch({ control: form.control, name: 'long_name' });
+	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
 
 	//
-	// B. Handle actions
-
-	const { action, isLoading } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'POST', url: API_ROUTES.core.ORGANIZATIONS_CREATE }),
-		onSuccess: ({ data }) => {
-			form.reset();
-			unblock();
-			mutate();
-			if (data?._id) {
-				const newUrl = keepUrlParams(PAGE_ROUTES.core.ORGANIZATIONS_DETAIL(data._id));
-				window.location.href = newUrl;
-			};
-		},
-	});
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeOrganizationsCreateModal} type="close" />
-			<Tag label={t('default:organizations.create.Header.PublishButton.label')} variant="secondary" />
-			<Label size="lg" singleLine>{longNameValue}</Label>
+			<Tag label={t('default:organizations.create.Header.NewOrganizationButton.label')} variant="secondary" />
+			<Label size="lg" singleLine>{nameValue}</Label>
 			<Spacer />
 			<Button
-				disabled={!longNameValue}
+				disabled={!capabilities.createEnabled}
 				icon={<IconUpload size={28} />}
-				label={t('default:organizations.create.Header.PublishButton.label')}
-				loading={isLoading}
-				onClick={action}
+				label={t('default:organizations.create.Header.UpdateButton.label')}
+				loading={status.isCreating}
+				onClick={actions.create}
 				variant="primary"
 			/>
 		</Toolbar>

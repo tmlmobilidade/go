@@ -1,12 +1,18 @@
 'use client';
 
-import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { useStandardForm, type UseStandardFormReturnType } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext } from 'react';
+import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { CreateOrganizationDto, CreateOrganizationSchema, Organization } from '@tmlmobilidade/go-types-core';
+import { hasPermission } from '@tmlmobilidade/go-types-permissions';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleUpdate, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+
+import { useOrganizationsListData } from '../list/use-organizations-list-data';
+import { closeOrganizationsCreateModal } from './OrganizationsCreate.modal';
 
 /* * */
 
-const OrganizationsCreateFormContext = createContext<undefined | UseStandardFormReturnType<typeof CreateOrganizationSchema>>(undefined);
+const OrganizationsCreateFormContext = createContext<StandardFormContextValue<CreateOrganizationDto> | undefined>(undefined);
 
 export function useOrganizationsCreateFormContext() {
 	const context = useContext(OrganizationsCreateFormContext);
@@ -20,17 +26,77 @@ export function OrganizationsCreateFormContextProvider({ children }: PropsWithCh
 	//
 
 	//
-	// A. Setup form
+	// A. Setup variables
 
-	const { form, unblock } = useStandardForm<typeof CreateOrganizationSchema>({
+	const router = useRouter();
+
+	const { data: meData } = useMeData();
+
+	const { mutate } = useOrganizationsListData();
+
+	//
+	// B. Setup form
+
+	const { form, unblock } = useStandardForm<CreateOrganizationDto, typeof CreateOrganizationSchema>({
 		schema: CreateOrganizationSchema,
 	});
 
 	//
-	// B. Return state
+	// C. Handle actions
+
+	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
+		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'POST', url: API_ROUTES.core.ORGANIZATIONS_CREATE }),
+		onSuccess: ({ data }) => {
+			closeOrganizationsCreateModal();
+			form.reset();
+			unblock();
+			mutate();
+			if (!data?._id) return;
+			router.push(keepUrlParams(PAGE_ROUTES.core.ORGANIZATIONS_DETAIL(data._id)));
+		},
+	});
+
+	//
+	// C. Setup flags
+
+	const hasCreatePermission = useMemo(() => {
+		return hasPermission(meData?.permissions, {
+			action: 'create',
+			scope: 'organizations',
+		});
+	}, [meData?.permissions]);
+
+	const { createEnabled, editEnabled } = useStandardFormCapabilities({
+		create: {
+			hasPermission: hasCreatePermission,
+			isCreating: isCreating,
+		},
+		form: {
+			isDirty: form.formState.isDirty,
+			isValid: form.formState.isValid,
+		},
+	});
+
+	//
+	// D. Return context value
+
+	const stateValue: StandardFormContextValue<CreateOrganizationDto> = useMemo(() => ({
+		actions: {
+			create: handleCreate,
+		},
+		capabilities: {
+			createEnabled,
+			editEnabled,
+		},
+		form,
+		status: {
+			isCreating,
+		},
+		unblock,
+	}), [createEnabled, editEnabled, form, handleCreate, isCreating, unblock]);
 
 	return (
-		<OrganizationsCreateFormContext.Provider value={{ form, unblock }}>
+		<OrganizationsCreateFormContext.Provider value={stateValue}>
 			{children}
 		</OrganizationsCreateFormContext.Provider>
 	);

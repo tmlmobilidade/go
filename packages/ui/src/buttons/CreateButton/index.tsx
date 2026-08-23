@@ -2,12 +2,12 @@
 
 import { useTranslation } from 'react-i18next';
 
-import { Tooltip } from '../../common/Tooltip';
+import { Tooltip } from '../../components/common/Tooltip';
 import { Button } from '../Button';
 
 /* * */
 
-interface UpdateButtonProps {
+interface CreateButtonProps {
 	isDisabled?: boolean
 	isLoading?: boolean
 	onClick: () => void
@@ -15,7 +15,7 @@ interface UpdateButtonProps {
 
 /* * */
 
-export function UpdateButton({ isDisabled, isLoading, onClick }: UpdateButtonProps) {
+export function CreateButton({ isDisabled, isLoading, onClick }: CreateButtonProps) {
 	//
 
 	//
@@ -40,19 +40,17 @@ export function UpdateButton({ isDisabled, isLoading, onClick }: UpdateButtonPro
 	return (
 		<Tooltip
 			disabled={isDisabled}
-			label={t('shared:components.buttons.UpdateButton.tooltip')}
+			label={t('shared:components.buttons.CreateButton.tooltip')}
 			position="bottom"
 			withArrow
 		>
 			<Button
 				disabled={isDisabled}
-				label={t('shared:components.buttons.UpdateButton.label')}
+				label={t('shared:components.buttons.CreateButton.label')}
 				loading={isLoading}
 				onClick={handleClick}
 				variant="primary"
 			/>
 		</Tooltip>
 	);
-
-	//
 }

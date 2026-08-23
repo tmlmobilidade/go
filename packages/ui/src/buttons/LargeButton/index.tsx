@@ -35,6 +35,4 @@ export function LargeButton({ href, icon, isActive, onClick, orientation = 'vert
 			</div>
 		);
 	}
-
-	//
 }
