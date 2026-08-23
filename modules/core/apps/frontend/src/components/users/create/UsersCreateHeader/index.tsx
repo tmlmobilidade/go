@@ -1,14 +1,14 @@
 'use client';
 
-import { closeRolesCreateModal } from '@/components/roles/create/RolesCreate.modal';
+import { closeUsersCreateModal } from '@/components/users/create/UsersCreate.modal';
 import { CloseButton, CreateButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { useRolesCreateFormContext } from '../RolesCreateForm.context';
+import { useUsersCreateFormContext } from '../UsersCreateForm.context';
 
 /* * */
 
-export function RolesCreateHeader() {
+export function UsersCreateHeader() {
 	//
 
 	//
@@ -16,15 +16,15 @@ export function RolesCreateHeader() {
 
 	const { t } = useTranslation();
 
-	const { actions, capabilities, status } = useRolesCreateFormContext();
+	const { actions, capabilities, status } = useUsersCreateFormContext();
 
 	//
 	// B. Render components
 
 	return (
 		<Toolbar>
-			<CloseButton onClick={closeRolesCreateModal} type="close" />
-			<Tag label={t('default:roles.create.Header.NewRoleButton.label')} variant="secondary" />
+			<CloseButton onClick={closeUsersCreateModal} type="close" />
+			<Tag label={t('default:users.create.Header.NewUserButton.label')} variant="secondary" />
 			<Spacer />
 			<CreateButton
 				disabled={!capabilities.createEnabled}

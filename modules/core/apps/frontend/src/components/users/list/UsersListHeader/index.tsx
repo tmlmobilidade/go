@@ -1,6 +1,6 @@
 /* * */
 
-import { openCreateUserModal } from '@/components/users/create/UserCreate.modal';
+import { openCreateUserModal } from '@/components/users/create/UsersCreate.modal';
 import { useUsersListContext } from '@/components/users/list/UsersList.context';
 import { IconPlus } from '@tabler/icons-react';
 import { Button, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';

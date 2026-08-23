@@ -1,6 +1,6 @@
 'use client';
 
-import { closeCreateUserModal } from '@/components/users/create/UserCreate.modal';
+import { closeCreateUserModal } from '@/components/users/create/UsersCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateUserDto, CreateUserSchema, type User } from '@tmlmobilidade/go-types-core';
 import { keepUrlParams, UseFormReturnType, useToast, useTypicalForm } from '@tmlmobilidade/ui';

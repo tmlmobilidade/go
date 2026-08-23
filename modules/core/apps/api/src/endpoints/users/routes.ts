@@ -1,12 +1,13 @@
 /* * */
 
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { createUserHandler } from './handlers/create-user.js';
 import { deleteUserHandler } from './handlers/delete-user.js';
 import { getUserSimplifiedHandler } from './handlers/get-user-simplified.js';
 import { getUserHandler } from './handlers/get-user.js';
+import { listOrganizationsHandler } from './handlers/list-organizations.js';
+import { listRolesHandler } from './handlers/list-roles.js';
 import { listUsersHandler } from './handlers/list-users.js';
 import { lockUserHandler } from './handlers/lock-user.js';
 import { updateUserHandler } from './handlers/update-user.js';
@@ -24,38 +25,50 @@ server.register(
 		//
 
 		instance.get(
-			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.read]) },
+			'/list',
+			{ preHandler: authorizationMiddleware('users', ['read']) },
 			listUsersHandler,
 		);
 
 		instance.get(
+			'/list-roles',
+			{ preHandler: authorizationMiddleware('users', ['read', 'create']) },
+			listRolesHandler,
+		);
+
+		instance.get(
+			'/list-organizations',
+			{ preHandler: authorizationMiddleware('users', ['read', 'create']) },
+			listOrganizationsHandler,
+		);
+
+		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.read]) },
+			{ preHandler: authorizationMiddleware('users', ['read']) },
 			getUserHandler,
 		);
 
 		instance.post(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.create]) },
+			{ preHandler: authorizationMiddleware('users', ['create']) },
 			createUserHandler,
 		);
 
 		instance.put(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.update]) },
+			{ preHandler: authorizationMiddleware('users', ['update']) },
 			updateUserHandler,
 		);
 
 		instance.delete(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.delete]) },
+			{ preHandler: authorizationMiddleware('users', ['delete']) },
 			deleteUserHandler,
 		);
 
 		instance.get(
 			'/:id/lock',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.users.scope, [PermissionCatalog.all.users.actions.lock]) },
+			{ preHandler: authorizationMiddleware('users', ['lock']) },
 			lockUserHandler,
 		);
 

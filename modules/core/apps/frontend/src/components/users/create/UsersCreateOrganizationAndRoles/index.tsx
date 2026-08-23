@@ -7,20 +7,27 @@ import { Grid, MultiSelect, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useUsersRolesData } from '../../shared/use-users-roles-data';
+import { useUsersCreateFormContext } from '../UsersCreateForm.context';
+
 /* * */
 
-export function UserCreateOrganizationAndRoles() {
+export function UsersCreateOrganizationAndRoles() {
 	//
 
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
+	const { options: rolesOptions } = useUsersRolesData();
+
+	const { capabilities, form } = useUsersCreateFormContext();
+
 	const rolesContext = useRolesContext();
 	const organizationsContext = useOrganizationsContext();
 
 	const userCreateContext = useUserCreateContext();
-
-	const { t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -67,6 +74,4 @@ export function UserCreateOrganizationAndRoles() {
 		</Section>
 
 	);
-
-	//
 }

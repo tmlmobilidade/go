@@ -1,7 +1,7 @@
 'use client';
 
 import { closeOrganizationsCreateModal } from '@/components/organizations/create/OrganizationsCreate.modal';
-import { CloseButton, CreateButton, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { CloseButton, CreateButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsCreateFormContext } from '../OrganizationsCreateForm.context';
@@ -16,9 +16,7 @@ export function OrganizationsCreateHeader() {
 
 	const { t } = useTranslation();
 
-	const { actions, capabilities, form, status } = useOrganizationsCreateFormContext();
-
-	const longNameValue = useStandardFormWatch({ control: form.control, name: 'long_name' });
+	const { actions, capabilities, status } = useOrganizationsCreateFormContext();
 
 	//
 	// B. Render components
@@ -27,7 +25,6 @@ export function OrganizationsCreateHeader() {
 		<Toolbar>
 			<CloseButton onClick={closeOrganizationsCreateModal} type="close" />
 			<Tag label={t('default:organizations.create.Header.NewOrganizationButton.label')} variant="secondary" />
-			<Label size="lg" singleLine>{longNameValue}</Label>
 			<Spacer />
 			<CreateButton
 				disabled={!capabilities.createEnabled}
