@@ -10,6 +10,7 @@ import useSWR from 'swr';
 /* * */
 
 interface UseUsersRolesDataReturnType {
+	data: UsersRoleItem[]
 	error: null | string
 	ids: string[]
 	options: SelectDataItem[]
@@ -58,6 +59,7 @@ export function useUsersRolesData(): UseUsersRolesDataReturnType {
 	// C. Return value
 
 	return useMemo(() => ({
+		data: data?.data,
 		error: error?.error,
 		ids: idsData,
 		options: optionsData,

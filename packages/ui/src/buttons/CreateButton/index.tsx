@@ -7,14 +7,14 @@ import { Button } from '../Button';
 /* * */
 
 interface CreateButtonProps {
-	disabled?: boolean
-	loading?: boolean
+	isDisabled?: boolean
+	isLoading?: boolean
 	onClick: () => void
 }
 
 /* * */
 
-export function CreateButton({ disabled, loading, onClick }: CreateButtonProps) {
+export function CreateButton({ isDisabled, isLoading, onClick }: CreateButtonProps) {
 	//
 
 	//
@@ -28,7 +28,7 @@ export function CreateButton({ disabled, loading, onClick }: CreateButtonProps) 
 	const handleClick = () => {
 		// If the button is loading or in read-only mode,
 		// do not trigger the onClick action
-		if (loading || disabled) return;
+		if (isLoading || isDisabled) return;
 		// Trigger the onClick action
 		onClick();
 	};
@@ -38,9 +38,9 @@ export function CreateButton({ disabled, loading, onClick }: CreateButtonProps) 
 
 	return (
 		<Button
-			disabled={disabled}
+			disabled={isDisabled}
 			label={t('shared:components.buttons.CreateButton.label')}
-			loading={loading}
+			loading={isLoading}
 			onClick={handleClick}
 			variant="primary"
 		/>

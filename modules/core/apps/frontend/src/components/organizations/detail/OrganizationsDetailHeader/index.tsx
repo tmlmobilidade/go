@@ -54,8 +54,8 @@ export function OrganizationsDetailHeader() {
 				scope={PermissionCatalog.all.organizations.scope}
 			>
 				<UpdateButton
-					disabled={!capabilities.updateEnabled}
-					loading={status.isUpdating}
+					isDisabled={!capabilities.updateEnabled}
+					isLoading={status.isUpdating}
 					onClick={actions.update}
 				/>
 			</HasPermission>

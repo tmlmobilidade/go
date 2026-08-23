@@ -27,8 +27,8 @@ export function OrganizationsCreateHeader() {
 			<Tag label={t('default:organizations.create.Header.NewOrganizationButton.label')} variant="secondary" />
 			<Spacer />
 			<CreateButton
-				disabled={!capabilities.createEnabled}
-				loading={status.isCreating}
+				isDisabled={!capabilities.createEnabled}
+				isLoading={status.isCreating}
 				onClick={actions.create}
 			/>
 		</Toolbar>

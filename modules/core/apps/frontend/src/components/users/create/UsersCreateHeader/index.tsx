@@ -27,8 +27,8 @@ export function UsersCreateHeader() {
 			<Tag label={t('default:users.create.Header.NewUserButton.label')} variant="secondary" />
 			<Spacer />
 			<CreateButton
-				disabled={!capabilities.createEnabled}
-				loading={status.isCreating}
+				isDisabled={!capabilities.createEnabled}
+				isLoading={status.isCreating}
 				onClick={actions.create}
 			/>
 		</Toolbar>

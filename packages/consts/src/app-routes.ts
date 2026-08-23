@@ -60,7 +60,7 @@ export const PAGE_ROUTES = Object.freeze({
 		ROLES_LIST: `${getModuleConfig('core', 'frontend_url')}/roles`,
 
 		// USERS
-		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'frontend_url')}/users/${encodeURIComponent(id)}`,
+		USERS_DETAIL: (userId: string) => `${getModuleConfig('core', 'frontend_url')}/users/${encodeURIComponent(userId)}`,
 		USERS_LIST: `${getModuleConfig('core', 'frontend_url')}/users`,
 	},
 
@@ -284,6 +284,7 @@ export const API_ROUTES = Object.freeze({
 		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}`,
 		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
 		USERS_LIST: `${getModuleConfig('core', 'api_url')}/users/list`,
+		USERS_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/users/list-agencies`,
 		USERS_LIST_ORGANIZATIONS: `${getModuleConfig('core', 'api_url')}/users/list-organizations`,
 		USERS_LIST_ROLES: `${getModuleConfig('core', 'api_url')}/users/list-roles`,
 		USERS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/users/lock/${encodeURIComponent(id)}`,

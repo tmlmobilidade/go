@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export function UserDetailBasicInfo() {
+export function UsersDetailBasicInfo() {
 	//
 
 	//

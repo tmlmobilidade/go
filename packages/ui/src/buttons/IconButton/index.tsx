@@ -18,8 +18,8 @@ interface ButtonProps {
 
 type IconButtonProps = (ButtonProps | LinkProps) & {
 	color?: string
-	disabled?: boolean
 	icon: React.ReactNode
+	isDisabled?: boolean
 	isLoading?: boolean
 	isReadOnly?: boolean
 	tooltip?: string
@@ -29,7 +29,7 @@ type IconButtonProps = (ButtonProps | LinkProps) & {
 
 /* * */
 
-export function IconButton({ color, disabled, icon, isLoading, isReadOnly, tooltip, tooltipOrienation, variant = 'subtle', ...props }: IconButtonProps) {
+export function IconButton({ color, icon, isDisabled, isLoading, isReadOnly, tooltip, tooltipOrienation, variant = 'subtle', ...props }: IconButtonProps) {
 	//
 
 	//
@@ -59,7 +59,7 @@ export function IconButton({ color, disabled, icon, isLoading, isReadOnly, toolt
 			<ActionIcon
 				color={color ?? 'var(--color-primary)'}
 				component={isLink ? 'a' : 'button'}
-				disabled={disabled}
+				disabled={isDisabled}
 				href={isLink ? (props as LinkProps).href : undefined}
 				loading={isLoading}
 				onClick={isLink ? undefined : handleClick}

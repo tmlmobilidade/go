@@ -132,8 +132,8 @@ export function CommentInput({
 				</Section>
 
 				<IconButton
-					disabled={isSendDisabled}
 					icon={<IconSend size={20} />}
+					isDisabled={isSendDisabled}
 					isLoading={loading}
 					onClick={handleSubmit}
 				/>

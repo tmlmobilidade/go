@@ -51,8 +51,8 @@ export function RolesDetailHeader() {
 				scope={PermissionCatalog.all.roles.scope}
 			>
 				<UpdateButton
-					disabled={!capabilities.updateEnabled}
-					loading={status.isUpdating}
+					isDisabled={!capabilities.updateEnabled}
+					isLoading={status.isUpdating}
 					onClick={actions.update}
 				/>
 			</HasPermission>

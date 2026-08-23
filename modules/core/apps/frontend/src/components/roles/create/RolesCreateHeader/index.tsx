@@ -27,8 +27,8 @@ export function RolesCreateHeader() {
 			<Tag label={t('default:roles.create.Header.NewRoleButton.label')} variant="secondary" />
 			<Spacer />
 			<CreateButton
-				disabled={!capabilities.createEnabled}
-				loading={status.isCreating}
+				isDisabled={!capabilities.createEnabled}
+				isLoading={status.isCreating}
 				onClick={actions.create}
 			/>
 		</Toolbar>

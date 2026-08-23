@@ -1,25 +1,32 @@
 'use client';
 
-import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, UpdateButton } from '@tmlmobilidade/ui';
+import { DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { CloseButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
+import { useUsersDetailUserId } from '../use-users-detail-user-id';
+import { useUsersDetailFormContext } from '../UsersDetailForm.context';
+
 /* * */
 
-export function UserDetailHeader() {
+export function UsersDetailHeader() {
 	//
 
 	//
 	// A. Setup variables
 
-	const router = useRouter();
-	const userDetailContext = useUserDetailContext();
-
 	const { t } = useTranslation();
+
+	const router = useRouter();
+
+	const { userId } = useUsersDetailUserId();
+
+	const { actions, capabilities, form, status } = useUsersDetailFormContext();
+
+	const emailValue = useStandardFormWatch({ control: form.control, name: 'email' });
 
 	//
 	// B. Handle actions
@@ -34,8 +41,8 @@ export function UserDetailHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={handleClose} type="close" />
-			<IdTag id={userDetailContext.data.id} copyOnClick />
-			<Label size="lg" singleLine>{userDetailContext.data.form.values.email}</Label>
+			<IdTag id={userId} copyOnClick />
+			<Label size="lg" singleLine>{emailValue}</Label>
 
 			<Spacer />
 
@@ -44,9 +51,9 @@ export function UserDetailHeader() {
 				scope={PermissionCatalog.all.users.scope}
 			>
 				<UpdateButton
-					isDisabled={!userDetailContext.flags.canSave}
-					isLoading={userDetailContext.flags.isSaving}
-					onClick={userDetailContext.actions.save}
+					isDisabled={!capabilities.updateEnabled}
+					isLoading={status.isUpdating}
+					onClick={actions.update}
 				/>
 			</HasPermission>
 
@@ -55,10 +62,10 @@ export function UserDetailHeader() {
 				scope={PermissionCatalog.all.users.scope}
 			>
 				<LockButton
-					isDisabled={!userDetailContext.flags.canLock}
-					isLoading={userDetailContext.flags.isLocking}
-					isLocked={userDetailContext.data.user?.is_locked}
-					onClick={userDetailContext.actions.lock}
+					isDisabled={!capabilities.lockEnabled}
+					isLoading={status.isLocking}
+					isLocked={false}
+					onClick={actions.lock}
 				/>
 			</HasPermission>
 
@@ -69,16 +76,13 @@ export function UserDetailHeader() {
 				<DeleteButton
 					confirmMessage={t('default:users.detail.Header.DeleteButton.confirm.message')}
 					confirmTitle={t('default:users.detail.Header.DeleteButton.confirm.title')}
-					isDisabled={!userDetailContext.flags.canDelete}
-					isLoading={userDetailContext.flags.isDeleting}
-					onDelete={userDetailContext.actions.delete}
-					onRestore={userDetailContext.actions.delete}
+					isDisabled={!capabilities.deleteEnabled}
+					isLoading={status.isDeleting}
+					onDelete={actions.delete}
 					showConfirmation={true}
 				/>
 			</HasPermission>
 
 		</Toolbar>
 	);
-
-	//
 }

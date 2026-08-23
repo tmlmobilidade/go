@@ -6,6 +6,7 @@ import { createUserHandler } from './handlers/create-user.js';
 import { deleteUserHandler } from './handlers/delete-user.js';
 import { getUserSimplifiedHandler } from './handlers/get-user-simplified.js';
 import { getUserHandler } from './handlers/get-user.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listOrganizationsHandler } from './handlers/list-organizations.js';
 import { listRolesHandler } from './handlers/list-roles.js';
 import { listUsersHandler } from './handlers/list-users.js';
@@ -28,6 +29,12 @@ server.register(
 			'/list',
 			{ preHandler: authorizationMiddleware('users', ['read']) },
 			listUsersHandler,
+		);
+
+		instance.get(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware('users', ['read', 'create']) },
+			listAgenciesHandler,
 		);
 
 		instance.get(

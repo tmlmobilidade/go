@@ -1,26 +1,28 @@
 'use client';
 
 import { PermissionSection } from '@/components/permissions/PermissionSection';
-import { RolesDetailBasicInfo } from '@/components/roles/detail/RolesDetailBasicInfo';
-import { RolesDetailHeader } from '@/components/roles/detail/RolesDetailHeader';
+import { UsersDetailBasicInfo } from '@/components/users/detail/UsersDetailBasicInfo';
+import { UsersDetailHeader } from '@/components/users/detail/UsersDetailHeader';
 import { permissionsConfig } from '@/lib/permissions';
 import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
 
-import { useRolesDetailFormContext } from '../RolesDetailForm.context';
-import { useRolesAgenciesData } from '../use-roles-agencies-data';
+import { useUsersRolesData } from '../../shared/use-users-roles-data';
+import { useUsersAgenciesData } from '../use-users-agencies-data';
+import { useUsersDetailFormContext } from '../UsersDetailForm.context';
 
 /* * */
 
-export function RolesDetail() {
+export function UsersDetail() {
 	//
 
 	//
 	// A. Setup variables
 
-	const { capabilities, form } = useRolesDetailFormContext();
+	const { capabilities, form } = useUsersDetailFormContext();
 
-	const { options: rolesAgenciesOptions } = useRolesAgenciesData();
+	const { options: usersAgenciesOptions } = useUsersAgenciesData();
+	const { data: usersRolesData } = useUsersRolesData();
 
 	const permissionsValue = useStandardFormWatch({ control: form.control, name: 'permissions' });
 
@@ -65,19 +67,19 @@ export function RolesDetail() {
 	// C. Render components
 
 	return (
-		<Pane header={[<RolesDetailHeader key="header" />]}>
-			<RolesDetailBasicInfo />
+		<Pane header={[<UsersDetailHeader key="header" />]}>
+			<UsersDetailBasicInfo />
 			{permissionsConfig.map(item => (
 				<PermissionSection
 					key={item.scope}
-					agenciesOptions={rolesAgenciesOptions}
+					agenciesOptions={usersAgenciesOptions}
 					configActions={item.actions}
 					description={item.description}
 					disabled={!capabilities.editEnabled}
 					enabledPermissions={permissionsValue}
 					onResourceToggle={handlePermissionResourceToggle}
 					onToggle={handlePermissionToggle}
-					rolesData={[]}
+					rolesData={usersRolesData}
 					scope={item.scope}
 					title={item.title}
 				/>

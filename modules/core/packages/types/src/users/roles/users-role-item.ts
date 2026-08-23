@@ -5,10 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const UsersRoleItemSchema = RoleSchema.pick({
-	_id: true,
-	name: true,
-});
+export const UsersRoleItemSchema = RoleSchema;
 
 /**
  * The item schema for listing users roles.

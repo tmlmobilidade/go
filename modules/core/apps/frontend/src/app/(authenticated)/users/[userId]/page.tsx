@@ -1,21 +1,14 @@
 /* * */
 
-import { UserDetail } from '@/components/users/detail/UserDetail';
-import { UserDetailContextProvider } from '@/components/users/detail/UserDetail.context';
+import { UsersDetail } from '@/components/users/detail/UsersDetail';
+import { UsersDetailFormContextProvider } from '@/components/users/detail/UsersDetailForm.context';
 
 /* * */
 
-interface Props {
-	params: Promise<{ id: string }>
-}
-
-/* * */
-
-export default async function Page({ params }: Props) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<UserDetailContextProvider userId={id}>
-			<UserDetail />
-		</UserDetailContextProvider>
+		<UsersDetailFormContextProvider>
+			<UsersDetail />
+		</UsersDetailFormContextProvider>
 	);
 }
