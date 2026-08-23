@@ -268,13 +268,13 @@ export const API_ROUTES = Object.freeze({
 		PLATFORM_DOWNLOADS: `${getModuleConfig('core', 'api_url')}/platform/downloads`,
 		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
 		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
-		PLATFORM_ORGANIZATIONS: `${getModuleConfig('core', 'api_url')}/platform/organizations`,
 
 		// ROLES
 		ROLES_CREATE: `${getModuleConfig('core', 'api_url')}/roles/create`,
 		ROLES_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/delete/${encodeURIComponent(id)}`,
 		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}`,
 		ROLES_LIST: `${getModuleConfig('core', 'api_url')}/roles/list`,
+		ROLES_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/roles/list-agencies`,
 		ROLES_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/lock/${encodeURIComponent(id)}`,
 		ROLES_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/update/${encodeURIComponent(id)}`,
 

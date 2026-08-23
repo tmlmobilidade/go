@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Role } from '@tmlmobilidade/go-types-core';
+import { type Organization } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -9,8 +9,8 @@ import useSWR from 'swr';
 
 /* * */
 
-interface UseRolesDataReturnType {
-	data: Role[]
+interface UseCoreOrganizationsDataReturnType {
+	data: Organization[]
 	error: null | string
 	ids: string[]
 	isLoading: boolean
@@ -25,14 +25,14 @@ interface UseRolesDataReturnType {
  * @param props The request to fetch the agencies data.
  * @returns An object containing the agencies data.
  */
-export function useRolesData(): UseRolesDataReturnType {
+export function useCoreOrganizationsData(): UseCoreOrganizationsDataReturnType {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<Role[]>>(API_ROUTES.core.ROLES_LIST, {
-		fetcher: async () => await fetchApiData<Role[]>({ method: 'GET', url: API_ROUTES.core.ROLES_LIST }),
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<Organization[]>>(API_ROUTES.core.ORGANIZATIONS_LIST, {
+		fetcher: async () => await fetchApiData<Organization[]>({ method: 'GET', url: API_ROUTES.core.ORGANIZATIONS_LIST }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
@@ -53,7 +53,7 @@ export function useRolesData(): UseRolesDataReturnType {
 		return data.data.map((item): SelectDataItem => ({
 			checked: false,
 			disabled: false,
-			label: `[${item._id}] ${item.name}`,
+			label: `[${item._id}] ${item.long_name}`,
 			value: item._id,
 		}));
 	}, [data?.data]);

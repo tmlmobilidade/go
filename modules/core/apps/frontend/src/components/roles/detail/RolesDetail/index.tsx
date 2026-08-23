@@ -8,6 +8,7 @@ import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permi
 import { Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
 
 import { useRolesDetailFormContext } from '../RolesDetailForm.context';
+import { useRolesAgenciesData } from '../use-roles-agencies-data';
 
 /* * */
 
@@ -18,6 +19,8 @@ export function RolesDetail() {
 	// A. Setup variables
 
 	const { form } = useRolesDetailFormContext();
+
+	const { options: rolesAgenciesOptions } = useRolesAgenciesData();
 
 	const permissionsValue = useStandardFormWatch({ control: form.control, name: 'permissions' });
 
@@ -67,6 +70,7 @@ export function RolesDetail() {
 			{permissionsConfig.map(item => (
 				<PermissionSection
 					key={item.scope}
+					agenciesOptions={rolesAgenciesOptions}
 					configActions={item.actions}
 					description={item.description}
 					enabledPermissions={permissionsValue}

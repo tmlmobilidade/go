@@ -3,16 +3,17 @@
 import { CheckCard } from '@/components/common/CheckCard';
 import { AgencyPermissionMultiselect } from '@/components/permissions/AgencyPermissionMultiselect';
 import { AlertReferenceTypePermissionMultiselect } from '@/components/permissions/AlertReferenceTypePermissionMultiselect';
-import { useRolesData } from '@/components/shared/use-roles-data';
+import { useCoreRolesData } from '@/components/shared/use-core-roles-data';
 import { hasRolePermission } from '@/lib/permission-helpers';
 import { PermissionConfigAction } from '@/lib/permissions';
 import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
-import { Grid } from '@tmlmobilidade/ui';
+import { Grid, type SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
 interface PermissionSectionItemProps {
+	agenciesOptions: SelectDataItem[]
 	configAction: PermissionConfigAction
 	enabledPermissions: Permission[]
 	enabledRoleIds?: string[]
@@ -23,13 +24,13 @@ interface PermissionSectionItemProps {
 
 /* * */
 
-export function PermissionSectionItem({ configAction, enabledPermissions, enabledRoleIds, onResourceToggle, onToggle, scope }: PermissionSectionItemProps) {
+export function PermissionSectionItem({ agenciesOptions, configAction, enabledPermissions, enabledRoleIds, onResourceToggle, onToggle, scope }: PermissionSectionItemProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const { data: rolesData } = useRolesData();
+	const { data: rolesData } = useCoreRolesData();
 
 	//
 	// B. Transform data
@@ -58,7 +59,7 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 
 	const handleToggle = () => {
 		if (hasPermissionFromRole) return;
-		const validatedPermission = PermissionSchema.safeParse({ action: configAction.action, scope });
+		const validatedPermission = PermissionSchema.safeParse({ action: configAction.action, resources: {}, scope });
 		if (!validatedPermission.success) return alert('Erro ao adicionar permissão: ' + JSON.stringify(validatedPermission.error));
 		onToggle(validatedPermission.data);
 	};
@@ -87,6 +88,7 @@ export function PermissionSectionItem({ configAction, enabledPermissions, enable
 					<AgencyPermissionMultiselect
 						disabled={hasPermissionFromRole}
 						onChange={(inputValue: string[]) => handleResourceToggle({ agency_ids: inputValue })}
+						options={agenciesOptions}
 						value={selectedAgencyIds}
 					/>
 				)}

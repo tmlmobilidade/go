@@ -4,7 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type AgenciesPlatformRequest, AgenciesPlatformRequestSchema, type AgenciesPlatformResponse, AgenciesPlatformResponseSchema } from '@tmlmobilidade/go-types-core';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Get agencies platform data.
@@ -30,7 +30,7 @@ export async function listPlatformAgenciesHandler(request: FastifyRequest<{ Body
 	//
 	// Build aggregation pipeline
 
-	const matchedAgencyIds = !resourceAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG)
+	const matchedAgencyIds = !resourceAgencyIds.includes(AllowAllFlagValue)
 		? { agency_id: { $in: resourceAgencyIds } }
 		: {};
 
