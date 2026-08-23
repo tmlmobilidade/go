@@ -1,12 +1,14 @@
 {
 	"buttons": {
+		"CreateButton": {
+			"label": "Criar"
+		},
 		"DuplicateButton": {
 			"label": "Duplicar",
 			"tooltip": "Criar cópia deste documento"
 		},
 		"UpdateButton": {
-			"label": "Guardar",
-			"tooltip": "Guardar Alterações"
+			"label": "Guardar"
 		}
 	},
 	"files": {

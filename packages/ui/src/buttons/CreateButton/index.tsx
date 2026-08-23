@@ -2,7 +2,6 @@
 
 import { useTranslation } from 'react-i18next';
 
-import { Tooltip } from '../../components/common/Tooltip';
 import { Button } from '../Button';
 
 /* * */
@@ -38,19 +37,12 @@ export function CreateButton({ disabled, loading, onClick }: CreateButtonProps) 
 	// C. Render components
 
 	return (
-		<Tooltip
+		<Button
 			disabled={disabled}
-			label={t('shared:components.buttons.CreateButton.tooltip')}
-			position="bottom"
-			withArrow
-		>
-			<Button
-				disabled={disabled}
-				label={t('shared:components.buttons.CreateButton.label')}
-				loading={loading}
-				onClick={handleClick}
-				variant="primary"
-			/>
-		</Tooltip>
+			label={t('shared:components.buttons.CreateButton.label')}
+			loading={loading}
+			onClick={handleClick}
+			variant="primary"
+		/>
 	);
 }
