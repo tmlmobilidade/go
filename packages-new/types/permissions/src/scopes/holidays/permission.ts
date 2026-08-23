@@ -10,7 +10,7 @@ import { HolidaysPermissionScopeSchema } from './scope.js';
 
 export const HolidaysPermissionSchema = z.object({
 	action: HolidaysPermissionActionsSchema,
-	resources: HolidaysPermissionResourcesSchema,
+	resources: HolidaysPermissionResourcesSchema.default({}),
 	scope: HolidaysPermissionScopeSchema,
 });
 

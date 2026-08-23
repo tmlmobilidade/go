@@ -10,7 +10,7 @@ import { RidesPermissionScopeSchema } from './scope.js';
 
 export const RidesPermissionSchema = z.object({
 	action: RidesPermissionActionsSchema,
-	resources: RidesPermissionResourcesSchema,
+	resources: RidesPermissionResourcesSchema.default({}),
 	scope: RidesPermissionScopeSchema,
 });
 

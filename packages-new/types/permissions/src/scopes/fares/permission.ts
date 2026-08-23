@@ -10,7 +10,7 @@ import { FaresPermissionScopeSchema } from './scope.js';
 
 export const FaresPermissionSchema = z.object({
 	action: FaresPermissionActionsSchema,
-	resources: FaresPermissionResourcesSchema,
+	resources: FaresPermissionResourcesSchema.default({}),
 	scope: FaresPermissionScopeSchema,
 });
 

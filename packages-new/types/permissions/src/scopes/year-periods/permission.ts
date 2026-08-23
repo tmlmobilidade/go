@@ -10,7 +10,7 @@ import { YearPeriodsPermissionScopeSchema } from './scope.js';
 
 export const YearPeriodsPermissionSchema = z.object({
 	action: YearPeriodsPermissionActionsSchema,
-	resources: YearPeriodsPermissionResourcesSchema,
+	resources: YearPeriodsPermissionResourcesSchema.default({}),
 	scope: YearPeriodsPermissionScopeSchema,
 });
 

@@ -10,7 +10,7 @@ import { AnnotationsPermissionScopeSchema } from './scope.js';
 
 export const AnnotationsPermissionSchema = z.object({
 	action: AnnotationsPermissionActionsSchema,
-	resources: AnnotationsPermissionResourcesSchema,
+	resources: AnnotationsPermissionResourcesSchema.default({}),
 	scope: AnnotationsPermissionScopeSchema,
 });
 

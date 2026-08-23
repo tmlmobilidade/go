@@ -10,7 +10,7 @@ import { TypologiesPermissionScopeSchema } from './scope.js';
 
 export const TypologiesPermissionSchema = z.object({
 	action: TypologiesPermissionActionsSchema,
-	resources: TypologiesPermissionResourcesSchema,
+	resources: TypologiesPermissionResourcesSchema.default({}),
 	scope: TypologiesPermissionScopeSchema,
 });
 

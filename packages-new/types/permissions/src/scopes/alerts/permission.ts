@@ -10,7 +10,7 @@ import { AlertsPermissionScopeSchema } from './scope.js';
 
 export const AlertsPermissionSchema = z.object({
 	action: AlertsPermissionActionsSchema,
-	resources: AlertsPermissionResourcesSchema,
+	resources: AlertsPermissionResourcesSchema.default({}),
 	scope: AlertsPermissionScopeSchema,
 });
 

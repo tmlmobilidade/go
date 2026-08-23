@@ -10,7 +10,7 @@ import { LinesPermissionScopeSchema } from './scope.js';
 
 export const LinesPermissionSchema = z.object({
 	action: LinesPermissionActionsSchema,
-	resources: LinesPermissionResourcesSchema,
+	resources: LinesPermissionResourcesSchema.default({}),
 	scope: LinesPermissionScopeSchema,
 });
 

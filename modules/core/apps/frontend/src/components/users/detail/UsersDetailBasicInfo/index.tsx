@@ -1,10 +1,11 @@
 'use client';
 
-import { useUserDetailContext } from '@/components/users/detail/UserDetail.context';
 import { IconMail, IconPhone } from '@tabler/icons-react';
-import { CreateUserSchema } from '@tmlmobilidade/go-types-core';
-import { Collapsible, Grid, PasswordInput, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, PasswordInput, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import bcrypt from 'bcryptjs';
 import { useTranslation } from 'react-i18next';
+
+import { useUsersDetailFormContext } from '../UsersDetailForm.context';
 
 /* * */
 
@@ -14,11 +15,20 @@ export function UsersDetailBasicInfo() {
 	//
 	// A. Setup variables
 
-	const userDetailContext = useUserDetailContext();
 	const { t } = useTranslation();
 
+	const { capabilities, form } = useUsersDetailFormContext();
+
 	//
-	// B. Render components
+	// B. Handle actions
+
+	function handleChangePassword(value: string) {
+		const passwordHash = bcrypt.hashSync(value);
+		form.setValue('password_hash', passwordHash, { shouldDirty: true });
+	}
+
+	//
+	// C. Render components
 
 	return (
 		<Collapsible
@@ -27,54 +37,95 @@ export function UsersDetailBasicInfo() {
 		>
 			<Section gap="md">
 				<Grid columns="ab" gap="xl">
-					<TextInput
-						key={userDetailContext.data.form.key('first_name')}
-						label={t('default:users.detail.BasicInfo.fields.first_name.label')}
-						maxLength={255}
-						placeholder={t('default:users.detail.BasicInfo.fields.first_name.placeholder')}
-						readOnly={userDetailContext.flags.isReadOnly}
-						withAsterisk={!CreateUserSchema.shape.first_name.isOptional()}
-						{...userDetailContext.data.form.getInputProps('first_name')}
+
+					<StandardFormController
+						control={form.control}
+						name="first_name"
+						render={({ field, fieldState }) => (
+							<TextInput
+								disabled={!capabilities.editEnabled}
+								error={fieldState.error?.message}
+								label={t('default:users.detail.BasicInfo.fields.first_name.label')}
+								maxLength={255}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('default:users.detail.BasicInfo.fields.first_name.placeholder')}
+								value={field.value ?? ''}
+								data-autofocus
+								withAsterisk
+							/>
+						)}
 					/>
-					<TextInput
-						key={userDetailContext.data.form.key('last_name')}
-						label={t('default:users.detail.BasicInfo.fields.last_name.label')}
-						maxLength={255}
-						placeholder={t('default:users.detail.BasicInfo.fields.last_name.placeholder')}
-						readOnly={userDetailContext.flags.isReadOnly}
-						withAsterisk={!CreateUserSchema.shape.last_name.isOptional()}
-						{...userDetailContext.data.form.getInputProps('last_name')}
+
+					<StandardFormController
+						control={form.control}
+						name="last_name"
+						render={({ field, fieldState }) => (
+							<TextInput
+								disabled={!capabilities.editEnabled}
+								error={fieldState.error?.message}
+								label={t('default:users.detail.BasicInfo.fields.last_name.label')}
+								maxLength={255}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('default:users.detail.BasicInfo.fields.last_name.placeholder')}
+								value={field.value ?? ''}
+								withAsterisk
+							/>
+						)}
 					/>
-					<TextInput
-						key={userDetailContext.data.form.key('email')}
-						label={t('default:users.detail.BasicInfo.fields.email.label')}
-						leftSection={<IconMail size={22} />}
-						placeholder={t('default:users.detail.BasicInfo.fields.email.placeholder')}
-						readOnly={userDetailContext.flags.isReadOnly}
-						withAsterisk={!CreateUserSchema.shape.email.isOptional()}
-						{...userDetailContext.data.form.getInputProps('email')}
+
+					<StandardFormController
+						control={form.control}
+						name="email"
+						render={({ field, fieldState }) => (
+							<TextInput
+								disabled={!capabilities.editEnabled}
+								error={fieldState.error?.message}
+								label={t('default:users.detail.BasicInfo.fields.email.label')}
+								leftSection={<IconMail size={22} />}
+								maxLength={255}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('default:users.detail.BasicInfo.fields.email.placeholder')}
+								type="email"
+								value={field.value ?? ''}
+								withAsterisk
+							/>
+						)}
 					/>
-					<TextInput
-						key={userDetailContext.data.form.key('phone')}
-						label={t('default:users.detail.BasicInfo.fields.phone.label')}
-						leftSection={<IconPhone size={22} />}
-						placeholder={t('default:users.detail.BasicInfo.fields.phone.placeholder')}
-						readOnly={userDetailContext.flags.isReadOnly}
-						withAsterisk={!CreateUserSchema.shape.phone.isOptional()}
-						{...userDetailContext.data.form.getInputProps('phone')}
+
+					<StandardFormController
+						control={form.control}
+						name="phone"
+						render={({ field, fieldState }) => (
+							<TextInput
+								disabled={!capabilities.editEnabled}
+								error={fieldState.error?.message}
+								label={t('default:users.detail.BasicInfo.fields.phone.label')}
+								leftSection={<IconPhone size={22} />}
+								maxLength={255}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('default:users.detail.BasicInfo.fields.phone.placeholder')}
+								type="phone"
+								value={field.value ?? ''}
+								withAsterisk
+							/>
+						)}
 					/>
+
 					<PasswordInput
-						key={userDetailContext.data.form.key('password')}
 						autoComplete="new-password"
+						disabled={!capabilities.editEnabled}
 						label={t('default:users.detail.BasicInfo.fields.password.label')}
-						onChange={event => userDetailContext.actions.handleChangePassword(event.target.value)}
+						maxLength={255}
+						onChange={event => handleChangePassword(event.target.value)}
 						placeholder={t('default:users.detail.BasicInfo.fields.password.placeholder')}
-						readOnly={userDetailContext.flags.isReadOnly}
 					/>
+
 				</Grid>
 			</Section>
 		</Collapsible>
 	);
-
-	//
 }
