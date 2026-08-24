@@ -1,10 +1,9 @@
 'use client';
 
-import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, Collapsible, FileItem, FileUpload, HasPermission, Label, Section, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { Button, Collapsible, fetchApiData, FileItem, FileUpload, HasPermission, Label, Section, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -55,7 +54,7 @@ export function PlanDetailSectionApexFile() {
 	};
 
 	const { action: handleSendApexNotification, isLoading: isSendingApexNotification } = useHandleUpdate({
-		fetchFn: async () => await fetchData(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE_SEND_NOTIFICATION(planDetailContext.data.id)),
+		fetchFn: async () => await fetchApiData<unknown>({ url: API_ROUTES.plans.PLANS_DETAIL_APEX_FILE_SEND_NOTIFICATION(planDetailContext.data.id) }),
 		onSuccess: () => {},
 	});
 

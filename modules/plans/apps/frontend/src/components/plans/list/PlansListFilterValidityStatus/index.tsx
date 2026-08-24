@@ -1,7 +1,8 @@
 /* * */
 
-import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { ListFilter } from '@tmlmobilidade/ui';
+
+import { usePlansListFilterValidityStatus } from './use-plans-list-filter-validity-status';
 
 /* * */
 
@@ -11,17 +12,17 @@ export function PlansListFilterValidityStatus() {
 	//
 	// A. Setup variables
 
-	const plansListContext = usePlansListContext();
+	const filterValidityStatus = usePlansListFilterValidityStatus();
 
 	//
 	// B. Render components
 
 	return (
 		<ListFilter
-			active={plansListContext.filters.validity_status.isActive}
+			active={filterValidityStatus.isActive}
 			label="Estado de Validade"
-			onChange={plansListContext.filters.validity_status.set}
-			options={plansListContext.filters.validity_status.options}
+			onChange={filterValidityStatus.set}
+			options={filterValidityStatus.options}
 			withToggleAll
 		/>
 	);

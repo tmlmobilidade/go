@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Collapsible, FileItem, Label, Section, useToast } from '@tmlmobilidade/ui';
 

@@ -1,15 +1,17 @@
 'use client';
 
-import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFeedDates';
 import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { type PlanNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+
+import { usePlansListData } from '../use-plans-list-data';
 
 /* * */
 
@@ -22,7 +24,7 @@ export function PlansList() {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
-	const plansListContext = usePlansListContext();
+	const plansData = usePlansListData();
 
 	const columns: DataTableColumn<PlanNormalized>[] = [
 		{
@@ -33,7 +35,19 @@ export function PlansList() {
 		},
 		{
 			accessor: 'agency_id_normalized',
-			render: item => <AgencyTag agencyId={item.agency_id} copyOnClick={false} showShortName />,
+			render: item => (
+				<AgencyTag
+					agencyId={item.agency_id}
+					copyOnClick={false}
+					request={{
+						permissions: {
+							actions: [PermissionCatalog.all.plans.actions.read],
+							scope: PermissionCatalog.all.plans.scope,
+						},
+					}}
+					showShortName
+				/>
+			),
 			title: 'Operador',
 			width: 180,
 		},
@@ -103,24 +117,18 @@ export function PlansList() {
 	//
 	// C. Render components
 
-	if (plansListContext.flags.isLoading) {
-		return <LoadingOverlay />;
-	}
-
-	if (plansListContext.flags.error) {
-		return <ErrorDisplay message={plansListContext.flags.error.message} />;
-	}
-
 	return (
 		<Pane header={[
 			<PlansListHeader key="header" />,
 			<PlansListFiltersBar key="filters" />,
 		]}
 		>
+			{plansData.error && <ErrorDisplay message={plansData.error} />}
 			<DataTable
 				columns={columns}
+				isLoading={plansData.isLoading}
 				onRowClick={handleRowClick}
-				records={plansListContext.data.filtered}
+				records={plansData.data}
 				rowIdAccessor="_id"
 				selectedId={params.id}
 			/>

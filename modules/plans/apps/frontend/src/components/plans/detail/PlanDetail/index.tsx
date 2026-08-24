@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { PlanDetailFootnote } from '@/components/plans/detail/PlanDetailFootnote';
 import { PlanDetailHeader } from '@/components/plans/detail/PlanDetailHeader';
 import { PlanDetailSectionAgency } from '@/components/plans/detail/PlanDetailSectionAgency';
@@ -8,7 +8,6 @@ import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetai
 import { PlanDetailSectionFeedInfo } from '@/components/plans/detail/PlanDetailSectionFeedInfo';
 import { PlanDetailSectionPcgiLegacy } from '@/components/plans/detail/PlanDetailSectionPcgiLegacy';
 import { PlanDetailSectionApexFile } from '@/components/plans/detail/PlansDetailSectionApexFile';
-import { PlanDetailSectionOperationFile } from '@/components/plans/detail/PlansDetailSectionOperationFile';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
@@ -38,7 +37,6 @@ export function PlanDetail() {
 
 			<PlanDetailSectionAgency />
 			<PlanDetailSectionFeedInfo />
-			<PlanDetailSectionOperationFile />
 
 			<HasPermission
 				action={PermissionCatalog.all.plans.actions.read_apex_file}

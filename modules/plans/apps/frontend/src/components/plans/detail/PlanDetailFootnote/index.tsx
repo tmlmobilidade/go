@@ -1,6 +1,6 @@
 /* * */
 
-import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { Label, Section, UserTag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
