@@ -7,7 +7,7 @@ import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useSchoolsListFilterSearch } from '../filters/SchoolsListFilterSearch/use-schools-list-filter-search';
+import { useSchoolsListFilterSearch } from './filters/SchoolsListFilterSearch/use-schools-list-filter-search';
 
 /* * */
 

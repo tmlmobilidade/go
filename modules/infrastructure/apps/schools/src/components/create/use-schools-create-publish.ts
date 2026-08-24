@@ -1,37 +1,37 @@
 'use client';
 
-import { useAlertsListData } from '@/components/list/shared/use-alerts-list-data';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Alert } from '@tmlmobilidade/go-types-operation';
+import { School } from '@tmlmobilidade/go-types-operation';
 import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import { useAlertsCreateFormContext } from './AlertsCreateForm.context';
+import { useSchoolsListData } from '../list/use-schools-list-data';
+import { useSchoolCreateFormContext } from './SchoolCreateForm.context';
 
 /* * */
 
-interface UseAlertsCreatePublishReturnType {
+interface UseSchoolCreatePublishReturnType {
 	isLoading: boolean
 	publish: () => Promise<void>
 }
 
 /* * */
 
-export function useAlertsCreatePublish(): UseAlertsCreatePublishReturnType {
+export function useSchoolCreatePublish(): UseSchoolCreatePublishReturnType {
 	//
 
 	//
 	// A. Setup variables
 
-	const { mutate } = useAlertsListData();
+	const { mutate } = useSchoolsListData();
 
-	const { form, unblock } = useAlertsCreateFormContext();
+	const { form, unblock } = useSchoolCreateFormContext();
 
 	//
 	// B. Handle actions
 
 	const { action, isLoading } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Alert>({ body: form.getValues(), method: 'POST', url: API_ROUTES.alerts.ALERTS_CREATE }),
+		fetchFn: async () => await fetchApiData<School>({ body: form.getValues(), method: 'POST', url: API_ROUTES.schools.SCHOOLS_CREATE }),
 		onSuccess: ({ data }) => {
 			form.reset();
 			unblock();

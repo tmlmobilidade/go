@@ -1,8 +1,8 @@
 'use client';
 
-import { useSchoolsDetailSchoolId } from '@/components/detail/shared/use-schools-detail-school-id';
+import { useSchoolsDetailSchoolId } from '@/components/detail/use-schools-detail-school-id';
 import { SchoolsListFiltersBar } from '@/components/list/filters/SchoolsListFiltersBar';
-import { SchoolsListHeader } from '@/components/list/shared/SchoolsListHeader';
+import { SchoolsListHeader } from '@/components/list/SchoolsListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type SchoolsListItem } from '@tmlmobilidade/go-schools-pckg-types';
 import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane } from '@tmlmobilidade/ui';

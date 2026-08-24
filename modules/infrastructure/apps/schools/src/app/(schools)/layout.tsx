@@ -1,6 +1,6 @@
 /* * */
 
-import { SchoolsList } from '@/components/list/shared/SchoolsList';
+import { SchoolsList } from '@/components/list/SchoolsList';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

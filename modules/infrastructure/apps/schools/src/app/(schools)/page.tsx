@@ -1,9 +1,13 @@
 /* * */
 
-import { SchoolsList } from '@/components/list/shared/SchoolsList';
+import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
 
 /* * */
 
-export default async function Page() {
-	return <SchoolsList />;
+export default function Page() {
+	return (
+		<Surface align="center" justify="center" variant="transparent">
+			<NoDataLabel text="Selecione uma escola" />
+		</Surface>
+	);
 }
