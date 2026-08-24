@@ -1,6 +1,6 @@
 'use client';
 
-import { StopFacilitySchema } from '@tmlmobilidade/types';
+import { StopFacilitySchema } from '@tmlmobilidade/go-types-infrastructure';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**

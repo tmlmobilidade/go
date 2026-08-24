@@ -1,6 +1,6 @@
 'use client';
 
-import { LifecycleStatusSchema } from '@tmlmobilidade/types';
+import { LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**
