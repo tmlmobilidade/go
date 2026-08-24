@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AgenciesPlatformRequest, type AgenciesPlatformResponse } from '@tmlmobilidade/go-types-core';
+import { type AgenciesPlatformRequest, type AgenciesPlatformResponse } from '@tmlmobilidade/go-types-platform';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 import useSWR from 'swr';
