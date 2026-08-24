@@ -3,8 +3,9 @@
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
 import { type CreateFileExportDto, type FileExport, type FileExportType } from '@tmlmobilidade/go-types-downloads';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
-import useSWR from 'swr';
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo } from 'react';
+
+import { useFileExportsListData } from '../data/use-file-exports-list-data';
 
 /* * */
 
@@ -18,7 +19,7 @@ interface ExportsContextState {
 		fileExports: FileExport[]
 	}
 	flags: {
-		error: HttpException | undefined
+		error: null | string
 		loading: boolean
 	}
 }
@@ -42,7 +43,8 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 
 	//
 	// A. Setup variables
-	const { data, error, isLoading, mutate } = useSWR<FileExport[], HttpException>(API_ROUTES.exporter.EXPORTER_LIST);
+
+	const fileExportsListData = useFileExportsListData();
 
 	//
 	// B. Transform data
@@ -50,21 +52,21 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// C. Handle actions
 
-	async function create<T extends { properties: Record<string, unknown>, type: FileExportType }>(dto: CreateFileExportDto<T>): Promise<FileExport> {
+	const create = useCallback(async <T extends { properties: Record<string, unknown>, type: FileExportType }>(dto: CreateFileExportDto<T>): Promise<FileExport> => {
 		const response = await fetchData<FileExport>(API_ROUTES.exporter.EXPORTER_LIST, 'POST', dto);
 
 		if (response.error || !response.data) {
 			throw new HttpException(response.statusCode, response.error ?? 'Failed to create file export');
 		}
 
-		mutate();
+		fileExportsListData.mutate();
 
 		return response.data;
-	}
+	}, [fileExportsListData.mutate]);
 
-	function download(id: string): void {
+	const download = useCallback((id: string): void => {
 		window.location.href = API_ROUTES.exporter.EXPORTER_DETAIL_DOWNLOAD(id);
-	}
+	}, []);
 
 	//
 	// D. Define context value
@@ -74,17 +76,17 @@ export const ExportsContextProvider = ({ children }: PropsWithChildren) => {
 			actions: {
 				create,
 				download,
-				mutate,
+				mutate: fileExportsListData.mutate,
 			},
 			data: {
-				fileExports: data || [],
+				fileExports: fileExportsListData.data,
 			},
 			flags: {
-				error,
-				loading: isLoading,
+				error: fileExportsListData.error,
+				loading: fileExportsListData.isLoading,
 			},
 		};
-	}, [data, error, isLoading]);
+	}, [create, download, fileExportsListData.data, fileExportsListData.error, fileExportsListData.isLoading, fileExportsListData.mutate]);
 
 	//
 	// E. Render components
