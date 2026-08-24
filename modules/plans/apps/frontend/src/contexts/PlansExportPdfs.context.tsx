@@ -15,6 +15,7 @@ interface PlansExportPdfsContextState {
 	actions: {
 		exportPosters: () => Promise<void>
 		setAgencyId: (value: null | string) => void
+		setCanvasProfile: (value: CanvasProfile | null) => void
 		setLineIds: (value: string[]) => void
 		setLinesMode: (value: LinesMode) => void
 		setPlanId: (value: null | string) => void
@@ -22,6 +23,7 @@ interface PlansExportPdfsContextState {
 	data: {
 		agencyId: null | string
 		agencyOptions: SelectDataItem[]
+		canvasProfile: CanvasProfile | null
 		lineIds: string[]
 		lines: Line[]
 		linesMode: LinesMode
@@ -33,6 +35,10 @@ interface PlansExportPdfsContextState {
 		loading: boolean
 	}
 }
+
+/* * */
+
+type CanvasProfile = NonNullable<PlanPostersExportProperties['properties']['canvas_profile']>;
 
 /* * */
 
@@ -58,6 +64,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	const posterLinesData = usePosterLinesData();
 	const exports = useExportsContext();
 	const [agencyId, setAgencyId] = useState<null | string>(null);
+	const [canvasProfile, setCanvasProfile] = useState<CanvasProfile | null>('0Master.C');
 	const [lineIds, setLineIds] = useState<string[]>([]);
 	const [linesMode, setLinesMode] = useState<LinesMode>('all');
 	const [planId, setPlanId] = useState<null | string>(null);
@@ -73,7 +80,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	//
 	// B. Derived state
 
-	const canSave = !!agencyId && !!planId && (linesMode === 'all' || lineIds.length > 0);
+	const canSave = !!agencyId && !!planId && (linesMode === 'all' || (!!canvasProfile && lineIds.length > 0));
 
 	//
 	// C. Handle actions
@@ -109,7 +116,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	const exportPosters = useCallback(async () => {
 		if (loading) return;
 		if (!agencyId || !planId) return;
-		if (linesMode !== 'all' && !lineIds.length) return;
+		if (linesMode !== 'all' && (!canvasProfile || !lineIds.length)) return;
 
 		const selectedPlan = plansData.raw.find(plan => plan._id === planId && plan.agency_id === agencyId);
 		if (!selectedPlan?.operation_file_id) return;
@@ -121,7 +128,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 			processing_status: 'waiting',
 			properties: {
 				agency_id: agencyId,
-				canvas_profile: '0Master.C',
+				canvas_profile: linesMode === 'all' ? '0Master.C' : canvasProfile,
 				line_ids: linesMode === 'all' ? undefined : lineIds,
 				lines_mode: linesMode,
 				plan_id: planId,
@@ -140,7 +147,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 		} finally {
 			setLoading(false);
 		}
-	}, [agencyId, exports.actions, lineIds, linesMode, loading, planId, plansData.raw]);
+	}, [agencyId, canvasProfile, exports.actions, lineIds, linesMode, loading, planId, plansData.raw]);
 
 	//
 	// D. Define context value
@@ -149,6 +156,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 		actions: {
 			exportPosters,
 			setAgencyId: selectAgencyId,
+			setCanvasProfile,
 			setLineIds,
 			setLinesMode: selectLinesMode,
 			setPlanId: selectPlanId,
@@ -156,6 +164,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 		data: {
 			agencyId,
 			agencyOptions,
+			canvasProfile,
 			lineIds,
 			lines: posterLinesData.data,
 			linesMode,
@@ -166,7 +175,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 			has_error: !!posterLinesData.error,
 			loading,
 		},
-	}), [agencyId, agencyOptions, canSave, exportPosters, lineIds, linesMode, loading, planId, posterLinesData.data, posterLinesData.error, selectAgencyId, selectLinesMode, selectPlanId]);
+	}), [agencyId, agencyOptions, canSave, canvasProfile, exportPosters, lineIds, linesMode, loading, planId, posterLinesData.data, posterLinesData.error, selectAgencyId, selectLinesMode, selectPlanId]);
 
 	//
 	// E. Render components

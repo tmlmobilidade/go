@@ -9,6 +9,15 @@ import { useMemo } from 'react';
 
 /* * */
 
+const canvasProfileOptions = [
+	{ label: '0Master.A', value: '0Master.A' },
+	{ label: '0Master.B', value: '0Master.B' },
+	{ label: '0Master.C', value: '0Master.C' },
+	{ label: '0Master.F', value: '0Master.F' },
+];
+
+/* * */
+
 export function PlanPostersExportModalBody() {
 	//
 
@@ -104,6 +113,17 @@ export function PlanPostersExportModalBody() {
 							onChange={context.actions.setLineIds}
 							placeholder="Selecionar linhas"
 							value={context.data.lineIds}
+							w="100%"
+						/>
+					)}
+
+					{context.data.linesMode !== 'all' && (
+						<Select
+							data={canvasProfileOptions}
+							description="Este perfil será aplicado às paragens das linhas selecionadas"
+							label="Canvas profile"
+							onChange={value => context.actions.setCanvasProfile(value as typeof context.data.canvasProfile)}
+							value={context.data.canvasProfile}
 							w="100%"
 						/>
 					)}
