@@ -1,10 +1,11 @@
 'use client';
 
 import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { Collapsible, Grid, ImageUpload, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, ImageUpload, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsDetailFormContext } from '../OrganizationsDetailForm.context';
+import { useOrganizationsImageDetailData } from '../use-organizations-image-detail-data';
 
 /* * */
 
@@ -18,8 +19,8 @@ export function OrganizationsDetailBasicInfo() {
 
 	const { actions, capabilities, form, status } = useOrganizationsDetailFormContext();
 
-	const logoDarkUrlValue = useStandardFormWatch({ control: form.control, name: 'logo_dark' });
-	const logoLightUrlValue = useStandardFormWatch({ control: form.control, name: 'logo_light' });
+	const { data: logoLightUrlValue } = useOrganizationsImageDetailData('light');
+	const { data: logoDarkUrlValue } = useOrganizationsImageDetailData('dark');
 
 	//
 	// B. Render components

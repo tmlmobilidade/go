@@ -4,4 +4,5 @@ export * from './dates/index.js';
 export * from './documents/index.js';
 export * from './numbers/index.js';
 export * from './status/index.js';
+export * from './theme/index.js';
 export * from './utils/index.js';
