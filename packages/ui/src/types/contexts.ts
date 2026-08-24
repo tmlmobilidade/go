@@ -50,7 +50,7 @@ export interface CreateContextStateTemplate<T = any> {
  * and a `flags` section, with error, isSaving and loading flags.
  * You should add a `data: { ... }` section and expand these defaults as needed.
  */
-export interface DetailContextStateTemplate<T = any> {
+export interface DetailContextStateTemplate<T = unknown> {
 	actions: {
 		delete?: () => void
 		duplicate?: () => void

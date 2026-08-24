@@ -51,7 +51,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data: allStopsData, error, isLoading } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST, { refreshInterval: 5000 });
+	const { data: allStopsData, error, isLoading } = useSWR<Stop[]>(API_ROUTES.infrastructure.STOPS_LIST, { refreshInterval: 5000 });
 
 	//
 	// C. Transform data

@@ -2,7 +2,7 @@
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
 import { StopCreateStepLocationLocationsCards } from '@/components/stops/create/StopCreateStepLocationLocationsCards';
-import { ContextFormController, Divider, Section, useLocationsContext, ValueDisplay } from '@tmlmobilidade/ui';
+import { StandardFormController, Divider, Section, useLocationsContext, ValueDisplay } from '@tmlmobilidade/ui';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
@@ -41,7 +41,7 @@ export function StopCreateStepSummary() {
 		<>
 			<Section padding="lg">
 				<div className={styles.wrapper}>
-					<ContextFormController control={stopCreateContext.form.instance.control} name="name" render={({ field }) => <p className={styles.name}>{field.value}</p>} />
+					<StandardFormController control={stopCreateContext.form.instance.control} name="name" render={({ field }) => <p className={styles.name}>{field.value}</p>} />
 					<p className={styles.location}>{locationLabel}</p>
 					<p className={styles.coordinates}>{latitude}, {longitude}</p>
 				</div>
@@ -50,8 +50,8 @@ export function StopCreateStepSummary() {
 			<Divider />
 
 			<Section>
-				<ContextFormController control={stopCreateContext.form.instance.control} name="short_name" render={({ field }) => <ValueDisplay label="Nome curto" value={field.value} variant="plain" />} />
-				<ContextFormController control={stopCreateContext.form.instance.control} name="tts_name" render={({ field }) => <ValueDisplay label="Nome tts" value={field.value} variant="plain" />} />
+				<StandardFormController control={stopCreateContext.form.instance.control} name="short_name" render={({ field }) => <ValueDisplay label="Nome curto" value={field.value} variant="plain" />} />
+				<StandardFormController control={stopCreateContext.form.instance.control} name="tts_name" render={({ field }) => <ValueDisplay label="Nome tts" value={field.value} variant="plain" />} />
 			</Section>
 
 			<StopCreateStepLocationLocationsCards />

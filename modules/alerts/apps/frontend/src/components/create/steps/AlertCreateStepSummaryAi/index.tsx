@@ -1,7 +1,7 @@
 /* * */
 
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ContextFormController, Divider, Inline, Label, LoadingThinking, Section, Surface, Switch, Text, TextInput, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
+import { StandardFormController, Divider, Inline, Label, LoadingThinking, Section, Surface, Switch, Text, TextInput, useStandardFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,11 +24,11 @@ export function AlertCreateStepSummaryAi() {
 
 	const { data: composeData, isLoading: isLoadingComposeData, isValidating: isValidatingComposeData } = useAlertsComposeData();
 
-	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const referenceTypeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
-	const autoTextsValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'auto_texts' });
-	const titleValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'title' });
-	const descriptionValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'description' });
+	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const referenceTypeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
+	const autoTextsValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'auto_texts' });
+	const titleValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'title' });
+	const descriptionValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'description' });
 
 	//
 	// B. Transform data
@@ -86,7 +86,7 @@ export function AlertCreateStepSummaryAi() {
 
 				<Section gap="md">
 					{(hasPermissionToCreate || hasPermissionToUpdateTexts) && (
-						<ContextFormController
+						<StandardFormController
 							control={alertsCreateForm.control}
 							name="auto_texts"
 							render={({ field }) => (
@@ -100,7 +100,7 @@ export function AlertCreateStepSummaryAi() {
 						/>
 					)}
 					{(autoTextsValue && hasPermissionToCreate) && (
-						<ContextFormController
+						<StandardFormController
 							control={alertsCreateForm.control}
 							name="user_instructions"
 							render={({ field }) => (

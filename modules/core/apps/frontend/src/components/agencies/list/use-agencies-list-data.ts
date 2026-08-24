@@ -33,7 +33,7 @@ export function useAgenciesListData(): UseAgenciesListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<AgenciesListItem[]>>(API_ROUTES.auth.AGENCIES_LIST, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<AgenciesListItem[]>>(API_ROUTES.core.AGENCIES_LIST, {
 		fetcher: async (url: string) => await fetchApiData<AgenciesListItem[]>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

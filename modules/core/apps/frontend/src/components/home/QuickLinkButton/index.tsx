@@ -1,13 +1,13 @@
 /* * */
 
-import { type HomeLink } from '@/types/quick-links';
+import { type HomeQuickLink } from '@tmlmobilidade/go-types-core';
 
 import styles from './styles.module.css';
 
 /* * */
 
 interface QuickLinkButtonProps {
-	item: HomeLink
+	item: HomeQuickLink
 }
 
 /* * */

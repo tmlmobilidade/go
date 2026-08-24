@@ -29,7 +29,7 @@ export async function sendPasswordResetEmailHandler(request: FastifyRequest<{ Bo
 	await sendResetPasswordEmail({
 		data: {
 			firstName: foundUser.first_name,
-			resetPasswordUrl: `${PAGE_ROUTES.auth.CHANGE_PASSWORD_LIST}?token=${randomToken}&email=${encodeURIComponent(foundUser.email)}`,
+			resetPasswordUrl: `${PAGE_ROUTES.core.CHANGE_PASSWORD_LIST}?token=${randomToken}&email=${encodeURIComponent(foundUser.email)}`,
 		},
 		to: request.body.email,
 	});

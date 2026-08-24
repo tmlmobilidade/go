@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -13,7 +13,7 @@ export async function cleanExpiredSessions() {
 	try {
 		const timer = new Timer();
 		Logger.info({ message: `Cleaning expired "sessions" documents...` });
-		const now = Dates.now('Europe/Lisbon').unix_timestamp;
+		const now = Dates.now('utc').unix_timestamp;
 		const deleteResult = await goDb.core.sessions.deleteMany({ expires_at: { $lt: now } });
 		Logger.success(`Deleted ${deleteResult.deletedCount} expired "sessions" documents in ${timer.get()}.`);
 	} catch (error) {

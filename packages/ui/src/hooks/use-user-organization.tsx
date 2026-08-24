@@ -20,7 +20,7 @@ export function useUserOrganization(): [Organization | undefined, (value: Organi
 	// A. Setup variables
 
 	const meContext = useMeContext();
-	const { data: raw, error: error, isLoading: loading } = useSWR<Organization[], HttpException>(`${getModuleConfig('auth', 'api_url')}/organizations`);
+	const { data: raw, error: error, isLoading: loading } = useSWR<Organization[], HttpException>(`${getModuleConfig('core', 'api_url')}/organizations`);
 	const [orgData, setOrgData] = useState<Organization | undefined>(undefined);
 
 	//

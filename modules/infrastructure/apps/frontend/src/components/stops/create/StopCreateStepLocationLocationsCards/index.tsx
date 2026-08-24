@@ -1,7 +1,7 @@
 'use client';
 
 import { useStopCreateContext } from '@/components/stops/create/StopCreate.context';
-import { ContextFormController, Grid, Section, Skeleton, useLocationsContext, ValueDisplay } from '@tmlmobilidade/ui';
+import { StandardFormController, Grid, Section, Skeleton, useLocationsContext, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -30,22 +30,22 @@ export function StopCreateStepLocationLocationsCards() {
 	return (
 		<Section>
 			<Grid columns="ab" gap="md">
-				<ContextFormController
+				<StandardFormController
 					control={stopCreateContext.form.instance.control}
 					name="district_id"
 					render={() => <ValueDisplay label="Distrito" value={locationsContext.flags.is_loading ? <Skeleton height={12} width={230} /> : districtLabel} variant="bordered" />}
 				/>
-				<ContextFormController
+				<StandardFormController
 					control={stopCreateContext.form.instance.control}
 					name="municipality_id"
 					render={() => <ValueDisplay label="Município" value={locationsContext.flags.is_loading ? <Skeleton height={12} width={230} /> : municipalityLabel} variant="bordered" />}
 				/>
-				<ContextFormController
+				<StandardFormController
 					control={stopCreateContext.form.instance.control}
 					name="parish_id"
 					render={() => <ValueDisplay label="Freguesia" value={locationsContext.flags.is_loading ? <Skeleton height={12} width={230} /> : parishLabel} variant="bordered" />}
 				/>
-				<ContextFormController
+				<StandardFormController
 					control={stopCreateContext.form.instance.control}
 					name="locality_id"
 					render={() => <ValueDisplay label="Localidade" value={locationsContext.flags.is_loading ? <Skeleton height={12} width={230} /> : localityLabel} variant="bordered" />}

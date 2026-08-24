@@ -61,11 +61,12 @@
 		"maplibre-gl": "5.24.0",
 		"next": "16.3.0",
 		"nuqs": "2.9.5",
-		"react-hook-form": "7.84.0",
+		"react-hook-form": "7.86.0",
 		"react-i18next": "17.0.11",
 		"react-viewport-list": "7.1.2",
 		"swr": "2.5.0",
-		"ukkonen": "2.2.0"
+		"ukkonen": "2.2.0",
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@turf/turf": "7.4.0",

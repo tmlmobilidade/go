@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { getStopShortName, getStopTtsName } from '@tmlmobilidade/go-infrastructure-pckg-organize';
 import { CreateStopDto, Stop } from '@tmlmobilidade/types';
-import { CreateContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useHandleUpdate, useLocationsContext, useMultiStep, UseMultiStepReturnType } from '@tmlmobilidade/ui';
+import { CreateContextStateTemplate, keepUrlParams, useStandardForm, useStandardFormWatch, useHandleUpdate, useLocationsContext, useMultiStep, UseMultiStepReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -45,20 +45,20 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Setup form
 
-	const { form, unblock } = useContextForm<CreateStopDto>({
+	const { form, unblock } = useStandardForm<CreateStopDto>({
 		// schema: CreateStopSchema,
 	});
 
-	const nameValue = useContextFormWatch({ control: form.control, name: 'name' });
-	const latitudeValue = useContextFormWatch({ control: form.control, name: 'latitude' });
-	const longitudeValue = useContextFormWatch({ control: form.control, name: 'longitude' });
+	const nameValue = useStandardFormWatch({ control: form.control, name: 'name' });
+	const latitudeValue = useStandardFormWatch({ control: form.control, name: 'latitude' });
+	const longitudeValue = useStandardFormWatch({ control: form.control, name: 'longitude' });
 
 	const [loadingLocations, setLoadingLocations] = useState(false);
 
 	//
 	// C. Fetch data
 
-	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
+	const { mutate: allStopsMutate } = useSWR<Stop[]>(API_ROUTES.infrastructure.STOPS_LIST);
 
 	//
 	// D. Side Effects
@@ -133,12 +133,12 @@ export const StopCreateContextProvider = ({ children }: PropsWithChildren) => {
 	// F. Submit action
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Stop>(API_ROUTES.stops.STOPS_LIST, 'POST', form.getValues()),
+		fetchFn: async () => await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_LIST, 'POST', form.getValues()),
 		onSuccess: (updatedItem) => {
 			form.reset();
 			unblock();
 			allStopsMutate();
-			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.stops.STOPS_DETAIL(updatedItem._id.toString())));
+			if (updatedItem?._id) router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(updatedItem._id.toString())));
 			closeStopCreateModal();
 		},
 	});

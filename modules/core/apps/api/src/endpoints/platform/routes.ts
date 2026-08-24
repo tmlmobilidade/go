@@ -3,6 +3,7 @@
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getMeHandler } from './handlers/get-me.js';
+import { listPlatformAgenciesHandler } from './handlers/list-platform-agencies.js';
 import { updateMeHandler } from './handlers/update-me.js';
 
 /* * */
@@ -25,7 +26,7 @@ server.register(
 
 		instance.get('/notifications', { preHandler: authorizationMiddleware() }, getMeHandler);
 
-		instance.post('/agencies', { preHandler: authorizationMiddleware() }, getMeHandler);
+		instance.post('/agencies', { preHandler: authorizationMiddleware() }, listPlatformAgenciesHandler);
 
 		next();
 	},

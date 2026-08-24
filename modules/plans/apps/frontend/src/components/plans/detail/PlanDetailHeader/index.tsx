@@ -5,7 +5,7 @@ import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.conte
 import { IconRefresh } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { AgencyTag, CloseButton, DeleteButton, HasPermission, IconButton, IdTag, LockButton, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { AgencyTag, CloseButton, DeleteButton, HasPermission, IconButton, IdTag, LockButton, UpdateButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
@@ -47,7 +47,7 @@ export function PlanDetailHeader() {
 				scope={PermissionCatalog.all.plans.scope}
 				value={planDetailContext.data.plan.agency_id}
 			>
-				<SaveButton
+				<UpdateButton
 					isDisabled={!planDetailContext.flags.canSave}
 					isLoading={planDetailContext.flags.isSaving}
 					onClick={planDetailContext.actions.save}

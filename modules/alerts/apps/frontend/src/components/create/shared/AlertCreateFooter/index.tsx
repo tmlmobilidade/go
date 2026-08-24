@@ -1,7 +1,7 @@
 'use client';
 
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, HasPermission, PublishStatusDisplay, Spacer, Toolbar, useContextFormWatch } from '@tmlmobilidade/ui';
+import { Button, HasPermission, PublishStatusDisplay, Spacer, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
 
 import { useAlertsCreateFormContext } from '../AlertsCreateForm.context';
 import { useAlertsCreateFormStepsContext } from '../AlertsCreateFormSteps.context';
@@ -19,8 +19,8 @@ export function AlertCreateFooter() {
 	const { actions: alertsCreateFormStepsActions, progress: alertsCreateFormStepsProgress } = useAlertsCreateFormStepsContext();
 	const { isLoading: isCreating, publish } = useAlertsCreatePublish();
 
-	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const publishStatusValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'publish_status' });
+	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const publishStatusValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'publish_status' });
 
 	//
 	// B. Render components

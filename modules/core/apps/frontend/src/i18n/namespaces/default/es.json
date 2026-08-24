@@ -624,7 +624,7 @@
 				"NewRoleButton": {
 					"label": "Nuevo grupo de permisos"
 				},
-				"SaveButton": {
+				"UpdateButton": {
 					"label": "Crear"
 				}
 			}
@@ -690,7 +690,7 @@
 				"NewUserButton": {
 					"label": "Nuevo usuario"
 				},
-				"SaveButton": {
+				"UpdateButton": {
 					"label": "Crear"
 				}
 			},

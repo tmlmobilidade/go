@@ -2,7 +2,7 @@
 
 import { usePlanChangeContext } from '@/components/plans/change/PlanChange.context';
 import { closePlanChangeModal } from '@/components/plans/change/PlanChange.modal';
-import { CloseButton, Label, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, Label, UpdateButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -22,7 +22,7 @@ export function PlanChangeHeader() {
 			<CloseButton onClick={closePlanChangeModal} type="close" />
 			<Label size="lg" caps singleLine>Alterar Plano</Label>
 			<Spacer />
-			<SaveButton
+			<UpdateButton
 				isDisabled={!changePlanContext.data.selected_validation_id}
 				isLoading={changePlanContext.flags.isSaving}
 				// eslint-disable-next-line @typescript-eslint/no-misused-promises

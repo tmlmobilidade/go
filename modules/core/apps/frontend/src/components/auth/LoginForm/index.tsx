@@ -1,6 +1,6 @@
 'use client';
 
-import { AuthenticationForm } from '@/components/common/AuthenticationForm';
+import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Session } from '@tmlmobilidade/go-types-core';
 import { fetchApiData, PasswordInput, TextInput, useHandleUpdate, useQueryState, useToast } from '@tmlmobilidade/ui';
@@ -17,7 +17,7 @@ export function LoginForm() {
 
 	const { t } = useTranslation();
 
-	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: PAGE_ROUTES.auth.HOME_LIST });
+	const [redirectToValue] = useQueryState('redirect', { clearOnDefault: true, defaultValue: PAGE_ROUTES.core.HOME_LIST });
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
 	const [passwordValue, setPasswordValue] = useState('');
@@ -26,7 +26,7 @@ export function LoginForm() {
 	// B. Handle actions
 
 	const { action: handleLogin, isLoading: isLoggingIn } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Session>({ body: { email: emailValue, password: passwordValue }, method: 'POST', url: API_ROUTES.auth.AUTH_LOGIN }),
+		fetchFn: async () => await fetchApiData<Session>({ body: { email: emailValue, password: passwordValue }, method: 'POST', url: API_ROUTES.core.AUTH_LOGIN }),
 		onError: (error) => {
 			useToast.error({
 				message: error.message ?? t('unauthenticated:LoginForm.error.description'),
@@ -38,8 +38,7 @@ export function LoginForm() {
 				message: t('unauthenticated:LoginForm.success.description'),
 				title: t('unauthenticated:LoginForm.success.title'),
 			});
-			console.log('redirectToValue', redirectToValue);
-			// window.location.href = redirectToValue;
+			window.location.href = redirectToValue;
 		},
 	});
 
@@ -50,7 +49,7 @@ export function LoginForm() {
 		<AuthenticationForm
 			description={t('unauthenticated:LoginForm.description')}
 			footerLabel={t('unauthenticated:LoginForm.footer.label')}
-			footerUrl={PAGE_ROUTES.auth.RESET_PASSWORD_LIST}
+			footerUrl={PAGE_ROUTES.core.RESET_PASSWORD_LIST}
 			loading={isLoggingIn}
 			onSubmit={handleLogin}
 			submitDisabled={passwordValue.length < 8 || emailValue.length === 0 || isLoggingIn}

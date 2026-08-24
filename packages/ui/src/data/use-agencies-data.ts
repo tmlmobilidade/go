@@ -27,13 +27,13 @@ interface UseAgenciesDataReturnType {
  * @param props The request to fetch the agencies data.
  * @returns An object containing the agencies data.
  */
-export function useAgenciesData(props: AgenciesPlatformRequest): UseAgenciesDataReturnType {
+export function useAgenciesData(permissions: AgenciesPlatformRequest): UseAgenciesDataReturnType {
 	//
 
 	//
 	// A. Transform data
 
-	const query = useMemo<AgenciesPlatformRequest>(() => ({ ...props }), [props]);
+	const query = useMemo<AgenciesPlatformRequest>(() => ({ ...permissions }), [permissions]);
 
 	//
 	// B. Fetch data
@@ -46,7 +46,7 @@ export function useAgenciesData(props: AgenciesPlatformRequest): UseAgenciesData
 	//
 	// C. Transform data
 
-	const filteredIds = useMemo(() => {
+	const idsData = useMemo(() => {
 		// Skip if no data is available
 		if (!data?.data?.length) return [];
 		// Keep only the IDs of the response data
@@ -71,10 +71,10 @@ export function useAgenciesData(props: AgenciesPlatformRequest): UseAgenciesData
 	return useMemo(() => ({
 		data: data?.data ?? [],
 		error: error?.error,
-		ids: filteredIds,
+		ids: idsData,
 		isLoading: isLoading,
 		isValidating: isValidating,
 		options: optionsData,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.data, error?.error, filteredIds, isLoading, isValidating, optionsData, data?.timestamp]);
+	}), [data?.data, error?.error, idsData, isLoading, isValidating, optionsData, data?.timestamp]);
 };

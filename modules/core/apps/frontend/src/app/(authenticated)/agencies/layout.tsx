@@ -12,7 +12,7 @@ export default function Layout({ children }: PropsWithChildren) {
 			id="agencies"
 			panes={[
 				<AgenciesList key="list" />,
-				<Fragment key="detail">{children}</Fragment>,
+				<Fragment key="children">{children}</Fragment>,
 			]}
 		/>
 	);

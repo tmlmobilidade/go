@@ -3,7 +3,7 @@
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusDisplay, SaveButton, Spacer, Toolbar, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusDisplay, UpdateButton, Spacer, Toolbar, useStandardFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -19,7 +19,7 @@ export function AlertDetailHeader() {
 	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
 
-	const publishStatusValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'publish_status' });
+	const publishStatusValue = useStandardFormWatch({ control: alertDetailContext.form.instance.control, name: 'publish_status' });
 
 	//
 	// B. Transform data
@@ -79,7 +79,7 @@ export function AlertDetailHeader() {
 				/>
 			</HasPermission>
 
-			<SaveButton
+			<UpdateButton
 				isDisabled={!alertDetailContext.flags.canSave}
 				isLoading={alertDetailContext.flags.isSaving}
 				onClick={alertDetailContext.actions.save}

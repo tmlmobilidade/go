@@ -1,10 +1,12 @@
-/* * */
+'use client';
 
-import { openCreateUserModal } from '@/components/users/create/UserCreate.modal';
-import { useUsersListContext } from '@/components/users/list/UsersList.context';
+import { openUsersCreateModal } from '@/components/users/create/UsersCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
-import { Button, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useUsersListData } from '../use-users-list-data';
+import { UsersListFilterSearch } from '../UsersListFilterSearch';
 
 /* * */
 
@@ -16,7 +18,7 @@ export function UsersListHeader() {
 
 	const { t } = useTranslation();
 
-	const usersListContext = useUsersListContext();
+	const { isLoading, isValidating, timestamp } = useUsersListData();
 
 	//
 	// B. Render components
@@ -24,11 +26,14 @@ export function UsersListHeader() {
 	return (
 		<Toolbar>
 			<Label size="lg" caps singleLine>{t('default:users.list.Header.title')}</Label>
+			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
-			<SearchField onChange={usersListContext.filters.search.set} value={usersListContext.filters.search.value} />
-			<Button icon={<IconPlus size={20} />} label={t('default:users.list.Header.NewUserButton.label')} onClick={openCreateUserModal} />
+			<UsersListFilterSearch />
+			<Button
+				icon={<IconPlus size={20} />}
+				label={t('default:users.list.Header.NewUserButton.label')}
+				onClick={openUsersCreateModal}
+			/>
 		</Toolbar>
 	);
-
-	//
 }

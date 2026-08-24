@@ -26,7 +26,7 @@ export function useStopsListFilterMunicipality(): UseFilterStateListReturnType {
 		municipalityOptions,
 	);
 
-	const { data: allStopsData } = useSWR<Stop[]>(API_ROUTES.stops.STOPS_LIST);
+	const { data: allStopsData } = useSWR<Stop[]>(API_ROUTES.infrastructure.STOPS_LIST);
 
 	const filteredMunicipalityOptions = useMemo(() => {
 		if (!allStopsData?.length || !filterMunicipality.options?.length) {

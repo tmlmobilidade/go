@@ -1,11 +1,13 @@
 /* * */
 
-import { ScopeActionsSchema } from '@tmlmobilidade/go-types-permissions';
+import { PermissionsRegistrySchema } from '@tmlmobilidade/go-types-permissions';
 import { z } from 'zod';
 
 /* * */
 
-export const AgenciesPlatformRequestSchema = ScopeActionsSchema;
+export const AgenciesPlatformRequestSchema = z.object({
+	permissions: PermissionsRegistrySchema,
+});
 
 /**
  * The request schema for getting agencies platform data

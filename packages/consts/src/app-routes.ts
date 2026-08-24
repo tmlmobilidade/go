@@ -49,18 +49,18 @@ export const PAGE_ROUTES = Object.freeze({
 		LOGIN_LIST: `${getModuleConfig('core', 'frontend_url')}/login`,
 
 		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('core', 'frontend_url')}/organizations/${encodeURIComponent(id)}`,
+		ORGANIZATIONS_DETAIL: (organizationId: string) => `${getModuleConfig('core', 'frontend_url')}/organizations/${encodeURIComponent(organizationId)}`,
 		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'frontend_url')}/organizations`,
 
 		// RESET_PASSWORD
 		RESET_PASSWORD_LIST: `${getModuleConfig('core', 'frontend_url')}/reset-password`,
 
 		// ROLES
-		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'frontend_url')}/roles/${encodeURIComponent(id)}`,
+		ROLES_DETAIL: (roleId: string) => `${getModuleConfig('core', 'frontend_url')}/roles/${encodeURIComponent(roleId)}`,
 		ROLES_LIST: `${getModuleConfig('core', 'frontend_url')}/roles`,
 
 		// USERS
-		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'frontend_url')}/users/${encodeURIComponent(id)}`,
+		USERS_DETAIL: (userId: string) => `${getModuleConfig('core', 'frontend_url')}/users/${encodeURIComponent(userId)}`,
 		USERS_LIST: `${getModuleConfig('core', 'frontend_url')}/users`,
 	},
 
@@ -249,12 +249,19 @@ export const API_ROUTES = Object.freeze({
 		AUTH_LOGOUT: `${getModuleConfig('core', 'api_url')}/auth/logout`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
 
+		// HOME
+		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
+
 		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}`,
-		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/image`,
+		ORGANIZATIONS_CREATE: `${getModuleConfig('core', 'api_url')}/organizations/create`,
+		ORGANIZATIONS_DETAIL_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/delete`,
+		ORGANIZATIONS_DETAIL_DELETE_IMAGE_VAR: (id: string, theme: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/delete/image/${encodeURIComponent(theme)}`,
+		ORGANIZATIONS_DETAIL_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/detail`,
+		ORGANIZATIONS_DETAIL_DETAIL_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/detail/image`,
 		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/lock`,
-		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/${encodeURIComponent(theme)}/image`,
-		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations`,
+		ORGANIZATIONS_DETAIL_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/update`,
+		ORGANIZATIONS_DETAIL_UPDATE_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/update/image`,
+		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations/list`,
 
 		// PLATFORM
 		PLATFORM_AGENCIES: `${getModuleConfig('core', 'api_url')}/platform/agencies`,
@@ -263,15 +270,25 @@ export const API_ROUTES = Object.freeze({
 		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
 
 		// ROLES
+		ROLES_CREATE: `${getModuleConfig('core', 'api_url')}/roles/create`,
+		ROLES_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/delete/${encodeURIComponent(id)}`,
 		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}`,
-		ROLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}/lock`,
-		ROLES_LIST: `${getModuleConfig('core', 'api_url')}/roles`,
+		ROLES_LIST: `${getModuleConfig('core', 'api_url')}/roles/list`,
+		ROLES_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/roles/list-agencies`,
+		ROLES_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/lock/${encodeURIComponent(id)}`,
+		ROLES_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/update/${encodeURIComponent(id)}`,
 
 		// USERS
+		USERS_CREATE: `${getModuleConfig('core', 'api_url')}/users/create`,
+		USERS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/delete/${encodeURIComponent(id)}`,
 		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}`,
-		USERS_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/lock`,
 		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
-		USERS_LIST: `${getModuleConfig('core', 'api_url')}/users`,
+		USERS_LIST: `${getModuleConfig('core', 'api_url')}/users/list`,
+		USERS_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/users/list-agencies`,
+		USERS_LIST_ORGANIZATIONS: `${getModuleConfig('core', 'api_url')}/users/list-organizations`,
+		USERS_LIST_ROLES: `${getModuleConfig('core', 'api_url')}/users/list-roles`,
+		USERS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/users/lock/${encodeURIComponent(id)}`,
+		USERS_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/update/${encodeURIComponent(id)}`,
 	},
 
 	dates: {

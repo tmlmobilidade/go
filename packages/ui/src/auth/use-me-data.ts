@@ -26,7 +26,7 @@ export function useMeData(): UseMeDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<User>>(API_ROUTES.auth.AUTH_ME, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<User>>(API_ROUTES.core.PLATFORM_ME, {
 		fetcher: async (url: string) => await fetchApiData<User>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

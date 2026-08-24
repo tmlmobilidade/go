@@ -50,7 +50,7 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 	//
 	// A. Setup variables
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.vehicles.actions.read],
 		scope: PermissionCatalog.all.alerts.scope,
 	});

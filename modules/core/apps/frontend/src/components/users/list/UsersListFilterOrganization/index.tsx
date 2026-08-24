@@ -1,8 +1,9 @@
 /* * */
 
-import { useUsersListContext } from '@/components/users/list/UsersList.context';
 import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useUsersListFilterOrganization } from './use-users-list-filter-organization';
 
 /* * */
 
@@ -14,20 +15,19 @@ export function UsersListFilterOrganization() {
 
 	const { t } = useTranslation();
 
-	const usersListContext = useUsersListContext();
+	const filterOrganization = useUsersListFilterOrganization();
 
 	//
 	// B. Render components
 
 	return (
 		<ListFilter
-			active={usersListContext.filters.organization_ids.isActive}
+			active={filterOrganization.isActive}
 			label={t('default:users.list.FilterBar.organization.label')}
-			onChange={usersListContext.filters.organization_ids.set}
-			options={usersListContext.filters.organization_ids.options}
+			onChange={filterOrganization.set}
+			options={filterOrganization.options}
+			isMultiple
 			withToggleAll
 		/>
 	);
-
-	//
 }

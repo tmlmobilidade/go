@@ -1,10 +1,12 @@
 'use client';
 
-import { openCreateRoleModal } from '@/components/roles/create/RoleCreate.modal';
-import { useRolesListContext } from '@/components/roles/list/RolesList.context';
+import { openRolesCreateModal } from '@/components/roles/create/RolesCreate.modal';
 import { IconPlus } from '@tabler/icons-react';
-import { Button, Label, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Button, Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { RolesListFilterSearch } from '../RolesListFilterSearch';
+import { useRolesListData } from '../use-roles-list-data';
 
 /* * */
 
@@ -14,8 +16,9 @@ export function RolesListHeader() {
 	//
 	// A. Setup variables
 
-	const roleListContext = useRolesListContext();
 	const { t } = useTranslation();
+
+	const { isLoading, isValidating, timestamp } = useRolesListData();
 
 	//
 	// B. Render components
@@ -23,11 +26,14 @@ export function RolesListHeader() {
 	return (
 		<Toolbar>
 			<Label size="lg" caps singleLine>{t('default:roles.list.Header.title')}</Label>
+			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
-			<SearchField onChange={roleListContext.filters.search.set} value={roleListContext.filters.search.value} />
-			<Button icon={<IconPlus size={20} />} label={t('default:roles.list.Header.NewRoleButton.label')} onClick={openCreateRoleModal} />
+			<RolesListFilterSearch />
+			<Button
+				icon={<IconPlus size={20} />}
+				label={t('default:roles.list.Header.NewRoleButton.label')}
+				onClick={openRolesCreateModal}
+			/>
 		</Toolbar>
 	);
-
-	//
 }

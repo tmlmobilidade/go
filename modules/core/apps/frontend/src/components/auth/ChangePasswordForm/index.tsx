@@ -1,6 +1,6 @@
 'use client';
 
-import { AuthenticationForm } from '@/components/common/AuthenticationForm';
+import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PasswordRequirementsSchema, type Session } from '@tmlmobilidade/go-types-core';
@@ -66,16 +66,14 @@ export function ChangePasswordForm() {
 	//
 	// B. Handle actions
 
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		// Prevent default form submission behavior
-		event.preventDefault();
+	const handleSubmit = async () => {
 		// Update loading state
 		setIsLoading(true);
 		// Hash the password before sending it to the server
 		const passwordHash = bcrypt.hashSync(passwordValue);
 		// Send the request to change the password
 		const response = await fetchData<Session>(
-			API_ROUTES.auth.AUTH_CHANGE_PASSWORD,
+			API_ROUTES.core.AUTH_CHANGE_PASSWORD,
 			'POST',
 			{ password_hash: passwordHash, token: tokenValue },
 		);
@@ -88,7 +86,7 @@ export function ChangePasswordForm() {
 		}
 		// Show success message and redirect to login page
 		useToast.success({ message: t('unauthenticated:ChangePasswordForm.success.description'), title: t('unauthenticated:ChangePasswordForm.success.title') });
-		window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
+		window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
 	};
 
 	//
@@ -98,7 +96,7 @@ export function ChangePasswordForm() {
 		<AuthenticationForm
 			description={t('unauthenticated:ChangePasswordForm.description')}
 			footerLabel={t('unauthenticated:ChangePasswordForm.footer.label')}
-			footerUrl={PAGE_ROUTES.auth.LOGIN_LIST}
+			footerUrl={PAGE_ROUTES.core.LOGIN_LIST}
 			loading={isLoading}
 			onSubmit={handleSubmit}
 			submitDisabled={isDisabled}

@@ -56,7 +56,7 @@ export const ValidationsListContextProvider = ({ children }: PropsWithChildren) 
 
 	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[], Error>(API_ROUTES.plans.VALIDATIONS_LIST, { refreshInterval: 3_000 });
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.gtfs_validations.actions.read],
 		scope: PermissionCatalog.all.gtfs_validations.scope,
 	});

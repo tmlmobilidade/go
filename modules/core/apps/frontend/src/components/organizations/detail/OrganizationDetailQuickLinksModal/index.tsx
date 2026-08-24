@@ -1,14 +1,12 @@
 'use client';
 
-import { IconChooser } from '@/components/common/IconChooser';
-import { HomeLink } from '@tmlmobilidade/go-types-core';
-
-/* * */
-
+import { type HomeQuickLink } from '@tmlmobilidade/go-types-core';
 import { isUrl } from '@tmlmobilidade/strings';
 import { Button, closeModal, Divider, Grid, openModal, Section, TextInput } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { OrganizationDetailQuickLinksIconChooser } from '../OrganizationDetailQuickLinksIconChooser';
 
 /* * */
 
@@ -17,8 +15,8 @@ export const QUICK_LINKS_MODAL_ID = 'quick-links-modal';
 /* * */
 
 export interface QuickLinksModalProps {
-	handleSubmit?: (link: HomeLink) => void
-	link?: HomeLink
+	handleSubmit?: (link: HomeQuickLink) => void
+	link?: HomeQuickLink
 }
 
 /* * */
@@ -39,13 +37,13 @@ export const openOrganizationQuickLinksModal = ({ handleSubmit, link }: QuickLin
 
 /* * */
 
-export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?: (link: Omit<HomeLink, 'order'>) => void, link?: HomeLink }) {
+export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?: (link: Omit<HomeQuickLink, 'order'>) => void, link?: HomeQuickLink }) {
 	//
 
 	//
 	// A. Setup variables
 
-	const [newLink, setNewLink] = useState<Omit<HomeLink, 'order'>>(link || { href: '', icon: '', title: '' });
+	const [newLink, setNewLink] = useState<Omit<HomeQuickLink, 'order'>>(link || { href: '', icon: '', title: '' });
 	const [selectedIcon, setSelectedIcon] = useState<'' | string>(link?.icon || '');
 
 	const { t } = useTranslation();
@@ -85,7 +83,10 @@ export default function QuickLinksModal({ handleSubmit, link }: { handleSubmit?:
 				value={newLink.href}
 				required
 			/>
-			<IconChooser selectedIcon={selectedIcon} setSelectedIcon={handleIconChange} />
+			<OrganizationDetailQuickLinksIconChooser
+				selectedIcon={selectedIcon}
+				setSelectedIcon={handleIconChange}
+			/>
 			<Divider />
 			<Grid columns="ab" gap="sm">
 				<Button
