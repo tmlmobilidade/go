@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 /* * */
 
 interface UseSchoolsDetailSchoolIdReturnType {
-	schoolId: string
+	schoolId: string | undefined
 }
 
 /* * */
@@ -17,9 +17,9 @@ export function useSchoolsDetailSchoolId(): UseSchoolsDetailSchoolIdReturnType {
 	//
 	// A. Setup variables
 
-	const params = useParams<{ schoolId: string }>();
+	const params = useParams<{ schoolId?: string }>();
 
-	const schoolId = decodeURIComponent(params.schoolId);
+	const schoolId = params.schoolId ? decodeURIComponent(params.schoolId) : undefined;
 
 	//
 	// B. Return data

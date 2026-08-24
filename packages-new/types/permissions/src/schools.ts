@@ -9,6 +9,8 @@ export const SchoolsPermissionSchema = z.object({
 		'create',
 		'delete',
 		'read',
+		'update',
+		'lock',
 	]),
 	resources: z.object({
 		agency_ids: z.array(z.string()).default([]),

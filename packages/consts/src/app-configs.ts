@@ -315,6 +315,46 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			...DEFAULT_STG_CONFIG,
 		},
 	},
+
+	schools: {
+		dev: {
+			api_port: 52011,
+			api_url: 'http://localhost:52011',
+			cors_origin: true,
+			frontend_port: 51011,
+			frontend_url: 'http://localhost:51011/schools',
+		},
+		prd: {
+			api_url: 'https://go.tmlmobilidade.pt/schools/api',
+			frontend_url: 'https://go.tmlmobilidade.pt/schools',
+			...DEFAULT_PRD_CONFIG,
+		},
+		stg: {
+			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/schools/api`,
+			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/schools`,
+			...DEFAULT_STG_CONFIG,
+		},
+	},
+
+	stops: {
+		dev: {
+			api_port: 52003,
+			api_url: 'http://localhost:52003',
+			cors_origin: true,
+			frontend_port: 51003,
+			frontend_url: 'http://localhost:51003/stops',
+		},
+		prd: {
+			api_url: 'https://go.tmlmobilidade.pt/stops/api',
+			frontend_url: 'https://go.tmlmobilidade.pt/stops',
+			...DEFAULT_PRD_CONFIG,
+		},
+		stg: {
+			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/stops/api`,
+			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/stops`,
+			...DEFAULT_STG_CONFIG,
+		},
+	},
 } as const satisfies Record<string, Record<Environment, ModuleConfigGroup>>;
 
 /* * */

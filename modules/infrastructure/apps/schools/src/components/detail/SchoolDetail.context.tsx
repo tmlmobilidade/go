@@ -1,10 +1,9 @@
 'use client';
 
-// import { isValidOptionalAlertCoordinates } from '@/lib/alert-coordinates';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type School, type UpdateSchoolDto } from '@tmlmobilidade/go-types-operation';
-import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type School, type UpdateSchoolDto, UpdateSchoolSchema } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useContextForm, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -46,42 +45,42 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 	//
 	// B. Fetch Data
 
-	const { mutate: schoolsListMutate } = useSWR<School[]>(API_ROUTES.operation.SCHOOLS_LIST);
-	const { data: schoolData, error: schoolError, isLoading: schoolLoading, isValidating: schoolValidating, mutate: schoolMutate } = useSWR<School>(API_ROUTES.operation.SCHOOLS_DETAIL(schoolId));
+	const { mutate: schoolsListMutate } = useSWR<School[]>(API_ROUTES.schools.SCHOOLS_LIST);
+	const { data: schoolData, error: schoolError, isLoading: schoolLoading, isValidating: schoolValidating, mutate: schoolMutate } = useSWR<School>(API_ROUTES.schools.SCHOOLS_DETAIL(schoolId));
 
 	//
 	// C. Setup form
 
 	const { form } = useContextForm<UpdateSchoolDto>({
 		apiData: schoolData,
-		schema: UpdateSchoolDtoSchema,
+		schema: UpdateSchoolSchema,
 	});
 
 	//
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<School>(API_ROUTES.operation.SCHOOLS_DETAIL(schoolId), 'PUT', form.getValues()),
+		fetchFn: async () => await fetchApiData<School>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.schools.SCHOOLS_DETAIL(schoolId) }),
 		onSuccess: (updatedItem) => {
-			form.reset(updatedItem);
-			schoolMutate(updatedItem);
+			form.reset(updatedItem.data);
+			schoolMutate(updatedItem.data);
 			schoolsListMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<School>(API_ROUTES.operation.SCHOOLS_DETAIL(schoolId), 'DELETE'),
+		fetchFn: async () => await fetchApiData<School>({ method: 'DELETE', url: API_ROUTES.schools.SCHOOLS_DETAIL(schoolId) }),
 		onSuccess: () => {
 			schoolsListMutate();
-			router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
+			router.push(keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_LIST));
 		},
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<School>(API_ROUTES.operation.SCHOOLS_DETAIL_LOCK(schoolId)),
+		fetchFn: async () => await fetchApiData<School>({ method: 'GET', url: API_ROUTES.schools.SCHOOLS_DETAIL_LOCK(schoolId) }),
 		onSuccess: (updatedItem) => {
-			form.reset(updatedItem);
-			schoolMutate(updatedItem);
+			form.reset(updatedItem.data);
+			schoolMutate(updatedItem.data);
 			schoolsListMutate();
 		},
 	});
@@ -92,7 +91,7 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 	const { isReadOnly } = useFlagReadOnly({
 		hasPermission: meContext.actions.hasPermissionResource([
 			{
-				action: PermissionCatalog.all.schools.actions.update,
+				action: PermissionCatalog.all.schools.actions.read,
 				resource_key: 'school_ids',
 				scope: PermissionCatalog.all.schools.scope,
 				value: schoolData?._id,

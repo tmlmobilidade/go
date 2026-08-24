@@ -13,7 +13,7 @@ import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilida
  */
 export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
-	schools: namespaceSchoolsPt,,
+	schools: namespaceSchoolsPt,
 } as const;
 
 /**

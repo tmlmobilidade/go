@@ -1,11 +1,7 @@
 'use client';
 
-import { AgenciesContextProvider, LocationsContextProvider } from '@tmlmobilidade/ui';
-
 /* * */
 
 export function DataProviders({ children }: { children: React.ReactNode }) {
-	return (
-		{children}
-	);
+	return children;
 }

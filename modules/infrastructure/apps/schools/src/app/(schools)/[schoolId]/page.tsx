@@ -5,10 +5,10 @@ import { SchoolDetailContextProvider } from '@/components/detail/SchoolDetail.co
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function Page({ params }: { params: Promise<{ schoolId: string }> }) {
+	const { schoolId } = await params;
 	return (
-		<SchoolDetailContextProvider schoolId={id}>
+		<SchoolDetailContextProvider schoolId={schoolId}>
 			<SchoolDetail />
 		</SchoolDetailContextProvider>
 	);

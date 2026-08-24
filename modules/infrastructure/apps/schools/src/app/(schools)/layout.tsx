@@ -1,18 +1,18 @@
 /* * */
 
-import { AlertsList } from '@/components/list/shared/AlertsList';
+import { SchoolsList } from '@/components/list/shared/SchoolsList';
 import { PanesManager } from '@tmlmobilidade/ui';
-import { Fragment, type PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 
 /* * */
 
 export default function Layout({ children }: PropsWithChildren) {
 	return (
 		<PanesManager
-			id="alerts"
+			id="schools"
 			panes={[
-				<AlertsList key="alerts-list" />,
-				<Fragment key="alerts-detail">{children}</Fragment>,
+				<SchoolsList key="schools-list" />,
+				children,
 			]}
 		/>
 	);

@@ -7,7 +7,6 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type SchoolsListItem } from '@tmlmobilidade/go-schools-pckg-types';
 import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
 
 import { useSchoolsListData } from '../use-schools-list-data';
 
@@ -33,7 +32,7 @@ export function SchoolsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: SchoolsListItem) => {
-		router.push(keepUrlParams(PAGE_ROUTES.operation.SCHOOLS_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_DETAIL(item._id)));
 	};
 
 	//

@@ -1,9 +1,9 @@
 /* * */
 
-import { AlertCreate } from '@/components/create/shared/AlertCreate';
+import { SchoolsList } from '@/components/list/shared/SchoolsList';
 
 /* * */
 
 export default async function Page() {
-	return <AlertCreate />;
+	return <SchoolsList />;
 }
