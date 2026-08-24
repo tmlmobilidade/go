@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-utils-runtime",
+	"name": "@tmlmobilidade/go-utils-exec",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -36,7 +36,8 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-types-geo": "*"
+		"@tmlmobilidade/go-types-geo": "*",
+		"@tmlmobilidade/go-types-shared": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
