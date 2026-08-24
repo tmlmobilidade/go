@@ -2,13 +2,12 @@
 
 import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
 import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/Posters/PlanPostersModal/constants';
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { usePosterLinesData } from '@/components/plans/Posters/use-poster-lines-data';
 import { type CreateFileExportDto, type PlanPostersExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { type Line, type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { closeModal, type SelectDataItem, useAgenciesData, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import useSWR from 'swr';
 
 /* * */
 
@@ -16,7 +15,6 @@ interface PlansExportPdfsContextState {
 	actions: {
 		exportPosters: () => Promise<void>
 		setAgencyId: (value: null | string) => void
-		setCanvasProfile: (value: null | string) => void
 		setLineIds: (value: string[]) => void
 		setLinesMode: (value: LinesMode) => void
 		setPlanId: (value: null | string) => void
@@ -24,7 +22,6 @@ interface PlansExportPdfsContextState {
 	data: {
 		agencyId: null | string
 		agencyOptions: SelectDataItem[]
-		canvasProfile: null | string
 		lineIds: string[]
 		lines: Line[]
 		linesMode: LinesMode
@@ -58,10 +55,9 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	// A. Setup variables
 
 	const plansData = usePlansListData();
+	const posterLinesData = usePosterLinesData();
 	const exports = useExportsContext();
-	const { data: linesData } = useSWR<Line[], Error>(API_ROUTES.plans.PLANS_POSTER_LINES);
 	const [agencyId, setAgencyId] = useState<null | string>(null);
-	const [canvasProfile, setCanvasProfile] = useState<null | string>('0Master.C');
 	const [lineIds, setLineIds] = useState<string[]>([]);
 	const [linesMode, setLinesMode] = useState<LinesMode>('all');
 	const [planId, setPlanId] = useState<null | string>(null);
@@ -77,7 +73,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	//
 	// B. Derived state
 
-	const canSave = !!agencyId && !!planId && !!canvasProfile && (linesMode === 'all' || lineIds.length > 0);
+	const canSave = !!agencyId && !!planId && (linesMode === 'all' || lineIds.length > 0);
 
 	//
 	// C. Handle actions
@@ -112,7 +108,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 
 	const exportPosters = useCallback(async () => {
 		if (loading) return;
-		if (!agencyId || !canvasProfile || !planId) return;
+		if (!agencyId || !planId) return;
 		if (linesMode !== 'all' && !lineIds.length) return;
 
 		const selectedPlan = plansData.raw.find(plan => plan._id === planId && plan.agency_id === agencyId);
@@ -125,7 +121,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 			processing_status: 'waiting',
 			properties: {
 				agency_id: agencyId,
-				canvas_profile: canvasProfile as '0Master.A' | '0Master.B' | '0Master.C' | '0Master.F',
+				canvas_profile: '0Master.C',
 				line_ids: linesMode === 'all' ? undefined : lineIds,
 				lines_mode: linesMode,
 				plan_id: planId,
@@ -144,7 +140,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 		} finally {
 			setLoading(false);
 		}
-	}, [agencyId, canvasProfile, exports.actions, lineIds, linesMode, loading, planId, plansData.raw]);
+	}, [agencyId, exports.actions, lineIds, linesMode, loading, planId, plansData.raw]);
 
 	//
 	// D. Define context value
@@ -153,7 +149,6 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 		actions: {
 			exportPosters,
 			setAgencyId: selectAgencyId,
-			setCanvasProfile,
 			setLineIds,
 			setLinesMode: selectLinesMode,
 			setPlanId: selectPlanId,
@@ -161,18 +156,17 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 		data: {
 			agencyId,
 			agencyOptions,
-			canvasProfile,
 			lineIds,
-			lines: linesData ?? [],
+			lines: posterLinesData.data,
 			linesMode,
 			planId,
 		},
 		flags: {
 			canSave,
-			has_error: false,
+			has_error: !!posterLinesData.error,
 			loading,
 		},
-	}), [agencyId, agencyOptions, canSave, canvasProfile, exportPosters, lineIds, linesData, linesMode, loading, planId, selectAgencyId, selectLinesMode, selectPlanId]);
+	}), [agencyId, agencyOptions, canSave, exportPosters, lineIds, linesMode, loading, planId, posterLinesData.data, posterLinesData.error, selectAgencyId, selectLinesMode, selectPlanId]);
 
 	//
 	// E. Render components

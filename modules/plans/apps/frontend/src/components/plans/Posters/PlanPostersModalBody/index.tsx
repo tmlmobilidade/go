@@ -9,15 +9,6 @@ import { useMemo } from 'react';
 
 /* * */
 
-const canvasProfileOptions = [
-	{ label: '0Master.A', value: '0Master.A' },
-	{ label: '0Master.B', value: '0Master.B' },
-	{ label: '0Master.C', value: '0Master.C' },
-	{ label: '0Master.F', value: '0Master.F' },
-];
-
-/* * */
-
 export function PlanPostersExportModalBody() {
 	//
 
@@ -93,33 +84,30 @@ export function PlanPostersExportModalBody() {
 						]}
 					/>
 
-					{context.data.linesMode !== 'all' && (
+					{context.data.linesMode === 'include' && (
 						<MultiSelect
 							key={`${context.data.agencyId}-${context.data.linesMode}`}
 							data={linesOptions}
-							label={context.data.linesMode === 'include' ? 'Linhas a incluir' : 'Linhas a excluir'}
+							description="Apenas estas linhas serão exportadas."
 							onChange={context.actions.setLineIds}
+							placeholder="Selecionar linhas"
 							value={context.data.lineIds}
 							w="100%"
-							description={context.data.linesMode === 'include'
-								? 'Apenas estas linhas serão exportadas'
-								: 'Todas as linhas serão exportadas, exceto estas'}
 						/>
 					)}
 
-				</Section>
-			)}
+					{context.data.linesMode === 'exclude' && (
+						<MultiSelect
+							key={`${context.data.agencyId}-${context.data.linesMode}`}
+							data={linesOptions}
+							description="Todas as linhas serão exportadas, exceto estas."
+							onChange={context.actions.setLineIds}
+							placeholder="Selecionar linhas"
+							value={context.data.lineIds}
+							w="100%"
+						/>
+					)}
 
-			{context.data.agencyId && (
-				<Section gap="md">
-					<Select
-						data={canvasProfileOptions}
-						description="Este perfil será aplicado às paragens das linhas selecionadas"
-						label="Canvas profile"
-						onChange={context.actions.setCanvasProfile}
-						value={context.data.canvasProfile}
-						w="100%"
-					/>
 				</Section>
 			)}
 		</>
