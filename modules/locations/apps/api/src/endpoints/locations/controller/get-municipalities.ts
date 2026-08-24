@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { Municipality } from '@tmlmobilidade/types';
+import { Municipality } from '@tmlmobilidade/go-types-locations';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 import { z } from 'zod';
 

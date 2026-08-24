@@ -9,7 +9,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import crypto from 'node:crypto';
@@ -44,8 +44,7 @@ export async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-gtfs-cm', message: 'Sentry Hub Publish GTFS CM initialized', module: 'hub', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS CM' });
 	}

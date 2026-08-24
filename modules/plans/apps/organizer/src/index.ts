@@ -2,7 +2,7 @@
 
 import { cleanOldValidations } from '@/tasks/clean-old-validations.js';
 import { ensureGtfsFiles } from '@/tasks/ensure-gtfs-files.js';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -14,8 +14,7 @@ const main = async () => {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Plans Organizer initialized', module: 'plans', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Plans Organizer' });
 	}

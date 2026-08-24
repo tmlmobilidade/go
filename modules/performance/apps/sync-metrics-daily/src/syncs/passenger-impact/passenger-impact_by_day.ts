@@ -2,7 +2,7 @@ import { GO_CM_AGENCY_IDS } from '@/constants.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AggregationPipeline, metrics } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type OperationalDate, type Ride } from '@tmlmobilidade/types';
 import { Interval } from 'luxon';
 

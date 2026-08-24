@@ -4,7 +4,7 @@ import { type ImportGtfsContext } from '@/shared/init-context.js';
 import { parseCsvFile } from '@/shared/parse-csv.js';
 import { type GtfsStrictV29SQLTables } from '@/versions/v29/types.js';
 import { type GtfsStrictV29CalendarDates, GtfsStrictV29CalendarDatesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 

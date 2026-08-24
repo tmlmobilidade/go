@@ -24,7 +24,9 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -43,7 +45,7 @@
 		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/normalizers": "*",
 		"@tmlmobilidade/utils": "*"
 	},

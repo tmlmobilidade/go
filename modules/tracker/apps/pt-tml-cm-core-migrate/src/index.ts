@@ -3,6 +3,7 @@
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { getCurrentEnvironment } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -17,7 +18,13 @@ const PROCESS_ID = `${process.pid}-${Math.random().toString(36).substring(2, 10)
 async function main() {
 	//
 
-	console.log(`[${PROCESS_ID}] Starting...`);
+	// Initialize Sentry
+
+	try {
+		await initSentry();
+	} catch (error) {
+		Logger.error({ error, message: 'Error initializing Sentry Tracker CM Sync Core' });
+	}
 
 	//
 

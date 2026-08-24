@@ -8,7 +8,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { getPublicRouteId } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
@@ -27,7 +27,6 @@ import { exportStopTimesFile } from '@/exports/stop-times.js';
 import { exportStopsFile } from '@/exports/stops.js';
 import { exportTripsFile } from '@/exports/trips.js';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { initSentryNode } from '@tmlmobilidade/logger';
 
 /* * */
 
@@ -42,8 +41,7 @@ export async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-gtfs', message: 'Sentry Hub Publish GTFS initialized', module: 'hub', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Hub Publish GTFS' });
 	}

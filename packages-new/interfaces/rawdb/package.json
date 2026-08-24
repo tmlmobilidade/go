@@ -40,7 +40,7 @@
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"bcryptjs": "3.0.3",

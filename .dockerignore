@@ -47,3 +47,4 @@
 # Any folders that are not modules or packages
 !packages/**
 !modules/**
+!packages-new/**

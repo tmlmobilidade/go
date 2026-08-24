@@ -23,7 +23,7 @@
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-operation": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"papaparse": "5.5.4"

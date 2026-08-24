@@ -5,7 +5,7 @@ import { parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection } from
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction, type SimplifiedApexInspection } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 import { BatchWriter } from '@tmlmobilidade/utils';
 import { type Filter } from 'mongodb';

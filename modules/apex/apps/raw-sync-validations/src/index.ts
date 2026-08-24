@@ -2,7 +2,7 @@
 
 import { syncApexValidations } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
@@ -13,8 +13,7 @@ async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'raw-sync-validations', message: 'Sentry APEX Raw Sync Validations initialized', module: 'apex', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry APEX Raw Sync Validations' });
 	}

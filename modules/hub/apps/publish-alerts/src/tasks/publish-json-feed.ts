@@ -9,7 +9,7 @@ import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type HubAlert, HubAlertSchema } from '@tmlmobilidade/go-types-public-info';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type AlertReference } from '@tmlmobilidade/types';
 

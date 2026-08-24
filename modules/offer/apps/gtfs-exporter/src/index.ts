@@ -5,7 +5,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type FileExport, type GtfsExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import AdmZip from 'adm-zip';
@@ -124,8 +124,8 @@ async function main() {
 	// Initialize the logger
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'gtfs-exporter', message: 'Sentry GTFS Exporter initialized', module: 'offer', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'gtfs-exporter', message: 'Sentry GTFS Exporter initialized', module: 'offer', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry GTFS Exporter' });
 	}

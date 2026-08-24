@@ -5,7 +5,7 @@ import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-alerts-pckg-c
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type ServiceAlertResponse } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -29,8 +29,8 @@ async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'sync-datik', message: 'Sentry Alerts Sync Datik initialized', module: 'alerts', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'sync-datik', message: 'Sentry Alerts Sync Datik initialized', module: 'alerts', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Alerts Sync Datik' });
 	}

@@ -34,7 +34,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/go-clients-ssh": "*",
 		"luxon": "3.7.2",
 		"redis": "6.2.0",

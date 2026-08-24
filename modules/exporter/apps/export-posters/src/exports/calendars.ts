@@ -8,7 +8,7 @@ import { type GtfsCalendarDates, type GtfsStopTimes, type GtfsTrips, validateGtf
 import { type GtfsStrictV29CalendarDates } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import fs from 'node:fs';

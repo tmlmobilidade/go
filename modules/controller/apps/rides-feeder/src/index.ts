@@ -4,7 +4,7 @@ import { cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.
 import { parsePlan } from '@/parse-plan.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -18,8 +18,7 @@ async function main() {
 		// Initialize Sentry
 
 		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'rides-feeder', message: 'Sentry Rides Feeder initialized', module: 'controller', severity: 'info' });
+			await initSentry();
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Rides Feeder' });
 		}

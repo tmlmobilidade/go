@@ -10,6 +10,7 @@ import { SWRConfig, type SWRConfiguration } from 'swr';
 
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
+import { swrFetcher } from '../../fetch/swr-fetcher';
 import { LoadingSection } from '../../loaders';
 import { themeData } from '../../styles/theme';
 
@@ -43,6 +44,7 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 	};
 
 	const swrSettings: SWRConfiguration = {
+		fetcher: swrFetcher,
 		refreshInterval: 600_000, // 10 minutes
 		refreshWhenHidden: false,
 		revalidateIfStale: true,

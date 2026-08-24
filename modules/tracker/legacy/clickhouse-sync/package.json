@@ -7,7 +7,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -24,7 +26,7 @@
 		"@tmlmobilidade/go-tracker-pckg-callback": "*",
 		"@tmlmobilidade/go-tracker-pckg-parsers": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},

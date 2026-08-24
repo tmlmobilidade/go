@@ -20,7 +20,7 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/utils": "*",
 		"archiver": "8.0.0",
 		"mongodb": "7.5.0",

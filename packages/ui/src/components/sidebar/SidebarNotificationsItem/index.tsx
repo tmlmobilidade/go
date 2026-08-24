@@ -1,6 +1,6 @@
 'use client';
 
-import { Notification } from '@tmlmobilidade/go-types-core';
+import { type Notification } from '@tmlmobilidade/go-types-core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,9 +28,8 @@ export function SidebarNotificationsItem({ notification }: SidebarNotificationsI
 	const { t } = useTranslation();
 	const icon = getSidebarNotificationScopeIcon(notification.scope);
 
-	if (!notification.payload) {
-		return null;
-	}
+	//
+	// B. Render components
 
 	return (
 		<div className={styles.root}>
@@ -54,4 +53,4 @@ export function SidebarNotificationsItem({ notification }: SidebarNotificationsI
 	);
 
 	//
-};
+}

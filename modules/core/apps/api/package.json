@@ -30,7 +30,7 @@
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*"
 	},

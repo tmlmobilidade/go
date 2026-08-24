@@ -4,7 +4,7 @@ import { syncRealtimeDemand } from '@/tasks/sync-realtime-demand.js';
 import { syncRealtimeServiceCompliance } from '@/tasks/sync-service-compliance.js';
 // import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
 import { runDemandByAgencyByOperationalDate } from '@tmlmobilidade/go-performance-pckg-scripts';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -16,8 +16,7 @@ async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'sync-metrics-realtime', message: 'Sentry Performance Sync Metrics Realtime initialized', module: 'performance', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Performance Sync Metrics Realtime' });
 	}

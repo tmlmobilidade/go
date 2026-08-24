@@ -3,7 +3,7 @@
 import { generatePiperTtsAudio } from '@/services/piperTtsApi.js';
 import TIMETRACKER from '@helperkits/timer';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import pLimit from 'p-limit';
 
 /* * */

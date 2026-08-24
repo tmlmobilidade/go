@@ -4,7 +4,7 @@
 // import { type AggregationResultItem } from '@/types.js';
 // import { Dates } from '@tmlmobilidade/dates';
 // import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-// import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+// import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 // import { Timer } from '@tmlmobilidade/timer';
 // import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -18,8 +18,8 @@
 // 		// Initialize Sentry
 
 // 		try {
-// 			await initSentryNode();
-// 			Logger.startNodeLogs({ app: 'sams-feeder', message: 'Sentry Sams Feeder initialized', module: 'controller', severity: 'info' });
+// 			await initSentry();
+// 			Logger.startLogs({ app: 'sams-feeder', message: 'Sentry Sams Feeder initialized', module: 'controller', severity: 'info' });
 // 		} catch (error) {
 // 			Logger.error({ error, message: 'Error initializing Sentry Sams Feeder' });
 // 		}

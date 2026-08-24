@@ -1,7 +1,7 @@
 /* * */
 
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type Alert, type GtfsRtTranslatedImage } from '@tmlmobilidade/types';
 
 /* * */

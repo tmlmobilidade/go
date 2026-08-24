@@ -4,7 +4,7 @@ import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
 import { parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexOnBoardRefund } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */

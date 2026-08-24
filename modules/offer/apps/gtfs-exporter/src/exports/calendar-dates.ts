@@ -6,7 +6,7 @@ import { type ServiceRegistry } from '@/utils/service-registry.js';
 import { Dates, isHoliday } from '@tmlmobilidade/dates';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

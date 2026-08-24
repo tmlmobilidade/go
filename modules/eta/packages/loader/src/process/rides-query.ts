@@ -4,7 +4,7 @@
 // import { Dates } from '@tmlmobilidade/dates';
 // import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 // import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-// import { Logger } from '@tmlmobilidade/logger';
+// import { Logger } from '@tmlmobilidade/logger-logger-backend';
 // import { type HashedPatternWaypoint, type Ride } from '@tmlmobilidade/types';
 
 // /* * */

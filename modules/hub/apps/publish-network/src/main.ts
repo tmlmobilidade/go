@@ -4,7 +4,7 @@ import { generateLinesRoutesPatterns } from '@/tasks/sync-lines-routes-patterns.
 import { generateShapes } from '@/tasks/sync-shapes.js';
 import { generateStops } from '@/tasks/sync-stops.js';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
@@ -16,8 +16,8 @@ export async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-network', message: 'Sentry Hub Publish Network initialized', module: 'hub', severity: 'info' });
+		await initSentry();
+		Logger.startLogs({ app: 'publish-network', message: 'Sentry Hub Publish Network initialized', module: 'hub', severity: 'info' });
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Network' });
 	}

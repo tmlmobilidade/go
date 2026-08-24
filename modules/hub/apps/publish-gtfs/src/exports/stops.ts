@@ -5,7 +5,7 @@ import { clampCoordinate } from '@tmlmobilidade/geo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type HubGtfsExportStops, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-public-info';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

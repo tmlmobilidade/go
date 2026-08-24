@@ -7,7 +7,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -21,8 +21,8 @@ export async function analyzeRides() {
 		// Initialize Sentry
 
 		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'rides-analyzer', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
+			await initSentry();
+			Logger.startLogs({ app: 'rides-analyzer', message: 'Sentry Rides Examiner initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Rides Examiner' });
 		}

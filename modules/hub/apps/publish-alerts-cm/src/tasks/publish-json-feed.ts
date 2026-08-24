@@ -4,7 +4,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Alert } from '@tmlmobilidade/types';
 

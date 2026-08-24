@@ -6,7 +6,7 @@
 // import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 // import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
 // import { type RawVehicleEvent, type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-// import { Logger } from '@tmlmobilidade/logger';
+// mport { Logger } from '@tmlmobilidade/logger-logger-backend';
 // import { BatchWriter, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 
 // /* * */

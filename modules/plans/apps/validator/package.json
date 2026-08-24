@@ -25,7 +25,7 @@
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-gtfs-validator": "*",
 		"@tmlmobilidade/gtfs-validator": "20260803.96.36",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},

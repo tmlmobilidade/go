@@ -24,7 +24,9 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -42,7 +44,7 @@
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/mongo": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",

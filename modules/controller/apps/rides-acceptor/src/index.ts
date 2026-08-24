@@ -4,7 +4,7 @@
 // import { Dates } from '@tmlmobilidade/dates';
 // import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 // import { type Ride, type RideAcceptance } from '@tmlmobilidade/go-types-operation';
-// import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+// import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 // import { Timer } from '@tmlmobilidade/timer';
 // import { compareObjects, runOnInterval } from '@tmlmobilidade/utils';
 // import { Interval } from 'luxon';
@@ -105,8 +105,8 @@
 // 		// Initialize Sentry
 
 // 		try {
-// 			await initSentryNode();
-// 			Logger.startNodeLogs({ app: 'rides-acceptor', message: 'Sentry Rides Acceptor initialized', module: 'controller', severity: 'info' });
+// 			await initSentry();
+// 			Logger.startLogs({ app: 'rides-acceptor', message: 'Sentry Rides Acceptor initialized', module: 'controller', severity: 'info' });
 // 		} catch (error) {
 // 			Logger.error({ error, message: 'Error initializing Sentry Rides Acceptor' });
 // 		}

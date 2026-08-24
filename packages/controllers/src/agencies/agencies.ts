@@ -6,7 +6,7 @@ import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type ActionsOf, type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

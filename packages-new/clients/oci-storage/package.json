@@ -24,7 +24,9 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -35,7 +37,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/utils": "*",
 		"oci-common": "2.139.0",
 		"oci-objectstorage": "2.139.0"

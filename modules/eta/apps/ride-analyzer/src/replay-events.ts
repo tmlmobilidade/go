@@ -5,7 +5,7 @@ import { type CurrVehicleEvent, type EnrichedEta, type ReplaySnapshot } from '@/
 import { type ClickHouseClient } from '@clickhouse/client';
 import { pipelinePath, qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

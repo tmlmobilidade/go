@@ -7,7 +7,7 @@ import { makeStop } from '@/utils/makeText.js';
 import TIMETRACKER from '@helperkits/timer';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import pLimit from 'p-limit';
 
 /* * */

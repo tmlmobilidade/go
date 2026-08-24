@@ -3,7 +3,7 @@
 
 import { type ExportedAfetacaoRow, type GtfsV29ExportConfig } from '@/types.js';
 import { type Fare, type Line, type Pattern, type Typology, type Zone } from '@tmlmobilidade/go-types-offer';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type Agency, type Stop } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';

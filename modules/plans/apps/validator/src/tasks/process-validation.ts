@@ -9,7 +9,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };

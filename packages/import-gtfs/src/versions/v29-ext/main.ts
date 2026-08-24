@@ -3,7 +3,7 @@
 import { type ImportGtfsConfig } from '@/shared/config.js';
 import { extractGtfsSource } from '@/shared/extract-source.js';
 import { initImportGtfsContext } from '@/shared/init-context.js';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { processGtfsStrictV29ExtCalendarDates } from './processors/calendar-dates.js';

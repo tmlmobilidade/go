@@ -1,5 +1,5 @@
 import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 const CLEANUP_HIST_VEHICLE_EVENTS_SQL = 'cleanup/5-delete-orphan-hist-vehicle-events.sql';
 

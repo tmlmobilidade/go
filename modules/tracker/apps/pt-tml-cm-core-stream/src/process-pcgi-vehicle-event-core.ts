@@ -1,7 +1,7 @@
 /* * */
 
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 import { alsaWriter, rlWriter, tstWriter, vaWriter } from './writers.js';
 

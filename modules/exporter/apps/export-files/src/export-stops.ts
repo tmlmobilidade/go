@@ -2,7 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type FileExport, type StopExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
 import { CsvWriter } from '@tmlmobilidade/writers';

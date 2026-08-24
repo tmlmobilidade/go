@@ -3,8 +3,8 @@
 // import { escapeClickHouseString, queryRows, updateById } from '@/utils/clickhouse.js';
 // import { Dates } from '@tmlmobilidade/dates';
 // import { getSimplifiedApexValidationCategory, validateIfSimplifiedApexOnBoardSaleIsPassenger, validateIfSimplifiedApexValidationIsPassenger } from '@tmlmobilidade/go-apex-pckg-parse';
+// import { Logger } from '@tmlmobilidade/logger-logger-backend';
 // import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-// import { Logger } from '@tmlmobilidade/logger';
 // import { Timer } from '@tmlmobilidade/timer';
 
 // /* * */

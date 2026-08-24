@@ -10,7 +10,7 @@ import { replayEvents } from '@/replay-events.js';
 import { runLoaderPhase } from '@/run-loader.js';
 import { writeOutput } from '@/write-output.js';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -121,8 +121,7 @@ async function main() {
 	// A. Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'ride-analyzer', message: 'Sentry ETA Ride Analyzer initialized', module: 'eta', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry ETA Ride Analyzer' });
 	}

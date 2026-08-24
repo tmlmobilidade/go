@@ -21,7 +21,7 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},

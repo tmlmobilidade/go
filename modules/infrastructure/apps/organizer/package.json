@@ -7,7 +7,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -17,9 +19,9 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-infrastructure-pckg-organize": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},

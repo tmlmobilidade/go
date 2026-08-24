@@ -7,7 +7,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -20,12 +22,12 @@
 		"@carrismetropolitana/api-types": "20260730.2028.44",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-clients-sqlite": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/lib": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/go-clients-sqlite": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",

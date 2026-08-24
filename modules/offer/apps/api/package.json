@@ -29,7 +29,7 @@
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-offer": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"adm-zip": "0.6.0",

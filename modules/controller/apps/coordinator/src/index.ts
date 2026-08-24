@@ -1,7 +1,7 @@
 /* * */
 
 import { getRides } from '@/get-rides.js';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import Fastify from 'fastify';
 
 /* * */
@@ -13,8 +13,7 @@ await (async function init() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'coordinator', message: 'Sentry Coordinator initialized', module: 'controller', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Coordinator' });
 	}

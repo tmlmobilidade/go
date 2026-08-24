@@ -4,7 +4,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

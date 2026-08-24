@@ -1,8 +1,8 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { organizeStop } from '@tmlmobilidade/go-infrastructure-pckg-organize';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -15,8 +15,7 @@ async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'organizer', message: 'Sentry Stops Organizer initialized', module: 'stops', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Stops Organizer' });
 	}

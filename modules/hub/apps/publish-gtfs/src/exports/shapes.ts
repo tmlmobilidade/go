@@ -4,7 +4,7 @@
 import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsStrictV29Shapes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type Plan } from '@tmlmobilidade/types';
 import { getPublicShapeId } from '@tmlmobilidade/utils';
 

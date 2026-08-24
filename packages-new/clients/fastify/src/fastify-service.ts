@@ -12,7 +12,7 @@ import fastifyCors from '@fastify/cors';
 import oneLineLogger from '@fastify/one-line-logger';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { HttpResponse } from '@tmlmobilidade/utils';
 import fastify, { FastifyLoggerOptions } from 'fastify';
 import { type FastifyInstance as FastifyInstanceType, type FastifyReply as FastifyReplyType } from 'fastify';
@@ -172,7 +172,7 @@ const createLoggerOptions = (getModuleName: () => string): FastifyLoggerOptions<
 			const shouldSendToSentry = message !== 'incoming request' && message !== 'request completed';
 
 			if (shouldSendToSentry) {
-				Logger.startNodeLogs({
+				Logger.startLogs({
 					app: 'api',
 					message: message,
 					method: method,
@@ -240,7 +240,7 @@ export class FastifyService {
 		if (moduleName) this.options.module = moduleName;
 
 		try {
-			await initSentryNode();
+			await initSentry();
 		} catch (error) {
 			this.server.log.error({ err: error }, 'Error sending startup log to Sentry.');
 		}
@@ -331,7 +331,9 @@ export class FastifyService {
 						statusCode: error.statusCode,
 					});
 			} else {
-				Logger.issue({ context: { action: 'errorHandler', feature: this.options.module, request, value: request.body }, level: 'error', messageOrError: 'Internal server error' });
+				if (error instanceof Error) {
+					Logger.issue({ context: { action: 'errorHandler', feature: this.options.module, request, value: request.body }, level: 'error', messageOrError: error });
+				}
 				return sendErrorApiResponse(reply, {
 					error: 'Internal server error',
 					status_code: '500',
@@ -350,8 +352,11 @@ export class FastifyService {
 		 */
 		this.server.addHook('onSend', (_, reply, payload, done) => {
 			try {
-				const payloadJson = JSON.parse(payload as string) as HttpResponse<unknown>;
-				reply.code(payloadJson.statusCode ?? HTTP_STATUS.OK);
+				const payloadJson = JSON.parse(payload as string) as ApiResponse<unknown> | HttpResponse<unknown>;
+				const statusCode = 'status_code' in payloadJson
+					? Number(payloadJson.status_code)
+					: payloadJson.statusCode;
+				reply.code(statusCode ?? HTTP_STATUS.OK);
 			} catch {
 				// Do nothing
 			} finally {

@@ -3,7 +3,7 @@
 import { pipelinePath } from '@tmlmobilidade/go-hub-pckg-sql';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 import { type ClickHouseEtaKeyValue, type TripStopEta } from '../types.js';

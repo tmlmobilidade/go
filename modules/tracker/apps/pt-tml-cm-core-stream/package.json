@@ -21,7 +21,7 @@
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-tracker-pckg-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {

@@ -4,7 +4,7 @@ import { type ImportGtfsContext } from '@/shared/init-context.js';
 import { parseCsvFile } from '@/shared/parse-csv.js';
 import { type GtfsSQLTables } from '@/versions/standard/types.js';
 import { type GtfsRoutes, GtfsRoutesSchema } from '@tmlmobilidade/go-types-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /**

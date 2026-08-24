@@ -24,7 +24,9 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -34,6 +36,7 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-clients-sqlite": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-gtfs-strict": "*",
@@ -41,8 +44,7 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/go-clients-sqlite": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
 		"csv-parse": "7.0.2",

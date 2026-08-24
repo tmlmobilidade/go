@@ -2,7 +2,7 @@
 
 import { processPcgiVehicleEventCore } from '@/process-pcgi-vehicle-event-core.js';
 import { pcgiLegacy } from '@tmlmobilidade/go-interfaces-pcgi-legacy';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 
@@ -12,8 +12,7 @@ import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'cm-stream-core', message: 'Sentry Tracker CM Stream Core initialized', module: 'tracker', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Tracker CM Stream Core' });
 	}

@@ -2,7 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { performInChunks } from '@tmlmobilidade/utils';
 

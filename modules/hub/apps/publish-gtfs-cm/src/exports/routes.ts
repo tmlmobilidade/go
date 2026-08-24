@@ -4,7 +4,7 @@
 import { type MergedGtfsExportConfig } from '@/types.js';
 import { GtfsBinary, type GtfsRouteType } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29PathType, type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

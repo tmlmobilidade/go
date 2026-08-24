@@ -4,7 +4,7 @@ import { transformAlertIntoRssEntity } from '@/transform/rss/main.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { createRssFeed, type RssRawItem } from '@tmlmobilidade/rss';
 import { Timer } from '@tmlmobilidade/timer';
 

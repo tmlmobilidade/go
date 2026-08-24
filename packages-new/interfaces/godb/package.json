@@ -44,7 +44,7 @@
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"bcryptjs": "3.0.3",

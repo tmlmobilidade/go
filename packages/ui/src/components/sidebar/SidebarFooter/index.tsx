@@ -25,7 +25,7 @@ export function SidebarFooter() {
 	return (
 		<div className={styles.footer}>
 			<SidebarExports />
-			{sidebarContext.presentation.visual_mode !== 'collapsed' && <SidebarNotifications />}
+			<SidebarNotifications />
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && <SidebarOptions />}
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && <Spacer />}
 			{sidebarContext.presentation.visual_mode !== 'collapsed' && <EnvironmentTag />}

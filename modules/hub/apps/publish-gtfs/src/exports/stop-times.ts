@@ -6,7 +6,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsBinary, type GtfsPickupDropoffType } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type Plan } from '@tmlmobilidade/types';
 import { getPublicTripId } from '@tmlmobilidade/utils';
 

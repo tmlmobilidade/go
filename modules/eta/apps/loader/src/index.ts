@@ -1,7 +1,7 @@
 /* * */
 
 import { loadEta } from '@tmlmobilidade/go-eta-pckg-loader';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
 import { AppConfig } from './config.js';
@@ -15,8 +15,7 @@ await (async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'loader', message: 'Sentry ETA Loader initialized', module: 'eta', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry ETA Loader' });
 	}

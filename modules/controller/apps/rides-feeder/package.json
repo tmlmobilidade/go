@@ -30,7 +30,7 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-geo": "*",
 		"@tmlmobilidade/import-gtfs": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},

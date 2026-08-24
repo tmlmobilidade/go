@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import { Interval } from 'luxon';
@@ -19,8 +19,7 @@ async function main() {
 		// Initialize Sentry
 
 		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'rides-locker', message: 'Sentry Rides Locker initialized', module: 'controller', severity: 'info' });
+			await initSentry();
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Rides Locker' });
 		}

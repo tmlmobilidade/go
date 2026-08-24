@@ -7,7 +7,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -20,9 +22,12 @@
 	"dependencies": {
 		"@tmlmobilidade/go-alerts-pckg-compose": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
+		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"protobufjs": "8.7.1"
 	},

@@ -1,7 +1,7 @@
 /* * */
 
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type RssRawImageInput, type RssRawItem } from '@tmlmobilidade/rss/dist/types/feed.types.js';
 import { type Alert } from '@tmlmobilidade/types';
 

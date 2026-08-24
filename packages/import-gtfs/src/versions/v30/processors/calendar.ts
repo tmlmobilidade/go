@@ -7,7 +7,7 @@ import { type GtfsDate, GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV30Calendar, GtfsStrictV30CalendarSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dates';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 

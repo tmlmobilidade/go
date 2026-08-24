@@ -9,7 +9,7 @@ import useSWR from 'swr';
 
 import { useMeData } from '../auth';
 import { ErrorDisplay } from '../components/display/ErrorDisplay';
-import { fetchApiData } from '../fetch/fetch-api-data';
+import { fetchApiData } from '../fetch';
 import { LoadingOverlay } from '../loaders/LoadingOverlay';
 
 /* * */

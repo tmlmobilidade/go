@@ -18,7 +18,8 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/go-providers-operation": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*"
 	},

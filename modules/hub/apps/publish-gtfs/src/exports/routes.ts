@@ -4,7 +4,7 @@
 import { type ExportGtfsContext } from '@/types/context.js';
 import { GtfsBinary, type GtfsRouteType } from '@tmlmobilidade/go-types-gtfs';
 import { GtfsStrictV29PathType, type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { getPublicLineId, getPublicRouteId } from '@tmlmobilidade/utils';
 

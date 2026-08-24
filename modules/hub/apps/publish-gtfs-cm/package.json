@@ -7,7 +7,9 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -26,7 +28,7 @@
 		"@tmlmobilidade/go-types-gtfs-strict": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/import-gtfs": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",

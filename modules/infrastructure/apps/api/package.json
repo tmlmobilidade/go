@@ -25,7 +25,10 @@
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-infrastructure": "*",
+		"@tmlmobilidade/go-types-permissions": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {

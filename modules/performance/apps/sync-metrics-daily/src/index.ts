@@ -5,7 +5,7 @@ import { syncPassengerImpactMetrics } from '@/tasks/sync-passenger-impact.js';
 import { syncPatternHourMetrics } from '@/tasks/sync-pattern-hour-metrics.js';
 import { syncProductMetrics } from '@/tasks/sync-product-metrics.js';
 import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -16,8 +16,7 @@ async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'sync-metrics-daily', message: 'Sentry Performance Sync Metrics Daily initialized', module: 'performance', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Performance Sync Metrics Daily' });
 	}

@@ -1,7 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type Alert, type GtfsRtEntitySelector } from '@tmlmobilidade/types';
 
 /* * */

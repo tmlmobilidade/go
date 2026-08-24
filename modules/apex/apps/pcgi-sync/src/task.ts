@@ -5,7 +5,7 @@ import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade
 import { pcgiFileManager } from '@tmlmobilidade/go-interfaces-pcgi-file-manager';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { BatchWriter, type PerformInTimeChunksItem } from '@tmlmobilidade/utils';
 

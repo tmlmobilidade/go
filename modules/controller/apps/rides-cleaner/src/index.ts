@@ -1,7 +1,7 @@
 /* * */
 
 import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -15,8 +15,8 @@ async function reprocessStuckRides() {
 		// Initialize Sentry
 
 		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'rides-cleaner', message: 'Sentry Rides Cleaner initialized', module: 'controller', severity: 'info' });
+			await initSentry();
+			Logger.startLogs({ app: 'rides-cleaner', message: 'Sentry Rides Cleaner initialized', module: 'controller', severity: 'info' });
 		} catch (error) {
 			Logger.error({ error, message: 'Error initializing Sentry Rides Cleaner' });
 		}

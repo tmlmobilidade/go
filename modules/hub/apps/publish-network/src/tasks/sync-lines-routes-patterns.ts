@@ -4,7 +4,7 @@ import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type HubLine, type HubPattern, type HubRoute, type HubScheduledArrival, type HubStop, type HubTrip, type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import crypto from 'node:crypto';
 

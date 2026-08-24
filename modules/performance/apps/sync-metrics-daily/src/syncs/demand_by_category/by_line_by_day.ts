@@ -4,7 +4,7 @@ import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
 import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type DemandByCategoryByLineByDay } from '@tmlmobilidade/types';
 import pLimit from 'p-limit';

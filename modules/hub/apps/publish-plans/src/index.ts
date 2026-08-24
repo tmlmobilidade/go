@@ -1,7 +1,7 @@
 /* * */
 
 import { publishApprovedPlans } from '@/tasks/publish-approved-plans.js';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -14,8 +14,7 @@ const main = async () => {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'publish-plans', message: 'Sentry Hub Publish Plans initialized', module: 'hub', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Hub Publish Plans' });
 	}

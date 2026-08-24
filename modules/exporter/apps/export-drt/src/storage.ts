@@ -2,7 +2,7 @@
 
 import { mimeTypes } from '@tmlmobilidade/consts';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import fs from 'fs';
 
 import { DatabaseConfig, getDatabasePath } from './database.js';

@@ -37,7 +37,7 @@
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/interfaces": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",

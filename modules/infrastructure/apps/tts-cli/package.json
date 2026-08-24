@@ -25,7 +25,7 @@
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-infrastructure-pckg-organize": "*",
 		"@tmlmobilidade/go-types-public-info": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/utils": "*",
 		"adm-zip": "0.6.0",

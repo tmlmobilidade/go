@@ -8,7 +8,7 @@ import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { type HubPlan, HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
 import { OperationalDateInt, toCalendarDate, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { getPublicLineId, getPublicPatternId, getPublicTripId, getPublicVehicleId } from '@tmlmobilidade/utils';
 

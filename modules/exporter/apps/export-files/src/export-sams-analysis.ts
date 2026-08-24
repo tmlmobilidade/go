@@ -3,7 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type FileExport, type FlatSamsAnalysisExportAnalysis, type SamsAnalysisExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { buildSamsMatch, sams, samsAnalysisExportAggregationPipeline } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { Timer } from '@tmlmobilidade/timer';
 import { PermissionCatalog, type Sam, type SamAnalysis } from '@tmlmobilidade/types';

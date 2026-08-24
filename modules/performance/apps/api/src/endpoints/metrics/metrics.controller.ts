@@ -2,9 +2,9 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type Metric } from '@tmlmobilidade/go-types-performance';
 import { metrics } from '@tmlmobilidade/interfaces';
-import { Logger } from '@tmlmobilidade/logger';
-import { type Metric } from '@tmlmobilidade/types';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

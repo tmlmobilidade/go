@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { getEmptyGtfsRtFeedMessage } from '@tmlmobilidade/gtfs-rt';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
 
 /**

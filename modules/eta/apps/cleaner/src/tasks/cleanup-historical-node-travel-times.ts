@@ -1,5 +1,5 @@
 import { pipelinePath, queryEachEtaStatementFromFile } from '@tmlmobilidade/go-eta-pckg-common';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 const CLEANUP_HIST_NODE_TRAVEL_TIMES_SQL = 'cleanup/6-delete-orphan-hist-node-travel-times.sql';
 

@@ -25,7 +25,7 @@
 		"@tmlmobilidade/go-eta-pckg-loader": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/timer": "*",
 		"@tmlmobilidade/writers": "*"
 	},

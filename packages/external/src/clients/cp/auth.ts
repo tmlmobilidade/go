@@ -1,6 +1,6 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { cpSshTunnel, SshTunnel } from '@tmlmobilidade/go-clients-ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IncomingMessage } from 'node:http';

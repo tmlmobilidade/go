@@ -3,7 +3,7 @@
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-performance';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */

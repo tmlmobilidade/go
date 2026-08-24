@@ -6,7 +6,7 @@ import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
 import { validateGtfsTime } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/go-types-offer';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { metersToGtfsKm, type Stop } from '@tmlmobilidade/types';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';

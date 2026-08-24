@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type Plan } from '@tmlmobilidade/types';
 
 /* * */

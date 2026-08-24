@@ -37,7 +37,7 @@
 		"@tmlmobilidade/go-clients-ssh": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/gtfs-rt": "*",
-		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/logger-logger-backend": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},

@@ -10,7 +10,7 @@ import { cleanupHistoricalRides } from '@/tasks/cleanup-historical-rides.js';
 import { cleanupHistoricalVehicleEvents } from '@/tasks/cleanup-historical-vehicle-events.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 
@@ -25,8 +25,7 @@ export async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'cleaner', message: 'Sentry ETA Cleaner initialized', module: 'eta', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry ETA Cleaner' });
 	}

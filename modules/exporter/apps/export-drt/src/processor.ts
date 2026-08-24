@@ -1,6 +1,6 @@
 import { Stop } from '@carrismetropolitana/api-types/network';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { HashedShape, HashedTrip, Ride } from '@tmlmobilidade/types';
 

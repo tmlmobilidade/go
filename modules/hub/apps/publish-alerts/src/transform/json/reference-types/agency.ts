@@ -1,6 +1,6 @@
 /* * */
 
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { type Alert, AlertReference } from '@tmlmobilidade/types';
 
 /* * */

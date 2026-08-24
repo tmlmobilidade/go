@@ -2,7 +2,7 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Zone } from '@tmlmobilidade/go-types-offer';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 
 /* * */
 

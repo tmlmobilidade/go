@@ -4,7 +4,7 @@ import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlCpV1 } from '@tmlmobilidade/go-types-vehicle-events';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
@@ -15,8 +15,7 @@ let ITERATION = 0;
 
 /* * */
 try {
-	await initSentryNode();
-	Logger.startNodeLogs({ app: 'pt-tml-cp-api-fetch', message: 'Sentry Tracker CP Fetch initialized', module: 'tracker', severity: 'info' });
+	await initSentry();
 } catch (error) {
 	Logger.error({ error, message: 'Error initializing Sentry Tracker CP Fetch' });
 }

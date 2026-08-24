@@ -11,7 +11,7 @@ import { CreateHashedTrip, CreateHashedTripSchema, type HashedTrip, HashedTripSc
 import { HexColorSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-geo';
 import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { type Plan } from '@tmlmobilidade/types';
 import { BatchWriter, fromGtfsTimeAndGtfsDateToUnixTimestamp } from '@tmlmobilidade/utils';

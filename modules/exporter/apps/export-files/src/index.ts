@@ -3,7 +3,7 @@
 import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { initSentryNode, Logger } from '@tmlmobilidade/logger';
+import { initSentry, Logger } from '@tmlmobilidade/logger-logger-backend';
 import { Timer } from '@tmlmobilidade/timer';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -23,8 +23,7 @@ async function main() {
 	// Initialize Sentry
 
 	try {
-		await initSentryNode();
-		Logger.startNodeLogs({ app: 'export-files', message: 'Sentry Exporter Files initialized', module: 'exporter', severity: 'info' });
+		await initSentry();
 	} catch (error) {
 		Logger.error({ error, message: 'Error initializing Sentry Exporter Files' });
 	}

@@ -3,7 +3,7 @@
 import { parseRawApexTransactionInspectionDecisionV20IntoSimplifiedApexInspectionDecision } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexInspectionDecision } from '@tmlmobilidade/go-types-apex';
-import { Logger } from '@tmlmobilidade/logger';
+import { Logger } from '@tmlmobilidade/logger-logger-backend';
 import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
