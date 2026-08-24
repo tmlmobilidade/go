@@ -3,16 +3,24 @@
 import { Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 import { useSchoolCreatePublish } from '../use-schools-create-publish';
+import { type UseSchoolCreateFormReturnType } from '../use-schools-create-form';
 
 /* * */
 
-export function SchoolCreateFooter() {
+interface SchoolCreateFooterProps {
+	form: UseSchoolCreateFormReturnType['form']
+	unblock: UseSchoolCreateFormReturnType['unblock']
+}
+
+/* * */
+
+export function SchoolCreateFooter({ form, unblock }: SchoolCreateFooterProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const { isLoading: isCreating, publish } = useSchoolCreatePublish();
+	const { isLoading: isCreating, publish } = useSchoolCreatePublish({ form, unblock });
 
 	//
 	// B. Render components

@@ -1,64 +1,36 @@
 'use client';
 
-import { type CreateSchoolDto, CreateSchoolSchema } from '@tmlmobilidade/go-types-operation';
-import { Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Divider } from '@tmlmobilidade/ui';
 
-import { useSchoolCreateFormContext } from '../SchoolCreateForm.context';
-
-/* * */
-
-const schoolTextFields = [
-	'address',
-	'agency_id',
-	'district_id',
-	'district_name',
-	'email',
-	'grouping',
-	'locality',
-	'municipality_id',
-	'municipality_name',
-	'name',
-	'nature',
-	'parish_name',
-	'postal_code',
-	'region_id',
-	'region_name',
-] as const satisfies readonly (keyof CreateSchoolDto)[];
+import { SchoolCreateSectionAdministrative } from '../sections/SchoolCreateSectionAdministrative';
+import { SchoolCreateSectionAddress } from '../sections/SchoolCreateSectionAddress';
+import { SchoolCreateSectionGeneral } from '../sections/SchoolCreateSectionGeneral';
+import { SchoolCreateSectionOrganization } from '../sections/SchoolCreateSectionOrganization';
+import { type UseSchoolCreateFormReturnType } from '../use-schools-create-form';
 
 /* * */
 
-export function SchoolCreateForm() {
+interface SchoolCreateFormProps {
+	form: UseSchoolCreateFormReturnType['form']
+}
+
+/* * */
+
+export function SchoolCreateForm({ form }: SchoolCreateFormProps) {
 	//
 
 	//
-	// A. Setup variables
-
-	const { form } = useSchoolCreateFormContext();
-
-	//
-	// B. Render components
+	// A. Render components
 
 	return (
-		<Section gap="md">
-			<Grid columns="a" gap="xl">
-				{schoolTextFields.map(name => (
-					<StandardFormController
-						key={name}
-						control={form.control}
-						name={name}
-						render={({ field, fieldState }) => (
-							<TextInput
-								error={fieldState.error?.message}
-								label={name.replaceAll('_', ' ')}
-								onBlur={field.onBlur}
-								onChange={event => field.onChange(event.currentTarget.value)}
-								value={field.value ?? ''}
-								withAsterisk={CreateSchoolSchema.shape[name].isOptional() === false}
-							/>
-						)}
-					/>
-				))}
-			</Grid>
-		</Section>
+		<>
+			<SchoolCreateSectionGeneral form={form} />
+			<Divider />
+			<SchoolCreateSectionOrganization form={form} />
+			<Divider />
+			<SchoolCreateSectionAddress form={form} />
+			<Divider />
+			<SchoolCreateSectionAdministrative form={form} />
+		</>
 	);
 }

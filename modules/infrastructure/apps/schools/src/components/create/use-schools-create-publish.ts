@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
 import { useSchoolsListData } from '../list/use-schools-list-data';
-import { useSchoolCreateFormContext } from './SchoolCreateForm.context';
+import { type UseSchoolCreateFormReturnType } from './use-schools-create-form';
 
 /* * */
 
@@ -18,7 +18,14 @@ interface UseSchoolCreatePublishReturnType {
 
 /* * */
 
-export function useSchoolCreatePublish(): UseSchoolCreatePublishReturnType {
+export interface UseSchoolCreatePublishProps {
+	form: UseSchoolCreateFormReturnType['form']
+	unblock: UseSchoolCreateFormReturnType['unblock']
+}
+
+/* * */
+
+export function useSchoolCreatePublish({ form, unblock }: UseSchoolCreatePublishProps): UseSchoolCreatePublishReturnType {
 	//
 
 	//
@@ -26,8 +33,6 @@ export function useSchoolCreatePublish(): UseSchoolCreatePublishReturnType {
 
 	const { mutate } = useSchoolsListData();
 	const router = useRouter();
-
-	const { form, unblock } = useSchoolCreateFormContext();
 
 	//
 	// B. Handle actions

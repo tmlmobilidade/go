@@ -6,8 +6,8 @@ import { useMemo } from 'react';
 
 import { SchoolCreateFooter } from '../SchoolCreateFooter';
 import { SchoolCreateForm } from '../SchoolCreateForm';
-import { SchoolCreateFormContextProvider } from '../SchoolCreateForm.context';
 import { SchoolCreateHeader } from '../SchoolCreateHeader';
+import { useSchoolsCreateForm } from '../use-schools-create-form';
 
 /* * */
 
@@ -23,6 +23,8 @@ export function SchoolCreate() {
 		return meContext?.actions.hasPermission(PermissionCatalog.all.schools.scope, PermissionCatalog.all.schools.actions.create);
 	}, [meContext]);
 
+	const schoolCreateForm = useSchoolsCreateForm();
+
 	//
 	// B. Render components
 
@@ -35,14 +37,11 @@ export function SchoolCreate() {
 	}
 
 	return (
-		<SchoolCreateFormContextProvider>
-
-			<Pane
-				footer={[<SchoolCreateFooter key="footer" />]}
-				header={[<SchoolCreateHeader key="header" />]}
-			>
-				<SchoolCreateForm />
-			</Pane>
-		</SchoolCreateFormContextProvider>
+		<Pane
+			footer={[<SchoolCreateFooter key="footer" form={schoolCreateForm.form} unblock={schoolCreateForm.unblock} />]}
+			header={[<SchoolCreateHeader key="header" />]}
+		>
+			<SchoolCreateForm form={schoolCreateForm.form} />
+		</Pane>
 	);
 }
