@@ -9,10 +9,10 @@ import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useValidationsListFilterAgency } from './ValidationsListFilterAgency/use-validations-list-filter-agency';
-import { useValidationsListFilterProcessingStatus } from './ValidationsListFilterProcessingStatus/use-validations-list-filter-processing-status';
-import { useValidationsListFilterSearch } from './ValidationsListFilterSearch/use-validations-list-filter-search';
-import { useValidationsListFilterValidityStatus } from './ValidationsListFilterValidityStatus/use-validations-list-filter-validity-status';
+import { useValidationsListFilterAgency } from './filters/ValidationsListFilterAgency/use-validations-list-filter-agency';
+import { useValidationsListFilterProcessingStatus } from './filters/ValidationsListFilterProcessingStatus/use-validations-list-filter-processing-status';
+import { useValidationsListFilterSearch } from './filters/ValidationsListFilterSearch/use-validations-list-filter-search';
+import { useValidationsListFilterValidityStatus } from './filters/ValidationsListFilterValidityStatus/use-validations-list-filter-validity-status';
 
 /* * */
 

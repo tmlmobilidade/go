@@ -1,6 +1,6 @@
 /* * */
 
-import { ValidationsList } from '@/components/validations/list/ValidationsList';
+import { ValidationsList } from '@/components/validations/list/shared/ValidationsList';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

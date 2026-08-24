@@ -1,8 +1,8 @@
 'use client';
 
-import { ValidationsListCellDate } from '@/components/validations/list/ValidationsListCellCreatedAt';
-import { ValidationsListFiltersBar } from '@/components/validations/list/ValidationsListFiltersBar';
-import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
+import { ValidationsListFiltersBar } from '@/components/validations/list/filters/ValidationsListFiltersBar';
+import { ValidationsListCellDate } from '@/components/validations/list/shared/ValidationsListCellCreatedAt';
+import { ValidationsListHeader } from '@/components/validations/list/shared/ValidationsListHeader';
 import { type ValidationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -10,7 +10,7 @@ import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, 
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
-import { useValidationsListData } from '../use-validations-list-data';
+import { useValidationsListData } from '../../use-validations-list-data';
 
 /* * */
 

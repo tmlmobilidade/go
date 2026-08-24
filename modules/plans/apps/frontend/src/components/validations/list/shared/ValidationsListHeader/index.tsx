@@ -1,7 +1,7 @@
 /* * */
 
 import { openCreateValidationModal } from '@/components/validations/create/ValidationCreate.modal';
-import { ValidationsListFilterSearch } from '@/components/validations/list/ValidationsListFilterSearch';
+import { ValidationsListFilterSearch } from '@/components/validations/list/filters/ValidationsListFilterSearch';
 import { IconPlus } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, HasPermission, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
