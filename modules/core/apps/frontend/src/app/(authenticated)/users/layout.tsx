@@ -1,9 +1,8 @@
 /* * */
 
 import { UsersList } from '@/components/users/list/UsersList';
-import { UsersListContextProvider } from '@/components/users/list/UsersList.context';
 import { PanesManager } from '@tmlmobilidade/ui';
-import { type PropsWithChildren } from 'react';
+import { Fragment, type PropsWithChildren } from 'react';
 
 /* * */
 
@@ -12,10 +11,8 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="users"
 			panes={[
-				<UsersListContextProvider>
-					<UsersList />
-				</UsersListContextProvider>,
-				children,
+				<UsersList key="list" />,
+				<Fragment key="children">{children}</Fragment>,
 			]}
 		/>
 	);

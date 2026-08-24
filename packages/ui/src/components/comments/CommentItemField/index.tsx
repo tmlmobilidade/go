@@ -6,7 +6,7 @@ import { FieldChange, FieldChangedComment } from '@tmlmobilidade/go-types-shared
 
 import styles from './styles.module.css';
 
-import { IconButton } from '../../buttons';
+import { IconButton } from '../../../buttons';
 import { Label } from '../../display/Label';
 
 /* * */

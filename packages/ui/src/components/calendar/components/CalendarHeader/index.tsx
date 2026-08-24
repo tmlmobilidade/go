@@ -6,7 +6,7 @@ import React from 'react';
 
 import styles from './styles.module.css';
 
-import { Button, IconButton } from '../../../buttons';
+import { Button, IconButton } from '../../../../buttons';
 import { Divider } from '../../../layout';
 
 /* * */

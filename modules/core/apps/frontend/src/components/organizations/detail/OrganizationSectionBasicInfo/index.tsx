@@ -1,22 +1,25 @@
 'use client';
 
-import { UploadImage } from '@/components/common/UploadImage';
-import { useOrganizationsDetailContext } from '@/components/organizations/detail/OrganizationDetail.context';
 import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { Collapsible, Grid, Section, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, ImageUpload, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useOrganizationsDetailFormContext } from '../OrganizationsDetailForm.context';
 
 /* * */
 
-export function OrganizationDetailBasicInfo() {
+export function OrganizationsDetailBasicInfo() {
 	//
 
 	//
 	// A. Setup variables
 
-	const organizationDetailContext = useOrganizationsDetailContext();
-
 	const { t } = useTranslation();
+
+	const { actions, capabilities, form, status } = useOrganizationsDetailFormContext();
+
+	const logoDarkUrlValue = useStandardFormWatch({ control: form.control, name: 'logo_dark' });
+	const logoLightUrlValue = useStandardFormWatch({ control: form.control, name: 'logo_light' });
 
 	//
 	// B. Render components
@@ -25,47 +28,69 @@ export function OrganizationDetailBasicInfo() {
 		<Collapsible
 			description={t('default:organizations.detail.SectionBasicInfo.description')}
 			title={t('default:organizations.detail.SectionBasicInfo.title')}
+			defaultOpen
 		>
 			<Section gap="lg">
+
 				<Grid columns="aab" gap="lg">
-					<TextInput
-						key={organizationDetailContext.data.form.key('long_name')}
-						label={t('default:organizations.detail.SectionBasicInfo.fields.long_name.label')}
-						maxLength={255}
-						placeholder={t('default:organizations.detail.SectionBasicInfo.fields.long_name.placeholder')}
-						readOnly={organizationDetailContext.flags.isReadOnly}
-						withAsterisk={!CreateOrganizationSchema.shape.long_name}
-						{...organizationDetailContext.data.form.getInputProps('long_name')}
+					<StandardFormController
+						control={form.control}
+						name="long_name"
+						render={({ field, fieldState }) => (
+							<TextInput
+								disabled={!capabilities.editEnabled}
+								error={fieldState.error?.message}
+								label={t('default:organizations.detail.SectionBasicInfo.fields.long_name.label')}
+								maxLength={CreateOrganizationSchema.shape.long_name.maxLength}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('default:organizations.detail.SectionBasicInfo.fields.long_name.placeholder')}
+								value={field.value ?? ''}
+								data-autofocus
+								withAsterisk
+							/>
+						)}
 					/>
-					<TextInput
-						key={organizationDetailContext.data.form.key('short_name')}
-						label={t('default:organizations.detail.SectionBasicInfo.fields.short_name.label')}
-						maxLength={10}
-						placeholder={t('default:organizations.detail.SectionBasicInfo.fields.short_name.placeholder')}
-						readOnly={organizationDetailContext.flags.isReadOnly}
-						withAsterisk={!CreateOrganizationSchema.shape.short_name}
-						{...organizationDetailContext.data.form.getInputProps('short_name')}
+					<StandardFormController
+						control={form.control}
+						name="short_name"
+						render={({ field, fieldState }) => (
+							<TextInput
+								disabled={!capabilities.editEnabled}
+								error={fieldState.error?.message}
+								label={t('default:organizations.detail.SectionBasicInfo.fields.short_name.label')}
+								maxLength={CreateOrganizationSchema.shape.short_name.maxLength}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('default:organizations.detail.SectionBasicInfo.fields.short_name.placeholder')}
+								value={field.value ?? ''}
+								data-autofocus
+								withAsterisk
+							/>
+						)}
 					/>
 				</Grid>
-				<Section>
-					<Grid columns="ab" gap="lg">
-						<UploadImage
-							imageUrl={organizationDetailContext.data.logoDarkUrl}
-							label={t('default:organizations.detail.SectionBasicInfo.fields.logo_dark.label')}
-							onDelete={() => organizationDetailContext.actions.deleteImage('dark')}
-							onFileChange={organizationDetailContext.actions.fileChangedDark}
-						/>
-						<UploadImage
-							imageUrl={organizationDetailContext.data.logoLightUrl}
-							label={t('default:organizations.detail.SectionBasicInfo.fields.logo_light.label')}
-							onDelete={() => organizationDetailContext.actions.deleteImage('light')}
-							onFileChange={organizationDetailContext.actions.fileChangedLight}
-						/>
-					</Grid>
-				</Section>
+
+				<Grid columns="ab" gap="lg">
+					<ImageUpload
+						isDisabled={form.formState.isDirty}
+						isLoading={status.isUpdatingLightLogo}
+						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_light.label')}
+						onChange={actions.updateLightLogo}
+						onDelete={actions.deleteLightLogo}
+						value={logoLightUrlValue}
+					/>
+					<ImageUpload
+						isDisabled={form.formState.isDirty}
+						isLoading={status.isUpdatingDarkLogo}
+						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_dark.label')}
+						onChange={actions.updateDarkLogo}
+						onDelete={actions.deleteDarkLogo}
+						value={logoDarkUrlValue}
+					/>
+				</Grid>
+
 			</Section>
 		</Collapsible>
 	);
-
-	//
 }

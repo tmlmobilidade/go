@@ -1,6 +1,6 @@
 /* * */
 
-import { ContextFormController, Section, TextInput } from '@tmlmobilidade/ui';
+import { StandardFormController, Section, TextInput } from '@tmlmobilidade/ui';
 
 import { useStopCreateContext } from '../StopCreate.context';
 
@@ -17,7 +17,7 @@ export function StopCreateStepNames() {
 
 	return (
 		<Section gap="sm" width="100%">
-			<ContextFormController
+			<StandardFormController
 				control={stopCreateContext.form.instance.control}
 				name="name"
 				render={({ field, fieldState }) => (
@@ -33,7 +33,7 @@ export function StopCreateStepNames() {
 					/>
 				)}
 			/>
-			<ContextFormController
+			<StandardFormController
 				control={stopCreateContext.form.instance.control}
 				name="short_name"
 				render={({ field }) => (
@@ -46,7 +46,7 @@ export function StopCreateStepNames() {
 					/>
 				)}
 			/>
-			<ContextFormController
+			<StandardFormController
 				control={stopCreateContext.form.instance.control}
 				name="tts_name"
 				render={({ field }) => (

@@ -112,7 +112,7 @@ export const sidebarNavigationGroups = [
 				_id: 'sams',
 				href: PAGE_ROUTES.controller.SAMS_LIST,
 				icon: <IconDeviceSim />,
-				permissions: [{ action: PermissionCatalog.all.sams.actions.read, scope: PermissionCatalog.all.sams.scope }],
+				permissions: [{ action: PermissionCatalog.all.sams.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.sams.scope }],
 			},
 			{
 				_id: 'vehicles',
@@ -127,7 +127,7 @@ export const sidebarNavigationGroups = [
 		items: [
 			{
 				_id: 'stops',
-				href: PAGE_ROUTES.infrastructure.STOPS_LIST,
+				href: PAGE_ROUTES.infrastructure.INFRASTRUCTURE_LIST,
 				icon: <IconBusStop />,
 				permissions: [{ action: PermissionCatalog.all.stops.actions.read, resources: { agency_ids: [], municipality_ids: [] }, scope: PermissionCatalog.all.stops.scope }],
 			},

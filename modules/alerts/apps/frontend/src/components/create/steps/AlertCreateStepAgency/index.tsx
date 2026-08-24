@@ -1,9 +1,8 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ContextFormController, Grid, Label, openConfirmModal, Section, Select, useDataAgencies } from '@tmlmobilidade/ui';
+import { StandardFormController, Grid, Label, openConfirmModal, Section, Select, useAgenciesData } from '@tmlmobilidade/ui';
 
 import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
 
@@ -17,9 +16,11 @@ export function AlertCreateStepAgency() {
 
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
-	const { options: agenciesOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.create],
-		scope: PermissionCatalog.all.alerts.scope,
+	const { options: agenciesOptions } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.alerts.actions.create],
+			scope: PermissionCatalog.all.alerts.scope,
+		},
 	});
 
 	//
@@ -52,7 +53,7 @@ export function AlertCreateStepAgency() {
 		<Section>
 			<Grid gap="md">
 				{agenciesOptions.length > 1 && (
-					<ContextFormController
+					<StandardFormController
 						control={alertsCreateForm.control}
 						name="agency_id"
 						render={({ field, fieldState }) => (

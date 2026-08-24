@@ -7,6 +7,7 @@ import { AlertsListCellCauseEffect } from '@/components/list/table/AlertsListCel
 import { AlertsListCellReferenceType } from '@/components/list/table/AlertsListCellReferenceType';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane, PublishStatusDisplay, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +33,19 @@ export function AlertsList() {
 	const columns: DataTableColumn<AlertsListItem>[] = [
 		{
 			accessor: 'agency_id',
-			render: item => <AgencyTag agencyId={item.agency_id} copyOnClick={false} showShortName />,
+			render: item => (
+				<AgencyTag
+					agencyId={item.agency_id}
+					copyOnClick={false}
+					request={{
+						permissions: {
+							actions: [PermissionCatalog.all.alerts.actions.read],
+							scope: PermissionCatalog.all.alerts.scope,
+						},
+					}}
+					showShortName
+				/>
+			),
 			title: t('alerts:list.AlertsList.columns.agency_id.label'),
 			width: 180,
 		},

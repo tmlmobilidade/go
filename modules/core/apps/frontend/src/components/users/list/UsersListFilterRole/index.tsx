@@ -1,8 +1,9 @@
 /* * */
 
-import { useUsersListContext } from '@/components/users/list/UsersList.context';
 import { ListFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useUsersListFilterRole } from './use-users-list-filter-role';
 
 /* * */
 
@@ -14,20 +15,19 @@ export function UsersListFilterRole() {
 
 	const { t } = useTranslation();
 
-	const usersListContext = useUsersListContext();
+	const filterRole = useUsersListFilterRole();
 
 	//
 	// B. Render components
 
 	return (
 		<ListFilter
-			active={usersListContext.filters.role_ids.isActive}
+			active={filterRole.isActive}
 			label={t('default:users.list.FilterBar.role.label')}
-			onChange={usersListContext.filters.role_ids.set}
-			options={usersListContext.filters.role_ids.options}
+			onChange={filterRole.set}
+			options={filterRole.options}
+			isMultiple
 			withToggleAll
 		/>
 	);
-
-	//
 }

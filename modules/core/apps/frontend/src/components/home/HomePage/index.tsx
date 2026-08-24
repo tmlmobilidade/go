@@ -2,8 +2,9 @@
 
 import { QuickLinks } from '@/components/home/QuickLinks';
 import { WelcomeMessage } from '@/components/home/WelcomeMessage';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Pane, useMeContext } from '@tmlmobilidade/ui';
+import { LoadingSection, Pane } from '@tmlmobilidade/ui';
+
+import { useQuickLinksData } from '../use-quick-links-data';
 
 /* * */
 
@@ -13,25 +14,24 @@ export function HomePage() {
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
-
-	//
-	// B. Transform data
-
-	const hasQuickLinksPermission = meContext.actions.hasPermission(PermissionCatalog.all.home.scope, PermissionCatalog.all.home.actions.read_links);
+	const { data, isLoading } = useQuickLinksData();
 
 	//
 	// C. Render components
 
-	if (!hasQuickLinksPermission) {
+	if (isLoading) {
+		return (
+			<LoadingSection size="lg" fullHeight />
+		);
+	}
+
+	if (!data.length) {
 		return <WelcomeMessage />;
 	}
 
 	return (
 		<Pane>
-			{hasQuickLinksPermission && <QuickLinks />}
+			<QuickLinks />
 		</Pane>
 	);
-
-	//
 }

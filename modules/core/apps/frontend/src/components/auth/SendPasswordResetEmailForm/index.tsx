@@ -1,6 +1,6 @@
 'use client';
 
-import { AuthenticationForm } from '@/components/common/AuthenticationForm';
+import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Session } from '@tmlmobilidade/go-types-core';
 import { TextInput, useQueryState, useToast } from '@tmlmobilidade/ui';
@@ -25,9 +25,7 @@ export function SendPasswordResetEmailForm() {
 	//
 	// B. Handle actions
 
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		// Prevent default form submission behavior
-		event.preventDefault();
+	const handleSubmit = async () => {
 		// Update loading state
 		setIsLoading(true);
 		// Perform password reset email request

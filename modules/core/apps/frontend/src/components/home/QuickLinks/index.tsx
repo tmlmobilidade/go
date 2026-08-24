@@ -1,10 +1,11 @@
 'use client';
 
-import { useOrganizationsContext } from '@/contexts/Organizations.context';
 import { iconMap } from '@/lib/icons';
 import { IconFileInfo } from '@tabler/icons-react';
-import { Grid, LargeButton, Section, useMeContext } from '@tmlmobilidade/ui';
+import { Grid, LargeButton, Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+
+import { useQuickLinksData } from '../use-quick-links-data';
 
 /* * */
 
@@ -14,25 +15,18 @@ export function QuickLinks() {
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
-	const organizationsContext = useOrganizationsContext();
+	const { data } = useQuickLinksData();
 
 	//
 	// B. Transform data
 
 	const quickLinks = useMemo(() => {
-		// Skip if no links
-		if (!organizationsContext.data.raw) return [];
-		// Find the organization detail
-		const foundOrganizationData = organizationsContext.data.raw.find(org => org._id === meContext.data.user.organization_id);
-		if (!foundOrganizationData) return [];
-		// Return mapped links
-		return foundOrganizationData.home_links.map(item => ({
+		return data.map(item => ({
 			href: item.href,
 			icon: iconMap[item.icon] || <IconFileInfo />,
 			title: item.title,
 		}));
-	}, [organizationsContext.data.raw, meContext.data.user.organization_id]);
+	}, [data]);
 
 	//
 	// C. Render components
@@ -51,6 +45,4 @@ export function QuickLinks() {
 			</Grid>
 		</Section>
 	);
-
-	//
 }

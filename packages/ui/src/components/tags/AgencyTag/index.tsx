@@ -1,10 +1,11 @@
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type AgenciesPlatformRequest } from '@tmlmobilidade/go-types-core';
+import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
-import { useDataAgencies } from '../../../hooks/use-data/use-data-agencies';
+import { useAgenciesData } from '../../../data';
 import { Label } from '../../display/Label';
 import { IdTag } from '../IdTag';
 import { Tag } from '../Tag';
@@ -14,6 +15,7 @@ import { Tag } from '../Tag';
 interface AgencyTagProps {
 	agencyId: string
 	copyOnClick?: boolean
+	request: AgenciesPlatformRequest
 	showCode?: boolean
 	showId?: boolean
 	showName?: boolean
@@ -22,21 +24,20 @@ interface AgencyTagProps {
 
 /* * */
 
-export function AgencyTag({ agencyId, copyOnClick = true, showCode = true, showId = true, showName = false, showShortName = false }: AgencyTagProps) {
+export function AgencyTag({ agencyId, copyOnClick = true, request, showCode = true, showId = true, showName = false, showShortName = false }: AgencyTagProps) {
 	//
 
 	//
 	// A. Fetch data
 
-	const { raw: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
+	const { data } = useAgenciesData(request);
 
 	//
 	// B. Transform data
 
-	const agencyData = agenciesData.find(agency => agency._id === agencyId);
-	const agencyCode = agencyData?.code;
-	const agencyName = agencyData?.name;
-	const agencyShortName = agencyData?.short_name;
+	const matchingAgency = useMemo(() => {
+		return data.find(agency => agency._id === agencyId);
+	}, [data, agencyId]);
 
 	//
 	// C. Render components
@@ -44,9 +45,9 @@ export function AgencyTag({ agencyId, copyOnClick = true, showCode = true, showI
 	return (
 		<div className={styles.wrapper}>
 			{showId && <IdTag copyOnClick={copyOnClick} id={agencyId} />}
-			{showCode && <Tag label={agencyCode} variant="secondary" />}
-			{showName && agencyCode && <Label>{agencyName}</Label>}
-			{showShortName && agencyShortName && <Label>{agencyShortName}</Label>}
+			{showCode && <Tag label={matchingAgency?.code} variant="secondary" />}
+			{showName && matchingAgency?.name && <Label>{matchingAgency?.name}</Label>}
+			{showShortName && matchingAgency?.short_name && <Label>{matchingAgency?.short_name}</Label>}
 		</div>
 	);
 }

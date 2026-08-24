@@ -4,7 +4,7 @@ import { TimePicker as MantineTimePicker } from '@mantine/dates';
 import { IconClock, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 
-import { IconButton } from '../../buttons';
+import { IconButton } from '../../../buttons';
 
 /* * */
 
@@ -118,8 +118,8 @@ export function TimeInput(props: TimeInputProps) {
 			withSeconds={props.withSeconds}
 			leftSection={(
 				<IconButton
-					disabled={props.disabled}
 					icon={<IconClock size={16} />}
+					isDisabled={props.disabled}
 					onClick={() => setDropdownOpened(true)}
 				/>
 			)}
@@ -131,8 +131,8 @@ export function TimeInput(props: TimeInputProps) {
 				props.deletable && props.onDelete ? (
 					<IconButton
 						color="red"
-						disabled={props.disabled}
 						icon={<IconTrash size={16} />}
+						isDisabled={props.disabled}
 						onClick={props.onDelete}
 						variant="subtle"
 					/>

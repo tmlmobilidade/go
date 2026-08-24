@@ -2,7 +2,7 @@
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Collapsible, ContextFormController, DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
+import { Collapsible, StandardFormController, DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -46,7 +46,7 @@ export function AlertDetailSectionDates() {
 				<Label size="md" caps>Período de Vigência</Label>
 				<Text size="sm" weight="medium">Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).</Text>
 				<Grid columns="ab" gap="md">
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="active_period_start_date"
 						render={({ field, fieldState }) => (
@@ -59,7 +59,7 @@ export function AlertDetailSectionDates() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="active_period_end_date"
 						render={({ field, fieldState }) => (
@@ -82,7 +82,7 @@ export function AlertDetailSectionDates() {
 				<Label size="md" caps>Agendamento</Label>
 				<Text size="sm" weight="medium">É possível agendar a permanência do alerta nos canais digitais. A visibilidade do alerta é diferente do seu período de vigência.</Text>
 				<Grid columns="ab" gap="md">
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="publish_start_date"
 						render={({ field, fieldState }) => (
@@ -96,7 +96,7 @@ export function AlertDetailSectionDates() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="publish_end_date"
 						render={({ field, fieldState }) => (

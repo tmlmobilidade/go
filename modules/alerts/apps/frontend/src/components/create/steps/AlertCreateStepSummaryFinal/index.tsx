@@ -2,7 +2,7 @@
 
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ContextFormController, CoordinatesInput, Grid, Section, Textarea, TextInput, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
+import { StandardFormController, CoordinatesInput, Grid, Section, Textarea, TextInput, useStandardFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
@@ -21,8 +21,8 @@ export function AlertCreateStepSummaryFinal() {
 
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const referenceTypeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
+	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const referenceTypeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
 
 	//
 	// B. Transform data
@@ -49,7 +49,7 @@ export function AlertCreateStepSummaryFinal() {
 		<Section gap="md">
 			<Grid gap="md">
 
-				<ContextFormController
+				<StandardFormController
 					control={alertsCreateForm.control}
 					name="title"
 					render={({ field, fieldState }) => (
@@ -64,7 +64,7 @@ export function AlertCreateStepSummaryFinal() {
 					)}
 				/>
 
-				<ContextFormController
+				<StandardFormController
 					control={alertsCreateForm.control}
 					name="description"
 					render={({ field, fieldState }) => (
@@ -81,7 +81,7 @@ export function AlertCreateStepSummaryFinal() {
 					)}
 				/>
 
-				<ContextFormController
+				<StandardFormController
 					control={alertsCreateForm.control}
 					name="coordinates"
 					render={({ field }) => (
@@ -94,7 +94,7 @@ export function AlertCreateStepSummaryFinal() {
 					)}
 				/>
 
-				<ContextFormController
+				<StandardFormController
 					control={alertsCreateForm.control}
 					name="info_url"
 					render={({ field, fieldState }) => (

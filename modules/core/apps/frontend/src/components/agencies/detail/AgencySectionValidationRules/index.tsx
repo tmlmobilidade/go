@@ -3,7 +3,7 @@
 // import { useAgencyDetailContext } from '@/components/agencies/detail/AgencyDetail.context';
 // import { FileComponent } from '@/components/common/FileComponent/index';
 // import { gtfsrules, type SeverityLevel, SeverityLevelSchema } from '@tmlmobilidade/go-types-shared';
-// import { Collapsible, Divider, FileButton, Grid, Label, Section, SegmentedControl, Spacer, Surface, Table, useContextFormWatch, useToast } from '@tmlmobilidade/ui';
+// import { Collapsible, Divider, FileButton, Grid, Label, Section, SegmentedControl, Spacer, Surface, Table, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
 // import { useTranslation } from 'react-i18next';
 
 // /* * */
@@ -23,7 +23,7 @@
 // 	const agencyDetailContext = useAgencyDetailContext();
 
 // 	const availableOptions = SeverityLevelSchema.options.map(value => ({ label: value, value }));
-// 	const validationRules = useContextFormWatch({ control: agencyDetailContext.form.instance.control, name: 'validation_rules' });
+// 	const validationRules = useStandardFormWatch({ control: agencyDetailContext.form.instance.control, name: 'validation_rules' });
 
 // 	//
 // 	// B. Handle actions
