@@ -34,8 +34,8 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"zod": "3.25.76",
-		"@tmlmobilidade/go-types-shared": "*"
+		"@tmlmobilidade/go-types-shared": "*",
+		"zod": "3.25.76"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
