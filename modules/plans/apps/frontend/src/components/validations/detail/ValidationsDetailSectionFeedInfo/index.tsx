@@ -1,7 +1,7 @@
 /* * */
 
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
-import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
+import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Collapsible, FileItem, Label, Section, useToast } from '@tmlmobilidade/ui';
 

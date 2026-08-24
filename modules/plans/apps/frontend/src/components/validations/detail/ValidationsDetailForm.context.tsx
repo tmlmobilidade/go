@@ -8,9 +8,9 @@ import { fetchApiData, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useValidationsDetailData } from '../components/validations/detail/use-validations-detail-data';
-import { useValidationsDetailValidationId } from '../components/validations/detail/use-validations-detail-validation-id';
-import { useValidationsListData } from '../components/validations/list/use-validations-list-data';
+import { useValidationsListData } from '../list/use-validations-list-data';
+import { useValidationsDetailData } from './use-validations-detail-data';
+import { useValidationsDetailValidationId } from './use-validations-detail-validation-id';
 
 /* * */
 

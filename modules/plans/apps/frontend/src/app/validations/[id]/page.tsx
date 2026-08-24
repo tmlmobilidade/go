@@ -1,7 +1,7 @@
 /* * */
 
 import { ValidationsDetail } from '@/components/validations/detail/ValidationsDetail';
-import { ValidationsDetailContextProvider } from '@/contexts/ValidationsDetail.context';
+import { ValidationsDetailContextProvider } from '@/components/validations/detail/ValidationsDetailForm.context';
 
 /* * */
 
