@@ -1,11 +1,12 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/go-providers-emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/go-providers-emails';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog, validateOperationalDate } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Requests approval for a Validation by ID

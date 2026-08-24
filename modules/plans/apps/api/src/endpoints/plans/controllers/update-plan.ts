@@ -5,8 +5,12 @@ import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { CreateAttachmentDto } from '@tmlmobilidade/go-types-core';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { type CreateAttachmentDto, HashablePlanMetadata, PermissionCatalog, type Plan, type UpdatePlanDto, validateOperationalDate } from '@tmlmobilidade/types';
+import { HashablePlanMetadata, Plan } from '@tmlmobilidade/go-types-operation';
+import { UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { createHash } from 'node:crypto';
 
 /**
