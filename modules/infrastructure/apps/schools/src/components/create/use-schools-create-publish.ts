@@ -3,6 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { School } from '@tmlmobilidade/go-types-operation';
 import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';
+import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
 import { useSchoolsListData } from '../list/use-schools-list-data';
@@ -24,6 +25,7 @@ export function useSchoolCreatePublish(): UseSchoolCreatePublishReturnType {
 	// A. Setup variables
 
 	const { mutate } = useSchoolsListData();
+	const router = useRouter();
 
 	const { form, unblock } = useSchoolCreateFormContext();
 
@@ -37,8 +39,7 @@ export function useSchoolCreatePublish(): UseSchoolCreatePublishReturnType {
 			unblock();
 			mutate();
 			if (data?._id) {
-				const newUrl = keepUrlParams(PAGE_ROUTES.alerts.ALERTS_DETAIL(data._id));
-				window.location.href = newUrl;
+				router.push(keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_DETAIL(data._id)));
 			};
 		},
 	});

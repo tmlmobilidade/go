@@ -179,6 +179,7 @@ export const PAGE_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('schools', 'frontend_url')}`,
 
 		// SCHOOLS
+		SCHOOLS_CREATE: `${getModuleConfig('schools', 'frontend_url')}/create`,
 		SCHOOLS_DETAIL: (schoolId: string) => `${getModuleConfig('schools', 'frontend_url')}/${encodeURIComponent(schoolId)}`,
 		SCHOOLS_LIST: `${getModuleConfig('schools', 'frontend_url')}`,
 	},
@@ -518,6 +519,7 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('schools', 'api_url')}`,
 
 		// SCHOOLS
+		SCHOOLS_CREATE: `${getModuleConfig('schools', 'api_url')}/schools`,
 		SCHOOLS_DETAIL: (id: string) => `${getModuleConfig('schools', 'api_url')}/schools/${encodeURIComponent(id)}`,
 		SCHOOLS_DETAIL_LOCK: (id: string) => `${getModuleConfig('schools', 'api_url')}/schools/${encodeURIComponent(id)}/lock`,
 		SCHOOLS_LIST: `${getModuleConfig('schools', 'api_url')}/schools/list`,

@@ -4,7 +4,6 @@ import { SearchField } from '@tmlmobilidade/ui';
 
 import { useSchoolsListFilterSearch } from './use-schools-list-filter-search';
 
-
 /* * */
 
 export function SchoolsListFilterSearch() {

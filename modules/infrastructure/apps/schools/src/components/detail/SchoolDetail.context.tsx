@@ -3,10 +3,13 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type School, type UpdateSchoolDto, UpdateSchoolSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useContextForm, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext } from '@tmlmobilidade/ui';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useStandardForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
+
+import { useSchoolsListData } from '../list/use-schools-list-data';
 
 /* * */
 
@@ -45,13 +48,16 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 	//
 	// B. Fetch Data
 
-	const { mutate: schoolsListMutate } = useSWR<School[]>(API_ROUTES.schools.SCHOOLS_LIST);
-	const { data: schoolData, error: schoolError, isLoading: schoolLoading, isValidating: schoolValidating, mutate: schoolMutate } = useSWR<School>(API_ROUTES.schools.SCHOOLS_DETAIL(schoolId));
+	const { mutate: schoolsListMutate } = useSchoolsListData();
+	const { data: schoolResponse, error: schoolError, isLoading: schoolLoading, isValidating: schoolValidating, mutate: schoolMutate } = useSWR<ApiResponse<School>>(API_ROUTES.schools.SCHOOLS_DETAIL(schoolId), {
+		fetcher: async (url: string) => await fetchApiData<School>({ url }),
+	});
+	const schoolData = schoolResponse?.data;
 
 	//
 	// C. Setup form
 
-	const { form } = useContextForm<UpdateSchoolDto>({
+	const { form } = useStandardForm<UpdateSchoolDto, typeof UpdateSchoolSchema>({
 		apiData: schoolData,
 		schema: UpdateSchoolSchema,
 	});
@@ -63,7 +69,7 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 		fetchFn: async () => await fetchApiData<School>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.schools.SCHOOLS_DETAIL(schoolId) }),
 		onSuccess: (updatedItem) => {
 			form.reset(updatedItem.data);
-			schoolMutate(updatedItem.data);
+			schoolMutate();
 			schoolsListMutate();
 		},
 	});
@@ -80,7 +86,7 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 		fetchFn: async () => await fetchApiData<School>({ method: 'GET', url: API_ROUTES.schools.SCHOOLS_DETAIL_LOCK(schoolId) }),
 		onSuccess: (updatedItem) => {
 			form.reset(updatedItem.data);
-			schoolMutate(updatedItem.data);
+			schoolMutate();
 			schoolsListMutate();
 		},
 	});
@@ -92,9 +98,9 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 		hasPermission: meContext.actions.hasPermissionResource([
 			{
 				action: PermissionCatalog.all.schools.actions.read,
-				resource_key: 'school_ids',
+				resource_key: 'agency_ids',
 				scope: PermissionCatalog.all.schools.scope,
-				value: schoolData?._id,
+				value: schoolData?.agency_id,
 			},
 		]),
 		isDeleting: isDeleting,
@@ -108,9 +114,9 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 		hasPermission: meContext.actions.hasPermissionResource([
 			{
 				action: PermissionCatalog.all.schools.actions.update,
-				resource_key: 'school_ids',
+				resource_key: 'agency_ids',
 				scope: PermissionCatalog.all.schools.scope,
-				value: schoolData?._id,
+				value: schoolData?.agency_id,
 			},
 		]),
 		isDeleting: isDeleting,
@@ -125,9 +131,9 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 		hasPermission: meContext.actions.hasPermissionResource([
 			{
 				action: PermissionCatalog.all.schools.actions.lock,
-				resource_key: 'school_ids',
+				resource_key: 'agency_ids',
 				scope: PermissionCatalog.all.schools.scope,
-				value: schoolData?._id,
+				value: schoolData?.agency_id,
 			},
 		]),
 		isDeleting: isDeleting,
@@ -141,31 +147,15 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 		hasPermission: meContext.actions.hasPermissionResource([
 			{
 				action: PermissionCatalog.all.schools.actions.delete,
-				resource_key: 'school_ids',
+				resource_key: 'agency_ids',
 				scope: PermissionCatalog.all.schools.scope,
-				value: schoolData?._id,
+				value: schoolData?.agency_id,
 			},
 		]),
 		isDeleting: isDeleting,
 		isDirty: form.formState.isDirty,
 		isLoading: schoolLoading,
 		isLocked: schoolData?.is_locked,
-		isLocking: isLocking,
-		isValid: form.formState.isValid,
-	});
-
-	const { canDuplicate } = useFlagCanDuplicate({
-		hasPermission: meContext.actions.hasPermissionResource([
-			{
-				action: PermissionCatalog.all.schools.actions.create,
-				resource_key: 'school_ids',
-				scope: PermissionCatalog.all.schools.scope,
-				value: schoolData?._id,
-			},
-		]),
-		isDeleting: isDeleting,
-		isDirty: form.formState.isDirty,
-		isLoading: schoolLoading,
 		isLocking: isLocking,
 		isValid: form.formState.isValid,
 	});
@@ -185,7 +175,6 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 		},
 		flags: {
 			canDelete,
-			canDuplicate,
 			canLock,
 			canSave,
 			error: schoolError,
@@ -200,7 +189,7 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 		form: {
 			instance: form,
 		},
-	}), [canDelete, canDuplicate, canLock, canSave, form, handleDelete, handleLock, handleSave, isDeleting, isLocking, isReadOnly, isSaving, schoolData, schoolError, schoolId, schoolLoading, schoolValidating]);
+	}), [canDelete, canLock, canSave, form, handleDelete, handleLock, handleSave, isDeleting, isLocking, isReadOnly, isSaving, schoolData, schoolError, schoolId, schoolLoading, schoolValidating]);
 
 	//
 	// F. Render components
