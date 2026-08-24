@@ -29,49 +29,22 @@ export function SidebarHeaderLogo() {
 		);
 	}
 
-	if (!data) {
-		return (
-			<div className={styles.appLogo}>
-				<WhenMode
-					dark={(
-						<Image
-							key={data?.logo_dark}
-							alt="Logo"
-							src={`${process.env.NEXT_PUBLIC_BASE_PATH}/assets/layout/sidebar/go-sidebar-fallback-dark.png`}
-							width={70}
-						/>
-					)}
-					light={(
-						<Image
-							key={data?.logo_light}
-							alt="Logo"
-							src={`${process.env.NEXT_PUBLIC_BASE_PATH}/assets/layout/sidebar/go-sidebar-fallback-light.png`}
-							width={70}
-						/>
-					)}
-				/>
-			</div>
-		);
-	}
-
 	return (
 		<div className={styles.appLogo}>
 			<WhenMode
 				dark={(
 					<Image
-						key={data?.logo_dark}
 						alt="Logo"
 						fallbackSrc={`${process.env.NEXT_PUBLIC_BASE_PATH}/assets/layout/sidebar/go-sidebar-fallback-dark.png`}
-						src={data?.logo_dark}
+						src={data}
 						width={70}
 					/>
 				)}
 				light={(
 					<Image
-						key={data?.logo_light}
 						alt="Logo"
 						fallbackSrc={`${process.env.NEXT_PUBLIC_BASE_PATH}/assets/layout/sidebar/go-sidebar-fallback-light.png`}
-						src={data?.logo_light}
+						src={data}
 						width={70}
 					/>
 				)}

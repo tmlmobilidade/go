@@ -6,7 +6,7 @@ import { z } from 'zod';
 /* * */
 
 export const SidebarLogoPlatformRequestSchema = z.object({
-	theme: ThemeModeSchema,
+	theme_mode: ThemeModeSchema,
 });
 
 /**

@@ -3,8 +3,8 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type AgenciesPlatformRequest, AgenciesPlatformRequestSchema, type AgenciesPlatformResponse, AgenciesPlatformResponseSchema } from '@tmlmobilidade/go-types-core';
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
+import { type AgenciesPlatformRequest, AgenciesPlatformRequestSchema, type AgenciesPlatformResponse, AgenciesPlatformResponseSchema } from '@tmlmobilidade/go-types-platform';
 
 /**
  * Get agencies platform data.

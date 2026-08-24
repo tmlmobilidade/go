@@ -268,6 +268,7 @@ export const API_ROUTES = Object.freeze({
 		PLATFORM_DOWNLOADS: `${getModuleConfig('core', 'api_url')}/platform/downloads`,
 		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
 		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
+		PLATFORM_SIDEBAR_LOGO: `${getModuleConfig('core', 'api_url')}/platform/sidebar-logo`,
 
 		// ROLES
 		ROLES_CREATE: `${getModuleConfig('core', 'api_url')}/roles/create`,
