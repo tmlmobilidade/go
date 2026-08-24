@@ -5,7 +5,8 @@ import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobil
 import { useMemo } from 'react';
 
 /**
- * Manage the validity-status filter for the plans list.
+ * Hook to manage the validity-status filter for the plans list.
+ * @returns The filter state management object.
  */
 export function usePlansListFilterValidityStatus(): UseFilterStateListReturnType<ValidityStatus> {
 	//
