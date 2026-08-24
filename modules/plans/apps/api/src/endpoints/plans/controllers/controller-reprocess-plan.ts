@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Plan } from '@tmlmobilidade/types';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Reprocesses a plan by ID.

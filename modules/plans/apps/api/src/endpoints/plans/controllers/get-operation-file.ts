@@ -4,7 +4,8 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Attachment, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Retrieves the operation file associated with a plan by ID

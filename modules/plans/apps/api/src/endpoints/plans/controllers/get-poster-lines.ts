@@ -1,9 +1,9 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Line } from '@tmlmobilidade/types';
+import { type Line } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 

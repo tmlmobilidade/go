@@ -1,11 +1,12 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/go-providers-emails';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { PermissionCatalog, validateOperationalDate } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Sends a notification to the APEX contact emails.
