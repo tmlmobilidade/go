@@ -4,6 +4,7 @@ import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type PlanListFilters } from '@tmlmobilidade/go-plans-pckg-types';
 import { Plan } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
@@ -12,10 +13,20 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param request Fastify request
  * @param reply Fastify reply
  */
-export async function getAllPlans(request: FastifyRequest, reply: FastifyReply<Plan[]>) {
+export async function getAllPlans(request: FastifyRequest<{ Body: PlanListFilters }>, reply: FastifyReply<Plan[]>) {
 	//
 
 	//
+	// Apply permission filters to the request body
+
+	request.body.agency_ids = PermissionCatalog.filterPermissionResourceValues<string>({
+		action: PermissionCatalog.all.plans.actions.read,
+		permissions: request.permissions,
+		resourceKey: 'agency_ids',
+		scope: PermissionCatalog.all.plans.scope,
+		values: request.body.agency_ids,
+	});
+
 	// Get the resource permissions for
 	// GTFS Validations for the current user.
 
