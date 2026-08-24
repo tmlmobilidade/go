@@ -60,7 +60,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		setIsLoading(true);
 		setIsError(null);
 
-		const response = await fetchData<Plan>(API_ROUTES.plans.PLANS_LIST, 'POST', { validation_id: validationId });
+		const response = await fetchData<Plan>(API_ROUTES.plans.PLANS_CREATE, 'POST', { validation_id: validationId });
 
 		if (response.error) {
 			useToast.error({ message: response.error, title: 'Erro ao aprovar plano' });

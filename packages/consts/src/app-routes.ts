@@ -481,6 +481,7 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('plans', 'api_url')}`,
 
 		// PLANS
+		PLANS_CREATE: `${getModuleConfig('plans', 'api_url')}/plans/create`,
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}`,
 		PLANS_DETAIL_APEX_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file`,
 		PLANS_DETAIL_APEX_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file/download`,
@@ -491,7 +492,7 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file`,
 		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file/download`,
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
-		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans`,
+		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans/list`,
 
 		// VALIDATIONS
 		VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}`,
