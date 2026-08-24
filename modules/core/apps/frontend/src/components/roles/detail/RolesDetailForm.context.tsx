@@ -53,9 +53,9 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_UPDATE(roleId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			rolesDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			rolesDetailMutate(response);
 			rolesListMutate();
 		},
 	});
@@ -70,9 +70,9 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Role>({ method: 'PUT', url: API_ROUTES.core.ROLES_DETAIL(roleId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			rolesDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			rolesDetailMutate(response);
 			rolesListMutate();
 		},
 	});

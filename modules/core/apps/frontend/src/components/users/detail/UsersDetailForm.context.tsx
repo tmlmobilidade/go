@@ -53,9 +53,9 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<User>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.USERS_UPDATE(userId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			usersDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			usersDetailMutate(response);
 			usersListMutate();
 		},
 	});
@@ -70,9 +70,9 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<User>({ method: 'PUT', url: API_ROUTES.core.USERS_DETAIL(userId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			usersDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			usersDetailMutate(response);
 			usersListMutate();
 		},
 	});

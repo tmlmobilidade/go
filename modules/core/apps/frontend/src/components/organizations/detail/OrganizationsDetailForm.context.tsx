@@ -74,9 +74,9 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE(organizationId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			organizationsDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			organizationsDetailMutate(response);
 			organizationsListMutate();
 		},
 	});
@@ -91,9 +91,9 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Organization>({ method: 'PUT', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_LOCK(organizationId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			organizationsDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			organizationsDetailMutate(response);
 			organizationsListMutate();
 		},
 	});

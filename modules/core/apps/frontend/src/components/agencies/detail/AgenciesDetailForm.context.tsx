@@ -50,9 +50,9 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Agency>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			agenciesDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			agenciesDetailMutate(response);
 			agenciesListMutate();
 		},
 	});

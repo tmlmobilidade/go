@@ -18,6 +18,11 @@
 	background-color: var(--color-status-success-contrast);
 }
 
+.root[data-disabled] {
+	pointer-events: none;
+	opacity: 0.5;
+}
+
 .inner {
 	width: 100%;
 }
