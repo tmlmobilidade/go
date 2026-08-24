@@ -49,7 +49,7 @@ export function SchoolCreateFormContextProvider({ children }: PropsWithChildren)
 	// C. Return state
 
 	return (
-		<SchoolCreateFormContext.Provider value={{ form, unblock }}>
+		<SchoolCreateFormContext.Provider value={{ form, isDirty: form.formState.isDirty, unblock }}>
 			{children}
 		</SchoolCreateFormContext.Provider>
 	);
