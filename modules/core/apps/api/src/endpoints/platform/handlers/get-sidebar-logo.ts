@@ -10,7 +10,7 @@ import { type SidebarLogoPlatformRequest, SidebarLogoPlatformRequestSchema, type
  * @param request The request object.
  * @param reply The reply object.
 */
-export async function sidebarLogoHandler(request: FastifyRequest<{ Body: SidebarLogoPlatformRequest }>, reply: FastifyReply<SidebarLogoPlatformResponse>) {
+export async function getSidebarLogoHandler(request: FastifyRequest<{ Body: SidebarLogoPlatformRequest }>, reply: FastifyReply<SidebarLogoPlatformResponse>) {
 	//
 
 	//
@@ -38,7 +38,7 @@ export async function sidebarLogoHandler(request: FastifyRequest<{ Body: Sidebar
 	//
 	// Validate the request parameters and get the corresponding file URL
 
-	const validatedParams = SidebarLogoPlatformRequestSchema.parse(request.params);
+	const validatedParams = SidebarLogoPlatformRequestSchema.parse(request.body);
 
 	const fileId = validatedParams.theme_mode === 'light'
 		? foundOrganization.logo_light

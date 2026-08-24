@@ -6,8 +6,8 @@ import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-sh
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useLayoutContext } from '../../../contexts';
 import { fetchApiData } from '../../../fetch';
+import { useCurrentThemeMode } from '../../../layout';
 
 /* * */
 
@@ -27,13 +27,14 @@ export function useSidebarHeaderLogo(): UseSidebarHeaderLogoReturnType {
 	//
 	// A. Setup variables
 
-	const layoutContext = useLayoutContext();
+	const currentThemeMode = useCurrentThemeMode();
 
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<SidebarLogoPlatformResponse>>([API_ROUTES.core.PLATFORM_SIDEBAR_LOGO, layoutContext.data.active_theme], {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<SidebarLogoPlatformResponse>>([API_ROUTES.core.PLATFORM_SIDEBAR_LOGO, currentThemeMode], {
 		fetcher: async ([url, themeMode]) => await fetchApiData<SidebarLogoPlatformResponse>({ body: { theme_mode: themeMode }, method: 'POST', url }),
+		refreshInterval: 10_000, // 10 seconds
 	});
 
 	//
