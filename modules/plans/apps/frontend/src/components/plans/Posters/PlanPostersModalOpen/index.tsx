@@ -1,4 +1,3 @@
-import { PlansListContextProvider } from '@/components/plans/list/PlansList.context';
 import { PlanPostersExportModal } from '@/components/plans/Posters/PlanPostersModal';
 import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/Posters/PlanPostersModal/constants';
 import { PlansExportPdfsModalContextProvider } from '@/contexts/PlansExportPdfs.context';
@@ -11,11 +10,9 @@ export const openPlanPostersExportModal = () => {
 		children: (
 			<MeContextProvider>
 				<ExportsContextProvider>
-					<PlansListContextProvider>
-						<PlansExportPdfsModalContextProvider>
-							<PlanPostersExportModal />
-						</PlansExportPdfsModalContextProvider>
-					</PlansListContextProvider>
+					<PlansExportPdfsModalContextProvider>
+						<PlanPostersExportModal />
+					</PlansExportPdfsModalContextProvider>
 				</ExportsContextProvider>
 			</MeContextProvider>
 		),

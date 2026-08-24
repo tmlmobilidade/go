@@ -1,10 +1,12 @@
 /* * */
 
 import { openPlanExportModal } from '@/components/plans/exporter/PlanExportModalOpen';
-import { usePlansListContext } from '@/components/plans/list/PlansList.context';
+import { PlansListFilterSearch } from '@/components/plans/list/PlansListFilterSearch';
 import { openPlanPostersExportModal } from '@/components/plans/Posters/PlanPostersModalOpen';
 import { IconDots, IconFileDownload, IconFileTypePdf } from '@tabler/icons-react';
-import { Label, Menu, MenuItem, MenuLabel, SearchField, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { Label, LoadingActivity, Menu, MenuItem, MenuLabel, Spacer, Toolbar } from '@tmlmobilidade/ui';
+
+import { usePlansListData } from '../use-plans-list-data';
 
 /* * */
 
@@ -14,7 +16,7 @@ export function PlansListHeader() {
 	//
 	// A. Setup variables
 
-	const plansListContext = usePlansListContext();
+	const { isLoading, isValidating, timestamp } = usePlansListData();
 
 	//
 	// B. Render components
@@ -22,8 +24,9 @@ export function PlansListHeader() {
 	return (
 		<Toolbar>
 			<Label size="lg" caps singleLine>Planos</Label>
+			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
-			<SearchField onChange={plansListContext.filters.search.set} value={plansListContext.filters.search.value} />
+			<PlansListFilterSearch />
 			<Menu icon={IconDots} label="Mais opções">
 				<MenuLabel>Ações</MenuLabel>
 				<MenuItem

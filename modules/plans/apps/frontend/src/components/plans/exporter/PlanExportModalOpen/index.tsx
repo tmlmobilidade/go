@@ -1,7 +1,6 @@
 import { PlanExportModalContextProvider } from '@/contexts/PlanExport.context';
 import { ExportsContextProvider, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
-import { PlansListContextProvider } from '../../list/PlansList.context';
 import { PlanExportModal } from '../PlanExportModal';
 import { PLAN_EXPORT_MODAL_ID } from '../PlanExportModal/constants';
 
@@ -14,11 +13,9 @@ export const openPlanExportModal = () => {
 		children: (
 			<MeContextProvider>
 				<ExportsContextProvider>
-					<PlansListContextProvider>
-						<PlanExportModalContextProvider>
-							<PlanExportModal />
-						</PlanExportModalContextProvider>
-					</PlansListContextProvider>
+					<PlanExportModalContextProvider>
+						<PlanExportModal />
+					</PlanExportModalContextProvider>
 				</ExportsContextProvider>
 			</MeContextProvider>
 		),

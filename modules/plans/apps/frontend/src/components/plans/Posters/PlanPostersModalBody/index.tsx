@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlansListContext } from '@/components/plans/list/PlansList.context';
+import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
@@ -25,9 +25,9 @@ export function PlanPostersExportModalBody() {
 	// A. Setup variables
 
 	const context = usePlansExportPdfsContext();
-	const plansListContext = usePlansListContext();
+	const plansData = usePlansListData();
 
-	const plansOptions = useMemo(() => plansListContext.data.raw
+	const plansOptions = useMemo(() => plansData.raw
 		.filter(plan => !!plan.operation_file_id && plan.agency_id === context.data.agencyId)
 		.map((plan) => {
 			const startDate = Dates.fromOperationalDate(plan.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toFormat('dd-MM-yyyy');
@@ -37,7 +37,7 @@ export function PlanPostersExportModalBody() {
 				label: `#${plan._id} · ${startDate} - ${endDate}`,
 				value: plan._id,
 			};
-		}), [context.data.agencyId, plansListContext.data.raw]);
+		}), [context.data.agencyId, plansData.raw]);
 
 	const linesOptions = useMemo(() => context.data.lines
 		.filter(line => line.agency_id === context.data.agencyId)

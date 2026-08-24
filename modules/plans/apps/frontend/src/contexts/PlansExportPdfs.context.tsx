@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlansListContext } from '@/components/plans/list/PlansList.context';
+import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
 import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/Posters/PlanPostersModal/constants';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateFileExportDto, type PlanPostersExportProperties } from '@tmlmobilidade/go-types-downloads';
@@ -57,7 +57,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	//
 	// A. Setup variables
 
-	const plansListContext = usePlansListContext();
+	const plansData = usePlansListData();
 	const exports = useExportsContext();
 	const { data: linesData } = useSWR<Line[], Error>(API_ROUTES.plans.PLANS_POSTER_LINES);
 	const [agencyId, setAgencyId] = useState<null | string>(null);
@@ -95,10 +95,10 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	}, []);
 
 	const selectPlanId = useCallback((value: null | string) => {
-		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === value && plan.agency_id === agencyId && !!plan.operation_file_id);
+		const selectedPlan = plansData.raw.find(plan => plan._id === value && plan.agency_id === agencyId && !!plan.operation_file_id);
 
 		setPlanId(selectedPlan?._id ?? null);
-	}, [agencyId, plansListContext.data.raw]);
+	}, [agencyId, plansData.raw]);
 
 	useEffect(() => {
 		const selectedAgencyIsAvailable = agencyOptions.some(option => option.value === agencyId);
@@ -115,7 +115,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 		if (!agencyId || !canvasProfile || !planId) return;
 		if (linesMode !== 'all' && !lineIds.length) return;
 
-		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === planId && plan.agency_id === agencyId);
+		const selectedPlan = plansData.raw.find(plan => plan._id === planId && plan.agency_id === agencyId);
 		if (!selectedPlan?.operation_file_id) return;
 
 		const createFileExportDto: CreateFileExportDto<PlanPostersExportProperties> = {
@@ -144,7 +144,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 		} finally {
 			setLoading(false);
 		}
-	}, [agencyId, canvasProfile, exports.actions, lineIds, linesMode, loading, planId, plansListContext.data.raw]);
+	}, [agencyId, canvasProfile, exports.actions, lineIds, linesMode, loading, planId, plansData.raw]);
 
 	//
 	// D. Define context value

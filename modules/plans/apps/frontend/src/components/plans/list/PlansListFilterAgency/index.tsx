@@ -1,7 +1,8 @@
 /* * */
 
-import { usePlansListContext } from '@/components/plans/list/PlansList.context';
 import { ListFilter } from '@tmlmobilidade/ui';
+
+import { usePlansListFilterAgency } from './use-plans-list-filter-agency';
 
 /* * */
 
@@ -11,17 +12,17 @@ export function PlansListFilterAgency() {
 	//
 	// A. Setup variables
 
-	const plansListContext = usePlansListContext();
+	const filterAgency = usePlansListFilterAgency();
 
 	//
 	// B. Render components
 
 	return (
 		<ListFilter
-			active={plansListContext.filters.agency.isActive}
+			active={filterAgency.isActive}
 			label="Operador"
-			onChange={plansListContext.filters.agency.set}
-			options={plansListContext.filters.agency.options}
+			onChange={filterAgency.set}
+			options={filterAgency.options}
 			isMultiple
 			withToggleAll
 		/>

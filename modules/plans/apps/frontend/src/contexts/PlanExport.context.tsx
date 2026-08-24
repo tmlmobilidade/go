@@ -1,6 +1,7 @@
 'use client';
 
-import { usePlansListContext } from '@/components/plans/list/PlansList.context';
+import { usePlansListFilterAgency } from '@/components/plans/list/PlansListFilterAgency/use-plans-list-filter-agency';
+import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
 import { type CreateFileExportDto, type PlanExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -45,7 +46,8 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// A. Setup variables
 
-	const plansListContext = usePlansListContext();
+	const plansData = usePlansListData();
+	const filterAgency = usePlansListFilterAgency();
 	const exports = useExportsContext();
 	const [agencyId, setAgencyId] = useState<null | string>(null);
 	const [planId, setPlanId] = useState<null | string>(null);
@@ -65,13 +67,13 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 	}, []);
 
 	const selectPlanId = useCallback((value: null | string) => {
-		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === value && plan.agency_id === agencyId);
+		const selectedPlan = plansData.raw.find(plan => plan._id === value && plan.agency_id === agencyId);
 
 		setPlanId(selectedPlan?._id ?? null);
-	}, [agencyId, plansListContext.data.raw]);
+	}, [agencyId, plansData.raw]);
 
 	useEffect(() => {
-		const agencyOptions = plansListContext.filters.agency.options;
+		const agencyOptions = filterAgency.options;
 		const selectedAgencyIsAvailable = agencyOptions.some(option => option.value === agencyId);
 
 		if (agencyOptions.length === 1 && agencyId !== agencyOptions[0].value) {
@@ -79,14 +81,14 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 		} else if (agencyOptions.length > 1 && agencyId && !selectedAgencyIsAvailable) {
 			selectAgencyId(null);
 		}
-	}, [agencyId, plansListContext.filters.agency.options, selectAgencyId]);
+	}, [agencyId, filterAgency.options, selectAgencyId]);
 
 	const exportPlan = useCallback(async () => {
 		if (loading) return;
 
 		if (!agencyId || !planId) return;
 
-		const selectedPlan = plansListContext.data.raw.find(plan => plan._id === planId && plan.agency_id === agencyId);
+		const selectedPlan = plansData.raw.find(plan => plan._id === planId && plan.agency_id === agencyId);
 		if (!selectedPlan) return;
 
 		const createFileExportDto: CreateFileExportDto<PlanExportProperties> = {
@@ -112,7 +114,7 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 		} finally {
 			setLoading(false);
 		}
-	}, [agencyId, exports.actions, loading, planId, plansListContext.data.raw]);
+	}, [agencyId, exports.actions, loading, planId, plansData.raw]);
 
 	//
 	// D. Define context value
