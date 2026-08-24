@@ -59,20 +59,23 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 	const sqlGtfs = await importGtfsStrictV29ExtToDatabase(importConfig);
 
 	if (options?.lines_mode !== 'all' && options?.line_codes?.length) {
-		const placeholders = options.line_codes.map(() => '?').join(', ');
-		const matchingRoutes = sqlGtfs.routes.all(`WHERE CAST(line_id AS TEXT) IN (${placeholders})`, options.line_codes);
+		const lineIdMatchExpression = options.line_codes
+			.map(() => '(CAST(line_id AS TEXT) = ? OR CAST(line_id AS TEXT) GLOB ?)')
+			.join(' OR ');
+		const lineIdMatchParameters = options.line_codes.flatMap(lineCode => [lineCode, `${lineCode}_*`]);
+		const matchingRoutes = sqlGtfs.routes.all(`WHERE ${lineIdMatchExpression}`, lineIdMatchParameters);
 
 		if (!matchingRoutes.length) {
 			throw new Error(`None of the selected lines exist in Plan ${planData._id}.`);
 		}
-		const selectedLineCodes = new Set(matchingRoutes.map(route => String(route.line_id)));
-		const missingLineCodes = options.line_codes.filter(lineCode => !selectedLineCodes.has(lineCode));
+		const matchingRouteLineIds = matchingRoutes.map(route => String(route.line_id));
+		const missingLineCodes = options.line_codes.filter(lineCode => !matchingRouteLineIds.some(routeLineId => routeLineId === lineCode || routeLineId.startsWith(`${lineCode}_`)));
 		if (missingLineCodes.length) {
 			throw new Error(`Lines ${missingLineCodes.join(', ')} do not exist in Plan ${planData._id}.`);
 		}
 
 		const selectedRoutes = options.lines_mode === 'exclude'
-			? sqlGtfs.routes.all(`WHERE CAST(line_id AS TEXT) NOT IN (${placeholders})`, options.line_codes)
+			? sqlGtfs.routes.all(`WHERE NOT (${lineIdMatchExpression})`, lineIdMatchParameters)
 			: matchingRoutes;
 		if (!selectedRoutes.length) {
 			throw new Error(`The selected line filter removes every route from Plan ${planData._id}.`);
