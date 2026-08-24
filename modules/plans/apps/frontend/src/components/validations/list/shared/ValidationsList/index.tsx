@@ -3,8 +3,8 @@
 import { ValidationsListFiltersBar } from '@/components/validations/list/filters/ValidationsListFiltersBar';
 import { ValidationsListCellDate } from '@/components/validations/list/shared/ValidationsListCellCreatedAt';
 import { ValidationsListHeader } from '@/components/validations/list/shared/ValidationsListHeader';
-import { type ValidationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type ValidationListItem } from '@tmlmobilidade/go-plans-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay, ValidityStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
@@ -25,7 +25,7 @@ export function ValidationsList() {
 
 	const validationsData = useValidationsListData();
 
-	const columns: DataTableColumn<ValidationNormalized>[] = [
+	const columns: DataTableColumn<ValidationListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -73,7 +73,7 @@ export function ValidationsList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: ValidationNormalized) => {
+	const handleRowClick = (item: ValidationListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.plans.VALIDATIONS_DETAIL(item._id)));
 	};
 
