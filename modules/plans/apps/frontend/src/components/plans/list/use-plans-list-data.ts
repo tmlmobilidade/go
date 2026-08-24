@@ -10,9 +10,9 @@ import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { usePlansListFilterAgency } from './PlansListFilterAgency/use-plans-list-filter-agency';
-import { usePlansListFilterSearch } from './PlansListFilterSearch/use-plans-list-filter-search';
-import { usePlansListFilterValidityStatus } from './PlansListFilterValidityStatus/use-plans-list-filter-validity-status';
+import { usePlansListFilterAgency } from './filters/PlansListFilterAgency/use-plans-list-filter-agency';
+import { usePlansListFilterSearch } from './filters/PlansListFilterSearch/use-plans-list-filter-search';
+import { usePlansListFilterValidityStatus } from './filters/PlansListFilterValidityStatus/use-plans-list-filter-validity-status';
 
 /* * */
 

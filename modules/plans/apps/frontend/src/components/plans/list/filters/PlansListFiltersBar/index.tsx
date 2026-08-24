@@ -1,7 +1,7 @@
 /* * */
 
-import { PlansListFilterAgency } from '@/components/plans/list/PlansListFilterAgency';
-import { PlansListFilterValidityStatus } from '@/components/plans/list/PlansListFilterValidityStatus';
+import { PlansListFilterAgency } from '@/components/plans/list/filters/PlansListFilterAgency';
+import { PlansListFilterValidityStatus } from '@/components/plans/list/filters/PlansListFilterValidityStatus';
 import { FiltersBar } from '@tmlmobilidade/ui';
 
 /* * */

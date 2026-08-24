@@ -1,6 +1,6 @@
 /* * */
 
-import { PlansListFilterSearch } from '@/components/plans/list/PlansListFilterSearch';
+import { PlansListFilterSearch } from '@/components/plans/list/filters/PlansListFilterSearch';
 import { Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
 /* * */

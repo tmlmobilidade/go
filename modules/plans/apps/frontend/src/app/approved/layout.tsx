@@ -1,6 +1,6 @@
 /* * */
 
-import { PlansList } from '@/components/plans/list/PlansList';
+import { PlansList } from '@/components/plans/list/shared/PlansList';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 

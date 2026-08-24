@@ -1,8 +1,8 @@
 'use client';
 
-import { PlansListCellFeedDates } from '@/components/plans/list/PlansListCellFeedDates';
-import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar';
-import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
+import { PlansListCellFeedDates } from '@/components/plans/list/filters/PlansListCellFeedDates';
+import { PlansListFiltersBar } from '@/components/plans/list/filters/PlansListFiltersBar';
+import { PlansListHeader } from '@/components/plans/list/shared/PlansListHeader';
 import { type PlanNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
@@ -11,7 +11,7 @@ import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, 
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
-import { usePlansListData } from '../use-plans-list-data';
+import { usePlansListData } from '../../use-plans-list-data';
 
 /* * */
 
