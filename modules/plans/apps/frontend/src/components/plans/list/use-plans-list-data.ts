@@ -35,7 +35,9 @@ export function usePlansListData(): UsePlansListDataReturnType {
 	// A. Setup variables
 
 	const filterAgency = usePlansListFilterAgency();
+
 	const filterSearch = usePlansListFilterSearch();
+
 	const filterValidityStatus = usePlansListFilterValidityStatus();
 
 	//
