@@ -11,6 +11,7 @@ import { createContext, type PropsWithChildren, useContext, useMemo } from 'reac
 import { useOrganizationsListData } from '../list/use-organizations-list-data';
 import { useOrganizationsDetailData } from './use-organizations-detail-data';
 import { useOrganizationsDetailOrganizationId } from './use-organizations-detail-organization-id';
+import { useOrganizationsImageDetailData } from './use-organizations-image-detail-data';
 
 /* * */
 
@@ -57,10 +58,13 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 
 	const { data: organizationData, isLoading: organizationDataLoading, mutate: organizationsDetailMutate } = useOrganizationsDetailData();
 
+	const { mutate: organizationsImageDetailLightMutate } = useOrganizationsImageDetailData('light');
+	const { mutate: organizationsImageDetailDarkMutate } = useOrganizationsImageDetailData('dark');
+
 	//
 	// B. Setup form
 
-	const { form, unblock } = useStandardForm<UpdateOrganizationDto, typeof UpdateOrganizationSchema>({
+	const { form, isDirty, unblock } = useStandardForm<UpdateOrganizationDto, typeof UpdateOrganizationSchema>({
 		apiData: organizationData,
 		schema: UpdateOrganizationSchema,
 	});
@@ -96,12 +100,16 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 
 	const { action: handleDeleteLightLogo, isLoading: isDeletingLightLogo } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_DELETE_IMAGE_VAR(organizationId, 'light') }),
-		onSuccess: () => null,
+		onSuccess: () => {
+			organizationsImageDetailLightMutate();
+		},
 	});
 
 	const { action: handleDeleteDarkLogo, isLoading: isDeletingDarkLogo } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_DELETE_IMAGE_VAR(organizationId, 'dark') }),
-		onSuccess: () => null,
+		onSuccess: () => {
+			organizationsImageDetailDarkMutate();
+		},
 	});
 
 	const { action: handleUpdateLightLogo, isLoading: isUpdatingLightLogo } = useHandleUpdate({
@@ -110,7 +118,9 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 			formData.append('light', imageFile);
 			return await fetchApiMultipart<Organization>(API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE_IMAGE(organizationId), formData);
 		},
-		onSuccess: () => null,
+		onSuccess: () => {
+			organizationsImageDetailLightMutate();
+		},
 	});
 
 	const { action: handleUpdateDarkLogo, isLoading: isUpdatingDarkLogo } = useHandleUpdate({
@@ -119,7 +129,9 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 			formData.append('dark', imageFile);
 			return await fetchApiMultipart<Organization>(API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE_IMAGE(organizationId), formData);
 		},
-		onSuccess: () => null,
+		onSuccess: () => {
+			organizationsImageDetailDarkMutate();
+		},
 	});
 
 	//
@@ -182,6 +194,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 			updateEnabled,
 		},
 		form,
+		isDirty,
 		status: {
 			isDeleting,
 			isDeletingDarkLogo,
@@ -194,7 +207,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 			isUpdatingLightLogo,
 		},
 		unblock,
-	}), [deleteEnabled, editEnabled, form, handleDelete, handleDeleteDarkLogo, handleDeleteLightLogo, handleLock, handleUpdate, handleUpdateDarkLogo, handleUpdateLightLogo, isDeleting, isDeletingDarkLogo, isDeletingLightLogo, isLocking, isUpdating, isUpdatingDarkLogo, isUpdatingLightLogo, lockEnabled, organizationData?.is_locked, organizationDataLoading, unblock, updateEnabled]);
+	}), [deleteEnabled, editEnabled, form, handleDelete, handleDeleteDarkLogo, handleDeleteLightLogo, handleLock, handleUpdate, handleUpdateDarkLogo, handleUpdateLightLogo, isDeleting, isDeletingDarkLogo, isDeletingLightLogo, isDirty, isLocking, isUpdating, isUpdatingDarkLogo, isUpdatingLightLogo, lockEnabled, organizationData?.is_locked, organizationDataLoading, unblock, updateEnabled]);
 
 	return (
 		<OrganizationsDetailFormContext.Provider value={stateValue}>

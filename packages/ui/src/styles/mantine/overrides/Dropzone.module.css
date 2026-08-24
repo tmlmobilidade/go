@@ -5,6 +5,7 @@
 	justify-content: center;
 	width: 100%;
 	height: 100%;
+	padding: 0;
 	border: none;
 	border-radius: 0;
 }
@@ -15,4 +16,8 @@
 
 .root[data-accept] {
 	background-color: var(--color-status-success-contrast);
+}
+
+.inner {
+	width: 100%;
 }
