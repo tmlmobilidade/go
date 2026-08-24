@@ -2,15 +2,20 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Attachment, User } from '@tmlmobilidade/go-types-core';
+import { type Attachment, type User } from '@tmlmobilidade/go-types-core';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type UpdatePlanDto, UpdatePlanSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type DetailContextStateTemplate, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData, uploadFile } from '@tmlmobilidade/utils';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { type DetailContextStateTemplate, fetchApiData, keepUrlParams, useFlagCanDelete, useFlagCanLock, useFlagCanSave, useFlagCustom, useFlagReadOnly, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
+
+import { usePlansListData } from '../list/use-plans-list-data';
+import { usePlansDetailData } from './use-plans-detail-data';
+import { usePlansDetailPlanId } from './use-plans-detail-plan-id';
 
 /* * */
 
@@ -47,25 +52,46 @@ export function usePlanDetailContext() {
 
 /* * */
 
-export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildren<{ planId: string }>) => {
+export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
+
 	const meContext = useMeContext();
 
+	const { planId } = usePlansDetailPlanId();
+
 	const [apexFileUpload, setApexFileUpload] = useState<File | null>(null);
+
+	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = usePlansDetailData();
 
 	//
 	// B. Fetch data
 
-	const { mutate: plansListMutate } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
-	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
-	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<Attachment>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
-	const { data: apexFileData, mutate: apexFileMutate } = useSWR<Attachment>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId));
-	const { data: userData } = useSWR<User>(planId && API_ROUTES.core.USERS_DETAIL(planData?.created_by));
+	const { mutate: plansListMutate } = usePlansListData();
+
+	const { data: operationFileResponse, error: operationFileSwrError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<ApiResponse<Attachment>>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId), {
+		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
+	});
+
+	const { data: apexFileResponse, mutate: apexFileMutate } = useSWR<ApiResponse<Attachment>>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId), {
+		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
+	});
+
+	const { data: userResponse } = useSWR<ApiResponse<User>>(planData?.created_by ? API_ROUTES.core.USERS_DETAIL(planData.created_by) : null, {
+		fetcher: async (url: string) => await fetchApiData<User>({ url }),
+	});
+
+	const operationFileData = operationFileResponse?.data ?? null;
+
+	const operationFileError = operationFileResponse?.error ?? (operationFileSwrError instanceof Error ? operationFileSwrError.message : null);
+
+	const apexFileData = apexFileResponse?.data ?? null;
+
+	const userData = userResponse?.data ?? null;
 
 	//
 	// C. Setup form
@@ -78,12 +104,12 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
 		fetchFn: async () => {
 			if (apexFileUpload) await uploadFile(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId), apexFileUpload);
-			return await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'PUT', form.getValues());
+			return await fetchApiData<Plan>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.plans.PLANS_DETAIL(planId) });
 		},
-		onSuccess: (updatedItem) => {
+		onSuccess: () => {
 			setApexFileUpload(null);
 			form.resetDirty();
-			planMutate(updatedItem);
+			planMutate();
 			operationFileMutate();
 			apexFileMutate();
 			plansListMutate();
@@ -91,7 +117,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), 'DELETE'),
+		fetchFn: async () => await fetchApiData<Plan>({ method: 'DELETE', url: API_ROUTES.plans.PLANS_DETAIL(planId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			plansListMutate();
@@ -100,30 +126,30 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL_LOCK(planId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Plan>({ url: API_ROUTES.plans.PLANS_DETAIL_LOCK(planId) }),
+		onSuccess: () => {
 			form.resetDirty();
-			planMutate(updatedItem);
+			planMutate();
 			operationFileMutate();
 			plansListMutate();
 		},
 	});
 
 	const { action: handleControllerReprocessPlan, isLoading: isReprocessing } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Plan>(API_ROUTES.plans.PLANS_DETAIL_CONTROLLER_REPROCESS(planId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Plan>({ url: API_ROUTES.plans.PLANS_DETAIL_CONTROLLER_REPROCESS(planId) }),
+		onSuccess: () => {
 			form.resetDirty();
-			planMutate(updatedItem);
+			planMutate();
 			operationFileMutate();
 			plansListMutate();
 		},
 	});
 
 	const { action: handleDeleteApexFile, isLoading: isDeletingApexFile } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Attachment>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId), 'DELETE'),
+		fetchFn: async () => await fetchApiData<Attachment>({ method: 'DELETE', url: API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId) }),
 		onSuccess: () => {
 			setApexFileUpload(null);
-			apexFileMutate(null);
+			apexFileMutate();
 			planMutate();
 		},
 	});
@@ -231,7 +257,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 			canDelete,
 			canLock,
 			canSave,
-			error: planError || operationFileError,
+			error: planError || operationFileError ? new Error(planError || operationFileError || 'Failed to load plan') : undefined,
 			isDeleting,
 			isLoading: planLoading || operationFileLoading,
 			isLocking,

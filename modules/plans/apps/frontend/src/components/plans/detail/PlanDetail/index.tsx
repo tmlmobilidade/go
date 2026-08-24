@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { PlanDetailFootnote } from '@/components/plans/detail/PlanDetailFootnote';
 import { PlanDetailHeader } from '@/components/plans/detail/PlanDetailHeader';
 import { PlanDetailSectionAgency } from '@/components/plans/detail/PlanDetailSectionAgency';
