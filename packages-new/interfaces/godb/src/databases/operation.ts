@@ -3,9 +3,7 @@
 import { alertsIndexes, plansIndexes, rideAcceptancesIndexes, vehiclesIndexes } from '@/indexes/index.js';
 import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { type CreateGtfsValidationDto, CreateGtfsValidationSchema, type GtfsValidation, type UpdateGtfsValidationDto, UpdateGtfsValidationSchema } from '@tmlmobilidade/go-types-operation';
-import { type CreateRideAcceptanceDto, CreateRideAcceptanceSchema, type RideAcceptance, type UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema } from '@tmlmobilidade/go-types-operation';
-import { type Alert, type CreateAlertDto, CreateAlertSchema, type CreatePlanDto, CreatePlanSchema, type CreateSamDto, CreateSamSchema, type CreateVehicleDto, CreateVehicleSchema, type Plan, type Sam, type UpdateAlertDto, UpdateAlertSchema, type UpdatePlanDto, UpdatePlanSchema, type UpdateSamDto, UpdateSamSchema, type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/go-types-operation';
+import { type Alert, type CreateAlertDto, CreateAlertSchema, type CreateGtfsValidationDto, CreateGtfsValidationSchema, type CreatePlanDto, CreatePlanSchema, type CreateRideAcceptanceDto, CreateRideAcceptanceSchema, type CreateSamDto, CreateSamSchema, type CreateSchoolDto, CreateSchoolSchema, type CreateVehicleDto, CreateVehicleSchema, type GtfsValidation, type Plan, type RideAcceptance, type Sam, type School, type UpdateAlertDto, UpdateAlertSchema, type UpdateGtfsValidationDto, UpdateGtfsValidationSchema, type UpdatePlanDto, UpdatePlanSchema, type UpdateRideAcceptanceDto, UpdateRideAcceptanceSchema, type UpdateSamDto, UpdateSamSchema, type UpdateSchoolDto, UpdateSchoolSchema, type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
@@ -17,6 +15,7 @@ export class OperationDatabase {
 	public readonly plans: MongoInterfaceTemplate<Plan, CreatePlanDto, UpdatePlanDto>;
 	public readonly rideAcceptances: MongoInterfaceTemplate<RideAcceptance, CreateRideAcceptanceDto, UpdateRideAcceptanceDto>;
 	public readonly sams: MongoInterfaceTemplate<Sam, CreateSamDto, UpdateSamDto>;
+	public readonly schools: MongoInterfaceTemplate<School, CreateSchoolDto, UpdateSchoolDto>;
 	public readonly vehicles: MongoInterfaceTemplate<Vehicle, CreateVehicleDto, UpdateVehicleDto>;
 
 	private readonly database: Db;
@@ -31,6 +30,7 @@ export class OperationDatabase {
 		this.plans = new MongoInterfaceTemplate<Plan, CreatePlanDto, UpdatePlanDto>('plans', this.database, CreatePlanSchema, UpdatePlanSchema, plansIndexes);
 		this.rideAcceptances = new MongoInterfaceTemplate<RideAcceptance, CreateRideAcceptanceDto, UpdateRideAcceptanceDto>('ride-acceptances', this.database, CreateRideAcceptanceSchema, UpdateRideAcceptanceSchema, rideAcceptancesIndexes);
 		this.sams = new MongoInterfaceTemplate<Sam, CreateSamDto, UpdateSamDto>('sams', this.database, CreateSamSchema, UpdateSamSchema);
+		this.schools = new MongoInterfaceTemplate<School, CreateSchoolDto, UpdateSchoolDto>('schools', this.database, CreateSchoolSchema, UpdateSchoolSchema);
 		this.vehicles = new MongoInterfaceTemplate<Vehicle, CreateVehicleDto, UpdateVehicleDto>('vehicles', this.database, CreateVehicleSchema, UpdateVehicleSchema, vehiclesIndexes);
 	}
 }

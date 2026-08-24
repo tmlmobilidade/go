@@ -6,7 +6,9 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-client
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type Attachment, CreateStopSchema, PermissionCatalog, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/types';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
+import { CreateStopSchema, type Stop, type StopId, type UpdateStopDto } from '@tmlmobilidade/go-types-infrastructure';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * This is an example controller that is using the stops interface.

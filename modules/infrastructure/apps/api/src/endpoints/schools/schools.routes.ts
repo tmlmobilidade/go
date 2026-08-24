@@ -14,42 +14,40 @@ const server = FastifyService.getInstance().server;
 
 server.register(
 	(instance, opts, next) => {
-		//
-
-		instance.get(
-			'/',
+		instance.post(
+			'/list',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.schools.scope, [PermissionCatalog.all.schools.actions.read]) },
 			SchoolsController.getAll,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
-			StopsController.getById,
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.schools.scope, [PermissionCatalog.all.schools.actions.read]) },
+			SchoolsController.getById,
 		);
 
 		instance.post(
 			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.create]) },
-			StopsController.create,
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.schools.scope, [PermissionCatalog.all.schools.actions.create]) },
+			SchoolsController.create,
 		);
 
 		instance.put(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.update]) },
-			StopsController.update,
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.schools.scope, [PermissionCatalog.all.schools.actions.update]) },
+			SchoolsController.update,
 		);
 
 		instance.get(
 			'/:id/lock',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.lock]) },
-			StopsController.lock,
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.schools.scope, [PermissionCatalog.all.schools.actions.lock]) },
+			SchoolsController.lock,
 		);
 
 		instance.delete(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.delete]) },
-			StopsController.delete,
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.schools.scope, [PermissionCatalog.all.schools.actions.delete]) },
+			SchoolsController.delete,
 		);
 
 		next();

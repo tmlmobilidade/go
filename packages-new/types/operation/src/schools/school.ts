@@ -22,6 +22,7 @@ export const SchoolSchema = DocumentSchema.extend({
 	grouping: z.string(),
 	high_school: z.boolean().default(false),
 	is_active: z.boolean().default(false),
+	is_deleted: z.boolean().default(false),
 	lat: z.number().nullable().default(null),
 	lng: z.number().nullable().default(null),
 	locality: z.string(),

@@ -25,6 +25,11 @@
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
+		"@tmlmobilidade/go-schools-pckg-types": "*",
+		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-infrastructure": "*",
+		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*"
 	},

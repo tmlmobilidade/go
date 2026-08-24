@@ -1,6 +1,6 @@
 /* * */
 
-import { type AgenciesPlatformRequest } from '@tmlmobilidade/go-types-core';
+import { type AgenciesPlatformRequest } from '@tmlmobilidade/go-types-platform';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';

@@ -2,7 +2,7 @@
 
 import { deletedCmStops } from '@/lib/deleted-cm-stops.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type StopId, validateStopIdStructure } from '@tmlmobilidade/types';
+import { type StopId, validateStopIdStructure } from '@tmlmobilidade/go-types-infrastructure';
 
 /**
  * Generates a new unique Stop ID that does not conflict
