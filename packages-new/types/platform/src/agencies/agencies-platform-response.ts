@@ -1,6 +1,6 @@
 /* * */
 
-import { AgencySchema } from '@/agencies/agency.js';
+import { AgencySchema } from '@tmlmobilidade/go-types-core';
 import { z } from 'zod';
 
 /* * */
