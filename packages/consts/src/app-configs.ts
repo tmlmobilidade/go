@@ -318,8 +318,8 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 
 	schools: {
 		dev: {
-			api_port: 52011,
-			api_url: 'http://localhost:52011',
+			api_port: 52003,
+			api_url: 'http://localhost:52003',
 			cors_origin: true,
 			frontend_port: 51011,
 			frontend_url: 'http://localhost:51011/schools',
