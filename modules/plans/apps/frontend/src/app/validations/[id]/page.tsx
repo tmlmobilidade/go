@@ -5,10 +5,9 @@ import { ValidationsDetailContextProvider } from '@/contexts/ValidationsDetail.c
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default function Page() {
 	return (
-		<ValidationsDetailContextProvider validationId={id}>
+		<ValidationsDetailContextProvider>
 			<ValidationsDetail />
 		</ValidationsDetailContextProvider>
 	);

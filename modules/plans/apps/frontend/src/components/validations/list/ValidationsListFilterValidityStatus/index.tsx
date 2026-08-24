@@ -1,7 +1,8 @@
 /* * */
 
-import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
 import { ListFilter } from '@tmlmobilidade/ui';
+
+import { useValidationsListFilterValidityStatus } from './use-validations-list-filter-validity-status';
 
 /* * */
 
@@ -11,17 +12,17 @@ export function ValidationsListFilterValidityStatus() {
 	//
 	// A. Setup variables
 
-	const validationsListContext = useValidationsListContext();
+	const filterValidityStatus = useValidationsListFilterValidityStatus();
 
 	//
 	// B. Render components
 
 	return (
 		<ListFilter
-			active={validationsListContext.filters.validity_status.isActive}
+			active={filterValidityStatus.isActive}
 			label="Resultado"
-			onChange={validationsListContext.filters.validity_status.set}
-			options={validationsListContext.filters.validity_status.options}
+			onChange={filterValidityStatus.set}
+			options={filterValidityStatus.options}
 			isMultiple
 			withToggleAll
 		/>

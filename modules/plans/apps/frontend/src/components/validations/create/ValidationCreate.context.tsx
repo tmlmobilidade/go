@@ -5,7 +5,7 @@ import { type WorkerMessage } from '@/types/worker';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateGtfsValidationDto, type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type SelectDataItem, useDataAgencies, useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
+import { type SelectDataItem, useAgenciesData, useForm, UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { multipartFetch } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -63,9 +63,11 @@ export const ValidationCreateContextProvider = ({ children }: PropsWithChildren)
 	//
 	// B. Fetch data
 
-	const { error: agenciesError, filtered: permittedAgencies, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.gtfs_validations.actions.create],
-		scope: PermissionCatalog.all.gtfs_validations.scope,
+	const { data: permittedAgencies, error: agenciesError, isLoading: agenciesLoading } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.gtfs_validations.actions.create],
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+		},
 	});
 
 	//

@@ -1,7 +1,7 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type UnixTimestamp } from '@tmlmobilidade/types';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { Label } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

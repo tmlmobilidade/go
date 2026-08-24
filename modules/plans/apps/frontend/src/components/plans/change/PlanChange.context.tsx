@@ -3,11 +3,12 @@
 'use client';
 
 import { closePlanChangeModal } from '@/components/plans/change/PlanChange.modal';
+import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
+import { useValidationsListData } from '@/components/validations/list/use-validations-list-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { type Plan } from '@tmlmobilidade/types';
-import { useHandleUpdate, useToast } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type GtfsValidation, type Plan } from '@tmlmobilidade/go-types-operation';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData, useHandleUpdate, useToast } from '@tmlmobilidade/ui';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -51,17 +52,19 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 	//
 	// B. Fetch data
 
-	const { mutate: plansList } = useSWR<Plan[]>(API_ROUTES.plans.PLANS_LIST);
-	const { data: planData, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId));
-	const { data: allValidationsData, error: allValidationsError, isLoading: allValidationsLoading } = useSWR<GtfsValidation[]>(API_ROUTES.plans.VALIDATIONS_LIST);
+	const { mutate: plansListMutate } = usePlansListData();
+	const { data: planResponse, isLoading: planLoading, mutate: planMutate } = useSWR<ApiResponse<Plan>>(API_ROUTES.plans.PLANS_DETAIL(planId), {
+		fetcher: async (url: string) => await fetchApiData<Plan>({ url }),
+	});
+	const { error: allValidationsError, isLoading: allValidationsLoading, raw: allValidationsData } = useValidationsListData();
+
+	const planData = planResponse?.data ?? undefined;
 
 	//
 	// C. Transform data
 
 	const availableValidations = useMemo(() => {
 		if (!planData) return [];
-		if (!allValidationsData) return [];
-
 		return allValidationsData.filter((item) => {
 			const matchesAgencyId = item.agency_id === planData.agency_id;
 			const isComplete = item.processing_status === 'complete';
@@ -85,7 +88,7 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 				return;
 			}
 
-			const selectedValidation = availableValidations.find(item => item._id === selectedValidationId) ?? allValidationsData?.find(item => item._id === selectedValidationId);
+			const selectedValidation = availableValidations.find(item => item._id === selectedValidationId) ?? allValidationsData.find(item => item._id === selectedValidationId);
 
 			if (!selectedValidation) {
 				useToast.error({ message: 'Validação selecionada não encontrada.', title: 'Erro' });
@@ -97,15 +100,15 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 				return;
 			}
 
-			return await fetchData<Plan>(
-				API_ROUTES.plans.PLANS_DETAIL_CHANGE_GTFS(planId),
-				'POST',
-				{ validation_id: selectedValidationId },
-			);
+			return await fetchApiData<Plan>({
+				body: { validation_id: selectedValidationId },
+				method: 'POST',
+				url: API_ROUTES.plans.PLANS_DETAIL_CHANGE_GTFS(planId),
+			});
 		},
-		onSuccess: (updatedItem) => {
-			plansList();
-			planMutate(updatedItem);
+		onSuccess: () => {
+			plansListMutate();
+			planMutate();
 			closePlanChangeModal();
 		},
 	});
@@ -125,7 +128,7 @@ export const PlanChangeContextProvider = ({ children, planId }: PropsWithChildre
 				selected_validation_id: selectedValidationId,
 			},
 			flags: {
-				error: allValidationsError,
+				error: allValidationsError ? new Error(allValidationsError) : undefined,
 				isLoading: allValidationsLoading || planLoading,
 				isSaving,
 			},

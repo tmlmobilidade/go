@@ -1,7 +1,7 @@
 /* * */
 
-import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { type Plan, ProcessingStatusSchema } from '@tmlmobilidade/types';
+import { type GtfsValidation, type Plan } from '@tmlmobilidade/go-types-operation';
+import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { SelectDataItem } from '@tmlmobilidade/ui';
 
 /* * */

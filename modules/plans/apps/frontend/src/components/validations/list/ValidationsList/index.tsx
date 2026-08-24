@@ -1,14 +1,16 @@
 'use client';
 
-import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
 import { ValidationsListCellDate } from '@/components/validations/list/ValidationsListCellCreatedAt';
 import { ValidationsListFiltersBar } from '@/components/validations/list/ValidationsListFiltersBar';
 import { ValidationsListHeader } from '@/components/validations/list/ValidationsListHeader';
 import { type ValidationNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusDisplay, ValidityStatusTag } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay, ValidityStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+
+import { useValidationsListData } from '../use-validations-list-data';
 
 /* * */
 
@@ -21,7 +23,7 @@ export function ValidationsList() {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
-	const validationsListContext = useValidationsListContext();
+	const validationsData = useValidationsListData();
 
 	const columns: DataTableColumn<ValidationNormalized>[] = [
 		{
@@ -32,7 +34,19 @@ export function ValidationsList() {
 		},
 		{
 			accessor: 'agency_id_normalized',
-			render: item => <AgencyTag agencyId={item.agency_id} copyOnClick={false} showShortName />,
+			render: item => (
+				<AgencyTag
+					agencyId={item.agency_id}
+					copyOnClick={false}
+					request={{
+						permissions: {
+							actions: [PermissionCatalog.all.gtfs_validations.actions.read],
+							scope: PermissionCatalog.all.gtfs_validations.scope,
+						},
+					}}
+					showShortName
+				/>
+			),
 			title: 'Operador',
 			width: 180,
 		},
@@ -44,7 +58,7 @@ export function ValidationsList() {
 		},
 		{
 			accessor: 'validity_status',
-			render: item => <ValidityStatusTag value={item.validity_status} />,
+			render: item => <ValidityStatusDisplay value={item.validity_status} />,
 			title: 'Resultado',
 			width: 110,
 		},
@@ -66,24 +80,18 @@ export function ValidationsList() {
 	//
 	// C. Render components
 
-	if (validationsListContext.flags.loading) {
-		return <LoadingOverlay />;
-	}
-
-	if (validationsListContext.flags.error) {
-		return <ErrorDisplay message={validationsListContext.flags.error.message} />;
-	}
-
 	return (
 		<Pane header={[
 			<ValidationsListHeader key="header" />,
 			<ValidationsListFiltersBar key="filters" />,
 		]}
 		>
+			{validationsData.error && <ErrorDisplay message={validationsData.error} />}
 			<DataTable
 				columns={columns}
+				isLoading={validationsData.isLoading}
 				onRowClick={handleRowClick}
-				records={validationsListContext.data.filtered}
+				records={validationsData.data}
 				rowIdAccessor="_id"
 				selectedId={params.id}
 			/>

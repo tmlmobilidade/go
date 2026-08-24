@@ -1,12 +1,16 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { type Attachment, type ProcessingStatus } from '@tmlmobilidade/types';
-import { useToast } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type ApiResponse, type ProcessingStatus } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
+
+import { useValidationsDetailData } from '../components/validations/detail/use-validations-detail-data';
+import { useValidationsDetailValidationId } from '../components/validations/detail/use-validations-detail-validation-id';
+import { useValidationsListData } from '../components/validations/list/use-validations-list-data';
 
 /* * */
 
@@ -39,17 +43,31 @@ export function useValidationsDetailContext() {
 
 /* * */
 
-export const ValidationsDetailContextProvider = ({ children, validationId }: PropsWithChildren<{ validationId: string }>) => {
+export const ValidationsDetailContextProvider = ({ children }: PropsWithChildren) => {
 	//
 
 	//
-	// A. Fetch data
+	// A. Setup variables
 
-	const { data: validationData, error: validationError, isLoading: validationLoading, mutate: validationMutate } = useSWR<GtfsValidation>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL(validationId), { refreshInterval: 3_000 });
-	const { data: fileData, error: fileError, isLoading: fileLoading } = useSWR<Attachment>(validationId && API_ROUTES.plans.VALIDATIONS_DETAIL_FILE(validationId));
+	const { validationId } = useValidationsDetailValidationId();
+
+	const { data: validationData, error: validationError, isLoading: validationLoading, mutate: validationMutate } = useValidationsDetailData();
 
 	//
-	// B. Handle actions
+	// B. Fetch data
+
+	const { mutate: validationsListMutate } = useValidationsListData();
+
+	const { data: fileResponse, error: fileSwrError, isLoading: fileLoading } = useSWR<ApiResponse<Attachment>>(API_ROUTES.plans.VALIDATIONS_DETAIL_FILE(validationId), {
+		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
+	});
+
+	const fileData = fileResponse?.data ?? null;
+
+	const fileError = fileResponse?.error ?? (fileSwrError instanceof Error ? fileSwrError.message : null);
+
+	//
+	// C. Handle actions
 
 	const updateProcessingStatus = useCallback(async (status: ProcessingStatus) => {
 		if (!validationId) {
@@ -57,20 +75,24 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 			return;
 		}
 		try {
-			const response = await fetchData<GtfsValidation>(API_ROUTES.plans.VALIDATIONS_DETAIL_PROCESSING_STATUS(validationId), 'PUT', { processing_status: status });
+			const response = await fetchApiData<GtfsValidation>({
+				body: { processing_status: status },
+				method: 'PUT',
+				url: API_ROUTES.plans.VALIDATIONS_DETAIL_PROCESSING_STATUS(validationId),
+			});
 			if (response.error || !response.data) {
 				useToast.error({ message: response.error ?? 'Erro ao atualizar estado da validação.', title: 'Erro' });
 				return;
 			}
-			// Update SWR cache so UI reflects new processing_status immediately
-			await validationMutate(response.data);
+			validationMutate();
+			validationsListMutate();
 		} catch (error) {
 			useToast.error({ message: error instanceof Error ? error.message : 'Erro ao atualizar estado da validação.', title: 'Erro' });
 		}
-	}, [validationId, validationMutate]);
+	}, [validationId, validationMutate, validationsListMutate]);
 
 	//
-	// C. Define context value
+	// D. Define context value
 
 	const contextValue: ValidationsDetailContextState = useMemo(() => ({
 		actions: {
@@ -82,7 +104,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 		},
 		flags: {
 			can_approve: validationData?.processing_status === 'complete' && validationData?.validity_status === 'valid',
-			error: validationError || fileError,
+			error: validationError || fileError ? new Error(validationError || fileError || 'Failed to load validation') : null,
 			loading: validationLoading || fileLoading,
 		},
 	}), [
@@ -96,7 +118,7 @@ export const ValidationsDetailContextProvider = ({ children, validationId }: Pro
 	]);
 
 	//
-	// D. Render components
+	// E. Render components
 
 	return (
 		<ValidationsDetailContext.Provider value={contextValue}>
