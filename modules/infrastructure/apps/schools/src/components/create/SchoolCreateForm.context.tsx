@@ -1,8 +1,6 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateSchoolDto, CreateSchoolSchema } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { useStandardForm, type UseStandardFormReturnType } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -25,26 +23,30 @@ export function SchoolCreateFormContextProvider({ children }: PropsWithChildren)
 	// B. Setup form
 
 	const formDefaultValues = useMemo<Partial<CreateSchoolDto>>(() => ({
-
+		address: '',
+		agency_id: '',
+		district_id: '',
+		district_name: '',
+		email: '',
+		grouping: '',
+		locality: '',
+		municipality_id: '',
+		municipality_name: '',
+		name: '',
+		nature: '',
+		parish_name: '',
+		postal_code: '',
+		region_id: '',
+		region_name: '',
 	}), []);
 
-	const { form, unblock } = useStandardForm<CreateSchoolDto>({
+	const { form, unblock } = useStandardForm<CreateSchoolDto, typeof CreateSchoolSchema>({
 		defaultValues: formDefaultValues,
 		schema: CreateSchoolSchema,
 	});
 
 	//
-	// C. Fetch data
-
-	const { filtered: schoolsData } = useSchoolsListData(API_ROUTES.schools.SCHOOLS_LIST, {
-		actions: [PermissionCatalog.all.schools.actions.create],
-		scope: PermissionCatalog.all.schools.scope,
-	});
-
-	//
-	// D. Return state
-
-	if (!schoolsData?.length) return null;
+	// C. Return state
 
 	return (
 		<SchoolCreateFormContext.Provider value={{ form, unblock }}>

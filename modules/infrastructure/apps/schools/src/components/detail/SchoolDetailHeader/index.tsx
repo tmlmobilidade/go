@@ -3,9 +3,8 @@
 import { useSchoolDetailContext } from '@/components/detail/SchoolDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusDisplay, SaveButton, Spacer, Toolbar, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, Spacer, Toolbar, UpdateButton } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
 
 /* * */
 
@@ -16,38 +15,13 @@ export function SchoolDetailHeader() {
 	// A. Setup variables
 
 	const router = useRouter();
-	const meContext = useMeContext();
 	const schoolDetailContext = useSchoolDetailContext();
-
-	const publishStatusValue = useContextFormWatch({ control: schoolDetailContext.form.instance.control, name: 'publish_status' });
-
-	//
-	// B. Transform data
-
-	const hasPermissionToChangePublishStatus = useMemo(() => {
-		// User can change publish status if they have permission
-		// for the agency and reference type.
-		return meContext.actions.hasPermissionResource([
-			{
-				action: PermissionCatalog.all.alerts.actions.update_publish_status,
-				resource_key: 'agency_ids',
-				scope: PermissionCatalog.all.alerts.scope,
-				value: schoolDetailContext.data.school.agency_id,
-			},
-			{
-				action: PermissionCatalog.all.alerts.actions.update_publish_status,
-				resource_key: 'reference_types',
-				scope: PermissionCatalog.all.alerts.scope,
-				value: schoolDetailContext.data.school.reference_type,
-			},
-		]);
-	}, [meContext.actions, schoolDetailContext.data.school.agency_id, schoolDetailContext.data.school.reference_type]);
 
 	//
 	// C. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.alerts.ALERTS_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_LIST));
 	};
 
 	//
@@ -60,34 +34,22 @@ export function SchoolDetailHeader() {
 
 			<IdTag id={schoolDetailContext.data.id} copyOnClick />
 
-			<PublishStatusDisplay
-				disabled={!hasPermissionToChangePublishStatus}
-				onChange={value => schoolDetailContext.form.instance.setValue('publish_status', value, { shouldDirty: true })}
-				value={publishStatusValue}
-			/>
-
 			<Spacer />
 
 			<HasPermission
-				action={PermissionCatalog.all.alerts.actions.create}
-				scope={PermissionCatalog.all.alerts.scope}
+				action={PermissionCatalog.all.schools.actions.update}
+				scope={PermissionCatalog.all.schools.scope}
 			>
-				<DuplicateButton
-					isDisabled={!schoolDetailContext.flags.canDuplicate}
-					isLoading={schoolDetailContext.flags.isDuplicating}
-					onClick={schoolDetailContext.actions.duplicate}
+				<UpdateButton
+					isDisabled={!schoolDetailContext.flags.canSave}
+					isLoading={schoolDetailContext.flags.isSaving}
+					onClick={schoolDetailContext.actions.save}
 				/>
 			</HasPermission>
 
-			<SaveButton
-				isDisabled={!schoolDetailContext.flags.canSave}
-				isLoading={schoolDetailContext.flags.isSaving}
-				onClick={schoolDetailContext.actions.save}
-			/>
-
 			<HasPermission
-				action={PermissionCatalog.all.alerts.actions.lock}
-				scope={PermissionCatalog.all.alerts.scope}
+				action={PermissionCatalog.all.schools.actions.lock}
+				scope={PermissionCatalog.all.schools.scope}
 			>
 				<LockButton
 					isDisabled={!schoolDetailContext.flags.canLock}
@@ -98,12 +60,12 @@ export function SchoolDetailHeader() {
 			</HasPermission>
 
 			<HasPermission
-				action={PermissionCatalog.all.alerts.actions.delete}
-				scope={PermissionCatalog.all.alerts.scope}
+				action={PermissionCatalog.all.schools.actions.delete}
+				scope={PermissionCatalog.all.schools.scope}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que pretende eliminar este Alerta? Esta ação é irreversível."
-					confirmTitle="Eliminar Alerta"
+					confirmMessage="Tem a certeza que pretende eliminar esta escola? Esta ação é irreversível."
+					confirmTitle="Eliminar escola"
 					isDisabled={!schoolDetailContext.flags.canDelete}
 					isLoading={schoolDetailContext.flags.isDeleting}
 					onDelete={schoolDetailContext.actions.delete}

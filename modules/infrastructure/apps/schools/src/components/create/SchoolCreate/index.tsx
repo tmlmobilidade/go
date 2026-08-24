@@ -5,6 +5,7 @@ import { NoDataLabel, Pane, Surface, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { SchoolCreateFooter } from '../SchoolCreateFooter';
+import { SchoolCreateForm } from '../SchoolCreateForm';
 import { SchoolCreateFormContextProvider } from '../SchoolCreateForm.context';
 import { SchoolCreateHeader } from '../SchoolCreateHeader';
 
@@ -19,7 +20,7 @@ export function SchoolCreate() {
 	const meContext = useMeContext();
 
 	const hasPermissionCreate = useMemo(() => {
-		return meContext?.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+		return meContext?.actions.hasPermission(PermissionCatalog.all.schools.scope, PermissionCatalog.all.schools.actions.create);
 	}, [meContext]);
 
 	//
@@ -28,7 +29,7 @@ export function SchoolCreate() {
 	if (!hasPermissionCreate) {
 		return (
 			<Surface align="center" justify="center" variant="transparent">
-				<NoDataLabel text="Selecione um alerta" />
+				<NoDataLabel text="Sem permissão para criar escola" />
 			</Surface>
 		);
 	}
