@@ -124,7 +124,7 @@ export function AgenciesDetailAlertsMap() {
 															name={`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`}
 															render={({ field, fieldState }) => (
 																<Checkbox
-																	checked={field.value ?? false}
+																	checked={field.value}
 																	error={fieldState.error?.message}
 																	onChange={field.onChange}
 																	readOnly={!capabilities.editEnabled}
