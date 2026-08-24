@@ -66,12 +66,12 @@ export const PlanDetailContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [apexFileUpload, setApexFileUpload] = useState<File | null>(null);
 
+	const { mutate: plansListMutate } = usePlansListData();
+
 	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = usePlansDetailData();
 
 	//
 	// B. Fetch data
-
-	const { mutate: plansListMutate } = usePlansListData();
 
 	const { data: operationFileResponse, error: operationFileSwrError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<ApiResponse<Attachment>>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId), {
 		fetcher: async (url: string) => await fetchApiData<Attachment>({ url }),
