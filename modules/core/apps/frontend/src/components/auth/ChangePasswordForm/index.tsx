@@ -66,9 +66,7 @@ export function ChangePasswordForm() {
 	//
 	// B. Handle actions
 
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		// Prevent default form submission behavior
-		event.preventDefault();
+	const handleSubmit = async () => {
 		// Update loading state
 		setIsLoading(true);
 		// Hash the password before sending it to the server

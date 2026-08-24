@@ -73,14 +73,14 @@ export function OrganizationsDetailBasicInfo() {
 				<Grid columns="ab" gap="lg">
 					<ImageUpload
 						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_light.label')}
-						// onChange={actions.fileChangedLight}
-						// onDelete={() => actions.deleteImage('light')}
+						onChange={actions.updateLightLogo}
+						onDelete={actions.deleteLightLogo}
 						value={logoLightUrlValue}
 					/>
 					<ImageUpload
 						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_dark.label')}
-						// onChange={actions.fileChangedDark}
-						// onDelete={() => actions.deleteImage('dark')}
+						onChange={actions.updateDarkLogo}
+						onDelete={actions.deleteDarkLogo}
 						value={logoDarkUrlValue}
 					/>
 				</Grid>

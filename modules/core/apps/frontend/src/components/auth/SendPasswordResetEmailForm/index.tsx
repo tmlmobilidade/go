@@ -25,9 +25,7 @@ export function SendPasswordResetEmailForm() {
 	//
 	// B. Handle actions
 
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		// Prevent default form submission behavior
-		event.preventDefault();
+	const handleSubmit = async () => {
 		// Update loading state
 		setIsLoading(true);
 		// Perform password reset email request

@@ -33,7 +33,7 @@ export function useOrganizationsDetailData(): UseOrganizationsDetailDataReturnTy
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Organization>>(API_ROUTES.core.ORGANIZATIONS_DETAIL(organizationId), {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Organization>>(API_ROUTES.core.ORGANIZATIONS_DETAIL_DETAIL(organizationId), {
 		fetcher: async (url: string) => await fetchApiData<Organization>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

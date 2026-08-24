@@ -2,7 +2,7 @@
 
 import { IconArrowRight } from '@tabler/icons-react';
 import { Button, EnvironmentTag, keepUrlParams, Label, Section, Surface, TMLogoDark, TMLogoLight, WhenMode } from '@tmlmobilidade/ui';
-import { type PropsWithChildren } from 'react';
+import { type PropsWithChildren, type SubmitEvent } from 'react';
 
 import styles from './styles.module.css';
 
@@ -13,7 +13,7 @@ interface AuthenticationFormProps {
 	footerLabel: string
 	footerUrl: string
 	loading: boolean
-	onSubmit: (event: React.FormEvent<HTMLFormElement>) => Promise<void>
+	onSubmit: () => Promise<void>
 	submitDisabled: boolean
 	submitLabel: string
 	title: string
@@ -29,6 +29,11 @@ export function AuthenticationForm({ children, description, footerLabel, footerU
 
 	const handleFooterClick = () => {
 		window.location.href = keepUrlParams(footerUrl);
+	};
+
+	const handleSubmit = async (event?: SubmitEvent<HTMLFormElement>) => {
+		event?.preventDefault();
+		await onSubmit();
 	};
 
 	//
@@ -50,7 +55,7 @@ export function AuthenticationForm({ children, description, footerLabel, footerU
 						</div>
 					</div>
 
-					<form className={styles.form} onSubmit={onSubmit}>
+					<form className={styles.form} onSubmit={handleSubmit}>
 
 						{children}
 

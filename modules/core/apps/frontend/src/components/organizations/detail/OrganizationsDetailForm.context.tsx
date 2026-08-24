@@ -14,7 +14,24 @@ import { useOrganizationsDetailOrganizationId } from './use-organizations-detail
 
 /* * */
 
-const OrganizationsDetailFormContext = createContext<StandardFormContextValue<UpdateOrganizationDto> | undefined>(undefined);
+interface OrganizationsDetailFormContextValue extends StandardFormContextValue<UpdateOrganizationDto> {
+	actions: StandardFormContextValue<UpdateOrganizationDto>['actions'] & {
+		deleteDarkLogo: () => void
+		deleteLightLogo: () => void
+		updateDarkLogo: (imageFile: File) => void
+		updateLightLogo: (imageFile: File) => void
+	}
+	status: StandardFormContextValue<UpdateOrganizationDto>['status'] & {
+		isDeletingDarkLogo: boolean
+		isDeletingLightLogo: boolean
+		isUpdatingDarkLogo: boolean
+		isUpdatingLightLogo: boolean
+	}
+}
+
+/* * */
+
+const OrganizationsDetailFormContext = createContext<OrganizationsDetailFormContextValue | undefined>(undefined);
 
 export function useOrganizationsDetailFormContext() {
 	const context = useContext(OrganizationsDetailFormContext);
@@ -52,7 +69,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 	// D. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_UPDATE(organizationId) }),
+		fetchFn: async () => await fetchApiData<Organization>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE(organizationId) }),
 		onSuccess: ({ data }) => {
 			form.reset(data);
 			organizationsDetailMutate();
@@ -61,20 +78,48 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.core.ROLES_DELETE(organizationId) }),
+		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_DELETE(organizationId) }),
 		onSuccess: () => {
 			organizationsListMutate();
-			router.push(keepUrlParams(PAGE_ROUTES.core.ROLES_LIST));
+			router.push(keepUrlParams(PAGE_ROUTES.core.ORGANIZATIONS_LIST));
 		},
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Organization>({ method: 'PUT', url: API_ROUTES.core.ROLES_DETAIL(organizationId) }),
+		fetchFn: async () => await fetchApiData<Organization>({ method: 'PUT', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_LOCK(organizationId) }),
 		onSuccess: ({ data }) => {
 			form.reset(data);
 			organizationsDetailMutate();
 			organizationsListMutate();
 		},
+	});
+
+	const { action: handleDeleteLightLogo, isLoading: isDeletingLightLogo } = useHandleUpdate({
+		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_DELETE_IMAGE_VAR(organizationId, 'light') }),
+		onSuccess: () => null,
+	});
+
+	const { action: handleDeleteDarkLogo, isLoading: isDeletingDarkLogo } = useHandleUpdate({
+		fetchFn: async () => await fetchApiData<Organization>({ method: 'DELETE', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_DELETE_IMAGE_VAR(organizationId, 'dark') }),
+		onSuccess: () => null,
+	});
+
+	const { action: handleUpdateLightLogo, isLoading: isUpdatingLightLogo } = useHandleUpdate({
+		fetchFn: async (imageFile: File) => {
+			const formData = new FormData();
+			formData.append('light', imageFile);
+			return await fetchApiData<Organization>({ body: formData, method: 'POST', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE(organizationId) });
+		},
+		onSuccess: () => null,
+	});
+
+	const { action: handleUpdateDarkLogo, isLoading: isUpdatingDarkLogo } = useHandleUpdate({
+		fetchFn: async (imageFile: File) => {
+			const formData = new FormData();
+			formData.append('dark', imageFile);
+			return await fetchApiData<Organization>({ body: formData, method: 'POST', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE(organizationId) });
+		},
+		onSuccess: () => null,
 	});
 
 	//
@@ -113,18 +158,22 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 		},
 		update: {
 			hasPermission: hasUpdatePermission,
-			isUpdating: isUpdating,
+			isUpdating: isUpdating || isUpdatingDarkLogo || isUpdatingLightLogo,
 		},
 	});
 
 	//
 	// E. Return state
 
-	const stateValue: StandardFormContextValue<UpdateOrganizationDto> = useMemo(() => ({
+	const stateValue: OrganizationsDetailFormContextValue = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
+			deleteDarkLogo: handleDeleteDarkLogo,
+			deleteLightLogo: handleDeleteLightLogo,
 			lock: handleLock,
 			update: handleUpdate,
+			updateDarkLogo: handleUpdateDarkLogo,
+			updateLightLogo: handleUpdateLightLogo,
 		},
 		capabilities: {
 			deleteEnabled,
@@ -135,13 +184,17 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 		form,
 		status: {
 			isDeleting,
+			isDeletingDarkLogo,
+			isDeletingLightLogo,
 			isLoading: organizationDataLoading,
 			isLocked: organizationData?.is_locked,
 			isLocking,
 			isUpdating,
+			isUpdatingDarkLogo,
+			isUpdatingLightLogo,
 		},
 		unblock,
-	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isLocking, isUpdating, lockEnabled, organizationData?.is_locked, organizationDataLoading, unblock, updateEnabled]);
+	}), [deleteEnabled, editEnabled, form, handleDelete, handleDeleteDarkLogo, handleDeleteLightLogo, handleLock, handleUpdate, handleUpdateDarkLogo, handleUpdateLightLogo, isDeleting, isDeletingDarkLogo, isDeletingLightLogo, isLocking, isUpdating, isUpdatingDarkLogo, isUpdatingLightLogo, lockEnabled, organizationData?.is_locked, organizationDataLoading, unblock, updateEnabled]);
 
 	return (
 		<OrganizationsDetailFormContext.Provider value={stateValue}>
