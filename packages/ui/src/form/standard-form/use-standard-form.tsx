@@ -9,13 +9,6 @@ import { usePreventNavigation } from '../../hooks/use-prevent-navigation';
 
 /* * */
 
-// interface UseStandardFormProps<T> {
-// 	apiData?: null | T
-// 	defaultValues?: DefaultValues<T>
-// 	mode?: 'controlled' | 'uncontrolled'
-// 	schema?: ZodSchema<T>
-// }
-
 interface UseStandardFormProps<T, TSchema extends ZodType> {
 	apiData?: null | T
 	defaultValues?: DefaultValues<T>
@@ -55,8 +48,10 @@ export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultVa
 	useEffect(() => {
 		// Skip if no API data
 		if (!apiData) return;
-		// Skip if form is dirty
-		if (form.formState.isDirty) return;
+		// Skip if form has at least one dirty field
+		// Use this method instead of "form.formState.isDirty"
+		// because it is not a reliable indicator of this state
+		if (Object.keys(form.formState.dirtyFields).length > 0) return;
 		// Initialize form with API data
 		form.reset(apiData);
 		// eslint-disable-next-line no-console
@@ -66,7 +61,7 @@ export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultVa
 	//
 	// Prevent navigation if form is dirty
 
-	const unblock = usePreventNavigation(false); // (isDirty);
+	const unblock = usePreventNavigation(form.formState.isDirty);
 
 	//
 	// Return hook values and functions

@@ -9,8 +9,8 @@ import { getImageHandler } from './handlers/get-image.js';
 import { getOrganizationHandler } from './handlers/get-organization.js';
 import { listOrganizationsHandler } from './handlers/list-organizations.js';
 import { lockOrganizationHandler } from './handlers/lock-organization.js';
+import { updateImageHandler } from './handlers/update-image.js';
 import { updateOrganizationHandler } from './handlers/update-organization.js';
-import { uploadImageHandler } from './handlers/upload-image.js';
 
 /* * */
 
@@ -51,7 +51,7 @@ server.register(
 		instance.post(
 			'/:id/update/image',
 			{ preHandler: authorizationMiddleware('organizations', ['update']) },
-			uploadImageHandler,
+			updateImageHandler,
 		);
 
 		instance.get(

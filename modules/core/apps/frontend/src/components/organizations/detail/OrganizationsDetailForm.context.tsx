@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiMultipart, type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -108,7 +108,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 		fetchFn: async (imageFile: File) => {
 			const formData = new FormData();
 			formData.append('light', imageFile);
-			return await fetchApiData<Organization>({ body: formData, method: 'POST', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE(organizationId) });
+			return await fetchApiMultipart<Organization>(API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE_IMAGE(organizationId), formData);
 		},
 		onSuccess: () => null,
 	});
@@ -117,7 +117,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 		fetchFn: async (imageFile: File) => {
 			const formData = new FormData();
 			formData.append('dark', imageFile);
-			return await fetchApiData<Organization>({ body: formData, method: 'POST', url: API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE(organizationId) });
+			return await fetchApiMultipart<Organization>(API_ROUTES.core.ORGANIZATIONS_DETAIL_UPDATE_IMAGE(organizationId), formData);
 		},
 		onSuccess: () => null,
 	});

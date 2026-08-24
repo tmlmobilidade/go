@@ -14,6 +14,8 @@ import { FileButton } from '../FileButton';
 /* * */
 
 export interface ImageUploadProps {
+	isDisabled?: boolean
+	isLoading?: boolean
 	label?: string
 	maxFileSize?: number
 	maxHeight?: number
@@ -26,6 +28,8 @@ export interface ImageUploadProps {
 /* * */
 
 export function ImageUpload({
+	isDisabled,
+	isLoading,
 	label,
 	maxFileSize = 6 * 1024 * 1024, // 5MB default
 	maxHeight = 300,
@@ -98,7 +102,9 @@ export function ImageUpload({
 			) : (
 				<FileButton
 					accept="image/*"
+					disabled={isDisabled}
 					label="Carregar imagem"
+					loading={isLoading}
 					onFileChange={handleFileChange}
 				/>
 			)}

@@ -16,7 +16,7 @@ export function OrganizationsDetailBasicInfo() {
 
 	const { t } = useTranslation();
 
-	const { actions, capabilities, form } = useOrganizationsDetailFormContext();
+	const { actions, capabilities, form, status } = useOrganizationsDetailFormContext();
 
 	const logoDarkUrlValue = useStandardFormWatch({ control: form.control, name: 'logo_dark' });
 	const logoLightUrlValue = useStandardFormWatch({ control: form.control, name: 'logo_light' });
@@ -28,6 +28,7 @@ export function OrganizationsDetailBasicInfo() {
 		<Collapsible
 			description={t('default:organizations.detail.SectionBasicInfo.description')}
 			title={t('default:organizations.detail.SectionBasicInfo.title')}
+			defaultOpen
 		>
 			<Section gap="lg">
 
@@ -72,12 +73,16 @@ export function OrganizationsDetailBasicInfo() {
 
 				<Grid columns="ab" gap="lg">
 					<ImageUpload
+						isDisabled={form.formState.isDirty}
+						isLoading={status.isUpdatingLightLogo}
 						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_light.label')}
 						onChange={actions.updateLightLogo}
 						onDelete={actions.deleteLightLogo}
 						value={logoLightUrlValue}
 					/>
 					<ImageUpload
+						isDisabled={form.formState.isDirty}
+						isLoading={status.isUpdatingDarkLogo}
 						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_dark.label')}
 						onChange={actions.updateDarkLogo}
 						onDelete={actions.deleteDarkLogo}

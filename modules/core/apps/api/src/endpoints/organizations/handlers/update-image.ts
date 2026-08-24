@@ -6,11 +6,11 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Organization } from '@tmlmobilidade/go-types-core';
 
 /**
- * Upload organization logos.
+ * Update organization logos.
  * @param request The request object containing the organization ID in the params and the image files in the body
  * @param reply The reply object used to send the response
  */
-export async function uploadImageHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ logo_dark?: string, logo_light?: string }>) {
+export async function updateImageHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ logo_dark?: string, logo_light?: string }>) {
 	//
 
 	//
