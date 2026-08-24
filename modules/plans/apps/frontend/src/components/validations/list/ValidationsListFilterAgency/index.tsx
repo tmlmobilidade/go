@@ -1,7 +1,8 @@
 /* * */
 
-import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
 import { ListFilter } from '@tmlmobilidade/ui';
+
+import { useValidationsListFilterAgency } from './use-validations-list-filter-agency';
 
 /* * */
 
@@ -11,17 +12,17 @@ export function ValidationsListFilterAgency() {
 	//
 	// A. Setup variables
 
-	const validationsListContext = useValidationsListContext();
+	const filterAgency = useValidationsListFilterAgency();
 
 	//
 	// B. Render components
 
 	return (
 		<ListFilter
-			active={validationsListContext.filters.agency.isActive}
+			active={filterAgency.isActive}
 			label="Operador"
-			onChange={validationsListContext.filters.agency.set}
-			options={validationsListContext.filters.agency.options}
+			onChange={filterAgency.set}
+			options={filterAgency.options}
 			isMultiple
 			withToggleAll
 		/>

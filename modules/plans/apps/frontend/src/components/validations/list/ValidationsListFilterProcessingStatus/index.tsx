@@ -1,7 +1,8 @@
 /* * */
 
-import { useValidationsListContext } from '@/components/validations/list/ValidationsList.context';
 import { ListFilter } from '@tmlmobilidade/ui';
+
+import { useValidationsListFilterProcessingStatus } from './use-validations-list-filter-processing-status';
 
 /* * */
 
@@ -11,17 +12,17 @@ export function ValidationsListFilterProcessingStatus() {
 	//
 	// A. Setup variables
 
-	const validationsListContext = useValidationsListContext();
+	const filterProcessingStatus = useValidationsListFilterProcessingStatus();
 
 	//
 	// B. Render components
 
 	return (
 		<ListFilter
-			active={validationsListContext.filters.processing_status.isActive}
+			active={filterProcessingStatus.isActive}
 			label="Estado"
-			onChange={validationsListContext.filters.processing_status.set}
-			options={validationsListContext.filters.processing_status.options}
+			onChange={filterProcessingStatus.set}
+			options={filterProcessingStatus.options}
 			isMultiple
 			withToggleAll
 		/>
