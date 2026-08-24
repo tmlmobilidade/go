@@ -495,12 +495,13 @@ export const API_ROUTES = Object.freeze({
 		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans/list`,
 
 		// VALIDATIONS
+		VALIDATIONS_CREATE: `${getModuleConfig('plans', 'api_url')}/validations/create`,
 		VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}`,
 		VALIDATIONS_DETAIL_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/file`,
 		VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/file/download`,
 		VALIDATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/lock`,
 		VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/processing-status`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/request-approval`,
-		VALIDATIONS_LIST: `${getModuleConfig('plans', 'api_url')}/validations`,
+		VALIDATIONS_LIST: `${getModuleConfig('plans', 'api_url')}/validations/list`,
 	},
 } as const);
