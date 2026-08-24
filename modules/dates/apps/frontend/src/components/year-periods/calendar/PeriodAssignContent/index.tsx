@@ -23,7 +23,7 @@ export function PeriodAssignContent() {
 	const periodsListContext = usePeriodsListContext();
 	const periodAssignContext = usePeriodAssignContext();
 
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { options: agencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.year_periods.actions.update],
 		scope: PermissionCatalog.all.year_periods.scope,
 	});

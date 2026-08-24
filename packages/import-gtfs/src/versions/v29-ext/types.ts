@@ -2,7 +2,7 @@
 
 import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29ExtRoutes, type GtfsStrictV29ExtShapes, type GtfsStrictV29ExtStops, type GtfsStrictV29ExtStopTimes, type GtfsStrictV29ExtTrips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/sqlite';
+import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/go-clients-sqlite';
 
 /**
  * Holds references to all GTFS-related SQL tables.

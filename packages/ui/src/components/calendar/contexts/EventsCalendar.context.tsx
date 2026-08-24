@@ -107,7 +107,7 @@ const EventsCalendarDataProvider = ({ additionalEvents = [], children }: PropsWi
 		canReadEvents ? API_ROUTES.dates.EVENTS_LIST : null,
 	);
 
-	const { data: agenciesData } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
+	const { data: agenciesData } = useSWR<Agency[], Error>(API_ROUTES.core.AGENCIES_LIST);
 
 	//
 	// C. Handle errors and loading states

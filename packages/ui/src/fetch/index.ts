@@ -1,3 +1,3 @@
 export * from './fetch-api-data';
-export * from './swr-fetcher';
+export * from './fetch-api-multipart';
 export * from './use-handle-update';

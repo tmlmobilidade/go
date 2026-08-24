@@ -100,10 +100,10 @@ Key exports:
 import { ComponentWrapper, ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 // Action buttons
-import { DeleteButton, DuplicateButton, LockButton, SaveButton } from '@tmlmobilidade/ui';
+import { DeleteButton, DuplicateButton, LockButton, UpdateButton } from '@tmlmobilidade/ui';
 
 // Form utilities
-import { useContextForm } from '@tmlmobilidade/ui';
+import { useStandardForm } from '@tmlmobilidade/ui';
 
 // Data hooks
 import { useDataAgencies, useDataLines, useDataStops } from '@tmlmobilidade/ui';
@@ -180,7 +180,7 @@ Also contains batching, caching, generic object/array utilities. Check `packages
 ### `@tmlmobilidade/mongo`
 MongoDB client with connection pooling and helpers. Used by `@tmlmobilidade/interfaces` — you rarely import this directly.
 
-### `@tmlmobilidade/rabbitmq`
+### `@tmlmobilidade/go-clients-rabbitmq`
 RabbitMQ client for inter-service messaging. Used in worker apps that consume or publish events.
 
 ### `@tmlmobilidade/go-clients-fastify`
@@ -253,7 +253,7 @@ File system utilities (reading, writing, path helpers).
 ### `@tmlmobilidade/go-clients-ssh`
 SSH connection utilities for remote operations.
 
-### `@tmlmobilidade/sqlite`
+### `@tmlmobilidade/go-clients-sqlite`
 SQLite client for local data storage in CLI tools.
 
 ### `@tmlmobilidade/ai`

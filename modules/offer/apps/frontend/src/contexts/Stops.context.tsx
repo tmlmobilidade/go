@@ -39,7 +39,7 @@ export const StopsContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[], Error>(API_ROUTES.stops.STOPS_LIST);
+	const { data: allStopsData, error: allStopsError, isLoading: allStopsLoading } = useSWR<Stop[], Error>(API_ROUTES.infrastructure.STOPS_LIST);
 
 	//
 	// B. Define context value

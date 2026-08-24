@@ -1,0 +1,486 @@
+/* * */
+
+import { Permission, PermissionSchema } from './permissions.js';
+
+/* * */
+
+export type ActionsOf<S extends Permission['scope']> = Extract<Permission, { scope: S }>['action'];
+
+export type PermissionCatalogType = {
+	[S in Permission['scope']]: {
+		actions: {
+			[A in ActionsOf<S>]: A;
+		}
+		scope: S
+	};
+};
+
+/**
+ * Arguments for hasPermissionResource function.
+ * @param T The type of the resource.
+ */
+export interface HasPermissionResourceArgs {
+	action: string
+	permissions: Permission[]
+	resource_key: string
+	scope: string
+	value: unknown
+}
+
+/**
+ * Arguments for filterPermissionResourceValues function.
+ * @param T The type of the resource.
+ */
+export interface FilterPermissionResourceValuesArgs<TValue = string> {
+	action: ActionsOf<Permission['scope']>
+	permissions: Permission[]
+	resourceKey: string
+	scope: Permission['scope']
+	values: TValue[] | undefined
+}
+
+/**
+ * A scope/action pair used to collect resource access from one or more permissions.
+ */
+export interface PermissionResourceCheck<S extends Permission['scope'] = Permission['scope']> {
+	action: ActionsOf<S>
+	scope: S
+}
+
+/**
+ * Arguments for getPermissionResourceAccess function.
+ */
+export interface GetPermissionResourceAccessArgs {
+	checks: PermissionResourceCheck[]
+	permissions: Permission[]
+	resource_key: string
+}
+
+/**
+ * Aggregated access to a permission resource key.
+ * When allowAll is true, callers should ignore values and treat the user
+ * as having access to every value for that resource key.
+ */
+export interface PermissionResourceAccess<TValue = string> {
+	allowAll: boolean
+	values: TValue[]
+}
+
+/**
+ * Arguments for getScopePermissions function.
+ */
+export interface GetScopePermissionsArgs<S extends Permission['scope']> {
+	actions: PermissionCatalogType[S]['actions']
+	permissions: Permission[]
+	resource?: { key: string, requireAll?: boolean, value: unknown }
+	scope: S
+}
+
+/**
+ * Result object containing permission checks for a scope.
+ * Maps each action of the scope to a boolean indicating if the user has that permission.
+ */
+export type ScopePermissions<S extends Permission['scope']> = Record<ActionsOf<S>, boolean>;
+
+/**
+ * PermissionCatalog provides a structured catalog of all available permissions
+ * in the system, categorized by scope and their respective actions.
+ * Use it to reference required permissions in components and services.
+ */
+export class PermissionCatalog {
+	//
+
+	public static readonly ALLOW_ALL_FLAG = 'allow_all';
+
+	/**
+	 * Generates the complete permission catalog by extracting
+	 * scopes and actions from the defined PermissionSchema.
+	 * @return A catalog object mapping scopes to their actions.
+	 */
+	static get all() {
+		// Initialize catalog object
+		const catalog = {};
+		// Iterate over each schema option
+		for (const schemaOption of PermissionSchema.options) {
+		// Extract scope name and actions
+			const scopeName = schemaOption.shape.scope.value;
+			const actions = schemaOption.shape.action.options;
+			// Build catalog entry
+			catalog[scopeName] = {
+				actions: Object.fromEntries(actions.map((a: string) => [a, a])),
+				scope: scopeName,
+			};
+		}
+		// Return the completed catalog
+		return catalog as PermissionCatalogType;
+	}
+
+	/**
+	 * Get a specific permission from a full list by scope and action.
+	 * @param permissionEntries The full list of permissions of the user.
+	 * @param scope The resource scope of the permission to filter by.
+	 * @param action The action of the permission to filter by.
+	 * @returns The filtered Permission object or undefined if not found.
+	 */
+	static get<S extends Permission['scope']>(permissionEntries: Permission[], scope: S, action: ActionsOf<S>): Extract<Permission, { action: ActionsOf<S>, scope: S }> | undefined {
+		return permissionEntries.find((p): p is Extract<Permission, { action: ActionsOf<S>, scope: S }> => p.scope === scope && p.action === action);
+	}
+
+	/**
+	 * Get all permissions for a given scope and set of actions in one call.
+	 * More efficient than calling hasPermission or hasPermissionResource multiple times.
+	 * @param args Arguments object containing permissions, scope, actions, and optional resource.
+	 * @param args.resource.requireAll If true, uses hasPermissionResourceAll (user must have permission for ALL values in array). If false/undefined, uses hasPermissionResource (user needs permission for ANY value).
+	 * @returns Object with boolean values for each action in the scope.
+	 */
+	static getScopePermissions<S extends Permission['scope']>({ actions, permissions, resource, scope }: GetScopePermissionsArgs<S>): ScopePermissions<S> {
+		if (!permissions) {
+			return Object.keys(actions).reduce((acc, key) => ({ ...acc, [key]: false }), {}) as ScopePermissions<S>;
+		}
+
+		const result = {} as Record<string, boolean>;
+
+		for (const [key, action] of Object.entries(actions)) {
+			if (!action || typeof action !== 'string') {
+				result[key] = false;
+				continue;
+			}
+
+			if (resource) {
+				// Use hasPermissionResourceAll if requireAll is true, otherwise use hasPermissionResource
+				if (resource.requireAll) {
+					result[key] = this.hasPermissionResourceAll({
+						action,
+						permissions,
+						resource_key: resource.key,
+						scope,
+						value: resource.value,
+					});
+				} else {
+					result[key] = this.hasPermissionResource({
+						action,
+						permissions,
+						resource_key: resource.key,
+						scope,
+						value: resource.value,
+					});
+				}
+			} else {
+				result[key] = this.hasPermission(permissions, scope, action as ActionsOf<S>);
+			}
+		}
+
+		return result as ScopePermissions<S>;
+	}
+
+	/**
+	 * Check if a list of permission entries has the requested scope/action pair.
+	 * @param permissionEntries The list of permission entries to check against.
+	 * @param scope The required scope to check.
+	 * @param action The required action to check.
+	 * @returns The permission object or undefined if not found.
+	 */
+	static hasPermission<S extends Permission['scope']>(permissionEntries: Permission[], scope: S, action: ActionsOf<S>): boolean {
+		return permissionEntries.find(p => p.scope === scope && p.action === action) !== undefined;
+	}
+
+	/**
+	 * Collect allowed values for a resource key across multiple scope/action checks.
+	 *
+	 * Use this when a caller needs to build a database filter before loading
+	 * documents. For example, a list endpoint can combine `lines.read`,
+	 * `lines.update`, and `zones.nav` permissions into a single set of
+	 * allowed `agency_ids`, then query MongoDB with `{ agency_ids: { $in: values } }`.
+	 *
+	 * This complements `hasPermissionResource`: that method answers whether
+	 * a user can access a known resource value, while this method answers which
+	 * resource values the user can access for a set of allowed permissions.
+	 *
+	 * If any matching permission contains PermissionCatalog.ALLOW_ALL_FLAG for
+	 * the resource key, this returns `{ allowAll: true, values: [] }`.
+	 *
+	 * @param permissions The list of permissions from a user or request.
+	 * @param checks The scope/action pairs whose resource values should be merged.
+	 * @param resource_key The permission resource key to collect, e.g. `agency_ids`.
+	 * @returns The aggregated resource access for the requested checks.
+	 */
+	static getPermissionResourceAccess<TValue = string>(args: GetPermissionResourceAccessArgs): PermissionResourceAccess<TValue> {
+		//
+
+		if (!args.permissions?.length || !args.checks.length) {
+			return { allowAll: false, values: [] };
+		}
+
+		const values = new Set<TValue>();
+
+		for (const check of args.checks) {
+			const matchingPermissions = args.permissions.filter(permission => permission.scope === check.scope && permission.action === check.action);
+
+			for (const permission of matchingPermissions) {
+				const resourceValues = permission['resources']?.[args.resource_key];
+
+				if (!resourceValues) continue;
+
+				if (Array.isArray(resourceValues)) {
+					if (resourceValues.includes(this.ALLOW_ALL_FLAG)) {
+						return { allowAll: true, values: [] };
+					}
+
+					for (const resourceValue of resourceValues) {
+						values.add(resourceValue as TValue);
+					}
+
+					continue;
+				}
+
+				if (resourceValues === this.ALLOW_ALL_FLAG) {
+					return { allowAll: true, values: [] };
+				}
+
+				values.add(resourceValues as TValue);
+			}
+		}
+
+		return {
+			allowAll: false,
+			values: [...values],
+		};
+
+		//
+	}
+
+	/**
+	 * Check if a permission exists in a list of permissions, with additional check for a given resource value.
+	 * If a `value` exists in a `resource` of a User `permissions` object that
+	 * matches the given `action` and `scope`. For example, if you want to check if
+	 * a user has access to a specific `agency_id`, you set `value=43` and `resource_key='agency_ids'`.
+	 * If the provided `permissions` object contains the value `43` inside the `scope='plans'`,
+	 * `action='create'` and `resource_key='agency_ids'` the function will return true.
+	 * @param permissions The list of permissions (from a user or request).
+	 * @param value The permission value to check against.
+	 * @param resource_key The key of the resource.
+	 * @param scope The scope of the permission.
+	 * @param action The action of the permission.
+	 * @returns The permission.
+	 */
+	static hasPermissionResource({ action, permissions, resource_key, scope, value }: HasPermissionResourceArgs) {
+		//
+
+		//
+		// Return false if no permissions
+
+		if (!permissions) return false;
+
+		//
+		// Find the permission with the given action and scope
+
+		const foundPermission = permissions.find(p => p.action === action && p.scope === scope);
+
+		if (!foundPermission) return false;
+
+		//
+		// Check if value exists in the permission.resources[resource_key]
+
+		const resourceValues = foundPermission['resources']?.[resource_key];
+
+		if (!resourceValues) return false;
+
+		//
+		// If resourceValues is an Array, check if value is in the array
+		// or if it contains the ALLOW_ALL_FLAG.
+
+		if (Array.isArray(resourceValues) && resourceValues.includes(this.ALLOW_ALL_FLAG)) return true;
+
+		//
+		// If value is an array, check if there's any overlap between value and resourceValues
+
+		if (Array.isArray(value)) {
+			if (Array.isArray(resourceValues)) {
+				return value.some(v => resourceValues.includes(v));
+			}
+			return value.includes(resourceValues);
+		}
+
+		//
+		// If value is not an array, check if it's in resourceValues
+
+		if (Array.isArray(resourceValues) && resourceValues.includes(value)) return true;
+
+		//
+		// If resourceValues is not an Array, check if it is equal to the requested value
+
+		if (resourceValues === value) return true;
+
+		//
+		// Otherwise, return false
+
+		return false;
+
+		//
+	}
+
+	/**
+	 * Checks whether the user has permission to perform a specific action
+	 * within a specific scope for ALL values in an array.
+	 * This is stricter than `hasPermissionResource` which only requires permission for ANY value.
+	 * Use this for operations like update/delete where the user must have permission for all agencies involved.
+	 * @param permissions The list of permissions (from a user or request).
+	 * @param value The permission value(s) to check against - if array, ALL values must be permitted.
+	 * @param resource_key The key of the resource.
+	 * @param scope The scope of the permission.
+	 * @param action The action of the permission.
+	 * @returns True if user has permission for ALL values, false otherwise.
+	 */
+	static hasPermissionResourceAll({ action, permissions, resource_key, scope, value }: HasPermissionResourceArgs): boolean {
+		//
+
+		//
+		// Return false if no permissions
+
+		if (!permissions) return false;
+
+		//
+		// Find the permission with the given action and scope
+
+		const foundPermission = permissions.find(p => p.action === action && p.scope === scope);
+
+		if (!foundPermission) return false;
+
+		//
+		// Check if value exists in the permission.resources[resource_key]
+
+		const resourceValues = foundPermission['resources']?.[resource_key];
+
+		if (!resourceValues) return false;
+
+		//
+		// If resourceValues contains the ALLOW_ALL_FLAG, user has permission for everything
+
+		if (Array.isArray(resourceValues) && resourceValues.includes(this.ALLOW_ALL_FLAG)) return true;
+
+		//
+		// If value is an array, check if ALL elements are in resourceValues
+
+		if (Array.isArray(value)) {
+			if (Array.isArray(resourceValues)) {
+				return value.every(v => resourceValues.includes(v));
+			}
+			return value.every(v => v === resourceValues);
+		}
+
+		//
+		// If value is not an array, check if it's in resourceValues
+
+		if (Array.isArray(resourceValues) && resourceValues.includes(value)) return true;
+
+		//
+		// If resourceValues is not an Array, check if it is equal to the requested value
+
+		if (resourceValues === value) return true;
+
+		//
+		// Otherwise, return false
+
+		return false;
+
+		//
+	}
+
+	/**
+	 * Sanitizes a list of permissions by removing any entries
+	 * that do not correspond to valid scopes and actions
+	 * defined in the PermissionCatalog.
+	 * @param existingEntries Array of Permission objects to sanitize.
+	 * @return A cleaned array containing only valid permissions.
+	 */
+	static sanitize(existingEntries: Permission[]): Permission[] {
+		// Create a new array to hold valid permissions
+		const cleanedPermissions: Record<string, Permission> = {};
+		// Iterate through each permission entry of the user
+		for (const permissionEntry of existingEntries) {
+			// Validate the permission entry
+			const validationResult = PermissionSchema.safeParse(permissionEntry);
+			if (!validationResult.success) continue;
+			// Permission is valid; keep it
+			cleanedPermissions[`${permissionEntry.scope}:${permissionEntry.action}`] = permissionEntry;
+		}
+		// Return the cleaned permissions array
+		return Object.values(cleanedPermissions);
+	}
+
+	/**
+	 * Sanitizes a list of permissions by removing any entries
+	 * that do not correspond to valid scopes and actions
+	 * defined in the PermissionCatalog.
+	 * @param existingEntries Array of Permission objects to sanitize.
+	 * @return A cleaned array containing only valid permissions.
+	 */
+	static updatePermissionResource<S extends Permission['scope']>(permissionEntries: Permission[], scope: S, action: ActionsOf<S>, resources: Record<string, unknown>): Permission[] {
+		// Create a copy of the existing permissions
+		const updatedPermissions = JSON.parse(JSON.stringify(permissionEntries)) as Permission[];
+		// Find the index of the permission to update
+		const permissionIndex = updatedPermissions.findIndex(p => p.scope === scope && p.action === action);
+		if (permissionIndex === -1) return updatedPermissions;
+		// Update the permission at the found index
+		updatedPermissions[permissionIndex]['resources'] = { ...updatedPermissions[permissionIndex]['resources'], ...resources };
+		// Return the updated permissions array
+		return updatedPermissions;
+	}
+
+	//
+
+	/**
+	 * Filters requested resource values to only those the user is permitted to access.
+	 *
+	 * Unlike `hasPermissionResource`, which answers whether access should be granted,
+	 * this method returns the subset of requested values that are actually permitted.
+	 *
+	 * An empty `values` array means no resource filter was requested, so all values
+	 * are returned unchanged.
+	 *
+	 * @param permissions The list of permissions from a user or request.
+	 * @param scope The scope of the permission.
+	 * @param action The action of the permission.
+	 * @param resource_key The resource key containing the allowed values.
+	 * @param values The resource values requested by the caller.
+	 * @returns Only the requested values that the user is permitted to access.
+	*/
+	static filterPermissionResourceValues<TValue = string>({ action, permissions, resourceKey, scope, values }: FilterPermissionResourceValuesArgs<TValue>): TValue[] {
+		// No filter was requested, so preserve the original values.
+		if (!values || values.length === 0) return values ?? [];
+
+		if (!permissions?.length) return [];
+
+		const allowedValues = new Set<TValue>();
+
+		// Collect resource values from every matching permission.
+		for (const permission of permissions) {
+			if (permission.scope !== scope || permission.action !== action) {
+				continue;
+			}
+
+			const resourceValues = permission['resources']?.[resourceKey];
+
+			if (!resourceValues) continue;
+
+			// The allow-all flag grants access to every requested value.
+			if (
+				Array.isArray(resourceValues) &&
+				resourceValues.includes(this.ALLOW_ALL_FLAG)
+			) {
+				return values;
+			}
+
+			if (Array.isArray(resourceValues)) {
+				for (const resourceValue of resourceValues) {
+					allowedValues.add(resourceValue as TValue);
+				}
+			} else {
+				allowedValues.add(resourceValues as TValue);
+			}
+		}
+
+		// Return only requested values that exist in the user's allowed resources.
+		return values.filter(value => allowedValues.has(value));
+	}
+}

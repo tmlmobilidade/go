@@ -3,9 +3,9 @@
 import { SegmentedControl, Switch } from '@mantine/core';
 import { IconCrosshair } from '@tabler/icons-react';
 
+import { Button } from '../../../../buttons';
 import { useMapContext } from '../../../../contexts/Map.context';
 import { SearchField } from '../../../../filters';
-import { Button } from '../../../buttons/Button';
 import { Spacer } from '../../../layout/Spacer';
 import { Toolbar } from '../../../layout/Toolbar';
 import { MAP_STYLES } from '../../configs/styles';

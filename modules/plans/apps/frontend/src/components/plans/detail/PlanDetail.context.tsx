@@ -62,7 +62,7 @@ export const PlanDetailContextProvider = ({ children, planId }: PropsWithChildre
 	const { data: planData, error: planError, isLoading: planLoading, mutate: planMutate } = useSWR<Plan>(API_ROUTES.plans.PLANS_DETAIL(planId), { refreshInterval: 5000 });
 	const { data: operationFileData, error: operationFileError, isLoading: operationFileLoading, mutate: operationFileMutate } = useSWR<Attachment>(API_ROUTES.plans.PLANS_DETAIL_OPERATION_FILE(planId));
 	const { data: apexFileData, mutate: apexFileMutate } = useSWR<Attachment>(API_ROUTES.plans.PLANS_DETAIL_APEX_FILE(planId));
-	const { data: userData } = useSWR<User>(planId && API_ROUTES.auth.USERS_DETAIL(planData?.created_by));
+	const { data: userData } = useSWR<User>(planId && API_ROUTES.core.USERS_DETAIL(planData?.created_by));
 
 	//
 	// C. Setup form

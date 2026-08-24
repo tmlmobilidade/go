@@ -62,7 +62,7 @@ module.exports = {
         'utils',      // @tmlmobilidade/utils — shared utilities
         'fastify',    // @tmlmobilidade/go-clients-fastify — Fastify server + auth middleware
         'mongo',      // @tmlmobilidade/mongo — MongoDB client
-        'rabbitmq',   // @tmlmobilidade/rabbitmq — message queue client
+        'rabbitmq',   // @tmlmobilidade/go-clients-rabbitmq — message queue client
 
         // Cross-cutting
         'infra',    // Kubernetes, deployment, infrastructure config

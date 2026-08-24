@@ -1,7 +1,7 @@
 'use client';
 
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ContextFormController, DateTimeInput, Divider, Grid, Label, Section, Text, useContextFormWatch, useMeContext } from '@tmlmobilidade/ui';
+import { StandardFormController, DateTimeInput, Divider, Grid, Label, Section, Text, useStandardFormWatch, useMeContext } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
@@ -19,8 +19,8 @@ export function AlertCreateStepDates() {
 	const meContext = useMeContext();
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const referenceTypeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
+	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const referenceTypeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
 
 	//
 	// B. Transform data
@@ -50,7 +50,7 @@ export function AlertCreateStepDates() {
 				<Label size="lg" caps>{t('alerts:create.AlertCreateStepDates.sections.active_period.title')}</Label>
 				<Text size="sm" weight="medium">{t('alerts:create.AlertCreateStepDates.sections.active_period.description')}</Text>
 				<Grid columns="ab" gap="md">
-					<ContextFormController
+					<StandardFormController
 						control={alertsCreateForm.control}
 						name="active_period_start_date"
 						render={({ field, fieldState }) => (
@@ -63,7 +63,7 @@ export function AlertCreateStepDates() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={alertsCreateForm.control}
 						name="active_period_end_date"
 						render={({ field, fieldState }) => (
@@ -86,7 +86,7 @@ export function AlertCreateStepDates() {
 				<Label size="lg" caps>{t('alerts:create.AlertCreateStepDates.sections.publish_date.title')}</Label>
 				<Text size="sm" weight="medium">{t('alerts:create.AlertCreateStepDates.sections.publish_date.description')}</Text>
 				<Grid columns="ab" gap="md">
-					<ContextFormController
+					<StandardFormController
 						control={alertsCreateForm.control}
 						name="publish_start_date"
 						render={({ field, fieldState }) => (
@@ -100,7 +100,7 @@ export function AlertCreateStepDates() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={alertsCreateForm.control}
 						name="publish_end_date"
 						render={({ field, fieldState }) => (

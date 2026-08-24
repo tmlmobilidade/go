@@ -1,14 +1,15 @@
 'use client';
 
-import { API_ROUTES, HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type User, type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
 import { type FileExport } from '@tmlmobilidade/go-types-downloads';
 import { type ActionsOf, type GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions } from '@tmlmobilidade/go-types-permissions';
-import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
+import { useMeData } from '../auth';
 import { ErrorDisplay } from '../components/display/ErrorDisplay';
+import { fetchApiData } from '../fetch';
 import { LoadingOverlay } from '../loaders/LoadingOverlay';
 
 /* * */
@@ -56,34 +57,25 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useMeData();
+
 	//
 	// B. Fetch data
-
-	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useSWR<User, HttpException>(API_ROUTES.auth.AUTH_ME, {
-		fetcher: async (url: string) => {
-			const response = await fetchData<User>(url);
-			if (!response.data || response.error) {
-				throw new HttpException(response.statusCode, response.error ?? 'Failed to load the current user');
-			}
-			return response.data;
-		},
-		refreshInterval: 10_000, // 10 seconds
-	});
 
 	const { data: fileExportsData, mutate: fileExportsMutate } = useSWR<FileExport[]>(API_ROUTES.exporter.EXPORTER_LIST, { refreshInterval: 5_000 });
 
 	//
 	// C. Handle actions
 
-	const isUnauthorized = meError?.statusCode === HTTP_STATUS.UNAUTHORIZED;
-	const isRedirectingToLogin = isLoggingOut || isUnauthorized;
+	const isUnauthorized = meError;
+	const isRedirectingToLogin = isLoggingOut || isUnauthorized || (!meLoading && !meData);
 
 	useEffect(() => {
 		// Skip if data is still loading or logout is already redirecting
 		if (meLoading || isLoggingOut) return;
 		// Redirect to login when the session is missing or expired
-		if (isUnauthorized) window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
-	}, [meLoading, isUnauthorized, isLoggingOut]);
+		if (!meData || isUnauthorized) window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
+	}, [meLoading, meData, isUnauthorized, isLoggingOut]);
 
 	const hasPermission = <S extends Permission['scope']>(scope: S, action: ActionsOf<S>) => {
 		if (!meData?.permissions) return false;
@@ -110,13 +102,13 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		setIsLoggingOut(true);
 		try {
 			// Call the logout endpoint
-			await fetch(API_ROUTES.auth.AUTH_LOGOUT, { credentials: 'include' });
+			await fetch(API_ROUTES.core.AUTH_LOGOUT, { credentials: 'include' });
 			// Clear the SWR cache without revalidating — the session is already gone,
 			// so a revalidate would 401 and surface ErrorDisplay before redirect.
-			await meMutate(undefined, { revalidate: false });
+			meMutate();
 		} finally {
 			// Always redirect to login, even if logout or cache clear fails
-			window.location.href = PAGE_ROUTES.auth.LOGIN_LIST;
+			window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
 		}
 	};
 
@@ -133,8 +125,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		const updatedScope = { ...currentScope, [key]: value };
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
 		// Call the update endpoint
-		const response = await fetchData<User>(API_ROUTES.auth.AUTH_ME, 'PUT', { preferences: updatedPreferences });
-		if (response.error) throw new HttpException(response.statusCode, response.error);
+		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.core.PLATFORM_ME });
 	};
 
 	//
@@ -154,7 +145,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 			user: meData,
 		},
 		flags: {
-			error: meError,
+			error: null,
 			loading: meLoading || isLoggingOut,
 		},
 		mutate: {
@@ -167,11 +158,11 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	// E. Render components
 
 	if (meLoading || isRedirectingToLogin) {
-		return <LoadingOverlay fullscreen />;
+		return <LoadingOverlay size="lg" fullscreen />;
 	}
 
 	if (meError) {
-		return <ErrorDisplay message={meError.message} />;
+		return <ErrorDisplay message={meError} />;
 	}
 
 	return (

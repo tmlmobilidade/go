@@ -1,8 +1,9 @@
 'use client';
 
 import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { AlertCauseSchema, AlertEffectSchema, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { AlertCauseIcons, AlertEffectIcons, Collapsible, ContextFormController, Grid, Section, Select, useMeContext } from '@tmlmobilidade/ui';
+import { AlertCauseSchema, AlertEffectSchema } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { AlertCauseIcons, AlertEffectIcons, Collapsible, StandardFormController, Grid, Section, Select, useMeContext } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -58,7 +59,7 @@ export function AlertDetailSectionCauseEffect() {
 		>
 			<Section>
 				<Grid columns="ab" gap="md">
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="cause"
 						render={({ field, fieldState }) => (
@@ -73,7 +74,7 @@ export function AlertDetailSectionCauseEffect() {
 							/>
 						)}
 					/>
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="effect"
 						render={({ field, fieldState }) => (

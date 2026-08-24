@@ -79,13 +79,13 @@ Always destructure `mutate` so you can invalidate after mutations. For list inva
 
 ## Forms
 
-Use `useContextForm` from `@tmlmobilidade/ui` for all forms inside context providers. It handles syncing with API data and tracks dirty state.
+Use `useStandardForm` from `@tmlmobilidade/ui` for all forms inside context providers. It handles syncing with API data and tracks dirty state.
 
 ```tsx
-import { useContextForm } from '@tmlmobilidade/ui';
+import { useStandardForm } from '@tmlmobilidade/ui';
 import { type UpdateAlertDto } from '@tmlmobilidade/types';
 
-const { form } = useContextForm<UpdateAlertDto>({
+const { form } = useStandardForm<UpdateAlertDto>({
   apiData: alertData,
   // schema: UpdateAlertSchema,  ← uncomment to enable Zod validation
 });
@@ -190,7 +190,7 @@ Common components:
 | `LoadingOverlay` | Full-pane loading state |
 | `ErrorDisplay` | Full-pane error state |
 | `ComponentWrapper` | Labelled section wrapper |
-| `SaveButton` / `DeleteButton` / `LockButton` / `DuplicateButton` | Action buttons with built-in loading state |
+| `UpdateButton` / `DeleteButton` / `LockButton` / `DuplicateButton` | Action buttons with built-in loading state |
 
 ```tsx
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';

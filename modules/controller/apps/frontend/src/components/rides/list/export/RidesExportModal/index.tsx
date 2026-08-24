@@ -43,7 +43,7 @@ export default function RidesExportModal() {
 	// A. Setup variables
 
 	const context = useRidesExportModalContext();
-	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
+	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
 	const { t } = useTranslation();
 
 	//

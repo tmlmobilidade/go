@@ -7,8 +7,8 @@ import { useToast } from '../hooks/toast';
 
 /* * */
 
-interface UseHandleUpdateProps<T> {
-	fetchFn: () => Promise<ApiResponse<T>>
+interface UseHandleUpdateProps<T, A = void> {
+	fetchFn: (requestData: A) => Promise<ApiResponse<T>>
 	labels?: {
 		error_message?: string
 		error_title?: string
@@ -19,8 +19,8 @@ interface UseHandleUpdateProps<T> {
 	onSuccess: (response: ApiResponse<T>) => void
 }
 
-interface UseHandleUpdateReturnType {
-	action: () => Promise<void>
+interface UseHandleUpdateReturnType<A> {
+	action: (requestData: A) => Promise<void>
 	isError: Error | undefined
 	isLoading: boolean
 }
@@ -29,7 +29,7 @@ interface UseHandleUpdateReturnType {
  * Handles the update of an item.
  * @param params The parameters for the update operation.
  */
-export function useHandleUpdate<T>({ fetchFn, labels, onError, onSuccess }: UseHandleUpdateProps<T>): UseHandleUpdateReturnType {
+export function useHandleUpdate<T, A = void>({ fetchFn, labels, onError, onSuccess }: UseHandleUpdateProps<T, A>): UseHandleUpdateReturnType<A> {
 	//
 
 	//
@@ -56,9 +56,9 @@ export function useHandleUpdate<T>({ fetchFn, labels, onError, onSuccess }: UseH
 	//
 	// B. Handle actions
 
-	const action = useCallback(async () => {
+	const action = useCallback(async (requestData: A) => {
 		setIsLoading(true);
-		const response = await fetchFnRef.current();
+		const response = await fetchFnRef.current(requestData);
 		if (!response) {
 			const error = new Error('No response from server');
 			useToast.error({ message: error.message, title: labelsRef.current?.error_title ?? 'Erro' });

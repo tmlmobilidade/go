@@ -3,7 +3,7 @@
 import { IconArrowBigUpLinesFilled } from '@tabler/icons-react';
 import { type ReactNode, useState } from 'react';
 
-import { Button } from '../../buttons/Button';
+import { Button } from '../../../buttons';
 
 /* * */
 

@@ -78,7 +78,7 @@ export async function fetchApiData<T, K = unknown>(params: FetchApiDataParams<K>
 	};
 
 	const validatedHeaders: HeadersInit = {
-		'Content-Type': 'application/json',
+		...(validatedParams.body ? { 'Content-Type': 'application/json' } : {}),
 		...validatedParams.headers,
 	};
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/sqlite';
+import { SQLiteDatabase, SQLiteDatabaseConfig } from '@tmlmobilidade/go-clients-sqlite';
 import fs from 'fs';
 import path from 'path';
 

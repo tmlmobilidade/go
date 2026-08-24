@@ -5,7 +5,7 @@ import { ReferencesEditor } from '@/components/references/shared/ReferencesEdito
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Collapsible, ContextFormController, Label, openConfirmModal, Section, Select, useContextFormWatch, useDataAgencies, useMeContext } from '@tmlmobilidade/ui';
+import { Collapsible, StandardFormController, Label, openConfirmModal, Section, Select, useStandardFormWatch, useDataAgencies, useMeContext } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
 
 /* * */
@@ -19,19 +19,19 @@ export function AlertDetailSectionReferences() {
 	const meContext = useMeContext();
 	const alertDetailContext = useAlertDetailContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'agency_id' });
-	const causeValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'cause' });
-	const effectValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'effect' });
-	const municipalityIdsValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'municipality_ids' });
-	const activePeriodStartDateValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_start_date' });
-	const activePeriodEndDateValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_end_date' });
-	const referenceTypeValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'reference_type' });
-	const referencesValue = useContextFormWatch({ control: alertDetailContext.form.instance.control, name: 'references' });
+	const agencyIdValue = useStandardFormWatch({ control: alertDetailContext.form.instance.control, name: 'agency_id' });
+	const causeValue = useStandardFormWatch({ control: alertDetailContext.form.instance.control, name: 'cause' });
+	const effectValue = useStandardFormWatch({ control: alertDetailContext.form.instance.control, name: 'effect' });
+	const municipalityIdsValue = useStandardFormWatch({ control: alertDetailContext.form.instance.control, name: 'municipality_ids' });
+	const activePeriodStartDateValue = useStandardFormWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_start_date' });
+	const activePeriodEndDateValue = useStandardFormWatch({ control: alertDetailContext.form.instance.control, name: 'active_period_end_date' });
+	const referenceTypeValue = useStandardFormWatch({ control: alertDetailContext.form.instance.control, name: 'reference_type' });
+	const referencesValue = useStandardFormWatch({ control: alertDetailContext.form.instance.control, name: 'references' });
 
 	//
 	// B. Fetch data
 
-	const { filtered: agenciesData, options: agenciesOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { filtered: agenciesData, options: agenciesOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.read, PermissionCatalog.all.alerts.actions.update],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
@@ -109,7 +109,7 @@ export function AlertDetailSectionReferences() {
 
 			{agenciesOptions.length > 1 && (
 				<Section>
-					<ContextFormController
+					<StandardFormController
 						control={alertDetailContext.form.instance.control}
 						name="agency_id"
 						render={({ field, fieldState }) => (

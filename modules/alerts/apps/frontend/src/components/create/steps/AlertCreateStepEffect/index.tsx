@@ -1,9 +1,8 @@
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertEffect, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { AlertEffectIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useContextFormWatch, useDataAgencies } from '@tmlmobilidade/ui';
+import { AlertEffectIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useAgenciesData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,16 +22,18 @@ export function AlertCreateStepEffect() {
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 	const { actions: alertsCreateFormStepsActions } = useAlertsCreateFormStepsContext();
 
-	const agencyIdValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const causeValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'cause' });
-	const effectValue = useContextFormWatch({ control: alertsCreateForm.control, name: 'effect' });
+	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const causeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'cause' });
+	const effectValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'effect' });
 
 	//
 	// B. Fetch data
 
-	const { filtered: agenciesData, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.create],
-		scope: PermissionCatalog.all.alerts.scope,
+	const { data: agenciesData, isLoading: agenciesLoading } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.alerts.actions.create],
+			scope: PermissionCatalog.all.alerts.scope,
+		},
 	});
 
 	//

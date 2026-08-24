@@ -41,7 +41,7 @@ export function InitialStopSelector({ isLoading, lineColor, lineData, onInitiali
 		setSecondStopId(null);
 		if (!id) return;
 
-		const selectedStopResult = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(id));
+		const selectedStopResult = await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(id));
 		if (!selectedStopResult.isOk) {
 			useToast.error({ message: selectedStopResult.error, title: 'Erro ao carregar paragem' });
 			return;
@@ -54,7 +54,7 @@ export function InitialStopSelector({ isLoading, lineColor, lineData, onInitiali
 		setSecondStopId(id);
 		if (!id || !firstStop) return;
 
-		const selectedStopResult = await fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(id));
+		const selectedStopResult = await fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(id));
 		if (!selectedStopResult.isOk) {
 			useToast.error({ message: selectedStopResult.error, title: 'Erro ao carregar paragem' });
 			return;

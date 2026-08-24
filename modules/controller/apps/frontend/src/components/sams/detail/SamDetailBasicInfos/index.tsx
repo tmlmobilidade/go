@@ -17,7 +17,7 @@ export function SamsDetailBasicInfos() {
 	const { t } = useTranslation();
 
 	const samDetailContext = useSamsDetailContext();
-	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
+	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
 
 	if (samDetailContext.flags.loading) {
 		return <LoadingOverlay />;

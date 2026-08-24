@@ -1,8 +1,7 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useContextFormWatch, useDataAgencies, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
+import { useAgenciesData, useStandardFormWatch, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useAlertsCreateFormContext } from './AlertsCreateForm.context';
@@ -29,21 +28,23 @@ export function AlertsCreateFormStepsContextProvider({ children }: PropsWithChil
 
 	const { form: createAlertForm } = useAlertsCreateFormContext();
 
-	const agencyIdValue = useContextFormWatch({ control: createAlertForm.control, name: 'agency_id' });
-	const causeValue = useContextFormWatch({ control: createAlertForm.control, name: 'cause' });
-	const effectValue = useContextFormWatch({ control: createAlertForm.control, name: 'effect' });
-	const activePeriodEndDateValue = useContextFormWatch({ control: createAlertForm.control, name: 'active_period_end_date' });
-	const referenceTypeValue = useContextFormWatch({ control: createAlertForm.control, name: 'reference_type' });
-	const referencesValue = useContextFormWatch({ control: createAlertForm.control, name: 'references' });
-	const titleValue = useContextFormWatch({ control: createAlertForm.control, name: 'title' });
-	const descriptionValue = useContextFormWatch({ control: createAlertForm.control, name: 'description' });
+	const agencyIdValue = useStandardFormWatch({ control: createAlertForm.control, name: 'agency_id' });
+	const causeValue = useStandardFormWatch({ control: createAlertForm.control, name: 'cause' });
+	const effectValue = useStandardFormWatch({ control: createAlertForm.control, name: 'effect' });
+	const activePeriodEndDateValue = useStandardFormWatch({ control: createAlertForm.control, name: 'active_period_end_date' });
+	const referenceTypeValue = useStandardFormWatch({ control: createAlertForm.control, name: 'reference_type' });
+	const referencesValue = useStandardFormWatch({ control: createAlertForm.control, name: 'references' });
+	const titleValue = useStandardFormWatch({ control: createAlertForm.control, name: 'title' });
+	const descriptionValue = useStandardFormWatch({ control: createAlertForm.control, name: 'description' });
 
 	//
 	// C. Fetch data
 
-	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.alerts.actions.create],
-		scope: PermissionCatalog.all.alerts.scope,
+	const { data: agenciesData } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.alerts.actions.create],
+			scope: PermissionCatalog.all.alerts.scope,
+		},
 	});
 
 	//

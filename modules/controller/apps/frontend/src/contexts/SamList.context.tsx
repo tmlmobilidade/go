@@ -112,7 +112,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const samsFavoritesContext = useSamsFavoritesContext();
 
-	const { filtered: agenciesData, filteredIds: agencyIdsOrdered, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
+	const { filtered: agenciesData, filteredIds: agencyIdsOrdered, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
 
 	const agencyOptions = useMemo(
 		() =>

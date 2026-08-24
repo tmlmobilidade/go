@@ -2,8 +2,10 @@
 
 // import { isValidOptionalAlertCoordinates } from '@/lib/alert-coordinates';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Alert, type Attachment, PermissionCatalog, type UpdateAlertDto } from '@tmlmobilidade/types';
-import { type DetailContextStateTemplate, keepUrlParams, useContextForm, useContextFormWatch, useDataAgencies, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
+import { type Attachment } from '@tmlmobilidade/go-types-core';
+import { type Alert, type UpdateAlertDto } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type DetailContextStateTemplate, keepUrlParams, useStandardForm, useStandardFormWatch, useDataAgencies, useFlagCanDelete, useFlagCanDuplicate, useFlagCanLock, useFlagCanSave, useFlagReadOnly, useHandleUpdate, useMeContext, useToast } from '@tmlmobilidade/ui';
 import { fetchData, uploadFile } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
@@ -63,16 +65,16 @@ export const AlertDetailContextProvider = ({ alertId, children }: PropsWithChild
 	//
 	// C. Setup form
 
-	const { form } = useContextForm<UpdateAlertDto>({
+	const { form } = useStandardForm<UpdateAlertDto>({
 		apiData: alertData,
 		// schema: UpdateAlertSchema,
 	});
-	const coordinatesValue = useContextFormWatch({ control: form.control, name: 'coordinates' });
+	const coordinatesValue = useStandardFormWatch({ control: form.control, name: 'coordinates' });
 
 	//
 	// C. Transform data
 
-	const { isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
+	const { isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
 		actions: [PermissionCatalog.all.alerts.actions.create],
 		scope: PermissionCatalog.all.alerts.scope,
 	});
