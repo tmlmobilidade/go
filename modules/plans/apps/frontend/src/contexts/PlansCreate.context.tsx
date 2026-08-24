@@ -6,7 +6,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type GtfsValidation, type Plan } from '@tmlmobilidade/go-types-operation';
 import { closeModal, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
 /* * */
@@ -56,7 +56,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 	//
 	// C. Handle actions
 
-	const createPlan = async () => {
+	const createPlan = useCallback(async () => {
 		setIsLoading(true);
 		setIsError(null);
 
@@ -79,9 +79,9 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 		if (response.data) {
 			window.location.href = PAGE_ROUTES.plans.APPROVED_DETAIL(response.data._id);
 		}
-	};
+	}, [validationId]);
 
-	const requestApproval = async () => {
+	const requestApproval = useCallback(async () => {
 		setIsLoading(true);
 		setIsError(null);
 
@@ -98,7 +98,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 
 		setIsLoading(false);
 		closeModal(REQUEST_APPROVAL_MODAL_ID);
-	};
+	}, [validationId, setIsLoading, setIsError]);
 
 	//
 	// D. Define context value
@@ -118,7 +118,7 @@ export const PlansCreateContextProvider = ({ children, validationId }: PropsWith
 				loading: isLoading,
 			},
 		};
-	}, [validationData, isLoading]);
+	}, [validationData, isLoading, isError, validationError, createPlan, requestApproval]);
 
 	//
 	// E. Render components
