@@ -5,7 +5,8 @@ import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/Posters/PlanPos
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateFileExportDto, type PlanPostersExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { type Line, type LinesMode } from '@tmlmobilidade/go-types-offer';
-import { closeModal, type SelectDataItem, useDataAgencies, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { closeModal, type SelectDataItem, useAgenciesData, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
@@ -58,7 +59,6 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 
 	const plansListContext = usePlansListContext();
 	const exports = useExportsContext();
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST);
 	const { data: linesData } = useSWR<Line[], Error>(API_ROUTES.plans.PLANS_POSTER_LINES);
 	const [agencyId, setAgencyId] = useState<null | string>(null);
 	const [canvasProfile, setCanvasProfile] = useState<null | string>('0Master.C');
@@ -66,6 +66,13 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	const [linesMode, setLinesMode] = useState<LinesMode>('all');
 	const [planId, setPlanId] = useState<null | string>(null);
 	const [loading, setLoading] = useState(false);
+
+	const { options: agencyOptions } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.plans.actions.read],
+			scope: PermissionCatalog.all.plans.scope,
+		},
+	});
 
 	//
 	// B. Derived state

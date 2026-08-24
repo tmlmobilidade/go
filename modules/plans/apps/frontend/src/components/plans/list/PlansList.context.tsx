@@ -3,9 +3,10 @@
 import { type PlanNormalized, planValidityStatusOptions, planValidityStatusValues } from '@/types/normalized';
 import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { PermissionCatalog, type Plan } from '@tmlmobilidade/types';
-import { type ListContextStateTemplate, useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, useSearch } from '@tmlmobilidade/ui';
+import { type ListContextStateTemplate, useAgenciesData, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -44,9 +45,11 @@ export const PlansListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { data: allPlansData, error: allPlansError, isLoading: allPlansLoading } = useSWR<Plan[], Error>(API_ROUTES.plans.PLANS_LIST, { refreshInterval: 5_000 });
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.plans.actions.read],
-		scope: PermissionCatalog.all.plans.scope,
+	const { ids: filteredAgencyIds, options: filteredAgencyOptions } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.plans.actions.read],
+			scope: PermissionCatalog.all.plans.scope,
+		},
 	});
 
 	//
