@@ -7,7 +7,9 @@ import { type UseSchoolCreateFormReturnType } from '../../use-schools-create-for
 
 /* * */
 
-export type SchoolCreateTextFieldName = Extract<keyof CreateSchoolDto, string>;
+export type SchoolCreateTextFieldName = {
+	[Key in keyof CreateSchoolDto]: CreateSchoolDto[Key] extends string ? Key : never
+}[keyof CreateSchoolDto];
 
 interface SchoolCreateTextFieldProps {
 	form: UseSchoolCreateFormReturnType['form']

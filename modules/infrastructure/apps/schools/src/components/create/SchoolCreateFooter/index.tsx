@@ -2,8 +2,8 @@
 
 import { Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
-import { useSchoolCreatePublish } from '../use-schools-create-publish';
 import { type UseSchoolCreateFormReturnType } from '../use-schools-create-form';
+import { useSchoolCreatePublish } from '../use-schools-create-publish';
 
 /* * */
 

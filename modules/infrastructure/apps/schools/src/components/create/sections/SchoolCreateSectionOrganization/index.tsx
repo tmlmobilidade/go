@@ -1,6 +1,6 @@
 'use client';
 
-import { Grid, Label, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { type UseSchoolCreateFormReturnType } from '../../use-schools-create-form';
@@ -28,13 +28,17 @@ export function SchoolCreateSectionOrganization({ form }: SchoolCreateSectionOrg
 	// B. Render components
 
 	return (
-		<Section gap="sm">
-			<Label size="lg" caps>{t('schools:create.SchoolCreateSectionOrganization.title')}</Label>
-			<Grid columns="ab" gap="md">
-				{schoolOrganizationFields.map(name => (
-					<SchoolCreateTextField key={name} form={form} label={t(`schools:create.SchoolCreateSectionOrganization.fields.${name}`)} name={name} />
-				))}
-			</Grid>
-		</Section>
+		<Collapsible
+			description={t('schools:create.SchoolCreateSectionOrganization.description')}
+			title={t('schools:create.SchoolCreateSectionOrganization.title')}
+		>
+			<Section gap="sm">
+				<Grid columns="ab" gap="md">
+					{schoolOrganizationFields.map(name => (
+						<SchoolCreateTextField key={name} form={form} label={t(`schools:create.SchoolCreateSectionOrganization.fields.${name}`)} name={name} />
+					))}
+				</Grid>
+			</Section>
+		</Collapsible>
 	);
 }

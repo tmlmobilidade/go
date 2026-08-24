@@ -1,9 +1,7 @@
 'use client';
 
-import { Divider } from '@tmlmobilidade/ui';
-
-import { SchoolCreateSectionAdministrative } from '../sections/SchoolCreateSectionAdministrative';
 import { SchoolCreateSectionAddress } from '../sections/SchoolCreateSectionAddress';
+import { SchoolCreateSectionAdministrative } from '../sections/SchoolCreateSectionAdministrative';
 import { SchoolCreateSectionGeneral } from '../sections/SchoolCreateSectionGeneral';
 import { SchoolCreateSectionOrganization } from '../sections/SchoolCreateSectionOrganization';
 import { type UseSchoolCreateFormReturnType } from '../use-schools-create-form';
@@ -25,11 +23,8 @@ export function SchoolCreateForm({ form }: SchoolCreateFormProps) {
 	return (
 		<>
 			<SchoolCreateSectionGeneral form={form} />
-			<Divider />
 			<SchoolCreateSectionOrganization form={form} />
-			<Divider />
 			<SchoolCreateSectionAddress form={form} />
-			<Divider />
 			<SchoolCreateSectionAdministrative form={form} />
 		</>
 	);

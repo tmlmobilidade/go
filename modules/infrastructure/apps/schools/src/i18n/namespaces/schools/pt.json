@@ -1,8 +1,43 @@
 {
 	"create": {
-		"SchoolCreateStepDates": {
-			"sections": {
-			}
+		"SchoolCreateSectionAddress": {
+			"description": "Morada e localização da escola.",
+			"fields": {
+				"address": "Morada",
+				"locality": "Localidade",
+				"parish_name": "Freguesia",
+				"postal_code": "Código postal"
+			},
+			"title": "Localização"
+		},
+		"SchoolCreateSectionAdministrative": {
+			"description": "Identificadores administrativos e localização territorial.",
+			"fields": {
+				"district_id": "ID do distrito",
+				"district_name": "Distrito",
+				"municipality_id": "ID do município",
+				"municipality_name": "Município",
+				"region_id": "ID da região",
+				"region_name": "Região"
+			},
+			"title": "Dados administrativos"
+		},
+		"SchoolCreateSectionGeneral": {
+			"description": "Informações gerais da escola.",
+			"fields": {
+				"grouping": "Agrupamento",
+				"name": "Nome",
+				"nature": "Natureza"
+			},
+			"title": "Dados gerais"
+		},
+		"SchoolCreateSectionOrganization": {
+			"description": "Operador e contacto da escola.",
+			"fields": {
+				"agency_id": "Operador",
+				"email": "Email"
+			},
+			"title": "Organização e contacto"
 		},
 		"summary": {
 			"title": {

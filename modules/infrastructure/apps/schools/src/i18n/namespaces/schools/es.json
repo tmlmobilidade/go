@@ -1,8 +1,43 @@
 {
 	"create": {
-		"SchoolCreateStepDates": {
-			"sections": {
-			}
+		"SchoolCreateSectionAddress": {
+			"description": "Dirección y ubicación de la escuela.",
+			"fields": {
+				"address": "Dirección",
+				"locality": "Localidad",
+				"parish_name": "Parroquia",
+				"postal_code": "Código postal"
+			},
+			"title": "Ubicación"
+		},
+		"SchoolCreateSectionAdministrative": {
+			"description": "Identificadores administrativos y ubicación territorial.",
+			"fields": {
+				"district_id": "ID del distrito",
+				"district_name": "Distrito",
+				"municipality_id": "ID del municipio",
+				"municipality_name": "Municipio",
+				"region_id": "ID de la región",
+				"region_name": "Región"
+			},
+			"title": "Datos administrativos"
+		},
+		"SchoolCreateSectionGeneral": {
+			"description": "Información general de la escuela.",
+			"fields": {
+				"grouping": "Agrupación",
+				"name": "Nombre",
+				"nature": "Naturaleza"
+			},
+			"title": "Datos generales"
+		},
+		"SchoolCreateSectionOrganization": {
+			"description": "Operador y contacto de la escuela.",
+			"fields": {
+				"agency_id": "Operador",
+				"email": "Correo electrónico"
+			},
+			"title": "Organización y contacto"
 		},
 		"summary": {
 			"title": {
