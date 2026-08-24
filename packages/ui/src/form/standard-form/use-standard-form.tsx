@@ -19,6 +19,7 @@ interface UseStandardFormProps<T, TSchema extends ZodType> {
 export interface UseStandardFormReturnType<T> {
 	form: UseFormReturn<T>
 	isDirty: boolean
+	isValid: boolean
 	unblock: () => void
 }
 
@@ -52,6 +53,11 @@ export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultVa
 	const isDirty = Object.keys(form.formState.dirtyFields).length > 0;
 
 	//
+	// Do the same override for the "isValid" state
+
+	const isValid = Object.keys(form.formState.errors).length === 0;
+
+	//
 	// Initialize form with API data
 
 	useEffect(() => {
@@ -72,5 +78,5 @@ export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultVa
 	//
 	// Return hook values and functions
 
-	return { form, isDirty, unblock };
+	return { form, isDirty, isValid, unblock };
 }

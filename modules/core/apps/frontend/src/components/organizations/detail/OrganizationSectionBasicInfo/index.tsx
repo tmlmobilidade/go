@@ -17,7 +17,7 @@ export function OrganizationsDetailBasicInfo() {
 
 	const { t } = useTranslation();
 
-	const { actions, capabilities, form, status } = useOrganizationsDetailFormContext();
+	const { actions, capabilities, form, isDirty, status } = useOrganizationsDetailFormContext();
 
 	const { data: logoLightUrlValue, isLoading: isLoadingLogoLight } = useOrganizationsImageDetailData('light');
 	const { data: logoDarkUrlValue, isLoading: isLoadingLogoDark } = useOrganizationsImageDetailData('dark');
@@ -74,7 +74,7 @@ export function OrganizationsDetailBasicInfo() {
 
 				<Grid columns="ab" gap="lg">
 					<UploadImage
-						isDisabled={form.formState.isDirty}
+						isDisabled={isDirty}
 						isLoading={isLoadingLogoLight || status.isUpdatingLightLogo || status.isDeletingLightLogo}
 						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_light.label')}
 						onDelete={actions.deleteLightLogo}
@@ -82,7 +82,7 @@ export function OrganizationsDetailBasicInfo() {
 						urlValue={logoLightUrlValue}
 					/>
 					<UploadImage
-						isDisabled={form.formState.isDirty}
+						isDisabled={isDirty}
 						isLoading={isLoadingLogoDark || status.isUpdatingDarkLogo || status.isDeletingDarkLogo}
 						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_dark.label')}
 						onDelete={actions.deleteDarkLogo}

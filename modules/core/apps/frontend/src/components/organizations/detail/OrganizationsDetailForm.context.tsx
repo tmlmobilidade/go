@@ -64,7 +64,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 	//
 	// B. Setup form
 
-	const { form, isDirty, unblock } = useStandardForm<UpdateOrganizationDto, typeof UpdateOrganizationSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateOrganizationDto, typeof UpdateOrganizationSchema>({
 		apiData: organizationData,
 		schema: UpdateOrganizationSchema,
 	});
@@ -157,8 +157,8 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 			isDeleting: isDeleting,
 		},
 		form: {
-			isDirty: form.formState.isDirty,
-			isValid: form.formState.isValid,
+			isDirty,
+			isValid,
 		},
 		loading: {
 			isLoading: organizationDataLoading,
@@ -195,6 +195,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 		},
 		form,
 		isDirty,
+		isValid,
 		status: {
 			isDeleting,
 			isDeletingDarkLogo,
@@ -207,7 +208,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 			isUpdatingLightLogo,
 		},
 		unblock,
-	}), [deleteEnabled, editEnabled, form, handleDelete, handleDeleteDarkLogo, handleDeleteLightLogo, handleLock, handleUpdate, handleUpdateDarkLogo, handleUpdateLightLogo, isDeleting, isDeletingDarkLogo, isDeletingLightLogo, isDirty, isLocking, isUpdating, isUpdatingDarkLogo, isUpdatingLightLogo, lockEnabled, organizationData?.is_locked, organizationDataLoading, unblock, updateEnabled]);
+	}), [deleteEnabled, editEnabled, form, handleDelete, handleDeleteDarkLogo, handleDeleteLightLogo, handleLock, handleUpdate, handleUpdateDarkLogo, handleUpdateLightLogo, isDeleting, isDeletingDarkLogo, isDeletingLightLogo, isDirty, isLocking, isUpdating, isUpdatingDarkLogo, isUpdatingLightLogo, lockEnabled, organizationData?.is_locked, organizationDataLoading, unblock, updateEnabled, isValid]);
 
 	return (
 		<OrganizationsDetailFormContext.Provider value={stateValue}>
