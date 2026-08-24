@@ -37,43 +37,43 @@ server.register(
 		);
 
 		instance.get(
-			'/detail/:id',
+			'/:id/detail',
 			{ preHandler: authorizationMiddleware('organizations', ['read']) },
 			getOrganizationHandler,
 		);
 
 		instance.put(
-			'/update/:id',
+			'/:id/update',
 			{ preHandler: authorizationMiddleware('organizations', ['update']) },
 			updateOrganizationHandler,
 		);
 
 		instance.post(
-			'/update/:id/image',
+			'/:id/update/image',
 			{ preHandler: authorizationMiddleware('organizations', ['update']) },
 			uploadImageHandler,
 		);
 
 		instance.get(
-			'/detail/:id/image',
+			'/:id/detail/image',
 			{ preHandler: authorizationMiddleware('organizations', ['read']) },
 			getImageHandler,
 		);
 
 		instance.delete(
-			'/delete/:id/:theme/image',
-			{ preHandler: authorizationMiddleware('organizations', ['delete']) },
+			'/:id/delete/image/:theme',
+			{ preHandler: authorizationMiddleware('organizations', ['update']) },
 			deleteImageHandler,
 		);
 
 		instance.get(
-			'/lock/:id',
+			'/:id/lock',
 			{ preHandler: authorizationMiddleware('organizations', ['lock']) },
 			lockOrganizationHandler,
 		);
 
 		instance.delete(
-			'/delete/:id',
+			'/:id/delete',
 			{ preHandler: authorizationMiddleware('organizations', ['delete']) },
 			deleteOrganizationHandler,
 		);

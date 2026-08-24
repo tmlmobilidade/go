@@ -254,14 +254,14 @@ export const API_ROUTES = Object.freeze({
 
 		// ORGANIZATIONS
 		ORGANIZATIONS_CREATE: `${getModuleConfig('core', 'api_url')}/organizations/create`,
-		ORGANIZATIONS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/delete/${encodeURIComponent(id)}`,
-		ORGANIZATIONS_DELETE_DETAIL_: (id: string, theme: string) => `${getModuleConfig('core', 'api_url')}/THEME_IMAGE:/core/api/organizations/delete/${encodeURIComponent(id)}/${encodeURIComponent(theme)}/image`,
-		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/detail/${encodeURIComponent(id)}`,
-		ORGANIZATIONS_DETAIL_DETAIL_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/detail/${encodeURIComponent(id)}/image`,
+		ORGANIZATIONS_DETAIL_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/delete`,
+		ORGANIZATIONS_DETAIL_DELETE_IMAGE_VAR: (id: string, theme: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/delete/image/${encodeURIComponent(theme)}`,
+		ORGANIZATIONS_DETAIL_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/detail`,
+		ORGANIZATIONS_DETAIL_DETAIL_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/detail/image`,
+		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/lock`,
+		ORGANIZATIONS_DETAIL_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/update`,
+		ORGANIZATIONS_DETAIL_UPDATE_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/update/image`,
 		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations/list`,
-		ORGANIZATIONS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/lock/${encodeURIComponent(id)}`,
-		ORGANIZATIONS_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/update/${encodeURIComponent(id)}`,
-		ORGANIZATIONS_UPDATE_DETAIL_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/update/${encodeURIComponent(id)}/image`,
 
 		// PLATFORM
 		PLATFORM_AGENCIES: `${getModuleConfig('core', 'api_url')}/platform/agencies`,
