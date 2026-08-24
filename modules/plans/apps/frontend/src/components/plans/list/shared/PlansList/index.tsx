@@ -3,9 +3,9 @@
 import { PlansListCellFeedDates } from '@/components/plans/list/filters/PlansListCellFeedDates';
 import { PlansListFiltersBar } from '@/components/plans/list/filters/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/shared/PlansListHeader';
-import { type PlanNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
+import { type PlanListItem } from '@tmlmobilidade/go-plans-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
@@ -26,7 +26,7 @@ export function PlansList() {
 
 	const plansData = usePlansListData();
 
-	const columns: DataTableColumn<PlanNormalized>[] = [
+	const columns: DataTableColumn<PlanListItem>[] = [
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
@@ -34,7 +34,7 @@ export function PlansList() {
 			width: 90,
 		},
 		{
-			accessor: 'agency_id_normalized',
+			accessor: 'agency_id',
 			render: item => (
 				<AgencyTag
 					agencyId={item.agency_id}
@@ -110,7 +110,7 @@ export function PlansList() {
 	//
 	// B. Handle actions
 
-	const handleRowClick = (item: PlanNormalized) => {
+	const handleRowClick = (item: PlanListItem) => {
 		router.push(keepUrlParams(PAGE_ROUTES.plans.APPROVED_DETAIL(item._id)));
 	};
 

@@ -1,17 +1,7 @@
 /* * */
 
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixTimestampSchema, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
-
-/* * */
-
-export const PlanValidityStatusSchema = z.enum([
-	'active',
-	'expired',
-	'upcoming',
-]);
-
-export type PlanValidityStatus = z.infer<typeof PlanValidityStatusSchema>;
 
 /* * */
 
@@ -35,7 +25,7 @@ export const PlanListFiltersSchema = z.object({
 		.optional(),
 
 	validity_statuses: z
-		.array(PlanValidityStatusSchema)
+		.array(ValidityStatusSchema)
 		.default([]),
 });
 
