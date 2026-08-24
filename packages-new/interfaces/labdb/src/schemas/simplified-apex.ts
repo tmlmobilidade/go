@@ -10,6 +10,7 @@ export const simplifiedApexBankingTapTableSchema: ClickHouseTableSchema<Simplifi
 	agency_code: { type: 'LowCardinality(String)' },
 	agency_id: { type: 'LowCardinality(String)' },
 	apex_version: { type: 'LowCardinality(String)' },
+	banking_tap_id: { type: 'String' },
 	banking_token: { type: 'String' },
 	card_brand: { type: 'UInt8' },
 	card_pan: { type: 'String' },
