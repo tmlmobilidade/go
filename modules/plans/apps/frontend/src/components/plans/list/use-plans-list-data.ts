@@ -3,6 +3,7 @@
 import { type PlanNormalized } from '@/types/normalized';
 import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type PlanListFilters } from '@tmlmobilidade/go-plans-pckg-types';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { normalizeString } from '@tmlmobilidade/strings';
@@ -11,6 +12,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import { usePlansListFilterAgency } from './filters/PlansListFilterAgency/use-plans-list-filter-agency';
+import { usePlansListFilterFeedDates } from './filters/PlansListFilterFeedDates/use-plans-list-filter-feed-dates';
 import { usePlansListFilterSearch } from './filters/PlansListFilterSearch/use-plans-list-filter-search';
 import { usePlansListFilterValidityStatus } from './filters/PlansListFilterValidityStatus/use-plans-list-filter-validity-status';
 
@@ -35,16 +37,25 @@ export function usePlansListData(): UsePlansListDataReturnType {
 	// A. Setup variables
 
 	const filterAgency = usePlansListFilterAgency();
-
 	const filterSearch = usePlansListFilterSearch();
-
 	const filterValidityStatus = usePlansListFilterValidityStatus();
+	const filterFeedDates = usePlansListFilterFeedDates();
+
+	//
+	// B. Transform data
+
+	const query = useMemo<PlanListFilters>(() => ({
+		agency_ids: filterAgency.value,
+		feed_dates: filterFeedDates.value,
+		search: filterSearch.value,
+		validity_statuses: filterValidityStatus.value,
+	}), [filterAgency.value, filterFeedDates.value, filterSearch.value, filterValidityStatus.value]);
 
 	//
 	// B. Fetch data
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Plan[]>>(API_ROUTES.plans.PLANS_LIST, {
-		fetcher: async (url: string) => await fetchApiData<Plan[]>({ url }),
+		fetcher: async (url: string, query: PlanListFilters) => await fetchApiData<Plan[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 5_000,
 	});
 
