@@ -24,6 +24,9 @@ interface AgenciesContextState {
 
 const AgenciesContext = createContext<AgenciesContextState | undefined>(undefined);
 
+/**
+ * @deprecated use `useAgenciesData` hook instead.
+ */
 export const useAgenciesContext = () => {
 	const context = useContext(AgenciesContext);
 	if (!context) {

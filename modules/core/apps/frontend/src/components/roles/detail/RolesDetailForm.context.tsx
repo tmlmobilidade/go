@@ -43,7 +43,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// B. Setup form
 
-	const { form, unblock } = useStandardForm<UpdateRoleDto, typeof UpdateRoleSchema>({
+	const { form, isDirty, unblock } = useStandardForm<UpdateRoleDto, typeof UpdateRoleSchema>({
 		apiData: roleData,
 		schema: UpdateRoleSchema,
 	});
@@ -100,7 +100,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 			isDeleting: isDeleting,
 		},
 		form: {
-			isDirty: form.formState.isDirty,
+			isDirty,
 			isValid: form.formState.isValid,
 		},
 		loading: {
@@ -133,6 +133,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 			updateEnabled,
 		},
 		form,
+		isDirty,
 		status: {
 			isDeleting,
 			isLoading: roleDataLoading,
@@ -141,7 +142,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 			isUpdating,
 		},
 		unblock,
-	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isLocking, isUpdating, lockEnabled, roleData?.is_locked, roleDataLoading, unblock, updateEnabled]);
+	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isLocking, isUpdating, lockEnabled, roleData?.is_locked, roleDataLoading, unblock, updateEnabled, isDirty]);
 
 	return (
 		<RolesDetailFormContext.Provider value={stateValue}>
