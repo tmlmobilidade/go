@@ -65,7 +65,7 @@ async function main() {
 				.setZone('Europe/Lisbon', 'offset_only');
 
 			Logger.spacer(1);
-			Logger.title(`${progress} - ${chunkEndDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)} › ${chunkStartDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)}`);
+			Logger.title(`${progress} - ${chunkEndDate.toFormat('yyyy-MM-dd HH:mm:ss')} › ${chunkStartDate.toFormat('yyyy-MM-dd HH:mm:ss')}`);
 
 			//
 			// Fetch the ride acceptances.
