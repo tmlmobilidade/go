@@ -4,8 +4,8 @@ import { AppConfig } from '@/lib/config.js';
 import { chunkLineByDistanceV2, hashedShapesToFeatureCollection } from '@tmlmobilidade/geo';
 import { qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { BatchWriter } from '@tmlmobilidade/utils';
 import geohash from 'ngeohash';
 
 /* * */

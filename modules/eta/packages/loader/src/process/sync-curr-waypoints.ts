@@ -4,8 +4,8 @@ import type { AppConfig } from '@/lib/config.js';
 
 import { qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
