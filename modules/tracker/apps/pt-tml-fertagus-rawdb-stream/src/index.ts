@@ -9,6 +9,8 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 
+import { findTripIdQuery } from './find-trip-id-query.js';
+
 /* * */
 
 const AGENCY_ID = '7NTB1';
@@ -27,6 +29,15 @@ const ridesMap = new Map<string, string>();
 
 /* * */
 
+/**
+ * Finds the trip ID for a given Fertagus vehicle event payload.
+ *
+ * Attempts to retrieve the corresponding trip ID from the cache, or queries the database if needed.
+ * Logs errors if no ride or multiple rides are found for the given event parameters.
+ *
+ * @param {RawVehicleEventPtTmlFertagusV1['payload']} event - The vehicle event payload to find the trip ID for.
+ * @returns {Promise<string | null>} The trip ID if found and unique, otherwise null.
+ */
 async function findTripId(event: RawVehicleEventPtTmlFertagusV1['payload']): Promise<null | string> {
 	if (!event.startsAt || !event.stop_id_start || !event.stop_id_end) return null;
 
@@ -36,47 +47,7 @@ async function findTripId(event: RawVehicleEventPtTmlFertagusV1['payload']): Pro
 
 	const startTimeScheduled = Dates.fromISO(event.startsAt).unix_timestamp;
 
-	const foundRides = await labDb.queryFromString<{ trip_id: string }>(`
-		WITH
-			rides_latest AS (
-				SELECT
-					_id,
-					hashed_trip_id,
-					trip_id
-				FROM operation.rides
-				WHERE
-					agency_id = $1
-					AND start_time_scheduled = $2
-				ORDER BY
-					updated_at DESC
-				LIMIT 1 BY _id
-			),
-			trip_stops AS (
-				SELECT
-					_id,
-					argMin(stop_id, stop_sequence) AS first_stop_id,
-					argMax(stop_id, stop_sequence) AS last_stop_id
-				FROM (
-					SELECT
-						_id,
-						stop_id,
-						stop_sequence
-					FROM operation.hashed_trips
-					WHERE _id IN (SELECT hashed_trip_id FROM rides_latest)
-					ORDER BY
-						updated_at DESC
-					LIMIT 1 BY _id, stop_sequence
-				)
-				GROUP BY _id
-			)
-		SELECT
-			r.trip_id
-		FROM rides_latest AS r
-		INNER JOIN trip_stops AS t ON r.hashed_trip_id = t._id
-		WHERE
-			t.first_stop_id = $3
-			AND t.last_stop_id = $4
-	`, {
+	const foundRides = await labDb.queryFromString<{ trip_id: string }>(findTripIdQuery, {
 		1: AGENCY_ID,
 		2: startTimeScheduled,
 		3: event.stop_id_start,
