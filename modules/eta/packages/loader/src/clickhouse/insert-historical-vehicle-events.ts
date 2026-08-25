@@ -29,6 +29,7 @@ export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters
 	Logger.title('3. Insert historical rides vehicle events into clickhouse');
 
 	await performInTimeChunks({
+		intervalHrs: config.historicalVehicleEventsChunkDays * 24,
 		onChunk: async (chunk) => {
 			Logger.progress({ message: `[${chunk.index + 1}/${chunk.total}] - ${Dates.fromUnixTimestamp(chunk.end).iso}[${chunk.end}] › ${Dates.fromUnixTimestamp(chunk.start).iso}[${chunk.start}]` });
 			const operationalDates = operationalDateBoundsForChunk(chunk.start, chunk.end);
@@ -38,7 +39,6 @@ export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters
 				...operationalDates,
 			});
 		},
-		splitBy: { days: config.historicalVehicleEventsChunkDays },
 		startDate: Dates.now('Europe/Lisbon').minus({ days: config.historicalDataDaysBack }).unix_timestamp,
 	});
 
