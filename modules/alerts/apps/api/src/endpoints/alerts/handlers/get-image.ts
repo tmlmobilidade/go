@@ -11,7 +11,7 @@ import { type Attachment } from '@tmlmobilidade/go-types-core';
  * @param request The request object containing the alert ID in the params.
  * @param reply The reply object.
  */
-export async function getImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
+export async function getImageHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
 	// Ensure the alert exists
 	const foundAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
 	if (!foundAlert) {

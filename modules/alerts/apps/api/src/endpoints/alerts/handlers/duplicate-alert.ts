@@ -10,7 +10,7 @@ import { Alert, CreateAlertSchema } from '@tmlmobilidade/go-types-operation';
  * @param request Fastify request containing alert ID in params.
  * @param reply Fastify reply.
  */
-export async function duplicate(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
+export async function duplicateAlertHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
 	// Retrieve the existing alert
 	const existingAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
 	if (!existingAlert) {

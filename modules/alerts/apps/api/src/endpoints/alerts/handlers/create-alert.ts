@@ -9,7 +9,7 @@ import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilida
  * @param request The request object containing the alert data in the body.
  * @param reply The reply object.
  */
-export async function createAlert(request: FastifyRequest<{ Body: CreateAlertDto }>, reply: FastifyReply<Alert>) {
+export async function createAlertHandler(request: FastifyRequest<{ Body: CreateAlertDto }>, reply: FastifyReply<Alert>) {
 	const validatedAlert = CreateAlertSchema.parse(request.body);
 	const insertResult = await goDb.operation.alerts.insertOne({ ...validatedAlert, created_by: request.me._id, updated_by: request.me._id });
 	if (!insertResult) {

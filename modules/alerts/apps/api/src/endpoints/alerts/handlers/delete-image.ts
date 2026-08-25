@@ -10,7 +10,7 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param request The request object containing the alert ID in the params.
  * @param reply The reply object.
  */
-export async function deleteImage(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
+export async function deleteImageHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 	console.log('===> Deleting image for alert ID:', request.params.id);
 	// Ensure the alert exists and has an image
 	const foundAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });

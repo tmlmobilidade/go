@@ -10,7 +10,7 @@ import { Alert } from '@tmlmobilidade/go-types-operation';
  * @param request Fastify request containing alert ID in params.
  * @param reply Fastify reply.
  */
-export async function lock(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
+export async function lockAlertHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Alert>) {
 	const foundAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
 	if (!foundAlert) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Alert not found');
 	await goDb.operation.alerts.updateOne({ _id: request.params.id }, { is_locked: !foundAlert.is_locked });

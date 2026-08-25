@@ -10,7 +10,7 @@ import { Alert, UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-type
  * @param request The request object
  * @param reply The reply object
  */
-export async function update(request: FastifyRequest<{ Body: UpdateAlertDto, Params: { id: string } }>, reply: FastifyReply<Alert>) {
+export async function updateAlertHandler(request: FastifyRequest<{ Body: UpdateAlertDto, Params: { id: string } }>, reply: FastifyReply<Alert>) {
 	// Validate the request body
 	const validatedAlert = UpdateAlertSchema.safeParse(request.body);
 	if (!validatedAlert.success) {

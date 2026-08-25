@@ -3,17 +3,17 @@
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
-import { composeAlert } from './handlers/compose-alert.js';
-import { createAlert } from './handlers/create-alert.js';
+import { composeAlertHandler } from './handlers/compose-alert.js';
+import { createAlertHandler } from './handlers/create-alert.js';
 import { deleteAlertHandler } from './handlers/delete-alert.js';
-import { deleteImage } from './handlers/delete-image.js';
-import { duplicate } from './handlers/duplicate.js';
+import { deleteImageHandler } from './handlers/delete-image.js';
+import { duplicateAlertHandler } from './handlers/duplicate-alert.js';
 import { getAlertHandler } from './handlers/get-alert.js';
-import { getImage } from './handlers/get-image.js';
+import { getImageHandler } from './handlers/get-image.js';
 import { listAlertsHandler } from './handlers/list-alerts.js';
-import { lock } from './handlers/lock.js';
-import { update } from './handlers/update.js';
-import { uploadImage } from './handlers/upload-image.js';
+import { lockAlertHandler } from './handlers/lock-alert.js';
+import { updateAlertHandler } from './handlers/update-alert.js';
+import { uploadImageHandler } from './handlers/upload-image.js';
 
 /* * */
 
@@ -42,19 +42,19 @@ server.register(
 		instance.get(
 			'/:id/image',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			getImage,
+			getImageHandler,
 		);
 
 		instance.post(
 			'/create',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
-			createAlert,
+			createAlertHandler,
 		);
 
 		instance.put(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.update]) },
-			update,
+			updateAlertHandler,
 		);
 
 		instance.delete(
@@ -66,31 +66,31 @@ server.register(
 		instance.post(
 			'/:id/image',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.update]) },
-			uploadImage,
+			uploadImageHandler,
 		);
 
 		instance.delete(
 			'/:id/image',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.update]) },
-			deleteImage,
+			deleteImageHandler,
 		);
 
 		instance.get(
 			'/:id/lock',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.lock]) },
-			lock,
+			lockAlertHandler,
 		);
 
 		instance.get(
 			'/:id/duplicate',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
-			duplicate,
+			duplicateAlertHandler,
 		);
 
 		instance.post(
 			'/compose',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
-			composeAlert,
+			composeAlertHandler,
 		);
 
 		next();

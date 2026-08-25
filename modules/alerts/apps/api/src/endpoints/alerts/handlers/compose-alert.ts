@@ -9,7 +9,7 @@ import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '
  * @param request Fastify request containing alert ID in params.
  * @param reply Fastify reply.
  */
-export async function composeAlert(request: FastifyRequest<{ Body: AlertsComposeRequest }>, reply: FastifyReply<AlertsComposeResponse>) {
+export async function composeAlertHandler(request: FastifyRequest<{ Body: AlertsComposeRequest }>, reply: FastifyReply<AlertsComposeResponse>) {
 	const result = await composeAlertTitleAndDescription(request.body);
 	sendSuccessApiResponse(reply, result);
 }
