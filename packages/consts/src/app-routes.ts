@@ -173,16 +173,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// REFERENCE
 		REFERENCE_LIST: `${getModuleConfig('root', 'frontend_url')}/reference`,
 	},
-
-	schools: {
-		// BASE
-		BASE: `${getModuleConfig('schools', 'frontend_url')}`,
-
-		// SCHOOLS
-		SCHOOLS_CREATE: `${getModuleConfig('schools', 'frontend_url')}/create`,
-		SCHOOLS_DETAIL: (schoolId: string) => `${getModuleConfig('schools', 'frontend_url')}/${encodeURIComponent(schoolId)}`,
-		SCHOOLS_LIST: `${getModuleConfig('schools', 'frontend_url')}`,
-	},
 } as const);
 
 export const API_ROUTES = Object.freeze({
@@ -397,6 +387,11 @@ export const API_ROUTES = Object.freeze({
 		// BASE
 		BASE: `${getModuleConfig('infrastructure', 'api_url')}`,
 
+		// SCHOOLS
+		SCHOOLS_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/schools/${encodeURIComponent(id)}`,
+		SCHOOLS_DETAIL_LOCK: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/schools/${encodeURIComponent(id)}/lock`,
+		SCHOOLS_LIST: `${getModuleConfig('infrastructure', 'api_url')}/schools/list`,
+
 		// STOPS
 		STOPS_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/${encodeURIComponent(id)}`,
 		STOPS_DETAIL_LOCK: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/${encodeURIComponent(id)}/lock`,
@@ -512,16 +507,5 @@ export const API_ROUTES = Object.freeze({
 		VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/processing-status`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/request-approval`,
 		VALIDATIONS_LIST: `${getModuleConfig('plans', 'api_url')}/validations`,
-	},
-
-	schools: {
-		// BASE
-		BASE: `${getModuleConfig('schools', 'api_url')}`,
-
-		// SCHOOLS
-		SCHOOLS_CREATE: `${getModuleConfig('schools', 'api_url')}/schools`,
-		SCHOOLS_DETAIL: (id: string) => `${getModuleConfig('schools', 'api_url')}/schools/${encodeURIComponent(id)}`,
-		SCHOOLS_DETAIL_LOCK: (id: string) => `${getModuleConfig('schools', 'api_url')}/schools/${encodeURIComponent(id)}/lock`,
-		SCHOOLS_LIST: `${getModuleConfig('schools', 'api_url')}/schools/list`,
 	},
 } as const);
