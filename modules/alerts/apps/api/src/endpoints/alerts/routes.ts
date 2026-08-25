@@ -1,7 +1,6 @@
 /* * */
 
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { composeAlertHandler } from './handlers/compose-alert.js';
 import { createAlertHandler } from './handlers/create-alert.js';
@@ -29,67 +28,67 @@ server.register(
 
 		instance.post(
 			'/list',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
+			{ preHandler: authorizationMiddleware('alerts', ['read']) },
 			listAlertsHandler,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
+			{ preHandler: authorizationMiddleware('alerts', ['read']) },
 			getAlertHandler,
 		);
 
 		instance.get(
 			'/:id/image',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
+			{ preHandler: authorizationMiddleware('alerts', ['read']) },
 			getImageHandler,
 		);
 
 		instance.post(
 			'/create',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
+			{ preHandler: authorizationMiddleware('alerts', ['create']) },
 			createAlertHandler,
 		);
 
 		instance.put(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.update]) },
+			{ preHandler: authorizationMiddleware('alerts', ['update']) },
 			updateAlertHandler,
 		);
 
 		instance.delete(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.delete]) },
+			{ preHandler: authorizationMiddleware('alerts', ['delete']) },
 			deleteAlertHandler,
 		);
 
 		instance.post(
 			'/:id/image',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.update]) },
+			{ preHandler: authorizationMiddleware('alerts', ['update']) },
 			uploadImageHandler,
 		);
 
 		instance.delete(
 			'/:id/image',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.update]) },
+			{ preHandler: authorizationMiddleware('alerts', ['update']) },
 			deleteImageHandler,
 		);
 
 		instance.get(
 			'/:id/lock',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.lock]) },
+			{ preHandler: authorizationMiddleware('alerts', ['lock']) },
 			lockAlertHandler,
 		);
 
 		instance.get(
 			'/:id/duplicate',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
+			{ preHandler: authorizationMiddleware('alerts', ['create']) },
 			duplicateAlertHandler,
 		);
 
 		instance.post(
 			'/compose',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.create]) },
+			{ preHandler: authorizationMiddleware('alerts', ['create']) },
 			composeAlertHandler,
 		);
 
