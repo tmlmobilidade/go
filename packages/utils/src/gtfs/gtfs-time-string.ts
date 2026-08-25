@@ -1,8 +1,8 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { type GtfsDate, type GtfsTime, validateGtfsDate, validateGtfsTime } from '@tmlmobilidade/go-types-gtfs';
 import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * @deprecated Use `fromGtfsTimeAndGtfsDateToUnixTimestamp()` instead.
@@ -15,7 +15,7 @@ export function convertGTFSTimeStringAndOperationalDateToUnixTimestamp(timeStrin
 	// Extract the individual components of the time string (HH:MM:SS)
 	const [hoursOperation, minutesOperation, secondsOperation] = timeString.split(':').map(Number);
 	return Dates
-		.fromOperationalDate(operationalDate, 'Europe/Lisbon')
+		.fromOperationalDateInt(operationalDate, 'Europe/Lisbon')
 		.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
 		.unix_timestamp;
 };
@@ -36,7 +36,7 @@ export function fromGtfsTimeAndGtfsDateToUnixTimestamp(gtfsTime: GtfsTime, gtfsD
 	const [hours, minutes, seconds] = validatedGtfsTime.split(':').map(Number);
 	// Convert the combination of the time and date to a Unix timestamp
 	return Dates
-		.fromOperationalDate(validatedGtfsDate, 'Europe/Lisbon')
+		.fromOperationalDateInt(validatedGtfsDate, 'Europe/Lisbon')
 		.set({ hour: hours, minute: minutes, second: seconds })
 		.unix_timestamp;
 };

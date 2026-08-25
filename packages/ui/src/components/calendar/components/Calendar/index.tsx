@@ -1,6 +1,6 @@
 'use client';
 
-import { CalendarKey, Dates, monthYearFromKey } from '@tmlmobilidade/dates';
+import { CalendarKey, Dates, monthYearFromKey } from '@tmlmobilidade/go-utils-dates';
 import { type CalendarEvent, CalendarEventType } from '@tmlmobilidade/types';
 import React, { useCallback, useEffect, useRef } from 'react';
 

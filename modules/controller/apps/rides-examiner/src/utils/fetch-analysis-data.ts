@@ -1,9 +1,9 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

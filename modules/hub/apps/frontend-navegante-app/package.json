@@ -25,7 +25,7 @@
 		"@mantine/notifications": "9.5.1",
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-public-info": "*",

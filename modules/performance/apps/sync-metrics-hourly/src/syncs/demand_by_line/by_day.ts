@@ -2,7 +2,7 @@
 
 import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
 import { dayLabelFromStartIso } from '@/utils/day-label.js';
-import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
+import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';

@@ -1,7 +1,7 @@
 /* * */
 
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

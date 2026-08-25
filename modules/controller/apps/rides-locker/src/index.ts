@@ -1,11 +1,10 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { Dates, splitTimeIntervals } from '@tmlmobilidade/go-utils-dates';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
-import { Interval } from 'luxon';
 
 /* * */
 
@@ -42,11 +41,7 @@ async function main() {
 		const thirtySecondsAgo = Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK - 2 });
 		const earliestDataNeeded = Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK });
 
-		const allTimestampChunks = Interval
-			.fromISO(`${earliestDataNeeded.iso}/${thirtySecondsAgo.iso}`)
-			.splitBy({ hour: 2 })
-			.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
-			.sort((a, b) => b.start - a.start);
+		const allTimestampChunks = splitTimeIntervals(earliestDataNeeded.unix_timestamp, thirtySecondsAgo.unix_timestamp, 2);
 
 		//
 		// Iterate over each timestamp chunk and sync the documents.
@@ -70,7 +65,7 @@ async function main() {
 				.setZone('Europe/Lisbon', 'offset_only');
 
 			Logger.spacer(1);
-			Logger.title(`${progress} - ${chunkEndDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)} › ${chunkStartDate.toLocaleString(Dates.FORMATS.DATETIME_MEDIUM_WITH_SECONDS)}`);
+			Logger.title(`${progress} - ${chunkEndDate.toFormat('yyyy-MM-dd HH:mm:ss')} › ${chunkStartDate.toFormat('yyyy-MM-dd HH:mm:ss')}`);
 
 			//
 			// Fetch the ride acceptances.

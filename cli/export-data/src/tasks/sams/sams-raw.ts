@@ -2,7 +2,7 @@
 
 import { type SamExport } from '@/tasks/sams/sams-raw.types.js';
 import { type ExportType, type TaskProps } from '@/types.js';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Sam } from '@tmlmobilidade/go-types-operation';
 import { type Filter } from '@tmlmobilidade/interfaces';

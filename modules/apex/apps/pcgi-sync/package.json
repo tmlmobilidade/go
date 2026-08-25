@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-apex-pckg-parsers": "*",
 		"@tmlmobilidade/go-interfaces-pcgi-file-manager": "*",
 		"@tmlmobilidade/go-interfaces-rawdb": "*",

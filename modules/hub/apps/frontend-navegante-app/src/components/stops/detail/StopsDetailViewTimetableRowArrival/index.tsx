@@ -3,7 +3,7 @@
 import { LiveIcon } from '@/components/common/display/LiveIcon';
 import { type StopsDetailViewTimetableData } from '@/components/stops/detail/StopsDetail.context';
 import { IconClockHour9 } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

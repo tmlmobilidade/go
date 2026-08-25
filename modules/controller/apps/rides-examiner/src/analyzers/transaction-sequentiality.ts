@@ -1,8 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { type RideAnalysisTransactionSequentiality, RideAnalysisTransactionSequentialitySchema } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * This analyzer tests if there are any missing Transactions for the given Ride.

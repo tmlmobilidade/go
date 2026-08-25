@@ -10,5 +10,5 @@ export type TrainsResponse = Array<{
 	startsAt: null | string
 	stop_id_end: null | string
 	stop_id_start: null | string
-	train_id: null | string
+	train_id: null | number
 }>;

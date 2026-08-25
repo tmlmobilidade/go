@@ -2,7 +2,7 @@
 
 import { closeAsignPeriodModal } from '@/components/year-periods/calendar/PeriodAssign.modal';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { CalendarKey, convertKeysToOperationalDates, convertRangeToKeysArray, datesFromCalendarKey } from '@tmlmobilidade/dates';
+import { CalendarKey, convertKeysToOperationalDates, convertRangeToKeysArray, datesFromCalendarKey } from '@tmlmobilidade/go-utils-dates';
 import { type CreateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { useForm, type UseFormReturnType, useMeContext, useToast } from '@tmlmobilidade/ui';

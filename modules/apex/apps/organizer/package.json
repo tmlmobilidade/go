@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"@clickhouse/client": "1.23.1",
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",

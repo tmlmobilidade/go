@@ -144,10 +144,10 @@ Agency 41 matching to the decimal and agency 42 within ~0.01% after cleaning
 orphans usually means an **offer-data alignment** issue, not a broken VKM
 implementation.
 
-After changing `@tmlmobilidade/dates`, rebuild it before re-exporting:
+After changing `@tmlmobilidade/go-utils-dates`, rebuild it before re-exporting:
 
 ```bash
-npm run build -w @tmlmobilidade/dates
+npm run build -w @tmlmobilidade/go-utils-dates
 cd modules/offer/apps/gtfs-exporter && npm run dev:local
 ```
 

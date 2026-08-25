@@ -7,7 +7,7 @@ import { Span } from '@/components/Span/index.js';
 import { Wrapper } from '@/components/Wrapper/index.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { render } from 'react-email';
 

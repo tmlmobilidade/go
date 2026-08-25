@@ -1,6 +1,6 @@
 /* * */
 
-import { type UnixTimestamp } from '@/dates/unix-timestamp.js';
+import { type UnixTimestamp } from '@/datetime/unix-timestamp.js';
 import { DocumentSchema } from '@/documents/document.js';
 import { type ApprovalStatus, ApprovalStatusSchema } from '@/status/approval.js';
 import { z } from 'zod';

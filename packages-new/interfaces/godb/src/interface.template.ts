@@ -3,7 +3,7 @@
 import type { AggregateOptions, AggregationCursor, BulkWriteOptions, Collection, Db, DeleteOptions, DeleteResult, Document, Filter, FindOptions, Flatten, InsertManyResult, InsertOneOptions, InsertOneResult, OptionalUnlessRequiredId, UpdateOptions, UpdateResult, WithId } from '@tmlmobilidade/go-clients-mongo';
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type AggregationPipeline, CreateIndexesOptions, isSameIndex, prepareMongoIndexOptions, type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
 import { UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';

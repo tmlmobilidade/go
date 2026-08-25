@@ -3,7 +3,7 @@
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
 import { usePeriodsListContext } from '@/components/year-periods/list/PeriodsList.context';
 import { IconArrowRight, IconCalendarCancel, IconCalendarRepeat } from '@tabler/icons-react';
-import { Dates, FORMATS } from '@tmlmobilidade/dates';
+import { Dates, FORMATS } from '@tmlmobilidade/go-utils-dates';
 import { EventRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/go-types-offer';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

@@ -1,8 +1,7 @@
 /* * */
 
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { DurationObjectUnits, Interval } from 'luxon';
+import { Dates, splitTimeIntervals } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
@@ -15,12 +14,12 @@ export interface PerformInTimeChunksItem {
 
 export interface PerformInTimeChunksOptions {
 	endDate?: UnixTimestamp
+	intervalHrs: number
 	onChunk: (chunk: PerformInTimeChunksItem) => Promise<void>
-	splitBy: DurationObjectUnits
 	startDate: UnixTimestamp
 }
 
-export async function performInTimeChunks({ endDate, onChunk, splitBy, startDate }: PerformInTimeChunksOptions) {
+export async function performInTimeChunks({ endDate, intervalHrs, onChunk, startDate }: PerformInTimeChunksOptions) {
 	//
 
 	// In order to sync both collections in a manageable way, due to the high volume of data,
@@ -31,19 +30,12 @@ export async function performInTimeChunks({ endDate, onChunk, splitBy, startDate
 	// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
 
 	const endDateValue = endDate
-		? Dates
-			.fromUnixTimestamp(endDate)
-		: Dates
-			.now('Europe/Lisbon')
-			.minus({ seconds: 30 });
+		? Dates.fromUnixTimestamp(endDate).unix_timestamp
+		: Dates.now('utc').minus({ seconds: 30 }).unix_timestamp;
 
-	const startDateValue = Dates.fromUnixTimestamp(startDate);
+	const startDateValue = Dates.fromUnixTimestamp(startDate).unix_timestamp;
 
-	const allTimestampChunks = Interval
-		.fromISO(`${startDateValue.iso}/${endDateValue.iso}`)
-		.splitBy(splitBy)
-		.map(interval => ({ end: interval.end?.toMillis() ?? 0, start: interval.start?.toMillis() ?? 0 }))
-		.sort((a, b) => b.start - a.start);
+	const allTimestampChunks = splitTimeIntervals(startDateValue, endDateValue, intervalHrs);
 
 	//
 	// Iterate over each timestamp chunk and sync the documents.

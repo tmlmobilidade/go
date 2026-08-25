@@ -1,6 +1,6 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type UnixTimestamp } from '@tmlmobilidade/types';
 import { Label } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

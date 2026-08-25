@@ -2,9 +2,9 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { performInChunks } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { performInChunks } from '@tmlmobilidade/utils';
 
 /**
  * Remove rides that were previously parsed from this plan but which should not be included anymore.

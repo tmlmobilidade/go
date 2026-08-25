@@ -18,7 +18,7 @@
 		"test": "tsx ./src/tests/index.ts"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-performance-pckg-log": "*",
 		"@tmlmobilidade/go-performance-pckg-scripts": "*",

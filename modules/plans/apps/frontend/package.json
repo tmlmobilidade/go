@@ -17,7 +17,7 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-gtfs-validator": "*",
 		"@tmlmobilidade/go-types-operation": "*",

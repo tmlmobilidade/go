@@ -1,8 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { type RideAnalysisSimpleOneVehicleEventOrApexValidation, RideAnalysisSimpleOneVehicleEventOrApexValidationSchema } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * This analyzer tests if at least one vehicle event or one validation is found for the trip.

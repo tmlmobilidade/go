@@ -19,7 +19,7 @@
 	"dependencies": {
 		"@carrismetropolitana/api-types": "20260730.2028.44",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/interfaces": "*",

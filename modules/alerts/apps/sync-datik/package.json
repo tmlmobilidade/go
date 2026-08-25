@@ -20,10 +20,10 @@
 	"dependencies": {
 		"@tmlmobilidade/go-alerts-pckg-compose": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
 		"protobufjs": "8.7.1"
 	},
 	"devDependencies": {

@@ -1,6 +1,6 @@
 'use client';
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useFilterStateDateRange, type UseFilterStateDateRangeReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

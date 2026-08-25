@@ -6,30 +6,13 @@ import { z } from 'zod';
 /* * */
 
 export const RawVehicleEventPtTmlFertagusV1PayloadSchema = z.object({
-	header: z.object({
-		gtfs_realtime_version: z.literal('2.0'),
-		incrementality: z.literal('FULL_DATASET'),
-		timestamp: z.number(),
-	}),
-	vehicle: z.object({
-		agencyId: z.string(),
-		current_status: z.literal('IN_TRANSIT_TO'),
-		position: z.object({
-			latitude: z.number(),
-			longitude: z.number(),
-		}),
-		timestamp: z.number(),
-		trip: z.object({
-			line_id: z.string(),
-			pattern_id: z.string(),
-			route_id: z.string(),
-			schedule_relationship: z.literal('SCHEDULED'),
-			trip_id: z.string(),
-		}),
-		vehicle: z.object({
-			id: z.string(),
-		}),
-	}),
+	date: z.string(),
+	latitude: z.number().nullable().default(null),
+	longitude: z.number().nullable().default(null),
+	startsAt: z.string().nullable().default(null),
+	stop_id_end: z.string().nullable().default(null),
+	stop_id_start: z.string().nullable().default(null),
+	train_id: z.number().nullable().default(null),
 });
 
 export type RawVehicleEventPtTmlFertagusV1Payload = z.infer<typeof RawVehicleEventPtTmlFertagusV1PayloadSchema>;

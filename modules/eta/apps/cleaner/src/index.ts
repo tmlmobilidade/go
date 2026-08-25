@@ -8,7 +8,7 @@ import { cleanupHistoricalNodeTravelTimesAggregation } from '@/tasks/cleanup-his
 import { cleanupHistoricalNodeTravelTimes } from '@/tasks/cleanup-historical-node-travel-times.js';
 import { cleanupHistoricalRides } from '@/tasks/cleanup-historical-rides.js';
 import { cleanupHistoricalVehicleEvents } from '@/tasks/cleanup-historical-vehicle-events.js';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';

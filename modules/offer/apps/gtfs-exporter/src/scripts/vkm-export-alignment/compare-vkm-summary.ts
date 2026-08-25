@@ -18,7 +18,7 @@
  *   ... --only-routed
  */
 
-import { buildOperationalDateRange, calculateAgencyVkm, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
+import { buildOperationalDateRange, calculateAgencyVkm, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CalculateVkmDto, type Pattern } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';

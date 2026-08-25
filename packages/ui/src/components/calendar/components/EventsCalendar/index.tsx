@@ -1,7 +1,7 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CalendarKey, Dates } from '@tmlmobilidade/dates';
+import { CalendarKey, Dates } from '@tmlmobilidade/go-utils-dates';
 import { type CalendarEvent, CalendarEventType } from '@tmlmobilidade/types';
 import { useRouter } from 'next/navigation';
 

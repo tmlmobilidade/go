@@ -19,7 +19,7 @@
 	"dependencies": {
 		"@fastify/websocket": "11.3.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",

@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertsListFilters, type AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData } from '@tmlmobilidade/ui';
+import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -57,8 +57,7 @@ export function useAlertsListData(): UseAlertsListDataReturnType {
 		publish_date_start: filterPublishDate.value_start,
 		publish_status: filterPublishStatus.value,
 		reference_type: filterReferenceType.value,
-		search: filterSearch.value,
-	}), [filterAgency.value, filterPublishStatus.value, filterReferenceType.value, filterCause.value, filterEffect.value, filterSearch.value, filterActivePeriod.value_end, filterActivePeriod.value_start, filterPublishDate.value_end, filterPublishDate.value_start]);
+	}), [filterAgency.value, filterPublishStatus.value, filterReferenceType.value, filterCause.value, filterEffect.value, filterActivePeriod.value_end, filterActivePeriod.value_start, filterPublishDate.value_end, filterPublishDate.value_start]);
 
 	//
 	// C. Fetch data
@@ -69,14 +68,23 @@ export function useAlertsListData(): UseAlertsListDataReturnType {
 	});
 
 	//
-	// D. Return data
+	// D. Transform data
+
+	const searchResultsData = useSearch<AlertsListItem>({
+		accessors: ['_id', 'title'],
+		data: data?.data,
+		query: filterSearch.value,
+	});
+
+	//
+	// E. Return data
 
 	return useMemo(() => ({
-		data: data?.data,
+		data: searchResultsData,
 		error: error?.error,
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [data, error, isLoading, isValidating, mutate]);
+	}), [searchResultsData, data?.timestamp, error, isLoading, isValidating, mutate]);
 };

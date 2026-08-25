@@ -3,9 +3,9 @@
 import { cleanExpiredSessions } from '@/tasks/clean-sessions.js';
 import { cleanExpiredVerificationTokens } from '@/tasks/clean-verification-tokens.js';
 import { sanitizePermissions } from '@/tasks/sanitize-permissions.js';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 

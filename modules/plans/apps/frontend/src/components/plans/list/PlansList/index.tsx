@@ -6,7 +6,7 @@ import { PlansListFiltersBar } from '@/components/plans/list/PlansListFiltersBar
 import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { type PlanNormalized } from '@/types/normalized';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
