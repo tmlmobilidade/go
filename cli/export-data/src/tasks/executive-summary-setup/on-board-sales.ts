@@ -1,5 +1,5 @@
 import { type TaskProps } from '@/types.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { simplifiedApexOnBoardSales } from '@tmlmobilidade/interfaces';
 
 /* Interface for the result */
