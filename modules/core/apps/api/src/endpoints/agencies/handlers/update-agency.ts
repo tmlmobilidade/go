@@ -30,8 +30,6 @@ export async function updateAgencyHandler(request: FastifyRequest<{ Body: Update
 	//
 	// Update the agency in the database
 
-	console.log('request.params.id', request.params.id);
-
 	const updatedAgencyData = await goDb.core.agencies.updateById(request.params.id, validatedAgency.data);
 
 	return sendSuccessApiResponse(reply, updatedAgencyData);

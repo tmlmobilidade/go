@@ -35,7 +35,6 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/luxon": "3.7.3",
 		"@types/node": "26.1.2",
 		"@types/papaparse": "5.5.2",
 		"@types/react": "19.2.18",

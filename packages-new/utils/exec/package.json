@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-types-public-info",
+	"name": "@tmlmobilidade/go-utils-exec",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -24,7 +24,9 @@
 		"access": "public"
 	},
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
@@ -34,12 +36,10 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/go-types-gtfs": "*",
-		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-shared": "*",
-		"@types/geojson": "7946.0.16",
-		"gtfs-types": "5.1.0",
-		"zod": "3.25.76"
+		"@tmlmobilidade/go-utils-dates": "*",
+		"luxon": "3.7.2"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

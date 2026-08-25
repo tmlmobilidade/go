@@ -55,6 +55,4 @@ export async function runOnInterval(fn: () => Promise<void>, options: RunOnInter
 	};
 
 	await runner();
-
-	//
 }

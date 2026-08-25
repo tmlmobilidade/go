@@ -1,13 +1,11 @@
 /**
  * Run an async function over all items in the array, with a specific concurrency limit.
- *
+ * Each result is a { status, value } or { status, reason } object, as from Promise.allSettled().
+ * The pool will never run more than `concurrency` functions at once.
  * @param items - The array of items to process.
  * @param concurrency - The maximum number of concurrent executions.
  * @param fn - Async function to run for each item. Receives the item and its index.
  * @returns A Promise resolving to an array of PromiseSettledResult objects, preserving input order.
- *
- * Each result is a { status, value } or { status, reason } object, as from Promise.allSettled().
- * The pool will never run more than `concurrency` functions at once.
  */
 export async function runWithConcurrency<T, R>(items: T[], concurrency: number, fn: (item: T, index: number) => Promise<R>): Promise<PromiseSettledResult<R>[]> {
 	if (items.length === 0) return [];

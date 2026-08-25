@@ -40,7 +40,7 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	//
 	// B. Setup form
 
-	const { form, isDirty, unblock } = useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({
 		apiData: agencyData,
 		schema: UpdateAgencySchema,
 	});
@@ -50,9 +50,9 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Agency>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			agenciesDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			agenciesDetailMutate(response);
 			agenciesListMutate();
 		},
 	});
@@ -70,7 +70,7 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	const { editEnabled, updateEnabled } = useStandardFormCapabilities({
 		form: {
 			isDirty,
-			isValid: form.formState.isValid,
+			isValid,
 		},
 		loading: {
 			isLoading: agencyDataLoading,
@@ -94,12 +94,13 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 		},
 		form,
 		isDirty,
+		isValid,
 		status: {
 			isLoading: agencyDataLoading,
 			isUpdating,
 		},
 		unblock,
-	}), [editEnabled, form, handleUpdate, isUpdating, agencyDataLoading, unblock, updateEnabled, isDirty]);
+	}), [editEnabled, form, handleUpdate, isUpdating, agencyDataLoading, unblock, updateEnabled, isDirty, isValid]);
 
 	return (
 		<AgenciesDetailFormContext.Provider value={stateValue}>

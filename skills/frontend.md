@@ -91,8 +91,6 @@ const { form } = useStandardForm<UpdateAlertDto>({
 });
 ```
 
-Access form state via `form.formState.isDirty`, `form.formState.isValid`, `form.getValues()`, `form.reset()`.
-
 ---
 
 ## Flag hooks

@@ -43,7 +43,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// B. Setup form
 
-	const { form, isDirty, unblock } = useStandardForm<UpdateRoleDto, typeof UpdateRoleSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateRoleDto, typeof UpdateRoleSchema>({
 		apiData: roleData,
 		schema: UpdateRoleSchema,
 	});
@@ -53,9 +53,9 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_UPDATE(roleId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			rolesDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			rolesDetailMutate(response);
 			rolesListMutate();
 		},
 	});
@@ -70,9 +70,9 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<Role>({ method: 'PUT', url: API_ROUTES.core.ROLES_DETAIL(roleId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			rolesDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			rolesDetailMutate(response);
 			rolesListMutate();
 		},
 	});
@@ -101,7 +101,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 		},
 		form: {
 			isDirty,
-			isValid: form.formState.isValid,
+			isValid,
 		},
 		loading: {
 			isLoading: roleDataLoading,
@@ -134,6 +134,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 		},
 		form,
 		isDirty,
+		isValid,
 		status: {
 			isDeleting,
 			isLoading: roleDataLoading,
@@ -142,7 +143,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 			isUpdating,
 		},
 		unblock,
-	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isLocking, isUpdating, lockEnabled, roleData?.is_locked, roleDataLoading, unblock, updateEnabled, isDirty]);
+	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isLocking, isUpdating, lockEnabled, roleData?.is_locked, roleDataLoading, unblock, updateEnabled, isDirty, isValid]);
 
 	return (
 		<RolesDetailFormContext.Provider value={stateValue}>

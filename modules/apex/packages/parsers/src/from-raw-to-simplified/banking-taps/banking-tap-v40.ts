@@ -22,6 +22,7 @@ export function parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap
 		agency_code: doc.payload.operatorInfo.operatorLongID,
 		agency_id: doc.agency_id,
 		apex_version: doc.payload.versionInfo.apexVersion,
+		banking_tap_id: doc.payload.tapInInfo.bankingTapID,
 		banking_token: doc.payload.tapInInfo.bankingToken,
 		card_brand: ApexBankingBrandSchema.parse(String(doc.payload.tapInInfo.cardBrand)),
 		card_pan: doc.payload.tapInInfo.cardPan,

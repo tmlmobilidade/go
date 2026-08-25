@@ -1,7 +1,7 @@
 'use client';
 
 import { type AlertCause, AlertCauseValues, type AlertEffect, AlertEffectValues, type AlertReferenceType, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
-import { Checkbox, Collapsible, Divider, Grid, Inline, Section, StandardFormController, Surface, Table } from '@tmlmobilidade/ui';
+import { Checkbox, Collapsible, Divider, Grid, Inline, Section, Surface, Table, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
@@ -18,6 +18,8 @@ export function AgenciesDetailAlertsMap() {
 
 	const { capabilities, form } = useAgenciesDetailFormContext();
 
+	const alertsMapValue = useStandardFormWatch({ control: form.control, name: 'alerts_map' });
+
 	//
 	// B. Handle actions
 
@@ -26,10 +28,11 @@ export function AgenciesDetailAlertsMap() {
 		if (!capabilities.editEnabled) return;
 		// Count how many reference types are currently enabled,
 		// to determine whether to set them all to false or all to true.
+		const causeMap = alertsMapValue?.[causeValue];
 		let enabledCount = 0;
 		for (const effectValue of AlertEffectValues) {
 			for (const referenceTypeValue of AlertReferenceTypeValues) {
-				const isEnabled = form.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
+				const isEnabled = causeMap?.[effectValue]?.[referenceTypeValue];
 				if (isEnabled) enabledCount++;
 			}
 		}
@@ -37,11 +40,8 @@ export function AgenciesDetailAlertsMap() {
 		// Otherwise, set them all to true.
 		const newValue = enabledCount === (AlertEffectValues.length * AlertReferenceTypeValues.length) ? false : true;
 		// Toggle the value of all reference types for the given cause and effect
-		for (const effectValue of AlertEffectValues) {
-			for (const referenceTypeValue of AlertReferenceTypeValues) {
-				form.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
-			}
-		}
+		const newCauseMap = Object.fromEntries(AlertEffectValues.map(effectValue => [effectValue, Object.fromEntries(AlertReferenceTypeValues.map(referenceTypeValue => [referenceTypeValue, newValue]))]));
+		form.setValue(`alerts_map.${causeValue}`, newCauseMap, { shouldDirty: true });
 	};
 
 	const handleEffectClick = (causeValue: AlertCause, effectValue: AlertEffect) => {
@@ -49,18 +49,18 @@ export function AgenciesDetailAlertsMap() {
 		if (!capabilities.editEnabled) return;
 		// Count how many reference types are currently enabled,
 		// to determine whether to set them all to false or all to true.
+		const effectMap = alertsMapValue?.[causeValue]?.[effectValue];
 		let enabledCount = 0;
 		for (const referenceTypeValue of AlertReferenceTypeValues) {
-			const isEnabled = form.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
+			const isEnabled = effectMap?.[referenceTypeValue];
 			if (isEnabled) enabledCount++;
 		}
 		// If all reference types are currently enabled, set them all to false.
 		// Otherwise, set them all to true.
 		const newValue = enabledCount === AlertReferenceTypeValues.length ? false : true;
 		// Toggle the value of all reference types for the given cause and effect
-		for (const referenceTypeValue of AlertReferenceTypeValues) {
-			form.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
-		}
+		const newEffectMap = Object.fromEntries(AlertReferenceTypeValues.map(referenceTypeValue => [referenceTypeValue, newValue]));
+		form.setValue(`alerts_map.${causeValue}`, { ...alertsMapValue?.[causeValue], [effectValue]: newEffectMap }, { shouldDirty: true });
 	};
 
 	const handleReferenceTypeClick = (causeValue: AlertCause, referenceTypeValue: AlertReferenceType) => {
@@ -70,16 +70,22 @@ export function AgenciesDetailAlertsMap() {
 		// to determine whether to set them all to false or all to true.
 		let enabledCount = 0;
 		for (const effectValue of AlertEffectValues) {
-			const isEnabled = form.getValues(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`);
+			const isEnabled = alertsMapValue?.[causeValue]?.[effectValue]?.[referenceTypeValue];
 			if (isEnabled) enabledCount++;
 		}
 		// If all reference types are currently enabled, set them all to false.
 		// Otherwise, set them all to true.
 		const newValue = enabledCount === AlertEffectValues.length ? false : true;
 		// Toggle the value of all reference types for the given cause and effect
-		for (const effectValue of AlertEffectValues) {
-			form.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
-		}
+		const newCauseMap = Object.fromEntries(AlertEffectValues.map(effectValue => [effectValue, { ...alertsMapValue?.[causeValue]?.[effectValue], [referenceTypeValue]: newValue }]));
+		form.setValue(`alerts_map.${causeValue}`, newCauseMap, { shouldDirty: true });
+	};
+
+	const handleCheckboxChange = (causeValue: AlertCause, effectValue: AlertEffect, referenceTypeValue: AlertReferenceType, newValue: boolean) => {
+		// Skip if the form is read-only
+		if (!capabilities.editEnabled) return;
+		// Toggle the value of the reference type
+		form.setValue(`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`, newValue, { shouldDirty: true });
 	};
 
 	//
@@ -95,7 +101,7 @@ export function AgenciesDetailAlertsMap() {
 
 					{AlertCauseValues.map(causeValue => (
 						<Surface key={causeValue} variant="bordered">
-							<Section key={causeValue} padding="none">
+							<Section padding="none">
 								<Section>
 									<Inline onClick={() => handleCauseClick(causeValue)} dotted>{t(`shared:alerts.causes.${causeValue}.title`)}</Inline>
 								</Section>
@@ -119,17 +125,10 @@ export function AgenciesDetailAlertsMap() {
 												</Table.Td>
 												{AlertReferenceTypeValues.map(referenceTypeValue => (
 													<Table.Td key={`${causeValue}-${effectValue}-${referenceTypeValue}`}>
-														<StandardFormController
-															control={form.control}
-															name={`alerts_map.${causeValue}.${effectValue}.${referenceTypeValue}`}
-															render={({ field, fieldState }) => (
-																<Checkbox
-																	checked={field.value}
-																	error={fieldState.error?.message}
-																	onChange={field.onChange}
-																	readOnly={!capabilities.editEnabled}
-																/>
-															)}
+														<Checkbox
+															checked={alertsMapValue?.[causeValue]?.[effectValue]?.[referenceTypeValue] ?? false}
+															onChange={({ target }) => handleCheckboxChange(causeValue, effectValue, referenceTypeValue, target.checked)}
+															readOnly={!capabilities.editEnabled}
 														/>
 													</Table.Td>
 												))}
