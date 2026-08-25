@@ -1,5 +1,5 @@
 // import { type TaskProps } from '@/types.js';
-// import { type CalendarEntry, Dates } from '@tmlmobilidade/go-utils-dates';
+// import { type CalendarEntry, Dates } from '@tmlmobilidade/dates';
 // import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 // export interface AgencyAverageRidesByDayTypeResult {

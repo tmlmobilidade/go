@@ -1,7 +1,7 @@
 /* * */
 
 import { type ExportType, type TaskProps } from '@/types.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { type Filter, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { CsvWriter } from '@tmlmobilidade/writers';

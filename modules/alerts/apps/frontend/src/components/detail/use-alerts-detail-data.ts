@@ -11,7 +11,7 @@ import { useAlertsDetailAlertId } from './use-alerts-detail-alert-id';
 
 /* * */
 
-interface UseAlertsDetailAlertDataReturnType {
+interface UseAlertsDetailDataReturnType {
 	data: Alert
 	error: null | string
 	isLoading: boolean
@@ -21,7 +21,7 @@ interface UseAlertsDetailAlertDataReturnType {
 
 /* * */
 
-export function useAlertsDetailAlertData(): UseAlertsDetailAlertDataReturnType {
+export function useAlertsDetailData(): UseAlertsDetailDataReturnType {
 	//
 
 	//

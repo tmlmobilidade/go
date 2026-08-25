@@ -3,7 +3,7 @@
 import { Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { AlertsListFilterSearch } from '../../filters/AlertsListFilterSearch';
+import { AlertsListFilterSearch } from '../filters/AlertsListFilterSearch';
 import { useAlertsListData } from '../use-alerts-list-data';
 
 /* * */
