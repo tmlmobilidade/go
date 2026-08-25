@@ -2,7 +2,7 @@
 
 import { SchoolsList } from '@/components/list/SchoolsList';
 import { PanesManager } from '@tmlmobilidade/ui';
-import { type PropsWithChildren } from 'react';
+import { Fragment, type PropsWithChildren } from 'react';
 
 /* * */
 
@@ -12,7 +12,7 @@ export default function Layout({ children }: PropsWithChildren) {
 			id="schools"
 			panes={[
 				<SchoolsList key="schools-list" />,
-				children,
+				<Fragment key="schools-detail">{children}</Fragment>,
 			]}
 		/>
 	);

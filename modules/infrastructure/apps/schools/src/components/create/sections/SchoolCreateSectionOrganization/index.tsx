@@ -1,22 +1,15 @@
 'use client';
 
-import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { School } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Collapsible, Grid, LoadingSection, Section, Select, useAgenciesData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { type UseSchoolCreateFormReturnType } from '../../use-schools-create-form';
-import { SchoolCreateTextField, type SchoolCreateTextFieldName } from '../SchoolCreateTextField';
+import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
 
 /* * */
 
-const schoolOrganizationFields = ['agency_id', 'email'] as const satisfies readonly SchoolCreateTextFieldName[];
-
-interface SchoolCreateSectionOrganizationProps {
-	form: UseSchoolCreateFormReturnType['form']
-}
-
-/* * */
-
-export function SchoolCreateSectionOrganization({ form }: SchoolCreateSectionOrganizationProps) {
+export function SchoolCreateSectionOrganization() {
 	//
 
 	//
@@ -24,19 +17,48 @@ export function SchoolCreateSectionOrganization({ form }: SchoolCreateSectionOrg
 
 	const { t } = useTranslation();
 
+	const { form: schoolsCreateForm } = useSchoolsCreateFormContext();
+
+	const agencyIdValue = useStandardFormWatch({ control: schoolsCreateForm.control, name: 'agency_id' });
+
 	//
-	// B. Render components
+	// B. Fetch data
+
+	const { data: agenciesData, isLoading: agenciesLoading } = useAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.schools.actions.create],
+			scope: PermissionCatalog.all.schools.scope,
+		},
+	});
+
+	//
+	// C. Transform data
+
+	const handleSelectAgencyId = (value: School['agency_id']) => {
+		schoolsCreateForm.setValue('agency_id', value, { shouldDirty: true });
+	};
+
+	//
+	// D. Render components
+
+	if (agenciesLoading) {
+		return <LoadingSection />;
+	}
 
 	return (
 		<Collapsible
 			description={t('schools:create.SchoolCreateSectionOrganization.description')}
 			title={t('schools:create.SchoolCreateSectionOrganization.title')}
 		>
-			<Section gap="sm">
-				<Grid columns="ab" gap="md">
-					{schoolOrganizationFields.map(name => (
-						<SchoolCreateTextField key={name} form={form} label={t(`schools:create.SchoolCreateSectionOrganization.fields.${name}`)} name={name} />
-					))}
+			<Section padding="lg">
+				<Grid columns="abc" gap="md">
+					<Select
+						data={agenciesData?.map(agency => ({ label: agency.name, value: agency._id }))}
+						label={t('schools:create.SchoolCreateSectionGeneral.agency')}
+						name="agency_id"
+						onChange={value => handleSelectAgencyId(value as School['agency_id'])}
+						value={agencyIdValue}
+					/>
 				</Grid>
 			</Section>
 		</Collapsible>

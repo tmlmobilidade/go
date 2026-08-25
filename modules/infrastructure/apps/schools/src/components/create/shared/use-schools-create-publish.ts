@@ -1,38 +1,31 @@
 'use client';
 
+import { useSchoolsListData } from '@/components/list/use-schools-list-data';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { School } from '@tmlmobilidade/go-types-operation';
 import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
-import { useSchoolsListData } from '../list/use-schools-list-data';
-import { type UseSchoolCreateFormReturnType } from './use-schools-create-form';
+import { useSchoolsCreateFormContext } from './SchoolsCreateForm.context';
 
 /* * */
 
-interface UseSchoolCreatePublishReturnType {
+interface UseSchoolsCreatePublishReturnType {
 	isLoading: boolean
 	publish: () => Promise<void>
 }
 
 /* * */
 
-export interface UseSchoolCreatePublishProps {
-	form: UseSchoolCreateFormReturnType['form']
-	unblock: UseSchoolCreateFormReturnType['unblock']
-}
-
-/* * */
-
-export function useSchoolCreatePublish({ form, unblock }: UseSchoolCreatePublishProps): UseSchoolCreatePublishReturnType {
+export function useSchoolsCreatePublish(): UseSchoolsCreatePublishReturnType {
 	//
 
 	//
 	// A. Setup variables
 
 	const { mutate } = useSchoolsListData();
-	const router = useRouter();
+
+	const { form, unblock } = useSchoolsCreateFormContext();
 
 	//
 	// B. Handle actions
@@ -44,7 +37,8 @@ export function useSchoolCreatePublish({ form, unblock }: UseSchoolCreatePublish
 			unblock();
 			mutate();
 			if (data?._id) {
-				router.push(keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_DETAIL(data._id)));
+				const newUrl = keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_DETAIL(data._id));
+				window.location.href = newUrl;
 			};
 		},
 	});

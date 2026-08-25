@@ -3,20 +3,9 @@
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { type UseSchoolCreateFormReturnType } from '../../use-schools-create-form';
-import { SchoolCreateTextField, type SchoolCreateTextFieldName } from '../SchoolCreateTextField';
-
 /* * */
 
-const schoolAddressFields = ['address', 'locality', 'parish_name', 'postal_code'] as const satisfies readonly SchoolCreateTextFieldName[];
-
-interface SchoolCreateSectionAddressProps {
-	form: UseSchoolCreateFormReturnType['form']
-}
-
-/* * */
-
-export function SchoolCreateSectionAddress({ form }: SchoolCreateSectionAddressProps) {
+export function SchoolCreateSectionAddress() {
 	//
 
 	//
@@ -34,9 +23,11 @@ export function SchoolCreateSectionAddress({ form }: SchoolCreateSectionAddressP
 		>
 			<Section gap="sm">
 				<Grid columns="ab" gap="md">
-					{schoolAddressFields.map(name => (
-						<SchoolCreateTextField key={name} form={form} label={t(`schools:create.SchoolCreateSectionAddress.fields.${name}`)} name={name} />
-					))}
+					{/* {schoolAddressFields.map(name => (
+						// <SchoolCreateTextField key={name} form={form} label={t(`schools:create.SchoolCreateSectionAddress.fields.${name}`)} name={name} />
+						<p key={name}>oops</p>
+					))} */}
+					<p>oops</p>
 				</Grid>
 			</Section>
 		</Collapsible>

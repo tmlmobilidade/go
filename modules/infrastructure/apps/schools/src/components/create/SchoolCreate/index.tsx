@@ -4,10 +4,13 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { NoDataLabel, Pane, Surface, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import { SchoolCreateFooter } from '../SchoolCreateFooter';
-import { SchoolCreateForm } from '../SchoolCreateForm';
-import { SchoolCreateHeader } from '../SchoolCreateHeader';
-import { useSchoolsCreateForm } from '../use-schools-create-form';
+import { SchoolCreateSectionAddress } from '../sections/SchoolCreateSectionAddress';
+import { SchoolCreateSectionAdministrative } from '../sections/SchoolCreateSectionAdministrative';
+import { SchoolCreateSectionGeneral } from '../sections/SchoolCreateSectionGeneral';
+import { SchoolCreateSectionOrganization } from '../sections/SchoolCreateSectionOrganization';
+import { SchoolCreateFooter } from '../shared/SchoolCreateFooter';
+import { SchoolCreateHeader } from '../shared/SchoolCreateHeader';
+import { SchoolsCreateFormContextProvider } from '../shared/SchoolsCreateForm.context';
 
 /* * */
 
@@ -23,25 +26,28 @@ export function SchoolCreate() {
 		return meContext?.actions.hasPermission(PermissionCatalog.all.schools.scope, PermissionCatalog.all.schools.actions.create);
 	}, [meContext]);
 
-	const schoolCreateForm = useSchoolsCreateForm();
-
 	//
 	// B. Render components
 
 	if (!hasPermissionCreate) {
 		return (
 			<Surface align="center" justify="center" variant="transparent">
-				<NoDataLabel text="Sem permissão para criar escola" />
+				<NoDataLabel text="Selecione um alerta" />
 			</Surface>
 		);
 	}
 
 	return (
-		<Pane
-			footer={[<SchoolCreateFooter key="footer" form={schoolCreateForm.form} unblock={schoolCreateForm.unblock} />]}
-			header={[<SchoolCreateHeader key="header" />]}
-		>
-			<SchoolCreateForm form={schoolCreateForm.form} />
-		</Pane>
+		<SchoolsCreateFormContextProvider>
+			<Pane
+				footer={[<SchoolCreateFooter key="footer" />]}
+				header={[<SchoolCreateHeader key="header" />]}
+			>
+				<SchoolCreateSectionGeneral />
+				<SchoolCreateSectionOrganization />
+				<SchoolCreateSectionAddress />
+				<SchoolCreateSectionAdministrative />
+			</Pane>
+		</SchoolsCreateFormContextProvider>
 	);
 }

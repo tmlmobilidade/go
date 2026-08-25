@@ -3,20 +3,11 @@
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { type UseSchoolCreateFormReturnType } from '../../use-schools-create-form';
-import { SchoolCreateTextField, type SchoolCreateTextFieldName } from '../SchoolCreateTextField';
+import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
 
 /* * */
 
-const schoolGeneralFields = ['name', 'nature', 'grouping'] as const satisfies readonly SchoolCreateTextFieldName[];
-
-interface SchoolCreateSectionGeneralProps {
-	form: UseSchoolCreateFormReturnType['form']
-}
-
-/* * */
-
-export function SchoolCreateSectionGeneral({ form }: SchoolCreateSectionGeneralProps) {
+export function SchoolCreateSectionGeneral() {
 	//
 
 	//
@@ -24,19 +15,25 @@ export function SchoolCreateSectionGeneral({ form }: SchoolCreateSectionGeneralP
 
 	const { t } = useTranslation();
 
+	const { form: schoolsCreateForm } = useSchoolsCreateFormContext();
+
 	//
-	// B. Render components
+	// B. Fetch data
+
+	//
+	// C. Transform data
+
+	//
+	// D. Render components
 
 	return (
 		<Collapsible
 			description={t('schools:create.SchoolCreateSectionGeneral.description')}
 			title={t('schools:create.SchoolCreateSectionGeneral.title')}
 		>
-			<Section gap="sm">
-				<Grid columns="ab" gap="md">
-					{schoolGeneralFields.map(name => (
-						<SchoolCreateTextField key={name} form={form} label={t(`schools:create.SchoolCreateSectionGeneral.fields.${name}`)} name={name} />
-					))}
+			<Section padding="lg">
+				<Grid columns="abc" gap="md">
+					<p>oops</p>
 				</Grid>
 			</Section>
 		</Collapsible>

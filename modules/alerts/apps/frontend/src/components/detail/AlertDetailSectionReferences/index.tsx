@@ -5,7 +5,7 @@ import { ReferencesEditor } from '@/components/references/shared/ReferencesEdito
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Collapsible, StandardFormController, Label, openConfirmModal, Section, Select, useStandardFormWatch, useDataAgencies, useMeContext } from '@tmlmobilidade/ui';
+import { Collapsible, Label, openConfirmModal, Section, Select, StandardFormController, useDataAgencies, useMeContext, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
 
 /* * */

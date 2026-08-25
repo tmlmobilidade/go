@@ -23,6 +23,7 @@
 			"title": "Datos administrativos"
 		},
 		"SchoolCreateSectionGeneral": {
+			"agency": "Operador",
 			"description": "Información general de la escuela.",
 			"fields": {
 				"grouping": "Agrupación",

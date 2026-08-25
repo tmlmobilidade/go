@@ -10,6 +10,7 @@ const SchoolsPermissionActionsValues = [
 	'read',
 	'lock',
 	'update',
+	'update_publish_status',
 ] as const;
 
 export const SchoolsPermissionActionsSchema = z.enum(SchoolsPermissionActionsValues);
