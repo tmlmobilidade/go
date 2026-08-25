@@ -8,7 +8,7 @@ import { type Permission } from '../permissions.js';
  * @param requiredPermission The required permission to check.
  * @returns True if the permission is found, false otherwise.
  */
-export function hasPermission(userPermissions: Permission[], requiredPermission: Permission): boolean {
+export function hasPermission(userPermissions: Permission[], requiredPermission: Omit<Permission, 'resources'>): boolean {
 	//
 
 	//

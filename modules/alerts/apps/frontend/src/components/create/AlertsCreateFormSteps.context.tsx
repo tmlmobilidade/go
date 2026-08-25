@@ -1,9 +1,10 @@
 'use client';
 
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useAgenciesData, useStandardFormWatch, useMeContext, useMultiStep, type UseMultiStepReturnType } from '@tmlmobilidade/ui';
+import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { useMeData, useMultiStep, type UseMultiStepReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
+import { useAlertsAgenciesData } from '../shared/use-alerts-agencies-data';
 import { useAlertsCreateFormContext } from './AlertsCreateForm.context';
 
 /* * */
@@ -24,7 +25,7 @@ export function AlertsCreateFormStepsContextProvider({ children }: PropsWithChil
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
+	const { data: meData } = useMeData();
 
 	const { form: createAlertForm } = useAlertsCreateFormContext();
 
@@ -40,19 +41,17 @@ export function AlertsCreateFormStepsContextProvider({ children }: PropsWithChil
 	//
 	// C. Fetch data
 
-	const { data: agenciesData } = useAgenciesData({
-		permissions: {
-			actions: [PermissionCatalog.all.alerts.actions.create],
-			scope: PermissionCatalog.all.alerts.scope,
-		},
-	});
+	const { data: agenciesData } = useAlertsAgenciesData();
 
 	//
 	// E. Multi-step setup
 
 	const hasCreateDatesPermission = useMemo(() => {
-		return meContext.actions.hasPermission(PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.update_dates);
-	}, [meContext.actions]);
+		return hasPermission(meData?.permissions, {
+			action: PermissionCatalog.all.alerts.actions.update_dates,
+			scope: PermissionCatalog.all.alerts.scope,
+		});
+	}, [meData?.permissions]);
 
 	const steps = useMemo(() => [
 		{

@@ -3,8 +3,10 @@
 import { AlertReferenceTypeValues, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { useAgenciesData, useMeContext, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { ErrorDisplay, useMeContext, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
+
+import { useAlertsAgenciesData } from '../shared/use-alerts-agencies-data';
 
 /* * */
 
@@ -76,10 +78,10 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	//
 	// C. Fetch data
 
-	const { data: agenciesData } = useAgenciesData({
+	const { data: agenciesData } = useAlertsAgenciesData({
 		permissions: {
-			actions: [PermissionCatalog.all.alerts.actions.create],
-			scope: PermissionCatalog.all.alerts.scope,
+			actions: ['create'],
+			scope: 'alerts',
 		},
 	});
 
@@ -212,7 +214,9 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	//
 	// H. Return state
 
-	if (!agenciesData?.length) return null;
+	if (!agenciesData?.length) {
+		return <ErrorDisplay message="Não há agências disponíveis" />;
+	}
 
 	return (
 		<AlertsCreateFormContext.Provider value={{ form, isDirty, isValid, unblock }}>
