@@ -5,9 +5,9 @@ import { externalClients } from '@tmlmobilidade/external';
 import { TrainsResponse } from '@tmlmobilidade/external/dist/clients/fertagus/types.js';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlFertagusV1 } from '@tmlmobilidade/go-types-vehicle-events';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import crypto from 'node:crypto';
 
 /* * */

@@ -3,8 +3,8 @@
 import { parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexInspection } from '@tmlmobilidade/go-types-apex';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 
