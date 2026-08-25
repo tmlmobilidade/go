@@ -9,7 +9,7 @@ import { ridesProvider } from '@tmlmobilidade/go-providers-operation';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 /* * */
 

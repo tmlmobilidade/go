@@ -6,7 +6,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type FileExport, type GtfsExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { CsvWriter } from '@tmlmobilidade/writers';
 import AdmZip from 'adm-zip';
 import fs from 'node:fs';

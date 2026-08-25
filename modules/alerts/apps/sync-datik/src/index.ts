@@ -8,7 +8,7 @@ import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type ServiceAlertResponse } from '@tmlmobilidade/types';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import path from 'path';
 import { fileURLToPath } from 'url';
 

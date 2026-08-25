@@ -5,7 +5,7 @@ import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
 import { Timer } from '@tmlmobilidade/timer';
 import { getCurrentEnvironment } from '@tmlmobilidade/types';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { ObjectId } from 'mongodb';
 
 /* * */
