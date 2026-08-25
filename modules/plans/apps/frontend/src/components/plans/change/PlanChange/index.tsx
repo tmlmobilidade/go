@@ -3,7 +3,7 @@
 import { usePlanChangeContext } from '@/components/plans/change/PlanChangeForm.context';
 import { PlanChangeHeader } from '@/components/plans/change/PlanChangeHeader';
 import { IconCheck } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { Grid, IdTag, Label, Pane, Section, Select, type SelectProps, StandardFormController } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -23,7 +23,7 @@ export function PlanChange() {
 	const availableValidationsOptions = useMemo(() => {
 		return changePlanContext.data.availableValidations.map(item => ({
 			icon: <IdTag id={item._id} />,
-			label: `Submetida a ${Dates.fromUnixTimestamp(item.created_at).setZone('Europe/Lisbon', 'offset_only').toFormat('dd LLL yyyy, HH:mm', { locale: 'pt-PT' })}`,
+			label: `Submetida a ${Dates.fromUnixTimestamp(item.created_at).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.format.DATETIME_MEDIUM, 'pt-PT')}`,
 			value: item._id,
 		}));
 	}, [changePlanContext.data.availableValidations]);
