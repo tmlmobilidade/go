@@ -5,10 +5,10 @@ import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-alerts-pckg-c
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { type ServiceAlertResponse } from '@tmlmobilidade/types';
-import { runOnInterval } from '@tmlmobilidade/utils';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
