@@ -1,10 +1,10 @@
 'use client';
 
-import { usePlanChangeContext } from '@/components/plans/change/PlanChange.context';
+import { usePlanChangeContext } from '@/components/plans/change/PlanChangeForm.context';
 import { PlanChangeHeader } from '@/components/plans/change/PlanChangeHeader';
 import { IconCheck } from '@tabler/icons-react';
 import { Dates } from '@tmlmobilidade/dates';
-import { Grid, IdTag, Label, Pane, Section, Select, type SelectProps } from '@tmlmobilidade/ui';
+import { Grid, IdTag, Label, Pane, Section, Select, type SelectProps, StandardFormController } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -21,12 +21,12 @@ export function PlanChange() {
 	// B. Transform data
 
 	const availableValidationsOptions = useMemo(() => {
-		return changePlanContext.data.available_validations.map(item => ({
+		return changePlanContext.data.availableValidations.map(item => ({
 			icon: <IdTag id={item._id} />,
 			label: `Submetida a ${Dates.fromUnixTimestamp(item.created_at).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.DATETIME_MEDIUM, 'pt-PT')}`,
 			value: item._id,
 		}));
-	}, [changePlanContext.data.available_validations]);
+	}, [changePlanContext.data.availableValidations]);
 
 	//
 	// C. Render components
@@ -43,12 +43,22 @@ export function PlanChange() {
 		<Pane header={[<PlanChangeHeader key="header" />]}>
 			<Section>
 				<Grid gap="md">
-					<Select
-						data={availableValidationsOptions}
-						label="Selecione uma validação para substituir o plano atual"
-						onChange={changePlanContext.actions.setSelectedValidationId}
-						renderOption={renderSelectOption}
-						value={changePlanContext.data.selected_validation_id}
+					<StandardFormController
+						control={changePlanContext.form.control}
+						name="validation_id"
+						render={({ field, fieldState }) => (
+							<Select
+								clearable={false}
+								data={availableValidationsOptions}
+								disabled={!changePlanContext.capabilities?.editEnabled}
+								error={fieldState.error?.message}
+								label="Selecione uma validação para substituir o plano atual"
+								onBlur={field.onBlur}
+								onChange={value => field.onChange(value)}
+								renderOption={renderSelectOption}
+								value={field.value}
+							/>
+						)}
 					/>
 				</Grid>
 			</Section>

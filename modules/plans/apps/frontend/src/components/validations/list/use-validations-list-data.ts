@@ -55,7 +55,7 @@ export function useValidationsListData(): UseValidationsListDataReturnType {
 
 	const searchResultData = useSearch<ValidationListItem>({
 		accessors: ['_id'],
-		data: data?.data,
+		data: data?.data ?? [],
 		query: filterSearch.value,
 	});
 
