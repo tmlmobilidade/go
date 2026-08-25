@@ -22,6 +22,7 @@ export class Dates {
 	//
 
 	static readonly standardWindowHours = 10;
+	static readonly standardWindowMilliseconds = this.standardWindowHours * 1000 * 60 * 60;
 
 	public calendar_date: CalendarDate;
 	public iso: null | string;

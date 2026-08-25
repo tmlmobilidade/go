@@ -19,8 +19,8 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-eta-pckg-loader": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/utils": "*"
 	},

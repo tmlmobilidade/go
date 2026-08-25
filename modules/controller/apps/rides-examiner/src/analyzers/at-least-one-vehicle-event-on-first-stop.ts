@@ -1,9 +1,9 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { type GeoJson2dPosition } from '@tmlmobilidade/go-types-geo';
 import { type RideAnalysisAtLeastOneVehicleEventOnFirstStop, RideAnalysisAtLeastOneVehicleEventOnFirstStopSchema } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
 
 /* * */

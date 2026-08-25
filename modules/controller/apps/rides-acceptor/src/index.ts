@@ -1,12 +1,12 @@
 // /* * */
 
 // import { isEmpty, testRide } from '@/utils.js';
-// import { Dates } from '@tmlmobilidade/dates';
+// import { Dates } from '@tmlmobilidade/go-utils-dates';
 // import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 // import { type Ride, type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 // import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 // import { Timer } from '@tmlmobilidade/timer';
-// import { compareObjects, runOnInterval } from '@tmlmobilidade/utils';
+// import { compareObjects, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 // import { Interval } from 'luxon';
 
 // /* * */
