@@ -1,6 +1,6 @@
 /* * */
 
-import { OPERATIONAL_DATE_FORMAT } from '@/dates/operational-date-int.js';
+import { OPERATIONAL_DATE_FORMAT } from '@/datetime/operational-date-int.js';
 import { DateTime } from 'luxon';
 import { z } from 'zod';
 
