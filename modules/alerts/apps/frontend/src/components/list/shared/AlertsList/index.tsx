@@ -1,6 +1,6 @@
 'use client';
 
-import { useAlertsDetailAlertId } from '@/components/detail/shared/use-alerts-detail-alert-id';
+import { useAlertsDetailAlertId } from '@/components/detail/use-alerts-detail-alert-id';
 import { AlertsListFiltersBar } from '@/components/list/filters/AlertsListFiltersBar';
 import { AlertsListHeader } from '@/components/list/shared/AlertsListHeader';
 import { AlertsListCellCauseEffect } from '@/components/list/table/AlertsListCellCauseEffect';

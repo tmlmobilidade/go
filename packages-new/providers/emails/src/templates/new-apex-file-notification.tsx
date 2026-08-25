@@ -7,7 +7,7 @@ import { Span } from '@/components/Span/index.js';
 import { Wrapper } from '@/components/Wrapper/index.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { render } from 'react-email';
 
@@ -35,7 +35,7 @@ export default function NewApexFileNotificationTemplate({ agencyName, planId, st
 				do operador
 				<Span spaceAfter spaceBefore weight="bold">{agencyName}</Span>
 				com início a
-				<Span spaceBefore weight="bold">{Dates.fromOperationalDate(startDate, 'Europe/Lisbon').toLocaleString(Dates.FORMATS.DATE_FULL_WITH_YEAR, 'pt-PT')}</Span>
+				<Span spaceBefore weight="bold">{Dates.fromOperationalDate(startDate, 'Europe/Lisbon').toFormat('yyyy-MM-dd')}</Span>
 				.
 			</Paragraph>
 			<Paragraph bold color="success">O ficheiro de configuração está em anexo neste email.</Paragraph>

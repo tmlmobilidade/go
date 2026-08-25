@@ -2,7 +2,7 @@
 
 import type { CalendarEvent } from '@tmlmobilidade/types';
 
-import { CalendarKey, Dates, generateMonthGrid, keyToYYYYMMDD, type MonthGrid, parseCalendarKey } from '@tmlmobilidade/go-utils-dates';
+import { CalendarKey, Dates, generateMonthGrid, keyToYYYYMMDD, type MonthGrid, parseCalendarKey } from '@tmlmobilidade/dates';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */
@@ -100,8 +100,7 @@ export const CalendarUIContextProvider = ({
 		if (month === 12) {
 			setMonthState(1);
 			setYearState(year + 1);
-		}
-		else {
+		} else {
 			setMonthState(month + 1);
 		}
 	}, [month, year]);
@@ -110,8 +109,7 @@ export const CalendarUIContextProvider = ({
 		if (month === 1) {
 			setMonthState(12);
 			setYearState(year - 1);
-		}
-		else {
+		} else {
 			setMonthState(month - 1);
 		}
 	}, [month, year]);
