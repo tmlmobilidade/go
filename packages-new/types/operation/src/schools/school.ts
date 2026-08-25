@@ -12,7 +12,7 @@ export const SchoolSchema = DocumentSchema.extend({
 	basic_1: z.boolean().default(false),
 	basic_2: z.boolean().default(false),
 	basic_3: z.boolean().default(false),
-	code: z.string().nullable().default(null),
+	code: z.string().default(''),
 	district_id: z.string(),
 	district_name: z.string(),
 	email: z.string(),
