@@ -1,6 +1,6 @@
 /* * */
 
-import { ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -11,7 +11,7 @@ export const ValidationListFiltersSchema = z.object({
 		.default([]),
 
 	processing_statuses: z
-		.array(z.string())
+		.array(ProcessingStatusSchema)
 		.default([]),
 
 	search: z

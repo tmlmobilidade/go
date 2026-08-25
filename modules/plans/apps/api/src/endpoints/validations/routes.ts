@@ -4,9 +4,9 @@ import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clien
 
 import { createGtfsValidation } from './controllers/create-gtfs-validation.js';
 import { downloadGtfsValidationFile } from './controllers/download-gtfs-validation-file.js';
-import { getAllGtfsValidations } from './controllers/get-all-gtfs-validations.js';
 import { getGtfsValidationFile } from './controllers/get-gtfs-validation-file.js';
 import { getGtfsValidation } from './controllers/get-gtfs-validation.js';
+import { listGtfsValidations } from './controllers/list-gtfs-validations.js';
 import { lockGtfsValidation } from './controllers/lock-gtfs-validation.js';
 import { requestApproval } from './controllers/request-approval.js';
 import { updateProcessingStatus } from './controllers/update-processing-status.js';
@@ -26,7 +26,7 @@ server.register(
 		instance.post(
 			'/list',
 			{ preHandler: authorizationMiddleware('gtfs_validations', ['read']) },
-			getAllGtfsValidations,
+			listGtfsValidations,
 		);
 
 		instance.get(
