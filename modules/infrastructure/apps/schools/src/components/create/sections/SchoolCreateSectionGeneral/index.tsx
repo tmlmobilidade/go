@@ -3,8 +3,6 @@
 import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
-
 /* * */
 
 export function SchoolCreateSectionGeneral() {
@@ -14,8 +12,6 @@ export function SchoolCreateSectionGeneral() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-
-	const { form: schoolsCreateForm } = useSchoolsCreateFormContext();
 
 	//
 	// B. Fetch data
