@@ -1,8 +1,8 @@
 'use client';
 
 import { useAlertsDetailAlertId } from '@/components/detail/use-alerts-detail-alert-id';
+import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { AlertsListFiltersBar } from '@/components/list/filters/AlertsListFiltersBar';
-import { AlertsListHeader } from '@/components/list/shared/AlertsListHeader';
 import { AlertsListCellCauseEffect } from '@/components/list/table/AlertsListCellCauseEffect';
 import { AlertsListCellReferenceType } from '@/components/list/table/AlertsListCellReferenceType';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
