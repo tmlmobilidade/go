@@ -11,7 +11,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function listAlerts(request: FastifyRequest<{ Body: AlertsListFilters }>, reply: FastifyReply<AlertsListItem[]>) {
+export async function listAlertsHandler(request: FastifyRequest<{ Body: AlertsListFilters }>, reply: FastifyReply<AlertsListItem[]>) {
 	//
 
 	//
@@ -33,7 +33,7 @@ export async function listAlerts(request: FastifyRequest<{ Body: AlertsListFilte
 	//
 	// Build aggregation pipeline
 
-	const pipeline: AggregationPipeline<AlertsListItem> = [
+	const pipeline: AggregationPipeline<Omit<AlertsListItem, 'title_normalized'>> = [
 		{
 			$match: {
 				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },

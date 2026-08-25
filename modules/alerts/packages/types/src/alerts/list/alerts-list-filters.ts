@@ -38,10 +38,6 @@ export const AlertsListFiltersSchema = z.object({
 		.array(AlertReferenceTypeSchema)
 		.default([]),
 
-	search: z
-		.string()
-		.optional(),
-
 });
 
 /**

@@ -10,7 +10,7 @@ import { deleteAlert } from './handlers/delete.js';
 import { duplicate } from './handlers/duplicate.js';
 import { getById } from './handlers/get-by-id.js';
 import { getImage } from './handlers/get-image.js';
-import { listAlerts } from './handlers/list-alerts.js';
+import { listAlertsHandler } from './handlers/list-alerts.js';
 import { lock } from './handlers/lock.js';
 import { update } from './handlers/update.js';
 import { uploadImage } from './handlers/upload-image.js';
@@ -30,7 +30,7 @@ server.register(
 		instance.post(
 			'/list',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			listAlerts,
+			listAlertsHandler,
 		);
 
 		instance.get(
