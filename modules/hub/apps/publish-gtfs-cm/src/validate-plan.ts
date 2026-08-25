@@ -1,6 +1,6 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { type Plan } from '@tmlmobilidade/types';

@@ -1,4 +1,4 @@
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { renderSystemErrorTemplate } from '@tmlmobilidade/go-providers-emails';
 import nodemailer, { Transporter } from 'nodemailer';
 

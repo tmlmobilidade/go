@@ -1,7 +1,7 @@
 /* * */
 
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Label, Section, UserTag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -24,7 +24,7 @@ export function PlanDetailFootnote() {
 		// Convert the Unix timestamp to a Date object.
 		return Dates
 			.fromUnixTimestamp(planDetailContext.data.plan.created_at)
-			.toLocaleString({ day: '2-digit', hour: '2-digit', minute: '2-digit', month: 'long', year: 'numeric' }, 'pt-PT');
+			.toFormat('dd \'de\' LLLL \'de\' yyyy \'às\' HH:mm', { locale: 'pt-PT' });
 	}, [planDetailContext.data.plan.created_at]);
 
 	//

@@ -2,7 +2,7 @@
 
 import { processValidation } from '@/tasks/process-validation.js';
 import { SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { sendSystemErrorEmail } from '@tmlmobilidade/go-providers-emails';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';

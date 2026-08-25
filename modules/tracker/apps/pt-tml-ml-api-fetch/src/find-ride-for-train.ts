@@ -1,6 +1,6 @@
 /* * */
 
-import { type Dates } from '@tmlmobilidade/dates';
+import { type Dates } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 import { aggregationQuery } from './aggregation-query.js';

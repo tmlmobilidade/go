@@ -28,6 +28,6 @@
  - [] add license to public data
 
 # tracker
- - [] fix fertagus idiom
+ - [x] fix fertagus idiom
  - [] fix metro
  - [] fix cp

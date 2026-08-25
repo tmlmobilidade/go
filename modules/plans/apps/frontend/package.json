@@ -17,7 +17,6 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-plans-pckg-types": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
@@ -25,6 +24,7 @@
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",

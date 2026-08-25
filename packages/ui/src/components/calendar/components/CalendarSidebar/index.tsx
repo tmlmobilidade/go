@@ -1,6 +1,6 @@
 'use client';
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import styles from './styles.module.css';

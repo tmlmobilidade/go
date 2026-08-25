@@ -1,7 +1,7 @@
 'use client';
 
 import { useSessionStorage } from '@mantine/hooks';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type OperationalDate } from '@tmlmobilidade/types';
 import { useMemo } from 'react';
 

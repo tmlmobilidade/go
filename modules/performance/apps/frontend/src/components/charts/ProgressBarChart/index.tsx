@@ -3,7 +3,7 @@
 import { generateColors } from '@/utils/metrics';
 import { getShortLabelFromDetailed } from '@/utils/metrics/formatDates';
 import { ProgressBarResult } from '@/utils/metrics/types/chartResults';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { CompositeChart, CompositeChartSeries, MetricsSkeleton } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

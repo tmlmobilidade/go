@@ -4,7 +4,7 @@ import { NoDataLabel } from '@/components/common/display/NoDataLabel';
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { PathWaypoint } from '@/components/lines/detail/PathWaypoint';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';

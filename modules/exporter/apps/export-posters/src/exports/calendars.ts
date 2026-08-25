@@ -3,7 +3,7 @@
 import { DAY_TYPES } from '@/day-types.js';
 import { getFormattedDates, getPeriodName, getWeekdayNames } from '@/get-names.js';
 import { type CalendarAssignmentsExt, type CalendarExt, DayTypeConfig, type ExportToHitouchConfig } from '@/types.js';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type GtfsCalendarDates, type GtfsStopTimes, type GtfsTrips, validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29CalendarDates } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';

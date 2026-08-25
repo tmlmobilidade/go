@@ -2,8 +2,8 @@
 
 import type { DateRangeState } from '../contexts/CalendarUI.context';
 
-import { type CalendarKey, parseCalendarKey } from '@tmlmobilidade/dates';
-import { type Dates } from '@tmlmobilidade/dates';
+import { type CalendarKey, parseCalendarKey } from '@tmlmobilidade/go-utils-dates';
+import { type Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

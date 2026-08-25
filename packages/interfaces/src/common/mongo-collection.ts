@@ -2,7 +2,7 @@
 
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { generateRandomString } from '@tmlmobilidade/strings';

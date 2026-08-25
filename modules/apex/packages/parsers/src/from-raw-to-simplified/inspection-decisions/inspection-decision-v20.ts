@@ -1,6 +1,6 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { ApexControlStatusSchema, type RawApexTransactionInspectionDecisionV20, type SimplifiedApexInspectionDecision, SimplifiedApexInspectionDecisionSchema } from '@tmlmobilidade/go-types-apex';
 
 /* * */

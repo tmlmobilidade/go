@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Label } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -26,7 +26,7 @@ export function ValidationsListCellDate({ value }: ValidationsListCellDateProps)
 		return Dates
 			.fromUnixTimestamp(value)
 			.setZone('Europe/Lisbon', 'offset_only')
-			.toLocaleString({ day: '2-digit', hour: '2-digit', minute: '2-digit', month: 'long', year: 'numeric' }, 'pt-PT');
+			.toFormat('dd \'de\' LLLL \'de\' yyyy \'às\' HH:mm', { locale: 'pt-PT' });
 	}, [value]);
 
 	//

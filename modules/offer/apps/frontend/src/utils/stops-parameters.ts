@@ -1,6 +1,6 @@
 /* * */
 
-import { SegmentTravelTimes } from '@tmlmobilidade/dates';
+import { SegmentTravelTimes } from '@tmlmobilidade/go-utils-dates';
 import { StopsParameter } from '@tmlmobilidade/go-types-offer';
 
 /* * */

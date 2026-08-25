@@ -1,6 +1,6 @@
 /* * */
 
-import { type CalendarDay, type CalendarKey, parseCalendarKey } from '@tmlmobilidade/dates';
+import { type CalendarDay, type CalendarKey, parseCalendarKey } from '@tmlmobilidade/go-utils-dates';
 import { type CalendarEvent } from '@tmlmobilidade/types';
 
 /* * */

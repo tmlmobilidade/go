@@ -1,7 +1,7 @@
 /* * */
 
 import { IconEdit, IconRestore } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { FieldChange, FieldChangedComment } from '@tmlmobilidade/go-types-shared';
 
 import styles from './styles.module.css';

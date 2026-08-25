@@ -1,7 +1,7 @@
 /* * */
 
 import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Label, Section, UserTag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -24,7 +24,7 @@ export function ValidationsDetailFootnote() {
 		// Convert the Unix timestamp to a Date object.
 		return Dates
 			.fromUnixTimestamp(validationsDetailContext.data.validation.created_at)
-			.toLocaleString({ day: '2-digit', hour: '2-digit', minute: '2-digit', month: 'long', year: 'numeric' }, 'pt-PT');
+			.toFormat('dd \'de\' LLLL \'de\' yyyy \'às\' HH:mm', { locale: 'pt-PT' });
 	}, [validationsDetailContext.data.validation.created_at]);
 
 	//
