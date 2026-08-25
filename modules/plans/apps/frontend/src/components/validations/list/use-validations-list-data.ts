@@ -50,7 +50,7 @@ export function useValidationsListData(): UseValidationsListDataReturnType {
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<ValidationListItem[]>>([API_ROUTES.plans.VALIDATIONS_LIST, query], {
 		fetcher: async ([url, query]) => await fetchApiData<ValidationListItem[]>({ body: query, method: 'POST', url }),
-		refreshInterval: 3_000,
+		refreshInterval: 10_000,
 	});
 
 	const searchResultData = useSearch<ValidationListItem>({

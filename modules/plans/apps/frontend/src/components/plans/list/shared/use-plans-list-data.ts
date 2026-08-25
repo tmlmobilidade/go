@@ -50,7 +50,7 @@ export function usePlansListData(): UsePlansListDataReturnType {
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<PlanListItem[]>>([API_ROUTES.plans.PLANS_LIST, query], {
 		fetcher: async ([url, query]) => await fetchApiData<PlanListItem[]>({ body: query, method: 'POST', url }),
-		refreshInterval: 5_000,
+		refreshInterval: 10_000,
 	});
 
 	const searchResultData = useSearch<PlanListItem>({
