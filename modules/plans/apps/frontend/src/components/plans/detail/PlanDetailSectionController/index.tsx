@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { Button, Collapsible, ProcessingStatusDisplay, Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */

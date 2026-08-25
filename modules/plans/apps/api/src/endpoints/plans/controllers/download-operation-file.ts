@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -19,7 +18,12 @@ export async function downloadOperationFile(request: FastifyRequest<{ Params: { 
 
 	const planData = await goDb.operation.plans.findById(request.params.id);
 
-	if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+	if (!planData) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
 	//
 	// Check if the user has permission to read the Plan
@@ -32,14 +36,24 @@ export async function downloadOperationFile(request: FastifyRequest<{ Params: { 
 		value: planData.agency_id,
 	});
 
-	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+	if (!hasPermissionReadPlan) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: read plan',
+			status_code: '403',
+		});
+	}
 
 	//
 	// Fetch the file associated with the plan
 
 	const foundFileData = await storageProvider.findById(planData.operation_file_id);
 
-	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan operation file not found');
+	if (!foundFileData) {
+		return sendErrorApiResponse(reply, {
+			error: 'Plan operation file not found',
+			status_code: '404',
+		});
+	}
 
 	//
 	// Stream the file in the given URL to the client
@@ -47,7 +61,10 @@ export async function downloadOperationFile(request: FastifyRequest<{ Params: { 
 	const storageServiceResponse = await fetch(foundFileData.url);
 
 	if (!storageServiceResponse.ok || !storageServiceResponse.body) {
-		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
+		return sendErrorApiResponse(reply, {
+			error: 'Could not fetch file',
+			status_code: '500',
+		});
 	}
 
 	//

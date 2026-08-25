@@ -2,8 +2,9 @@
 
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
-import { useValidationCreateContext } from '@/components/validations/create/ValidationCreate.context';
 import { AlertMessage, Divider, FileUpload, Label, Section, Select } from '@tmlmobilidade/ui';
+
+import { useValidationCreateContext } from '../ValidationCreateForm.context';
 
 /* * */
 
@@ -14,6 +15,8 @@ export function ValidationCreateBasicInfo() {
 	// A. Setup variables
 
 	const validationCreateContext = useValidationCreateContext();
+	const gtfsAgency = validationCreateContext.form.watch('gtfs_agency');
+	const gtfsFeedInfo = validationCreateContext.form.watch('gtfs_feed_info');
 
 	//
 	// B. Render components
@@ -21,22 +24,22 @@ export function ValidationCreateBasicInfo() {
 	return (
 		<>
 
-			{validationCreateContext.flags.error?.name === 'ValidationError' && (
+			{validationCreateContext.data.validationError && (
 				<>
-					<AlertMessage title={validationCreateContext.flags.error?.message ?? ''} variant="danger" />
+					<AlertMessage title={validationCreateContext.data.validationError.message} variant="danger" />
 					<Divider />
 				</>
 			)}
 
-			{validationCreateContext.data.agency_options.length > 1 && (
+			{validationCreateContext.data.agencyOptions.length > 1 && (
 				<>
 					<Section gap="sm">
 						<Label size="lg">Selecione a agência para a validação</Label>
 						<Select
 							clearable={false}
-							data={validationCreateContext.data.agency_options}
+							data={validationCreateContext.data.agencyOptions}
 							onChange={validationCreateContext.actions.setSelectedAgencyId}
-							value={validationCreateContext.data.selected_agency_id}
+							value={validationCreateContext.data.selectedAgencyId}
 							w="100%"
 						/>
 					</Section>
@@ -44,21 +47,21 @@ export function ValidationCreateBasicInfo() {
 				</>
 			)}
 
-			{validationCreateContext.data.form.values.gtfs_agency && (
+			{gtfsAgency && (
 				<>
 					<Section gap="sm">
 						<Label size="lg">agency.txt</Label>
-						<AgencyDisplay data={validationCreateContext.data.form.values.gtfs_agency} />
+						<AgencyDisplay data={gtfsAgency} />
 					</Section>
 					<Divider />
 				</>
 			)}
 
-			{validationCreateContext.data.form.values.gtfs_feed_info && (
+			{gtfsFeedInfo && (
 				<>
 					<Section gap="sm">
 						<Label size="lg">feed_info.txt</Label>
-						<FeedInfoDisplay data={validationCreateContext.data.form.values.gtfs_feed_info} />
+						<FeedInfoDisplay data={gtfsFeedInfo} />
 					</Section>
 					<Divider />
 				</>

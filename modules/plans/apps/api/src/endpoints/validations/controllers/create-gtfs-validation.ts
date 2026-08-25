@@ -1,14 +1,14 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { Dates } from '@tmlmobilidade/dates';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
 import { type CreateGtfsValidationDto, type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { generateRandomString } from '@tmlmobilidade/strings';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { generateRandomString } from '@tmlmobilidade/strings';
 import { createWriteStream } from 'fs';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { finished } from 'node:stream/promises';
@@ -23,8 +23,19 @@ import { join } from 'path';
 export async function createGtfsValidation(request: FastifyRequest, reply: FastifyReply<unknown>) {
 	//
 
+	//
+	// Get the request data
+
 	const requestData = await request.file();
-	if (!requestData) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file provided');
+	if (!requestData) {
+		return sendErrorApiResponse(reply, {
+			error: 'No file provided',
+			status_code: '400',
+		});
+	}
+
+	//
+	// Check if the user has permission to create a validation
 
 	const hasPermissionCreateValidation = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.gtfs_validations.actions.create,
@@ -34,7 +45,15 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 		value: requestData.fields.agency_id['value'],
 	});
 
-	if (!hasPermissionCreateValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: create validation');
+	if (!hasPermissionCreateValidation) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: create validation',
+			status_code: '403',
+		});
+	}
+
+	//
+	// Create the validation data
 
 	const validationData: Omit<CreateGtfsValidationDto, 'file_id'> = {
 		agency_id: requestData.fields.agency_id['value'] as string,
@@ -49,7 +68,13 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 		validity_status: 'unknown',
 	};
 
+	//
+	// Create a temporary file path
+
 	const tempFilePath = join(tmpdir(), `validation-upload-${Date.now()}-${Math.random().toString(36).substring(7)}`);
+
+	//
+	// Create a buffer and size
 
 	let buffer: Buffer;
 	let size: number;
@@ -108,5 +133,8 @@ export async function createGtfsValidation(request: FastifyRequest, reply: Fasti
 		}
 	}
 
-	return reply.send({ data: finalValidationData, error: null, statusCode: HTTP_STATUS.OK });
+	//
+	// Return the success response
+
+	return sendSuccessApiResponse(reply, finalValidationData);
 }

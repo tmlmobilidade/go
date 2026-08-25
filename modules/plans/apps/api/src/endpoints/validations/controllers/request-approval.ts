@@ -1,11 +1,11 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/go-providers-emails';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { sendPlanApprovalRequestEmail } from '@tmlmobilidade/go-providers-emails';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog, validateOperationalDate } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Requests approval for a Validation by ID
@@ -21,14 +21,20 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 	const validationData = await goDb.operation.gtfsValidations.findById(request.params.id);
 
 	if (!validationData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Validation not found',
+			status_code: '404',
+		});
 	}
 
 	//
 	// Check if the notification has already been sent
 
 	if (validationData.notification_sent) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Notification has already been sent');
+		return sendErrorApiResponse(reply, {
+			error: 'Notification has already been sent',
+			status_code: '400',
+		});
 	}
 
 	//
@@ -43,7 +49,10 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 	});
 
 	if (!hasPermissionRequestApproval) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: request approval');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: request approval',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -52,7 +61,10 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 	const agencyData = await goDb.core.agencies.findById(validationData.agency_id);
 
 	if (!agencyData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Agency not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -76,7 +88,17 @@ export async function requestApproval(request: FastifyRequest<{ Params: { id: st
 
 	const updatedValidation = await goDb.operation.gtfsValidations.updateById(validationData._id, { notification_sent: true });
 
-	reply.send({ data: updatedValidation, error: null, statusCode: HTTP_STATUS.OK });
+	if (!updatedValidation) {
+		return sendErrorApiResponse(reply, {
+			error: 'Failed to update Validation',
+			status_code: '404',
+		});
+	}
+
+	//
+	// Return the updated Validation
+
+	return sendSuccessApiResponse(reply, updatedValidation);
 
 	//
 }
