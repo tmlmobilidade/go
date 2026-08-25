@@ -10,7 +10,7 @@ import useSWR from 'swr';
 import { usePlansListFilterAgency } from './filters/PlansListFilterAgency/use-plans-list-filter-agency';
 import { usePlansListFilterSearch } from './filters/PlansListFilterSearch/use-plans-list-filter-search';
 import { usePlansListFilterValidityStatus } from './filters/PlansListFilterValidityStatus/use-plans-list-filter-validity-status';
-import { usePlansListFilterFeedDates } from './table/PlansListCellFeedDates/use-plans-list-filter-feed-dates';
+import { usePlansListFilterFeedDates } from './table/PlansListCellFeedDates/use-plans-list-cell-feed-dates';
 
 /* * */
 
@@ -41,15 +41,10 @@ export function usePlansListData(): UsePlansListDataReturnType {
 
 	const query = useMemo<PlanListFilters>(() => ({
 		agency_ids: filterAgency.value,
-		// gtfs_feed_info: {
-		// 	end_date: filterFeedDates.value_end,
-		// 	start_date: filterFeedDates.value_start,
-		// },
 		search: filterSearch.value,
 		validity_statuses: filterValidityStatus.value,
 	}), [filterAgency.value, filterFeedDates.value_end, filterFeedDates.value_start, filterSearch.value, filterValidityStatus.value]);
 
-	console.log('query', query);
 	//
 	// C. Fetch data
 
