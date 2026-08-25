@@ -1,7 +1,8 @@
 /* * */
 
+import { type AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { Divider, Inline, Label, LoadingThinking, Section, StandardFormController, Surface, Switch, Text, TextInput, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Divider, Inline, Label, LoadingThinking, Section, StandardFormController, Surface, Switch, Text, TextInput, useDebouncedValue, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -20,15 +21,37 @@ export function AlertCreateStepSummaryAi() {
 
 	const { data: meData } = useMeData();
 
-	const { form: alertsCreateForm } = useAlertsCreateFormContext();
+	const { form } = useAlertsCreateFormContext();
 
-	const { data: composeData, isLoading: isLoadingComposeData, isValidating: isValidatingComposeData } = useAlertsComposeData();
+	const agencyIdValue = useStandardFormWatch({ control: form.control, name: 'agency_id' });
+	const autoTextsValue = useStandardFormWatch({ control: form.control, name: 'auto_texts' });
+	const titleValue = useStandardFormWatch({ control: form.control, name: 'title' });
+	const descriptionValue = useStandardFormWatch({ control: form.control, name: 'description' });
+	const activePeriodEndDateValue = useStandardFormWatch({ control: form.control, name: 'active_period_end_date' });
+	const activePeriodStartDateValue = useStandardFormWatch({ control: form.control, name: 'active_period_start_date' });
+	const causeValue = useStandardFormWatch({ control: form.control, name: 'cause' });
+	const effectValue = useStandardFormWatch({ control: form.control, name: 'effect' });
+	const referenceTypeValue = useStandardFormWatch({ control: form.control, name: 'reference_type' });
+	const referencesValue = useStandardFormWatch({ control: form.control, name: 'references' });
+	const userInstructionsValue = useStandardFormWatch({ control: form.control, name: 'user_instructions' });
 
-	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const referenceTypeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
-	const autoTextsValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'auto_texts' });
-	const titleValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'title' });
-	const descriptionValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'description' });
+	const [debouncedUserInstructions] = useDebouncedValue(userInstructionsValue, 1_000, { leading: false });
+
+	//
+	// B. Transform data
+
+	const requestBody = useMemo<AlertsComposeRequest>(() => ({
+		active_period_end_date: activePeriodEndDateValue,
+		active_period_start_date: activePeriodStartDateValue,
+		agency_id: agencyIdValue,
+		cause: causeValue,
+		effect: effectValue,
+		reference_type: referenceTypeValue,
+		references: referencesValue,
+		user_instructions: debouncedUserInstructions,
+	}), [agencyIdValue, activePeriodEndDateValue, activePeriodStartDateValue, causeValue, effectValue, referenceTypeValue, referencesValue, debouncedUserInstructions]);
+
+	const { data: composeData, isLoading: isLoadingComposeData, isValidating: isValidatingComposeData } = useAlertsComposeData(requestBody);
 
 	//
 	// B. Transform data
@@ -71,8 +94,8 @@ export function AlertCreateStepSummaryAi() {
 	// C. Handle actions
 
 	const handleAcceptProposal = () => {
-		alertsCreateForm.setValue('title', composeData?.pt?.title);
-		alertsCreateForm.setValue('description', composeData?.pt?.description);
+		form.setValue('title', composeData?.pt?.title);
+		form.setValue('description', composeData?.pt?.description);
 	};
 
 	//
@@ -85,7 +108,7 @@ export function AlertCreateStepSummaryAi() {
 				<Section gap="md">
 					{(hasPermissionToCreate || hasPermissionToUpdateTexts) && (
 						<StandardFormController
-							control={alertsCreateForm.control}
+							control={form.control}
 							name="auto_texts"
 							render={({ field }) => (
 								<Switch
@@ -99,7 +122,7 @@ export function AlertCreateStepSummaryAi() {
 					)}
 					{(autoTextsValue && hasPermissionToCreate) && (
 						<StandardFormController
-							control={alertsCreateForm.control}
+							control={form.control}
 							name="user_instructions"
 							render={({ field }) => (
 								<TextInput
