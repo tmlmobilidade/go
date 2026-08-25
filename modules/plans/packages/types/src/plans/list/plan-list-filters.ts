@@ -1,7 +1,17 @@
 /* * */
 
-import { UnixTimestampSchema, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+/* * */
+
+export const PlanValidityStatusSchema = z.enum([
+	'active',
+	'expired',
+	'upcoming',
+]);
+
+export type PlanValidityStatus = z.infer<typeof PlanValidityStatusSchema>;
 
 /* * */
 
@@ -10,14 +20,14 @@ export const PlanListFiltersSchema = z.object({
 		.array(z.string())
 		.default([]),
 
-	feed_dates: z
+	gtfs_feed_info: z
 		.object({
-			end: UnixTimestampSchema,
-			start: UnixTimestampSchema,
+			end_date: UnixTimestampSchema,
+			start_date: UnixTimestampSchema,
 		})
 		.default({
-			end: 0,
-			start: 0,
+			end_date: 0,
+			start_date: 0,
 		}),
 
 	search: z
@@ -25,7 +35,7 @@ export const PlanListFiltersSchema = z.object({
 		.optional(),
 
 	validity_statuses: z
-		.array(ValidityStatusSchema)
+		.array(PlanValidityStatusSchema)
 		.default([]),
 });
 

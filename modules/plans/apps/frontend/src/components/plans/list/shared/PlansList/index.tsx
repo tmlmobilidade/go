@@ -3,6 +3,7 @@
 import { PlansListCellFeedDates } from '@/components/plans/list/filters/PlansListCellFeedDates';
 import { PlansListFiltersBar } from '@/components/plans/list/filters/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/shared/PlansListHeader';
+import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type PlanListItem } from '@tmlmobilidade/go-plans-pckg-types';
@@ -57,7 +58,7 @@ export function PlansList() {
 				<PlansListCellFeedDates
 					endDate={item.gtfs_feed_info.feed_end_date}
 					startDate={item.gtfs_feed_info.feed_start_date}
-					validityStatus={item.validity_status}
+					validityStatus={getPlanValidityStatus(item.gtfs_feed_info.feed_start_date, item.gtfs_feed_info.feed_end_date)}
 				/>
 			),
 			title: 'Datas de Validade',

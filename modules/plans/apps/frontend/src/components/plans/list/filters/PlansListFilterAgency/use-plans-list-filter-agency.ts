@@ -7,6 +7,8 @@ import { useAgenciesData, useFilterStateList, type UseFilterStateListReturnType 
  * Manage the agency filter for the plans list.
  */
 export function usePlansListFilterAgency(): UseFilterStateListReturnType {
+	//
+
 	const { ids, options } = useAgenciesData({
 		permissions: {
 			actions: [PermissionCatalog.all.plans.actions.read],

@@ -9,11 +9,11 @@ import { deleteApexFile } from './controllers/delete-apex-file.js';
 import { deletePlan } from './controllers/delete-plan.js';
 import { downloadApexFile } from './controllers/download-apex-file.js';
 import { downloadOperationFile } from './controllers/download-operation-file.js';
-import { getAllPlans } from './controllers/get-all-plans.js';
 import { getApexFile } from './controllers/get-apex-file.js';
 import { getDrtModel } from './controllers/get-drt-model.js';
 import { getOperationFile } from './controllers/get-operation-file.js';
 import { getPlan } from './controllers/get-plan.js';
+import { listPlans } from './controllers/list-plans.js';
 import { lockPlan } from './controllers/lock-plan.js';
 import { sendApexNotification } from './controllers/send-apex-notification.js';
 import { updateApexFile } from './controllers/update-apex-file.js';
@@ -34,7 +34,7 @@ server.register(
 		instance.post(
 			'/list',
 			{ preHandler: authorizationMiddleware('plans', ['read']) },
-			getAllPlans,
+			listPlans,
 		);
 
 		instance.get(

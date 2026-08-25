@@ -41,9 +41,9 @@ export function usePlansListData(): UsePlansListDataReturnType {
 
 	const query = useMemo<PlanListFilters>(() => ({
 		agency_ids: filterAgency.value,
-		feed_dates: {
-			end: filterFeedDates.value_end,
-			start: filterFeedDates.value_start,
+		gtfs_feed_info: {
+			end_date: filterFeedDates.value_end,
+			start_date: filterFeedDates.value_start,
 		},
 		search: filterSearch.value,
 		validity_statuses: filterValidityStatus.value,
@@ -61,7 +61,7 @@ export function usePlansListData(): UsePlansListDataReturnType {
 	// D. Return data
 
 	return useMemo(() => ({
-		data: data?.data ?? [],
+		data: data?.data,
 		error: data?.error ?? (error instanceof Error ? error.message : null),
 		isLoading,
 		isValidating,
