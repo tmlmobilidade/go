@@ -6,9 +6,8 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
-import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
+import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
 
 import { type SyncConfig, type VehicleEventsCollectionDocument } from './types.js';
 
