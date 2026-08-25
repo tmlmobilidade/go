@@ -2,7 +2,7 @@
 
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawVehicleEventPtTmpUnirUt1V1, type RawVehicleEventPtTmpUnirUt2V1, type RawVehicleEventPtTmpUnirUt3V1, type RawVehicleEventPtTmpUnirUt4V1, type RawVehicleEventPtTmpUnirUt5V1 } from '@tmlmobilidade/go-types-vehicle-events';
-import { BatchWriter } from '@tmlmobilidade/utils';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 
 /* * */
 

@@ -22,13 +22,14 @@ interface UseValidationsDetailDataReturnType {
 
 /* * */
 
-export function useValidationsDetailData(): UseValidationsDetailDataReturnType {
+export function useValidationsDetailData(validationIdOverride?: string): UseValidationsDetailDataReturnType {
 	//
 
 	//
 	// A. Setup variables
 
-	const { validationId } = useValidationsDetailValidationId();
+	const { validationId: routeValidationId } = useValidationsDetailValidationId();
+	const validationId = validationIdOverride ?? routeValidationId;
 
 	//
 	// B. Fetch data
