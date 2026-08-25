@@ -3,10 +3,9 @@
 import { analyzeRide } from '@/utils/analyze-ride.js';
 import { augmentRide } from '@/utils/augment-ride.js';
 import { fetchAnalysisData } from '@/utils/fetch-analysis-data.js';
+import { ridesProvider } from '@tmlmobilidade/go-controller-pckg-utils';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { Ride } from '@tmlmobilidade/go-types-operation';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -62,13 +61,7 @@ export async function analyzeRides() {
 
 		const fetchRideDocumentsTimer = new Timer();
 
-		const ridesBatch = await labDb.queryFromString<Ride>(`
-			SELECT *
-			FROM operation.rides
-			WHERE _id IN (${rideIdsBatch.map(id => `'${id}'`).join(',')})
-			ORDER BY updated_at DESC
-			LIMIT 1 BY _id
-		`);
+		const ridesBatch = await ridesProvider.findRides({ _id: rideIdsBatch });
 
 		Logger.info({ message: `Processing ${ridesBatch.length} rides... (coordinator: ${fetchCoordinatorTimerResult} | interface: ${fetchRideDocumentsTimer.get()})`, spacesAfterOrBefore: 1 });
 
@@ -117,8 +110,6 @@ export async function analyzeRides() {
 
 				const insertTimer = new Timer();
 
-				const nowUnixTimestamp = Dates.now('utc').unix_timestamp;
-
 				const insertPromises = [
 					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnFirstStop.insert('JSONEachRow', [analyzeRideResults.analyses.at_least_one_vehicle_event_on_first_stop]),
 					labDb.operation.rideAnalysisAtLeastOneVehicleEventOnLastStop.insert('JSONEachRow', [analyzeRideResults.analyses.at_least_one_vehicle_event_on_last_stop]),
@@ -135,7 +126,7 @@ export async function analyzeRides() {
 					labDb.operation.rideAnalysisSimpleOneVehicleEventOrApexValidation.insert('JSONEachRow', [analyzeRideResults.analyses.simple_one_vehicle_event_or_apex_validation]),
 					labDb.operation.rideAnalysisSimpleThreeVehicleEvents.insert('JSONEachRow', [analyzeRideResults.analyses.simple_three_vehicle_events]),
 					labDb.operation.rideAnalysisTransactionSequentiality.insert('JSONEachRow', [analyzeRideResults.analyses.transaction_sequentiality]),
-					labDb.operation.rides.insert('JSONEachRow', [{ ...augmentedRideData, processing_status: 'complete', updated_at: nowUnixTimestamp }]),
+					ridesProvider.updateRideById(rideData._id, { ...augmentedRideData, processing_status: 'complete' }),
 				];
 
 				await Promise.all(insertPromises);
@@ -161,7 +152,7 @@ export async function analyzeRides() {
 
 				//
 			} catch (error) {
-				await labDb.operation.rides.insert('JSONEachRow', [{ ...rideData, processing_status: 'error', updated_at: Dates.now('utc').unix_timestamp }]);
+				await ridesProvider.updateRideById(rideData._id, { processing_status: 'error' });
 				Logger.error({ error, message: `An error occurred while processing a ride (${rideData._id}): ${error.message}` });
 			}
 		}

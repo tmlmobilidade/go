@@ -1,9 +1,9 @@
 /* * */
 
 import { type RideAtomicUpdateFields } from '@/rides/types.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Ride, RideSchema } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * Updates a ride by its ID.
