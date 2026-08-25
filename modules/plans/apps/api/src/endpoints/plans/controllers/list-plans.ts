@@ -59,8 +59,6 @@ export async function listPlans(request: FastifyRequest<{ Body: PlanListFilters 
 			$match: {
 				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },
 				...(validityStatusFilters.length ? { $or: validityStatusFilters } : {}),
-				// ...(validatedFilters.gtfs_feed_info?.end_date ? { gtfs_feed_info: { end_date: { $lte: validatedFilters.gtfs_feed_info?.end_date ?? 0 } } } : {}),
-				// ...(validatedFilters.gtfs_feed_info?.start_date ? { gtfs_feed_info: { start_date: { $gte: validatedFilters.gtfs_feed_info?.start_date ?? 0 } } } : {}),
 			},
 		},
 		{ $project: Object.fromEntries(Object.keys(PlanListItemSchema.shape).map(key => [key, 1])) },

@@ -20,16 +20,6 @@ export const PlanListFiltersSchema = z.object({
 		.array(z.string())
 		.default([]),
 
-	gtfs_feed_info: z
-		.object({
-			end_date: UnixTimestampSchema,
-			start_date: UnixTimestampSchema,
-		})
-		.default({
-			end_date: 0,
-			start_date: 0,
-		}),
-
 	search: z
 		.string()
 		.optional(),
