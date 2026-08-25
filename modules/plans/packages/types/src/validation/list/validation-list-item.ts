@@ -10,6 +10,9 @@ export const ValidationListItemSchema = GtfsValidationSchema
 	.pick({
 		_id: true,
 		agency_id: true,
+		file_id: true,
+		gtfs_agency: true,
+		gtfs_feed_info: true,
 		processing_status: true,
 		summary: true,
 		updated_at: true,

@@ -1,9 +1,10 @@
 'use client';
 
-import { useValidationCreateContext } from '@/components/validations/create/ValidationCreateForm.context';
 import { closeCreateValidationModal } from '@/components/validations/create/ValidationCreate.modal';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
+
+import { useValidationCreateContext } from '../ValidationCreateForm.context';
 
 /* * */
 
@@ -23,7 +24,7 @@ export function ValidationCreateHeader() {
 			<CloseButton onClick={closeCreateValidationModal} type="close" />
 			<Label size="lg" caps singleLine>Nova Validação GTFS</Label>
 			<AgencyTag
-				agencyId={validationCreateContext.data.selected_agency_id}
+				agencyId={validationCreateContext.data.selectedAgencyId}
 				request={{
 					permissions: {
 						actions: [PermissionCatalog.all.gtfs_validations.actions.create],
@@ -33,10 +34,10 @@ export function ValidationCreateHeader() {
 			/>
 			<Spacer />
 			<Button
-				disabled={!validationCreateContext.flags.can_create}
+				disabled={!validationCreateContext.capabilities?.createEnabled}
 				label="Criar validação"
-				loading={validationCreateContext.flags.loading}
-				onClick={validationCreateContext.actions.createValidation}
+				loading={validationCreateContext.status.isCreating}
+				onClick={validationCreateContext.actions.create}
 			/>
 		</Toolbar>
 	);
