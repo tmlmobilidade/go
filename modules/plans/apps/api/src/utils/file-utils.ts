@@ -1,6 +1,7 @@
 import { Files } from '@tmlmobilidade/files';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Attachment, OperationalDate } from '@tmlmobilidade/types';
+import { Attachment } from '@tmlmobilidade/go-types-core';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { File as NodeFile } from 'node:buffer';
 
 /**

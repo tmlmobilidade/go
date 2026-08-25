@@ -1,7 +1,7 @@
 /* * */
 
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
-import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { Collapsible, Section } from '@tmlmobilidade/ui';
 
 /* * */

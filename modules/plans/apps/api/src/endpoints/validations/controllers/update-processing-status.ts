@@ -1,10 +1,10 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog, type ProcessingStatus } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type ProcessingStatus } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Updates the processing status of a GTFS Validation by ID.
@@ -20,7 +20,10 @@ export async function updateProcessingStatus(request: FastifyRequest<{ Body: { p
 	const gtfsValidationData = await goDb.operation.gtfsValidations.findById(request.params.id);
 
 	if (!gtfsValidationData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'GTFS Validation not found');
+		return sendErrorApiResponse(reply, {
+			error: 'GTFS Validation not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -35,7 +38,10 @@ export async function updateProcessingStatus(request: FastifyRequest<{ Body: { p
 	});
 
 	if (!hasPermissionChangeStatus) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: change status validation');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: change status validation',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -47,7 +53,17 @@ export async function updateProcessingStatus(request: FastifyRequest<{ Body: { p
 		validity_status: 'unknown',
 	});
 
-	reply.send({ data: updatedGtfsValidation, error: null, statusCode: HTTP_STATUS.OK });
+	if (!updatedGtfsValidation) {
+		return sendErrorApiResponse(reply, {
+			error: 'Failed to update GTFS Validation',
+			status_code: '404',
+		});
+	}
+
+	//
+	// Return the updated GTFS Validation
+
+	return sendSuccessApiResponse(reply, updatedGtfsValidation);
 
 	//
 }

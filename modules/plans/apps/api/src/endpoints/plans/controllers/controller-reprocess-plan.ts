@@ -1,9 +1,8 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Plan } from '@tmlmobilidade/types';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Reprocesses a plan by ID.
@@ -11,7 +10,19 @@ import { type Plan } from '@tmlmobilidade/types';
  * @param reply Fastify reply
  */
 export async function controllerReprocessPlan(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
+	//
+
+	//
+	// Get the plan data
+
 	const planData = await goDb.operation.plans.findById(request.params.id);
+
+	//
+	// Update the plan data
 	const result = await goDb.operation.plans.updateById(request.params.id, { apps: { ...planData.apps, controller: { last_hash: null, status: 'waiting', timestamp: null } } });
-	return reply.send({ data: result, error: null, statusCode: HTTP_STATUS.OK });
+
+	//
+	// Return the success response
+
+	return sendSuccessApiResponse(reply, result);
 }

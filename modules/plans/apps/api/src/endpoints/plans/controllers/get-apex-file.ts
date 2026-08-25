@@ -1,10 +1,10 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Attachment, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Attachment } from '@tmlmobilidade/go-types-core';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Retrieves the APEX file associated with a plan by ID
@@ -19,7 +19,12 @@ export async function getApexFile(request: FastifyRequest<{ Params: { id: string
 
 	const planData = await goDb.operation.plans.findById(request.params.id);
 
-	if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+	if (!planData) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
 	//
 	// Check if the user has permission to read the Plan
@@ -32,26 +37,37 @@ export async function getApexFile(request: FastifyRequest<{ Params: { id: string
 		value: planData.agency_id,
 	});
 
-	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+	if (!hasPermissionReadPlan) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: read plan',
+			status_code: '403',
+		});
+	}
 
 	//
 	// Check if there is an APEX file associated with the plan
 
-	if (!planData.apex_file_id) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No APEX file associated with this plan');
+	if (!planData.apex_file_id) {
+		return sendErrorApiResponse(reply, {
+			error: 'No APEX file associated with this plan',
+			status_code: '404',
+		});
+	}
 
 	//
 	// Fetch the file associated with the plan
 
 	const foundFileData = await storageProvider.findById(planData.apex_file_id);
 
-	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'APEX file not found for this plan');
+	if (!foundFileData) {
+		return sendErrorApiResponse(reply, {
+			error: 'APEX file not found for this plan',
+			status_code: '404',
+		});
+	}
 
 	//
 	// Return the file
 
-	reply.send({
-		data: foundFileData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, foundFileData);
 }

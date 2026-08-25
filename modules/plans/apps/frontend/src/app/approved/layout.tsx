@@ -1,7 +1,6 @@
 /* * */
 
-import { PlansList } from '@/components/plans/list/PlansList';
-import { PlansListContextProvider } from '@/components/plans/list/PlansList.context';
+import { PlansList } from '@/components/plans/list/shared/PlansList';
 import { PanesManager } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 
@@ -12,9 +11,7 @@ export default function Layout({ children }: PropsWithChildren) {
 		<PanesManager
 			id="plans"
 			panes={[
-				<PlansListContextProvider>
-					<PlansList />
-				</PlansListContextProvider>,
+				<PlansList key="list" />,
 				children,
 			]}
 		/>

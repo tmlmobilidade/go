@@ -12,7 +12,7 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 import { fetchHistoricalRidesForDayIndex } from './tasks/fetch-historical-rides-for-day-index.js';
 

@@ -6,7 +6,7 @@ import { publishVehiclesPositions } from '@/tasks/vehicles/publish-vehicle-posit
 import { publishVehiclesMetadata } from '@/tasks/vehicles/publish-vehicles-metadata.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 /* * */
 

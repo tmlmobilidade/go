@@ -1,14 +1,13 @@
 /* * */
 
 import { ValidationsDetail } from '@/components/validations/detail/ValidationsDetail';
-import { ValidationsDetailContextProvider } from '@/contexts/ValidationsDetail.context';
+import { ValidationsDetailContextProvider } from '@/components/validations/detail/ValidationsDetailForm.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default function Page() {
 	return (
-		<ValidationsDetailContextProvider validationId={id}>
+		<ValidationsDetailContextProvider>
 			<ValidationsDetail />
 		</ValidationsDetailContextProvider>
 	);

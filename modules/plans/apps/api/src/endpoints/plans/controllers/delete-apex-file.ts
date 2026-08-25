@@ -1,10 +1,10 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { PermissionCatalog, type Plan } from '@tmlmobilidade/types';
+import { Plan } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Deletes an apex file by plan ID
@@ -14,11 +14,24 @@ import { PermissionCatalog, type Plan } from '@tmlmobilidade/types';
 export async function deleteApexFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
-	if (!request.params?.id) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing Plan ID in request params.');
+	//
+	// Check if the plan ID is provided
+
+	if (!request.params?.id) {
+		return sendErrorApiResponse(reply, {
+			error: 'Missing Plan ID in request params.',
+			status_code: '400',
+		});
+	}
 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
-	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found.');
+	if (!foundPlan) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
 	//
 	// Check if the user has permission to delete an apex file
@@ -30,7 +43,10 @@ export async function deleteApexFile(request: FastifyRequest<{ Params: { id: str
 		scope: PermissionCatalog.all.plans.scope,
 		value: foundPlan.agency_id,
 	})) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: delete plan');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: delete plan',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -38,7 +54,12 @@ export async function deleteApexFile(request: FastifyRequest<{ Params: { id: str
 
 	const foundFileData = await storageProvider.findById(foundPlan.apex_file_id);
 
-	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan APEX file not found');
+	if (!foundFileData) {
+		return sendErrorApiResponse(reply, {
+			error: 'Plan APEX file not found',
+			status_code: '404',
+		});
+	}
 
 	let updatedPlan: null | Plan = null;
 	await storageProvider.delete(foundFileData._id, {
@@ -54,5 +75,5 @@ export async function deleteApexFile(request: FastifyRequest<{ Params: { id: str
 	//
 	// Update the plan to remove the apex file ID
 
-	reply.send({ data: updatedPlan, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, updatedPlan);
 }

@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -12,13 +11,23 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param reply The reply object.
  */
 export async function downloadGtfsValidationFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+	//
+
+	//
 	// Get the Validation from the database
+
 	const foundValidation = await goDb.operation.gtfsValidations.findById(request.params.id);
+
 	if (!foundValidation) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Validation not found',
+			status_code: '404',
+		});
 	}
 
+	//
 	// Check if the user has permission to read the Validation
+
 	const hasPermissionReadValidation = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.gtfs_validations.actions.read,
 		permissions: request.permissions,
@@ -27,27 +36,50 @@ export async function downloadGtfsValidationFile(request: FastifyRequest<{ Param
 		value: foundValidation.agency_id,
 	});
 	if (!hasPermissionReadValidation) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: read validation file',
+			status_code: '403',
+		});
 	}
 
+	//
 	// Fetch the file associated with the validation
+
 	const foundFileData = await storageProvider.findById(foundValidation.file_id);
+
 	if (!foundFileData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation file not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Validation file not found',
+			status_code: '404',
+		});
 	}
 
+	//
 	// Stream the file in the given URL to the client
+
 	const storageServiceResponse = await fetch(foundFileData.url);
+
 	if (!storageServiceResponse.ok || !storageServiceResponse.body) {
-		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
+		return sendErrorApiResponse(reply, {
+			error: 'Could not fetch file',
+			status_code: '500',
+		});
 	}
 
+	//
 	// Set headers and pipe the response body to the client
+
 	reply.header('Content-Disposition', `attachment; filename="${foundFileData.name}"`);
 	reply.header('Content-Type', 'application/zip');
+
+	//
 	// Set content length if available
+
 	const contentLength = storageServiceResponse.headers.get('Content-Length');
 	if (contentLength) reply.header('Content-Length', contentLength);
+
+	//
 	// Pipe the response body to the client
+
 	return reply.send(storageServiceResponse.body);
 }

@@ -1,11 +1,11 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { Dates } from '@tmlmobilidade/dates';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type CreatePlanDto, HashablePlanMetadata, PermissionCatalog, type Plan } from '@tmlmobilidade/types';
+import { CreatePlanDto, HashablePlanMetadata, Plan } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { createHash } from 'node:crypto';
 
 /**
@@ -16,10 +16,31 @@ import { createHash } from 'node:crypto';
 export async function createPlan(request: FastifyRequest<{ Body: { validation_id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
+	//
+	// Get the validation data
+
 	const validationData = await goDb.operation.gtfsValidations.findById(request.body.validation_id);
-	if (!validationData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+
+	//
+	// Check if have permissions to create the plan
+
+	const hasPermissionCreatePlan = PermissionCatalog.hasPermissionResource({
+		action: PermissionCatalog.all.plans.actions.create,
+		permissions: request.permissions,
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.plans.scope,
+		value: validationData.agency_id,
+	});
+
+	if (!hasPermissionCreatePlan) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to create this plan.',
+			status_code: '403',
+		});
 	}
+
+	//
+	// Create the new plan data
 
 	const newPlanData: CreatePlanDto = {
 		agency_id: validationData.agency_id,
@@ -57,6 +78,9 @@ export async function createPlan(request: FastifyRequest<{ Body: { validation_id
 			operation_plan_id: '',
 		},
 	};
+
+	//
+	// Insert the new plan data
 
 	const planResult = await goDb.operation.plans.insertOne(newPlanData);
 
@@ -97,5 +121,8 @@ export async function createPlan(request: FastifyRequest<{ Body: { validation_id
 		},
 	);
 
-	reply.send({ data: finalPlanData, error: null, statusCode: HTTP_STATUS.OK });
+	//
+	// Return the success response
+
+	return sendSuccessApiResponse(reply, finalPlanData);
 }

@@ -5,7 +5,7 @@ import { publishJsonFeed } from '@/tasks/publish-json-feed.js';
 import { publishRssFeed } from '@/tasks/publish-rss-feed.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 /* * */
 

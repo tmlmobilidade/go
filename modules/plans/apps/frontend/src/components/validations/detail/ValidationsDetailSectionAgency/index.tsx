@@ -1,7 +1,7 @@
 /* * */
 
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
-import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
+import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { Collapsible, Section } from '@tmlmobilidade/ui';
 
 /* * */
