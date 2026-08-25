@@ -27,9 +27,9 @@
 		"@tmlmobilidade/go-eta-pckg-common": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
 		"ngeohash": "0.6.4"
 	},
 	"devDependencies": {

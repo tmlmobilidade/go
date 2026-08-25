@@ -44,11 +44,11 @@
 		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*",
 		"papaparse": "5.5.4"
 	},

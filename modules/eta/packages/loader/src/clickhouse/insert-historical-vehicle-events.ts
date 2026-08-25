@@ -1,8 +1,8 @@
 import { AppConfig } from '@/lib/config.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { pipelinePath, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
+import { performInTimeChunks } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { performInTimeChunks } from '@tmlmobilidade/utils';
 
 const INSERT_HISTORICAL_VEHICLE_EVENTS_SQL_FILE = 'loader/1-insert-historical-vehicle-events.sql';
 
@@ -29,6 +29,7 @@ export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters
 	Logger.title('3. Insert historical rides vehicle events into clickhouse');
 
 	await performInTimeChunks({
+		intervalHrs: config.historicalVehicleEventsChunkDays * 24,
 		onChunk: async (chunk) => {
 			Logger.progress({ message: `[${chunk.index + 1}/${chunk.total}] - ${Dates.fromUnixTimestamp(chunk.end).iso}[${chunk.end}] › ${Dates.fromUnixTimestamp(chunk.start).iso}[${chunk.start}]` });
 			const operationalDates = operationalDateBoundsForChunk(chunk.start, chunk.end);
@@ -38,7 +39,6 @@ export async function insertHistoricalVehicleEvents(clickhouseClient: Parameters
 				...operationalDates,
 			});
 		},
-		splitBy: { days: config.historicalVehicleEventsChunkDays },
 		startDate: Dates.now('Europe/Lisbon').minus({ days: config.historicalDataDaysBack }).unix_timestamp,
 	});
 

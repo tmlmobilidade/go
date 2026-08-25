@@ -18,8 +18,8 @@
 		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
-		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/go-utils-exec": "*",
+		"@tmlmobilidade/logger": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
