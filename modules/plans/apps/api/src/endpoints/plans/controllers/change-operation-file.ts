@@ -27,6 +27,9 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 	}
 
 	const originalFileId = planData.operation_file_id;
+	const originalApps = planData.apps;
+	const originalGtfsAgency = planData.gtfs_agency;
+	const originalGtfsFeedInfo = planData.gtfs_feed_info;
 	const originalHash = planData.hash;
 
 	// Check if the user has permission to change the GTFS of the Plan
@@ -63,6 +66,28 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 	// - old-file delete fails → onSuccess throws → onRollback restores plan → saga compensates the copy
 
 	let updatedPlanData: null | Plan = null;
+	const appsWaitingForReprocessing: Plan['apps'] = {
+		controller: {
+			last_hash: null,
+			status: 'waiting',
+			timestamp: null,
+		},
+		hub_gtfs: {
+			last_hash: null,
+			status: 'waiting',
+			timestamp: null,
+		},
+		hub_schedules: {
+			last_hash: null,
+			status: 'waiting',
+			timestamp: null,
+		},
+		merger: {
+			last_hash: null,
+			status: 'waiting',
+			timestamp: null,
+		},
+	};
 
 	await storageProvider.copy(
 		validationData.file_id,
@@ -72,6 +97,9 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 			onRollback: async () => {
 				if (!updatedPlanData) return;
 				await goDb.operation.plans.updateById(planData._id, {
+					apps: originalApps,
+					gtfs_agency: originalGtfsAgency,
+					gtfs_feed_info: originalGtfsFeedInfo,
 					hash: originalHash,
 					operation_file_id: originalFileId,
 				});
@@ -80,8 +108,8 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 			onSuccess: async (_ctx, result) => {
 				const hashablePlanMetadata: HashablePlanMetadata = {
 					_id: planData._id,
-					gtfs_agency: planData.gtfs_agency,
-					gtfs_feed_info: planData.gtfs_feed_info,
+					gtfs_agency: validationData.gtfs_agency,
+					gtfs_feed_info: validationData.gtfs_feed_info,
 					operation_file_id: result._id,
 				};
 
@@ -91,7 +119,13 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 
 				updatedPlanData = await goDb.operation.plans.updateById(
 					planData._id,
-					{ hash: hashValue, operation_file_id: result._id },
+					{
+						apps: appsWaitingForReprocessing,
+						gtfs_agency: validationData.gtfs_agency,
+						gtfs_feed_info: validationData.gtfs_feed_info,
+						hash: hashValue,
+						operation_file_id: result._id,
+					},
 				);
 
 				await storageProvider.delete(originalFileId);
