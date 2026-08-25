@@ -6,9 +6,8 @@ import { parseRawApexTransactionLocationV30IntoSimplifiedApexLocation } from '@t
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction, type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
+import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { BatchWriter } from '@tmlmobilidade/utils';
 import { type Filter } from 'mongodb';
 
 /* * */
