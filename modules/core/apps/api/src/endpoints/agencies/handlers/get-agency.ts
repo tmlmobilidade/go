@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 
@@ -11,9 +10,19 @@ import { type Agency } from '@tmlmobilidade/go-types-core';
  * @param reply The reply object
  */
 export async function getAgencyHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Agency>) {
-	const agencyData = await goDb.core.agencies.findById(request.params.id);
-	if (!agencyData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, `Error finding agency with ID ${request.params.id}`);
+	//
+
+	//
+	// Get the agency data
+
+	const foundAgency = await goDb.core.agencies.findById(request.params.id);
+
+	if (!foundAgency) {
+		return sendErrorApiResponse(reply, {
+			error: `Agency with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
 	}
-	reply.send({ data: agencyData, error: null, statusCode: HTTP_STATUS.OK });
+
+	return sendSuccessApiResponse(reply, foundAgency);
 }

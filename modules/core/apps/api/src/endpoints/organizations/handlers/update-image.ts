@@ -48,7 +48,13 @@ export async function updateImageHandler(request: FastifyRequest<{ Params: { id:
 		// the organization with the new logo ID
 		if (file.fieldname === 'light') {
 			// Delete old light logo if it exists
-			if (foundOrganization.logo_light) await storageProvider.delete(foundOrganization.logo_light);
+			if (foundOrganization.logo_light) {
+				try {
+					await storageProvider.delete(foundOrganization.logo_light);
+				} catch (error) {
+					console.info('Failed to delete old light logo', error);
+				}
+			}
 			// Update the organization with the new logo ID
 			updateFields.logo_light = result._id;
 		}
@@ -57,7 +63,13 @@ export async function updateImageHandler(request: FastifyRequest<{ Params: { id:
 		// the organization with the new logo ID
 		if (file.fieldname === 'dark') {
 			// Delete old dark logo if it exists
-			if (foundOrganization.logo_dark) await storageProvider.delete(foundOrganization.logo_dark);
+			if (foundOrganization.logo_dark) {
+				try {
+					await storageProvider.delete(foundOrganization.logo_dark);
+				} catch (error) {
+					console.info('Failed to delete old dark logo', error);
+				}
+			}
 			// Update the organization with the new logo ID
 			updateFields.logo_dark = result._id;
 		}

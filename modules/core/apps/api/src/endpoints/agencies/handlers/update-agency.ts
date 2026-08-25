@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
 
@@ -11,14 +10,27 @@ import { type Agency, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobil
  * @param reply The reply object
  */
 export async function updateAgencyHandler(request: FastifyRequest<{ Body: UpdateAgencyDto, Params: { id: string } }>, reply: FastifyReply<Agency>) {
+	//
+
+	//
 	// Validate the request body
-	const validatedAgency = UpdateAgencySchema.safeParse(request.body);
+
+	const validatedAgency = UpdateAgencySchema.safeParse({
+		...request.body,
+		updated_by: request.me._id,
+	});
+
 	if (!validatedAgency.success) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, validatedAgency.error.message);
+		return sendErrorApiResponse(reply, {
+			error: validatedAgency.error.message,
+			status_code: '400',
+		});
 	}
-	// Set the updated_by field to the current user's id
-	validatedAgency.data.updated_by = request.me._id;
+
+	//
 	// Update the agency in the database
+
 	const updatedAgencyData = await goDb.core.agencies.updateById(request.params.id, validatedAgency.data);
-	reply.send({ data: updatedAgencyData, error: null, statusCode: HTTP_STATUS.OK });
+
+	return sendSuccessApiResponse(reply, updatedAgencyData);
 }

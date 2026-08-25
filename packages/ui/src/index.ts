@@ -10,6 +10,7 @@ export * from './form';
 export * from './hooks';
 export * from './i18n';
 export * from './icons';
+export * from './layout';
 export * from './lib';
 export * from './loaders';
 export * from './providers';

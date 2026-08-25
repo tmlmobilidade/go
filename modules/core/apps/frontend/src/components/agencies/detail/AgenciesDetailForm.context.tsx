@@ -40,25 +40,25 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	//
 	// B. Setup form
 
-	const { form, unblock } = useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({
 		apiData: agencyData,
 		schema: UpdateAgencySchema,
 	});
 
 	//
-	// D. Handle actions
+	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<Agency>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_UPDATE(agencyId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			agenciesDetailMutate();
+		fetchFn: async () => await fetchApiData<Agency>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.AGENCIES_DETAIL(agencyId) }),
+		onSuccess: (response) => {
+			form.reset(response.data);
+			agenciesDetailMutate(response);
 			agenciesListMutate();
 		},
 	});
 
 	//
-	// C. Setup flags
+	// D. Setup flags
 
 	const hasUpdatePermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
@@ -69,8 +69,8 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 
 	const { editEnabled, updateEnabled } = useStandardFormCapabilities({
 		form: {
-			isDirty: form.formState.isDirty,
-			isValid: form.formState.isValid,
+			isDirty,
+			isValid,
 		},
 		loading: {
 			isLoading: agencyDataLoading,
@@ -93,12 +93,14 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 			updateEnabled,
 		},
 		form,
+		isDirty,
+		isValid,
 		status: {
 			isLoading: agencyDataLoading,
 			isUpdating,
 		},
 		unblock,
-	}), [editEnabled, form, handleUpdate, isUpdating, agencyDataLoading, unblock, updateEnabled]);
+	}), [editEnabled, form, handleUpdate, isUpdating, agencyDataLoading, unblock, updateEnabled, isDirty, isValid]);
 
 	return (
 		<AgenciesDetailFormContext.Provider value={stateValue}>

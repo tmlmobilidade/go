@@ -55,7 +55,7 @@ server.register(
 		);
 
 		instance.get(
-			'/:id/detail/image',
+			'/:id/detail/image/:theme',
 			{ preHandler: authorizationMiddleware('organizations', ['read']) },
 			getImageHandler,
 		);

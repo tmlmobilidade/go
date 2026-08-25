@@ -18,6 +18,8 @@ interface UseStandardFormProps<T, TSchema extends ZodType> {
 
 export interface UseStandardFormReturnType<T> {
 	form: UseFormReturn<T>
+	isDirty: boolean
+	isValid: boolean
 	unblock: () => void
 }
 
@@ -43,28 +45,38 @@ export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultVa
 	});
 
 	//
+	// Override the value of "form.formState.isDirty" based
+	// on how many fields are actually dirty.
+	// "react-hook-form" has a non-intuitive behavior of setting
+	// "isDirty" to true even if no fields are actually dirty.
+
+	const isDirty = Object.keys(form.formState.dirtyFields).length > 0;
+
+	//
+	// Do the same override for the "isValid" state
+
+	const isValid = Object.keys(form.formState.errors).length === 0;
+
+	//
 	// Initialize form with API data
 
 	useEffect(() => {
 		// Skip if no API data
 		if (!apiData) return;
-		// Skip if form has at least one dirty field
-		// Use this method instead of "form.formState.isDirty"
-		// because it is not a reliable indicator of this state
-		if (Object.keys(form.formState.dirtyFields).length > 0) return;
 		// Initialize form with API data
-		form.reset(apiData);
+		// but keep any dirty values intact
+		form.reset(apiData, { keepDirtyValues: true });
 		// eslint-disable-next-line no-console
 		console.info(`Form initialized with values from API.`);
-	}, [apiData, form]);
+	}, [apiData, form, isDirty]);
 
 	//
 	// Prevent navigation if form is dirty
 
-	const unblock = usePreventNavigation(form.formState.isDirty);
+	const unblock = usePreventNavigation(isDirty);
 
 	//
 	// Return hook values and functions
 
-	return { form, unblock };
+	return { form, isDirty, isValid, unblock };
 }

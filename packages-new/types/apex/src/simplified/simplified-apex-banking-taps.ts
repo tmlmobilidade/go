@@ -12,6 +12,7 @@ export const SimplifiedApexBankingTapSchema = z.object({
 	agency_code: z.string(),
 	agency_id: z.string(),
 	apex_version: z.string(),
+	banking_tap_id: z.string(),
 	banking_token: z.string(),
 	card_brand: ApexBankingBrandSchema,
 	card_pan: z.string(),
