@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlansListFilterAgency } from '@/components/plans/list/PlansListFilterAgency/use-plans-list-filter-agency';
+import { usePlansListFilterAgency } from '@/components/plans/list/filters/PlansListFilterAgency/use-plans-list-filter-agency';
 import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
 import { usePlanExportModalContext } from '@/contexts/PlanExport.context';
 import { Dates } from '@tmlmobilidade/dates';
