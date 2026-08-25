@@ -5,7 +5,6 @@ import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { ValidationListFilters, ValidationListFiltersSchema, ValidationListItem, ValidationListItemSchema } from '@tmlmobilidade/go-plans-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ProcessingStatus, ValidityStatus } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Lists GTFS Validation objects, filtered
@@ -38,8 +37,8 @@ export async function listGtfsValidations(request: FastifyRequest<{ Body: Valida
 		{
 			$match: {
 				...{ agency_id: { $in: validatedFilters.agency_ids ?? [] } },
-				...(validatedFilters.processing_statuses.length ? { processing_status: { $in: validatedFilters.processing_statuses as ProcessingStatus[] } } : {}),
-				...(validatedFilters.validity_statuses.length ? { validity_status: { $in: validatedFilters.validity_statuses as ValidityStatus[] } } : {}),
+				...(validatedFilters.processing_statuses.length ? { processing_status: { $in: validatedFilters.processing_statuses } } : []),
+				...(validatedFilters.validity_statuses.length ? { validity_status: { $in: validatedFilters.validity_statuses } } : []),
 			},
 		},
 		{ $project: Object.fromEntries(Object.keys(ValidationListItemSchema.shape).map(key => [key, 1])) },

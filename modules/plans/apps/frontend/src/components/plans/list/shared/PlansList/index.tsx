@@ -12,7 +12,7 @@ import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, 
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
 
-import { usePlansListData } from '../../use-plans-list-data';
+import { usePlansListData } from '../use-plans-list-data';
 
 /* * */
 

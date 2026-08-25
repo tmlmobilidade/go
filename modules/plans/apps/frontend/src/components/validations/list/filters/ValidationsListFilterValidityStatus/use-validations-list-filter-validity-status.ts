@@ -1,8 +1,9 @@
 'use client';
 
-import { ValidityStatusSchema, ValidityStatusValues } from '@tmlmobilidade/go-types-shared';
+import { ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Manage the validity-status filter for the validations list.
@@ -11,18 +12,17 @@ import { useMemo } from 'react';
 export function useValidationsListFilterValidityStatus(): UseFilterStateListReturnType {
 	//
 
+	const { t } = useTranslation();
+
 	const selectOptions = useMemo(() =>
-		ValidityStatusValues.map(item => ({
-			label: item,
+		ValidityStatusSchema.options.map(item => ({
+			label: t(`shared:status.validity_status.${item}`),
 			value: item,
 		})),
-	[]);
+	[t],
+	);
 
 	//
 
-	return useFilterStateList(
-		'validity_status',
-		ValidityStatusSchema.options,
-		selectOptions,
-	);
+	return useFilterStateList('validity_status', ValidityStatusSchema.options, selectOptions);
 }

@@ -7,10 +7,10 @@ import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { usePlansListFilterAgency } from './filters/PlansListFilterAgency/use-plans-list-filter-agency';
-import { usePlansListFilterSearch } from './filters/PlansListFilterSearch/use-plans-list-filter-search';
-import { usePlansListFilterValidityStatus } from './filters/PlansListFilterValidityStatus/use-plans-list-filter-validity-status';
-import { usePlansListFilterFeedDates } from './table/PlansListCellFeedDates/use-plans-list-cell-feed-dates';
+import { usePlansListFilterAgency } from '../filters/PlansListFilterAgency/use-plans-list-filter-agency';
+import { usePlansListFilterSearch } from '../filters/PlansListFilterSearch/use-plans-list-filter-search';
+import { usePlansListFilterValidityStatus } from '../filters/PlansListFilterValidityStatus/use-plans-list-filter-validity-status';
+import { usePlansListFilterFeedDates } from '../table/PlansListCellFeedDates/use-plans-list-cell-feed-dates';
 
 /* * */
 

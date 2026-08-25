@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type ValidationListFilters, type ValidationListItem } from '@tmlmobilidade/go-plans-pckg-types';
-import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, ProcessingStatus, type UnixTimestamp, ValidityStatus } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -40,9 +40,9 @@ export function useValidationsListData(): UseValidationsListDataReturnType {
 
 	const query = useMemo<ValidationListFilters>(() => ({
 		agency_ids: filterAgency.value,
-		processing_statuses: filterProcessingStatus.value,
+		processing_statuses: filterProcessingStatus.value as ProcessingStatus[],
 		search: filterSearch.value,
-		validity_statuses: filterValidityStatus.value,
+		validity_statuses: filterValidityStatus.value as ValidityStatus[],
 	}), [filterAgency.value, filterProcessingStatus.value, filterSearch.value, filterValidityStatus.value]);
 
 	//
