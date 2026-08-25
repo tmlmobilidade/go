@@ -5,7 +5,7 @@ import { runnerPatterns } from '@/runners/runner_patterns.js';
 import { runnerStops } from '@/runners/runner_stops.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 /* * */
 

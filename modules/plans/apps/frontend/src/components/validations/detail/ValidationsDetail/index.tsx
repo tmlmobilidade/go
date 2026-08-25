@@ -5,7 +5,7 @@ import { ValidationsDetailHeader } from '@/components/validations/detail/Validat
 import { ValidationsDetailSectionAgency } from '@/components/validations/detail/ValidationsDetailSectionAgency';
 import { ValidationsDetailSectionFeedInfo } from '@/components/validations/detail/ValidationsDetailSectionFeedInfo';
 import { ValidationsDetailSectionResult } from '@/components/validations/detail/ValidationsDetailSectionResult';
-import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
+import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */

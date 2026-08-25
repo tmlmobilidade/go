@@ -3,7 +3,7 @@
 
 import { openApprovePlanModal } from '@/components/validations/detail/ApprovePlanModal';
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
-import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
+import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ProcessingStatus } from '@tmlmobilidade/go-types-shared';

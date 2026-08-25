@@ -1,19 +1,19 @@
 /* * */
 
-import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { type PlanValidityStatus, PlanValidityStatusSchema } from '@tmlmobilidade/go-plans-pckg-types';
+import { type GtfsValidation, type Plan } from '@tmlmobilidade/go-types-operation';
 import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { SelectDataItem } from '@tmlmobilidade/ui';
 
 /* * */
 
-export const planValidityStatusOptions: SelectDataItem[] = [
-	{ label: 'Ativo', value: 'active' },
-	{ label: 'Expirado', value: 'expired' },
-	{ label: 'Agendado', value: 'upcoming' },
-];
+export const planValidityStatusOptions: SelectDataItem[] = PlanValidityStatusSchema.options.map((value) => {
+	if (value === 'active') return { label: 'Ativo', value };
+	if (value === 'expired') return { label: 'Expirado', value };
+	return { label: 'Agendado', value };
+});
 
-export const planValidityStatusValues = planValidityStatusOptions.map(item => item.value);
+export const planValidityStatusValues = PlanValidityStatusSchema.options;
 
 /* * */
 
@@ -21,7 +21,7 @@ export interface PlanNormalized extends Plan {
 	agency_code_normalized: string
 	agency_id_normalized: string
 	agency_name_normalized: string
-	validity_status: typeof planValidityStatusValues[number]
+	validity_status: PlanValidityStatus
 }
 
 /* * */

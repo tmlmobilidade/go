@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/dates';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { type UpdatePlanDto } from '@tmlmobilidade/types';
+import { type UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 

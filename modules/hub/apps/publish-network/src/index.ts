@@ -1,7 +1,7 @@
 /* * */
 
 import { main } from '@/main.js';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 /* * */
 

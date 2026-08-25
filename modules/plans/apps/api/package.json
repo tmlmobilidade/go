@@ -25,6 +25,7 @@
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-plans-pckg-types": "*",
 		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-core": "*",

@@ -1,28 +1,25 @@
 'use client';
 
-import { type ValidationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { normalizeString } from '@tmlmobilidade/strings';
+import { type ValidationListFilters, type ValidationListItem } from '@tmlmobilidade/go-plans-pckg-types';
+import { type ApiResponse, ProcessingStatus, type UnixTimestamp, ValidityStatus } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useValidationsListFilterAgency } from './ValidationsListFilterAgency/use-validations-list-filter-agency';
-import { useValidationsListFilterProcessingStatus } from './ValidationsListFilterProcessingStatus/use-validations-list-filter-processing-status';
-import { useValidationsListFilterSearch } from './ValidationsListFilterSearch/use-validations-list-filter-search';
-import { useValidationsListFilterValidityStatus } from './ValidationsListFilterValidityStatus/use-validations-list-filter-validity-status';
+import { useValidationsListFilterAgency } from './filters/ValidationsListFilterAgency/use-validations-list-filter-agency';
+import { useValidationsListFilterProcessingStatus } from './filters/ValidationsListFilterProcessingStatus/use-validations-list-filter-processing-status';
+import { useValidationsListFilterSearch } from './filters/ValidationsListFilterSearch/use-validations-list-filter-search';
+import { useValidationsListFilterValidityStatus } from './filters/ValidationsListFilterValidityStatus/use-validations-list-filter-validity-status';
 
 /* * */
 
 interface UseValidationsListDataReturnType {
-	data: ValidationNormalized[]
+	data: ValidationListItem[]
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
 	mutate: () => void
-	raw: GtfsValidation[]
 	timestamp: null | UnixTimestamp
 }
 
@@ -39,56 +36,38 @@ export function useValidationsListData(): UseValidationsListDataReturnType {
 	const filterSearch = useValidationsListFilterSearch();
 	const filterValidityStatus = useValidationsListFilterValidityStatus();
 
-	//
-	// B. Fetch data
+	// B. Transform data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<GtfsValidation[]>>(API_ROUTES.plans.VALIDATIONS_LIST, {
-		fetcher: async (url: string) => await fetchApiData<GtfsValidation[]>({ url }),
-		refreshInterval: 3_000,
+	const query = useMemo<ValidationListFilters>(() => ({
+		agency_ids: filterAgency.value,
+		processing_statuses: filterProcessingStatus.value as ProcessingStatus[],
+		search: filterSearch.value,
+		validity_statuses: filterValidityStatus.value as ValidityStatus[],
+	}), [filterAgency.value, filterProcessingStatus.value, filterSearch.value, filterValidityStatus.value]);
+
+	//
+	// C. Fetch data
+
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<ValidationListItem[]>>([API_ROUTES.plans.VALIDATIONS_LIST, query], {
+		fetcher: async ([url, query]) => await fetchApiData<ValidationListItem[]>({ body: query, method: 'POST', url }),
+		refreshInterval: 10_000,
 	});
 
-	//
-	// C. Transform data
-
-	const normalizedValidationsData = useMemo<ValidationNormalized[]>(() => {
-		if (!data?.data) return [];
-
-		return data.data.map(item => ({
-			...item,
-			agency_code_normalized: item.gtfs_agency.agency_id,
-			agency_id_normalized: item.agency_id,
-			agency_name_normalized: normalizeString(item.gtfs_agency.agency_name),
-		}));
-	}, [data?.data]);
-
-	const searchResultsData = useSearch<ValidationNormalized>({
-		accessors: ['_id', 'agency_id_normalized', 'agency_name_normalized'],
-		data: normalizedValidationsData,
+	const searchResultData = useSearch<ValidationListItem>({
+		accessors: ['_id'],
+		data: data?.data ?? [],
 		query: filterSearch.value,
 	});
-
-	const filteredValidationsData = useMemo(() => {
-		const agencySet = new Set(filterAgency.value);
-		const processingStatusSet = new Set(filterProcessingStatus.value);
-		const validityStatusSet = new Set(filterValidityStatus.value);
-
-		return searchResultsData.filter(item => (
-			agencySet.has(item.agency_id)
-			&& processingStatusSet.has(item.processing_status)
-			&& validityStatusSet.has(item.validity_status)
-		));
-	}, [filterAgency.value, filterProcessingStatus.value, filterValidityStatus.value, searchResultsData]);
 
 	//
 	// D. Return data
 
 	return useMemo(() => ({
-		data: filteredValidationsData,
+		data: searchResultData,
 		error: data?.error ?? (error instanceof Error ? error.message : null),
 		isLoading,
 		isValidating,
 		mutate,
-		raw: data?.data ?? [],
 		timestamp: data?.timestamp ?? null,
-	}), [data, error, filteredValidationsData, isLoading, isValidating, mutate]);
+	}), [searchResultData, data?.timestamp, error, isLoading, isValidating, mutate]);
 }

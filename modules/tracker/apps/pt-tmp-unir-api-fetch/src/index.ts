@@ -7,7 +7,7 @@ import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmpUnir } from '@tmlmobilidade/go-types-vehicle-events';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import crypto from 'node:crypto';
 
 import { ut1Writer, ut2Writer, ut3Writer, ut4Writer, ut5Writer } from './writers.js';

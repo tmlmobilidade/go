@@ -6,7 +6,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { ProcessingStatusSchema } from '@tmlmobilidade/types';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import fs from 'fs';
 
 import { exportPlanFile } from './export-plan.js';

@@ -1,9 +1,8 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { Plan } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -19,7 +18,12 @@ export async function lockPlan(request: FastifyRequest<{ Params: { id: string } 
 
 	const planData = await goDb.operation.plans.findById(request.params.id);
 
-	if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+	if (!planData) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
 	//
 	// Check if the user has permission to toggle lock the Plan
@@ -32,7 +36,12 @@ export async function lockPlan(request: FastifyRequest<{ Params: { id: string } 
 		value: planData.agency_id,
 	});
 
-	if (!hasPermissionToggleLockPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: toggle lock plan');
+	if (!hasPermissionToggleLockPlan) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: toggle lock plan',
+			status_code: '403',
+		});
+	}
 
 	//
 	// If authorized, toggle the lock status of the plan
@@ -41,7 +50,15 @@ export async function lockPlan(request: FastifyRequest<{ Params: { id: string } 
 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
-	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+	if (!foundPlan) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
-	reply.send({ data: foundPlan, error: null, statusCode: HTTP_STATUS.OK });
+	//
+	// Return the success response
+
+	return sendSuccessApiResponse(reply, foundPlan);
 }

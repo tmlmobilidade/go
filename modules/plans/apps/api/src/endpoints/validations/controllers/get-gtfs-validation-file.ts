@@ -1,10 +1,9 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type Attachment } from '@tmlmobilidade/go-types-core';
+import { Attachment } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -19,7 +18,13 @@ export async function getGtfsValidationFile(request: FastifyRequest<{ Params: { 
 	// Get the requested Validation data
 
 	const foundValidation = await goDb.operation.gtfsValidations.findById(request.params.id);
-	if (!foundValidation) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+
+	if (!foundValidation) {
+		return sendErrorApiResponse(reply, {
+			error: 'Validation not found',
+			status_code: '404',
+		});
+	}
 
 	//
 	// Check if the user has permission to read the validation
@@ -32,12 +37,27 @@ export async function getGtfsValidationFile(request: FastifyRequest<{ Params: { 
 		value: foundValidation.agency_id,
 	});
 
-	if (!hasPermissionReadValidation) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read validation file');
+	if (!hasPermissionReadValidation) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: read validation file',
+			status_code: '403',
+		});
+	}
 
 	//
 	// Fetch the file associated with the validation
 
 	const foundFile = await storageProvider.findById(foundValidation.file_id);
 
-	reply.send({ data: foundFile, error: null, statusCode: HTTP_STATUS.OK });
+	if (!foundFile) {
+		return sendErrorApiResponse(reply, {
+			error: 'Validation file not found',
+			status_code: '404',
+		});
+	}
+
+	//
+	// Return the success response
+
+	return sendSuccessApiResponse(reply, foundFile);
 }

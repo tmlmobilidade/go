@@ -12,8 +12,16 @@ interface UseValidationsDetailValidationIdReturnType {
 /* * */
 
 export function useValidationsDetailValidationId(): UseValidationsDetailValidationIdReturnType {
+	//
+
+	//
+	// A. Setup variables
+
 	const params = useParams<{ id: string }>();
 	const validationId = decodeURIComponent(params.id);
+
+	//
+	// B. Return data
 
 	return useMemo(() => ({
 		validationId,

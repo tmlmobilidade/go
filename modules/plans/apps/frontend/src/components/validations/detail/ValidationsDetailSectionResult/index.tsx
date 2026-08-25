@@ -2,7 +2,7 @@
 
 import { SeverityTag } from '@/components/common/SeverityTag';
 import { ValidationsDetailSectionResultCellRows } from '@/components/validations/detail/ValidationsDetailSectionResultCellRows';
-import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
+import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { getGtfsScheduleDocUrl } from '@/lib/gtfs-schedule-doc-url';
 import { IconExternalLink } from '@tabler/icons-react';
 import { type GtfsValidationOutputMessage } from '@tmlmobilidade/go-types-gtfs-validator';

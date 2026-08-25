@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -14,23 +13,44 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 export async function deletePlan(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 	//
 
-	if (!request.params?.id) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Missing Plan ID in request params.');
+	//
+	// Check if the plan ID is provided
+
+	if (!request.params?.id) {
+		return sendErrorApiResponse(reply, {
+			error: 'Missing Plan ID in request params.',
+			status_code: '400',
+		});
+	}
 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
-	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found.');
+	//
+	// Check if the plan exists
+
+	if (!foundPlan) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
 	//
-	// Check if the user has permission to delete a plan
+	// Check if have permissions to delete the plan
 
-	if (!PermissionCatalog.hasPermissionResource({
+	const hasPermissionDeletePlan = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.plans.actions.delete,
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
 		value: foundPlan.agency_id,
-	})) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: delete plan');
+	});
+
+	if (!hasPermissionDeletePlan) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to delete this plan.',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -45,5 +65,8 @@ export async function deletePlan(request: FastifyRequest<{ Params: { id: string 
 		},
 	});
 
-	reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+	//
+	// Return the success response
+
+	return sendSuccessApiResponse(reply, undefined);
 }

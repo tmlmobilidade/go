@@ -1,9 +1,8 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { Plan } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -19,10 +18,15 @@ export async function getPlan(request: FastifyRequest<{ Params: { id: string } }
 
 	const planData = await goDb.operation.plans.findById(request.params.id);
 
-	if (!planData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+	if (!planData) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
 	//
-	// Check if the user has permission to read the Plan
+	// Check if have permissions to read the plan
 
 	const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.plans.actions.read,
@@ -32,14 +36,15 @@ export async function getPlan(request: FastifyRequest<{ Params: { id: string } }
 		value: planData.agency_id,
 	});
 
-	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+	if (!hasPermissionReadPlan) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to read this plan.',
+			status_code: '403',
+		});
+	}
 
 	//
-	// Fetch the plan data
+	// Return the plan data
 
-	return reply.send({
-		data: planData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, planData);
 }

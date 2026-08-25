@@ -7,7 +7,7 @@ import { sendSystemErrorEmail } from '@tmlmobilidade/go-providers-emails';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import pjson from 'pjson' with { type: 'json' };
 
 /* * */

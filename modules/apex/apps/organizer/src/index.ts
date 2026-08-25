@@ -3,7 +3,7 @@
 // import { categorizeValidations } from '@/tasks/categorize-validations.js';
 // import { linkRefundsToSalesToValidations } from '@/tasks/link-refunds.js';
 // import { linkSalesToValidations } from '@/tasks/link-sales.js';
-// import { runOnInterval } from '@tmlmobilidade/utils';
+// import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 // /* * */
 

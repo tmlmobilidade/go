@@ -3,7 +3,7 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import os from 'node:os';
 
 import { deleteAllAgencyDatabases, initializeDatabase } from './database.js';
