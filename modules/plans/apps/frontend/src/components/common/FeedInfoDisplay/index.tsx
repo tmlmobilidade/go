@@ -1,6 +1,6 @@
 'use client';
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
 import { Grid, ValueDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
