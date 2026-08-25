@@ -5,10 +5,10 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { composeAlert } from './handlers/compose-alert.js';
 import { createAlert } from './handlers/create-alert.js';
+import { deleteAlertHandler } from './handlers/delete-alert.js';
 import { deleteImage } from './handlers/delete-image.js';
-import { deleteAlert } from './handlers/delete.js';
 import { duplicate } from './handlers/duplicate.js';
-import { getById } from './handlers/get-by-id.js';
+import { getAlertHandler } from './handlers/get-alert.js';
 import { getImage } from './handlers/get-image.js';
 import { listAlertsHandler } from './handlers/list-alerts.js';
 import { lock } from './handlers/lock.js';
@@ -36,7 +36,7 @@ server.register(
 		instance.get(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.read]) },
-			getById,
+			getAlertHandler,
 		);
 
 		instance.get(
@@ -60,7 +60,7 @@ server.register(
 		instance.delete(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.alerts.scope, [PermissionCatalog.all.alerts.actions.delete]) },
-			deleteAlert,
+			deleteAlertHandler,
 		);
 
 		instance.post(

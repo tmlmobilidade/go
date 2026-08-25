@@ -1,8 +1,8 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-alerts-pckg-compose';
 import { type AlertsComposeRequest, type AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 
 /**
  * Generates a description for an alert.
