@@ -28,11 +28,19 @@
 				"label": "Código",
 				"placeholder": "Introduza o código da escola"
 			},
+			"coordinates": {
+				"label": "Coordenadas",
+				"placeholder": "Introduza as coordenadas da escola"
+			},
 			"description": "Informações gerais da escola.",
 			"fields": {
 				"grouping": "Agrupamento",
 				"name": "Nome",
 				"nature": "Natureza"
+			},
+			"name": {
+				"label": "Nome",
+				"placeholder": "Introduza o nome da escola"
 			},
 			"title": "Dados gerais"
 		},

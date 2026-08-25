@@ -24,15 +24,13 @@
 		},
 		"SchoolCreateSectionGeneral": {
 			"agency": "Operador",
-			"code": {
-				"label": "Código",
-				"placeholder": "Introduzca el código de la escuela"
+			"coordinates": {
+				"label": "Coordenadas",
+				"placeholder": "Introduzca las coordenadas de la escuela"
 			},
-			"description": "Información general de la escuela.",
-			"fields": {
-				"grouping": "Agrupación",
-				"name": "Nombre",
-				"nature": "Naturaleza"
+			"name": {
+				"label": "Nombre",
+				"placeholder": "Introduzca el nombre de la escuela"
 			},
 			"title": "Datos generales"
 		},

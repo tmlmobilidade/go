@@ -1,7 +1,7 @@
 'use client';
 
 import { useSchoolsCreateFormContext } from '@/components/create/shared/SchoolsCreateForm.context';
-import { Collapsible, Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, CoordinatesInput, Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -39,6 +39,27 @@ export function SchoolCreateSectionGeneral() {
 								w="100%"
 							/>
 						)}
+					/>
+
+					<StandardFormController
+						control={schoolsCreateForm.control}
+						name="name"
+						render={({ field }) => (
+							<TextInput
+								label={t('schools:create.SchoolCreateSectionGeneral.name.label')}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('schools:create.SchoolCreateSectionGeneral.name.placeholder')}
+								value={String(field.value)}
+								w="100%"
+							/>
+						)}
+					/>
+
+					<CoordinatesInput
+						label={t('schools:create.SchoolCreateSectionGeneral.coordinates.label')}
+						onChange={coordinates => schoolsCreateForm.setValue('coordinates', coordinates)}
+						value={schoolsCreateForm.watch('coordinates')}
 					/>
 				</Grid>
 			</Section>
