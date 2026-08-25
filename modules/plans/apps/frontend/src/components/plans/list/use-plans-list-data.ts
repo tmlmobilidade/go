@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PlanListFilters, type PlanListItem } from '@tmlmobilidade/go-plans-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData } from '@tmlmobilidade/ui';
+import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -53,15 +53,21 @@ export function usePlansListData(): UsePlansListDataReturnType {
 		refreshInterval: 5_000,
 	});
 
+	const searchResultData = useSearch<PlanListItem>({
+		accessors: ['_id'],
+		data: data?.data,
+		query: filterSearch.value,
+	});
+
 	//
 	// D. Return data
 
 	return useMemo(() => ({
-		data: data?.data,
+		data: searchResultData,
 		error: data?.error ?? (error instanceof Error ? error.message : null),
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp ?? null,
-	}), [data, error, isLoading, isValidating, mutate]);
+	}), [searchResultData, data?.timestamp, error, isLoading, isValidating, mutate]);
 }
