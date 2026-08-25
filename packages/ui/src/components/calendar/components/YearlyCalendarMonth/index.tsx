@@ -1,7 +1,7 @@
 'use client';
 
 import { Tooltip } from '@mantine/core';
-import { type CalendarDay } from '@tmlmobilidade/go-utils-dates';
+import { type CalendarDay } from '@tmlmobilidade/dates';
 import { type CalendarEvent } from '@tmlmobilidade/types';
 import React, { useMemo } from 'react';
 

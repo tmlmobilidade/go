@@ -1,7 +1,7 @@
 'use client';
 
 import { IconCalendar, IconChevronLeft, IconChevronRight, IconLayoutGrid } from '@tabler/icons-react';
-import { getNextMonth, getPreviousMonth } from '@tmlmobilidade/go-utils-dates';
+import { getNextMonth, getPreviousMonth } from '@tmlmobilidade/dates';
 import React from 'react';
 
 import styles from './styles.module.css';
