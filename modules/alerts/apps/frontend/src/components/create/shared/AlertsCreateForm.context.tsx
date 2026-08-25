@@ -1,9 +1,9 @@
 'use client';
 
-import { AlertReferenceTypeValues, type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
+import { AlertReferenceTypeValues, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { useAgenciesData, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch, useMeContext } from '@tmlmobilidade/ui';
+import { useAgenciesData, useMeContext, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 
 /* * */
@@ -60,9 +60,9 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 
 	}), []);
 
-	const { form, unblock } = useStandardForm<CreateAlertDto>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreateAlertDto, typeof CreateAlertSchema>({
 		defaultValues: formDefaultValues,
-		// schema: CreateAlertSchema,
+		schema: CreateAlertSchema,
 	});
 
 	const agencyIdValue = useStandardFormWatch({ control: form.control, name: 'agency_id' });
@@ -215,7 +215,7 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	if (!agenciesData?.length) return null;
 
 	return (
-		<AlertsCreateFormContext.Provider value={{ form, unblock }}>
+		<AlertsCreateFormContext.Provider value={{ form, isDirty, isValid, unblock }}>
 			{children}
 		</AlertsCreateFormContext.Provider>
 	);

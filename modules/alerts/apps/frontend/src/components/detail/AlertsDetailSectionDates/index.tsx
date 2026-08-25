@@ -1,37 +1,42 @@
 'use client';
 
-import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Collapsible, StandardFormController, DateTimeInput, Divider, Grid, Label, Section, Text, useMeContext } from '@tmlmobilidade/ui';
+import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
+import { Collapsible, DateTimeInput, Divider, Grid, Label, Section, StandardFormController, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
+
+import { useAlertsDetailFormContext } from '../AlertsDetailForm.context';
 
 /* * */
 
-export function AlertDetailSectionDates() {
+export function AlertsDetailSectionDates() {
 	//
 
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
-	const alertDetailContext = useAlertDetailContext();
+	const { data: meData } = useMeData();
+
+	const { form } = useAlertsDetailFormContext();
+
+	const agencyIdValue = useStandardFormWatch({ control: form.control, name: 'agency_id' });
+	const referenceTypeValue = useStandardFormWatch({ control: form.control, name: 'reference_type' });
 
 	//
 	// B. Transform data
 
-	const hasPermissionToUpdateDates = meContext.actions.hasPermissionResource([
-		{
-			action: PermissionCatalog.all.alerts.actions.update_dates,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.alerts.scope,
-			value: alertDetailContext.data.alert.agency_id,
-		},
-		{
-			action: PermissionCatalog.all.alerts.actions.update_dates,
-			resource_key: 'reference_types',
-			scope: PermissionCatalog.all.alerts.scope,
-			value: alertDetailContext.data.alert.reference_type,
-		},
-	]);
+	const hasPermissionToUpdateDates = useMemo(() => {
+		const permissionForAgencyId = hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'update', scope: 'alerts' },
+			requiredValue: agencyIdValue,
+			resourceKey: 'agency_ids',
+		});
+		const permissionForReferenceType = hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'update', scope: 'alerts' },
+			requiredValue: referenceTypeValue,
+			resourceKey: 'reference_types',
+		});
+		return permissionForAgencyId && permissionForReferenceType;
+	}, [agencyIdValue, meData?.permissions, referenceTypeValue]);
 
 	//
 	// C. Render components
@@ -47,7 +52,7 @@ export function AlertDetailSectionDates() {
 				<Text size="sm" weight="medium">Período em que o alerta é válido. Distinto da visibilidade. O alerta pode estar visível mas não ser ainda válido (ex: um alerta para um corte de estrada é vísível uma semana antes, mas o corte em si é apenas durante 2 dias).</Text>
 				<Grid columns="ab" gap="md">
 					<StandardFormController
-						control={alertDetailContext.form.instance.control}
+						control={form.control}
 						name="active_period_start_date"
 						render={({ field, fieldState }) => (
 							<DateTimeInput
@@ -60,7 +65,7 @@ export function AlertDetailSectionDates() {
 						)}
 					/>
 					<StandardFormController
-						control={alertDetailContext.form.instance.control}
+						control={form.control}
 						name="active_period_end_date"
 						render={({ field, fieldState }) => (
 							<DateTimeInput
@@ -83,7 +88,7 @@ export function AlertDetailSectionDates() {
 				<Text size="sm" weight="medium">É possível agendar a permanência do alerta nos canais digitais. A visibilidade do alerta é diferente do seu período de vigência.</Text>
 				<Grid columns="ab" gap="md">
 					<StandardFormController
-						control={alertDetailContext.form.instance.control}
+						control={form.control}
 						name="publish_start_date"
 						render={({ field, fieldState }) => (
 							<DateTimeInput
@@ -97,7 +102,7 @@ export function AlertDetailSectionDates() {
 						)}
 					/>
 					<StandardFormController
-						control={alertDetailContext.form.instance.control}
+						control={form.control}
 						name="publish_end_date"
 						render={({ field, fieldState }) => (
 							<DateTimeInput
@@ -114,6 +119,4 @@ export function AlertDetailSectionDates() {
 			</Section>
 		</Collapsible>
 	);
-
-	//
 }

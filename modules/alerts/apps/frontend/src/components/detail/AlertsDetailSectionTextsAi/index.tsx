@@ -5,12 +5,12 @@ import { Divider, Inline, Label, LoadingThinking, Section, StandardFormControlle
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useAlertsComposeData } from '../../../shared/use-alerts-compose-data';
-import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
+import { useAlertsComposeData } from '../../shared/use-alerts-compose-data';
+import { useAlertsDetailFormContext } from '../AlertsDetailForm.context';
 
 /* * */
 
-export function AlertCreateStepSummaryAi() {
+export function AlertsDetailSectionTextsAi() {
 	//
 
 	//
@@ -20,20 +20,20 @@ export function AlertCreateStepSummaryAi() {
 
 	const { data: meData } = useMeData();
 
-	const { form: alertsCreateForm } = useAlertsCreateFormContext();
+	const { form } = useAlertsDetailFormContext();
 
 	const { data: composeData, isLoading: isLoadingComposeData, isValidating: isValidatingComposeData } = useAlertsComposeData();
 
-	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const referenceTypeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
-	const autoTextsValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'auto_texts' });
-	const titleValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'title' });
-	const descriptionValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'description' });
+	const agencyIdValue = useStandardFormWatch({ control: form.control, name: 'agency_id' });
+	const referenceTypeValue = useStandardFormWatch({ control: form.control, name: 'reference_type' });
+	const autoTextsValue = useStandardFormWatch({ control: form.control, name: 'auto_texts' });
+	const titleValue = useStandardFormWatch({ control: form.control, name: 'title' });
+	const descriptionValue = useStandardFormWatch({ control: form.control, name: 'description' });
 
 	//
 	// B. Transform data
 
-	const hasPermissionToCreate = useMemo(() => {
+	const hasPermissionToUpdate = useMemo(() => {
 		const permissionForAgencyId = hasPermissionResource(meData?.permissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
 			requiredValue: agencyIdValue,
@@ -71,8 +71,8 @@ export function AlertCreateStepSummaryAi() {
 	// C. Handle actions
 
 	const handleAcceptProposal = () => {
-		alertsCreateForm.setValue('title', composeData?.pt?.title);
-		alertsCreateForm.setValue('description', composeData?.pt?.description);
+		form.setValue('title', composeData?.pt?.title);
+		form.setValue('description', composeData?.pt?.description);
 	};
 
 	//
@@ -83,9 +83,9 @@ export function AlertCreateStepSummaryAi() {
 			<Surface variant="bordered" withBackground>
 
 				<Section gap="md">
-					{(hasPermissionToCreate || hasPermissionToUpdateTexts) && (
+					{(hasPermissionToUpdate || hasPermissionToUpdateTexts) && (
 						<StandardFormController
-							control={alertsCreateForm.control}
+							control={form.control}
 							name="auto_texts"
 							render={({ field }) => (
 								<Switch
@@ -97,9 +97,10 @@ export function AlertCreateStepSummaryAi() {
 							)}
 						/>
 					)}
-					{(autoTextsValue && hasPermissionToCreate) && (
+
+					{(autoTextsValue && hasPermissionToUpdate) && (
 						<StandardFormController
-							control={alertsCreateForm.control}
+							control={form.control}
 							name="user_instructions"
 							render={({ field }) => (
 								<TextInput
@@ -116,7 +117,7 @@ export function AlertCreateStepSummaryAi() {
 					)}
 				</Section>
 
-				{(autoTextsValue && hasPermissionToCreate) && (
+				{(autoTextsValue && hasPermissionToUpdate) && (
 					<>
 
 						<Divider lineStyle="dashed" />

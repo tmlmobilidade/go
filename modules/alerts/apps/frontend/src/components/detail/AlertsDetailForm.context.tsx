@@ -63,9 +63,13 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 	const hasUpdatePermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
 			action: 'update',
+			resources: {
+				agency_ids: [alertData.agency_id],
+				reference_types: [alertData.reference_type],
+			},
 			scope: 'alerts',
 		});
-	}, [meData?.permissions]);
+	}, [alertData.agency_id, alertData.reference_type, meData?.permissions]);
 
 	const { editEnabled, updateEnabled } = useStandardFormCapabilities({
 		form: {

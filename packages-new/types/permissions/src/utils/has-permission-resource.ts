@@ -3,12 +3,25 @@
 import { AllowAllFlagValue } from '@/allow-all.js';
 import { PermissionsResources } from '@/resources-registy.js';
 
-import { Permission } from '../permissions.js';
+import { type Permission } from '../permissions.js';
 
 /* * */
 
-export interface HasPermissionResourceParams {
+interface HasPermissionResourceRequirements {
+
+	/**
+	 * The required permission to check.
+	 */
+	requiredPermission: Omit<Permission, 'resources'>
+
+	/**
+	 * The required value to check.
+	 */
 	requiredValue: string
+
+	/**
+	 * The key of the resource.
+	 */
 	resourceKey: keyof PermissionsResources
 }
 
@@ -20,33 +33,33 @@ export interface HasPermissionResourceParams {
  * If the provided `permissions` object contains the value `43` inside the `scope='plans'`,
  * `action='create'` and `resource_key='agency_ids'` the function will return true.
  * @param userPermissions The list of permissions (from a user or request).
- * @param requiredPermission The required permission to check.
- * @param requiredValue The permission value to check against.
- * @param resourceKey The key of the resource.
+ * @param requirements The requirements to check for.
  * @returns True if the permission is found, false otherwise.
  */
-export function hasPermissionResource(userPermissions: Permission[], requiredPermission: Permission, { requiredValue, resourceKey }: HasPermissionResourceParams) {
+export function hasPermissionResource(userPermissions: Permission[], { requiredPermission, requiredValue, resourceKey }: HasPermissionResourceRequirements) {
 	//
 
 	//
 	// Return false if no permissions
 
-	if (!userPermissions) return false;
+	if (!userPermissions?.length) return false;
+
+	if (!resourceKey || !requiredValue) return false;
 
 	//
 	// Find the permission with the given action and scope
 
-	const foundPermission = userPermissions.find(p => p.action === requiredPermission.action && p.scope === requiredPermission.scope);
+	const foundUserPermission = userPermissions.find(p => p.action === requiredPermission.action && p.scope === requiredPermission.scope);
 
-	if (!foundPermission) return false;
+	if (!foundUserPermission) return false;
 
 	//
 	// Exit if the found user permission does not have the resources property
 	// or if the resources property is empty
 
-	if (!('resources' in foundPermission)) return false;
+	if (!('resources' in foundUserPermission)) return false;
 
-	const resourceValues: string[] = foundPermission.resources[resourceKey];
+	const resourceValues: string[] = foundUserPermission.resources[resourceKey];
 
 	if (!resourceValues?.length) return false;
 
