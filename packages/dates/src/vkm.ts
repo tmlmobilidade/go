@@ -1,4 +1,6 @@
-import type { Agency, CalculateVkmDto, Event, Holiday, LegacyVkmDayType, OperationalDate, Pattern, VkmCalculationResult, VkmPeriodResult, YearPeriod } from '@tmlmobilidade/types';
+import type { CalculateVkmDto, Event, Holiday, LegacyVkmDayType, Pattern, VkmCalculationResult, VkmPeriodResult, YearPeriod } from '@tmlmobilidade/go-types-offer';
+import type { OperationalDate } from '@tmlmobilidade/go-types-shared';
+import type { Agency } from '@tmlmobilidade/types';
 
 import { buildOperationalDateRange } from '@/calendar/rules/utils/date.js';
 import { calendarWeekday } from '@/calendar/utils/index.js';

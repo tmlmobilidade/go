@@ -1,11 +1,11 @@
 /* * */
 
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type HubLine, type HubPattern, type HubRoute, type HubScheduledArrival, type HubStop, type HubTrip, type HubWaypoint } from '@tmlmobilidade/go-types-public-info';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Route_Extended } from '@tmlmobilidade/types';
 import crypto from 'node:crypto';
 
 /* * */
@@ -60,7 +60,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 
 	// For Routes
 	const allRoutesRaw = importedGtfsSql.routes.all();
-	const allRoutesRawMap = new Map<string, GTFS_Route_Extended>(allRoutesRaw.map(item => [item.route_id, item]));
+	const allRoutesRawMap = new Map<string, GtfsStrictV29Routes>(allRoutesRaw.map(item => [item.route_id, item]));
 
 	// Get all distinct Pattern IDs from trips table
 	const allDistinctPatternIds = importedGtfsSql.trips.distinct('pattern_id');
@@ -165,8 +165,8 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				// This will be the path that is stored alongside this pattern group.
 
 				stopTimesAsCompletePath.push({
-					allow_drop_off: stopTimeRawData.drop_off_type !== 1, // Alight.NOT_AVAILABLE
-					allow_pickup: stopTimeRawData.pickup_type !== 1, // Alight.NOT_AVAILABLE
+					allow_drop_off: stopTimeRawData.drop_off_type !== '1', // Alight.NOT_AVAILABLE
+					allow_pickup: stopTimeRawData.pickup_type !== '1', // Alight.NOT_AVAILABLE
 					distance: Number(stopTimeRawData.shape_dist_traveled),
 					distance_delta: 0,
 					stop_id: stopTimeRawData.stop_id,
@@ -230,7 +230,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 				_id: tripRawData.pattern_id,
 				agency_id: routeRawData.agency_id,
 				color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
-				direction_id: tripRawData.direction_id,
+				direction_id: Number(tripRawData.direction_id) as 0 | 1,
 				headsign: tripRawData.trip_headsign,
 				line_id: String(routeRawData.line_id),
 				route_id: routeRawData.route_id,
@@ -257,7 +257,7 @@ export async function generateLinesRoutesPatterns(importedGtfsSql: GtfsSQLTables
 					_id: tripRawData.pattern_id,
 					agency_id: routeRawData.agency_id,
 					color: routeRawData.route_color ? `#${routeRawData.route_color}` : '#000000',
-					direction_id: tripRawData.direction_id,
+					direction_id: Number(tripRawData.direction_id) as 0 | 1,
 					district_ids: [],
 					district_names: [],
 					facilities: [],

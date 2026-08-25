@@ -19,6 +19,7 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
+		"@fastify/multipart": "10.1.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/controllers": "*",
 		"@tmlmobilidade/fastify": "*",
@@ -26,6 +27,7 @@
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},

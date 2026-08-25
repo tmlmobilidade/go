@@ -1,8 +1,6 @@
 'use client';
 
 import { OfferBreadcrumbs } from '@/components/common/OfferBreadcrumbs';
-/* * */
-
 import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';

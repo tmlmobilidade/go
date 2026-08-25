@@ -5,6 +5,9 @@ import { z } from 'zod';
 
 /* * */
 
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export const HashedTripWaypointSchema = z.object({
 	arrival_time: z.string(),
 	departure_time: z.string(),
@@ -19,10 +22,14 @@ export const HashedTripWaypointSchema = z.object({
 	timepoint: z.number(),
 });
 
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export type HashedTripWaypoint = z.infer<typeof HashedTripWaypointSchema>;
 
-/* * */
-
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export const HashedTripSchema = DocumentSchema
 	.omit({ created_by: true, is_locked: true, updated_by: true })
 	.extend({
@@ -40,4 +47,7 @@ export const HashedTripSchema = DocumentSchema
 		trip_headsign: z.string(),
 	});
 
+/**
+ * @deprecated Use the `HashedTrip` type from the `@tmlmobilidade/go-types-operation` package instead.
+ */
 export type HashedTrip = z.infer<typeof HashedTripSchema>;

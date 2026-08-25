@@ -1,5 +1,5 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Typology } from '@tmlmobilidade/types';
+import { type Typology } from '@tmlmobilidade/go-types-offer';
 
 /**
  * Fetches all typologies and returns them as a Map keyed by ID
@@ -13,9 +13,8 @@ export async function fetchAllTypologies(): Promise<Map<string, Typology>> {
 			typologiesMap.set(typology._id, typology);
 		}
 		return typologiesMap;
-	}
-	catch (error) {
-		throw new Error(`Error fetching typologies: ${error}`);
+	} catch (error) {
+		throw new Error(`Error fetching typologies: ${error}`, error);
 	}
 }
 
@@ -39,8 +38,7 @@ export async function getTypologyDetails(
 	// Otherwise, fetch individually
 	try {
 		return await goDb.offer.typologies.findById(typologyId);
-	}
-	catch (error) {
-		throw new Error(`Error fetching typology ${typologyId}: ${error}`);
+	} catch (error) {
+		throw new Error(`Error fetching typology ${typologyId}: ${error}`, error);
 	}
 }

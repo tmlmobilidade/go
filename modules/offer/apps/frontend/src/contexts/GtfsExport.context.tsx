@@ -3,7 +3,9 @@
 import { GTFS_EXPORT_MODAL_ID } from '@/components/lines/export/GtfsExportModal';
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { API_ROUTES, HttpException } from '@tmlmobilidade/consts';
-import { type CreateFileExportDto, FileExport, FileExportType, type GtfsExportProperties, type LinesMode, type OperationalDate } from '@tmlmobilidade/types';
+import { type CreateFileExportDto, type FileExport, type FileExportType, type GtfsExportProperties } from '@tmlmobilidade/go-types-downloads';
+import { type LinesMode } from '@tmlmobilidade/go-types-offer';
+import { type OperationalDate } from '@tmlmobilidade/types';
 import { useForm } from '@tmlmobilidade/ui';
 import { closeModal, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';

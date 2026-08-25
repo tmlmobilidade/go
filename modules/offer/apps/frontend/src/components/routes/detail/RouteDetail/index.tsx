@@ -28,7 +28,7 @@ export function RouteDetail() {
 	}
 
 	return (
-		<Pane header={[<RouteDetailHeader />]}>
+		<Pane header={[<RouteDetailHeader key="header" />]}>
 			<RouteDetailSectionConfig />
 			<RouteDetailSectionPatterns />
 		</Pane>

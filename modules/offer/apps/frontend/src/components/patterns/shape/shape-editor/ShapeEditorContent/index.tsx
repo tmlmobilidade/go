@@ -2,7 +2,7 @@
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { useStopsContext } from '@/contexts/Stops.context';
-import { PopulatedPath } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { MapOverlayPatternShape, type MapOverlayPatternShapeLineData, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
 

@@ -2,7 +2,7 @@
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { IconHistory } from '@tabler/icons-react';
-import { UpdatePatternDto } from '@tmlmobilidade/types';
+import { type UpdatePatternDto } from '@tmlmobilidade/go-types-offer';
 import { CommentInput, CommentItemField, CommentItemNote, Menu } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import { useCallback, useMemo, useState } from 'react';

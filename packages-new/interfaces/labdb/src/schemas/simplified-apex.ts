@@ -1,7 +1,7 @@
 /* * */
 
 import { type ClickHouseTableSchema } from '@tmlmobilidade/go-clients-clickhouse';
-import { type SimplifiedApexBankingTap, SimplifiedApexInspection, SimplifiedApexInspectionDecision, SimplifiedApexLocation, SimplifiedApexOnBoardRefund, SimplifiedApexOnBoardSale, SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
+import { type SimplifiedApexBankingTap, type SimplifiedApexInspection, type SimplifiedApexInspectionDecision, type SimplifiedApexLocation, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 
 /* * */
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
-import { LineSchema } from '@tmlmobilidade/types';
+import { LineSchema } from '@tmlmobilidade/go-types-offer';
 import { Collapsible, Grid, Section, Switch } from '@tmlmobilidade/ui';
 
 /* * */

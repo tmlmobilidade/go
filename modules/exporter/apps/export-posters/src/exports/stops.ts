@@ -1,9 +1,9 @@
 /* * */
 
 import { type ExportToHitouchConfig } from '@/types.js';
+import { type GtfsStops } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GTFS_Stop } from '@tmlmobilidade/types';
 import { CsvWriter } from '@tmlmobilidade/writers';
 
 /* * */
@@ -15,7 +15,7 @@ export async function exportStopsFile(sqlTables: GtfsSQLTables, exportConfig: Ex
 	const stopsCsv = new CsvWriter('stops.txt', `${exportConfig.workdir}/stops.txt`, { batch_size: 100000 });
 
 	for await (const stopData of sqlTables.stops.stream()) {
-		const data: GTFS_Stop = {
+		const data: GtfsStops = {
 			location_type: stopData.location_type,
 			parent_station: stopData.parent_station,
 			platform_code: stopData.platform_code,
