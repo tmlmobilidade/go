@@ -6,7 +6,7 @@ import { type CreateFileExportDto, type PlanExportProperties } from '@tmlmobilid
 import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-import { PLAN_EXPORT_MODAL_ID } from '../components/plans/exporter/PlanExportModal/constants';
+import { PLAN_EXPORT_MODAL_ID } from './PlanExportModal/constants';
 
 /* * */
 

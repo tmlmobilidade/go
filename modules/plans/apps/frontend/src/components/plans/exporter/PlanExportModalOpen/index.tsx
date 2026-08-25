@@ -1,4 +1,4 @@
-import { PlanExportModalContextProvider } from '@/contexts/PlanExport.context';
+import { PlanExportModalContextProvider } from '@/components/plans/exporter/PlanExportForm.context';
 import { ExportsContextProvider, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 import { PlanExportModal } from '../PlanExportModal';

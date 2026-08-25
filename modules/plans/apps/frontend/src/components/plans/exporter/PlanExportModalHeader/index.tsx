@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlanExportModalContext } from '@/contexts/PlanExport.context';
+import { usePlanExportModalContext } from '@/components/plans/exporter/PlanExportForm.context';
 import { IconFileDownload } from '@tabler/icons-react';
 import { Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 

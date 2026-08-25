@@ -2,7 +2,7 @@
 
 import { usePlansListFilterAgency } from '@/components/plans/list/filters/PlansListFilterAgency/use-plans-list-filter-agency';
 import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
-import { usePlanExportModalContext } from '@/contexts/PlanExport.context';
+import { usePlanExportModalContext } from '@/components/plans/exporter/PlanExportForm.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { Divider, Section, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
