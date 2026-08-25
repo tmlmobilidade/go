@@ -1,8 +1,8 @@
 /* * */
 
 import { updateFeedInfoDates } from '@/utils/file-utils.js';
-import { HTTP_STATUS, HttpException, mimeTypes } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { mimeTypes } from '@tmlmobilidade/consts';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { CreateAttachmentDto } from '@tmlmobilidade/go-types-core';
@@ -26,12 +26,17 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
-	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+	if (!foundPlan) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
 	//
 	// Check if the user has permission to update the Plan
 
-	const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
+	const hasPermissionUpdatePlan = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.plans.actions.update,
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
@@ -39,7 +44,12 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 		value: foundPlan.agency_id,
 	});
 
-	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this plan.');
+	if (!hasPermissionUpdatePlan) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update this plan.',
+			status_code: '403',
+		});
+	}
 
 	//
 	// Validate the new feed info dates
@@ -48,7 +58,10 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 	const validatedFeedEndDate = validateGtfsDate(request.body.gtfs_feed_info?.feed_end_date);
 
 	if (validatedFeedStartDate > validatedFeedEndDate) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Feed start date cannot be after feed end date');
+		return sendErrorApiResponse(reply, {
+			error: 'Feed start date cannot be after feed end date',
+			status_code: '400',
+		});
 	}
 
 	//
@@ -69,7 +82,12 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 			value: foundPlan.agency_id,
 		});
 
-		if (!hasPermissionUpdateFeedInfoDates) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the feed info dates.');
+		if (!hasPermissionUpdateFeedInfoDates) {
+			return sendErrorApiResponse(reply, {
+				error: 'You are not authorized to update the feed info dates.',
+				status_code: '403',
+			});
+		}
 
 		//
 		// Update the feed info dates in the operation file
@@ -150,7 +168,12 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 			value: foundPlan.agency_id,
 		});
 
-		if (!hasPermissionUpdatePcgiLegacy) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update the PCGI legacy field.');
+		if (!hasPermissionUpdatePcgiLegacy) {
+			return sendErrorApiResponse(reply, {
+				error: 'You are not authorized to update the PCGI legacy field.',
+				status_code: '403',
+			});
+		}
 
 		//
 		// Update the plan with the new data
@@ -169,16 +192,15 @@ export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto &
 
 	const updatedPlanData = await goDb.operation.plans.findById(request.params.id);
 
-	if (!updatedPlanData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+	if (!updatedPlanData) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
 	//
 	// Send the updated plan data as the response
 
-	reply.send({
-		data: updatedPlanData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
-
-	//
+	return sendSuccessApiResponse(reply, updatedPlanData);
 }
