@@ -1,7 +1,7 @@
 'use client';
 
 import { useSchoolsCreateFormContext } from '@/components/create/shared/SchoolsCreateForm.context';
-import { Collapsible, CoordinatesInput, Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, CoordinatesInput, Grid, Section, Spacer, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -25,7 +25,7 @@ export function SchoolCreateSectionGeneral() {
 			title={t('schools:create.SchoolCreateSectionGeneral.title')}
 		>
 			<Section padding="lg">
-				<Grid columns="abc" gap="md">
+				<Grid columns="ab" gap="md">
 					<StandardFormController
 						control={schoolsCreateForm.control}
 						name="code"
@@ -56,13 +56,52 @@ export function SchoolCreateSectionGeneral() {
 						)}
 					/>
 
+				</Grid>
+			</Section>
+
+			<Spacer />
+
+			<Section padding="lg">
+				<Grid columns="ab" gap="md">
+
 					<CoordinatesInput
 						label={t('schools:create.SchoolCreateSectionGeneral.coordinates.label')}
 						onChange={coordinates => schoolsCreateForm.setValue('coordinates', coordinates)}
 						value={schoolsCreateForm.watch('coordinates')}
 					/>
+
+					<StandardFormController
+						control={schoolsCreateForm.control}
+						name="nature"
+						render={({ field }) => (
+							<TextInput
+								label={t('schools:create.SchoolCreateSectionGeneral.nature.label')}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('schools:create.SchoolCreateSectionGeneral.nature.placeholder')}
+								value={String(field.value)}
+								w="100%"
+							/>
+						)}
+					/>
+
+					<StandardFormController
+						control={schoolsCreateForm.control}
+						name="grouping"
+						render={({ field }) => (
+							<TextInput
+								label={t('schools:create.SchoolCreateSectionGeneral.grouping.label')}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('schools:create.SchoolCreateSectionGeneral.grouping.placeholder')}
+								value={String(field.value)}
+								w="100%"
+							/>
+						)}
+					/>
 				</Grid>
 			</Section>
+
 		</Collapsible>
 	);
 }

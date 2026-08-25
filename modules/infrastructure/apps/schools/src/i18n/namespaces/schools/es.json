@@ -28,9 +28,17 @@
 				"label": "Coordenadas",
 				"placeholder": "Introduzca las coordenadas de la escuela"
 			},
+			"grouping": {
+				"label": "Agrupación",
+				"placeholder": "Introduzca la agrupación de la escuela"
+			},
 			"name": {
 				"label": "Nombre",
 				"placeholder": "Introduzca el nombre de la escuela"
+			},
+			"nature": {
+				"label": "Naturaleza",
+				"placeholder": "Introduzca la naturaleza de la escuela"
 			},
 			"title": "Datos generales"
 		},

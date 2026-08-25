@@ -38,9 +38,17 @@
 				"name": "Nome",
 				"nature": "Natureza"
 			},
+			"grouping": {
+				"label": "Agrupamento",
+				"placeholder": "Introduza o agrupamento da escola"
+			},
 			"name": {
 				"label": "Nome",
 				"placeholder": "Introduza o nome da escola"
+			},
+			"nature": {
+				"label": "Natureza",
+				"placeholder": "Introduza a natureza da escola"
 			},
 			"title": "Dados gerais"
 		},
