@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAlertsComposeData } from '../../../shared/use-alerts-compose-data';
-import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
+import { useAlertsCreateFormContext } from '../../AlertsCreateForm.context';
 
 /* * */
 

@@ -4,7 +4,7 @@ import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { StandardFormController, Grid, Label, openConfirmModal, Section, Select, useAgenciesData } from '@tmlmobilidade/ui';
 
-import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
+import { useAlertsCreateFormContext } from '../../AlertsCreateForm.context';
 
 /* * */
 

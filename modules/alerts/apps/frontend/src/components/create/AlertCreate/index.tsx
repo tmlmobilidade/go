@@ -1,7 +1,7 @@
 'use client';
 
-import { AlertCreateFooter } from '@/components/create/shared/AlertCreateFooter';
-import { AlertCreateHeader } from '@/components/create/shared/AlertCreateHeader';
+import { AlertCreateFooter } from '@/components/create/AlertCreateFooter';
+import { AlertCreateHeader } from '@/components/create/AlertCreateHeader';
 import { AlertCreateSteps } from '@/components/create/steps/AlertCreateSteps';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { NoDataLabel, Pane, Surface, useMeContext } from '@tmlmobilidade/ui';

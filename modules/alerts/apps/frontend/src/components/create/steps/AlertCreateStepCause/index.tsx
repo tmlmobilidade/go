@@ -6,8 +6,8 @@ import { AlertCauseIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Sectio
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
-import { useAlertsCreateFormStepsContext } from '../../shared/AlertsCreateFormSteps.context';
+import { useAlertsCreateFormContext } from '../../AlertsCreateForm.context';
+import { useAlertsCreateFormStepsContext } from '../../AlertsCreateFormSteps.context';
 
 /* * */
 

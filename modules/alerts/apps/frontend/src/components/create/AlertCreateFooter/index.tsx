@@ -5,7 +5,7 @@ import { Button, HasPermission, PublishStatusDisplay, Spacer, Toolbar, useStanda
 
 import { useAlertsCreateFormContext } from '../AlertsCreateForm.context';
 import { useAlertsCreateFormStepsContext } from '../AlertsCreateFormSteps.context';
-import { useAlertsCreatePublish } from '../use-alerts-create-publish';
+import { useAlertsCreatePublish } from '../shared/use-alerts-create-publish';
 
 /* * */
 
