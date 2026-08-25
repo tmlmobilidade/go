@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Plan } from '@tmlmobilidade/go-types-operation';
@@ -22,7 +22,12 @@ export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanD
 	//
 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);
-	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+	if (!foundPlan) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
 	const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.plans.actions.update_apex_file,
@@ -32,10 +37,20 @@ export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanD
 		value: foundPlan.agency_id,
 	});
 
-	if (!hasPermissionReadPlan) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to update this plan.');
+	if (!hasPermissionReadPlan) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to update this plan.',
+			status_code: '403',
+		});
+	}
 
 	const requestData = await request.file();
-	if (!requestData) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No file provided');
+	if (!requestData) {
+		return sendErrorApiResponse(reply, {
+			error: 'No file provided',
+			status_code: '400',
+		});
+	}
 
 	let updatedPlanData: null | Plan = null;
 	const originalApexFileId = foundPlan.apex_file_id;
@@ -97,9 +112,5 @@ export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanD
 		}
 	}
 
-	reply.send({
-		data: updatedPlanData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, updatedPlanData);
 }
