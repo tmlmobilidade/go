@@ -1,42 +1,23 @@
 {
-	"name": "@tmlmobilidade/go-providers-operation",
+	"name": "@tmlmobilidade/go-controller-pckg-utils",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
 		"name": "TML-ISO"
 	},
 	"license": "AGPL-3.0-or-later",
-	"homepage": "https://go.tmlmobilidade.pt",
-	"bugs": {
-		"url": "https://github.com/tmlmobilidade/go/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/tmlmobilidade/go.git"
-	},
-	"keywords": [
-		"public transit",
-		"tml",
-		"transportes metropolitanos de lisboa",
-		"go"
-	],
-	"publishConfig": {
-		"access": "public"
-	},
 	"type": "module",
 	"files": ["dist"],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"lint": "eslint ./src/ && tsc --noEmit",
-		"lint:fix": "eslint ./src/ --fix",
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
