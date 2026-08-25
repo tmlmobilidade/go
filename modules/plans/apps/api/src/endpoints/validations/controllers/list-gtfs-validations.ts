@@ -26,6 +26,7 @@ export async function listGtfsValidations(request: FastifyRequest<{ Body: Valida
 		values: request.body.agency_ids,
 	});
 
+	//
 	// Validate the filters
 
 	const validatedFilters = ValidationListFiltersSchema.parse(request.body); ;
@@ -44,6 +45,9 @@ export async function listGtfsValidations(request: FastifyRequest<{ Body: Valida
 		{ $project: Object.fromEntries(Object.keys(ValidationListItemSchema.shape).map(key => [key, 1])) },
 		{ $sort: { created_at: -1 } },
 	];
+
+	//
+	// Execute the aggregation pipeline
 
 	const aggregationResult = await goDb.operation.gtfsValidations.aggregate(pipeline);
 
