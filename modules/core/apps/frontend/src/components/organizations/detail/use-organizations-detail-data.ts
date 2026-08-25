@@ -16,7 +16,7 @@ interface UseOrganizationsDetailDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: () => void
+	mutate: (newData?: ApiResponse<Organization>) => void
 	timestamp: null | UnixTimestamp
 }
 

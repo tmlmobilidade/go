@@ -16,7 +16,7 @@ interface UseRolesDetailDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: () => void
+	mutate: (newData?: ApiResponse<Role>) => void
 	timestamp: null | UnixTimestamp
 }
 

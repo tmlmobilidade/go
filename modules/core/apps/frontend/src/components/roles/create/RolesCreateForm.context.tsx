@@ -37,7 +37,7 @@ export function RolesCreateFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// B. Setup form
 
-	const { form, unblock } = useStandardForm<CreateRoleDto, typeof CreateRoleSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreateRoleDto, typeof CreateRoleSchema>({
 		schema: CreateRoleSchema,
 	});
 
@@ -72,8 +72,8 @@ export function RolesCreateFormContextProvider({ children }: PropsWithChildren) 
 			isCreating: isCreating,
 		},
 		form: {
-			isDirty: form.formState.isDirty,
-			isValid: form.formState.isValid,
+			isDirty,
+			isValid,
 		},
 	});
 
@@ -89,11 +89,13 @@ export function RolesCreateFormContextProvider({ children }: PropsWithChildren) 
 			editEnabled,
 		},
 		form,
+		isDirty,
+		isValid,
 		status: {
 			isCreating,
 		},
 		unblock,
-	}), [createEnabled, editEnabled, form, handleCreate, isCreating, unblock]);
+	}), [createEnabled, editEnabled, form, handleCreate, isCreating, unblock, isDirty, isValid]);
 
 	return (
 		<RolesCreateFormContext.Provider value={stateValue}>

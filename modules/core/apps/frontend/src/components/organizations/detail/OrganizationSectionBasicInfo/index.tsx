@@ -1,10 +1,11 @@
 'use client';
 
 import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { Collapsible, Grid, ImageUpload, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, StandardFormController, TextInput, UploadImage } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsDetailFormContext } from '../OrganizationsDetailForm.context';
+import { useOrganizationsImageDetailData } from '../use-organizations-image-detail-data';
 
 /* * */
 
@@ -18,8 +19,8 @@ export function OrganizationsDetailBasicInfo() {
 
 	const { actions, capabilities, form, status } = useOrganizationsDetailFormContext();
 
-	const logoDarkUrlValue = useStandardFormWatch({ control: form.control, name: 'logo_dark' });
-	const logoLightUrlValue = useStandardFormWatch({ control: form.control, name: 'logo_light' });
+	const { data: logoLightUrlValue, isLoading: isLoadingLogoLight } = useOrganizationsImageDetailData('light');
+	const { data: logoDarkUrlValue, isLoading: isLoadingLogoDark } = useOrganizationsImageDetailData('dark');
 
 	//
 	// B. Render components
@@ -72,21 +73,21 @@ export function OrganizationsDetailBasicInfo() {
 				</Grid>
 
 				<Grid columns="ab" gap="lg">
-					<ImageUpload
-						isDisabled={form.formState.isDirty}
-						isLoading={status.isUpdatingLightLogo}
+					<UploadImage
+						isDisabled={!capabilities.editEnabled}
+						isLoading={isLoadingLogoLight || status.isUpdatingLightLogo || status.isDeletingLightLogo}
 						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_light.label')}
-						onChange={actions.updateLightLogo}
 						onDelete={actions.deleteLightLogo}
-						value={logoLightUrlValue}
+						onUpload={actions.updateLightLogo}
+						urlValue={logoLightUrlValue}
 					/>
-					<ImageUpload
-						isDisabled={form.formState.isDirty}
-						isLoading={status.isUpdatingDarkLogo}
+					<UploadImage
+						isDisabled={!capabilities.editEnabled}
+						isLoading={isLoadingLogoDark || status.isUpdatingDarkLogo || status.isDeletingDarkLogo}
 						label={t('default:organizations.detail.SectionBasicInfo.fields.logo_dark.label')}
-						onChange={actions.updateDarkLogo}
 						onDelete={actions.deleteDarkLogo}
-						value={logoDarkUrlValue}
+						onUpload={actions.updateDarkLogo}
+						urlValue={logoDarkUrlValue}
 					/>
 				</Grid>
 

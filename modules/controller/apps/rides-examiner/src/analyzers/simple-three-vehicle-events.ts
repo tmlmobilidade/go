@@ -1,8 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { type RideAnalysisSimpleThreeVehicleEvents, RideAnalysisSimpleThreeVehicleEventsSchema } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * This analyzer tests if at least one stop_id is found for each segment of the trip.

@@ -43,7 +43,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// B. Setup form
 
-	const { form, unblock } = useStandardForm<UpdateUserDto, typeof UpdateUserSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateUserDto, typeof UpdateUserSchema>({
 		apiData: userData,
 		schema: UpdateUserSchema,
 	});
@@ -53,9 +53,9 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<User>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.USERS_UPDATE(userId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			usersDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			usersDetailMutate(response);
 			usersListMutate();
 		},
 	});
@@ -70,9 +70,9 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
 		fetchFn: async () => await fetchApiData<User>({ method: 'PUT', url: API_ROUTES.core.USERS_DETAIL(userId) }),
-		onSuccess: ({ data }) => {
-			form.reset(data);
-			usersDetailMutate();
+		onSuccess: (response) => {
+			form.reset(response.data);
+			usersDetailMutate(response);
 			usersListMutate();
 		},
 	});
@@ -100,8 +100,8 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 			isDeleting: isDeleting,
 		},
 		form: {
-			isDirty: form.formState.isDirty,
-			isValid: form.formState.isValid,
+			isDirty,
+			isValid,
 		},
 		loading: {
 			isLoading: userDataLoading,
@@ -133,6 +133,8 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 			updateEnabled,
 		},
 		form,
+		isDirty,
+		isValid,
 		status: {
 			isDeleting,
 			isLoading: userDataLoading,
@@ -141,7 +143,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 			isUpdating,
 		},
 		unblock,
-	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isLocking, isUpdating, lockEnabled, userData?.is_locked, userDataLoading, unblock, updateEnabled]);
+	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isLocking, isUpdating, lockEnabled, userData?.is_locked, userDataLoading, unblock, updateEnabled, isDirty, isValid]);
 
 	return (
 		<UsersDetailFormContext.Provider value={stateValue}>

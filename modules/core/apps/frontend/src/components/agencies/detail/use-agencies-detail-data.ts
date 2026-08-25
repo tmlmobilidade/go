@@ -16,7 +16,7 @@ interface UseAgenciesDetailDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: () => void
+	mutate: (newData?: ApiResponse<Agency>) => void
 	timestamp: null | UnixTimestamp
 }
 

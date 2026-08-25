@@ -18,7 +18,6 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
@@ -28,6 +27,8 @@
 		"@tmlmobilidade/go-types-gtfs-strict": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-geo": "*",
 		"@tmlmobilidade/import-gtfs": "*",
 		"@tmlmobilidade/logger": "*",

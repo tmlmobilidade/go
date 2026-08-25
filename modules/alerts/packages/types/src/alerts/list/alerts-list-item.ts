@@ -23,8 +23,6 @@ export const AlertsListItemSchema = AlertSchema.pick({
 	updated_by: true,
 });
 
-/* * */
-
 /**
  * A read model for the alert list item.
  */

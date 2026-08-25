@@ -7,7 +7,7 @@
 // import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 // import { Timer } from '@tmlmobilidade/timer';
 // import { type CreateSamDto, Sam, type SamAnalysis, type SamTimelineSummary, UpdateSamDto } from '@tmlmobilidade/types';
-// import { runOnInterval } from '@tmlmobilidade/utils';
+// import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 // /* * */
 

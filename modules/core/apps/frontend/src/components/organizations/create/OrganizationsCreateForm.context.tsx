@@ -37,7 +37,7 @@ export function OrganizationsCreateFormContextProvider({ children }: PropsWithCh
 	//
 	// B. Setup form
 
-	const { form, unblock } = useStandardForm<CreateOrganizationDto, typeof CreateOrganizationSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreateOrganizationDto, typeof CreateOrganizationSchema>({
 		schema: CreateOrganizationSchema,
 	});
 
@@ -72,8 +72,8 @@ export function OrganizationsCreateFormContextProvider({ children }: PropsWithCh
 			isCreating: isCreating,
 		},
 		form: {
-			isDirty: form.formState.isDirty,
-			isValid: form.formState.isValid,
+			isDirty,
+			isValid,
 		},
 	});
 
@@ -89,11 +89,13 @@ export function OrganizationsCreateFormContextProvider({ children }: PropsWithCh
 			editEnabled,
 		},
 		form,
+		isDirty,
+		isValid,
 		status: {
 			isCreating,
 		},
 		unblock,
-	}), [createEnabled, editEnabled, form, handleCreate, isCreating, unblock]);
+	}), [createEnabled, editEnabled, form, handleCreate, isCreating, unblock, isDirty, isValid]);
 
 	return (
 		<OrganizationsCreateFormContext.Provider value={stateValue}>

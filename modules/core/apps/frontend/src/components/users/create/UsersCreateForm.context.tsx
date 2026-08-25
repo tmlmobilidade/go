@@ -37,7 +37,7 @@ export function UsersCreateFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// B. Setup form
 
-	const { form, unblock } = useStandardForm<CreateUserDto, typeof CreateUserSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreateUserDto, typeof CreateUserSchema>({
 		schema: CreateUserSchema,
 	});
 
@@ -72,8 +72,8 @@ export function UsersCreateFormContextProvider({ children }: PropsWithChildren) 
 			isCreating: isCreating,
 		},
 		form: {
-			isDirty: form.formState.isDirty,
-			isValid: form.formState.isValid,
+			isDirty,
+			isValid,
 		},
 	});
 
@@ -89,11 +89,13 @@ export function UsersCreateFormContextProvider({ children }: PropsWithChildren) 
 			editEnabled,
 		},
 		form,
+		isDirty,
+		isValid,
 		status: {
 			isCreating,
 		},
 		unblock,
-	}), [createEnabled, editEnabled, form, handleCreate, isCreating, unblock]);
+	}), [createEnabled, editEnabled, form, handleCreate, isCreating, unblock, isDirty, isValid]);
 
 	return (
 		<UsersCreateFormContext.Provider value={stateValue}>

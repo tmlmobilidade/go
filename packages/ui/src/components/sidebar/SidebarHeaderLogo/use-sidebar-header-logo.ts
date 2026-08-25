@@ -1,18 +1,18 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Organization } from '@tmlmobilidade/go-types-core';
+import { type SidebarLogoPlatformResponse } from '@tmlmobilidade/go-types-platform';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useMeContext } from '../../../contexts';
 import { fetchApiData } from '../../../fetch';
+import { useCurrentThemeMode } from '../../../layout';
 
 /* * */
 
 interface UseSidebarHeaderLogoReturnType {
-	data: null | Pick<Organization, 'logo_dark' | 'logo_light'>
+	data: null | SidebarLogoPlatformResponse
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -27,13 +27,14 @@ export function useSidebarHeaderLogo(): UseSidebarHeaderLogoReturnType {
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
+	const currentThemeMode = useCurrentThemeMode();
 
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Pick<Organization, 'logo_dark' | 'logo_light'>>>(meContext.data.user?.organization_id && API_ROUTES.core.ORGANIZATIONS_DETAIL_DETAIL_IMAGE(meContext.data.user.organization_id), {
-		fetcher: async (url: string) => await fetchApiData<Pick<Organization, 'logo_dark' | 'logo_light'>>({ url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<SidebarLogoPlatformResponse>>([API_ROUTES.core.PLATFORM_SIDEBAR_LOGO, currentThemeMode], {
+		fetcher: async ([url, themeMode]) => await fetchApiData<SidebarLogoPlatformResponse>({ body: { theme_mode: themeMode }, method: 'POST', url }),
+		refreshInterval: 10_000, // 10 seconds
 	});
 
 	//

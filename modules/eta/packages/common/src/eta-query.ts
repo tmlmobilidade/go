@@ -3,12 +3,19 @@ import type { ClickHouseClient } from '@clickhouse/client';
 import { prepareNamedQueryParams, splitClickHouseStatements } from '@tmlmobilidade/go-clients-clickhouse';
 import { readFile } from 'node:fs/promises';
 
-async function queryEtaFromSql<T>(
-	client: ClickHouseClient,
-	sql: string,
-	context: string,
-	params?: Record<string, number | string>,
-): Promise<T[]> {
+/* * */
+
+/**
+ * Executes a single SQL query from the specified string.
+ *
+ * @template T - The type representing each returned row.
+ * @param client - The ClickHouseClient instance to use for executing the query.
+ * @param sql - The SQL query string to be executed.
+ * @param context - The context of the query (e.g. file path).
+ * @param params - Optional query parameters to replace in the query.
+ * @returns A promise that resolves to an array of results of type T.
+ */
+async function queryEtaFromSql<T>(client: ClickHouseClient, sql: string, context: string, params?: Record<string, number | string>): Promise<T[]> {
 	const { query, queryParams } = prepareNamedQueryParams(sql, params, context);
 	const result = await client.query({
 		format: 'JSONEachRow',

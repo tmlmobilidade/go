@@ -16,7 +16,7 @@ interface UseUsersDetailDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: () => void
+	mutate: (newData?: ApiResponse<User>) => void
 	timestamp: null | UnixTimestamp
 }
 

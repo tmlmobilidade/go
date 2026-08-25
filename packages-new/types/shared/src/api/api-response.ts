@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 
-import { UnixTimestampSchema } from '../dates/unix-timestamp.js';
+import { UnixTimestampSchema } from '../datetime/unix-timestamp.js';
 import { HttpStatusSchema } from './http-status.js';
 
 /* * */

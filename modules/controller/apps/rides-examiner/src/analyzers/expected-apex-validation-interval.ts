@@ -1,9 +1,9 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { type RideAnalysisExpectedApexValidationInterval, RideAnalysisExpectedApexValidationIntervalSchema } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 

@@ -1,4 +1,3 @@
-export * from '@/batching/index.js';
 export * from '@/caching/index.js';
 export * from '@/generic/index.js';
 export * from '@/get-public-trip-id.js';
@@ -9,8 +8,6 @@ export * from '@/numbers/index.js';
 export * from '@/objects/index.js';
 export * from '@/permissions.js';
 export * from '@/query-param-schemas.js';
-export * from '@/run-on-interval.js';
-export * from '@/run-with-concurrency.js';
 export * from '@/singleton-proxy.js';
 export * from '@/validate-query-params.js';
 export * from '@/with-retry.js';

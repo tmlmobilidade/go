@@ -39,9 +39,9 @@
 		"@tmlmobilidade/go-clients-oci-storage": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/strings": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/strings": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

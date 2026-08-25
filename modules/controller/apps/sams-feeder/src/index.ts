@@ -6,7 +6,7 @@
 // import { sams, simplifiedApexLocations, simplifiedApexOnBoardRefunds, simplifiedApexOnBoardSales, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 // import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 // import { Timer } from '@tmlmobilidade/timer';
-// import { runOnInterval } from '@tmlmobilidade/utils';
+// import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 // /* * */
 
