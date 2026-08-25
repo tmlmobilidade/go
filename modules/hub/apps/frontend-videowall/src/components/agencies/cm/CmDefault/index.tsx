@@ -6,7 +6,7 @@ import { CardDefault } from '@/components/CardDefault';
 import { Grid } from '@/components/Grid';
 import { IconCreditCardPay } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-performance';
 import { useMemo } from 'react';
 import useSWR from 'swr';

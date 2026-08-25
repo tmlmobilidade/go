@@ -23,7 +23,7 @@
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*"
+		"@tmlmobilidade/go-utils-dates": "*"
 	},
 	"devDependencies": {
 		"@types/node": "26.1.2",

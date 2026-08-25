@@ -2,7 +2,7 @@
 
 import { type PlanNormalized } from '@/types/normalized';
 import { IconArrowRight } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { Indicator, Tag } from '@tmlmobilidade/ui';
 

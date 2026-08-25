@@ -5,7 +5,7 @@ import { useRidesDetailApexValidationsData } from '@/components/rides/detail/sha
 import { useRidesDetailHashedTripData } from '@/components/rides/detail/shared/use-rides-detail-hashed-trip-data';
 import { useRidesDetailRideData } from '@/components/rides/detail/shared/use-rides-detail-ride-data';
 import { useRidesDetailVehicleEventsData } from '@/components/rides/detail/shared/use-rides-detail-vehicle-events-data';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/geo';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
 import { fromEncodedPolylineToGeoJsonLineString } from '@tmlmobilidade/go-utils-geo';

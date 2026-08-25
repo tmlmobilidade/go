@@ -3,7 +3,7 @@
 import { usePlanChangeContext } from '@/components/plans/change/PlanChange.context';
 import { PlanChangeHeader } from '@/components/plans/change/PlanChangeHeader';
 import { IconCheck } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Grid, IdTag, Label, Pane, Section, Select, type SelectProps } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 

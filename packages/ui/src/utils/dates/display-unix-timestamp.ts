@@ -1,6 +1,6 @@
 /* * */
 
-import { Dates, type DatesFormat } from '@tmlmobilidade/dates';
+import { Dates, type DatesFormat } from '@tmlmobilidade/go-utils-dates';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 
 /**

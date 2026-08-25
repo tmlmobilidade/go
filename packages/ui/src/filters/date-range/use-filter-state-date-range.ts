@@ -1,6 +1,6 @@
 'use client';
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { useEffect, useMemo } from 'react';

@@ -1,6 +1,6 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { parsePcgiTransactionEntityIntoRawApexTransaction } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { pcgiFileManager } from '@tmlmobilidade/go-interfaces-pcgi-file-manager';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';

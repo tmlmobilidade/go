@@ -1,7 +1,7 @@
 /* * */
 
 import { getAgencyIdFromOperatorLongId } from '@/agency-map.js';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type PcgiTransactionEntity } from '@tmlmobilidade/go-types-apex';
 import { type RawApexTransaction, type RawApexTransactionInspectionDecisionV20, RawApexTransactionInspectionDecisionV20PayloadSchema, RawApexTransactionInspectionDecisionV20Schema } from '@tmlmobilidade/go-types-apex';
 

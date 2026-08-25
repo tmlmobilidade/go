@@ -6,7 +6,7 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { filterDataByAgencies } from '@/utils/metrics/handlers/ChartTransformers';
 import { buildMetricUrl } from '@/utils/metrics/handlers/MetricRouteResolver';
 import { RawMetricData } from '@/utils/metrics/types/metricData';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Grid, Section, Skeleton, Surface } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';

@@ -3,7 +3,7 @@
 import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { Modal, SegmentedControl } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

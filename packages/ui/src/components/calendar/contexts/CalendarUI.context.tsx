@@ -2,7 +2,7 @@
 
 import type { CalendarEvent } from '@tmlmobilidade/types';
 
-import { CalendarKey, Dates, generateMonthGrid, keyToYYYYMMDD, type MonthGrid, parseCalendarKey } from '@tmlmobilidade/dates';
+import { CalendarKey, Dates, generateMonthGrid, keyToYYYYMMDD, type MonthGrid, parseCalendarKey } from '@tmlmobilidade/go-utils-dates';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 /* * */

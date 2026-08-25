@@ -5,7 +5,7 @@ import { Circulations } from '@/components/visualizations/Circulations';
 import RecordSupply from '@/components/visualizations/RecordVkms';
 import { VmksScheduled } from '@/components/visualizations/VkmsScheduled';
 import { AgencyType } from '@/constants';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { DateInput, MonthPicker, Section, SegmentedControl, Spacer, YearPicker } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 

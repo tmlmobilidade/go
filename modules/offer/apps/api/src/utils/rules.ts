@@ -1,4 +1,4 @@
-import { resolvePatternRules } from '@tmlmobilidade/dates';
+import { resolvePatternRules } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Pattern } from '@tmlmobilidade/go-types-offer';
 

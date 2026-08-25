@@ -1,7 +1,7 @@
 /* * */
 
 import { transformAlertIntoGtfsRtEntity } from '@/transform/gtfs-rt/main.js';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
