@@ -42,7 +42,7 @@ export async function performInTimeChunks({ endDate, onChunk, splitBy, startDate
 	const allTimestampChunks = Interval
 		.fromISO(`${startDateValue.iso}/${endDateValue.iso}`)
 		.splitBy(splitBy)
-		.map(interval => ({ end: interval.end.toMillis(), start: interval.start.toMillis() }))
+		.map(interval => ({ end: interval.end?.toMillis() ?? 0, start: interval.start?.toMillis() ?? 0 }))
 		.sort((a, b) => b.start - a.start);
 
 	//

@@ -24,6 +24,10 @@
 		},
 		"SchoolCreateSectionGeneral": {
 			"agency": "Operador",
+			"code": {
+				"label": "Código",
+				"placeholder": "Introduza o código da escola"
+			},
 			"description": "Informações gerais da escola.",
 			"fields": {
 				"grouping": "Agrupamento",
