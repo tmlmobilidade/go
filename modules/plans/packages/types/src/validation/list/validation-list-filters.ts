@@ -17,9 +17,6 @@ export const ValidationListFiltersSchema = z.object({
 		.string()
 		.optional(),
 
-	validity_statuses: z
-		.array(z.string())
-		.default([]),
 });
 
 export type ValidationListFilters = z.infer<typeof ValidationListFiltersSchema>;

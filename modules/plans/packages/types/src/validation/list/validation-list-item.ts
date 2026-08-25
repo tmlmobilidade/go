@@ -11,6 +11,8 @@ export const ValidationListItemSchema = GtfsValidationSchema
 		_id: true,
 		agency_id: true,
 		processing_status: true,
+		summary: true,
+		updated_at: true,
 		validity_status: true,
 	})
 	.extend({
