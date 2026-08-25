@@ -1,8 +1,8 @@
 /* * */
 
 import { type AnalysisData } from '@/types/analysis-data.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { RideAnalysisMatchingVehicleIds, RideAnalysisMatchingVehicleIdsSchema } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * This analyzer checks if the Vehicle IDs of APEX transactions match the Vehicle Events.
