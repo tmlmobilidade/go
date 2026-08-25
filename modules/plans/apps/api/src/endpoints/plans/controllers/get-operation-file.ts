@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { Attachment } from '@tmlmobilidade/go-types-core';
@@ -36,7 +36,10 @@ export async function getOperationFile(request: FastifyRequest<{ Params: { id: s
 	});
 
 	if (!hasPermissionReadPlan) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to perform this action: read plan');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to perform this action: read plan',
+			status_code: '403',
+		});
 	}
 
 	//
@@ -45,14 +48,13 @@ export async function getOperationFile(request: FastifyRequest<{ Params: { id: s
 	const fileData = await storageProvider.findById(planData.operation_file_id);
 
 	if (!fileData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan operation file not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Plan operation file not found',
+			status_code: '404',
+		});
 	}
 
-	return reply.send({
-		data: fileData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, fileData);
 
 	//
 }

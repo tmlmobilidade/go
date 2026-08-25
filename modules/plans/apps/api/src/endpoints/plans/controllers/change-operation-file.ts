@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { HashablePlanMetadata, Plan } from '@tmlmobilidade/go-types-operation';
@@ -21,7 +20,10 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 
 	const planData = await goDb.operation.plans.findById(request.params.id);
 	if (!planData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
 	}
 
 	const originalFileId = planData.operation_file_id;
@@ -38,13 +40,19 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 
 	// Throw an error if the user is not authorized
 	if (!hasPermissionChangeGtfsPlan) {
-		throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to change the GTFS of the plan.');
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to change the GTFS of the plan.',
+			status_code: '403',
+		});
 	}
 
 	// For a given validation ID, get the validation data
 	const validationData = await goDb.operation.gtfsValidations.findById(request.body.validation_id);
 	if (!validationData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Validation not found');
+		return sendErrorApiResponse(reply, {
+			error: 'Validation not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -91,6 +99,8 @@ export async function changeOperationFile(request: FastifyRequest<{ Body: { vali
 		},
 	);
 
+	//
 	// Send the updated plan data as the response
-	reply.send({ data: updatedPlanData, error: null, statusCode: HTTP_STATUS.OK });
+
+	return sendSuccessApiResponse(reply, updatedPlanData);
 }

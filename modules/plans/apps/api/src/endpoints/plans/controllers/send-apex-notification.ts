@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendNewApexFileNotificationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
@@ -21,7 +20,12 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
-	if (!foundPlan) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
+	if (!foundPlan) {
+		return sendErrorApiResponse(reply, {
+			error: `Plan with ID ${request.params.id} not found`,
+			status_code: '404',
+		});
+	}
 
 	//
 	// Check if the user has permission to send the APEX notification
@@ -34,26 +38,44 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 		value: foundPlan.agency_id,
 	});
 
-	if (!hasPermissionSendApexNotification) throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to send the APEX notification.');
+	if (!hasPermissionSendApexNotification) {
+		return sendErrorApiResponse(reply, {
+			error: 'You are not authorized to send the APEX notification.',
+			status_code: '403',
+		});
+	}
 
 	//
 	// Fetch the Agency data
 
 	const agencyData = await goDb.core.agencies.findById(foundPlan.agency_id);
 
-	if (!agencyData.apex.contact_emails.length) throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'No APEX contact emails found for this agency.');
+	if (!agencyData.apex.contact_emails.length) {
+		return sendErrorApiResponse(reply, {
+			error: 'No APEX contact emails found for this agency.',
+			status_code: '400',
+		});
+	}
 
 	//
 	// Fetch the APEX file data
 
 	const foundFileData = await storageProvider.findById(foundPlan.apex_file_id);
 
-	if (!foundFileData) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'APEX file not found for this plan');
+	if (!foundFileData) {
+		return sendErrorApiResponse(reply, {
+			error: 'APEX file not found for this plan',
+			status_code: '404',
+		});
+	}
 
 	const storageServiceResponse = await fetch(foundFileData.url);
 
 	if (!storageServiceResponse.ok || !storageServiceResponse.body) {
-		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
+		return sendErrorApiResponse(reply, {
+			error: 'Could not fetch file',
+			status_code: '500',
+		});
 	}
 
 	const apexFileBuffer = Buffer.from(await storageServiceResponse.arrayBuffer());
@@ -78,9 +100,5 @@ export async function sendApexNotification(request: FastifyRequest<{ Params: { i
 	//
 	// Return the updated Plan
 
-	reply.send({
-		data: undefined,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, undefined);
 }
