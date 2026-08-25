@@ -7,14 +7,14 @@ import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useAlertsListFilterActivePeriod } from '../filters/AlertsListFilterActivePeriod/use-alerts-list-filter-active-period';
-import { useAlertsListFilterAgency } from '../filters/AlertsListFilterAgency/use-alerts-list-filter-agency';
-import { useAlertsListFilterCause } from '../filters/AlertsListFilterCause/use-alerts-list-filter-cause';
-import { useAlertsListFilterEffect } from '../filters/AlertsListFilterEffect/use-alerts-list-filter-effect';
-import { useAlertsListFilterPublishDate } from '../filters/AlertsListFilterPublishDate/use-alerts-list-filter-publish-date';
-import { useAlertsListFilterPublishStatus } from '../filters/AlertsListFilterPublishStatus/use-alerts-list-filter-publish-status';
-import { useAlertsListFilterReferenceType } from '../filters/AlertsListFilterReferenceType/use-alerts-list-filter-reference-type';
-import { useAlertsListFilterSearch } from '../filters/AlertsListFilterSearch/use-alerts-list-filter-search';
+import { useAlertsListFilterActivePeriod } from './filters/AlertsListFilterActivePeriod/use-alerts-list-filter-active-period';
+import { useAlertsListFilterAgency } from './filters/AlertsListFilterAgency/use-alerts-list-filter-agency';
+import { useAlertsListFilterCause } from './filters/AlertsListFilterCause/use-alerts-list-filter-cause';
+import { useAlertsListFilterEffect } from './filters/AlertsListFilterEffect/use-alerts-list-filter-effect';
+import { useAlertsListFilterPublishDate } from './filters/AlertsListFilterPublishDate/use-alerts-list-filter-publish-date';
+import { useAlertsListFilterPublishStatus } from './filters/AlertsListFilterPublishStatus/use-alerts-list-filter-publish-status';
+import { useAlertsListFilterReferenceType } from './filters/AlertsListFilterReferenceType/use-alerts-list-filter-reference-type';
+import { useAlertsListFilterSearch } from './filters/AlertsListFilterSearch/use-alerts-list-filter-search';
 
 /* * */
 

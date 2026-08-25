@@ -38,7 +38,7 @@
 	"dependencies": {
 		"@clack/prompts": "1.7.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-apex": "*",
 		"@tmlmobilidade/go-types-downloads": "*",
