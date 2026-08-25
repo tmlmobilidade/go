@@ -17,13 +17,7 @@ export function SchoolCreateSectionGeneral() {
 	const { form: schoolsCreateForm } = useSchoolsCreateFormContext();
 
 	//
-	// B. Fetch data
-
-	//
-	// C. Transform data
-
-	//
-	// D. Render components
+	// B. Render components
 
 	return (
 		<Collapsible
