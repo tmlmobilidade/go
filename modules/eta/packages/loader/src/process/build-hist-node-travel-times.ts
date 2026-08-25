@@ -25,6 +25,7 @@ const SQL_PATH = 'loader/build-hist-node-travel-times.sql';
 export async function buildHistNodeTravelTimes(windowStart: UnixTimestamp, windowEnd: UnixTimestamp): Promise<void> {
 	await performInTimeChunks({
 		endDate: windowEnd,
+		intervalHrs: 24,
 		onChunk: async (chunk) => {
 			const start = Dates.fromUnixTimestamp(chunk.start);
 			const end = Dates.fromUnixTimestamp(chunk.end);
@@ -35,7 +36,6 @@ export async function buildHistNodeTravelTimes(windowStart: UnixTimestamp, windo
 
 			await labDb.queryFromFile(pipelinePath(SQL_PATH), { chunk_end: chunk.end, chunk_start: chunk.start });
 		},
-		splitBy: { days: 1 },
 		startDate: windowStart,
 	});
 }

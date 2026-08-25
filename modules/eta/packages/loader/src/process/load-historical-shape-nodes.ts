@@ -2,8 +2,8 @@
 
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { EncodedPolyline } from '@tmlmobilidade/go-types-geo';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { chunkLineStringByDistance, fromEncodedPolylineToGeoJsonLineString, geohashEncode } from '@tmlmobilidade/go-utils-geo';
-import { BatchWriter } from '@tmlmobilidade/utils';
 
 /* * */
 

@@ -4,8 +4,8 @@ import { pipelinePath } from '@tmlmobilidade/go-eta-pckg-common';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { performInTimeChunks } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { performInTimeChunks } from '@tmlmobilidade/utils';
 
 /* * */
 
@@ -27,6 +27,7 @@ const hourMs = 3_600_000;
 export async function aggregateHistNodeTravelTimes(windowStart: UnixTimestamp, windowEnd: UnixTimestamp): Promise<void> {
 	await performInTimeChunks({
 		endDate: windowEnd,
+		intervalHrs: 24,
 		onChunk: async (chunk) => {
 			const day = Dates.fromUnixTimestamp(chunk.start).startOf('day');
 			Logger.progress({ message: `[${chunk.index + 1}/${chunk.total}] operational day ${day.toFormat('yyyyMMdd')}` });
@@ -36,7 +37,6 @@ export async function aggregateHistNodeTravelTimes(windowStart: UnixTimestamp, w
 				scan_start: day.unix_timestamp - 16 * hourMs,
 			});
 		},
-		splitBy: { days: 1 },
 		startDate: windowStart,
 	});
 }

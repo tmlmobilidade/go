@@ -2,9 +2,9 @@
 
 import { pipelinePath } from '@tmlmobilidade/go-eta-pckg-common';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { performInTimeChunks } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { performInTimeChunks } from '@tmlmobilidade/utils';
 
 import { aggregateHistNodeTravelTimes } from './process/aggregate-hist-node-travel-times.js';
 import { buildHistNodeTravelTimes } from './process/build-hist-node-travel-times.js';
@@ -97,6 +97,7 @@ export async function loadEta(config: AppConfig) {
 		Logger.title('5. Loading historical vehicle events');
 		await performInTimeChunks({
 			endDate: config.processing.historicalRidesEndTime,
+			intervalHrs: 24,
 			onChunk: async (chunk) => {
 				Logger.progress({ message: `[${chunk.index + 1}/${chunk.total}] historical vehicle events` });
 				await labDb.queryFromFile(pipelinePath('loader/load-historical-vehicle-events.sql'), {
@@ -104,7 +105,6 @@ export async function loadEta(config: AppConfig) {
 					chunk_start: chunk.start,
 				});
 			},
-			splitBy: { days: 1 },
 			startDate: config.processing.historicalRidesStartTime,
 		});
 	}

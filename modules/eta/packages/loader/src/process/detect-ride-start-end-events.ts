@@ -1,6 +1,6 @@
 /* * */
 
-import { pipelinePath, qualifiedTable, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
+import { pipelinePath, qualifiedTable } from '@tmlmobilidade/go-eta-pckg-common';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
