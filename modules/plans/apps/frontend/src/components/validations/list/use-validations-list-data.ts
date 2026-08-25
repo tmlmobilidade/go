@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type ValidationListFilters, type ValidationListItem } from '@tmlmobilidade/go-plans-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData } from '@tmlmobilidade/ui';
+import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -20,7 +20,6 @@ interface UseValidationsListDataReturnType {
 	isLoading: boolean
 	isValidating: boolean
 	mutate: () => void
-	raw: ValidationListItem[]
 	timestamp: null | UnixTimestamp
 }
 
@@ -54,16 +53,21 @@ export function useValidationsListData(): UseValidationsListDataReturnType {
 		refreshInterval: 3_000,
 	});
 
+	const searchResultData = useSearch<ValidationListItem>({
+		accessors: ['_id'],
+		data: data?.data,
+		query: filterSearch.value,
+	});
+
 	//
 	// D. Return data
 
 	return useMemo(() => ({
-		data: data?.data ?? [],
+		data: searchResultData,
 		error: data?.error ?? (error instanceof Error ? error.message : null),
 		isLoading,
 		isValidating,
 		mutate,
-		raw: data?.data ?? [],
 		timestamp: data?.timestamp ?? null,
-	}), [data, error, isLoading, isValidating, mutate]);
+	}), [searchResultData, data?.timestamp, error, isLoading, isValidating, mutate]);
 }

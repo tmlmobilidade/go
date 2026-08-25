@@ -1,5 +1,6 @@
 /* * */
 
+import { ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -17,6 +18,9 @@ export const ValidationListFiltersSchema = z.object({
 		.string()
 		.optional(),
 
+	validity_statuses: z
+		.array(ValidityStatusSchema)
+		.default([]),
 });
 
 export type ValidationListFilters = z.infer<typeof ValidationListFiltersSchema>;
