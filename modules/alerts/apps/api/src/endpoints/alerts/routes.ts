@@ -3,17 +3,17 @@
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
-import { composeAlert } from './controllers/compose-alert.js';
-import { createAlert } from './controllers/create-alert.js';
-import { deleteImage } from './controllers/delete-image.js';
-import { deleteAlert } from './controllers/delete.js';
-import { duplicate } from './controllers/duplicate.js';
-import { getById } from './controllers/get-by-id.js';
-import { getImage } from './controllers/get-image.js';
-import { listAlerts } from './controllers/list-alerts.js';
-import { lock } from './controllers/lock.js';
-import { update } from './controllers/update.js';
-import { uploadImage } from './controllers/upload-image.js';
+import { composeAlert } from './handlers/compose-alert.js';
+import { createAlert } from './handlers/create-alert.js';
+import { deleteImage } from './handlers/delete-image.js';
+import { deleteAlert } from './handlers/delete.js';
+import { duplicate } from './handlers/duplicate.js';
+import { getById } from './handlers/get-by-id.js';
+import { getImage } from './handlers/get-image.js';
+import { listAlerts } from './handlers/list-alerts.js';
+import { lock } from './handlers/lock.js';
+import { update } from './handlers/update.js';
+import { uploadImage } from './handlers/upload-image.js';
 
 /* * */
 
