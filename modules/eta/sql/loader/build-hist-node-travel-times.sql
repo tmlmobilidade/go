@@ -10,11 +10,10 @@ WITH
 
     -- 1. SNAP: for every raw GPS ping, find the nearest node on the matching shape.
     --    Optimizations vs naive version:
-    --      a) Geohash-7 cell equality is added to the join key. Each event is expanded
+    --      a) Geohash-6 cell equality is added to the join key. Each event is expanded
     --         (arrayJoin geohashesInBox) into the ~3-4 cells its bbox touches; the join
-    --         then probes (hashed_shape_id, geohash) buckets containing only ~30 nodes each
-    --         (25 m chunks → ~30 per 153 m geohash-7 cell), instead of every node in
-    --         the shape (could be thousands).
+    --         then probes (hashed_shape_id, geohash) buckets. Must match
+    --         hist_shape_nodes encoding (geohashPrefixLength = 6).
     --      b) Bbox stays as a residual filter — clips cell-boundary noise cheaply.
     --      c) Each (event, node) pair is unique because a node sits in exactly one
     --         geohash cell, so no DISTINCT/dedup is needed before argMin.
@@ -40,10 +39,10 @@ WITH
             )                                AS nearest,
             min(greatCircleDistance(e.longitude, e.latitude, n.longitude, n.latitude)) AS dist
         FROM (
-            -- Expand each event into (event, candidate_geohash7_cell) tuples so the
+            -- Expand each event into (event, candidate_geohash6_cell) tuples so the
             -- downstream join can use (hashed_shape_id, geohash) as a compound equality
-            -- hash-join key. precision 7 ≈ 153 m × 153 m, comfortably wider than
-            -- max_dist_m (30 m); the bbox refine below trims residual noise.
+            -- hash-join key. precision 6 matches hist_shape_nodes; the bbox refine
+            -- below trims residual noise.
             SELECT
                 _id,
                 ride_id,
@@ -57,13 +56,13 @@ WITH
                         toFloat32(latitude  - bbox_deg),
                         toFloat32(longitude + bbox_deg),
                         toFloat32(latitude  + bbox_deg),
-                        7
+                        6
                     )
                 ) AS cell
             FROM eta.hist_vehicle_events
             WHERE
-                created_at >= {chunk_start}
-                AND created_at < {chunk_end}
+                created_at >= $chunk_start
+                AND created_at < $chunk_end
         ) AS e
         INNER JOIN eta.hist_shape_nodes AS n
             ON  e.hashed_shape_id = n.hashed_shape_id

@@ -3,14 +3,14 @@
 -- Source: eta.hist_node_travel_times
 -- Target: eta.hist_node_travel_times_aggregation
 --
--- Processes ONE operational day per run ({chunk_date}). The loader iterates the
+-- Processes ONE operational day per run ($chunk_date). The loader iterates the
 -- historical window day by day, so aggregation state stays bounded to a single
 -- day's groups instead of the whole window (which previously exceeded the query
 -- memory limit during the final GROUP BY merge).
 --
--- {scan_start}/{scan_end} (ms epoch) bound the created_at scan generously
+-- $scan_start/$scan_end (ms epoch) bound the created_at scan generously
 -- around the operational day (timezone-agnostic padding); the exact row
--- selection is done by the operational_date = {chunk_date} filter, so chunk
+-- selection is done by the operational_date = $chunk_date filter, so chunk
 -- boundaries can never split an aggregation group.
 --
 -- Dimensions produced:
@@ -56,8 +56,8 @@ parsed_timestamps AS (
     FROM eta.hist_node_travel_times
     WHERE
         travel_time_seconds > 0  -- discard zero/null samples (GPS noise, missing segments)
-        AND created_at >= {scan_start}
-        AND created_at < {scan_end}
+        AND created_at >= $scan_start
+        AND created_at < $scan_end
 ),
 
 -- -----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ derived_fields AS (
         toHour(event_ts)             AS event_hour,        -- raw wall-clock hour for period_of_day
         toDayOfWeek(operational_ts)  AS operational_weekday -- 1=Mon … 7=Sun
     FROM parsed_timestamps
-    WHERE toUInt32(formatDateTime(operational_ts, '%Y%m%d')) = {chunk_date}
+    WHERE toUInt32(formatDateTime(operational_ts, '%Y%m%d')) = $chunk_date
 ),
 
 -- -----------------------------------------------------------------------------

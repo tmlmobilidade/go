@@ -108,18 +108,18 @@ export function splitClickHouseStatements(sql: string): string[] {
  * Executes a query from a .sql file with optional parameter substitutions.
  * @param client The ClickHouse client to use for executing the query.
  * @param filePath Absolute or relative path to the .sql file.
- * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+ * @param params Optional key-value substitutions applied to the query (replaces $key placeholders).
  * @returns Query result rows typed as `T`.
  * @example
  * // Given a SQL file "get_users.sql" with the content:
- * // SELECT * FROM users WHERE created_at >= {start_date} AND created_at <= {end_date}
+ * // SELECT * FROM users WHERE created_at >= $start_date AND created_at <= $end_date
  *
  * const users = await clickhouseService.queryFromFile<User>('get_users.sql', {
  *   start_date: '2024-01-01',
  *   end_date: '2024-12-31',
  * });
  */
-export async function queryFromFile<T>(client: ClickHouseClient, filePath: string, params?: Record<string, number | string>): Promise<T[]> {
+export async function queryFromFile<T>(client: ClickHouseClient, filePath: string, params?: Record<string, number | string | string[]>): Promise<T[]> {
 	let sql: string;
 	try {
 		sql = await readFile(filePath, { encoding: 'utf-8' });
@@ -145,7 +145,7 @@ export async function queryFromFile<T>(client: ClickHouseClient, filePath: strin
  * Like {@link queryFromFile}, but runs each `;`-terminated statement separately. Use when the file
  * contains multiple statements (ClickHouse rejects multi-statement queries by default).
  */
-export async function queryEachStatementFromFile<T>(client: ClickHouseClient, filePath: string, params?: Record<string, number | string>): Promise<T[]> {
+export async function queryEachStatementFromFile<T>(client: ClickHouseClient, filePath: string, params?: Record<string, number | string | string[]>): Promise<T[]> {
 	let sql: string;
 	try {
 		sql = await readFile(filePath, { encoding: 'utf-8' });

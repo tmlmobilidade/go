@@ -1,6 +1,6 @@
 /* * */
 
-import { Dates, type TimeSlot } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */
 
@@ -9,40 +9,33 @@ const isProduction = process.env.ENVIRONMENT === 'prd';
 export const AppConfig = Object.freeze({
 	// Agency and line configurations
 	agencyIds: ['IA9T6', 'A3H3M', 'HF16N', 'LA77N', 'BNA17', 'YA15B', 'A2L1N'],
+	database: 'eta',
+	processing: {
+		// Current rides Time Range
+		currentRidesEndTime: Dates.now('local').plus({ hours: Dates.standardWindowHours }).unix_timestamp,
+		currentRidesStartTime: Dates.now('local').minus({ hours: Dates.standardWindowHours }).unix_timestamp,
 
-	development: {
-		isDevelopment: !isProduction,
-		lineIds: [],
-		timeEnd: Dates.now('Europe/Lisbon').plus({ hours: 1 }),
-		timeStart: Dates.now('Europe/Lisbon').minus({ hours: 1 }),
+		/** Geohash prefix length used to restrict candidate events to cells near a stop. A length of 6 matches a geohash-7 cell and its neighbours (~1.2 km). */
+		geohashPrefixLength: 6,
+
+		// Historical rides Time Range
+		historicalRidesEndTime: Dates.now('local').minus({ hours: Dates.standardWindowHours }).unix_timestamp,
+		historicalRidesStartTime: Dates.now('local').minus({ days: 30, hours: Dates.standardWindowHours }).unix_timestamp,
+
+		/** Length of shape node chunks in meters. */
+		shapeNodeChunkLength: 25,
+
+		/** Geofence radius (meters) around first/last stop used to detect observed start/end times. */
+		stopGeofenceRadius: 50,
 	},
-
-	// Data and time settings
-	historicalDataDaysBack: 30,
-	historicalTransformationChunkDays: 1,
-	historicalVehicleEventsChunkDays: 2,
-	syncInterval: '15m' as TimeSlot,
-
-	// Geometry settings
-	shapeNodeChunkLength: 25, // meters
-
-	// Ride start/end event detection settings
-	rideEventBufferRadiusMeters: 50, // meters (matches rides-controller BUFFER_RADIUS)
-	rideEventDetectionBatchSize: 500, // hist_rides per detect+mutation batch
-	rideEventGeohashPrefixLength: 6, // geohash-7 cell + neighbours around each stop
-	rideEventWindowPostMs: 10 * 60 * 60 * 1000, // 10h after scheduled start (matches temp.sql window)
-	rideEventWindowPreMs: 10 * 60 * 60 * 1000, // 10h before scheduled start (matches temp.sql window)
-
-	// App Pipeline Steps
-	pipelineSteps: {
-		detectRideStartEndEvents: true,
-		insertCurrentWindowRides: true,
-		insertCurrentWindowWaypoints: true,
-		insertHistoricalRidesByDay: true,
-		insertHistoricalShapeNodes: true,
-		insertHistoricalVehicleEvents: true,
-		runDdl: !isProduction,
-		runTransformationAndAggregationQueries: true,
-		truncatePipelineTables: !isProduction,
+	stages: {
+		_1_bootstrap: !isProduction,
+		_2_loadCurrentRides: true,
+		_3_loadHistoricalRides: true,
+		_4_loadHistoricalShapeNodes: true,
+		_5_loadHistoricalVehicleEvents: true,
+		_6_calculateNodeTravelTimes: true,
+		_7_loadCurrentWaypoints: true,
 	},
+	syncInterval: '15m',
 });

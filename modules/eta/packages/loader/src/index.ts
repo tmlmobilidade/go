@@ -1,187 +1,137 @@
-// /* * */
+/* * */
 
-// import { insertEtaRides } from '@/clickhouse/insert-eta-rides.js';
-// import { insertHistoricalVehicleEvents } from '@/clickhouse/insert-historical-vehicle-events.js';
-// import { type AppConfig } from '@/lib/config.js';
-// // import { parseHistoricalRide, parseRide } from '@/lib/eta-ride-row.js';
-// import { buildHistNodeTravelTimes } from '@/process/build-hist-node-travel-times.js';
-// import { detectRideStartEndEvents } from '@/process/detect-ride-start-end-events.js';
-// // import { buildRidesQuery, fetchCurrentWindowRides, fetchHistoricalRidesForDayIndex } from '@/process/rides-query.js';
-// import { syncShapeNodes } from '@/process/sync-shape-nodes.js';
-// import { Dates } from '@tmlmobilidade/dates';
-// import { pipelinePath, qualifiedTable, queryEachEtaStatementFromFile, queryEtaFromFile } from '@tmlmobilidade/go-eta-pckg-common';
-// import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-// import { Logger } from '@tmlmobilidade/logger';
-// import { Timer } from '@tmlmobilidade/timer';
+import { pipelinePath } from '@tmlmobilidade/go-eta-pckg-common';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { Logger } from '@tmlmobilidade/logger';
+import { Timer } from '@tmlmobilidade/timer';
+import { performInTimeChunks } from '@tmlmobilidade/utils';
 
-// import { syncCurrentWaypoints } from './process/sync-curr-waypoints.js';
+import { aggregateHistNodeTravelTimes } from './process/aggregate-hist-node-travel-times.js';
+import { buildHistNodeTravelTimes } from './process/build-hist-node-travel-times.js';
+import { detectRideStartEndEvents } from './process/detect-ride-start-end-events.js';
+import { loadHistoricalShapeNodes } from './process/load-historical-shape-nodes.js';
+import { AppConfig } from './types/config.js';
 
-// /* * */
+/* * */
 
-// export async function loadEta(config: AppConfig) {
-// 	//
-// 	// Initialize the logger
+/**
+ * Loads the ETA data into clickhouse
+ *
+ * @param config - The configuration for the loader.
+ * @returns A promise that resolves when the data is loaded.
+ */
+export async function loadEta(config: AppConfig) {
+	//
+	// Initialize the logger
 
-// 	Logger.init();
-// 	const globalTimer = new Timer();
-// 	const clickhouseClient = await labDb.getClient();
+	Logger.init();
+	const globalTimer = new Timer();
 
-// 	const ridesQuery = buildRidesQuery(config);
+	//
+	// 1. Bootstrap
+	if (config.stages._1_bootstrap) {
+		Logger.title('1. Bootstrapping ETA');
 
-// 	//
-// 	// 0. Bootstrap
+		await labDb.queryEachStatementFromFile(pipelinePath('bootstrap/create-tables.sql'));
+		Logger.progress({ message: 'Created base tables' });
 
-// 	if (config.pipelineSteps.runDdl || config.pipelineSteps.truncatePipelineTables) {
-// 		Logger.title('0. Bootstrap');
+		await labDb.queryEachStatementFromFile(pipelinePath('bootstrap/mv-sync-curr-vehicle-events.sql'));
+		Logger.progress({ message: 'Created MV: mv-sync-curr-vehicle-events' });
 
-// 		//
-// 		// Truncate pipeline tables (destructive; deletes tables from database)
+		await labDb.queryEachStatementFromFile(pipelinePath('bootstrap/mv-predict-node-etas.sql'));
+		Logger.progress({ message: 'Created MV: mv-predict-node-etas' });
 
-// 		if (config.pipelineSteps.truncatePipelineTables) {
-// 			Logger.info({ message: 'Running 0b-truncate.sql' });
-// 			await queryEachEtaStatementFromFile(clickhouseClient, pipelinePath('bootstrap/0b-truncate.sql'));
-// 		}
+		await labDb.queryEachStatementFromFile(pipelinePath('bootstrap/mv-predict-trip-stop-etas.sql'));
+		Logger.progress({ message: 'Created MV: mv-predict-trip-stop-etas' });
+	}
 
-// 		//
-// 		// Create tables
+	//
+	// 2. Load current rides
 
-// 		if (config.pipelineSteps.runDdl) {
-// 			Logger.info({ message: 'Running 0a-ddl.sql' });
-// 			await queryEachEtaStatementFromFile(clickhouseClient, pipelinePath('bootstrap/0a-create-tables.sql'));
+	if (config.stages._2_loadCurrentRides) {
+		Logger.title('2. Loading current rides');
+		await labDb.queryFromFile(pipelinePath('loader/load-rides.sql'), {
+			agency_ids: config.agencyIds.join(','),
+			line_ids: undefined,
+			table_name: 'curr_rides',
+			time_end: config.processing.currentRidesEndTime,
+			time_start: config.processing.currentRidesStartTime,
+		});
 
-// 			Logger.info({ message: 'Creating Materialized Views' });
+		Logger.progress({ message: 'Loaded current rides: curr_rides' });
+	}
 
-// 			await queryEachEtaStatementFromFile(clickhouseClient, pipelinePath('bootstrap/mv-sync-curr-vehicle-events.sql'));
-// 			Logger.progress({ message: 'Created mv-sync-curr-vehicle-events' });
+	//
+	// 3. Load historical rides
 
-// 			await queryEachEtaStatementFromFile(clickhouseClient, pipelinePath('bootstrap/mv-predict-node-etas.sql'));
-// 			Logger.progress({ message: 'Created mv-predict-node-etas' });
+	if (config.stages._3_loadHistoricalRides) {
+		Logger.title('3. Loading historical rides');
+		await labDb.queryFromFile(pipelinePath('loader/load-rides.sql'), {
+			agency_ids: config.agencyIds.join(','),
+			line_ids: undefined,
+			table_name: 'hist_rides',
+			time_end: config.processing.historicalRidesEndTime,
+			time_start: config.processing.historicalRidesStartTime,
+		});
 
-// 			await queryEachEtaStatementFromFile(clickhouseClient, pipelinePath('bootstrap/mv-predict-trip-stop-etas.sql'));
-// 			Logger.progress({ message: 'Created mv-predict-trip-stop-etas' });
-// 		}
-// 	}
+		Logger.progress({ message: 'Loaded historical rides: hist_rides' });
 
-// 	//
-// 	// 1. Insert current window rides into clickhouse
+		//
+		// Detect ride start/end events
+		Logger.info({ message: 'Detecting ride start/end events' });
+		await detectRideStartEndEvents(config);
+	}
 
-// 	const currentWindowDistinctHashedTrips = new Set<string>();
-// 	if (config.pipelineSteps.insertCurrentWindowRides) {
-// 		//
+	//
+	// 4. Load historical shape nodes
+	if (config.stages._4_loadHistoricalShapeNodes) {
+		Logger.title('4. Loading historical shape nodes');
+		await loadHistoricalShapeNodes(config.processing.shapeNodeChunkLength, config.processing.geohashPrefixLength);
+		Logger.progress({ message: 'Loaded historical shape nodes: hist_shape_nodes' });
+	}
 
-// 		Logger.title('1. Insert current window rides into clickhouse');
+	//
+	// 5. Load historical vehicle events
 
-// 		const currentWindowRides = await fetchCurrentWindowRides(ridesQuery, config);
-// 		await insertEtaRides(clickhouseClient, qualifiedTable('eta', 'curr_rides'), currentWindowRides.map(parseRide), 'current window rides');
+	if (config.stages._5_loadHistoricalVehicleEvents) {
+		Logger.title('5. Loading historical vehicle events');
+		await performInTimeChunks({
+			endDate: config.processing.historicalRidesEndTime,
+			onChunk: async (chunk) => {
+				Logger.progress({ message: `[${chunk.index + 1}/${chunk.total}] historical vehicle events` });
+				await labDb.queryFromFile(pipelinePath('loader/load-historical-vehicle-events.sql'), {
+					chunk_end: chunk.end,
+					chunk_start: chunk.start,
+				});
+			},
+			splitBy: { days: 1 },
+			startDate: config.processing.historicalRidesStartTime,
+		});
+	}
 
-// 		// Get distinct hashed trip ids for later use
-// 		currentWindowRides.forEach(ride => currentWindowDistinctHashedTrips.add(ride.hashed_trip_id));
-// 	}
+	if (config.stages._6_calculateNodeTravelTimes) {
+		Logger.title('6. Run Node Travel Times Transformation & Aggregation');
 
-// 	//
-// 	// 2. Insert historical rides into clickhouse & get distinct hashed shape ids
+		//
+		// Calculate the node travel times for the historical rides
+		Logger.info({ message: 'Running build_hist_node_travel_times.sql query in chunks' });
+		await buildHistNodeTravelTimes(config.processing.historicalRidesStartTime, config.processing.historicalRidesEndTime);
 
-// 	const disctictHashedShapeIds = new Set<string>();
-// 	if (config.pipelineSteps.insertHistoricalRidesByDay) {
-// 		//
+		//
+		// Aggregate the node travel times for the historical rides
+		Logger.info({ message: 'Running aggregate_hist_node_travel_times.sql query in chunks' });
+		await aggregateHistNodeTravelTimes(config.processing.historicalRidesStartTime, config.processing.historicalRidesEndTime);
+	}
 
-// 		Logger.title('2. Insert historical rides into clickhouse');
+	if (config.stages._7_loadCurrentWaypoints) {
+		Logger.title('7. Loading and snapping current waypoints');
 
-// 		Logger.info({ message: `Getting historical rides for date range: ${Dates.now('Europe/Lisbon').minus({ days: config.historicalDataDaysBack }).iso} → ${Dates.now('Europe/Lisbon').iso}` });
+		await labDb.queryFromFile(pipelinePath('loader/load-current-waypoints.sql'));
+		Logger.progress({ message: 'Loaded current waypoints: curr_waypoints' });
 
-// 		const historicalRidesPromises = [];
-// 		for (let index = 0; index < config.historicalDataDaysBack; index++) {
-// 			historicalRidesPromises.push(
-// 				(async () => {
-// 					//
+		await labDb.queryFromFile(pipelinePath('loader/snap-waypoints.sql'));
+		Logger.progress({ message: 'Snapped waypoints: curr_waypoints_snapped' });
+	}
 
-// 					// Fetch the historical rides for the day index.
-// 					const historicalRides = await fetchHistoricalRidesForDayIndex(ridesQuery, index, config);
-
-// 					// Add the distinct hashed shape ids to the set.
-// 					historicalRides.forEach((ride) => {
-// 						disctictHashedShapeIds.add(ride.hashed_shape_id);
-// 					});
-
-// 					Logger.info({ message: `Found ${historicalRides.length} historical rides` });
-
-// 					// Insert into clickhouse, _id, trip_id, hashed_shape_id
-// 					await insertEtaRides(clickhouseClient, qualifiedTable('eta', 'hist_rides'), historicalRides.map(parseHistoricalRide), 'historical rides');
-// 				})(),
-// 			);
-// 		}
-// 		await Promise.all(historicalRidesPromises);
-// 	}
-
-// 	// process.exit(0);
-
-// 	//
-// 	// 2b. Detect historical ride start/end observed times in clickhouse
-// 	//     Must run before step 3, which scopes source vehicle events by these times.
-
-// 	if (config.pipelineSteps.detectRideStartEndEvents) {
-// 		await detectRideStartEndEvents(clickhouseClient, config);
-// 	}
-
-// 	//
-// 	// 3. Insert historical rides vehicle events into clickhouse
-
-// 	if (config.pipelineSteps.insertHistoricalVehicleEvents) {
-// 		await insertHistoricalVehicleEvents(clickhouseClient, config);
-// 	}
-
-// 	//
-// 	// 4. Sync historical shape nodes into clickhouse
-
-// 	if (config.pipelineSteps.insertHistoricalShapeNodes) {
-// 		await syncShapeNodes(clickhouseClient, Array.from(disctictHashedShapeIds), config);
-// 	}
-
-// 	//
-// 	// 5. Run Transformatino Pipeline
-
-// 	if (config.pipelineSteps.runTransformationAndAggregationQueries) {
-// 		//
-
-// 		Logger.title('5. Run Node Travel Times Transformation & Aggregation');
-
-// 		const historicalWindowStart = Dates.now('Europe/Lisbon').minus({ days: config.historicalDataDaysBack }).unix_timestamp;
-
-// 		//
-// 		Logger.info({ message: 'Running 5a-build_hist_node_travel_times.sql query in chunks' });
-// 		await buildHistNodeTravelTimes(clickhouseClient, historicalWindowStart, config);
-
-// 		//
-// 		// Aggregate one operational day per query so GROUP BY state stays bounded
-// 		// (aggregating the whole window at once exceeded the query memory limit).
-// 		Logger.info({ message: 'Running 5b-aggregate_hist_node_travel_times.sql query per operational day' });
-// 		const hourMs = 3_600_000;
-// 		for (let dayIndex = 0; dayIndex <= config.historicalDataDaysBack; dayIndex++) {
-// 			const day = Dates.now('Europe/Lisbon').minus({ days: dayIndex }).startOf('day');
-// 			Logger.progress({ message: `[${dayIndex + 1}/${config.historicalDataDaysBack + 1}] 5b operational day ${day.toFormat('yyyyMMdd')}` });
-// 			// Rows of an operational day have created_at within [00:00, next day 04:00)
-// 			// in the ClickHouse SERVER timezone; the ±padding below covers any server
-// 			// timezone offset. Exact row selection happens in SQL via operational_date.
-// 			await queryEtaFromFile(clickhouseClient, pipelinePath('loader/3-aggregate_hist_node_travel_times.sql'), {
-// 				chunk_date: Number(day.toFormat('yyyyMMdd')),
-// 				scan_end: day.unix_timestamp + 42 * hourMs,
-// 				scan_start: day.unix_timestamp - 16 * hourMs,
-// 			});
-// 		}
-// 	}
-
-// 	//
-// 	// 6. Insert current window waypoints into clickhouse
-
-// 	if (config.pipelineSteps.insertCurrentWindowWaypoints) {
-// 		await syncCurrentWaypoints(clickhouseClient, Array.from(currentWindowDistinctHashedTrips), config);
-
-// 		Logger.info({ message: 'Snapping waypoints for current window' });
-// 		await queryEtaFromFile(clickhouseClient, pipelinePath('loader/4-snap-waypoints.sql'));
-// 	}
-
-// 	//
-// 	//
-
-// 	Logger.success(`Loader completed in ${globalTimer.get()} seconds`);
-// }
+	Logger.success(`ETA loaded in ${globalTimer.get()}.`);
+}

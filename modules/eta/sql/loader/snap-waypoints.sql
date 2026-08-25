@@ -12,7 +12,7 @@
 
 INSERT INTO eta.curr_waypoints_snapped
 SELECT
-    w.hashed_trip_id                                                    AS hashed_trip_id,
+    w._id                                                               AS hashed_trip_id,
     d.hashed_shape_id                                                   AS hashed_shape_id,
     w.stop_sequence                                                     AS stop_sequence,
     w.stop_id                                                           AS stop_id,
@@ -26,10 +26,10 @@ SELECT
     w.arrival_time                                                      AS arrival_time,
     w.departure_time                                                    AS departure_time
 FROM eta.curr_waypoints AS w
-INNER JOIN eta.curr_rides     AS d ON w.hashed_trip_id = d.hashed_trip_id
+INNER JOIN eta.curr_rides     AS d ON w._id = d.hashed_trip_id
 INNER JOIN eta.hist_shape_nodes     AS n ON d.hashed_shape_id = n.hashed_shape_id
 GROUP BY
-    w.hashed_trip_id,
+    w._id,
     d.hashed_shape_id,
     w.stop_sequence,
     w.stop_id,
