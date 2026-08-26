@@ -592,6 +592,30 @@ Still deferred:
 - deciding the long-term relationship between the one-minute Videowall fact
   and the five-minute Performance V2 fact.
 
+## Follow-up architecture audit
+
+- [ ] Review the complete metric flow across
+  `modules/performance/packages/scripts`, `modules/performance/sql`, and
+  `modules/performance/apps/sync-metrics-*` before extending it with more
+  metric families.
+- [ ] Trace each flow from source selection and metric definition through fact
+  refresh, locking, reconciliation, storage, queries, workers, and public
+  exports. Confirm that every layer has one clear responsibility and that the
+  worker apps remain scheduling adapters rather than metric implementations.
+- [ ] Challenge the current abstraction depth. Keep abstractions that protect
+  shared execution invariants, but simplify wrappers and indirection that make
+  an individual metric flow harder to follow than its duplicated equivalent.
+- [ ] Review names and folder boundaries so facts, queries, refresh policies,
+  backfills, reconciliation tasks, and diagnostic SQL are discoverable from
+  their domain language rather than implementation history.
+- [ ] Confirm the boundary of `modules/performance/sql`: executable production
+  SQL belongs with its owning fact or query, while this folder contains only
+  human-operated diagnostics, benchmarks, and migration aids.
+- [ ] Review package barrels and public exports so consumers depend on
+  intentional metric interfaces instead of internal refresh or SQL helpers.
+- [ ] Record the agreed target structure and migration sequence before moving
+  files, renaming packages, or consolidating worker applications.
+
 ## Decisions to confirm during implementation
 
 - Whether the shared package should be named `metrics`, `metric-engine`, or
