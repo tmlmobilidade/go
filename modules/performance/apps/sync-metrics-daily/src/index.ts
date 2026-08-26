@@ -2,6 +2,7 @@
 
 import { rebuildPassengerDemandDaily } from '@/tasks/rebuild-passenger-demand-daily.js';
 import { reconcileDailyPassengerDemandFiveMinute } from '@/tasks/reconcile-passenger-demand-five-minute.js';
+import { reconcileDailyRidePerformance } from '@/tasks/reconcile-ride-performance.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { runOnInterval } from '@tmlmobilidade/utils';
@@ -27,6 +28,7 @@ async function main() {
 	try {
 		await rebuildPassengerDemandDaily();
 		await reconcileDailyPassengerDemandFiveMinute();
+		await reconcileDailyRidePerformance();
 
 		Logger.divider();
 		Logger.terminate(`Finished All Metrics Sync (${globalTimer.get()})`);

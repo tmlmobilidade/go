@@ -2,6 +2,7 @@
 
 import { refreshPassengerDemandDaily } from '@/tasks/refresh-passenger-demand-daily.js';
 import { refreshPassengerDemandFiveMinute } from '@/tasks/refresh-passenger-demand-five-minute.js';
+import { refreshRidePerformance } from '@/tasks/refresh-ride-performance.js';
 import { syncPassengerDemandMetrics } from '@/tasks/sync-passenger-demand.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -33,6 +34,9 @@ async function main() {
 
 	// Publish the current operational date at the canonical five-minute grain.
 	await refreshPassengerDemandFiveMinute();
+
+	// Publish the current ride-grain fact on the same closed five-minute cadence.
+	await refreshRidePerformance();
 
 	// Separately refresh the seven-day window of the daily dimensional history.
 	// This task enforces its own five-minute cadence even though this worker runs every 30 seconds.

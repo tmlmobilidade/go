@@ -13,6 +13,7 @@
 	"scripts": {
 		"backfill:passenger-demand": "node --import tsx ./src/scripts/backfill-passenger-demand.ts",
 		"backfill:passenger-demand-five-minute": "node --import tsx ./src/scripts/backfill-passenger-demand-five-minute.ts",
+		"backfill:ride-performance": "node --import tsx ./src/scripts/backfill-ride-performance.ts",
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",

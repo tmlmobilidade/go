@@ -3,6 +3,7 @@
 import { mergeDemandRowsWithExistingKeys } from '@/handlers/passenger-demand/demand-facts.js';
 import { getCurrentRefreshRange, getHourlyReconciliationRange, getNightlyReconciliationRange, markCurrentRefreshCompleted, markHourlyReconciliationCompleted, markNightlyReconciliationCompleted } from '@/handlers/passenger-demand/refresh-cadence.js';
 import { getPassengerDemandDailyRefreshSlot } from '@/tasks/refresh-passenger-demand-daily.js';
+import { getRidePerformanceRefreshSlot } from '@/tasks/refresh-ride-performance.js';
 import { Dates } from '@tmlmobilidade/dates';
 import { buildPassengerDemandDailyRefreshPlan } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { validateUnixTimestamp } from '@tmlmobilidade/go-types-shared';
@@ -55,6 +56,10 @@ assert.equal(dailyRefreshPlan.end_date, 20260729);
 assert.deepEqual(dailyRefreshPlan.partition_months, [202607]);
 assert.equal(
 	getPassengerDemandDailyRefreshSlot(referenceNow),
+	Math.floor(referenceNow.unix_timestamp / (5 * 60 * 1_000)),
+);
+assert.equal(
+	getRidePerformanceRefreshSlot(referenceNow),
 	Math.floor(referenceNow.unix_timestamp / (5 * 60 * 1_000)),
 );
 
