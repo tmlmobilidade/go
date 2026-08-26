@@ -2,7 +2,7 @@
 
 import { parseDateBoundary, parseDateRange, parseIds } from '@/endpoints/metrics/utils/query-params.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type PassengerDemandBreakdownQueryInput, PassengerDemandBreakdownQueryInputSchema, type PassengerDemandComparisonQueryInput, PassengerDemandComparisonQueryInputSchema, type PassengerDemandOverTimeQueryInput, PassengerDemandOverTimeQueryInputSchema, type PassengerDemandTotalQueryInput, PassengerDemandTotalQueryInputSchema } from '@tmlmobilidade/go-types-performance';
+import { type PassengerDemandBaselineComparisonQueryInput, PassengerDemandBaselineComparisonQueryInputSchema, type PassengerDemandBreakdownQueryInput, PassengerDemandBreakdownQueryInputSchema, type PassengerDemandComparisonQueryInput, PassengerDemandComparisonQueryInputSchema, type PassengerDemandLineDashboardQueryInput, PassengerDemandLineDashboardQueryInputSchema, type PassengerDemandOverTimeQueryInput, PassengerDemandOverTimeQueryInputSchema, type PassengerDemandTotalQueryInput, PassengerDemandTotalQueryInputSchema } from '@tmlmobilidade/go-types-performance';
 import { type z } from 'zod';
 
 /* * */
@@ -40,6 +40,22 @@ export interface PassengerDemandComparisonHttpQuery extends Omit<PassengerDemand
 	comparison_start_date?: string
 	current_end_date?: string
 	current_start_date?: string
+}
+
+export interface PassengerDemandBaselineComparisonHttpQuery extends Omit<PassengerDemandHttpFilters, 'end_date' | 'start_date'> {
+	operational_date?: string
+	sample_size?: QueryValue
+}
+
+export interface PassengerDemandLineDashboardHttpQuery {
+	agency_id?: QueryValue
+	comparison_end_date?: string
+	comparison_start_date?: string
+	current_end_date?: string
+	current_start_date?: string
+	line_id?: QueryValue
+	record_end_date?: string
+	record_start_date?: string
 }
 
 /* * */
@@ -177,6 +193,42 @@ export function buildPassengerDemandComparisonQueryInput(
 		current_period: {
 			end_date: parseRequiredDate(query.current_end_date, 'current_end_date', 'end'),
 			start_date: parseRequiredDate(query.current_start_date, 'current_start_date', 'start'),
+		},
+	});
+}
+
+export function buildPassengerDemandBaselineComparisonQueryInput(
+	query: PassengerDemandBaselineComparisonHttpQuery,
+): PassengerDemandBaselineComparisonQueryInput {
+	return parseWithSchema(PassengerDemandBaselineComparisonQueryInputSchema, {
+		...buildCommonFilters(query),
+		operational_date: parseRequiredDate(query.operational_date, 'operational_date', 'start'),
+		sample_size: parseOptionalInteger(query.sample_size, 'sample_size', { max: 8, min: 1 }),
+	});
+}
+
+export function buildPassengerDemandLineDashboardQueryInput(
+	query: PassengerDemandLineDashboardHttpQuery,
+): PassengerDemandLineDashboardQueryInput {
+	const agencyId = parseSingleValue(query.agency_id, 'agency_id');
+	const lineId = parseSingleValue(query.line_id, 'line_id');
+	if (typeof agencyId !== 'string' || !agencyId) badRequest('agency_id is required');
+	if (typeof lineId !== 'string' || !lineId) badRequest('line_id is required');
+
+	return parseWithSchema(PassengerDemandLineDashboardQueryInputSchema, {
+		agency_id: agencyId,
+		comparison_period: {
+			end_date: parseRequiredDate(query.comparison_end_date, 'comparison_end_date', 'end'),
+			start_date: parseRequiredDate(query.comparison_start_date, 'comparison_start_date', 'start'),
+		},
+		current_period: {
+			end_date: parseRequiredDate(query.current_end_date, 'current_end_date', 'end'),
+			start_date: parseRequiredDate(query.current_start_date, 'current_start_date', 'start'),
+		},
+		line_id: lineId,
+		record_period: {
+			end_date: parseRequiredDate(query.record_end_date, 'record_end_date', 'end'),
+			start_date: parseRequiredDate(query.record_start_date, 'record_start_date', 'start'),
 		},
 	});
 }

@@ -1,11 +1,6 @@
 /* * */
 
-import {
-	buildPassengerDemandBreakdownQueryInput,
-	buildPassengerDemandComparisonQueryInput,
-	buildPassengerDemandOverTimeQueryInput,
-	buildPassengerDemandTotalQueryInput,
-} from '@/endpoints/passenger-demand/query-params.js';
+import { buildPassengerDemandBreakdownQueryInput, buildPassengerDemandComparisonQueryInput, buildPassengerDemandLineDashboardQueryInput, buildPassengerDemandOverTimeQueryInput, buildPassengerDemandTotalQueryInput } from '@/endpoints/passenger-demand/query-params.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
@@ -55,6 +50,25 @@ test('parses over-time grain and breakdown limit', () => {
 		end_date: 20260807,
 		limit: 25,
 		start_date: 20260801,
+	});
+});
+
+test('parses a line-dashboard query with current, comparison, and record periods', () => {
+	assert.deepEqual(buildPassengerDemandLineDashboardQueryInput({
+		agency_id: '41',
+		comparison_end_date: '2026-07-31',
+		comparison_start_date: '2026-07-01',
+		current_end_date: '2026-08-31',
+		current_start_date: '2026-08-01',
+		line_id: '4701',
+		record_end_date: '2026-08-31',
+		record_start_date: '2025-09-01',
+	}), {
+		agency_id: '41',
+		comparison_period: { end_date: 20260731, start_date: 20260701 },
+		current_period: { end_date: 20260831, start_date: 20260801 },
+		line_id: '4701',
+		record_period: { end_date: 20260831, start_date: 20250901 },
 	});
 });
 

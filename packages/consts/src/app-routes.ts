@@ -455,17 +455,29 @@ export const API_ROUTES = Object.freeze({
 
 		// NETWORK
 		NETWORK_AGENCIES: `${getModuleConfig('performance', 'api_url')}/network/agencies`,
-		NETWORK_LINE_DETAIL: (id: string) => `${getModuleConfig('performance', 'api_url')}/network/lines/${encodeURIComponent(id)}`,
 		NETWORK_LINES: `${getModuleConfig('performance', 'api_url')}/network/lines`,
+		NETWORK_LINES_DETAIL: (lineId: string) => `${getModuleConfig('performance', 'api_url')}/network/lines/${encodeURIComponent(lineId)}`,
 		NETWORK_PATTERNS: `${getModuleConfig('performance', 'api_url')}/network/patterns`,
 
 		// PASSENGER-DEMAND
+		PASSENGER_DEMAND_BASELINE_COMPARISON: `${getModuleConfig('performance', 'api_url')}/passenger-demand/baseline-comparison`,
 		PASSENGER_DEMAND_BY_LINE: `${getModuleConfig('performance', 'api_url')}/passenger-demand/by-line`,
 		PASSENGER_DEMAND_BY_PATTERN: `${getModuleConfig('performance', 'api_url')}/passenger-demand/by-pattern`,
 		PASSENGER_DEMAND_BY_STOP: `${getModuleConfig('performance', 'api_url')}/passenger-demand/by-stop`,
 		PASSENGER_DEMAND_COMPARISON: `${getModuleConfig('performance', 'api_url')}/passenger-demand/comparison`,
+		PASSENGER_DEMAND_LINE_DASHBOARD: `${getModuleConfig('performance', 'api_url')}/passenger-demand/line-dashboard`,
 		PASSENGER_DEMAND_OVER_TIME: `${getModuleConfig('performance', 'api_url')}/passenger-demand/over-time`,
 		PASSENGER_DEMAND_TOTAL: `${getModuleConfig('performance', 'api_url')}/passenger-demand/total`,
+
+		// RIDE-PERFORMANCE
+		RIDE_PERFORMANCE_BASELINE_COMPARISON: `${getModuleConfig('performance', 'api_url')}/ride-performance/baseline-comparison`,
+		RIDE_PERFORMANCE_BY_LINE: `${getModuleConfig('performance', 'api_url')}/ride-performance/by-line`,
+		RIDE_PERFORMANCE_BY_PATTERN: `${getModuleConfig('performance', 'api_url')}/ride-performance/by-pattern`,
+		RIDE_PERFORMANCE_COMPARISON: `${getModuleConfig('performance', 'api_url')}/ride-performance/comparison`,
+		RIDE_PERFORMANCE_HEATMAP: `${getModuleConfig('performance', 'api_url')}/ride-performance/heatmap`,
+		RIDE_PERFORMANCE_OVER_TIME: `${getModuleConfig('performance', 'api_url')}/ride-performance/over-time`,
+		RIDE_PERFORMANCE_PLANNED_SUPPLY_LINE_DASHBOARD: `${getModuleConfig('performance', 'api_url')}/ride-performance/planned-supply-line-dashboard`,
+		RIDE_PERFORMANCE_TOTAL: `${getModuleConfig('performance', 'api_url')}/ride-performance/total`,
 	},
 
 	plans: {

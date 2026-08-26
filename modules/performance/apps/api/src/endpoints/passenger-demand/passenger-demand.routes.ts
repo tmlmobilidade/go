@@ -1,9 +1,11 @@
 /* * */
 
+import { getPassengerDemandBaselineComparison } from '@/endpoints/passenger-demand/controllers/get-demand-baseline-comparison.js';
 import { getPassengerDemandByLine } from '@/endpoints/passenger-demand/controllers/get-demand-by-line.js';
 import { getPassengerDemandByPattern } from '@/endpoints/passenger-demand/controllers/get-demand-by-pattern.js';
 import { getPassengerDemandByStop } from '@/endpoints/passenger-demand/controllers/get-demand-by-stop.js';
 import { getPassengerDemandComparison } from '@/endpoints/passenger-demand/controllers/get-demand-comparison.js';
+import { getPassengerDemandLineDashboard } from '@/endpoints/passenger-demand/controllers/get-demand-line-dashboard.js';
 import { getPassengerDemandOverTime } from '@/endpoints/passenger-demand/controllers/get-demand-over-time.js';
 import { getPassengerDemandTotal } from '@/endpoints/passenger-demand/controllers/get-demand-total.js';
 import { authorizationMiddleware, FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
@@ -29,6 +31,8 @@ server.register(
 		instance.get('/by-pattern', { preHandler: readAuthorization }, getPassengerDemandByPattern);
 		instance.get('/by-stop', { preHandler: readAuthorization }, getPassengerDemandByStop);
 		instance.get('/comparison', { preHandler: readAuthorization }, getPassengerDemandComparison);
+		instance.get('/baseline-comparison', { preHandler: readAuthorization }, getPassengerDemandBaselineComparison);
+		instance.get('/line-dashboard', { preHandler: readAuthorization }, getPassengerDemandLineDashboard);
 		next();
 	},
 	{ prefix: NAMESPACE },

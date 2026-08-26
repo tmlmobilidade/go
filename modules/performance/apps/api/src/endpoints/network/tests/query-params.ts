@@ -4,10 +4,7 @@ import { HttpException } from '@tmlmobilidade/consts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {
-	parsePerformanceNetworkLineIdentity,
-	parsePerformanceNetworkLinesQuery,
-} from '../query-params.js';
+import { parsePerformanceNetworkLineIdentity, parsePerformanceNetworkLinesQuery } from '../query-params.js';
 
 /* * */
 
@@ -44,4 +41,3 @@ test('parses and validates a composite line ID', () => {
 		(error: unknown) => error instanceof HttpException,
 	);
 });
-
