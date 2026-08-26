@@ -16,6 +16,7 @@ interface UseAlertsDetailDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
+	mutate: (newData?: ApiResponse<Alert>) => void
 	timestamp: null | UnixTimestamp
 }
 
@@ -32,7 +33,7 @@ export function useAlertsDetailData(): UseAlertsDetailDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<Alert>>(alertId && API_ROUTES.alerts.ALERTS_DETAIL(alertId), {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Alert>>(alertId && API_ROUTES.alerts.ALERTS_DETAIL(alertId), {
 		fetcher: async (url: string) => await fetchApiData<Alert>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
@@ -45,6 +46,7 @@ export function useAlertsDetailData(): UseAlertsDetailDataReturnType {
 		error: error?.error,
 		isLoading,
 		isValidating,
+		mutate,
 		timestamp: data?.timestamp,
 	}), [data, error, isLoading, isValidating]);
 };

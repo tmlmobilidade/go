@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-types-operation';
-import { hasPermission } from '@tmlmobilidade/go-types-permissions';
+import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, useHandleUpdate } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -61,11 +61,18 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 	// D. Setup flags
 
 	const hasUpdatePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
-			action: 'update',
-			scope: 'alerts',
+		const hasPermissionAgencyId = hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'update', scope: 'alerts' },
+			requiredValue: alertData?._id,
+			resourceKey: 'agency_ids',
 		});
-	}, [meData?.permissions]);
+		const hasPermissionReferenceType = hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'update', scope: 'alerts' },
+			requiredValue: alertData?._id,
+			resourceKey: 'reference_types',
+		});
+		return hasPermissionAgencyId && hasPermissionReferenceType;
+	}, [alertData?._id, meData?.permissions]);
 
 	const { editEnabled, updateEnabled } = useStandardFormCapabilities({
 		form: {

@@ -1,7 +1,7 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { type UsersRoleItem, UsersRoleItemSchema } from '@tmlmobilidade/go-core-pckg-types';
+import { type UsersRoleItem } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /**
@@ -21,7 +21,5 @@ export async function listRolesHandler(request: FastifyRequest, reply: FastifyRe
 		});
 	}
 
-	const validatedRoles = UsersRoleItemSchema.array().parse(foundRoles);
-
-	return sendSuccessApiResponse(reply, validatedRoles);
+	return sendSuccessApiResponse(reply, foundRoles);
 }

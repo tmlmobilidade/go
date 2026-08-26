@@ -2,10 +2,10 @@
 
 import { IconLink } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { StandardFormController, CoordinatesInput, Grid, Section, Textarea, TextInput, useStandardFormWatch, useMeContext } from '@tmlmobilidade/ui';
+import { CoordinatesInput, Grid, Section, StandardFormController, Textarea, TextInput, useMeContext, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
+import { useAlertsCreateFormContext } from '../../AlertsCreateForm.context';
 
 /* * */
 

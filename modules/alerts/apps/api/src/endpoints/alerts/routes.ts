@@ -9,6 +9,7 @@ import { deleteImageHandler } from './handlers/delete-image.js';
 import { duplicateAlertHandler } from './handlers/duplicate-alert.js';
 import { getAlertHandler } from './handlers/get-alert.js';
 import { getImageHandler } from './handlers/get-image.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listAlertsHandler } from './handlers/list-alerts.js';
 import { lockAlertHandler } from './handlers/lock-alert.js';
 import { updateAlertHandler } from './handlers/update-alert.js';
@@ -30,6 +31,12 @@ server.register(
 			'/list',
 			{ preHandler: authorizationMiddleware('alerts', ['read']) },
 			listAlertsHandler,
+		);
+
+		instance.post(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware('alerts', ['read', 'create']) },
+			listAgenciesHandler,
 		);
 
 		instance.get(

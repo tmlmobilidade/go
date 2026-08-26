@@ -1,14 +1,16 @@
 'use client';
 
-import { useAlertDetailContext } from '@/components/detail/AlertDetail.context';
 import { AlertCauseSchema, AlertEffectSchema } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { AlertCauseIcons, AlertEffectIcons, Collapsible, StandardFormController, Grid, Section, Select, useMeContext } from '@tmlmobilidade/ui';
+import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
+import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select, StandardFormController, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useAlertsDetailFormContext } from '../AlertsDetailForm.context';
 
 /* * */
 
-export function AlertDetailSectionCauseEffect() {
+export function AlertsDetailSectionCauseEffect() {
 	//
 
 	//
@@ -16,26 +18,29 @@ export function AlertDetailSectionCauseEffect() {
 
 	const { t } = useTranslation();
 
-	const meContext = useMeContext();
-	const alertDetailContext = useAlertDetailContext();
+	const { data: meData } = useMeData();
+
+	const { form } = useAlertsDetailFormContext();
+
+	const agencyIdValue = useStandardFormWatch({ control: form.control, name: 'agency_id' });
+	const referenceTypeValue = useStandardFormWatch({ control: form.control, name: 'reference_type' });
 
 	//
 	// B. Transform data
 
-	const hasPermissionToUpdate = meContext.actions.hasPermissionResource([
-		{
-			action: PermissionCatalog.all.alerts.actions.update,
-			resource_key: 'agency_ids',
-			scope: PermissionCatalog.all.alerts.scope,
-			value: alertDetailContext.data.alert.agency_id,
-		},
-		{
-			action: PermissionCatalog.all.alerts.actions.update,
-			resource_key: 'reference_types',
-			scope: PermissionCatalog.all.alerts.scope,
-			value: alertDetailContext.data.alert.reference_type,
-		},
-	]);
+	const hasPermissionToUpdate = useMemo(() => {
+		const permissionForAgencyId = hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'update', scope: 'alerts' },
+			requiredValue: agencyIdValue,
+			resourceKey: 'agency_ids',
+		});
+		const permissionForReferenceType = hasPermissionResource(meData?.permissions, {
+			requiredPermission: { action: 'update', scope: 'alerts' },
+			requiredValue: referenceTypeValue,
+			resourceKey: 'reference_types',
+		});
+		return permissionForAgencyId && permissionForReferenceType;
+	}, [agencyIdValue, meData?.permissions, referenceTypeValue]);
 
 	const causeItems = AlertCauseSchema.options.map(cause => ({
 		icon: AlertCauseIcons[cause],
@@ -60,7 +65,7 @@ export function AlertDetailSectionCauseEffect() {
 			<Section>
 				<Grid columns="ab" gap="md">
 					<StandardFormController
-						control={alertDetailContext.form.instance.control}
+						control={form.control}
 						name="cause"
 						render={({ field, fieldState }) => (
 							<Select
@@ -75,7 +80,7 @@ export function AlertDetailSectionCauseEffect() {
 						)}
 					/>
 					<StandardFormController
-						control={alertDetailContext.form.instance.control}
+						control={form.control}
 						name="effect"
 						render={({ field, fieldState }) => (
 							<Select

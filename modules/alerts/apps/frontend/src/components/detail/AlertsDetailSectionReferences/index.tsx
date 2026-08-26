@@ -3,16 +3,15 @@
 import { ReferencesEditor } from '@/components/references/shared/ReferencesEditor';
 import { useAlertsAgenciesData } from '@/components/shared/use-alerts-agencies-data';
 import { type Alert, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { LoadingSection, NoDataLabel, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useAlertsCreateFormContext } from '../../AlertsCreateForm.context';
+import { useAlertsDetailFormContext } from '../AlertsDetailForm.context';
 
 /* * */
 
-export function AlertCreateStepReferences() {
+export function AlertsDetailSectionReferences() {
 	//
 
 	//
@@ -20,24 +19,18 @@ export function AlertCreateStepReferences() {
 
 	const { t } = useTranslation();
 
-	const { form: alertsCreateForm } = useAlertsCreateFormContext();
+	const { form } = useAlertsDetailFormContext();
 
-	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
-	const causeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'cause' });
-	const effectValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'effect' });
-	const activePeriodEndDateValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'active_period_end_date' });
-	const activePeriodStartDateValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'active_period_start_date' });
-	const referencesValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'references' });
-	const referenceTypeValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'reference_type' });
-
-	//
-	// B. Fetch data
+	const agencyIdValue = useStandardFormWatch({ control: form.control, name: 'agency_id' });
+	const causeValue = useStandardFormWatch({ control: form.control, name: 'cause' });
+	const effectValue = useStandardFormWatch({ control: form.control, name: 'effect' });
+	const activePeriodEndDateValue = useStandardFormWatch({ control: form.control, name: 'active_period_end_date' });
+	const activePeriodStartDateValue = useStandardFormWatch({ control: form.control, name: 'active_period_start_date' });
+	const referencesValue = useStandardFormWatch({ control: form.control, name: 'references' });
+	const referenceTypeValue = useStandardFormWatch({ control: form.control, name: 'reference_type' });
 
 	const { data: agenciesData, isLoading: agenciesLoading } = useAlertsAgenciesData({
-		permissions: {
-			actions: [PermissionCatalog.all.alerts.actions.create],
-			scope: PermissionCatalog.all.alerts.scope,
-		},
+		permissions: { actions: ['read'], scope: 'alerts' },
 	});
 
 	//
@@ -59,11 +52,11 @@ export function AlertCreateStepReferences() {
 	// D. Handle actions
 
 	const handleChangeReferenceType = (value: Alert['reference_type']) => {
-		alertsCreateForm.setValue('reference_type', value, { shouldDirty: true });
+		form.setValue('reference_type', value, { shouldDirty: true });
 	};
 
 	const handleChangeReferences = (value: Alert['references']) => {
-		alertsCreateForm.setValue('references', value, { shouldDirty: true });
+		form.setValue('references', value, { shouldDirty: true });
 	};
 
 	//

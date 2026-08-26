@@ -1,17 +1,17 @@
 /* * */
 
-import { type AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
+import { AlertsComposeRequest } from '@tmlmobilidade/go-alerts-pckg-types';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { Divider, Inline, Label, LoadingThinking, Section, StandardFormController, Surface, Switch, Text, TextInput, useDebouncedValue, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useAlertsComposeData } from '../../../shared/use-alerts-compose-data';
-import { useAlertsCreateFormContext } from '../../AlertsCreateForm.context';
+import { useAlertsComposeData } from '../../shared/use-alerts-compose-data';
+import { useAlertsDetailFormContext } from '../AlertsDetailForm.context';
 
 /* * */
 
-export function AlertCreateStepSummaryAi() {
+export function AlertsDetailSectionTextsAi() {
 	//
 
 	//
@@ -21,7 +21,7 @@ export function AlertCreateStepSummaryAi() {
 
 	const { data: meData } = useMeData();
 
-	const { form } = useAlertsCreateFormContext();
+	const { form } = useAlertsDetailFormContext();
 
 	const agencyIdValue = useStandardFormWatch({ control: form.control, name: 'agency_id' });
 	const autoTextsValue = useStandardFormWatch({ control: form.control, name: 'auto_texts' });
@@ -56,7 +56,7 @@ export function AlertCreateStepSummaryAi() {
 	//
 	// B. Transform data
 
-	const hasPermissionToCreate = useMemo(() => {
+	const hasPermissionToUpdate = useMemo(() => {
 		const permissionForAgencyId = hasPermissionResource(meData?.permissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
 			requiredValue: agencyIdValue,
@@ -106,7 +106,7 @@ export function AlertCreateStepSummaryAi() {
 			<Surface variant="bordered" withBackground>
 
 				<Section gap="md">
-					{(hasPermissionToCreate || hasPermissionToUpdateTexts) && (
+					{(hasPermissionToUpdate || hasPermissionToUpdateTexts) && (
 						<StandardFormController
 							control={form.control}
 							name="auto_texts"
@@ -120,7 +120,8 @@ export function AlertCreateStepSummaryAi() {
 							)}
 						/>
 					)}
-					{(autoTextsValue && hasPermissionToCreate) && (
+
+					{(autoTextsValue && hasPermissionToUpdate) && (
 						<StandardFormController
 							control={form.control}
 							name="user_instructions"
@@ -139,7 +140,7 @@ export function AlertCreateStepSummaryAi() {
 					)}
 				</Section>
 
-				{(autoTextsValue && hasPermissionToCreate) && (
+				{(autoTextsValue && hasPermissionToUpdate) && (
 					<>
 
 						<Divider lineStyle="dashed" />

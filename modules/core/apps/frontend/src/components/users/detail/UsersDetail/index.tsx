@@ -8,8 +8,8 @@ import { permissionsConfig } from '@/lib/permissions';
 import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
 
+import { useUsersAgenciesData } from '../../shared/use-users-agencies-data';
 import { useUsersRolesData } from '../../shared/use-users-roles-data';
-import { useUsersAgenciesData } from '../use-users-agencies-data';
 import { useUsersDetailFormContext } from '../UsersDetailForm.context';
 
 /* * */

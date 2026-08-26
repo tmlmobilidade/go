@@ -5,6 +5,7 @@ import { AlertsListHeader } from '@/components/list/AlertsListHeader';
 import { AlertsListFiltersBar } from '@/components/list/filters/AlertsListFiltersBar';
 import { AlertsListCellCauseEffect } from '@/components/list/table/AlertsListCellCauseEffect';
 import { AlertsListCellReferenceType } from '@/components/list/table/AlertsListCellReferenceType';
+import { useAlertsAgenciesData } from '@/components/shared/use-alerts-agencies-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertsListItem } from '@tmlmobilidade/go-alerts-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -26,6 +27,13 @@ export function AlertsList() {
 
 	const { alertId } = useAlertsDetailAlertId();
 
+	const { data: agenciesData } = useAlertsAgenciesData({
+		permissions: {
+			actions: [PermissionCatalog.all.alerts.actions.read],
+			scope: PermissionCatalog.all.alerts.scope,
+		},
+	});
+
 	const router = useRouter();
 
 	const alertsData = useAlertsListData();
@@ -37,12 +45,7 @@ export function AlertsList() {
 				<AgencyTag
 					agencyId={item.agency_id}
 					copyOnClick={false}
-					request={{
-						permissions: {
-							actions: [PermissionCatalog.all.alerts.actions.read],
-							scope: PermissionCatalog.all.alerts.scope,
-						},
-					}}
+					data={agenciesData}
 					showShortName
 				/>
 			),
