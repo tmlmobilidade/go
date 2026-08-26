@@ -22,7 +22,7 @@ export type GtfsDate = string & {
  * Represents a GTFS date as a string in the format `yyyyMMdd`.
  */
 export const GtfsDateSchema = z
-	.string()
+	.union([z.string(), z.number()])
 	.transform(validateGtfsDate);
 
 /**
