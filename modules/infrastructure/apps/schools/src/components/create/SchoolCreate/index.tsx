@@ -6,7 +6,9 @@ import { useMemo } from 'react';
 
 import { SchoolCreateSectionAddress } from '../sections/SchoolCreateSectionAddress';
 import { SchoolCreateSectionAdministrative } from '../sections/SchoolCreateSectionAdministrative';
+import { SchoolCreateSectionEducation } from '../sections/SchoolCreateSectionEducation';
 import { SchoolCreateSectionGeneral } from '../sections/SchoolCreateSectionGeneral';
+import { SchoolCreateSectionOperations } from '../sections/SchoolCreateSectionOperations';
 import { SchoolCreateSectionOrganization } from '../sections/SchoolCreateSectionOrganization';
 import { SchoolCreateFooter } from '../shared/SchoolCreateFooter';
 import { SchoolCreateHeader } from '../shared/SchoolCreateHeader';
@@ -47,6 +49,8 @@ export function SchoolCreate() {
 				<SchoolCreateSectionOrganization />
 				<SchoolCreateSectionAddress />
 				<SchoolCreateSectionAdministrative />
+				<SchoolCreateSectionEducation />
+				<SchoolCreateSectionOperations />
 			</Pane>
 		</SchoolsCreateFormContextProvider>
 	);

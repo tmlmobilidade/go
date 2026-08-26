@@ -2,7 +2,7 @@
 
 import { School } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Collapsible, Grid, LoadingSection, Section, Select, useAgenciesData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, LoadingSection, Section, Select, StandardFormController, TextInput, useAgenciesData, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
@@ -58,6 +58,36 @@ export function SchoolCreateSectionOrganization() {
 						name="agency_id"
 						onChange={value => handleSelectAgencyId(value as School['agency_id'])}
 						value={agencyIdValue}
+					/>
+
+					<StandardFormController
+						control={schoolsCreateForm.control}
+						name="email"
+						render={({ field, fieldState }) => (
+							<TextInput
+								error={fieldState.error?.message}
+								label={t('schools:create.SchoolCreateSectionOrganization.fields.email')}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								value={field.value ?? ''}
+								w="100%"
+							/>
+						)}
+					/>
+
+					<StandardFormController
+						control={schoolsCreateForm.control}
+						name="url"
+						render={({ field, fieldState }) => (
+							<TextInput
+								error={fieldState.error?.message}
+								label={t('schools:create.SchoolCreateSectionOrganization.fields.url')}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								value={field.value ?? ''}
+								w="100%"
+							/>
+						)}
 					/>
 				</Grid>
 			</Section>

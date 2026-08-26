@@ -22,6 +22,22 @@
 			},
 			"title": "Dados administrativos"
 		},
+		"SchoolCreateSectionEducation": {
+			"description": "Níveis e modalidades de ensino disponibilizados pela escola.",
+			"fields": {
+				"artistic": "Ensino artístico",
+				"basic_1": "1.º ciclo",
+				"basic_2": "2.º ciclo",
+				"basic_3": "3.º ciclo",
+				"high_school": "Ensino secundário",
+				"other": "Outro ensino",
+				"pre_school": "Educação pré-escolar",
+				"professional": "Ensino profissional",
+				"special": "Educação especial",
+				"university": "Ensino superior"
+			},
+			"title": "Ensino"
+		},
 		"SchoolCreateSectionGeneral": {
 			"agency": "Operador",
 			"code": {
@@ -52,11 +68,21 @@
 			},
 			"title": "Dados gerais"
 		},
+		"SchoolCreateSectionOperations": {
+			"description": "Estado de validação, atividade e paragens associadas.",
+			"fields": {
+				"is_active": "Escola ativa",
+				"stops": "Paragens associadas",
+				"validation_date": "Data de validação"
+			},
+			"title": "Estado e ligações"
+		},
 		"SchoolCreateSectionOrganization": {
 			"description": "Operador e contacto da escola.",
 			"fields": {
 				"agency_id": "Operador",
-				"email": "Email"
+				"email": "Email",
+				"url": "Website"
 			},
 			"title": "Organização e contacto"
 		},

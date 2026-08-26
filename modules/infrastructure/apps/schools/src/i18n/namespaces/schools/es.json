@@ -22,6 +22,22 @@
 			},
 			"title": "Datos administrativos"
 		},
+		"SchoolCreateSectionEducation": {
+			"description": "Niveles y modalidades educativas ofrecidos por la escuela.",
+			"fields": {
+				"artistic": "Enseñanza artística",
+				"basic_1": "1.er ciclo",
+				"basic_2": "2.º ciclo",
+				"basic_3": "3.er ciclo",
+				"high_school": "Enseñanza secundaria",
+				"other": "Otra enseñanza",
+				"pre_school": "Educación infantil",
+				"professional": "Formación profesional",
+				"special": "Educación especial",
+				"university": "Enseñanza superior"
+			},
+			"title": "Enseñanza"
+		},
 		"SchoolCreateSectionGeneral": {
 			"agency": "Operador",
 			"coordinates": {
@@ -42,11 +58,21 @@
 			},
 			"title": "Datos generales"
 		},
+		"SchoolCreateSectionOperations": {
+			"description": "Estado de validación, actividad y paradas asociadas.",
+			"fields": {
+				"is_active": "Escuela activa",
+				"stops": "Paradas asociadas",
+				"validation_date": "Fecha de validación"
+			},
+			"title": "Estado y conexiones"
+		},
 		"SchoolCreateSectionOrganization": {
 			"description": "Operador y contacto de la escuela.",
 			"fields": {
 				"agency_id": "Operador",
-				"email": "Correo electrónico"
+				"email": "Correo electrónico",
+				"url": "Sitio web"
 			},
 			"title": "Organización y contacto"
 		},

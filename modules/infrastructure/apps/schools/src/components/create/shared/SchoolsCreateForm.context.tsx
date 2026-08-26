@@ -30,6 +30,8 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 		basic_1: false,
 		basic_2: false,
 		basic_3: false,
+		code: '',
+		coordinates: null,
 		district_id: '',
 		district_name: '',
 		email: '',
@@ -37,8 +39,7 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 		high_school: false,
 		is_active: false,
 		is_deleted: false,
-		lat: null,
-		lng: null,
+		is_locked: false,
 		locality: '',
 		municipality_id: '',
 		municipality_name: '',
@@ -59,7 +60,7 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 		validation_date: null,
 	}), []);
 
-	const { form, isDirty, unblock } = useStandardForm<CreateSchoolDto, typeof CreateSchoolSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreateSchoolDto, typeof CreateSchoolSchema>({
 		defaultValues: formDefaultValues,
 		schema: CreateSchoolSchema,
 	});
@@ -101,7 +102,7 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 	if (!agenciesData?.length) return null;
 
 	return (
-		<SchoolsCreateFormContext.Provider value={{ form, isDirty, unblock }}>
+		<SchoolsCreateFormContext.Provider value={{ form, isDirty, isValid, unblock }}>
 			{children}
 		</SchoolsCreateFormContext.Provider>
 	);

@@ -66,7 +66,7 @@ export function SchoolCreateSectionGeneral() {
 
 					<CoordinatesInput
 						label={t('schools:create.SchoolCreateSectionGeneral.coordinates.label')}
-						onChange={coordinates => schoolsCreateForm.setValue('coordinates', coordinates)}
+						onChange={coordinates => schoolsCreateForm.setValue('coordinates', coordinates, { shouldDirty: true })}
 						value={schoolsCreateForm.watch('coordinates')}
 					/>
 

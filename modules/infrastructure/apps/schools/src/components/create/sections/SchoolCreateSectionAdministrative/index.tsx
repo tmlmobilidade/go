@@ -1,7 +1,9 @@
 'use client';
 
-import { Collapsible, Grid, Section } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
 
 /* * */
 
@@ -14,6 +16,7 @@ export function SchoolCreateSectionAdministrative() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const { form: schoolsCreateForm } = useSchoolsCreateFormContext();
 
 	//
 	// B. Render components
@@ -25,10 +28,23 @@ export function SchoolCreateSectionAdministrative() {
 		>
 			<Section gap="sm">
 				<Grid columns="ab" gap="md">
-					{/* {schoolAdministrativeFields.map(name => (
-						<SchoolCreateTextField key={name} form={form} label={t(`schools:create.SchoolCreateSectionAdministrative.fields.${name}`)} name={name} />
-					))} */}
-					<p>oops</p>
+					{(['district_id', 'district_name', 'municipality_id', 'municipality_name', 'region_id', 'region_name'] as const).map(name => (
+						<StandardFormController
+							key={name}
+							control={schoolsCreateForm.control}
+							name={name}
+							render={({ field, fieldState }) => (
+								<TextInput
+									error={fieldState.error?.message}
+									label={t(`schools:create.SchoolCreateSectionAdministrative.fields.${name}`)}
+									onBlur={field.onBlur}
+									onChange={e => field.onChange(e.currentTarget.value)}
+									value={field.value ?? ''}
+									w="100%"
+								/>
+							)}
+						/>
+					))}
 				</Grid>
 			</Section>
 		</Collapsible>
