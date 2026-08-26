@@ -10,6 +10,7 @@ export const AlertsAgencyItemSchema = AgencySchema.pick({
 	alerts_map: true,
 	code: true,
 	name: true,
+	short_name: true,
 });
 
 /**

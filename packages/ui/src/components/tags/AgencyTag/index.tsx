@@ -23,14 +23,14 @@ interface AgencyTagProps {
 
 /* * */
 
-export function AgencyTag({ agencyId, copyOnClick = true, data, showCode = true, showId = true, showName = false, showShortName = false }: AgencyTagProps) {
+export function AgencyTag({ agencyId, copyOnClick = true, data = [], showCode = true, showId = true, showName = false, showShortName = false }: AgencyTagProps) {
 	//
 
 	//
 	// A. Transform data
 
 	const matchingAgency = useMemo(() => {
-		return data.find(agency => agency._id === agencyId);
+		return data?.find(agency => agency._id === agencyId);
 	}, [data, agencyId]);
 
 	//
