@@ -3,15 +3,16 @@
 import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { ProcessingStatusSchema } from '@tmlmobilidade/types';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import fs from 'fs';
 
 import { exportPlanFile } from './export-plan.js';
-import { exportRidesFile } from './export-rides.js';
-import { exportSamsAnalysisFile } from './export-sams-analysis.js';
+// import { exportRidesFile } from './export-rides.js';
+// import { exportSamsAnalysisFile } from './export-sams-analysis.js';
+import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
+
 import { exportStopsFile } from './export-stops.js';
 import { exportVehiclesFile } from './export-vehicles.js';
 
@@ -37,10 +38,10 @@ async function main() {
 
 	const globalTimer = new Timer();
 
+	// TODO fix sorted by created_at don't found anything
 	const waitingFileExports = await goDb.core.exports.findMany({
 		processing_status: ProcessingStatusSchema.enum.waiting,
-		sorted: { created_at: -1 },
-		type: { $ne: 'plan_posters' },
+		// sorted: { created_at: -1 },
 	});
 
 	Logger.info({ message: `Found ${waitingFileExports.length} waiting file exports.` });
@@ -54,11 +55,15 @@ async function main() {
 			//
 			// Process the file export.
 			switch (fileExport.type) {
+				case 'plan': {
+					pathToFile = await exportPlanFile(fileExport);
+					break;
+				}
 				case 'ride':
-					pathToFile = await exportRidesFile(fileExport);
+					// pathToFile = await exportRidesFile(fileExport);
 					break;
 				case 'sams_analysis':
-					pathToFile = await exportSamsAnalysisFile(fileExport);
+					// pathToFile = await exportSamsAnalysisFile(fileExport);
 					break;
 				case 'stop':
 					pathToFile = await exportStopsFile(fileExport);
@@ -66,12 +71,6 @@ async function main() {
 				case 'vehicle':
 					pathToFile = await exportVehiclesFile(fileExport);
 					break;
-				case 'plan': {
-					await goDb.core.exports.updateById(fileExport._id, { processing_status: 'processing' });
-					const file = await exportPlanFile(fileExport);
-					await goDb.core.exports.updateById(fileExport._id, { file_id: file._id, processing_status: 'complete' });
-					continue;
-				}
 				case 'plan_posters':
 					Logger.info({ message: `Skipping plan poster export ${fileExport._id}; it is handled by the Plans poster exporter.` });
 					continue;
