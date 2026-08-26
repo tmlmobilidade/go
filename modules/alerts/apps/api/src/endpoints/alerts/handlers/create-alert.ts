@@ -10,13 +10,21 @@ import { type Alert, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilida
  * @param reply The reply object.
  */
 export async function createAlertHandler(request: FastifyRequest<{ Body: CreateAlertDto }>, reply: FastifyReply<Alert>) {
+	//
+
+	//
+	// Validate the request body
+
 	const validatedAlert = CreateAlertSchema.parse(request.body);
+
 	const insertResult = await goDb.operation.alerts.insertOne({ ...validatedAlert, created_by: request.me._id, updated_by: request.me._id });
+
 	if (!insertResult) {
 		return sendErrorApiResponse(reply, {
 			error: 'Failed to create alert',
 			status_code: '500',
 		});
 	}
+
 	return sendSuccessApiResponse(reply, insertResult, { status_code: '201' });
 }
