@@ -8,7 +8,7 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
 import { CreateHashedTrip, CreateHashedTripSchema, type HashedTrip, HashedTripSchema, type Ride } from '@tmlmobilidade/go-types-operation';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
-import { HexColorSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-geo';
@@ -275,7 +275,7 @@ export async function parsePlan(planData: Plan) {
 					end_time_observed: null,
 					end_time_scheduled: endTimeScheduledUnixTimestamp,
 					extension_observed: null,
-					extension_scheduled: extensionScheduledInMeters,
+					extension_scheduled: NonNegativeIntegerSchema.parse(Math.round(extensionScheduledInMeters)),
 					hashed_trip_id: uniqueIdValueForCreateHashedTrip,
 					headsign: currentTrip.trip_headsign,
 					operational_date: OperationalDateIntSchema.parse(calendarDate),
