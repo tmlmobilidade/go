@@ -1,15 +1,14 @@
 /* * */
 
-import { AlertDetail } from '@/components/detail/AlertDetail';
-import { AlertDetailContextProvider } from '@/components/detail/AlertDetail.context';
+import { AlertsDetail } from '@/components/detail/AlertsDetail';
+import { AlertsDetailFormContextProvider } from '@/components/detail/AlertsDetailForm.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<AlertDetailContextProvider alertId={id}>
-			<AlertDetail />
-		</AlertDetailContextProvider>
+		<AlertsDetailFormContextProvider>
+			<AlertsDetail />
+		</AlertsDetailFormContextProvider>
 	);
 }

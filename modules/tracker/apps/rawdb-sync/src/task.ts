@@ -1,11 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { type Collection, type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 

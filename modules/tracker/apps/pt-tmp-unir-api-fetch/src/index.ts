@@ -1,6 +1,6 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { UnirVehicleLocationResponse } from '@tmlmobilidade/external/dist/clients/unir/types.js';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';

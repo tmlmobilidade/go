@@ -190,7 +190,7 @@ See above — covers all Fastify server setup.
 
 ## Domain packages
 
-### `@tmlmobilidade/dates`
+### `@tmlmobilidade/go-utils-dates`
 Date utilities for operational calendar logic, period management, and GTFS date handling.
 
 ### `@tmlmobilidade/geo`

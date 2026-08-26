@@ -1,7 +1,7 @@
 'use client';
 
 import { useDebouncedCallback } from '@mantine/hooks';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { type SetStateAction, useCallback, useEffect, useRef, useState } from 'react';

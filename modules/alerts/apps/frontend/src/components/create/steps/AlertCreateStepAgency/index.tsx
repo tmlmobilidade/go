@@ -1,10 +1,11 @@
 'use client';
 
+import { useAlertsAgenciesData } from '@/components/shared/use-alerts-agencies-data';
 import { type Alert } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { StandardFormController, Grid, Label, openConfirmModal, Section, Select, useAgenciesData } from '@tmlmobilidade/ui';
+import { Grid, Label, openConfirmModal, Section, Select, StandardFormController } from '@tmlmobilidade/ui';
 
-import { useAlertsCreateFormContext } from '../../shared/AlertsCreateForm.context';
+import { useAlertsCreateFormContext } from '../../AlertsCreateForm.context';
 
 /* * */
 
@@ -16,7 +17,7 @@ export function AlertCreateStepAgency() {
 
 	const { form: alertsCreateForm } = useAlertsCreateFormContext();
 
-	const { options: agenciesOptions } = useAgenciesData({
+	const { options: agenciesOptions } = useAlertsAgenciesData({
 		permissions: {
 			actions: [PermissionCatalog.all.alerts.actions.create],
 			scope: PermissionCatalog.all.alerts.scope,

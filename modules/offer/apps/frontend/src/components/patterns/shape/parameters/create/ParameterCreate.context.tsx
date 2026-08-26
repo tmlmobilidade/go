@@ -2,7 +2,7 @@
 
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
-import { buildParameterSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
+import { buildParameterSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/go-utils-dates';
 import { type Path, PopulatedPath, StopsParameter, StopsParameterSchema } from '@tmlmobilidade/go-types-offer';
 import { useForm } from '@tmlmobilidade/ui';
 import { type UseFormReturnType } from '@tmlmobilidade/ui';

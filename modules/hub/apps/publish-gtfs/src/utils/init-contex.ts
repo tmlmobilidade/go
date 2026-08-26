@@ -1,7 +1,7 @@
 /* * */
 
 import { type ExportGtfsContext } from '@/types/context.js';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import fs from 'node:fs';
 import Papa from 'papaparse';

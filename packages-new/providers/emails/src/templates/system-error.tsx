@@ -5,8 +5,8 @@ import { Span } from '@/components/Span/index.js';
 import { Wrapper } from '@/components/Wrapper/index.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { render } from 'react-email';
 
 /* * */
@@ -37,7 +37,7 @@ export default function SystemErrorTemplate({ errorMessage, serviceName, timesta
 			</Paragraph>
 			<Paragraph bold size="md">
 				Timestamp:
-				<Span spaceBefore weight="normal">{Dates.fromUnixTimestamp(timestamp).toLocaleString(Dates.FORMATS.DATETIME_FULL_WITH_SECONDS)}</Span>
+				<Span spaceBefore weight="normal">{Dates.fromUnixTimestamp(timestamp).toFormat('yyyy-MM-dd HH:mm:ss')}</Span>
 			</Paragraph>
 		</Wrapper>
 	);

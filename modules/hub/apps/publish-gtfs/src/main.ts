@@ -2,7 +2,7 @@
 
 import { initExportGtfsContext } from '@/utils/init-contex.js';
 import { validatePlan } from '@/validate-plan.js';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';

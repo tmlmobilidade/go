@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertCreate } from '@/components/create/shared/AlertCreate';
+import { AlertCreate } from '@/components/create/AlertCreate';
 
 /* * */
 

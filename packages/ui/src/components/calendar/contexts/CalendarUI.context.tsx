@@ -100,8 +100,7 @@ export const CalendarUIContextProvider = ({
 		if (month === 12) {
 			setMonthState(1);
 			setYearState(year + 1);
-		}
-		else {
+		} else {
 			setMonthState(month + 1);
 		}
 	}, [month, year]);
@@ -110,8 +109,7 @@ export const CalendarUIContextProvider = ({
 		if (month === 1) {
 			setMonthState(12);
 			setYearState(year - 1);
-		}
-		else {
+		} else {
 			setMonthState(month - 1);
 		}
 	}, [month, year]);

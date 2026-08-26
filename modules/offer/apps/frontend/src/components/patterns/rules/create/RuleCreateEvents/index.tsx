@@ -2,7 +2,7 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { useEventsContext } from '@/contexts/Events.context';
-import { Dates, FORMATS } from '@tmlmobilidade/dates';
+import { Dates, FORMATS } from '@tmlmobilidade/go-utils-dates';
 import { Section, Select, Switch } from '@tmlmobilidade/ui';
 
 /* * */
