@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Collapsible, DateTimeInput, Grid, MultiSelect, Section, StandardFormController, Switch } from '@tmlmobilidade/ui';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { Collapsible, DateTimeInput, fetchApiData, Grid, MultiSelect, Section, StandardFormController, Switch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
@@ -29,14 +30,16 @@ export function SchoolCreateSectionOperations() {
 	//
 	// B. Fetch data
 
-	const { data: stopsData, isLoading: stopsLoading } = useSWR<SchoolStopOption[]>(API_ROUTES.infrastructure.STOPS_LIST);
+	const { data: stopsResponse, isLoading: stopsLoading } = useSWR<ApiResponse<SchoolStopOption[]>>(API_ROUTES.infrastructure.STOPS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<SchoolStopOption[]>({ url }),
+	});
 
 	//
 	// C. Transform data
 
-	const stopsOptions = useMemo(() => (stopsData ?? [])
+	const stopsOptions = useMemo(() => (stopsResponse?.data ?? [])
 		.map(stop => ({ label: `[${stop._id}] ${stop.name}`, value: String(stop._id) }))
-		.sort((a, b) => a.label.localeCompare(b.label, 'pt')), [stopsData]);
+		.sort((a, b) => a.label.localeCompare(b.label, 'pt')), [stopsResponse?.data]);
 
 	//
 	// D. Render components

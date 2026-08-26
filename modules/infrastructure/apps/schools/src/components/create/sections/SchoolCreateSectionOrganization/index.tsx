@@ -24,7 +24,7 @@ export function SchoolCreateSectionOrganization() {
 	//
 	// B. Fetch data
 
-	const { data: agenciesData, isLoading: agenciesLoading } = useAgenciesData({
+	const { isLoading: agenciesLoading, options: agenciesOptions } = useAgenciesData({
 		permissions: {
 			actions: [PermissionCatalog.all.schools.actions.create],
 			scope: PermissionCatalog.all.schools.scope,
@@ -53,7 +53,7 @@ export function SchoolCreateSectionOrganization() {
 			<Section padding="lg">
 				<Grid columns="abc" gap="md">
 					<Select
-						data={agenciesData?.map(agency => ({ label: agency.name, value: agency._id }))}
+						data={agenciesOptions}
 						label={t('schools:create.SchoolCreateSectionGeneral.agency')}
 						name="agency_id"
 						onChange={value => handleSelectAgencyId(value as School['agency_id'])}

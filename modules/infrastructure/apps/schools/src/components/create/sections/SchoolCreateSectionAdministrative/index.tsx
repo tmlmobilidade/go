@@ -1,12 +1,26 @@
 'use client';
 
-import { Collapsible, Grid, Section, Select, StandardFormController, TextInput, useLocationsContext, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { Collapsible, fetchApiData, Grid, Section, Select, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import useSWR from 'swr';
 
 import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
 
 /* * */
+
+interface SchoolDistrict {
+	_id: string
+	name: string
+}
+
+interface SchoolMunicipality {
+	_id: string
+	district_id: string
+	name: string
+}
 
 /* * */
 
@@ -18,7 +32,6 @@ export function SchoolCreateSectionAdministrative() {
 
 	const { t } = useTranslation();
 	const { form: schoolsCreateForm } = useSchoolsCreateFormContext();
-	const locationsContext = useLocationsContext();
 
 	const districtIdValue = useStandardFormWatch({ control: schoolsCreateForm.control, name: 'district_id' });
 	const municipalityIdValue = useStandardFormWatch({ control: schoolsCreateForm.control, name: 'municipality_id' });
@@ -26,20 +39,31 @@ export function SchoolCreateSectionAdministrative() {
 	//
 	// B. Transform data
 
-	const districtOptions = useMemo(() => Array.from(locationsContext.data.districts.values())
-		.map(item => ({ label: item.name, value: item._id }))
-		.sort((a, b) => a.label.localeCompare(b.label, 'pt')), [locationsContext.data.districts]);
+	const { data: districtsResponse, isLoading: districtsLoading } = useSWR<ApiResponse<SchoolDistrict[]>>(API_ROUTES.locations.LOCATIONS_DISTRICTS, {
+		fetcher: async (url: string) => await fetchApiData<SchoolDistrict[]>({ url }),
+	});
 
-	const municipalityOptions = useMemo(() => Array.from(locationsContext.data.municipalities.values())
+	const { data: municipalitiesResponse, isLoading: municipalitiesLoading } = useSWR<ApiResponse<SchoolMunicipality[]>>(API_ROUTES.locations.LOCATIONS_MUNICIPALITIES, {
+		fetcher: async (url: string) => await fetchApiData<SchoolMunicipality[]>({ url }),
+	});
+
+	const districtsData = districtsResponse?.data;
+	const municipalitiesData = municipalitiesResponse?.data;
+
+	const districtOptions = useMemo(() => (districtsData ?? [])
+		.map(item => ({ label: item.name, value: item._id }))
+		.sort((a, b) => a.label.localeCompare(b.label, 'pt')), [districtsData]);
+
+	const municipalityOptions = useMemo(() => (municipalitiesData ?? [])
 		.filter(item => !districtIdValue || item.district_id === districtIdValue)
 		.map(item => ({ label: item.name, value: item._id }))
-		.sort((a, b) => a.label.localeCompare(b.label, 'pt')), [districtIdValue, locationsContext.data.municipalities]);
+		.sort((a, b) => a.label.localeCompare(b.label, 'pt')), [districtIdValue, municipalitiesData]);
 
 	//
 	// C. Handle actions
 
 	const handleDistrictChange = (value: null | string) => {
-		const district = value ? locationsContext.actions.getDistrict(value) : undefined;
+		const district = value ? districtsData?.find(item => item._id === value) : undefined;
 		schoolsCreateForm.setValue('district_id', value ?? '', { shouldDirty: true });
 		schoolsCreateForm.setValue('district_name', district?.name ?? '', { shouldDirty: true });
 		schoolsCreateForm.setValue('municipality_id', '', { shouldDirty: true });
@@ -47,8 +71,8 @@ export function SchoolCreateSectionAdministrative() {
 	};
 
 	const handleMunicipalityChange = (value: null | string) => {
-		const municipality = value ? locationsContext.actions.getMunicipality(value) : undefined;
-		const district = municipality ? locationsContext.actions.getDistrict(municipality.district_id) : undefined;
+		const municipality = value ? municipalitiesData?.find(item => item._id === value) : undefined;
+		const district = municipality ? districtsData?.find(item => item._id === municipality.district_id) : undefined;
 
 		schoolsCreateForm.setValue('municipality_id', value ?? '', { shouldDirty: true });
 		schoolsCreateForm.setValue('municipality_name', municipality?.name ?? '', { shouldDirty: true });
@@ -73,7 +97,7 @@ export function SchoolCreateSectionAdministrative() {
 				<Grid columns="ab" gap="md">
 					<Select
 						data={districtOptions}
-						disabled={locationsContext.flags.is_loading}
+						disabled={districtsLoading || municipalitiesLoading}
 						label={t('schools:create.SchoolCreateSectionAdministrative.fields.district_name')}
 						name="district_id"
 						onChange={handleDistrictChange}
@@ -82,7 +106,7 @@ export function SchoolCreateSectionAdministrative() {
 
 					<Select
 						data={municipalityOptions}
-						disabled={locationsContext.flags.is_loading}
+						disabled={districtsLoading || municipalitiesLoading}
 						label={t('schools:create.SchoolCreateSectionAdministrative.fields.municipality_name')}
 						name="municipality_id"
 						onChange={handleMunicipalityChange}
