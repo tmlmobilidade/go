@@ -3,8 +3,10 @@
 /* * */
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
-import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { usePerformancePeriodFilters } from '@/hooks/usePerformancePeriodFilters';
+import { type PerformanceComparison, type PerformancePeriodSelection, type PerformanceScreen } from '@/utils/performance-periods';
+import { useFilterStateList } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
@@ -17,16 +19,18 @@ interface FilterOption {
 interface PerformanceFiltersContextState {
 	actions: {
 		setOperators: (operatorIds: string[]) => void
+		setPeriod: (selection: PerformancePeriodSelection) => void
 	}
 	data: {
+		comparisonContextLabel: string
 		comparisonOptions: FilterOption[]
-		dateOptions: FilterOption[]
 		operatorOptions: FilterOption[]
+		screen: PerformanceScreen
 	}
 	filters: {
-		comparison: { set: (value: string) => void, value: string }
-		date: { set: (value: string) => void, value: string }
+		comparison: { set: (value: string) => void, value: PerformanceComparison }
 		operator: { values: string[] }
+		period: { set: (selection: PerformancePeriodSelection) => void, value: PerformancePeriodSelection }
 	}
 }
 
@@ -52,45 +56,24 @@ export function PerformanceFiltersContextProvider({ children }: PropsWithChildre
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation('default');
 	const agenciesContext = useAgenciesContext();
-	const [date, setDate] = useState('today');
-	const [comparison, setComparison] = useState('equivalent-days');
-	const [operators, setOperators] = useState<null | string[]>(null);
+	const periodFilters = usePerformancePeriodFilters();
 
 	//
 	// B. Transform data
-
-	const dateOptions = useMemo<FilterOption[]>(() => [
-		{ label: t('filters.date.today'), value: 'today' },
-		{ label: t('filters.date.yesterday'), value: 'yesterday' },
-	], [t]);
-
-	const comparisonOptions = useMemo<FilterOption[]>(() => [
-		{ description: t('filters.comparison.equivalentDescription'), label: t('filters.comparison.equivalentDays'), value: 'equivalent-days' },
-		{ label: t('filters.comparison.previousDay'), value: 'previous-day' },
-		{ label: t('filters.comparison.previousWeek'), value: 'previous-week' },
-	], [t]);
 
 	const operatorOptions = useMemo<FilterOption[]>(() => agenciesContext.data.agencies.map(agency => ({
 		label: agency.public_name,
 		value: agency._id,
 	})), [agenciesContext.data.agencies]);
-	const selectedOperators = operators ?? operatorOptions.map(item => item.value);
-
+	const allOperatorIds = useMemo(() => operatorOptions.map(item => item.value), [operatorOptions]);
+	const operatorFilter = useFilterStateList('agency_ids', allOperatorIds, operatorOptions);
 	//
 	// C. Handle actions
 
 	const setOperatorsAction = (operatorIds: string[]) => {
 		if (operatorIds.length === 0) return;
-
-		const allIds = operatorOptions.map(item => item.value);
-		if (operatorIds.length === allIds.length && allIds.every(id => operatorIds.includes(id))) {
-			setOperators(null);
-			return;
-		}
-
-		setOperators(operatorIds);
+		operatorFilter.set(operatorIds);
 	};
 
 	//
@@ -99,12 +82,12 @@ export function PerformanceFiltersContextProvider({ children }: PropsWithChildre
 	return (
 		<PerformanceFiltersContext.Provider
 			value={{
-				actions: { setOperators: setOperatorsAction },
-				data: { comparisonOptions, dateOptions, operatorOptions },
+				actions: { setOperators: setOperatorsAction, setPeriod: periodFilters.filters.period.set },
+				data: { ...periodFilters.data, operatorOptions },
 				filters: {
-					comparison: { set: setComparison, value: comparison },
-					date: { set: setDate, value: date },
-					operator: { values: selectedOperators },
+					comparison: periodFilters.filters.comparison,
+					operator: { values: operatorFilter.value },
+					period: periodFilters.filters.period,
 				},
 			}}
 		>
@@ -114,3 +97,5 @@ export function PerformanceFiltersContextProvider({ children }: PropsWithChildre
 
 	//
 }
+
+/* * */

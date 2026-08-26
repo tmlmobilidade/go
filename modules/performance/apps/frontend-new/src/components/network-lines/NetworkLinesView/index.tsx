@@ -5,6 +5,7 @@
 import { LinePerformanceTable } from '@/components/network-lines/LinePerformanceTable';
 import { NetworkLinesSummary } from '@/components/network-lines/NetworkLinesSummary';
 import { useNetworkLinesData } from '@/hooks/useNetworkLinesData';
+import { usePerformanceFilterHref } from '@/hooks/usePerformanceFilterHref';
 import { IconSearch } from '@tabler/icons-react';
 import { SegmentedControl, TextInput } from '@tmlmobilidade/ui';
 import Link from 'next/link';
@@ -28,6 +29,7 @@ export function NetworkLinesView() {
 	const networkLines = useNetworkLinesData();
 	const [query, setQuery] = useState('');
 	const [view, setView] = useState<LineListView>('all');
+	const getFilterHref = usePerformanceFilterHref();
 
 	//
 	// B. Transform data
@@ -64,7 +66,7 @@ export function NetworkLinesView() {
 	return (
 		<div className={styles.root}>
 			<nav aria-label={t('networkLines.breadcrumb.ariaLabel')} className={styles.breadcrumb}>
-				<Link href="/network">{t('navigation.network.label')}</Link>
+				<Link href={getFilterHref('/network')}>{t('navigation.network.label')}</Link>
 				<span>/</span>
 				<strong>{t('navigation.network.lines.title')}</strong>
 			</nav>
@@ -99,10 +101,17 @@ export function NetworkLinesView() {
 					<div>
 						<h2>{t('networkLines.table.title')}</h2>
 					</div>
-					<span>{networkLines.flags.is_loading ? t('networkLines.table.loading') : networkLines.flags.has_real_lines && networkLines.flags.has_real_demand ? t('networkLines.table.mixedData') : t('networkLines.table.demoData')}</span>
+					<span>{networkLines.flags.is_demo
+						? t('demoData.active')
+						: networkLines.flags.is_loading
+							? t('networkLines.table.loading')
+							: networkLines.flags.has_real_lines && networkLines.flags.has_real_demand && networkLines.flags.has_real_operational
+								? t('networkLines.table.mixedData')
+								: t('networkLines.table.dataUnavailable')}
+					</span>
 				</header>
 
-				<LinePerformanceTable isLoading={networkLines.flags.is_loading} lines={visibleLines} paginationResetKey={`${query}:${view}`} />
+				<LinePerformanceTable getFilterHref={getFilterHref} isLoading={networkLines.flags.is_loading} lines={visibleLines} paginationResetKey={`${query}:${view}`} />
 			</section>
 		</div>
 	);

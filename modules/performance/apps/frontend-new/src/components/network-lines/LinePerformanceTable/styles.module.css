@@ -91,15 +91,3 @@
 	color: #b45309;
 	background: var(--color-status-warning-contrast);
 }
-
-.alert {
-	display: inline-flex;
-	gap: 6px;
-	align-items: center;
-	font-weight: var(--font-weight-semibold);
-	color: var(--color-status-danger-primary);
-}
-
-.muted {
-	color: var(--color-system-text-100);
-}

@@ -1,16 +1,20 @@
 {
+	"demoData": {
+		"active": "Dados de demonstração · julho de 2026",
+		"disable": "Desativar dados demo",
+		"enable": "Usar dados demo"
+	},
 	"filters": {
 		"comparison": {
 			"equivalentDays": "Dias equivalentes",
-			"equivalentDescription": "Mediana de dias operacionais comparáveis",
+			"equivalentDescription": "Compara o dia selecionado com a mediana dos últimos dias operacionais do mesmo tipo de dia da semana",
 			"label": "Comparação",
-			"previousDay": "Dia anterior",
-			"previousWeek": "Semana anterior"
-		},
-		"date": {
-			"label": "Data operacional",
-			"today": "Hoje",
-			"yesterday": "Ontem"
+			"previousPeriod": "Período anterior",
+			"previousPeriodDescription": "Compara com o período imediatamente anterior, com a mesma duração",
+			"previousWeek": "Semana anterior",
+			"previousWeekDescription": "Compara com o mesmo dia da semana anterior",
+			"samePeriodLastMonth": "Mesmo período do mês anterior",
+			"samePeriodLastMonthDescription": "Compara com o mesmo intervalo de datas no mês anterior"
 		},
 		"operator": {
 			"all": "Todos",
@@ -18,20 +22,98 @@
 			"label": "Operador",
 			"selectedCount": "{count} selecionados"
 		},
+		"period": {
+			"custom": "Personalizado",
+			"label": "Período",
+			"last7Days": "Últimos 7 dias",
+			"monthToDate": "Mês atual",
+			"today": "Hoje",
+			"yesterday": "Ontem"
+		},
 		"refresh": "Atualizar dados"
 	},
 	"lineDetail": {
 		"breadcrumb": {
 			"ariaLabel": "Localização da página"
 		},
+		"comparison": {
+			"againstRange": "vs. {range}",
+			"baselineFootnote": "Calculado com base nos últimos {count} {weekday}s com dados"
+		},
 		"demand": {
 			"ariaLabel": "Procura da linha",
-			"comparison": "vs. mesmo período do mês anterior",
+			"averageDaily": "Média por dia com dados",
+			"averageHourly": "Média por hora com dados",
+			"chartAriaLabel": "Evolução das validações no período selecionado",
+			"comparison": "vs. período selecionado",
+			"comparisonValue": "Comparável: {value}",
 			"empty": "Não existem validações para esta linha no período selecionado.",
 			"error": "Não foi possível carregar a procura desta linha.",
-			"historySubtitle": "Últimos 7 dias com dados no mês atual",
+			"historySubtitleHourly": "Distribuição horária no dia selecionado",
+			"historySubtitlePeriod": "Evolução no período selecionado",
 			"historyTitle": "Procura diária",
-			"totalTitle": "Validações no mês"
+			"historyTitleHourly": "Procura horária",
+			"referenceValue": "Referência do período: {value}",
+			"selectedPeriod": "Período selecionado",
+			"totalTitle": "Validações no período",
+			"validationsValue": "{value} validações",
+			"weeklyAggregation": "Agregado por semana"
+		},
+		"demandDashboard": {
+			"composition": {
+				"categories": "Categorias",
+				"description": "Peso atual e alteração face ao período comparável",
+				"dimensionLabel": "Dimensão da composição",
+				"products": "Produtos",
+				"title": "Composição da procura"
+			},
+			"contributions": {
+				"description": "Origem das validações e contributo para a alteração observada",
+				"patterns": "Patterns",
+				"stopLabel": "Paragem {id}",
+				"stops": "Paragens de embarque",
+				"title": "Onde se concentra a procura"
+			},
+			"dashboardError": "Não foi possível carregar os detalhes agregados da procura.",
+			"dataState": "Validações aceites. Produtos, categorias e recordes usam agregados diários reconciliados; paragens e horas usam a fonte de cinco minutos e podem ser provisórias.",
+			"demandError": "Parte da série temporal da procura está indisponível.",
+			"description": "Utilização da linha, patterns temporais, composição e relação com o serviço realizado",
+			"heatmap": {
+				"ariaLabel": "Validações por dia da semana e hora",
+				"description": "Distribuição horária agregada no período selecionado",
+				"title": "Quando ocorre a procura"
+			},
+			"productivity": {
+				"deliveredKm": "Quilómetros realizados",
+				"description": "Procura normalizada pelo serviço efetivamente realizado",
+				"operatedRides": "Circulações realizadas",
+				"perRide": "Validações por circulação",
+				"perVehicleKm": "Validações por veículo-km",
+				"title": "Procura e serviço"
+			},
+			"records": {
+				"dayTypes": {
+					"saturday": "Sábados",
+					"sunday_holiday": "Domingos e feriados",
+					"weekday": "Dias úteis"
+				},
+				"description": "Melhores dias dos últimos 12 meses, por tipo de dia",
+				"title": "Recordes da linha"
+			},
+			"summary": {
+				"ariaLabel": "Resumo da procura da linha",
+				"averageContext": "nos intervalos com dados",
+				"averageDaily": "Média diária",
+				"averageHourly": "Média horária",
+				"busiestDay": "Dia mais movimentado",
+				"busiestHour": "Hora mais movimentada",
+				"peakHour": "Hora de ponta",
+				"peakShare": "{value}% das validações",
+				"total": "Validações aceites"
+			},
+			"title": "Procura",
+			"unavailable": "Dados indisponíveis",
+			"unknown": "Não identificado"
 		},
 		"error": {
 			"back": "Voltar à lista de linhas",
@@ -39,31 +121,45 @@
 			"title": "Linha não encontrada"
 		},
 		"header": {
-			"patternCount": "{count} padrões"
+			"patternCount": "{count} patterns"
 		},
 		"navigation": {
 			"ariaLabel": "Navegação do detalhe da linha",
-			"data": "Dados",
+			"data": "Qualidade dos dados",
 			"demand": "Procura",
-			"offer": "Oferta e capacidade",
+			"feedback": "Feedback",
+			"financial": "Financeiro",
+			"history": "Histórico",
 			"overview": "Visão geral",
-			"patterns": "Padrões e paragens",
+			"patterns": "Patterns",
 			"reliability": "Fiabilidade",
-			"service": "Serviço realizado"
+			"service": "Serviço realizado",
+			"supply": "Oferta planeada",
+			"tooltips": {
+				"data": "Explica a cobertura, atualidade, correspondência e reconciliação dos dados usados nesta linha.",
+				"feedback": "Relaciona o feedback dos passageiros com a linha, os patterns, as paragens e os períodos analisados.",
+				"financial": "Analisa receita, custo e saldo atribuídos à linha, incluindo cobertura de custos e valores unitários com denominadores explícitos.",
+				"history": "Mostra alterações da oferta, versões de horário, incidentes e intervenções ao longo do tempo.",
+				"patterns": "Compara os patterns da linha e permite abrir o detalhe dos respetivos percursos e paragens.",
+				"reliability": "Analisa atrasos, adiantamentos, regularidade, tempos de percurso e a consistência do serviço realizado.",
+				"service": "Compara o serviço planeado com o realizado, incluindo supressões, circulações parciais e veículo-km não realizados.",
+				"supply": "Mostra o serviço planeado: circulações, frequência, horários, veículo-km e capacidade prevista."
+			}
 		},
 		"operationalPreview": {
 			"advances": {
 				"target": "Meta: ≤ 3,0%",
 				"title": "Adiantamentos"
 			},
-			"ariaLabel": "Indicadores operacionais provisórios",
-			"badge": "Dados de demonstração",
+			"ariaLabel": "Indicadores operacionais",
+			"badge": "Fonte reconciliada",
 			"comparison": "vs. período comparável",
 			"delays": {
 				"target": "Meta: ≤ 10,0%",
 				"title": "Atrasos"
 			},
-			"description": "Valores provisórios enquanto a integração operacional não está disponível.",
+			"description": "Indicadores calculados a partir das circulações analisadas.",
+			"error": "Não foi possível carregar o desempenho operacional desta linha.",
 			"service": {
 				"target": "Meta: ≥ 95,0%",
 				"title": "Serviço realizado"
@@ -71,23 +167,80 @@
 			"title": "Desempenho operacional"
 		},
 		"patternsTable": {
-			"ariaLabel": "Desempenho dos padrões da linha",
+			"ariaLabel": "Desempenho dos patterns da linha",
 			"columns": {
 				"advances": "Adiantamentos",
 				"delays": "Atrasos",
-				"pattern": "Padrão",
+				"pattern": "Pattern",
 				"service": "Serviço",
 				"validations": "Validações"
 			},
 			"description": "Comparação dos sentidos e variantes da linha",
-			"empty": "Esta linha não tem padrões disponíveis.",
-			"identityOnly": "Identidade real · operação simulada",
-			"mixedData": "Identidade e procura reais · operação simulada",
-			"title": "Padrões"
+			"empty": "Esta linha não tem patterns disponíveis.",
+			"identityOnly": "Alguns indicadores estão indisponíveis",
+			"mixedData": "Dados reais de procura e operação",
+			"title": "Patterns"
+		},
+		"plannedSupply": {
+			"dashboardError": "Não foi possível carregar a oferta planeada desta linha.",
+			"dataState": "Oferta prevista no horário publicado. As circulações, partidas e veículo-km são agregados da versão de oferta associada a cada dia; capacidade e lugares-km não são apresentados sem uma atribuição de veículo defensável.",
+			"dayProfiles": {
+				"dayType": "Tipo de dia",
+				"description": "Janela de serviço e frequência típica da oferta publicada",
+				"dimensionLabel": "Tipo de dia do perfil da oferta",
+				"first": "Primeira partida",
+				"headway": "Intervalo mediano",
+				"last": "Última partida",
+				"rides": "Circulações/dia",
+				"span": "Amplitude",
+				"title": "Perfil por tipo de dia",
+				"types": {
+					"saturday": "Sábados",
+					"sunday_holiday": "Domingos e feriados",
+					"weekday": "Dias úteis"
+				},
+				"vehicleKm": "Veículo-km/dia"
+			},
+			"description": "Serviço previsto no horário: volume, distribuição temporal, frequência e contributo dos patterns",
+			"evolution": {
+				"ariaLabel": "Evolução diária da oferta planeada",
+				"comparisonValue": "Comparável: {value}",
+				"current": "Período selecionado",
+				"description": "Oferta publicada ao longo do período e respetiva comparação",
+				"metricLabel": "Métrica da evolução",
+				"rides": "Circulações",
+				"ridesValue": "{value} circulações",
+				"title": "Evolução da oferta",
+				"vehicleKm": "Veículo-km",
+				"vehicleKmValue": "{value} veículo-km",
+				"weeklyAggregation": "Agregado por semana"
+			},
+			"heatmap": {
+				"ariaLabel": "Partidas planeadas por dia da semana e hora",
+				"description": "Média de partidas previstas por ocorrência de cada dia da semana",
+				"title": "Quando está planeado o serviço"
+			},
+			"patterns": {
+				"change": "Variação",
+				"description": "Distribuição das circulações e veículo-km pelos patterns da linha",
+				"rides": "Circulações",
+				"share": "Peso",
+				"title": "Contributo dos patterns",
+				"vehicleKm": "Veículo-km"
+			},
+			"summary": {
+				"ariaLabel": "Resumo da oferta planeada da linha",
+				"kmPerDay": "Veículo-km por dia",
+				"rides": "Circulações planeadas",
+				"ridesPerDay": "Circulações por dia",
+				"vehicleKm": "Veículo-km planeados"
+			},
+			"title": "Oferta planeada",
+			"unavailable": "Dados indisponíveis"
 		},
 		"reliabilityHeatmap": {
 			"ariaLabel": "{metric} por dia da semana e hora",
-			"badge": "Dados de demonstração",
+			"badge": "Dados reconciliados",
 			"days": {
 				"friday": "Sex",
 				"monday": "Seg",
@@ -97,6 +250,7 @@
 				"tuesday": "Ter",
 				"wednesday": "Qua"
 			},
+			"error": "Não foi possível carregar esta matriz de desempenho.",
 			"metricLabel": "Métrica",
 			"metrics": {
 				"advances": {
@@ -162,7 +316,7 @@
 			},
 			"patterns": {
 				"description": "Disponível depois de selecionar uma linha",
-				"title": "Padrões"
+				"title": "Patterns"
 			},
 			"structure": "Estrutura da rede"
 		},
@@ -171,10 +325,6 @@
 	"networkLines": {
 		"breadcrumb": {
 			"ariaLabel": "Localização da página"
-		},
-		"confidence": {
-			"high": "Alta",
-			"medium": "Média"
 		},
 		"empty": "Nenhuma linha corresponde aos filtros aplicados.",
 		"filters": {
@@ -185,22 +335,18 @@
 		},
 		"subtitle": "{count} linhas no âmbito selecionado",
 		"summary": {
-			"activeAlerts": "{count} alertas ativos",
 			"ariaLabel": "Resumo da rede filtrada",
 			"belowServiceTarget": "{count} linhas abaixo da meta de serviço",
-			"dataCoverage": "Cobertura dos dados 96%",
+			"dataCoverage": "Cobertura dos dados {value}%",
 			"elevatedDelays": "{count} com atrasos elevados"
 		},
 		"table": {
 			"advances": "Adiantamentos",
-			"alerts": "Alertas",
-			"backendNote": "Serviço, atrasos, adiantamentos e alertas simulados",
-			"confidence": "Confiança",
+			"dataUnavailable": "Alguns dados estão indisponíveis",
 			"delays": "Atrasos",
-			"demoData": "Dados de demonstração",
 			"line": "Linha",
 			"loading": "A carregar dados reais…",
-			"mixedData": "Identidade e procura reais · operação simulada",
+			"mixedData": "Dados reais de procura e operação",
 			"openLine": "Abrir linha",
 			"openLineLabel": "Abrir detalhe da linha {lineId}",
 			"operator": "Operador",
@@ -212,5 +358,19 @@
 			"visibleRange": "{start}–{end} de {total} linhas"
 		},
 		"title": "Linhas"
+	},
+	"pulse": {
+		"baselineFootnote": "Calculado com base nos últimos {count} {weekday}s com dados",
+		"demand": {
+			"title": "Validações hoje"
+		},
+		"error": "Não foi possível carregar os dados do Pulse.",
+		"operational": {
+			"advances": "Adiantamentos",
+			"delays": "Atrasos",
+			"service": "Serviço realizado"
+		},
+		"subtitle": "Visão em tempo real do dia operacional atual",
+		"title": "Pulse"
 	}
 }

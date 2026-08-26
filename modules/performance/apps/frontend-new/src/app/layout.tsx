@@ -2,6 +2,7 @@
 
 import pjson from '#/package.json';
 import { AgenciesContextProvider } from '@/contexts/Agencies.context';
+import { DemoDataContextProvider } from '@/contexts/DemoData.context';
 import { PerformanceFiltersContextProvider } from '@/contexts/PerformanceFilters.context';
 import { i18nResourceKeysEs, i18nResourceKeysPt } from '@/i18n/resources';
 import { AppProvider, AppWrapper, BaseProvider } from '@tmlmobilidade/ui';
@@ -23,9 +24,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
 			<AppProvider notificationsEnabled={false}>
 				<AppWrapper>
 					<AgenciesContextProvider>
-						<PerformanceFiltersContextProvider>
-							{children}
-						</PerformanceFiltersContextProvider>
+						<DemoDataContextProvider>
+							<PerformanceFiltersContextProvider>
+								{children}
+							</PerformanceFiltersContextProvider>
+						</DemoDataContextProvider>
 					</AgenciesContextProvider>
 				</AppWrapper>
 			</AppProvider>

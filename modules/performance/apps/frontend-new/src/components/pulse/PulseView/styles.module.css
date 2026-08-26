@@ -1,0 +1,37 @@
+.root {
+	display: grid;
+	gap: 20px;
+	padding: 20px;
+}
+
+.header {
+	display: grid;
+	gap: 6px;
+}
+
+.header h1 {
+	margin: 0;
+	font-size: 1.5rem;
+}
+
+.header p,
+.header small {
+	margin: 0;
+	color: var(--color-system-text-200);
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 16px;
+}
+
+.loadingCard {
+	height: 160px;
+	border-radius: var(--border-radius-md);
+}
+
+.error {
+	margin: 0;
+	color: var(--color-danger);
+}

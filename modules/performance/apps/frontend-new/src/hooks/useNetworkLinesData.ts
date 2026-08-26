@@ -3,48 +3,32 @@
 /* * */
 
 import { useAgenciesContext } from '@/contexts/Agencies.context';
+import { useDemoDataContext } from '@/contexts/DemoData.context';
 import { usePerformanceFiltersContext } from '@/contexts/PerformanceFilters.context';
-import { NETWORK_LINES } from '@/data/network-lines';
-import { type NetworkLine } from '@/types/network-line';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PassengerDemandByLineItem, type PerformanceNetworkLine } from '@tmlmobilidade/go-types-performance';
+import { createDemoNetworkLines } from '@/data/demo-performance';
+import { createNetworkLineRequestUrls } from '@/utils/network-line-requests';
+import { composeNetworkLines } from '@/utils/network-lines';
+import { getPerformancePeriods } from '@/utils/performance-comparisons';
+import { getComparisonLabelKey } from '@/utils/performance-period-labels';
+import { type PassengerDemandByLineItem, type PerformanceNetworkLine, type RidePerformanceByLineItem } from '@tmlmobilidade/go-types-performance';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
-
-/* * */
-
-function formatOperationalDate(date: Date) {
-	return new Intl.DateTimeFormat('sv-SE', {
-		day: '2-digit',
-		month: '2-digit',
-		timeZone: 'Europe/Lisbon',
-		year: 'numeric',
-	}).format(date);
-}
-
-function getOperationalDateRange(dateFilter: string) {
-	const endDate = new Date();
-	if (dateFilter === 'yesterday') endDate.setDate(endDate.getDate() - 1);
-
-	const startDate = new Date(endDate);
-	startDate.setDate(1);
-
-	return {
-		endDate: formatOperationalDate(endDate),
-		startDate: formatOperationalDate(startDate),
-	};
-}
-
-/* * */
 
 export function useNetworkLinesData() {
 	//
 
 	// A. Setup variables
 
+	const { t } = useTranslation('default');
 	const agenciesContext = useAgenciesContext();
+	const demoDataContext = useDemoDataContext();
 	const filtersContext = usePerformanceFiltersContext();
-	const operationalDateRange = getOperationalDateRange(filtersContext.filters.date.value);
+	const periods = getPerformancePeriods(
+		filtersContext.filters.period.value,
+		filtersContext.filters.comparison.value,
+	);
+	const comparisonLabel = t(getComparisonLabelKey(filtersContext.filters.comparison.value));
 	const selectedAgencies = useMemo(() => {
 		const selectedIds = new Set(filtersContext.filters.operator.values);
 		return agenciesContext.data.agencies.filter(agency => selectedIds.has(agency._id));
@@ -53,64 +37,39 @@ export function useNetworkLinesData() {
 		() => selectedAgencies.flatMap(agency => agency.metric_ids),
 		[selectedAgencies],
 	);
-	const demandQuery = new URLSearchParams({
-		end_date: operationalDateRange.endDate,
-		exclude_unknown: 'true',
-		limit: '1000',
-		start_date: operationalDateRange.startDate,
-	});
-	selectedMetricAgencyIds.forEach(agencyId => demandQuery.append('agency_ids', agencyId));
-	const networkQuery = new URLSearchParams({
-		end_date: operationalDateRange.endDate,
-		start_date: operationalDateRange.startDate,
-	});
-	selectedMetricAgencyIds.forEach(agencyId => networkQuery.append('agency_ids', agencyId));
+	const requestUrls = createNetworkLineRequestUrls({ metricAgencyIds: selectedMetricAgencyIds, periods });
 
 	//
 	// B. Fetch data
 
 	const linesRequest = useSWR<PerformanceNetworkLine[], Error>(
-		agenciesContext.flags.is_loading ? null : `${API_ROUTES.performance.NETWORK_LINES}?${networkQuery.toString()}`,
+		agenciesContext.flags.is_loading || demoDataContext.flags.is_enabled ? null : requestUrls.lines,
 	);
 	const demandRequest = useSWR<PassengerDemandByLineItem[], Error>(
-		agenciesContext.flags.is_loading ? null : `${API_ROUTES.performance.PASSENGER_DEMAND_BY_LINE}?${demandQuery.toString()}`,
+		agenciesContext.flags.is_loading || demoDataContext.flags.is_enabled ? null : requestUrls.demand,
+	);
+	const comparisonDemandRequest = useSWR<PassengerDemandByLineItem[], Error>(
+		agenciesContext.flags.is_loading || demoDataContext.flags.is_enabled ? null : requestUrls.comparisonDemand,
+	);
+	const ridePerformanceRequest = useSWR<RidePerformanceByLineItem[], Error>(
+		agenciesContext.flags.is_loading || demoDataContext.flags.is_enabled ? null : requestUrls.ridePerformance,
 	);
 
 	//
 	// C. Transform data
 
-	const lines = useMemo<NetworkLine[]>(() => {
+	const lines = useMemo(() => {
+		if (demoDataContext.flags.is_enabled) return createDemoNetworkLines(periods, demoDataContext.data.refresh_index);
 		if (!linesRequest.data) return [];
 
-		const operatorNameById = new Map(selectedAgencies.flatMap(agency => (
-			[agency._id, agency.code, ...agency.metric_ids].map(id => [id, agency.short_name] as const)
-		)));
-		const canonicalAgencyIdByAlias = new Map(selectedAgencies.flatMap(agency => (
-			[agency._id, agency.code, ...agency.metric_ids].map(id => [id, agency._id] as const)
-		)));
-		const demandByLine = new Map(demandRequest.data?.map(item => [
-			`${canonicalAgencyIdByAlias.get(item.agency_id) ?? item.agency_id}:${item.line_id}`,
-			item.passenger_demand,
-		]));
-
-		return linesRequest.data.map((line, index) => {
-			const simulated = NETWORK_LINES[index % NETWORK_LINES.length];
-			const canonicalAgencyId = canonicalAgencyIdByAlias.get(line.agency_id) ?? line.agency_id;
-			const validationsByCode = demandByLine.get(`${canonicalAgencyId}:${line.code}`);
-			const validationsById = demandByLine.get(`${canonicalAgencyId}:${line._id}`);
-			const validations = validationsByCode ?? validationsById ?? null;
-
-			return {
-				...simulated,
-				_id: line._id,
-				id: line.code,
-				name: line.name,
-				operator: operatorNameById.get(line.agency_id) ?? line.agency_id,
-				validations,
-				validationsDelta: null,
-			};
+		return composeNetworkLines({
+			comparisonDemand: comparisonDemandRequest.data,
+			demand: demandRequest.data,
+			lines: linesRequest.data,
+			ridePerformance: ridePerformanceRequest.data,
+			selectedAgencies,
 		});
-	}, [demandRequest.data, linesRequest.data, selectedAgencies]);
+	}, [comparisonDemandRequest.data, demandRequest.data, demoDataContext.data.refresh_index, demoDataContext.flags.is_enabled, linesRequest.data, periods, ridePerformanceRequest.data, selectedAgencies]);
 
 	//
 	// D. Return data
@@ -120,7 +79,13 @@ export function useNetworkLinesData() {
 		flags: {
 			has_real_demand: !!demandRequest.data?.length,
 			has_real_lines: !!linesRequest.data,
-			is_loading: agenciesContext.flags.is_loading || linesRequest.isLoading || demandRequest.isLoading,
+			has_real_operational: !!ridePerformanceRequest.data?.length,
+			is_demo: demoDataContext.flags.is_enabled,
+			is_loading: !demoDataContext.flags.is_enabled && (agenciesContext.flags.is_loading || linesRequest.isLoading || demandRequest.isLoading || comparisonDemandRequest.isLoading || ridePerformanceRequest.isLoading),
+		},
+		meta: {
+			comparisonLabel,
+			periods,
 		},
 	};
 

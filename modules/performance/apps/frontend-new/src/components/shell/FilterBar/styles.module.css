@@ -38,3 +38,23 @@
 	border-color: color-mix(in srgb, var(--color-primary) 50%, var(--color-system-border-100));
 	outline: none;
 }
+
+.refresh[data-refreshing='true'] svg {
+	animation: refresh-spin 650ms linear infinite;
+}
+
+.refresh:disabled {
+	cursor: wait;
+}
+
+@keyframes refresh-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.refresh[data-refreshing='true'] svg {
+		animation: none;
+	}
+}

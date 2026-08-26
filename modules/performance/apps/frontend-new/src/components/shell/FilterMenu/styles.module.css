@@ -33,7 +33,7 @@
 }
 
 .value {
-	max-width: 150px;
+	max-width: 280px;
 	overflow: hidden;
 	font-size: var(--font-size-sm);
 	font-weight: var(--font-weight-semibold);

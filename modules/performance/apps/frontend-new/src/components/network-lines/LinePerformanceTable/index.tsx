@@ -2,6 +2,7 @@
 
 /* * */
 
+import { usePerformanceFormatters } from '@/hooks/usePerformanceFormatters';
 import { type NetworkLine } from '@/types/network-line';
 import { DataTableV2 } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -14,6 +15,7 @@ import { createLinePerformanceColumns } from './columns';
 /* * */
 
 interface LinePerformanceTableProps {
+	getFilterHref: (pathname: string) => string
 	isLoading: boolean
 	lines: NetworkLine[]
 	paginationResetKey: string
@@ -25,13 +27,14 @@ const NETWORK_LINES_PAGE_SIZE = 10;
 
 /* * */
 
-export function LinePerformanceTable({ isLoading, lines, paginationResetKey }: LinePerformanceTableProps) {
+export function LinePerformanceTable({ getFilterHref, isLoading, lines, paginationResetKey }: LinePerformanceTableProps) {
 	//
 
 	// A. Setup variables
 
 	const { t } = useTranslation('default');
-	const columns = useMemo(() => createLinePerformanceColumns(t), [t]);
+	const formatters = usePerformanceFormatters();
+	const columns = useMemo(() => createLinePerformanceColumns(t, getFilterHref, formatters), [formatters, getFilterHref, t]);
 
 	//
 	// B. Render components

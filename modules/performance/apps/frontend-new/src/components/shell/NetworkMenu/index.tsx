@@ -2,6 +2,7 @@
 
 /* * */
 
+import { usePerformanceFilterHref } from '@/hooks/usePerformanceFilterHref';
 import { IconArrowRight, IconChevronDown, IconGitBranch, IconRoute, IconSitemap } from '@tabler/icons-react';
 import { Popover } from '@tmlmobilidade/ui';
 import Link from 'next/link';
@@ -22,6 +23,7 @@ export function NetworkMenu() {
 	const { t } = useTranslation('default');
 	const pathname = usePathname();
 	const [opened, setOpened] = useState(false);
+	const getFilterHref = usePerformanceFilterHref();
 
 	//
 	// B. Setup flags
@@ -42,7 +44,7 @@ export function NetworkMenu() {
 
 			<Popover.Dropdown className={styles.dropdown}>
 				<nav aria-label={t('navigation.network.ariaLabel')} className={styles.menu}>
-					<Link className={styles.item} href="/network" onClick={() => setOpened(false)}>
+					<Link className={styles.item} href={getFilterHref('/network')} onClick={() => setOpened(false)}>
 						<span className={styles.itemIcon}><IconSitemap size={20} /></span>
 						<span>
 							<strong>{t('navigation.network.overview.title')}</strong>
@@ -54,7 +56,7 @@ export function NetworkMenu() {
 					<div className={styles.divider} />
 					<p className={styles.groupLabel}>{t('navigation.network.structure')}</p>
 
-					<Link className={styles.item} href="/network/lines" onClick={() => setOpened(false)}>
+					<Link className={styles.item} href={getFilterHref('/network/lines')} onClick={() => setOpened(false)}>
 						<span className={styles.itemIcon}><IconRoute size={20} /></span>
 						<span>
 							<strong>{t('navigation.network.lines.title')}</strong>
