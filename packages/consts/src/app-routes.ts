@@ -483,6 +483,7 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('plans', 'api_url')}`,
 
 		// PLANS
+		PLANS_AGENCIES: `${getModuleConfig('plans', 'api_url')}/plans/agencies`,
 		PLANS_CREATE: `${getModuleConfig('plans', 'api_url')}/plans/create`,
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}`,
 		PLANS_DETAIL_APEX_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file`,

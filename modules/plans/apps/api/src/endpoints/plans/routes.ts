@@ -14,6 +14,7 @@ import { getDrtModel } from './controllers/get-drt-model.js';
 import { getOperationFile } from './controllers/get-operation-file.js';
 import { getPlan } from './controllers/get-plan.js';
 import { getPosterLines } from './controllers/get-poster-lines.js';
+import { listAgencies } from './controllers/list-agency.js';
 import { listPlans } from './controllers/list-plans.js';
 import { lockPlan } from './controllers/lock-plan.js';
 import { sendApexNotification } from './controllers/send-apex-notification.js';
@@ -129,6 +130,12 @@ server.register(
 		);
 
 		instance.get('/drt-model/:id', getDrtModel);
+
+		instance.post(
+			'/agencies',
+			{ preHandler: authorizationMiddleware('plans', ['read']) },
+			listAgencies,
+		);
 
 		next();
 	},
