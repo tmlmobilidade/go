@@ -29,10 +29,39 @@ export async function exportPlanPostersFile(fileExport: FileExport): Promise<Att
 		throw new Error(`Plan ${planData._id} has no operation file for poster export`);
 	}
 
+	const contentMode = properties.content_mode ?? (properties.stop_ids?.length ? 'stops' : properties.line_ids?.length ? 'lines' : 'all');
 	const linesMode = properties.lines_mode ?? (properties.line_ids?.length ? 'include' : 'all');
-	const selectedLineIds = linesMode === 'all' ? [] : properties.line_ids ?? [];
-	if (linesMode !== 'all' && !selectedLineIds.length) {
+	const selectedLineIds = contentMode === 'lines' ? properties.line_ids ?? [] : [];
+	const selectedStopIds = contentMode === 'stops' ? properties.stop_ids ?? [] : [];
+	const stopsMode = properties.stops_mode ?? 'include';
+
+	if (contentMode === 'lines' && !selectedLineIds.length) {
 		throw new Error(`Poster export ${fileExport._id} requires selected lines for ${linesMode} mode.`);
+	}
+
+	if (contentMode === 'stops' && !selectedStopIds.length) {
+		throw new Error(`Poster export ${fileExport._id} requires selected stops for ${stopsMode} mode.`);
+	}
+
+	const selectedStops = selectedStopIds.length
+		? await goDb.infrastructure.stops.findMany({
+			flags: {
+				$elemMatch: {
+					agency_ids: properties.agency_id,
+					stop_id: { $in: selectedStopIds },
+				},
+			},
+			is_deleted: false,
+		})
+		: [];
+	const agencyStopIds = new Set(selectedStops.flatMap(stop => stop.flags
+		.filter(flag => flag.agency_ids.includes(properties.agency_id))
+		.map(flag => flag.stop_id),
+	));
+	const missingAgencyStopIds = selectedStopIds.filter(stopId => !agencyStopIds.has(stopId));
+
+	if (missingAgencyStopIds.length) {
+		throw new Error(`Stops ${missingAgencyStopIds.join(', ')} do not belong to agency ${properties.agency_id}.`);
 	}
 
 	const selectedLines = selectedLineIds.length
@@ -55,8 +84,11 @@ export async function exportPlanPostersFile(fileExport: FileExport): Promise<Att
 
 	const pdfZip = await generatePlanPostersZip(planData, fileExport._id, {
 		canvas_profile: properties.canvas_profile,
+		content_mode: contentMode,
 		line_codes: lineCodes,
 		lines_mode: linesMode,
+		stop_ids: selectedStopIds,
+		stops_mode: stopsMode,
 	});
 
 	return storageProvider.upload(pdfZip, {

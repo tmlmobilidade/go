@@ -497,6 +497,7 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans/list`,
 		PLANS_POSTER_LINES: `${getModuleConfig('plans', 'api_url')}/plans/poster-lines`,
+		PLANS_POSTER_STOPS: `${getModuleConfig('plans', 'api_url')}/plans/poster-stops`,
 
 		// VALIDATIONS
 		VALIDATIONS_AGENCIES: `${getModuleConfig('plans', 'api_url')}/validations/agencies`,

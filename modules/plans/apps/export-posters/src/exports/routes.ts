@@ -66,6 +66,10 @@ export async function exportRoutesFile(sqlTables: GtfsStrictV29ExtSQLTables, exp
 
 	Logger.info({ message: 'Exported routes.txt file.' });
 
+	if (exportConfig.content_mode === 'stops') {
+		return Logger.info({ message: 'Skipped routesToCanvasExt.txt because this export targets stops.' });
+	}
+
 	//
 	// Export route canvas profiles by route and direction.
 

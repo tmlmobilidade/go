@@ -2,7 +2,7 @@
 
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
 import { Dates } from '@tmlmobilidade/dates';
-import { type LinesMode } from '@tmlmobilidade/go-types-offer';
+import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { Divider, MultiSelect, Section, SegmentedControl, Select } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
@@ -47,7 +47,7 @@ export function PlanPostersExportModalBody() {
 			<Section gap="md">
 				<Select
 					data={context.data.agencyOptions}
-					description="As linhas e os planos são apresentados para este operador"
+					description="Os planos e as opções de exportação são apresentados para este operador"
 					label="Selecionar operador"
 					onChange={context.actions.setAgencyId}
 					value={context.data.agencyId}
@@ -69,25 +69,38 @@ export function PlanPostersExportModalBody() {
 			</Section>
 			<Divider />
 
-			{context.data.agencyId && (
+			{context.data.planId && (
 				<Section gap="md">
 					<SegmentedControl
 						fullWidth={true}
-						label="Linhas a exportar"
-						onChange={value => context.actions.setLinesMode(value as LinesMode)}
-						value={context.data.linesMode}
+						label="Conteúdo a exportar"
+						onChange={value => context.actions.setContentMode(value as PlanPostersContentMode)}
+						value={context.data.contentMode}
 						data={[
-							{ label: 'Todas as linhas', value: 'all' },
-							{ label: 'Apenas estas linhas', value: 'include' },
-							{ label: 'Todas exceto estas', value: 'exclude' },
+							{ label: 'Tudo', value: 'all' },
+							{ label: 'Linhas', value: 'lines' },
+							{ label: 'Paragens', value: 'stops' },
 						]}
 					/>
 
-					{context.data.linesMode === 'include' && (
+					{context.data.contentMode !== 'all' && (
+						<SegmentedControl
+							fullWidth={true}
+							label={context.data.contentMode === 'lines' ? 'Filtro de linhas' : 'Filtro de paragens'}
+							onChange={value => context.actions.setFilterMode(value as PlanPostersFilterMode)}
+							value={context.data.filterMode}
+							data={[
+								{ label: 'Apenas selecionadas', value: 'include' },
+								{ label: 'Todas exceto selecionadas', value: 'exclude' },
+							]}
+						/>
+					)}
+
+					{context.data.contentMode === 'lines' && (
 						<MultiSelect
-							key={`${context.data.agencyId}-${context.data.linesMode}`}
+							key={`${context.data.agencyId}-lines-${context.data.filterMode}`}
 							data={context.data.lineOptions}
-							description="Apenas estas linhas serão exportadas."
+							description={context.data.filterMode === 'include' ? 'Apenas estas linhas serão exportadas.' : 'Todas as linhas serão exportadas, exceto estas.'}
 							onChange={context.actions.setLineIds}
 							placeholder="Selecionar linhas"
 							value={context.data.lineIds}
@@ -95,22 +108,22 @@ export function PlanPostersExportModalBody() {
 						/>
 					)}
 
-					{context.data.linesMode === 'exclude' && (
+					{context.data.contentMode === 'stops' && (
 						<MultiSelect
-							key={`${context.data.agencyId}-${context.data.linesMode}`}
-							data={context.data.lineOptions}
-							description="Todas as linhas serão exportadas, exceto estas."
-							onChange={context.actions.setLineIds}
-							placeholder="Selecionar linhas"
-							value={context.data.lineIds}
+							key={`${context.data.agencyId}-stops-${context.data.filterMode}`}
+							data={context.data.stopOptions}
+							description={context.data.filterMode === 'include' ? 'Apenas estas paragens serão exportadas.' : 'Todas as paragens serão exportadas, exceto estas.'}
+							onChange={context.actions.setStopIds}
+							placeholder="Selecionar paragens"
+							value={context.data.stopIds}
 							w="100%"
 						/>
 					)}
 
-					{context.data.linesMode !== 'all' && (
+					{context.data.contentMode !== 'all' && (
 						<Select
 							data={canvasProfileOptions}
-							description="Este perfil será aplicado às paragens das linhas selecionadas"
+							description="Este perfil será aplicado às paragens exportadas"
 							label="Canvas profile"
 							onChange={value => context.actions.setCanvasProfile(value as typeof context.data.canvasProfile)}
 							value={context.data.canvasProfile}

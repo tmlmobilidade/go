@@ -1,17 +1,21 @@
 /* * */
 
+import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
 export interface ExportToHitouchConfig {
 	canvas_profile: '0Master.A' | '0Master.B' | '0Master.C' | '0Master.F'
+	content_mode: PlanPostersContentMode
 	date_range: {
 		end: OperationalDate
 		start: OperationalDate
 	}
 	output: string
 	source_has_calendar: boolean
+	stop_ids: string[]
+	stops_mode?: PlanPostersFilterMode
 	workdir: string
 }
 

@@ -10,6 +10,7 @@ import { buildDatesMap } from '@/utils/build-dates-map.js';
 import { createHitouchZip } from '@/utils/create-hitouch-zip.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
@@ -20,7 +21,7 @@ import fs from 'node:fs';
 
 /* * */
 
-export async function importPlanToSqlite(planData: Plan, options?: { canvas_profile?: ExportToHitouchConfig['canvas_profile'], line_codes?: string[], lines_mode?: LinesMode, workdir?: string }): Promise<ExportToHitouchConfig> {
+export async function importPlanToSqlite(planData: Plan, options?: { canvas_profile?: ExportToHitouchConfig['canvas_profile'], content_mode?: PlanPostersContentMode, line_codes?: string[], lines_mode?: LinesMode, stop_ids?: string[], stops_mode?: PlanPostersFilterMode, workdir?: string }): Promise<ExportToHitouchConfig> {
 	//
 
 	//
@@ -58,7 +59,7 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 
 	const sqlGtfs = await importGtfsStrictV29ExtToDatabase(importConfig);
 
-	if (options?.lines_mode !== 'all' && options?.line_codes?.length) {
+	if (options?.content_mode === 'lines' && options.line_codes?.length) {
 		const lineIdMatchExpression = options.line_codes
 			.map(() => '(CAST(line_id AS TEXT) = ? OR CAST(line_id AS TEXT) GLOB ?)')
 			.join(' OR ');
@@ -91,6 +92,28 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 		filterTransaction();
 	}
 
+	if (options?.content_mode === 'stops' && options.stop_ids?.length) {
+		const stopPlaceholders = options.stop_ids.map(() => '?').join(', ');
+		const matchingStopIds = sqlGtfs.stop_times
+			.all(`WHERE stop_id IN (${stopPlaceholders})`, options.stop_ids)
+			.map(stopTime => stopTime.stop_id);
+		const matchingStopIdSet = new Set(matchingStopIds);
+		const missingStopIds = options.stop_ids.filter(stopId => !matchingStopIdSet.has(stopId));
+
+		if (missingStopIds.length) {
+			throw new Error(`Stops ${missingStopIds.join(', ')} do not exist in Plan ${planData._id}.`);
+		}
+
+		if ((options.stops_mode ?? 'include') === 'include') {
+			const filterTransaction = sqlGtfs._db.databaseInstance.transaction(() => {
+				sqlGtfs.trips.run(`DELETE FROM trips WHERE trip_id NOT IN (SELECT DISTINCT trip_id FROM stop_times WHERE stop_id IN (${stopPlaceholders}))`, options.stop_ids);
+				sqlGtfs.stop_times.run('DELETE FROM stop_times WHERE trip_id NOT IN (SELECT trip_id FROM trips)');
+				sqlGtfs.routes.run('DELETE FROM routes WHERE route_id NOT IN (SELECT DISTINCT route_id FROM trips)');
+			});
+			filterTransaction();
+		}
+	}
+
 	const sourceHasCalendar = true;
 	const [agencyHolidays, agencyYearPeriods] = await Promise.all([
 		goDb.offer.holidays.findMany({ agency_ids: { $in: [agencyId] } }),
@@ -102,12 +125,15 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 
 	const exportConfig: ExportToHitouchConfig = {
 		canvas_profile: options?.canvas_profile ?? '0Master.C',
+		content_mode: options?.content_mode ?? 'all',
 		date_range: {
 			end: validateOperationalDate(feedEndDate),
 			start: validateOperationalDate(feedStartDate),
 		},
 		output: options?.workdir ? `${planData._id}-hitouch-posters.zip` : `../${planData._id}-hitouch-posters.zip`,
 		source_has_calendar: sourceHasCalendar,
+		stop_ids: options?.stop_ids ?? [],
+		stops_mode: options?.content_mode === 'stops' ? options.stops_mode ?? 'include' : undefined,
 		workdir: options?.workdir ?? `/tmp/hitouch/${planData._id}`,
 	};
 

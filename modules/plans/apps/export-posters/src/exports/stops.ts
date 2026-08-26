@@ -42,12 +42,17 @@ export async function exportStopsFile(sqlTables: GtfsStrictV29ExtSQLTables, expo
 	// Export stop canvas profiles by stop and direction.
 
 	const stopsToCanvasExtFields: (keyof StopsToCanvasExt)[] = ['stop_id', 'canvas_profile', 'direction_id'];
+	const stopPlaceholders = exportConfig.stop_ids.map(() => '?').join(', ');
+	const stopFilter = exportConfig.content_mode === 'stops' && exportConfig.stop_ids.length
+		? `WHERE stop_times.stop_id ${exportConfig.stops_mode === 'exclude' ? 'NOT IN' : 'IN'} (${stopPlaceholders})`
+		: '';
 	const stopsToCanvasExtRows = sqlTables._db.databaseInstance.prepare(
 		` SELECT DISTINCT stop_times.stop_id, trips.direction_id
 		FROM stop_times
 		INNER JOIN trips ON trips.trip_id = stop_times.trip_id
+		${stopFilter}
 		ORDER BY stop_times.stop_id ASC, trips.direction_id ASC `,
-	).all().map((row: { direction_id: number, stop_id: string }): StopsToCanvasExt => ({
+	).all(...exportConfig.stop_ids).map((row: { direction_id: number, stop_id: string }): StopsToCanvasExt => ({
 		canvas_profile: exportConfig.canvas_profile,
 		direction_id: row.direction_id,
 		stop_id: row.stop_id,
@@ -56,7 +61,12 @@ export async function exportStopsFile(sqlTables: GtfsStrictV29ExtSQLTables, expo
 	//
 	// If no stop directions were found, skip the export
 
-	if (!stopsToCanvasExtRows.length) return Logger.info({ message: 'Skipped stopsToCanvasExt.txt file because no stop directions were found.' });
+	if (!stopsToCanvasExtRows.length) {
+		if (exportConfig.content_mode === 'stops') {
+			throw new Error('The selected stop filter removes every stop poster target.');
+		}
+		return Logger.info({ message: 'Skipped stopsToCanvasExt.txt file because no stop directions were found.' });
+	}
 
 	//
 	// Output the stops to canvas ext data
