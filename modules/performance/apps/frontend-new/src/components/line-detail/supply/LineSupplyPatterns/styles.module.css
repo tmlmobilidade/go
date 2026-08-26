@@ -1,0 +1,67 @@
+.empty {
+	margin: 0;
+	font-size: var(--font-size-xs);
+	color: var(--color-system-text-200);
+}
+
+.tableScroll {
+	max-height: 326px;
+	overflow: auto;
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+}
+
+.table {
+	min-width: 680px;
+	table-layout: fixed;
+}
+
+.table thead {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background: var(--color-system-background-100);
+}
+
+.table th {
+	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-200);
+}
+
+.table th:first-child,
+.table td:first-child {
+	width: 36%;
+}
+
+.table th:not(:first-child),
+.table td:not(:first-child) {
+	text-align: right;
+}
+
+.identity {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.identity strong {
+	font-size: var(--font-size-sm);
+	color: var(--color-system-text-100);
+}
+
+.identity span {
+	overflow: hidden;
+	font-size: var(--font-size-xs);
+	color: var(--color-system-text-200);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.metric {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+	font-variant-numeric: tabular-nums;
+	color: var(--color-system-text-100);
+	white-space: nowrap;
+}

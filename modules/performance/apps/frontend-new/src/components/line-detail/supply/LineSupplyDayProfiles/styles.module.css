@@ -1,0 +1,42 @@
+.empty { 
+    margin: 0; 
+    font-size: var(--font-size-xs); 
+    color: var(--color-system-text-200); 
+}
+
+.metrics { 
+    display: grid; 
+    grid-template-columns: repeat(2, minmax(0, 1fr)); 
+    width: 100%; 
+    margin: 0; 
+}
+
+.metrics div { 
+    min-width: 0; 
+    padding: 13px 10px; 
+    border-bottom: 1px solid var(--color-system-border-100); 
+}
+
+.metrics div:nth-last-child(-n + 2) { 
+    border-bottom: 0; 
+}
+
+.metrics div:nth-child(odd) { 
+    padding-left: 0; 
+    border-right: 1px solid var(--color-system-border-100); 
+}
+
+.metrics dt { 
+    overflow: hidden; 
+    font-size: 11px; 
+    color: var(--color-system-text-200); 
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
+
+.metrics dd { 
+    margin: 5px 0 0; 
+    font-size: var(--font-size-md); 
+    font-weight: var(--font-weight-semibold); 
+    color: var(--color-system-text-100); 
+}
