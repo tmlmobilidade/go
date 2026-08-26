@@ -1,9 +1,9 @@
 /* * */
 
 import { ClickHouseInterfaceTemplate } from '@/interface.template.js';
-import { metricRefreshTableSchema, passengerDemandByAgencyByMinuteTableSchema, passengerDemandByDimensionsBy5MinutesTableSchema, passengerDemandByDimensionsByDayTableSchema, passengerDemandRealtimeTableSchema } from '@/schemas/performance.js';
+import { metricRefreshTableSchema, passengerDemandByAgencyByMinuteTableSchema, passengerDemandByDimensionsBy5MinutesTableSchema, passengerDemandByDimensionsByDayTableSchema, passengerDemandRealtimeTableSchema, rideServiceByRideTableSchema } from '@/schemas/performance.js';
 import { ClickHouseClient } from '@tmlmobilidade/go-clients-clickhouse';
-import { type MetricRefresh, type PassengerDemandByAgencyByMinute, type PassengerDemandByDimensionsBy5Minutes, type PassengerDemandByDimensionsByDay, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
+import { type MetricRefresh, type PassengerDemandByAgencyByMinute, type PassengerDemandByDimensionsBy5Minutes, type PassengerDemandByDimensionsByDay, type PassengerDemandRealtime, type RideServiceByRide } from '@tmlmobilidade/go-types-performance';
 
 /* * */
 
@@ -15,6 +15,7 @@ export class PerformanceDatabase {
 	public readonly passengerDemandByDimensionsBy5Minutes: ClickHouseInterfaceTemplate<PassengerDemandByDimensionsBy5Minutes>;
 	public readonly passengerDemandByDimensionsByDay: ClickHouseInterfaceTemplate<PassengerDemandByDimensionsByDay>;
 	public readonly passengerDemandRealtime: ClickHouseInterfaceTemplate<PassengerDemandRealtime>;
+	public readonly rideServiceByRide: ClickHouseInterfaceTemplate<RideServiceByRide>;
 
 	private readonly databaseName = 'performance';
 
@@ -44,6 +45,11 @@ export class PerformanceDatabase {
 			orderBy: ['definition_version', 'current_operational_date', 'agency_id'],
 			partitionBy: 'intDiv(current_operational_date, 100)',
 		});
+		this.rideServiceByRide = new ClickHouseInterfaceTemplate<RideServiceByRide>(instance, this.databaseName, 'ride_service_by_ride', rideServiceByRideTableSchema, {
+			engine: 'MergeTree()',
+			orderBy: ['definition_version', 'operational_date', 'ride_id'],
+			partitionBy: 'operational_date',
+		});
 	}
 
 	public async init() {
@@ -53,6 +59,7 @@ export class PerformanceDatabase {
 			this.passengerDemandByDimensionsBy5Minutes.init(),
 			this.passengerDemandByDimensionsByDay.init(),
 			this.passengerDemandRealtime.init(),
+			this.rideServiceByRide.init(),
 		]);
 	}
 }

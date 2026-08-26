@@ -79,6 +79,20 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	}
 
 	/**
+	 * Executes an ALTER TABLE ... UPDATE mutation on the ClickHouse table.
+	 * @param setClause The SET clause (e.g., `"processing_status = 'processing'"`).
+	 * @param where The WHERE clause to filter the rows to update (e.g., `"_id IN ($1)"`).
+	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
+	 */
+	public async update(setClause: string, where: string, params?: Record<string, number | string | string[]>): Promise<void> {
+		const preparedQuery = preparePositionalQueryParams(`ALTER TABLE "${this.databaseName}"."${this.tableName}" UPDATE ${setClause} WHERE ${where}`, params);
+		await this.client.command({
+			query: preparedQuery.query,
+			query_params: preparedQuery.query_params,
+		});
+	}
+
+	/**
 	 * Executes a DISTINCT query on the ClickHouse table using the service's client.
 	 * @param select The columns to select in the query (e.g., `"*"`, `"column1, column2"`).
 	 * @param where The WHERE clause to filter the results (e.g., `"id = 1"`).
@@ -135,7 +149,7 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 * @param params Optional key-value substitutions applied to the WHERE clause (replaces $1, $2, etc.).
 	 * @returns A promise that resolves to an array of results matching the query.
 	 */
-	public async select(select: string, where: string, params?: Record<string, number | string>): Promise<T[]> {
+	public async select(select: string, where: string, params?: Record<string, number | string | string[]>): Promise<T[]> {
 		return await queryFromString<T>(this.client, `SELECT ${select} FROM "${this.databaseName}"."${this.tableName}" WHERE ${where}`, params);
 	}
 
