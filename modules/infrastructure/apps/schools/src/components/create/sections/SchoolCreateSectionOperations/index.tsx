@@ -1,9 +1,19 @@
 'use client';
 
-import { Collapsible, DateTimeInput, Grid, Section, StandardFormController, Switch, TagsInput } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { Collapsible, DateTimeInput, Grid, MultiSelect, Section, StandardFormController, Switch } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import useSWR from 'swr';
 
 import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
+
+/* * */
+
+interface SchoolStopOption {
+	_id: number
+	name: string
+}
 
 /* * */
 
@@ -17,7 +27,19 @@ export function SchoolCreateSectionOperations() {
 	const { form: schoolsCreateForm } = useSchoolsCreateFormContext();
 
 	//
-	// B. Render components
+	// B. Fetch data
+
+	const { data: stopsData, isLoading: stopsLoading } = useSWR<SchoolStopOption[]>(API_ROUTES.infrastructure.STOPS_LIST);
+
+	//
+	// C. Transform data
+
+	const stopsOptions = useMemo(() => (stopsData ?? [])
+		.map(stop => ({ label: `[${stop._id}] ${stop.name}`, value: String(stop._id) }))
+		.sort((a, b) => a.label.localeCompare(b.label, 'pt')), [stopsData]);
+
+	//
+	// D. Render components
 
 	return (
 		<Collapsible
@@ -57,7 +79,9 @@ export function SchoolCreateSectionOperations() {
 						control={schoolsCreateForm.control}
 						name="stops"
 						render={({ field, fieldState }) => (
-							<TagsInput
+							<MultiSelect
+								data={stopsOptions}
+								disabled={stopsLoading}
 								error={fieldState.error?.message}
 								label={t('schools:create.SchoolCreateSectionOperations.fields.stops')}
 								onChange={field.onChange}
