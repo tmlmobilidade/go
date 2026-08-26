@@ -1,9 +1,11 @@
 'use client';
 
-import { usePlansListFilterAgency } from '@/components/plans/list/filters/PlansListFilterAgency/use-plans-list-filter-agency';
-import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
+import { usePlansAgencies } from '@/components/plans/shared/use-plans-agencies';
+import { usePlansExportListData } from '@/components/plans/shared/use-plans-export-list-data';
+import { type PlanListItem } from '@tmlmobilidade/go-plans-pckg-types';
 import { type CreateFileExportDto, type PlanExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { closeModal, type SelectDataItem, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { PLAN_EXPORT_MODAL_ID } from './PlanExportModal/constants';
@@ -18,7 +20,9 @@ interface PlanExportModalContextState {
 	}
 	data: {
 		agencyId: null | string
+		agencyOptions: SelectDataItem[]
 		planId: null | string
+		plans: PlanListItem[]
 	}
 	flags: {
 		canSave: boolean
@@ -46,12 +50,19 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// A. Setup variables
 
-	const plansData = usePlansListData();
-	const filterAgency = usePlansListFilterAgency();
 	const exports = useExportsContext();
 	const [agencyId, setAgencyId] = useState<null | string>(null);
 	const [planId, setPlanId] = useState<null | string>(null);
 	const [loading, setLoading] = useState(false);
+
+	const { options: agencyOptions } = usePlansAgencies({
+		permissions: {
+			actions: [PermissionCatalog.all.plans.actions.read],
+			scope: PermissionCatalog.all.plans.scope,
+		},
+	});
+
+	const plansData = usePlansExportListData(agencyId);
 
 	//
 	// B. Derived state
@@ -67,13 +78,12 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 	}, []);
 
 	const selectPlanId = useCallback((value: null | string) => {
-		const selectedPlan = plansData.raw.find(plan => plan._id === value && plan.agency_id === agencyId);
+		const selectedPlan = plansData.data.find(plan => plan._id === value && plan.agency_id === agencyId);
 
 		setPlanId(selectedPlan?._id ?? null);
-	}, [agencyId, plansData.raw]);
+	}, [agencyId, plansData.data]);
 
 	useEffect(() => {
-		const agencyOptions = filterAgency.options;
 		const selectedAgencyIsAvailable = agencyOptions.some(option => option.value === agencyId);
 
 		if (agencyOptions.length === 1 && agencyId !== agencyOptions[0].value) {
@@ -81,14 +91,14 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 		} else if (agencyOptions.length > 1 && agencyId && !selectedAgencyIsAvailable) {
 			selectAgencyId(null);
 		}
-	}, [agencyId, filterAgency.options, selectAgencyId]);
+	}, [agencyId, agencyOptions, selectAgencyId]);
 
 	const exportPlan = useCallback(async () => {
 		if (loading) return;
 
 		if (!agencyId || !planId) return;
 
-		const selectedPlan = plansData.raw.find(plan => plan._id === planId && plan.agency_id === agencyId);
+		const selectedPlan = plansData.data.find(plan => plan._id === planId && plan.agency_id === agencyId);
 		if (!selectedPlan) return;
 
 		const createFileExportDto: CreateFileExportDto<PlanExportProperties> = {
@@ -114,7 +124,7 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 		} finally {
 			setLoading(false);
 		}
-	}, [agencyId, exports.actions, loading, planId, plansData.raw]);
+	}, [agencyId, exports.actions, loading, planId, plansData.data]);
 
 	//
 	// D. Define context value
@@ -127,13 +137,15 @@ export const PlanExportModalContextProvider = ({ children }: PropsWithChildren) 
 		},
 		data: {
 			agencyId,
+			agencyOptions,
 			planId,
+			plans: plansData.data,
 		},
 		flags: {
 			canSave,
 			loading,
 		},
-	}), [agencyId, canSave, exportPlan, loading, planId, selectAgencyId, selectPlanId]);
+	}), [agencyId, agencyOptions, canSave, exportPlan, loading, planId, plansData.data, selectAgencyId, selectPlanId]);
 
 	//
 	// E. Render components
