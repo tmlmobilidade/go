@@ -1,12 +1,12 @@
 /* * */
 
-import { type PropsWithChildren } from 'react';
+import { type HTMLAttributes, type PropsWithChildren } from 'react';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface GridProps {
+interface GridProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
 	columns?: 'a' | 'aab' | 'aabc' | 'ab' | 'abb' | 'abc' | 'abcd' | 'abcde'
 	gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl' | 'xs'
 	hAlign?: 'center' | 'end' | 'start'
@@ -15,10 +15,13 @@ interface GridProps {
 
 /* * */
 
-export function Grid({ children, columns = 'a', gap = 'none', hAlign = 'start', vAlign = 'start' }: PropsWithChildren<GridProps>) {
+export function Grid({ children, className, columns = 'a', gap = 'none', hAlign = 'start', vAlign = 'start', ...props }: PropsWithChildren<GridProps>) {
+	const rootClassName = className ? `${styles.container} ${className}` : styles.container;
+
 	return (
 		<div
-			className={styles.container}
+			{...props}
+			className={rootClassName}
 			data-columns={columns}
 			data-gap={gap}
 			data-h-align={hAlign}

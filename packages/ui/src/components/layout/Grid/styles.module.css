@@ -69,99 +69,99 @@
 /* PROPS / COLUMNS */
 
 .container[data-columns='a'] {
-	grid-template-columns: 1fr;
+	grid-template-columns: minmax(0, 1fr);
 }
 
 .container[data-columns='aab'] {
-	grid-template-columns: 2fr 1fr;
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
 }
 
 .container[data-columns='aabc'] {
-	grid-template-columns: 2fr 1fr 1fr;
+	grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
 }
 
 .container[data-columns='ab'] {
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .container[data-columns='abb'] {
-	grid-template-columns: 1fr 2fr;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
 }
 
 .container[data-columns='abc'] {
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .container[data-columns='abcd'] {
-	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .container[data-columns='abcde'] {
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 @container (max-width: 1000px) {
 	.container[data-columns='aab'] {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 	.container[data-columns='ab'] {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 	.container[data-columns='abb'] {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 	.container[data-columns='abc'] {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 	.container[data-columns='abcd'] {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 	.container[data-columns='abcde'] {
-		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 	}
 }
 
 @container (max-width: 900px) {
 	.container[data-columns='aab'] {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.container[data-columns='ab'] {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.container[data-columns='abb'] {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.container[data-columns='abc'] {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 	.container[data-columns='abcd'] {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 	.container[data-columns='abcde'] {
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 }
 
 @container (max-width: 650px) {
 	.container[data-columns='abc'] {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.container[data-columns='abcd'] {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.container[data-columns='abcde'] {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 }
 
 @container (max-width: 450px) {
 	.container[data-columns='abc'] {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.container[data-columns='abcd'] {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 	.container[data-columns='abcde'] {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 }

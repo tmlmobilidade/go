@@ -1,11 +1,6 @@
 'use client';
 
-import {
-	Popover as MantinePopover,
-	PopoverDropdownProps as MantinePopoverDropdownProps,
-	PopoverProps as MantinePopoverProps,
-	PopoverTargetProps as MantinePopoverTargetProps,
-} from '@mantine/core';
+import { Popover as MantinePopover, PopoverDropdownProps as MantinePopoverDropdownProps, PopoverProps as MantinePopoverProps, PopoverTargetProps as MantinePopoverTargetProps } from '@mantine/core';
 
 export type PopoverProps = MantinePopoverProps;
 export type PopoverTargetProps = MantinePopoverTargetProps;
