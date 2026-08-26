@@ -18,6 +18,14 @@ export interface SegmentedControlDataItem {
 export interface SegmentedControlProps extends Omit<MantineSegmentedControlProps, 'data'> {
 
 	/**
+	 * Visual treatment applied to the control.
+	 * `brand` preserves the primary, uppercase treatment used across existing apps.
+	 * `neutral` provides a compact, lower-case treatment for dashboard filters.
+	 * @default 'brand'
+	 */
+	appearance?: 'brand' | 'neutral'
+
+	/**
 	 * The data items to be displayed in the SegmentedControl component.
 	 * Use the `SegmentedControlDataItem` interface to define properties for each item.
 	 */
@@ -43,7 +51,7 @@ export interface SegmentedControlProps extends Omit<MantineSegmentedControlProps
 
 /* * */
 
-export function SegmentedControl({ data, description, fullWidth, label, style, ...props }: SegmentedControlProps) {
+export function SegmentedControl({ appearance = 'brand', data, description, fullWidth, label, style, ...props }: SegmentedControlProps) {
 	const segmentedControlStyle: CSSProperties = {
 		...(style as CSSProperties | undefined),
 		...(fullWidth ? { width: '100%' } : {}),
@@ -55,7 +63,13 @@ export function SegmentedControl({ data, description, fullWidth, label, style, .
 			{description && <p className={styles.description}>{description}</p>}
 			<MantineSegmentedControl
 				data={data}
+				data-appearance={appearance}
 				style={segmentedControlStyle}
+				classNames={appearance === 'neutral' ? {
+					indicator: styles.neutralIndicator,
+					label: styles.neutralControlLabel,
+					root: styles.neutralControl,
+				} : undefined}
 				{...props}
 			/>
 		</div>

@@ -7,6 +7,8 @@ import clsx from 'clsx';
 
 import styles from './styles.module.css';
 
+import { createQuantityHeatmapScale } from './quantity-scale';
+
 /* * */
 
 export type HeatmapTone = 'critical' | 'high' | 'intensity-1' | 'intensity-2' | 'intensity-3' | 'intensity-4' | 'intensity-5' | 'low' | 'medium' | 'neutral' | 'positive';
@@ -27,33 +29,57 @@ export interface HeatmapLegendItem {
 	tone: HeatmapTone
 }
 
-export interface HeatmapProps {
+interface DataHeatmapBaseProps {
 	ariaLabel: string
+	cellLayout?: 'fluid' | 'square'
 	cells: HeatmapCell[]
 	className?: string
 	columns: HeatmapAxisItem[]
 	emptyLabel?: string
 	formatValue?: (value: number) => string
-	getTone: (value: number) => HeatmapTone
-	legend?: HeatmapLegendItem[]
 	rows: HeatmapAxisItem[]
 }
 
+interface CustomDataHeatmapProps extends DataHeatmapBaseProps {
+	getTone: (value: number) => HeatmapTone
+	legend?: HeatmapLegendItem[]
+	scale?: 'custom'
+}
+
+interface QuantityDataHeatmapProps extends DataHeatmapBaseProps {
+	getTone?: never
+	legend?: never
+	scale: 'quantity'
+}
+
+export type DataHeatmapProps = CustomDataHeatmapProps | QuantityDataHeatmapProps;
+
 /* * */
 
-export function Heatmap({ ariaLabel, cells, className, columns, emptyLabel = '—', formatValue = String, getTone, legend, rows }: HeatmapProps) {
+export function DataHeatmap(props: DataHeatmapProps) {
 	//
 
 	//
-	// A. Transform data
+	// A. Setup variables
+
+	const { ariaLabel, cellLayout = 'fluid', cells, className, columns, emptyLabel = '—', formatValue = String, rows } = props;
+
+	//
+	// B. Transform data
 
 	const cellByCoordinates = new Map(cells.map(cell => [`${cell.rowId}:${cell.columnId}`, cell]));
+	const quantityScale = props.scale === 'quantity'
+		? createQuantityHeatmapScale(cells.flatMap(cell => cell.value === null ? [] : [cell.value]), formatValue)
+		: null;
+	const legend = quantityScale?.legend ?? props.legend;
+
+	const getTone = (value: number) => quantityScale?.getTone(value) ?? (props.scale === 'quantity' ? 'neutral' : props.getTone(value));
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
-		<div className={clsx(styles.root, className)}>
+		<div className={clsx(styles.root, className)} data-cell-layout={cellLayout}>
 			<div className={styles.scrollArea}>
 				<table aria-label={ariaLabel} className={styles.table}>
 					<thead>
@@ -101,3 +127,5 @@ export function Heatmap({ ariaLabel, cells, className, columns, emptyLabel = '�
 
 	//
 }
+
+export { createQuantityHeatmapScale } from './quantity-scale';

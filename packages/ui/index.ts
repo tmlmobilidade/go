@@ -1,4 +1,5 @@
 export * from './src/components';
+export { AreaChart, type AreaChartProps, type AreaChartSeries } from './src/components/display/AreaChart';
 export * from './src/contexts';
 export * from './src/hooks';
 export * from './src/i18n';

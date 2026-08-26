@@ -26,3 +26,34 @@
 	line-height: var(--font-line-height);
 	color: var(--color-system-text-200);
 }
+
+/* * */
+/* APPEARANCE / NEUTRAL */
+
+.neutralControl {
+	padding: 3px;
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-200);
+	border-radius: var(--border-radius-sm);
+}
+
+.neutralIndicator {
+	background-color: var(--color-system-background-100);
+	border: 0;
+	border-radius: calc(var(--border-radius-sm) - 2px);
+	box-shadow: 0 1px 3px rgb(0 0 0 / 8%);
+}
+
+.neutralControlLabel {
+	padding: 6px 10px;
+	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight-medium);
+	line-height: 1;
+	color: var(--color-system-text-200);
+	text-transform: none;
+}
+
+.neutralControlLabel[data-active='true'] {
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-system-text-100);
+}

@@ -1,0 +1,15 @@
+.root {
+	box-sizing: border-box;
+	min-width: 0;
+	padding: var(--size-spacing-sm) var(--size-spacing-lg) var(--size-spacing-md);
+}
+
+.referenceCursor,
+.referenceCursor :global(.recharts-wrapper),
+.referenceCursor :global(.recharts-surface) {
+	cursor: crosshair;
+}
+
+.hoverDotsOnly :global(.recharts-area-dots) {
+	display: none;
+}
