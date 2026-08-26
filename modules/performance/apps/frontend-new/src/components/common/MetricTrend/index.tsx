@@ -1,13 +1,13 @@
 /* * */
 
+import { type MetricTrendDirection, type MetricTrendSentiment } from '@/utils/metric-trend';
 import { IconArrowDownRight, IconArrowRight, IconArrowUpRight } from '@tabler/icons-react';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export type MetricTrendDirection = 'down' | 'flat' | 'up';
-export type MetricTrendSentiment = 'negative' | 'neutral' | 'positive' | 'warning';
+export type { MetricTrendDirection, MetricTrendSentiment } from '@/utils/metric-trend';
 
 interface MetricTrendProps {
 	className?: string
