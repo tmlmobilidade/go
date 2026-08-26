@@ -7,6 +7,7 @@ import { AgenciesDetailContacts } from '@/components/agencies/detail/AgenciesDet
 import { AgenciesDetailFinancials } from '@/components/agencies/detail/AgenciesDetailFinancials';
 import { AgenciesDetailHeader } from '@/components/agencies/detail/AgenciesDetailHeader';
 import { AgenciesDetailOpenData } from '@/components/agencies/detail/AgenciesDetailOpenData';
+import { AgencySectionValidationRules } from '@/components/agencies/detail/AgencySectionValidationRules';
 import { Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -19,7 +20,7 @@ export function AgenciesDetail() {
 			<AgenciesDetailContacts />
 			<AgenciesDetailOpenData />
 			<AgenciesDetailApex />
-			{/* <AgencySectionValidationRules /> */}
+			<AgencySectionValidationRules />
 			<AgenciesDetailAlertsMap />
 		</Pane>
 	);
