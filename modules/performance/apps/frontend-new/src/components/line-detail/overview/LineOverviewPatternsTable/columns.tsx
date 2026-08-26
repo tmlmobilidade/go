@@ -1,18 +1,14 @@
 /* * */
 
+import { type PerformanceFormatters } from '@/hooks/usePerformanceFormatters';
 import { type DataTableV2Column, Label, Section, Tag } from '@tmlmobilidade/ui';
 import { type TFunction } from 'i18next';
 
-import { type LinePatternTableRow } from './types';
+import { type LineOverviewPatternTableRow } from './types';
 
 /* * */
 
-const compactFormatter = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 1, notation: 'compact' });
-const percentageFormatter = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
-
-/* * */
-
-export function createLinePatternColumns(t: TFunction): DataTableV2Column<LinePatternTableRow>[] {
+export function createLineOverviewPatternColumns(t: TFunction, formatters: PerformanceFormatters): DataTableV2Column<LineOverviewPatternTableRow>[] {
 	return [
 		{
 			id: 'pattern',
@@ -31,7 +27,7 @@ export function createLinePatternColumns(t: TFunction): DataTableV2Column<LinePa
 		{
 			align: 'center',
 			id: 'validations',
-			render: pattern => <strong>{pattern.validations === null ? '—' : compactFormatter.format(pattern.validations)}</strong>,
+			render: pattern => <strong>{pattern.validations === null ? '—' : formatters.compact(pattern.validations)}</strong>,
 			sortable: true,
 			sortValue: pattern => pattern.validations,
 			title: t('lineDetail.patternsTable.columns.validations'),
@@ -40,7 +36,7 @@ export function createLinePatternColumns(t: TFunction): DataTableV2Column<LinePa
 		{
 			align: 'center',
 			id: 'service',
-			render: pattern => <strong>{percentageFormatter.format(pattern.service)}%</strong>,
+			render: pattern => <strong>{pattern.service === null ? '—' : formatters.percentage(pattern.service)}</strong>,
 			sortable: true,
 			sortValue: pattern => pattern.service,
 			title: t('lineDetail.patternsTable.columns.service'),
@@ -49,7 +45,7 @@ export function createLinePatternColumns(t: TFunction): DataTableV2Column<LinePa
 		{
 			align: 'center',
 			id: 'delays',
-			render: pattern => <strong>{percentageFormatter.format(pattern.delays)}%</strong>,
+			render: pattern => <strong>{pattern.delays === null ? '—' : formatters.percentage(pattern.delays)}</strong>,
 			sortable: true,
 			sortValue: pattern => pattern.delays,
 			title: t('lineDetail.patternsTable.columns.delays'),
@@ -58,7 +54,7 @@ export function createLinePatternColumns(t: TFunction): DataTableV2Column<LinePa
 		{
 			align: 'center',
 			id: 'advances',
-			render: pattern => <strong>{percentageFormatter.format(pattern.advances)}%</strong>,
+			render: pattern => <strong>{pattern.advances === null ? '—' : formatters.percentage(pattern.advances)}</strong>,
 			sortable: true,
 			sortValue: pattern => pattern.advances,
 			title: t('lineDetail.patternsTable.columns.advances'),

@@ -1,0 +1,35 @@
+.root {
+	height: 100%;
+}
+
+.badge {
+	flex: 0 0 auto;
+	padding: 6px 10px;
+	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight-medium);
+	color: var(--color-system-text-200);
+	background: var(--color-system-background-200);
+	border-radius: 999px;
+}
+
+.controls {
+	display: flex;
+	flex: 0 0 auto;
+	gap: 8px;
+	align-items: center;
+}
+
+.metricSelect {
+	width: 190px;
+}
+
+.loading {
+	min-height: 320px;
+}
+
+@media (width <= 620px) {
+	.controls,
+	.metricSelect {
+		width: 100%;
+	}
+}

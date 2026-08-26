@@ -1,6 +1,6 @@
 /* * */
 
-import { LineDetailOverview } from '@/components/line-detail/LineDetailOverview';
+import { LineOverviewDashboard } from '@/components/line-detail/overview/LineOverviewDashboard';
 import { PerformanceShell } from '@/components/shell/PerformanceShell';
 
 /* * */
@@ -16,7 +16,7 @@ export default async function Page({ params }: PageProps) {
 
 	return (
 		<PerformanceShell>
-			<LineDetailOverview lineId={lineId} />
+			<LineOverviewDashboard lineId={lineId} />
 		</PerformanceShell>
 	);
 }

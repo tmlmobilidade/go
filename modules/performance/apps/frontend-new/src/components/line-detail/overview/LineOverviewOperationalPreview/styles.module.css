@@ -2,6 +2,8 @@
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
+	min-width: 0;
+	width: 100%;
 }
 
 .header {
@@ -34,24 +36,18 @@
 	border-radius: 999px;
 }
 
-.cards {
-	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 12px;
+.loadingCard {
+	min-height: 180px;
 }
 
-@media (width <= 960px) {
-	.cards {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
+.error {
+	margin: 0;
+	font-size: var(--font-size-xs);
+	color: var(--color-status-danger-primary);
 }
 
 @media (width <= 620px) {
 	.header {
 		flex-direction: column;
-	}
-
-	.cards {
-		grid-template-columns: minmax(0, 1fr);
 	}
 }
