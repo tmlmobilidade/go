@@ -12,6 +12,7 @@ export const PlanListItemSchema = PlanSchema.pick({
 	created_at: true,
 	created_by: true,
 	gtfs_feed_info: true,
+	operation_file_id: true,
 	updated_at: true,
 	updated_by: true,
 });

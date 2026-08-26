@@ -1,6 +1,5 @@
 'use client';
 
-import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
 import { usePlansExportPdfsContext } from '@/contexts/PlansExportPdfs.context';
 import { Dates } from '@tmlmobilidade/dates';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
@@ -25,9 +24,8 @@ export function PlanPostersExportModalBody() {
 	// A. Setup variables
 
 	const context = usePlansExportPdfsContext();
-	const plansData = usePlansListData();
 
-	const plansOptions = useMemo(() => plansData.raw
+	const plansOptions = useMemo(() => context.data.plans
 		.filter(plan => !!plan.operation_file_id && plan.agency_id === context.data.agencyId)
 		.map((plan) => {
 			const startDate = Dates.fromOperationalDate(plan.gtfs_feed_info.feed_start_date, 'Europe/Lisbon').toFormat('dd-MM-yyyy');
@@ -37,15 +35,7 @@ export function PlanPostersExportModalBody() {
 				label: `#${plan._id} · ${startDate} - ${endDate}`,
 				value: plan._id,
 			};
-		}), [context.data.agencyId, plansData.raw]);
-
-	const linesOptions = useMemo(() => context.data.lines
-		.filter(line => line.agency_id === context.data.agencyId)
-		.sort((a, b) => a.code.localeCompare(b.code))
-		.map(line => ({
-			label: `${line.code} - ${line.name}`,
-			value: line._id,
-		})), [context.data.agencyId, context.data.lines]);
+		}), [context.data.agencyId, context.data.plans]);
 
 	//
 	// D. Render components
@@ -96,7 +86,7 @@ export function PlanPostersExportModalBody() {
 					{context.data.linesMode === 'include' && (
 						<MultiSelect
 							key={`${context.data.agencyId}-${context.data.linesMode}`}
-							data={linesOptions}
+							data={context.data.lineOptions}
 							description="Apenas estas linhas serão exportadas."
 							onChange={context.actions.setLineIds}
 							placeholder="Selecionar linhas"
@@ -108,7 +98,7 @@ export function PlanPostersExportModalBody() {
 					{context.data.linesMode === 'exclude' && (
 						<MultiSelect
 							key={`${context.data.agencyId}-${context.data.linesMode}`}
-							data={linesOptions}
+							data={context.data.lineOptions}
 							description="Todas as linhas serão exportadas, exceto estas."
 							onChange={context.actions.setLineIds}
 							placeholder="Selecionar linhas"
