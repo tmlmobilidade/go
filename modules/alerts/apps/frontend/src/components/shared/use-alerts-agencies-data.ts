@@ -13,6 +13,7 @@ interface UseAlertsAgenciesDataReturnType {
 	data: AlertsAgencyItem[]
 	error: null | string
 	ids: string[]
+	isLoading: boolean
 	options: SelectDataItem[]
 	timestamp: null | UnixTimestamp
 }
@@ -62,7 +63,8 @@ export function useAlertsAgenciesData(query: AlertsAgencyRequest): UseAlertsAgen
 		data: data?.data,
 		error: error?.error,
 		ids: idsData,
+		isLoading,
 		options: optionsData,
 		timestamp: data?.timestamp ?? null,
-	}), [data?.data, error?.error, isLoading, isValidating, optionsData, data?.timestamp]);
+	}), [data?.data, error?.error, idsData, isLoading, isValidating, optionsData, data?.timestamp]);
 };

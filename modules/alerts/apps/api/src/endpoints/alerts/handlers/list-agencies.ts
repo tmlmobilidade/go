@@ -31,7 +31,7 @@ export async function listAgenciesHandler(request: FastifyRequest<{ Body: Alerts
 	// Build aggregation pipeline
 
 	const matchedAgencyIds = !resourceAgencyIds.includes(AllowAllFlagValue)
-		? { agency_id: { $in: resourceAgencyIds } }
+		? { _id: { $in: resourceAgencyIds } }
 		: {};
 
 	const pipeline: AggregationPipeline<AlertsAgencyItem> = [

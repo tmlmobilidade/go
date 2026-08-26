@@ -2,10 +2,11 @@
 
 import { type AlertEffect, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { AlertEffectIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useAgenciesData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { AlertEffectIcons, Grid, LargeButton, LoadingSection, NoDataLabel, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useAlertsAgenciesData } from '../../../shared/use-alerts-agencies-data';
 import { useAlertsCreateFormContext } from '../../AlertsCreateForm.context';
 import { useAlertsCreateFormStepsContext } from '../../AlertsCreateFormSteps.context';
 
@@ -29,7 +30,7 @@ export function AlertCreateStepEffect() {
 	//
 	// B. Fetch data
 
-	const { data: agenciesData, isLoading: agenciesLoading } = useAgenciesData({
+	const { data: agenciesData, isLoading: agenciesLoading } = useAlertsAgenciesData({
 		permissions: {
 			actions: [PermissionCatalog.all.alerts.actions.create],
 			scope: PermissionCatalog.all.alerts.scope,
