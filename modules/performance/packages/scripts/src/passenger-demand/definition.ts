@@ -1,6 +1,10 @@
 /* * */
 
-export const PASSENGER_DEMAND_ACCEPTED_VALIDATION_STATUSES = ['0', '4', '5', '6'] as const;
+import { ValidApexValidationStatusValues } from '@tmlmobilidade/go-types-apex';
+
+/* * */
+
+export const PASSENGER_DEMAND_ACCEPTED_VALIDATION_STATUSES = ValidApexValidationStatusValues;
 export const PASSENGER_DEMAND_ACCEPTED_VALIDATION_STATUSES_SQL = PASSENGER_DEMAND_ACCEPTED_VALIDATION_STATUSES
 	.map(status => `'${status}'`)
 	.join(', ');

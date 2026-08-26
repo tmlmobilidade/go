@@ -5,13 +5,7 @@ import { validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {
-	buildCurrentPassengerDemandFiveMinuteRefreshRange,
-	buildPassengerDemandFiveMinuteBackfillRange,
-	buildRecentPassengerDemandFiveMinuteRefreshRange,
-	listOperationalDates,
-	PASSENGER_DEMAND_FIVE_MINUTE_BUCKET_MS,
-} from '../refresh-policy.js';
+import { buildCurrentPassengerDemandFiveMinuteRefreshRange, buildPassengerDemandFiveMinuteBackfillRange, buildRecentPassengerDemandFiveMinuteRefreshRange, listOperationalDates, PASSENGER_DEMAND_FIVE_MINUTE_BUCKET_MS } from '../refresh-policy.js';
 
 /* * */
 

@@ -1,3 +1,4 @@
+export * from './baseline-comparison.js';
 export * from './demand-by-line.js';
 export * from './demand-by-pattern.js';
 export * from './demand-by-stop.js';
