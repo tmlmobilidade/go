@@ -1,11 +1,10 @@
 /* * */
 
-import { type AgenciesPlatformRequest } from '@tmlmobilidade/go-types-platform';
+import { type Agency } from '@tmlmobilidade/go-types-core';
 import { useMemo } from 'react';
 
 import styles from './styles.module.css';
 
-import { useAgenciesData } from '../../../data';
 import { Label } from '../../display/Label';
 import { IdTag } from '../IdTag';
 import { Tag } from '../Tag';
@@ -15,7 +14,7 @@ import { Tag } from '../Tag';
 interface AgencyTagProps {
 	agencyId: string
 	copyOnClick?: boolean
-	request: AgenciesPlatformRequest
+	data: Partial<Pick<Agency, '_id' | 'code' | 'name' | 'short_name'>>[]
 	showCode?: boolean
 	showId?: boolean
 	showName?: boolean
@@ -24,23 +23,18 @@ interface AgencyTagProps {
 
 /* * */
 
-export function AgencyTag({ agencyId, copyOnClick = true, request, showCode = true, showId = true, showName = false, showShortName = false }: AgencyTagProps) {
+export function AgencyTag({ agencyId, copyOnClick = true, data, showCode = true, showId = true, showName = false, showShortName = false }: AgencyTagProps) {
 	//
 
 	//
-	// A. Fetch data
-
-	const { data } = useAgenciesData(request);
-
-	//
-	// B. Transform data
+	// A. Transform data
 
 	const matchingAgency = useMemo(() => {
 		return data.find(agency => agency._id === agencyId);
 	}, [data, agencyId]);
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<div className={styles.wrapper}>
