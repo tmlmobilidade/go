@@ -3,10 +3,11 @@
 import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
 import { PLAN_POSTERS_EXPORT_MODAL_ID } from '@/components/plans/Posters/PlanPostersModal/constants';
 import { usePosterLinesData } from '@/components/plans/Posters/use-poster-lines-data';
+import { usePlansAgencies } from '@/components/plans/shared/use-plans-agencies';
 import { type CreateFileExportDto, type PlanPostersExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { type Line, type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { closeModal, type SelectDataItem, useAgenciesData, useExportsContext, useToast } from '@tmlmobilidade/ui';
+import { closeModal, type SelectDataItem, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
@@ -70,7 +71,7 @@ export const PlansExportPdfsModalContextProvider = ({ children }: PropsWithChild
 	const [planId, setPlanId] = useState<null | string>(null);
 	const [loading, setLoading] = useState(false);
 
-	const { options: agencyOptions } = useAgenciesData({
+	const { options: agencyOptions } = usePlansAgencies({
 		permissions: {
 			actions: [PermissionCatalog.all.plans.actions.read],
 			scope: PermissionCatalog.all.plans.scope,

@@ -3,6 +3,7 @@
 import { PlansListFiltersBar } from '@/components/plans/list/filters/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/shared/PlansListHeader';
 import { PlansListCellFeedDates } from '@/components/plans/list/table/PlansListCellFeedDates';
+import { usePlansAgencies } from '@/components/plans/shared/use-plans-agencies';
 import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
@@ -26,6 +27,12 @@ export function PlansList() {
 	const params = useParams<{ id?: string }>();
 
 	const plansData = usePlansListData();
+	const { data: agenciesData } = usePlansAgencies({
+		permissions: {
+			actions: [PermissionCatalog.all.plans.actions.read],
+			scope: PermissionCatalog.all.plans.scope,
+		},
+	});
 
 	const columns: DataTableColumn<PlanListItem>[] = [
 		{
@@ -40,12 +47,7 @@ export function PlansList() {
 				<AgencyTag
 					agencyId={item.agency_id}
 					copyOnClick={false}
-					request={{
-						permissions: {
-							actions: [PermissionCatalog.all.plans.actions.read],
-							scope: PermissionCatalog.all.plans.scope,
-						},
-					}}
+					data={agenciesData}
 					showShortName
 				/>
 			),

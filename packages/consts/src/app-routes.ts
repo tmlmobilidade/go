@@ -499,6 +499,7 @@ export const API_ROUTES = Object.freeze({
 		PLANS_POSTER_LINES: `${getModuleConfig('plans', 'api_url')}/plans/poster-lines`,
 
 		// VALIDATIONS
+		VALIDATIONS_AGENCIES: `${getModuleConfig('plans', 'api_url')}/validations/agencies`,
 		VALIDATIONS_CREATE: `${getModuleConfig('plans', 'api_url')}/validations/create`,
 		VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}`,
 		VALIDATIONS_DETAIL_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/file`,

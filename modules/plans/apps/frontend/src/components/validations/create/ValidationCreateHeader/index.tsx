@@ -4,6 +4,7 @@ import { closeCreateValidationModal } from '@/components/validations/create/Vali
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, Button, CloseButton, Label, Spacer, Toolbar } from '@tmlmobilidade/ui';
 
+import { useValidationsAgencies } from '../../shared/use-validations-agencies';
 import { useValidationCreateContext } from '../ValidationCreateForm.context';
 
 /* * */
@@ -15,6 +16,12 @@ export function ValidationCreateHeader() {
 	// A. Setup variables
 
 	const validationCreateContext = useValidationCreateContext();
+	const { data: agenciesData } = useValidationsAgencies({
+		permissions: {
+			actions: [PermissionCatalog.all.gtfs_validations.actions.create],
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+		},
+	});
 
 	//
 	// B. Render components
@@ -25,12 +32,7 @@ export function ValidationCreateHeader() {
 			<Label size="lg" caps singleLine>Nova Validação GTFS</Label>
 			<AgencyTag
 				agencyId={validationCreateContext.data.selectedAgencyId}
-				request={{
-					permissions: {
-						actions: [PermissionCatalog.all.gtfs_validations.actions.create],
-						scope: PermissionCatalog.all.gtfs_validations.scope,
-					},
-				}}
+				data={agenciesData}
 			/>
 			<Spacer />
 			<Button
