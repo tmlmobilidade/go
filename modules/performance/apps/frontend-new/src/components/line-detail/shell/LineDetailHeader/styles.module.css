@@ -1,7 +1,4 @@
 .breadcrumb {
-	display: flex;
-	gap: 8px;
-	align-items: center;
 	font-size: var(--font-size-xs);
 	color: var(--color-system-text-200);
 }

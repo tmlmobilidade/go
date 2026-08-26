@@ -1,0 +1,28 @@
+.root {
+	container-type: inline-size;
+	min-width: 0;
+}
+
+.intro h2 {
+	margin: 0;
+	font-size: 22px;
+	color: var(--color-system-text-100);
+}
+
+.intro p {
+	margin: 4px 0 0;
+	font-size: var(--font-size-sm);
+	color: var(--color-system-text-200);
+}
+
+.loadingKpis {
+	height: 135px;
+}
+
+.loadingContent {
+	height: 420px;
+}
+
+.loadingRecords {
+	height: 290px;
+}

@@ -1,0 +1,22 @@
+.root {
+	min-width: 0;
+}
+
+.root h1 {
+	margin: 0;
+	font-size: 24px;
+	color: var(--color-system-text-100);
+}
+
+.root p {
+	margin: 0;
+	font-size: var(--font-size-sm);
+	color: var(--color-system-text-200);
+}
+
+.root a {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-primary);
+	text-decoration: none;
+}

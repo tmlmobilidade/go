@@ -1,8 +1,9 @@
 /* * */
 
+import { usePerformanceFilterHref } from '@/hooks/usePerformanceFilterHref';
 import { IconBuilding, IconRoute } from '@tabler/icons-react';
 import { type PerformanceNetworkLineDetail } from '@tmlmobilidade/go-types-performance';
-import { Tag } from '@tmlmobilidade/ui';
+import { Breadcrumbs, Tag } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
@@ -18,15 +19,16 @@ interface LineDetailHeaderProps {
 
 export function LineDetailHeader({ line }: LineDetailHeaderProps) {
 	const { t } = useTranslation('default');
+	const getFilterHref = usePerformanceFilterHref();
 
 	return (
 		<>
-			<nav aria-label={t('lineDetail.breadcrumb.ariaLabel')} className={styles.breadcrumb}>
-				<Link href="/network">{t('navigation.network.label')}</Link>
-				<span>/</span>
-				<Link href="/network/lines">{t('navigation.network.lines.title')}</Link>
-				<span>/</span>
-				<strong>{line.code}</strong>
+			<nav aria-label={t('lineDetail.breadcrumb.ariaLabel')}>
+				<Breadcrumbs className={styles.breadcrumb} separator="/" separatorMargin="xs">
+					<Link href={getFilterHref('/network')}>{t('navigation.network.label')}</Link>
+					<Link href={getFilterHref('/network/lines')}>{t('navigation.network.lines.title')}</Link>
+					<strong>{line.code}</strong>
+				</Breadcrumbs>
 			</nav>
 
 			<header className={styles.header}>
@@ -34,7 +36,6 @@ export function LineDetailHeader({ line }: LineDetailHeaderProps) {
 					<Tag label={line.code} variant="secondary" />
 					<div>
 						<h1>{line.name}</h1>
-						<p>{line.agency_name}</p>
 					</div>
 				</div>
 
