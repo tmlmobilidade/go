@@ -1,17 +1,11 @@
 /* * */
 
-import {
-	createPerformanceNetworkLineId,
-	parsePerformanceNetworkLineId,
-} from '@tmlmobilidade/go-types-performance';
+import { createPerformanceNetworkLineId, parsePerformanceNetworkLineId } from '@tmlmobilidade/go-types-performance';
 import { validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {
-	buildPerformanceNetworkLinesQuery,
-	buildPerformanceNetworkPatternsQuery,
-} from '../lines.js';
+import { buildPerformanceNetworkLinesQuery, buildPerformanceNetworkPatternsQuery } from '../lines.js';
 
 /* * */
 
@@ -64,4 +58,3 @@ test('builds a representative ride and hashed-trip pattern query', () => {
 	assert.match(result.query, /argMax\(hashed_trip\.stop_name, hashed_trip\.stop_sequence\)/);
 	assert.match(result.query, /ride\.metadata\.2 = hashed_trip\._id/);
 });
-
