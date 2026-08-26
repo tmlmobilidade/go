@@ -1,14 +1,9 @@
 /* * */
 
-import {
-	buildPassengerDemandSnapshot,
-	getComparableOperationalDates,
-} from '@/tasks/realtime/passenger-demand.js';
+import { buildPassengerDemandSnapshot } from '@/tasks/realtime/passenger-demand.js';
 import { Dates } from '@tmlmobilidade/dates';
-import {
-	PassengerDemandByAgencyByMinuteSchema,
-	PassengerDemandRealtimeSchema,
-} from '@tmlmobilidade/go-types-performance';
+import { getComparableOperationalDates } from '@tmlmobilidade/go-performance-pckg-scripts';
+import { PassengerDemandByAgencyByMinuteSchema, PassengerDemandRealtimeSchema } from '@tmlmobilidade/go-types-performance';
 import { validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 

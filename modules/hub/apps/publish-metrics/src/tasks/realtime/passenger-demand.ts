@@ -3,15 +3,14 @@
 import { Dates } from '@tmlmobilidade/dates';
 import { cacheDb, hubRealtimePassengerDemandMetricsCacheKey, legacyHubPassengerDemandMetricsCacheKey } from '@tmlmobilidade/go-interfaces-cachedb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { COMPARABLE_WEEKDAY_SAMPLE_SIZE, getComparableOperationalDates } from '@tmlmobilidade/go-performance-pckg-scripts';
 import { type PassengerDemandByAgencyByMinute, type PassengerDemandRealtime } from '@tmlmobilidade/go-types-performance';
 import { type PassengerDemandMetricsSnapshot, PassengerDemandMetricsSnapshotSchema, type PassengerDemandSeriesPoint, type PassengerDemandSnapshotAgency } from '@tmlmobilidade/go-types-public-info';
-import { type OperationalDateInt, validateOperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
 /* * */
 
-const BASELINE_SAMPLE_SIZE = 8;
 const DEFINITION_VERSION = 'passenger-demand-v2' as const;
 const PUBLISHED_INTERVAL_MINUTES = 15;
 const TIMEZONE = 'Europe/Lisbon';
@@ -35,28 +34,7 @@ function getOperationalMinuteIndex(intervalStart: number) {
 	return (operationalHour - 4) * 60 + minute;
 }
 
-export function getComparableOperationalDates(
-	currentOperationalDate: OperationalDateInt,
-	sampleSize = BASELINE_SAMPLE_SIZE,
-): OperationalDateInt[] {
-	const value = String(currentOperationalDate);
-	const currentDate = new Date(Date.UTC(
-		Number(value.slice(0, 4)),
-		Number(value.slice(4, 6)) - 1,
-		Number(value.slice(6, 8)),
-	));
-
-	return Array.from({ length: sampleSize }, (_, index) => {
-		const comparableDate = new Date(currentDate);
-		comparableDate.setUTCDate(currentDate.getUTCDate() - (index + 1) * 7);
-
-		return validateOperationalDateInt(
-			comparableDate.getUTCFullYear() * 10_000
-			+ (comparableDate.getUTCMonth() + 1) * 100
-			+ comparableDate.getUTCDate(),
-		);
-	});
-}
+/* * */
 
 function toSeriesPoints(
 	rows: PassengerDemandByAgencyByMinute[],
@@ -139,7 +117,7 @@ export function buildPassengerDemandSnapshot(
 		agencies,
 		definition_version: DEFINITION_VERSION,
 		meta: {
-			baseline_sample_size_target: BASELINE_SAMPLE_SIZE,
+			baseline_sample_size_target: COMPARABLE_WEEKDAY_SAMPLE_SIZE,
 			current_cutoff: reference.current_cutoff,
 			current_operational_date: reference.current_operational_date,
 			generated_at: generatedAt,

@@ -12,8 +12,8 @@ performance.passenger_demand_by_dimensions_by_day
   -> future Hub public API endpoints
 ```
 
-The Hub publisher calls the same `queryDemandByAgency`, `queryDemandByLine`,
-and `queryDemandByPattern` functions used by the Performance API. It does not
+The Hub publisher calls the same `queryDailyPassengerDemandOverTimeByAgency`, `queryDailyPassengerDemandOverTimeByLine`,
+and `queryDailyPassengerDemandOverTimeByPattern` functions used by the Performance API. It does not
 duplicate their ClickHouse calculations.
 
 ## Cadence
