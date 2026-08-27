@@ -1,11 +1,11 @@
 'use client';
 
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { type HolidayNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Holiday } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -47,10 +47,7 @@ export const HolidaysListContextProvider = ({ children }: PropsWithChildren) => 
 	//
 	// A. Fetch data
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.holidays.actions.read],
-		scope: PermissionCatalog.all.holidays.scope,
-	});
+	const { ids: allAgencyIds, options: allAgencyOptions } = useAnnotationsAgenciesData();
 
 	const { data: allHolidaysData, error: allHolidaysError, isLoading: allHolidaysLoading } = useSWR<Holiday[], Error>(API_ROUTES.dates.HOLIDAYS_LIST);
 
@@ -58,7 +55,7 @@ export const HolidaysListContextProvider = ({ children }: PropsWithChildren) => 
 	// B. Setup filters
 
 	const filterSearch = useFilterStateText('search');
-	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const filterAgency = useFilterStateList('agency', allAgencyIds, allAgencyOptions);
 
 	// Get all unique dates from holidays for the dates filter
 	const allDatesOptions = useMemo(() => {

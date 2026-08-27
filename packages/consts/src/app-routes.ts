@@ -300,7 +300,8 @@ export const API_ROUTES = Object.freeze({
 		// ANNOTATIONS
 		ANNOTATIONS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}`,
 		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}/lock`,
-		ANNOTATIONS_LIST: `${getModuleConfig('dates', 'api_url')}/annotations`,
+		ANNOTATIONS_LIST: `${getModuleConfig('dates', 'api_url')}/annotations/list`,
+		ANNOTATIONS_LIST_AGENCIES: `${getModuleConfig('dates', 'api_url')}/annotations/list-agencies`,
 
 		// EVENTS
 		EVENTS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/events/${encodeURIComponent(id)}`,

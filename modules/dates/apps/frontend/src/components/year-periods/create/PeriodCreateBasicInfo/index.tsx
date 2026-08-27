@@ -1,10 +1,9 @@
 'use client';
 
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { usePeriodCreateContext } from '@/components/year-periods/create/PeriodsCreate.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { YearPeriodSchema } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ColorInput, MultiSelect, Section, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { ColorInput, MultiSelect, Section, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -16,10 +15,7 @@ export function PeriodCreateBasicInfo() {
 
 	const periodCreateContext = usePeriodCreateContext();
 
-	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.year_periods.actions.create],
-		scope: PermissionCatalog.all.year_periods.scope,
-	});
+	const { options: allAgencyOptions } = useAnnotationsAgenciesData();
 
 	//
 	// B. Render Components

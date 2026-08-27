@@ -1,12 +1,11 @@
 'use client';
 
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { DatesSelector } from '@/components/holidays/detail/HolidaysDatesSelector';
 import { useHolidaysDetailContext } from '@/components/holidays/detail/HolidaysDetail.context';
 import { HolidaysDetailHeader } from '@/components/holidays/detail/HolidaysDetailHeader';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { HolidaySchema } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,10 +19,7 @@ export function HolidaysDetail() {
 
 	// Bypass permissions to show all agency labels in read-only mode
 	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: holidaysDetailContext.flags.isReadOnly ? undefined : [PermissionCatalog.all.holidays.actions.update],
-		scope: holidaysDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.holidays.scope,
-	});
+	const { options: agencyOptions } = useAnnotationsAgenciesData();
 
 	//
 	// B. Render components
@@ -37,7 +33,7 @@ export function HolidaysDetail() {
 	}
 
 	return (
-		<Pane header={[<HolidaysDetailHeader />]}>
+		<Pane header={[<HolidaysDetailHeader key="header" />]}>
 			<Section>
 				<Grid columns="a" gap="lg">
 
