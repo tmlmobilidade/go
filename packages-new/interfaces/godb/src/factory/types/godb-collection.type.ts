@@ -5,6 +5,7 @@ import type { AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import type { UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 
 import { InsertableDocument } from './insertable-document.type.js';
+import { UpdatableDocument } from './updatable-document.type.js';
 
 /**
  * The GoDB collection interface type.
@@ -51,7 +52,7 @@ export interface GoDbCollection<T extends Document> {
 
 	// toggleLockById(id: string, forceValue?: boolean): Promise<void>
 
-	// updateById<TReturnDocument extends boolean = true>(id: string, updateFields: T, options?: UpdateOptions & { forceIfLocked?: boolean, returnResult?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T> : UpdateResult<T>>
+	updateById(_id: string, updateFields: UpdatableDocument<T>, options?: UpdateOptions): Promise<T>
 
 	// updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: T & { updated_at?: UnixTimestamp, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>>
 

@@ -12,6 +12,7 @@ import { findOne } from './methods/find-one.js';
 import { getCollection } from './methods/get-collection.js';
 import { insertOneUnsafe } from './methods/insert-one-unsafe.js';
 import { insertOne } from './methods/insert-one.js';
+import { updateById } from './methods/update-by-id.js';
 import { type GoDbCollectionContext } from './types/godb-collection-context.type.js';
 import { type GoDbCollection } from './types/godb-collection.type.js';
 
@@ -82,7 +83,7 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 
 		// toggleLockById: (id, forceValue) => toggleLockById(context, id, forceValue),
 
-		// updateById: (id, updateFields, options) => updateById(context, id, updateFields, options),
+		updateById: (_id, updateFields, options) => updateById<T>(context, _id, updateFields, options),
 
 		// updateMany: (filter, updateFields, options) => updateMany(context, filter, updateFields, options),
 
