@@ -1,9 +1,8 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, UseFilterStateListReturnType, useFilterStateText, UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
-import { unauthenticatedSwrFetcher } from '@tmlmobilidade/utils';
+import { type Vehicle } from '@tmlmobilidade/go-types-operation';
+import { useFilterStateList, UseFilterStateListReturnType, useFilterStateText, UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -50,18 +49,18 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 	//
 	// A. Setup variables
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.vehicles.actions.read],
-		scope: PermissionCatalog.all.alerts.scope,
-	});
+	// const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useAgenciesContext(API_ROUTES.core.AGENCIES_LIST, {
+	// 	actions: [PermissionCatalog.all.vehicles.actions.read],
+	// 	scope: PermissionCatalog.all.alerts.scope,
+	// });
 
 	const filterSearch = useFilterStateText('search');
-	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const filterAgency = useFilterStateList('agency', [], []);
 
 	//
 	// B. Fetch data
 
-	const { data: allVehicleData, error: allVehicleError, isLoading: allVehicleLoading } = useSWR<Vehicle[], Error>(API_ROUTES.fleet.VEHICLES_LIST, unauthenticatedSwrFetcher, { refreshInterval: 5000 });
+	const { data: allVehicleData, error: allVehicleError, isLoading: allVehicleLoading } = useSWR<Vehicle[], Error>(API_ROUTES.fleet.VEHICLES_LIST, { refreshInterval: 5000 });
 
 	//
 	// C. Transform data
@@ -77,7 +76,7 @@ export const VehiclesListContextProvider = ({ children }: PropsWithChildren) => 
 				dates_normalized: [],
 			};
 		});
-	}, [allVehicleData, filteredAgencyIds]);
+	}, [allVehicleData]);
 
 	const searchResultsData = useSearch<VehicleNormalized>({
 		accessors: ['_id', 'agency_id', 'license_plate'],
