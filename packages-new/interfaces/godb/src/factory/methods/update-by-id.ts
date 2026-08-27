@@ -49,7 +49,7 @@ export async function updateById<T extends Document>(context: GoDbCollectionCont
 	// Attempt to update the document in the collection
 	// and check if the update operation was acknowledged
 
-	const updateResult = await context.collection.updateOne({ _id: { $eq: _id as Filter<T>['_id'] } }, validatedDocument, { session: options?.session });
+	const updateResult = await context.collection.updateOne({ _id: { $eq: _id as Filter<T>['_id'] } }, { $set: validatedDocument }, { session: options?.session });
 
 	if (!updateResult.acknowledged) {
 		throw new Error(`Failed to update document into ${context.collectionName} collection. The update operation was not acknowledged.`);
