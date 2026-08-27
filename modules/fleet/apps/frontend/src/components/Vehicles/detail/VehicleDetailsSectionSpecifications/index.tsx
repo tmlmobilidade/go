@@ -2,7 +2,7 @@
 
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { Translations } from '@/lib/translations';
-import { VehicleEmissionSchema, VehiclePropulsionSchema, VehicleTypologySchema } from '@tmlmobilidade/types';
+import { VehicleEmissionSchema, VehiclePropulsionSchema, VehicleTypologySchema } from '@tmlmobilidade/go-types-operation';
 import { Collapsible, ErrorDisplay, Grid, LoadingOverlay, NumberInput, Section, Select, TextInput } from '@tmlmobilidade/ui';
 
 /* * */

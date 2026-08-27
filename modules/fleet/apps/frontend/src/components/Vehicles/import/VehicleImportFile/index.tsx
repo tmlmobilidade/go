@@ -1,9 +1,6 @@
 'use client';
 
 import { ImportPreview } from '@/components/common/ImportPreview';
-
-/* * */
-
 import { useVehicleImportContext } from '@/contexts/VehicleImport.context';
 import { AlertMessage, Button, closeModal, Divider, FileUpload, Grid, Label, Section } from '@tmlmobilidade/ui';
 

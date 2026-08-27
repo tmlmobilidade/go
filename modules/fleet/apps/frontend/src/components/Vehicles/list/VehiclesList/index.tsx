@@ -6,7 +6,7 @@ import { useVehiclesListContext } from '@/contexts/VehiclesList.context';
 import { VehicleNormalized } from '@/types/normalized';
 import { FormatlLicensePlate } from '@/utils/formatLicencePlate';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { OperationalDateInt } from '@tmlmobilidade/types';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, OperationalDateDisplay, Pane, Tag, useAgenciesContext } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
