@@ -4,12 +4,12 @@ import { AlertCauseSchema } from '@/alerts/cause.js';
 import { AlertEffectSchema } from '@/alerts/effect.js';
 import { AlertReferenceTypeSchema } from '@/alerts/reference-type.js';
 import { AlertReferenceSchema } from '@/alerts/reference.js';
-import { DocumentSchema, PublishStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, PublishStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const AlertSchema = DocumentSchema.extend({
+export const AlertSchema = BaseDocumentSchema.extend({
 	active_period_end_date: UnixTimestampSchema.nullable().default(null),
 	active_period_start_date: UnixTimestampSchema,
 	agency_id: z.string(),

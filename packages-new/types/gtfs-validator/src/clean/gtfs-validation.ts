@@ -2,12 +2,12 @@
 
 import { GtfsValidationSummarySchema } from '@/clean/summary.js';
 import { GtfsAgencySchema, GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-gtfs';
-import { DocumentSchema, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const GtfsValidationSchema = DocumentSchema.extend({
+export const GtfsValidationSchema = BaseDocumentSchema.extend({
 	agency_id: z.string(),
 	file_id: z.string(),
 	gtfs_agency: GtfsAgencySchema,

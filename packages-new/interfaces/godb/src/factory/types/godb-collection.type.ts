@@ -15,7 +15,7 @@ export interface GoDbCollection<T extends Document> {
 
 	// count(filter?: Filter<T>): Promise<number>
 
-	deleteById(id: T['_id'], options?: DeleteOptions): Promise<DeleteResult>
+	deleteById(_id: string, options?: DeleteOptions): Promise<DeleteResult>
 
 	// deleteMany(filter: Filter<T>): Promise<DeleteResult>
 
@@ -25,9 +25,9 @@ export interface GoDbCollection<T extends Document> {
 
 	// exists<K extends keyof T>(key: K, value: T[K]): Promise<boolean>
 
-	// existsById(id: T['_id']): Promise<boolean>
+	// existsById(id: string): Promise<boolean>
 
-	findById(id: T['_id'], options?: FindOptions): Promise<null | T>
+	findById(_id: string, options?: FindOptions): Promise<null | T>
 
 	findMany(filter?: Filter<T>, options?: FindOptions): Promise<WithId<T>[]>
 
@@ -37,19 +37,19 @@ export interface GoDbCollection<T extends Document> {
 
 	// getCollectionName(): string
 
-	// insertMany(docs: (T & { _id?: T['_id'], created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], options?: { options?: BulkWriteOptions, unsafe?: boolean }): Promise<InsertManyResult<T>>
+	// insertMany(docs: (T & { _id?: string, created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], options?: { options?: BulkWriteOptions, unsafe?: boolean }): Promise<InsertManyResult<T>>
 
-	insertOne(doc: Omit<T, '_id'>, options?: InsertOneOptions): Promise<T>
+	insertOne(doc: Omit<T, '_id' | 'created_at' | 'updated_at'>, options?: InsertOneOptions): Promise<T>
 
 	insertOneUnsafe(doc: T, options?: InsertOneOptions): Promise<T>
 
 	// isLocked(filter: Filter<T>): Promise<boolean>
 
-	// isLockedById(id: T['_id']): Promise<boolean>
+	// isLockedById(id: string): Promise<boolean>
 
-	// toggleLockById(id: T['_id'], forceValue?: boolean): Promise<void>
+	// toggleLockById(id: string, forceValue?: boolean): Promise<void>
 
-	// updateById<TReturnDocument extends boolean = true>(id: T['_id'], updateFields: T, options?: UpdateOptions & { forceIfLocked?: boolean, returnResult?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T> : UpdateResult<T>>
+	// updateById<TReturnDocument extends boolean = true>(id: string, updateFields: T, options?: UpdateOptions & { forceIfLocked?: boolean, returnResult?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T> : UpdateResult<T>>
 
 	// updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: T & { updated_at?: UnixTimestamp, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>>
 

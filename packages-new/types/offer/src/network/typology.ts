@@ -1,11 +1,11 @@
 /* * */
 
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const TypologySchema = DocumentSchema.extend({
+export const TypologySchema = BaseDocumentSchema.extend({
 	agency_ids: z.array(z.string()).min(1, 'At least one agency ID is required'),
 	code: z.string().trim().min(1).max(10),
 	color: z.string().trim().min(1).max(7), // Hex color code

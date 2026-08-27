@@ -1,6 +1,6 @@
 /* * */
 
-import { DocumentSchema, OperationalDateIntSchema, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateIntSchema, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { AgencyAlertsMapSchema } from './alerts-map.js';
@@ -10,7 +10,7 @@ import { AgencyOpenDataSchema } from './open-data.js';
 
 /* * */
 
-export const AgencySchema = DocumentSchema.extend({
+export const AgencySchema = BaseDocumentSchema.extend({
 	alerts_map: AgencyAlertsMapSchema,
 	apex: AgencyApexSchema,
 	code: z.string().max(20),

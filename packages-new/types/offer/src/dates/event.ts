@@ -1,12 +1,12 @@
 /* * */
 
 import { EventRuleSchema } from '@/network/rules.js';
-import { DocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const EventSchema = DocumentSchema.extend({
+export const EventSchema = BaseDocumentSchema.extend({
 	agency_ids: z.array(z.string()).min(1),
 	code: z.string()
 		.min(1)

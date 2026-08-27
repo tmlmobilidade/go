@@ -1,6 +1,6 @@
 /* * */
 
-import { DocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { VehicleEmissionSchema } from './emission.js';
@@ -9,7 +9,7 @@ import { VehicleTypologySchema } from './typology.js';
 
 /* * */
 
-export const vehicleSchema = DocumentSchema.extend({
+export const vehicleSchema = BaseDocumentSchema.extend({
 	// Vehicle identification
 	agency_id: z.string(),
 	license_plate: z.string(),

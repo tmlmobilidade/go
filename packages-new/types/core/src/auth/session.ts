@@ -1,11 +1,11 @@
 /* * */
 
-import { DocumentSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const SessionSchema = DocumentSchema
+export const SessionSchema = BaseDocumentSchema
 	.pick({ _id: true, created_at: true, updated_at: true })
 	.extend({
 		expires_at: UnixTimestampSchema,

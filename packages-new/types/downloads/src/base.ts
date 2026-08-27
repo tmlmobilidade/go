@@ -1,6 +1,6 @@
 /* * */
 
-import { DocumentSchema, ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -11,7 +11,7 @@ export type FileExportType = z.infer<typeof FileExportTypeSchema>;
 
 /* * */
 
-export const FileExportBaseSchema = DocumentSchema
+export const FileExportBaseSchema = BaseDocumentSchema
 	.omit({ is_locked: true })
 	.extend({
 		file_id: z.string().nullish(),

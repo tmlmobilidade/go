@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const DocumentSchema = z.object({
+export const BaseDocumentSchema = z.object({
 	_id: z.string(),
 	created_at: UnixTimestampSchema,
 	created_by: z.string().nullable().default(null),
@@ -14,4 +14,4 @@ export const DocumentSchema = z.object({
 	updated_by: z.string().optional(),
 });
 
-export type GoMongoDocument = z.infer<typeof DocumentSchema>;
+export type BaseDocument = z.infer<typeof BaseDocumentSchema>;

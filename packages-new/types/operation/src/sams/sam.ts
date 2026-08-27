@@ -2,12 +2,12 @@
 
 import { SamAnalysisSchema } from '@/sams/sam-analysis.js';
 import { SamTimelineSummarySchema } from '@/sams/sam-timeline-summary.js';
-import { DocumentSchema, SystemStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, SystemStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const SamSchema = DocumentSchema
+export const SamSchema = BaseDocumentSchema
 	.omit({ created_by: true, is_locked: true, updated_by: true })
 	.extend({
 		_id: z.number(),

@@ -1,11 +1,11 @@
 /* * */
 
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const AttachmentSchema = DocumentSchema
+export const AttachmentSchema = BaseDocumentSchema
 	.omit({ is_locked: true })
 	.extend({
 		created_by: z.string(),

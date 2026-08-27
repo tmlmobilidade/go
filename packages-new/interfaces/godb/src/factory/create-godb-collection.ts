@@ -1,6 +1,7 @@
 /* * */
 
 import { type Db, type SimplifiedMongoIndex } from '@tmlmobilidade/go-clients-mongo';
+import { GoMongoDocument } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { aggregate, aggregateCursor } from './methods/aggregate.js';
@@ -29,7 +30,7 @@ interface CreateGoDbCollectionParams<T extends Document> {
  * @param params The parameters for the GoDB collection interface.
  * @returns The GoDB collection interface implementation.
  */
-export function createGoDbCollection<T extends Document>({ collectionName, database, indexDescription, schema }: CreateGoDbCollectionParams<T>): GoDbCollection<T> {
+export function createGoDbCollection<T extends GoMongoDocument>({ collectionName, database, indexDescription, schema }: CreateGoDbCollectionParams<T>): GoDbCollection<T> {
 	//
 
 	const context: GoDbCollectionContext<T> = {

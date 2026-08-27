@@ -1,12 +1,12 @@
 /* * */
 
 import { HomeQuickLinkSchema } from '@/home/quick-link.js';
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const OrganizationSchema = DocumentSchema.extend({
+export const OrganizationSchema = BaseDocumentSchema.extend({
 	home_links: z.array(HomeQuickLinkSchema).default([]),
 	home_wikis: z.array(z.string()).default([]),
 	logo_dark: z.string().nullable().default(null),

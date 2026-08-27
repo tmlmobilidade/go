@@ -1,7 +1,7 @@
 /* * */
 
 import { PermissionSchema } from '@tmlmobilidade/go-types-permissions';
-import { DocumentSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -18,7 +18,7 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 
 /* * */
 
-export const UserSchema_UNSAFE = DocumentSchema.extend({
+export const UserSchema_UNSAFE = BaseDocumentSchema.extend({
 	email: z.string().email(),
 	email_verified: UnixTimestampSchema.nullable().default(null),
 	first_name: z.string().min(2),

@@ -3,12 +3,12 @@
 import { RideAcceptanceStatusSchema } from '@/ride-acceptances/acceptance-status.js';
 import { RideJustificationSchema } from '@/ride-acceptances/ride-justification.js';
 import { RideOverridesSchema } from '@/ride-acceptances/ride-overrides.js';
-import { CommentSchema, DocumentSchema, GradeStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { CommentSchema, BaseDocumentSchema, GradeStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const RideAcceptanceSchema = DocumentSchema.extend({
+export const RideAcceptanceSchema = BaseDocumentSchema.extend({
 	acceptance_status: RideAcceptanceStatusSchema,
 	analysis_summary: z.record(z.string(), z.object({
 		grade: GradeStatusSchema,

@@ -1,13 +1,13 @@
 /* * */
 
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export type Notification = z.infer<typeof NotificationSchema>;
 
-export const NotificationSchema = DocumentSchema
+export const NotificationSchema = BaseDocumentSchema
 	.omit({ is_locked: true })
 	.extend({
 		is_read: z.boolean(),

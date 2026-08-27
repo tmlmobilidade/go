@@ -1,6 +1,6 @@
 /* * */
 
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { FareSimplifiedSchema } from './fare.js';
@@ -24,7 +24,7 @@ export const interchangeModeOptions = [
 
 /* * */
 
-export const LineSchema = DocumentSchema.extend({
+export const LineSchema = BaseDocumentSchema.extend({
 	agency_id: z.string(),
 	code: z.string().trim().min(1).max(10),
 	interchange: z.nativeEnum(INTERCHANGE_MODE).default(INTERCHANGE_MODE.NONE),

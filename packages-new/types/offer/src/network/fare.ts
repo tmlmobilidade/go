@@ -1,6 +1,6 @@
 /* * */
 
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -23,7 +23,7 @@ export const FARE_CURRENCY = {
 
 /* * */
 
-export const FareSchema = DocumentSchema.extend({
+export const FareSchema = BaseDocumentSchema.extend({
 	agency_ids: z.array(z.string()).min(1, 'At least one agency ID is required'),
 	code: z.string().trim().min(1).max(10),
 	currency_type: z.enum([FARE_CURRENCY.EUR]).default(FARE_CURRENCY.EUR),

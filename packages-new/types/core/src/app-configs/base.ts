@@ -1,11 +1,11 @@
 /* * */
 
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const AppConfigBaseSchema = DocumentSchema.extend({
+export const AppConfigBaseSchema = BaseDocumentSchema.extend({
 	_id: z.string(),
 });
 

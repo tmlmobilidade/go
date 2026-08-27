@@ -1,12 +1,12 @@
 /* * */
 
 import { PermissionSchema } from '@tmlmobilidade/go-types-permissions';
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const RoleSchema = DocumentSchema.extend({
+export const RoleSchema = BaseDocumentSchema.extend({
 	name: z.string(),
 	permissions: z.array(PermissionSchema).default([]),
 });

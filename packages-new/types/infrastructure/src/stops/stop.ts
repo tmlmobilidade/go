@@ -7,12 +7,12 @@ import { StopFlagSchema } from '@/stops/flag.js';
 import { StopJurisdictionSchema } from '@/stops/jurisdiction.js';
 import { StopRoadTypeSchema } from '@/stops/road-type.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
-import { AvailabilityStatusSchema, CommentSchema, ConditionStatusSchema, DocumentSchema, LifecycleStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { AvailabilityStatusSchema, CommentSchema, ConditionStatusSchema, BaseDocumentSchema, LifecycleStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const StopSchema = DocumentSchema.extend({
+export const StopSchema = BaseDocumentSchema.extend({
 
 	//
 	// General

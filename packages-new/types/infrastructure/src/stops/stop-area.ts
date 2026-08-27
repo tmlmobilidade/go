@@ -1,11 +1,11 @@
 /* * */
 
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const StopAreaSchema = DocumentSchema.extend({
+export const StopAreaSchema = BaseDocumentSchema.extend({
 	_id: z.string(),
 	parent_station_ids: z.array(z.string()),
 });

@@ -2,12 +2,12 @@
 
 import { AlertCauseSchema } from '@/alerts/cause.js';
 import { RideJustificationSourceSchema } from '@/ride-acceptances/justification-source.js';
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const RideJustificationSchema = DocumentSchema
+export const RideJustificationSchema = BaseDocumentSchema
 	.omit({ _id: true, is_locked: true })
 	.extend({
 		justification_cause: AlertCauseSchema,

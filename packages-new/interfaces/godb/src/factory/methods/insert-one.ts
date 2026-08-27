@@ -1,10 +1,15 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type Document, InsertOneOptions, OptionalUnlessRequiredId } from '@tmlmobilidade/go-clients-mongo';
+import { type InsertOneOptions, WithId } from '@tmlmobilidade/go-clients-mongo';
+import { type GoMongoDocument } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
+
+/* * */
+
+type InsertableDocument<T extends GoMongoDocument> = Omit<T, '_id' | 'created_at' | 'updated_at'>;
 
 /**
  * Inserts a single document into the collection.
@@ -12,41 +17,52 @@ import { type GoDbCollectionContext } from '../types/godb-collection-context.typ
  * @param options The options for the insert operation.
  * @returns A promise that resolves to the result of the insert operation.
  */
-export async function insertOne<T extends Document>(context: GoDbCollectionContext<T>, doc: Omit<T, '_id'>, options?: InsertOneOptions): Promise<T> {
-	// Setup a copy of the document to be inserted with defaults
-	let parsedDocument = {
+export async function insertOne<T extends GoMongoDocument>(context: GoDbCollectionContext<T>, doc: InsertableDocument<T>, options?: InsertOneOptions): Promise<T> {
+	//
+
+	if (!context.schema) {
+		throw new Error(`No schema defined for insert operation on ${context.collectionName} collection. Use .insertOneUnsafe() to insert documents without schema validation.`);
+	}
+
+	//
+	// Add default values to the document, including a random _id,
+	// and check if the generated _id is already in use.
+	// Generate a new _id if it is already in use.
+
+	const insertableDocument = {
 		...doc,
-		// created_at: doc.created_at || Dates.now('utc').unix_timestamp,
-		// created_by: doc.created_by || 'system',
-		// updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,
-		// updated_by: doc.updated_by || 'system',
-	} as OptionalUnlessRequiredId<T>;
+		_id: generateRandomString({ length: 5 }),
+		created_at: Dates.now('utc').unix_timestamp,
+		updated_at: Dates.now('utc').unix_timestamp,
+	};
 
-	// Validate the document against the create schema if unsafe is false
-	try {
-		if (!context.schema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
-		parsedDocument = context.schema.parse(parsedDocument);
-	} catch (error) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
+	while (await context.collection.findOne({ _id: insertableDocument._id as WithId<T>['_id'] })) {
+		insertableDocument._id = generateRandomString({ length: 5 }) as T['_id'];
 	}
 
-	// Preserve a caller-provided _id (create schemas omit it, so parse strips it),
-	// otherwise generate a unique one.
-	if (doc._id) {
-		parsedDocument._id = doc._id;
-	} else {
-		parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
-		while (await context.collection.findOne({ _id: { $eq: parsedDocument._id as T['_id'] } })) {
-			parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
-		}
-	}
+	//
+	// Validate the document against the schema
 
+	const validatedDocument = context.schema.parse(insertableDocument);
+
+	//
 	// Attempt to insert the document into the collection
-	const result = await context.collection.insertOne(parsedDocument, options);
-	// Check if the insert operation was acknowledged
-	if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
-	// Otherwise, fetch and return the inserted document
-	const insertedDoc = await context.collection.findOne({ _id: { $eq: result.insertedId as T['_id'] } }, options);
-	if (!insertedDoc) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find inserted document', result);
-	return insertedDoc as unknown as T;
+	// and check if the insert operation was acknowledged
+
+	const insertResult = await context.collection.insertOne(validatedDocument, options);
+
+	if (!insertResult.acknowledged) {
+		throw new Error(`Failed to insert document into ${context.collectionName} collection. The insert operation was not acknowledged.`);
+	}
+
+	//
+	// Fetch the inserted document and return it
+
+	const insertedDoc = await context.collection.findOne({ _id: insertResult.insertedId as WithId<T>['_id'] }, options);
+
+	if (!insertedDoc) {
+		throw new Error(`Failed to find inserted document in ${context.collectionName} collection. The inserted document was not found.`);
+	}
+
+	return insertedDoc;
 }

@@ -3,12 +3,12 @@
 import { PlanAppStatusSchema } from '@/plans/plan-app-status.js';
 import { PlanPcgiLegacySchema } from '@/plans/plan-pcgi-legacy.js';
 import { GtfsAgencySchema, GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-gtfs';
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const PlanSchema = DocumentSchema.extend({
+export const PlanSchema = BaseDocumentSchema.extend({
 	agency_id: z.string(),
 	apex_file_id: z.string().nullable().default(null),
 	apps: z.object({

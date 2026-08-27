@@ -1,11 +1,11 @@
 /* * */
 
-import { DocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const HolidaySchema = DocumentSchema.extend({
+export const HolidaySchema = BaseDocumentSchema.extend({
 	agency_ids: z.array(z.string()).default([]),
 	dates: z.array(OperationalDateSchema).default([]),
 	description: z.string().optional(),

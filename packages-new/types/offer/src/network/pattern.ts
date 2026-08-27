@@ -2,7 +2,7 @@
 
 import { type GtfsTripDirection } from '@tmlmobilidade/go-types-gtfs';
 import { type Stop, StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
-import { CommentSchema, DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { CommentSchema, BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
@@ -92,7 +92,7 @@ export const ShapeSchema = z.object({
 
 /* * */
 
-export const PatternSchema = DocumentSchema.extend({
+export const PatternSchema = BaseDocumentSchema.extend({
 	code: z.string().trim().min(1).max(10),
 
 	// Activity (field changes and notes)

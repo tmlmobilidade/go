@@ -1,6 +1,6 @@
 /* * */
 
-import { DocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { PatternSimplifiedSchema } from './pattern.js';
@@ -16,7 +16,7 @@ export const pathTypeOptions: { label: string, value: RoutePathType }[] = [
 
 /* * */
 
-export const RouteSchema = DocumentSchema.extend({
+export const RouteSchema = BaseDocumentSchema.extend({
 	code: z.string().trim().min(1).max(10),
 	line_id: z.string(),
 	name: z.string().trim().min(1),
