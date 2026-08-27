@@ -26,7 +26,7 @@ export function SchoolCreateSectionOrganization() {
 			title={t('schools:create.SchoolCreateSectionOrganization.title')}
 		>
 			<Section padding="lg">
-				<Grid columns="abc" gap="md">
+				<Grid columns="ab" gap="md">
 
 					<StandardFormController
 						control={schoolsCreateForm.control}

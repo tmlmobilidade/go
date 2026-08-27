@@ -21,6 +21,7 @@
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-locations": "*",
+		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
