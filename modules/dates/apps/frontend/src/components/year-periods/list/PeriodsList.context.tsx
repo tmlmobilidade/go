@@ -1,9 +1,9 @@
 'use client';
 
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { type PeriodNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { normalizeString } from '@tmlmobilidade/strings';
 import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -50,10 +50,7 @@ export const PeriodsListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { data: allPeriodsData, error: allPeriodsError, isLoading: allPeriodsLoading } = useSWR<YearPeriod[], Error>(API_ROUTES.dates.YEAR_PERIODS_LIST);
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.year_periods.actions.read],
-		scope: PermissionCatalog.all.year_periods.scope,
-	});
+	const { ids: filteredAgencyIds, options: filteredAgencyOptions } = useAnnotationsAgenciesData();
 
 	//
 	// B. Setup filters

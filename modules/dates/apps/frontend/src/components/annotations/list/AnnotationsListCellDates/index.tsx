@@ -1,7 +1,7 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
 
 /* * */
