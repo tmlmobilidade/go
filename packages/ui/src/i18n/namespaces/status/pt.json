@@ -47,7 +47,8 @@
 	"publish_status": {
 		"archived": "Arquivado",
 		"draft": "Rascunho",
-		"published": "Publicado"
+		"published": "Publicado",
+		"scheduled": "Agendado"
 	},
 	"seen_status": {
 		"gone": "-",
