@@ -1,11 +1,12 @@
 /* * */
 
-import { type ClientSession, type Document, type WithId } from '@tmlmobilidade/go-clients-mongo';
+import { type Document, type WithId } from '@tmlmobilidade/go-clients-mongo';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
-import { InsertableDocument } from '../types/insertable-document.type.js';
+import { type InsertableDocument } from '../types/insertable-document.type.js';
+import { type MinimalOptions } from '../types/minimal-options.type.js';
 
 /**
  * Inserts a single document into the collection.
@@ -13,7 +14,7 @@ import { InsertableDocument } from '../types/insertable-document.type.js';
  * @param options The options for the insert operation.
  * @returns A promise that resolves to the result of the insert operation.
  */
-export async function insertOne<T extends Document>(context: GoDbCollectionContext<T>, doc: InsertableDocument<T>, clientSession?: ClientSession): Promise<T> {
+export async function insertOne<T extends Document>(context: GoDbCollectionContext<T>, doc: InsertableDocument<T>, options?: MinimalOptions): Promise<T> {
 	//
 
 	if (!context.schema) {
@@ -32,7 +33,7 @@ export async function insertOne<T extends Document>(context: GoDbCollectionConte
 		updated_at: Dates.now('utc').unix_timestamp,
 	};
 
-	while (await context.collection.findOne<T>({ _id: insertableDocument._id as WithId<T>['_id'] }, { session: clientSession })) {
+	while (await context.collection.findOne<T>({ _id: insertableDocument._id as WithId<T>['_id'] }, { session: options?.session })) {
 		insertableDocument._id = generateRandomString({ length: 5 }) as T['_id'];
 	}
 
@@ -45,7 +46,7 @@ export async function insertOne<T extends Document>(context: GoDbCollectionConte
 	// Attempt to insert the document into the collection
 	// and check if the insert operation was acknowledged
 
-	const insertResult = await context.collection.insertOne(validatedDocument, { session: clientSession });
+	const insertResult = await context.collection.insertOne(validatedDocument, { session: options?.session });
 
 	if (!insertResult.acknowledged) {
 		throw new Error(`Failed to insert document into ${context.collectionName} collection. The insert operation was not acknowledged.`);
@@ -54,7 +55,7 @@ export async function insertOne<T extends Document>(context: GoDbCollectionConte
 	//
 	// Fetch the inserted document and return it
 
-	const insertedDoc = await context.collection.findOne<T>({ _id: insertResult.insertedId as WithId<T>['_id'] }, { session: clientSession });
+	const insertedDoc = await context.collection.findOne<T>({ _id: insertResult.insertedId as WithId<T>['_id'] }, { session: options?.session });
 
 	if (!insertedDoc) {
 		throw new Error(`Failed to find inserted document in ${context.collectionName} collection. The inserted document was not found.`);

@@ -1,8 +1,9 @@
 /* * */
 
-import { type ClientSession, type Document, type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { type Document, type Filter } from '@tmlmobilidade/go-clients-mongo';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
+import { type MinimalOptions } from '../types/minimal-options.type.js';
 
 /**
  * Finds a document by a filter.
@@ -11,6 +12,6 @@ import { type GoDbCollectionContext } from '../types/godb-collection-context.typ
  * @param options Optional find options.
  * @returns A promise that resolves to the matching document or null if not found.
  */
-export async function findOne<T extends Document>(context: GoDbCollectionContext<T>, filter: Filter<T>, clientSession?: ClientSession): Promise<null | T> {
-	return await context.collection.findOne<T>(filter, { session: clientSession });
+export async function findOne<T extends Document>(context: GoDbCollectionContext<T>, filter: Filter<T>, options?: MinimalOptions): Promise<null | T> {
+	return await context.collection.findOne<T>(filter, { session: options?.session });
 }

@@ -1,10 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type Document, type Filter, type InsertOneOptions, type OptionalUnlessRequiredId } from '@tmlmobilidade/go-clients-mongo';
+import { type Document, type Filter, type OptionalUnlessRequiredId } from '@tmlmobilidade/go-clients-mongo';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
+import { type MinimalOptions } from '../types/minimal-options.type.js';
 
 /**
  * Inserts a single document into the collection.
@@ -12,7 +13,7 @@ import { type GoDbCollectionContext } from '../types/godb-collection-context.typ
  * @param options The options for the insert operation.
  * @returns A promise that resolves to the result of the insert operation.
  */
-export async function insertOneUnsafe<T extends Document>(context: GoDbCollectionContext<T>, doc: T, options?: InsertOneOptions): Promise<T> {
+export async function insertOneUnsafe<T extends Document>(context: GoDbCollectionContext<T>, doc: T, options?: MinimalOptions): Promise<T> {
 	// Setup a copy of the document to be inserted with defaults
 	let parsedDocument = {
 		...doc,
@@ -42,7 +43,7 @@ export async function insertOneUnsafe<T extends Document>(context: GoDbCollectio
 	}
 
 	// Attempt to insert the document into the collection
-	const result = await context.collection.insertOne(parsedDocument, options);
+	const result = await context.collection.insertOne(parsedDocument, { session: options?.session });
 	// Check if the insert operation was acknowledged
 	if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
 	// Otherwise, fetch and return the inserted document

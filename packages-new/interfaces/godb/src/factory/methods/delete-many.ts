@@ -1,8 +1,9 @@
 /* * */
 
-import { type ClientSession, type DeleteResult, type Document, type Filter } from '@tmlmobilidade/go-clients-mongo';
+import { type DeleteResult, type Document, type Filter } from '@tmlmobilidade/go-clients-mongo';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
+import { type MinimalOptions } from '../types/minimal-options.type.js';
 
 /**
  * Deletes multiple documents by a filter.
@@ -10,6 +11,6 @@ import { type GoDbCollectionContext } from '../types/godb-collection-context.typ
  * @param filter The filter to use to delete the documents.
  * @returns A promise that resolves to the result of the delete operation.
  */
-export async function deleteMany<T extends Document>(context: GoDbCollectionContext<T>, filter: Filter<T>, clientSession?: ClientSession): Promise<DeleteResult> {
-	return await context.collection.deleteMany(filter, { session: clientSession });
+export async function deleteMany<T extends Document>(context: GoDbCollectionContext<T>, filter: Filter<T>, options?: MinimalOptions): Promise<DeleteResult> {
+	return await context.collection.deleteMany(filter, { session: options?.session });
 }

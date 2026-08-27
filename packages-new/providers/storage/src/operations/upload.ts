@@ -51,7 +51,7 @@ export async function upload(deps: StorageDeps, input: UploadInput): Promise<Att
 				created_at: Dates.now('utc').unix_timestamp,
 				type: mimeType,
 				updated_at: Dates.now('utc').unix_timestamp,
-			}, session);
+			}, { session });
 
 			await hooks?.onSuccess?.(context, attachment, session);
 			return attachment;

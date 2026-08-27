@@ -26,7 +26,7 @@ export async function findMany(deps: StorageDeps, input: FindManyInput): ReturnT
 	return runOperation({
 		context,
 		execute: async () => {
-			return await goDb.core.attachments.findMany(filter, clientSession);
+			return await goDb.core.attachments.findMany(filter, { session: clientSession });
 		},
 		hooks,
 		observability: deps.observability,
