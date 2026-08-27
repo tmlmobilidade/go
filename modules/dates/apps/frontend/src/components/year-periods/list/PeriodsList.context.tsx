@@ -3,9 +3,9 @@
 import { type PeriodNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { normalizeString } from '@tmlmobilidade/strings';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { normalizeString } from '@tmlmobilidade/strings';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
