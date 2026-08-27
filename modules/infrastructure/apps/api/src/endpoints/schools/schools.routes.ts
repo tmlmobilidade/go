@@ -1,5 +1,6 @@
 /* * */
 
+import { listAgenciesHandler } from '@/endpoints/schools/handlers/list-agencies.js';
 import { SchoolsController } from '@/endpoints/schools/schools.controller.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -18,6 +19,12 @@ server.register(
 			'/list',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.schools.scope, [PermissionCatalog.all.schools.actions.read]) },
 			SchoolsController.getAll,
+		);
+
+		instance.post(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.schools.scope, [PermissionCatalog.all.schools.actions.read, PermissionCatalog.all.schools.actions.create]) },
+			listAgenciesHandler,
 		);
 
 		instance.get(
