@@ -1,28 +1,36 @@
 /* * */
 
-import { Filter } from '@tmlmobilidade/go-clients-mongo';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { AppConfig } from '@/lib/config.js';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Ride } from '@tmlmobilidade/types';
 
 /* * */
 
-export async function fetchHistoricalRidesForDayIndex(ridesQuery: Filter<Ride>, dayIndex: number) {
-	const start = Dates.now('Europe/Lisbon').minus({ days: dayIndex, hours: 1 });
-	const end = Dates.now('Europe/Lisbon').minus({ days: dayIndex }).plus({ hours: 2 });
+/**
+ * Ride `_id`s currently considered in-window for `eta.hist_rides` cleanup.
+ * Matches the loader's historical window: `[now − daysBack − standardWindowHours, now − standardWindowHours]`.
+ */
+export async function fetchHistoricalRidesForDayIndex() {
+	const end = Dates.now('Europe/Lisbon').minus({ hours: Dates.standardWindowHours });
+	const start = Dates.now('Europe/Lisbon').minus({
+		days: AppConfig.historicalDataDaysBack,
+		hours: Dates.standardWindowHours,
+	});
 
 	Logger.progress({ message: `Getting historical rides for date range: ${start.iso} → ${end.iso}` });
 
-	return await goDb.operation.rides.aggregate([
-		{ $match: {
-			...ridesQuery,
-			start_time_scheduled: {
-				$gte: start.unix_timestamp,
-				$lte: end.unix_timestamp,
-			},
-		} },
-		{ $sort: { start_time_scheduled: 1 } },
-	]);
+	return await labDb.queryFromString<{ _id: string }>(
+		`
+			SELECT _id
+			FROM operation.rides FINAL
+			WHERE start_time_scheduled >= $1
+			  AND start_time_scheduled <= $2
+			ORDER BY start_time_scheduled ASC
+		`,
+		{
+			1: start.unix_timestamp,
+			2: end.unix_timestamp,
+		},
+	);
 }
-
