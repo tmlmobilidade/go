@@ -145,7 +145,7 @@ export class HolidaysController {
 		//
 		// Fetch holidays based on query filters
 
-		const allHolidays = await goDb.offer.holidays.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allHolidays = await goDb.offer.holidays.findMany(queryFilters);
 
 		return reply.send({ data: allHolidays, error: null, statusCode: HTTP_STATUS.OK });
 

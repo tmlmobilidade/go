@@ -145,7 +145,7 @@ export class AnnotationsController {
 		//
 		// Fetch annotations based on query filters
 
-		const allAnnotations = await goDb.offer.annotations.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allAnnotations = await goDb.offer.annotations.findMany(queryFilters);
 
 		return reply.send({ data: allAnnotations, error: null, statusCode: HTTP_STATUS.OK });
 
