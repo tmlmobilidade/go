@@ -1,6 +1,6 @@
 /* * */
 
-import { useSchoolDetailContext } from '@/components/detail/SchoolDetail.context';
+import { useSchoolDetailContext } from '@/components/schools/detail/SchoolDetail.context';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Label, Section, UserTag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';

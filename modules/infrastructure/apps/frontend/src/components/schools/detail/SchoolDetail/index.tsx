@@ -1,7 +1,7 @@
 'use client';
 
-import { useSchoolDetailContext } from '@/components/detail/SchoolDetail.context';
-import { SchoolDetailHeader } from '@/components/detail/SchoolDetailHeader';
+import { useSchoolDetailContext } from '@/components/schools/detail/SchoolDetail.context';
+import { SchoolDetailHeader } from '@/components/schools/detail/SchoolDetailHeader';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */

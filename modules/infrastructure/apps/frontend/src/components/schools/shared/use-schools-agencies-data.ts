@@ -29,7 +29,7 @@ export function useSchoolsAgenciesData(query: SchoolsAgencyRequest): UseSchoolsA
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SchoolsAgencyItem[]>>([API_ROUTES.schools.SCHOOLS_LIST_AGENCIES, query], {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<SchoolsAgencyItem[]>>([API_ROUTES.infrastructure.SCHOOLS_LIST_AGENCIES, query], {
 		fetcher: async ([url, query]) => await fetchApiData<SchoolsAgencyItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

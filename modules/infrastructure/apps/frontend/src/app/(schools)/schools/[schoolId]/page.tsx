@@ -1,7 +1,7 @@
 /* * */
 
-import { SchoolDetail } from '@/components/detail/SchoolDetail';
-import { SchoolDetailContextProvider } from '@/components/detail/SchoolDetail.context';
+import { SchoolDetail } from '@/components/schools/detail/SchoolDetail';
+import { SchoolDetailContextProvider } from '@/components/schools/detail/SchoolDetail.context';
 
 /* * */
 

@@ -19,6 +19,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-infrastructure-pckg-organize": "*",
+		"@tmlmobilidade/go-schools-pckg-types": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/strings": "*",

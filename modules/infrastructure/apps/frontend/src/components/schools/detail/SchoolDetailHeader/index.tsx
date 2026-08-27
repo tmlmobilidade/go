@@ -1,6 +1,6 @@
 'use client';
 
-import { useSchoolDetailContext } from '@/components/detail/SchoolDetail.context';
+import { useSchoolDetailContext } from '@/components/schools/detail/SchoolDetail.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, LockButton, Spacer, Toolbar, UpdateButton } from '@tmlmobilidade/ui';
@@ -21,7 +21,7 @@ export function SchoolDetailHeader() {
 	// C. Handle actions
 
 	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_LIST));
+		router.push(keepUrlParams(PAGE_ROUTES.infrastructure.SCHOOLS_LIST));
 	};
 
 	//

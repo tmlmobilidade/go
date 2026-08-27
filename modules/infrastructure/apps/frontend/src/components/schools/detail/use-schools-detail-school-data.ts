@@ -32,7 +32,7 @@ export function useSchoolsDetailSchoolData(): UseSchoolsDetailSchoolDataReturnTy
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<School>>(schoolId && API_ROUTES.schools.SCHOOLS_DETAIL(schoolId), {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<School>>(schoolId && API_ROUTES.infrastructure.SCHOOLS_DETAIL(schoolId), {
 		fetcher: async (url: string) => await fetchApiData<School>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});

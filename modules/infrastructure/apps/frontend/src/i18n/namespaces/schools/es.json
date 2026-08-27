@@ -1,0 +1,96 @@
+{
+	"create": {
+		"SchoolCreateSectionAddress": {
+			"description": "Dirección y ubicación de la escuela.",
+			"fields": {
+				"address": "Dirección",
+				"locality": "Localidad",
+				"parish_name": "Parroquia",
+				"postal_code": "Código postal"
+			},
+			"title": "Ubicación"
+		},
+		"SchoolCreateSectionAdministrative": {
+			"description": "Identificadores administrativos y ubicación territorial.",
+			"fields": {
+				"district_id": "ID del distrito",
+				"district_name": "Distrito",
+				"municipality_id": "ID del municipio",
+				"municipality_name": "Municipio",
+				"region_id": "ID de la región",
+				"region_name": "Región"
+			},
+			"title": "Datos administrativos"
+		},
+		"SchoolCreateSectionEducation": {
+			"description": "Niveles y modalidades educativas ofrecidos por la escuela.",
+			"fields": {
+				"artistic": "Enseñanza artística",
+				"basic_1": "1.er ciclo",
+				"basic_2": "2.º ciclo",
+				"basic_3": "3.er ciclo",
+				"high_school": "Enseñanza secundaria",
+				"other": "Otra enseñanza",
+				"pre_school": "Educación infantil",
+				"professional": "Formación profesional",
+				"special": "Educación especial",
+				"university": "Enseñanza superior"
+			},
+			"title": "Enseñanza"
+		},
+		"SchoolCreateSectionGeneral": {
+			"agency": "Operador",
+			"coordinates": {
+				"label": "Coordenadas",
+				"placeholder": "Introduzca las coordenadas de la escuela"
+			},
+			"grouping": {
+				"label": "Agrupación",
+				"placeholder": "Introduzca la agrupación de la escuela"
+			},
+			"name": {
+				"label": "Nombre",
+				"placeholder": "Introduzca el nombre de la escuela"
+			},
+			"nature": {
+				"label": "Naturaleza",
+				"placeholder": "Introduzca la naturaleza de la escuela"
+			},
+			"title": "Datos generales"
+		},
+		"SchoolCreateSectionOperations": {
+			"description": "Estado de validación, actividad y paradas asociadas.",
+			"fields": {
+				"is_active": "Escuela activa",
+				"stops": "Paradas asociadas",
+				"validation_date": "Fecha de validación"
+			},
+			"title": "Estado y conexiones"
+		},
+		"SchoolCreateSectionOrganization": {
+			"description": "Operador y contacto de la escuela.",
+			"fields": {
+				"agency_id": "Operador",
+				"email": "Correo electrónico",
+				"url": "Sitio web"
+			},
+			"title": "Organización y contacto"
+		},
+		"summary": {
+			"title": {
+				"label": "Título"
+			}
+		}
+	},
+	"list": {
+		"SchoolsList": {
+			"columns": {
+			}
+		},
+		"SchoolsListHeader": {
+			"title": "Escuelas"
+		},
+		"filters": {
+		}
+	}
+}

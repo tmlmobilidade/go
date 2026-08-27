@@ -200,16 +200,16 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 			api_url: 'http://localhost:52003',
 			cors_origin: true,
 			frontend_port: 51003,
-			frontend_url: 'http://localhost:51003/stops',
+			frontend_url: 'http://localhost:51003/infrastructure',
 		},
 		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/stops/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/stops',
+			api_url: 'https://go.tmlmobilidade.pt/infrastructure/api',
+			frontend_url: 'https://go.tmlmobilidade.pt/infrastructure',
 			...DEFAULT_PRD_CONFIG,
 		},
 		stg: {
-			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/stops/api`,
-			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/stops`,
+			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/infrastructure/api`,
+			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/infrastructure`,
 			...DEFAULT_STG_CONFIG,
 		},
 	},
@@ -312,26 +312,6 @@ const MODULE_CONFIGS: Record<string, Record<Environment, ModuleConfigGroup>> = {
 		stg: {
 			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt`,
 			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt`,
-			...DEFAULT_STG_CONFIG,
-		},
-	},
-
-	schools: {
-		dev: {
-			api_port: 52003,
-			api_url: 'http://localhost:52003',
-			cors_origin: true,
-			frontend_port: 51011,
-			frontend_url: 'http://localhost:51011/schools',
-		},
-		prd: {
-			api_url: 'https://go.tmlmobilidade.pt/schools/api',
-			frontend_url: 'https://go.tmlmobilidade.pt/schools',
-			...DEFAULT_PRD_CONFIG,
-		},
-		stg: {
-			api_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/schools/api`,
-			frontend_url: `https://${process.env.ENVIRONMENT || process.env.NEXT_PUBLIC_ENVIRONMENT}.go-stg.tmlmobilidade.pt/schools`,
 			...DEFAULT_STG_CONFIG,
 		},
 	},

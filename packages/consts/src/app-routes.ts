@@ -104,6 +104,10 @@ export const PAGE_ROUTES = Object.freeze({
 		// INFRASTRUCTURE
 		INFRASTRUCTURE_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/${encodeURIComponent(id)}`,
 		INFRASTRUCTURE_LIST: `${getModuleConfig('infrastructure', 'frontend_url')}`,
+
+		// SCHOOLS
+		SCHOOLS_DETAIL: (schoolId: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/schools/${encodeURIComponent(schoolId)}`,
+		SCHOOLS_LIST: `${getModuleConfig('infrastructure', 'frontend_url')}/schools`,
 	},
 
 	offer: {

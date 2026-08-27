@@ -1,6 +1,6 @@
 'use client';
 
-import { useSchoolsAgenciesData } from '@/components/shared/use-schools-agencies-data';
+import { useSchoolsAgenciesData } from '@/components/schools/shared/use-schools-agencies-data';
 import { type School } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Collapsible, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';

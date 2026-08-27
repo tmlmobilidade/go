@@ -23,7 +23,7 @@ export function SchoolsListHeader() {
 
 	const { isLoading, isValidating, timestamp } = useSchoolsListData();
 
-	const openSchoolCreate = () => router.push(keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_CREATE));
+	const openSchoolCreate = () => router.push(keepUrlParams(PAGE_ROUTES.infrastructure.SCHOOLS_LIST));
 
 	//
 	// B. Render components

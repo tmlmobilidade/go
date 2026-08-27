@@ -1,8 +1,8 @@
 'use client';
 
-import { useSchoolsDetailSchoolId } from '@/components/detail/use-schools-detail-school-id';
-import { SchoolsListFiltersBar } from '@/components/list/filters/SchoolsListFiltersBar';
-import { SchoolsListHeader } from '@/components/list/SchoolsListHeader';
+import { useSchoolsDetailSchoolId } from '@/components/schools/detail/use-schools-detail-school-id';
+import { SchoolsListFiltersBar } from '@/components/schools/list/filters/SchoolsListFiltersBar';
+import { SchoolsListHeader } from '@/components/schools/list/SchoolsListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type SchoolsListItem } from '@tmlmobilidade/go-schools-pckg-types';
 import { DataTable, type DataTableColumn, ErrorDisplay, keepUrlParams, Pane } from '@tmlmobilidade/ui';
@@ -32,7 +32,7 @@ export function SchoolsList() {
 	// B. Handle actions
 
 	const handleRowClick = (item: SchoolsListItem) => {
-		router.push(keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_DETAIL(item._id)));
+		router.push(keepUrlParams(PAGE_ROUTES.infrastructure.SCHOOLS_DETAIL(item._id)));
 	};
 
 	//

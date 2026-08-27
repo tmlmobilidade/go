@@ -1,6 +1,6 @@
 'use client';
 
-import { useSchoolsCreateFormContext } from '@/components/create/shared/SchoolsCreateForm.context';
+import { useSchoolsCreateFormContext } from '@/components/schools/create/shared/SchoolsCreateForm.context';
 import { Collapsible, CoordinatesInput, Grid, Section, Spacer, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

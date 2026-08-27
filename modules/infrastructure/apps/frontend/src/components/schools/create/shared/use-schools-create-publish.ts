@@ -1,6 +1,6 @@
 'use client';
 
-import { useSchoolsListData } from '@/components/list/use-schools-list-data';
+import { useSchoolsListData } from '@/components/schools/list/use-schools-list-data';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { School } from '@tmlmobilidade/go-types-operation';
 import { fetchApiData, keepUrlParams, useHandleUpdate } from '@tmlmobilidade/ui';
@@ -31,13 +31,13 @@ export function useSchoolsCreatePublish(): UseSchoolsCreatePublishReturnType {
 	// B. Handle actions
 
 	const { action, isLoading } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<School>({ body: form.getValues(), method: 'POST', url: API_ROUTES.schools.SCHOOLS_CREATE }),
+		fetchFn: async () => await fetchApiData<School>({ body: form.getValues(), method: 'POST', url: `${API_ROUTES.infrastructure.BASE}/schools` }),
 		onSuccess: ({ data }) => {
 			form.reset();
 			unblock();
 			mutate();
 			if (data?._id) {
-				const newUrl = keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_DETAIL(data._id));
+				const newUrl = keepUrlParams(PAGE_ROUTES.infrastructure.SCHOOLS_DETAIL(data._id));
 				window.location.href = newUrl;
 			};
 		},

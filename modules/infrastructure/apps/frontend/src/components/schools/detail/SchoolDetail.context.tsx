@@ -49,7 +49,7 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 	// B. Fetch Data
 
 	const { mutate: schoolsListMutate } = useSchoolsListData();
-	const { data: schoolResponse, error: schoolError, isLoading: schoolLoading, isValidating: schoolValidating, mutate: schoolMutate } = useSWR<ApiResponse<School>>(API_ROUTES.schools.SCHOOLS_DETAIL(schoolId), {
+	const { data: schoolResponse, error: schoolError, isLoading: schoolLoading, isValidating: schoolValidating, mutate: schoolMutate } = useSWR<ApiResponse<School>>(API_ROUTES.infrastructure.SCHOOLS_DETAIL(schoolId), {
 		fetcher: async (url: string) => await fetchApiData<School>({ url }),
 	});
 	const schoolData = schoolResponse?.data;
@@ -66,7 +66,7 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<School>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.schools.SCHOOLS_DETAIL(schoolId) }),
+		fetchFn: async () => await fetchApiData<School>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.infrastructure.SCHOOLS_DETAIL(schoolId) }),
 		onSuccess: (updatedItem) => {
 			form.reset(updatedItem.data);
 			schoolMutate();
@@ -75,15 +75,15 @@ export const SchoolDetailContextProvider = ({ children, schoolId }: PropsWithChi
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<School>({ method: 'DELETE', url: API_ROUTES.schools.SCHOOLS_DETAIL(schoolId) }),
+		fetchFn: async () => await fetchApiData<School>({ method: 'DELETE', url: API_ROUTES.infrastructure.SCHOOLS_DETAIL(schoolId) }),
 		onSuccess: () => {
 			schoolsListMutate();
-			router.push(keepUrlParams(PAGE_ROUTES.schools.SCHOOLS_LIST));
+			router.push(keepUrlParams(PAGE_ROUTES.infrastructure.SCHOOLS_LIST));
 		},
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchApiData<School>({ method: 'GET', url: API_ROUTES.schools.SCHOOLS_DETAIL_LOCK(schoolId) }),
+		fetchFn: async () => await fetchApiData<School>({ method: 'GET', url: API_ROUTES.infrastructure.SCHOOLS_DETAIL_LOCK(schoolId) }),
 		onSuccess: (updatedItem) => {
 			form.reset(updatedItem.data);
 			schoolMutate();

@@ -1,6 +1,6 @@
 /* * */
 
-import { SchoolCreate } from '@/components/create/SchoolCreate';
+import { SchoolCreate } from '@/components/schools/create/SchoolCreate';
 
 /* * */
 

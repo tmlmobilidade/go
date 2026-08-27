@@ -139,7 +139,7 @@ export const sidebarNavigationGroups = [
 			},
 			{
 				_id: 'schools',
-				href: PAGE_ROUTES.schools.SCHOOLS_LIST,
+				href: PAGE_ROUTES.infrastructure.SCHOOLS_LIST,
 				icon: <IconSchool />,
 				permissions: [{ action: PermissionCatalog.all.schools.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.schools.scope }],
 			},
