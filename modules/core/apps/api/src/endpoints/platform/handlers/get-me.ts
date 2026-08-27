@@ -19,6 +19,13 @@ export async function getMeHandler(request: FastifyRequest, reply: FastifyReply<
 
 	const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
 
+	if (!sessionToken) {
+		return sendErrorApiResponse(reply, {
+			error: 'Session token not found',
+			status_code: '401',
+		});
+	}
+
 	//
 	// Retrieve user data using the session token.
 	// If the user is not found, log out the session token

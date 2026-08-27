@@ -11,6 +11,9 @@ export async function logoutHandler(request: FastifyRequest, reply: FastifyReply
 	// Extract the session token from the request cookies
 	// and call the authProvider to log out the user.
 	const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
+	if (!sessionToken) {
+		return reply.send({ data: undefined, error: 'Session token not found', statusCode: HTTP_STATUS.BAD_REQUEST });
+	}
 	await authProvider.logout(sessionToken);
 	// Clear the session token by expiring the cookie
 	reply.setCookie(AUTH_SESSION_COOKIE_NAME, '', {

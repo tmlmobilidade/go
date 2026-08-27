@@ -15,6 +15,10 @@ export async function updateMeHandler(request: FastifyRequest<{ Body: UpdateUser
 
 	const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
 
+	if (!sessionToken) {
+		return sendErrorApiResponse(reply, { error: 'Session token not found', status_code: '401' });
+	}
+
 	const userData = await authProvider.getUserFromSessionToken(sessionToken);
 
 	// For now, only the preferences field is allowed to be updated by the current user

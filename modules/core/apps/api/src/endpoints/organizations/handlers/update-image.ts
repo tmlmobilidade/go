@@ -10,7 +10,7 @@ import { Organization } from '@tmlmobilidade/go-types-core';
  * @param request The request object containing the organization ID in the params and the image files in the body
  * @param reply The reply object used to send the response
  */
-export async function updateImageHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<{ logo_dark?: string, logo_light?: string }>) {
+export async function updateImageHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<boolean>) {
 	//
 
 	//
@@ -90,5 +90,12 @@ export async function updateImageHandler(request: FastifyRequest<{ Params: { id:
 
 	const updateResult = await goDb.core.organizations.updateById(request.params.id, updateFields);
 
-	return sendSuccessApiResponse(reply, updateResult);
+	if (!updateResult) {
+		return sendErrorApiResponse(reply, {
+			error: 'Failed to update organization',
+			status_code: '500',
+		});
+	}
+
+	return sendSuccessApiResponse(reply, true);
 }

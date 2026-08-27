@@ -11,8 +11,8 @@ export const OrganizationSchema = BaseDocumentSchema.extend({
 	home_wikis: z.array(z.string()).default([]),
 	logo_dark: z.string().nullable().default(null),
 	logo_light: z.string().nullable().default(null),
-	long_name: z.string(),
-	short_name: z.string(),
+	long_name: z.string().min(1),
+	short_name: z.string().min(1).max(6),
 	theme: z.string().nullable().default(null),
 });
 

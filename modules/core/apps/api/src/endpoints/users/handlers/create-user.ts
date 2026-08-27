@@ -1,7 +1,7 @@
 /* * */
 
-import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
 import { sendWelcomeEmail } from '@tmlmobilidade/go-providers-emails';
@@ -13,17 +13,27 @@ import { type CreateUserDto, type User } from '@tmlmobilidade/go-types-core';
  * @param reply The reply object.
  */
 export async function createUserHandler(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply<User>) {
-	// Set the created_by and updated_by fields to the current user's id
-	request.body.created_by = request.me._id;
-	request.body.updated_by = request.me._id;
+	//
+
+	//
 	// Register the new user using the auth provider
-	const verificationToken = await authProvider.register(request.body);
+
+	const verificationToken = await authProvider.register({
+		...request.body,
+		created_by: request.me._id,
+		updated_by: request.me._id,
+	});
 
 	if (!verificationToken) {
-		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to register user');
+		return sendErrorApiResponse(reply, {
+			error: 'Failed to register user',
+			status_code: '500',
+		});
 	}
 
+	//
 	// Send a welcome email to the user with the verification token
+
 	await sendWelcomeEmail({
 		data: {
 			firstName: request.body.first_name,
@@ -32,8 +42,18 @@ export async function createUserHandler(request: FastifyRequest<{ Body: CreateUs
 		to: request.body.email,
 	});
 
+	//
 	// Fetch the newly created user to ensure it was created successfully
 	// and send a response back to the client
+
 	const newUser = await goDb.core.users.findOne({ email: request.body.email });
-	reply.send({ data: newUser, error: null, statusCode: HTTP_STATUS.OK });
+
+	if (!newUser) {
+		return sendErrorApiResponse(reply, {
+			error: 'Failed to create user',
+			status_code: '500',
+		});
+	}
+
+	return sendSuccessApiResponse(reply, newUser);
 }

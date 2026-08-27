@@ -44,6 +44,13 @@ export async function getSidebarLogoHandler(request: FastifyRequest<{ Body: Side
 		? foundOrganization.logo_light
 		: foundOrganization.logo_dark;
 
+	if (!fileId) {
+		return sendErrorApiResponse(reply, {
+			error: 'Sidebar logo not found.',
+			status_code: '404',
+		});
+	}
+
 	const fileData = await storageProvider.findById(fileId);
 
 	if (!fileData) {
