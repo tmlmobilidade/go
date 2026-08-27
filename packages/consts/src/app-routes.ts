@@ -222,6 +222,7 @@ export const API_ROUTES = Object.freeze({
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/vehicle-events`,
 		RIDES_FAVORITES: `${getModuleConfig('controller', 'api_url')}/rides/favorites`,
 		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides/list`,
+		RIDES_LIST_AGENCIES: `${getModuleConfig('controller', 'api_url')}/rides/list-agencies`,
 
 		// SAMS
 		SAMS_APEX_VERSIONS: `${getModuleConfig('controller', 'api_url')}/sams/apex-versions`,
