@@ -5,7 +5,7 @@
 import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
 import { Flex, Group, Select, type SelectProps } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
-import { AlertEffect, AlertEffectSchema } from '@tmlmobilidade/types';
+import { AlertEffect, AlertEffectSchema } from '@tmlmobilidade/go-types-operation';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

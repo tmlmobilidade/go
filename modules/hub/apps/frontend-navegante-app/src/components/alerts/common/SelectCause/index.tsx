@@ -5,7 +5,7 @@
 import { AlertCauseIcon } from '@/components/alerts/common/AlertCauseIcon';
 import { Flex, Group, Select, type SelectProps } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
-import { AlertCause, AlertCauseSchema } from '@tmlmobilidade/types';
+import { AlertCause, AlertCauseSchema } from '@tmlmobilidade/go-types-operation';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
