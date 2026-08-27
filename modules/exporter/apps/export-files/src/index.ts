@@ -9,6 +9,7 @@ import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 import { runOnInterval } from '@tmlmobilidade/utils';
 import fs from 'fs';
 
+import { exportAlertsFile } from './export-alerts.js';
 import { exportRidesFile } from './export-rides.js';
 import { exportSamsAnalysisFile } from './export-sams-analysis.js';
 import { exportStopsFile } from './export-stops.js';
@@ -49,6 +50,9 @@ async function main() {
 			//
 			// Process the file export.
 			switch (fileExport.type) {
+				case 'alert':
+					pathToFile = await exportAlertsFile(fileExport);
+					break;
 				case 'ride':
 					pathToFile = await exportRidesFile(fileExport);
 					break;
