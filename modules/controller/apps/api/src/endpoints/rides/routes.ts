@@ -1,19 +1,20 @@
 /* * */
 
-import { getSimplifiedApexBankingTaps } from '@/endpoints/rides/controllers/get-apex-banking-taps.js';
-import { getSimplifiedApexLocations } from '@/endpoints/rides/controllers/get-apex-locations.js';
-import { getSimplifiedApexOnBoardRefunds } from '@/endpoints/rides/controllers/get-apex-refunds.js';
-import { getSimplifiedApexOnBoardSales } from '@/endpoints/rides/controllers/get-apex-sales.js';
-import { getSimplifiedApexValidations } from '@/endpoints/rides/controllers/get-apex-validations.js';
-import { getHashedTrip } from '@/endpoints/rides/controllers/get-hashed-trip.js';
-import { getRideAnalyses } from '@/endpoints/rides/controllers/get-ride-analyses.js';
-import { getRideById } from '@/endpoints/rides/controllers/get-ride-by-id.js';
-import { getSimplifiedVehicleEvents } from '@/endpoints/rides/controllers/get-vehicle-events.js';
-import { listRides } from '@/endpoints/rides/controllers/list-rides.js';
-import { reprocessRideById } from '@/endpoints/rides/controllers/reprocess-ride.js';
 import { fastifyWebsocket } from '@fastify/websocket';
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+
+import { getSimplifiedApexBankingTaps } from './handlers/get-apex-banking-taps.js';
+import { getSimplifiedApexLocations } from './handlers/get-apex-locations.js';
+import { getSimplifiedApexOnBoardRefunds } from './handlers/get-apex-refunds.js';
+import { getSimplifiedApexOnBoardSales } from './handlers/get-apex-sales.js';
+import { getSimplifiedApexValidations } from './handlers/get-apex-validations.js';
+import { getHashedTrip } from './handlers/get-hashed-trip.js';
+import { getRideAnalyses } from './handlers/get-ride-analyses.js';
+import { getRideById } from './handlers/get-ride-by-id.js';
+import { getSimplifiedVehicleEvents } from './handlers/get-vehicle-events.js';
+import { listRides } from './handlers/list-rides.js';
+import { reprocessRideById } from './handlers/reprocess-ride.js';
 
 /* * */
 
