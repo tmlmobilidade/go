@@ -3,7 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
 
-import { type TripPathWaypoint } from './types.js';
+import { ML_AGENCY_ID, type TripPathWaypoint } from './types.js';
 
 /* * */
 
@@ -19,7 +19,7 @@ export function addStopCodesToTripPath(path: HashedTrip[], stopDocs: StopCodeSou
 
 	for (const stop of stopDocs) {
 		const agencyStopCodes = stop.flags
-			.filter(flag => flag.agency_ids.includes('2'))
+			.filter(flag => flag.agency_ids.includes(ML_AGENCY_ID))
 			.map(flag => flag.stop_id);
 
 		for (const stopCode of agencyStopCodes) {
@@ -38,7 +38,7 @@ export async function enrichTripPathWithStopCodes(path: HashedTrip[]): Promise<T
 		{
 			flags: {
 				$elemMatch: {
-					agency_ids: 'IA2N9',
+					agency_ids: ML_AGENCY_ID,
 					stop_id: { $in: path.map(waypoint => waypoint.stop_id) },
 				},
 			},

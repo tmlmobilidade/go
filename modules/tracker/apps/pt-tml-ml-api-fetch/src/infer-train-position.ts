@@ -35,7 +35,7 @@ export function inferTrainPositionOnShape({ nextStop, nextStopWaypoint, previous
 	}
 
 	// Create a GeoJSON LineString for the route shape.
-	const hashedShapeLineString: Feature<LineString> = lineFeatureFromEncodedPolyline(ride.shape_polyline);
+	const hashedShapeLineString: Feature<LineString> = lineFeatureFromEncodedPolyline(ride.shape_polyline, undefined, 6);
 
 	// Create GeoJSON Points for the previous and next stop waypoints.
 	const previousStopPoint: Feature<Point> = point([previousStopWaypoint.longitude, previousStopWaypoint.latitude]);

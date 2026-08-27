@@ -19,13 +19,13 @@ interface FindRideForTrainParams {
  * Finds a single Metro Lisboa ride, joining its shape and trip, whose headsign matches the
  * specified destinationId (ML API stop identifier) within a time window centered on the current timestamp.
  *
- * Searches for a stop document whose flags include the given destinationId (using Metro's agency id "2").
+ * Searches for a stop document whose flags include the given destinationId (Metro agency IA2N9).
  * Uses the matched stop's name to filter rides by headsign, and limits the scheduled start time search to
  * one hour before and after the provided 'now' timestamp.
  *
  * Returns the middle ride match (if any) joined with its GTFS shape and trip, or null if none found.
  *
- * @param params.destinationId - ML API stop_id for the train's destination (string, agency 2).
+ * @param params.destinationId - ML API stop_id for the train's destination (string, agency IA2N9).
  * @param params.now - Current Dates instance (reference time zone aware).
  * @returns The AggregationResult object with shape and trip, or null if no match.
  *
