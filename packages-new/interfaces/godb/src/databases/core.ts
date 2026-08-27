@@ -4,8 +4,8 @@ import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
 import { type Agency, AgencySchema, type AppConfig, AppConfigSchema, type Attachment, AttachmentSchema, type Organization, OrganizationSchema, type Role, RoleSchema, type Session, SessionSchema, type User, UserSchema, type VerificationToken, VerificationTokenSchema } from '@tmlmobilidade/go-types-core';
 import { type FileExport, FileExportSchema } from '@tmlmobilidade/go-types-downloads';
 
-import { createGoDbCollection } from '../factory/collections/create-godb-collection.js';
-import { GoDbCollection } from '../factory/collections/types/godb-collection.type.js';
+import { createGoDbCollection } from '../factory/create-godb-collection.js';
+import { type GoDbCollection } from '../factory/types/godb-collection.type.js';
 import { exportsIndexes } from '../indexes/index.js';
 
 /* * */

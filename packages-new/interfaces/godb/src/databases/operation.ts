@@ -4,8 +4,8 @@ import { alertsIndexes, plansIndexes, rideAcceptancesIndexes, vehiclesIndexes } 
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
 import { type Alert, AlertSchema, type GtfsValidation, GtfsValidationSchema, type Plan, PlanSchema, type RideAcceptance, RideAcceptanceSchema, type Sam, SamSchema, type Vehicle, vehicleSchema } from '@tmlmobilidade/go-types-operation';
 
-import { createGoDbCollection } from '../factory/collections/create-godb-collection.js';
-import { GoDbCollection } from '../factory/collections/types/godb-collection.type.js';
+import { createGoDbCollection } from '../factory/create-godb-collection.js';
+import { type GoDbCollection } from '../factory/types/godb-collection.type.js';
 
 /* * */
 

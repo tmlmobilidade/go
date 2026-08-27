@@ -3,8 +3,8 @@
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
 import { type Stop, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
 
-import { createGoDbCollection } from '../factory/collections/create-godb-collection.js';
-import { GoDbCollection } from '../factory/collections/types/godb-collection.type.js';
+import { createGoDbCollection } from '../factory/create-godb-collection.js';
+import { type GoDbCollection } from '../factory/types/godb-collection.type.js';
 import { stopsIndexes } from '../indexes/index.js';
 
 /* * */

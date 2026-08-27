@@ -3,8 +3,8 @@
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
 import { type Annotation, AnnotationSchema, type Event, EventSchema, type Fare, FareSchema, type Holiday, HolidaySchema, type Line, LineSchema, type Pattern, PatternSchema, type Route, RouteSchema, type Typology, TypologySchema, type YearPeriod, YearPeriodSchema, type Zone, ZoneSchema } from '@tmlmobilidade/go-types-offer';
 
-import { createGoDbCollection } from '../factory/collections/create-godb-collection.js';
-import { GoDbCollection } from '../factory/collections/types/godb-collection.type.js';
+import { createGoDbCollection } from '../factory/create-godb-collection.js';
+import { type GoDbCollection } from '../factory/types/godb-collection.type.js';
 
 /* * */
 

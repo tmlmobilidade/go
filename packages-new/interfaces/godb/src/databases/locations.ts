@@ -4,8 +4,8 @@ import { districtsIndexes, localitiesIndexes, municipalitiesIndexes, parishesInd
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
 import { type DistrictFeature, type LocalityFeature, type MunicipalityFeature, type ParishFeature } from '@tmlmobilidade/go-types-locations';
 
-import { createGoDbCollection } from '../factory/collections/create-godb-collection.js';
-import { GoDbCollection } from '../factory/collections/types/godb-collection.type.js';
+import { createGoDbCollection } from '../factory/create-godb-collection.js';
+import { type GoDbCollection } from '../factory/types/godb-collection.type.js';
 
 /* * */
 
