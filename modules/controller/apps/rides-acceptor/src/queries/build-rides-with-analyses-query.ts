@@ -187,7 +187,8 @@ ${buildAnalysisJoins(analyses)}
 
 SELECT
 	_id,
-	operational_status,${buildAnalysisMap(analyses)}
+	operational_status,
+	route_short_name,${buildAnalysisMap(analyses)}
 
 FROM ride_with_statuses
 

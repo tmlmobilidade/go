@@ -19,4 +19,5 @@ export interface RideWithAnalyses {
 	_id: string
 	analysis: Partial<Record<RequiredAnalysis, RideAnalysisResult>>
 	operational_status: OperationalStatus
+	route_short_name: string
 }

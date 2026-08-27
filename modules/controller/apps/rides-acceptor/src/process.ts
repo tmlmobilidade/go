@@ -8,6 +8,7 @@ import { PerformInTimeChunksItem } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { alertJustification } from './alert-justification.js';
 import { createRideAcceptance } from './create-ride-acceptance.js';
 import { ridesWithAnalysesQuery } from './queries/rides-with-analyses-query.js';
 import { type RideWithAnalyses } from './types/ride-with-analyses.js';
@@ -63,10 +64,10 @@ export async function processRideAcceptanceChunk(chunk: PerformInTimeChunksItem)
 		// If the ride has an acceptance, update it.
 		await updateRideAcceptance(ride, acceptance);
 
-		// //
-		// // Justify
-		// if (acceptanceMap.get(ride._id)?.acceptance_status === 'justification_required') {
-		// 	await alertJustification(ride);
-		// }
+		//
+		// If justification is required, try to justify from a matching alert.
+		if (acceptance.acceptance_status === 'justification_required') {
+			await alertJustification(ride, acceptance);
+		}
 	}
 }
