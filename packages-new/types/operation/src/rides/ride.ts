@@ -1,6 +1,5 @@
 /* * */
 
-import { EncodedPolylineSchema } from '@tmlmobilidade/go-types-geo';
 import { GtfsTripDirectionSchema } from '@tmlmobilidade/go-types-gtfs';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema, ProcessingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
@@ -12,6 +11,7 @@ export const RideIdentitySchema = z.object({
 	agency_code: z.string(),
 	agency_id: z.string(),
 	direction_id: GtfsTripDirectionSchema,
+	hashed_shape_id: z.string(),
 	hashed_trip_id: z.string(),
 	headsign: z.string(),
 	operational_date: OperationalDateIntSchema,
@@ -22,7 +22,6 @@ export const RideIdentitySchema = z.object({
 	route_short_name: z.string(),
 	route_text_color: HexColorSchema.default('#FFFFFF'),
 	shape_id: z.string(),
-	shape_polyline: EncodedPolylineSchema,
 	trip_id: z.string(),
 });
 

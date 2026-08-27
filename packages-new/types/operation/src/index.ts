@@ -1,5 +1,6 @@
 export * from './alerts/index.js';
 export * from './gtfs-validations/index.js';
+export * from './hashed-shapes/index.js';
 export * from './hashed-trips/index.js';
 export * from './plans/index.js';
 export * from './ride-acceptances/index.js';

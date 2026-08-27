@@ -1,7 +1,7 @@
 /* * */
 
 import { type ClickHouseTableSchema } from '@tmlmobilidade/go-clients-clickhouse';
-import { type HashedTrip, type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisBase, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
+import { type HashedShape, type HashedTrip, type Ride, type RideAnalysisAtLeastOneVehicleEventOnFirstStop, type RideAnalysisAtLeastOneVehicleEventOnLastStop, type RideAnalysisBase, type RideAnalysisExpectedApexValidationInterval, type RideAnalysisExpectedDriverIdQty, type RideAnalysisExpectedStartTime, type RideAnalysisExpectedVehicleEventDelay, type RideAnalysisExpectedVehicleEventInterval, type RideAnalysisExpectedVehicleEventQty, type RideAnalysisExpectedVehicleIdQty, type RideAnalysisMatchingApexLocations, type RideAnalysisMatchingVehicleIds, type RideAnalysisSimpleOneApexValidation, type RideAnalysisSimpleOneVehicleEventOrApexValidation, type RideAnalysisSimpleThreeVehicleEvents, type RideAnalysisTransactionSequentiality } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
 /* * */
@@ -24,6 +24,17 @@ export const simplifiedVehicleEventTableSchema: ClickHouseTableSchema<Simplified
 	stop_id: { type: 'LowCardinality(Nullable(String))' },
 	trip_id: { type: 'String' },
 	vehicle_id: { type: 'LowCardinality(String)' },
+};
+
+/* * */
+
+export const hashedShapeTableSchema: ClickHouseTableSchema<HashedShape> = {
+	_id: { type: 'String' },
+	agency_id: { type: 'LowCardinality(String)' },
+	extension: { type: 'UInt32 CODEC(T64, ZSTD)' },
+	shape_id: { type: 'LowCardinality(String)' },
+	shape_polyline: { type: 'String CODEC(ZSTD)' },
+	updated_at: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 };
 
 /* * */
@@ -201,6 +212,7 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 	end_time_scheduled: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	extension_observed: { type: 'Nullable(UInt32) CODEC(T64, ZSTD)' },
 	extension_scheduled: { type: 'UInt32 CODEC(T64, ZSTD)' },
+	hashed_shape_id: { type: 'LowCardinality(String)' },
 	hashed_trip_id: { type: 'LowCardinality(String)' },
 	headsign: { type: 'LowCardinality(String)' },
 	operational_date: { type: 'UInt32' },
@@ -223,7 +235,6 @@ export const ridesTableSchema: ClickHouseTableSchema<Ride> = {
 	seen_first_at: { type: 'Nullable(Int64) CODEC(DoubleDelta, ZSTD)' },
 	seen_last_at: { type: 'Nullable(Int64) CODEC(DoubleDelta, ZSTD)' },
 	shape_id: { type: 'LowCardinality(String)' },
-	shape_polyline: { type: 'String CODEC(ZSTD)' },
 	start_time_observed: { type: 'Nullable(Int64) CODEC(DoubleDelta, ZSTD)' },
 	start_time_scheduled: { type: 'Int64 CODEC(DoubleDelta, ZSTD)' },
 	trip_id: { type: 'LowCardinality(String)' },
