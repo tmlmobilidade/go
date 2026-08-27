@@ -3,7 +3,7 @@
 import { RideAcceptanceStatusSchema } from '@/ride-acceptances/acceptance-status.js';
 import { RideJustificationSchema } from '@/ride-acceptances/ride-justification.js';
 import { RideOverridesSchema } from '@/ride-acceptances/ride-overrides.js';
-import { CommentSchema, BaseDocumentSchema, GradeStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, CommentSchema, GradeStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
