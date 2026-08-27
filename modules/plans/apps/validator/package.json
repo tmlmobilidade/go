@@ -18,16 +18,16 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-gtfs-validator": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/gtfs-validator": "20260803.96.36",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
