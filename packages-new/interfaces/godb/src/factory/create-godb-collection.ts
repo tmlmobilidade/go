@@ -8,6 +8,7 @@ import { count } from './methods/count.js';
 import { deleteById } from './methods/delete-by-id.js';
 import { deleteMany } from './methods/delete-many.js';
 import { deleteOne } from './methods/delete-one.js';
+import { distinct } from './methods/distinct.js';
 import { findById } from './methods/find-by-id.js';
 import { findMany } from './methods/find-many.js';
 import { findOne } from './methods/find-one.js';
@@ -58,7 +59,7 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 
 		deleteOne: (filter, clientSession) => deleteOne(context, filter, clientSession),
 
-		// distinct: (key, filter) => distinct(context, key, filter),
+		distinct: (key, filter) => distinct(context, key, filter),
 
 		// exists: (key, value) => exists(context, key, value),
 

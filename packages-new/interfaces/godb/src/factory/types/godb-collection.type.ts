@@ -23,7 +23,7 @@ export interface GoDbCollection<T extends Document> {
 
 	deleteOne(filter: Filter<T>, options?: MinimalOptions): Promise<DeleteResult>
 
-	// distinct<Key extends keyof WithId<T>>(key: Key, filter?: Filter<T>): Promise<Array<Flatten<WithId<T>[Key]>>>
+	distinct<Key extends keyof T>(key: Key, filter?: Filter<T>): Promise<Array<T[Key]>>
 
 	// exists<K extends keyof T>(key: K, value: T[K]): Promise<boolean>
 
