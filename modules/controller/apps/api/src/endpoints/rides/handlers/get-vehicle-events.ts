@@ -1,17 +1,17 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * Get SimplifiedVehicleEvents by Ride ID.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getSimplifiedVehicleEvents(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
+export async function getSimplifiedVehicleEventsHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedVehicleEvent[]>) {
 	//
 
 	//

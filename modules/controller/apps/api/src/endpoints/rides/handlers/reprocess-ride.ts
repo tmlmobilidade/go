@@ -11,7 +11,7 @@ import { Logger } from '@tmlmobilidade/logger';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function reprocessRideById(request: FastifyRequest, reply: FastifyReply<Ride>) {
+export async function reprocessRideHandler(request: FastifyRequest, reply: FastifyReply<Ride>) {
 	try {
 		//
 

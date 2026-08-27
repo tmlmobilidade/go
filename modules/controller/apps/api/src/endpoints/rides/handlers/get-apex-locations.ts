@@ -1,17 +1,17 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
 import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * Get SimplifiedApexLocations by Ride ID.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getSimplifiedApexLocations(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedApexLocation[]>) {
+export async function getSimplifiedApexLocationsHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<SimplifiedApexLocation[]>) {
 	//
 
 	//

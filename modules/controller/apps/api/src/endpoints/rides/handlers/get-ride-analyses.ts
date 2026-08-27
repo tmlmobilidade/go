@@ -9,7 +9,7 @@ import { type RideAnalysesRegistry, RideAnalysesRegistrySchema } from '@tmlmobil
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getRideAnalyses(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<RideAnalysesRegistry>) {
+export async function getRideAnalysesHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<RideAnalysesRegistry>) {
 	//
 
 	//

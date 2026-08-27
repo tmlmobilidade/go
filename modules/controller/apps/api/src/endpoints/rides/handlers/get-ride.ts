@@ -9,7 +9,7 @@ import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getRideById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<ControllerRidesDetailRideItem>) {
+export async function getRideHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<ControllerRidesDetailRideItem>) {
 	//
 
 	//

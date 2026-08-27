@@ -2,14 +2,14 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type HashedTrip, type Ride } from '@tmlmobilidade/go-types-operation';
+import { type HashedShape, type Ride } from '@tmlmobilidade/go-types-operation';
 
 /**
- * Get a HashedTrip by Ride ID.
+ * Get a HashedShape by Ride ID.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function getHashedTripHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HashedTrip[]>) {
+export async function getHashedShapeHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HashedShape[]>) {
 	//
 
 	//
@@ -25,8 +25,8 @@ export async function getHashedTripHandler(request: FastifyRequest<{ Params: { i
 	//
 	// Fetch the ride data from the database
 
-	const ridesQueryResult = await labDb.queryFromString<Pick<Ride, 'hashed_trip_id'>>(
-		'SELECT hashed_trip_id FROM operation.rides WHERE _id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id',
+	const ridesQueryResult = await labDb.queryFromString<Pick<Ride, 'hashed_shape_id'>>(
+		'SELECT hashed_shape_id FROM operation.rides WHERE _id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id',
 		{ 1: request.params.id },
 	);
 
@@ -43,18 +43,18 @@ export async function getHashedTripHandler(request: FastifyRequest<{ Params: { i
 	// Fetch the hashed trip data by ride ID
 	// and send it back to the client
 
-	const foundHashedTripData = await labDb.operation.hashedTrips.select(
+	const foundHashedShapeData = await labDb.operation.hashedShapes.select(
 		'*',
 		'_id = $1 ORDER BY updated_at DESC LIMIT 1 BY _id, stop_sequence',
-		{ 1: rideData.hashed_trip_id },
+		{ 1: rideData.hashed_shape_id },
 	);
 
-	if (!foundHashedTripData?.length) {
+	if (!foundHashedShapeData?.length) {
 		return sendErrorApiResponse(reply, {
-			error: 'Hashed Trip not found.',
+			error: 'Hashed Shape not found.',
 			status_code: '404',
 		});
 	}
 
-	return sendSuccessApiResponse(reply, foundHashedTripData);
+	return sendSuccessApiResponse(reply, foundHashedShapeData);
 }
