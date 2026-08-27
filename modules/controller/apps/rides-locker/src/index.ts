@@ -1,8 +1,8 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Dates, splitTimeIntervals } from '@tmlmobilidade/go-utils-dates';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -30,68 +30,48 @@ async function main() {
 		Logger.init();
 
 		const globalTimer = new Timer();
-		//
-		// In order to sync both collections in a manageable way, due to the high volume of data,
-		// it is necessary to divide the process into smaller blocks. Instead of syncing all documents at once,
-		// divide the process by timestamps chunks and iterate over each one, getting all document IDs from both databases.
-		// Like this we can more easily compare the IDs in memory and sync only the missing documents.
-		// More recent data is more important than older data, so we start syncing the most recent data first.
-		// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
-
-		const thirtySecondsAgo = Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK - 2 });
-		const earliestDataNeeded = Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK });
-
-		const allTimestampChunks = splitTimeIntervals(earliestDataNeeded.unix_timestamp, thirtySecondsAgo.unix_timestamp, 2);
-
-		//
-		// Iterate over each timestamp chunk and sync the documents.
-		// Timestamp chunks are sorted in descending order, so that more recent data is processed first.
-		// Timestamp chunks are in the format { start: day1, end: day2 }, so end is always greater than start.
-		// This might be confusing as the array of chunks itself is sorted in descending order, but the chunks individually are not.
 
 		const totalRides = 0;
-		for (const [chunkIndex, chunkData] of allTimestampChunks.entries()) {
-			//
-
-			const chunkTimer = new Timer();
-			const progress = `[${chunkIndex + 1}/${allTimestampChunks.length}]`;
-
-			const chunkStartDate = Dates
-				.fromUnixTimestamp(chunkData.start)
-				.setZone('Europe/Lisbon', 'offset_only');
-
-			const chunkEndDate = Dates
-				.fromUnixTimestamp(chunkData.end)
-				.setZone('Europe/Lisbon', 'offset_only');
-
-			Logger.spacer(1);
-			Logger.title(`${progress} - ${chunkEndDate.toFormat('yyyy-MM-dd HH:mm:ss')} › ${chunkStartDate.toFormat('yyyy-MM-dd HH:mm:ss')}`);
-
-			//
-			// Fetch the ride acceptances.
-			const foundRides = await goDb.operation.rideAcceptances.findMany({ created_at: { $gte: chunkStartDate.unix_timestamp, $lte: chunkEndDate.unix_timestamp } });
-
-			//
-			// Loop through the found rides and process
-			let totalRides = 0;
-			for (const rideAcceptance of foundRides) {
+		performInTimeChunks({
+			endDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK - 2 }).unix_timestamp,
+			intervalHrs: 1,
+			onChunk: async (chunk) => {
+				//
 				//
 
-				totalRides++;
+				const chunkTimer = new Timer();
+				const progress = `[${chunk.index + 1}/${chunk.total}]`;
 
-				if (rideAcceptance.is_locked) continue;
+				Logger.spacer(1);
+				Logger.title(`${progress} - ${Dates.fromUnixTimestamp(chunk.start).toLocaleString('full')} › ${Dates.fromUnixTimestamp(chunk.end).toLocaleString('full')}`);
 
-				await goDb.operation.rideAcceptances.updateById(rideAcceptance._id, { ...rideAcceptance, is_locked: true, updated_by: 'system' });
-				Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance._id}.` });
-			}
+				//
+				// Fetch the ride acceptances.
+				const foundRides = await goDb.operation.rideAcceptances.findMany({ created_at: { $gte: chunk.start, $lte: chunk.end } });
 
-			//
+				//
+				// Loop through the found rides and process
+				let totalRides = 0;
+				for (const rideAcceptance of foundRides) {
+				//
 
-			Logger.info({ message: `Found ${totalRides} ride acceptances. (${chunkTimer.get()})` });
+					totalRides++;
 
-			Logger.spacer(1);
-			Logger.divider();
-		}
+					if (rideAcceptance.is_locked) continue;
+
+					await goDb.operation.rideAcceptances.updateById(rideAcceptance._id, { ...rideAcceptance, is_locked: true, updated_by: 'system' });
+					Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance._id}.` });
+				}
+
+				//
+
+				Logger.info({ message: `Found ${totalRides} ride acceptances. (${chunkTimer.get()})` });
+
+				Logger.spacer(1);
+				Logger.divider();
+			},
+			startDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK }).unix_timestamp,
+		});
 
 		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });
 	} catch (err) {
