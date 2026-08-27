@@ -4,6 +4,7 @@ import { type Db, type Document, type SimplifiedMongoIndex } from '@tmlmobilidad
 import { z } from 'zod';
 
 import { aggregate, aggregateCursor } from './methods/aggregate.js';
+import { count } from './methods/count.js';
 import { deleteById } from './methods/delete-by-id.js';
 import { deleteMany } from './methods/delete-many.js';
 import { deleteOne } from './methods/delete-one.js';
@@ -49,7 +50,7 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 
 		aggregateCursor: (pipeline, options) => aggregateCursor(context, pipeline, options),
 
-		// count: filter => count(context, filter),
+		count: (filter, options) => count(context, filter, options),
 
 		deleteById: (_id, clientSession) => deleteById(context, _id, clientSession),
 

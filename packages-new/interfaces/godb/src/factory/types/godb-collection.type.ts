@@ -15,7 +15,7 @@ export interface GoDbCollection<T extends Document> {
 
 	aggregateCursor(pipeline: AggregationPipeline<T>, options?: AggregateOptions): Promise<AggregationCursor<T>>
 
-	// count(filter?: Filter<T>): Promise<number>
+	count(filter?: Filter<T>, options?: MinimalOptions): Promise<number>
 
 	deleteById(_id: string, options?: MinimalOptions): Promise<DeleteResult>
 

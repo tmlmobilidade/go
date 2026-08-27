@@ -73,13 +73,14 @@ async function main() {
 				user_instructions: '',
 			});
 
-			const createAlertDto: CreateAlertDto = {
+			const alertRealtime = await goDb.operation.alerts.insertOne({
 				active_period_end_date: null,
 				active_period_start_date: undefined,
 				agency_id: '43',
 				auto_texts: true,
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
 				coordinates: null,
+				created_by: 'sync-datik',
 				description: alertDescribeResult.pt.description,
 				effect: serviceAlert.alert.effect as CreateAlertDto['effect'],
 				external_id: serviceAlert.id,
@@ -97,9 +98,8 @@ async function main() {
 				})),
 				title: alertDescribeResult.pt.title,
 				user_instructions: '',
-			};
+			});
 
-			const alertRealtime = await goDb.operation.alerts.insertOne(createAlertDto);
 			Logger.info({ message: `Alert created | Internal ID: ${alertRealtime._id}, External ID: ${alertRealtime.external_id}` });
 		}
 	}
