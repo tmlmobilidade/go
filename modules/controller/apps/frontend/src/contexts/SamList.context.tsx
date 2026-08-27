@@ -3,8 +3,9 @@
 import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
+import { type Sam } from '@tmlmobilidade/go-types-operation';
+import { type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -112,20 +113,18 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const samsFavoritesContext = useSamsFavoritesContext();
 
-	const { filtered: agenciesData, filteredIds: agencyIdsOrdered, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
+	// const { filtered: agenciesData, filteredIds: agencyIdsOrdered, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
 
-	const agencyOptions = useMemo(
-		() =>
-			agenciesData.map(item => ({
-				checked: false,
-				disabled: false,
-				label: `${item._id} - ${item.name}`,
-				value: item._id,
-			})),
-		[agenciesData],
-	);
+	const agencyOptions = useMemo(() =>
+		[].map(item => ({
+			checked: false,
+			disabled: false,
+			label: `${item._id} - ${item.name}`,
+			value: item._id,
+		})),
+	[]);
 
-	const filterAgency = useFilterStateList('agency_id', agencyIdsOrdered, agencyOptions);
+	const filterAgency = useFilterStateList('agency_id', [], agencyOptions);
 
 	//
 
@@ -142,10 +141,10 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	const apexVersionsUrl = useMemo(() => {
-		if (agenciesLoading) return null;
+		// if (agenciesLoading) return null;
 		const base = `${API_ROUTES.controller.SAMS_LIST}/apex-versions`;
 		return baseQueryString ? `${base}?${baseQueryString}` : base;
-	}, [agenciesLoading, baseQueryString]);
+	}, [baseQueryString]);
 
 	const { data: apexVersionsData } = useSWR<string[], Error>(apexVersionsUrl);
 
@@ -201,10 +200,10 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	const samsListUrl = useMemo(() => {
-		if (agenciesLoading) return null;
+		// if (agenciesLoading) return null;
 		const base = API_ROUTES.controller.SAMS_BASE;
 		return samsListQueryString ? `${base}?${samsListQueryString}` : base;
-	}, [agenciesLoading, samsListQueryString]);
+	}, [samsListQueryString]);
 
 	//
 
