@@ -11,7 +11,7 @@ import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 export async function getRideAcceptance(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
 
-	const rideAcceptanceData = await goDb.operation.rideAcceptances.findOne({ ride_id: request.params.id });
+	const rideAcceptanceData = await goDb.operation.rideAcceptances.findById(request.params.id);
 
 	if (!rideAcceptanceData) {
 		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride acceptance not found.');

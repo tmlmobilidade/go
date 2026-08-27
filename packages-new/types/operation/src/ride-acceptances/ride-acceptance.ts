@@ -17,7 +17,6 @@ export const RideAcceptanceSchema = BaseDocumentSchema.extend({
 	comments: z.array(CommentSchema).default([]),
 	justification: RideJustificationSchema.nullable(),
 	overrides: RideOverridesSchema.nullable(),
-	ride_id: z.string(),
 });
 
 export const CreateRideAcceptanceSchema = RideAcceptanceSchema.partial({ _id: true }).omit({ created_at: true, updated_at: true });

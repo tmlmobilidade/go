@@ -1,10 +1,10 @@
 /* * */
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type AlertCause, type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * Justifies a ride acceptance by ride ID
@@ -12,7 +12,18 @@ import { type AlertCause, type RideAcceptance, RideAcceptanceStatusSchema } from
 export async function justifyRide(request: FastifyRequest<{ Body: { justification_cause: AlertCause, manual_trip_id?: string, pto_message: string }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
 
-	const updateResult = await goDb.operation.rideAcceptances.updateOne({ ride_id: request.params.id }, {
+	const oldJustificationData = await goDb.operation.rideAcceptances.findById(request.params.id);
+
+	if (!oldJustificationData) {
+		return reply.status(HTTP_STATUS.NOT_FOUND).send({
+			data: null,
+			error: 'Ride acceptance not found.',
+			statusCode: HTTP_STATUS.NOT_FOUND,
+		});
+	}
+
+	const updateResult = await goDb.operation.rideAcceptances.updateById(request.params.id, {
+		...oldJustificationData,
 		acceptance_status: RideAcceptanceStatusSchema.Values.under_review,
 		justification: {
 			created_at: Dates.now('utc').unix_timestamp,
@@ -22,6 +33,7 @@ export async function justifyRide(request: FastifyRequest<{ Body: { justificatio
 			manual_trip_id: request.body.manual_trip_id,
 			pto_message: request.body.pto_message,
 			updated_at: Dates.now('utc').unix_timestamp,
+			updated_by: request.me._id,
 		},
 		updated_by: request.me._id,
 	});
