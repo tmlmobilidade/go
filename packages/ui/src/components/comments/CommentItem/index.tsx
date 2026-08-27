@@ -1,10 +1,10 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-;
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 
 import styles from './styles.module.css';
 
+import { displayUnixTimestamp } from '../../../utils';
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
 
@@ -12,7 +12,7 @@ import { Section } from '../../layout/Section';
 
 export interface CommentItemProps {
 	content: React.ReactNode | string
-	created_at: number
+	created_at: UnixTimestamp
 	created_by: string
 	icon: React.ReactNode
 	iconTopMargin?: number
@@ -32,7 +32,7 @@ export function CommentItem({ content, created_at, created_by, icon, iconTopMarg
 				{typeof content === 'string' ? (
 					<Section flexDirection="column" padding="none">
 						<div className={styles.label}>{content}</div>
-						<Label size="sm">{created_by} a {Dates.fromUnixTimestamp(created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
+						<Label size="sm">{created_by} a {displayUnixTimestamp(created_at, 'short')}</Label>
 					</Section>
 				) : (
 					content
