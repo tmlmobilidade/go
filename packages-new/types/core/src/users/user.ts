@@ -18,7 +18,7 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 
 /* * */
 
-export const UserSchema_UNSAFE = BaseDocumentSchema.extend({
+export const UserSchema = BaseDocumentSchema.extend({
 	email: z.string().email(),
 	email_verified: UnixTimestampSchema.nullable().default(null),
 	first_name: z.string().min(2),
@@ -34,16 +34,12 @@ export const UserSchema_UNSAFE = BaseDocumentSchema.extend({
 	verification_token_ids: z.array(z.string()).default([]),
 });
 
-export const CreateUserSchema = UserSchema_UNSAFE.omit({ _id: true, created_at: true, updated_at: true });
+export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateUserSchema = CreateUserSchema.omit({ created_by: true, session_ids: true, verification_token_ids: true }).partial();
-export const UserSchema = UserSchema_UNSAFE.omit({ password_hash: true, session_ids: true, verification_token_ids: true });
 
-/* * */
-
-export type User_UNSAFE = z.infer<typeof UserSchema_UNSAFE>;
+export type User = z.infer<typeof UserSchema>;
 export type CreateUserDto = z.infer<typeof CreateUserSchema>;
 export type UpdateUserDto = z.infer<typeof UpdateUserSchema>;
-export type User = z.infer<typeof UserSchema>;
 
 /* * */
 
