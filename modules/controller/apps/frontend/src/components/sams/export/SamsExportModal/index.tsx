@@ -6,11 +6,10 @@ import { SamsListContextState } from '@/contexts/SamList.context';
 import { SAM_EXPORT_MODAL_ID, SamsExportContextProvider, type SamsExportSummaryFilter, useSamsExportContext } from '@/contexts/SamsExport.context';
 import { translateFilterKey, translateFilterValue } from '@/lib/translations';
 import { IconFileDownload } from '@tabler/icons-react';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type SamsAnalysisExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { type SystemStatus, UnixTimestamp } from '@tmlmobilidade/types';
-import { Button, CloseButton, closeModal, Divider, ExportsContextProvider, Label, MeContextProvider, openModal, Section, Spacer, Text, Toolbar, useDataAgencies } from '@tmlmobilidade/ui';
+import { type SystemStatus, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Button, CloseButton, closeModal, Divider, ExportsContextProvider, Label, MeContextProvider, openModal, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -135,7 +134,7 @@ export default function SamsExportModal() {
 	// A. Setup variables
 
 	const context = useSamsExportContext();
-	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
+	// const { filtered: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
 	const { t } = useTranslation();
 
 	//
@@ -143,11 +142,11 @@ export default function SamsExportModal() {
 
 	const agencyMap = useMemo(() => {
 		const map = new Map<string, string>();
-		agenciesData.forEach((agency) => {
+		[].forEach((agency) => {
 			map.set(agency._id, agency.name);
 		});
 		return map;
-	}, [agenciesData]);
+	}, []);
 
 	const getFormattedValue = (key: string, value: number | string | string[]): string => {
 		if (Array.isArray(value)) {

@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
+import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**
  * Hook to manage the agency IDs filter for the rides list filter bar.
