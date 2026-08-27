@@ -12,7 +12,7 @@ import { useCurrentUrl } from '../../../hooks/use-current-url';
 import { type SidebarNavigationGroupType } from '../sidebar-navigation';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarNavigationGroupItem } from '../SidebarNavigationGroupItem';
-import { isItemActive } from '../utils';
+import { getActiveItemPathname, getItemPathname, isItemActive, normalizePathname } from '../utils';
 
 /* * */
 
@@ -39,6 +39,10 @@ export function SidebarNavigationGroup({ group }: SidebarNavigationGroupProps) {
 	const isGroupActive = useMemo(() => {
 		return group.items.some(item => isItemActive(item.href, currentUrl?.pathname));
 	}, [group, currentUrl?.pathname]);
+
+	const activeItemPathname = useMemo(() => {
+		return getActiveItemPathname(group.items, currentUrl?.pathname);
+	}, [group.items, currentUrl?.pathname]);
 
 	const isGroupOpen = useMemo(() => {
 		if (isGroupActive) return true;
@@ -73,7 +77,11 @@ export function SidebarNavigationGroup({ group }: SidebarNavigationGroupProps) {
 			{isGroupOpen && (
 				<div className={styles.items}>
 					{group.items.map(item => (
-						<SidebarNavigationGroupItem key={item._id} item={item} />
+						<SidebarNavigationGroupItem
+							isActive={normalizePathname(getItemPathname(item.href)) === activeItemPathname}
+							item={item}
+							key={item._id}
+						/>
 					))}
 				</div>
 			)}

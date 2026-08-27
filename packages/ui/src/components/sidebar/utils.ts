@@ -20,3 +20,10 @@ export function isItemActive(href: string, currentPathname?: string) {
 	if (itemPathname === '/') return current === '/';
 	return current === itemPathname || current.startsWith(`${itemPathname}/`);
 }
+
+export function getActiveItemPathname(items: readonly { href: string }[], currentPathname?: string) {
+	return items
+		.map(item => normalizePathname(getItemPathname(item.href)))
+		.filter(pathname => isItemActive(pathname, currentPathname))
+		.sort((a, b) => b.length - a.length)[0];
+}

@@ -1,25 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { useCurrentUrl } from '../../../hooks/use-current-url';
 import { type SidebarNavigationGroupItemType } from '../sidebar-navigation';
 import { useSidebarContext } from '../Sidebar.context';
-import { isItemActive } from '../utils';
 
 /* * */
 
 export interface SidebarNavigationGroupItemProps {
+	isActive: boolean
 	item: SidebarNavigationGroupItemType
 }
 
 /* * */
 
-export function SidebarNavigationGroupItem({ item }: SidebarNavigationGroupItemProps) {
+export function SidebarNavigationGroupItem({ isActive, item }: SidebarNavigationGroupItemProps) {
 	//
 
 	//
@@ -27,16 +25,7 @@ export function SidebarNavigationGroupItem({ item }: SidebarNavigationGroupItemP
 
 	const { t } = useTranslation();
 
-	const currentUrl = useCurrentUrl();
-
 	const sidebarContext = useSidebarContext();
-
-	//
-	// B. Transform data
-
-	const isActive = useMemo(() => {
-		return isItemActive(item.href, currentUrl?.pathname);
-	}, [currentUrl?.pathname, item.href]);
 
 	//
 	// C. Render components
