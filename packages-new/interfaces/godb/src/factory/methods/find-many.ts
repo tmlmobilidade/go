@@ -1,6 +1,6 @@
 /* * */
 
-import { type Document, type Filter, type FindOptions, WithId } from '@tmlmobilidade/go-clients-mongo';
+import { type ClientSession, type Document, type Filter } from '@tmlmobilidade/go-clients-mongo';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
 
@@ -11,6 +11,6 @@ import { type GoDbCollectionContext } from '../types/godb-collection-context.typ
  * @param options Optional find options.
  * @returns A promise that resolves to the matching document or null if not found.
  */
-export async function findMany<T extends Document>(context: GoDbCollectionContext<T>, filter?: Filter<T>, options?: FindOptions): Promise<WithId<T>[]> {
-	return await context.collection.find(filter ?? {}, options).toArray();
+export async function findMany<T extends Document>(context: GoDbCollectionContext<T>, filter?: Filter<T>, clientSession?: ClientSession): Promise<T[]> {
+	return await context.collection.find<T>(filter ?? {}, { session: clientSession }).toArray();
 }

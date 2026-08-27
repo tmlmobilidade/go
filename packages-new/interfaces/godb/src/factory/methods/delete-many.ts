@@ -5,11 +5,11 @@ import { type ClientSession, type DeleteResult, type Document, type Filter } fro
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
 
 /**
- * Deletes a document by its ID.
+ * Deletes multiple documents by a filter.
  * @param context The context of the Mongo interface.
- * @param _id The ID of the document to delete.
+ * @param filter The filter to use to delete the documents.
  * @returns A promise that resolves to the result of the delete operation.
  */
-export async function deleteById<T extends Document>(context: GoDbCollectionContext<T>, _id: string, clientSession?: ClientSession): Promise<DeleteResult> {
-	return await context.collection.deleteOne({ _id: { $eq: _id as Filter<T>['_id'] } }, { session: clientSession });
+export async function deleteMany<T extends Document>(context: GoDbCollectionContext<T>, filter: Filter<T>, clientSession?: ClientSession): Promise<DeleteResult> {
+	return await context.collection.deleteMany(filter, { session: clientSession });
 }

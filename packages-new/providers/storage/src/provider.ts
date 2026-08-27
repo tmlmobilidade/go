@@ -164,7 +164,7 @@ class StorageProviderClass {
 	 * @returns A promise resolving to an array of matching attachments.
 	 */
 	async findMany(filter?: Filter<Attachment>, options?: FindOptions, hooks?: OperationHooks<OperationContext, Attachment[]>): Promise<Attachment[] | null> {
-		return operations.findMany(this.deps, { filter, hooks, options });
+		return operations.findMany(this.deps, { clientSession: options?.session, filter, hooks });
 	}
 }
 

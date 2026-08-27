@@ -1,6 +1,6 @@
 /* * */
 
-import { type Document, type InsertOneOptions, type WithId } from '@tmlmobilidade/go-clients-mongo';
+import { type ClientSession, type Document, type WithId } from '@tmlmobilidade/go-clients-mongo';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
@@ -13,7 +13,7 @@ import { InsertableDocument } from '../types/insertable-document.type.js';
  * @param options The options for the insert operation.
  * @returns A promise that resolves to the result of the insert operation.
  */
-export async function insertOne<T extends Document>(context: GoDbCollectionContext<T>, doc: InsertableDocument<T>, options?: InsertOneOptions): Promise<T> {
+export async function insertOne<T extends Document>(context: GoDbCollectionContext<T>, doc: InsertableDocument<T>, clientSession?: ClientSession): Promise<T> {
 	//
 
 	if (!context.schema) {
@@ -32,7 +32,7 @@ export async function insertOne<T extends Document>(context: GoDbCollectionConte
 		updated_at: Dates.now('utc').unix_timestamp,
 	};
 
-	while (await context.collection.findOne({ _id: insertableDocument._id as WithId<T>['_id'] })) {
+	while (await context.collection.findOne<T>({ _id: insertableDocument._id as WithId<T>['_id'] }, { session: clientSession })) {
 		insertableDocument._id = generateRandomString({ length: 5 }) as T['_id'];
 	}
 
@@ -45,7 +45,7 @@ export async function insertOne<T extends Document>(context: GoDbCollectionConte
 	// Attempt to insert the document into the collection
 	// and check if the insert operation was acknowledged
 
-	const insertResult = await context.collection.insertOne(validatedDocument, options);
+	const insertResult = await context.collection.insertOne(validatedDocument, { session: clientSession });
 
 	if (!insertResult.acknowledged) {
 		throw new Error(`Failed to insert document into ${context.collectionName} collection. The insert operation was not acknowledged.`);
@@ -54,7 +54,7 @@ export async function insertOne<T extends Document>(context: GoDbCollectionConte
 	//
 	// Fetch the inserted document and return it
 
-	const insertedDoc = await context.collection.findOne({ _id: insertResult.insertedId as WithId<T>['_id'] }, options);
+	const insertedDoc = await context.collection.findOne<T>({ _id: insertResult.insertedId as WithId<T>['_id'] }, { session: clientSession });
 
 	if (!insertedDoc) {
 		throw new Error(`Failed to find inserted document in ${context.collectionName} collection. The inserted document was not found.`);

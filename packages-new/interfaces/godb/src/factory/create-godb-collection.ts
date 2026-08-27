@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import { aggregate, aggregateCursor } from './methods/aggregate.js';
 import { deleteById } from './methods/delete-by-id.js';
+import { deleteMany } from './methods/delete-many.js';
 import { deleteOne } from './methods/delete-one.js';
 import { findById } from './methods/find-by-id.js';
 import { findMany } from './methods/find-many.js';
@@ -12,6 +13,7 @@ import { findOne } from './methods/find-one.js';
 import { getCollection } from './methods/get-collection.js';
 import { insertOneUnsafe } from './methods/insert-one-unsafe.js';
 import { insertOne } from './methods/insert-one.js';
+import { toggleLockById } from './methods/toggle-lock-by-id.js';
 import { updateById } from './methods/update-by-id.js';
 import { type GoDbCollectionContext } from './types/godb-collection-context.type.js';
 import { type GoDbCollection } from './types/godb-collection.type.js';
@@ -49,11 +51,11 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 
 		// count: filter => count(context, filter),
 
-		deleteById: (id, options) => deleteById(context, id, options),
+		deleteById: (_id, clientSession) => deleteById(context, _id, clientSession),
 
-		// deleteMany: filter => deleteMany(context, filter),
+		deleteMany: (filter, clientSession) => deleteMany(context, filter, clientSession),
 
-		deleteOne: (filter, options) => deleteOne(context, filter, options),
+		deleteOne: (filter, clientSession) => deleteOne(context, filter, clientSession),
 
 		// distinct: (key, filter) => distinct(context, key, filter),
 
@@ -61,11 +63,11 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 
 		// existsById: id => existsById(context, id),
 
-		findById: (_id, options) => findById(context, _id, options),
+		findById: (_id, clientSession) => findById(context, _id, clientSession),
 
-		findMany: (filter, options) => findMany(context, filter, options),
+		findMany: (filter, clientSession) => findMany(context, filter, clientSession),
 
-		findOne: (filter, options) => findOne<T>(context, filter, options),
+		findOne: (filter, clientSession) => findOne<T>(context, filter, clientSession),
 
 		getCollection: () => getCollection(context),
 
@@ -73,17 +75,17 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 
 		// insertMany: (docs, options) => insertMany(context, docs, options),
 
-		insertOne: (doc, options) => insertOne<T>(context, doc, options),
+		insertOne: (doc, clientSession) => insertOne<T>(context, doc, clientSession),
 
-		insertOneUnsafe: (doc, options) => insertOneUnsafe<T>(context, doc, options),
+		insertOneUnsafe: (doc, clientSession) => insertOneUnsafe<T>(context, doc, clientSession),
 
 		// isLocked: filter => isLocked(context, filter),
 
 		// isLockedById: id => isLockedById(context, id),
 
-		// toggleLockById: (id, forceValue) => toggleLockById(context, id, forceValue),
+		toggleLockById: (_id, clientSession) => toggleLockById<T>(context, _id, clientSession),
 
-		updateById: (_id, updateFields, options) => updateById<T>(context, _id, updateFields, options),
+		updateById: (_id, updateFields, clientSession) => updateById<T>(context, _id, updateFields, clientSession),
 
 		// updateMany: (filter, updateFields, options) => updateMany(context, filter, updateFields, options),
 

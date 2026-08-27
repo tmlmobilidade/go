@@ -69,8 +69,7 @@ export class AgenciesSharedController {
 
 		const allowAllAgencies = permittedAgencyIds.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 		const queryFilters: Filter<Agency> = allowAllAgencies ? {} : { _id: { $in: permittedAgencyIds } };
-
-		const allAgencies = await goDb.core.agencies.findMany(queryFilters, { sort: { _id: 1 } });
+		const allAgencies = await goDb.core.agencies.findMany(queryFilters);
 		reply.send({ data: allAgencies, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

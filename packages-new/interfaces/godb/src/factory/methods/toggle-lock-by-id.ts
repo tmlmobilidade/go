@@ -4,21 +4,18 @@ import { type ClientSession, type Document, type Filter } from '@tmlmobilidade/g
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
-import { type UpdatableDocument } from '../types/updatable-document.type.js';
 
 /**
- * Updates a document by its ID.
+ * Toggles the lock status of a document by its ID.
  * @param context The context of the Mongo interface.
- * @param _id The ID of the document to update.
- * @param updateFields The fields to update in the document.
- * @param options Optional options for the update operation.
- * @returns A promise that resolves to the result of the update operation.
+ * @param _id The ID of the document to toggle the lock status of.
+ * @returns A promise that resolves to the result of the toggle operation.
  */
-export async function updateById<T extends Document>(context: GoDbCollectionContext<T>, _id: string, updateFields: UpdatableDocument<T>, clientSession?: ClientSession): Promise<T> {
+export async function toggleLockById<T extends Document>(context: GoDbCollectionContext<T>, _id: string, clientSession?: ClientSession): Promise<T> {
 	//
 
 	if (!context.schema) {
-		throw new Error(`No schema defined for insert operation on ${context.collectionName} collection. Use .insertOneUnsafe() to insert documents without schema validation.`);
+		throw new Error(`No schema defined for toggle lock operation on ${context.collectionName} collection. Use .toggleLockByIdUnsafe() to toggle documents without schema validation.`);
 	}
 
 	//
@@ -35,7 +32,7 @@ export async function updateById<T extends Document>(context: GoDbCollectionCont
 
 	const updatableDocument = {
 		...existingDocument,
-		...updateFields,
+		is_locked: !existingDocument.is_locked,
 		updated_at: Dates.now('utc').unix_timestamp,
 	};
 
