@@ -1,6 +1,8 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { RideAcceptance, RideAcceptanceSchema } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 
 import { testRide } from './test-ride.js';
@@ -22,18 +24,24 @@ export async function createRideAcceptance(ride: RideWithAnalyses) {
 
 		//
 		// Create the acceptance.
-		await goDb.operation.rideAcceptances.insertOne({
+		const acceptance: RideAcceptance = {
+			_id: ride._id,
 			acceptance_status: pass ? 'accepted' : 'justification_required',
 			analysis_summary: analysisSummary,
 			comments: [],
+			created_at: Dates.now('utc').unix_timestamp,
 			created_by: 'system',
 			is_locked: false,
 			justification: null,
 			overrides: {
 				trip_id: null,
 			},
-			ride_id: ride._id,
-		});
+			updated_at: Dates.now('utc').unix_timestamp,
+			updated_by: 'system',
+		};
+
+		const parsedAcceptance = RideAcceptanceSchema.parse(acceptance);
+		await goDb.operation.rideAcceptances.insertOneUnsafe(parsedAcceptance);
 
 		Logger.info({ message: `Created acceptance for ride ${ride._id} with status ${pass ? 'accepted' : 'justification_required'}.` });
 	} catch (err) {

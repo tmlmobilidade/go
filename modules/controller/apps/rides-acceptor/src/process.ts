@@ -11,6 +11,7 @@ import { Timer } from '@tmlmobilidade/timer';
 import { createRideAcceptance } from './create-ride-acceptance.js';
 import { ridesWithAnalysesQuery } from './queries/rides-with-analyses-query.js';
 import { type RideWithAnalyses } from './types/ride-with-analyses.js';
+import { updateRideAcceptance } from './update-ride-acceptance.js';
 
 /* * */
 
@@ -39,7 +40,7 @@ export async function processRideAcceptanceChunk(chunk: PerformInTimeChunksItem)
 	//
 	// Bulk fetch acceptances.
 	const acceptances: RideAcceptance[] = await goDb.operation.rideAcceptances.findMany({ ride_id: { $in: foundRides.map(r => r._id) } });
-	const acceptanceMap = new Map<string, RideAcceptance>(acceptances.map(a => [a.ride_id, a]));
+	const acceptanceMap = new Map<string, RideAcceptance>(acceptances.map(a => [a._id, a]));
 
 	//
 	// Loop through the found rides and process
@@ -49,16 +50,18 @@ export async function processRideAcceptanceChunk(chunk: PerformInTimeChunksItem)
 
 		totalRides++;
 
+		const acceptance = acceptanceMap.get(ride._id);
+
 		//
 		// If the ride does not have an acceptance, create one.
-		if (!acceptanceMap.has(ride._id)) {
+		if (!acceptance) {
 			await createRideAcceptance(ride);
 			continue;
 		}
 
-		// //
-		// // If the ride has an acceptance, update it.
-		// await updateRideAcceptance(ride, acceptanceMap.get(ride._id));
+		//
+		// If the ride has an acceptance, update it.
+		await updateRideAcceptance(ride, acceptance);
 
 		// //
 		// // Justify
