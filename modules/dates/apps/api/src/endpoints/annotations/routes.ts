@@ -4,6 +4,7 @@ import { AnnotationsController } from '@/endpoints/annotations/annotations.contr
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { createAnnotationHandler } from './handlers/create-annotation.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
 
 /* * */
 
@@ -17,41 +18,19 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get(
-			'/',
-			{ preHandler: authorizationMiddleware('annotations', ['read']) },
-			AnnotationsController.getAll,
-		);
+		instance.get('/list', { preHandler: authorizationMiddleware('annotations', ['read']) }, AnnotationsController.getAll);
 
-		instance.get(
-			'/:id',
-			{ preHandler: authorizationMiddleware('annotations', ['read']) },
-			AnnotationsController.getById,
-		);
+		instance.get('/list-agencies', { preHandler: authorizationMiddleware('annotations', ['read', 'create']) }, listAgenciesHandler);
 
-		instance.post(
-			'/',
-			{ preHandler: authorizationMiddleware('annotations', ['create']) },
-			createAnnotationHandler,
-		);
+		instance.get('/:id', { preHandler: authorizationMiddleware('annotations', ['read']) }, AnnotationsController.getById);
 
-		instance.put(
-			'/:id',
-			{ preHandler: authorizationMiddleware('annotations', ['update']) },
-			AnnotationsController.update,
-		);
+		instance.post('/', { preHandler: authorizationMiddleware('annotations', ['create']) }, createAnnotationHandler);
 
-		instance.get(
-			'/:id/lock',
-			{ preHandler: authorizationMiddleware('annotations', ['lock']) },
-			AnnotationsController.lock,
-		);
+		instance.put('/:id', { preHandler: authorizationMiddleware('annotations', ['update']) }, AnnotationsController.update);
 
-		instance.delete(
-			'/:id',
-			{ preHandler: authorizationMiddleware('annotations', ['delete']) },
-			AnnotationsController.delete,
-		);
+		instance.get('/:id/lock', { preHandler: authorizationMiddleware('annotations', ['lock']) }, AnnotationsController.lock);
+
+		instance.delete('/:id', { preHandler: authorizationMiddleware('annotations', ['delete']) }, AnnotationsController.delete);
 
 		next();
 	},

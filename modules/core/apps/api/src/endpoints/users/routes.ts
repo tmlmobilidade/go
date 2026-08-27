@@ -25,65 +25,25 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get(
-			'/list',
-			{ preHandler: authorizationMiddleware('users', ['read']) },
-			listUsersHandler,
-		);
+		instance.get('/list', { preHandler: authorizationMiddleware('users', ['read']) }, listUsersHandler);
 
-		instance.get(
-			'/list-agencies',
-			{ preHandler: authorizationMiddleware('users', ['read', 'create']) },
-			listAgenciesHandler,
-		);
+		instance.get('/list-agencies', { preHandler: authorizationMiddleware('users', ['read', 'create']) }, listAgenciesHandler);
 
-		instance.get(
-			'/list-roles',
-			{ preHandler: authorizationMiddleware('users', ['read', 'create']) },
-			listRolesHandler,
-		);
+		instance.get('/list-roles', { preHandler: authorizationMiddleware('users', ['read', 'create']) }, listRolesHandler);
 
-		instance.get(
-			'/list-organizations',
-			{ preHandler: authorizationMiddleware('users', ['read', 'create']) },
-			listOrganizationsHandler,
-		);
+		instance.get('/list-organizations', { preHandler: authorizationMiddleware('users', ['read', 'create']) }, listOrganizationsHandler);
 
-		instance.get(
-			'/:id',
-			{ preHandler: authorizationMiddleware('users', ['read']) },
-			getUserHandler,
-		);
+		instance.get('/:id', { preHandler: authorizationMiddleware('users', ['read']) }, getUserHandler);
 
-		instance.post(
-			'/create',
-			{ preHandler: authorizationMiddleware('users', ['create']) },
-			createUserHandler,
-		);
+		instance.post('/create', { preHandler: authorizationMiddleware('users', ['create']) }, createUserHandler);
 
-		instance.put(
-			'/update/:id',
-			{ preHandler: authorizationMiddleware('users', ['update']) },
-			updateUserHandler,
-		);
+		instance.put('/update/:id', { preHandler: authorizationMiddleware('users', ['update']) }, updateUserHandler);
 
-		instance.delete(
-			'/delete/:id',
-			{ preHandler: authorizationMiddleware('users', ['delete']) },
-			deleteUserHandler,
-		);
+		instance.delete('/delete/:id', { preHandler: authorizationMiddleware('users', ['delete']) }, deleteUserHandler);
 
-		instance.get(
-			'/lock/:id',
-			{ preHandler: authorizationMiddleware('users', ['lock']) },
-			lockUserHandler,
-		);
+		instance.get('/lock/:id', { preHandler: authorizationMiddleware('users', ['lock']) }, lockUserHandler);
 
-		instance.get(
-			'/:id/simplified',
-			{ preHandler: authorizationMiddleware() },
-			getUserSimplifiedHandler,
-		);
+		instance.get('/:id/simplified', { preHandler: authorizationMiddleware() }, getUserSimplifiedHandler);
 
 		next();
 	},
