@@ -6,8 +6,6 @@ import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-sh
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { fetchApiData } from '../fetch/fetch-api-data';
-
 /* * */
 
 interface UseFileExportsListDataReturnType {
@@ -21,6 +19,22 @@ interface UseFileExportsListDataReturnType {
 
 /* * */
 
+async function fetchFileExports(url: string): Promise<ApiResponse<FileExport[]>> {
+	const response = await fetch(url, {
+		credentials: 'include',
+		method: 'POST',
+	});
+
+	if (!response.ok) throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+
+	const responseData = await response.json() as ApiResponse<FileExport[]>;
+	if (responseData.error) throw new Error(responseData.error);
+
+	return responseData;
+}
+
+/* * */
+
 export function useFileExportsListData(): UseFileExportsListDataReturnType {
 	//
 
@@ -28,7 +42,7 @@ export function useFileExportsListData(): UseFileExportsListDataReturnType {
 	// A. Fetch data
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<FileExport[]>, Error>(API_ROUTES.exporter.EXPORTER_LIST, {
-		fetcher: async (url: string) => await fetchApiData<FileExport[]>({ url }),
+		fetcher: fetchFileExports,
 		refreshInterval: 5_000,
 	});
 

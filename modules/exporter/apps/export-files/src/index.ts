@@ -38,11 +38,13 @@ async function main() {
 
 	const globalTimer = new Timer();
 
-	// TODO fix sorted by created_at don't found anything
-	const waitingFileExports = await goDb.core.exports.findMany({
-		processing_status: ProcessingStatusSchema.enum.waiting,
-		// sorted: { created_at: -1 },
-	});
+	const waitingFileExports = await goDb.core.exports.findMany(
+		{
+			processing_status: ProcessingStatusSchema.enum.waiting,
+			type: { $ne: 'plan_posters' },
+		},
+		{ sort: { created_at: -1 } },
+	);
 
 	Logger.info({ message: `Found ${waitingFileExports.length} waiting file exports.` });
 
@@ -85,7 +87,7 @@ async function main() {
 			//
 			// Upload the file to the storage service & update the file export.
 			if (pathToFile) {
-				const fileStream = fs.createReadStream(pathToFile, 'utf-8');
+				const fileStream = fs.createReadStream(pathToFile);
 
 				const file = await storageProvider.upload(fileStream, {
 					created_by: 'system',
