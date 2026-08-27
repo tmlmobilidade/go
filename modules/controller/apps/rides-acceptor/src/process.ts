@@ -40,7 +40,7 @@ export async function processRideAcceptanceChunk(chunk: PerformInTimeChunksItem)
 
 	//
 	// Bulk fetch acceptances.
-	const acceptances: RideAcceptance[] = await goDb.operation.rideAcceptances.findMany({ ride_id: { $in: foundRides.map(r => r._id) } });
+	const acceptances: RideAcceptance[] = await goDb.operation.rideAcceptances.findMany({ _id: { $in: foundRides.map(r => r._id) } });
 	const acceptanceMap = new Map<string, RideAcceptance>(acceptances.map(a => [a._id, a]));
 
 	//
@@ -70,4 +70,8 @@ export async function processRideAcceptanceChunk(chunk: PerformInTimeChunksItem)
 			await alertJustification(ride, acceptance);
 		}
 	}
+
+	Logger.success(`${progress} - ${totalRides} rides processed in ${chunkTimer.get()}ms`);
+	Logger.spacer(1);
+	Logger.divider();
 }
