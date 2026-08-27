@@ -39,7 +39,7 @@ export interface GoDbCollection<T extends Document> {
 
 	// getCollectionName(): string
 
-	// insertMany(docs: (T & { _id?: string, created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], options?: { options?: BulkWriteOptions, unsafe?: boolean }): Promise<InsertManyResult<T>>
+	insertMany(docs: InsertableDocument<T>[], options?: MinimalOptions): Promise<T[]>
 
 	insertOne(doc: InsertableDocument<T>, options?: MinimalOptions): Promise<T>
 

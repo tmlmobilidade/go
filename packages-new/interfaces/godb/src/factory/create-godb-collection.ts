@@ -13,6 +13,7 @@ import { findById } from './methods/find-by-id.js';
 import { findMany } from './methods/find-many.js';
 import { findOne } from './methods/find-one.js';
 import { getCollection } from './methods/get-collection.js';
+import { insertMany } from './methods/insert-many.js';
 import { insertOneUnsafe } from './methods/insert-one-unsafe.js';
 import { insertOne } from './methods/insert-one.js';
 import { toggleLockById } from './methods/toggle-lock-by-id.js';
@@ -75,7 +76,7 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 
 		// getCollectionName: () => getCollectionName(context),
 
-		// insertMany: (docs, options) => insertMany(context, docs, options),
+		insertMany: (docs, options) => insertMany(context, docs, options),
 
 		insertOne: (doc, clientSession) => insertOne<T>(context, doc, clientSession),
 

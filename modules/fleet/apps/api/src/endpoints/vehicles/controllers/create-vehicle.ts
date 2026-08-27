@@ -3,7 +3,8 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateVehicleDto, PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
+import { type CreateVehicleDto, type Vehicle } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Creates a new vehicle.

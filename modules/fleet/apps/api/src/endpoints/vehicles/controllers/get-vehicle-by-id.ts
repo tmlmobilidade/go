@@ -3,7 +3,7 @@
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Vehicle } from '@tmlmobilidade/types';
+import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Retrieves a single vehicle by ID
