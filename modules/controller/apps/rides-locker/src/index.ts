@@ -81,8 +81,8 @@ async function main() {
 
 				if (rideAcceptance.is_locked) continue;
 
-				await goDb.operation.rideAcceptances.updateById(rideAcceptance._id, { is_locked: true, updated_by: 'system' });
-				Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance.ride_id}.` });
+				await goDb.operation.rideAcceptances.updateById(rideAcceptance._id, { ...rideAcceptance, is_locked: true, updated_by: 'system' });
+				Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance._id}.` });
 			}
 
 			//
