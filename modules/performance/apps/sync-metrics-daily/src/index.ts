@@ -1,9 +1,11 @@
 /* * */
 
 import { syncCategoryMetrics } from '@/tasks/sync-category-metrics.js';
+import { syncItrpMetrics } from '@/tasks/sync-itrp.js';
 import { syncPassengerImpactMetrics } from '@/tasks/sync-passenger-impact.js';
 import { syncPatternHourMetrics } from '@/tasks/sync-pattern-hour-metrics.js';
 import { syncProductMetrics } from '@/tasks/sync-product-metrics.js';
+import { syncStopValidationsMetrics } from '@/tasks/sync-stop-validations.js';
 import { generatePerformanceSummary } from '@tmlmobilidade/go-performance-pckg-log';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -28,10 +30,12 @@ async function main() {
 	Logger.divider();
 
 	try {
-		await syncPatternHourMetrics();
-		await syncProductMetrics();
-		await syncCategoryMetrics();
-		await syncPassengerImpactMetrics();
+		// await syncPatternHourMetrics();
+		// await syncProductMetrics();
+		// await syncCategoryMetrics();
+		// await syncPassengerImpactMetrics();
+		// await syncStopValidationsMetrics();
+		await syncItrpMetrics();
 
 		generatePerformanceSummary();
 

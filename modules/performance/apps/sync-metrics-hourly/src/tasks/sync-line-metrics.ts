@@ -6,6 +6,9 @@ import { syncDemandByLineByYear } from '@/syncs/demand_by_line/by_year.js';
 import { computeMeanDemandByLineByMonth } from '@/syncs/demand_by_line/mean_by_month.js';
 import { computeTop30DayPerformanceByLine } from '@/syncs/demand_by_line/top_30day_performance.js';
 import { computeTopMeanDemandByLineByMonth } from '@/syncs/demand_by_line/top_mean_by_month.js';
+import { syncSupplyByLineByDay } from '@/syncs/supply_by_line/by_day.js';
+import { syncSupplyByLineByMonth } from '@/syncs/supply_by_line/by_month.js';
+import { syncSupplyByLineByYear } from '@/syncs/supply_by_line/by_year.js';
 import { MetricSyncRunner } from '@/utils/run-metric.js';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -19,15 +22,19 @@ export const syncLineMetrics = async (): Promise<void> => {
 	Logger.title('Starting Line Demand Metrics Sync');
 	Logger.divider();
 
-	await runner.run('demand_by_line_by_day', syncDemandByLineByDay);
-	await runner.run('demand_by_line_by_month', syncDemandByLineByMonth);
-	await runner.run('demand_by_line_by_year', syncDemandByLineByYear);
+	// await runner.run('demand_by_line_by_day', syncDemandByLineByDay);
+	// await runner.run('demand_by_line_by_month', syncDemandByLineByMonth);
+	// await runner.run('demand_by_line_by_year', syncDemandByLineByYear);
 
-	await runner.runParallel([
-		{ fn: computeMeanDemandByLineByMonth, name: 'mean_demand_by_line_by_month' },
-		{ fn: computeTopMeanDemandByLineByMonth, name: 'top_mean_demand_by_line_by_month' },
-		{ fn: computeTop30DayPerformanceByLine, name: 'top_lines_30day_performance' },
-	]);
+	// await runner.runParallel([
+	// 	{ fn: computeMeanDemandByLineByMonth, name: 'mean_demand_by_line_by_month' },
+	// 	{ fn: computeTopMeanDemandByLineByMonth, name: 'top_mean_demand_by_line_by_month' },
+	// 	{ fn: computeTop30DayPerformanceByLine, name: 'top_lines_30day_performance' },
+	// ]);
+
+	await runner.run('supply_by_line_by_day', syncSupplyByLineByDay);
+	await runner.run('supply_by_line_by_month', syncSupplyByLineByMonth);
+	await runner.run('supply_by_line_by_year', syncSupplyByLineByYear);
 
 	runner.finish({ successMessage: `Finished Line Demand Metrics Sync (${timer.get()})` });
 };

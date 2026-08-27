@@ -35,6 +35,8 @@
 		"build:locations": "turbo run build --filter=@tmlmobilidade/go-locations-*",
 		"build:offer": "turbo run build --filter=@tmlmobilidade/go-offer-*",
 		"build:performance": "turbo run build --filter=@tmlmobilidade/go-performance-*",
+		"build:performance:sync-metrics-daily": "turbo run build --filter=@tmlmobilidade/go-performance-sync-metrics-daily",
+		"build:performance:sync-metrics-realtime": "turbo run build --filter=@tmlmobilidade/go-performance-sync-metrics-realtime",
 		"build:plans": "turbo run build --filter=@tmlmobilidade/go-plans-*",
 		"build:replicator": "turbo run build --filter=@tmlmobilidade/go-replicator-*",
 		"build:stops": "turbo run build --filter=@tmlmobilidade/go-stops-*",
@@ -128,6 +130,8 @@
 		"prd:eta": "npm run build:eta:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-eta-*",
 		"prd:hub:publish-realtime": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-realtime",
 		"prd:hub:ui:navegante-app": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
+		"prd:performance:sync-metrics-daily": "npm run build:performance:sync-metrics-daily && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-performance-sync-metrics-daily",
+		"prd:performance:sync-metrics-realtime": "npm run build:performance:sync-metrics-realtime && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-performance-sync-metrics-realtime",
 		"prd:plans": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-plans-*",
 		"prd:stops": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-stops-*",
 		"prd:tracker": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-*",
@@ -157,13 +161,6 @@
 		"repo:rinse": "npx --yes @tmlmobilidade/repo-rinse",
 		"repo:routes": "bash ./scripts/generate-routes.sh"
 	},
-	"devDependencies": {
-		"@commitlint/cli": "21.2.1",
-		"@commitlint/config-conventional": "21.2.0",
-		"@tmlmobilidade/eslint": "*",
-		"husky": "9.1.7",
-		"turbo": "2.10.7"
-	},
 	"packageManager": "npm@12.0.1",
 	"workspaces": [
 		"!**/.next",
@@ -189,5 +186,15 @@
 		"fsevents": true,
 		"sharp": true,
 		"ssh2": true
+	},
+	"dependencies": {
+		"@dotenv-run/cli": "^1.3.6"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "21.2.1",
+		"@commitlint/config-conventional": "21.2.0",
+		"@tmlmobilidade/eslint": "*",
+		"husky": "9.1.7",
+		"turbo": "2.10.7"
 	}
 }

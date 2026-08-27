@@ -29,9 +29,9 @@ async function main() {
 	Logger.title('Starting Metrics Sync');
 	Logger.divider();
 
-	await runner.run('agency_metrics', syncAgencyMetrics);
+	// await runner.run('agency_metrics', syncAgencyMetrics);
 	await runner.run('line_metrics', syncLineMetrics);
-	await runner.run('pattern_metrics', syncPatternMetrics);
+	// await runner.run('pattern_metrics', syncPatternMetrics);
 
 	generatePerformanceSummary();
 

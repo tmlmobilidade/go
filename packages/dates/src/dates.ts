@@ -3,7 +3,10 @@
 import { CALENDAR_DATE_FORMAT, type DatesFormat, FORMATS, OPERATIONAL_DATE_FORMAT } from '@/lib/date-format.js';
 import { type TimezoneIdentified, TimezoneIdentifiedSchema, TimezoneIdentifiedValues } from '@/lib/timezone-identified.js';
 import { type CalendarDate, type OperationalDate, type OperationalDateInt, type UnixTimestamp } from '@tmlmobilidade/types';
+import fs from 'fs';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 /* * */
 
@@ -213,8 +216,8 @@ export class Dates {
 	static async fetchCalendarData(): Promise<CalendarEntry[]> {
 		try {
 			let calendarJson: CalendarEntry[] = [];
-			const response = await fetch('https://go.carrismetropolitana.pt/api/dates/public');
-			calendarJson = !response.ok ? [] : await response.json() as CalendarEntry[];
+			const response = fs.readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'assets', 'dates', 'calendars.json'), 'utf8');
+			calendarJson = JSON.parse(response) as CalendarEntry[];
 			return calendarJson;
 		} catch (error) {
 			console.error('Error fetching calendar data:', error);

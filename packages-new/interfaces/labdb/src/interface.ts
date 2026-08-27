@@ -1,6 +1,6 @@
 /* * */
 
-import { ClickHouseClient, ClickHouseDatabaseClient, queryFromFile, queryFromString } from '@tmlmobilidade/go-clients-clickhouse';
+import { ClickHouseClient, ClickHouseDatabaseClient, queryEachStatementFromFile, queryFromFile, queryFromString } from '@tmlmobilidade/go-clients-clickhouse';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 
 import { OperationDatabase } from './databases/operation.js';
@@ -94,6 +94,18 @@ class LabDbClass {
 	*/
 	public async queryFromString<T>(query: string, params?: Record<string, number | string>): ReturnType<typeof queryFromString<T>> {
 		return await queryFromString<T>(this.clickhouseClient, query, params);
+	}
+
+	/**
+	 * Executes each statement from a .sql file with optional parameter substitutions.
+	 * @param filePath Absolute or relative path to the .sql file.
+	 * @param params Optional key-value substitutions applied to the query (replaces {key} placeholders).
+	 * @returns Query result rows typed as `T`.
+	 * @example
+	 * const users = await queryEachStatementFromFile<User>(clickhouseClient, 'get_users.sql', { start_date: '2024-01-01', end_date: '2024-12-31' });
+	*/
+	public async queryEachStatementFromFile<T>(filePath: string, params?: Record<string, number | string>): ReturnType<typeof queryEachStatementFromFile<T>> {
+		return await queryEachStatementFromFile<T>(this.clickhouseClient, filePath, params);
 	}
 }
 
