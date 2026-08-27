@@ -108,10 +108,8 @@ class AuthProviderClass {
 		if (!passwordHashMatch) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Invalid password');
 
 		const createdSession = await goDb.core.sessions.insertOne({
-			created_at: Dates.now('utc').unix_timestamp,
 			expires_at: Dates.now('utc').plus({ days: 30 }).unix_timestamp,
 			token: generateRandomToken(),
-			updated_at: Dates.now('utc').unix_timestamp,
 			user_id: userData._id.toString(),
 		});
 
@@ -136,10 +134,8 @@ class AuthProviderClass {
 
 		const verificationToken = generateRandomToken();
 		await goDb.core.verificationTokens.insertOne({
-			created_at: Dates.now('utc').unix_timestamp,
 			expires_at: Dates.now('utc').plus({ days: 7 }).unix_timestamp,
 			token: verificationToken,
-			updated_at: Dates.now('utc').unix_timestamp,
 			user_id: insertNewUserResult._id,
 		});
 

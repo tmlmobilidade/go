@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type Document, InsertOneOptions, OptionalUnlessRequiredId } from '@tmlmobilidade/go-clients-mongo';
+import { type Document, type Filter, type InsertOneOptions, type OptionalUnlessRequiredId } from '@tmlmobilidade/go-clients-mongo';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
@@ -36,7 +36,7 @@ export async function insertOneUnsafe<T extends Document>(context: GoDbCollectio
 		parsedDocument._id = doc._id;
 	} else {
 		parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
-		while (await context.collection.findOne({ _id: { $eq: parsedDocument._id as T['_id'] } })) {
+		while (await context.collection.findOne({ _id: { $eq: parsedDocument._id as Filter<T>['_id'] } })) {
 			parsedDocument._id = generateRandomString({ length: 5 }) as T['_id'];
 		}
 	}
@@ -46,7 +46,7 @@ export async function insertOneUnsafe<T extends Document>(context: GoDbCollectio
 	// Check if the insert operation was acknowledged
 	if (!result.acknowledged) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to insert document', result);
 	// Otherwise, fetch and return the inserted document
-	const insertedDoc = await context.collection.findOne({ _id: { $eq: result.insertedId as T['_id'] } }, options);
+	const insertedDoc = await context.collection.findOne({ _id: { $eq: result.insertedId as Filter<T>['_id'] } }, options);
 	if (!insertedDoc) throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Failed to find inserted document', result);
 	return insertedDoc as unknown as T;
 }

@@ -5,7 +5,6 @@ import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-client
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/go-types-downloads';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 
 /* * */
@@ -22,10 +21,8 @@ export class ExporterSharedController {
 	static async create(request: FastifyRequest<{ Body: CreateFileExportDto<any> }>, reply: FastifyReply<FileExport>) {
 		const fileExportData = await goDb.core.exports.insertOne({
 			...request.body,
-			created_at: Dates.now('utc').unix_timestamp,
 			created_by: request.me._id,
 			processing_status: 'waiting',
-			updated_at: Dates.now('utc').unix_timestamp,
 			updated_by: request.me._id,
 		});
 		return reply.send({ data: fileExportData, error: null, statusCode: HTTP_STATUS.CREATED });

@@ -4,6 +4,8 @@ import type { AggregateOptions, AggregationCursor, BulkWriteOptions, Collection,
 import type { AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import type { UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 
+import { InsertableDocument } from './insertable-document.type.js';
+
 /**
  * The GoDB collection interface type.
  */
@@ -39,7 +41,7 @@ export interface GoDbCollection<T extends Document> {
 
 	// insertMany(docs: (T & { _id?: string, created_at?: UnixTimestamp, created_by?: string, updated_at?: UnixTimestamp, updated_by?: string })[], options?: { options?: BulkWriteOptions, unsafe?: boolean }): Promise<InsertManyResult<T>>
 
-	insertOne(doc: Omit<T, '_id' | 'created_at' | 'updated_at'>, options?: InsertOneOptions): Promise<T>
+	insertOne(doc: InsertableDocument<T>, options?: InsertOneOptions): Promise<T>
 
 	insertOneUnsafe(doc: T, options?: InsertOneOptions): Promise<T>
 

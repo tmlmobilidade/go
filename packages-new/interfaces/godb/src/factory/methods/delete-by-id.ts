@@ -1,6 +1,6 @@
 /* * */
 
-import { type DeleteOptions, type DeleteResult, type Document } from '@tmlmobilidade/go-clients-mongo';
+import { type DeleteOptions, type DeleteResult, type Document, type Filter } from '@tmlmobilidade/go-clients-mongo';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
 
@@ -11,6 +11,6 @@ import { type GoDbCollectionContext } from '../types/godb-collection-context.typ
  * @param options Optional find options.
  * @returns A promise that resolves to the matching document or null if not found.
  */
-export async function deleteById<T extends Document>(context: GoDbCollectionContext<T>, id: T['_id'], options?: DeleteOptions): Promise<DeleteResult> {
-	return await context.collection.deleteOne({ _id: { $eq: id } }, options);
+export async function deleteById<T extends Document>(context: GoDbCollectionContext<T>, _id: string, options?: DeleteOptions): Promise<DeleteResult> {
+	return await context.collection.deleteOne({ _id: { $eq: _id as Filter<T>['_id'] } }, options);
 }

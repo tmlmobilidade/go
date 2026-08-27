@@ -1,15 +1,11 @@
 /* * */
 
-import { type InsertOneOptions, WithId } from '@tmlmobilidade/go-clients-mongo';
-import { type GoMongoDocument } from '@tmlmobilidade/go-types-shared';
+import { type Document, type InsertOneOptions, type WithId } from '@tmlmobilidade/go-clients-mongo';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 import { type GoDbCollectionContext } from '../types/godb-collection-context.type.js';
-
-/* * */
-
-type InsertableDocument<T extends GoMongoDocument> = Omit<T, '_id' | 'created_at' | 'updated_at'>;
+import { InsertableDocument } from '../types/insertable-document.type.js';
 
 /**
  * Inserts a single document into the collection.
@@ -17,7 +13,7 @@ type InsertableDocument<T extends GoMongoDocument> = Omit<T, '_id' | 'created_at
  * @param options The options for the insert operation.
  * @returns A promise that resolves to the result of the insert operation.
  */
-export async function insertOne<T extends GoMongoDocument>(context: GoDbCollectionContext<T>, doc: InsertableDocument<T>, options?: InsertOneOptions): Promise<T> {
+export async function insertOne<T extends Document>(context: GoDbCollectionContext<T>, doc: InsertableDocument<T>, options?: InsertOneOptions): Promise<T> {
 	//
 
 	if (!context.schema) {
