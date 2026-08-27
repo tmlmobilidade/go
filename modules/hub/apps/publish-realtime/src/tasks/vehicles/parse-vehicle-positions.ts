@@ -1,23 +1,17 @@
 /* * */
 
 import { type HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
+import { toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
-import { getPublicLineId, getPublicPatternId } from '@tmlmobilidade/utils';
 
 /* * */
 
 /**
- * Parses an array of raw vehicle position events, transforming and validating each one.
+ * Validates vehicle positions already public-ID-formatted by SQL.
  *
- * Each event is converted to a valid `HubVehiclePosition`:
  * - Skips events without a `trip_id`.
- * - Transforms `line_id` and `pattern_id` using the appropriate public ID helpers,
- *   or sets them to `null` if missing.
- * - Validates the transformed event using `HubVehiclePositionSchema`.
- * - Logs an error and skips entries that do not validate.
- *
- * @param events Array of raw vehicle position events to parse.
- * @returns Array of valid, parsed `HubVehiclePosition` objects.
+ * - Adds `calendar_date` from `operational_date`.
+ * - Validates with `HubVehiclePositionSchema`; logs and skips failures.
  */
 export function parseVehiclePositions(events: HubVehiclePosition[]): HubVehiclePosition[] {
 	const positions: HubVehiclePosition[] = [];
@@ -28,8 +22,7 @@ export function parseVehiclePositions(events: HubVehiclePosition[]): HubVehicleP
 
 			const parsed = HubVehiclePositionSchema.safeParse({
 				...event,
-				line_id: event.line_id ? getPublicLineId(event.agency_id, event.line_id) : null,
-				pattern_id: event.pattern_id ? getPublicPatternId(event.agency_id, event.pattern_id) : null,
+				calendar_date: toCalendarDate(String(event.operational_date)),
 			});
 
 			if (!parsed.success) throw new Error(`Error parsing vehicle position ID: ${event._id}: ${parsed.error.message}`);
