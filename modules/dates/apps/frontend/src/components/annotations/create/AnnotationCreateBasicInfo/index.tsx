@@ -1,10 +1,10 @@
 'use client';
 
 import { useAnnotationCreateContext } from '@/components/annotations/create/AnnotationCreate.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { AnnotationSchema } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { MultiSelect, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { MultiSelect, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+
+import { useAnnotationsAgenciesData } from '../../shared/use-users-agencies-data';
 
 /* * */
 
@@ -16,10 +16,7 @@ export function AnnotationCreateBasicInfo() {
 
 	const annotationCreateContext = useAnnotationCreateContext();
 
-	const { options: allAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.annotations.actions.create],
-		scope: PermissionCatalog.all.annotations.scope,
-	});
+	const { options: allAgencyOptions } = useAnnotationsAgenciesData();
 
 	//
 	// B. Render Components

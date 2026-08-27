@@ -3,10 +3,10 @@
 import { DatesSelector } from '@/components/annotations/detail/AnnotationsDatesSelector';
 import { useAnnotationsDetailContext } from '@/components/annotations/detail/AnnotationsDetail.context';
 import { AnnotationsDetailHeader } from '@/components/annotations/detail/AnnotationsDetailHeader';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { AnnotationSchema } from '@tmlmobilidade/go-types-offer';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Textarea, TextInput } from '@tmlmobilidade/ui';
+
+import { useAnnotationsAgenciesData } from '../../shared/use-users-agencies-data';
 
 /* * */
 
@@ -20,10 +20,7 @@ export function AnnotationsDetail() {
 
 	// Bypass permissions to show all agency labels in read-only mode
 	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: annotationsDetailContext.flags.isReadOnly ? undefined : [PermissionCatalog.all.annotations.actions.update],
-		scope: annotationsDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.annotations.scope,
-	});
+	const { options: agencyOptions } = useAnnotationsAgenciesData();
 
 	//
 	// B. Render components

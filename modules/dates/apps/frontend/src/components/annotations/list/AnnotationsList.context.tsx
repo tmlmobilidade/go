@@ -4,10 +4,11 @@ import { type AnnotationNormalized } from '@/types/normalized';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Annotation } from '@tmlmobilidade/go-types-offer';
 import { normalizeString } from '@tmlmobilidade/strings';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useDataAgencies, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
+
+import { useAnnotationsAgenciesData } from '../shared/use-users-agencies-data';
 
 /* * */
 
@@ -47,10 +48,7 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// A. Fetch data
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.annotations.actions.read],
-		scope: PermissionCatalog.all.annotations.scope,
-	});
+	const { ids: allAgencyIds, options: allAgencyOptions } = useAnnotationsAgenciesData();
 
 	const { data: allAnnotationsData, error: allAnnotationsError, isLoading: allAnnotationsLoading } = useSWR<Annotation[], Error>(API_ROUTES.dates.ANNOTATIONS_LIST);
 
@@ -58,7 +56,7 @@ export const AnnotationsListContextProvider = ({ children }: PropsWithChildren) 
 	// B. Setup filters
 
 	const filterSearch = useFilterStateText('search');
-	const filterAgency = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	const filterAgency = useFilterStateList('agency', allAgencyIds, allAgencyOptions);
 
 	// Get all unique dates from annotations for the dates filter
 	const allDatesOptions = useMemo(() => {
