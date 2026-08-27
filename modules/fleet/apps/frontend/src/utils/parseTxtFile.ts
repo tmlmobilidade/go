@@ -1,6 +1,6 @@
 /* * */
 
-import { CreateVehicleDto } from '@tmlmobilidade/types';
+import { type CreateVehicleDto } from '@tmlmobilidade/go-types-operation';
 
 import { parseVehicleLine } from './parseVehicleLine';
 
@@ -38,9 +38,7 @@ export const parseTxtFile = async (file: File): Promise<CreateVehicleDto[]> => {
 
 			return parseVehicleLine(raw);
 		} catch (err) {
-			throw new Error(
-				`Error parsing line ${index + 2}: ${(err as Error).message}`,
-			);
+			throw new Error(`Error parsing line ${index + 2}: ${(err as Error).message}`, err);
 		}
 	});
 };
