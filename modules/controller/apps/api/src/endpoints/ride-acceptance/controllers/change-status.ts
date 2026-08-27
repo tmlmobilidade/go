@@ -10,8 +10,18 @@ import { type RideAcceptance, type UpdateRideAcceptanceDto } from '@tmlmobilidad
  */
 export async function changeStatus(request: FastifyRequest<{ Body: { acceptance_status: UpdateRideAcceptanceDto['acceptance_status'] }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
+	const oldRideAcceptanceData = await goDb.operation.rideAcceptances.findById(request.params.id);
 
-	const updateResult = await goDb.operation.rideAcceptances.updateOne({ ride_id: request.params.id }, {
+	if (!oldRideAcceptanceData) {
+		return reply.status(HTTP_STATUS.NOT_FOUND).send({
+			data: null,
+			error: 'Ride acceptance not found.',
+			statusCode: HTTP_STATUS.NOT_FOUND,
+		});
+	}
+
+	const updateResult = await goDb.operation.rideAcceptances.updateById(request.params.id, {
+		...oldRideAcceptanceData,
 		acceptance_status: request.body.acceptance_status,
 		updated_by: request.me._id,
 	});

@@ -3,7 +3,7 @@
 import { RideAcceptanceStatusSchema } from '@/ride-acceptances/acceptance-status.js';
 import { RideJustificationSchema } from '@/ride-acceptances/ride-justification.js';
 import { RideOverridesSchema } from '@/ride-acceptances/ride-overrides.js';
-import { CommentSchema, BaseDocumentSchema, GradeStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, CommentSchema, GradeStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -17,7 +17,6 @@ export const RideAcceptanceSchema = BaseDocumentSchema.extend({
 	comments: z.array(CommentSchema).default([]),
 	justification: RideJustificationSchema.nullable(),
 	overrides: RideOverridesSchema.nullable(),
-	ride_id: z.string(),
 });
 
 export const CreateRideAcceptanceSchema = RideAcceptanceSchema.partial({ _id: true }).omit({ created_at: true, updated_at: true });

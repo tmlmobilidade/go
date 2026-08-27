@@ -12,7 +12,7 @@ import { type NoteComment } from '@tmlmobilidade/go-types-shared';
 export async function addComment(request: FastifyRequest<{ Body: NoteComment, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
 
-	const rideAcceptanceData = await goDb.operation.rideAcceptances.findOne({ ride_id: request.params.id });
+	const rideAcceptanceData = await goDb.operation.rideAcceptances.findOne({ _id: request.params.id });
 
 	if (!rideAcceptanceData) {
 		return reply.status(HTTP_STATUS.NOT_FOUND).send({
@@ -22,9 +22,9 @@ export async function addComment(request: FastifyRequest<{ Body: NoteComment, Pa
 		});
 	}
 
-	const updateResult = await goDb.operation.rideAcceptances.updateOne(
-		{ ride_id: request.params.id },
-		{ comments: [...rideAcceptanceData.comments, { ...request.body, created_by: request.me._id, updated_by: request.me._id }], updated_by: request.me._id },
+	const updateResult = await goDb.operation.rideAcceptances.updateById(
+		request.params.id,
+		{ ...rideAcceptanceData, comments: [...rideAcceptanceData.comments, { ...request.body, created_by: request.me._id, updated_by: request.me._id }], updated_by: request.me._id },
 	);
 
 	return reply.send({

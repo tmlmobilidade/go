@@ -10,7 +10,7 @@ import { type RideAcceptance, type UpdateRideAcceptanceDto } from '@tmlmobilidad
  */
 export async function lockRideAcceptance(request: FastifyRequest<{ Body: { is_locked: UpdateRideAcceptanceDto['is_locked'] }, Params: { id: string } }>, reply: FastifyReply<RideAcceptance>) {
 	//
-	const oldJustificationData = await goDb.operation.rideAcceptances.findOne({ ride_id: request.params.id });
+	const oldJustificationData = await goDb.operation.rideAcceptances.findById(request.params.id);
 
 	if (oldJustificationData.is_locked === request.body.is_locked) {
 		return reply.send({
@@ -20,7 +20,11 @@ export async function lockRideAcceptance(request: FastifyRequest<{ Body: { is_lo
 		});
 	}
 
-	const updateResult = await goDb.operation.rideAcceptances.updateOne({ ride_id: request.params.id }, { is_locked: request.body.is_locked, updated_by: request.me._id });
+	const updateResult = await goDb.operation.rideAcceptances.updateById(request.params.id, {
+		...oldJustificationData,
+		is_locked: request.body.is_locked,
+		updated_by: request.me._id,
+	});
 
 	return reply.send({
 		data: updateResult,
