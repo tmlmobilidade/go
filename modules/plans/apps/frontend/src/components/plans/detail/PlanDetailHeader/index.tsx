@@ -2,6 +2,7 @@
 
 import { openPlanChangeModal } from '@/components/plans/change/PlanChange.modal';
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
+import { usePlansAgencies } from '@/components/plans/shared/use-plans-agencies';
 import { IconRefresh } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -19,6 +20,12 @@ export function PlanDetailHeader() {
 
 	const router = useRouter();
 	const planDetailContext = usePlanDetailContext();
+	const { data: agenciesData } = usePlansAgencies({
+		permissions: {
+			actions: [PermissionCatalog.all.plans.actions.read],
+			scope: PermissionCatalog.all.plans.scope,
+		},
+	});
 
 	//
 	// B. Handle actions
@@ -39,12 +46,7 @@ export function PlanDetailHeader() {
 
 			<AgencyTag
 				agencyId={planDetailContext.data.plan.agency_id}
-				request={{
-					permissions: {
-						actions: [PermissionCatalog.all.plans.actions.read],
-						scope: PermissionCatalog.all.plans.scope,
-					},
-				}}
+				data={agenciesData}
 				showShortName
 			/>
 

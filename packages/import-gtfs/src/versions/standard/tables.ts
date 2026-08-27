@@ -1,7 +1,7 @@
 /* * */
 
-import { type GtfsDate, type GtfsRoutes, type GtfsShapes, type GtfsStops, type GtfsStopTimes, type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
 import { SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
+import { type GtfsDate, type GtfsRoutes, type GtfsShapes, type GtfsStops, type GtfsStopTimes, type GtfsTrips } from '@tmlmobilidade/go-types-gtfs';
 
 import { type GtfsSQLTables } from './types.js';
 
@@ -61,28 +61,20 @@ export function initGtfsSqlTables(): GtfsSQLTables {
 	const stopsTable = database.registerTable<GtfsStops>('stops', {
 		batch_size: 10000,
 		columns: [
+			{ indexed: false, name: 'level_id', type: 'TEXT' },
 			{ indexed: false, name: 'location_type', type: 'INTEGER' },
 			{ indexed: false, name: 'parent_station', type: 'TEXT' },
 			{ indexed: false, name: 'platform_code', type: 'TEXT' },
 			{ indexed: false, name: 'stop_code', type: 'TEXT' },
+			{ indexed: false, name: 'stop_desc', type: 'TEXT' },
 			{ indexed: true, name: 'stop_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_lat', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_lon', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'stop_timezone', type: 'TEXT' },
+			{ indexed: false, name: 'stop_url', type: 'TEXT' },
 			{ indexed: false, name: 'wheelchair_boarding', type: 'INTEGER' },
-			// { indexed: false, name: 'lifecycle_status', type: 'TEXT' },
-			// { indexed: false, name: 'stop_short_name', type: 'TEXT' },
-			// { indexed: false, name: 'tts_stop_name', type: 'TEXT' },
-			// { indexed: false, name: 'district_id', type: 'TEXT' },
-			// { indexed: false, name: 'district_name', type: 'TEXT' },
-			// { indexed: false, name: 'flags', type: 'TEXT' },
-			// { indexed: false, name: 'legacy_ids', type: 'TEXT' },
-			// { indexed: false, name: 'municipality_id', type: 'TEXT' },
-			// { indexed: false, name: 'municipality_name', type: 'TEXT' },
-			// { indexed: false, name: 'parish_id', type: 'TEXT' },
-			// { indexed: false, name: 'parish_name', type: 'TEXT' },
-			// { indexed: false, name: 'locality_id', type: 'TEXT' },
-			// { indexed: false, name: 'locality_name', type: 'TEXT' },
+			{ indexed: false, name: 'zone_id', type: 'TEXT' },
 		],
 	});
 

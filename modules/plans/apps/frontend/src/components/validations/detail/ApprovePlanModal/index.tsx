@@ -2,6 +2,7 @@
 
 import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
+import { useValidationsAgencies } from '@/components/validations/shared/use-validations-agencies';
 import { PlansCreateContextProvider, usePlansCreateContext } from '@/contexts/PlansCreateForm.context';
 import { IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -39,6 +40,12 @@ export default function ApprovePlanModal() {
 	// A. Setup variables
 
 	const plansCreateContext = usePlansCreateContext();
+	const { data: agenciesData } = useValidationsAgencies({
+		permissions: {
+			actions: [PermissionCatalog.all.gtfs_validations.actions.read],
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+		},
+	});
 
 	//
 	// B. Render components
@@ -51,12 +58,7 @@ export default function ApprovePlanModal() {
 				<ValidityStatusDisplay value={plansCreateContext.data.validation.validity_status} />
 				<AgencyTag
 					agencyId={plansCreateContext.data.validation?.agency_id}
-					request={{
-						permissions: {
-							actions: [PermissionCatalog.all.gtfs_validations.actions.read],
-							scope: PermissionCatalog.all.gtfs_validations.scope,
-						},
-					}}
+					data={agenciesData}
 					showShortName
 				/>
 				<Label size="md" caps>{plansCreateContext.data.validation._id}</Label>

@@ -324,8 +324,9 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('exporter', 'api_url')}`,
 
 		// EXPORTER
+		EXPORTER_CREATE: `${getModuleConfig('exporter', 'api_url')}/exporter`,
 		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getModuleConfig('exporter', 'api_url')}/exporter/${encodeURIComponent(id)}/download`,
-		EXPORTER_LIST: `${getModuleConfig('exporter', 'api_url')}/exporter`,
+		EXPORTER_LIST: `${getModuleConfig('exporter', 'api_url')}/exporter/list`,
 	},
 
 	fleet: {
@@ -483,6 +484,7 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('plans', 'api_url')}`,
 
 		// PLANS
+		PLANS_AGENCIES: `${getModuleConfig('plans', 'api_url')}/plans/agencies`,
 		PLANS_CREATE: `${getModuleConfig('plans', 'api_url')}/plans/create`,
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}`,
 		PLANS_DETAIL_APEX_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file`,
@@ -495,8 +497,11 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file/download`,
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans/list`,
+		PLANS_POSTER_LINES: `${getModuleConfig('plans', 'api_url')}/plans/poster-lines`,
+		PLANS_POSTER_STOPS: `${getModuleConfig('plans', 'api_url')}/plans/poster-stops`,
 
 		// VALIDATIONS
+		VALIDATIONS_AGENCIES: `${getModuleConfig('plans', 'api_url')}/validations/agencies`,
 		VALIDATIONS_CREATE: `${getModuleConfig('plans', 'api_url')}/validations/create`,
 		VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}`,
 		VALIDATIONS_DETAIL_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/file`,

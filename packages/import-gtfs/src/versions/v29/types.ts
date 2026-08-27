@@ -1,8 +1,8 @@
 /* * */
 
+import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/go-clients-sqlite';
 import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type SQLiteDatabase, type SQLiteTableInstance } from '@tmlmobilidade/go-clients-sqlite';
 
 /**
  * Holds references to all GTFS-related SQL tables.

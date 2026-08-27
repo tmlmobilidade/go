@@ -114,6 +114,12 @@
 			"SectionValidationRules": {
 				"description": "Archivo de reglas de validación del GTFS",
 				"fields": {
+					"Rules": {
+						"label": "Reglas"
+					},
+					"Severity": {
+						"label": "Severidad"
+					},
 					"file": {
 						"button": "Cargar reglas",
 						"label": "Insertar reglas de validación del GTFS"
@@ -124,7 +130,11 @@
 						"no_content": "No hay reglas de validación definidas"
 					}
 				},
-				"title": "Reglas de validación del GTFS",
+				"title": {
+					"GTFS_validation_rules": {
+						"title": "Reglas de validación del GTFS"
+					}
+				},
 				"toasts": {
 					"error": {
 						"message": "No fue posible leer el archivo JSON. Verifique el contenido.",

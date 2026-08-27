@@ -1,8 +1,8 @@
 /* * */
 
+import { SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
 import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29Routes, type GtfsStrictV29Shapes, type GtfsStrictV29Stops, type GtfsStrictV29StopTimes, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { SQLiteDatabase } from '@tmlmobilidade/go-clients-sqlite';
 
 import { type GtfsStrictV29SQLTables } from './types.js';
 
@@ -23,7 +23,10 @@ export function initGtfsStrictV29SqlTables(): GtfsStrictV29SQLTables {
 			{ indexed: true, name: 'trip_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'bikes_allowed', type: 'TEXT' },
 			{ indexed: false, name: 'block_id', type: 'TEXT' },
+			{ indexed: false, name: 'calendar_desc', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'direction_id', not_null: true, type: 'TEXT' },
+			{ indexed: true, name: 'pattern_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'pattern_short_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'service_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'shape_id', not_null: true, type: 'TEXT' },
@@ -38,13 +41,21 @@ export function initGtfsStrictV29SqlTables(): GtfsStrictV29SQLTables {
 			{ indexed: false, name: 'agency_id', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'continuous_drop_off', type: 'TEXT' },
 			{ indexed: false, name: 'continuous_pickup', type: 'TEXT' },
+			{ indexed: false, name: 'line_id', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'line_long_name', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'line_short_name', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'path_type', type: 'TEXT' },
 			{ indexed: false, name: 'route_color', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_desc', type: 'TEXT' },
+			{ indexed: false, name: 'route_destination', type: 'TEXT' },
 			{ indexed: true, name: 'route_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_long_name', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'route_origin', type: 'TEXT' },
+			{ indexed: false, name: 'route_remarks', type: 'TEXT' },
 			{ indexed: false, name: 'route_short_name', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_text_color', not_null: true, type: 'TEXT' },
 			{ indexed: false, name: 'route_type', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'school', type: 'TEXT' },
 		],
 	});
 
@@ -62,28 +73,20 @@ export function initGtfsStrictV29SqlTables(): GtfsStrictV29SQLTables {
 	const stopsTable = database.registerTable<GtfsStrictV29Stops>('stops', {
 		batch_size: 10000,
 		columns: [
+			{ indexed: false, name: 'level_id', type: 'TEXT' },
 			{ indexed: false, name: 'location_type', type: 'TEXT' },
 			{ indexed: false, name: 'parent_station', type: 'TEXT' },
 			{ indexed: false, name: 'platform_code', type: 'TEXT' },
 			{ indexed: false, name: 'stop_code', type: 'TEXT' },
+			{ indexed: false, name: 'stop_desc', type: 'TEXT' },
 			{ indexed: true, name: 'stop_id', not_null: true, primary_key: true, type: 'TEXT' },
 			{ indexed: false, name: 'stop_lat', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_lon', not_null: true, type: 'REAL' },
 			{ indexed: false, name: 'stop_name', not_null: true, type: 'TEXT' },
+			{ indexed: false, name: 'stop_timezone', type: 'TEXT' },
+			{ indexed: false, name: 'stop_url', type: 'TEXT' },
 			{ indexed: false, name: 'wheelchair_boarding', type: 'TEXT' },
-			// { indexed: false, name: 'lifecycle_status', type: 'TEXT' },
-			// { indexed: false, name: 'stop_short_name', type: 'TEXT' },
-			// { indexed: false, name: 'tts_stop_name', type: 'TEXT' },
-			// { indexed: false, name: 'district_id', type: 'TEXT' },
-			// { indexed: false, name: 'district_name', type: 'TEXT' },
-			// { indexed: false, name: 'flags', type: 'TEXT' },
-			// { indexed: false, name: 'legacy_ids', type: 'TEXT' },
-			// { indexed: false, name: 'municipality_id', type: 'TEXT' },
-			// { indexed: false, name: 'municipality_name', type: 'TEXT' },
-			// { indexed: false, name: 'parish_id', type: 'TEXT' },
-			// { indexed: false, name: 'parish_name', type: 'TEXT' },
-			// { indexed: false, name: 'locality_id', type: 'TEXT' },
-			// { indexed: false, name: 'locality_name', type: 'TEXT' },
+			{ indexed: false, name: 'zone_id', type: 'TEXT' },
 		],
 	});
 

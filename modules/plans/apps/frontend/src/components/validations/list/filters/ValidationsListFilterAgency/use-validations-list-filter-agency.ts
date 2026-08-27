@@ -1,13 +1,15 @@
 'use client';
 
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useAgenciesData, useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
+import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
+
+import { useValidationsAgencies } from '../../../shared/use-validations-agencies';
 
 /**
  * Manage the agency filter for the validations list.
  */
 export function useValidationsListFilterAgency(): UseFilterStateListReturnType {
-	const { ids, options } = useAgenciesData({
+	const { ids, options } = useValidationsAgencies({
 		permissions: {
 			actions: [PermissionCatalog.all.gtfs_validations.actions.read],
 			scope: PermissionCatalog.all.gtfs_validations.scope,

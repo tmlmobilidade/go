@@ -76,6 +76,7 @@ const planActions: PermissionConfig = {
 		{ action: 'lock', description: 'Permite bloquear/desbloquear um plano', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar um plano', label: 'Eliminar', resources: ['AGENCIES'] },
 		{ action: 'update_gtfs_plan', description: 'Permite alterar o GTFS de um plano', label: 'Alterar GTFS', resources: ['AGENCIES'] },
+		{ action: 'generate_pdf_posters', description: 'Permite gerar posters em PDF de um plano', label: 'Gerar Posters PDF', resources: ['AGENCIES'] },
 		{ action: 'read_apex_file', description: 'Permite ver o ficheiro APEX de um plano', label: 'Ver Ficheiro APEX', resources: ['AGENCIES'] },
 		{ action: 'update_apex_file', description: 'Permite alterar o ficheiro APEX de um plano', label: 'Alterar Ficheiro APEX', resources: ['AGENCIES'] },
 		{ action: 'delete_apex_file', description: 'Permite eliminar o ficheiro APEX de um plano', label: 'Eliminar Ficheiro APEX', resources: ['AGENCIES'] },

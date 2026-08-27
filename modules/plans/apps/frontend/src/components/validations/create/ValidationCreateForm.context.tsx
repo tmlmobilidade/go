@@ -6,11 +6,12 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ValidationCreateItem, ValidationCreateItemSchema } from '@tmlmobilidade/go-plans-pckg-types';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiMultipart, keepUrlParams, type SelectDataItem, type StandardFormContextValue, useAgenciesData, useHandleUpdate, useStandardForm, useStandardFormCapabilities, useToast } from '@tmlmobilidade/ui';
+import { fetchApiMultipart, keepUrlParams, type SelectDataItem, type StandardFormContextValue, useHandleUpdate, useStandardForm, useStandardFormCapabilities, useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useValidationsListData } from '../list/use-validations-list-data';
+import { useValidationsAgencies } from '../shared/use-validations-agencies';
 
 /* * */
 
@@ -70,7 +71,7 @@ export function ValidationCreateContextProvider({ children }: PropsWithChildren)
 	//
 	// C. Fetch data
 
-	const { data: permittedAgencies, error: agenciesError, isLoading: agenciesLoading } = useAgenciesData({
+	const { data: permittedAgencies, error: agenciesError, isLoading: agenciesLoading } = useValidationsAgencies({
 		permissions: {
 			actions: [PermissionCatalog.all.gtfs_validations.actions.create],
 			scope: PermissionCatalog.all.gtfs_validations.scope,

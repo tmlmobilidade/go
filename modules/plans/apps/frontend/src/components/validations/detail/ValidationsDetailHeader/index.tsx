@@ -4,6 +4,7 @@
 import { openApprovePlanModal } from '@/components/validations/detail/ApprovePlanModal';
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
+import { useValidationsAgencies } from '@/components/validations/shared/use-validations-agencies';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ProcessingStatus } from '@tmlmobilidade/go-types-shared';
@@ -23,6 +24,12 @@ export function ValidationsDetailHeader() {
 	const router = useRouter();
 	const meContext = useMeContext();
 	const validationsDetailContext = useValidationsDetailContext();
+	const { data: agenciesData } = useValidationsAgencies({
+		permissions: {
+			actions: [PermissionCatalog.all.gtfs_validations.actions.read],
+			scope: PermissionCatalog.all.gtfs_validations.scope,
+		},
+	});
 
 	//
 	// B. Transform data
@@ -72,12 +79,7 @@ export function ValidationsDetailHeader() {
 			<IdTag id={validationsDetailContext.data.validation?._id} copyOnClick />
 			<AgencyTag
 				agencyId={validationsDetailContext.data.validation?.agency_id}
-				request={{
-					permissions: {
-						actions: [PermissionCatalog.all.gtfs_validations.actions.read],
-						scope: PermissionCatalog.all.gtfs_validations.scope,
-					},
-				}}
+				data={agenciesData}
 				showShortName
 			/>
 

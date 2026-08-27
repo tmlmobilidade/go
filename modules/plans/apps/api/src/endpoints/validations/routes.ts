@@ -6,6 +6,7 @@ import { createGtfsValidation } from './controllers/create-gtfs-validation.js';
 import { downloadGtfsValidationFile } from './controllers/download-gtfs-validation-file.js';
 import { getGtfsValidationFile } from './controllers/get-gtfs-validation-file.js';
 import { getGtfsValidation } from './controllers/get-gtfs-validation.js';
+import { listAgencies } from './controllers/list-agency.js';
 import { listGtfsValidations } from './controllers/list-gtfs-validations.js';
 import { lockGtfsValidation } from './controllers/lock-gtfs-validation.js';
 import { requestApproval } from './controllers/request-approval.js';
@@ -27,6 +28,12 @@ server.register(
 			'/list',
 			{ preHandler: authorizationMiddleware('gtfs_validations', ['read']) },
 			listGtfsValidations,
+		);
+
+		instance.post(
+			'/agencies',
+			{ preHandler: authorizationMiddleware('gtfs_validations', ['read', 'create']) },
+			listAgencies,
 		);
 
 		instance.get(

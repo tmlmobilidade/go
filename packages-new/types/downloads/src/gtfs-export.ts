@@ -20,6 +20,7 @@ export const GtfsExportPropertiesSchema = z.object({
 		lines_include: z.array(z.string()).default([]),
 		lines_mode: LinesModeSchema.default('all'),
 		numeric_calendar_codes: z.boolean().default(false),
+		plan_ids: z.array(z.string()).optional(),
 		stop_sequence_start: z.number().default(1),
 		stops_export_all: z.boolean().default(true),
 	}),

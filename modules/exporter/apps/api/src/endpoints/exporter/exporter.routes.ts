@@ -15,8 +15,8 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get(
-			'/',
+		instance.post(
+			'/list',
 			{ preHandler: authorizationMiddleware() },
 			ExporterController.getAll,
 		);

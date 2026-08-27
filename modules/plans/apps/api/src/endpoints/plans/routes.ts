@@ -13,7 +13,10 @@ import { getApexFile } from './controllers/get-apex-file.js';
 import { getDrtModel } from './controllers/get-drt-model.js';
 import { getOperationFile } from './controllers/get-operation-file.js';
 import { getPlan } from './controllers/get-plan.js';
+import { listAgencies } from './controllers/list-agency.js';
+import { listLines } from './controllers/list-lines.js';
 import { listPlans } from './controllers/list-plans.js';
+import { listStops } from './controllers/list-stops.js';
 import { lockPlan } from './controllers/lock-plan.js';
 import { sendApexNotification } from './controllers/send-apex-notification.js';
 import { updateApexFile } from './controllers/update-apex-file.js';
@@ -35,6 +38,18 @@ server.register(
 			'/list',
 			{ preHandler: authorizationMiddleware('plans', ['read']) },
 			listPlans,
+		);
+
+		instance.post(
+			'/poster-lines',
+			{ preHandler: authorizationMiddleware('plans', ['generate_pdf_posters']) },
+			listLines,
+		);
+
+		instance.post(
+			'/poster-stops',
+			{ preHandler: authorizationMiddleware('plans', ['generate_pdf_posters']) },
+			listStops,
 		);
 
 		instance.get(
@@ -122,6 +137,12 @@ server.register(
 		);
 
 		instance.get('/drt-model/:id', getDrtModel);
+
+		instance.post(
+			'/agencies',
+			{ preHandler: authorizationMiddleware('plans', ['read']) },
+			listAgencies,
+		);
 
 		next();
 	},
