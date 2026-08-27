@@ -3,9 +3,9 @@
 import { getEarliestDate } from '@tmlmobilidade/consts';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { transformPcgiVehicleEventCore } from '@tmlmobilidade/go-tracker-pckg-shared';
-import { Timer } from '@tmlmobilidade/timer';
-import { getCurrentEnvironment } from '@tmlmobilidade/types';
+import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
+import { Timer } from '@tmlmobilidade/timer';
 import { ObjectId } from 'mongodb';
 
 /* * */

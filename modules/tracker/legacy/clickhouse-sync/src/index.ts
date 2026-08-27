@@ -2,9 +2,9 @@
 
 // import { syncVehicleEvents } from '@/task.js';
 import { getEarliestDate } from '@tmlmobilidade/consts';
+import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 
