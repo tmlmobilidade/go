@@ -10,8 +10,8 @@ import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 	const fastifyService = FastifyService.getInstance({
 		module: 'schools',
-		origin: getModuleConfig('infrastructure', 'cors_origin'),
-		port: getModuleConfig('infrastructure', 'api_port'),
+		origin: getModuleConfig('schools', 'cors_origin'),
+		port: getModuleConfig('schools', 'api_port'),
 	});
 
 	await fastifyService.start();
