@@ -40,10 +40,15 @@
 		},
 		"SchoolCreateSectionGeneral": {
 			"agency": "Operador",
+			"code": {
+				"label": "Código",
+				"placeholder": "Introduzca el código de la escuela"
+			},
 			"coordinates": {
 				"label": "Coordenadas",
 				"placeholder": "Introduzca las coordenadas de la escuela"
 			},
+			"description": "Información general de la escuela.",
 			"grouping": {
 				"label": "Agrupación",
 				"placeholder": "Introduzca la agrupación de la escuela"
@@ -55,6 +60,10 @@
 			"nature": {
 				"label": "Naturaleza",
 				"placeholder": "Introduzca la naturaleza de la escuela"
+			},
+			"period_organization": {
+				"label": "Periodo de organización",
+				"placeholder": "Introduzca el periodo de organización de la escuela"
 			},
 			"title": "Datos generales"
 		},

@@ -49,11 +49,6 @@
 				"placeholder": "Introduza as coordenadas da escola"
 			},
 			"description": "Informações gerais da escola.",
-			"fields": {
-				"grouping": "Agrupamento",
-				"name": "Nome",
-				"nature": "Natureza"
-			},
 			"grouping": {
 				"label": "Agrupamento",
 				"placeholder": "Introduza o agrupamento da escola"
@@ -65,6 +60,10 @@
 			"nature": {
 				"label": "Natureza",
 				"placeholder": "Introduza a natureza da escola"
+			},
+			"period_organization": {
+				"label": "Período de organização",
+				"placeholder": "Introduza o período de organização da escola"
 			},
 			"title": "Dados gerais"
 		},

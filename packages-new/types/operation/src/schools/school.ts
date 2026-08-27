@@ -7,7 +7,6 @@ import { z } from 'zod';
 export const SchoolSchema = DocumentSchema.extend({
 	_id: z.string(),
 	address: z.string(),
-	agency_id: z.string(),
 	artistic: z.boolean().default(false),
 	basic_1: z.boolean().default(false),
 	basic_2: z.boolean().default(false),
@@ -28,6 +27,7 @@ export const SchoolSchema = DocumentSchema.extend({
 	nature: z.string(),
 	other: z.boolean().default(false),
 	parish_name: z.string(),
+	period_organization: z.enum(['semester', 'trimester']),
 	postal_code: z.string(),
 	pre_school: z.boolean().default(false),
 	professional: z.boolean().default(false),

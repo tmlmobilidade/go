@@ -99,6 +99,21 @@ export function SchoolCreateSectionGeneral() {
 							/>
 						)}
 					/>
+
+					<StandardFormController
+						control={schoolsCreateForm.control}
+						name="period_organization"
+						render={({ field }) => (
+							<TextInput
+								label={t('schools:create.SchoolCreateSectionGeneral.period_organization.label')}
+								onBlur={field.onBlur}
+								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('schools:create.SchoolCreateSectionGeneral.period_organization.placeholder')}
+								value={String(field.value)}
+								w="100%"
+							/>
+						)}
+					/>
 				</Grid>
 			</Section>
 

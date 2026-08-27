@@ -1,13 +1,12 @@
 'use client';
 
+import { useSchoolsCreateFormContext } from '@/components/schools/create/shared/SchoolsCreateForm.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { Collapsible, fetchApiData, Grid, Section, Select, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
-
-import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
 
 /* * */
 

@@ -21,6 +21,8 @@
 		"@tmlmobilidade/go-infrastructure-pckg-organize": "*",
 		"@tmlmobilidade/go-schools-pckg-types": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
+		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
@@ -28,6 +30,7 @@
 		"next": "16.3.0",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
+		"react-i18next": "17.0.11",
 		"swr": "2.5.0"
 	},
 	"devDependencies": {

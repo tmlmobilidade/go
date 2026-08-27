@@ -1,10 +1,8 @@
 'use client';
 
 import { type CreateSchoolDto, CreateSchoolSchema } from '@tmlmobilidade/go-types-operation';
-import { ErrorDisplay, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
-
-import { useSchoolsAgenciesData } from '../../shared/use-schools-agencies-data';
+import { useStandardForm, type UseStandardFormReturnType } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 /* * */
 
@@ -66,43 +64,8 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 		schema: CreateSchoolSchema,
 	});
 
-	const agencyIdValue = useStandardFormWatch({ control: form.control, name: 'agency_id' });
-
 	//
-	// C. Fetch data
-
-	const { data: agenciesData } = useSchoolsAgenciesData({
-		permissions: {
-			actions: ['create'],
-			scope: 'schools',
-		},
-	});
-
-	//
-	// D. Side effects
-
-	/**
-	 * Auto-select "agency_id" when only one agency is available.
-	 */
-	useEffect(() => {
-		// Skip if no agencies are available
-		if (!agenciesData?.length) return;
-		// Skip if more than one agency is available
-		if (agenciesData?.length !== 1) return;
-		// Skip if "agency_id" is already set
-		if (agencyIdValue) return;
-		// Auto-select "agency_id"
-		form.setValue('agency_id', agenciesData[0]._id, { shouldDirty: false });
-		// eslint-disable-next-line no-console
-		console.log('[Form] Auto-selected "agency_id" based on available agencies data.');
-	}, [agenciesData, agencyIdValue, form]);
-
-	//
-	// H. Return state
-
-	if (!agenciesData?.length) {
-		return <ErrorDisplay message="Não há agências disponíveis" />;
-	}
+	// B. Return state
 
 	return (
 		<SchoolsCreateFormContext.Provider value={{ form, isDirty, isValid, unblock }}>

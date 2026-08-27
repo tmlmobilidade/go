@@ -1,18 +1,17 @@
 'use client';
 
+import { SchoolCreateSectionAddress } from '@/components/schools/create/sections/SchoolCreateSectionAddress';
+import { SchoolCreateSectionAdministrative } from '@/components/schools/create/sections/SchoolCreateSectionAdministrative';
+import { SchoolCreateSectionEducation } from '@/components/schools/create/sections/SchoolCreateSectionEducation';
+import { SchoolCreateSectionGeneral } from '@/components/schools/create/sections/SchoolCreateSectionGeneral';
+import { SchoolCreateSectionOperations } from '@/components/schools/create/sections/SchoolCreateSectionOperations';
+import { SchoolCreateSectionOrganization } from '@/components/schools/create/sections/SchoolCreateSectionOrganization';
+import { SchoolCreateFooter } from '@/components/schools/create/shared/SchoolCreateFooter';
+import { SchoolCreateHeader } from '@/components/schools/create/shared/SchoolCreateHeader';
+import { SchoolsCreateFormContextProvider } from '@/components/schools/create/shared/SchoolsCreateForm.context';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { NoDataLabel, Pane, Surface, useMeContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-
-import { SchoolCreateSectionAddress } from '../sections/SchoolCreateSectionAddress';
-import { SchoolCreateSectionAdministrative } from '../sections/SchoolCreateSectionAdministrative';
-import { SchoolCreateSectionEducation } from '../sections/SchoolCreateSectionEducation';
-import { SchoolCreateSectionGeneral } from '../sections/SchoolCreateSectionGeneral';
-import { SchoolCreateSectionOperations } from '../sections/SchoolCreateSectionOperations';
-import { SchoolCreateSectionOrganization } from '../sections/SchoolCreateSectionOrganization';
-import { SchoolCreateFooter } from '../shared/SchoolCreateFooter';
-import { SchoolCreateHeader } from '../shared/SchoolCreateHeader';
-import { SchoolsCreateFormContextProvider } from '../shared/SchoolsCreateForm.context';
 
 /* * */
 
