@@ -2,10 +2,9 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Event, EventRule, Line, type UpdateEventDto, UpdateEventSchema } from '@tmlmobilidade/go-types-offer';
-import { generateRandomString } from '@tmlmobilidade/strings';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { generateRandomString } from '@tmlmobilidade/strings';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -81,16 +80,16 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Event>(API_ROUTES.dates.EVENTS_DETAIL(eventId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Event>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.dates.EVENTS_DETAIL(eventId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			eventMutate(updatedItem);
+			eventMutate(data);
 			eventsListMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Event>(API_ROUTES.dates.EVENTS_DETAIL(eventId), 'DELETE', eventData),
+		fetchFn: async () => await fetchApiData<Event>({ method: 'DELETE', url: API_ROUTES.dates.EVENTS_DETAIL(eventId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			eventsListMutate();
@@ -99,10 +98,10 @@ export const EventsDetailContextProvider = ({ children, eventId }: PropsWithChil
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<Event>(API_ROUTES.dates.EVENTS_DETAIL_LOCK(eventId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<Event>({ url: API_ROUTES.dates.EVENTS_DETAIL_LOCK(eventId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			eventMutate(updatedItem);
+			eventMutate(data);
 			eventsListMutate();
 		},
 	});

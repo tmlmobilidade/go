@@ -1,8 +1,8 @@
 'use client';
 
 import { useRuleCreateContext } from '@/components/events/rules/RuleCreate.context';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/dates';
+import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 import { MultiSelect, Section } from '@tmlmobilidade/ui';
 import { useEffect } from 'react';
 
