@@ -3,7 +3,7 @@
 import { PeriodAssign } from '@/components/year-periods/calendar/PeriodAssign';
 import { PeriodAssignContextProvider } from '@/components/year-periods/calendar/PeriodAssign.context';
 import { DataProviders } from '@/providers/data-providers';
-import { CalendarKey } from '@tmlmobilidade/go-utils-dates';
+import { type CalendarKey } from '@tmlmobilidade/dates';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
