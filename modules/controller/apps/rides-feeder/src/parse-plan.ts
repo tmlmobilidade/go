@@ -6,7 +6,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
-import { CreateHashedTrip, CreateHashedTripSchema, type HashedTrip, HashedTripSchema, type Ride } from '@tmlmobilidade/go-types-operation';
+import { CreateHashedShapeSchema, type CreateHashedTrip, CreateHashedTripSchema, type HashedShape, HashedShapeSchema, type HashedTrip, HashedTripSchema, type Ride } from '@tmlmobilidade/go-types-operation';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -36,6 +36,14 @@ const hashedTripsWritter = new BatchWriter<HashedTrip>({
 	title: await labDb.operation.hashedTrips.getTableName(),
 });
 
+const hashedShapesWritter = new BatchWriter<HashedShape>({
+	batch_size: 10_000,
+	insertFn: async (data) => {
+		await labDb.operation.hashedShapes.insert('JSONEachRow', data);
+	},
+	title: await labDb.operation.hashedShapes.getTableName(),
+});
+
 /* * */
 
 export async function parsePlan(planData: Plan) {
@@ -48,6 +56,7 @@ export async function parsePlan(planData: Plan) {
 
 	const savedRideIds = new Set<string>();
 	const savedHashedTripIds = new Set<string>();
+	const savedHashedShapeIds = new Set<string>();
 
 	//
 	// Import the GTFS into SQLite using the helper package
@@ -142,7 +151,7 @@ export async function parsePlan(planData: Plan) {
 			const lastStopTime = sortedStopTimesData[sortedStopTimesData.length - 1];
 
 			/* * */
-			/* HASHED PATH */
+			/* HASHED TRIP */
 
 			//
 			// Build the HashedTrip data, including formatting the path data by combining
@@ -173,7 +182,6 @@ export async function parsePlan(planData: Plan) {
 					stop_sequence: stopTime.stop_sequence,
 					timepoint: stopTime.timepoint === '1' ? true : false,
 				});
-
 				// Save the formatted path data for this stop_time
 				formattedCreateHashedTripItems.push(validatedCreateHashedTripItem);
 			}
@@ -186,7 +194,7 @@ export async function parsePlan(planData: Plan) {
 			// Hash the object contents and check if it already exists in the database.
 			// The hash value is the _id of the HashedTrip item.
 
-			const uniqueIdValueForCreateHashedTrip = crypto
+			const uniqueIdValueForHashedTrip = crypto
 				.createHash('sha256')
 				.update(JSON.stringify(sortedCreateHashedTripItems))
 				.digest('hex');
@@ -195,23 +203,23 @@ export async function parsePlan(planData: Plan) {
 			// Check if there are rows with this unique ID value.
 			// If there are no rows, save the HashedTrip items to the database.
 
-			const currentHashedTripAlreadyExists = await labDb.operation.hashedTrips.count('DISTINCT(_id)', '_id = $1', { 1: uniqueIdValueForCreateHashedTrip });
+			const currentHashedTripAlreadyExists = await labDb.operation.hashedTrips.count('DISTINCT(_id)', '_id = $1', { 1: uniqueIdValueForHashedTrip });
 
 			const hashedTripItems = sortedCreateHashedTripItems.map((item): HashedTrip => {
 				return HashedTripSchema.parse({
 					...item,
-					_id: uniqueIdValueForCreateHashedTrip,
+					_id: uniqueIdValueForHashedTrip,
 					updated_at: Dates.now('utc').unix_timestamp,
 				});
 			});
 
 			if (!currentHashedTripAlreadyExists) {
 				await hashedTripsWritter.write(hashedTripItems);
-				savedHashedTripIds.add(uniqueIdValueForCreateHashedTrip);
+				savedHashedTripIds.add(uniqueIdValueForHashedTrip);
 			}
 
 			/* * */
-			/* SHAPE TO ENCODED POLYLINE */
+			/* HASHED SHAPE */
 
 			//
 			// Transform the GTFS shape data into a GeoJSON LineString,
@@ -226,16 +234,45 @@ export async function parsePlan(planData: Plan) {
 
 			const shapeAsEncodedPolyline = fromGeoJsonLineStringToEncodedPolyline(shapeAsGeoJsonGeometry);
 
-			/* * */
-			/* RIDES */
-
 			//
-			// Setup variable that will be used multiple times in the next steps.
+			// Calculate the extension in meters for the shape.
 
 			const firstWaypoint = sortedCreateHashedTripItems[0];
 			const lastWaypoint = sortedCreateHashedTripItems[sortedCreateHashedTripItems.length - 1];
 
 			const extensionScheduledInMeters = toMetersFromKilometersOrMeters(lastWaypoint.shape_dist_traveled, lastWaypoint.shape_dist_traveled);
+
+			//
+			// Hash the object contents and check if it already exists in the database.
+			// The hash value is the _id of the HashedTrip item.
+
+			const createHashedShape = CreateHashedShapeSchema.parse({
+				agency_id: planData.agency_id,
+				extension: extensionScheduledInMeters,
+				shape_id: currentTrip.shape_id,
+				shape_polyline: shapeAsEncodedPolyline,
+			});
+
+			const uniqueIdValueForHashedShape = crypto
+				.createHash('sha256')
+				.update(JSON.stringify(createHashedShape))
+				.digest('hex');
+
+			const currentHashedShapeAlreadyExists = await labDb.operation.hashedShapes.count('DISTINCT(_id)', '_id = $1', { 1: uniqueIdValueForHashedShape });
+
+			const hashedShapeItem = HashedShapeSchema.parse({
+				...createHashedShape,
+				_id: uniqueIdValueForHashedShape,
+				updated_at: Dates.now('utc').unix_timestamp,
+			});
+
+			if (!currentHashedShapeAlreadyExists) {
+				await hashedShapesWritter.write(hashedShapeItem);
+				savedHashedShapeIds.add(uniqueIdValueForHashedShape);
+			}
+
+			/* * */
+			/* RIDES */
 
 			//
 			// Iterate on the saved calendar dates for this trip,
@@ -276,7 +313,8 @@ export async function parsePlan(planData: Plan) {
 					end_time_scheduled: endTimeScheduledUnixTimestamp,
 					extension_observed: null,
 					extension_scheduled: NonNegativeIntegerSchema.parse(Math.round(extensionScheduledInMeters)),
-					hashed_trip_id: uniqueIdValueForCreateHashedTrip,
+					hashed_shape_id: uniqueIdValueForHashedShape,
+					hashed_trip_id: uniqueIdValueForHashedTrip,
 					headsign: currentTrip.trip_headsign,
 					operational_date: OperationalDateIntSchema.parse(calendarDate),
 					passengers_estimated: null,
@@ -298,7 +336,6 @@ export async function parsePlan(planData: Plan) {
 					seen_first_at: null,
 					seen_last_at: null,
 					shape_id: currentTrip.shape_id,
-					shape_polyline: shapeAsEncodedPolyline,
 					start_time_observed: null,
 					start_time_scheduled: startTimeScheduledUnixTimestamp,
 					trip_id: currentTrip.trip_id,
