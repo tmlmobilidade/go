@@ -1,8 +1,9 @@
 'use client';
 
-import { School } from '@tmlmobilidade/go-types-operation';
+import { useSchoolsAgenciesData } from '@/components/shared/use-schools-agencies-data';
+import { type School } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Collapsible, Grid, LoadingSection, Section, Select, StandardFormController, TextInput, useAgenciesData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
@@ -19,12 +20,10 @@ export function SchoolCreateSectionOrganization() {
 
 	const { form: schoolsCreateForm } = useSchoolsCreateFormContext();
 
-	const agencyIdValue = useStandardFormWatch({ control: schoolsCreateForm.control, name: 'agency_id' });
-
 	//
 	// B. Fetch data
 
-	const { isLoading: agenciesLoading, options: agenciesOptions } = useAgenciesData({
+	const { options: agenciesOptions } = useSchoolsAgenciesData({
 		permissions: {
 			actions: [PermissionCatalog.all.schools.actions.create],
 			scope: PermissionCatalog.all.schools.scope,
@@ -32,18 +31,14 @@ export function SchoolCreateSectionOrganization() {
 	});
 
 	//
-	// C. Transform data
+	// C. Handle actions
 
-	const handleSelectAgencyId = (value: School['agency_id']) => {
-		schoolsCreateForm.setValue('agency_id', value, { shouldDirty: true });
+	const handleChangeAgencyId = (value: School['agency_id'], fieldOnChange: (v: School['agency_id']) => void) => {
+		fieldOnChange(value);
 	};
 
 	//
 	// D. Render components
-
-	if (agenciesLoading) {
-		return <LoadingSection />;
-	}
 
 	return (
 		<Collapsible
@@ -52,13 +47,23 @@ export function SchoolCreateSectionOrganization() {
 		>
 			<Section padding="lg">
 				<Grid columns="abc" gap="md">
-					<Select
-						data={agenciesOptions}
-						label={t('schools:create.SchoolCreateSectionGeneral.agency')}
-						name="agency_id"
-						onChange={value => handleSelectAgencyId(value as School['agency_id'])}
-						value={agencyIdValue}
-					/>
+					{agenciesOptions.length > 1 && (
+						<StandardFormController
+							control={schoolsCreateForm.control}
+							name="agency_id"
+							render={({ field, fieldState }) => (
+								<Select
+									clearable={false}
+									data={agenciesOptions}
+									error={fieldState.error?.message}
+									label={t('schools:create.SchoolCreateSectionGeneral.agency')}
+									onBlur={field.onBlur}
+									onChange={value => handleChangeAgencyId(value as School['agency_id'], field.onChange)}
+									value={field.value}
+								/>
+							)}
+						/>
+					)}
 
 					<StandardFormController
 						control={schoolsCreateForm.control}

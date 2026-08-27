@@ -1,5 +1,5 @@
 {
-	"name": "@tmlmobilidade/go-infrastructure-schools-frontend",
+	"name": "@tmlmobilidade/go-schools-frontend",
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -17,6 +17,7 @@
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-alerts-pckg-types": "*",
+		"@tmlmobilidade/go-schools-pckg-types": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-permissions": "*",

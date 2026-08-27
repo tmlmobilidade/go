@@ -15,7 +15,9 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
+		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/utils": "*",
 		"zod": "3.25.76"

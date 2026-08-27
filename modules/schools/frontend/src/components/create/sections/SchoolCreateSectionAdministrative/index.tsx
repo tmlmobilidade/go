@@ -52,12 +52,12 @@ export function SchoolCreateSectionAdministrative() {
 
 	const districtOptions = useMemo(() => (districtsData ?? [])
 		.map(item => ({ label: item.name, value: item._id }))
-		.sort((a, b) => a.label.localeCompare(b.label, 'pt')), [districtsData]);
+		.sort((a, b) => a.label.localeCompare(b.label)), [districtsData]);
 
 	const municipalityOptions = useMemo(() => (municipalitiesData ?? [])
 		.filter(item => !districtIdValue || item.district_id === districtIdValue)
 		.map(item => ({ label: item.name, value: item._id }))
-		.sort((a, b) => a.label.localeCompare(b.label, 'pt')), [districtIdValue, municipalitiesData]);
+		.sort((a, b) => a.label.localeCompare(b.label)), [districtIdValue, municipalitiesData]);
 
 	//
 	// C. Handle actions

@@ -1,9 +1,10 @@
 'use client';
 
 import { type CreateSchoolDto, CreateSchoolSchema } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useAgenciesData, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { ErrorDisplay, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
+
+import { useSchoolsAgenciesData } from '../../shared/use-schools-agencies-data';
 
 /* * */
 
@@ -70,10 +71,10 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 	//
 	// C. Fetch data
 
-	const { data: agenciesData } = useAgenciesData({
+	const { data: agenciesData } = useSchoolsAgenciesData({
 		permissions: {
-			actions: [PermissionCatalog.all.schools.actions.create],
-			scope: PermissionCatalog.all.schools.scope,
+			actions: ['create'],
+			scope: 'schools',
 		},
 	});
 
@@ -99,7 +100,9 @@ export function SchoolsCreateFormContextProvider({ children }: PropsWithChildren
 	//
 	// H. Return state
 
-	if (!agenciesData?.length) return null;
+	if (!agenciesData?.length) {
+		return <ErrorDisplay message="Não há agências disponíveis" />;
+	}
 
 	return (
 		<SchoolsCreateFormContext.Provider value={{ form, isDirty, isValid, unblock }}>
