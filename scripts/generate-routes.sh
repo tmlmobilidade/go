@@ -438,15 +438,17 @@ for module_dir in "${MODULES_DIR}"/*; do
 
     printf "${YELLOW}Processing module: ${module_name}${NC}\n"
 
-    frontend_app="${module_dir}/apps/frontend"
     api_app="${module_dir}/apps/api"
 
     # Collect routes for this module
     declare -a module_route_list=()
 
-    # Scan frontend routes
-    if [ -d "$frontend_app" ]; then
-        printf "  Scanning frontend routes...\n"
+    # Scan frontend routes (apps named "frontend" or "frontend-*")
+    for frontend_app in "${module_dir}/apps"/frontend "${module_dir}/apps"/frontend-*; do
+        if [ ! -d "$frontend_app" ]; then
+            continue
+        fi
+        printf "  Scanning frontend routes in $(basename "$frontend_app")...\n"
         frontend_routes_temp=$(mktemp)
         scan_frontend_routes "$module_name" "$frontend_app" > "$frontend_routes_temp"
         while IFS= read -r route; do
@@ -455,7 +457,7 @@ for module_dir in "${MODULES_DIR}"/*; do
             fi
         done < "$frontend_routes_temp"
         rm -f "$frontend_routes_temp"
-    fi
+    done
 
     # Scan API routes
     if [ -d "$api_app" ] && [ -d "${api_app}/src/endpoints" ]; then
