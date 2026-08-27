@@ -2,9 +2,9 @@
 
 import { deleteOldFileExports } from '@/tasks/delete-old-exports.js';
 import { markStuckProcessingExportsAsError } from '@/tasks/mark-stuck-as-error.js';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
 /* * */
 
