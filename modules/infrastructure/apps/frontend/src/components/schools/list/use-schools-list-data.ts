@@ -7,6 +7,9 @@ import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
+import { useSchoolsListFilterCycle } from './filters/SchoolsListFilterCycle/use-schools-list-filter-cycle';
+import { useSchoolsListFilterGrouping } from './filters/SchoolsListFilterGrouping/use-schools-list-filter-grouping';
+import { useSchoolsListFilterMunicipality } from './filters/SchoolsListFilterMunicipality/use-schools-list-filter-municipality';
 import { useSchoolsListFilterSearch } from './filters/SchoolsListFilterSearch/use-schools-list-filter-search';
 
 /* * */
@@ -28,14 +31,20 @@ export function useSchoolsListData(): UseSchoolsListDataReturnType {
 	//
 	// A. Setup variables
 
+	const filterCycle = useSchoolsListFilterCycle();
+	const filterGrouping = useSchoolsListFilterGrouping();
+	const filterMunicipality = useSchoolsListFilterMunicipality();
 	const filterSearch = useSchoolsListFilterSearch();
 
 	//
 	// B. Transform data
 
 	const query = useMemo<SchoolsListFilters>(() => ({
+		cycles: filterCycle.value,
+		groupings: filterGrouping.value,
+		municipality_ids: filterMunicipality.value,
 		search: filterSearch.value,
-	}), [filterSearch.value]);
+	}), [filterCycle.value, filterGrouping.value, filterMunicipality.value, filterSearch.value]);
 
 	//
 	// C. Fetch data

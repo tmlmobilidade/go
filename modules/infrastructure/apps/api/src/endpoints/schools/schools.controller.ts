@@ -70,6 +70,18 @@ export class SchoolsController {
 			queryFilters.name = { $options: 'i', $regex: filters.search };
 		}
 
+		if (filters.municipality_ids?.length) {
+			queryFilters.municipality_id = { $in: filters.municipality_ids };
+		}
+
+		if (filters.groupings?.length) {
+			queryFilters.grouping = { $in: filters.groupings };
+		}
+
+		if (filters.cycles?.length) {
+			queryFilters.$or = filters.cycles.map(cycle => ({ [cycle]: true }));
+		}
+
 		const data = await goDb.operation.schools.findMany(queryFilters, {
 			projection: Object.fromEntries(Object.keys(SchoolsListItemSchema.shape).map(key => [key, 1])),
 			sort: { created_at: -1 },

@@ -103,6 +103,27 @@
 			"title": "Escolas"
 		},
 		"filters": {
+			"cycle": {
+				"label": "Ciclo",
+				"options": {
+					"artistic": "Ensino artístico",
+					"basic_1": "1.º ciclo",
+					"basic_2": "2.º ciclo",
+					"basic_3": "3.º ciclo",
+					"high_school": "Ensino secundário",
+					"other": "Outro ensino",
+					"pre_school": "Educação pré-escolar",
+					"professional": "Ensino profissional",
+					"special": "Educação especial",
+					"university": "Ensino superior"
+				}
+			},
+			"grouping": {
+				"label": "Agrupamento"
+			},
+			"municipality": {
+				"label": "Município"
+			}
 		}
 	}
 }
