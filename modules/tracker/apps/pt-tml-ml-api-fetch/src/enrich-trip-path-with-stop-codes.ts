@@ -34,17 +34,19 @@ export function addStopCodesToTripPath(path: HashedTrip[], stopDocs: StopCodeSou
 }
 
 export async function enrichTripPathWithStopCodes(path: HashedTrip[]): Promise<TripPathWaypoint[]> {
-	const stopDocs = await goDb.infrastructure.stops.findMany(
+	const stopDocs = await goDb.infrastructure.stops.aggregate([
 		{
-			flags: {
-				$elemMatch: {
-					agency_ids: ML_AGENCY_ID,
-					stop_id: { $in: path.map(waypoint => waypoint.stop_id) },
+			$match: {
+				flags: {
+					$elemMatch: {
+						agency_ids: ML_AGENCY_ID,
+						stop_id: { $in: path.map(waypoint => waypoint.stop_id) },
+					},
 				},
 			},
 		},
-		{ projection: { _id: 0, flags: 1 } },
-	);
+		{ $project: { _id: 0, flags: 1 } },
+	]);
 
 	return addStopCodesToTripPath(path, stopDocs);
 }
