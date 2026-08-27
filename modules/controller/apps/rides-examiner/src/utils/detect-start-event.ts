@@ -1,7 +1,7 @@
 /* * */
 
 import { type GeoJson2dPosition } from '@tmlmobilidade/go-types-geo';
-import { type HashedTrip, type Ride } from '@tmlmobilidade/go-types-operation';
+import { type HashedShape, type HashedTrip, type Ride } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { chunkLineStringByDistance, cutLineStringAtLength, fromEncodedPolylineToGeoJsonLineString, getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
 
@@ -17,7 +17,7 @@ const INITIAL_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param analysisData The analysis data containing the vehicle events, hashed trip, and hashed shape.
  * @returns The event which starts the trip.
  */
-export function detectStartEvent(rideData: Ride, hashedTripData: HashedTrip[], vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
+export function detectStartEvent(rideData: Ride, hashedTripData: HashedTrip[], hashedShapeData: HashedShape | null, vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
 	//
 
 	//
@@ -41,7 +41,9 @@ export function detectStartEvent(rideData: Ride, hashedTripData: HashedTrip[], v
 	// Decode the EncodedPolyline of the shape into a GeoJSON LineString,
 	// cut it at the initial segment length, and chunk it into segments of the initial segment chunk length.
 
-	const shapeAsGeoJsonLineString = fromEncodedPolylineToGeoJsonLineString(rideData.shape_polyline);
+	if (!hashedShapeData) return null;
+
+	const shapeAsGeoJsonLineString = fromEncodedPolylineToGeoJsonLineString(hashedShapeData.shape_polyline);
 	if (!shapeAsGeoJsonLineString) return null;
 
 	const initialSegmentOfShape = cutLineStringAtLength(shapeAsGeoJsonLineString, INITIAL_SEGMENT_LENGTH);

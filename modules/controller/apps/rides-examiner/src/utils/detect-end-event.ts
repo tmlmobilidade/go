@@ -1,6 +1,6 @@
 /* * */
 
-import { type Ride } from '@tmlmobilidade/go-types-operation';
+import { type HashedShape, type Ride } from '@tmlmobilidade/go-types-operation';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { chunkLineStringByDistance, cutLineStringAtLength, fromEncodedPolylineToGeoJsonLineString, getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
 
@@ -17,7 +17,7 @@ const ENDING_SEGMENT_CHUNK_LENGTH = 50; // meters
  * @param vehicleEventsData The vehicle events data.
  * @returns The event which ends the trip.
  */
-export function detectEndEvent(rideData: Ride, vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
+export function detectEndEvent(rideData: Ride, hashedShapeData: HashedShape | null, vehicleEventsData: SimplifiedVehicleEvent[]): null | SimplifiedVehicleEvent {
 	//
 
 	//
@@ -32,7 +32,9 @@ export function detectEndEvent(rideData: Ride, vehicleEventsData: SimplifiedVehi
 	// Decode the EncodedPolyline of the shape into a GeoJSON LineString,
 	// cut it at the ending segment length, and chunk it into segments of the ending segment chunk length.
 
-	const shapeAsGeoJsonLineString = fromEncodedPolylineToGeoJsonLineString(rideData.shape_polyline);
+	if (!hashedShapeData) return null;
+
+	const shapeAsGeoJsonLineString = fromEncodedPolylineToGeoJsonLineString(hashedShapeData.shape_polyline);
 	if (!shapeAsGeoJsonLineString) return null;
 
 	const endingSegmentOfShape = cutLineStringAtLength(shapeAsGeoJsonLineString, ENDING_SEGMENT_LENGTH, 'reversed');

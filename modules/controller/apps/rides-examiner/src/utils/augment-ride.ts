@@ -31,8 +31,8 @@ export function augmentRide(analysisData: AnalysisData): Ride {
 	//
 	// Detect the start and end times for this Ride
 
-	const detectedStartEvent = detectStartEvent(analysisData.ride, analysisData.hashed_trip, analysisData.vehicle_events);
-	const detectedEndEvent = detectEndEvent(analysisData.ride, analysisData.vehicle_events);
+	const detectedStartEvent = detectStartEvent(analysisData.ride, analysisData.hashed_trip, analysisData.hashed_shape, analysisData.vehicle_events);
+	const detectedEndEvent = detectEndEvent(analysisData.ride, analysisData.hashed_shape, analysisData.vehicle_events);
 
 	augmentedRide.start_time_observed = detectedStartEvent?.created_at ?? null;
 	augmentedRide.end_time_observed = detectedEndEvent?.created_at ?? null;

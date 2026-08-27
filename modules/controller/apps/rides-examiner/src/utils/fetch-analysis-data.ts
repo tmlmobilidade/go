@@ -21,6 +21,7 @@ export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 	// Fetch data from LabDB in parallel.
 
 	const hashedTripPromise = labDb.operation.hashedTrips.select('*', '_id = $1', { 1: rideData.hashed_trip_id });
+	const hashedShapePromise = labDb.operation.hashedShapes.select('*', '_id = $1', { 1: rideData.hashed_shape_id });
 	const simplifiedApexBankingTapsPromise = labDb.simplifiedApex.bankingTaps.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
 	const simplifiedApexLocationsPromise = labDb.simplifiedApex.locations.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
 	const simplifiedApexOnBoardRefundsPromise = labDb.simplifiedApex.refunds.select('*', `created_at >= $1 AND created_at <= $2 AND agency_id = $3 AND trip_id = $4`, { 1: standardWindowInterval.start, 2: standardWindowInterval.end, 3: rideData.agency_id, 4: rideData.trip_id });
@@ -30,6 +31,7 @@ export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 
 	const [
 		hashedTripData,
+		hashedShapeData,
 		simplifiedApexBankingTapsData,
 		simplifiedApexLocationsData,
 		simplifiedApexOnBoardRefundsData,
@@ -38,6 +40,7 @@ export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 		vehicleEventsData,
 	] = await Promise.all([
 		hashedTripPromise,
+		hashedShapePromise,
 		simplifiedApexBankingTapsPromise,
 		simplifiedApexLocationsPromise,
 		simplifiedApexOnBoardRefundsPromise,
@@ -52,6 +55,7 @@ export async function fetchAnalysisData(rideData: Ride): Promise<AnalysisData> {
 		apex_refunds: simplifiedApexOnBoardRefundsData,
 		apex_sales: simplifiedApexOnBoardSalesData,
 		apex_validations: simplifiedApexValidationsData,
+		hashed_shape: hashedShapeData?.length > 0 ? hashedShapeData[0] : null,
 		hashed_trip: hashedTripData,
 		ride: rideData,
 		vehicle_events: vehicleEventsData,
