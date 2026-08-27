@@ -63,7 +63,7 @@ export class ExporterController {
 			created_by: request.me._id,
 		};
 
-		const allFileExport = await goDb.core.exports.findMany(filters, { sort: { created_at: 1 } });
+		const allFileExport = await goDb.core.exports.findMany(filters, { sort: { created_at: -1 } });
 		return reply.send({ data: allFileExport, error: null, statusCode: HTTP_STATUS.OK });
 	}
 

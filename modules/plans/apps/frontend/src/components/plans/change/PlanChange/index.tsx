@@ -23,7 +23,7 @@ export function PlanChange() {
 	const availableValidationsOptions = useMemo(() => {
 		return changePlanContext.data.availableValidations.map(item => ({
 			icon: <IdTag id={item._id} />,
-			label: `Submetida a ${Dates.fromUnixTimestamp(item.created_at).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.format.DATETIME_MEDIUM, 'pt-PT')}`,
+			label: `Submetida a ${Dates.fromUnixTimestamp(item.created_at).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.DATETIME_MEDIUM, 'pt-PT')}`,
 			value: item._id,
 		}));
 	}, [changePlanContext.data.availableValidations]);

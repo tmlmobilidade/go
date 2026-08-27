@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const GtfsStrictV29TripsSchema = z.object({
 	bikes_allowed: GtfsTernarySchema.optional(),
 	block_id: z.string().optional(),
-	calendar_desc: z.string(),
+	calendar_desc: z.string().optional().default(''),
 	direction_id: GtfsTripDirectionSchema,
 	pattern_id: z.string(),
 	pattern_short_name: z.string(),

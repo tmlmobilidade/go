@@ -104,14 +104,9 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 			throw new Error(`Stops ${missingStopIds.join(', ')} do not exist in Plan ${planData._id}.`);
 		}
 
-		if ((options.stops_mode ?? 'include') === 'include') {
-			const filterTransaction = sqlGtfs._db.databaseInstance.transaction(() => {
-				sqlGtfs.trips.run(`DELETE FROM trips WHERE trip_id NOT IN (SELECT DISTINCT trip_id FROM stop_times WHERE stop_id IN (${stopPlaceholders}))`, options.stop_ids);
-				sqlGtfs.stop_times.run('DELETE FROM stop_times WHERE trip_id NOT IN (SELECT trip_id FROM trips)');
-				sqlGtfs.routes.run('DELETE FROM routes WHERE route_id NOT IN (SELECT DISTINCT route_id FROM trips)');
-			});
-			filterTransaction();
-		}
+		// Stop selection controls poster targets through stopsToCanvasExt.txt.
+		// Keep the full GTFS network so each selected stop retains every
+		// line, route, trip, and stop sequence required by HiTouch.
 	}
 
 	const sourceHasCalendar = true;

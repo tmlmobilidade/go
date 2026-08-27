@@ -8,6 +8,7 @@ import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';
+import path from 'node:path';
 
 /* * */
 
@@ -34,6 +35,12 @@ export async function generatePlanPostersZip(planData: Plan, exportId: string, o
 	try {
 		Logger.info({ message: `Preparing GTFS files for poster export ${exportId} (Plan ${planData._id}).` });
 		exportConfig = await importPlanToSqlite(planData, { ...options, workdir: `/tmp/hitouch/export-${exportId}` });
+
+		const requestZipPath = path.resolve(exportConfig.workdir, exportConfig.output);
+		const preservedRequestZipPath = `/tmp/hitouch/export-${exportId}-request.zip`;
+		fs.copyFileSync(requestZipPath, preservedRequestZipPath);
+		Logger.info({ message: `Preserved HiTouch request ZIP at ${preservedRequestZipPath}.` });
+
 		Logger.info({ message: `Submitting poster GTFS for export ${exportId} to ZPHERES.` });
 		const pdfId = await postersController.generatePDF(exportConfig);
 		Logger.info({ message: `Created ZPHERES PDF job ${pdfId} for poster export ${exportId}.` });
