@@ -47,7 +47,7 @@ jobs:
               '**Available modules:**',
               moduleList,
               '',
-              'Note: You need to build auth module first for preview environment to work.'
+              'Note: You need to build core module first for preview environment to work.'
             ].join('\n');
 
             github.rest.issues.createComment({
