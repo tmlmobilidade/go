@@ -28,7 +28,7 @@ export async function deleteImageHandler(request: FastifyRequest<{ Params: { id:
 	// Delete the image file and update the alert
 	// await files.deleteById(foundAlert.file_id);
 	Logger.info({ message: `===> Deleted image file ID: ${foundAlert.file_id}` });
-	await goDb.operation.alerts.updateOne({ _id: request.params.id }, { file_id: null });
+	await goDb.operation.alerts.updateById(request.params.id, { file_id: null });
 	// Send the updated Alert to the client
 	const updatedAlert = await goDb.operation.alerts.findOne({ _id: request.params.id });
 	// If the updated alert does not exist, return an error

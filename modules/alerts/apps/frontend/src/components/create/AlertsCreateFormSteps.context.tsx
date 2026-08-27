@@ -1,6 +1,6 @@
 'use client';
 
-import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { useMeData, useMultiStep, type UseMultiStepReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -41,15 +41,20 @@ export function AlertsCreateFormStepsContextProvider({ children }: PropsWithChil
 	//
 	// C. Fetch data
 
-	const { data: agenciesData } = useAlertsAgenciesData();
+	const { data: agenciesData } = useAlertsAgenciesData({
+		permissions: {
+			actions: ['create'],
+			scope: 'alerts',
+		},
+	});
 
 	//
 	// E. Multi-step setup
 
 	const hasCreateDatesPermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
-			action: PermissionCatalog.all.alerts.actions.update_dates,
-			scope: PermissionCatalog.all.alerts.scope,
+			action: 'update_dates',
+			scope: 'alerts',
 		});
 	}, [meData?.permissions]);
 
