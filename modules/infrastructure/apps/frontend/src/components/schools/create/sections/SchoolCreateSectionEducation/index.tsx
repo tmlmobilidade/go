@@ -39,7 +39,7 @@ export function SchoolCreateSectionEducation() {
 			title={t('schools:create.SchoolCreateSectionEducation.title')}
 		>
 			<Section padding="lg">
-				<Grid columns="abcd" gap="md">
+				<Grid columns="abc" gap="md">
 					{educationFields.map(name => (
 						<StandardFormController
 							key={name}

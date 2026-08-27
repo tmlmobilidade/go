@@ -34,9 +34,10 @@ export function SchoolCreateSectionOrganization() {
 						render={({ field, fieldState }) => (
 							<TextInput
 								error={fieldState.error?.message}
-								label={t('schools:create.SchoolCreateSectionOrganization.fields.email')}
+								label={t('schools:create.SchoolCreateSectionOrganization.fields.email.label')}
 								onBlur={field.onBlur}
 								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('schools:create.SchoolCreateSectionOrganization.fields.email.placeholder')}
 								value={field.value ?? ''}
 								w="100%"
 							/>
@@ -49,9 +50,10 @@ export function SchoolCreateSectionOrganization() {
 						render={({ field, fieldState }) => (
 							<TextInput
 								error={fieldState.error?.message}
-								label={t('schools:create.SchoolCreateSectionOrganization.fields.url')}
+								label={t('schools:create.SchoolCreateSectionOrganization.fields.url.label')}
 								onBlur={field.onBlur}
 								onChange={e => field.onChange(e.currentTarget.value)}
+								placeholder={t('schools:create.SchoolCreateSectionOrganization.fields.url.placeholder')}
 								value={field.value ?? ''}
 								w="100%"
 							/>

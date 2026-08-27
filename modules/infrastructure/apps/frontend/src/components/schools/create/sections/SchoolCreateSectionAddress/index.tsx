@@ -34,9 +34,10 @@ export function SchoolCreateSectionAddress() {
 							render={({ field, fieldState }) => (
 								<TextInput
 									error={fieldState.error?.message}
-									label={t(`schools:create.SchoolCreateSectionAddress.fields.${name}`)}
+									label={t(`schools:create.SchoolCreateSectionAddress.fields.${name}.label`)}
 									onBlur={field.onBlur}
 									onChange={e => field.onChange(e.currentTarget.value)}
+									placeholder={t(`schools:create.SchoolCreateSectionAddress.fields.${name}.placeholder`)}
 									value={field.value ?? ''}
 									w="100%"
 								/>

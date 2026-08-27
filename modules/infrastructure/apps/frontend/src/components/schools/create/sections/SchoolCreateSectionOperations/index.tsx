@@ -1,6 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { Collapsible, DateTimeInput, fetchApiData, Grid, MultiSelect, Section, StandardFormController, Switch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -8,13 +9,6 @@ import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 import { useSchoolsCreateFormContext } from '../../shared/SchoolsCreateForm.context';
-
-/* * */
-
-interface SchoolStopOption {
-	_id: number
-	name: string
-}
 
 /* * */
 
@@ -30,8 +24,8 @@ export function SchoolCreateSectionOperations() {
 	//
 	// B. Fetch data
 
-	const { data: stopsResponse, isLoading: stopsLoading } = useSWR<ApiResponse<SchoolStopOption[]>>(API_ROUTES.infrastructure.STOPS_LIST, {
-		fetcher: async (url: string) => await fetchApiData<SchoolStopOption[]>({ url }),
+	const { data: stopsResponse, isLoading: stopsLoading } = useSWR<ApiResponse<Pick<Stop, '_id' | 'name'>[]>>(API_ROUTES.infrastructure.STOPS_LIST, {
+		fetcher: async (url: string) => await fetchApiData<Pick<Stop, '_id' | 'name'>[]>({ url }),
 	});
 
 	//
@@ -70,8 +64,9 @@ export function SchoolCreateSectionOperations() {
 						render={({ field, fieldState }) => (
 							<DateTimeInput
 								error={fieldState.error?.message}
-								label={t('schools:create.SchoolCreateSectionOperations.fields.validation_date')}
+								label={t('schools:create.SchoolCreateSectionOperations.fields.validation_date.label')}
 								onChange={field.onChange}
+								placeholder={t('schools:create.SchoolCreateSectionOperations.fields.validation_date.placeholder')}
 								value={field.value}
 								clearable
 							/>
@@ -86,8 +81,9 @@ export function SchoolCreateSectionOperations() {
 								data={stopsOptions}
 								disabled={stopsLoading}
 								error={fieldState.error?.message}
-								label={t('schools:create.SchoolCreateSectionOperations.fields.stops')}
+								label={t('schools:create.SchoolCreateSectionOperations.fields.stops.label')}
 								onChange={field.onChange}
+								placeholder={t('schools:create.SchoolCreateSectionOperations.fields.stops.placeholder')}
 								value={field.value ?? []}
 								w="100%"
 							/>

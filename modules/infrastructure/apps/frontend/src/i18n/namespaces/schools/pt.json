@@ -3,22 +3,52 @@
 		"SchoolCreateSectionAddress": {
 			"description": "Morada e localização da escola.",
 			"fields": {
-				"address": "Morada",
-				"locality": "Localidade",
-				"parish_name": "Freguesia",
-				"postal_code": "Código postal"
+				"address": {
+					"label": "Morada",
+					"placeholder": "Introduza a morada da escola"
+				},
+				"locality": {
+					"label": "Localidade",
+					"placeholder": "Introduza a localidade da escola"
+				},
+				"parish_name": {
+					"label": "Freguesia",
+					"placeholder": "Introduza a freguesia da escola"
+				},
+				"postal_code": {
+					"label": "Código postal",
+					"placeholder": "Introduza o código postal da escola"
+				}
 			},
 			"title": "Localização"
 		},
 		"SchoolCreateSectionAdministrative": {
 			"description": "Identificadores administrativos e localização territorial.",
 			"fields": {
-				"district_id": "ID do distrito",
-				"district_name": "Distrito",
-				"municipality_id": "ID do município",
-				"municipality_name": "Município",
-				"region_id": "ID da região",
-				"region_name": "Região"
+				"district_id": {
+					"label": "ID do distrito",
+					"placeholder": "Selecione o distrito"
+				},
+				"district_name": {
+					"label": "Distrito",
+					"placeholder": "Selecione o distrito"
+				},
+				"municipality_id": {
+					"label": "ID do município",
+					"placeholder": "Selecione o município"
+				},
+				"municipality_name": {
+					"label": "Município",
+					"placeholder": "Selecione o município"
+				},
+				"region_id": {
+					"label": "ID da região",
+					"placeholder": "Introduza o ID da região"
+				},
+				"region_name": {
+					"label": "Região",
+					"placeholder": "Introduza a região da escola"
+				}
 			},
 			"title": "Dados administrativos"
 		},
@@ -63,7 +93,11 @@
 			},
 			"period_organization": {
 				"label": "Período de organização",
-				"placeholder": "Introduza o período de organização da escola"
+				"options": {
+					"semester": "Semestre",
+					"trimester": "Trimestre"
+				},
+				"placeholder": "Selecione o período de organização"
 			},
 			"title": "Dados gerais"
 		},
@@ -71,8 +105,14 @@
 			"description": "Estado de validação, atividade e paragens associadas.",
 			"fields": {
 				"is_active": "Escola ativa",
-				"stops": "Paragens associadas",
-				"validation_date": "Data de validação"
+				"stops": {
+					"label": "Paragens associadas",
+					"placeholder": "Selecione as paragens associadas"
+				},
+				"validation_date": {
+					"label": "Data de validação",
+					"placeholder": "Selecione a data de validação"
+				}
 			},
 			"title": "Estado e ligações"
 		},
@@ -80,8 +120,14 @@
 			"description": "Operador e contacto da escola.",
 			"fields": {
 				"agency_id": "Operador",
-				"email": "Email",
-				"url": "Website"
+				"email": {
+					"label": "Email",
+					"placeholder": "Introduza o email da escola"
+				},
+				"url": {
+					"label": "Website",
+					"placeholder": "Introduza o website da escola"
+				}
 			},
 			"title": "Organização e contacto"
 		},
