@@ -6,14 +6,14 @@ import { z } from 'zod';
 /* * */
 
 export const VerificationTokenSchema = DocumentSchema
-	.omit({ is_locked: true })
+	.pick({ _id: true, created_at: true, updated_at: true })
 	.extend({
 		expires_at: UnixTimestampSchema,
 		token: z.string(),
 		user_id: z.string(),
 	});
 
-export const CreateVerificationTokenSchema = VerificationTokenSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
+export const CreateVerificationTokenSchema = VerificationTokenSchema.omit({ _id: true, created_at: true, updated_at: true });
 export const UpdateVerificationTokenSchema = CreateVerificationTokenSchema.partial();
 
 /* * */

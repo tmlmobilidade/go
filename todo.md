@@ -30,4 +30,4 @@
 # tracker
  - [x] fix fertagus idiom
  - [] fix metro
- - [] fix cp
+ - [x] fix cp

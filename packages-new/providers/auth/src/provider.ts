@@ -6,7 +6,7 @@ import { type LoginDto, type Session } from '@tmlmobilidade/go-types-core';
 import { type CreateUserDto, type Organization, type User } from '@tmlmobilidade/go-types-core';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { generateRandomString, generateRandomToken } from '@tmlmobilidade/strings';
+import { generateRandomToken } from '@tmlmobilidade/strings';
 import { asyncSingletonProxy, mergeObjects } from '@tmlmobilidade/utils';
 import bcrypt from 'bcryptjs';
 
@@ -108,13 +108,10 @@ class AuthProviderClass {
 		if (!passwordHashMatch) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Invalid password');
 
 		const createdSession = await goDb.core.sessions.insertOne({
-			_id: generateRandomString(),
 			created_at: Dates.now('utc').unix_timestamp,
-			created_by: 'system',
 			expires_at: Dates.now('utc').plus({ days: 30 }).unix_timestamp,
 			token: generateRandomToken(),
 			updated_at: Dates.now('utc').unix_timestamp,
-			updated_by: 'system',
 			user_id: userData._id.toString(),
 		});
 
@@ -139,8 +136,10 @@ class AuthProviderClass {
 
 		const verificationToken = generateRandomToken();
 		await goDb.core.verificationTokens.insertOne({
+			created_at: Dates.now('utc').unix_timestamp,
 			expires_at: Dates.now('utc').plus({ days: 7 }).unix_timestamp,
 			token: verificationToken,
+			updated_at: Dates.now('utc').unix_timestamp,
 			user_id: insertNewUserResult._id,
 		});
 

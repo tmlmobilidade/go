@@ -1,25 +1,27 @@
 /* * */
 
-import { exportsIndexes } from '@/indexes/index.js';
-import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
-import { type Agency, type AppConfig, type Attachment, type CreateAgencyDto, CreateAgencySchema, type CreateAttachmentDto, CreateAttachmentSchema, type CreateOrganizationDto, CreateOrganizationSchema, type CreateRoleDto, CreateRoleSchema, type CreateSessionDto, CreateSessionSchema, type CreateUserDto, CreateUserSchema, type CreateVerificationTokenDto, CreateVerificationTokenSchema, type Organization, type Role, type Session, type UpdateAgencyDto, UpdateAgencySchema, type UpdateAttachmentDto, UpdateAttachmentSchema, type UpdateOrganizationDto, UpdateOrganizationSchema, type UpdateRoleDto, UpdateRoleSchema, type UpdateSessionDto, UpdateSessionSchema, type UpdateUserDto, UpdateUserSchema, type UpdateVerificationTokenDto, UpdateVerificationTokenSchema, type User, type VerificationToken } from '@tmlmobilidade/go-types-core';
-import { type CreateFileExportDto, CreateFileExportSchema, type FileExport, UpdateFileExportSchema } from '@tmlmobilidade/go-types-downloads';
+import { type Agency, AgencySchema, type AppConfig, AppConfigSchema, type Attachment, AttachmentSchema, type Organization, OrganizationSchema, type Role, RoleSchema, type Session, SessionSchema, type User, UserSchema, type VerificationToken, VerificationTokenSchema } from '@tmlmobilidade/go-types-core';
+import { type FileExport, FileExportSchema } from '@tmlmobilidade/go-types-downloads';
+
+import { createGoDbCollection } from '../factory/collections/create-godb-collection.js';
+import { GoDbCollection } from '../factory/collections/types/godb-collection.type.js';
+import { exportsIndexes } from '../indexes/index.js';
 
 /* * */
 
 export class CoreDatabase {
 	//
 
-	public readonly agencies: MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>;
-	public readonly appConfigs: MongoInterfaceTemplate<AppConfig, null, null>;
-	public readonly attachments: MongoInterfaceTemplate<Attachment, CreateAttachmentDto, UpdateAttachmentDto>;
-	public readonly exports: MongoInterfaceTemplate<FileExport, CreateFileExportDto<any>, Partial<FileExport>>;
-	public readonly organizations: MongoInterfaceTemplate<Organization, CreateOrganizationDto, UpdateOrganizationDto>;
-	public readonly roles: MongoInterfaceTemplate<Role, CreateRoleDto, UpdateRoleDto>;
-	public readonly sessions: MongoInterfaceTemplate<Session, CreateSessionDto, UpdateSessionDto>;
-	public readonly users: MongoInterfaceTemplate<User, CreateUserDto, UpdateUserDto>;
-	public readonly verificationTokens: MongoInterfaceTemplate<VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto>;
+	public readonly agencies: GoDbCollection<Agency>;
+	public readonly appConfigs: GoDbCollection<AppConfig>;
+	public readonly attachments: GoDbCollection<Attachment>;
+	public readonly exports: GoDbCollection<FileExport>;
+	public readonly organizations: GoDbCollection<Organization>;
+	public readonly roles: GoDbCollection<Role>;
+	public readonly sessions: GoDbCollection<Session>;
+	public readonly users: GoDbCollection<User>;
+	public readonly verificationTokens: GoDbCollection<VerificationToken>;
 
 	private readonly database: Db;
 	private readonly databaseName = 'core';
@@ -28,14 +30,14 @@ export class CoreDatabase {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
 		// Create collection interfaces
-		this.agencies = new MongoInterfaceTemplate<Agency, CreateAgencyDto, UpdateAgencyDto>('agencies', this.database, CreateAgencySchema, UpdateAgencySchema);
-		this.appConfigs = new MongoInterfaceTemplate<AppConfig, null, null>('app-configs', this.database, null, null);
-		this.exports = new MongoInterfaceTemplate<FileExport, CreateFileExportDto<any>, Partial<FileExport>>('exports', this.database, CreateFileExportSchema, UpdateFileExportSchema, exportsIndexes);
-		this.organizations = new MongoInterfaceTemplate<Organization, CreateOrganizationDto, UpdateOrganizationDto>('organizations', this.database, CreateOrganizationSchema, UpdateOrganizationSchema);
-		this.roles = new MongoInterfaceTemplate<Role, CreateRoleDto, UpdateRoleDto>('roles', this.database, CreateRoleSchema, UpdateRoleSchema);
-		this.sessions = new MongoInterfaceTemplate<Session, CreateSessionDto, UpdateSessionDto>('sessions', this.database, CreateSessionSchema, UpdateSessionSchema);
-		this.users = new MongoInterfaceTemplate<User, CreateUserDto, UpdateUserDto>('users', this.database, CreateUserSchema, UpdateUserSchema);
-		this.verificationTokens = new MongoInterfaceTemplate<VerificationToken, CreateVerificationTokenDto, UpdateVerificationTokenDto>('verification-tokens', this.database, CreateVerificationTokenSchema, UpdateVerificationTokenSchema);
-		this.attachments = new MongoInterfaceTemplate<Attachment, CreateAttachmentDto, UpdateAttachmentDto>('attachments', this.database, CreateAttachmentSchema, UpdateAttachmentSchema);
+		this.agencies = createGoDbCollection<Agency>({ collectionName: 'agencies', database: this.database, indexDescription: null, schema: AgencySchema });
+		this.appConfigs = createGoDbCollection<AppConfig>({ collectionName: 'app-configs', database: this.database, indexDescription: null, schema: AppConfigSchema });
+		this.exports = createGoDbCollection<FileExport>({ collectionName: 'exports', database: this.database, indexDescription: exportsIndexes, schema: FileExportSchema });
+		this.organizations = createGoDbCollection<Organization>({ collectionName: 'organizations', database: this.database, indexDescription: null, schema: OrganizationSchema });
+		this.roles = createGoDbCollection<Role>({ collectionName: 'roles', database: this.database, indexDescription: null, schema: RoleSchema });
+		this.sessions = createGoDbCollection<Session>({ collectionName: 'sessions', database: this.database, indexDescription: null, schema: SessionSchema });
+		this.users = createGoDbCollection<User>({ collectionName: 'users', database: this.database, indexDescription: null, schema: UserSchema });
+		this.verificationTokens = createGoDbCollection<VerificationToken>({ collectionName: 'verification-tokens', database: this.database, indexDescription: null, schema: VerificationTokenSchema });
+		this.attachments = createGoDbCollection<Attachment>({ collectionName: 'attachments', database: this.database, indexDescription: null, schema: AttachmentSchema });
 	}
 }

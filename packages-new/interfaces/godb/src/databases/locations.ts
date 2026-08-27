@@ -1,19 +1,21 @@
 /* * */
 
 import { districtsIndexes, localitiesIndexes, municipalitiesIndexes, parishesIndexes } from '@/indexes/index.js';
-import { MongoInterfaceTemplate } from '@/interface.template.js';
 import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
 import { type DistrictFeature, type LocalityFeature, type MunicipalityFeature, type ParishFeature } from '@tmlmobilidade/go-types-locations';
+
+import { createGoDbCollection } from '../factory/collections/create-godb-collection.js';
+import { GoDbCollection } from '../factory/collections/types/godb-collection.type.js';
 
 /* * */
 
 export class LocationsDatabase {
 	//
 
-	public readonly districts: MongoInterfaceTemplate<DistrictFeature, null, null>;
-	public readonly localities: MongoInterfaceTemplate<LocalityFeature, null, null>;
-	public readonly municipalities: MongoInterfaceTemplate<MunicipalityFeature, null, null>;
-	public readonly parishes: MongoInterfaceTemplate<ParishFeature, null, null>;
+	public readonly districts: GoDbCollection<DistrictFeature>;
+	public readonly localities: GoDbCollection<LocalityFeature>;
+	public readonly municipalities: GoDbCollection<MunicipalityFeature>;
+	public readonly parishes: GoDbCollection<ParishFeature>;
 
 	private readonly database: Db;
 	private readonly databaseName = 'locations';
@@ -22,10 +24,10 @@ export class LocationsDatabase {
 		// Create the database instance
 		this.database = instance.db(this.databaseName);
 		// Create collection interfaces
-		this.districts = new MongoInterfaceTemplate<DistrictFeature, null, null>('districts', this.database, null, null, districtsIndexes);
-		this.localities = new MongoInterfaceTemplate<LocalityFeature, null, null>('localities', this.database, null, null, localitiesIndexes);
-		this.municipalities = new MongoInterfaceTemplate<MunicipalityFeature, null, null>('municipalities', this.database, null, null, municipalitiesIndexes);
-		this.parishes = new MongoInterfaceTemplate<ParishFeature, null, null>('parishes', this.database, null, null, parishesIndexes);
+		this.districts = createGoDbCollection<DistrictFeature>({ collectionName: 'districts', database: this.database, indexDescription: districtsIndexes, schema: null });
+		this.localities = createGoDbCollection<LocalityFeature>({ collectionName: 'localities', database: this.database, indexDescription: localitiesIndexes, schema: null });
+		this.municipalities = createGoDbCollection<MunicipalityFeature>({ collectionName: 'municipalities', database: this.database, indexDescription: municipalitiesIndexes, schema: null });
+		this.parishes = createGoDbCollection<ParishFeature>({ collectionName: 'parishes', database: this.database, indexDescription: parishesIndexes, schema: null });
 	}
 }
 
