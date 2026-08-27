@@ -1,7 +1,8 @@
 /* * */
 
-import { Dates, type DatesFormat } from '@tmlmobilidade/go-utils-dates';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { DateFormat } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * Formats a timestamp into a human-readable string.
@@ -9,7 +10,7 @@ import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
  * @param format The format to use. Defaults to 'HH:mm:ss'.
  * @returns The formatted timestamp 'HH:mm:ss'.
  */
-export function displayUnixTimestamp(timestamp?: null | UnixTimestamp, format: DatesFormat = Dates.FORMATS.TIME_SIMPLE): null | string {
+export function displayUnixTimestamp(timestamp?: null | UnixTimestamp, format: DateFormat = 'only_time'): null | string {
 	// Skip if no timestamp is provided
 	if (!timestamp) return null;
 	// Format the timestamp into a human-readable
