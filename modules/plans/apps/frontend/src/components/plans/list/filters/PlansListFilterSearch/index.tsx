@@ -23,6 +23,4 @@ export function PlansListFilterSearch() {
 			value={filterSearch.value}
 		/>
 	);
-
-	//
 }

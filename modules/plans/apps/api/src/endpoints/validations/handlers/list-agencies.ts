@@ -3,7 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type PlansAgencyItem, PlansAgencyItemSchema } from '@tmlmobilidade/go-plans-pckg-types';
+import { type GtfsValidationsAgencyRequest, GtfsValidationsAgencyRequestSchema, type PlansAgencyItem, PlansAgencyItemSchema } from '@tmlmobilidade/go-plans-pckg-types';
 import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -11,15 +11,21 @@ import { AllowAllFlagValue } from '@tmlmobilidade/go-types-permissions';
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
-export async function listAgenciesHandler(request: FastifyRequest, reply: FastifyReply<PlansAgencyItem[]>) {
+export async function listAgenciesHandler(request: FastifyRequest<{ Body: GtfsValidationsAgencyRequest }>, reply: FastifyReply<PlansAgencyItem[]>) {
 	//
 
 	//
-	// Get the agency IDs this user has access to
+	// Validate the filters
 
-	const resourceAgencyIds = request.permissions
-		.filter(permission => permission.scope === 'gtfs_validations' && permission.action === 'read')
-		.flatMap(permission => 'resources' in permission ? permission.resources.agency_ids ?? [] : []) ?? [];
+	const validatedFilters = GtfsValidationsAgencyRequestSchema.parse(request.body);
+
+	//
+	// Get the agency IDs from the permissions
+
+	const resourceAgencyIds = validatedFilters.permissions.actions?.flatMap(action => request.permissions
+		.filter(permission => permission.scope === validatedFilters.permissions.scope && permission.action === action)
+		.flatMap(permission => 'resources' in permission ? permission.resources.agency_ids ?? [] : []),
+	) ?? [];
 
 	//
 	// Build aggregation pipeline

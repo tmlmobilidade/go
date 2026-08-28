@@ -3,9 +3,9 @@
 import { ValidationsListFiltersBar } from '@/components/validations/list/filters/ValidationsListFiltersBar';
 import { ValidationsListCellDate } from '@/components/validations/list/shared/ValidationsListCellCreatedAt';
 import { ValidationsListHeader } from '@/components/validations/list/shared/ValidationsListHeader';
+import { useGtfsValidationsAgenciesData } from '@/components/validations/shared/use-gtfs-validations-agencies-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ValidationListItem } from '@tmlmobilidade/go-plans-pckg-types';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay, ValidityStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -23,6 +23,10 @@ export function ValidationsList() {
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
 
+	const { data: agenciesData } = useGtfsValidationsAgenciesData({
+		permissions: { actions: ['read'], scope: 'gtfs_validations' },
+	});
+
 	const validationsData = useValidationsListData();
 
 	const columns: DataTableColumn<ValidationListItem>[] = [
@@ -38,12 +42,7 @@ export function ValidationsList() {
 				<AgencyTag
 					agencyId={item.agency_id}
 					copyOnClick={false}
-					request={{
-						permissions: {
-							actions: [PermissionCatalog.all.gtfs_validations.actions.read],
-							scope: PermissionCatalog.all.gtfs_validations.scope,
-						},
-					}}
+					data={agenciesData}
 					showShortName
 				/>
 			),
@@ -97,6 +96,4 @@ export function ValidationsList() {
 			/>
 		</Pane>
 	);
-
-	//
 }

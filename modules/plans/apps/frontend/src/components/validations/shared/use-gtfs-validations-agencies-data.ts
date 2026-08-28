@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type GtfsValidationsAgencyItem } from '@tmlmobilidade/go-plans-pckg-types';
+import { type GtfsValidationsAgencyItem, type GtfsValidationsAgencyRequest } from '@tmlmobilidade/go-plans-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -23,14 +23,14 @@ interface UseGtfsValidationsAgenciesDataReturnType {
  * to filters or select components.
  * @returns An object containing the agencies data.
  */
-export function useGtfsValidationsAgenciesData(): UseGtfsValidationsAgenciesDataReturnType {
+export function useGtfsValidationsAgenciesData(query: GtfsValidationsAgencyRequest): UseGtfsValidationsAgenciesDataReturnType {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<GtfsValidationsAgencyItem[]>>(API_ROUTES.plans.VALIDATIONS_LIST_AGENCIES, {
-		fetcher: async (url: string) => await fetchApiData<GtfsValidationsAgencyItem[]>({ method: 'GET', url: url }),
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<GtfsValidationsAgencyItem[]>>([API_ROUTES.plans.VALIDATIONS_LIST_AGENCIES, query], {
+		fetcher: async ([url, query]) => await fetchApiData<GtfsValidationsAgencyItem[]>({ body: query, method: 'POST', url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 

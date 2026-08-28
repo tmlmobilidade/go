@@ -1,7 +1,7 @@
 'use client';
 
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useAgenciesData, useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
+import { usePlansAgenciesData } from '@/components/plans/shared/use-plans-agencies-data';
+import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**
  * Manage the agency filter for the plans list.
@@ -9,12 +9,7 @@ import { useAgenciesData, useFilterStateList, type UseFilterStateListReturnType 
 export function usePlansListFilterAgency(): UseFilterStateListReturnType {
 	//
 
-	const { ids, options } = useAgenciesData({
-		permissions: {
-			actions: [PermissionCatalog.all.plans.actions.read],
-			scope: PermissionCatalog.all.plans.scope,
-		},
-	});
+	const { ids, options } = usePlansAgenciesData();
 
 	return useFilterStateList('agency', ids, options);
 }

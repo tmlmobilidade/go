@@ -1,16 +1,16 @@
 'use client';
 
-import { closeCreateValidationModal } from '@/components/validations/create/ValidationCreate.modal';
 import { type WorkerMessage } from '@/types/worker';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ValidationCreateItem, ValidationCreateItemSchema } from '@tmlmobilidade/go-plans-pckg-types';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiMultipart, keepUrlParams, type SelectDataItem, type StandardFormContextValue, useAgenciesData, useHandleUpdate, useStandardForm, useStandardFormCapabilities, useToast } from '@tmlmobilidade/ui';
+import { fetchApiMultipart, keepUrlParams, type SelectDataItem, type StandardFormContextValue, useHandleUpdate, useStandardForm, useStandardFormCapabilities, useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useValidationsListData } from '../list/use-validations-list-data';
+import { useGtfsValidationsAgenciesData } from '../shared/use-gtfs-validations-agencies-data';
+import { closeCreateValidationModal } from './ValidationCreate.modal';
 
 /* * */
 
@@ -70,11 +70,8 @@ export function ValidationCreateContextProvider({ children }: PropsWithChildren)
 	//
 	// C. Fetch data
 
-	const { data: permittedAgencies, error: agenciesError, isLoading: agenciesLoading } = useAgenciesData({
-		permissions: {
-			actions: [PermissionCatalog.all.gtfs_validations.actions.create],
-			scope: PermissionCatalog.all.gtfs_validations.scope,
-		},
+	const { data: permittedAgencies, error: agenciesError, isLoading: agenciesLoading } = useGtfsValidationsAgenciesData({
+		permissions: { actions: ['create'], scope: 'gtfs_validations' },
 	});
 
 	//
