@@ -10,7 +10,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param request Fastify request containing GTFS Validation ID in params.
  * @param reply Fastify reply.
  */
-export async function lockGtfsValidation(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
+export async function lockGtfsValidationHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
 	//
 
 	//

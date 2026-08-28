@@ -12,7 +12,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param request Fastify request
  * @param reply Fastify reply
  */
-export async function listGtfsValidations(request: FastifyRequest<{ Body: ValidationListFilters }>, reply: FastifyReply<ValidationListItem[]>) {
+export async function listGtfsValidationsHandler(request: FastifyRequest<{ Body: ValidationListFilters }>, reply: FastifyReply<ValidationListItem[]>) {
 	//
 
 	//

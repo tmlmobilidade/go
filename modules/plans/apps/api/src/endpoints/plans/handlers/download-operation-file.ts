@@ -10,7 +10,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function downloadOperationFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+export async function downloadOperationFileHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
 	//
 
 	//

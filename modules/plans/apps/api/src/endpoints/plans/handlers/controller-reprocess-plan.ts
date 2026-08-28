@@ -9,7 +9,7 @@ import { type Plan } from '@tmlmobilidade/go-types-operation';
  * @param request Fastify request containing plan ID in params
  * @param reply Fastify reply
  */
-export async function controllerReprocessPlan(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
+export async function controllerReprocessPlanHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
 	//

@@ -18,7 +18,7 @@ import { join } from 'path';
  * @param request Fastify request containing plan ID in params and update data in body
  * @param reply Fastify reply
  */
-export async function updateApexFile(request: FastifyRequest<{ Body: UpdatePlanDto & { apex_file?: File }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
+export async function updateApexFileHandler(request: FastifyRequest<{ Body: UpdatePlanDto & { apex_file?: File }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);

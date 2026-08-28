@@ -18,7 +18,7 @@ import { createHash } from 'node:crypto';
  * @param request Fastify request containing plan ID in params and update data in body
  * @param reply Fastify reply
  */
-export async function updatePlan(request: FastifyRequest<{ Body: UpdatePlanDto & { apex_file?: File }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
+export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePlanDto & { apex_file?: File }, Params: { id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
 	//

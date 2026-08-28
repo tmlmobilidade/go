@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type RidesAgencyItem } from '@tmlmobilidade/go-controller-pckg-types';
+import { type GtfsValidationsAgencyItem } from '@tmlmobilidade/go-plans-pckg-types';
 import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -9,8 +9,8 @@ import useSWR from 'swr';
 
 /* * */
 
-interface UseRidesAgenciesDataReturnType {
-	data: RidesAgencyItem[]
+interface UseGtfsValidationsAgenciesDataReturnType {
+	data: GtfsValidationsAgencyItem[]
 	error: null | string
 	ids: string[]
 	isLoading: boolean
@@ -23,14 +23,14 @@ interface UseRidesAgenciesDataReturnType {
  * to filters or select components.
  * @returns An object containing the agencies data.
  */
-export function useRidesAgenciesData(): UseRidesAgenciesDataReturnType {
+export function useGtfsValidationsAgenciesData(): UseGtfsValidationsAgenciesDataReturnType {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<RidesAgencyItem[]>>(API_ROUTES.controller.RIDES_LIST_AGENCIES, {
-		fetcher: async (url: string) => await fetchApiData<RidesAgencyItem[]>({ method: 'GET', url: url }),
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<GtfsValidationsAgencyItem[]>>(API_ROUTES.controller.RIDES_LIST_AGENCIES, {
+		fetcher: async (url: string) => await fetchApiData<GtfsValidationsAgencyItem[]>({ method: 'GET', url: url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 

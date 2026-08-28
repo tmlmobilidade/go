@@ -3,15 +3,14 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { Plan } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Deletes an apex file by plan ID
+ * Deletes an plan by ID
  * @param request Fastify request containing plan ID in params
  * @param reply Fastify reply
  */
-export async function deleteApexFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
+export async function deletePlanHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<void>) {
 	//
 
 	//
@@ -26,6 +25,9 @@ export async function deleteApexFile(request: FastifyRequest<{ Params: { id: str
 
 	const foundPlan = await goDb.operation.plans.findById(request.params.id);
 
+	//
+	// Check if the plan exists
+
 	if (!foundPlan) {
 		return sendErrorApiResponse(reply, {
 			error: `Plan with ID ${request.params.id} not found`,
@@ -34,46 +36,37 @@ export async function deleteApexFile(request: FastifyRequest<{ Params: { id: str
 	}
 
 	//
-	// Check if the user has permission to delete an apex file
+	// Check if have permissions to delete the plan
 
-	if (!PermissionCatalog.hasPermissionResource({
-		action: PermissionCatalog.all.plans.actions.delete_apex_file,
+	const hasPermissionDeletePlan = PermissionCatalog.hasPermissionResource({
+		action: PermissionCatalog.all.plans.actions.delete,
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.plans.scope,
 		value: foundPlan.agency_id,
-	})) {
+	});
+
+	if (!hasPermissionDeletePlan) {
 		return sendErrorApiResponse(reply, {
-			error: 'You are not authorized to perform this action: delete plan',
+			error: 'You are not authorized to delete this plan.',
 			status_code: '403',
 		});
 	}
 
 	//
-	// Fetch the file associated with the plan
+	// Actually delete the plan
 
-	const foundFileData = await storageProvider.findById(foundPlan.apex_file_id);
-
-	if (!foundFileData) {
-		return sendErrorApiResponse(reply, {
-			error: 'Plan APEX file not found',
-			status_code: '404',
-		});
-	}
-
-	let updatedPlan: null | Plan = null;
-	await storageProvider.delete(foundFileData._id, {
+	await storageProvider.delete(foundPlan.operation_file_id, {
 		onRollback: async (_, error) => {
-			await goDb.operation.plans.updateById(request.params.id, { apex_file_id: foundPlan.apex_file_id });
 			throw error;
 		},
 		onSuccess: async () => {
-			updatedPlan = await goDb.operation.plans.updateById(request.params.id, { apex_file_id: null });
+			await goDb.operation.plans.deleteById(request.params.id);
 		},
 	});
 
 	//
-	// Update the plan to remove the apex file ID
+	// Return the success response
 
-	return sendSuccessApiResponse(reply, updatedPlan);
+	return sendSuccessApiResponse(reply, undefined);
 }

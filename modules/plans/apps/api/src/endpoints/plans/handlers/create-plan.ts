@@ -1,11 +1,11 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { CreatePlanDto, HashablePlanMetadata, Plan } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { createHash } from 'node:crypto';
 
 /**
@@ -13,7 +13,7 @@ import { createHash } from 'node:crypto';
  * @param request Fastify request containing plan data and operation plan file in multipart form
  * @param reply Fastify reply
  */
-export async function createPlan(request: FastifyRequest<{ Body: { validation_id: string } }>, reply: FastifyReply<Plan>) {
+export async function createPlanHandler(request: FastifyRequest<{ Body: { validation_id: string } }>, reply: FastifyReply<Plan>) {
 	//
 
 	//

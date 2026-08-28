@@ -1,16 +1,18 @@
 /* * */
 
+import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Plan } from '@tmlmobilidade/go-types-operation';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { Attachment } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Retrieves a single plan by ID
+ * Retrieves the operation file associated with a plan by ID
  * @param request Fastify request containing plan ID in params
  * @param reply Fastify reply
  */
-export async function getPlan(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
+export async function getOperationFileHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Attachment>) {
 	//
 
 	//
@@ -19,14 +21,11 @@ export async function getPlan(request: FastifyRequest<{ Params: { id: string } }
 	const planData = await goDb.operation.plans.findById(request.params.id);
 
 	if (!planData) {
-		return sendErrorApiResponse(reply, {
-			error: `Plan with ID ${request.params.id} not found`,
-			status_code: '404',
-		});
+		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Plan not found');
 	}
 
 	//
-	// Check if have permissions to read the plan
+	// Check if the user has permission to read the Plan
 
 	const hasPermissionReadPlan = PermissionCatalog.hasPermissionResource({
 		action: PermissionCatalog.all.plans.actions.read,
@@ -38,13 +37,24 @@ export async function getPlan(request: FastifyRequest<{ Params: { id: string } }
 
 	if (!hasPermissionReadPlan) {
 		return sendErrorApiResponse(reply, {
-			error: 'You are not authorized to read this plan.',
+			error: 'You are not authorized to perform this action: read plan',
 			status_code: '403',
 		});
 	}
 
 	//
-	// Return the plan data
+	// Fetch the file associated with the plan
 
-	return sendSuccessApiResponse(reply, planData);
+	const fileData = await storageProvider.findById(planData.operation_file_id);
+
+	if (!fileData) {
+		return sendErrorApiResponse(reply, {
+			error: 'Plan operation file not found',
+			status_code: '404',
+		});
+	}
+
+	return sendSuccessApiResponse(reply, fileData);
+
+	//
 }

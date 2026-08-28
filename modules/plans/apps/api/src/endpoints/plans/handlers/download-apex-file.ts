@@ -11,7 +11,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function downloadApexFile(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
+export async function downloadApexFileHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
 	//
 
 	//

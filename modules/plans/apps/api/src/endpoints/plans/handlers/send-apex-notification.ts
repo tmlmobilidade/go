@@ -12,7 +12,7 @@ import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
  * @param request Fastify request containing plan ID in params
  * @param reply Fastify reply
  */
-export async function sendApexNotification(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<undefined>) {
+export async function sendApexNotificationHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<undefined>) {
 	//
 
 	//

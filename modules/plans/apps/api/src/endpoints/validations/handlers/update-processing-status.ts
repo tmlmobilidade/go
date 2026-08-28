@@ -11,7 +11,7 @@ import { type ProcessingStatus } from '@tmlmobilidade/go-types-shared';
  * @param request Fastify request containing GTFS Validation ID in params and processing status in body.
  * @param reply Fastify reply.
  */
-export async function updateProcessingStatus(request: FastifyRequest<{ Body: { processing_status: ProcessingStatus }, Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
+export async function updateProcessingStatusHandler(request: FastifyRequest<{ Body: { processing_status: ProcessingStatus }, Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
 	//
 
 	//

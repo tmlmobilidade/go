@@ -12,7 +12,7 @@ import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
  * @param request Fastify request containing Validation ID in params
  * @param reply Fastify reply
  */
-export async function requestApproval(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
+export async function requestApprovalHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<GtfsValidation>) {
 	//
 
 	//

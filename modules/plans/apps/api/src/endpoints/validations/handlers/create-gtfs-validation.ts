@@ -20,7 +20,7 @@ import { join } from 'path';
  * @param request Fastify request containing Validation data and operation Validation file in multipart form.
  * @param reply Fastify reply
  */
-export async function createGtfsValidation(request: FastifyRequest, reply: FastifyReply<unknown>) {
+export async function createGtfsValidationHandler(request: FastifyRequest, reply: FastifyReply<unknown>) {
 	//
 
 	//

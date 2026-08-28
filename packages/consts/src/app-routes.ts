@@ -497,6 +497,7 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file/download`,
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
 		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans/list`,
+		PLANS_LIST_AGENCIES: `${getModuleConfig('plans', 'api_url')}/plans/list-agencies`,
 
 		// VALIDATIONS
 		VALIDATIONS_CREATE: `${getModuleConfig('plans', 'api_url')}/validations/create`,
@@ -507,5 +508,6 @@ export const API_ROUTES = Object.freeze({
 		VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/processing-status`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/request-approval`,
 		VALIDATIONS_LIST: `${getModuleConfig('plans', 'api_url')}/validations/list`,
+		VALIDATIONS_LIST_AGENCIES: `${getModuleConfig('plans', 'api_url')}/validations/list-agencies`,
 	},
 } as const);
