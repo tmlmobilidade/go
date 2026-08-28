@@ -1,6 +1,7 @@
 /* * */
 
 import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
+import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
@@ -12,6 +13,8 @@ export interface ExportToHitouchConfig {
 		end: OperationalDate
 		start: OperationalDate
 	}
+	line_codes: string[]
+	lines_mode?: LinesMode
 	output: string
 	source_has_calendar: boolean
 	stop_ids: string[]

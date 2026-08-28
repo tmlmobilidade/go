@@ -66,19 +66,33 @@ export async function exportRoutesFile(sqlTables: GtfsStrictV29ExtSQLTables, exp
 
 	Logger.info({ message: 'Exported routes.txt file.' });
 
-	if (exportConfig.content_mode === 'stops') {
-		return Logger.info({ message: 'Skipped routesToCanvasExt.txt because this export targets stops.' });
-	}
-
 	//
 	// Export route canvas profiles by route and direction.
 
 	const routesToCanvasExtFields: (keyof RoutesToCanvasExt)[] = ['route_id', 'canvas_profile', 'direction_id'];
+	const stopPlaceholders = exportConfig.stop_ids.map(() => '?').join(', ');
+	const isStopExport = exportConfig.content_mode === 'stops' && exportConfig.stop_ids.length > 0;
+	const canvasJoin = isStopExport ? 'INNER JOIN stop_times ON stop_times.trip_id = trips.trip_id' : '';
+	const canvasFilter = isStopExport
+		? `WHERE stop_times.stop_id ${exportConfig.stops_mode === 'exclude' ? 'NOT IN' : 'IN'} (${stopPlaceholders})`
+		: '';
+	const canvasFilterParameters = isStopExport ? exportConfig.stop_ids : [];
+
+	// Line filtering is temporarily disabled while PDF exports use stop filters only.
+	// const lineIdMatchExpression = exportConfig.line_codes
+	// 	.map(() => '(CAST(routes.line_id AS TEXT) = ? OR CAST(routes.line_id AS TEXT) GLOB ?)')
+	// 	.join(' OR ');
+	// const lineIdMatchParameters = exportConfig.line_codes.flatMap(lineCode => [lineCode, `${lineCode}_*`]);
+	// const isLineExport = exportConfig.content_mode === 'lines' && exportConfig.line_codes.length > 0;
+	// const lineJoin = isLineExport ? 'INNER JOIN routes ON routes.route_id = trips.route_id' : '';
+	// const lineFilter = isLineExport ? `WHERE ${exportConfig.lines_mode === 'exclude' ? 'NOT' : ''} (${lineIdMatchExpression})` : '';
 	const routesToCanvasExtRows = sqlTables._db.databaseInstance.prepare(
-		` SELECT DISTINCT route_id, direction_id
+		` SELECT DISTINCT trips.route_id, trips.direction_id
 		FROM trips
-		ORDER BY route_id ASC, direction_id ASC `,
-	).all().map((row: { direction_id: number, route_id: string }): RoutesToCanvasExt => ({
+		${canvasJoin}
+		${canvasFilter}
+		ORDER BY trips.route_id ASC, trips.direction_id ASC `,
+	).all(...canvasFilterParameters).map((row: { direction_id: number, route_id: string }): RoutesToCanvasExt => ({
 		canvas_profile: '08.01.RouteTimeTable.001',
 		direction_id: row.direction_id,
 		route_id: row.route_id,

@@ -59,38 +59,28 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 
 	const sqlGtfs = await importGtfsStrictV29ExtToDatabase(importConfig);
 
-	if (options?.content_mode === 'lines' && options.line_codes?.length) {
-		const lineIdMatchExpression = options.line_codes
-			.map(() => '(CAST(line_id AS TEXT) = ? OR CAST(line_id AS TEXT) GLOB ?)')
-			.join(' OR ');
-		const lineIdMatchParameters = options.line_codes.flatMap(lineCode => [lineCode, `${lineCode}_*`]);
-		const matchingRoutes = sqlGtfs.routes.all(`WHERE ${lineIdMatchExpression}`, lineIdMatchParameters);
-
-		if (!matchingRoutes.length) {
-			throw new Error(`None of the selected lines exist in Plan ${planData._id}.`);
-		}
-		const matchingRouteLineIds = matchingRoutes.map(route => String(route.line_id));
-		const missingLineCodes = options.line_codes.filter(lineCode => !matchingRouteLineIds.some(routeLineId => routeLineId === lineCode || routeLineId.startsWith(`${lineCode}_`)));
-		if (missingLineCodes.length) {
-			throw new Error(`Lines ${missingLineCodes.join(', ')} do not exist in Plan ${planData._id}.`);
-		}
-
-		const selectedRoutes = options.lines_mode === 'exclude'
-			? sqlGtfs.routes.all(`WHERE NOT (${lineIdMatchExpression})`, lineIdMatchParameters)
-			: matchingRoutes;
-		if (!selectedRoutes.length) {
-			throw new Error(`The selected line filter removes every route from Plan ${planData._id}.`);
-		}
-
-		const selectedRouteIds = selectedRoutes.map(route => route.route_id);
-		const routePlaceholders = selectedRouteIds.map(() => '?').join(', ');
-		const filterTransaction = sqlGtfs._db.databaseInstance.transaction(() => {
-			sqlGtfs.stop_times.run(`DELETE FROM stop_times WHERE trip_id NOT IN (SELECT trip_id FROM trips WHERE route_id IN (${routePlaceholders}))`, selectedRouteIds);
-			sqlGtfs.trips.run(`DELETE FROM trips WHERE route_id NOT IN (${routePlaceholders})`, selectedRouteIds);
-			sqlGtfs.routes.run(`DELETE FROM routes WHERE route_id NOT IN (${routePlaceholders})`, selectedRouteIds);
-		});
-		filterTransaction();
-	}
+	// Line filtering is temporarily disabled while PDF exports use stop filters only.
+	// if (options?.content_mode === 'lines' && options.line_codes?.length) {
+	// 	const lineIdMatchExpression = options.line_codes
+	// 		.map(() => '(CAST(line_id AS TEXT) = ? OR CAST(line_id AS TEXT) GLOB ?)')
+	// 		.join(' OR ');
+	// 	const lineIdMatchParameters = options.line_codes.flatMap(lineCode => [lineCode, `${lineCode}_*`]);
+	// 	const matchingRoutes = sqlGtfs.routes.all(`WHERE ${lineIdMatchExpression}`, lineIdMatchParameters);
+	// 	if (!matchingRoutes.length) {
+	// 		throw new Error(`None of the selected lines exist in Plan ${planData._id}.`);
+	// 	}
+	// 	const matchingRouteLineIds = matchingRoutes.map(route => String(route.line_id));
+	// 	const missingLineCodes = options.line_codes.filter(lineCode => !matchingRouteLineIds.some(routeLineId => routeLineId === lineCode || routeLineId.startsWith(`${lineCode}_`)));
+	// 	if (missingLineCodes.length) {
+	// 		throw new Error(`Lines ${missingLineCodes.join(', ')} do not exist in Plan ${planData._id}.`);
+	// 	}
+	// 	const selectedRoutes = options.lines_mode === 'exclude'
+	// 		? sqlGtfs.routes.all(`WHERE NOT (${lineIdMatchExpression})`, lineIdMatchParameters)
+	// 		: matchingRoutes;
+	// 	if (!selectedRoutes.length) {
+	// 		throw new Error(`The selected line filter removes every route from Plan ${planData._id}.`);
+	// 	}
+	// }
 
 	if (options?.content_mode === 'stops' && options.stop_ids?.length) {
 		const stopPlaceholders = options.stop_ids.map(() => '?').join(', ');
@@ -103,10 +93,6 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 		if (missingStopIds.length) {
 			throw new Error(`Stops ${missingStopIds.join(', ')} do not exist in Plan ${planData._id}.`);
 		}
-
-		// Stop selection controls poster targets through stopsToCanvasExt.txt.
-		// Keep the full GTFS network so each selected stop retains every
-		// line, route, trip, and stop sequence required by HiTouch.
 	}
 
 	const sourceHasCalendar = true;
@@ -125,6 +111,8 @@ export async function importPlanToSqlite(planData: Plan, options?: { canvas_prof
 			end: validateOperationalDate(feedEndDate),
 			start: validateOperationalDate(feedStartDate),
 		},
+		line_codes: options?.line_codes ?? [],
+		lines_mode: options?.content_mode === 'lines' ? options.lines_mode ?? 'include' : undefined,
 		output: options?.workdir ? `${planData._id}-hitouch-posters.zip` : `../${planData._id}-hitouch-posters.zip`,
 		source_has_calendar: sourceHasCalendar,
 		stop_ids: options?.stop_ids ?? [],
