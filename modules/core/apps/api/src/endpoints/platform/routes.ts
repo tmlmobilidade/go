@@ -4,7 +4,6 @@ import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clien
 
 import { getMeHandler } from './handlers/get-me.js';
 import { getSidebarLogoHandler } from './handlers/get-sidebar-logo.js';
-import { listPlatformAgenciesHandler } from './handlers/list-platform-agencies.js';
 import { updateMeHandler } from './handlers/update-me.js';
 
 /* * */
@@ -28,8 +27,6 @@ server.register(
 		instance.get('/notifications', { preHandler: authorizationMiddleware() }, getMeHandler);
 
 		instance.post('/sidebar-logo', { preHandler: authorizationMiddleware() }, getSidebarLogoHandler);
-
-		instance.post('/agencies', { preHandler: authorizationMiddleware() }, listPlatformAgenciesHandler);
 
 		next();
 	},

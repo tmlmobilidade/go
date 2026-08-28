@@ -3,7 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type SidebarLogoPlatformRequest, SidebarLogoPlatformRequestSchema, type SidebarLogoPlatformResponse } from '@tmlmobilidade/go-types-platform';
+import { type SidebarLogoPlatformRequest, SidebarLogoPlatformRequestSchema, type SidebarLogoPlatformResponse } from '@tmlmobilidade/go-types-core';
 
 /**
  * Get the current user from the session token.
