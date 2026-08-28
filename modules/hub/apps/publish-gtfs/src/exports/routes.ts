@@ -1,10 +1,10 @@
 /* * */
 
+import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
 import { type HubGtfsExportRoutes, HubGtfsExportRoutesSchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { getPublicRouteId } from '@tmlmobilidade/utils';
 
 import { type ExportGtfsContext } from '../types/context.js';
 
@@ -29,7 +29,7 @@ export async function exportRoutesFile(context: ExportGtfsContext, routesList: G
 			continuous_drop_off: routeData.continuous_drop_off,
 			continuous_pickup: routeData.continuous_pickup,
 			route_color: routeData.route_color,
-			route_id: getPublicRouteId(routeData.agency_id, routeData.route_id),
+			route_id: getQualifiedRouteId(routeData.agency_id, routeData.route_id),
 			route_long_name: routeData.route_long_name,
 			route_short_name: routeData.route_short_name,
 			route_text_color: routeData.route_text_color,

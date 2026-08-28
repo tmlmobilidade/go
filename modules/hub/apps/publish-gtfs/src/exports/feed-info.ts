@@ -1,7 +1,7 @@
 /* * */
 
 import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
-import { HubGtfsExportFeedInfo, HubGtfsExportFeedInfoSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubGtfsExportFeedInfo, HubGtfsExportFeedInfoSchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 

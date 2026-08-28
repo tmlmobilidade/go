@@ -8,19 +8,19 @@ import { z } from 'zod';
 /* * */
 
 export const GtfsRoutesSchema = z.object({
-	agency_id: z.string().optional(),
+	agency_id: z.string().default(''),
 	cemv_support: GtfsTernarySchema.default('0'),
 	continuous_drop_off: GtfsPickupDropoffTypeSchema.default('1'),
 	continuous_pickup: GtfsPickupDropoffTypeSchema.default('1'),
-	route_color: z.string().optional(),
-	route_desc: z.string().optional(),
+	route_color: z.string().default(''),
+	route_desc: z.string().default(''),
 	route_id: z.string(),
-	route_long_name: z.string().optional(),
-	route_short_name: z.string().optional(),
-	route_sort_order: z.number().optional(),
-	route_text_color: z.string().optional(),
+	route_long_name: z.string().default(''),
+	route_short_name: z.string().default(''),
+	route_sort_order: z.number(),
+	route_text_color: z.string().default(''),
 	route_type: GtfsRouteTypeSchema,
-	route_url: z.string().optional(),
+	route_url: z.string().default(''),
 });
 
 /**

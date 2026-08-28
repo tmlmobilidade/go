@@ -10,6 +10,11 @@ export const HubGtfsExportAgencySchema = GtfsAgencySchema.extend({
 });
 
 /**
+ * Representation of a GTFS agency for the Hub GTFS export that is being created.
+ */
+export type HubGtfsExportAgencyInput = z.input<typeof HubGtfsExportAgencySchema>;
+
+/**
  * Representation of a GTFS agency for the Hub GTFS export.
  */
-export type HubGtfsExportAgency = z.infer<typeof HubGtfsExportAgencySchema>;
+export type HubGtfsExportAgency = z.output<typeof HubGtfsExportAgencySchema>;

@@ -1,11 +1,11 @@
 /* * */
 
+import { getQualifiedShapeId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { type GtfsStrictV29Shapes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type HubGtfsExportShapes, HubGtfsExportShapesSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { getPublicShapeId } from '@tmlmobilidade/utils';
 
 import { type ExportGtfsContext } from '../types/context.js';
 
@@ -22,7 +22,7 @@ export async function exportShapesFile(context: ExportGtfsContext, planData: Pla
 		const shapeData: GtfsStrictV29Shapes = shapesItem;
 		const parsedShapesRow: HubGtfsExportShapes = {
 			shape_dist_traveled: shapeData.shape_dist_traveled,
-			shape_id: getPublicShapeId(planData._id, planData.agency_id, shapeData.shape_id),
+			shape_id: getQualifiedShapeId(planData._id, planData.agency_id, shapeData.shape_id),
 			shape_pt_lat: shapeData.shape_pt_lat,
 			shape_pt_lon: shapeData.shape_pt_lon,
 			shape_pt_sequence: shapeData.shape_pt_sequence,

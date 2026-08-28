@@ -10,16 +10,16 @@ import { z } from 'zod';
 
 export const GtfsStopTimesSchema = z.object({
 	arrival_time: GtfsTimeSchema,
-	continuous_drop_off: GtfsPickupDropoffTypeSchema.optional(),
-	continuous_pickup: GtfsPickupDropoffTypeSchema.optional(),
+	continuous_drop_off: GtfsPickupDropoffTypeSchema.default('1'),
+	continuous_pickup: GtfsPickupDropoffTypeSchema.default('1'),
 	departure_time: GtfsTimeSchema,
-	drop_off_type: GtfsPickupDropoffTypeSchema.optional(),
-	pickup_type: GtfsPickupDropoffTypeSchema.optional(),
-	shape_dist_traveled: NonNegativeFloatSchema.optional(),
-	stop_headsign: z.string().optional(),
+	drop_off_type: GtfsPickupDropoffTypeSchema.default('1'),
+	pickup_type: GtfsPickupDropoffTypeSchema.default('1'),
+	shape_dist_traveled: NonNegativeFloatSchema.default(0),
+	stop_headsign: z.string().default(''),
 	stop_id: z.string(),
 	stop_sequence: NonNegativeIntegerSchema,
-	timepoint: GtfsBinarySchema,
+	timepoint: GtfsBinarySchema.default('0'),
 	trip_id: z.string(),
 });
 

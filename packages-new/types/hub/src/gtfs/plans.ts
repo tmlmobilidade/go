@@ -13,6 +13,11 @@ export const HubGtfsExportPlansSchema = z.object({
 });
 
 /**
+ * Representation of a GTFS plan for the Hub GTFS export that is being created.
+ */
+export type HubGtfsExportPlansInput = z.input<typeof HubGtfsExportPlansSchema>;
+
+/**
  * Representation of a GTFS plan for the Hub GTFS export.
  */
-export type HubGtfsExportPlans = z.infer<typeof HubGtfsExportPlansSchema>;
+export type HubGtfsExportPlans = z.output<typeof HubGtfsExportPlansSchema>;

@@ -1,6 +1,6 @@
 /* * */
 
-import { HubGtfsExportPlans, HubGtfsExportPlansSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubGtfsExportPlans, HubGtfsExportPlansSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 

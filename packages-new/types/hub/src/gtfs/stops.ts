@@ -7,20 +7,25 @@ import { z } from 'zod';
 /* * */
 
 export const HubGtfsExportStopsSchema = GtfsStopsSchema.extend({
-	district_id: z.string(),
-	district_name: z.string(),
-	flags: z.string(),
-	legacy_ids: z.string(),
-	lifecycle_status: LifecycleStatusSchema,
-	locality_id: z.string().optional(),
-	locality_name: z.string().optional(),
-	municipality_id: z.string(),
-	municipality_name: z.string(),
-	parish_id: z.string(),
-	parish_name: z.string(),
+	district_id: z.string().default(''),
+	district_name: z.string().default(''),
+	flags: z.string().default(''),
+	legacy_ids: z.string().default(''),
+	lifecycle_status: LifecycleStatusSchema.default('active'),
+	locality_id: z.string().default(''),
+	locality_name: z.string().default(''),
+	municipality_id: z.string().default(''),
+	municipality_name: z.string().default(''),
+	parish_id: z.string().default(''),
+	parish_name: z.string().default(''),
 });
+
+/**
+ * Representation of a GTFS stop for the Hub GTFS export that is being created.
+ */
+export type HubGtfsExportStopsInput = z.input<typeof HubGtfsExportStopsSchema>;
 
 /**
  * Representation of a GTFS stop for the Hub GTFS export.
  */
-export type HubGtfsExportStops = z.infer<typeof HubGtfsExportStopsSchema>;
+export type HubGtfsExportStops = z.output<typeof HubGtfsExportStopsSchema>;
