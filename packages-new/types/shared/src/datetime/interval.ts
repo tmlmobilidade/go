@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 
-import { UnixTimestampSchema } from './unix-timestamp.js';
+import { UnixTimestampSchema } from './unix-millis.js';
 
 /* * */
 

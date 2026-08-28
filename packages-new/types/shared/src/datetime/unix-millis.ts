@@ -12,7 +12,7 @@ export type UnixTimestamp = number & {
 };
 
 /**
- * The schema for a Unix timestamp value.
+ * The schema for a Unix timestamp value in milliseconds.
  * @example
  * ```ts
  * const unixTimestamp = UnixTimestampSchema.parse(1715025600000);

@@ -1,6 +1,6 @@
 /* * */
 
-import { UnixTimestampSchema } from '@/datetime/unix-timestamp.js';
+import { UnixTimestampSchema } from '@/datetime/unix-millis.js';
 import { z } from 'zod';
 
 /* * */

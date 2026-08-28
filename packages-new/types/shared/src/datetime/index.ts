@@ -5,4 +5,5 @@ export * from './operational-date-int.js';
 export * from './operational-date.js';
 export * from './time-slot.js';
 export * from './timezone-identified.js';
-export * from './unix-timestamp.js';
+export * from './unix-millis.js';
+export * from './unix-seconds.js';
