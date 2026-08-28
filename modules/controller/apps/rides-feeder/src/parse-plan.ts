@@ -240,7 +240,7 @@ export async function parsePlan(planData: Plan) {
 			const firstWaypoint = sortedCreateHashedTripItems[0];
 			const lastWaypoint = sortedCreateHashedTripItems[sortedCreateHashedTripItems.length - 1];
 
-			const extensionScheduledInMeters = toMetersFromKilometersOrMeters(lastWaypoint.shape_dist_traveled, lastWaypoint.shape_dist_traveled);
+			const extensionScheduledInMeters = Math.round(toMetersFromKilometersOrMeters(lastWaypoint.shape_dist_traveled, lastWaypoint.shape_dist_traveled));
 
 			//
 			// Hash the object contents and check if it already exists in the database.
