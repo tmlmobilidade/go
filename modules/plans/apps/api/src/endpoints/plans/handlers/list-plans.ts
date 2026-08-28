@@ -63,7 +63,7 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlanListF
 			},
 		},
 		{ $project: Object.fromEntries(Object.keys(PlanListItemSchema.shape).map(key => [key, 1])) },
-		{ $sort: { created_at: -1 } },
+		{ $sort: { 'gtfs_feed_info.feed_start_date': -1 } },
 	];
 
 	const aggregationResult = await goDb.operation.plans.aggregate(pipeline);

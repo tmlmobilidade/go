@@ -2,7 +2,7 @@
 
 /* * */
 
-import { usePlansListData } from '@/components/plans/list/shared/use-plans-list-data';
+import { usePlansListData } from '@/components/plans/list/use-plans-list-data';
 import { CREATE_PLAN_MODAL_ID } from '@/components/validations/detail/ApprovePlanModal';
 import { REQUEST_APPROVAL_MODAL_ID } from '@/components/validations/detail/RequestApprovalModal';
 import { useValidationsDetailData } from '@/components/validations/detail/use-validations-detail-data';

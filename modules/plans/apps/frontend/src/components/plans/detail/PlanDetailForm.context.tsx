@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 import useSWR from 'swr';
 
-import { usePlansListData } from '../list/shared/use-plans-list-data';
+import { usePlansListData } from '../list/use-plans-list-data';
 import { usePlansDetailData } from './use-plans-detail-data';
 import { usePlansDetailPlanId } from './use-plans-detail-plan-id';
 

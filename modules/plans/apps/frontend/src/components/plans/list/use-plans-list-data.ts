@@ -7,10 +7,10 @@ import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { usePlansListFilterAgency } from '../filters/PlansListFilterAgency/use-plans-list-filter-agency';
-import { usePlansListFilterSearch } from '../filters/PlansListFilterSearch/use-plans-list-filter-search';
-import { usePlansListFilterValidityStatus } from '../filters/PlansListFilterValidityStatus/use-plans-list-filter-validity-status';
-import { usePlansListFilterFeedDates } from '../table/PlansListCellFeedDates/use-plans-list-cell-feed-dates';
+import { usePlansListFilterAgency } from './filters/PlansListFilterAgency/use-plans-list-filter-agency';
+import { usePlansListFilterSearch } from './filters/PlansListFilterSearch/use-plans-list-filter-search';
+import { usePlansListFilterValidityStatus } from './filters/PlansListFilterValidityStatus/use-plans-list-filter-validity-status';
+import { usePlansListFilterFeedDates } from './table/PlansListCellFeedDates/use-plans-list-cell-feed-dates';
 
 /* * */
 
@@ -53,21 +53,27 @@ export function usePlansListData(): UsePlansListDataReturnType {
 		refreshInterval: 10_000,
 	});
 
-	const searchResultData = useSearch<PlanListItem>({
+	const searchResultsData = useSearch<PlanListItem>({
 		accessors: ['_id'],
 		data: data?.data,
 		query: filterSearch.value,
 	});
 
+	const sortedSearchResultsData = useMemo(() => {
+		return [...searchResultsData].sort((a, b) => {
+			return b.gtfs_feed_info.feed_start_date.localeCompare(a.gtfs_feed_info.feed_start_date);
+		});
+	}, [searchResultsData]);
+
 	//
 	// D. Return data
 
 	return useMemo(() => ({
-		data: searchResultData,
+		data: sortedSearchResultsData,
 		error: data?.error ?? (error instanceof Error ? error.message : null),
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp ?? null,
-	}), [searchResultData, data?.timestamp, error, isLoading, isValidating, mutate]);
+	}), [sortedSearchResultsData, data?.timestamp, error, isLoading, isValidating, mutate]);
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { PlansListFiltersBar } from '@/components/plans/list/filters/PlansListFiltersBar';
-import { PlansListHeader } from '@/components/plans/list/shared/PlansListHeader';
+import { PlansListHeader } from '@/components/plans/list/PlansListHeader';
 import { PlansListCellFeedDates } from '@/components/plans/list/table/PlansListCellFeedDates';
 import { usePlansAgenciesData } from '@/components/plans/shared/use-plans-agencies-data';
 import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
