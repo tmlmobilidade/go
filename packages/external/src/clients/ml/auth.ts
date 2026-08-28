@@ -1,7 +1,7 @@
 /* * */
 
 import { Logger } from '@tmlmobilidade/logger';
-import { SshTunnel } from '@tmlmobilidade/ssh';
+import { SshTunnel } from '@tmlmobilidade/go-clients-ssh';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IncomingMessage } from 'node:http';
 import https from 'node:https';

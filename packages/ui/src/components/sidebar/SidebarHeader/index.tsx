@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { IconButton } from '../../buttons/IconButton';
+import { IconButton } from '../../../buttons';
 import { useSidebarContext } from '../Sidebar.context';
 import { SidebarHeaderGreeting } from '../SidebarHeaderGreeting';
 import { SidebarHeaderLogo } from '../SidebarHeaderLogo';

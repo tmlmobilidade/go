@@ -1,10 +1,12 @@
 /* * */
 
-import { type Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
+import { type Dates } from '@tmlmobilidade/go-utils-dates';
 
-import { aggregationQuery } from './aggregation-query.js';
-import { type AggregationResult } from './types.js';
+import { enrichTripPathWithStopCodes } from './enrich-trip-path-with-stop-codes.js';
+import { findRidesForTrainQuery, findTripPathQuery } from './find-rides-for-train-query.js';
+import { type AggregationResult, ML_AGENCY_ID } from './types.js';
 
 /* * */
 
@@ -14,42 +16,45 @@ interface FindRideForTrainParams {
 }
 
 /**
- * Finds a single Metro Lisboa ride, joining its hashed shape and trip, whose headsign matches the
+ * Finds a single Metro Lisboa ride, joining its shape and trip, whose headsign matches the
  * specified destinationId (ML API stop identifier) within a time window centered on the current timestamp.
  *
- * Searches for a stop document whose flags include the given destinationId (using Metro's agency id "2").
+ * Searches for a stop document whose flags include the given destinationId (Metro agency IA2N9).
  * Uses the matched stop's name to filter rides by headsign, and limits the scheduled start time search to
- * two hours before and after the provided 'now' timestamp.
+ * one hour before and after the provided 'now' timestamp.
  *
- * Returns the first ride match (if any) joined with its hashed GTFS shape and trip, or null if none found.
+ * Returns the middle ride match (if any) joined with its GTFS shape and trip, or null if none found.
  *
- * @param params.destinationId - ML API stop_id for the train's destination (string, agency 2).
- * @param params.iteration - Current fetch loop iteration (for logging, unused here).
- * @param params.line - Metro line name (for logging, unused here).
+ * @param params.destinationId - ML API stop_id for the train's destination (string, agency IA2N9).
  * @param params.now - Current Dates instance (reference time zone aware).
- * @param params.trainId - Unique train identifier (for logging, unused here).
- * @returns The first AggregationResult object with hashed shape and trip, or null if no match.
+ * @returns The AggregationResult object with shape and trip, or null if no match.
  *
  * Used by ml-fetch to map API train positions to GTFS rides for downstream vehicle event construction.
  */
 export async function findRideForTrain({ destinationId, now }: FindRideForTrainParams): Promise<AggregationResult | null> {
 	const destinationStop = await goDb.infrastructure.stops.findOne({
-		flags: { $elemMatch: { agency_ids: '2', stop_id: destinationId } },
+		flags: { $elemMatch: { agency_ids: ML_AGENCY_ID, stop_id: destinationId } },
 	});
 
 	if (!destinationStop) return null;
 
-	const ridesCollection = await goDb.operation.rides.getCollection();
+	const rides = await labDb.operation.rides.queryFromString(findRidesForTrainQuery, {
+		1: ML_AGENCY_ID,
+		2: destinationStop.name,
+		3: now.minus({ hours: 1 }).unix_timestamp,
+		4: now.plus({ hours: 1 }).unix_timestamp,
+	});
 
-	const ridesAggregationResult = await ridesCollection.aggregate(
-		aggregationQuery({
-			endTimeScheduled: now.plus({ hours: 1 }).unix_timestamp,
-			headsign: destinationStop.name,
-			startTimeScheduled: now.minus({ hours: 1 }).unix_timestamp,
-		}),
-	).toArray() as AggregationResult[];
+	const ride = rides[Math.floor(rides.length / 2)];
+	if (!ride) return null;
 
-	if (ridesAggregationResult.length === 0) return null;
+	const path = await labDb.operation.hashedTrips.queryFromString(findTripPathQuery, { 1: ride.hashed_trip_id });
+	if (!path.length) return null;
 
-	return ridesAggregationResult[Math.floor(ridesAggregationResult.length / 2)] ?? null;
+	return {
+		_id: ride._id,
+		hashed_trip: { path: await enrichTripPathWithStopCodes(path) },
+		shape_polyline: ride.shape_polyline,
+		trip_id: ride.trip_id,
+	};
 }

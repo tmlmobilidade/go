@@ -1,8 +1,8 @@
 /* * */
 
 import { useSamsListContext } from '@/contexts/SamList.context';
-import { UnixTimestamp } from '@tmlmobilidade/types';
-import { FilterTypeDateRange } from '@tmlmobilidade/ui';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { DateRangeFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -19,7 +19,7 @@ export function SamsFiltersDate() {
 	// B. Render components
 
 	return (
-		<FilterTypeDateRange
+		<DateRangeFilter
 			active={samsListContext.filters.seen_last_at != null || samsListContext.filters.seen_first_at != null}
 			disabled={samsListContext.flags.favoritesEnabled}
 			endDate={samsListContext.filters.seen_last_at as UnixTimestamp}

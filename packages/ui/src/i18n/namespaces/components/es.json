@@ -1,12 +1,14 @@
 {
 	"buttons": {
+		"CreateButton": {
+			"label": "Crear"
+		},
 		"DuplicateButton": {
 			"label": "Duplicar",
 			"tooltip": "Crear una copia de este documento"
 		},
-		"SaveButton": {
-			"label": "Guardar",
-			"tooltip": "Guardar cambios"
+		"UpdateButton": {
+			"label": "Guardar"
 		}
 	},
 	"files": {
@@ -25,11 +27,6 @@
 			}
 		}
 	},
-	"filters": {
-		"FilterTypeList": {
-			"toggle_all": "Seleccionar todo"
-		}
-	},
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {
@@ -39,11 +36,20 @@
 				"placeholder": "Longitud (-180 a 180)"
 			}
 		},
-		"SearchInput": {
+		"SearchField": {
 			"placeholder": "Buscar..."
 		},
 		"Select": {
 			"nothing_found": "No se encontraron resultados"
+		}
+	},
+	"loaders": {
+		"LoadingActivity": {
+			"days_ago": "Actualizado hace {count, plural, =1 {1 día} other {# días}}",
+			"hours_ago": "Actualizado hace {count, plural, =1 {1 hora} other {# horas}}",
+			"just_now": "Actualizado ahora",
+			"minutes_ago": "Actualizado hace {count, plural, =1 {1 minuto} other {# minutos}}",
+			"seconds_ago": "Actualizado hace {count, plural, =1 {1 segundo} other {# segundos}}"
 		}
 	},
 	"sidebar": {

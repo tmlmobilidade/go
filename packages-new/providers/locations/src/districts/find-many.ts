@@ -2,7 +2,7 @@
 
 import { flattenPropertiesPipeline } from '@/utils/flatten-properties-pipeline.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type District } from '@tmlmobilidade/types';
+import { type District } from '@tmlmobilidade/go-types-locations';
 
 /* * */
 

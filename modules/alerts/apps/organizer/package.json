@@ -17,17 +17,17 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-types-operation": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/rss": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",

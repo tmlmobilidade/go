@@ -16,10 +16,14 @@
 		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
+		"@mantine/core": "9.5.1",
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-types-downloads": "*",
+		"@tmlmobilidade/go-types-offer": "*",
+		"@tmlmobilidade/go-types-permissions": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
@@ -34,14 +38,11 @@
 		"swr": "2.5.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
-		"@types/luxon": "3.7.3",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"@types/papaparse": "5.5.2",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.4",
-		"tsx": "4.23.10",
 		"typescript": "6.0.3"
 	}
 }

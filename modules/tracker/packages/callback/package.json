@@ -15,14 +15,15 @@
 		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsc-watch": "7.2.1",

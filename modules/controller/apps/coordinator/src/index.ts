@@ -1,17 +1,14 @@
 /* * */
 
-import { getRides } from '@/get-rides.js';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import Fastify from 'fastify';
+
+import { getRides } from './get-rides.js';
 
 /* * */
 
 await (async function init() {
 	//
-
-	// const now = Dates.now('Europe/Lisbon').unix_timestamp;
-	// await rides.updateMany({ agency_id: { $in: ['crtm-aisa', 'crtm-laveloz'] }, start_time_scheduled: { $lt: now } }, { system_status: 'waiting' });
-	// console.log('Marked crtm-aisa and crtm-laveloz rides as waiting');
 
 	//
 	// Initialize Sentry

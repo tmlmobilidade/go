@@ -2,7 +2,8 @@
 
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Sam, SystemStatus, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type Sam } from '@tmlmobilidade/go-types-operation';
+import { type SystemStatus, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { DateTime } from 'luxon';
 
 /* * */

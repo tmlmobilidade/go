@@ -2,7 +2,7 @@
 
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Sam } from '@tmlmobilidade/types';
+import { type Sam } from '@tmlmobilidade/go-types-operation';
 import { useUserPreference } from '@tmlmobilidade/ui';
 /* * */
 

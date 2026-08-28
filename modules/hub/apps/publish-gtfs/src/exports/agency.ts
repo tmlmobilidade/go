@@ -36,10 +36,7 @@ export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsC
 	//
 	// Get agencies data from the database.
 
-	const foundAgenciesData = await goDb.core.agencies.findMany(
-		{ _id: { $in: agencyIds } },
-		{ sort: { _id: 1 } },
-	);
+	const foundAgenciesData = await goDb.core.agencies.findMany({ _id: { $in: agencyIds } });
 
 	for (const agencyData of foundAgenciesData) {
 		const parsedAgencyRow: ExportedAgencyRow = {

@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsRtFeedMessage } from '@tmlmobilidade/types';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 
 /**
  * Returns an empty GTFS-RT feed message.

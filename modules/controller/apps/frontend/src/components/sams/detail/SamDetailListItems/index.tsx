@@ -1,9 +1,8 @@
 /* * */
 
 import { useSamsDetailContext } from '@/contexts/SamDetail.context';
-import { formatUnixTimestampToDateString } from '@/lib/utils';
-import { SamAnalysis } from '@tmlmobilidade/types';
-import { DataTable, DataTableColumn, Label } from '@tmlmobilidade/ui';
+import { SamAnalysis } from '@tmlmobilidade/go-types-operation';
+import { DataTable, DataTableColumn, Label, UnixTimestampDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -66,13 +65,13 @@ export function SamsDetailListItems() {
 		return [
 			{
 				accessor: 'start_time',
-				render: item => item.start_time ? <Label>{formatUnixTimestampToDateString(item.start_time)}</Label> : <Label>N/A</Label>,
+				render: item => item.start_time ? <UnixTimestampDisplay value={item.start_time} /> : <Label>N/A</Label>,
 				title: 'Data de início',
 				width: 200,
 			},
 			{
 				accessor: 'end_time',
-				render: item => item.end_time ? <Label>{formatUnixTimestampToDateString(item.end_time)}</Label> : <Label>N/A</Label>,
+				render: item => item.end_time ? <UnixTimestampDisplay value={item.end_time} /> : <Label>N/A</Label>,
 				title: 'Data de fim',
 				width: 200,
 			},

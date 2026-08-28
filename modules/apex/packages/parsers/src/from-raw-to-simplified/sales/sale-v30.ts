@@ -1,6 +1,6 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { ApexCardTypeSchema, ApexPaymentMethodSchema, type RawApexTransactionSaleV30, type SimplifiedApexOnBoardSale, SimplifiedApexOnBoardSaleSchema } from '@tmlmobilidade/go-types-apex';
 import { toUInt64 } from '@tmlmobilidade/utils';
 

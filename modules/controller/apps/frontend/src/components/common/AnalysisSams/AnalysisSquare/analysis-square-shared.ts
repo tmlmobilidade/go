@@ -1,6 +1,6 @@
 /* * */
 
-import { type SamAnalysis } from '@tmlmobilidade/types';
+import { type SamAnalysis } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 

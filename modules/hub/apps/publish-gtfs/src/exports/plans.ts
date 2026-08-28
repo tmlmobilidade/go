@@ -1,16 +1,17 @@
 /* eslint-disable perfectionist/sort-objects */
 
 import { type ExportGtfsContext } from '@/types/context.js';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
-import { type OperationalDate, Plan } from '@tmlmobilidade/types';
 
 /* * */
 
 export interface ExportedPlansRow {
 	agency_id: string
-	plan_end_date: OperationalDate
+	plan_end_date: OperationalDateInt
 	plan_id: string
-	plan_start_date: OperationalDate
+	plan_start_date: OperationalDateInt
 }
 
 /**
@@ -27,8 +28,8 @@ export async function exportPlansFile(planData: Plan, context: ExportGtfsContext
 	const parsedPlansRow: ExportedPlansRow = {
 		agency_id: planData.agency_id,
 		plan_id: planData._id,
-		plan_end_date: planData.gtfs_feed_info.feed_end_date,
-		plan_start_date: planData.gtfs_feed_info.feed_start_date,
+		plan_end_date: OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date),
+		plan_start_date: OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_start_date),
 	};
 
 	await context.writers.plans.write(parsedPlansRow);

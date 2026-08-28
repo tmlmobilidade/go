@@ -1,11 +1,11 @@
 'use client';
 
-import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useSamsFavoritesContext } from '@/contexts/SamFavorites.context';
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Sam, type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/types';
-import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType } from '@tmlmobilidade/ui';
+import { type Sam } from '@tmlmobilidade/go-types-operation';
+import { type SystemStatus, SystemStatusSchema, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -32,7 +32,7 @@ export interface SamsListContextState {
 	filters: {
 		agency: UseFilterStateListReturnType
 		apex_version: UseFilterStateListReturnType<string>
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 		seen_first_at: null | UnixTimestamp
 		seen_last_at: null | UnixTimestamp
 		status: UseFilterStateListReturnType<SystemStatus>
@@ -70,7 +70,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 
 	const [favoritesEnabled, setFavoritesEnabled] = useState<boolean>(false);
 	const [timelineById, setTimelineById] = useState<Record<number, null | Sam['timeline_summary'] | undefined>>({});
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 	const [debouncedFilterSearch, setDebouncedFilterSearch] = useState('');
 	const inflightTimelineIdsRef = useRef<Set<number>>(new Set());
 	const timelineByIdRef = useRef<Record<number, null | Sam['timeline_summary'] | undefined>>({});
@@ -112,21 +112,19 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	const samsFavoritesContext = useSamsFavoritesContext();
-	const agenciesContext = useAgenciesContext();
-	const agencyIdsOrdered = agenciesContext.data.ids;
 
-	const agencyOptions = useMemo(
-		() =>
-			agenciesContext.data.raw.map(item => ({
-				checked: false,
-				disabled: false,
-				label: `${item._id} - ${item.name}`,
-				value: item._id,
-			})),
-		[agenciesContext.data.raw],
-	);
+	// const { filtered: agenciesData, filteredIds: agencyIdsOrdered, isLoading: agenciesLoading } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
 
-	const filterAgency = useFilterStateList('agency_id', agencyIdsOrdered, agencyOptions);
+	const agencyOptions = useMemo(() =>
+		[].map(item => ({
+			checked: false,
+			disabled: false,
+			label: `${item._id} - ${item.name}`,
+			value: item._id,
+		})),
+	[]);
+
+	const filterAgency = useFilterStateList('agency_id', [], agencyOptions);
 
 	//
 
@@ -143,10 +141,10 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	const apexVersionsUrl = useMemo(() => {
-		if (agenciesContext.flags.loading) return null;
+		// if (agenciesLoading) return null;
 		const base = `${API_ROUTES.controller.SAMS_LIST}/apex-versions`;
 		return baseQueryString ? `${base}?${baseQueryString}` : base;
-	}, [agenciesContext.flags.loading, baseQueryString]);
+	}, [baseQueryString]);
 
 	const { data: apexVersionsData } = useSWR<string[], Error>(apexVersionsUrl);
 
@@ -202,10 +200,10 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 	//
 
 	const samsListUrl = useMemo(() => {
-		if (agenciesContext.flags.loading) return null;
+		// if (agenciesLoading) return null;
 		const base = API_ROUTES.controller.SAMS_BASE;
 		return samsListQueryString ? `${base}?${samsListQueryString}` : base;
-	}, [agenciesContext.flags.loading, samsListQueryString]);
+	}, [samsListQueryString]);
 
 	//
 

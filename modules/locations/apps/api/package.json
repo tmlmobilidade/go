@@ -18,18 +18,19 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-locations": "*",
+		"@tmlmobilidade/go-types-geo": "*",
+		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@turf/turf": "7.4.0",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",

@@ -1,6 +1,6 @@
 /* * */
 
-import { Vehicle } from '@tmlmobilidade/types';
+import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 

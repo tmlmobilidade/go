@@ -1,0 +1,9 @@
+{
+	"ListFilter": {
+		"toggle_all": "Seleccionar todo"
+	},
+	"TagFilter": {
+		"description": "Escriba y separe por comas o espacios.",
+		"placeholder": "Buscar..."
+	}
+}

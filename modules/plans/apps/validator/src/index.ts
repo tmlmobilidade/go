@@ -2,12 +2,12 @@
 
 import { processValidation } from '@/tasks/process-validation.js';
 import { SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
-import { sendSystemErrorEmail } from '@tmlmobilidade/emails';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { sendSystemErrorEmail } from '@tmlmobilidade/go-providers-emails';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
 import pjson from 'pjson' with { type: 'json' };
 
 /* * */
@@ -40,10 +40,7 @@ async function main() {
 		// Status "processing" is included to catch any validations
 		// that may be stuck due to previous crashes or errors.
 
-		const waitingOrStuckGtfsValidations = await goDb.operation.gtfsValidations.findMany(
-			{ processing_status: { $in: ['waiting', 'processing'] } },
-			{ sort: { created_at: 1 } },
-		);
+		const waitingOrStuckGtfsValidations = await goDb.operation.gtfsValidations.findMany({ processing_status: { $in: ['waiting', 'processing'] } });
 
 		if (!waitingOrStuckGtfsValidations.length) {
 			Logger.info({ message: 'No waiting validations to process. Exiting...' });

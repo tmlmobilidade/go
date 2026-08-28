@@ -3,7 +3,7 @@
 import { getApprovedPlans } from '@/endpoints/v1/plans/controllers/get-approved-plans.js';
 import { getGtfsCm } from '@/endpoints/v1/plans/controllers/get-gtfs-cm.js';
 import { getGtfs } from '@/endpoints/v1/plans/controllers/get-gtfs.js';
-import { type FastifyInstance, FastifyService } from '@tmlmobilidade/fastify';
+import { type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

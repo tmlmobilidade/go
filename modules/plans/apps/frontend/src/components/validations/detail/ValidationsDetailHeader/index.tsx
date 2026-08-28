@@ -3,13 +3,16 @@
 
 import { openApprovePlanModal } from '@/components/validations/detail/ApprovePlanModal';
 import { openRequestApprovalModalModal } from '@/components/validations/detail/RequestApprovalModal';
-import { useValidationsDetailContext } from '@/contexts/ValidationsDetail.context';
+import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, type ProcessingStatus } from '@tmlmobilidade/types';
-import { AgencyTag, Button, CloseButton, HasPermission, IdTag, ProcessingStatusTag, Spacer, Toolbar, useMeContext, ValidityStatusTag } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type ProcessingStatus } from '@tmlmobilidade/go-types-shared';
+import { AgencyTag, Button, CloseButton, HasPermission, IdTag, ProcessingStatusDisplay, Spacer, Toolbar, useMeContext, ValidityStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+
+import { useGtfsValidationsAgenciesData } from '../../shared/use-gtfs-validations-agencies-data';
 
 /* * */
 
@@ -22,6 +25,10 @@ export function ValidationsDetailHeader() {
 	const router = useRouter();
 	const meContext = useMeContext();
 	const validationsDetailContext = useValidationsDetailContext();
+
+	const { data: agenciesData } = useGtfsValidationsAgenciesData({
+		permissions: { actions: ['read'], scope: 'gtfs_validations' },
+	});
 
 	//
 	// B. Transform data
@@ -69,15 +76,19 @@ export function ValidationsDetailHeader() {
 
 			<CloseButton onClick={handleClose} type="close" />
 			<IdTag id={validationsDetailContext.data.validation?._id} copyOnClick />
-			<AgencyTag agencyId={validationsDetailContext.data.validation?.agency_id} showShortName />
+			<AgencyTag
+				agencyId={validationsDetailContext.data.validation?.agency_id}
+				data={agenciesData}
+				showShortName
+			/>
 
-			<ProcessingStatusTag
+			<ProcessingStatusDisplay
 				disabled={!hasPermissionToChangeProcessingStatus}
 				onChange={handleUpdateProcessingStatus}
 				value={validationsDetailContext.data.validation?.processing_status}
 			/>
 
-			<ValidityStatusTag value={validationsDetailContext.data.validation?.validity_status} />
+			<ValidityStatusDisplay value={validationsDetailContext.data.validation?.validity_status} />
 
 			<Spacer />
 
@@ -115,6 +126,4 @@ export function ValidationsDetailHeader() {
 
 		</Toolbar>
 	);
-
-	//
 }

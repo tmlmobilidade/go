@@ -28,6 +28,6 @@ export async function exportCalendarMap(
 
 		Logger.success(`Exported ${sorted.length} entries to calendar_map.txt`);
 	} catch (error) {
-		throw new Error(`Error exporting calendar map: ${error}`);
+		throw new Error(`Error exporting calendar map: ${error}`, error);
 	}
 }

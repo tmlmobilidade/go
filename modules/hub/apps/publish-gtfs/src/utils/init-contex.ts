@@ -1,8 +1,8 @@
 /* * */
 
 import { type ExportGtfsContext } from '@/types/context.js';
-import { Dates } from '@tmlmobilidade/dates';
-import { BatchWriter } from '@tmlmobilidade/utils';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import fs from 'node:fs';
 import Papa from 'papaparse';
 
@@ -51,17 +51,6 @@ export function initExportGtfsContext(): ExportGtfsContext {
 				fs.appendFileSync(dirPath, csvData, { encoding: 'utf-8', flush: true });
 			},
 			title: 'calendar_dates',
-		}),
-		dates: new BatchWriter({
-			batch_size: 100_000,
-			insertFn: async (data) => {
-				const dirPath = `${workdirContext.path}/dates.txt`;
-				const fileAlreadyExists = fs.existsSync(dirPath);
-				let csvData = Papa.unparse(data, { header: !fileAlreadyExists, newline: '\n', skipEmptyLines: 'greedy' });
-				if (fileAlreadyExists) csvData = '\n' + csvData;
-				fs.appendFileSync(dirPath, csvData, { encoding: 'utf-8', flush: true });
-			},
-			title: 'dates',
 		}),
 		feed_info: new BatchWriter({
 			batch_size: 100_000,

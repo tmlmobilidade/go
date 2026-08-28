@@ -2,7 +2,7 @@
 
 import { type UseFormReturn } from 'react-hook-form';
 
-import { type UseFilterStateStringReturnType } from '../hooks/use-filter-state-string';
+import { type UseFilterStateTextReturnType } from '../filters';
 
 /**
  * Use this interface to type the state of **List** contexts.
@@ -13,7 +13,7 @@ import { type UseFilterStateStringReturnType } from '../hooks/use-filter-state-s
  */
 export interface ListContextStateTemplate {
 	filters: {
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		error: Error | undefined
@@ -50,7 +50,7 @@ export interface CreateContextStateTemplate<T = any> {
  * and a `flags` section, with error, isSaving and loading flags.
  * You should add a `data: { ... }` section and expand these defaults as needed.
  */
-export interface DetailContextStateTemplate<T = any> {
+export interface DetailContextStateTemplate<T = unknown> {
 	actions: {
 		delete?: () => void
 		duplicate?: () => void

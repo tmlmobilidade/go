@@ -7,7 +7,7 @@ import { type SamsListItem, useSamsListContext } from '@/contexts/SamList.contex
 import { getSamSystemStatus } from '@/lib/sam-status';
 import { translateFilterValue } from '@/lib/translations';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Sam } from '@tmlmobilidade/types';
+import { type Sam } from '@tmlmobilidade/go-types-operation';
 import { AgencyTag, DataTable, DataTableColumn, IdTag, keepUrlParams, Label, Pane, Tag } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo } from 'react';
@@ -48,7 +48,7 @@ export function SamsList() {
 		},
 		{
 			accessor: 'agency_id',
-			render: item => <AgencyTag agencyId={item.agency_id} />,
+			render: item => <AgencyTag agencyId={item.agency_id} data={[]} />,
 			title: 'Operador',
 			width: 80,
 		},

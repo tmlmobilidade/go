@@ -3,7 +3,7 @@
 import { ScrollChips } from '@/components/common/lists/ScrollChips';
 import { getAgencyLogo } from '@/lib/agency-logos-map';
 import { AGENCY_NAMES_MAP } from '@/lib/agency-names-map';
-import { useFilterStateString } from '@tmlmobilidade/ui';
+import { useFilterStateText } from '@tmlmobilidade/ui';
 import clsx from 'clsx';
 import Image from 'next/image';
 
@@ -21,7 +21,7 @@ export function SearchAgencyChips() {
 	//
 	// A. Setup variables
 
-	const filterAgency = useFilterStateString('agency');
+	const filterAgency = useFilterStateText('agency');
 
 	//
 	// B. Render components

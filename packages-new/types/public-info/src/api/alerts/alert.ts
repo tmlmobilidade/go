@@ -1,6 +1,6 @@
 /* * */
 
-import { AlertSchema } from '@tmlmobilidade/types';
+import { AlertSchema } from '@tmlmobilidade/go-types-operation';
 import { z } from 'zod';
 
 /* * */

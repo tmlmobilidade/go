@@ -2,7 +2,7 @@
 
 import { FileInput, Stack } from '@mantine/core';
 
-import { Button } from '../../buttons';
+import { Button } from '../../../buttons';
 import { Grid } from '../../layout';
 
 /* * */
@@ -39,8 +39,7 @@ export function GeoJsonInput({
 			const parsed = JSON.parse(text);
 
 			onChange?.(parsed);
-		}
-		catch {
+		} catch {
 			onError?.('Invalid GeoJSON file');
 		}
 	};

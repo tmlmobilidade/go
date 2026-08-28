@@ -18,14 +18,15 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/fastify": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/geo": "*",
+		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-types-gtfs-strict": "*",
+		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/rabbitmq": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"adm-zip": "0.6.0",
@@ -33,8 +34,7 @@
 		"papaparse": "5.5.4"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/adm-zip": "0.5.8",
 		"@types/node": "26.1.2",
 		"@types/papaparse": "5.5.2",

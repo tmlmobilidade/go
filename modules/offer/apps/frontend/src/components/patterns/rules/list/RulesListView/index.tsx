@@ -4,8 +4,8 @@ import { usePatternDetailContext } from '@/components/patterns/detail/PatternDet
 import RulesListViewEventCard from '@/components/patterns/rules/list/RulesListViewEventCard';
 import RulesListViewManualCard from '@/components/patterns/rules/list/RulesListViewManualCard';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { sortRulesBySection } from '@tmlmobilidade/dates';
-import { EventReplacementRule } from '@tmlmobilidade/types';
+import { sortRulesBySection } from '@tmlmobilidade/go-utils-dates';
+import { type EventReplacementRule } from '@tmlmobilidade/go-types-offer';
 import { Section, Text } from '@tmlmobilidade/ui';
 
 /* * */

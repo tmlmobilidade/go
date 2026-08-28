@@ -1,4 +1,4 @@
-import { CreateVehicleDto } from '@tmlmobilidade/types';
+import { type CreateVehicleDto } from '@tmlmobilidade/go-types-operation';
 
 export interface VehicleImportPreview {
 	changes?: Partial<Record<keyof CreateVehicleDto, { newValue: unknown, oldValue: unknown }>>

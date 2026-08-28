@@ -1,8 +1,6 @@
 'use client';
 
 import { AgencySelect } from '@/components/common/AgencySelect';
-/* * */
-
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { Collapsible, DateInput, Grid, Section, TextInput } from '@tmlmobilidade/ui';
 

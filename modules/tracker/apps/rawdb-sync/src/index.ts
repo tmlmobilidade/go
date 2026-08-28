@@ -1,11 +1,11 @@
 /* * */
 
 import { getEarliestDate } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { performInTimeChunks, runOnInterval } from '@tmlmobilidade/utils';
 
 import { syncVehicleEvents } from './task.js';
 import { SyncConfig } from './types.js';
@@ -70,6 +70,7 @@ async function main() {
 
 		await performInTimeChunks({
 			endDate: Dates.now('utc').minus({ minutes: 10 }).unix_timestamp,
+			intervalHrs: 2,
 			onChunk: async (chunk) => {
 				for (const configItem of syncConfig) {
 					try {
@@ -84,16 +85,15 @@ async function main() {
 						// the current chunk into smaller chunks
 						await performInTimeChunks({
 							endDate: chunk.end,
+							intervalHrs: 10 / 60, // 10 minutes
 							onChunk: async (chunk) => {
 								await syncVehicleEvents(chunk, configItem);
 							},
-							splitBy: { minutes: 10 },
 							startDate: chunk.start,
 						});
 					}
 				}
 			},
-			splitBy: { hours: 2 },
 			startDate: earliestDate.unix_timestamp,
 		});
 

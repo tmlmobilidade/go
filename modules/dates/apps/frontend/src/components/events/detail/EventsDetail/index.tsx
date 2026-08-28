@@ -1,12 +1,12 @@
 'use client';
 
+import { useAnnotationsAgenciesData } from '@/components/annotations/shared/use-users-agencies-data';
 import { DatesSelector } from '@/components/events/detail/EventsDatesSelector';
 import { useEventsDetailContext } from '@/components/events/detail/EventsDetail.context';
 import { EventsDetailHeader } from '@/components/events/detail/EventsDetailHeader';
 import { RuleCard } from '@/components/events/rules/RuleCard';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { EventRule, EventSchema, PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, Divider, ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Spacer, Text, Textarea, TextInput, useDataAgencies } from '@tmlmobilidade/ui';
+import { EventRule, EventSchema } from '@tmlmobilidade/go-types-offer';
+import { Button, Divider, ErrorDisplay, Grid, LoadingOverlay, MultiSelect, Pane, Section, Spacer, Text, Textarea, TextInput } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -20,10 +20,7 @@ export function EventsDetail() {
 
 	// Bypass permissions to show all agency labels in read-only mode
 	// When editable, filter agencies based on user permissions
-	const { options: agencyOptions } = useDataAgencies(API_ROUTES.auth.AGENCIES_LIST, {
-		actions: eventsDetailContext.flags.isReadOnly ? undefined : [PermissionCatalog.all.events.actions.update],
-		scope: eventsDetailContext.flags.isReadOnly ? undefined : PermissionCatalog.all.events.scope,
-	});
+	const { options: agencyOptions } = useAnnotationsAgenciesData();
 
 	//
 	// B. Render components
@@ -37,7 +34,7 @@ export function EventsDetail() {
 	}
 
 	return (
-		<Pane header={[<EventsDetailHeader />]}>
+		<Pane header={[<EventsDetailHeader key="events-detail-header" />]}>
 			<Section>
 				<Grid columns="a" gap="lg">
 

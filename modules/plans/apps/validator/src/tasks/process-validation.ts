@@ -2,14 +2,14 @@
 
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/dates';
-import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/emails';
 import { getTmpWorkdirPath } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { GtfsValidator } from '@tmlmobilidade/gtfs-validator';
 import { Logger } from '@tmlmobilidade/logger';
-import { type GtfsValidation, type GtfsValidationSummary } from '@tmlmobilidade/types';
 import fs from 'node:fs';
 import { join } from 'node:path';
 import pjson from 'pjson' with { type: 'json' };
@@ -108,7 +108,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'complete',
-			summary: gtfsValidationResult.summary as GtfsValidationSummary,
+			summary: gtfsValidationResult.summary as GtfsValidation['summary'],
 			validity_status: gtfsValidationResult.summary.total_errors === 0 ? 'valid' : 'invalid',
 		});
 

@@ -17,7 +17,6 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
 		"@vis.gl/react-maplibre": "8.1.2",
@@ -29,7 +28,7 @@
 		"swr": "2.5.0"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"@types/react": "19.2.18",
 		"@types/react-dom": "19.2.4",

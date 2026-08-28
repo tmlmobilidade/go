@@ -1,7 +1,7 @@
 'use client';
 
 import { PlanChange } from '@/components/plans/change/PlanChange';
-import { PlanChangeContextProvider } from '@/components/plans/change/PlanChange.context';
+import { PlanChangeContextProvider } from '@/components/plans/change/PlanChangeForm.context';
 import { DataProviders } from '@/providers/data-providers';
 import { closeModal, openModal } from '@tmlmobilidade/ui';
 

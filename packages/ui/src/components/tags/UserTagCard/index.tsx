@@ -1,8 +1,8 @@
 'use client';
 
 import { HoverCard } from '@mantine/core';
-import { Dates } from '@tmlmobilidade/dates';
-import { type UnixTimestamp } from '@tmlmobilidade/types';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 
 import styles from './styles.module.css';

@@ -1,12 +1,14 @@
 /* * */
 
 import { fetchProtobuf } from '@/protobuf.js';
-import { describeAlert } from '@tmlmobilidade/go-alerts-pckg-describe';
+import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-alerts-pckg-compose';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type CreateAlertDto, type ServiceAlertResponse, UnixTimestamp } from '@tmlmobilidade/types';
-import { runOnInterval } from '@tmlmobilidade/utils';
+import { type ServiceAlertResponse } from '@tmlmobilidade/types';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -57,7 +59,7 @@ async function main() {
 			}
 
 			//
-			const alertDescribeResult = await describeAlert({
+			const alertDescribeResult = await composeAlertTitleAndDescription({
 				active_period_end_date: serviceAlert.alert.active_period[0].end as UnixTimestamp,
 				active_period_start_date: serviceAlert.alert.active_period[0].start as UnixTimestamp,
 				agency_id: '43',
@@ -71,13 +73,14 @@ async function main() {
 				user_instructions: '',
 			});
 
-			const createAlertDto: CreateAlertDto = {
+			const alertRealtime = await goDb.operation.alerts.insertOne({
 				active_period_end_date: null,
 				active_period_start_date: undefined,
 				agency_id: '43',
 				auto_texts: true,
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
 				coordinates: null,
+				created_by: 'sync-datik',
 				description: alertDescribeResult.pt.description,
 				effect: serviceAlert.alert.effect as CreateAlertDto['effect'],
 				external_id: serviceAlert.id,
@@ -95,9 +98,8 @@ async function main() {
 				})),
 				title: alertDescribeResult.pt.title,
 				user_instructions: '',
-			};
+			});
 
-			const alertRealtime = await goDb.operation.alerts.insertOne(createAlertDto);
 			Logger.info({ message: `Alert created | Internal ID: ${alertRealtime._id}, External ID: ${alertRealtime.external_id}` });
 		}
 	}

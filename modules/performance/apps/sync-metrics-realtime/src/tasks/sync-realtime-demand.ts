@@ -1,7 +1,7 @@
 /* * */
 
 import { LEGACY_CM_AGENCY_IDS } from '@/constants.js';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { logMetricToFile } from '@tmlmobilidade/go-performance-pckg-log';
 import { metrics, simplifiedApexValidations } from '@tmlmobilidade/interfaces';
 import { Logger } from '@tmlmobilidade/logger';

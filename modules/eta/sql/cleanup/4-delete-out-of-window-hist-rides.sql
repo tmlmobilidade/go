@@ -1,9 +1,9 @@
 -- Delete out-of-window historical rides from eta.hist_rides.
 --
--- The cleaner mirrors the loader's historical fetch: for each `dayIndex` in
--- [0 .. historicalDataDaysBack) it pulls every ride from Mongo whose
--- `start_time_scheduled` falls inside that day's 3h window. The union of
--- those `_id` values is the set of rides currently considered in-window.
+-- The cleaner mirrors the loader's historical window: rides from
+-- `operation.rides` whose `start_time_scheduled` falls inside
+-- `[now − historicalDataDaysBack − standardWindowHours, now − standardWindowHours]`.
+-- Those `_id` values are the set currently considered in-window.
 --
 -- That set is staged (by the cleaner task) into
 -- `eta._cleaner_hist_rides_keep`, a small MergeTree table that is

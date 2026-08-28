@@ -1,9 +1,9 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, type UpdateYearPeriodDto, UpdateYearPeriodSchema, type YearPeriod } from '@tmlmobilidade/types';
-import { DetailContextStateTemplate, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
-import { fetchData } from '@tmlmobilidade/utils';
+import { type UpdateYearPeriodDto, UpdateYearPeriodSchema, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
@@ -58,16 +58,16 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleUpdate({
-		fetchFn: async () => await fetchData<YearPeriod>(API_ROUTES.dates.YEAR_PERIODS_DETAIL(yearPeriodId), 'PUT', form.getValues()),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<YearPeriod>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.dates.YEAR_PERIODS_DETAIL(yearPeriodId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			periodMutate(updatedItem);
+			periodMutate(data);
 			periodsListMutate();
 		},
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleUpdate({
-		fetchFn: async () => await fetchData<YearPeriod>(API_ROUTES.dates.YEAR_PERIODS_DETAIL(yearPeriodId), 'DELETE', periodData),
+		fetchFn: async () => await fetchApiData<YearPeriod>({ method: 'DELETE', url: API_ROUTES.dates.YEAR_PERIODS_DETAIL(yearPeriodId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			periodsListMutate();
@@ -76,10 +76,10 @@ export const PeriodsDetailContextProvider = ({ children, yearPeriodId }: PropsWi
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleUpdate({
-		fetchFn: async () => await fetchData<YearPeriod>(API_ROUTES.dates.YEAR_PERIODS_DETAIL_LOCK(yearPeriodId)),
-		onSuccess: (updatedItem) => {
+		fetchFn: async () => await fetchApiData<YearPeriod>({ url: API_ROUTES.dates.YEAR_PERIODS_DETAIL_LOCK(yearPeriodId) }),
+		onSuccess: ({ data }) => {
 			form.resetDirty();
-			periodMutate(updatedItem);
+			periodMutate(data);
 			periodsListMutate();
 		},
 	});

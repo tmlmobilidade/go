@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Holiday } from '@tmlmobilidade/types';
+import { Holiday } from '@tmlmobilidade/go-types-offer';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 

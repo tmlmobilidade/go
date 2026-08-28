@@ -24,8 +24,8 @@ export function findTripStopWaypoints({
 	let nextStopWaypoint: TripStopWaypoint | undefined;
 
 	for (const [index, waypoint] of ride.hashed_trip.path.entries()) {
-		const foundStopCode = waypoint.stop_codes.find(code => code === nextStop.stop_id);
-		if (!foundStopCode) continue;
+		const matchesNextStop = waypoint.stop_id === nextStop.stop_id || waypoint.stop_codes.includes(nextStop.stop_id);
+		if (!matchesNextStop) continue;
 
 		if (index > 0) {
 			const timeDifference = gtfsTimeToSeconds(waypoint.arrival_time) - gtfsTimeToSeconds(ride.hashed_trip.path[index - 1].departure_time);

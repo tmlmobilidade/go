@@ -3,7 +3,7 @@
 /* * */
 
 import { useSamsDetailContext } from '@/contexts/SamDetail.context';
-import { FilterTypeList } from '@tmlmobilidade/ui';
+import { ListFilter } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -60,7 +60,7 @@ export function SamsDetailListFilterApexVersion() {
 	if (versionValues.length === 0) return null;
 
 	return (
-		<FilterTypeList
+		<ListFilter
 			active={apexFilterActive}
 			label={t('default:sams.detail.SamsDetailList.SamsDetailListFilterApexVersion.label')}
 			onChange={samDetailContext.actions.setAnalysisApexVersionFilter}

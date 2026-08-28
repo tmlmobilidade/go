@@ -7,8 +7,8 @@ import { getLastVehicleEvent } from '@/endpoints/vehicles/controllers/get-last-v
 import { getVehicleById } from '@/endpoints/vehicles/controllers/get-vehicle-by-id.js';
 import { lockVehicle } from '@/endpoints/vehicles/controllers/lock-vehicle.js';
 import { updateVehicle } from '@/endpoints/vehicles/controllers/update-vehicle.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { mergekit } from 'mergekit';
 
 /**

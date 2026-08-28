@@ -1,32 +1,31 @@
 /* * */
 
-import { initExportGtfsContext } from '@/utils/init-contex.js';
-import { validatePlan } from '@/validate-plan.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { Files } from '@tmlmobilidade/files';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
-import { Logger } from '@tmlmobilidade/logger';
+import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
+import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
+import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GTFS_Route_Extended, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
 import { getPublicRouteId } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
 
-/* * */
-
-import { exportAgencyFile } from '@/exports/agency.js';
-import { exportCalendarDatesFile } from '@/exports/calendar-dates.js';
-import { exportFeedInfoFile } from '@/exports/feed-info.js';
-import { exportPlansFile } from '@/exports/plans.js';
-import { exportRoutesFile } from '@/exports/routes.js';
-import { exportShapesFile } from '@/exports/shapes.js';
-import { exportStopTimesFile } from '@/exports/stop-times.js';
-import { exportStopsFile } from '@/exports/stops.js';
-import { exportTripsFile } from '@/exports/trips.js';
-import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { initSentryNode } from '@tmlmobilidade/logger';
+import { exportAgencyFile } from './exports/agency.js';
+import { exportCalendarDatesFile } from './exports/calendar-dates.js';
+import { exportFeedInfoFile } from './exports/feed-info.js';
+import { exportPlansFile } from './exports/plans.js';
+import { exportRoutesFile } from './exports/routes.js';
+import { exportShapesFile } from './exports/shapes.js';
+import { exportStopTimesFile } from './exports/stop-times.js';
+import { exportStopsFile } from './exports/stops.js';
+import { exportTripsFile } from './exports/trips.js';
+import { initExportGtfsContext } from './utils/init-contex.js';
+import { validatePlan } from './validate-plan.js';
 
 /* * */
 
@@ -74,12 +73,12 @@ export async function main() {
 	//
 	// Setup the necessary variables for the export process.
 
-	let farthestDateFound: OperationalDate;
+	let farthestDateFound: OperationalDateInt;
 
 	const referencedAgencyIds = new Set<string>();
-	const routesMarkedForFinalExport: Record<string, GTFS_Route_Extended> = {};
+	const routesMarkedForFinalExport: Record<string, GtfsStrictV29Routes> = {};
 
-	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date;
+	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
 
 	//
 	// Retrieve all Plans from the database
@@ -87,7 +86,7 @@ export async function main() {
 
 	const plansCollection = await goDb.operation.plans.getCollection();
 
-	const allPlansData = await goDb.operation.plans.findMany({}, { sort: { 'gtfs_feed_info.feed_start_date': 1 } });
+	const allPlansData = await goDb.operation.plans.findMany();
 
 	if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
@@ -158,22 +157,22 @@ export async function main() {
 
 			let thisIsAnActivePlan = false;
 
-			const importConfig: ImportGtfsToDatabaseConfig = {
+			const importConfig: ImportGtfsConfig = {
 				source: {
 					url: operationFileUrl,
 				},
 				time_range: {
 					date_range: {
-						end: planData.gtfs_feed_info.feed_end_date,
-						start: planData.gtfs_feed_info.feed_start_date,
+						end: GtfsDateSchema.parse(planData.gtfs_feed_info.feed_end_date),
+						start: GtfsDateSchema.parse(planData.gtfs_feed_info.feed_start_date),
 					},
 				},
 			};
 
-			if (currentOperationalDate >= planData.gtfs_feed_info.feed_start_date && currentOperationalDate <= planData.gtfs_feed_info.feed_end_date) {
+			if (currentOperationalDate >= OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_start_date) && currentOperationalDate <= OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date)) {
 				// If the plan is currently active, set the start date
 				// to a far past date to be able to provide a full year of data.
-				importConfig.time_range.date_range.start = validateOperationalDate('20010101');
+				importConfig.time_range.date_range.start = GtfsDateSchema.parse('20010101');
 				// Update the flag
 				thisIsAnActivePlan = true;
 			}
@@ -214,7 +213,7 @@ export async function main() {
 			// This block only determines which routes should be exported; no files are written here.
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
-				const routeData: GTFS_Route_Extended = routeItem;
+				const routeData: GtfsStrictV29Routes = routeItem;
 				const publicRouteId = getPublicRouteId(planData.agency_id, routeData.route_id);
 				if (thisIsAnActivePlan || !routesMarkedForFinalExport[publicRouteId]) {
 					routesMarkedForFinalExport[publicRouteId] = { ...routeData, agency_id: planData.agency_id };
@@ -229,8 +228,8 @@ export async function main() {
 
 			referencedAgencyIds.add(planData.agency_id);
 
-			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
-				? planData.gtfs_feed_info.feed_end_date
+			farthestDateFound = !farthestDateFound || OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date) > farthestDateFound
+				? OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date)
 				: farthestDateFound;
 
 			//
@@ -250,7 +249,7 @@ export async function main() {
 			// Since SQLite sets up memory using C-level allocations, it is not possible
 			// to rely on garbage collection alone to free up memory in a timely manner.
 
-			importedGtfsSql._db.close();
+			importedGtfsSql._db.cleanup();
 
 			Logger.divider();
 

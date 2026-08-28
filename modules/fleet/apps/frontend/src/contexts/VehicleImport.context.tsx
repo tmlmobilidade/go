@@ -2,7 +2,8 @@ import { closeImportVehicleModal } from '@/components/Vehicles/import/VehicleImp
 import { VehicleImportPreview } from '@/types/preview';
 import { parseTxtFile } from '@/utils/parseTxtFile';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateVehicleDto, CreateVehicleSchema, PermissionCatalog, type Vehicle } from '@tmlmobilidade/types';
+import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { useAgenciesContext, type UseFormReturnType, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';

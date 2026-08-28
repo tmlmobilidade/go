@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import styles from './styles.module.css';
 
 import { createDocCollection } from '../../../hooks/use-other-search';
-import { Loader } from '../../loaders/Loader';
+import { Loader } from '../../../loaders';
 import { LineDisplay } from '../LineDisplay';
 
 /* * */

@@ -1,8 +1,8 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Zone } from '@tmlmobilidade/go-types-offer';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Zone } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -26,6 +26,6 @@ export async function fetchAllZones(): Promise<Map<string, Zone>> {
 		return zonesMap;
 	} catch (error) {
 		Logger.error({ error, message: 'Error fetching zones' });
-		throw new Error(`Failed to fetch zones: ${error}`);
+		throw new Error(`Failed to fetch zones: ${error}`, error);
 	}
 }

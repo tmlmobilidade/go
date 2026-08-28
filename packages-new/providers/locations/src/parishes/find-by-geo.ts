@@ -2,7 +2,7 @@
 
 import { geoFilter } from '@/utils/geo-filter.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Parish } from '@tmlmobilidade/types';
+import { type Parish } from '@tmlmobilidade/go-types-locations';
 
 /* * */
 

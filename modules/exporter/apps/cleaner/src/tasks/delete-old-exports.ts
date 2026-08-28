@@ -1,10 +1,10 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
-import { ProcessingStatusSchema } from '@tmlmobilidade/types';
 
 /* * */
 

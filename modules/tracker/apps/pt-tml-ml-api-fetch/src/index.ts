@@ -1,13 +1,13 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { externalClients } from '@tmlmobilidade/external';
 import { type BaseResponse, type TempoEsperaRawItem } from '@tmlmobilidade/external/dist/clients/ml/types.js';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type HashableRawVehicleEvent, type RawVehicleEventPtTmlMlV1 } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 
 import { findRideForTrain } from './find-ride-for-train.js';
@@ -68,6 +68,7 @@ const main = async () => {
 		try {
 			response = await externalClients.ml.tempoEsperaLinha(line);
 		} catch (error) {
+			console.log(error);
 			Logger.error({ error, message: `[${ITERATION}] Error fetching Metro Lisboa data from API for line ${line}:` });
 			continue;
 		}

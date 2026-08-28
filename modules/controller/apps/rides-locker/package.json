@@ -18,17 +18,15 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/normalizers": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*",
-		"luxon": "3.7.2"
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/luxon": "3.7.3",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",

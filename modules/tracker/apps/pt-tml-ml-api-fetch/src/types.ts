@@ -1,9 +1,14 @@
-import { type HashedShape, type HashedTrip, type HashedTripWaypoint } from '@tmlmobilidade/types';
+import { type EncodedPolyline } from '@tmlmobilidade/go-types-geo';
+import { type HashedTrip } from '@tmlmobilidade/go-types-operation';
+
+export type TripPathWaypoint = HashedTrip & { stop_codes: string[] };
+
+export const ML_AGENCY_ID = 'IA2N9';
 
 export interface AggregationResult {
 	_id: string
-	hashed_shape: HashedShape
-	hashed_trip: Omit<HashedTrip, 'path'> & { path: (HashedTripWaypoint & { stop_codes: string[] })[] }
+	hashed_trip: { path: TripPathWaypoint[] }
+	shape_polyline: EncodedPolyline
 	trip_id: string
 }
 

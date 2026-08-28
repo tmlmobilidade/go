@@ -2,11 +2,11 @@
 
 import { type PlanNormalized } from '@/types/normalized';
 import { Dates } from '@tmlmobilidade/dates';
-import { type OperationalDate } from '@tmlmobilidade/types';
+import { type GtfsDate } from '@tmlmobilidade/go-types-gtfs';
 
 /* * */
 
-export const getPlanValidityStatus = (startDate: OperationalDate, endDate: OperationalDate): PlanNormalized['validity_status'] => {
+export const getPlanValidityStatus = (startDate: GtfsDate, endDate: GtfsDate): PlanNormalized['validity_status'] => {
 	//
 
 	//

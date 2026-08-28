@@ -1,2 +1,2 @@
-import '@/endpoints/alerts/alerts.routes.js';
-import '@/endpoints/operation/operation.routes.js';
+import './alerts/routes.js';
+import './operation/routes.js';

@@ -1,8 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog, type Zone } from '@tmlmobilidade/types';
-import { useDataAgenciesNew, useFilterStateList, UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { type Zone } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { useDataAgenciesNew, useFilterStateList, UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -15,7 +16,7 @@ interface ZonesListContextState {
 	}
 	filters: {
 		agencies: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		canCreate: boolean
@@ -53,7 +54,7 @@ export const ZonesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Setup filters
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 	const filterAgencies = useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
 
 	//

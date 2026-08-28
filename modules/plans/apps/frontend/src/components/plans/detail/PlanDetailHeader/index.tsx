@@ -1,13 +1,15 @@
 'use client';
 
 import { openPlanChangeModal } from '@/components/plans/change/PlanChange.modal';
-import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
 import { IconRefresh } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { AgencyTag, CloseButton, DeleteButton, HasPermission, IconButton, IdTag, LockButton, SaveButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { AgencyTag, CloseButton, DeleteButton, HasPermission, IconButton, IdTag, LockButton, Spacer, Toolbar, UpdateButton } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+
+import { usePlansAgenciesData } from '../../shared/use-plans-agencies-data';
 
 /* * */
 
@@ -19,6 +21,8 @@ export function PlanDetailHeader() {
 
 	const router = useRouter();
 	const planDetailContext = usePlanDetailContext();
+
+	const { data: agenciesData } = usePlansAgenciesData();
 
 	//
 	// B. Handle actions
@@ -37,7 +41,11 @@ export function PlanDetailHeader() {
 
 			<IdTag id={planDetailContext.data.plan._id} copyOnClick />
 
-			<AgencyTag agencyId={planDetailContext.data.plan.agency_id} showShortName />
+			<AgencyTag
+				agencyId={planDetailContext.data.plan.agency_id}
+				data={agenciesData}
+				showShortName
+			/>
 
 			<Spacer />
 
@@ -47,7 +55,7 @@ export function PlanDetailHeader() {
 				scope={PermissionCatalog.all.plans.scope}
 				value={planDetailContext.data.plan.agency_id}
 			>
-				<SaveButton
+				<UpdateButton
 					isDisabled={!planDetailContext.flags.canSave}
 					isLoading={planDetailContext.flags.isSaving}
 					onClick={planDetailContext.actions.save}
@@ -61,8 +69,8 @@ export function PlanDetailHeader() {
 				value={planDetailContext.data.plan.agency_id}
 			>
 				<IconButton
-					disabled={!planDetailContext.flags.canChangePlan}
 					icon={<IconRefresh />}
+					isDisabled={!planDetailContext.flags.canChangePlan}
 					onClick={() => openPlanChangeModal(planDetailContext.data.plan._id)}
 					tooltip="Alterar Plano"
 				/>
@@ -101,6 +109,4 @@ export function PlanDetailHeader() {
 
 		</Toolbar>
 	);
-
-	//
 }

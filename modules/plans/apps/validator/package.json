@@ -18,19 +18,19 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/emails": "*",
 		"@tmlmobilidade/files": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
-		"@tmlmobilidade/gtfs-validator": "20260624.1438.43",
+		"@tmlmobilidade/go-types-gtfs-validator": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
+		"@tmlmobilidade/gtfs-validator": "20260803.96.36",
 		"@tmlmobilidade/logger": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
-		"@tmlmobilidade/utils": "*"
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",

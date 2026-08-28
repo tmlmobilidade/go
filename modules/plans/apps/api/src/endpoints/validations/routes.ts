@@ -1,16 +1,16 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
-import { createGtfsValidation } from './controllers/create-gtfs-validation.js';
-import { downloadGtfsValidationFile } from './controllers/download-gtfs-validation-file.js';
-import { getAllGtfsValidations } from './controllers/get-all-gtfs-validations.js';
-import { getGtfsValidationFile } from './controllers/get-gtfs-validation-file.js';
-import { getGtfsValidation } from './controllers/get-gtfs-validation.js';
-import { lockGtfsValidation } from './controllers/lock-gtfs-validation.js';
-import { requestApproval } from './controllers/request-approval.js';
-import { updateProcessingStatus } from './controllers/update-processing-status.js';
+import { createGtfsValidationHandler } from './handlers/create-gtfs-validation.js';
+import { downloadGtfsValidationFileHandler } from './handlers/download-gtfs-validation-file.js';
+import { getGtfsValidationFileHandler } from './handlers/get-gtfs-validation-file.js';
+import { getGtfsValidationHandler } from './handlers/get-gtfs-validation.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
+import { listGtfsValidationsHandler } from './handlers/list-gtfs-validations.js';
+import { lockGtfsValidationHandler } from './handlers/lock-gtfs-validation.js';
+import { requestApprovalHandler } from './handlers/request-approval.js';
+import { updateProcessingStatusHandler } from './handlers/update-processing-status.js';
 
 /* * */
 
@@ -24,53 +24,23 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get(
-			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.read]) },
-			getAllGtfsValidations,
-		);
+		instance.post('/list', { preHandler: authorizationMiddleware('gtfs_validations', ['read']) }, listGtfsValidationsHandler);
 
-		instance.get(
-			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.read]) },
-			getGtfsValidation,
-		);
+		instance.post('/list-agencies', { preHandler: authorizationMiddleware('gtfs_validations', ['read']) }, listAgenciesHandler);
 
-		instance.post(
-			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.create]) },
-			createGtfsValidation,
-		);
+		instance.get('/:id', { preHandler: authorizationMiddleware('gtfs_validations', ['read']) }, getGtfsValidationHandler);
 
-		instance.get(
-			'/:id/file',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.read]) },
-			getGtfsValidationFile,
-		);
+		instance.post('/create', { preHandler: authorizationMiddleware('gtfs_validations', ['create']) }, createGtfsValidationHandler);
 
-		instance.get(
-			'/:id/file/download',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.read]) },
-			downloadGtfsValidationFile,
-		);
+		instance.get('/:id/file', { preHandler: authorizationMiddleware('gtfs_validations', ['read']) }, getGtfsValidationFileHandler);
 
-		instance.get(
-			'/:id/request-approval',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.request_approval]) },
-			requestApproval,
-		);
+		instance.get('/:id/file/download', { preHandler: authorizationMiddleware('gtfs_validations', ['read']) }, downloadGtfsValidationFileHandler);
 
-		instance.get(
-			'/:id/lock',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.lock]) },
-			lockGtfsValidation,
-		);
+		instance.get('/:id/request-approval', { preHandler: authorizationMiddleware('gtfs_validations', ['request_approval']) }, requestApprovalHandler);
 
-		instance.put(
-			'/:id/processing-status',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.gtfs_validations.scope, [PermissionCatalog.all.gtfs_validations.actions.update_processing_status]) },
-			updateProcessingStatus,
-		);
+		instance.get('/:id/lock', { preHandler: authorizationMiddleware('gtfs_validations', ['lock']) }, lockGtfsValidationHandler);
+
+		instance.put('/:id/processing-status', { preHandler: authorizationMiddleware('gtfs_validations', ['update_processing_status']) }, updateProcessingStatusHandler);
 
 		next();
 	},

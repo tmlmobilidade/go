@@ -9,7 +9,8 @@ import { runSaga } from '@/utils/operation-runner.js';
 import { buildStorageKey, storageKey, tempStorageKey } from '@/utils/storage-key.js';
 import { ConflictError, MetadataError, NotFoundError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Attachment, type CreateAttachmentDto, CreateAttachmentSchema } from '@tmlmobilidade/types';
+import { type Attachment, AttachmentSchema, type CreateAttachmentDto } from '@tmlmobilidade/go-types-core';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { convertObject } from '@tmlmobilidade/utils';
 
 /**
@@ -86,17 +87,19 @@ export async function replace(deps: StorageDeps, input: ReplaceInput): Promise<A
 			{
 				compensate: async () => {
 					if (inserted && existing) {
-						await goDb.core.attachments.deleteById(fileId, { forceIfLocked: true });
-						const restored = convertObject(existing, CreateAttachmentSchema);
-						await goDb.core.attachments.insertOne({ ...restored, _id: fileId });
+						await goDb.core.attachments.deleteById(fileId);
+						const restored = convertObject(existing, AttachmentSchema);
+						await goDb.core.attachments.insertOneUnsafe({ ...restored, _id: fileId });
 					}
 				},
 				execute: async () => {
-					await goDb.core.attachments.deleteById(fileId, { forceIfLocked: true });
-					inserted = await goDb.core.attachments.insertOne({
+					await goDb.core.attachments.deleteById(fileId);
+					inserted = await goDb.core.attachments.insertOneUnsafe({
 						...createAttachmentDto,
 						_id: fileId,
+						created_at: Dates.now('utc').unix_timestamp,
 						type: mimeType,
+						updated_at: Dates.now('utc').unix_timestamp,
 					});
 				},
 				name: 'replaceMetadata',

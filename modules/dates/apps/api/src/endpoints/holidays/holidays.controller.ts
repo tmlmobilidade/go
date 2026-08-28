@@ -1,10 +1,11 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateHolidayDto, type Holiday, PermissionCatalog, type UpdateHolidayDto } from '@tmlmobilidade/types';
+import { type CreateHolidayDto, type Holiday, type UpdateHolidayDto } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /* * */
 
@@ -144,7 +145,7 @@ export class HolidaysController {
 		//
 		// Fetch holidays based on query filters
 
-		const allHolidays = await goDb.offer.holidays.findMany(queryFilters, { sort: { created_at: -1 } });
+		const allHolidays = await goDb.offer.holidays.findMany(queryFilters);
 
 		return reply.send({ data: allHolidays, error: null, statusCode: HTTP_STATUS.OK });
 

@@ -1,7 +1,7 @@
 /* * */
 
 import { ExporterController } from '@/endpoints/exporter/exporter.controller.js';
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

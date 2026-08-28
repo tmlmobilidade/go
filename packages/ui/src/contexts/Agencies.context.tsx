@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Agency } from '@tmlmobilidade/types';
+import { type Agency } from '@tmlmobilidade/go-types-core';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -24,6 +24,9 @@ interface AgenciesContextState {
 
 const AgenciesContext = createContext<AgenciesContextState | undefined>(undefined);
 
+/**
+ * @deprecated use `useAgenciesData` hook instead.
+ */
 export const useAgenciesContext = () => {
 	const context = useContext(AgenciesContext);
 	if (!context) {
@@ -40,7 +43,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Fetch data
 
-	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(API_ROUTES.auth.AGENCIES_LIST);
+	const { data: allAgenciesData, error: allAgenciesError, isLoading: allAgenciesLoading } = useSWR<Agency[], Error>(API_ROUTES.core.AGENCIES_LIST);
 
 	//
 	// B. Transform data

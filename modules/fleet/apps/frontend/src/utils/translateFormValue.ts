@@ -1,8 +1,6 @@
 import { Translations } from '@/lib/translations';
 import { useAgenciesContext } from '@tmlmobilidade/ui';
 
-import { formatDate } from './formatDate';
-
 /* * */
 
 export function translateFormValue(field: string, value: unknown): string {
@@ -61,7 +59,7 @@ export function translateFormValue(field: string, value: unknown): string {
 		// Date fields
 		case 'registration_date':
 		case 'start_date':
-			return formatDate(stringValue);
+			return stringValue;
 		// Typology
 		case 'typology':
 			return (

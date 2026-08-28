@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type OptionalIf } from '@tmlmobilidade/types';
+import { type OptionalIf } from '@tmlmobilidade/go-types-shared';
 import { Filter } from 'mongodb';
 
 interface MatchStage<T> { $match: Filter<T> }

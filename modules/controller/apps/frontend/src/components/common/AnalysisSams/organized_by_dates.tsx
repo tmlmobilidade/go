@@ -5,7 +5,7 @@
  * Responsible for mapping SamAnalysis to day/month granularity.
  */
 
-import { type SamAnalysis } from '@tmlmobilidade/types';
+import { type SamAnalysis } from '@tmlmobilidade/go-types-operation';
 import { DateTime } from 'luxon';
 
 import { analysisSquareHasValues } from './AnalysisSquare/analysis-square-shared';

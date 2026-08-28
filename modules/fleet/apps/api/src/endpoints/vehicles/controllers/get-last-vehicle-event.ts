@@ -1,7 +1,7 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 
@@ -27,7 +27,7 @@ export async function getLastVehicleEvent(request: FastifyRequest<{ Params: { id
 			LIMIT 1
 		`;
 
-	const lastEvent = await labDb.operation.vehicleEvents.queryFromString<SimplifiedVehicleEvent>(query);
+	const lastEvent = await labDb.operation.simplifiedVehicleEvents.queryFromString(query);
 	if (!lastEvent || lastEvent.length === 0) throw new HttpException(HTTP_STATUS.NOT_FOUND, 'No last event found for vehicle');
 
 	//

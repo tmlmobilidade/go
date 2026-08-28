@@ -16,7 +16,7 @@
 	"dependencies": {
 		"@tabler/icons-react": "3.46.0",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-types-performance": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
@@ -30,8 +30,7 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/geojson": "7946.0.16",
 		"@types/node": "26.1.2",
 		"@types/react": "19.2.18",

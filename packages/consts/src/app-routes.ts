@@ -14,42 +14,8 @@ export const PAGE_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('alerts', 'frontend_url')}`,
 
 		// ALERTS
-		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'frontend_url')}/${encodeURIComponent(id)}`,
+		ALERTS_DETAIL: (alertId: string) => `${getModuleConfig('alerts', 'frontend_url')}/${encodeURIComponent(alertId)}`,
 		ALERTS_LIST: `${getModuleConfig('alerts', 'frontend_url')}`,
-	},
-
-	auth: {
-		// BASE
-		BASE: `${getModuleConfig('auth', 'frontend_url')}`,
-
-		// AGENCIES
-		AGENCIES_DETAIL: (id: string) => `${getModuleConfig('auth', 'frontend_url')}/agencies/${encodeURIComponent(id)}`,
-		AGENCIES_LIST: `${getModuleConfig('auth', 'frontend_url')}/agencies`,
-
-		// CHANGE_PASSWORD
-		CHANGE_PASSWORD_LIST: `${getModuleConfig('auth', 'frontend_url')}/change-password`,
-
-		// HOME
-		HOME_DETAIL: (id: string) => `${getModuleConfig('auth', 'frontend_url')}/home/${encodeURIComponent(id)}`,
-		HOME_LIST: `${getModuleConfig('auth', 'frontend_url')}/home`,
-
-		// LOGIN
-		LOGIN_LIST: `${getModuleConfig('auth', 'frontend_url')}/login`,
-
-		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('auth', 'frontend_url')}/organizations/${encodeURIComponent(id)}`,
-		ORGANIZATIONS_LIST: `${getModuleConfig('auth', 'frontend_url')}/organizations`,
-
-		// RESET_PASSWORD
-		RESET_PASSWORD_LIST: `${getModuleConfig('auth', 'frontend_url')}/reset-password`,
-
-		// ROLES
-		ROLES_DETAIL: (id: string) => `${getModuleConfig('auth', 'frontend_url')}/roles/${encodeURIComponent(id)}`,
-		ROLES_LIST: `${getModuleConfig('auth', 'frontend_url')}/roles`,
-
-		// USERS
-		USERS_DETAIL: (id: string) => `${getModuleConfig('auth', 'frontend_url')}/users/${encodeURIComponent(id)}`,
-		USERS_LIST: `${getModuleConfig('auth', 'frontend_url')}/users`,
 	},
 
 	controller: {
@@ -57,12 +23,45 @@ export const PAGE_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('controller', 'frontend_url')}`,
 
 		// RIDES
-		RIDES_DETAIL: (id: string) => `${getModuleConfig('controller', 'frontend_url')}/rides/${encodeURIComponent(id)}`,
+		RIDES_DETAIL: (rideId: string) => `${getModuleConfig('controller', 'frontend_url')}/rides/${encodeURIComponent(rideId)}`,
 		RIDES_LIST: `${getModuleConfig('controller', 'frontend_url')}/rides`,
 
 		// SAMS
 		SAMS_DETAIL: (id: string) => `${getModuleConfig('controller', 'frontend_url')}/sams/${encodeURIComponent(id)}`,
 		SAMS_LIST: `${getModuleConfig('controller', 'frontend_url')}/sams`,
+	},
+
+	core: {
+		// BASE
+		BASE: `${getModuleConfig('core', 'frontend_url')}`,
+
+		// AGENCIES
+		AGENCIES_DETAIL: (agencyId: string) => `${getModuleConfig('core', 'frontend_url')}/agencies/${encodeURIComponent(agencyId)}`,
+		AGENCIES_LIST: `${getModuleConfig('core', 'frontend_url')}/agencies`,
+
+		// CHANGE_PASSWORD
+		CHANGE_PASSWORD_LIST: `${getModuleConfig('core', 'frontend_url')}/change-password`,
+
+		// HOME
+		HOME_LIST: `${getModuleConfig('core', 'frontend_url')}/home`,
+
+		// LOGIN
+		LOGIN_LIST: `${getModuleConfig('core', 'frontend_url')}/login`,
+
+		// ORGANIZATIONS
+		ORGANIZATIONS_DETAIL: (organizationId: string) => `${getModuleConfig('core', 'frontend_url')}/organizations/${encodeURIComponent(organizationId)}`,
+		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'frontend_url')}/organizations`,
+
+		// RESET_PASSWORD
+		RESET_PASSWORD_LIST: `${getModuleConfig('core', 'frontend_url')}/reset-password`,
+
+		// ROLES
+		ROLES_DETAIL: (roleId: string) => `${getModuleConfig('core', 'frontend_url')}/roles/${encodeURIComponent(roleId)}`,
+		ROLES_LIST: `${getModuleConfig('core', 'frontend_url')}/roles`,
+
+		// USERS
+		USERS_DETAIL: (userId: string) => `${getModuleConfig('core', 'frontend_url')}/users/${encodeURIComponent(userId)}`,
+		USERS_LIST: `${getModuleConfig('core', 'frontend_url')}/users`,
 	},
 
 	dates: {
@@ -96,6 +95,15 @@ export const PAGE_ROUTES = Object.freeze({
 		// VEHICLES
 		VEHICLES_DETAIL: (id: string) => `${getModuleConfig('fleet', 'frontend_url')}/vehicles/${encodeURIComponent(id)}`,
 		VEHICLES_LIST: `${getModuleConfig('fleet', 'frontend_url')}/vehicles`,
+	},
+
+	infrastructure: {
+		// BASE
+		BASE: `${getModuleConfig('infrastructure', 'frontend_url')}`,
+
+		// INFRASTRUCTURE
+		INFRASTRUCTURE_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'frontend_url')}/${encodeURIComponent(id)}`,
+		INFRASTRUCTURE_LIST: `${getModuleConfig('infrastructure', 'frontend_url')}`,
 	},
 
 	offer: {
@@ -165,15 +173,6 @@ export const PAGE_ROUTES = Object.freeze({
 		// REFERENCE
 		REFERENCE_LIST: `${getModuleConfig('root', 'frontend_url')}/reference`,
 	},
-
-	stops: {
-		// BASE
-		BASE: `${getModuleConfig('stops', 'frontend_url')}`,
-
-		// STOPS
-		STOPS_DETAIL: (id: string) => `${getModuleConfig('stops', 'frontend_url')}/${encodeURIComponent(id)}`,
-		STOPS_LIST: `${getModuleConfig('stops', 'frontend_url')}`,
-	},
 } as const);
 
 export const API_ROUTES = Object.freeze({
@@ -183,71 +182,19 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('alerts', 'api_url')}`,
 
 		// ALERTS
-		ALERTS_DESCRIBE: `${getModuleConfig('alerts', 'api_url')}/alerts/describe`,
+		ALERTS_COMPOSE: `${getModuleConfig('alerts', 'api_url')}/alerts/compose`,
+		ALERTS_CREATE: `${getModuleConfig('alerts', 'api_url')}/alerts/create`,
 		ALERTS_DETAIL: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}`,
 		ALERTS_DETAIL_DUPLICATE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/duplicate`,
 		ALERTS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/image`,
 		ALERTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('alerts', 'api_url')}/alerts/${encodeURIComponent(id)}/lock`,
-		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts`,
+		ALERTS_LIST: `${getModuleConfig('alerts', 'api_url')}/alerts/list`,
+		ALERTS_LIST_AGENCIES: `${getModuleConfig('alerts', 'api_url')}/alerts/list-agencies`,
 
 		// OPERATION
 		OPERATION_LINES: `${getModuleConfig('alerts', 'api_url')}/operation/lines`,
 		OPERATION_RIDES: `${getModuleConfig('alerts', 'api_url')}/operation/rides`,
-		OPERATION_RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('alerts', 'api_url')}/operation/rides/${encodeURIComponent(id)}/ride`,
-		OPERATION_RIDES_WS: `${getModuleConfig('alerts', 'api_url')}/operation/rides/ws`,
 		OPERATION_STOPS: `${getModuleConfig('alerts', 'api_url')}/operation/stops`,
-	},
-
-	auth: {
-		// BASE
-		BASE: `${getModuleConfig('auth', 'api_url')}`,
-
-		// AGENCIES
-		AGENCIES_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/agencies/${encodeURIComponent(id)}`,
-		AGENCIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/agencies/${encodeURIComponent(id)}/lock`,
-		AGENCIES_LIST: `${getModuleConfig('auth', 'api_url')}/agencies`,
-
-		// APP-CONFIGS
-		APP_CONFIGS_APP_BANNER: `${getModuleConfig('auth', 'api_url')}/app-configs/app-banner`,
-
-		// AUTH
-		AUTH_CHANGE_PASSWORD: `${getModuleConfig('auth', 'api_url')}/auth/change-password`,
-		AUTH_LOGIN: `${getModuleConfig('auth', 'api_url')}/auth/login`,
-		AUTH_LOGOUT: `${getModuleConfig('auth', 'api_url')}/auth/logout`,
-		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('auth', 'api_url')}/auth/send-password-reset-email`,
-
-		// NOTIFICATIONS
-		NOTIFICATIONS_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/notifications/${encodeURIComponent(id)}`,
-		NOTIFICATIONS_DETAIL_MARK_AS_READ: (id: string) => `${getModuleConfig('auth', 'api_url')}/notifications/${encodeURIComponent(id)}/mark-as-read`,
-		NOTIFICATIONS_LIST: `${getModuleConfig('auth', 'api_url')}/notifications`,
-
-		// ORGANIZATIONS
-		ORGANIZATIONS_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}`,
-		ORGANIZATIONS_DETAIL_IMAGE: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/image`,
-		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/lock`,
-		ORGANIZATIONS_DETAIL_LOGO: (id: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/logo`,
-		ORGANIZATIONS_DETAIL_VAR_IMAGE: (id: string, theme: string) => `${getModuleConfig('auth', 'api_url')}/organizations/${encodeURIComponent(id)}/${encodeURIComponent(theme)}/image`,
-		ORGANIZATIONS_LIST: `${getModuleConfig('auth', 'api_url')}/organizations`,
-
-		// PROPOSED-CHANGES
-		PROPOSED_CHANGES_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/proposed-changes/${encodeURIComponent(id)}`,
-		PROPOSED_CHANGES_LIST: `${getModuleConfig('auth', 'api_url')}/proposed-changes`,
-
-		// ROLES
-		ROLES_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/roles/${encodeURIComponent(id)}`,
-		ROLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/roles/${encodeURIComponent(id)}/lock`,
-		ROLES_LIST: `${getModuleConfig('auth', 'api_url')}/roles`,
-
-		// USERS
-		USERS_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/users/${encodeURIComponent(id)}`,
-		USERS_DETAIL_LOCK: (id: string) => `${getModuleConfig('auth', 'api_url')}/users/${encodeURIComponent(id)}/lock`,
-		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('auth', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
-		USERS_LIST: `${getModuleConfig('auth', 'api_url')}/users`,
-		USERS_ME: `${getModuleConfig('auth', 'api_url')}/users/me`,
-
-		// WIKI
-		WIKI_DETAIL: (id: string) => `${getModuleConfig('auth', 'api_url')}/wiki/${encodeURIComponent(id)}`,
-		WIKI_LIST: `${getModuleConfig('auth', 'api_url')}/wiki`,
 	},
 
 	controller: {
@@ -262,18 +209,20 @@ export const API_ROUTES = Object.freeze({
 		ACCEPTANCE_LOCK: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/acceptance/lock`,
 
 		// RIDES
+		RIDES_DETAIL_ANALYSES: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/analyses`,
+		RIDES_DETAIL_APEX_BANKING_TAPS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-banking-taps`,
+		RIDES_DETAIL_APEX_LOCATIONS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-locations`,
+		RIDES_DETAIL_APEX_REFUNDS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-refunds`,
+		RIDES_DETAIL_APEX_SALES: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-sales`,
+		RIDES_DETAIL_APEX_VALIDATIONS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/apex-validations`,
 		RIDES_DETAIL_HASHED_SHAPE: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-shape`,
 		RIDES_DETAIL_HASHED_TRIP: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/hashed-trip`,
 		RIDES_DETAIL_REPROCESS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/reprocess`,
 		RIDES_DETAIL_RIDE: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/ride`,
-		RIDES_DETAIL_SIMPLIFIED_APEX_LOCATIONS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/simplified-apex-locations`,
-		RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_REFUNDS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/simplified-apex-on-board-refunds`,
-		RIDES_DETAIL_SIMPLIFIED_APEX_ON_BOARD_SALES: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/simplified-apex-on-board-sales`,
-		RIDES_DETAIL_SIMPLIFIED_APEX_VALIDATIONS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/simplified-apex-validations`,
 		RIDES_DETAIL_VEHICLE_EVENTS: (id: string) => `${getModuleConfig('controller', 'api_url')}/rides/${encodeURIComponent(id)}/vehicle-events`,
 		RIDES_FAVORITES: `${getModuleConfig('controller', 'api_url')}/rides/favorites`,
-		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides`,
-		RIDES_WS: `${getModuleConfig('controller', 'api_url')}/rides/ws`,
+		RIDES_LIST: `${getModuleConfig('controller', 'api_url')}/rides/list`,
+		RIDES_LIST_AGENCIES: `${getModuleConfig('controller', 'api_url')}/rides/list-agencies`,
 
 		// SAMS
 		SAMS_APEX_VERSIONS: `${getModuleConfig('controller', 'api_url')}/sams/apex-versions`,
@@ -285,6 +234,66 @@ export const API_ROUTES = Object.freeze({
 		SAMS_TIMELINE_SUMMARY: `${getModuleConfig('controller', 'api_url')}/sams/timeline-summary`,
 	},
 
+	core: {
+		// BASE
+		BASE: `${getModuleConfig('core', 'api_url')}`,
+
+		// AGENCIES
+		AGENCIES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/agencies/${encodeURIComponent(id)}`,
+		AGENCIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/agencies/${encodeURIComponent(id)}/lock`,
+		AGENCIES_LIST: `${getModuleConfig('core', 'api_url')}/agencies`,
+
+		// APP-CONFIGS
+		APP_CONFIGS_BANNER: `${getModuleConfig('core', 'api_url')}/app-configs/banner`,
+
+		// AUTH
+		AUTH_CHANGE_PASSWORD: `${getModuleConfig('core', 'api_url')}/auth/change-password`,
+		AUTH_LOGIN: `${getModuleConfig('core', 'api_url')}/auth/login`,
+		AUTH_LOGOUT: `${getModuleConfig('core', 'api_url')}/auth/logout`,
+		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
+
+		// HOME
+		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
+
+		// ORGANIZATIONS
+		ORGANIZATIONS_CREATE: `${getModuleConfig('core', 'api_url')}/organizations/create`,
+		ORGANIZATIONS_DETAIL_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/delete`,
+		ORGANIZATIONS_DETAIL_DELETE_IMAGE_VAR: (id: string, theme: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/delete/image/${encodeURIComponent(theme)}`,
+		ORGANIZATIONS_DETAIL_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/detail`,
+		ORGANIZATIONS_DETAIL_DETAIL_IMAGE_VAR: (id: string, theme: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/detail/image/${encodeURIComponent(theme)}`,
+		ORGANIZATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/lock`,
+		ORGANIZATIONS_DETAIL_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/update`,
+		ORGANIZATIONS_DETAIL_UPDATE_IMAGE: (id: string) => `${getModuleConfig('core', 'api_url')}/organizations/${encodeURIComponent(id)}/update/image`,
+		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations/list`,
+
+		// PLATFORM
+		PLATFORM_DOWNLOADS: `${getModuleConfig('core', 'api_url')}/platform/downloads`,
+		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
+		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
+		PLATFORM_SIDEBAR_LOGO: `${getModuleConfig('core', 'api_url')}/platform/sidebar-logo`,
+
+		// ROLES
+		ROLES_CREATE: `${getModuleConfig('core', 'api_url')}/roles/create`,
+		ROLES_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/delete/${encodeURIComponent(id)}`,
+		ROLES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/${encodeURIComponent(id)}`,
+		ROLES_LIST: `${getModuleConfig('core', 'api_url')}/roles/list`,
+		ROLES_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/roles/list-agencies`,
+		ROLES_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/lock/${encodeURIComponent(id)}`,
+		ROLES_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/roles/update/${encodeURIComponent(id)}`,
+
+		// USERS
+		USERS_CREATE: `${getModuleConfig('core', 'api_url')}/users/create`,
+		USERS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/delete/${encodeURIComponent(id)}`,
+		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}`,
+		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
+		USERS_LIST: `${getModuleConfig('core', 'api_url')}/users/list`,
+		USERS_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/users/list-agencies`,
+		USERS_LIST_ORGANIZATIONS: `${getModuleConfig('core', 'api_url')}/users/list-organizations`,
+		USERS_LIST_ROLES: `${getModuleConfig('core', 'api_url')}/users/list-roles`,
+		USERS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/users/lock/${encodeURIComponent(id)}`,
+		USERS_UPDATE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/update/${encodeURIComponent(id)}`,
+	},
+
 	dates: {
 		// BASE
 		BASE: `${getModuleConfig('dates', 'api_url')}`,
@@ -292,7 +301,8 @@ export const API_ROUTES = Object.freeze({
 		// ANNOTATIONS
 		ANNOTATIONS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}`,
 		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}/lock`,
-		ANNOTATIONS_LIST: `${getModuleConfig('dates', 'api_url')}/annotations`,
+		ANNOTATIONS_LIST: `${getModuleConfig('dates', 'api_url')}/annotations/list`,
+		ANNOTATIONS_LIST_AGENCIES: `${getModuleConfig('dates', 'api_url')}/annotations/list-agencies`,
 
 		// EVENTS
 		EVENTS_DETAIL: (id: string) => `${getModuleConfig('dates', 'api_url')}/events/${encodeURIComponent(id)}`,
@@ -363,13 +373,29 @@ export const API_ROUTES = Object.freeze({
 		// REALTIME
 		REALTIME_ETA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta`,
 		REALTIME_ETA_BY_STOP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}`,
+		REALTIME_ETA_BY_STOP_GTFS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}/gtfs`,
+		REALTIME_ETA_BY_STOP_GTFS_PB: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-stop/${encodeURIComponent(id)}/gtfs.pb`,
 		REALTIME_ETA_BY_TRIP: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}`,
+		REALTIME_ETA_BY_TRIP_GTFS: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}/gtfs`,
+		REALTIME_ETA_BY_TRIP_GTFS_PB: (id: string) => `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/by-trip/${encodeURIComponent(id)}/gtfs.pb`,
 		REALTIME_ETA_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs`,
 		REALTIME_ETA_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/eta/gtfs.pb`,
 		REALTIME_VEHICLES_METADATA: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/metadata`,
 		REALTIME_VEHICLES_POSITIONS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions`,
 		REALTIME_VEHICLES_POSITIONS_GTFS: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs`,
 		REALTIME_VEHICLES_POSITIONS_GTFS_PB: `${getModuleConfig('hub', 'api_url')}/v1/realtime/vehicles/positions/gtfs.pb`,
+	},
+
+	infrastructure: {
+		// BASE
+		BASE: `${getModuleConfig('infrastructure', 'api_url')}`,
+
+		// STOPS
+		STOPS_DETAIL: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/${encodeURIComponent(id)}`,
+		STOPS_DETAIL_LOCK: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/${encodeURIComponent(id)}/lock`,
+		STOPS_LIST: `${getModuleConfig('infrastructure', 'api_url')}/stops`,
+		STOPS_TTS: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/tts/${encodeURIComponent(id)}`,
+		STOPS_VALID_ID: `${getModuleConfig('infrastructure', 'api_url')}/stops/valid-id`,
 	},
 
 	locations: {
@@ -459,6 +485,7 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('plans', 'api_url')}`,
 
 		// PLANS
+		PLANS_CREATE: `${getModuleConfig('plans', 'api_url')}/plans/create`,
 		PLANS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}`,
 		PLANS_DETAIL_APEX_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file`,
 		PLANS_DETAIL_APEX_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/apex-file/download`,
@@ -469,27 +496,18 @@ export const API_ROUTES = Object.freeze({
 		PLANS_DETAIL_OPERATION_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file`,
 		PLANS_DETAIL_OPERATION_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/${encodeURIComponent(id)}/operation-file/download`,
 		PLANS_DRT_MODEL: (id: string) => `${getModuleConfig('plans', 'api_url')}/plans/drt-model/${encodeURIComponent(id)}`,
-		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans`,
+		PLANS_LIST: `${getModuleConfig('plans', 'api_url')}/plans/list`,
+		PLANS_LIST_AGENCIES: `${getModuleConfig('plans', 'api_url')}/plans/list-agencies`,
 
 		// VALIDATIONS
+		VALIDATIONS_CREATE: `${getModuleConfig('plans', 'api_url')}/validations/create`,
 		VALIDATIONS_DETAIL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}`,
 		VALIDATIONS_DETAIL_FILE: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/file`,
 		VALIDATIONS_DETAIL_FILE_DOWNLOAD: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/file/download`,
 		VALIDATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/lock`,
 		VALIDATIONS_DETAIL_PROCESSING_STATUS: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/processing-status`,
 		VALIDATIONS_DETAIL_REQUEST_APPROVAL: (id: string) => `${getModuleConfig('plans', 'api_url')}/validations/${encodeURIComponent(id)}/request-approval`,
-		VALIDATIONS_LIST: `${getModuleConfig('plans', 'api_url')}/validations`,
-	},
-
-	stops: {
-		// BASE
-		BASE: `${getModuleConfig('stops', 'api_url')}`,
-
-		// STOPS
-		STOPS_DETAIL: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}`,
-		STOPS_DETAIL_LOCK: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/${encodeURIComponent(id)}/lock`,
-		STOPS_LIST: `${getModuleConfig('stops', 'api_url')}/stops`,
-		STOPS_TTS: (id: string) => `${getModuleConfig('stops', 'api_url')}/stops/tts/${encodeURIComponent(id)}`,
-		STOPS_VALID_ID: `${getModuleConfig('stops', 'api_url')}/stops/valid-id`,
+		VALIDATIONS_LIST: `${getModuleConfig('plans', 'api_url')}/validations/list`,
+		VALIDATIONS_LIST_AGENCIES: `${getModuleConfig('plans', 'api_url')}/validations/list-agencies`,
 	},
 } as const);

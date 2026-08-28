@@ -1,9 +1,9 @@
 /* * */
 
 import { ensureStructure } from '@/tasks/ensure-structure.js';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
 
 /* * */
 

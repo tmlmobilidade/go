@@ -1,11 +1,12 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GtfsValidation, type UnixTimestamp } from '@tmlmobilidade/types';
 
 /**
  * This script removes gtfs-validation documents and their associated files

@@ -2,7 +2,7 @@
 
 /* * */
 
-import { CreateFileExportDto, type VehicleExportProperties } from '@tmlmobilidade/types';
+import { type CreateFileExportDto, type VehicleExportProperties } from '@tmlmobilidade/go-types-downloads';
 import { closeModal, useAgenciesContext, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 

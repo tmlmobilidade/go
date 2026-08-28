@@ -1,13 +1,13 @@
 /* eslint-disable perfectionist/sort-objects */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
-import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
 export interface ExportedDatesRow {
-	date: OperationalDate
+	date: OperationalDateInt
 	day_type: '1' | '2' | '3'
 	holiday: '0' | '1'
 	notes: string
@@ -15,7 +15,7 @@ export interface ExportedDatesRow {
 }
 
 interface DateObjApiResponse {
-	date: OperationalDate
+	date: OperationalDateInt
 	day_type: '1' | '2' | '3'
 	holiday: '0' | '1'
 	holiday_name: string

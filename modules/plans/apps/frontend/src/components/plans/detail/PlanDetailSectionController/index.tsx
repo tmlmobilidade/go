@@ -1,7 +1,7 @@
 'use client';
 
-import { usePlanDetailContext } from '@/components/plans/detail/PlanDetail.context';
-import { Button, Collapsible, ProcessingStatusTag, Section, Tag } from '@tmlmobilidade/ui';
+import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
+import { Button, Collapsible, ProcessingStatusDisplay, Section, Tag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -23,7 +23,7 @@ export function PlanDetailSectionController() {
 		>
 			<Section gap="sm">
 
-				<ProcessingStatusTag value={planDetailContext.data.plan.apps?.controller?.status} />
+				<ProcessingStatusDisplay value={planDetailContext.data.plan.apps?.controller?.status} />
 
 				<Tag label={planDetailContext.data.plan.hash || 'N/A'} variant="secondary" />
 				<Tag label={planDetailContext.data.plan.apps?.controller?.last_hash || 'N/A'} variant="secondary" />

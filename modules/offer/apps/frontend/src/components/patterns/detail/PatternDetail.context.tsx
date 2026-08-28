@@ -7,10 +7,11 @@ import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/dates';
+import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, Dates, getMergedPath } from '@tmlmobilidade/go-utils-dates';
 import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
+import { EventReplacementRule, EventRestrictionRule, type LineNormalized, ManualRule, Path, Pattern, PopulatedPath, PopulatedPattern, ScheduleRule, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { EventReplacementRule, EventRestrictionRule, type LineNormalized, ManualRule, Path, Pattern, PermissionCatalog, PopulatedPath, PopulatedPattern, ScheduleRule, Stop, StopsParameter, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/types';
+import { PermissionCatalog, Stop } from '@tmlmobilidade/types';
 import { DetailContextStateTemplate, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, useDetailState, type UseFormReturnType, useHandleUpdate, useMeContext, useToast, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { type FeatureCollection, type Point } from 'geojson';
@@ -342,7 +343,7 @@ export const PatternDetailContextProvider = ({ children, lineId, patternId }: Pr
 	const enrichPath = useCallback(async (path: Path[]): Promise<PopulatedPath[]> => {
 		const stopIds = [...new Set(path.map(p => p.stop_id))];
 		const results = await Promise.all(
-			stopIds.map(id => fetchData<Stop>(API_ROUTES.stops.STOPS_DETAIL(String(id)))),
+			stopIds.map(id => fetchData<Stop>(API_ROUTES.infrastructure.STOPS_DETAIL(String(id)))),
 		);
 		const stopsMap = new Map(
 			results.flatMap(r => r.isOk && r.data ? [[r.data._id, r.data]] : []),

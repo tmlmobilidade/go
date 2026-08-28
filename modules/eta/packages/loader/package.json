@@ -7,37 +7,30 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
-		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
-		"lint:fix": "eslint . --fix"
+		"watch": "tsc-watch --onSuccess 'resolve-tspaths'"
 	},
 	"dependencies": {
-		"@clickhouse/client": "1.23.1",
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/geo": "*",
-		"@tmlmobilidade/go-clients-clickhouse": "*",
-		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-eta-pckg-common": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-types-geo": "*",
+		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
+		"@tmlmobilidade/go-utils-geo": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/utils": "*",
-		"ngeohash": "0.6.4"
+		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
-		"@tmlmobilidade/types": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.10",
+		"tsc-watch": "7.2.1",
 		"typescript": "6.0.3"
 	}
 }

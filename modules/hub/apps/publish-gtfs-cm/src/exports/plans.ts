@@ -1,16 +1,16 @@
 /* eslint-disable perfectionist/sort-objects */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
-import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
 export interface ExportedPlansRow {
 	agency_id: string
-	plan_end_date: OperationalDate
+	plan_end_date: OperationalDateInt
 	plan_id: string
-	plan_start_date: OperationalDate
+	plan_start_date: OperationalDateInt
 }
 
 /**
@@ -21,7 +21,7 @@ export interface ExportedPlansRow {
  * @param planEndDate The plan end date.
  * @param exportConfig The export configuration.
  */
-export async function exportPlansFile(agencyId: string, planId: string, planStartDate: OperationalDate, planEndDate: OperationalDate, exportConfig: MergedGtfsExportConfig) {
+export async function exportPlansFile(agencyId: string, planId: string, planStartDate: OperationalDateInt, planEndDate: OperationalDateInt, exportConfig: MergedGtfsExportConfig) {
 	//
 
 	const parsedPlansRow: ExportedPlansRow = {

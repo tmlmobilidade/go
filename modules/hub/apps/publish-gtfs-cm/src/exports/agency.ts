@@ -32,7 +32,6 @@ export async function exportAgencyFile(agencyIds: string[], exportConfig: Merged
 
 	const foundAgenciesData = await goDb.core.agencies.findMany(
 		{ _id: { $in: agencyIds } },
-		{ sort: { _id: 1 } },
 	);
 
 	for (const agencyData of foundAgenciesData) {

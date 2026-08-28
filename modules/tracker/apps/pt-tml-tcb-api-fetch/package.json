@@ -17,7 +17,7 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/external": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
@@ -26,11 +26,10 @@
 		"@tmlmobilidade/gtfs-rt": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",

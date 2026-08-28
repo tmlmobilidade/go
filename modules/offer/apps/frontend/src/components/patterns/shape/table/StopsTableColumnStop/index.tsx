@@ -1,7 +1,7 @@
 'use client';
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PopulatedPath } from '@tmlmobilidade/types';
+import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { Text, useLocationsContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -24,7 +24,7 @@ export function PathTableColumnStop({ pathItem }: { pathItem: PopulatedPath }) {
 
 	const handleOpenStop = () => {
 		if (pathItem.stop_id) {
-			router.push(PAGE_ROUTES.stops.STOPS_DETAIL(String(pathItem.stop_id)));
+			router.push(PAGE_ROUTES.infrastructure.STOPS_DETAIL(String(pathItem.stop_id)));
 		}
 	};
 

@@ -1,24 +1,24 @@
 /* * */
 
-import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/fastify';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
-import { changeOperationFile } from './controllers/change-operation-file.js';
-import { controllerReprocessPlan } from './controllers/controller-reprocess-plan.js';
-import { createPlan } from './controllers/create-plan.js';
-import { deleteApexFile } from './controllers/delete-apex-file.js';
-import { deletePlan } from './controllers/delete-plan.js';
-import { downloadApexFile } from './controllers/download-apex-file.js';
-import { downloadOperationFile } from './controllers/download-operation-file.js';
-import { getAllPlans } from './controllers/get-all-plans.js';
-import { getApexFile } from './controllers/get-apex-file.js';
-import { getDrtModel } from './controllers/get-drt-model.js';
-import { getOperationFile } from './controllers/get-operation-file.js';
-import { getPlan } from './controllers/get-plan.js';
-import { lockPlan } from './controllers/lock-plan.js';
-import { sendApexNotification } from './controllers/send-apex-notification.js';
-import { updateApexFile } from './controllers/update-apex-file.js';
-import { updatePlan } from './controllers/update-plan.js';
+import { changeOperationFileHandler } from './handlers/change-operation-file.js';
+import { controllerReprocessPlanHandler } from './handlers/controller-reprocess-plan.js';
+import { createPlanHandler } from './handlers/create-plan.js';
+import { deleteApexFileHandler } from './handlers/delete-apex-file.js';
+import { deletePlanHandler } from './handlers/delete-plan.js';
+import { downloadApexFileHandler } from './handlers/download-apex-file.js';
+import { downloadOperationFileHandler } from './handlers/download-operation-file.js';
+import { getApexFileHandler } from './handlers/get-apex-file.js';
+import { getDrtModelHandler } from './handlers/get-drt-model.js';
+import { getOperationFileHandler } from './handlers/get-operation-file.js';
+import { getPlanHandler } from './handlers/get-plan.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
+import { listPlansHandler } from './handlers/list-plans.js';
+import { lockPlanHandler } from './handlers/lock-plan.js';
+import { sendApexNotificationHandler } from './handlers/send-apex-notification.js';
+import { updateApexFileHandler } from './handlers/update-apex-file.js';
+import { updatePlanHandler } from './handlers/update-plan.js';
 
 /* * */
 
@@ -32,97 +32,39 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get(
-			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
-			getAllPlans,
-		);
+		instance.post('/list', { preHandler: authorizationMiddleware('plans', ['read']) }, listPlansHandler);
 
-		instance.get(
-			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
-			getPlan,
-		);
+		instance.post('/list-agencies', { preHandler: authorizationMiddleware('plans', ['read']) }, listAgenciesHandler);
 
-		instance.get(
-			'/:id/operation-file',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
-			getOperationFile,
-		);
+		instance.get('/:id', { preHandler: authorizationMiddleware('plans', ['read']) }, getPlanHandler);
 
-		instance.get(
-			'/:id/apex-file',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read_apex_file]) },
-			getApexFile,
-		);
+		instance.get('/:id/operation-file', { preHandler: authorizationMiddleware('plans', ['read']) }, getOperationFileHandler);
 
-		instance.get(
-			'/:id/operation-file/download',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read]) },
-			downloadOperationFile,
-		);
+		instance.get('/:id/apex-file', { preHandler: authorizationMiddleware('plans', ['read_apex_file']) }, getApexFileHandler);
 
-		instance.get(
-			'/:id/apex-file/download',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.read_apex_file]) },
-			downloadApexFile,
-		);
+		instance.get('/:id/operation-file/download', { preHandler: authorizationMiddleware('plans', ['read']) }, downloadOperationFileHandler);
 
-		instance.post(
-			'/:id/apex-file',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_apex_file]) },
-			updateApexFile,
-		);
+		instance.get('/:id/apex-file/download', { preHandler: authorizationMiddleware('plans', ['read_apex_file']) }, downloadApexFileHandler);
 
-		instance.delete(
-			'/:id/apex-file',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.delete_apex_file]) },
-			deleteApexFile,
-		);
+		instance.post('/:id/apex-file', { preHandler: authorizationMiddleware('plans', ['update_apex_file']) }, updateApexFileHandler);
 
-		instance.get(
-			'/:id/apex-file/send-notification',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.send_apex_notification]) },
-			sendApexNotification,
-		);
+		instance.delete('/:id/apex-file', { preHandler: authorizationMiddleware('plans', ['delete_apex_file']) }, deleteApexFileHandler);
 
-		instance.post(
-			'/',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.create]) },
-			createPlan,
-		);
+		instance.get('/:id/apex-file/send-notification', { preHandler: authorizationMiddleware('plans', ['send_apex_notification']) }, sendApexNotificationHandler);
 
-		instance.put(
-			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update]) },
-			updatePlan,
-		);
+		instance.post('/create', { preHandler: authorizationMiddleware('plans', ['create']) }, createPlanHandler);
 
-		instance.get(
-			'/:id/lock',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.lock]) },
-			lockPlan,
-		);
+		instance.put('/:id', { preHandler: authorizationMiddleware('plans', ['update']) }, updatePlanHandler);
 
-		instance.get(
-			'/:id/controller-reprocess',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_controller]) },
-			controllerReprocessPlan,
-		);
+		instance.get('/:id/lock', { preHandler: authorizationMiddleware('plans', ['lock']) }, lockPlanHandler);
 
-		instance.delete(
-			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.delete]) },
-			deletePlan,
-		);
+		instance.get('/:id/controller-reprocess', { preHandler: authorizationMiddleware('plans', ['update_controller']) }, controllerReprocessPlanHandler);
 
-		instance.post(
-			'/:id/change-gtfs',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.plans.scope, [PermissionCatalog.all.plans.actions.update_gtfs_plan]) },
-			changeOperationFile,
-		);
+		instance.delete('/:id', { preHandler: authorizationMiddleware('plans', ['delete']) }, deletePlanHandler);
 
-		instance.get('/drt-model/:id', getDrtModel);
+		instance.post('/:id/change-gtfs', { preHandler: authorizationMiddleware('plans', ['update_gtfs_plan']) }, changeOperationFileHandler);
+
+		instance.get('/drt-model/:id', getDrtModelHandler);
 
 		next();
 	},

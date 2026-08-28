@@ -1,5 +1,6 @@
 import { EMISSION_MAP, PROPULSION_MAP, TYPOLOGY_MAP } from '@/lib/vehicleEnum';
-import { CreateVehicleDto, type OperationalDate, validateOperationalDate } from '@tmlmobilidade/types';
+import { type CreateVehicleDto } from '@tmlmobilidade/go-types-operation';
+import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 
 import { formatValidationDate } from './formatValidationDate';
 import { parseBoolean } from './parseBoolean';

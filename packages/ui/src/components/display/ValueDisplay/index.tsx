@@ -4,7 +4,6 @@ import { type ReactNode } from 'react';
 
 import styles from './styles.module.css';
 
-import { cn } from '../../../lib/utils';
 import { Section, Surface, type SurfaceProps } from '../../layout';
 
 /* * */
@@ -26,7 +25,7 @@ export function ValueDisplay({ className, elevated, icon, label, onClick, strong
 	return (
 		<Surface elevated={elevated} variant={variant}>
 			<Section>
-				<p className={cn(styles.label, className)} onClick={onClick}>{label} {icon}</p>
+				<p className={`${styles.label} ${className}`} onClick={onClick}>{label} {icon}</p>
 				<p className={styles.value} data-strong={strong}>{value}</p>
 			</Section>
 		</Surface>

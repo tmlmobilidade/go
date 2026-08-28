@@ -4,7 +4,7 @@
 import { type RoutePreviewDto, type RoutePreviewResponse } from '@/types/shapes.js';
 import { routeWithValhalla } from '@/utils/route-preview.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
 

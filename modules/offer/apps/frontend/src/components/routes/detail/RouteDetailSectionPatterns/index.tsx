@@ -3,7 +3,7 @@
 import { openCreatePatternModal } from '@/components/patterns/create/PatternCreate.modal';
 import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.context';
 import RouteDetailPattern from '@/components/routes/detail/RouteDetailPattern';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, Collapsible, HasPermission, Section } from '@tmlmobilidade/ui';
 
 /* * */

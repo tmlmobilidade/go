@@ -4,7 +4,7 @@ import { transformReferenceTypeAgencyIntoJson } from '@/transform/json/reference
 import { transformReferenceTypeLinesIntoJson } from '@/transform/json/reference-types/lines.js';
 import { transformReferenceTypeRidesIntoJson } from '@/transform/json/reference-types/rides.js';
 import { transformReferenceTypeStopsIntoJson } from '@/transform/json/reference-types/stops.js';
-import { Dates } from '@tmlmobilidade/dates';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';

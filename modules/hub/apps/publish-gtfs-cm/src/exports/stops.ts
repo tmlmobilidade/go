@@ -37,7 +37,6 @@ export async function exportStopsFile(exportConfig: MergedGtfsExportConfig) {
 
 	const allStopsList = await goDb.infrastructure.stops.findMany(
 		{ 'flags.agency_ids': { $in: ['A2L1N', 'BNA17', 'LA77N', 'YA15B'] } }, // Only stops used by CM
-		{ sort: { _id: 1 } },
 	);
 
 	for (const stopData of allStopsList) {

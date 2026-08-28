@@ -1,7 +1,7 @@
 /* * */
 
-import { type UnixTimestamp } from '@/dates/unix-timestamp.js';
-import { DocumentSchema } from '@/documents/document.js';
+import { type UnixTimestamp } from '@/datetime/unix-timestamp.js';
+import { BaseDocumentSchema } from '@/documents/document.js';
 import { type ApprovalStatus, ApprovalStatusSchema } from '@/status/approval.js';
 import { z } from 'zod';
 
@@ -15,7 +15,7 @@ export type Scope = z.infer<typeof ScopeSchema>;
 
 // Define schemas using constants
 
-export const ProposedChangeSchema = DocumentSchema.extend({
+export const ProposedChangeSchema = BaseDocumentSchema.extend({
 	curr_value: z.any(),
 	field: z.string(),
 	related_id: z.string(),

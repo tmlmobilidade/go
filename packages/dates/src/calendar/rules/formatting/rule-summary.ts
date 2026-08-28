@@ -6,11 +6,11 @@ import {
 	EventRestrictionRule,
 	ManualRule,
 	MONTH_OPTIONS,
-	OperationalDate,
 	ScheduleRule,
 	WEEKDAY_OPTIONS,
 	YearPeriod,
-} from '@tmlmobilidade/types';
+} from '@tmlmobilidade/go-types-offer';
+import { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 import { buildMonthsPart, buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
 

@@ -1,12 +1,13 @@
 /* * */
 
-import { cleanupOrphanHashedPatterns, cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from '@/cleanup.js';
-import { parsePlan } from '@/parse-plan.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { runOnInterval } from '@tmlmobilidade/utils';
+
+import { cleanupOrphanHashedShapes, cleanupOrphanHashedTrips, cleanupOrphanRidesGlobally } from './cleanup.js';
+import { parsePlan } from './parse-plan.js';
 
 /* * */
 
@@ -36,7 +37,10 @@ async function main() {
 
 		const plansCollection = await goDb.operation.plans.getCollection();
 
-		const allPlansData = await goDb.operation.plans.findMany({});
+		const allPlansData = await goDb.operation.plans.findMany({
+			'$expr': { $ne: ['$hash', '$apps.controller.last_hash'] },
+			'apps.controller.status': { $in: ['waiting', 'processing'] },
+		});
 
 		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
@@ -52,26 +56,7 @@ async function main() {
 				Logger.divider(`[${planIndex + 1}/${allPlansData.length}] - Agency ${currentPlan.agency_id} - Plan ${currentPlan._id}`);
 
 				//
-				// Only process Plans that are waiting or resuming processing
-
-				const controllerStatus = currentPlan.apps?.controller?.status;
-
-				if (controllerStatus !== 'waiting' && controllerStatus !== 'processing') {
-					Logger.error({ message: `Skip processing: status_controller is '${controllerStatus}'.` });
-					continue;
-				}
-
-				//
-				// If the hash is the same continue
-				// as it means the plan did not change since last run
-
-				if (currentPlan.hash === currentPlan.apps?.controller?.last_hash) {
-					Logger.error({ message: `Skip processing: Hash is the same as last_hash.` });
-					continue;
-				}
-
-				//
-				// Mark as error if it does not have an associated operation file
+				// Mark the plan as 'error' if it does not have an associated operation file
 
 				if (!currentPlan.operation_file_id) {
 					Logger.error({ message: `Skip processing: No operation file found.` });
@@ -80,8 +65,7 @@ async function main() {
 				}
 
 				//
-				// At this point, the plan will be processed.
-				// Mark it as 'processing' to prevent multiple concurrent runs.
+				// Mark the plan as 'processing' to prevent multiple concurrent runs.
 
 				await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.status': 'processing' } });
 
@@ -105,9 +89,8 @@ async function main() {
 		// Perform the cleanup operations after processing all plans
 
 		await cleanupOrphanRidesGlobally();
-		await cleanupOrphanHashedPatterns();
-		await cleanupOrphanHashedShapes();
 		await cleanupOrphanHashedTrips();
+		await cleanupOrphanHashedShapes();
 
 		//
 

@@ -2,16 +2,16 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type ExportGtfsContext } from '@/types/context.js';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type OperationalDate } from '@tmlmobilidade/types';
 
 /* * */
 
 export interface ExportedFeedInfoRow {
 	feed_version: string
-	feed_start_date: OperationalDate
-	feed_end_date: OperationalDate
+	feed_start_date: OperationalDateInt
+	feed_end_date: OperationalDateInt
 	feed_publisher_name: 'TML - Transportes Metropolitanos de Lisboa'
 	feed_publisher_url: 'https://tmlmobilidade.pt'
 	feed_contact_email: 'go@tmlmobilidade.pt'
@@ -26,7 +26,7 @@ export interface ExportedFeedInfoRow {
  * @param endDate The feed end date.
  * @param context The export context.
  */
-export async function exportFeedInfoFile(startDate: OperationalDate, endDate: OperationalDate, context: ExportGtfsContext) {
+export async function exportFeedInfoFile(startDate: OperationalDateInt, endDate: OperationalDateInt, context: ExportGtfsContext) {
 	//
 
 	const timer = new Timer();

@@ -2,8 +2,7 @@
 
 /* * */
 
-import { cn } from '@/lib/utils';
-import { type SamTimelineAccent, type SamTimelineSummary } from '@tmlmobilidade/types';
+import { type SamTimelineAccent, type SamTimelineSummary } from '@tmlmobilidade/go-types-operation';
 import { DateTime } from 'luxon';
 import { useMemo } from 'react';
 
@@ -107,7 +106,7 @@ interface MonthCounts {
 }
 
 /** One square per month; color prefers API `accent`, with local fallback from counts. */
-export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remarks, timelineSummary }: AnalysisTimeLineRowProps) {
+export function AnalysisTimeLineRow({ rangeEndTs, rangeStartTs, remarks, timelineSummary }: AnalysisTimeLineRowProps) {
 	const placeholderSections = useMemo((): MonthSection[] => {
 		return monthKeysBetweenMillis(rangeStartTs, rangeEndTs).map(monthKey => ({
 			dayKey: monthKey,
@@ -176,7 +175,7 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 	if (summarySections.length === 0 && placeholderSections.length === 0) {
 		if (timelineSummary) {
 			return (
-				<div className={cn(styles.byDayInline, className)}>
+				<div className={styles.byDayInline}>
 					<AnalysisSquare
 						accent="white"
 						className={styles.monthSquare}
@@ -226,7 +225,7 @@ export function AnalysisTimeLineRow({ className, rangeEndTs, rangeStartTs, remar
 			))
 			: null;
 	return (
-		<div className={cn(styles.byDayInline, className)}>
+		<div className={styles.byDayInline}>
 			{renderedSquares}
 		</div>
 	);

@@ -19,18 +19,16 @@
 		"lint:fix": "eslint src --fix"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
-		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-eta-pckg-common": "*",
-		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",

@@ -3,7 +3,7 @@
 import { generateLinesRoutesPatterns } from '@/tasks/sync-lines-routes-patterns.js';
 import { generateShapes } from '@/tasks/sync-shapes.js';
 import { generateStops } from '@/tasks/sync-stops.js';
-import { importGtfsToDatabase, type ImportGtfsToDatabaseConfig } from '@tmlmobilidade/import-gtfs';
+import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -34,10 +34,11 @@ export async function main() {
 	//
 	// Set up the import config
 
-	const importConfig: ImportGtfsToDatabaseConfig = {
+	const importConfig: ImportGtfsConfig = {
 		source: {
 			url: 'https://go.tmlmobilidade.pt/hub/api/v1/plans/gtfs',
 		},
+
 	};
 
 	const importedGtfsSql = await importGtfsToDatabase(importConfig);
@@ -50,6 +51,8 @@ export async function main() {
 	await generateShapes(importedGtfsSql);
 
 	await generateLinesRoutesPatterns(importedGtfsSql);
+
+	importedGtfsSql._db.cleanup();
 
 	//
 	// Finalize the export process

@@ -1,8 +1,11 @@
 'use client';
 
-import { useAlertCreateContext } from '@/components/create/AlertCreate.context';
-import { PermissionCatalog } from '@tmlmobilidade/types';
-import { Button, HasPermission, PublishStatusTag, Spacer, Toolbar, useContextFormWatch } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Button, HasPermission, PublishStatusDisplay, Spacer, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
+
+import { useAlertsCreateFormContext } from '../AlertsCreateForm.context';
+import { useAlertsCreateFormStepsContext } from '../AlertsCreateFormSteps.context';
+import { useAlertsCreatePublish } from '../use-alerts-create-publish';
 
 /* * */
 
@@ -12,9 +15,12 @@ export function AlertCreateFooter() {
 	//
 	// A. Setup variables
 
-	const alertCreateContext = useAlertCreateContext();
+	const { form: alertsCreateForm } = useAlertsCreateFormContext();
+	const { actions: alertsCreateFormStepsActions, progress: alertsCreateFormStepsProgress } = useAlertsCreateFormStepsContext();
+	const { isLoading: isCreating, publish } = useAlertsCreatePublish();
 
-	const publishStatusValue = useContextFormWatch({ control: alertCreateContext.form.instance.control, name: 'publish_status' });
+	const agencyIdValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'agency_id' });
+	const publishStatusValue = useStandardFormWatch({ control: alertsCreateForm.control, name: 'publish_status' });
 
 	//
 	// B. Render components
@@ -26,10 +32,10 @@ export function AlertCreateFooter() {
 				action={PermissionCatalog.all.alerts.actions.update_publish_status}
 				resourceKey="agency_ids"
 				scope={PermissionCatalog.all.alerts.scope}
-				value={alertCreateContext.form.instance.getValues('agency_id')}
+				value={agencyIdValue}
 			>
-				<PublishStatusTag
-					onChange={value => alertCreateContext.form.instance.setValue('publish_status', value, { shouldDirty: true })}
+				<PublishStatusDisplay
+					onChange={value => alertsCreateForm.setValue('publish_status', value, { shouldDirty: true })}
 					value={publishStatusValue}
 				/>
 			</HasPermission>
@@ -37,31 +43,28 @@ export function AlertCreateFooter() {
 			<Spacer />
 
 			<Button
-				disabled={alertCreateContext.form.multi_step.progress.current?.id === 'cause'}
+				disabled={!alertsCreateFormStepsProgress.prev?.id}
 				label="Voltar"
-				onClick={alertCreateContext.form.multi_step.actions.prev}
+				onClick={alertsCreateFormStepsActions.prev}
 				variant="secondary"
 			/>
 
-			{alertCreateContext.form.multi_step.progress.current?.id !== 'summary' && (
+			{alertsCreateFormStepsProgress.next?.id && (
 				<Button
-					disabled={!alertCreateContext.form.multi_step.progress.current?.isValid()}
+					disabled={!alertsCreateFormStepsProgress.current?.isValid}
 					label="Avançar"
-					onClick={alertCreateContext.form.multi_step.actions.next}
+					onClick={alertsCreateFormStepsActions.next}
 				/>
 			)}
 
-			{alertCreateContext.form.multi_step.progress.current?.id === 'summary' && (
+			{!alertsCreateFormStepsProgress.next?.id && (
 				<Button
-					disabled={!alertCreateContext.form.multi_step.progress.current?.isValid()}
+					disabled={!alertsCreateFormStepsProgress.current?.isValid}
 					label="Publicar"
-					loading={alertCreateContext.flags.isCreating}
-					onClick={alertCreateContext.actions.create}
+					loading={isCreating}
+					onClick={publish}
 				/>
 			)}
-
 		</Toolbar>
 	);
-
-	//
 }

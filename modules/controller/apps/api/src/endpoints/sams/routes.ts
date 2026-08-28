@@ -1,14 +1,14 @@
 // /* * */
 
-// import { getApexVersions } from '@/endpoints/sams/controllers/get-apex-versions.js';
-// import { getBatchBase } from '@/endpoints/sams/controllers/get-batch-base.js';
-// import { getBatch } from '@/endpoints/sams/controllers/get-batch.js';
-// import { getById } from '@/endpoints/sams/controllers/get-by-id.js';
-// import { getExportData } from '@/endpoints/sams/controllers/get-export-data.js';
-// import { getSamByIds } from '@/endpoints/sams/controllers/get-sam-by-ids.js';
-// import { getTimelineSummaryByIds } from '@/endpoints/sams/controllers/get-timeline-summary.js';
-// import { postTimelineSummaryByIds } from '@/endpoints/sams/controllers/post-timeline-summary.js';
-// import { authorizationMiddleware, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/fastify';
+// import { getApexVersions } from './handlers/get-apex-versions.js';
+// import { getBatchBase } from './handlers/get-batch-base.js';
+// import { getBatch } from './handlers/get-batch.js';
+// import { getById } from './handlers/get-by-id.js';
+// import { getExportData } from './handlers/get-export-data.js';
+// import { getSamByIds } from './handlers/get-sam-by-ids.js';
+// import { getTimelineSummaryByIds } from './handlers/get-timeline-summary.js';
+// import { postTimelineSummaryByIds } from './handlers/post-timeline-summary.js';
+// import { authorizationMiddleware, type FastifyReply, type FastifyRequest, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 // import { type GetSamsBatchQuery, PermissionCatalog, type Sam, type SamListItem } from '@tmlmobilidade/types';
 
 // /* * */

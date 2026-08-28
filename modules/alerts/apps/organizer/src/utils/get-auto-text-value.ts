@@ -1,6 +1,6 @@
 /* * */
 
-import { type Alert } from '@tmlmobilidade/types';
+import { type Alert } from '@tmlmobilidade/go-types-operation';
 
 /**
  * Sets the `auto_texts` attribute of an alert

@@ -7,8 +7,9 @@ import { runSaga } from '@/utils/operation-runner.js';
 import { storageKey } from '@/utils/storage-key.js';
 import { MetadataError, NotFoundError } from '@tmlmobilidade/go-clients-oci-storage';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { type Attachment, CreateAttachmentSchema } from '@tmlmobilidade/go-types-core';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type Attachment, CreateAttachmentSchema } from '@tmlmobilidade/types';
 import { convertObject } from '@tmlmobilidade/utils';
 
 import { type StorageDeps } from '../types/deps.js';
@@ -67,16 +68,18 @@ export async function copy(deps: StorageDeps, input: CopyInput): Promise<Attachm
 			},
 			{
 				compensate: async () => {
-					if (inserted) await goDb.core.attachments.deleteById(inserted._id, { forceIfLocked: true });
+					if (inserted) await goDb.core.attachments.deleteById(inserted._id);
 				},
 				execute: async () => {
 					if (!source) throw new MetadataError('Copy source missing during insert');
 					const newFile = convertObject(source, CreateAttachmentSchema);
-					inserted = await goDb.core.attachments.insertOne({
+					inserted = await goDb.core.attachments.insertOneUnsafe({
 						...newFile,
 						_id,
+						created_at: Dates.now('utc').unix_timestamp,
 						resource_id: resourceId,
 						scope,
+						updated_at: Dates.now('utc').unix_timestamp,
 					});
 				},
 				name: 'insertMetadata',

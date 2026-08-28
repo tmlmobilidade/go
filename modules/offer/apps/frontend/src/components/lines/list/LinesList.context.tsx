@@ -1,8 +1,9 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Agency, type LineNormalized, PermissionCatalog } from '@tmlmobilidade/types';
-import { type SelectDataItem, useDataAgenciesNew, useFilterStateList, type UseFilterStateListReturnType, useFilterStateString, type UseFilterStateStringReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { type LineNormalized } from '@tmlmobilidade/go-types-offer';
+import { type Agency, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { type SelectDataItem, useDataAgenciesNew, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -18,7 +19,7 @@ interface LinesListContextState {
 	}
 	filters: {
 		agencies: UseFilterStateListReturnType
-		search: UseFilterStateStringReturnType
+		search: UseFilterStateTextReturnType
 	}
 	flags: {
 		canCreate: boolean
@@ -56,7 +57,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Setup filters
 
-	const filterSearch = useFilterStateString('search');
+	const filterSearch = useFilterStateText('search');
 	const filterAgencies = useFilterStateList('agency', agencyIds, agencyOptions);
 
 	//

@@ -18,20 +18,20 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-apex-pckg-callback": "*",
 		"@tmlmobilidade/go-apex-pckg-parsers": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-types-apex": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/logger": "*",
 		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/types": "*",
 		"@tmlmobilidade/utils": "*",
 		"@tmlmobilidade/writers": "*"
 	},
 	"devDependencies": {
-		"@tmlmobilidade/tsconfig": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.1.2",
 		"resolve-tspaths": "0.8.23",
 		"tsx": "4.23.10",

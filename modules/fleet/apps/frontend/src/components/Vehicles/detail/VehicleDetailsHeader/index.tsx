@@ -3,7 +3,7 @@
 import { useVehiclesDetailContext } from '@/contexts/VehiclesDetail.context';
 import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/types';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, CloseButton, DeleteButton, HasPermission, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';

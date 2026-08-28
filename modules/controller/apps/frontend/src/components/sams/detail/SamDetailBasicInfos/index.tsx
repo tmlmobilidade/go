@@ -1,9 +1,7 @@
 /* * */
 
-import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useSamsDetailContext } from '@/contexts/SamDetail.context';
 import { translateFilterValue } from '@/lib/translations';
-import { formatUnixTimestampToDateString } from '@/lib/utils';
 import { Collapsible, ErrorDisplay, Grid, LoadingOverlay, Section, ValueDisplay } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -18,7 +16,6 @@ export function SamsDetailBasicInfos() {
 	const { t } = useTranslation();
 
 	const samDetailContext = useSamsDetailContext();
-	const agenciesContext = useAgenciesContext();
 
 	if (samDetailContext.flags.loading) {
 		return <LoadingOverlay />;
@@ -39,9 +36,9 @@ export function SamsDetailBasicInfos() {
 		>
 			<Section>
 				<Grid columns="abc" gap="lg">
-					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.agency_id.label')} value={agenciesContext.data.raw.find(agency => agency._id === samDetailContext.data.sam?.agency_id)?.name} variant="bordered" />
-					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.seen_first_at.label')} value={formatUnixTimestampToDateString(samDetailContext.data.sam?.seen_first_at)} variant="bordered" />
-					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.seen_last_at.label')} value={formatUnixTimestampToDateString(samDetailContext.data.sam?.seen_last_at)} variant="bordered" />
+					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.agency_id.label')} value={[]?.find(agency => agency._id === samDetailContext.data.sam?.agency_id)?.name} variant="bordered" />
+					{/* <ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.seen_first_at.label')} value={samDetailContext.data.sam?.seen_first_at} variant="bordered" />
+					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.seen_last_at.label')} value={samDetailContext.data.sam?.seen_last_at} variant="bordered" /> */}
 					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.transactions_expected.label')} value={samDetailContext.data.sam?.transactions_expected?.toString() ?? '-'} variant="bordered" />
 					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.transactions_found.label')} value={samDetailContext.data.sam?.transactions_found?.toString() ?? '-'} variant="bordered" />
 					<ValueDisplay label={t('default:sams.detail.SamsDetailBasicInfos.fields.transactions_missing.label')} value={samDetailContext.data.sam?.transactions_missing?.toString() ?? '-'} variant="bordered" />

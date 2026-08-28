@@ -98,3 +98,10 @@
 	background-color: var(--color-status-danger-primary);
 	border-color: var(--color-status-danger-primary);
 }
+
+/* * */
+/* PROPS / WITH TOOLTIP */
+
+.root[data-with-tooltip='true'] {
+	cursor: help;
+}

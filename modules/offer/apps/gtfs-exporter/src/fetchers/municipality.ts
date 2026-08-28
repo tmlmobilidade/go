@@ -1,7 +1,7 @@
 /* * */
 
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { type Municipality } from '@tmlmobilidade/types';
+import { type Municipality } from '@tmlmobilidade/go-types-locations';
 
 /* * */
 

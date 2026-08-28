@@ -2,7 +2,8 @@
 
 import { calendarKey, CalendarKey, calendarWeekday, datesFromCalendarKey, keyToYYYYMMDD } from '@/calendar/utils/index.js';
 import { Dates } from '@/dates.js';
-import { Event, Holiday, ManualRule, OperationalDate, YearPeriod } from '@tmlmobilidade/types';
+import { Event, Holiday, ManualRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Context for computing which dates a manual rule affects within a calendar range.

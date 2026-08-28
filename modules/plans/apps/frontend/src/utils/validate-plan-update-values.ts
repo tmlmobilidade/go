@@ -1,7 +1,8 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/dates';
-import { type UpdatePlanDto } from '@tmlmobilidade/types';
+import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
+import { type UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
 
 /* * */
 
@@ -40,8 +41,8 @@ export const validatePlanUpdateValues = (values: UpdatePlanDto): UpdatePlanDto =
 		...values,
 		gtfs_feed_info: {
 			...values.gtfs_feed_info,
-			feed_end_date: feedEndDate,
-			feed_start_date: feedStartDate,
+			feed_end_date: validateGtfsDate(feedEndDate),
+			feed_start_date: validateGtfsDate(feedStartDate),
 		},
 	};
 

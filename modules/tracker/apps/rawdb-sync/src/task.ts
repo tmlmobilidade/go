@@ -1,14 +1,13 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
 import { type Collection, type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { PARSER_MAP } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { BatchWriter, performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
-import { performInChunks, type PerformInTimeChunksItem, replicate } from '@tmlmobilidade/utils';
-import { BatchWriter } from '@tmlmobilidade/utils';
 
 import { type SyncConfig, type VehicleEventsCollectionDocument } from './types.js';
 
@@ -17,9 +16,9 @@ import { type SyncConfig, type VehicleEventsCollectionDocument } from './types.j
 const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	batch_size: 10_000,
 	insertFn: async (data) => {
-		await labDb.operation.vehicleEvents.insert('JSONEachRow', data);
+		await labDb.operation.simplifiedVehicleEvents.insert('JSONEachRow', data);
 	},
-	title: await labDb.operation.vehicleEvents.getTableName(),
+	title: await labDb.operation.simplifiedVehicleEvents.getTableName(),
 });
 
 /**
@@ -67,7 +66,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 	await replicate<VehicleEventsCollectionDocument<SyncConfig['collection']>>({
 
 		countDestinationDbFn: async () => {
-			return await labDb.operation.vehicleEvents.count(
+			return await labDb.operation.simplifiedVehicleEvents.count(
 				'*',
 				'created_at >= $1 AND created_at < $2 AND agency_id = $3',
 				{ 1: timeChunk.start, 2: timeChunk.end, 3: configItem.agency_id },
@@ -81,7 +80,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 
 		deleteDestinationDbFn: async (ids: string[]) => {
 			await performInChunks(ids, async (chunk) => {
-				await labDb.operation.vehicleEvents.delete(
+				await labDb.operation.simplifiedVehicleEvents.delete(
 					'_id IN $1',
 					{ 1: chunk },
 				);
@@ -89,7 +88,7 @@ export async function syncVehicleEvents(timeChunk: PerformInTimeChunksItem, conf
 		},
 
 		distinctDestinationDbFn: async () => {
-			return await labDb.operation.vehicleEvents.distinct(
+			return await labDb.operation.simplifiedVehicleEvents.distinct(
 				'_id',
 				'created_at >= $1 AND created_at < $2 AND agency_id = $3',
 				{ 1: timeChunk.start, 2: timeChunk.end, 3: configItem.agency_id },

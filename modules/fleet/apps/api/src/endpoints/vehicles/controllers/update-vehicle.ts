@@ -1,9 +1,10 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/fastify';
+import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { PermissionCatalog, type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/types';
+import { type UpdateVehicleDto, type Vehicle } from '@tmlmobilidade/go-types-operation';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
  * Updates an existing vehicle by ID

@@ -2,7 +2,7 @@
 
 import { closeCreateZoneModal } from '@/components/zones/create/ZoneCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateZoneDto, CreateZoneSchema, Zone } from '@tmlmobilidade/types';
+import { CreateZoneDto, CreateZoneSchema, Zone } from '@tmlmobilidade/go-types-offer';
 import { keepUrlParams, type UseFormReturnType, useHandleUpdate, useTypicalForm } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { useRouter } from 'next/navigation';

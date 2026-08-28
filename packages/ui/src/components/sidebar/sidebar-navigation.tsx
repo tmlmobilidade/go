@@ -4,7 +4,7 @@
 
 import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconBusStop, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type Permission, PermissionCatalog } from '@tmlmobilidade/types';
+import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type JSX } from 'react';
 
 import { i18nResourceKeysPtShared } from '../../i18n/resources';
@@ -31,7 +31,7 @@ export const sidebarNavigationGroups = [
 		items: [
 			{
 				_id: 'home',
-				href: PAGE_ROUTES.auth.HOME_LIST,
+				href: PAGE_ROUTES.core.HOME_LIST,
 				icon: <IconHome />,
 				permissions: [
 					{ action: PermissionCatalog.all.home.actions.read_links, scope: PermissionCatalog.all.home.scope },
@@ -57,25 +57,25 @@ export const sidebarNavigationGroups = [
 		items: [
 			{
 				_id: 'agencies',
-				href: PAGE_ROUTES.auth.AGENCIES_LIST,
+				href: PAGE_ROUTES.core.AGENCIES_LIST,
 				icon: <IconBuildings />,
 				permissions: [{ action: PermissionCatalog.all.agencies.actions.read, scope: PermissionCatalog.all.agencies.scope }],
 			},
 			{
 				_id: 'organizations',
-				href: PAGE_ROUTES.auth.ORGANIZATIONS_LIST,
+				href: PAGE_ROUTES.core.ORGANIZATIONS_LIST,
 				icon: <IconSitemap />,
 				permissions: [{ action: PermissionCatalog.all.organizations.actions.read, scope: PermissionCatalog.all.organizations.scope }],
 			},
 			{
 				_id: 'roles',
-				href: PAGE_ROUTES.auth.ROLES_LIST,
+				href: PAGE_ROUTES.core.ROLES_LIST,
 				icon: <IconKey />,
 				permissions: [{ action: PermissionCatalog.all.roles.actions.read, scope: PermissionCatalog.all.roles.scope }],
 			},
 			{
 				_id: 'users',
-				href: PAGE_ROUTES.auth.USERS_LIST,
+				href: PAGE_ROUTES.core.USERS_LIST,
 				icon: <IconUser />,
 				permissions: [{ action: PermissionCatalog.all.users.actions.read, scope: PermissionCatalog.all.users.scope }],
 			},
@@ -112,7 +112,7 @@ export const sidebarNavigationGroups = [
 				_id: 'sams',
 				href: PAGE_ROUTES.controller.SAMS_LIST,
 				icon: <IconDeviceSim />,
-				permissions: [{ action: PermissionCatalog.all.sams.actions.read, scope: PermissionCatalog.all.sams.scope }],
+				permissions: [{ action: PermissionCatalog.all.sams.actions.read, resources: { agency_ids: [] }, scope: PermissionCatalog.all.sams.scope }],
 			},
 			{
 				_id: 'vehicles',
@@ -127,7 +127,7 @@ export const sidebarNavigationGroups = [
 		items: [
 			{
 				_id: 'stops',
-				href: PAGE_ROUTES.stops.STOPS_LIST,
+				href: PAGE_ROUTES.infrastructure.INFRASTRUCTURE_LIST,
 				icon: <IconBusStop />,
 				permissions: [{ action: PermissionCatalog.all.stops.actions.read, resources: { agency_ids: [], municipality_ids: [] }, scope: PermissionCatalog.all.stops.scope }],
 			},

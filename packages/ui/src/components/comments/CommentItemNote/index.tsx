@@ -1,9 +1,9 @@
 /* * */
 
 import { IconMessageCircle } from '@tabler/icons-react';
-import { Dates } from '@tmlmobilidade/dates';
-import { NoteComment } from '@tmlmobilidade/types';
+import { NoteComment } from '@tmlmobilidade/go-types-shared';
 
+import { displayUnixTimestamp } from '../../../utils';
 import { Label } from '../../display/Label';
 import { Section } from '../../layout/Section';
 import { CommentItem } from '../CommentItem';
@@ -27,7 +27,7 @@ export function CommentItemNote({ comment, reverse }: CommentItemNoteProps) {
 				{comment.message}
 			</div>
 			<Label size="sm">
-				{comment.created_by} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}
+				{comment.created_by} a {displayUnixTimestamp(comment.created_at, 'short')}
 			</Label>
 		</Section>
 	);

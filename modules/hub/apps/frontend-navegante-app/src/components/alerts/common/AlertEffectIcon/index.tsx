@@ -1,7 +1,7 @@
 /* * */
 
 import { getEffectSeverityLevel } from '@/utils/get-alert-severity-level';
-import { type AlertEffect, AlertEffectValues } from '@tmlmobilidade/types';
+import { type AlertEffect, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
 import { AlertEffectIcons } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
