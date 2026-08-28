@@ -9,7 +9,7 @@ import useSWR from 'swr';
 
 /* * */
 
-interface UseGtfsValidationsAgenciesDataReturnType {
+interface PlansAgenciesDataReturnType {
 	data: GtfsValidationsAgencyItem[]
 	error: null | string
 	ids: string[]
@@ -23,13 +23,13 @@ interface UseGtfsValidationsAgenciesDataReturnType {
  * to filters or select components.
  * @returns An object containing the agencies data.
  */
-export function useGtfsValidationsAgenciesData(): UseGtfsValidationsAgenciesDataReturnType {
+export function useGtfsValidationsAgenciesData(): PlansAgenciesDataReturnType {
 	//
 
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<GtfsValidationsAgencyItem[]>>(API_ROUTES.plans.VALIDATIONS_LIST_AGENCIES, {
+	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<GtfsValidationsAgencyItem[]>>(API_ROUTES.plans.PLANS_LIST_AGENCIES, {
 		fetcher: async (url: string) => await fetchApiData<GtfsValidationsAgencyItem[]>({ method: 'GET', url: url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
