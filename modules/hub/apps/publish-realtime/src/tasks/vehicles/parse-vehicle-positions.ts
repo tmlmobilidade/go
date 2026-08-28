@@ -1,6 +1,6 @@
 /* * */
 
-import { type HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-public-info';
+import { type HubVehiclePosition, HubVehiclePositionSchema } from '@tmlmobilidade/go-types-hub';
 import { toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/logger';
 

@@ -5,7 +5,7 @@
 import { LineDisplay } from '@/components/lines/common/LineDisplay';
 import { ActionIcon, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import { IconArrowLoopRight, IconSelector, IconX } from '@tabler/icons-react';
-import { type HubLine } from '@tmlmobilidade/go-types-public-info';
+import { type HubLine } from '@tmlmobilidade/go-types-hub';
 import { useSearch } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';

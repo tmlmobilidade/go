@@ -2,7 +2,7 @@
 
 import { pipelinePath } from '@tmlmobilidade/go-hub-pckg-sql';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type HubVehiclePosition } from '@tmlmobilidade/go-types-public-info';
+import { type HubVehiclePosition } from '@tmlmobilidade/go-types-hub';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /* * */

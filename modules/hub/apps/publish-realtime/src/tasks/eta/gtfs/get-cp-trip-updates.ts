@@ -4,7 +4,7 @@ import { externalClients } from '@tmlmobilidade/external';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsRtTripUpdate } from '@tmlmobilidade/go-types-gtfs-rt';
-import { type HubPlan } from '@tmlmobilidade/go-types-public-info';
+import { type HubPlan } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 import { getPublicTripId } from '@tmlmobilidade/utils';

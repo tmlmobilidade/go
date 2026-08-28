@@ -1,6 +1,6 @@
 /* * */
 
-import { HubLine } from '@tmlmobilidade/go-types-public-info';
+import { HubLine } from '@tmlmobilidade/go-types-hub';
 
 import styles from './styles.module.css';
 

@@ -1,6 +1,6 @@
 /* * */
 
-import { type HubAlert } from '@tmlmobilidade/go-types-public-info';
+import { type HubAlert } from '@tmlmobilidade/go-types-hub';
 
 /**
  * Represents a group of alerts.

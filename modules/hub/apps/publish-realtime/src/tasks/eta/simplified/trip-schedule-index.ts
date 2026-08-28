@@ -2,7 +2,7 @@
 
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type HubLine, type HubPattern, type HubScheduledArrival } from '@tmlmobilidade/go-types-public-info';
+import { type HubLine, type HubPattern, type HubScheduledArrival } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 
