@@ -2,9 +2,10 @@
 
 import { useRideAcceptanceContext } from '@/contexts/RideAcceptance.context';
 import { IconAlertCircle, IconCircleCheck, IconCircleDashedLetterC, IconCircleDashedLetterR, IconCircleDashedLetterU, IconCircleDashedMinus, IconCircleDashedPlus, IconCircleDashedX, IconCircleFilled, IconCircleX, IconClock, IconLock, IconLockOpen, IconMathMaxMin, IconMessageCircle } from '@tabler/icons-react';
+import { UserDisplay } from '@tmlmobilidade/go-types-core';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { PermissionCatalog, UserDisplay } from '@tmlmobilidade/types';
-import { CommentInput, CommentItemProps, CommentList, HasPermission, Label, Section, Tooltip } from '@tmlmobilidade/ui';
+import { CommentInput, CommentItemProps, CommentList, displayUnixTimestamp, HasPermission, Label, Section, Tooltip } from '@tmlmobilidade/ui';
 import React, { createElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -127,7 +128,6 @@ export function RideAcceptanceCommentList() {
 				item.iconTopMargin = 25;
 				item.icon = createElement(CommentAnalysisSummaryProps.icon, { color: CommentAnalysisSummaryProps.color });
 
-				const analysisSummary = comment.curr_value as any;
 				const analysisItems = []; //  Object.entries(analysisSummary).map(([id, item]) => ({ id: id, ...item }));
 
 				item.content = (
@@ -150,7 +150,7 @@ export function RideAcceptanceCommentList() {
 								</Tooltip>
 							))}
 						</Section>
-						<Label size="sm">{createdBy} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
+						<Label size="sm">{createdBy} a {displayUnixTimestamp(comment.created_at, 'short')}</Label>
 					</div>
 				);
 			}
@@ -161,7 +161,7 @@ export function RideAcceptanceCommentList() {
 				item.content = (
 					<div className={styles.messageContainer}>
 						<div className={styles.label}>{comment.message}</div>
-						<Label size="sm">{createdBy} a {Dates.fromUnixTimestamp(comment.created_at).toLocaleString(Dates.FORMATS.DATETIME_SHORT, 'pt-PT')}</Label>
+						<Label size="sm">{createdBy} a {displayUnixTimestamp(comment.created_at, 'short')}</Label>
 					</div>
 				);
 			}
@@ -173,7 +173,7 @@ export function RideAcceptanceCommentList() {
 
 			return item;
 		});
-	}, [acceptanceContext.data.acceptance.comments]);
+	}, [CommentAcceptanceStatusProps, CommentAnalysisSummaryProps.color, CommentAnalysisSummaryProps.icon, CommentAnalysisSummaryProps.label, CommentCrudProps, CommentJustificationProps.color, CommentJustificationProps.icon, CommentJustificationProps.label, CommentLockProps, CommentNoteProps.color, CommentNoteProps.icon, acceptanceContext.data.acceptance.comments]);
 
 	//
 	// B. Handle actions
