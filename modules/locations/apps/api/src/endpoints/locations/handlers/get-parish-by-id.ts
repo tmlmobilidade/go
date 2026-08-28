@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { Municipality } from '@tmlmobilidade/types';
+import { type Parish } from '@tmlmobilidade/go-types-locations';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 import { z } from 'zod';
 
@@ -16,11 +16,11 @@ const queryParamsSchema = z.object({
 type QueryParams = z.infer<typeof queryParamsSchema>;
 
 /**
- * Retrieves a municipality filtered by id.
+ * Retrieves a parish filtered by id.
  * @param request Fastify request
  * @param reply Fastify reply
 */
-export async function getMunicipalityById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Municipality>) {
+export async function getParishById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Parish>) {
 	//
 
 	//
@@ -29,12 +29,11 @@ export async function getMunicipalityById(request: FastifyRequest<{ Params: { id
 	const params = validateQueryParams<QueryParams>(request.query, queryParamsSchema);
 
 	//
-	// Fetch all municipality
+	// Fetch all parish
 
-	const municipality = await locationsProvider.findMunicipalityById(request.params.id, { geometry: params.geometry });
+	const parish = await locationsProvider.findParishById(request.params.id, { geometry: params.geometry });
 
-	return reply
-		.send({ data: municipality, error: null, statusCode: HTTP_STATUS.OK });
+	return reply.send({ data: parish, error: null, statusCode: HTTP_STATUS.OK });
 
 	//
 }

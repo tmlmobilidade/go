@@ -2,15 +2,15 @@
 
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
-import { getDistrictById } from './controller/get-district-by-id.js';
-import { getDistricts } from './controller/get-districts.js';
-import { getLocalities } from './controller/get-localities.js';
-import { getLocalityById } from './controller/get-locality-by-id.js';
-import { getLocation } from './controller/get-location.js';
-import { getMunicipalities } from './controller/get-municipalities.js';
-import { getMunicipalityById } from './controller/get-municipality-by-id.js';
-import { getParishById } from './controller/get-parish-by-id.js';
-import { getParishes } from './controller/get-parishes.js';
+import { getDistrictById } from './handlers/get-district-by-id.js';
+import { getDistricts } from './handlers/get-districts.js';
+import { getLocalities } from './handlers/get-localities.js';
+import { getLocalityById } from './handlers/get-locality-by-id.js';
+import { getLocation } from './handlers/get-location.js';
+import { getMunicipalities } from './handlers/get-municipalities.js';
+import { getMunicipalityById } from './handlers/get-municipality-by-id.js';
+import { getParishById } from './handlers/get-parish-by-id.js';
+import { getParishes } from './handlers/get-parishes.js';
 
 /* * */
 

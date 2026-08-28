@@ -3,7 +3,7 @@
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { District } from '@tmlmobilidade/types';
+import { type District } from '@tmlmobilidade/go-types-locations';
 
 /**
  * Retrieves all districts.

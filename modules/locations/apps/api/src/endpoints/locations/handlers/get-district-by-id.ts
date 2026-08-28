@@ -2,9 +2,8 @@
 
 import { HTTP_STATUS } from '@tmlmobilidade/consts';
 import { FastifyReply, FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
-import { District } from '@tmlmobilidade/types';
+import { type District } from '@tmlmobilidade/go-types-locations';
 import { validateQueryParams } from '@tmlmobilidade/utils';
 import { z } from 'zod';
 
@@ -37,6 +36,4 @@ export async function getDistrictById(request: FastifyRequest<{ Params: { id: st
 	return reply
 		.header('Access-Control-Allow-Origin', '*')
 		.send({ data: district, error: null, statusCode: HTTP_STATUS.OK });
-
-	//
 }
