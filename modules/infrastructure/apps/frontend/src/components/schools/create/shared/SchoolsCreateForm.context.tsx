@@ -6,16 +6,10 @@ import { createContext, type PropsWithChildren, useContext, useMemo } from 'reac
 
 /* * */
 
-const SchoolsCreateSchema = CreateSchoolSchema.superRefine((school, context) => {
-	if (school.email && !CreateSchoolSchema.shape.email.safeParse(school.email).success) {
-		context.addIssue({ code: 'custom', message: 'Email inválido', path: ['email'] });
-	}
-	if (!/^\d{4}-\d{3}$/.test(school.postal_code)) {
-		context.addIssue({ code: 'custom', message: 'Código postal inválido', path: ['postal_code'] });
-	}
-	if (school.stops.length === 0) {
-		context.addIssue({ code: 'custom', message: 'Selecione pelo menos uma paragem', path: ['stops'] });
-	}
+const SchoolsCreateSchema = CreateSchoolSchema.extend({
+	email: CreateSchoolSchema.shape.email.refine(value => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), 'Email inválido'),
+	postal_code: CreateSchoolSchema.shape.postal_code.regex(/^\d{4}-\d{3}$/, 'Código postal inválido'),
+	stops: CreateSchoolSchema.shape.stops.refine(value => value.length > 0, 'Selecione pelo menos uma paragem'),
 });
 
 const SchoolsCreateFormContext = createContext<undefined | UseStandardFormReturnType<CreateSchoolDto>>(undefined);
