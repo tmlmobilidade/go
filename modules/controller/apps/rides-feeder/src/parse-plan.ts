@@ -28,20 +28,20 @@ const ridesWritter = new BatchWriter<Ride>({
 	title: await labDb.operation.rides.getTableName(),
 });
 
+const hashedShapesWritter = new BatchWriter<HashedShape>({
+	batch_size: 2_000,
+	insertFn: async (data) => {
+		await labDb.operation.hashedShapes.insert('JSONEachRow', data);
+	},
+	title: await labDb.operation.hashedShapes.getTableName(),
+});
+
 const hashedTripsWritter = new BatchWriter<HashedTrip>({
 	batch_size: 10_000,
 	insertFn: async (data) => {
 		await labDb.operation.hashedTrips.insert('JSONEachRow', data);
 	},
 	title: await labDb.operation.hashedTrips.getTableName(),
-});
-
-const hashedShapesWritter = new BatchWriter<HashedShape>({
-	batch_size: 10_000,
-	insertFn: async (data) => {
-		await labDb.operation.hashedShapes.insert('JSONEachRow', data);
-	},
-	title: await labDb.operation.hashedShapes.getTableName(),
 });
 
 /* * */
@@ -142,16 +142,70 @@ export async function parsePlan(planData: Plan) {
 				continue;
 			}
 
+			/* * */
+			/* HASHED SHAPE */
+
+			//
+			// Transform the GTFS shape data into a GeoJSON LineString,
+			// and then encode it as a polyline string.
+
+			const sortedShapeData = shapeData.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
+
+			const shapeAsGeoJsonGeometry = GeoJsonLineStringGeometrySchema.parse({
+				coordinates: sortedShapeData.map(point => [point.shape_pt_lon, point.shape_pt_lat]),
+				type: 'LineString',
+			});
+
+			const shapeAsEncodedPolyline = fromGeoJsonLineStringToEncodedPolyline(shapeAsGeoJsonGeometry);
+
+			//
+			// Calculate the extension in meters for the shape.
+
+			const firstShapePoint = sortedShapeData[0];
+			const lastShapePoint = sortedShapeData[sortedShapeData.length - 1];
+
+			const extensionScheduledInMeters = Math.round(toMetersFromKilometersOrMeters(lastShapePoint.shape_dist_traveled, firstShapePoint.shape_dist_traveled));
+
+			//
+			// Hash the object contents and check if it already exists in the database.
+			// The hash value is the _id of the HashedTrip item.
+
+			const createHashedShape = CreateHashedShapeSchema.parse({
+				agency_id: planData.agency_id,
+				extension: extensionScheduledInMeters,
+				shape_id: currentTrip.shape_id,
+				shape_polyline: shapeAsEncodedPolyline,
+			});
+
+			const uniqueIdValueForHashedShape = crypto
+				.createHash('sha256')
+				.update(JSON.stringify(createHashedShape))
+				.digest('hex');
+
+			const currentHashedShapeAlreadyExists = await labDb.operation.hashedShapes.count('DISTINCT(_id)', '_id = $1', { 1: uniqueIdValueForHashedShape });
+
+			const hashedShapeItem = HashedShapeSchema.parse({
+				...createHashedShape,
+				_id: uniqueIdValueForHashedShape,
+				updated_at: Dates.now('utc').unix_timestamp,
+			});
+
+			if (!currentHashedShapeAlreadyExists) {
+				await hashedShapesWritter.write(hashedShapeItem);
+				savedHashedShapeIds.add(uniqueIdValueForHashedShape);
+			}
+
+			/* * */
+			/* HASHED TRIP */
+
 			//
 			// Extract commonly used variables to avoid
 			// repeated lookups and calculations.
 
 			const sortedStopTimesData = stopTimesData?.sort((a, b) => a.stop_sequence - b.stop_sequence);
 
+			const firstStopTime = sortedStopTimesData[0];
 			const lastStopTime = sortedStopTimesData[sortedStopTimesData.length - 1];
-
-			/* * */
-			/* HASHED TRIP */
 
 			//
 			// Build the HashedTrip data, including formatting the path data by combining
@@ -219,59 +273,6 @@ export async function parsePlan(planData: Plan) {
 			}
 
 			/* * */
-			/* HASHED SHAPE */
-
-			//
-			// Transform the GTFS shape data into a GeoJSON LineString,
-			// and then encode it as a polyline string.
-
-			const sortedShapeData = shapeData.sort((a, b) => a.shape_pt_sequence - b.shape_pt_sequence);
-
-			const shapeAsGeoJsonGeometry = GeoJsonLineStringGeometrySchema.parse({
-				coordinates: sortedShapeData.map(point => [point.shape_pt_lon, point.shape_pt_lat]),
-				type: 'LineString',
-			});
-
-			const shapeAsEncodedPolyline = fromGeoJsonLineStringToEncodedPolyline(shapeAsGeoJsonGeometry);
-
-			//
-			// Calculate the extension in meters for the shape.
-
-			const firstWaypoint = sortedCreateHashedTripItems[0];
-			const lastWaypoint = sortedCreateHashedTripItems[sortedCreateHashedTripItems.length - 1];
-
-			const extensionScheduledInMeters = Math.round(toMetersFromKilometersOrMeters(lastWaypoint.shape_dist_traveled, lastWaypoint.shape_dist_traveled));
-
-			//
-			// Hash the object contents and check if it already exists in the database.
-			// The hash value is the _id of the HashedTrip item.
-
-			const createHashedShape = CreateHashedShapeSchema.parse({
-				agency_id: planData.agency_id,
-				extension: extensionScheduledInMeters,
-				shape_id: currentTrip.shape_id,
-				shape_polyline: shapeAsEncodedPolyline,
-			});
-
-			const uniqueIdValueForHashedShape = crypto
-				.createHash('sha256')
-				.update(JSON.stringify(createHashedShape))
-				.digest('hex');
-
-			const currentHashedShapeAlreadyExists = await labDb.operation.hashedShapes.count('DISTINCT(_id)', '_id = $1', { 1: uniqueIdValueForHashedShape });
-
-			const hashedShapeItem = HashedShapeSchema.parse({
-				...createHashedShape,
-				_id: uniqueIdValueForHashedShape,
-				updated_at: Dates.now('utc').unix_timestamp,
-			});
-
-			if (!currentHashedShapeAlreadyExists) {
-				await hashedShapesWritter.write(hashedShapeItem);
-				savedHashedShapeIds.add(uniqueIdValueForHashedShape);
-			}
-
-			/* * */
 			/* RIDES */
 
 			//
@@ -286,10 +287,10 @@ export async function parsePlan(planData: Plan) {
 
 				const uniqueIdValueForRide = `${planData._id}-${routeData.agency_id}-${calendarDate}-${currentTrip.trip_id}`;
 
-				const startTimeScheduledString = firstWaypoint.arrival_time;
+				const startTimeScheduledString = firstStopTime.arrival_time;
 				const startTimeScheduledUnixTimestamp = fromGtfsTimeAndGtfsDateToUnixTimestamp(startTimeScheduledString, calendarDate);
 
-				const endTimeScheduledString = lastWaypoint.arrival_time;
+				const endTimeScheduledString = lastStopTime.arrival_time;
 				const endTimeScheduledUnixTimestamp = fromGtfsTimeAndGtfsDateToUnixTimestamp(endTimeScheduledString, calendarDate);
 
 				//
@@ -368,6 +369,7 @@ export async function parsePlan(planData: Plan) {
 		// Flush the writers to save all the data to the database
 		// before changing the Plan status to 'success'.
 
+		await hashedShapesWritter.flush();
 		await hashedTripsWritter.flush();
 		await ridesWritter.flush();
 
