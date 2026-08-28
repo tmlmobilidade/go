@@ -1,6 +1,6 @@
 /* * */
 
-import { type SamTimelineAccent } from '@tmlmobilidade/types';
+import { type SamTimelineAccent } from '@tmlmobilidade/go-types-operation';
 
 /**
  * API / persisted timeline row shape (list batch or detail). Total analyses = successful + failed;
