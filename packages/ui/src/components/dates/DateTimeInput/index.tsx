@@ -110,23 +110,23 @@ export function DateTimeInput(props: DateTimeInputProps) {
 			setTimePickerValue(undefined);
 			return;
 		}
-		// Try to validate the provided unix timestamp
+		// Try to validate the provided unix milliseconds
 		try {
 			const validatedUnixMilliseconds = validateUnixMilliseconds(combinedValue);
-			// Transform unix timestamp into date and time strings
+			// Transform unix milliseconds into date and time strings
 			const dateString = Dates
 				.fromUnixMilliseconds(validatedUnixMilliseconds)
 				.setZone(timezone, 'offset_only')
 				.toFormat('yyyy-MM-dd');
 			setDateInputValue(dateString);
-			// Transform unix timestamp into time string
+			// Transform unix milliseconds into time string
 			const timeString = Dates
 				.fromUnixMilliseconds(validatedUnixMilliseconds)
 				.setZone(timezone, 'offset_only')
 				.toFormat('HH:mm:ss');
 			setTimePickerValue(timeString);
 		} catch (error) {
-			console.error('DateInput: Invalid unix timestamp provided in value prop', error);
+			console.error('DateInput: Invalid unix milliseconds provided in value prop', error);
 			setDateInputValue(undefined);
 			setTimePickerValue(undefined);
 		}
@@ -138,7 +138,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 		// If input values are null or undefined, call onChange with null
 		if (!dateInputValue || typeof dateInputValue !== 'string') return;
 		if (!timePickerValue || typeof timePickerValue !== 'string') return;
-		// Try to transform the value into a valid unix timestamp
+		// Try to transform the value into a valid unix milliseconds
 		// If it succeeds, call onChange with the validated timestamp
 		// If it fails, call onChange with null
 		try {
