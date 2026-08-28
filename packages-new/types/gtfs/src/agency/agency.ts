@@ -1,8 +1,9 @@
 /* * */
 
-import { GtfsTernarySchema } from '@/shared/ternary.js';
 import { LanguageTagSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { GtfsTernarySchema } from '../shared/ternary.js';
 
 /* * */
 

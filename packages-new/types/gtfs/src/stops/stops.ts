@@ -1,10 +1,11 @@
 /* * */
 
-import { GtfsTernarySchema } from '@/shared/ternary.js';
-import { GtfsLocationTypeSchema } from '@/stops/location-type.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { GtfsTernarySchema } from '../shared/ternary.js';
+import { GtfsLocationTypeSchema } from './location-type.js';
 
 /* * */
 

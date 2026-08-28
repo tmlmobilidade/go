@@ -1,8 +1,9 @@
 /* * */
 
-import { GtfsDateSchema } from '@/shared/gtfs-date.js';
 import { LanguageTagSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { GtfsDateSchema } from '../shared/gtfs-date.js';
 
 /* * */
 

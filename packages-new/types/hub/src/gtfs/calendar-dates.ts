@@ -6,7 +6,7 @@ import { z } from 'zod';
 /* * */
 
 export const HubGtfsExportCalendarDatesSchema = GtfsCalendarDatesSchema.extend({
-	exception_type: z.literal('1'),
+	exception_type: z.literal('1').default('1'),
 });
 
 /**

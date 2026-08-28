@@ -1,8 +1,9 @@
 /* * */
 
-import { GtfsBinarySchema } from '@/shared/binary.js';
-import { GtfsDateSchema } from '@/shared/gtfs-date.js';
 import { z } from 'zod';
+
+import { GtfsBinarySchema } from '../shared/binary.js';
+import { GtfsDateSchema } from '../shared/gtfs-date.js';
 
 /* * */
 

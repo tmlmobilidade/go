@@ -1,8 +1,9 @@
 /* * */
 
-import { GtfsExceptionTypeSchema } from '@/calendar-dates/exception-type.js';
-import { GtfsDateSchema } from '@/shared/gtfs-date.js';
 import { z } from 'zod';
+
+import { GtfsDateSchema } from '../shared/gtfs-date.js';
+import { GtfsExceptionTypeSchema } from './exception-type.js';
 
 /* * */
 

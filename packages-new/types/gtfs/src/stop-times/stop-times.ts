@@ -1,10 +1,11 @@
 /* * */
 
-import { GtfsBinarySchema } from '@/shared/binary.js';
-import { GtfsTimeSchema } from '@/shared/gtfs-time.js';
-import { GtfsPickupDropoffTypeSchema } from '@/shared/pickup-dropoff-type.js';
 import { NonNegativeFloatSchema, NonNegativeIntegerSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { GtfsBinarySchema } from '../shared/binary.js';
+import { GtfsTimeSchema } from '../shared/gtfs-time.js';
+import { GtfsPickupDropoffTypeSchema } from '../shared/pickup-dropoff-type.js';
 
 /* * */
 

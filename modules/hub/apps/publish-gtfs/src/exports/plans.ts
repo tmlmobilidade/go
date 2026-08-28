@@ -1,6 +1,6 @@
 /* * */
 
-import { type HubGtfsExportPlans, HubGtfsExportPlansSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubGtfsExportPlansInput, HubGtfsExportPlansSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/logger';
 
@@ -14,7 +14,7 @@ import { type ExportGtfsContext } from '../types/context.js';
 export async function exportPlansFile(context: ExportGtfsContext, planData: Plan) {
 	//
 
-	const parsedPlansRow: HubGtfsExportPlans = {
+	const parsedPlansRow: HubGtfsExportPlansInput = {
 		agency_id: planData.agency_id,
 		plan_end_date: planData.gtfs_feed_info.feed_end_date,
 		plan_id: planData._id,

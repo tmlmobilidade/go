@@ -1,8 +1,9 @@
 /* * */
 
-import { GtfsTernarySchema } from '@/shared/ternary.js';
-import { GtfsTripDirectionSchema } from '@/trips/direction.js';
 import { z } from 'zod';
+
+import { GtfsTernarySchema } from '../shared/ternary.js';
+import { GtfsTripDirectionSchema } from './direction.js';
 
 /* * */
 
