@@ -15,12 +15,12 @@ export function defaultManifest(): MetadataRoute.Manifest {
 		icons: [
 			{
 				sizes: '192x192',
-				src: '/assets/pwa/192x192.png',
+				src: 'assets/pwa/192x192.png',
 				type: 'image/png',
 			},
 			{
 				sizes: '512x512',
-				src: '/assets/pwa/512x512.png',
+				src: 'assets/pwa/512x512.png',
 				type: 'image/png',
 			},
 		],
