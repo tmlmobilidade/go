@@ -2,7 +2,7 @@
 
 /* * */
 
-import { type SamAnalysis } from '@tmlmobilidade/types';
+import { type SamAnalysis } from '@tmlmobilidade/go-types-operation';
 import { DateTime } from 'luxon';
 import { useMemo } from 'react';
 

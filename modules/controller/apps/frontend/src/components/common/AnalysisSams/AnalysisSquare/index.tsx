@@ -3,7 +3,7 @@
 /* * */
 
 // External imports
-import { type SamAnalysis } from '@tmlmobilidade/types';
+import { type SamAnalysis } from '@tmlmobilidade/go-types-operation';
 import { Tooltip } from '@tmlmobilidade/ui';
 
 // Style import
@@ -148,7 +148,6 @@ export interface AnalysisSquareRowProps {
  */
 export function AnalysisSquareRow({
 	analyses,
-	className,
 	filled,
 	fullWidth = false,
 	onClick,
