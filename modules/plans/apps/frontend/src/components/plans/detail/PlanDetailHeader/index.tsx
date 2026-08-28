@@ -9,6 +9,8 @@ import { AgencyTag, CloseButton, DeleteButton, HasPermission, IconButton, IdTag,
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
+import { usePlansAgenciesData } from '../../shared/use-plans-agencies-data';
+
 /* * */
 
 export function PlanDetailHeader() {
@@ -19,6 +21,8 @@ export function PlanDetailHeader() {
 
 	const router = useRouter();
 	const planDetailContext = usePlanDetailContext();
+
+	const { data: agenciesData } = usePlansAgenciesData();
 
 	//
 	// B. Handle actions
@@ -39,12 +43,7 @@ export function PlanDetailHeader() {
 
 			<AgencyTag
 				agencyId={planDetailContext.data.plan.agency_id}
-				request={{
-					permissions: {
-						actions: [PermissionCatalog.all.plans.actions.read],
-						scope: PermissionCatalog.all.plans.scope,
-					},
-				}}
+				data={agenciesData}
 				showShortName
 			/>
 
@@ -110,6 +109,4 @@ export function PlanDetailHeader() {
 
 		</Toolbar>
 	);
-
-	//
 }

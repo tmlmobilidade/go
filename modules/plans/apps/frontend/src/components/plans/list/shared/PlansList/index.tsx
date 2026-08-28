@@ -3,11 +3,11 @@
 import { PlansListFiltersBar } from '@/components/plans/list/filters/PlansListFiltersBar';
 import { PlansListHeader } from '@/components/plans/list/shared/PlansListHeader';
 import { PlansListCellFeedDates } from '@/components/plans/list/table/PlansListCellFeedDates';
+import { usePlansAgenciesData } from '@/components/plans/shared/use-plans-agencies-data';
 import { getPlanValidityStatus } from '@/utils/get-plan-validity-status';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Dates } from '@tmlmobilidade/dates';
 import { type PlanListItem } from '@tmlmobilidade/go-plans-pckg-types';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
@@ -27,6 +27,8 @@ export function PlansList() {
 
 	const plansData = usePlansListData();
 
+	const { data: agenciesData } = usePlansAgenciesData();
+
 	const columns: DataTableColumn<PlanListItem>[] = [
 		{
 			accessor: '_id',
@@ -40,12 +42,7 @@ export function PlansList() {
 				<AgencyTag
 					agencyId={item.agency_id}
 					copyOnClick={false}
-					request={{
-						permissions: {
-							actions: [PermissionCatalog.all.plans.actions.read],
-							scope: PermissionCatalog.all.plans.scope,
-						},
-					}}
+					data={agenciesData}
 					showShortName
 				/>
 			),
@@ -135,6 +132,4 @@ export function PlansList() {
 			/>
 		</Pane>
 	);
-
-	//
 }

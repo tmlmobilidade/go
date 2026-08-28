@@ -12,6 +12,8 @@ import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
+import { useGtfsValidationsAgenciesData } from '../../shared/use-gtfs-validations-agencies-data';
+
 /* * */
 
 export function ValidationsDetailHeader() {
@@ -23,6 +25,10 @@ export function ValidationsDetailHeader() {
 	const router = useRouter();
 	const meContext = useMeContext();
 	const validationsDetailContext = useValidationsDetailContext();
+
+	const { data: agenciesData } = useGtfsValidationsAgenciesData({
+		permissions: { actions: ['read'], scope: 'gtfs_validations' },
+	});
 
 	//
 	// B. Transform data
@@ -72,12 +78,7 @@ export function ValidationsDetailHeader() {
 			<IdTag id={validationsDetailContext.data.validation?._id} copyOnClick />
 			<AgencyTag
 				agencyId={validationsDetailContext.data.validation?.agency_id}
-				request={{
-					permissions: {
-						actions: [PermissionCatalog.all.gtfs_validations.actions.read],
-						scope: PermissionCatalog.all.gtfs_validations.scope,
-					},
-				}}
+				data={agenciesData}
 				showShortName
 			/>
 
@@ -125,6 +126,4 @@ export function ValidationsDetailHeader() {
 
 		</Toolbar>
 	);
-
-	//
 }

@@ -4,8 +4,9 @@ import { AgencyDisplay } from '@/components/common/AgencyDisplay';
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { PlansCreateContextProvider, usePlansCreateContext } from '@/contexts/PlansCreateForm.context';
 import { IconRosetteDiscountCheckFilled } from '@tabler/icons-react';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { AgencyTag, Button, closeModal, Divider, Grid, Label, MeContextProvider, openModal, ProcessingStatusDisplay, Section, ValidityStatusDisplay } from '@tmlmobilidade/ui';
+
+import { useGtfsValidationsAgenciesData } from '../../shared/use-gtfs-validations-agencies-data';
 
 /* * */
 
@@ -40,6 +41,10 @@ export default function ApprovePlanModal() {
 
 	const plansCreateContext = usePlansCreateContext();
 
+	const { data: agenciesData } = useGtfsValidationsAgenciesData({
+		permissions: { actions: ['read'], scope: 'gtfs_validations' },
+	});
+
 	//
 	// B. Render components
 
@@ -51,12 +56,7 @@ export default function ApprovePlanModal() {
 				<ValidityStatusDisplay value={plansCreateContext.data.validation.validity_status} />
 				<AgencyTag
 					agencyId={plansCreateContext.data.validation?.agency_id}
-					request={{
-						permissions: {
-							actions: [PermissionCatalog.all.gtfs_validations.actions.read],
-							scope: PermissionCatalog.all.gtfs_validations.scope,
-						},
-					}}
+					data={agenciesData}
 					showShortName
 				/>
 				<Label size="md" caps>{plansCreateContext.data.validation._id}</Label>
@@ -103,6 +103,4 @@ export default function ApprovePlanModal() {
 
 		</>
 	);
-
-	//
 }
