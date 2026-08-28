@@ -10,19 +10,19 @@ import { Timer } from '@tmlmobilidade/timer';
 
 const SYNC_DAYS_BACK = 90;
 
+//
+// Initialize Sentry
+
+try {
+	await initSentryNode();
+	Logger.startNodeLogs({ app: 'rides-locker', message: 'Sentry Rides Locker initialized', module: 'controller', severity: 'info' });
+} catch (error) {
+	Logger.error({ error, message: 'Error initializing Sentry Rides Locker' });
+}
+
 async function main() {
 	try {
 		//
-
-		//
-		// Initialize Sentry
-
-		try {
-			await initSentryNode();
-			Logger.startNodeLogs({ app: 'rides-locker', message: 'Sentry Rides Locker initialized', module: 'controller', severity: 'info' });
-		} catch (error) {
-			Logger.error({ error, message: 'Error initializing Sentry Rides Locker' });
-		}
 
 		//
 		// Initialize the logger
