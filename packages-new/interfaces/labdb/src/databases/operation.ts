@@ -133,6 +133,7 @@ export class OperationDatabase {
 	}
 
 	public async init() {
+		await this.hashedShapes.init();
 		await this.hashedTrips.init();
 		await this.rideAnalysisAtLeastOneVehicleEventOnFirstStop.init();
 		await this.rideAnalysisAtLeastOneVehicleEventOnLastStop.init();
