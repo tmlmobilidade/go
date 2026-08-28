@@ -20,5 +20,5 @@ import { z } from 'zod';
 export const NonNegativeIntegerSchema = z
 	.coerce
 	.number()
-	.int()
-	.nonnegative();
+	.transform(Math.round)
+	.pipe(z.number().int().nonnegative());
