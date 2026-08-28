@@ -1,15 +1,15 @@
 /* * */
 
-import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
 
 /* * */
 
 export const HubGtfsExportPlansSchema = z.object({
 	agency_id: z.string(),
-	plan_end_date: OperationalDateIntSchema,
+	plan_end_date: GtfsDateSchema,
 	plan_id: z.string(),
-	plan_start_date: OperationalDateIntSchema,
+	plan_start_date: GtfsDateSchema,
 });
 
 /**

@@ -1,17 +1,18 @@
 /* * */
 
-import { type ExportGtfsContext } from '@/types/context.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { HubGtfsExportAgency, HubGtfsExportAgencySchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
+import { type ExportGtfsContext } from '../types/context.js';
+
 /**
  * Export the agency.txt file.
- * @param agencyIds The list of agency IDs to export.
  * @param context The export context.
+ * @param agencyIds The list of agency IDs to export.
  */
-export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsContext) {
+export async function exportAgencyFile(context: ExportGtfsContext, agencyIds: string[]) {
 	//
 
 	const timer = new Timer();

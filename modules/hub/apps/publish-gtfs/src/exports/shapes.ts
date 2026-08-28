@@ -1,42 +1,34 @@
-/* eslint-disable perfectionist/sort-objects */
-/* eslint-disable perfectionist/sort-interfaces */
+/* * */
 
-import { type ExportGtfsContext } from '@/types/context.js';
 import { type GtfsStrictV29Shapes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type HubGtfsExportShapes, HubGtfsExportShapesSchema } from '@tmlmobilidade/go-types-hub';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
 import { getPublicShapeId } from '@tmlmobilidade/utils';
 
-/* * */
-
-export interface ExportedShapesRow {
-	shape_id: string
-	shape_pt_sequence: number
-	shape_dist_traveled: number
-	shape_pt_lat: number
-	shape_pt_lon: number
-}
+import { type ExportGtfsContext } from '../types/context.js';
 
 /**
  * Export the shapes.txt file.
+ * @param context The export context.
  * @param planData The plan data.
  * @param sqlTables The SQL tables.
- * @param context The export context.
  */
-export async function exportShapesFile(planData: Plan, sqlTables: GtfsSQLTables, context: ExportGtfsContext) {
+export async function exportShapesFile(context: ExportGtfsContext, planData: Plan, sqlTables: GtfsSQLTables) {
 	//
 
 	for await (const shapesItem of sqlTables.shapes.stream('ORDER BY shape_id, shape_pt_sequence ASC')) {
 		const shapeData: GtfsStrictV29Shapes = shapesItem;
-		const parsedShapesRow: ExportedShapesRow = {
-			shape_id: getPublicShapeId(planData._id, planData.agency_id, shapeData.shape_id),
-			shape_pt_sequence: shapeData.shape_pt_sequence,
+		const parsedShapesRow: HubGtfsExportShapes = {
 			shape_dist_traveled: shapeData.shape_dist_traveled,
+			shape_id: getPublicShapeId(planData._id, planData.agency_id, shapeData.shape_id),
 			shape_pt_lat: shapeData.shape_pt_lat,
 			shape_pt_lon: shapeData.shape_pt_lon,
+			shape_pt_sequence: shapeData.shape_pt_sequence,
 		};
-		await context.writers.shapes.write(parsedShapesRow);
+		const validatedShapesRow = HubGtfsExportShapesSchema.parse(parsedShapesRow);
+		await context.writers.shapes.write(validatedShapesRow);
 	}
 
 	await context.writers.shapes.flush();
