@@ -1,10 +1,10 @@
 'use client';
 
+import { useRidesAgenciesData } from '@/components/rides/shared/use-rides-agencies-data';
 import { RidesExportModalContextProvider, useRidesExportModalContext } from '@/contexts/RidesExport.context';
 import { IconFileDownload } from '@tabler/icons-react';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { Button, CloseButton, closeModal, DateTimeInput, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Spacer, Text, Toolbar, useDataAgencies } from '@tmlmobilidade/ui';
+import { Button, CloseButton, closeModal, DateTimeInput, Divider, ExportsContextProvider, Grid, Label, openModal, Section, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -43,7 +43,7 @@ export default function RidesExportModal() {
 	// A. Setup variables
 
 	const context = useRidesExportModalContext();
-	const { filtered: agenciesData } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST);
+	const { data: agenciesData } = useRidesAgenciesData();
 	const { t } = useTranslation();
 
 	//

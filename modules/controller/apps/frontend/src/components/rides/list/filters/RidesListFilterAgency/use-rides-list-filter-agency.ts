@@ -1,7 +1,6 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { useRidesAgenciesData } from '@/components/rides/shared/use-rides-agencies-data';
 import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 /**
@@ -11,10 +10,7 @@ import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobil
 export function useRidesListFilterAgency(): UseFilterStateListReturnType {
 	//
 
-	const { filteredIds: filteredAgencyIds, options: filteredAgencyOptions } = useDataAgencies(API_ROUTES.core.AGENCIES_LIST, {
-		actions: [PermissionCatalog.all.rides.actions.analysis_read],
-		scope: PermissionCatalog.all.rides.scope,
-	});
+	const { ids, options } = useRidesAgenciesData();
 
-	return useFilterStateList('agency', filteredAgencyIds, filteredAgencyOptions);
+	return useFilterStateList('agency', ids, options);
 }

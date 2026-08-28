@@ -1,7 +1,7 @@
 /* * */
 
 import { useSamsListContext } from '@/contexts/SamList.context';
-import { UnixTimestamp } from '@tmlmobilidade/types';
+import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { DateRangeFilter } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

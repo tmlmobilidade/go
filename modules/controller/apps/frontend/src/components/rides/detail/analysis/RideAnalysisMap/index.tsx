@@ -1,21 +1,22 @@
 'use client';
 
 import { ReplayEvents } from '@/components/common/ReplayEvents';
-import { useRidesDetailApexValidationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-validations-data';
-import { useRidesDetailHashedTripData } from '@/components/rides/detail/shared/use-rides-detail-hashed-trip-data';
-import { useRidesDetailRideData } from '@/components/rides/detail/shared/use-rides-detail-ride-data';
-import { useRidesDetailVehicleEventsData } from '@/components/rides/detail/shared/use-rides-detail-vehicle-events-data';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { getBaseGeoJsonFeature, getBaseGeoJsonFeatureCollection, getGeofenceOnPosition } from '@tmlmobilidade/geo';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { fromEncodedPolylineToGeoJsonLineString } from '@tmlmobilidade/go-utils-geo';
-import { Collapsible, Divider, getCssVariableValue, MapOverlayGeofences, MapOverlayObservedPath, MapOverlayScheduledPath, MapView, Section, Switch } from '@tmlmobilidade/ui';
-import { type MapOverlayGeofencesPolygonDataProps, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps } from '@tmlmobilidade/ui';
+import { Collapsible, Divider, getCssVariableValue, MapOverlayGeofences, type MapOverlayGeofencesPolygonDataProps, MapOverlayObservedPath, type MapOverlayObservedPathLineDataProps, type MapOverlayObservedPathPointsDataProps, MapOverlayScheduledPath, type MapOverlayScheduledPathLineDataProps, type MapOverlayScheduledPathPointsDataProps, MapView, Section, Switch } from '@tmlmobilidade/ui';
 import { type FeatureCollection, type LineString, type Point, type Polygon } from 'geojson';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
+
+import { useRidesDetailApexValidationsData } from '../..//shared/use-rides-detail-apex-validations-data';
+import { useRidesDetailHashedTripData } from '../..//shared/use-rides-detail-hashed-trip-data';
+import { useRidesDetailRideData } from '../..//shared/use-rides-detail-ride-data';
+import { useRidesDetailVehicleEventsData } from '../..//shared/use-rides-detail-vehicle-events-data';
+import { useRidesDetailHashedShapeData } from '../../shared/use-rides-detail-hashed-shape-data';
 
 /* * */
 
@@ -27,6 +28,7 @@ export function RideAnalysisMap() {
 
 	const { data: rideData } = useRidesDetailRideData();
 	const { data: hashedTripData } = useRidesDetailHashedTripData();
+	const { data: hashedShapeData } = useRidesDetailHashedShapeData();
 	const { data: apexValidationsData } = useRidesDetailApexValidationsData();
 	const { data: vehicleEventsData } = useRidesDetailVehicleEventsData();
 
@@ -142,16 +144,16 @@ export function RideAnalysisMap() {
 		// Setup an empty feature collection
 		const featureCollection = getBaseGeoJsonFeatureCollection<LineString, MapOverlayScheduledPathLineDataProps>();
 		// If no hashed shape data, return the empty feature collection
-		if (!rideData?.shape_polyline) return featureCollection;
+		if (!hashedShapeData?.shape_polyline) return featureCollection;
 		// Decode the polyline
-		const decodedPolyline = fromEncodedPolylineToGeoJsonLineString(rideData.shape_polyline);
+		const decodedPolyline = fromEncodedPolylineToGeoJsonLineString(hashedShapeData.shape_polyline);
 		// Build a feature of the decoded polyline
 		const feature = getBaseGeoJsonFeature<LineString, MapOverlayScheduledPathLineDataProps>('LineString');
 		feature.geometry = decodedPolyline;
 		feature.properties.id = rideData._id;
 		featureCollection.features.push(feature);
 		return featureCollection;
-	}, [rideData?._id, rideData?.shape_polyline]);
+	}, [rideData?._id, hashedShapeData?.shape_polyline]);
 
 	//
 
