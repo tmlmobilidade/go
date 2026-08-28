@@ -9,11 +9,20 @@ import { AgenciesDetailHeader } from '@/components/agencies/detail/AgenciesDetai
 import { AgenciesDetailOpenData } from '@/components/agencies/detail/AgenciesDetailOpenData';
 import { Pane } from '@tmlmobilidade/ui';
 
+import { useAgenciesDetailData } from '../use-agencies-detail-data';
+
 /* * */
 
 export function AgenciesDetail() {
+	//
+
+	const { isLoading } = useAgenciesDetailData();
+
 	return (
-		<Pane header={[<AgenciesDetailHeader key="header" />]}>
+		<Pane
+			header={[<AgenciesDetailHeader key="header" />]}
+			isLoading={isLoading}
+		>
 			<AgenciesDetailBasicInfo />
 			<AgenciesDetailFinancials />
 			<AgenciesDetailContacts />

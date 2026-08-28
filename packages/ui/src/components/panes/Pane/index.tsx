@@ -2,6 +2,7 @@
 
 import styles from './styles.module.css';
 
+import { LoadingSection } from '../../../loaders';
 import { Surface } from '../../layout/Surface';
 
 /* * */
@@ -29,11 +30,25 @@ interface PaneProps {
 	 */
 	header?: React.ReactNode[]
 
+	/**
+	 * Whether the pane is loading.
+	 * This will be used to display a loading spinner in the pane.
+	 */
+	isLoading?: boolean
+
 }
 
 /* * */
 
-export function Pane({ children, footer, header }: PaneProps) {
+export function Pane({ children, footer, header, isLoading }: PaneProps) {
+	//
+
+	if (isLoading) {
+		return (
+			<LoadingSection size="lg" fullHeight />
+		);
+	}
+
 	return (
 		<Surface height="full">
 

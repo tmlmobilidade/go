@@ -68,7 +68,7 @@ export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultVa
 		form.reset(apiData, { keepDirtyValues: true });
 		// eslint-disable-next-line no-console
 		console.info(`Form initialized with values from API.`);
-	}, [apiData, form, isDirty]);
+	}, [apiData, form]);
 
 	//
 	// Prevent navigation if form is dirty
