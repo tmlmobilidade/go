@@ -5,7 +5,9 @@ import { z } from 'zod';
 
 /* * */
 
-export const HubGtfsExportAgencySchema = GtfsAgencySchema;
+export const HubGtfsExportAgencySchema = GtfsAgencySchema.extend({
+	agency_code: z.string(),
+});
 
 /**
  * Representation of a GTFS agency for the Hub GTFS export.

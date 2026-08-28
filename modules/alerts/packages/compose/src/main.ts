@@ -3,7 +3,7 @@
 import { type AlertsComposeRequest, AlertsComposeRequestSchema, type AlertsComposeResponse } from '@tmlmobilidade/go-alerts-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { OCIGenerativeAIProvider } from '@tmlmobilidade/go-providers-ai';
-import { I18nCodeValues } from '@tmlmobilidade/go-types-shared';
+import { LanguageTagValues } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { addToPromptContext, getFinalPrompt } from './context/index.js';
@@ -67,7 +67,7 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 	// Iterate on the available language codes to generate
 	// a title and description for each language
 
-	for (const i18nCode of I18nCodeValues.filter(code => code === 'pt')) {
+	for (const i18nCode of LanguageTagValues.filter(code => code === 'pt')) {
 		//
 
 		//

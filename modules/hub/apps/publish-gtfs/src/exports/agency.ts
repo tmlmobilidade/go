@@ -1,25 +1,10 @@
-/* eslint-disable perfectionist/sort-objects */
-/* eslint-disable perfectionist/sort-interfaces */
+/* * */
 
 import { type ExportGtfsContext } from '@/types/context.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { HubGtfsExportAgency, HubGtfsExportAgencySchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-
-/* * */
-
-export interface ExportedAgencyRow {
-	agency_id: string
-	agency_code: string
-	agency_name: string
-	agency_email: string
-	agency_phone: string
-	agency_url: string
-	agency_fare_url: string
-	agency_lang: string
-	agency_timezone: string
-	cemv_support: 0 | 1 | 2
-}
 
 /**
  * Export the agency.txt file.
@@ -39,19 +24,20 @@ export async function exportAgencyFile(agencyIds: string[], context: ExportGtfsC
 	const foundAgenciesData = await goDb.core.agencies.findMany({ _id: { $in: agencyIds } });
 
 	for (const agencyData of foundAgenciesData) {
-		const parsedAgencyRow: ExportedAgencyRow = {
-			agency_id: agencyData._id,
+		const parsedAgencyRow: HubGtfsExportAgency = {
 			agency_code: agencyData.code,
-			agency_name: agencyData.public_name || agencyData.name,
 			agency_email: agencyData.public_email,
-			agency_phone: agencyData.phone,
-			agency_url: agencyData.website_url,
 			agency_fare_url: agencyData.fare_url,
-			agency_lang: 'pt',
+			agency_id: agencyData._id,
+			agency_lang: agencyData.primary_language ?? 'pt',
+			agency_name: agencyData.public_name || agencyData.name,
+			agency_phone: agencyData.phone,
 			agency_timezone: agencyData.timezone,
-			cemv_support: 0,
+			agency_url: agencyData.website_url,
+			cemv_support: '0',
 		};
-		await context.writers.agency.write(parsedAgencyRow);
+		const validatedAgencyRow = HubGtfsExportAgencySchema.parse(parsedAgencyRow);
+		await context.writers.agency.write(validatedAgencyRow);
 	}
 
 	await context.writers.agency.flush();

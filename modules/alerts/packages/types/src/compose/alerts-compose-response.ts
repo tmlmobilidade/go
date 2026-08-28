@@ -1,11 +1,11 @@
 /* * */
 
-import { I18nCodeSchema } from '@tmlmobilidade/go-types-shared';
+import { LanguageTagSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const AlertsComposeResponseSchema = z.record(I18nCodeSchema, z.object({
+export const AlertsComposeResponseSchema = z.record(LanguageTagSchema, z.object({
 	description: z.string(),
 	title: z.string(),
 }));

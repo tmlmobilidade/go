@@ -1,15 +1,12 @@
 /* * */
 
-import { type I18nCode } from '@tmlmobilidade/go-types-shared';
+import { type LanguageTag } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Initial part of the prompt for generating title and description together.
  */
-export const terminationPrompt: Record<I18nCode, string> = {
-	en: `
-		Generate the requested JSON object now.
-	`,
-	pt: `
-		Gera agora o objeto JSON solicitado.
-	`,
+export const terminationPrompt: Record<LanguageTag, string> = {
+	en: 'Generate the requested JSON object now.',
+	es: 'Genera ahora el objeto JSON solicitado.',
+	pt: 'Gera agora o objeto JSON solicitado.',
 };

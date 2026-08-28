@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema, OperationalDateIntSchema, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, LanguageTagSchema, OperationalDateIntSchema, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { AgencyAlertsMapSchema } from './alerts-map.js';
@@ -22,6 +22,7 @@ export const AgencySchema = BaseDocumentSchema.extend({
 	open_data: AgencyOpenDataSchema,
 	operation_start_date: OperationalDateIntSchema.nullable().default(null),
 	phone: z.string(),
+	primary_language: LanguageTagSchema.default('pt'),
 	pta_name: z.string().default(''),
 	public_email: z.string().email(),
 	public_name: z.string(),

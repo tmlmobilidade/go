@@ -1,16 +1,22 @@
 /* * */
 
-import { type I18nCode } from '@tmlmobilidade/go-types-shared';
+import { type LanguageTag } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Initial part of the prompt for generating title and description together.
  */
-export const initPrompt: Record<I18nCode, string> = {
+export const initPrompt: Record<LanguageTag, string> = {
 	en: `
 		You generate short Service Alert titles and descriptions for a public transport platform
 		used by multiple operators (bus, metro, etc.). Use the operator label provided in the context.
 		Write in British English. Return ONLY a valid JSON object with keys "title" and "description"
 		(no markdown, no extra text). Title and description must be consistent.
+	`,
+	es: `
+		Tu generas títulos y descripciones cortas de alertas de servicio público para una plataforma de transporte público
+		utilizada por múltiples operadores (autobuses, metro, etc.). Usa la etiqueta del operador proporcionada en el contexto.
+		Escribe en español. Devuelve UN ÚNICO objeto JSON válido con claves "title" y "description"
+		(no markdown, no texto adicional). El título y la descripción deben ser consistentes.
 	`,
 	pt: `
 		Missão

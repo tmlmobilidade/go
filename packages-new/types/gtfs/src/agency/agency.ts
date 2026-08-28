@@ -1,6 +1,7 @@
 /* * */
 
 import { GtfsTernarySchema } from '@/shared/ternary.js';
+import { LanguageTagSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -9,7 +10,7 @@ export const GtfsAgencySchema = z.object({
 	agency_email: z.string().optional(),
 	agency_fare_url: z.string().optional(),
 	agency_id: z.string(),
-	agency_lang: z.string().optional(),
+	agency_lang: LanguageTagSchema.optional(),
 	agency_name: z.string(),
 	agency_phone: z.string().optional(),
 	agency_timezone: z.string(),
