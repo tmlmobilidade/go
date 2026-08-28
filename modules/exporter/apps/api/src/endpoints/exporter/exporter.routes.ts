@@ -30,7 +30,7 @@ server.register(
 		);
 
 		instance.post(
-			'/',
+			'/create',
 			{ preHandler: authorizationMiddleware() },
 			createExport,
 		);

@@ -1,5 +1,4 @@
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
@@ -17,7 +16,10 @@ export async function downloadExport(request: FastifyRequest<{ Params: { id: str
 	const fileExport = await goDb.core.exports.findById(request.params.id);
 
 	if (!fileExport) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File export not found');
+		return sendErrorApiResponse(reply, {
+			error: 'File export not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -26,7 +28,10 @@ export async function downloadExport(request: FastifyRequest<{ Params: { id: str
 	const fileData = await storageProvider.findById(fileExport.file_id);
 
 	if (!fileData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'File not found');
+		return sendErrorApiResponse(reply, {
+			error: 'File not found',
+			status_code: '404',
+		});
 	}
 
 	//
@@ -35,7 +40,10 @@ export async function downloadExport(request: FastifyRequest<{ Params: { id: str
 	const storageResponse = await fetch(fileData.url);
 
 	if (!storageResponse.ok || !storageResponse.body) {
-		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Could not fetch file');
+		return sendErrorApiResponse(reply, {
+			error: 'Could not fetch file',
+			status_code: '500',
+		});
 	}
 
 	//

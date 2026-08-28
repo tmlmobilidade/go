@@ -1,4 +1,4 @@
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateFileExportDto, type FileExport, type FileExportType } from '@tmlmobilidade/go-types-downloads';
 
@@ -18,6 +18,13 @@ export async function createExport(request: FastifyRequest<{ Body: CreateFileExp
 		created_by: request.me._id,
 		updated_by: request.me._id,
 	});
+
+	if (!fileExport) {
+		return sendErrorApiResponse(reply, {
+			error: 'Failed to create file export',
+			status_code: '500',
+		});
+	}
 
 	//
 	// Return the file export
