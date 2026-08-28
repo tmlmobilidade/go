@@ -1,6 +1,8 @@
 /* * */
 
-import { ExporterController } from '@/endpoints/exporter/exporter.controller.js';
+import { createExport } from '@/endpoints/exporter/controller/create-export.js';
+import { downloadExport } from '@/endpoints/exporter/controller/download-export.js';
+import { listExports } from '@/endpoints/exporter/controller/list-export.js';
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 /* * */
@@ -18,19 +20,19 @@ server.register(
 		instance.post(
 			'/list',
 			{ preHandler: authorizationMiddleware() },
-			ExporterController.getAll,
+			listExports,
 		);
 
 		instance.get(
 			'/:id/download',
 			{ preHandler: authorizationMiddleware() },
-			ExporterController.download,
+			downloadExport,
 		);
 
 		instance.post(
 			'/',
 			{ preHandler: authorizationMiddleware() },
-			ExporterController.create,
+			createExport,
 		);
 
 		next();
