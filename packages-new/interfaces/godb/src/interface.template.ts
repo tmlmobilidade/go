@@ -8,7 +8,7 @@ import { UnixTimestamp } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import z from 'zod';
+import { z } from 'zod';
 
 /* * */
 

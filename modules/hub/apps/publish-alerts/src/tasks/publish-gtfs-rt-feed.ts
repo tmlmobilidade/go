@@ -1,12 +1,12 @@
 /* * */
 
-import { transformAlertIntoGtfsRtEntity } from '@/transform/gtfs-rt/main.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { type GtfsRtFeedEntity, type GtfsRtFeedMessage } from '@tmlmobilidade/types';
+
+import { transformAlertIntoGtfsRtEntity } from '../transform/gtfs-rt/main.js';
 
 /* * */
 
@@ -24,12 +24,7 @@ export async function publishGtfsRtFeed() {
 		{
 			$and: [
 				{
-					$or: [
-						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
-						{ publish_end_date: null },
-						{ publish_end_date: undefined },
-						{ publish_end_date: { $exists: false } },
-					],
+					publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp },
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
 					publish_status: 'published',
 				},

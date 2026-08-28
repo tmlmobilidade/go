@@ -1,8 +1,9 @@
 /* * */
 
-import { GtfsRtScheduleRelationshipSchema } from '@/shared/schedule-relationship.js';
 import { GtfsDateSchema, GtfsTimeSchema } from '@tmlmobilidade/go-types-gtfs';
 import { z } from 'zod';
+
+import { GtfsRtScheduleRelationshipSchema } from './schedule-relationship.js';
 
 /* * */
 
