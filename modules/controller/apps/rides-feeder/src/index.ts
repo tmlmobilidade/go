@@ -37,10 +37,13 @@ async function main() {
 
 		const plansCollection = await goDb.operation.plans.getCollection();
 
-		const allPlansData = await goDb.operation.plans.findMany({
-			'$expr': { $ne: ['$hash', '$apps.controller.last_hash'] },
-			'apps.controller.status': { $in: ['waiting', 'processing'] },
-		});
+		const allPlansData = await goDb.operation.plans.findMany(
+			{
+				'$expr': { $ne: ['$hash', '$apps.controller.last_hash'] },
+				'apps.controller.status': { $in: ['waiting', 'processing'] },
+			},
+			{ sort: { 'gtfs_feed_info.feed_start_date': -1 } },
+		);
 
 		if (allPlansData.length === 0) return Logger.terminate('No Plans found. Exiting...');
 
