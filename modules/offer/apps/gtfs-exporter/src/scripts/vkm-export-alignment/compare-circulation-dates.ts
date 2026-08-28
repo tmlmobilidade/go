@@ -21,7 +21,7 @@
  *   ... --pattern 4432_0_1 --csv /tmp/missing.csv
  */
 
-import { buildOperationalDateRange, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/go-utils-dates';
+import { buildOperationalDateRange, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Pattern } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';

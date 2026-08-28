@@ -1,6 +1,6 @@
 /* * */
 
-import { calendarWeekday, Dates } from '@tmlmobilidade/go-utils-dates';
+import { calendarWeekday, Dates } from '@tmlmobilidade/dates';
 import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 

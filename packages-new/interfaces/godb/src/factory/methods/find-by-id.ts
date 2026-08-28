@@ -13,5 +13,9 @@ import { type MinimalOptions } from '../types/minimal-options.type.js';
  * @returns A promise that resolves to the matching document or null if not found.
  */
 export async function findById<T extends Document>(context: GoDbCollectionContext<T>, _id: string, options?: MinimalOptions): Promise<null | T> {
-	return await context.collection.findOne<T>({ _id: { $eq: _id as Filter<T>['_id'] } }, { session: options?.session });
+	return await context.collection.findOne<T>({ _id: { $eq: _id as Filter<T>['_id'] } }, {
+		projection: options?.projection,
+		session: options?.session,
+		sort: options?.sort,
+	});
 }
