@@ -1,16 +1,14 @@
 /* * */
 
 import { Files } from '@tmlmobilidade/files';
+import { getQualifiedRouteId } from '@tmlmobilidade/go-hub-pckg-utils';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { GtfsDateSchema } from '@tmlmobilidade/go-types-gtfs';
-import { type GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { type GtfsDate, GtfsDateSchema, type GtfsRoutes } from '@tmlmobilidade/go-types-gtfs';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/import-gtfs';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
-import { getPublicRouteId } from '@tmlmobilidade/utils';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { ZipFile } from 'yazl';
@@ -73,12 +71,12 @@ export async function main() {
 	//
 	// Setup the necessary variables for the export process.
 
-	let farthestDateFound: OperationalDateInt;
+	let farthestDateFound: GtfsDate;
 
 	const referencedAgencyIds = new Set<string>();
-	const routesMarkedForFinalExport: Record<string, GtfsStrictV29Routes> = {};
+	const routesMarkedForFinalExport: Record<string, GtfsRoutes> = {};
 
-	const currentOperationalDate = Dates.now('Europe/Lisbon').operational_date_int;
+	const currentDate = GtfsDateSchema.parse(Dates.now('Europe/Lisbon').toFormat('yyyyMMdd'));
 
 	//
 	// Retrieve all Plans from the database
@@ -169,7 +167,7 @@ export async function main() {
 				},
 			};
 
-			if (currentOperationalDate >= OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_start_date) && currentOperationalDate <= OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date)) {
+			if (currentDate >= planData.gtfs_feed_info.feed_start_date && currentDate <= planData.gtfs_feed_info.feed_end_date) {
 				// If the plan is currently active, set the start date
 				// to a far past date to be able to provide a full year of data.
 				importConfig.time_range.date_range.start = GtfsDateSchema.parse('20010101');
@@ -194,10 +192,10 @@ export async function main() {
 
 			const exportTimer = new Timer();
 
-			await exportTripsFile(planData, importedGtfsSql, context);
-			await exportStopTimesFile(planData, importedGtfsSql, context);
-			await exportShapesFile(planData, importedGtfsSql, context);
-			await exportCalendarDatesFile(planData, importedGtfsSql, context);
+			await exportTripsFile(context, planData, importedGtfsSql);
+			await exportStopTimesFile(context, planData, importedGtfsSql);
+			await exportShapesFile(context, planData, importedGtfsSql);
+			await exportCalendarDatesFile(context, planData, importedGtfsSql);
 
 			Logger.success(`Exported plan ${planData._id} files in ${exportTimer.get()}.`);
 
@@ -213,8 +211,8 @@ export async function main() {
 			// This block only determines which routes should be exported; no files are written here.
 
 			for await (const routeItem of importedGtfsSql.routes.stream()) {
-				const routeData: GtfsStrictV29Routes = routeItem;
-				const publicRouteId = getPublicRouteId(planData.agency_id, routeData.route_id);
+				const routeData: GtfsRoutes = routeItem;
+				const publicRouteId = getQualifiedRouteId(planData.agency_id, routeData.route_id);
 				if (thisIsAnActivePlan || !routesMarkedForFinalExport[publicRouteId]) {
 					routesMarkedForFinalExport[publicRouteId] = { ...routeData, agency_id: planData.agency_id };
 				}
@@ -228,14 +226,14 @@ export async function main() {
 
 			referencedAgencyIds.add(planData.agency_id);
 
-			farthestDateFound = !farthestDateFound || OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date) > farthestDateFound
-				? OperationalDateIntSchema.parse(planData.gtfs_feed_info.feed_end_date)
+			farthestDateFound = !farthestDateFound || planData.gtfs_feed_info.feed_end_date > farthestDateFound
+				? planData.gtfs_feed_info.feed_end_date
 				: farthestDateFound;
 
 			//
 			// Finally, write the plan entry into the plans.txt file.
 
-			await exportPlansFile(planData, context);
+			await exportPlansFile(context, planData);
 
 			//
 			// Mark the plan as complete in the database.
@@ -264,10 +262,10 @@ export async function main() {
 	//
 	// Export GTFS files from the merged dataset
 
-	await exportRoutesFile(Object.values(routesMarkedForFinalExport), context);
-	await exportStopsFile(Array.from(referencedAgencyIds), context);
-	await exportAgencyFile(Array.from(referencedAgencyIds), context);
-	await exportFeedInfoFile(currentOperationalDate, farthestDateFound, context);
+	await exportRoutesFile(context, Object.values(routesMarkedForFinalExport));
+	await exportStopsFile(context, Array.from(referencedAgencyIds));
+	await exportAgencyFile(context, Array.from(referencedAgencyIds));
+	await exportFeedInfoFile(context, currentDate, farthestDateFound);
 
 	//
 	// Zip the exported GTFS files into a single archive.

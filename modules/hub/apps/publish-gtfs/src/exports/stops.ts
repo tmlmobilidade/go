@@ -3,7 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
-import { type HubGtfsExportStops, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-hub';
+import { type HubGtfsExportStopsInput, HubGtfsExportStopsSchema } from '@tmlmobilidade/go-types-hub';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
 
@@ -11,7 +11,7 @@ import { type ExportGtfsContext } from '../types/context.js';
 
 /* * */
 
-export async function exportStopsFile(agencyIds: string[], context: ExportGtfsContext) {
+export async function exportStopsFile(context: ExportGtfsContext, agencyIds: string[]) {
 	//
 
 	const timer = new Timer();
@@ -70,7 +70,7 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 		const matchingParishName = allParishesMap.get(stopData.parish_id);
 		const matchingLocalityName = allLocalitiesMap.get(stopData.locality_id);
 
-		const parsedStopsRow: HubGtfsExportStops = {
+		const parsedStopsRow: HubGtfsExportStopsInput = {
 			district_id: stopData.district_id,
 			district_name: matchingDistrictName,
 			flags: formattedStopFlagsValue.join('|'),
@@ -81,7 +81,6 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 			location_type: '0',
 			municipality_id: stopData.municipality_id,
 			municipality_name: matchingMunicipalityName,
-			parent_station: '',
 			parish_id: stopData.parish_id,
 			parish_name: matchingParishName,
 			platform_code: '',
