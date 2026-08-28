@@ -51,6 +51,7 @@ export const UnixSecondsSchema = z
 export function validateUnixSeconds(value: number | string): UnixSeconds {
 	const valueAsNumber = Number(value);
 	if (Number.isNaN(valueAsNumber)) throw new Error(`Invalid value '${value}', expected a number in seconds but received a NaN`);
+	if (valueAsNumber <= 0) throw new Error(`Invalid value '${value}', expected a number in seconds but received a number less than or equal to 0`);
 	if (valueAsNumber < 1e9) throw new Error(`Invalid value '${value}', expected a number in seconds but received a number smaller than 1e9`);
 	const parsedDate = DateTime.fromSeconds(valueAsNumber);
 	if (!parsedDate.isValid) throw new Error(`Invalid UnixSeconds value '${value}', explanation: ${parsedDate.invalidExplanation}`);

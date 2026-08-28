@@ -51,6 +51,7 @@ export const UnixTimestampSchema = z
 export function validateUnixTimestamp(value: number | string): UnixTimestamp {
 	const valueAsNumber = Number(value);
 	if (Number.isNaN(valueAsNumber)) throw new Error(`Invalid value '${value}', expected a number in milliseconds but received a NaN`);
+	if (valueAsNumber <= 0) throw new Error(`Invalid value '${value}', expected a number in milliseconds but received a number less than or equal to 0`);
 	if (valueAsNumber < 1e10) throw new Error(`Invalid value '${value}', expected a number in milliseconds but received a number smaller than 1e10`);
 	const parsedDate = DateTime.fromMillis(valueAsNumber);
 	if (!parsedDate.isValid) throw new Error(`Invalid UnixTimestamp value '${value}', explanation: ${parsedDate.invalidExplanation}`);
