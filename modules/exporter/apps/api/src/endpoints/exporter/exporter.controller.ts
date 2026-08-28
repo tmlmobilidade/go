@@ -1,24 +1,23 @@
 /* * */
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type CreateFileExportDto, type FileExport } from '@tmlmobilidade/go-types-downloads';
+import { type CreateFileExportDto, type FileExport, type FileExportType } from '@tmlmobilidade/go-types-downloads';
 
 /* * */
 
 export class ExporterController {
 	//
 	/**
-	 * Returns an Agency by ID.
+	 * Creates a file export.
 	 * @param request The request object
 	 * @param reply The reply object
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static async create(request: FastifyRequest<{ Body: CreateFileExportDto<any> }>, reply: FastifyReply<FileExport>) {
+	static async create(request: FastifyRequest<{ Body: CreateFileExportDto<{ properties: Record<string, unknown>, type: FileExportType }> }>, reply: FastifyReply<FileExport>) {
 		const fileExportData = await goDb.core.exports.insertOne({ ...request.body, created_by: request.me._id, updated_by: request.me._id });
-		return reply.send({ data: fileExportData, error: null, statusCode: HTTP_STATUS.CREATED });
+		return sendSuccessApiResponse(reply, fileExportData, { status_code: '201' });
 	}
 
 	/**
@@ -54,7 +53,7 @@ export class ExporterController {
 	}
 
 	/**
-	 * Returns all FileExport sorted by ID.
+	 * Returns the current user's file exports, newest first.
 	 * @param request The request object
 	 * @param reply The reply object
 	 */
@@ -63,8 +62,8 @@ export class ExporterController {
 			created_by: request.me._id,
 		};
 
-		const allFileExport = await goDb.core.exports.findMany(filters, { sort: { created_at: -1 } });
-		return reply.send({ data: allFileExport, error: null, statusCode: HTTP_STATUS.OK });
+		const fileExports = await goDb.core.exports.findMany(filters, { sort: { created_at: -1 } });
+		return sendSuccessApiResponse(reply, fileExports);
 	}
 
 	//

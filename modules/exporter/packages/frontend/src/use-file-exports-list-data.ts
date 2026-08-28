@@ -47,14 +47,21 @@ export function useFileExportsListData(): UseFileExportsListDataReturnType {
 	});
 
 	//
-	// B. Return data
+	// B. Transform data
+
+	const fileExports = useMemo(() => {
+		return [...(data?.data ?? [])].sort((a, b) => Number(b.created_at) - Number(a.created_at));
+	}, [data?.data]);
+
+	//
+	// C. Return data
 
 	return useMemo(() => ({
-		data: data?.data ?? [],
+		data: fileExports,
 		error: data?.error ?? (error instanceof Error ? error.message : null),
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp ?? null,
-	}), [data, error, isLoading, isValidating, mutate]);
+	}), [data?.error, data?.timestamp, error, fileExports, isLoading, isValidating, mutate]);
 }
