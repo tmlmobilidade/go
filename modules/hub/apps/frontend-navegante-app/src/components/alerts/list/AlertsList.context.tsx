@@ -170,7 +170,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			if (!alert.active_period_start_date) return result;
 
 			const alertStartDate = Dates
-				.fromUnixTimestamp(alert.active_period_start_date)
+				.fromUnixMilliseconds(alert.active_period_start_date)
 				.setZone('Europe/Lisbon', 'offset_only');
 			const alertStartDateString = alertStartDate.toFormat('yyyyMMdd');
 			const existingGroup = result.find(group => group.value === alertStartDateString);

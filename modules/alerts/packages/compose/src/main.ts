@@ -114,12 +114,12 @@ export async function composeAlertTitleAndDescription(request: AlertsComposeRequ
 		// Add the active period prompt
 
 		const activePeriodStart = Dates
-			.fromUnixTimestamp(validatedRequestData.active_period_start_date)
+			.fromUnixMilliseconds(validatedRequestData.active_period_start_date)
 			.setZone(foundAgency.timezone, 'offset_only')
 			.toFormat('yyyy-MM-dd HH:mm');
 
 		const activePeriodEnd = Dates
-			.fromUnixTimestamp(validatedRequestData.active_period_end_date)
+			.fromUnixMilliseconds(validatedRequestData.active_period_end_date)
 			.toFormat('yyyy-MM-dd HH:mm');
 
 		addToPromptContext(promptContext, activePeriodPrompt[i18nCode](activePeriodStart, activePeriodEnd));

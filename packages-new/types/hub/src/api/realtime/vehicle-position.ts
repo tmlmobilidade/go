@@ -3,7 +3,7 @@
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { GtfsTripDirectionSchema } from '@tmlmobilidade/go-types-gtfs';
 import { GtfsRtVehicleStopStatusSchema } from '@tmlmobilidade/go-types-gtfs-rt';
-import { CalendarDateSchema, NonNegativeIntegerSchema, OperationalDateIntSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { CalendarDateSchema, NonNegativeIntegerSchema, OperationalDateIntSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -13,14 +13,14 @@ export const HubVehiclePositionSchema = z.object({
 	agency_id: z.string(),
 	bearing: NonNegativeIntegerSchema.nullable().default(null),
 	calendar_date: CalendarDateSchema,
-	created_at: UnixTimestampSchema,
+	created_at: UnixMillisecondsSchema,
 	current_status: GtfsRtVehicleStopStatusSchema.nullable().default(null),
 	direction_id: GtfsTripDirectionSchema.nullable().default(null),
 	geohash: z.string().nullable().default(null),
 	latitude: LatitudeSchema,
 	longitude: LongitudeSchema,
 	operational_date: OperationalDateIntSchema,
-	received_at: UnixTimestampSchema,
+	received_at: UnixMillisecondsSchema,
 	ride_id: z.string().nullable().default(null),
 	route_id: z.string().nullable().default(null),
 	route_short_name: z.string().nullable().default(null),

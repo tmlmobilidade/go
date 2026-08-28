@@ -2,7 +2,7 @@
 
 import { SamAnalysisSchema } from '@/sams/sam-analysis.js';
 import { SamTimelineSummarySchema } from '@/sams/sam-timeline-summary.js';
-import { BaseDocumentSchema, SystemStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, SystemStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -15,8 +15,8 @@ export const SamSchema = BaseDocumentSchema
 		analysis: z.array(SamAnalysisSchema).default([]),
 		latest_apex_version: z.string().nullable(),
 		remarks: z.string().nullable().default(null),
-		seen_first_at: UnixTimestampSchema.nullable(),
-		seen_last_at: UnixTimestampSchema.nullable(),
+		seen_first_at: UnixMillisecondsSchema.nullable(),
+		seen_last_at: UnixMillisecondsSchema.nullable(),
 		system_status: SystemStatusSchema.default('waiting'),
 		timeline_summary: SamTimelineSummarySchema.default({ months: [] }).optional().nullable(),
 		transactions_expected: z.number().nullable(),

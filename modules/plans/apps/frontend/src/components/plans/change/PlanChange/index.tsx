@@ -3,7 +3,7 @@
 import { usePlanChangeContext } from '@/components/plans/change/PlanChangeForm.context';
 import { PlanChangeHeader } from '@/components/plans/change/PlanChangeHeader';
 import { IconCheck } from '@tabler/icons-react';
-import { displayUnixTimestamp, Grid, IdTag, Label, Pane, Section, Select, type SelectProps, StandardFormController } from '@tmlmobilidade/ui';
+import { displayUnixMilliseconds, Grid, IdTag, Label, Pane, Section, Select, type SelectProps, StandardFormController } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
@@ -22,7 +22,7 @@ export function PlanChange() {
 	const availableValidationsOptions = useMemo(() => {
 		return changePlanContext.data.availableValidations.map(item => ({
 			icon: <IdTag id={item._id} />,
-			label: `Submetida a ${displayUnixTimestamp(item.created_at, 'short')}`,
+			label: `Submetida a ${displayUnixMilliseconds(item.created_at, 'short')}`,
 			value: item._id,
 		}));
 	}, [changePlanContext.data.availableValidations]);

@@ -23,11 +23,11 @@ export async function processRideAcceptanceChunk(chunk: PerformInTimeChunksItem)
 	const progress = `[${chunk.index + 1}/${chunk.total}]`;
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(chunk.start)
+		.fromUnixMilliseconds(chunk.start)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(chunk.end)
+		.fromUnixMilliseconds(chunk.end)
 		.setZone('Europe/Lisbon', 'offset_only');
 
 	Logger.spacer(1);

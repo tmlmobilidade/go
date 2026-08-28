@@ -67,7 +67,7 @@ export function PlansList() {
 				<ProcessingStatusDisplay
 					value={item.apps?.controller?.status}
 					tooltip={item.apps?.controller?.timestamp && Dates
-						.fromUnixTimestamp(item.apps?.controller?.timestamp)
+						.fromUnixMilliseconds(item.apps?.controller?.timestamp)
 						.setZone('Europe/Lisbon', 'offset_only')
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>
@@ -81,7 +81,7 @@ export function PlansList() {
 				<ProcessingStatusDisplay
 					value={item.apps?.merger?.status}
 					tooltip={item.apps?.merger?.timestamp && Dates
-						.fromUnixTimestamp(item.apps?.merger?.timestamp)
+						.fromUnixMilliseconds(item.apps?.merger?.timestamp)
 						.setZone('Europe/Lisbon', 'offset_only')
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>
@@ -95,7 +95,7 @@ export function PlansList() {
 				<ProcessingStatusDisplay
 					value={item.apps?.hub_gtfs?.status}
 					tooltip={item.apps?.hub_gtfs?.timestamp && Dates
-						.fromUnixTimestamp(item.apps?.hub_gtfs?.timestamp)
+						.fromUnixMilliseconds(item.apps?.hub_gtfs?.timestamp)
 						.setZone('Europe/Lisbon', 'offset_only')
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>

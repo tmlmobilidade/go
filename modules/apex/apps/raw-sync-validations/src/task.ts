@@ -29,11 +29,11 @@ export async function syncApexValidations(timeChunk: PerformInTimeChunksItem) {
 	//
 
 	const chunkStartDate = Dates
-		.fromUnixTimestamp(timeChunk.start)
+		.fromUnixMilliseconds(timeChunk.start)
 		.setZone('utc', 'offset_only');
 
 	const chunkEndDate = Dates
-		.fromUnixTimestamp(timeChunk.end)
+		.fromUnixMilliseconds(timeChunk.end)
 		.setZone('utc', 'offset_only');
 
 	Logger.spacer(1);

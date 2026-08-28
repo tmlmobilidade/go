@@ -40,7 +40,7 @@ export const syncRealtimeDemand = async () => {
 		.now('Europe/Lisbon')
 		.operational_date;
 
-	const currentOperationalDateAsUnixTimestamp = Dates
+	const currentOperationalDateAsUnixMilliseconds = Dates
 		.fromOperationalDate(currentOperationalDate, 'Europe/Lisbon')
 		.startOf('day')
 		.set({ hour: 4 })
@@ -51,13 +51,13 @@ export const syncRealtimeDemand = async () => {
 		.minus({ days: 7 })
 		.operational_date;
 
-	const previousOperationalDateAsUnixTimestamp = Dates
+	const previousOperationalDateAsUnixMilliseconds = Dates
 		.fromOperationalDate(previousOperationalDate, 'Europe/Lisbon')
 		.startOf('day')
 		.set({ hour: 4 })
 		.unix_timestamp;
 
-	const previousUntilNowAsUnixTimestamp = Dates
+	const previousUntilNowAsUnixMilliseconds = Dates
 		.now('Europe/Lisbon')
 		.minus({ days: 7 })
 		.unix_timestamp;
@@ -85,7 +85,7 @@ export const syncRealtimeDemand = async () => {
 
 		const todayValidCount = await validationsCollection.countDocuments({
 			agency_id: agencyId,
-			created_at: { $gte: currentOperationalDateAsUnixTimestamp },
+			created_at: { $gte: currentOperationalDateAsUnixMilliseconds },
 			is_passenger: true,
 		});
 
@@ -95,8 +95,8 @@ export const syncRealtimeDemand = async () => {
 		const lastWeekValidCount = await validationsCollection.countDocuments({
 			agency_id: agencyId,
 			created_at: {
-				$gte: previousOperationalDateAsUnixTimestamp,
-				$lte: previousUntilNowAsUnixTimestamp,
+				$gte: previousOperationalDateAsUnixMilliseconds,
+				$lte: previousUntilNowAsUnixMilliseconds,
 			},
 			is_passenger: true,
 		});

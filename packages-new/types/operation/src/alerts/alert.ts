@@ -4,14 +4,14 @@ import { AlertCauseSchema } from '@/alerts/cause.js';
 import { AlertEffectSchema } from '@/alerts/effect.js';
 import { AlertReferenceTypeSchema } from '@/alerts/reference-type.js';
 import { AlertReferenceSchema } from '@/alerts/reference.js';
-import { BaseDocumentSchema, PublishStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, PublishStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const AlertSchema = BaseDocumentSchema.extend({
-	active_period_end_date: UnixTimestampSchema.nullable().default(null),
-	active_period_start_date: UnixTimestampSchema,
+	active_period_end_date: UnixMillisecondsSchema.nullable().default(null),
+	active_period_start_date: UnixMillisecondsSchema,
 	agency_id: z.string(),
 	auto_texts: z.boolean().default(true),
 	cause: AlertCauseSchema,
@@ -22,8 +22,8 @@ export const AlertSchema = BaseDocumentSchema.extend({
 	file_id: z.string().nullable().default(null),
 	info_url: z.union([z.string().url(), z.literal('')]).nullable().default(null),
 	municipality_ids: z.array(z.string()).default([]),
-	publish_end_date: UnixTimestampSchema.nullable().default(null),
-	publish_start_date: UnixTimestampSchema.nullable().default(null),
+	publish_end_date: UnixMillisecondsSchema.nullable().default(null),
+	publish_start_date: UnixMillisecondsSchema.nullable().default(null),
 	publish_status: PublishStatusSchema.default('draft'),
 	reference_type: AlertReferenceTypeSchema,
 	references: z.array(AlertReferenceSchema).default([]),

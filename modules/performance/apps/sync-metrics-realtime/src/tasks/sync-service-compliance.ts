@@ -22,11 +22,11 @@ async function processRidesStream(stream, results, agencies, mode: 'last_week' |
 
 		const referenceNow = Dates.now('Europe/Lisbon');
 
-		const nowInUnixTimestamp = mode === 'now'
+		const nowInUnixMilliseconds = mode === 'now'
 			? referenceNow.unix_timestamp - 300_000 // 5 minutes ago
 			: referenceNow.minus({ days: 7 }).unix_timestamp - 300_000;
 
-		if (nowInUnixTimestamp - rideData.start_time_scheduled < 0) continue;
+		if (nowInUnixMilliseconds - rideData.start_time_scheduled < 0) continue;
 
 		//
 		// Scheduled rides

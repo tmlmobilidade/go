@@ -45,7 +45,7 @@ export async function getSimplifiedApexBankingTapsHandler(request: FastifyReques
 	// Fetch the simplified apex locations data by ride ID
 	// and send it back to the client
 
-	const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
+	const standardWindowInterval = Dates.fromUnixMilliseconds(rideData.start_time_scheduled).std_window;
 
 	const simplifiedApexBankingTapsData = await labDb.simplifiedApex.bankingTaps.select(
 		'*',

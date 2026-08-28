@@ -3,7 +3,7 @@
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Alert, type GtfsRtEntitySelector, UnixTimestamp } from '@tmlmobilidade/types';
+import { type Alert, type GtfsRtEntitySelector, UnixMilliseconds } from '@tmlmobilidade/types';
 import { getPublicRouteId } from '@tmlmobilidade/utils';
 
 /* * */
@@ -37,7 +37,7 @@ export async function transformReferenceTypeLinesIntoGtfsRt(alertData: Alert): P
 		// Set a default end date to one hour after the current time
 		// to limit the search for rides if active_period_end_date is not provided.
 
-		let activePeriodEndDate: UnixTimestamp;
+		let activePeriodEndDate: UnixMilliseconds;
 
 		if (!alertData.active_period_end_date) activePeriodEndDate = Dates.now('Europe/Lisbon').plus({ hours: 1 }).unix_timestamp;
 		else activePeriodEndDate = alertData.active_period_end_date;

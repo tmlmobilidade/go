@@ -1,7 +1,7 @@
 /* * */
 
 import { EncodedPolylineSchema } from '@tmlmobilidade/go-types-geo';
-import { NonNegativeIntegerSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { NonNegativeIntegerSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -12,7 +12,7 @@ export const HashedShapeSchema = z.object({
 	extension: NonNegativeIntegerSchema,
 	shape_id: z.string(),
 	shape_polyline: EncodedPolylineSchema,
-	updated_at: UnixTimestampSchema,
+	updated_at: UnixMillisecondsSchema,
 });
 
 /**

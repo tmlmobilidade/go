@@ -3,7 +3,7 @@
 import { useDebouncedCallback } from '@mantine/hooks';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { type SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useMeContext } from '../contexts/Me.context';
@@ -32,7 +32,7 @@ export function useUserPreference<T extends UserPreferenceValue>(scope: string, 
 	const preferenceValueRef = useRef<T>(defaultValue);
 
 	/** Baseline: last local edit time, or last applied server `updated_at`. */
-	const latestUpdatedAtRef = useRef<UnixTimestamp>(0 as UnixTimestamp);
+	const latestUpdatedAtRef = useRef<UnixMilliseconds>(0 as UnixMilliseconds);
 
 	//
 	// B. Handle actions

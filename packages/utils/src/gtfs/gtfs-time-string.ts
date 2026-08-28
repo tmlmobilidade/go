@@ -1,13 +1,13 @@
 /* * */
 
 import { type GtfsDate, type GtfsTime, validateGtfsDate, validateGtfsTime } from '@tmlmobilidade/go-types-gtfs';
-import { type OperationalDate, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDate, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
- * @deprecated Use `fromGtfsTimeAndGtfsDateToUnixTimestamp()` instead.
+ * @deprecated Use `fromGtfsTimeAndGtfsDateToUnixMilliseconds()` instead.
  */
-export function convertGTFSTimeStringAndOperationalDateToUnixTimestamp(timeString: string, operationalDate: OperationalDate): UnixTimestamp {
+export function convertGTFSTimeStringAndOperationalDateToUnixMilliseconds(timeString: string, operationalDate: OperationalDate): UnixMilliseconds {
 	// Return early if no time string is provided
 	if (!timeString || !operationalDate) throw new Error(`✖︎ No time string or operational date provided. timeString: ${timeString}, operationalDate: ${operationalDate}`);
 	// Check if the timestring is in the format HH:MM:SS
@@ -26,7 +26,7 @@ export function convertGTFSTimeStringAndOperationalDateToUnixTimestamp(timeStrin
  * @param gtfsDate The GTFS date to be converted.
  * @returns The given time and date as a Unix timestamp.
  */
-export function fromGtfsTimeAndGtfsDateToUnixTimestamp(gtfsTime: GtfsTime, gtfsDate: GtfsDate): UnixTimestamp {
+export function fromGtfsTimeAndGtfsDateToUnixMilliseconds(gtfsTime: GtfsTime, gtfsDate: GtfsDate): UnixMilliseconds {
 	// Return early if no time string is provided
 	if (!gtfsTime || !gtfsDate) throw new Error(`✖︎ No GTFS Time string or GTFS date string provided. gtfsTime: ${gtfsTime}, gtfsDate: ${gtfsDate}`);
 	// Check if both params are valid

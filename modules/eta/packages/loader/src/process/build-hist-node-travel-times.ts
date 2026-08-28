@@ -2,7 +2,7 @@
 
 import { pipelinePath } from '@tmlmobilidade/go-eta-pckg-common';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { performInTimeChunks } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
@@ -22,13 +22,13 @@ const SQL_PATH = 'loader/build-hist-node-travel-times.sql';
  * @param windowStart - Inclusive start of the processing window.
  * @param windowEnd - Exclusive end of the processing window.
  */
-export async function buildHistNodeTravelTimes(windowStart: UnixTimestamp, windowEnd: UnixTimestamp): Promise<void> {
+export async function buildHistNodeTravelTimes(windowStart: UnixMilliseconds, windowEnd: UnixMilliseconds): Promise<void> {
 	await performInTimeChunks({
 		endDate: windowEnd,
 		intervalHrs: 24,
 		onChunk: async (chunk) => {
-			const start = Dates.fromUnixTimestamp(chunk.start);
-			const end = Dates.fromUnixTimestamp(chunk.end);
+			const start = Dates.fromUnixMilliseconds(chunk.start);
+			const end = Dates.fromUnixMilliseconds(chunk.end);
 
 			Logger.progress({
 				message: `[${chunk.index + 1}/${chunk.total}] hist_node_travel_times ${start.iso} [${chunk.start}] → ${end.iso} [${chunk.end}]`,

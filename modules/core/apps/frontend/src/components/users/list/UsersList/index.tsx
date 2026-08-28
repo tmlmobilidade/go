@@ -3,7 +3,7 @@
 import { UsersListHeader } from '@/components/users/list/UsersListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type UsersListItem } from '@tmlmobilidade/go-core-pckg-types';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -54,7 +54,7 @@ export function UsersList() {
 		},
 		{
 			accessor: 'seen_last_at',
-			render: item => item.seen_last_at && <UnixTimestampDisplay value={item.seen_last_at} showDate />,
+			render: item => item.seen_last_at && <UnixMillisecondsDisplay value={item.seen_last_at} showDate />,
 			title: t('default:users.list.Table.columns.lastSeenAt.label'),
 			width: 200,
 		},

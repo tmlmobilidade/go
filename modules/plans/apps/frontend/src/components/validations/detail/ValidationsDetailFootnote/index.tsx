@@ -23,7 +23,7 @@ export function ValidationsDetailFootnote() {
 		if (!validationsDetailContext.data.validation.created_at) return 'N/A';
 		// Convert the Unix timestamp to a Date object.
 		return Dates
-			.fromUnixTimestamp(validationsDetailContext.data.validation.created_at)
+			.fromUnixMilliseconds(validationsDetailContext.data.validation.created_at)
 			.toLocaleString({ day: '2-digit', hour: '2-digit', minute: '2-digit', month: 'long', year: 'numeric' }, 'pt-PT');
 	}, [validationsDetailContext.data.validation.created_at]);
 

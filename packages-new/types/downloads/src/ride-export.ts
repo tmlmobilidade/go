@@ -2,7 +2,7 @@
 
 import { FileExportBaseSchema } from '@/base.js';
 import { AlertCauseSchema, RideJustificationSourceSchema } from '@tmlmobilidade/go-types-operation';
-import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, SeenStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { DelayStatusSchema, GradeStatusSchema, OperationalStatusSchema, SeenStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -122,8 +122,8 @@ export const RideExportPropertiesSchema = z.object({
 
 		/* * */
 
-		date_end: UnixTimestampSchema,
-		date_start: UnixTimestampSchema,
+		date_end: UnixMillisecondsSchema,
+		date_start: UnixMillisecondsSchema,
 
 		/* * */
 

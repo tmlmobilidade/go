@@ -2,7 +2,7 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type AppConfigBanner } from '@tmlmobilidade/go-types-core';
-import { type ApiResponse, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -15,7 +15,7 @@ interface UseAppConfigBannerDataReturnType {
 	isLoading: boolean
 	isValidating: boolean
 	mutate: (newData?: ApiResponse<AppConfigBanner>) => void
-	timestamp: null | UnixTimestamp
+	timestamp: null | UnixMilliseconds
 }
 
 /* * */

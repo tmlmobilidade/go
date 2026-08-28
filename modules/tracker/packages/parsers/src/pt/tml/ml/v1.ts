@@ -18,7 +18,7 @@ export function parseRawVehicleEventPtTmlMlV1(doc: RawVehicleEventPtTmlMlV1): nu
 		latitude: doc.payload.vehicle.position.latitude,
 		longitude: doc.payload.vehicle.position.longitude,
 		odometer: null,
-		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date_int,
+		operational_date: Dates.fromUnixMilliseconds(doc.created_at).operational_date_int,
 		received_at: doc.received_at,
 		speed: null,
 		stop_id: doc.payload.vehicle.stop_id ?? null,

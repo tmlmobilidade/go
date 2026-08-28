@@ -2,7 +2,7 @@
 
 import { FileExportBaseSchema } from '@/base.js';
 import { SamAnalysisSchema } from '@tmlmobilidade/go-types-operation';
-import { SystemStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { SystemStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -21,13 +21,13 @@ export const SamsAnalysisExportPropertiesSchema = z.object({
 		_id: z.array(z.number()).optional().nullable(),
 		agency_ids: z.array(z.string()).optional().nullable(),
 		apex_versions: z.array(z.string()).optional().nullable(),
-		end_time: UnixTimestampSchema.optional().nullable(),
+		end_time: UnixMillisecondsSchema.optional().nullable(),
 		favorites_only: z.boolean().optional().nullable(),
 		sam_ids: z.array(z.number()).optional().nullable(),
 		search: z.string().optional().nullable(),
-		seen_first_at: UnixTimestampSchema.optional().nullable(),
-		seen_last_at: UnixTimestampSchema.optional().nullable(),
-		start_time: UnixTimestampSchema.optional().nullable(),
+		seen_first_at: UnixMillisecondsSchema.optional().nullable(),
+		seen_last_at: UnixMillisecondsSchema.optional().nullable(),
+		start_time: UnixMillisecondsSchema.optional().nullable(),
 		statuses: z.array(SystemStatusSchema).optional().nullable(),
 	}),
 	type: z.literal('sams_analysis'),

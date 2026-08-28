@@ -26,15 +26,15 @@ export function getPublishStatusValue(alertData: Alert): PublishStatus {
 
 	let result: PublishStatus = alertData.publish_status;
 
-	const nowUnixTimestamp = Dates.now('Europe/Lisbon').unix_timestamp;
+	const nowUnixMilliseconds = Dates.now('Europe/Lisbon').unix_timestamp;
 
-	if (alertData.publish_start_date && alertData.publish_start_date <= nowUnixTimestamp) {
+	if (alertData.publish_start_date && alertData.publish_start_date <= nowUnixMilliseconds) {
 		// So far the alert is not a draft and the publish start date has passed,
 		// so we can consider it published.
 		result = 'published';
 	}
 
-	if (alertData.publish_end_date && alertData.publish_end_date <= nowUnixTimestamp) {
+	if (alertData.publish_end_date && alertData.publish_end_date <= nowUnixMilliseconds) {
 		// The publish end date has passed, so we can consider the alert archived.
 		result = 'archived';
 	}

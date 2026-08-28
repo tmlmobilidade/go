@@ -43,7 +43,7 @@ async function main() {
 				const progress = `[${chunk.index + 1}/${chunk.total}]`;
 
 				Logger.spacer(1);
-				Logger.title(`${progress} - ${Dates.fromUnixTimestamp(chunk.start).toLocaleString('full')} › ${Dates.fromUnixTimestamp(chunk.end).toLocaleString('full')}`);
+				Logger.title(`${progress} - ${Dates.fromUnixMilliseconds(chunk.start).toLocaleString('full')} › ${Dates.fromUnixMilliseconds(chunk.end).toLocaleString('full')}`);
 
 				//
 				// Fetch the ride acceptances.

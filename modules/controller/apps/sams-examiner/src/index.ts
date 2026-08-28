@@ -39,8 +39,8 @@
 // 	const to = Math.max(startTs, endTs);
 
 // 	const monthKeys = new Set<string>();
-// 	let cursor = Dates.fromUnixTimestamp(from).setZone(LISBON_TZ, 'offset_only').startOf('month');
-// 	const last = Dates.fromUnixTimestamp(to).setZone(LISBON_TZ, 'offset_only').startOf('month');
+// 	let cursor = Dates.fromUnixMilliseconds(from).setZone(LISBON_TZ, 'offset_only').startOf('month');
+// 	const last = Dates.fromUnixMilliseconds(to).setZone(LISBON_TZ, 'offset_only').startOf('month');
 
 // 	while (cursor.unix_timestamp <= last.unix_timestamp) {
 // 		const monthKey = getMonthKeyFromTimestamp(cursor.unix_timestamp);

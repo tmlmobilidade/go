@@ -2,7 +2,7 @@
 
 import { HoverCard } from '@mantine/core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { type PropsWithChildren, useEffect, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -15,7 +15,7 @@ import { Label } from '../../display/Label';
 interface UserTagCardProps {
 	fullName: string
 	organizationName: string
-	seenLastAt: UnixTimestamp
+	seenLastAt: UnixMilliseconds
 }
 
 /* * */

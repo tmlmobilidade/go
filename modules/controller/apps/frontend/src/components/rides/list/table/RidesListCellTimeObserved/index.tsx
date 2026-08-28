@@ -1,15 +1,15 @@
 'use client';
 
-import { type DelayStatus, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { DelayStatusDisplay, displayDuration, displayUnixTimestamp, Section, Tag } from '@tmlmobilidade/ui';
+import { type DelayStatus, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { DelayStatusDisplay, displayDuration, displayUnixMilliseconds, Section, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
 interface RidesListCellTimeObservedProps {
 	delayStatus?: DelayStatus | null
-	observedTimestamp?: null | UnixTimestamp
-	scheduledTimestamp?: null | UnixTimestamp
+	observedTimestamp?: null | UnixMilliseconds
+	scheduledTimestamp?: null | UnixMilliseconds
 }
 
 /* * */
@@ -21,7 +21,7 @@ export function RidesListCellTimeObserved({ delayStatus, observedTimestamp, sche
 	// A. Transform data
 
 	const observedTimeDisplay = useMemo(() => {
-		return displayUnixTimestamp(observedTimestamp);
+		return displayUnixMilliseconds(observedTimestamp);
 	}, [observedTimestamp]);
 
 	const durationDisplay = useMemo(() => {

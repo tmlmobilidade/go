@@ -1,6 +1,6 @@
 /* * */
 
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 
 interface DisplayDurationOptions {
 
@@ -14,12 +14,12 @@ interface DisplayDurationOptions {
 /**
  * Formats a duration into a human-readable string.
  * The duration is calculated as the difference
- * between two UnixTimestamps.
+ * between two UnixMillisecondss.
  * @param startTimestamp The start timestamp in milliseconds.
  * @param endTimestamp The end timestamp in milliseconds.
  * @returns The formatted duration 'X min'.
  */
-export function displayDuration(startTimestamp?: null | UnixTimestamp, endTimestamp?: null | UnixTimestamp, options?: DisplayDurationOptions): null | string {
+export function displayDuration(startTimestamp?: null | UnixMilliseconds, endTimestamp?: null | UnixMilliseconds, options?: DisplayDurationOptions): null | string {
 	//
 
 	//

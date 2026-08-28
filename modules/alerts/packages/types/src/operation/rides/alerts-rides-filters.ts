@@ -1,6 +1,6 @@
 /* * */
 
-import { OperationalStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -25,9 +25,9 @@ export const AlertsRidesFiltersSchema = z.object({
 		.array(z.string())
 		.optional(),
 
-	start_time_scheduled_end: UnixTimestampSchema,
+	start_time_scheduled_end: UnixMillisecondsSchema,
 
-	start_time_scheduled_start: UnixTimestampSchema,
+	start_time_scheduled_start: UnixMillisecondsSchema,
 
 });
 

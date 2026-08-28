@@ -6,8 +6,8 @@ import { useRidesDetailApexSalesData } from '@/components/rides/detail/shared/us
 import { useRidesDetailApexValidationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-validations-data';
 import { useRidesDetailHashedTripData } from '@/components/rides/detail/shared/use-rides-detail-hashed-trip-data';
 import { type SimplifiedApexBankingTap, type SimplifiedApexOnBoardRefund, type SimplifiedApexOnBoardSale, type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
-import { Collapsible, DataTable, DataTableColumn, DataTableScroller, IdTag, Label, NumberDisplay, Section, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, IdTag, Label, NumberDisplay, Section, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,8 +21,8 @@ interface TableData {
 	passengers_observed_sales_amount: number
 	passengers_observed_sales_qty: number
 	passengers_observed_subscription_qty: number
-	seen_first_at: UnixTimestamp
-	seen_last_at: UnixTimestamp
+	seen_first_at: UnixMilliseconds
+	seen_last_at: UnixMilliseconds
 	stop_id: string
 	stop_name: string
 	stop_sequence: number
@@ -110,8 +110,8 @@ export function RideAnalysisPath() {
 			accessor: 'seen_at',
 			render: item => (
 				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-					<UnixTimestampDisplay value={item.seen_first_at} />
-					<UnixTimestampDisplay value={item.seen_last_at} />
+					<UnixMillisecondsDisplay value={item.seen_first_at} />
+					<UnixMillisecondsDisplay value={item.seen_last_at} />
 				</Section>
 			),
 			title: t('default:rides.analysis.RideAnalysisPath.table.columns.seen_at.label'),
@@ -173,13 +173,13 @@ export function RideAnalysisPath() {
 					...(bankingTapsByStopId[item.stop_id]?.map(bankingTap => bankingTap.created_at) || []),
 					...(salesByStopId[item.stop_id]?.map(sale => sale.created_at) || []),
 					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || []),
-				]) as UnixTimestamp;
+				]) as UnixMilliseconds;
 				const seenLastAt = Math.max(...[
 					...(validationsByStopId[item.stop_id]?.map(validation => validation.created_at) || []),
 					...(bankingTapsByStopId[item.stop_id]?.map(bankingTap => bankingTap.created_at) || []),
 					...(salesByStopId[item.stop_id]?.map(sale => sale.created_at) || []),
 					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || []),
-				]) as UnixTimestamp;
+				]) as UnixMilliseconds;
 				// Return the data
 				return {
 					passengers_observed: validationsByStopId[item.stop_id]?.filter(validation => validation.is_passenger).length || 0,

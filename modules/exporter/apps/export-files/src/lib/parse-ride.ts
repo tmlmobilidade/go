@@ -1,13 +1,13 @@
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type RideExportData } from '@tmlmobilidade/go-types-downloads';
-import { type RideAcceptance, type RideNormalized, type UnixTimestamp } from '@tmlmobilidade/types';
+import { type RideAcceptance, type RideNormalized, type UnixMilliseconds } from '@tmlmobilidade/types';
 
-function parseTime(time: null | UnixTimestamp): null | string {
+function parseTime(time: null | UnixMilliseconds): null | string {
 	if (!time) {
 		return null;
 	}
 
-	return Dates.fromUnixTimestamp(time).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt-Pt');
+	return Dates.fromUnixMilliseconds(time).setZone('Europe/Lisbon', 'offset_only').toLocaleString(Dates.FORMATS.TIME_SIMPLE, 'pt-Pt');
 }
 
 export function parseRide(ride: RideNormalized & { acceptance: null | RideAcceptance }): RideExportData {

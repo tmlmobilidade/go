@@ -1,14 +1,14 @@
 /* * */
 
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 
 import { Tag } from '../../components/tags';
 
 /* * */
 
-interface UnixTimestampDisplayProps {
+interface UnixMillisecondsDisplayProps {
 
 	/**
 	 * Whether to show the date
@@ -29,15 +29,15 @@ interface UnixTimestampDisplayProps {
 	showTime?: boolean
 
 	/**
-	 * The UnixTimestamp to display, in milliseconds
+	 * The UnixMilliseconds to display, in milliseconds
 	 * @example 1718534400000
 	 */
-	value: UnixTimestamp
+	value: UnixMilliseconds
 }
 
 /* * */
 
-export function UnixTimestampDisplay({ showDate = false, showSeconds = false, showTime = true, value }: UnixTimestampDisplayProps) {
+export function UnixMillisecondsDisplay({ showDate = false, showSeconds = false, showTime = true, value }: UnixMillisecondsDisplayProps) {
 	//
 
 	//
@@ -56,7 +56,7 @@ export function UnixTimestampDisplay({ showDate = false, showSeconds = false, sh
 		if (!value) return;
 		if (value === Infinity || value === -Infinity) return;
 		// Format the timestamp
-		return Dates.fromUnixTimestamp(value).toFormat(format);
+		return Dates.fromUnixMilliseconds(value).toFormat(format);
 	}, [value, format]);
 
 	//

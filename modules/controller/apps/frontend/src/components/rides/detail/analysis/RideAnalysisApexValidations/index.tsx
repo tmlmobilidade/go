@@ -4,7 +4,7 @@ import { ApexValidationIsPassengerTag } from '@/components/common/ApexValidation
 import { ApexValidationStatusTag } from '@/components/common/ApexValidationStatusTag';
 import { useRidesDetailApexValidationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-validations-data';
 import { type SimplifiedApexValidation } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, DataTableScroller, IdTag, NumberDisplay, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, IdTag, NumberDisplay, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +23,7 @@ export function RideAnalysisApexValidations() {
 	const columns: DataTableColumn<SimplifiedApexValidation>[] = [
 		{
 			accessor: 'created_at',
-			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
+			render: item => <UnixMillisecondsDisplay value={item.created_at} showDate />,
 			title: t('default:rides.analysis.RideAnalysisApexValidations.table.columns.created_at.label'),
 			width: 180,
 		},

@@ -1,16 +1,16 @@
 'use client';
 
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { displayDuration, Section, Tag } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /* * */
 
 interface RidesListCellDurationObservedProps {
-	endTimeObserved?: null | UnixTimestamp
-	endTimeScheduled?: null | UnixTimestamp
-	startTimeObserved?: null | UnixTimestamp
-	startTimeScheduled?: null | UnixTimestamp
+	endTimeObserved?: null | UnixMilliseconds
+	endTimeScheduled?: null | UnixMilliseconds
+	startTimeObserved?: null | UnixMilliseconds
+	startTimeScheduled?: null | UnixMilliseconds
 }
 
 /* * */

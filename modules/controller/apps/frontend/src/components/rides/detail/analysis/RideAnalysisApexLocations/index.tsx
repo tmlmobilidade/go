@@ -2,7 +2,7 @@
 
 import { useRidesDetailApexLocationsData } from '@/components/rides/detail/shared/use-rides-detail-apex-locations-data';
 import { type SimplifiedApexLocation } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,7 +21,7 @@ export function RideAnalysisApexLocations() {
 	const columns: DataTableColumn<SimplifiedApexLocation>[] = [
 		{
 			accessor: 'created_at',
-			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
+			render: item => <UnixMillisecondsDisplay value={item.created_at} showDate />,
 			title: t('default:rides.analysis.RideAnalysisApexLocations.table.columns.created_at.label'),
 			width: 280,
 		},

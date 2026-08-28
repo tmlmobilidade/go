@@ -1,7 +1,7 @@
 /* * */
 
 import { GtfsTripDirectionSchema } from '@tmlmobilidade/go-types-gtfs';
-import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema, ProcessingStatusSchema, UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema, ProcessingStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -26,12 +26,12 @@ export const RideIdentitySchema = z.object({
 });
 
 export const RideScheduleSchema = z.object({
-	end_time_observed: UnixTimestampSchema.nullable().default(null),
-	end_time_scheduled: UnixTimestampSchema,
+	end_time_observed: UnixMillisecondsSchema.nullable().default(null),
+	end_time_scheduled: UnixMillisecondsSchema,
 	extension_observed: NonNegativeIntegerSchema.nullable().default(null),
 	extension_scheduled: NonNegativeIntegerSchema,
-	start_time_observed: UnixTimestampSchema.nullable().default(null),
-	start_time_scheduled: UnixTimestampSchema,
+	start_time_observed: UnixMillisecondsSchema.nullable().default(null),
+	start_time_scheduled: UnixMillisecondsSchema,
 });
 
 export const RideApexSchema = z.object({
@@ -59,14 +59,14 @@ export const RidePassengersSchema = z.object({
 
 export const RideOperationSchema = z.object({
 	driver_ids: z.array(z.string()).default([]),
-	seen_first_at: UnixTimestampSchema.nullable().default(null),
-	seen_last_at: UnixTimestampSchema.nullable().default(null),
+	seen_first_at: UnixMillisecondsSchema.nullable().default(null),
+	seen_last_at: UnixMillisecondsSchema.nullable().default(null),
 	vehicle_ids: z.array(z.string()).default([]),
 });
 
 export const RideLifecycleSchema = z.object({
 	processing_status: ProcessingStatusSchema.default('waiting'),
-	updated_at: UnixTimestampSchema,
+	updated_at: UnixMillisecondsSchema,
 });
 
 /* * */

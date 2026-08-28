@@ -18,7 +18,7 @@ export function parseRawVehicleEventPtTmpUnirUt2V1(doc: RawVehicleEventPtTmpUnir
 		latitude: doc.payload.latitude,
 		longitude: doc.payload.longitude,
 		odometer: null,
-		operational_date: Dates.fromUnixTimestamp(doc.created_at).operational_date_int,
+		operational_date: Dates.fromUnixMilliseconds(doc.created_at).operational_date_int,
 		received_at: doc.received_at,
 		speed: doc.payload.velocity || null,
 		stop_id: doc.payload.stopPointRef || null,

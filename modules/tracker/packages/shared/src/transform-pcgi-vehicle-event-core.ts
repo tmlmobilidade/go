@@ -73,7 +73,7 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 		const parsedDocument = RawVehicleEventPtTmlCmSchema.safeParse({
 			...hashableRawEvent,
 			_id: hashableRawEventId,
-			received_at: Dates.fromUnixTimestamp(pcgiVehicleEvent.millis).unix_timestamp,
+			received_at: Dates.fromUnixMilliseconds(pcgiVehicleEvent.millis).unix_timestamp,
 		});
 
 		if (!parsedDocument.success) {

@@ -2,7 +2,7 @@
 
 import { pipelinePath } from '@tmlmobilidade/go-eta-pckg-common';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { performInTimeChunks } from '@tmlmobilidade/go-utils-exec';
 import { Logger } from '@tmlmobilidade/logger';
@@ -24,12 +24,12 @@ const hourMs = 3_600_000;
  * @param windowStart - Inclusive start of the processing window.
  * @param windowEnd - Exclusive end of the processing window.
  */
-export async function aggregateHistNodeTravelTimes(windowStart: UnixTimestamp, windowEnd: UnixTimestamp): Promise<void> {
+export async function aggregateHistNodeTravelTimes(windowStart: UnixMilliseconds, windowEnd: UnixMilliseconds): Promise<void> {
 	await performInTimeChunks({
 		endDate: windowEnd,
 		intervalHrs: 24,
 		onChunk: async (chunk) => {
-			const day = Dates.fromUnixTimestamp(chunk.start).startOf('day');
+			const day = Dates.fromUnixMilliseconds(chunk.start).startOf('day');
 			Logger.progress({ message: `[${chunk.index + 1}/${chunk.total}] operational day ${day.toFormat('yyyyMMdd')}` });
 			await labDb.queryFromFile(pipelinePath(SQL_PATH), {
 				chunk_date: Number(day.toFormat('yyyyMMdd')),

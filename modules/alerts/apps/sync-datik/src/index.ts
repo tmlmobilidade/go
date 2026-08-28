@@ -4,7 +4,7 @@ import { fetchProtobuf } from '@/protobuf.js';
 import { composeAlertTitleAndDescription } from '@tmlmobilidade/go-alerts-pckg-compose';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateAlertDto } from '@tmlmobilidade/go-types-operation';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -60,8 +60,8 @@ async function main() {
 
 			//
 			const alertDescribeResult = await composeAlertTitleAndDescription({
-				active_period_end_date: serviceAlert.alert.active_period[0].end as UnixTimestamp,
-				active_period_start_date: serviceAlert.alert.active_period[0].start as UnixTimestamp,
+				active_period_end_date: serviceAlert.alert.active_period[0].end as UnixMilliseconds,
+				active_period_start_date: serviceAlert.alert.active_period[0].start as UnixMilliseconds,
 				agency_id: '43',
 				cause: serviceAlert.alert.cause as CreateAlertDto['cause'],
 				effect: serviceAlert.alert.effect as CreateAlertDto['effect'],

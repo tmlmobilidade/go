@@ -1,15 +1,15 @@
 'use client';
 
 import { type AlertReference, type AlertReferenceType } from '@tmlmobilidade/go-types-operation';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Label, openConfirmModal } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
 /* * */
 
 export interface ReferencesEditorContextProps {
-	activePeriodEndDate: undefined | UnixTimestamp
-	activePeriodStartDate: undefined | UnixTimestamp
+	activePeriodEndDate: undefined | UnixMilliseconds
+	activePeriodStartDate: undefined | UnixMilliseconds
 	enabledReferenceTypes: AlertReferenceType[]
 	onChangeReferences: (references: AlertReference[]) => void
 	onChangeReferenceType: (type: AlertReferenceType) => void
@@ -29,8 +29,8 @@ interface ReferencesEditorContextState {
 		updateReference: (index: number, field: 'child_ids' | 'parent_id', value: string | string[]) => void
 	}
 	data: {
-		active_period_end_date: UnixTimestamp
-		active_period_start_date: UnixTimestamp
+		active_period_end_date: UnixMilliseconds
+		active_period_start_date: UnixMilliseconds
 		enabled_reference_types: AlertReferenceType[]
 		selected_agency_id: string
 		selected_reference_type: AlertReferenceType

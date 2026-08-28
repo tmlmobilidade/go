@@ -122,7 +122,7 @@
 // 			//
 // 			if (!validationTransaction.trip_id) continue;
 
-// 			const standardWindowInterval = Dates.fromUnixTimestamp(onBoardRefund.created_at).std_window;
+// 			const standardWindowInterval = Dates.fromUnixMilliseconds(onBoardRefund.created_at).std_window;
 // 			await goDb.operation.rides.updateMany(
 // 				{
 // 					start_time_scheduled: { $gte: standardWindowInterval.start, $lte: standardWindowInterval.end },

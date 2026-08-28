@@ -43,8 +43,8 @@ export function VehiclesDetailView() {
 
 	const differenceInSeconds = useMemo(() => {
 		if (!vehiclesDetailContext.data.vehicle?.created_at) return;
-		const nowUnixTimestamp = Dates.now('Europe/Lisbon').unix_timestamp;
-		const differenceInMilliseconds = nowUnixTimestamp - vehiclesDetailContext.data.vehicle?.created_at;
+		const nowUnixMilliseconds = Dates.now('Europe/Lisbon').unix_timestamp;
+		const differenceInMilliseconds = nowUnixMilliseconds - vehiclesDetailContext.data.vehicle?.created_at;
 		const differenceInSeconds = differenceInMilliseconds / 1000;
 		return Math.round(differenceInSeconds);
 	}, [vehiclesDetailContext.data.vehicle?.created_at]);

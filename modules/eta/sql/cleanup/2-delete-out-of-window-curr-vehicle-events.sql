@@ -11,7 +11,7 @@
 
 SELECT count() AS rows_to_delete FROM eta.curr_vehicle_events
 WHERE
-    created_at < toUInt64(toUnixTimestamp64Milli(now64(3))) - (toUInt64({window_hours_before:UInt32}) * 60 * 60 * 1000)
+    created_at < toUInt64(toUnixMilliseconds64Milli(now64(3))) - (toUInt64({window_hours_before:UInt32}) * 60 * 60 * 1000)
     OR (trip_id, hashed_shape_id) NOT IN (
         SELECT DISTINCT
             trip_id,
@@ -23,7 +23,7 @@ WHERE
 
 ALTER TABLE eta.curr_vehicle_events
 DELETE WHERE
-    created_at < toUInt64(toUnixTimestamp64Milli(now64(3))) - (toUInt64({window_hours_before:UInt32}) * 60 * 60 * 1000)
+    created_at < toUInt64(toUnixMilliseconds64Milli(now64(3))) - (toUInt64({window_hours_before:UInt32}) * 60 * 60 * 1000)
     OR (trip_id, hashed_shape_id) NOT IN (
         SELECT DISTINCT
             trip_id,

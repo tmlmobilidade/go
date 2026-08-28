@@ -83,7 +83,7 @@ export async function setRidesAsWaiting(data: SimplifiedVehicleEvent[]) {
 					.filter(item => !!item.trip_id)
 					.map((item) => {
 						const standardWindowInterval = Dates
-							.fromUnixTimestamp(item.created_at)
+							.fromUnixMilliseconds(item.created_at)
 							.std_window;
 						const window: TrackerRidesCallbackWindow = {
 							agency_id: item.agency_id,

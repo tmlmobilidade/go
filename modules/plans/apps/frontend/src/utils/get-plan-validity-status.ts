@@ -12,19 +12,19 @@ export const getPlanValidityStatus = (startDate: GtfsDate, endDate: GtfsDate): P
 	//
 	// Get current date in Unix timestamp format
 
-	const nowInUnixTimestamp = Dates
+	const nowInUnixMilliseconds = Dates
 		.now('Europe/Lisbon')
 		.unix_timestamp;
 
 	//
 	// Parse start and end dates to Unix timestamp format
 
-	const startDateUnixTimestamp = Dates
+	const startDateUnixMilliseconds = Dates
 		.fromOperationalDate(startDate, 'Europe/Lisbon')
 		.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
 		.unix_timestamp;
 
-	const endDateUnixTimestamp = Dates
+	const endDateUnixMilliseconds = Dates
 		.fromOperationalDate(endDate, 'Europe/Lisbon')
 		.plus({ days: 1 })
 		.set({ hour: 3, millisecond: 59, minute: 59, second: 59 })
@@ -33,11 +33,11 @@ export const getPlanValidityStatus = (startDate: GtfsDate, endDate: GtfsDate): P
 	//
 	// Return validity status
 
-	if (nowInUnixTimestamp > startDateUnixTimestamp && nowInUnixTimestamp > endDateUnixTimestamp) return 'expired';
+	if (nowInUnixMilliseconds > startDateUnixMilliseconds && nowInUnixMilliseconds > endDateUnixMilliseconds) return 'expired';
 
-	if (nowInUnixTimestamp >= startDateUnixTimestamp && nowInUnixTimestamp <= endDateUnixTimestamp) return 'active';
+	if (nowInUnixMilliseconds >= startDateUnixMilliseconds && nowInUnixMilliseconds <= endDateUnixMilliseconds) return 'active';
 
-	if (nowInUnixTimestamp < startDateUnixTimestamp && nowInUnixTimestamp < endDateUnixTimestamp) return 'upcoming';
+	if (nowInUnixMilliseconds < startDateUnixMilliseconds && nowInUnixMilliseconds < endDateUnixMilliseconds) return 'upcoming';
 
 	//
 };

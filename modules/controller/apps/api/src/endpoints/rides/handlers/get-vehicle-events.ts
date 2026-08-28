@@ -45,7 +45,7 @@ export async function getSimplifiedVehicleEventsHandler(request: FastifyRequest<
 	// Fetch the simplified vehicle events data by ride ID
 	// and send it back to the client
 
-	const standardWindowInterval = Dates.fromUnixTimestamp(rideData.start_time_scheduled).std_window;
+	const standardWindowInterval = Dates.fromUnixMilliseconds(rideData.start_time_scheduled).std_window;
 
 	const vehicleEventsData = await labDb.operation.simplifiedVehicleEvents.select(
 		'*',

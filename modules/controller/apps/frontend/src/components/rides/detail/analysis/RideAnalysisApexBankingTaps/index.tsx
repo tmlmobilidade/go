@@ -2,7 +2,7 @@
 
 import { useRidesDetailApexBankingTapsData } from '@/components/rides/detail/shared/use-rides-detail-apex-banking-taps-data';
 import { type SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
-import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixTimestampDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, DataTable, DataTableColumn, DataTableScroller, UnixMillisecondsDisplay } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,7 +21,7 @@ export function RideAnalysisApexBankingTaps() {
 	const columns: DataTableColumn<SimplifiedApexBankingTap>[] = [
 		{
 			accessor: 'created_at',
-			render: item => <UnixTimestampDisplay value={item.created_at} showDate />,
+			render: item => <UnixMillisecondsDisplay value={item.created_at} showDate />,
 			title: t('default:rides.analysis.RideAnalysisApexBankingTaps.table.columns.created_at.label'),
 			width: 280,
 		},

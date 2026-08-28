@@ -3,7 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger } from '@tmlmobilidade/logger';
 import { Timer } from '@tmlmobilidade/timer';
@@ -69,12 +69,12 @@ export async function cleanOldValidations() {
 			continue;
 		}
 
-		const cutoffUnixTimestamp = Dates.now('Europe/Lisbon').unix_timestamp - thresholdValue as UnixTimestamp;
+		const cutoffUnixMilliseconds = Dates.now('Europe/Lisbon').unix_timestamp - thresholdValue as UnixMilliseconds;
 
 		//
 		// Check if the validation is older than the cutoff date
 
-		if (validation.created_at > cutoffUnixTimestamp) {
+		if (validation.created_at > cutoffUnixMilliseconds) {
 			Logger.info({ message: `Validation ${validation._id} is not old enough. Skipping.` });
 			continue;
 		}

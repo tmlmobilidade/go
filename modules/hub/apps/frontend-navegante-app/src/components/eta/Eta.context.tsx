@@ -2,7 +2,7 @@
 
 /* * */
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { pushArrayToMap } from '@tmlmobilidade/utils';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import useSWR from 'swr';
@@ -11,7 +11,7 @@ import useSWR from 'swr';
 
 export interface PreparedTripUpdate {
 	eta_at: string
-	eta_seconds: UnixTimestamp
+	eta_seconds: UnixMilliseconds
 	stop_id: string
 	stop_name: string
 	stop_sequence: string

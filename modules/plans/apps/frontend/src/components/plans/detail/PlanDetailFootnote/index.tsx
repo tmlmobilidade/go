@@ -23,7 +23,7 @@ export function PlanDetailFootnote() {
 		if (!planDetailContext.data.plan.created_at) return 'N/A';
 		// Convert the Unix timestamp to a Date object.
 		return Dates
-			.fromUnixTimestamp(planDetailContext.data.plan.created_at)
+			.fromUnixMilliseconds(planDetailContext.data.plan.created_at)
 			.toLocaleString({ day: '2-digit', hour: '2-digit', minute: '2-digit', month: 'long', year: 'numeric' }, 'pt-PT');
 	}, [planDetailContext.data.plan.created_at]);
 

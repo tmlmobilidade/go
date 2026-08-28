@@ -3,7 +3,7 @@
 import { RIDES_EXPORT_MODAL_ID } from '@/components/rides/list/export/RidesExportModal';
 import { Dates } from '@tmlmobilidade/dates';
 import { type CreateFileExportDto, type RideExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { DelayStatus, OperationalStatus, type UnixTimestamp } from '@tmlmobilidade/go-types-shared';
+import { DelayStatus, OperationalStatus, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { closeModal, useExportsContext, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo, useState } from 'react';
 
@@ -56,7 +56,7 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 	async function exportRides() {
 		if (!initialFilters.date_start || !initialFilters.date_end) return;
 
-		const fileName = `${Dates.fromUnixTimestamp(filterDateStart).setZone('Europe/Lisbon', 'offset_only').operational_date}_${Dates.fromUnixTimestamp(filterDateEnd).setZone('Europe/Lisbon', 'offset_only').operational_date}.csv`;
+		const fileName = `${Dates.fromUnixMilliseconds(filterDateStart).setZone('Europe/Lisbon', 'offset_only').operational_date}_${Dates.fromUnixMilliseconds(filterDateEnd).setZone('Europe/Lisbon', 'offset_only').operational_date}.csv`;
 		const createFileExportDto: CreateFileExportDto<RideExportProperties> = {
 			created_by: 'will-be-set-by-api',
 			file_id: null,
@@ -69,8 +69,8 @@ export const RidesExportModalContextProvider = ({ children, initialFilters }: Pr
 				analysis_expected_apex_validation_interval: initialFilters.analysis_expected_apex_validation_interval.value,
 				analysis_simple_three_vehicle_events_grade: initialFilters.analysis_simple_three_vehicle_events_grade.value,
 				analysis_transaction_sequentiality: initialFilters.analysis_transaction_sequentiality.value,
-				date_end: filterDateEnd as UnixTimestamp,
-				date_start: filterDateStart as UnixTimestamp,
+				date_end: filterDateEnd as UnixMilliseconds,
+				date_start: filterDateStart as UnixMilliseconds,
 				delay_statuses: initialFilters.delay_status.value as DelayStatus[],
 				operational_statuses: initialFilters.operational_status.value as OperationalStatus[],
 				search: initialFilters.search.value || undefined,

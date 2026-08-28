@@ -1,16 +1,16 @@
 /* * */
 
 import { AlertCauseSchema, AlertEffectSchema, AlertReferenceSchema, AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
-import { UnixTimestampSchema } from '@tmlmobilidade/go-types-shared';
+import { UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const AlertsComposeRequestSchema = z.object({
 
-	active_period_end_date: UnixTimestampSchema,
+	active_period_end_date: UnixMillisecondsSchema,
 
-	active_period_start_date: UnixTimestampSchema,
+	active_period_start_date: UnixMillisecondsSchema,
 
 	agency_id: z.string(),
 
