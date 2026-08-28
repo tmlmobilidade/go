@@ -267,7 +267,6 @@ export const API_ROUTES = Object.freeze({
 		ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/organizations/list`,
 
 		// PLATFORM
-		PLATFORM_AGENCIES: `${getModuleConfig('core', 'api_url')}/platform/agencies`,
 		PLATFORM_DOWNLOADS: `${getModuleConfig('core', 'api_url')}/platform/downloads`,
 		PLATFORM_ME: `${getModuleConfig('core', 'api_url')}/platform/me`,
 		PLATFORM_NOTIFICATIONS: `${getModuleConfig('core', 'api_url')}/platform/notifications`,
