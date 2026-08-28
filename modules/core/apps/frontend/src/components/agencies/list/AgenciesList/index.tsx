@@ -63,11 +63,7 @@ export function AgenciesList() {
 	// C. Render components
 
 	return (
-		<Pane
-			header={[
-				<AgenciesListHeader key="header" />,
-			]}
-		>
+		<Pane header={[<AgenciesListHeader key="header" />]}>
 			{agenciesData.error && <ErrorDisplay message={agenciesData.error} />}
 			<DataTable
 				columns={columns}

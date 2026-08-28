@@ -7,20 +7,20 @@ import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useRidesListFilterAcceptanceStatus } from '../filters/RidesListFilterAcceptanceStatus/use-rides-list-filter-acceptance-status';
-import { useRidesListFilterAgency } from '../filters/RidesListFilterAgency/use-rides-list-filter-agency';
-import { useRidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop } from '../filters/RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop/use-rides-list-filter-analysis-at-least-one-vehicle-event-on-last-stop';
-import { useRidesListFilterAnalysisExpectedApexValidationInterval } from '../filters/RidesListFilterAnalysisExpectedApexValidationInterval/use-rides-list-filter-analysis-expected-apex-validation-interval';
-import { useRidesListFilterAnalysisSimpleThreeEvents } from '../filters/RidesListFilterAnalysisSimpleThreeEvents/use-rides-list-filter-analysis-simple-three-events';
-import { useRidesListFilterAnalysisTransactionSequentiality } from '../filters/RidesListFilterAnalysisTransactionSequentiality/use-rides-list-filter-analysis-transaction-sequentiality';
-import { useRidesListFilterDateRange } from '../filters/RidesListFilterDateRange/use-rides-list-filter-date-range';
-import { useRidesListFilterDriver } from '../filters/RidesListFilterDriver/use-rides-list-filter-driver';
-import { useRidesListFilterEndDelayStatus } from '../filters/RidesListFilterEndDelayStatus/use-rides-list-filter-end-delay-status';
-import { useRidesListFilterOperationalStatus } from '../filters/RidesListFilterOperationalStatus/use-rides-list-filter-operational-status';
-import { useRidesListFilterSearch } from '../filters/RidesListFilterSearch/use-rides-list-filter-search';
-import { useRidesListFilterStartDelayStatus } from '../filters/RidesListFilterStartDelayStatus/use-rides-list-filter-start-delay-status';
-import { useRidesListFilterTicketingStatus } from '../filters/RidesListFilterTicketingStatus/use-rides-list-filter-ticketing-status';
-import { useRidesListFilterVehicle } from '../filters/RidesListFilterVehicle/use-rides-list-filter-vehicle';
+import { useRidesListFilterAcceptanceStatus } from './filters/RidesListFilterAcceptanceStatus/use-rides-list-filter-acceptance-status';
+import { useRidesListFilterAgency } from './filters/RidesListFilterAgency/use-rides-list-filter-agency';
+import { useRidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop } from './filters/RidesListFilterAnalysisAtLeastOneVehicleEventOnLastStop/use-rides-list-filter-analysis-at-least-one-vehicle-event-on-last-stop';
+import { useRidesListFilterAnalysisExpectedApexValidationInterval } from './filters/RidesListFilterAnalysisExpectedApexValidationInterval/use-rides-list-filter-analysis-expected-apex-validation-interval';
+import { useRidesListFilterAnalysisSimpleThreeEvents } from './filters/RidesListFilterAnalysisSimpleThreeEvents/use-rides-list-filter-analysis-simple-three-events';
+import { useRidesListFilterAnalysisTransactionSequentiality } from './filters/RidesListFilterAnalysisTransactionSequentiality/use-rides-list-filter-analysis-transaction-sequentiality';
+import { useRidesListFilterDateRange } from './filters/RidesListFilterDateRange/use-rides-list-filter-date-range';
+import { useRidesListFilterDriver } from './filters/RidesListFilterDriver/use-rides-list-filter-driver';
+import { useRidesListFilterEndDelayStatus } from './filters/RidesListFilterEndDelayStatus/use-rides-list-filter-end-delay-status';
+import { useRidesListFilterOperationalStatus } from './filters/RidesListFilterOperationalStatus/use-rides-list-filter-operational-status';
+import { useRidesListFilterSearch } from './filters/RidesListFilterSearch/use-rides-list-filter-search';
+import { useRidesListFilterStartDelayStatus } from './filters/RidesListFilterStartDelayStatus/use-rides-list-filter-start-delay-status';
+import { useRidesListFilterTicketingStatus } from './filters/RidesListFilterTicketingStatus/use-rides-list-filter-ticketing-status';
+import { useRidesListFilterVehicle } from './filters/RidesListFilterVehicle/use-rides-list-filter-vehicle';
 
 /* * */
 

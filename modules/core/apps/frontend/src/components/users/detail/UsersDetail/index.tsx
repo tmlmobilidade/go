@@ -10,6 +10,7 @@ import { Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
 
 import { useUsersAgenciesData } from '../../shared/use-users-agencies-data';
 import { useUsersRolesData } from '../../shared/use-users-roles-data';
+import { useUsersDetailData } from '../use-users-detail-data';
 import { useUsersDetailFormContext } from '../UsersDetailForm.context';
 
 /* * */
@@ -19,6 +20,8 @@ export function UsersDetail() {
 
 	//
 	// A. Setup variables
+
+	const { isLoading } = useUsersDetailData();
 
 	const { capabilities, form } = useUsersDetailFormContext();
 
@@ -68,7 +71,7 @@ export function UsersDetail() {
 	// C. Render components
 
 	return (
-		<Pane header={[<UsersDetailHeader key="header" />]}>
+		<Pane header={[<UsersDetailHeader key="header" />]} isLoading={isLoading}>
 			<UsersDetailBasicInfo />
 			<UsersDetailOrganizationAndRoles />
 			{permissionsConfig.map(item => (

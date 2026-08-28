@@ -9,6 +9,7 @@ import { Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
 
 import { useRolesDetailFormContext } from '../RolesDetailForm.context';
 import { useRolesAgenciesData } from '../use-roles-agencies-data';
+import { useRolesDetailData } from '../use-roles-detail-data';
 
 /* * */
 
@@ -17,6 +18,8 @@ export function RolesDetail() {
 
 	//
 	// A. Setup variables
+
+	const { isLoading } = useRolesDetailData();
 
 	const { capabilities, form } = useRolesDetailFormContext();
 
@@ -65,7 +68,7 @@ export function RolesDetail() {
 	// C. Render components
 
 	return (
-		<Pane header={[<RolesDetailHeader key="header" />]}>
+		<Pane header={[<RolesDetailHeader key="header" />]} isLoading={isLoading}>
 			<RolesDetailBasicInfo />
 			{permissionsConfig.map(item => (
 				<PermissionSection

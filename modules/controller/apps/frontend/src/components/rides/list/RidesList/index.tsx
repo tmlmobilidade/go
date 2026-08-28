@@ -2,14 +2,14 @@
 
 import { useRidesDetailRideId } from '@/components/rides/detail/shared/use-rides-detail-ride-id';
 import { RidesListFiltersBar } from '@/components/rides/list/filters/RidesListFiltersBar';
-import { RidesListHeader } from '@/components/rides/list/shared/RidesListHeader';
-import { useRidesListData } from '@/components/rides/list/shared/use-rides-list-data';
+import { RidesListHeader } from '@/components/rides/list/RidesListHeader';
 import { RidesListCellDrivers } from '@/components/rides/list/table/RidesListCellDrivers';
 import { RidesListCellDurationObserved } from '@/components/rides/list/table/RidesListCellDurationObserved';
 import { RidesListCellDurationScheduled } from '@/components/rides/list/table/RidesListCellDurationScheduled';
 import { RidesListCellPassengers } from '@/components/rides/list/table/RidesListCellPassengers';
 import { RidesListCellTimeObserved } from '@/components/rides/list/table/RidesListCellTimeObserved';
 import { RidesListCellVehicles } from '@/components/rides/list/table/RidesListCellVehicles';
+import { useRidesListData } from '@/components/rides/list/use-rides-list-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ControllerRidesListItem } from '@tmlmobilidade/go-controller-pckg-types';
 import { DataTable, DataTableColumn, displayUnixTimestamp, ErrorDisplay, GradeStatusDisplay, Label, OperationalDateDisplay, OperationalStatusDisplay, Pane, Section, SeenStatusDisplay, Tag } from '@tmlmobilidade/ui';

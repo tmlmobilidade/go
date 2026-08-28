@@ -3,7 +3,7 @@
 import { Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { RidesListFilterSearch } from '../../filters/RidesListFilterSearch';
+import { RidesListFilterSearch } from '../filters/RidesListFilterSearch';
 import { useRidesListData } from '../use-rides-list-data';
 
 /* * */

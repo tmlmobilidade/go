@@ -6,7 +6,7 @@ import { RideAnalysisAudit } from '@/components/rides/detail/audit';
 import { RidesDetailHeader } from '@/components/rides/detail/shared/RidesDetailHeader';
 import { useRidesDetailCurrentView } from '@/components/rides/detail/shared/use-rides-detail-current-view';
 import { useRidesDetailRideData } from '@/components/rides/detail/shared/use-rides-detail-ride-data';
-import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
+import { ErrorDisplay, Pane } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { useRidesDetailApexBankingTapsData } from '../use-rides-detail-apex-banking-taps-data';
@@ -62,12 +62,8 @@ export function RidesDetail() {
 	//
 	// C. Render components
 
-	if (isLoading) {
-		return <LoadingOverlay />;
-	}
-
 	return (
-		<Pane header={[<RidesDetailHeader key="header" />]}>
+		<Pane header={[<RidesDetailHeader key="header" />]} isLoading={isLoading}>
 			{isError && <ErrorDisplay message={isError} />}
 			{currentView === 'analysis' && <RideAnalysis />}
 			{currentView === 'audit' && <RideAnalysisAudit />}

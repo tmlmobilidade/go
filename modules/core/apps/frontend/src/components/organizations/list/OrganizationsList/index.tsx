@@ -51,11 +51,7 @@ export function OrganizationsList() {
 	// C. Render components
 
 	return (
-		<Pane
-			header={[
-				<OrganizationsListHeader key="header" />,
-			]}
-		>
+		<Pane header={[<OrganizationsListHeader key="header" />]}>
 			{organizationsData.error && <ErrorDisplay message={organizationsData.error} />}
 			<DataTable
 				columns={columns}
