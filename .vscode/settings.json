@@ -15,30 +15,12 @@
 
 	// Auto fix
 	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": "explicit"
+		"source.fixAll.oxc": "always"
 	},
 
-	"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+	"editor.defaultFormatter": "oxc.oxc-vscode",
 	"editor.formatOnSave": false,
 	"editor.tabSize": 4,
-
-	"eslint.format.enable": true,
-	// Enable eslint for all supported languages
-	"eslint.validate": [
-		"javascript",
-		"javascriptreact",
-		"typescript",
-		"typescriptreact",
-		"vue",
-		"html",
-		"markdown",
-		"json",
-		"jsonc",
-		"yaml",
-		"toml",
-		"astro"
-	],
-	"eslint.workingDirectories": [{ "mode": "auto" }],
 	"files.eol": "\n",
 
 	"github.copilot.chat.commitMessageGeneration.instructions": [
@@ -48,8 +30,6 @@
 	],
 
 	"less.validate": false,
-	// Disable the default formatter, use eslint instead
-	"prettier.enable": false,
 	"scss.validate": false,
 
 	"svg.preview.background": "custom",
