@@ -37,6 +37,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",

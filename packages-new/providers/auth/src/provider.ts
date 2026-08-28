@@ -2,8 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type LoginDto, type Session } from '@tmlmobilidade/go-types-core';
-import { type CreateUserDto, type Organization, type User } from '@tmlmobilidade/go-types-core';
+import { type CreateUserDto, type LoginDto, type Organization, type Session, type User } from '@tmlmobilidade/go-types-core';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomToken } from '@tmlmobilidade/strings';
