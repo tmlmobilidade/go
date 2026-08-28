@@ -9,7 +9,7 @@ import { PlanDetailSectionFeedInfo } from '@/components/plans/detail/PlanDetailS
 import { PlanDetailSectionPcgiLegacy } from '@/components/plans/detail/PlanDetailSectionPcgiLegacy';
 import { PlanDetailSectionApexFile } from '@/components/plans/detail/PlansDetailSectionApexFile';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ErrorDisplay, HasPermission, Pane } from '@tmlmobilidade/ui';
+import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 import { usePlansDetailData } from '../use-plans-detail-data';
 
@@ -27,6 +27,10 @@ export function PlanDetail() {
 
 	//
 	// B. Render components
+
+	if (!planDetailContext.data.plan) {
+		return <LoadingOverlay />;
+	}
 
 	return (
 		<Pane header={[<PlanDetailHeader key="header" />]} isLoading={isLoading}>
