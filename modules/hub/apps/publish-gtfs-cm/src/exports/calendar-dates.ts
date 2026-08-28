@@ -2,16 +2,16 @@
 /* eslint-disable perfectionist/sort-interfaces */
 
 import { type MergedGtfsExportConfig } from '@/types.js';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
 export interface ExportedCalendarDatesRow {
 	service_id: string
-	date: OperationalDate
+	date: OperationalDateInt
 	exception_type: 1 // Only type 1 (added) is supported in merged exports
 }
 
@@ -24,7 +24,7 @@ export async function exportCalendarDatesRows(planData: Plan, sqlTables: GtfsSQL
 		for (const operationalDate of operationalDatesList.sort()) {
 			const parsedCalendarDatesRow: ExportedCalendarDatesRow = {
 				service_id: `[${planData._id}]${serviceId}`,
-				date: operationalDate,
+				date: OperationalDateIntSchema.parse(operationalDate),
 				exception_type: 1,
 			};
 			await exportConfig.writers.calendar_dates.write(parsedCalendarDatesRow);

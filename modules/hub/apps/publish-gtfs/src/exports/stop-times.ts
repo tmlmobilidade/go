@@ -5,9 +5,9 @@ import { type ExportGtfsContext } from '@/types/context.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsBinary, type GtfsPickupDropoffType } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Plan } from '@tmlmobilidade/types';
 import { getPublicTripId } from '@tmlmobilidade/utils';
 
 /* * */
@@ -39,10 +39,9 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 	// Fetch all stops for the current agency
 	// and build a map of flag IDs to stop_id
 
-	const allStopsData = await goDb.infrastructure.stops.findMany(
-		{ 'flags.agency_ids': { $in: [planData.agency_id] } },
-		{ sort: { _id: 1 }, projection: { _id: 1, flags: 1 } },
-	);
+	const allStopsData = await goDb.infrastructure.stops.findMany({
+		'flags.agency_ids': { $in: [planData.agency_id] },
+	});
 
 	const allStopsMap = new Map<string, number>();
 
@@ -67,8 +66,8 @@ export async function exportStopTimesFile(planData: Plan, sqlTables: GtfsSQLTabl
 			stop_sequence: stopTimeData.stop_sequence,
 			pickup_type: stopTimeData.pickup_type ?? '0',
 			drop_off_type: stopTimeData.drop_off_type ?? '0',
-			continuous_pickup: stopTimeData.continuous_pickup ?? '0',
-			continuous_drop_off: stopTimeData.continuous_drop_off ?? '0',
+			continuous_pickup: '0',
+			continuous_drop_off: '0',
 			shape_dist_traveled: stopTimeData.shape_dist_traveled ?? 0,
 			timepoint: stopTimeData.timepoint ?? '0',
 		};

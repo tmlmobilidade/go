@@ -4,9 +4,9 @@
 import { type ExportGtfsContext } from '@/types/context.js';
 import { GtfsTernary, type GtfsTripDirection, GtfsWheelchairBoarding } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Plan } from '@tmlmobilidade/types';
 import { getPublicPatternId, getPublicRouteId, getPublicServiceId, getPublicShapeId, getPublicTripId } from '@tmlmobilidade/utils';
 
 /* * */

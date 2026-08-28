@@ -5,9 +5,9 @@ import { type MergedGtfsExportConfig } from '@/types.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { GtfsBinary, GtfsPickupDropoffType } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
 import { Logger } from '@tmlmobilidade/logger';
-import { type Plan } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -30,7 +30,7 @@ export interface ExportedStopTimesRow {
 export async function exportStopTimesRows(planData: Plan, sqlTables: GtfsSQLTables, exportConfig: MergedGtfsExportConfig) {
 	//
 
-	const allStopsList = await goDb.infrastructure.stops.findMany({}, { projection: { _id: 1, flags: 1, legacy_ids: 1 } });
+	const allStopsList = await goDb.infrastructure.stops.findMany();
 	const allStopsMap = new Map<string, string>();
 
 	allStopsList.forEach((stopData) => {
@@ -52,8 +52,8 @@ export async function exportStopTimesRows(planData: Plan, sqlTables: GtfsSQLTabl
 			stop_sequence: stopTimeData.stop_sequence,
 			pickup_type: stopTimeData.pickup_type ?? '0',
 			drop_off_type: stopTimeData.drop_off_type ?? '0',
-			continuous_pickup: stopTimeData.continuous_pickup ?? '0',
-			continuous_drop_off: stopTimeData.continuous_drop_off ?? '0',
+			continuous_pickup: '0',
+			continuous_drop_off: '0',
 			shape_dist_traveled: stopTimeData.shape_dist_traveled ?? 0,
 			timepoint: stopTimeData.timepoint ?? '0',
 		};

@@ -35,10 +35,10 @@ export async function exportStopsFile(agencyIds: string[], context: ExportGtfsCo
 	//
 	// Get all the stops for the specified agency IDs
 
-	const allStopsList = await goDb.infrastructure.stops.findMany(
-		{ 'flags.agency_ids': { $in: agencyIds }, 'is_deleted': false },
-		{ sort: { _id: 1 } },
-	);
+	const allStopsList = await goDb.infrastructure.stops.findMany({
+		'flags.agency_ids': { $in: agencyIds },
+		'is_deleted': false,
+	});
 
 	//
 	// Export the stops
