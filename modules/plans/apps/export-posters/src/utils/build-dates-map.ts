@@ -7,13 +7,30 @@ import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dat
 
 /* * */
 
+/**
+ * Get the Hitouch period ID for a given period.
+ * @param period - The period to get the Hitouch period ID for.
+ * @returns The Hitouch period ID.
+ */
 function getHitouchPeriodId(period?: YearPeriod): GtfsDate['period'] {
 	if (period?.code === '3' || period?._id === 'UW2U0' || period?.name?.toLowerCase().includes('verão')) return '3';
 	if (period?.code === '2' || period?._id === '2KIUJ' || period?.name?.toLowerCase().includes('férias')) return '2';
 	return '1';
 }
 
+/**
+ * Build a map of dates to GtfsDate objects.
+ * @param dateRange - The date range to build the map for.
+ * @param holidays - The holidays to build the map for.
+ * @param periods - The periods to build the map for.
+ * @returns A map of dates to GtfsDate objects.
+ */
 export function buildDatesMap(dateRange: { end: OperationalDate, start: OperationalDate }, holidays: Holiday[], periods: YearPeriod[]): Map<OperationalDate, GtfsDate> {
+	//
+
+	//
+	// Build maps of holidays and periods by date
+
 	const holidayByDate = new Map<OperationalDate, string[]>();
 	const periodByDate = new Map<OperationalDate, YearPeriod>();
 
