@@ -1,22 +1,17 @@
 'use client';
 
 import { IconAlertCircle, IconCircleCheck, IconInfoCircle, IconServerCog } from '@tabler/icons-react';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type AppBanner, type AppBannerVariant } from '@tmlmobilidade/go-types-core';
+import { type AppConfigBannerVariant } from '@tmlmobilidade/go-types-core';
 import { type ReactNode } from 'react';
-import useSWR from 'swr';
 
 import styles from './styles.module.css';
 
 import { Surface } from '../../layout/Surface';
+import { useAppConfigBannerData } from './use-app-config-banner-data';
 
 /* * */
 
-export type AppWrapperBannerVariant = AppBannerVariant;
-
-/* * */
-
-const VARIANT_ICONS: Record<AppWrapperBannerVariant, ReactNode> = {
+const VARIANT_ICONS: Record<AppConfigBannerVariant, ReactNode> = {
 	danger: <IconAlertCircle size={18} />,
 	info: <IconInfoCircle size={18} />,
 	success: <IconCircleCheck size={18} />,
@@ -29,24 +24,22 @@ export function AppWrapperBanner() {
 	//
 
 	//
-	// A. Fetch data
+	// A. Setup variables
 
-	const { data: banner } = useSWR<AppBanner | null, Error>(API_ROUTES.core.APP_CONFIGS_APP_BANNER, {
-		refreshInterval: 60_000,
-	});
+	const { data } = useAppConfigBannerData();
 
 	//
 	// B. Render components
 
-	if (!banner?.enabled || !banner.title) {
+	if (!data?.enabled || !data?.title) {
 		return null;
 	}
 
 	return (
 		<Surface>
-			<div className={styles.root} data-variant={banner.variant} role="status">
-				{VARIANT_ICONS[banner.variant]}
-				<p className={styles.title}>{banner.title}</p>
+			<div className={styles.root} data-variant={data.variant} role="status">
+				{VARIANT_ICONS[data.variant]}
+				<p className={styles.title}>{data.title}</p>
 			</div>
 		</Surface>
 	);

@@ -2,12 +2,12 @@
 
 import { z } from 'zod';
 
-import { AppBannerSchema } from './app-banner.js';
+import { AppConfigBannerSchema } from './banner/banner.js';
 
 /* * */
 
 export const AppConfigSchema = z.discriminatedUnion('_id', [
-	AppBannerSchema,
+	AppConfigBannerSchema,
 ]);
 
 /* * */
