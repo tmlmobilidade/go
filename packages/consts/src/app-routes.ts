@@ -324,7 +324,7 @@ export const API_ROUTES = Object.freeze({
 		BASE: `${getModuleConfig('exporter', 'api_url')}`,
 
 		// EXPORTER
-		EXPORTER_CREATE: `${getModuleConfig('exporter', 'api_url')}/exporter`,
+		EXPORTER_CREATE: `${getModuleConfig('exporter', 'api_url')}/exporter/create`,
 		EXPORTER_DETAIL_DOWNLOAD: (id: string) => `${getModuleConfig('exporter', 'api_url')}/exporter/${encodeURIComponent(id)}/download`,
 		EXPORTER_LIST: `${getModuleConfig('exporter', 'api_url')}/exporter/list`,
 	},
