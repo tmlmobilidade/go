@@ -2,8 +2,8 @@
 /* eslint-disable perfectionist/sort-objects */
 
 import { type GtfsV29ExportConfig } from '@/types.js';
+import { type Agency } from '@tmlmobilidade/go-types-core';
 import { GtfsStrictV29Agency } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type Agency } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -15,7 +15,7 @@ import { type Agency } from '@tmlmobilidade/types';
 export function parseAgency(agencyData: Agency): GtfsStrictV29Agency {
 	try {
 		return {
-			agency_code: agencyData.code,
+			// agency_code: agencyData.code,
 			agency_email: agencyData.public_email || '',
 			agency_fare_url: agencyData.fare_url || '',
 			agency_id: agencyData.code,

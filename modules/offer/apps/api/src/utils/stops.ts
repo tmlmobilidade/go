@@ -1,5 +1,5 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 
 export function createImportedStopResolver(agencyId?: string) {
 	const cache = new Map<string, Promise<null | Stop>>();

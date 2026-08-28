@@ -1,8 +1,8 @@
 import { GtfsV29ExportConfig } from '@/types.js';
 import { getCurrentTimestamp } from '@/utils.js';
+import { type Agency } from '@tmlmobilidade/go-types-core';
 import { validateGtfsDate } from '@tmlmobilidade/go-types-gtfs';
 import { type GtfsStrictV29FeedInfo } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type Agency } from '@tmlmobilidade/types';
 
 /**
  * Parses feed info data into GTFS feed_info.txt format

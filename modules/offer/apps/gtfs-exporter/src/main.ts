@@ -4,7 +4,7 @@ import { exportAgencyFile, exportCalendarDates, exportCalendarMap, exportFareAtt
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/types.js';
 import { rewriteServiceIds, rewriteTripIds } from '@/utils/rewrite-service-ids.js';
 import { ServiceRegistry } from '@/utils/service-registry.js';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { initSentryNode, Logger } from '@tmlmobilidade/logger';
 import fs from 'node:fs';

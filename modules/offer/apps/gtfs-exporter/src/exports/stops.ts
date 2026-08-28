@@ -3,7 +3,8 @@
 
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { type GtfsStrictV29Stops } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type Municipality, type Stop } from '@tmlmobilidade/types';
+import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
+import { type Municipality } from '@tmlmobilidade/go-types-locations';
 
 import { getAgencyStopId } from '../utils/get-agency-stop-id.js';
 

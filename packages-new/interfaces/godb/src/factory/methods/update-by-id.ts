@@ -15,7 +15,7 @@ import { type UpdatableDocument } from '../types/updatable-document.type.js';
  * @param options Optional options for the update operation.
  * @returns A promise that resolves to the result of the update operation.
  */
-export async function updateById<T extends Document>(context: GoDbCollectionContext<T>, _id: string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T> {
+export async function updateById<T extends Document>(context: GoDbCollectionContext<T>, _id: number | string, updateFields: UpdatableDocument<T>, options?: MinimalOptions): Promise<T> {
 	//
 
 	if (!context.schema) {

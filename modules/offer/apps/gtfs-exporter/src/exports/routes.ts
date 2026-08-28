@@ -4,9 +4,9 @@
 import { getTypologyDetails } from '@/fetchers/typology.js';
 import { type GtfsV29ExportConfig } from '@/types.js';
 import { getLineType } from '@/utils.js';
+import { type Agency } from '@tmlmobilidade/go-types-core';
 import { GtfsStrictV29Routes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Line, pathTypeMapper, Pattern, Route, transportTypeMapper, Typology } from '@tmlmobilidade/go-types-offer';
-import { type Agency } from '@tmlmobilidade/types';
 
 /* * */
 
@@ -28,11 +28,15 @@ export function parseRoute(
 	try {
 		return {
 			agency_id: agencyData.code,
-			cemv_support: '0',
+			// cemv_support: '0',
+			continuous_drop_off: '0',
+			continuous_pickup: '0',
+			route_desc: '',
+			route_remarks: '',
 			line_id: lineData.code,
 			line_short_name: lineData.code.replace(/  +/g, ' ').trim(),
 			line_long_name: lineData.name.replaceAll(',', '').replace(/  +/g, ' ').trim(),
-			line_type: getLineType(typologyData.code),
+			// line_type: getLineType(typologyData.code),
 			route_id: routeData.code,
 			route_short_name: lineData.code.replace(/  +/g, ' ').trim(),
 			route_long_name: routeData.name.replaceAll(',', '').replace(/  +/g, ' ').trim(),

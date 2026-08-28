@@ -1,5 +1,5 @@
+import { Comment } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Comment } from '@tmlmobilidade/types';
 import { compareObjects } from '@tmlmobilidade/utils';
 
 function shouldSkipKey(key: string, exclude?: string[]) {

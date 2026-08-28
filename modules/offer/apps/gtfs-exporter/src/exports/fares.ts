@@ -2,8 +2,9 @@
 /* * */
 
 import { type GtfsV29ExportConfig } from '@/types.js';
+import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type Fare, type Line, type Route } from '@tmlmobilidade/go-types-offer';
-import { type Agency, type GtfsTMLFareAttributes, type GtfsTMLFareRules } from '@tmlmobilidade/types';
+import { type GtfsTMLFareAttributes, type GtfsTMLFareRules } from '@tmlmobilidade/types';
 
 /* * */
 
