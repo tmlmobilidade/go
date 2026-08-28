@@ -16,6 +16,5 @@ export async function findById<T extends Document>(context: GoDbCollectionContex
 	return await context.collection.findOne<T>({ _id: { $eq: _id as Filter<T>['_id'] } }, {
 		projection: options?.projection,
 		session: options?.session,
-		sort: options?.sort,
 	});
 }

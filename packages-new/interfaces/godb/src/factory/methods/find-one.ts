@@ -16,6 +16,5 @@ export async function findOne<T extends Document>(context: GoDbCollectionContext
 	return await context.collection.findOne<T>(filter, {
 		projection: options?.projection,
 		session: options?.session,
-		sort: options?.sort,
 	});
 }
