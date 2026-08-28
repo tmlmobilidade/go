@@ -54,5 +54,5 @@ export function validateUnixTimestamp(value: number | string): UnixTimestamp {
 	if (valueAsNumber < 1e10) throw new Error(`Invalid value '${value}', expected a number in milliseconds but received a number smaller than 1e10`);
 	const parsedDate = DateTime.fromMillis(valueAsNumber);
 	if (!parsedDate.isValid) throw new Error(`Invalid UnixTimestamp value '${value}', explanation: ${parsedDate.invalidExplanation}`);
-	return parsedDate.toMillis() as UnixTimestamp;
+	return valueAsNumber as UnixTimestamp;
 }
