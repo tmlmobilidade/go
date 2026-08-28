@@ -41,8 +41,8 @@ export async function findRideForTrain({ destinationId, now }: FindRideForTrainP
 	const rides = await labDb.operation.rides.queryFromString(findRidesForTrainQuery, {
 		1: ML_AGENCY_ID,
 		2: destinationStop.name,
-		3: now.minus({ hours: 1 }).unix_timestamp,
-		4: now.plus({ hours: 1 }).unix_timestamp,
+		3: now.minus({ hours: 1 }).unix_milliseconds,
+		4: now.plus({ hours: 1 }).unix_milliseconds,
 	});
 
 	const ride = rides[Math.floor(rides.length / 2)];

@@ -173,7 +173,7 @@ export function StopsDetailContextProvider({ children, stopId }: PropsWithChildr
 					const isFirstStop = stopTime.stop_sequence === patternData.path[0].stop_sequence;
 					const isLastStop = stopTime.stop_sequence === patternData.path[patternData.path.length - 1].stop_sequence;
 					// Detect the temporal status of this stop time
-					const isPast = Number(effectiveArrivalMs) < Dates.now('Europe/Lisbon').unix_timestamp;
+					const isPast = Number(effectiveArrivalMs) < Dates.now('Europe/Lisbon').unix_milliseconds;
 					const isRealtime = !!estimatedArrivalMs && operationalDate.isTodaySelected;
 					// Add this stop time to the timetable array
 					timetableDataForSelectedDate.push({

@@ -90,7 +90,7 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 	//
 	// B. Transform data
 
-	const oneWeekFromNowMs = useMemo(() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_timestamp, []);
+	const oneWeekFromNowMs = useMemo(() => Dates.now('Europe/Lisbon').plus({ weeks: 1 }).endOf('day').unix_milliseconds, []);
 
 	const searchResultsData = useSearch<HubAlert>({
 		accessors: ['title', 'description'],
@@ -184,13 +184,13 @@ export function AlertsListContextProvider({ children }: PropsWithChildren) {
 			const formattedDate = alertStartDate.toFormat('d LLLL yyyy', { locale: displayLocale });
 
 			let formattedGroupLabel: string;
-			if (alertStartDateCompare.unix_timestamp === today.unix_timestamp) {
+			if (alertStartDateCompare.unix_milliseconds === today.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.today', '', { value: formattedDate });
-			} else if (alertStartDateCompare.unix_timestamp === tomorrow.unix_timestamp) {
+			} else if (alertStartDateCompare.unix_milliseconds === tomorrow.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.tomorrow', '', { value: formattedDate });
-			} else if (alertStartDateCompare.unix_timestamp === yesterday.unix_timestamp) {
+			} else if (alertStartDateCompare.unix_milliseconds === yesterday.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.yesterday', '', { value: formattedDate });
-			} else if (alertStartDateCompare.unix_timestamp < yesterday.unix_timestamp) {
+			} else if (alertStartDateCompare.unix_milliseconds < yesterday.unix_milliseconds) {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.past', '', { value: formattedDate });
 			} else {
 				formattedGroupLabel = t('default:alerts.AlertsListGroup.titles.future', '', { value: formattedDate });

@@ -27,7 +27,7 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		control_destination_stop_id: doc.payload.controlServiceInfo.controlDestinationStopLongID,
 		control_origin_stop_id: doc.payload.controlServiceInfo.controlOriginStopLongID,
 		control_status: ApexControlStatusSchema.parse(String(doc.payload.controlInfo.controlStatus)),
-		created_at: transactionDateValue.unix_timestamp,
+		created_at: transactionDateValue.unix_milliseconds,
 		device_id: doc.payload.operatorInfo.deviceID,
 		environment_status: ApexEnvironmentStatusSchema.parse(String(doc.payload.controlInfo.environmentStatus)),
 		inspection_id: null,
@@ -41,7 +41,7 @@ export function parseRawApexTransactionInspectionV20IntoSimplifiedApexInspection
 		product_id: doc.payload.controlInfo.productLongID,
 		received_at: doc.received_at,
 		trip_id: doc.payload.controlServiceInfo.journeyID,
-		updated_at: Dates.now('utc').unix_timestamp,
+		updated_at: Dates.now('utc').unix_milliseconds,
 		vehicle_id: String(doc.payload.controlServiceInfo.vehicleID),
 	};
 

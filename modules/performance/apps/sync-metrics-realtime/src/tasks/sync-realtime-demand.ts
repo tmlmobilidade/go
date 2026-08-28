@@ -44,7 +44,7 @@ export const syncRealtimeDemand = async () => {
 		.fromOperationalDate(currentOperationalDate, 'Europe/Lisbon')
 		.startOf('day')
 		.set({ hour: 4 })
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	const previousOperationalDate = Dates
 		.now('Europe/Lisbon')
@@ -55,12 +55,12 @@ export const syncRealtimeDemand = async () => {
 		.fromOperationalDate(previousOperationalDate, 'Europe/Lisbon')
 		.startOf('day')
 		.set({ hour: 4 })
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	const previousUntilNowAsUnixMilliseconds = Dates
 		.now('Europe/Lisbon')
 		.minus({ days: 7 })
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	//
 	// Define agencies

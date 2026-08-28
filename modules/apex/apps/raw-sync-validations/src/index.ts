@@ -61,7 +61,7 @@ async function main() {
 					});
 				}
 			},
-			startDate: earliestDate.unix_timestamp,
+			startDate: earliestDate.unix_milliseconds,
 		});
 
 		Logger.terminate(`Run took ${globalTimer.get()}.`);

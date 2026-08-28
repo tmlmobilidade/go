@@ -21,7 +21,7 @@ export async function sendPasswordResetEmailHandler(request: FastifyRequest<{ Bo
 	// Create a verification token entry in the database
 	// with an expiration time of 1 hour
 	await goDb.core.verificationTokens.insertOne({
-		expires_at: Dates.now('utc').plus({ hours: 1 }).unix_timestamp,
+		expires_at: Dates.now('utc').plus({ hours: 1 }).unix_milliseconds,
 		token: randomToken,
 		user_id: foundUser._id,
 	});

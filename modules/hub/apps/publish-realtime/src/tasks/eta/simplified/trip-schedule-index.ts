@@ -26,7 +26,7 @@ function gtfsArrivalTimeToUnixMs(operationalDate: string, arrivalTime: string): 
 
 	return Dates.fromOperationalDate(operationalDate, 'Europe/Lisbon')
 		.plus({ hours, minutes, seconds })
-		.unix_timestamp;
+		.unix_milliseconds;
 };
 
 function indexPatterns(patternGroups: HubPattern[]): TripScheduleIndex {

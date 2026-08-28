@@ -24,8 +24,8 @@ export async function publishGtfsRtFeed() {
 		{
 			$and: [
 				{
-					publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp },
-					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
+					publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_milliseconds },
+					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_milliseconds },
 					publish_status: 'published',
 				},
 			],
@@ -54,7 +54,7 @@ export async function publishGtfsRtFeed() {
 		header: {
 			gtfs_realtime_version: '2.0',
 			incrementality: 'FULL_DATASET',
-			timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			timestamp: Dates.now('Europe/Lisbon').unix_milliseconds,
 		},
 	};
 

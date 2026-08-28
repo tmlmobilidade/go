@@ -46,12 +46,12 @@ export function useFilterStateDateRange(key: string, defaultStart?: null | UnixM
 
 	const defaultStartValueSecondsPrecision = useMemo(() => {
 		if (!defaultStart) return null;
-		return Dates.fromUnixMilliseconds(defaultStart).set({ millisecond: 0 }).unix_timestamp;
+		return Dates.fromUnixMilliseconds(defaultStart).set({ millisecond: 0 }).unix_milliseconds;
 	}, [defaultStart]);
 
 	const defaultEndValueSecondsPrecision = useMemo(() => {
 		if (!defaultEnd) return null;
-		return Dates.fromUnixMilliseconds(defaultEnd).set({ millisecond: 0 }).unix_timestamp;
+		return Dates.fromUnixMilliseconds(defaultEnd).set({ millisecond: 0 }).unix_milliseconds;
 	}, [defaultEnd]);
 
 	const [urlValueStart, setUrlValueStart] = useQueryState(`${key}-start`, parseAsInteger.withDefault(defaultStartValueSecondsPrecision));

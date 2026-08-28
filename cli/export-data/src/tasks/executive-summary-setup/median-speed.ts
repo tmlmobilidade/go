@@ -30,8 +30,8 @@
 
 // 	const ridesCollection = await goDb.operation.rides.getCollection();
 
-// 	// const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp;
-// 	// const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp;
+// 	// const startDateStr = Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_milliseconds;
+// 	// const endDateStr = Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_milliseconds;
 
 // 	const pipeline = [
 // 		{

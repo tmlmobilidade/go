@@ -111,7 +111,7 @@ export async function main() {
 	// Mark plans as 'waiting' in the database.
 
 	for (const planData of allPlansData) {
-		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'waiting', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+		await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'waiting', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 	}
 
 	//
@@ -135,12 +135,12 @@ export async function main() {
 			const isEligiblePlan = await evaluatePlan(planData);
 
 			if (!isEligiblePlan) {
-				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+				await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'skipped', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 				Logger.info({ message: `Skipped plan ${planData._id} as it was ineligible for processing.` });
 				continue;
 			}
 
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'processing', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'processing', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 			//
 			// Get the operation file URL
@@ -238,7 +238,7 @@ export async function main() {
 			//
 			// Mark the plan as complete in the database.
 
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'complete', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'complete', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 			Logger.success(`Processed plan ${planData._id} in ${planTimer.get()}.`);
 
@@ -253,7 +253,7 @@ export async function main() {
 
 			//
 		} catch (error) {
-			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'error', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+			await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.hub_gtfs.last_hash': null, 'apps.hub_gtfs.status': 'error', 'apps.hub_gtfs.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 			Logger.error({ error, message: `Error processing plan ${planData._id}` });
 			Logger.divider();
 		}

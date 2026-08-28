@@ -29,14 +29,14 @@ export async function createRideAcceptance(ride: RideWithAnalyses) {
 			acceptance_status: pass ? 'accepted' : 'justification_required',
 			analysis_summary: analysisSummary,
 			comments: [],
-			created_at: Dates.now('utc').unix_timestamp,
+			created_at: Dates.now('utc').unix_milliseconds,
 			created_by: 'system',
 			is_locked: false,
 			justification: null,
 			overrides: {
 				trip_id: null,
 			},
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 			updated_by: 'system',
 		};
 

@@ -57,7 +57,7 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 
 	const validationData: Omit<CreateGtfsValidationDto, 'file_id'> = {
 		agency_id: requestData.fields.agency_id['value'] as string,
-		created_at: Dates.now('utc').unix_timestamp,
+		created_at: Dates.now('utc').unix_milliseconds,
 		created_by: request.me._id,
 		gtfs_agency: JSON.parse(requestData.fields.gtfs_agency['value'] as string) as GtfsAgency,
 		gtfs_feed_info: JSON.parse(requestData.fields.gtfs_feed_info['value'] as string) as GtfsFeedInfo,

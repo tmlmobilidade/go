@@ -13,7 +13,7 @@ export async function cleanExpiredVerificationTokens() {
 	try {
 		const timer = new Timer();
 		Logger.info({ message: `Cleaning expired "verification_tokens" documents...` });
-		const now = Dates.now('utc').unix_timestamp;
+		const now = Dates.now('utc').unix_milliseconds;
 		const deleteResult = await goDb.core.verificationTokens.deleteMany({ expires_at: { $lt: now } });
 		Logger.success(`Deleted ${deleteResult.deletedCount} expired "verification_tokens" documents in ${timer.get()}.`);
 	} catch (error) {

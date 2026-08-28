@@ -58,7 +58,7 @@ export async function getMeHandler(request: FastifyRequest, reply: FastifyReply<
 	//
 	// Add seen_last_at for this user asynchronously
 
-	await goDb.core.users.updateById(userData._id, { seen_last_at: Dates.now('utc').unix_timestamp });
+	await goDb.core.users.updateById(userData._id, { seen_last_at: Dates.now('utc').unix_milliseconds });
 
 	//
 }

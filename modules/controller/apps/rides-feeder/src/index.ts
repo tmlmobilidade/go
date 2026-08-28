@@ -63,7 +63,7 @@ async function main() {
 
 				if (!currentPlan.operation_file_id) {
 					Logger.error({ message: `Skip processing: No operation file found.` });
-					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+					await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 					continue;
 				}
 
@@ -82,7 +82,7 @@ async function main() {
 
 				//
 			} catch (error) {
-				await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+				await plansCollection.updateOne({ _id: { $eq: currentPlan._id } }, { $set: { 'apps.controller.last_hash': null, 'apps.controller.status': 'error', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 				Logger.error({ error, message: `Error processing plan ${currentPlan._id}` });
 				Logger.divider();
 			}

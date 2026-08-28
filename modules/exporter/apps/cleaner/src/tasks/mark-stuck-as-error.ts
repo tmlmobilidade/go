@@ -15,7 +15,7 @@ const PROCESSING_TIMEOUT_HOURS = 2;
 export async function markStuckProcessingExportsAsError() {
 	//
 
-	const cutoffTimestamp = Dates.now('local').minus({ hours: PROCESSING_TIMEOUT_HOURS }).unix_timestamp;
+	const cutoffTimestamp = Dates.now('local').minus({ hours: PROCESSING_TIMEOUT_HOURS }).unix_milliseconds;
 
 	const stuckExports = await goDb.core.exports.findMany({ created_at: { $lt: cutoffTimestamp }, processing_status: ProcessingStatusSchema.enum.processing });
 

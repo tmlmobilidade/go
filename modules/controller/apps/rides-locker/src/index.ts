@@ -33,7 +33,7 @@ async function main() {
 
 		const totalRides = 0;
 		performInTimeChunks({
-			endDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK - 2 }).unix_timestamp,
+			endDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK - 2 }).unix_milliseconds,
 			intervalHrs: 1,
 			onChunk: async (chunk) => {
 				//
@@ -70,7 +70,7 @@ async function main() {
 				Logger.spacer(1);
 				Logger.divider();
 			},
-			startDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK }).unix_timestamp,
+			startDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK }).unix_milliseconds,
 		});
 
 		Logger.info({ message: `Total rides: ${totalRides}. (${globalTimer.get()})` });

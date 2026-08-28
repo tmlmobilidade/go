@@ -87,7 +87,7 @@ export function DateTimePicker({ clearable, description, disabled, fullWidth, la
 		if (!value) return onChange(null);
 		const parsedValue = Dates
 			.fromFormat(value, 'yyyy-LL-dd HH:mm:ss', 'Europe/Lisbon')
-			.unix_timestamp;
+			.unix_milliseconds;
 		onChange(parsedValue);
 	};
 

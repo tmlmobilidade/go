@@ -51,7 +51,7 @@ export function UnixMillisecondsDisplay({ showDate = false, showSeconds = false,
 		return format.join('').trim();
 	}, [showDate, showSeconds, showTime]);
 
-	const unixTimestampDisplayValue = useMemo(() => {
+	const unixMillisecondsDisplayValue = useMemo(() => {
 		// Skip if no value or value is Infinity
 		if (!value) return;
 		if (value === Infinity || value === -Infinity) return;
@@ -62,7 +62,7 @@ export function UnixMillisecondsDisplay({ showDate = false, showSeconds = false,
 	//
 	// B. Render components
 
-	if (!unixTimestampDisplayValue) return;
+	if (!unixMillisecondsDisplayValue) return;
 
-	return <Tag label={unixTimestampDisplayValue} variant="muted" />;
+	return <Tag label={unixMillisecondsDisplayValue} variant="muted" />;
 }

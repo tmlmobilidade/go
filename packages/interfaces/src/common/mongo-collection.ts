@@ -213,9 +213,9 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			return {
 				...doc,
 				_id: doc._id || generateRandomString({ length: 5 }),
-				created_at: doc.created_at || Dates.now('utc').unix_timestamp,
+				created_at: doc.created_at || Dates.now('utc').unix_milliseconds,
 				created_by: doc.created_by || 'system',
-				updated_at: doc.updated_at || Dates.now('utc').unix_timestamp,
+				updated_at: doc.updated_at || Dates.now('utc').unix_milliseconds,
 				updated_by: doc.updated_by || 'system',
 			} as unknown as OptionalUnlessRequiredId<T>;
 		});
@@ -276,9 +276,9 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			}
 		}
 		// Add default fields if they are missing from the original document
-		if (!doc.created_at) parsedDocument.created_at = Dates.now('utc').unix_timestamp;
+		if (!doc.created_at) parsedDocument.created_at = Dates.now('utc').unix_milliseconds;
 		if (!doc.created_by) parsedDocument.created_by = 'system';
-		if (!doc.updated_at) parsedDocument.updated_at = Dates.now('utc').unix_timestamp;
+		if (!doc.updated_at) parsedDocument.updated_at = Dates.now('utc').unix_milliseconds;
 		if (!doc.updated_by) parsedDocument.updated_by = 'system';
 		// Add the ID if it is missing from the original document
 		// If the document is missing any default fields, add them
@@ -374,7 +374,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	public async updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: TUpdate & { updated_at?: UnixMilliseconds, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>> {
 		let parsedUpdateFields = {
 			...updateFields,
-			updated_at: updateFields.updated_at || Dates.now('utc').unix_timestamp,
+			updated_at: updateFields.updated_at || Dates.now('utc').unix_milliseconds,
 			updated_by: updateFields.updated_by || 'system',
 		};
 
@@ -386,7 +386,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			}
 		}
 
-		const result = await this.mongoCollection.updateMany(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
+		const result = await this.mongoCollection.updateMany(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_milliseconds } } as unknown as Partial<T>, options);
 
 		if (options?.returnResults === false) return result as TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>;
 
@@ -427,7 +427,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 			}
 		}
 
-		const result = await this.mongoCollection.updateOne(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_timestamp } } as unknown as Partial<T>, options);
+		const result = await this.mongoCollection.updateOne(filter, { $set: { ...parsedUpdateFields, updated_at: Dates.now('utc').unix_milliseconds } } as unknown as Partial<T>, options);
 
 		if (options?.returnResult === false) return result as TReturnDocument extends true ? WithId<T> : UpdateResult<T>;
 

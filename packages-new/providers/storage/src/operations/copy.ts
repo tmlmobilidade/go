@@ -76,10 +76,10 @@ export async function copy(deps: StorageDeps, input: CopyInput): Promise<Attachm
 					inserted = await goDb.core.attachments.insertOneUnsafe({
 						...newFile,
 						_id,
-						created_at: Dates.now('utc').unix_timestamp,
+						created_at: Dates.now('utc').unix_milliseconds,
 						resource_id: resourceId,
 						scope,
-						updated_at: Dates.now('utc').unix_timestamp,
+						updated_at: Dates.now('utc').unix_milliseconds,
 					});
 				},
 				name: 'insertMetadata',

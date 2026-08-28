@@ -33,7 +33,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 				reason: 'NO_APEX_VALIDATIONS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -48,7 +48,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 				reason: 'NOT_ENOUGH_VALIDATIONS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -118,7 +118,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 				reason: 'INTERVALS_TOO_SHORT',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -135,7 +135,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 			reason: 'EXPECTED_VALIDATION_INTERVALS',
 			remarks: null,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 
 		//
@@ -150,7 +150,7 @@ export function expectedApexValidationIntervalAnalyzer(analysisData: AnalysisDat
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	}
 };

@@ -35,7 +35,7 @@ export function StopsDetailViewTimetable() {
 		// Skip if not today
 		if (!operationalDate.isTodaySelected) return;
 		// Get now in Unix timestamp
-		const now = Dates.now('Europe/Lisbon').unix_timestamp;
+		const now = Dates.now('Europe/Lisbon').unix_milliseconds;
 		// Check if the timetable starts after now or ends before now
 		if (stopsDetailContext.data.timetable[0].arrival_effective_ms > now) return;
 		if (stopsDetailContext.data.timetable[stopsDetailContext.data.timetable.length - 1].arrival_effective_ms < now) return;

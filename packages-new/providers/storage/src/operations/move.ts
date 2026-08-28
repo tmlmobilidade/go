@@ -78,10 +78,10 @@ export async function move(deps: StorageDeps, input: MoveInput): Promise<Attachm
 					inserted = await goDb.core.attachments.insertOneUnsafe({
 						...newFile,
 						_id,
-						created_at: Dates.now('utc').unix_timestamp,
+						created_at: Dates.now('utc').unix_milliseconds,
 						resource_id: resourceId,
 						scope,
-						updated_at: Dates.now('utc').unix_timestamp,
+						updated_at: Dates.now('utc').unix_milliseconds,
 					});
 				},
 				name: 'insertMetadata',
@@ -102,7 +102,7 @@ export async function move(deps: StorageDeps, input: MoveInput): Promise<Attachm
 				compensate: async () => {
 					if (sourceMetaDeleted && source) {
 						const restored = convertObject(source, CreateAttachmentSchema);
-						await goDb.core.attachments.insertOneUnsafe({ ...restored, _id: fileId, created_at: Dates.now('utc').unix_timestamp, updated_at: Dates.now('utc').unix_timestamp });
+						await goDb.core.attachments.insertOneUnsafe({ ...restored, _id: fileId, created_at: Dates.now('utc').unix_milliseconds, updated_at: Dates.now('utc').unix_milliseconds });
 					}
 				},
 				execute: async () => {

@@ -27,7 +27,7 @@ export async function publishTripUpdates() {
 		header: {
 			gtfs_realtime_version: '2.0',
 			incrementality: 'FULL_DATASET',
-			timestamp: Dates.now('Europe/Lisbon').unix_timestamp / 1000,
+			timestamp: Dates.now('Europe/Lisbon').unix_milliseconds / 1000,
 		},
 	};
 

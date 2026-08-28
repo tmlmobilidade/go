@@ -26,7 +26,7 @@ export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: Anal
 				reason: 'FOUND_VEHICLE_EVENT_OR_APEX_VALIDATION',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -37,7 +37,7 @@ export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: Anal
 			reason: 'NO_VEHICLE_EVENTS_OR_APEX_VALIDATIONS',
 			remarks: null,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 
 		//
@@ -49,7 +49,7 @@ export function simpleOneVehicleEventOrApexValidationAnalyzer(analysisData: Anal
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	}
 };

@@ -21,7 +21,7 @@ export async function updateRideById(rideId: string, updateData: RideAtomicUpdat
 	const newRideData = RideSchema.parse({
 		...foundRideBeforeUpdateQuery[0],
 		...updateData,
-		updated_at: Dates.now('utc').unix_timestamp,
+		updated_at: Dates.now('utc').unix_milliseconds,
 	});
 	// Insert a new version of the ride in the database
 	await labDb.operation.rides.insert('JSONEachRow', [newRideData]);

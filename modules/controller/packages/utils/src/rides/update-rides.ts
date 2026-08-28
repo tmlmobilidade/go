@@ -25,7 +25,7 @@ export async function updateRides<K extends RideFilterKey>(filter: RideFilterFie
 	const newRides = foundRides.map(foundRide => ({
 		...foundRide,
 		...updatedFields,
-		updated_at: Dates.now('utc').unix_timestamp,
+		updated_at: Dates.now('utc').unix_milliseconds,
 	}));
 	// Insert the new ride versions in the database
 	await labDb.operation.rides.insert('JSONEachRow', newRides);

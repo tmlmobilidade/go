@@ -54,7 +54,7 @@ export async function seedFromTmp() {
 			console.log(`Generated new stop ID`, newStopId.data);
 			const stop = StopSchema.safeParse({
 				_id: newStopId.data,
-				created_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				created_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 				created_by: 'system',
 				district_id: '',
 				flags: [{
@@ -75,7 +75,7 @@ export async function seedFromTmp() {
 				previous_go_id: originalStop.stop_id,
 				short_name: '-----',
 				tts_name: '',
-				updated_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				updated_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 				updated_by: 'system',
 			});
 			if (stop.success) {

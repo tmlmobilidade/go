@@ -16,7 +16,7 @@ export async function alertJustification(ride: RideWithAnalyses, acceptance: Rid
 		//
 		// Find a recent alert that references this ride or its line.
 		const foundAlert = await goDb.operation.alerts.findOne({
-			created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 2 }).unix_timestamp },
+			created_at: { $gte: Dates.now('Europe/Lisbon').minus({ days: 2 }).unix_milliseconds },
 			reference_type: { $in: ['rides', 'lines'] },
 			references: { $elemMatch: { parent_id: { $in: [ride._id, ride.route_short_name] } } },
 		});
@@ -26,7 +26,7 @@ export async function alertJustification(ride: RideWithAnalyses, acceptance: Rid
 		//
 		// Justify the acceptance with the alert.
 		const { _id, ...fields } = acceptance;
-		const now = Dates.now('utc').unix_timestamp;
+		const now = Dates.now('utc').unix_milliseconds;
 
 		await goDb.operation.rideAcceptances.updateById(_id, {
 			...fields,

@@ -187,7 +187,7 @@ export async function parsePlan(planData: Plan) {
 			const hashedShapeItem = HashedShapeSchema.parse({
 				...createHashedShape,
 				_id: uniqueIdValueForHashedShape,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 
 			if (!currentHashedShapeAlreadyExists) {
@@ -263,7 +263,7 @@ export async function parsePlan(planData: Plan) {
 				return HashedTripSchema.parse({
 					...item,
 					_id: uniqueIdValueForHashedTrip,
-					updated_at: Dates.now('utc').unix_timestamp,
+					updated_at: Dates.now('utc').unix_milliseconds,
 				});
 			});
 
@@ -340,7 +340,7 @@ export async function parsePlan(planData: Plan) {
 					start_time_observed: null,
 					start_time_scheduled: startTimeScheduledUnixMilliseconds,
 					trip_id: currentTrip.trip_id,
-					updated_at: Dates.now('utc').unix_timestamp,
+					updated_at: Dates.now('utc').unix_milliseconds,
 					vehicle_ids: [],
 				};
 
@@ -400,7 +400,7 @@ export async function parsePlan(planData: Plan) {
 
 	const plansCollection = await goDb.operation.plans.getCollection();
 
-	await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.controller.last_hash': planData.hash, 'apps.controller.status': 'complete', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_timestamp } });
+	await plansCollection.updateOne({ _id: { $eq: planData._id } }, { $set: { 'apps.controller.last_hash': planData.hash, 'apps.controller.status': 'complete', 'apps.controller.timestamp': Dates.now('Europe/Lisbon').unix_milliseconds } });
 
 	Logger.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 

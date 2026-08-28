@@ -71,7 +71,7 @@ export function useUserPreference<T extends UserPreferenceValue>(scope: string, 
 			? (value as (prev: T) => T)(preferenceValueRef.current)
 			: value;
 		// Update the latest updated at.
-		latestUpdatedAtRef.current = Dates.now('utc').unix_timestamp;
+		latestUpdatedAtRef.current = Dates.now('utc').unix_milliseconds;
 		// Update the preference value.
 		preferenceValueRef.current = nextValue;
 		// Update the local state.

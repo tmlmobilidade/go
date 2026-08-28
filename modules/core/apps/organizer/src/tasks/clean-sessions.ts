@@ -13,7 +13,7 @@ export async function cleanExpiredSessions() {
 	try {
 		const timer = new Timer();
 		Logger.info({ message: `Cleaning expired "sessions" documents...` });
-		const now = Dates.now('utc').unix_timestamp;
+		const now = Dates.now('utc').unix_milliseconds;
 		const deleteResult = await goDb.core.sessions.deleteMany({ expires_at: { $lt: now } });
 		Logger.success(`Deleted ${deleteResult.deletedCount} expired "sessions" documents in ${timer.get()}.`);
 	} catch (error) {

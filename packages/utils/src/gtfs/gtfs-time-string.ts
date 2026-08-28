@@ -17,7 +17,7 @@ export function convertGTFSTimeStringAndOperationalDateToUnixMilliseconds(timeSt
 	return Dates
 		.fromOperationalDateInt(operationalDate, 'Europe/Lisbon')
 		.set({ hour: hoursOperation, minute: minutesOperation, second: secondsOperation })
-		.unix_timestamp;
+		.unix_milliseconds;
 };
 
 /**
@@ -38,5 +38,5 @@ export function fromGtfsTimeAndGtfsDateToUnixMilliseconds(gtfsTime: GtfsTime, gt
 	return Dates
 		.fromOperationalDateInt(validatedGtfsDate, 'Europe/Lisbon')
 		.set({ hour: hours, minute: minutes, second: seconds })
-		.unix_timestamp;
+		.unix_milliseconds;
 };

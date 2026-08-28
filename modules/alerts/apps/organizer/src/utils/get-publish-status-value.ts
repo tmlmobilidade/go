@@ -26,7 +26,7 @@ export function getPublishStatusValue(alertData: Alert): PublishStatus {
 
 	let result: PublishStatus = alertData.publish_status;
 
-	const nowUnixMilliseconds = Dates.now('Europe/Lisbon').unix_timestamp;
+	const nowUnixMilliseconds = Dates.now('Europe/Lisbon').unix_milliseconds;
 
 	if (alertData.publish_start_date && alertData.publish_start_date <= nowUnixMilliseconds) {
 		// So far the alert is not a draft and the publish start date has passed,

@@ -54,8 +54,8 @@ export async function exportValidationsAggregated({ context, groupFields, messag
 	};
 
 	filterQuery.created_at = {
-		$gte: Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_timestamp,
-		$lt: Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_timestamp,
+		$gte: Dates.fromOperationalDate(context.dates.start, 'Europe/Lisbon').unix_milliseconds,
+		$lt: Dates.fromOperationalDate(context.dates.end, 'Europe/Lisbon').unix_milliseconds,
 	};
 
 	if (context.filters.agency_ids.length) {

@@ -57,7 +57,7 @@ export function sendSuccessApiResponse<T>(reply: FastifyReply<T>, data: T, optio
 		data,
 		error: null,
 		status_code: statusCodeValue,
-		timestamp: Dates.now('local').unix_timestamp,
+		timestamp: Dates.now('local').unix_milliseconds,
 	};
 
 	return reply.send(response);

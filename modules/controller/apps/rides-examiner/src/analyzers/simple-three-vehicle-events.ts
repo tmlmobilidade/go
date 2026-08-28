@@ -28,7 +28,7 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 				stop_ids_first: [],
 				stop_ids_last: [],
 				stop_ids_middle: [],
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -87,7 +87,7 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 				stop_ids_first: Array.from(firstStopIds),
 				stop_ids_last: Array.from(lastStopIds),
 				stop_ids_middle: Array.from(middleStopIds),
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -102,7 +102,7 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 				stop_ids_first: Array.from(firstStopIds),
 				stop_ids_last: Array.from(lastStopIds),
 				stop_ids_middle: Array.from(middleStopIds),
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -117,7 +117,7 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 				stop_ids_first: Array.from(firstStopIds),
 				stop_ids_last: Array.from(lastStopIds),
 				stop_ids_middle: Array.from(middleStopIds),
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -131,7 +131,7 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 			stop_ids_first: Array.from(firstStopIds),
 			stop_ids_last: Array.from(lastStopIds),
 			stop_ids_middle: Array.from(middleStopIds),
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 
 		//
@@ -146,7 +146,7 @@ export function simpleThreeVehicleEventsAnalyzer(analysisData: AnalysisData): Ri
 			stop_ids_first: [],
 			stop_ids_last: [],
 			stop_ids_middle: [],
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	}
 };

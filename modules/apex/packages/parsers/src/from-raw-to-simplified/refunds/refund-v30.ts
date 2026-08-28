@@ -25,7 +25,7 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 		apex_version: doc.payload.versionInfo.apexVersion,
 		card_physical_type: ApexCardTypeSchema.parse(String(doc.payload.cardInfo.cardPhysicalType)),
 		card_serial_number: toUInt64(doc.payload.cardInfo.cardSerialNumber),
-		created_at: transactionDateValue.unix_timestamp,
+		created_at: transactionDateValue.unix_milliseconds,
 		device_id: doc.payload.operatorInfo.deviceID,
 		is_ok: false,
 		is_ok_pcgi: doc.is_ok,
@@ -42,7 +42,7 @@ export function parseRawApexTransactionRefundV30IntoSimplifiedApexOnBoardRefund(
 		received_at: doc.received_at,
 		stop_id: null,
 		trip_id: null,
-		updated_at: Dates.now('utc').unix_timestamp,
+		updated_at: Dates.now('utc').unix_milliseconds,
 		validation_id: null,
 		vehicle_id: null,
 	};

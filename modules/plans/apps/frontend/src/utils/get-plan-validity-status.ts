@@ -14,7 +14,7 @@ export const getPlanValidityStatus = (startDate: GtfsDate, endDate: GtfsDate): P
 
 	const nowInUnixMilliseconds = Dates
 		.now('Europe/Lisbon')
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	//
 	// Parse start and end dates to Unix timestamp format
@@ -22,13 +22,13 @@ export const getPlanValidityStatus = (startDate: GtfsDate, endDate: GtfsDate): P
 	const startDateUnixMilliseconds = Dates
 		.fromOperationalDate(startDate, 'Europe/Lisbon')
 		.set({ hour: 4, millisecond: 0, minute: 0, second: 0 })
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	const endDateUnixMilliseconds = Dates
 		.fromOperationalDate(endDate, 'Europe/Lisbon')
 		.plus({ days: 1 })
 		.set({ hour: 3, millisecond: 59, minute: 59, second: 59 })
-		.unix_timestamp;
+		.unix_milliseconds;
 
 	//
 	// Return validity status

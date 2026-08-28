@@ -121,7 +121,7 @@ export function buildAffectedDaysDetails(
 
 	let currentDate = startDate.startOf('day');
 
-	while (currentDate.unix_timestamp <= endDate.unix_timestamp) {
+	while (currentDate.unix_milliseconds <= endDate.unix_milliseconds) {
 		const key = calendarKey(currentDate);
 		const dayDetails = buildDayScheduleDetail(key, allRules, periods, holidays, options?.events);
 

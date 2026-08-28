@@ -37,7 +37,7 @@ export class MailerService {
 		const emailHtml = await renderSystemErrorTemplate({
 			errorMessage: error,
 			serviceName: this.config.mail_options.subject,
-			timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			timestamp: Dates.now('Europe/Lisbon').unix_milliseconds,
 		});
 
 		const mailOptions = {

@@ -25,7 +25,7 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 				reason: 'NO_PATH_DATA',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -40,7 +40,7 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 				reason: 'NO_APEX_LOCATIONS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -96,7 +96,7 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 				reason: 'MISSING_APEX_LOCATION_FOR_AT_LEAST_ONE_STOP',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -110,7 +110,7 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 			reason: 'MATCHING_APEX_LOCATIONS',
 			remarks: null,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 
 		//
@@ -125,7 +125,7 @@ export function matchingApexLocationsAnalyzer(analysisData: AnalysisData): RideA
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	}
 };

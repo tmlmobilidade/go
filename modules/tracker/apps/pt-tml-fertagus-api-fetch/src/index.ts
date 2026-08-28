@@ -55,7 +55,7 @@ const main = async () => {
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlFertagusV1> = {
 				agency_id: '7NTB1',
-				created_at: Dates.fromISO(event.date).unix_timestamp,
+				created_at: Dates.fromISO(event.date).unix_milliseconds,
 				entity_id: `${event.date}-${event.train_id ?? ''}`,
 				payload: event,
 				version: 'pt-tml-fertagus-v1',
@@ -73,7 +73,7 @@ const main = async () => {
 			await rawDb.vehicleEvents.ptTmlFertagus.insertOne({
 				...hashableRawEvent,
 				_id: hashableRawEventId,
-				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 			});
 
 			saveCount++;

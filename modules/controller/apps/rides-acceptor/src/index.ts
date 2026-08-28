@@ -42,7 +42,7 @@ async function main() {
 		// It makes sense to divide chunks by day, but this should be adjusted according to the volume of data in each chunk.
 
 		performInTimeChunks({
-			endDate: Dates.now('Europe/Lisbon').minus({ seconds: 30 }).unix_timestamp,
+			endDate: Dates.now('Europe/Lisbon').minus({ seconds: 30 }).unix_milliseconds,
 			intervalHrs: 2,
 			onChunk: async (chunk) => {
 				//
@@ -53,7 +53,7 @@ async function main() {
 				Logger.spacer(1);
 				Logger.divider();
 			},
-			startDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK }).unix_timestamp,
+			startDate: Dates.now('Europe/Lisbon').minus({ days: SYNC_DAYS_BACK }).unix_milliseconds,
 		});
 
 		Logger.success(`Finished running Rides Acceptor. (${globalTimer.get()})`);

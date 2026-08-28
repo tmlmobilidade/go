@@ -51,7 +51,7 @@ export function toGtfsRtVehiclePositions(positions: HubVehiclePosition[]): GtfsR
 		header: {
 			gtfs_realtime_version: '2.0',
 			incrementality: 'FULL_DATASET',
-			timestamp: Dates.now('Europe/Lisbon').unix_timestamp,
+			timestamp: Dates.now('Europe/Lisbon').unix_milliseconds,
 		},
 	};
 }

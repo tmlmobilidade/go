@@ -67,7 +67,7 @@ export async function createPlanHandler(request: FastifyRequest<{ Body: { valida
 				timestamp: null,
 			},
 		},
-		created_at: Dates.now('utc').unix_timestamp,
+		created_at: Dates.now('utc').unix_milliseconds,
 		created_by: request.me._id,
 		gtfs_agency: validationData.gtfs_agency,
 		gtfs_feed_info: validationData.gtfs_feed_info,

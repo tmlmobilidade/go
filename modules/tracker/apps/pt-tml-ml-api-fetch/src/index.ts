@@ -116,13 +116,13 @@ const main = async () => {
 
 			const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlMlV1> = {
 				agency_id: 'IA2N9',
-				created_at: now.unix_timestamp,
+				created_at: now.unix_milliseconds,
 				entity_id: `${line}_${trainId}_${destinationId}`,
 				payload: {
 					header: {
 						gtfs_realtime_version: '2.0',
 						incrementality: 'FULL_DATASET',
-						timestamp: now.unix_timestamp,
+						timestamp: now.unix_milliseconds,
 					},
 					vehicle: {
 						bearing: null,
@@ -133,7 +133,7 @@ const main = async () => {
 						},
 						speed: null,
 						stop_id: nextStop.stop_id,
-						timestamp: now.unix_timestamp,
+						timestamp: now.unix_milliseconds,
 						trip: {
 							trip_id: ride.trip_id,
 						},
@@ -161,7 +161,7 @@ const main = async () => {
 			await rawDb.vehicleEvents.ptTmlMl.insertOne({
 				...hashableRawEvent,
 				_id: hashableRawEventId,
-				received_at: Dates.now('Europe/Lisbon').unix_timestamp,
+				received_at: Dates.now('Europe/Lisbon').unix_milliseconds,
 			});
 
 			saveCount++;

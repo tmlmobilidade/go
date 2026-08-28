@@ -15,13 +15,13 @@ export type UnixMilliseconds = number & {
  * The schema for a Unix timestamp value in milliseconds.
  * @example
  * ```ts
- * const unixTimestamp = UnixMillisecondsSchema.parse(1715025600000);
+ * const unixMilliseconds = UnixMillisecondsSchema.parse(1715025600000);
  * // => 1715025600000 as UnixMilliseconds
  *
- * const unixTimestamp = UnixMillisecondsSchema.parse('1715025600000');
+ * const unixMilliseconds = UnixMillisecondsSchema.parse('1715025600000');
  * // => 1715025600000 as UnixMilliseconds
  *
- * const unixTimestamp = UnixMillisecondsSchema.parse('not a number');
+ * const unixMilliseconds = UnixMillisecondsSchema.parse('not a number');
  * // => Throws an error: 'Invalid value 'not a number', expected a number or string in milliseconds, but received a NaN'
  * ```
  */
@@ -38,13 +38,13 @@ export const UnixMillisecondsSchema = z
  * @throws An error if the value is invalid.
  * @example
  * ```ts
- * const unixTimestamp = validateUnixMilliseconds(1715025600000);
+ * const unixMilliseconds = validateUnixMilliseconds(1715025600000);
  * // => 1715025600000 as UnixMilliseconds
  *
- * const unixTimestamp = validateUnixMilliseconds('1715025600000');
+ * const unixMilliseconds = validateUnixMilliseconds('1715025600000');
  * // => 1715025600000 as UnixMilliseconds
  *
- * const unixTimestamp = validateUnixMilliseconds('not a number');
+ * const unixMilliseconds = validateUnixMilliseconds('not a number');
  * // => Throws an error: 'Invalid value 'not a number', expected a number in milliseconds but received a NaN'
  * ```
  */

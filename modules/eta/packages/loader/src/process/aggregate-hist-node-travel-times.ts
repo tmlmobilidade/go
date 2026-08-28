@@ -33,8 +33,8 @@ export async function aggregateHistNodeTravelTimes(windowStart: UnixMilliseconds
 			Logger.progress({ message: `[${chunk.index + 1}/${chunk.total}] operational day ${day.toFormat('yyyyMMdd')}` });
 			await labDb.queryFromFile(pipelinePath(SQL_PATH), {
 				chunk_date: Number(day.toFormat('yyyyMMdd')),
-				scan_end: day.unix_timestamp + 42 * hourMs,
-				scan_start: day.unix_timestamp - 16 * hourMs,
+				scan_end: day.unix_milliseconds + 42 * hourMs,
+				scan_start: day.unix_milliseconds - 16 * hourMs,
 			});
 		},
 		startDate: windowStart,

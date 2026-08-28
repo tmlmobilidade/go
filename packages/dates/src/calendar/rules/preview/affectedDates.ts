@@ -127,7 +127,7 @@ export function getManualRuleAffectedDates(rule: ManualRule, ctx: CalendarContex
 	let current = datesFromCalendarKey(from);
 	const end = datesFromCalendarKey(to);
 
-	while (current.unix_timestamp <= end.unix_timestamp) {
+	while (current.unix_milliseconds <= end.unix_milliseconds) {
 		const key = calendarKey(current);
 
 		if (ruleAppliesToCivilKey(rule, key, ctx, activePeriodDates)) {

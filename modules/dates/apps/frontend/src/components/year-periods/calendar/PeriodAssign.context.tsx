@@ -324,7 +324,7 @@ export const PeriodAssignContextProvider = ({ children, dateRange }: PropsWithCh
 		const startDate = startD.toFormat('d \'de\' MMMM \'de\' yyyy');
 		const endDate = endD.toFormat('d \'de\' MMMM \'de\' yyyy');
 
-		const diffMs = endD.unix_timestamp - startD.unix_timestamp;
+		const diffMs = endD.unix_milliseconds - startD.unix_milliseconds;
 		const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
 
 		return {

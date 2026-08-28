@@ -41,7 +41,7 @@ export function LoadingActivity({ isLoading, isValidating, timestamp }: LoadingA
 	useEffect(() => {
 		const updateTooltipValue = () => {
 			if (!effectiveTimestampValue) return;
-			const diff = Dates.now('local').unix_timestamp - effectiveTimestampValue;
+			const diff = Dates.now('local').unix_milliseconds - effectiveTimestampValue;
 			if (diff < 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.just_now'));
 			if (diff < 60 * 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.seconds_ago', '', { count: Math.floor(diff / 1000) }));
 			if (diff < 60 * 60 * 1000) return setTooltipValue(t('shared:components.loaders.LoadingActivity.minutes_ago', '', { count: Math.floor(diff / 1000 / 60) }));
@@ -56,7 +56,7 @@ export function LoadingActivity({ isLoading, isValidating, timestamp }: LoadingA
 	useEffect(() => {
 		const updateIndicatorVariant = () => {
 			if (!effectiveTimestampValue) return;
-			const diff = Dates.now('local').unix_timestamp - effectiveTimestampValue;
+			const diff = Dates.now('local').unix_milliseconds - effectiveTimestampValue;
 			if (diff < 10_000) return setIndicatorVariant('primary');
 			return setIndicatorVariant('muted');
 		};

@@ -45,8 +45,8 @@ export async function insertMany<T extends Document>(context: GoDbCollectionCont
 		// Add default values to the document
 		return { ...doc,
 			_id: unusedId,
-			created_at: Dates.now('utc').unix_timestamp,
-			updated_at: Dates.now('utc').unix_timestamp };
+			created_at: Dates.now('utc').unix_milliseconds,
+			updated_at: Dates.now('utc').unix_milliseconds };
 	});
 
 	//

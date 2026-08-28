@@ -47,7 +47,7 @@
 // 			.now('Europe/Lisbon')
 // 			.startOf('day')
 // 			.set({ day: 1, hour: 4, minute: 0, month: 1, year: 2025 })
-// 			.unix_timestamp;
+// 			.unix_milliseconds;
 
 // 		const agregationPipeline = [
 // 			{ $match: { agency_id: { $in: ['41', '42', '43', '44'] }, created_at: { $gte: searchTimestampStart } } },

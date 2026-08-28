@@ -41,7 +41,7 @@ export function generateComments<T extends object>(
 	},
 ): Comment[] {
 	const diff = compareObjects(prev, curr);
-	const now = Dates.now('utc').unix_timestamp;
+	const now = Dates.now('utc').unix_milliseconds;
 
 	// Next state (needed to store "whole new version")
 	const next = { ...prev, ...curr } as T;

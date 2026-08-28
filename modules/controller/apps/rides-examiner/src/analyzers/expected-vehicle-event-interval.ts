@@ -33,7 +33,7 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 				reason: 'NO_VEHICLE_EVENTS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -75,7 +75,7 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 				reason: 'EXPECTED_VEHICLE_EVENT_INTERVAL',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 			});
 		}
 
@@ -89,7 +89,7 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 			reason: 'UNEXPECTED_VEHICLE_EVENT_INTERVAL',
 			remarks: null,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 
 		//
@@ -104,7 +104,7 @@ export function expectedVehicleEventIntervalAnalyzer(analysisData: AnalysisData)
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 		});
 	}
 };

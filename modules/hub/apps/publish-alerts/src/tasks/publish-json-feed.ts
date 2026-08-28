@@ -30,12 +30,12 @@ export async function publishJsonFeed() {
 			$and: [
 				{
 					$or: [
-						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_timestamp } },
+						{ publish_end_date: { $gte: Dates.now('Europe/Lisbon').unix_milliseconds } },
 						{ publish_end_date: null },
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
-					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_timestamp },
+					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_milliseconds },
 					publish_status: 'published',
 				},
 			],

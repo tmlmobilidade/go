@@ -16,7 +16,7 @@ export function useRidesListFilterDateRange(): UseFilterStateDateRangeReturnType
 			.now('local')
 			.minus({ hours: 1 })
 			.startOf('hour')
-			.unix_timestamp;
+			.unix_milliseconds;
 	}, []);
 
 	const defaultEndValue = useMemo(() => {
@@ -24,7 +24,7 @@ export function useRidesListFilterDateRange(): UseFilterStateDateRangeReturnType
 			.now('local')
 			.plus({ hours: 1 })
 			.endOf('hour')
-			.unix_timestamp;
+			.unix_milliseconds;
 	}, []);
 
 	return useFilterStateDateRange(

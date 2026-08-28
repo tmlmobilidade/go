@@ -48,7 +48,7 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 
 		const hashableRawEvent: HashableRawVehicleEvent<RawVehicleEventPtTmlCm> = {
 			agency_id: matchingAgency.agency_id,
-			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_timestamp,
+			created_at: Dates.fromSeconds(entity.vehicle.timestamp).unix_milliseconds,
 			entity_id: entity._id,
 			payload: {
 				header: {
@@ -73,7 +73,7 @@ export function transformPcgiVehicleEventCore(pcgiVehicleEvent: PcgiVehicleEvent
 		const parsedDocument = RawVehicleEventPtTmlCmSchema.safeParse({
 			...hashableRawEvent,
 			_id: hashableRawEventId,
-			received_at: Dates.fromUnixMilliseconds(pcgiVehicleEvent.millis).unix_timestamp,
+			received_at: Dates.fromUnixMilliseconds(pcgiVehicleEvent.millis).unix_milliseconds,
 		});
 
 		if (!parsedDocument.success) {

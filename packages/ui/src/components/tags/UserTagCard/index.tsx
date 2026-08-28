@@ -34,7 +34,7 @@ export function UserTagCard({ children, fullName, organizationName, seenLastAt }
 
 	useEffect(() => {
 		const updateRelativeTimeString = () => {
-			const diff = Dates.now('utc').unix_timestamp - (seenLastAt ?? 0);
+			const diff = Dates.now('utc').unix_milliseconds - (seenLastAt ?? 0);
 			if (diff < 60 * 1_000) return setSeenLastAtRelativeString('Online Agora');
 			if (diff < 60 * 60 * 1_000) return setSeenLastAtRelativeString(`Online há ${Math.floor(diff / 1000 / 60)} min`);
 			if (diff < 24 * 60 * 60 * 1_000) return setSeenLastAtRelativeString(`Online há ${Math.floor(diff / 1000 / 60 / 60)} h`);
@@ -47,7 +47,7 @@ export function UserTagCard({ children, fullName, organizationName, seenLastAt }
 
 	useEffect(() => {
 		const updateIndicatorVariant = () => {
-			const diff = Dates.now('utc').unix_timestamp - (seenLastAt ?? 0);
+			const diff = Dates.now('utc').unix_milliseconds - (seenLastAt ?? 0);
 			if (diff < 60 * 1_000) return setIndicatorVariant('primary');
 			return setIndicatorVariant('muted');
 		};

@@ -13,7 +13,7 @@ interface DatesConstructor {
 	js_date: Date
 	operational_date_int: OperationalDateInt
 	std_window: { end: UnixMilliseconds, start: UnixMilliseconds }
-	unix_timestamp: UnixMilliseconds
+	unix_milliseconds: UnixMilliseconds
 }
 
 /* * */
@@ -29,7 +29,7 @@ export class Dates {
 	public js_date: Date;
 	public operational_date_int: OperationalDateInt;
 	public std_window: { end: UnixMilliseconds, start: UnixMilliseconds };
-	public unix_timestamp: UnixMilliseconds;
+	public unix_milliseconds: UnixMilliseconds;
 
 	constructor(params: DatesConstructor) {
 		this.calendar_date = params.calendar_date;
@@ -37,7 +37,7 @@ export class Dates {
 		this.js_date = params.js_date;
 		this.operational_date_int = params.operational_date_int;
 		this.std_window = params.std_window;
-		this.unix_timestamp = params.unix_timestamp;
+		this.unix_milliseconds = params.unix_milliseconds;
 	}
 
 	/**
@@ -58,7 +58,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -76,7 +76,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -95,7 +95,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -116,7 +116,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -135,7 +135,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -154,7 +154,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -173,7 +173,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.prototype.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.prototype.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -207,7 +207,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -227,7 +227,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -247,7 +247,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -267,7 +267,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -290,7 +290,7 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
@@ -310,20 +310,20 @@ export class Dates {
 			js_date: dateTime.toJSDate(),
 			operational_date_int: this.getOperationalDateInt(dateTime.toISO()),
 			std_window: this.getStandardWindowInterval(dateTime.toISO()),
-			unix_timestamp: dateTime.toMillis() as UnixMilliseconds,
+			unix_milliseconds: dateTime.toMillis() as UnixMilliseconds,
 		});
 	}
 
 	/**
-	 * Returns the time remaining until a given unix_timestamp (in ms) from now,
+	 * Returns the time remaining until a given unix_milliseconds (in ms) from now,
 	 * as an object with minutes, hours, and days (all as floats, not rounded).
-	 * @param unixTimestamp The target timestamp in milliseconds
+	 * @param unixMilliseconds The target timestamp in milliseconds
 	 * @returns { minutes: number, hours: number, days: number }
 	 */
-	timeUntil(unixTimestamp: UnixMilliseconds): { days: number, hours: number, minutes: number } {
+	timeUntil(unixMilliseconds: UnixMilliseconds): { days: number, hours: number, minutes: number } {
 		// Calculate the difference in milliseconds
 		const now = Date.now();
-		const diffMs = unixTimestamp - now;
+		const diffMs = unixMilliseconds - now;
 		// Calculate the time remaining
 		const minutes = diffMs / (1000 * 60);
 		const hours = diffMs / (1000 * 60 * 60);

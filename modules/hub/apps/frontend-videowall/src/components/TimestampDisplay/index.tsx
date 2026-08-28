@@ -28,7 +28,7 @@ export function TimestampDisplay({ timestamp = 0 }: Props) {
 		if (!timestamp) return;
 		const updateTimestamp = () => {
 			const now = Dates.now('Europe/Lisbon');
-			const diff = now.unix_timestamp - timestamp;
+			const diff = now.unix_milliseconds - timestamp;
 			// Convert the difference in milliseconds to an object with days, hours, minutes, and seconds
 			const initSeconds = Math.floor(diff / 1000);
 			const days = Math.floor(initSeconds / (24 * 3600));

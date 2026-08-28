@@ -69,7 +69,7 @@ export async function cleanOldValidations() {
 			continue;
 		}
 
-		const cutoffUnixMilliseconds = Dates.now('Europe/Lisbon').unix_timestamp - thresholdValue as UnixMilliseconds;
+		const cutoffUnixMilliseconds = Dates.now('Europe/Lisbon').unix_milliseconds - thresholdValue as UnixMilliseconds;
 
 		//
 		// Check if the validation is older than the cutoff date

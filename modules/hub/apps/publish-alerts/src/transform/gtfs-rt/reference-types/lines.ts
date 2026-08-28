@@ -39,7 +39,7 @@ export async function transformReferenceTypeLinesIntoGtfsRt(alertData: Alert): P
 
 		let activePeriodEndDate: UnixMilliseconds;
 
-		if (!alertData.active_period_end_date) activePeriodEndDate = Dates.now('Europe/Lisbon').plus({ hours: 1 }).unix_timestamp;
+		if (!alertData.active_period_end_date) activePeriodEndDate = Dates.now('Europe/Lisbon').plus({ hours: 1 }).unix_milliseconds;
 		else activePeriodEndDate = alertData.active_period_end_date;
 
 		//

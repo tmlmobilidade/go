@@ -49,10 +49,10 @@ export interface DateTimeInputProps {
 
 	/**
 	 * Callback fired when the date is changed.
-	 * @param unixTimestamp The selected Unix timestamp
+	 * @param unixMilliseconds The selected Unix timestamp
 	 * or null if the date is invalid or cleared.
 	 */
-	onChange?: (unixTimestamp: null | UnixMilliseconds) => void
+	onChange?: (unixMilliseconds: null | UnixMilliseconds) => void
 
 	/**
 	 * A placeholder for the input.
@@ -143,10 +143,10 @@ export function DateTimeInput(props: DateTimeInputProps) {
 		// If it fails, call onChange with null
 		try {
 			const formattedTimeValue = timePickerValue.length === 5 ? `${timePickerValue}:00` : timePickerValue;
-			const unixTimestamp = Dates
+			const unixMilliseconds = Dates
 				.fromFormat(`${dateInputValue} ${formattedTimeValue}`, 'yyyy-MM-dd HH:mm:ss', timezone)
-				.unix_timestamp;
-			const validatedUnixMilliseconds = validateUnixMilliseconds(unixTimestamp);
+				.unix_milliseconds;
+			const validatedUnixMilliseconds = validateUnixMilliseconds(unixMilliseconds);
 			props.onChange(validatedUnixMilliseconds);
 			return;
 		} catch (error) {

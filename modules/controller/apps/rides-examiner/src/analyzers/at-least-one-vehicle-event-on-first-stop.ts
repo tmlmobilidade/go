@@ -32,7 +32,7 @@ export function atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData: Analysis
 				reason: 'NO_PATH_DATA',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 				vehicle_events_on_first_stop_qty: null,
 			});
 		}
@@ -48,7 +48,7 @@ export function atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData: Analysis
 				reason: 'NO_VEHICLE_EVENTS',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 				vehicle_events_on_first_stop_qty: null,
 			});
 		}
@@ -78,7 +78,7 @@ export function atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData: Analysis
 				reason: 'ONE_OR_MORE_VEHICLE_EVENTS_ON_FIRST_STOP',
 				remarks: null,
 				ride_id: analysisData.ride._id,
-				updated_at: Dates.now('utc').unix_timestamp,
+				updated_at: Dates.now('utc').unix_milliseconds,
 				vehicle_events_on_first_stop_qty: eventsFoundOnFirstStop,
 			});
 		}
@@ -90,7 +90,7 @@ export function atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData: Analysis
 			reason: 'NO_VEHICLE_EVENTS_ON_FIRST_STOP',
 			remarks: null,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 			vehicle_events_on_first_stop_qty: eventsFoundOnFirstStop,
 		});
 
@@ -103,7 +103,7 @@ export function atLeastOneVehicleEventOnFirstStopAnalyzer(analysisData: Analysis
 			reason: null,
 			remarks: error.message,
 			ride_id: analysisData.ride._id,
-			updated_at: Dates.now('utc').unix_timestamp,
+			updated_at: Dates.now('utc').unix_milliseconds,
 			vehicle_events_on_first_stop_qty: null,
 		});
 	}

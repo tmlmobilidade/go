@@ -34,7 +34,7 @@ export async function toggleLockById<T extends Document>(context: GoDbCollection
 	const updatableDocument = {
 		...existingDocument,
 		is_locked: !existingDocument.is_locked,
-		updated_at: Dates.now('utc').unix_timestamp,
+		updated_at: Dates.now('utc').unix_milliseconds,
 	};
 
 	//

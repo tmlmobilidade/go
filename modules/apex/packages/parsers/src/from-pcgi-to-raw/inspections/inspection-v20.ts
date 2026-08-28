@@ -26,10 +26,10 @@ export function parsePcgiTransactionEntityIntoRawApexTransactionInspectionV20(pc
 		_id: pcgiTransactionEntity.transactionId,
 		agency_code: decodedTransaction.operatorInfo.operatorLongID,
 		agency_id: getAgencyIdFromOperatorLongId(decodedTransaction.operatorInfo.operatorLongID),
-		created_at: transactionDateValue.unix_timestamp,
+		created_at: transactionDateValue.unix_milliseconds,
 		is_ok: pcgiTransactionEntity.isOK,
 		payload: RawApexTransactionInspectionV20PayloadSchema.parse(decodedTransaction),
-		received_at: receivedAtValue.unix_timestamp,
+		received_at: receivedAtValue.unix_milliseconds,
 		version: 'inspection-2.0',
 	};
 

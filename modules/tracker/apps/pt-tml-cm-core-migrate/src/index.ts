@@ -80,7 +80,7 @@ async function main() {
 				// Skip if document has no trip_id
 				if (!parsedDocument.payload.vehicle?.trip?.tripId) continue;
 				// If the document created_at is before the earliest date, skip it
-				if (parsedDocument.created_at < earliestDate.unix_timestamp) continue;
+				if (parsedDocument.created_at < earliestDate.unix_milliseconds) continue;
 				// Write the document to the correct collection
 				if (parsedDocument.agency_id === 'LA77N') {
 					await rawDb.vehicleEvents.ptTmlCmVa.insertOne(parsedDocument);
