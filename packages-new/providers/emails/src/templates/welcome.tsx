@@ -8,6 +8,7 @@ import { Wrapper } from '@/components/Wrapper/index.js';
 import { GO_HOMEPAGE_URL } from '@/constants.js';
 import { emailProvider } from '@/email.provider.js';
 import { type SendEmailProps } from '@/types.js';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { render } from 'react-email';
 
 /* * */
@@ -44,7 +45,7 @@ export default function WelcomeTemplate({ firstName, resetPasswordUrl }: Welcome
 
 WelcomeTemplate.PreviewProps = {
 	firstName: 'Josué',
-	resetPasswordUrl: 'https://go.tmlmobilidade.pt/auth/reset-password',
+	resetPasswordUrl: PAGE_ROUTES.core.RESET_PASSWORD_LIST,
 } satisfies WelcomeTemplateProps;
 
 /* * */
